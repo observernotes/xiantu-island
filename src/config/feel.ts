@@ -5,13 +5,13 @@ export const FEEL = {
   gravity: 2000,
   maxFallSpeed: 670,
 
-  walkSpeed: 160,
+  walkSpeed: 130,
   groundAccel: 2400,     // 越大起步越干脆
   groundDecel: 3000,     // 松手后的刹车，越大越不滑
   airAccel: 300,         // 空中转向能力，冒险岛很弱
-  airMaxSpeed: 160,
+  airMaxSpeed: 130,
 
-  jumpSpeed: 600,        // 起跳初速，约 90px 高
+  jumpSpeed: 560,        // 起跳初速，约 78px 高（执法堂 v0.1 报告建议）
   coyoteMs: 60,          // 离开平台后仍可起跳的宽限
   jumpBufferMs: 80,      // 落地前提前按跳的缓冲
 
@@ -25,7 +25,7 @@ export const FEEL = {
 
   dropThroughMs: 220,    // ↓+跳 穿过单向平台的时长
 
-  attackCooldownMs: 450,
+  attackCooldownMs: 580,
   attackActiveMs: 120,
   attackRange: 64,
   attackHeight: 48,

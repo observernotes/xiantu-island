@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { FEEL, SPEC } from '../config/feel';
 import { PROTO_MAP } from '../config/maps';
+import qingyunRaw from '../../../maps/qingyun_village.proto.txt?raw';
 import { buildMap, BuiltMap } from './MapBuilder';
 import { Player, Input } from './Player';
 
@@ -20,7 +21,8 @@ export class ProtoScene extends Phaser.Scene {
 
   create() {
     this.drawBackground();
-    this.map = buildMap(this, PROTO_MAP);
+    const useTest = new URLSearchParams(location.search).get('map') === 'test';
+    this.map = buildMap(this, useTest ? PROTO_MAP : qingyunRaw.split('\n').filter((l: string) => l.length > 0));
     this.physics.world.setBounds(0, 0, this.map.width, this.map.height + 200);
     this.player = new Player(this, this.map.spawn.x, this.map.spawn.y);
 
@@ -31,7 +33,7 @@ export class ProtoScene extends Phaser.Scene {
       return body.velocity.y >= 0 && body.prev.y + body.height <= top + 2;
     };
     this.physics.add.collider(this.player, this.map.solids);
-    this.physics.add.collider(this.player, this.map.oneWays, () => { if (this.player.body.touching.down) this.player.onOneWay = true; }, oneWayCheck);
+    this.physics.add.collider(this.player, this.map.oneWays, () => { if (this.player.body.touching.down) this.player.oneWayAt = this.time.now; }, oneWayCheck);
 
     this.mobs = this.physics.add.group();
     this.map.monsterSpawns.forEach(p => this.spawnMob(p.x, p.y));
@@ -131,13 +133,18 @@ export class ProtoScene extends Phaser.Scene {
     fx.beginPath(); fx.arc(cx, cy, FEEL.attackRange - 8, s > 0 ? -1.2 : Math.PI - 0.0 - 1.9, s > 0 ? 1.0 : Math.PI + 1.2); fx.strokePath();
     this.tweens.add({ targets: fx, alpha: 0, duration: FEEL.attackActiveMs + 100, onComplete: () => fx.destroy() });
 
-    let hitOne = false;
-    for (const o of this.mobs.getChildren()) {            // 普攻只打最近的一只，和冒险岛初始普攻一致
+    // 普攻只打离角色最近的一只，和冒险岛初始普攻一致
+    let best: Mob | null = null, bestD = Infinity;
+    for (const o of this.mobs.getChildren()) {
       const m = o as Mob;
-      if (m.dead || hitOne) continue;
+      if (m.dead) continue;
       const mb = m.body as Phaser.Physics.Arcade.Body;
       if (!Phaser.Geom.Intersects.RectangleToRectangle(rect, new Phaser.Geom.Rectangle(mb.x, mb.y, mb.width, mb.height))) continue;
-      hitOne = true;
+      const d = Math.abs(m.x - p.x);
+      if (d < bestD) { bestD = d; best = m; }
+    }
+    if (best) {
+      const m = best, mb = m.body as Phaser.Physics.Arcade.Body;
       const [lo, hi] = FEEL.attackDamage, dmg = Phaser.Math.Between(lo, hi);
       m.hp -= dmg; m.stunUntil = this.time.now + 350;
       mb.setVelocity(s * 50, -120);

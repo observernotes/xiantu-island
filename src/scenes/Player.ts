@@ -16,7 +16,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   hp = 100; maxHp = 100;
   rope: Rope | null = null;
   canDouble = true;
-  onOneWay = false;          // 由碰撞回调每帧写入
+  oneWayAt = -9999;          // 最近一次站在单向平台上的时间，由碰撞回调写入
+  get onOneWay() { return this.scene.time.now - this.oneWayAt < 100; }
   dropUntil = 0;
   ropeRegrabAt = 0;
   lastGroundAt = 0;
@@ -114,6 +115,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.dropUntil = time + FEEL.dropThroughMs;
         b.setVelocityY(60);
         this.jumpBufferedAt = -9999;
+      } else if (grounded && inp.down) {                      // 实心地面上 ↓+跳：不动（冒险岛行为）
+        this.jumpBufferedAt = -9999;
       } else if (canGroundJump && b.velocity.y >= -1) {
         b.setVelocityY(-FEEL.jumpSpeed);
         this.lastGroundAt = -9999; this.jumpBufferedAt = -9999;
@@ -156,7 +159,6 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   private finish(time: number) {
     this.setFlipX(this.facing < 0);
     this.setAlpha(time < this.invulnUntil ? (Math.floor(time / 80) % 2 ? 0.35 : 0.9) : 1);
-    this.onOneWay = false;
   }
 
   private findRope(ropes: Rope[], up: boolean, grounded: boolean) {
