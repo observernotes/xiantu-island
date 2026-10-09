@@ -54,5 +54,10 @@
    "frameRate": 6,
    "repeat": 0
   }
- ]
+ ],
+ "bodySize": [
+  46,
+  22
+ ],
+ "kind": "monster"
 }

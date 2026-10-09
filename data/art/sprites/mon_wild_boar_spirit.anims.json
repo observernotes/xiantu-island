@@ -75,5 +75,6 @@
   "telegraph": 1,
   "hit": 2
  },
- "note": "attack_01 前摇定格（telegraphMs 600，后坐刨地、眼放红光）；attack_02 起冲（判定帧）；位移 192px 期间循环 charge，结束播 attack_03 收势。fx_boar_charge 挂在脚底身后"
+ "note": "attack_01 前摇定格（telegraphMs 600，后坐刨地、眼放红光）；attack_02 起冲（判定帧）；位移 192px 期间循环 charge，结束播 attack_03 收势。fx_boar_charge 挂在脚底身后",
+ "kind": "monster"
 }

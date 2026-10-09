@@ -67,8 +67,9 @@
   "hit": 2
  },
  "projectileSpawn": [
-  -14,
-  -36
+  -22,
+  -30
  ],
- "note": "attack_01 前摇定格（telegraphMs 400，举符聚紫光）；attack_02 出手帧生成 fx_black_robe_projectile，位置 = 脚底 + projectileSpawn（朝右时 x 取反）"
+ "note": "attack_01 前摇定格（telegraphMs 400，举符聚紫光）；attack_02 出手帧生成 fx_black_robe_projectile，位置 = 脚底 + projectileSpawn（朝右时 x 取反）",
+ "kind": "monster"
 }

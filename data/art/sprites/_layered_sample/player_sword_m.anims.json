@@ -98,6 +98,16 @@
    ],
    "frameRate": 2,
    "repeat": -1
+  },
+  {
+   "key": "player_sword_m_gather",
+   "frames": [
+    "player_sword_m_gather_01",
+    "player_sword_m_gather_02",
+    "player_sword_m_gather_03"
+   ],
+   "frameRate": 8,
+   "repeat": -1
   }
  ]
 }

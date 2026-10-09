@@ -110,5 +110,13 @@
   "trial.altar_broken": "阵眼被破，试炼失败。",
   "trial.success": "阵法已成！",
   "realm.next_bonus": "下次成功率 +{bonus}%",
-  "realm.rate_detail": "成功率 {rate}%（基础 {base}% + 丹药 {pill}% + 悟性 {insight}% + 清心丹 {clear}% + 保底 {pity}%）"
+  "realm.rate_detail": "成功率 {rate}%（基础 {base}% + 丹药 {pill}% + 悟性 {insight}% + 清心丹 {clear}% + 保底 {pity}%）",
+  "key.bestiary": "B 图鉴",
+  "bestiary.title": "妖兽图鉴",
+  "bestiary.unknown": "？？？",
+  "bestiary.update": "图鉴更新：{monster}",
+  "bestiary.stage.silhouette": "未识",
+  "bestiary.stage.known": "初识",
+  "bestiary.stage.familiar": "熟知",
+  "bestiary.stage.master": "精通"
 }

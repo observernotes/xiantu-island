@@ -33,5 +33,6 @@
    "repeat": 0
   }
  ],
- "blend": "NORMAL"
+ "blend": "NORMAL",
+ "kind": "fx"
 }

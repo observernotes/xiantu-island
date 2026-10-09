@@ -25,6 +25,11 @@
    "value": true
   },
   {
+   "name": "qiDensity",
+   "type": "int",
+   "value": 2
+  },
+  {
    "name": "bgm",
    "type": "string",
    "value": "bgm_qingyun"

@@ -33,5 +33,6 @@
   28,
   60
  ],
- "note": "moveSpeed 0、打不死：只用 idle；hit 2 帧摇晃可选，受击时播一次再回 idle"
+ "note": "moveSpeed 0、打不死：只用 idle；hit 2 帧摇晃可选，受击时播一次再回 idle",
+ "kind": "monster"
 }
