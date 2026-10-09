@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { FEEL, SPEC } from '../config/feel';
 import { FIELD_TEST } from '../config/maps';
-import { MONSTERS, DROPS, ITEMS, TILED_MAPS, ATLASES, MAP_AREA, AREAS, NPCS, SCRIPTS, t, MP_REGEN_FRACTION_PER_5S } from '../data';
+import { MONSTERS, DROPS, ITEMS, TILED_MAPS, ATLASES, MAP_AREA, AREAS, NPCS, SCRIPTS, t, MP_REGEN_FRACTION_PER_5S, BREAKTHROUGH_LEVELS } from '../data';
 import { QuestSystem } from '../QuestSystem';
 import { QUESTS as QUESTS_REF } from '../data';
 import { DialogBox, SkillBar, SkillWindow } from '../UI';
@@ -10,11 +10,15 @@ import { HOTBAR_SLOTS, SKILLS, skillsForJob } from '../skills';
 import { installKeyGuard } from '../keyguard';
 import { buildTiledMap, buildCharMap, BuiltMap, MapObj } from './MapBuilder';
 import { Player, Input } from './Player';
-import { Monster } from './Monster';
+import { Monster, type SkillVolley } from './Monster';
 import { Progress } from '../Progress';
 
 const MAP_FALLBACK: Record<string, string> = {};
 type Drop = Phaser.Physics.Arcade.Sprite & { itemId: string; count: number; bornAt: number; label?: Phaser.GameObjects.Text };
+interface Shot {
+  sprite: Phaser.Physics.Arcade.Sprite; state: 'fly' | 'hit'; until: number;
+  ratio: number; kb: number; atk: number; hitAnim?: string; hitMs: number; dead?: boolean;
+}
 
 export class GameScene extends Phaser.Scene {
   map!: BuiltMap;
@@ -46,6 +50,7 @@ export class GameScene extends Phaser.Scene {
     }
     this.load.atlas('icons_skills', 'art/icons/icons_skills.png', 'art/icons/icons_skills.json');
     for (const s of skillsForJob(1)) if (s.icon) this.load.image(`${s.icon}@64`, `art/icons/skills/${s.icon}@64.png`);
+    for (const tier of ['empty', 'half', 'full']) this.load.image(`icon_overflow_gourd_${tier}`, `art/icons/ui/icon_overflow_gourd_${tier}.png`);
   }
 
   create(data: { map?: string; portal?: string }) {
@@ -104,8 +109,7 @@ export class GameScene extends Phaser.Scene {
         const x = sp.w > 0 ? sp.x + (sp.w * (i + 0.5)) / sp.count + Phaser.Math.Between(-16, 16) : sp.x + i * 24;
         const m = new Monster(this, x, sp.y, def);
         if (sp.w > 0) m.patrolBounds = [sp.x, sp.x + sp.w];
-        m.onDead = mm => this.onMobDead(mm);
-        m.onSlam = (mm, rect) => this.onSlam(mm, rect);
+        this.wireMob(m);
         this.mobs.push(m);
       }
     }
@@ -113,7 +117,7 @@ export class GameScene extends Phaser.Scene {
     this.physics.add.collider(this.mobs, this.map.oneWays, undefined, oneWayCheck);
     this.physics.add.overlap(this.player, this.mobs, (_p, mo) => {
       const m = mo as Monster;
-      if (m.dead || !m.def.touchDamage || this.map.safeZone && false) return;
+      if (m.dead || m.suppressTouch || !m.def.touchDamage || this.map.safeZone && false) return;
       this.hurtPlayer(this.prog.damageFrom(m.def.atk), m.x, m.def.knockback);
     });
 
@@ -153,12 +157,19 @@ export class GameScene extends Phaser.Scene {
     this.bossIntroShown = false;
     this.input.keyboard!.addKey(K.ENTER).on('down', () => this.dialog.advance());
     this.invText = this.add.text(1264, 130, '', { fontFamily: 'sans-serif', fontSize: '14px', color: '#ffffff', backgroundColor: '#1d2a3acc', padding: { x: 10, y: 8 } }).setOrigin(1, 0).setScrollFactor(0).setDepth(100).setVisible(false);
+    this.gourd = this.add.image(1220, 718, 'icon_overflow_gourd_empty').setOrigin(0.5, 1).setScrollFactor(0).setDepth(103).setVisible(false).setInteractive({ useHandCursor: true });
+    this.gourdTip = this.add.text(1220, 680, '', { fontFamily: 'sans-serif', fontSize: '12px', color: '#fff8e8', backgroundColor: '#1d2a3aee', padding: { x: 6, y: 3 } }).setOrigin(1, 1).setScrollFactor(0).setDepth(140).setVisible(false);
+    this.gourd.on('pointerover', () => { if (this.gourd.visible) this.gourdTip.setVisible(true); });
+    this.gourd.on('pointerout', () => this.gourdTip.setVisible(false));
+    this.bossName = this.add.text(0, 0, '', { fontFamily: 'serif', fontSize: '18px', color: '#fff6e8', stroke: '#3a1020', strokeThickness: 4 }).setScrollFactor(0).setDepth(130).setVisible(false);
+    this.bossHpText = this.add.text(0, 0, '', { fontFamily: 'sans-serif', fontSize: '13px', color: '#ffe0e0', stroke: '#000000', strokeThickness: 3 }).setScrollFactor(0).setDepth(130).setVisible(false);
   }
   invText!: Phaser.GameObjects.Text;
 
   update(time: number, delta: number) {
     const k = this.keys, J = Phaser.Input.Keyboard.JustDown;
     for (const p of this.parallax) p.ts.tilePositionX = this.cameras.main.scrollX * p.f;
+    this.updateShots(time);
     this.regenMp(delta);
     this.combat.update(time, delta);
     if (J(k.k) && !this.dialog.open) this.skillWindow.toggle();
@@ -195,6 +206,7 @@ export class GameScene extends Phaser.Scene {
 
     this.player.step(time, delta / 1000, inp, this.map.ropes);
     for (const m of this.mobs) m.step(time, this.player);
+    for (let i = this.mobs.length - 1; i >= 0; i--) if (!this.mobs[i].active) this.mobs.splice(i, 1);
     for (const d of this.drops.getChildren() as Drop[]) {
       d.label?.setPosition(d.x, d.y - 22);
       if (time - d.bornAt > 60000) { d.label?.destroy(); d.destroy(); }
@@ -220,8 +232,79 @@ export class GameScene extends Phaser.Scene {
   tracker!: Phaser.GameObjects.Text;
   bossIntroShown = false;
   hudTexts?: Phaser.GameObjects.Text[];
+  /** 当前地图上的首领（含已死、尚未重生的那只），测试从 window.__scene.boss 拿 */
+  get boss(): Monster | null { return this.mobs.find(m => m.def.isBoss && !m.owner) ?? null; }
+  gourd!: Phaser.GameObjects.Image;
+  gourdTip!: Phaser.GameObjects.Text;
+  bossName!: Phaser.GameObjects.Text;
+  bossHpText!: Phaser.GameObjects.Text;
+  private shots: Shot[] = [];
+  private shotOf = new Map<Phaser.GameObjects.GameObject, Shot>();
+  private shotGroup?: Phaser.Physics.Arcade.Group;
 
   // ---------------- 战斗 ----------------
+  private wireMob(m: Monster) {
+    m.onDead = mm => this.onMobDead(mm);
+    m.onSlam = (mm, rect) => this.onSlam(mm, rect);
+    m.onVolley = v => this.launchVolley(v);
+    m.onSkillDamage = (mm, ratio, kb, fromX) => this.hurtPlayer(this.prog.damageFrom(mm.def.atk, ratio), fromX, kb);
+    m.onSummon = (owner, id, x, y, grant, despawn) => this.spawnSummon(owner, id, x, y, grant, despawn);
+  }
+
+  private spawnSummon(owner: Monster, id: string, x: number, y: number, grantRewards: boolean, despawnWithOwner: boolean) {
+    const def = MONSTERS[id];
+    if (!def || !owner.active) return;
+    const m = new Monster(this, x, y, def);
+    m.owner = owner; m.grantRewards = grantRewards; m.despawnWithOwner = despawnWithOwner; m.noRespawn = true;
+    this.wireMob(m);
+    owner.summons.push(m);
+    this.mobs.push(m);
+  }
+
+  private launchVolley(v: SkillVolley) {
+    if (!this.shotGroup) {
+      this.shotGroup = this.physics.add.group();
+      this.physics.add.collider(this.shotGroup, this.map.solids, obj => { const s = this.shotOf.get(obj as Phaser.GameObjects.GameObject); if (s) this.impactShot(s, false); });
+      this.physics.add.overlap(this.player, this.shotGroup, (_p, obj) => { const s = this.shotOf.get(obj as Phaser.GameObjects.GameObject); if (s) this.impactShot(s, true); });
+    }
+    const pack = this.cache.json.get(`${v.fx}_anims`);
+    const anims = (pack?.anims ?? []) as { key: string; frames: string[]; frameRate: number }[];
+    const fly = anims.find(a => a.key.includes('fly')) ?? anims[0];
+    const hit = anims.find(a => a.key.includes('hit'));
+    const origin = (pack?.origin ?? [0.5, 0.5]) as [number, number];
+    const hitMs = hit ? hit.frames.length * (1000 / hit.frameRate) : 200;
+    for (const sh of v.shots) {
+      if (!this.textures.exists(v.fx)) continue;
+      const s = this.physics.add.sprite(sh.x, sh.y, v.fx);
+      s.setOrigin(origin[0], origin[1]).setDepth(12).setBlendMode(Phaser.BlendModes.NORMAL).setFlipX(sh.vx > 0);
+      const body = s.body as Phaser.Physics.Arcade.Body;
+      body.setAllowGravity(false).setSize(22, 18).setOffset((s.width - 22) / 2, (s.height - 18) / 2).setVelocity(sh.vx, sh.vy);
+      if (fly && this.anims.exists(fly.key)) s.play(fly.key);
+      const shot: Shot = { sprite: s, state: 'fly', until: 0, ratio: v.ratio, kb: v.knockback, atk: v.atk, hitAnim: hit?.key, hitMs };
+      this.shots.push(shot); this.shotOf.set(s, shot); this.shotGroup.add(s);
+    }
+  }
+
+  private impactShot(s: Shot, hitPlayer: boolean) {
+    if (s.state !== 'fly') return;
+    s.state = 'hit';
+    const body = s.sprite.body as Phaser.Physics.Arcade.Body;
+    body.setVelocity(0, 0); body.enable = false;
+    if (hitPlayer) this.hurtPlayer(this.prog.damageFrom(s.atk, s.ratio), s.sprite.x, s.kb);
+    if (s.hitAnim && this.anims.exists(s.hitAnim)) s.sprite.play(s.hitAnim);
+    s.until = this.time.now + s.hitMs;
+  }
+
+  private updateShots(time: number) {
+    for (const s of this.shots) {
+      const gone = s.state === 'hit' ? time >= s.until
+        : s.sprite.x < -80 || s.sprite.x > this.map.width + 80 || s.sprite.y < -120 || s.sprite.y > this.map.height + 120;
+      if (!gone) continue;
+      this.shotOf.delete(s.sprite); s.sprite.destroy(); s.dead = true;
+    }
+    if (this.shots.some(s => s.dead)) this.shots = this.shots.filter(s => !s.dead);
+  }
+
   doAttack(rect: Phaser.Geom.Rectangle) {
     const p = this.player, s = p.facing;
     if (this.anims.exists('fx_sword_slash_play')) {      // 刀光：第 2 帧播放，普通混合（加色在白云背景上看不见）
@@ -278,6 +361,8 @@ export class GameScene extends Phaser.Scene {
   }
 
   onMobDead(m: Monster) {
+    // grantRewards 默认 false 的召唤物：不给修为、不掉落、不计任务击杀，也不进任何击杀统计
+    if (!m.grantRewards) return;
     const d = m.def;
     this.quests.onKill(d.id);
     if (d.isBoss) this.time.delayedCall(600, () => this.dialog.show(SCRIPTS.q_fox?.bossDeath ?? [], null));
@@ -412,8 +497,10 @@ export class GameScene extends Phaser.Scene {
     }, (cue, next) => this.playCue(cue, next));
   }
 
-  applyExp(r: { gained: number; levels: number; blocked: boolean }) {
+  applyExp(r: { gained: number; levels: number; blocked: boolean; overflowed?: number; overflowFilled?: boolean }) {
     if (r.gained > 0) this.log(t('sys.exp_gain', { exp: r.gained }), '#ffe680');
+    if ((r.overflowed ?? 0) > 0) this.log(`${t('sys.exp_gain', { exp: r.overflowed ?? 0 })}${t('realm.overflow_gain')}`, '#9a9a9a');
+    if (r.overflowFilled) this.log(t('realm.overflow_full'), '#ffb0ff');
     if (r.levels) {
       this.levelUpFx(); this.log(t('sys.level_up', { level: this.prog.level }), '#7fffd4');
       this.player.maxHp = this.prog.maxHp; this.player.hp = this.prog.hp; this.prog.save();
@@ -428,7 +515,12 @@ export class GameScene extends Phaser.Scene {
   giveRewards(q: typeof QUESTS_REF[string], broke: boolean) {
     const rw = q.rewards;
     this.log(t('quest.complete', { name: q.name }), '#ffe680');
-    if (broke) { this.player.maxHp = this.prog.maxHp; this.log(`突破成功，当前境界 ${this.prog.realmName}`, '#ffb0ff'); }
+    if (broke) {
+      this.player.maxHp = this.prog.maxHp; this.player.hp = this.prog.hp;
+      this.log(`突破成功，当前境界 ${this.prog.realmName}`, '#ffb0ff');
+      if (this.prog.lastOverflowReturned > 0) this.log(`溢出修为返还 ${this.prog.lastOverflowReturned}`, '#c8c8c8');
+      if (this.prog.breakthroughBonusLevels > 0) { this.levelUpFx(); this.log(t('sys.level_up', { level: this.prog.level }), '#7fffd4'); }
+    }
     if (rw.exp) this.applyExp(this.prog.gainExp(rw.exp, this.prog.level));
     if (rw.spiritStone) { this.prog.stones += rw.spiritStone; this.log(`获得灵石 ${rw.spiritStone}`, '#7ff0d0'); }
     for (const it of rw.items ?? []) {
@@ -586,7 +678,29 @@ export class GameScene extends Phaser.Scene {
     g.fillStyle(0x333333).fillRect(130, H - 38, 220, 18).fillStyle(0xe8443a).fillRect(130, H - 38, 220 * pr.hp / pr.maxHp, 18);
     g.fillStyle(0x333333).fillRect(366, H - 38, 180, 18).fillStyle(0x3a8af0).fillRect(366, H - 38, 180 * pr.mp / pr.maxMp, 18);
     const need = pr.expNeed, ratio = Number.isFinite(need) ? Math.min(1, pr.exp / need) : 1;
-    g.fillStyle(0x333333).fillRect(0, H - 10, W, 10).fillStyle(pr.atBreakthrough ? 0xd080ff : 0xf2d24a).fillRect(0, H - 10, W * ratio, 10);
+    const expW = 1200;
+    g.fillStyle(0x333333).fillRect(0, H - 10, expW, 10).fillStyle(pr.atBreakthrough ? 0xd080ff : 0xf2d24a).fillRect(0, H - 10, expW * ratio, 10);
+    const boss = this.mobs.find(m => m.def.isBoss && !m.owner && !m.dead);
+    if (boss) {
+      const bw = 420, x = (W - bw) / 2;
+      g.fillStyle(0x1a1020, 0.88).fillRoundedRect(x - 12, 10, bw + 24, 46, 8);
+      g.fillStyle(0x3a1820).fillRect(x, 36, bw, 12);
+      g.fillStyle(0xd04048).fillRect(x, 36, bw * Math.max(0, boss.hp) / boss.def.hp, 12);
+      this.bossName.setPosition(x, 14).setOrigin(0, 0).setText(boss.def.name).setVisible(true);
+      this.bossHpText.setPosition(x + bw, 14).setOrigin(1, 0).setText(`${Math.max(0, Math.ceil(boss.hp))} / ${boss.def.hp}`).setVisible(true);
+    } else { this.bossName.setVisible(false); this.bossHpText.setVisible(false); }
+    const showGourd = BREAKTHROUGH_LEVELS.includes(pr.level) || pr.overflowExp > 0;
+    if (this.gourd && this.textures.exists('icon_overflow_gourd_empty')) {
+      this.gourd.setVisible(showGourd);
+      if (showGourd) {
+        const cap = pr.overflowCap, n = pr.overflowExp;
+        const tier = pr.overflowTier;
+        const key = `icon_overflow_gourd_${tier}`;
+        if (this.gourd.texture.key !== key && this.textures.exists(key)) this.gourd.setTexture(key);
+        this.gourd.setPosition(expW + 20, H - 2);
+        this.gourdTip.setText(t('realm.overflow_tip', { n, max: cap })).setPosition(Math.min(this.gourd.x + 16, W - 8), this.gourd.y - 36);
+      } else this.gourdTip.setVisible(false);
+    }
     if (!this.hudTexts) {
       const mk = (x: number, o = 0) => this.add.text(x, H - 29, '', { fontFamily: 'sans-serif', fontSize: '13px', color: '#ffffff', stroke: '#000000', strokeThickness: 3 }).setOrigin(o, 0.5).setScrollFactor(0).setDepth(101);
       this.hudTexts = [mk(14), mk(240, 0.5), mk(456, 0.5), mk(566)];

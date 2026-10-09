@@ -1,14 +1,62 @@
 import Phaser from 'phaser';
-import { ATLAS_INFO, type MonsterDef } from '../data';
+import { ATLAS_INFO, type MonsterDef, type MonsterSkill } from '../data';
 
 type MState = 'patrol' | 'idle' | 'chase' | 'attack' | 'hit' | 'dead';
 
-/** ?debug=timing：把山魈等的前摇各段时间打到控制台，方便和实测对数 */
+/** ?debug=timing：山魈和妖狐的前摇 / 出手 / 冷却打到控制台，时间用游戏时钟 */
 const DEBUG_TIMING = typeof location !== 'undefined' && new URLSearchParams(location.search).get('debug') === 'timing';
 /** 碰撞体优先读 anims.json 的 bodySize；这里只给还没标 bodySize 的旧图集兜底 */
 const BODY_FALLBACK: Record<string, [number, number]> = { mon_bamboo_snake: [46, 22], mon_mountain_mandrill: [46, 58] };
+/** 霸体受击闪白。用游戏时钟清，不用 delayedCall */
+const ARMOR_FLASH_MS = 80;
+/**
+ * 冲刺速度表里没有。1280px/s 时 384px 大约 300ms，撞墙提前停。
+ * 狐火扇形夹角（FOX_FIRE_SPREAD）、召唤间距（SUMMON_GAP）表里也没有。
+ */
+const DASH_SPEED = 1280;
+const FOX_FIRE_SPREAD = 0.26;
+const SUMMON_GAP = 96;
+/** skillFrames 备注：召唤阵第 4 帧刷出灵兔（anims 里没有单独的数字字段） */
+const SUMMON_SPAWN_FRAME = 4;
+/** 幻影突袭预警贴地，低于玩家（10）和怪物（8） */
+const DEPTH_WARN = 5;
+/** 狐火、召唤阵、冲刺残影、消散：画在角色上面 */
+const DEPTH_SKILL_FX = 12;
 
-/** 小怪：巡逻 / 主动怪追击 / 山魈拍地 / 受击 / 死亡 / 复活。数值全部来自 monsters.json */
+interface AnimDef { key: string; frames: string[]; frameRate: number; repeat: number; }
+interface AnimPack {
+  origin?: [number, number];
+  anims?: AnimDef[];
+  skillFrames?: Record<string, {
+    release?: number; spawnOffset?: [number, number];
+    telegraphFrames?: number[]; dashFrame?: number; recoverFrame?: number;
+    fx?: string; warnFx?: string;
+  }>;
+}
+type SkillMeta = NonNullable<AnimPack['skillFrames']>[string];
+interface Cast {
+  skill: MonsterSkill;
+  t0: number; wall0: number;
+  releaseAt: number; endAt: number;
+  interruptible: boolean; released: boolean;
+  frames: string[]; frameMs: number;
+  meta?: SkillMeta;
+  logged?: Record<string, boolean>;
+  warn?: Phaser.GameObjects.Sprite;
+  fromX?: number; prevX?: number; moved?: boolean;
+  dashStarted?: boolean; dashDone?: boolean; didHit?: boolean; recoverAt?: number;
+  points?: { x: number; y: number }[];
+  spawnAt?: number; spawned?: boolean;
+}
+interface FxTimer { sprite: Phaser.GameObjects.Sprite; doneAt: number; }
+interface Cd { readyAt: number; wall: number; game: number; ms: number; logged: boolean; }
+
+export interface SkillVolley {
+  fx: string; ratio: number; knockback: number; atk: number;
+  shots: { x: number; y: number; vx: number; vy: number }[];
+}
+
+/** 小怪：巡逻 / 追击 / 山魈拍地。首领技能（妖狐）数值全部来自 monsters.json 和 anims.json */
 export class Monster extends Phaser.Physics.Arcade.Sprite {
   declare body: Phaser.Physics.Arcade.Body;
   def: MonsterDef; hp: number; home: { x: number; y: number };
@@ -17,6 +65,28 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
   patrolBounds?: [number, number];
   onSlam?: (m: Monster, rect: Phaser.Geom.Rectangle) => void;
   onDead?: (m: Monster) => void;
+  onVolley?: (v: SkillVolley) => void;
+  onSkillDamage?: (m: Monster, ratio: number, knockback: number, fromX: number) => void;
+  onSummon?: (owner: Monster, summonId: string, x: number, y: number, grantRewards: boolean, despawnWithOwner: boolean) => void;
+  /** 普通怪给奖励；召唤物按技能 grantRewards（默认 false）关掉 */
+  grantRewards = true;
+  despawnWithOwner = false;
+  noRespawn = false;
+  owner?: Monster;
+  summons: Monster[] = [];
+  /** 幻影突袭整段不出接触伤害，避免无敌帧把冲刺伤害吃掉 */
+  suppressTouch = false;
+  dashing = false;
+  despawning = false;
+  /** 测试用：已经放过的 once 技能 */
+  usedOnce = new Set<string>();
+
+  private cast: Cast | null = null;
+  private fxTimers: FxTimer[] = [];
+  private cooldowns: Record<string, Cd> = {};
+  private flashUntil = 0;
+  private teleAt = 0; private teleEnd = 0; private teleBlink?: Phaser.Tweens.Tween;
+  private despawnHideAt = 0; private despawnDoneAt = 0; private despawnHidden = false;
 
   constructor(scene: Phaser.Scene, x: number, y: number, def: MonsterDef) {
     const atlas = scene.textures.exists(def.sprite);
@@ -32,9 +102,6 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
     this.dir = Math.random() < 0.5 ? -1 : 1;
     this.bar = scene.add.graphics().setDepth(11);
     this.anim('idle');
-    this.on(Phaser.Animations.Events.ANIMATION_UPDATE, (_a: any, frame: Phaser.Animations.AnimationFrame) => {
-      // 出伤害改在前摇结束时直接触发（见 step），这里不再按帧判，免得低帧率下拖长
-    });
   }
 
   static placeholder(scene: Phaser.Scene, def: MonsterDef) {
@@ -58,15 +125,21 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
     if (this.scene.anims.exists(k) && this.anims.currentAnim?.key !== k) this.play(k);
   }
 
-  get dead() { return this.st === 'dead'; }
+  get dead() { return this.st === 'dead' || this.despawning; }
   get grounded() { return this.body.blocked.down || this.body.touching.down; }
 
   step(time: number, player: Phaser.Physics.Arcade.Sprite & { dead?: boolean }) {
+    if (!this.active) return;
     const d = this.def, b = this.body;
     this.drawBar();
+    this.tickFlash(time);
+    this.tickFx(time);
+    this.tickCooldownLogs(time);
+    if (this.despawning) { this.tickDespawn(time); return; }
     if (this.st === 'dead') return;
+    if (this.cast) { this.tickCast(time, player); return; }
     if (d.moveSpeed === 0) { b.setVelocityX(0); return; }
-    // 前摇结束：落下出伤害
+    // 山魈：前摇结束落下出伤害（游戏时钟，不用 delayedCall）
     if (this.teleEnd && time >= this.teleEnd) {
       this.teleEnd = 0; this.teleBlink?.stop(); this.teleBlink = undefined; this.clearTint();
       if (DEBUG_TIMING) console.log(`[tele] ${d.id} 前摇结束 实际 +${Math.round(performance.now() - this.teleAt)}ms`);
@@ -81,19 +154,20 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
     const dx = player.x - this.x, dy = player.y - this.y;
     const sees = d.aggressive && !player.dead && Math.abs(dx) < (d.aggroRange ?? 0) && Math.abs(dy) < 64;
 
+    if (d.skills?.length && this.trySkills(time, player, dx, sees)) return;
+
     // 山魈：玩家进入拍地范围就出手
     if (d.attack && sees && time >= this.attackReadyAt && Math.abs(dx) < this.slamRange.w && this.grounded) {
       this.dir = Math.sign(dx) || this.dir;
-      // 前摇：停在抬手帧 telegraphMs（默认 500ms），身体闪红，然后才落下出伤害
-      const tele = (d.attack as any).telegraphMs ?? 500;
-      this.st = 'attack'; this.attackReadyAt = time + d.attack.cooldownMs; this.teleAt = performance.now(); this.teleGameAt = this.scene.time.now;
+      const tele = d.attack.telegraphMs ?? 500;
+      this.st = 'attack'; this.attackReadyAt = time + d.attack.cooldownMs; this.teleAt = performance.now();
       if (DEBUG_TIMING) console.log(`[tele] ${d.id} 抬手 telegraphMs=${tele}`);
       this.stateUntil = time + tele + 450;
       b.setVelocityX(0); this.anim('attack');
       if (this.atlas) this.anims.pause();
       const blink = this.scene.tweens.addCounter({ from: 0, to: 1, duration: 120, yoyo: true, repeat: Math.floor(tele / 240),
         onUpdate: tw => this.setTint(Phaser.Display.Color.GetColor(255, 255 - 120 * tw.getValue()!, 255 - 120 * tw.getValue()!)) });
-      this.teleEnd = time + tele; this.teleBlink = blink;   // 前摇结束在 update 里按同一个时钟判，不用 delayedCall（低帧率下会被拖长）
+      this.teleEnd = time + tele; this.teleBlink = blink;
       return this.face();
     }
 
@@ -130,7 +204,6 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
 
   /** Y2：冲锋、弹道 AI 还没写，非 slam 类型的怪临时按山魈拍地 96×48 出手和判定（damageRatio、telegraphMs、cooldownMs 仍读自己那一行） */
   get slamRange() { const a = this.def.attack!; return a.type === 'slam' && a.range ? a.range : { w: 96, h: 48 }; }
-  private teleAt = 0; private teleGameAt = 0; private teleEnd = 0; private teleBlink?: Phaser.Tweens.Tween;
   private doSlam() {
     if (DEBUG_TIMING) console.log(`[tele] ${this.def.id} 出伤害 实际 +${Math.round(performance.now() - this.teleAt)}ms`);
     const r = this.slamRange, b = this.body;
@@ -140,11 +213,19 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
 
   takeHit(time: number, dmg: number, fromDir: number) {
     if (this.dead) return;
-    this.hp -= dmg;
-    this.setTintFill(0xffffff); this.scene.time.delayedCall(60, () => this.clearTint());
-    if (this.def.respawnMs === 0) { if (this.hp <= 0) this.hp = this.def.hp; return; }   // 木人桩：打不死
+    this.hp = Math.max(0, this.hp - dmg);
+    // interruptible 缺省 false：整段出招不打断、不击退、不重置冷却。前摇里只闪白，继续播当前攻击帧
+    const armored = !!this.cast && this.cast.interruptible !== true;
+    if (armored) this.flashWhite(time);
+    else {
+      this.setTintFill(0xffffff);
+      this.scene.time.delayedCall(60, () => { if (this.active && !this.flashUntil) this.clearTint(); });
+    }
+    if (this.def.respawnMs === 0 && !this.noRespawn) { if (this.hp <= 0) this.hp = this.def.hp; return; }
     if (this.hp <= 0) return this.die();
-    if (this.st !== 'attack') {                                     // 拍地中不被打断（霸体）
+    if (armored) return;
+    if (this.cast?.interruptible === true) this.abortCast();
+    if (this.st !== 'attack') {
       this.st = 'hit'; this.stateUntil = time + 350;
       this.body.setVelocity(fromDir * 60, -110); this.anim('hit');
     }
@@ -152,16 +233,52 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
   }
 
   private die() {
+    if (this.st === 'dead' || this.despawning) return;
+    this.abortCast();
+    for (const s of this.summons) if (s.despawnWithOwner && s.active && !s.dead) s.despawn();
     this.st = 'dead'; this.body.enable = false; this.bar.clear();
     this.anim('die');
     this.scene.tweens.add({ targets: this, alpha: 0, delay: 350, duration: 400 });
     this.onDead?.(this);
-    this.scene.time.delayedCall(this.def.respawnMs, () => this.respawn());
+    if (this.noRespawn) this.scene.time.delayedCall(800, () => { if (this.active) this.destroy(); });
+    else if (this.def.respawnMs > 0) this.scene.time.delayedCall(this.def.respawnMs, () => this.respawn());
+  }
+
+  /** 首领死亡：脚底播消散，第 2 帧藏本体，播完销毁。不走死亡奖励 */
+  despawn() {
+    if (!this.active || this.despawning || this.st === 'dead') return;
+    this.despawning = true; this.st = 'dead';
+    this.abortCast();
+    this.body.setVelocity(0, 0); this.body.enable = false; this.bar.clear();
+    const key = 'fx_summon_despawn';
+    const pack = this.pack(key);
+    const anim = pack?.anims?.[0];
+    const rate = anim?.frameRate ?? 12;
+    const n = anim?.frames?.length ?? 6;
+    const now = this.scene.time.now;
+    this.despawnHideAt = now + (2 - 1) * (1000 / rate);
+    this.despawnDoneAt = now + n * (1000 / rate);
+    if (this.scene.textures.exists(key)) {
+      const origin = pack?.origin ?? [0.5, 1];
+      const s = this.scene.add.sprite(this.x, this.y, key).setOrigin(origin[0], origin[1]).setDepth(DEPTH_SKILL_FX).setBlendMode(Phaser.BlendModes.NORMAL);
+      if (anim && this.scene.anims.exists(anim.key)) s.play(anim.key);
+      this.fxTimers.push({ sprite: s, doneAt: this.despawnDoneAt });
+    }
+  }
+
+  private tickDespawn(time: number) {
+    if (!this.despawnHidden && time >= this.despawnHideAt) { this.despawnHidden = true; this.setVisible(false); }
+    if (time >= this.despawnDoneAt) {
+      for (const f of this.fxTimers) f.sprite.destroy();
+      this.fxTimers = [];
+      this.destroy();
+    }
   }
 
   private respawn() {
-    if (!this.scene) return;
-    this.hp = this.def.hp; this.st = 'patrol'; this.setAlpha(0);
+    if (!this.scene || !this.active) return;
+    this.hp = this.def.hp; this.st = 'patrol'; this.cast = null; this.usedOnce.clear(); this.summons = [];
+    this.suppressTouch = false; this.dashing = false; this.setAlpha(0).setVisible(true);
     this.body.enable = true; this.body.reset(this.home.x, this.home.y);
     this.anim('idle');
     this.scene.tweens.add({ targets: this, alpha: 1, duration: 400 });
@@ -169,8 +286,261 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
 
   private drawBar() {
     this.bar.clear();
-    if (this.dead || this.hp >= this.def.hp) return;
+    if (this.dead || this.hp >= this.def.hp || this.def.isBoss) return;
     const w = 44, y = this.y - this.body.height - 14;
-    this.bar.fillStyle(0x222222).fillRect(this.x - w / 2, y, w, 5).fillStyle(0xe8443a).fillRect(this.x - w / 2, y, w * this.hp / this.def.hp, 5);
+    this.bar.fillStyle(0x222222).fillRect(this.x - w / 2, y, w, 5).fillStyle(0xe8443a).fillRect(this.x - w / 2, y, w * Math.max(0, this.hp) / this.def.hp, 5);
   }
+
+  // ---------------- 首领技能 ----------------
+
+  private trySkills(time: number, player: Phaser.Physics.Arcade.Sprite, dx: number, sees: boolean) {
+    if (!this.grounded) return false;
+    const skills = this.def.skills ?? [];
+    const ratio = this.hp / this.def.hp;
+    const summon = skills.find(s => s.type === 'summon' && !this.usedOnce.has(s.id) && ratio < (s.hpBelow ?? 1));
+    if (summon) { this.startSkill(summon, time, player); return true; }
+    if (!sees) return false;
+    const dash = skills.find(s => s.type === 'dash' && this.cdReady(s.id, time) && Math.abs(dx) <= (s.distance ?? Infinity));
+    if (dash) { this.startSkill(dash, time, player); return true; }
+    const shot = skills.find(s => s.type === 'projectile' && this.cdReady(s.id, time));
+    if (shot) { this.startSkill(shot, time, player); return true; }
+    return false;
+  }
+
+  private startSkill(skill: MonsterSkill, time: number, player: Phaser.Physics.Arcade.Sprite) {
+    const dx = player.x - this.x;
+    if (Math.abs(dx) > 4) this.dir = Math.sign(dx) || this.dir;
+    const meta = this.skillMeta(skill.id);
+    const anim = this.pack(this.def.sprite)?.anims?.find(a => a.key === `${this.def.sprite}_${skill.id}`);
+    const frames = anim?.frames ?? [];
+    const frameMs = 1000 / (anim?.frameRate || 8);
+    const release = meta?.release ?? 1;
+    const windup = skill.type === 'dash' ? (skill.telegraphMs ?? 0) : Math.max(0, release - 1) * frameMs;
+    this.st = 'attack'; this.body.setVelocityX(0);
+    if (this.atlas) this.anims.stop();
+    if (this.atlas && frames[0]) this.setFrame(frames[0]);
+    this.cast = {
+      skill, t0: time, wall0: performance.now(),
+      releaseAt: time + windup, endAt: time + Math.max(frames.length, 1) * frameMs,
+      interruptible: skill.interruptible === true, released: false,
+      frames, frameMs, meta,
+    };
+    if (skill.once) this.usedOnce.add(skill.id);
+    this.armCd(skill, time);
+    this.suppressTouch = skill.type === 'dash';
+    if (DEBUG_TIMING) {
+      if (skill.type === 'dash') console.log(`[tele] ${this.def.id} ${skill.id} 抬手 telegraphMs=${skill.telegraphMs ?? 0}`);
+      else console.log(`[tele] ${this.def.id} ${skill.id} 抬手 出手帧=${release} 预计 +${Math.round(windup)}ms`);
+      if (skill.type === 'summon' && !skill.cooldownMs) console.log(`[tele] ${this.def.id} ${skill.id} 唤狐 once（无 cooldownMs）`);
+    }
+    if (skill.type === 'dash') this.ensureWarn(meta?.warnFx ?? `${meta?.fx ?? this.fxKey(skill)}_warn`);
+    this.face();
+  }
+
+  private tickCast(time: number, player: Phaser.Physics.Arcade.Sprite) {
+    const cast = this.cast!;
+    this.face();
+    if (cast.skill.type === 'dash') { this.tickDash(time, player); return; }
+    const elapsed = time - cast.t0;
+    if (cast.frames.length) this.pose(cast.frames, Math.min(cast.frames.length - 1, Math.floor(elapsed / cast.frameMs)));
+    this.body.setVelocityX(0);
+    if (!cast.released && time >= cast.releaseAt) {
+      cast.released = true;
+      this.logCast('出手');
+      if (cast.skill.type === 'projectile') this.releaseProjectiles(player);
+      else if (cast.skill.type === 'summon') this.releaseSummon(time);
+    }
+    if (cast.spawnAt && !cast.spawned && time >= cast.spawnAt) {
+      cast.spawned = true;
+      this.logCast('召唤落下');
+      const grant = cast.skill.grantRewards ?? false;
+      const despawn = cast.skill.despawnWithOwner ?? true;
+      for (const p of cast.points ?? []) this.onSummon?.(this, cast.skill.summon ?? '', p.x, p.y, grant, despawn);
+    }
+    if (time >= cast.endAt) this.endCast();
+  }
+
+  private tickDash(time: number, player: Phaser.Physics.Arcade.Sprite) {
+    const cast = this.cast!, skill = cast.skill, meta = cast.meta;
+    if (time < cast.releaseAt) {
+      const tf = meta?.telegraphFrames ?? [1];
+      const tele = Math.max(1, skill.telegraphMs ?? 0);
+      const idx = Math.min(tf.length - 1, Math.floor((time - cast.t0) / tele * tf.length));
+      this.pose(cast.frames, (tf[idx] ?? 1) - 1);
+      this.body.setVelocityX(0);
+      this.placeWarn();
+      return;
+    }
+    if (!cast.dashStarted) {
+      cast.dashStarted = true; cast.fromX = this.x; cast.prevX = this.x;
+      this.logCast('前摇结束'); this.logCast('出手');
+      this.destroyWarn();
+      this.dashing = true;
+    }
+    if (!cast.dashDone) {
+      const dist = skill.distance ?? 0;
+      const traveled = (this.x - (cast.fromX ?? this.x)) * this.dir;
+      const blocked = this.dir > 0 ? this.body.blocked.right : this.body.blocked.left;
+      if (traveled >= dist - 0.5 || (cast.moved && blocked)) {
+        if (!(blocked && traveled < dist)) this.body.reset((cast.fromX ?? this.x) + this.dir * dist, this.y);
+        this.body.setVelocityX(0);
+        cast.dashDone = true; cast.recoverAt = time + cast.frameMs; this.dashing = false;
+        this.pose(cast.frames, (meta?.recoverFrame ?? cast.frames.length) - 1);
+        const mid = ((cast.fromX ?? this.x) + this.x) / 2;
+        this.spawnFx(meta?.fx ?? this.fxKey(skill), mid, this.y, this.dir > 0);
+      } else {
+        this.body.setVelocityX(this.dir * DASH_SPEED);
+        this.pose(cast.frames, (meta?.dashFrame ?? 3) - 1);
+        this.tryDashHit(player);
+        cast.moved = true; cast.prevX = this.x;
+      }
+      return;
+    }
+    this.body.setVelocityX(0);
+    if (time >= (cast.recoverAt ?? time)) this.endCast();
+  }
+
+  private tryDashHit(player: Phaser.Physics.Arcade.Sprite) {
+    const cast = this.cast;
+    if (!cast || cast.didHit) return;
+    const pb = player.body as Phaser.Physics.Arcade.Body;
+    const mb = this.body;
+    const dx = this.x - (cast.prevX ?? this.x);
+    const rect = new Phaser.Geom.Rectangle(Math.min(mb.x, mb.x - dx), mb.y, mb.width + Math.abs(dx), mb.height);
+    if (!Phaser.Geom.Intersects.RectangleToRectangle(rect, new Phaser.Geom.Rectangle(pb.x, pb.y, pb.width, pb.height))) return;
+    cast.didHit = true;
+    this.onSkillDamage?.(this, cast.skill.damageRatio ?? 1, cast.skill.knockback ?? this.def.knockback, this.x);
+  }
+
+  private releaseProjectiles(player: Phaser.Physics.Arcade.Sprite) {
+    const cast = this.cast!, skill = cast.skill, meta = cast.meta;
+    const off = meta?.spawnOffset ?? [0, -40];
+    const sx = this.x + (this.dir < 0 ? off[0] : -off[0]);
+    const sy = this.y + off[1];
+    const count = skill.count ?? 1;
+    const speed = skill.speed ?? 0;
+    const aim = Math.atan2((player.body as Phaser.Physics.Arcade.Body).center.y - sy, player.x - sx);
+    const shots = [];
+    for (let i = 0; i < count; i++) {
+      const a = aim + (i - (count - 1) / 2) * FOX_FIRE_SPREAD;
+      shots.push({ x: sx, y: sy, vx: Math.cos(a) * speed, vy: Math.sin(a) * speed });
+    }
+    this.onVolley?.({
+      fx: meta?.fx ?? skill.fx ?? this.fxKey(skill),
+      ratio: skill.damageRatio ?? 1,
+      knockback: skill.knockback ?? this.def.knockback,
+      atk: this.def.atk, shots,
+    });
+  }
+
+  private releaseSummon(time: number) {
+    const cast = this.cast!, skill = cast.skill;
+    const fx = cast.meta?.fx ?? skill.fx ?? this.fxKey(skill);
+    const count = skill.count ?? 1;
+    const lo = this.patrolBounds?.[0] ?? this.x - 480;
+    const hi = this.patrolBounds?.[1] ?? this.x + 480;
+    cast.points = [];
+    for (let i = 0; i < count; i++) {
+      const raw = this.x + (i - (count - 1) / 2) * SUMMON_GAP;
+      const x = Phaser.Math.Clamp(raw, lo + 24, hi - 24);
+      cast.points.push({ x, y: this.y });
+      this.spawnFx(fx, x, this.y, false);
+    }
+    const rate = this.pack(fx)?.anims?.[0]?.frameRate ?? 12;
+    cast.spawnAt = time + (SUMMON_SPAWN_FRAME - 1) * (1000 / rate);
+    cast.spawned = false;
+  }
+
+  private endCast() {
+    this.destroyWarn();
+    this.suppressTouch = false; this.dashing = false;
+    this.cast = null;
+    if (this.st === 'attack') this.st = 'patrol';
+  }
+
+  private abortCast() {
+    this.destroyWarn();
+    this.suppressTouch = false; this.dashing = false;
+    this.cast = null;
+  }
+
+  private ensureWarn(key: string) {
+    if (!this.cast || this.cast.warn || !this.scene.textures.exists(key)) return;
+    const origin = this.pack(key)?.origin ?? [0.9286, 1];
+    const s = this.scene.add.sprite(this.x, this.y, key).setDepth(DEPTH_WARN).setBlendMode(Phaser.BlendModes.NORMAL);
+    s.setData('oxL', origin[0]); s.setData('oxR', 1 - origin[0]); s.setData('oy', origin[1]);
+    const anim = this.pack(key)?.anims?.[0];
+    if (anim && this.scene.anims.exists(anim.key)) s.play(anim.key);
+    this.cast.warn = s;
+    this.placeWarn();
+  }
+
+  /** 动画每帧会把原点设回图集 pivot。朝右要在渲染前改成 1 - pivotX（0.9286 → 0.0714）并 flipX */
+  private placeWarn() {
+    const s = this.cast?.warn;
+    if (!s) return;
+    const right = this.dir > 0;
+    s.setFlipX(right).setOrigin(right ? s.getData('oxR') : s.getData('oxL'), s.getData('oy')).setPosition(this.x, this.y);
+  }
+  private destroyWarn() { this.cast?.warn?.destroy(); if (this.cast) this.cast.warn = undefined; }
+
+  private spawnFx(key: string, x: number, y: number, flipX: boolean) {
+    if (!this.scene.textures.exists(key)) return;
+    const pack = this.pack(key);
+    const origin = pack?.origin ?? [0.5, 1];
+    const s = this.scene.add.sprite(x, y, key).setOrigin(origin[0], origin[1]).setFlipX(flipX).setDepth(DEPTH_SKILL_FX).setBlendMode(Phaser.BlendModes.NORMAL);
+    const anim = pack?.anims?.[0];
+    if (anim && this.scene.anims.exists(anim.key)) s.play(anim.key);
+    const n = anim?.frames?.length ?? 1;
+    const rate = anim?.frameRate ?? 12;
+    this.fxTimers.push({ sprite: s, doneAt: this.scene.time.now + (anim?.repeat === -1 ? 600000 : n * (1000 / rate)) });
+  }
+
+  private pose(frames: string[], index: number) {
+    if (!this.atlas) return;
+    const name = frames[Math.max(0, Math.min(frames.length - 1, index))];
+    if (name && this.frame.name !== name) this.setFrame(name);
+  }
+
+  private flashWhite(time: number) { this.setTintFill(0xffffff); this.flashUntil = time + ARMOR_FLASH_MS; }
+  private tickFlash(time: number) {
+    if (this.flashUntil && time >= this.flashUntil) { this.flashUntil = 0; this.clearTint(); }
+  }
+
+  private tickFx(time: number) {
+    if (!this.fxTimers.length) return;
+    this.fxTimers = this.fxTimers.filter(f => {
+      if (time >= f.doneAt) { f.sprite.destroy(); return false; }
+      return true;
+    });
+  }
+
+  private cdReady(id: string, time: number) { const c = this.cooldowns[id]; return !c || time >= c.readyAt; }
+  private armCd(skill: MonsterSkill, time: number) {
+    const ms = skill.cooldownMs ?? 0;
+    if (!ms) return;
+    this.cooldowns[skill.id] = { readyAt: time + ms, wall: performance.now(), game: time, ms, logged: false };
+    if (DEBUG_TIMING) console.log(`[tele] ${this.def.id} ${skill.id} 冷却开始 cooldownMs=${ms}`);
+  }
+  private tickCooldownLogs(time: number) {
+    if (!DEBUG_TIMING) return;
+    for (const [id, c] of Object.entries(this.cooldowns)) {
+      if (!c.logged && time >= c.readyAt) {
+        c.logged = true;
+        console.log(`[tele] ${this.def.id} ${id} 冷却结束 游戏 +${Math.round(time - c.game)}ms 实际 +${Math.round(performance.now() - c.wall)}ms`);
+      }
+    }
+  }
+  private logCast(tag: string) {
+    const cast = this.cast;
+    if (!DEBUG_TIMING || !cast || cast.logged?.[tag]) return;
+    (cast.logged ??= {})[tag] = true;
+    const time = this.scene.time.now;
+    console.log(`[tele] ${this.def.id} ${cast.skill.id} ${tag} 游戏 +${Math.round(time - cast.t0)}ms 实际 +${Math.round(performance.now() - cast.wall0)}ms`);
+  }
+
+  private pack(key: string): AnimPack | undefined { return this.scene.cache.json.get(`${key}_anims`); }
+  private skillMeta(id: string) { return this.pack(this.def.sprite)?.skillFrames?.[id]; }
+  /** 规范 G6：fx_<短名>_<技能id>，demon_fox 的短名是 fox */
+  private fxKey(skill: MonsterSkill) { return `fx_${this.def.id.split('_').pop()}_${skill.id}`; }
 }
