@@ -1,10 +1,12 @@
 import Phaser from 'phaser';
 import { FEEL, SPEC } from '../config/feel';
 import { FIELD_TEST } from '../config/maps';
-import { MONSTERS, DROPS, ITEMS, TILED_MAPS, ATLASES, MAP_AREA, AREAS, NPCS, SCRIPTS, t } from '../data';
+import { MONSTERS, DROPS, ITEMS, TILED_MAPS, ATLASES, MAP_AREA, AREAS, NPCS, SCRIPTS, t, MP_REGEN_FRACTION_PER_5S } from '../data';
 import { QuestSystem } from '../QuestSystem';
 import { QUESTS as QUESTS_REF } from '../data';
-import { DialogBox, SkillBar } from '../UI';
+import { DialogBox, SkillBar, SkillWindow } from '../UI';
+import { SkillCombat } from '../SkillCombat';
+import { HOTBAR_SLOTS, SKILLS, skillsForJob } from '../skills';
 import { installKeyGuard } from '../keyguard';
 import { buildTiledMap, buildCharMap, BuiltMap, MapObj } from './MapBuilder';
 import { Player, Input } from './Player';
@@ -42,6 +44,8 @@ export class GameScene extends Phaser.Scene {
       this.load.atlas(k, `art/sprites/${k}.png`, `art/sprites/${k}.json`);
       this.load.json(`${k}_anims`, `art/sprites/${k}.anims.json`);
     }
+    this.load.atlas('icons_skills', 'art/icons/icons_skills.png', 'art/icons/icons_skills.json');
+    for (const s of skillsForJob(1)) if (s.icon) this.load.image(`${s.icon}@64`, `art/icons/skills/${s.icon}@64.png`);
   }
 
   create(data: { map?: string; portal?: string }) {
@@ -77,6 +81,8 @@ export class GameScene extends Phaser.Scene {
     const at = data.portal ? this.map.objects.find(o => o.type === 'portal' && o.name === data.portal) : null;
     this.player = new Player(this, at ? at.x : this.map.spawn.x, at ? at.y : this.map.spawn.y);
     this.player.hp = this.prog.hp; this.player.maxHp = this.prog.maxHp;
+    this.player.getMovePoints = () => this.prog.currentMovePoints();
+    this.combat = new SkillCombat(this);
 
     const oneWayCheck = (a: any, plat: any) => {
       const body: Phaser.Physics.Arcade.Body = a.body;
@@ -121,7 +127,8 @@ export class GameScene extends Phaser.Scene {
     const K = Phaser.Input.Keyboard.KeyCodes;
     this.keys = this.input.keyboard!.addKeys({
       left: K.LEFT, right: K.RIGHT, up: K.UP, down: K.DOWN, alt: K.ALT, space: K.SPACE, c: K.C,
-      ctrl: K.CTRL, x: K.X, z: K.Z, f1: K.F1, r: K.R, one: K.ONE, two: K.TWO, i: K.I,
+      ctrl: K.CTRL, x: K.X, z: K.Z, f1: K.F1, r: K.R, one: K.ONE, two: K.TWO, three: K.THREE, four: K.FOUR, five: K.FIVE, i: K.I,
+      a: K.A, s: K.S, d: K.D, f: K.F, g: K.G, h: K.H, q: K.Q, w: K.W, k: K.K, esc: K.ESC,
     }, true) as any;
 
     const cam = this.cameras.main;
@@ -134,11 +141,14 @@ export class GameScene extends Phaser.Scene {
     this.debugText = this.add.text(16, 200, '', { fontFamily: 'monospace', fontSize: '12px', color: '#1d2a3a', backgroundColor: '#ffffffaa', padding: { x: 6, y: 4 } }).setScrollFactor(0).setDepth(100).setVisible(false);
     this.add.text(16, 14, `${this.map.name}${this.map.safeZone ? '（安全区）' : ''}`, { fontFamily: 'sans-serif', fontSize: '18px', color: '#1d2a3a', stroke: '#ffffff', strokeThickness: 4 }).setScrollFactor(0).setDepth(100);
     this.add.text(1264, 14,
-      '方向键 移动 / ↑↓ 爬绳梯  ↑ 进传送门\nAlt / 空格 / C 跳跃（空中再按 = 二段跳）\n↓ + 跳 穿下单向平台\nCtrl / X 普攻   Z 对话 / 拾取 / 开宝箱\n1 回春丹  2 回气丹  I 背包  F1 调试',
+      '方向键 移动 / ↑↓ 爬绳梯  ↑ 进传送门\nAlt / 空格 / C 跳跃（空中再按 = 二段跳）\n↓ + 跳 穿下单向平台\nCtrl / X 普攻   Z 对话 / 拾取 / 开宝箱\nA S D F G H Q W 技能   K 功法\n1 回春丹  2 回气丹  I 背包  F1 调试',
       { fontFamily: 'sans-serif', fontSize: '13px', color: '#1d2a3a', backgroundColor: '#ffffffaa', padding: { x: 8, y: 6 }, align: 'right' })
       .setOrigin(1, 0).setScrollFactor(0).setDepth(100);
     this.dialog = new DialogBox(this);
     this.skillBar = new SkillBar(this);
+    this.skillWindow = new SkillWindow(this, () => this.prog, id => this.tryAddPoint(id));
+    this.skillBar.onSlot = i => { if (this.skillWindow.open) this.skillWindow.assign(i); };
+    this.maybeSpTip();
     this.tracker = this.add.text(16, 44, '', { fontFamily: 'sans-serif', fontSize: '13px', color: '#ffffff', backgroundColor: '#1d2a3aaa', padding: { x: 8, y: 6 }, lineSpacing: 3 }).setScrollFactor(0).setDepth(100);
     this.bossIntroShown = false;
     this.input.keyboard!.addKey(K.ENTER).on('down', () => this.dialog.advance());
@@ -149,8 +159,17 @@ export class GameScene extends Phaser.Scene {
   update(time: number, delta: number) {
     const k = this.keys, J = Phaser.Input.Keyboard.JustDown;
     for (const p of this.parallax) p.ts.tilePositionX = this.cameras.main.scrollX * p.f;
-    if (this.dialog.open) {
-      if (J(k.z) || J(k.space) || J(k.up)) this.dialog.advance();
+    this.regenMp(delta);
+    this.combat.update(time, delta);
+    if (J(k.k) && !this.dialog.open) this.skillWindow.toggle();
+    if (J(k.esc) && this.skillWindow.open) this.skillWindow.close();
+    if (this.dialog.open || this.skillWindow.open) {
+      if (this.dialog.open && (J(k.z) || J(k.space) || J(k.up))) this.dialog.advance();
+      if (this.skillWindow.open) {
+        const jobs = skillsForJob(1);
+        const nums = [k.one, k.two, k.three, k.four, k.five];
+        nums.forEach((key, i) => { if (J(key) && jobs[i]) this.tryAddPoint(jobs[i].id); });
+      }
       J(k.alt); J(k.c);
       this.player.body.setVelocityX(0);
       this.player.step(time, delta / 1000, { left: false, right: false, up: false, down: false, jumpDown: false, attackDown: false }, this.map.ropes);
@@ -169,6 +188,8 @@ export class GameScene extends Phaser.Scene {
     if (J(k.z) && this.player.state2 === 'ground' && this.talkNearby()) return;
     if (k.z.isDown && time >= this.nextPickAt) { this.nextPickAt = time + 150; this.tryPickup(); }
     if (J(k.up) && this.player.state2 === 'ground' && this.tryInteract()) return;
+    const slotKey: Record<string, Phaser.Input.Keyboard.Key> = { A: k.a, S: k.s, D: k.d, F: k.f, G: k.g, H: k.h, Q: k.q, W: k.w };
+    HOTBAR_SLOTS.forEach((s, i) => { if (J(slotKey[s.label])) this.combat.tryCast(i); });
     this.checkReach();
     if (this.player.y > this.map.height + 100) this.player.body.reset(this.map.spawn.x, this.map.spawn.y);
 
@@ -193,6 +214,9 @@ export class GameScene extends Phaser.Scene {
   parallax: { ts: Phaser.GameObjects.TileSprite; f: number }[] = [];
   dialog!: DialogBox;
   skillBar!: SkillBar;
+  skillWindow!: SkillWindow;
+  combat!: SkillCombat;
+  private mpPool = 0;
   tracker!: Phaser.GameObjects.Text;
   bossIntroShown = false;
   hudTexts?: Phaser.GameObjects.Text[];
@@ -393,6 +417,7 @@ export class GameScene extends Phaser.Scene {
     if (r.levels) {
       this.levelUpFx(); this.log(t('sys.level_up', { level: this.prog.level }), '#7fffd4');
       this.player.maxHp = this.prog.maxHp; this.player.hp = this.prog.hp; this.prog.save();
+      this.maybeSpTip();
     }
     if (r.blocked) {
       if (r.gained === 0) this.log(t('realm.bottleneck'), '#ffb0ff');
@@ -410,8 +435,16 @@ export class GameScene extends Phaser.Scene {
       if (ITEMS[it.item]?.type === 'equip') { const on = this.prog.gainEquip(it.item); this.log(`获得 ${ITEMS[it.item].name}${on ? '（已自动装备）' : ''}`, '#9fd0ff'); }
       else { this.prog.addItem(it.item, it.count); this.log(`获得 ${ITEMS[it.item]?.name ?? it.item} ×${it.count}`, '#ffffff'); }
     }
-    if (rw.job) { this.prog.job = rw.job; this.log('拜入天剑宗，成为剑徒', '#ffd23a'); }
+    if (rw.job) this.prog.job = rw.job;
+    const granted = rw.skills ?? [];
+    for (const s of granted) this.prog.grantSkill(s.id, s.level);
+    const ids = granted.map(s => s.id);
+    if (ids.includes('whirl_sword') && ids.includes('light_body')) this.log(t('skill.job_advance'), '#ffd23a');
+    else if (ids.includes('sword_qi_slash')) this.log(t('skill.learned_first'), '#9fd0ff');
+    else for (const id of ids) this.log(t('skill.learned', { skill: SKILLS[id]?.name ?? id }), '#9fd0ff');
+    if (rw.job && !(ids.includes('whirl_sword') && ids.includes('light_body'))) this.log(t('job.' + rw.job), '#ffd23a');
     this.player.maxHp = this.prog.maxHp; this.player.hp = this.prog.hp;
+    this.maybeSpTip();
     this.prog.save();
   }
 
@@ -420,6 +453,37 @@ export class GameScene extends Phaser.Scene {
     if (!this.textures.exists('fx_breakthrough_fail')) return;
     const fx = this.add.sprite(x, y, 'fx_breakthrough_fail').setOrigin(0.5, 1).setDepth(165);
     fx.play('fx_breakthrough_fail_play'); fx.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => fx.destroy());
+  }
+
+  tryAddPoint(id: string) {
+    const r = this.prog.addSkillPoint(id);
+    if (r.ok) this.log(t('skill.sp_left', { n: this.prog.spLeftFor(1) }), '#ffe680');
+    else if (r.reason === 'req') this.log(t('skill.req_block', { req: r.req || '前置不足' }), '#ffb0b0');
+    else if (r.reason === 'sp') this.log(t('skill.no_sp'), '#ffb0b0');
+    else if (r.reason === 'max') this.log(t('skill.maxed'), '#ffb0b0');
+    else if (r.reason === 'locked') this.log(t('skill.locked'), '#ffb0b0');
+    this.skillWindow.refresh();
+  }
+
+  maybeSpTip() {
+    if (this.prog.spTipShown || this.prog.spLeftFor(1) <= 0) return;
+    this.prog.spTipShown = true;
+    this.log(t('tip.first_sp'), '#ffe680');
+    this.prog.save();
+  }
+
+  /** 自然回蓝：每 5 秒最大灵力 × MP_REGEN_FRACTION_PER_5S，再加上被动的 mpRegenPer10s。 */
+  private regenMp(deltaMs: number) {
+    const pr = this.prog;
+    if (this.player.dead) return;
+    if (pr.mp >= pr.maxMp) { pr.mp = pr.maxMp; this.mpPool = 0; return; }
+    const perMs = pr.maxMp * MP_REGEN_FRACTION_PER_5S / 5000 + pr.passiveBonus('mpRegenPer10s') / 10000;
+    this.mpPool += perMs * deltaMs;
+    if (this.mpPool >= 1) {
+      const add = Math.floor(this.mpPool);
+      this.mpPool -= add;
+      pr.mp = Math.min(pr.maxMp, pr.mp + add);
+    }
   }
 
   /** 演出：突破 / 转职 */
@@ -528,9 +592,10 @@ export class GameScene extends Phaser.Scene {
       this.hudTexts = [mk(14), mk(240, 0.5), mk(456, 0.5), mk(566)];
     }
     const [lv, hp, mp, info] = this.hudTexts;
-    lv.setText(`Lv.${pr.level}  ${pr.realmName}`); hp.setText(`气血 ${pr.hp}/${pr.maxHp}`); mp.setText(`灵力 ${pr.mp}/${pr.maxMp}`);
+    const jobName = pr.job ? t('job.' + pr.job) : '';
+    lv.setText(`Lv.${pr.level}  ${pr.realmName}${jobName && !jobName.startsWith('job.') ? '  ' + jobName : ''}`); hp.setText(`气血 ${pr.hp}/${pr.maxHp}`); mp.setText(`灵力 ${Math.floor(pr.mp)}/${pr.maxMp}`);
     info.setText(`修为 ${pr.exp}/${need}${pr.atBreakthrough ? `（${t('realm.bottleneck')}）` : ''}    灵石 ${pr.stones}    攻击 ${pr.atk.toFixed(0)}  防御 ${pr.def.toFixed(1)}`);
-    this.skillBar.draw(pr.skillsUnlocked, this.time.now);
+    this.skillBar.draw(pr.skillsUnlocked, this.time.now, pr.hotbar, this.combat.cds, pr);
     for (const m of this.npcMarks) m.text.setText(this.quests.mark(m.id) ?? '').setColor(this.quests.mark(m.id) === '…' ? '#cccccc' : '#ffd23a');
     const tl: string[] = [];
     for (const id of this.quests.activeIds) {

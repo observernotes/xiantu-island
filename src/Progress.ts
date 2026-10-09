@@ -1,4 +1,5 @@
-import { GROWTH, EXP_TO_NEXT, MAX_LEVEL, ITEMS, BREAKTHROUGH_LEVELS, REALMS } from './data';
+import { GROWTH, EXP_TO_NEXT, MAX_LEVEL, ITEMS, BREAKTHROUGH_LEVELS, REALMS, QUESTS } from './data';
+import { HOTBAR_SLOTS, QUEST_SKILL_BACKFILL, SKILLS, SKILL_RULES, SkillDef, skillNumber, spEarnedFor } from './skills';
 
 /** 自动加点：加点界面做好前每级自动分配（演武堂/天机阁确认：根骨 2、身法 2、悟性 1） */
 export const AUTO_STATS = { rootBone: 2, agility: 2, insight: 1, spirit: 0 } as Record<string, number>;
@@ -12,6 +13,15 @@ export class Progress {
   job = '';                                 // 转职后的职业 id
   quests: Record<string, { state: 'active' | 'done'; kills: Record<string, number>; reached?: boolean; talked?: Record<string, boolean> }> = {};
   name = '少年';
+  /** 已学会的功法等级。任务赠送的 1 级也写在这里。 */
+  skills: Record<string, number> = {};
+  /** 其中不花技能点的等级（任务直接发放）。 */
+  skillGifted: Record<string, number> = {};
+  skillMastery: Record<string, number> = {};
+  hotbar: (string | null)[] = Array.from({ length: HOTBAR_SLOTS.length }, () => null);
+  /** 增益结束的绝对时间（Date.now），换图、刷新都还在。 */
+  buffs: { id: string; expireAt: number; warned?: boolean }[] = [];
+  spTipShown = false;
 
   constructor() { this.hp = this.maxHp; this.mp = this.maxMp; }
 
@@ -35,7 +45,10 @@ export class Progress {
   static load(): Progress {
     const p = new Progress();
     try { const raw = localStorage.getItem(SAVE_KEY); if (raw) Object.assign(p, JSON.parse(raw)); } catch { /* 存档损坏就重开 */ }
+    p.ensureDefaults();
+    const backfilled = p.backfillQuestSkills();
     p.hp = Math.min(p.hp || p.maxHp, p.maxHp); p.mp = Math.min(p.mp || p.maxMp, p.maxMp);
+    if (backfilled) p.save();
     return p;
   }
   static reset() { try { localStorage.removeItem(SAVE_KEY); } catch { /* ignore */ } }
@@ -44,8 +57,8 @@ export class Progress {
     return Object.values(this.equip).reduce((s, id) => s + (ITEMS[id]?.stats?.[stat] ?? 0), 0);
   }
   get maxHp() { return Math.round(GROWTH.base.hp + GROWTH.perLevel.hp * (this.level - 1) + this.statBonus('hp') + this.equipSum('hp')); }
-  get maxMp() { return Math.round(GROWTH.base.mp + GROWTH.perLevel.mp * (this.level - 1) + this.statBonus('mp')); }
-  get atk() { return GROWTH.base.atk + GROWTH.perLevel.atk * (this.level - 1) + this.statBonus('atk') + this.equipSum('atk'); }
+  get maxMp() { return Math.round((GROWTH.base.mp + GROWTH.perLevel.mp * (this.level - 1) + this.statBonus('mp')) * (1 + this.passiveBonus('mpMaxRatio'))); }
+  get atk() { return GROWTH.base.atk + GROWTH.perLevel.atk * (this.level - 1) + this.statBonus('atk') + this.equipSum('atk') + this.passiveBonus('atk'); }
   get def() { return GROWTH.base.def + GROWTH.perLevel.def * (this.level - 1) + this.statBonus('def') + this.equipSum('def'); }
   get expNeed() { return EXP_TO_NEXT[String(this.level)] ?? Infinity; }
   get atBreakthrough() { return BREAKTHROUGH_LEVELS.includes(this.level) && this.exp >= this.expNeed; }
@@ -54,7 +67,9 @@ export class Progress {
   damageTo(monLevel: number, monDef: number, ratio = 1) {
     const n = monLevel - this.level;
     const gap = n > 0 ? Math.max(0.6, 1 - 0.05 * n) : 1;
-    return Math.max(1, Math.round((this.atk * ratio * (0.9 + Math.random() * 0.2) - monDef) * gap));
+    const minRoll = Math.min(1.1, 0.9 + Math.max(0, this.passiveBonus('minDamageRatio')));
+    const roll = minRoll + Math.random() * (1.1 - minRoll);
+    return Math.max(1, Math.round((this.atk * ratio * roll - monDef) * gap));
   }
   /** 怪打玩家：同一公式 */
   damageFrom(monAtk: number, ratio = 1) {
@@ -101,4 +116,193 @@ export class Progress {
   }
 
   addItem(id: string, n: number) { this.inventory[id] = (this.inventory[id] ?? 0) + n; }
+
+  /** 旧档缺字段时补上，避免 Object.assign 把后面新增的数组弄丢或弄短。 */
+  ensureDefaults() {
+    if (!this.skills || typeof this.skills !== 'object') this.skills = {};
+    if (!this.skillGifted || typeof this.skillGifted !== 'object') this.skillGifted = {};
+    if (!this.skillMastery || typeof this.skillMastery !== 'object') this.skillMastery = {};
+    if (!this.inventory || typeof this.inventory !== 'object') this.inventory = {};
+    if (!this.equip || typeof this.equip !== 'object') this.equip = {};
+    if (!this.quests || typeof this.quests !== 'object') this.quests = {};
+    if (typeof this.job !== 'string') this.job = '';
+    if (typeof this.spTipShown !== 'boolean') this.spTipShown = false;
+    if (!Array.isArray(this.hotbar)) this.hotbar = [];
+    while (this.hotbar.length < HOTBAR_SLOTS.length) this.hotbar.push(null);
+    if (this.hotbar.length > HOTBAR_SLOTS.length) this.hotbar.length = HOTBAR_SLOTS.length;
+    if (!Array.isArray(this.buffs)) this.buffs = [];
+    const now = Date.now();
+    this.buffs = this.buffs.filter(b => b && typeof b.expireAt === 'number' && b.expireAt > now);
+  }
+
+  /**
+   * 已完成 q_breakthrough / q_fox、但存档里没有对应功法时补发。
+   * 和任务交付走同一条 grantSkill：不检查前置。
+   */
+  backfillQuestSkills() {
+    let changed = false;
+    for (const qid of QUEST_SKILL_BACKFILL) {
+      if (this.quests[qid]?.state !== 'done') continue;
+      for (const s of QUESTS[qid]?.rewards.skills ?? []) if (this.grantSkill(s.id, s.level)) changed = true;
+    }
+    return changed;
+  }
+
+  skillLevel(id: string) { return this.skills?.[id] ?? 0; }
+
+  /** 被动心法加成。只统计 type=passive，buff 的 speed/jump 不走这里。 */
+  passiveBonus(key: string) {
+    let v = 0;
+    for (const [id, lv] of Object.entries(this.skills ?? {})) {
+      if (!(lv > 0)) continue;
+      const def = SKILLS[id];
+      if (!def || def.type !== 'passive') continue;
+      v += skillNumber(def, key, lv);
+    }
+    return v;
+  }
+
+  buffActive(id: string) { return this.buffs.some(b => b.id === id && b.expireAt > Date.now()); }
+  buffRemaining(id: string) {
+    const b = this.buffs.find(x => x.id === id);
+    return b ? Math.max(0, b.expireAt - Date.now()) : 0;
+  }
+
+  /**
+   * 当前速度 / 跳跃点数。基础 100，加上装备 stats，轻身术生效时再把 perLevel×等级加进去（加法，不是倍率）。
+   */
+  currentMovePoints() {
+    let speed = (GROWTH.base.speed ?? 100) + this.equipSum('speed') + this.statBonus('speed');
+    let jump = (GROWTH.base.jump ?? 100) + this.equipSum('jump') + this.statBonus('jump');
+    if (this.buffActive('light_body')) {
+      const lv = this.skillLevel('light_body');
+      const def = SKILLS.light_body;
+      if (def && lv > 0) {
+        speed += skillNumber(def, 'speed', lv);
+        jump += skillNumber(def, 'jump', lv);
+      }
+    }
+    return { speed, jump };
+  }
+
+  spEarned(job: number) { return spEarnedFor(this.level, job, !!this.job); }
+  spSpent(job: number) {
+    let n = 0;
+    for (const [id, lv] of Object.entries(this.skills)) {
+      const def = SKILLS[id];
+      if (!def || def.job !== job) continue;
+      const gifted = Math.min(this.skillGifted[id] ?? 0, lv);
+      n += Math.max(0, lv - gifted) * (def.spCost ?? 1);
+    }
+    return n;
+  }
+  spLeftFor(job: number) { return Math.max(0, this.spEarned(job) - this.spSpent(job)); }
+
+  skillCap(def: SkillDef) {
+    let cap = def.maxLevel;
+    const mastery = this.skillMastery[def.id] ?? 0;
+    if (def.masteryToCap > 0 && mastery >= def.masteryToCap) cap += SKILL_RULES.masteryCapBonus ?? 0;
+    return cap;
+  }
+
+  /** 玩家自己加点才检查前置和等级上限。 */
+  prereqMet(def: SkillDef) {
+    const req = def.req;
+    if (!req) return true;
+    for (const [k, v] of Object.entries(req)) {
+      if (k === 'realm') {
+        const realm = REALMS.find((r: { id: string; levelMin: number }) => r.id === v);
+        if (realm ? this.level < realm.levelMin : this.realm?.id !== v) return false;
+      } else if (k === 'item') {
+        if (this.count(String(v)) <= 0) return false;
+      } else if (this.skillLevel(k) < Number(v)) return false;
+    }
+    return true;
+  }
+
+  reqText(def: SkillDef) {
+    const req = def.req;
+    if (!req) return '';
+    const parts: string[] = [];
+    for (const [k, v] of Object.entries(req)) {
+      if (k === 'realm') {
+        const realm = REALMS.find((r: { id: string; name?: string; levelMin: number }) => r.id === v);
+        if (realm && this.level < realm.levelMin) parts.push(realm.name ?? String(v));
+      } else if (k === 'item') {
+        if (this.count(String(v)) <= 0) parts.push(ITEMS[String(v)]?.name ?? String(v));
+      } else if (this.skillLevel(k) < Number(v)) parts.push(`${SKILLS[k]?.name ?? k} ${v}级`);
+    }
+    return parts.join('、');
+  }
+
+  /**
+   * 直接学会到至少 level 级。任务奖励用这条，不检查前置。
+   * 新给的等级记进 skillGifted，升级不花技能点。
+   */
+  grantSkill(id: string, level: number) {
+    if (!SKILLS[id] || !(level > 0)) return false;
+    const cur = this.skillLevel(id);
+    if (level <= cur) return false;
+    this.skillGifted[id] = (this.skillGifted[id] ?? 0) + (level - cur);
+    this.skills[id] = level;
+    this.autoBind(id);
+    return true;
+  }
+
+  addSkillPoint(id: string): { ok: true } | { ok: false; reason: 'missing' | 'locked' | 'max' | 'req' | 'sp'; req?: string } {
+    const def = SKILLS[id];
+    if (!def) return { ok: false, reason: 'missing' };
+    if (!this.skillsUnlocked) return { ok: false, reason: 'locked' };
+    if (this.skillLevel(id) >= this.skillCap(def)) return { ok: false, reason: 'max' };
+    if (!this.prereqMet(def)) return { ok: false, reason: 'req', req: this.reqText(def) };
+    const cost = def.spCost ?? 1;
+    if (this.spLeftFor(def.job) < cost) return { ok: false, reason: 'sp' };
+    this.skills[id] = this.skillLevel(id) + 1;
+    if (def.type !== 'passive') this.autoBind(id);
+    this.save();
+    return { ok: true };
+  }
+
+  skillMpCost(id: string) {
+    const def = SKILLS[id];
+    const lv = this.skillLevel(id);
+    if (!def || lv <= 0) return 0;
+    const raw = Math.max(0, skillNumber(def, 'mpCost', lv));
+    const reduce = Math.min(0.9, Math.max(0, this.passiveBonus('mpCostReduce')));
+    return raw * (1 - reduce);
+  }
+
+  addMastery(id: string, hits = 1) {
+    const def = SKILLS[id];
+    if (!def?.masteryPerHit || hits <= 0) return;
+    const cap = def.masteryToCap > 0 ? def.masteryToCap : Infinity;
+    this.skillMastery[id] = Math.min(cap, (this.skillMastery[id] ?? 0) + def.masteryPerHit * hits);
+  }
+
+  /** 主动和增益放进快捷栏。default:A 优先占 A 格，被动不占格。 */
+  autoBind(id: string) {
+    const def = SKILLS[id];
+    if (!def || def.type === 'passive' || this.skillLevel(id) <= 0) return;
+    if (this.hotbar.includes(id)) return;
+    let idx = -1;
+    const label = def.key?.match(/^default:(.+)$/)?.[1];
+    if (label) {
+      const i = HOTBAR_SLOTS.findIndex(s => s.label === label);
+      if (i >= 0 && !this.hotbar[i]) idx = i;
+    }
+    if (idx < 0) idx = this.hotbar.findIndex(s => !s);
+    if (idx >= 0) this.hotbar[idx] = id;
+  }
+
+  bindHotbar(slot: number, id: string | null) {
+    if (slot < 0 || slot >= this.hotbar.length) return false;
+    if (id) {
+      const def = SKILLS[id];
+      if (!def || def.type === 'passive' || this.skillLevel(id) <= 0) return false;
+      this.hotbar = this.hotbar.map(s => (s === id ? null : s));
+    }
+    this.hotbar[slot] = id;
+    this.save();
+    return true;
+  }
 }

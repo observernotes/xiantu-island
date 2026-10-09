@@ -54,7 +54,10 @@ export interface NpcDef { id: string; name: string; map: string; sprite: string;
 export interface QuestObjective { type: 'kill' | 'collect' | 'reach' | 'breakthrough' | 'talk' | 'craft'; target?: string; count?: number; consume?: boolean; map?: string; realm?: string; }
 export interface QuestDef {
   id: string; name: string; giver: string; turnIn: string; reqLevel: number; objectives: QuestObjective[];
-  rewards: { exp: number; spiritStone: number; items: { item: string; count: number }[]; job?: string }; next: string | null;
+  rewards: {
+    exp: number; spiritStone: number; items: { item: string; count: number }[];
+    job?: string; skills?: { id: string; level: number }[];
+  }; next: string | null;
 }
 export const NPCS: Record<string, NpcDef> = Object.fromEntries((npcs as NpcDef[]).map(n => [n.id, n]));
 export const QUESTS: Record<string, QuestDef> = Object.fromEntries((quests as QuestDef[]).map(q => [q.id, q]));
@@ -100,8 +103,26 @@ function parseScript(md: string) {
 export const SCRIPTS = parseScript(questScript);
 
 import strings from '@xt/balance/strings_zh.json';
-/** 文案：按 key 取 balance/strings_zh.json，{var} 替换 */
+import pacing from '@xt/balance/solo_pacing.json';
+
+/**
+ * 平时回蓝。player_growth 没有通用回蓝字段，借用打坐的 meditation.mpRegenPctPer5s
+ * （0.03 = 每 5 秒回复最大灵力的 3%）。天剑心法的 mpRegenPer10s 另外再加。
+ */
+export const MP_REGEN_FRACTION_PER_5S = Number((pacing as { meditation?: { mpRegenPctPer5s?: number } }).meditation?.mpRegenPctPer5s ?? 0.03);
+
+/** strings_zh.json 里还没有的界面文案。有表内 key 时以表为准，不要改 data/。 */
+const LOCAL_STRINGS: Record<string, string> = {
+  'skill.req_block': '还不能加点：{req}',
+  'skill.maxed': '这门功法已经满级了',
+  'skill.no_sp': '技能点不足',
+  'skill.locked': '突破到炼气期后才能修习功法',
+};
+
+/** 文案：按 key 取 balance/strings_zh.json，缺了再用本地兜底，{var} 替换 */
 export function t(key: string, vars: Record<string, string | number> = {}) {
-  const raw = (strings as unknown as Record<string, string>)[key] ?? key;
+  const table = strings as unknown as Record<string, unknown>;
+  const fromTable = typeof table[key] === 'string' ? table[key] as string : undefined;
+  const raw = fromTable ?? LOCAL_STRINGS[key] ?? key;
   return raw.replace(/\{(\w+)\}/g, (_, k) => String(vars[k] ?? `{${k}}`));
 }

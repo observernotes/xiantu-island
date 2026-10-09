@@ -1,5 +1,7 @@
 import Phaser from 'phaser';
 import type { Line } from './data';
+import type { Progress } from './Progress';
+import { HOTBAR_SLOTS, SKILLS, describeSkill, skillsForJob, typeLabel } from './skills';
 
 /** 冒险岛式 NPC 对话框：底部居中，左侧头像，Z / 空格 / 回车 / ↑ 翻页 */
 export class DialogBox {
@@ -63,28 +65,163 @@ export class DialogBox {
   }
 }
 
-/** 技能快捷栏骨架：6 个槽位（A S D F G H），突破炼气前锁定；技能数据等演武堂填表后接入 */
+const SLOT_W = 44, SLOT_H = 44, SLOT_GAP = 4;
+
+function hotbarLayout() {
+  const n = HOTBAR_SLOTS.length;
+  const total = n * SLOT_W + (n - 1) * SLOT_GAP;
+  return { x: 1280 - 16 - total, y: 720 - 98, total };
+}
+
+/** 八格快捷栏（A S D F G H Q W）。学会主动/增益后图标亮起，冷却期间盖一层遮罩。 */
 export class SkillBar {
-  static KEYS = ['A', 'S', 'D', 'F', 'G', 'H'];
   private g: Phaser.GameObjects.Graphics;
   private labels: Phaser.GameObjects.Text[] = [];
+  private icons: Phaser.GameObjects.Image[] = [];
+  private lvs: Phaser.GameObjects.Text[] = [];
   private lock: Phaser.GameObjects.Text;
-  slots: ({ id: string; name: string; cooldownMs: number; readyAt: number } | null)[] = [null, null, null, null, null, null];
+  onSlot?: (index: number) => void;
 
   constructor(private scene: Phaser.Scene) {
-    const x0 = 860, y = 720 - 96;
+    if (!scene.textures.exists('__blank')) {
+      const g = scene.make.graphics({}, false);
+      g.fillStyle(0xffffff, 0).fillRect(0, 0, 4, 4);
+      g.generateTexture('__blank', 4, 4); g.destroy();
+    }
+    const iconKey = scene.textures.exists('icons_skills') ? 'icons_skills' : '__blank';
+    const iconFrame = iconKey === 'icons_skills' ? scene.textures.get('icons_skills').getFrameNames()[0] : undefined;
+    const { x: x0, y, total } = hotbarLayout();
     this.g = scene.add.graphics().setScrollFactor(0).setDepth(100);
-    SkillBar.KEYS.forEach((k, i) => this.labels.push(scene.add.text(x0 + i * 66 + 4, y + 2, k, { fontSize: '12px', color: '#ffffff', stroke: '#000', strokeThickness: 3 }).setScrollFactor(0).setDepth(101)));
-    this.lock = scene.add.text(x0 + 195, y + 28, '', { fontFamily: 'sans-serif', fontSize: '13px', color: '#ffffff', stroke: '#000', strokeThickness: 3 }).setOrigin(0.5).setScrollFactor(0).setDepth(101);
+    HOTBAR_SLOTS.forEach((s, i) => {
+      const x = x0 + i * (SLOT_W + SLOT_GAP);
+      this.labels.push(scene.add.text(x + 3, y + 1, s.label, { fontSize: '11px', color: '#ffffff', stroke: '#000', strokeThickness: 3 }).setScrollFactor(0).setDepth(103));
+      const icon = scene.add.image(x + SLOT_W / 2, y + SLOT_H / 2 + 2, iconKey, iconFrame).setDisplaySize(32, 32).setScrollFactor(0).setDepth(101).setVisible(false);
+      this.icons.push(icon);
+      this.lvs.push(scene.add.text(x + SLOT_W - 2, y + SLOT_H - 1, '', { fontSize: '11px', color: '#fff6c8', stroke: '#000', strokeThickness: 3 }).setOrigin(1, 1).setScrollFactor(0).setDepth(103));
+      const zone = scene.add.zone(x, y, SLOT_W, SLOT_H).setOrigin(0, 0).setScrollFactor(0).setDepth(104).setInteractive();
+      zone.on('pointerdown', () => this.onSlot?.(i));
+    });
+    this.lock = scene.add.text(x0 + total / 2, y + 22, '', { fontFamily: 'sans-serif', fontSize: '13px', color: '#ffffff', stroke: '#000', strokeThickness: 3 }).setOrigin(0.5).setScrollFactor(0).setDepth(103);
   }
 
-  draw(unlocked: boolean, now: number) {
-    const x0 = 860, y = 720 - 96, g = this.g.clear();
-    this.slots.forEach((s, i) => {
-      const x = x0 + i * 66;
-      g.fillStyle(unlocked ? 0x2a3a52 : 0x3a3a3a, 0.85).fillRoundedRect(x, y, 58, 50, 8).lineStyle(2, unlocked ? 0x9fd0ff : 0x777777).strokeRoundedRect(x, y, 58, 50, 8);
-      if (s && unlocked && now < s.readyAt) g.fillStyle(0x000000, 0.55).fillRect(x, y + 50 * (1 - (s.readyAt - now) / s.cooldownMs), 58, 50 * (s.readyAt - now) / s.cooldownMs);
+  draw(unlocked: boolean, now: number, hotbar: (string | null)[], cds: Map<string, { readyAt: number; total: number }>, prog: Progress) {
+    const { x: x0, y } = hotbarLayout();
+    const g = this.g.clear();
+    const atlas = this.scene.textures.exists('icons_skills') ? this.scene.textures.get('icons_skills') : null;
+    HOTBAR_SLOTS.forEach((_, i) => {
+      const x = x0 + i * (SLOT_W + SLOT_GAP);
+      const id = hotbar[i];
+      const def = id ? SKILLS[id] : undefined;
+      const level = id ? prog.skillLevel(id) : 0;
+      const show = !!(unlocked && def && level > 0);
+      g.fillStyle(unlocked ? 0x2a3a52 : 0x3a3a3a, 0.85).fillRoundedRect(x, y, SLOT_W, SLOT_H, 6).lineStyle(2, show ? 0x9fd0ff : unlocked ? 0x6a849c : 0x777777).strokeRoundedRect(x, y, SLOT_W, SLOT_H, 6);
+      const icon = this.icons[i];
+      if (show && atlas && def!.icon && atlas.has(def!.icon)) icon.setTexture('icons_skills', def!.icon).setVisible(true).setPosition(x + SLOT_W / 2, y + SLOT_H / 2 + 2);
+      else icon.setVisible(false);
+      const cd = id ? cds.get(id) : undefined;
+      const left = cd ? cd.readyAt - now : 0;
+      if (show && cd && left > 0 && cd.total > 0) {
+        const r = Math.min(1, left / cd.total);
+        g.fillStyle(0x000000, 0.62).fillRect(x, y + SLOT_H * (1 - r), SLOT_W, SLOT_H * r);
+      }
+      const remain = id ? prog.buffRemaining(id) : 0;
+      const blink = show && remain > 0 && remain <= 5000;
+      icon.setAlpha(!show ? 1 : blink && Math.floor(now / 160) % 2 ? 0.3 : 1);
+      this.lvs[i].setText(show && level > 0 ? String(level) : '').setPosition(x + SLOT_W - 2, y + SLOT_H - 1);
     });
     this.lock.setText(unlocked ? '' : '突破炼气期后解锁技能栏');
+  }
+}
+
+/** 功法窗口（K）。加点检查前置；点击功法再点槽位可改快捷栏。数字键 1–5 给前五个一转功法加点。 */
+export class SkillWindow {
+  open = false;
+  selected: string | null = null;
+  private objs: Phaser.GameObjects.GameObject[] = [];
+
+  constructor(private scene: Phaser.Scene, private getProg: () => Progress, private onAdd: (id: string) => void) {}
+
+  private queued = false;
+  toggle() { this.open ? this.close() : this.show(); }
+  show() { this.open = true; this.refresh(); }
+  close() { this.open = false; this.selected = null; this.clear(); }
+
+  assign(slot: number) {
+    const prog = this.getProg();
+    if (this.selected) prog.bindHotbar(slot, this.selected);
+    else if (prog.hotbar[slot]) prog.bindHotbar(slot, null);
+    this.selected = null;
+    this.refresh();
+  }
+
+  /** 下一帧再重建，避免在点击回调里拆掉正在处理的按钮。 */
+  refresh() {
+    if (this.queued) return;
+    this.queued = true;
+    this.scene.time.delayedCall(0, () => { this.queued = false; this.rebuild(); });
+  }
+
+  private rebuild() {
+    this.clear();
+    if (!this.open) return;
+    const prog = this.getProg();
+    const W = 780, H = 520, x = 640, y = 318;
+    const g = this.scene.add.graphics().setScrollFactor(0).setDepth(210);
+    g.fillStyle(0x000000, 0.45).fillRect(0, 0, 1280, 720);
+    g.fillStyle(0xfdf6e3, 0.98).fillRoundedRect(x - W / 2, y - H / 2, W, H, 16).lineStyle(3, 0x6b4b2a).strokeRoundedRect(x - W / 2, y - H / 2, W, H, 16);
+    this.objs.push(g);
+    const title = this.scene.add.text(x - W / 2 + 28, y - H / 2 + 16, '功法', { fontFamily: 'serif', fontSize: '28px', color: '#6b2a00' }).setScrollFactor(0).setDepth(211);
+    const sp = this.scene.add.text(x + W / 2 - 28, y - H / 2 + 24, `剩余技能点 ${prog.spLeftFor(1)}`, { fontFamily: 'sans-serif', fontSize: '18px', color: '#1a5a8a' }).setOrigin(1, 0).setScrollFactor(0).setDepth(211);
+    this.objs.push(title, sp);
+    const list = skillsForJob(1);
+    list.forEach((def, i) => {
+      const ry = y - H / 2 + 64 + i * 72;
+      const learned = prog.skillLevel(def.id);
+      const selected = this.selected === def.id;
+      const row = this.scene.add.graphics().setScrollFactor(0).setDepth(211);
+      row.fillStyle(selected ? 0xf3e2b8 : 0xf7efe0, 1).fillRoundedRect(x - W / 2 + 20, ry, W - 40, 66, 8);
+      this.objs.push(row);
+      const iconKey = `${def.icon}@64`;
+      if (def.icon && this.scene.textures.exists(iconKey)) {
+        this.objs.push(this.scene.add.image(x - W / 2 + 56, ry + 33, iconKey).setDisplaySize(52, 52).setScrollFactor(0).setDepth(212));
+      } else if (def.icon && this.scene.textures.exists('icons_skills')) {
+        this.objs.push(this.scene.add.image(x - W / 2 + 56, ry + 33, 'icons_skills', def.icon).setDisplaySize(48, 48).setScrollFactor(0).setDepth(212));
+      }
+      const head = `${def.name}  ${typeLabel(def.type)}  Lv ${learned}/${prog.skillCap(def)}`;
+      const req = prog.reqText(def);
+      const body = `${learned > 0 ? describeSkill(def, learned) : '未学  ' + describeSkill(def, 1)}${req ? '   需要 ' + req : ''}`;
+      this.objs.push(
+        this.scene.add.text(x - W / 2 + 92, ry + 8, head, { fontFamily: 'sans-serif', fontSize: '16px', color: '#3a2a10', fontStyle: 'bold' }).setScrollFactor(0).setDepth(212),
+        this.scene.add.text(x - W / 2 + 92, ry + 34, body, { fontFamily: 'sans-serif', fontSize: '13px', color: '#5a4630', wordWrap: { width: 500 } }).setScrollFactor(0).setDepth(212),
+      );
+      const hit = this.scene.add.zone(x - W / 2 + 20, ry, W - 150, 66).setOrigin(0, 0).setScrollFactor(0).setDepth(213).setInteractive({ useHandCursor: true });
+      hit.on('pointerdown', () => { this.selected = this.selected === def.id ? null : def.id; this.refresh(); });
+      this.objs.push(hit);
+      const btn = this.scene.add.text(x + W / 2 - 36, ry + 33, '加点', { fontFamily: 'sans-serif', fontSize: '16px', color: '#fff', backgroundColor: '#2a6a4a', padding: { x: 10, y: 6 } }).setOrigin(1, 0.5).setScrollFactor(0).setDepth(212).setInteractive({ useHandCursor: true });
+      btn.on('pointerdown', () => this.onAdd(def.id));
+      this.objs.push(btn);
+    });
+    const hint = this.scene.add.text(x, y + H / 2 - 78, '点击功法后再点格子放入快捷栏；再点已放入的格子卸下。1–5 加点，K / Esc 关闭', { fontFamily: 'sans-serif', fontSize: '13px', color: '#6b4b2a' }).setOrigin(0.5, 0.5).setScrollFactor(0).setDepth(212);
+    this.objs.push(hint);
+    HOTBAR_SLOTS.forEach((s, i) => {
+      const sx = x - (HOTBAR_SLOTS.length * 52) / 2 + i * 52;
+      const sy = y + H / 2 - 48;
+      const id = prog.hotbar[i];
+      const box = this.scene.add.graphics().setScrollFactor(0).setDepth(212);
+      box.fillStyle(0x2a3a52, 1).fillRoundedRect(sx, sy, 46, 40, 6).lineStyle(2, 0x9fd0ff).strokeRoundedRect(sx, sy, 46, 40, 6);
+      this.objs.push(box);
+      if (id && SKILLS[id]?.icon && this.scene.textures.exists('icons_skills')) {
+        this.objs.push(this.scene.add.image(sx + 23, sy + 22, 'icons_skills', SKILLS[id].icon).setDisplaySize(28, 28).setScrollFactor(0).setDepth(213));
+      }
+      this.objs.push(this.scene.add.text(sx + 3, sy + 1, s.label, { fontSize: '11px', color: '#fff', stroke: '#000', strokeThickness: 2 }).setScrollFactor(0).setDepth(214));
+      const zone = this.scene.add.zone(sx, sy, 46, 40).setOrigin(0, 0).setScrollFactor(0).setDepth(215).setInteractive({ useHandCursor: true });
+      zone.on('pointerdown', () => this.assign(i));
+      this.objs.push(zone);
+    });
+  }
+
+  private clear() {
+    this.objs.forEach(o => o.destroy());
+    this.objs = [];
   }
 }
