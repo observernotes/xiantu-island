@@ -11,12 +11,22 @@ import lingxi from '@xt/maps/lingxi_path.json';
 import luoxia1 from '@xt/maps/luoxia_outskirts_1.json';
 import luoxia2 from '@xt/maps/luoxia_outskirts_2.json';
 import altar from '@xt/maps/trial_foundation_altar.json';
+import breakthrough from '@xt/balance/breakthrough.json';
 
+/** 首领技能。字段见 01_配置表规范 附录：interruptible 缺省 false，grantRewards 缺省 false，despawnWithOwner 缺省 true */
+export interface MonsterSkill {
+  id: string; name: string; type: string;
+  damageRatio?: number; count?: number; speed?: number; cooldownMs?: number;
+  distance?: number; telegraphMs?: number; summon?: string; hpBelow?: number;
+  once?: boolean; grantRewards?: boolean; despawnWithOwner?: boolean;
+  interruptible?: boolean; fx?: string; knockback?: number;
+}
 export interface MonsterDef {
   id: string; name: string; level: number; hp: number; atk: number; def: number; exp: number;
   aggressive: boolean; aggroRange?: number; moveSpeed: number; patrolRange: number;
   touchDamage: boolean; noDamage?: boolean; knockback: number; respawnMs: number;
-  attack?: { type: string; damageRatio: number; range: { w: number; h: number }; cooldownMs: number; knockback: number };
+  attack?: { type: string; damageRatio: number; range: { w: number; h: number }; cooldownMs: number; knockback: number; telegraphMs?: number };
+  skills?: MonsterSkill[];
   sprite: string; dropTable: string | null; isBoss: boolean;
 }
 export interface ItemDef { id: string; name: string; type: string; slot?: string; stats?: Record<string, number>; effect?: any; }
@@ -34,6 +44,8 @@ export const TILED_MAPS: Record<string, any> = { qingyun_village: qingyun, bambo
 
 /** 境界突破关口：到这一级修为满后需要找 NPC 突破（design/02_新手任务.md 第三节） */
 export const BREAKTHROUGH_LEVELS: number[] = (realmsRaw as any[]).map(r => r.levelMax).filter((lv: number) => lv < (expCurve as any).maxLevel);
+/** breakthrough.json：溢出池只给了转化比例，上限不在表里 */
+export const BREAKTHROUGH = breakthrough as { overflowPoolRatio: number };
 
 /** 已有精灵图集的 sprite 键（art/sprites/），其余用色块占位 */
 import assets from './gen/assets.json';
@@ -100,8 +112,15 @@ function parseScript(md: string) {
 export const SCRIPTS = parseScript(questScript);
 
 import strings from '@xt/balance/strings_zh.json';
-/** 文案：按 key 取 balance/strings_zh.json，{var} 替换 */
+/** 快照里还没有的 key。strings_zh 补上之后以表为准 */
+const STRING_FALLBACK: Record<string, string> = {
+  'realm.overflow_tip': '溢出修为 {n}/{max}，突破后返还',
+  'realm.overflow_full': '溢出修为已满，突破后返还。',
+  'realm.overflow_gain': '（存入溢出池）',
+};
+/** 文案：按 key 取 balance/strings_zh.json，缺了再用上面的兜底，{var} 替换 */
 export function t(key: string, vars: Record<string, string | number> = {}) {
-  const raw = (strings as unknown as Record<string, string>)[key] ?? key;
+  const table = strings as unknown as Record<string, string>;
+  const raw = table[key] ?? STRING_FALLBACK[key] ?? key;
   return raw.replace(/\{(\w+)\}/g, (_, k) => String(vars[k] ?? `{${k}}`));
 }
