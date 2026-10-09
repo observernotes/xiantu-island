@@ -28,7 +28,11 @@ export class Progress {
   breakthroughFails = 0;
   /** 境界不稳到期时间（Date.now）与属性比例 */
   unstableUntil = 0;
+  /** 已领过突破奖励（realms.json reward.hpMul/mpMul）的境界 id。按 id 去重，倍率每个境界只乘一次 */
+  realmRewards: string[] = [];
   unstableRatio = 0;
+  /** 境界不稳影响的属性，读 realms.json failPenalty.debuffStats */
+  unstableStats: string[] = [];
   /** 刚突破时返还了多少，给界面飘字用，不参与公式 */
   lastOverflowReturned = 0;
   /** 返还的修为让新境界又升了几级 */
@@ -59,7 +63,7 @@ export class Progress {
     p.overflowExp = Math.max(0, Math.floor(Number(p.overflowExp) || 0));
     if (Number.isFinite(p.overflowCap)) p.overflowExp = Math.min(p.overflowExp, p.overflowCap);
     p.ensureDefaults();
-    const backfilled = p.backfillQuestSkills();
+    const backfilled = p.backfillRealmRewards() || p.backfillQuestSkills();
     p.hp = Math.min(p.hp || p.maxHp, p.maxHp); p.mp = Math.min(p.mp || p.maxMp, p.maxMp);
     if (backfilled) p.save();
     return p;
@@ -69,12 +73,29 @@ export class Progress {
   private equipSum(stat: string) {
     return Object.values(this.equip).reduce((s, id) => s + (ITEMS[id]?.stats?.[stat] ?? 0), 0);
   }
-  get maxHp() { return Math.round(GROWTH.base.hp + GROWTH.perLevel.hp * (this.level - 1) + this.statBonus('hp') + this.equipSum('hp')); }
-  get maxMp() { return Math.round((GROWTH.base.mp + GROWTH.perLevel.mp * (this.level - 1) + this.statBonus('mp')) * (1 + this.passiveBonus('mpMaxRatio'))); }
-  get atk() { return (GROWTH.base.atk + GROWTH.perLevel.atk * (this.level - 1) + this.statBonus('atk') + this.equipSum('atk') + this.passiveBonus('atk')) * this.unstableMul; }
-  get def() { return (GROWTH.base.def + GROWTH.perLevel.def * (this.level - 1) + this.statBonus('def') + this.equipSum('def')) * this.unstableMul; }
+  get maxHp() { return Math.round((GROWTH.base.hp + GROWTH.perLevel.hp * (this.level - 1) + this.statBonus('hp') + this.equipSum('hp')) * this.realmMul('hpMul') * this.debuffMul('hp')); }
+  get maxMp() { return Math.round((GROWTH.base.mp + GROWTH.perLevel.mp * (this.level - 1) + this.statBonus('mp')) * (1 + this.passiveBonus('mpMaxRatio')) * this.realmMul('mpMul') * this.debuffMul('mp')); }
+  /** 突破奖励倍率：已领奖励的境界各乘一次（同一境界重复记录也只算一次） */
+  realmMul(key: 'hpMul' | 'mpMul') {
+    let m = 1;
+    for (const id of new Set(this.realmRewards)) { const v = Number((REALMS.find((r: any) => r.id === id) as any)?.reward?.[key]); if (Number.isFinite(v) && v > 0) m *= v; }
+    return m;
+  }
+  /** 旧存档补发：已经越过的境界（levelMax < 当前等级）都应领过奖励 */
+  backfillRealmRewards() {
+    if (!Array.isArray(this.realmRewards)) this.realmRewards = [];
+    const before = this.realmRewards.length;
+    const set = new Set(this.realmRewards);
+    for (const r of REALMS as any[]) if (r.levelMax < this.level) set.add(r.id);
+    this.realmRewards = [...set];
+    return this.realmRewards.length !== before;
+  }
+  get atk() { return (GROWTH.base.atk + GROWTH.perLevel.atk * (this.level - 1) + this.statBonus('atk') + this.equipSum('atk') + this.passiveBonus('atk')) * this.debuffMul('atk'); }
+  get def() { return (GROWTH.base.def + GROWTH.perLevel.def * (this.level - 1) + this.statBonus('def') + this.equipSum('def')) * this.debuffMul('def'); }
   /** 突破失败的「境界不稳」：到期前攻防 × (1 + debuffStatRatio)。暂只作用于攻击、防御（气血/灵力上限不动，免得回血逻辑乱） */
   get unstable() { return Date.now() < this.unstableUntil; }
+  /** 境界不稳：只对 unstableStats 里列出的属性生效 */
+  debuffMul(stat: string) { return Array.isArray(this.unstableStats) && this.unstableStats.includes(stat) ? this.unstableMul : 1; }
   get unstableMul() { return this.unstable ? 1 + this.unstableRatio : 1; }
   /** 突破成功率明细（03 文档 1.3 节 + breakthrough.json）。丹药品质暂按 low（物品还没有品质字段） */
   breakthroughRate(withClearMind = this.count('clear_mind_pill') > 0, quality = 'low') {
@@ -175,6 +196,8 @@ export class Progress {
   breakthrough() {
     if (!this.atBreakthrough) return false;
     const pool = this.overflowExp;
+    const left = this.realm.id;
+    if (!this.realmRewards.includes(left)) this.realmRewards.push(left);
     this.overflowExp = 0;
     this.lastOverflowReturned = pool;
     this.exp = 0; this.level++;

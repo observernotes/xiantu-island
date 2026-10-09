@@ -65,7 +65,10 @@ export interface TrialHazard { type: string; everyMs: number; count: number; rad
 export interface TrialWave { fromMs: number; toMs: number; spawns: TrialSpawn[]; total?: number; hazard?: TrialHazard; despawnAll?: boolean }
 export interface TrialDef {
   id: string; name: string; realmFrom: string; realmTo: string; type: string; map: string; durationMs: number;
-  waves?: TrialWave[]; objective?: { id: string; name: string; hp: number; def?: number; x?: number | string; monsterDamageMul?: number };
+  waves?: TrialWave[];
+  objective?: { id: string; name: string; hp: number; def?: number; x?: number | string; monsterDamageMul?: number; hitHalfWidth?: number; climbJumpVelocity?: number };
+  /** 按怪物 id 覆盖行为，只在这场试炼里生效 */
+  behaviorOverrides?: Record<string, { useAttack?: boolean; objectiveHit?: 'contact' | 'attack' }>;
 }
 export const TRIALS: Record<string, TrialDef> = Object.fromEntries((trialsRaw as unknown as TrialDef[]).map(t => [t.id, t]));
 /** 地图 id → 防守类试炼（目前只有筑基台） */
@@ -146,6 +149,13 @@ import pacing from '@xt/balance/solo_pacing.json';
  * （0.03 = 每 5 秒回复最大灵力的 3%）。天剑心法的 mpRegenPer10s 另外再加。
  */
 export const MP_REGEN_FRACTION_PER_5S = Number((pacing as { meditation?: { mpRegenPctPer5s?: number } }).meditation?.mpRegenPctPer5s ?? 0.03);
+
+/** 当前版本所处的剧情阶段。地图 npc 对象（以后任务也一样）按 phaseMin / phaseMax 过滤，没填不限制 */
+export const GAME_PHASE = 4;
+export function inPhase(p: { phaseMin?: unknown; phaseMax?: unknown } | undefined, phase = GAME_PHASE) {
+  const lo = Number(p?.phaseMin), hi = Number(p?.phaseMax);
+  return !(Number.isFinite(lo) && phase < lo) && !(Number.isFinite(hi) && phase > hi);
+}
 
 /** strings_zh.json 里还没有的界面文案。有表内 key 时以表为准，不要改 data/。 */
 const LOCAL_STRINGS: Record<string, string> = {

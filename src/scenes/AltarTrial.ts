@@ -25,8 +25,14 @@ const THUNDER_KNOCK = 120;
 const THUNDER_LIFT = 24;
 /** 预警圈 depth：地面特效层，低于怪（8）和主角（10） */
 const DEPTH_GROUND_FX = 5;
-/** 阵眼判定半宽（表里没有，暂定 40px），怪近战按这个距离 + 攻击宽度的一半出手 */
-const EYE_HALF_W = 40;
+/** 表里缺 objective.hitHalfWidth / climbJumpVelocity 时的兜底（演武堂已填 40 / 600） */
+const EYE_HALF_W_FALLBACK = 40;
+const CLIMB_VY_FALLBACK = 600;
+/** 阵眼图集 prop_formation_eye（128×128，原点脚底）；深度在预警圈(5)之上、怪(8)和主角(10)之下 */
+const EYE_KEY = 'prop_formation_eye';
+const DEPTH_EYE = 6;
+/** anims.json note：气血 <30% 换 damaged */
+const EYE_DAMAGED_RATIO = 0.3;
 
 interface Thunder { x: number; y: number; r: number; strikeAt: number; ratio: number; warn?: Phaser.GameObjects.Sprite; struck: boolean }
 
@@ -51,6 +57,8 @@ export class AltarTrial {
   private thunders: Thunder[] = [];
   private countdown: Phaser.GameObjects.Text;
   private eyeGfx: Phaser.GameObjects.Graphics;
+  eyeSprite?: Phaser.GameObjects.Sprite;
+  private eyeHitting = false;
   private edge?: Phaser.GameObjects.Graphics;
 
   constructor(private scene: TrialHost, readonly def: TrialDef, private speed = 1) {
@@ -61,6 +69,14 @@ export class AltarTrial {
     for (const o of scene.map.objects) if (o.type === 'spawnGate') this.gates[o.name] = { x: o.x, y: o.y };
     this.area = scene.map.zones.find(z => z.props.hazard === 'thunder_circle');
     this.eyeGfx = scene.add.graphics().setDepth(4);
+    if (scene.textures.exists(EYE_KEY) && scene.anims.exists(`${EYE_KEY}_idle`)) {
+      // 脚底对着台面（objective 坐标就是台面中心）
+      this.eyeSprite = scene.add.sprite(this.eye.x, this.eye.y, EYE_KEY).setOrigin(0.5, 1).setDepth(DEPTH_EYE);
+      this.eyeSprite.play(`${EYE_KEY}_idle`);
+      this.eyeSprite.on(Phaser.Animations.Events.ANIMATION_COMPLETE, (a: Phaser.Animations.Animation) => {
+        if (a.key === `${EYE_KEY}_hit`) { this.eyeHitting = false; this.eyeLoop(true); }
+      });
+    }
     this.countdown = hudText(scene, 640, 84, 16, { fontStyle: 'bold', color: INK, stroke: PAPER, strokeThickness: 3 }).setOrigin(0.5).setDepth(131);
     scene.bossOverride = { name: ob.name, hp: this.hp, max: this.maxHp };
     this.drawEye();
@@ -118,8 +134,10 @@ export class AltarTrial {
     if (!gate) return false;
     const m = this.scene.spawnTrialMob(id, gate.x, gate.y);
     if (!m) return false;
-    m.objective = { x: this.eye.x, y: this.eye.y, halfW: EYE_HALF_W, mul: this.def.objective?.monsterDamageMul ?? 1, def: this.def.objective?.def ?? 0,
-      hit: (_mm, dmg) => this.damageEye(dmg) };
+    const ob = this.def.objective, ov = this.def.behaviorOverrides?.[id];
+    m.objective = { x: this.eye.x, y: this.eye.y, halfW: ob?.hitHalfWidth ?? EYE_HALF_W_FALLBACK, mul: ob?.monsterDamageMul ?? 1, def: ob?.def ?? 0,
+      climbVy: ob?.climbJumpVelocity ?? CLIMB_VY_FALLBACK, useAttack: ov?.useAttack, contact: ov?.objectiveHit === 'contact',
+      hit: (mm, dmg) => this.damageEye(dmg, mm.def.id) };
     if (def.flying) {
       m.body.setAllowGravity(false);
       const [lo, hi] = def.flyHeight ?? [96, 128];
@@ -129,9 +147,15 @@ export class AltarTrial {
     return true;
   }
 
-  damageEye(dmg: number) {
+  /** 每种怪打了阵眼几下（测试和调试用） */
+  hitsBy: Record<string, number> = {};
+
+  damageEye(dmg: number, by = '?') {
     if (this.ended) return;
+    this.hitsBy[by] = (this.hitsBy[by] ?? 0) + 1;
     this.hp = Math.max(0, this.hp - dmg);
+    const sp = this.eyeSprite;
+    if (sp && this.hp > 0 && this.scene.anims.exists(`${EYE_KEY}_hit`)) { this.eyeHitting = true; sp.play(`${EYE_KEY}_hit`); }
     this.scene.damageNumber(this.eye.x, this.eye.y - 60, dmg, '#ffffff', '#3b2a20');
   }
 
@@ -185,8 +209,23 @@ export class AltarTrial {
     this.edge = g;
   }
 
+  /** 平时 idle / 低血 damaged 循环；受击动画播放中不打断 */
+  private eyeLoop(force = false) {
+    const sp = this.eyeSprite;
+    if (!sp || this.eyeHitting || this.hp <= 0) return;
+    const key = this.hp / this.maxHp < EYE_DAMAGED_RATIO && this.scene.anims.exists(`${EYE_KEY}_damaged`) ? `${EYE_KEY}_damaged` : `${EYE_KEY}_idle`;
+    if (force || sp.anims.currentAnim?.key !== key) sp.play(key);
+  }
+
   private drawEye() {
+    this.eyeLoop();
     const g = this.eyeGfx.clear(), k = this.hp / this.maxHp, pulse = 0.5 + 0.5 * Math.sin(this.scene.time.now / 300);
+    if (this.eyeSprite) {
+      // 有图时椭圆只当脚下光圈，调淡
+      g.fillStyle(0x9fe8ff, (0.08 + 0.06 * pulse) * Math.max(0.3, k)).fillEllipse(this.eye.x, this.eye.y - 2, 150, 26);
+      g.lineStyle(2, 0xd9a441, 0.25 * Math.max(0.3, k)).strokeEllipse(this.eye.x, this.eye.y - 2, 128, 20);
+      return;
+    }
     g.fillStyle(0x9fe8ff, 0.18 + 0.12 * pulse * k).fillEllipse(this.eye.x, this.eye.y - 4, 140, 24);
     g.lineStyle(2, 0xd9a441, 0.5 + 0.4 * k).strokeEllipse(this.eye.x, this.eye.y - 4, 120, 18);
     g.fillStyle(0xfff0a0, 0.35 + 0.4 * pulse * k).fillCircle(this.eye.x, this.eye.y - 30, 10 + 4 * pulse);
@@ -195,6 +234,10 @@ export class AltarTrial {
   end(result: TrialResult) {
     if (this.ended) return;
     this.ended = true;
+    if (result === 'broken' && this.eyeSprite) {
+      this.drawEye();
+      if (this.scene.anims.exists(`${EYE_KEY}_broken`)) this.eyeSprite.play(`${EYE_KEY}_broken`);   // repeat 0，停在最后一帧
+    }
     this.clearMobs();
     for (const th of this.thunders) th.warn?.destroy();
     this.thunders = [];

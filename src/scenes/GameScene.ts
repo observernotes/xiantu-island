@@ -6,7 +6,7 @@ import { QuestSystem } from '../QuestSystem';
 import { QUESTS as QUESTS_REF } from '../data';
 import { DialogBox, SkillBar, SkillWindow } from '../UI';
 import { AltarTrial, type TrialResult } from './AltarTrial';
-import { TRIALS, TRIAL_BY_MAP, REALMS, BREAKTHROUGH, type TrialDef } from '../data';
+import { TRIALS, TRIAL_BY_MAP, REALMS, BREAKTHROUGH, inPhase, type TrialDef } from '../data';
 import { preloadHud, registerHudFonts, hasHud, sliced, setSlicedWidth, HudBar, hudText, hudSpec, HUD_FONT, INK, INK_60, PAPER } from '../hud';
 import { SkillCombat } from '../SkillCombat';
 import { HOTBAR_SLOTS, SKILLS, skillsForJob } from '../skills';
@@ -35,8 +35,6 @@ interface Shot {
 /** ?debug=trial：直接进筑基台；&speed=N 试炼时钟加速；&skip=held|broken|dead 直接结算；&roll=win|lose 固定成功率判定 */
 const QS = typeof location !== 'undefined' ? new URLSearchParams(location.search) : new URLSearchParams();
 const DEBUG_TRIAL = QS.get('debug') === 'trial';
-/** 06 文档〇节：v0.4 没有天剑宗山门，传功长老暂时站在青云村（地图数据不动，代码里补一个站位，坐标暂定） */
-const NPC_FALLBACK_POS: Record<string, { map: string; x: number; y: number }> = { tianjian_elder: { map: 'qingyun_village', x: 1216, y: 704 } };
 /** 试炼结束后传回的位置：传功长老身边 */
 const TRIAL_RETURN = { map: 'qingyun_village', x: 1180, y: 700 };
 
@@ -107,10 +105,8 @@ export class GameScene extends Phaser.Scene {
       : buildCharMap(this, FIELD_TEST.id, FIELD_TEST.name, FIELD_TEST.rows, FIELD_TEST.portals, `tiles_${area}`);
     this.npcMarks = [];
     this.physics.world.setBounds(0, 0, this.map.width, this.map.height + 200);
-    for (const [id, pos] of Object.entries(NPC_FALLBACK_POS)) {
-      if (pos.map !== mapId || TILED_MAPS[NPCS[id]?.map] || this.map.objects.some(o => o.type === 'npc' && (o.props.npc ?? o.name) === id)) continue;
-      this.map.objects.push({ type: 'npc', name: id, x: pos.x, y: pos.y, props: { npc: id } });
-    }
+    // 地图 npc 对象的 phaseMin / phaseMax：不在当前版本阶段的不创建（没填不限制）
+    this.map.objects = this.map.objects.filter(o => o.type !== 'npc' || inPhase(o.props));
     this.map.objects.forEach(o => this.drawObject(o));
 
     const at = data.portal ? this.map.objects.find(o => o.type === 'portal' && o.name === data.portal) : data.pos;
@@ -320,7 +316,7 @@ export class GameScene extends Phaser.Scene {
         this.tweens.add({ targets: gray, fillAlpha: 0.45, duration: 400 });
         const lost = pr.applyBreakthroughFail(Number(pen.expLossRatio ?? 0));
         pr.breakthroughFails++;
-        if (pen.debuffMs) { pr.unstableUntil = Date.now() + Number(pen.debuffMs); pr.unstableRatio = Number(pen.debuffStatRatio ?? 0); }
+        if (pen.debuffMs) { pr.unstableUntil = Date.now() + Number(pen.debuffMs); pr.unstableRatio = Number(pen.debuffStatRatio ?? 0); pr.unstableStats = Array.isArray(pen.debuffStats) ? [...pen.debuffStats] : []; }
         const bonus = Math.round((BREAKTHROUGH.pityPerFail ?? 0) * 100);
         banner(t('realm.breakthrough_fail'), '#d0d0d0');
         this.log(t('realm.breakthrough_fail'), '#d0d0d0');
@@ -847,6 +843,7 @@ export class GameScene extends Phaser.Scene {
 
   // ---------------- 表现 ----------------
   log(msg: string, color: string) {
+    const hist = ((window as any).__logs ??= []) as string[]; hist.push(msg); if (hist.length > 100) hist.shift();   // 测试读系统消息
     const t = this.add.text(16, 0, msg, { fontFamily: 'sans-serif', fontSize: '14px', color, stroke: '#000000', strokeThickness: 3 }).setOrigin(0, 1).setScrollFactor(0).setDepth(102);
     this.logs.push(t);
     if (this.logs.length > 6) this.logs.shift()!.destroy();

@@ -62,9 +62,22 @@ interface FxTimer { sprite: Phaser.GameObjects.Sprite; doneAt: number; }
 interface Cd { readyAt: number; wall: number; game: number; ms: number; logged: boolean; }
 
 /** 试炼目标（筑基台阵眼）：带 targetsObjective 的怪走过去打它 */
-export interface ObjectiveTarget { x: number; y: number; halfW: number; hit: (m: Monster, dmg: number) => void; mul: number; def: number }
-/** 地面心魔走到台阶前起跳的速度（暂定：重力 2000 下约能跳 90px，筑基台中台高 64px） */
-const STEP_JUMP_VY = 600;
+/**
+ * 守阵目标（试炼里由 AltarTrial 填）。halfW / climbVy 读 trials.json objective.hitHalfWidth / climbJumpVelocity；
+ * useAttack / contact 读 behaviorOverrides[怪物 id]（只在这场试炼里生效）
+ */
+export interface ObjectiveTarget {
+  x: number; y: number; halfW: number; hit: (m: Monster, dmg: number) => void; mul: number; def: number;
+  climbVy: number;
+  /** false = 不用自身 attack（不打玩家，也不用攻击打阵眼） */
+  useAttack?: boolean;
+  /** true = 贴到阵眼判定框就算一击（objectiveHit: "contact"） */
+  contact?: boolean;
+}
+/** 接触撞阵眼的间隔：表里没有 attack 时用（暂定 1000ms） */
+const CONTACT_CD_MS = 1000;
+/** 接触型飞行心魔贴近阵眼时下降到的高度：阵眼 hitArea 64×100 的一半（anims.json note） */
+const CONTACT_FLY_DY = 50;
 
 export interface SkillVolley {
   fx: string; ratio: number; knockback: number; atk: number;
@@ -252,14 +265,25 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
     if (this.st === 'hit' || this.st === 'attack') this.st = 'patrol';
     // 地面怪：玩家贴身时照原逻辑打玩家
     const pdx = player.x - this.x;
-    if (!flying && !player.dead && Math.abs(pdx) < 48 && Math.abs(player.y - this.y) < 48) return false;
+    if (o.useAttack !== false && !flying && !player.dead && Math.abs(pdx) < 48 && Math.abs(player.y - this.y) < 48) return false;
     const dx = o.x - this.x;
     this.dir = Math.sign(dx) || this.dir;
     if (flying) {
-      const vy = this.flyY !== undefined ? Phaser.Math.Clamp((this.flyY - this.y) * 3, -d.moveSpeed, d.moveSpeed) : 0;
+      const ty = o.contact && Math.abs(dx) < this.objReach * 3 ? o.y - CONTACT_FLY_DY : this.flyY;
+      const vy = ty !== undefined ? Phaser.Math.Clamp((ty - this.y) * 3, -d.moveSpeed, d.moveSpeed) : 0;
       b.setVelocityY(vy);
     }
-    if (Math.abs(dx) <= this.objReach) {
+    if (o.contact && Math.abs(dx) <= this.objReach) {
+      b.setVelocityX(0); this.anim('idle');
+      if (time >= this.attackReadyAt) {
+        this.attackReadyAt = time + ((o.useAttack !== false && a?.cooldownMs) || CONTACT_CD_MS);
+        const ratio = (d as { touchDamageMul?: number }).touchDamageMul ?? 1;
+        o.hit(this, Math.max(1, Math.round(d.atk * ratio * o.mul - o.def)));
+      }
+      return true;
+    }
+    if (o.useAttack === false) { if (Math.abs(dx) <= this.objReach) { b.setVelocityX(0); this.anim('idle'); return true; } }
+    else if (Math.abs(dx) <= this.objReach) {
       b.setVelocityX(0);
       if (a && time >= this.attackReadyAt && (flying || this.grounded)) {
         const tele = a.telegraphMs ?? 300;
@@ -273,14 +297,15 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
       return true;
     }
     b.setVelocityX(this.dir * d.moveSpeed);
-    if (!flying && this.grounded && (this.dir > 0 ? b.blocked.right : b.blocked.left)) b.setVelocityY(-STEP_JUMP_VY);
+    if (!flying && this.grounded && (this.dir > 0 ? b.blocked.right : b.blocked.left)) b.setVelocityY(-o.climbVy);
     this.anim('walk');
     return true;
   }
   /** 到阵眼多近开打：近战 = 阵眼半宽 + range.w / 2；远程 = range.w */
   private get objReach() {
     const a = this.def.attack, o = this.objective!;
-    if (!a) return o.halfW;
+    if (o.contact) return o.halfW + this.body.width / 2;
+    if (!a || o.useAttack === false) return o.halfW;
     return a.type === 'projectile' ? (a.range?.w ?? 200) * 0.8 : o.halfW + (a.range?.w ?? 48) / 2;
   }
 
