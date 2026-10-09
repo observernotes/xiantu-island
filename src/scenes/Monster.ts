@@ -82,7 +82,7 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
     const sees = d.aggressive && !player.dead && Math.abs(dx) < (d.aggroRange ?? 0) && Math.abs(dy) < 64;
 
     // 山魈：玩家进入拍地范围就出手
-    if (d.attack && sees && time >= this.attackReadyAt && Math.abs(dx) < d.attack.range.w && this.grounded) {
+    if (d.attack && sees && time >= this.attackReadyAt && Math.abs(dx) < this.slamRange.w && this.grounded) {
       this.dir = Math.sign(dx) || this.dir;
       // 前摇：停在抬手帧 telegraphMs（默认 500ms），身体闪红，然后才落下出伤害
       const tele = (d.attack as any).telegraphMs ?? 500;
@@ -128,10 +128,12 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
 
   private face() { this.setFlipX(this.dir > 0); }   // 美术朝左画
 
+  /** Y2：冲锋、弹道 AI 还没写，非 slam 类型的怪临时按山魈拍地 96×48 出手和判定（damageRatio、telegraphMs、cooldownMs 仍读自己那一行） */
+  get slamRange() { const a = this.def.attack!; return a.type === 'slam' ? a.range : { w: 96, h: 48 }; }
   private teleAt = 0; private teleGameAt = 0; private teleEnd = 0; private teleBlink?: Phaser.Tweens.Tween;
   private doSlam() {
     if (DEBUG_TIMING) console.log(`[tele] ${this.def.id} 出伤害 实际 +${Math.round(performance.now() - this.teleAt)}ms`);
-    const r = this.def.attack!.range, b = this.body;
+    const r = this.slamRange, b = this.body;
     const x = this.dir > 0 ? b.center.x : b.center.x - r.w;
     this.onSlam?.(this, new Phaser.Geom.Rectangle(x, b.bottom - r.h, r.w, r.h));
   }
