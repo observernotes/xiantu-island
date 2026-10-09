@@ -44,6 +44,9 @@
   "sys.save_reset": "存档已重置。",
   "realm.bottleneck": "修为已满，需突破",
   "realm.bottleneck_tip": "你已到{realm}圆满，修为不再增长。去找{npc}寻求突破之法。",
+  "realm.overflow_tip": "溢出修为 {n}/{max}，突破后返还",
+  "realm.overflow_full": "溢出池已满，再打怪的修为不会再存了，快去突破吧。",
+  "realm.overflow_gain": "（存入溢出池）",
   "realm.breakthrough_ok": "突破成功·{realm}",
   "realm.breakthrough_fail": "突破失败……境界不稳",
   "realm.unstable": "境界不稳：全属性下降，持续 {min} 分钟。",
@@ -118,5 +121,9 @@
   "bestiary.stage.silhouette": "未识",
   "bestiary.stage.known": "初识",
   "bestiary.stage.familiar": "熟知",
-  "bestiary.stage.master": "精通"
+  "bestiary.stage.master": "精通",
+  "sys.portal_level": "需要达到 {lv} 级才能前往。",
+  "tip.skill_points": "升级会得到技能点。按 K 打开技能窗口，把点数加到想练的技能上。",
+  "sys.seclusion_locked": "筑基之后才能进闭关室。",
+  "sys.seclusion_cost": "闭关 {years} 年，需要宗门贡献 {cost}（现有 {have}）。"
 }

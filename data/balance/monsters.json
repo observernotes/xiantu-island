@@ -131,6 +131,7 @@
   "noDamage": true,
   "knockback": 0,
   "respawnMs": 0,
+  "immortal": true,
   "sprite": "mon_training_dummy",
   "dropTable": null,
   "isBoss": false
@@ -161,6 +162,8 @@
     "h": 48
    },
    "distance": 192,
+   "chargeSpeed": 360,
+   "recoverMs": 300,
    "telegraphMs": 600,
    "cooldownMs": 4000,
    "knockback": 280
@@ -210,6 +213,7 @@
     "w": 320,
     "h": 32
    },
+   "recoverMs": 350,
    "telegraphMs": 400,
    "cooldownMs": 3500,
    "knockback": 120
@@ -480,6 +484,7 @@
     "w": 360,
     "h": 32
    },
+   "recoverMs": 300,
    "telegraphMs": 400,
    "cooldownMs": 3000,
    "knockback": 150
@@ -626,9 +631,145 @@
     "w": 256,
     "h": 160
    },
+   "recoverMs": 300,
    "telegraphMs": 300,
    "cooldownMs": 2000,
    "knockback": 60
   }
+ },
+ {
+  "id": "paper_puppet",
+  "name": "纸傀儡",
+  "level": 11,
+  "hp": 110,
+  "atk": 34,
+  "def": 6,
+  "exp": 0,
+  "aggressive": true,
+  "aggroRange": 1280,
+  "moveSpeed": 80,
+  "patrolRange": 200,
+  "touchDamage": true,
+  "knockback": 120,
+  "respawnMs": 0,
+  "sprite": "mon_paper_puppet",
+  "dropTable": null,
+  "isBoss": false,
+  "phase": 5
+ },
+ {
+  "id": "wood_target",
+  "name": "木靶",
+  "level": 1,
+  "hp": 100,
+  "atk": 0,
+  "def": 0,
+  "exp": 0,
+  "aggressive": false,
+  "moveSpeed": 0,
+  "patrolRange": 0,
+  "touchDamage": false,
+  "knockback": 0,
+  "respawnMs": 0,
+  "sprite": "mon_wood_target",
+  "dropTable": null,
+  "isBoss": false,
+  "noDamage": true,
+  "phase": 5
+ },
+ {
+  "id": "youying_patrol",
+  "name": "巡逻弟子",
+  "level": 12,
+  "hp": 310,
+  "atk": 0,
+  "def": 7,
+  "exp": 0,
+  "aggressive": false,
+  "moveSpeed": 50,
+  "patrolRange": 240,
+  "touchDamage": false,
+  "knockback": 0,
+  "respawnMs": 0,
+  "sprite": "mon_youying_patrol",
+  "dropTable": null,
+  "isBoss": false,
+  "noDamage": true,
+  "invulnerable": true,
+  "vision": {
+   "length": 192,
+   "halfAngleDeg": 15,
+   "detectMs": 800,
+   "decayMul": 2.0
+  },
+  "phase": 5
+ },
+ {
+  "id": "mad_mandrill",
+  "name": "发狂山魈",
+  "level": 12,
+  "hp": 2400,
+  "atk": 36,
+  "def": 8,
+  "exp": 0,
+  "aggressive": true,
+  "aggroRange": 1280,
+  "moveSpeed": 80,
+  "patrolRange": 200,
+  "touchDamage": true,
+  "knockback": 260,
+  "respawnMs": 0,
+  "sprite": "mon_mad_mandrill",
+  "dropTable": null,
+  "isBoss": false,
+  "minHp": 1,
+  "kneelBelow": 0.5,
+  "attack": {
+   "type": "slam",
+   "damageRatio": 1.2,
+   "range": {
+    "w": 96,
+    "h": 48
+   },
+   "telegraphMs": 500,
+   "recoverMs": 400,
+   "cooldownMs": 3000,
+   "knockback": 320
+  },
+  "phase": 5
+ },
+ {
+  "id": "wild_wolf",
+  "name": "野狼",
+  "level": 11,
+  "hp": 170,
+  "atk": 34,
+  "def": 6,
+  "exp": 0,
+  "aggressive": true,
+  "aggroRange": 1280,
+  "moveSpeed": 110,
+  "patrolRange": 200,
+  "touchDamage": true,
+  "knockback": 180,
+  "respawnMs": 0,
+  "sprite": "mon_wild_wolf",
+  "dropTable": null,
+  "isBoss": false,
+  "attack": {
+   "type": "charge",
+   "damageRatio": 1.1,
+   "range": {
+    "w": 48,
+    "h": 40
+   },
+   "distance": 160,
+   "chargeSpeed": 420,
+   "telegraphMs": 400,
+   "recoverMs": 400,
+   "cooldownMs": 3500,
+   "knockback": 180
+  },
+  "phase": 5
  }
 ]

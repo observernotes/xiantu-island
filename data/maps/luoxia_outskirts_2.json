@@ -6812,7 +6812,7 @@
     },
     {
      "id": 11,
-     "name": "portal_to_town_locked",
+     "name": "portal_to_town",
      "type": "portal",
      "x": 80,
      "y": 896,
@@ -6828,11 +6828,6 @@
        "name": "targetPortal",
        "type": "string",
        "value": "portal_to_outskirts"
-      },
-      {
-       "name": "locked",
-       "type": "bool",
-       "value": true
       }
      ]
     },

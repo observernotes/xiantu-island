@@ -9,21 +9,42 @@
  ],
  "pad": 4,
  "maxUpscale": 1.5,
+ "framingRule": {
+  "full": "普通怪：全身入框，脚底贴框底留 pad，放大不超过 maxUpscale",
+  "bust": "首领（monsters.json isBoss）：头 + 上胸，取身体包围盒顶部 60% 高度，水平以头部为中心，铺满框（顶部留 pad），尾巴 / 四肢末端可被裁掉"
+ },
  "portraits": {
   "mon_bamboo_snake": {
    "monster": "bamboo_snake",
    "name": "竹叶青蛇",
    "srcFrame": "mon_bamboo_snake_idle_01",
    "srcBBox": [
-    7,
-    26,
-    60,
+    10,
+    23,
+    55,
     64
    ],
-   "scale": 1.358,
+   "scale": 1.5,
    "inBestiary": true,
    "image": "portrait_mon_bamboo_snake",
-   "silhouette": "portrait_mon_bamboo_snake_silhouette"
+   "silhouette": "portrait_mon_bamboo_snake_silhouette",
+   "framing": "full"
+  },
+  "mon_black_robe_guard": {
+   "monster": "black_robe_guard",
+   "name": "黑袍卫",
+   "srcFrame": "mon_black_robe_guard_idle_01",
+   "framing": "full",
+   "srcBBox": [
+    17,
+    14,
+    63,
+    88
+   ],
+   "scale": 0.865,
+   "inBestiary": true,
+   "image": "portrait_mon_black_robe_guard",
+   "silhouette": "portrait_mon_black_robe_guard_silhouette"
   },
   "mon_black_robe_minion": {
    "monster": "black_robe_minion",
@@ -31,104 +52,240 @@
    "srcFrame": "mon_black_robe_minion_idle_01",
    "srcBBox": [
     20,
-    19,
-    63,
+    16,
+    60,
     88
    ],
-   "scale": 0.928,
+   "scale": 0.889,
    "inBestiary": true,
    "image": "portrait_mon_black_robe_minion",
-   "silhouette": "portrait_mon_black_robe_minion_silhouette"
+   "silhouette": "portrait_mon_black_robe_minion_silhouette",
+   "framing": "full"
   },
   "mon_demon_fox": {
    "monster": "demon_fox",
    "name": "妖狐",
    "srcFrame": "mon_demon_fox_idle_01",
    "srcBBox": [
-    32,
-    18,
-    180,
-    160
+    23,
+    2,
+    125,
+    94
    ],
-   "scale": 0.451,
+   "scale": 0.784,
    "inBestiary": true,
    "image": "portrait_mon_demon_fox",
-   "silhouette": "portrait_mon_demon_fox_silhouette"
+   "silhouette": "portrait_mon_demon_fox_silhouette",
+   "framing": "bust",
+   "recut": "待精修组重切：规则改为 bust（头 + 上胸），现有图片还是全身框法；srcBBox / scale 已按 bust 算好"
+  },
+  "mon_demonized_ape": {
+   "monster": "demonized_ape",
+   "name": "魔化猿",
+   "srcFrame": "mon_demonized_ape_idle_01",
+   "framing": "full",
+   "srcBBox": [
+    19,
+    25,
+    78,
+    96
+   ],
+   "scale": 0.901,
+   "inBestiary": true,
+   "image": "portrait_mon_demonized_ape",
+   "silhouette": "portrait_mon_demonized_ape_silhouette"
+  },
+  "mon_fire_crow": {
+   "monster": "fire_crow",
+   "name": "火鸦",
+   "srcFrame": "mon_fire_crow_idle_01",
+   "framing": "full",
+   "srcBBox": [
+    12,
+    24,
+    79,
+    58
+   ],
+   "scale": 1.075,
+   "inBestiary": true,
+   "image": "portrait_mon_fire_crow",
+   "silhouette": "portrait_mon_fire_crow_silhouette"
+  },
+  "mon_flame_envoy": {
+   "monster": "flame_envoy",
+   "name": "炎魔使",
+   "srcFrame": "mon_flame_envoy_idle_01",
+   "framing": "bust",
+   "srcBBox": [
+    43,
+    28,
+    149,
+    123
+   ],
+   "scale": 0.755,
+   "inBestiary": true,
+   "image": "portrait_mon_flame_envoy",
+   "silhouette": "portrait_mon_flame_envoy_silhouette"
+  },
+  "mon_flame_puppet": {
+   "monster": "flame_puppet",
+   "name": "炎傀",
+   "srcFrame": "mon_flame_puppet_idle_01",
+   "framing": "full",
+   "srcBBox": [
+    14,
+    10,
+    64,
+    96
+   ],
+   "scale": 0.744,
+   "inBestiary": true,
+   "image": "portrait_mon_flame_puppet",
+   "silhouette": "portrait_mon_flame_puppet_silhouette"
   },
   "mon_heart_demon_imp": {
    "monster": "heart_demon_imp",
    "name": "心魔·地",
    "srcFrame": "mon_heart_demon_imp_idle_01",
    "srcBBox": [
-    16,
-    2,
-    81,
+    18,
+    6,
+    71,
     72
    ],
-   "scale": 0.914,
+   "scale": 0.97,
    "inBestiary": false,
    "image": "portrait_mon_heart_demon_imp",
-   "silhouette": "portrait_mon_heart_demon_imp_silhouette"
+   "silhouette": "portrait_mon_heart_demon_imp_silhouette",
+   "framing": "full"
   },
   "mon_heart_demon_wisp": {
    "monster": "heart_demon_wisp",
    "name": "心魔·飞",
    "srcFrame": "mon_heart_demon_wisp_idle_01",
    "srcBBox": [
-    8,
-    12,
-    82,
+    18,
+    9,
+    74,
     76
    ],
-   "scale": 0.973,
+   "scale": 0.955,
    "inBestiary": false,
    "image": "portrait_mon_heart_demon_wisp",
-   "silhouette": "portrait_mon_heart_demon_wisp_silhouette"
+   "silhouette": "portrait_mon_heart_demon_wisp_silhouette",
+   "framing": "full"
+  },
+  "mon_lava_lizard": {
+   "monster": "lava_lizard",
+   "name": "熔岩蜥",
+   "srcFrame": "mon_lava_lizard_idle_01",
+   "framing": "full",
+   "srcBBox": [
+    12,
+    21,
+    95,
+    48
+   ],
+   "scale": 0.867,
+   "inBestiary": true,
+   "image": "portrait_mon_lava_lizard",
+   "silhouette": "portrait_mon_lava_lizard_silhouette"
+  },
+  "mon_millennium_tree_demon": {
+   "monster": "millennium_tree_demon",
+   "name": "千年树妖",
+   "srcFrame": "mon_millennium_tree_demon_idle_01",
+   "framing": "bust",
+   "srcBBox": [
+    20,
+    0,
+    172,
+    137
+   ],
+   "scale": 0.526,
+   "inBestiary": true,
+   "image": "portrait_mon_millennium_tree_demon",
+   "silhouette": "portrait_mon_millennium_tree_demon_silhouette"
   },
   "mon_mountain_mandrill": {
    "monster": "mountain_mandrill",
    "name": "山魈",
    "srcFrame": "mon_mountain_mandrill_idle_01",
    "srcBBox": [
-    4,
-    15,
-    62,
-    79
+    14,
+    17,
+    61,
+    80
    ],
-   "scale": 1.0,
+   "scale": 1.016,
    "inBestiary": true,
    "image": "portrait_mon_mountain_mandrill",
-   "silhouette": "portrait_mon_mountain_mandrill_silhouette"
+   "silhouette": "portrait_mon_mountain_mandrill_silhouette",
+   "framing": "full"
+  },
+  "mon_poison_spider": {
+   "monster": "poison_spider",
+   "name": "毒蛛",
+   "srcFrame": "mon_poison_spider_idle_01",
+   "framing": "full",
+   "srcBBox": [
+    19,
+    21,
+    70,
+    56
+   ],
+   "scale": 1.412,
+   "inBestiary": true,
+   "image": "portrait_mon_poison_spider",
+   "silhouette": "portrait_mon_poison_spider_silhouette"
+  },
+  "mon_shadow_wolf": {
+   "monster": "shadow_wolf",
+   "name": "影狼",
+   "srcFrame": "mon_shadow_wolf_idle_01",
+   "framing": "full",
+   "srcBBox": [
+    6,
+    16,
+    95,
+    64
+   ],
+   "scale": 0.809,
+   "inBestiary": true,
+   "image": "portrait_mon_shadow_wolf",
+   "silhouette": "portrait_mon_shadow_wolf_silhouette"
   },
   "mon_spirit_rabbit": {
    "monster": "spirit_rabbit",
    "name": "灵兔",
    "srcFrame": "mon_spirit_rabbit_idle_01",
    "srcBBox": [
-    13,
-    13,
-    50,
-    62
+    12,
+    12,
+    47,
+    64
    ],
-   "scale": 1.306,
+   "scale": 1.231,
    "inBestiary": true,
    "image": "portrait_mon_spirit_rabbit",
-   "silhouette": "portrait_mon_spirit_rabbit_silhouette"
+   "silhouette": "portrait_mon_spirit_rabbit_silhouette",
+   "framing": "full"
   },
   "mon_straw_puppet": {
    "monster": "straw_puppet",
    "name": "稻草傀儡",
    "srcFrame": "mon_straw_puppet_idle_01",
    "srcBBox": [
-    8,
-    11,
-    55,
+    7,
+    13,
+    58,
     80
    ],
-   "scale": 0.928,
+   "scale": 0.955,
    "inBestiary": true,
    "image": "portrait_mon_straw_puppet",
-   "silhouette": "portrait_mon_straw_puppet_silhouette"
+   "silhouette": "portrait_mon_straw_puppet_silhouette",
+   "framing": "full"
   },
   "mon_training_dummy": {
    "monster": "training_dummy",
@@ -136,29 +293,63 @@
    "srcFrame": "mon_training_dummy_idle_01",
    "srcBBox": [
     7,
-    7,
-    53,
+    15,
+    51,
     80
    ],
-   "scale": 0.877,
+   "scale": 0.985,
    "inBestiary": false,
    "image": "portrait_mon_training_dummy",
-   "silhouette": "portrait_mon_training_dummy_silhouette"
+   "silhouette": "portrait_mon_training_dummy_silhouette",
+   "framing": "full"
+  },
+  "mon_tree_demon_sapling": {
+   "monster": "tree_demon_sapling",
+   "name": "树妖分身",
+   "srcFrame": "mon_tree_demon_sapling_idle_01",
+   "framing": "full",
+   "srcBBox": [
+    8,
+    13,
+    64,
+    88
+   ],
+   "scale": 0.853,
+   "inBestiary": true,
+   "image": "portrait_mon_tree_demon_sapling",
+   "silhouette": "portrait_mon_tree_demon_sapling_silhouette"
+  },
+  "mon_vine_imp": {
+   "monster": "vine_imp",
+   "name": "藤妖",
+   "srcFrame": "mon_vine_imp_idle_01",
+   "framing": "full",
+   "srcBBox": [
+    11,
+    20,
+    53,
+    72
+   ],
+   "scale": 1.231,
+   "inBestiary": true,
+   "image": "portrait_mon_vine_imp",
+   "silhouette": "portrait_mon_vine_imp_silhouette"
   },
   "mon_wild_boar_spirit": {
    "monster": "wild_boar_spirit",
    "name": "野猪精",
    "srcFrame": "mon_wild_boar_spirit_idle_01",
    "srcBBox": [
-    11,
-    28,
-    87,
+    5,
+    29,
+    85,
     80
    ],
-   "scale": 0.947,
+   "scale": 0.9,
    "inBestiary": true,
    "image": "portrait_mon_wild_boar_spirit",
-   "silhouette": "portrait_mon_wild_boar_spirit_silhouette"
+   "silhouette": "portrait_mon_wild_boar_spirit_silhouette",
+   "framing": "full"
   }
  }
 }

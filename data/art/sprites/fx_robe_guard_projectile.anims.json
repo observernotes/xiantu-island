@@ -1,0 +1,38 @@
+{
+ "atlas": "fx_robe_guard_projectile",
+ "facing": "left",
+ "origin": [
+  0.5,
+  0.5
+ ],
+ "frameSize": [
+  48,
+  32
+ ],
+ "anims": [
+  {
+   "key": "fx_robe_guard_projectile_fly",
+   "frames": [
+    "fx_robe_guard_projectile_fly_01",
+    "fx_robe_guard_projectile_fly_02",
+    "fx_robe_guard_projectile_fly_03",
+    "fx_robe_guard_projectile_fly_04"
+   ],
+   "frameRate": 12,
+   "repeat": -1
+  },
+  {
+   "key": "fx_robe_guard_projectile_hit",
+   "frames": [
+    "fx_robe_guard_projectile_hit_01",
+    "fx_robe_guard_projectile_hit_02",
+    "fx_robe_guard_projectile_hit_03"
+   ],
+   "frameRate": 16,
+   "repeat": 0
+  }
+ ],
+ "note": "黑袍卫火符弹：原点 (0.5,0.5) = 符心，朝左飞（火尾向右），朝右 setFlipX(true)；speed 280、射程 360。火属性描边深朱 #B8322A。",
+ "blend": "normal",
+ "kind": "fx"
+}

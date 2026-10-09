@@ -12,7 +12,11 @@
    "respawnMs": 60000,
    "maps": [
     "bamboo_forest",
-    "lingxi_path"
+    "lingxi_path",
+    "luoxia_outskirts_1",
+    "luoxia_outskirts_2",
+    "wanyao_outer_1",
+    "wanyao_outer_2"
    ]
   }
  },
@@ -28,7 +32,9 @@
    "castMs": 3000,
    "respawnMs": 120000,
    "maps": [
-    "赤炎火山（待定）"
+    "chiyan_slope_1",
+    "chiyan_slope_2",
+    "chiyan_core"
    ]
   }
  },
@@ -60,7 +66,8 @@
    "castMs": 5000,
    "respawnMs": 600000,
    "maps": [
-    "万妖林（待定）"
+    "wanyao_outer_2",
+    "wanyao_deep_1"
    ]
   }
  },
@@ -92,7 +99,10 @@
    "castMs": 3500,
    "respawnMs": 120000,
    "maps": [
-    "万妖林（待定）"
+    "wanyao_outer_1",
+    "wanyao_outer_2",
+    "wanyao_deep_1",
+    "wanyao_deep_2"
    ]
   }
  },

@@ -1,274 +1,296 @@
 [
-  {
-    "id": "rabbit_fur",
-    "name": "灵兔绒",
-    "type": "material",
-    "desc": "灵兔身上的软绒，可卖给王婶。",
-    "stack": 200,
-    "price": 6,
-    "icon": "icon_rabbit_fur"
+ {
+  "id": "rabbit_fur",
+  "name": "灵兔绒",
+  "type": "material",
+  "desc": "灵兔身上的软绒，可卖给王婶。",
+  "stack": 200,
+  "price": 6,
+  "icon": "icon_rabbit_fur"
+ },
+ {
+  "id": "snake_gall",
+  "name": "青蛇胆",
+  "type": "material",
+  "desc": "孙郎中收来入药。",
+  "stack": 200,
+  "price": 16,
+  "icon": "icon_snake_gall"
+ },
+ {
+  "id": "mandrill_fang",
+  "name": "山魈獠牙",
+  "type": "material",
+  "desc": "坚硬的獠牙，日后可用于炼器。",
+  "stack": 200,
+  "price": 30,
+  "icon": "icon_mandrill_fang"
+ },
+ {
+  "id": "fox_tail",
+  "name": "妖狐尾",
+  "type": "material",
+  "desc": "首领妖狐的尾巴，带着淡淡狐火。任务道具。",
+  "stack": 1,
+  "price": 0,
+  "icon": "icon_fox_tail",
+  "quest": true
+ },
+ {
+  "id": "foundation_shard",
+  "name": "筑基丹残片",
+  "type": "material",
+  "desc": "集齐可合成筑基丹，demo 中仅收集展示。",
+  "stack": 99,
+  "price": 0,
+  "icon": "icon_foundation_shard"
+ },
+ {
+  "id": "hp_pill_small",
+  "name": "回春丹·小",
+  "type": "consume",
+  "desc": "回复少量气血。",
+  "effect": {
+   "hp": 60
   },
-  {
-    "id": "snake_gall",
-    "name": "青蛇胆",
-    "type": "material",
-    "desc": "孙郎中收来入药。",
-    "stack": 200,
-    "price": 16,
-    "icon": "icon_snake_gall"
+  "stack": 100,
+  "price": 15,
+  "icon": "icon_hp_pill_small"
+ },
+ {
+  "id": "qi_pill",
+  "name": "回气丹",
+  "type": "consume",
+  "desc": "回复少量灵力。",
+  "effect": {
+   "mp": 50
   },
-  {
-    "id": "mandrill_fang",
-    "name": "山魈獠牙",
-    "type": "material",
-    "desc": "坚硬的獠牙，日后可用于炼器。",
-    "stack": 200,
-    "price": 30,
-    "icon": "icon_mandrill_fang"
+  "stack": 100,
+  "price": 20,
+  "icon": "icon_qi_pill"
+ },
+ {
+  "id": "wood_sword",
+  "name": "桃木剑",
+  "type": "equip",
+  "slot": "weapon",
+  "desc": "新手剑，觉醒灵根时李村长所赠。",
+  "reqLevel": 1,
+  "stats": {
+   "atk": 12
   },
-  {
-    "id": "fox_tail",
-    "name": "妖狐尾",
-    "type": "material",
-    "desc": "首领妖狐的尾巴，带着淡淡狐火。任务道具。",
-    "stack": 1,
-    "price": 0,
-    "icon": "icon_fox_tail",
-    "quest": true
+  "stack": 1,
+  "price": 60,
+  "icon": "icon_wood_sword"
+ },
+ {
+  "id": "bamboo_sword",
+  "name": "青竹剑",
+  "type": "equip",
+  "slot": "weapon",
+  "desc": "竹林里削的练手剑。",
+  "reqLevel": 5,
+  "stats": {
+   "atk": 22
   },
-  {
-    "id": "foundation_shard",
-    "name": "筑基丹残片",
-    "type": "material",
-    "desc": "集齐可合成筑基丹，demo 中仅收集展示。",
-    "stack": 99,
-    "price": 0,
-    "icon": "icon_foundation_shard"
+  "stack": 1,
+  "price": 300,
+  "icon": "icon_bamboo_sword"
+ },
+ {
+  "id": "azure_steel_sword",
+  "name": "青钢剑",
+  "type": "equip",
+  "slot": "weapon",
+  "desc": "天剑宗外门弟子的佩剑。",
+  "reqLevel": 10,
+  "stats": {
+   "atk": 34
   },
-  {
-    "id": "hp_pill_small",
-    "name": "回春丹·小",
-    "type": "consume",
-    "desc": "回复少量气血。",
-    "effect": {
-      "hp": 60
-    },
-    "stack": 100,
-    "price": 15,
-    "icon": "icon_hp_pill_small"
+  "stack": 1,
+  "price": 1600,
+  "icon": "icon_azure_steel_sword"
+ },
+ {
+  "id": "cloth_shoes",
+  "name": "布履",
+  "type": "equip",
+  "slot": "shoes",
+  "desc": "村里纳的千层底。",
+  "reqLevel": 5,
+  "stats": {
+   "def": 2,
+   "speed": 5
   },
-  {
-    "id": "qi_pill",
-    "name": "回气丹",
-    "type": "consume",
-    "desc": "回复少量灵力。",
-    "effect": {
-      "mp": 50
-    },
-    "stack": 100,
-    "price": 20,
-    "icon": "icon_qi_pill"
+  "stack": 1,
+  "price": 240,
+  "icon": "icon_cloth_shoes"
+ },
+ {
+  "id": "fox_robe",
+  "name": "狐裘道袍",
+  "type": "equip",
+  "slot": "robe",
+  "desc": "用妖狐皮毛缝制，首领掉落。",
+  "reqLevel": 10,
+  "stats": {
+   "def": 8,
+   "hp": 40
   },
-  {
-    "id": "wood_sword",
-    "name": "桃木剑",
-    "type": "equip",
-    "slot": "weapon",
-    "desc": "新手剑，觉醒灵根时李村长所赠。",
-    "reqLevel": 1,
-    "stats": {
-      "atk": 12
-    },
-    "stack": 1,
-    "price": 60,
-    "icon": "icon_wood_sword"
+  "stack": 1,
+  "price": 1200,
+  "icon": "icon_fox_robe"
+ },
+ {
+  "id": "clear_mind_pill",
+  "name": "清心丹",
+  "type": "consume",
+  "desc": "凝神静气。解除「境界不稳」，突破前服用可提高成功率。",
+  "effect": {
+   "removeDebuff": "realm_unstable",
+   "breakthroughBonus": 0.1
   },
-  {
-    "id": "bamboo_sword",
-    "name": "青竹剑",
-    "type": "equip",
-    "slot": "weapon",
-    "desc": "竹林里削的练手剑。",
-    "reqLevel": 5,
-    "stats": {
-      "atk": 22
-    },
-    "stack": 1,
-    "price": 300,
-    "icon": "icon_bamboo_sword"
+  "stack": 100,
+  "price": 60,
+  "icon": "icon_clear_mind_pill"
+ },
+ {
+  "id": "sword_intent_pill",
+  "name": "剑意丹",
+  "type": "consume",
+  "desc": "服后剑意勃发，一段时间内攻击提升。",
+  "effect": {},
+  "stack": 100,
+  "price": 120,
+  "icon": "icon_sword_intent_pill"
+ },
+ {
+  "id": "foundation_pill",
+  "name": "筑基丹",
+  "type": "consume",
+  "desc": "炼气圆满者服之，可冲击筑基。",
+  "effect": {
+   "breakthrough": "foundation"
   },
-  {
-    "id": "azure_steel_sword",
-    "name": "青钢剑",
-    "type": "equip",
-    "slot": "weapon",
-    "desc": "天剑宗外门弟子的佩剑。",
-    "reqLevel": 10,
-    "stats": {
-      "atk": 34
-    },
-    "stack": 1,
-    "price": 1600,
-    "icon": "icon_azure_steel_sword"
+  "stack": 10,
+  "price": 500,
+  "icon": "icon_foundation_pill"
+ },
+ {
+  "id": "golden_core_pill",
+  "name": "凝金丹",
+  "type": "consume",
+  "desc": "助筑基圆满者凝结金丹。",
+  "effect": {
+   "breakthrough": "golden_core"
   },
-  {
-    "id": "cloth_shoes",
-    "name": "布履",
-    "type": "equip",
-    "slot": "shoes",
-    "desc": "村里纳的千层底。",
-    "reqLevel": 5,
-    "stats": {
-      "def": 2,
-      "speed": 5
-    },
-    "stack": 1,
-    "price": 240,
-    "icon": "icon_cloth_shoes"
+  "stack": 10,
+  "price": 5000,
+  "icon": "icon_golden_core_pill"
+ },
+ {
+  "id": "nascent_pill",
+  "name": "化婴丹",
+  "type": "consume",
+  "desc": "金丹圆满者破丹成婴所需。第四阶段内容，先占位。",
+  "effect": {
+   "breakthrough": "nascent_soul"
   },
-  {
-    "id": "fox_robe",
-    "name": "狐裘道袍",
-    "type": "equip",
-    "slot": "robe",
-    "desc": "用妖狐皮毛缝制，首领掉落。",
-    "reqLevel": 10,
-    "stats": {
-      "def": 8,
-      "hp": 40
-    },
-    "stack": 1,
-    "price": 1200,
-    "icon": "icon_fox_robe"
-  },
-  {
-    "id": "clear_mind_pill",
-    "name": "清心丹",
-    "type": "consume",
-    "desc": "凝神静气。解除「境界不稳」，突破前服用可提高成功率。",
-    "effect": {
-      "removeDebuff": "realm_unstable",
-      "breakthroughBonus": 0.1
-    },
-    "stack": 100,
-    "price": 60,
-    "icon": "icon_clear_mind_pill"
-  },
-  {
-    "id": "sword_intent_pill",
-    "name": "剑意丹",
-    "type": "consume",
-    "desc": "服后剑意勃发，一段时间内攻击提升。",
-    "effect": {},
-    "stack": 100,
-    "price": 120,
-    "icon": "icon_sword_intent_pill"
-  },
-  {
-    "id": "foundation_pill",
-    "name": "筑基丹",
-    "type": "consume",
-    "desc": "炼气圆满者服之，可冲击筑基。",
-    "effect": {
-      "breakthrough": "foundation"
-    },
-    "stack": 10,
-    "price": 500,
-    "icon": "icon_foundation_pill"
-  },
-  {
-    "id": "golden_core_pill",
-    "name": "凝金丹",
-    "type": "consume",
-    "desc": "助筑基圆满者凝结金丹。",
-    "effect": {
-      "breakthrough": "golden_core"
-    },
-    "stack": 10,
-    "price": 5000,
-    "icon": "icon_golden_core_pill"
-  },
-  {
-    "id": "nascent_pill",
-    "name": "化婴丹",
-    "type": "consume",
-    "desc": "金丹圆满者破丹成婴所需。第四阶段内容，先占位。",
-    "effect": {
-      "breakthrough": "nascent_soul"
-    },
-    "stack": 10,
-    "price": 0,
-    "icon": "icon_nascent_pill",
-    "placeholder": true
-  },
-  {
-    "id": "scroll_ten_thousand_swords",
-    "name": "万剑归宗·残页",
-    "type": "skill_scroll",
-    "desc": "天剑宗失传绝学的残页，可解锁「万剑归宗」。",
-    "unlockSkill": "ten_thousand_swords",
-    "stack": 1,
-    "price": 0,
-    "icon": "icon_scroll_ten_thousand_swords"
-  },
-  {
-    "id": "bronze_furnace",
-    "name": "青铜丹炉",
-    "type": "tool",
-    "toolType": "furnace",
-    "desc": "丹师送的入门丹炉。",
-    "stack": 1,
-    "price": 0,
-    "icon": "icon_bronze_furnace"
-  },
-  {
-    "id": "purple_copper_furnace",
-    "name": "紫铜丹炉",
-    "type": "tool",
-    "toolType": "furnace",
-    "desc": "炉壁厚实，火力稳定。",
-    "stack": 1,
-    "price": 0,
-    "icon": "icon_purple_copper_furnace"
-  },
-  {
-    "id": "dark_iron_furnace",
-    "name": "玄铁丹炉",
-    "type": "tool",
-    "toolType": "furnace",
-    "desc": "以玄铁铸成，可炼高阶丹药。",
-    "stack": 1,
-    "price": 0,
-    "icon": "icon_dark_iron_furnace"
-  },
-  {
-    "id": "pillar_shard_1",
-    "name": "天柱残片·其一",
-    "type": "material",
-    "desc": "妖狐临死前留下的发光碎片，触手温热。",
-    "stack": 1,
-    "price": 0,
-    "icon": "icon_pillar_shard",
-    "quest": true
-  },
-  {
-    "id": "pillar_shard_2",
-    "name": "天柱残片·其二",
-    "type": "material",
-    "desc": "千年树妖体内取出的残片，缠着魔种的黑气。",
-    "stack": 1,
-    "price": 0,
-    "icon": "icon_pillar_shard",
-    "quest": true
-  },
-  {
-    "id": "pillar_shard_3",
-    "name": "天柱残片·其三",
-    "type": "material",
-    "desc": "炎魔使守护的残片，滚烫如火。",
-    "stack": 1,
-    "price": 0,
-    "icon": "icon_pillar_shard",
-    "quest": true
-  }
+  "stack": 10,
+  "price": 0,
+  "icon": "icon_nascent_pill",
+  "placeholder": true
+ },
+ {
+  "id": "scroll_ten_thousand_swords",
+  "name": "万剑归宗·残页",
+  "type": "skill_scroll",
+  "desc": "天剑宗失传绝学的残页，可解锁「万剑归宗」。",
+  "unlockSkill": "ten_thousand_swords",
+  "stack": 1,
+  "price": 0,
+  "icon": "icon_scroll_ten_thousand_swords"
+ },
+ {
+  "id": "bronze_furnace",
+  "name": "青铜丹炉",
+  "type": "tool",
+  "toolType": "furnace",
+  "desc": "丹师送的入门丹炉。",
+  "stack": 1,
+  "price": 0,
+  "icon": "icon_bronze_furnace"
+ },
+ {
+  "id": "purple_copper_furnace",
+  "name": "紫铜丹炉",
+  "type": "tool",
+  "toolType": "furnace",
+  "desc": "炉壁厚实，火力稳定。",
+  "stack": 1,
+  "price": 0,
+  "icon": "icon_purple_copper_furnace"
+ },
+ {
+  "id": "dark_iron_furnace",
+  "name": "玄铁丹炉",
+  "type": "tool",
+  "toolType": "furnace",
+  "desc": "以玄铁铸成，可炼高阶丹药。",
+  "stack": 1,
+  "price": 0,
+  "icon": "icon_dark_iron_furnace"
+ },
+ {
+  "id": "pillar_shard_1",
+  "name": "天柱残片·其一",
+  "type": "material",
+  "desc": "妖狐临死前留下的发光碎片，触手温热。",
+  "stack": 1,
+  "price": 0,
+  "icon": "icon_pillar_shard",
+  "quest": true
+ },
+ {
+  "id": "pillar_shard_2",
+  "name": "天柱残片·其二",
+  "type": "material",
+  "desc": "千年树妖体内取出的残片，缠着魔种的黑气。",
+  "stack": 1,
+  "price": 0,
+  "icon": "icon_pillar_shard",
+  "quest": true
+ },
+ {
+  "id": "pillar_shard_3",
+  "name": "天柱残片·其三",
+  "type": "material",
+  "desc": "炎魔使守护的残片，滚烫如火。",
+  "stack": 1,
+  "price": 0,
+  "icon": "icon_pillar_shard",
+  "quest": true
+ },
+ {
+  "id": "five_sect_token",
+  "name": "五宗帖",
+  "type": "quest",
+  "desc": "五大宗门联名的拜帖。打开可选择要去拜入的宗门。",
+  "stack": 1,
+  "price": 0,
+  "icon": "icon_five_sect_token",
+  "quest": true,
+  "phase": 5
+ },
+ {
+  "id": "shadow_token",
+  "name": "幽影令牌",
+  "type": "quest",
+  "desc": "幽影楼藏宝阁里的黑铁令牌，入门试炼要偷出来的东西。",
+  "stack": 1,
+  "price": 0,
+  "icon": "icon_shadow_token",
+  "quest": true,
+  "phase": 5
+ }
 ]

@@ -1,0 +1,51 @@
+{
+ "atlas": "prop_trial_lamp",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  48,
+  64
+ ],
+ "anims": [
+  {
+   "key": "prop_trial_lamp_unlit",
+   "frames": [
+    "prop_trial_lamp_unlit_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  },
+  {
+   "key": "prop_trial_lamp_ignite",
+   "frames": [
+    "prop_trial_lamp_ignite_01",
+    "prop_trial_lamp_ignite_02",
+    "prop_trial_lamp_ignite_03",
+    "prop_trial_lamp_ignite_04"
+   ],
+   "frameRate": 12,
+   "repeat": 0
+  },
+  {
+   "key": "prop_trial_lamp_lit",
+   "frames": [
+    "prop_trial_lamp_lit_01",
+    "prop_trial_lamp_lit_02",
+    "prop_trial_lamp_lit_03",
+    "prop_trial_lamp_lit_04"
+   ],
+   "frameRate": 8,
+   "repeat": -1
+  }
+ ],
+ "hitArea": [
+  24,
+  36
+ ],
+ "hitAreaOffsetY": -16,
+ "note": "太虚观试炼·演法台灯（5 盏同图）：铜莲灯盏 + 石座，原点 (0.5,1) 放平台面。未点亮停 unlit；spirit_bolt 命中 hitArea（脚底居中、上移 16）后播 ignite 一次再循环 lit。全部点亮后不用再变。灯火是暖金（金光类描边 #A86E1E），和太虚观紫袍、主角天青都拉得开。",
+ "kind": "prop"
+}

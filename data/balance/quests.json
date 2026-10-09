@@ -1,254 +1,394 @@
 [
-  {
-    "id": "q_awaken",
-    "name": "灵根初现",
-    "giver": "village_elder",
-    "turnIn": "village_elder",
-    "reqLevel": 1,
-    "objectives": [
-      {
-        "type": "reach",
-        "target": "chest_lookout",
-        "map": "qingyun_village"
-      }
-    ],
-    "rewards": {
-      "exp": 20,
-      "spiritStone": 30,
-      "items": [
-        {
-          "item": "wood_sword",
-          "count": 1
-        }
-      ]
-    },
-    "next": "q_bamboo"
+ {
+  "id": "q_awaken",
+  "name": "灵根初现",
+  "giver": "village_elder",
+  "turnIn": "village_elder",
+  "reqLevel": 1,
+  "objectives": [
+   {
+    "type": "reach",
+    "target": "chest_lookout",
+    "map": "qingyun_village"
+   }
+  ],
+  "rewards": {
+   "exp": 20,
+   "spiritStone": 30,
+   "items": [
+    {
+     "item": "wood_sword",
+     "count": 1
+    }
+   ]
   },
-  {
-    "id": "q_bamboo",
-    "name": "竹林兔患",
-    "giver": "grocer_wang",
-    "turnIn": "grocer_wang",
-    "reqLevel": 2,
-    "objectives": [
-      {
-        "type": "kill",
-        "target": "spirit_rabbit",
-        "count": 8
-      },
-      {
-        "type": "collect",
-        "target": "rabbit_fur",
-        "count": 5,
-        "consume": true
-      }
-    ],
-    "rewards": {
-      "exp": 60,
-      "spiritStone": 100,
-      "items": []
-    },
-    "next": "q_snake"
+  "next": "q_bamboo"
+ },
+ {
+  "id": "q_bamboo",
+  "name": "竹林兔患",
+  "giver": "grocer_wang",
+  "turnIn": "grocer_wang",
+  "reqLevel": 2,
+  "objectives": [
+   {
+    "type": "kill",
+    "target": "spirit_rabbit",
+    "count": 8
+   },
+   {
+    "type": "collect",
+    "target": "rabbit_fur",
+    "count": 5,
+    "consume": true
+   }
+  ],
+  "rewards": {
+   "exp": 60,
+   "spiritStone": 100,
+   "items": []
   },
-  {
-    "id": "q_snake",
-    "name": "蛇胆入药",
-    "giver": "doctor_sun",
-    "turnIn": "doctor_sun",
-    "reqLevel": 5,
-    "objectives": [
-      {
-        "type": "collect",
-        "target": "snake_gall",
-        "count": 5,
-        "consume": true
-      }
-    ],
-    "rewards": {
-      "exp": 120,
-      "spiritStone": 80,
-      "items": [
-        {
-          "item": "hp_pill_small",
-          "count": 3
-        }
-      ]
-    },
-    "next": "q_breakthrough"
+  "next": "q_snake"
+ },
+ {
+  "id": "q_snake",
+  "name": "蛇胆入药",
+  "giver": "doctor_sun",
+  "turnIn": "doctor_sun",
+  "reqLevel": 5,
+  "objectives": [
+   {
+    "type": "collect",
+    "target": "snake_gall",
+    "count": 5,
+    "consume": true
+   }
+  ],
+  "rewards": {
+   "exp": 120,
+   "spiritStone": 80,
+   "items": [
+    {
+     "item": "hp_pill_small",
+     "count": 3
+    }
+   ]
   },
-  {
-    "id": "q_breakthrough",
-    "name": "引气入体",
-    "giver": "tianjian_envoy",
-    "turnIn": "tianjian_envoy",
-    "reqLevel": 9,
-    "objectives": [
-      {
-        "type": "kill",
-        "target": "mountain_mandrill",
-        "count": 10
-      },
-      {
-        "type": "breakthrough",
-        "realm": "qi_refining"
-      }
-    ],
-    "rewards": {
-      "exp": 250,
-      "spiritStone": 150,
-      "items": [
-        {
-          "item": "qi_pill",
-          "count": 2
-        }
-      ],
-      "skills": [
-        {
-          "id": "sword_qi_slash",
-          "level": 1
-        }
-      ]
-    },
-    "next": "q_fox"
+  "next": "q_breakthrough"
+ },
+ {
+  "id": "q_breakthrough",
+  "name": "引气入体",
+  "giver": "tianjian_envoy",
+  "turnIn": "tianjian_envoy",
+  "reqLevel": 9,
+  "objectives": [
+   {
+    "type": "kill",
+    "target": "mountain_mandrill",
+    "count": 10
+   },
+   {
+    "type": "breakthrough",
+    "realm": "qi_refining"
+   }
+  ],
+  "rewards": {
+   "exp": 250,
+   "spiritStone": 150,
+   "items": [
+    {
+     "item": "qi_pill",
+     "count": 2
+    }
+   ],
+   "skills": [
+    {
+     "id": "sword_qi_slash",
+     "level": 1
+    }
+   ]
   },
-  {
-    "id": "q_fox",
-    "name": "斩妖入宗",
-    "giver": "tianjian_envoy",
-    "turnIn": "tianjian_envoy",
-    "reqLevel": 10,
-    "objectives": [
-      {
-        "type": "kill",
-        "target": "demon_fox",
-        "count": 1
-      },
-      {
-        "type": "collect",
-        "target": "fox_tail",
-        "count": 1,
-        "consume": true
-      }
-    ],
-    "rewards": {
-      "exp": 335,
-      "spiritStone": 200,
-      "items": [
-        {
-          "item": "azure_steel_sword",
-          "count": 1
-        },
-        {
-          "item": "foundation_shard",
-          "count": 1
-        }
-      ],
-      "job": "tianjian_disciple",
-      "skills": [
-        {
-          "id": "whirl_sword",
-          "level": 1
-        },
-        {
-          "id": "light_body",
-          "level": 1
-        }
-      ]
+  "next": "q_fox"
+ },
+ {
+  "id": "q_fox",
+  "name": "斩妖入宗",
+  "giver": "tianjian_envoy",
+  "turnIn": "tianjian_envoy",
+  "reqLevel": 10,
+  "objectives": [
+   {
+    "type": "kill",
+    "target": "demon_fox",
+    "count": 1
+   },
+   {
+    "type": "collect",
+    "target": "fox_tail",
+    "count": 1,
+    "consume": true
+   }
+  ],
+  "rewards": {
+   "exp": 335,
+   "spiritStone": 200,
+   "items": [
+    {
+     "item": "azure_steel_sword",
+     "count": 1
     },
-    "next": null
+    {
+     "item": "foundation_shard",
+     "count": 1
+    }
+   ],
+   "job": "tianjian_disciple",
+   "skills": [
+    {
+     "id": "whirl_sword",
+     "level": 1
+    },
+    {
+     "id": "light_body",
+     "level": 1
+    }
+   ]
   },
-  {
-    "id": "q_elder_exam",
-    "name": "长老考核",
-    "giver": "tianjian_elder",
-    "turnIn": "tianjian_elder",
-    "reqLevel": 29,
-    "objectives": [
-      {
-        "type": "collect",
-        "target": "foundation_pill",
-        "count": 1,
-        "consume": false
-      },
-      {
-        "type": "talk",
-        "target": "tianjian_elder"
-      }
-    ],
-    "rewards": {
-      "exp": 0,
-      "spiritStone": 0,
-      "items": [],
-      "unlockTrial": "trial_foundation_altar"
-    },
-    "next": null,
-    "note": "第三阶段：炼气圆满、身上带着筑基丹时，找天剑宗传功长老接取，交付后开启筑基台试炼。奖励【演武堂】。"
+  "next": null
+ },
+ {
+  "id": "q_elder_exam",
+  "name": "长老考核",
+  "giver": "tianjian_elder",
+  "turnIn": "tianjian_elder",
+  "reqLevel": 29,
+  "objectives": [
+   {
+    "type": "collect",
+    "target": "foundation_pill",
+    "count": 1,
+    "consume": false
+   },
+   {
+    "type": "talk",
+    "target": "tianjian_elder"
+   }
+  ],
+  "rewards": {
+   "exp": 0,
+   "spiritStone": 0,
+   "items": [],
+   "unlockTrial": "trial_foundation_altar"
   },
-  {
-    "id": "q_alchemy_intro",
-    "name": "初识丹道",
-    "giver": "doctor_sun",
-    "turnIn": "doctor_sun",
-    "reqLevel": 12,
-    "objectives": [
-      {
-        "type": "collect",
-        "target": "spirit_herb",
-        "count": 3,
-        "consume": true
-      },
-      {
-        "type": "craft",
-        "target": "hp_pill_small",
-        "count": 1
-      }
-    ],
-    "rewards": {
-      "exp": 200,
-      "spiritStone": 0,
-      "items": [
-        {
-          "item": "bronze_furnace",
-          "count": 1
-        },
-        {
-          "item": "spirit_herb",
-          "count": 3
-        }
-      ],
-      "recipes": [
-        "recipe_hp_pill",
-        "recipe_qi_pill"
-      ]
+  "next": null,
+  "note": "第三阶段：炼气圆满、身上带着筑基丹时，找天剑宗传功长老接取，交付后开启筑基台试炼。奖励【演武堂】。"
+ },
+ {
+  "id": "q_alchemy_intro",
+  "name": "初识丹道",
+  "giver": "doctor_sun",
+  "turnIn": "doctor_sun",
+  "reqLevel": 12,
+  "objectives": [
+   {
+    "type": "collect",
+    "target": "spirit_herb",
+    "count": 3,
+    "consume": true
+   },
+   {
+    "type": "craft",
+    "target": "hp_pill_small",
+    "count": 1
+   }
+  ],
+  "rewards": {
+   "exp": 200,
+   "spiritStone": 0,
+   "items": [
+    {
+     "item": "bronze_furnace",
+     "count": 1
     },
-    "next": null,
-    "phase": 4
+    {
+     "item": "spirit_herb",
+     "count": 3
+    }
+   ],
+   "recipes": [
+    "recipe_hp_pill",
+    "recipe_qi_pill"
+   ]
   },
-  {
-    "id": "q_main_03",
-    "name": "黑袍疑踪",
-    "giver": "luoxia_mayor",
-    "turnIn": "luoxia_mayor",
-    "reqLevel": 12,
-    "objectives": [
-      {
-        "type": "kill",
-        "target": "black_robe_minion",
-        "count": 15
-      }
-    ],
-    "rewards": {
-      "exp": 0,
-      "spiritStone": 0,
-      "items": [
-        {
-          "item": "foundation_shard",
-          "count": 1
-        }
-      ]
+  "next": null,
+  "phase": 4
+ },
+ {
+  "id": "q_main_03",
+  "name": "黑袍疑踪",
+  "giver": "luoxia_mayor",
+  "turnIn": "luoxia_mayor",
+  "reqLevel": 12,
+  "objectives": [
+   {
+    "type": "kill",
+    "target": "black_robe_minion",
+    "count": 15
+   }
+  ],
+  "rewards": {
+   "exp": 0,
+   "spiritStone": 0,
+   "items": [
+    {
+     "item": "foundation_shard",
+     "count": 1
+    }
+   ]
+  },
+  "next": null,
+  "phase": 5,
+  "note": "主线第一卷第 3 章（见 design/04_区域与主线.md），修为和灵石奖励【演武堂】。v0.4 先登记，落霞镇做好后启用。"
+ },
+ {
+  "id": "q_sect_tianjian",
+  "name": "剑心初成",
+  "giver": "tianjian_envoy",
+  "turnIn": "tianjian_elder",
+  "reqLevel": 10,
+  "prereq": "q_fox",
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "tianjian_elder"
+   }
+  ],
+  "rewards": {
+   "exp": 300,
+   "spiritStone": 150,
+   "items": [],
+   "skills": [
+    {
+     "id": "whirl_sword",
+     "level": 1
     },
-    "next": null,
-    "phase": 5,
-    "note": "主线第一卷第 3 章（见 design/04_区域与主线.md），修为和灵石奖励【演武堂】。v0.4 先登记，落霞镇做好后启用。"
-  }
+    {
+     "id": "light_body",
+     "level": 1
+    }
+   ]
+  },
+  "next": null,
+  "phase": 5,
+  "note": "五宗入门试炼，见 design/08_五宗试炼脚本.md。需持五宗帖并选定本宗；完成即拜入。天剑宗沿用打妖狐，对话即拜入。"
+ },
+ {
+  "id": "q_sect_taixu",
+  "name": "观中斗法",
+  "giver": "taixu_envoy",
+  "turnIn": "taixu_elder",
+  "reqLevel": 10,
+  "prereq": "q_fox",
+  "objectives": [
+   {
+    "type": "trial",
+    "trial": "trial_sect_taixu"
+   }
+  ],
+  "rewards": {
+   "exp": 300,
+   "spiritStone": 150,
+   "items": []
+  },
+  "next": null,
+  "phase": 5,
+  "note": "五宗入门试炼，见 design/08_五宗试炼脚本.md。需持五宗帖并选定本宗；完成即拜入。入门技替换 spirit_bolt 并退点由代码处理，rewards.skills 含入门技。 skillsPending 里的技能等 skills.json 登记后挪进 rewards.skills。",
+  "skillsPending": [
+   "fire_talisman_bolt",
+   "thunder_palm",
+   "water_mirror"
+  ]
+ },
+ {
+  "id": "q_sect_lingfu",
+  "name": "画符",
+  "giver": "lingfu_envoy",
+  "turnIn": "lingfu_elder",
+  "reqLevel": 10,
+  "prereq": "q_fox",
+  "objectives": [
+   {
+    "type": "trial",
+    "trial": "trial_sect_lingfu"
+   }
+  ],
+  "rewards": {
+   "exp": 300,
+   "spiritStone": 150,
+   "items": []
+  },
+  "next": null,
+  "phase": 5,
+  "note": "五宗入门试炼，见 design/08_五宗试炼脚本.md。需持五宗帖并选定本宗；完成即拜入。入门技替换 spirit_bolt 并退点由代码处理，rewards.skills 含入门技。 skillsPending 里的技能等 skills.json 登记后挪进 rewards.skills。",
+  "skillsPending": [
+   "paper_talisman_throw",
+   "scatter_talisman",
+   "talisman_step"
+  ]
+ },
+ {
+  "id": "q_sect_youying",
+  "name": "夜探",
+  "giver": "youying_envoy",
+  "turnIn": "youying_elder",
+  "reqLevel": 10,
+  "prereq": "q_fox",
+  "objectives": [
+   {
+    "type": "trial",
+    "trial": "trial_sect_youying"
+   }
+  ],
+  "rewards": {
+   "exp": 300,
+   "spiritStone": 150,
+   "items": []
+  },
+  "next": null,
+  "phase": 5,
+  "note": "五宗入门试炼，见 design/08_五宗试炼脚本.md。需持五宗帖并选定本宗；完成即拜入。入门技替换 spirit_bolt 并退点由代码处理，rewards.skills 含入门技。 skillsPending 里的技能等 skills.json 登记后挪进 rewards.skills。",
+  "skillsPending": [
+   "shadow_dart",
+   "shadow_step",
+   "phantom_cloak"
+  ]
+ },
+ {
+  "id": "q_sect_wanshou",
+  "name": "驯兽",
+  "giver": "wanshou_envoy",
+  "turnIn": "wanshou_elder",
+  "reqLevel": 10,
+  "prereq": "q_fox",
+  "objectives": [
+   {
+    "type": "trial",
+    "trial": "trial_sect_wanshou"
+   }
+  ],
+  "rewards": {
+   "exp": 300,
+   "spiritStone": 150,
+   "items": []
+  },
+  "next": null,
+  "phase": 5,
+  "note": "五宗入门试炼，见 design/08_五宗试炼脚本.md。需持五宗帖并选定本宗；完成即拜入。入门技替换 spirit_bolt 并退点由代码处理，rewards.skills 含入门技。 skillsPending 里的技能等 skills.json 登记后挪进 rewards.skills。",
+  "skillsPending": [
+   "summon_spirit_wolf",
+   "beast_roar",
+   "beast_bond"
+  ]
+ }
 ]

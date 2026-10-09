@@ -106,5 +106,183 @@
   "map": "trial_heart_demon_tribulation",
   "mirror": true,
   "placeholder": true
+ },
+ {
+  "id": "trial_sect_taixu",
+  "name": "观中斗法",
+  "sect": "taixu",
+  "quest": "q_sect_taixu",
+  "realmFrom": null,
+  "realmTo": null,
+  "type": "lamps_then_waves",
+  "map": "trial_sect_taixu",
+  "phase": 5,
+  "desc": "限时用灵气弹点亮 5 盏灯，再击退 3 波纸傀儡；倒地即失败。",
+  "lamps": {
+   "count": 5,
+   "timeLimitMs": 60000,
+   "hitSkill": "spirit_bolt"
+  },
+  "waves": [
+   {
+    "monster": "paper_puppet",
+    "count": 4,
+    "side": "both"
+   },
+   {
+    "monster": "paper_puppet",
+    "count": 6,
+    "side": "both"
+   },
+   {
+    "monster": "paper_puppet",
+    "count": 8,
+    "side": "both"
+   }
+  ],
+  "waveGapMs": 3000,
+  "spawnIntervalMs": 600,
+  "failOn": [
+   "playerDown",
+   "lampTimeout"
+  ],
+  "balanceNote": "演武堂 v0.1：12 级玩家点灯约 30～45 秒，3 波共 18 只纸傀儡约 60～75 秒，加对话跑图一次约 2.5～3 分钟。"
+ },
+ {
+  "id": "trial_sect_lingfu",
+  "name": "画符",
+  "sect": "lingfu",
+  "quest": "q_sect_lingfu",
+  "realmFrom": null,
+  "realmTo": null,
+  "type": "draw_then_targets",
+  "map": "trial_sect_lingfu",
+  "phase": 5,
+  "desc": "连画 3 道符（每道 4～6 笔，错一笔重画这道），再在 30 秒内打碎 10 个木靶。",
+  "draw": {
+   "talismans": 3,
+   "strokesMin": 4,
+   "strokesMax": 6,
+   "wrongStroke": "redrawCurrent",
+   "timeLimitMs": 0
+  },
+  "targets": {
+   "monster": "wood_target",
+   "total": 10,
+   "timeLimitMs": 30000,
+   "maxActive": 4,
+   "refillDelayMs": 500,
+   "spawnPoints": 8,
+   "highPoints": 3,
+   "movers": 3,
+   "moveRange": 128,
+   "moveSpeed": 60
+  },
+  "failOn": [
+   "targetTimeout"
+  ],
+  "balanceNote": "演武堂 v0.1：木靶 100 血，12 级普攻或灵气弹 2 下碎；同屏 4 个、碎一个 0.5 秒补一个，熟手约 18～22 秒打完，不打高台的会超时。"
+ },
+ {
+  "id": "trial_sect_youying",
+  "name": "夜探",
+  "sect": "youying",
+  "quest": "q_sect_youying",
+  "realmFrom": null,
+  "realmTo": null,
+  "type": "stealth",
+  "map": "trial_sect_youying",
+  "phase": 5,
+  "desc": "避开 3 名巡逻弟子的灯笼光，从藏宝阁偷出令牌再回起点；被发现即失败。",
+  "patrols": {
+   "monster": "youying_patrol",
+   "count": 3,
+   "turnPauseMs": 1500
+  },
+  "detect": {
+   "fromMonster": "vision",
+   "onDetect": "fail"
+  },
+  "grantSkills": [
+   {
+    "id": "phantom_cloak",
+    "level": 1,
+    "charges": 2,
+    "durationMs": 4000
+   },
+   {
+    "id": "shadow_step",
+    "level": 1
+   }
+  ],
+  "item": "shadow_token",
+  "failOn": [
+   "detected"
+  ],
+  "balanceNote": "演武堂 v0.1：照到 0.8 秒才发现，擦边走过不算；单程约 50～70 秒，一次约 2～3 分钟。"
+ },
+ {
+  "id": "trial_sect_wanshou",
+  "name": "驯兽",
+  "sect": "wanshou",
+  "quest": "q_sect_wanshou",
+  "realmFrom": null,
+  "realmTo": null,
+  "type": "tame_then_waves",
+  "map": "trial_sect_wanshou",
+  "phase": 5,
+  "desc": "把发狂山魈打到半血以下，吹骨笛 3 秒驯服它，再和它一起击退 2 波野狼；倒地即失败。",
+  "tame": {
+   "monster": "mad_mandrill",
+   "fluteMs": 3000,
+   "interruptOn": [
+    "move",
+    "attack",
+    "hurt"
+   ]
+  },
+  "companion": {
+   "id": "tamed_mandrill",
+   "name": "山魈",
+   "sprite": "mon_mountain_mandrill",
+   "hp": 600,
+   "atk": 40,
+   "def": 8,
+   "moveSpeed": 120,
+   "followDist": 96,
+   "leashDist": 320,
+   "aggroRange": 320,
+   "attack": {
+    "type": "slam",
+    "damageRatio": 1.0,
+    "range": {
+     "w": 96,
+     "h": 48
+    },
+    "telegraphMs": 400,
+    "recoverMs": 400,
+    "cooldownMs": 2500,
+    "knockback": 200
+   },
+   "onZeroHp": "kneel"
+  },
+  "waves": [
+   {
+    "monster": "wild_wolf",
+    "count": 3,
+    "side": "both"
+   },
+   {
+    "monster": "wild_wolf",
+    "count": 4,
+    "side": "both"
+   }
+  ],
+  "waveGapMs": 3000,
+  "spawnIntervalMs": 800,
+  "failOn": [
+   "playerDown"
+  ],
+  "balanceNote": "演武堂 v0.1：打到半血约 20～25 秒，吹笛 3 秒，2 波 7 只野狼约 35～45 秒（山魈分担约 2 成伤害），一次约 2～2.5 分钟。"
  }
 ]
