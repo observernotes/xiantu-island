@@ -7,7 +7,7 @@
     "dev": "npm run sync && vite --host 0.0.0.0 --port 5173",
     "build": "npm run sync && tsc --noEmit && vite build",
     "preview": "vite preview --host 0.0.0.0 --port 4173",
-    "sync": "rm -rf public/art && mkdir -p public/art/sprites && cp ../art/sprites/*.png ../art/sprites/*.json public/art/sprites/"
+    "sync": "rm -rf public/art && mkdir -p public/art/sprites public/art/tiles && cp ../art/sprites/*.png ../art/sprites/*.json public/art/sprites/ && cp ../art/tiles/*.png ../art/tiles/*.json public/art/tiles/"
   },
   "dependencies": {
     "phaser": "^3.80.1"

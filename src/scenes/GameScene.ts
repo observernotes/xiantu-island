@@ -1,7 +1,11 @@
 import Phaser from 'phaser';
 import { FEEL, SPEC } from '../config/feel';
 import { FIELD_TEST } from '../config/maps';
-import { MONSTERS, DROPS, ITEMS, TILED_MAPS, ATLASES } from '../data';
+import { MONSTERS, DROPS, ITEMS, TILED_MAPS, ATLASES, MAP_AREA, AREAS, NPCS, SCRIPTS } from '../data';
+import { QuestSystem } from '../QuestSystem';
+import { QUESTS as QUESTS_REF } from '../data';
+import { DialogBox, SkillBar } from '../UI';
+import { installKeyGuard } from '../keyguard';
 import { buildTiledMap, buildCharMap, BuiltMap, MapObj } from './MapBuilder';
 import { Player, Input } from './Player';
 import { Monster } from './Monster';
@@ -28,6 +32,12 @@ export class GameScene extends Phaser.Scene {
   constructor() { super('game'); (window as any).__scene = this; }
 
   preload() {
+    for (const a of AREAS) {
+      this.load.image(`tiles_${a}`, `art/tiles/tiles_${a}.png`);
+      this.load.spritesheet(`tiles_${a}_ss`, `art/tiles/tiles_${a}.png`, { frameWidth: 32, frameHeight: 32 });
+      this.load.image(`bg_${a}_far`, `art/tiles/bg_${a}_far.png`);
+      this.load.image(`bg_${a}_mid`, `art/tiles/bg_${a}_mid.png`);
+    }
     for (const k of ATLASES) {
       this.load.atlas(k, `art/sprites/${k}.png`, `art/sprites/${k}.json`);
       this.load.json(`${k}_anims`, `art/sprites/${k}.anims.json`);
@@ -35,13 +45,16 @@ export class GameScene extends Phaser.Scene {
   }
 
   create(data: { map?: string; portal?: string }) {
+    installKeyGuard();
     for (const k of ATLASES) {
       const a = this.cache.json.get(`${k}_anims`);
       if (!a) continue;
       for (const an of a.anims) if (!this.anims.exists(an.key))
         this.anims.create({ key: an.key, frames: an.frames.map((f: string) => ({ key: k, frame: f })), frameRate: an.frameRate, repeat: an.repeat });
     }
-    this.prog = this.registry.get('progress') ?? new Progress();
+    if (new URLSearchParams(location.search).get('reset') === '1' && !this.registry.get('progress')) Progress.reset();
+    this.prog = this.registry.get('progress') ?? Progress.load();
+    this.quests = new QuestSystem(this.prog);
     this.registry.set('progress', this.prog);
     this.openedChests = this.registry.get('chests') ?? new Set();
     this.registry.set('chests', this.openedChests);
@@ -51,9 +64,11 @@ export class GameScene extends Phaser.Scene {
     let mapId = data.map ?? (q === 'test' || q === 'field' ? 'field_test' : q && TILED_MAPS[q] ? q : 'qingyun_village');
     mapId = TILED_MAPS[mapId] ? mapId : (MAP_FALLBACK[mapId] ?? mapId);
 
-    this.drawBackground();
-    this.map = TILED_MAPS[mapId] ? buildTiledMap(this, TILED_MAPS[mapId])
-      : buildCharMap(this, FIELD_TEST.id, FIELD_TEST.name, FIELD_TEST.rows, FIELD_TEST.portals);
+    const area = MAP_AREA[mapId] ?? 'qingyun';
+    this.drawBackground(area);
+    this.map = TILED_MAPS[mapId] ? buildTiledMap(this, TILED_MAPS[mapId], `tiles_${area}`)
+      : buildCharMap(this, FIELD_TEST.id, FIELD_TEST.name, FIELD_TEST.rows, FIELD_TEST.portals, `tiles_${area}`);
+    this.npcMarks = [];
     this.physics.world.setBounds(0, 0, this.map.width, this.map.height + 200);
     this.map.objects.forEach(o => this.drawObject(o));
 
@@ -75,7 +90,7 @@ export class GameScene extends Phaser.Scene {
       if (!def) { console.warn(`[spawn] 没有怪物 ${sp.monster}`); continue; }
       // 首领区：接了 unlockQuest 才刷（任务系统 v0.3 接入，v0.2 先不刷）
       const zone = this.map.zones.find(z => sp.x >= z.x && sp.x <= z.x + z.w && sp.y >= z.y && sp.y <= z.y + z.h);
-      if (zone?.props.unlockQuest && !(this.registry.get('quests') ?? []).includes(zone.props.unlockQuest)) continue;
+      if (zone?.props.unlockQuest && !this.quests.isActive(zone.props.unlockQuest)) continue;
       for (let i = 0; i < sp.count; i++) {
         // 刷怪点是一段平台宽度，怪在这段上均匀打散
         const x = sp.w > 0 ? sp.x + (sp.w * (i + 0.5)) / sp.count + Phaser.Math.Between(-16, 16) : sp.x + i * 24;
@@ -114,18 +129,31 @@ export class GameScene extends Phaser.Scene {
 
     this.hud = this.add.graphics().setScrollFactor(0).setDepth(100);
     this.hudText = this.add.text(0, 0, '', { fontFamily: 'sans-serif', fontSize: '14px', color: '#ffffff' }).setScrollFactor(0).setDepth(101);
-    this.debugText = this.add.text(16, 44, '', { fontFamily: 'monospace', fontSize: '12px', color: '#1d2a3a', backgroundColor: '#ffffffaa', padding: { x: 6, y: 4 } }).setScrollFactor(0).setDepth(100).setVisible(false);
+    this.debugText = this.add.text(16, 200, '', { fontFamily: 'monospace', fontSize: '12px', color: '#1d2a3a', backgroundColor: '#ffffffaa', padding: { x: 6, y: 4 } }).setScrollFactor(0).setDepth(100).setVisible(false);
     this.add.text(16, 14, `${this.map.name}${this.map.safeZone ? '（安全区）' : ''}`, { fontFamily: 'sans-serif', fontSize: '18px', color: '#1d2a3a', stroke: '#ffffff', strokeThickness: 4 }).setScrollFactor(0).setDepth(100);
     this.add.text(1264, 14,
-      '方向键 移动 / ↑↓ 爬绳梯  ↑ 进传送门\nAlt / 空格 / C 跳跃（空中再按 = 二段跳）\n↓ + 跳 穿下单向平台\nCtrl / X 普攻   Z 拾取 / 开宝箱\n1 回春丹  2 回气丹  I 背包  F1 调试',
+      '方向键 移动 / ↑↓ 爬绳梯  ↑ 进传送门\nAlt / 空格 / C 跳跃（空中再按 = 二段跳）\n↓ + 跳 穿下单向平台\nCtrl / X 普攻   Z 对话 / 拾取 / 开宝箱\n1 回春丹  2 回气丹  I 背包  F1 调试',
       { fontFamily: 'sans-serif', fontSize: '13px', color: '#1d2a3a', backgroundColor: '#ffffffaa', padding: { x: 8, y: 6 }, align: 'right' })
       .setOrigin(1, 0).setScrollFactor(0).setDepth(100);
+    this.dialog = new DialogBox(this);
+    this.skillBar = new SkillBar(this);
+    this.tracker = this.add.text(16, 44, '', { fontFamily: 'sans-serif', fontSize: '13px', color: '#ffffff', backgroundColor: '#1d2a3aaa', padding: { x: 8, y: 6 }, lineSpacing: 3 }).setScrollFactor(0).setDepth(100);
+    this.bossIntroShown = false;
+    this.input.keyboard!.addKey(K.ENTER).on('down', () => this.dialog.advance());
     this.invText = this.add.text(1264, 130, '', { fontFamily: 'sans-serif', fontSize: '14px', color: '#ffffff', backgroundColor: '#1d2a3acc', padding: { x: 10, y: 8 } }).setOrigin(1, 0).setScrollFactor(0).setDepth(100).setVisible(false);
   }
   invText!: Phaser.GameObjects.Text;
 
   update(time: number, delta: number) {
     const k = this.keys, J = Phaser.Input.Keyboard.JustDown;
+    for (const p of this.parallax) p.ts.tilePositionX = this.cameras.main.scrollX * p.f;
+    if (this.dialog.open) {
+      if (J(k.z) || J(k.space) || J(k.up)) this.dialog.advance();
+      J(k.alt); J(k.c);
+      this.player.body.setVelocityX(0);
+      this.player.step(time, delta / 1000, { left: false, right: false, up: false, down: false, jumpDown: false, attackDown: false }, this.map.ropes);
+      this.drawHud(); return;
+    }
     const inp: Input = {
       left: k.left.isDown, right: k.right.isDown, up: k.up.isDown, down: k.down.isDown,
       jumpDown: J(k.alt) || J(k.space) || J(k.c),
@@ -136,8 +164,10 @@ export class GameScene extends Phaser.Scene {
     if (J(k.i)) this.invText.setVisible(!this.invText.visible);
     if (J(k.one)) this.usePill('hp_pill_small');
     if (J(k.two)) this.usePill('qi_pill');
+    if (J(k.z) && this.player.state2 === 'ground' && this.talkNearby()) return;
     if (k.z.isDown && time >= this.nextPickAt) { this.nextPickAt = time + 150; this.tryPickup(); }
     if (J(k.up) && this.player.state2 === 'ground' && this.tryInteract()) return;
+    this.checkReach();
     if (this.player.y > this.map.height + 100) this.player.body.reset(this.map.spawn.x, this.map.spawn.y);
 
     this.player.step(time, delta / 1000, inp, this.map.ropes);
@@ -147,20 +177,36 @@ export class GameScene extends Phaser.Scene {
       if (time - d.bornAt > 60000) { d.label?.destroy(); d.destroy(); }
     }
     const z = this.map.zones.find(z => this.player.x >= z.x && this.player.x <= z.x + z.w && this.player.y >= z.y && this.player.y <= z.y + z.h);
-    if (z?.name !== this.curZone) { this.curZone = z?.name; if (z?.props.label) this.log(`进入 ${z.props.label}`, '#ffd0ff'); }
+    if (z?.name !== this.curZone) {
+      this.curZone = z?.name;
+      if (z?.props.label) this.log(`进入 ${z.props.label}`, '#ffd0ff');
+      const boss = this.mobs.find(m => m.def.isBoss && !m.dead && z && m.x >= z.x && m.x <= z.x + z.w);
+      if (boss && !this.bossIntroShown && z?.props.unlockQuest) { this.bossIntroShown = true; this.dialog.show(SCRIPTS[z.props.unlockQuest]?.bossIntro ?? [], null); }
+    }
     this.drawHud();
   }
   curZone?: string;
+  quests!: QuestSystem;
+  npcMarks: { id: string; text: Phaser.GameObjects.Text }[] = [];
+  parallax: { ts: Phaser.GameObjects.TileSprite; f: number }[] = [];
+  dialog!: DialogBox;
+  skillBar!: SkillBar;
+  tracker!: Phaser.GameObjects.Text;
+  bossIntroShown = false;
   hudTexts?: Phaser.GameObjects.Text[];
 
   // ---------------- 战斗 ----------------
   doAttack(rect: Phaser.Geom.Rectangle) {
     const p = this.player, s = p.facing;
-    const fx = this.add.graphics().setDepth(12);
-    fx.lineStyle(6, 0xbfefff, 0.9);
-    const cx = p.x, cy = p.y - SPEC.bodyH / 2;
-    fx.beginPath(); fx.arc(cx, cy, FEEL.attackRange - 8, s > 0 ? -1.2 : Math.PI - 1.0, s > 0 ? 1.0 : Math.PI + 1.2); fx.strokePath();
-    this.tweens.add({ targets: fx, alpha: 0, duration: 200, onComplete: () => fx.destroy() });
+    if (this.anims.exists('fx_sword_slash_play')) {      // 刀光：第 2 帧播放，加色混合
+      const fx = this.add.sprite(p.x + s * 36, p.y + 10, 'fx_sword_slash').setOrigin(0.5, 1).setDepth(12).setBlendMode(Phaser.BlendModes.ADD).setFlipX(s > 0);
+      fx.play('fx_sword_slash_play'); fx.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => fx.destroy());
+    } else {
+      const fx = this.add.graphics().setDepth(12);
+      fx.lineStyle(6, 0xbfefff, 0.9);
+      fx.beginPath(); fx.arc(p.x, p.y - SPEC.bodyH / 2, FEEL.attackRange - 8, s > 0 ? -1.2 : Math.PI - 1.0, s > 0 ? 1.0 : Math.PI + 1.2); fx.strokePath();
+      this.tweens.add({ targets: fx, alpha: 0, duration: 200, onComplete: () => fx.destroy() });
+    }
 
     let best: Monster | null = null, bestD = Infinity;   // 普攻只打最近的一只
     for (const m of this.mobs) {
@@ -207,10 +253,12 @@ export class GameScene extends Phaser.Scene {
 
   onMobDead(m: Monster) {
     const d = m.def;
+    this.quests.onKill(d.id);
+    if (d.isBoss) this.time.delayedCall(600, () => this.dialog.show(SCRIPTS.q_fox?.bossDeath ?? [], null));
     if (d.exp > 0) {
       const r = this.prog.gainExp(d.exp, d.level);
       this.log(`获得修为 +${r.gained}`, '#ffe680');
-      if (r.levels) { this.levelUpFx(); this.log(`升级！当前 ${this.prog.level} 级`, '#7fffd4'); this.player.maxHp = this.prog.maxHp; this.player.hp = this.prog.hp; }
+      if (r.levels) { this.levelUpFx(); this.log(`升级！当前 ${this.prog.level} 级`, '#7fffd4'); this.player.maxHp = this.prog.maxHp; this.player.hp = this.prog.hp; this.prog.save(); }
       if (r.blocked && !this.breakthroughNotified) { this.breakthroughNotified = true; this.log('修为已至瓶颈，需寻天剑宗接引使突破', '#ffb0ff'); }
     }
     const t = d.dropTable ? DROPS[d.dropTable] : null;
@@ -250,6 +298,7 @@ export class GameScene extends Phaser.Scene {
     d.label?.destroy();
     this.tweens.add({ targets: d, x: this.player.x, y: this.player.y - 70, alpha: 0, duration: 200, onComplete: () => d.destroy() });
     if (d.itemId === 'spirit_stone') { this.prog.stones += d.count; this.log(`获得灵石 ${d.count}`, '#7ff0d0'); }
+    else if (ITEMS[d.itemId]?.type === 'equip') { const on = this.prog.gainEquip(d.itemId); this.log(`获得 ${ITEMS[d.itemId].name}${on ? '（已自动装备）' : ''}`, '#9fd0ff'); }
     else { this.prog.addItem(d.itemId, d.count); this.log(`获得 ${ITEMS[d.itemId]?.name ?? d.itemId} ×${d.count}`, '#ffffff'); }
   }
 
@@ -266,10 +315,22 @@ export class GameScene extends Phaser.Scene {
   // ---------------- 地图物件 ----------------
   drawObject(o: MapObj) {
     if (o.type === 'npc') {
+      const npc = NPCS[o.props.npc ?? o.name];
       const c = this.add.container(o.x, o.y).setDepth(5);
-      c.add(this.add.rectangle(0, -28, 30, 56, 0xf2d9a0).setStrokeStyle(2, 0x5a4020));
-      c.add(this.add.circle(0, -62, 16, 0xffe0c2).setStrokeStyle(2, 0x5a4020));
-      c.add(this.add.text(0, 6, o.props.npc ?? o.name, { fontSize: '12px', color: '#fff', backgroundColor: '#3a2a10cc', padding: { x: 4, y: 2 } }).setOrigin(0.5, 0));
+      let h = 70;
+      if (npc && this.textures.exists(npc.sprite)) {
+        const sp = this.add.sprite(0, 0, npc.sprite).setOrigin(0.5, 1).setFlipX(o.x < this.map.width / 2);
+        if (this.anims.exists(`${npc.sprite}_idle`)) sp.play(`${npc.sprite}_idle`);
+        c.add(sp); h = sp.height - 10;
+      } else {
+        c.add(this.add.rectangle(0, -28, 30, 56, 0xf2d9a0).setStrokeStyle(2, 0x5a4020));
+        c.add(this.add.circle(0, -62, 16, 0xffe0c2).setStrokeStyle(2, 0x5a4020));
+      }
+      c.add(this.add.text(0, 6, npc?.name ?? o.name, { fontFamily: 'sans-serif', fontSize: '12px', color: '#fff', backgroundColor: '#3a2a10cc', padding: { x: 4, y: 2 } }).setOrigin(0.5, 0));
+      const mark = this.add.text(0, -h - 8, '', { fontFamily: 'Arial Black, sans-serif', fontSize: '26px', color: '#ffd23a', stroke: '#6b3a00', strokeThickness: 5 }).setOrigin(0.5, 1);
+      c.add(mark);
+      this.tweens.add({ targets: mark, y: mark.y - 6, yoyo: true, repeat: -1, duration: 500 });
+      if (npc) this.npcMarks.push({ id: npc.id, text: mark });
     } else if (o.type === 'portal') {
       const g = this.add.ellipse(o.x, o.y - 40, 46, 80, o.props.locked ? 0x888888 : 0x8fe3ff, 0.55).setStrokeStyle(3, o.props.locked ? 0x555555 : 0x3a9fd8).setDepth(4);
       if (!o.props.locked) this.tweens.add({ targets: g, scaleX: 0.85, yoyo: true, repeat: -1, duration: 700 });
@@ -285,14 +346,88 @@ export class GameScene extends Phaser.Scene {
       if (Math.abs(o.x - p.x) > 28 || Math.abs(o.y - p.y) > 40) continue;
       if (o.type === 'portal') {
         if (o.props.locked) { this.log('这条路暂时走不通', '#aaaaaa'); return true; }
-        this.prog.hp = this.prog.hp;
+        this.prog.save();
         this.cameras.main.fadeOut(200);
         this.time.delayedCall(220, () => this.scene.restart({ map: o.props.target, portal: o.props.targetPortal }));
         return true;
       }
-      if (o.type === 'npc') { this.log(`【${o.props.npc ?? o.name}】对话和任务在 v0.3 接入`, '#ffe0a0'); return true; }
+      if (o.type === 'npc') { this.talkTo(o.props.npc ?? o.name); return true; }
     }
     return false;
+  }
+
+  // ---------------- NPC 对话与任务 ----------------
+  nearNpc(): string | null {
+    const p = this.player;
+    for (const o of this.map.objects) if (o.type === 'npc' && Math.abs(o.x - p.x) < 40 && Math.abs(o.y - p.y) < 48) return o.props.npc ?? o.name;
+    return null;
+  }
+
+  talkNearby() {
+    const hasDrop = (this.drops.getChildren() as Drop[]).some(d => Math.abs(d.x - this.player.x) < 40 && Math.abs(d.y - this.player.y) < 40);
+    const id = hasDrop ? null : this.nearNpc();
+    if (!id) return false;
+    this.talkTo(id); return true;
+  }
+
+  talkTo(npcId: string) {
+    const npc = NPCS[npcId]; if (!npc) return;
+    const { lines, after } = this.quests.talk(npcId);
+    this.player.body.setVelocityX(0);
+    this.dialog.show(lines, npc.sprite, () => {
+      const r = after?.();
+      if (r) this.giveRewards(r.quest, r.broke);
+      else if (after) this.log(`接受任务【${this.quests.activeIds.map(i => QUESTS_REF[i].name).slice(-1)[0] ?? ''}】`, '#ffe680');
+      this.prog.save();
+    }, (cue, next) => this.playCue(cue, next));
+  }
+
+  giveRewards(q: typeof QUESTS_REF[string], broke: boolean) {
+    const rw = q.rewards;
+    this.log(`完成任务【${q.name}】`, '#ffe680');
+    if (broke) { this.player.maxHp = this.prog.maxHp; this.log(`突破成功，当前境界 ${this.prog.realmName}`, '#ffb0ff'); }
+    if (rw.exp) {
+      const r = this.prog.gainExp(rw.exp, this.prog.level);
+      this.log(`获得修为 +${r.gained}`, '#ffe680');
+      if (r.levels) { this.levelUpFx(); this.log(`升级！当前 ${this.prog.level} 级`, '#7fffd4'); }
+    }
+    if (rw.spiritStone) { this.prog.stones += rw.spiritStone; this.log(`获得灵石 ${rw.spiritStone}`, '#7ff0d0'); }
+    for (const it of rw.items ?? []) {
+      if (ITEMS[it.item]?.type === 'equip') { const on = this.prog.gainEquip(it.item); this.log(`获得 ${ITEMS[it.item].name}${on ? '（已自动装备）' : ''}`, '#9fd0ff'); }
+      else { this.prog.addItem(it.item, it.count); this.log(`获得 ${ITEMS[it.item]?.name ?? it.item} ×${it.count}`, '#ffffff'); }
+    }
+    if (rw.job) { this.prog.job = rw.job; this.log('拜入天剑宗，成为剑徒', '#ffd23a'); }
+    this.player.maxHp = this.prog.maxHp; this.player.hp = this.prog.hp;
+    this.prog.save();
+  }
+
+  /** 演出：突破 / 转职 */
+  playCue(cue: string, next: () => void) {
+    const p = this.player, cam = this.cameras.main;
+    const dim = this.add.rectangle(640, 360, 1280, 720, 0x000000, 0).setScrollFactor(0).setDepth(150);
+    this.tweens.add({ targets: dim, fillAlpha: 0.6, duration: 400 });
+    if (p.atlas) p.play('player_sword_m_sit');
+    const col = cue === 'breakthrough' ? 0xfff0a0 : 0x9fe8ff;
+    for (let i = 0; i < 24; i++) {                       // 灵气从四周汇入
+      const a = (i / 24) * Math.PI * 2, r = 220;
+      const dot = this.add.circle(p.x + Math.cos(a) * r, p.y - 40 + Math.sin(a) * r, 5, col).setDepth(160).setBlendMode(Phaser.BlendModes.ADD);
+      this.tweens.add({ targets: dot, x: p.x, y: p.y - 40, alpha: 0.2, delay: i * 40, duration: 900, onComplete: () => dot.destroy() });
+    }
+    this.time.delayedCall(1900, () => {
+      cam.flash(400, 255, 240, 180);
+      const ring = this.add.circle(p.x, p.y - 40, 30, col, 0.7).setDepth(160).setBlendMode(Phaser.BlendModes.ADD);
+      this.tweens.add({ targets: ring, scale: 8, alpha: 0, duration: 700, onComplete: () => ring.destroy() });
+      const t = this.add.text(640, 260, cue === 'breakthrough' ? '突破成功 · 炼气期' : '拜入天剑宗 · 剑徒', { fontFamily: 'serif', fontSize: '44px', color: '#fff6c8', stroke: '#7a4a00', strokeThickness: 6 }).setOrigin(0.5).setScrollFactor(0).setDepth(170).setAlpha(0);
+      this.tweens.add({ targets: t, alpha: 1, y: 240, duration: 500, hold: 1200, yoyo: true, onComplete: () => {
+        t.destroy(); this.tweens.add({ targets: dim, fillAlpha: 0, duration: 300, onComplete: () => { dim.destroy(); next(); } });
+      } });
+    });
+  }
+
+  /** reach 目标：走到对应地图物件附近就算到达 */
+  checkReach() {
+    const p = this.player;
+    for (const o of this.map.objects) if (o.type === 'chest' && Math.abs(o.x - p.x) < 48 && Math.abs(o.y - p.y) < 48) this.quests.onReach(o.name);
   }
 
   tryOpenChest() {
@@ -310,7 +445,7 @@ export class GameScene extends Phaser.Scene {
 
   // ---------------- 表现 ----------------
   log(msg: string, color: string) {
-    const t = this.add.text(1264, 0, msg, { fontFamily: 'sans-serif', fontSize: '14px', color, stroke: '#000000', strokeThickness: 3 }).setOrigin(1, 1).setScrollFactor(0).setDepth(102);
+    const t = this.add.text(16, 0, msg, { fontFamily: 'sans-serif', fontSize: '14px', color, stroke: '#000000', strokeThickness: 3 }).setOrigin(0, 1).setScrollFactor(0).setDepth(102);
     this.logs.push(t);
     if (this.logs.length > 6) this.logs.shift()!.destroy();
     this.logs.forEach((l, i) => l.setY(668 - (this.logs.length - 1 - i) * 20));
@@ -361,11 +496,20 @@ export class GameScene extends Phaser.Scene {
       this.hudTexts = [mk(14), mk(240, 0.5), mk(456, 0.5), mk(566)];
     }
     const [lv, hp, mp, info] = this.hudTexts;
-    lv.setText(`Lv.${pr.level}  剑徒`); hp.setText(`气血 ${pr.hp}/${pr.maxHp}`); mp.setText(`灵力 ${pr.mp}/${pr.maxMp}`);
-    info.setText(`修为 ${pr.exp}/${need}${pr.atBreakthrough ? '（瓶颈）' : ''}    灵石 ${pr.stones}    攻击 ${pr.atk.toFixed(0)}  防御 ${pr.def.toFixed(1)}`);
+    lv.setText(`Lv.${pr.level}  ${pr.realmName}`); hp.setText(`气血 ${pr.hp}/${pr.maxHp}`); mp.setText(`灵力 ${pr.mp}/${pr.maxMp}`);
+    info.setText(`修为 ${pr.exp}/${need}${pr.atBreakthrough ? '（圆满·待突破）' : ''}    灵石 ${pr.stones}    攻击 ${pr.atk.toFixed(0)}  防御 ${pr.def.toFixed(1)}`);
+    this.skillBar.draw(pr.skillsUnlocked, this.time.now);
+    for (const m of this.npcMarks) m.text.setText(this.quests.mark(m.id) ?? '').setColor(this.quests.mark(m.id) === '…' ? '#cccccc' : '#ffd23a');
+    const tl: string[] = [];
+    for (const id of this.quests.activeIds) {
+      const q = this.quests.objectiveProgress(QUESTS_REF[id]);
+      tl.push(`【${QUESTS_REF[id].name}】${this.quests.complete(id) ? '  可交付' : ''}`);
+      for (const o of q) tl.push(`  ${o.label} ${o.cur}/${o.need}`);
+    }
+    this.tracker.setText(tl.join('\n')).setVisible(tl.length > 0);
     if (this.invText.visible) {
       const lines = Object.entries(pr.inventory).filter(([, n]) => n > 0).map(([id, n]) => `${ITEMS[id]?.name ?? id} ×${n}`);
-      this.invText.setText(['背包', `灵石 ${pr.stones}`, `武器 ${ITEMS[pr.equip.weapon]?.name}`, ...lines].join('\n'));
+      this.invText.setText(['背包', `灵石 ${pr.stones}`, `武器 ${ITEMS[pr.equip.weapon]?.name ?? '无'}`, `属性 根骨 ${pr.stat('rootBone')} 身法 ${pr.stat('agility')} 悟性 ${pr.stat('insight')}`, ...lines].join('\n'));
     }
     if (this.debugText.visible) {
       const p = this.player, b = p.body;
@@ -381,17 +525,20 @@ export class GameScene extends Phaser.Scene {
     this.debugText.setVisible(w.drawDebug);
   }
 
-  drawBackground() {
+  drawBackground(area: string) {
     const sky = this.add.graphics().setScrollFactor(0).setDepth(-10);
     sky.fillGradientStyle(0x7cc8f2, 0x7cc8f2, 0xdff3ff, 0xdff3ff, 1).fillRect(0, 0, 1280, 720);
+    this.parallax = [];
+    for (const [layer, f, d] of [['far', 0.2, -9], ['mid', 0.5, -8]] as [string, number, number][]) {
+      const key = `bg_${area}_${layer}`;
+      if (!this.textures.exists(key)) continue;
+      const img = this.textures.get(key).getSourceImage() as HTMLImageElement;
+      const ts = this.add.tileSprite(0, 720, 1280, img.height, key).setOrigin(0, 1).setScrollFactor(0).setDepth(d);
+      this.parallax.push({ ts, f });
+    }
+    if (this.parallax.length) return;
     const far = this.add.graphics().setScrollFactor(0.15, 0.1).setDepth(-9);
     far.fillStyle(0xb7d9ec);
     for (let i = 0; i < 12; i++) far.fillTriangle(i * 260 - 100, 620, i * 260 + 60, 260 + (i % 3) * 50, i * 260 + 220, 620);
-    const mid = this.add.graphics().setScrollFactor(0.4, 0.3).setDepth(-8);
-    mid.fillStyle(0x8fcf9a);
-    for (let i = 0; i < 18; i++) mid.fillEllipse(i * 200, 700, 320, 260 + (i % 2) * 80);
-    const clouds = this.add.graphics().setScrollFactor(0.25, 0.1).setDepth(-7);
-    clouds.fillStyle(0xffffff, 0.85);
-    for (let i = 0; i < 10; i++) { const x = i * 330 + 40, y = 90 + (i % 3) * 60; clouds.fillEllipse(x, y, 140, 40).fillEllipse(x + 50, y - 14, 90, 40); }
   }
 }

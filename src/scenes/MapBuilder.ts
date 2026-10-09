@@ -27,9 +27,35 @@ function emptyMap(scene: Phaser.Scene, id: string, name: string, safe: boolean, 
   };
 }
 
-/** 碰撞体：同一行连续的地块合并成一个，避免接缝卡脚 */
-function buildTerrain(scene: Phaser.Scene, map: BuiltMap, grid: Grid) {
-  const T = FEEL.tile, gfx = scene.add.graphics().setDepth(-1);
+/** 按邻格自动选图块（规则见 art/tiles/README.md） */
+function autoTile(grid: Grid, r: number, c: number): number {
+  const ch = grid[r][c], at = (rr: number, cc: number) => grid[rr]?.[cc] ?? '.';
+  if (ch === '=') {
+    const L = at(r, c - 1) === '=', R = at(r, c + 1) === '=';
+    return L && R ? 9 : L ? 10 : R ? 8 : 11;
+  }
+  const top = at(r - 1, c) !== '#';
+  const L = at(r, c - 1) === '#' || c === 0, R = at(r, c + 1) === '#' || c === grid[r].length - 1;
+  const base = top ? 0 : 4;
+  return L && R ? base + 1 : L ? base + 2 : R ? base : base + 3;
+}
+
+/** 碰撞体：同一行连续的地块合并成一个，避免接缝卡脚；有图块素材就铺图块，没有就画色块 */
+function buildTerrain(scene: Phaser.Scene, map: BuiltMap, grid: Grid, tileset?: string) {
+  const T = FEEL.tile;
+  const useTiles = !!tileset && scene.textures.exists(tileset);
+  const gfx = scene.add.graphics().setDepth(-1);
+  if (useTiles) {
+    const data = grid.map((line, r) => [...line].map((ch, c) => (ch === '#' || ch === '=' ? autoTile(grid, r, c) : -1)));
+    // 装饰草：地面顶上一格，按位置伪随机点缀
+    grid.forEach((line, r) => [...line].forEach((ch, c) => {
+      if (ch !== '#' || r === 0 || grid[r - 1][c] !== '.' || (c * 7 + r * 13) % 5 !== 0) return;
+      data[r - 1][c] = 15;
+    }));
+    const tm = scene.make.tilemap({ data, tileWidth: T, tileHeight: T });
+    const ts = tm.addTilesetImage(tileset!, tileset!, T, T, 0, 0)!;
+    tm.createLayer(0, ts, 0, 0)!.setDepth(-1);
+  }
   grid.forEach((line, row) => {
     let c = 0;
     while (c < line.length) {
@@ -38,12 +64,13 @@ function buildTerrain(scene: Phaser.Scene, map: BuiltMap, grid: Grid) {
       let e = c; while (e + 1 < line.length && line[e + 1] === ch) e++;
       const x = c * T, w = (e - c + 1) * T, y = row * T;
       if (ch === '#') {
-        gfx.fillStyle(0x8a5a3c).fillRect(x, y, w, T);
-        for (let k = c; k <= e; k++) if (grid[row - 1]?.[k] !== '#') gfx.fillStyle(0x5cbf4a).fillRect(k * T, y, T, 8);
+        if (!useTiles) {
+          gfx.fillStyle(0x8a5a3c).fillRect(x, y, w, T);
+          for (let k = c; k <= e; k++) if (grid[row - 1]?.[k] !== '#') gfx.fillStyle(0x5cbf4a).fillRect(k * T, y, T, 8);
+        }
         map.solids.add(scene.add.zone(x + w / 2, y + T / 2, w, T));
       } else {
-        gfx.fillStyle(0xc9a56b).fillRect(x, y, w, 14);
-        gfx.fillStyle(0x6fd25a).fillRect(x, y, w, SPEC.oneWayEdge);
+        if (!useTiles) { gfx.fillStyle(0xc9a56b).fillRect(x, y, w, 14); gfx.fillStyle(0x6fd25a).fillRect(x, y, w, SPEC.oneWayEdge); }
         const z = scene.add.zone(x + w / 2, y + SPEC.oneWayEdge / 2, w, SPEC.oneWayEdge);
         map.oneWays.add(z);
         const b = z.body as Phaser.Physics.Arcade.StaticBody;
@@ -54,7 +81,17 @@ function buildTerrain(scene: Phaser.Scene, map: BuiltMap, grid: Grid) {
   });
 }
 
-function drawClimbable(scene: Phaser.Scene, r: Rope) {
+function drawClimbable(scene: Phaser.Scene, r: Rope, tileset?: string) {
+  const ss = tileset ? tileset + '_ss' : '';
+  if (ss && scene.textures.exists(ss)) {
+    const h = r.bottom - r.top;
+    if (r.kind === 'rope') scene.add.tileSprite(r.x, r.top, 32, h, ss, 12).setOrigin(0.5, 0).setDepth(-1);
+    else {
+      scene.add.image(r.x, r.top, ss, 14).setOrigin(0.5, 0).setDepth(-1);
+      if (h > 32) scene.add.tileSprite(r.x, r.top + 32, 32, h - 32, ss, 13).setOrigin(0.5, 0).setDepth(-1);
+    }
+    return;
+  }
   const g = scene.add.graphics().setDepth(-1);
   if (r.kind === 'rope') {
     g.lineStyle(4, 0x8b5e2b).lineBetween(r.x, r.top, r.x, r.bottom);
@@ -66,7 +103,7 @@ function drawClimbable(scene: Phaser.Scene, r: Rope) {
 }
 
 /** Tiled JSON（图层约定见 design/01_配置表规范.md） */
-export function buildTiledMap(scene: Phaser.Scene, tj: any): BuiltMap {
+export function buildTiledMap(scene: Phaser.Scene, tj: any, tileset?: string): BuiltMap {
   const prop = (arr: any[] | undefined) => Object.fromEntries((arr ?? []).map((p: any) => [p.name, p.value]));
   const mp = prop(tj.properties);
   const map = emptyMap(scene, mp.id ?? 'map', mp.name ?? '', !!mp.safeZone, tj.width, tj.height);
@@ -77,7 +114,7 @@ export function buildTiledMap(scene: Phaser.Scene, tj: any): BuiltMap {
     if (!ch) continue;
     l.data.forEach((gid: number, i: number) => { if (gid) grid[Math.floor(i / tj.width)][i % tj.width] = ch; });
   }
-  buildTerrain(scene, map, grid.map(r => r.join('')));
+  buildTerrain(scene, map, grid.map(r => r.join('')), tileset);
   for (const l of tj.layers) {
     if (l.type !== 'objectgroup') continue;
     for (const o of l.objects) {
@@ -87,7 +124,7 @@ export function buildTiledMap(scene: Phaser.Scene, tj: any): BuiltMap {
         case 'rope': case 'ladder': {
           const r: Rope = { kind: o.type, x: o.type === 'ladder' ? o.x + o.width / 2 : o.x, top: o.y, bottom: o.y + o.height,
             halfW: o.type === 'ladder' ? Math.max(12, o.width / 2) : FEEL.ropeGrabRangeX };
-          map.ropes.push(r); drawClimbable(scene, r); break;
+          map.ropes.push(r); drawClimbable(scene, r, tileset); break;
         }
         case 'spawn': map.spawns.push({ x: o.x, y: o.y, w: o.width ?? 0, monster: p.monster, count: p.count ?? 1 }); break;
         case 'zone': map.zones.push({ name: o.name, x: o.x, y: o.y, w: o.width, h: o.height, props: p }); break;
@@ -99,11 +136,11 @@ export function buildTiledMap(scene: Phaser.Scene, tj: any): BuiltMap {
 }
 
 /** 字符地图（临时测试图用）：# 实心 = 单向 | 绳 H 梯 P 出生点 r 灵兔 s 青蛇 m 山魈 d 木人桩 < > 传送门 */
-export function buildCharMap(scene: Phaser.Scene, id: string, name: string, rows: string[], portals: Record<string, Record<string, any>> = {}): BuiltMap {
+export function buildCharMap(scene: Phaser.Scene, id: string, name: string, rows: string[], portals: Record<string, Record<string, any>> = {}, tileset?: string): BuiltMap {
   const T = FEEL.tile, cols = Math.max(...rows.map(r => r.length));
   const grid = rows.map(r => r.padEnd(cols, '.'));
   const map = emptyMap(scene, id, name, false, cols, grid.length);
-  buildTerrain(scene, map, grid.map(l => l.replace(/[^#=]/g, '.')));
+  buildTerrain(scene, map, grid.map(l => l.replace(/[^#=]/g, '.')), tileset);
   const mons: Record<string, string> = { r: 'spirit_rabbit', s: 'bamboo_snake', m: 'mountain_mandrill', d: 'training_dummy' };
   grid.forEach((line, r) => [...line].forEach((ch, c) => {
     const x = c * T + T / 2, y = (r + 1) * T;
@@ -121,7 +158,7 @@ export function buildCharMap(scene: Phaser.Scene, id: string, name: string, rows
       const anchored = above === '=' || above === '#';
       if (!anchored) console.warn(`[map] 第${c}列第${r}行的绳梯上方没有平台`);
       const rope: Rope = { kind: ch === 'H' ? 'ladder' : 'rope', x: c * T + T / 2, top: anchored ? (r - 1) * T : r * T, bottom: (e + 1) * T, halfW: ch === 'H' ? 16 : FEEL.ropeGrabRangeX };
-      map.ropes.push(rope); drawClimbable(scene, rope);
+      map.ropes.push(rope); drawClimbable(scene, rope, tileset);
       r = e + 1;
     }
   }

@@ -77,9 +77,19 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
     // 山魈：玩家进入拍地范围就出手
     if (d.attack && sees && time >= this.attackReadyAt && Math.abs(dx) < d.attack.range.w && this.grounded) {
       this.dir = Math.sign(dx) || this.dir;
+      // 前摇：停在抬手帧 telegraphMs（默认 500ms），身体闪红，然后才落下出伤害
+      const tele = (d.attack as any).telegraphMs ?? 500;
       this.st = 'attack'; this.attackReadyAt = time + d.attack.cooldownMs;
-      this.stateUntil = time + 700;
+      this.stateUntil = time + tele + 450;
       b.setVelocityX(0); this.anim('attack');
+      if (this.atlas) this.anims.pause();
+      const blink = this.scene.tweens.addCounter({ from: 0, to: 1, duration: 120, yoyo: true, repeat: Math.floor(tele / 240),
+        onUpdate: tw => this.setTint(Phaser.Display.Color.GetColor(255, 255 - 120 * tw.getValue()!, 255 - 120 * tw.getValue()!)) });
+      this.scene.time.delayedCall(tele, () => {
+        blink.stop(); this.clearTint();
+        if (this.st !== 'attack') return;
+        if (this.atlas) this.anims.resume(); else this.doSlam();
+      });
       return this.face();
     }
 
