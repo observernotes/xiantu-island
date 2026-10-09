@@ -1,0 +1,302 @@
+{
+ "frames": {
+  "mon_black_robe_minion_idle_01": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_black_robe_minion_idle_02": {
+   "frame": {
+    "x": 80,
+    "y": 0,
+    "w": 80,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_black_robe_minion_walk_01": {
+   "frame": {
+    "x": 160,
+    "y": 0,
+    "w": 80,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_black_robe_minion_walk_02": {
+   "frame": {
+    "x": 240,
+    "y": 0,
+    "w": 80,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_black_robe_minion_walk_03": {
+   "frame": {
+    "x": 320,
+    "y": 0,
+    "w": 80,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_black_robe_minion_attack_01": {
+   "frame": {
+    "x": 400,
+    "y": 0,
+    "w": 80,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_black_robe_minion_attack_02": {
+   "frame": {
+    "x": 480,
+    "y": 0,
+    "w": 80,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_black_robe_minion_attack_03": {
+   "frame": {
+    "x": 560,
+    "y": 0,
+    "w": 80,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_black_robe_minion_hit_01": {
+   "frame": {
+    "x": 0,
+    "y": 88,
+    "w": 80,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_black_robe_minion_die_01": {
+   "frame": {
+    "x": 80,
+    "y": 88,
+    "w": 80,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_black_robe_minion_die_02": {
+   "frame": {
+    "x": 160,
+    "y": 88,
+    "w": 80,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_black_robe_minion_die_03": {
+   "frame": {
+    "x": 240,
+    "y": 88,
+    "w": 80,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  }
+ },
+ "meta": {
+  "app": "xiantu gen_mobs_v04.py",
+  "image": "mon_black_robe_minion.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 640,
+   "h": 176
+  },
+  "scale": "1"
+ }
+}

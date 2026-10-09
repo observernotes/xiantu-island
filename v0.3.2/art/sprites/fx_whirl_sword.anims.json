@@ -1,0 +1,28 @@
+{
+ "atlas": "fx_whirl_sword",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  192,
+  128
+ ],
+ "anims": [
+  {
+   "key": "fx_whirl_sword_play",
+   "frames": [
+    "fx_whirl_sword_play_01",
+    "fx_whirl_sword_play_02",
+    "fx_whirl_sword_play_03",
+    "fx_whirl_sword_play_04",
+    "fx_whirl_sword_play_05",
+    "fx_whirl_sword_play_06"
+   ],
+   "frameRate": 20,
+   "repeat": 0
+  }
+ ],
+ "note": "原点 (0.5,1) 对齐角色脚底，单次播放 300ms。"
+}

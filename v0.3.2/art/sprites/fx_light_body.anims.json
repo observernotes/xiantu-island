@@ -1,0 +1,37 @@
+{
+ "atlas": "fx_light_body",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  96,
+  48
+ ],
+ "anims": [
+  {
+   "key": "fx_light_body_start",
+   "frames": [
+    "fx_light_body_start_01",
+    "fx_light_body_start_02",
+    "fx_light_body_start_03",
+    "fx_light_body_start_04"
+   ],
+   "frameRate": 12,
+   "repeat": 0
+  },
+  {
+   "key": "fx_light_body_loop",
+   "frames": [
+    "fx_light_body_loop_01",
+    "fx_light_body_loop_02",
+    "fx_light_body_loop_03",
+    "fx_light_body_loop_04"
+   ],
+   "frameRate": 8,
+   "repeat": -1
+  }
+ ],
+ "note": "原点 (0.5,1) 对齐角色脚底；start 播一次后接 loop，增益结束时淡出销毁。"
+}
