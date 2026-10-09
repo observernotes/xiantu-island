@@ -22,7 +22,7 @@ export class Progress {
   /** 增益结束的绝对时间（Date.now），换图、刷新都还在。 */
   buffs: { id: string; expireAt: number; warned?: boolean }[] = [];
   spTipShown = false;
-  /** 瓶颈期装不下的修为，按 overflowPoolRatio 存进来。旧档没有这个字段，读档时补 0 */
+  /** 瓶颈期装不下的修为，全额存进来，上限 overflowCap。旧档没有这个字段，读档时补 0 */
   overflowExp = 0;
   /** 刚突破时返还了多少，给界面飘字用，不参与公式 */
   lastOverflowReturned = 0;
@@ -127,10 +127,9 @@ export class Progress {
     return { gained, levels, blocked, overflowed, overflowFilled };
   }
 
-  /** 修为条满了之后的结余 × overflowPoolRatio，再被上限截断 */
+  /** G12：修为条满了之后的结余全额存入，到上限（卡住那级 × overflowPoolRatio）截断 */
   private storeOverflow(leftover: number) {
-    const ratio = BREAKTHROUGH.overflowPoolRatio ?? 0.5;
-    const want = Math.max(0, Math.round(leftover * ratio));
+    const want = Math.max(0, Math.round(leftover));
     const space = Math.max(0, this.overflowCap - this.overflowExp);
     this.overflowExp += Math.min(want, space);
   }

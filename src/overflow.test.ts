@@ -36,4 +36,20 @@ eq(p.overflowExp, 0, '溢出池归零');
 eq(p.exp, bar - short.fromBar, '修为条扣掉差额');
 eq(p.overflowTier, 'empty', '池子扣空后葫芦切回空态');
 
+// G12：多出的修为全额存入，到上限截断
+const g = new Progress();
+g.level = 9; g.exp = stuck - 10; g.overflowExp = 0;
+// 悟性带 expBonus，找一个实际到账正好 100 的基础修为，让结余正好是 90
+const bonus = (g as unknown as { statBonus(a: string): number }).statBonus('expBonus');
+let base = 1; while (Math.max(1, Math.round(base * (1 + bonus))) < 100) base++;
+eq(Math.round(base * (1 + bonus)), 100, '测试前提：实际到账 100');
+const r1 = g.gainExp(base, 9);
+eq(g.overflowExp, 90, '卡 9 级多出 90 就存 90（不乘 overflowPoolRatio）');
+eq(r1.overflowed, 90, '飘字数字 = 实际存入');
+eq(g.overflowCap, 191, '9 级卡住上限 382×0.5=191');
+const r2 = g.gainExp(500, 9);
+eq(g.overflowExp, 191, '超过上限时截断到 191');
+eq(r2.overflowed, 101, '截断时飘字只报实际存入的 101');
+eq(r2.overflowFilled, true, '第一次存满');
+
 console.log('overflow tests ok');

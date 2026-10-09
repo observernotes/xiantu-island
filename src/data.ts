@@ -24,7 +24,15 @@ export interface MonsterSkill {
 export interface MonsterDef {
   id: string; name: string; level: number; hp: number; atk: number; def: number; exp: number;
   aggressive: boolean; aggroRange?: number; moveSpeed: number; patrolRange: number;
-  touchDamage: boolean; noDamage?: boolean; knockback: number; respawnMs: number;
+  touchDamage: boolean; noDamage?: boolean; knockback: number;
+  /** 规范：respawnMs 0 = 不重生（打死消失）；>0 = 多少毫秒后原地重生 */
+  respawnMs: number;
+  /** 打不死（木人桩）：照常扣血飘字，打空立刻回满 */
+  immortal?: boolean;
+  /** 血不会低于这个值 */
+  minHp?: number;
+  /** 不扣血 */
+  invulnerable?: boolean;
   attack?: { type: string; damageRatio: number; range: { w: number; h: number }; cooldownMs: number; knockback: number; telegraphMs?: number };
   skills?: MonsterSkill[];
   sprite: string; dropTable: string | null; isBoss: boolean;

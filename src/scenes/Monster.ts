@@ -292,7 +292,10 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
 
   takeHit(time: number, dmg: number, fromDir: number) {
     if (this.dead) return;
-    this.hp = Math.max(0, this.hp - dmg);
+    const d = this.def;
+    // invulnerable 不扣血；minHp 是血量下限；immortal（木人桩）打空立刻回满
+    if (!d.invulnerable) this.hp = Math.max(d.minHp ?? 0, this.hp - dmg);
+    if (d.immortal && this.hp <= 0) this.hp = d.hp;
     // interruptible 缺省 false：整段出招不打断、不击退、不重置冷却。前摇里只闪白，继续播当前攻击帧
     const armored = !!this.cast && this.cast.interruptible !== true;
     if (armored) this.flashWhite(time);
@@ -300,7 +303,7 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
       this.setTintFill(0xffffff);
       this.scene.time.delayedCall(60, () => { if (this.active && !this.flashUntil) this.clearTint(); });
     }
-    if (this.def.respawnMs === 0 && !this.noRespawn) { if (this.hp <= 0) this.hp = this.def.hp; return; }
+    if (d.immortal) return;   // 不死：只扣血闪白，不进受击硬直（沿用原木人桩表现）
     if (this.hp <= 0) return this.die();
     if (armored) return;
     if (this.cast?.interruptible === true) this.abortCast();
@@ -320,8 +323,9 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
     this.anim('die');
     this.scene.tweens.add({ targets: this, alpha: 0, delay: 350, duration: 400 });
     this.onDead?.(this);
-    if (this.noRespawn) this.scene.time.delayedCall(800, () => { if (this.active) this.destroy(); });
-    else if (this.def.respawnMs > 0) this.scene.time.delayedCall(this.def.respawnMs, () => this.respawn());
+    // respawnMs 0（或召唤物）= 不重生，死亡演出后销毁
+    if (this.noRespawn || !(this.def.respawnMs > 0)) this.scene.time.delayedCall(800, () => { if (this.active) this.destroy(); });
+    else this.scene.time.delayedCall(this.def.respawnMs, () => this.respawn());
   }
 
   /** 首领死亡：脚底播消散，第 2 帧藏本体，播完销毁。不走死亡奖励 */
