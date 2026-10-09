@@ -181,5 +181,248 @@
   "castbar": "ui_gather_castbar_frame（9-slice 4,4,3,3，40×10）+ ui_gather_castbar_fill（3-slice 2,2，内区 x+3,y+3,w-6,h-6）",
   "icon": "icon_gather_herb / icon_gather_ore 放在读条左侧",
   "placement": "读条放在角色头顶 y−80，宽 48；中断时填充闪红后消失"
- }
+ },
+ "ui_alchemy_btn_disabled": {
+  "size": [
+   64,
+   28
+  ],
+  "nineSlice": [
+   6,
+   6,
+   6,
+   6
+  ]
+ },
+ "ui_alchemy_btn_hover": {
+  "size": [
+   64,
+   28
+  ],
+  "nineSlice": [
+   6,
+   6,
+   6,
+   6
+  ]
+ },
+ "ui_alchemy_btn_normal": {
+  "size": [
+   64,
+   28
+  ],
+  "nineSlice": [
+   6,
+   6,
+   6,
+   6
+  ]
+ },
+ "ui_alchemy_btn_pressed": {
+  "size": [
+   64,
+   28
+  ],
+  "nineSlice": [
+   6,
+   6,
+   6,
+   6
+  ]
+ },
+ "ui_alchemy_exp_fill": {
+  "size": [
+   16,
+   8
+  ],
+  "threeSlice": [
+   3,
+   3
+  ]
+ },
+ "ui_alchemy_fire": {
+  "size": [
+   256,
+   32
+  ],
+  "frameSize": [
+   64,
+   32
+  ],
+  "frames": 4
+ },
+ "ui_alchemy_fire_gauge": {
+  "size": [
+   64,
+   22
+  ],
+  "nineSlice": [
+   6,
+   6,
+   6,
+   6
+  ]
+ },
+ "ui_alchemy_fire_perfect": {
+  "size": [
+   6,
+   22
+  ]
+ },
+ "ui_alchemy_fire_pointer": {
+  "size": [
+   16,
+   26
+  ]
+ },
+ "ui_alchemy_fire_track": {
+  "size": [
+   64,
+   14
+  ],
+  "stretch": "whole"
+ },
+ "ui_alchemy_fire_zone": {
+  "size": [
+   16,
+   18
+  ],
+  "threeSlice": [
+   2,
+   2
+  ]
+ },
+ "ui_alchemy_furnace_bronze_furnace": {
+  "size": [
+   128,
+   128
+  ]
+ },
+ "ui_alchemy_furnace_dark_iron_furnace": {
+  "size": [
+   128,
+   128
+  ]
+ },
+ "ui_alchemy_furnace_purple_copper_furnace": {
+  "size": [
+   128,
+   128
+  ]
+ },
+ "ui_alchemy_glow_gold": {
+  "size": [
+   128,
+   128
+  ]
+ },
+ "ui_alchemy_list_row_disabled": {
+  "size": [
+   64,
+   26
+  ],
+  "nineSlice": [
+   10,
+   6,
+   6,
+   6
+  ]
+ },
+ "ui_alchemy_list_row_normal": {
+  "size": [
+   64,
+   26
+  ],
+  "nineSlice": [
+   10,
+   6,
+   6,
+   6
+  ]
+ },
+ "ui_alchemy_list_row_selected": {
+  "size": [
+   64,
+   26
+  ],
+  "nineSlice": [
+   10,
+   6,
+   6,
+   6
+  ]
+ },
+ "ui_alchemy_quality_high": {
+  "size": [
+   44,
+   18
+  ]
+ },
+ "ui_alchemy_quality_low": {
+  "size": [
+   44,
+   18
+  ]
+ },
+ "ui_alchemy_quality_mid": {
+  "size": [
+   44,
+   18
+  ]
+ },
+ "ui_alchemy_quality_supreme": {
+  "size": [
+   44,
+   18
+  ]
+ },
+ "ui_alchemy_slot": {
+  "size": [
+   40,
+   40
+  ]
+ },
+ "ui_alchemy_slot_empty": {
+  "size": [
+   40,
+   40
+  ]
+ },
+ "ui_alchemy_slot_lack": {
+  "size": [
+   40,
+   40
+  ]
+ },
+ "ui_alchemy_slot_ok": {
+  "size": [
+   40,
+   40
+  ]
+ },
+ "ui_alchemy_smoke_black": {
+  "size": [
+   96,
+   96
+  ]
+ },
+ "ui_alchemy_smoke_white": {
+  "size": [
+   96,
+   96
+  ]
+ },
+ "ui_alchemy_stamp_fail": {
+  "size": [
+   80,
+   80
+  ]
+ },
+ "ui_alchemy_stamp_success": {
+  "size": [
+   80,
+   80
+  ]
+ },
+ "structuredNote": "ui_alchemy_* 顶层记录供 artcheck 读取（2026-10-09 补，丹青阁·画风精修）：size=1x 实际 PNG 尺寸（@2x 为 2 倍）；nineSlice=[左,右,上,下]，threeSlice=[左,右]，数值与上文说明/rowSlices 及 README 一致；fire 的 size 是 4 帧横排整张图尺寸，单帧 64×32；fire_track 整条拉伸不切。原有字段一律未改。"
 }

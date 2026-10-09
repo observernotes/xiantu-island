@@ -107,7 +107,9 @@
     "summon": "spirit_rabbit",
     "count": 3,
     "hpBelow": 0.5,
-    "once": true
+    "once": true,
+    "grantRewards": false,
+    "despawnWithOwner": true
    }
   ],
   "sprite": "mon_demon_fox",
@@ -377,7 +379,9 @@
     "summon": "vine_imp",
     "count": 4,
     "hpBelow": 0.5,
-    "once": true
+    "once": true,
+    "grantRewards": false,
+    "despawnWithOwner": true
    }
   ]
  },
