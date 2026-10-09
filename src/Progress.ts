@@ -64,16 +64,22 @@ export class Progress {
   /** 加修为，返回升了几级。怪比玩家低 5 级以上按 max(0.2, 1−0.1(n−4)) 衰减；突破关口停住 */
   gainExp(base: number, monLevel: number): { gained: number; levels: number; blocked: boolean } {
     const n = this.level - monLevel;
-    const gained = Math.max(1, Math.round(base * (n >= 5 ? Math.max(0.2, 1 - 0.1 * (n - 4)) : 1) * (1 + this.statBonus('expBonus'))));
-    this.exp += gained;
-    let levels = 0;
+    const raw = Math.max(1, Math.round(base * (n >= 5 ? Math.max(0.2, 1 - 0.1 * (n - 4)) : 1) * (1 + this.statBonus('expBonus'))));
+    const before = this.totalExpMark();
+    this.exp += raw;
+    let levels = 0, blocked = false;
     while (this.level < MAX_LEVEL && this.exp >= this.expNeed) {
-      if (BREAKTHROUGH_LEVELS.includes(this.level)) { this.exp = this.expNeed; return { gained, levels, blocked: true }; }
+      if (BREAKTHROUGH_LEVELS.includes(this.level)) { this.exp = this.expNeed; blocked = true; break; }
       this.exp -= this.expNeed; this.level++; levels++;
     }
-    if (levels) { this.hp = this.maxHp; this.mp = this.maxMp; }
-    return { gained, levels, blocked: false };
+    if (levels) { this.hp = this.maxHp; this.mp = this.maxMp; }   // G2：卡在瓶颈级也要回满
+    // G3：瓶颈期被截掉的修为不算“获得”
+    const gained = blocked ? Math.max(0, this.totalExpMark() - before) : raw;
+    return { gained, levels, blocked };
   }
+
+  /** 当前等级之前累计的修为 + 本级修为，用来算实际加了多少 */
+  private totalExpMark() { let t = this.exp; for (let lv = 1; lv < this.level; lv++) t += EXP_TO_NEXT[String(lv)] ?? 0; return t; }
 
   /** 突破：瓶颈级修为满 → 进入下一级（境界随等级变化） */
   breakthrough() {

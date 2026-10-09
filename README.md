@@ -28,3 +28,15 @@ Ctrl/X 普攻（按住连打）；Z 拾取；F1 显示碰撞框；R 回出生点
 - 图块按邻格自动选择（art/tiles），远景、中景视差；刀光特效第 2 帧加色播放。
 - 技能快捷栏骨架（A S D F G H），炼气期解锁，技能数据待接 skills.json。
 - 存档在浏览器 localStorage，地址加 `?reset=1` 重新开始。
+
+## 分支与发版（v0.3.1 起）
+- 主工作区 `/workspace/xiantu/game` 固定在 master，只做合并和打 tag；worktree 在 `/workspace/xiantu/wt/`：`dev`（日常开发）、`hotfix`（线上修复）、`qa`（给执法堂的待测版本）、`feat-*`（大功能分支，如 `feat/skills`）。
+- 项目根目录（balance/、maps/、design/、art/）由 `scripts/root.mjs` 自动向上查找，代码里用 `@xt/...` 引用，所以每个 worktree 都读同一份配置和素材。
+- 新 worktree 第一次用：`ln -s /workspace/xiantu/game/node_modules node_modules`。
+- 发版：合到 master，打 `vX.Y.Z` tag，构建产物复制到 `releases/<版本>/` 再推到 gh-pages。
+
+## v0.3.1
+- G2 卡在瓶颈级的升级也会回满气血和灵力；G3 瓶颈期提示改成「修为已满，需突破」，只显示实际加上的修为。
+- 文案改从 `balance/strings_zh.json` 读取（`t(key, vars)`）。
+- 抓绳判定半宽 14 改成 18；出刀期间锁朝向。
+- 刀光改用普通混合；sync 增加 `art/icons`。

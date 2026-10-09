@@ -19,7 +19,7 @@ export const FEEL = {
   doubleJumpVx: 330,     // 二段跳向前冲刺（类似冒险岛的“二段跳/轻功”）
 
   climbSpeed: 110,
-  ropeGrabRangeX: 14,    // 离绳子中线多近按↑可以抓住
+  ropeGrabRangeX: 18,    // 离绳子中线多近按↑可以抓住（执法堂建议 18～20）
   ropeJumpVx: 160,       // 绳上左/右 + 跳 跳离
   ropeJumpVy: 360,
 

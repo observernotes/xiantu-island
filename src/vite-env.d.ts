@@ -1,1 +1,1 @@
-declare module '*?raw' { const s: string; export default s; }
+declare module '*.md?raw' { const s: string; export default s; }

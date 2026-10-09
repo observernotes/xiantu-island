@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { FEEL, SPEC } from '../config/feel';
 import { FIELD_TEST } from '../config/maps';
-import { MONSTERS, DROPS, ITEMS, TILED_MAPS, ATLASES, MAP_AREA, AREAS, NPCS, SCRIPTS } from '../data';
+import { MONSTERS, DROPS, ITEMS, TILED_MAPS, ATLASES, MAP_AREA, AREAS, NPCS, SCRIPTS, t } from '../data';
 import { QuestSystem } from '../QuestSystem';
 import { QUESTS as QUESTS_REF } from '../data';
 import { DialogBox, SkillBar } from '../UI';
@@ -198,8 +198,8 @@ export class GameScene extends Phaser.Scene {
   // ---------------- 战斗 ----------------
   doAttack(rect: Phaser.Geom.Rectangle) {
     const p = this.player, s = p.facing;
-    if (this.anims.exists('fx_sword_slash_play')) {      // 刀光：第 2 帧播放，加色混合
-      const fx = this.add.sprite(p.x + s * 36, p.y + 10, 'fx_sword_slash').setOrigin(0.5, 1).setDepth(12).setBlendMode(Phaser.BlendModes.ADD).setFlipX(s > 0);
+    if (this.anims.exists('fx_sword_slash_play')) {      // 刀光：第 2 帧播放，普通混合（加色在白云背景上看不见）
+      const fx = this.add.sprite(p.x + s * 36, p.y + 10, 'fx_sword_slash').setOrigin(0.5, 1).setDepth(12).setFlipX(s > 0);
       fx.play('fx_sword_slash_play'); fx.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => fx.destroy());
     } else {
       const fx = this.add.graphics().setDepth(12);
@@ -255,12 +255,7 @@ export class GameScene extends Phaser.Scene {
     const d = m.def;
     this.quests.onKill(d.id);
     if (d.isBoss) this.time.delayedCall(600, () => this.dialog.show(SCRIPTS.q_fox?.bossDeath ?? [], null));
-    if (d.exp > 0) {
-      const r = this.prog.gainExp(d.exp, d.level);
-      this.log(`获得修为 +${r.gained}`, '#ffe680');
-      if (r.levels) { this.levelUpFx(); this.log(`升级！当前 ${this.prog.level} 级`, '#7fffd4'); this.player.maxHp = this.prog.maxHp; this.player.hp = this.prog.hp; this.prog.save(); }
-      if (r.blocked && !this.breakthroughNotified) { this.breakthroughNotified = true; this.log('修为已至瓶颈，需寻天剑宗接引使突破', '#ffb0ff'); }
-    }
+    if (d.exp > 0) this.applyExp(this.prog.gainExp(d.exp, d.level));
     const t = d.dropTable ? DROPS[d.dropTable] : null;
     if (!t) return;
     const out: [string, number][] = [];
@@ -377,20 +372,28 @@ export class GameScene extends Phaser.Scene {
     this.dialog.show(lines, npc.sprite, () => {
       const r = after?.();
       if (r) this.giveRewards(r.quest, r.broke);
-      else if (after) this.log(`接受任务【${this.quests.activeIds.map(i => QUESTS_REF[i].name).slice(-1)[0] ?? ''}】`, '#ffe680');
+      else if (after) this.log(t('quest.accept', { name: this.quests.activeIds.map(i => QUESTS_REF[i].name).slice(-1)[0] ?? '' }), '#ffe680');
       this.prog.save();
     }, (cue, next) => this.playCue(cue, next));
   }
 
+  applyExp(r: { gained: number; levels: number; blocked: boolean }) {
+    if (r.gained > 0) this.log(t('sys.exp_gain', { exp: r.gained }), '#ffe680');
+    if (r.levels) {
+      this.levelUpFx(); this.log(t('sys.level_up', { level: this.prog.level }), '#7fffd4');
+      this.player.maxHp = this.prog.maxHp; this.player.hp = this.prog.hp; this.prog.save();
+    }
+    if (r.blocked) {
+      if (r.gained === 0) this.log(t('realm.bottleneck'), '#ffb0ff');
+      if (!this.breakthroughNotified) { this.breakthroughNotified = true; this.log(t('realm.bottleneck_tip', { realm: this.prog.realm.name, npc: '天剑宗接引使' }), '#ffb0ff'); }
+    }
+  }
+
   giveRewards(q: typeof QUESTS_REF[string], broke: boolean) {
     const rw = q.rewards;
-    this.log(`完成任务【${q.name}】`, '#ffe680');
+    this.log(t('quest.complete', { name: q.name }), '#ffe680');
     if (broke) { this.player.maxHp = this.prog.maxHp; this.log(`突破成功，当前境界 ${this.prog.realmName}`, '#ffb0ff'); }
-    if (rw.exp) {
-      const r = this.prog.gainExp(rw.exp, this.prog.level);
-      this.log(`获得修为 +${r.gained}`, '#ffe680');
-      if (r.levels) { this.levelUpFx(); this.log(`升级！当前 ${this.prog.level} 级`, '#7fffd4'); }
-    }
+    if (rw.exp) this.applyExp(this.prog.gainExp(rw.exp, this.prog.level));
     if (rw.spiritStone) { this.prog.stones += rw.spiritStone; this.log(`获得灵石 ${rw.spiritStone}`, '#7ff0d0'); }
     for (const it of rw.items ?? []) {
       if (ITEMS[it.item]?.type === 'equip') { const on = this.prog.gainEquip(it.item); this.log(`获得 ${ITEMS[it.item].name}${on ? '（已自动装备）' : ''}`, '#9fd0ff'); }
@@ -497,7 +500,7 @@ export class GameScene extends Phaser.Scene {
     }
     const [lv, hp, mp, info] = this.hudTexts;
     lv.setText(`Lv.${pr.level}  ${pr.realmName}`); hp.setText(`气血 ${pr.hp}/${pr.maxHp}`); mp.setText(`灵力 ${pr.mp}/${pr.maxMp}`);
-    info.setText(`修为 ${pr.exp}/${need}${pr.atBreakthrough ? '（圆满·待突破）' : ''}    灵石 ${pr.stones}    攻击 ${pr.atk.toFixed(0)}  防御 ${pr.def.toFixed(1)}`);
+    info.setText(`修为 ${pr.exp}/${need}${pr.atBreakthrough ? `（${t('realm.bottleneck')}）` : ''}    灵石 ${pr.stones}    攻击 ${pr.atk.toFixed(0)}  防御 ${pr.def.toFixed(1)}`);
     this.skillBar.draw(pr.skillsUnlocked, this.time.now);
     for (const m of this.npcMarks) m.text.setText(this.quests.mark(m.id) ?? '').setColor(this.quests.mark(m.id) === '…' ? '#cccccc' : '#ffd23a');
     const tl: string[] = [];

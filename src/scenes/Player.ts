@@ -148,7 +148,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
       if (Math.sign(vx) !== dir || Math.abs(vx) < FEEL.airMaxSpeed)
         b.setVelocityX(approach(vx, dir * FEEL.airMaxSpeed, FEEL.airAccel * dt));
     }
-    if (dir !== 0 && !locked) this.facing = dir;
+    if (dir !== 0 && time >= this.attackLockUntil) this.facing = dir;   // 出刀期间锁朝向（地面空中都锁）
 
     // ---- 普攻 ----
     if (inp.attackDown && time >= this.attackReadyAt) {

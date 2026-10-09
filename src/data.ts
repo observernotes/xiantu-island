@@ -1,13 +1,13 @@
 // 读表：全部来自策划/数值目录，字段见 design/01_配置表规范.md
-import monsters from '../../balance/monsters.json';
-import drops from '../../balance/drops.json';
-import items from '../../balance/items.json';
-import growth from '../../balance/player_growth.json';
-import expCurve from '../../balance/exp_curve.json';
-import qingyun from '../../maps/qingyun_village.json';
-import realmsRaw from '../../balance/realms.json';
-import bamboo from '../../maps/bamboo_forest.json';
-import lingxi from '../../maps/lingxi_path.json';
+import monsters from '@xt/balance/monsters.json';
+import drops from '@xt/balance/drops.json';
+import items from '@xt/balance/items.json';
+import growth from '@xt/balance/player_growth.json';
+import expCurve from '@xt/balance/exp_curve.json';
+import qingyun from '@xt/maps/qingyun_village.json';
+import realmsRaw from '@xt/balance/realms.json';
+import bamboo from '@xt/maps/bamboo_forest.json';
+import lingxi from '@xt/maps/lingxi_path.json';
 
 export interface MonsterDef {
   id: string; name: string; level: number; hp: number; atk: number; def: number; exp: number;
@@ -21,7 +21,7 @@ export interface DropTable { spiritStone: [number, number]; items: { item: strin
 
 export const MONSTERS: Record<string, MonsterDef> = Object.fromEntries((monsters as MonsterDef[]).map(m => [m.id, m]));
 export const DROPS = drops as unknown as Record<string, DropTable>;
-import materials from '../../balance/materials.json';
+import materials from '@xt/balance/materials.json';
 // materials.json 结构和 items.json 一样，启动时合成一张物品表
 export const ITEMS: Record<string, ItemDef> = Object.fromEntries([...(items as ItemDef[]), ...(materials as unknown as ItemDef[])].map(i => [i.id, i]));
 export const GROWTH = growth as any;
@@ -38,10 +38,10 @@ export const ATLASES = ['player_sword_m', 'mon_spirit_rabbit', 'mon_bamboo_snake
 export const MAP_AREA: Record<string, string> = { qingyun_village: 'qingyun', bamboo_forest: 'bamboo', lingxi_path: 'bamboo', field_test: 'qingyun' };
 export const AREAS = ['qingyun', 'bamboo'];
 
-import npcs from '../../balance/npcs.json';
-import quests from '../../balance/quests.json';
-import realms from '../../balance/realms.json';
-import questScript from '../../design/02_新手任务.md?raw';
+import npcs from '@xt/balance/npcs.json';
+import quests from '@xt/balance/quests.json';
+import realms from '@xt/balance/realms.json';
+import questScript from '@xt/design/02_新手任务.md?raw';
 
 export interface NpcDef { id: string; name: string; map: string; sprite: string; dialog: string[]; quests: string[]; shop?: boolean; }
 export interface QuestObjective { type: 'kill' | 'collect' | 'reach' | 'breakthrough'; target?: string; count?: number; consume?: boolean; map?: string; realm?: string; }
@@ -91,3 +91,10 @@ function parseScript(md: string) {
   return out;
 }
 export const SCRIPTS = parseScript(questScript);
+
+import strings from '@xt/balance/strings_zh.json';
+/** 文案：按 key 取 balance/strings_zh.json，{var} 替换 */
+export function t(key: string, vars: Record<string, string | number> = {}) {
+  const raw = (strings as unknown as Record<string, string>)[key] ?? key;
+  return raw.replace(/\{(\w+)\}/g, (_, k) => String(vars[k] ?? `{${k}}`));
+}
