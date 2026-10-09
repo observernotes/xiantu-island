@@ -29,5 +29,10 @@ export function findRoot(start) {
     if (!fs.existsSync(path.join(snap, 'balance'))) throw new Error('发版分支缺少数据快照 data/，先在 dev 上 npm run snapshot 并合并过来');
     return snap;
   }
-  return sharedRoot(start);
+  try { return sharedRoot(start); }
+  catch (e) {
+    // 云端 agent / 新机器上没有共享目录：退回分支里的快照
+    if (fs.existsSync(path.join(start, 'data', 'balance'))) { console.warn('[root] 没有共享目录，改用 data/ 快照'); return path.join(start, 'data'); }
+    throw e;
+  }
 }
