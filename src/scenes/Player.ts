@@ -1,5 +1,7 @@
 import Phaser from 'phaser';
 import { FEEL, SPEC } from '../config/feel';
+import { GROWTH } from '../data';
+import { pixelsFromMovePoints } from '../move';
 import type { Rope } from './MapBuilder';
 
 export type PState = 'ground' | 'air' | 'rope' | 'hurt';
@@ -28,6 +30,21 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   invulnUntil = 0;
   onAttack?: (hit: Phaser.Geom.Rectangle) => void;
   atlas = false;
+  /** 技能后摇期间锁移动。剑气斩可被跳跃取消。 */
+  skillRooted = false;
+  skillCancelOnJump = false;
+  /** 霸体结束时间：受击掉血，但不击退、不进硬直。 */
+  superArmorUntil = 0;
+  /**
+   * 当前速度 / 跳跃点数。GameScene 注入，读的是 Progress.currentMovePoints()。
+   * window.__scene.player.speed / .jump 给测试用，基础 100，轻身术按等级加在点数上。
+   */
+  getMovePoints: () => { speed: number; jump: number } = () => ({
+    speed: GROWTH.base.speed ?? 100,
+    jump: GROWTH.base.jump ?? 100,
+  });
+  get speed() { return this.getMovePoints().speed; }
+  get jump() { return this.getMovePoints().jump; }
   prone = false;
   didDouble = false;
   dead = false;
@@ -115,43 +132,53 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     // ---- 跳 ----
+    if (time >= this.attackLockUntil) { this.skillRooted = false; this.skillCancelOnJump = false; }
+    const mv = pixelsFromMovePoints(this.speed, this.jump);
     const buffered = time - this.jumpBufferedAt <= FEEL.jumpBufferMs;
     const canGroundJump = grounded || time - this.lastGroundAt <= FEEL.coyoteMs;
-    if (buffered && time >= this.attackLockUntil) {
+    // 普攻后摇不能跳；剑气斩的后摇允许跳，跳起来就取消锁移动
+    const jumpLocked = time < this.attackLockUntil && !this.skillCancelOnJump;
+    if (buffered && !jumpLocked) {
       if (grounded && inp.down && this.onOneWay) {            // ↓+跳：穿过单向平台
         this.dropUntil = time + FEEL.dropThroughMs;
         b.setVelocityY(60);
         this.jumpBufferedAt = -9999;
+        this.releaseSkillRecovery();
       } else if (grounded && inp.down) {                      // 实心地面上 ↓+跳：不动（冒险岛行为）
         this.jumpBufferedAt = -9999;
       } else if (canGroundJump && b.velocity.y >= -1) {
-        b.setVelocityY(-FEEL.jumpSpeed);
+        b.setVelocityY(-mv.jumpSpeed);
         this.lastGroundAt = -9999; this.jumpBufferedAt = -9999;
         this.state2 = 'air';
-      } else if (!grounded && inp.jumpDown && this.canDouble) { // 二段跳
+        this.releaseSkillRecovery();
+      } else if (!grounded && inp.jumpDown && this.canDouble) { // 二段跳：纵向横向都不吃轻身术
         this.canDouble = false; this.didDouble = true;
         b.setVelocity(this.facing * FEEL.doubleJumpVx, -FEEL.doubleJumpVy);
         this.jumpBufferedAt = -9999;
         this.emit('doublejump');
+        this.releaseSkillRecovery();
       }
     }
 
     // ---- 水平移动 ----
-    const locked = FEEL.attackLocksGroundMove && time < this.attackLockUntil && this.state2 === 'ground';
+    const rooted = this.skillRooted && time < this.attackLockUntil;
+    const locked = rooted || (FEEL.attackLocksGroundMove && time < this.attackLockUntil && this.state2 === 'ground');
     const prone = this.state2 === 'ground' && inp.down;
     if (this.state2 === 'ground') {
-      const target = locked || prone ? 0 : dir * FEEL.walkSpeed;
+      const target = locked || prone ? 0 : dir * mv.walkSpeed;
       const rate = target === 0 ? FEEL.groundDecel : FEEL.groundAccel;
       b.setVelocityX(approach(b.velocity.x, target, rate * dt));
+    } else if (rooted) {
+      b.setVelocityX(0);
     } else if (dir !== 0) {
       const vx = b.velocity.x;
-      if (Math.sign(vx) !== dir || Math.abs(vx) < FEEL.airMaxSpeed)
-        b.setVelocityX(approach(vx, dir * FEEL.airMaxSpeed, FEEL.airAccel * dt));
+      if (Math.sign(vx) !== dir || Math.abs(vx) < mv.airMaxSpeed)
+        b.setVelocityX(approach(vx, dir * mv.airMaxSpeed, FEEL.airAccel * dt));
     }
     if (dir !== 0 && time >= this.attackLockUntil) this.facing = dir;   // 出刀期间锁朝向（地面空中都锁）
 
     // ---- 普攻 ----
-    if (inp.attackDown && time >= this.attackReadyAt) {
+    if (inp.attackDown && time >= this.attackReadyAt && time >= this.attackLockUntil) {
       this.attackReadyAt = time + FEEL.attackCooldownMs;
       this.attackLockUntil = time + FEEL.attackCooldownMs * 0.8;
       if (this.atlas) this.play('player_sword_m_attack', true);
@@ -167,10 +194,29 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     this.finish(time);
   }
 
+  /** 跳跃取消剑气斩后摇：恢复移动，挥砍动画停下。弹道已经记了朝向，不受影响。 */
+  private releaseSkillRecovery() {
+    if (!this.skillCancelOnJump) return;
+    this.attackLockUntil = 0;
+    this.skillRooted = false;
+    this.skillCancelOnJump = false;
+    const key = this.anims.currentAnim?.key;
+    if (key?.endsWith('_attack') && this.anims.isPlaying) this.anims.stop();
+  }
+
   private finish(time: number) {
     this.setFlipX(this.atlas ? this.facing > 0 : this.facing < 0);
     if (this.atlas) this.updateAnim(time);
+    this.syncWalkTimeScale();
     this.setAlpha(time < this.invulnUntil ? (Math.floor(time / 80) % 2 ? 0.35 : 0.9) : 1);
+  }
+
+  /** 只有 walk 跟着速度点数走（满级轻身术、无其他速度加成时是 1.2），其它动画回到 1。 */
+  private syncWalkTimeScale() {
+    if (!this.atlas) return;
+    const key = this.anims.currentAnim?.key ?? '';
+    const walking = key.endsWith('_walk') && this.anims.isPlaying && !this.anims.isPaused;
+    this.anims.timeScale = walking ? this.speed / 100 : 1;
   }
 
   private updateAnim(time: number) {
@@ -216,11 +262,13 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
   hurt(time: number, fromX: number, dmg: number, knock = FEEL.hurtKnockVx): boolean {
     if (time < this.invulnUntil || this.dead) return false;
-    if (this.state2 === 'rope') this.leaveRope(time);
+    const armor = time < this.superArmorUntil;
+    if (this.state2 === 'rope' && !armor) this.leaveRope(time);
     this.hp = Math.max(0, this.hp - dmg);
+    this.invulnUntil = time + FEEL.hurtInvulnMs;
+    if (armor) return true;                 // 霸体：掉血，不击退，技能不被硬直打断
     this.state2 = 'hurt';
     this.hurtUntil = time + 300;
-    this.invulnUntil = time + FEEL.hurtInvulnMs;
     const away = this.x < fromX ? -1 : 1;
     this.body.setVelocity(away * Math.min(knock * 1.2, 320), -FEEL.hurtKnockVy);
     return true;
