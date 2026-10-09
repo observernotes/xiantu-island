@@ -29,7 +29,7 @@ export const FEEL = {
   attackActiveMs: 120,
   attackRange: 64,
   attackHeight: 48,
-  attackDamage: [18, 26] as [number, number],
+  attackHitDelayMs: 90,  // 普攻第 2 帧（12fps）才出判定
   attackLocksGroundMove: true, // 地面普攻时站定（冒险岛的感觉）
 
   hurtKnockVx: 180,

@@ -27,9 +27,15 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   hurtUntil = 0;
   invulnUntil = 0;
   onAttack?: (hit: Phaser.Geom.Rectangle) => void;
+  atlas = false;
+  prone = false;
+  didDouble = false;
+  dead = false;
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
-    super(scene, x, y, Player.makeTexture(scene));
+    const atlas = scene.textures.exists('player_sword_m');
+    super(scene, x, y, atlas ? 'player_sword_m' : Player.makeTexture(scene));
+    this.atlas = atlas;
     scene.add.existing(this);
     scene.physics.add.existing(this);
     this.setOrigin(0.5, 1).setDepth(10);
@@ -60,6 +66,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   step(time: number, dt: number, inp: Input, ropes: Rope[]) {
     const b = this.body;
     const dir = (inp.right ? 1 : 0) - (inp.left ? 1 : 0);
+    if (this.dead) { b.setVelocityX(0); return; }
     if (inp.jumpDown) this.jumpBufferedAt = time;
 
     // ---- 受击硬直 ----
@@ -98,7 +105,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     const grounded = this.onGround;
-    if (grounded) { this.state2 = 'ground'; this.lastGroundAt = time; this.canDouble = true; }
+    if (grounded) { this.state2 = 'ground'; this.lastGroundAt = time; this.canDouble = true; this.didDouble = false; }
     else this.state2 = 'air';
 
     // ---- 抓绳 ----
@@ -122,7 +129,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.lastGroundAt = -9999; this.jumpBufferedAt = -9999;
         this.state2 = 'air';
       } else if (!grounded && inp.jumpDown && this.canDouble) { // 二段跳
-        this.canDouble = false;
+        this.canDouble = false; this.didDouble = true;
         b.setVelocity(this.facing * FEEL.doubleJumpVx, -FEEL.doubleJumpVy);
         this.jumpBufferedAt = -9999;
         this.emit('doublejump');
@@ -147,23 +154,46 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     if (inp.attackDown && time >= this.attackReadyAt) {
       this.attackReadyAt = time + FEEL.attackCooldownMs;
       this.attackLockUntil = time + FEEL.attackCooldownMs * 0.8;
-      const w = FEEL.attackRange, h = FEEL.attackHeight;
-      const x = this.facing > 0 ? b.right - 4 : b.left - w + 4;
-      this.onAttack?.(new Phaser.Geom.Rectangle(x, b.bottom - h - 6, w, h));
+      if (this.atlas) this.play('player_sword_m_attack', true);
+      this.scene.time.delayedCall(FEEL.attackHitDelayMs, () => {     // 第 2 帧出剑判定
+        const w = FEEL.attackRange, h = FEEL.attackHeight;
+        const x = this.facing > 0 ? b.right - 4 : b.left - w + 4;
+        this.onAttack?.(new Phaser.Geom.Rectangle(x, b.bottom - h - 6, w, h));
+      });
     }
 
-    this.setScale(1, prone ? 0.7 : 1);
+    this.prone = prone;
+    if (!this.atlas) this.setScale(1, prone ? 0.7 : 1);
     this.finish(time);
   }
 
   private finish(time: number) {
-    this.setFlipX(this.facing < 0);
+    this.setFlipX(this.atlas ? this.facing > 0 : this.facing < 0);
+    if (this.atlas) this.updateAnim(time);
     this.setAlpha(time < this.invulnUntil ? (Math.floor(time / 80) % 2 ? 0.35 : 0.9) : 1);
+  }
+
+  private updateAnim(time: number) {
+    const k = 'player_sword_m_';
+    const cur = this.anims.currentAnim?.key;
+    if (cur === k + 'attack' && this.anims.isPlaying) return;
+    let next: string;
+    if (this.state2 === 'hurt') next = 'hit';
+    else if (this.state2 === 'rope') {
+      next = this.rope?.kind === 'ladder' ? 'ladder' : 'rope';
+      if (cur !== k + next) this.play(k + next);
+      if (this.body.velocity.y === 0) this.anims.pause(); else this.anims.resume();
+      return;
+    } else if (this.state2 === 'air') next = this.didDouble ? 'djump' : 'jump';
+    else if (this.prone) next = 'sit';
+    else next = Math.abs(this.body.velocity.x) > 10 ? 'walk' : 'idle';
+    if (this.anims.isPaused) this.anims.resume();
+    if (cur !== k + next) this.play(k + next);
   }
 
   private findRope(ropes: Rope[], up: boolean, grounded: boolean) {
     for (const r of ropes) {
-      if (Math.abs(this.x - r.x) > FEEL.ropeGrabRangeX) continue;
+      if (Math.abs(this.x - r.x) > r.halfW) continue;
       if (up && this.feet > r.top + 4 && this.body.top < r.bottom) return r;
       if (!up && grounded && Math.abs(this.feet - r.top) <= 6) return r;  // 站在绳头上按↓往下爬
     }
@@ -184,16 +214,16 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     this.state2 = 'air';
   }
 
-  hurt(time: number, fromX: number, dmg: number) {
-    if (time < this.invulnUntil) return;
+  hurt(time: number, fromX: number, dmg: number, knock = FEEL.hurtKnockVx): boolean {
+    if (time < this.invulnUntil || this.dead) return false;
     if (this.state2 === 'rope') this.leaveRope(time);
     this.hp = Math.max(0, this.hp - dmg);
     this.state2 = 'hurt';
     this.hurtUntil = time + 300;
     this.invulnUntil = time + FEEL.hurtInvulnMs;
     const away = this.x < fromX ? -1 : 1;
-    this.body.setVelocity(away * FEEL.hurtKnockVx, -FEEL.hurtKnockVy);
-    if (this.hp <= 0) this.hp = this.maxHp; // 原型阶段：不死，直接回满
+    this.body.setVelocity(away * Math.min(knock * 1.2, 320), -FEEL.hurtKnockVy);
+    return true;
   }
 }
 

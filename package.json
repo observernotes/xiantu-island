@@ -4,10 +4,16 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "dev": "vite --host 0.0.0.0 --port 5173",
-    "build": "tsc --noEmit && vite build",
-    "preview": "vite preview --host 0.0.0.0 --port 4173"
+    "dev": "npm run sync && vite --host 0.0.0.0 --port 5173",
+    "build": "npm run sync && tsc --noEmit && vite build",
+    "preview": "vite preview --host 0.0.0.0 --port 4173",
+    "sync": "rm -rf public/art && mkdir -p public/art/sprites && cp ../art/sprites/*.png ../art/sprites/*.json public/art/sprites/"
   },
-  "dependencies": { "phaser": "^3.80.1" },
-  "devDependencies": { "typescript": "^5.4.0", "vite": "^5.2.0" }
+  "dependencies": {
+    "phaser": "^3.80.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "vite": "^5.2.0"
+  }
 }

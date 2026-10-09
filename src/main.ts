@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { FEEL } from './config/feel';
-import { ProtoScene } from './scenes/ProtoScene';
+import { GameScene } from './scenes/GameScene';
 
 new Phaser.Game({
   type: Phaser.AUTO,
@@ -14,5 +14,5 @@ new Phaser.Game({
     arcade: { gravity: { x: 0, y: FEEL.gravity }, debug: false, tileBias: 16 },
   },
   scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
-  scene: [ProtoScene],
+  scene: [GameScene],
 });
