@@ -1,0 +1,185 @@
+{
+ "note": "炼丹窗口排版（1x，窗口 640×400，坐标相对窗口左上角）。窗体/标题/内嵌面板/关闭按钮复用 bestiary/ 的 ui_bestiary_window(9-slice 10)/_title/_inset(9-slice 6)/_btn_close。文字全部由程序绘制。",
+ "window": {
+  "size": [
+   640,
+   400
+  ],
+  "image": "bestiary/ui_bestiary_window",
+  "nineSlice": [
+   10,
+   10,
+   10,
+   10
+  ],
+  "title": "bestiary/ui_bestiary_title（宽 160，居中，y=-12，文字 alchemy.title）",
+  "close": [
+   614,
+   6
+  ]
+ },
+ "levelBar": {
+  "text": [
+   24,
+   30
+  ],
+  "frame": "ui_bar_cultivation_frame（9-slice 10,10,4,4）",
+  "frameRect": [
+   110,
+   24,
+   140,
+   16
+  ],
+  "fill": "ui_alchemy_exp_fill（3-slice 3,3）放在 frameRect 内 x+4,y+4，高 8"
+ },
+ "recipeList": {
+  "panel": [
+   20,
+   52,
+   176,
+   326
+  ],
+  "panelImage": "bestiary/ui_bestiary_inset",
+  "row": [
+   26,
+   58,
+   164,
+   26
+  ],
+  "rowGap": 4,
+  "rowImages": {
+   "normal": "ui_alchemy_list_row_normal",
+   "selected": "ui_alchemy_list_row_selected",
+   "disabled": "ui_alchemy_list_row_disabled（缺料）"
+  },
+  "rowIcon": "产物图标 32px 缩到 20px 放在行内 x+14,y+3；名字 x+40；右侧 icon_alchemy_ok / icon_alchemy_lack（14px）",
+  "rowSlices": [
+   10,
+   6,
+   6,
+   6
+  ]
+ },
+ "detail": {
+  "panel": [
+   206,
+   52,
+   414,
+   326
+  ],
+  "panelImage": "bestiary/ui_bestiary_inset",
+  "output": {
+   "icon@64": [
+    222,
+    64
+   ],
+   "name": [
+    296,
+    74
+   ],
+   "qualityTag": [
+    296,
+    92
+   ],
+   "note": "产物图标用 icons/items/<icon>@64；qualityTag 只在成丹结果时显示"
+  },
+  "furnace": {
+   "image": "ui_alchemy_furnace_<丹炉 id>",
+   "rect": [
+    470,
+    60,
+    128,
+    128
+   ],
+   "fire": "ui_alchemy_fire 叠在丹炉 (32,82)，depth 在炉身之上",
+   "glow": "ui_alchemy_glow_gold 中心对齐炉口 (534,96)",
+   "smoke": "ui_alchemy_smoke_white/black 中心对齐 (534,70)，上飘 24px 淡出 900ms"
+  },
+  "materials": {
+   "slot": "ui_alchemy_slot / _ok / _lack / _empty (40×40)",
+   "first": [
+    222,
+    150
+   ],
+   "gap": 52,
+   "icon": "物品图标 32×32 放在格子 +4,+4",
+   "count": "格子下方居中 y+44 写「2/2」",
+   "mark": "icon_alchemy_ok/lack 放在格子右上角 (+30,-4)"
+  },
+  "fuel": {
+   "slot": [
+    430,
+    150
+   ],
+   "icon": "icons/items/icon_spirit_stone",
+   "note": "燃料格用 ui_alchemy_slot，数量写在下方"
+  },
+  "rate": {
+   "text": [
+    222,
+    216
+   ],
+   "note": "预估成功率（不含火候）"
+  },
+  "fireGauge": {
+   "frame": "ui_alchemy_fire_gauge（9-slice 6,6,6,6；外圈 4px 透明，1px 线在 x4/y4）",
+   "rect": [
+    222,
+    248,
+    380,
+    22
+   ],
+   "track": "ui_alchemy_fire_track 拉伸到 frame 内 x+5,y+5,w-10,h-10",
+   "zone": "ui_alchemy_fire_zone 3-slice(2,2) 横向拉伸到文火区宽度，竖向居中于轨道",
+   "perfect": "ui_alchemy_fire_perfect 居中在文火区正中",
+   "pointer": "ui_alchemy_fire_pointer 原点 (0.5,1)，尖端落在轨道顶 y+6；往返 ~2s（Sine.InOut yoyo）",
+   "hint": "轨道下方 y+30 写 alchemy.fire_hint",
+   "assume": "文火区宽度/正中线宽度按策划数值（美术假设 26% / 3%，居中）"
+  },
+  "buttons": {
+   "image": "ui_alchemy_btn_{normal,hover,pressed,disabled}（9-slice 6,6,6,6）",
+   "brew": [
+    222,
+    330,
+    96,
+    30
+   ],
+   "batch": [
+    326,
+    330,
+    96,
+    30
+   ],
+   "skip": [
+    430,
+    330,
+    80,
+    30
+   ]
+  },
+  "stamp": {
+   "success": "ui_alchemy_stamp_success",
+   "fail": "ui_alchemy_stamp_fail",
+   "center": [
+    534,
+    140
+   ],
+   "size": [
+    80,
+    80
+   ],
+   "anim": "scale 2.2→1、alpha 0→1，180ms Back.Out，停 1.2s 后淡出"
+  }
+ },
+ "quality": {
+  "low": "ui_alchemy_quality_low",
+  "mid": "ui_alchemy_quality_mid",
+  "high": "ui_alchemy_quality_high",
+  "supreme": "ui_alchemy_quality_supreme"
+ },
+ "gather": {
+  "castbar": "ui_gather_castbar_frame（9-slice 4,4,3,3，40×10）+ ui_gather_castbar_fill（3-slice 2,2，内区 x+3,y+3,w-6,h-6）",
+  "icon": "icon_gather_herb / icon_gather_ore 放在读条左侧",
+  "placement": "读条放在角色头顶 y−80，宽 48；中断时填充闪红后消失"
+ }
+}

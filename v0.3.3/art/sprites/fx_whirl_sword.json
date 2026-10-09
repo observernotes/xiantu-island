@@ -1,0 +1,158 @@
+{
+ "frames": {
+  "fx_whirl_sword_play_01": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 128
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 128
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 128
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fx_whirl_sword_play_02": {
+   "frame": {
+    "x": 192,
+    "y": 0,
+    "w": 192,
+    "h": 128
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 128
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 128
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fx_whirl_sword_play_03": {
+   "frame": {
+    "x": 384,
+    "y": 0,
+    "w": 192,
+    "h": 128
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 128
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 128
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fx_whirl_sword_play_04": {
+   "frame": {
+    "x": 576,
+    "y": 0,
+    "w": 192,
+    "h": 128
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 128
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 128
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fx_whirl_sword_play_05": {
+   "frame": {
+    "x": 768,
+    "y": 0,
+    "w": 192,
+    "h": 128
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 128
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 128
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fx_whirl_sword_play_06": {
+   "frame": {
+    "x": 960,
+    "y": 0,
+    "w": 192,
+    "h": 128
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 128
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 128
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  }
+ },
+ "meta": {
+  "app": "xiantu gen_fx_icons.py",
+  "image": "fx_whirl_sword.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1152,
+   "h": 128
+  },
+  "scale": "1"
+ }
+}
