@@ -290,13 +290,14 @@
   }
  },
  "meta": {
-  "app": "xiantu gen_sprites.py",
+  "app": "xiantu assemble.py",
   "image": "mon_bamboo_snake.png",
   "format": "RGBA8888",
   "size": {
    "w": 512,
    "h": 128
   },
-  "scale": "1"
+  "scale": "1",
+  "loadout": {}
  }
 }

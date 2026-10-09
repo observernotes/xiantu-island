@@ -1,0 +1,72 @@
+{
+ "atlas": "mon_heart_demon_imp",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  88,
+  72
+ ],
+ "anims": [
+  {
+   "key": "mon_heart_demon_imp_idle",
+   "frames": [
+    "mon_heart_demon_imp_idle_01",
+    "mon_heart_demon_imp_idle_02"
+   ],
+   "frameRate": 3,
+   "repeat": -1
+  },
+  {
+   "key": "mon_heart_demon_imp_walk",
+   "frames": [
+    "mon_heart_demon_imp_walk_01",
+    "mon_heart_demon_imp_walk_02",
+    "mon_heart_demon_imp_walk_03"
+   ],
+   "frameRate": 8,
+   "repeat": -1
+  },
+  {
+   "key": "mon_heart_demon_imp_attack",
+   "frames": [
+    "mon_heart_demon_imp_attack_01",
+    "mon_heart_demon_imp_attack_02",
+    "mon_heart_demon_imp_attack_03"
+   ],
+   "frameRate": 8,
+   "repeat": 0
+  },
+  {
+   "key": "mon_heart_demon_imp_hit",
+   "frames": [
+    "mon_heart_demon_imp_hit_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  },
+  {
+   "key": "mon_heart_demon_imp_die",
+   "frames": [
+    "mon_heart_demon_imp_die_01",
+    "mon_heart_demon_imp_die_02",
+    "mon_heart_demon_imp_die_03"
+   ],
+   "frameRate": 6,
+   "repeat": 0
+  }
+ ],
+ "bodySize": [
+  36,
+  46
+ ],
+ "attackFrames": {
+  "telegraph": 1,
+  "hit": 2
+ },
+ "targetsObjective": true,
+ "note": "地面心魔。attack_01 前摇定格（telegraphMs 300，前爪举到脑后、红眼放光）；attack_02 前扑横扫判定帧（爪前月牙画在帧内，不需要额外特效）；attack_03 收势。打阵眼时同样播 attack。die 化成墨点向上飘散，不倒地。",
+ "kind": "monster"
+}

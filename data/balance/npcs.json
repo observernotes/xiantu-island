@@ -177,5 +177,93 @@
     ],
     "quests": [],
     "phase": 5
+  },
+  {
+    "id": "taixu_envoy",
+    "name": "清风道童",
+    "map": "taixu_temple",
+    "sprite": "npc_taixu_envoy",
+    "dialog": [
+      "……"
+    ],
+    "quests": [],
+    "phase": 5
+  },
+  {
+    "id": "taixu_elder",
+    "name": "玄微真人",
+    "map": "taixu_temple",
+    "sprite": "npc_taixu_elder",
+    "dialog": [
+      "……"
+    ],
+    "quests": [],
+    "phase": 5
+  },
+  {
+    "id": "lingfu_envoy",
+    "name": "墨符使",
+    "map": "lingfu_pavilion",
+    "sprite": "npc_lingfu_envoy",
+    "dialog": [
+      "……"
+    ],
+    "quests": [],
+    "phase": 5
+  },
+  {
+    "id": "lingfu_elder",
+    "name": "符老",
+    "map": "lingfu_pavilion",
+    "sprite": "npc_lingfu_elder",
+    "dialog": [
+      "……"
+    ],
+    "quests": [],
+    "phase": 5
+  },
+  {
+    "id": "youying_envoy",
+    "name": "影娘",
+    "map": "youying_tower",
+    "sprite": "npc_youying_envoy",
+    "dialog": [
+      "……"
+    ],
+    "quests": [],
+    "phase": 5
+  },
+  {
+    "id": "youying_elder",
+    "name": "楼主·无面",
+    "map": "youying_tower",
+    "sprite": "npc_youying_elder",
+    "dialog": [
+      "……"
+    ],
+    "quests": [],
+    "phase": 5
+  },
+  {
+    "id": "wanshou_envoy",
+    "name": "小狼崽",
+    "map": "wanshou_mountain",
+    "sprite": "npc_wanshou_envoy",
+    "dialog": [
+      "……"
+    ],
+    "quests": [],
+    "phase": 5
+  },
+  {
+    "id": "wanshou_elder",
+    "name": "兽王·岳",
+    "map": "wanshou_mountain",
+    "sprite": "npc_wanshou_elder",
+    "dialog": [
+      "……"
+    ],
+    "quests": [],
+    "phase": 5
   }
 ]

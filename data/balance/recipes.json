@@ -14,7 +14,11 @@
    "skipped": 0.0,
    "inZone": 0.1,
    "perfect": 0.15,
-   "missed": -0.05
+   "missed": -0.05,
+   "zoneWidth": 0.26,
+   "perfectWidth": 0.04,
+   "periodMs": 1200,
+   "zoneRandomPerBrew": true
   },
   "quality": {
    "base": {

@@ -1,0 +1,148 @@
+{
+ "grindKillsPerMin": 12,
+ "qiDensity": {
+  "qingyun_village": 2,
+  "bamboo_forest": 3,
+  "lingxi_path": 4,
+  "luoxia_outskirts_1": 4,
+  "luoxia_outskirts_2": 4,
+  "trial_foundation_altar": 6,
+  "wanyao_forest": 6,
+  "chiyan_volcano": 7,
+  "secret_realm": 8,
+  "cave_abode_base": 3
+ },
+ "densityRef": 5,
+ "meditation": {
+  "desc": "安全区打坐，每分钟修为 = 同等级打怪每分钟修为 × 0.15 × 浓度/5",
+  "ratioOfGrind": 0.15,
+  "hpRegenPctPer5s": 0.03,
+  "mpRegenPctPer5s": 0.03
+ },
+ "seclusion": {
+  "desc": "只能在洞府闭关室；每闭关 1 年得到 当前等级升级所需 × 0.1 × 浓度/5 × 境界系数 × 闭关室系数，逐年结算，遇瓶颈只进溢出池",
+  "options": [
+   1,
+   10,
+   100
+  ],
+  "perYearRatio": 0.1,
+  "realmMul": {
+   "mortal": 1.0,
+   "qi_refining": 1.0,
+   "foundation": 0.6,
+   "golden_core": 0.22
+  },
+  "roomLevelMul": [
+   1.0,
+   1.05,
+   1.1,
+   1.15,
+   1.2,
+   1.25
+  ]
+ },
+ "sectSeclusion": {
+  "desc": "筑基期在宗门闭关室闭关，浓度固定 6，房间系数 0.7；用宗门贡献换次数，金丹有洞府后改用洞府闭关室",
+  "unlockRealm": "foundation",
+  "density": 6,
+  "roomMul": 0.7,
+  "options": [
+   1,
+   10
+  ],
+  "contributionCost": {
+   "1": 12,
+   "10": 100
+  },
+  "dailyQuestContribution": 30,
+  "maxYearsPerRealDay": 30
+ },
+ "lifespan": {
+  "startAge": 16,
+  "agePerRealHour": 1,
+  "cap": {
+   "mortal": 100,
+   "qi_refining": 150,
+   "foundation": 250,
+   "golden_core": 500
+  },
+  "warnAtRemaining": 20,
+  "longevityPill": {
+   "id": "longevity_pill",
+   "years": 50,
+   "source": "主线赠送 1 颗"
+  }
+ },
+ "offline": {
+  "maxHours": 8,
+  "desc": "离线只结算洞府：修为 = 洞府打坐速度 × 0.25；灵田、灵脉、寄售照常",
+  "meditationRatio": 0.25
+ },
+ "spiritAbode": {
+  "gatherDensityBonus": {
+   "聚灵阵每级": 1,
+   "占据灵脉": 2
+  },
+  "maxDensity": 10
+ },
+ "encounter": {
+  "baseChancePerMapEnter": 0.08,
+  "luckBonusPerPoint": 0.002,
+  "cooldownMinPerEvent": 30,
+  "maxPerMapEnter": 1,
+  "expRewardMinutesOfGrind": 2.5,
+  "stoneRewardMinutesOfGrind": 3,
+  "sageAdviceChancePerMeditationMin": 0.005,
+  "sageAdviceInsight": [
+   1,
+   3
+  ]
+ },
+ "companion": {
+  "damageRatioOfPlayer": 0.35,
+  "reviveMs": 30000
+ },
+ "tower": {
+  "floors": 30,
+  "monsterLevel": "9 + 层数",
+  "hpMul": 1.5,
+  "atkMul": 1.1,
+  "affixEvery": 10,
+  "affixes": [
+   "狂暴（攻击 +30%）",
+   "护盾（受伤前 20% 气血免伤）",
+   "分裂（死亡分裂 2 只小体）"
+  ],
+  "firstClearStones": "50 × 怪物等级",
+  "every5": "上品回春丹 ×3",
+  "every10": "称号或外观 + 精炼石 ×5",
+  "startFrom": "最高层 − 10"
+ },
+ "secretRealm": {
+  "rooms": [
+   6,
+   10
+  ],
+  "minutesPerRun": [
+   8,
+   12
+  ],
+  "expMul": 1.2,
+  "refineStones": [
+   3,
+   6
+  ],
+  "scrollChance": 0.15,
+  "failKeepRatio": 0.5,
+  "dailyBonusRuns": 3,
+  "dailyBonusMul": 2.0
+ },
+ "stones": {
+  "perKill": "等级 × 1~2",
+  "leyLinePerHour": "0.1 × 同等级打怪每小时灵石",
+  "consignFee": 0.05,
+  "auctionFee": 0.1,
+  "marketPriceSwing": 0.2
+ }
+}

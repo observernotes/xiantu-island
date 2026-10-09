@@ -33,10 +33,14 @@ export const TILED_MAPS: Record<string, any> = { qingyun_village: qingyun, bambo
 export const BREAKTHROUGH_LEVELS: number[] = (realmsRaw as any[]).map(r => r.levelMax).filter((lv: number) => lv < (expCurve as any).maxLevel);
 
 /** 已有精灵图集的 sprite 键（art/sprites/），其余用色块占位 */
-export const ATLASES = ['player_sword_m', 'mon_spirit_rabbit', 'mon_bamboo_snake', 'mon_mountain_mandrill', 'npc_village_elder', 'npc_grocer_wang', 'npc_doctor_sun', 'fx_sword_slash'];
+import assets from './gen/assets.json';
+/** 素材清单由 sync 扫 art/sprites/*.anims.json 自动生成（src/gen/assets.json），不再手写 */
+export interface AtlasInfo { key: string; kind: string; origin: [number, number]; bodySize: [number, number] | null; }
+export const ATLAS_INFO: Record<string, AtlasInfo> = Object.fromEntries((assets.atlases as AtlasInfo[]).map(a => [a.key, a]));
+export const ATLASES: string[] = Object.keys(ATLAS_INFO);
 /** 地图对应的图块与背景区域（art/tiles/README.md） */
-export const MAP_AREA: Record<string, string> = { qingyun_village: 'qingyun', bamboo_forest: 'bamboo', lingxi_path: 'lingxi', field_test: 'qingyun' };
-export const AREAS = ['qingyun', 'bamboo', 'lingxi'];
+export const MAP_AREA: Record<string, string> = { qingyun_village: 'qingyun', bamboo_forest: 'bamboo', lingxi_path: 'lingxi', luoxia_outskirts_1: 'luoxia', luoxia_outskirts_2: 'luoxia', trial_foundation_altar: 'altar', field_test: 'qingyun' };
+export const AREAS: string[] = assets.areas;
 
 import npcs from '@xt/balance/npcs.json';
 import quests from '@xt/balance/quests.json';

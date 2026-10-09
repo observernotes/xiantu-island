@@ -32,5 +32,6 @@
    "frameRate": 16,
    "repeat": 0
   }
- ]
+ ],
+ "kind": "fx"
 }

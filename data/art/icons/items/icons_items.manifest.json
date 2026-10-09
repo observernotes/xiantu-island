@@ -1,0 +1,262 @@
+{
+ "size": [
+  32,
+  32
+ ],
+ "big": "@64",
+ "atlas": "icons_items",
+ "icons": {
+  "icon_rabbit_fur": {
+   "name": "灵兔绒",
+   "items": [
+    "rabbit_fur"
+   ]
+  },
+  "icon_snake_gall": {
+   "name": "青蛇胆",
+   "items": [
+    "snake_gall"
+   ]
+  },
+  "icon_mandrill_fang": {
+   "name": "山魈獠牙",
+   "items": [
+    "mandrill_fang"
+   ]
+  },
+  "icon_fox_tail": {
+   "name": "妖狐尾",
+   "items": [
+    "fox_tail"
+   ]
+  },
+  "icon_foundation_shard": {
+   "name": "筑基丹残片",
+   "items": [
+    "foundation_shard"
+   ]
+  },
+  "icon_hp_pill_small": {
+   "name": "回春丹·小",
+   "items": [
+    "hp_pill_small"
+   ]
+  },
+  "icon_qi_pill": {
+   "name": "回气丹",
+   "items": [
+    "qi_pill"
+   ]
+  },
+  "icon_wood_sword": {
+   "name": "桃木剑",
+   "items": [
+    "wood_sword"
+   ]
+  },
+  "icon_bamboo_sword": {
+   "name": "青竹剑",
+   "items": [
+    "bamboo_sword"
+   ]
+  },
+  "icon_azure_steel_sword": {
+   "name": "青钢剑",
+   "items": [
+    "azure_steel_sword"
+   ]
+  },
+  "icon_cloth_shoes": {
+   "name": "布履",
+   "items": [
+    "cloth_shoes"
+   ]
+  },
+  "icon_fox_robe": {
+   "name": "狐裘道袍",
+   "items": [
+    "fox_robe"
+   ]
+  },
+  "icon_clear_mind_pill": {
+   "name": "清心丹",
+   "items": [
+    "clear_mind_pill"
+   ]
+  },
+  "icon_sword_intent_pill": {
+   "name": "剑意丹",
+   "items": [
+    "sword_intent_pill"
+   ]
+  },
+  "icon_foundation_pill": {
+   "name": "筑基丹",
+   "items": [
+    "foundation_pill"
+   ]
+  },
+  "icon_golden_core_pill": {
+   "name": "凝金丹",
+   "items": [
+    "golden_core_pill"
+   ]
+  },
+  "icon_nascent_pill": {
+   "name": "化婴丹",
+   "items": [
+    "nascent_pill"
+   ]
+  },
+  "icon_scroll_ten_thousand_swords": {
+   "name": "万剑归宗·残页",
+   "items": [
+    "scroll_ten_thousand_swords"
+   ]
+  },
+  "icon_bronze_furnace": {
+   "name": "青铜丹炉",
+   "items": [
+    "bronze_furnace"
+   ]
+  },
+  "icon_purple_copper_furnace": {
+   "name": "紫铜丹炉",
+   "items": [
+    "purple_copper_furnace"
+   ]
+  },
+  "icon_dark_iron_furnace": {
+   "name": "玄铁丹炉",
+   "items": [
+    "dark_iron_furnace"
+   ]
+  },
+  "icon_pillar_shard": {
+   "name": "天柱残片·其一",
+   "items": [
+    "pillar_shard_1",
+    "pillar_shard_2",
+    "pillar_shard_3"
+   ]
+  },
+  "icon_spirit_herb": {
+   "name": "灵草",
+   "items": [
+    "spirit_herb"
+   ]
+  },
+  "icon_fire_herb": {
+   "name": "火灵草",
+   "items": [
+    "fire_herb"
+   ]
+  },
+  "icon_cold_heart_lotus": {
+   "name": "寒心莲",
+   "items": [
+    "cold_heart_lotus"
+   ]
+  },
+  "icon_nine_leaf_ganoderma": {
+   "name": "九叶灵芝",
+   "items": [
+    "nine_leaf_ganoderma"
+   ]
+  },
+  "icon_iron_essence": {
+   "name": "铁精",
+   "items": [
+    "iron_essence"
+   ]
+  },
+  "icon_spirit_copper": {
+   "name": "灵铜",
+   "items": [
+    "spirit_copper"
+   ]
+  },
+  "icon_cold_iron": {
+   "name": "寒铁",
+   "items": [
+    "cold_iron"
+   ]
+  },
+  "icon_beast_core": {
+   "name": "妖兽内丹",
+   "items": [
+    "beast_core"
+   ]
+  },
+  "icon_golden_boss_essence": {
+   "name": "金丹首领精魄",
+   "items": [
+    "golden_boss_essence"
+   ]
+  },
+  "icon_refine_stone": {
+   "name": "精炼石",
+   "items": [
+    "refine_stone"
+   ]
+  },
+  "icon_protect_charm": {
+   "name": "护器符",
+   "items": [
+    "protect_charm"
+   ]
+  },
+  "icon_spirit_stone": {
+   "name": "灵石（货币）",
+   "items": [
+    "spirit_stone"
+   ]
+  },
+  "icon_recipe_scroll": {
+   "name": "丹方（通用）",
+   "items": [
+    "(recipe)"
+   ]
+  }
+ },
+ "items": {
+  "rabbit_fur": "icon_rabbit_fur",
+  "snake_gall": "icon_snake_gall",
+  "mandrill_fang": "icon_mandrill_fang",
+  "fox_tail": "icon_fox_tail",
+  "foundation_shard": "icon_foundation_shard",
+  "hp_pill_small": "icon_hp_pill_small",
+  "qi_pill": "icon_qi_pill",
+  "wood_sword": "icon_wood_sword",
+  "bamboo_sword": "icon_bamboo_sword",
+  "azure_steel_sword": "icon_azure_steel_sword",
+  "cloth_shoes": "icon_cloth_shoes",
+  "fox_robe": "icon_fox_robe",
+  "clear_mind_pill": "icon_clear_mind_pill",
+  "sword_intent_pill": "icon_sword_intent_pill",
+  "foundation_pill": "icon_foundation_pill",
+  "golden_core_pill": "icon_golden_core_pill",
+  "nascent_pill": "icon_nascent_pill",
+  "scroll_ten_thousand_swords": "icon_scroll_ten_thousand_swords",
+  "bronze_furnace": "icon_bronze_furnace",
+  "purple_copper_furnace": "icon_purple_copper_furnace",
+  "dark_iron_furnace": "icon_dark_iron_furnace",
+  "pillar_shard_1": "icon_pillar_shard",
+  "pillar_shard_2": "icon_pillar_shard",
+  "pillar_shard_3": "icon_pillar_shard",
+  "spirit_herb": "icon_spirit_herb",
+  "fire_herb": "icon_fire_herb",
+  "cold_heart_lotus": "icon_cold_heart_lotus",
+  "nine_leaf_ganoderma": "icon_nine_leaf_ganoderma",
+  "iron_essence": "icon_iron_essence",
+  "spirit_copper": "icon_spirit_copper",
+  "cold_iron": "icon_cold_iron",
+  "beast_core": "icon_beast_core",
+  "golden_boss_essence": "icon_golden_boss_essence",
+  "refine_stone": "icon_refine_stone",
+  "protect_charm": "icon_protect_charm",
+  "spirit_stone": "icon_spirit_stone",
+  "(recipe)": "icon_recipe_scroll"
+ },
+ "placeholders": []
+}

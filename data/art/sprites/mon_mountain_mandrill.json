@@ -290,13 +290,14 @@
   }
  },
  "meta": {
-  "app": "xiantu gen_sprites.py",
+  "app": "xiantu assemble.py",
   "image": "mon_mountain_mandrill.png",
   "format": "RGBA8888",
   "size": {
    "w": 640,
    "h": 160
   },
-  "scale": "1"
+  "scale": "1",
+  "loadout": {}
  }
 }

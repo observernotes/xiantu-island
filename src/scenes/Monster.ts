@@ -1,14 +1,12 @@
 import Phaser from 'phaser';
-import type { MonsterDef } from '../data';
+import { ATLAS_INFO, type MonsterDef } from '../data';
 
 type MState = 'patrol' | 'idle' | 'chase' | 'attack' | 'hit' | 'dead';
 
 /** ?debug=timing：把山魈等的前摇各段时间打到控制台，方便和实测对数 */
 const DEBUG_TIMING = typeof location !== 'undefined' && new URLSearchParams(location.search).get('debug') === 'timing';
-const BODY: Record<string, [number, number]> = {
-  mon_demon_fox: [64, 110],
-  mon_spirit_rabbit: [34, 30], mon_bamboo_snake: [46, 22], mon_mountain_mandrill: [46, 58],
-};
+/** 碰撞体优先读 anims.json 的 bodySize；这里只给还没标 bodySize 的旧图集兜底 */
+const BODY_FALLBACK: Record<string, [number, number]> = { mon_bamboo_snake: [46, 22], mon_mountain_mandrill: [46, 58] };
 
 /** 小怪：巡逻 / 主动怪追击 / 山魈拍地 / 受击 / 死亡 / 复活。数值全部来自 monsters.json */
 export class Monster extends Phaser.Physics.Arcade.Sprite {
@@ -27,7 +25,7 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
     scene.add.existing(this); scene.physics.add.existing(this);
     this.setOrigin(0.5, 1).setDepth(8);
     const fs = this.frame.realWidth, fh = this.frame.realHeight;
-    const [bw, bh] = BODY[def.sprite] ?? [Math.min(fs - 8, 40), Math.min(fh - 4, 56)];
+    const [bw, bh] = ATLAS_INFO[def.sprite]?.bodySize ?? BODY_FALLBACK[def.sprite] ?? [Math.min(fs - 8, 40), Math.min(fh - 4, 56)];
     this.body.setSize(bw, bh).setOffset((fs - bw) / 2, fh - bh);
     this.body.setMaxVelocityY(670);
     if (def.moveSpeed === 0) this.body.setImmovable(true);

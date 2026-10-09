@@ -23,6 +23,11 @@
    "name": "safeZone",
    "type": "bool",
    "value": false
+  },
+  {
+   "name": "qiDensity",
+   "type": "int",
+   "value": 3
   }
  ],
  "tilesets": [

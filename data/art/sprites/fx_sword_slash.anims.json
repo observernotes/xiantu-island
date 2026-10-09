@@ -19,5 +19,6 @@
    "frameRate": 20,
    "repeat": 0
   }
- ]
+ ],
+ "kind": "fx"
 }
