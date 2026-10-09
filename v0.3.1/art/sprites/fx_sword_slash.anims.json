@@ -1,0 +1,23 @@
+{
+ "atlas": "fx_sword_slash",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": 128,
+ "anims": [
+  {
+   "key": "fx_sword_slash_play",
+   "frames": [
+    "fx_sword_slash_play_01",
+    "fx_sword_slash_play_02",
+    "fx_sword_slash_play_03",
+    "fx_sword_slash_play_04",
+    "fx_sword_slash_play_05"
+   ],
+   "frameRate": 20,
+   "repeat": 0
+  }
+ ]
+}
