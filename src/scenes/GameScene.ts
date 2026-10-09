@@ -415,12 +415,30 @@ export class GameScene extends Phaser.Scene {
     this.prog.save();
   }
 
+  /** 突破失败演出（v0.4 筑基台用）：同样放在 dim 层上方 */
+  playBreakthroughFail(x: number, y: number) {
+    if (!this.textures.exists('fx_breakthrough_fail')) return;
+    const fx = this.add.sprite(x, y, 'fx_breakthrough_fail').setOrigin(0.5, 1).setDepth(165);
+    fx.play('fx_breakthrough_fail_play'); fx.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => fx.destroy());
+  }
+
   /** 演出：突破 / 转职 */
   playCue(cue: string, next: () => void) {
     const p = this.player, cam = this.cameras.main;
     const dim = this.add.rectangle(640, 360, 1280, 720, 0x000000, 0).setScrollFactor(0).setDepth(150);
     this.tweens.add({ targets: dim, fillAlpha: 0.6, duration: 400 });
     if (p.atlas) p.play('player_sword_m_sit');
+    // 主角和突破特效都要在 dim 层（150）上方，否则会被一起压暗：back 155 < 主角 158 < front 165
+    const pDepth = p.depth; p.setDepth(158);
+    if (cue === 'breakthrough' && this.textures.exists('fx_breakthrough_success')) {
+      // front_07 爆光对准 1900ms 的闪白：8fps 下第 7 帧在 750ms，所以 1150ms 开播
+      this.time.delayedCall(1150, () => {
+        for (const [layer, d] of [['back', 155], ['front', 165]] as const) {
+          const fx = this.add.sprite(p.x, p.y, 'fx_breakthrough_success').setOrigin(0.5, 1).setDepth(d);
+          fx.play('fx_breakthrough_success_' + layer); fx.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => fx.destroy());
+        }
+      });
+    }
     const col = cue === 'breakthrough' ? 0xfff0a0 : 0x9fe8ff;
     for (let i = 0; i < 24; i++) {                       // 灵气从四周汇入
       const a = (i / 24) * Math.PI * 2, r = 220;
@@ -433,7 +451,7 @@ export class GameScene extends Phaser.Scene {
       this.tweens.add({ targets: ring, scale: 8, alpha: 0, duration: 700, onComplete: () => ring.destroy() });
       const t = this.add.text(640, 260, cue === 'breakthrough' ? '突破成功 · 炼气期' : '拜入天剑宗 · 剑徒', { fontFamily: 'serif', fontSize: '44px', color: '#fff6c8', stroke: '#7a4a00', strokeThickness: 6 }).setOrigin(0.5).setScrollFactor(0).setDepth(170).setAlpha(0);
       this.tweens.add({ targets: t, alpha: 1, y: 240, duration: 500, hold: 1200, yoyo: true, onComplete: () => {
-        t.destroy(); this.tweens.add({ targets: dim, fillAlpha: 0, duration: 300, onComplete: () => { dim.destroy(); next(); } });
+        t.destroy(); this.tweens.add({ targets: dim, fillAlpha: 0, duration: 300, onComplete: () => { dim.destroy(); p.setDepth(pDepth); next(); } });
       } });
     });
   }
