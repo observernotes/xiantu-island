@@ -1,0 +1,37 @@
+{
+ "atlas": "fx_black_robe_projectile",
+ "facing": "left",
+ "origin": [
+  0.5,
+  0.5
+ ],
+ "frameSize": [
+  48,
+  32
+ ],
+ "anims": [
+  {
+   "key": "fx_black_robe_projectile_fly",
+   "frames": [
+    "fx_black_robe_projectile_fly_01",
+    "fx_black_robe_projectile_fly_02",
+    "fx_black_robe_projectile_fly_03",
+    "fx_black_robe_projectile_fly_04"
+   ],
+   "frameRate": 12,
+   "repeat": -1
+  },
+  {
+   "key": "fx_black_robe_projectile_hit",
+   "frames": [
+    "fx_black_robe_projectile_hit_01",
+    "fx_black_robe_projectile_hit_02",
+    "fx_black_robe_projectile_hit_03",
+    "fx_black_robe_projectile_hit_04"
+   ],
+   "frameRate": 16,
+   "repeat": 0
+  }
+ ],
+ "blend": "NORMAL"
+}

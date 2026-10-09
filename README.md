@@ -40,3 +40,9 @@ Ctrl/X 普攻（按住连打）；Z 拾取；F1 显示碰撞框；R 回出生点
 - 文案改从 `balance/strings_zh.json` 读取（`t(key, vars)`）。
 - 抓绳判定半宽 14 改成 18；出刀期间锁朝向。
 - 刀光改用普通混合；sync 增加 `art/icons`。
+
+## v0.3.2
+- Y1 传送门按规范附录 G7：`locked` 永久关闭，`unlockQuest` 要求任务已完成；目标地图本版本没有的一律关闭，存档或传送指向不存在的地图时回青云村。
+- G6 补 `talk` 目标；本版本不支持的目标类型（如 `craft`）的任务暂不开放，也不会抛错。G8 击杀数立即存档。
+- 山魈前摇改按游戏时钟判定，抬手 500ms 后同一帧出伤害；`?debug=timing` 会把各段时间打到控制台。
+- 数据快照：发版分支（master/hotfix/qa）构建只读分支里提交的 `data/`，dev 和 feat/* 读共享目录；`npm run snapshot` 刷新快照，`XT_DATA=shared|snapshot` 可强制指定。

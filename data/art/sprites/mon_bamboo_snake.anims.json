@@ -1,0 +1,58 @@
+{
+ "atlas": "mon_bamboo_snake",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": 64,
+ "anims": [
+  {
+   "key": "mon_bamboo_snake_idle",
+   "frames": [
+    "mon_bamboo_snake_idle_01",
+    "mon_bamboo_snake_idle_02"
+   ],
+   "frameRate": 3,
+   "repeat": -1
+  },
+  {
+   "key": "mon_bamboo_snake_walk",
+   "frames": [
+    "mon_bamboo_snake_walk_01",
+    "mon_bamboo_snake_walk_02",
+    "mon_bamboo_snake_walk_03"
+   ],
+   "frameRate": 8,
+   "repeat": -1
+  },
+  {
+   "key": "mon_bamboo_snake_attack",
+   "frames": [
+    "mon_bamboo_snake_attack_01",
+    "mon_bamboo_snake_attack_02",
+    "mon_bamboo_snake_attack_03"
+   ],
+   "frameRate": 12,
+   "repeat": 0
+  },
+  {
+   "key": "mon_bamboo_snake_hit",
+   "frames": [
+    "mon_bamboo_snake_hit_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  },
+  {
+   "key": "mon_bamboo_snake_die",
+   "frames": [
+    "mon_bamboo_snake_die_01",
+    "mon_bamboo_snake_die_02",
+    "mon_bamboo_snake_die_03"
+   ],
+   "frameRate": 6,
+   "repeat": 0
+  }
+ ]
+}

@@ -63,6 +63,8 @@ export class GameScene extends Phaser.Scene {
     const q = new URLSearchParams(location.search).get('map');
     let mapId = data.map ?? (q === 'test' || q === 'field' ? 'field_test' : q && TILED_MAPS[q] ? q : 'qingyun_village');
     mapId = TILED_MAPS[mapId] ? mapId : (MAP_FALLBACK[mapId] ?? mapId);
+    // 本版本没有的地图（存档或传送门指过去）一律回青云村，不再掉进测试图
+    if (!TILED_MAPS[mapId] && mapId !== 'field_test') { mapId = 'qingyun_village'; data.portal = undefined; }
 
     const area = MAP_AREA[mapId] ?? 'qingyun';
     this.drawBackground(area);
@@ -327,12 +329,21 @@ export class GameScene extends Phaser.Scene {
       this.tweens.add({ targets: mark, y: mark.y - 6, yoyo: true, repeat: -1, duration: 500 });
       if (npc) this.npcMarks.push({ id: npc.id, text: mark });
     } else if (o.type === 'portal') {
-      const g = this.add.ellipse(o.x, o.y - 40, 46, 80, o.props.locked ? 0x888888 : 0x8fe3ff, 0.55).setStrokeStyle(3, o.props.locked ? 0x555555 : 0x3a9fd8).setDepth(4);
-      if (!o.props.locked) this.tweens.add({ targets: g, scaleX: 0.85, yoyo: true, repeat: -1, duration: 700 });
+      const shut = !this.portalOpen(o);
+      const g = this.add.ellipse(o.x, o.y - 40, 46, 80, shut ? 0x888888 : 0x8fe3ff, 0.55).setStrokeStyle(3, shut ? 0x555555 : 0x3a9fd8).setDepth(4);
+      if (!shut) this.tweens.add({ targets: g, scaleX: 0.85, yoyo: true, repeat: -1, duration: 700 });
     } else if (o.type === 'chest') {
       const opened = this.openedChests.has(`${this.map.id}:${o.name}`);
       this.add.rectangle(o.x, o.y - 14, 34, 28, opened ? 0x7a5a3a : 0xd9a43a).setStrokeStyle(2, 0x5a3418).setDepth(4).setName('chest:' + o.name);
     }
+  }
+
+  /** 传送门能否通行（规范附录 G7）：locked 永久关闭；unlockQuest 要求该任务已完成；目标地图本版本没有也视为关闭 */
+  portalOpen(o: { props: any }) {
+    if (o.props.locked) return false;
+    if (o.props.unlockQuest && this.quests.state(o.props.unlockQuest) !== 'done') return false;
+    const tgt = o.props.target;
+    return !!tgt && (!!TILED_MAPS[tgt] || tgt === 'field_test');
   }
 
   tryInteract(): boolean {
@@ -340,7 +351,7 @@ export class GameScene extends Phaser.Scene {
     for (const o of this.map.objects) {
       if (Math.abs(o.x - p.x) > 28 || Math.abs(o.y - p.y) > 40) continue;
       if (o.type === 'portal') {
-        if (o.props.locked) { this.log('这条路暂时走不通', '#aaaaaa'); return true; }
+        if (!this.portalOpen(o)) { this.log(t('sys.portal_locked'), '#aaaaaa'); return true; }
         this.prog.save();
         this.cameras.main.fadeOut(200);
         this.time.delayedCall(220, () => this.scene.restart({ map: o.props.target, portal: o.props.targetPortal }));

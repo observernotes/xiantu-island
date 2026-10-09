@@ -1,0 +1,137 @@
+[
+ {
+  "id": "mortal",
+  "name": "凡人",
+  "levelMin": 1,
+  "levelMax": 9,
+  "stages": [
+   "凡人"
+  ],
+  "breakthroughItem": null,
+  "breakthroughQuest": "q_breakthrough",
+  "trial": null,
+  "baseRate": 1.0,
+  "failPenalty": null,
+  "reward": {
+   "unlock": [
+    "mp_bar",
+    "quickbar",
+    "job1"
+   ]
+  }
+ },
+ {
+  "id": "qi_refining",
+  "name": "炼气期",
+  "levelMin": 10,
+  "levelMax": 29,
+  "stages": [
+   "初期",
+   "中期",
+   "后期",
+   "圆满"
+  ],
+  "stageLevels": [
+   10,
+   15,
+   20,
+   25
+  ],
+  "breakthroughItem": "foundation_pill",
+  "breakthroughQuest": "q_elder_exam",
+  "trial": "trial_foundation_altar",
+  "baseRate": 0.6,
+  "failPenalty": {
+   "expLossRatio": 0.1,
+   "debuffMs": 600000,
+   "debuffStatRatio": -0.1,
+   "consumeItem": true,
+   "retryTrial": true
+  },
+  "reward": {
+   "hpMul": 1.3,
+   "mpMul": 1.3,
+   "unlock": [
+    "job2",
+    "sword_ride",
+    "forging",
+    "pet"
+   ]
+  }
+ },
+ {
+  "id": "foundation",
+  "name": "筑基期",
+  "levelMin": 30,
+  "levelMax": 59,
+  "stages": [
+   "初期",
+   "中期",
+   "后期",
+   "圆满"
+  ],
+  "stageLevels": [
+   30,
+   38,
+   46,
+   53
+  ],
+  "breakthroughItem": "golden_core_pill",
+  "breakthroughQuest": null,
+  "trial": "trial_heart_demon",
+  "requireDaoHeart": 60,
+  "baseRate": 0.45,
+  "failPenalty": {
+   "expLossRatio": 0.1,
+   "debuffMs": 600000,
+   "debuffStatRatio": -0.1,
+   "consumeItem": true,
+   "retryTrial": true
+  },
+  "reward": {
+   "hpMul": 1.3,
+   "mpMul": 1.3,
+   "unlock": [
+    "job3",
+    "natal_treasure",
+    "cave_abode"
+   ]
+  }
+ },
+ {
+  "id": "golden_core",
+  "name": "金丹期",
+  "levelMin": 60,
+  "levelMax": 99,
+  "stages": [
+   "初期",
+   "中期",
+   "后期",
+   "圆满"
+  ],
+  "stageLevels": [
+   60,
+   70,
+   80,
+   90
+  ],
+  "breakthroughItem": "nascent_pill",
+  "breakthroughQuest": null,
+  "trial": "trial_heart_demon_tribulation",
+  "baseRate": 0.35,
+  "failPenalty": {
+   "expLossRatio": 0.1,
+   "debuffMs": 600000,
+   "debuffStatRatio": -0.1,
+   "consumeItem": true,
+   "retryTrial": true
+  },
+  "reward": {
+   "hpMul": 1.3,
+   "mpMul": 1.3,
+   "unlock": [
+    "job4"
+   ]
+  }
+ }
+]

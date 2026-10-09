@@ -1,0 +1,110 @@
+[
+ {
+  "id": "trial_foundation_altar",
+  "name": "筑基台",
+  "realmFrom": "qi_refining",
+  "realmTo": "foundation",
+  "type": "defend",
+  "desc": "60 秒内守住聚灵阵，阵眼气血归零或玩家倒地即失败。",
+  "durationMs": 60000,
+  "map": "trial_foundation_altar",
+  "waves": [
+   {
+    "fromMs": 0,
+    "toMs": 20000,
+    "spawns": [
+     {
+      "monster": "heart_demon_imp",
+      "side": "both",
+      "everyMs": 3000,
+      "perSide": 1
+     }
+    ],
+    "total": 12
+   },
+   {
+    "fromMs": 20000,
+    "toMs": 40000,
+    "spawns": [
+     {
+      "monster": "heart_demon_imp",
+      "side": "both",
+      "everyMs": 4000,
+      "perSide": 1
+     },
+     {
+      "monster": "heart_demon_wisp",
+      "side": "alternate",
+      "everyMs": 4000,
+      "perSide": 1
+     }
+    ],
+    "total": 15
+   },
+   {
+    "fromMs": 40000,
+    "toMs": 55000,
+    "spawns": [
+     {
+      "monster": "heart_demon_imp",
+      "side": "both",
+      "everyMs": 2500,
+      "perSide": 1
+     },
+     {
+      "monster": "heart_demon_wisp",
+      "side": "both",
+      "everyMs": 5000,
+      "perSide": 1
+     }
+    ],
+    "hazard": {
+     "type": "thunder_circle",
+     "everyMs": 4000,
+     "count": 2,
+     "radius": 64,
+     "telegraphMs": 1200,
+     "playerDamageRatioOfMaxHp": 0.15,
+     "nearObjective": 320
+    },
+    "total": 24
+   },
+   {
+    "fromMs": 55000,
+    "toMs": 60000,
+    "spawns": [],
+    "despawnAll": true
+   }
+  ],
+  "objective": {
+   "id": "spirit_array_eye",
+   "name": "阵眼",
+   "hp": 6000,
+   "def": 0,
+   "x": "center",
+   "monsterDamageMul": 0.6
+  },
+  "balanceNote": "演武堂 v0.1：29 级、自动加点、只有一转技能的剑修，正常打可让阵眼剩 40% 以上；完全不管阵眼约 30 秒破阵（怪打阵眼按 0.6 倍伤害算）。"
+ },
+ {
+  "id": "trial_heart_demon",
+  "name": "凝丹·心魔",
+  "realmFrom": "foundation",
+  "realmTo": "golden_core",
+  "type": "duel",
+  "desc": "击败复制玩家技能的心魔镜像。",
+  "map": "trial_heart_demon",
+  "mirror": true
+ },
+ {
+  "id": "trial_heart_demon_tribulation",
+  "name": "破丹成婴·心魔劫",
+  "realmFrom": "golden_core",
+  "realmTo": "nascent_soul",
+  "type": "duel",
+  "desc": "第四阶段内容：心魔加天雷双重考验，先占位。",
+  "map": "trial_heart_demon_tribulation",
+  "mirror": true,
+  "placeholder": true
+ }
+]

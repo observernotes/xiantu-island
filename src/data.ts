@@ -44,7 +44,7 @@ import realms from '@xt/balance/realms.json';
 import questScript from '@xt/design/02_新手任务.md?raw';
 
 export interface NpcDef { id: string; name: string; map: string; sprite: string; dialog: string[]; quests: string[]; shop?: boolean; }
-export interface QuestObjective { type: 'kill' | 'collect' | 'reach' | 'breakthrough'; target?: string; count?: number; consume?: boolean; map?: string; realm?: string; }
+export interface QuestObjective { type: 'kill' | 'collect' | 'reach' | 'breakthrough' | 'talk' | 'craft'; target?: string; count?: number; consume?: boolean; map?: string; realm?: string; }
 export interface QuestDef {
   id: string; name: string; giver: string; turnIn: string; reqLevel: number; objectives: QuestObjective[];
   rewards: { exp: number; spiritStone: number; items: { item: string; count: number }[]; job?: string }; next: string | null;

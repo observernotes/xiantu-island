@@ -1,0 +1,146 @@
+{
+ "maxLevel": 12,
+ "levels": [
+  {
+   "to": 1,
+   "rate": 0.95,
+   "stones": 100,
+   "refineStones": 1,
+   "dropOnFail": false
+  },
+  {
+   "to": 2,
+   "rate": 0.9,
+   "stones": 400,
+   "refineStones": 1,
+   "dropOnFail": false
+  },
+  {
+   "to": 3,
+   "rate": 0.85,
+   "stones": 900,
+   "refineStones": 2,
+   "dropOnFail": false
+  },
+  {
+   "to": 4,
+   "rate": 0.8,
+   "stones": 1600,
+   "refineStones": 2,
+   "dropOnFail": false
+  },
+  {
+   "to": 5,
+   "rate": 0.75,
+   "stones": 2500,
+   "refineStones": 3,
+   "dropOnFail": false
+  },
+  {
+   "to": 6,
+   "rate": 0.65,
+   "stones": 3600,
+   "refineStones": 3,
+   "dropOnFail": true
+  },
+  {
+   "to": 7,
+   "rate": 0.55,
+   "stones": 4900,
+   "refineStones": 4,
+   "dropOnFail": true
+  },
+  {
+   "to": 8,
+   "rate": 0.5,
+   "stones": 6400,
+   "refineStones": 4,
+   "dropOnFail": true
+  },
+  {
+   "to": 9,
+   "rate": 0.4,
+   "stones": 8100,
+   "refineStones": 5,
+   "dropOnFail": true
+  },
+  {
+   "to": 10,
+   "rate": 0.35,
+   "stones": 10000,
+   "refineStones": 5,
+   "dropOnFail": true
+  },
+  {
+   "to": 11,
+   "rate": 0.3,
+   "stones": 12100,
+   "refineStones": 6,
+   "dropOnFail": true
+  },
+  {
+   "to": 12,
+   "rate": 0.25,
+   "stones": 14400,
+   "refineStones": 6,
+   "dropOnFail": true
+  }
+ ],
+ "statPerLevel": {
+  "weapon": {
+   "atkRatioOfBase": 0.04
+  },
+  "armor": {
+   "defRatioOfBase": 0.05,
+   "hpRatioOfBase": 0.03
+  }
+ },
+ "milestoneBonus": {
+  "7": {
+   "allRatio": 0.03
+  },
+  "10": {
+   "allRatio": 0.05
+  },
+  "12": {
+   "allRatio": 0.08
+  }
+ },
+ "protectCharm": "失败不掉级，成功率不变",
+ "forge": {
+  "grade": {
+   "common": 0.6,
+   "fine": 0.3,
+   "spirit": 0.09,
+   "treasure": 0.01
+  },
+  "affixCount": {
+   "common": 0,
+   "fine": 1,
+   "spirit": 2,
+   "treasure": 3
+  },
+  "forgingLevelShift": 0.01
+ },
+ "enchant": {
+  "elementDamage": 0.05,
+  "sameRootBonus": 0.05,
+  "cost": {
+   "stones": 2000,
+   "materials": [
+    {
+     "item": "beast_core",
+     "count": 1
+    }
+   ]
+  }
+ },
+ "salvage": {
+  "refineStonesByGrade": {
+   "common": 1,
+   "fine": 2,
+   "spirit": 4,
+   "treasure": 8
+  }
+ }
+}

@@ -1,0 +1,218 @@
+{
+ "rules": {
+  "formula": "成功率 = 丹方基础 + 1%×炼丹等级 + 丹炉加成 + 火候 − 10%×max(0, 丹方等级 − 炼丹等级)，最终限制在 5%–95%",
+  "perAlchemyLevel": 0.01,
+  "levelGapPenalty": 0.1,
+  "minRate": 0.05,
+  "maxRate": 0.95,
+  "furnace": {
+   "bronze_furnace": 0.0,
+   "purple_copper_furnace": 0.05,
+   "dark_iron_furnace": 0.1
+  },
+  "fire": {
+   "skipped": 0.0,
+   "inZone": 0.1,
+   "perfect": 0.15,
+   "missed": -0.05
+  },
+  "quality": {
+   "base": {
+    "low": 0.6,
+    "mid": 0.3,
+    "high": 0.09,
+    "supreme": 0.01
+   },
+   "perAlchemyLevelShift": 0.01,
+   "perfectFireBonus": {
+    "high": 0.1,
+    "supreme": 0.02
+   },
+   "effectMul": {
+    "low": 1.0,
+    "mid": 1.2,
+    "high": 1.5,
+    "supreme": 2.0
+   }
+  },
+  "alchemyExp": {
+   "perBrew": "丹方等级 × 10（失败也给一半）",
+   "toNext": "50 × 当前炼丹等级",
+   "maxLevel": 30
+  }
+ },
+ "recipes": [
+  {
+   "id": "recipe_hp_pill",
+   "name": "回春丹",
+   "output": "hp_pill_small",
+   "outputCount": 5,
+   "recipeLevel": 1,
+   "baseRate": 0.8,
+   "materials": [
+    {
+     "item": "spirit_herb",
+     "count": 2
+    },
+    {
+     "item": "rabbit_fur",
+     "count": 1
+    }
+   ],
+   "fuelStones": 10,
+   "realm": "qi_refining",
+   "price": 200,
+   "reqLevel": 12
+  },
+  {
+   "id": "recipe_qi_pill",
+   "name": "回气丹",
+   "output": "qi_pill",
+   "outputCount": 5,
+   "recipeLevel": 1,
+   "baseRate": 0.8,
+   "materials": [
+    {
+     "item": "spirit_herb",
+     "count": 2
+    },
+    {
+     "item": "snake_gall",
+     "count": 1
+    }
+   ],
+   "fuelStones": 10,
+   "realm": "qi_refining",
+   "price": 200,
+   "reqLevel": 12
+  },
+  {
+   "id": "recipe_clear_mind",
+   "name": "清心丹",
+   "output": "clear_mind_pill",
+   "outputCount": 1,
+   "recipeLevel": 5,
+   "baseRate": 0.65,
+   "materials": [
+    {
+     "item": "cold_heart_lotus",
+     "count": 1
+    },
+    {
+     "item": "spirit_herb",
+     "count": 3
+    }
+   ],
+   "fuelStones": 60,
+   "realm": "qi_refining",
+   "price": 1500,
+   "reqLevel": 15
+  },
+  {
+   "id": "recipe_buff_atk",
+   "name": "剑意丹",
+   "output": "sword_intent_pill",
+   "outputCount": 3,
+   "recipeLevel": 10,
+   "baseRate": 0.6,
+   "materials": [
+    {
+     "item": "mandrill_fang",
+     "count": 3
+    },
+    {
+     "item": "fire_herb",
+     "count": 2
+    }
+   ],
+   "fuelStones": 120,
+   "realm": "foundation",
+   "price": 3000,
+   "reqLevel": 30
+  },
+  {
+   "id": "recipe_foundation",
+   "name": "筑基丹",
+   "output": "foundation_pill",
+   "outputCount": 1,
+   "recipeLevel": 12,
+   "baseRate": 0.45,
+   "materials": [
+    {
+     "item": "foundation_shard",
+     "count": 5
+    },
+    {
+     "item": "spirit_herb",
+     "count": 5
+    },
+    {
+     "item": "beast_core",
+     "count": 1
+    }
+   ],
+   "fuelStones": 500,
+   "realm": "qi_refining",
+   "price": 8000,
+   "reqLevel": 20
+  },
+  {
+   "id": "recipe_golden_core",
+   "name": "凝金丹",
+   "output": "golden_core_pill",
+   "outputCount": 1,
+   "recipeLevel": 25,
+   "baseRate": 0.35,
+   "materials": [
+    {
+     "item": "golden_boss_essence",
+     "count": 3
+    },
+    {
+     "item": "nine_leaf_ganoderma",
+     "count": 2
+    },
+    {
+     "item": "beast_core",
+     "count": 5
+    }
+   ],
+   "fuelStones": 5000,
+   "realm": "foundation",
+   "price": 60000,
+   "reqLevel": 50
+  }
+ ],
+ "newItems": {
+  "clear_mind_pill": {
+   "name": "清心丹",
+   "effect": {
+    "cureDebuff": "realm_unstable",
+    "breakthroughBonus": 0.1
+   },
+   "price": 300
+  },
+  "sword_intent_pill": {
+   "name": "剑意丹",
+   "effect": {
+    "atkRatio": 0.1,
+    "durationMs": 300000
+   },
+   "price": 150
+  },
+  "foundation_pill": {
+   "name": "筑基丹",
+   "effect": {
+    "breakthrough": "foundation"
+   },
+   "price": 0
+  },
+  "golden_core_pill": {
+   "name": "凝金丹",
+   "effect": {
+    "breakthrough": "golden_core"
+   },
+   "price": 0
+  }
+ }
+}

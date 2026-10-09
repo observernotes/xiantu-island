@@ -1,0 +1,134 @@
+{
+ "frames": {
+  "fx_fox_phantom_dash_play_01": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 448,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 448,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 448,
+    "h": 160
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fx_fox_phantom_dash_play_02": {
+   "frame": {
+    "x": 448,
+    "y": 0,
+    "w": 448,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 448,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 448,
+    "h": 160
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fx_fox_phantom_dash_play_03": {
+   "frame": {
+    "x": 896,
+    "y": 0,
+    "w": 448,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 448,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 448,
+    "h": 160
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fx_fox_phantom_dash_play_04": {
+   "frame": {
+    "x": 1344,
+    "y": 0,
+    "w": 448,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 448,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 448,
+    "h": 160
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fx_fox_phantom_dash_play_05": {
+   "frame": {
+    "x": 1792,
+    "y": 0,
+    "w": 448,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 448,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 448,
+    "h": 160
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  }
+ },
+ "meta": {
+  "app": "xiantu gen_boss_fox.py",
+  "image": "fx_fox_phantom_dash.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 2240,
+   "h": 160
+  },
+  "scale": "1"
+ }
+}

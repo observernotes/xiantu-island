@@ -1,0 +1,121 @@
+{
+ "atlas": "mon_demon_fox",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  192,
+  160
+ ],
+ "anims": [
+  {
+   "key": "mon_demon_fox_idle",
+   "frames": [
+    "mon_demon_fox_idle_01",
+    "mon_demon_fox_idle_02",
+    "mon_demon_fox_idle_03",
+    "mon_demon_fox_idle_04"
+   ],
+   "frameRate": 5,
+   "repeat": -1
+  },
+  {
+   "key": "mon_demon_fox_walk",
+   "frames": [
+    "mon_demon_fox_walk_01",
+    "mon_demon_fox_walk_02",
+    "mon_demon_fox_walk_03",
+    "mon_demon_fox_walk_04"
+   ],
+   "frameRate": 8,
+   "repeat": -1
+  },
+  {
+   "key": "mon_demon_fox_fox_fire",
+   "frames": [
+    "mon_demon_fox_fox_fire_01",
+    "mon_demon_fox_fox_fire_02",
+    "mon_demon_fox_fox_fire_03",
+    "mon_demon_fox_fox_fire_04"
+   ],
+   "frameRate": 8,
+   "repeat": 0
+  },
+  {
+   "key": "mon_demon_fox_phantom_dash",
+   "frames": [
+    "mon_demon_fox_phantom_dash_01",
+    "mon_demon_fox_phantom_dash_02",
+    "mon_demon_fox_phantom_dash_03",
+    "mon_demon_fox_phantom_dash_04"
+   ],
+   "frameRate": 8,
+   "repeat": 0
+  },
+  {
+   "key": "mon_demon_fox_fox_summon",
+   "frames": [
+    "mon_demon_fox_fox_summon_01",
+    "mon_demon_fox_fox_summon_02",
+    "mon_demon_fox_fox_summon_03",
+    "mon_demon_fox_fox_summon_04"
+   ],
+   "frameRate": 6,
+   "repeat": 0
+  },
+  {
+   "key": "mon_demon_fox_hit",
+   "frames": [
+    "mon_demon_fox_hit_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  },
+  {
+   "key": "mon_demon_fox_die",
+   "frames": [
+    "mon_demon_fox_die_01",
+    "mon_demon_fox_die_02",
+    "mon_demon_fox_die_03",
+    "mon_demon_fox_die_04",
+    "mon_demon_fox_die_05"
+   ],
+   "frameRate": 7,
+   "repeat": 0
+  }
+ ],
+ "bodySize": [
+  64,
+  110
+ ],
+ "skillFrames": {
+  "fox_fire": {
+   "release": 3,
+   "spawnOffset": [
+    -64,
+    -44
+   ],
+   "fx": "fx_fox_fox_fire",
+   "note": "第 3 帧在 spawnOffset（相对脚底，朝左；朝右时 x 取反）生成 3 枚狐火"
+  },
+  "phantom_dash": {
+   "telegraphFrames": [
+    1,
+    2
+   ],
+   "dashFrame": 3,
+   "recoverFrame": 4,
+   "fx": "fx_fox_phantom_dash",
+   "warnFx": "fx_fox_phantom_dash_warn",
+   "note": "telegraphMs 期间停在 1→2 帧并播 warn；位移期间定格第 3 帧；落地播第 4 帧；结束后在路径中点播残影"
+  },
+  "fox_summon": {
+   "release": 3,
+   "fx": "fx_fox_fox_summon",
+   "note": "第 3 帧在每个刷怪点播召唤阵，召唤阵第 4 帧刷出灵兔"
+  }
+ },
+ "judgeNote": "非 die 帧脚底都落在帧底边（y=159），die 第 3 帧起倒地。"
+}

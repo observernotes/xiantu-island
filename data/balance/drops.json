@@ -1,0 +1,524 @@
+{
+ "drop_rabbit": {
+  "spiritStone": [
+   1,
+   5
+  ],
+  "items": [
+   {
+    "item": "rabbit_fur",
+    "chance": 0.4,
+    "count": [
+     1,
+     1
+    ]
+   },
+   {
+    "item": "hp_pill_small",
+    "chance": 0.05,
+    "count": [
+     1,
+     1
+    ]
+   }
+  ]
+ },
+ "drop_snake": {
+  "spiritStone": [
+   4,
+   10
+  ],
+  "items": [
+   {
+    "item": "snake_gall",
+    "chance": 0.3,
+    "count": [
+     1,
+     1
+    ]
+   },
+   {
+    "item": "hp_pill_small",
+    "chance": 0.08,
+    "count": [
+     1,
+     2
+    ]
+   },
+   {
+    "item": "bamboo_sword",
+    "chance": 0.01,
+    "count": [
+     1,
+     1
+    ]
+   }
+  ]
+ },
+ "drop_mandrill": {
+  "spiritStone": [
+   10,
+   22
+  ],
+  "items": [
+   {
+    "item": "mandrill_fang",
+    "chance": 0.3,
+    "count": [
+     1,
+     1
+    ]
+   },
+   {
+    "item": "hp_pill_small",
+    "chance": 0.1,
+    "count": [
+     1,
+     2
+    ]
+   },
+   {
+    "item": "qi_pill",
+    "chance": 0.06,
+    "count": [
+     1,
+     1
+    ]
+   },
+   {
+    "item": "cloth_shoes",
+    "chance": 0.015,
+    "count": [
+     1,
+     1
+    ]
+   }
+  ]
+ },
+ "drop_fox": {
+  "spiritStone": [
+   300,
+   500
+  ],
+  "items": [
+   {
+    "item": "fox_tail",
+    "chance": 1.0,
+    "count": [
+     1,
+     1
+    ]
+   },
+   {
+    "item": "foundation_shard",
+    "chance": 0.3,
+    "count": [
+     1,
+     1
+    ]
+   },
+   {
+    "item": "azure_steel_sword",
+    "chance": 0.25,
+    "count": [
+     1,
+     1
+    ]
+   },
+   {
+    "item": "fox_robe",
+    "chance": 0.25,
+    "count": [
+     1,
+     1
+    ]
+   },
+   {
+    "item": "hp_pill_small",
+    "chance": 1.0,
+    "count": [
+     3,
+     5
+    ]
+   }
+  ]
+ },
+ "drop_wild_boar_spirit": {
+  "spiritStone": [
+   12,
+   24
+  ],
+  "items": [
+   {
+    "item": "hp_pill_small",
+    "chance": 0.08,
+    "count": [
+     1,
+     2
+    ]
+   }
+  ]
+ },
+ "drop_straw_puppet": {
+  "spiritStone": [
+   15,
+   30
+  ],
+  "items": [
+   {
+    "item": "hp_pill_small",
+    "chance": 0.08,
+    "count": [
+     1,
+     2
+    ]
+   }
+  ]
+ },
+ "drop_black_robe_minion": {
+  "spiritStone": [
+   18,
+   36
+  ],
+  "items": [
+   {
+    "item": "hp_pill_small",
+    "chance": 0.08,
+    "count": [
+     1,
+     2
+    ]
+   },
+   {
+    "item": "foundation_shard",
+    "chance": 0.008,
+    "count": [
+     1,
+     1
+    ]
+   }
+  ]
+ },
+ "drop_vine_imp": {
+  "spiritStone": [
+   22,
+   44
+  ],
+  "items": [
+   {
+    "item": "hp_pill_small",
+    "chance": 0.08,
+    "count": [
+     1,
+     2
+    ]
+   },
+   {
+    "item": "spirit_herb",
+    "chance": 0.3,
+    "count": [
+     1,
+     1
+    ]
+   }
+  ]
+ },
+ "drop_shadow_wolf": {
+  "spiritStone": [
+   26,
+   52
+  ],
+  "items": [
+   {
+    "item": "hp_pill_small",
+    "chance": 0.08,
+    "count": [
+     1,
+     2
+    ]
+   },
+   {
+    "item": "foundation_shard",
+    "chance": 0.004,
+    "count": [
+     1,
+     1
+    ]
+   }
+  ]
+ },
+ "drop_poison_spider": {
+  "spiritStone": [
+   30,
+   60
+  ],
+  "items": [
+   {
+    "item": "hp_pill_small",
+    "chance": 0.08,
+    "count": [
+     1,
+     2
+    ]
+   },
+   {
+    "item": "beast_core",
+    "chance": 0.03,
+    "count": [
+     1,
+     1
+    ]
+   },
+   {
+    "item": "foundation_shard",
+    "chance": 0.004,
+    "count": [
+     1,
+     1
+    ]
+   }
+  ]
+ },
+ "drop_demonized_ape": {
+  "spiritStone": [
+   34,
+   68
+  ],
+  "items": [
+   {
+    "item": "hp_pill_small",
+    "chance": 0.08,
+    "count": [
+     1,
+     2
+    ]
+   },
+   {
+    "item": "iron_essence",
+    "chance": 0.3,
+    "count": [
+     1,
+     1
+    ]
+   },
+   {
+    "item": "beast_core",
+    "chance": 0.03,
+    "count": [
+     1,
+     1
+    ]
+   }
+  ]
+ },
+ "drop_tree_demon_sapling": {
+  "spiritStone": [
+   37,
+   74
+  ],
+  "items": [
+   {
+    "item": "hp_pill_small",
+    "chance": 0.08,
+    "count": [
+     1,
+     2
+    ]
+   },
+   {
+    "item": "spirit_copper",
+    "chance": 0.3,
+    "count": [
+     1,
+     1
+    ]
+   },
+   {
+    "item": "beast_core",
+    "chance": 0.03,
+    "count": [
+     1,
+     1
+    ]
+   }
+  ]
+ },
+ "drop_millennium_tree_demon": {
+  "spiritStone": [
+   2000,
+   3000
+  ],
+  "items": [
+   {
+    "item": "pillar_shard_2",
+    "chance": 1.0,
+    "count": [
+     1,
+     1
+    ],
+    "questOnly": true
+   },
+   {
+    "item": "beast_core",
+    "chance": 1.0,
+    "count": [
+     1,
+     1
+    ]
+   },
+   {
+    "item": "spirit_copper",
+    "chance": 1.0,
+    "count": [
+     3,
+     6
+    ]
+   }
+  ]
+ },
+ "drop_lava_lizard": {
+  "spiritStone": [
+   43,
+   86
+  ],
+  "items": [
+   {
+    "item": "hp_pill_small",
+    "chance": 0.08,
+    "count": [
+     1,
+     2
+    ]
+   },
+   {
+    "item": "fire_herb",
+    "chance": 0.3,
+    "count": [
+     1,
+     1
+    ]
+   }
+  ]
+ },
+ "drop_fire_crow": {
+  "spiritStone": [
+   47,
+   94
+  ],
+  "items": [
+   {
+    "item": "hp_pill_small",
+    "chance": 0.08,
+    "count": [
+     1,
+     2
+    ]
+   },
+   {
+    "item": "beast_core",
+    "chance": 0.03,
+    "count": [
+     1,
+     1
+    ]
+   }
+  ]
+ },
+ "drop_flame_puppet": {
+  "spiritStone": [
+   51,
+   102
+  ],
+  "items": [
+   {
+    "item": "hp_pill_small",
+    "chance": 0.08,
+    "count": [
+     1,
+     2
+    ]
+   },
+   {
+    "item": "iron_essence",
+    "chance": 0.3,
+    "count": [
+     1,
+     1
+    ]
+   },
+   {
+    "item": "beast_core",
+    "chance": 0.03,
+    "count": [
+     1,
+     1
+    ]
+   }
+  ]
+ },
+ "drop_black_robe_guard": {
+  "spiritStone": [
+   55,
+   110
+  ],
+  "items": [
+   {
+    "item": "hp_pill_small",
+    "chance": 0.08,
+    "count": [
+     1,
+     2
+    ]
+   },
+   {
+    "item": "beast_core",
+    "chance": 0.04,
+    "count": [
+     1,
+     1
+    ]
+   }
+  ]
+ },
+ "drop_flame_envoy": {
+  "spiritStone": [
+   5000,
+   8000
+  ],
+  "items": [
+   {
+    "item": "pillar_shard_3",
+    "chance": 1.0,
+    "count": [
+     1,
+     1
+    ],
+    "questOnly": true
+   },
+   {
+    "item": "golden_boss_essence",
+    "chance": 1.0,
+    "count": [
+     1,
+     2
+    ]
+   },
+   {
+    "item": "scroll_ten_thousand_swords",
+    "chance": 0.05,
+    "count": [
+     1,
+     1
+    ]
+   },
+   {
+    "item": "beast_core",
+    "chance": 1.0,
+    "count": [
+     1,
+     1
+    ]
+   }
+  ]
+ }
+}

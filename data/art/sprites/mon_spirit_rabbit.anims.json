@@ -1,0 +1,48 @@
+{
+ "atlas": "mon_spirit_rabbit",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": 64,
+ "anims": [
+  {
+   "key": "mon_spirit_rabbit_idle",
+   "frames": [
+    "mon_spirit_rabbit_idle_01",
+    "mon_spirit_rabbit_idle_02"
+   ],
+   "frameRate": 3,
+   "repeat": -1
+  },
+  {
+   "key": "mon_spirit_rabbit_walk",
+   "frames": [
+    "mon_spirit_rabbit_walk_01",
+    "mon_spirit_rabbit_walk_02",
+    "mon_spirit_rabbit_walk_03"
+   ],
+   "frameRate": 8,
+   "repeat": -1
+  },
+  {
+   "key": "mon_spirit_rabbit_hit",
+   "frames": [
+    "mon_spirit_rabbit_hit_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  },
+  {
+   "key": "mon_spirit_rabbit_die",
+   "frames": [
+    "mon_spirit_rabbit_die_01",
+    "mon_spirit_rabbit_die_02",
+    "mon_spirit_rabbit_die_03"
+   ],
+   "frameRate": 6,
+   "repeat": 0
+  }
+ ]
+}
