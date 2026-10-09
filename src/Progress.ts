@@ -10,7 +10,7 @@ export class Progress {
   inventory: Record<string, number> = {};
   equip: Record<string, string> = {};     // 桃木剑由任务「灵根初现」发放
   job = '';                                 // 转职后的职业 id
-  quests: Record<string, { state: 'active' | 'done'; kills: Record<string, number>; reached?: boolean }> = {};
+  quests: Record<string, { state: 'active' | 'done'; kills: Record<string, number>; reached?: boolean; talked?: Record<string, boolean> }> = {};
   name = '少年';
 
   constructor() { this.hp = this.maxHp; this.mp = this.maxMp; }

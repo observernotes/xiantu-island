@@ -1,0 +1,14 @@
+{
+ "overflowPoolRatio": 0.5,
+ "pillQualityBonus": {
+  "low": 0.0,
+  "mid": 0.05,
+  "high": 0.1,
+  "supreme": 0.2
+ },
+ "insightBonusPerPoint": 0.002,
+ "insightBonusCap": 0.1,
+ "clearMindPillBonus": 0.1,
+ "pityPerFail": 0.15,
+ "maxRate": 1.0
+}

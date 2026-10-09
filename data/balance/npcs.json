@@ -1,0 +1,181 @@
+[
+  {
+    "id": "village_elder",
+    "name": "李村长",
+    "map": "qingyun_village",
+    "sprite": "npc_village_elder",
+    "dialog": [
+      "孩子，你身上……竟有灵根？",
+      "村外竹林的灵兔最近躁动得很，先去练练手吧。"
+    ],
+    "quests": [
+      "q_awaken"
+    ]
+  },
+  {
+    "id": "grocer_wang",
+    "name": "王婶",
+    "map": "qingyun_village",
+    "sprite": "npc_grocer_wang",
+    "shop": true,
+    "dialog": [
+      "哎哟，小仙长来啦！兔绒我都收，价钱公道。"
+    ],
+    "quests": [
+      "q_bamboo"
+    ]
+  },
+  {
+    "id": "doctor_sun",
+    "name": "孙郎中",
+    "map": "qingyun_village",
+    "sprite": "npc_doctor_sun",
+    "shop": true,
+    "dialog": [
+      "受了伤别硬撑，回春丹拿去。",
+      "青蛇胆是好药引，有多少我要多少。"
+    ],
+    "quests": [
+      "q_snake"
+    ]
+  },
+  {
+    "id": "tianjian_envoy",
+    "name": "天剑宗接引使",
+    "map": "qingyun_village",
+    "sprite": "npc_tianjian_envoy",
+    "dialog": [
+      "灵溪山道的妖狐为祸已久。斩了它，便是入我天剑宗的投名状。"
+    ],
+    "quests": [
+      "q_breakthrough",
+      "q_fox"
+    ]
+  },
+  {
+    "id": "tianjian_elder",
+    "name": "传功长老",
+    "map": "tianjian_sect",
+    "sprite": "npc_tianjian_elder",
+    "dialog": [
+      "炼气圆满，便该筑基了。筑基丹带来了吗？",
+      "筑基台上，心要静，阵要稳。"
+    ],
+    "quests": [
+      "q_elder_exam"
+    ],
+    "phase": 3
+  },
+  {
+    "id": "luoxia_mayor",
+    "name": "柳知县",
+    "map": "luoxia_town",
+    "sprite": "npc_luoxia_mayor",
+    "dialog": [
+      "近来各岛妖兽异动，镇上还有人在暗中收购一种发光的碎片……"
+    ],
+    "quests": [
+      "q_main_03"
+    ],
+    "phase": 5
+  },
+  {
+    "id": "alchemist_ge",
+    "name": "葛丹师",
+    "map": "luoxia_town",
+    "sprite": "npc_alchemist_ge",
+    "dialog": [
+      "丹道无捷径，火候到了，丹自然成。"
+    ],
+    "quests": [],
+    "phase": 5
+  },
+  {
+    "id": "smith_ou",
+    "name": "欧冶匠",
+    "map": "luoxia_town",
+    "sprite": "npc_smith_ou",
+    "dialog": [
+      "好铁要千锤，好剑要百炼。"
+    ],
+    "quests": [],
+    "phase": 5
+  },
+  {
+    "id": "merchant_qian",
+    "name": "钱掌柜",
+    "map": "luoxia_town",
+    "sprite": "npc_merchant_qian",
+    "dialog": [
+      "客官，看看兵刃？童叟无欺！"
+    ],
+    "quests": [],
+    "phase": 5
+  },
+  {
+    "id": "storage_keeper",
+    "name": "库房老周",
+    "map": "luoxia_town",
+    "sprite": "npc_storage_keeper",
+    "dialog": [
+      "东西放我这儿，丢不了。"
+    ],
+    "quests": [],
+    "phase": 5
+  },
+  {
+    "id": "ferry_master",
+    "name": "船老大",
+    "map": "luoxia_town",
+    "sprite": "npc_ferry_master",
+    "dialog": [
+      "飞舟要开了，去哪座岛？"
+    ],
+    "quests": [],
+    "phase": 5
+  },
+  {
+    "id": "sect_master_ling",
+    "name": "凌宗主",
+    "map": "tianjian_sect",
+    "sprite": "npc_sect_master_ling",
+    "dialog": [
+      "天柱残片……没想到还能再见到它。"
+    ],
+    "quests": [],
+    "phase": 5
+  },
+  {
+    "id": "senior_sister_su",
+    "name": "苏师姐",
+    "map": "tianjian_sect",
+    "sprite": "npc_senior_sister_su",
+    "dialog": [
+      "师弟（师妹），宗门里的路我带你走一遍。"
+    ],
+    "quests": [],
+    "phase": 5
+  },
+  {
+    "id": "hunter_lei",
+    "name": "雷猎户",
+    "map": "wanyao_forest",
+    "sprite": "npc_hunter_lei",
+    "dialog": [
+      "林子里的畜生最近都疯了，小心点。"
+    ],
+    "quests": [],
+    "phase": 5
+  },
+  {
+    "id": "tree_spirit",
+    "name": "古树灵",
+    "map": "wanyao_forest",
+    "sprite": "npc_tree_spirit",
+    "dialog": [
+      "外来的灵气……在逼疯我的孩子们……"
+    ],
+    "quests": [],
+    "phase": 5
+  }
+]

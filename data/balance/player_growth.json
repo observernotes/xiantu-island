@@ -1,0 +1,37 @@
+{
+ "base": {
+  "hp": 50,
+  "mp": 10,
+  "atk": 4,
+  "def": 0,
+  "speed": 100,
+  "jump": 100
+ },
+ "perLevel": {
+  "hp": 12,
+  "mp": 4,
+  "atk": 1.0,
+  "def": 0.5,
+  "statPoints": 5
+ },
+ "statEffects": {
+  "rootBone": {
+   "hp": 2,
+   "def": 0.5,
+   "atk": 0.3
+  },
+  "agility": {
+   "hit": 0.5,
+   "evade": 0.3
+  },
+  "spirit": {
+   "mp": 3,
+   "matk": 1
+  },
+  "insight": {
+   "expBonus": 0.002
+  }
+ },
+ "damageFormula": "max(1, round(atk * ratio * rand(0.9,1.1) - targetDef))",
+ "levelGapRule": "怪物比玩家高 n 级：玩家伤害 ×max(0.6, 1-0.05n)；怪物比玩家低 5 级以上：修为 ×max(0.2, 1-0.1(n-4))"
+}

@@ -3,6 +3,8 @@ import type { MonsterDef } from '../data';
 
 type MState = 'patrol' | 'idle' | 'chase' | 'attack' | 'hit' | 'dead';
 
+/** ?debug=timing：把山魈等的前摇各段时间打到控制台，方便和实测对数 */
+const DEBUG_TIMING = typeof location !== 'undefined' && new URLSearchParams(location.search).get('debug') === 'timing';
 const BODY: Record<string, [number, number]> = {
   mon_spirit_rabbit: [34, 30], mon_bamboo_snake: [46, 22], mon_mountain_mandrill: [46, 58],
 };
@@ -32,7 +34,7 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
     this.bar = scene.add.graphics().setDepth(11);
     this.anim('idle');
     this.on(Phaser.Animations.Events.ANIMATION_UPDATE, (_a: any, frame: Phaser.Animations.AnimationFrame) => {
-      if (this.st === 'attack' && frame.index === 2 && this.def.attack) this.doSlam();
+      // 出伤害改在前摇结束时直接触发（见 step），这里不再按帧判，免得低帧率下拖长
     });
   }
 
@@ -65,6 +67,12 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
     this.drawBar();
     if (this.st === 'dead') return;
     if (d.moveSpeed === 0) { b.setVelocityX(0); return; }
+    // 前摇结束：落下出伤害
+    if (this.teleEnd && time >= this.teleEnd) {
+      this.teleEnd = 0; this.teleBlink?.stop(); this.teleBlink = undefined; this.clearTint();
+      if (DEBUG_TIMING) console.log(`[tele] ${d.id} 前摇结束 实际 +${Math.round(performance.now() - this.teleAt)}ms`);
+      if (this.st === 'attack') { if (this.atlas) { this.anims.resume(); this.anims.nextFrame(); } this.doSlam(); }
+    }
     if ((this.st === 'hit' || this.st === 'attack') && time < this.stateUntil) {
       if (this.grounded && this.st === 'attack') b.setVelocityX(0);
       return this.face();
@@ -79,17 +87,14 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
       this.dir = Math.sign(dx) || this.dir;
       // 前摇：停在抬手帧 telegraphMs（默认 500ms），身体闪红，然后才落下出伤害
       const tele = (d.attack as any).telegraphMs ?? 500;
-      this.st = 'attack'; this.attackReadyAt = time + d.attack.cooldownMs;
+      this.st = 'attack'; this.attackReadyAt = time + d.attack.cooldownMs; this.teleAt = performance.now(); this.teleGameAt = this.scene.time.now;
+      if (DEBUG_TIMING) console.log(`[tele] ${d.id} 抬手 telegraphMs=${tele}`);
       this.stateUntil = time + tele + 450;
       b.setVelocityX(0); this.anim('attack');
       if (this.atlas) this.anims.pause();
       const blink = this.scene.tweens.addCounter({ from: 0, to: 1, duration: 120, yoyo: true, repeat: Math.floor(tele / 240),
         onUpdate: tw => this.setTint(Phaser.Display.Color.GetColor(255, 255 - 120 * tw.getValue()!, 255 - 120 * tw.getValue()!)) });
-      this.scene.time.delayedCall(tele, () => {
-        blink.stop(); this.clearTint();
-        if (this.st !== 'attack') return;
-        if (this.atlas) this.anims.resume(); else this.doSlam();
-      });
+      this.teleEnd = time + tele; this.teleBlink = blink;   // 前摇结束在 update 里按同一个时钟判，不用 delayedCall（低帧率下会被拖长）
       return this.face();
     }
 
@@ -124,7 +129,9 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
 
   private face() { this.setFlipX(this.dir > 0); }   // 美术朝左画
 
+  private teleAt = 0; private teleGameAt = 0; private teleEnd = 0; private teleBlink?: Phaser.Tweens.Tween;
   private doSlam() {
+    if (DEBUG_TIMING) console.log(`[tele] ${this.def.id} 出伤害 实际 +${Math.round(performance.now() - this.teleAt)}ms`);
     const r = this.def.attack!.range, b = this.body;
     const x = this.dir > 0 ? b.center.x : b.center.x - r.w;
     this.onSlam?.(this, new Phaser.Geom.Rectangle(x, b.bottom - r.h, r.w, r.h));

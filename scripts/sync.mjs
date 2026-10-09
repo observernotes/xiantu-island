@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { findRoot } from './root.mjs';
+import { findRoot, dataMode } from './root.mjs';
 const here = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const root = findRoot(here);
 const out = path.join(here, 'public/art');
@@ -17,4 +17,4 @@ function copyDir(src, dst) {
   }
 }
 for (const sub of ['sprites', 'tiles', 'icons']) copyDir(path.join(root, 'art', sub), path.join(out, sub));
-console.log('synced art from', root);
+console.log('synced art from', root, '(' + dataMode(here) + ')');

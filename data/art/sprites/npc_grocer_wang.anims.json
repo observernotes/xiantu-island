@@ -1,0 +1,30 @@
+{
+ "atlas": "npc_grocer_wang",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": 96,
+ "anims": [
+  {
+   "key": "npc_grocer_wang_idle",
+   "frames": [
+    "npc_grocer_wang_idle_01",
+    "npc_grocer_wang_idle_02",
+    "npc_grocer_wang_idle_03"
+   ],
+   "frameRate": 3,
+   "repeat": -1
+  },
+  {
+   "key": "npc_grocer_wang_talk",
+   "frames": [
+    "npc_grocer_wang_talk_01",
+    "npc_grocer_wang_talk_02"
+   ],
+   "frameRate": 4,
+   "repeat": -1
+  }
+ ]
+}

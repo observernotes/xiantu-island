@@ -1,0 +1,155 @@
+[
+ {
+  "id": "spirit_herb",
+  "name": "灵草",
+  "type": "material",
+  "kind": "herb",
+  "price": 8,
+  "stack": 200,
+  "icon": "icon_spirit_herb",
+  "gather": {
+   "castMs": 2500,
+   "respawnMs": 60000,
+   "maps": [
+    "bamboo_forest",
+    "lingxi_path"
+   ]
+  }
+ },
+ {
+  "id": "fire_herb",
+  "name": "火灵草",
+  "type": "material",
+  "kind": "herb",
+  "price": 25,
+  "stack": 200,
+  "icon": "icon_fire_herb",
+  "gather": {
+   "castMs": 3000,
+   "respawnMs": 120000,
+   "maps": [
+    "赤炎火山（待定）"
+   ]
+  }
+ },
+ {
+  "id": "cold_heart_lotus",
+  "name": "寒心莲",
+  "type": "material",
+  "kind": "herb",
+  "price": 60,
+  "stack": 200,
+  "icon": "icon_cold_heart_lotus",
+  "gather": {
+   "castMs": 4000,
+   "respawnMs": 300000,
+   "maps": [
+    "灵溪山道（溪边，待加）"
+   ]
+  }
+ },
+ {
+  "id": "nine_leaf_ganoderma",
+  "name": "九叶灵芝",
+  "type": "material",
+  "kind": "herb",
+  "price": 400,
+  "stack": 200,
+  "icon": "icon_nine_leaf_ganoderma",
+  "gather": {
+   "castMs": 5000,
+   "respawnMs": 600000,
+   "maps": [
+    "万妖林（待定）"
+   ]
+  }
+ },
+ {
+  "id": "iron_essence",
+  "name": "铁精",
+  "type": "material",
+  "kind": "ore",
+  "price": 10,
+  "stack": 200,
+  "icon": "icon_iron_essence",
+  "gather": {
+   "castMs": 3000,
+   "respawnMs": 90000,
+   "maps": [
+    "lingxi_path"
+   ]
+  }
+ },
+ {
+  "id": "spirit_copper",
+  "name": "灵铜",
+  "type": "material",
+  "kind": "ore",
+  "price": 40,
+  "stack": 200,
+  "icon": "icon_spirit_copper",
+  "gather": {
+   "castMs": 3500,
+   "respawnMs": 120000,
+   "maps": [
+    "万妖林（待定）"
+   ]
+  }
+ },
+ {
+  "id": "cold_iron",
+  "name": "寒铁",
+  "type": "material",
+  "kind": "ore",
+  "price": 150,
+  "stack": 200,
+  "icon": "icon_cold_iron",
+  "gather": {
+   "castMs": 4000,
+   "respawnMs": 180000,
+   "maps": [
+    "寒玉冰原（待定）"
+   ]
+  }
+ },
+ {
+  "id": "beast_core",
+  "name": "妖兽内丹",
+  "type": "material",
+  "kind": "drop",
+  "price": 120,
+  "stack": 200,
+  "icon": "icon_beast_core",
+  "note": "炼气后期以上精英怪 3%，首领必掉"
+ },
+ {
+  "id": "golden_boss_essence",
+  "name": "金丹首领精魄",
+  "type": "material",
+  "kind": "drop",
+  "price": 2000,
+  "stack": 200,
+  "icon": "icon_golden_boss_essence",
+  "note": "金丹期区域首领掉落，具体首领待天机阁定"
+ },
+ {
+  "id": "refine_stone",
+  "name": "精炼石",
+  "type": "material",
+  "kind": "enhance",
+  "price": 50,
+  "stack": 200,
+  "icon": "icon_refine_stone",
+  "note": "分解装备、秘境产出"
+ },
+ {
+  "id": "protect_charm",
+  "name": "护器符",
+  "type": "material",
+  "kind": "enhance",
+  "price": 800,
+  "stack": 200,
+  "icon": "icon_protect_charm",
+  "note": "强化失败不掉级，商城/活动产出"
+ }
+]

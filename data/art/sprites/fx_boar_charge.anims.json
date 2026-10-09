@@ -1,0 +1,25 @@
+{
+ "atlas": "fx_boar_charge",
+ "facing": "left",
+ "origin": [
+  0.12,
+  1
+ ],
+ "frameSize": [
+  96,
+  48
+ ],
+ "anims": [
+  {
+   "key": "fx_boar_charge_loop",
+   "frames": [
+    "fx_boar_charge_loop_01",
+    "fx_boar_charge_loop_02",
+    "fx_boar_charge_loop_03"
+   ],
+   "frameRate": 12,
+   "repeat": -1
+  }
+ ],
+ "blend": "NORMAL"
+}

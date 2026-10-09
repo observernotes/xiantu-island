@@ -1,0 +1,36 @@
+{
+ "atlas": "fx_fox_fox_fire",
+ "facing": "left",
+ "origin": [
+  0.5,
+  0.5
+ ],
+ "frameSize": [
+  64,
+  48
+ ],
+ "anims": [
+  {
+   "key": "fx_fox_fox_fire_fly",
+   "frames": [
+    "fx_fox_fox_fire_fly_01",
+    "fx_fox_fox_fire_fly_02",
+    "fx_fox_fox_fire_fly_03",
+    "fx_fox_fox_fire_fly_04"
+   ],
+   "frameRate": 12,
+   "repeat": -1
+  },
+  {
+   "key": "fx_fox_fox_fire_hit",
+   "frames": [
+    "fx_fox_fox_fire_hit_01",
+    "fx_fox_fox_fire_hit_02",
+    "fx_fox_fox_fire_hit_03",
+    "fx_fox_fox_fire_hit_04"
+   ],
+   "frameRate": 16,
+   "repeat": 0
+  }
+ ]
+}

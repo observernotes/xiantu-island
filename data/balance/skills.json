@@ -1,0 +1,523 @@
+{
+ "rules": {
+  "spPerLevel": 3,
+  "jobAdvanceBonusSp": 1,
+  "masteryCapBonus": 2,
+  "budget": {
+   "job1": {
+    "levels": "10-29",
+    "sp": 61,
+    "needToMaxAll": 70
+   },
+   "job2": {
+    "levels": "30-59",
+    "sp": 91,
+    "needToMaxAll": 80
+   },
+   "job3": {
+    "levels": "60-99",
+    "sp": 121,
+    "needToMaxAll": 120
+   }
+  }
+ },
+ "skills": [
+  {
+   "id": "sword_qi_slash",
+   "name": "剑气斩",
+   "sect": "tianjian",
+   "job": 1,
+   "type": "active",
+   "maxLevel": 20,
+   "spCost": 1,
+   "masteryPerHit": 1,
+   "masteryToCap": 500,
+   "mpCost": 6,
+   "cooldownMs": 0,
+   "damageRatio": 1.6,
+   "hitCount": 1,
+   "maxTargets": 1,
+   "range": {
+    "w": 280,
+    "h": 48
+   },
+   "durationMs": 0,
+   "perLevel": {
+    "damageRatio": 0.05
+   },
+   "effects": {},
+   "req": null,
+   "fx": "fx_sword_qi_slash",
+   "icon": "icon_skill_sword_qi_slash",
+   "key": "default:A"
+  },
+  {
+   "id": "whirl_sword",
+   "name": "回风剑",
+   "sect": "tianjian",
+   "job": 1,
+   "type": "active",
+   "maxLevel": 20,
+   "spCost": 1,
+   "masteryPerHit": 1,
+   "masteryToCap": 500,
+   "mpCost": 10,
+   "cooldownMs": 0,
+   "damageRatio": 0.9,
+   "hitCount": 1,
+   "maxTargets": 3,
+   "range": {
+    "w": 160,
+    "h": 80,
+    "behind": 32
+   },
+   "durationMs": 0,
+   "perLevel": {
+    "damageRatio": 0.04,
+    "maxTargets": 0.2
+   },
+   "effects": {},
+   "req": {
+    "sword_qi_slash": 1
+   },
+   "fx": "fx_whirl_sword",
+   "icon": "icon_skill_whirl_sword"
+  },
+  {
+   "id": "light_body",
+   "name": "轻身术",
+   "sect": "tianjian",
+   "job": 1,
+   "type": "buff",
+   "maxLevel": 10,
+   "spCost": 1,
+   "masteryPerHit": 0,
+   "masteryToCap": 0,
+   "mpCost": 12,
+   "cooldownMs": 0,
+   "damageRatio": 0,
+   "hitCount": 0,
+   "maxTargets": 0,
+   "range": null,
+   "durationMs": 60000,
+   "perLevel": {
+    "durationMs": 6000,
+    "speed": 2,
+    "jump": 1
+   },
+   "effects": {},
+   "req": null,
+   "fx": "fx_light_body",
+   "icon": "icon_skill_light_body"
+  },
+  {
+   "id": "tianjian_heart",
+   "name": "天剑心法·初",
+   "sect": "tianjian",
+   "job": 1,
+   "type": "passive",
+   "maxLevel": 10,
+   "spCost": 1,
+   "masteryPerHit": 0,
+   "masteryToCap": 0,
+   "mpCost": 0,
+   "cooldownMs": 0,
+   "damageRatio": 0,
+   "hitCount": 0,
+   "maxTargets": 0,
+   "range": null,
+   "durationMs": 0,
+   "perLevel": {
+    "atk": 1,
+    "mpRegenPer10s": 1
+   },
+   "effects": {},
+   "req": null,
+   "fx": "fx_tianjian_heart",
+   "icon": "icon_skill_tianjian_heart"
+  },
+  {
+   "id": "sword_mastery",
+   "name": "剑术精通",
+   "sect": "tianjian",
+   "job": 1,
+   "type": "passive",
+   "maxLevel": 10,
+   "spCost": 1,
+   "masteryPerHit": 0,
+   "masteryToCap": 0,
+   "mpCost": 0,
+   "cooldownMs": 0,
+   "damageRatio": 0,
+   "hitCount": 0,
+   "maxTargets": 0,
+   "range": null,
+   "durationMs": 0,
+   "perLevel": {
+    "hit": 2,
+    "minDamageRatio": 0.01
+   },
+   "effects": {},
+   "req": null,
+   "fx": "fx_sword_mastery",
+   "icon": "icon_skill_sword_mastery"
+  },
+  {
+   "id": "flying_sword",
+   "name": "御剑术",
+   "sect": "tianjian",
+   "job": 2,
+   "type": "active",
+   "maxLevel": 20,
+   "spCost": 1,
+   "masteryPerHit": 1,
+   "masteryToCap": 1000,
+   "mpCost": 14,
+   "cooldownMs": 0,
+   "damageRatio": 1.5,
+   "hitCount": 2,
+   "maxTargets": 4,
+   "range": {
+    "w": 400,
+    "h": 48
+   },
+   "durationMs": 0,
+   "perLevel": {
+    "damageRatio": 0.06
+   },
+   "effects": {
+    "pierce": true,
+    "returns": true
+   },
+   "req": null,
+   "fx": "fx_flying_sword",
+   "icon": "icon_skill_flying_sword"
+  },
+  {
+   "id": "sword_rain",
+   "name": "剑雨",
+   "sect": "tianjian",
+   "job": 2,
+   "type": "active",
+   "maxLevel": 20,
+   "spCost": 1,
+   "masteryPerHit": 1,
+   "masteryToCap": 1000,
+   "mpCost": 26,
+   "cooldownMs": 4000,
+   "damageRatio": 0.8,
+   "hitCount": 5,
+   "maxTargets": 6,
+   "range": {
+    "w": 320,
+    "h": 160
+   },
+   "durationMs": 0,
+   "perLevel": {
+    "damageRatio": 0.03
+   },
+   "effects": {},
+   "req": {
+    "flying_sword": 5
+   },
+   "fx": "fx_sword_rain",
+   "icon": "icon_skill_sword_rain"
+  },
+  {
+   "id": "sword_shield",
+   "name": "剑罡护体",
+   "sect": "tianjian",
+   "job": 2,
+   "type": "buff",
+   "maxLevel": 15,
+   "spCost": 1,
+   "masteryPerHit": 0,
+   "masteryToCap": 0,
+   "mpCost": 30,
+   "cooldownMs": 30000,
+   "damageRatio": 0,
+   "hitCount": 0,
+   "maxTargets": 0,
+   "range": null,
+   "durationMs": 60000,
+   "perLevel": {
+    "durationMs": 3000,
+    "damageReduce": 0.01,
+    "reflectRatio": 0.05
+   },
+   "effects": {
+    "damageReduce": 0.05,
+    "reflectRatio": 0.5
+   },
+   "req": null,
+   "fx": "fx_sword_shield",
+   "icon": "icon_skill_sword_shield"
+  },
+  {
+   "id": "sword_ride",
+   "name": "御剑飞行",
+   "sect": "tianjian",
+   "job": 2,
+   "type": "passive",
+   "maxLevel": 1,
+   "spCost": 0,
+   "masteryPerHit": 0,
+   "masteryToCap": 0,
+   "mpCost": 8,
+   "cooldownMs": 3000,
+   "damageRatio": 0,
+   "hitCount": 0,
+   "maxTargets": 0,
+   "range": null,
+   "durationMs": 0,
+   "perLevel": {},
+   "effects": {
+    "dashDistance": 192,
+    "dashMs": 180,
+    "worldFlight": true
+   },
+   "req": {
+    "realm": "foundation"
+   },
+   "fx": "fx_sword_ride",
+   "icon": "icon_skill_sword_ride"
+  },
+  {
+   "id": "tianjian_heart_2",
+   "name": "天剑心法·中",
+   "sect": "tianjian",
+   "job": 2,
+   "type": "passive",
+   "maxLevel": 15,
+   "spCost": 1,
+   "masteryPerHit": 0,
+   "masteryToCap": 0,
+   "mpCost": 0,
+   "cooldownMs": 0,
+   "damageRatio": 0,
+   "hitCount": 0,
+   "maxTargets": 0,
+   "range": null,
+   "durationMs": 0,
+   "perLevel": {
+    "critRate": 0.01,
+    "critDamage": 0.02
+   },
+   "effects": {
+    "critRate": 0.05,
+    "critDamage": 1.5
+   },
+   "req": {
+    "tianjian_heart": 10
+   },
+   "fx": "fx_tianjian_heart_2",
+   "icon": "icon_skill_tianjian_heart_2"
+  },
+  {
+   "id": "qi_condense",
+   "name": "凝气",
+   "sect": "tianjian",
+   "job": 2,
+   "type": "passive",
+   "maxLevel": 10,
+   "spCost": 1,
+   "masteryPerHit": 0,
+   "masteryToCap": 0,
+   "mpCost": 0,
+   "cooldownMs": 0,
+   "damageRatio": 0,
+   "hitCount": 0,
+   "maxTargets": 0,
+   "range": null,
+   "durationMs": 0,
+   "perLevel": {
+    "mpMaxRatio": 0.03,
+    "mpCostReduce": 0.02
+   },
+   "effects": {},
+   "req": null,
+   "fx": "fx_qi_condense",
+   "icon": "icon_skill_qi_condense"
+  },
+  {
+   "id": "ten_thousand_swords",
+   "name": "万剑归宗",
+   "sect": "tianjian",
+   "job": 3,
+   "type": "active",
+   "maxLevel": 30,
+   "spCost": 1,
+   "masteryPerHit": 1,
+   "masteryToCap": 1500,
+   "mpCost": 120,
+   "cooldownMs": 60000,
+   "damageRatio": 2.0,
+   "hitCount": 6,
+   "maxTargets": 15,
+   "range": {
+    "w": 1280,
+    "h": 720
+   },
+   "durationMs": 0,
+   "perLevel": {
+    "damageRatio": 0.1,
+    "cooldownMs": -1000
+   },
+   "effects": {},
+   "req": {
+    "sword_rain": 10,
+    "item": "scroll_ten_thousand_swords"
+   },
+   "fx": "fx_ten_thousand_swords",
+   "icon": "icon_skill_ten_thousand_swords"
+  },
+  {
+   "id": "sword_domain",
+   "name": "剑域",
+   "sect": "tianjian",
+   "job": 3,
+   "type": "active",
+   "maxLevel": 20,
+   "spCost": 1,
+   "masteryPerHit": 1,
+   "masteryToCap": 1500,
+   "mpCost": 60,
+   "cooldownMs": 20000,
+   "damageRatio": 0.6,
+   "hitCount": 1,
+   "maxTargets": 8,
+   "range": {
+    "w": 320,
+    "h": 160
+   },
+   "durationMs": 8000,
+   "perLevel": {
+    "durationMs": 200,
+    "damageRatio": 0.03,
+    "slow": 0.01
+   },
+   "effects": {
+    "tickMs": 500,
+    "slow": 0.2
+   },
+   "req": null,
+   "fx": "fx_sword_domain",
+   "icon": "icon_skill_sword_domain"
+  },
+  {
+   "id": "heart_sword",
+   "name": "心剑",
+   "sect": "tianjian",
+   "job": 3,
+   "type": "active",
+   "maxLevel": 20,
+   "spCost": 1,
+   "masteryPerHit": 1,
+   "masteryToCap": 1500,
+   "mpCost": 40,
+   "cooldownMs": 6000,
+   "damageRatio": 3.0,
+   "hitCount": 2,
+   "maxTargets": 1,
+   "range": {
+    "w": 448,
+    "h": 96
+   },
+   "durationMs": 0,
+   "perLevel": {
+    "damageRatio": 0.12,
+    "cooldownMs": -100
+   },
+   "effects": {
+    "teleportBehind": true
+   },
+   "req": null,
+   "fx": "fx_heart_sword",
+   "icon": "icon_skill_heart_sword"
+  },
+  {
+   "id": "golden_core_sword",
+   "name": "金丹剑意",
+   "sect": "tianjian",
+   "job": 3,
+   "type": "buff",
+   "maxLevel": 20,
+   "spCost": 1,
+   "masteryPerHit": 0,
+   "masteryToCap": 0,
+   "mpCost": 80,
+   "cooldownMs": 120000,
+   "damageRatio": 0,
+   "hitCount": 0,
+   "maxTargets": 0,
+   "range": null,
+   "durationMs": 30000,
+   "perLevel": {
+    "durationMs": 1000,
+    "damageBonus": 0.01
+   },
+   "effects": {
+    "damageBonus": 0.1
+   },
+   "req": {
+    "realm": "golden_core"
+   },
+   "fx": "fx_golden_core_sword",
+   "icon": "icon_skill_golden_core_sword"
+  },
+  {
+   "id": "tianjian_heart_3",
+   "name": "天剑心法·极",
+   "sect": "tianjian",
+   "job": 3,
+   "type": "passive",
+   "maxLevel": 20,
+   "spCost": 1,
+   "masteryPerHit": 0,
+   "masteryToCap": 0,
+   "mpCost": 0,
+   "cooldownMs": 0,
+   "damageRatio": 0,
+   "hitCount": 0,
+   "maxTargets": 0,
+   "range": null,
+   "durationMs": 0,
+   "perLevel": {
+    "ignoreDef": 0.015
+   },
+   "effects": {},
+   "req": {
+    "tianjian_heart_2": 15
+   },
+   "fx": "fx_tianjian_heart_3",
+   "icon": "icon_skill_tianjian_heart_3"
+  },
+  {
+   "id": "sword_intent",
+   "name": "剑意通明",
+   "sect": "tianjian",
+   "job": 3,
+   "type": "passive",
+   "maxLevel": 10,
+   "spCost": 1,
+   "masteryPerHit": 0,
+   "masteryToCap": 0,
+   "mpCost": 0,
+   "cooldownMs": 0,
+   "damageRatio": 0,
+   "hitCount": 0,
+   "maxTargets": 0,
+   "range": null,
+   "durationMs": 0,
+   "perLevel": {
+    "masteryGain": 0.05
+   },
+   "effects": {
+    "skillCapBonusAtMax": 2
+   },
+   "req": null,
+   "fx": "fx_sword_intent",
+   "icon": "icon_skill_sword_intent"
+  }
+ ]
+}
