@@ -129,7 +129,7 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
   private face() { this.setFlipX(this.dir > 0); }   // 美术朝左画
 
   /** Y2：冲锋、弹道 AI 还没写，非 slam 类型的怪临时按山魈拍地 96×48 出手和判定（damageRatio、telegraphMs、cooldownMs 仍读自己那一行） */
-  get slamRange() { const a = this.def.attack!; return a.type === 'slam' ? a.range : { w: 96, h: 48 }; }
+  get slamRange() { const a = this.def.attack!; return a.type === 'slam' && a.range ? a.range : { w: 96, h: 48 }; }
   private teleAt = 0; private teleGameAt = 0; private teleEnd = 0; private teleBlink?: Phaser.Tweens.Tween;
   private doSlam() {
     if (DEBUG_TIMING) console.log(`[tele] ${this.def.id} 出伤害 实际 +${Math.round(performance.now() - this.teleAt)}ms`);
