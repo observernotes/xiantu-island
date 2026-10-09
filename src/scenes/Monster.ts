@@ -4,6 +4,7 @@ import type { MonsterDef } from '../data';
 type MState = 'patrol' | 'idle' | 'chase' | 'attack' | 'hit' | 'dead';
 
 const BODY: Record<string, [number, number]> = {
+  mon_demon_fox: [64, 110],
   mon_spirit_rabbit: [34, 30], mon_bamboo_snake: [46, 22], mon_mountain_mandrill: [46, 58],
 };
 

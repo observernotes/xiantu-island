@@ -35,8 +35,8 @@ export const BREAKTHROUGH_LEVELS: number[] = (realmsRaw as any[]).map(r => r.lev
 /** 已有精灵图集的 sprite 键（art/sprites/），其余用色块占位 */
 export const ATLASES = ['player_sword_m', 'mon_spirit_rabbit', 'mon_bamboo_snake', 'mon_mountain_mandrill', 'npc_village_elder', 'npc_grocer_wang', 'npc_doctor_sun', 'fx_sword_slash'];
 /** 地图对应的图块与背景区域（art/tiles/README.md） */
-export const MAP_AREA: Record<string, string> = { qingyun_village: 'qingyun', bamboo_forest: 'bamboo', lingxi_path: 'bamboo', field_test: 'qingyun' };
-export const AREAS = ['qingyun', 'bamboo'];
+export const MAP_AREA: Record<string, string> = { qingyun_village: 'qingyun', bamboo_forest: 'bamboo', lingxi_path: 'lingxi', field_test: 'qingyun' };
+export const AREAS = ['qingyun', 'bamboo', 'lingxi'];
 
 import npcs from '@xt/balance/npcs.json';
 import quests from '@xt/balance/quests.json';
