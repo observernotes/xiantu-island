@@ -5,6 +5,8 @@ import { MONSTERS, DROPS, ITEMS, TILED_MAPS, ATLASES, MAP_AREA, AREAS, NPCS, SCR
 import { QuestSystem } from '../QuestSystem';
 import { QUESTS as QUESTS_REF } from '../data';
 import { DialogBox, SkillBar, SkillWindow } from '../UI';
+import { AltarTrial, type TrialResult } from './AltarTrial';
+import { TRIALS, TRIAL_BY_MAP, REALMS, BREAKTHROUGH, type TrialDef } from '../data';
 import { preloadHud, registerHudFonts, hasHud, sliced, setSlicedWidth, HudBar, hudText, hudSpec, HUD_FONT, INK, INK_60, PAPER } from '../hud';
 import { SkillCombat } from '../SkillCombat';
 import { HOTBAR_SLOTS, SKILLS, skillsForJob } from '../skills';
@@ -29,6 +31,14 @@ interface Shot {
   ratio: number; kb: number; atk: number; hitAnim?: string; hitMs: number; dead?: boolean;
   fromX?: number; maxDist?: number;
 }
+
+/** ?debug=trial：直接进筑基台；&speed=N 试炼时钟加速；&skip=held|broken|dead 直接结算；&roll=win|lose 固定成功率判定 */
+const QS = typeof location !== 'undefined' ? new URLSearchParams(location.search) : new URLSearchParams();
+const DEBUG_TRIAL = QS.get('debug') === 'trial';
+/** 06 文档〇节：v0.4 没有天剑宗山门，传功长老暂时站在青云村（地图数据不动，代码里补一个站位，坐标暂定） */
+const NPC_FALLBACK_POS: Record<string, { map: string; x: number; y: number }> = { tianjian_elder: { map: 'qingyun_village', x: 1216, y: 704 } };
+/** 试炼结束后传回的位置：传功长老身边 */
+const TRIAL_RETURN = { map: 'qingyun_village', x: 1180, y: 700 };
 
 const QUEST_MARK_KEYS = ['ui_hud_quest_available', 'ui_hud_quest_turnin', 'ui_hud_quest_progress'];
 
@@ -68,7 +78,7 @@ export class GameScene extends Phaser.Scene {
     preloadHud(this);
   }
 
-  create(data: { map?: string; portal?: string }) {
+  create(data: { map?: string; portal?: string; pos?: { x: number; y: number } }) {
     installKeyGuard();
     for (const k of ATLASES) {
       const a = this.cache.json.get(`${k}_anims`);
@@ -97,9 +107,13 @@ export class GameScene extends Phaser.Scene {
       : buildCharMap(this, FIELD_TEST.id, FIELD_TEST.name, FIELD_TEST.rows, FIELD_TEST.portals, `tiles_${area}`);
     this.npcMarks = [];
     this.physics.world.setBounds(0, 0, this.map.width, this.map.height + 200);
+    for (const [id, pos] of Object.entries(NPC_FALLBACK_POS)) {
+      if (pos.map !== mapId || TILED_MAPS[NPCS[id]?.map] || this.map.objects.some(o => o.type === 'npc' && (o.props.npc ?? o.name) === id)) continue;
+      this.map.objects.push({ type: 'npc', name: id, x: pos.x, y: pos.y, props: { npc: id } });
+    }
     this.map.objects.forEach(o => this.drawObject(o));
 
-    const at = data.portal ? this.map.objects.find(o => o.type === 'portal' && o.name === data.portal) : null;
+    const at = data.portal ? this.map.objects.find(o => o.type === 'portal' && o.name === data.portal) : data.pos;
     this.player = new Player(this, at ? at.x : this.map.spawn.x, at ? at.y : this.map.spawn.y);
     this.player.hp = this.prog.hp; this.player.maxHp = this.prog.maxHp;
     this.player.getMovePoints = () => this.prog.currentMovePoints();
@@ -134,7 +148,7 @@ export class GameScene extends Phaser.Scene {
     this.physics.add.overlap(this.player, this.mobs, (_p, mo) => {
       const m = mo as Monster;
       if (m.dead || m.suppressTouch || !m.def.touchDamage || this.map.safeZone && false) return;
-      this.hurtPlayer(this.prog.damageFrom(m.def.atk), m.x, m.def.knockback);
+      this.hurtPlayer(this.prog.damageFrom(m.def.atk, m.def.touchDamageMul ?? 1), m.x, m.def.knockback);
     });
 
     this.drops = this.physics.add.group();
@@ -180,6 +194,152 @@ export class GameScene extends Phaser.Scene {
     this.bossName = this.add.text(0, 0, '', { fontFamily: 'serif', fontSize: '18px', color: '#fff6e8', stroke: '#3a1020', strokeThickness: 4 }).setScrollFactor(0).setDepth(130).setVisible(false);
     this.bossHpText = this.add.text(0, 0, '', { fontFamily: 'sans-serif', fontSize: '13px', color: '#ffe0e0', stroke: '#000000', strokeThickness: 3 }).setScrollFactor(0).setDepth(130).setVisible(false);
     this.buildHudKit();
+    this.trial = undefined; this.bossOverride = null;
+    this.setupTrial(mapId);
+  }
+
+  // ---------------- 筑基台试炼 ----------------
+  trial?: AltarTrial;
+  bossOverride: { name: string; hp: number; max: number } | null = null;
+
+  private setupTrial(mapId: string) {
+    const def = TRIAL_BY_MAP[mapId];
+    const pending = this.registry.get('trialPending');
+    if (def && (pending === def.id || (DEBUG_TRIAL && !this.registry.get('debugTrialUsed')))) {
+      this.registry.set('trialPending', null); this.registry.set('debugTrialUsed', true);
+      if (!this.registry.get('trialRate')) this.registry.set('trialRate', this.prog.breakthroughRate(false));
+      const speed = Math.max(0.1, Number(QS.get('speed') ?? 1) || 1);
+      this.trial = new AltarTrial(this, def, DEBUG_TRIAL ? speed : 1);
+      this.log(t('trial.countdown', { sec: Math.round(def.durationMs / 1000) }), '#ffe680');
+      const skip = DEBUG_TRIAL ? QS.get('skip') : null;
+      if (skip === 'held' || skip === 'broken' || skip === 'dead') this.time.delayedCall(500, () => this.trial?.end(skip));
+      return;
+    }
+    if (DEBUG_TRIAL && !def && !this.registry.get('debugTrialUsed')) {
+      // 直接准备一个 29 级瓶颈、带筑基丹、考核已完成的角色
+      const tr = Object.values(TRIALS).find(x => x.type === 'defend');
+      const realm = REALMS.find((r: any) => r.trial === tr?.id);
+      if (!tr || !realm) return;
+      const pr = this.prog;
+      pr.level = realm.levelMax; pr.exp = pr.expNeed;
+      if (realm.breakthroughItem && pr.count(realm.breakthroughItem) < 1) pr.addItem(realm.breakthroughItem, 1);
+      if (realm.breakthroughQuest) pr.quests[realm.breakthroughQuest] = { state: 'done', kills: {} };
+      pr.hp = pr.maxHp; pr.mp = pr.maxMp;
+      this.time.delayedCall(50, () => this.enterTrial(tr));
+    }
+  }
+
+  /** 生成一只试炼怪（respawnMs 0，打死就消失） */
+  spawnTrialMob(id: string, x: number, y: number) {
+    const def = MONSTERS[id];
+    if (!def) return null;
+    const m = new Monster(this, x, y, def);
+    m.noRespawn = true;
+    this.wireMob(m);
+    this.mobs.push(m);
+    return m;
+  }
+
+  /** 和长老对话时：考核已完成、正卡在该境界瓶颈 → 可进试炼 */
+  private trialOfferFor(npcId: string): TrialDef | null {
+    const realm = this.prog.realm;
+    if (!realm?.trial || !this.prog.atBreakthrough) return null;
+    const qid = realm.breakthroughQuest, q = qid ? QUESTS_REF[qid] : null;
+    if (!q || q.giver !== npcId || this.quests.state(qid) !== 'done') return null;
+    const tr = TRIALS[realm.trial];
+    return tr && tr.type === 'defend' && TILED_MAPS[tr.map] ? tr : null;
+  }
+
+  offerTrial(npcId: string, tr: TrialDef) {
+    const npc = NPCS[npcId], realm = this.prog.realm, item = realm.breakthroughItem as string | null;
+    const speaker = npc?.name ?? npcId;
+    if (item && this.prog.count(item) < 1) {
+      this.dialog.show([{ speaker, text: t('trial.need_pill', { item: ITEMS[item]?.name ?? item }) }], npc?.sprite ?? null);
+      return;
+    }
+    const r = this.prog.breakthroughRate();
+    const pct = (v: number) => Math.round(v * 100);
+    const lines = [
+      { speaker, text: npc?.dialog?.[1] ?? '' },
+      { speaker: null, text: t('realm.rate_detail', { rate: pct(r.rate), base: pct(r.base), pill: pct(r.pill), insight: pct(r.insight), clear: pct(r.clear), pity: pct(r.pity) }) },
+      { speaker, text: t('trial.enter_hint', { sec: Math.round(tr.durationMs / 1000) }) },
+    ].filter(l => l.text);
+    this.dialog.show(lines, npc?.sprite ?? null, () => this.enterTrial(tr));
+  }
+
+  /** 进试炼：消耗突破丹药（和清心丹），记下本次成功率，载入试炼图 */
+  enterTrial(tr: TrialDef) {
+    const pr = this.prog, item = pr.realm.breakthroughItem as string | null;
+    const withClear = pr.count('clear_mind_pill') > 0;
+    const rate = pr.breakthroughRate(withClear);
+    if (item) { pr.removeItem(item, 1); this.log(t('trial.consume', { item: ITEMS[item]?.name ?? item }), '#c8c8c8'); }
+    if (withClear) { pr.removeItem('clear_mind_pill', 1); this.log(t('trial.consume', { item: ITEMS.clear_mind_pill?.name ?? '清心丹' }), '#c8c8c8'); }
+    pr.hp = pr.maxHp; pr.mp = pr.maxMp; pr.save();
+    this.registry.set('trialPending', tr.id); this.registry.set('trialRate', rate);
+    this.cameras.main.fadeOut(200);
+    this.time.delayedCall(220, () => this.scene.restart({ map: tr.map }));
+  }
+
+  /** 试炼结束：守不住只扣丹药（进场时已扣）；守住了按成功率掷骰 */
+  onTrialEnd(result: TrialResult) {
+    const pr = this.prog, p = this.player;
+    const realm = pr.realm, pen = realm.failPenalty ?? {};
+    const banner = (text: string, color = '#fff6c8') => {
+      const tx = this.add.text(640, 250, text, { fontFamily: 'serif', fontSize: '40px', color, stroke: '#3b2a20', strokeThickness: 6 }).setOrigin(0.5).setScrollFactor(0).setDepth(170);
+      this.tweens.add({ targets: tx, alpha: { from: 0, to: 1 }, duration: 400, hold: 1600, yoyo: true, onComplete: () => tx.destroy() });
+    };
+    this.registry.set('lastTrialResult', null);
+    if (result !== 'held') {
+      const msg = result === 'broken' ? t('trial.altar_broken') : t('trial.player_down');
+      this.log(msg, '#ff8080'); banner(msg, '#ffb0b0');
+      this.registry.set('lastTrialResult', result);
+      this.time.delayedCall(2600, () => this.returnFromTrial());
+      return;
+    }
+    this.log(t('trial.success'), '#ffe680'); banner(t('trial.success'));
+    const rate = (this.registry.get('trialRate') as { rate: number } | undefined)?.rate ?? pr.breakthroughRate(false).rate;
+    const forced = DEBUG_TRIAL ? QS.get('roll') : null;
+    const win = forced === 'win' ? true : forced === 'lose' ? false : Math.random() < rate;
+    this.time.delayedCall(2200, () => {
+      if (win) {
+        const next = REALMS[REALMS.indexOf(realm) + 1];
+        this.playCue('breakthrough', () => {
+          pr.breakthrough(); pr.breakthroughFails = 0; pr.unstableUntil = 0;
+          pr.hp = pr.maxHp; pr.mp = pr.maxMp;
+          this.player.maxHp = pr.maxHp; this.player.hp = pr.hp;
+          this.log(`突破成功，当前境界 ${pr.realmName}`, '#ffb0ff');
+          if (pr.lastOverflowReturned > 0) this.log(`溢出修为返还 ${pr.lastOverflowReturned}`, '#c8c8c8');
+          this.registry.set('lastTrialResult', 'win');
+          pr.save();
+          this.time.delayedCall(1200, () => this.returnFromTrial());
+        }, t('realm.breakthrough_ok', { realm: next?.name ?? '' }));
+      } else {
+        this.playBreakthroughFail(p.x, p.y);
+        this.cameras.main.shake(300, 0.008);
+        const gray = this.add.rectangle(640, 360, 1280, 720, 0x6a6a6a, 0).setScrollFactor(0).setDepth(149);
+        this.tweens.add({ targets: gray, fillAlpha: 0.45, duration: 400 });
+        const lost = pr.applyBreakthroughFail(Number(pen.expLossRatio ?? 0));
+        pr.breakthroughFails++;
+        if (pen.debuffMs) { pr.unstableUntil = Date.now() + Number(pen.debuffMs); pr.unstableRatio = Number(pen.debuffStatRatio ?? 0); }
+        const bonus = Math.round((BREAKTHROUGH.pityPerFail ?? 0) * 100);
+        banner(t('realm.breakthrough_fail'), '#d0d0d0');
+        this.log(t('realm.breakthrough_fail'), '#d0d0d0');
+        this.log(t('realm.next_bonus', { bonus }), '#ffe680');
+        if (lost.lost > 0) this.log(`修为 −${lost.lost}${lost.fromPool ? `（溢出池 −${lost.fromPool}）` : ''}`, '#c8c8c8');
+        if (pen.debuffMs) this.log(t('realm.unstable', { min: Math.round(Number(pen.debuffMs) / 60000) }), '#ffb0b0');
+        this.registry.set('lastTrialResult', 'lose');
+        pr.save();
+        this.time.delayedCall(3000, () => this.returnFromTrial());
+      }
+    });
+  }
+
+  private returnFromTrial() {
+    const pr = this.prog;
+    pr.hp = pr.maxHp; pr.mp = pr.maxMp; pr.save();
+    this.registry.set('trialRate', null);
+    this.cameras.main.fadeOut(250);
+    this.time.delayedCall(270, () => this.scene.restart({ map: TRIAL_RETURN.map, pos: { x: TRIAL_RETURN.x, y: TRIAL_RETURN.y } }));
   }
   invText!: Phaser.GameObjects.Text;
 
@@ -203,6 +363,7 @@ export class GameScene extends Phaser.Scene {
       this.player.step(time, delta / 1000, { left: false, right: false, up: false, down: false, jumpDown: false, attackDown: false }, this.map.ropes);
       this.drawHud(); return;
     }
+    this.trial?.update(delta);
     const inp: Input = {
       left: k.left.isDown, right: k.right.isDown, up: k.up.isDown, down: k.down.isDown,
       jumpDown: J(k.alt) || J(k.space) || J(k.c),
@@ -380,6 +541,8 @@ export class GameScene extends Phaser.Scene {
     const p = this.player;
     p.dead = true; p.state2 = 'hurt'; p.hurtUntil = Infinity;
     if (p.atlas) p.play('player_sword_m_die');
+    if (this.trial && !this.trial.ended) { this.trial.end('dead'); return; }
+    if (this.trial) return;
     this.log('你被击倒了，3 秒后在出生点复活', '#ff8080');
     this.time.delayedCall(3000, () => {
       this.prog.hp = this.prog.maxHp; this.prog.mp = this.prog.maxMp;
@@ -455,7 +618,7 @@ export class GameScene extends Phaser.Scene {
   drawObject(o: MapObj) {
     if (o.type === 'npc') {
       const npc = NPCS[o.props.npc ?? o.name];
-      const c = this.add.container(o.x, o.y).setDepth(5);
+      const c = this.add.container(o.x, o.y).setDepth(5).setAlpha(o.props.phantom ? 0.55 : 1);
       let h = 70;
       if (npc && this.textures.exists(npc.sprite)) {
         const sp = this.add.sprite(0, 0, npc.sprite).setOrigin(0.5, 1).setFlipX(o.x < this.map.width / 2);
@@ -528,11 +691,21 @@ export class GameScene extends Phaser.Scene {
 
   talkTo(npcId: string) {
     const npc = NPCS[npcId]; if (!npc) return;
-    const { lines, after } = this.quests.talk(npcId);
+    if (this.trial || TRIAL_BY_MAP[this.map.id]) return;   // 试炼图里的长老虚影只护法，不对话
+    const offer = this.trialOfferFor(npcId);
+    if (offer) { this.offerTrial(npcId, offer); return; }
+    const talked = this.quests.talk(npcId);
+    const after = talked.after;
+    // 任务没有对白脚本时，用 NPC 的通用台词兜底
+    const lines = talked.lines.length ? talked.lines : npc.dialog.map(tx => ({ speaker: npc.name, text: tx }));
     this.player.body.setVelocityX(0);
     this.dialog.show(lines, npc.sprite, () => {
       const r = after?.();
-      if (r) this.giveRewards(r.quest, r.broke);
+      if (r) {
+        this.giveRewards(r.quest, r.broke);
+        const ut = (r.quest.rewards as { unlockTrial?: string }).unlockTrial;
+        if (ut && TRIALS[ut]) this.time.delayedCall(150, () => { const o = this.trialOfferFor(npcId); if (o) this.offerTrial(npcId, o); });
+      }
       else if (after) this.log(t('quest.accept', { name: this.quests.activeIds.map(i => QUESTS_REF[i].name).slice(-1)[0] ?? '' }), '#ffe680');
       this.prog.save();
     }, (cue, next) => this.playCue(cue, next));
@@ -620,7 +793,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   /** 演出：突破 / 转职 */
-  playCue(cue: string, next: () => void) {
+  playCue(cue: string, next: () => void, title?: string) {
     const p = this.player, cam = this.cameras.main;
     const dim = this.add.rectangle(640, 360, 1280, 720, 0x000000, 0).setScrollFactor(0).setDepth(150);
     this.tweens.add({ targets: dim, fillAlpha: 0.6, duration: 400 });
@@ -646,7 +819,7 @@ export class GameScene extends Phaser.Scene {
       cam.flash(400, 255, 240, 180);
       const ring = this.add.circle(p.x, p.y - 40, 30, col, 0.7).setDepth(160).setBlendMode(Phaser.BlendModes.ADD);
       this.tweens.add({ targets: ring, scale: 8, alpha: 0, duration: 700, onComplete: () => ring.destroy() });
-      const t = this.add.text(640, 260, cue === 'breakthrough' ? '突破成功 · 炼气期' : '拜入天剑宗 · 剑徒', { fontFamily: 'serif', fontSize: '44px', color: '#fff6c8', stroke: '#7a4a00', strokeThickness: 6 }).setOrigin(0.5).setScrollFactor(0).setDepth(170).setAlpha(0);
+      const t = this.add.text(640, 260, title ?? (cue === 'breakthrough' ? '突破成功 · 炼气期' : '拜入天剑宗 · 剑徒'), { fontFamily: 'serif', fontSize: '44px', color: '#fff6c8', stroke: '#7a4a00', strokeThickness: 6 }).setOrigin(0.5).setScrollFactor(0).setDepth(170).setAlpha(0);
       this.tweens.add({ targets: t, alpha: 1, y: 240, duration: 500, hold: 1200, yoyo: true, onComplete: () => {
         t.destroy(); this.tweens.add({ targets: dim, fillAlpha: 0, duration: 300, onComplete: () => { dim.destroy(); p.setDepth(pDepth); next(); } });
       } });
@@ -787,7 +960,7 @@ export class GameScene extends Phaser.Scene {
       kit.exp.set(ratio, pr.atBreakthrough ? 'ui_bar_cultivation_bottleneck' : 'ui_bar_cultivation');
       kit.expGlow?.setVisible(pr.atBreakthrough);
       kit.expT.setText(`修为 ${pr.exp}/${need}${pr.atBreakthrough ? `（${t('realm.bottleneck')}）` : ''}`);
-      const boss = this.mobs.find(m => m.def.isBoss && !m.owner && !m.dead);
+      const boss = this.hudBoss();
       if (kit.boss) {
         const b = kit.boss, on = !!boss;
         b.name.setVisible(on); b.num.setVisible(on); b.plate.setVisible(on); b.bar.setVisible(on);
@@ -810,7 +983,7 @@ export class GameScene extends Phaser.Scene {
     const need = pr.expNeed, ratio = Number.isFinite(need) ? Math.min(1, pr.exp / need) : 1;
     const expW = 1200;
     g.fillStyle(0x333333).fillRect(0, H - 10, expW, 10).fillStyle(pr.atBreakthrough ? 0xd080ff : 0xf2d24a).fillRect(0, H - 10, expW * ratio, 10);
-    this.drawBossFallback(g, this.mobs.find(m => m.def.isBoss && !m.owner && !m.dead));
+    this.drawBossFallback(g, this.hudBoss());
     this.drawGourd(expW + 20, H - 2);
     if (!this.hudTexts) {
       const mk = (x: number, o = 0) => this.add.text(x, H - 29, '', { fontFamily: 'sans-serif', fontSize: '13px', color: '#ffffff', stroke: '#000000', strokeThickness: 3 }).setOrigin(o, 0.5).setScrollFactor(0).setDepth(101);
@@ -824,7 +997,13 @@ export class GameScene extends Phaser.Scene {
   }
 
   /** 旧版首领血条（hud 素材缺失时） */
-  private drawBossFallback(g: Phaser.GameObjects.Graphics, boss: Monster | undefined) {
+  /** 顶部大血条显示谁：试炼时是阵眼，否则是场上的首领 */
+  private hudBoss(): { hp: number; def: { name: string; hp: number } } | undefined {
+    if (this.bossOverride) return { hp: this.bossOverride.hp, def: { name: this.bossOverride.name, hp: this.bossOverride.max } };
+    return this.mobs.find(m => m.def.isBoss && !m.owner && !m.dead);
+  }
+
+  private drawBossFallback(g: Phaser.GameObjects.Graphics, boss: { hp: number; def: { name: string; hp: number } } | undefined) {
     const W = 1280;
     if (boss) {
       const bw = 420, x = (W - bw) / 2;

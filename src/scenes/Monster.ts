@@ -61,6 +61,11 @@ interface Cast {
 interface FxTimer { sprite: Phaser.GameObjects.Sprite; doneAt: number; }
 interface Cd { readyAt: number; wall: number; game: number; ms: number; logged: boolean; }
 
+/** 试炼目标（筑基台阵眼）：带 targetsObjective 的怪走过去打它 */
+export interface ObjectiveTarget { x: number; y: number; halfW: number; hit: (m: Monster, dmg: number) => void; mul: number; def: number }
+/** 地面心魔走到台阶前起跳的速度（暂定：重力 2000 下约能跳 90px，筑基台中台高 64px） */
+const STEP_JUMP_VY = 600;
+
 export interface SkillVolley {
   fx: string; ratio: number; knockback: number; atk: number;
   shots: { x: number; y: number; vx: number; vy: number }[];
@@ -90,6 +95,10 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
   suppressTouch = false;
   dashing = false;
   despawning = false;
+  /** 试炼：目标阵眼与飞行高度（地面 y − flyHeight） */
+  objective?: ObjectiveTarget;
+  flyY?: number;
+  private objTeleEnd = 0;
   /** 测试用：已经放过的 once 技能 */
   usedOnce = new Set<string>();
 
@@ -166,6 +175,7 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
       }
     }
     if (this.charge) { this.tickCharge(time, player); return this.face(); }
+    if (this.objective && this.stepObjective(time, player)) return this.face();
     if ((this.st === 'hit' || this.st === 'attack') && time < this.stateUntil) {
       if (this.grounded && this.st === 'attack') b.setVelocityX(0);
       return this.face();
@@ -220,6 +230,58 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
       this.anim('walk');
     }
     this.face();
+  }
+
+  /**
+   * 试炼 AI：朝阵眼走（飞行的保持在 flyY 高度），到了攻击距离就按 attack 的 telegraphMs / cooldownMs 打阵眼，
+   * 伤害 = max(1, round(atk × damageRatio × monsterDamageMul − 阵眼 def))。地面怪的贴身玩家仍走原来的出手逻辑。
+   * 返回 true 表示本帧已处理。
+   */
+  private stepObjective(time: number, player: Phaser.Physics.Arcade.Sprite & { dead?: boolean }) {
+    const d = this.def, b = this.body, o = this.objective!, a = d.attack;
+    const flying = !!(d as { flying?: boolean }).flying;
+    if ((this.st === 'hit' || this.st === 'attack') && time < this.stateUntil) {
+      if (this.objTeleEnd && time >= this.objTeleEnd) {
+        this.objTeleEnd = 0; this.teleBlink?.stop(); this.teleBlink = undefined; this.clearTint();
+        if (this.atlas) { this.anims.resume(); this.anims.nextFrame(); }
+        if (Math.abs(o.x - this.x) <= this.objReach + 8) o.hit(this, Math.max(1, Math.round(d.atk * (a?.damageRatio ?? 1) * o.mul - o.def)));
+      }
+      if (flying) b.setVelocity(0, 0);
+      return this.st === 'attack' && !this.teleEnd;   // 普通拍地前摇交回原逻辑
+    }
+    if (this.st === 'hit' || this.st === 'attack') this.st = 'patrol';
+    // 地面怪：玩家贴身时照原逻辑打玩家
+    const pdx = player.x - this.x;
+    if (!flying && !player.dead && Math.abs(pdx) < 48 && Math.abs(player.y - this.y) < 48) return false;
+    const dx = o.x - this.x;
+    this.dir = Math.sign(dx) || this.dir;
+    if (flying) {
+      const vy = this.flyY !== undefined ? Phaser.Math.Clamp((this.flyY - this.y) * 3, -d.moveSpeed, d.moveSpeed) : 0;
+      b.setVelocityY(vy);
+    }
+    if (Math.abs(dx) <= this.objReach) {
+      b.setVelocityX(0);
+      if (a && time >= this.attackReadyAt && (flying || this.grounded)) {
+        const tele = a.telegraphMs ?? 300;
+        this.st = 'attack'; this.attackReadyAt = time + a.cooldownMs; this.teleAt = performance.now();
+        this.stateUntil = time + tele + 300; this.objTeleEnd = time + tele;
+        if (DEBUG_TIMING) console.log(`[tele] ${d.id} 打阵眼 抬手 telegraphMs=${tele}`);
+        this.anim('attack'); if (this.atlas) this.anims.pause();
+        this.teleBlink = this.scene.tweens.addCounter({ from: 0, to: 1, duration: 120, yoyo: true, repeat: Math.floor(tele / 240),
+          onUpdate: tw => this.setTint(Phaser.Display.Color.GetColor(255, 255 - 120 * tw.getValue()!, 255 - 120 * tw.getValue()!)) });
+      } else this.anim('idle');
+      return true;
+    }
+    b.setVelocityX(this.dir * d.moveSpeed);
+    if (!flying && this.grounded && (this.dir > 0 ? b.blocked.right : b.blocked.left)) b.setVelocityY(-STEP_JUMP_VY);
+    this.anim('walk');
+    return true;
+  }
+  /** 到阵眼多近开打：近战 = 阵眼半宽 + range.w / 2；远程 = range.w */
+  private get objReach() {
+    const a = this.def.attack, o = this.objective!;
+    if (!a) return o.halfW;
+    return a.type === 'projectile' ? (a.range?.w ?? 200) * 0.8 : o.halfW + (a.range?.w ?? 48) / 2;
   }
 
   private face() { this.setFlipX(this.dir > 0); }   // 美术朝左画

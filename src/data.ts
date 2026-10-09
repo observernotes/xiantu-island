@@ -25,6 +25,8 @@ export interface MonsterDef {
   id: string; name: string; level: number; hp: number; atk: number; def: number; exp: number;
   aggressive: boolean; aggroRange?: number; moveSpeed: number; patrolRange: number;
   touchDamage: boolean; noDamage?: boolean; knockback: number;
+  /** 接触伤害倍率（可选，演武堂填；缺省 1） */
+  touchDamageMul?: number;
   /** 规范：respawnMs 0 = 不重生（打死消失）；>0 = 多少毫秒后原地重生 */
   respawnMs: number;
   /** 打不死（木人桩）：照常扣血飘字，打空立刻回满 */
@@ -53,7 +55,21 @@ export const TILED_MAPS: Record<string, any> = { qingyun_village: qingyun, bambo
 /** 境界突破关口：到这一级修为满后需要找 NPC 突破（design/02_新手任务.md 第三节） */
 export const BREAKTHROUGH_LEVELS: number[] = (realmsRaw as any[]).map(r => r.levelMax).filter((lv: number) => lv < (expCurve as any).maxLevel);
 /** breakthrough.json：溢出池只给了转化比例，上限不在表里 */
-export const BREAKTHROUGH = breakthrough as { overflowPoolRatio: number };
+export const BREAKTHROUGH = breakthrough as {
+  overflowPoolRatio: number; pillQualityBonus?: Record<string, number>; insightBonusPerPoint?: number; insightBonusCap?: number;
+  clearMindPillBonus?: number; pityPerFail?: number; maxRate?: number;
+};
+import trialsRaw from '@xt/balance/trials.json';
+export interface TrialSpawn { monster: string; side: 'both' | 'alternate' | 'left' | 'right'; everyMs: number; perSide?: number }
+export interface TrialHazard { type: string; everyMs: number; count: number; radius: number; telegraphMs: number; playerDamageRatioOfMaxHp: number; nearObjective?: number }
+export interface TrialWave { fromMs: number; toMs: number; spawns: TrialSpawn[]; total?: number; hazard?: TrialHazard; despawnAll?: boolean }
+export interface TrialDef {
+  id: string; name: string; realmFrom: string; realmTo: string; type: string; map: string; durationMs: number;
+  waves?: TrialWave[]; objective?: { id: string; name: string; hp: number; def?: number; x?: number | string; monsterDamageMul?: number };
+}
+export const TRIALS: Record<string, TrialDef> = Object.fromEntries((trialsRaw as unknown as TrialDef[]).map(t => [t.id, t]));
+/** 地图 id → 防守类试炼（目前只有筑基台） */
+export const TRIAL_BY_MAP: Record<string, TrialDef> = Object.fromEntries(Object.values(TRIALS).filter(t => t.type === 'defend' && t.map).map(t => [t.map, t]));
 
 /** 已有精灵图集的 sprite 键（art/sprites/），其余用色块占位 */
 import assets from './gen/assets.json';
@@ -140,6 +156,11 @@ const LOCAL_STRINGS: Record<string, string> = {
   'realm.overflow_tip': '溢出修为 {n}/{max}，突破后返还',
   'realm.overflow_full': '溢出修为已满，突破后返还。',
   'realm.overflow_gain': '（存入溢出池）',
+  'trial.need_pill': '没有{item}，筑基台上走不了一步。先去备好丹药再来。',
+  'trial.enter_hint': '入阵后守住阵眼 {sec} 秒。对话结束即入阵（筑基丹此时消耗）。',
+  'trial.consume': '消耗了 {item}',
+  'trial.player_down': '你在阵中倒下，试炼中断。筑基丹已耗，修为无损。',
+  'trial.retreat': '心魔退散，阵眼稳住了……',
 };
 
 /** 文案：按 key 取 balance/strings_zh.json，缺了再用本地兜底，{var} 替换 */

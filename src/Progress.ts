@@ -24,6 +24,11 @@ export class Progress {
   spTipShown = false;
   /** 瓶颈期装不下的修为，全额存进来，上限 overflowCap。旧档没有这个字段，读档时补 0 */
   overflowExp = 0;
+  /** 突破失败次数（保底用，成功清零） */
+  breakthroughFails = 0;
+  /** 境界不稳到期时间（Date.now）与属性比例 */
+  unstableUntil = 0;
+  unstableRatio = 0;
   /** 刚突破时返还了多少，给界面飘字用，不参与公式 */
   lastOverflowReturned = 0;
   /** 返还的修为让新境界又升了几级 */
@@ -66,8 +71,22 @@ export class Progress {
   }
   get maxHp() { return Math.round(GROWTH.base.hp + GROWTH.perLevel.hp * (this.level - 1) + this.statBonus('hp') + this.equipSum('hp')); }
   get maxMp() { return Math.round((GROWTH.base.mp + GROWTH.perLevel.mp * (this.level - 1) + this.statBonus('mp')) * (1 + this.passiveBonus('mpMaxRatio'))); }
-  get atk() { return GROWTH.base.atk + GROWTH.perLevel.atk * (this.level - 1) + this.statBonus('atk') + this.equipSum('atk') + this.passiveBonus('atk'); }
-  get def() { return GROWTH.base.def + GROWTH.perLevel.def * (this.level - 1) + this.statBonus('def') + this.equipSum('def'); }
+  get atk() { return (GROWTH.base.atk + GROWTH.perLevel.atk * (this.level - 1) + this.statBonus('atk') + this.equipSum('atk') + this.passiveBonus('atk')) * this.unstableMul; }
+  get def() { return (GROWTH.base.def + GROWTH.perLevel.def * (this.level - 1) + this.statBonus('def') + this.equipSum('def')) * this.unstableMul; }
+  /** 突破失败的「境界不稳」：到期前攻防 × (1 + debuffStatRatio)。暂只作用于攻击、防御（气血/灵力上限不动，免得回血逻辑乱） */
+  get unstable() { return Date.now() < this.unstableUntil; }
+  get unstableMul() { return this.unstable ? 1 + this.unstableRatio : 1; }
+  /** 突破成功率明细（03 文档 1.3 节 + breakthrough.json）。丹药品质暂按 low（物品还没有品质字段） */
+  breakthroughRate(withClearMind = this.count('clear_mind_pill') > 0, quality = 'low') {
+    const B = BREAKTHROUGH, r = this.realm;
+    const base = Number(r.baseRate ?? 0);
+    const pill = Number(B.pillQualityBonus?.[quality] ?? 0);
+    const insight = Math.min(B.insightBonusCap ?? 0, this.stat('insight') * (B.insightBonusPerPoint ?? 0));
+    const clear = withClearMind ? (B.clearMindPillBonus ?? 0) : 0;
+    const pity = this.breakthroughFails * (B.pityPerFail ?? 0);
+    const rate = Math.min(B.maxRate ?? 1, base + pill + insight + clear + pity);
+    return { rate, base, pill, insight, clear, pity };
+  }
   get expNeed() { return EXP_TO_NEXT[String(this.level)] ?? Infinity; }
   get atBreakthrough() { return BREAKTHROUGH_LEVELS.includes(this.level) && this.exp >= this.expNeed; }
   /**
