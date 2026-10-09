@@ -1,0 +1,75 @@
+{
+ "atlas": "mon_black_robe_minion",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  80,
+  88
+ ],
+ "anims": [
+  {
+   "key": "mon_black_robe_minion_idle",
+   "frames": [
+    "mon_black_robe_minion_idle_01",
+    "mon_black_robe_minion_idle_02"
+   ],
+   "frameRate": 3,
+   "repeat": -1
+  },
+  {
+   "key": "mon_black_robe_minion_walk",
+   "frames": [
+    "mon_black_robe_minion_walk_01",
+    "mon_black_robe_minion_walk_02",
+    "mon_black_robe_minion_walk_03"
+   ],
+   "frameRate": 8,
+   "repeat": -1
+  },
+  {
+   "key": "mon_black_robe_minion_attack",
+   "frames": [
+    "mon_black_robe_minion_attack_01",
+    "mon_black_robe_minion_attack_02",
+    "mon_black_robe_minion_attack_03"
+   ],
+   "frameRate": 8,
+   "repeat": 0
+  },
+  {
+   "key": "mon_black_robe_minion_hit",
+   "frames": [
+    "mon_black_robe_minion_hit_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  },
+  {
+   "key": "mon_black_robe_minion_die",
+   "frames": [
+    "mon_black_robe_minion_die_01",
+    "mon_black_robe_minion_die_02",
+    "mon_black_robe_minion_die_03"
+   ],
+   "frameRate": 6,
+   "repeat": 0
+  }
+ ],
+ "bodySize": [
+  34,
+  60
+ ],
+ "attackFrames": {
+  "telegraph": 1,
+  "hit": 2
+ },
+ "projectileSpawn": [
+  -22,
+  -30
+ ],
+ "note": "attack_01 前摇定格（telegraphMs 400，举符聚紫光）；attack_02 出手帧生成 fx_black_robe_projectile，位置 = 脚底 + projectileSpawn（朝右时 x 取反）",
+ "kind": "monster"
+}
