@@ -5,6 +5,7 @@ import { MONSTERS, DROPS, ITEMS, TILED_MAPS, ATLASES, MAP_AREA, AREAS, NPCS, SCR
 import { QuestSystem } from '../QuestSystem';
 import { QUESTS as QUESTS_REF } from '../data';
 import { DialogBox, SkillBar, SkillWindow } from '../UI';
+import { preloadHud, registerHudFonts, hasHud, sliced, setSlicedWidth, HudBar, hudText, hudSpec, HUD_FONT, INK, INK_60, PAPER } from '../hud';
 import { SkillCombat } from '../SkillCombat';
 import { HOTBAR_SLOTS, SKILLS, skillsForJob } from '../skills';
 import { installKeyGuard } from '../keyguard';
@@ -14,12 +15,22 @@ import { Monster, type SkillVolley } from './Monster';
 import { Progress } from '../Progress';
 
 const MAP_FALLBACK: Record<string, string> = {};
-type Drop = Phaser.Physics.Arcade.Sprite & { itemId: string; count: number; bornAt: number; label?: Phaser.GameObjects.Text };
+type Drop = Phaser.Physics.Arcade.Sprite & { itemId: string; count: number; bornAt: number; label?: Phaser.GameObjects.Text; shadow?: Phaser.GameObjects.Ellipse; floatTw?: Phaser.Tweens.Tween; landed?: boolean };
+/** 掉落物：图标 32px，影子 20×6 墨褐 30%，上下浮动 2px、1 秒一个来回（丹青阁） */
+const DROP_ICON_PX = 32, DROP_SHADOW = { w: 20, h: 6, color: 0x3b2a1e, alpha: 0.3 }, DROP_FLOAT = { px: 2, periodMs: 1000 };
+interface HudKit {
+  panel: Phaser.GameObjects.GameObject; hp: HudBar; mp: HudBar; exp: HudBar; expGlow?: Phaser.GameObjects.GameObject & Phaser.GameObjects.Components.Visible;
+  lv: Phaser.GameObjects.Text; info: Phaser.GameObjects.Text; hpT: Phaser.GameObjects.Text; mpT: Phaser.GameObjects.Text; expT: Phaser.GameObjects.Text;
+  boss?: { plate: Phaser.GameObjects.NineSlice | Phaser.GameObjects.Image; bar: HudBar; name: Phaser.GameObjects.Text; num: Phaser.GameObjects.Text };
+  expRight: number;
+}
 interface Shot {
   sprite: Phaser.Physics.Arcade.Sprite; state: 'fly' | 'hit'; until: number;
   ratio: number; kb: number; atk: number; hitAnim?: string; hitMs: number; dead?: boolean;
   fromX?: number; maxDist?: number;
 }
+
+const QUEST_MARK_KEYS = ['ui_hud_quest_available', 'ui_hud_quest_turnin', 'ui_hud_quest_progress'];
 
 export class GameScene extends Phaser.Scene {
   map!: BuiltMap;
@@ -51,7 +62,10 @@ export class GameScene extends Phaser.Scene {
     }
     this.load.atlas('icons_skills', 'art/icons/icons_skills.png', 'art/icons/icons_skills.json');
     for (const s of skillsForJob(1)) if (s.icon) this.load.image(`${s.icon}@64`, `art/icons/skills/${s.icon}@64.png`);
+    // 葫芦三态：hud/ 目录里还没有，继续读 art/icons/ui/
     for (const tier of ['empty', 'half', 'full']) this.load.image(`icon_overflow_gourd_${tier}`, `art/icons/ui/icon_overflow_gourd_${tier}.png`);
+    this.load.atlas('icons_items', 'art/icons/icons_items.png', 'art/icons/icons_items.json');
+    preloadHud(this);
   }
 
   create(data: { map?: string; portal?: string }) {
@@ -68,7 +82,8 @@ export class GameScene extends Phaser.Scene {
     this.registry.set('progress', this.prog);
     this.openedChests = this.registry.get('chests') ?? new Set();
     this.registry.set('chests', this.openedChests);
-    this.mobs = []; this.logs = []; this.hudTexts = undefined;
+    this.mobs = []; this.logs = []; this.hudTexts = undefined; this.hudKit = undefined;
+    registerHudFonts(this);
 
     const q = new URLSearchParams(location.search).get('map');
     let mapId = data.map ?? (q === 'test' || q === 'field' ? 'field_test' : q && TILED_MAPS[q] ? q : 'qingyun_village');
@@ -164,6 +179,7 @@ export class GameScene extends Phaser.Scene {
     this.gourd.on('pointerout', () => this.gourdTip.setVisible(false));
     this.bossName = this.add.text(0, 0, '', { fontFamily: 'serif', fontSize: '18px', color: '#fff6e8', stroke: '#3a1020', strokeThickness: 4 }).setScrollFactor(0).setDepth(130).setVisible(false);
     this.bossHpText = this.add.text(0, 0, '', { fontFamily: 'sans-serif', fontSize: '13px', color: '#ffe0e0', stroke: '#000000', strokeThickness: 3 }).setScrollFactor(0).setDepth(130).setVisible(false);
+    this.buildHudKit();
   }
   invText!: Phaser.GameObjects.Text;
 
@@ -209,8 +225,9 @@ export class GameScene extends Phaser.Scene {
     for (const m of this.mobs) m.step(time, this.player);
     for (let i = this.mobs.length - 1; i >= 0; i--) if (!this.mobs[i].active) this.mobs.splice(i, 1);
     for (const d of this.drops.getChildren() as Drop[]) {
-      d.label?.setPosition(d.x, d.y - 22);
-      if (time - d.bornAt > 60000) { d.label?.destroy(); d.destroy(); }
+      if (!d.landed && d.shadow && (d.body as Phaser.Physics.Arcade.Body).blocked.down) this.landDrop(d);
+      d.label?.setPosition(d.x, d.y - (d.shadow ? 34 : 22));
+      if (time - d.bornAt > 60000) this.removeDrop(d);
     }
     const z = this.map.zones.find(z => this.player.x >= z.x && this.player.x <= z.x + z.w && this.player.y >= z.y && this.player.y <= z.y + z.h);
     if (z?.name !== this.curZone) {
@@ -223,7 +240,8 @@ export class GameScene extends Phaser.Scene {
   }
   curZone?: string;
   quests!: QuestSystem;
-  npcMarks: { id: string; text: Phaser.GameObjects.Text }[] = [];
+  npcMarks: { id: string; text: Phaser.GameObjects.Text; img?: Phaser.GameObjects.Image }[] = [];
+  hudKit?: HudKit;
   parallax: { ts: Phaser.GameObjects.TileSprite; f: number }[] = [];
   dialog!: DialogBox;
   skillBar!: SkillBar;
@@ -388,11 +406,16 @@ export class GameScene extends Phaser.Scene {
 
   // ---------------- 掉落与拾取 ----------------
   spawnDrop(x: number, y: number, id: string, count: number) {
-    const tex = this.dropTex(id);
-    const d = this.physics.add.sprite(x, y, tex).setOrigin(0.5, 1).setDepth(7) as Drop;
+    const icon = this.dropIcon(id);
+    const d = (icon ? this.physics.add.sprite(x, y, 'icons_items', icon) : this.physics.add.sprite(x, y, this.dropTex(id))).setOrigin(0.5, 1).setDepth(7) as Drop;
     this.drops.add(d);
     d.itemId = id; d.count = count; d.bornAt = this.time.now;
-    d.body!.setSize(16, 16);
+    if (icon) {
+      d.setDisplaySize(DROP_ICON_PX, DROP_ICON_PX);
+      // 碰撞体 16×16 贴图标底边（拾取判定不变）
+      d.body!.setSize(16 / d.scaleX, 16 / d.scaleY).setOffset((d.width - 16 / d.scaleX) / 2, d.height - 16 / d.scaleY);
+      d.shadow = this.add.ellipse(x, y, DROP_SHADOW.w, DROP_SHADOW.h, DROP_SHADOW.color, DROP_SHADOW.alpha).setDepth(6).setVisible(false);
+    } else d.body!.setSize(16, 16);
     (d.body as Phaser.Physics.Arcade.Body).setVelocity(Phaser.Math.Between(-30, 30), -300).setDragX(300);
     if (id !== 'spirit_stone') d.label = this.add.text(x, y, ITEMS[id]?.name ?? id, { fontSize: '11px', color: '#ffffff', backgroundColor: '#00000088', padding: { x: 3, y: 1 } }).setOrigin(0.5, 1).setDepth(7);
   }
@@ -411,7 +434,7 @@ export class GameScene extends Phaser.Scene {
   collect(d: Drop) {
     (d.body as Phaser.Physics.Arcade.Body).enable = false;
     this.drops.remove(d);
-    d.label?.destroy();
+    d.label?.destroy(); d.floatTw?.stop(); d.shadow?.destroy();
     this.tweens.add({ targets: d, x: this.player.x, y: this.player.y - 70, alpha: 0, duration: 200, onComplete: () => d.destroy() });
     if (d.itemId === 'spirit_stone') { this.prog.stones += d.count; this.log(`获得灵石 ${d.count}`, '#7ff0d0'); }
     else if (ITEMS[d.itemId]?.type === 'equip') { const on = this.prog.gainEquip(d.itemId); this.log(`获得 ${ITEMS[d.itemId].name}${on ? '（已自动装备）' : ''}`, '#9fd0ff'); }
@@ -446,7 +469,15 @@ export class GameScene extends Phaser.Scene {
       const mark = this.add.text(0, -h - 8, '', { fontFamily: 'Arial Black, sans-serif', fontSize: '26px', color: '#ffd23a', stroke: '#6b3a00', strokeThickness: 5 }).setOrigin(0.5, 1);
       c.add(mark);
       this.tweens.add({ targets: mark, y: mark.y - 6, yoyo: true, repeat: -1, duration: 500 });
-      if (npc) this.npcMarks.push({ id: npc.id, text: mark });
+      // 任务标记图（hud_ui.json 的 origin），三张都在才换图，否则保留文字
+      let img: Phaser.GameObjects.Image | undefined;
+      if (QUEST_MARK_KEYS.every(k => this.textures.exists(k))) {
+        const sp = hudSpec(this, 'ui_hud_quest_available');
+        img = this.add.image(0, -h - 8, 'ui_hud_quest_available').setOrigin(sp?.origin?.[0] ?? 0.5, sp?.origin?.[1] ?? 1).setVisible(false);
+        c.add(img);
+        this.tweens.add({ targets: img, y: img.y - 6, yoyo: true, repeat: -1, duration: 500 });
+      }
+      if (npc) this.npcMarks.push({ id: npc.id, text: mark, img });
     } else if (o.type === 'portal') {
       const shut = !this.portalOpen(o);
       const g = this.add.ellipse(o.x, o.y - 40, 46, 80, shut ? 0x888888 : 0x8fe3ff, 0.55).setStrokeStyle(3, shut ? 0x555555 : 0x3a9fd8).setDepth(4);
@@ -646,7 +677,8 @@ export class GameScene extends Phaser.Scene {
     const t = this.add.text(16, 0, msg, { fontFamily: 'sans-serif', fontSize: '14px', color, stroke: '#000000', strokeThickness: 3 }).setOrigin(0, 1).setScrollFactor(0).setDepth(102);
     this.logs.push(t);
     if (this.logs.length > 6) this.logs.shift()!.destroy();
-    this.logs.forEach((l, i) => l.setY(668 - (this.logs.length - 1 - i) * 20));
+    const base = this.hudKit ? 596 : 668;   // 新 HUD 状态区从 y=604 开始，系统消息挪到它上面
+    this.logs.forEach((l, i) => l.setY(base - (this.logs.length - 1 - i) * 20));
     this.time.delayedCall(4000, () => { this.tweens.add({ targets: t, alpha: 0, duration: 400, onComplete: () => { this.logs = this.logs.filter(x => x !== t); t.destroy(); } }); });
   }
 
@@ -658,6 +690,13 @@ export class GameScene extends Phaser.Scene {
   }
 
   damageNumber(x: number, y: number, n: number, color: string, stroke: string) {
+    // 位图字：玩家受伤用朱红，其余用伤害白（只含 0–9、+、升级）
+    const font = color === '#c45cff' ? 'ui_hud_font_hurt' : 'ui_hud_font_white';
+    if (this.cache.bitmapFont.exists(font)) {
+      const bt = this.add.bitmapText(x, y, font, String(n)).setOrigin(0.5).setDepth(50);
+      this.tweens.add({ targets: bt, y: y - 40, alpha: 0, duration: 700, ease: 'Cubic.easeOut', onComplete: () => bt.destroy() });
+      return;
+    }
     const t = this.add.text(x, y, String(n), { fontFamily: 'Arial Black, sans-serif', fontSize: '24px', color, stroke, strokeThickness: 4 }).setOrigin(0.5).setDepth(50);
     this.tweens.add({ targets: t, y: y - 40, alpha: 0, duration: 700, ease: 'Cubic.easeOut', onComplete: () => t.destroy() });
   }
@@ -666,6 +705,22 @@ export class GameScene extends Phaser.Scene {
     const c = this.add.circle(x, y, 10, 0xffffff, 0.8).setDepth(9);
     this.tweens.add({ targets: c, scale: 2.5, alpha: 0, duration: 250, onComplete: () => c.destroy() });
   }
+
+  /** 掉落图标键：配表 icon，灵石固定 icon_spirit_stone；图集里没有就返回 null（退回色块） */
+  dropIcon(id: string): string | null {
+    const key = id === 'spirit_stone' ? 'icon_spirit_stone' : ITEMS[id]?.icon;
+    return key && this.textures.exists('icons_items') && this.textures.get('icons_items').has(key) ? key : null;
+  }
+
+  /** 落地：停掉物理，影子贴地不动，图标上下浮动 */
+  landDrop(d: Drop) {
+    d.landed = true;
+    const b = d.body as Phaser.Physics.Arcade.Body;
+    b.setVelocity(0, 0); b.setAllowGravity(false); b.moves = false;
+    d.shadow!.setPosition(d.x, d.y).setVisible(true);
+    d.floatTw = this.tweens.add({ targets: d, y: d.y - DROP_FLOAT.px, duration: DROP_FLOAT.periodMs / 2, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+  }
+  removeDrop(d: Drop) { d.label?.destroy(); d.floatTw?.stop(); d.shadow?.destroy(); d.destroy(); }
 
   dropTex(id: string) {
     const key = id === 'spirit_stone' ? 'drop_stone' : 'drop_' + (ITEMS[id]?.type ?? 'misc');
@@ -681,16 +736,96 @@ export class GameScene extends Phaser.Scene {
     return key;
   }
 
+  /** 精修 HUD（art/icons/ui/hud/README 建议布局，1280×720）。必需件缺任何一个就整套退回代码绘制 */
+  buildHudKit() {
+    const need = ['ui_hud_panel', 'ui_hud_bar_frame', 'ui_hud_bar_hp', 'ui_hud_bar_mp', 'ui_bar_cultivation_frame', 'ui_bar_cultivation'];
+    if (!need.every(k => hasHud(this, k))) return;
+    const D = 100;
+    const panel = sliced(this, 'ui_hud_panel', 16, 604, 400, 88)!.setDepth(D);
+    const lv = hudText(this, 28, 616, 14, { fontStyle: 'bold' }).setDepth(D + 2);
+    const info = hudText(this, 404, 618, 12, { color: INK_60 }).setOrigin(1, 0).setDepth(D + 2);
+    hudText(this, 28, 650, 12).setText('气血').setOrigin(0, 0.5).setDepth(D + 2);
+    hudText(this, 28, 674, 12).setText('灵力').setOrigin(0, 0.5).setDepth(D + 2);
+    const hp = new HudBar(this, 'ui_hud_bar_frame', 'ui_hud_bar_hp', 64, 640, 340, 20, D + 1);
+    const mp = new HudBar(this, 'ui_hud_bar_frame', 'ui_hud_bar_mp', 64, 664, 340, 20, D + 1);
+    const num = (x: number, y: number) => hudText(this, x, y, 12, { color: '#ffffff', stroke: INK, strokeThickness: 2 }).setOrigin(0.5).setDepth(D + 3);
+    const hpT = num(64 + 170, 650), mpT = num(64 + 170, 674);
+    const EXP_X = 16, EXP_Y = 698, EXP_W = 1200, EXP_H = 16;
+    const exp = new HudBar(this, 'ui_bar_cultivation_frame', 'ui_bar_cultivation', EXP_X, EXP_Y, EXP_W, EXP_H, D + 1);
+    let expGlow: HudKit['expGlow'];
+    const gs = hudSpec(this, 'ui_bar_cultivation_bottleneck_glow');
+    if (gs && this.textures.exists('ui_bar_cultivation_bottleneck_glow')) {
+      const pad = gs.pad ?? 0;
+      const glow = sliced(this, 'ui_bar_cultivation_bottleneck_glow', EXP_X - pad, EXP_Y - pad, EXP_W + 2 * pad, EXP_H + 2 * pad)!.setDepth(D).setVisible(false);
+      this.tweens.add({ targets: glow, alpha: { from: 0.35, to: 1 }, duration: 1600, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+      expGlow = glow;
+    }
+    const expT = num(EXP_X + EXP_W / 2, EXP_Y + EXP_H / 2);
+    let boss: HudKit['boss'];
+    if (['ui_hud_boss_bar_frame', 'ui_hud_boss_bar_fill', 'ui_hud_boss_nameplate'].every(k => hasHud(this, k))) {
+      const plate = sliced(this, 'ui_hud_boss_nameplate', 640, 8, 48, 24)!.setDepth(130);
+      const bar = new HudBar(this, 'ui_hud_boss_bar_frame', 'ui_hud_boss_bar_fill', 340, 44, 600, 24, 130);
+      const name = hudText(this, 640, 20, 14, { fontStyle: 'bold' }).setOrigin(0.5).setDepth(132);
+      const bnum = hudText(this, 640, 56, 12, { fontStyle: 'bold', color: '#ffffff', stroke: INK, strokeThickness: 2 }).setOrigin(0.5).setDepth(133);
+      boss = { plate, bar, name, num: bnum };
+      plate.setVisible(false); bar.setVisible(false); name.setVisible(false); bnum.setVisible(false);
+    }
+    this.hudKit = { panel, hp, mp, exp, expGlow, lv, info, hpT, mpT, expT, boss, expRight: EXP_X + EXP_W };
+  }
+
   drawHud() {
     const pr = this.prog, W = 1280, H = 720;
     const g = this.hud.clear();
+    const kit = this.hudKit;
+    const jobName0 = pr.job ? t('job.' + pr.job) : '';
+    if (kit) {
+      const need = pr.expNeed, ratio = Number.isFinite(need) ? Math.min(1, pr.exp / need) : 1;
+      kit.lv.setText(`Lv.${pr.level}  ${pr.realmName}${jobName0 && !jobName0.startsWith('job.') ? '  ' + jobName0 : ''}`);
+      kit.info.setText(`灵石 ${pr.stones}  攻 ${pr.atk.toFixed(0)}  防 ${pr.def.toFixed(1)}`);
+      kit.hp.set(pr.hp / pr.maxHp); kit.hpT.setText(`${pr.hp} / ${pr.maxHp}`);
+      kit.mp.set(pr.mp / pr.maxMp); kit.mpT.setText(`${Math.floor(pr.mp)} / ${pr.maxMp}`);
+      kit.exp.set(ratio, pr.atBreakthrough ? 'ui_bar_cultivation_bottleneck' : 'ui_bar_cultivation');
+      kit.expGlow?.setVisible(pr.atBreakthrough);
+      kit.expT.setText(`修为 ${pr.exp}/${need}${pr.atBreakthrough ? `（${t('realm.bottleneck')}）` : ''}`);
+      const boss = this.mobs.find(m => m.def.isBoss && !m.owner && !m.dead);
+      if (kit.boss) {
+        const b = kit.boss, on = !!boss;
+        b.name.setVisible(on); b.num.setVisible(on); b.plate.setVisible(on); b.bar.setVisible(on);
+        if (boss) {
+          b.name.setText(boss.def.name);
+          const pw = b.name.width + 24;
+          setSlicedWidth(this, b.plate, 'ui_hud_boss_nameplate', pw); b.plate.setX(640 - pw / 2);
+          b.bar.set(Math.max(0, boss.hp) / boss.def.hp);
+          b.num.setText(`${Math.max(0, Math.ceil(boss.hp))} / ${boss.def.hp}`);
+        }
+        this.bossName.setVisible(false); this.bossHpText.setVisible(false);
+      } else this.drawBossFallback(g, boss);
+      this.drawGourd(kit.expRight + 24, H - 2);
+      this.drawHudTail();
+      return;
+    }
     g.fillStyle(0x1d2a3a, 0.85).fillRect(0, H - 44, W, 44);
     g.fillStyle(0x333333).fillRect(130, H - 38, 220, 18).fillStyle(0xe8443a).fillRect(130, H - 38, 220 * pr.hp / pr.maxHp, 18);
     g.fillStyle(0x333333).fillRect(366, H - 38, 180, 18).fillStyle(0x3a8af0).fillRect(366, H - 38, 180 * pr.mp / pr.maxMp, 18);
     const need = pr.expNeed, ratio = Number.isFinite(need) ? Math.min(1, pr.exp / need) : 1;
     const expW = 1200;
     g.fillStyle(0x333333).fillRect(0, H - 10, expW, 10).fillStyle(pr.atBreakthrough ? 0xd080ff : 0xf2d24a).fillRect(0, H - 10, expW * ratio, 10);
-    const boss = this.mobs.find(m => m.def.isBoss && !m.owner && !m.dead);
+    this.drawBossFallback(g, this.mobs.find(m => m.def.isBoss && !m.owner && !m.dead));
+    this.drawGourd(expW + 20, H - 2);
+    if (!this.hudTexts) {
+      const mk = (x: number, o = 0) => this.add.text(x, H - 29, '', { fontFamily: 'sans-serif', fontSize: '13px', color: '#ffffff', stroke: '#000000', strokeThickness: 3 }).setOrigin(o, 0.5).setScrollFactor(0).setDepth(101);
+      this.hudTexts = [mk(14), mk(240, 0.5), mk(456, 0.5), mk(566)];
+    }
+    const [lv, hp, mp, info] = this.hudTexts;
+    const jobName = jobName0;
+    lv.setText(`Lv.${pr.level}  ${pr.realmName}${jobName && !jobName.startsWith('job.') ? '  ' + jobName : ''}`); hp.setText(`气血 ${pr.hp}/${pr.maxHp}`); mp.setText(`灵力 ${Math.floor(pr.mp)}/${pr.maxMp}`);
+    info.setText(`修为 ${pr.exp}/${need}${pr.atBreakthrough ? `（${t('realm.bottleneck')}）` : ''}    灵石 ${pr.stones}    攻击 ${pr.atk.toFixed(0)}  防御 ${pr.def.toFixed(1)}`);
+    this.drawHudTail();
+  }
+
+  /** 旧版首领血条（hud 素材缺失时） */
+  private drawBossFallback(g: Phaser.GameObjects.Graphics, boss: Monster | undefined) {
+    const W = 1280;
     if (boss) {
       const bw = 420, x = (W - bw) / 2;
       g.fillStyle(0x1a1020, 0.88).fillRoundedRect(x - 12, 10, bw + 24, 46, 8);
@@ -699,28 +834,32 @@ export class GameScene extends Phaser.Scene {
       this.bossName.setPosition(x, 14).setOrigin(0, 0).setText(boss.def.name).setVisible(true);
       this.bossHpText.setPosition(x + bw, 14).setOrigin(1, 0).setText(`${Math.max(0, Math.ceil(boss.hp))} / ${boss.def.hp}`).setVisible(true);
     } else { this.bossName.setVisible(false); this.bossHpText.setVisible(false); }
+  }
+
+  /** 溢出池葫芦：修为条右侧 */
+  private drawGourd(x: number, y: number) {
+    const pr = this.prog, W = 1280;
     const showGourd = BREAKTHROUGH_LEVELS.includes(pr.level) || pr.overflowExp > 0;
     if (this.gourd && this.textures.exists('icon_overflow_gourd_empty')) {
       this.gourd.setVisible(showGourd);
       if (showGourd) {
         const cap = pr.overflowCap, n = pr.overflowExp;
-        const tier = pr.overflowTier;
-        const key = `icon_overflow_gourd_${tier}`;
+        const key = `icon_overflow_gourd_${pr.overflowTier}`;
         if (this.gourd.texture.key !== key && this.textures.exists(key)) this.gourd.setTexture(key);
-        this.gourd.setPosition(expW + 20, H - 2);
+        this.gourd.setPosition(x, y);
         this.gourdTip.setText(t('realm.overflow_tip', { n, max: cap })).setPosition(Math.min(this.gourd.x + 16, W - 8), this.gourd.y - 36);
       } else this.gourdTip.setVisible(false);
     }
-    if (!this.hudTexts) {
-      const mk = (x: number, o = 0) => this.add.text(x, H - 29, '', { fontFamily: 'sans-serif', fontSize: '13px', color: '#ffffff', stroke: '#000000', strokeThickness: 3 }).setOrigin(o, 0.5).setScrollFactor(0).setDepth(101);
-      this.hudTexts = [mk(14), mk(240, 0.5), mk(456, 0.5), mk(566)];
-    }
-    const [lv, hp, mp, info] = this.hudTexts;
-    const jobName = pr.job ? t('job.' + pr.job) : '';
-    lv.setText(`Lv.${pr.level}  ${pr.realmName}${jobName && !jobName.startsWith('job.') ? '  ' + jobName : ''}`); hp.setText(`气血 ${pr.hp}/${pr.maxHp}`); mp.setText(`灵力 ${Math.floor(pr.mp)}/${pr.maxMp}`);
-    info.setText(`修为 ${pr.exp}/${need}${pr.atBreakthrough ? `（${t('realm.bottleneck')}）` : ''}    灵石 ${pr.stones}    攻击 ${pr.atk.toFixed(0)}  防御 ${pr.def.toFixed(1)}`);
+  }
+
+  private drawHudTail() {
+    const pr = this.prog;
     this.skillBar.draw(pr.skillsUnlocked, this.time.now, pr.hotbar, this.combat.cds, pr);
-    for (const m of this.npcMarks) m.text.setText(this.quests.mark(m.id) ?? '').setColor(this.quests.mark(m.id) === '…' ? '#cccccc' : '#ffd23a');
+    for (const m of this.npcMarks) {
+      const mk = this.quests.mark(m.id);
+      if (m.img) { m.text.setText(''); m.img.setVisible(!!mk); if (mk) m.img.setTexture(mk === '!' ? 'ui_hud_quest_available' : mk === '?' ? 'ui_hud_quest_turnin' : 'ui_hud_quest_progress'); }
+      else m.text.setText(mk ?? '').setColor(mk === '…' ? '#cccccc' : '#ffd23a');
+    }
     const tl: string[] = [];
     for (const id of this.quests.activeIds) {
       const q = this.quests.objectiveProgress(QUESTS_REF[id]);

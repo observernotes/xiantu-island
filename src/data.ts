@@ -29,7 +29,7 @@ export interface MonsterDef {
   skills?: MonsterSkill[];
   sprite: string; dropTable: string | null; isBoss: boolean;
 }
-export interface ItemDef { id: string; name: string; type: string; slot?: string; stats?: Record<string, number>; effect?: any; }
+export interface ItemDef { id: string; name: string; type: string; slot?: string; stats?: Record<string, number>; effect?: any; icon?: string; }
 export interface DropTable { spiritStone: [number, number]; items: { item: string; chance: number; count: [number, number] }[] }
 
 export const MONSTERS: Record<string, MonsterDef> = Object.fromEntries((monsters as MonsterDef[]).map(m => [m.id, m]));

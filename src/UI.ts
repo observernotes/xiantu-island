@@ -2,22 +2,25 @@ import Phaser from 'phaser';
 import type { Line } from './data';
 import type { Progress } from './Progress';
 import { HOTBAR_SLOTS, SKILLS, describeSkill, skillsForJob, typeLabel } from './skills';
+import { hasHud, hudSpec, sliced, HUD_FONT, INK, INK_60, PAPER, RED, NAVY } from './hud';
 
 /** 冒险岛式 NPC 对话框：底部居中，左侧头像，Z / 空格 / 回车 / ↑ 翻页 */
 export class DialogBox {
-  private c: Phaser.GameObjects.Container;
-  private name: Phaser.GameObjects.Text;
-  private body: Phaser.GameObjects.Text;
-  private hint: Phaser.GameObjects.Text;
-  private portrait: Phaser.GameObjects.Sprite;
+  private c!: Phaser.GameObjects.Container;
+  private name!: Phaser.GameObjects.Text;
+  private body!: Phaser.GameObjects.Text;
+  private hint!: Phaser.GameObjects.Text;
+  private portrait!: Phaser.GameObjects.Sprite;
   private lines: Line[] = [];
   private i = 0;
   private done?: () => void;
   private onCue?: (cue: string, next: () => void) => void;
   private waiting = false;
+  private kit = false;
   open = false;
 
   constructor(private scene: Phaser.Scene) {
+    if (hasHud(scene, 'ui_hud_dialog')) { this.buildKit(); return; }
     const W = 760, H = 170, x = 640, y = 520;
     this.c = scene.add.container(x, y).setScrollFactor(0).setDepth(200).setVisible(false);
     const bg = scene.add.graphics();
@@ -28,6 +31,22 @@ export class DialogBox {
     this.body = scene.add.text(-W / 2 + 150, -H / 2 + 46, '', { fontFamily: 'sans-serif', fontSize: '17px', color: '#2b2b2b', wordWrap: { width: W - 180, useAdvancedWrap: true }, lineSpacing: 6 });
     this.hint = scene.add.text(W / 2 - 16, H / 2 - 12, '', { fontFamily: 'sans-serif', fontSize: '13px', color: '#8a6a40' }).setOrigin(1, 1);
     this.c.add([bg, this.portrait, this.name, this.body, this.hint]);
+  }
+
+  /** 精修对话框：ui_hud_dialog (260,404, 760×168)，切片读 hud_ui.json；排版按 hud/README */
+  private buildKit() {
+    const scene = this.scene, W = 760, H = 168, L = -W / 2, T = -H / 2;
+    this.kit = true;
+    this.c = scene.add.container(260 + W / 2, 404 + H / 2).setScrollFactor(0).setDepth(200).setVisible(false);
+    const bg = sliced(scene, 'ui_hud_dialog', L, T, W, H)!;
+    const deco = scene.add.graphics();
+    deco.fillStyle(0xECE0C4).fillRoundedRect(L + 16, T + 16, 112, 136, 8);
+    deco.lineStyle(1, 0x3B2A20, 0.2).lineBetween(L + 144, T + 44.5, L + W - 16, T + 44.5);
+    this.portrait = scene.add.sprite(L + 16 + 56, T + 16 + 136 - 4, '__DEFAULT').setOrigin(0.5, 1);
+    this.name = scene.add.text(L + 144, T + 18, '', { fontFamily: HUD_FONT, fontSize: '16px', color: INK, fontStyle: 'bold' });
+    this.body = scene.add.text(L + 144, T + 56, '', { fontFamily: HUD_FONT, fontSize: '16px', color: INK, wordWrap: { width: 592, useAdvancedWrap: true }, lineSpacing: 8 });
+    this.hint = scene.add.text(W / 2 - 16, H / 2 - 16, '', { fontFamily: HUD_FONT, fontSize: '12px', color: INK_60 }).setOrigin(1, 1);
+    this.c.add([bg, deco, this.portrait, this.name, this.body, this.hint]);
   }
 
   show(lines: Line[], portraitKey: string | null, done?: () => void, onCue?: (cue: string, next: () => void) => void) {
@@ -47,8 +66,13 @@ export class DialogBox {
       if (!this.onCue) { this.waiting = false; this.c.setVisible(true); this.advance(); }
       return;
     }
-    this.name.setText(l.speaker ?? '【提示】').setColor(l.speaker ? (l.player ? '#1a5a8a' : '#6b2a00') : '#2a7a3a');
-    this.body.setText(l.text).setColor(l.speaker ? '#2b2b2b' : '#2a7a3a');
+    if (this.kit) {
+      this.name.setText(l.speaker ?? '【提示】').setColor(l.speaker ? (l.player ? NAVY : INK) : RED);
+      this.body.setText(l.text).setColor(INK);
+    } else {
+      this.name.setText(l.speaker ?? '【提示】').setColor(l.speaker ? (l.player ? '#1a5a8a' : '#6b2a00') : '#2a7a3a');
+      this.body.setText(l.text).setColor(l.speaker ? '#2b2b2b' : '#2a7a3a');
+    }
     this.hint.setText(this.i < this.lines.length - 1 ? 'Z / 空格 继续 ▼' : 'Z / 空格 结束');
   }
 
@@ -65,11 +89,15 @@ export class DialogBox {
   }
 }
 
-const SLOT_W = 44, SLOT_H = 44, SLOT_GAP = 4;
+let SLOT_W = 44, SLOT_H = 44, SLOT_GAP = 4;
+/** 精修快捷栏：README 建议 ui_hud_panel 底板 y=632，内边距 8，格子间距 8（每格 +52），右边距 16 */
+const KIT = { panelY: 632, pad: 8, gap: 8, right: 16 };
+let kitMode = false;
 
 function hotbarLayout() {
   const n = HOTBAR_SLOTS.length;
   const total = n * SLOT_W + (n - 1) * SLOT_GAP;
+  if (kitMode) return { x: 1280 - KIT.right - KIT.pad - total, y: KIT.panelY + KIT.pad, total };
   return { x: 1280 - 16 - total, y: 720 - 98, total };
 }
 
@@ -80,9 +108,19 @@ export class SkillBar {
   private icons: Phaser.GameObjects.Image[] = [];
   private lvs: Phaser.GameObjects.Text[] = [];
   private lock: Phaser.GameObjects.Text;
+  /** 精修格子：每格 normal / active / locked 三张九切片，按状态切显示 */
+  private slots: { n: Phaser.GameObjects.GameObject & Phaser.GameObjects.Components.Visible; a: Phaser.GameObjects.GameObject & Phaser.GameObjects.Components.Visible; l: Phaser.GameObjects.GameObject & Phaser.GameObjects.Components.Visible }[] = [];
+  private keys: (Phaser.Input.Keyboard.Key | undefined)[] = [];
+  private iconOff: [number, number] = [6, 6];
   onSlot?: (index: number) => void;
 
   constructor(private scene: Phaser.Scene) {
+    kitMode = ['ui_hud_panel', 'ui_hud_slot', 'ui_hud_slot_active', 'ui_hud_slot_locked'].every(k => hasHud(scene, k));
+    if (kitMode) {
+      const sp = hudSpec(scene, 'ui_hud_slot')!;
+      [SLOT_W, SLOT_H] = sp.size ?? [44, 44]; SLOT_GAP = KIT.gap;
+      this.iconOff = sp.iconOffset ?? [6, 6];
+    } else { SLOT_W = 44; SLOT_H = 44; SLOT_GAP = 4; }
     if (!scene.textures.exists('__blank')) {
       const g = scene.make.graphics({}, false);
       g.fillStyle(0xffffff, 0).fillRect(0, 0, 4, 4);
@@ -91,17 +129,29 @@ export class SkillBar {
     const iconKey = scene.textures.exists('icons_skills') ? 'icons_skills' : '__blank';
     const iconFrame = iconKey === 'icons_skills' ? scene.textures.get('icons_skills').getFrameNames()[0] : undefined;
     const { x: x0, y, total } = hotbarLayout();
-    this.g = scene.add.graphics().setScrollFactor(0).setDepth(100);
+    this.g = scene.add.graphics().setScrollFactor(0).setDepth(kitMode ? 102 : 100);
+    if (kitMode) sliced(scene, 'ui_hud_panel', x0 - KIT.pad, KIT.panelY, total + 2 * KIT.pad, SLOT_H + 2 * KIT.pad)!.setDepth(100);
     HOTBAR_SLOTS.forEach((s, i) => {
       const x = x0 + i * (SLOT_W + SLOT_GAP);
-      this.labels.push(scene.add.text(x + 3, y + 1, s.label, { fontSize: '11px', color: '#ffffff', stroke: '#000', strokeThickness: 3 }).setScrollFactor(0).setDepth(103));
-      const icon = scene.add.image(x + SLOT_W / 2, y + SLOT_H / 2 + 2, iconKey, iconFrame).setDisplaySize(32, 32).setScrollFactor(0).setDepth(101).setVisible(false);
+      if (kitMode) {
+        const mk = (k: string) => sliced(scene, k, x, y, SLOT_W, SLOT_H)!.setDepth(100.5);
+        this.slots.push({ n: mk('ui_hud_slot'), a: mk('ui_hud_slot_active').setVisible(false), l: mk('ui_hud_slot_locked').setVisible(false) });
+        this.keys.push(scene.input.keyboard?.addKey(s.label, false));
+        this.labels.push(scene.add.text(x + 4, y + 2, s.label, { fontFamily: HUD_FONT, fontSize: '11px', fontStyle: 'bold', color: INK, stroke: PAPER, strokeThickness: 2 }).setScrollFactor(0).setDepth(103));
+      } else this.labels.push(scene.add.text(x + 3, y + 1, s.label, { fontSize: '11px', color: '#ffffff', stroke: '#000', strokeThickness: 3 }).setScrollFactor(0).setDepth(103));
+      const icon = kitMode
+        ? scene.add.image(x + this.iconOff[0], y + this.iconOff[1], iconKey, iconFrame).setOrigin(0, 0).setDisplaySize(32, 32).setScrollFactor(0).setDepth(101).setVisible(false)
+        : scene.add.image(x + SLOT_W / 2, y + SLOT_H / 2 + 2, iconKey, iconFrame).setDisplaySize(32, 32).setScrollFactor(0).setDepth(101).setVisible(false);
       this.icons.push(icon);
-      this.lvs.push(scene.add.text(x + SLOT_W - 2, y + SLOT_H - 1, '', { fontSize: '11px', color: '#fff6c8', stroke: '#000', strokeThickness: 3 }).setOrigin(1, 1).setScrollFactor(0).setDepth(103));
+      this.lvs.push(kitMode
+        ? scene.add.text(x + 40, y + 40, '', { fontFamily: HUD_FONT, fontSize: '12px', fontStyle: 'bold', color: INK, stroke: PAPER, strokeThickness: 2 }).setOrigin(1, 1).setScrollFactor(0).setDepth(103)
+        : scene.add.text(x + SLOT_W - 2, y + SLOT_H - 1, '', { fontSize: '11px', color: '#fff6c8', stroke: '#000', strokeThickness: 3 }).setOrigin(1, 1).setScrollFactor(0).setDepth(103));
       const zone = scene.add.zone(x, y, SLOT_W, SLOT_H).setOrigin(0, 0).setScrollFactor(0).setDepth(104).setInteractive();
       zone.on('pointerdown', () => this.onSlot?.(i));
     });
-    this.lock = scene.add.text(x0 + total / 2, y + 22, '', { fontFamily: 'sans-serif', fontSize: '13px', color: '#ffffff', stroke: '#000', strokeThickness: 3 }).setOrigin(0.5).setScrollFactor(0).setDepth(103);
+    this.lock = kitMode
+      ? scene.add.text(x0 + total / 2, y + SLOT_H / 2, '', { fontFamily: HUD_FONT, fontSize: '12px', color: INK, stroke: PAPER, strokeThickness: 2 }).setOrigin(0.5).setScrollFactor(0).setDepth(103)
+      : scene.add.text(x0 + total / 2, y + 22, '', { fontFamily: 'sans-serif', fontSize: '13px', color: '#ffffff', stroke: '#000', strokeThickness: 3 }).setOrigin(0.5).setScrollFactor(0).setDepth(103);
   }
 
   draw(unlocked: boolean, now: number, hotbar: (string | null)[], cds: Map<string, { readyAt: number; total: number }>, prog: Progress) {
@@ -114,20 +164,28 @@ export class SkillBar {
       const def = id ? SKILLS[id] : undefined;
       const level = id ? prog.skillLevel(id) : 0;
       const show = !!(unlocked && def && level > 0);
-      g.fillStyle(unlocked ? 0x2a3a52 : 0x3a3a3a, 0.85).fillRoundedRect(x, y, SLOT_W, SLOT_H, 6).lineStyle(2, show ? 0x9fd0ff : unlocked ? 0x6a849c : 0x777777).strokeRoundedRect(x, y, SLOT_W, SLOT_H, 6);
+      if (kitMode) {
+        const st = this.slots[i], active = unlocked && !!this.keys[i]?.isDown;
+        st.l.setVisible(!unlocked); st.a.setVisible(active); st.n.setVisible(unlocked && !active);
+      } else g.fillStyle(unlocked ? 0x2a3a52 : 0x3a3a3a, 0.85).fillRoundedRect(x, y, SLOT_W, SLOT_H, 6).lineStyle(2, show ? 0x9fd0ff : unlocked ? 0x6a849c : 0x777777).strokeRoundedRect(x, y, SLOT_W, SLOT_H, 6);
       const icon = this.icons[i];
-      if (show && atlas && def!.icon && atlas.has(def!.icon)) icon.setTexture('icons_skills', def!.icon).setVisible(true).setPosition(x + SLOT_W / 2, y + SLOT_H / 2 + 2);
-      else icon.setVisible(false);
+      if (show && atlas && def!.icon && atlas.has(def!.icon)) {
+        icon.setTexture('icons_skills', def!.icon).setVisible(true);
+        if (kitMode) icon.setPosition(x + this.iconOff[0], y + this.iconOff[1]).setDisplaySize(32, 32);
+        else icon.setPosition(x + SLOT_W / 2, y + SLOT_H / 2 + 2);
+      } else icon.setVisible(false);
       const cd = id ? cds.get(id) : undefined;
       const left = cd ? cd.readyAt - now : 0;
       if (show && cd && left > 0 && cd.total > 0) {
         const r = Math.min(1, left / cd.total);
-        g.fillStyle(0x000000, 0.62).fillRect(x, y + SLOT_H * (1 - r), SLOT_W, SLOT_H * r);
+        if (kitMode) g.fillStyle(0x3B2A20, 0.55).fillRect(x, y + SLOT_H * (1 - r), SLOT_W, SLOT_H * r);   // README：墨褐 55% 从上往下退
+        else g.fillStyle(0x000000, 0.62).fillRect(x, y + SLOT_H * (1 - r), SLOT_W, SLOT_H * r);
       }
       const remain = id ? prog.buffRemaining(id) : 0;
       const blink = show && remain > 0 && remain <= 5000;
       icon.setAlpha(!show ? 1 : blink && Math.floor(now / 160) % 2 ? 0.3 : 1);
-      this.lvs[i].setText(show && level > 0 ? String(level) : '').setPosition(x + SLOT_W - 2, y + SLOT_H - 1);
+      this.lvs[i].setText(show && level > 0 ? String(level) : '');
+      if (!kitMode) this.lvs[i].setPosition(x + SLOT_W - 2, y + SLOT_H - 1);
     });
     this.lock.setText(unlocked ? '' : '突破炼气期后解锁技能栏');
   }
