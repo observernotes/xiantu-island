@@ -8,6 +8,9 @@ import qingyun from '@xt/maps/qingyun_village.json';
 import realmsRaw from '@xt/balance/realms.json';
 import bamboo from '@xt/maps/bamboo_forest.json';
 import lingxi from '@xt/maps/lingxi_path.json';
+import luoxia1 from '@xt/maps/luoxia_outskirts_1.json';
+import luoxia2 from '@xt/maps/luoxia_outskirts_2.json';
+import altar from '@xt/maps/trial_foundation_altar.json';
 
 export interface MonsterDef {
   id: string; name: string; level: number; hp: number; atk: number; def: number; exp: number;
@@ -27,7 +30,7 @@ export const ITEMS: Record<string, ItemDef> = Object.fromEntries([...(items as I
 export const GROWTH = growth as any;
 export const EXP_TO_NEXT = (expCurve as any).expToNext as Record<string, number>;
 export const MAX_LEVEL = (expCurve as any).maxLevel as number;
-export const TILED_MAPS: Record<string, any> = { qingyun_village: qingyun, bamboo_forest: bamboo, lingxi_path: lingxi };
+export const TILED_MAPS: Record<string, any> = { qingyun_village: qingyun, bamboo_forest: bamboo, lingxi_path: lingxi, luoxia_outskirts_1: luoxia1, luoxia_outskirts_2: luoxia2, trial_foundation_altar: altar };
 
 /** 境界突破关口：到这一级修为满后需要找 NPC 突破（design/02_新手任务.md 第三节） */
 export const BREAKTHROUGH_LEVELS: number[] = (realmsRaw as any[]).map(r => r.levelMax).filter((lv: number) => lv < (expCurve as any).maxLevel);
