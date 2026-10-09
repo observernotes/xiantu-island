@@ -1,0 +1,157 @@
+{
+ "atlas": "mon_flame_envoy",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  192,
+  192
+ ],
+ "anims": [
+  {
+   "key": "mon_flame_envoy_idle",
+   "frames": [
+    "mon_flame_envoy_idle_01",
+    "mon_flame_envoy_idle_02",
+    "mon_flame_envoy_idle_03",
+    "mon_flame_envoy_idle_04"
+   ],
+   "frameRate": 4,
+   "repeat": -1
+  },
+  {
+   "key": "mon_flame_envoy_walk",
+   "frames": [
+    "mon_flame_envoy_walk_01",
+    "mon_flame_envoy_walk_02",
+    "mon_flame_envoy_walk_03",
+    "mon_flame_envoy_walk_04"
+   ],
+   "frameRate": 6,
+   "repeat": -1
+  },
+  {
+   "key": "mon_flame_envoy_idle_p2",
+   "frames": [
+    "mon_flame_envoy_idle_p2_01",
+    "mon_flame_envoy_idle_p2_02",
+    "mon_flame_envoy_idle_p2_03",
+    "mon_flame_envoy_idle_p2_04"
+   ],
+   "frameRate": 6,
+   "repeat": -1
+  },
+  {
+   "key": "mon_flame_envoy_flame_palm",
+   "frames": [
+    "mon_flame_envoy_flame_palm_01",
+    "mon_flame_envoy_flame_palm_02",
+    "mon_flame_envoy_flame_palm_03",
+    "mon_flame_envoy_flame_palm_04"
+   ],
+   "frameRate": 6,
+   "repeat": 0
+  },
+  {
+   "key": "mon_flame_envoy_fire_wave",
+   "frames": [
+    "mon_flame_envoy_fire_wave_01",
+    "mon_flame_envoy_fire_wave_02",
+    "mon_flame_envoy_fire_wave_03",
+    "mon_flame_envoy_fire_wave_04"
+   ],
+   "frameRate": 8,
+   "repeat": 0
+  },
+  {
+   "key": "mon_flame_envoy_lava_pillar",
+   "frames": [
+    "mon_flame_envoy_lava_pillar_01",
+    "mon_flame_envoy_lava_pillar_02",
+    "mon_flame_envoy_lava_pillar_03",
+    "mon_flame_envoy_lava_pillar_04"
+   ],
+   "frameRate": 6,
+   "repeat": 0
+  },
+  {
+   "key": "mon_flame_envoy_floor_collapse",
+   "frames": [
+    "mon_flame_envoy_floor_collapse_01",
+    "mon_flame_envoy_floor_collapse_02",
+    "mon_flame_envoy_floor_collapse_03",
+    "mon_flame_envoy_floor_collapse_04"
+   ],
+   "frameRate": 6,
+   "repeat": 0
+  },
+  {
+   "key": "mon_flame_envoy_hit",
+   "frames": [
+    "mon_flame_envoy_hit_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  },
+  {
+   "key": "mon_flame_envoy_die",
+   "frames": [
+    "mon_flame_envoy_die_01",
+    "mon_flame_envoy_die_02",
+    "mon_flame_envoy_die_03",
+    "mon_flame_envoy_die_04",
+    "mon_flame_envoy_die_05"
+   ],
+   "frameRate": 6,
+   "repeat": 0
+  }
+ ],
+ "bodySize": [
+  70,
+  130
+ ],
+ "phases": {
+  "p1": "血量 >50%：idle / walk / flame_palm / fire_wave",
+  "p2": "<50%：idle_p2（身后火焰披风）、lava_pillar、floor_collapse、fire_wave；p2 时 walk 也可叠一层火焰"
+ },
+ "skillFrames": {
+  "flame_palm": {
+   "telegraphFrames": [
+    1,
+    2
+   ],
+   "release": 3,
+   "warnFx": "fx_flame_envoy_flame_palm_warn",
+   "fx": "fx_flame_envoy_flame_palm",
+   "note": "telegraphMs 700：停在 1→2 帧并在身前播 warn（160×96 = range）；第 3 帧推掌，同帧在身前播 flame_palm"
+  },
+  "fire_wave": {
+   "release": 2,
+   "spawnOffset": [
+    -70,
+    -40
+   ],
+   "fx": "fx_flame_envoy_fire_wave",
+   "note": "第 2 帧在 spawnOffset 生成炎浪（贴地前进，speed 320）"
+  },
+  "lava_pillar": {
+   "telegraphFrames": [
+    1,
+    2
+   ],
+   "release": 3,
+   "warnFx": "fx_flame_envoy_lava_pillar_warn",
+   "fx": "fx_flame_envoy_lava_pillar",
+   "note": "telegraphMs 1000：4 个落点播 warn；第 3 帧落点同时喷熔岩柱"
+  },
+  "floor_collapse": {
+   "release": 2,
+   "warnFx": "fx_flame_envoy_floor_collapse_warn",
+   "note": "每 2500ms 一段地面先播 warn（龟裂红光，建议 800ms），再由程序把那段平台移除；restoreMs 12000 后恢复。塌陷本身是地形，不另出特效"
+  }
+ },
+ "note": "首领 192×192，2px 描边。",
+ "kind": "monster"
+}

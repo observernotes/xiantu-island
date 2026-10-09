@@ -1,0 +1,57 @@
+{
+ "atlas": "mon_shadow_wolf",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  96,
+  64
+ ],
+ "anims": [
+  {
+   "key": "mon_shadow_wolf_idle",
+   "frames": [
+    "mon_shadow_wolf_idle_01",
+    "mon_shadow_wolf_idle_02"
+   ],
+   "frameRate": 3,
+   "repeat": -1
+  },
+  {
+   "key": "mon_shadow_wolf_walk",
+   "frames": [
+    "mon_shadow_wolf_walk_01",
+    "mon_shadow_wolf_walk_02",
+    "mon_shadow_wolf_walk_03"
+   ],
+   "frameRate": 8,
+   "repeat": -1
+  },
+  {
+   "key": "mon_shadow_wolf_hit",
+   "frames": [
+    "mon_shadow_wolf_hit_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  },
+  {
+   "key": "mon_shadow_wolf_die",
+   "frames": [
+    "mon_shadow_wolf_die_01",
+    "mon_shadow_wolf_die_02",
+    "mon_shadow_wolf_die_03"
+   ],
+   "frameRate": 6,
+   "repeat": 0
+  }
+ ],
+ "bodySize": [
+  56,
+  34
+ ],
+ "note": "影狼：快速（moveSpeed 120）近身，配置无 attack；walk 建议 fps 随速度可提到 10",
+ "kind": "monster"
+}

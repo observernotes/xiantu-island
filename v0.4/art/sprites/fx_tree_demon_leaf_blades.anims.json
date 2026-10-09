@@ -1,0 +1,38 @@
+{
+ "atlas": "fx_tree_demon_leaf_blades",
+ "facing": "left",
+ "origin": [
+  0.5,
+  0.5
+ ],
+ "frameSize": [
+  32,
+  24
+ ],
+ "anims": [
+  {
+   "key": "fx_tree_demon_leaf_blades_fly",
+   "frames": [
+    "fx_tree_demon_leaf_blades_fly_01",
+    "fx_tree_demon_leaf_blades_fly_02",
+    "fx_tree_demon_leaf_blades_fly_03",
+    "fx_tree_demon_leaf_blades_fly_04"
+   ],
+   "frameRate": 12,
+   "repeat": -1
+  },
+  {
+   "key": "fx_tree_demon_leaf_blades_hit",
+   "frames": [
+    "fx_tree_demon_leaf_blades_hit_01",
+    "fx_tree_demon_leaf_blades_hit_02",
+    "fx_tree_demon_leaf_blades_hit_03"
+   ],
+   "frameRate": 16,
+   "repeat": 0
+  }
+ ],
+ "note": "叶刃弹：原点 (0.5,0.5)，朝左飞，朝右 setFlipX(true)；7 片扇形发射，speed 280；被魔种侵蚀，描边深墨紫 #3A2A48。",
+ "blend": "normal",
+ "kind": "fx"
+}

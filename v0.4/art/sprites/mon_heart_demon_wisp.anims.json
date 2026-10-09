@@ -1,0 +1,80 @@
+{
+ "atlas": "mon_heart_demon_wisp",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  84,
+  76
+ ],
+ "anims": [
+  {
+   "key": "mon_heart_demon_wisp_idle",
+   "frames": [
+    "mon_heart_demon_wisp_idle_01",
+    "mon_heart_demon_wisp_idle_02",
+    "mon_heart_demon_wisp_idle_03",
+    "mon_heart_demon_wisp_idle_04"
+   ],
+   "frameRate": 6,
+   "repeat": -1
+  },
+  {
+   "key": "mon_heart_demon_wisp_walk",
+   "frames": [
+    "mon_heart_demon_wisp_walk_01",
+    "mon_heart_demon_wisp_walk_02",
+    "mon_heart_demon_wisp_walk_03",
+    "mon_heart_demon_wisp_walk_04"
+   ],
+   "frameRate": 8,
+   "repeat": -1
+  },
+  {
+   "key": "mon_heart_demon_wisp_attack",
+   "frames": [
+    "mon_heart_demon_wisp_attack_01",
+    "mon_heart_demon_wisp_attack_02",
+    "mon_heart_demon_wisp_attack_03"
+   ],
+   "frameRate": 8,
+   "repeat": 0
+  },
+  {
+   "key": "mon_heart_demon_wisp_hit",
+   "frames": [
+    "mon_heart_demon_wisp_hit_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  },
+  {
+   "key": "mon_heart_demon_wisp_die",
+   "frames": [
+    "mon_heart_demon_wisp_die_01",
+    "mon_heart_demon_wisp_die_02",
+    "mon_heart_demon_wisp_die_03"
+   ],
+   "frameRate": 6,
+   "repeat": 0
+  }
+ ],
+ "bodySize": [
+  34,
+  34
+ ],
+ "attackFrames": {
+  "telegraph": 1,
+  "hit": 2
+ },
+ "projectileSpawn": [
+  -21,
+  -18
+ ],
+ "projectileFx": "fx_heart_wisp_projectile",
+ "flying": true,
+ "note": "飞行心魔。原点 (0.5,1) = 悬浮体最低点（下摆尖），物理体贴帧底 34×34 正好罩住头部；flyHeight 指的就是这个点离地的高度。上下浮动画在帧内（idle 0→−3px→0，循环），程序不用再做 bob，也可以额外叠加慢速正弦。移动用 walk（前倾飞行）。attack_01 前摇（嘴前聚红芯墨珠），attack_02 出手帧在 脚底+projectileSpawn（朝右 x 取反）生成 fx_heart_wisp_projectile。die 原地化墨上飘，不下落。",
+ "kind": "monster"
+}

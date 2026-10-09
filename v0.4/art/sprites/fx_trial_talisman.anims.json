@@ -1,0 +1,61 @@
+{
+ "atlas": "fx_trial_talisman",
+ "facing": "left",
+ "origin": [
+  0.5,
+  0.5
+ ],
+ "frameSize": [
+  64,
+  112
+ ],
+ "anims": [
+  {
+   "key": "fx_trial_talisman_blank",
+   "frames": [
+    "fx_trial_talisman_blank_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  },
+  {
+   "key": "fx_trial_talisman_stroke",
+   "frames": [
+    "fx_trial_talisman_stroke_01",
+    "fx_trial_talisman_stroke_02",
+    "fx_trial_talisman_stroke_03",
+    "fx_trial_talisman_stroke_04",
+    "fx_trial_talisman_stroke_05",
+    "fx_trial_talisman_stroke_06"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  },
+  {
+   "key": "fx_trial_talisman_done",
+   "frames": [
+    "fx_trial_talisman_done_01",
+    "fx_trial_talisman_done_02",
+    "fx_trial_talisman_done_03",
+    "fx_trial_talisman_done_04"
+   ],
+   "frameRate": 10,
+   "repeat": 0
+  },
+  {
+   "key": "fx_trial_talisman_fail",
+   "frames": [
+    "fx_trial_talisman_fail_01",
+    "fx_trial_talisman_fail_02",
+    "fx_trial_talisman_fail_03",
+    "fx_trial_talisman_fail_04"
+   ],
+   "frameRate": 10,
+   "repeat": 0
+  }
+ ],
+ "blend": "normal",
+ "origin_note": "(0.5,0.5) = 符纸中心",
+ "note": "灵符派试炼·画符：符阁桌前悬浮的一张黄符（UI 层，放屏幕中上）。blank 空符；stroke 6 帧是累计笔画——每画对一笔就 setFrame(`fx_trial_talisman_stroke_0n`)，4 笔的符画到 04 就算成，然后播 done（金光上浮淡出）；按错一笔播 fail（墨团晕开、符纸歪掉）再回 blank 重画。方向键提示复用 HUD 的键帽底（ui_hud_key*），箭头字形由程序画；笔画形状是占位通用符，不对应具体按键。",
+ "kind": "fx"
+}

@@ -1,0 +1,58 @@
+{
+ "ui_bar_cultivation_frame": {
+  "size": [
+   48,
+   16
+  ],
+  "nineSlice": {
+   "left": 10,
+   "right": 10,
+   "top": 4,
+   "bottom": 4
+  },
+  "innerRect": [
+   4,
+   4,
+   40,
+   8
+  ],
+  "note": "修为条底框（木框+墨槽），两种状态共用；inner 区 = 填充放的位置（x4..44, y4..12）"
+ },
+ "ui_bar_cultivation": {
+  "size": [
+   16,
+   8
+  ],
+  "threeSlice": {
+   "left": 3,
+   "right": 3
+  },
+  "note": "普通修为填充（修为金，偏暖黄），宽度 = 槽宽 × exp/need"
+ },
+ "ui_bar_cultivation_bottleneck": {
+  "size": [
+   16,
+   8
+  ],
+  "threeSlice": {
+   "left": 3,
+   "right": 3
+  },
+  "note": "瓶颈期填充（亮金 + 顶部高光线），满条显示"
+ },
+ "ui_bar_cultivation_bottleneck_glow": {
+  "size": [
+   64,
+   24
+  ],
+  "nineSlice": {
+   "left": 10,
+   "right": 10,
+   "top": 10,
+   "bottom": 10
+  },
+  "pad": 6,
+  "note": "瓶颈期呼吸光晕：比底框四周各大 4px（中心挖空），alpha 0.35↔1.0 yoyo 1600ms Sine"
+ },
+ "@2x": "同名加 @2x 的是 2 倍图，切片数值也乘 2"
+}

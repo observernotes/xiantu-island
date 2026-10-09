@@ -1,0 +1,57 @@
+{
+ "atlas": "mon_lava_lizard",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  96,
+  48
+ ],
+ "anims": [
+  {
+   "key": "mon_lava_lizard_idle",
+   "frames": [
+    "mon_lava_lizard_idle_01",
+    "mon_lava_lizard_idle_02"
+   ],
+   "frameRate": 3,
+   "repeat": -1
+  },
+  {
+   "key": "mon_lava_lizard_walk",
+   "frames": [
+    "mon_lava_lizard_walk_01",
+    "mon_lava_lizard_walk_02",
+    "mon_lava_lizard_walk_03"
+   ],
+   "frameRate": 8,
+   "repeat": -1
+  },
+  {
+   "key": "mon_lava_lizard_hit",
+   "frames": [
+    "mon_lava_lizard_hit_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  },
+  {
+   "key": "mon_lava_lizard_die",
+   "frames": [
+    "mon_lava_lizard_die_01",
+    "mon_lava_lizard_die_02",
+    "mon_lava_lizard_die_03"
+   ],
+   "frameRate": 6,
+   "repeat": 0
+  }
+ ],
+ "bodySize": [
+  56,
+  22
+ ],
+ "note": "熔岩蜥：近身，配置无 attack；背棘与尾尖是岩浆色",
+ "kind": "monster"
+}

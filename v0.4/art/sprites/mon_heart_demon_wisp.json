@@ -1,0 +1,374 @@
+{
+ "frames": {
+  "mon_heart_demon_wisp_idle_01": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 84,
+    "h": 76
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 84,
+    "h": 76
+   },
+   "sourceSize": {
+    "w": 84,
+    "h": 76
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_heart_demon_wisp_idle_02": {
+   "frame": {
+    "x": 84,
+    "y": 0,
+    "w": 84,
+    "h": 76
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 84,
+    "h": 76
+   },
+   "sourceSize": {
+    "w": 84,
+    "h": 76
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_heart_demon_wisp_idle_03": {
+   "frame": {
+    "x": 168,
+    "y": 0,
+    "w": 84,
+    "h": 76
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 84,
+    "h": 76
+   },
+   "sourceSize": {
+    "w": 84,
+    "h": 76
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_heart_demon_wisp_idle_04": {
+   "frame": {
+    "x": 252,
+    "y": 0,
+    "w": 84,
+    "h": 76
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 84,
+    "h": 76
+   },
+   "sourceSize": {
+    "w": 84,
+    "h": 76
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_heart_demon_wisp_walk_01": {
+   "frame": {
+    "x": 336,
+    "y": 0,
+    "w": 84,
+    "h": 76
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 84,
+    "h": 76
+   },
+   "sourceSize": {
+    "w": 84,
+    "h": 76
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_heart_demon_wisp_walk_02": {
+   "frame": {
+    "x": 420,
+    "y": 0,
+    "w": 84,
+    "h": 76
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 84,
+    "h": 76
+   },
+   "sourceSize": {
+    "w": 84,
+    "h": 76
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_heart_demon_wisp_walk_03": {
+   "frame": {
+    "x": 504,
+    "y": 0,
+    "w": 84,
+    "h": 76
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 84,
+    "h": 76
+   },
+   "sourceSize": {
+    "w": 84,
+    "h": 76
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_heart_demon_wisp_walk_04": {
+   "frame": {
+    "x": 588,
+    "y": 0,
+    "w": 84,
+    "h": 76
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 84,
+    "h": 76
+   },
+   "sourceSize": {
+    "w": 84,
+    "h": 76
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_heart_demon_wisp_attack_01": {
+   "frame": {
+    "x": 0,
+    "y": 76,
+    "w": 84,
+    "h": 76
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 84,
+    "h": 76
+   },
+   "sourceSize": {
+    "w": 84,
+    "h": 76
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_heart_demon_wisp_attack_02": {
+   "frame": {
+    "x": 84,
+    "y": 76,
+    "w": 84,
+    "h": 76
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 84,
+    "h": 76
+   },
+   "sourceSize": {
+    "w": 84,
+    "h": 76
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_heart_demon_wisp_attack_03": {
+   "frame": {
+    "x": 168,
+    "y": 76,
+    "w": 84,
+    "h": 76
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 84,
+    "h": 76
+   },
+   "sourceSize": {
+    "w": 84,
+    "h": 76
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_heart_demon_wisp_hit_01": {
+   "frame": {
+    "x": 252,
+    "y": 76,
+    "w": 84,
+    "h": 76
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 84,
+    "h": 76
+   },
+   "sourceSize": {
+    "w": 84,
+    "h": 76
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_heart_demon_wisp_die_01": {
+   "frame": {
+    "x": 336,
+    "y": 76,
+    "w": 84,
+    "h": 76
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 84,
+    "h": 76
+   },
+   "sourceSize": {
+    "w": 84,
+    "h": 76
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_heart_demon_wisp_die_02": {
+   "frame": {
+    "x": 420,
+    "y": 76,
+    "w": 84,
+    "h": 76
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 84,
+    "h": 76
+   },
+   "sourceSize": {
+    "w": 84,
+    "h": 76
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_heart_demon_wisp_die_03": {
+   "frame": {
+    "x": 504,
+    "y": 76,
+    "w": 84,
+    "h": 76
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 84,
+    "h": 76
+   },
+   "sourceSize": {
+    "w": 84,
+    "h": 76
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  }
+ },
+ "meta": {
+  "app": "xiantu gen_trial_altar.py",
+  "image": "mon_heart_demon_wisp.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 672,
+   "h": 152
+  },
+  "scale": "1"
+ }
+}

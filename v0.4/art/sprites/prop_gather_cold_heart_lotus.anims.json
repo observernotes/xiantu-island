@@ -1,0 +1,45 @@
+{
+ "atlas": "prop_gather_cold_heart_lotus",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  48,
+  48
+ ],
+ "anims": [
+  {
+   "key": "prop_gather_cold_heart_lotus_idle",
+   "frames": [
+    "prop_gather_cold_heart_lotus_idle_01",
+    "prop_gather_cold_heart_lotus_idle_02",
+    "prop_gather_cold_heart_lotus_idle_03",
+    "prop_gather_cold_heart_lotus_idle_04"
+   ],
+   "frameRate": 6,
+   "repeat": -1
+  },
+  {
+   "key": "prop_gather_cold_heart_lotus_harvested",
+   "frames": [
+    "prop_gather_cold_heart_lotus_harvested_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  }
+ ],
+ "blend": "NORMAL",
+ "hitArea": [
+  32,
+  32
+ ],
+ "promptOffsetY": -52,
+ "gatherItem": "cold_heart_lotus",
+ "maps": [
+  "lingxi_path"
+ ],
+ "note": "采集点（maps 里 type=gather 的对象，item=cold_heart_lotus）。放在对象坐标，脚底=地面。可采时循环 idle（微光+上浮灵光点）；采完切 harvested 停住，respawnMs 后切回 idle。头顶「Z 采集」提示建议画在 y−52，读条用 art/icons/ui/alchemy/ui_gather_castbar_*。",
+ "kind": "prop"
+}

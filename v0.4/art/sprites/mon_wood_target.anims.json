@@ -1,0 +1,49 @@
+{
+ "atlas": "mon_wood_target",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  64,
+  80
+ ],
+ "anims": [
+  {
+   "key": "mon_wood_target_idle",
+   "frames": [
+    "mon_wood_target_idle_01",
+    "mon_wood_target_idle_02"
+   ],
+   "frameRate": 2,
+   "repeat": -1
+  },
+  {
+   "key": "mon_wood_target_hit",
+   "frames": [
+    "mon_wood_target_hit_01",
+    "mon_wood_target_hit_02"
+   ],
+   "frameRate": 12,
+   "repeat": 0
+  },
+  {
+   "key": "mon_wood_target_die",
+   "frames": [
+    "mon_wood_target_die_01",
+    "mon_wood_target_die_02",
+    "mon_wood_target_die_03",
+    "mon_wood_target_die_04"
+   ],
+   "frameRate": 10,
+   "repeat": 0
+  }
+ ],
+ "bodySize": [
+  32,
+  60
+ ],
+ "note": "灵符派试炼·木靶（wood_target）：立柱 + 朱白同心圆靶面，3/4 侧向左。打不还手、不出 walk/attack——「会平移」的靶子由程序直接移动坐标（idle 照常循环）。hit 2 帧左右晃；die 4 帧：裂开 → 两半飞散 + 木片 → 淡出，播完销毁、计数 +1。高台上的靶子同一张图。",
+ "kind": "monster"
+}
