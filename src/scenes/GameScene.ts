@@ -18,6 +18,7 @@ type Drop = Phaser.Physics.Arcade.Sprite & { itemId: string; count: number; born
 interface Shot {
   sprite: Phaser.Physics.Arcade.Sprite; state: 'fly' | 'hit'; until: number;
   ratio: number; kb: number; atk: number; hitAnim?: string; hitMs: number; dead?: boolean;
+  fromX?: number; maxDist?: number;
 }
 
 export class GameScene extends Phaser.Scene {
@@ -273,15 +274,23 @@ export class GameScene extends Phaser.Scene {
     const hit = anims.find(a => a.key.includes('hit'));
     const origin = (pack?.origin ?? [0.5, 0.5]) as [number, number];
     const hitMs = hit ? hit.frames.length * (1000 / hit.frameRate) : 200;
+    let tex = v.fx;
+    if (!this.textures.exists(tex)) {
+      if (!v.maxDist) return;
+      // 没有弹道图集时：小黄色矩形占位（黑袍人的符）
+      tex = 'ph_talisman';
+      if (!this.textures.exists(tex)) { const g = this.make.graphics({}, false); g.fillStyle(0xf2d04a).fillRect(0, 0, 20, 12).lineStyle(2, 0x8a5a10).strokeRect(0, 0, 20, 12); g.generateTexture(tex, 20, 12); g.destroy(); }
+    }
     for (const sh of v.shots) {
-      if (!this.textures.exists(v.fx)) continue;
-      const s = this.physics.add.sprite(sh.x, sh.y, v.fx);
+      const s = this.physics.add.sprite(sh.x, sh.y, tex);
       s.setOrigin(origin[0], origin[1]).setDepth(12).setBlendMode(Phaser.BlendModes.NORMAL).setFlipX(sh.vx > 0);
+      this.shotGroup.add(s);   // 先进组：PhysicsGroup 加入时会把重力、速度重置成组默认值，所以之后再设
       const body = s.body as Phaser.Physics.Arcade.Body;
-      body.setAllowGravity(false).setSize(22, 18).setOffset((s.width - 22) / 2, (s.height - 18) / 2).setVelocity(sh.vx, sh.vy);
+      const bw = v.body?.w ?? 22, bh = v.body?.h ?? 18;
+      body.setAllowGravity(false).setSize(bw, bh).setOffset((s.width - bw) / 2, (s.height - bh) / 2).setVelocity(sh.vx, sh.vy);
       if (fly && this.anims.exists(fly.key)) s.play(fly.key);
-      const shot: Shot = { sprite: s, state: 'fly', until: 0, ratio: v.ratio, kb: v.knockback, atk: v.atk, hitAnim: hit?.key, hitMs };
-      this.shots.push(shot); this.shotOf.set(s, shot); this.shotGroup.add(s);
+      const shot: Shot = { sprite: s, state: 'fly', until: 0, ratio: v.ratio, kb: v.knockback, atk: v.atk, hitAnim: hit?.key, hitMs, fromX: sh.x, maxDist: v.maxDist };
+      this.shots.push(shot); this.shotOf.set(s, shot);
     }
   }
 
@@ -298,6 +307,7 @@ export class GameScene extends Phaser.Scene {
   private updateShots(time: number) {
     for (const s of this.shots) {
       const gone = s.state === 'hit' ? time >= s.until
+        : (s.maxDist && Math.abs(s.sprite.x - (s.fromX ?? s.sprite.x)) >= s.maxDist) ? (this.impactShot(s, false), false)
         : s.sprite.x < -80 || s.sprite.x > this.map.width + 80 || s.sprite.y < -120 || s.sprite.y > this.map.height + 120;
       if (!gone) continue;
       this.shotOf.delete(s.sprite); s.sprite.destroy(); s.dead = true;

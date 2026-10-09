@@ -16,6 +16,16 @@ const ARMOR_FLASH_MS = 80;
 const DASH_SPEED = 1280;
 const FOX_FIRE_SPREAD = 0.26;
 const SUMMON_GAP = 96;
+/** #3c 野猪冲锋：表里有 distance（192），没有速度，暂定 360px/s；表里没 distance 时最远 256px */
+const CHARGE_SPEED = 360;
+const CHARGE_MAX_DIST = 256;
+/** 冲锋停下后的收招时间（暂定），之后才进入正常巡逻；冷却从出手起算 cooldownMs */
+const CHARGE_RECOVER_MS = 300;
+/** #3c 黑袍人丢符：表里有 speed（240），缺省 300px/s；出手后的收招时间暂定 */
+const PROJECTILE_SPEED = 300;
+const PROJECTILE_RECOVER_MS = 350;
+/** 还没实现的攻击类型（poison 等）临时按山魈拍地 96×48 */
+const FALLBACK_RANGE = { w: 96, h: 48 };
 /** skillFrames 备注：召唤阵第 4 帧刷出灵兔（anims 里没有单独的数字字段） */
 const SUMMON_SPAWN_FRAME = 4;
 /** 幻影突袭预警贴地，低于玩家（10）和怪物（8） */
@@ -54,6 +64,8 @@ interface Cd { readyAt: number; wall: number; game: number; ms: number; logged: 
 export interface SkillVolley {
   fx: string; ratio: number; knockback: number; atk: number;
   shots: { x: number; y: number; vx: number; vy: number }[];
+  /** 可选：飞行最远距离（黑袍人符 = range.w）和碰撞框（range.h 做高） */
+  maxDist?: number; body?: { w: number; h: number };
 }
 
 /** 小怪：巡逻 / 追击 / 山魈拍地。首领技能（妖狐）数值全部来自 monsters.json 和 anims.json */
@@ -86,6 +98,8 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
   private cooldowns: Record<string, Cd> = {};
   private flashUntil = 0;
   private teleAt = 0; private teleEnd = 0; private teleBlink?: Phaser.Tweens.Tween;
+  /** 野猪冲锋进行中：起点、是否已命中 */
+  private charge: { fromX: number; hit: boolean; prevX: number } | null = null;
   private despawnHideAt = 0; private despawnDoneAt = 0; private despawnHidden = false;
 
   constructor(scene: Phaser.Scene, x: number, y: number, def: MonsterDef) {
@@ -143,8 +157,15 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
     if (this.teleEnd && time >= this.teleEnd) {
       this.teleEnd = 0; this.teleBlink?.stop(); this.teleBlink = undefined; this.clearTint();
       if (DEBUG_TIMING) console.log(`[tele] ${d.id} 前摇结束 实际 +${Math.round(performance.now() - this.teleAt)}ms`);
-      if (this.st === 'attack') { if (this.atlas) { this.anims.resume(); this.anims.nextFrame(); } this.doSlam(); }
+      if (this.st === 'attack') {
+        if (this.atlas) { this.anims.resume(); this.anims.nextFrame(); }
+        const type = d.attack?.type;
+        if (type === 'charge') this.startCharge(time);
+        else if (type === 'projectile') this.throwTalisman(time, player);
+        else this.doSlam();
+      }
     }
+    if (this.charge) { this.tickCharge(time, player); return this.face(); }
     if ((this.st === 'hit' || this.st === 'attack') && time < this.stateUntil) {
       if (this.grounded && this.st === 'attack') b.setVelocityX(0);
       return this.face();
@@ -157,12 +178,13 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
     if (d.skills?.length && this.trySkills(time, player, dx, sees)) return;
 
     // 山魈：玩家进入拍地范围就出手
-    if (d.attack && sees && time >= this.attackReadyAt && Math.abs(dx) < this.slamRange.w && this.grounded) {
+    if (d.attack && sees && time >= this.attackReadyAt && Math.abs(dx) < this.triggerRange && this.grounded) {
       this.dir = Math.sign(dx) || this.dir;
       const tele = d.attack.telegraphMs ?? 500;
       this.st = 'attack'; this.attackReadyAt = time + d.attack.cooldownMs; this.teleAt = performance.now();
-      if (DEBUG_TIMING) console.log(`[tele] ${d.id} 抬手 telegraphMs=${tele}`);
-      this.stateUntil = time + tele + 450;
+      if (DEBUG_TIMING) console.log(`[tele] ${d.id} ${d.attack.type} 抬手 telegraphMs=${tele}`);
+      // 冲锋的结束由 tickCharge 决定，这里先给足时间
+      this.stateUntil = time + tele + (d.attack.type === 'charge' ? 60000 : d.attack.type === 'projectile' ? PROJECTILE_RECOVER_MS : 450);
       b.setVelocityX(0); this.anim('attack');
       if (this.atlas) this.anims.pause();
       const blink = this.scene.tweens.addCounter({ from: 0, to: 1, duration: 120, yoyo: true, repeat: Math.floor(tele / 240),
@@ -202,8 +224,65 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
 
   private face() { this.setFlipX(this.dir > 0); }   // 美术朝左画
 
-  /** Y2：冲锋、弹道 AI 还没写，非 slam 类型的怪临时按山魈拍地 96×48 出手和判定（damageRatio、telegraphMs、cooldownMs 仍读自己那一行） */
-  get slamRange() { const a = this.def.attack!; return a.type === 'slam' && a.range ? a.range : { w: 96, h: 48 }; }
+  /** Y2：slam 读自己的 range；charge / projectile 走 #3c 新逻辑；其余未实现类型（poison 等）临时按 96×48 拍地 */
+  get slamRange() { const a = this.def.attack!; return a.type === 'slam' && a.range ? a.range : FALLBACK_RANGE; }
+  /** 出手距离：冲锋 = 冲锋距离 + 撞击宽度一半；丢符 = range.w；其余 = 拍地宽度 */
+  get triggerRange() {
+    const a = this.def.attack!;
+    if (a.type === 'charge') return this.chargeDist + (a.range?.w ?? 64) / 2;
+    if (a.type === 'projectile') return a.range?.w ?? FALLBACK_RANGE.w * 3;
+    return this.slamRange.w;
+  }
+  private get chargeDist() { return (this.def.attack as { distance?: number }).distance ?? CHARGE_MAX_DIST; }
+
+  private startCharge(time: number) {
+    if (DEBUG_TIMING) console.log(`[tele] ${this.def.id} 冲锋开始 实际 +${Math.round(performance.now() - this.teleAt)}ms`);
+    this.charge = { fromX: this.x, hit: false, prevX: this.x };
+    this.suppressTouch = true;   // 冲锋只按 damageRatio 结算一次，不叠接触伤害
+    this.anim('walk');
+    this.tickCharge(time, null);
+  }
+
+  private tickCharge(time: number, player: (Phaser.Physics.Arcade.Sprite & { dead?: boolean }) | null) {
+    const c = this.charge!, b = this.body, a = this.def.attack!;
+    const traveled = (this.x - c.fromX) * this.dir;
+    const aheadX = this.dir > 0 ? b.right + 4 : b.left - 6;
+    const ground = this.scene.physics.overlapRect(aheadX, b.bottom + 2, 2, 6, false, true).length > 0;
+    const wall = this.dir > 0 ? b.blocked.right : b.blocked.left;
+    if (this.st === 'dead' || traveled >= this.chargeDist || !ground || (wall && traveled > 1) || !this.grounded) {
+      b.setVelocityX(0);
+      if (DEBUG_TIMING) console.log(`[tele] ${this.def.id} 冲锋结束 距离 ${Math.round(traveled)}px${!ground ? '（平台边缘）' : wall ? '（撞墙）' : ''}`);
+      this.charge = null; this.suppressTouch = false;
+      if (this.st === 'attack') { this.stateUntil = time + CHARGE_RECOVER_MS; this.anim('idle'); }
+      return;
+    }
+    b.setVelocityX(this.dir * CHARGE_SPEED);
+    if (player && !c.hit && !player.dead) {
+      const pb = player.body as Phaser.Physics.Arcade.Body;
+      const dx = this.x - c.prevX;
+      const rect = new Phaser.Geom.Rectangle(Math.min(b.x, b.x - dx), b.y, b.width + Math.abs(dx), b.height);
+      if (Phaser.Geom.Intersects.RectangleToRectangle(rect, new Phaser.Geom.Rectangle(pb.x, pb.y, pb.width, pb.height))) {
+        c.hit = true;
+        if (DEBUG_TIMING) console.log(`[tele] ${this.def.id} 冲锋命中`);
+        this.onSkillDamage?.(this, a.damageRatio, a.knockback, this.x);
+      }
+    }
+    c.prevX = this.x;
+  }
+
+  private throwTalisman(_time: number, player: Phaser.Physics.Arcade.Sprite) {
+    const a = this.def.attack! as { damageRatio: number; knockback: number; range: { w: number; h: number }; speed?: number };
+    if (DEBUG_TIMING) console.log(`[tele] ${this.def.id} 丢符 实际 +${Math.round(performance.now() - this.teleAt)}ms`);
+    this.dir = Math.sign(player.x - this.x) || this.dir;
+    const speed = a.speed ?? PROJECTILE_SPEED;
+    const range = a.range ?? { w: 320, h: 32 };
+    const sx = this.x + this.dir * 20, sy = this.body.bottom - this.body.height / 2;
+    this.onVolley?.({
+      fx: 'fx_black_robe_projectile', ratio: a.damageRatio, knockback: a.knockback, atk: this.def.atk,
+      shots: [{ x: sx, y: sy, vx: this.dir * speed, vy: 0 }],
+      maxDist: range.w, body: { w: Math.min(32, range.h), h: range.h },
+    });
+  }
   private doSlam() {
     if (DEBUG_TIMING) console.log(`[tele] ${this.def.id} 出伤害 实际 +${Math.round(performance.now() - this.teleAt)}ms`);
     const r = this.slamRange, b = this.body;
@@ -235,6 +314,7 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
   private die() {
     if (this.st === 'dead' || this.despawning) return;
     this.abortCast();
+    this.charge = null;
     for (const s of this.summons) if (s.despawnWithOwner && s.active && !s.dead) s.despawn();
     this.st = 'dead'; this.body.enable = false; this.bar.clear();
     this.anim('die');
