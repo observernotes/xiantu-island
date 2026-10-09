@@ -141,6 +141,10 @@
     {
      "item": "foundation_shard",
      "count": 1
+    },
+    {
+     "item": "pillar_shard_1",
+     "count": 1
     }
    ],
    "job": "tianjian_disciple",
@@ -223,33 +227,6 @@
   },
   "next": null,
   "phase": 4
- },
- {
-  "id": "q_main_03",
-  "name": "黑袍疑踪",
-  "giver": "luoxia_mayor",
-  "turnIn": "luoxia_mayor",
-  "reqLevel": 12,
-  "objectives": [
-   {
-    "type": "kill",
-    "target": "black_robe_minion",
-    "count": 15
-   }
-  ],
-  "rewards": {
-   "exp": 0,
-   "spiritStone": 0,
-   "items": [
-    {
-     "item": "foundation_shard",
-     "count": 1
-    }
-   ]
-  },
-  "next": null,
-  "phase": 5,
-  "note": "主线第一卷第 3 章（见 design/04_区域与主线.md），修为和灵石奖励【演武堂】。v0.4 先登记，落霞镇做好后启用。"
  },
  {
   "id": "q_sect_tianjian",
@@ -390,5 +367,143 @@
    "beast_roar",
    "beast_bond"
   ]
+ },
+ {
+  "id": "q_main_01",
+  "name": "入城",
+  "giver": "luoxia_mayor",
+  "turnIn": "luoxia_mayor",
+  "reqLevel": 10,
+  "prereq": "q_fox",
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "luoxia_mayor"
+   },
+   {
+    "type": "talk",
+    "target": "alchemist_ge"
+   }
+  ],
+  "rewards": {
+   "exp": 0,
+   "spiritStone": 0,
+   "items": []
+  },
+  "next": "q_main_02",
+  "phase": 5,
+  "note": "第 1 章。坐飞舟到落霞镇见柳知县，听妖兽异动和黑袍人收购碎片的传闻，再去认识葛丹师（v0.5 炼丹入门改在这里接）。主线第一卷，见 design/04_区域与主线.md 第三节。修为和灵石【演武堂】。"
+ },
+ {
+  "id": "q_main_02",
+  "name": "上山",
+  "giver": "luoxia_mayor",
+  "turnIn": "sect_master_ling",
+  "reqLevel": 10,
+  "objectives": [
+   {
+    "type": "collect",
+    "target": "pillar_shard_1",
+    "count": 1,
+    "consume": true
+   },
+   {
+    "type": "talk",
+    "target": "sect_master_ling"
+   }
+  ],
+  "rewards": {
+   "exp": 0,
+   "spiritStone": 0,
+   "items": []
+  },
+  "next": "q_main_03",
+  "phase": 5,
+  "note": "第 2 章。把妖狐身上得到的天柱残片交给凌宗主，宗主认出残片，命苏师姐带路。五宗玩家都走这一章（凌宗主是正道盟主身份，不限宗门）；技能点教学在剑冢触发。主线第一卷，见 design/04_区域与主线.md 第三节。修为和灵石【演武堂】。"
+ },
+ {
+  "id": "q_main_03",
+  "name": "黑袍疑踪",
+  "giver": "luoxia_mayor",
+  "turnIn": "luoxia_mayor",
+  "reqLevel": 12,
+  "objectives": [
+   {
+    "type": "kill",
+    "target": "black_robe_minion",
+    "count": 15
+   }
+  ],
+  "rewards": {
+   "exp": 0,
+   "spiritStone": 0,
+   "items": [
+    {
+     "item": "foundation_shard",
+     "count": 1
+    }
+   ]
+  },
+  "next": "q_main_04",
+  "phase": 5,
+  "note": "主线第一卷第 3 章（见 design/04_区域与主线.md），修为和灵石奖励【演武堂】。v0.4 先登记，落霞镇做好后启用。"
+ },
+ {
+  "id": "q_main_04",
+  "name": "入林",
+  "giver": "luoxia_mayor",
+  "turnIn": "tree_spirit",
+  "reqLevel": 20,
+  "objectives": [
+   {
+    "type": "kill",
+    "target": "vine_imp",
+    "count": 20
+   },
+   {
+    "type": "talk",
+    "target": "tree_spirit"
+   }
+  ],
+  "rewards": {
+   "exp": 0,
+   "spiritStone": 0,
+   "items": [
+    {
+     "item": "clear_mind_pill",
+     "count": 1
+    }
+   ]
+  },
+  "next": "q_main_06",
+  "phase": 5,
+  "note": "第 4 章。追查黑袍人进万妖林外围，清藤妖后见古树灵，得知妖兽被外来灵气逼疯。寒心莲支线等灵溪溪边采集点加好后再挂。第 5 章是筑基（q_elder_exam + 筑基台），不单独建主线任务。主线第一卷，见 design/04_区域与主线.md 第三节。修为和灵石【演武堂】。"
+ },
+ {
+  "id": "q_main_06",
+  "name": "深林",
+  "giver": "hunter_lei",
+  "turnIn": "hunter_lei",
+  "reqLevel": 35,
+  "objectives": [
+   {
+    "type": "kill",
+    "target": "millennium_tree_demon",
+    "count": 1
+   }
+  ],
+  "rewards": {
+   "exp": 0,
+   "spiritStone": 0,
+   "items": [
+    {
+     "item": "pillar_shard_2",
+     "count": 1
+    }
+   ]
+  },
+  "next": null,
+  "phase": 5,
+  "note": "第 6 章。古树心首领场的 unlockQuest 填 q_main_06（接取未完成才刷千年树妖）。原设计要求筑基后御剑进深处，v0.5 先用魔猿岭的 reqLevel 30 门代替。主线第一卷，见 design/04_区域与主线.md 第三节。修为和灵石【演武堂】。"
  }
 ]

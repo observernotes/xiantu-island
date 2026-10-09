@@ -23,6 +23,35 @@
  },
  "skills": [
   {
+   "id": "spirit_bolt",
+   "name": "灵气弹",
+   "sect": null,
+   "job": 0,
+   "type": "active",
+   "maxLevel": 10,
+   "spCost": 1,
+   "masteryPerHit": 1,
+   "masteryToCap": 0,
+   "mpCost": 5,
+   "cooldownMs": 0,
+   "damageRatio": 1.2,
+   "hitCount": 1,
+   "maxTargets": 1,
+   "range": {
+    "w": 320,
+    "h": 32
+   },
+   "durationMs": 0,
+   "perLevel": {
+    "damageRatio": 0.03
+   },
+   "effects": {},
+   "req": null,
+   "fx": "fx_spirit_bolt",
+   "icon": "icon_skill_spirit_bolt",
+   "key": "default:A"
+  },
+  {
    "id": "sword_qi_slash",
    "name": "剑气斩",
    "sect": "tianjian",

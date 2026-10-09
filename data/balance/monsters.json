@@ -79,6 +79,7 @@
   "moveSpeed": 110,
   "patrolRange": 600,
   "touchDamage": true,
+  "touchDamageMul": 0.3,
   "knockback": 300,
   "respawnMs": 300000,
   "skills": [

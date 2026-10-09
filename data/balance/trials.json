@@ -82,9 +82,17 @@
    "hp": 6000,
    "def": 0,
    "x": "center",
-   "monsterDamageMul": 0.6
+   "monsterDamageMul": 0.6,
+   "hitHalfWidth": 40,
+   "climbJumpVelocity": 600
   },
-  "balanceNote": "演武堂 v0.1：29 级、自动加点、只有一转技能的剑修，正常打可让阵眼剩 40% 以上；完全不管阵眼约 30 秒破阵（怪打阵眼按 0.6 倍伤害算）。"
+  "balanceNote": "演武堂 v0.1：29 级、自动加点、只有一转技能的剑修，正常打可让阵眼剩 40% 以上；完全不管阵眼约 30 秒破阵（怪打阵眼按 0.6 倍伤害算）。",
+  "behaviorOverrides": {
+   "heart_demon_wisp": {
+    "useAttack": false,
+    "objectiveHit": "contact"
+   }
+  }
  },
  {
   "id": "trial_heart_demon",
@@ -115,7 +123,7 @@
   "realmFrom": null,
   "realmTo": null,
   "type": "lamps_then_waves",
-  "map": "trial_sect_taixu",
+  "map": "trial_taixu_stage",
   "phase": 5,
   "desc": "限时用灵气弹点亮 5 盏灯，再击退 3 波纸傀儡；倒地即失败。",
   "lamps": {
@@ -156,7 +164,7 @@
   "realmFrom": null,
   "realmTo": null,
   "type": "draw_then_targets",
-  "map": "trial_sect_lingfu",
+  "map": "trial_lingfu_range",
   "phase": 5,
   "desc": "连画 3 道符（每道 4～6 笔，错一笔重画这道），再在 30 秒内打碎 10 个木靶。",
   "draw": {
@@ -191,7 +199,7 @@
   "realmFrom": null,
   "realmTo": null,
   "type": "stealth",
-  "map": "trial_sect_youying",
+  "map": "trial_youying_vault",
   "phase": 5,
   "desc": "避开 3 名巡逻弟子的灯笼光，从藏宝阁偷出令牌再回起点；被发现即失败。",
   "patrols": {
@@ -229,7 +237,7 @@
   "realmFrom": null,
   "realmTo": null,
   "type": "tame_then_waves",
-  "map": "trial_sect_wanshou",
+  "map": "trial_wanshou_pen",
   "phase": 5,
   "desc": "把发狂山魈打到半血以下，吹骨笛 3 秒驯服它，再和它一起击退 2 波野狼；倒地即失败。",
   "tame": {

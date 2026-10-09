@@ -45,6 +45,10 @@
    "expLossRatio": 0.1,
    "debuffMs": 600000,
    "debuffStatRatio": -0.1,
+   "debuffStats": [
+    "atk",
+    "def"
+   ],
    "consumeItem": true,
    "retryTrial": true
   },
@@ -85,6 +89,10 @@
    "expLossRatio": 0.1,
    "debuffMs": 600000,
    "debuffStatRatio": -0.1,
+   "debuffStats": [
+    "atk",
+    "def"
+   ],
    "consumeItem": true,
    "retryTrial": true
   },
@@ -123,6 +131,10 @@
    "expLossRatio": 0.1,
    "debuffMs": 600000,
    "debuffStatRatio": -0.1,
+   "debuffStats": [
+    "atk",
+    "def"
+   ],
    "consumeItem": true,
    "retryTrial": true
   },
