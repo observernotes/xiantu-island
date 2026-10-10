@@ -2,7 +2,7 @@ import { gameNow } from '../GameClock';
 import Phaser from 'phaser';
 import { FEEL, SPEC } from '../config/feel';
 import { FIELD_TEST } from '../config/maps';
-import { MONSTERS, DROPS, ITEMS, TILED_MAPS, ATLASES, MAP_AREA, AREAS, TILE_METADATA, BACKGROUNDS, BACKGROUND_CONFIGS, SKILL_ICONS, NPCS, SCRIPTS, t, questName, questDescription, MP_REGEN_FRACTION_PER_5S, BREAKTHROUGH_LEVELS } from '../data';
+import { MONSTERS, DROPS, ITEMS, TILED_MAPS, ATLASES, MAP_AREA, AREAS, TILE_METADATA, BACKGROUNDS, BACKGROUND_CONFIGS, PROP_LAYOUTS, SKILL_ICONS, NPCS, SCRIPTS, t, questName, questDescription, MP_REGEN_FRACTION_PER_5S, BREAKTHROUGH_LEVELS } from '../data';
 import { QuestSystem } from '../QuestSystem';
 import type { DailyQuestReward } from '../DailyQuests';
 import { QUESTS as QUESTS_REF } from '../data';
@@ -30,6 +30,7 @@ import { AlchemySystem, ALCHEMY_RULES } from '../Alchemy';
 import { AlchemyPanel, preloadAlchemy, registerAlchemy } from '../AlchemyPanel';
 import { BackgroundArt, type BackgroundConfig } from './BackgroundArt';
 import { EnvironmentArt, type EnvironmentArtConfig } from './EnvironmentArt';
+import { PropLayout } from './PropLayout';
 import { applySpriteArt } from '../SpriteArt';
 import { SectGrowth, newSectTransactionId } from '../SectGrowth';
 import { featureEnabled, FEATURE_UNAVAILABLE, type FeatureName } from '../features';
@@ -112,6 +113,7 @@ export class GameScene extends Phaser.Scene {
     }
     for (const metadata of TILE_METADATA) loadOptionalJson(this, metadata.key, metadata.path);
     for (const config of BACKGROUND_CONFIGS) loadOptionalJson(this, config.key, config.path);
+    for (const layout of PROP_LAYOUTS) loadOptionalJson(this, layout.key, layout.path);
     for (const background of BACKGROUNDS) loadOptionalImage(this, background.key, background.path);
     for (const k of ATLASES) {
       if (loadOptionalAtlas(this, k, `art/sprites/${k}.png`, `art/sprites/${k}.json`))
@@ -164,6 +166,8 @@ export class GameScene extends Phaser.Scene {
       TILED_MAPS[mapId]?.height * FEEL.tile || FIELD_TEST.rows.length * FEEL.tile);
     this.map = TILED_MAPS[mapId] ? buildTiledMap(this, TILED_MAPS[mapId], `tiles_${area}`)
       : buildCharMap(this, FIELD_TEST.id, FIELD_TEST.name, FIELD_TEST.rows, FIELD_TEST.portals, `tiles_${area}`);
+    this.propLayout?.destroy();
+    this.propLayout = new PropLayout(this, mapId, this.cache.json.get(`props_${area}_layout`));
     this.npcMarks = [];
     this.physics.world.setBounds(0, 0, this.map.width, this.map.height + 200);
     // 地图 npc 对象的 phaseMin / phaseMax：不在当前版本阶段的不创建（没填不限制）
@@ -444,7 +448,7 @@ export class GameScene extends Phaser.Scene {
     this.player.syncAppearance();
     const k = this.keys, J = Phaser.Input.Keyboard.JustDown;
     this.clearAbandonedBossSummons();
-    this.backgroundArt?.update();
+    this.backgroundArt?.update(this.player, delta);
     for (const p of this.parallax) p.ts.tilePositionX = this.cameras.main.scrollX * p.f;
     this.updateShots(time);
     this.regenMp(delta);
@@ -1689,6 +1693,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   backgroundArt?: BackgroundArt;
+  propLayout?: PropLayout;
   environmentArt?: EnvironmentArt;
   configureEnvironment(config?: EnvironmentArtConfig | null) {
     this.environmentArt?.destroy();

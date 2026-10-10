@@ -7,6 +7,7 @@ interface OptionalAssetManifest {
   tileMetadata?: { path: string }[];
   backgrounds?: { path: string }[];
   backgroundConfigs?: { path: string }[];
+  propLayouts?: { path: string }[];
   skillIcons: { path: string }[];
   sectRankIcons?: { path: string }[];
 }
@@ -21,6 +22,7 @@ export function optionalAssetUrls(manifest: OptionalAssetManifest): string[] {
     ...(manifest.tileMetadata ?? []).map(metadata => metadata.path),
     ...(manifest.backgrounds ?? []).map(bg => bg.path),
     ...(manifest.backgroundConfigs ?? []).map(config => config.path),
+    ...(manifest.propLayouts ?? []).map(layout => layout.path),
     ...manifest.skillIcons.map(icon => icon.path),
     ...(manifest.sectRankIcons ?? []).map(icon => icon.path),
   ])];
