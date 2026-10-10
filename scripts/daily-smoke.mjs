@@ -1,6 +1,6 @@
-// 先 npm run build；timeout 120s node scripts/daily-smoke.mjs。
+// 先 npm run build:test；timeout 120s node scripts/daily-smoke.mjs；XT_SMOKE_BASE_URL 可复用已有服务。
 // 试炼胜利、采集材料只作为夹具；拜宗、NPC 菜单、交付、给奖和读档使用正式代码。
-// QA_TIER_GATE_AWARE: fiveSectClasses
+// QA_TIER_GATE_AWARE: fiveSectClasses sectShopLibrary shops sectDonations
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
