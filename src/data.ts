@@ -293,6 +293,15 @@ export const LIFESPAN = pacing.lifespan;
 
 /** strings_zh.json 里还没有的界面文案。有表内 key 时以表为准，不要改 data/。 */
 const LOCAL_STRINGS: Record<string, string> = {
+  'sect.entry.need_token': '需持有五宗帖，才能接取入门任务或进入试炼。',
+  'sect.entry.select_sect': '请先打开背包中的五宗帖，选定本宗后再来。',
+  'sect.entry.open_token': '打开五宗帖',
+  'sect.entry.select_title': '五宗帖 · 选宗门',
+  'sect.entry.select_tip': '选定后乘飞舟前往山门，完成入门试炼才算拜入。拜入后不可更改。',
+  'sect.entry.selected': '已选定{sect}，尚未拜入。',
+  'sect.entry.trial_complete': '试炼已成，请先交付或放弃入门任务后再改选。',
+  'sect.entry.abandon': '放弃入门任务',
+  'sect.entry.abandoned': '已放弃入门任务，取得五宗帖并选定本宗后可重新接取。',
   'ui.shop.menu': '商店',
   'ui.shop.confirm': '花费{price}灵石购买{item}。',
   'ui.shop.complete': '已购买{item}。',

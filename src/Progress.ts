@@ -2,7 +2,7 @@ import { gameNow } from './GameClock';
 import { GROWTH, EXP_TO_NEXT, MAX_LEVEL, ITEMS, BREAKTHROUGH_LEVELS, BREAKTHROUGH, REALMS, QUESTS, LIFESPAN, RECIPES, ALCHEMY_RULES, SECT_RANKS, TILED_MAPS, PillQuality, QuestDef } from './data';
 import { validSectGrowthState, type SectGrowthState } from './SectGrowth';
 import { HOTBAR_SLOTS, QUEST_SKILL_BACKFILL, SKILLS, SKILL_RULES, SkillDef, actOf, skillNumber, spEarnedFor, spBand } from './skills';
-import { CLASS_RULES, classDef, classEntryEnabled, classEntrySkill, classForQuest, classGiftSkills, classMinLevel, classRobe, skillsForClass } from './classes';
+import { CLASS_LIST, CLASS_RULES, classDef, classEntryEnabled, classEntrySkill, classForQuest, classGiftSkills, classMinLevel, classRobe, skillsForClass } from './classes';
 import { DAILY_QUEST_LIMIT, dailyQuestDay, dailyContribution, dailyRewardsReady, type DailyQuestReward } from './DailyQuests';
 import { isBrewSession, type BrewSession } from './Alchemy';
 import { featureEnabled } from './features';
@@ -37,7 +37,7 @@ function validSaveData(saved: unknown): saved is Record<string, unknown> {
   }
   for (const key of ['inventory', 'skills', 'skillGifted']) if (has(key) && !numbers(saved[key])) return false;
   for (const key of ['skillMastery', 'gatherRespawnAt']) if (has(key) && !numbers(saved[key], false)) return false;
-  for (const key of ['job', 'name', 'rootElement', 'sectDailyContributionDay', 'dailyQuestResetDay', 'seclusionDay']) {
+  for (const key of ['job', 'selectedSect', 'name', 'rootElement', 'sectDailyContributionDay', 'dailyQuestResetDay', 'seclusionDay']) {
     if (has(key) && typeof saved[key] !== 'string') return false;
   }
   if (has('sectRank') && saved.sectRank !== null && typeof saved.sectRank !== 'string') return false;
@@ -81,6 +81,8 @@ export class Progress {
   private transientItems: Record<string, number> = {};
   equip: Record<string, string> = {};     // 桃木剑由任务「灵根初现」发放
   job = '';                                 // 转职后的职业 id
+  /** 五宗帖的去向只记录选择，不视为已拜入；旧档缺省未选择。 */
+  selectedSect = '';
   /** 职业框架迁移版本；保留本宗等级、技能点和自定义快捷栏。 */
   classVersion = 0;
   /** 新角色从当前奖励版本开始，交妖狐后读档不会被旧入宗规则迁移。 */
@@ -240,6 +242,18 @@ export class Progress {
     try { return Progress.restore(saved, true); } catch { return Progress.restore(undefined, true); }
   }
   static reset() { try { localStorage.removeItem(SAVE_KEY); } catch { /* ignore */ } }
+
+  /** 持帖可在试炼成功前改选；不消耗拜帖，也不授予职业或奖励。 */
+  selectSect(sectId: string): boolean {
+    const cls = CLASS_LIST.find(c => c.sect === sectId);
+    if (!cls || !classEntryEnabled(cls) || this.job || this.pendingSectTrial || this.count('five_sect_token') <= 0) return false;
+    if (sectId !== this.selectedSect && this.completedTrials.some(id => /^trial_sect_(taixu|lingfu|youying|wanshou)$/.test(id))) return false;
+    const previous = this.selectedSect;
+    this.selectedSect = sectId;
+    if (this.save()) return true;
+    this.selectedSect = previous;
+    return false;
+  }
 
   setPosition(mapId: string, x: number, y: number): boolean {
     if ((mapId !== 'field_test' && !Object.prototype.hasOwnProperty.call(TILED_MAPS, mapId)) || !Number.isFinite(x) || !Number.isFinite(y)) return false;
@@ -628,6 +642,7 @@ export class Progress {
 
   /** 旧档缺字段时补上，避免 Object.assign 把后面新增的数组弄丢或弄短。 */
   ensureDefaults() {
+    if (typeof this.selectedSect !== 'string' || !CLASS_LIST.some(c => c.sect === this.selectedSect)) this.selectedSect = '';
     if (!this.position || typeof this.position !== 'object'
       || (this.position.mapId !== 'field_test' && !Object.prototype.hasOwnProperty.call(TILED_MAPS, this.position.mapId))
       || !Number.isFinite(this.position.x) || !Number.isFinite(this.position.y)) this.position = null;

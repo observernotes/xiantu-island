@@ -1,7 +1,7 @@
 import { gameNow } from './GameClock';
 import { QUESTS, QUEST_ORDER, NPCS, SCRIPTS, ITEMS, MONSTERS, Line, QuestDef, questInPhase, t } from './data';
 import type { Progress } from './Progress';
-import { classEntryEnabled, classForQuest } from './classes';
+import { CLASS_RULES, classEntryEnabled, classForQuest } from './classes';
 import { REALMS } from './data';
 import { dailyRewardsReady, type DailyQuestReward } from './DailyQuests';
 import { FEATURE_UNAVAILABLE, featureEnabled } from './features';
@@ -51,11 +51,20 @@ export class QuestSystem {
 
   private classAllowed(q: QuestDef) {
     if (!this.featureAllowed(q)) return false;
+    if (this.sectEntryBlock(q.id)) return false;
     const cls = classForQuest(q.id);
     if (cls && this.prog.job && this.prog.job !== cls.id) return false;
     if (q.sect && this.prog.sect !== q.sect) return false;
     if (q.reqRealm && REALMS.findIndex(r => r.id === this.prog.realm.id) < REALMS.findIndex(r => r.id === q.reqRealm)) return false;
     return true;
+  }
+
+  /** 四宗拜帖门槛用于接取、入场及结算；天剑继续沿用妖狐前置与对话拜入。 */
+  sectEntryBlock(id: string): string | undefined {
+    const cls = classForQuest(id);
+    if (!cls || cls.sect === CLASS_RULES.unjoinedSkillSect) return;
+    if (this.prog.count('five_sect_token') <= 0) return t('sect.entry.need_token');
+    if (this.prog.selectedSect !== cls.sect) return t('sect.entry.select_sect');
   }
 
   private featureAllowed(q: QuestDef) {
@@ -146,6 +155,10 @@ export class QuestSystem {
     for (const id of this.npcQuestIds(npcId).filter(id => !questId || id === questId)) {
       const q = QUESTS[id], sc = SCRIPTS[id] ?? {};
       if (!q) continue;
+      const blocked = this.sectEntryBlock(id);
+      if (blocked && (questId || !this.prog.job) && this.state(id) !== 'done' && (q.giver === npcId || q.turnIn === npcId)) {
+        return { lines: [{ speaker: npc.name, text: blocked }] };
+      }
       const lines = (stage: 'offer' | 'progress' | 'complete', fallback?: Line[]) => {
         const key = q.dialogueKeys?.[stage];
         return key ? [{ speaker: npc.name, text: t(key, { name: this.prog.name }) }] : fill(fallback);
@@ -172,6 +185,19 @@ export class QuestSystem {
     if (id === 'q_alchemy_intro') this.prog.grantRecipe('recipe_hp_pill');
     this.prog.save();
     return true;
+  }
+
+  /** 旧档或改选后可退回未接；清除本次试炼记录，不能带旧通关重接领奖。 */
+  abandon(id: string): boolean {
+    const cls = classForQuest(id), q = QUESTS[id];
+    if (!cls || cls.sect === CLASS_RULES.unjoinedSkillSect || !q || !this.isActive(id) || this.prog.pendingSectTrial) return false;
+    const previous = this.prog.quests[id], trials = this.prog.completedTrials;
+    delete this.prog.quests[id];
+    this.prog.completedTrials = trials.filter(trial => !q.objectives.some(o => o.type === 'trial' && o.trial === trial));
+    if (this.prog.save()) return true;
+    this.prog.quests[id] = previous;
+    this.prog.completedTrials = trials;
+    return false;
   }
 
   turnIn(id: string): QuestReward | undefined {
@@ -207,7 +233,8 @@ export class QuestSystem {
   }
   /** 完整试炼控制器胜利时调用；进图、局部机关、失败均不能算通关。 */
   onTrialComplete(trialId: string) {
-    if (!trialId || !this.activeIds.some(id => QUESTS[id].objectives.some(o => o.type === 'trial' && o.trial === trialId))) return false;
+    if (!trialId || !this.activeIds.some(id => this.classAllowed(QUESTS[id])
+      && QUESTS[id].objectives.some(o => o.type === 'trial' && o.trial === trialId))) return false;
     if (this.prog.completedTrials.includes(trialId)) return false;
     this.prog.completedTrials.push(trialId);
     this.prog.save();

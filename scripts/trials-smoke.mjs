@@ -55,8 +55,9 @@ async function drainDialog(page) {
   }
   throw new Error('对白 24 次输入后仍未关闭');
 }
-async function fixture(page, mapId, quest) {
-  await page.evaluate(async ({ mapId, quest }) => {
+async function fixture(page, mapId, quest, patch = {}) {
+  const selectedSect = classes.find(row => row.joinQuest === quest.id)?.sect ?? '';
+  await page.evaluate(async ({ mapId, quest, selectedSect, patch }) => {
     const scene = window.__scene, p = scene.prog;
     const save = p.exportSave();
     Object.assign(save, { level: Math.max(12, quest.reqLevel), job: '', classVersion: 0,
@@ -64,15 +65,43 @@ async function fixture(page, mapId, quest) {
       quests: { q_fox: { state: 'done', kills: {}, crafted: {} } },
       skills: { spirit_bolt: 4 }, skillGifted: { spirit_bolt: 1 }, skillMastery: {}, skillCooldowns: {},
       hotbar: ['spirit_bolt', null, null, null, null, null, null, null], buffs: [],
-      equip: {}, inventory: { five_sect_token: 1 }, exp: 0, stones: 123, sectRank: null,
+      equip: {}, inventory: { five_sect_token: 1 }, selectedSect, exp: 0, stones: 123, sectRank: null,
       position: { mapId, x: 96, y: 576 } });
+    Object.assign(save, patch);
     await window.__xt.loadSave(save);
     const fresh = window.__scene;
     fresh.prog.hp = fresh.prog.maxHp; fresh.prog.mp = fresh.prog.maxMp;
     fresh.player.hp = fresh.prog.hp; fresh.player.maxHp = fresh.prog.maxHp;
     fresh.physics.pause(); fresh.player.body.reset(fresh.map.spawn.x, fresh.map.spawn.y);
-  }, { mapId, quest });
+  }, { mapId, quest, selectedSect, patch });
   await ready(page, mapId);
+}
+async function standAtNpc(page, npcId) {
+  const frame = await page.evaluate(id => {
+    const scene = window.__scene, npc = scene.map.objects.find(o => o.type === 'npc' && (o.props.npc ?? o.name) === id);
+    if (!npc) throw new Error(`找不到 NPC: ${id}`);
+    scene.physics.resume(); scene.player.body.reset(npc.x, npc.y);
+    return scene.game.loop.frame;
+  }, npcId);
+  await page.waitForFunction(frame => {
+    const scene = window.__scene;
+    if (scene.game.loop.frame <= frame || !scene.player.onGround || scene.player.state2 !== 'ground') return false;
+    scene.physics.pause(); return true;
+  }, frame, { timeout: 3000, polling: 50 });
+}
+async function chooseSectToken(page, sect) {
+  await page.keyboard.press('i', { delay: 45 });
+  await page.waitForFunction(() => window.__scene.children.getByName('inventory:five-sect-token')?.visible);
+  const point = await page.evaluate(() => {
+    const bounds = window.__scene.children.getByName('inventory:five-sect-token').getBounds();
+    return { x: bounds.centerX, y: bounds.centerY };
+  });
+  await page.mouse.click(point.x, point.y);
+  await page.waitForFunction(() => window.__scene.dialog.choices.length === 5);
+  await page.keyboard.press(String(classes.findIndex(row => row.sect === sect) + 1), { delay: 45 });
+  assert.deepEqual(await page.evaluate(() => ({ selected: window.__scene.prog.selectedSect, job: window.__scene.prog.job,
+    stored: JSON.parse(localStorage.getItem('xiantu_save_v1')).selectedSect, token: window.__scene.prog.count('five_sect_token') })),
+  { selected: sect, job: '', stored: sect, token: 1 }, `${sect}: 真正使用五宗帖只保存选择，不消耗帖或提前拜入`);
 }
 async function enter(page, trial, quest) {
   await page.evaluate(({ quest }) => {
@@ -272,10 +301,56 @@ try {
   const initialFeatures = await page.evaluate(() => window.__xt.getState().features);
   assert.equal(initialFeatures.fiveSectClasses, false, 'v0.5b 四宗默认关口必须关闭');
   console.log(JSON.stringify({ test: 'trials-smoke', baseURL, playwright: module, browser: executablePath, dataMode: dataMode(root), initialFeatures }));
+  await page.evaluate(() => { window.__xt.setFlag('fiveSectClasses', true); window.__xt.setFlag('v05Maps', true); });
+  for (const trial of trials) {
+    const quest = quests.find(row => row.id === trial.quest);
+    for (const [caseName, patch] of [
+      ['无帖', { inventory: {}, selectedSect: trial.sect }],
+      ['未选宗', { selectedSect: '' }],
+      ['选错宗', { selectedSect: 'tianjian' }],
+    ]) {
+      await fixture(page, trial.map, quest, patch);
+      await standAtNpc(page, quest.giver); await page.keyboard.press('z', { delay: 45 });
+      const denied = await page.evaluate(id => ({ state: window.__scene.quests.state(id),
+        text: window.__scene.dialog.lines.map(line => line.text).join('\n'),
+        available: window.__scene.quests.available(id), accept: window.__scene.quests.accept(id) }), quest.id);
+      assert.equal(denied.state, undefined, `${trial.sect}/${caseName}: 真实 Z 不得接任务`);
+      assert.equal(denied.available, false); assert.equal(denied.accept, false);
+      assert.ok(denied.text.includes('五宗帖'), `${trial.sect}/${caseName}: 接引缺门槛提示`);
+      await drainDialog(page);
+      await page.evaluate(({ quest, trial }) => {
+        const p = window.__scene.prog;
+        p.quests[quest.id] = { state: 'active', kills: {}, crafted: {} };
+        p.completedTrials = [trial.id]; p.save();
+      }, { quest, trial });
+      const activeSave = await page.evaluate(() => window.__xt.exportSave());
+      await page.evaluate(async save => window.__xt.loadSave(save), activeSave); await ready(page, trial.map);
+      const before = await page.evaluate(() => window.__scene.prog.exportSave());
+      await standAtNpc(page, quest.turnIn); await page.keyboard.press('z', { delay: 45 });
+      const blocked = await page.evaluate(({ quest, trial }) => {
+        const s = window.__scene;
+        return { choices: s.dialog.choices.map(choice => choice.label), text: s.dialog.lines.map(line => line.text).join('\n'),
+          entered: s.enterSectTrial(quest.turnIn, trial), complete: s.quests.complete(quest.id),
+          reward: s.quests.turnIn(quest.id), won: s.quests.onTrialComplete(trial.id), save: s.prog.exportSave() };
+      }, { quest, trial });
+      assert.equal(blocked.choices.includes('进入试炼'), false, `${trial.sect}/${caseName}: 长老隐藏入场`);
+      assert.ok(blocked.choices.includes(strings['sect.entry.abandon'] ?? '放弃入门任务'));
+      assert.ok(blocked.text.includes('五宗帖')); assert.equal(blocked.entered, false);
+      assert.equal(blocked.complete, false); assert.equal(blocked.reward, undefined); assert.equal(blocked.won, false);
+      for (const field of ['job', 'exp', 'stones', 'inventory', 'skills', 'skillGifted', 'classRefundSp', 'classRewardClaims', 'completedTrials'])
+        assert.deepEqual(blocked.save[field], before[field], `${trial.sect}/${caseName}: 旧 active 不发奖或改资源 ${field}`);
+      await page.keyboard.press('1', { delay: 45 });
+      assert.deepEqual(await page.evaluate(id => ({ state: window.__scene.quests.state(id),
+        trials: window.__scene.prog.completedTrials, stored: JSON.parse(localStorage.getItem('xiantu_save_v1')).quests[id] }), quest.id),
+      { state: undefined, trials: [], stored: undefined }, `${trial.sect}/${caseName}: 真实放弃回未接并清通关`);
+      checks.push(`${trial.sect}/${caseName}: 真实 Z 接引/长老均拒绝，旧 active 存读不奖，真实选项放弃`);
+    }
+  }
   for (const trial of trials) {
     const quest = quests.find(row => row.id === trial.quest);
     await page.evaluate(() => { window.__xt.setFlag('fiveSectClasses', true); window.__xt.setFlag('v05Maps', true); });
-    await fixture(page, trial.map, quest);
+    await fixture(page, trial.map, quest, { selectedSect: '' });
+    await chooseSectToken(page, trial.sect);
     const entrance = await page.evaluate(({ quest }) => ({
       npcs: window.__scene.map.objects.filter(o => o.type === 'npc').map(o => o.props.npc),
       mobs: window.__scene.mobs.filter(mob => mob.active && !mob.dead).length,
@@ -343,6 +418,16 @@ try {
     const savedWin = await page.evaluate(() => window.__xt.exportSave());
     await page.evaluate(async save => window.__xt.loadSave(save), savedWin); await ready(page, trial.map);
     assert.equal(await page.evaluate(id => window.__scene.quests.complete(id), quest.id), true, `${trial.sect}: 通关存读丢失`);
+    const selection = await page.evaluate(() => {
+      const s = window.__scene;
+      return { opened: s.openSectToken(), choices: s.dialog.choices.map(choice => ({ disabled: !!choice.disabled, reason: choice.reason })) };
+    });
+    assert.equal(selection.opened, true);
+    for (const [index, cls] of classes.entries()) {
+      assert.equal(selection.choices[index].disabled, cls.sect !== trial.sect, `${trial.sect}: 通关后的改选须灰显`);
+      if (cls.sect !== trial.sect) assert.ok(selection.choices[index].reason, `${trial.sect}: 灰显缺原因`);
+    }
+    await page.keyboard.press('Escape', { delay: 45 });
     await page.evaluate(({ quest }) => window.__scene.talkTo(quest.turnIn, quest.id), { quest }); await drainDialog(page);
     const joined = await page.evaluate(id => {
       const p = window.__scene.prog;

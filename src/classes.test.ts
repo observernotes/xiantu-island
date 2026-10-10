@@ -167,6 +167,10 @@ for (const job of CLASS_LIST) {
 for (const job of CLASS_LIST) {
   const p = new Progress(), qs = new QuestSystem(p), quest = QUESTS[job.joinQuest];
   p.level = quest.reqLevel; p.quests.q_fox = { state: 'done', kills: {} };
+  if (job.sect !== 'tianjian') {
+    p.addItem('five_sect_token', 1);
+    p.selectedSect = job.sect;
+  }
   const trial = quest.objectives.find(objective => objective.type === 'trial')?.trial;
   if (trial) eq(qs.onTrialComplete(trial), false, `${job.id}: 未接任务不登记试炼通关`);
   eq(qs.mark(quest.giver), '!', `${job.id}: NPC 动态任务入口可见`);

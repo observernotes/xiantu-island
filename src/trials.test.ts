@@ -95,6 +95,7 @@ function finishObjectives(trial: SectTrialState, context: string) {
 {
   const trial = sectTrials.find(row => row.sect === 'youying')!, p = new Progress();
   p.level = 12; p.grantSkill('spirit_bolt', 1);
+  p.addItem('five_sect_token', 1); p.selectedSect = 'youying';
   p.hotbar = [null, 'spirit_bolt', null, null, null, null, null, null];
   const hotbar = [...p.hotbar], skills = { ...p.skills };
   p.quests[trial.quest!] = { state: 'active', kills: {}, crafted: {} };
@@ -251,6 +252,10 @@ for (const job of CLASS_LIST) {
   ok(quest, `${job.id}: 正式拜入任务保留在运行时`);
   const p = new Progress(); p.level = quest.reqLevel; p.exp = 0;
   p.quests.q_fox = { state: 'done', kills: {}, crafted: {} }; p.grantSkill('spirit_bolt', 1);
+  if (job.sect !== 'tianjian') {
+    p.addItem('five_sect_token', 1);
+    p.selectedSect = job.sect;
+  }
   p.skills.spirit_bolt += 3; p.stones = 123; p.hp = p.maxHp; p.mp = p.maxMp;
   const quests = new QuestSystem(p);
   eq(quests.accept(quest.id), true, `${job.id}: 实际接取本宗任务`);

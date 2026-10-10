@@ -113,6 +113,10 @@ try {
       check(s.dialog.body.text.includes(unavailable), '关闭职业没有开放提示');
     }
     flip('fiveSectClasses', true);
+    check(!s.quests.available('q_sect_taixu'), '开放四宗后缺帖仍可接取');
+    s.prog.addItem('five_sect_token', 1);
+    check(!s.quests.available('q_sect_taixu'), '有帖未选宗仍可接取');
+    check(s.prog.selectSect('taixu'), '选择太虚回归夹具失败');
     check(s.quests.available('q_sect_taixu') === taixuEntryPresent, '非剑徒入口未遵循任务阶段');
     xt.joinSect('tianjian');
     check(s.prog.job === 'tianjian_disciple', '天剑正常拜入失败');

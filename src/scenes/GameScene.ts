@@ -8,11 +8,11 @@ import type { DailyQuestReward } from '../DailyQuests';
 import { QUESTS as QUESTS_REF } from '../data';
 import { DialogBox, SkillBar, SkillWindow, type DialogChoice } from '../UI';
 import { AltarTrial, type TrialResult } from './AltarTrial';
-import { TRIALS, TRIAL_BY_MAP, REALMS, BREAKTHROUGH, SECT_SECLUSION, inPhase, type TrialDef } from '../data';
+import { TRIALS, TRIAL_BY_MAP, REALMS, BREAKTHROUGH, SECT_RANKS, SECT_SECLUSION, inPhase, type TrialDef } from '../data';
 import { preloadHud, registerHudFonts, hasHud, sliced, setSlicedWidth, HudBar, hudText, hudSpec, sectRankIcon, HUD_FONT, INK, INK_60, PAPER } from '../hud';
 import { SkillCombat } from '../SkillCombat';
 import { HOTBAR_SLOTS, SKILLS } from '../skills';
-import { classDef, classForQuest } from '../classes';
+import { CLASS_LIST, classDef, classEntryEnabled, classForQuest } from '../classes';
 import { installKeyGuard } from '../keyguard';
 import { buildTiledMap, buildCharMap, BuiltMap, MapObj } from './MapBuilder';
 import { HUD_RESERVE, addFloorStrip } from './cameraFloor';
@@ -76,6 +76,7 @@ export class GameScene extends Phaser.Scene {
   debugText!: Phaser.GameObjects.Text;
   private helpText!: Phaser.GameObjects.Text;
   private inventoryFurnace!: Phaser.GameObjects.Text;
+  private inventorySectToken!: Phaser.GameObjects.Text;
   logs: Phaser.GameObjects.Text[] = [];
   private logBadges = new Map<Phaser.GameObjects.Text, Phaser.GameObjects.Image>();
   nextPickAt = 0;
@@ -144,7 +145,12 @@ export class GameScene extends Phaser.Scene {
     if (!DEBUG_CLASS && new URLSearchParams(location.search).get('reset') === '1' && !this.registry.get('progress')) Progress.reset();
     this.prog = this.registry.get('progress') ?? (DEBUG_CLASS ? this.createDebugClass() : Progress.load());
     // 页面刷新中断一局；保存的返回落点使失败/刷新都能再次找长老确认。
-    const interrupted = this.prog.pendingSectTrial && !this.registry.get('sectTrialEntering');
+    const pendingQuest = this.prog.pendingSectTrial ? TRIALS[this.prog.pendingSectTrial.id]?.quest : undefined;
+    const pendingClass = pendingQuest ? classForQuest(pendingQuest) : undefined;
+    const pendingAllowed = !this.prog.job && featureEnabled('fiveSectClasses') && featureEnabled('v05Maps')
+      && pendingClass && this.prog.quests[pendingQuest!]?.state === 'active'
+      && this.prog.count('five_sect_token') > 0 && this.prog.selectedSect === pendingClass.sect;
+    const interrupted = this.prog.pendingSectTrial && (!this.registry.get('sectTrialEntering') || !pendingAllowed);
     if (interrupted && this.prog.pendingSectTrial) {
       const at = this.prog.pendingSectTrial.returnPosition;
       data = { map: at.mapId, pos: { x: at.x, y: at.y } };
@@ -287,6 +293,10 @@ export class GameScene extends Phaser.Scene {
       if (this.invText.visible && !this.dialog.open && !this.skillWindow.open && ITEMS[id]?.toolType === 'furnace'
         && this.prog.count(id) > 0 && this.openAlchemy(id)) this.invText.setVisible(false);
     });
+    this.inventorySectToken = this.add.text(1264, 170, t('sect.entry.open_token'), { fontFamily: 'sans-serif', fontSize: '14px', color: '#ffe680',
+      backgroundColor: '#1d2a3acc', padding: { x: 10, y: 8 } }).setName('inventory:five-sect-token')
+      .setOrigin(1, 0).setScrollFactor(0).setDepth(101).setVisible(false).setInteractive({ useHandCursor: true });
+    this.inventorySectToken.on('pointerdown', () => { if (this.invText.visible) this.openSectToken(); });
     this.gourd = this.add.image(1220, 718, 'icon_overflow_gourd_empty').setOrigin(0.5, 1).setScrollFactor(0).setDepth(103).setVisible(false).setInteractive({ useHandCursor: true });
     this.gourdTip = this.add.text(1220, 680, '', { fontFamily: 'sans-serif', fontSize: '12px', color: '#fff8e8', backgroundColor: '#1d2a3aee', padding: { x: 6, y: 3 } }).setOrigin(1, 1).setScrollFactor(0).setDepth(140).setVisible(false);
     this.gourd.on('pointerover', () => { if (this.gourd.visible) this.gourdTip.setVisible(true); });
@@ -321,6 +331,7 @@ export class GameScene extends Phaser.Scene {
     return Object.values(TRIALS).find(tr => {
       const q = tr.quest ? QUESTS_REF[tr.quest] : undefined;
       return q && (!questId || q.id === questId) && q.turnIn === npcId && this.quests.activeIds.includes(q.id)
+        && !this.quests.sectEntryBlock(q.id)
         && !this.prog.completedTrials.includes(tr.id) && TILED_MAPS[tr.map] && mapEntryOpen(tr.map, this.map.id);
     });
   }
@@ -352,7 +363,7 @@ export class GameScene extends Phaser.Scene {
   onSectTrialEnd(result: 'win' | 'fail' | 'exit') {
     const attempt = this.prog.pendingSectTrial;
     if (!attempt) return;
-    if (result === 'win') this.quests.onTrialComplete(attempt.id);
+    const won = result === 'win' && this.quests.onTrialComplete(attempt.id);
     this.prog.pendingSectTrial = null;
     this.player.body.setVelocity(0, 0);
     for (const mob of this.mobs) if (mob.active && !mob.dead) mob.despawn();
@@ -360,7 +371,7 @@ export class GameScene extends Phaser.Scene {
     this.prog.hp = this.prog.maxHp; this.prog.mp = this.prog.maxMp;
     const at = attempt.returnPosition;
     this.prog.setPosition(at.mapId, at.x, at.y);
-    this.registry.set('sectTrialReturnMessage', result === 'win' ? '试炼已成，找长老交付入门任务即可拜入。'
+    this.registry.set('sectTrialReturnMessage', won ? '试炼已成，找长老交付入门任务即可拜入。'
       : t(result === 'fail' ? 'trial.fail_return' : 'trial.exit_return'));
     this.travelling = true;
     this.time.delayedCall(0, () => this.scene.restart({ map: at.mapId, pos: { x: at.x, y: at.y } }));
@@ -545,6 +556,9 @@ export class GameScene extends Phaser.Scene {
     this.regenMp(delta);
     this.combat.update(time, delta);
     this.trialObjects?.update(delta);
+    if (this.sectTrial && !this.sectTrial.ended && this.sectTrial.def.quest && this.quests.sectEntryBlock(this.sectTrial.def.quest)) {
+      this.sectTrial.exit(); return;
+    }
     if (this.sectTrial && !this.dialog.open && !this.skillWindow.open && !this.alchemy.isOpen()) this.sectTrial.update(delta);
     if (this.sectTrial?.ended) { this.drawHud(); return; }
     if (time >= this.nextAgeUpdateAt) { this.prog.advanceAge(); this.nextAgeUpdateAt = time + 60000; this.prog.save(); }
@@ -949,6 +963,7 @@ export class GameScene extends Phaser.Scene {
     this.dialog?.dismiss(); this.skillWindow?.close();
     this.refreshHelpText();
     this.inventoryFurnace?.setVisible(false);
+    this.inventorySectToken?.setVisible(false);
     if (this.sectTrial && !this.sectTrial.ended && (!featureEnabled('fiveSectClasses') || !featureEnabled('v05Maps'))) this.sectTrial.exit();
     if (!featureEnabled('foxBoss')) {
       // 只撤下战斗，不触发死亡结算，也不改任务击杀、背包或已领取奖励。
@@ -1243,6 +1258,26 @@ export class GameScene extends Phaser.Scene {
     this.talkTo(id); return true;
   }
 
+  /** 背包中的拜帖提供明确选择；定下去向并不提前拜入。 */
+  openSectToken(): boolean {
+    if (this.prog.count('five_sect_token') <= 0 || this.prog.job || this.prog.pendingSectTrial || this.player.dead
+      || this.dialog.open || this.skillWindow.open || this.alchemy.isOpen()) return false;
+    this.player.body.setVelocityX(0); this.invText.setVisible(false);
+    this.dialog.choose({ speaker: null, text: `${t('sect.entry.select_title')}\n${t('sect.entry.select_tip')}` }, null,
+      CLASS_LIST.map(cls => {
+        const name = SECT_RANKS.sects.find(sect => sect.id === cls.sect)?.name ?? cls.name;
+        const locked = cls.sect !== this.prog.selectedSect && Object.values(TRIALS)
+          .some(tr => tr.quest && classForQuest(tr.quest) && this.prog.completedTrials.includes(tr.id));
+        return { label: name, disabled: !classEntryEnabled(cls) || locked,
+          reason: !classEntryEnabled(cls) ? FEATURE_UNAVAILABLE : locked ? t('sect.entry.trial_complete') : undefined,
+          onSelect: () => {
+            if (this.prog.selectSect(cls.sect)) this.log(t('sect.entry.selected', { sect: name }), '#ffe680');
+            else this.log(t('sect.ui.save_failed'), '#ffb0b0');
+          } };
+      }));
+    return true;
+  }
+
   talkTo(npcId: string, questId?: string, skipMenu = false) {
     const npc = NPCS[npcId]; if (!npc) return;
     if (this.trial || this.sectTrial || TRIAL_BY_MAP[this.map.id]) return;
@@ -1264,6 +1299,18 @@ export class GameScene extends Phaser.Scene {
             });
           } };
         }),
+        { label: t('ui.dialog.close'), onSelect: () => {} },
+      ]);
+      return;
+    }
+    const blockedQuest = (questId || !this.prog.job) && this.quests.npcQuestIds(npcId).find(id => (!questId || id === questId)
+      && this.quests.state(id) !== 'done' && this.quests.sectEntryBlock(id));
+    if (blockedQuest) {
+      this.player.body.setVelocityX(0);
+      this.dialog.choose({ speaker: npc.name, text: this.quests.sectEntryBlock(blockedQuest)! }, npc.sprite, [
+        ...(this.quests.isActive(blockedQuest) ? [{ label: t('sect.entry.abandon'), onSelect: () => {
+          if (this.quests.abandon(blockedQuest)) this.log(t('sect.entry.abandoned'), '#ffe680');
+        } }] : []),
         { label: t('ui.dialog.close'), onSelect: () => {} },
       ]);
       return;
@@ -1930,6 +1977,9 @@ export class GameScene extends Phaser.Scene {
       && !this.dialog.open && !this.skillWindow.open && !this.alchemy.isOpen());
     if (furnace) this.inventoryFurnace.setData('furnace', furnace).setText(`使用${ITEMS[furnace].name}`)
       .setPosition(this.invText.x - this.invText.width - 4, this.invText.y);
+    this.inventorySectToken.setVisible(this.invText.visible && pr.count('five_sect_token') > 0 && !pr.job
+      && !pr.pendingSectTrial && !this.dialog.open && !this.skillWindow.open && !this.alchemy.isOpen())
+      .setPosition(this.invText.x - this.invText.width - 4, this.invText.y + (furnace && featureEnabled('alchemyPhase1') ? 40 : 0));
     if (this.debugText.visible) {
       const p = this.player, b = p.body;
       this.debugText.setText(`状态 ${p.state2}  二段跳 ${p.canDouble ? '可用' : '已用'}  单向平台 ${p.onOneWay}\n速度 vx ${b.velocity.x.toFixed(0)} vy ${b.velocity.y.toFixed(0)}  位置 ${p.x.toFixed(0)},${p.y.toFixed(0)}  FPS ${this.game.loop.actualFps.toFixed(0)}`);

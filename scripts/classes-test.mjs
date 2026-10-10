@@ -268,6 +268,10 @@ try {
     const p = new Progress(), qs = new QuestSystem(p);
     p.level = raw.reqLevel;
     p.quests.q_fox = { state: 'done', kills: {} };
+    if (cls.sect !== CLASS_RULES.unjoinedSkillSect) {
+      p.addItem('five_sect_token', 1);
+      p.selectedSect = cls.sect;
+    }
     p.grantSkill('spirit_bolt', 4);
     const before = JSON.stringify(p), storedBefore = saved[saveKey];
     if (!gateOpen || !QUESTS[cls.joinQuest] || !inPhase(raw)) {
@@ -385,6 +389,9 @@ try {
   }
   // 四宗新入口关闭时也必须覆盖通用技能替换、退款及已有五宗旧档迁移。
   await server.ssrLoadModule('/src/class-entry.test.ts');
+  // Y8 的四宗帖门槛须在默认关闭入口的快照下独立开启、检查并恢复。
+  await server.ssrLoadModule('/src/sect-entry.test.ts');
+  equal(features.featureFlags(), expected, '四宗帖回归结束后恢复发版关口');
 } finally {
   await server.close();
 }
