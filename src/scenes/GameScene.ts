@@ -15,6 +15,8 @@ import { buildTiledMap, buildCharMap, BuiltMap, MapObj } from './MapBuilder';
 import { Player, Input } from './Player';
 import { Monster, type SkillVolley } from './Monster';
 import { Progress } from '../Progress';
+import { Seclusion, realDay } from '../Seclusion';
+import { LIFESPAN } from '../data';
 
 const MAP_FALLBACK: Record<string, string> = {};
 type Drop = Phaser.Physics.Arcade.Sprite & { itemId: string; count: number; bornAt: number; label?: Phaser.GameObjects.Text; shadow?: Phaser.GameObjects.Ellipse; floatTw?: Phaser.Tweens.Tween; landed?: boolean };
@@ -724,22 +726,36 @@ export class GameScene extends Phaser.Scene {
     this.time.delayedCall(220, () => this.scene.restart({ map, portal }));
   }
 
-  /** 本批只提示门槛与表中费用，不消耗贡献、不结算修为。 */
+  /** 配表选项确认后逐年结算；退出对白不消耗资源。 */
   private offerSeclusion(o: MapObj) {
-    const config = o.props.mode === 'sect' ? SECT_SECLUSION : undefined;
-    const reqRealm = o.props.reqRealm ?? config?.unlockRealm;
-    const realm = REALMS.find(r => r.id === reqRealm);
-    let lines: { speaker: null; text: string }[];
-    if (!config || !realm || this.prog.level < realm.levelMin) {
-      lines = [{ speaker: null, text: t('sys.seclusion_locked') }];
-    } else {
-      lines = config.options.map(years => ({ speaker: null, text: t('sys.seclusion_cost', {
-        years, cost: config.contributionCost[String(years)], have: this.prog.sectContribution,
-      }) }));
-    }
-    lines.forEach(line => this.log(line.text, '#ffe680'));
     this.player.body.setVelocityX(0);
-    this.dialog.show(lines, null);
+    const seclusion = new Seclusion(this.prog);
+    if (seclusion.locked(o.props)) {
+      const text = t('sys.seclusion_locked'); this.log(text, '#ffe680');
+      this.dialog.show([{ speaker: null, text }], null); return;
+    }
+    const costs = SECT_SECLUSION.options.map(years => t('sys.seclusion_cost', {
+      years, cost: SECT_SECLUSION.contributionCost[String(years)], have: this.prog.sectContribution,
+    }));
+    this.dialog.choose({ speaker: null, text: costs.join('\n') }, null, [
+      ...SECT_SECLUSION.options.map(years => ({ label: `闭关 ${years} 年`, onSelect: () => this.completeSeclusion(o, years) })),
+      { label: t('ui.dialog.close'), onSelect: () => {} },
+    ]);
+  }
+
+  private completeSeclusion(o: MapObj, years: number) {
+    const result = new Seclusion(this.prog).settle(o.props, years);
+    if (!result.ok) {
+      const vars = { years, cost: SECT_SECLUSION.contributionCost[String(years)], have: this.prog.sectContribution,
+        used: this.prog.seclusionDay === realDay() ? this.prog.seclusionYearsToday : 0, max: SECT_SECLUSION.maxYearsPerRealDay };
+      const text = t(result.reason === 'locked' ? 'sys.seclusion_locked' : result.reason === 'daily'
+        ? 'sys.seclusion_daily' : result.reason === 'life' ? 'sys.seclusion_life' : 'sys.seclusion_cost', vars);
+      this.log(text, '#ffe680'); this.dialog.show([{ speaker: null, text }], null); return;
+    }
+    this.applyExp(result);
+    this.log(t('sys.seclusion_done', { years: result.years, cost: result.cost, exp: result.gained,
+      overflow: result.overflowed, age: Math.floor(this.prog.age) }), '#ffe680');
+    if (this.prog.remainingLife <= LIFESPAN.warnAtRemaining) this.log(t('sys.lifespan_warn', { years: Math.floor(this.prog.remainingLife) }), '#ffb0b0');
   }
 
   // ---------------- NPC 对话与任务 ----------------

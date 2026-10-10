@@ -199,9 +199,16 @@ export interface SectSeclusionConfig {
   readonly maxYearsPerRealDay: number;
 }
 export const SECT_SECLUSION: Readonly<SectSeclusionConfig> = pacing.sectSeclusion;
+export const SECLUSION_RULES = pacing.seclusion;
+export const DENSITY_REF = pacing.densityRef;
+export const LIFESPAN = pacing.lifespan;
 
 /** strings_zh.json 里还没有的界面文案。有表内 key 时以表为准，不要改 data/。 */
 const LOCAL_STRINGS: Record<string, string> = {
+  'sys.seclusion_done': '闭关 {years} 年，修为增加 {exp}（溢出 {overflow}），消耗贡献 {cost}，年龄 {age} 岁。',
+  'sys.seclusion_daily': '今日闭关已用 {used}/{max} 年。',
+  'sys.seclusion_life': '剩余寿元不足以闭关 {years} 年。',
+  'sys.lifespan_warn': '寿元还剩 {years} 年。',
   'skill.req_block': '还不能加点：{req}',
   'skill.maxed': '这门功法已经满级了',
   'skill.no_sp': '技能点不足',

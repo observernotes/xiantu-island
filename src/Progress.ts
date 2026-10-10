@@ -1,4 +1,4 @@
-import { GROWTH, EXP_TO_NEXT, MAX_LEVEL, ITEMS, BREAKTHROUGH_LEVELS, BREAKTHROUGH, REALMS, QUESTS } from './data';
+import { GROWTH, EXP_TO_NEXT, MAX_LEVEL, ITEMS, BREAKTHROUGH_LEVELS, BREAKTHROUGH, REALMS, QUESTS, LIFESPAN } from './data';
 import { HOTBAR_SLOTS, QUEST_SKILL_BACKFILL, SKILLS, SKILL_RULES, SkillDef, skillNumber, spEarnedFor } from './skills';
 
 /** 自动加点：加点界面做好前每级自动分配（演武堂/天机阁确认：根骨 2、身法 2、悟性 1） */
@@ -26,6 +26,11 @@ export class Progress {
   tutorialsSeen: string[] = [];
   /** 宗门闭关贡献余额；获取与扣除流程留待闭关玩法接入。 */
   sectContribution = 0;
+  age = LIFESPAN.startAge;
+  ageUpdatedAt = Date.now();
+  seclusionDay = '';
+  seclusionYearsToday = 0;
+  seclusionHistory: { at: number; years: number; cost: number; gained: number; overflowed: number }[] = [];
   /** 瓶颈期装不下的修为，全额存进来，上限 overflowCap。旧档没有这个字段，读档时补 0 */
   overflowExp = 0;
   /** 突破失败次数（保底用，成功清零） */
@@ -67,6 +72,7 @@ export class Progress {
     p.overflowExp = Math.max(0, Math.floor(Number(p.overflowExp) || 0));
     if (Number.isFinite(p.overflowCap)) p.overflowExp = Math.min(p.overflowExp, p.overflowCap);
     p.ensureDefaults();
+    p.advanceAge();
     const backfilled = p.backfillRealmRewards() || p.backfillQuestSkills();
     p.hp = Math.min(p.hp || p.maxHp, p.maxHp); p.mp = Math.min(p.mp || p.maxMp, p.maxMp);
     if (backfilled) p.save();
@@ -156,6 +162,13 @@ export class Progress {
   gainExp(base: number, monLevel: number): { gained: number; levels: number; blocked: boolean; overflowed: number; overflowFilled: boolean } {
     const n = this.level - monLevel;
     const raw = Math.max(1, Math.round(base * (n >= 5 ? Math.max(0.2, 1 - 0.1 * (n - 4)) : 1) * (1 + this.statBonus('expBonus'))));
+    return this.settleExp(raw);
+  }
+
+  /** 闭关公式已经包含境界/灵气/房间倍率，不再套击杀衰减或悟性倍率。 */
+  gainCultivation(base: number) { return this.settleExp(Math.max(0, Math.round(base))); }
+
+  private settleExp(raw: number) {
     const before = this.totalExpMark();
     const poolBefore = this.overflowExp;
     const capBefore = this.overflowCap;
@@ -252,12 +265,26 @@ export class Progress {
     this.tutorialsSeen = [...new Set(this.tutorialsSeen.filter(id => typeof id === 'string' && id.length > 0))];
     const contribution = Number(this.sectContribution);
     this.sectContribution = Number.isFinite(contribution) ? Math.max(0, Math.floor(contribution)) : 0;
+    this.age = Number.isFinite(Number(this.age)) ? Math.max(LIFESPAN.startAge, Number(this.age)) : LIFESPAN.startAge;
+    this.ageUpdatedAt = Number.isFinite(Number(this.ageUpdatedAt)) && this.ageUpdatedAt > 0 ? Math.min(Date.now(), this.ageUpdatedAt) : Date.now();
+    if (typeof this.seclusionDay !== 'string') this.seclusionDay = '';
+    this.seclusionYearsToday = Math.max(0, Math.floor(Number(this.seclusionYearsToday) || 0));
+    if (!Array.isArray(this.seclusionHistory)) this.seclusionHistory = [];
+    this.seclusionHistory = this.seclusionHistory.filter(x => x && Number.isFinite(x.at) && x.years > 0).slice(-20);
     if (!Array.isArray(this.hotbar)) this.hotbar = [];
     while (this.hotbar.length < HOTBAR_SLOTS.length) this.hotbar.push(null);
     if (this.hotbar.length > HOTBAR_SLOTS.length) this.hotbar.length = HOTBAR_SLOTS.length;
     if (!Array.isArray(this.buffs)) this.buffs = [];
     const now = Date.now();
     this.buffs = this.buffs.filter(b => b && typeof b.expireAt === 'number' && b.expireAt > now);
+  }
+
+  get lifespanCap() { return Number((LIFESPAN.cap as Record<string, number>)[this.realm.id] ?? LIFESPAN.cap.mortal); }
+  get remainingLife() { return Math.max(0, this.lifespanCap - this.age); }
+  advanceAge(now = Date.now()) {
+    const elapsed = Math.max(0, now - this.ageUpdatedAt);
+    this.age += elapsed / 3600000 * LIFESPAN.agePerRealHour;
+    this.ageUpdatedAt = now;
   }
 
   /**
