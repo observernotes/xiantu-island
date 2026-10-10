@@ -330,7 +330,7 @@
    ]
   },
   "next": null,
-  "phase": 5,
+  "phase": 6,
   "note": "五宗入门试炼，见 design/08_五宗试炼脚本.md。需持五宗帖并选定本宗；完成即拜入。入门技替换 spirit_bolt 并退点由代码处理，rewards.skills 含入门技。"
  },
  {
@@ -371,7 +371,7 @@
    ]
   },
   "next": null,
-  "phase": 5,
+  "phase": 6,
   "note": "五宗入门试炼，见 design/08_五宗试炼脚本.md。需持五宗帖并选定本宗；完成即拜入。入门技替换 spirit_bolt 并退点由代码处理，rewards.skills 含入门技。"
  },
  {
@@ -412,7 +412,7 @@
    ]
   },
   "next": null,
-  "phase": 5,
+  "phase": 6,
   "note": "五宗入门试炼，见 design/08_五宗试炼脚本.md。需持五宗帖并选定本宗；完成即拜入。入门技替换 spirit_bolt 并退点由代码处理，rewards.skills 含入门技。"
  },
  {
@@ -453,7 +453,7 @@
    ]
   },
   "next": null,
-  "phase": 5,
+  "phase": 6,
   "note": "五宗入门试炼，见 design/08_五宗试炼脚本.md。需持五宗帖并选定本宗；完成即拜入。入门技替换 spirit_bolt 并退点由代码处理，rewards.skills 含入门技。"
  },
  {

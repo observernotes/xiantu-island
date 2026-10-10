@@ -91,7 +91,7 @@
     },
     {
       "id": "before_fox",
-      "description": "妖狐前：foxsim 实测 Lv11、剑气斩 Lv7、青竹剑、10 颗回春丹。",
+      "description": "妖狐前：foxsim 实测 Lv11、剑气斩 Lv7、桃木剑、10 颗回春丹。",
       "map": "lingxi_path",
       "spawn": {
         "objectId": 9,
@@ -121,7 +121,7 @@
         "sword_qi_slash": 7
       },
       "equip": {
-        "weapon": "bamboo_sword"
+        "weapon": "wood_sword"
       },
       "inventory": [
         {
@@ -618,7 +618,7 @@
     },
     {
       "id": "seclusion_ready",
-      "description": "闭关可用：筑基初期外门，12 贡献恰好换一次 1 年闭关。",
+      "description": "闭关可用：筑基初期外门，100 贡献恰好换一次 10 年闭关。",
       "map": "tianjian_sect",
       "spawn": {
         "objectId": 10,
@@ -642,7 +642,7 @@
       "statPoints": 0,
       "sect": "tianjian",
       "rank": "outer_disciple",
-      "sectContribution": 12,
+      "sectContribution": 100,
       "job": "tianjian_disciple",
       "skills": {
         "sword_qi_slash": 20,
@@ -726,7 +726,7 @@
     },
     {
       "id": "alchemy_intro",
-      "description": "炼丹入门：初识丹道已完成，丹炉、两张丹方及首炉材料可用。",
+      "description": "炼丹入门：初识丹道已完成，两张丹方及首炉材料可用，未预发丹炉。",
       "map": "qingyun_village",
       "spawn": {
         "objectId": 1,
@@ -770,16 +770,12 @@
           "quality": "low"
         },
         {
-          "item": "bronze_furnace",
-          "count": 1
-        },
-        {
           "item": "spirit_herb",
-          "count": 6
+          "count": 5
         },
         {
           "item": "rabbit_fur",
-          "count": 3
+          "count": 1
         },
         {
           "item": "snake_gall",
