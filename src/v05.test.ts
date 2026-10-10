@@ -13,6 +13,7 @@ import { ferryLockedReason } from './Ferry';
 import { Progress } from './Progress';
 import { QuestSystem } from './QuestSystem';
 import { realDay, Seclusion } from './Seclusion';
+import { dailyContribution, dailyQuestDay } from './DailyQuests';
 import { advancePatrol, detectProgress, inShadow, seesPlayer, shadowPieces, startPatrol, targetMotion } from './TrialMotion';
 
 let assertions = 0;
@@ -267,17 +268,24 @@ function yearly(level: number, realmId = unlock!.id) {
   eq(JSON.stringify(exhausted), lifeBefore, '寿元不足不扣贡献、不加修为、不记闭关');
 }
 
-// 最小贡献接口：同来源同日只能领一次，跨日可再领；已发和已花都可存档恢复。
+// 日常贡献接口：只认本宗真实已交付任务，同任务同日只能领一次。
 {
   const p = ready(); p.sectContribution = 0;
-  eq(p.onSectDailyQuestCompleted('daily_a', now), sect.dailyQuestContribution, '完成宗门日常按配表奖励贡献');
-  eq(p.onSectDailyQuestCompleted('daily_a', now), 0, '同日同来源不重复领奖');
-  eq(p.onSectDailyQuestCompleted('daily_b', now), sect.dailyQuestContribution, '同日不同来源可分别领奖');
-  eq(p.sectContribution, 2 * sect.dailyQuestContribution, '累计贡献按配表奖励');
-  same(p.sectDailyContributionClaims, ['daily_a', 'daily_b'], '领取来源去重');
+  p.advanceClass('tianjian_disciple'); p.resetDailyQuests(now);
+  const dailyA = QUESTS.q_daily_tianjian_1, dailyB = QUESTS.q_daily_tianjian_2;
+  const contributionA = dailyContribution(dailyA)!, contributionB = dailyContribution(dailyB)!;
+  eq(p.onSectDailyQuestCompleted('daily_a', now), 0, '旧虚构来源不发贡献');
+  eq(p.onSectDailyQuestCompleted(dailyA.id, now), 0, '尚未交付日常不发贡献');
+  p.quests[dailyA.id] = { state: 'done', kills: {} };
+  eq(p.onSectDailyQuestCompleted(dailyA.id, now), contributionA, '本宗真实日常按任务奖励贡献');
+  eq(p.onSectDailyQuestCompleted(dailyA.id, now), 0, '同日同来源不重复领奖');
+  p.quests[dailyB.id] = { state: 'done', kills: {} };
+  eq(p.onSectDailyQuestCompleted(dailyB.id, now), contributionB, '同日不同日常可分别领奖');
+  eq(p.sectContribution, contributionA + contributionB, '累计贡献按任务奖励');
+  same(p.sectDailyContributionClaims, [dailyA.id, dailyB.id], '领取来源去重');
   p.save();
   const loaded = Progress.load();
-  eq(loaded.onSectDailyQuestCompleted('daily_a', now), 0, '读档后同日来源仍不可重领');
+  eq(loaded.onSectDailyQuestCompleted(dailyA.id, now), 0, '读档后同日来源仍不可重领');
   eq(loaded.onSectDailyQuestCompleted('', now), 0, '空来源不发贡献');
   for (const invalid of [-1, 0.5, NaN, Infinity, loaded.sectContribution + 1]) {
     const balance = loaded.sectContribution;
@@ -287,9 +295,12 @@ function yearly(level: number, realmId = unlock!.id) {
   const expected = loaded.sectContribution - costs[String(minYears)];
   eq(loaded.spendSectContribution(costs[String(minYears)]), true, '足够贡献可按闭关费用消耗');
   eq(Progress.load().sectContribution, expected, '贡献消耗持久化');
-  eq(loaded.onSectDailyQuestCompleted('daily_a', tomorrow), sect.dailyQuestContribution, '跨日相同来源可再次领取');
-  same(loaded.sectDailyContributionClaims, ['daily_a'], '跨日清空旧领取记录');
-  eq(Progress.load().sectContribution, expected + sect.dailyQuestContribution, '跨日获得贡献持久化');
+  loaded.resetDailyQuests(tomorrow);
+  eq(loaded.onSectDailyQuestCompleted(dailyA.id, tomorrow), 0, '跨日须重新交付才能再次领取');
+  loaded.quests[dailyA.id] = { state: 'done', kills: {} };
+  eq(loaded.onSectDailyQuestCompleted(dailyA.id, tomorrow), contributionA, '跨日重新交付相同任务可再次领取');
+  same(loaded.sectDailyContributionClaims, [dailyA.id], '跨日清空旧领取记录');
+  eq(Progress.load().sectContribution, expected + contributionA, '跨日获得贡献持久化');
 }
 
 // 旧档缺省新增字段：直接 ensureDefaults 和真实 load 两条入口均能恢复。
@@ -304,7 +315,9 @@ function yearly(level: number, realmId = unlock!.id) {
   eq(loaded.name, '旧档修士', '旧档迁移保留角色');
   eq(loaded.count('hp_pill_small'), 3, '旧档迁移保留背包');
   for (const key of ['sectContribution', 'seclusionYearsToday'] as const) eq(loaded[key], 0, `旧档 ${key} 缺省 0`);
-  for (const key of ['sectDailyContributionDay', 'seclusionDay'] as const) eq(loaded[key], '', `旧档 ${key} 缺省空日期`);
+  eq(loaded.sectDailyContributionDay, dailyQuestDay(), '旧档日常贡献日期补到当前 05:00 日');
+  eq(loaded.dailyQuestResetDay, dailyQuestDay(), '旧档记录本次补算日常日期');
+  eq(loaded.seclusionDay, '', '旧档闭关日期缺省空日期');
   same(loaded.sectDailyContributionClaims, [], '旧档缺省无贡献来源');
   same(loaded.seclusionHistory, [], '旧档缺省无闭关记录');
   ok(loaded.age >= pacing.lifespan.startAge && loaded.age < pacing.lifespan.startAge + 0.01, '旧档年龄从配表 startAge 开始');
