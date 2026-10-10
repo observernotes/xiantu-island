@@ -31,6 +31,25 @@ const backgrounds = areas.flatMap(area => ['far', 'mid'].flatMap(layer => {
   const key = `bg_${area}_${layer}`, file = `tiles/${key}.png`;
   return fs.existsSync(path.join(out, file)) ? [{ key, path: `art/${file}` }] : [];
 }));
+// 只有正式交付的配置/纹理进入清单；缺文件时不发出请求。
+const backgroundConfigs = areas.flatMap(area => {
+  const file = `tiles/bg_${area}.json`, source = path.join(out, file);
+  if (!fs.existsSync(source)) return [];
+  const config = JSON.parse(fs.readFileSync(source, 'utf8'));
+  const layers = Array.isArray(config.layers) ? config.layers : Object.entries(config.layers ?? {}).map(([name, layer]) => ({ key: `bg_${area}_${name}`, ...layer }));
+  for (const texture of [...layers, ...(config.textures ?? [])]) {
+    const key = texture.texture ?? texture.key;
+    if (!key) continue;
+    const imageFile = texture.path ?? texture.file ?? `${key}.png`;
+    const relative = imageFile.startsWith('art/') ? imageFile.slice(4) : imageFile.startsWith('tiles/') || imageFile.startsWith('sprites/') ? imageFile : `tiles/${imageFile}`;
+    if (fs.existsSync(path.join(out, relative))) {
+      const existing = backgrounds.find(image => image.key === key);
+      if (existing) existing.path = `art/${relative}`;
+      else backgrounds.push({ key, path: `art/${relative}` });
+    }
+  }
+  return [{ area, key: `bg_${area}_config`, path: `art/${file}` }];
+});
 // 未验收的 _pending/ 不会拷到 public；技能 @64 缺图时不进入加载清单。
 const skills = JSON.parse(fs.readFileSync(path.join(root, 'balance/skills.json'), 'utf8')).skills;
 const missingSkillIcons = [];
@@ -54,6 +73,6 @@ function findRankIcons(dir) {
 }
 findRankIcons(path.join(out, 'icons'));
 fs.mkdirSync(path.join(here, 'src/gen'), { recursive: true });
-fs.writeFileSync(path.join(here, 'src/gen/assets.json'), JSON.stringify({ atlases, areas, backgrounds, skillIcons, sectRankIcons }, null, 1));
+fs.writeFileSync(path.join(here, 'src/gen/assets.json'), JSON.stringify({ atlases, areas, backgrounds, backgroundConfigs, skillIcons, sectRankIcons }, null, 1));
 console.log(`manifest: ${atlases.length} 个图集，${skillIcons.length} 个技能 @64 图标，区域 ${areas.join('/')}`);
 console.log('synced art from', root, '(' + dataMode(here) + ')');

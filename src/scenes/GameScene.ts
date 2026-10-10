@@ -2,7 +2,7 @@ import { gameNow } from '../GameClock';
 import Phaser from 'phaser';
 import { FEEL, SPEC } from '../config/feel';
 import { FIELD_TEST } from '../config/maps';
-import { MONSTERS, DROPS, ITEMS, TILED_MAPS, ATLASES, MAP_AREA, AREAS, BACKGROUNDS, SKILL_ICONS, NPCS, SCRIPTS, t, questName, questDescription, MP_REGEN_FRACTION_PER_5S, BREAKTHROUGH_LEVELS } from '../data';
+import { MONSTERS, DROPS, ITEMS, TILED_MAPS, ATLASES, MAP_AREA, AREAS, BACKGROUNDS, BACKGROUND_CONFIGS, SKILL_ICONS, NPCS, SCRIPTS, t, questName, questDescription, MP_REGEN_FRACTION_PER_5S, BREAKTHROUGH_LEVELS } from '../data';
 import { QuestSystem } from '../QuestSystem';
 import type { DailyQuestReward } from '../DailyQuests';
 import { QUESTS as QUESTS_REF } from '../data';
@@ -27,6 +27,7 @@ import { Gathering } from './Gathering';
 import { interactionPrompt } from '../InteractionPrompt';
 import { AlchemySystem, ALCHEMY_RULES } from '../Alchemy';
 import { AlchemyPanel, preloadAlchemy, registerAlchemy } from '../AlchemyPanel';
+import { BackgroundArt, type BackgroundConfig } from './BackgroundArt';
 import { applySpriteArt } from '../SpriteArt';
 import { SectGrowth, newSectTransactionId } from '../SectGrowth';
 
@@ -103,6 +104,7 @@ export class GameScene extends Phaser.Scene {
       this.load.image(`tiles_${a}`, `art/tiles/tiles_${a}.png`);
       this.load.spritesheet(`tiles_${a}_ss`, `art/tiles/tiles_${a}.png`, { frameWidth: 32, frameHeight: 32 });
     }
+    for (const config of BACKGROUND_CONFIGS) this.load.json(config.key, config.path);
     for (const background of BACKGROUNDS) this.load.image(background.key, background.path);
     for (const k of ATLASES) {
       this.load.atlas(k, `art/sprites/${k}.png`, `art/sprites/${k}.json`);
@@ -150,7 +152,8 @@ export class GameScene extends Phaser.Scene {
     if (!TILED_MAPS[mapId] && mapId !== 'field_test') { mapId = 'qingyun_village'; data.portal = undefined; }
 
     const area = MAP_AREA[mapId] ?? 'qingyun';
-    this.drawBackground(area);
+    this.drawBackground(area, TILED_MAPS[mapId]?.width * FEEL.tile || Math.max(...FIELD_TEST.rows.map(row => row.length)) * FEEL.tile,
+      TILED_MAPS[mapId]?.height * FEEL.tile || FIELD_TEST.rows.length * FEEL.tile);
     this.map = TILED_MAPS[mapId] ? buildTiledMap(this, TILED_MAPS[mapId], `tiles_${area}`)
       : buildCharMap(this, FIELD_TEST.id, FIELD_TEST.name, FIELD_TEST.rows, FIELD_TEST.portals, `tiles_${area}`);
     this.npcMarks = [];
@@ -413,6 +416,7 @@ export class GameScene extends Phaser.Scene {
     this.player.syncAppearance();
     const k = this.keys, J = Phaser.Input.Keyboard.JustDown;
     this.clearAbandonedBossSummons();
+    this.backgroundArt?.update();
     for (const p of this.parallax) p.ts.tilePositionX = this.cameras.main.scrollX * p.f;
     this.updateShots(time);
     this.regenMp(delta);
@@ -1568,8 +1572,20 @@ export class GameScene extends Phaser.Scene {
     this.debugText.setVisible(w.drawDebug);
   }
 
-  drawBackground(area: string) {
+  backgroundArt?: BackgroundArt;
+  private backgroundObjects: Phaser.GameObjects.GameObject[] = [];
+  drawBackground(area: string, width = this.map.width, height = this.map.height) {
+    this.backgroundArt?.destroy(); this.backgroundArt = undefined;
+    for (const object of this.backgroundObjects) object.destroy();
+    this.backgroundObjects = []; this.parallax = [];
+    const config: BackgroundConfig | undefined = this.cache.json.get(`bg_${area}_config`);
+    if (config?.layers) {
+      this.backgroundArt = new BackgroundArt(this, area, width, height, config);
+      if (this.backgroundArt.layers.length) return;
+      this.backgroundArt.destroy(); this.backgroundArt = undefined;
+    }
     const sky = this.add.graphics().setScrollFactor(0).setDepth(-10);
+    this.backgroundObjects.push(sky);
     sky.fillGradientStyle(0x7cc8f2, 0x7cc8f2, 0xdff3ff, 0xdff3ff, 1).fillRect(0, 0, 1280, 720);
     this.parallax = [];
     for (const [layer, f, d] of [['far', 0.2, -9], ['mid', 0.5, -8]] as [string, number, number][]) {
@@ -1577,10 +1593,12 @@ export class GameScene extends Phaser.Scene {
       if (!this.textures.exists(key)) continue;
       const img = this.textures.get(key).getSourceImage() as HTMLImageElement;
       const ts = this.add.tileSprite(0, 720, 1280, img.height, key).setOrigin(0, 1).setScrollFactor(0).setDepth(d);
+      this.backgroundObjects.push(ts);
       this.parallax.push({ ts, f });
     }
     if (this.parallax.length) return;
     const far = this.add.graphics().setScrollFactor(0.15, 0.1).setDepth(-9);
+    this.backgroundObjects.push(far);
     far.fillStyle(0xb7d9ec);
     for (let i = 0; i < 12; i++) far.fillTriangle(i * 260 - 100, 620, i * 260 + 60, 260 + (i % 3) * 50, i * 260 + 220, 620);
   }

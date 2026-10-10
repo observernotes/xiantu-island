@@ -6,6 +6,8 @@ import { gameNow, setGameTimeSource } from './GameClock';
 import { FIELD_TEST } from './config/maps';
 import { FEEL } from './config/feel';
 import { applySpriteArt, spriteArtSpec, type SpriteArtSpec } from './SpriteArt';
+import { MAP_AREA } from './data';
+import type { BackgroundConfig } from './scenes/BackgroundArt';
 import { SPEC } from './config/feel';
 
 type EventType = 'loaderror' | 'console.error' | 'error' | 'unhandledrejection' | 'scene' | 'quest:complete';
@@ -120,8 +122,24 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig): Phaser.Game
         return copy({ player: { key: p.texture.key, x: p.x, y: p.y, frame: p.frame.name,
           frameSize: spriteArtSpec(p).frameSize, origin: [p.originX, p.originY], displayScale: p.scaleX,
           displayHeight: p.displayHeight, feet: p.feet, body: { x: b.x, y: b.y, width: b.width, height: b.height, bottom: b.bottom } },
-          labels, backgrounds: s.parallax.map(({ ts, f }) => ({ key: ts.texture.key, width: ts.width, depth: ts.depth, factorX: f, y: ts.y })),
+          labels, backgrounds: s.backgroundArt?.snapshot() ?? s.parallax.map(({ ts, f }) => ({ key: ts.texture.key, width: ts.width, depth: ts.depth, factorX: f, y: ts.y })),
           fps: s.game.loop.actualFps });
+      },
+      rebuildBackground(config: BackgroundConfig | null) {
+        const s = current(), area = MAP_AREA[s.map.id] ?? 'qingyun';
+        if (config) s.cache.json.add(`bg_${area}_config`, copy(config));
+        else s.cache.json.remove(`bg_${area}_config`);
+        s.drawBackground(area); return api.art.snapshot();
+      },
+      async loadImage(key: string, imageUrl: string) {
+        const s = current();
+        await new Promise<void>((resolve, reject) => {
+          const failed = (file: Phaser.Loader.File) => { if (file.key === key) { cleanup(); reject(new Error(`${marker}: fixture image failed: ${key}`)); } };
+          const loaded = () => { cleanup(); resolve(); };
+          const cleanup = () => { s.load.off('loaderror', failed); s.load.off('complete', loaded); };
+          s.load.on('loaderror', failed).once('complete', loaded);
+          s.load.image(key, imageUrl); s.load.start();
+        });
       },
       applyAtlas(key: string, metadata?: SpriteArtSpec) {
         const s = current(), p = s.player;
