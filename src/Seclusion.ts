@@ -36,7 +36,7 @@ export class Seclusion {
     if (reason) return { ok: false as const, reason };
     const p = this.prog;
     const cost = SECT_SECLUSION.contributionCost[String(years)];
-    p.sectContribution -= cost;
+    if (!p.spendSectContribution(cost)) return { ok: false as const, reason: 'cost' as const };
     if (p.seclusionDay !== realDay(now)) { p.seclusionDay = realDay(now); p.seclusionYearsToday = 0; }
     p.seclusionYearsToday += years;
     let gained = 0, overflowed = 0, levels = 0, blocked = false, overflowFilled = false;

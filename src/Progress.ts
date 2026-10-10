@@ -1,5 +1,7 @@
 import { GROWTH, EXP_TO_NEXT, MAX_LEVEL, ITEMS, BREAKTHROUGH_LEVELS, BREAKTHROUGH, REALMS, QUESTS, LIFESPAN } from './data';
 import { HOTBAR_SLOTS, QUEST_SKILL_BACKFILL, SKILLS, SKILL_RULES, SkillDef, skillNumber, spEarnedFor } from './skills';
+import { SECT_SECLUSION } from './data';
+import { realDay } from './Seclusion';
 
 /** 自动加点：加点界面做好前每级自动分配（演武堂/天机阁确认：根骨 2、身法 2、悟性 1） */
 export const AUTO_STATS = { rootBone: 2, agility: 2, insight: 1, spirit: 0 } as Record<string, number>;
@@ -24,8 +26,10 @@ export class Progress {
   spTipShown = false;
   /** 每档只显示一次的地图教学 id。 */
   tutorialsSeen: string[] = [];
-  /** 宗门闭关贡献余额；获取与扣除流程留待闭关玩法接入。 */
+  /** 宗门贡献余额；旧档缺省 0。 */
   sectContribution = 0;
+  sectDailyContributionDay = '';
+  sectDailyContributionClaims: string[] = [];
   age = LIFESPAN.startAge;
   ageUpdatedAt = Date.now();
   seclusionDay = '';
@@ -86,6 +90,32 @@ export class Progress {
     this.tutorialsSeen.push(id);
     this.save();
     return true;
+  }
+
+  gainSectContribution(amount: number) {
+    if (!Number.isFinite(amount) || amount <= 0) return 0;
+    const gained = Math.floor(amount);
+    this.sectContribution += gained; this.save();
+    return gained;
+  }
+
+  spendSectContribution(amount: number) {
+    if (!Number.isFinite(amount) || amount < 0 || !Number.isInteger(amount) || this.sectContribution < amount) return false;
+    this.sectContribution -= amount; this.save();
+    return true;
+  }
+
+  /**
+   * 宗门日常完成回调：调用方须先验证日常任务来源，同日同来源只发一次。
+   * TODO(策划)：quests 缺宗门日常分类、重置规则/奖励字段，NPC 也未配日常入口；暂不挂主线或虚构领取按钮。
+   */
+  onSectDailyQuestCompleted(sourceId: string, now = Date.now()) {
+    if (!sourceId) return 0;
+    const day = realDay(now);
+    if (this.sectDailyContributionDay !== day) { this.sectDailyContributionDay = day; this.sectDailyContributionClaims = []; }
+    if (this.sectDailyContributionClaims.includes(sourceId)) return 0;
+    this.sectDailyContributionClaims.push(sourceId);
+    return this.gainSectContribution(SECT_SECLUSION.dailyQuestContribution);
   }
 
   private equipSum(stat: string) {
@@ -265,6 +295,9 @@ export class Progress {
     this.tutorialsSeen = [...new Set(this.tutorialsSeen.filter(id => typeof id === 'string' && id.length > 0))];
     const contribution = Number(this.sectContribution);
     this.sectContribution = Number.isFinite(contribution) ? Math.max(0, Math.floor(contribution)) : 0;
+    if (typeof this.sectDailyContributionDay !== 'string') this.sectDailyContributionDay = '';
+    if (!Array.isArray(this.sectDailyContributionClaims)) this.sectDailyContributionClaims = [];
+    this.sectDailyContributionClaims = [...new Set(this.sectDailyContributionClaims.filter(id => typeof id === 'string' && id.length > 0))];
     this.age = Number.isFinite(Number(this.age)) ? Math.max(LIFESPAN.startAge, Number(this.age)) : LIFESPAN.startAge;
     this.ageUpdatedAt = Number.isFinite(Number(this.ageUpdatedAt)) && this.ageUpdatedAt > 0 ? Math.min(Date.now(), this.ageUpdatedAt) : Date.now();
     if (typeof this.seclusionDay !== 'string') this.seclusionDay = '';
