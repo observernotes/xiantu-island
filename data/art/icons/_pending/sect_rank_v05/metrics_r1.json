@@ -1,0 +1,1601 @@
+{
+  "schema_version": 1,
+  "old_directory": "art/icons/_backup/v30_sect_rank_r1_20261010_150232",
+  "new_directory": "art/icons/_pending/sect_rank_v05",
+  "rank_order": [
+    "outer_disciple",
+    "inner_disciple",
+    "direct_disciple",
+    "deacon",
+    "elder"
+  ],
+  "palette": {
+    "INK": "#3B2A20",
+    "PAPER": "#FAF2DC",
+    "PAPER_SH": "#E8D3A4",
+    "GOLD": "#D9A441",
+    "GOLD_E": "#A86E1E"
+  },
+  "definitions": {
+    "bbox": "[left, top, right, bottom), alpha > 128; delta = new - old",
+    "gold_fraction": "near GOLD or GOLD_E: Euclidean RGB distance <= 40; denominator alpha > 128",
+    "outer_ring": "alpha > 128 pixel with any four-neighbor alpha <= 128 (outside image transparent)",
+    "outer_ring_ink_fraction": "Euclidean RGB distance to INK <= 40; denominator outer-ring pixels",
+    "design_color_count": "alpha > 200 pixels classified by nearest RGB palette color; fraction >= 0.02",
+    "display_24": "32px RGBA single resized to 24x24 using PIL BILINEAR",
+    "silhouette_iou": "intersection / union of alpha > 128 silhouettes; 10 unordered pairs",
+    "mean_cie76_delta_e": "mean Euclidean CIELAB D65 distance on alpha > 128 silhouette union after RGBA source-over compositing",
+    "paper_background": "#FAF2DC opaque",
+    "qingyun_background": "bg_qingyun_far.png exact center 32x32 crop; BILINEAR to 24x24 when needed; opaque over #FAF2DC",
+    "nearest_pairs": "min_delta_e_pair and max_iou_pair are selected independently; both contain their DeltaE and IoU"
+  },
+  "validation": {
+    "json_byte_identical": true,
+    "json_sha256": "403d0651789d57162bd43e0b29287fb5519bb1d6e4c1796a8720662f6dc9b041",
+    "old_and_new_atlas_cells_equal_singles": true,
+    "all_32_and_64_sizes_correct": true,
+    "new_alpha_cleanup_passed": true,
+    "new_bbox_within_1px": true
+  },
+  "icons": {
+    "outer_disciple": {
+      "label": "外门",
+      "old": {
+        "bbox": [
+          4,
+          4,
+          28,
+          28
+        ],
+        "silhouette_pixels": 458,
+        "gold_pixels": 22,
+        "gold_fraction": 0.048035,
+        "outer_ring_pixels": 67,
+        "outer_ring_ink_pixels": 39,
+        "outer_ring_ink_fraction": 0.58209,
+        "design_color_count": 4,
+        "design_color_fractions": {
+          "INK": 0.111111,
+          "PAPER": 0.705215,
+          "PAPER_SH": 0.052154,
+          "GOLD": 0.015873,
+          "GOLD_E": 0.115646
+        }
+      },
+      "new": {
+        "bbox": [
+          4,
+          4,
+          28,
+          28
+        ],
+        "silhouette_pixels": 448,
+        "gold_pixels": 52,
+        "gold_fraction": 0.116071,
+        "outer_ring_pixels": 64,
+        "outer_ring_ink_pixels": 42,
+        "outer_ring_ink_fraction": 0.65625,
+        "design_color_count": 5,
+        "design_color_fractions": {
+          "INK": 0.12963,
+          "PAPER": 0.585648,
+          "PAPER_SH": 0.104167,
+          "GOLD": 0.115741,
+          "GOLD_E": 0.064815
+        }
+      },
+      "bbox_delta": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "inner_disciple": {
+      "label": "内门",
+      "old": {
+        "bbox": [
+          3,
+          4,
+          29,
+          28
+        ],
+        "silhouette_pixels": 477,
+        "gold_pixels": 44,
+        "gold_fraction": 0.092243,
+        "outer_ring_pixels": 72,
+        "outer_ring_ink_pixels": 52,
+        "outer_ring_ink_fraction": 0.722222,
+        "design_color_count": 5,
+        "design_color_fractions": {
+          "INK": 0.148889,
+          "PAPER": 0.566667,
+          "PAPER_SH": 0.086667,
+          "GOLD": 0.02,
+          "GOLD_E": 0.177778
+        }
+      },
+      "new": {
+        "bbox": [
+          3,
+          4,
+          29,
+          28
+        ],
+        "silhouette_pixels": 468,
+        "gold_pixels": 69,
+        "gold_fraction": 0.147436,
+        "outer_ring_pixels": 72,
+        "outer_ring_ink_pixels": 52,
+        "outer_ring_ink_fraction": 0.722222,
+        "design_color_count": 5,
+        "design_color_fractions": {
+          "INK": 0.160088,
+          "PAPER": 0.504386,
+          "PAPER_SH": 0.120614,
+          "GOLD": 0.149123,
+          "GOLD_E": 0.065789
+        }
+      },
+      "bbox_delta": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "direct_disciple": {
+      "label": "亲传",
+      "old": {
+        "bbox": [
+          3,
+          3,
+          29,
+          29
+        ],
+        "silhouette_pixels": 351,
+        "gold_pixels": 46,
+        "gold_fraction": 0.131054,
+        "outer_ring_pixels": 51,
+        "outer_ring_ink_pixels": 17,
+        "outer_ring_ink_fraction": 0.333333,
+        "design_color_count": 5,
+        "design_color_fractions": {
+          "INK": 0.157895,
+          "PAPER": 0.482972,
+          "PAPER_SH": 0.080495,
+          "GOLD": 0.120743,
+          "GOLD_E": 0.157895
+        }
+      },
+      "new": {
+        "bbox": [
+          3,
+          3,
+          29,
+          29
+        ],
+        "silhouette_pixels": 342,
+        "gold_pixels": 110,
+        "gold_fraction": 0.321637,
+        "outer_ring_pixels": 54,
+        "outer_ring_ink_pixels": 54,
+        "outer_ring_ink_fraction": 1.0,
+        "design_color_count": 5,
+        "design_color_fractions": {
+          "INK": 0.326923,
+          "PAPER": 0.11859,
+          "PAPER_SH": 0.067308,
+          "GOLD": 0.192308,
+          "GOLD_E": 0.294872
+        }
+      },
+      "bbox_delta": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "deacon": {
+      "label": "执事",
+      "old": {
+        "bbox": [
+          5,
+          5,
+          27,
+          29
+        ],
+        "silhouette_pixels": 416,
+        "gold_pixels": 23,
+        "gold_fraction": 0.055288,
+        "outer_ring_pixels": 70,
+        "outer_ring_ink_pixels": 41,
+        "outer_ring_ink_fraction": 0.585714,
+        "design_color_count": 5,
+        "design_color_fractions": {
+          "INK": 0.279302,
+          "PAPER": 0.40399,
+          "PAPER_SH": 0.13217,
+          "GOLD": 0.0798,
+          "GOLD_E": 0.104738
+        }
+      },
+      "new": {
+        "bbox": [
+          5,
+          5,
+          27,
+          29
+        ],
+        "silhouette_pixels": 448,
+        "gold_pixels": 83,
+        "gold_fraction": 0.185268,
+        "outer_ring_pixels": 72,
+        "outer_ring_ink_pixels": 71,
+        "outer_ring_ink_fraction": 0.986111,
+        "design_color_count": 5,
+        "design_color_fractions": {
+          "INK": 0.349315,
+          "PAPER": 0.273973,
+          "PAPER_SH": 0.114155,
+          "GOLD": 0.13242,
+          "GOLD_E": 0.130137
+        }
+      },
+      "bbox_delta": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "elder": {
+      "label": "长老",
+      "old": {
+        "bbox": [
+          4,
+          4,
+          29,
+          28
+        ],
+        "silhouette_pixels": 367,
+        "gold_pixels": 6,
+        "gold_fraction": 0.016349,
+        "outer_ring_pixels": 62,
+        "outer_ring_ink_pixels": 34,
+        "outer_ring_ink_fraction": 0.548387,
+        "design_color_count": 5,
+        "design_color_fractions": {
+          "INK": 0.133721,
+          "PAPER": 0.616279,
+          "PAPER_SH": 0.090116,
+          "GOLD": 0.087209,
+          "GOLD_E": 0.072674
+        }
+      },
+      "new": {
+        "bbox": [
+          4,
+          4,
+          28,
+          27
+        ],
+        "silhouette_pixels": 324,
+        "gold_pixels": 80,
+        "gold_fraction": 0.246914,
+        "outer_ring_pixels": 60,
+        "outer_ring_ink_pixels": 57,
+        "outer_ring_ink_fraction": 0.95,
+        "design_color_count": 5,
+        "design_color_fractions": {
+          "INK": 0.303333,
+          "PAPER": 0.256667,
+          "PAPER_SH": 0.1,
+          "GOLD": 0.153333,
+          "GOLD_E": 0.186667
+        }
+      },
+      "bbox_delta": [
+        0,
+        0,
+        -1,
+        -1
+      ]
+    }
+  },
+  "comparisons": {
+    "24": {
+      "paper": {
+        "old": {
+          "pairs": [
+            {
+              "pair": [
+                "outer_disciple",
+                "inner_disciple"
+              ],
+              "labels": [
+                "外门",
+                "内门"
+              ],
+              "silhouette_iou": 0.929889,
+              "mean_cie76_delta_e": 16.805328,
+              "union_pixels": 271
+            },
+            {
+              "pair": [
+                "outer_disciple",
+                "direct_disciple"
+              ],
+              "labels": [
+                "外门",
+                "亲传"
+              ],
+              "silhouette_iou": 0.734375,
+              "mean_cie76_delta_e": 21.678221,
+              "union_pixels": 256
+            },
+            {
+              "pair": [
+                "outer_disciple",
+                "deacon"
+              ],
+              "labels": [
+                "外门",
+                "执事"
+              ],
+              "silhouette_iou": 0.798507,
+              "mean_cie76_delta_e": 26.109197,
+              "union_pixels": 268
+            },
+            {
+              "pair": [
+                "outer_disciple",
+                "elder"
+              ],
+              "labels": [
+                "外门",
+                "长老"
+              ],
+              "silhouette_iou": 0.792308,
+              "mean_cie76_delta_e": 17.692471,
+              "union_pixels": 260
+            },
+            {
+              "pair": [
+                "inner_disciple",
+                "direct_disciple"
+              ],
+              "labels": [
+                "内门",
+                "亲传"
+              ],
+              "silhouette_iou": 0.70412,
+              "mean_cie76_delta_e": 21.2189,
+              "union_pixels": 267
+            },
+            {
+              "pair": [
+                "inner_disciple",
+                "deacon"
+              ],
+              "labels": [
+                "内门",
+                "执事"
+              ],
+              "silhouette_iou": 0.773381,
+              "mean_cie76_delta_e": 25.15039,
+              "union_pixels": 278
+            },
+            {
+              "pair": [
+                "inner_disciple",
+                "elder"
+              ],
+              "labels": [
+                "内门",
+                "长老"
+              ],
+              "silhouette_iou": 0.747253,
+              "mean_cie76_delta_e": 23.261614,
+              "union_pixels": 273
+            },
+            {
+              "pair": [
+                "direct_disciple",
+                "deacon"
+              ],
+              "labels": [
+                "亲传",
+                "执事"
+              ],
+              "silhouette_iou": 0.754237,
+              "mean_cie76_delta_e": 23.84834,
+              "union_pixels": 236
+            },
+            {
+              "pair": [
+                "direct_disciple",
+                "elder"
+              ],
+              "labels": [
+                "亲传",
+                "长老"
+              ],
+              "silhouette_iou": 0.792793,
+              "mean_cie76_delta_e": 22.879508,
+              "union_pixels": 222
+            },
+            {
+              "pair": [
+                "deacon",
+                "elder"
+              ],
+              "labels": [
+                "执事",
+                "长老"
+              ],
+              "silhouette_iou": 0.786885,
+              "mean_cie76_delta_e": 25.791356,
+              "union_pixels": 244
+            }
+          ],
+          "min_delta_e_pair": {
+            "pair": [
+              "outer_disciple",
+              "inner_disciple"
+            ],
+            "labels": [
+              "外门",
+              "内门"
+            ],
+            "silhouette_iou": 0.929889,
+            "mean_cie76_delta_e": 16.805328,
+            "union_pixels": 271
+          },
+          "max_iou_pair": {
+            "pair": [
+              "outer_disciple",
+              "inner_disciple"
+            ],
+            "labels": [
+              "外门",
+              "内门"
+            ],
+            "silhouette_iou": 0.929889,
+            "mean_cie76_delta_e": 16.805328,
+            "union_pixels": 271
+          }
+        },
+        "new": {
+          "pairs": [
+            {
+              "pair": [
+                "outer_disciple",
+                "inner_disciple"
+              ],
+              "labels": [
+                "外门",
+                "内门"
+              ],
+              "silhouette_iou": 0.925373,
+              "mean_cie76_delta_e": 19.253185,
+              "union_pixels": 268
+            },
+            {
+              "pair": [
+                "outer_disciple",
+                "direct_disciple"
+              ],
+              "labels": [
+                "外门",
+                "亲传"
+              ],
+              "silhouette_iou": 0.703125,
+              "mean_cie76_delta_e": 40.534292,
+              "union_pixels": 256
+            },
+            {
+              "pair": [
+                "outer_disciple",
+                "deacon"
+              ],
+              "labels": [
+                "外门",
+                "执事"
+              ],
+              "silhouette_iou": 0.844444,
+              "mean_cie76_delta_e": 35.710766,
+              "union_pixels": 270
+            },
+            {
+              "pair": [
+                "outer_disciple",
+                "elder"
+              ],
+              "labels": [
+                "外门",
+                "长老"
+              ],
+              "silhouette_iou": 0.695312,
+              "mean_cie76_delta_e": 34.707936,
+              "union_pixels": 256
+            },
+            {
+              "pair": [
+                "inner_disciple",
+                "direct_disciple"
+              ],
+              "labels": [
+                "内门",
+                "亲传"
+              ],
+              "silhouette_iou": 0.692308,
+              "mean_cie76_delta_e": 40.830646,
+              "union_pixels": 260
+            },
+            {
+              "pair": [
+                "inner_disciple",
+                "deacon"
+              ],
+              "labels": [
+                "内门",
+                "执事"
+              ],
+              "silhouette_iou": 0.832117,
+              "mean_cie76_delta_e": 34.583463,
+              "union_pixels": 274
+            },
+            {
+              "pair": [
+                "inner_disciple",
+                "elder"
+              ],
+              "labels": [
+                "内门",
+                "长老"
+              ],
+              "silhouette_iou": 0.671756,
+              "mean_cie76_delta_e": 36.075463,
+              "union_pixels": 262
+            },
+            {
+              "pair": [
+                "direct_disciple",
+                "deacon"
+              ],
+              "labels": [
+                "亲传",
+                "执事"
+              ],
+              "silhouette_iou": 0.701613,
+              "mean_cie76_delta_e": 35.65642,
+              "union_pixels": 248
+            },
+            {
+              "pair": [
+                "direct_disciple",
+                "elder"
+              ],
+              "labels": [
+                "亲传",
+                "长老"
+              ],
+              "silhouette_iou": 0.79,
+              "mean_cie76_delta_e": 33.841526,
+              "union_pixels": 200
+            },
+            {
+              "pair": [
+                "deacon",
+                "elder"
+              ],
+              "labels": [
+                "执事",
+                "长老"
+              ],
+              "silhouette_iou": 0.666667,
+              "mean_cie76_delta_e": 35.344842,
+              "union_pixels": 252
+            }
+          ],
+          "min_delta_e_pair": {
+            "pair": [
+              "outer_disciple",
+              "inner_disciple"
+            ],
+            "labels": [
+              "外门",
+              "内门"
+            ],
+            "silhouette_iou": 0.925373,
+            "mean_cie76_delta_e": 19.253185,
+            "union_pixels": 268
+          },
+          "max_iou_pair": {
+            "pair": [
+              "outer_disciple",
+              "inner_disciple"
+            ],
+            "labels": [
+              "外门",
+              "内门"
+            ],
+            "silhouette_iou": 0.925373,
+            "mean_cie76_delta_e": 19.253185,
+            "union_pixels": 268
+          }
+        }
+      },
+      "qingyun_center": {
+        "old": {
+          "pairs": [
+            {
+              "pair": [
+                "outer_disciple",
+                "inner_disciple"
+              ],
+              "labels": [
+                "外门",
+                "内门"
+              ],
+              "silhouette_iou": 0.929889,
+              "mean_cie76_delta_e": 16.817106,
+              "union_pixels": 271
+            },
+            {
+              "pair": [
+                "outer_disciple",
+                "direct_disciple"
+              ],
+              "labels": [
+                "外门",
+                "亲传"
+              ],
+              "silhouette_iou": 0.734375,
+              "mean_cie76_delta_e": 23.15813,
+              "union_pixels": 256
+            },
+            {
+              "pair": [
+                "outer_disciple",
+                "deacon"
+              ],
+              "labels": [
+                "外门",
+                "执事"
+              ],
+              "silhouette_iou": 0.798507,
+              "mean_cie76_delta_e": 27.024205,
+              "union_pixels": 268
+            },
+            {
+              "pair": [
+                "outer_disciple",
+                "elder"
+              ],
+              "labels": [
+                "外门",
+                "长老"
+              ],
+              "silhouette_iou": 0.792308,
+              "mean_cie76_delta_e": 19.598595,
+              "union_pixels": 260
+            },
+            {
+              "pair": [
+                "inner_disciple",
+                "direct_disciple"
+              ],
+              "labels": [
+                "内门",
+                "亲传"
+              ],
+              "silhouette_iou": 0.70412,
+              "mean_cie76_delta_e": 22.944937,
+              "union_pixels": 267
+            },
+            {
+              "pair": [
+                "inner_disciple",
+                "deacon"
+              ],
+              "labels": [
+                "内门",
+                "执事"
+              ],
+              "silhouette_iou": 0.773381,
+              "mean_cie76_delta_e": 25.874661,
+              "union_pixels": 278
+            },
+            {
+              "pair": [
+                "inner_disciple",
+                "elder"
+              ],
+              "labels": [
+                "内门",
+                "长老"
+              ],
+              "silhouette_iou": 0.747253,
+              "mean_cie76_delta_e": 25.11725,
+              "union_pixels": 273
+            },
+            {
+              "pair": [
+                "direct_disciple",
+                "deacon"
+              ],
+              "labels": [
+                "亲传",
+                "执事"
+              ],
+              "silhouette_iou": 0.754237,
+              "mean_cie76_delta_e": 25.841791,
+              "union_pixels": 236
+            },
+            {
+              "pair": [
+                "direct_disciple",
+                "elder"
+              ],
+              "labels": [
+                "亲传",
+                "长老"
+              ],
+              "silhouette_iou": 0.792793,
+              "mean_cie76_delta_e": 23.948021,
+              "union_pixels": 222
+            },
+            {
+              "pair": [
+                "deacon",
+                "elder"
+              ],
+              "labels": [
+                "执事",
+                "长老"
+              ],
+              "silhouette_iou": 0.786885,
+              "mean_cie76_delta_e": 26.718774,
+              "union_pixels": 244
+            }
+          ],
+          "min_delta_e_pair": {
+            "pair": [
+              "outer_disciple",
+              "inner_disciple"
+            ],
+            "labels": [
+              "外门",
+              "内门"
+            ],
+            "silhouette_iou": 0.929889,
+            "mean_cie76_delta_e": 16.817106,
+            "union_pixels": 271
+          },
+          "max_iou_pair": {
+            "pair": [
+              "outer_disciple",
+              "inner_disciple"
+            ],
+            "labels": [
+              "外门",
+              "内门"
+            ],
+            "silhouette_iou": 0.929889,
+            "mean_cie76_delta_e": 16.817106,
+            "union_pixels": 271
+          }
+        },
+        "new": {
+          "pairs": [
+            {
+              "pair": [
+                "outer_disciple",
+                "inner_disciple"
+              ],
+              "labels": [
+                "外门",
+                "内门"
+              ],
+              "silhouette_iou": 0.925373,
+              "mean_cie76_delta_e": 19.362525,
+              "union_pixels": 268
+            },
+            {
+              "pair": [
+                "outer_disciple",
+                "direct_disciple"
+              ],
+              "labels": [
+                "外门",
+                "亲传"
+              ],
+              "silhouette_iou": 0.703125,
+              "mean_cie76_delta_e": 40.921794,
+              "union_pixels": 256
+            },
+            {
+              "pair": [
+                "outer_disciple",
+                "deacon"
+              ],
+              "labels": [
+                "外门",
+                "执事"
+              ],
+              "silhouette_iou": 0.844444,
+              "mean_cie76_delta_e": 35.727854,
+              "union_pixels": 270
+            },
+            {
+              "pair": [
+                "outer_disciple",
+                "elder"
+              ],
+              "labels": [
+                "外门",
+                "长老"
+              ],
+              "silhouette_iou": 0.695312,
+              "mean_cie76_delta_e": 36.058921,
+              "union_pixels": 256
+            },
+            {
+              "pair": [
+                "inner_disciple",
+                "direct_disciple"
+              ],
+              "labels": [
+                "内门",
+                "亲传"
+              ],
+              "silhouette_iou": 0.692308,
+              "mean_cie76_delta_e": 41.651095,
+              "union_pixels": 260
+            },
+            {
+              "pair": [
+                "inner_disciple",
+                "deacon"
+              ],
+              "labels": [
+                "内门",
+                "执事"
+              ],
+              "silhouette_iou": 0.832117,
+              "mean_cie76_delta_e": 34.478387,
+              "union_pixels": 274
+            },
+            {
+              "pair": [
+                "inner_disciple",
+                "elder"
+              ],
+              "labels": [
+                "内门",
+                "长老"
+              ],
+              "silhouette_iou": 0.671756,
+              "mean_cie76_delta_e": 38.00999,
+              "union_pixels": 262
+            },
+            {
+              "pair": [
+                "direct_disciple",
+                "deacon"
+              ],
+              "labels": [
+                "亲传",
+                "执事"
+              ],
+              "silhouette_iou": 0.701613,
+              "mean_cie76_delta_e": 37.31705,
+              "union_pixels": 248
+            },
+            {
+              "pair": [
+                "direct_disciple",
+                "elder"
+              ],
+              "labels": [
+                "亲传",
+                "长老"
+              ],
+              "silhouette_iou": 0.79,
+              "mean_cie76_delta_e": 33.798855,
+              "union_pixels": 200
+            },
+            {
+              "pair": [
+                "deacon",
+                "elder"
+              ],
+              "labels": [
+                "执事",
+                "长老"
+              ],
+              "silhouette_iou": 0.666667,
+              "mean_cie76_delta_e": 36.781529,
+              "union_pixels": 252
+            }
+          ],
+          "min_delta_e_pair": {
+            "pair": [
+              "outer_disciple",
+              "inner_disciple"
+            ],
+            "labels": [
+              "外门",
+              "内门"
+            ],
+            "silhouette_iou": 0.925373,
+            "mean_cie76_delta_e": 19.362525,
+            "union_pixels": 268
+          },
+          "max_iou_pair": {
+            "pair": [
+              "outer_disciple",
+              "inner_disciple"
+            ],
+            "labels": [
+              "外门",
+              "内门"
+            ],
+            "silhouette_iou": 0.925373,
+            "mean_cie76_delta_e": 19.362525,
+            "union_pixels": 268
+          }
+        }
+      }
+    },
+    "32": {
+      "paper": {
+        "old": {
+          "pairs": [
+            {
+              "pair": [
+                "outer_disciple",
+                "inner_disciple"
+              ],
+              "labels": [
+                "外门",
+                "内门"
+              ],
+              "silhouette_iou": 0.923868,
+              "mean_cie76_delta_e": 22.164505,
+              "union_pixels": 486
+            },
+            {
+              "pair": [
+                "outer_disciple",
+                "direct_disciple"
+              ],
+              "labels": [
+                "外门",
+                "亲传"
+              ],
+              "silhouette_iou": 0.743534,
+              "mean_cie76_delta_e": 28.80032,
+              "union_pixels": 464
+            },
+            {
+              "pair": [
+                "outer_disciple",
+                "deacon"
+              ],
+              "labels": [
+                "外门",
+                "执事"
+              ],
+              "silhouette_iou": 0.787321,
+              "mean_cie76_delta_e": 34.203588,
+              "union_pixels": 489
+            },
+            {
+              "pair": [
+                "outer_disciple",
+                "elder"
+              ],
+              "labels": [
+                "外门",
+                "长老"
+              ],
+              "silhouette_iou": 0.770386,
+              "mean_cie76_delta_e": 24.439251,
+              "union_pixels": 466
+            },
+            {
+              "pair": [
+                "inner_disciple",
+                "direct_disciple"
+              ],
+              "labels": [
+                "内门",
+                "亲传"
+              ],
+              "silhouette_iou": 0.725,
+              "mean_cie76_delta_e": 30.132847,
+              "union_pixels": 480
+            },
+            {
+              "pair": [
+                "inner_disciple",
+                "deacon"
+              ],
+              "labels": [
+                "内门",
+                "执事"
+              ],
+              "silhouette_iou": 0.764822,
+              "mean_cie76_delta_e": 33.316688,
+              "union_pixels": 506
+            },
+            {
+              "pair": [
+                "inner_disciple",
+                "elder"
+              ],
+              "labels": [
+                "内门",
+                "长老"
+              ],
+              "silhouette_iou": 0.725971,
+              "mean_cie76_delta_e": 31.070958,
+              "union_pixels": 489
+            },
+            {
+              "pair": [
+                "direct_disciple",
+                "deacon"
+              ],
+              "labels": [
+                "亲传",
+                "执事"
+              ],
+              "silhouette_iou": 0.743182,
+              "mean_cie76_delta_e": 33.640444,
+              "union_pixels": 440
+            },
+            {
+              "pair": [
+                "direct_disciple",
+                "elder"
+              ],
+              "labels": [
+                "亲传",
+                "长老"
+              ],
+              "silhouette_iou": 0.790524,
+              "mean_cie76_delta_e": 32.474429,
+              "union_pixels": 401
+            },
+            {
+              "pair": [
+                "deacon",
+                "elder"
+              ],
+              "labels": [
+                "执事",
+                "长老"
+              ],
+              "silhouette_iou": 0.767494,
+              "mean_cie76_delta_e": 37.120464,
+              "union_pixels": 443
+            }
+          ],
+          "min_delta_e_pair": {
+            "pair": [
+              "outer_disciple",
+              "inner_disciple"
+            ],
+            "labels": [
+              "外门",
+              "内门"
+            ],
+            "silhouette_iou": 0.923868,
+            "mean_cie76_delta_e": 22.164505,
+            "union_pixels": 486
+          },
+          "max_iou_pair": {
+            "pair": [
+              "outer_disciple",
+              "inner_disciple"
+            ],
+            "labels": [
+              "外门",
+              "内门"
+            ],
+            "silhouette_iou": 0.923868,
+            "mean_cie76_delta_e": 22.164505,
+            "union_pixels": 486
+          }
+        },
+        "new": {
+          "pairs": [
+            {
+              "pair": [
+                "outer_disciple",
+                "inner_disciple"
+              ],
+              "labels": [
+                "外门",
+                "内门"
+              ],
+              "silhouette_iou": 0.92437,
+              "mean_cie76_delta_e": 29.052754,
+              "union_pixels": 476
+            },
+            {
+              "pair": [
+                "outer_disciple",
+                "direct_disciple"
+              ],
+              "labels": [
+                "外门",
+                "亲传"
+              ],
+              "silhouette_iou": 0.732456,
+              "mean_cie76_delta_e": 49.859369,
+              "union_pixels": 456
+            },
+            {
+              "pair": [
+                "outer_disciple",
+                "deacon"
+              ],
+              "labels": [
+                "外门",
+                "执事"
+              ],
+              "silhouette_iou": 0.866667,
+              "mean_cie76_delta_e": 45.424192,
+              "union_pixels": 480
+            },
+            {
+              "pair": [
+                "outer_disciple",
+                "elder"
+              ],
+              "labels": [
+                "外门",
+                "长老"
+              ],
+              "silhouette_iou": 0.715556,
+              "mean_cie76_delta_e": 42.771055,
+              "union_pixels": 450
+            },
+            {
+              "pair": [
+                "inner_disciple",
+                "direct_disciple"
+              ],
+              "labels": [
+                "内门",
+                "亲传"
+              ],
+              "silhouette_iou": 0.716102,
+              "mean_cie76_delta_e": 50.325031,
+              "union_pixels": 472
+            },
+            {
+              "pair": [
+                "inner_disciple",
+                "deacon"
+              ],
+              "labels": [
+                "内门",
+                "执事"
+              ],
+              "silhouette_iou": 0.832,
+              "mean_cie76_delta_e": 44.761368,
+              "union_pixels": 500
+            },
+            {
+              "pair": [
+                "inner_disciple",
+                "elder"
+              ],
+              "labels": [
+                "内门",
+                "长老"
+              ],
+              "silhouette_iou": 0.685106,
+              "mean_cie76_delta_e": 44.588633,
+              "union_pixels": 470
+            },
+            {
+              "pair": [
+                "direct_disciple",
+                "deacon"
+              ],
+              "labels": [
+                "亲传",
+                "执事"
+              ],
+              "silhouette_iou": 0.706263,
+              "mean_cie76_delta_e": 47.020029,
+              "union_pixels": 463
+            },
+            {
+              "pair": [
+                "direct_disciple",
+                "elder"
+              ],
+              "labels": [
+                "亲传",
+                "长老"
+              ],
+              "silhouette_iou": 0.780749,
+              "mean_cie76_delta_e": 45.816917,
+              "union_pixels": 374
+            },
+            {
+              "pair": [
+                "deacon",
+                "elder"
+              ],
+              "labels": [
+                "执事",
+                "长老"
+              ],
+              "silhouette_iou": 0.678261,
+              "mean_cie76_delta_e": 45.691187,
+              "union_pixels": 460
+            }
+          ],
+          "min_delta_e_pair": {
+            "pair": [
+              "outer_disciple",
+              "inner_disciple"
+            ],
+            "labels": [
+              "外门",
+              "内门"
+            ],
+            "silhouette_iou": 0.92437,
+            "mean_cie76_delta_e": 29.052754,
+            "union_pixels": 476
+          },
+          "max_iou_pair": {
+            "pair": [
+              "outer_disciple",
+              "inner_disciple"
+            ],
+            "labels": [
+              "外门",
+              "内门"
+            ],
+            "silhouette_iou": 0.92437,
+            "mean_cie76_delta_e": 29.052754,
+            "union_pixels": 476
+          }
+        }
+      },
+      "qingyun_center": {
+        "old": {
+          "pairs": [
+            {
+              "pair": [
+                "outer_disciple",
+                "inner_disciple"
+              ],
+              "labels": [
+                "外门",
+                "内门"
+              ],
+              "silhouette_iou": 0.923868,
+              "mean_cie76_delta_e": 21.855875,
+              "union_pixels": 486
+            },
+            {
+              "pair": [
+                "outer_disciple",
+                "direct_disciple"
+              ],
+              "labels": [
+                "外门",
+                "亲传"
+              ],
+              "silhouette_iou": 0.743534,
+              "mean_cie76_delta_e": 30.187609,
+              "union_pixels": 464
+            },
+            {
+              "pair": [
+                "outer_disciple",
+                "deacon"
+              ],
+              "labels": [
+                "外门",
+                "执事"
+              ],
+              "silhouette_iou": 0.787321,
+              "mean_cie76_delta_e": 34.674023,
+              "union_pixels": 489
+            },
+            {
+              "pair": [
+                "outer_disciple",
+                "elder"
+              ],
+              "labels": [
+                "外门",
+                "长老"
+              ],
+              "silhouette_iou": 0.770386,
+              "mean_cie76_delta_e": 26.118619,
+              "union_pixels": 466
+            },
+            {
+              "pair": [
+                "inner_disciple",
+                "direct_disciple"
+              ],
+              "labels": [
+                "内门",
+                "亲传"
+              ],
+              "silhouette_iou": 0.725,
+              "mean_cie76_delta_e": 31.827778,
+              "union_pixels": 480
+            },
+            {
+              "pair": [
+                "inner_disciple",
+                "deacon"
+              ],
+              "labels": [
+                "内门",
+                "执事"
+              ],
+              "silhouette_iou": 0.764822,
+              "mean_cie76_delta_e": 33.740035,
+              "union_pixels": 506
+            },
+            {
+              "pair": [
+                "inner_disciple",
+                "elder"
+              ],
+              "labels": [
+                "内门",
+                "长老"
+              ],
+              "silhouette_iou": 0.725971,
+              "mean_cie76_delta_e": 32.929454,
+              "union_pixels": 489
+            },
+            {
+              "pair": [
+                "direct_disciple",
+                "deacon"
+              ],
+              "labels": [
+                "亲传",
+                "执事"
+              ],
+              "silhouette_iou": 0.743182,
+              "mean_cie76_delta_e": 35.551213,
+              "union_pixels": 440
+            },
+            {
+              "pair": [
+                "direct_disciple",
+                "elder"
+              ],
+              "labels": [
+                "亲传",
+                "长老"
+              ],
+              "silhouette_iou": 0.790524,
+              "mean_cie76_delta_e": 32.778021,
+              "union_pixels": 401
+            },
+            {
+              "pair": [
+                "deacon",
+                "elder"
+              ],
+              "labels": [
+                "执事",
+                "长老"
+              ],
+              "silhouette_iou": 0.767494,
+              "mean_cie76_delta_e": 37.361665,
+              "union_pixels": 443
+            }
+          ],
+          "min_delta_e_pair": {
+            "pair": [
+              "outer_disciple",
+              "inner_disciple"
+            ],
+            "labels": [
+              "外门",
+              "内门"
+            ],
+            "silhouette_iou": 0.923868,
+            "mean_cie76_delta_e": 21.855875,
+            "union_pixels": 486
+          },
+          "max_iou_pair": {
+            "pair": [
+              "outer_disciple",
+              "inner_disciple"
+            ],
+            "labels": [
+              "外门",
+              "内门"
+            ],
+            "silhouette_iou": 0.923868,
+            "mean_cie76_delta_e": 21.855875,
+            "union_pixels": 486
+          }
+        },
+        "new": {
+          "pairs": [
+            {
+              "pair": [
+                "outer_disciple",
+                "inner_disciple"
+              ],
+              "labels": [
+                "外门",
+                "内门"
+              ],
+              "silhouette_iou": 0.92437,
+              "mean_cie76_delta_e": 28.339979,
+              "union_pixels": 476
+            },
+            {
+              "pair": [
+                "outer_disciple",
+                "direct_disciple"
+              ],
+              "labels": [
+                "外门",
+                "亲传"
+              ],
+              "silhouette_iou": 0.732456,
+              "mean_cie76_delta_e": 49.678789,
+              "union_pixels": 456
+            },
+            {
+              "pair": [
+                "outer_disciple",
+                "deacon"
+              ],
+              "labels": [
+                "外门",
+                "执事"
+              ],
+              "silhouette_iou": 0.866667,
+              "mean_cie76_delta_e": 44.652222,
+              "union_pixels": 480
+            },
+            {
+              "pair": [
+                "outer_disciple",
+                "elder"
+              ],
+              "labels": [
+                "外门",
+                "长老"
+              ],
+              "silhouette_iou": 0.715556,
+              "mean_cie76_delta_e": 44.013736,
+              "union_pixels": 450
+            },
+            {
+              "pair": [
+                "inner_disciple",
+                "direct_disciple"
+              ],
+              "labels": [
+                "内门",
+                "亲传"
+              ],
+              "silhouette_iou": 0.716102,
+              "mean_cie76_delta_e": 50.698547,
+              "union_pixels": 472
+            },
+            {
+              "pair": [
+                "inner_disciple",
+                "deacon"
+              ],
+              "labels": [
+                "内门",
+                "执事"
+              ],
+              "silhouette_iou": 0.832,
+              "mean_cie76_delta_e": 43.646009,
+              "union_pixels": 500
+            },
+            {
+              "pair": [
+                "inner_disciple",
+                "elder"
+              ],
+              "labels": [
+                "内门",
+                "长老"
+              ],
+              "silhouette_iou": 0.685106,
+              "mean_cie76_delta_e": 46.109698,
+              "union_pixels": 470
+            },
+            {
+              "pair": [
+                "direct_disciple",
+                "deacon"
+              ],
+              "labels": [
+                "亲传",
+                "执事"
+              ],
+              "silhouette_iou": 0.706263,
+              "mean_cie76_delta_e": 47.242141,
+              "union_pixels": 463
+            },
+            {
+              "pair": [
+                "direct_disciple",
+                "elder"
+              ],
+              "labels": [
+                "亲传",
+                "长老"
+              ],
+              "silhouette_iou": 0.780749,
+              "mean_cie76_delta_e": 44.154879,
+              "union_pixels": 374
+            },
+            {
+              "pair": [
+                "deacon",
+                "elder"
+              ],
+              "labels": [
+                "执事",
+                "长老"
+              ],
+              "silhouette_iou": 0.678261,
+              "mean_cie76_delta_e": 45.93293,
+              "union_pixels": 460
+            }
+          ],
+          "min_delta_e_pair": {
+            "pair": [
+              "outer_disciple",
+              "inner_disciple"
+            ],
+            "labels": [
+              "外门",
+              "内门"
+            ],
+            "silhouette_iou": 0.92437,
+            "mean_cie76_delta_e": 28.339979,
+            "union_pixels": 476
+          },
+          "max_iou_pair": {
+            "pair": [
+              "outer_disciple",
+              "inner_disciple"
+            ],
+            "labels": [
+              "外门",
+              "内门"
+            ],
+            "silhouette_iou": 0.92437,
+            "mean_cie76_delta_e": 28.339979,
+            "union_pixels": 476
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "version": "v0.5",
+  "enabled": false,
+  "offers": [
+    {
+      "id": "donate_tianjian_iron",
+      "sect": "tianjian",
+      "npc": "tianjian_envoy_sect",
+      "item": "iron_essence",
+      "reqRank": "outer_disciple",
+      "enabled": false,
+      "count": 10,
+      "rewards": {
+        "sectContribution": 50
+      },
+      "dailyLimit": 2,
+      "balanceTodo": []
+    },
+    {
+      "id": "donate_taixu_herb",
+      "sect": "taixu",
+      "npc": "taixu_envoy",
+      "item": "spirit_herb",
+      "reqRank": "outer_disciple",
+      "enabled": false,
+      "count": 12,
+      "rewards": {
+        "sectContribution": 48
+      },
+      "dailyLimit": 2,
+      "balanceTodo": []
+    },
+    {
+      "id": "donate_lingfu_ink",
+      "sect": "lingfu",
+      "npc": "lingfu_envoy",
+      "item": "spirit_ink",
+      "reqRank": "outer_disciple",
+      "enabled": false,
+      "count": 16,
+      "rewards": {
+        "sectContribution": 48
+      },
+      "dailyLimit": 2,
+      "balanceTodo": []
+    },
+    {
+      "id": "donate_youying_herb",
+      "sect": "youying",
+      "npc": "youying_envoy",
+      "item": "spirit_herb",
+      "reqRank": "outer_disciple",
+      "enabled": false,
+      "count": 12,
+      "rewards": {
+        "sectContribution": 48
+      },
+      "dailyLimit": 2,
+      "balanceTodo": []
+    },
+    {
+      "id": "donate_wanshou_herb",
+      "sect": "wanshou",
+      "npc": "wanshou_envoy",
+      "item": "spirit_herb",
+      "reqRank": "outer_disciple",
+      "enabled": false,
+      "count": 12,
+      "rewards": {
+        "sectContribution": 48
+      },
+      "dailyLimit": 2,
+      "balanceTodo": []
+    }
+  ]
+}

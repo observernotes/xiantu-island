@@ -1,0 +1,41 @@
+{
+  "version": "v0.5",
+  "enabled": false,
+  "unlock": {"realmMin": "foundation"},
+  "rules": {
+    "attribute": "spirit",
+    "action": "spirit_scan",
+    "cooldownClock": "real_time",
+    "rangeShape": "circle",
+    "occlusion": "ignore_terrain",
+    "repeatReveal": "keep_state"
+  },
+  "scan": {
+    "radiusBasePx": 1280,
+    "radiusPerSpiritPx": 4,
+    "radiusMaxPx": 2560,
+    "mpCost": 8,
+    "cooldownMs": 12000
+  },
+  "reveal": {"highlightMs": 6000},
+  "inspect": {"durationMs": 12000},
+  "visual": {
+    "waveSprite": "fx_spirit_scan_wave",
+    "waveAnim": "fx_spirit_scan_wave_play",
+    "revealSprite": "fx_spirit_scan_reveal",
+    "revealAnim": "fx_spirit_scan_reveal_play"
+  },
+  "balanceTodo": [],
+  "targetProfiles": [
+    {"id": "sense_hidden_chest", "kind": "chest", "enabled": false,
+      "reqSpirit": 0, "balanceTodo": []},
+    {"id": "sense_hidden_platform", "kind": "platform", "enabled": false,
+      "reqSpirit": 10, "balanceTodo": []},
+    {"id": "sense_monster_basic", "kind": "monster_info", "enabled": false,
+      "reqSpirit": 0, "balanceTodo": []}
+  ],
+  "future": {
+    "weakness": {"enabled": false, "damageBonusRatio": 0.15, "durationMs": 6000,
+      "balanceTodo": []}
+  }
+}

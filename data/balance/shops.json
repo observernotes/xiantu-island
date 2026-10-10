@@ -8,5 +8,129 @@
  "doctor_sun": [
   "hp_pill_small",
   "qi_pill"
+ ],
+ "tianjian_envoy_sect": [
+  {
+   "item": "hp_pill_small",
+   "reqRank": "outer_disciple",
+   "costContribution": 8,
+   "enabled": false,
+   "balanceTodo": []
+  },
+  {
+   "item": "clear_mind_pill",
+   "reqRank": "inner_disciple",
+   "costContribution": 30,
+   "enabled": false,
+   "balanceTodo": []
+  },
+  {
+   "item": "protect_charm",
+   "reqRank": "direct_disciple",
+   "costContribution": 400,
+   "enabled": false,
+   "balanceTodo": []
+  }
+ ],
+ "taixu_envoy": [
+  {
+   "item": "hp_pill_small",
+   "reqRank": "outer_disciple",
+   "costContribution": 8,
+   "enabled": false,
+   "balanceTodo": []
+  },
+  {
+   "item": "clear_mind_pill",
+   "reqRank": "inner_disciple",
+   "costContribution": 30,
+   "enabled": false,
+   "balanceTodo": []
+  },
+  {
+   "item": "protect_charm",
+   "reqRank": "direct_disciple",
+   "costContribution": 400,
+   "enabled": false,
+   "balanceTodo": []
+  }
+ ],
+ "lingfu_envoy": [
+  {
+   "item": "hp_pill_small",
+   "reqRank": "outer_disciple",
+   "costContribution": 8,
+   "enabled": false,
+   "balanceTodo": []
+  },
+  {
+   "item": "clear_mind_pill",
+   "reqRank": "inner_disciple",
+   "costContribution": 30,
+   "enabled": false,
+   "balanceTodo": []
+  },
+  {
+   "item": "protect_charm",
+   "reqRank": "direct_disciple",
+   "costContribution": 400,
+   "enabled": false,
+   "balanceTodo": []
+  }
+ ],
+ "youying_envoy": [
+  {
+   "item": "hp_pill_small",
+   "reqRank": "outer_disciple",
+   "costContribution": 8,
+   "enabled": false,
+   "balanceTodo": []
+  },
+  {
+   "item": "clear_mind_pill",
+   "reqRank": "inner_disciple",
+   "costContribution": 30,
+   "enabled": false,
+   "balanceTodo": []
+  },
+  {
+   "item": "protect_charm",
+   "reqRank": "direct_disciple",
+   "costContribution": 400,
+   "enabled": false,
+   "balanceTodo": []
+  }
+ ],
+ "wanshou_envoy": [
+  {
+   "item": "hp_pill_small",
+   "reqRank": "outer_disciple",
+   "costContribution": 8,
+   "enabled": false,
+   "balanceTodo": []
+  },
+  {
+   "item": "clear_mind_pill",
+   "reqRank": "inner_disciple",
+   "costContribution": 30,
+   "enabled": false,
+   "balanceTodo": []
+  },
+  {
+   "item": "protect_charm",
+   "reqRank": "direct_disciple",
+   "costContribution": 400,
+   "enabled": false,
+   "balanceTodo": []
+  }
+ ],
+ "tianjian_elder": [
+  {
+   "item": "scroll_ten_thousand_swords",
+   "reqRank": "direct_disciple",
+   "costContribution": 600,
+   "enabled": false,
+   "balanceTodo": []
+  }
  ]
 }
