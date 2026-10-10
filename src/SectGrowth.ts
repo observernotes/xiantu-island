@@ -1,5 +1,5 @@
 import { gameNow } from './GameClock';
-import { ITEMS, NPCS, REALMS, SECT_RANKS, SECT_DONATIONS, SHOPS, inPhase, t, type ItemDef, type NpcDef, type SectRankDef, type SectRanksConfig, type SectShopGood, type ShopEntry, type SectDonationsConfig, type SectDonationOffer } from './data';
+import { ITEMS, NPCS, REALMS, RECIPES, SECT_RANKS, SECT_DONATIONS, SHOPS, inPhase, t, type ItemDef, type NpcDef, type RecipeDef, type SectRankDef, type SectRanksConfig, type SectShopGood, type ShopEntry, type SectDonationsConfig, type SectDonationOffer } from './data';
 import { SKILLS, type SkillDef } from './skills';
 import { dailyQuestDay } from './DailyQuests';
 import type { Progress } from './Progress';
@@ -15,6 +15,7 @@ export interface SectGrowthConfig {
   items: Record<string, ItemDef>;
   realms: { id: string; name: string; levelMin: number }[];
   skills: Record<string, SkillDef>;
+  recipes: Record<string, RecipeDef>;
 }
 export interface SectGrowthReceipt { kind: 'donation' | 'shop' | 'shop_sale' | 'promotion'; sect: string; sourceId: string; day: string }
 export interface SectGrowthState {
@@ -45,6 +46,10 @@ export interface OrdinaryShopEntry extends SectGrowthResult { itemId: string; na
 export interface OrdinaryShopCatalog extends SectGrowthResult { entries: OrdinaryShopEntry[] }
 export interface OrdinarySellEntry extends OrdinaryShopEntry { count: number }
 export interface OrdinarySellCatalog extends SectGrowthResult { entries: OrdinarySellEntry[] }
+export interface RecipeShopEntry extends SectGrowthResult {
+  recipeId: string; name: string; price: number; reqLevel: number; learned: boolean;
+}
+export interface RecipeShopCatalog extends SectGrowthResult { entries: RecipeShopEntry[] }
 
 function freeze<T>(value: T): DeepReadonly<T> {
   if (value && typeof value === 'object') {
@@ -55,9 +60,10 @@ function freeze<T>(value: T): DeepReadonly<T> {
 }
 // 冻结独立副本，既有职业/任务消费者仍可使用原表；测试只注入内存配置。
 export const SECT_GROWTH_CONFIG: DeepReadonly<SectGrowthConfig> = freeze(JSON.parse(JSON.stringify({
-  ranks: SECT_RANKS, npcs: NPCS, shops: SHOPS, donations: SECT_DONATIONS, items: ITEMS, realms: REALMS, skills: SKILLS,
+  ranks: SECT_RANKS, npcs: NPCS, shops: SHOPS, donations: SECT_DONATIONS, items: ITEMS, realms: REALMS, skills: SKILLS, recipes: RECIPES,
 })));
 const V05_RANKS = ['outer_disciple', 'inner_disciple', 'direct_disciple'] as const;
+const PHASE1_RECIPE_SHOP = ['recipe_clear_mind', 'recipe_foundation'] as const;
 const SERVICE_CONFIG: Record<SectServiceType, string> = { sect_promotion: 'sect_ranks', sect_shop: 'shops', sect_library: 'shops', sect_donation: 'sect_donations' };
 const SERVICE_FEATURE: Record<SectServiceType, FeatureName> = {
   sect_promotion: 'sectRanks', sect_shop: 'sectShopLibrary', sect_library: 'sectShopLibrary', sect_donation: 'sectDonations',
@@ -198,6 +204,7 @@ export class SectGrowth {
       rank: this.prog.sectRank, contribution: this.prog.sectContribution,
       stones: this.prog.stones,
       inventory: { ...this.prog.inventory }, state: this.prog.sectGrowthState,
+      learnedRecipes: [...this.prog.learnedRecipes],
       qualities: Object.fromEntries(Object.entries(this.prog.pillQualities).map(([id, counts]) => [id, { ...counts }])),
     };
     this.busy = true;
@@ -215,6 +222,7 @@ export class SectGrowth {
         this.prog.stones = previous.stones;
         this.prog.inventory = previous.inventory; this.prog.sectGrowthState = previous.state;
         this.prog.pillQualities = previous.qualities;
+        this.prog.learnedRecipes = previous.learnedRecipes;
       }
       this.busy = false;
     }
@@ -366,6 +374,46 @@ export class SectGrowth {
       this.prog.stones -= total;
       this.prog.addItem(itemId, count);
       return this.prog.count(itemId) === before + count;
+    }, key);
+  }
+
+  private recipeAccess(npcId: string): SectGrowthResult {
+    if (!featureEnabled('alchemyPhase1')) return { ok: false, key: FEATURE_UNAVAILABLE };
+    const access = this.ordinaryAccess(npcId);
+    return access.ok && npcId !== 'doctor_sun' ? { ok: false, key: 'sect.ui.closed' } : access;
+  }
+
+  /** 一期丹方独立于物品货架，价格与购买等级只读 recipes；购买直接学会，不进入背包。 */
+  recipeCatalog(npcId: string): RecipeShopCatalog {
+    const access = this.recipeAccess(npcId);
+    if (!access.ok) return { ...access, entries: [] };
+    const entries = PHASE1_RECIPE_SHOP.flatMap(recipeId => {
+      const recipe = this.config.recipes[recipeId], output = recipe && this.config.items[recipe.output];
+      if (!recipe || recipe.id !== recipeId || recipe.type || !inPhase(recipe)
+        || !integer(recipe.price) || !positive(recipe.reqLevel)
+        || !output || !inPhase(output) || output.enabled === false || output.placeholder === true) return [];
+      const learned = this.prog.learnedRecipes.includes(recipeId);
+      const key = learned ? 'alchemy.recipe.learned'
+        : !positive(this.prog.level) || this.prog.level < recipe.reqLevel ? 'alchemy.recipe.level'
+        : !integer(this.prog.stones) || this.prog.stones < recipe.price ? 'ui.shop.not_enough' : '';
+      return [{ recipeId, name: recipe.name, price: recipe.price, reqLevel: recipe.reqLevel, learned, ok: !key, key }];
+    });
+    return entries.length ? { ok: true, key: '', entries } : { ...pending(), entries };
+  }
+
+  buyRecipe(npcId: string, recipeId: string, transactionId: string): SectGrowthResult {
+    const access = this.recipeAccess(npcId);
+    if (!access.ok) return access;
+    const key = 'alchemy.recipe.complete', sourceId = `${npcId}|recipe:${recipeId}`;
+    const repeated = this.repeated(transactionId, 'shop', sourceId, key);
+    if (repeated) return repeated;
+    const catalog = this.recipeCatalog(npcId);
+    if (!catalog.ok) return catalog;
+    const entry = catalog.entries.find(row => row.recipeId === recipeId);
+    if (!entry || !entry.ok) return entry ?? pending();
+    return this.settle(transactionId, { kind: 'shop', sect: this.prog.sect, sourceId, day: dailyQuestDay() }, () => {
+      this.prog.stones -= entry.price;
+      return this.prog.grantRecipe(recipeId);
     }, key);
   }
 

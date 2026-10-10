@@ -26,7 +26,7 @@ const now = new Date(2026, 9, 11, 12).getTime();
 const originalNow = Date.now;
 const originalStorage = Object.getOwnPropertyDescriptor(globalThis, 'localStorage');
 const originalFeatures = featureFlags();
-const serviceFeatures = ['shops', 'sectRanks', 'sectShopLibrary'] as const;
+const serviceFeatures = ['shops', 'sectRanks', 'sectShopLibrary', 'alchemyPhase1'] as const;
 Date.now = () => now;
 let failStorage = false, writes = 0;
 const disk: Record<string, string> = {};
@@ -69,7 +69,7 @@ function sectShelf(config: SectGrowthConfig, sectId = 'tianjian') {
 function state(p: Progress) {
   return clone({ inventory: p.inventory, permanentInventory: p.exportSave().inventory, qualities: p.pillQualities,
     stones: p.stones, contribution: p.sectContribution, rank: p.sectRank,
-    equip: p.equip, skills: p.skills, quests: p.quests, growth: p.sectGrowthState });
+    equip: p.equip, skills: p.skills, quests: p.quests, learnedRecipes: p.learnedRecipes, growth: p.sectGrowthState });
 }
 function rejected(action: () => { ok: boolean; key: string }, p: Progress, message: string, key?: string) {
   const before = state(p), diskBefore = disk[saveKey], writesBefore = writes;
@@ -149,6 +149,74 @@ try {
     rejected(() => growth.buyOrdinary('tianjian_envoy_sect', 'qi_pill', 'not-ordinary'), p, '宗门 NPC 不成为普通商店');
     rejected(() => growth.buyOrdinary('missing', 'qi_pill', 'unknown-npc'), p, '未知 NPC 不卖货');
     rejected(() => growth.sellOrdinary('missing', 'qi_pill', 'unknown-sale-npc'), p, '未知 NPC 不收货');
+  }
+
+  // 06 只规定孙郎中出售清心/筑基丹方；学习与灵石和收据一起保存。
+  {
+    const config = fixture(), p = new Progress(), growth = new SectGrowth(p, config);
+    p.level = 20; p.stones = 10000; p.save();
+    const catalog = growth.recipeCatalog('doctor_sun');
+    ok(catalog.ok, '孙郎中开放丹方目录');
+    same(catalog.entries.map(row => row.recipeId), ['recipe_clear_mind', 'recipe_foundation'], '孙郎中只售一期规定的两张丹方');
+    for (const row of catalog.entries) {
+      eq(row.price, config.recipes[row.recipeId].price, `${row.recipeId} 售价读 recipes`);
+      eq(row.reqLevel, config.recipes[row.recipeId].reqLevel, `${row.recipeId} 购买等级读 recipes`);
+    }
+    p.level = config.recipes.recipe_foundation.reqLevel - 1;
+    eq(growth.recipeCatalog('doctor_sun').entries.find(row => row.recipeId === 'recipe_foundation')?.key, 'alchemy.recipe.level', '筑基丹方差一级显示购买门槛');
+    rejected(() => growth.buyRecipe('doctor_sun', 'recipe_foundation', 'recipe-level-short'), p, '确认重新检验购买等级', 'alchemy.recipe.level');
+    p.level = 20; p.stones = config.recipes.recipe_foundation.price! - 1;
+    rejected(() => growth.buyRecipe('doctor_sun', 'recipe_foundation', 'recipe-stone-short'), p, '丹方差一灵石拒绝', 'ui.shop.not_enough');
+    p.stones = config.recipes.recipe_foundation.price!; p.save();
+    const writesBefore = writes, beforeInventory = clone(p.inventory);
+    eq(growth.buyRecipe('doctor_sun', 'recipe_foundation', 'recipe-foundation').key, 'alchemy.recipe.complete', '丹方购买返回学习完成');
+    eq(p.stones, 0, '丹方恰好售价扣至零');
+    same(p.learnedRecipes, ['recipe_foundation'], '购买直接 grantRecipe 学会');
+    same(p.inventory, beforeInventory, '丹方购买不写物品背包');
+    eq(writes - writesBefore, 1, '丹方学习/灵石/收据只保存一次');
+    eq(growth.recipeCatalog('doctor_sun').entries.find(row => row.recipeId === 'recipe_foundation')?.learned, true, '目录标记已经学会');
+    const after = state(p), writesAfter = writes;
+    eq(growth.buyRecipe('doctor_sun', 'recipe_foundation', 'recipe-foundation').repeated, true, '原购买确认重试命中收据');
+    same(state(p), after, '重试不重复扣费授方'); eq(writes, writesAfter, '重试不再写存档');
+    const loaded = Progress.load(), loadedGrowth = new SectGrowth(loaded, config);
+    eq(loadedGrowth.buyRecipe('doctor_sun', 'recipe_foundation', 'recipe-foundation').repeated, true, '读档保留丹方收据');
+    same(state(loaded), after, '丹方购买读档保持角色状态');
+    rejected(() => growth.buyRecipe('doctor_sun', 'recipe_foundation', 'recipe-already-known'), p, '新确认不重复购买已学丹方', 'alchemy.recipe.learned');
+    rejected(() => growth.buyRecipe('doctor_sun', 'recipe_clear_mind', 'recipe-foundation'), p, '收据不能改为另一张丹方');
+    rejected(() => growth.buyOrdinary('doctor_sun', 'qi_pill', 'recipe-foundation'), p, '丹方收据不能变为普通购买');
+    rejected(() => growth.buyRecipe('doctor_sun', 'recipe_hp_pill', 'recipe-tutorial'), p, '任务教学丹方不额外销售');
+    rejected(() => growth.buyRecipe('doctor_sun', 'recipe_buff_atk', 'recipe-later'), p, '后续丹方不进入一期商店');
+    rejected(() => growth.buyRecipe('grocer_wang', 'recipe_clear_mind', 'recipe-wrong-npc'), p, '普通杂货商不售孙郎中丹方');
+    eq(growth.recipeCatalog('grocer_wang').entries.length, 0, '杂货商不显示丹方目录');
+  }
+  {
+    const config = fixture(), p = new Progress(), growth = new SectGrowth(p, config);
+    p.level = 20; p.stones = 10000; p.save();
+    ok(growth.recipeCatalog('doctor_sun').entries.every(row => row.ok), '开关关闭前预览可以购买');
+    for (const feature of ['shops', 'alchemyPhase1'] as const) {
+      setFeatureFlag(feature, false);
+      eq(growth.recipeCatalog('doctor_sun').entries.length, 0, `${feature} 关闭时丹方入口目录为空`);
+      rejected(() => growth.buyRecipe('doctor_sun', 'recipe_clear_mind', `recipe-gate-${feature}`), p, `旧预览确认不能绕过 ${feature}`, FEATURE_UNAVAILABLE);
+      setFeatureFlag(feature, true);
+    }
+    failStorage = true;
+    try { rejected(() => growth.buyRecipe('doctor_sun', 'recipe_clear_mind', 'recipe-save-failure'), p, '丹方保存失败回滚学习/余额/收据', 'sect.ui.save_failed'); }
+    finally { failStorage = false; }
+    eq(p.learnedRecipes.length, 0, '保存失败不留下已学丹方');
+    const writesBefore = writes;
+    ok(growth.buyRecipe('doctor_sun', 'recipe_clear_mind', 'recipe-save-failure').ok, '丹方保存恢复后原确认可重试');
+    eq(writes - writesBefore, 1, '丹方恢复交易只保存一次');
+    same(p.learnedRecipes, ['recipe_clear_mind'], '恢复后只学会一次');
+    eq(p.stones, 10000 - config.recipes.recipe_clear_mind.price!, '恢复后按表扣一笔价格');
+  }
+  for (const field of ['price', 'reqLevel'] as const) {
+    for (const value of [null, -1, 0.5, Infinity, Number.MAX_SAFE_INTEGER + 1]) {
+      const config = fixture(), p = new Progress(); p.level = 20; p.stones = 10000;
+      Object.assign(config.recipes.recipe_clear_mind, { [field]: value });
+      const growth = new SectGrowth(p, config);
+      ok(!growth.recipeCatalog('doctor_sun').entries.some(row => row.recipeId === 'recipe_clear_mind'), `缺失/非法丹方 ${field} ${String(value)} 不展示销售`);
+      rejected(() => growth.buyRecipe('doctor_sun', 'recipe_clear_mind', `recipe-invalid-${field}-${String(value)}`), p, `缺失/非法丹方 ${field} ${String(value)} 不交易`);
+    }
   }
 
   // 永久库存可卖给普通商店，价格为 item.price 一半向下取整；不要求该物在货架。
@@ -308,7 +376,7 @@ try {
     rejected(() => new SectGrowth(outsider, config).exchange(npc, 'sect_shop', 'clear_mind_pill', 'outsider'), outsider, '未入宗不开放宗门货架');
   }
 
-  console.log(`shop.test: ${assertions} 条断言通过（普通买卖/G15/门禁/原子存档，仅内存配置与存档）`);
+  console.log(`shop.test: ${assertions} 条断言通过（普通买卖/一期丹方/G15/门禁/原子存档，仅内存配置与存档）`);
 } finally {
   for (const name of serviceFeatures) setFeatureFlag(name, originalFeatures[name]);
   Date.now = originalNow;
