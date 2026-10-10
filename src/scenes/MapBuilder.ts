@@ -4,7 +4,7 @@ import { FEEL, SPEC } from '../config/feel';
 export interface Rope { kind: 'rope' | 'ladder'; x: number; top: number; bottom: number; halfW: number; }
 export interface Spawn { x: number; y: number; w: number; monster: string; count: number; }
 export interface Zone { name: string; x: number; y: number; w: number; h: number; props: Record<string, any>; }
-export interface MapObj { type: string; name: string; x: number; y: number; props: Record<string, any>; }
+export interface MapObj { type: string; name: string; x: number; y: number; w: number; h: number; props: Record<string, any>; }
 export interface BuiltMap {
   id: string; name: string; safeZone: boolean;
   width: number; height: number;
@@ -13,6 +13,7 @@ export interface BuiltMap {
   ropes: Rope[];
   spawn: { x: number; y: number };
   spawns: Spawn[];
+  spawnGates: MapObj[];  // 命名刷怪口，保留 side / flying 等属性供召唤与试炼使用
   objects: MapObj[];   // npc / portal / chest
   zones: Zone[];
 }
@@ -23,7 +24,7 @@ function emptyMap(scene: Phaser.Scene, id: string, name: string, safe: boolean, 
   return {
     id, name, safeZone: safe, width: cols * FEEL.tile, height: rows * FEEL.tile,
     solids: scene.physics.add.staticGroup(), oneWays: scene.physics.add.staticGroup(),
-    ropes: [], spawn: { x: 64, y: 64 }, spawns: [], objects: [], zones: [],
+    ropes: [], spawn: { x: 64, y: 64 }, spawns: [], spawnGates: [], objects: [], zones: [],
   };
 }
 
@@ -127,8 +128,14 @@ export function buildTiledMap(scene: Phaser.Scene, tj: any, tileset?: string): B
           map.ropes.push(r); drawClimbable(scene, r, tileset); break;
         }
         case 'spawn': map.spawns.push({ x: o.x, y: o.y, w: o.width ?? 0, monster: p.monster, count: p.count ?? 1 }); break;
+        case 'spawnGate': {
+          const gate: MapObj = { type: o.type, name: o.name, x: o.x, y: o.y, w: o.width ?? 0, h: o.height ?? 0, props: p };
+          map.spawnGates.push(gate);
+          map.objects.push(gate);  // 现有筑基台仍按 objects 查找刷怪口
+          break;
+        }
         case 'zone': map.zones.push({ name: o.name, x: o.x, y: o.y, w: o.width, h: o.height, props: p }); break;
-        default: map.objects.push({ type: o.type, name: o.name, x: o.x, y: o.y, props: p });
+        default: map.objects.push({ type: o.type, name: o.name, x: o.x, y: o.y, w: o.width ?? 0, h: o.height ?? 0, props: p });
       }
     }
   }
@@ -146,7 +153,7 @@ export function buildCharMap(scene: Phaser.Scene, id: string, name: string, rows
     const x = c * T + T / 2, y = (r + 1) * T;
     if (ch === 'P') map.spawn = { x, y };
     if (mons[ch]) map.spawns.push({ x, y, w: 0, monster: mons[ch], count: 1 });
-    if (portals[ch]) map.objects.push({ type: 'portal', name: portals[ch].name, x, y, props: portals[ch] });
+    if (portals[ch]) map.objects.push({ type: 'portal', name: portals[ch].name, x, y, w: 0, h: 0, props: portals[ch] });
   }));
   for (let c = 0; c < cols; c++) {
     let r = 0;

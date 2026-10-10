@@ -6,7 +6,7 @@ import { QuestSystem } from '../QuestSystem';
 import { QUESTS as QUESTS_REF } from '../data';
 import { DialogBox, SkillBar, SkillWindow } from '../UI';
 import { AltarTrial, type TrialResult } from './AltarTrial';
-import { TRIALS, TRIAL_BY_MAP, REALMS, BREAKTHROUGH, inPhase, type TrialDef } from '../data';
+import { TRIALS, TRIAL_BY_MAP, REALMS, BREAKTHROUGH, SECT_SECLUSION, inPhase, type TrialDef } from '../data';
 import { preloadHud, registerHudFonts, hasHud, sliced, setSlicedWidth, HudBar, hudText, hudSpec, HUD_FONT, INK, INK_60, PAPER } from '../hud';
 import { SkillCombat } from '../SkillCombat';
 import { HOTBAR_SLOTS, SKILLS, skillsForJob } from '../skills';
@@ -36,7 +36,13 @@ interface Shot {
 const QS = typeof location !== 'undefined' ? new URLSearchParams(location.search) : new URLSearchParams();
 const DEBUG_TRIAL = QS.get('debug') === 'trial';
 /** 试炼结束后传回的位置：传功长老身边 */
-const TRIAL_RETURN = { map: 'qingyun_village', x: 1180, y: 700 };
+const TRIAL_RETURN = { map: 'tianjian_sect', x: 2476, y: 768 };
+
+/** npcs.json 目前只有通用对白，没有航线字段；等策划补表后改为读表。 */
+const FERRY_ROUTES = [
+  { label: '万妖林', map: 'wanyao_outer_1' },
+  { label: '天剑宗', map: 'tianjian_sect' },
+];
 
 const QUEST_MARK_KEYS = ['ui_hud_quest_available', 'ui_hud_quest_turnin', 'ui_hud_quest_progress'];
 
@@ -54,6 +60,7 @@ export class GameScene extends Phaser.Scene {
   nextPickAt = 0;
   openedChests = new Set<string>();
   breakthroughNotified = false;
+  private travelling = false;
 
   constructor() { super('game'); (window as any).__scene = this; }
 
@@ -91,6 +98,7 @@ export class GameScene extends Phaser.Scene {
     this.openedChests = this.registry.get('chests') ?? new Set();
     this.registry.set('chests', this.openedChests);
     this.mobs = []; this.logs = []; this.hudTexts = undefined; this.hudKit = undefined;
+    this.travelling = false; this.curZone = undefined;
     registerHudFonts(this);
 
     const q = new URLSearchParams(location.search).get('map');
@@ -171,7 +179,7 @@ export class GameScene extends Phaser.Scene {
     this.debugText = this.add.text(16, 200, '', { fontFamily: 'monospace', fontSize: '12px', color: '#1d2a3a', backgroundColor: '#ffffffaa', padding: { x: 6, y: 4 } }).setScrollFactor(0).setDepth(100).setVisible(false);
     this.add.text(16, 14, `${this.map.name}${this.map.safeZone ? '（安全区）' : ''}`, { fontFamily: 'sans-serif', fontSize: '18px', color: '#1d2a3a', stroke: '#ffffff', strokeThickness: 4 }).setScrollFactor(0).setDepth(100);
     this.add.text(1264, 14,
-      '方向键 移动 / ↑↓ 爬绳梯  ↑ 进传送门\nAlt / 空格 / C 跳跃（空中再按 = 二段跳）\n↓ + 跳 穿下单向平台\nCtrl / X 普攻   Z 对话 / 拾取 / 开宝箱\nA S D F G H Q W 技能   K 功法\n1 回春丹  2 回气丹  I 背包  F1 调试',
+      '方向键 移动 / ↑↓ 爬绳梯  ↑ 传送 / 上船 / 闭关\nAlt / 空格 / C 跳跃（空中再按 = 二段跳）\n↓ + 跳 穿下单向平台\nCtrl / X 普攻   Z 对话 / 拾取 / 开宝箱\nA S D F G H Q W 技能   K 功法\n1 回春丹  2 回气丹  I 背包  F1 调试',
       { fontFamily: 'sans-serif', fontSize: '13px', color: '#1d2a3a', backgroundColor: '#ffffffaa', padding: { x: 8, y: 6 }, align: 'right' })
       .setOrigin(1, 0).setScrollFactor(0).setDepth(100);
     this.dialog = new DialogBox(this);
@@ -346,8 +354,13 @@ export class GameScene extends Phaser.Scene {
     this.regenMp(delta);
     this.combat.update(time, delta);
     if (J(k.k) && !this.dialog.open) this.skillWindow.toggle();
-    if (J(k.esc) && this.skillWindow.open) this.skillWindow.close();
+    const escDown = J(k.esc);
+    if (escDown && this.skillWindow.open) this.skillWindow.close();
     if (this.dialog.open || this.skillWindow.open) {
+      if (this.dialog.open) {
+        [k.one, k.two, k.three].forEach((key, i) => { if (J(key)) this.dialog.selectChoice(i); });
+        if (escDown) this.dialog.dismissChoices();
+      }
       if (this.dialog.open && (J(k.z) || J(k.space) || J(k.up))) this.dialog.advance();
       if (this.skillWindow.open) {
         const jobs = skillsForJob(1);
@@ -392,6 +405,17 @@ export class GameScene extends Phaser.Scene {
       if (z?.props.label) this.log(`进入 ${z.props.label}`, '#ffd0ff');
       const boss = this.mobs.find(m => m.def.isBoss && !m.dead && z && m.x >= z.x && m.x <= z.x + z.w);
       if (boss && !this.bossIntroShown && z?.props.unlockQuest) { this.bossIntroShown = true; this.dialog.show(SCRIPTS[z.props.unlockQuest]?.bossIntro ?? [], null); }
+    }
+    // 独立检查教学区，重叠 zone 也能触发；对白空闲后才记入存档并弹出。
+    if (!this.dialog.open) for (const tutorialZone of this.map.zones) {
+      const id = tutorialZone.props.tutorial;
+      if (typeof id !== 'string' || !id || this.player.x < tutorialZone.x || this.player.x > tutorialZone.x + tutorialZone.w
+        || this.player.y < tutorialZone.y || this.player.y > tutorialZone.y + tutorialZone.h) continue;
+      if (!this.prog.markTutorialSeen(id)) continue;
+      const text = t(`tip.${id}`);
+      this.log(text, '#ffe680');
+      this.dialog.show([{ speaker: null, text }], null);
+      break;
     }
     this.drawHud();
   }
@@ -644,11 +668,20 @@ export class GameScene extends Phaser.Scene {
     } else if (o.type === 'chest') {
       const opened = this.openedChests.has(`${this.map.id}:${o.name}`);
       this.add.rectangle(o.x, o.y - 14, 34, 28, opened ? 0x7a5a3a : 0xd9a43a).setStrokeStyle(2, 0x5a3418).setDepth(4).setName('chest:' + o.name);
+    } else if (o.type === 'ferry' && this.textures.exists('prop_ferry_boat')) {
+      // 落霞镇的 y 是甲板面，其他停靠点的 y 是船底；图片只做演出。
+      const boat = this.add.sprite(o.x + o.w / 2, o.y + (this.map.id === 'luoxia_town' ? 96 : 0), 'prop_ferry_boat')
+        .setOrigin(0.5, 1).setDepth(3).setName(`ferry:${o.name}`);
+      if (this.anims.exists('prop_ferry_boat_idle')) boat.play('prop_ferry_boat_idle');
+    } else if (o.type === 'seclusion') {
+      this.add.text(o.x, o.y - 48, '闭关室 ↑', { fontSize: '13px', color: '#fff8d0', stroke: '#3b2a20', strokeThickness: 3 })
+        .setOrigin(0.5, 1).setDepth(4);
     }
   }
 
-  /** 传送门能否通行（规范附录 G7）：locked 永久关闭；unlockQuest 要求该任务已完成；目标地图本版本没有也视为关闭 */
+  /** G7/G8：等级先判；locked 永久关闭；任务须已完成；目标地图须已注册。 */
   portalOpen(o: { props: any }) {
+    if (this.prog.level < Number(o.props.reqLevel ?? 0)) return false;
     if (o.props.locked) return false;
     if (o.props.unlockQuest && this.quests.state(o.props.unlockQuest) !== 'done') return false;
     const tgt = o.props.target;
@@ -656,19 +689,57 @@ export class GameScene extends Phaser.Scene {
   }
 
   tryInteract(): boolean {
+    if (this.travelling) return true;
     const p = this.player;
     for (const o of this.map.objects) {
-      if (Math.abs(o.x - p.x) > 28 || Math.abs(o.y - p.y) > 40) continue;
+      const nearX = o.type === 'ferry' && o.w > 0 ? p.x >= o.x - 28 && p.x <= o.x + o.w + 28 : Math.abs(o.x - p.x) <= 28;
+      if (!nearX || Math.abs(o.y - p.y) > 40) continue;
       if (o.type === 'portal') {
+        if (this.prog.level < Number(o.props.reqLevel ?? 0)) { this.log(t('sys.portal_level', { lv: o.props.reqLevel }), '#aaaaaa'); return true; }
         if (!this.portalOpen(o)) { this.log(t('sys.portal_locked'), '#aaaaaa'); return true; }
-        this.prog.save();
-        this.cameras.main.fadeOut(200);
-        this.time.delayedCall(220, () => this.scene.restart({ map: o.props.target, portal: o.props.targetPortal }));
+        this.travelToMap(o.props.target, o.props.targetPortal);
+        return true;
+      }
+      if (o.type === 'ferry') {
+        if (o.props.returnTo) this.travelToMap(o.props.returnTo, o.props.targetPortal);
+        else if (o.props.npc) this.talkTo(o.props.npc);
+        return true;
+      }
+      if (o.type === 'seclusion') {
+        this.offerSeclusion(o);
         return true;
       }
       if (o.type === 'npc') { this.talkTo(o.props.npc ?? o.name); return true; }
     }
     return false;
+  }
+
+  private travelToMap(map: string, portal?: string) {
+    if (!TILED_MAPS[map] && map !== 'field_test') { this.log(t('sys.portal_locked'), '#aaaaaa'); return; }
+    if (this.travelling) return;
+    this.travelling = true;
+    this.player.body.setVelocityX(0);
+    this.prog.save();
+    this.cameras.main.fadeOut(200);
+    this.time.delayedCall(220, () => this.scene.restart({ map, portal }));
+  }
+
+  /** 本批只提示门槛与表中费用，不消耗贡献、不结算修为。 */
+  private offerSeclusion(o: MapObj) {
+    const config = o.props.mode === 'sect' ? SECT_SECLUSION : undefined;
+    const reqRealm = o.props.reqRealm ?? config?.unlockRealm;
+    const realm = REALMS.find(r => r.id === reqRealm);
+    let lines: { speaker: null; text: string }[];
+    if (!config || !realm || this.prog.level < realm.levelMin) {
+      lines = [{ speaker: null, text: t('sys.seclusion_locked') }];
+    } else {
+      lines = config.options.map(years => ({ speaker: null, text: t('sys.seclusion_cost', {
+        years, cost: config.contributionCost[String(years)], have: this.prog.sectContribution,
+      }) }));
+    }
+    lines.forEach(line => this.log(line.text, '#ffe680'));
+    this.player.body.setVelocityX(0);
+    this.dialog.show(lines, null);
   }
 
   // ---------------- NPC 对话与任务 ----------------
@@ -688,6 +759,14 @@ export class GameScene extends Phaser.Scene {
   talkTo(npcId: string) {
     const npc = NPCS[npcId]; if (!npc) return;
     if (this.trial || TRIAL_BY_MAP[this.map.id]) return;   // 试炼图里的长老虚影只护法，不对话
+    if (npcId === 'ferry_master') {
+      this.player.body.setVelocityX(0);
+      this.dialog.choose({ speaker: npc.name, text: npc.dialog[0] ?? '' }, npc.sprite, [
+        ...FERRY_ROUTES.map(route => ({ label: route.label, onSelect: () => this.travelToMap(route.map) })),
+        { label: t('ui.dialog.close'), onSelect: () => {} },
+      ]);
+      return;
+    }
     const offer = this.trialOfferFor(npcId);
     if (offer) { this.offerTrial(npcId, offer); return; }
     const talked = this.quests.talk(npcId);

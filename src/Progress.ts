@@ -22,6 +22,10 @@ export class Progress {
   /** 增益结束的绝对时间（Date.now），换图、刷新都还在。 */
   buffs: { id: string; expireAt: number; warned?: boolean }[] = [];
   spTipShown = false;
+  /** 每档只显示一次的地图教学 id。 */
+  tutorialsSeen: string[] = [];
+  /** 宗门闭关贡献余额；获取与扣除流程留待闭关玩法接入。 */
+  sectContribution = 0;
   /** 瓶颈期装不下的修为，全额存进来，上限 overflowCap。旧档没有这个字段，读档时补 0 */
   overflowExp = 0;
   /** 突破失败次数（保底用，成功清零） */
@@ -69,6 +73,14 @@ export class Progress {
     return p;
   }
   static reset() { try { localStorage.removeItem(SAVE_KEY); } catch { /* ignore */ } }
+
+  /** 教学首次触发就存档，换图与刷新后都不重复弹出。 */
+  markTutorialSeen(id: string): boolean {
+    if (!id || this.tutorialsSeen.includes(id)) return false;
+    this.tutorialsSeen.push(id);
+    this.save();
+    return true;
+  }
 
   private equipSum(stat: string) {
     return Object.values(this.equip).reduce((s, id) => s + (ITEMS[id]?.stats?.[stat] ?? 0), 0);
@@ -236,6 +248,10 @@ export class Progress {
     if (!this.quests || typeof this.quests !== 'object') this.quests = {};
     if (typeof this.job !== 'string') this.job = '';
     if (typeof this.spTipShown !== 'boolean') this.spTipShown = false;
+    if (!Array.isArray(this.tutorialsSeen)) this.tutorialsSeen = [];
+    this.tutorialsSeen = [...new Set(this.tutorialsSeen.filter(id => typeof id === 'string' && id.length > 0))];
+    const contribution = Number(this.sectContribution);
+    this.sectContribution = Number.isFinite(contribution) ? Math.max(0, Math.floor(contribution)) : 0;
     if (!Array.isArray(this.hotbar)) this.hotbar = [];
     while (this.hotbar.length < HOTBAR_SLOTS.length) this.hotbar.push(null);
     if (this.hotbar.length > HOTBAR_SLOTS.length) this.hotbar.length = HOTBAR_SLOTS.length;

@@ -10,6 +10,17 @@ import bamboo from '@xt/maps/bamboo_forest.json';
 import lingxi from '@xt/maps/lingxi_path.json';
 import luoxia1 from '@xt/maps/luoxia_outskirts_1.json';
 import luoxia2 from '@xt/maps/luoxia_outskirts_2.json';
+import luoxiaTown from '@xt/maps/luoxia_town.json';
+import wanyaoOuter1 from '@xt/maps/wanyao_outer_1.json';
+import wanyaoOuter2 from '@xt/maps/wanyao_outer_2.json';
+import wanyaoDeep1 from '@xt/maps/wanyao_deep_1.json';
+import wanyaoDeep2 from '@xt/maps/wanyao_deep_2.json';
+import tianjianSect from '@xt/maps/tianjian_sect.json';
+import tianjianSwordTomb from '@xt/maps/tianjian_sword_tomb.json';
+import trialTaixuStage from '@xt/maps/trial_taixu_stage.json';
+import trialLingfuRange from '@xt/maps/trial_lingfu_range.json';
+import trialYouyingVault from '@xt/maps/trial_youying_vault.json';
+import trialWanshouPen from '@xt/maps/trial_wanshou_pen.json';
 import altar from '@xt/maps/trial_foundation_altar.json';
 import breakthrough from '@xt/balance/breakthrough.json';
 
@@ -50,7 +61,16 @@ export const ITEMS: Record<string, ItemDef> = Object.fromEntries([...(items as I
 export const GROWTH = growth as any;
 export const EXP_TO_NEXT = (expCurve as any).expToNext as Record<string, number>;
 export const MAX_LEVEL = (expCurve as any).maxLevel as number;
-export const TILED_MAPS: Record<string, any> = { qingyun_village: qingyun, bamboo_forest: bamboo, lingxi_path: lingxi, luoxia_outskirts_1: luoxia1, luoxia_outskirts_2: luoxia2, trial_foundation_altar: altar };
+export const TILED_MAPS: Record<string, any> = {
+  qingyun_village: qingyun, bamboo_forest: bamboo, lingxi_path: lingxi,
+  luoxia_outskirts_1: luoxia1, luoxia_outskirts_2: luoxia2, luoxia_town: luoxiaTown,
+  trial_foundation_altar: altar,
+  wanyao_outer_1: wanyaoOuter1, wanyao_outer_2: wanyaoOuter2,
+  wanyao_deep_1: wanyaoDeep1, wanyao_deep_2: wanyaoDeep2,
+  tianjian_sect: tianjianSect, tianjian_sword_tomb: tianjianSwordTomb,
+  trial_taixu_stage: trialTaixuStage, trial_lingfu_range: trialLingfuRange,
+  trial_youying_vault: trialYouyingVault, trial_wanshou_pen: trialWanshouPen,
+};
 
 /** 境界突破关口：到这一级修为满后需要找 NPC 突破（design/02_新手任务.md 第三节） */
 export const BREAKTHROUGH_LEVELS: number[] = (realmsRaw as any[]).map(r => r.levelMax).filter((lv: number) => lv < (expCurve as any).maxLevel);
@@ -81,7 +101,16 @@ export interface AtlasInfo { key: string; kind: string; origin: [number, number]
 export const ATLAS_INFO: Record<string, AtlasInfo> = Object.fromEntries((assets.atlases as AtlasInfo[]).map(a => [a.key, a]));
 export const ATLASES: string[] = Object.keys(ATLAS_INFO);
 /** 地图对应的图块与背景区域（art/tiles/README.md） */
-export const MAP_AREA: Record<string, string> = { qingyun_village: 'qingyun', bamboo_forest: 'bamboo', lingxi_path: 'lingxi', luoxia_outskirts_1: 'luoxia', luoxia_outskirts_2: 'luoxia', trial_foundation_altar: 'altar', field_test: 'qingyun' };
+export const MAP_AREA: Record<string, string> = {
+  qingyun_village: 'qingyun', bamboo_forest: 'bamboo', lingxi_path: 'lingxi',
+  luoxia_outskirts_1: 'luoxia', luoxia_outskirts_2: 'luoxia', luoxia_town: 'luoxia',
+  trial_foundation_altar: 'altar', field_test: 'qingyun',
+  wanyao_outer_1: 'wanyao', wanyao_outer_2: 'wanyao',
+  wanyao_deep_1: 'wanyao', wanyao_deep_2: 'wanyao',
+  tianjian_sect: 'tianjian', tianjian_sword_tomb: 'tianjian',
+  trial_taixu_stage: 'taixu', trial_lingfu_range: 'lingfu',
+  trial_youying_vault: 'youying', trial_wanshou_pen: 'wanshou',
+};
 export const AREAS: string[] = assets.areas;
 
 import npcs from '@xt/balance/npcs.json';
@@ -150,8 +179,21 @@ import pacing from '@xt/balance/solo_pacing.json';
  */
 export const MP_REGEN_FRACTION_PER_5S = Number((pacing as { meditation?: { mpRegenPctPer5s?: number } }).meditation?.mpRegenPctPer5s ?? 0.03);
 
+/** 宗门闭关参数只读接入，数值由 solo_pacing.json 管理（附录 G8）。 */
+export interface SectSeclusionConfig {
+  readonly desc: string;
+  readonly unlockRealm: string;
+  readonly density: number;
+  readonly roomMul: number;
+  readonly options: readonly number[];
+  readonly contributionCost: Readonly<Record<string, number>>;
+  readonly dailyQuestContribution: number;
+  readonly maxYearsPerRealDay: number;
+}
+export const SECT_SECLUSION: Readonly<SectSeclusionConfig> = pacing.sectSeclusion;
+
 /** 当前版本所处的剧情阶段。地图 npc 对象（以后任务也一样）按 phaseMin / phaseMax 过滤，没填不限制 */
-export const GAME_PHASE = 4;
+export const GAME_PHASE = 5;
 export function inPhase(p: { phaseMin?: unknown; phaseMax?: unknown } | undefined, phase = GAME_PHASE) {
   const lo = Number(p?.phaseMin), hi = Number(p?.phaseMax);
   return !(Number.isFinite(lo) && phase < lo) && !(Number.isFinite(hi) && phase > hi);

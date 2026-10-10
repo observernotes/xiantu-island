@@ -4,6 +4,8 @@ import type { Progress } from './Progress';
 import { HOTBAR_SLOTS, SKILLS, describeSkill, skillsForJob, typeLabel } from './skills';
 import { hasHud, hudSpec, sliced, HUD_FONT, INK, INK_60, PAPER, RED, NAVY } from './hud';
 
+interface DialogChoice { label: string; onSelect: () => void; }
+
 /** 冒险岛式 NPC 对话框：底部居中，左侧头像，Z / 空格 / 回车 / ↑ 翻页 */
 export class DialogBox {
   private c!: Phaser.GameObjects.Container;
@@ -17,6 +19,8 @@ export class DialogBox {
   private onCue?: (cue: string, next: () => void) => void;
   private waiting = false;
   private kit = false;
+  private choices: DialogChoice[] = [];
+  private choiceObjects: Phaser.GameObjects.GameObject[] = [];
   open = false;
 
   constructor(private scene: Phaser.Scene) {
@@ -50,12 +54,46 @@ export class DialogBox {
   }
 
   show(lines: Line[], portraitKey: string | null, done?: () => void, onCue?: (cue: string, next: () => void) => void) {
+    this.clearChoices();
     if (!lines.length) { done?.(); return; }
     this.lines = lines; this.i = 0; this.done = done; this.onCue = onCue; this.open = true;
     if (portraitKey && this.scene.textures.exists(portraitKey)) this.portrait.setTexture(portraitKey, this.scene.textures.get(portraitKey).getFrameNames().sort()[0]).setVisible(true).setFlipX(true);
     else this.portrait.setVisible(false);
     this.c.setVisible(true);
     this.render();
+  }
+
+  /** 航线等少量选项：点击或按 1 / 2 / 3 选择，保留现有对白框。 */
+  choose(line: Line, portraitKey: string | null, choices: DialogChoice[]) {
+    this.show([line], portraitKey);
+    this.choices = choices;
+    choices.forEach((choice, i) => {
+      const x = -140 + i * 180, y = 40;
+      const bg = this.scene.add.rectangle(x, y, 170, 30, 0xece0c4).setStrokeStyle(1, 0x6b4b2a)
+        .setName(`dialog-choice:${i}`).setInteractive({ useHandCursor: true });
+      const label = this.scene.add.text(x, y, `${i + 1}. ${choice.label}`, { fontFamily: HUD_FONT, fontSize: '14px', color: INK }).setOrigin(0.5);
+      bg.on('pointerdown', () => this.selectChoice(i));
+      bg.on('pointerover', () => bg.setFillStyle(0xe0cd9e));
+      bg.on('pointerout', () => bg.setFillStyle(0xece0c4));
+      this.c.add([bg, label]); this.choiceObjects.push(bg, label);
+    });
+    this.hint.setText('点击或按数字选择 · Esc 告辞');
+  }
+
+  selectChoice(index: number) {
+    const choice = this.open ? this.choices[index] : undefined;
+    if (!choice) return;
+    this.close();
+    choice.onSelect();
+  }
+
+  dismissChoices() {
+    if (this.choices.length) this.close();
+  }
+
+  private clearChoices() {
+    this.choiceObjects.forEach(o => o.destroy());
+    this.choiceObjects = []; this.choices = [];
   }
 
   private render() {
@@ -78,6 +116,7 @@ export class DialogBox {
 
   advance() {
     if (!this.open || this.waiting) return;
+    if (this.choices.length) return;
     this.i++;
     if (this.i >= this.lines.length) { this.close(); return; }
     this.render();
@@ -85,6 +124,7 @@ export class DialogBox {
 
   close() {
     this.open = false; this.c.setVisible(false);
+    this.clearChoices();
     const d = this.done; this.done = undefined; d?.();
   }
 }

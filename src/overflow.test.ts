@@ -91,12 +91,55 @@ eq(r2.overflowFilled, true, '第一次存满');
   const yl = Progress.load(); eq(yl.realmRewards.includes('qi_refining'), false, '29 级不补筑基奖励');
 }
 
+// v0.5 存档契约：旧档补全、教学首次即保存、跨读档去重，新档独立。
+{
+  const mem: Record<string, string> = {};
+  const saveKey = 'xiantu_save_v1';
+  (globalThis as any).localStorage = {
+    getItem: (k: string) => mem[k] ?? null,
+    setItem: (k: string, v: string) => { mem[k] = String(v); },
+    removeItem: (k: string) => { delete mem[k]; },
+  };
+  const legacy = new Progress(); legacy.name = '旧档修士'; legacy.addItem('hp_pill_small', 3); legacy.save();
+  const old = JSON.parse(mem[saveKey]); delete old.tutorialsSeen; delete old.sectContribution;
+  mem[saveKey] = JSON.stringify(old);
+  const restored = Progress.load();
+  eq(restored.name, '旧档修士', '迁移保留原角色');
+  eq(restored.count('hp_pill_small'), 3, '迁移保留背包');
+  eq(JSON.stringify(restored.tutorialsSeen), '[]', '旧档补空教学记录');
+  eq(restored.sectContribution, 0, '旧档贡献默认 0');
+  eq(restored.markTutorialSeen('skill_points'), true, '首次进入教学区');
+  eq(JSON.stringify(JSON.parse(mem[saveKey]).tutorialsSeen), '["skill_points"]', '首入立即写存档');
+  const reloaded = Progress.load();
+  eq(reloaded.markTutorialSeen('skill_points'), false, '读档后同一教学不重复');
+  eq(reloaded.markTutorialSeen('other_tip'), true, '同档其他教学仍可首次触发');
+  eq(JSON.stringify(Progress.load().tutorialsSeen), '["skill_points","other_tip"]', '多条教学记录都持久化');
+  Progress.reset();
+  const newSave = Progress.load();
+  eq(newSave.markTutorialSeen('skill_points'), true, '重开新档可再次首次触发');
+  eq(Progress.load().markTutorialSeen('skill_points'), false, '新档首次记录也持久化');
+
+  // 从 JSON 读入损坏或非整数余额，保存后的余额必须仍能稳定读回。
+  for (const [raw, expected] of [['-12', 0], ['"无效"', 0], ['1e999', 0], ['null', 0], ['37.9', 37]] as const) {
+    mem[saveKey] = `{"sectContribution":${raw}}`;
+    const loaded = Progress.load();
+    eq(loaded.sectContribution, expected, `读档贡献 ${raw} 标准化`);
+    loaded.save();
+    eq(JSON.parse(mem[saveKey]).sectContribution, expected, `保存贡献 ${raw} 为有效余额`);
+    eq(Progress.load().sectContribution, expected, `再次读档贡献 ${raw} 保持一致`);
+  }
+}
+
 // phase 过滤
 eq(inPhase({}), true, '没填 phase 不限制');
-eq(inPhase({ phaseMin: 5 }), false, 'phaseMin 5 > 4 不创建');
-eq(inPhase({ phaseMax: 3 }), false, 'phaseMax 3 < 4 不创建');
-eq(inPhase({ phaseMin: 2, phaseMax: 4 }), true, '2~4 包含 4');
-eq(GAME_PHASE, 4, 'GAME_PHASE');
+eq(inPhase({ phaseMin: 5 }), true, 'phaseMin 5 在阶段 5 创建');
+eq(inPhase({ phaseMin: 6 }), false, 'phaseMin 6 > 5 不创建');
+eq(inPhase({ phaseMax: 4 }), false, 'phaseMax 4 < 5 不创建');
+eq(inPhase({ phaseMin: 2, phaseMax: 5 }), true, '2~5 包含 5');
+eq(inPhase({ phaseMin: 5 }, 4), false, '旧阶段 4 不创建 phaseMin 5');
+eq(inPhase({ phaseMax: 3 }, 4), false, '旧阶段 4 不创建 phaseMax 3');
+eq(inPhase({ phaseMin: 2, phaseMax: 4 }, 4), true, '旧阶段 4 包含在 2~4 内');
+eq(GAME_PHASE, 5, 'GAME_PHASE');
 // 境界不稳只影响 debuffStats
 {
   const u = new Progress(); u.level = 29;
