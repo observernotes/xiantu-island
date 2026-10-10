@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 
 /**
  * HUD 精修素材（art/icons/ui/hud/，README 与 hud_ui.json）。
- * 九切片 / 三切片边距、innerRect、iconOffset 一律读 hud_ui.json 和 ../ui_bar_cultivation.slices.json，不在代码里写死。
+ * 切片边距、innerRect、iconOffset 读取 HUD / 修为 / 图鉴 / 炼丹素材表。
  * 素材缺失时各调用方退回代码绘制。
  */
 export const HUD_DIR = 'art/icons/ui/hud';
@@ -15,6 +15,7 @@ const HUD_IMAGES = [
   'ui_hud_slot', 'ui_hud_slot_locked', 'ui_hud_slot_active',
   'ui_hud_quest_available', 'ui_hud_quest_turnin', 'ui_hud_quest_progress',
   'ui_hud_boss_bar_frame', 'ui_hud_boss_bar_fill', 'ui_hud_boss_nameplate',
+  'ui_hud_keycap',
 ];
 const CULT_IMAGES = ['ui_bar_cultivation_frame', 'ui_bar_cultivation', 'ui_bar_cultivation_bottleneck', 'ui_bar_cultivation_bottleneck_glow'];
 export const HUD_FONTS = ['ui_hud_font_white', 'ui_hud_font_crit', 'ui_hud_font_hurt'];
@@ -22,7 +23,13 @@ export const HUD_FONTS = ['ui_hud_font_white', 'ui_hud_font_crit', 'ui_hud_font_
 export function preloadHud(scene: Phaser.Scene) {
   scene.load.json('hud_ui', `${HUD_DIR}/hud_ui.json`);
   scene.load.json('cult_slices', 'art/icons/ui/ui_bar_cultivation.slices.json');
+  scene.load.json('bestiary_ui', 'art/icons/ui/bestiary/bestiary_ui.json');
+  scene.load.json('alchemy_ui', 'art/icons/ui/alchemy/alchemy_ui.json');
   for (const k of HUD_IMAGES) scene.load.image(k, `${HUD_DIR}/${k}.png`);
+  for (const k of ['ui_bestiary_window', 'ui_bestiary_title', 'ui_bestiary_inset', 'ui_bestiary_btn_close', 'ui_bestiary_btn_close_hover'])
+    scene.load.image(k, `art/icons/ui/bestiary/${k}.png`);
+  for (const k of ['ui_gather_castbar_frame', 'ui_gather_castbar_fill', 'icon_gather_herb', 'icon_gather_ore'])
+    scene.load.image(k, `art/icons/ui/alchemy/${k}.png`);
   for (const k of CULT_IMAGES) scene.load.image(k, `art/icons/ui/${k}.png`);
   for (const k of HUD_FONTS) { scene.load.image(k, `${HUD_DIR}/fonts/${k}.png`); scene.load.json(`${k}_data`, `${HUD_DIR}/fonts/${k}.json`); }
 }
@@ -49,15 +56,40 @@ export interface HudSpec {
   origin?: [number, number];
   contentInset?: number;
   pad?: number;
+  text?: { size?: number; bold?: boolean; color?: string; centerY?: number };
 }
 export function hudSpec(scene: Phaser.Scene, key: string): HudSpec | undefined {
-  return scene.cache.json.get('hud_ui')?.[key] ?? scene.cache.json.get('cult_slices')?.[key];
+  const raw = scene.cache.json.get('hud_ui')?.[key] ?? scene.cache.json.get('cult_slices')?.[key]
+    ?? scene.cache.json.get('bestiary_ui')?.[key] ?? scene.cache.json.get('alchemy_ui')?.[key]
+    ?? scene.cache.json.get('gather_ui')?.[key];
+  if (raw) {
+    const nine = raw.nineSlice ?? raw.slice, three = raw.threeSlice;
+    return { ...raw,
+      nineSlice: Array.isArray(nine) ? { left: nine[0], right: nine[1], top: nine[2], bottom: nine[3] } : nine,
+      threeSlice: Array.isArray(three) ? { left: three[0], right: three[1] } : three,
+    };
+  }
+  // 当前采集表只有描述字段；边距仍从 alchemy_ui.json 读，待美术补结构化记录后由上面分支接管。
+  const castbar: string | undefined = scene.cache.json.get('alchemy_ui')?.gather?.castbar;
+  if (!castbar) return undefined;
+  if (key === 'ui_gather_castbar_frame') {
+    const m = castbar.match(/9-slice\s+(\d+),(\d+),(\d+),(\d+)，(\d+)×(\d+)/);
+    const inner = castbar.match(/内区 x\+(\d+),y\+(\d+),w[−-](\d+),h[−-](\d+)/);
+    if (m) return { size: [+m[5], +m[6]], nineSlice: { left: +m[1], right: +m[2], top: +m[3], bottom: +m[4] },
+      innerRect: inner ? [+inner[1], +inner[2], +m[5] - +inner[3], +m[6] - +inner[4]] : undefined };
+  }
+  if (key === 'ui_gather_castbar_fill') {
+    const m = castbar.match(/3-slice\s+(\d+),(\d+)/);
+    const frame = hudSpec(scene, 'ui_gather_castbar_frame');
+    if (m) return { threeSlice: { left: +m[1], right: +m[2] }, size: [Number(m[1]) + Number(m[2]), frame?.innerRect?.[3] ?? 0] };
+  }
+  return undefined;
 }
 export function hasHud(scene: Phaser.Scene, key: string) { return scene.textures.exists(key) && !!hudSpec(scene, key); }
 
 type Sliced = Phaser.GameObjects.NineSlice | Phaser.GameObjects.Image;
 
-/** 按 hud_ui.json 的切片建一个可拉伸的件。WebGL 用 NineSlice；Canvas 退回整图拉伸 */
+/** 按素材表切片建可拉伸的件。WebGL 用 NineSlice；Canvas 退回整图拉伸。 */
 export function sliced(scene: Phaser.Scene, key: string, x: number, y: number, w: number, h: number): Sliced | null {
   const sp = hudSpec(scene, key);
   if (!scene.textures.exists(key) || !sp) return null;
