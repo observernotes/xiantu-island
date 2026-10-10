@@ -1,4 +1,4 @@
-// 先 npm run build，再 npm run test:smoke:alchemy（外层 timeout，无头 Chromium）。
+// 先 npm run build:test，再 npm run test:smoke:alchemy（外层 timeout，无头 Chromium）。
 // 只夹具等级、原料、燃料及落点；接受/采集/开炉/炼制/交付均走真实键鼠。
 // 炼制随机数固定为 0；正中线时暂停画面时钟，按下真实空格再恢复，避免 CI 调度漂移。
 // 可用 PLAYWRIGHT_MODULE / CHROMIUM_EXECUTABLE_PATH / XT_SMOKE_BASE_URL 指定本机工具或已有服务。
@@ -68,6 +68,11 @@ async function waitForMap(page, mapId) {
     try { return !window.__xt || window.__xt.getState().mapId === id; }
     catch { return false; }
   }, mapId, { timeout: 15000, polling: 50 });
+  await page.evaluate(() => {
+    if (!window.__xt) throw new Error('商店冒烟需要测试构建，请先执行 npm run build:test');
+    // 会话开关不入存档；刷新后重新开启，不修改正式 features.json。
+    window.__xt.setFlag('shops', true);
+  });
 }
 
 // Playwright 的 evaluate 没有 timeout；用宿主时钟约束整个站位步骤及失败诊断。

@@ -1,4 +1,4 @@
-// npm run build 后执行：timeout 120s node scripts/sect-growth-smoke.mjs。
+// npm run build:test 后执行：timeout 120s node scripts/sect-growth-smoke.mjs。
 // 未发布服务只在浏览器内存启用；真实配置、data/ 与系统时间保持原样。
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
@@ -56,6 +56,11 @@ async function sceneReady(page) {
     const s = window.__scene;
     return s?.map?.id === 'tianjian_sect' && s.player?.active && s.dialog && s.quests && s.sectGrowth;
   }, null, { timeout: 15000 });
+  await page.evaluate(() => {
+    if (!window.__xt) throw new Error('宗门服务冒烟需要测试构建，请先执行 npm run build:test');
+    // 会话开关不入存档；每次刷新仅在测试页面内重新开启。
+    for (const feature of ['shops', 'sectRanks', 'sectShopLibrary', 'sectDonations']) window.__xt.setFlag(feature, true);
+  });
   await page.waitForTimeout(250);
 }
 async function finishDialog(page) {

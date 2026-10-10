@@ -1142,10 +1142,12 @@ export class GameScene extends Phaser.Scene {
       return;
     }
     const dailyIds = this.quests.npcDailyQuestIds(npcId);
-    const services = this.sectGrowth.services(npcId).filter(service => featureEnabled(service.type === 'sect_promotion'
-      ? 'sectRanks' : service.type === 'sect_donation' ? 'sectDonations' : 'sectShopLibrary'));
+    const services = this.sectGrowth.services(npcId).filter(service => (service.type !== 'sect_shop' || featureEnabled('shops'))
+      && featureEnabled(service.type === 'sect_promotion'
+        ? 'sectRanks' : service.type === 'sect_donation' ? 'sectDonations' : 'sectShopLibrary'));
     const ordinaryShop = this.sectGrowth.ordinaryCatalog(npcId);
-    if (!questId && !skipMenu && (dailyIds.length || services.length || ordinaryShop.entries.length)) {
+    const hasOrdinaryShop = featureEnabled('shops') && (ordinaryShop.ok || this.sectGrowth.ordinarySellCatalog(npcId).ok);
+    if (!questId && !skipMenu && (dailyIds.length || services.length || hasOrdinaryShop)) {
       this.player.body.setVelocityX(0);
       const ordinaryIds = this.quests.npcQuestIds(npcId).filter(id => QUESTS_REF[id] && !QUESTS_REF[id].daily
         && (this.quests.available(id) || this.quests.isActive(id)));
@@ -1164,7 +1166,7 @@ export class GameScene extends Phaser.Scene {
           reason: service.allowed ? undefined : t(service.key),
           onSelect: () => service.type === 'sect_promotion' ? this.openSectPromotion(npcId)
             : service.type === 'sect_donation' ? this.openSectDonations(npcId) : this.openSectCatalog(npcId, service.type) })),
-        ...(ordinaryShop.entries.length ? [{ label: t('ui.shop.menu'), onSelect: () => this.openOrdinaryShop(npcId) }] : []),
+        ...(hasOrdinaryShop ? [{ label: t('ui.shop.menu'), onSelect: () => this.openOrdinaryShop(npcId) }] : []),
         ...(!dailyIds.length ? [{ label: t('ui.dialog.next'), onSelect: () => this.talkTo(npcId, undefined, true) }] : []),
         { label: t('ui.dialog.close'), onSelect: () => {} },
       ], services.length ? this.sectRankBadgeKey() : undefined);
@@ -1242,7 +1244,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   openSectCatalog(npcId: string, service: 'sect_shop' | 'sect_library') {
-    if (!this.requireFeature('sectShopLibrary', npcId)) return;
+    if (!this.requireFeature('sectShopLibrary', npcId) || (service === 'sect_shop' && !this.requireFeature('shops', npcId))) return;
     const npc = NPCS[npcId]; if (!npc) return;
     const catalog = this.sectGrowth.catalog(npcId, service);
     const prefix = service === 'sect_library' ? 'sect.library' : 'sect.shop';
@@ -1255,11 +1257,11 @@ export class GameScene extends Phaser.Scene {
       return { label: rankLabel ? `${entry.name}（${rankLabel}）` : entry.name, rankIcon: rankLabel ? this.sectRankBadgeKey(entry.reqRank) : undefined, disabled: !entry.ok,
         reason: [preview, entry.ok ? '' : t(entry.key, { rank: entry.rankName })].filter(Boolean).join('\n'),
         onSelect: () => {
-          if (!this.requireFeature('sectShopLibrary', npcId)) return;
+          if (!this.requireFeature('sectShopLibrary', npcId) || (service === 'sect_shop' && !this.requireFeature('shops', npcId))) return;
           const transactionId = newSectTransactionId();
           this.dialog.choose({ speaker: npc.name, text: this.sectOverview() }, npc.sprite, [
             { label: t('sect.ui.confirm'), rankIcon: rankLabel ? this.sectRankBadgeKey(entry.reqRank) : undefined, reason: preview, onSelect: () => {
-              if (!this.requireFeature('sectShopLibrary', npcId)) return;
+              if (!this.requireFeature('sectShopLibrary', npcId) || (service === 'sect_shop' && !this.requireFeature('shops', npcId))) return;
               const current = this.sectGrowth.catalog(npcId, service).entries.find(row => row.itemId === entry.itemId);
               if (current && (current.costContribution !== entry.costContribution || current.reqRank !== entry.reqRank)) {
                 this.openSectCatalog(npcId, service); return;
@@ -1276,26 +1278,38 @@ export class GameScene extends Phaser.Scene {
     this.dialog.choose({ speaker: npc.name, text: `${this.sectOverview()}\n${t(`${prefix}.menu`)}` }, npc.sprite, choices, this.sectRankBadgeKey());
   }
 
-  openOrdinaryShop(npcId: string) {
+  /** UI-5 前先复用对白选项；每次确认只购买或出售一件。 */
+  openOrdinaryShop(npcId: string, mode: 'buy' | 'sell' = 'buy') {
+    if (!this.requireFeature('shops', npcId)) return;
     const npc = NPCS[npcId]; if (!npc) return;
-    const catalog = this.sectGrowth.ordinaryCatalog(npcId);
+    const selling = mode === 'sell';
+    const catalog = selling ? this.sectGrowth.ordinarySellCatalog(npcId) : this.sectGrowth.ordinaryCatalog(npcId);
     const choices: DialogChoice[] = catalog.entries.map(entry => {
-      const preview = t('ui.shop.confirm', { item: entry.name, price: entry.price });
-      return { label: entry.name, disabled: !entry.ok, reason: entry.ok ? preview : t(entry.key), onSelect: () => {
+      const preview = t(selling ? 'ui.shop.sell_confirm' : 'ui.shop.confirm', { item: entry.name, price: entry.price });
+      const count = 'count' in entry ? entry.count : undefined;
+      return { label: selling ? `${entry.name} ×${count}` : entry.name, disabled: !entry.ok, reason: entry.ok ? preview : t(entry.key), onSelect: () => {
+        if (!this.requireFeature('shops', npcId)) return;
         const transactionId = newSectTransactionId();
         this.dialog.choose({ speaker: npc.name, text: preview }, npc.sprite, [
           { label: t('sect.ui.confirm'), reason: preview, onSelect: () => {
-            const current = this.sectGrowth.ordinaryCatalog(npcId).entries.find(row => row.itemId === entry.itemId);
-            if (current && current.price !== entry.price) { this.openOrdinaryShop(npcId); return; }
-            this.sectResult(npcId, this.sectGrowth.buyOrdinary(npcId, entry.itemId, transactionId), { item: entry.name });
+            if (!this.requireFeature('shops', npcId)) return;
+            const currentCatalog = selling ? this.sectGrowth.ordinarySellCatalog(npcId) : this.sectGrowth.ordinaryCatalog(npcId);
+            const current = currentCatalog.entries.find(row => row.itemId === entry.itemId);
+            if (!current || current.price !== entry.price || (selling && 'count' in current && current.count !== count)) {
+              this.openOrdinaryShop(npcId, mode); return;
+            }
+            const result = selling ? this.sectGrowth.sellOrdinary(npcId, entry.itemId, transactionId)
+              : this.sectGrowth.buyOrdinary(npcId, entry.itemId, transactionId);
+            this.sectResult(npcId, result, { item: entry.name, price: entry.price });
           } },
-          { label: t('sect.ui.cancel'), onSelect: () => this.openOrdinaryShop(npcId) },
+          { label: t('sect.ui.cancel'), onSelect: () => this.openOrdinaryShop(npcId, mode) },
         ]);
       } };
     });
     if (!choices.length) choices.push({ label: t(catalog.key || 'sect.ui.config_pending'), disabled: true, onSelect: () => {} });
+    choices.push({ label: t(selling ? 'ui.shop.buy' : 'ui.shop.sell'), onSelect: () => this.openOrdinaryShop(npcId, selling ? 'buy' : 'sell') });
     choices.push({ label: t('ui.dialog.close'), onSelect: () => {} });
-    this.dialog.choose({ speaker: npc.name, text: t('ui.shop.menu') }, npc.sprite, choices);
+    this.dialog.choose({ speaker: npc.name, text: `${t('ui.shop.menu')} · ${t(selling ? 'ui.shop.sell' : 'ui.shop.buy')}` }, npc.sprite, choices);
   }
 
   openSectDonations(npcId: string) {
