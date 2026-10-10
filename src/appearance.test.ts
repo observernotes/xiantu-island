@@ -61,7 +61,9 @@ class Fixture {
     exists: (key: string) => this.animations.has(key),
     get: (key: string) => this.animations.get(key),
   };
+  json = new Map<string, unknown>();
   scene = {
+    cache: { json: { get: (key: string) => this.json.get(key) } },
     textures: this.textureManager,
     anims: this.animationManager,
     sys: { anims: this.animationManager },
@@ -265,6 +267,28 @@ globalThis.localStorage = {
   player.frame = { name: `${foxAtlas}_unknown_01` } as Phaser.Textures.Frame;
   changed(player, undefined, BASE_PLAYER_ATLAS, '未知静态帧');
   eq(player.frame.name, `${BASE_PLAYER_ATLAS}_idle_01`, '未知静态帧回退明确的 idle_01');
+}
+
+// 纸娃娃规则：v2 本体（192 画布 / 0.5 缩放）上不叠画布更小的旧 96 外观，只显示本体；装备数据不变，同规格重画后自动接回。
+{
+  const v2 = { frameSize: 192, displayScale: 0.5 }, v1 = { frameSize: 96 };
+  const fixture = new Fixture([BASE_PLAYER_ATLAS, ...variants, foxAtlas]);
+  fixture.json.set(`${BASE_PLAYER_ATLAS}_anims`, v2);
+  for (const key of [...variants, foxAtlas]) fixture.json.set(`${key}_anims`, v1);
+  const player = fixture.sprite(BASE_PLAYER_ATLAS, 'walk', 2);
+  for (const appearance of ['fox_robe', ...sects.map(sect => `outfit_${sect}_1`)]) {
+    eq(sync(player, appearance), false, `${appearance} 旧 96 图层不叠到 v2 本体`);
+    eq(player.texture.key, BASE_PLAYER_ATLAS, `${appearance} 只显示 v2 本体`);
+  }
+  const worn = fixture.sprite(foxAtlas, 'attack', 2);
+  changed(worn, 'fox_robe', BASE_PLAYER_ATLAS, '已穿旧狐裘遇 v2 本体退回本体');
+  fixture.json.set(`${foxAtlas}_anims`, { frameSize: [192, 192], displayScale: 0.5 });
+  changed(player, 'fox_robe', foxAtlas, '狐裘重画成同规格后自动接回');
+  fixture.json.set(`${BASE_PLAYER_ATLAS}_anims`, v1);
+  const old = fixture.sprite(BASE_PLAYER_ATLAS, 'idle', 1);
+  changed(old, `outfit_${sects[0]}_1`, variants[0], '旧 96 本体仍可叠旧外观');
+  fixture.json.set(`${variants[1]}_anims`, v2);
+  changed(fixture.sprite(BASE_PLAYER_ATLAS, 'walk', 3), `outfit_${sects[1]}_1`, variants[1], '旧 96 本体 + 新 2x 外观照 E-1 并存');
 }
 
 console.log(`appearance tests ok: ${assertions} assertions`);

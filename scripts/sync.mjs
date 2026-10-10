@@ -19,6 +19,24 @@ function copyDir(src, dst) {
 if (!manifestOnly) {
   fs.rmSync(out, { recursive: true, force: true });
   for (const sub of ['sprites', 'tiles', 'icons']) copyDir(path.join(root, 'art', sub), path.join(out, sub));
+  // 试样覆盖（art.overrides.json）：未转正的工作稿以正式 key 接入，用于在 dev/feat 上看实景；
+  // 正式目录 art/sprites 与 polished.lock 不动。转正后删掉对应条目即回到正式图，代码无需改。
+  // 三件套缺任一个则不覆盖（沿用正式图），XT_ART_OVERRIDES=0 可整体关闭（对比旧图用）。
+  const overrideFile = path.join(here, 'art.overrides.json');
+  if (fs.existsSync(overrideFile) && process.env.XT_ART_OVERRIDES !== '0') {
+    const { sprites = {} } = JSON.parse(fs.readFileSync(overrideFile, 'utf8'));
+    for (const [key, spec] of Object.entries(sprites)) {
+      if (key.startsWith('//')) continue;
+      const srcBase = path.join(root, spec.from);
+      const files = ['png', 'json', 'anims.json'].map(ext => [`${srcBase}.${ext}`, path.join(out, 'sprites', `${key}.${ext}`)]);
+      const missing = files.filter(([src]) => !fs.existsSync(src)).map(([src]) => path.relative(root, src));
+      if (missing.length) { console.warn(`[sync] 覆盖 ${key} 跳过，缺：${missing.join('、')}（沿用正式图）`); continue; }
+      const anims = JSON.parse(fs.readFileSync(files[2][0], 'utf8'));
+      if ((anims.atlas ?? key) !== key) { console.warn(`[sync] 覆盖 ${key} 跳过：anims.json atlas=${anims.atlas} 与 key 不符`); continue; }
+      for (const [src, dst] of files) fs.copyFileSync(src, dst);
+      console.log(`[sync] 覆盖 ${key} ← ${spec.from}.*（${spec.note ?? '试样'}）`);
+    }
+  }
 }
 // 素材清单：扫 art/sprites/*.anims.json 生成图集列表（含 kind、origin、bodySize）和区域列表（tiles_<区域>.png），写到 src/gen/assets.json
 const spritesDir = path.join(out, 'sprites');
