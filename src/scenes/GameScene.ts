@@ -73,6 +73,8 @@ export class GameScene extends Phaser.Scene {
   hud!: Phaser.GameObjects.Graphics;
   hudText!: Phaser.GameObjects.Text;
   debugText!: Phaser.GameObjects.Text;
+  private helpText!: Phaser.GameObjects.Text;
+  private inventoryFurnace!: Phaser.GameObjects.Text;
   logs: Phaser.GameObjects.Text[] = [];
   private logBadges = new Map<Phaser.GameObjects.Text, Phaser.GameObjects.Image>();
   nextPickAt = 0;
@@ -251,10 +253,10 @@ export class GameScene extends Phaser.Scene {
     this.sectBadge = this.add.image(0, 0, '__DEFAULT').setName('sect-rank-hud').setDisplaySize(24, 24).setScrollFactor(0).setDepth(101).setVisible(false);
     this.debugText = this.add.text(16, 200, '', { fontFamily: 'monospace', fontSize: '12px', color: '#1d2a3a', backgroundColor: '#ffffffaa', padding: { x: 6, y: 4 } }).setScrollFactor(0).setDepth(100).setVisible(false);
     this.add.text(16, 14, `${this.map.name}${this.map.safeZone ? '（安全区）' : ''}`, { fontFamily: 'sans-serif', fontSize: '18px', color: '#1d2a3a', stroke: '#ffffff', strokeThickness: 4 }).setScrollFactor(0).setDepth(100);
-    this.add.text(1264, 14,
-      '方向键 移动 / ↑↓ 爬绳梯  ↑ 传送 / 上船 / 闭关\nAlt / 空格 / C 跳跃（空中再按 = 二段跳）\n↓ + 跳 穿下单向平台\nCtrl / X 普攻   Z 对话 / 拾取 / 采集 / 开宝箱\nA S D F G H Q W 技能   K 功法  L 丹炉\n1 回春丹  2 回气丹  I 背包  F1 调试',
+    this.helpText = this.add.text(1264, 14, '',
       { fontFamily: 'sans-serif', fontSize: '13px', color: '#1d2a3a', backgroundColor: '#ffffffaa', padding: { x: 8, y: 6 }, align: 'right' })
       .setOrigin(1, 0).setScrollFactor(0).setDepth(100);
+    this.refreshHelpText();
     this.dialog = new DialogBox(this);
     this.alchemySystem = new AlchemySystem(this.prog, this.quests);
     this.alchemy = new AlchemyPanel(this, this.prog, this.alchemySystem);
@@ -267,6 +269,14 @@ export class GameScene extends Phaser.Scene {
     this.bossIntroShown = false;
     this.input.keyboard!.addKey(K.ENTER).on('down', () => this.dialog.advance());
     this.invText = this.add.text(1264, 130, '', { fontFamily: 'sans-serif', fontSize: '14px', color: '#ffffff', backgroundColor: '#1d2a3acc', padding: { x: 10, y: 8 } }).setOrigin(1, 0).setScrollFactor(0).setDepth(100).setVisible(false);
+    this.inventoryFurnace = this.add.text(1264, 130, '', { fontFamily: 'sans-serif', fontSize: '14px', color: '#ffe680',
+      backgroundColor: '#1d2a3acc', padding: { x: 10, y: 8 } }).setName('inventory:furnace')
+      .setOrigin(1, 0).setScrollFactor(0).setDepth(101).setVisible(false).setInteractive({ useHandCursor: true });
+    this.inventoryFurnace.on('pointerdown', () => {
+      const id = this.inventoryFurnace.getData('furnace');
+      if (this.invText.visible && !this.dialog.open && !this.skillWindow.open && ITEMS[id]?.toolType === 'furnace'
+        && this.prog.count(id) > 0 && this.openAlchemy(id)) this.invText.setVisible(false);
+    });
     this.gourd = this.add.image(1220, 718, 'icon_overflow_gourd_empty').setOrigin(0.5, 1).setScrollFactor(0).setDepth(103).setVisible(false).setInteractive({ useHandCursor: true });
     this.gourdTip = this.add.text(1220, 680, '', { fontFamily: 'sans-serif', fontSize: '12px', color: '#fff8e8', backgroundColor: '#1d2a3aee', padding: { x: 6, y: 3 } }).setOrigin(1, 1).setScrollFactor(0).setDepth(140).setVisible(false);
     this.gourd.on('pointerover', () => { if (this.gourd.visible) this.gourdTip.setVisible(true); });
@@ -834,6 +844,11 @@ export class GameScene extends Phaser.Scene {
   }
 
   // ---------------- 地图物件 ----------------
+  private refreshHelpText() {
+    const alchemy = featureEnabled('alchemyPhase1');
+    this.helpText?.setText(`方向键 移动 / ↑↓ 爬绳梯  ↑ 传送 / 上船 / 闭关\nAlt / 空格 / C 跳跃（空中再按 = 二段跳）\n↓ + 跳 穿下单向平台\nCtrl / X 普攻   Z 对话 / 拾取${alchemy ? ' / 采集' : ''} / 开宝箱\nA S D F G H Q W 技能   K 功法${alchemy ? '  L 丹炉' : ''}\n1 回春丹  2 回气丹  I 背包  F1 调试`);
+  }
+
   private requireFeature(name: FeatureName, npcId?: string) {
     if (featureEnabled(name)) return true;
     this.log(FEATURE_UNAVAILABLE, '#aaaaaa');
@@ -845,6 +860,8 @@ export class GameScene extends Phaser.Scene {
   /** 测试覆盖即时撤下旧回调；存档身份、材料、贡献与待炼炉次均保留。 */
   applyFeatureFlags() {
     this.dialog?.dismiss(); this.skillWindow?.close();
+    this.refreshHelpText();
+    this.inventoryFurnace?.setVisible(false);
     if (!featureEnabled('foxBoss')) {
       // 只撤下战斗，不触发死亡结算，也不改任务击杀、背包或已领取奖励。
       for (const m of this.mobs) if (m.def.id === 'demon_fox' || m.owner?.def.id === 'demon_fox') {
@@ -1146,7 +1163,8 @@ export class GameScene extends Phaser.Scene {
         ? 'sectRanks' : service.type === 'sect_donation' ? 'sectDonations' : 'sectShopLibrary'));
     const ordinaryShop = this.sectGrowth.ordinaryCatalog(npcId);
     const hasOrdinaryShop = featureEnabled('shops') && (ordinaryShop.ok || this.sectGrowth.ordinarySellCatalog(npcId).ok);
-    if (!questId && !skipMenu && (dailyIds.length || services.length || hasOrdinaryShop)) {
+    const hasRecipeShop = this.sectGrowth.recipeCatalog(npcId).ok;
+    if (!questId && !skipMenu && (dailyIds.length || services.length || hasOrdinaryShop || hasRecipeShop)) {
       this.player.body.setVelocityX(0);
       const ordinaryIds = this.quests.npcQuestIds(npcId).filter(id => QUESTS_REF[id] && !QUESTS_REF[id].daily
         && (this.quests.available(id) || this.quests.isActive(id)));
@@ -1166,6 +1184,7 @@ export class GameScene extends Phaser.Scene {
           onSelect: () => service.type === 'sect_promotion' ? this.openSectPromotion(npcId)
             : service.type === 'sect_donation' ? this.openSectDonations(npcId) : this.openSectCatalog(npcId, service.type) })),
         ...(hasOrdinaryShop ? [{ label: t('ui.shop.menu'), onSelect: () => this.openOrdinaryShop(npcId) }] : []),
+        ...(hasRecipeShop ? [{ label: '学习丹方', onSelect: () => this.openRecipeShop(npcId) }] : []),
         ...(!dailyIds.length ? [{ label: t('ui.dialog.next'), onSelect: () => this.talkTo(npcId, undefined, true) }] : []),
         { label: t('ui.dialog.close'), onSelect: () => {} },
       ], services.length ? this.sectRankBadgeKey() : undefined);
@@ -1176,7 +1195,8 @@ export class GameScene extends Phaser.Scene {
     const talked = this.quests.talk(npcId, questId);
     const after = talked.after;
     // 任务没有对白脚本时，用 NPC 的通用台词兜底
-    const intro = this.quests.isActive('q_alchemy_intro') || this.quests.available('q_alchemy_intro');
+    const intro = featureEnabled('alchemyPhase1')
+      && (this.quests.isActive('q_alchemy_intro') || this.quests.available('q_alchemy_intro'));
     const lines = talked.lines.length ? talked.lines : npcId === 'doctor_sun' && intro ? [
       { speaker: npc.name, text: '你如今入了炼气，该学学炼丹了。修仙路上，丹药就是半条命。' },
       { speaker: npc.name, text: '可先试炼回春丹：每炉用灵草二株、灵兔绒一份、灵石十枚。交付入门任务时，还须留足三株灵草。丹炉可在我这里用，学成后再送你。' },
@@ -1193,7 +1213,7 @@ export class GameScene extends Phaser.Scene {
         name: questId ? questName(QUESTS_REF[questId]) : this.quests.activeIds.map(i => questName(QUESTS_REF[i])).slice(-1)[0] ?? '',
       }), '#ffe680');
       this.prog.save();
-      if (npcId === 'doctor_sun' && this.quests.state('q_alchemy_intro')) this.openAlchemy('bronze_furnace');
+      if (npcId === 'doctor_sun' && featureEnabled('alchemyPhase1') && this.quests.state('q_alchemy_intro')) this.openAlchemy('bronze_furnace');
     }, (cue, next) => this.playCue(cue, next));
   }
 
@@ -1309,6 +1329,40 @@ export class GameScene extends Phaser.Scene {
     choices.push({ label: t(selling ? 'ui.shop.buy' : 'ui.shop.sell'), onSelect: () => this.openOrdinaryShop(npcId, selling ? 'buy' : 'sell') });
     choices.push({ label: t('ui.dialog.close'), onSelect: () => {} });
     this.dialog.choose({ speaker: npc.name, text: `${t('ui.shop.menu')} · ${t(selling ? 'ui.shop.sell' : 'ui.shop.buy')}` }, npc.sprite, choices);
+  }
+
+  /** 丹方不是背包商品；读丹方的售价/等级，购买成功直接授方。 */
+  openRecipeShop(npcId: string) {
+    if (!this.requireFeature('alchemyPhase1', npcId) || !this.requireFeature('shops', npcId)) return;
+    const npc = NPCS[npcId]; if (!npc) return;
+    const catalog = this.sectGrowth.recipeCatalog(npcId);
+    const choices: DialogChoice[] = catalog.entries.map(entry => {
+      const preview = t('ui.shop.confirm', { item: `${entry.name}丹方`, price: entry.price });
+      return { label: `${entry.name}丹方`, disabled: !entry.ok,
+        reason: entry.ok ? preview : entry.learned ? '已学会这张丹方' : this.prog.level < entry.reqLevel
+          ? `需达到 ${entry.reqLevel} 级` : t(entry.key), onSelect: () => {
+          if (!this.requireFeature('alchemyPhase1', npcId) || !this.requireFeature('shops', npcId)) return;
+          const transactionId = newSectTransactionId();
+          this.dialog.choose({ speaker: npc.name, text: preview }, npc.sprite, [
+            { label: t('sect.ui.confirm'), reason: preview, onSelect: () => {
+              if (!this.requireFeature('alchemyPhase1', npcId) || !this.requireFeature('shops', npcId)) return;
+              const current = this.sectGrowth.recipeCatalog(npcId).entries.find(row => row.recipeId === entry.recipeId);
+              if (!current || current.price !== entry.price || current.reqLevel !== entry.reqLevel) {
+                this.openRecipeShop(npcId); return;
+              }
+              const result = this.sectGrowth.buyRecipe(npcId, entry.recipeId, transactionId);
+              const fallback: Record<string, string> = { 'alchemy.recipe.complete': `已学会${entry.name}丹方`,
+                'alchemy.recipe.learned': '已学会这张丹方', 'alchemy.recipe.level': `需达到 ${entry.reqLevel} 级` };
+              this.sectResult(npcId, { ...result, key: t(result.key) === result.key ? fallback[result.key] ?? result.key : result.key },
+                { item: `${entry.name}丹方`, price: entry.price });
+            } },
+            { label: t('sect.ui.cancel'), onSelect: () => this.openRecipeShop(npcId) },
+          ]);
+        } };
+    });
+    if (!choices.length) choices.push({ label: t(catalog.key || 'ui.shop.empty'), disabled: true, onSelect: () => {} });
+    choices.push({ label: t('ui.dialog.close'), onSelect: () => {} });
+    this.dialog.choose({ speaker: npc.name, text: '学习丹方' }, npc.sprite, choices);
   }
 
   openSectDonations(npcId: string) {
@@ -1757,6 +1811,12 @@ export class GameScene extends Phaser.Scene {
       const lines = Object.entries(pr.inventory).filter(([, n]) => n > 0).map(([id, n]) => `${ITEMS[id]?.name ?? id} ×${n}`);
       this.invText.setText(['背包', `灵石 ${pr.stones}`, `武器 ${ITEMS[pr.equip.weapon]?.name ?? '无'}`, `属性 根骨 ${pr.stat('rootBone')} 身法 ${pr.stat('agility')} 悟性 ${pr.stat('insight')}`, ...lines].join('\n'));
     }
+    const furnace = Object.keys(ALCHEMY_RULES.furnace).filter(id => ITEMS[id]?.toolType === 'furnace' && pr.count(id) > 0)
+      .sort((a, b) => (ALCHEMY_RULES.furnace as Record<string, number>)[b] - (ALCHEMY_RULES.furnace as Record<string, number>)[a])[0];
+    this.inventoryFurnace.setVisible(this.invText.visible && featureEnabled('alchemyPhase1') && !!furnace
+      && !this.dialog.open && !this.skillWindow.open && !this.alchemy.isOpen());
+    if (furnace) this.inventoryFurnace.setData('furnace', furnace).setText(`使用${ITEMS[furnace].name}`)
+      .setPosition(this.invText.x - this.invText.width - 4, this.invText.y);
     if (this.debugText.visible) {
       const p = this.player, b = p.body;
       this.debugText.setText(`状态 ${p.state2}  二段跳 ${p.canDouble ? '可用' : '已用'}  单向平台 ${p.onOneWay}\n速度 vx ${b.velocity.x.toFixed(0)} vy ${b.velocity.y.toFixed(0)}  位置 ${p.x.toFixed(0)},${p.y.toFixed(0)}  FPS ${this.game.loop.actualFps.toFixed(0)}`);

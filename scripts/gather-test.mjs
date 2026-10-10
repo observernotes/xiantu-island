@@ -31,6 +31,8 @@ try {
   const { Gathering } = await server.ssrLoadModule('/src/scenes/Gathering.ts');
   const { Progress } = await server.ssrLoadModule('/src/Progress.ts');
   const { ITEMS } = await server.ssrLoadModule('/src/data.ts');
+  const { setFeatureFlag } = await server.ssrLoadModule('/src/features.ts');
+  setFeatureFlag('alchemyPhase1', true);
   const dataRoot = findRoot(process.cwd());
   const spec = JSON.parse(fs.readFileSync(path.join(dataRoot, 'art/icons/ui/alchemy/alchemy_ui.json'), 'utf8'));
   const hud = JSON.parse(fs.readFileSync(path.join(dataRoot, 'art/icons/ui/hud/hud_ui.json'), 'utf8'));
@@ -83,5 +85,19 @@ try {
   eq(gathering.active, undefined, '附近落物/对话优先不开始采集');
   gathering.update(cfg.castMs, true, false, true);
   eq(gathering.active, undefined, '移动期间不能采集');
+  gathering.update(0, false, false);
+  gathering.update(100, true, false);
+  eq(!!gathering.active, true, '关闭前有进行中的真实采集');
+  setFeatureFlag('alchemyPhase1', false);
+  gathering.update(cfg.castMs, true, false);
+  eq(gathering.active, undefined, '关闭时中断采集');
+  eq(scene.player.gathering, false, '关闭时恢复角色动作');
+  eq(point.prompt.visible, false, '关闭时隐藏采集入口');
+  eq(bar.visible, false, '关闭时隐藏读条');
+  eq(scene.prog.count('spirit_herb'), 1, '关闭时按住Z不发奖励');
+  setFeatureFlag('alchemyPhase1', true);
+  gathering.update(0, false, false);
+  gathering.update(cfg.castMs, true, false);
+  eq(scene.prog.count('spirit_herb'), 2, '重新开启可以再次真实采集');
   console.log(`gather logic ok: ${assertions} assertions`);
 } finally { Date.now = originalNow; delete globalThis.localStorage; await server.close(); }

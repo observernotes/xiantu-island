@@ -3,6 +3,9 @@ import { ALCHEMY_RULES, RECIPES, QUESTS, ITEMS, NPCS } from './data';
 import { Progress } from './Progress';
 import { QuestSystem } from './QuestSystem';
 import { AlchemySystem, fireConfig, fireOutcome, firePointer, qualityRates } from './Alchemy';
+import { setFeatureFlag } from './features';
+
+setFeatureFlag('alchemyPhase1', true);
 
 let assertions = 0;
 function eq(actual: unknown, expected: unknown, message: string) {
@@ -196,4 +199,30 @@ function ready() {
   saved[key] = JSON.stringify({ quests: { unknown_corrupt_quest: null }, learnedRecipes: null });
   eq(Progress.load().learnedRecipes.length, 0, '损坏未知任务条目不阻断丹方默认值读档');
 }
-console.log(`alchemy logic tests ok: ${assertions} assertions (fire, costs, qualities, crafts, batches, old saves)`);
+// 关闭入口保留已付费炉、丹方及任务；恢复开关后继续同炉，只结算一次。
+{
+  const { p, q, a } = ready(); q.accept('q_alchemy_intro');
+  a.start(recipe.id);
+  const paid = JSON.stringify({ inventory: p.inventory, stones: p.stones, pending: p.pendingAlchemy,
+    recipes: p.learnedRecipes, quest: p.quests.q_alchemy_intro });
+  setFeatureFlag('alchemyPhase1', false);
+  eq(q.npcQuestIds('doctor_sun').includes('q_alchemy_intro'), false, '关闭时孙郎中隐藏入门任务');
+  eq(q.activeIds.includes('q_alchemy_intro'), false, '关闭时追踪器隐藏进行中入门');
+  eq(q.complete('q_alchemy_intro'), false, '关闭时禁止交付');
+  eq(a.check(recipe.id).reason, 'closed', '关闭时禁止开炉');
+  eq(a.batch(recipe.id).results.length, 0, '关闭时禁止批量');
+  eq(a.advanceFire(9999), null, '关闭时火候不推进');
+  eq(a.stopFire(), null, '关闭时空格不结算');
+  eq(a.skipFire(), null, '关闭时跳过不结算');
+  eq(JSON.stringify({ inventory: p.inventory, stones: p.stones, pending: p.pendingAlchemy,
+    recipes: p.learnedRecipes, quest: p.quests.q_alchemy_intro }), paid, '关闭不丢已扣材料/炉次/丹方/任务');
+  const restored = Progress.load(), resumed = new AlchemySystem(restored, new QuestSystem(restored), () => 0);
+  ok(resumed.active, '关闭时读档保留待炼炉');
+  eq(resumed.skipFire(), null, '关闭时恢复炉仍不能结算');
+  setFeatureFlag('alchemyPhase1', true);
+  ok(resumed.skipFire()?.success, '重新开启可以完成原炉');
+  eq(restored.count(recipe.output), recipe.outputCount, '重开仅发一炉');
+  eq(restored.stones, p.stones, '重开不会第二次扣燃料');
+  eq(resumed.skipFire(), null, '重新开启结算仍然幂等');
+}
+console.log(`alchemy logic tests ok: ${assertions} assertions (fire, costs, qualities, crafts, batches, old saves, feature gate)`);
