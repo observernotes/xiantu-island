@@ -29,7 +29,10 @@ try {
   const near = (actual, wanted, message) => check(Math.abs(actual - wanted) <= 1e-7, message);
   equal(features.featureFlags(), expected, '职业自测读取的发版开关与工程快照不一致');
   if (process.env.QA_TIER_EXPECT_FEATURES) {
-    equal(expected, JSON.parse(process.env.QA_TIER_EXPECT_FEATURES), 'QA 期望与工程发版快照不一致');
+    // QA 的关口清单可能早于新开关；其已列出的关口仍须逐项匹配快照。
+    for (const [name, value] of Object.entries(JSON.parse(process.env.QA_TIER_EXPECT_FEATURES))) {
+      equal(expected[name], value, `QA 关口 ${name} 与工程发版快照不一致`);
+    }
   }
 
   const { CLASS_LIST, CLASS_RULES, classDef, classEntryEnabled, skillsForClass, classRobe } =
