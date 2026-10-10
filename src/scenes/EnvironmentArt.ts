@@ -12,7 +12,7 @@ export interface EnvironmentFog {
 }
 export interface EnvironmentParticles {
   kind: 'leaf' | 'firefly'; x: number; y: number; width: number; height: number;
-  count?: number; texture?: string; color?: number | string; alpha?: number;
+  count?: number; texture?: string; color?: number | string; colorEnd?: number | string; alpha?: number;
   size?: number; speedX?: number; speedY?: number;
 }
 export interface EnvironmentArtConfig {
@@ -33,7 +33,7 @@ type Fog = { image: Phaser.GameObjects.TileSprite; speed: number };
 type Particle = {
   image: Phaser.GameObjects.Image; kind: 'leaf' | 'firefly'; x: number; y: number;
   width: number; height: number; initialX: number; initialY: number;
-  speedX: number; speedY: number; phase: number; alpha: number;
+  speedX: number; speedY: number; phase: number; alpha: number; color: number; colorEnd?: number;
 };
 
 const numeric = (value: unknown, fallback: number) => typeof value === 'number' && Number.isFinite(value) ? value : fallback;
@@ -148,15 +148,17 @@ export class EnvironmentArt {
       const width = bounded(def.width, this.mapWidth, 1, this.mapWidth * 2);
       const height = bounded(def.height, this.mapHeight, 1, Math.max(1, this.mapHeight));
       const alpha = bounded(def.alpha, leaf ? 0.6 : 0.7, 0, 1), size = bounded(def.size, leaf ? 10 : 5, 1, 48);
+      const color = tint(def.color, leaf ? 0xabc889 : 0xd8ff8e);
+      const colorEnd = !leaf && def.colorEnd !== undefined ? tint(def.colorEnd, color) : undefined;
       for (let index = 0; index < count; index++) {
         const seed = this.particles.length * 7 + 3, initialX = fraction(seed) * width, initialY = fraction(seed + 1) * height;
         const image = this.scene.add.image(def.x + initialX, def.y + initialY, texture)
           .setName(`environment:${def.kind}`).setDepth(ENVIRONMENT_DEPTH.particle).setDisplaySize(size, leaf ? size * 0.6 : size)
-          .setTint(tint(def.color, leaf ? 0xabc889 : 0xd8ff8e)).setAlpha(alpha);
+          .setTint(color).setAlpha(alpha);
         if (!leaf) image.setBlendMode(Phaser.BlendModes.ADD);
         this.particles.push({ image, kind: def.kind, x: def.x, y: def.y, width, height, initialX, initialY,
           speedX: bounded(def.speedX, leaf ? 16 : 2, -256, 256), speedY: bounded(def.speedY, leaf ? 12 : -2, -256, 256),
-          phase: fraction(seed + 2) * Math.PI * 2, alpha });
+          phase: fraction(seed + 2) * Math.PI * 2, alpha, color, colorEnd });
       }
     }
   }
@@ -181,7 +183,18 @@ export class EnvironmentArt {
       image.x = x; image.y = y;
       image.visible = x >= view.left - 24 && x <= view.right + 24 && y >= view.top - 24 && y <= view.bottom + 24;
       if (particle.kind === 'leaf') image.rotation = particle.phase + time * 0.45;
-      else image.alpha = particle.alpha * (0.6 + 0.4 * Math.sin(time * 2 + particle.phase) ** 2);
+      else {
+        const twinkle = Math.sin(time * 2 + particle.phase) ** 2;
+        image.alpha = particle.alpha * (0.6 + 0.4 * twinkle);
+        if (particle.colorEnd !== undefined) {
+          // Use the existing flicker phase: bright keeps color, dim fades toward colorEnd.
+          const fade = 1 - twinkle, from = particle.color, to = particle.colorEnd;
+          const red = Math.round((from >>> 16 & 0xff) + ((to >>> 16 & 0xff) - (from >>> 16 & 0xff)) * fade);
+          const green = Math.round((from >>> 8 & 0xff) + ((to >>> 8 & 0xff) - (from >>> 8 & 0xff)) * fade);
+          const blue = Math.round((from & 0xff) + ((to & 0xff) - (from & 0xff)) * fade);
+          image.setTint(red << 16 | green << 8 | blue);
+        }
+      }
     }
   }
 
