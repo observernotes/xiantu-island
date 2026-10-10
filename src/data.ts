@@ -60,7 +60,7 @@ export interface MonsterDef {
 }
 export interface ItemDef {
   id: string; name: string; type: string; slot?: string; stats?: Record<string, number>; effect?: any; icon?: string; appearance?: string;
-  kind?: string; toolType?: string;
+  kind?: string; toolType?: string; sect?: string; reqLevel?: number;
   gather?: { castMs: number; respawnMs: number; maps?: string[] };
 }
 export interface DropTable { spiritStone: [number, number]; items: { item: string; chance: number; count: [number, number] }[] }
@@ -154,10 +154,10 @@ export interface FerryRoute {
   reqLevel?: number; unlockQuest?: string; phaseMin?: number; phaseMax?: number;
 }
 export interface NpcDef { id: string; name: string; map: string; sprite: string; dialog: string[]; quests: string[]; shop?: boolean; ferryRoutes?: FerryRoute[]; }
-export interface QuestObjective { type: 'kill' | 'collect' | 'reach' | 'breakthrough' | 'talk' | 'craft'; target?: string; count?: number; consume?: boolean; map?: string; realm?: string; }
+export interface QuestObjective { type: 'kill' | 'collect' | 'reach' | 'breakthrough' | 'talk' | 'craft' | 'trial'; target?: string; count?: number; consume?: boolean; map?: string; realm?: string; trial?: string; }
 export interface QuestDef {
   id: string; name: string; giver: string; turnIn: string; reqLevel: number; objectives: QuestObjective[];
-  prereq?: string; phase?: number;
+  prereq?: string; phase?: number; reqRealm?: string; sect?: string; daily?: boolean; skillsPending?: string[];
   rewards: {
     exp: number; spiritStone: number; items: { item: string; count: number }[];
     job?: string; skills?: { id: string; level: number }[]; recipes?: string[];

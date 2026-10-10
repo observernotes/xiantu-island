@@ -3,7 +3,7 @@ import skillsJson from '@xt/balance/skills.json';
 
 export interface SkillRange { w: number; h: number; behind?: number }
 export interface SkillDef {
-  id: string; name: string; sect: string; job: number;
+  id: string; name: string; sect: string | null; job: number;
   type: 'active' | 'buff' | 'passive' | string;
   maxLevel: number; spCost: number; masteryPerHit: number; masteryToCap: number;
   mpCost: number; cooldownMs: number; damageRatio: number; hitCount: number; maxTargets: number;
@@ -11,7 +11,7 @@ export interface SkillDef {
   perLevel: Record<string, number>;
   effects: Record<string, number | boolean | string>;
   req: Record<string, number | string> | null;
-  fx: string; icon: string; key?: string;
+  fx: string | null; icon: string; key?: string;
 }
 
 const raw = skillsJson as unknown as { rules: SkillRules; skills: SkillDef[] };
@@ -44,7 +44,7 @@ export const SKILL_WINDOW_CODE = 'KeyK';
  * 表内 cooldownMs 为 0 时，施放间隔取这里的 recoverMs，并用来画快捷栏遮罩。
  */
 export interface SkillAct {
-  kind: 'projectile' | 'aoe' | 'buff';
+  kind: 'projectile' | 'aoe' | 'buff' | 'summon' | 'dash';
   recoverMs: number; hitDelayMs: number;
   jumpCancel?: boolean; superArmorMs?: number;
 }
@@ -67,8 +67,14 @@ export const BUFF_FADE_MS = 200;
 export function actOf(def: SkillDef): SkillAct {
   const spec = SKILL_ACT[def.id];
   if (spec) return spec;
-  if (def.type === 'buff') return { kind: 'buff', recoverMs: 200, hitDelayMs: 0 };
-  return { kind: 'aoe', recoverMs: Math.max(300, Math.max(0, def.cooldownMs || 0)), hitDelayMs: 80 };
+  const recoverMs = typeof def.effects.recoverMs === 'number' ? Math.max(0, def.effects.recoverMs) : def.type === 'buff' ? 200 : 300;
+  if (def.type === 'buff') return { kind: 'buff', recoverMs, hitDelayMs: 0 };
+  if (typeof def.effects.summon === 'string') return { kind: 'summon', recoverMs, hitDelayMs: 0 };
+  if (typeof def.effects.dashDistance === 'number') return { kind: 'dash', recoverMs, hitDelayMs: 0 };
+  if (def.key?.startsWith('default:') || typeof def.effects.projectileCount === 'number') {
+    return { kind: 'projectile', recoverMs, hitDelayMs: 90, jumpCancel: true };
+  }
+  return { kind: 'aoe', recoverMs, hitDelayMs: 80 };
 }
 
 export function skillsForJob(job: number) { return SKILL_LIST.filter(s => s.job === job); }
@@ -131,7 +137,8 @@ export function spEarnedFor(level: number, job: number, jobAdvanced: boolean) {
 
 const STAT_LABEL: Record<string, string> = {
   atk: '攻击', mpRegenPer10s: '每10秒回灵', hit: '命中', minDamageRatio: '最低伤害',
-  speed: '移速', jump: '跳跃',
+  speed: '移速', jump: '跳跃', spirit: '神识', rootBone: '根骨', agility: '身法',
+  critRate: '暴击率', evade: '闪避', attackSpeedRatio: '攻速', extraAirJumps: '空中跳跃次数',
 };
 
 function trimNum(n: number) {

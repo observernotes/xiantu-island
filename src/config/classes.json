@@ -1,0 +1,17 @@
+{
+  "rules": {
+    "advanceJob": 1,
+    "giftLevel": 1,
+    "entryKey": "default:A",
+    "replaceCommonSkills": ["spirit_bolt"],
+    "unjoinedSkillSect": "tianjian",
+    "damageBaseFallback": "atk"
+  },
+  "classes": [
+    { "id": "tianjian_disciple", "name": "剑徒", "sect": "tianjian", "job": 1, "joinQuest": "q_sect_tianjian" },
+    { "id": "taixu_acolyte", "name": "道童", "sect": "taixu", "job": 1, "joinQuest": "q_sect_taixu" },
+    { "id": "lingfu_novice", "name": "符童", "sect": "lingfu", "job": 1, "joinQuest": "q_sect_lingfu" },
+    { "id": "youying_shadow", "name": "影卫", "sect": "youying", "job": 1, "joinQuest": "q_sect_youying" },
+    { "id": "wanshou_tamer", "name": "兽童", "sect": "wanshou", "job": 1, "joinQuest": "q_sect_wanshou" }
+  ]
+}
