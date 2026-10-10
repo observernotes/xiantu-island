@@ -7,12 +7,12 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { createServer, preview } from 'vite';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-const names = ['fiveSectClasses', 'sectDaily', 'sectRanks', 'sectShopLibrary', 'sectDonations', 'seclusion', 'alchemyPhase1', 'v05Maps', 'foxBoss'];
+const names = ['fiveSectClasses', 'sectDaily', 'sectRanks', 'sectShopLibrary', 'shops', 'sectDonations', 'seclusion', 'alchemyPhase1', 'v05Maps', 'foxBoss'];
 let configured = {};
 try { configured = JSON.parse(await fs.readFile(path.join(root, 'data/features.json'), 'utf8')); }
 catch (error) { if (error.code !== 'ENOENT') throw error; }
 const expected = Object.fromEntries(names.map(name => [name,
-  typeof configured?.[name] === 'boolean' ? configured[name] : true]));
+  typeof configured?.[name] === 'boolean' ? configured[name] : name !== 'shops']));
 if (process.env.QA_TIER_EXPECT_FEATURES) {
   // tier1 的清单可早于新开关；完整运行时开关仍在下方与工程快照核对。
   for (const [name, value] of Object.entries(JSON.parse(process.env.QA_TIER_EXPECT_FEATURES))) {
@@ -45,7 +45,7 @@ try {
     const loader = await createServer({ root: fixtureRoot, configFile: false, server: { middlewareMode: true, hmr: false, ws: false }, logLevel: 'error' });
     try {
       const features = await loader.ssrLoadModule('/src/features.ts');
-      assert.deepEqual(features.featureFlags(), Object.fromEntries(names.map(name => [name, configured?.[name] ?? true])));
+      assert.deepEqual(features.featureFlags(), Object.fromEntries(names.map(name => [name, configured?.[name] ?? (name !== 'shops')])));
     } finally { await loader.close(); }
   }
 } finally { await fs.rm(fixtureRoot, { recursive: true, force: true }); }
@@ -159,6 +159,20 @@ try {
     check(s.sectGrowth.services('tianjian_envoy_sect').some(row => row.type === 'sect_shop'), '货架服务未恢复');
     check(s.sectGrowth.catalog('tianjian_elder', 'sect_library').key !== unavailable, '藏经阁未恢复');
     s.dialog.dismiss(); checked.push('sectShopLibrary');
+
+    s.prog.stones = 1000; s.prog.addItem('qi_pill', 1);
+    const shopBefore = JSON.stringify({ inventory: s.prog.inventory, stones: s.prog.stones, growth: s.prog.sectGrowthState });
+    flip('shops', false);
+    check(s.sectGrowth.ordinaryCatalog('doctor_sun').entries.length === 0, '普通货架关闭仍展示');
+    check(s.sectGrowth.ordinarySellCatalog('doctor_sun').entries.length === 0, '出售目录关闭仍展示');
+    check(!s.sectGrowth.buyOrdinary('doctor_sun', 'qi_pill', 'features:shop-buy').ok, 'shops 关闭仍购买');
+    check(!s.sectGrowth.sellOrdinary('doctor_sun', 'qi_pill', 'features:shop-sell').ok, 'shops 关闭仍出售');
+    check(s.sectGrowth.catalog('tianjian_envoy_sect', 'sect_shop').key === unavailable, 'shops 关闭仍开放宗门商店');
+    check(s.sectGrowth.catalog('tianjian_elder', 'sect_library').key !== unavailable, 'shops 关闭影响藏经阁');
+    same(JSON.stringify({ inventory: s.prog.inventory, stones: s.prog.stones, growth: s.prog.sectGrowthState }), shopBefore, '关闭商店仍变更余额、库存或收据');
+    flip('shops', true);
+    check(s.sectGrowth.ordinaryCatalog('doctor_sun').ok && s.sectGrowth.ordinarySellCatalog('doctor_sun').ok, '普通买卖没有恢复');
+    checked.push('shops');
 
     xt.setFlag('sect_donations.enabled', true);
     const config = s.sectGrowth.config;
