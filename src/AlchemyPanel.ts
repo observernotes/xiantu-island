@@ -62,7 +62,7 @@ export class AlchemyPanel {
 
   isOpen() { return this.shown; }
   open(furnaceId = 'bronze_furnace') {
-    this.furnaceId = furnaceId;
+    this.furnaceId = this.system.active?.furnaceId ?? furnaceId;
     this.shown = true;
     this.status = '';
     if (!this.system.knownRecipes.some(r => r.id === this.selected)) this.selected = this.system.knownRecipes[0]?.id ?? '';
@@ -74,7 +74,7 @@ export class AlchemyPanel {
       this.onChanged();
     }
     this.shown = false;
-    this.c?.destroy(); this.c = undefined;
+    this.clear();
     this.pointer = undefined; this.pointerTrack = undefined;
   }
   selectRecipe(id: string) {
@@ -152,9 +152,13 @@ export class AlchemyPanel {
     this.status = result.success ? t('alchemy.success', { quality: t(`alchemy.quality.${result.quality}`) }) + ` ×${result.count}` : t('alchemy.fail');
     this.onChanged(); this.render(); this.effects(result);
   }
+  private clear() {
+    for (const child of this.c?.list ?? []) this.scene.tweens.killTweensOf(child);
+    this.c?.destroy(); this.c = undefined;
+  }
   private render() {
     if (!this.shown) return;
-    this.c?.destroy(); this.pointer = undefined; this.pointerTrack = undefined;
+    this.clear(); this.pointer = undefined; this.pointerTrack = undefined;
     const L = this.layout, [width, height] = L.window.size as Point;
     this.position = { x: (this.scene.scale.width - width) / 2, y: (this.scene.scale.height - height) / 2, width, height };
     this.c = this.scene.add.container(this.position.x, this.position.y).setDepth(230).setScrollFactor(0);
