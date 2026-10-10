@@ -1,4 +1,4 @@
-import { inPhase, QUEST_NAMES, TILED_MAPS, t, type FerryRoute } from './data';
+import { inPhase, QUEST_NAMES, TILED_MAPS, TRIALS, NPCS, QUESTS, t, type FerryRoute } from './data';
 import type { Progress } from './Progress';
 import { featureEnabled, FEATURE_UNAVAILABLE } from './features';
 
@@ -17,8 +17,16 @@ const RETURN_MAPS: Record<string, string> = {
   tianjian_sword_tomb: 'tianjian_sect', tianjian_sect: 'luoxia_town',
 };
 
+/** 山门尚未接图时，正式航线落在本宗现有试炼图的长老入口。 */
+export function sectEntryMap(map: string): string {
+  if (TILED_MAPS[map]) return map;
+  const trial = Object.values(TRIALS).find(tr => tr.quest && NPCS[QUESTS[tr.quest]?.turnIn]?.map === map);
+  return trial && TILED_MAPS[trial.map] ? trial.map : map;
+}
+
 /** 关闭新地图入口时仍保留旧存档沿回程路径离开的能力。 */
 export function mapEntryOpen(targetMap: string, currentMap?: string, returning = false): boolean {
+  targetMap = sectEntryMap(targetMap);
   if (!featureEnabled('fiveSectClasses') && FIRST_CLASS_TRIAL_MAPS.has(targetMap)) return false;
   return featureEnabled('v05Maps') || !V05_MAPS.has(targetMap)
     || !!currentMap && (RETURN_MAPS[currentMap] === targetMap || returning && V05_MAPS.has(currentMap));
@@ -31,7 +39,7 @@ export function ferryLockedReason(route: FerryRoute, prog: Pick<Progress, 'level
   if (prog.level < (route.reqLevel ?? 0)) return t('sys.portal_level', { lv: route.reqLevel! });
   if (route.unlockQuest && prog.quests[route.unlockQuest]?.state !== 'done')
     return t('ferry.locked_quest', { quest: QUEST_NAMES[route.unlockQuest] ?? route.unlockQuest });
-  if (!TILED_MAPS[route.targetMap] && route.targetMap !== 'field_test') return t('sys.portal_locked');
+  if (!TILED_MAPS[sectEntryMap(route.targetMap)] && route.targetMap !== 'field_test') return t('sys.portal_locked');
   if (prog.stones < route.cost) return t('ui.shop.not_enough');
   return undefined;
 }

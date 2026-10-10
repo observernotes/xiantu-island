@@ -1,5 +1,5 @@
 import { gameNow } from './GameClock';
-import { QUESTS, QUEST_ORDER, NPCS, SCRIPTS, ITEMS, MONSTERS, Line, QuestDef, inPhase, t } from './data';
+import { QUESTS, QUEST_ORDER, NPCS, SCRIPTS, ITEMS, MONSTERS, Line, QuestDef, questInPhase, t } from './data';
 import type { Progress } from './Progress';
 import { classEntryEnabled, classForQuest } from './classes';
 import { REALMS } from './data';
@@ -38,14 +38,14 @@ export class QuestSystem {
   available(id: string) {
     if (this.state(id)) return false;
     const q = QUESTS[id];
-    if (!q || !inPhase(q) || !supported(q) || !this.prereqsDone(q) || !this.classAllowed(q)) return false;
+    if (!q || !questInPhase(q) || !supported(q) || !this.prereqsDone(q) || !this.classAllowed(q)) return false;
     if (q.daily && !this.prog.canCompleteSectDailyQuest(id, this.now())) return false;
     return this.prog.level >= q.reqLevel;
   }
   /** 前置已完成但等级不够 */
   levelLocked(id: string) {
     const q = QUESTS[id];
-    return !!q && inPhase(q) && supported(q) && !this.state(id) && this.prereqsDone(q) && this.classAllowed(q)
+    return !!q && questInPhase(q) && supported(q) && !this.state(id) && this.prereqsDone(q) && this.classAllowed(q)
       && (!q.daily || this.prog.canCompleteSectDailyQuest(id, this.now())) && this.prog.level < q.reqLevel;
   }
 

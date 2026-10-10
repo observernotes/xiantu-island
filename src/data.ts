@@ -112,6 +112,7 @@ import trialsRaw from '@xt/balance/trials.json';
 export interface TrialSpawn { monster: string; side: 'both' | 'alternate' | 'left' | 'right'; everyMs: number; perSide?: number }
 export interface TrialHazard { type: string; everyMs: number; count: number; radius: number; telegraphMs: number; playerDamageRatioOfMaxHp: number; nearObjective?: number }
 export interface TrialWave { fromMs: number; toMs: number; spawns: TrialSpawn[]; total?: number; hazard?: TrialHazard; despawnAll?: boolean }
+export interface SectTrialWave { monster: string; count: number; side: 'both' | 'left' | 'right' }
 export interface TrialDef {
   id: string; name: string; realmFrom: string; realmTo: string; type: string; map: string; durationMs: number;
   waves?: TrialWave[];
@@ -124,6 +125,10 @@ export interface TrialDef {
   patrols?: { monster: string; count: number; turnPauseMs: number };
   item?: string;
   tame?: { monster: string; fluteMs: number; interruptOn: string[] };
+  sect?: string; quest?: string; phase?: number;
+  waveGapMs?: number; spawnIntervalMs?: number; failOn?: string[];
+  grantSkills?: { id: string; level: number; charges?: number; durationMs?: number }[];
+  companion?: { id: string; name: string; sprite: string; hp: number; atk: number; def: number; moveSpeed: number; followDist: number; leashDist: number; aggroRange: number; attack: { type: string; damageRatio: number; range: { w: number; h: number }; telegraphMs: number; recoverMs: number; cooldownMs: number; knockback: number }; onZeroHp: string };
 }
 export const TRIALS: Record<string, TrialDef> = Object.fromEntries((trialsRaw as unknown as TrialDef[]).map(t => [t.id, t]));
 /** 地图 id → 防守类试炼（目前只有筑基台） */
@@ -190,7 +195,9 @@ export function questDescription(q: QuestDef) {
 export const NPCS: Record<string, NpcDef> = Object.fromEntries((npcs as NpcDef[]).map(n => [n.id, n]));
 // 锁定原因需要任务名称，未来阶段的任务也保留名称供界面展示。
 export const QUEST_NAMES: Record<string, string> = Object.fromEntries((quests as QuestDef[]).map(q => [q.id, questName(q)]));
-export const QUESTS: Record<string, QuestDef> = Object.fromEntries((quests as QuestDef[]).filter(q => inPhase(q)).map(q => [q.id, q]));
+/** 四宗拜入保留登记，由 fiveSectClasses 开关开放；其余未来阶段仍按 phase 隔离。 */
+export function questInPhase(q: QuestDef) { return inPhase(q) || /^q_sect_(taixu|lingfu|youying|wanshou)$/.test(q.id); }
+export const QUESTS: Record<string, QuestDef> = Object.fromEntries((quests as QuestDef[]).filter(questInPhase).map(q => [q.id, q]));
 export const QUEST_ORDER: string[] = Object.keys(QUESTS);
 export const REALMS = realms as any[];
 
