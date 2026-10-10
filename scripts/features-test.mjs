@@ -14,7 +14,10 @@ catch (error) { if (error.code !== 'ENOENT') throw error; }
 const expected = Object.fromEntries(names.map(name => [name,
   typeof configured?.[name] === 'boolean' ? configured[name] : true]));
 if (process.env.QA_TIER_EXPECT_FEATURES) {
-  assert.deepEqual(expected, JSON.parse(process.env.QA_TIER_EXPECT_FEATURES), 'tier1 期望与目标快照不一致');
+  // tier1 的清单可早于新开关；完整运行时开关仍在下方与工程快照核对。
+  for (const [name, value] of Object.entries(JSON.parse(process.env.QA_TIER_EXPECT_FEATURES))) {
+    assert.equal(expected[name], value, `tier1 关口 ${name} 与目标快照不一致`);
+  }
 }
 // 任务阶段是另一道关口；测试覆盖不能把 phase=6 的入口当成本期已发布。
 process.env.XT_DATA ??= 'snapshot';
