@@ -145,6 +145,8 @@ export class AlchemyPanel {
     this.lastResult = result.results[result.results.length - 1] ?? null;
     this.status = `五炉炼制：成丹 ${successes} 炉，产出 ${result.results.reduce((n, r) => n + r.count, 0)} 颗`;
     this.onChanged(); this.render();
+    const fire = this.furnaceFire();
+    if (fire) this.scene.time.delayedCall(900, () => fire.destroy());
     if (this.lastResult) this.effects(this.lastResult);
   }
   private finish(result: AlchemyResult) {
@@ -224,10 +226,7 @@ export class AlchemyPanel {
       this.text(qx + spec.size![0] / 2 - 3, qy + spec.size![1] / 2, t(`alchemy.quality.${quality}`), 12, PAPER).setOrigin(0.5);
     }
     this.art(`ui_alchemy_furnace_${this.furnaceId}`, D.furnace.rect)?.setName('alchemy_furnace');
-    if (busy && this.scene.anims.exists('ui_alchemy_fire')) {
-      const [fx, fy] = D.furnace.rect as Rect;
-      this.add(this.scene.add.sprite(fx + 32, fy + 82, 'ui_alchemy_fire').setOrigin(0, 0).play('ui_alchemy_fire'));
-    }
+    if (busy) this.furnaceFire();
     const [mx, my] = D.materials.first as Point;
     this.text(mx, my - 16, '材料', 12, INK_60);
     recipe.materials.forEach((material, i) => {
@@ -274,6 +273,11 @@ export class AlchemyPanel {
     if (!this.system.active || !this.pointer || !this.pointerTrack) return;
     this.pointerRatio = firePointer(this.system.active.fire);
     this.pointer.x = this.pointerTrack.x + this.pointerRatio * this.pointerTrack.w;
+  }
+  private furnaceFire() {
+    if (!this.scene.anims.exists('ui_alchemy_fire')) return undefined;
+    const [fx, fy] = this.layout.detail.furnace.rect as Rect;
+    return this.add(this.scene.add.sprite(fx + 32, fy + 82, 'ui_alchemy_fire').setOrigin(0, 0).play('ui_alchemy_fire'));
   }
   private effects(result: AlchemyResult) {
     const D = this.layout.detail, [fx, fy, fw] = D.furnace.rect as Rect;
