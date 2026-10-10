@@ -89,7 +89,7 @@ function goods(config: SectGrowthConfig, id = 'tianjian') {
   ];
   return npc;
 }
-function books(config: SectGrowthConfig) {
+function books(config: SectGrowthConfig, tianjianSkill = 'ten_thousand_swords') {
   for (const entry of config.ranks.sects) {
     let item = 'scroll_ten_thousand_swords';
     if (entry.id !== 'tianjian') {
@@ -97,12 +97,19 @@ function books(config: SectGrowthConfig) {
       ok(skill, `${entry.id} 本宗真实功法登记存在`);
       item = `sect_test_scroll_${entry.id}`;
       config.items[item] = { ...clone(config.items.scroll_ten_thousand_swords), id: item, unlockSkill: skill.id };
+    } else {
+      config.items[item].unlockSkill = tianjianSkill;
     }
     config.shops[entry.promotionNpc] = [
       { item, reqRank: direct, costContribution: 50, enabled: true, balanceTodo: [] },
     ];
   }
   return 'tianjian_elder';
+}
+function firstJobBooks(config: SectGrowthConfig) {
+  // 独立业务夹具解锁真实一转被动；不改变生产技能表或虚构高转职业。
+  config.skills.sword_mastery.req = { sword_qi_slash: 10, level: 60, item: 'scroll_ten_thousand_swords' };
+  return books(config, 'sword_mastery');
 }
 
 try {
@@ -371,10 +378,22 @@ try {
     rejected(() => growth.exchange(npc, shop, 'hp_pill_small', 'bag-full'), p, '背包接口拒收不扣款');
   }
 
-  // 五宗同档书目齐备才开放高阶目录；买书保留原功法条件，权限不直接发技能。
+  // 职位与等级不能替代职业阶段：一转角色仍不能兑换或学习原三转秘籍。
   {
     const config = fixture(), npc = books(config), p = joined('tianjian', 60);
     p.sectRank = direct; p.sectContribution = 200; p.skills.sword_rain = 10;
+    const growth = new SectGrowth(p, config);
+    eq(growth.catalog(npc, library).entries.find(row => row.itemId === 'scroll_ten_thousand_swords')?.ok,
+      false, '本宗三转秘籍对一转角色锁定');
+    rejected(() => growth.exchange(npc, library, 'scroll_ten_thousand_swords', 'library-job-mismatch'), p,
+      '亲传职位和原技能前置齐备仍不能越职业阶段兑换');
+    rejected(() => p.addSkillPoint('ten_thousand_swords'), p, '原学习入口拒绝一转角色学习三转技能');
+  }
+
+  // 五宗同档书目齐备才开放高阶目录；用匹配当前职业的测试秘籍检查原学习条件。
+  {
+    const config = fixture(), npc = firstJobBooks(config), p = joined('tianjian', 60);
+    p.sectRank = direct; p.sectContribution = 200; p.skills.sword_qi_slash = 10;
     const growth = new SectGrowth(p, config), lastSect = config.ranks.sects[4];
     const lastShelf = config.shops[lastSect.promotionNpc];
     delete config.shops[lastSect.promotionNpc];
@@ -382,13 +401,13 @@ try {
     rejected(() => growth.exchange(npc, library, 'scroll_ten_thousand_swords', 'library-incomplete'), p, '未齐五宗同档书目不扣款');
     const initialSkill = CLASS_LIST.find(row => row.sect === 'tianjian')!;
     ok(p.classRewardClaims.includes(initialSkill.id), '未齐书目不撤销既有一转登记');
-    ok(p.skillLevel('breeze_sword') > 0 || Object.keys(p.skills).some(id => id !== 'sword_rain'), '未齐书目保留已学一转功法');
+    eq(p.skillLevel('sword_qi_slash'), 10, '未齐书目保留已学一转功法');
     config.shops[lastSect.promotionNpc] = lastShelf;
     ok(growth.catalog(npc, library).ok, '五宗同档商品与功法引用齐备可开目录');
-    p.skills.sword_rain = 9;
+    p.skills.sword_qi_slash = 9;
     rejected(() => growth.exchange(npc, library, 'scroll_ten_thousand_swords', 'library-prereq'), p, '秘籍原功法前置差 1 不可兑换');
-    p.skills.sword_rain = 10; p.level = 59;
-    rejected(() => growth.exchange(npc, library, 'scroll_ten_thousand_swords', 'library-level'), p, '秘籍原三转等级条件不足不兑换');
+    p.skills.sword_qi_slash = 10; p.level = 59;
+    rejected(() => growth.exchange(npc, library, 'scroll_ten_thousand_swords', 'library-level'), p, '测试秘籍等级条件不足不兑换');
     p.level = 60; p.sectRank = inner;
     rejected(() => growth.exchange(npc, library, 'scroll_ten_thousand_swords', 'library-rank'), p, '已有学习前置仍须亲传职位');
     p.sectRank = direct;
@@ -398,19 +417,21 @@ try {
     ok(growth.exchange(npc, library, 'scroll_ten_thousand_swords', 'library-success').ok, '满足原条件与职位可兑换秘籍');
     eq(p.count('scroll_ten_thousand_swords'), 1, '秘籍单件进入背包');
     eq(p.sectContribution, 150, '秘籍只扣配置贡献价格');
-    eq(p.skillLevel('ten_thousand_swords'), 0, '兑换不自动学会解锁功法');
+    eq(p.skillLevel('sword_mastery'), 0, '兑换不自动学会解锁功法');
     same(p.skills, before.skills, '兑换权限不改已有功法等级');
     same(p.skillGifted, before.skillGifted, '兑换不改赠送技能点记录');
-    ok(p.addSkillPoint('ten_thousand_swords').ok, '书入背包后仍由原学习接口花技能点解锁');
+    const spBefore = p.spLeftFor(1);
+    ok(p.addSkillPoint('sword_mastery').ok, '匹配职业的功法由原学习接口花技能点解锁');
+    eq(p.spLeftFor(1), spBefore - config.skills.sword_mastery.spCost, '学习测试秘籍的实际功法扣除技能点');
     rejected(() => growth.exchange(npc, library, 'scroll_ten_thousand_swords', 'library-learned'), p, '已学秘籍新确认也不能重复购买');
     const after = state(p);
     growth.exchange(npc, library, 'scroll_ten_thousand_swords', 'library-success');
     same(state(p), after, '已学后重试成功交易仍不多发不多扣');
   }
   for (const mutation of ['realm', 'level', 'itemLevel', 'unknownSkill'] as const) {
-    const config = fixture(), npc = books(config), p = joined('tianjian', 60);
-    p.sectRank = direct; p.sectContribution = 200; p.skills.sword_rain = 10;
-    const skill = config.skills.ten_thousand_swords;
+    const config = fixture(), npc = firstJobBooks(config), p = joined('tianjian', 60);
+    p.sectRank = direct; p.sectContribution = 200; p.skills.sword_qi_slash = 10;
+    const skill = config.skills.sword_mastery;
     if (mutation === 'realm') skill.req = { ...skill.req, realm: 'nascent_soul' };
     else if (mutation === 'level') skill.req = { ...skill.req, level: 61 };
     else if (mutation === 'itemLevel') config.items.scroll_ten_thousand_swords.reqLevel = 61;

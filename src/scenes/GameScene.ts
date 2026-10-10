@@ -475,9 +475,8 @@ export class GameScene extends Phaser.Scene {
       }
       if (this.dialog.open && (J(k.z) || J(k.space) || J(k.up))) this.dialog.advance();
       if (this.skillWindow.open) {
-        const jobs = this.prog.classSkills;
         const nums = [k.one, k.two, k.three, k.four, k.five];
-        nums.forEach((key, i) => { if (J(key) && jobs[i]) this.tryAddPoint(jobs[i].id); });
+        nums.forEach((key, i) => { if (J(key)) this.skillWindow.addPoint(i); });
       }
       J(k.alt); J(k.c);
       J(k.space); J(k.z); J(k.up);
@@ -1436,7 +1435,7 @@ export class GameScene extends Phaser.Scene {
     else if (r.reason === 'req') this.log(t('skill.req_block', { req: r.req || '前置不足' }), '#ffb0b0');
     else if (r.reason === 'sp') this.log(t('skill.no_sp'), '#ffb0b0');
     else if (r.reason === 'max') this.log(t('skill.maxed'), '#ffb0b0');
-    else if (r.reason === 'locked') this.log(t('skill.locked'), '#ffb0b0');
+    else if (r.reason === 'locked') this.log(this.prog.skillsUnlocked ? '当前职业不能修习这门功法' : t('skill.locked'), '#ffb0b0');
     this.skillWindow.refresh();
   }
 

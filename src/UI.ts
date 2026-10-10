@@ -313,6 +313,13 @@ export class SkillWindow {
   show() { this.open = true; this.refresh(); }
   close() { this.open = false; this.selected = null; this.clear(); }
 
+  /** 数字键和鼠标共用加点检查；锁定行不触发学习回调。 */
+  addPoint(index: number) {
+    const prog = this.getProg();
+    const def = prog.classSkills[index];
+    if (this.open && def && prog.checkSkillPoint(def.id).ok) this.onAdd(def.id);
+  }
+
   assign(slot: number) {
     const prog = this.getProg();
     if (this.selected) prog.bindHotbar(slot, this.selected);
@@ -345,7 +352,9 @@ export class SkillWindow {
     list.forEach((def, i) => {
       const ry = y - H / 2 + 64 + i * 72;
       const learned = prog.skillLevel(def.id);
-      const selected = this.selected === def.id;
+      const available = prog.skillsUnlocked && prog.ownsSkill(def);
+      const selected = available && this.selected === def.id;
+      const point = prog.checkSkillPoint(def.id);
       const row = this.scene.add.graphics().setScrollFactor(0).setDepth(211);
       row.fillStyle(selected ? 0xf3e2b8 : 0xf7efe0, 1).fillRoundedRect(x - W / 2 + 20, ry, W - 40, 66, 8);
       this.objs.push(row);
@@ -357,16 +366,24 @@ export class SkillWindow {
       } else row.lineStyle(1, 0x9a8766, 0.8).strokeRoundedRect(x - W / 2 + 40, ry + 17, 32, 32, 4);
       const head = `${def.name}  ${typeLabel(def.type)}  Lv ${learned}/${prog.skillCap(def)}`;
       const req = prog.reqText(def);
-      const body = `${learned > 0 ? describeSkill(def, learned) : '未学  ' + describeSkill(def, 1)}${req ? '   需要 ' + req : ''}`;
+      const lock = !prog.ownsSkill(def) ? '正式拜入本宗后解锁' : !prog.skillsUnlocked ? t('skill.locked') : '';
+      const body = `${lock || (learned > 0 ? describeSkill(def, learned) : '未学  ' + describeSkill(def, 1))}${req ? '   需要 ' + req : ''}`;
       this.objs.push(
-        this.scene.add.text(x - W / 2 + 92, ry + 8, head, { fontFamily: 'sans-serif', fontSize: '16px', color: '#3a2a10', fontStyle: 'bold' }).setScrollFactor(0).setDepth(212),
+        this.scene.add.text(x - W / 2 + 92, ry + 8, head, { fontFamily: 'sans-serif', fontSize: '16px', color: available ? '#3a2a10' : '#8a8172', fontStyle: 'bold' }).setScrollFactor(0).setDepth(212),
         this.scene.add.text(x - W / 2 + 92, ry + 34, body, { fontFamily: 'sans-serif', fontSize: '13px', color: '#5a4630', wordWrap: { width: 500 } }).setScrollFactor(0).setDepth(212),
       );
-      const hit = this.scene.add.zone(x - W / 2 + 20, ry, W - 150, 66).setOrigin(0, 0).setScrollFactor(0).setDepth(213).setInteractive({ useHandCursor: true });
-      hit.on('pointerdown', () => { this.selected = this.selected === def.id ? null : def.id; this.refresh(); });
+      const hit = this.scene.add.zone(x - W / 2 + 20, ry, W - 150, 66).setOrigin(0, 0).setScrollFactor(0).setDepth(213);
+      if (available) {
+        hit.setInteractive({ useHandCursor: true });
+        hit.on('pointerdown', () => { this.selected = this.selected === def.id ? null : def.id; this.refresh(); });
+      }
       this.objs.push(hit);
-      const btn = this.scene.add.text(x + W / 2 - 36, ry + 33, '加点', { fontFamily: 'sans-serif', fontSize: '16px', color: '#fff', backgroundColor: '#2a6a4a', padding: { x: 10, y: 6 } }).setOrigin(1, 0.5).setScrollFactor(0).setDepth(212).setInteractive({ useHandCursor: true });
-      btn.on('pointerdown', () => this.onAdd(def.id));
+      const label = point.ok ? '加点' : point.reason === 'max' ? '已满级' : point.reason === 'sp' ? '点数不足' : '锁定';
+      const btn = this.scene.add.text(x + W / 2 - 36, ry + 33, label, { fontFamily: 'sans-serif', fontSize: '16px', color: '#fff', backgroundColor: point.ok ? '#2a6a4a' : '#8a8172', padding: { x: 10, y: 6 } }).setOrigin(1, 0.5).setScrollFactor(0).setDepth(212);
+      if (point.ok) {
+        btn.setInteractive({ useHandCursor: true });
+        btn.on('pointerdown', () => this.addPoint(i));
+      }
       this.objs.push(btn);
     });
     const hint = this.scene.add.text(x, y + H / 2 - 78, '点击功法后再点格子放入快捷栏；再点已放入的格子卸下。1–5 加点，K / Esc 关闭', { fontFamily: 'sans-serif', fontSize: '13px', color: '#6b4b2a' }).setOrigin(0.5, 0.5).setScrollFactor(0).setDepth(212);

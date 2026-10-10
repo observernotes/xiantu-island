@@ -70,6 +70,121 @@ try {
     log() {}, levelUpFx() {}, maybeSpTip() {},
   });
 
+  // 学习资格不受新拜入入口开关或数据模式影响，必须在所有发版分支执行。
+  const assertSkillCheck = (p, id, result, context) => {
+    const before = p.exportSave(), storedBefore = saved[saveKey];
+    const spBefore = [p.spLeftFor(0), p.spLeftFor(1)];
+    equal(p.checkSkillPoint(id), result, `${context}: 窗口预检查与实际加点资格一致`);
+    equal(p.exportSave(), before, `${context}: 预检查不改角色状态`);
+    equal(saved[saveKey], storedBefore, `${context}: 预检查不写存档`);
+    equal([p.spLeftFor(0), p.spLeftFor(1)], spBefore, `${context}: 预检查不消耗 SP`);
+  };
+  const assertSkillLocked = (p, id, context) => {
+    assertSkillCheck(p, id, { ok: false, reason: 'locked' }, context);
+    const before = p.exportSave(), storedBefore = saved[saveKey];
+    const spBefore = [p.spLeftFor(0), p.spLeftFor(1)];
+    equal(p.addSkillPoint(id), { ok: false, reason: 'locked' }, `${context}: 学习/升级必须拒绝`);
+    equal(p.exportSave(), before, `${context}: 拒绝加点不改角色、技能、赠级或热键`);
+    equal(saved[saveKey], storedBefore, `${context}: 拒绝加点不写存档`);
+    equal([p.spLeftFor(0), p.spLeftFor(1)], spBefore, `${context}: 拒绝加点不消耗 SP`);
+  };
+  {
+    const p = new Progress();
+    p.level = 10;
+    p.quests.q_breakthrough = { state: 'done', kills: {} };
+    equal(p.grantSkill('spirit_bolt', 1), true, '未入宗回归夹具只赠灵气弹 Lv1');
+    equal(p.skillsUnlocked, true, 'Lv10 突破角色已打开技能系统');
+    equal(p.job, '', 'Lv10 突破角色尚未入宗');
+    equal(p.skills, { spirit_bolt: 1 }, 'Lv10 突破夹具没有宗门技能');
+    equal(p.spLeftFor(1), 3, 'Lv10 未入宗仍有一转 SP=3，不能用点池代替职业检查');
+    p.save();
+    // 首项覆盖候选回归的剑气斩入口，其余覆盖所有宗门的主动、增益和被动。
+    for (const skill of SKILL_LIST.filter(skill => skill.sect !== null)) {
+      assertSkillLocked(p, skill.id, `未入宗/${skill.id}`);
+      equal(p.ownsSkill(skill), false, `未入宗/${skill.id}: 不拥有宗门技能`);
+      const before = p.exportSave();
+      equal(p.grantSkill(skill.id, 1), false, `未入宗/${skill.id}: 奖励入口也不能提前授予宗门技能`);
+      equal(p.exportSave(), before, `未入宗/${skill.id}: 拒绝授予不改状态`);
+
+      // 某些历史/异常档可能已有残留等级；仍不能通过升级入口绕过拜入。
+      p.skills[skill.id] = 1;
+      assertSkillLocked(p, skill.id, `未入宗残留 Lv1/${skill.id}`);
+      delete p.skills[skill.id];
+    }
+    equal(p.skillLevel('sword_qi_slash'), 0, '所有拒绝入口后剑气斩仍为 0');
+    equal(p.spLeftFor(1), 3, '所有拒绝入口后一转 SP 仍为 3');
+    equal(p.ownsSkill(SKILLS.spirit_bolt), true, '未入宗保留通用灵气弹资格');
+    equal(p.ownsSkill({ ...SKILLS.spirit_bolt, job: 1 }), false, '未入宗拒绝 sect=null 的非通用转职技能');
+    // 当前配表没有 job0 点池；注入已获得的通用点，验证实际学习与升级入口。
+    const common = new Progress();
+    common.level = 10;
+    common.quests.q_breakthrough = { state: 'done', kills: {} };
+    const baseEarned = common.spEarned.bind(common);
+    common.spEarned = job => job === 0 ? 3 * SKILLS.spirit_bolt.spCost : baseEarned(job);
+    assertSkillCheck(common, 'spirit_bolt', { ok: true }, '未入宗通用技学习');
+    equal(common.addSkillPoint('spirit_bolt'), { ok: true }, '未入宗仍可花通用点学习灵气弹');
+    assertSkillCheck(common, 'spirit_bolt', { ok: true }, '未入宗通用技升级');
+    equal(common.addSkillPoint('spirit_bolt'), { ok: true }, '未入宗仍可花通用点升级灵气弹');
+    equal(common.skillLevel('spirit_bolt'), 2, '通用学习与升级实际累加等级');
+    equal(common.spLeftFor(0), SKILLS.spirit_bolt.spCost, '通用学习与升级扣对应点池');
+    equal(common.spLeftFor(1), 3, '通用加点不消费一转点池');
+  }
+  {
+    const p = new Progress();
+    p.level = 10; p.job = 'unknown_class';
+    p.save();
+    equal(p.ownsSkill(SKILLS.spirit_bolt), false, '未知职业不能冒充未入宗职业使用通用技能');
+    for (const skill of SKILL_LIST) assertSkillLocked(p, skill.id, `未知职业/${skill.id}`);
+  }
+  for (const cls of CLASS_LIST) {
+    const p = new Progress(), tree = skillsForClass(cls.id);
+    p.level = 10; p.job = cls.id; p.classVersion = 2;
+    p.quests.q_breakthrough = { state: 'done', kills: {} };
+    p.save();
+    for (const skill of tree) {
+      equal(p.ownsSkill(skill), true, `${cls.id}/${skill.id}: 已有职业保留本宗本转学习资格`);
+      equal(p.ownsSkill({ ...skill, job: skill.job + 1 }), false, `${cls.id}/${skill.id}: 相同宗门的不同转职仍锁定`);
+      equal(p.ownsSkill({ ...skill, sect: null }), false, `${cls.id}/${skill.id}: 相同转职不能绕过宗门字段`);
+    }
+    for (const incompatible of SKILL_LIST.filter(skill => skill.sect && (skill.sect !== cls.sect || skill.job !== cls.job))) {
+      equal(p.ownsSkill(incompatible), false, `${cls.id}/${incompatible.id}: 外宗或不同转职不属于当前职业`);
+      assertSkillLocked(p, incompatible.id, `${cls.id}/不匹配职业/${incompatible.id}`);
+      p.skills[incompatible.id] = 1;
+      assertSkillLocked(p, incompatible.id, `${cls.id}/不匹配职业残留 Lv1/${incompatible.id}`);
+      delete p.skills[incompatible.id];
+    }
+    assertSkillLocked(p, 'spirit_bolt', `${cls.id}/已替换通用技能`);
+    const entry = tree.find(skill => skill.key === 'default:A');
+    check(entry, `${cls.id}: 有可学习的本宗入门技能`);
+    const spBefore = p.spLeftFor(entry.job);
+    assertSkillCheck(p, entry.id, { ok: true }, `${cls.id}/本宗学习`);
+    equal(p.addSkillPoint(entry.id), { ok: true }, `${cls.id}: 入口关闭也不影响已有职业学习`);
+    assertSkillCheck(p, entry.id, { ok: true }, `${cls.id}/本宗升级`);
+    equal(p.addSkillPoint(entry.id), { ok: true }, `${cls.id}: 已有职业本宗技能可升级`);
+    equal(p.skillLevel(entry.id), 2, `${cls.id}: 本宗学习与升级实际生效`);
+    equal(p.spLeftFor(entry.job), spBefore - 2 * entry.spCost, `${cls.id}: 本宗技能按表消耗 SP`);
+  }
+  {
+    const p = new Progress();
+    p.level = 20;
+    p.quests = { q_breakthrough: { state: 'done', kills: {} }, q_fox: { state: 'done', kills: {} } };
+    p.skills = { sword_qi_slash: 3, whirl_sword: 1, light_body: 1 };
+    p.skillGifted = { sword_qi_slash: 1, whirl_sword: 1, light_body: 1 };
+    p.hotbar = [null, null, 'sword_qi_slash', 'whirl_sword', 'light_body', null, null, null];
+    const old = p.exportSave();
+    delete old.classVersion; delete old.questRewardVersion;
+    saved[saveKey] = JSON.stringify(old);
+    const migrated = Progress.load();
+    equal(migrated.job, 'tianjian_disciple', '无版本已交妖狐旧档仍迁移为天剑职业');
+    equal(migrated.skillLevel('sword_qi_slash'), 3, '旧天剑档保留剑气斩已学等级');
+    equal(migrated.hotbar, old.hotbar, '旧天剑档保留自定义热键');
+    const spBefore = migrated.spLeftFor(1);
+    assertSkillCheck(migrated, 'sword_qi_slash', { ok: true }, '迁移天剑旧档升级');
+    equal(migrated.addSkillPoint('sword_qi_slash'), { ok: true }, '迁移成天剑的老玩家仍可正常升级');
+    equal(migrated.skillLevel('sword_qi_slash'), 4, '旧天剑档升级实际生效');
+    equal(migrated.spLeftFor(1), spBefore - SKILLS.sword_qi_slash.spCost, '旧天剑档升级正常扣 SP');
+  }
+
   if (dataMode(root) === 'shared') {
     equal(QUESTS.q_breakthrough.rewards.skills, [{ id: 'spirit_bolt', level: 1 }], '突破奖励灵气弹来自新表');
     equal(QUESTS.q_fox.rewards.job, undefined, '妖狐新表不定职业');

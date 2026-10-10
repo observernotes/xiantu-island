@@ -733,10 +733,11 @@ export class Progress {
 
   get classSkills() { return skillsForClass(this.job); }
   get sect() { return classDef(this.job)?.sect ?? ''; }
-  /** 未拜入沿用原剑修技能窗口；拜宗后过滤其他宗门的技能和被动。 */
+  /** 未拜入仅有通用技能资格；宗门和转职阶段均须与当前职业匹配。 */
   ownsSkill(def: SkillDef) {
-    return !(this.sect && CLASS_RULES.replaceCommonSkills.includes(def.id))
-      && (!def.sect || def.sect === (this.sect || CLASS_RULES.unjoinedSkillSect));
+    if (!this.job) return def.sect === null && def.job === 0;
+    const c = classDef(this.job);
+    return !!c && def.sect === c.sect && def.job === c.job;
   }
 
   /**
@@ -935,7 +936,8 @@ export class Progress {
     return true;
   }
 
-  addSkillPoint(id: string): { ok: true } | { ok: false; reason: 'missing' | 'locked' | 'max' | 'req' | 'sp'; req?: string } {
+  /** 窗口与实际学习入口共用的检查，不改变技能、点数或存档。 */
+  checkSkillPoint(id: string): { ok: true } | { ok: false; reason: 'missing' | 'locked' | 'max' | 'req' | 'sp'; req?: string } {
     const def = SKILLS[id];
     if (!def) return { ok: false, reason: 'missing' };
     if (!this.skillsUnlocked || !this.ownsSkill(def)) return { ok: false, reason: 'locked' };
@@ -943,10 +945,17 @@ export class Progress {
     if (!this.prereqMet(def)) return { ok: false, reason: 'req', req: this.reqText(def) };
     const cost = def.spCost ?? 1;
     if (this.spLeftFor(def.job) < cost) return { ok: false, reason: 'sp' };
+    return { ok: true };
+  }
+
+  addSkillPoint(id: string) {
+    const result = this.checkSkillPoint(id);
+    if (!result.ok) return result;
+    const def = SKILLS[id];
     this.skills[id] = this.skillLevel(id) + 1;
     if (def.type !== 'passive') this.autoBind(id);
     this.save();
-    return { ok: true };
+    return result;
   }
 
   skillMpCost(id: string) {
