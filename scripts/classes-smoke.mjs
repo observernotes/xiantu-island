@@ -295,16 +295,18 @@ try {
             scene.events.once('create', () => {
               scene.dialog.close(); scene.regenMp = () => {}; scene.prog.mp = scene.prog.maxMp;
               scene.player.state2 = 'ground'; scene.player.skillRooted = false; scene.player.attackLockUntil = 0;
-              const checkpoint = { deadline, initialRemaining, readyAt: scene.prog.skillCooldowns[id]?.readyAt,
-                remaining: scene.combat.cds.get(id)?.readyAt - Date.now() };
+              const checkedAt = Date.now(), combatReadyAt = scene.combat.cds.get(id)?.readyAt ?? null;
+              const checkpoint = { deadline, initialRemaining, checkedAt, combatReadyAt,
+                readyAt: scene.prog.skillCooldowns[id]?.readyAt, cost: scene.prog.skillMpCost(id) };
               // 与恢复快照同一时刻重试，避免RPC在真实冷却到期后才送来按键。
               let casts = 0;
               const countCast = event => { if (event.id === id) casts++; };
               scene.events.on('skill:cast', countCast);
               const mp = scene.prog.mp;
               scene.combat.tryCast(scene.prog.hotbar.indexOf(id));
+              const retryCompletedAt = Date.now();
               scene.events.off('skill:cast', countCast);
-              window.__cooldownSmoke = { ...checkpoint, blocked: { casts, mpLoss: mp - scene.prog.mp } };
+              window.__cooldownSmoke = { ...checkpoint, retryCompletedAt, retry: { casts, mpLoss: mp - scene.prog.mp } };
             });
             scene.scene.restart({ map: 'qingyun_village' });
           };
@@ -323,9 +325,25 @@ try {
         const checkpoint = await page.evaluate(() => window.__cooldownSmoke);
         assert.ok(checkpoint.initialRemaining > 0, `${id}: 独立冷却没有写入进度`);
         assert.equal(checkpoint.readyAt, checkpoint.deadline, `${id}: 换图重置存档冷却`);
-        assert.ok(checkpoint.remaining > 0, `${id}: 换图没有恢复战斗冷却`);
-        assert.deepEqual(checkpoint.blocked, { casts: 0, mpLoss: 0 }, `${id}: 可通过换图绕过独立冷却`);
-        cooldownAcrossMap = { id, retained: true, blocked: true };
+        const stillCoolingDown = checkpoint.deadline > checkpoint.checkedAt;
+        // 换图耗时也计入墙钟冷却；自然到期后可不恢复战斗冷却，并应允许再次施放。
+        if (stillCoolingDown) {
+          assert.equal(checkpoint.combatReadyAt, checkpoint.deadline, `${id}: 换图没有恢复战斗冷却`);
+        } else {
+          assert.ok(checkpoint.combatReadyAt === null || checkpoint.combatReadyAt === checkpoint.deadline,
+            `${id}: 换图重置已到期的战斗冷却`);
+        }
+        if (checkpoint.deadline > checkpoint.retryCompletedAt) {
+          assert.deepEqual(checkpoint.retry, { casts: 0, mpLoss: 0 }, `${id}: 可通过换图绕过独立冷却`);
+        } else if (!stillCoolingDown) {
+          assert.deepEqual(checkpoint.retry, { casts: 1, mpLoss: checkpoint.cost }, `${id}: 自然到期后仍无法施放`);
+        } else {
+          // 同步重试也可能恰好跨过截止时间，两种完整结果都符合真实冷却。
+          assert.ok(checkpoint.retry.casts === 0 && checkpoint.retry.mpLoss === 0
+            || checkpoint.retry.casts === 1 && checkpoint.retry.mpLoss === checkpoint.cost,
+            `${id}: 冷却到期边界的施放次数或灵力消耗错误`);
+        }
+        cooldownAcrossMap = { id, retained: true, blocked: checkpoint.retry.casts === 0 };
       }
       // 调用真实任务 after/turnIn 与 GameScene.giveRewards，通关仅由胜利回调模拟。
       const quest = questRows.find(row => row.id === `q_sect_${sect}`);
