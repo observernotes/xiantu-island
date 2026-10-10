@@ -9,7 +9,7 @@ import { createServer, preview } from 'vite';
 import { findRoot } from './root.mjs';
 
 const projectRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-process.env.XT_DATA = 'snapshot';
+process.env.XT_DATA ??= 'snapshot';
 const dataRoot = findRoot(projectRoot);
 const { skills } = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/skills.json'), 'utf8'));
 const allSkills = Object.fromEntries(skills.map(row => [row.id, row]));
@@ -421,15 +421,22 @@ try {
         const trial = quest.objectives.find(objective => objective.type === 'trial')?.trial;
         if (trial) scene.quests.onTrialComplete(trial);
         const reward = scene.quests.talk(quest.turnIn).after?.();
+        const beforeRewardJob = p.job;
         if (reward) scene.giveRewards(reward.quest, reward.broke);
-        return { accepted, early, completed: p.quests[quest.id]?.state, job: p.job, appearance: p.appearance,
+        return { accepted, early, beforeRewardJob, completed: p.quests[quest.id]?.state, job: p.job, appearance: p.appearance,
+          skills: p.skills, gifted: p.skillGifted, refund: p.classRefundSp,
           playerTexture: scene.player.texture.key, hotbar: p.hotbar, robe: p.equip.robe, stones: p.stones,
           duplicate: scene.quests.turnIn(quest.id) ?? null, save: localStorage.getItem('xiantu_save_v1') };
       }, quest);
       assert.equal(questCheck.accepted, true, `${job}: 真实任务不可接`);
       assert.equal(questCheck.early, false, `${job}: 未通关任务可交`);
       assert.equal(questCheck.completed, 'done', `${job}: 真实交付未完成`);
+      assert.equal(questCheck.beforeRewardJob, '', `${job}: 正式发奖前已经定职`);
       assert.equal(questCheck.job, job, `${job}: GameScene任务奖励未定下职业`);
+      const gifted = Object.fromEntries((quest.rewards.skills ?? []).map(skill => [skill.id, skill.level]));
+      assert.deepEqual(questCheck.skills, gifted, `${job}: 正式拜入赠技不完全遵循当前任务表`);
+      assert.deepEqual(questCheck.gifted, gifted, `${job}: 正式拜入赠技被计为付费等级`);
+      assert.equal(questCheck.refund, 0, `${job}: 未花通用技能点却获得退款`);
       assert.equal(questCheck.appearance, initial.appearance, `${job}: 任务奖励没有换道袍`);
       assert.equal(questCheck.stones, quest.rewards.spiritStone, `${job}: 任务灵石没有发放`);
       assert.equal(questCheck.duplicate, null, `${job}: 重复交付发奖励`);

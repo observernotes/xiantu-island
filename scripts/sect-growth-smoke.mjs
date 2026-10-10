@@ -158,7 +158,7 @@ try {
     if (!sessionStorage.getItem('sect-smoke-created')) {
       // 等级/前置为开发夹具，正式拜入事实必须由任务交付产生。
       localStorage.setItem('xiantu_save_v1', JSON.stringify({ name: '宗门服务冒烟修士', level: 30, exp: 0,
-        hp: 0, mp: 0, job: '', inventory: {}, quests: { q_fox: { state: 'done', kills: {} } }, ageUpdatedAt: initial }));
+        hp: 0, mp: 0, job: '', questRewardVersion: 1, inventory: {}, quests: { q_fox: { state: 'done', kills: {} } }, ageUpdatedAt: initial }));
       sessionStorage.setItem('sect-smoke-created', '1');
     }
   });

@@ -12,6 +12,7 @@ import { GAME_PHASE, inPhase, NPCS, QUESTS, QUEST_NAMES, QUEST_ORDER, t } from '
 import { ferryLockedReason } from './Ferry';
 import { Progress } from './Progress';
 import { QuestSystem } from './QuestSystem';
+import { SKILLS } from './skills';
 import { realDay, Seclusion } from './Seclusion';
 import { dailyContribution, dailyQuestDay } from './DailyQuests';
 import { advancePatrol, detectProgress, inShadow, seesPlayer, shadowPieces, startPatrol, targetMotion } from './TrialMotion';
@@ -40,6 +41,43 @@ globalThis.localStorage = {
   key: (index: number) => Object.keys(saved)[index] ?? null,
   get length() { return Object.keys(saved).length; },
 };
+
+// 新奖励表：突破只教通用技，妖狐发五宗帖，正式拜入才送天剑三技。
+{
+  const breakthrough = QUESTS.q_breakthrough, fox = QUESTS.q_fox, join = QUESTS.q_sect_tianjian;
+  same(breakthrough.rewards.skills, [{ id: 'spirit_bolt', level: 1 }], '突破奖励为灵气弹');
+  eq(fox.rewards.job, undefined, '妖狐奖励不定职业');
+  same(fox.rewards.skills ?? [], [], '妖狐奖励不送旧剑徒功法');
+  ok(fox.rewards.items?.some(item => item.item === 'five_sect_token' && item.count === 1), '妖狐奖励包含五宗帖');
+  same(join.rewards.skills, [
+    { id: 'sword_qi_slash', level: 1 }, { id: 'whirl_sword', level: 1 }, { id: 'light_body', level: 1 },
+  ], '天剑正式拜入奖励三招');
+
+  const p = new Progress(); p.level = fox.reqLevel;
+  p.quests.q_breakthrough = { state: 'done', kills: {} };
+  eq(p.backfillQuestSkills(), true, '突破任务补发读取新表通用技');
+  eq(p.skillLevel('spirit_bolt'), 1, '灵气弹赠送一级');
+  eq(p.skillGifted.spirit_bolt, 1, '灵气弹赠级不占付费点数');
+  p.skills.spirit_bolt = 4;
+  p.quests.q_fox = { state: 'done', kills: {} };
+  p.addItem('five_sect_token', 1);
+  eq(p.backfillQuestSkills(), false, '交妖狐不补发旧剑技');
+  const hotbar = [...p.hotbar]; p.save();
+  const loaded = Progress.load();
+  eq(loaded.job, '', '新档交妖狐后刷新不定职');
+  same(loaded.skills, { spirit_bolt: 4 }, '未正式拜入保留通用技能付费等级');
+  same(loaded.hotbar, hotbar, '未正式拜入保留通用技能热键');
+  eq(loaded.count('five_sect_token'), 1, '刷新保留五宗帖');
+  loaded.quests[join.id] = { state: 'done', kills: {} };
+  eq(loaded.backfillClass(), true, '已正式交付记录迁移为剑徒');
+  eq(loaded.skillLevel('spirit_bolt'), 0, '正式拜入替换灵气弹');
+  eq(loaded.classRefundSp, 3 * SKILLS.spirit_bolt.spCost, '只退灵气弹三个付费等级');
+  eq(loaded.hotbar[hotbar.indexOf('spirit_bolt')], 'sword_qi_slash', '原灵气弹热键换为剑气斩');
+  loaded.save();
+  const joined = Progress.load();
+  eq(joined.backfillClass(), false, '正式拜入刷新后迁移幂等');
+  eq(joined.classRefundSp, loaded.classRefundSp, '刷新不重复返点');
+}
 
 // G8：航线来自 NPC 原表；叠加门槛只能提示第一个未满足条件，任务必须交付完成。
 {

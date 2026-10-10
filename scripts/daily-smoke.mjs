@@ -117,7 +117,7 @@ try {
     Date.now = () => window.__dailyNow;
     if (!sessionStorage.getItem('daily-smoke-created')) {
       localStorage.setItem('xiantu_save_v1', JSON.stringify({ name: '日常冒烟修士', level: 29, exp: 0, hp: 0, mp: 0,
-        job: '', inventory: {}, quests: { q_fox: { state: 'done', kills: {} } }, ageUpdatedAt: initial }));
+        job: '', questRewardVersion: 1, inventory: {}, quests: { q_fox: { state: 'done', kills: {} } }, ageUpdatedAt: initial }));
       sessionStorage.setItem('daily-smoke-created', '1');
     }
   });

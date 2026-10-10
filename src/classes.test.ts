@@ -97,11 +97,13 @@ for (const job of CLASS_LIST) {
   same({ job: p.job, skills: p.skills, hotbar: p.hotbar }, unjoined, `${job.id}: 未拜入角色读档不变`);
   eq(p.advanceClass(job.id), true, `${job.id}: 可以首次拜入`);
   eq(p.job, job.id, `${job.id}: 职业落定`);
-  eq(p.hotbar[0], tree.find(skill => skill.key === 'default:A')?.id, `${job.id}: 新拜入入门技遵循默认 A 键`);
+  eq(p.hotbar[0], tree.find(skill => skill.key === 'default:A')?.id, `${job.id}: 新拜入入门技继承灵气弹默认 A 键`);
   same(p.classSkills.map(row => row.id), expectedTrees[job.id], `${job.id}: 运行时树来自本职业`);
   for (const skill of tree) {
-    eq(p.skillLevel(skill.id), skill.type === 'passive' ? 0 : 1, `${job.id}: 只赠三招 Lv1`);
-    if (skill.type !== 'passive') ok(p.hotbar.includes(skill.id), `${skill.id}: 赠技绑定快捷键`);
+    const giftLevel = quest.rewards.skills?.find(gift => gift.id === skill.id)?.level ?? 0;
+    eq(p.skillLevel(skill.id), giftLevel, `${job.id}: 赠技等级完全来自正式拜入表`);
+    eq(p.skillGifted[skill.id] ?? 0, giftLevel, `${skill.id}: 表内赠级记录不算付费等级`);
+    if (giftLevel > 0 && skill.type !== 'passive') ok(p.hotbar.includes(skill.id), `${skill.id}: 赠技绑定快捷键`);
   }
   ok(p.hotbar.every(id => id === null || tree.some(row => row.id === id && row.type !== 'passive')), `${job.id}: 快捷栏没有外宗/被动`);
   eq(p.skillLevel('spirit_bolt'), 0, `${job.id}: 替换灵气弹`);
@@ -187,7 +189,7 @@ for (const job of CLASS_LIST) {
   eq(new QuestSystem(migrated).available(other.joinQuest), false, `${job.id}: 已入宗不提供外宗任务`);
 }
 
-// paid spirit_bolt 是 job0 技能：已付点跨池退还一次，任务赠送等级不能重复退。
+// 新表突破赠 spirit_bolt Lv1；旧档付费等级才跨池退还，赠级与重复读档不再退款。
 {
   const p = new Progress(); p.level = 10; p.grantSkill('spirit_bolt', 1);
   p.skills.spirit_bolt = 4; p.skillMastery.spirit_bolt = 99;
@@ -199,6 +201,9 @@ for (const job of CLASS_LIST) {
   eq(p.buffs.some(buff => buff.id === 'spirit_bolt'), false, '替换技能移除残留增益');
   p.backfillClass(); p.save(); const reload = Progress.load();
   eq(reload.classRefundSp, p.classRefundSp, '退点记录持久化且不重复');
+  const giftedOnly = new Progress(); giftedOnly.level = 10;
+  giftedOnly.grantSkill('spirit_bolt', 1); giftedOnly.advanceClass('tianjian_disciple');
+  eq(giftedOnly.classRefundSp, 0, '仅突破赠级换宗门入门技不产生退款');
 }
 
 // 客户端属性/后摇/伤害 getter 必须与设计模型使用的效果契约一致。
