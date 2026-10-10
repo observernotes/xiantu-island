@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { FEEL, SPEC } from '../config/feel';
 import { GROWTH } from '../data';
 import { pixelsFromMovePoints } from '../move';
+import { BASE_PLAYER_ATLAS, syncPlayerAppearance } from '../Appearance';
 import type { Rope } from './MapBuilder';
 
 export type PState = 'ground' | 'air' | 'rope' | 'hurt';
@@ -30,6 +31,12 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   invulnUntil = 0;
   onAttack?: (hit: Phaser.Geom.Rectangle) => void;
   atlas = false;
+  /** 读取当前装备，读档与换图后由 GameScene 重新绑定。 */
+  getAppearance: () => string | undefined = () => undefined;
+  animationKey(action: string) { return `${this.texture.key}_${action}`; }
+  syncAppearance() {
+    if (syncPlayerAppearance(this, this.getAppearance())) this.atlas = true;
+  }
   /** 技能后摇期间锁移动。剑气斩可被跳跃取消。 */
   skillRooted = false;
   skillCancelOnJump = false;
@@ -52,8 +59,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   shadowAlpha = 1;
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
-    const atlas = scene.textures.exists('player_sword_m');
-    super(scene, x, y, atlas ? 'player_sword_m' : Player.makeTexture(scene));
+    const atlas = scene.textures.exists(BASE_PLAYER_ATLAS);
+    super(scene, x, y, atlas ? BASE_PLAYER_ATLAS : Player.makeTexture(scene));
     this.atlas = atlas;
     scene.add.existing(this);
     scene.physics.add.existing(this);
@@ -183,7 +190,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     if (inp.attackDown && time >= this.attackReadyAt && time >= this.attackLockUntil) {
       this.attackReadyAt = time + FEEL.attackCooldownMs;
       this.attackLockUntil = time + FEEL.attackCooldownMs * 0.8;
-      if (this.atlas) this.play('player_sword_m_attack', true);
+      if (this.atlas) this.play(this.animationKey('attack'), true);
       this.scene.time.delayedCall(FEEL.attackHitDelayMs, () => {     // 第 2 帧出剑判定
         const w = FEEL.attackRange, h = FEEL.attackHeight;
         const x = this.facing > 0 ? b.right - 4 : b.left - w + 4;
@@ -222,7 +229,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   private updateAnim(time: number) {
-    const k = 'player_sword_m_';
+    const k = `${this.texture.key}_`;
     const cur = this.anims.currentAnim?.key;
     if (cur === k + 'attack' && this.anims.isPlaying) return;
     let next: string;

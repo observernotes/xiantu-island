@@ -80,7 +80,7 @@ export class SkillCombat {
       p.skillRooted = act.recoverMs > 0;
       p.skillCancelOnJump = !!act.jumpCancel;
       if (act.superArmorMs) p.superArmorUntil = now + act.superArmorMs;
-      const atk = 'player_sword_m_attack';
+      const atk = p.animationKey('attack');
       if (p.atlas && this.scene.anims.exists(atk)) {
         p.play(atk);
         p.anims.timeScale = 1;

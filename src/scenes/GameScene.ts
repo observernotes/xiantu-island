@@ -123,6 +123,8 @@ export class GameScene extends Phaser.Scene {
     this.player = new Player(this, at ? at.x : this.map.spawn.x, at ? at.y : this.map.spawn.y);
     this.player.hp = this.prog.hp; this.player.maxHp = this.prog.maxHp;
     this.player.getMovePoints = () => this.prog.currentMovePoints();
+    this.player.getAppearance = () => this.prog.appearance;
+    this.player.syncAppearance();
     this.combat = new SkillCombat(this);
 
     const oneWayCheck = (a: any, plat: any) => {
@@ -353,6 +355,7 @@ export class GameScene extends Phaser.Scene {
   invText!: Phaser.GameObjects.Text;
 
   update(time: number, delta: number) {
+    this.player.syncAppearance();
     const k = this.keys, J = Phaser.Input.Keyboard.JustDown;
     for (const p of this.parallax) p.ts.tilePositionX = this.cameras.main.scrollX * p.f;
     this.updateShots(time);
@@ -569,7 +572,7 @@ export class GameScene extends Phaser.Scene {
   playerDie() {
     const p = this.player;
     p.dead = true; p.state2 = 'hurt'; p.hurtUntil = Infinity;
-    if (p.atlas) p.play('player_sword_m_die');
+    if (p.atlas) p.play(p.animationKey('die'));
     if (this.trial && !this.trial.ended) { this.trial.end('dead'); return; }
     if (this.trial) return;
     if (this.map.trial) {
@@ -637,7 +640,7 @@ export class GameScene extends Phaser.Scene {
     d.label?.destroy(); d.floatTw?.stop(); d.shadow?.destroy();
     this.tweens.add({ targets: d, x: this.player.x, y: this.player.y - 70, alpha: 0, duration: 200, onComplete: () => d.destroy() });
     if (d.itemId === 'spirit_stone') { this.prog.stones += d.count; this.log(`获得灵石 ${d.count}`, '#7ff0d0'); }
-    else if (ITEMS[d.itemId]?.type === 'equip') { const on = this.prog.gainEquip(d.itemId); this.log(`获得 ${ITEMS[d.itemId].name}${on ? '（已自动装备）' : ''}`, '#9fd0ff'); }
+    else if (ITEMS[d.itemId]?.type === 'equip') { const on = this.prog.gainEquip(d.itemId); this.player.syncAppearance(); this.log(`获得 ${ITEMS[d.itemId].name}${on ? '（已自动装备）' : ''}`, '#9fd0ff'); }
     else { this.prog.addItem(d.itemId, d.count); this.log(`获得 ${ITEMS[d.itemId]?.name ?? d.itemId} ×${d.count}`, '#ffffff'); }
   }
 
@@ -863,7 +866,7 @@ export class GameScene extends Phaser.Scene {
     if (rw.exp) this.applyExp(this.prog.gainExp(rw.exp, this.prog.level));
     if (rw.spiritStone) { this.prog.stones += rw.spiritStone; this.log(`获得灵石 ${rw.spiritStone}`, '#7ff0d0'); }
     for (const it of rw.items ?? []) {
-      if (ITEMS[it.item]?.type === 'equip') { const on = this.prog.gainEquip(it.item); this.log(`获得 ${ITEMS[it.item].name}${on ? '（已自动装备）' : ''}`, '#9fd0ff'); }
+      if (ITEMS[it.item]?.type === 'equip') { const on = this.prog.gainEquip(it.item); this.player.syncAppearance(); this.log(`获得 ${ITEMS[it.item].name}${on ? '（已自动装备）' : ''}`, '#9fd0ff'); }
       else { this.prog.addItem(it.item, it.count); this.log(`获得 ${ITEMS[it.item]?.name ?? it.item} ×${it.count}`, '#ffffff'); }
     }
     if (rw.job) this.prog.job = rw.job;
@@ -922,7 +925,7 @@ export class GameScene extends Phaser.Scene {
     const p = this.player, cam = this.cameras.main;
     const dim = this.add.rectangle(640, 360, 1280, 720, 0x000000, 0).setScrollFactor(0).setDepth(150);
     this.tweens.add({ targets: dim, fillAlpha: 0.6, duration: 400 });
-    if (p.atlas) p.play('player_sword_m_sit');
+    if (p.atlas) p.play(p.animationKey('sit'));
     // 主角和突破特效都要在 dim 层（150）上方，否则会被一起压暗：back 155 < 主角 158 < front 165
     const pDepth = p.depth; p.setDepth(158);
     if (cue === 'breakthrough' && this.textures.exists('fx_breakthrough_success')) {

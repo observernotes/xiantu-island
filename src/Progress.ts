@@ -128,6 +128,14 @@ export class Progress {
   private equipSum(stat: string) {
     return Object.values(this.equip).reduce((s, id) => s + (ITEMS[id]?.stats?.[stat] ?? 0), 0);
   }
+  /** 外观派生自当前装备，不额外存档；旧狐裘表没有 appearance，在代码中兼容。 */
+  get appearance(): string | undefined {
+    for (const id of Object.values(this.equip)) {
+      const appearance = ITEMS[id]?.appearance ?? (id === 'fox_robe' ? 'fox_robe' : undefined);
+      if (typeof appearance === 'string' && appearance.length > 0) return appearance;
+    }
+    return undefined;
+  }
   get maxHp() { return Math.round((GROWTH.base.hp + GROWTH.perLevel.hp * (this.level - 1) + this.statBonus('hp') + this.equipSum('hp')) * this.realmMul('hpMul') * this.debuffMul('hp')); }
   get maxMp() { return Math.round((GROWTH.base.mp + GROWTH.perLevel.mp * (this.level - 1) + this.statBonus('mp')) * (1 + this.passiveBonus('mpMaxRatio')) * this.realmMul('mpMul') * this.debuffMul('mp')); }
   /** 突破奖励倍率：已领奖励的境界各乘一次（同一境界重复记录也只算一次） */
