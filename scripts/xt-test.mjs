@@ -55,10 +55,11 @@ try {
   page.setDefaultTimeout(15000);
   page.on('pageerror', error => browserErrors.push(error.message));
   // 在首次 preload 前拦截一张可缺省背景图，不改动真实资源文件。
+  // 启动时的存在性探测（HEAD，G15）放行，只让 Phaser 的 GET 失败，模拟探测后文件丢失，仍须进入 loaderror。
   await page.route('**/art/tiles/bg_*_far.png', async route => {
     const requested = route.request().url();
     blockedImage ??= requested;
-    if (requested === blockedImage) await route.abort('failed');
+    if (requested === blockedImage && route.request().method() !== 'HEAD') await route.abort('failed');
     else await route.continue();
   });
   // HTTP 200 的无效 PNG 走图片解码失败入口，仍须收录 loaderror / console.error。
