@@ -179,7 +179,8 @@ try {
     boss.summons = [summoned, kept]; boss.usedOnce.add('fox_summon');
     boss.startSkill(dash, 0, player);
     const game = Object.assign(Object.create(GameScene.prototype), scene, {
-      player, mobs: [boss, summoned, kept], prog: { hp: 0, mp: 0, maxHp: 194, maxMp: 46 }, log() {},
+      player, mobs: [boss, summoned, kept], portalVisuals: [],
+      prog: { hp: 0, mp: 0, maxHp: 194, maxMp: 46 }, log() {},
     });
     const calls = [];
     game.time = { now: 100, delayedCall: (ms, fn) => calls.push({ ms, fn }) };

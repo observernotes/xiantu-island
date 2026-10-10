@@ -19,6 +19,8 @@ image.file = path.join(root, 'public', image.relative);
 const metadataFile = path.join(root, 'public/art/tiles/tiles_altar.json');
 const manifestFile = path.join(root, 'src/gen/assets.json');
 const expectedVariants = { '5': { tileset: 'tiles_altar_fill_variants', frames: [0, 1, 2], includeBase: true } };
+// UI-1 74041a6 的等权候选顺序：原 #5、外部帧 0/1/2。
+const expectedFillCounts = { base: 17, variant0: 23, variant1: 26, variant2: 24, other: 0 };
 const sha256 = async file => createHash('sha256').update(await fs.readFile(file)).digest('hex');
 const json = async file => JSON.parse(await fs.readFile(file, 'utf8'));
 const emptyEvents = () => ({ console: [], page: [], request: [], http: [], assets: [], head: [] });
@@ -31,7 +33,7 @@ let assertions = 0;
 const equal = (actual, expected, message) => { assert.deepEqual(actual, expected, message); assertions++; };
 const check = (actual, message) => { assert.ok(actual, message); assertions++; };
 
-let browser, server, activeChild, backupDir, temporaryDir, interrupted, failure, cleaning = false;
+let browser, server, activeChild, backupDir, temporaryDir, interrupted, failure, baselineTiles, cleaning = false;
 const result = { mode: 'preview', map: 'trial_foundation_altar', port, passed: false, assertions: 0,
   baseline: null, missing: null, baselineState: null, missingState: null,
   manifestOnly: [], events: {}, restored: null, cleanupErrors: [] };
@@ -118,6 +120,35 @@ async function verifyManifestOnly(label, metadataHash, imagePresent) {
   }
 }
 
+async function readMapState(page, cells) {
+  await page.waitForFunction(() => {
+    const scene = window.__scene;
+    return scene?.map?.id === 'trial_foundation_altar' && scene.player?.active && scene.dialog;
+  }, null, { timeout: 25000 });
+  await page.waitForTimeout(350);
+  return page.evaluate(coordinates => {
+    const scene = window.__scene;
+    const layers = scene.children.list.filter(object => object.type === 'TilemapLayer');
+    const layer = layers[0], sets = layer?.tileset ?? [];
+    const renderedTiles = layer?.layer.data.map(line => line.map(tile => {
+      const source = sets.find(set => tile.index >= set.firstgid && tile.index < set.firstgid + set.total);
+      return { tileset: source?.name ?? null, frame: source ? tile.index - source.firstgid : null };
+    }));
+    const tiles = coordinates.map(({ col, row }) => ({ col, row, ...renderedTiles?.[row]?.[col] }));
+    const fillCounts = { base: 0, variant0: 0, variant1: 0, variant2: 0, other: 0 };
+    for (const tile of tiles) {
+      if (tile.tileset === 'tiles_altar' && tile.frame === 5) fillCounts.base++;
+      else if (tile.tileset === 'tiles_altar_fill_variants' && [0, 1, 2].includes(tile.frame)) fillCounts[`variant${tile.frame}`]++;
+      else fillCounts.other++;
+    }
+    return { tileLayers: layers.length, tileSets: sets.map(set => set.name), fillCells: coordinates.length, fillCounts,
+      variantCells: fillCounts.variant0 + fillCounts.variant1 + fillCounts.variant2,
+      variantTexturePresent: scene.textures.exists('tiles_altar_fill_variants'),
+      variants: scene.cache.json.get('tiles_altar_meta')?.variants,
+      testBridgePresent: !!window.__xt, sampleCells: tiles.slice(0, 12), renderedTiles };
+  }, cells);
+}
+
 async function phase(outDir, label, cells) {
   checkInterrupted();
   server = await preview({ root, build: { outDir }, logLevel: 'error',
@@ -125,6 +156,10 @@ async function phase(outDir, label, cells) {
   const context = await browser.newContext({ viewport: { width: 1280, height: 720 }, timezoneId: 'Asia/Shanghai' });
   const events = emptyEvents();
   try {
+    const baseURL = server.resolvedUrls?.local?.[0];
+    check(baseURL, `${label} preview 没有提供可访问地址`);
+    const altarURL = new URL(baseURL);
+    altarURL.searchParams.set('map', 'trial_foundation_altar');
     const page = await context.newPage();
     page.on('console', message => { if (message.type() === 'error') events.console.push(message.text()); });
     page.on('pageerror', error => events.page.push(error.message));
@@ -137,47 +172,28 @@ async function phase(outDir, label, cells) {
     page.on('response', response => {
       if (response.status() >= 400) events.http.push({ status: response.status(), url: response.url() });
     });
-    await page.goto(`http://127.0.0.1:${port}/?map=trial_foundation_altar`, { waitUntil: 'networkidle', timeout: 30000 });
-    await page.waitForFunction(() => {
-      const scene = window.__scene;
-      return scene?.map?.id === 'trial_foundation_altar' && scene.player?.active && scene.dialog;
-    }, null, { timeout: 25000 });
-    await page.waitForTimeout(350);
-    const state = await page.evaluate(coordinates => {
-      const scene = window.__scene;
-      const layer = scene.children.list.find(object => object.type === 'TilemapLayer');
-      const sets = layer?.tileset ?? [];
-      const tiles = coordinates.map(({ col, row }) => {
-        const index = layer?.layer.data[row]?.[col]?.index;
-        const source = sets.find(set => index >= set.firstgid && index < set.firstgid + set.total);
-        return { col, row, index, tileset: source?.name ?? null, frame: source ? index - source.firstgid : null };
-      });
-      const fillCounts = { base: 0, variant0: 0, variant1: 0, variant2: 0, other: 0 };
-      for (const tile of tiles) {
-        if (tile.tileset === 'tiles_altar' && tile.frame === 5) fillCounts.base++;
-        else if (tile.tileset === 'tiles_altar_fill_variants' && [0, 1, 2].includes(tile.frame)) fillCounts[`variant${tile.frame}`]++;
-        else fillCounts.other++;
-      }
-      return { tileSets: sets.map(set => set.name), fillCells: coordinates.length, fillCounts,
-        variantCells: fillCounts.variant0 + fillCounts.variant1 + fillCounts.variant2,
-        variantTexturePresent: scene.textures.exists('tiles_altar_fill_variants'),
-        variants: scene.cache.json.get('tiles_altar_meta')?.variants,
-        testBridgePresent: !!window.__xt, sampleCells: tiles.slice(0, 12) };
-    }, cells);
+    await page.goto(altarURL.href, { waitUntil: 'networkidle', timeout: 30000 });
+    const { renderedTiles, ...state } = await readMapState(page, cells);
     result[`${label}State`] = state;
     equal(state.testBridgePresent, false, `${label} 必须使用正式构建`);
+    equal(state.tileLayers, 1, `${label} 原 #5 和外部变体必须在同一图层`);
     equal(state.variants, expectedVariants, `${label} 没有加载外部 variants 配置`);
     equal(state.fillCells, 90, `${label} 筑基台 #5 满铺格数变化`);
     equal(state.fillCounts.other, 0, `${label} 存在错误的 #5 满铺格`);
     equal(state.variantTexturePresent, label === 'baseline', `${label} 变体纹理存在性错误`);
     if (label === 'baseline') {
       equal([...state.tileSets].sort(), ['tiles_altar', 'tiles_altar_fill_variants'], '正常图层没有使用外部图集');
-      check(state.fillCounts.base > 0, '正常图层没有保留原 #5');
-      for (const frame of [0, 1, 2]) check(state.fillCounts[`variant${frame}`] > 0, `正常图层没有使用变体 ${frame}`);
+      equal(state.fillCounts, expectedFillCounts, 'E-3 原 #5/变体 0/1/2 分布与 UI-1 不一致');
+      baselineTiles = renderedTiles;
+      await page.reload({ waitUntil: 'networkidle', timeout: 30000 });
+      equal((await readMapState(page, cells)).renderedTiles, baselineTiles, '重载正式页面改变了坐标确定性选块');
       check(events.assets.length > 0, '正常构建没有请求变体图片');
     } else {
       equal(state.tileSets, ['tiles_altar'], '缺图没有仅保留 tiles_altar');
       equal(state.fillCounts, { base: 90, variant0: 0, variant1: 0, variant2: 0, other: 0 }, '缺图未全部回退原 #5');
+      const fillCoordinates = new Set(cells.map(({ col, row }) => `${col},${row}`));
+      const withoutFill = tiles => tiles.flatMap((line, row) => line.filter((tile, col) => !fillCoordinates.has(`${col},${row}`)));
+      equal(withoutFill(renderedTiles), withoutFill(baselineTiles), '缺图改变了非 #5 图块（含边缘与装饰）');
       equal(events.assets.length, 0, `缺图仍请求变体图片：${JSON.stringify(events.assets)}`);
     }
     for (const [kind, rows] of Object.entries(events).filter(([kind]) => ['console', 'page', 'request', 'http', 'head'].includes(kind)))
