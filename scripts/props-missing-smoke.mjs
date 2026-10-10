@@ -1,22 +1,23 @@
-// 自包含正式构建冒烟：从 public 移走全部 prop PNG，只重建清单再打包，最后还原素材与清单。
+// 共享 preview 通过清单改写模拟缺图；独立运行时移走 prop PNG 并重建正式构建，最后还原。
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
-import net from 'node:net';
 import { createHash } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { createIsolatedBuild, childBuildEnv, preview } from './isolated-build.mjs';
+import { inspectSharedPreview, installMissingManifest } from './shared-smoke-preview.mjs';
 import { chromium } from '/tmp/pwt/node_modules/playwright-core/index.mjs';
 
 const projectRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-assert.equal(process.argv.length, 2, 'prop 缺图冒烟使用正式 preview，不接受参数');
-const requestedPort = process.env.XT_TEST_PORT === undefined ? undefined : Number(process.env.XT_TEST_PORT);
-if (requestedPort !== undefined)
-  assert.ok(Number.isInteger(requestedPort) && requestedPort > 0 && requestedPort < 65536, 'XT_TEST_PORT 必须是有效端口');
-const isolated = await createIsolatedBuild(projectRoot, 'props-missing');
-const root = isolated.root;
+assert.equal(process.argv.length, 2, 'prop 缺图冒烟使用 preview，不接受参数');
+const externalURL = process.env.XT_SMOKE_BASE_URL?.trim();
+const requestedPort = externalURL ? 0 : Number(process.env.XT_TEST_PORT ?? 0);
+if (!externalURL)
+  assert.ok(Number.isInteger(requestedPort) && requestedPort >= 0 && requestedPort < 65536, 'XT_TEST_PORT 必须是有效端口（0 表示随机空闲端口）');
+const isolated = externalURL ? undefined : await createIsolatedBuild(projectRoot, 'props-missing');
+const root = isolated?.root ?? projectRoot;
 const spriteDir = path.join(root, 'public/art/sprites');
 const assets = [];
 const sha256 = async file => createHash('sha256').update(await fs.readFile(file)).digest('hex');
@@ -33,7 +34,8 @@ const equal = (actual, expected, message) => { assert.deepEqual(actual, expected
 const check = (actual, message) => { assert.ok(actual, message); assertions++; };
 
 let browser, server, activeChild, backupDir, temporaryDir, interrupted, failure;
-const result = { mode: 'preview', passed: false, assertions: 0, assetCount: 0, baseline: null, missing: null,
+let baselineManifest, expectedTestBridgePresent = false;
+const result = { mode: externalURL ? 'shared-preview' : 'preview', passed: false, assertions: 0, assetCount: 0, baseline: null, missing: null,
   baselineState: null, missingState: null, manifests: {}, events: {}, restored: [], cleanupErrors: [] };
 const checkInterrupted = () => { if (interrupted) throw interrupted; };
 const onSignal = signal => {
@@ -74,38 +76,13 @@ async function command(executable, args, env = {}, cleanup = false) {
   if (!cleanup) checkInterrupted();
 }
 
-async function freePort(port) {
-  const socket = net.createServer();
-  try {
-    await new Promise((resolve, reject) => {
-      socket.once('error', reject);
-      socket.listen(port, '127.0.0.1', resolve);
-    });
-    return true;
-  } catch (error) {
-    if (error.code === 'EADDRINUSE') return false;
-    throw error;
-  } finally {
-    if (socket.listening) await new Promise((resolve, reject) => socket.close(error => error ? reject(error) : resolve()));
-  }
-}
-
 async function startServer(outDir) {
-  const ports = requestedPort === undefined ? Array.from({ length: 100 }, (_, index) => 4300 + index) : [requestedPort];
-  for (const port of ports) {
-    if (!await freePort(port)) continue;
-    checkInterrupted();
-    try {
-      const started = await preview({ root, build: { outDir }, logLevel: 'error',
-        preview: { host: '127.0.0.1', port, strictPort: true } });
-      const baseURL = started.resolvedUrls?.local?.[0];
-      check(baseURL, 'preview 没有提供可访问地址');
-      return { server: started, baseURL };
-    } catch (error) {
-      if (error.code !== 'EADDRINUSE' && !/already in use/.test(error.message)) throw error;
-    }
-  }
-  throw new Error(requestedPort === undefined ? '4300–4399 没有可用端口' : `XT_TEST_PORT=${requestedPort} 已被占用`);
+  checkInterrupted();
+  const started = await preview({ root, build: { outDir }, logLevel: 'error',
+    preview: { host: '127.0.0.1', port: requestedPort, strictPort: true } });
+  const baseURL = started.resolvedUrls?.local?.[0];
+  check(baseURL, 'preview 没有提供可访问地址');
+  return { server: started, baseURL };
 }
 
 async function closeServer() {
@@ -158,13 +135,21 @@ async function ready(page, mapId) {
 
 async function phase(outDir, label) {
   checkInterrupted();
-  const started = await startServer(outDir);
+  const started = externalURL ? { baseURL: externalURL } : await startServer(outDir);
   server = started.server;
   result.baseURL = started.baseURL;
   let context;
   const events = emptyEvents();
   try {
     context = await browser.newContext({ viewport: { width: 1280, height: 720 }, timezoneId: 'Asia/Shanghai' });
+    const missingManifest = externalURL && label === 'missing'
+      ? await installMissingManifest(context, baselineManifest, assets.flatMap(({ key }) =>
+        ['.png', '.json', '.anims.json'].map(extension => `art/sprites/${key}${extension}`)))
+      : undefined;
+    if (missingManifest) {
+      result.manifests.missing = propKeys(missingManifest);
+      equal(result.manifests.missing, [], '缺图 prop 图集仍在构建清单');
+    }
     // 两阶段独立存档；保留工程的发版开关，不调用测试桥或覆写 feature 配置。
     await context.addInitScript(() => {
       localStorage.setItem('xiantu_save_v1', JSON.stringify({ name: '道具缺图冒烟修士', level: 30, exp: 0,
@@ -195,7 +180,7 @@ async function phase(outDir, label) {
       url.searchParams.set('map', mapId);
       await page.goto(url.href, { waitUntil: 'networkidle', timeout: 30000 });
       state[name] = await ready(page, mapId);
-      equal(state[name].testBridgePresent, false, `${label} ${mapId} 必须使用正式构建`);
+      equal(state[name].testBridgePresent, expectedTestBridgePresent, `${label} ${mapId} 测试桥与 preview 构建类型不一致`);
     }
     result[`${label}State`] = state;
     check(state.village.portals.length > 0, `${label} 青云村没有传送门测试对象`);
@@ -203,8 +188,9 @@ async function phase(outDir, label) {
     check(state.sect.seclusions.length > 0, `${label} 天剑宗没有闭关室测试对象`);
     for (const [kind, rows] of Object.entries(events).filter(([kind]) => ['console', 'page', 'request', 'http', 'head'].includes(kind)))
       equal(rows.length, 0, `${label} 出现 ${kind}：${JSON.stringify(rows.slice(0, 10))}`);
+    if (missingManifest) check(missingManifest.rewriteCount > 0, '共享 preview 缺图阶段没有改写构建清单');
     checkInterrupted();
-    console.log(JSON.stringify({ mode: 'preview', phase: label, assetCount: assets.length, ...counts(events) }));
+    console.log(JSON.stringify({ mode: result.mode, phase: label, assetCount: assets.length, ...counts(events) }));
     return { state, events };
   } finally {
     result[label] = counts(events);
@@ -214,13 +200,26 @@ async function phase(outDir, label) {
 }
 
 try {
-  // npm run build 会正常 sync，不能直接复用旧 dist 或清单。
-  await command('npm', ['run', 'build'], { XT_SYNC_MANIFEST_ONLY: '0', VITE_XT_TEST: '0' });
-  const files = (await fs.readdir(spriteDir)).filter(file => /^prop_.*\.png$/.test(file)).sort();
+  if (externalURL) {
+    const inspected = await inspectSharedPreview(externalURL);
+    baselineManifest = inspected.manifest;
+    expectedTestBridgePresent = inspected.testBridgePresent;
+  } else {
+    // npm run build 会正常 sync，独立模式先建立完整基线构建。
+    await command('npm', ['run', 'build'], { XT_SYNC_MANIFEST_ONLY: '0', VITE_XT_TEST: '0' });
+    baselineManifest = await readManifest();
+  }
+  const files = externalURL ? propKeys(baselineManifest).map(key => `${key}.png`)
+    : (await fs.readdir(spriteDir)).filter(file => /^prop_.*\.png$/.test(file)).sort();
   equal(files.length, 19, '必须覆盖全部 19 个 prop 图集 PNG');
   for (const file of files) {
     const key = file.slice(0, -4);
-    const animationData = JSON.parse(await fs.readFile(path.join(spriteDir, `${key}.anims.json`), 'utf8'));
+    let animationData;
+    if (externalURL) {
+      const response = await fetch(new URL(`art/sprites/${key}.anims.json`, externalURL));
+      check(response.ok, `${key} 动画定义请求失败：${response.status}`);
+      animationData = await response.json();
+    } else animationData = JSON.parse(await fs.readFile(path.join(spriteDir, `${key}.anims.json`), 'utf8'));
     check(animationData.anims?.length > 0, `${key} 缺少动画定义`);
     assets.push({ file: path.join(spriteDir, file), relative: `art/sprites/${file}`, key,
       animationKeys: animationData.anims.map(animation => animation.key), moved: false, restored: false });
@@ -228,11 +227,13 @@ try {
   result.assetCount = assets.length;
   const keys = assets.map(asset => asset.key);
   const animationKeys = assets.flatMap(asset => asset.animationKeys).sort();
-  result.manifests.baseline = propKeys(await readManifest());
+  result.manifests.baseline = propKeys(baselineManifest);
   equal(result.manifests.baseline, keys, '全部 prop PNG 均须进入基线构建清单');
-  for (const asset of assets) asset.beforeHash = await sha256(asset.file);
-  backupDir = await fs.mkdtemp(path.join(os.tmpdir(), 'xiantu-props-missing-backup-'));
-  temporaryDir = await fs.mkdtemp(path.join(os.tmpdir(), 'xiantu-props-missing-dist-'));
+  if (!externalURL) {
+    for (const asset of assets) asset.beforeHash = await sha256(asset.file);
+    backupDir = await fs.mkdtemp(path.join(os.tmpdir(), 'xiantu-props-missing-backup-'));
+    temporaryDir = await fs.mkdtemp(path.join(os.tmpdir(), 'xiantu-props-missing-dist-'));
+  }
   const candidates = [process.env.CHROMIUM_EXECUTABLE_PATH, chromium.executablePath(),
     '/home/box/.cache/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell']
     .filter(Boolean);
@@ -271,19 +272,21 @@ try {
     }
   }
 
-  for (const [index, asset] of assets.entries()) {
-    checkInterrupted();
-    asset.backup = path.join(backupDir, `${index}.png`);
-    await move(asset.file, asset.backup);
-    asset.moved = true;
-    await assert.rejects(fs.stat(asset.file), { code: 'ENOENT' }); assertions++;
+  if (!externalURL) {
+    for (const [index, asset] of assets.entries()) {
+      checkInterrupted();
+      asset.backup = path.join(backupDir, `${index}.png`);
+      await move(asset.file, asset.backup);
+      asset.moved = true;
+      await assert.rejects(fs.stat(asset.file), { code: 'ENOENT' }); assertions++;
+    }
+    equal((await fs.readdir(spriteDir)).filter(file => /^prop_.*\.png$/.test(file)), [], '未移走全部 prop PNG');
+    await command('npm', ['run', 'sync'], { XT_SYNC_MANIFEST_ONLY: '1' });
+    result.manifests.missing = propKeys(await readManifest());
+    equal(result.manifests.missing, [], '缺图 prop 图集仍在构建清单');
+    // 直接 vite build，防止 npm run build 的正常 sync 将刚移走的 PNG 拷回。
+    await command('npx', ['vite', 'build', '--outDir', temporaryDir, '--emptyOutDir'], { VITE_XT_TEST: '0' });
   }
-  equal((await fs.readdir(spriteDir)).filter(file => /^prop_.*\.png$/.test(file)), [], '未移走全部 prop PNG');
-  await command('npm', ['run', 'sync'], { XT_SYNC_MANIFEST_ONLY: '1' });
-  result.manifests.missing = propKeys(await readManifest());
-  equal(result.manifests.missing, [], '缺图 prop 图集仍在构建清单');
-  // 直接 vite build，防止 npm run build 的正常 sync 将刚移走的 PNG 拷回。
-  await command('npx', ['vite', 'build', '--outDir', temporaryDir, '--emptyOutDir'], { VITE_XT_TEST: '0' });
   const missing = await phase(temporaryDir, 'missing');
   equal(missing.events.assets.length, 0, `缺图 prop 仍有网络请求：${JSON.stringify(missing.events.assets)}`);
   for (const [name, state] of Object.entries(missing.state)) {
@@ -320,7 +323,7 @@ try {
   result.failure = error.message;
 } finally {
   // 任一步失败或信号中断，逐个还原并校验；还原失败时保留备份以便恢复。
-  for (const asset of assets) {
+  for (const asset of externalURL ? [] : assets) {
     try {
       if (asset.moved) await move(asset.backup, asset.file);
       if (asset.beforeHash) {
@@ -331,14 +334,16 @@ try {
     } catch (error) { result.cleanupErrors.push(`${asset.relative}: ${error.message}`); }
     result.restored.push({ file: asset.relative, restored: asset.restored, beforeHash: asset.beforeHash, afterHash: asset.afterHash });
   }
-  try {
-    await command('npm', ['run', 'sync'], { XT_SYNC_MANIFEST_ONLY: '0' }, true);
-    result.manifests.restored = propKeys(await readManifest());
-    if (assets.length === 19) equal(result.manifests.restored, assets.map(asset => asset.key), '还原后的清单缺少 prop 图集');
-    for (const asset of assets) {
-      if (asset.beforeHash) equal(await sha256(asset.file), asset.beforeHash, `${asset.relative} 正常 sync 后哈希变化`);
-    }
-  } catch (error) { result.cleanupErrors.push(`restore manifest: ${error.message}`); }
+  if (!externalURL) {
+    try {
+      await command('npm', ['run', 'sync'], { XT_SYNC_MANIFEST_ONLY: '0' }, true);
+      result.manifests.restored = propKeys(await readManifest());
+      if (assets.length === 19) equal(result.manifests.restored, assets.map(asset => asset.key), '还原后的清单缺少 prop 图集');
+      for (const asset of assets) {
+        if (asset.beforeHash) equal(await sha256(asset.file), asset.beforeHash, `${asset.relative} 正常 sync 后哈希变化`);
+      }
+    } catch (error) { result.cleanupErrors.push(`restore manifest: ${error.message}`); }
+  }
   try { await browser?.close(); } catch (error) { result.cleanupErrors.push(`browser: ${error.message}`); }
   try { await closeServer(); } catch (error) { result.cleanupErrors.push(`server: ${error.message}`); }
   if (backupDir && assets.every(asset => !asset.moved || asset.restored)) {
@@ -350,7 +355,7 @@ try {
     catch (error) { result.cleanupErrors.push(`temporary build: ${error.message}`); }
   }
   if (!result.cleanupErrors.length) {
-    try { await isolated.cleanup(); }
+    try { await isolated?.cleanup(); }
     catch (error) { result.cleanupErrors.push(`isolated project: ${error.message}`); }
   } else result.workspace = root;
   if (interrupted) { failure ??= interrupted; result.failure = interrupted.message; }

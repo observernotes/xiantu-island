@@ -1,4 +1,4 @@
-// 正式构建冒烟：检查 E-3 实际铺块；缺图只重建清单，finally 还原本工作树素材并正常 sync。
+// 检查 E-3 实际铺块；共享 preview 用独立浏览器清单模拟缺图，独立运行验收正式构建。
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -7,14 +7,17 @@ import { createHash } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { createIsolatedBuild, childBuildEnv, preview } from './isolated-build.mjs';
+import { inspectSharedPreview, installMissingManifest } from './shared-smoke-preview.mjs';
 import { chromium } from '/tmp/pwt/node_modules/playwright-core/index.mjs';
 
 const projectRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-assert.equal(process.argv.length, 2, '筑基台冒烟使用正式 preview，不接受参数');
-const port = Number(process.env.XT_TEST_PORT ?? 4352);
-assert.ok(Number.isInteger(port) && port > 0 && port < 65536, 'XT_TEST_PORT 必须是有效端口');
-const isolated = await createIsolatedBuild(projectRoot, 'altar-fill');
-const root = isolated.root;
+assert.equal(process.argv.length, 2, '筑基台冒烟使用 preview，不接受参数');
+const externalURL = process.env.XT_SMOKE_BASE_URL?.trim() || undefined;
+const port = externalURL ? undefined : Number(process.env.XT_TEST_PORT ?? 0);
+if (port !== undefined)
+  assert.ok(Number.isInteger(port) && port >= 0 && port < 65536, 'XT_TEST_PORT 必须是有效端口');
+const isolated = externalURL ? undefined : await createIsolatedBuild(projectRoot, 'altar-fill');
+const root = isolated?.root ?? projectRoot;
 const image = { relative: 'art/tiles/tiles_altar_fill_variants.png', moved: false, restored: false };
 image.file = path.join(root, 'public', image.relative);
 const metadataFile = path.join(root, 'public/art/tiles/tiles_altar.json');
@@ -34,8 +37,8 @@ let assertions = 0;
 const equal = (actual, expected, message) => { assert.deepEqual(actual, expected, message); assertions++; };
 const check = (actual, message) => { assert.ok(actual, message); assertions++; };
 
-let browser, server, activeChild, backupDir, temporaryDir, interrupted, failure, baselineTiles, cleaning = false;
-const result = { mode: 'preview', map: 'trial_foundation_altar', port, passed: false, assertions: 0,
+let browser, server, activeChild, backupDir, temporaryDir, interrupted, failure, baselineTiles, shared, cleaning = false;
+const result = { mode: externalURL ? 'shared-preview' : 'preview', map: 'trial_foundation_altar', port, passed: false, assertions: 0,
   baseline: null, missing: null, baselineState: null, missingState: null,
   manifestOnly: [], events: {}, restored: null, cleanupErrors: [] };
 const checkInterrupted = () => { if (interrupted) throw interrupted; };
@@ -152,13 +155,22 @@ async function readMapState(page, cells) {
 
 async function phase(outDir, label, cells) {
   checkInterrupted();
-  server = await preview({ root, build: { outDir }, logLevel: 'error',
+  if (!externalURL) server = await preview({ root, build: { outDir }, logLevel: 'error',
     preview: { host: '127.0.0.1', port, strictPort: true } });
   const context = await browser.newContext({ viewport: { width: 1280, height: 720 }, timezoneId: 'Asia/Shanghai' });
   const events = emptyEvents();
   try {
-    const baseURL = server.resolvedUrls?.local?.[0];
+    const missingManifest = externalURL && label === 'missing'
+      ? await installMissingManifest(context, shared.manifest, [image.relative]) : undefined;
+    if (missingManifest) {
+      equal(missingManifest.areas.includes('altar_fill_variants'), false, '缺图图集仍在区域清单');
+      equal(missingManifest.tileMetadata.some(entry => entry.key === 'tiles_altar_fill_variants_meta'), false,
+        '缺图外部图集元数据仍在清单');
+    }
+    const baseURL = externalURL ?? server.resolvedUrls?.local?.[0];
     check(baseURL, `${label} preview 没有提供可访问地址`);
+    result.baseURL = baseURL;
+    result.port = Number(new URL(baseURL).port);
     const altarURL = new URL(baseURL);
     altarURL.searchParams.set('map', 'trial_foundation_altar');
     const page = await context.newPage();
@@ -176,7 +188,9 @@ async function phase(outDir, label, cells) {
     await page.goto(altarURL.href, { waitUntil: 'networkidle', timeout: 30000 });
     const { renderedTiles, ...state } = await readMapState(page, cells);
     result[`${label}State`] = state;
-    equal(state.testBridgePresent, false, `${label} 必须使用正式构建`);
+    const expectedBridge = shared?.testBridgePresent ?? false;
+    equal(state.testBridgePresent, expectedBridge,
+      `${label} ${expectedBridge ? '测试构建必须提供' : '正式构建不得提供'}测试桥`);
     equal(state.tileLayers, 1, `${label} 原 #5 和外部变体必须在同一图层`);
     equal(state.variants, expectedVariants, `${label} 没有加载外部 variants 配置`);
     equal(state.fillCells, 90, `${label} 筑基台 #5 满铺格数变化`);
@@ -187,7 +201,7 @@ async function phase(outDir, label, cells) {
       equal(state.fillCounts, expectedFillCounts, 'E-3 原 #5/变体 0/1/2 分布与 UI-1 不一致');
       baselineTiles = renderedTiles;
       await page.reload({ waitUntil: 'networkidle', timeout: 30000 });
-      equal((await readMapState(page, cells)).renderedTiles, baselineTiles, '重载正式页面改变了坐标确定性选块');
+      equal((await readMapState(page, cells)).renderedTiles, baselineTiles, '重载页面改变了坐标确定性选块');
       check(events.assets.length > 0, '正常构建没有请求变体图片');
     } else {
       equal(state.tileSets, ['tiles_altar'], '缺图没有仅保留 tiles_altar');
@@ -199,6 +213,7 @@ async function phase(outDir, label, cells) {
     }
     for (const [kind, rows] of Object.entries(events).filter(([kind]) => ['console', 'page', 'request', 'http', 'head'].includes(kind)))
       equal(rows.length, 0, `${label} 出现 ${kind}：${JSON.stringify(rows.slice(0, 10))}`);
+    if (missingManifest) check(missingManifest.rewriteCount > 0, '缺图阶段没有改写共享构建清单');
     checkInterrupted();
     console.log(JSON.stringify({ phase: label, ...counts(events), tileSets: state.tileSets,
       fillCells: state.fillCells, fillCounts: state.fillCounts, variantCells: state.variantCells }));
@@ -211,15 +226,27 @@ async function phase(outDir, label, cells) {
 }
 
 try {
-  await command('npm', ['run', 'build'], { XT_SYNC_MANIFEST_ONLY: '0', VITE_XT_TEST: '0' });
-  image.beforeHash = await sha256(image.file);
-  const metadataHash = await sha256(metadataFile);
-  equal((await json(metadataFile)).variants, expectedVariants, '正常 sync 未合并仓库覆盖层');
+  let metadataHash;
+  if (externalURL) {
+    shared = await inspectSharedPreview(externalURL);
+    const metadata = await fetch(new URL('art/tiles/tiles_altar.json', externalURL),
+      { signal: AbortSignal.timeout(15000) }).then(response => {
+      check(response.ok, '共享 preview 缺少筑基台图块配置');
+      return response.json();
+    });
+    equal(metadata.variants, expectedVariants, '共享构建没有合并仓库覆盖层');
+    equal(shared.manifest.areas.includes('altar_fill_variants'), true, '共享构建缺少变体图集清单');
+  } else {
+    await command('npm', ['run', 'build'], { XT_SYNC_MANIFEST_ONLY: '0', VITE_XT_TEST: '0' });
+    image.beforeHash = await sha256(image.file);
+    metadataHash = await sha256(metadataFile);
+    equal((await json(metadataFile)).variants, expectedVariants, '正常 sync 未合并仓库覆盖层');
+    await verifyManifestOnly('baseline', metadataHash, true);
+    backupDir = await fs.mkdtemp(path.join(os.tmpdir(), 'xiantu-altar-fill-backup-'));
+    temporaryDir = await fs.mkdtemp(path.join(os.tmpdir(), 'xiantu-altar-fill-dist-'));
+  }
   const cells = fillCells(await json(path.join(root, 'data/maps/trial_foundation_altar.json')));
   equal(cells.length, 90, '筑基台 #5 满铺坐标数量变化');
-  await verifyManifestOnly('baseline', metadataHash, true);
-  backupDir = await fs.mkdtemp(path.join(os.tmpdir(), 'xiantu-altar-fill-backup-'));
-  temporaryDir = await fs.mkdtemp(path.join(os.tmpdir(), 'xiantu-altar-fill-dist-'));
   const candidates = [process.env.CHROMIUM_EXECUTABLE_PATH, chromium.executablePath(),
     '/home/box/.cache/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell'].filter(Boolean);
   let executablePath;
@@ -231,12 +258,14 @@ try {
     args: ['--use-gl=swiftshader', '--enable-unsafe-swiftshader'] });
   await phase('dist', 'baseline', cells);
   checkInterrupted();
-  image.backup = path.join(backupDir, path.basename(image.file));
-  await move(image.file, image.backup);
-  image.moved = true;
-  await assert.rejects(fs.stat(image.file), { code: 'ENOENT' }); assertions++;
-  await verifyManifestOnly('missing', metadataHash, false);
-  await command('npx', ['vite', 'build', '--outDir', temporaryDir, '--emptyOutDir'], { VITE_XT_TEST: '0' });
+  if (!externalURL) {
+    image.backup = path.join(backupDir, path.basename(image.file));
+    await move(image.file, image.backup);
+    image.moved = true;
+    await assert.rejects(fs.stat(image.file), { code: 'ENOENT' }); assertions++;
+    await verifyManifestOnly('missing', metadataHash, false);
+    await command('npx', ['vite', 'build', '--outDir', temporaryDir, '--emptyOutDir'], { VITE_XT_TEST: '0' });
+  }
   await phase(temporaryDir, 'missing', cells);
   result.passed = true;
 } catch (error) {
@@ -253,7 +282,7 @@ try {
     }
   } catch (error) { result.cleanupErrors.push(`restore image: ${error.message}`); }
   try {
-    await command('npm', ['run', 'sync'], { XT_SYNC_MANIFEST_ONLY: '0' }, true);
+    if (!externalURL) await command('npm', ['run', 'sync'], { XT_SYNC_MANIFEST_ONLY: '0' }, true);
     if (image.beforeHash) {
       image.afterSyncHash = await sha256(image.file);
       equal(image.afterSyncHash, image.beforeHash, '正常 sync 后变体图片 SHA256 变化');
@@ -261,7 +290,7 @@ try {
       equal((await json(manifestFile)).areas.includes('altar_fill_variants'), true, '正常 sync 后没有恢复图集清单');
     }
   } catch (error) { result.cleanupErrors.push(`restore manifest: ${error.message}`); }
-  result.restored = { file: image.file, restored: image.restored, beforeHash: image.beforeHash,
+  if (!externalURL) result.restored = { file: image.file, restored: image.restored, beforeHash: image.beforeHash,
     afterHash: image.afterHash, afterSyncHash: image.afterSyncHash };
   try { await browser?.close(); } catch (error) { result.cleanupErrors.push(`browser: ${error.message}`); }
   try { await closeServer(); } catch (error) { result.cleanupErrors.push(`server: ${error.message}`); }
@@ -274,7 +303,7 @@ try {
     catch (error) { result.cleanupErrors.push(`temporary build: ${error.message}`); }
   }
   if (!result.cleanupErrors.length) {
-    try { await isolated.cleanup(); }
+    try { await isolated?.cleanup(); }
     catch (error) { result.cleanupErrors.push(`isolated project: ${error.message}`); }
   } else result.workspace = root;
   if (interrupted) { failure ??= interrupted; result.failure = interrupted.message; }

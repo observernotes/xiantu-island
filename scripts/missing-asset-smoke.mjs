@@ -1,4 +1,4 @@
-// 自包含正式构建冒烟：基线 sync+build，缺图后只重建清单再打包，最后还原素材与清单。
+// 优先复用共享 preview，以浏览器路由模拟缺图清单；独立运行才构建并临时移走素材。
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -7,14 +7,17 @@ import { createHash } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { createIsolatedBuild, childBuildEnv, preview } from './isolated-build.mjs';
+import { inspectSharedPreview, installMissingManifest } from './shared-smoke-preview.mjs';
 import { chromium } from '/tmp/pwt/node_modules/playwright-core/index.mjs';
 
 const projectRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-assert.equal(process.argv.length, 2, '缺图冒烟使用正式 preview，不接受参数');
-const port = Number(process.env.XT_TEST_PORT ?? 4351);
-assert.ok(Number.isInteger(port) && port > 0 && port < 65536, 'XT_TEST_PORT 必须是有效端口');
-const isolated = await createIsolatedBuild(projectRoot, 'missing-assets');
-const root = isolated.root;
+assert.equal(process.argv.length, 2, '缺图冒烟使用 preview，不接受参数');
+const externalURL = process.env.XT_SMOKE_BASE_URL?.trim() || undefined;
+const port = externalURL ? undefined : Number(process.env.XT_TEST_PORT ?? 0);
+if (!externalURL)
+  assert.ok(Number.isInteger(port) && port >= 0 && port < 65536, 'XT_TEST_PORT 必须是有效端口（0 为随机空闲端口）');
+const isolated = externalURL ? undefined : await createIsolatedBuild(projectRoot, 'missing-assets');
+const root = isolated?.root ?? projectRoot;
 const features = JSON.parse(await fs.readFile(path.join(root, 'data/features.json'), 'utf8'));
 const assetRoot = path.join(root, 'public');
 const assets = [
@@ -36,9 +39,10 @@ let assertions = 0;
 const equal = (actual, expected, message) => { assert.deepEqual(actual, expected, message); assertions++; };
 const check = (actual, message) => { assert.ok(actual, message); assertions++; };
 
-let browser, server, activeChild, backupDir, temporaryDir, interrupted;
+let browser, server, activeChild, backupDir, temporaryDir, interrupted, sharedPreview;
 let failure;
-const result = { mode: 'preview', port, passed: false, assertions: 0, baseline: null, missing: null,
+const result = { mode: externalURL ? 'shared-preview' : 'preview', port, baseURL: externalURL,
+  passed: false, assertions: 0, baseline: null, missing: null,
   baselineState: null, missingState: null, events: {}, restored: [], cleanupErrors: [] };
 const checkInterrupted = () => { if (interrupted) throw interrupted; };
 const onSignal = signal => {
@@ -117,11 +121,17 @@ async function ready(page, mapId) {
 
 async function phase(outDir, label) {
   checkInterrupted();
-  server = await preview({ root, build: { outDir }, logLevel: 'error',
-    preview: { host: '127.0.0.1', port, strictPort: true } });
+  if (!externalURL)
+    server = await preview({ root, build: { outDir }, logLevel: 'error',
+      preview: { host: '127.0.0.1', port, strictPort: true } });
   const context = await browser.newContext({ viewport: { width: 1280, height: 720 }, timezoneId: 'Asia/Shanghai' });
   const events = emptyEvents();
   try {
+    let missingManifest;
+    if (externalURL && label === 'missing') {
+      missingManifest = await installMissingManifest(context, sharedPreview.manifest, assets.map(asset => asset.relative));
+      assertMissingManifest(missingManifest);
+    }
     // 独立浏览器档提供外门身份，产品发版开关仍读取工程配置。
     await context.addInitScript(() => {
       localStorage.setItem('xiantu_save_v1', JSON.stringify({ name: '缺图冒烟修士', level: 30, exp: 0,
@@ -141,19 +151,22 @@ async function phase(outDir, label) {
     page.on('response', response => {
       if (response.status() >= 400) events.http.push({ status: response.status(), url: response.url() });
     });
-    const baseURL = server.resolvedUrls?.local?.[0];
+    const baseURL = externalURL ?? server.resolvedUrls?.local?.[0];
     check(baseURL, `${label} preview 没有提供可访问地址`);
+    result.baseURL = baseURL;
+    result.port = Number(new URL(baseURL).port);
     const altarURL = new URL(baseURL);
     altarURL.searchParams.set('map', 'trial_foundation_altar');
     await page.goto(altarURL.href, { waitUntil: 'networkidle', timeout: 30000 });
     const altar = await ready(page, 'trial_foundation_altar');
-    equal(altar.testBridgePresent, false, `${label} 必须使用正式构建`);
+    const expectedBridge = sharedPreview?.testBridgePresent ?? false;
+    equal(altar.testBridgePresent, expectedBridge, `${label} 测试桥不符合 preview 构建模式`);
     const villageURL = new URL(baseURL);
     villageURL.searchParams.set('map', 'qingyun_village');
     await page.goto(villageURL.href, { waitUntil: 'networkidle', timeout: 30000 });
     const village = await ready(page, 'qingyun_village');
     result[`${label}State`] = { altar, village };
-    equal(village.testBridgePresent, false, `${label} 青云村必须使用正式构建`);
+    equal(village.testBridgePresent, expectedBridge, `${label} 青云村测试桥不符合 preview 构建模式`);
     check(village.chests.length > 0, `${label} 未创建真实地图宝匣对象`);
     for (const chest of village.chests) {
       equal(chest.visible, true, `${label} ${chest.name} 宝匣不可见`);
@@ -171,6 +184,7 @@ async function phase(outDir, label) {
     }
     for (const [kind, rows] of Object.entries(events).filter(([kind]) => ['console', 'page', 'request', 'http', 'head'].includes(kind)))
       equal(rows.length, 0, `${label} 出现 ${kind}：${JSON.stringify(rows.slice(0, 10))}`);
+    if (missingManifest) check(missingManifest.rewriteCount > 0, '共享 preview 未改写打包资产清单');
     checkInterrupted();
     console.log(JSON.stringify({ phase: label, ...counts(events), chestRenderChecks: village.chests.length }));
     return { state: { altar, village }, events };
@@ -182,12 +196,21 @@ async function phase(outDir, label) {
   }
 }
 
+function assertMissingManifest(manifest) {
+  equal(manifest.atlases.some(atlas => atlas.key === 'prop_chest'), false, '缺图图集仍在清单');
+  equal(manifest.areas.includes('altar_fill_variants'), false, '缺图填充图集仍在区域清单');
+  equal(manifest.sectRankIcons.some(icon => icon.key === 'icon_sect_rank_outer_disciple'), false, '缺图徽记仍在清单');
+}
+
 try {
-  // npm run build 包含正常 sync，不能直接复用旧 dist/清单。
-  await command('npm', ['run', 'build'], { XT_SYNC_MANIFEST_ONLY: '0', VITE_XT_TEST: '0' });
-  for (const asset of assets) asset.beforeHash = await sha256(asset.file);
-  backupDir = await fs.mkdtemp(path.join(os.tmpdir(), 'xiantu-missing-assets-backup-'));
-  temporaryDir = await fs.mkdtemp(path.join(os.tmpdir(), 'xiantu-missing-assets-dist-'));
+  if (externalURL) sharedPreview = await inspectSharedPreview(externalURL);
+  else {
+    // npm run build 包含正常 sync，独立验收不复用旧 dist/清单。
+    await command('npm', ['run', 'build'], { XT_SYNC_MANIFEST_ONLY: '0', VITE_XT_TEST: '0' });
+    for (const asset of assets) asset.beforeHash = await sha256(asset.file);
+    backupDir = await fs.mkdtemp(path.join(os.tmpdir(), 'xiantu-missing-assets-backup-'));
+    temporaryDir = await fs.mkdtemp(path.join(os.tmpdir(), 'xiantu-missing-assets-dist-'));
+  }
   const candidates = [process.env.CHROMIUM_EXECUTABLE_PATH, chromium.executablePath(),
     '/home/box/.cache/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell']
     .filter(Boolean);
@@ -209,19 +232,19 @@ try {
     equal(state.sectTitleVisible, features.sectRanks, '基线职位称号不符合发版关口');
     if (features.sectRanks) check(/外门弟子/.test(state.sectTitle), '基线缺中文职位');
   }
-  for (const [index, asset] of assets.entries()) {
-    checkInterrupted();
-    asset.backup = path.join(backupDir, `${index}${path.extname(asset.file)}`);
-    await move(asset.file, asset.backup);
-    asset.moved = true;
-    await assert.rejects(fs.stat(asset.file), { code: 'ENOENT' }); assertions++;
+  if (!externalURL) {
+    for (const [index, asset] of assets.entries()) {
+      checkInterrupted();
+      asset.backup = path.join(backupDir, `${index}${path.extname(asset.file)}`);
+      await move(asset.file, asset.backup);
+      asset.moved = true;
+      await assert.rejects(fs.stat(asset.file), { code: 'ENOENT' }); assertions++;
+    }
+    await command('npm', ['run', 'sync'], { XT_SYNC_MANIFEST_ONLY: '1' });
+    const manifest = JSON.parse(await fs.readFile(path.join(root, 'src/gen/assets.json'), 'utf8'));
+    assertMissingManifest(manifest);
+    await command('npx', ['vite', 'build', '--outDir', temporaryDir, '--emptyOutDir'], { VITE_XT_TEST: '0' });
   }
-  await command('npm', ['run', 'sync'], { XT_SYNC_MANIFEST_ONLY: '1' });
-  const manifest = JSON.parse(await fs.readFile(path.join(root, 'src/gen/assets.json'), 'utf8'));
-  equal(manifest.atlases.some(atlas => atlas.key === 'prop_chest'), false, '缺图图集仍在清单');
-  equal(manifest.areas.includes('altar_fill_variants'), false, '缺图填充图集仍在区域清单');
-  equal(manifest.sectRankIcons.some(icon => icon.key === 'icon_sect_rank_outer_disciple'), false, '缺图徽记仍在清单');
-  await command('npx', ['vite', 'build', '--outDir', temporaryDir, '--emptyOutDir'], { VITE_XT_TEST: '0' });
   const missing = await phase(temporaryDir, 'missing');
   result.missing = counts(missing.events);
   result.missingState = missing.state;
@@ -244,8 +267,8 @@ try {
   failure = error;
   result.failure = error.message;
 } finally {
-  // 任一步失败或信号中断，先逐个还原并校验，再正常 sync 恢复正式清单。
-  for (const asset of assets) {
+  // 独立模式失败或中断时还原文件与清单；共享模式只关闭自己的浏览器。
+  for (const asset of externalURL ? [] : assets) {
     try {
       if (asset.moved) await move(asset.backup, asset.file);
       if (asset.beforeHash) {
@@ -256,8 +279,10 @@ try {
     } catch (error) { result.cleanupErrors.push(`${asset.relative}: ${error.message}`); }
     result.restored.push({ file: asset.file, restored: asset.restored, beforeHash: asset.beforeHash, afterHash: asset.afterHash });
   }
-  try { await command('npm', ['run', 'sync'], { XT_SYNC_MANIFEST_ONLY: '0' }, true); }
-  catch (error) { result.cleanupErrors.push(`restore manifest: ${error.message}`); }
+  if (!externalURL) {
+    try { await command('npm', ['run', 'sync'], { XT_SYNC_MANIFEST_ONLY: '0' }, true); }
+    catch (error) { result.cleanupErrors.push(`restore manifest: ${error.message}`); }
+  }
   try { await browser?.close(); } catch (error) { result.cleanupErrors.push(`browser: ${error.message}`); }
   try { await closeServer(); } catch (error) { result.cleanupErrors.push(`server: ${error.message}`); }
   if (backupDir && assets.every(asset => !asset.moved || asset.restored)) {
@@ -268,10 +293,10 @@ try {
     try { await fs.rm(temporaryDir, { recursive: true, force: true }); }
     catch (error) { result.cleanupErrors.push(`temporary build: ${error.message}`); }
   }
-  if (!result.cleanupErrors.length) {
+  if (isolated && !result.cleanupErrors.length) {
     try { await isolated.cleanup(); }
     catch (error) { result.cleanupErrors.push(`isolated project: ${error.message}`); }
-  } else result.workspace = root;
+  } else if (isolated) result.workspace = root;
   if (interrupted) { failure ??= interrupted; result.failure = interrupted.message; }
   if (failure || result.cleanupErrors.length) result.passed = false;
   result.assertions = assertions;
