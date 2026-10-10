@@ -1,0 +1,27 @@
+{
+ "atlas": "fx_summon_despawn",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": 64,
+ "blend": "normal",
+ "anims": [
+  {
+   "key": "fx_summon_despawn",
+   "frames": [
+    "fx_summon_despawn_01",
+    "fx_summon_despawn_02",
+    "fx_summon_despawn_03",
+    "fx_summon_despawn_04",
+    "fx_summon_despawn_05",
+    "fx_summon_despawn_06"
+   ],
+   "frameRate": 12,
+   "repeat": 0
+  }
+ ],
+ "note": "首领死亡时，它召唤的小怪一起消散：每只小怪脚底播一次，第 2 帧隐藏小怪本体，播完销毁。NORMAL 混合。",
+ "kind": "fx"
+}

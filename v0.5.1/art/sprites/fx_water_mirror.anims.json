@@ -1,0 +1,54 @@
+{
+ "atlas": "fx_water_mirror",
+ "facing": "left",
+ "origin": [
+  0.5,
+  0.75
+ ],
+ "frameSize": [
+  96,
+  96
+ ],
+ "blend": "NORMAL",
+ "kind": "fx",
+ "note": "原点(0.5,0.75)是护盾下部定位点(48,72)，跟随角色脚底上方约16px的护盾基准点。施放播start一次，接animationcomplete后loop循环；增益消失时end一次后销毁。盾面半透明，角色仍可见；天青深描边#2678C8。NORMAL混合，伤害吸收由技能系统处理。",
+ "anims": [
+  {
+   "key": "fx_water_mirror_start",
+   "frames": [
+    "fx_water_mirror_start_01",
+    "fx_water_mirror_start_02",
+    "fx_water_mirror_start_03",
+    "fx_water_mirror_start_04"
+   ],
+   "frameRate": 12,
+   "repeat": 0
+  },
+  {
+   "key": "fx_water_mirror_loop",
+   "frames": [
+    "fx_water_mirror_loop_01",
+    "fx_water_mirror_loop_02",
+    "fx_water_mirror_loop_03",
+    "fx_water_mirror_loop_04",
+    "fx_water_mirror_loop_05",
+    "fx_water_mirror_loop_06",
+    "fx_water_mirror_loop_07",
+    "fx_water_mirror_loop_08"
+   ],
+   "frameRate": 12,
+   "repeat": -1
+  },
+  {
+   "key": "fx_water_mirror_end",
+   "frames": [
+    "fx_water_mirror_end_01",
+    "fx_water_mirror_end_02",
+    "fx_water_mirror_end_03",
+    "fx_water_mirror_end_04"
+   ],
+   "frameRate": 12,
+   "repeat": 0
+  }
+ ]
+}

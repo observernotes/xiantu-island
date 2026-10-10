@@ -1,0 +1,57 @@
+{
+ "atlas": "mon_straw_puppet",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  64,
+  80
+ ],
+ "anims": [
+  {
+   "key": "mon_straw_puppet_idle",
+   "frames": [
+    "mon_straw_puppet_idle_01",
+    "mon_straw_puppet_idle_02"
+   ],
+   "frameRate": 3,
+   "repeat": -1
+  },
+  {
+   "key": "mon_straw_puppet_walk",
+   "frames": [
+    "mon_straw_puppet_walk_01",
+    "mon_straw_puppet_walk_02",
+    "mon_straw_puppet_walk_03"
+   ],
+   "frameRate": 8,
+   "repeat": -1
+  },
+  {
+   "key": "mon_straw_puppet_hit",
+   "frames": [
+    "mon_straw_puppet_hit_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  },
+  {
+   "key": "mon_straw_puppet_die",
+   "frames": [
+    "mon_straw_puppet_die_01",
+    "mon_straw_puppet_die_02",
+    "mon_straw_puppet_die_03"
+   ],
+   "frameRate": 6,
+   "repeat": 0
+  }
+ ],
+ "bodySize": [
+  30,
+  52
+ ],
+ "note": "被动怪，无 attack；walk 是独脚蹦跳，第 2 帧离地 5px（画在帧内，物理体不用跳）",
+ "kind": "monster"
+}

@@ -1,0 +1,45 @@
+{
+ "atlas": "prop_chest",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  48,
+  40
+ ],
+ "blend": "NORMAL",
+ "kind": "prop",
+ "note": "程序化占位；key 名待天机阁确认。通用宝匣，用于 enc_hidden_abode_chest 和地图 chest。原点 (0.5,1) 为箱底，默认 closed；确认开启时播 open 一次后定格 opened。加载已开存档直接 opened；洞府机关成功只解锁交互，仍等 take/seal 选择后按玩法切状态。NORMAL，开盖最多3颗金光点，描边 #A86E1E。",
+ "anims": [
+  {
+   "key": "prop_chest_closed",
+   "frames": [
+    "prop_chest_closed_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  },
+  {
+   "key": "prop_chest_open",
+   "frames": [
+    "prop_chest_open_01",
+    "prop_chest_open_02",
+    "prop_chest_open_03",
+    "prop_chest_open_04",
+    "prop_chest_open_05"
+   ],
+   "frameRate": 10,
+   "repeat": 0
+  },
+  {
+   "key": "prop_chest_opened",
+   "frames": [
+    "prop_chest_opened_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  }
+ ]
+}

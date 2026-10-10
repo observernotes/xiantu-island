@@ -1,0 +1,48 @@
+{
+  "environment": {
+    "enabled": true,
+    "areas": {
+      "qingyun": true
+    },
+    "budget": {
+      "lights": 0,
+      "fog": 4,
+      "particles": 96
+    },
+    "fog": [
+      {
+        "x": 0,
+        "y": 520,
+        "width": 2560,
+        "height": 160,
+        "alpha": 0.18,
+        "speedX": 8,
+        "scrollFactor": 0.3
+      },
+      {
+        "x": 0,
+        "y": 700,
+        "width": 2560,
+        "height": 90,
+        "alpha": 0.12,
+        "speedX": 14,
+        "scrollFactor": 0.9
+      }
+    ],
+    "particles": [
+      {
+        "kind": "firefly",
+        "x": 300,
+        "y": 400,
+        "width": 1800,
+        "height": 250,
+        "count": 40,
+        "speedX": 0.0,
+        "speedY": -11.0,
+        "color": "#FFE8A0",
+        "alpha": 0.85,
+        "colorEnd": "#FFF6D8"
+      }
+    ]
+  }
+}

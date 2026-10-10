@@ -1,0 +1,182 @@
+{
+  "frames": {
+    "prop_chest_closed_01": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 48,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 48,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 48,
+        "h": 40
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    "prop_chest_open_01": {
+      "frame": {
+        "x": 48,
+        "y": 0,
+        "w": 48,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 48,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 48,
+        "h": 40
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    "prop_chest_open_02": {
+      "frame": {
+        "x": 96,
+        "y": 0,
+        "w": 48,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 48,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 48,
+        "h": 40
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    "prop_chest_open_03": {
+      "frame": {
+        "x": 144,
+        "y": 0,
+        "w": 48,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 48,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 48,
+        "h": 40
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    "prop_chest_open_04": {
+      "frame": {
+        "x": 192,
+        "y": 0,
+        "w": 48,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 48,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 48,
+        "h": 40
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    "prop_chest_open_05": {
+      "frame": {
+        "x": 240,
+        "y": 0,
+        "w": 48,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 48,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 48,
+        "h": 40
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    "prop_chest_opened_01": {
+      "frame": {
+        "x": 288,
+        "y": 0,
+        "w": 48,
+        "h": 40
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 48,
+        "h": 40
+      },
+      "sourceSize": {
+        "w": 48,
+        "h": 40
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    }
+  },
+  "meta": {
+    "app": "xiantu gen_encounter_v05.py",
+    "image": "prop_chest.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 336,
+      "h": 40
+    },
+    "scale": "1"
+  }
+}

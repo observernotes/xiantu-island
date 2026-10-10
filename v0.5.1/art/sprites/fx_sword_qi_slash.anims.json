@@ -1,0 +1,38 @@
+{
+ "atlas": "fx_sword_qi_slash",
+ "facing": "left",
+ "origin": [
+  0.5,
+  0.5
+ ],
+ "frameSize": [
+  96,
+  64
+ ],
+ "anims": [
+  {
+   "key": "fx_sword_qi_slash_fly",
+   "frames": [
+    "fx_sword_qi_slash_fly_01",
+    "fx_sword_qi_slash_fly_02",
+    "fx_sword_qi_slash_fly_03",
+    "fx_sword_qi_slash_fly_04"
+   ],
+   "frameRate": 16,
+   "repeat": -1
+  },
+  {
+   "key": "fx_sword_qi_slash_hit",
+   "frames": [
+    "fx_sword_qi_slash_hit_01",
+    "fx_sword_qi_slash_hit_02",
+    "fx_sword_qi_slash_hit_03",
+    "fx_sword_qi_slash_hit_04"
+   ],
+   "frameRate": 20,
+   "repeat": 0
+  }
+ ],
+ "note": "投射物：原点 (0.5,0.5) 为月牙中心偏前；朝左飞，向右时 flipX。命中后切 hit 播放一次再销毁。",
+ "kind": "fx"
+}

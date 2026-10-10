@@ -1,0 +1,51 @@
+{
+ "atlas": "fx_enc_inner_voice",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  64,
+  112
+ ],
+ "blend": "NORMAL",
+ "kind": "fx",
+ "note": "程序化占位；key 名待天机阁确认。灯背黑影，扭曲的玩家剪影，不画真人五官。原点 (0.5,1) 为影子落地点；appear 后循环 idle，结局播 vanish 后销毁。暗紫描边 #3A2A48，半透明，NORMAL；每帧最多5颗光点。建议 enc_inner_voice.sprite 引用此 atlas，仍是事件演员，不生成敌人。",
+ "anims": [
+  {
+   "key": "fx_enc_inner_voice_appear",
+   "frames": [
+    "fx_enc_inner_voice_appear_01",
+    "fx_enc_inner_voice_appear_02",
+    "fx_enc_inner_voice_appear_03",
+    "fx_enc_inner_voice_appear_04"
+   ],
+   "frameRate": 8,
+   "repeat": 0
+  },
+  {
+   "key": "fx_enc_inner_voice_idle",
+   "frames": [
+    "fx_enc_inner_voice_idle_01",
+    "fx_enc_inner_voice_idle_02",
+    "fx_enc_inner_voice_idle_03",
+    "fx_enc_inner_voice_idle_04"
+   ],
+   "frameRate": 5,
+   "repeat": -1
+  },
+  {
+   "key": "fx_enc_inner_voice_vanish",
+   "frames": [
+    "fx_enc_inner_voice_vanish_01",
+    "fx_enc_inner_voice_vanish_02",
+    "fx_enc_inner_voice_vanish_03",
+    "fx_enc_inner_voice_vanish_04",
+    "fx_enc_inner_voice_vanish_05"
+   ],
+   "frameRate": 10,
+   "repeat": 0
+  }
+ ]
+}

@@ -1,0 +1,38 @@
+{
+ "atlas": "prop_portal",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  80,
+  112
+ ],
+ "blend": "NORMAL",
+ "kind": "prop",
+ "note": "程序化占位；key 名待天机阁确认。通用竖椭圆传送门。原点 (0.5,1) 为门槛底边，对齐 portal 对象坐标；portalOpen 为真循环 open（天青漩涡），否则定格 closed（灰石框暗）。NORMAL，天青描边 #2678C8，每帧4颗星点；沿用原有传送交互/通行判定，贴图尺寸不等于碰撞尺寸。",
+ "anims": [
+  {
+   "key": "prop_portal_open",
+   "frames": [
+    "prop_portal_open_01",
+    "prop_portal_open_02",
+    "prop_portal_open_03",
+    "prop_portal_open_04",
+    "prop_portal_open_05",
+    "prop_portal_open_06"
+   ],
+   "frameRate": 6,
+   "repeat": -1
+  },
+  {
+   "key": "prop_portal_closed",
+   "frames": [
+    "prop_portal_closed_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  }
+ ]
+}

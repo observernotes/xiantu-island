@@ -1,0 +1,30 @@
+{
+ "atlas": "fx_talisman_return_cast",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  64,
+  96
+ ],
+ "blend": "NORMAL",
+ "kind": "fx",
+ "note": "遁地读条符阵，原点 (0.5,1) 是角色脚底，跟随 player 脚底位置循环 loop；阵线在脚底附近，最多 4 细土尘向上浮，NORMAL。开始读条时显示，进度条复用已精修 ui_gather_castbar_*，宽度/进度由当前品质 castMs 驱动。移动、攻击、受伤、死亡或切图中断时立即停播隐藏，不扣符；加载及安全落点复核成功迁移后隐藏本图，并在目的地播 fx_talisman_return_land。",
+ "anims": [
+  {
+   "key": "fx_talisman_return_cast_loop",
+   "frames": [
+    "fx_talisman_return_cast_loop_01",
+    "fx_talisman_return_cast_loop_02",
+    "fx_talisman_return_cast_loop_03",
+    "fx_talisman_return_cast_loop_04",
+    "fx_talisman_return_cast_loop_05",
+    "fx_talisman_return_cast_loop_06"
+   ],
+   "frameRate": 8,
+   "repeat": -1
+  }
+ ]
+}

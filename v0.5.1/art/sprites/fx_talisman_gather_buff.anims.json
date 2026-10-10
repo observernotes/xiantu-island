@@ -1,0 +1,32 @@
+{
+ "atlas": "fx_talisman_gather_buff",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  64,
+  96
+ ],
+ "blend": "NORMAL",
+ "kind": "fx",
+ "note": "聚灵持续增益，原点 (0.5,1) 对齐角色脚底，3 颗淡天青灵点从侧方汇聚至身体中心，3 颗金点绕脚边左右摆动上飘，NORMAL。增益挂载后循环 loop，显示在人物旁且保持低透明度；到期隐藏销毁，死亡保留到原 expireAt。有效状态以现实时间 30 分钟到期为准，循环帧数不当作计时；切图重挂视觉、同品质刷新/高品质替换复用一个实例。HUD 状态使用 icon_buff_talisman_gather；只提示状态，不触发修为结算。",
+ "anims": [
+  {
+   "key": "fx_talisman_gather_buff_loop",
+   "frames": [
+    "fx_talisman_gather_buff_loop_01",
+    "fx_talisman_gather_buff_loop_02",
+    "fx_talisman_gather_buff_loop_03",
+    "fx_talisman_gather_buff_loop_04",
+    "fx_talisman_gather_buff_loop_05",
+    "fx_talisman_gather_buff_loop_06",
+    "fx_talisman_gather_buff_loop_07",
+    "fx_talisman_gather_buff_loop_08"
+   ],
+   "frameRate": 8,
+   "repeat": -1
+  }
+ ]
+}
