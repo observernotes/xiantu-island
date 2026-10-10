@@ -37,7 +37,10 @@ try {
     [name, typeof configured[name] === 'boolean' ? configured[name] : true]));
   assert.deepEqual(features.featureFlags(), expectedFeatures, '职业冒烟开关与工程快照不一致');
   if (process.env.QA_TIER_EXPECT_FEATURES) {
-    assert.deepEqual(expectedFeatures, JSON.parse(process.env.QA_TIER_EXPECT_FEATURES), 'QA 期望与工程快照不一致');
+    // 新开关不要求旧 QA 清单已枚举，但旧清单中的关口必须匹配工程快照。
+    for (const [name, value] of Object.entries(JSON.parse(process.env.QA_TIER_EXPECT_FEATURES))) {
+      assert.equal(expectedFeatures[name], value, `QA 关口 ${name} 与工程快照不一致`);
+    }
   }
   ({ inPhase } = await featureLoader.ssrLoadModule('/src/data.ts'));
 } finally { await featureLoader.close(); }
