@@ -1,0 +1,469 @@
+{
+  "definitions": {
+    "silhouette": "alpha > 40; difference = 1 - intersection/union",
+    "empty_silhouette_union_difference": 0.0,
+    "nontransparent": "alpha > 0 for RGB, bbox, outline and ground matching",
+    "mean_color": "Unweighted mean of raw nontransparent RGB; no compositing",
+    "mean_rgb_distance": "Euclidean distance between mean RGB vectors, 0..255 scale",
+    "lab_delta_e76": "Euclidean distance between Lab(mean RGB), sRGB D65/2 degree",
+    "bbox_xyxy": "[left, top, right, bottom]; right/bottom exclusive, 32px coordinates",
+    "outline_color_ratio": "Fraction of nontransparent pixels with RGB distance to #3B2A20 < 40",
+    "ground_matching_ratio": "Fraction of nontransparent pixels with raw RGB Lab delta E76 < 12 to ground",
+    "ratios": "Fractions in [0, 1], not percentages; strict threshold comparisons"
+  },
+  "sect_order": [
+    "tianjian",
+    "taixu",
+    "lingfu",
+    "youying",
+    "wanshou"
+  ],
+  "icons": {
+    "icon_robe_tianjian_1": {
+      "nontransparent_pixels": 654,
+      "fully_opaque_pixels": 410,
+      "silhouette_pixels": 635,
+      "bbox_xyxy": [
+        1,
+        2,
+        31,
+        31
+      ],
+      "bbox_size": [
+        30,
+        29
+      ],
+      "mean_rgb": [
+        132.73241590214067,
+        142.17278287461772,
+        148.52140672782875
+      ],
+      "mean_rgb_lab_d65": [
+        58.524171974871706,
+        -2.0882375532649267,
+        -4.5431352261093405
+      ],
+      "old_silhouette_difference": 0.24739195230998512,
+      "outline_pixels": 167,
+      "outline_color_ratio": 0.25535168195718655,
+      "ground_matching_pixels": {
+        "#2A2432": 3,
+        "#ECE0C4": 8
+      },
+      "ground_matching_ratio": {
+        "#2A2432": 0.0045871559633027525,
+        "#ECE0C4": 0.012232415902140673
+      }
+    },
+    "icon_robe_taixu_1": {
+      "nontransparent_pixels": 597,
+      "fully_opaque_pixels": 438,
+      "silhouette_pixels": 584,
+      "bbox_xyxy": [
+        1,
+        1,
+        31,
+        30
+      ],
+      "bbox_size": [
+        30,
+        29
+      ],
+      "mean_rgb": [
+        141.89782244556113,
+        130.47236180904522,
+        150.93132328308207
+      ],
+      "mean_rgb_lab_d65": [
+        56.15303832983315,
+        8.338331646049191,
+        -9.373411527361398
+      ],
+      "old_silhouette_difference": 0.1949778434268833,
+      "outline_pixels": 164,
+      "outline_color_ratio": 0.2747068676716918,
+      "ground_matching_pixels": {
+        "#2A2432": 5,
+        "#ECE0C4": 0
+      },
+      "ground_matching_ratio": {
+        "#2A2432": 0.008375209380234505,
+        "#ECE0C4": 0.0
+      }
+    },
+    "icon_robe_lingfu_1": {
+      "nontransparent_pixels": 667,
+      "fully_opaque_pixels": 473,
+      "silhouette_pixels": 643,
+      "bbox_xyxy": [
+        1,
+        2,
+        31,
+        31
+      ],
+      "bbox_size": [
+        30,
+        29
+      ],
+      "mean_rgb": [
+        147.63868065967017,
+        105.68515742128936,
+        67.62668665667167
+      ],
+      "mean_rgb_lab_d65": [
+        48.15867206264345,
+        12.183374769794197,
+        27.87580936856846
+      ],
+      "old_silhouette_difference": 0.16317365269461082,
+      "outline_pixels": 239,
+      "outline_color_ratio": 0.3583208395802099,
+      "ground_matching_pixels": {
+        "#2A2432": 3,
+        "#ECE0C4": 8
+      },
+      "ground_matching_ratio": {
+        "#2A2432": 0.004497751124437781,
+        "#ECE0C4": 0.01199400299850075
+      }
+    },
+    "icon_robe_youying_1": {
+      "nontransparent_pixels": 692,
+      "fully_opaque_pixels": 497,
+      "silhouette_pixels": 669,
+      "bbox_xyxy": [
+        1,
+        0,
+        31,
+        31
+      ],
+      "bbox_size": [
+        30,
+        31
+      ],
+      "mean_rgb": [
+        95.90462427745665,
+        80.86127167630057,
+        102.33381502890174
+      ],
+      "mean_rgb_lab_d65": [
+        36.57811268473109,
+        10.668733347279746,
+        -10.09319138212299
+      ],
+      "old_silhouette_difference": 0.3401459854014599,
+      "outline_pixels": 253,
+      "outline_color_ratio": 0.36560693641618497,
+      "ground_matching_pixels": {
+        "#2A2432": 53,
+        "#ECE0C4": 0
+      },
+      "ground_matching_ratio": {
+        "#2A2432": 0.07658959537572255,
+        "#ECE0C4": 0.0
+      }
+    },
+    "icon_robe_wanshou_1": {
+      "nontransparent_pixels": 650,
+      "fully_opaque_pixels": 467,
+      "silhouette_pixels": 643,
+      "bbox_xyxy": [
+        1,
+        1,
+        31,
+        31
+      ],
+      "bbox_size": [
+        30,
+        30
+      ],
+      "mean_rgb": [
+        102.48,
+        95.2523076923077,
+        58.847692307692306
+      ],
+      "mean_rgb_lab_d65": [
+        40.24183510089357,
+        -3.0070997774502004,
+        21.862085399995824
+      ],
+      "old_silhouette_difference": 0.2780337941628265,
+      "outline_pixels": 278,
+      "outline_color_ratio": 0.4276923076923077,
+      "ground_matching_pixels": {
+        "#2A2432": 0,
+        "#ECE0C4": 1
+      },
+      "ground_matching_ratio": {
+        "#2A2432": 0.0,
+        "#ECE0C4": 0.0015384615384615385
+      }
+    }
+  },
+  "pairwise": [
+    {
+      "a": "icon_robe_tianjian_1",
+      "b": "icon_robe_taixu_1",
+      "silhouette_difference": 0.34375,
+      "mean_rgb_distance": 15.056966096167955,
+      "lab_delta_e76": 11.733166204275678
+    },
+    {
+      "a": "icon_robe_tianjian_1",
+      "b": "icon_robe_lingfu_1",
+      "silhouette_difference": 0.20253164556962022,
+      "mean_rgb_distance": 89.98610601439984,
+      "lab_delta_e76": 36.90678088594136
+    },
+    {
+      "a": "icon_robe_tianjian_1",
+      "b": "icon_robe_youying_1",
+      "silhouette_difference": 0.23545331529093372,
+      "mean_rgb_distance": 85.13918761838937,
+      "lab_delta_e76": 25.984090291149617
+    },
+    {
+      "a": "icon_robe_tianjian_1",
+      "b": "icon_robe_wanshou_1",
+      "silhouette_difference": 0.22253129346314326,
+      "mean_rgb_distance": 105.63197772054659,
+      "lab_delta_e76": 32.129796539566584
+    },
+    {
+      "a": "icon_robe_taixu_1",
+      "b": "icon_robe_lingfu_1",
+      "silhouette_difference": 0.30055401662049863,
+      "mean_rgb_distance": 87.10353286665911,
+      "lab_delta_e76": 38.29097421052665
+    },
+    {
+      "a": "icon_robe_taixu_1",
+      "b": "icon_robe_youying_1",
+      "silhouette_difference": 0.2597222222222222,
+      "mean_rgb_distance": 83.29677274903852,
+      "lab_delta_e76": 19.72629131741933
+    },
+    {
+      "a": "icon_robe_taixu_1",
+      "b": "icon_robe_wanshou_1",
+      "silhouette_difference": 0.27183098591549293,
+      "mean_rgb_distance": 106.17726702052309,
+      "lab_delta_e76": 36.84482963289269
+    },
+    {
+      "a": "icon_robe_lingfu_1",
+      "b": "icon_robe_youying_1",
+      "silhouette_difference": 0.2198100407055631,
+      "mean_rgb_distance": 67.06133500822037,
+      "lab_delta_e76": 39.72465874177094
+    },
+    {
+      "a": "icon_robe_lingfu_1",
+      "b": "icon_robe_wanshou_1",
+      "silhouette_difference": 0.1522988505747126,
+      "mean_rgb_distance": 47.17225385932914,
+      "lab_delta_e76": 18.15466057021155
+    },
+    {
+      "a": "icon_robe_youying_1",
+      "b": "icon_robe_wanshou_1",
+      "silhouette_difference": 0.12034383954154726,
+      "mean_rgb_distance": 46.27505108404219,
+      "lab_delta_e76": 34.951265897245754
+    }
+  ],
+  "merge_self_check": {
+    "all_passed": true,
+    "dimensions_equal": true,
+    "rgba_mode_equal": true,
+    "outside_replaced_frames_equal": true,
+    "replacement_frames_equal": {
+      "icon_robe_tianjian_1": true,
+      "icon_robe_taixu_1": true,
+      "icon_robe_lingfu_1": true,
+      "icon_robe_youying_1": true,
+      "icon_robe_wanshou_1": true
+    },
+    "json_bytes_equal": true,
+    "official_inputs_unchanged": true,
+    "official_size": [
+      256,
+      192
+    ],
+    "merged_size": [
+      256,
+      192
+    ],
+    "outside_pixels_checked": 44032,
+    "outside_differing_pixels": 0,
+    "replaced_rectangles_xyxy": {
+      "icon_robe_tianjian_1": [
+        96,
+        160,
+        128,
+        192
+      ],
+      "icon_robe_taixu_1": [
+        128,
+        160,
+        160,
+        192
+      ],
+      "icon_robe_lingfu_1": [
+        160,
+        160,
+        192,
+        192
+      ],
+      "icon_robe_youying_1": [
+        192,
+        160,
+        224,
+        192
+      ],
+      "icon_robe_wanshou_1": [
+        224,
+        160,
+        256,
+        192
+      ]
+    },
+    "md5": {
+      "official_png": "2886ea83933ec00af08f62d5f10f2853",
+      "official_json": "fdb86f399b616d98f93288853f5ce523",
+      "merged_png": "6dd790957c88455140c99dcdad8fa333",
+      "merged_json": "fdb86f399b616d98f93288853f5ce523"
+    }
+  },
+  "bag_preview": {
+    "window_size_1x": [
+      308,
+      308
+    ],
+    "grid": [
+      6,
+      6
+    ],
+    "padding": 12,
+    "gap": 4,
+    "nine_slice_border": 8,
+    "slot_size": [
+      44,
+      44
+    ],
+    "cells": [
+      [
+        "icon_robe_tianjian_1",
+        "icon_rabbit_fur",
+        "icon_snake_gall",
+        "icon_mandrill_fang",
+        "icon_fox_tail",
+        "icon_foundation_shard"
+      ],
+      [
+        "icon_hp_pill_small",
+        "icon_qi_pill",
+        "icon_robe_taixu_1",
+        "icon_wood_sword",
+        "icon_bamboo_sword",
+        "icon_azure_steel_sword"
+      ],
+      [
+        "icon_cloth_shoes",
+        "icon_fox_robe",
+        "icon_clear_mind_pill",
+        "icon_sword_intent_pill",
+        "icon_robe_lingfu_1",
+        "icon_foundation_pill"
+      ],
+      [
+        "icon_golden_core_pill",
+        "icon_robe_youying_1",
+        "icon_nascent_pill",
+        "icon_scroll_ten_thousand_swords",
+        "icon_bronze_furnace",
+        "icon_purple_copper_furnace"
+      ],
+      [
+        "icon_dark_iron_furnace",
+        "icon_pillar_shard",
+        "icon_spirit_herb",
+        "icon_fire_herb",
+        "icon_cold_heart_lotus",
+        "icon_robe_wanshou_1"
+      ],
+      [
+        "icon_nine_leaf_ganoderma",
+        "icon_iron_essence",
+        "icon_spirit_copper",
+        null,
+        null,
+        null
+      ]
+    ],
+    "filled_slots": 33,
+    "empty_slots": 3,
+    "source": "art/icons/_pending/robe_icons_r1/icons_items.merged.png",
+    "preview_1x_origin": [
+      12,
+      42
+    ],
+    "preview_3x_origin": [
+      344,
+      42
+    ]
+  },
+  "comparison_preview": {
+    "grounds": [
+      "#FAF2DC",
+      "#2A2432",
+      "ui_hud_slot"
+    ],
+    "columns": [
+      "icon_robe_tianjian_1",
+      "icon_robe_taixu_1",
+      "icon_robe_lingfu_1",
+      "icon_robe_youying_1",
+      "icon_robe_wanshou_1",
+      "icon_fox_robe"
+    ],
+    "rows_1x": [
+      "old32",
+      "new32"
+    ],
+    "rows_3x": [
+      "old32_NEAREST_x3",
+      "new32_NEAREST_x3",
+      "old64_native",
+      "new64_native"
+    ],
+    "fox64_reference": "32px fox NEAREST x2"
+  },
+  "outputs": [
+    "art/icons/_pending/robe_icons_r1/icons_items.merged.png",
+    "art/icons/_pending/robe_icons_r1/icons_items.merged.json",
+    "art/icons/_pending/robe_icons_r1/metrics_r1.json",
+    "art/sprites/preview/72_robe_icons_r1_compare_1x.png",
+    "art/sprites/preview/72_robe_icons_r1_compare_3x.png",
+    "art/sprites/preview/72_robe_icons_r1_bag6x6.png",
+    "art/sprites/preview/72_robe_icons_r1_silhouette.png"
+  ],
+  "preview_sizes": {
+    "art/sprites/preview/72_robe_icons_r1_compare_1x.png": [
+      1254,
+      212
+    ],
+    "art/sprites/preview/72_robe_icons_r1_compare_3x.png": [
+      2928,
+      612
+    ],
+    "art/sprites/preview/72_robe_icons_r1_bag6x6.png": [
+      1280,
+      978
+    ],
+    "art/sprites/preview/72_robe_icons_r1_silhouette.png": [
+      1068,
+      432
+    ]
+  }
+}

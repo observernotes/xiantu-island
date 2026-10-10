@@ -1,0 +1,289 @@
+{
+  "version": "v0.5",
+  "enabled": false,
+  "rules": {
+    "rankOrder": [
+      "outer_disciple",
+      "inner_disciple",
+      "direct_disciple",
+      "deacon",
+      "elder"
+    ],
+    "initialRank": "outer_disciple",
+    "v05MaxRank": "direct_disciple",
+    "contributionBasis": "current_balance",
+    "promotionSpendsContribution": false,
+    "demoteOnSpend": false
+  },
+  "ranks": [
+    {
+      "id": "outer_disciple",
+      "name": "外门弟子",
+      "nameKey": "sect.rank.outer_disciple.name",
+      "icon": "icon_sect_rank_outer_disciple",
+      "availableInV05": true,
+      "reqContribution": null,
+      "reqRealm": null,
+      "promotion": {
+        "mode": "on_join",
+        "dialogueKeys": {
+          "complete": "sect.promotion.outer_complete"
+        }
+      },
+      "unlocks": {
+        "libraryTier": "entry",
+        "shopShelf": "outer_disciple",
+        "dispatch": false
+      },
+      "balanceTodo": [
+        "reqContribution",
+        "reqRealm"
+      ]
+    },
+    {
+      "id": "inner_disciple",
+      "name": "内门弟子",
+      "nameKey": "sect.rank.inner_disciple.name",
+      "icon": "icon_sect_rank_inner_disciple",
+      "availableInV05": true,
+      "reqContribution": null,
+      "reqRealm": null,
+      "promotion": {
+        "mode": "confirm",
+        "dialogueKeys": {
+          "offer": "sect.promotion.inner_offer",
+          "complete": "sect.promotion.inner_complete"
+        }
+      },
+      "unlocks": {
+        "libraryTier": "advanced",
+        "shopShelf": "inner_disciple",
+        "dispatch": false
+      },
+      "balanceTodo": [
+        "reqContribution",
+        "reqRealm"
+      ]
+    },
+    {
+      "id": "direct_disciple",
+      "name": "亲传弟子",
+      "nameKey": "sect.rank.direct_disciple.name",
+      "icon": "icon_sect_rank_direct_disciple",
+      "availableInV05": true,
+      "reqContribution": null,
+      "reqRealm": null,
+      "promotion": {
+        "mode": "oath",
+        "dialogueKeys": {
+          "offer": "sect.promotion.direct_offer",
+          "question": "sect.promotion.direct_question",
+          "accept": "sect.promotion.direct_accept",
+          "defer": "sect.promotion.direct_defer",
+          "complete": "sect.promotion.direct_complete"
+        }
+      },
+      "unlocks": {
+        "libraryTier": "secret",
+        "shopShelf": "direct_disciple",
+        "dispatch": false
+      },
+      "balanceTodo": [
+        "reqContribution",
+        "reqRealm"
+      ]
+    },
+    {
+      "id": "deacon",
+      "name": "执事",
+      "nameKey": "sect.rank.deacon.name",
+      "icon": "icon_sect_rank_deacon",
+      "availableInV05": false,
+      "reqContribution": null,
+      "reqRealm": null,
+      "promotion": {
+        "mode": "reserved",
+        "dialogueKeys": {
+          "offer": "sect.promotion.reserved_offer",
+          "complete": "sect.promotion.reserved_complete"
+        }
+      },
+      "unlocks": {
+        "libraryTier": "reserved",
+        "shopShelf": "deacon",
+        "dispatch": false
+      },
+      "balanceTodo": [
+        "reqContribution",
+        "reqRealm"
+      ]
+    },
+    {
+      "id": "elder",
+      "name": "长老",
+      "nameKey": "sect.rank.elder.name",
+      "icon": "icon_sect_rank_elder",
+      "availableInV05": false,
+      "reqContribution": null,
+      "reqRealm": null,
+      "promotion": {
+        "mode": "reserved",
+        "dialogueKeys": {
+          "offer": "sect.promotion.reserved_offer",
+          "complete": "sect.promotion.reserved_complete"
+        }
+      },
+      "unlocks": {
+        "libraryTier": "reserved",
+        "shopShelf": "elder",
+        "dispatch": false
+      },
+      "balanceTodo": [
+        "reqContribution",
+        "reqRealm"
+      ]
+    }
+  ],
+  "sects": [
+    {
+      "id": "tianjian",
+      "name": "天剑宗",
+      "promotionNpc": "tianjian_elder",
+      "stewardNpc": "tianjian_envoy_sect",
+      "titles": {
+        "outer_disciple": {
+          "name": "天剑宗·外门弟子",
+          "nameKey": "sect.title.tianjian.outer_disciple"
+        },
+        "inner_disciple": {
+          "name": "天剑宗·内门弟子",
+          "nameKey": "sect.title.tianjian.inner_disciple"
+        },
+        "direct_disciple": {
+          "name": "天剑宗·亲传弟子",
+          "nameKey": "sect.title.tianjian.direct_disciple"
+        },
+        "deacon": {
+          "name": "天剑宗·执事",
+          "nameKey": "sect.title.tianjian.deacon"
+        },
+        "elder": {
+          "name": "天剑宗·长老",
+          "nameKey": "sect.title.tianjian.elder"
+        }
+      }
+    },
+    {
+      "id": "taixu",
+      "name": "太虚观",
+      "promotionNpc": "taixu_elder",
+      "stewardNpc": "taixu_envoy",
+      "titles": {
+        "outer_disciple": {
+          "name": "太虚观·外门弟子",
+          "nameKey": "sect.title.taixu.outer_disciple"
+        },
+        "inner_disciple": {
+          "name": "太虚观·内门弟子",
+          "nameKey": "sect.title.taixu.inner_disciple"
+        },
+        "direct_disciple": {
+          "name": "太虚观·亲传弟子",
+          "nameKey": "sect.title.taixu.direct_disciple"
+        },
+        "deacon": {
+          "name": "太虚观·执事",
+          "nameKey": "sect.title.taixu.deacon"
+        },
+        "elder": {
+          "name": "太虚观·长老",
+          "nameKey": "sect.title.taixu.elder"
+        }
+      }
+    },
+    {
+      "id": "lingfu",
+      "name": "灵符派",
+      "promotionNpc": "lingfu_elder",
+      "stewardNpc": "lingfu_envoy",
+      "titles": {
+        "outer_disciple": {
+          "name": "灵符派·外门弟子",
+          "nameKey": "sect.title.lingfu.outer_disciple"
+        },
+        "inner_disciple": {
+          "name": "灵符派·内门弟子",
+          "nameKey": "sect.title.lingfu.inner_disciple"
+        },
+        "direct_disciple": {
+          "name": "灵符派·亲传弟子",
+          "nameKey": "sect.title.lingfu.direct_disciple"
+        },
+        "deacon": {
+          "name": "灵符派·执事",
+          "nameKey": "sect.title.lingfu.deacon"
+        },
+        "elder": {
+          "name": "灵符派·长老",
+          "nameKey": "sect.title.lingfu.elder"
+        }
+      }
+    },
+    {
+      "id": "youying",
+      "name": "幽影楼",
+      "promotionNpc": "youying_elder",
+      "stewardNpc": "youying_envoy",
+      "titles": {
+        "outer_disciple": {
+          "name": "幽影楼·外门弟子",
+          "nameKey": "sect.title.youying.outer_disciple"
+        },
+        "inner_disciple": {
+          "name": "幽影楼·内门弟子",
+          "nameKey": "sect.title.youying.inner_disciple"
+        },
+        "direct_disciple": {
+          "name": "幽影楼·亲传弟子",
+          "nameKey": "sect.title.youying.direct_disciple"
+        },
+        "deacon": {
+          "name": "幽影楼·执事",
+          "nameKey": "sect.title.youying.deacon"
+        },
+        "elder": {
+          "name": "幽影楼·长老",
+          "nameKey": "sect.title.youying.elder"
+        }
+      }
+    },
+    {
+      "id": "wanshou",
+      "name": "万兽山",
+      "promotionNpc": "wanshou_elder",
+      "stewardNpc": "wanshou_envoy",
+      "titles": {
+        "outer_disciple": {
+          "name": "万兽山·外门弟子",
+          "nameKey": "sect.title.wanshou.outer_disciple"
+        },
+        "inner_disciple": {
+          "name": "万兽山·内门弟子",
+          "nameKey": "sect.title.wanshou.inner_disciple"
+        },
+        "direct_disciple": {
+          "name": "万兽山·亲传弟子",
+          "nameKey": "sect.title.wanshou.direct_disciple"
+        },
+        "deacon": {
+          "name": "万兽山·执事",
+          "nameKey": "sect.title.wanshou.deacon"
+        },
+        "elder": {
+          "name": "万兽山·长老",
+          "nameKey": "sect.title.wanshou.elder"
+        }
+      }
+    }
+  ]
+}

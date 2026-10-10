@@ -1,0 +1,945 @@
+{
+  "meta": {
+    "version": "v0.6",
+    "floorCount": 30,
+    "monsterLevelOffset": 9,
+    "multiplierScale": 100,
+    "multiplierRule": "actualMultiplier = storedValue / multiplierScale",
+    "statBaseRule": "先按 monsterLevel 重标定同级模板基准，再套塔倍率；保留模板固有强弱与技能",
+    "roundingRule": "各次比例运算向下取整；气血、攻击至少为 1",
+    "startFromRule": {
+      "expression": "max(1, highestClearedFloor - 10)",
+      "minFloor": 1,
+      "highestClearedFloorMinus": 10
+    },
+    "roomRule": {
+      "roomsPerFloor": 1,
+      "fixedRoomPerFloor": true,
+      "advanceWhen": "allMobsClearedIncludingSplitChildren",
+      "respawn": false,
+      "bossEvery": 10,
+      "bossRoleOverridesTemplate": true
+    },
+    "affixDefs": {
+      "rage": {
+        "name": "狂暴",
+        "startFloor": 10,
+        "atkBonusPct": 30
+      },
+      "shield": {
+        "name": "护盾",
+        "startFloor": 20,
+        "absorbMaxHpPct": 20,
+        "regenerate": false,
+        "overflowToHp": true
+      },
+      "split": {
+        "name": "分裂",
+        "startFloor": 30,
+        "trigger": "death",
+        "childCount": 2,
+        "childHpPct": 40,
+        "childAtkPct": 40,
+        "childStatBase": "parentFinalMaxHpAndAtk",
+        "reuseParentMonsterId": true,
+        "childInheritAffixes": [
+          "rage",
+          "shield"
+        ],
+        "childReapplyAtkBonus": false,
+        "childCanSplit": false,
+        "childrenMustBeCleared": true
+      }
+    },
+    "affixScope": [
+      "normal",
+      "boss"
+    ],
+    "firstClearOnly": true,
+    "normalPool": [
+      "spirit_rabbit",
+      "bamboo_snake",
+      "mountain_mandrill",
+      "wild_boar_spirit",
+      "straw_puppet",
+      "black_robe_minion",
+      "vine_imp",
+      "shadow_wolf",
+      "poison_spider",
+      "demonized_ape",
+      "tree_demon_sapling"
+    ],
+    "rewardQualityField": "firstClearRewards.items[].quality",
+    "rewardQualityValue": "high",
+    "specSection": "G14",
+    "pendingRegistration": {
+      "titleIds": [
+        "title_tower_10",
+        "title_tower_20",
+        "title_tower_30"
+      ]
+    },
+    "sources": [
+      "balance/05_单机节奏表.md 第五节",
+      "design/GDD_总体设计.md §15.4",
+      "balance/tools/gen_solo.py tower",
+      "balance/solo_pacing.json tower",
+      "balance/monsters.json",
+      "balance/items.json"
+    ]
+  },
+  "floors": [
+    {
+      "floor": 1,
+      "monsterLevel": 10,
+      "hpMul": 150,
+      "atkMul": 110,
+      "affixes": [],
+      "mobs": [
+        {
+          "monsterId": "mountain_mandrill",
+          "count": 3,
+          "role": "normal"
+        },
+        {
+          "monsterId": "wild_boar_spirit",
+          "count": 1,
+          "role": "normal"
+        }
+      ],
+      "firstClearRewards": {
+        "spirit_stone": 500,
+        "items": [],
+        "titles": []
+      }
+    },
+    {
+      "floor": 2,
+      "monsterLevel": 11,
+      "hpMul": 150,
+      "atkMul": 110,
+      "affixes": [],
+      "mobs": [
+        {
+          "monsterId": "wild_boar_spirit",
+          "count": 3,
+          "role": "normal"
+        },
+        {
+          "monsterId": "mountain_mandrill",
+          "count": 1,
+          "role": "normal"
+        }
+      ],
+      "firstClearRewards": {
+        "spirit_stone": 550,
+        "items": [],
+        "titles": []
+      }
+    },
+    {
+      "floor": 3,
+      "monsterLevel": 12,
+      "hpMul": 150,
+      "atkMul": 110,
+      "affixes": [],
+      "mobs": [
+        {
+          "monsterId": "wild_boar_spirit",
+          "count": 4,
+          "role": "normal"
+        },
+        {
+          "monsterId": "mountain_mandrill",
+          "count": 1,
+          "role": "normal"
+        }
+      ],
+      "firstClearRewards": {
+        "spirit_stone": 600,
+        "items": [],
+        "titles": []
+      }
+    },
+    {
+      "floor": 4,
+      "monsterLevel": 13,
+      "hpMul": 150,
+      "atkMul": 110,
+      "affixes": [],
+      "mobs": [
+        {
+          "monsterId": "wild_boar_spirit",
+          "count": 4,
+          "role": "normal"
+        },
+        {
+          "monsterId": "straw_puppet",
+          "count": 1,
+          "role": "normal"
+        }
+      ],
+      "firstClearRewards": {
+        "spirit_stone": 650,
+        "items": [],
+        "titles": []
+      }
+    },
+    {
+      "floor": 5,
+      "monsterLevel": 14,
+      "hpMul": 150,
+      "atkMul": 110,
+      "affixes": [],
+      "mobs": [
+        {
+          "monsterId": "straw_puppet",
+          "count": 4,
+          "role": "normal"
+        },
+        {
+          "monsterId": "wild_boar_spirit",
+          "count": 2,
+          "role": "normal"
+        }
+      ],
+      "firstClearRewards": {
+        "spirit_stone": 700,
+        "items": [
+          {
+            "item": "hp_pill_small",
+            "count": 3,
+            "quality": "high"
+          }
+        ],
+        "titles": []
+      }
+    },
+    {
+      "floor": 6,
+      "monsterLevel": 15,
+      "hpMul": 150,
+      "atkMul": 110,
+      "affixes": [],
+      "mobs": [
+        {
+          "monsterId": "straw_puppet",
+          "count": 4,
+          "role": "normal"
+        },
+        {
+          "monsterId": "wild_boar_spirit",
+          "count": 2,
+          "role": "normal"
+        }
+      ],
+      "firstClearRewards": {
+        "spirit_stone": 750,
+        "items": [],
+        "titles": []
+      }
+    },
+    {
+      "floor": 7,
+      "monsterLevel": 16,
+      "hpMul": 150,
+      "atkMul": 110,
+      "affixes": [],
+      "mobs": [
+        {
+          "monsterId": "straw_puppet",
+          "count": 5,
+          "role": "normal"
+        },
+        {
+          "monsterId": "black_robe_minion",
+          "count": 2,
+          "role": "normal"
+        }
+      ],
+      "firstClearRewards": {
+        "spirit_stone": 800,
+        "items": [],
+        "titles": []
+      }
+    },
+    {
+      "floor": 8,
+      "monsterLevel": 17,
+      "hpMul": 150,
+      "atkMul": 110,
+      "affixes": [],
+      "mobs": [
+        {
+          "monsterId": "black_robe_minion",
+          "count": 5,
+          "role": "normal"
+        },
+        {
+          "monsterId": "straw_puppet",
+          "count": 2,
+          "role": "normal"
+        }
+      ],
+      "firstClearRewards": {
+        "spirit_stone": 850,
+        "items": [],
+        "titles": []
+      }
+    },
+    {
+      "floor": 9,
+      "monsterLevel": 18,
+      "hpMul": 150,
+      "atkMul": 110,
+      "affixes": [],
+      "mobs": [
+        {
+          "monsterId": "black_robe_minion",
+          "count": 6,
+          "role": "normal"
+        },
+        {
+          "monsterId": "straw_puppet",
+          "count": 2,
+          "role": "normal"
+        }
+      ],
+      "firstClearRewards": {
+        "spirit_stone": 900,
+        "items": [],
+        "titles": []
+      }
+    },
+    {
+      "floor": 10,
+      "monsterLevel": 19,
+      "hpMul": 150,
+      "atkMul": 110,
+      "affixes": [
+        "rage"
+      ],
+      "mobs": [
+        {
+          "monsterId": "vine_imp",
+          "count": 1,
+          "role": "boss"
+        },
+        {
+          "monsterId": "black_robe_minion",
+          "count": 1,
+          "role": "normal"
+        },
+        {
+          "monsterId": "straw_puppet",
+          "count": 1,
+          "role": "normal"
+        }
+      ],
+      "firstClearRewards": {
+        "spirit_stone": 950,
+        "items": [
+          {
+            "item": "hp_pill_small",
+            "count": 3,
+            "quality": "high"
+          },
+          {
+            "item": "refine_stone",
+            "count": 5
+          }
+        ],
+        "titles": [
+          {
+            "id": "title_tower_10",
+            "name": "锁妖·初阶"
+          }
+        ]
+      }
+    },
+    {
+      "floor": 11,
+      "monsterLevel": 20,
+      "hpMul": 150,
+      "atkMul": 110,
+      "affixes": [
+        "rage"
+      ],
+      "mobs": [
+        {
+          "monsterId": "black_robe_minion",
+          "count": 3,
+          "role": "normal"
+        },
+        {
+          "monsterId": "vine_imp",
+          "count": 1,
+          "role": "normal"
+        }
+      ],
+      "firstClearRewards": {
+        "spirit_stone": 1000,
+        "items": [],
+        "titles": []
+      }
+    },
+    {
+      "floor": 12,
+      "monsterLevel": 21,
+      "hpMul": 150,
+      "atkMul": 110,
+      "affixes": [
+        "rage"
+      ],
+      "mobs": [
+        {
+          "monsterId": "vine_imp",
+          "count": 3,
+          "role": "normal"
+        },
+        {
+          "monsterId": "black_robe_minion",
+          "count": 1,
+          "role": "normal"
+        }
+      ],
+      "firstClearRewards": {
+        "spirit_stone": 1050,
+        "items": [],
+        "titles": []
+      }
+    },
+    {
+      "floor": 13,
+      "monsterLevel": 22,
+      "hpMul": 150,
+      "atkMul": 110,
+      "affixes": [
+        "rage"
+      ],
+      "mobs": [
+        {
+          "monsterId": "vine_imp",
+          "count": 4,
+          "role": "normal"
+        },
+        {
+          "monsterId": "black_robe_minion",
+          "count": 1,
+          "role": "normal"
+        }
+      ],
+      "firstClearRewards": {
+        "spirit_stone": 1100,
+        "items": [],
+        "titles": []
+      }
+    },
+    {
+      "floor": 14,
+      "monsterLevel": 23,
+      "hpMul": 150,
+      "atkMul": 110,
+      "affixes": [
+        "rage"
+      ],
+      "mobs": [
+        {
+          "monsterId": "vine_imp",
+          "count": 4,
+          "role": "normal"
+        },
+        {
+          "monsterId": "shadow_wolf",
+          "count": 1,
+          "role": "normal"
+        }
+      ],
+      "firstClearRewards": {
+        "spirit_stone": 1150,
+        "items": [],
+        "titles": []
+      }
+    },
+    {
+      "floor": 15,
+      "monsterLevel": 24,
+      "hpMul": 150,
+      "atkMul": 110,
+      "affixes": [
+        "rage"
+      ],
+      "mobs": [
+        {
+          "monsterId": "vine_imp",
+          "count": 4,
+          "role": "normal"
+        },
+        {
+          "monsterId": "shadow_wolf",
+          "count": 2,
+          "role": "normal"
+        }
+      ],
+      "firstClearRewards": {
+        "spirit_stone": 1200,
+        "items": [
+          {
+            "item": "hp_pill_small",
+            "count": 3,
+            "quality": "high"
+          }
+        ],
+        "titles": []
+      }
+    },
+    {
+      "floor": 16,
+      "monsterLevel": 25,
+      "hpMul": 150,
+      "atkMul": 110,
+      "affixes": [
+        "rage"
+      ],
+      "mobs": [
+        {
+          "monsterId": "shadow_wolf",
+          "count": 4,
+          "role": "normal"
+        },
+        {
+          "monsterId": "vine_imp",
+          "count": 2,
+          "role": "normal"
+        }
+      ],
+      "firstClearRewards": {
+        "spirit_stone": 1250,
+        "items": [],
+        "titles": []
+      }
+    },
+    {
+      "floor": 17,
+      "monsterLevel": 26,
+      "hpMul": 150,
+      "atkMul": 110,
+      "affixes": [
+        "rage"
+      ],
+      "mobs": [
+        {
+          "monsterId": "shadow_wolf",
+          "count": 5,
+          "role": "normal"
+        },
+        {
+          "monsterId": "vine_imp",
+          "count": 2,
+          "role": "normal"
+        }
+      ],
+      "firstClearRewards": {
+        "spirit_stone": 1300,
+        "items": [],
+        "titles": []
+      }
+    },
+    {
+      "floor": 18,
+      "monsterLevel": 27,
+      "hpMul": 150,
+      "atkMul": 110,
+      "affixes": [
+        "rage"
+      ],
+      "mobs": [
+        {
+          "monsterId": "shadow_wolf",
+          "count": 5,
+          "role": "normal"
+        },
+        {
+          "monsterId": "poison_spider",
+          "count": 2,
+          "role": "normal"
+        }
+      ],
+      "firstClearRewards": {
+        "spirit_stone": 1350,
+        "items": [],
+        "titles": []
+      }
+    },
+    {
+      "floor": 19,
+      "monsterLevel": 28,
+      "hpMul": 150,
+      "atkMul": 110,
+      "affixes": [
+        "rage"
+      ],
+      "mobs": [
+        {
+          "monsterId": "shadow_wolf",
+          "count": 6,
+          "role": "normal"
+        },
+        {
+          "monsterId": "poison_spider",
+          "count": 2,
+          "role": "normal"
+        }
+      ],
+      "firstClearRewards": {
+        "spirit_stone": 1400,
+        "items": [],
+        "titles": []
+      }
+    },
+    {
+      "floor": 20,
+      "monsterLevel": 29,
+      "hpMul": 150,
+      "atkMul": 110,
+      "affixes": [
+        "rage",
+        "shield"
+      ],
+      "mobs": [
+        {
+          "monsterId": "poison_spider",
+          "count": 1,
+          "role": "boss"
+        },
+        {
+          "monsterId": "shadow_wolf",
+          "count": 2,
+          "role": "normal"
+        },
+        {
+          "monsterId": "vine_imp",
+          "count": 1,
+          "role": "normal"
+        }
+      ],
+      "firstClearRewards": {
+        "spirit_stone": 1450,
+        "items": [
+          {
+            "item": "hp_pill_small",
+            "count": 3,
+            "quality": "high"
+          },
+          {
+            "item": "refine_stone",
+            "count": 5
+          }
+        ],
+        "titles": [
+          {
+            "id": "title_tower_20",
+            "name": "锁妖·中阶"
+          }
+        ]
+      }
+    },
+    {
+      "floor": 21,
+      "monsterLevel": 30,
+      "hpMul": 150,
+      "atkMul": 110,
+      "affixes": [
+        "rage",
+        "shield"
+      ],
+      "mobs": [
+        {
+          "monsterId": "poison_spider",
+          "count": 3,
+          "role": "normal"
+        },
+        {
+          "monsterId": "shadow_wolf",
+          "count": 1,
+          "role": "normal"
+        }
+      ],
+      "firstClearRewards": {
+        "spirit_stone": 1500,
+        "items": [],
+        "titles": []
+      }
+    },
+    {
+      "floor": 22,
+      "monsterLevel": 31,
+      "hpMul": 150,
+      "atkMul": 110,
+      "affixes": [
+        "rage",
+        "shield"
+      ],
+      "mobs": [
+        {
+          "monsterId": "poison_spider",
+          "count": 3,
+          "role": "normal"
+        },
+        {
+          "monsterId": "demonized_ape",
+          "count": 1,
+          "role": "normal"
+        }
+      ],
+      "firstClearRewards": {
+        "spirit_stone": 1550,
+        "items": [],
+        "titles": []
+      }
+    },
+    {
+      "floor": 23,
+      "monsterLevel": 32,
+      "hpMul": 150,
+      "atkMul": 110,
+      "affixes": [
+        "rage",
+        "shield"
+      ],
+      "mobs": [
+        {
+          "monsterId": "poison_spider",
+          "count": 4,
+          "role": "normal"
+        },
+        {
+          "monsterId": "demonized_ape",
+          "count": 1,
+          "role": "normal"
+        }
+      ],
+      "firstClearRewards": {
+        "spirit_stone": 1600,
+        "items": [],
+        "titles": []
+      }
+    },
+    {
+      "floor": 24,
+      "monsterLevel": 33,
+      "hpMul": 150,
+      "atkMul": 110,
+      "affixes": [
+        "rage",
+        "shield"
+      ],
+      "mobs": [
+        {
+          "monsterId": "demonized_ape",
+          "count": 4,
+          "role": "normal"
+        },
+        {
+          "monsterId": "poison_spider",
+          "count": 1,
+          "role": "normal"
+        }
+      ],
+      "firstClearRewards": {
+        "spirit_stone": 1650,
+        "items": [],
+        "titles": []
+      }
+    },
+    {
+      "floor": 25,
+      "monsterLevel": 34,
+      "hpMul": 150,
+      "atkMul": 110,
+      "affixes": [
+        "rage",
+        "shield"
+      ],
+      "mobs": [
+        {
+          "monsterId": "demonized_ape",
+          "count": 4,
+          "role": "normal"
+        },
+        {
+          "monsterId": "tree_demon_sapling",
+          "count": 2,
+          "role": "normal"
+        }
+      ],
+      "firstClearRewards": {
+        "spirit_stone": 1700,
+        "items": [
+          {
+            "item": "hp_pill_small",
+            "count": 3,
+            "quality": "high"
+          }
+        ],
+        "titles": []
+      }
+    },
+    {
+      "floor": 26,
+      "monsterLevel": 35,
+      "hpMul": 150,
+      "atkMul": 110,
+      "affixes": [
+        "rage",
+        "shield"
+      ],
+      "mobs": [
+        {
+          "monsterId": "demonized_ape",
+          "count": 4,
+          "role": "normal"
+        },
+        {
+          "monsterId": "tree_demon_sapling",
+          "count": 2,
+          "role": "normal"
+        }
+      ],
+      "firstClearRewards": {
+        "spirit_stone": 1750,
+        "items": [],
+        "titles": []
+      }
+    },
+    {
+      "floor": 27,
+      "monsterLevel": 36,
+      "hpMul": 150,
+      "atkMul": 110,
+      "affixes": [
+        "rage",
+        "shield"
+      ],
+      "mobs": [
+        {
+          "monsterId": "tree_demon_sapling",
+          "count": 5,
+          "role": "normal"
+        },
+        {
+          "monsterId": "demonized_ape",
+          "count": 2,
+          "role": "normal"
+        }
+      ],
+      "firstClearRewards": {
+        "spirit_stone": 1800,
+        "items": [],
+        "titles": []
+      }
+    },
+    {
+      "floor": 28,
+      "monsterLevel": 37,
+      "hpMul": 150,
+      "atkMul": 110,
+      "affixes": [
+        "rage",
+        "shield"
+      ],
+      "mobs": [
+        {
+          "monsterId": "tree_demon_sapling",
+          "count": 5,
+          "role": "normal"
+        },
+        {
+          "monsterId": "demonized_ape",
+          "count": 2,
+          "role": "normal"
+        }
+      ],
+      "firstClearRewards": {
+        "spirit_stone": 1850,
+        "items": [],
+        "titles": []
+      }
+    },
+    {
+      "floor": 29,
+      "monsterLevel": 38,
+      "hpMul": 150,
+      "atkMul": 110,
+      "affixes": [
+        "rage",
+        "shield"
+      ],
+      "mobs": [
+        {
+          "monsterId": "tree_demon_sapling",
+          "count": 6,
+          "role": "normal"
+        },
+        {
+          "monsterId": "demonized_ape",
+          "count": 2,
+          "role": "normal"
+        }
+      ],
+      "firstClearRewards": {
+        "spirit_stone": 1900,
+        "items": [],
+        "titles": []
+      }
+    },
+    {
+      "floor": 30,
+      "monsterLevel": 39,
+      "hpMul": 150,
+      "atkMul": 110,
+      "affixes": [
+        "rage",
+        "shield",
+        "split"
+      ],
+      "mobs": [
+        {
+          "monsterId": "tree_demon_sapling",
+          "count": 1,
+          "role": "boss"
+        },
+        {
+          "monsterId": "demonized_ape",
+          "count": 3,
+          "role": "normal"
+        },
+        {
+          "monsterId": "poison_spider",
+          "count": 1,
+          "role": "normal"
+        }
+      ],
+      "firstClearRewards": {
+        "spirit_stone": 1950,
+        "items": [
+          {
+            "item": "hp_pill_small",
+            "count": 3,
+            "quality": "high"
+          },
+          {
+            "item": "refine_stone",
+            "count": 5
+          }
+        ],
+        "titles": [
+          {
+            "id": "title_tower_30",
+            "name": "锁妖·高阶"
+          }
+        ]
+      }
+    }
+  ]
+}

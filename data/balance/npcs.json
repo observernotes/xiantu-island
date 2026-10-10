@@ -13,26 +13,24 @@
   ],
   "affinity": {
    "enabled": false,
-   "min": null,
-   "max": null,
-   "initial": null,
+   "min": 0,
+   "max": 1000,
+   "initial": 0,
    "tiers": [
-    { "id": "stranger", "min": null, "nameKey": "affinity.tier.stranger", "dialogKey": "affinity.village_elder.stranger" },
-    { "id": "acquaintance", "min": null, "nameKey": "affinity.tier.acquaintance", "dialogKey": "affinity.village_elder.acquaintance" },
-    { "id": "confidant", "min": null, "nameKey": "affinity.tier.confidant", "dialogKey": "affinity.village_elder.confidant" },
-    { "id": "close_friend", "min": null, "nameKey": "affinity.tier.close_friend", "dialogKey": "affinity.village_elder.close_friend" },
-    { "id": "sworn_friend", "min": null, "nameKey": "affinity.tier.sworn_friend", "dialogKey": "affinity.village_elder.sworn_friend" }
+    { "id": "stranger", "min": 0, "nameKey": "affinity.tier.stranger", "dialogKey": "affinity.village_elder.stranger" },
+    { "id": "acquaintance", "min": 100, "nameKey": "affinity.tier.acquaintance", "dialogKey": "affinity.village_elder.acquaintance" },
+    { "id": "confidant", "min": 300, "nameKey": "affinity.tier.confidant", "dialogKey": "affinity.village_elder.confidant" },
+    { "id": "close_friend", "min": 600, "nameKey": "affinity.tier.close_friend", "dialogKey": "affinity.village_elder.close_friend" },
+    { "id": "sworn_friend", "min": 1000, "nameKey": "affinity.tier.sworn_friend", "dialogKey": "affinity.village_elder.sworn_friend" }
    ],
    "sources": [
-    { "type": "quest", "quest": "q_awaken", "on": "done", "once": true, "delta": null }
+    { "type": "quest", "quest": "q_awaken", "on": "done", "once": true, "delta": 40 }
    ],
-   "gifts": { "enabled": false, "likedItems": ["clear_mind_pill"], "delta": null },
+   "gifts": { "enabled": false, "likedItems": ["clear_mind_pill"], "delta": 25 },
    "unlocks": [
-    { "id": "confidant_gift", "tier": "confidant", "once": true, "items": [{ "item": "hp_pill_small", "count": null }] }
+    { "id": "confidant_gift", "tier": "confidant", "once": true, "items": [{ "item": "hp_pill_small", "count": 1 }] }
    ],
-   "balanceTodo": [
-    "min", "max", "initial", "tiers[0].min", "tiers[1].min", "tiers[2].min", "tiers[3].min", "tiers[4].min", "sources[0].delta", "gifts.delta", "unlocks[0].items[0].count"
-   ]
+   "balanceTodo": []
   }
  },
  {
@@ -49,26 +47,24 @@
   ],
   "affinity": {
    "enabled": false,
-   "min": null,
-   "max": null,
-   "initial": null,
+   "min": 0,
+   "max": 1000,
+   "initial": 0,
    "tiers": [
-    { "id": "stranger", "min": null, "nameKey": "affinity.tier.stranger", "dialogKey": "affinity.grocer_wang.stranger" },
-    { "id": "acquaintance", "min": null, "nameKey": "affinity.tier.acquaintance", "dialogKey": "affinity.grocer_wang.acquaintance" },
-    { "id": "confidant", "min": null, "nameKey": "affinity.tier.confidant", "dialogKey": "affinity.grocer_wang.confidant" },
-    { "id": "close_friend", "min": null, "nameKey": "affinity.tier.close_friend", "dialogKey": "affinity.grocer_wang.close_friend" },
-    { "id": "sworn_friend", "min": null, "nameKey": "affinity.tier.sworn_friend", "dialogKey": "affinity.grocer_wang.sworn_friend" }
+    { "id": "stranger", "min": 0, "nameKey": "affinity.tier.stranger", "dialogKey": "affinity.grocer_wang.stranger" },
+    { "id": "acquaintance", "min": 100, "nameKey": "affinity.tier.acquaintance", "dialogKey": "affinity.grocer_wang.acquaintance" },
+    { "id": "confidant", "min": 300, "nameKey": "affinity.tier.confidant", "dialogKey": "affinity.grocer_wang.confidant" },
+    { "id": "close_friend", "min": 600, "nameKey": "affinity.tier.close_friend", "dialogKey": "affinity.grocer_wang.close_friend" },
+    { "id": "sworn_friend", "min": 1000, "nameKey": "affinity.tier.sworn_friend", "dialogKey": "affinity.grocer_wang.sworn_friend" }
    ],
    "sources": [
-    { "type": "quest", "quest": "q_bamboo", "on": "done", "once": true, "delta": null }
+    { "type": "quest", "quest": "q_bamboo", "on": "done", "once": true, "delta": 30 }
    ],
-   "gifts": { "enabled": false, "likedItems": ["rabbit_fur"], "delta": null },
+   "gifts": { "enabled": false, "likedItems": ["rabbit_fur"], "delta": 15 },
    "unlocks": [
-    { "id": "confidant_gift", "tier": "confidant", "once": true, "items": [{ "item": "hp_pill_small", "count": null }] }
+    { "id": "confidant_gift", "tier": "confidant", "once": true, "items": [{ "item": "hp_pill_small", "count": 1 }] }
    ],
-   "balanceTodo": [
-    "min", "max", "initial", "tiers[0].min", "tiers[1].min", "tiers[2].min", "tiers[3].min", "tiers[4].min", "sources[0].delta", "gifts.delta", "unlocks[0].items[0].count"
-   ]
+   "balanceTodo": []
   }
  },
  {
@@ -86,26 +82,24 @@
   ],
   "affinity": {
    "enabled": false,
-   "min": null,
-   "max": null,
-   "initial": null,
+   "min": 0,
+   "max": 1000,
+   "initial": 0,
    "tiers": [
-    { "id": "stranger", "min": null, "nameKey": "affinity.tier.stranger", "dialogKey": "affinity.doctor_sun.stranger" },
-    { "id": "acquaintance", "min": null, "nameKey": "affinity.tier.acquaintance", "dialogKey": "affinity.doctor_sun.acquaintance" },
-    { "id": "confidant", "min": null, "nameKey": "affinity.tier.confidant", "dialogKey": "affinity.doctor_sun.confidant" },
-    { "id": "close_friend", "min": null, "nameKey": "affinity.tier.close_friend", "dialogKey": "affinity.doctor_sun.close_friend" },
-    { "id": "sworn_friend", "min": null, "nameKey": "affinity.tier.sworn_friend", "dialogKey": "affinity.doctor_sun.sworn_friend" }
+    { "id": "stranger", "min": 0, "nameKey": "affinity.tier.stranger", "dialogKey": "affinity.doctor_sun.stranger" },
+    { "id": "acquaintance", "min": 100, "nameKey": "affinity.tier.acquaintance", "dialogKey": "affinity.doctor_sun.acquaintance" },
+    { "id": "confidant", "min": 300, "nameKey": "affinity.tier.confidant", "dialogKey": "affinity.doctor_sun.confidant" },
+    { "id": "close_friend", "min": 600, "nameKey": "affinity.tier.close_friend", "dialogKey": "affinity.doctor_sun.close_friend" },
+    { "id": "sworn_friend", "min": 1000, "nameKey": "affinity.tier.sworn_friend", "dialogKey": "affinity.doctor_sun.sworn_friend" }
    ],
    "sources": [
-    { "type": "quest", "quest": "q_snake", "on": "done", "once": true, "delta": null }
+    { "type": "quest", "quest": "q_snake", "on": "done", "once": true, "delta": 40 }
    ],
-   "gifts": { "enabled": false, "likedItems": ["snake_gall"], "delta": null },
+   "gifts": { "enabled": false, "likedItems": ["snake_gall"], "delta": 20 },
    "unlocks": [
-    { "id": "confidant_gift", "tier": "confidant", "once": true, "items": [{ "item": "hp_pill_small", "count": null }] }
+    { "id": "confidant_gift", "tier": "confidant", "once": true, "items": [{ "item": "hp_pill_small", "count": 1 }] }
    ],
-   "balanceTodo": [
-    "min", "max", "initial", "tiers[0].min", "tiers[1].min", "tiers[2].min", "tiers[3].min", "tiers[4].min", "sources[0].delta", "gifts.delta", "unlocks[0].items[0].count"
-   ]
+   "balanceTodo": []
   }
  },
  {
@@ -123,6 +117,10 @@
  },
  {
   "id": "tianjian_envoy_sect",
+  "services": [
+   {"type": "sect_shop", "sect": "tianjian", "config": "shops"},
+   {"type": "sect_donation", "sect": "tianjian", "config": "sect_donations"}
+  ],
   "name": "天剑宗接引使",
   "map": "tianjian_sect",
   "sprite": "npc_tianjian_envoy",
@@ -140,6 +138,10 @@
  },
  {
   "id": "tianjian_elder",
+  "services": [
+   {"type": "sect_promotion", "sect": "tianjian", "config": "sect_ranks"},
+   {"type": "sect_library", "sect": "tianjian", "config": "shops"}
+  ],
   "name": "传功长老",
   "map": "tianjian_sect",
   "sprite": "npc_tianjian_elder",
@@ -153,27 +155,25 @@
   "phase": 3,
   "affinity": {
    "enabled": false,
-   "min": null,
-   "max": null,
-   "initial": null,
+   "min": 0,
+   "max": 1000,
+   "initial": 0,
    "tiers": [
-    { "id": "stranger", "min": null, "nameKey": "affinity.tier.stranger", "dialogKey": "affinity.tianjian_elder.stranger" },
-    { "id": "acquaintance", "min": null, "nameKey": "affinity.tier.acquaintance", "dialogKey": "affinity.tianjian_elder.acquaintance" },
-    { "id": "confidant", "min": null, "nameKey": "affinity.tier.confidant", "dialogKey": "affinity.tianjian_elder.confidant" },
-    { "id": "close_friend", "min": null, "nameKey": "affinity.tier.close_friend", "dialogKey": "affinity.tianjian_elder.close_friend" },
-    { "id": "sworn_friend", "min": null, "nameKey": "affinity.tier.sworn_friend", "dialogKey": "affinity.tianjian_elder.sworn_friend" }
+    { "id": "stranger", "min": 0, "nameKey": "affinity.tier.stranger", "dialogKey": "affinity.tianjian_elder.stranger" },
+    { "id": "acquaintance", "min": 100, "nameKey": "affinity.tier.acquaintance", "dialogKey": "affinity.tianjian_elder.acquaintance" },
+    { "id": "confidant", "min": 300, "nameKey": "affinity.tier.confidant", "dialogKey": "affinity.tianjian_elder.confidant" },
+    { "id": "close_friend", "min": 600, "nameKey": "affinity.tier.close_friend", "dialogKey": "affinity.tianjian_elder.close_friend" },
+    { "id": "sworn_friend", "min": 1000, "nameKey": "affinity.tier.sworn_friend", "dialogKey": "affinity.tianjian_elder.sworn_friend" }
    ],
    "sources": [
-    { "type": "quest", "quest": "q_sect_tianjian", "on": "done", "once": true, "delta": null },
-    { "type": "quest", "quest": "q_elder_exam", "on": "done", "once": true, "delta": null }
+    { "type": "quest", "quest": "q_sect_tianjian", "on": "done", "once": true, "delta": 40 },
+    { "type": "quest", "quest": "q_elder_exam", "on": "done", "once": true, "delta": 60 }
    ],
-   "gifts": { "enabled": false, "likedItems": ["sword_intent_pill"], "delta": null },
+   "gifts": { "enabled": false, "likedItems": ["sword_intent_pill"], "delta": 25 },
    "unlocks": [
-    { "id": "confidant_gift", "tier": "confidant", "once": true, "items": [{ "item": "hp_pill_small", "count": null }] }
+    { "id": "confidant_gift", "tier": "confidant", "once": true, "items": [{ "item": "hp_pill_small", "count": 1 }] }
    ],
-   "balanceTodo": [
-    "min", "max", "initial", "tiers[0].min", "tiers[1].min", "tiers[2].min", "tiers[3].min", "tiers[4].min", "sources[0].delta", "sources[1].delta", "gifts.delta", "unlocks[0].items[0].count"
-   ]
+   "balanceTodo": []
   }
  },
  {
@@ -306,6 +306,10 @@
  },
  {
   "id": "taixu_envoy",
+  "services": [
+   {"type": "sect_shop", "sect": "taixu", "config": "shops"},
+   {"type": "sect_donation", "sect": "taixu", "config": "sect_donations"}
+  ],
   "name": "清风道童",
   "map": "taixu_temple",
   "sprite": "npc_taixu_envoy",
@@ -321,6 +325,10 @@
  },
  {
   "id": "taixu_elder",
+  "services": [
+   {"type": "sect_promotion", "sect": "taixu", "config": "sect_ranks"},
+   {"type": "sect_library", "sect": "taixu", "config": "shops"}
+  ],
   "name": "玄微真人",
   "map": "taixu_temple",
   "sprite": "npc_taixu_elder",
@@ -331,30 +339,32 @@
   "phase": 5,
   "affinity": {
    "enabled": false,
-   "min": null,
-   "max": null,
-   "initial": null,
+   "min": 0,
+   "max": 1000,
+   "initial": 0,
    "tiers": [
-    { "id": "stranger", "min": null, "nameKey": "affinity.tier.stranger", "dialogKey": "affinity.taixu_elder.stranger" },
-    { "id": "acquaintance", "min": null, "nameKey": "affinity.tier.acquaintance", "dialogKey": "affinity.taixu_elder.acquaintance" },
-    { "id": "confidant", "min": null, "nameKey": "affinity.tier.confidant", "dialogKey": "affinity.taixu_elder.confidant" },
-    { "id": "close_friend", "min": null, "nameKey": "affinity.tier.close_friend", "dialogKey": "affinity.taixu_elder.close_friend" },
-    { "id": "sworn_friend", "min": null, "nameKey": "affinity.tier.sworn_friend", "dialogKey": "affinity.taixu_elder.sworn_friend" }
+    { "id": "stranger", "min": 0, "nameKey": "affinity.tier.stranger", "dialogKey": "affinity.taixu_elder.stranger" },
+    { "id": "acquaintance", "min": 100, "nameKey": "affinity.tier.acquaintance", "dialogKey": "affinity.taixu_elder.acquaintance" },
+    { "id": "confidant", "min": 300, "nameKey": "affinity.tier.confidant", "dialogKey": "affinity.taixu_elder.confidant" },
+    { "id": "close_friend", "min": 600, "nameKey": "affinity.tier.close_friend", "dialogKey": "affinity.taixu_elder.close_friend" },
+    { "id": "sworn_friend", "min": 1000, "nameKey": "affinity.tier.sworn_friend", "dialogKey": "affinity.taixu_elder.sworn_friend" }
    ],
    "sources": [
-    { "type": "quest", "quest": "q_sect_taixu", "on": "done", "once": true, "delta": null }
+    { "type": "quest", "quest": "q_sect_taixu", "on": "done", "once": true, "delta": 40 }
    ],
-   "gifts": { "enabled": false, "likedItems": ["qi_pill"], "delta": null },
+   "gifts": { "enabled": false, "likedItems": ["qi_pill"], "delta": 20 },
    "unlocks": [
-    { "id": "confidant_gift", "tier": "confidant", "once": true, "items": [{ "item": "hp_pill_small", "count": null }] }
+    { "id": "confidant_gift", "tier": "confidant", "once": true, "items": [{ "item": "hp_pill_small", "count": 1 }] }
    ],
-   "balanceTodo": [
-    "min", "max", "initial", "tiers[0].min", "tiers[1].min", "tiers[2].min", "tiers[3].min", "tiers[4].min", "sources[0].delta", "gifts.delta", "unlocks[0].items[0].count"
-   ]
+   "balanceTodo": []
   }
  },
  {
   "id": "lingfu_envoy",
+  "services": [
+   {"type": "sect_shop", "sect": "lingfu", "config": "shops"},
+   {"type": "sect_donation", "sect": "lingfu", "config": "sect_donations"}
+  ],
   "name": "墨符使",
   "map": "lingfu_pavilion",
   "sprite": "npc_lingfu_envoy",
@@ -371,6 +381,10 @@
  },
  {
   "id": "lingfu_elder",
+  "services": [
+   {"type": "sect_promotion", "sect": "lingfu", "config": "sect_ranks"},
+   {"type": "sect_library", "sect": "lingfu", "config": "shops"}
+  ],
   "name": "符老",
   "map": "lingfu_pavilion",
   "sprite": "npc_lingfu_elder",
@@ -381,30 +395,32 @@
   "phase": 5,
   "affinity": {
    "enabled": false,
-   "min": null,
-   "max": null,
-   "initial": null,
+   "min": 0,
+   "max": 1000,
+   "initial": 0,
    "tiers": [
-    { "id": "stranger", "min": null, "nameKey": "affinity.tier.stranger", "dialogKey": "affinity.lingfu_elder.stranger" },
-    { "id": "acquaintance", "min": null, "nameKey": "affinity.tier.acquaintance", "dialogKey": "affinity.lingfu_elder.acquaintance" },
-    { "id": "confidant", "min": null, "nameKey": "affinity.tier.confidant", "dialogKey": "affinity.lingfu_elder.confidant" },
-    { "id": "close_friend", "min": null, "nameKey": "affinity.tier.close_friend", "dialogKey": "affinity.lingfu_elder.close_friend" },
-    { "id": "sworn_friend", "min": null, "nameKey": "affinity.tier.sworn_friend", "dialogKey": "affinity.lingfu_elder.sworn_friend" }
+    { "id": "stranger", "min": 0, "nameKey": "affinity.tier.stranger", "dialogKey": "affinity.lingfu_elder.stranger" },
+    { "id": "acquaintance", "min": 100, "nameKey": "affinity.tier.acquaintance", "dialogKey": "affinity.lingfu_elder.acquaintance" },
+    { "id": "confidant", "min": 300, "nameKey": "affinity.tier.confidant", "dialogKey": "affinity.lingfu_elder.confidant" },
+    { "id": "close_friend", "min": 600, "nameKey": "affinity.tier.close_friend", "dialogKey": "affinity.lingfu_elder.close_friend" },
+    { "id": "sworn_friend", "min": 1000, "nameKey": "affinity.tier.sworn_friend", "dialogKey": "affinity.lingfu_elder.sworn_friend" }
    ],
    "sources": [
-    { "type": "quest", "quest": "q_sect_lingfu", "on": "done", "once": true, "delta": null }
+    { "type": "quest", "quest": "q_sect_lingfu", "on": "done", "once": true, "delta": 40 }
    ],
-   "gifts": { "enabled": false, "likedItems": ["talisman_guard"], "delta": null },
+   "gifts": { "enabled": false, "likedItems": ["talisman_guard"], "delta": 20 },
    "unlocks": [
-    { "id": "confidant_gift", "tier": "confidant", "once": true, "items": [{ "item": "hp_pill_small", "count": null }] }
+    { "id": "confidant_gift", "tier": "confidant", "once": true, "items": [{ "item": "hp_pill_small", "count": 1 }] }
    ],
-   "balanceTodo": [
-    "min", "max", "initial", "tiers[0].min", "tiers[1].min", "tiers[2].min", "tiers[3].min", "tiers[4].min", "sources[0].delta", "gifts.delta", "unlocks[0].items[0].count"
-   ]
+   "balanceTodo": []
   }
  },
  {
   "id": "youying_envoy",
+  "services": [
+   {"type": "sect_shop", "sect": "youying", "config": "shops"},
+   {"type": "sect_donation", "sect": "youying", "config": "sect_donations"}
+  ],
   "name": "影娘",
   "map": "youying_tower",
   "sprite": "npc_youying_envoy",
@@ -420,6 +436,10 @@
  },
  {
   "id": "youying_elder",
+  "services": [
+   {"type": "sect_promotion", "sect": "youying", "config": "sect_ranks"},
+   {"type": "sect_library", "sect": "youying", "config": "shops"}
+  ],
   "name": "楼主·无面",
   "map": "youying_tower",
   "sprite": "npc_youying_elder",
@@ -430,30 +450,32 @@
   "phase": 5,
   "affinity": {
    "enabled": false,
-   "min": null,
-   "max": null,
-   "initial": null,
+   "min": 0,
+   "max": 1000,
+   "initial": 0,
    "tiers": [
-    { "id": "stranger", "min": null, "nameKey": "affinity.tier.stranger", "dialogKey": "affinity.youying_elder.stranger" },
-    { "id": "acquaintance", "min": null, "nameKey": "affinity.tier.acquaintance", "dialogKey": "affinity.youying_elder.acquaintance" },
-    { "id": "confidant", "min": null, "nameKey": "affinity.tier.confidant", "dialogKey": "affinity.youying_elder.confidant" },
-    { "id": "close_friend", "min": null, "nameKey": "affinity.tier.close_friend", "dialogKey": "affinity.youying_elder.close_friend" },
-    { "id": "sworn_friend", "min": null, "nameKey": "affinity.tier.sworn_friend", "dialogKey": "affinity.youying_elder.sworn_friend" }
+    { "id": "stranger", "min": 0, "nameKey": "affinity.tier.stranger", "dialogKey": "affinity.youying_elder.stranger" },
+    { "id": "acquaintance", "min": 100, "nameKey": "affinity.tier.acquaintance", "dialogKey": "affinity.youying_elder.acquaintance" },
+    { "id": "confidant", "min": 300, "nameKey": "affinity.tier.confidant", "dialogKey": "affinity.youying_elder.confidant" },
+    { "id": "close_friend", "min": 600, "nameKey": "affinity.tier.close_friend", "dialogKey": "affinity.youying_elder.close_friend" },
+    { "id": "sworn_friend", "min": 1000, "nameKey": "affinity.tier.sworn_friend", "dialogKey": "affinity.youying_elder.sworn_friend" }
    ],
    "sources": [
-    { "type": "quest", "quest": "q_sect_youying", "on": "done", "once": true, "delta": null }
+    { "type": "quest", "quest": "q_sect_youying", "on": "done", "once": true, "delta": 40 }
    ],
-   "gifts": { "enabled": false, "likedItems": ["talisman_return"], "delta": null },
+   "gifts": { "enabled": false, "likedItems": ["talisman_return"], "delta": 15 },
    "unlocks": [
-    { "id": "confidant_gift", "tier": "confidant", "once": true, "items": [{ "item": "hp_pill_small", "count": null }] }
+    { "id": "confidant_gift", "tier": "confidant", "once": true, "items": [{ "item": "hp_pill_small", "count": 1 }] }
    ],
-   "balanceTodo": [
-    "min", "max", "initial", "tiers[0].min", "tiers[1].min", "tiers[2].min", "tiers[3].min", "tiers[4].min", "sources[0].delta", "gifts.delta", "unlocks[0].items[0].count"
-   ]
+   "balanceTodo": []
   }
  },
  {
   "id": "wanshou_envoy",
+  "services": [
+   {"type": "sect_shop", "sect": "wanshou", "config": "shops"},
+   {"type": "sect_donation", "sect": "wanshou", "config": "sect_donations"}
+  ],
   "name": "小狼崽",
   "map": "wanshou_mountain",
   "sprite": "npc_wanshou_envoy",
@@ -469,6 +491,10 @@
  },
  {
   "id": "wanshou_elder",
+  "services": [
+   {"type": "sect_promotion", "sect": "wanshou", "config": "sect_ranks"},
+   {"type": "sect_library", "sect": "wanshou", "config": "shops"}
+  ],
   "name": "兽王·岳",
   "map": "wanshou_mountain",
   "sprite": "npc_wanshou_elder",
@@ -479,26 +505,24 @@
   "phase": 5,
   "affinity": {
    "enabled": false,
-   "min": null,
-   "max": null,
-   "initial": null,
+   "min": 0,
+   "max": 1000,
+   "initial": 0,
    "tiers": [
-    { "id": "stranger", "min": null, "nameKey": "affinity.tier.stranger", "dialogKey": "affinity.wanshou_elder.stranger" },
-    { "id": "acquaintance", "min": null, "nameKey": "affinity.tier.acquaintance", "dialogKey": "affinity.wanshou_elder.acquaintance" },
-    { "id": "confidant", "min": null, "nameKey": "affinity.tier.confidant", "dialogKey": "affinity.wanshou_elder.confidant" },
-    { "id": "close_friend", "min": null, "nameKey": "affinity.tier.close_friend", "dialogKey": "affinity.wanshou_elder.close_friend" },
-    { "id": "sworn_friend", "min": null, "nameKey": "affinity.tier.sworn_friend", "dialogKey": "affinity.wanshou_elder.sworn_friend" }
+    { "id": "stranger", "min": 0, "nameKey": "affinity.tier.stranger", "dialogKey": "affinity.wanshou_elder.stranger" },
+    { "id": "acquaintance", "min": 100, "nameKey": "affinity.tier.acquaintance", "dialogKey": "affinity.wanshou_elder.acquaintance" },
+    { "id": "confidant", "min": 300, "nameKey": "affinity.tier.confidant", "dialogKey": "affinity.wanshou_elder.confidant" },
+    { "id": "close_friend", "min": 600, "nameKey": "affinity.tier.close_friend", "dialogKey": "affinity.wanshou_elder.close_friend" },
+    { "id": "sworn_friend", "min": 1000, "nameKey": "affinity.tier.sworn_friend", "dialogKey": "affinity.wanshou_elder.sworn_friend" }
    ],
    "sources": [
-    { "type": "quest", "quest": "q_sect_wanshou", "on": "done", "once": true, "delta": null }
+    { "type": "quest", "quest": "q_sect_wanshou", "on": "done", "once": true, "delta": 40 }
    ],
-   "gifts": { "enabled": false, "likedItems": ["mandrill_fang"], "delta": null },
+   "gifts": { "enabled": false, "likedItems": ["mandrill_fang"], "delta": 20 },
    "unlocks": [
-    { "id": "confidant_gift", "tier": "confidant", "once": true, "items": [{ "item": "hp_pill_small", "count": null }] }
+    { "id": "confidant_gift", "tier": "confidant", "once": true, "items": [{ "item": "hp_pill_small", "count": 1 }] }
    ],
-   "balanceTodo": [
-    "min", "max", "initial", "tiers[0].min", "tiers[1].min", "tiers[2].min", "tiers[3].min", "tiers[4].min", "sources[0].delta", "gifts.delta", "unlocks[0].items[0].count"
-   ]
+   "balanceTodo": []
   }
  },
  {
@@ -508,26 +532,24 @@
   "sprite": "npc_enc_wanderer",
   "affinity": {
    "enabled": false,
-   "min": null,
-   "max": null,
-   "initial": null,
+   "min": 0,
+   "max": 1000,
+   "initial": 0,
    "tiers": [
-    { "id": "stranger", "min": null, "nameKey": "affinity.tier.stranger", "dialogKey": "affinity.enc_wanderer.stranger" },
-    { "id": "acquaintance", "min": null, "nameKey": "affinity.tier.acquaintance", "dialogKey": "affinity.enc_wanderer.acquaintance" },
-    { "id": "confidant", "min": null, "nameKey": "affinity.tier.confidant", "dialogKey": "affinity.enc_wanderer.confidant" },
-    { "id": "close_friend", "min": null, "nameKey": "affinity.tier.close_friend", "dialogKey": "affinity.enc_wanderer.close_friend" },
-    { "id": "sworn_friend", "min": null, "nameKey": "affinity.tier.sworn_friend", "dialogKey": "affinity.enc_wanderer.sworn_friend" }
+    { "id": "stranger", "min": 0, "nameKey": "affinity.tier.stranger", "dialogKey": "affinity.enc_wanderer.stranger" },
+    { "id": "acquaintance", "min": 100, "nameKey": "affinity.tier.acquaintance", "dialogKey": "affinity.enc_wanderer.acquaintance" },
+    { "id": "confidant", "min": 300, "nameKey": "affinity.tier.confidant", "dialogKey": "affinity.enc_wanderer.confidant" },
+    { "id": "close_friend", "min": 600, "nameKey": "affinity.tier.close_friend", "dialogKey": "affinity.enc_wanderer.close_friend" },
+    { "id": "sworn_friend", "min": 1000, "nameKey": "affinity.tier.sworn_friend", "dialogKey": "affinity.enc_wanderer.sworn_friend" }
    ],
    "sources": [
     { "type": "encounter", "encounter": "enc_stranded_cultivator", "outcomes": ["rescued", "aided"], "hookRef": "hooks.affinity", "oncePerEncounter": true }
    ],
-   "gifts": { "enabled": false, "likedItems": ["hp_pill_small"], "delta": null },
+   "gifts": { "enabled": false, "likedItems": ["hp_pill_small"], "delta": 20 },
    "unlocks": [
-    { "id": "confidant_gift", "tier": "confidant", "once": true, "items": [{ "item": "hp_pill_small", "count": null }] }
+    { "id": "confidant_gift", "tier": "confidant", "once": true, "items": [{ "item": "hp_pill_small", "count": 1 }] }
    ],
-   "balanceTodo": [
-    "min", "max", "initial", "tiers[0].min", "tiers[1].min", "tiers[2].min", "tiers[3].min", "tiers[4].min", "gifts.delta", "unlocks[0].items[0].count"
-   ]
+   "balanceTodo": []
   }
  },
  {

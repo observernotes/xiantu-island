@@ -579,13 +579,10 @@
   "desc": "万妖巢穴遗留的功法残卷，留待后续参悟拼合。",
   "phase": 6,
   "enabled": false,
-  "price": null,
-  "stack": null,
+  "price": 0,
+  "stack": 99,
   "icon": "icon_secret_art_fragment",
-  "balanceTodo": [
-   "price",
-   "stack"
-  ]
+  "balanceTodo": []
  },
  {
   "id": "nest_spirit_wood",
@@ -595,12 +592,9 @@
   "desc": "巢心凝成的灵木，留待后续法宝制作。",
   "phase": 6,
   "enabled": false,
-  "price": null,
-  "stack": null,
+  "price": 40,
+  "stack": 200,
   "icon": "icon_nest_spirit_wood",
-  "balanceTodo": [
-   "price",
-   "stack"
-  ]
+  "balanceTodo": []
  }
 ]

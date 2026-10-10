@@ -313,16 +313,25 @@
      "item": "robe_taixu_1",
      "count": 1
     }
+   ],
+   "skills": [
+    {
+     "id": "fire_talisman_bolt",
+     "level": 1
+    },
+    {
+     "id": "thunder_palm",
+     "level": 1
+    },
+    {
+     "id": "water_mirror",
+     "level": 1
+    }
    ]
   },
   "next": null,
   "phase": 5,
-  "note": "五宗入门试炼，见 design/08_五宗试炼脚本.md。需持五宗帖并选定本宗；完成即拜入。入门技替换 spirit_bolt 并退点由代码处理，rewards.skills 含入门技。 skillsPending 里的技能等 skills.json 登记后挪进 rewards.skills。",
-  "skillsPending": [
-   "fire_talisman_bolt",
-   "thunder_palm",
-   "water_mirror"
-  ]
+  "note": "五宗入门试炼，见 design/08_五宗试炼脚本.md。需持五宗帖并选定本宗；完成即拜入。入门技替换 spirit_bolt 并退点由代码处理，rewards.skills 含入门技。"
  },
  {
   "id": "q_sect_lingfu",
@@ -345,16 +354,25 @@
      "item": "robe_lingfu_1",
      "count": 1
     }
+   ],
+   "skills": [
+    {
+     "id": "paper_talisman_throw",
+     "level": 1
+    },
+    {
+     "id": "scatter_talisman",
+     "level": 1
+    },
+    {
+     "id": "talisman_step",
+     "level": 1
+    }
    ]
   },
   "next": null,
   "phase": 5,
-  "note": "五宗入门试炼，见 design/08_五宗试炼脚本.md。需持五宗帖并选定本宗；完成即拜入。入门技替换 spirit_bolt 并退点由代码处理，rewards.skills 含入门技。 skillsPending 里的技能等 skills.json 登记后挪进 rewards.skills。",
-  "skillsPending": [
-   "paper_talisman_throw",
-   "scatter_talisman",
-   "talisman_step"
-  ]
+  "note": "五宗入门试炼，见 design/08_五宗试炼脚本.md。需持五宗帖并选定本宗；完成即拜入。入门技替换 spirit_bolt 并退点由代码处理，rewards.skills 含入门技。"
  },
  {
   "id": "q_sect_youying",
@@ -377,16 +395,25 @@
      "item": "robe_youying_1",
      "count": 1
     }
+   ],
+   "skills": [
+    {
+     "id": "shadow_dart",
+     "level": 1
+    },
+    {
+     "id": "shadow_step",
+     "level": 1
+    },
+    {
+     "id": "phantom_cloak",
+     "level": 1
+    }
    ]
   },
   "next": null,
   "phase": 5,
-  "note": "五宗入门试炼，见 design/08_五宗试炼脚本.md。需持五宗帖并选定本宗；完成即拜入。入门技替换 spirit_bolt 并退点由代码处理，rewards.skills 含入门技。 skillsPending 里的技能等 skills.json 登记后挪进 rewards.skills。",
-  "skillsPending": [
-   "shadow_dart",
-   "shadow_step",
-   "phantom_cloak"
-  ]
+  "note": "五宗入门试炼，见 design/08_五宗试炼脚本.md。需持五宗帖并选定本宗；完成即拜入。入门技替换 spirit_bolt 并退点由代码处理，rewards.skills 含入门技。"
  },
  {
   "id": "q_sect_wanshou",
@@ -409,16 +436,25 @@
      "item": "robe_wanshou_1",
      "count": 1
     }
+   ],
+   "skills": [
+    {
+     "id": "summon_spirit_wolf",
+     "level": 1
+    },
+    {
+     "id": "beast_roar",
+     "level": 1
+    },
+    {
+     "id": "beast_bond",
+     "level": 1
+    }
    ]
   },
   "next": null,
   "phase": 5,
-  "note": "五宗入门试炼，见 design/08_五宗试炼脚本.md。需持五宗帖并选定本宗；完成即拜入。入门技替换 spirit_bolt 并退点由代码处理，rewards.skills 含入门技。 skillsPending 里的技能等 skills.json 登记后挪进 rewards.skills。",
-  "skillsPending": [
-   "summon_spirit_wolf",
-   "beast_roar",
-   "beast_bond"
-  ]
+  "note": "五宗入门试炼，见 design/08_五宗试炼脚本.md。需持五宗帖并选定本宗；完成即拜入。入门技替换 spirit_bolt 并退点由代码处理，rewards.skills 含入门技。"
  },
  {
   "id": "q_main_01",

@@ -588,6 +588,7 @@
   "dropTable": null,
   "isBoss": false,
   "targetsObjective": true,
+  "touchDamageMul": 0.75,
   "attack": {
    "type": "melee",
    "damageRatio": 0.6,
@@ -619,6 +620,7 @@
   "dropTable": null,
   "isBoss": false,
   "targetsObjective": true,
+  "touchDamageMul": 0.75,
   "flying": true,
   "flyHeight": [
    96,
