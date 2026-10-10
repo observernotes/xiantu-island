@@ -66,6 +66,7 @@ export class GameScene extends Phaser.Scene {
   hudText!: Phaser.GameObjects.Text;
   debugText!: Phaser.GameObjects.Text;
   logs: Phaser.GameObjects.Text[] = [];
+  private logBadges = new Map<Phaser.GameObjects.Text, Phaser.GameObjects.Image>();
   nextPickAt = 0;
   openedChests = new Set<string>();
   breakthroughNotified = false;
@@ -133,7 +134,7 @@ export class GameScene extends Phaser.Scene {
     this.registry.set('progress', this.prog);
     this.openedChests = this.registry.get('chests') ?? new Set();
     this.registry.set('chests', this.openedChests);
-    this.mobs = []; this.logs = []; this.hudTexts = undefined; this.hudKit = undefined;
+    this.mobs = []; this.logs = []; this.logBadges.clear(); this.hudTexts = undefined; this.hudKit = undefined;
     this.travelling = false; this.curZone = undefined; this.nextDailyUpdateAt = 0;
     registerHudFonts(this);
     registerAlchemy(this);
@@ -227,7 +228,7 @@ export class GameScene extends Phaser.Scene {
     this.hudText = this.add.text(0, 0, '', { fontFamily: 'sans-serif', fontSize: '14px', color: '#ffffff' }).setScrollFactor(0).setDepth(101);
     this.sectTitle = this.add.text(1264, 164, '', { fontFamily: HUD_FONT, fontSize: '13px', color: INK,
       backgroundColor: '#faf2dcee', padding: { x: 6, y: 4 }, lineSpacing: 3 }).setOrigin(1, 0).setScrollFactor(0).setDepth(101).setVisible(false);
-    this.sectBadge = this.add.image(0, 176, '__DEFAULT').setDisplaySize(24, 24).setScrollFactor(0).setDepth(101).setVisible(false);
+    this.sectBadge = this.add.image(0, 0, '__DEFAULT').setName('sect-rank-hud').setDisplaySize(24, 24).setScrollFactor(0).setDepth(101).setVisible(false);
     this.debugText = this.add.text(16, 200, '', { fontFamily: 'monospace', fontSize: '12px', color: '#1d2a3a', backgroundColor: '#ffffffaa', padding: { x: 6, y: 4 } }).setScrollFactor(0).setDepth(100).setVisible(false);
     this.add.text(16, 14, `${this.map.name}${this.map.safeZone ? '（安全区）' : ''}`, { fontFamily: 'sans-serif', fontSize: '18px', color: '#1d2a3a', stroke: '#ffffff', strokeThickness: 4 }).setScrollFactor(0).setDepth(100);
     this.add.text(1264, 14,
@@ -973,7 +974,8 @@ export class GameScene extends Phaser.Scene {
       this.player.body.setVelocityX(0);
       const ordinaryIds = this.quests.npcQuestIds(npcId).filter(id => QUESTS_REF[id] && !QUESTS_REF[id].daily
         && (this.quests.available(id) || this.quests.isActive(id)));
-      this.dialog.choose({ speaker: npc.name, text: t(dailyIds.length ? 'ui.quests' : 'sect.ui.title') }, npc.sprite, [
+      const menuTitle = t(dailyIds.length ? 'ui.quests' : 'sect.ui.title');
+      this.dialog.choose({ speaker: npc.name, text: services.length ? `${this.sectOverview()}\n${menuTitle}` : menuTitle }, npc.sprite, [
         ...dailyIds.map(id => {
           const q = QUESTS_REF[id], state = this.quests.state(id);
           const disabled = !this.quests.isActive(id) && !this.quests.available(id);
@@ -989,7 +991,7 @@ export class GameScene extends Phaser.Scene {
             : this.openSectCatalog(npcId, service.type) })),
         ...(!dailyIds.length ? [{ label: t('ui.dialog.next'), onSelect: () => this.talkTo(npcId, undefined, true) }] : []),
         { label: t('ui.dialog.close'), onSelect: () => {} },
-      ]);
+      ], services.length ? this.sectRankBadgeKey() : undefined);
       return;
     }
     const offer = !questId ? this.trialOfferFor(npcId) : null;
@@ -1024,6 +1026,13 @@ export class GameScene extends Phaser.Scene {
       t('sect.ui.contribution', { contribution: this.prog.sectContribution })].filter(Boolean).join('\n');
   }
 
+  /** 只读取现有身份与职位表；无效身份不展示当前或目标职位徽记。 */
+  private sectRankBadgeKey(rankId?: string) {
+    const identity = this.sectGrowth.identity();
+    if (!identity?.valid) return undefined;
+    return rankId ? this.sectGrowth.config.ranks.ranks.find(rank => rank.id === rankId)?.icon : identity.icon;
+  }
+
   openSectPromotion(npcId: string) {
     const npc = NPCS[npcId]; if (!npc) return;
     const offer = this.sectGrowth.promotion(npcId);
@@ -1032,23 +1041,24 @@ export class GameScene extends Phaser.Scene {
     const reason = [conditions, conditions ? t('sect.ui.promotion_free') : '',
       offer.ok && offer.dialogueKeys?.offer ? t(offer.dialogueKeys.offer) : t(offer.key)].filter(Boolean).join('\n');
     this.dialog.choose({ speaker: npc.name, text: this.sectOverview() || t('sect.ui.title') }, npc.sprite, [
-      { label: offer.targetRankName ? `${t('sect.ui.confirm')}（${offer.targetRankName}）` : t('sect.ui.confirm'), disabled: !offer.ok, reason, onSelect: () => {
-        const target = offer.target; if (!target) return;
-        const transactionId = newSectTransactionId();
-        const promote = (acceptOath = false) => {
-          const result = this.sectGrowth.promote(npcId, target, transactionId, acceptOath);
-          this.sectResult(npcId, result, {});
-        };
-        if (offer.mode === 'oath') {
-          const keys = offer.dialogueKeys;
-          this.dialog.choose({ speaker: npc.name, text: keys?.question ? t(keys.question) : t('sect.ui.config_pending') }, npc.sprite, [
-            { label: keys?.accept ? t(keys.accept) : t('sect.ui.confirm'), onSelect: () => promote(true) },
-            { label: keys?.defer ? t(keys.defer) : t('sect.ui.cancel'), onSelect: () => {} },
-          ]);
-        } else promote();
-      } },
+      { label: offer.targetRankName ? `${t('sect.ui.confirm')}（${offer.targetRankName}）` : t('sect.ui.confirm'), rankIcon: offer.target ? this.sectRankBadgeKey(offer.target) : undefined,
+        disabled: !offer.ok, reason, onSelect: () => {
+          const target = offer.target; if (!target) return;
+          const transactionId = newSectTransactionId();
+          const promote = (acceptOath = false) => {
+            const result = this.sectGrowth.promote(npcId, target, transactionId, acceptOath);
+            this.sectResult(npcId, result, {});
+          };
+          if (offer.mode === 'oath') {
+            const keys = offer.dialogueKeys;
+            this.dialog.choose({ speaker: npc.name, text: keys?.question ? t(keys.question) : t('sect.ui.config_pending') }, npc.sprite, [
+              { label: keys?.accept ? t(keys.accept) : t('sect.ui.confirm'), rankIcon: this.sectRankBadgeKey(target), onSelect: () => promote(true) },
+              { label: keys?.defer ? t(keys.defer) : t('sect.ui.cancel'), onSelect: () => {} },
+            ], this.sectRankBadgeKey(target));
+          } else promote();
+        } },
       { label: t('sect.ui.cancel'), onSelect: () => {} },
-    ]);
+    ], this.sectRankBadgeKey());
   }
 
   openSectCatalog(npcId: string, service: 'sect_shop' | 'sect_library') {
@@ -1061,12 +1071,12 @@ export class GameScene extends Phaser.Scene {
       const preview = entry.costContribution !== null
         ? t(`${prefix}.confirm`, { contribution: entry.costContribution, item: entry.name }) : '';
       const rankLabel = rankOrder.includes(entry.reqRank) ? entry.rankName : '';
-      return { label: rankLabel ? `${entry.name}（${rankLabel}）` : entry.name, disabled: !entry.ok,
+      return { label: rankLabel ? `${entry.name}（${rankLabel}）` : entry.name, rankIcon: rankLabel ? this.sectRankBadgeKey(entry.reqRank) : undefined, disabled: !entry.ok,
         reason: [preview, entry.ok ? '' : t(entry.key, { rank: entry.rankName })].filter(Boolean).join('\n'),
         onSelect: () => {
           const transactionId = newSectTransactionId();
           this.dialog.choose({ speaker: npc.name, text: this.sectOverview() }, npc.sprite, [
-            { label: t('sect.ui.confirm'), reason: preview, onSelect: () => {
+            { label: t('sect.ui.confirm'), rankIcon: rankLabel ? this.sectRankBadgeKey(entry.reqRank) : undefined, reason: preview, onSelect: () => {
               const current = this.sectGrowth.catalog(npcId, service).entries.find(row => row.itemId === entry.itemId);
               if (current && (current.costContribution !== entry.costContribution || current.reqRank !== entry.reqRank)) {
                 this.openSectCatalog(npcId, service); return;
@@ -1075,19 +1085,20 @@ export class GameScene extends Phaser.Scene {
               this.sectResult(npcId, result, { item: entry.name });
             } },
             { label: t('sect.ui.cancel'), onSelect: () => this.openSectCatalog(npcId, service) },
-          ]);
+          ], this.sectRankBadgeKey());
         } };
     });
     if (!choices.length) choices.push({ label: t(catalog.key || 'sect.ui.config_pending'), disabled: true, onSelect: () => {} });
     choices.push({ label: t('ui.dialog.close'), onSelect: () => {} });
-    this.dialog.choose({ speaker: npc.name, text: `${t(`${prefix}.menu`)}\n${t('sect.ui.contribution', { contribution: this.prog.sectContribution })}` }, npc.sprite, choices);
+    this.dialog.choose({ speaker: npc.name, text: `${this.sectOverview()}\n${t(`${prefix}.menu`)}` }, npc.sprite, choices, this.sectRankBadgeKey());
   }
 
   private sectResult(npcId: string, result: { ok: boolean; key: string; repeated?: boolean }, vars: Record<string, string>) {
     const text = t(result.key, { ...vars, title: this.sectGrowth.identity()?.title ?? '' });
-    if (result.ok && !result.repeated) this.log(text, '#ffd23a');
+    const rankIcon = result.key.startsWith('sect.promotion.') ? this.sectRankBadgeKey() : undefined;
+    if (result.ok && !result.repeated) this.log(text, '#ffd23a', rankIcon);
     const npc = NPCS[npcId];
-    this.dialog.show([{ speaker: npc?.name ?? null, text }], npc?.sprite ?? null);
+    this.dialog.show([{ speaker: npc?.name ?? null, text }], npc?.sprite ?? null, undefined, undefined, rankIcon);
   }
 
   applyExp(r: { gained: number; levels: number; blocked: boolean; overflowed?: number; overflowFilled?: boolean }) {
@@ -1247,14 +1258,23 @@ export class GameScene extends Phaser.Scene {
   }
 
   // ---------------- 表现 ----------------
-  log(msg: string, color: string) {
+  log(msg: string, color: string, rankIcon?: string) {
     const hist = ((window as any).__logs ??= []) as string[]; hist.push(msg); if (hist.length > 100) hist.shift();   // 测试读系统消息
-    const t = this.add.text(16, 0, msg, { fontFamily: 'sans-serif', fontSize: '14px', color, stroke: '#000000', strokeThickness: 3 }).setOrigin(0, 1).setScrollFactor(0).setDepth(102);
+    const badge = sectRankIcon(this, rankIcon);
+    const t = this.add.text(badge ? 42 : 16, 0, msg, { fontFamily: 'sans-serif', fontSize: '14px', color, stroke: '#000000', strokeThickness: 3 }).setOrigin(0, 1).setScrollFactor(0).setDepth(102);
+    const image = badge ? this.add.image(26, 0, badge.texture, badge.frame).setName('sect-rank-log').setDisplaySize(20, 20).setScrollFactor(0).setDepth(102) : undefined;
+    if (image) {
+      this.logBadges.set(t, image);
+      t.once(Phaser.GameObjects.Events.DESTROY, () => { image.destroy(); this.logBadges.delete(t); });
+    }
     this.logs.push(t);
     if (this.logs.length > 6) this.logs.shift()!.destroy();
     const base = this.hudKit ? 596 : 668;   // 新 HUD 状态区从 y=604 开始，系统消息挪到它上面
-    this.logs.forEach((l, i) => l.setY(base - (this.logs.length - 1 - i) * 20));
-    this.time.delayedCall(4000, () => { this.tweens.add({ targets: t, alpha: 0, duration: 400, onComplete: () => { this.logs = this.logs.filter(x => x !== t); t.destroy(); } }); });
+    this.logs.forEach((l, i) => {
+      l.setY(base - (this.logs.length - 1 - i) * 20);
+      this.logBadges.get(l)?.setY(l.y - l.height / 2);
+    });
+    this.time.delayedCall(4000, () => { this.tweens.add({ targets: image ? [t, image] : t, alpha: 0, duration: 400, onComplete: () => { this.logs = this.logs.filter(x => x !== t); t.destroy(); } }); });
   }
 
   levelUpFx() {
@@ -1436,11 +1456,16 @@ export class GameScene extends Phaser.Scene {
   private drawHudTail() {
     const pr = this.prog;
     const identity = this.sectGrowth.identity();
-    this.sectTitle.setVisible(!!identity).setText(identity
-      ? `${identity.title || t('sect.ui.invalid_rank')}\n${t('sect.ui.contribution', { contribution: pr.sectContribution })}` : '');
     const badge = identity?.valid ? sectRankIcon(this, identity.icon) : null;
-    this.sectBadge.setVisible(!!badge);
-    if (badge) this.sectBadge.setTexture(badge.texture, badge.frame).setDisplaySize(24, 24).setX(1264 - this.sectTitle.width - 18);
+    const visible = !!identity && !this.invText.visible;
+    // 徽记置于称号底板内；两行文字共用左侧留白，贡献再长也不会压住徽记。
+    if (this.sectTitle.padding.left !== (badge ? 38 : 6))
+      this.sectTitle.setPadding({ left: badge ? 38 : 6, right: 6, top: badge ? 6 : 4, bottom: badge ? 6 : 4 });
+    this.sectTitle.setVisible(visible).setText(identity
+      ? `${identity.title || t('sect.ui.invalid_rank')}\n${t('sect.ui.contribution', { contribution: pr.sectContribution })}` : '');
+    this.sectBadge.setVisible(visible && !!badge);
+    if (badge) this.sectBadge.setTexture(badge.texture, badge.frame).setDisplaySize(24, 24)
+      .setPosition(this.sectTitle.x - this.sectTitle.width + 18, this.sectTitle.y + 18);
     this.skillBar.draw(pr.skillsUnlocked, this.time.now, pr.hotbar, this.combat.cds, pr);
     for (const m of this.npcMarks) {
       const mk = this.quests.mark(m.id);

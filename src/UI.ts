@@ -3,15 +3,18 @@ import type { Line } from './data';
 import { t } from './data';
 import type { Progress } from './Progress';
 import { HOTBAR_SLOTS, SKILLS, describeSkill, typeLabel } from './skills';
-import { hasHud, hudSpec, sliced, HUD_FONT, INK, INK_60, PAPER, RED, NAVY } from './hud';
+import { hasHud, hudSpec, sliced, sectRankIcon, HUD_FONT, INK, INK_60, PAPER, RED, NAVY } from './hud';
 
-export interface DialogChoice { label: string; onSelect: () => void; disabled?: boolean; reason?: string; }
+export interface DialogChoice { label: string; onSelect: () => void; disabled?: boolean; reason?: string; rankIcon?: string; }
 
 /** 冒险岛式 NPC 对话框：底部居中，左侧头像，Z / 空格 / 回车 / ↑ 翻页 */
 export class DialogBox {
   private c!: Phaser.GameObjects.Container;
   private name!: Phaser.GameObjects.Text;
   private body!: Phaser.GameObjects.Text;
+  private rankBadge?: Phaser.GameObjects.Image;
+  private bodyX = 0;
+  private bodyWrapWidth = 0;
   private hint!: Phaser.GameObjects.Text;
   private portrait!: Phaser.GameObjects.Sprite;
   private lines: Line[] = [];
@@ -34,6 +37,7 @@ export class DialogBox {
     this.portrait = scene.add.sprite(-W / 2 + 74, -H / 2 + 150, '__DEFAULT').setOrigin(0.5, 1);
     this.name = scene.add.text(-W / 2 + 150, -H / 2 + 16, '', { fontFamily: 'sans-serif', fontSize: '18px', color: '#6b2a00', fontStyle: 'bold' });
     this.body = scene.add.text(-W / 2 + 150, -H / 2 + 46, '', { fontFamily: 'sans-serif', fontSize: '17px', color: '#2b2b2b', wordWrap: { width: W - 180, useAdvancedWrap: true }, lineSpacing: 6 });
+    this.bodyX = this.body.x; this.bodyWrapWidth = W - 180;
     this.hint = scene.add.text(W / 2 - 16, H / 2 - 12, '', { fontFamily: 'sans-serif', fontSize: '13px', color: '#8a6a40' }).setOrigin(1, 1);
     this.c.add([bg, this.portrait, this.name, this.body, this.hint]);
   }
@@ -50,43 +54,47 @@ export class DialogBox {
     this.portrait = scene.add.sprite(L + 16 + 56, T + 16 + 136 - 4, '__DEFAULT').setOrigin(0.5, 1);
     this.name = scene.add.text(L + 144, T + 18, '', { fontFamily: HUD_FONT, fontSize: '16px', color: INK, fontStyle: 'bold' });
     this.body = scene.add.text(L + 144, T + 56, '', { fontFamily: HUD_FONT, fontSize: '16px', color: INK, wordWrap: { width: 592, useAdvancedWrap: true }, lineSpacing: 8 });
+    this.bodyX = this.body.x; this.bodyWrapWidth = 592;
     this.hint = scene.add.text(W / 2 - 16, H / 2 - 16, '', { fontFamily: HUD_FONT, fontSize: '12px', color: INK_60 }).setOrigin(1, 1);
     this.c.add([bg, deco, this.portrait, this.name, this.body, this.hint]);
   }
 
-  show(lines: Line[], portraitKey: string | null, done?: () => void, onCue?: (cue: string, next: () => void) => void) {
+  show(lines: Line[], portraitKey: string | null, done?: () => void, onCue?: (cue: string, next: () => void) => void, rankIcon?: string) {
     this.clearChoices();
+    this.setRankBadge(undefined);
     if (!lines.length) { done?.(); return; }
     this.lines = lines; this.i = 0; this.done = done; this.onCue = onCue; this.open = true;
     if (portraitKey && this.scene.textures.exists(portraitKey)) this.portrait.setTexture(portraitKey, this.scene.textures.get(portraitKey).getFrameNames().sort()[0]).setVisible(true).setFlipX(true);
     else this.portrait.setVisible(false);
+    this.setRankBadge(rankIcon);
     this.c.setVisible(true);
     this.render();
   }
 
   /** 数字键只支持 1–5；较长目录每页三项，再放前后页，保留现有对白框。 */
-  choose(line: Line, portraitKey: string | null, choices: DialogChoice[]) {
-    this.choosePage(line, portraitKey, choices, 0);
+  choose(line: Line, portraitKey: string | null, choices: DialogChoice[], rankIcon?: string) {
+    this.choosePage(line, portraitKey, choices, 0, rankIcon);
   }
 
-  private choosePage(line: Line, portraitKey: string | null, all: DialogChoice[], page: number) {
+  private choosePage(line: Line, portraitKey: string | null, all: DialogChoice[], page: number, rankIcon?: string) {
     const pages = Math.ceil(all.length / 3);
     const choices = all.length <= 5 ? all : [
       ...all.slice(page * 3, page * 3 + 3),
-      ...(page > 0 ? [{ label: `‹ ${page}/${pages}`, onSelect: () => this.choosePage(line, portraitKey, all, page - 1) }] : []),
-      ...(page + 1 < pages ? [{ label: `› ${page + 2}/${pages}`, onSelect: () => this.choosePage(line, portraitKey, all, page + 1) }] : []),
+      ...(page > 0 ? [{ label: `‹ ${page}/${pages}`, onSelect: () => this.choosePage(line, portraitKey, all, page - 1, rankIcon) }] : []),
+      ...(page + 1 < pages ? [{ label: `› ${page + 2}/${pages}`, onSelect: () => this.choosePage(line, portraitKey, all, page + 1, rankIcon) }] : []),
     ];
-    this.show([line], portraitKey);
+    this.show([line], portraitKey, undefined, undefined, rankIcon);
     this.choices = choices;
     // 选项在对白框上方纵排，原因随行换行，不挤占 NPC 台词或底部提示。
     const rows = choices.map((choice, i) => {
       const text = `${i + 1}. ${choice.label}${choice.reason ? `\n${choice.reason}` : ''}`;
-      const label = this.scene.add.text(-224, 0, text, { fontFamily: HUD_FONT, fontSize: '14px',
-        color: choice.disabled ? INK_60 : INK, wordWrap: { width: 560, useAdvancedWrap: true } }).setOrigin(0, 0.5);
-      return { choice, label, height: Math.max(30, label.height + 12) };
+      const badge = sectRankIcon(this.scene, choice.rankIcon), inset = badge ? 32 : 0;
+      const label = this.scene.add.text(-224 + inset, 0, text, { fontFamily: HUD_FONT, fontSize: '14px',
+        color: choice.disabled ? INK_60 : INK, wordWrap: { width: 560 - inset, useAdvancedWrap: true } }).setOrigin(0, 0.5);
+      return { choice, label, badge, height: Math.max(badge ? 36 : 30, label.height + 12) };
     });
     let top = -90 - rows.reduce((sum, row) => sum + row.height + 6, 0);
-    rows.forEach(({ choice, label, height }, i) => {
+    rows.forEach(({ choice, label, badge, height }, i) => {
       const y = top + height / 2;
       const bg = this.scene.add.rectangle(60, y, 592, height, choice.disabled ? 0xd4cec0 : 0xece0c4)
         .setStrokeStyle(1, choice.disabled ? 0xaaa399 : 0x6b4b2a).setName(`dialog-choice:${i}`);
@@ -98,6 +106,12 @@ export class DialogBox {
         bg.on('pointerout', () => bg.setFillStyle(0xece0c4));
       }
       this.c.add([bg, label]); this.choiceObjects.push(bg, label);
+      if (badge) {
+        const icon = this.scene.add.image(-224, y - label.height / 2 - 4, badge.texture, badge.frame)
+          .setOrigin(0, 0).setDisplaySize(24, 24).setName(`dialog-choice-rank:${i}`).setScrollFactor(0)
+          .setAlpha(choice.disabled ? 0.6 : 1);
+        this.c.add(icon); this.choiceObjects.push(icon);
+      }
       top += height + 6;
     });
     this.hint.setText(`1–${choices.length} · ${t('ui.dialog.accept')} / Esc · ${t('ui.dialog.close')}`);
@@ -117,6 +131,16 @@ export class DialogBox {
   private clearChoices() {
     this.choiceObjects.forEach(o => o.destroy());
     this.choiceObjects = []; this.choices = [];
+  }
+
+  private setRankBadge(key: string | undefined) {
+    this.rankBadge?.destroy(); this.rankBadge = undefined;
+    const badge = sectRankIcon(this.scene, key), inset = badge ? 32 : 0;
+    this.body.setX(this.bodyX + inset).setWordWrapWidth(this.bodyWrapWidth - inset, true);
+    if (!badge) return;
+    this.rankBadge = this.scene.add.image(this.bodyX, this.body.y - 4, badge.texture, badge.frame)
+      .setOrigin(0, 0).setDisplaySize(24, 24).setName('dialog-sect-rank').setScrollFactor(0);
+    this.c.add(this.rankBadge);
   }
 
   private render() {
@@ -148,6 +172,7 @@ export class DialogBox {
   close() {
     this.open = false; this.c.setVisible(false);
     this.clearChoices();
+    this.setRankBadge(undefined);
     const d = this.done; this.done = undefined; d?.();
   }
 }
