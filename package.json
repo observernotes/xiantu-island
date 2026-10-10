@@ -23,6 +23,7 @@
     "test:appearance": "timeout 60s node scripts/appearance-test.mjs",
     "test:classes": "timeout 120s node scripts/classes-test.mjs",
     "test:smoke:classes": "timeout 120s node scripts/classes-smoke.mjs",
+    "test:smoke:skill-learning": "timeout 120s node scripts/skill-learning-smoke.mjs",
     "test:daily": "timeout 60s node scripts/daily-test.mjs",
     "test:smoke:daily": "timeout 120s node scripts/daily-smoke.mjs",
     "test:sect-growth": "timeout 60s node scripts/sect-growth-test.mjs",
