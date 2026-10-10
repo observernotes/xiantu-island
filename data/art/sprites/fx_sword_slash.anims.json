@@ -5,7 +5,10 @@
   0.5,
   1
  ],
- "frameSize": 128,
+ "frameSize": [
+  128,
+  96
+ ],
  "anims": [
   {
    "key": "fx_sword_slash_play",
@@ -20,5 +23,6 @@
    "repeat": 0
   }
  ],
- "kind": "fx"
+ "kind": "fx",
+ "displayScale": 1.0
 }
