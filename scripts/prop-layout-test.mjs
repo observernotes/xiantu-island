@@ -27,12 +27,8 @@ const scene = {
   } },
   events: { once: (event, callback, context) => shutdown.push({ event, callback, context }), off: () => {} },
 };
-const config = { map: 'fixture_map', atlas: 'props_fixture', items: [
-  { frame: 'house', x: 600, y: 704, layer: 'back', flipX: true, scale: 0.75 },
-  { frame: 'lantern', x: 680, y: 704, layer: 'front', origin: [0.25, 0.9], scale: [0.5, 0.8] },
-  { frame: 'fence', x: 700, y: 704 },
-  { frame: 'missing', x: 740, y: 704 }, { frame: 'house', x: NaN, y: 704 },
-] };
+const config = JSON.parse(await fs.readFile(new URL('scripts/fixtures/scene-art/props.layout.json', root), 'utf8'));
+config.items.push({ frame: 'house', x: NaN, y: 704 });
 new PropLayout(scene, 'other_map', config);
 new PropLayout(scene, 'fixture_map', { ...config, atlas: 'missing_atlas' });
 new PropLayout(scene, 'fixture_map');

@@ -3,8 +3,8 @@ import fs from 'node:fs/promises';
 import ts from 'typescript';
 
 // Exercise the real E-4 implementation with Phaser's texture/frame lookup contract.
-const atlas = JSON.parse(await fs.readFile(new URL('../data/art/sprites/fx_qingyun_env.json', import.meta.url), 'utf8'));
-assert.ok(atlas.frames.glow_soft, 'the shipped atmosphere atlas contains glow_soft');
+const atlas = JSON.parse(await fs.readFile(new URL('./fixtures/scene-art/environment.atlas.json', import.meta.url), 'utf8'));
+assert.ok(atlas.frames.glow_soft, 'the independent atmosphere fixture contains glow_soft');
 const generated = '__environment_art_light';
 const phaserKey = '__environmentFramePhaser';
 globalThis[phaserKey] = { Scenes: { Events: { SHUTDOWN: 'shutdown' } }, BlendModes: { NORMAL: 0, ADD: 1 } };
@@ -15,7 +15,7 @@ try {
     { compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 } });
   const { EnvironmentArt, ENVIRONMENT_DEPTH } = await import(`data:text/javascript;base64,${Buffer.from(outputText).toString('base64')}`);
 
-  const create = (definitions, available = { fx_qingyun_env: Object.keys(atlas.frames), standalone: [] }, particles = []) => {
+  const create = (definitions, available = { environment_fixture: Object.keys(atlas.frames), standalone: [] }, particles = []) => {
     const textures = new Map(Object.entries(available).map(([key, frames]) => [key,
       { key, has: frame => frame === '__BASE' || frames.some(name => String(name) === String(frame)) }]));
     const images = [], warnings = [], canvases = [];
@@ -35,8 +35,8 @@ try {
       add: { image(x, y, key, frame) {
         assert.ok(textures.has(key), `image must use a loaded texture: ${key}`);
         if (frame !== undefined && !textures.get(key).has(frame)) warnings.push({ key, frame });
-        const frameName = frame ?? (key === 'fx_qingyun_env' ? Object.keys(atlas.frames)[0] : '__BASE');
-        const pivot = key === 'fx_qingyun_env' ? atlas.frames[frameName]?.pivot : undefined;
+        const frameName = frame ?? (key === 'environment_fixture' ? Object.keys(atlas.frames)[0] : '__BASE');
+        const pivot = key === 'environment_fixture' ? atlas.frames[frameName]?.pivot : undefined;
         const image = {
           x, y, texture: { key }, frame: { name: frameName }, requestedFrame: frame, visible: true,
           originX: pivot?.x ?? 0.5, originY: pivot?.y ?? 0.5, tintCalls: 0,
@@ -58,11 +58,11 @@ try {
     return { art, images, warnings, canvases };
   };
 
-  const definition = { x: 400, y: 280, texture: 'fx_qingyun_env', frame: 'glow_soft',
+  const definition = { x: 400, y: 280, texture: 'environment_fixture', frame: 'glow_soft',
     radius: 56, color: '#ffd090', alpha: 0.4, flicker: 0.06 };
   const real = create([definition]);
   const image = real.images[0];
-  assert.equal(image.texture.key, 'fx_qingyun_env');
+  assert.equal(image.texture.key, 'environment_fixture');
   assert.equal(image.requestedFrame, 'glow_soft', 'pass the named frame to Phaser.add.image');
   assert.equal(image.tintTopLeft, 0xffd090, 'retain the delivered warm color');
   assert.equal(image.displayWidth, 112, 'radius sets the rendered diameter');
@@ -74,7 +74,7 @@ try {
   assert.equal(image.depth, ENVIRONMENT_DEPTH.light);
   assert.equal(image.blendMode, globalThis[phaserKey].BlendModes.ADD);
   assert.equal(real.canvases.length, 0, 'a real atlas frame never generates an in-memory glow');
-  assert.deepEqual(real.art.snapshot().lightDetails, [{ texture: 'fx_qingyun_env', frame: 'glow_soft',
+  assert.deepEqual(real.art.snapshot().lightDetails, [{ texture: 'environment_fixture', frame: 'glow_soft',
     tint: 0xffd090, alpha: 0.4, baseAlpha: 0.4, radius: 56, blendMode: globalThis[phaserKey].BlendModes.ADD }]);
   real.art.update(100);
   assert.ok(image.alpha >= 0.4 * (1 - 0.06) && image.alpha <= 0.4, 'flicker keeps the configured alpha ceiling');
@@ -104,7 +104,7 @@ try {
   assert.equal(numeric.images[0].requestedFrame, 0, 'numeric sprite-sheet frames also remain valid');
 
   const normal = create([{ ...definition, blend: 'NORMAL' }]);
-  assert.equal(normal.images[0].texture.key, 'fx_qingyun_env');
+  assert.equal(normal.images[0].texture.key, 'environment_fixture');
   assert.equal(normal.images[0].requestedFrame, 'glow_soft');
   assert.equal(normal.images[0].blendMode, globalThis[phaserKey].BlendModes.NORMAL, 'explicit NORMAL uses normal compositing');
   assert.equal(normal.art.snapshot().lightDetails[0].blendMode, globalThis[phaserKey].BlendModes.NORMAL);
@@ -148,7 +148,7 @@ try {
     'blue interpolates in sync with opacity');
   for (const fixture of [defaultFirefly, noTail, withTail]) fixture.art.destroy();
 
-  for (const available of [{}, { fx_qingyun_env: ['glow_window'] }]) {
+  for (const available of [{}, { environment_fixture: ['glow_window'] }]) {
     const missing = create([definition, { ...definition, x: 460 }], available);
     assert.equal(missing.images.length, 2);
     for (const fallback of missing.images) {
@@ -177,7 +177,7 @@ try {
   assert.equal(reserved.images[0].requestedFrame, undefined, 'a missing frame on a generated key also falls back safely');
   assert.deepEqual(reserved.warnings, []);
   assert.deepEqual(real.warnings, []);
-  console.log(JSON.stringify({ suite: 'environment-frame', passed: true, texture: 'fx_qingyun_env', frame: 'glow_soft' }));
+  console.log(JSON.stringify({ suite: 'environment-frame', passed: true, texture: 'environment_fixture', frame: 'glow_soft' }));
 } finally {
   delete globalThis[phaserKey];
 }

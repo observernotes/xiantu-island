@@ -1,0 +1,7 @@
+{
+  "width": 128,
+  "height": 128,
+  "opaque": { "x": 64, "y": 64, "width": 8, "height": 8 },
+  "alpha": 255,
+  "layer": { "texture": "foreground_fixture", "alpha": 0.9 }
+}

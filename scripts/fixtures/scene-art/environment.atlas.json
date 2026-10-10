@@ -1,0 +1,13 @@
+{
+  "frames": {
+    "glow_soft": {
+      "frame": { "x": 0, "y": 0, "w": 64, "h": 64 },
+      "pivot": { "x": 0.5, "y": 1 }
+    },
+    "glow_window": {
+      "frame": { "x": 64, "y": 0, "w": 32, "h": 32 },
+      "pivot": { "x": 0.5, "y": 1 }
+    }
+  },
+  "meta": { "app": "environment-frame fixture", "size": { "w": 96, "h": 64 } }
+}
