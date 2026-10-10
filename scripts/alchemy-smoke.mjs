@@ -61,28 +61,62 @@ async function browserPath(chromium) {
 async function waitForMap(page, mapId) {
   await page.waitForFunction(id => {
     const scene = window.__scene;
-    return scene?.map?.id === id && scene.player && scene.dialog && scene.gathering
-      && (scene.alchemy ?? scene.alchemyPanel) && scene.game.loop.frame > 3;
-  }, mapId, { timeout: 15000 });
-  await page.waitForTimeout(300);
+    if (!(scene?.map?.id === id && scene.player?.body && scene.prog && scene.dialog && scene.gathering
+      && (scene.alchemy ?? scene.alchemyPanel) && scene.sys.isActive()
+      && scene.game.loop.running && scene.game.loop.frame > 3)) return false;
+    // 普通构建没有 __xt；测试构建的接口须等 create 完成后才可用。
+    try { return !window.__xt || window.__xt.getState().mapId === id; }
+    catch { return false; }
+  }, mapId, { timeout: 15000, polling: 50 });
+}
+
+// Playwright 的 evaluate 没有 timeout；用宿主时钟约束整个站位步骤及失败诊断。
+async function withDeadline(label, action, timeout) {
+  let timer;
+  try {
+    return await Promise.race([action(), new Promise((_, reject) => {
+      timer = setTimeout(() => reject(new Error(`${label} 超过 ${timeout}ms`)), timeout);
+    })]);
+  } finally { clearTimeout(timer); }
 }
 
 // 落点、无敌与暂停物理隔离路过怪物；采集和火候继续使用游戏帧计时。
 async function standAt(page, name) {
-  const frame = await page.evaluate(objectName => {
-    const scene = window.__scene;
-    const object = scene.map.objects.find(object => object.name === objectName);
-    if (!object) throw new Error(`地图缺少 ${objectName}`);
-    // 等待真实落地的物理帧期间，也不能被路过怪物接触击退。
-    scene.player.invulnUntil = Number.POSITIVE_INFINITY;
-    scene.physics.resume();
-    scene.player.body.reset(object.x, object.y);
-    return scene.game.loop.frame;
-  }, name);
-  // reset 后旧落地标记可能尚未刷新，须让物理步实际处理新位置后再暂停。
-  await page.waitForFunction(frame => window.__scene.game.loop.frame > frame
-    && window.__scene.player.onGround && window.__scene.player.state2 === 'ground', frame, { timeout: 3000 });
-  await page.evaluate(() => window.__scene.physics.pause());
+  let target, stage = '定位';
+  try {
+    await withDeadline(`standAt(${name})`, async () => {
+      target = await page.evaluate(objectName => {
+        const scene = window.__scene;
+        const object = scene.map.objects.find(object => object.name === objectName);
+        if (!object) throw new Error(`地图 ${scene.map.id} 缺少 ${objectName}`);
+        // 等待真实落地的物理帧期间，也不能被路过怪物接触击退。
+        scene.player.invulnUntil = Number.POSITIVE_INFINITY;
+        scene.physics.resume();
+        scene.player.body.reset(object.x, object.y);
+        return { map: scene.map.id, x: object.x, y: object.y, frame: scene.game.loop.frame };
+      }, name);
+      stage = '落地并暂停物理';
+      // reset 后旧落地标记可能尚未刷新，须让物理步实际处理新位置后再暂停。
+      await page.waitForFunction(target => {
+        const scene = window.__scene, player = scene.player;
+        if (scene.map.id !== target.map || scene.game.loop.frame <= target.frame
+          || !player.onGround || player.state2 !== 'ground') return false;
+        // 在就绪的同一次轮询中暂停，避免再做一次无时限的 evaluate。
+        scene.physics.pause();
+        return true;
+      }, target, { timeout: 3000, polling: 50 });
+    }, 5000);
+  } catch (error) {
+    const diagnostic = await withDeadline(`standAt(${name}) 诊断`, () => page.evaluate(() => {
+      const scene = window.__scene, player = scene?.player, body = player?.body;
+      return { map: scene?.map?.id, frame: scene?.game?.loop.frame, loopRunning: scene?.game?.loop.running,
+        physicsPaused: scene?.physics?.world.isPaused, player: player && { x: player.x, y: player.y,
+          feet: player.feet, onGround: player.onGround, state: player.state2, dead: player.dead },
+        body: body && { blocked: body.blocked, touching: body.touching, velocity: body.velocity } };
+    }), 500).catch(failure => ({ unavailable: failure.message }));
+    throw new Error(`standAt(${name}) ${stage}失败: ${error.message}; ${JSON.stringify({ target, diagnostic })}`,
+      { cause: error });
+  }
 }
 
 async function finishDialogue(page) {
@@ -171,9 +205,10 @@ let browser;
 let page;
 let errors = [];
 const checks = [];
+const startedAt = performance.now();
 function passed(check) {
   checks.push(check);
-  console.log(JSON.stringify({ checked: checks.length, check }));
+  console.log(JSON.stringify({ checked: checks.length, check, elapsedMs: Math.round(performance.now() - startedAt) }));
 }
 try {
   const { api, module } = await loadPlaywright();
@@ -193,7 +228,7 @@ try {
     fixtures: 'level12/materials/fuel/position/contact damage isolated/paused physics; deterministic RNG; perfect-frame clock pause' }));
   const url = new URL(baseURL);
   url.searchParams.set('map', 'qingyun_village'); url.searchParams.set('reset', '1');
-  await page.goto(url.href, { waitUntil: 'networkidle', timeout: 30000 });
+  await page.goto(url.href, { waitUntil: 'load', timeout: 15000 });
   await waitForMap(page, 'qingyun_village');
   await page.evaluate(() => {
     const p = window.__scene.prog;
@@ -338,7 +373,7 @@ try {
   });
   assert.equal(startedBrew.pending?.recipeId, recipe.id, '开炉未保存付料炉次');
   assert.equal(startedBrew.pill, beforeBrew.pill, '开炉直接跳过火候发了产物');
-  await page.reload({ waitUntil: 'domcontentloaded', timeout: 30000 });
+  await page.reload({ waitUntil: 'load', timeout: 15000 });
   await waitForMap(page, 'qingyun_village');
   const resumedBrew = await page.evaluate(() => {
     const scene = window.__scene, panel = scene.alchemy ?? scene.alchemyPanel;
@@ -409,7 +444,7 @@ try {
   passed('Z 交付入门，奖励丹方去重、丹炉与品质/经验/冷却保存');
 
   await page.evaluate(() => { const url = new URL(location.href); url.searchParams.delete('reset'); history.replaceState(null, '', url.href); });
-  await page.reload({ waitUntil: 'networkidle', timeout: 30000 });
+  await page.reload({ waitUntil: 'load', timeout: 15000 });
   await waitForMap(page, 'qingyun_village');
   const reloaded = await page.evaluate(() => ({
     quest: window.__scene.prog.quests.q_alchemy_intro.state, recipes: window.__scene.prog.learnedRecipes,
