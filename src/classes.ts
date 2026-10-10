@@ -38,11 +38,11 @@ export function skillsForClass(job: string): SkillDef[] {
 export function classEntrySkill(c: ClassDef): SkillDef | undefined {
   return skillsForClass(c.id).find(s => s.key === CLASS_RULES.entryKey && s.type !== 'passive');
 }
-export function classGiftSkills(c: ClassDef): { id: string; level: number }[] {
+export function classGiftSkills(c: ClassDef, legacy = false): { id: string; level: number }[] {
   const q = QUESTS[c.joinQuest];
   const gifts = new Map((q?.rewards.skills ?? []).map(s => [s.id, s.level]));
-  // skillsPending 已在 skills.json 登记，统一读取该职业三项主动/增益，补齐缺失奖励字段。
-  for (const s of skillsForClass(c.id)) if (s.type !== 'passive' && !gifts.has(s.id)) gifts.set(s.id, CLASS_RULES.giftLevel);
+  // 旧档保留此前补齐三招的奖励；新玩家只领取正式拜入任务表内的技能。
+  if (legacy) for (const s of skillsForClass(c.id)) if (s.type !== 'passive' && !gifts.has(s.id)) gifts.set(s.id, CLASS_RULES.giftLevel);
   // 按技能树顺序先发 default:A 入门技；奖励数组先列回风剑时也不抢占 A。
   return skillsForClass(c.id).filter(skill => gifts.has(skill.id))
     .map(skill => ({ id: skill.id, level: gifts.get(skill.id)! }));

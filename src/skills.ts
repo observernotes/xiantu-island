@@ -173,5 +173,5 @@ export function describeSkill(def: SkillDef, level: number) {
   return bits.join('  ');
 }
 
-/** 旧档补发：只处理这两张已经上线、并且奖励里写了 skills 的任务。 */
+/** 早期主线旧档补发：只读取当前表的 skills，不继承已经移除的奖励。 */
 export const QUEST_SKILL_BACKFILL = ['q_breakthrough', 'q_fox'];

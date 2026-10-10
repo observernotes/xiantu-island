@@ -1,8 +1,8 @@
-import { QUESTS, inPhase } from './data';
+import { QUESTS, SECT_RANKS, inPhase } from './data';
 import { dailyQuestDay } from './DailyQuests';
 import { Progress } from './Progress';
 import { QuestSystem } from './QuestSystem';
-import { CLASS_LIST, CLASS_RULES, classEntryEnabled, classEntrySkill, classMinLevel, skillsForClass, type ClassDef } from './classes';
+import { CLASS_LIST, CLASS_RULES, classEntryEnabled, classEntrySkill, classMinLevel, classRobe, skillsForClass, type ClassDef } from './classes';
 import { featureFlags } from './features';
 import { HOTBAR_SLOTS, SKILLS, spBand, spEarnedFor } from './skills';
 
@@ -65,6 +65,7 @@ function fixture(cls: ClassDef, version: number | undefined = 2) {
   p.dailyQuestResetDay = dailyQuestDay(now);
   const old = p.exportSave();
   if (version === undefined) delete old.classVersion;
+  delete old.questRewardVersion;
   return { old, entry, otherActive, buff };
 }
 
@@ -137,10 +138,10 @@ try {
       assertStable(p, context);
     }
 
-    // 只留正式交付记录的旧档也应迁移；仅帖、妖狐或试炼不能替玩家选宗。
+    // 正式交付优先于旧妖狐交付，不能把已选其他宗门的玩家迁成天剑。
     const { old, entry } = fixture(cls, 1);
     old.job = '';
-    old.quests = { [cls.joinQuest]: { state: 'done', kills: {} } };
+    old.quests = { q_fox: { state: 'done', kills: {} }, [cls.joinQuest]: { state: 'done', kills: {} } };
     const p = load(old);
     equal(p.job, cls.id, `${cls.id}: 已交付旧档补正式职业`);
     equal(p.hotbar[commonSlot], entry, `${cls.id}: 已交付旧档原位换技`);
@@ -238,6 +239,97 @@ try {
     assertStable(unboundPreserved, `${cls.id}/主动解绑`);
   }
 
+  const tianjian = CLASS_LIST.find(cls => cls.id === 'tianjian_disciple')!;
+  check(tianjian, '旧妖狐迁移需要天剑职业登记');
+  for (const version of [undefined, 1, 2]) {
+    const { old } = fixture(tianjian, version);
+    old.job = '';
+    old.quests = { q_breakthrough: { state: 'done', kills: {} }, q_fox: { state: 'done', kills: {} } };
+    old.classRewardClaims = [];
+    old.equip = { robe: 'fox_robe' };
+    old.inventory = {};
+    for (const key of ['skills', 'skillGifted', 'skillMastery', 'skillCooldowns']) {
+      delete (old[key] as Record<string, unknown>).spirit_bolt;
+    }
+    (old.hotbar as (string | null)[])[commonSlot] = null;
+    old.buffs = (old.buffs as Progress['buffs']).filter(buff => buff.id !== 'spirit_bolt');
+    const context = `旧妖狐/职业版本${version ?? '缺失'}`;
+    const p = load(old);
+    equal(p.job, tianjian.id, `${context}: 未留正式拜入记录仍继承天剑剑徒`);
+    equal(p.questRewardVersion, 1, `${context}: 登记新任务奖励版本`);
+    equal(p.sectRank, SECT_RANKS.rules.initialRank, `${context}: 旧未入宗品级补初始品级`);
+    equal(p.skills, old.skills, `${context}: 已学本宗技能等级全部保留`);
+    equal(p.skillGifted, old.skillGifted, `${context}: 已付点与任务赠级区分保持`);
+    equal(p.skillMastery, old.skillMastery, `${context}: 本宗熟练度保留`);
+    equal(p.hotbar, old.hotbar, `${context}: 突破补发不抢已有自定义热键或主动空槽`);
+    equal(p.skillCooldowns, old.skillCooldowns, `${context}: 本宗冷却保留`);
+    equal(p.buffs, old.buffs, `${context}: 本宗增益保留`);
+    equal(p.classRefundSp, old.classRefundSp, `${context}: 没有通用技不追加退款`);
+    equal(p.equip, old.equip, `${context}: 保留已有衣着`);
+    const robe = classRobe(tianjian);
+    if (robe) equal(p.count(robe), 1, `${context}: 未领宗门道袍补背包`);
+    const imported = new Progress();
+    equal(imported.importSave(old), true, `${context}: 可直接导入未迁移旧档`);
+    equal(imported.exportSave(), p.exportSave(), `${context}: 读档与导入共用迁移`);
+    assertStable(p, context);
+  }
+
+  // 旧玩家已经投过通用技能时，继承天剑身份仍复用一次性的换技返点规则。
+  const withCommon = fixture(tianjian).old;
+  withCommon.job = '';
+  withCommon.quests = { q_fox: { state: 'done', kills: {} } };
+  const migratedCommon = load(withCommon);
+  equal(migratedCommon.job, tianjian.id, '旧妖狐/通用技: 继承天剑身份');
+  equal(migratedCommon.classRefundSp, 5 * commonCost, '旧妖狐/通用技: 已投等级退点且保留原退款');
+  equal(migratedCommon.hotbar[commonSlot], 'sword_qi_slash', '旧妖狐/通用技: 原键位换天剑入门技');
+  assertCommonRemoved(migratedCommon, '旧妖狐/通用技');
+  assertStable(migratedCommon, '旧妖狐/通用技');
+
+  // 旧档首次更新时还未交妖狐，之后按新表交付也不能追溯成旧拜宗。
+  for (const state of ['active', undefined] as const) {
+    const p = new Progress();
+    p.level = classMinLevel(tianjian);
+    p.grantSkill('spirit_bolt', 1);
+    p.bindHotbar(commonSlot, 'spirit_bolt');
+    if (state) p.quests.q_fox = { state, kills: {} };
+    const old = p.exportSave();
+    delete old.questRewardVersion;
+    const updated = load(old);
+    equal(updated.job, '', `旧未交妖狐/${state ?? '未接'}: 更新不提前入宗`);
+    equal(updated.questRewardVersion, 1, `旧未交妖狐/${state ?? '未接'}: 更新登记新表`);
+    equal(JSON.parse(saved[saveKey]).questRewardVersion, 1, `旧未交妖狐/${state ?? '未接'}: 标记持久化`);
+    updated.quests.q_fox = { state: 'done', kills: {} };
+    equal(updated.save(), true, `旧未交妖狐/${state ?? '未接'}: 新表交付可保存`);
+    const reloaded = Progress.load();
+    equal(reloaded.job, '', `旧未交妖狐/${state ?? '未接'}: 新交付后刷新仍未定职`);
+    equal(reloaded.hotbar[commonSlot], 'spirit_bolt', `旧未交妖狐/${state ?? '未接'}: 刷新保留通用键位`);
+    equal(reloaded.classRefundSp, 0, `旧未交妖狐/${state ?? '未接'}: 不提前退款`);
+    equal(reloaded.backfillClass(), false, `旧未交妖狐/${state ?? '未接'}: 重跑迁移幂等`);
+    const imported = new Progress();
+    equal(imported.importSave(reloaded.exportSave()), true, `旧未交妖狐/${state ?? '未接'}: 新交付结果可导入`);
+    equal(imported.job, '', `旧未交妖狐/${state ?? '未接'}: 导入不会把新交付当旧入宗`);
+  }
+
+  // 新角色无论首次交付还是刷新都按奖励表，不能从完整技能树追加缺失的赠技。
+  const join = QUESTS[tianjian.joinQuest];
+  check(join, '新表发奖回归需要天剑正式任务');
+  const originalGifts = join.rewards.skills;
+  try {
+    join.rewards.skills = (originalGifts ?? []).filter(gift => gift.id !== 'light_body');
+    const p = new Progress();
+    p.level = classMinLevel(tianjian);
+    p.quests[tianjian.joinQuest] = { state: 'done', kills: {} };
+    equal(p.advanceClass(tianjian.id), true, '新表缺赠技: 首次正式拜入成功');
+    equal(p.skillLevel('light_body'), 0, '新表缺赠技: 首次发奖不从技能树补轻身术');
+    equal(p.save(), true, '新表缺赠技: 正式拜入结果可保存');
+    const reloaded = Progress.load();
+    equal(reloaded.skillLevel('light_body'), 0, '新表缺赠技: 刷新仍不从技能树补轻身术');
+    equal(reloaded.backfillClass(), false, '新表缺赠技: 重跑不追加树奖励');
+    const imported = new Progress();
+    equal(imported.importSave(reloaded.exportSave()), true, '新表缺赠技: 可导入新角色');
+    equal(imported.skillLevel('light_body'), 0, '新表缺赠技: 导入仍只保留任务表赠技');
+  } finally { join.rewards.skills = originalGifts; }
+
   // 所有实际开放的入口都走任务接取、真实目标推进、正式交付。
   const openEntrances: string[] = [];
   for (const cls of CLASS_LIST) {
@@ -268,7 +360,8 @@ try {
     equal(p.hotbar[1], buff.id, `${cls.id}: 首次拜入保留本宗增益原槽位`);
     equal(p.hotbar[3], otherActive.id, `${cls.id}: 首次拜入保留本宗其他主动原槽位`);
     equal(p.classRefundSp, 5 * commonCost, `${cls.id}: 首次拜入返还已投点`);
-    equal(p.skillGifted[entry], 1, `${cls.id}: 首次拜入新技赠级不花点`);
+    equal(p.skillGifted[entry], q.rewards.skills?.find(gift => gift.id === entry)?.level,
+      `${cls.id}: 首次拜入入门技赠级完全按正式任务表`);
     assertCommonRemoved(p, `${cls.id}/首次正式拜入`);
     equal(qs.turnIn(q.id), undefined, `${cls.id}: 不可重复正式交付`);
     assertStable(p, `${cls.id}/首次正式拜入`);

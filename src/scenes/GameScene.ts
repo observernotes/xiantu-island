@@ -1391,8 +1391,7 @@ export class GameScene extends Phaser.Scene {
     }
     const rw = q.rewards;
     const cls = classForQuest(q.id);
-    // 新角色在正式拜入任务交付时定宗；旧档已有剑徒由 Progress.load 保留。
-    const job = cls?.id ?? (q.id === 'q_fox' ? undefined : rw.job);
+    const job = cls?.id ?? rw.job;
     if (job && !this.prog.advanceClass(job)) return;
     this.log(t('quest.complete', { name: questName(q) }), '#ffe680');
     if (broke) {

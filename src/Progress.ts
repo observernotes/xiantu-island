@@ -10,6 +10,8 @@ import { featureEnabled } from './features';
 /** 自动加点：加点界面做好前每级自动分配（演武堂/天机阁确认：根骨 2、身法 2、悟性 1） */
 export const AUTO_STATS = { rootBone: 2, agility: 2, insight: 1, spirit: 0 } as Record<string, number>;
 const SAVE_KEY = 'xiantu_save_v1';
+/** 妖狐任务改为五宗帖的奖励版本；无此字段的已交付旧档保留原天剑身份。 */
+const QUEST_REWARD_VERSION = 1;
 export interface SavePosition { mapId: string; x: number; y: number }
 const flagKey = (key: string) => typeof key === 'string' && /^[a-zA-Z][\w.-]*$/.test(key)
   && !key.split('.').some(part => ['__proto__', 'prototype', 'constructor'].includes(part));
@@ -29,7 +31,7 @@ function validSaveData(saved: unknown): saved is Record<string, unknown> {
   for (const key of ['exp', 'hp', 'mp', 'stones', 'age', 'ageUpdatedAt', 'overflowExp', 'unstableUntil', 'lastOverflowReturned', 'alchemyExp']) {
     if (has(key) && !nonnegative(saved[key])) return false;
   }
-  for (const key of ['sectContribution', 'classVersion', 'classRefundSp', 'seclusionYearsToday', 'breakthroughFails', 'breakthroughBonusLevels', 'alchemyLevel']) {
+  for (const key of ['sectContribution', 'classVersion', 'questRewardVersion', 'classRefundSp', 'seclusionYearsToday', 'breakthroughFails', 'breakthroughBonusLevels', 'alchemyLevel']) {
     if (has(key) && !count(saved[key])) return false;
   }
   for (const key of ['inventory', 'skills', 'skillGifted']) if (has(key) && !numbers(saved[key])) return false;
@@ -73,6 +75,8 @@ export class Progress {
   job = '';                                 // 转职后的职业 id
   /** 职业框架迁移版本；保留本宗等级、技能点和自定义快捷栏。 */
   classVersion = 0;
+  /** 新角色从当前奖励版本开始，交妖狐后读档不会被旧入宗规则迁移。 */
+  questRewardVersion = QUEST_REWARD_VERSION;
   classRewardClaims: string[] = [];
   /** 通用入门技的付费等级在拜宗后退回当前一转点池。 */
   classRefundSp = 0;
@@ -192,6 +196,7 @@ export class Progress {
     try {
       if (saved && typeof saved === 'object' && !Array.isArray(saved)) {
         const fields = saved as Record<string, unknown>;
+        if (!Object.prototype.hasOwnProperty.call(fields, 'questRewardVersion')) p.questRewardVersion = 0;
         hadStoredRank = Object.prototype.hasOwnProperty.call(fields, 'sectRank');
         if (hadStoredRank) storedRank = fields.sectRank as string | null;
         for (const key of Object.keys(p)) if (key !== 'transientItems' && Object.prototype.hasOwnProperty.call(fields, key)) {
@@ -203,9 +208,12 @@ export class Progress {
       p.ensureDefaults();
       p.resetDailyQuests();
       p.advanceAge();
-      backfilled = [p.backfillRealmRewards(), p.backfillQuestSkills(), p.backfillQuestRecipes(), p.backfillClass(false)].some(Boolean);
+      const legacyFoxJoin = p.questRewardVersion < QUEST_REWARD_VERSION && p.quests.q_fox?.state === 'done'
+        && !classDef(p.job) && !Object.keys(p.quests).some(id => classForQuest(id) && p.quests[id]?.state === 'done');
+      // 先登记老玩家的宗门，避免按新突破表补通用技时抢动既有快捷栏。
+      backfilled = [p.backfillRealmRewards(), p.backfillClass(false), p.backfillQuestSkills(), p.backfillQuestRecipes()].some(Boolean);
       // 原职业/已交付拜入任务是正式入宗事实；试炼、帖和山门位置不参与迁移。
-      p.sectRank = hadStoredRank ? storedRank : p.sect ? SECT_RANKS.rules.initialRank : null;
+      p.sectRank = hadStoredRank && !(legacyFoxJoin && storedRank === null) ? storedRank : p.sect ? SECT_RANKS.rules.initialRank : null;
       p.hp = Math.min(p.hp || p.maxHp, p.maxHp); p.mp = Math.min(p.mp || p.maxMp, p.maxMp);
     } finally { Reflect.deleteProperty(p, 'save'); }
     if (persistMigrations && (saveRequested || backfilled || !hadStoredRank)) p.save();
@@ -648,6 +656,7 @@ export class Progress {
     }
     if (typeof this.job !== 'string') this.job = '';
     if (!Number.isFinite(this.classVersion)) this.classVersion = 0;
+    if (!count(this.questRewardVersion)) this.questRewardVersion = 0;
     if (!Array.isArray(this.classRewardClaims)) this.classRewardClaims = [];
     this.classRewardClaims = [...new Set(this.classRewardClaims.filter(id => typeof id === 'string' && !!classDef(id)))];
     this.classRefundSp = Math.max(0, Math.floor(Number(this.classRefundSp) || 0));
@@ -736,9 +745,10 @@ export class Progress {
    */
   advanceClass(job: string, initializeSectRank = true): boolean {
     const c = classDef(job);
-    if (!c || this.level < classMinLevel(c) || (this.job && this.job !== c.id)) return false;
+    if (!c || (!this.job && this.level < classMinLevel(c)) || (this.job && this.job !== c.id)) return false;
     if (!classEntryEnabled(c) && !this.job && this.quests[c.joinQuest]?.state !== 'done') return false;
     const firstJoin = !this.job;
+    const legacyRewards = this.questRewardVersion < QUEST_REWARD_VERSION;
     const migrating = this.classVersion < 2;
     let changed = firstJoin || migrating;
     this.job = c.id;
@@ -761,7 +771,7 @@ export class Progress {
       this.buffs = this.buffs.filter(buff => buff.id !== id);
       changed = true;
     }
-    for (const gift of classGiftSkills(c)) changed = this.grantSkill(gift.id, gift.level) || changed;
+    for (const gift of classGiftSkills(c, legacyRewards)) changed = this.grantSkill(gift.id, gift.level) || changed;
     if (!this.classRewardClaims.includes(c.id)) {
       const robe = classRobe(c);
       if (robe && this.equip.robe !== robe) {
@@ -781,16 +791,28 @@ export class Progress {
     return true;
   }
 
-  /** 旧档已有职业或已交付拜入任务，自动补登记/奖励；q_fox 本身不替未入宗者选宗。 */
+  /** 正式入宗事实优先；仅旧奖励版本的已交妖狐档继承原天剑身份。 */
   backfillClass(initializeSectRank = true): boolean {
-    const c = classDef(this.job) ?? Object.keys(this.quests).map(classForQuest).find(candidate => candidate && this.quests[candidate.joinQuest]?.state === 'done');
-    if (!c) return false;
-    const state = () => JSON.stringify({ job: this.job, classVersion: this.classVersion, classRefundSp: this.classRefundSp,
+    const state = () => JSON.stringify({ job: this.job, classVersion: this.classVersion, questRewardVersion: this.questRewardVersion, classRefundSp: this.classRefundSp,
       skills: this.skills, gifted: this.skillGifted, mastery: this.skillMastery, hotbar: this.hotbar,
-      cooldowns: this.skillCooldowns, buffs: this.buffs, claims: this.classRewardClaims, equip: this.equip });
+      cooldowns: this.skillCooldowns, buffs: this.buffs, claims: this.classRewardClaims, equip: this.equip, inventory: this.inventory, rank: this.sectRank });
     const before = state();
-    this.advanceClass(c.id, initializeSectRank);
-    return before !== state();
+    const formal = classDef(this.job) ?? Object.keys(this.quests).map(classForQuest)
+      .find(candidate => candidate && this.quests[candidate.joinQuest]?.state === 'done');
+    const legacy = !formal && this.questRewardVersion < QUEST_REWARD_VERSION && this.quests.q_fox?.state === 'done'
+      ? classDef('tianjian_disciple') : undefined;
+    // 旧妖狐交付已经入宗；保留衣着和本宗技能/键位，道袍按已有职业补进背包。
+    if (legacy) {
+      this.job = legacy.id;
+      if (initializeSectRank && this.sectRank === null) this.sectRank = SECT_RANKS.rules.initialRank;
+    }
+    const c = formal ?? legacy;
+    if (c) this.advanceClass(c.id, initializeSectRank);
+    this.questRewardVersion = Math.max(this.questRewardVersion, QUEST_REWARD_VERSION);
+    const changed = before !== state();
+    // 旧档尚未交妖狐也登记新规则，以后交付、刷新不能被再次当成旧入宗事实。
+    if (changed) this.save();
+    return changed;
   }
 
   /** 被动心法加成。只统计 type=passive，buff 的 speed/jump 不走这里。 */
