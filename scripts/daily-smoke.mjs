@@ -253,8 +253,8 @@ try {
   assert.equal(tianjian.mark, '!', '天剑山门入宗后无日常标记');
   assert.equal(tianjian.daily, 3, '天剑山门日常没有完整三条');
   await openNpc(page, 'tianjian_envoy_sect');
-  assert.equal(await page.evaluate(() => window.__scene.dialog.choices.filter(choice => !choice.disabled).length), 4,
-    '天剑接引没有三条可选日常与告辞选项');
+  assert.equal(await page.evaluate(() => window.__scene.dialog.choices.filter(choice => !choice.disabled).length), 5,
+    '天剑接引没有三条可选日常、宗门商店与告辞选项');
   await press(page, 'Escape');
   await page.waitForTimeout(300);
   assert.deepEqual(errors, { console: [], page: [], request: [], http: [] }, '浏览器冒烟出现报错');
