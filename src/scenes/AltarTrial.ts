@@ -74,7 +74,7 @@ export class AltarTrial {
       this.eyeSprite = scene.add.sprite(this.eye.x, this.eye.y, EYE_KEY).setOrigin(0.5, 1).setDepth(DEPTH_EYE);
       this.eyeSprite.play(`${EYE_KEY}_idle`);
       this.eyeSprite.on(Phaser.Animations.Events.ANIMATION_COMPLETE, (a: Phaser.Animations.Animation) => {
-        if (a.key === `${EYE_KEY}_hit`) { this.eyeHitting = false; this.eyeLoop(true); }
+        if (a.key === `${EYE_KEY}_hit` || a.key === `${EYE_KEY}_hit_damaged`) { this.eyeHitting = false; this.eyeLoop(true); }
       });
     }
     this.countdown = hudText(scene, 640, 84, 16, { fontStyle: 'bold', color: INK, stroke: PAPER, strokeThickness: 3 }).setOrigin(0.5).setDepth(131);
@@ -153,9 +153,12 @@ export class AltarTrial {
   damageEye(dmg: number, by = '?') {
     if (this.ended) return;
     this.hitsBy[by] = (this.hitsBy[by] ?? 0) + 1;
+    // anims.json note：按受击前的气血选 hit；本次跌破 30% 时，播完再切 damaged。
+    const hitKey = this.hp / this.maxHp < EYE_DAMAGED_RATIO && this.scene.anims.exists(`${EYE_KEY}_hit_damaged`)
+      ? `${EYE_KEY}_hit_damaged` : `${EYE_KEY}_hit`;
     this.hp = Math.max(0, this.hp - dmg);
     const sp = this.eyeSprite;
-    if (sp && this.hp > 0 && this.scene.anims.exists(`${EYE_KEY}_hit`)) { this.eyeHitting = true; sp.play(`${EYE_KEY}_hit`); }
+    if (sp && this.hp > 0 && this.scene.anims.exists(hitKey)) { this.eyeHitting = true; sp.play(hitKey); }
     this.scene.damageNumber(this.eye.x, this.eye.y - 60, dmg, '#ffffff', '#3b2a20');
   }
 
