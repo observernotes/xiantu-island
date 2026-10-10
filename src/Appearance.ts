@@ -38,7 +38,8 @@ export function syncPlayerAppearance(player: Phaser.GameObjects.Sprite, appearan
     const name = String(player.frame.name);
     const mapped = name.startsWith(`${previous}_`) ? `${atlas}_${name.slice(previous.length + 1)}` : `${atlas}_idle_01`;
     const texture = scene.textures.get(atlas);
-    player.setTexture(atlas, texture.has(mapped) ? mapped : undefined);
+    const frame = texture.has(mapped) ? mapped : texture.has(`${atlas}_idle_01`) ? `${atlas}_idle_01` : undefined;
+    player.setTexture(atlas, frame);
   }
   return true;
 }

@@ -9,6 +9,7 @@
     "preview": "vite preview --host 0.0.0.0 --port 4173",
     "test:overflow": "node scripts/overflow-test.mjs",
     "test:v05": "timeout 60s node scripts/v05-test.mjs",
+    "test:appearance": "timeout 60s node scripts/appearance-test.mjs",
     "test:smoke:v05": "timeout 120s node scripts/v05-smoke.mjs",
     "sync": "node scripts/sync.mjs",
     "snapshot": "node scripts/snapshot.mjs"
