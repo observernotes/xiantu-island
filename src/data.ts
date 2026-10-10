@@ -53,6 +53,7 @@ export interface MonsterDef {
   minHp?: number;
   /** 不扣血 */
   invulnerable?: boolean;
+  vision?: { length: number; halfAngleDeg: number; detectMs: number; decayMul: number };
   attack?: { type: string; damageRatio: number; range: { w: number; h: number }; cooldownMs: number; knockback: number; telegraphMs?: number };
   skills?: MonsterSkill[];
   sprite: string; dropTable: string | null; isBoss: boolean;
@@ -96,6 +97,12 @@ export interface TrialDef {
   objective?: { id: string; name: string; hp: number; def?: number; x?: number | string; monsterDamageMul?: number; hitHalfWidth?: number; climbJumpVelocity?: number };
   /** 按怪物 id 覆盖行为，只在这场试炼里生效 */
   behaviorOverrides?: Record<string, { useAttack?: boolean; objectiveHit?: 'contact' | 'attack' }>;
+  lamps?: { count: number; timeLimitMs: number; hitSkill: string };
+  draw?: { talismans: number; strokesMin: number; strokesMax: number; wrongStroke: string; timeLimitMs: number };
+  targets?: { monster: string; total: number; timeLimitMs: number; maxActive: number; refillDelayMs: number; moveSpeed: number };
+  patrols?: { monster: string; count: number; turnPauseMs: number };
+  item?: string;
+  tame?: { monster: string; fluteMs: number; interruptOn: string[] };
 }
 export const TRIALS: Record<string, TrialDef> = Object.fromEntries((trialsRaw as unknown as TrialDef[]).map(t => [t.id, t]));
 /** 地图 id → 防守类试炼（目前只有筑基台） */

@@ -103,11 +103,14 @@ export class SkillCombat {
     const range = skillRange(def);
     const maxDist = range?.w ?? 280;
     const hitH = range?.h ?? 48;
-    const x = p.x + facing * 42;
-    const y = p.y - 46;
+    const pack = this.scene.cache.json.get(`${def.fx}_anims`) as { projectileSpawn?: [number, number]; origin?: [number, number] } | undefined;
+    const spawn = pack?.projectileSpawn;
+    const x = p.x + (spawn ? -facing * spawn[0] : facing * 42);
+    const y = p.y + (spawn?.[1] ?? -46);
     const sprite = this.fxSprite(def.fx, x, y, [0.5, 0.5]);
     if (!sprite) return;
     sprite.setDepth(p.depth + 2).setFlipX(facing > 0);
+    if (facing > 0 && pack?.origin) sprite.setOrigin(1 - pack.origin[0], pack.origin[1]);
     const fly = `${def.fx}_fly`;
     if (this.scene.anims.exists(fly)) sprite.play(fly);
     this.qis.push({
@@ -136,6 +139,7 @@ export class SkillCombat {
       Math.abs(q.sprite.x - oldX) + w, q.hitH,
     );
     const dir = Math.sign(q.vx) || -1;
+    if (this.scene.trialObjects?.hitSpell(q.defId, rect)) { this.impactQi(q); return true; }
     const mobs = this.scene.mobs
       .filter(m => !m.dead)
       .sort((a, b) => (a.x - b.x) * dir);
@@ -143,16 +147,20 @@ export class SkillCombat {
       const mb = m.body;
       if (!Phaser.Geom.Intersects.RectangleToRectangle(rect, new Phaser.Geom.Rectangle(mb.x, mb.y, mb.width, mb.height))) continue;
       this.applyHits(q.defId, q.level, [m]);
-      q.alive = false;
-      const hit = `${SKILLS[q.defId]?.fx ?? ''}_hit`;
-      if (this.scene.anims.exists(hit)) {
-        q.sprite.play(hit);
-        q.sprite.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => q.sprite.destroy());
-      } else q.sprite.destroy();
+      this.impactQi(q);
       this.hitstop();
       return true;
     }
     return false;
+  }
+
+  private impactQi(q: Qi) {
+    q.alive = false;
+    const hit = `${SKILLS[q.defId]?.fx ?? ''}_hit`;
+    if (this.scene.anims.exists(hit)) {
+      q.sprite.play(hit);
+      q.sprite.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => q.sprite.destroy());
+    } else q.sprite.destroy();
   }
 
   private killQi(q: Qi) {
@@ -171,6 +179,7 @@ export class SkillCombat {
     const behind = range.behind;
     const x = p.facing > 0 ? p.x - behind : p.x - front;
     const rect = new Phaser.Geom.Rectangle(x, p.body.bottom - range.h, front + behind, range.h);
+    this.scene.trialObjects?.hitSpell(def.id, rect);
     const hits = this.scene.mobs.filter(m => {
       if (m.dead) return false;
       const mb = m.body;

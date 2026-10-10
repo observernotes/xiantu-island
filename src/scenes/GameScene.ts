@@ -17,6 +17,7 @@ import { Monster, type SkillVolley } from './Monster';
 import { Progress } from '../Progress';
 import { Seclusion, realDay } from '../Seclusion';
 import { LIFESPAN } from '../data';
+import { SectTrialObjects } from './SectTrialObjects';
 
 const MAP_FALLBACK: Record<string, string> = {};
 type Drop = Phaser.Physics.Arcade.Sprite & { itemId: string; count: number; bornAt: number; label?: Phaser.GameObjects.Text; shadow?: Phaser.GameObjects.Ellipse; floatTw?: Phaser.Tweens.Tween; landed?: boolean };
@@ -63,6 +64,7 @@ export class GameScene extends Phaser.Scene {
   openedChests = new Set<string>();
   breakthroughNotified = false;
   private travelling = false;
+  trialObjects?: SectTrialObjects;
 
   constructor() { super('game'); (window as any).__scene = this; }
 
@@ -134,7 +136,8 @@ export class GameScene extends Phaser.Scene {
     this.physics.add.collider(this.player, this.map.solids);
     this.physics.add.collider(this.player, this.map.oneWays, () => { if (this.player.body.touching.down) this.player.oneWayAt = this.time.now; }, oneWayCheck);
 
-    for (const sp of this.map.spawns) {
+    this.trialObjects = new SectTrialObjects(this);
+    for (const sp of this.map.trial ? [] : this.map.spawns) {
       const def = MONSTERS[sp.monster];
       if (!def) { console.warn(`[spawn] 没有怪物 ${sp.monster}`); continue; }
       // 首领区：接了 unlockQuest 才刷（任务系统 v0.3 接入，v0.2 先不刷）
@@ -355,6 +358,7 @@ export class GameScene extends Phaser.Scene {
     this.updateShots(time);
     this.regenMp(delta);
     this.combat.update(time, delta);
+    this.trialObjects?.update(delta);
     if (J(k.k) && !this.dialog.open) this.skillWindow.toggle();
     const escDown = J(k.esc);
     if (escDown && this.skillWindow.open) this.skillWindow.close();
@@ -385,7 +389,7 @@ export class GameScene extends Phaser.Scene {
     if (J(k.i)) this.invText.setVisible(!this.invText.visible);
     if (J(k.one)) this.usePill('hp_pill_small');
     if (J(k.two)) this.usePill('qi_pill');
-    if (J(k.z) && this.player.state2 === 'ground' && this.talkNearby()) return;
+    if (J(k.z) && this.player.state2 === 'ground' && (this.interactTrialObject() || this.talkNearby())) return;
     if (k.z.isDown && time >= this.nextPickAt) { this.nextPickAt = time + 150; this.tryPickup(); }
     if (J(k.up) && this.player.state2 === 'ground' && this.tryInteract()) return;
     const slotKey: Record<string, Phaser.Input.Keyboard.Key> = { A: k.a, S: k.s, D: k.d, F: k.f, G: k.g, H: k.h, Q: k.q, W: k.w };
@@ -565,6 +569,14 @@ export class GameScene extends Phaser.Scene {
     if (p.atlas) p.play('player_sword_m_die');
     if (this.trial && !this.trial.ended) { this.trial.end('dead'); return; }
     if (this.trial) return;
+    if (this.map.trial) {
+      this.events.emit('trial:object', { trial: this.map.trial, action: 'player_down' });
+      this.time.delayedCall(1000, () => {
+        this.prog.hp = this.prog.maxHp; this.prog.mp = this.prog.maxMp;
+        this.scene.restart({ map: this.map.id });
+      });
+      return;
+    }
     this.log('你被击倒了，3 秒后在出生点复活', '#ff8080');
     this.time.delayedCall(3000, () => {
       this.prog.hp = this.prog.maxHp; this.prog.mp = this.prog.maxMp;
@@ -696,6 +708,7 @@ export class GameScene extends Phaser.Scene {
     for (const o of this.map.objects) {
       const nearX = o.type === 'ferry' && o.w > 0 ? p.x >= o.x - 28 && p.x <= o.x + o.w + 28 : Math.abs(o.x - p.x) <= 28;
       if (!nearX || Math.abs(o.y - p.y) > 40) continue;
+      if (this.trialObjects?.interact(o)) return true;
       if (o.type === 'portal') {
         if (this.prog.level < Number(o.props.reqLevel ?? 0)) { this.log(t('sys.portal_level', { lv: o.props.reqLevel }), '#aaaaaa'); return true; }
         if (!this.portalOpen(o)) { this.log(t('sys.portal_locked'), '#aaaaaa'); return true; }
@@ -712,6 +725,14 @@ export class GameScene extends Phaser.Scene {
         return true;
       }
       if (o.type === 'npc') { this.talkTo(o.props.npc ?? o.name); return true; }
+    }
+    return false;
+  }
+
+  private interactTrialObject() {
+    for (const o of this.map.objects) {
+      if (Math.abs(o.x - this.player.x) <= 40 && Math.abs(o.y - this.player.feet) <= 48
+        && this.trialObjects?.interact(o)) return true;
     }
     return false;
   }
@@ -774,7 +795,7 @@ export class GameScene extends Phaser.Scene {
 
   talkTo(npcId: string) {
     const npc = NPCS[npcId]; if (!npc) return;
-    if (this.trial || TRIAL_BY_MAP[this.map.id]) return;   // 试炼图里的长老虚影只护法，不对话
+    if (this.trial || this.map.trial || TRIAL_BY_MAP[this.map.id]) return;   // 试炼图里的长老虚影只护法，不对话
     if (npcId === 'ferry_master') {
       this.player.body.setVelocityX(0);
       this.dialog.choose({ speaker: npc.name, text: npc.dialog[0] ?? '' }, npc.sprite, [

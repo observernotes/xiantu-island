@@ -49,6 +49,7 @@ export interface SkillAct {
   jumpCancel?: boolean; superArmorMs?: number;
 }
 export const SKILL_ACT: Record<string, SkillAct> = {
+  spirit_bolt: { kind: 'projectile', recoverMs: 400, hitDelayMs: 90, jumpCancel: true },
   sword_qi_slash: { kind: 'projectile', recoverMs: 400, hitDelayMs: 90, jumpCancel: true },
   whirl_sword: { kind: 'aoe', recoverMs: 300, hitDelayMs: 100, superArmorMs: 200 },
   light_body: { kind: 'buff', recoverMs: 200, hitDelayMs: 0 },

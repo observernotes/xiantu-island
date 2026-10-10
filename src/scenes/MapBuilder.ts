@@ -4,9 +4,10 @@ import { FEEL, SPEC } from '../config/feel';
 export interface Rope { kind: 'rope' | 'ladder'; x: number; top: number; bottom: number; halfW: number; }
 export interface Spawn { x: number; y: number; w: number; monster: string; count: number; }
 export interface Zone { name: string; x: number; y: number; w: number; h: number; props: Record<string, any>; }
-export interface MapObj { type: string; name: string; x: number; y: number; w: number; h: number; props: Record<string, any>; }
+export interface MapObj { type: string; name: string; x: number; y: number; w: number; h: number; props: Record<string, any>; points?: { x: number; y: number }[]; }
 export interface BuiltMap {
   id: string; name: string; safeZone: boolean;
+  trial?: string; night: boolean;
   width: number; height: number;
   solids: Phaser.Physics.Arcade.StaticGroup;
   oneWays: Phaser.Physics.Arcade.StaticGroup;
@@ -22,7 +23,7 @@ type Grid = string[];  // '#' 实心  '=' 单向  '.' 空
 
 function emptyMap(scene: Phaser.Scene, id: string, name: string, safe: boolean, cols: number, rows: number): BuiltMap {
   return {
-    id, name, safeZone: safe, width: cols * FEEL.tile, height: rows * FEEL.tile,
+    id, name, safeZone: safe, night: false, width: cols * FEEL.tile, height: rows * FEEL.tile,
     solids: scene.physics.add.staticGroup(), oneWays: scene.physics.add.staticGroup(),
     ropes: [], spawn: { x: 64, y: 64 }, spawns: [], spawnGates: [], objects: [], zones: [],
   };
@@ -108,6 +109,8 @@ export function buildTiledMap(scene: Phaser.Scene, tj: any, tileset?: string): B
   const prop = (arr: any[] | undefined) => Object.fromEntries((arr ?? []).map((p: any) => [p.name, p.value]));
   const mp = prop(tj.properties);
   const map = emptyMap(scene, mp.id ?? 'map', mp.name ?? '', !!mp.safeZone, tj.width, tj.height);
+  map.trial = typeof mp.trial === 'string' ? mp.trial : undefined;
+  map.night = !!mp.night;
   const grid: string[][] = Array.from({ length: tj.height }, () => Array(tj.width).fill('.'));
   for (const l of tj.layers) {
     if (l.type !== 'tilelayer') continue;
@@ -135,7 +138,8 @@ export function buildTiledMap(scene: Phaser.Scene, tj: any, tileset?: string): B
           break;
         }
         case 'zone': map.zones.push({ name: o.name, x: o.x, y: o.y, w: o.width, h: o.height, props: p }); break;
-        default: map.objects.push({ type: o.type, name: o.name, x: o.x, y: o.y, w: o.width ?? 0, h: o.height ?? 0, props: p });
+        default: map.objects.push({ type: o.type, name: o.name, x: o.x, y: o.y, w: o.width ?? 0, h: o.height ?? 0, props: p,
+          points: o.polyline?.map((point: { x: number; y: number }) => ({ x: o.x + point.x, y: o.y + point.y })) });
       }
     }
   }
