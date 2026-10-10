@@ -1,0 +1,235 @@
+{
+  "schemaVersion": 1,
+  "phase": 5,
+  "rules": {
+    "scope": "playthrough",
+    "moralState": {
+      "feature": "moral_state",
+      "daoHeart": {
+        "min": 0,
+        "max": 100,
+        "initial": 30,
+        "tiers": [
+          { "id": "unsettled", "min": 0, "nameKey": "moral.dao_heart.unsettled" },
+          { "id": "steady", "min": 30, "nameKey": "moral.dao_heart.steady" },
+          { "id": "firm", "min": 60, "nameKey": "moral.dao_heart.firm" },
+          { "id": "unshaken", "min": 80, "nameKey": "moral.dao_heart.unshaken" }
+        ]
+      },
+      "morality": {
+        "min": -100,
+        "max": 100,
+        "initial": 0,
+        "tiers": [
+          { "id": "demonic", "min": -100, "nameKey": "moral.morality.demonic" },
+          { "id": "self_seeking", "min": -49, "nameKey": "moral.morality.self_seeking" },
+          { "id": "balanced", "min": -9, "nameKey": "moral.morality.balanced" },
+          { "id": "benevolent", "min": 10, "nameKey": "moral.morality.benevolent" },
+          { "id": "exemplary", "min": 50, "nameKey": "moral.morality.exemplary" }
+        ]
+      }
+    }
+  },
+  "questHooks": [
+    {
+      "id": "prologue_medicine",
+      "enabled": false,
+      "quest": "q_awaken",
+      "node": "turn_in_moral",
+      "on": "turn_in",
+      "speaker": "village_elder",
+      "textKeys": ["karma.prologue.offer", "karma.prologue.question"],
+      "featuresAll": ["moral_state"],
+      "choices": [
+        {
+          "id": "return",
+          "textKey": "karma.prologue.choice_return",
+          "resultTextKeys": ["karma.prologue.returned"],
+          "hooks": {
+            "oncePerQuest": true,
+            "karma": [{ "flag": "prologue_medicine_returned", "value": true }],
+            "moralityDelta": 1
+          }
+        },
+        {
+          "id": "keep",
+          "textKey": "karma.prologue.choice_keep",
+          "resultTextKeys": ["karma.prologue.kept"],
+          "hooks": {
+            "oncePerQuest": true,
+            "karma": [{ "flag": "prologue_medicine_kept", "value": true }],
+            "moralityDelta": -1
+          }
+        }
+      ]
+    },
+    {
+      "id": "sect_tianjian_sword",
+      "enabled": false,
+      "quest": "q_sect_tianjian",
+      "node": "sword_purpose",
+      "on": "turn_in",
+      "speaker": "tianjian_elder",
+      "textKeys": ["karma.tianjian.question"],
+      "featuresAll": ["moral_state"],
+      "choices": [
+        {
+          "id": "protect",
+          "textKey": "karma.tianjian.choice_protect",
+          "resultTextKeys": ["karma.tianjian.protected"],
+          "hooks": {
+            "oncePerQuest": true,
+            "karma": [{ "flag": "sect_tianjian_protect", "value": true }],
+            "moralityDelta": 1
+          }
+        },
+        {
+          "id": "seek_dao",
+          "textKey": "karma.tianjian.choice_seek_dao",
+          "resultTextKeys": ["karma.tianjian.sought_dao"],
+          "hooks": {
+            "oncePerQuest": true,
+            "karma": [{ "flag": "sect_tianjian_seek_dao", "value": true }],
+            "daoHeartDelta": 1
+          }
+        }
+      ]
+    }
+  ],
+  "flags": [
+    {
+      "id": "prologue_medicine_returned",
+      "nameKey": "karma.flag.prologue_medicine_returned",
+      "type": "boolean", "mode": "once", "default": false, "scope": "playthrough",
+      "exclusiveGroup": "prologue_medicine",
+      "writers": [{ "type": "quest", "id": "q_awaken", "node": "turn_in_moral", "outcome": "return" }],
+      "readers": [
+        { "type": "journal", "id": "karma_history" },
+        { "type": "dialog", "id": "village_elder_idle", "textKey": "karma.recall.prologue_medicine_returned" }
+      ],
+      "description": "序章归还乡亲遗失的药囊。"
+    },
+    {
+      "id": "prologue_medicine_kept",
+      "nameKey": "karma.flag.prologue_medicine_kept",
+      "type": "boolean", "mode": "once", "default": false, "scope": "playthrough",
+      "exclusiveGroup": "prologue_medicine",
+      "writers": [{ "type": "quest", "id": "q_awaken", "node": "turn_in_moral", "outcome": "keep" }],
+      "readers": [
+        { "type": "journal", "id": "karma_history" },
+        { "type": "dialog", "id": "village_elder_idle", "textKey": "karma.recall.prologue_medicine_kept" }
+      ],
+      "description": "序章将乡亲遗失的药囊据为己有；不产生背包物品。"
+    },
+    {
+      "id": "sect_tianjian_protect",
+      "nameKey": "karma.flag.sect_tianjian_protect",
+      "type": "boolean", "mode": "once", "default": false, "scope": "playthrough",
+      "exclusiveGroup": "sect_tianjian_sword",
+      "writers": [{ "type": "quest", "id": "q_sect_tianjian", "node": "sword_purpose", "outcome": "protect" }],
+      "readers": [
+        { "type": "journal", "id": "karma_history" },
+        { "type": "dialog", "id": "tianjian_elder_idle", "textKey": "karma.recall.sect_tianjian_protect" }
+      ],
+      "description": "入门答剑为护身边之人，善恶增加。"
+    },
+    {
+      "id": "sect_tianjian_seek_dao",
+      "nameKey": "karma.flag.sect_tianjian_seek_dao",
+      "type": "boolean", "mode": "once", "default": false, "scope": "playthrough",
+      "exclusiveGroup": "sect_tianjian_sword",
+      "writers": [{ "type": "quest", "id": "q_sect_tianjian", "node": "sword_purpose", "outcome": "seek_dao" }],
+      "readers": [
+        { "type": "journal", "id": "karma_history" },
+        { "type": "dialog", "id": "tianjian_elder_idle", "textKey": "karma.recall.sect_tianjian_seek_dao" }
+      ],
+      "description": "入门答剑为求更高的道，道心增加。"
+    },
+    {
+      "id": "enc_wanderer_rescued",
+      "nameKey": "karma.flag.enc_wanderer_rescued",
+      "type": "boolean", "mode": "once", "default": false, "scope": "playthrough",
+      "exclusiveGroup": "enc_wanderer_first_help",
+      "writers": [{ "type": "encounter", "id": "enc_stranded_cultivator", "outcome": "rescued" }],
+      "readers": [
+        { "type": "journal", "id": "karma_history" },
+        { "type": "dialog", "id": "enc_stranded_cultivator.offer_repeat", "textKey": "karma.recall.enc_wanderer_rescued" }
+      ],
+      "description": "首次有效救援选择战斗；后续援药不补写另一标记。"
+    },
+    {
+      "id": "enc_wanderer_aided",
+      "nameKey": "karma.flag.enc_wanderer_aided",
+      "type": "boolean", "mode": "once", "default": false, "scope": "playthrough",
+      "exclusiveGroup": "enc_wanderer_first_help",
+      "writers": [{ "type": "encounter", "id": "enc_stranded_cultivator", "outcome": "aided" }],
+      "readers": [
+        { "type": "journal", "id": "karma_history" },
+        { "type": "dialog", "id": "enc_stranded_cultivator.offer_repeat", "textKey": "karma.recall.enc_wanderer_aided" }
+      ],
+      "description": "首次有效救援选择援药；后续战斗救援不补写另一标记。"
+    },
+    {
+      "id": "enc_herb_preserved",
+      "nameKey": "karma.flag.enc_herb_preserved",
+      "type": "boolean", "mode": "once", "default": false, "scope": "playthrough",
+      "exclusiveGroup": "enc_herb_harvest",
+      "writers": [{ "type": "encounter", "id": "enc_fragrant_herb", "outcome": "preserved" }],
+      "readers": [{ "type": "journal", "id": "karma_history" }],
+      "description": "林隙灵芝留根采叶；只记个人见闻。"
+    },
+    {
+      "id": "enc_herb_uprooted",
+      "nameKey": "karma.flag.enc_herb_uprooted",
+      "type": "boolean", "mode": "once", "default": false, "scope": "playthrough",
+      "exclusiveGroup": "enc_herb_harvest",
+      "writers": [{ "type": "encounter", "id": "enc_fragrant_herb", "outcome": "uprooted" }],
+      "readers": [{ "type": "journal", "id": "karma_history" }],
+      "description": "整株拔取奇遇灵芝；不改变常驻采集点。"
+    },
+    {
+      "id": "enc_abode_taken",
+      "nameKey": "karma.flag.enc_abode_taken",
+      "type": "boolean", "mode": "once", "default": false, "scope": "playthrough",
+      "exclusiveGroup": "enc_abode_chest",
+      "writers": [{ "type": "encounter", "id": "enc_hidden_abode", "outcome": "taken" }],
+      "readers": [{ "type": "journal", "id": "karma_history" }],
+      "description": "解谜后收下旧居余材，不扣善恶。"
+    },
+    {
+      "id": "enc_abode_sealed",
+      "nameKey": "karma.flag.enc_abode_sealed",
+      "type": "boolean", "mode": "once", "default": false, "scope": "playthrough",
+      "exclusiveGroup": "enc_abode_chest",
+      "writers": [{ "type": "encounter", "id": "enc_hidden_abode", "outcome": "sealed" }],
+      "readers": [{ "type": "journal", "id": "karma_history" }],
+      "description": "解谜后封存旧匣；道心仅由结局 hook 增加一次。"
+    },
+    {
+      "id": "enc_sage_enlightened",
+      "nameKey": "karma.flag.enc_sage_enlightened",
+      "type": "boolean", "mode": "once", "default": false, "scope": "playthrough",
+      "writers": [{ "type": "encounter", "id": "enc_sage_advice", "outcome": "enlightened" }],
+      "readers": [{ "type": "journal", "id": "karma_history" }],
+      "description": "槐下答对道心与善恶题；不为老者建立好感。"
+    },
+    {
+      "id": "enc_whisper_accepted",
+      "nameKey": "karma.flag.enc_whisper_accepted",
+      "type": "boolean", "mode": "once", "default": false, "scope": "playthrough",
+      "exclusiveGroup": "enc_whisper_answer",
+      "writers": [{ "type": "encounter", "id": "enc_demon_whisper", "outcome": "accepted" }],
+      "readers": [{ "type": "journal", "id": "karma_history" }],
+      "description": "接受低语；不据此更换宗门、封门或启用战斗加成。"
+    },
+    {
+      "id": "enc_whisper_refused",
+      "nameKey": "karma.flag.enc_whisper_refused",
+      "type": "boolean", "mode": "once", "default": false, "scope": "playthrough",
+      "exclusiveGroup": "enc_whisper_answer",
+      "writers": [{ "type": "encounter", "id": "enc_demon_whisper", "outcome": "refused" }],
+      "readers": [{ "type": "journal", "id": "karma_history" }],
+      "description": "拒绝低语；无概率抵抗，道心低也可选。"
+    }
+  ]
+}

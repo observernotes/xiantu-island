@@ -587,16 +587,12 @@
    }
   ],
   "rewards": {
-   "exp": null,
-   "spiritStone": null,
-   "sectContribution": null,
+   "exp": 1056,
+   "spiritStone": 180,
+   "sectContribution": 40,
    "items": []
   },
-  "balanceTodo": [
-   "rewards.exp",
-   "rewards.spiritStone",
-   "rewards.sectContribution"
-  ]
+  "balanceTodo": []
  },
  {
   "id": "q_daily_tianjian_2",
@@ -624,16 +620,12 @@
    }
   ],
   "rewards": {
-   "exp": null,
-   "spiritStone": null,
-   "sectContribution": null,
+   "exp": 792,
+   "spiritStone": 270,
+   "sectContribution": 40,
    "items": []
   },
-  "balanceTodo": [
-   "rewards.exp",
-   "rewards.spiritStone",
-   "rewards.sectContribution"
-  ]
+  "balanceTodo": []
  },
  {
   "id": "q_daily_tianjian_3",
@@ -659,16 +651,12 @@
    }
   ],
   "rewards": {
-   "exp": null,
-   "spiritStone": null,
-   "sectContribution": null,
+   "exp": 264,
+   "spiritStone": 90,
+   "sectContribution": 20,
    "items": []
   },
-  "balanceTodo": [
-   "rewards.exp",
-   "rewards.spiritStone",
-   "rewards.sectContribution"
-  ]
+  "balanceTodo": []
  },
  {
   "id": "q_daily_taixu_1",
@@ -695,16 +683,12 @@
    }
   ],
   "rewards": {
-   "exp": null,
-   "spiritStone": null,
-   "sectContribution": null,
+   "exp": 1056,
+   "spiritStone": 180,
+   "sectContribution": 40,
    "items": []
   },
-  "balanceTodo": [
-   "rewards.exp",
-   "rewards.spiritStone",
-   "rewards.sectContribution"
-  ]
+  "balanceTodo": []
  },
  {
   "id": "q_daily_taixu_2",
@@ -732,16 +716,12 @@
    }
   ],
   "rewards": {
-   "exp": null,
-   "spiritStone": null,
-   "sectContribution": null,
+   "exp": 792,
+   "spiritStone": 270,
+   "sectContribution": 40,
    "items": []
   },
-  "balanceTodo": [
-   "rewards.exp",
-   "rewards.spiritStone",
-   "rewards.sectContribution"
-  ]
+  "balanceTodo": []
  },
  {
   "id": "q_daily_taixu_3",
@@ -767,16 +747,12 @@
    }
   ],
   "rewards": {
-   "exp": null,
-   "spiritStone": null,
-   "sectContribution": null,
+   "exp": 264,
+   "spiritStone": 90,
+   "sectContribution": 20,
    "items": []
   },
-  "balanceTodo": [
-   "rewards.exp",
-   "rewards.spiritStone",
-   "rewards.sectContribution"
-  ]
+  "balanceTodo": []
  },
  {
   "id": "q_daily_lingfu_1",
@@ -803,16 +779,12 @@
    }
   ],
   "rewards": {
-   "exp": null,
-   "spiritStone": null,
-   "sectContribution": null,
+   "exp": 1056,
+   "spiritStone": 180,
+   "sectContribution": 40,
    "items": []
   },
-  "balanceTodo": [
-   "rewards.exp",
-   "rewards.spiritStone",
-   "rewards.sectContribution"
-  ]
+  "balanceTodo": []
  },
  {
   "id": "q_daily_lingfu_2",
@@ -840,16 +812,12 @@
    }
   ],
   "rewards": {
-   "exp": null,
-   "spiritStone": null,
-   "sectContribution": null,
+   "exp": 792,
+   "spiritStone": 270,
+   "sectContribution": 40,
    "items": []
   },
-  "balanceTodo": [
-   "rewards.exp",
-   "rewards.spiritStone",
-   "rewards.sectContribution"
-  ]
+  "balanceTodo": []
  },
  {
   "id": "q_daily_lingfu_3",
@@ -875,16 +843,12 @@
    }
   ],
   "rewards": {
-   "exp": null,
-   "spiritStone": null,
-   "sectContribution": null,
+   "exp": 264,
+   "spiritStone": 90,
+   "sectContribution": 20,
    "items": []
   },
-  "balanceTodo": [
-   "rewards.exp",
-   "rewards.spiritStone",
-   "rewards.sectContribution"
-  ]
+  "balanceTodo": []
  },
  {
   "id": "q_daily_youying_1",
@@ -911,16 +875,12 @@
    }
   ],
   "rewards": {
-   "exp": null,
-   "spiritStone": null,
-   "sectContribution": null,
+   "exp": 1056,
+   "spiritStone": 180,
+   "sectContribution": 40,
    "items": []
   },
-  "balanceTodo": [
-   "rewards.exp",
-   "rewards.spiritStone",
-   "rewards.sectContribution"
-  ]
+  "balanceTodo": []
  },
  {
   "id": "q_daily_youying_2",
@@ -948,16 +908,12 @@
    }
   ],
   "rewards": {
-   "exp": null,
-   "spiritStone": null,
-   "sectContribution": null,
+   "exp": 792,
+   "spiritStone": 270,
+   "sectContribution": 40,
    "items": []
   },
-  "balanceTodo": [
-   "rewards.exp",
-   "rewards.spiritStone",
-   "rewards.sectContribution"
-  ]
+  "balanceTodo": []
  },
  {
   "id": "q_daily_youying_3",
@@ -983,16 +939,12 @@
    }
   ],
   "rewards": {
-   "exp": null,
-   "spiritStone": null,
-   "sectContribution": null,
+   "exp": 264,
+   "spiritStone": 90,
+   "sectContribution": 20,
    "items": []
   },
-  "balanceTodo": [
-   "rewards.exp",
-   "rewards.spiritStone",
-   "rewards.sectContribution"
-  ]
+  "balanceTodo": []
  },
  {
   "id": "q_daily_wanshou_1",
@@ -1019,16 +971,12 @@
    }
   ],
   "rewards": {
-   "exp": null,
-   "spiritStone": null,
-   "sectContribution": null,
+   "exp": 1056,
+   "spiritStone": 180,
+   "sectContribution": 40,
    "items": []
   },
-  "balanceTodo": [
-   "rewards.exp",
-   "rewards.spiritStone",
-   "rewards.sectContribution"
-  ]
+  "balanceTodo": []
  },
  {
   "id": "q_daily_wanshou_2",
@@ -1056,16 +1004,12 @@
    }
   ],
   "rewards": {
-   "exp": null,
-   "spiritStone": null,
-   "sectContribution": null,
+   "exp": 792,
+   "spiritStone": 270,
+   "sectContribution": 40,
    "items": []
   },
-  "balanceTodo": [
-   "rewards.exp",
-   "rewards.spiritStone",
-   "rewards.sectContribution"
-  ]
+  "balanceTodo": []
  },
  {
   "id": "q_daily_wanshou_3",
@@ -1091,15 +1035,11 @@
    }
   ],
   "rewards": {
-   "exp": null,
-   "spiritStone": null,
-   "sectContribution": null,
+   "exp": 264,
+   "spiritStone": 90,
+   "sectContribution": 20,
    "items": []
   },
-  "balanceTodo": [
-   "rewards.exp",
-   "rewards.spiritStone",
-   "rewards.sectContribution"
-  ]
+  "balanceTodo": []
  }
 ]

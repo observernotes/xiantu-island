@@ -265,6 +265,36 @@
    "items": [
     "talisman_gather"
    ]
+  },
+  "icon_robe_tianjian_1": {
+   "name": "天剑宗一转道袍",
+   "items": [
+    "robe_tianjian_1"
+   ]
+  },
+  "icon_robe_taixu_1": {
+   "name": "太虚观一转道袍",
+   "items": [
+    "robe_taixu_1"
+   ]
+  },
+  "icon_robe_lingfu_1": {
+   "name": "灵符派一转道袍",
+   "items": [
+    "robe_lingfu_1"
+   ]
+  },
+  "icon_robe_youying_1": {
+   "name": "幽影楼一转道袍",
+   "items": [
+    "robe_youying_1"
+   ]
+  },
+  "icon_robe_wanshou_1": {
+   "name": "万兽山一转道袍",
+   "items": [
+    "robe_wanshou_1"
+   ]
   }
  },
  "items": {
@@ -312,7 +342,12 @@
   "talisman_fire": "icon_talisman_fire",
   "talisman_guard": "icon_talisman_guard",
   "talisman_return": "icon_talisman_return",
-  "talisman_gather": "icon_talisman_gather"
+  "talisman_gather": "icon_talisman_gather",
+  "robe_tianjian_1": "icon_robe_tianjian_1",
+  "robe_taixu_1": "icon_robe_taixu_1",
+  "robe_lingfu_1": "icon_robe_lingfu_1",
+  "robe_youying_1": "icon_robe_youying_1",
+  "robe_wanshou_1": "icon_robe_wanshou_1"
  },
  "placeholders": []
 }
