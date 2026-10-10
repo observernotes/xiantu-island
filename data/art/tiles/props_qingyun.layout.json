@@ -1,0 +1,186 @@
+{
+  "map": "qingyun_village",
+  "atlas": "props_qingyun",
+  "items": [
+    {
+      "frame": "bamboo_a",
+      "x": 280,
+      "y": 704,
+      "origin": [
+        0.5,
+        1
+      ],
+      "layer": "back",
+      "scale": 1.1
+    },
+    {
+      "frame": "house_a",
+      "x": 600,
+      "y": 704,
+      "origin": [
+        0.5,
+        1
+      ],
+      "layer": "back",
+      "scale": 1.0,
+      "light": "lantern_a"
+    },
+    {
+      "frame": "fence_a",
+      "x": 700,
+      "y": 704,
+      "origin": [
+        0.5,
+        1
+      ],
+      "layer": "mid",
+      "scale": 1.0
+    },
+    {
+      "frame": "lantern_red",
+      "x": 680,
+      "y": 704,
+      "origin": [
+        0.5,
+        1
+      ],
+      "layer": "mid",
+      "scale": 0.9,
+      "light": "lantern_a"
+    },
+    {
+      "frame": "stone_lantern",
+      "x": 360,
+      "y": 704,
+      "origin": [
+        0.5,
+        1
+      ],
+      "layer": "mid",
+      "scale": 0.85
+    },
+    {
+      "frame": "crate",
+      "x": 740,
+      "y": 704,
+      "origin": [
+        0.5,
+        1
+      ],
+      "layer": "mid",
+      "scale": 0.8
+    },
+    {
+      "frame": "tree_a",
+      "x": 1120,
+      "y": 704,
+      "origin": [
+        0.5,
+        1
+      ],
+      "layer": "back",
+      "scale": 1.15
+    },
+    {
+      "frame": "house_b",
+      "x": 1280,
+      "y": 704,
+      "origin": [
+        0.5,
+        1
+      ],
+      "layer": "back",
+      "scale": 1.0,
+      "flipX": true
+    },
+    {
+      "frame": "bamboo_a",
+      "x": 1550,
+      "y": 704,
+      "origin": [
+        0.5,
+        1
+      ],
+      "layer": "back",
+      "scale": 1.0
+    },
+    {
+      "frame": "signpost",
+      "x": 1680,
+      "y": 704,
+      "origin": [
+        0.5,
+        1
+      ],
+      "layer": "mid",
+      "scale": 0.9
+    },
+    {
+      "frame": "stone_lantern",
+      "x": 1750,
+      "y": 704,
+      "origin": [
+        0.5,
+        1
+      ],
+      "layer": "mid",
+      "scale": 0.85
+    },
+    {
+      "frame": "house_a",
+      "x": 2100,
+      "y": 704,
+      "origin": [
+        0.5,
+        1
+      ],
+      "layer": "back",
+      "scale": 0.95
+    },
+    {
+      "frame": "fence_a",
+      "x": 2200,
+      "y": 704,
+      "origin": [
+        0.5,
+        1
+      ],
+      "layer": "mid",
+      "scale": 1.0
+    },
+    {
+      "frame": "lantern_red",
+      "x": 2180,
+      "y": 704,
+      "origin": [
+        0.5,
+        1
+      ],
+      "layer": "mid",
+      "scale": 0.9,
+      "light": "lantern_a"
+    },
+    {
+      "frame": "crate",
+      "x": 900,
+      "y": 640,
+      "origin": [
+        0.5,
+        1
+      ],
+      "layer": "mid",
+      "scale": 0.75
+    },
+    {
+      "frame": "tree_a",
+      "x": 760,
+      "y": 640,
+      "origin": [
+        0.5,
+        1
+      ],
+      "layer": "back",
+      "scale": 1.0
+    }
+  ]
+}

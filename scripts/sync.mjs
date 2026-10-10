@@ -51,6 +51,11 @@ const tileMetadata = areas.flatMap(area => {
   const key = `tiles_${area}`, file = `tiles/${key}.json`;
   return fs.existsSync(path.join(out, file)) ? [{ key: `${key}_meta`, path: `art/${file}` }] : [];
 });
+// 装饰布局不要求该区域有图块；只从已拷出的正式文件登记，不推测缺省路径。
+const propLayouts = fs.readdirSync(path.join(out, 'tiles')).sort().flatMap(file => {
+  const area = file.match(/^props_(\w+)\.layout\.json$/)?.[1];
+  return area ? [{ area, key: `props_${area}_layout`, path: `art/tiles/${file}` }] : [];
+});
 // 图块变体不一定提供背景；只登记实际交付的背景，避免将缺省层当成待加载图片。
 const backgrounds = areas.flatMap(area => ['far', 'mid'].flatMap(layer => {
   const key = `bg_${area}_${layer}`, file = `tiles/${key}.png`;
@@ -98,6 +103,6 @@ function findRankIcons(dir) {
 }
 findRankIcons(path.join(out, 'icons'));
 fs.mkdirSync(path.join(here, 'src/gen'), { recursive: true });
-fs.writeFileSync(path.join(here, 'src/gen/assets.json'), JSON.stringify({ atlases, areas, tileMetadata, backgrounds, backgroundConfigs, skillIcons, sectRankIcons }, null, 1));
+fs.writeFileSync(path.join(here, 'src/gen/assets.json'), JSON.stringify({ atlases, areas, tileMetadata, backgrounds, backgroundConfigs, propLayouts, skillIcons, sectRankIcons }, null, 1));
 console.log(`manifest: ${atlases.length} 个图集，${skillIcons.length} 个技能 @64 图标，区域 ${areas.join('/')}`);
 console.log(manifestOnly ? 'rebuilt manifest from public/art' : 'synced art from', root, '(' + dataMode(here) + ')');

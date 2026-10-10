@@ -148,6 +148,7 @@ export const AREAS: string[] = assets.areas;
 export const TILE_METADATA: { key: string; path: string }[] = assets.tileMetadata;
 export const BACKGROUND_CONFIGS: { area: string; key: string; path: string }[] = assets.backgroundConfigs;
 export const BACKGROUNDS: { key: string; path: string }[] = assets.backgrounds;
+export const PROP_LAYOUTS: { area: string; key: string; path: string }[] = assets.propLayouts;
 /** sync 只登记已转正且存在的技能 @64 图标，避免加载 _pending 或缺失文件。 */
 export const SKILL_ICONS: { key: string; path: string }[] = assets.skillIcons;
 
