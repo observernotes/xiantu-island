@@ -10,6 +10,8 @@
     "test:overflow": "node scripts/overflow-test.mjs",
     "test:v05": "timeout 60s node scripts/v05-test.mjs",
     "test:appearance": "timeout 60s node scripts/appearance-test.mjs",
+    "test:classes": "timeout 120s node scripts/classes-test.mjs",
+    "test:smoke:classes": "timeout 120s node scripts/classes-smoke.mjs",
     "test:altar": "timeout 60s node scripts/altar-test.mjs",
     "test:alchemy": "timeout 60s node scripts/alchemy-test.mjs && timeout 60s node scripts/gather-test.mjs",
     "test:smoke:alchemy": "timeout 120s node scripts/alchemy-smoke.mjs",
