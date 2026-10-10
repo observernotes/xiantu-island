@@ -1,0 +1,110 @@
+{
+ "frames": {
+  "prop_ferry_boat_idle_01": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 320,
+    "h": 192
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 320,
+    "h": 192
+   },
+   "sourceSize": {
+    "w": 320,
+    "h": 192
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "prop_ferry_boat_idle_02": {
+   "frame": {
+    "x": 320,
+    "y": 0,
+    "w": 320,
+    "h": 192
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 320,
+    "h": 192
+   },
+   "sourceSize": {
+    "w": 320,
+    "h": 192
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "prop_ferry_boat_idle_03": {
+   "frame": {
+    "x": 640,
+    "y": 0,
+    "w": 320,
+    "h": 192
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 320,
+    "h": 192
+   },
+   "sourceSize": {
+    "w": 320,
+    "h": 192
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "prop_ferry_boat_idle_04": {
+   "frame": {
+    "x": 960,
+    "y": 0,
+    "w": 320,
+    "h": 192
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 320,
+    "h": 192
+   },
+   "sourceSize": {
+    "w": 320,
+    "h": 192
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  }
+ },
+ "meta": {
+  "app": "xiantu gen_props_v05.py",
+  "image": "prop_ferry_boat.png",
+  "format": "RGBA8888",
+  "scale": "1",
+  "size": {
+   "w": 1280,
+   "h": 192
+  }
+ }
+}

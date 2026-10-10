@@ -1,0 +1,76 @@
+{
+ "atlas": "mon_youying_patrol",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  80,
+  88
+ ],
+ "anims": [
+  {
+   "key": "mon_youying_patrol_idle",
+   "frames": [
+    "mon_youying_patrol_idle_01",
+    "mon_youying_patrol_idle_02"
+   ],
+   "frameRate": 3,
+   "repeat": -1
+  },
+  {
+   "key": "mon_youying_patrol_walk",
+   "frames": [
+    "mon_youying_patrol_walk_01",
+    "mon_youying_patrol_walk_02",
+    "mon_youying_patrol_walk_03"
+   ],
+   "frameRate": 6,
+   "repeat": -1
+  },
+  {
+   "key": "mon_youying_patrol_alert",
+   "frames": [
+    "mon_youying_patrol_alert_01",
+    "mon_youying_patrol_alert_02"
+   ],
+   "frameRate": 6,
+   "repeat": -1
+  },
+  {
+   "key": "mon_youying_patrol_hit",
+   "frames": [
+    "mon_youying_patrol_hit_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  },
+  {
+   "key": "mon_youying_patrol_die",
+   "frames": [
+    "mon_youying_patrol_die_01",
+    "mon_youying_patrol_die_02",
+    "mon_youying_patrol_die_03"
+   ],
+   "frameRate": 6,
+   "repeat": 0
+  }
+ ],
+ "bodySize": [
+  34,
+  60
+ ],
+ "lanternOffset": [
+  -30,
+  -36
+ ],
+ "lanternOffsetAlert": [
+  -30,
+  -44
+ ],
+ "coneFx": "fx_youying_patrol_lantern_cone",
+ "alertFx": "fx_trial_alert_mark",
+ "note": "幽影楼试炼·巡逻弟子（youying_patrol）：幽影楼墨紫袍 + 半面罩，前手杆头挂灯笼。不打架，所以没有 attack；hit/die 只是按小怪规格备着。灯笼中心 = 脚底 + lanternOffset（朝左；朝右 x 取反），扇形视线 fx_youying_patrol_lantern_cone 的原点就放这里、跟着朝向翻转。发现玩家时切 alert（灯笼举高到 lanternOffsetAlert），头顶 y−72 播 fx_trial_alert_mark 的 alert。",
+ "kind": "monster"
+}

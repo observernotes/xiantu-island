@@ -1,0 +1,158 @@
+{
+ "frames": {
+  "fx_flame_envoy_flame_palm_warn_warn_01": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 168,
+    "h": 104
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 168,
+    "h": 104
+   },
+   "sourceSize": {
+    "w": 168,
+    "h": 104
+   },
+   "pivot": {
+    "x": 1,
+    "y": 1
+   }
+  },
+  "fx_flame_envoy_flame_palm_warn_warn_02": {
+   "frame": {
+    "x": 168,
+    "y": 0,
+    "w": 168,
+    "h": 104
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 168,
+    "h": 104
+   },
+   "sourceSize": {
+    "w": 168,
+    "h": 104
+   },
+   "pivot": {
+    "x": 1,
+    "y": 1
+   }
+  },
+  "fx_flame_envoy_flame_palm_warn_warn_03": {
+   "frame": {
+    "x": 336,
+    "y": 0,
+    "w": 168,
+    "h": 104
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 168,
+    "h": 104
+   },
+   "sourceSize": {
+    "w": 168,
+    "h": 104
+   },
+   "pivot": {
+    "x": 1,
+    "y": 1
+   }
+  },
+  "fx_flame_envoy_flame_palm_warn_warn_04": {
+   "frame": {
+    "x": 504,
+    "y": 0,
+    "w": 168,
+    "h": 104
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 168,
+    "h": 104
+   },
+   "sourceSize": {
+    "w": 168,
+    "h": 104
+   },
+   "pivot": {
+    "x": 1,
+    "y": 1
+   }
+  },
+  "fx_flame_envoy_flame_palm_warn_warn_05": {
+   "frame": {
+    "x": 672,
+    "y": 0,
+    "w": 168,
+    "h": 104
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 168,
+    "h": 104
+   },
+   "sourceSize": {
+    "w": 168,
+    "h": 104
+   },
+   "pivot": {
+    "x": 1,
+    "y": 1
+   }
+  },
+  "fx_flame_envoy_flame_palm_warn_warn_06": {
+   "frame": {
+    "x": 840,
+    "y": 0,
+    "w": 168,
+    "h": 104
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 168,
+    "h": 104
+   },
+   "sourceSize": {
+    "w": 168,
+    "h": 104
+   },
+   "pivot": {
+    "x": 1,
+    "y": 1
+   }
+  }
+ },
+ "meta": {
+  "app": "xiantu gen_mon_v05.py",
+  "image": "fx_flame_envoy_flame_palm_warn.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1008,
+   "h": 104
+  },
+  "scale": "1"
+ }
+}

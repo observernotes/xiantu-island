@@ -1,0 +1,28 @@
+{
+ "atlas": "fx_trial_flute_prompt",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  40,
+  48
+ ],
+ "anims": [
+  {
+   "key": "fx_trial_flute_prompt_loop",
+   "frames": [
+    "fx_trial_flute_prompt_loop_01",
+    "fx_trial_flute_prompt_loop_02",
+    "fx_trial_flute_prompt_loop_03",
+    "fx_trial_flute_prompt_loop_04"
+   ],
+   "frameRate": 6,
+   "repeat": -1
+  }
+ ],
+ "blend": "normal",
+ "note": "「可以吹笛了」提示：宣纸色气泡里一支骨笛（绿穗 = 万兽山）。原点 (0.5,1) = 气泡尖，放在山魈脚底 + mon_mad_mandrill 的 flutePromptOffset (0,−66)，山魈进 tired 时出现，吹笛成功或山魈恢复时隐藏。",
+ "kind": "fx"
+}
