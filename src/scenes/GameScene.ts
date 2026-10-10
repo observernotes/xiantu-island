@@ -141,7 +141,7 @@ export class GameScene extends Phaser.Scene {
     this.events.on('trial:complete', trialComplete);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.events.off('trial:complete', trialComplete));
     this.registry.set('progress', this.prog);
-    this.openedChests = this.registry.get('chests') ?? new Set();
+    this.openedChests = new Set(this.prog.openedChests);
     this.registry.set('chests', this.openedChests);
     this.mobs = []; this.logs = []; this.logBadges.clear(); this.hudTexts = undefined; this.hudKit = undefined;
     this.travelling = false; this.curZone = undefined; this.nextDailyUpdateAt = 0;
@@ -938,7 +938,7 @@ export class GameScene extends Phaser.Scene {
       const label = text ? this.portalStatusLabel(o, text) : undefined;
       this.portalVisuals.push({ object: o, art, label });
     } else if (o.type === 'chest') {
-      const opened = this.openedChests.has(`${this.map.id}:${o.name}`);
+      const opened = this.prog.openedChests.includes(`${this.map.id}:${o.name}`);
       if (this.textures.exists('prop_chest')) {
         const sprite = this.add.sprite(o.x, o.y, 'prop_chest').setOrigin(0.5, 1).setDepth(4).setName('chest:' + o.name);
         this.playPropAnimation(sprite, opened ? 'prop_chest_opened' : 'prop_chest_closed');
@@ -1467,7 +1467,9 @@ export class GameScene extends Phaser.Scene {
     for (const o of this.map.objects) {
       if (o.type !== 'chest' || Math.abs(o.x - p.x) > 32 || Math.abs(o.y - p.y) > 40) continue;
       const key = `${this.map.id}:${o.name}`;
-      if (this.openedChests.has(key)) return;
+      if (this.prog.openedChests.includes(key)) return;
+      this.prog.openedChests.push(key);
+      this.prog.save();
       this.openedChests.add(key);
       const chest = this.children.getByName('chest:' + o.name);
       if (chest instanceof Phaser.GameObjects.Sprite) {

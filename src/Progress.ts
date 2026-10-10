@@ -90,6 +90,8 @@ export class Progress {
   pillQualities: Record<string, Partial<Record<PillQuality, number>>> = {};
   /** 地图 id:采集对象名 → 再生的绝对毫秒时间，换图/刷新后保持。 */
   gatherRespawnAt: Record<string, number> = {};
+  /** 已开宝匣的地图 id:对象名，换图与刷新后不再重复掉落。 */
+  openedChests: string[] = [];
   /** 已付料的这一炉；刷新继续火候，结算前清空防止重复领奖。 */
   pendingAlchemy: BrewSession | null = null;
   name = '少年';
@@ -635,6 +637,8 @@ export class Progress {
     }
     if (!this.gatherRespawnAt || typeof this.gatherRespawnAt !== 'object' || Array.isArray(this.gatherRespawnAt)) this.gatherRespawnAt = {};
     this.gatherRespawnAt = Object.fromEntries(Object.entries(this.gatherRespawnAt).filter(([, at]) => typeof at === 'number' && Number.isFinite(at) && at > 0));
+    if (!Array.isArray(this.openedChests)) this.openedChests = [];
+    this.openedChests = [...new Set(this.openedChests.filter(key => typeof key === 'string' && key.length > 0))];
     if (!isBrewSession(this.pendingAlchemy, this.learnedRecipes)) this.pendingAlchemy = null;
     for (const st of Object.values(this.quests)) {
       if (!st || typeof st !== 'object') continue;
