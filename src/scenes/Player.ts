@@ -19,6 +19,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   hp = 100; maxHp = 100;
   rope: Rope | null = null;
   canDouble = true;
+  private airJumpsUsed = 0;
+  getAirJumpBonus: () => { extra: number; distanceRatio: number } = () => ({ extra: 0, distanceRatio: 0 });
   oneWayAt = -9999;          // 最近一次站在单向平台上的时间，由碰撞回调写入
   get onOneWay() { return this.scene.time.now - this.oneWayAt < 100; }
   dropUntil = 0;
@@ -58,6 +60,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   dead = false;
   /** 阴影反馈与受伤闪烁相乘，避免每帧 finish 覆盖渐变。 */
   shadowAlpha = 1;
+  getSkillAlpha: () => number = () => 1;
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
     const atlas = scene.textures.exists(BASE_PLAYER_ATLAS);
@@ -115,7 +118,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
       if (inp.jumpDown && dir !== 0) {           // 左/右 + 跳：跳离绳子
         this.leaveRope(time);
         b.setVelocity(dir * FEEL.ropeJumpVx, -FEEL.ropeJumpVy);
-        this.canDouble = true; this.jumpBufferedAt = -9999;
+        this.canDouble = true; this.airJumpsUsed = 0; this.jumpBufferedAt = -9999;
         return this.finish(time);
       }
       if (this.feet <= r.top + 1 && inp.up) {    // 爬到顶：站上平台
@@ -132,7 +135,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     const grounded = this.onGround;
-    if (grounded) { this.state2 = 'ground'; this.lastGroundAt = time; this.canDouble = true; this.didDouble = false; }
+    if (grounded) { this.state2 = 'ground'; this.lastGroundAt = time; this.canDouble = true; this.airJumpsUsed = 0; this.didDouble = false; }
     else this.state2 = 'air';
 
     // ---- 抓绳 ----
@@ -162,8 +165,10 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.state2 = 'air';
         this.releaseSkillRecovery();
       } else if (!grounded && inp.jumpDown && this.canDouble) { // 二段跳：纵向横向都不吃轻身术
-        this.canDouble = false; this.didDouble = true;
-        b.setVelocity(this.facing * FEEL.doubleJumpVx, -FEEL.doubleJumpVy);
+        const bonus = this.getAirJumpBonus();
+        this.airJumpsUsed++;
+        this.canDouble = this.airJumpsUsed < 1 + Math.max(0, Math.floor(bonus.extra)); this.didDouble = true;
+        b.setVelocity(this.facing * FEEL.doubleJumpVx * (1 + bonus.distanceRatio), -FEEL.doubleJumpVy);
         this.jumpBufferedAt = -9999;
         this.emit('doublejump');
         this.releaseSkillRecovery();
@@ -218,7 +223,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     this.setFlipX(this.atlas ? this.facing > 0 : this.facing < 0);
     if (this.atlas) this.updateAnim(time);
     this.syncWalkTimeScale();
-    this.setAlpha(this.shadowAlpha * (time < this.invulnUntil ? (Math.floor(time / 80) % 2 ? 0.35 : 0.9) : 1));
+    this.setAlpha(this.shadowAlpha * this.getSkillAlpha() * (time < this.invulnUntil ? (Math.floor(time / 80) % 2 ? 0.35 : 0.9) : 1));
   }
 
   /** 只有 walk 跟着速度点数走（满级轻身术、无其他速度加成时是 1.2），其它动画回到 1。 */

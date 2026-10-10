@@ -1,5 +1,7 @@
 import { QUESTS, QUEST_ORDER, NPCS, SCRIPTS, ITEMS, MONSTERS, Line, QuestDef, inPhase } from './data';
 import type { Progress } from './Progress';
+import { classForQuest } from './classes';
+import { REALMS } from './data';
 
 export type NpcMark = '!' | '?' | '…' | null;
 
@@ -15,13 +17,21 @@ export class QuestSystem {
   available(id: string) {
     if (this.state(id)) return false;
     const q = QUESTS[id];
-    if (!q || !inPhase(q) || !supported(q) || !this.prereqsDone(q)) return false;
+    if (!q || !inPhase(q) || !supported(q) || !this.prereqsDone(q) || !this.classAllowed(q)) return false;
     return this.prog.level >= q.reqLevel;
   }
   /** 前置已完成但等级不够 */
   levelLocked(id: string) {
     const q = QUESTS[id];
-    return !!q && inPhase(q) && supported(q) && !this.state(id) && this.prereqsDone(q) && this.prog.level < q.reqLevel;
+    return !!q && inPhase(q) && supported(q) && !this.state(id) && this.prereqsDone(q) && this.classAllowed(q) && this.prog.level < q.reqLevel;
+  }
+
+  private classAllowed(q: QuestDef) {
+    const cls = classForQuest(q.id);
+    if (cls && this.prog.job && this.prog.job !== cls.id) return false;
+    if (q.sect && this.prog.sect !== q.sect) return false;
+    if (q.reqRealm && REALMS.findIndex(r => r.id === this.prog.realm.id) < REALMS.findIndex(r => r.id === q.reqRealm)) return false;
+    return true;
   }
 
   private prereqsDone(q: QuestDef) {
@@ -34,6 +44,8 @@ export class QuestSystem {
     const ids = [...(NPCS[npcId]?.quests ?? [])];
     const intro = QUESTS.q_alchemy_intro;
     if (intro && (intro.giver === npcId || intro.turnIn === npcId) && !ids.includes(intro.id)) ids.push(intro.id);
+    // 配表尚未将五宗拜入任务挂到 NPC.quests；按任务自身 giver/turnIn 补入口。
+    for (const q of Object.values(QUESTS)) if (classForQuest(q.id) && (q.giver === npcId || q.turnIn === npcId) && !ids.includes(q.id)) ids.push(q.id);
     return ids.filter(id => QUESTS[id]);
   }
 
@@ -47,11 +59,12 @@ export class QuestSystem {
         case 'breakthrough': return { o, cur: this.prog.atBreakthrough ? 1 : 0, need: 1, label: '修为圆满' };
         case 'talk': return { o, cur: st?.talked?.[o.target!] ? 1 : 0, need: 1, label: `与${NPCS[o.target!]?.name ?? o.target}对话` };
         case 'craft': return { o, cur: Math.min(st?.crafted?.[o.target!] ?? 0, o.count ?? 1), need: o.count ?? 1, label: `炼制 ${ITEMS[o.target!]?.name ?? o.target}` };
+        case 'trial': return { o, cur: this.prog.completedTrials.includes(o.trial ?? '') ? 1 : 0, need: 1, label: '通过入门试炼' };
         default: return { o, cur: 0, need: 1, label: String(o.type) };   // 未支持的目标：永不完成，但不抛错
       }
     });
   }
-  complete(id: string) { return this.isActive(id) && this.objectiveProgress(QUESTS[id]).every(p => p.cur >= p.need); }
+  complete(id: string) { return this.isActive(id) && !!QUESTS[id] && this.classAllowed(QUESTS[id]) && this.objectiveProgress(QUESTS[id]).every(p => p.cur >= p.need); }
 
   /** NPC 头顶标记：可交付 ?、可接 !、进行中 … */
   mark(npcId: string): NpcMark {
@@ -92,7 +105,8 @@ export class QuestSystem {
     return true;
   }
 
-  turnIn(id: string): QuestReward {
+  turnIn(id: string): QuestReward | undefined {
+    if (!this.complete(id)) return undefined;
     const q = QUESTS[id];
     for (const o of q.objectives) if (o.type === 'collect' && o.consume !== false) this.prog.removeItem(o.target!, o.count!);
     const broke = q.objectives.some(o => o.type === 'breakthrough') ? this.prog.breakthrough() : false;
@@ -111,6 +125,14 @@ export class QuestSystem {
   onReach(target: string) {
     for (const id of this.activeIds) if (QUESTS[id].objectives.some(o => o.type === 'reach' && o.target === target)) this.prog.quests[id].reached = true;
   }
+  /** 完整试炼控制器胜利时调用；进图、局部机关、失败均不能算通关。 */
+  onTrialComplete(trialId: string) {
+    if (!trialId || !this.activeIds.some(id => QUESTS[id].objectives.some(o => o.type === 'trial' && o.trial === trialId))) return false;
+    if (this.prog.completedTrials.includes(trialId)) return false;
+    this.prog.completedTrials.push(trialId);
+    this.prog.save();
+    return true;
+  }
   /** 只接受成功产出的数量，背包拾取/旧库存不计入 craft 目标。 */
   onCraft(itemId: string, count: number) {
     if (!Number.isFinite(count) || count <= 0) return;
@@ -124,7 +146,7 @@ export class QuestSystem {
   }
 }
 
-const SUPPORTED = new Set(['kill', 'collect', 'reach', 'breakthrough', 'talk', 'craft']);
-function supported(q: QuestDef) { return q.objectives.every(o => SUPPORTED.has(o.type)); }
+const SUPPORTED = new Set(['kill', 'collect', 'reach', 'breakthrough', 'talk', 'craft', 'trial']);
+function supported(q: QuestDef) { return !q.daily && q.objectives.every(o => SUPPORTED.has(o.type)); }
 
 export interface QuestReward { quest: QuestDef; broke: boolean; }

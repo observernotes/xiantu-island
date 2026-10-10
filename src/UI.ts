@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import type { Line } from './data';
 import type { Progress } from './Progress';
-import { HOTBAR_SLOTS, SKILLS, describeSkill, skillsForJob, typeLabel } from './skills';
+import { HOTBAR_SLOTS, SKILLS, describeSkill, typeLabel } from './skills';
 import { hasHud, hudSpec, sliced, HUD_FONT, INK, INK_60, PAPER, RED, NAVY } from './hud';
 
 interface DialogChoice { label: string; onSelect: () => void; disabled?: boolean; reason?: string; }
@@ -290,7 +290,7 @@ export class SkillWindow {
     const title = this.scene.add.text(x - W / 2 + 28, y - H / 2 + 16, '功法', { fontFamily: 'serif', fontSize: '28px', color: '#6b2a00' }).setScrollFactor(0).setDepth(211);
     const sp = this.scene.add.text(x + W / 2 - 28, y - H / 2 + 24, `剩余技能点 ${prog.spLeftFor(1)}`, { fontFamily: 'sans-serif', fontSize: '18px', color: '#1a5a8a' }).setOrigin(1, 0).setScrollFactor(0).setDepth(211);
     this.objs.push(title, sp);
-    const list = skillsForJob(1);
+    const list = prog.classSkills;
     const atlas = this.scene.textures.exists('icons_skills') ? this.scene.textures.get('icons_skills') : null;
     list.forEach((def, i) => {
       const ry = y - H / 2 + 64 + i * 72;

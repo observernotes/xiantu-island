@@ -576,6 +576,13 @@ export class Progress {
   }
 
   buffActive(id: string) { return this.buffs.some(b => b.id === id && b.expireAt > Date.now()); }
+  /** 布尔效果不经过 skillNumber，避免 invisible 被当成数字 0。 */
+  hasBuffEffect(key: string) {
+    return this.buffs.some(buff => {
+      const def = SKILLS[buff.id];
+      return buff.expireAt > Date.now() && !!def && this.ownsSkill(def) && this.skillLevel(def.id) > 0 && def.effects[key] === true;
+    });
+  }
   buffBonus(key: string) {
     let value = 0;
     const counted = new Set<string>();

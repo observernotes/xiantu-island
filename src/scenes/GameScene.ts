@@ -9,7 +9,8 @@ import { AltarTrial, type TrialResult } from './AltarTrial';
 import { TRIALS, TRIAL_BY_MAP, REALMS, BREAKTHROUGH, SECT_SECLUSION, inPhase, type TrialDef } from '../data';
 import { preloadHud, registerHudFonts, hasHud, sliced, setSlicedWidth, HudBar, hudText, hudSpec, HUD_FONT, INK, INK_60, PAPER } from '../hud';
 import { SkillCombat } from '../SkillCombat';
-import { HOTBAR_SLOTS, SKILLS, skillsForJob } from '../skills';
+import { HOTBAR_SLOTS, SKILLS } from '../skills';
+import { classDef, classForQuest } from '../classes';
 import { installKeyGuard } from '../keyguard';
 import { buildTiledMap, buildCharMap, BuiltMap, MapObj } from './MapBuilder';
 import { Player, Input } from './Player';
@@ -44,6 +45,8 @@ interface Shot {
 /** ?debug=trial：直接进筑基台；&speed=N 试炼时钟加速；&skip=held|broken|dead 直接结算；&roll=win|lose 固定成功率判定 */
 const QS = typeof location !== 'undefined' ? new URLSearchParams(location.search) : new URLSearchParams();
 const DEBUG_TRIAL = QS.get('debug') === 'trial';
+/** ?debug=class=tianjian_disciple（其余 id 见职业登记表）；调试角色独立于真实存档。 */
+const DEBUG_CLASS = QS.get('debug')?.startsWith('class=') ? classDef(QS.get('debug')!.slice(6)) : undefined;
 /** 试炼结束后传回的位置：传功长老身边 */
 const TRIAL_RETURN = { map: 'tianjian_sect', x: 2476, y: 768 };
 
@@ -74,6 +77,18 @@ export class GameScene extends Phaser.Scene {
 
   constructor() { super('game'); (window as any).__scene = this; }
 
+  private createDebugClass() {
+    const prog = new Progress();
+    // 独立调试档不写 localStorage；换图继续用 registry 内同一角色。
+    prog.save = () => {};
+    prog.level = 29;
+    prog.advanceClass(DEBUG_CLASS!.id);
+    for (const def of prog.classSkills) prog.grantSkill(def.id, 1);
+    prog.addItem('talisman_paper', 999);
+    prog.hp = prog.maxHp; prog.mp = prog.maxMp;
+    return prog;
+  }
+
   preload() {
     for (const a of AREAS) {
       this.load.image(`tiles_${a}`, `art/tiles/tiles_${a}.png`);
@@ -102,9 +117,12 @@ export class GameScene extends Phaser.Scene {
       for (const an of a.anims) if (!this.anims.exists(an.key))
         this.anims.create({ key: an.key, frames: an.frames.map((f: string) => ({ key: k, frame: f })), frameRate: an.frameRate, repeat: an.repeat });
     }
-    if (new URLSearchParams(location.search).get('reset') === '1' && !this.registry.get('progress')) Progress.reset();
-    this.prog = this.registry.get('progress') ?? Progress.load();
+    if (!DEBUG_CLASS && new URLSearchParams(location.search).get('reset') === '1' && !this.registry.get('progress')) Progress.reset();
+    this.prog = this.registry.get('progress') ?? (DEBUG_CLASS ? this.createDebugClass() : Progress.load());
     this.quests = new QuestSystem(this.prog);
+    const trialComplete = (id: string) => this.quests.onTrialComplete(id);
+    this.events.on('trial:complete', trialComplete);
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.events.off('trial:complete', trialComplete));
     this.registry.set('progress', this.prog);
     this.openedChests = this.registry.get('chests') ?? new Set();
     this.registry.set('chests', this.openedChests);
@@ -115,7 +133,7 @@ export class GameScene extends Phaser.Scene {
     this.interactionPrompts = [];
 
     const q = new URLSearchParams(location.search).get('map');
-    let mapId = data.map ?? (q === 'test' || q === 'field' ? 'field_test' : q && TILED_MAPS[q] ? q : 'qingyun_village');
+    let mapId = data.map ?? (q === 'test' || q === 'field' ? 'field_test' : q && TILED_MAPS[q] ? q : DEBUG_CLASS?.map ?? 'qingyun_village');
     mapId = TILED_MAPS[mapId] ? mapId : (MAP_FALLBACK[mapId] ?? mapId);
     // 本版本没有的地图（存档或传送门指过去）一律回青云村，不再掉进测试图
     if (!TILED_MAPS[mapId] && mapId !== 'field_test') { mapId = 'qingyun_village'; data.portal = undefined; }
@@ -134,6 +152,8 @@ export class GameScene extends Phaser.Scene {
     this.player = new Player(this, at ? at.x : this.map.spawn.x, at ? at.y : this.map.spawn.y);
     this.player.hp = this.prog.hp; this.player.maxHp = this.prog.maxHp;
     this.player.getMovePoints = () => this.prog.currentMovePoints();
+    this.player.getAirJumpBonus = () => ({ extra: this.prog.passiveBonus('extraAirJumps'), distanceRatio: this.prog.passiveBonus('doubleJumpDistanceRatio') });
+    this.player.getSkillAlpha = () => this.prog.hasBuffEffect('invisible') ? 0.35 : 1;
     this.player.getAppearance = () => this.prog.appearance;
     this.player.syncAppearance();
     this.gathering = new Gathering(this);
@@ -394,7 +414,7 @@ export class GameScene extends Phaser.Scene {
       }
       if (this.dialog.open && (J(k.z) || J(k.space) || J(k.up))) this.dialog.advance();
       if (this.skillWindow.open) {
-        const jobs = skillsForJob(1);
+        const jobs = this.prog.classSkills;
         const nums = [k.one, k.two, k.three, k.four, k.five];
         nums.forEach((key, i) => { if (J(key) && jobs[i]) this.tryAddPoint(jobs[i].id); });
       }
@@ -426,7 +446,7 @@ export class GameScene extends Phaser.Scene {
     if (this.player.y > this.map.height + 100) this.player.body.reset(this.map.spawn.x, this.map.spawn.y);
 
     this.player.step(time, delta / 1000, inp, this.map.ropes);
-    for (const m of this.mobs) m.step(time, this.player);
+    for (const m of this.mobs) m.step(time, this.player, this.prog.hasBuffEffect('invisible'));
     for (let i = this.mobs.length - 1; i >= 0; i--) if (!this.mobs[i].active) this.mobs.splice(i, 1);
     this.stealth?.update(delta, true);
     for (const d of this.drops.getChildren() as Drop[]) {
@@ -585,7 +605,14 @@ export class GameScene extends Phaser.Scene {
   }
 
   hurtPlayer(dmg: number, fromX: number, knock: number) {
+    if (this.player.dead || this.time.now < this.player.invulnUntil) return;
+    if (Math.random() < this.prog.passiveBonus('evade')) return;
+    const shield = Math.min(1, Math.max(0, this.prog.buffBonus('damageToMpRatio')));
+    const mpPerDamage = this.prog.buffBonus('mpPerAbsorbedDamage') || 1;
+    const absorbed = Math.min(Math.floor(dmg * shield), Math.floor(this.prog.mp / mpPerDamage));
+    dmg = Math.max(0, dmg - absorbed);
     if (!this.player.hurt(this.time.now, fromX, dmg, knock)) return;
+    this.prog.mp = Math.max(0, this.prog.mp - absorbed * mpPerDamage);
     this.gathering.cancel();
     this.prog.hp = Math.max(0, this.prog.hp - dmg);
     this.player.hp = this.prog.hp;
@@ -929,6 +956,10 @@ export class GameScene extends Phaser.Scene {
 
   giveRewards(q: typeof QUESTS_REF[string], broke: boolean) {
     const rw = q.rewards;
+    const cls = classForQuest(q.id);
+    // 新角色在正式拜入任务交付时定宗；旧档已有剑徒由 Progress.load 保留。
+    const job = cls?.id ?? (q.id === 'q_fox' ? undefined : rw.job);
+    if (job && !this.prog.advanceClass(job)) return;
     this.log(t('quest.complete', { name: q.name }), '#ffe680');
     if (broke) {
       this.player.maxHp = this.prog.maxHp; this.player.hp = this.prog.hp;
@@ -939,18 +970,21 @@ export class GameScene extends Phaser.Scene {
     if (rw.exp) this.applyExp(this.prog.gainExp(rw.exp, this.prog.level));
     if (rw.spiritStone) { this.prog.stones += rw.spiritStone; this.log(`获得灵石 ${rw.spiritStone}`, '#7ff0d0'); }
     for (const it of rw.items ?? []) {
+      // advanceClass 已按拜入奖励发本宗道袍并换装。
+      if (it.item === cls?.robeId) continue;
       if (ITEMS[it.item]?.type === 'equip') { const on = this.prog.gainEquip(it.item); this.player.syncAppearance(); this.log(`获得 ${ITEMS[it.item].name}${on ? '（已自动装备）' : ''}`, '#9fd0ff'); }
       else { this.prog.addItem(it.item, it.count); this.log(`获得 ${ITEMS[it.item]?.name ?? it.item} ×${it.count}`, '#ffffff'); }
     }
-    if (rw.job) this.prog.job = rw.job;
     const granted = rw.skills ?? [];
     this.prog.grantQuestRecipes(q);
     for (const s of granted) this.prog.grantSkill(s.id, s.level);
     const ids = granted.map(s => s.id);
-    if (ids.includes('whirl_sword') && ids.includes('light_body')) this.log(t('skill.job_advance'), '#ffd23a');
+    if (job && ids.includes('whirl_sword') && ids.includes('light_body')) this.log(t('skill.job_advance'), '#ffd23a');
     else if (ids.includes('sword_qi_slash')) this.log(t('skill.learned_first'), '#9fd0ff');
     else for (const id of ids) this.log(t('skill.learned', { skill: SKILLS[id]?.name ?? id }), '#9fd0ff');
-    if (rw.job && !(ids.includes('whirl_sword') && ids.includes('light_body'))) this.log(t('job.' + rw.job), '#ffd23a');
+    if (job && !(ids.includes('whirl_sword') && ids.includes('light_body'))) this.log(`拜入${cls?.name ?? job}，已学本宗一转功法`, '#ffd23a');
+    this.player.syncAppearance();
+    this.skillWindow.refresh();
     this.player.maxHp = this.prog.maxHp; this.player.hp = this.prog.hp;
     this.maybeSpTip();
     this.prog.save();

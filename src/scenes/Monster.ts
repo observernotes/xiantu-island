@@ -168,7 +168,7 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
   get dead() { return this.st === 'dead' || this.despawning; }
   get grounded() { return this.body.blocked.down || this.body.touching.down; }
 
-  step(time: number, player: Phaser.Physics.Arcade.Sprite & { dead?: boolean }) {
+  step(time: number, player: Phaser.Physics.Arcade.Sprite & { dead?: boolean }, hidden = false) {
     if (!this.active) return;
     const d = this.def, b = this.body;
     this.drawBar();
@@ -201,7 +201,7 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
     if (this.st === 'hit' || this.st === 'attack') this.st = 'patrol';
 
     const dx = player.x - this.x, dy = player.y - this.y;
-    const sees = d.aggressive && !player.dead && Math.abs(dx) < (d.aggroRange ?? 0) && Math.abs(dy) < 64;
+    const sees = !hidden && d.aggressive && !player.dead && Math.abs(dx) < (d.aggroRange ?? 0) && Math.abs(dy) < 64;
 
     if (d.skills?.length && this.trySkills(time, player, dx, sees)) return;
 
