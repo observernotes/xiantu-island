@@ -372,8 +372,13 @@ try {
     // 宿主若连旧版本身都不到60，只报告真实结果；不把软件渲染限制算成引擎通过60fps。
     if (metrics.baselineFps >= 59) check(metrics.target60FpsMet, '旧版可达60fps而示例素材低于60fps');
     metrics.samples = { beforeSamples, afterSamples, effectSamples };
-    check(fallbackFrameMs <= baselineFrameMs + 1, `旧素材帧间隔低于基线：${fallbackFrameMs} > ${baselineFrameMs} ms`);
-    check(effectsFrameMs <= baselineFrameMs + 1, `示例特效帧间隔低于基线：${effectsFrameMs} > ${baselineFrameMs} ms`);
+    // Canvas（禁用 GPU）与 WebGL（SwiftShader）均为软件渲染；qa/out_tier1/d4cd341_triage2/triage.md
+    // 的 A/A 均值波动达 16.11ms。三轮均值取中位后允许一个 60Hz 帧间隔，仍检查更大的持续退化。
+    const frameIntervalToleranceMs = 1000 / 60;
+    metrics.frameIntervalToleranceMs = frameIntervalToleranceMs;
+    const frameIntervalLimitMs = baselineFrameMs + frameIntervalToleranceMs;
+    check(fallbackFrameMs <= frameIntervalLimitMs, `${metrics.renderer} 旧素材帧间隔超过基线容差：${fallbackFrameMs.toFixed(2)} > ${baselineFrameMs.toFixed(2)} + ${frameIntervalToleranceMs.toFixed(2)} ms`);
+    check(effectsFrameMs <= frameIntervalLimitMs, `${metrics.renderer} 示例特效帧间隔超过基线容差：${effectsFrameMs.toFixed(2)} > ${baselineFrameMs.toFixed(2)} + ${frameIntervalToleranceMs.toFixed(2)} ms`);
   }
   equal(errors, [], '浏览器控制台/页面报错');
   const report = JSON.stringify({ baselineRevision, assertions, metrics }, null, 2);
