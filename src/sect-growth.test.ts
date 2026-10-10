@@ -6,6 +6,7 @@ import { dailyQuestDay } from './DailyQuests';
 import { REALMS, t } from './data';
 import { Progress } from './Progress';
 import { SectGrowth, SECT_GROWTH_CONFIG, type SectGrowthConfig } from './SectGrowth';
+import { featureFlags, setFeatureFlag } from './features';
 
 let assertions = 0;
 function eq(actual: unknown, expected: unknown, message: string) {
@@ -25,6 +26,8 @@ function clone<T>(value: T): T { return JSON.parse(JSON.stringify(value)) as T; 
 const now = new Date(2026, 9, 10, 12).getTime();
 const originalNow = Date.now;
 const originalStorage = Object.getOwnPropertyDescriptor(globalThis, 'localStorage');
+const originalFeatures = featureFlags();
+const serviceFeatures = ['sectRanks', 'sectShopLibrary'] as const;
 Date.now = () => now;
 const disk: Record<string, string> = {};
 let failStorage = false, writes = 0;
@@ -61,8 +64,9 @@ function joined(id = 'tianjian', level = 30) {
   const p = new Progress(); p.level = level;
   const cls = CLASS_LIST.find(row => row.sect === id);
   ok(cls, `${id} 职业登记存在`);
-  ok(p.advanceClass(cls.id), `${id} 正式入宗`);
+  // 已交付的拜宗事实用于既有成员回归，不受四宗新入口开关限制。
   p.quests[cls.joinQuest] = { state: 'done', kills: {} };
+  ok(p.advanceClass(cls.id), `${id} 正式入宗`);
   return p;
 }
 function state(p: Progress) {
@@ -102,6 +106,8 @@ function books(config: SectGrowthConfig) {
 }
 
 try {
+  // 注入业务夹具对应的会话开关；发版关闭入口另由 test:classes/test:features 覆盖。
+  for (const name of serviceFeatures) setFeatureFlag(name, true);
   // 共享表关闭晋升与兑换；读表与身份显示仍正常，未来预留档不会被总开关放行。
   eq(rawRanks.enabled, false, '共享职位总开关当前关闭');
   same(SECT_GROWTH_CONFIG.ranks.rules.rankOrder, rawRanks.rules.rankOrder, '唯一职位顺序读取共享配置');
@@ -461,6 +467,7 @@ try {
 
   console.log(`sect-growth.test: ${assertions} 条断言通过（内存配置/存档，不改共享表或 data/）`);
 } finally {
+  for (const name of serviceFeatures) setFeatureFlag(name, originalFeatures[name]);
   failStorage = false;
   Date.now = originalNow;
   if (originalStorage) Object.defineProperty(globalThis, 'localStorage', originalStorage);

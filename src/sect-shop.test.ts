@@ -6,6 +6,7 @@ import { QUESTS, type SectShopGood } from './data';
 import { Progress } from './Progress';
 import { QuestSystem } from './QuestSystem';
 import { SectGrowth, SECT_GROWTH_CONFIG, type SectGrowthConfig } from './SectGrowth';
+import { featureFlags, setFeatureFlag } from './features';
 
 let assertions = 0;
 function eq(actual: unknown, expected: unknown, message: string) {
@@ -28,6 +29,8 @@ const nextFive = new Date(2026, 9, 11, 5).getTime();
 let now = start, failStorage = false, writes = 0;
 const originalNow = Date.now;
 const originalStorage = Object.getOwnPropertyDescriptor(globalThis, 'localStorage');
+const originalFeatures = featureFlags();
+const serviceFeatures = ['sectRanks', 'sectShopLibrary', 'sectDonations'] as const;
 Date.now = () => now;
 const disk: Record<string, string> = {};
 Object.defineProperty(globalThis, 'localStorage', { configurable: true, value: {
@@ -52,8 +55,9 @@ function joined(sectId = 'tianjian') {
   const p = new Progress(); p.level = 30;
   const cls = CLASS_LIST.find(row => row.sect === sectId);
   ok(cls, `${sectId} 职业存在`);
-  ok(p.advanceClass(cls.id), `${sectId} 正式拜宗`);
+  // 已交付的拜宗事实用于既有成员回归，不受四宗新入口开关限制。
   p.quests[cls.joinQuest] = { state: 'done', kills: {} };
+  ok(p.advanceClass(cls.id), `${sectId} 正式拜宗`);
   p.resetDailyQuests(now);
   return p;
 }
@@ -94,6 +98,8 @@ function donate(growth: SectGrowth, row: ReturnType<typeof offer>, id: string, d
 }
 
 try {
+  // 注入业务夹具对应的会话开关；发版关闭入口另由 test:classes/test:features 覆盖。
+  for (const name of serviceFeatures) setFeatureFlag(name, true);
   // 真实配置保持禁用；测试仅克隆打开，不改快照与共享 JSON。
   same(SECT_GROWTH_CONFIG.donations, rawDonations, '上交从唯一共享表读取');
   same(SECT_GROWTH_CONFIG.shops, rawShops, '两种货品均完整读取');
@@ -440,6 +446,7 @@ try {
 
   console.log(`sect-shop.test: ${assertions} 条断言通过（双货架/上交/原子事务，仅内存配置与存档）`);
 } finally {
+  for (const name of serviceFeatures) setFeatureFlag(name, originalFeatures[name]);
   failStorage = false; Date.now = originalNow;
   if (originalStorage) Object.defineProperty(globalThis, 'localStorage', originalStorage);
   else Reflect.deleteProperty(globalThis, 'localStorage');

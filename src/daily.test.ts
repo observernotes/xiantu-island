@@ -42,8 +42,9 @@ function joined(sect = 'tianjian') {
   const p = new Progress(); p.level = 29;
   const cls = CLASS_LIST.find(c => c.sect === sect);
   ok(cls, `${sect} 职业已登记`);
-  ok(p.advanceClass(cls.id), `${sect} 正式拜入成功`);
+  // 已交付的拜宗事实用于既有成员回归，不受四宗新入口开关限制。
   p.quests[cls.joinQuest] = { state: 'done', kills: {} };
+  ok(p.advanceClass(cls.id), `${sect} 正式拜入成功`);
   p.resetDailyQuests(now);
   return p;
 }
