@@ -31,8 +31,10 @@ export function preloadHud(scene: Phaser.Scene) {
   scene.load.json('bestiary_ui', 'art/icons/ui/bestiary/bestiary_ui.json');
   scene.load.json('alchemy_ui', 'art/icons/ui/alchemy/alchemy_ui.json');
   for (const k of HUD_IMAGES) scene.load.image(k, `${HUD_DIR}/${k}.png`);
-  for (const k of ['ui_bestiary_window', 'ui_bestiary_title', 'ui_bestiary_inset', 'ui_bestiary_btn_close', 'ui_bestiary_btn_close_hover'])
-    scene.load.image(k, `art/icons/ui/bestiary/${k}.png`);
+  // 公共窗体件（图鉴/炼丹/商店共用）按构建清单可选加载，缺图时各窗体退回代码画。
+  for (const k of ['ui_bestiary_window', 'ui_bestiary_title', 'ui_bestiary_inset', 'ui_bestiary_btn_close', 'ui_bestiary_btn_close_hover',
+    'ui_bestiary_tab', 'ui_bestiary_tab_active'])
+    loadOptionalImage(scene, k, `art/icons/ui/bestiary/${k}.png`);
   for (const k of ['ui_gather_castbar_frame', 'ui_gather_castbar_fill', 'icon_gather_herb', 'icon_gather_ore'])
     scene.load.image(k, `art/icons/ui/alchemy/${k}.png`);
   for (const k of CULT_IMAGES) scene.load.image(k, `art/icons/ui/${k}.png`);

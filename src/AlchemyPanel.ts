@@ -4,6 +4,7 @@ import type { Progress } from './Progress';
 import { AlchemySystem, firePointer, type AlchemyResult } from './Alchemy';
 import { HUD_FONT, INK, INK_60, PAPER, RED, sliced, hudSpec, setSlicedWidth } from './hud';
 import { featureEnabled, FEATURE_UNAVAILABLE } from './features';
+import { loadOptionalImage } from './optionalAssets';
 
 const DIR = 'art/icons/ui/alchemy';
 const IMAGES = [
@@ -19,7 +20,8 @@ const IMAGES = [
 
 /** 公共窗体、切片表由 preloadHud 加载；炉火按自身 JSONHash 图集与 meta.anim 接入。 */
 export function preloadAlchemy(scene: Phaser.Scene) {
-  for (const key of IMAGES) scene.load.image(key, `${DIR}/${key}.png`);
+  // 窗体件与商店共用，按构建清单可选加载（UI-5）；缺图时 art() 返回空，不入加载队列。
+  for (const key of IMAGES) loadOptionalImage(scene, key, `${DIR}/${key}.png`);
   scene.load.atlas('ui_alchemy_fire', `${DIR}/ui_alchemy_fire.png`, `${DIR}/ui_alchemy_fire.json`);
   scene.load.json('alchemy_fire_meta', `${DIR}/ui_alchemy_fire.json`);
   for (const icon of new Set(Object.values(RECIPES).filter(r => !r.type).map(r => ITEMS[r.output]?.icon).filter(Boolean)))

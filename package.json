@@ -31,6 +31,7 @@
     "test:sect-growth": "timeout 60s node scripts/sect-growth-test.mjs",
     "test:sect-shop": "timeout 60s node scripts/sect-shop-test.mjs",
     "test:shop": "timeout 60s node scripts/shop-test.mjs",
+    "test:smoke:shop-ui": "timeout 300s node scripts/shop-ui-smoke.mjs",
     "test:smoke:sect-growth": "timeout 120s node scripts/sect-growth-smoke.mjs",
     "test:altar": "timeout 60s node scripts/altar-test.mjs",
     "test:alchemy": "timeout 60s node scripts/alchemy-test.mjs && timeout 60s node scripts/gather-test.mjs",

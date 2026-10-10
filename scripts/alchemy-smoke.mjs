@@ -305,11 +305,18 @@ try {
   const beforeShop = await page.evaluate(item => ({ stones: window.__scene.prog.stones,
     contribution: window.__scene.prog.sectContribution, count: window.__scene.prog.count(item) }), shopItem.id);
   await openDoctorDialogue(page);
-  await selectChoice(page, strings['ui.shop.menu'] ?? '商店'); await selectChoice(page, shopItem.name);
-  await page.evaluate(confirm => {
-    window.__ordinaryBuyConfirm = window.__scene.dialog.choices.find(choice => choice.label === confirm).onSelect;
-  }, strings['sect.ui.confirm']);
-  await selectChoice(page, strings['sect.ui.confirm']); await finishDialogue(page);
+  await selectChoice(page, strings['ui.shop.menu'] ?? '商店');
+  // UI-5 起货架走商店窗：方向键选货、回车两步确认；缓存同一确认用于重放去重。
+  await page.waitForFunction(() => window.__scene.shop.isOpen(), null, { timeout: 3000 });
+  const shopIndex = await page.evaluate(item => window.__scene.shop.snapshot().rows.findIndex(row => row.itemId === item), shopItem.id);
+  assert.ok(shopIndex >= 0, '孙郎中商店窗缺少回气丹');
+  for (let i = 0; i < shopIndex; i++) await page.keyboard.press('ArrowDown', { delay: 60 });
+  await page.keyboard.press('Enter', { delay: 60 });
+  await page.waitForFunction(() => !!window.__scene.shop.pending, null, { timeout: 3000 });
+  await page.evaluate(() => { const shop = window.__scene.shop, pending = shop.pending; window.__ordinaryBuyConfirm = () => shop.commit(pending); });
+  await page.keyboard.press('Enter', { delay: 60 });
+  await page.waitForFunction(() => !window.__scene.shop.pending, null, { timeout: 3000 });
+  await page.evaluate(() => window.__scene.shop.close());
   const afterShop = await page.evaluate(item => ({ stones: window.__scene.prog.stones,
     contribution: window.__scene.prog.sectContribution, count: window.__scene.prog.count(item) }), shopItem.id);
   assert.deepEqual(afterShop, { stones: beforeShop.stones - shopItem.price,
@@ -317,7 +324,7 @@ try {
   await page.evaluate(() => window.__ordinaryBuyConfirm());
   assert.deepEqual(await page.evaluate(item => ({ stones: window.__scene.prog.stones,
     contribution: window.__scene.prog.sectContribution, count: window.__scene.prog.count(item) }), shopItem.id), afterShop);
-  await finishDialogue(page); passed('孙郎中字符串货架仅扣灵石，同一确认不重复扣款或交货');
+  passed('孙郎中字符串货架仅扣灵石，同一确认不重复扣款或交货');
   await openDoctorDialogue(page);
   await finishDialogue(page);
   const accepted = await page.evaluate(() => ({

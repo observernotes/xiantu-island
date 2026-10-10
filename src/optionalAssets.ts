@@ -10,6 +10,7 @@ interface OptionalAssetManifest {
   propLayouts?: { path: string }[];
   skillIcons: { path: string }[];
   sectRankIcons?: { path: string }[];
+  uiImages?: { path: string }[];
 }
 
 /** sync 只登记实际存在的文件；图集登记要求 PNG、JSON、anims.json 齐全。 */
@@ -25,6 +26,7 @@ export function optionalAssetUrls(manifest: OptionalAssetManifest): string[] {
     ...(manifest.propLayouts ?? []).map(layout => layout.path),
     ...manifest.skillIcons.map(icon => icon.path),
     ...(manifest.sectRankIcons ?? []).map(icon => icon.path),
+    ...(manifest.uiImages ?? []).map(image => image.path),
   ])];
 }
 

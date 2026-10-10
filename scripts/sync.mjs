@@ -114,7 +114,19 @@ function findRankIcons(dir) {
   }
 }
 findRankIcons(path.join(out, 'icons'));
+// UI-5：界面窗体件（icons/ui 下 1x png）按可选素材登记；缺图时不入加载队列，调用方退回代码画窗体。
+const uiImages = [];
+function findUiImages(dir) {
+  if (!fs.existsSync(dir)) return;
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
+    const file = path.join(dir, entry.name);
+    if (entry.isDirectory()) findUiImages(file);
+    else if (entry.name.endsWith('.png') && !entry.name.includes('@'))
+      uiImages.push({ key: entry.name.slice(0, -4), path: `art/${path.relative(out, file).split(path.sep).join('/')}` });
+  }
+}
+findUiImages(path.join(out, 'icons/ui'));
 fs.mkdirSync(path.join(here, 'src/gen'), { recursive: true });
-fs.writeFileSync(path.join(here, 'src/gen/assets.json'), JSON.stringify({ atlases, areas, tileMetadata, backgrounds, backgroundConfigs, propLayouts, skillIcons, sectRankIcons }, null, 1));
+fs.writeFileSync(path.join(here, 'src/gen/assets.json'), JSON.stringify({ atlases, areas, tileMetadata, backgrounds, backgroundConfigs, propLayouts, skillIcons, sectRankIcons, uiImages }, null, 1));
 console.log(`manifest: ${atlases.length} 个图集，${skillIcons.length} 个技能 @64 图标，区域 ${areas.join('/')}`);
 console.log(manifestOnly ? 'rebuilt manifest from public/art' : 'synced art from', root, '(' + dataMode(here) + ')');
