@@ -11,7 +11,7 @@ interface Patrol {
   cone?: Phaser.GameObjects.Sprite;
 }
 
-/** 巡逻/发现只发事件，完整失败流程由试炼控制器承接。 */
+/** 巡逻/发现事件交给 SectTrial 结算；兜底山门只保留夜景装饰。 */
 export class StealthVision {
   readonly patrols: Patrol[] = [];
   private shadow = false;
@@ -23,7 +23,7 @@ export class StealthVision {
   constructor(private readonly scene: GameScene) {
     this.drawShadowZones();
     const config = scene.map.trial ? TRIALS[scene.map.trial]?.patrols : undefined;
-    for (const o of scene.map.objects.filter(o => o.type === 'patrol_path')) {
+    for (const o of scene.atSectTrialEntrance ? [] : scene.map.objects.filter(o => o.type === 'patrol_path')) {
       const raw = o.points?.length ? o.points : [
         { x: Number(o.props.startX ?? o.x), y: o.y }, { x: Number(o.props.endX ?? o.x), y: o.y },
       ];
@@ -63,6 +63,7 @@ export class StealthVision {
   }
 
   update(deltaMs: number, moving: boolean) {
+    if (this.scene.sectTrial?.ended) return;
     const scene = this.scene, feet = { x: scene.player.x, y: scene.player.feet };
     const shadow = inShadow(feet, scene.map.zones);
     this.setShadow(shadow);
@@ -90,6 +91,7 @@ export class StealthVision {
         patrol.detected = true;
         scene.log('巡逻弟子：什么人！', '#ffb0b0');
         this.emit(patrol, 'detected');
+        if (scene.sectTrial?.ended) return;
       } else if (patrol.progress === 0) patrol.detected = false;
     }
     this.drawNight();

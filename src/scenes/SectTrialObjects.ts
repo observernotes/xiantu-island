@@ -25,7 +25,7 @@ interface Target extends Prop {
   direction: number;
 }
 
-/** G10 对象与事件；试炼的阶段、胜负和画符输入由后续控制器承接。 */
+/** 试炼地图对象；阶段、胜负和画符输入由 SectTrial 承接。 */
 export class SectTrialObjects {
   private readonly trial?: TrialDef;
   private readonly lamps: Lamp[] = [];
@@ -82,7 +82,7 @@ export class SectTrialObjects {
     this.fillTargets();
     // 试炼图不刷常驻 spawn；兽栏只从配置对应的出生点建立驯服对象。
     const tameMonster = this.trial?.tame?.monster;
-    if (tameMonster) for (const spawn of scene.map.spawns.filter(sp => sp.monster === tameMonster)) {
+    if (tameMonster && !scene.atSectTrialEntrance) for (const spawn of scene.map.spawns.filter(sp => sp.monster === tameMonster)) {
       for (let i = 0; i < spawn.count; i++) {
         const x = spawn.x + (spawn.w > 0 ? spawn.w * (i + 0.5) / spawn.count : i * 24);
         const mob = scene.spawnTrialMob(tameMonster, x, spawn.y);
@@ -96,16 +96,17 @@ export class SectTrialObjects {
 
   /** 调用方已经完成距离/按键判定；返回 true 表示本模块接管了该次交互。 */
   interact(o: MapObj): boolean {
+    if (this.scene.atSectTrialEntrance || this.scene.sectTrial?.ended) return false;
     const p = this.props.get(o);
     if (!p || o.type !== 'draw_desk' && o.type !== 'token') return false;
     if (o.type === 'draw_desk') {
+      if (this.scene.sectTrial && this.scene.sectTrial.stage !== 'draw') return true;
       if (this.activeDesk && this.activeDesk !== p) this.play(this.activeDesk, 'idle');
       this.activeDesk = p;
       this.play(p, 'active');
       const talismans = this.trial?.draw?.talismans ?? Number(o.props.talismans ?? 3);
       this.scene.log(`画符桌前凝神，准备连画 ${talismans} 道符。`, '#ffe680');
       this.emit('draw_start', o, { talismans });
-      // TODO：接画符输入组件，完成/关闭回调恢复 idle，并交给试炼控制器推进阶段。
     } else if (!this.tokenTaken.has(o)) {
       const item = String(o.props.item ?? this.trial?.item ?? 'shadow_token');
       this.tokenTaken.add(o);
@@ -122,6 +123,8 @@ export class SectTrialObjects {
 
   /** 法术命中矩形，普通近战不会点灯。返回是否命中了一盏尚未点亮的灯。 */
   hitSpell(skillId: string, rect: Phaser.Geom.Rectangle): boolean {
+    if (this.scene.atSectTrialEntrance || this.scene.sectTrial?.ended) return false;
+    if (this.scene.sectTrial && this.scene.sectTrial.stage !== 'lamps') return false;
     if (skillId !== (this.trial?.lamps?.hitSkill ?? 'spirit_bolt')) return false;
     let hit = false;
     for (const lamp of this.lamps) {
@@ -136,12 +139,14 @@ export class SectTrialObjects {
   }
 
   update(delta: number): void {
+    if (this.scene.atSectTrialEntrance || this.scene.sectTrial?.ended) return;
     const player = this.scene.player;
     if (!player) return;
     const feet = player.feet;
     for (const p of this.props.values()) if (p.prompt) {
       const near = Math.abs(p.object.x - player.x) <= 80 && Math.abs(p.object.y - feet) <= 64;
-      p.prompt.setVisible(near && !this.tokenTaken.has(p.object));
+      p.prompt.setVisible(near && !this.tokenTaken.has(p.object)
+        && (p.object.type !== 'draw_desk' || !this.scene.sectTrial || this.scene.sectTrial.stage === 'draw'));
     }
     if (this.activeDesk && (Math.abs(this.activeDesk.object.x - player.x) > 80 || Math.abs(this.activeDesk.object.y - feet) > 64)) {
       this.play(this.activeDesk, 'idle');
@@ -179,12 +184,14 @@ export class SectTrialObjects {
         this.tokenReturned = true;
         this.scene.log('令牌已带回起点。', '#d4c0ff');
         this.emit('return_token', zone, { kind: zone.props.kind, item: this.tokenItem });
+        if (this.scene.sectTrial?.ended) return;
       }
     }
   }
 
   private fillTargets() {
-    if (!this.targets.length) return;
+    if (!this.targets.length || this.scene.atSectTrialEntrance || this.scene.sectTrial?.ended) return;
+    if (this.scene.sectTrial && this.scene.sectTrial.stage !== 'targets') return;
     const config = this.trial?.targets;
     const maxActive = Math.max(1, Math.floor(config?.maxActive ?? this.targets.length));
     const total = Math.max(0, Math.floor(config?.total ?? this.targets.length));
@@ -195,7 +202,8 @@ export class SectTrialObjects {
       const mob = this.scene.spawnTrialMob(config?.monster ?? 'wood_target', target.object.x, target.object.y);
       if (!mob) continue;
       target.mob = mob; target.distance = 0; target.direction = 1;
-      mob.setName(`target:${target.object.name}`);
+      const targetId = `${target.object.name}:${this.spawnedTargets}`;
+      mob.setName(`target:${targetId}`);
       mob.grantRewards = false;
       mob.body.setAllowGravity(false).setImmovable(true);
       mob.body.moves = false;
@@ -204,13 +212,18 @@ export class SectTrialObjects {
         onDead?.(dead);
         if (target.mob === dead) target.mob = undefined;
         this.refillAt = this.scene.time.now + Math.max(0, Number(config?.refillDelayMs) || 0);
-        this.emit('target_dead', target.object, { monster: dead.def.id, x: dead.x, high: !!target.object.props.high });
+        this.emit('target_dead', target.object, { targetId, monster: dead.def.id, x: dead.x, high: !!target.object.props.high });
       };
       active++; this.spawnedTargets++;
       this.playOnce(target, 'spawn', 'idle');
       this.emit('target_spawn', target.object, { monster: mob.def.id, high: !!target.object.props.high,
-        moveRange: target.range, moveSpeed: config?.moveSpeed ?? 0, spawned: this.spawnedTargets, total });
+        targetId, moveRange: target.range, moveSpeed: config?.moveSpeed ?? 0, spawned: this.spawnedTargets, total });
     }
+  }
+
+  finishDrawing() {
+    if (this.activeDesk) this.play(this.activeDesk, 'idle');
+    this.activeDesk = undefined;
   }
 
   private pack(key: string): AnimPack { return this.scene.cache.json.get(`${key}_anims`) ?? {}; }

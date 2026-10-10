@@ -13,6 +13,7 @@ const SAVE_KEY = 'xiantu_save_v1';
 /** 妖狐任务改为五宗帖的奖励版本；无此字段的已交付旧档保留原天剑身份。 */
 const QUEST_REWARD_VERSION = 1;
 export interface SavePosition { mapId: string; x: number; y: number }
+export interface SectTrialAttempt { id: string; returnPosition: SavePosition }
 const flagKey = (key: string) => typeof key === 'string' && /^[a-zA-Z][\w.-]*$/.test(key)
   && !key.split('.').some(part => ['__proto__', 'prototype', 'constructor'].includes(part));
 const dataRecord = (value: unknown): value is Record<string, unknown> => !!value && typeof value === 'object' && !Array.isArray(value);
@@ -52,6 +53,13 @@ function validSaveData(saved: unknown): saved is Record<string, unknown> {
     if (!dataRecord(p) || typeof p.mapId !== 'string' || (p.mapId !== 'field_test' && !Object.prototype.hasOwnProperty.call(TILED_MAPS, p.mapId))
       || typeof p.x !== 'number' || !Number.isFinite(p.x) || typeof p.y !== 'number' || !Number.isFinite(p.y)) return false;
   }
+  if (has('pendingSectTrial') && saved.pendingSectTrial !== null) {
+    const attempt = saved.pendingSectTrial;
+    if (!dataRecord(attempt) || typeof attempt.id !== 'string' || !/^trial_sect_(taixu|lingfu|youying|wanshou)$/.test(attempt.id)) return false;
+    const at = attempt.returnPosition;
+    if (!dataRecord(at) || typeof at.mapId !== 'string' || !Object.prototype.hasOwnProperty.call(TILED_MAPS, at.mapId)
+      || typeof at.x !== 'number' || !Number.isFinite(at.x) || typeof at.y !== 'number' || !Number.isFinite(at.y)) return false;
+  }
   if (has('quests')) {
     if (!dataRecord(saved.quests)) return false;
     for (const [id, quest] of Object.entries(saved.quests)) {
@@ -83,6 +91,10 @@ export class Progress {
   /** 灵根元素尚无配表/角色创建字段；仅已登记元素获得五行亲和。 */
   rootElement = '';
   completedTrials: string[] = [];
+  /** 记录未结算的尝试；刷新按中断回到入口，通关和正式任务进度继续保留。 */
+  pendingSectTrial: SectTrialAttempt | null = null;
+  private trialSkills: Record<string, { level: number; charges?: number; durationMs?: number }> = {};
+  private trialHotbarBefore: (string | null)[] | null = null;
   /** 仅独立冷却使用绝对时间，切图/刷新不能绕过；剑修原后摇不写入。 */
   skillCooldowns: Record<string, { readyAt: number; total: number }> = {};
   quests: Record<string, { state: 'active' | 'done'; kills: Record<string, number>; crafted?: Record<string, number>; reached?: boolean; talked?: Record<string, boolean> }> = {};
@@ -164,10 +176,13 @@ export class Progress {
   get skillsUnlocked() { return this.realm.id !== 'mortal'; }
 
   exportSave(): Record<string, unknown> {
-    const { transientItems, ...persistent } = this;
+    const { transientItems, trialSkills, trialHotbarBefore, ...persistent } = this;
     const inventory: Record<string, number> = { ...this.inventory };
     for (const [id, count] of Object.entries(transientItems)) inventory[id] = Math.max(0, this.count(id) - count);
-    return JSON.parse(JSON.stringify({ ...persistent, inventory }));
+    const temporaryIds = Object.keys(trialSkills);
+    return JSON.parse(JSON.stringify({ ...persistent, inventory, hotbar: trialHotbarBefore ?? this.hotbar,
+      buffs: this.buffs.filter(b => !temporaryIds.includes(b.id)),
+      skillCooldowns: Object.fromEntries(Object.entries(this.skillCooldowns).filter(([id]) => !temporaryIds.includes(id))) }));
   }
   save(): boolean {
     try { localStorage.setItem(SAVE_KEY, JSON.stringify(this.exportSave())); return true; } catch { return false; }
@@ -199,7 +214,7 @@ export class Progress {
         if (!Object.prototype.hasOwnProperty.call(fields, 'questRewardVersion')) p.questRewardVersion = 0;
         hadStoredRank = Object.prototype.hasOwnProperty.call(fields, 'sectRank');
         if (hadStoredRank) storedRank = fields.sectRank as string | null;
-        for (const key of Object.keys(p)) if (key !== 'transientItems' && Object.prototype.hasOwnProperty.call(fields, key)) {
+        for (const key of Object.keys(p)) if (!['transientItems', 'trialSkills', 'trialHotbarBefore'].includes(key) && Object.prototype.hasOwnProperty.call(fields, key)) {
           Object.assign(p, { [key]: fields[key] });
         }
       }
@@ -663,6 +678,10 @@ export class Progress {
     if (typeof this.rootElement !== 'string') this.rootElement = '';
     if (!Array.isArray(this.completedTrials)) this.completedTrials = [];
     this.completedTrials = [...new Set(this.completedTrials.filter(id => typeof id === 'string' && id.length > 0))];
+    const attempt = this.pendingSectTrial;
+    if (!attempt || typeof attempt.id !== 'string' || !QUESTS[`q_sect_${attempt.id.replace('trial_sect_', '')}`]
+      || !attempt.returnPosition || !TILED_MAPS[attempt.returnPosition.mapId]
+      || !Number.isFinite(attempt.returnPosition.x) || !Number.isFinite(attempt.returnPosition.y)) this.pendingSectTrial = null;
     if (!this.skillCooldowns || typeof this.skillCooldowns !== 'object' || Array.isArray(this.skillCooldowns)) this.skillCooldowns = {};
     this.skillCooldowns = Object.fromEntries(Object.entries(this.skillCooldowns).filter(([id, cd]) => SKILLS[id] && cd
       && Number.isFinite(cd.readyAt) && cd.readyAt > gameNow() && Number.isFinite(cd.total) && cd.total > 0));
@@ -729,7 +748,33 @@ export class Progress {
     return changed;
   }
 
-  skillLevel(id: string) { return this.skills?.[id] ?? 0; }
+  skillLevel(id: string) { return this.trialSkills[id]?.level ?? this.skills?.[id] ?? 0; }
+
+  beginTrialSkills(grants: { id: string; level: number; charges?: number; durationMs?: number }[]) {
+    this.endTrialSkills();
+    this.trialHotbarBefore = [...this.hotbar];
+    for (const [index, grant] of grants.entries()) if (SKILLS[grant.id]) {
+      this.trialSkills[grant.id] = { level: grant.level, charges: grant.charges, durationMs: grant.durationMs };
+      const slot = this.hotbar.findIndex((id, i) => i > 0 && id === null);
+      this.hotbar[slot >= 0 ? slot : Math.min(index + 1, this.hotbar.length - 1)] = grant.id;
+    }
+  }
+  endTrialSkills() {
+    for (const id of Object.keys(this.trialSkills)) {
+      this.buffs = this.buffs.filter(b => b.id !== id);
+      delete this.skillCooldowns[id];
+    }
+    if (this.trialHotbarBefore) this.hotbar = [...this.trialHotbarBefore];
+    this.trialSkills = {}; this.trialHotbarBefore = null;
+  }
+  canCastSkill(def: SkillDef) { return !!this.trialSkills[def.id] || this.ownsSkill(def); }
+  trialSkillCharges(id: string) { return this.trialSkills[id]?.charges; }
+  consumeTrialSkill(id: string) {
+    const skill = this.trialSkills[id];
+    if (skill?.charges !== undefined) { if (skill.charges <= 0) return false; skill.charges--; }
+    return true;
+  }
+  trialSkillDuration(id: string) { return this.trialSkills[id]?.durationMs; }
 
   get classSkills() { return skillsForClass(this.job); }
   get sect() { return classDef(this.job)?.sect ?? ''; }
@@ -833,7 +878,7 @@ export class Progress {
   hasBuffEffect(key: string) {
     return this.buffs.some(buff => {
       const def = SKILLS[buff.id];
-      return buff.expireAt > gameNow() && !!def && this.ownsSkill(def) && this.skillLevel(def.id) > 0 && def.effects[key] === true;
+      return buff.expireAt > gameNow() && !!def && this.canCastSkill(def) && this.skillLevel(def.id) > 0 && def.effects[key] === true;
     });
   }
   buffBonus(key: string) {
@@ -842,7 +887,7 @@ export class Progress {
     for (const buff of this.buffs) {
       if (buff.expireAt <= gameNow() || counted.has(buff.id)) continue;
       const def = SKILLS[buff.id], level = this.skillLevel(buff.id);
-      if (!def || !this.ownsSkill(def) || level <= 0) continue;
+      if (!def || !this.canCastSkill(def) || level <= 0) continue;
       counted.add(buff.id); value += skillNumber(def, key, level);
     }
     return value;

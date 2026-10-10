@@ -3,6 +3,7 @@ import { ATLAS_INFO, MONSTERS } from './data';
 import type { GameScene } from './scenes/GameScene';
 import type { Monster } from './scenes/Monster';
 import { floorCount, SKILLS, skillNumber, skillRange, type SkillDef } from './skills';
+import type { SectTrialCompanion } from './SectTrialState';
 
 export interface FriendlySummon {
   sprite: Phaser.Physics.Arcade.Sprite;
@@ -10,12 +11,17 @@ export interface FriendlySummon {
   hp: number; maxHp: number; defense: number;
   createdAt: number; expireAt: number; attackReadyAt: number; hurtReadyAt: number;
   colliders: Phaser.Physics.Arcade.Collider[];
+  trial?: SectTrialCompanion;
+  kneeling?: boolean;
+  pendingAttack?: { target: Monster; strikeAt: number };
+  recoverUntil?: number;
 }
 
 /** 友方灵兽独立于敌方 mobs：不会触发击杀、掉落、图鉴或任务奖励。 */
 export class FriendlySummons {
   readonly pets: FriendlySummon[] = [];
   private bond: Phaser.GameObjects.Graphics;
+  private destroyed = false;
 
   constructor(private readonly scene: GameScene) {
     this.bond = scene.add.graphics().setDepth(scene.player.depth - 1);
@@ -59,15 +65,38 @@ export class FriendlySummons {
     this.animate(sprite, 'idle');
   }
 
+  /** 试炼伙伴只使用本局 trials.companion 属性，沿用灵狼的追随和索敌。 */
+  summonTrialCompanion(config: SectTrialCompanion) {
+    const { player } = this.scene;
+    const texture = this.scene.textures.exists(config.sprite) ? config.sprite : this.placeholder();
+    const sprite = this.scene.physics.add.sprite(player.x - player.facing * config.followDist, player.feet, texture)
+      .setOrigin(0.5, 1).setDepth(player.depth - 1);
+    const body = sprite.body as Phaser.Physics.Arcade.Body;
+    const [w, h] = ATLAS_INFO[config.sprite]?.bodySize ?? [46, 58];
+    body.setSize(w, h).setOffset((sprite.frame.realWidth - w) / 2, sprite.frame.realHeight - h).setMaxVelocityY(670);
+    const colliders = [this.scene.physics.add.collider(sprite, this.scene.map.solids)];
+    colliders.push(this.scene.physics.add.collider(sprite, this.scene.map.oneWays, undefined, (a, platform) => {
+      const moving = (a as Phaser.Physics.Arcade.Sprite).body as Phaser.Physics.Arcade.Body;
+      const top = (platform as Phaser.Physics.Arcade.Sprite).body!.top;
+      return moving.velocity.y >= 0 && moving.prev.y + moving.height <= top + 2;
+    }));
+    const now = this.scene.time.now;
+    this.pets.push({ sprite, defId: config.id, level: 1, secondary: false, trial: config,
+      hp: config.hp, maxHp: config.hp, defense: config.def, createdAt: now, expireAt: Infinity,
+      attackReadyAt: now, hurtReadyAt: now, colliders });
+    this.animate(sprite, 'idle');
+  }
+
   update(time: number) {
     const { player, prog } = this.scene;
     this.bond.clear();
     for (const pet of [...this.pets]) {
-      if (!pet.sprite.active || player.dead || time >= pet.expireAt || !prog.ownsSkill(SKILLS[pet.defId])) {
+      if (!pet.sprite.active || player.dead || time >= pet.expireAt || !pet.trial && !prog.ownsSkill(SKILLS[pet.defId])) {
         this.remove(pet); continue;
       }
-      const def = SKILLS[pet.defId], lv = pet.level;
+      const def = this.definition(pet), lv = pet.level;
       const sprite = pet.sprite, body = sprite.body as Phaser.Physics.Arcade.Body;
+      if (pet.kneeling) { body.setVelocityX(0); continue; }
       const waiting = player.state2 === 'rope' && !!def.effects?.waitBelowRope;
       if (prog.buffBonus('petDamageShareRatio') > 0) this.bond.lineStyle(2, 0x7fe0c0, 0.45)
         .lineBetween(player.x, player.y - 36, sprite.x, sprite.y - 20);
@@ -86,7 +115,25 @@ export class FriendlySummons {
       body.setVelocityX(moving ? Math.sign(dx) * skillNumber(def, 'moveSpeed', lv) : 0);
       if (moving) sprite.setFlipX(dx > 0);
       if (target && target.y < sprite.y - 40 && (body.blocked.down || body.touching.down)) body.setVelocityY(-360);
-      if (inReach && time >= pet.attackReadyAt) {
+      if (pet.trial) {
+        if (pet.pendingAttack) {
+          body.setVelocityX(0);
+          if (time >= pet.pendingAttack.strikeAt) {
+            const victim = pet.pendingAttack.target;
+            pet.pendingAttack = undefined;
+            pet.recoverUntil = time + pet.trial.attack.recoverMs;
+            if (victim.active && !victim.dead && Math.abs(victim.x - sprite.x) <= range.w
+              && Math.abs(victim.y - sprite.y) <= range.h) this.attack(pet, victim);
+          }
+        } else if (time < (pet.recoverUntil ?? 0)) {
+          body.setVelocityX(0);
+        } else if (inReach && time >= pet.attackReadyAt) {
+          sprite.setFlipX(target!.x > sprite.x);
+          pet.pendingAttack = { target: target!, strikeAt: time + pet.trial.attack.telegraphMs };
+          pet.attackReadyAt = time + pet.trial.attack.telegraphMs + pet.trial.attack.cooldownMs;
+          this.animate(sprite, 'attack');
+        } else this.animate(sprite, moving ? 'walk' : 'idle');
+      } else if (inReach && time >= pet.attackReadyAt) {
         sprite.setFlipX(target!.x > sprite.x);
         pet.attackReadyAt = time + Math.max(1, skillNumber(def, 'attackIntervalMs', lv));
         this.animate(sprite, 'attack');
@@ -115,7 +162,12 @@ export class FriendlySummons {
       if (this.scene.prog.hp <= 0) this.scene.playerDie();
     }
     this.scene.damageNumber(pet.sprite.x, pet.sprite.y - 40, damage - ownerDamage, '#7fe0c0', '#123d31');
-    if (pet.hp <= 0) this.remove(pet);
+    if (pet.hp <= 0 && pet.trial?.onZeroHp === 'kneel') {
+      pet.kneeling = true; pet.pendingAttack = undefined;
+      (pet.sprite.body as Phaser.Physics.Arcade.Body).setVelocityX(0);
+      this.animate(pet.sprite, this.scene.anims.exists(`${pet.sprite.texture.key}_kneel`) ? 'kneel' : 'idle');
+      pet.sprite.setAlpha(0.6);
+    } else if (pet.hp <= 0) this.remove(pet);
     else {
       const body = pet.sprite.body as Phaser.Physics.Arcade.Body;
       body.setVelocityX(Math.sign(pet.sprite.x - fromX) * 60);
@@ -123,18 +175,30 @@ export class FriendlySummons {
   }
 
   private attack(pet: FriendlySummon, mob: Monster) {
-    const def = SKILLS[pet.defId], prog = this.scene.prog;
+    const def = this.definition(pet), prog = this.scene.prog;
     const ratio = skillNumber(def, 'damageRatio', pet.level)
       * (pet.secondary ? skillNumber(def, 'secondaryWolfDamageRatio', pet.level) : 1)
       * (1 + prog.buffBonus('petAtkRatio'));
     const count = Math.max(1, skillNumber(def, 'hitCount', pet.level));
     for (let i = 0; i < count && !mob.dead; i++) {
-      const damage = prog.damageTo(mob.def.level, mob.def.def, ratio);
+      const damage = pet.trial ? Math.max(1, Math.round(pet.trial.atk * pet.trial.attack.damageRatio - mob.def.def))
+        : prog.damageTo(mob.def.level, mob.def.def, ratio);
       mob.takeHit(this.scene.time.now, damage, Math.sign(mob.x - pet.sprite.x) || 1);
+      if (pet.trial && !mob.dead && !mob.manualMotion)
+        mob.body.setVelocityX((Math.sign(mob.x - pet.sprite.x) || 1) * pet.trial.attack.knockback);
       this.scene.damageNumber(mob.x, mob.y - mob.body.height - 10, damage, '#7fe0c0', '#123d31');
       this.scene.events.emit('skill:hit', { id: def.id, target: mob.def.id, damage, secondary: pet.secondary });
     }
-    prog.addMastery(def.id);
+    if (!pet.trial) prog.addMastery(def.id);
+  }
+
+  private definition(pet: FriendlySummon): SkillDef {
+    if (!pet.trial) return SKILLS[pet.defId];
+    const config = pet.trial;
+    return { ...SKILLS.summon_spirit_wolf, id: config.id, range: config.attack.range, perLevel: {},
+      damageRatio: config.attack.damageRatio, hitCount: 1,
+      effects: { followDist: config.followDist, leashDist: config.leashDist, aggroRange: config.aggroRange,
+        moveSpeed: config.moveSpeed, attackIntervalMs: config.attack.cooldownMs } };
   }
 
   private overlap(a: Phaser.Physics.Arcade.Sprite, b: Monster) {
@@ -168,7 +232,9 @@ export class FriendlySummons {
     return key;
   }
 
-  private destroy() {
+  destroy() {
+    if (this.destroyed) return;
+    this.destroyed = true;
     for (const pet of [...this.pets]) this.remove(pet);
     this.bond.destroy();
   }

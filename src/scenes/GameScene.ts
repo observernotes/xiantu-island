@@ -22,8 +22,9 @@ import { Progress } from '../Progress';
 import { Seclusion, realDay } from '../Seclusion';
 import { LIFESPAN } from '../data';
 import { SectTrialObjects } from './SectTrialObjects';
+import { SectTrial } from './SectTrial';
 import { StealthVision } from './StealthVision';
-import { ferryLockedReason, mapEntryOpen, FIRST_CLASS_TRIAL_MAPS } from '../Ferry';
+import { ferryLockedReason, mapEntryOpen, sectEntryMap, FIRST_CLASS_TRIAL_MAPS } from '../Ferry';
 import { Gathering } from './Gathering';
 import { interactionPrompt } from '../InteractionPrompt';
 import { AlchemySystem, ALCHEMY_RULES } from '../Alchemy';
@@ -82,6 +83,8 @@ export class GameScene extends Phaser.Scene {
   breakthroughNotified = false;
   private travelling = false;
   trialObjects?: SectTrialObjects;
+  sectTrial?: SectTrial;
+  atSectTrialEntrance = false;
   stealth?: StealthVision;
   private nextAgeUpdateAt = 0;
   private nextDailyUpdateAt = 0;
@@ -140,16 +143,23 @@ export class GameScene extends Phaser.Scene {
     }
     if (!DEBUG_CLASS && new URLSearchParams(location.search).get('reset') === '1' && !this.registry.get('progress')) Progress.reset();
     this.prog = this.registry.get('progress') ?? (DEBUG_CLASS ? this.createDebugClass() : Progress.load());
+    // 页面刷新中断一局；保存的返回落点使失败/刷新都能再次找长老确认。
+    const interrupted = this.prog.pendingSectTrial && !this.registry.get('sectTrialEntering');
+    if (interrupted && this.prog.pendingSectTrial) {
+      const at = this.prog.pendingSectTrial.returnPosition;
+      data = { map: at.mapId, pos: { x: at.x, y: at.y } };
+      this.prog.pendingSectTrial = null; this.prog.endTrialSkills();
+      this.prog.hp = this.prog.maxHp; this.prog.mp = this.prog.maxMp;
+      this.prog.setPosition(at.mapId, at.x, at.y);
+    }
+    this.registry.remove('sectTrialEntering');
     this.sectGrowth = new SectGrowth(this.prog);
     this.quests = new QuestSystem(this.prog);
-    const trialComplete = (id: string) => this.quests.onTrialComplete(id);
-    this.events.on('trial:complete', trialComplete);
-    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.events.off('trial:complete', trialComplete));
     this.registry.set('progress', this.prog);
     this.openedChests = new Set(this.prog.openedChests);
     this.registry.set('chests', this.openedChests);
     this.mobs = []; this.logs = []; this.logBadges.clear(); this.hudTexts = undefined; this.hudKit = undefined;
-    this.travelling = false; this.curZone = undefined; this.nextDailyUpdateAt = 0;
+    this.travelling = false; this.curZone = undefined; this.nextDailyUpdateAt = 0; this.sectTrial = undefined;
     registerHudFonts(this);
     registerAlchemy(this);
     this.interactionPrompts = [];
@@ -168,6 +178,8 @@ export class GameScene extends Phaser.Scene {
       TILED_MAPS[mapId]?.height * FEEL.tile || FIELD_TEST.rows.length * FEEL.tile);
     this.map = TILED_MAPS[mapId] ? buildTiledMap(this, TILED_MAPS[mapId], `tiles_${area}`)
       : buildCharMap(this, FIELD_TEST.id, FIELD_TEST.name, FIELD_TEST.rows, FIELD_TEST.portals, `tiles_${area}`);
+    this.atSectTrialEntrance = !DEBUG_CLASS && !this.prog.pendingSectTrial
+      && Object.values(TRIALS).some(def => def.quest && def.map === this.map.id);
     this.propLayout?.destroy();
     this.propLayout = new PropLayout(this, mapId, this.cache.json.get(`props_${area}_layout`));
     this.npcMarks = [];
@@ -176,6 +188,7 @@ export class GameScene extends Phaser.Scene {
     this.map.objects = this.map.objects.filter(o => o.type !== 'npc' || inPhase(o.props));
     this.configureEnvironment(this.cache.json.get(`bg_${area}_config`)?.environment);
     this.mountDailyEnvoys();
+    this.mountSectTrialEntrance();
     this.map.objects.forEach(o => this.drawObject(o));
 
     const savedPosition = !data.map && !q && this.prog.position?.mapId === mapId ? this.prog.position : undefined;
@@ -199,9 +212,6 @@ export class GameScene extends Phaser.Scene {
     this.physics.add.collider(this.player, this.map.solids);
     this.physics.add.collider(this.player, this.map.oneWays, () => { if (this.player.body.touching.down) this.player.oneWayAt = this.time.now; }, oneWayCheck);
 
-    this.trialObjects = new SectTrialObjects(this);
-    this.stealth = new StealthVision(this);
-    this.stealth.update(0, false);
     for (const sp of this.map.trial ? [] : this.map.spawns) {
       const def = MONSTERS[sp.monster];
       if (!def) { console.warn(`[spawn] 没有怪物 ${sp.monster}`); continue; }
@@ -286,8 +296,74 @@ export class GameScene extends Phaser.Scene {
     this.buildHudKit();
     this.trial = undefined; this.bossOverride = null;
     this.setupTrial(mapId);
+    const pending = this.prog.pendingSectTrial;
+    const sectDef = pending ? TRIALS[pending.id] : undefined;
+    if (sectDef && sectDef.map === mapId && featureEnabled('fiveSectClasses') && featureEnabled('v05Maps')) {
+      this.prog.beginTrialSkills(sectDef.grantSkills ?? []);
+      this.sectTrial = new SectTrial(this, sectDef);
+    }
+    this.trialObjects = new SectTrialObjects(this);
+    this.stealth = new StealthVision(this);
+    this.stealth.update(0, false);
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      this.sectTrial?.destroy(); this.prog.endTrialSkills();
+    });
     this.applyFeatureFlags();
     this.prog.setPosition(this.map.id, this.player.x, this.player.y);
+    const returned = this.registry.get('sectTrialReturnMessage');
+    this.registry.remove('sectTrialReturnMessage');
+    if (returned || interrupted) this.log(returned ?? t('trial.exit_return'), '#ffe680');
+  }
+
+  /** 已接取本宗任务且尚未通关，才可由交付长老开启试炼。 */
+  private sectTrialOfferFor(npcId: string, questId?: string): TrialDef | undefined {
+    if (!featureEnabled('fiveSectClasses') || !featureEnabled('v05Maps') || this.prog.job || this.prog.pendingSectTrial) return;
+    return Object.values(TRIALS).find(tr => {
+      const q = tr.quest ? QUESTS_REF[tr.quest] : undefined;
+      return q && (!questId || q.id === questId) && q.turnIn === npcId && this.quests.activeIds.includes(q.id)
+        && !this.prog.completedTrials.includes(tr.id) && TILED_MAPS[tr.map] && mapEntryOpen(tr.map, this.map.id);
+    });
+  }
+
+  offerSectTrial(npcId: string, def: TrialDef) {
+    if (this.sectTrialOfferFor(npcId, def.quest)?.id !== def.id) return;
+    const npc = NPCS[npcId];
+    this.player.body.setVelocityX(0);
+    this.dialog.choose({ speaker: npc.name, text: `${t('trial.enter_confirm')}\n${def.name}` }, npc.sprite, [
+      { label: '进入试炼', onSelect: () => this.enterSectTrial(npcId, def) },
+      { label: t('ui.dialog.close'), onSelect: () => {} },
+    ]);
+  }
+
+  enterSectTrial(npcId: string, def: TrialDef): boolean {
+    if (this.travelling || this.sectTrialOfferFor(npcId, def.quest)?.id !== def.id) return false;
+    const mapId = sectEntryMap(NPCS[npcId].map);
+    const at = this.map.objects.find(o => o.type === 'npc' && (o.props.npc ?? o.name) === npcId);
+    const returnPosition = { mapId, x: at?.x ?? this.player.x, y: at?.y ?? this.player.y };
+    this.prog.pendingSectTrial = { id: def.id, returnPosition };
+    this.prog.save();
+    this.travelling = true;
+    this.registry.set('sectTrialEntering', true);
+    this.player.body.setVelocityX(0);
+    this.scene.restart({ map: def.map });
+    return true;
+  }
+
+  onSectTrialEnd(result: 'win' | 'fail' | 'exit') {
+    const attempt = this.prog.pendingSectTrial;
+    if (!attempt) return;
+    if (result === 'win') this.quests.onTrialComplete(attempt.id);
+    this.prog.pendingSectTrial = null;
+    this.player.body.setVelocity(0, 0);
+    for (const mob of this.mobs) if (mob.active && !mob.dead) mob.despawn();
+    this.prog.endTrialSkills();
+    this.prog.hp = this.prog.maxHp; this.prog.mp = this.prog.maxMp;
+    const at = attempt.returnPosition;
+    this.prog.setPosition(at.mapId, at.x, at.y);
+    this.registry.set('sectTrialReturnMessage', result === 'win' ? '试炼已成，找长老交付入门任务即可拜入。'
+      : t(result === 'fail' ? 'trial.fail_return' : 'trial.exit_return'));
+    this.travelling = true;
+    this.time.delayedCall(0, () => this.scene.restart({ map: at.mapId, pos: { x: at.x, y: at.y } }));
   }
 
   // ---------------- 筑基台试炼 ----------------
@@ -452,6 +528,7 @@ export class GameScene extends Phaser.Scene {
   invText!: Phaser.GameObjects.Text;
 
   update(time: number, delta: number) {
+    if (this.sectTrial?.ended) { this.drawHud(); return; }
     this.environmentArt?.update(delta);
     if (time >= this.nextDailyUpdateAt) {
       this.quests.refreshDaily(); this.nextDailyUpdateAt = time + 1000;
@@ -468,12 +545,14 @@ export class GameScene extends Phaser.Scene {
     this.regenMp(delta);
     this.combat.update(time, delta);
     this.trialObjects?.update(delta);
+    if (this.sectTrial && !this.dialog.open && !this.skillWindow.open && !this.alchemy.isOpen()) this.sectTrial.update(delta);
+    if (this.sectTrial?.ended) { this.drawHud(); return; }
     if (time >= this.nextAgeUpdateAt) { this.prog.advanceAge(); this.nextAgeUpdateAt = time + 60000; this.prog.save(); }
     if (J(k.k) && !this.dialog.open && !this.alchemy.isOpen()) this.skillWindow.toggle();
     if (J(k.l) && !this.dialog.open && !this.skillWindow.open) this.openAlchemy();
     const escDown = J(k.esc);
     if (escDown && this.skillWindow.open) this.skillWindow.close();
-    const modal = this.dialog.open || this.skillWindow.open || this.alchemy.isOpen();
+    const modal = this.dialog.open || this.skillWindow.open || this.alchemy.isOpen() || !!this.sectTrial?.blocksInput;
     this.updateInteractionPrompts(modal);
     this.gathering.update(delta, k.z.isDown, modal || this.hasNearbyDrop(),
       k.left.isDown || k.right.isDown || k.up.isDown || k.down.isDown || k.space.isDown || k.alt.isDown || k.c.isDown || k.ctrl.isDown || k.x.isDown);
@@ -506,7 +585,10 @@ export class GameScene extends Phaser.Scene {
       attackDown: k.ctrl.isDown || k.x.isDown,
     };
     if (J(k.f1)) this.toggleDebug();
-    if (J(k.r)) { this.player.leaveRope(time); this.player.body.reset(this.map.spawn.x, this.map.spawn.y); }
+    if (J(k.r)) {
+      if (this.sectTrial) { this.sectTrial.exit(); return; }
+      this.player.leaveRope(time); this.player.body.reset(this.map.spawn.x, this.map.spawn.y);
+    }
     if (J(k.i)) this.invText.setVisible(!this.invText.visible);
     if (J(k.one)) this.usePill('hp_pill_small');
     if (J(k.two)) this.usePill('qi_pill');
@@ -517,12 +599,17 @@ export class GameScene extends Phaser.Scene {
     const slotKey: Record<string, Phaser.Input.Keyboard.Key> = { A: k.a, S: k.s, D: k.d, F: k.f, G: k.g, H: k.h, Q: k.q, W: k.w };
     HOTBAR_SLOTS.forEach((s, i) => { if (J(slotKey[s.label]) && !this.gathering.active) this.combat.tryCast(i); });
     this.checkReach();
-    if (this.player.y > this.map.height + 100) this.player.body.reset(this.map.spawn.x, this.map.spawn.y);
+    if (this.player.y > this.map.height + 100) {
+      if (this.sectTrial) { this.sectTrial.playerDown(); return; }
+      this.player.body.reset(this.map.spawn.x, this.map.spawn.y);
+    }
 
     this.player.step(time, delta / 1000, inp, this.map.ropes);
     for (const m of this.mobs) m.step(time, this.player, this.prog.hasBuffEffect('invisible'));
+    if (this.sectTrial?.ended) { this.drawHud(); return; }
     for (let i = this.mobs.length - 1; i >= 0; i--) if (!this.mobs[i].active) this.mobs.splice(i, 1);
     this.stealth?.update(delta, true);
+    if (this.sectTrial?.ended) { this.drawHud(); return; }
     for (const d of this.drops.getChildren() as Drop[]) {
       if (!d.landed && d.shadow && (d.body as Phaser.Physics.Arcade.Body).blocked.down) this.landDrop(d);
       d.label?.setPosition(d.x, d.y - (d.shadow ? 34 : 22));
@@ -660,6 +747,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   doAttack(rect: Phaser.Geom.Rectangle) {
+    if (this.sectTrial?.ended) return;
     const p = this.player, s = p.facing;
     if (this.anims.exists('fx_sword_slash_play')) {      // 刀光：第 2 帧播放，普通混合（加色在白云背景上看不见）
       const fx = this.add.sprite(p.x + s * 36, p.y + 10, 'fx_sword_slash').setOrigin(0.5, 1).setDepth(12).setFlipX(s > 0);
@@ -695,7 +783,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   hurtPlayer(dmg: number, fromX: number, knock: number) {
-    if (this.player.dead || this.time.now < this.player.invulnUntil) return;
+    if (this.sectTrial?.ended || this.player.dead || this.time.now < this.player.invulnUntil) return;
     if (Math.random() < this.prog.passiveBonus('evade')) return;
     const shield = Math.min(1, Math.max(0, this.prog.buffBonus('damageToMpRatio')));
     const mpPerDamage = this.prog.buffBonus('mpPerAbsorbedDamage') || 1;
@@ -717,6 +805,7 @@ export class GameScene extends Phaser.Scene {
     if (p.atlas) p.play(p.animationKey('die'));
     if (this.trial && !this.trial.ended) { this.trial.end('dead'); return; }
     if (this.trial) return;
+    if (this.sectTrial) { this.sectTrial.playerDown(); return; }
     if (this.map.trial) {
       this.events.emit('trial:object', { trial: this.map.trial, action: 'player_down' });
       this.time.delayedCall(1000, () => {
@@ -862,6 +951,7 @@ export class GameScene extends Phaser.Scene {
     this.dialog?.dismiss(); this.skillWindow?.close();
     this.refreshHelpText();
     this.inventoryFurnace?.setVisible(false);
+    if (this.sectTrial && !this.sectTrial.ended && (!featureEnabled('fiveSectClasses') || !featureEnabled('v05Maps'))) this.sectTrial.exit();
     if (!featureEnabled('foxBoss')) {
       // 只撤下战斗，不触发死亡结算，也不改任务击杀、背包或已领取奖励。
       for (const m of this.mobs) if (m.def.id === 'demon_fox' || m.owner?.def.id === 'demon_fox') {
@@ -878,6 +968,9 @@ export class GameScene extends Phaser.Scene {
       this.mountDailyEnvoys();
       this.map.objects.slice(count).forEach(o => this.drawObject(o));
     }
+    const entranceObjects = this.map.objects.length;
+    this.mountSectTrialEntrance();
+    this.map.objects.slice(entranceObjects).forEach(o => this.drawObject(o));
     const exitName = '__feature_return';
     const needsExit = FIRST_CLASS_TRIAL_MAPS.has(this.map.id)
       && (!featureEnabled('v05Maps') || !featureEnabled('fiveSectClasses'));
@@ -918,6 +1011,24 @@ export class GameScene extends Phaser.Scene {
       if (!(atRegisteredMap || atFallback) || this.map.objects.some(o => o.type === 'npc' && (o.props.npc ?? o.name) === npc.id)) continue;
       this.map.objects.push({ type: 'npc', name: npc.id, x: this.map.spawn.x + 96, y: this.map.spawn.y,
         w: 0, h: 0, props: { npc: npc.id } });
+    }
+  }
+
+  /** 未接入山门的四宗，在试炼图出生点保留接取、确认和交付入口。 */
+  private mountSectTrialEntrance() {
+    if (!featureEnabled('fiveSectClasses') || !featureEnabled('v05Maps')) return;
+    const def = Object.values(TRIALS).find(tr => tr.quest && tr.map === this.map.id);
+    if (!def?.quest || this.prog.pendingSectTrial) return;
+    const quest = QUESTS_REF[def.quest];
+    if (!quest || TILED_MAPS[NPCS[quest.turnIn]?.map]) return;
+    for (const [index, id] of [quest.giver, quest.turnIn].entries()) {
+      if (this.map.objects.some(o => o.type === 'npc' && (o.props.npc ?? o.name) === id)) continue;
+      this.map.objects.push({ type: 'npc', name: id, x: this.map.spawn.x + 48 + index * 80, y: this.map.spawn.y,
+        w: 0, h: 0, props: { npc: id, sectTrialEntrance: true } });
+    }
+    if (!this.map.objects.some(o => o.type === 'portal' && o.props.target === 'luoxia_town')) {
+      this.map.objects.push({ type: 'portal', name: '__sect_trial_gate_return', x: this.map.spawn.x - 48, y: this.map.spawn.y,
+        w: 0, h: 0, props: { target: 'luoxia_town' } });
     }
   }
 
@@ -1068,6 +1179,8 @@ export class GameScene extends Phaser.Scene {
   }
 
   private travelToMap(map: string, portal?: string, returning = false, onCancelled?: () => void) {
+    if (this.sectTrial && !this.sectTrial.ended) { this.sectTrial.exit(); return; }
+    map = sectEntryMap(map);
     if (!mapEntryOpen(map, this.map.id, returning)) { onCancelled?.(); this.log(FEATURE_UNAVAILABLE, '#aaaaaa'); return; }
     if (!TILED_MAPS[map] && map !== 'field_test') { onCancelled?.(); this.log(t('sys.portal_locked'), '#aaaaaa'); return; }
     if (this.travelling) { onCancelled?.(); return; }
@@ -1134,7 +1247,7 @@ export class GameScene extends Phaser.Scene {
 
   talkTo(npcId: string, questId?: string, skipMenu = false) {
     const npc = NPCS[npcId]; if (!npc) return;
-    if (this.trial || this.map.trial || TRIAL_BY_MAP[this.map.id]) return;   // 试炼图里的长老虚影只护法，不对话
+    if (this.trial || this.sectTrial || TRIAL_BY_MAP[this.map.id]) return;
     if (npcId === 'ferry_master') {
       // 航线菜单也算与船老大交谈，供幽影宗问讯日常记录目标。
       this.quests.onTalk(npcId);
@@ -1157,6 +1270,8 @@ export class GameScene extends Phaser.Scene {
       ]);
       return;
     }
+    const sectOffer = this.sectTrialOfferFor(npcId, questId);
+    if (sectOffer) { this.offerSectTrial(npcId, sectOffer); return; }
     const dailyIds = this.quests.npcDailyQuestIds(npcId);
     const services = this.sectGrowth.services(npcId).filter(service => (service.type !== 'sect_shop' || featureEnabled('shops'))
       && featureEnabled(service.type === 'sect_promotion'

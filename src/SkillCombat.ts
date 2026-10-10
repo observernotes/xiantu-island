@@ -63,6 +63,7 @@ export class SkillCombat {
   }
 
   tryCast(slot: number) {
+    if (this.scene.sectTrial?.ended) return;
     const { prog, player } = this.scene;
     if (!prog.skillsUnlocked || player.dead) return;
     if (player.state2 === 'hurt' || player.state2 === 'rope') return;
@@ -70,7 +71,8 @@ export class SkillCombat {
     if (!id) return;
     const def = SKILLS[id];
     const level = prog.skillLevel(id);
-    if (!def || !prog.ownsSkill(def) || level <= 0 || def.type === 'passive') return;
+    if (!def || !prog.canCastSkill(def) || level <= 0 || def.type === 'passive') return;
+    if (prog.trialSkillCharges(id) === 0) { this.scene.log('试炼隐息术次数已用尽。', '#d0d0d0'); return; }
     const now = gameNow();
     const cd = this.cds.get(id);
     if (cd && now < cd.readyAt) { this.hint('skill.cooldown', {}, '#d0d0d0'); return; }
@@ -84,6 +86,7 @@ export class SkillCombat {
       if (prog.count(ammo) < ammoCount) { this.scene.log(`${ITEMS[ammo].name}不足。`, '#ffd6a0'); return; }
       if (Math.random() >= Math.min(1, Math.max(0, prog.passiveBonus('ammoSaveChance')))) prog.removeItem(ammo, ammoCount);
     }
+    if (!prog.consumeTrialSkill(id)) return;
     prog.mp -= cost;
     const total = Math.max(0, prog.skillCooldownMs(id), prog.skillRecoverMs(id));
     if (total > 0) this.cds.set(id, { readyAt: now + total, total });
@@ -288,7 +291,7 @@ export class SkillCombat {
   }
 
   private applyBuff(def: SkillDef, level: number) {
-    const dur = Math.max(0, skillNumber(def, 'durationMs', level));
+    const dur = Math.max(0, this.scene.prog.trialSkillDuration(def.id) ?? skillNumber(def, 'durationMs', level));
     const expireAt = gameNow() + dur;
     const found = this.scene.prog.buffs.find(b => b.id === def.id);
     if (found) { found.expireAt = expireAt; found.warned = false; }
