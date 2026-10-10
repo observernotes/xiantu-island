@@ -6,13 +6,16 @@ import os from 'node:os';
 import { createHash } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { preview } from 'vite';
+import { createIsolatedBuild, childBuildEnv, preview } from './isolated-build.mjs';
 import { chromium } from '/tmp/pwt/node_modules/playwright-core/index.mjs';
 
-const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
+const projectRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 assert.equal(process.argv.length, 2, '缺图冒烟使用正式 preview，不接受参数');
 const port = Number(process.env.XT_TEST_PORT ?? 4351);
 assert.ok(Number.isInteger(port) && port > 0 && port < 65536, 'XT_TEST_PORT 必须是有效端口');
+const isolated = await createIsolatedBuild(projectRoot, 'missing-assets');
+const root = isolated.root;
+const features = JSON.parse(await fs.readFile(path.join(root, 'data/features.json'), 'utf8'));
 const assetRoot = path.join(root, 'public');
 const assets = [
   'art/icons/ui/sect_rank/icon_sect_rank_outer_disciple.png',
@@ -40,7 +43,10 @@ const result = { mode: 'preview', port, passed: false, assertions: 0, baseline: 
 const checkInterrupted = () => { if (interrupted) throw interrupted; };
 const onSignal = signal => {
   interrupted ??= new Error(`收到 ${signal}，正在还原文件并关闭服务`);
-  activeChild?.kill('SIGTERM');
+  if (activeChild?.pid) {
+    try { process.kill(process.platform === 'win32' ? activeChild.pid : -activeChild.pid, 'SIGTERM'); }
+    catch (error) { if (error.code !== 'ESRCH') activeChild.kill('SIGTERM'); }
+  }
   // 解除导航/等待阻塞，让 finally 仍然执行素材还原。
   if (browser) void browser.close().catch(() => {});
 };
@@ -53,7 +59,8 @@ async function command(executable, args, env = {}, cleanup = false) {
   if (!cleanup) checkInterrupted();
   console.log(JSON.stringify({ phase: 'command', command: [executable, ...args], manifestOnly: env.XT_SYNC_MANIFEST_ONLY === '1' }));
   await new Promise((resolve, reject) => {
-    const child = spawn(executable, args, { cwd: root, env: { ...process.env, ...env }, stdio: ['ignore', 'pipe', 'pipe'] });
+    const child = spawn(executable, args, { cwd: root, env: childBuildEnv(env),
+      detached: process.platform !== 'win32', stdio: ['ignore', 'pipe', 'pipe'] });
     activeChild = child;
     let output = '';
     const append = chunk => { output = (output + chunk.toString()).slice(-12000); };
@@ -134,12 +141,14 @@ async function phase(outDir, label) {
     page.on('response', response => {
       if (response.status() >= 400) events.http.push({ status: response.status(), url: response.url() });
     });
-    const altarURL = new URL(`http://127.0.0.1:${port}/`);
+    const baseURL = server.resolvedUrls?.local?.[0];
+    check(baseURL, `${label} preview 没有提供可访问地址`);
+    const altarURL = new URL(baseURL);
     altarURL.searchParams.set('map', 'trial_foundation_altar');
     await page.goto(altarURL.href, { waitUntil: 'networkidle', timeout: 30000 });
     const altar = await ready(page, 'trial_foundation_altar');
     equal(altar.testBridgePresent, false, `${label} 必须使用正式构建`);
-    const villageURL = new URL(`http://127.0.0.1:${port}/`);
+    const villageURL = new URL(baseURL);
     villageURL.searchParams.set('map', 'qingyun_village');
     await page.goto(villageURL.href, { waitUntil: 'networkidle', timeout: 30000 });
     const village = await ready(page, 'qingyun_village');
@@ -196,9 +205,9 @@ try {
   // 外部变体图片必须预加载；是否铺到地图上由 E-3 的显式 variants 配置决定。
   check(baseline.state.altar.tileSets.includes('tiles_altar'), '基线未加载原 altar tileset');
   for (const state of [baseline.state.altar, baseline.state.village]) {
-    equal(state.sectBadgeVisible, true, '基线未显示职位徽记');
-    equal(state.sectTitleVisible, true, '基线未显示职位称号');
-    check(/外门弟子/.test(state.sectTitle), '基线缺中文职位');
+    equal(state.sectBadgeVisible, features.sectRanks, '基线职位徽记不符合发版关口');
+    equal(state.sectTitleVisible, features.sectRanks, '基线职位称号不符合发版关口');
+    if (features.sectRanks) check(/外门弟子/.test(state.sectTitle), '基线缺中文职位');
   }
   for (const [index, asset] of assets.entries()) {
     checkInterrupted();
@@ -222,8 +231,8 @@ try {
   check(missing.state.altar.tileSets.includes('tiles_altar'), '缺图未保留原 altar tileset');
   for (const [index, state] of [missing.state.altar, missing.state.village].entries()) {
     equal(state.sectBadgeVisible, false, '缺图仍显示徽记');
-    equal(state.sectTitleVisible, true, '缺图隐藏职位称号');
-    check(/外门弟子/.test(state.sectTitle), '缺图没有保留中文职位');
+    equal(state.sectTitleVisible, features.sectRanks, '缺图职位称号不符合发版关口');
+    if (features.sectRanks) check(/外门弟子/.test(state.sectTitle), '缺图没有保留中文职位');
     const before = [baseline.state.altar, baseline.state.village][index];
     equal(state.sectTitle, before.sectTitle, '缺图改变中文职位称号');
   }
@@ -259,6 +268,10 @@ try {
     try { await fs.rm(temporaryDir, { recursive: true, force: true }); }
     catch (error) { result.cleanupErrors.push(`temporary build: ${error.message}`); }
   }
+  if (!result.cleanupErrors.length) {
+    try { await isolated.cleanup(); }
+    catch (error) { result.cleanupErrors.push(`isolated project: ${error.message}`); }
+  } else result.workspace = root;
   if (interrupted) { failure ??= interrupted; result.failure = interrupted.message; }
   if (failure || result.cleanupErrors.length) result.passed = false;
   result.assertions = assertions;
