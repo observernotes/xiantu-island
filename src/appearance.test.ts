@@ -284,9 +284,16 @@ globalThis.localStorage = {
   changed(worn, 'fox_robe', BASE_PLAYER_ATLAS, '已穿旧狐裘遇 v2 本体退回本体');
   fixture.json.set(`${foxAtlas}_anims`, { frameSize: [192, 192], displayScale: 0.5 });
   changed(player, 'fox_robe', foxAtlas, '狐裘重画成同规格后自动接回');
+  // 本体回退旧 96 后，同一套被屏蔽的旧外观无需改装备或存档就恢复显示。
   fixture.json.set(`${BASE_PLAYER_ATLAS}_anims`, v1);
-  const old = fixture.sprite(BASE_PLAYER_ATLAS, 'idle', 1);
-  changed(old, `outfit_${sects[0]}_1`, variants[0], '旧 96 本体仍可叠旧外观');
+  for (const key of [...variants, foxAtlas]) fixture.json.set(`${key}_anims`, v1);
+  const restored = fixture.sprite(BASE_PLAYER_ATLAS, 'walk', 2);
+  for (const appearance of ['fox_robe', ...sects.map(sect => `outfit_${sect}_1`)]) {
+    const key = `${BASE_PLAYER_ATLAS}__${appearance}`;
+    changed(restored, appearance, key, `96 本体 + 96 ${appearance} 恢复显示`);
+    eq(sync(restored, appearance), false, `${appearance} 恢复后重复同步不重播`);
+    changed(fixture.sprite(BASE_PLAYER_ATLAS, 'idle', 1), appearance, key, `${appearance} 96 本体首帧恢复显示`);
+  }
   fixture.json.set(`${variants[1]}_anims`, v2);
   changed(fixture.sprite(BASE_PLAYER_ATLAS, 'walk', 3), `outfit_${sects[1]}_1`, variants[1], '旧 96 本体 + 新 2x 外观照 E-1 并存');
 }

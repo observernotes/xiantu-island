@@ -5,7 +5,7 @@
   0.5,
   1
  ],
- "frameSize": 192,
+ "frameSize": 96,
  "anims": [
   {
    "key": "player_sword_m_idle",
@@ -110,10 +110,5 @@
    "repeat": -1
   }
  ],
- "kind": "player",
- "displayScale": 0.5,
- "bodySize": [
-  52,
-  116
- ]
+ "kind": "player"
 }

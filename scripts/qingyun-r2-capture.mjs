@@ -9,12 +9,25 @@ import { chromium } from '/tmp/pwt/node_modules/playwright-core/index.mjs';
 // 仅服务现有 dist 生产包；不构建、不写素材、不启用测试桥或发版开关。
 const project = path.resolve(process.env.QINGYUN_PROJECT ?? fileURLToPath(new URL('../', import.meta.url)));
 const dist = path.join(project, 'dist');
-const output = process.env.QINGYUN_REPORT_DIR ?? '/workspace/reports/qingyun_toon3d_a';
+const output = process.env.QINGYUN_REPORT_DIR ?? '/workspace/reports/revert_v2/qingyun-r2';
 const file = name => path.join(output, `r2_${name}`);
-const r2Path = '/workspace/xiantu/art/trial_v2/qingyun_3d/tiles/fx_qingyun.json';
-const mapPath = '/workspace/xiantu/maps/qingyun_village.json';
+const r2Path = path.join(dist, 'art/tiles/bg_qingyun.json');
+// Vite 内嵌地图数据，dist 不包含 maps/；只读取本 worktree 的发布快照。
+const mapPath = path.join(project, 'data/maps/qingyun_village.json');
 const digest = location => createHash('sha256').update(fs.readFileSync(location)).digest('hex');
-const r2 = JSON.parse(fs.readFileSync(r2Path, 'utf8'));
+assert.ok(fs.existsSync(path.join(dist, 'index.html')), `生产构建不存在: ${dist}`);
+const background = fs.existsSync(r2Path) ? JSON.parse(fs.readFileSync(r2Path, 'utf8')) : undefined;
+const r2 = background?.environment;
+const atlasPresent = ['png', 'json'].every(extension => fs.existsSync(path.join(dist, `art/sprites/fx_qingyun_env.${extension}`)));
+if (!atlasPresent || r2?.lights?.length !== 5 || r2.lights.some(light => light.texture !== 'fx_qingyun_env')) {
+  const skipped = { suite: 'qingyun-r2-capture', passed: true, skipped: true,
+    reason: '正式青云已回退旧 far/mid；toon3d r2 五盏图集灯光不再交付。环境引擎由 scripts/fixtures/scene-art 夹具继续验收。',
+    capabilityTest: 'node scripts/environment-frame-test.mjs', project, dist };
+  fs.mkdirSync(output, { recursive: true });
+  fs.writeFileSync(file('evidence.json'), JSON.stringify(skipped, null, 2) + '\n');
+  console.log(JSON.stringify(skipped));
+  process.exit(0);
+}
 const fixedTime = new Date('2026-10-10T12:00:00+08:00').getTime();
 const mime = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.png': 'image/png', '.css': 'text/css' };
 const consoleMessages = [], consoleErrors = [], pageErrors = [], failedRequests = [], httpErrors = [];
@@ -22,11 +35,10 @@ const evidence = {
   project, dist, mode: 'production', viewport: { width: 1280, height: 720 }, fixedTime,
   mapSource: { path: mapPath, sha256: digest(mapPath) },
   r2Source: { path: r2Path, sha256: digest(r2Path), lights: r2.lights },
-  textureDecision: '交付 3 盏 glow_window、2 盏 glow_soft；按总监口径统一使用 fx_qingyun_env 图集的 glow_soft 帧。',
+  textureDecision: '生产包 bg_qingyun.json 的五盏灯光使用 fx_qingyun_env 图集的 glow_soft 帧。',
   screenshots: { spawn: file('spawn.png') }, views: {}, passed: false,
 };
 fs.mkdirSync(output, { recursive: true });
-assert.ok(fs.existsSync(path.join(dist, 'index.html')), `生产构建不存在: ${dist}`);
 const server = http.createServer((req, res) => {
   const pathname = decodeURIComponent(new URL(req.url, 'http://local').pathname);
   if (pathname === '/favicon.ico') { res.writeHead(204); res.end(); return; }
@@ -130,9 +142,9 @@ try {
     assert.ok(light.tintCorners.every(color => color === light.tint), `灯 ${index} tint 一致`);
     assert.equal(light.radius, expected.radius, `灯 ${index} 半径与 r2 一致`);
     assert.ok(light.radius <= 56, `灯 ${index} r≤56`);
-    assert.equal(light.baseAlpha, expected.intensity, `灯 ${index} intensity→baseAlpha`);
-    assert.ok(light.baseAlpha <= 0.4 && light.alpha <= 0.4, `灯 ${index} alpha≤0.4`);
-    assert.equal(light.flicker, expected.flicker.amp, `灯 ${index} flicker.amp→数字`);
+    assert.equal(light.baseAlpha, expected.alpha, `灯 ${index} 保留生产包配置 alpha`);
+    assert.ok(light.alpha <= light.baseAlpha, `灯 ${index} 闪烁不超过配置 alpha`);
+    assert.equal(light.flicker, expected.flicker, `灯 ${index} 保留生产包配置 flicker`);
   }
   evidence.particleTintSummary = [...new Set(evidence.environment.particles.map(particle => particle.tintHex))];
 

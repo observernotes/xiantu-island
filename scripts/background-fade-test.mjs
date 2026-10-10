@@ -3,6 +3,7 @@ import fs from 'node:fs/promises';
 import ts from 'typescript';
 
 // 用小块不透明前景验证真实 BackgroundArt 的坐标转换和透明区行为。
+const fixture = JSON.parse(await fs.readFile(new URL('./fixtures/scene-art/background-fade.json', import.meta.url), 'utf8'));
 class Display {
   constructor(x, y, key, width = 128, height = 128) {
     Object.assign(this, { x, y, texture: { key }, displayWidth: width, displayHeight: height,
@@ -22,7 +23,7 @@ class TileSprite extends Display {}
 globalThis.__backgroundPhaser = { GameObjects: { TileSprite }, Scenes: { Events: { SHUTDOWN: 'shutdown' } } };
 const originalDocument = globalThis.document;
 let maskReads = 0;
-let sampledAlpha = 255;
+let sampledAlpha = fixture.alpha;
 globalThis.document = { createElement() {
   const canvas = {};
   canvas.getContext = () => ({
@@ -30,8 +31,10 @@ globalThis.document = { createElement() {
     getImageData() {
       maskReads++;
       const data = new Uint8ClampedArray(canvas.width * canvas.height * 4);
-      // 128×128 图片的 [64,72)×[64,72) 区域不透明，其余透明。
-      data[(8 * canvas.width + 8) * 4 + 3] = sampledAlpha;
+      // 按夹具缩成引擎读取的 1/8 alpha mask，其余画布保持透明。
+      const column = Math.floor(fixture.opaque.x / fixture.width * canvas.width);
+      const row = Math.floor(fixture.opaque.y / fixture.height * canvas.height);
+      data[(row * canvas.width + column) * 4 + 3] = sampledAlpha;
       return { data };
     },
   });
@@ -45,13 +48,13 @@ try {
   const { BackgroundArt } = await import(`data:text/javascript;base64,${Buffer.from(outputText).toString('base64')}`);
   const create = (definition, name = 'fg', width = 128) => {
     const scene = {
-      scale: { width: 128, height: 128 }, cameras: { main: { scrollX: 0, scrollY: 0 } },
-      textures: { exists: () => true, get: () => ({ getSourceImage: () => ({ width: 128, height: 128 }) }) },
+      scale: { width: fixture.width, height: fixture.height }, cameras: { main: { scrollX: 0, scrollY: 0 } },
+      textures: { exists: () => true, get: () => ({ getSourceImage: () => ({ width: fixture.width, height: fixture.height }) }) },
       events: { once() {}, off() {} },
       add: { image: (x, y, key) => new Display(x, y, key),
         tileSprite: (x, y, w, h, key) => new TileSprite(x, y, key, w, h), graphics: () => new Display() },
     };
-    const art = new BackgroundArt(scene, 'test', width, 128, { layers: { [name]: { texture: 'test', alpha: 0.9, ...definition } } });
+    const art = new BackgroundArt(scene, 'test', width, fixture.height, { layers: { [name]: { ...fixture.layer, ...definition } } });
     return { art, scene, image: art.layers[0].image };
   };
   const close = (actual, expected, message) => assert.ok(Math.abs(actual - expected) < 0.001, `${message}: ${actual}`);
