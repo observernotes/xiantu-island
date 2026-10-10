@@ -16,7 +16,7 @@
      {
       "monster": "heart_demon_imp",
       "side": "both",
-      "everyMs": 3000,
+      "everyMs": 4200,
       "perSide": 1
      }
     ],
@@ -29,13 +29,13 @@
      {
       "monster": "heart_demon_imp",
       "side": "both",
-      "everyMs": 4000,
+      "everyMs": 5600,
       "perSide": 1
      },
      {
       "monster": "heart_demon_wisp",
       "side": "alternate",
-      "everyMs": 4000,
+      "everyMs": 5600,
       "perSide": 1
      }
     ],
@@ -48,13 +48,13 @@
      {
       "monster": "heart_demon_imp",
       "side": "both",
-      "everyMs": 2500,
+      "everyMs": 3500,
       "perSide": 1
      },
      {
       "monster": "heart_demon_wisp",
       "side": "both",
-      "everyMs": 5000,
+      "everyMs": 7000,
       "perSide": 1
      }
     ],
