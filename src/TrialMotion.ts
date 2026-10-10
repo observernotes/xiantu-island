@@ -1,6 +1,13 @@
 export interface Point { x: number; y: number }
 export interface PatrolMotion extends Point { target: number; direction: number; pauseLeft: number; facing: number }
 
+/** 左右各 range 的平移；支持低帧率一次跨过多次端点，始终不越界。 */
+export function targetMotion(distance: number, range: number) {
+  if (range <= 0) return { offset: 0, direction: 1 };
+  const length = range * 2, at = (range + Math.max(0, distance)) % (length * 2);
+  return { offset: (at <= length ? at : length * 2 - at) - range, direction: at < length ? 1 : -1 };
+}
+
 /** 折线首点出发，沿原路线往返；只有两端停顿。 */
 export function startPatrol(points: Point[]): PatrolMotion {
   return { ...points[0], target: 1, direction: 1, pauseLeft: 0, facing: Math.sign(points[1].x - points[0].x) || 1 };

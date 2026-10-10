@@ -3,6 +3,7 @@ import { ITEMS, TRIALS, type TrialDef } from '../data';
 import type { GameScene } from './GameScene';
 import type { MapObj, Zone } from './MapBuilder';
 import type { Monster } from './Monster';
+import { targetMotion } from '../TrialMotion';
 
 interface AnimPack {
   origin?: [number, number];
@@ -155,10 +156,8 @@ export class SectTrialObjects {
       let x = target.object.x;
       if (target.range > 0 && speed > 0) {
         target.distance += speed * Math.max(0, delta) / 1000;
-        const length = target.range * 2, period = length * 2;
-        const at = (target.range + target.distance) % period;
-        x += (at <= length ? at : period - at) - target.range;
-        const direction = at < length ? 1 : -1;
+        const { offset, direction } = targetMotion(target.distance, target.range);
+        x += offset;
         if (direction !== target.direction) {
           target.direction = direction;
           this.emit('target_turn', target.object, { direction, x, minX: target.object.x - target.range, maxX: target.object.x + target.range });
