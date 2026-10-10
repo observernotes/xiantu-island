@@ -29,6 +29,11 @@ function collectErrors(page) {
   return errors;
 }
 
+function assertCooldown(actual, expected, now) {
+  if (actual === undefined) assert.ok(now >= expected, '采集冷却尚未到期就被清理');
+  else assert.equal(actual, expected, '换图或读档改变了采集刷新时间');
+}
+
 async function loadPlaywright() {
   const candidates = process.env.PLAYWRIGHT_MODULE ? [process.env.PLAYWRIGHT_MODULE]
     : ['playwright', 'playwright-core', '/tmp/pwt/node_modules/playwright-core/index.mjs'];
@@ -93,6 +98,10 @@ let browser;
 let page;
 let errors = [];
 const checks = [];
+function passed(check) {
+  checks.push(check);
+  console.log(JSON.stringify({ checked: checks.length, check }));
+}
 try {
   const { api, module } = await loadPlaywright();
   const executablePath = await browserPath(api.chromium);
@@ -130,7 +139,7 @@ try {
   assert.equal(accepted.state, 'active', '孙郎中真实对白结束后未接受炼丹入门');
   assert.ok(accepted.recipes.includes(recipe.id), '入门教学未先发回春丹方');
   assert.ok(accepted.saved.learnedRecipes.includes(recipe.id), '教学丹方未存档');
-  checks.push('Z 与孙郎中对话，after 接任务并学回春丹方');
+  passed('Z 与孙郎中对话，after 接任务并学回春丹方');
   await page.keyboard.press('Escape'); await page.waitForTimeout(100);
 
   await usePortal(page, 'portal_to_bamboo', 'bamboo_forest');
@@ -161,7 +170,7 @@ try {
   await page.waitForFunction(() => !window.__scene.gathering.active
     && !window.__scene.children.getByName('gather:castbar').visible, null, { timeout: 3000 });
   assert.equal(await page.evaluate(() => window.__scene.prog.count('spirit_herb')), cast.count, '松开 Z 的半途采集仍发物品');
-  checks.push('表内采集时长、y−88 读条、gather/idle、头顶键帽、松键中断');
+  passed('表内采集时长、y−88 读条、gather/idle、头顶键帽、松键中断');
 
   await page.keyboard.down('z');
   await page.waitForFunction(() => window.__scene.prog.count('spirit_herb') === 5, null,
@@ -179,7 +188,26 @@ try {
   assert.ok(harvested.remaining > herb.gather.respawnMs - 1500 && harvested.remaining <= herb.gather.respawnMs,
     '采集冷却未使用 materials.gather.respawnMs');
   assert.equal(harvested.cooldown, harvested.savedCooldown, '采集刷新时间未存档');
-  checks.push('按住 Z 完成一次采集 +1，respawnMs 冷却保存');
+  passed('按住 Z 完成一次采集 +1，respawnMs 冷却保存');
+
+  const fallbackPoint = await page.evaluate(() => window.__scene.gathering.points.find(point => point.ready)?.object.name);
+  assert.ok(fallbackPoint, '竹林缺少验证 idle 回退的第二个采集点');
+  await standAt(page, fallbackPoint);
+  await page.evaluate(() => {
+    const scene = window.__scene, player = scene.player;
+    // 缺 gather 动画的素材夹具；不改变读条、产物或采集状态。
+    player.anims.stop(); scene.anims.remove(player.animationKey('gather'));
+    player.play(player.animationKey('idle'), true);
+  });
+  await page.keyboard.down('z');
+  await page.waitForFunction(() => window.__scene.gathering.active?.elapsed > 100, null, { timeout: 3000 });
+  assert.equal(await page.evaluate(() => window.__scene.player.anims.currentAnim?.key),
+    await page.evaluate(() => window.__scene.player.animationKey('idle')), '缺 gather 动画时未回退 idle');
+  await page.keyboard.up('z');
+  await page.waitForFunction(() => !window.__scene.gathering.active
+    && !window.__scene.children.getByName('gather:castbar').visible, null, { timeout: 3000 });
+  assert.equal(await page.evaluate(() => window.__scene.prog.count('spirit_herb')), harvested.count);
+  passed('第二个采集点缺 gather 动画回退 idle，松键不产物');
 
   await usePortal(page, 'portal_to_village', 'qingyun_village');
   await standAt(page, 'doctor_sun');
@@ -193,13 +221,36 @@ try {
     return { stones: scene.prog.stones, herb: scene.prog.count('spirit_herb'), fur: scene.prog.count('rabbit_fur'),
       pill: scene.prog.count('hp_pill_small'), position: panel.position };
   });
-  checks.push('Z 在孙郎中处打开已学丹方的丹炉界面');
+  passed('Z 在孙郎中处打开已学丹方的丹炉界面');
   await fs.mkdir(path.dirname(screenshot), { recursive: true });
   await page.screenshot({ path: screenshot });
 
   // UI 素材表：brew=[222,330,96,30]；坐标随面板位置取值。
   await page.mouse.click(beforeBrew.position.x + 270, beforeBrew.position.y + 345);
   await page.waitForFunction(() => !!(window.__scene.alchemy ?? window.__scene.alchemyPanel).system.active, null, { timeout: 3000 });
+  const startedBrew = await page.evaluate(() => {
+    const scene = window.__scene;
+    const saved = JSON.parse(localStorage.getItem('xiantu_save_v1'));
+    const url = new URL(location.href); url.searchParams.delete('reset'); history.replaceState(null, '', url.href);
+    return { pending: saved.pendingAlchemy, herb: scene.prog.count('spirit_herb'), fur: scene.prog.count('rabbit_fur'),
+      stones: scene.prog.stones, pill: scene.prog.count('hp_pill_small') };
+  });
+  assert.equal(startedBrew.pending?.recipeId, recipe.id, '开炉未保存付料炉次');
+  assert.equal(startedBrew.pill, beforeBrew.pill, '开炉直接跳过火候发了产物');
+  await page.reload({ waitUntil: 'domcontentloaded', timeout: 30000 });
+  await waitForMap(page, 'qingyun_village');
+  const resumedBrew = await page.evaluate(() => {
+    const scene = window.__scene, panel = scene.alchemy ?? scene.alchemyPanel;
+    panel.system.random = () => 0;
+    return { open: panel.isOpen(), recipeId: panel.system.active?.recipeId, zoneStart: panel.system.active?.fire.zoneStart,
+      herb: scene.prog.count('spirit_herb'), fur: scene.prog.count('rabbit_fur'), stones: scene.prog.stones,
+      pill: scene.prog.count('hp_pill_small') };
+  });
+  assert.ok(resumedBrew.open, '刷新未恢复丹炉界面');
+  assert.equal(resumedBrew.recipeId, startedBrew.pending.recipeId, '刷新丢失已付料的炉次');
+  assert.equal(resumedBrew.zoneStart, startedBrew.pending.fire.zoneStart, '刷新重新随机了文火区');
+  for (const key of ['herb', 'fur', 'stones', 'pill']) assert.equal(resumedBrew[key], startedBrew[key], `刷新重复扣料或发丹：${key}`);
+  passed('开炉扣料后刷新恢复炉次/文火区，材料燃料仅扣一次');
   await page.waitForFunction(() => {
     const scene = window.__scene, panel = scene.alchemy ?? scene.alchemyPanel;
     const fire = panel.system.active?.fire;
@@ -231,17 +282,18 @@ try {
   assert.ok(brewed.exp > 0 && brewed.level >= 1, '炼丹经验未结算');
   assert.equal(brewed.quest.crafted[recipe.output], recipe.outputCount, 'craft 目标未按成功产物计数');
   assert.ok(brewed.complete, '采集 + 炼成后入门任务仍不可交付');
-  checks.push(`鼠标炼制、真实空格正中，成功下品 ${recipe.outputCount} 颗入包并计 craft`);
+  passed(`鼠标炼制、真实空格正中，成功下品 ${recipe.outputCount} 颗入包并计 craft`);
   await page.waitForTimeout(200);
   await page.screenshot({ path: path.join(projectRoot, 'dist/alchemy-smoke-result.png') });
 
   await page.keyboard.press('Escape'); await page.waitForTimeout(100);
   assert.equal(await page.evaluate(() => (window.__scene.alchemy ?? window.__scene.alchemyPanel).isOpen()), false);
+  await standAt(page, 'doctor_sun');
   await page.keyboard.press('z'); await page.waitForTimeout(100);
   await finishDialogue(page);
   const delivered = await page.evaluate(() => ({
     quest: window.__scene.prog.quests.q_alchemy_intro, recipes: window.__scene.prog.learnedRecipes,
-    inventory: window.__scene.prog.inventory, exp: window.__scene.prog.alchemyExp,
+    inventory: window.__scene.prog.inventory, exp: window.__scene.prog.alchemyExp, now: Date.now(),
     saved: JSON.parse(localStorage.getItem('xiantu_save_v1')),
   }));
   assert.equal(delivered.quest.state, 'done', '孙郎中真实对白结束后入门任务未交付');
@@ -252,8 +304,9 @@ try {
   assert.equal(delivered.inventory.bronze_furnace, quest.rewards.items.find(item => item.item === 'bronze_furnace').count);
   assert.equal(delivered.saved.quests.q_alchemy_intro.state, 'done');
   assert.deepEqual(delivered.saved.pillQualities, brewed.qualities);
-  assert.equal(delivered.saved.gatherRespawnAt[point.key], harvested.cooldown);
-  checks.push('Z 交付入门，奖励丹方去重、丹炉与品质/经验/冷却保存');
+  assertCooldown(delivered.saved.gatherRespawnAt[point.key], harvested.cooldown, delivered.now);
+  assert.equal(delivered.saved.pendingAlchemy, null, '成丹后未清理付料炉次，可能重复结算');
+  passed('Z 交付入门，奖励丹方去重、丹炉与品质/经验/冷却保存');
 
   await page.evaluate(() => { const url = new URL(location.href); url.searchParams.delete('reset'); history.replaceState(null, '', url.href); });
   await page.reload({ waitUntil: 'networkidle', timeout: 30000 });
@@ -261,12 +314,13 @@ try {
   const reloaded = await page.evaluate(() => ({
     quest: window.__scene.prog.quests.q_alchemy_intro.state, recipes: window.__scene.prog.learnedRecipes,
     qualities: window.__scene.prog.pillQualities, exp: window.__scene.prog.alchemyExp,
-    cooldowns: window.__scene.prog.gatherRespawnAt, furnace: window.__scene.prog.count('bronze_furnace'),
+    cooldowns: window.__scene.prog.gatherRespawnAt, furnace: window.__scene.prog.count('bronze_furnace'), now: Date.now(),
   }));
   assert.equal(reloaded.quest, 'done'); assert.deepEqual(reloaded.recipes, delivered.recipes);
   assert.deepEqual(reloaded.qualities, brewed.qualities); assert.equal(reloaded.exp, delivered.exp);
-  assert.equal(reloaded.cooldowns[point.key], harvested.cooldown); assert.equal(reloaded.furnace, delivered.inventory.bronze_furnace);
-  checks.push('刷新读档保留任务、丹方、品质、炼丹经验、采集冷却和丹炉');
+  assertCooldown(reloaded.cooldowns[point.key], harvested.cooldown, reloaded.now);
+  assert.equal(reloaded.furnace, delivered.inventory.bronze_furnace);
+  passed('刷新读档保留任务、丹方、品质、炼丹经验、采集冷却和丹炉');
   assert.deepEqual(errors, [], '炼丹冒烟出现浏览器报错');
   console.log(JSON.stringify({ passed: checks.length, checks, consoleErrors: 0, pageErrors: 0, requestFailures: 0,
     gathered: 1, brews: 1, output: recipe.output, outputCount: recipe.outputCount, quality: brewed.result.quality,
