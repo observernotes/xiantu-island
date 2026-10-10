@@ -1,0 +1,30 @@
+{
+ "atlas": "fx_trial_thunder_warn",
+ "facing": "left",
+ "origin": [
+  0.5,
+  0.5
+ ],
+ "frameSize": [
+  144,
+  144
+ ],
+ "anims": [
+  {
+   "key": "fx_trial_thunder_warn_warn",
+   "frames": [
+    "fx_trial_thunder_warn_warn_01",
+    "fx_trial_thunder_warn_warn_02",
+    "fx_trial_thunder_warn_warn_03",
+    "fx_trial_thunder_warn_warn_04",
+    "fx_trial_thunder_warn_warn_05",
+    "fx_trial_thunder_warn_warn_06"
+   ],
+   "frameRate": 5,
+   "repeat": 0
+  }
+ ],
+ "blend": "NORMAL",
+ "note": "天雷预警圈：圆心即原点，半径 64（=trials.json hazard.radius）。6 帧 5fps = 1.2s = telegraphMs，进度弧走满一圈时落雷；如果 telegraphMs 改了，用 anims.play({key, duration: telegraphMs})。",
+ "kind": "fx"
+}

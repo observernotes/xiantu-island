@@ -1,0 +1,30 @@
+{
+ "atlas": "fx_flame_envoy_flame_palm_warn",
+ "facing": "left",
+ "origin": [
+  1,
+  1
+ ],
+ "frameSize": [
+  168,
+  104
+ ],
+ "anims": [
+  {
+   "key": "fx_flame_envoy_flame_palm_warn_warn",
+   "frames": [
+    "fx_flame_envoy_flame_palm_warn_warn_01",
+    "fx_flame_envoy_flame_palm_warn_warn_02",
+    "fx_flame_envoy_flame_palm_warn_warn_03",
+    "fx_flame_envoy_flame_palm_warn_warn_04",
+    "fx_flame_envoy_flame_palm_warn_warn_05",
+    "fx_flame_envoy_flame_palm_warn_warn_06"
+   ],
+   "frameRate": 8,
+   "repeat": 0
+  }
+ ],
+ "note": "火焰掌预警：原点 (1,1) 放炎魔使脚底，色块向左覆盖 range 160×96，朱红 1px 边 + 闪烁，由近到远填满；telegraphMs 700 用 play({duration:700})；朝右 setFlipX 并把原点改 (0,1)。",
+ "blend": "normal",
+ "kind": "fx"
+}
