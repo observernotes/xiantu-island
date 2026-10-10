@@ -11,7 +11,7 @@ import { findRoot } from './root.mjs';
 
 const projectRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const fixtureRoot = path.join(projectRoot, 'scripts/fixtures/art-engine');
-const baselineRevision = 'a0f37b9e4f1af41329883f168dd37b58ff5fede7';
+const baselineRevision = '96e6584d26378bdef1c993faff6c62aa892f8d40';
 const fixedTime = 1791608400000;
 const port = Number(process.env.XT_TEST_PORT ?? 4337);
 for (const value of [port, port + 1]) {
@@ -41,7 +41,7 @@ async function browserPath(chromium) {
   throw new Error('未找到 Chromium；请设置 CHROMIUM_EXECUTABLE_PATH');
 }
 
-// 原提交只解包到临时目录；地图和旧素材与被测构建共用输入，隔离引擎变化。
+// v2 接入提交只解包到临时目录；地图和正式素材与被测构建共用输入，隔离引擎变化。
 async function buildBaseline() {
   if (process.env.ART_BASELINE_DIR) {
     const directory = path.resolve(process.env.ART_BASELINE_DIR);
@@ -122,6 +122,11 @@ async function prepare(page, baseURL, map = 'qingyun_village') {
     s.cameras.main.resetFX(); s.cameras.main.stopFollow(); s.cameras.main.setScroll(0, 0);
     p.body.reset(320, 608); p.body.setVelocity(0, 0); p.state2 = 'ground'; p.body.blocked.down = true;
     p.play('player_sword_m_idle'); p.anims.setCurrentFrame(s.anims.get('player_sword_m_idle').frames[0]); p.anims.pause();
+    // v2 基线已有正式环境效果；重建到第 0 秒，避免加载耗时改变雾/粒子/灯光相位。
+    const area = s.environmentArt?.snapshot().area;
+    if (area) s.configureEnvironment(s.cache.json.get(`bg_${area}_config`)?.environment);
+    s.backgroundArt?.update();
+    for (const { ts } of s.parallax) ts.tilePositionX = 0;
     const labels = [];
     const visit = (objects, x = 0, y = 0, depth = 0) => {
       for (const object of objects) {
@@ -133,7 +138,7 @@ async function prepare(page, baseURL, map = 'qingyun_village') {
     s.drawHud(); visit(s.children.list); p.body.updateFromGameObject(); s.scene.pause();
     return { body: { x: p.body.x, y: p.body.y, width: p.body.width, height: p.body.height, bottom: p.body.bottom },
       x: p.x, y: p.y, feet: p.feet, origin: [p.originX, p.originY], scale: p.scaleX, displayHeight: p.displayHeight,
-      frameSize: [p.frame.realWidth, p.frame.realHeight], frame: p.frame.name, labels,
+      frameSize: [p.frame.realWidth, p.frame.realHeight], sourceBody: [p.body.sourceWidth, p.body.sourceHeight], frame: p.frame.name, labels,
       collision: [s.map.solids, s.map.oneWays].map(group => group.getChildren().map(object => ({ x: object.body.x, y: object.body.y, width: object.body.width, height: object.body.height }))), map: { width: s.map.width, height: s.map.height } };
   });
 }
@@ -161,6 +166,28 @@ function playerAnchors(snapshot) {
   return { body: snapshot.player.body, x: snapshot.player.x, y: snapshot.player.y,
     feet: snapshot.player.feet, origin: snapshot.player.origin, displayHeight: snapshot.player.displayHeight, labels: [...snapshot.labels].sort((a, b) => a.depth - b.depth || a.x - b.x || a.y - b.y || a.text.localeCompare(b.text)) };
 }
+async function movingAppearance(page) {
+  return page.evaluate(() => {
+    const p = window.__scene.player, body = p.body;
+    window.__xt.art.applyAtlas('player_sword_m');
+    body.position.x += 13; body.position.y -= 9; body.setVelocity(130, -200);
+    const before = { x: body.x, y: body.y, velocity: { ...body.velocity } };
+    p.getAppearance = () => 'art_test_2x'; p.syncAppearance();
+    const after = { x: body.x, y: body.y, velocity: { ...body.velocity } };
+    const key = p.texture.key;
+    p.getAppearance = () => undefined; p.syncAppearance();
+    const reverted = { x: body.x, y: body.y, velocity: { ...body.velocity } };
+    body.setVelocity(0, 0); body.updateFromGameObject();
+    return { before, after, reverted, key };
+  });
+}
+function variantFixture(key, atlas, anims) {
+  return {
+    atlas: { ...atlas, frames: Object.fromEntries(Object.entries(atlas.frames).map(([name, frame]) => [name.replace('player_sword_m_', `${key}_`), frame])) },
+    anims: { ...anims, atlas: key, anims: anims.anims.map(animation => ({ ...animation,
+      key: animation.key.replace(anims.atlas, key), frames: animation.frames.map(frame => frame.replace('player_sword_m_', `${key}_`)) })) }
+  };
+}
 
 let baseline, beforeServer, afterServer, browser;
 const errors = [], metrics = {};
@@ -186,11 +213,17 @@ try {
   const beforeImage = await screenshot(beforePage);
   const afterState = await prepare(afterPage, afterServer.resolvedUrls.local[0]);
   const afterImage = await screenshot(afterPage);
-  equal(afterState, beforeState, '旧素材 world body / 脚底 / 所有名牌及 HUD 原位回退');
+  equal(afterState.frameSize, [192, 192], '正式主角 v2 画布不是 192×192');
+  equal(afterState.scale, 0.5, '正式主角 v2 displayScale 不是 0.5');
+  equal(afterState.sourceBody, [52, 116], '正式主角 v2 碰撞体不是源像素 52×116');
+  equal(afterState.body, { x: 307, y: 550, width: 26, height: 58, bottom: 608 }, 'v2 碰撞体换算后不是旧世界尺寸/位置');
+  equal([afterState.x, afterState.y, afterState.feet, afterState.origin, afterState.displayHeight],
+    [320, 608, 608, [0.5, 1], 96], 'v2 脚底线/原点/显示高度改变');
+  equal(afterState, beforeState, '主角 v2 无覆盖时 world body / 脚底 / 所有名牌及 HUD 与基线不同');
   const differentPixels = pixelDifference(beforeImage, afterImage);
   await fs.writeFile(path.join(projectRoot, 'dist/art-engine-before.png'), beforeImage);
   await fs.writeFile(path.join(projectRoot, 'dist/art-engine-after.png'), afterImage);
-  equal(differentPixels, 0, `没有新配置时截图不同：${differentPixels} 像素`);
+  equal(differentPixels, 0, `主角 v2 没有测试覆盖时截图不同：${differentPixels} 像素`);
   check(await afterPage.evaluate(() => !!window.__xt.art), '测试桥缺少 __xt.art');
 
   const fixturesPage = await newPage();
@@ -198,25 +231,61 @@ try {
   await fixturesPage.route('**/art/tiles/tiles_qingyun.png', route => route.fulfill({ contentType: 'image/png', path: path.join(fixtureRoot, 'tiles.png') }));
   await fixturesPage.route('**/art/tiles/tiles_qingyun.json', route => route.fulfill({ contentType: 'application/json', body: JSON.stringify(tilesMetadata) }));
   await prepare(fixturesPage, afterServer.resolvedUrls.local[0]);
-  const oneX = await fixturesPage.evaluate(() => window.__xt.art.snapshot());
-  const oneXImage = await screenshot(fixturesPage);
+  const v2 = await fixturesPage.evaluate(() => window.__xt.art.snapshot());
+
+  // 旧 96 三件套独立路由；正式主角 v2 不再与旧素材的 nearest 复制图比较像素。
+  const legacyPage = await newPage();
+  for (const [extension, fixture] of [['png', 'player-1x.png'], ['json', 'player-1x.atlas.json'], ['anims.json', 'player-1x.anims.json']]) {
+    await legacyPage.route(`**/art/sprites/player_sword_m.${extension}`, route => route.fulfill({
+      contentType: extension === 'png' ? 'image/png' : 'application/json', path: path.join(fixtureRoot, fixture) }));
+  }
+  await legacyPage.route('**/art/tiles/tiles_qingyun.png', route => route.fulfill({ contentType: 'image/png', path: path.join(fixtureRoot, 'tiles.png') }));
+  await legacyPage.route('**/art/tiles/tiles_qingyun.json', route => route.fulfill({ contentType: 'application/json', body: JSON.stringify(tilesMetadata) }));
+  const legacyState = await prepare(legacyPage, afterServer.resolvedUrls.local[0]);
+  equal([legacyState.frameSize, legacyState.scale, legacyState.sourceBody], [[96, 96], 1, [26, 58]], '旧 atlas 缺少缩放/bodySize 时没有回退 1x');
+  const oneX = await legacyPage.evaluate(() => window.__xt.art.snapshot());
+  equal(playerAnchors(v2), playerAnchors(oneX), '正式 v2 相比旧 96 改变 world body / 脚底线 / 所有名牌及 HUD');
+  equal(v2.collision, oneX.collision, '正式 v2 相比旧 atlas 改变地图碰撞体');
+  const oneXImage = await screenshot(legacyPage);
   const anims = await json('player-2x.anims.json'), atlas = await json('player-2x.atlas.json'), image = await pngUrl('player-2x.png');
-  await fixturesPage.evaluate(async ({ image, atlas, anims }) => {
+  await legacyPage.evaluate(async ({ image, atlas, anims }) => {
     await window.__xt.art.loadAtlas(anims.atlas, image, atlas, anims);
     window.__xt.art.applyAtlas(anims.atlas); window.__scene.player.body.updateFromGameObject();
   }, { image, atlas, anims });
-  const twoX = await fixturesPage.evaluate(() => window.__xt.art.snapshot());
+  const twoX = await legacyPage.evaluate(() => window.__xt.art.snapshot());
   equal(twoX.player.frameSize, [192, 192], '2x 画布未逐 key 读取');
   equal(twoX.player.displayScale, 0.5, 'displayScale 未读取');
   equal(playerAnchors(twoX), playerAnchors(oneX), '2x 主角 body / 脚底 / 名牌锚点变化');
-  equal(await fixturesPage.evaluate(() => [window.__scene.player.body.sourceWidth, window.__scene.player.body.sourceHeight]), [52, 116], 'bodySize 不是源像素2x');
-  equal(await fixturesPage.evaluate(() => window.__scene.player.texture.source[0].scaleMode), 1, 'pixelArt 开关未使用 nearest');
-  const duplicatePixels = pixelDifference(oneXImage, await screenshot(fixturesPage));
+  equal(await legacyPage.evaluate(() => [window.__scene.player.body.sourceWidth, window.__scene.player.body.sourceHeight]), [52, 116], 'bodySize 不是源像素2x');
+  equal(await legacyPage.evaluate(() => window.__scene.player.texture.source[0].scaleMode), 1, 'pixelArt 开关未使用 nearest');
+  const duplicatePixels = pixelDifference(oneXImage, await screenshot(legacyPage));
   metrics.duplicate2xPixelDifference = duplicatePixels;
   // Canvas roundPixels 的drawImage额外0.5源像素随displayScale变化；补充的整图等同只适用于WebGL。
-  if (await fixturesPage.evaluate(() => window.__scene.game.renderer.type !== 1)) equal(duplicatePixels, 0, 'nearest 2x 测试夹具缩至0.5后像素不一致');
-  await fixturesPage.evaluate(({ key }) => window.__xt.art.applyAtlas(key, { pixelArt: false }), { key: anims.atlas });
-  equal(await fixturesPage.evaluate(() => window.__scene.player.texture.source[0].scaleMode), 0, '线性过滤开关未生效');
+  if (await legacyPage.evaluate(() => window.__scene.game.renderer.type !== 1)) equal(duplicatePixels, 0, '旧 96 的 nearest 2x 测试夹具缩至0.5后像素不一致');
+  await legacyPage.evaluate(({ key }) => window.__xt.art.applyAtlas(key, { pixelArt: false }), { key: anims.atlas });
+  equal(await legacyPage.evaluate(() => window.__scene.player.texture.source[0].scaleMode), 0, '线性过滤开关未生效');
+  const legacyMoving = await movingAppearance(legacyPage);
+  equal(legacyMoving.key, anims.atlas, '旧 1x 移动中未通过真正换装切到 2x');
+  equal(legacyMoving.after, legacyMoving.before, '旧 1x→2x 换装回卷当前帧走/跳位移或速度');
+  equal(legacyMoving.reverted, legacyMoving.before, '旧 2x→1x 换装回卷当前帧走/跳位移或速度');
+  await legacyPage.evaluate(() => window.__xt.art.applyAtlas('player_sword_m'));
+  const legacyReverted = await legacyPage.evaluate(() => window.__xt.art.snapshot());
+  equal([legacyReverted.player.frameSize, legacyReverted.player.displayScale], [[96, 96], 1], '旧 96 atlas 回切默认 displayScale 不是 1');
+  equal(playerAnchors(legacyReverted), playerAnchors(oneX), '旧 1x/2x 混用回切改变锚点');
+  const noMetadata = await legacyPage.evaluate(() => {
+    window.__scene.cache.json.remove('player_sword_m_anims');
+    window.__xt.art.applyAtlas('player_sword_m');
+    return window.__xt.art.snapshot();
+  });
+  equal([noMetadata.player.frameSize, noMetadata.player.displayScale], [[96, 96], 1], '缺少元数据时未读取旧 atlas 帧尺寸/默认缩放');
+  equal(playerAnchors(noMetadata), playerAnchors(oneX), '无元数据旧 atlas 回退改变 body / 脚底 / 名牌');
+  await legacyPage.close();
+
+  await fixturesPage.evaluate(async ({ image, atlas, anims }) => {
+    await window.__xt.art.loadAtlas(anims.atlas, image, atlas, anims);
+    window.__xt.art.applyAtlas(anims.atlas);
+  }, { image, atlas, anims });
+  equal(playerAnchors(await fixturesPage.evaluate(() => window.__xt.art.snapshot())), playerAnchors(v2), 'v2 与同规格测试外观互换改变锚点');
   const originalRates = await fixturesPage.evaluate(({ key }) => {
     const s = window.__scene;
     return ['idle', 'walk', 'jump', 'djump', 'rope', 'ladder', 'attack', 'hit', 'die', 'sit', 'gather'].map(action => {
@@ -225,43 +294,42 @@ try {
     });
   }, { key: anims.atlas });
   check(originalRates.every(([oldCount, oldRate, newCount, newRate]) => oldCount === newCount && oldRate === newRate), '2x 帧数/帧率改变');
-  const moving = await fixturesPage.evaluate(() => {
-    const p = window.__scene.player, body = p.body;
-    window.__xt.art.applyAtlas('player_sword_m');
-    body.position.x += 13; body.position.y -= 9; body.setVelocity(130, -200);
-    const before = { x: body.x, y: body.y, velocity: { ...body.velocity } };
-    p.getAppearance = () => 'art_test_2x'; p.syncAppearance();
-    const after = { x: body.x, y: body.y, velocity: { ...body.velocity } };
-    const key = p.texture.key;
-    p.getAppearance = () => undefined; p.syncAppearance();
-    const reverted = { x: body.x, y: body.y, velocity: { ...body.velocity } };
-    body.setVelocity(0, 0); body.updateFromGameObject();
-    return { before, after, reverted, key };
-  });
+  const moving = await movingAppearance(fixturesPage);
   equal(moving.key, anims.atlas, '移动中未通过真正换装切到 2x');
   equal(moving.after, moving.before, '2x 换装回卷当前帧走/跳位移或速度');
-  equal(moving.reverted, moving.before, '回到 1x 回卷当前帧走/跳位移或速度');
+  equal(moving.reverted, moving.before, '回到正式 v2 回卷当前帧走/跳位移或速度');
   await fixturesPage.evaluate(() => window.__xt.art.applyAtlas('player_sword_m'));
   const reverted = await fixturesPage.evaluate(() => window.__xt.art.snapshot());
-  equal(reverted.player.displayScale, 1, '96x96 默认 displayScale 不是 1');
-  equal(playerAnchors(reverted), playerAnchors(oneX), '1x/2x 混用回切改变锚点');
+  equal([reverted.player.frameSize, reverted.player.displayScale], [[192, 192], 0.5], '正式 v2 回切未恢复 192×192 / 0.5');
+  equal(playerAnchors(reverted), playerAnchors(v2), '正式 v2 回切改变锚点');
 
-  // 在测试 TextureManager 内替换六套同帧变体，走真正 syncPlayerAppearance。
+  // 旧 96 外观回退 v2；六套同规格重画变体走真正 syncPlayerAppearance 自动接回。
+  const legacyAtlas = await json('player-1x.atlas.json'), legacyAnims = await json('player-1x.anims.json'), legacyImage = await pngUrl('player-1x.png');
   for (const appearance of ['fox_robe', ...['tianjian', 'taixu', 'lingfu', 'youying', 'wanshou'].map(area => `outfit_${area}_1`)]) {
     const key = `player_sword_m__${appearance}`;
-    const variantAtlas = { ...atlas, frames: Object.fromEntries(Object.entries(atlas.frames).map(([name, frame]) => [name.replace('player_sword_m_', `${key}_`), frame])) };
-    const variantAnims = { ...anims, atlas: key, anims: anims.anims.map(animation => ({ ...animation,
-      key: animation.key.replace(anims.atlas, key), frames: animation.frames.map(frame => frame.replace('player_sword_m_', `${key}_`)) })) };
+    const oldVariant = variantFixture(key, legacyAtlas, legacyAnims);
+    const outdated = await fixturesPage.evaluate(async ({ key, appearance, image, atlas, anims }) => {
+      const s = window.__scene;
+      window.__xt.art.applyAtlas('player_sword_m');
+      if (s.textures.exists(key)) s.textures.remove(key);
+      await window.__xt.art.loadAtlas(key, image, atlas, anims);
+      s.player.getAppearance = () => appearance; s.player.syncAppearance(); s.player.body.updateFromGameObject();
+      return window.__xt.art.snapshot();
+    }, { key, appearance, image: legacyImage, ...oldVariant });
+    equal(outdated.player.key, 'player_sword_m', `${appearance} 旧 96 外观未回退正式 v2 本体`);
+    equal([outdated.player.frameSize, outdated.player.displayScale], [[192, 192], 0.5], `${appearance} 旧 atlas 回退未保留 v2 规格`);
+    equal(playerAnchors(outdated), playerAnchors(v2), `${appearance} 旧 atlas 回退改变 body/脚底/名牌`);
+    const variant = variantFixture(key, atlas, anims);
     const result = await fixturesPage.evaluate(async ({ key, appearance, image, atlas, anims }) => {
       const s = window.__scene; window.__xt.art.applyAtlas('player_sword_m');
       if (s.textures.exists(key)) s.textures.remove(key);
       await window.__xt.art.loadAtlas(key, image, atlas, anims);
       s.player.getAppearance = () => appearance; s.player.syncAppearance(); s.player.body.updateFromGameObject();
       return window.__xt.art.snapshot();
-    }, { key, appearance, image, atlas: variantAtlas, anims: variantAnims });
+    }, { key, appearance, image, ...variant });
     equal(result.player.key, key, `${appearance} 未走同帧换装`);
     equal(result.player.displayScale, 0.5, `${appearance} 未继承逐 key displayScale`);
-    equal(playerAnchors(result), playerAnchors(oneX), `${appearance} body/名牌变化`);
+    equal(playerAnchors(result), playerAnchors(v2), `${appearance} body/名牌变化`);
   }
   await fixturesPage.evaluate(() => { window.__scene.player.getAppearance = () => undefined; window.__xt.art.applyAtlas('player_sword_m'); });
 
@@ -270,7 +338,8 @@ try {
     const s = window.__scene;
     return { terrain: s.children.list.filter(child => child.type === 'TilemapLayer').flatMap(layer => layer.layer.data.flatMap(row => row
       .filter(tile => tile.index >= 0).map(tile => ({ x: tile.x, y: tile.y, frame: tile.index })))),
-      climbables: s.children.list.filter(child => (child.displayTexture?.key ?? child.texture?.key) === 'tiles_qingyun_ss')
+      // UI-CAM 的 HUD 底条复用同一纹理，位于地图底边之外，不属于梯绳。
+      climbables: s.children.list.filter(child => (child.displayTexture?.key ?? child.texture?.key) === 'tiles_qingyun_ss' && child.y < s.map.height)
         .map(child => ({ x: child.x, y: child.y, frame: Number(child.displayFrame?.name ?? child.frame.name) })) };
   });
   const hash = (x, y) => Math.imul(Math.imul(Math.floor(x), 73856093) ^ Math.imul(Math.floor(y), 19349663), 2654435761) >>> 0;
@@ -302,7 +371,7 @@ try {
     equal(layers[index].y, (fy === 0 ? 720 : beforeState.map.height) + background.layers[layer].yOffset, `${layer} yOffset 未读配置`);
   }
   const foreground = layers.find(layer => layer.key === 'art_test_fg');
-  check(foreground.depth > oneX.player.depth || foreground.depth > 10, '前景没有覆盖角色');
+  check(foreground.depth > v2.player.depth || foreground.depth > 10, '前景没有覆盖角色');
   check(foreground.depth < 30, '前景挡住交互提示/HUD');
   await fixturesPage.evaluate(config => window.__xt.art.rebuildBackground(config), { ...background, layers: Object.fromEntries(Object.entries(background.layers).filter(([name]) => name !== 'fg')) });
   const withoutForeground = await screenshot(fixturesPage);
