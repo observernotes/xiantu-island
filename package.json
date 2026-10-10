@@ -5,9 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "npm run sync && vite --host 0.0.0.0 --port 5173",
-    "build": "npm run sync && tsc --noEmit && vite build",
+    "build": "npm run sync && tsc --noEmit && VITE_XT_TEST=0 vite build && node scripts/xt-leak-check.mjs",
+    "build:test": "npm run sync && tsc --noEmit && VITE_XT_TEST=1 vite build",
     "preview": "vite preview --host 0.0.0.0 --port 4173",
     "test:overflow": "node scripts/overflow-test.mjs",
+    "test:xt": "timeout 120s node scripts/xt-test.mjs",
     "test:v05": "timeout 60s node scripts/v05-test.mjs",
     "test:appearance": "timeout 60s node scripts/appearance-test.mjs",
     "test:classes": "timeout 120s node scripts/classes-test.mjs",

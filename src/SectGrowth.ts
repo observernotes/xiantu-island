@@ -1,3 +1,4 @@
+import { gameNow } from './GameClock';
 import { ITEMS, NPCS, REALMS, SECT_RANKS, SECT_DONATIONS, SHOPS, inPhase, t, type ItemDef, type NpcDef, type SectRankDef, type SectRanksConfig, type SectShopGood, type ShopEntry, type SectDonationsConfig, type SectDonationOffer } from './data';
 import { SKILLS, type SkillDef } from './skills';
 import { dailyQuestDay } from './DailyQuests';
@@ -69,7 +70,7 @@ export function validSectGrowthState(state: unknown): state is SectGrowthState {
 }
 let transactionSequence = 0;
 export function newSectTransactionId() {
-  return `sect:${typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function' ? crypto.randomUUID() : `${Date.now()}:${++transactionSequence}:${Math.random().toString(36).slice(2)}`}`;
+  return `sect:${typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function' ? crypto.randomUUID() : `${gameNow()}:${++transactionSequence}:${Math.random().toString(36).slice(2)}`}`;
 }
 
 /** 职位与贡献交易不调用会各自保存的贡献接口；变更和收据只保存一次。 */
@@ -127,7 +128,7 @@ export class SectGrowth {
   /** enabled 必须显式打开；待填、不一致门槛与后续档都不通过本期配置检查。 */
   private ranksReady() {
     const table = this.config.ranks, rules = table.rules, order = rules.rankOrder;
-    if (table.enabled !== true || rules.initialRank !== 'outer_disciple' || rules.v05MaxRank !== 'direct_disciple'
+    if (!this.prog.configFlag('sect_ranks.enabled', table.enabled) || rules.initialRank !== 'outer_disciple' || rules.v05MaxRank !== 'direct_disciple'
       || rules.contributionBasis !== 'current_balance' || rules.promotionSpendsContribution !== false || rules.demoteOnSpend !== false
       || !Array.isArray(order) || new Set(order).size !== order.length
       || table.ranks.length !== order.length || new Set(table.ranks.map(rank => rank.id)).size !== table.ranks.length
@@ -360,11 +361,11 @@ export class SectGrowth {
       && goods.some(good => record(good) && good.item === offer.item));
   }
 
-  donations(npcId: string, now = Date.now()): SectDonationCatalog {
+  donations(npcId: string, now = gameNow()): SectDonationCatalog {
     const access = this.service(npcId, 'sect_donation');
     if (!access.ok) return { ...access, entries: [] };
     const table = this.config.donations;
-    if (!Number.isFinite(now) || !record(table) || table.enabled !== true || typeof table.version !== 'string' || !table.version
+    if (!Number.isFinite(now) || !record(table) || !this.prog.configFlag('sect_donations.enabled', table.enabled) || typeof table.version !== 'string' || !table.version
       || !Array.isArray(table.offers) || !this.ranksReady()
       || !table.offers.every(offer => record(offer) && typeof offer.id === 'string' && !!offer.id)
       || new Set(table.offers.map(offer => offer.id)).size !== table.offers.length) return { ...pending(), entries: [] };
@@ -387,7 +388,7 @@ export class SectGrowth {
     return entries.length ? { ok: true, key: '', entries } : { ...pending(), entries };
   }
 
-  donate(npcId: string, offerId: string, transactionId: string, previewDay: string, now = Date.now()): SectGrowthResult {
+  donate(npcId: string, offerId: string, transactionId: string, previewDay: string, now = gameNow()): SectGrowthResult {
     const access = this.service(npcId, 'sect_donation');
     if (!access.ok) return access;
     const key = 'sect.donation.complete';

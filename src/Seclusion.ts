@@ -1,8 +1,9 @@
+import { gameNow } from './GameClock';
 import { DENSITY_REF, REALMS, SECT_SECLUSION, SECLUSION_RULES } from './data';
 import type { Progress } from './Progress';
 
 /** 本地日历日，不把游戏内闭关年份算进现实日上限。 */
-export function realDay(now = Date.now()) {
+export function realDay(now = gameNow()) {
   const d = new Date(now);
   return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
 }
@@ -19,7 +20,7 @@ export class Seclusion {
     });
   }
 
-  check(request: SeclusionRequest, years: number, now = Date.now()): 'locked' | 'cost' | 'daily' | 'life' | null {
+  check(request: SeclusionRequest, years: number, now = gameNow()): 'locked' | 'cost' | 'daily' | 'life' | null {
     if (this.locked(request) || !SECT_SECLUSION.options.includes(years)) return 'locked';
     const cost = SECT_SECLUSION.contributionCost[String(years)];
     if (!Number.isFinite(cost) || this.prog.sectContribution < cost) return 'cost';
@@ -31,7 +32,7 @@ export class Seclusion {
   }
 
   /** 配表没有现实等待时长；确认后逐年结算游戏内年数并立即落盘。 */
-  settle(request: SeclusionRequest, years: number, now = Date.now()) {
+  settle(request: SeclusionRequest, years: number, now = gameNow()) {
     const reason = this.check(request, years, now);
     if (reason) return { ok: false as const, reason };
     const p = this.prog;

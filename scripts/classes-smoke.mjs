@@ -282,7 +282,7 @@ try {
           await page.waitForFunction(id => {
             const scene = window.__scene;
             return Date.now() >= (scene.prog.skillCooldowns[id]?.readyAt ?? 0)
-              && scene.time.now >= (scene.combat.cds.get(id)?.readyAt ?? 0);
+              && Date.now() >= (scene.combat.cds.get(id)?.readyAt ?? 0);
           }, id, { timeout: 15000 });
         }
         const slot = await page.evaluate(({ id, recast }) => {
@@ -296,7 +296,7 @@ try {
               scene.dialog.close(); scene.regenMp = () => {}; scene.prog.mp = scene.prog.maxMp;
               scene.player.state2 = 'ground'; scene.player.skillRooted = false; scene.player.attackLockUntil = 0;
               const checkpoint = { deadline, initialRemaining, readyAt: scene.prog.skillCooldowns[id]?.readyAt,
-                remaining: scene.combat.cds.get(id)?.readyAt - scene.time.now };
+                remaining: scene.combat.cds.get(id)?.readyAt - Date.now() };
               // 与恢复快照同一时刻重试，避免RPC在真实冷却到期后才送来按键。
               let casts = 0;
               const countCast = event => { if (event.id === id) casts++; };

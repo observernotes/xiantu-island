@@ -1,3 +1,4 @@
+import { gameNow } from './GameClock';
 import { QUESTS, QUEST_ORDER, NPCS, SCRIPTS, ITEMS, MONSTERS, Line, QuestDef, inPhase, t } from './data';
 import type { Progress } from './Progress';
 import { classForQuest } from './classes';
@@ -8,7 +9,20 @@ export type NpcMark = '!' | '?' | '…' | null;
 
 /** 任务系统：串行任务链，状态存在 Progress.quests 里。字段见 balance/quests.json */
 export class QuestSystem {
-  constructor(private prog: Progress, private now: () => number = () => Date.now()) { this.refreshDaily(); }
+  private completionListeners = new Set<(reward: QuestReward) => void>();
+  constructor(private prog: Progress, private now: () => number = () => gameNow()) { this.refreshDaily(); }
+
+  /** 交付成功后通知订阅者；返回的函数可解除订阅。 */
+  onCompleted(listener: (reward: QuestReward) => void): () => void {
+    this.completionListeners.add(listener);
+    return () => { this.completionListeners.delete(listener); };
+  }
+  private notifyCompleted(reward: QuestReward): QuestReward {
+    for (const listener of [...this.completionListeners]) {
+      try { listener(reward); } catch (error) { console.error(error); }
+    }
+    return reward;
+  }
 
   refreshDaily() { return this.prog.resetDailyQuests(this.now()); }
 
@@ -152,9 +166,10 @@ export class QuestSystem {
     this.prog.quests[id].state = 'done';
     if (q.daily) {
       const daily = this.prog.settleSectDailyQuest(id, now);
-      return daily ? { quest: q, broke, daily } : undefined;
+      return daily ? this.notifyCompleted({ quest: q, broke, daily }) : undefined;
     }
-    return { quest: q, broke };
+    this.prog.save();
+    return this.notifyCompleted({ quest: q, broke });
   }
 
   onKill(monsterId: string) {
@@ -166,7 +181,11 @@ export class QuestSystem {
     if (changed) this.prog.save();   // G8：击杀数立即存档
   }
   onReach(target: string) {
-    for (const id of this.activeIds) if (QUESTS[id].objectives.some(o => o.type === 'reach' && o.target === target)) this.prog.quests[id].reached = true;
+    let changed = false;
+    for (const id of this.activeIds) if (!this.prog.quests[id].reached && QUESTS[id].objectives.some(o => o.type === 'reach' && o.target === target)) {
+      this.prog.quests[id].reached = true; changed = true;
+    }
+    if (changed) this.prog.save();
   }
   /** 完整试炼控制器胜利时调用；进图、局部机关、失败均不能算通关。 */
   onTrialComplete(trialId: string) {

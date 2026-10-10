@@ -1,3 +1,4 @@
+import { gameNow } from './GameClock';
 import Phaser from 'phaser';
 import { ITEMS, t } from './data';
 import { FriendlySummons, type FriendlySummon } from './FriendlySummons';
@@ -52,12 +53,12 @@ export class SkillCombat {
 
   constructor(private scene: GameScene) {
     this.pets = new FriendlySummons(scene);
-    const now = Date.now();
+    const now = gameNow();
     for (const [id, cd] of Object.entries(scene.prog.skillCooldowns)) {
       const def = SKILLS[id];
       if (!def || !scene.prog.ownsSkill(def) || skillNumber(def, 'cooldownMs', scene.prog.skillLevel(id)) <= 0) continue;
       const remaining = cd.readyAt - now;
-      if (remaining > 0) this.cds.set(id, { readyAt: scene.time.now + remaining, total: cd.total });
+      if (remaining > 0) this.cds.set(id, { readyAt: cd.readyAt, total: cd.total });
     }
   }
 
@@ -70,10 +71,10 @@ export class SkillCombat {
     const def = SKILLS[id];
     const level = prog.skillLevel(id);
     if (!def || !prog.ownsSkill(def) || level <= 0 || def.type === 'passive') return;
-    const now = this.scene.time.now;
+    const now = gameNow();
     const cd = this.cds.get(id);
     if (cd && now < cd.readyAt) { this.hint('skill.cooldown', {}, '#d0d0d0'); return; }
-    if (player.skillRooted && now < player.attackLockUntil) return;
+    if (player.skillRooted && this.scene.time.now < player.attackLockUntil) return;
     const cost = prog.skillMpCost(id);
     if (prog.mp + 1e-6 < cost) { this.hint('sys.mp_low', {}, '#8ec8ff'); return; }
     // 符纸还没有登记时保留射击，待制符配表上线后自动启用消耗与免耗判定。
@@ -88,7 +89,7 @@ export class SkillCombat {
     if (total > 0) this.cds.set(id, { readyAt: now + total, total });
     // 独立冷却跨地图/刷新保留；剑修无独立冷却的后摇沿用旧行为。
     const persistentCooldown = skillNumber(def, 'cooldownMs', level) > 0;
-    if (persistentCooldown) prog.skillCooldowns[id] = { readyAt: Date.now() + total, total };
+    if (persistentCooldown) prog.skillCooldowns[id] = { readyAt: now + total, total };
     this.perform(def, level);
     if (persistentCooldown) prog.save();
     this.scene.events.emit('skill:cast', { id, level, cost, cooldownMs: total });
@@ -97,7 +98,7 @@ export class SkillCombat {
   update(_time: number, delta: number) {
     this.stepQi(delta / 1000);
     this.pets.update(this.scene.time.now);
-    const now = Date.now();
+    const now = gameNow();
     const prog = this.scene.prog;
     for (const b of [...prog.buffs]) {
       const left = b.expireAt - now;
@@ -137,7 +138,7 @@ export class SkillCombat {
     const cast: SkillCast = { hits: new Set(), maxTargets: Math.max(1, skillNumber(def, 'maxTargets', level)),
       crit: Math.random() < Math.min(1, Math.max(0, this.scene.prog.passiveBonus('critRate'))) };
     if (def.damageRatio > 0 && act.kind !== 'summon') {
-      const cloak = this.scene.prog.buffs.find(b => b.expireAt > Date.now() && SKILLS[b.id]?.effects?.nextCastCrit);
+      const cloak = this.scene.prog.buffs.find(b => b.expireAt > gameNow() && SKILLS[b.id]?.effects?.nextCastCrit);
       if (cloak) {
         cast.crit = true;
         this.scene.prog.buffs = this.scene.prog.buffs.filter(b => b !== cloak);
@@ -288,7 +289,7 @@ export class SkillCombat {
 
   private applyBuff(def: SkillDef, level: number) {
     const dur = Math.max(0, skillNumber(def, 'durationMs', level));
-    const expireAt = Date.now() + dur;
+    const expireAt = gameNow() + dur;
     const found = this.scene.prog.buffs.find(b => b.id === def.id);
     if (found) { found.expireAt = expireAt; found.warned = false; }
     else this.scene.prog.buffs.push({ id: def.id, expireAt, warned: false });

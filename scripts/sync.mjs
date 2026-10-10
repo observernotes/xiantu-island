@@ -26,6 +26,11 @@ const atlases = fs.readdirSync(spritesDir).filter(f => f.endsWith('.anims.json')
   return { key, kind: j.kind ?? (key.split('_')[0] === 'mon' ? 'monster' : key.split('_')[0]), origin: j.origin ?? [0.5, 1], bodySize: j.bodySize ?? null };
 }).filter(Boolean);
 const areas = fs.readdirSync(path.join(out, 'tiles')).map(f => f.match(/^tiles_(\w+)\.png$/)?.[1]).filter(Boolean).sort();
+// 图块变体不一定提供背景；只登记实际交付的背景，避免将缺省层当成待加载图片。
+const backgrounds = areas.flatMap(area => ['far', 'mid'].flatMap(layer => {
+  const key = `bg_${area}_${layer}`, file = `tiles/${key}.png`;
+  return fs.existsSync(path.join(out, file)) ? [{ key, path: `art/${file}` }] : [];
+}));
 // 未验收的 _pending/ 不会拷到 public；技能 @64 缺图时不进入加载清单。
 const skills = JSON.parse(fs.readFileSync(path.join(root, 'balance/skills.json'), 'utf8')).skills;
 const missingSkillIcons = [];
@@ -49,6 +54,6 @@ function findRankIcons(dir) {
 }
 findRankIcons(path.join(out, 'icons'));
 fs.mkdirSync(path.join(here, 'src/gen'), { recursive: true });
-fs.writeFileSync(path.join(here, 'src/gen/assets.json'), JSON.stringify({ atlases, areas, skillIcons, sectRankIcons }, null, 1));
+fs.writeFileSync(path.join(here, 'src/gen/assets.json'), JSON.stringify({ atlases, areas, backgrounds, skillIcons, sectRankIcons }, null, 1));
 console.log(`manifest: ${atlases.length} 个图集，${skillIcons.length} 个技能 @64 图标，区域 ${areas.join('/')}`);
 console.log('synced art from', root, '(' + dataMode(here) + ')');

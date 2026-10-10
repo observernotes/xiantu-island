@@ -1,4 +1,5 @@
-import { GROWTH, EXP_TO_NEXT, MAX_LEVEL, ITEMS, BREAKTHROUGH_LEVELS, BREAKTHROUGH, REALMS, QUESTS, LIFESPAN, RECIPES, ALCHEMY_RULES, SECT_RANKS, PillQuality, QuestDef } from './data';
+import { gameNow } from './GameClock';
+import { GROWTH, EXP_TO_NEXT, MAX_LEVEL, ITEMS, BREAKTHROUGH_LEVELS, BREAKTHROUGH, REALMS, QUESTS, LIFESPAN, RECIPES, ALCHEMY_RULES, SECT_RANKS, TILED_MAPS, PillQuality, QuestDef } from './data';
 import { validSectGrowthState, type SectGrowthState } from './SectGrowth';
 import { HOTBAR_SLOTS, QUEST_SKILL_BACKFILL, SKILLS, SKILL_RULES, SkillDef, actOf, skillNumber, spEarnedFor, spBand } from './skills';
 import { CLASS_RULES, classDef, classForQuest, classGiftSkills, classMinLevel, classRobe, skillsForClass } from './classes';
@@ -8,6 +9,58 @@ import { isBrewSession, type BrewSession } from './Alchemy';
 /** 自动加点：加点界面做好前每级自动分配（演武堂/天机阁确认：根骨 2、身法 2、悟性 1） */
 export const AUTO_STATS = { rootBone: 2, agility: 2, insight: 1, spirit: 0 } as Record<string, number>;
 const SAVE_KEY = 'xiantu_save_v1';
+export interface SavePosition { mapId: string; x: number; y: number }
+const flagKey = (key: string) => typeof key === 'string' && /^[a-zA-Z][\w.-]*$/.test(key)
+  && !key.split('.').some(part => ['__proto__', 'prototype', 'constructor'].includes(part));
+const dataRecord = (value: unknown): value is Record<string, unknown> => !!value && typeof value === 'object' && !Array.isArray(value);
+const safeKey = (key: string) => !['__proto__', 'prototype', 'constructor'].includes(key);
+const nonnegative = (value: unknown): value is number => typeof value === 'number' && Number.isFinite(value) && value >= 0;
+const count = (value: unknown): value is number => nonnegative(value) && Number.isSafeInteger(value);
+const numbers = (value: unknown, integer = true) => dataRecord(value)
+  && Object.entries(value).every(([key, n]) => safeKey(key) && (integer ? count(n) : nonnegative(n)));
+const strings = (value: unknown) => Array.isArray(value) && value.every(entry => typeof entry === 'string');
+
+/** 导入允许旧档缺字段；已有核心状态必须可安全参与当前游戏计算。 */
+function validSaveData(saved: unknown): saved is Record<string, unknown> {
+  if (!dataRecord(saved)) return false;
+  const has = (key: string) => Object.prototype.hasOwnProperty.call(saved, key);
+  if (has('level') && (!count(saved.level) || saved.level < 1 || saved.level > MAX_LEVEL)) return false;
+  for (const key of ['exp', 'hp', 'mp', 'stones', 'age', 'ageUpdatedAt', 'overflowExp', 'unstableUntil', 'lastOverflowReturned', 'alchemyExp']) {
+    if (has(key) && !nonnegative(saved[key])) return false;
+  }
+  for (const key of ['sectContribution', 'classVersion', 'classRefundSp', 'seclusionYearsToday', 'breakthroughFails', 'breakthroughBonusLevels', 'alchemyLevel']) {
+    if (has(key) && !count(saved[key])) return false;
+  }
+  for (const key of ['inventory', 'skills', 'skillGifted']) if (has(key) && !numbers(saved[key])) return false;
+  for (const key of ['skillMastery', 'gatherRespawnAt']) if (has(key) && !numbers(saved[key], false)) return false;
+  for (const key of ['job', 'name', 'rootElement', 'sectDailyContributionDay', 'dailyQuestResetDay', 'seclusionDay']) {
+    if (has(key) && typeof saved[key] !== 'string') return false;
+  }
+  if (has('sectRank') && saved.sectRank !== null && typeof saved.sectRank !== 'string') return false;
+  if (has('unstableRatio') && (typeof saved.unstableRatio !== 'number' || !Number.isFinite(saved.unstableRatio))) return false;
+  if (has('equip') && (!dataRecord(saved.equip) || !Object.entries(saved.equip).every(([key, value]) => safeKey(key) && typeof value === 'string'))) return false;
+  for (const key of ['classRewardClaims', 'completedTrials', 'learnedRecipes', 'tutorialsSeen', 'sectDailyContributionClaims', 'realmRewards', 'unstableStats']) {
+    if (has(key) && !strings(saved[key])) return false;
+  }
+  if (has('hotbar') && (!Array.isArray(saved.hotbar) || !saved.hotbar.every(value => value === null || typeof value === 'string'))) return false;
+  if (has('flags') && (!dataRecord(saved.flags) || !Object.entries(saved.flags).every(([key, value]) => flagKey(key) && typeof value === 'boolean'))) return false;
+  if (has('position') && saved.position !== null) {
+    const p = saved.position;
+    if (!dataRecord(p) || typeof p.mapId !== 'string' || (p.mapId !== 'field_test' && !Object.prototype.hasOwnProperty.call(TILED_MAPS, p.mapId))
+      || typeof p.x !== 'number' || !Number.isFinite(p.x) || typeof p.y !== 'number' || !Number.isFinite(p.y)) return false;
+  }
+  if (has('quests')) {
+    if (!dataRecord(saved.quests)) return false;
+    for (const [id, quest] of Object.entries(saved.quests)) {
+      if (!safeKey(id) || !dataRecord(quest) || !['active', 'done'].includes(String(quest.state))) return false;
+      for (const key of ['kills', 'crafted']) if (Object.prototype.hasOwnProperty.call(quest, key) && !numbers(quest[key])) return false;
+      if (Object.prototype.hasOwnProperty.call(quest, 'reached') && typeof quest.reached !== 'boolean') return false;
+      if (Object.prototype.hasOwnProperty.call(quest, 'talked') && (!dataRecord(quest.talked)
+        || !Object.entries(quest.talked).every(([key, value]) => safeKey(key) && typeof value === 'boolean'))) return false;
+    }
+  }
+  return true;
+}
 
 /** 角色成长与背包（跨地图保留）。公式见 balance/player_growth.json */
 export class Progress {
@@ -45,7 +98,7 @@ export class Progress {
   skillGifted: Record<string, number> = {};
   skillMastery: Record<string, number> = {};
   hotbar: (string | null)[] = Array.from({ length: HOTBAR_SLOTS.length }, () => null);
-  /** 增益结束的绝对时间（Date.now），换图、刷新都还在。 */
+  /** 增益结束的绝对时间（gameNow），换图、刷新都还在。 */
   buffs: { id: string; expireAt: number; warned?: boolean }[] = [];
   spTipShown = false;
   /** 每档只显示一次的地图教学 id。 */
@@ -54,6 +107,10 @@ export class Progress {
   sectContribution = 0;
   /** 未拜入为 null；旧档只迁移缺失字段，异常值留给宗门服务诊断。 */
   sectRank: string | null = null;
+  /** 当前地图落点；旧档仍按默认出生点进入。 */
+  position: SavePosition | null = null;
+  /** 按配置路径覆盖布尔开关；未覆盖时沿用配表。 */
+  flags: Record<string, boolean> = {};
   sectGrowthState: SectGrowthState = { donationBatches: {}, settledTransactions: {} };
   sectDailyContributionDay = '';
   sectDailyContributionClaims: string[] = [];
@@ -61,7 +118,7 @@ export class Progress {
   dailyQuestResetDay = '';
   dailyQuestCompletions: Record<string, string[]> = {};
   age = LIFESPAN.startAge;
-  ageUpdatedAt = Date.now();
+  ageUpdatedAt = gameNow();
   seclusionDay = '';
   seclusionYearsToday = 0;
   seclusionHistory: { at: number; years: number; cost: number; gained: number; overflowed: number }[] = [];
@@ -69,7 +126,7 @@ export class Progress {
   overflowExp = 0;
   /** 突破失败次数（保底用，成功清零） */
   breakthroughFails = 0;
-  /** 境界不稳到期时间（Date.now）与属性比例 */
+  /** 境界不稳到期时间（gameNow）与属性比例 */
   unstableUntil = 0;
   /** 已领过突破奖励（realms.json reward.hpMul/mpMul）的境界 id。按 id 去重，倍率每个境界只乘一次 */
   realmRewards: string[] = [];
@@ -99,37 +156,83 @@ export class Progress {
   }
   get skillsUnlocked() { return this.realm.id !== 'mortal'; }
 
-  save(): boolean {
+  exportSave(): Record<string, unknown> {
     const { transientItems, ...persistent } = this;
     const inventory: Record<string, number> = { ...this.inventory };
     for (const [id, count] of Object.entries(transientItems)) inventory[id] = Math.max(0, this.count(id) - count);
-    try { localStorage.setItem(SAVE_KEY, JSON.stringify({ ...persistent, inventory })); return true; } catch { return false; }
+    return JSON.parse(JSON.stringify({ ...persistent, inventory }));
   }
-  static load(): Progress {
-    const p = new Progress();
-    let hadStoredRank = false, storedRank: string | null = null;
+  save(): boolean {
+    try { localStorage.setItem(SAVE_KEY, JSON.stringify(this.exportSave())); return true; } catch { return false; }
+  }
+  /** 导入和读取存档共用迁移；只接收数据字段，不允许覆盖实例方法。 */
+  importSave(saved: unknown): boolean {
+    if (!saved || typeof saved !== 'object' || Array.isArray(saved)) return false;
+    let restored: Progress;
     try {
-      const raw = localStorage.getItem(SAVE_KEY);
-      if (raw) {
-        const saved = JSON.parse(raw);
-        hadStoredRank = Object.prototype.hasOwnProperty.call(saved, 'sectRank');
-        if (hadStoredRank) storedRank = saved.sectRank;
-        Object.assign(p, saved);
+      const fields: unknown = JSON.parse(JSON.stringify(saved));
+      if (!validSaveData(fields)) return false;
+      restored = Progress.restore(fields, false);
+    } catch { return false; }
+    const previous = { ...this };
+    Object.assign(this, restored);
+    if (this.save()) return true;
+    Object.assign(this, previous);
+    return false;
+  }
+  private static restore(saved: unknown, persistMigrations: boolean): Progress {
+    const p = new Progress();
+    let saveRequested = false;
+    Object.defineProperty(p, 'save', { configurable: true, value: () => { saveRequested = true; return true; } });
+    let hadStoredRank = false, storedRank: string | null = null;
+    let backfilled = false;
+    try {
+      if (saved && typeof saved === 'object' && !Array.isArray(saved)) {
+        const fields = saved as Record<string, unknown>;
+        hadStoredRank = Object.prototype.hasOwnProperty.call(fields, 'sectRank');
+        if (hadStoredRank) storedRank = fields.sectRank as string | null;
+        for (const key of Object.keys(p)) if (key !== 'transientItems' && Object.prototype.hasOwnProperty.call(fields, key)) {
+          Object.assign(p, { [key]: fields[key] });
+        }
       }
-    } catch { /* 存档损坏就重开 */ }
-    p.overflowExp = Math.max(0, Math.floor(Number(p.overflowExp) || 0));
-    if (Number.isFinite(p.overflowCap)) p.overflowExp = Math.min(p.overflowExp, p.overflowCap);
-    p.ensureDefaults();
-    p.resetDailyQuests();
-    p.advanceAge();
-    const backfilled = [p.backfillRealmRewards(), p.backfillQuestSkills(), p.backfillQuestRecipes(), p.backfillClass(false)].some(Boolean);
-    // 原职业/已交付拜入任务是正式入宗事实；试炼、帖和山门位置不参与迁移。
-    p.sectRank = hadStoredRank ? storedRank : p.sect ? SECT_RANKS.rules.initialRank : null;
-    p.hp = Math.min(p.hp || p.maxHp, p.maxHp); p.mp = Math.min(p.mp || p.maxMp, p.maxMp);
-    if (backfilled || !hadStoredRank) p.save();
+      p.overflowExp = Math.max(0, Math.floor(Number(p.overflowExp) || 0));
+      if (Number.isFinite(p.overflowCap)) p.overflowExp = Math.min(p.overflowExp, p.overflowCap);
+      p.ensureDefaults();
+      p.resetDailyQuests();
+      p.advanceAge();
+      backfilled = [p.backfillRealmRewards(), p.backfillQuestSkills(), p.backfillQuestRecipes(), p.backfillClass(false)].some(Boolean);
+      // 原职业/已交付拜入任务是正式入宗事实；试炼、帖和山门位置不参与迁移。
+      p.sectRank = hadStoredRank ? storedRank : p.sect ? SECT_RANKS.rules.initialRank : null;
+      p.hp = Math.min(p.hp || p.maxHp, p.maxHp); p.mp = Math.min(p.mp || p.maxMp, p.maxMp);
+    } finally { Reflect.deleteProperty(p, 'save'); }
+    if (persistMigrations && (saveRequested || backfilled || !hadStoredRank)) p.save();
     return p;
   }
+  static load(): Progress {
+    let saved: unknown;
+    try { const raw = localStorage.getItem(SAVE_KEY); if (raw) saved = JSON.parse(raw); } catch { /* 存档损坏就重开 */ }
+    try { return Progress.restore(saved, true); } catch { return Progress.restore(undefined, true); }
+  }
   static reset() { try { localStorage.removeItem(SAVE_KEY); } catch { /* ignore */ } }
+
+  setPosition(mapId: string, x: number, y: number): boolean {
+    if ((mapId !== 'field_test' && !Object.prototype.hasOwnProperty.call(TILED_MAPS, mapId)) || !Number.isFinite(x) || !Number.isFinite(y)) return false;
+    this.position = { mapId, x, y };
+    return this.save();
+  }
+  setSectRank(rank: string | null): boolean {
+    if (!this.sect || rank === null || !SECT_RANKS.ranks.some(entry => entry.id === rank)) return false;
+    this.sectRank = rank;
+    return this.save();
+  }
+  setConfigFlag(key: string, value: boolean): boolean {
+    if (!flagKey(key) || typeof value !== 'boolean') return false;
+    this.flags[key] = value;
+    return this.save();
+  }
+  configFlag(key: string, fallback: boolean): boolean {
+    return Object.prototype.hasOwnProperty.call(this.flags, key) ? this.flags[key] === true : fallback === true;
+  }
 
   /** 教学首次触发就存档，换图与刷新后都不重复弹出。 */
   markTutorialSeen(id: string): boolean {
@@ -153,7 +256,7 @@ export class Progress {
   }
 
   /** 登录、接取、交付及在线检查共用；过期未交付任务也作废，不扣背包材料。 */
-  resetDailyQuests(now = Date.now()) {
+  resetDailyQuests(now = gameNow()) {
     const day = dailyQuestDay(now);
     if (this.dailyQuestResetDay === day) return false;
     this.dailyQuestResetDay = day;
@@ -172,7 +275,7 @@ export class Progress {
     return true;
   }
 
-  canCompleteSectDailyQuest(sourceId: string, now = Date.now()) {
+  canCompleteSectDailyQuest(sourceId: string, now = gameNow()) {
     this.resetDailyQuests(now);
     const q = QUESTS[sourceId];
     return !!q?.daily && dailyRewardsReady(q) && this.sect === q.sect
@@ -190,7 +293,7 @@ export class Progress {
     return amount;
   }
 
-  onSectDailyQuestCompleted(sourceId: string, now = Date.now()) {
+  onSectDailyQuestCompleted(sourceId: string, now = gameNow()) {
     const amount = this.claimSectDailyQuest(sourceId, now);
     if (amount === undefined) return 0;
     const gained = this.gainSectContribution(amount);
@@ -199,7 +302,7 @@ export class Progress {
   }
 
   /** 交付已验证目标并扣材料；整条日常的普通奖励与贡献在同一同步事务内保存。 */
-  settleSectDailyQuest(sourceId: string, now = Date.now()): DailyQuestReward | undefined {
+  settleSectDailyQuest(sourceId: string, now = gameNow()): DailyQuestReward | undefined {
     const contribution = this.claimSectDailyQuest(sourceId, now);
     if (contribution === undefined) return undefined;
     const q = QUESTS[sourceId], rw = q.rewards;
@@ -262,7 +365,7 @@ export class Progress {
   }
   get def() { return (GROWTH.base.def + GROWTH.perLevel.def * (this.level - 1) + this.statBonus('def') + this.equipSum('def')) * this.debuffMul('def'); }
   /** 突破失败的「境界不稳」：到期前攻防 × (1 + debuffStatRatio)。暂只作用于攻击、防御（气血/灵力上限不动，免得回血逻辑乱） */
-  get unstable() { return Date.now() < this.unstableUntil; }
+  get unstable() { return gameNow() < this.unstableUntil; }
   /** 境界不稳：只对 unstableStats 里列出的属性生效 */
   debuffMul(stat: string) { return Array.isArray(this.unstableStats) && this.unstableStats.includes(stat) ? this.unstableMul : 1; }
   get unstableMul() { return this.unstable ? 1 + this.unstableRatio : 1; }
@@ -496,6 +599,11 @@ export class Progress {
 
   /** 旧档缺字段时补上，避免 Object.assign 把后面新增的数组弄丢或弄短。 */
   ensureDefaults() {
+    if (!this.position || typeof this.position !== 'object'
+      || (this.position.mapId !== 'field_test' && !Object.prototype.hasOwnProperty.call(TILED_MAPS, this.position.mapId))
+      || !Number.isFinite(this.position.x) || !Number.isFinite(this.position.y)) this.position = null;
+    if (!this.flags || typeof this.flags !== 'object' || Array.isArray(this.flags)) this.flags = {};
+    this.flags = Object.fromEntries(Object.entries(this.flags).filter(([key, value]) => flagKey(key) && typeof value === 'boolean'));
     // 只补旧档缺失的容器；已有异常记录保留，由宗门消费者暂停交易。
     if (this.sectGrowthState && typeof this.sectGrowthState === 'object' && !Array.isArray(this.sectGrowthState)) {
       const state = this.sectGrowthState;
@@ -540,7 +648,7 @@ export class Progress {
     this.completedTrials = [...new Set(this.completedTrials.filter(id => typeof id === 'string' && id.length > 0))];
     if (!this.skillCooldowns || typeof this.skillCooldowns !== 'object' || Array.isArray(this.skillCooldowns)) this.skillCooldowns = {};
     this.skillCooldowns = Object.fromEntries(Object.entries(this.skillCooldowns).filter(([id, cd]) => SKILLS[id] && cd
-      && Number.isFinite(cd.readyAt) && cd.readyAt > Date.now() && Number.isFinite(cd.total) && cd.total > 0));
+      && Number.isFinite(cd.readyAt) && cd.readyAt > gameNow() && Number.isFinite(cd.total) && cd.total > 0));
     if (typeof this.spTipShown !== 'boolean') this.spTipShown = false;
     if (!Array.isArray(this.tutorialsSeen)) this.tutorialsSeen = [];
     this.tutorialsSeen = [...new Set(this.tutorialsSeen.filter(id => typeof id === 'string' && id.length > 0))];
@@ -555,7 +663,7 @@ export class Progress {
       this.dailyQuestCompletions[sect] = Array.isArray(ids) ? [...new Set(ids.filter(id => typeof id === 'string' && QUESTS[id]?.daily && QUESTS[id].sect === sect))] : [];
     }
     this.age = Number.isFinite(Number(this.age)) ? Math.max(LIFESPAN.startAge, Number(this.age)) : LIFESPAN.startAge;
-    this.ageUpdatedAt = Number.isFinite(Number(this.ageUpdatedAt)) && this.ageUpdatedAt > 0 ? Math.min(Date.now(), this.ageUpdatedAt) : Date.now();
+    this.ageUpdatedAt = Number.isFinite(Number(this.ageUpdatedAt)) && this.ageUpdatedAt > 0 ? Math.min(gameNow(), this.ageUpdatedAt) : gameNow();
     if (typeof this.seclusionDay !== 'string') this.seclusionDay = '';
     this.seclusionYearsToday = Math.max(0, Math.floor(Number(this.seclusionYearsToday) || 0));
     if (!Array.isArray(this.seclusionHistory)) this.seclusionHistory = [];
@@ -564,13 +672,13 @@ export class Progress {
     while (this.hotbar.length < HOTBAR_SLOTS.length) this.hotbar.push(null);
     if (this.hotbar.length > HOTBAR_SLOTS.length) this.hotbar.length = HOTBAR_SLOTS.length;
     if (!Array.isArray(this.buffs)) this.buffs = [];
-    const now = Date.now();
+    const now = gameNow();
     this.buffs = this.buffs.filter(b => b && typeof b.expireAt === 'number' && b.expireAt > now);
   }
 
   get lifespanCap() { return Number((LIFESPAN.cap as Record<string, number>)[this.realm.id] ?? LIFESPAN.cap.mortal); }
   get remainingLife() { return Math.max(0, this.lifespanCap - this.age); }
-  advanceAge(now = Date.now()) {
+  advanceAge(now = gameNow()) {
     const elapsed = Math.max(0, now - this.ageUpdatedAt);
     this.age += elapsed / 3600000 * LIFESPAN.agePerRealHour;
     this.ageUpdatedAt = now;
@@ -679,19 +787,19 @@ export class Progress {
     return v;
   }
 
-  buffActive(id: string) { return this.buffs.some(b => b.id === id && b.expireAt > Date.now()); }
+  buffActive(id: string) { return this.buffs.some(b => b.id === id && b.expireAt > gameNow()); }
   /** 布尔效果不经过 skillNumber，避免 invisible 被当成数字 0。 */
   hasBuffEffect(key: string) {
     return this.buffs.some(buff => {
       const def = SKILLS[buff.id];
-      return buff.expireAt > Date.now() && !!def && this.ownsSkill(def) && this.skillLevel(def.id) > 0 && def.effects[key] === true;
+      return buff.expireAt > gameNow() && !!def && this.ownsSkill(def) && this.skillLevel(def.id) > 0 && def.effects[key] === true;
     });
   }
   buffBonus(key: string) {
     let value = 0;
     const counted = new Set<string>();
     for (const buff of this.buffs) {
-      if (buff.expireAt <= Date.now() || counted.has(buff.id)) continue;
+      if (buff.expireAt <= gameNow() || counted.has(buff.id)) continue;
       const def = SKILLS[buff.id], level = this.skillLevel(buff.id);
       if (!def || !this.ownsSkill(def) || level <= 0) continue;
       counted.add(buff.id); value += skillNumber(def, key, level);
@@ -701,7 +809,7 @@ export class Progress {
   effectBonus(key: string) { return this.passiveBonus(key) + this.buffBonus(key); }
   buffRemaining(id: string) {
     const b = this.buffs.find(x => x.id === id);
-    return b ? Math.max(0, b.expireAt - Date.now()) : 0;
+    return b ? Math.max(0, b.expireAt - gameNow()) : 0;
   }
 
   /**

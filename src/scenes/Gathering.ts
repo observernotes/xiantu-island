@@ -1,3 +1,4 @@
+import { gameNow } from '../GameClock';
 import Phaser from 'phaser';
 import { ITEMS, t } from '../data';
 import { hasHud, hudSpec, sliced, setSlicedWidth } from '../hud';
@@ -37,7 +38,7 @@ export class Gathering {
         point.sprite = scene.add.sprite(o.x, o.y, atlas).setOrigin(origin[0], origin[1]).setDepth(4).setName(`gather:${o.name}`);
       } else point.fallback = scene.add.text(o.x, o.y, def.name, { color: '#a7dbac', fontSize: '14px' }).setOrigin(0.5, 1).setDepth(4);
       this.points.push(point);
-      this.refreshPoint(point, Date.now());
+      this.refreshPoint(point, gameNow());
     }
     this.bar = scene.add.container(0, 0).setDepth(40).setVisible(false).setName('gather:castbar');
     if (hasHud(scene, 'ui_gather_castbar_frame') && hasHud(scene, 'ui_gather_castbar_fill')) {
@@ -79,7 +80,7 @@ export class Gathering {
 
   /** blocked 包括落物优先、面板及对话；移动/松键/受击都会取消。 */
   update(delta: number, held: boolean, blocked: boolean, moving = false) {
-    const scene = this.scene, p = scene.player, now = Date.now();
+    const scene = this.scene, p = scene.player, now = gameNow();
     if (!held) this.requireRelease = false;
     for (const point of this.points) {
       this.refreshPoint(point, now);

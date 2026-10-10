@@ -1,8 +1,9 @@
+import { gameNow } from './GameClock';
 import { SECT_SECLUSION, type QuestDef } from './data';
 import type { Progress } from './Progress';
 
 /** 日常按运行端本地日历的 05:00 换日；闭关的午夜日界另行保留。 */
-export function dailyQuestDay(now = Date.now()) {
+export function dailyQuestDay(now = gameNow()) {
   const day = new Date(now);
   if (day.getHours() < 5) day.setDate(day.getDate() - 1);
   return `${day.getFullYear()}-${String(day.getMonth() + 1).padStart(2, '0')}-${String(day.getDate()).padStart(2, '0')}`;

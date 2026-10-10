@@ -1,7 +1,8 @@
+import { gameNow } from '../GameClock';
 import Phaser from 'phaser';
 import { FEEL, SPEC } from '../config/feel';
 import { FIELD_TEST } from '../config/maps';
-import { MONSTERS, DROPS, ITEMS, TILED_MAPS, ATLASES, MAP_AREA, AREAS, SKILL_ICONS, NPCS, SCRIPTS, t, questName, questDescription, MP_REGEN_FRACTION_PER_5S, BREAKTHROUGH_LEVELS } from '../data';
+import { MONSTERS, DROPS, ITEMS, TILED_MAPS, ATLASES, MAP_AREA, AREAS, BACKGROUNDS, SKILL_ICONS, NPCS, SCRIPTS, t, questName, questDescription, MP_REGEN_FRACTION_PER_5S, BREAKTHROUGH_LEVELS } from '../data';
 import { QuestSystem } from '../QuestSystem';
 import type { DailyQuestReward } from '../DailyQuests';
 import { QUESTS as QUESTS_REF } from '../data';
@@ -100,9 +101,8 @@ export class GameScene extends Phaser.Scene {
     for (const a of AREAS) {
       this.load.image(`tiles_${a}`, `art/tiles/tiles_${a}.png`);
       this.load.spritesheet(`tiles_${a}_ss`, `art/tiles/tiles_${a}.png`, { frameWidth: 32, frameHeight: 32 });
-      this.load.image(`bg_${a}_far`, `art/tiles/bg_${a}_far.png`);
-      this.load.image(`bg_${a}_mid`, `art/tiles/bg_${a}_mid.png`);
     }
+    for (const background of BACKGROUNDS) this.load.image(background.key, background.path);
     for (const k of ATLASES) {
       this.load.atlas(k, `art/sprites/${k}.png`, `art/sprites/${k}.json`);
       this.load.json(`${k}_anims`, `art/sprites/${k}.anims.json`);
@@ -143,7 +143,7 @@ export class GameScene extends Phaser.Scene {
     const q = new URLSearchParams(location.search).get('map');
     const debugTrial = DEBUG_CLASS && QUESTS_REF[DEBUG_CLASS.joinQuest]?.objectives.find(o => o.type === 'trial')?.trial;
     const debugMap = DEBUG_CLASS && (TILED_MAPS[DEBUG_CLASS.map ?? ''] ? DEBUG_CLASS.map : debugTrial ? TRIALS[debugTrial]?.map : undefined);
-    let mapId = data.map ?? (q === 'test' || q === 'field' ? 'field_test' : q && TILED_MAPS[q] ? q : debugMap ?? 'qingyun_village');
+    let mapId = data.map ?? (q === 'test' || q === 'field' ? 'field_test' : q && TILED_MAPS[q] ? q : debugMap ?? this.prog.position?.mapId ?? 'qingyun_village');
     mapId = TILED_MAPS[mapId] ? mapId : (MAP_FALLBACK[mapId] ?? mapId);
     // 本版本没有的地图（存档或传送门指过去）一律回青云村，不再掉进测试图
     if (!TILED_MAPS[mapId] && mapId !== 'field_test') { mapId = 'qingyun_village'; data.portal = undefined; }
@@ -159,7 +159,8 @@ export class GameScene extends Phaser.Scene {
     this.mountDailyEnvoys();
     this.map.objects.forEach(o => this.drawObject(o));
 
-    const at = data.portal ? this.map.objects.find(o => o.type === 'portal' && o.name === data.portal) : data.pos;
+    const savedPosition = !data.map && !q && this.prog.position?.mapId === mapId ? this.prog.position : undefined;
+    const at = data.portal ? this.map.objects.find(o => o.type === 'portal' && o.name === data.portal) : data.pos ?? savedPosition;
     this.player = new Player(this, at ? at.x : this.map.spawn.x, at ? at.y : this.map.spawn.y);
     this.player.hp = this.prog.hp; this.player.maxHp = this.prog.maxHp;
     this.player.getMovePoints = () => this.prog.currentMovePoints();
@@ -256,6 +257,7 @@ export class GameScene extends Phaser.Scene {
     this.buildHudKit();
     this.trial = undefined; this.bossOverride = null;
     this.setupTrial(mapId);
+    this.prog.setPosition(this.map.id, this.player.x, this.player.y);
   }
 
   // ---------------- 筑基台试炼 ----------------
@@ -380,7 +382,7 @@ export class GameScene extends Phaser.Scene {
         this.tweens.add({ targets: gray, fillAlpha: 0.45, duration: 400 });
         const lost = pr.applyBreakthroughFail(Number(pen.expLossRatio ?? 0));
         pr.breakthroughFails++;
-        if (pen.debuffMs) { pr.unstableUntil = Date.now() + Number(pen.debuffMs); pr.unstableRatio = Number(pen.debuffStatRatio ?? 0); pr.unstableStats = Array.isArray(pen.debuffStats) ? [...pen.debuffStats] : []; }
+        if (pen.debuffMs) { pr.unstableUntil = gameNow() + Number(pen.debuffMs); pr.unstableRatio = Number(pen.debuffStatRatio ?? 0); pr.unstableStats = Array.isArray(pen.debuffStats) ? [...pen.debuffStats] : []; }
         const bonus = Math.round((BREAKTHROUGH.pityPerFail ?? 0) * 100);
         banner(t('realm.breakthrough_fail'), '#d0d0d0');
         this.log(t('realm.breakthrough_fail'), '#d0d0d0');
@@ -1526,7 +1528,7 @@ export class GameScene extends Phaser.Scene {
     this.sectBadge.setVisible(visible && !!badge);
     if (badge) this.sectBadge.setTexture(badge.texture, badge.frame).setDisplaySize(24, 24)
       .setPosition(this.sectTitle.x - this.sectTitle.width + 18, this.sectTitle.y + 18);
-    this.skillBar.draw(pr.skillsUnlocked, this.time.now, pr.hotbar, this.combat.cds, pr);
+    this.skillBar.draw(pr.skillsUnlocked, gameNow(), pr.hotbar, this.combat.cds, pr);
     for (const m of this.npcMarks) {
       const mk = this.quests.mark(m.id);
       if (m.img) { m.text.setText(''); m.img.setVisible(!!mk); if (mk) m.img.setTexture(mk === '!' ? 'ui_hud_quest_available' : mk === '?' ? 'ui_hud_quest_turnin' : 'ui_hud_quest_progress'); }
