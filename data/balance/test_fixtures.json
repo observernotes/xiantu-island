@@ -1,0 +1,1067 @@
+{
+  "schemaVersion": 1,
+  "generatedBy": "balance/tools/gen_fixtures.py",
+  "consumer": "qa/fixtures（数值状态；需要程序载档适配器）",
+  "rules": {
+    "autoStats": {
+      "rootBone": 2,
+      "agility": 2,
+      "spirit": 0,
+      "insight": 1
+    },
+    "autoStatsSource": "game/src/Progress.ts AUTO_STATS；总点数取 player_growth.perLevel.statPoints",
+    "realmStageIndex": "0-based，与 realms.stages/stageLevels 一致",
+    "spAccounting": "按 realms 对应转数独立结算；扣除 skillGifted，禁止跨转数挪点；earned 兼容当前 skills.ts，tableBudget 按 skills.rules；未拜宗不领转职奖励",
+    "inventoryCatalogs": [
+      "balance/items.json",
+      "balance/materials.json"
+    ],
+    "phase5QuestSkills": "未拜宗保留 spirit_bolt Lv1；跳过旧 q_breakthrough/q_fox 的职业/剑修赠技回填；五宗帖预载，拜宗任务完成后赠技",
+    "questLoad": "列表转换为 Progress.quests 的 done/active，active 的 kills/talked 清零；完成任务不重复发奖",
+    "trialLoad": "before_altar 已消耗筑基丹，写 flags.trialPending/trialRate 后载图；不要再次扣丹"
+  },
+  "fixtures": [
+    {
+      "id": "newbie",
+      "description": "新手：觉醒任务尚未完成，空装备、零加点。",
+      "map": "qingyun_village",
+      "spawn": {
+        "objectId": 1,
+        "name": "playerStart",
+        "x": 176,
+        "y": 704
+      },
+      "level": 1,
+      "realm": {
+        "id": "mortal",
+        "stage": "凡人",
+        "stageIndex": 0
+      },
+      "exp": 0,
+      "stats": {
+        "rootBone": 0,
+        "agility": 0,
+        "spirit": 0,
+        "insight": 0
+      },
+      "statPoints": 0,
+      "sect": null,
+      "rank": null,
+      "sectContribution": 0,
+      "job": "",
+      "skills": {},
+      "equip": {},
+      "inventory": [],
+      "spiritStones": 0,
+      "quests": {
+        "completed": [],
+        "active": [
+          "q_awaken"
+        ]
+      },
+      "phase": 4,
+      "flags": {},
+      "realmRewards": [],
+      "skillGifted": {},
+      "skillPoints": {
+        "earned": 0,
+        "spent": 0,
+        "remaining": 0,
+        "byJob": {
+          "job1": {
+            "tableBudget": 0,
+            "earned": 0,
+            "spent": 0,
+            "remaining": 0
+          },
+          "job2": {
+            "tableBudget": 0,
+            "earned": 0,
+            "spent": 0,
+            "remaining": 0
+          },
+          "job3": {
+            "tableBudget": 0,
+            "earned": 0,
+            "spent": 0,
+            "remaining": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "before_fox",
+      "description": "妖狐前：foxsim 实测 Lv11、剑气斩 Lv7、青竹剑、10 颗回春丹。",
+      "map": "lingxi_path",
+      "spawn": {
+        "objectId": 9,
+        "name": "playerStart",
+        "x": 128,
+        "y": 960
+      },
+      "level": 11,
+      "realm": {
+        "id": "qi_refining",
+        "stage": "初期",
+        "stageIndex": 0
+      },
+      "exp": 0,
+      "stats": {
+        "rootBone": 20,
+        "agility": 20,
+        "spirit": 0,
+        "insight": 10
+      },
+      "statPoints": 0,
+      "sect": null,
+      "rank": null,
+      "sectContribution": 0,
+      "job": "",
+      "skills": {
+        "sword_qi_slash": 7
+      },
+      "equip": {
+        "weapon": "bamboo_sword"
+      },
+      "inventory": [
+        {
+          "item": "hp_pill_small",
+          "count": 10,
+          "quality": "low"
+        },
+        {
+          "item": "qi_pill",
+          "count": 2,
+          "quality": "low"
+        }
+      ],
+      "spiritStones": 0,
+      "quests": {
+        "completed": [
+          "q_awaken",
+          "q_bamboo",
+          "q_snake",
+          "q_breakthrough"
+        ],
+        "active": [
+          "q_fox"
+        ]
+      },
+      "phase": 4,
+      "flags": {},
+      "realmRewards": [
+        "mortal"
+      ],
+      "skillGifted": {
+        "sword_qi_slash": 1
+      },
+      "skillPoints": {
+        "earned": 6,
+        "spent": 6,
+        "remaining": 0,
+        "byJob": {
+          "job1": {
+            "tableBudget": 6,
+            "earned": 6,
+            "spent": 6,
+            "remaining": 0
+          },
+          "job2": {
+            "tableBudget": 0,
+            "earned": 0,
+            "spent": 0,
+            "remaining": 0
+          },
+          "job3": {
+            "tableBudget": 0,
+            "earned": 0,
+            "spent": 0,
+            "remaining": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "before_altar",
+      "description": "守阵眼前：altar.mjs 进场起点；筑基丹已消耗，载图时启动试炼。",
+      "map": "trial_foundation_altar",
+      "spawn": {
+        "objectId": 4,
+        "name": "playerStart",
+        "x": 704,
+        "y": 576
+      },
+      "level": 29,
+      "realm": {
+        "id": "qi_refining",
+        "stage": "圆满",
+        "stageIndex": 3
+      },
+      "exp": 5070,
+      "stats": {
+        "rootBone": 56,
+        "agility": 56,
+        "spirit": 0,
+        "insight": 28
+      },
+      "statPoints": 0,
+      "sect": null,
+      "rank": null,
+      "sectContribution": 0,
+      "job": "",
+      "skills": {
+        "sword_qi_slash": 10
+      },
+      "equip": {},
+      "inventory": [
+        {
+          "item": "hp_pill_small",
+          "count": 20,
+          "quality": "low"
+        }
+      ],
+      "spiritStones": 0,
+      "quests": {
+        "completed": [
+          "q_awaken",
+          "q_bamboo",
+          "q_snake",
+          "q_breakthrough",
+          "q_elder_exam"
+        ],
+        "active": [
+          "q_fox"
+        ]
+      },
+      "phase": 4,
+      "flags": {
+        "trialPending": "trial_foundation_altar",
+        "trialRate": {
+          "rate": 0.656,
+          "base": 0.6,
+          "pill": 0.0,
+          "insight": 0.056,
+          "clear": 0,
+          "pity": 0
+        }
+      },
+      "realmRewards": [
+        "mortal"
+      ],
+      "skillGifted": {
+        "sword_qi_slash": 1
+      },
+      "skillPoints": {
+        "earned": 60,
+        "spent": 9,
+        "remaining": 51,
+        "byJob": {
+          "job1": {
+            "tableBudget": 60,
+            "earned": 60,
+            "spent": 9,
+            "remaining": 51
+          },
+          "job2": {
+            "tableBudget": 0,
+            "earned": 0,
+            "spent": 0,
+            "remaining": 0
+          },
+          "job3": {
+            "tableBudget": 0,
+            "earned": 0,
+            "spent": 0,
+            "remaining": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "sect_outer",
+      "description": "刚入宗外门：天剑宗拜入完成、贡献 0，保留三招赠送 Lv1。",
+      "map": "tianjian_sect",
+      "spawn": {
+        "objectId": 5,
+        "name": "playerStart",
+        "x": 128,
+        "y": 832
+      },
+      "level": 12,
+      "realm": {
+        "id": "qi_refining",
+        "stage": "初期",
+        "stageIndex": 0
+      },
+      "exp": 0,
+      "stats": {
+        "rootBone": 22,
+        "agility": 22,
+        "spirit": 0,
+        "insight": 11
+      },
+      "statPoints": 0,
+      "sect": "tianjian",
+      "rank": "outer_disciple",
+      "sectContribution": 0,
+      "job": "tianjian_disciple",
+      "skills": {
+        "sword_qi_slash": 1,
+        "whirl_sword": 1,
+        "light_body": 1
+      },
+      "equip": {
+        "weapon": "azure_steel_sword",
+        "robe": "robe_tianjian_1"
+      },
+      "inventory": [
+        {
+          "item": "hp_pill_small",
+          "count": 10,
+          "quality": "low"
+        },
+        {
+          "item": "qi_pill",
+          "count": 5,
+          "quality": "low"
+        },
+        {
+          "item": "pillar_shard_1",
+          "count": 1
+        },
+        {
+          "item": "foundation_shard",
+          "count": 1
+        }
+      ],
+      "spiritStones": 300,
+      "quests": {
+        "completed": [
+          "q_awaken",
+          "q_bamboo",
+          "q_snake",
+          "q_breakthrough",
+          "q_fox",
+          "q_sect_tianjian"
+        ],
+        "active": [
+          "q_main_01"
+        ]
+      },
+      "phase": 5,
+      "flags": {},
+      "realmRewards": [
+        "mortal"
+      ],
+      "configOverrides": {
+        "sect_ranks": {
+          "enabled": true
+        }
+      },
+      "skillGifted": {
+        "sword_qi_slash": 1,
+        "whirl_sword": 1,
+        "light_body": 1
+      },
+      "skillPoints": {
+        "earned": 10,
+        "spent": 0,
+        "remaining": 10,
+        "byJob": {
+          "job1": {
+            "tableBudget": 10,
+            "earned": 10,
+            "spent": 0,
+            "remaining": 10
+          },
+          "job2": {
+            "tableBudget": 0,
+            "earned": 0,
+            "spent": 0,
+            "remaining": 0
+          },
+          "job3": {
+            "tableBudget": 0,
+            "earned": 0,
+            "spent": 0,
+            "remaining": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "sect_inner",
+      "description": "内门：筑基初期，当前贡献 500，恰好满足晋升门槛。",
+      "map": "tianjian_sect",
+      "spawn": {
+        "objectId": 5,
+        "name": "playerStart",
+        "x": 128,
+        "y": 832
+      },
+      "level": 30,
+      "realm": {
+        "id": "foundation",
+        "stage": "初期",
+        "stageIndex": 0
+      },
+      "exp": 0,
+      "stats": {
+        "rootBone": 58,
+        "agility": 58,
+        "spirit": 0,
+        "insight": 29
+      },
+      "statPoints": 0,
+      "sect": "tianjian",
+      "rank": "inner_disciple",
+      "sectContribution": 500,
+      "job": "tianjian_disciple",
+      "skills": {
+        "sword_qi_slash": 20,
+        "whirl_sword": 15,
+        "light_body": 3,
+        "tianjian_heart": 10,
+        "sword_mastery": 10,
+        "flying_sword": 1,
+        "sword_ride": 1,
+        "sword_shield": 1
+      },
+      "equip": {
+        "weapon": "azure_steel_sword",
+        "robe": "robe_tianjian_1"
+      },
+      "inventory": [
+        {
+          "item": "hp_pill_small",
+          "count": 20,
+          "quality": "mid"
+        },
+        {
+          "item": "qi_pill",
+          "count": 10,
+          "quality": "mid"
+        }
+      ],
+      "spiritStones": 1000,
+      "quests": {
+        "completed": [
+          "q_awaken",
+          "q_bamboo",
+          "q_snake",
+          "q_breakthrough",
+          "q_fox",
+          "q_sect_tianjian",
+          "q_elder_exam"
+        ],
+        "active": []
+      },
+      "phase": 5,
+      "flags": {},
+      "realmRewards": [
+        "mortal",
+        "qi_refining"
+      ],
+      "configOverrides": {
+        "sect_ranks": {
+          "enabled": true
+        }
+      },
+      "skillGifted": {
+        "sword_qi_slash": 1,
+        "whirl_sword": 1,
+        "light_body": 1
+      },
+      "skillPoints": {
+        "earned": 64,
+        "spent": 57,
+        "remaining": 7,
+        "byJob": {
+          "job1": {
+            "tableBudget": 61,
+            "earned": 61,
+            "spent": 55,
+            "remaining": 6
+          },
+          "job2": {
+            "tableBudget": 4,
+            "earned": 3,
+            "spent": 2,
+            "remaining": 1
+          },
+          "job3": {
+            "tableBudget": 0,
+            "earned": 0,
+            "spent": 0,
+            "remaining": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "sect_direct",
+      "description": "亲传：金丹初期，当前贡献 1400；凝丹所需道心 60。",
+      "map": "tianjian_sect",
+      "spawn": {
+        "objectId": 5,
+        "name": "playerStart",
+        "x": 128,
+        "y": 832
+      },
+      "level": 60,
+      "realm": {
+        "id": "golden_core",
+        "stage": "初期",
+        "stageIndex": 0
+      },
+      "exp": 0,
+      "stats": {
+        "rootBone": 118,
+        "agility": 118,
+        "spirit": 0,
+        "insight": 59
+      },
+      "statPoints": 0,
+      "sect": "tianjian",
+      "rank": "direct_disciple",
+      "sectContribution": 1400,
+      "job": "tianjian_disciple",
+      "skills": {
+        "sword_qi_slash": 20,
+        "whirl_sword": 14,
+        "light_body": 10,
+        "tianjian_heart": 10,
+        "sword_mastery": 10,
+        "flying_sword": 20,
+        "sword_rain": 20,
+        "sword_shield": 15,
+        "sword_ride": 1,
+        "tianjian_heart_2": 15,
+        "qi_condense": 10,
+        "sword_domain": 1,
+        "heart_sword": 1,
+        "golden_core_sword": 1
+      },
+      "equip": {
+        "weapon": "azure_steel_sword",
+        "robe": "robe_tianjian_1"
+      },
+      "inventory": [
+        {
+          "item": "hp_pill_small",
+          "count": 20,
+          "quality": "high"
+        },
+        {
+          "item": "qi_pill",
+          "count": 10,
+          "quality": "high"
+        }
+      ],
+      "spiritStones": 5000,
+      "quests": {
+        "completed": [
+          "q_awaken",
+          "q_bamboo",
+          "q_snake",
+          "q_breakthrough",
+          "q_fox",
+          "q_sect_tianjian",
+          "q_elder_exam"
+        ],
+        "active": []
+      },
+      "phase": 5,
+      "flags": {
+        "daoHeart": 60
+      },
+      "realmRewards": [
+        "mortal",
+        "qi_refining",
+        "foundation"
+      ],
+      "configOverrides": {
+        "sect_ranks": {
+          "enabled": true
+        }
+      },
+      "skillGifted": {
+        "sword_qi_slash": 1,
+        "whirl_sword": 1,
+        "light_body": 1
+      },
+      "skillPoints": {
+        "earned": 154,
+        "spent": 144,
+        "remaining": 10,
+        "byJob": {
+          "job1": {
+            "tableBudget": 61,
+            "earned": 61,
+            "spent": 61,
+            "remaining": 0
+          },
+          "job2": {
+            "tableBudget": 91,
+            "earned": 90,
+            "spent": 80,
+            "remaining": 10
+          },
+          "job3": {
+            "tableBudget": 4,
+            "earned": 3,
+            "spent": 3,
+            "remaining": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "seclusion_ready",
+      "description": "闭关可用：筑基初期外门，12 贡献恰好换一次 1 年闭关。",
+      "map": "tianjian_sect",
+      "spawn": {
+        "objectId": 10,
+        "name": "sect_seclusion",
+        "x": 2864,
+        "y": 768
+      },
+      "level": 30,
+      "realm": {
+        "id": "foundation",
+        "stage": "初期",
+        "stageIndex": 0
+      },
+      "exp": 0,
+      "stats": {
+        "rootBone": 58,
+        "agility": 58,
+        "spirit": 0,
+        "insight": 29
+      },
+      "statPoints": 0,
+      "sect": "tianjian",
+      "rank": "outer_disciple",
+      "sectContribution": 12,
+      "job": "tianjian_disciple",
+      "skills": {
+        "sword_qi_slash": 20,
+        "whirl_sword": 15,
+        "light_body": 3,
+        "tianjian_heart": 10,
+        "sword_mastery": 10,
+        "flying_sword": 1,
+        "sword_ride": 1
+      },
+      "equip": {
+        "weapon": "azure_steel_sword",
+        "robe": "robe_tianjian_1"
+      },
+      "inventory": [
+        {
+          "item": "hp_pill_small",
+          "count": 10,
+          "quality": "low"
+        },
+        {
+          "item": "qi_pill",
+          "count": 5,
+          "quality": "low"
+        }
+      ],
+      "spiritStones": 300,
+      "quests": {
+        "completed": [
+          "q_awaken",
+          "q_bamboo",
+          "q_snake",
+          "q_breakthrough",
+          "q_fox",
+          "q_sect_tianjian",
+          "q_elder_exam"
+        ],
+        "active": []
+      },
+      "phase": 5,
+      "flags": {},
+      "realmRewards": [
+        "mortal",
+        "qi_refining"
+      ],
+      "configOverrides": {
+        "sect_ranks": {
+          "enabled": true
+        }
+      },
+      "skillGifted": {
+        "sword_qi_slash": 1,
+        "whirl_sword": 1,
+        "light_body": 1
+      },
+      "skillPoints": {
+        "earned": 64,
+        "spent": 56,
+        "remaining": 8,
+        "byJob": {
+          "job1": {
+            "tableBudget": 61,
+            "earned": 61,
+            "spent": 55,
+            "remaining": 6
+          },
+          "job2": {
+            "tableBudget": 4,
+            "earned": 3,
+            "spent": 1,
+            "remaining": 2
+          },
+          "job3": {
+            "tableBudget": 0,
+            "earned": 0,
+            "spent": 0,
+            "remaining": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "alchemy_intro",
+      "description": "炼丹入门：初识丹道已完成，丹炉、两张丹方及首炉材料可用。",
+      "map": "qingyun_village",
+      "spawn": {
+        "objectId": 1,
+        "name": "playerStart",
+        "x": 176,
+        "y": 704
+      },
+      "level": 12,
+      "realm": {
+        "id": "qi_refining",
+        "stage": "初期",
+        "stageIndex": 0
+      },
+      "exp": 0,
+      "stats": {
+        "rootBone": 22,
+        "agility": 22,
+        "spirit": 0,
+        "insight": 11
+      },
+      "statPoints": 0,
+      "sect": null,
+      "rank": null,
+      "sectContribution": 0,
+      "job": "",
+      "skills": {
+        "sword_qi_slash": 7
+      },
+      "equip": {
+        "weapon": "bamboo_sword"
+      },
+      "inventory": [
+        {
+          "item": "hp_pill_small",
+          "count": 5,
+          "quality": "low"
+        },
+        {
+          "item": "qi_pill",
+          "count": 2,
+          "quality": "low"
+        },
+        {
+          "item": "bronze_furnace",
+          "count": 1
+        },
+        {
+          "item": "spirit_herb",
+          "count": 6
+        },
+        {
+          "item": "rabbit_fur",
+          "count": 3
+        },
+        {
+          "item": "snake_gall",
+          "count": 3
+        }
+      ],
+      "spiritStones": 200,
+      "quests": {
+        "completed": [
+          "q_awaken",
+          "q_bamboo",
+          "q_snake",
+          "q_breakthrough",
+          "q_alchemy_intro"
+        ],
+        "active": [
+          "q_fox"
+        ]
+      },
+      "phase": 4,
+      "flags": {},
+      "realmRewards": [
+        "mortal"
+      ],
+      "crafting": {
+        "alchemyLevel": 1,
+        "alchemyExp": 10,
+        "learnedRecipes": [
+          "recipe_hp_pill",
+          "recipe_qi_pill"
+        ]
+      },
+      "skillGifted": {
+        "sword_qi_slash": 1
+      },
+      "skillPoints": {
+        "earned": 9,
+        "spent": 6,
+        "remaining": 3,
+        "byJob": {
+          "job1": {
+            "tableBudget": 9,
+            "earned": 9,
+            "spent": 6,
+            "remaining": 3
+          },
+          "job2": {
+            "tableBudget": 0,
+            "earned": 0,
+            "spent": 0,
+            "remaining": 0
+          },
+          "job3": {
+            "tableBudget": 0,
+            "earned": 0,
+            "spent": 0,
+            "remaining": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "talisman_intro",
+      "description": "制符入门：灵符小阁、墨落成符已完成，未拜宗；预载纸墨与五张配方。",
+      "map": "lingfu_pavilion",
+      "spawn": {
+        "objectId": 4,
+        "name": "playerStart",
+        "x": 224,
+        "y": 512
+      },
+      "level": 15,
+      "realm": {
+        "id": "qi_refining",
+        "stage": "中期",
+        "stageIndex": 1
+      },
+      "exp": 0,
+      "stats": {
+        "rootBone": 28,
+        "agility": 28,
+        "spirit": 0,
+        "insight": 14
+      },
+      "statPoints": 0,
+      "sect": null,
+      "rank": null,
+      "sectContribution": 0,
+      "job": "",
+      "skills": {
+        "spirit_bolt": 1
+      },
+      "equip": {
+        "weapon": "bamboo_sword"
+      },
+      "inventory": [
+        {
+          "item": "hp_pill_small",
+          "count": 5,
+          "quality": "low"
+        },
+        {
+          "item": "qi_pill",
+          "count": 2,
+          "quality": "low"
+        },
+        {
+          "item": "five_sect_token",
+          "count": 1
+        },
+        {
+          "item": "talisman_paper",
+          "count": 10
+        },
+        {
+          "item": "spirit_ink",
+          "count": 8
+        },
+        {
+          "item": "spirit_herb",
+          "count": 3
+        },
+        {
+          "item": "snake_gall",
+          "count": 3
+        }
+      ],
+      "spiritStones": 200,
+      "quests": {
+        "completed": [
+          "q_awaken",
+          "q_bamboo",
+          "q_snake",
+          "q_breakthrough",
+          "q_fox",
+          "q_talisman_intro"
+        ],
+        "active": []
+      },
+      "phase": 5,
+      "flags": {},
+      "realmRewards": [
+        "mortal"
+      ],
+      "crafting": {
+        "learnedRecipes": [
+          "recipe_spirit_ink",
+          "recipe_talisman_fire",
+          "recipe_talisman_guard",
+          "recipe_talisman_return",
+          "recipe_talisman_gather"
+        ]
+      },
+      "skillGifted": {
+        "spirit_bolt": 1
+      },
+      "skillPoints": {
+        "earned": 18,
+        "spent": 0,
+        "remaining": 18,
+        "byJob": {
+          "job1": {
+            "tableBudget": 18,
+            "earned": 18,
+            "spent": 0,
+            "remaining": 18
+          },
+          "job2": {
+            "tableBudget": 0,
+            "earned": 0,
+            "spent": 0,
+            "remaining": 0
+          },
+          "job3": {
+            "tableBudget": 0,
+            "earned": 0,
+            "spent": 0,
+            "remaining": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "before_five_sect_trials",
+      "description": "五宗试炼前：五宗帖在包中，妖狐已过、尚未选宗，不回填旧版剑修赠技。",
+      "map": "luoxia_town",
+      "spawn": {
+        "objectId": 10,
+        "name": "playerStart",
+        "x": 128,
+        "y": 640
+      },
+      "level": 12,
+      "realm": {
+        "id": "qi_refining",
+        "stage": "初期",
+        "stageIndex": 0
+      },
+      "exp": 0,
+      "stats": {
+        "rootBone": 22,
+        "agility": 22,
+        "spirit": 0,
+        "insight": 11
+      },
+      "statPoints": 0,
+      "sect": null,
+      "rank": null,
+      "sectContribution": 0,
+      "job": "",
+      "skills": {
+        "spirit_bolt": 1
+      },
+      "equip": {
+        "weapon": "bamboo_sword"
+      },
+      "inventory": [
+        {
+          "item": "hp_pill_small",
+          "count": 10,
+          "quality": "low"
+        },
+        {
+          "item": "qi_pill",
+          "count": 5,
+          "quality": "low"
+        },
+        {
+          "item": "five_sect_token",
+          "count": 1
+        },
+        {
+          "item": "pillar_shard_1",
+          "count": 1
+        }
+      ],
+      "spiritStones": 300,
+      "quests": {
+        "completed": [
+          "q_awaken",
+          "q_bamboo",
+          "q_snake",
+          "q_breakthrough",
+          "q_fox"
+        ],
+        "active": [
+          "q_main_01"
+        ]
+      },
+      "phase": 5,
+      "flags": {},
+      "realmRewards": [
+        "mortal"
+      ],
+      "skillGifted": {
+        "spirit_bolt": 1
+      },
+      "skillPoints": {
+        "earned": 9,
+        "spent": 0,
+        "remaining": 9,
+        "byJob": {
+          "job1": {
+            "tableBudget": 9,
+            "earned": 9,
+            "spent": 0,
+            "remaining": 9
+          },
+          "job2": {
+            "tableBudget": 0,
+            "earned": 0,
+            "spent": 0,
+            "remaining": 0
+          },
+          "job3": {
+            "tableBudget": 0,
+            "earned": 0,
+            "spent": 0,
+            "remaining": 0
+          }
+        }
+      }
+    }
+  ]
+}

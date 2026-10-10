@@ -259,6 +259,34 @@
     "targetMap": "tianjian_sect",
     "targetPortal": null,
     "cost": 0
+   },
+   {
+    "id": "taixu_temple",
+    "label": "ferry.route_taixu_temple",
+    "targetMap": "taixu_temple",
+    "targetPortal": null,
+    "cost": 0
+   },
+   {
+    "id": "lingfu_pavilion",
+    "label": "ferry.route_lingfu_pavilion",
+    "targetMap": "lingfu_pavilion",
+    "targetPortal": null,
+    "cost": 0
+   },
+   {
+    "id": "youying_tower",
+    "label": "ferry.route_youying_tower",
+    "targetMap": "youying_tower",
+    "targetPortal": null,
+    "cost": 0
+   },
+   {
+    "id": "wanshou_mountain",
+    "label": "ferry.route_wanshou_mountain",
+    "targetMap": "wanshou_mountain",
+    "targetPortal": null,
+    "cost": 0
    }
   ],
   "phase": 5

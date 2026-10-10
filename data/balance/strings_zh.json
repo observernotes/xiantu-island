@@ -606,5 +606,15 @@
   "gongfa.dialog.study": "悟性助你读懂经义，神识助你发现机缘。",
   "gongfa.dialog.fragment": "残卷先妥善收好，待参悟之法开放再行拼合。",
   "gongfa.dialog.upgrade": "升阶须循序研习，旧日功夫不会因此散去。",
-  "gongfa.dialog.sense": "探出藏书所在之后，仍要亲自取书、依法研习。"
+  "gongfa.dialog.sense": "探出藏书所在之后，仍要亲自取书、依法研习。",
+  "ferry.route_taixu_temple": "前往太虚观",
+  "ferry.route_lingfu_pavilion": "前往灵符派",
+  "ferry.route_youying_tower": "前往幽影楼",
+  "ferry.route_wanshou_mountain": "前往万兽山",
+  "trial.enter_confirm": "准备好接受本宗的入门试炼了吗？",
+  "trial.fail_return": "试炼未成，已返回山门。可找长老再次挑战。",
+  "trial.exit_return": "已退出试炼，返回山门。可找长老再次挑战。",
+  "ui.shop.menu": "看看货架",
+  "ui.shop.confirm": "用 {price} 枚灵石购买 {item}？",
+  "ui.shop.complete": "购买成功，{item} 已放入行囊。"
 }
