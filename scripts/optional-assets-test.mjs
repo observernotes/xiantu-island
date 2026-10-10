@@ -2,7 +2,8 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import ts from 'typescript';
 
 let assertions = 0;
@@ -14,6 +15,44 @@ const previousFetch = globalThis.fetch;
 let fetchCalls = 0;
 globalThis.fetch = () => { fetchCalls++; throw new Error('optional assets must never probe'); };
 try {
+  // 覆盖层在独立 snapshot 工程里验证，完整 sync 不会读取共享美术目录。
+  const overlayRoot = path.join(temporary, 'overlay-project');
+  for (const directory of ['scripts', 'data/balance', 'data/art/sprites', 'data/art/tiles', 'data/art/icons', 'art-overlays/tiles'])
+    await fs.mkdir(path.join(overlayRoot, directory), { recursive: true });
+  for (const file of ['sync.mjs', 'root.mjs'])
+    await fs.copyFile(new URL(`scripts/${file}`, root), path.join(overlayRoot, 'scripts', file));
+  const overlayWrite = (file, contents) => fs.writeFile(path.join(overlayRoot, file), JSON.stringify(contents));
+  await overlayWrite('data/balance/skills.json', { skills: [] });
+  await overlayWrite('data/balance/sect_ranks.json', { ranks: [] });
+  const metadata = { tileSize: 32, columns: 10, note: 'preserved metadata', variants: { 4: [1], 5: [2] } };
+  const fillVariants = { 5: { tileset: 'tiles_altar_fill_variants', frames: [0, 1, 2], includeBase: true } };
+  await overlayWrite('data/art/tiles/tiles_altar.json', metadata);
+  await overlayWrite('data/art/tiles/tiles_altar.png', 'fixture');
+  await overlayWrite('art-overlays/tiles/tiles_altar.json', { variants: fillVariants });
+  await overlayWrite('art-overlays/tiles/tiles_missing.json', { variants: fillVariants });
+  const overlaySync = (manifestOnly = false) => {
+    const result = spawnSync(process.execPath, ['scripts/sync.mjs'], { cwd: overlayRoot,
+      env: { ...process.env, XT_DATA: 'snapshot', XT_SYNC_MANIFEST_ONLY: manifestOnly ? '1' : '0' }, encoding: 'utf8' });
+    equal(result.status, 0, `overlay ${manifestOnly ? 'manifest-only' : 'full'} sync succeeds: ${result.stderr}`);
+    return result;
+  };
+  const mergedFile = path.join(overlayRoot, 'public/art/tiles/tiles_altar.json');
+  const fullSync = overlaySync();
+  const mergedBytes = await fs.readFile(mergedFile);
+  const mergedHash = createHash('sha256').update(mergedBytes).digest('hex');
+  equal(JSON.parse(mergedBytes), { ...metadata, variants: fillVariants }, 'full sync copies source, preserves metadata and replaces the entire top-level variants');
+  check(fullSync.stderr.includes('tiles/tiles_missing.json'), 'missing overlay target warns');
+  equal(await fs.access(path.join(overlayRoot, 'public/art/tiles/tiles_missing.json')).then(() => true, () => false), false, 'missing overlay target is not created');
+  overlaySync();
+  equal(await fs.readFile(mergedFile), mergedBytes, 'repeated full sync is byte-identical');
+  // 非法且已改变的覆盖层证明 manifest-only 完全不读、不重新合并。
+  await fs.writeFile(path.join(overlayRoot, 'art-overlays/tiles/tiles_altar.json'), '{changed invalid overlay');
+  const manifestSync = overlaySync(true);
+  const preservedBytes = await fs.readFile(mergedFile);
+  equal(preservedBytes, mergedBytes, 'manifest-only preserves merged JSON bytes');
+  equal(createHash('sha256').update(preservedBytes).digest('hex'), mergedHash, 'manifest-only preserves merged JSON hash');
+  check(!manifestSync.stderr.includes('tiles/tiles_missing.json'), 'manifest-only does not process overlays');
+
   // 独立 snapshot 工程验证真实 sync；不会触碰当前工作树的素材或清单。
   for (const directory of ['scripts', 'data/balance', 'public/art/sprites', 'public/art/tiles', 'public/art/icons/skills', 'public/art/icons/ui/sect_rank'])
     await fs.mkdir(path.join(temporary, directory), { recursive: true });
