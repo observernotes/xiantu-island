@@ -232,11 +232,13 @@ export class AlchemyPanel {
     this.text(mx, my - 16, '材料', 12, INK_60);
     recipe.materials.forEach((material, i) => {
       const x = mx + i * D.materials.gap, have = this.prog.count(material.item), ok = have >= material.count;
-      this.image(ok ? 'ui_alchemy_slot_ok' : 'ui_alchemy_slot_lack', x, my);
+      const slot = this.image(ok ? 'ui_alchemy_slot_ok' : 'ui_alchemy_slot_lack', x, my);
       this.item(material.item, x + 4, my + 4, 32);
       this.image(ok ? 'icon_alchemy_ok' : 'icon_alchemy_lack', x + 30, my - 4, 14, 14);
       this.text(x + 20, my + 44, `${have}/${material.count}`, 12, ok ? INK : RED).setOrigin(0.5, 0);
-      this.text(x + 20, my + 60, ITEMS[material.item]?.name ?? material.item, 12, INK_60).setOrigin(0.5, 0);
+      const tip = this.text(x + 20, my - 2, ITEMS[material.item]?.name ?? material.item).setOrigin(0.5, 1)
+        .setBackgroundColor(PAPER).setPadding(4, 2).setVisible(false);
+      slot?.setInteractive().on('pointerover', () => tip.setVisible(true)).on('pointerout', () => tip.setVisible(false));
     });
     const [sx, sy] = D.fuel.slot as Point;
     this.text(sx, sy - 16, '燃料', 12, INK_60); this.image('ui_alchemy_slot', sx, sy); this.item('spirit_stone', sx + 4, sy + 4, 32);
