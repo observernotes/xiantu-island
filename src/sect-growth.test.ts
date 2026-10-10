@@ -105,7 +105,7 @@ try {
   // 共享表关闭晋升与兑换；读表与身份显示仍正常，未来预留档不会被总开关放行。
   eq(rawRanks.enabled, false, '共享职位总开关当前关闭');
   same(SECT_GROWTH_CONFIG.ranks.rules.rankOrder, rawRanks.rules.rankOrder, '唯一职位顺序读取共享配置');
-  same(SECT_GROWTH_CONFIG.shops, rawShops, '旧灵石货架完整保留');
+  same(SECT_GROWTH_CONFIG.shops, rawShops, '字符串与已落表贡献对象货架完整读取');
   same(rawRanks.ranks.filter(row => row.availableInV05).map(row => row.id), [outer, inner, direct], 'v0.5 只登记前三档');
   for (const row of rawRanks.ranks) {
     eq(row.icon, `icon_sect_rank_${row.id}`, `${row.id} 徽记 key`);
@@ -125,7 +125,7 @@ try {
     same(identity.libraryTiers, ['entry'], `${entry.id} 外门只开入门权限`);
     same(identity.shopShelves, [outer], `${entry.id} 外门只开本档货架`);
     rejected(() => growth.promote(entry.promotionNpc, inner, `closed-${entry.id}`), p, `${entry.id} 总开关关闭不得晋升`);
-    eq(growth.catalog(entry.stewardNpc, shop).ok, false, `${entry.id} 真实贡献货架未落表仍关闭`);
+    eq(growth.catalog(entry.stewardNpc, shop).ok, false, `${entry.id} 已落表贡献货架开关仍关闭`);
     eq(growth.catalog(entry.promotionNpc, library).ok, false, `${entry.id} 未齐真实书目仍筹备`);
     eq(growth.services(entry.stewardNpc).some(service => service.allowed), false, `${entry.id} 未落表服务不可扣款`);
   }

@@ -1,5 +1,5 @@
 import { GROWTH, EXP_TO_NEXT, MAX_LEVEL, ITEMS, BREAKTHROUGH_LEVELS, BREAKTHROUGH, REALMS, QUESTS, LIFESPAN, RECIPES, ALCHEMY_RULES, SECT_RANKS, PillQuality, QuestDef } from './data';
-import type { SectGrowthState } from './SectGrowth';
+import { validSectGrowthState, type SectGrowthState } from './SectGrowth';
 import { HOTBAR_SLOTS, QUEST_SKILL_BACKFILL, SKILLS, SKILL_RULES, SkillDef, actOf, skillNumber, spEarnedFor, spBand } from './skills';
 import { CLASS_RULES, classDef, classForQuest, classGiftSkills, classMinLevel, classRobe, skillsForClass } from './classes';
 import { DAILY_QUEST_LIMIT, dailyQuestDay, dailyContribution, dailyRewardsReady, type DailyQuestReward } from './DailyQuests';
@@ -400,6 +400,12 @@ export class Progress {
   }
 
   count(id: string) { return this.inventory[id] ?? 0; }
+  /** 临时试炼物不属于可上交的永久库存；坏数量暂停本次消耗。 */
+  permanentCount(id: string) {
+    const owned = this.count(id), transient = this.transientItems[id] ?? 0;
+    return Number.isSafeInteger(owned) && owned >= 0 && Number.isSafeInteger(transient) && transient >= 0 && transient <= owned
+      ? owned - transient : NaN;
+  }
   removeItem(id: string, n: number) {
     if (!Number.isFinite(n) || n <= 0) return;
     let left = Math.min(this.count(id), Math.floor(n));
@@ -490,6 +496,15 @@ export class Progress {
 
   /** 旧档缺字段时补上，避免 Object.assign 把后面新增的数组弄丢或弄短。 */
   ensureDefaults() {
+    // 只补旧档缺失的容器；已有异常记录保留，由宗门消费者暂停交易。
+    if (this.sectGrowthState && typeof this.sectGrowthState === 'object' && !Array.isArray(this.sectGrowthState)) {
+      const state = this.sectGrowthState;
+      const candidate = { ...state,
+        donationBatches: Object.prototype.hasOwnProperty.call(state, 'donationBatches') ? state.donationBatches : {},
+        settledTransactions: Object.prototype.hasOwnProperty.call(state, 'settledTransactions') ? state.settledTransactions : {},
+      };
+      if (validSectGrowthState(candidate)) this.sectGrowthState = candidate;
+    }
     if (!this.skills || typeof this.skills !== 'object') this.skills = {};
     if (!this.skillGifted || typeof this.skillGifted !== 'object') this.skillGifted = {};
     if (!this.skillMastery || typeof this.skillMastery !== 'object') this.skillMastery = {};

@@ -10,7 +10,9 @@ import { findRoot } from './root.mjs';
 const projectRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const dataRoot = findRoot(projectRoot);
 const readTable = async name => JSON.parse(await fs.readFile(path.join(dataRoot, `balance/${name}.json`), 'utf8'));
-const [quests, ranks, strings, items] = await Promise.all(['quests', 'sect_ranks', 'strings_zh', 'items'].map(readTable));
+const [quests, ranks, strings, itemRows, donations, materialRows] = await Promise.all(
+  ['quests', 'sect_ranks', 'strings_zh', 'items', 'sect_donations', 'materials'].map(readTable));
+const items = [...itemRows, ...materialRows];
 const join = quests.find(q => q.id === 'q_sect_tianjian');
 const dailies = quests.filter(q => q.daily && q.sect === 'tianjian');
 const inner = ranks.ranks.find(r => r.id === 'inner_disciple');
@@ -19,6 +21,9 @@ const days = Math.ceil(inner.reqContribution / dailyContribution);
 assert.ok(Number.isInteger(days) && days > 0 && days <= 10, '内门冒烟日常夹具范围有误');
 const exchangeItem = items.find(i => i.id === 'clear_mind_pill');
 const fixtureCost = 35; // 测试报价，不是正式数值，也不回退 items.price。
+const donationOffer = donations.offers.find(offer => offer.sect === 'tianjian');
+const donationItem = items.find(item => item.id === donationOffer.item);
+assert.ok(donationItem && donationOffer.count > 0 && donationOffer.dailyLimit === 2);
 
 async function loadPlaywright() {
   const candidates = process.env.PLAYWRIGHT_MODULE ? [process.env.PLAYWRIGHT_MODULE]
@@ -106,6 +111,27 @@ async function daily(page, quest) {
   assert.equal(await page.evaluate(id => window.__scene.quests.state(id), quest.id), 'done');
 }
 
+async function enableDonationFixture(page, addMaterials = false) {
+  await page.evaluate(({ ranks, donations, offer, addMaterials }) => {
+    const s = window.__scene, g = s.sectGrowth;
+    s.sectGrowth = new g.constructor(s.prog, { ...g.config, ranks: { ...ranks, enabled: true },
+      donations: { ...donations, enabled: true, offers: donations.offers.map(row => ({ ...row, enabled: row.id === offer.id })) } });
+    if (addMaterials) { s.prog.addItem(offer.item, offer.count * 4); s.prog.save(); }
+  }, { ranks, donations, offer: donationOffer, addMaterials });
+}
+async function donationState(page) {
+  return page.evaluate(item => ({ count: window.__scene.prog.count(item), contribution: window.__scene.prog.sectContribution,
+    stones: window.__scene.prog.stones, day: window.__scene.prog.sectGrowthState.donationDay,
+    batches: window.__scene.prog.sectGrowthState.donationBatches,
+    receipts: Object.values(window.__scene.prog.sectGrowthState.settledTransactions).filter(receipt => receipt.kind === 'donation') }), donationOffer.item);
+}
+async function nextDonationDay(page) {
+  await page.evaluate(() => {
+    window.__sectNow += 86400000;
+    sessionStorage.setItem('sect-smoke-now', String(window.__sectNow));
+  });
+}
+
 let browser, server, errors;
 try {
   const { api, module } = await loadPlaywright();
@@ -113,7 +139,7 @@ try {
   let baseURL = process.env.XT_SMOKE_BASE_URL;
   if (!baseURL) {
     await fs.access(path.join(projectRoot, 'dist/index.html'));
-    server = await preview({ root: projectRoot, preview: { host: '127.0.0.1', port: 4191 }, logLevel: 'error' });
+    server = await preview({ root: projectRoot, preview: { host: '127.0.0.1', port: Number(process.env.SMOKE_PORT ?? 4205), strictPort: true }, logLevel: 'error' });
     baseURL = server.resolvedUrls.local[0];
   }
   browser = await api.chromium.launch({ executablePath, headless: true, timeout: 20000,
@@ -150,20 +176,22 @@ try {
   assert.equal(joined.state, 'done'); assert.equal(joined.contribution, 0);
 
   // 真实表的关门/缺货不会意外开放；测试夹具只启用现有门槛与一件内门商品。
-  const configured = await page.evaluate(({ ranks, item, cost }) => {
+  const configured = await page.evaluate(({ ranks, item, cost, offer }) => {
     const s = window.__scene, g = s.sectGrowth;
     const real = { promotion: g.promotion('tianjian_elder'), catalog: g.catalog('tianjian_envoy_sect', 'sect_shop') };
     const transactionState = () => JSON.stringify({ inventory: s.prog.inventory, contribution: s.prog.sectContribution,
       stones: s.prog.stones, receipts: s.prog.sectGrowthState.settledTransactions });
     real.beforeExchange = transactionState();
     real.exchange = g.exchange('tianjian_envoy_sect', 'sect_shop', item, 'sect-smoke-config-closed');
+    real.donations = g.donations('tianjian_envoy_sect');
+    real.donate = g.donate('tianjian_envoy_sect', offer, 'sect-smoke-donation-closed', real.donations.entries[0]?.day ?? '');
     real.afterExchange = transactionState();
     const config = { ...g.config, ranks: { ...ranks, enabled: true }, shops: {
       ...g.config.shops, tianjian_envoy_sect: [{ item, reqRank: 'inner_disciple', costContribution: cost, enabled: true, balanceTodo: [] }],
     } };
     s.sectGrowth = new g.constructor(s.prog, config);
     return real;
-  }, { ranks, item: exchangeItem.id, cost: fixtureCost });
+  }, { ranks, item: exchangeItem.id, cost: fixtureCost, offer: donationOffer.id });
   assert.equal(configured.promotion.ok, false, '真实关门配置误开放晋升');
   assert.equal(configured.promotion.key, 'sect.ui.config_pending');
   assert.equal(configured.catalog.ok, false, '真实关门配置误开放货架');
@@ -171,6 +199,8 @@ try {
   assert.ok(configured.catalog.entries.every(entry => !entry.ok && entry.key === 'sect.ui.config_pending'), '真实关闭商品未灰显');
   assert.equal(configured.exchange.ok, false, '真实关门配置允许兑换');
   assert.equal(configured.exchange.key, 'sect.ui.config_pending');
+  assert.equal(configured.donations.ok, false, '真实关门配置误开放上交');
+  assert.equal(configured.donate.ok, false, '真实关门配置允许上交');
   assert.equal(configured.afterExchange, configured.beforeExchange, '真实关门兑换改变余额、背包或收据');
 
   for (let day = 0; day < days; day++) {
@@ -218,11 +248,72 @@ try {
   const reloaded = await page.evaluate(item => ({ rank: window.__scene.prog.sectRank,
     contribution: window.__scene.prog.sectContribution, count: window.__scene.prog.count(item) }), exchangeItem.id);
   assert.deepEqual(reloaded, { rank: inner.id, contribution: bought.contribution, count: bought.count });
+
+  // 仅内存开启上交表，材料/额度取正式配置；实际 NPC 数字菜单负责确认和保存。
+  await enableDonationFixture(page, true);
+  const donationBefore = await donationState(page);
+  await openNpc(page, donationOffer.npc); await select(page, strings['sect.donation.menu']);
+  await select(page, donationItem.name);
+  const previewText = await page.evaluate(() => window.__scene.dialog.lines[0].text);
+  assert.ok(previewText.includes(strings['sect.donation.quest_warning']), '上交确认缺日常材料警告');
+  assert.ok(previewText.includes(strings['sect.donation.remaining'].replace('{remaining}', String(donationOffer.dailyLimit))), '上交确认缺当日剩余批数');
+  await page.evaluate(confirm => {
+    window.__sectDonateConfirm = window.__scene.dialog.choices.find(choice => choice.label === confirm).onSelect;
+  }, strings['sect.ui.confirm']);
+  await select(page, strings['sect.ui.confirm']); await finishDialog(page);
+  const donated = await donationState(page);
+  assert.equal(donated.count, donationBefore.count - donationOffer.count);
+  assert.equal(donated.contribution, donationBefore.contribution + donationOffer.rewards.sectContribution);
+  assert.equal(donated.stones, donationBefore.stones, '上交改变灵石');
+  assert.equal(donated.batches[donationOffer.id], 1); assert.equal(donated.receipts.length, 1);
+  await page.evaluate(() => window.__sectDonateConfirm());
+  assert.deepEqual(await donationState(page), donated, '上交缓存确认重复扣料或发贡献');
+  await finishDialog(page);
+  await page.reload({ waitUntil: 'networkidle', timeout: 30000 }); await sceneReady(page);
+  assert.deepEqual(await donationState(page), donated, '刷新丢失上交批数、材料、贡献或收据');
+  await enableDonationFixture(page);
+  await openNpc(page, donationOffer.npc); await select(page, strings['sect.donation.menu']);
+  await select(page, donationItem.name); await select(page, strings['sect.ui.confirm']); await finishDialog(page);
+  const limited = await donationState(page);
+  assert.equal(limited.batches[donationOffer.id], donationOffer.dailyLimit);
+  assert.equal(limited.receipts.length, 2);
+  await openNpc(page, donationOffer.npc); await select(page, strings['sect.donation.menu']);
+  const limitChoice = await page.evaluate(name => {
+    const choice = window.__scene.dialog.choices.find(choice => choice.label.startsWith(name));
+    return { disabled: !!choice.disabled, reason: choice.reason };
+  }, donationItem.name);
+  assert.equal(limitChoice.disabled, true, '上交额度耗尽未禁用');
+  assert.ok(limitChoice.reason.includes(strings['sect.donation.daily_limit']));
+
+  // 隔日已有新额度，预览后再跨05:00必须重新确认，旧回调无权自动结算。
+  await nextDonationDay(page);
+  await openNpc(page, donationOffer.npc); await select(page, strings['sect.donation.menu']);
+  await select(page, donationItem.name);
+  await nextDonationDay(page);
+  await select(page, strings['sect.ui.confirm']);
+  assert.equal(await page.evaluate(() => window.__scene.dialog.lines[0].text), strings['sect.donation.day_changed']);
+  const stale = await donationState(page);
+  assert.equal(stale.count, limited.count); assert.equal(stale.contribution, limited.contribution);
+  assert.equal(stale.receipts.length, limited.receipts.length);
+  await press(page, 'Enter');
+  await page.waitForFunction(() => window.__scene.dialog.choices.length > 0);
+  await select(page, donationItem.name);
+  assert.ok((await page.evaluate(() => window.__scene.dialog.lines[0].text)).includes(
+    strings['sect.donation.remaining'].replace('{remaining}', String(donationOffer.dailyLimit))));
+  await select(page, strings['sect.ui.confirm']); await finishDialog(page);
+  const reconfirmed = await donationState(page);
+  assert.equal(reconfirmed.count, limited.count - donationOffer.count);
+  assert.equal(reconfirmed.contribution, limited.contribution + donationOffer.rewards.sectContribution);
+  assert.equal(reconfirmed.batches[donationOffer.id], 1); assert.equal(reconfirmed.receipts.length, 3);
+  assert.notEqual(reconfirmed.day, limited.day);
+  await page.reload({ waitUntil: 'networkidle', timeout: 30000 }); await sceneReady(page);
+  assert.deepEqual(await donationState(page), reconfirmed, '跨日上交结果刷新后未保留');
   await page.waitForTimeout(300);
   assert.deepEqual(errors, { console: [], page: [], request: [], http: [] }, '浏览器冒烟出现报错');
   console.log(JSON.stringify({ passed: true, joinedByQuest: true, days, dailiesCompleted: days * dailies.length,
     contributionEarned: contribution, rank: bought.rank, exchanged: exchangeItem.id, fixtureCost,
     reloadRetained: true, duplicateConfirmBlocked: true, fixtureOnlyEnabled: true,
+    donationMenuConfirmed: true, donationDuplicateBlocked: true, donationLimitEnforced: true, donationCrossDayReconfirmed: true,
     consoleErrors: 0, pageErrors: 0, requestFailures: 0, httpErrors: 0 }));
 } catch (error) {
   console.error(JSON.stringify({ failure: error.message, errors })); throw error;

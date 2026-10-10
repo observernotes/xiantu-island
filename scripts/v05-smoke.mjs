@@ -347,7 +347,7 @@ try {
   let baseURL = process.env.XT_SMOKE_BASE_URL;
   if (!baseURL) {
     await fs.access(path.join(projectRoot, 'dist/index.html'));
-    server = await preview({ root: projectRoot, preview: { host: '127.0.0.1', port: 4185 }, logLevel: 'error' });
+    server = await preview({ root: projectRoot, preview: { host: '127.0.0.1', port: Number(process.env.SMOKE_PORT ?? 4204), strictPort: true }, logLevel: 'error' });
     baseURL = server.resolvedUrls.local[0];
   }
   browser = await api.chromium.launch({

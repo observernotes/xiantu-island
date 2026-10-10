@@ -15,9 +15,12 @@ const screenshot = path.join(projectRoot, 'dist/alchemy-smoke.png');
 const materials = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/materials.json'), 'utf8'));
 const recipes = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/recipes.json'), 'utf8'));
 const quests = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/quests.json'), 'utf8'));
+const strings = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/strings_zh.json'), 'utf8'));
+const items = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/items.json'), 'utf8'));
 const herb = materials.find(item => item.id === 'spirit_herb');
 const recipe = recipes.recipes.find(item => item.id === 'recipe_hp_pill');
 const quest = quests.find(item => item.id === 'q_alchemy_intro');
+const shopItem = items.find(item => item.id === 'qi_pill');
 assert.ok(herb?.gather && recipe && quest, '采集、回春丹或入门任务配置缺失');
 
 function collectErrors(page) {
@@ -64,27 +67,97 @@ async function waitForMap(page, mapId) {
   await page.waitForTimeout(300);
 }
 
-// 位置与暂停物理是隔离路过怪物的夹具；采集和火候继续使用游戏帧计时。
+// 落点、无敌与暂停物理隔离路过怪物；采集和火候继续使用游戏帧计时。
 async function standAt(page, name) {
-  await page.evaluate(objectName => {
+  const frame = await page.evaluate(objectName => {
     const scene = window.__scene;
     const object = scene.map.objects.find(object => object.name === objectName);
     if (!object) throw new Error(`地图缺少 ${objectName}`);
+    // 等待真实落地的物理帧期间，也不能被路过怪物接触击退。
+    scene.player.invulnUntil = Number.POSITIVE_INFINITY;
     scene.physics.resume();
     scene.player.body.reset(object.x, object.y);
+    return scene.game.loop.frame;
   }, name);
-  await page.waitForFunction(() => window.__scene.player.onGround && window.__scene.player.state2 === 'ground', null, { timeout: 3000 });
+  // reset 后旧落地标记可能尚未刷新，须让物理步实际处理新位置后再暂停。
+  await page.waitForFunction(frame => window.__scene.game.loop.frame > frame
+    && window.__scene.player.onGround && window.__scene.player.state2 === 'ground', frame, { timeout: 3000 });
   await page.evaluate(() => window.__scene.physics.pause());
 }
 
 async function finishDialogue(page) {
+  // 开口前须确实进入对白；不能把尚未处理的 Z 输入误当作对白已经结束。
+  await page.waitForFunction(() => window.__scene.dialog.open, null, { timeout: 3000 });
   for (let i = 0; i < 20; i++) {
     if (!await page.evaluate(() => window.__scene.dialog.open)) return;
-    assert.equal(await page.evaluate(() => window.__scene.dialog.choices.length), 0, '烟测试遇到未预期的对话选项');
-    await page.keyboard.press('z');
-    await page.waitForTimeout(100);
+    const choices = await page.evaluate(() => window.__scene.dialog.choices.map(choice => choice.label));
+    if (choices.length) {
+      const label = strings[quest.nameKey] ?? quest.name, index = choices.indexOf(label);
+      assert.ok(index >= 0 && index < 5, '孙郎中服务菜单遮挡原炼丹任务');
+      await selectChoice(page, label);
+      continue;
+    }
+    const before = await dialogSignature(page);
+    await page.keyboard.press('z', { delay: 60 });
+    await waitForDialogueChange(page, before);
   }
   throw new Error('对白 20 次按键后仍未结束');
+}
+
+async function dialogSignature(page) {
+  return page.evaluate(() => {
+    const d = window.__scene.dialog;
+    return JSON.stringify([d.open, d.i, d.lines[d.i]?.text, d.choices.map(choice => choice.label)]);
+  });
+}
+async function waitForDialogueChange(page, before) {
+  await page.waitForFunction(before => {
+    const d = window.__scene.dialog;
+    return JSON.stringify([d.open, d.i, d.lines[d.i]?.text, d.choices.map(choice => choice.label)]) !== before;
+  }, before, { timeout: 3000 });
+}
+
+async function selectChoice(page, label) {
+  for (let i = 0; i < 10; i++) {
+    const choices = await page.evaluate(() => window.__scene.dialog.choices.map(choice => ({ label: choice.label, disabled: !!choice.disabled })));
+    const index = choices.findIndex(choice => choice.label === label);
+    if (index >= 0) {
+      assert.equal(choices[index].disabled, false, `${label} 菜单不可用`);
+      assert.ok(index < 5);
+      const before = await dialogSignature(page);
+      await page.keyboard.press(String(index + 1), { delay: 60 });
+      await waitForDialogueChange(page, before);
+      return;
+    }
+    const next = choices.findIndex(choice => choice.label.startsWith('›'));
+    assert.ok(next >= 0, `菜单缺 ${label}`);
+    const before = await dialogSignature(page);
+    await page.keyboard.press(String(next + 1), { delay: 60 });
+    await waitForDialogueChange(page, before);
+  }
+  assert.fail(`菜单分页缺 ${label}`);
+}
+
+async function openDoctorDialogue(page) {
+  await standAt(page, 'doctor_sun');
+  assert.equal(await page.evaluate(() => window.__scene.nearNpc()), 'doctor_sun', '孙郎中交互位置不正确');
+  await page.keyboard.press('z', { delay: 60 });
+  // 普通商店与炼丹任务共用服务菜单，等待实际菜单出现再选择原任务。
+  await page.waitForFunction(() => window.__scene.dialog.open && window.__scene.dialog.choices.length > 0,
+    null, { timeout: 3000 });
+}
+
+async function gatherDiagnostic(page) {
+  return page.evaluate(() => {
+    const s = window.__scene, p = s.player, g = s.gathering;
+    return { map: s.map.id, now: Date.now(), player: { x: p.x, y: p.y, feet: p.feet,
+      onGround: p.onGround, state: p.state2, dead: p.dead }, requireRelease: g.requireRelease,
+      active: g.active && { point: g.active.point.object.name, elapsed: g.active.elapsed },
+      dialog: s.dialog.open, alchemy: s.alchemy.isOpen(), skillWindow: s.skillWindow.open, nearbyDrop: s.hasNearbyDrop(),
+      keys: Object.fromEntries(['z', 'left', 'right', 'up', 'down', 'space', 'alt', 'c', 'ctrl', 'x'].map(key => [key, s.keys[key].isDown])),
+      points: g.points.map(point => ({ name: point.object.name, x: point.object.x, y: point.object.y,
+        ready: point.ready, near: g.near(point), cooldown: s.prog.gatherRespawnAt[point.key] })) };
+  });
 }
 
 async function usePortal(page, objectName, targetMap) {
@@ -108,7 +181,7 @@ try {
   let baseURL = process.env.XT_SMOKE_BASE_URL;
   if (!baseURL) {
     await fs.access(path.join(projectRoot, 'dist/index.html'));
-    server = await preview({ root: projectRoot, preview: { host: '127.0.0.1', port: 4186 }, logLevel: 'error' });
+    server = await preview({ root: projectRoot, preview: { host: '127.0.0.1', port: Number(process.env.SMOKE_PORT ?? 4203), strictPort: true }, logLevel: 'error' });
     baseURL = server.resolvedUrls.local[0];
   }
   browser = await api.chromium.launch({ executablePath, headless: true, timeout: 20000,
@@ -117,7 +190,7 @@ try {
   page = await context.newPage();
   errors = collectErrors(page);
   console.log(JSON.stringify({ baseURL, playwright: module, browser: executablePath, headless: true,
-    fixtures: 'level12/materials/fuel/position/paused physics; deterministic RNG; perfect-frame clock pause' }));
+    fixtures: 'level12/materials/fuel/position/contact damage isolated/paused physics; deterministic RNG; perfect-frame clock pause' }));
   const url = new URL(baseURL);
   url.searchParams.set('map', 'qingyun_village'); url.searchParams.set('reset', '1');
   await page.goto(url.href, { waitUntil: 'networkidle', timeout: 30000 });
@@ -128,8 +201,24 @@ try {
     p.inventory = { spirit_herb: 4, rabbit_fur: 1 };
     p.hp = p.maxHp; p.mp = p.maxMp; p.save();
   });
-  await standAt(page, 'doctor_sun');
-  await page.keyboard.press('z'); await page.waitForTimeout(100);
+  // 旧字符串货架保持灵石购买，入口与原教学任务并列，重复确认不重扣。
+  const beforeShop = await page.evaluate(item => ({ stones: window.__scene.prog.stones,
+    contribution: window.__scene.prog.sectContribution, count: window.__scene.prog.count(item) }), shopItem.id);
+  await openDoctorDialogue(page);
+  await selectChoice(page, strings['ui.shop.menu'] ?? '商店'); await selectChoice(page, shopItem.name);
+  await page.evaluate(confirm => {
+    window.__ordinaryBuyConfirm = window.__scene.dialog.choices.find(choice => choice.label === confirm).onSelect;
+  }, strings['sect.ui.confirm']);
+  await selectChoice(page, strings['sect.ui.confirm']); await finishDialogue(page);
+  const afterShop = await page.evaluate(item => ({ stones: window.__scene.prog.stones,
+    contribution: window.__scene.prog.sectContribution, count: window.__scene.prog.count(item) }), shopItem.id);
+  assert.deepEqual(afterShop, { stones: beforeShop.stones - shopItem.price,
+    contribution: beforeShop.contribution, count: beforeShop.count + 1 });
+  await page.evaluate(() => window.__ordinaryBuyConfirm());
+  assert.deepEqual(await page.evaluate(item => ({ stones: window.__scene.prog.stones,
+    contribution: window.__scene.prog.sectContribution, count: window.__scene.prog.count(item) }), shopItem.id), afterShop);
+  await finishDialogue(page); passed('孙郎中字符串货架仅扣灵石，同一确认不重复扣款或交货');
+  await openDoctorDialogue(page);
   await finishDialogue(page);
   const accepted = await page.evaluate(() => ({
     state: window.__scene.quests.state('q_alchemy_intro'),
@@ -176,6 +265,8 @@ try {
   await page.waitForFunction(() => window.__scene.prog.count('spirit_herb') === 5, null,
     { timeout: herb.gather.castMs + 3000 });
   await page.keyboard.up('z');
+  // 成功采集要求实际游戏帧先看到松键，才允许第二个点再次开始。
+  await page.waitForFunction(() => !window.__scene.gathering.requireRelease, null, { timeout: 3000 });
   const harvested = await page.evaluate(name => {
     const scene = window.__scene, point = scene.gathering.points.find(point => point.object.name === name);
     const saved = JSON.parse(localStorage.getItem('xiantu_save_v1'));
@@ -190,7 +281,9 @@ try {
   assert.equal(harvested.cooldown, harvested.savedCooldown, '采集刷新时间未存档');
   passed('按住 Z 完成一次采集 +1，respawnMs 冷却保存');
 
-  const fallbackPoint = await page.evaluate(() => window.__scene.gathering.points.find(point => point.ready)?.object.name);
+  // 第三个既有采集点位于实心平地，避免单向平台上的敌人干扰落点。
+  const fallbackPoint = await page.evaluate(() => window.__scene.gathering.points
+    .find(point => point.object.name === 'gather_spirit_herb_21' && point.ready)?.object.name);
   assert.ok(fallbackPoint, '竹林缺少验证 idle 回退的第二个采集点');
   await standAt(page, fallbackPoint);
   await page.evaluate(() => {
@@ -199,8 +292,17 @@ try {
     player.anims.stop(); scene.anims.remove(player.animationKey('gather'));
     player.play(player.animationKey('idle'), true);
   });
+  const fallbackBefore = await gatherDiagnostic(page);
+  const fallbackTarget = fallbackBefore.points.find(point => point.name === fallbackPoint);
+  assert.equal(fallbackTarget?.ready, true, 'idle 回退采集点尚未刷新');
+  assert.equal(fallbackTarget?.near, true, '真实落地后未进入 idle 回退采集点交互范围');
   await page.keyboard.down('z');
-  await page.waitForFunction(() => window.__scene.gathering.active?.elapsed > 100, null, { timeout: 3000 });
+  try {
+    await page.waitForFunction(() => window.__scene.gathering.active?.elapsed > 100, null, { timeout: 3000 });
+  } catch (error) {
+    console.error(JSON.stringify({ fallbackBefore, fallbackAfter: await gatherDiagnostic(page) }));
+    throw error;
+  }
   assert.equal(await page.evaluate(() => window.__scene.player.anims.currentAnim?.key),
     await page.evaluate(() => window.__scene.player.animationKey('idle')), '缺 gather 动画时未回退 idle');
   await page.keyboard.up('z');
@@ -210,8 +312,7 @@ try {
   passed('第二个采集点缺 gather 动画回退 idle，松键不产物');
 
   await usePortal(page, 'portal_to_village', 'qingyun_village');
-  await standAt(page, 'doctor_sun');
-  await page.keyboard.press('z'); await page.waitForTimeout(100);
+  await openDoctorDialogue(page);
   await finishDialogue(page);
   await page.waitForFunction(() => (window.__scene.alchemy ?? window.__scene.alchemyPanel).isOpen(), null, { timeout: 3000 });
   const beforeBrew = await page.evaluate(() => {
@@ -288,8 +389,7 @@ try {
 
   await page.keyboard.press('Escape'); await page.waitForTimeout(100);
   assert.equal(await page.evaluate(() => (window.__scene.alchemy ?? window.__scene.alchemyPanel).isOpen()), false);
-  await standAt(page, 'doctor_sun');
-  await page.keyboard.press('z'); await page.waitForTimeout(100);
+  await openDoctorDialogue(page);
   await finishDialogue(page);
   const delivered = await page.evaluate(() => ({
     quest: window.__scene.prog.quests.q_alchemy_intro, recipes: window.__scene.prog.learnedRecipes,

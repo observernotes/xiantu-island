@@ -76,7 +76,7 @@ try {
   let baseURL = process.env.XT_SMOKE_BASE_URL;
   if (!baseURL) {
     await fs.access(path.join(projectRoot, 'dist/index.html'));
-    server = await preview({ root: projectRoot, preview: { host: '127.0.0.1', port: 4186 }, logLevel: 'error' });
+    server = await preview({ root: projectRoot, preview: { host: '127.0.0.1', port: Number(process.env.SMOKE_PORT ?? 4201), strictPort: true }, logLevel: 'error' });
     baseURL = server.resolvedUrls.local[0];
   }
   browser = await api.chromium.launch({ executablePath, headless: true, timeout: 20000,
@@ -276,26 +276,55 @@ try {
       let cooldownAcrossMap = null;
       if (sect === 'taixu' || sect === 'wanshou') {
         const id = sect === 'taixu' ? 'water_mirror' : 'summon_spirit_wolf';
-        const deadline = await page.evaluate(id => window.__scene.prog.skillCooldowns[id]?.readyAt, id);
-        assert.ok(deadline > Date.now(), `${id}: 独立冷却没有写入进度`);
-        await page.evaluate(() => window.__scene.scene.restart({ map: 'qingyun_village' }));
-        await page.waitForFunction(() => window.__scene.map?.id === 'qingyun_village' && window.__scene.player?.active
-          && window.__scene.combat && window.__scene.game.loop.frame > 3, null, { timeout: 15000 });
-        const checkpoint = await page.evaluate(id => {
+        if (sect === 'wanshou') {
+          // 狼在本宗首个技能检查中施放；后续命中/RPC耗时可能已吃掉其10秒冷却。
+          // 等原冷却自然结束，再真实按键施放，并在该事件中立即发起换图。
+          await page.waitForFunction(id => {
+            const scene = window.__scene;
+            return Date.now() >= (scene.prog.skillCooldowns[id]?.readyAt ?? 0)
+              && scene.time.now >= (scene.combat.cds.get(id)?.readyAt ?? 0);
+          }, id, { timeout: 15000 });
+        }
+        const slot = await page.evaluate(({ id, recast }) => {
           const scene = window.__scene;
           scene.dialog.close(); scene.regenMp = () => {}; scene.prog.mp = scene.prog.maxMp;
           scene.player.state2 = 'ground'; scene.player.skillRooted = false; scene.player.attackLockUntil = 0;
-          window.__cooldownSmoke = { casts: 0, mp: scene.prog.mp };
-          scene.events.on('skill:cast', event => { if (event.id === id) window.__cooldownSmoke.casts++; });
-          return { readyAt: scene.prog.skillCooldowns[id]?.readyAt, remaining: scene.combat.cds.get(id)?.readyAt - scene.time.now,
-            slot: scene.prog.hotbar.indexOf(id) };
-        }, id);
-        assert.equal(checkpoint.readyAt, deadline, `${id}: 换图重置存档冷却`);
+          window.__cooldownSmoke = null;
+          const restart = () => {
+            const deadline = scene.prog.skillCooldowns[id]?.readyAt, initialRemaining = deadline - Date.now();
+            scene.events.once('create', () => {
+              scene.dialog.close(); scene.regenMp = () => {}; scene.prog.mp = scene.prog.maxMp;
+              scene.player.state2 = 'ground'; scene.player.skillRooted = false; scene.player.attackLockUntil = 0;
+              const checkpoint = { deadline, initialRemaining, readyAt: scene.prog.skillCooldowns[id]?.readyAt,
+                remaining: scene.combat.cds.get(id)?.readyAt - scene.time.now };
+              // 与恢复快照同一时刻重试，避免RPC在真实冷却到期后才送来按键。
+              let casts = 0;
+              const countCast = event => { if (event.id === id) casts++; };
+              scene.events.on('skill:cast', countCast);
+              const mp = scene.prog.mp;
+              scene.combat.tryCast(scene.prog.hotbar.indexOf(id));
+              scene.events.off('skill:cast', countCast);
+              window.__cooldownSmoke = { ...checkpoint, blocked: { casts, mpLoss: mp - scene.prog.mp } };
+            });
+            scene.scene.restart({ map: 'qingyun_village' });
+          };
+          if (recast) {
+            const onCast = event => {
+              if (event.id !== id) return;
+              scene.events.off('skill:cast', onCast); restart();
+            };
+            scene.events.on('skill:cast', onCast);
+          } else restart();
+          return scene.prog.hotbar.indexOf(id);
+        }, { id, recast: sect === 'wanshou' });
+        if (sect === 'wanshou') await pressSkill(page, labels[slot]);
+        await page.waitForFunction(() => window.__scene.map?.id === 'qingyun_village' && window.__cooldownSmoke,
+          null, { timeout: 15000 });
+        const checkpoint = await page.evaluate(() => window.__cooldownSmoke);
+        assert.ok(checkpoint.initialRemaining > 0, `${id}: 独立冷却没有写入进度`);
+        assert.equal(checkpoint.readyAt, checkpoint.deadline, `${id}: 换图重置存档冷却`);
         assert.ok(checkpoint.remaining > 0, `${id}: 换图没有恢复战斗冷却`);
-        await pressSkill(page, labels[checkpoint.slot]);
-        const blocked = await page.evaluate(() => ({ casts: window.__cooldownSmoke.casts,
-          mpLoss: window.__cooldownSmoke.mp - window.__scene.prog.mp }));
-        assert.deepEqual(blocked, { casts: 0, mpLoss: 0 }, `${id}: 可通过换图绕过独立冷却`);
+        assert.deepEqual(checkpoint.blocked, { casts: 0, mpLoss: 0 }, `${id}: 可通过换图绕过独立冷却`);
         cooldownAcrossMap = { id, retained: true, blocked: true };
       }
       // 调用真实任务 after/turnIn 与 GameScene.giveRewards，通关仅由胜利回调模拟。

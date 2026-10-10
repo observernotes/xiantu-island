@@ -61,6 +61,8 @@ export interface MonsterDef {
 }
 export interface ItemDef {
   id: string; name: string; type: string; slot?: string; stats?: Record<string, number>; effect?: any; icon?: string; appearance?: string;
+  price?: number;
+  phase?: number; phaseMin?: number; phaseMax?: number; enabled?: boolean; placeholder?: boolean;
   kind?: string; toolType?: string; sect?: string; reqLevel?: number;
   unlockSkill?: string;
   gather?: { castMs: number; respawnMs: number; maps?: string[] };
@@ -188,6 +190,7 @@ export const REALMS = realms as any[];
 
 import sectRanks from '@xt/balance/sect_ranks.json';
 import shops from '@xt/balance/shops.json';
+import sectDonations from '@xt/balance/sect_donations.json';
 export interface SectRankDef {
   id: string; name: string; nameKey: string; icon: string; availableInV05: boolean;
   reqContribution: number | null; reqRealm: string | null;
@@ -201,11 +204,17 @@ export interface SectRanksConfig {
   ranks: SectRankDef[];
   sects: { id: string; name: string; promotionNpc: string; stewardNpc: string; titles: Record<string, { name: string; nameKey: string }> }[];
 }
-export interface SectShopGood { item: string; reqRank: string; costContribution: number | null; enabled: boolean; balanceTodo: string[] }
+export interface SectShopGood { item: string; reqRank: string; costContribution: number | null; enabled: boolean; balanceTodo?: string[] }
+export interface SectDonationOffer {
+  id: string; sect: string; npc: string; item: string; reqRank: string; enabled: boolean;
+  count: number | null; rewards: { sectContribution: number | null }; dailyLimit: number | null; balanceTodo: string[];
+}
+export interface SectDonationsConfig { version: string; enabled: boolean; offers: SectDonationOffer[] }
 export type ShopEntry = string | SectShopGood;
 export const SECT_RANKS = sectRanks as SectRanksConfig;
 /** 旧字符串仍是灵石货架；宗门消费者只接受明确的贡献商品对象。 */
 export const SHOPS = shops as Record<string, ShopEntry[]>;
+export const SECT_DONATIONS = sectDonations as SectDonationsConfig;
 
 /** 一行台词：speaker 为空表示系统提示；cue 是演出标记（breakthrough / job） */
 export interface Line { speaker: string | null; text: string; player?: boolean; cue?: string; }
@@ -271,6 +280,39 @@ export const LIFESPAN = pacing.lifespan;
 
 /** strings_zh.json 里还没有的界面文案。有表内 key 时以表为准，不要改 data/。 */
 const LOCAL_STRINGS: Record<string, string> = {
+  'ui.shop.menu': '商店',
+  'ui.shop.confirm': '花费{price}灵石购买{item}。',
+  'ui.shop.complete': '已购买{item}。',
+  'ui.shop.not_enough': '灵石不足。',
+  'sect.ui.title': '宗门成长',
+  'sect.ui.rank': '当前职位：{title}',
+  'sect.ui.contribution': '宗门贡献：{contribution}',
+  'sect.ui.locked_rank': '达到{rank}后开放。',
+  'sect.ui.not_member': '先拜入本宗，再议门中事务。',
+  'sect.ui.requirements_unmet': '贡献或境界尚未达到要求。',
+  'sect.ui.config_pending': '此项尚在筹备，请稍后再来。',
+  'sect.ui.closed': '此项尚未开放。',
+  'sect.ui.invalid_rank': '宗门职位记录有误，暂无法办理。',
+  'sect.ui.contribution_short': '宗门贡献不足。',
+  'sect.ui.bag_full': '行囊空位不足，请先整理。',
+  'sect.ui.save_failed': '此次未能保存，请重试。',
+  'sect.ui.confirm': '确认',
+  'sect.ui.cancel': '稍后再说',
+  'sect.shop.menu': '宗门商店',
+  'sect.shop.confirm': '花费{contribution}贡献兑换{item}。',
+  'sect.shop.complete': '已兑换{item}。',
+  'sect.library.menu': '藏经阁',
+  'sect.library.confirm': '花费{contribution}贡献换取{item}。',
+  'sect.library.complete': '已换取{item}，修习仍须满足条件。',
+  'sect.library.learned': '这门功法已学会，无须再换秘籍。',
+  'sect.donation.menu': '上交材料',
+  'sect.donation.confirm': '交出{count}份{item}，获{contribution}贡献。',
+  'sect.donation.complete': '已上交{item}，获得{contribution}贡献。',
+  'sect.donation.material_short': '材料不足，无法上交。',
+  'sect.donation.daily_limit': '今日上交已达上限。',
+  'sect.donation.quest_warning': '上交后，日常任务可能缺少材料。',
+  'sect.donation.remaining': '今日还可上交{remaining}批。',
+  'sect.donation.day_changed': '上交额度已刷新，请重新确认。',
   'sys.seclusion_done': '闭关 {years} 年，修为增加 {exp}（溢出 {overflow}），消耗贡献 {cost}，年龄 {age} 岁。',
   'sys.seclusion_daily': '今日闭关已用 {used}/{max} 年。',
   'sys.seclusion_life': '剩余寿元不足以闭关 {years} 年。',

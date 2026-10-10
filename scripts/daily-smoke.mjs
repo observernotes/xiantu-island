@@ -104,7 +104,7 @@ try {
   let baseURL = process.env.XT_SMOKE_BASE_URL;
   if (!baseURL) {
     await fs.access(path.join(projectRoot, 'dist/index.html'));
-    server = await preview({ root: projectRoot, preview: { host: '127.0.0.1', port: 4189 }, logLevel: 'error' });
+    server = await preview({ root: projectRoot, preview: { host: '127.0.0.1', port: Number(process.env.SMOKE_PORT ?? 4202), strictPort: true }, logLevel: 'error' });
     baseURL = server.resolvedUrls.local[0];
   }
   browser = await api.chromium.launch({ executablePath, headless: true, timeout: 20000,
@@ -253,8 +253,17 @@ try {
   assert.equal(tianjian.mark, '!', '天剑山门入宗后无日常标记');
   assert.equal(tianjian.daily, 3, '天剑山门日常没有完整三条');
   await openNpc(page, 'tianjian_envoy_sect');
-  assert.equal(await page.evaluate(() => window.__scene.dialog.choices.filter(choice => !choice.disabled).length), 5,
-    '天剑接引没有三条可选日常、宗门商店与告辞选项');
+  const serviceChoices = [];
+  for (let pageIndex = 0; pageIndex < 4; pageIndex++) {
+    const choices = await page.evaluate(() => window.__scene.dialog.choices.map(choice => ({ label: choice.label, disabled: !!choice.disabled })));
+    serviceChoices.push(...choices.filter(choice => !/^[‹›]/.test(choice.label)));
+    const next = choices.findIndex(choice => choice.label.startsWith('›'));
+    if (next < 0) break;
+    await press(page, String(next + 1));
+  }
+  assert.equal(serviceChoices.filter(choice => !choice.disabled).length, 6,
+    '天剑接引没有三条可选日常、宗门商店、上交与告辞选项');
+  assert.ok(serviceChoices.some(choice => choice.label === strings['sect.donation.menu']), '缺上交菜单');
   await press(page, 'Escape');
   await page.waitForTimeout(300);
   assert.deepEqual(errors, { console: [], page: [], request: [], http: [] }, '浏览器冒烟出现报错');
