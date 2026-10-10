@@ -7,10 +7,10 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { preview } from 'vite';
-import { sharedRoot } from './root.mjs';
+import { dataMode, findRoot } from './root.mjs';
 
 const projectRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-const dataRoot = sharedRoot(projectRoot);
+const dataRoot = findRoot(projectRoot);
 const screenshot = path.join(projectRoot, 'dist/alchemy-smoke.png');
 const materials = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/materials.json'), 'utf8'));
 const recipes = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/recipes.json'), 'utf8'));
@@ -19,9 +19,12 @@ const strings = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/string
 const items = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/items.json'), 'utf8'));
 const herb = materials.find(item => item.id === 'spirit_herb');
 const recipe = recipes.recipes.find(item => item.id === 'recipe_hp_pill');
+const clearMindRecipe = recipes.recipes.find(item => item.id === 'recipe_clear_mind');
+const foundationRecipe = recipes.recipes.find(item => item.id === 'recipe_foundation');
 const quest = quests.find(item => item.id === 'q_alchemy_intro');
 const shopItem = items.find(item => item.id === 'qi_pill');
-assert.ok(herb?.gather && recipe && quest, '采集、回春丹或入门任务配置缺失');
+assert.ok(herb?.gather && recipe && quest && clearMindRecipe && foundationRecipe,
+  '采集、一期丹方或入门任务配置缺失');
 
 function collectErrors(page) {
   const errors = [];
@@ -69,9 +72,10 @@ async function waitForMap(page, mapId) {
     catch { return false; }
   }, mapId, { timeout: 15000, polling: 50 });
   await page.evaluate(() => {
-    if (!window.__xt) throw new Error('商店冒烟需要测试构建，请先执行 npm run build:test');
+    if (!window.__xt) throw new Error('炼丹冒烟需要测试构建，请先执行 npm run build:test');
     // 会话开关不入存档；刷新后重新开启，不修改正式 features.json。
     window.__xt.setFlag('shops', true);
+    window.__xt.setFlag('alchemyPhase1', true);
   });
 }
 
@@ -205,6 +209,35 @@ async function usePortal(page, objectName, targetMap) {
   await waitForMap(page, targetMap);
 }
 
+async function clickAlchemyButton(page, name) {
+  const point = await page.evaluate(name => {
+    const scene = window.__scene, panel = scene.alchemy ?? scene.alchemyPanel;
+    const [x, y, width, height] = scene.cache.json.get('alchemy_ui').detail.buttons[name];
+    return { x: panel.position.x + x + width / 2, y: panel.position.y + y + height / 2 };
+  }, name);
+  await page.mouse.click(point.x, point.y);
+}
+
+async function alchemyBalance(page) {
+  return page.evaluate(recipe => {
+    const scene = window.__scene, panel = scene.alchemy ?? scene.alchemyPanel;
+    return { materials: Object.fromEntries(recipe.materials.map(material => [material.item, scene.prog.count(material.item)])),
+      stones: scene.prog.stones, output: scene.prog.count(recipe.output),
+      low: scene.prog.pillQualities[recipe.output]?.low ?? 0,
+      level: scene.prog.alchemyLevel, exp: scene.prog.alchemyExp,
+      pending: scene.prog.pendingAlchemy, result: panel.lastResult };
+  }, recipe);
+}
+
+function assertBrewCosts(before, after, count) {
+  for (const material of recipe.materials) assert.equal(after.materials[material.item],
+    before.materials[material.item] - material.count * count, `${count} 炉材料扣除错误：${material.item}`);
+  assert.equal(after.stones, before.stones - recipe.fuelStones * count, `${count} 炉燃料扣除错误`);
+  assert.equal(after.output, before.output + recipe.outputCount * count, `${count} 炉产出错误`);
+  assert.equal(after.low, before.low + recipe.outputCount * count, `${count} 炉下品分桶错误`);
+  assert.equal(after.pending, null, '成丹后仍有待结算炉次');
+}
+
 let server;
 let browser;
 let page;
@@ -229,7 +262,7 @@ try {
   const context = await browser.newContext({ viewport: { width: 1280, height: 720 } });
   page = await context.newPage();
   errors = collectErrors(page);
-  console.log(JSON.stringify({ baseURL, playwright: module, browser: executablePath, headless: true,
+  console.log(JSON.stringify({ baseURL, dataMode: dataMode(projectRoot), dataRoot, playwright: module, browser: executablePath, headless: true,
     fixtures: 'level12/materials/fuel/position/contact damage isolated/paused physics; deterministic RNG; perfect-frame clock pause' }));
   const url = new URL(baseURL);
   url.searchParams.set('map', 'qingyun_village'); url.searchParams.set('reset', '1');
@@ -241,6 +274,33 @@ try {
     p.inventory = { spirit_herb: 4, rabbit_fur: 1 };
     p.hp = p.maxHp; p.mp = p.maxMp; p.save();
   });
+  await page.evaluate(() => window.__xt.setFlag('alchemyPhase1', false));
+  await standAt(page, 'doctor_sun');
+  await page.waitForFunction(() => {
+    const entry = window.__scene.interactionPrompts.find(entry => entry.object.name === 'doctor_sun');
+    return entry?.prompt.visible && entry.prompt.list.at(-1)?.text === '对话';
+  }, null, { timeout: 3000 });
+  await page.keyboard.press('l', { delay: 60 });
+  await page.waitForTimeout(100);
+  assert.equal(await page.evaluate(() => (window.__scene.alchemy ?? window.__scene.alchemyPanel).isOpen()), false,
+    'alchemyPhase1 关闭时 L 仍打开丹炉');
+  // 关闭功能的按键反馈仍是普通对白，先真实按键结束，再核对孙郎中菜单。
+  await finishDialogue(page);
+  await openDoctorDialogue(page);
+  const closedIntro = await page.evaluate(() => ({ available: window.__scene.quests.available('q_alchemy_intro'),
+    npcQuests: window.__scene.quests.npcQuestIds('doctor_sun'),
+    choices: window.__scene.dialog.choices.map(choice => choice.label), help: window.__scene.helpText.text }));
+  assert.equal(closedIntro.available, false, '关闭炼丹仍可接入门任务');
+  assert.ok(!closedIntro.npcQuests.includes(quest.id), '关闭炼丹未隐藏孙郎中任务入口');
+  assert.ok(!closedIntro.choices.includes(strings[quest.nameKey] ?? quest.name), '关闭炼丹仍显示入门服务菜单');
+  assert.ok(!closedIntro.choices.includes('学习丹方'), '关闭炼丹仍显示丹方购买入口');
+  assert.ok(!closedIntro.help.includes('采集') && !closedIntro.help.includes('L 丹炉'), '关闭炼丹仍显示帮助中的入口');
+  await selectChoice(page, strings['ui.dialog.close']);
+  await page.waitForFunction(() => !window.__scene.dialog.open, null, { timeout: 3000 });
+  assert.equal(await page.evaluate(() => window.__scene.quests.state('q_alchemy_intro')), undefined,
+    '关闭炼丹的孙郎中服务菜单仍接了入门任务');
+  await page.evaluate(() => window.__xt.setFlag('alchemyPhase1', true));
+  passed('关闭炼丹时孙郎中提示与任务/服务菜单隐藏，真实 L 不开炉；普通商店仍可对话');
   // 旧字符串货架保持灵石购买，入口与原教学任务并列，重复确认不重扣。
   const beforeShop = await page.evaluate(item => ({ stones: window.__scene.prog.stones,
     contribution: window.__scene.prog.sectContribution, count: window.__scene.prog.count(item) }), shopItem.id);
@@ -269,6 +329,25 @@ try {
   assert.ok(accepted.recipes.includes(recipe.id), '入门教学未先发回春丹方');
   assert.ok(accepted.saved.learnedRecipes.includes(recipe.id), '教学丹方未存档');
   passed('Z 与孙郎中对话，after 接任务并学回春丹方');
+  await page.evaluate(() => window.__xt.setFlag('alchemyPhase1', false));
+  await page.waitForFunction(label => !window.__scene.tracker.text.includes(label),
+    strings[quest.nameKey] ?? quest.name, { timeout: 3000 });
+  const hiddenActive = await page.evaluate(() => ({ open: window.__scene.alchemy.isOpen(),
+    state: window.__scene.quests.state('q_alchemy_intro'), active: window.__scene.quests.activeIds,
+    progress: window.__xt.getState().questProgress, tracker: window.__scene.tracker.text }));
+  assert.equal(hiddenActive.open, false, '关闭开关没有收起已打开的丹炉');
+  assert.equal(hiddenActive.state, 'active', '关闭开关丢弃了已接任务');
+  assert.ok(!hiddenActive.active.includes(quest.id) && !Object.hasOwn(hiddenActive.progress, quest.id),
+    '关闭开关没有隐藏已有炼丹任务追踪');
+  assert.ok(!hiddenActive.tracker.includes(strings[quest.nameKey] ?? quest.name), '关闭开关仍显示入门 HUD 追踪');
+  await openDoctorDialogue(page);
+  await selectChoice(page, strings['ui.dialog.next']);
+  assert.equal(await page.evaluate(() => window.__scene.dialog.lines.some(line => line.text.includes('试炼回春丹'))), false,
+    '关闭开关的普通对白仍泄漏进行中入门教学');
+  await finishDialogue(page);
+  assert.equal(await page.evaluate(() => window.__scene.alchemy.isOpen()), false, '关闭开关对白结束后自动开炉');
+  await page.evaluate(() => window.__xt.setFlag('alchemyPhase1', true));
+  passed('运行中关闭炼丹收起窗口和已接任务追踪，保留任务存档，重新开启可继续');
   await page.keyboard.press('Escape'); await page.waitForTimeout(100);
 
   await usePortal(page, 'portal_to_bamboo', 'bamboo_forest');
@@ -284,6 +363,21 @@ try {
   }, pointName);
   assert.equal(point.castMs, herb.gather.castMs); assert.equal(point.respawnMs, herb.gather.respawnMs);
   assert.ok(point.ready && point.promptVisible && point.keycap, '采集提示未接 HUD 键帽');
+  const closedGatherCount = await page.evaluate(() => {
+    window.__xt.setFlag('alchemyPhase1', false);
+    return window.__scene.prog.count('spirit_herb');
+  });
+  await page.keyboard.down('z'); await page.waitForTimeout(200);
+  const closedGather = await page.evaluate(() => ({ count: window.__scene.prog.count('spirit_herb'),
+    active: !!window.__scene.gathering.active, bar: window.__scene.children.getByName('gather:castbar').visible,
+    prompts: window.__scene.gathering.points.some(point => point.prompt.visible) }));
+  await page.keyboard.up('z');
+  assert.deepEqual(closedGather, { count: closedGatherCount, active: false, bar: false, prompts: false },
+    '关闭炼丹时仍能真实 Z 采集或显示采集入口');
+  await page.evaluate(() => window.__xt.setFlag('alchemyPhase1', true));
+  await page.waitForFunction(name => window.__scene.gathering.points.find(point => point.object.name === name)?.prompt.visible,
+    pointName, { timeout: 3000 });
+  passed('关闭炼丹时竹林采集提示和读条隐藏，按住真实 Z 不采集；重新开启恢复提示');
   await page.keyboard.down('z');
   await page.waitForFunction(() => window.__scene.gathering.active?.elapsed > 100, null, { timeout: 3000 });
   const cast = await page.evaluate(() => {
@@ -366,8 +460,8 @@ try {
   await fs.mkdir(path.dirname(screenshot), { recursive: true });
   await page.screenshot({ path: screenshot });
 
-  // UI 素材表：brew=[222,330,96,30]；坐标随面板位置取值。
-  await page.mouse.click(beforeBrew.position.x + 270, beforeBrew.position.y + 345);
+  // 坐标随面板位置和 UI 素材表取值。
+  await clickAlchemyButton(page, 'brew');
   await page.waitForFunction(() => !!(window.__scene.alchemy ?? window.__scene.alchemyPanel).system.active, null, { timeout: 3000 });
   const startedBrew = await page.evaluate(() => {
     const scene = window.__scene;
@@ -461,9 +555,127 @@ try {
   assertCooldown(reloaded.cooldowns[point.key], harvested.cooldown, reloaded.now);
   assert.equal(reloaded.furnace, delivered.inventory.bronze_furnace);
   passed('刷新读档保留任务、丹方、品质、炼丹经验、采集冷却和丹炉');
+
+  await page.keyboard.press('i', { delay: 60 });
+  await page.waitForFunction(() => window.__scene.invText.visible && window.__scene.inventoryFurnace.visible,
+    null, { timeout: 3000 });
+  const inventoryFurnace = await page.evaluate(() => {
+    const scene = window.__scene, button = scene.inventoryFurnace, bounds = button.getBounds();
+    return { x: bounds.x + bounds.width / 2, y: bounds.y + bounds.height / 2,
+      furnace: button.getData('furnace'), count: scene.prog.count(button.getData('furnace')) };
+  });
+  assert.equal(inventoryFurnace.furnace, 'bronze_furnace', '背包丹炉入口未使用获得的青铜炉');
+  await page.evaluate(() => window.__xt.setFlag('alchemyPhase1', false));
+  assert.equal(await page.evaluate(() => window.__scene.inventoryFurnace.visible), false, '关闭炼丹仍显示背包丹炉入口');
+  await page.mouse.click(inventoryFurnace.x, inventoryFurnace.y); await page.waitForTimeout(100);
+  assert.equal(await page.evaluate(() => window.__scene.alchemy.isOpen()), false, '关闭炼丹的背包入口仍可点击开炉');
+  await page.evaluate(() => window.__xt.setFlag('alchemyPhase1', true));
+  await page.waitForFunction(() => window.__scene.inventoryFurnace.visible, null, { timeout: 3000 });
+  await page.mouse.click(inventoryFurnace.x, inventoryFurnace.y);
+  await page.waitForFunction(() => window.__scene.alchemy.isOpen() && !window.__scene.invText.visible,
+    null, { timeout: 3000 });
+  assert.equal(await page.evaluate(id => window.__scene.prog.count(id), inventoryFurnace.furnace), inventoryFurnace.count,
+    '使用背包丹炉消耗了丹炉物品');
+  await page.keyboard.press('Escape'); await page.waitForTimeout(100);
+  passed('真实 I 背包点击青铜炉开窗且不消耗丹炉，关闭炼丹时背包入口隐藏并不可点击');
+
+  // 追加六炉原料/燃料夹具；实际开炉、跳过与批量均通过鼠标操作。
+  await page.evaluate(recipe => {
+    for (const material of recipe.materials) window.__xt.giveItem(material.item, material.count * 6);
+    const prog = window.__scene.prog;
+    prog.stones += recipe.fuelStones * 6; prog.save();
+  }, recipe);
+  await standAt(page, 'doctor_sun');
+  await page.keyboard.press('l', { delay: 60 });
+  await page.waitForFunction(() => window.__scene.alchemy.isOpen(), null, { timeout: 3000 });
+  await page.evaluate(() => { window.__scene.alchemy.system.random = () => 0; });
+  const beforeSkip = await alchemyBalance(page);
+  await clickAlchemyButton(page, 'brew');
+  await page.waitForFunction(() => !!window.__scene.alchemy.system.active, null, { timeout: 3000 });
+  await clickAlchemyButton(page, 'skip');
+  await page.waitForFunction(() => window.__scene.alchemy.lastResult?.fire === 'skipped', null, { timeout: 3000 });
+  const skipped = await alchemyBalance(page);
+  assert.ok(skipped.result.success, '真实跳过按钮未成功结算');
+  assertBrewCosts(beforeSkip, skipped, 1);
+  passed('获得丹炉后真实 L 开窗、鼠标开炉和跳过，单炉材料/燃料/品质结算一次');
+
+  await clickAlchemyButton(page, 'batch');
+  await page.waitForFunction(() => window.__scene.alchemy.status.startsWith('五炉炼制：'), null, { timeout: 3000 });
+  const batched = await alchemyBalance(page);
+  assertBrewCosts(skipped, batched, 5);
+  assert.equal(batched.result.fire, 'skipped', '批量最后一炉没有跳过火候');
+  assert.equal(await page.evaluate(() => !!window.__scene.alchemy.system.active), false, '批量留下火候小游戏');
+  assert.ok(batched.level > beforeSkip.level || batched.exp > beforeSkip.exp, '批量炼丹未累计经验');
+  passed('真实 ×5 批量跳过五次火候，准确扣五份原料/燃料并产出品质丹药、累计经验');
+
+  const disabledBrew = await page.evaluate(() => {
+    const scene = window.__scene, buttons = scene.cache.json.get('alchemy_ui').detail.buttons;
+    return ['brew', 'batch'].map(name => {
+      const [x, y] = buttons[name];
+      const zone = scene.alchemy.c.list.find(child => child.type === 'Zone' && child.x === x && child.y === y);
+      return { name, enabled: !!zone?.input?.enabled };
+    });
+  });
+  assert.deepEqual(disabledBrew, [{ name: 'brew', enabled: false }, { name: 'batch', enabled: false }],
+    '材料不足时炼制/批量按钮仍可点击');
+  await clickAlchemyButton(page, 'brew'); await clickAlchemyButton(page, 'batch');
+  assert.deepEqual(await alchemyBalance(page), batched, '缺料按钮真实点击仍改变材料或产物');
+  passed('材料不足时炼制和 ×5 按钮禁用，真实点击不扣料、不产丹');
+
+  await page.keyboard.press('Escape'); await page.waitForTimeout(100);
+  await page.evaluate(recipes => {
+    const prog = window.__scene.prog;
+    prog.level = 15; prog.exp = 0; prog.stones += recipes.reduce((sum, recipe) => sum + recipe.price, 0);
+    prog.save();
+  }, [clearMindRecipe, foundationRecipe]);
+  const beforeRecipes = await page.evaluate(() => ({ stones: window.__scene.prog.stones,
+    recipes: window.__scene.prog.learnedRecipes, contribution: window.__scene.prog.sectContribution }));
+  await openDoctorDialogue(page); await selectChoice(page, '学习丹方');
+  const recipeChoices = await page.evaluate(() => window.__scene.dialog.choices
+    .map(choice => ({ label: choice.label, disabled: !!choice.disabled, reason: choice.reason })));
+  const foundationIndex = recipeChoices.findIndex(choice => choice.label === `${foundationRecipe.name}丹方`);
+  assert.ok(foundationIndex >= 0 && foundationIndex < 5, '孙郎中丹方目录未列出筑基丹方');
+  assert.ok(recipeChoices[foundationIndex].disabled && recipeChoices[foundationIndex].reason.includes(String(foundationRecipe.reqLevel)),
+    '等级 15 时筑基丹方没有按 reqLevel 灰显');
+  const beforeDisabledRecipe = await dialogSignature(page);
+  await page.keyboard.press(String(foundationIndex + 1), { delay: 60 });
+  assert.equal(await dialogSignature(page), beforeDisabledRecipe, '等级不足仍可进入筑基丹方确认');
+  await selectChoice(page, `${clearMindRecipe.name}丹方`);
+  await page.evaluate(confirm => {
+    window.__recipeBuyConfirm = window.__scene.dialog.choices.find(choice => choice.label === confirm).onSelect;
+  }, strings['sect.ui.confirm']);
+  await selectChoice(page, strings['sect.ui.confirm']); await finishDialogue(page);
+  const afterClearMind = await page.evaluate(() => ({ stones: window.__scene.prog.stones,
+    recipes: window.__scene.prog.learnedRecipes, contribution: window.__scene.prog.sectContribution }));
+  assert.equal(afterClearMind.stones, beforeRecipes.stones - clearMindRecipe.price, '丹方购买没有按 recipes.price 扣灵石');
+  assert.equal(afterClearMind.contribution, beforeRecipes.contribution, '丹方购买误扣宗门贡献');
+  assert.equal(afterClearMind.recipes.filter(id => id === clearMindRecipe.id).length, 1, '清心丹方没有直接授方或授方重复');
+  await page.evaluate(() => window.__recipeBuyConfirm());
+  assert.deepEqual(await page.evaluate(() => ({ stones: window.__scene.prog.stones,
+    recipes: window.__scene.prog.learnedRecipes, contribution: window.__scene.prog.sectContribution })), afterClearMind,
+    '同一丹方确认回调重复扣款或授方');
+  await finishDialogue(page);
+  passed('孙郎中学习丹方：15 级可购买清心方，筑基方按 20 级门槛灰显，重复确认不重扣');
+
+  await page.evaluate(level => { window.__scene.prog.level = level; window.__scene.prog.save(); }, foundationRecipe.reqLevel);
+  await openDoctorDialogue(page); await selectChoice(page, '学习丹方');
+  await selectChoice(page, `${foundationRecipe.name}丹方`);
+  await selectChoice(page, strings['sect.ui.confirm']); await finishDialogue(page);
+  const afterRecipes = await page.evaluate(() => ({ stones: window.__scene.prog.stones,
+    recipes: window.__scene.prog.learnedRecipes, inventory: window.__scene.prog.inventory }));
+  assert.equal(afterRecipes.stones, afterClearMind.stones - foundationRecipe.price, '筑基丹方价格没有读表');
+  for (const recipe of [clearMindRecipe, foundationRecipe]) {
+    assert.equal(afterRecipes.recipes.filter(id => id === recipe.id).length, 1, `${recipe.id} 未授方或重复授方`);
+    assert.equal(afterRecipes.inventory[recipe.id], undefined, '丹方被当成背包商品');
+  }
+  await page.reload({ waitUntil: 'load', timeout: 15000 }); await waitForMap(page, 'qingyun_village');
+  const savedRecipes = await page.evaluate(() => ({ stones: window.__scene.prog.stones,
+    recipes: window.__scene.prog.learnedRecipes, inventory: window.__scene.prog.inventory }));
+  assert.deepEqual(savedRecipes, afterRecipes, '刷新丢失丹方购买或重复扣款');
+  passed('达到筑基丹方 reqLevel 后可真实购买，清心/筑基丹方与扣款刷新后保持');
   assert.deepEqual(errors, [], '炼丹冒烟出现浏览器报错');
   console.log(JSON.stringify({ passed: checks.length, checks, consoleErrors: 0, pageErrors: 0, requestFailures: 0,
-    gathered: 1, brews: 1, output: recipe.output, outputCount: recipe.outputCount, quality: brewed.result.quality,
+    gathered: 1, brews: 7, output: recipe.output, outputCount: recipe.outputCount * 7, quality: brewed.result.quality,
     quest: 'q_alchemy_intro:done', screenshot }));
 } catch (error) {
   console.error(JSON.stringify({ checks, errors, failure: error.message }));
