@@ -7,15 +7,17 @@ import net from 'node:net';
 import { createHash } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { preview } from 'vite';
+import { createIsolatedBuild, childBuildEnv, preview } from './isolated-build.mjs';
 import { chromium } from '/tmp/pwt/node_modules/playwright-core/index.mjs';
 
-const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
+const projectRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 assert.equal(process.argv.length, 2, 'prop 缺图冒烟使用正式 preview，不接受参数');
-const spriteDir = path.join(root, 'public/art/sprites');
 const requestedPort = process.env.XT_TEST_PORT === undefined ? undefined : Number(process.env.XT_TEST_PORT);
 if (requestedPort !== undefined)
   assert.ok(Number.isInteger(requestedPort) && requestedPort > 0 && requestedPort < 65536, 'XT_TEST_PORT 必须是有效端口');
+const isolated = await createIsolatedBuild(projectRoot, 'props-missing');
+const root = isolated.root;
+const spriteDir = path.join(root, 'public/art/sprites');
 const assets = [];
 const sha256 = async file => createHash('sha256').update(await fs.readFile(file)).digest('hex');
 const readManifest = async () => JSON.parse(await fs.readFile(path.join(root, 'src/gen/assets.json'), 'utf8'));
@@ -55,7 +57,7 @@ async function command(executable, args, env = {}, cleanup = false) {
   if (!cleanup) checkInterrupted();
   console.log(JSON.stringify({ phase: 'command', command: [executable, ...args], manifestOnly: env.XT_SYNC_MANIFEST_ONLY === '1' }));
   await new Promise((resolve, reject) => {
-    const child = spawn(executable, args, { cwd: root, env: { ...process.env, ...env },
+    const child = spawn(executable, args, { cwd: root, env: childBuildEnv(env),
       detached: process.platform !== 'win32', stdio: ['ignore', 'pipe', 'pipe'] });
     activeChild = child;
     let output = '';
@@ -96,7 +98,9 @@ async function startServer(outDir) {
     try {
       const started = await preview({ root, build: { outDir }, logLevel: 'error',
         preview: { host: '127.0.0.1', port, strictPort: true } });
-      return { server: started, baseURL: `http://127.0.0.1:${port}/` };
+      const baseURL = started.resolvedUrls?.local?.[0];
+      check(baseURL, 'preview 没有提供可访问地址');
+      return { server: started, baseURL };
     } catch (error) {
       if (error.code !== 'EADDRINUSE' && !/already in use/.test(error.message)) throw error;
     }
@@ -345,6 +349,10 @@ try {
     try { await fs.rm(temporaryDir, { recursive: true, force: true }); }
     catch (error) { result.cleanupErrors.push(`temporary build: ${error.message}`); }
   }
+  if (!result.cleanupErrors.length) {
+    try { await isolated.cleanup(); }
+    catch (error) { result.cleanupErrors.push(`isolated project: ${error.message}`); }
+  } else result.workspace = root;
   if (interrupted) { failure ??= interrupted; result.failure = interrupted.message; }
   if (failure || result.cleanupErrors.length) result.passed = false;
   result.assertions = assertions;
