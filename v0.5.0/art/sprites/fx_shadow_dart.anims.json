@@ -1,0 +1,38 @@
+{
+ "atlas": "fx_shadow_dart",
+ "facing": "left",
+ "origin": [
+  0.5,
+  0.5
+ ],
+ "frameSize": [
+  40,
+  16
+ ],
+ "blend": "NORMAL",
+ "kind": "fx",
+ "note": "原点(0.5,0.5)为单枚暗针中心(20,8)。fly朝左循环；袖里针一次连发2根由程序各建一个对象，不在图中塞两根。暴击时在命中点播hit暗紫雷花一次；普通命中可直接销毁。暴击与两段伤害由技能表计算，NORMAL混合。",
+ "anims": [
+  {
+   "key": "fx_shadow_dart_fly",
+   "frames": [
+    "fx_shadow_dart_fly_01",
+    "fx_shadow_dart_fly_02",
+    "fx_shadow_dart_fly_03"
+   ],
+   "frameRate": 18,
+   "repeat": -1
+  },
+  {
+   "key": "fx_shadow_dart_hit",
+   "frames": [
+    "fx_shadow_dart_hit_01",
+    "fx_shadow_dart_hit_02",
+    "fx_shadow_dart_hit_03",
+    "fx_shadow_dart_hit_04"
+   ],
+   "frameRate": 16,
+   "repeat": 0
+  }
+ ]
+}

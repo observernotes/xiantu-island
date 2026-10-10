@@ -1,0 +1,74 @@
+{
+ "atlas": "mon_fire_crow",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  80,
+  64
+ ],
+ "anims": [
+  {
+   "key": "mon_fire_crow_idle",
+   "frames": [
+    "mon_fire_crow_idle_01",
+    "mon_fire_crow_idle_02",
+    "mon_fire_crow_idle_03",
+    "mon_fire_crow_idle_04"
+   ],
+   "frameRate": 8,
+   "repeat": -1
+  },
+  {
+   "key": "mon_fire_crow_walk",
+   "frames": [
+    "mon_fire_crow_walk_01",
+    "mon_fire_crow_walk_02",
+    "mon_fire_crow_walk_03"
+   ],
+   "frameRate": 10,
+   "repeat": -1
+  },
+  {
+   "key": "mon_fire_crow_attack",
+   "frames": [
+    "mon_fire_crow_attack_01",
+    "mon_fire_crow_attack_02",
+    "mon_fire_crow_attack_03"
+   ],
+   "frameRate": 8,
+   "repeat": 0
+  },
+  {
+   "key": "mon_fire_crow_hit",
+   "frames": [
+    "mon_fire_crow_hit_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  },
+  {
+   "key": "mon_fire_crow_die",
+   "frames": [
+    "mon_fire_crow_die_01",
+    "mon_fire_crow_die_02",
+    "mon_fire_crow_die_03"
+   ],
+   "frameRate": 6,
+   "repeat": 0
+  }
+ ],
+ "bodySize": [
+  34,
+  26
+ ],
+ "attackFrames": {
+  "telegraph": 1,
+  "hit": 2
+ },
+ "flying": true,
+ "note": "飞行怪：原点 (0.5,1) = 悬浮体最低点（脚爪），flyHeight 按这个点算。walk = 飞行移动；idle 4 帧扇翅。attack.type dive、telegraphMs 500：attack_01 上扬收翅（前摇定格），attack_02 俯冲（判定，位移期间定格），attack_03 拉起。die 倒地后淡出。",
+ "kind": "monster"
+}

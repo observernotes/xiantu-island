@@ -1,0 +1,30 @@
+{
+ "atlas": "fx_talisman_fire_hit",
+ "facing": "left",
+ "origin": [
+  0.5,
+  0.5
+ ],
+ "frameSize": [
+  64,
+  64
+ ],
+ "blend": "NORMAL",
+ "kind": "fx",
+ "note": "火符命中小爆，原点 (0.5,0.5) 对齐首次敌人碰撞点，命中后播 hit 一次，末帧为空，播完销毁。NORMAL 混合、最多 5 火星；爆花只作视觉反馈，伤害仍只结算首个目标，不增加范围或二次判定。",
+ "anims": [
+  {
+   "key": "fx_talisman_fire_hit_hit",
+   "frames": [
+    "fx_talisman_fire_hit_hit_01",
+    "fx_talisman_fire_hit_hit_02",
+    "fx_talisman_fire_hit_hit_03",
+    "fx_talisman_fire_hit_hit_04",
+    "fx_talisman_fire_hit_hit_05",
+    "fx_talisman_fire_hit_hit_06"
+   ],
+   "frameRate": 14,
+   "repeat": 0
+  }
+ ]
+}

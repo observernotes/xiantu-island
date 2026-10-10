@@ -1,0 +1,30 @@
+{
+ "atlas": "fx_talisman_return_land",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  96,
+  64
+ ],
+ "blend": "NORMAL",
+ "kind": "fx",
+ "note": "遁地成功落点尘圈，原点 (0.5,1) 对齐目的地图 playerStart 的角色脚底，迁移并落点确认成功后播 land 一次，播完销毁。NORMAL 混合、最多 5 土尘，尘圈扩散收尾全透明；不作为回复、复活、伤害判定或传送成功检查。",
+ "anims": [
+  {
+   "key": "fx_talisman_return_land_land",
+   "frames": [
+    "fx_talisman_return_land_land_01",
+    "fx_talisman_return_land_land_02",
+    "fx_talisman_return_land_land_03",
+    "fx_talisman_return_land_land_04",
+    "fx_talisman_return_land_land_05",
+    "fx_talisman_return_land_land_06"
+   ],
+   "frameRate": 12,
+   "repeat": 0
+  }
+ ]
+}

@@ -1,0 +1,121 @@
+{
+ "atlas": "mon_millennium_tree_demon",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  192,
+  192
+ ],
+ "anims": [
+  {
+   "key": "mon_millennium_tree_demon_idle",
+   "frames": [
+    "mon_millennium_tree_demon_idle_01",
+    "mon_millennium_tree_demon_idle_02",
+    "mon_millennium_tree_demon_idle_03",
+    "mon_millennium_tree_demon_idle_04"
+   ],
+   "frameRate": 4,
+   "repeat": -1
+  },
+  {
+   "key": "mon_millennium_tree_demon_walk",
+   "frames": [
+    "mon_millennium_tree_demon_walk_01",
+    "mon_millennium_tree_demon_walk_02",
+    "mon_millennium_tree_demon_walk_03",
+    "mon_millennium_tree_demon_walk_04"
+   ],
+   "frameRate": 6,
+   "repeat": -1
+  },
+  {
+   "key": "mon_millennium_tree_demon_vine_burst",
+   "frames": [
+    "mon_millennium_tree_demon_vine_burst_01",
+    "mon_millennium_tree_demon_vine_burst_02",
+    "mon_millennium_tree_demon_vine_burst_03",
+    "mon_millennium_tree_demon_vine_burst_04"
+   ],
+   "frameRate": 6,
+   "repeat": 0
+  },
+  {
+   "key": "mon_millennium_tree_demon_leaf_blades",
+   "frames": [
+    "mon_millennium_tree_demon_leaf_blades_01",
+    "mon_millennium_tree_demon_leaf_blades_02",
+    "mon_millennium_tree_demon_leaf_blades_03",
+    "mon_millennium_tree_demon_leaf_blades_04"
+   ],
+   "frameRate": 8,
+   "repeat": 0
+  },
+  {
+   "key": "mon_millennium_tree_demon_corrupt_summon",
+   "frames": [
+    "mon_millennium_tree_demon_corrupt_summon_01",
+    "mon_millennium_tree_demon_corrupt_summon_02",
+    "mon_millennium_tree_demon_corrupt_summon_03",
+    "mon_millennium_tree_demon_corrupt_summon_04"
+   ],
+   "frameRate": 6,
+   "repeat": 0
+  },
+  {
+   "key": "mon_millennium_tree_demon_hit",
+   "frames": [
+    "mon_millennium_tree_demon_hit_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  },
+  {
+   "key": "mon_millennium_tree_demon_die",
+   "frames": [
+    "mon_millennium_tree_demon_die_01",
+    "mon_millennium_tree_demon_die_02",
+    "mon_millennium_tree_demon_die_03",
+    "mon_millennium_tree_demon_die_04",
+    "mon_millennium_tree_demon_die_05"
+   ],
+   "frameRate": 6,
+   "repeat": 0
+  }
+ ],
+ "bodySize": [
+  96,
+  150
+ ],
+ "skillFrames": {
+  "vine_burst": {
+   "telegraphFrames": [
+    1,
+    2
+   ],
+   "release": 3,
+   "fx": "fx_tree_demon_vine_burst",
+   "warnFx": "fx_tree_demon_vine_burst_warn",
+   "note": "telegraphMs 900 期间停在第 1→2 帧，在 3 个随机地面点各播 warn；第 3 帧（双臂砸地）在同样位置播 vine_burst（判定 = 特效第 2 帧）"
+  },
+  "leaf_blades": {
+   "release": 3,
+   "spawnOffset": [
+    -70,
+    -110
+   ],
+   "fx": "fx_tree_demon_leaf_blades",
+   "note": "第 3 帧从 spawnOffset（相对脚底，朝左；朝右时 x 取反）扇形发出 7 片叶刃"
+  },
+  "corrupt_summon": {
+   "release": 3,
+   "fx": "fx_tree_demon_corrupt_summon",
+   "note": "第 3 帧在 4 个刷怪点播召唤阵，阵第 4 帧刷出藤妖；首领死亡时藤妖一起播 fx_summon_despawn"
+  }
+ },
+ "note": "首领 192×192，2px 描边；树冠和根足都在帧内。die 5 帧：受击 → 两次后仰 → 倒地 → 淡出（倒地方向朝右）。",
+ "kind": "monster"
+}

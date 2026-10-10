@@ -1,0 +1,47 @@
+{
+ "atlas": "prop_enc_abode_entrance",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  96,
+  96
+ ],
+ "blend": "NORMAL",
+ "kind": "prop",
+ "note": "程序化占位；key 名待天机阁确认。石隙洞府入口。原点 (0.5,1) 为岩壁地面底边。初始 hidden 岩色细裂缝；有效扫描覆盖 enc_hidden_abode_anchor 后播 reveal，石片移开再循环 idle。未扫到前不显示提示/交互；揭示状态由程序存档，不靠动画推断。建议 hidden 对象 sprite 引用，reveal:entrance 是玩法标记，动画 key 为 prop_enc_abode_entrance_reveal。被扫到的物件由程序加 2px #6EC6FF 外描边，alpha 0.6↔1 呼吸，完整周期 1200ms，持续 6 秒；描边不出图。",
+ "anims": [
+  {
+   "key": "prop_enc_abode_entrance_hidden",
+   "frames": [
+    "prop_enc_abode_entrance_hidden_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  },
+  {
+   "key": "prop_enc_abode_entrance_reveal",
+   "frames": [
+    "prop_enc_abode_entrance_reveal_01",
+    "prop_enc_abode_entrance_reveal_02",
+    "prop_enc_abode_entrance_reveal_03",
+    "prop_enc_abode_entrance_reveal_04",
+    "prop_enc_abode_entrance_reveal_05",
+    "prop_enc_abode_entrance_reveal_06"
+   ],
+   "frameRate": 10,
+   "repeat": 0
+  },
+  {
+   "key": "prop_enc_abode_entrance_idle",
+   "frames": [
+    "prop_enc_abode_entrance_idle_01",
+    "prop_enc_abode_entrance_idle_02"
+   ],
+   "frameRate": 3,
+   "repeat": -1
+  }
+ ]
+}

@@ -1,0 +1,30 @@
+{
+ "atlas": "fx_beast_roar",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  128,
+  96
+ ],
+ "blend": "NORMAL",
+ "kind": "fx",
+ "note": "原点(0.5,1)是角色脚底(64,96)。play播一次，音波从身前向左扩张成扇形环，土褐描边#5A3E22；朝右flipX。程序按技能表处理击退160、宠物攻击增益与实际目标范围（配置也含behind=160；本任务按指定只画前方，后方目标判定独立，需后方视觉可另建镜像对象），纹理只表现方向和冲击。NORMAL混合。",
+ "anims": [
+  {
+   "key": "fx_beast_roar_play",
+   "frames": [
+    "fx_beast_roar_play_01",
+    "fx_beast_roar_play_02",
+    "fx_beast_roar_play_03",
+    "fx_beast_roar_play_04",
+    "fx_beast_roar_play_05",
+    "fx_beast_roar_play_06"
+   ],
+   "frameRate": 12,
+   "repeat": 0
+  }
+ ]
+}

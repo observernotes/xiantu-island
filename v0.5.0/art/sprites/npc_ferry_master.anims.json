@@ -1,0 +1,31 @@
+{
+ "atlas": "npc_ferry_master",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": 96,
+ "anims": [
+  {
+   "key": "npc_ferry_master_idle",
+   "frames": [
+    "npc_ferry_master_idle_01",
+    "npc_ferry_master_idle_02",
+    "npc_ferry_master_idle_03"
+   ],
+   "frameRate": 3,
+   "repeat": -1
+  },
+  {
+   "key": "npc_ferry_master_talk",
+   "frames": [
+    "npc_ferry_master_talk_01",
+    "npc_ferry_master_talk_02"
+   ],
+   "frameRate": 4,
+   "repeat": -1
+  }
+ ],
+ "kind": "npc"
+}

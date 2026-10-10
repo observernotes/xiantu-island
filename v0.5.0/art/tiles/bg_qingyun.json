@@ -1,0 +1,144 @@
+{
+  "layers": [
+    {
+      "key": "bg_qingyun_sky",
+      "factorX": 0.05,
+      "factorY": 0,
+      "anchor": "screenBottom",
+      "depth": -10,
+      "repeatX": true
+    },
+    {
+      "key": "bg_qingyun_far",
+      "factorX": 0.2,
+      "factorY": 0,
+      "anchor": "screenBottom",
+      "depth": -9
+    },
+    {
+      "key": "bg_qingyun_mid",
+      "factorX": 0.5,
+      "factorY": 0,
+      "anchor": "screenBottom",
+      "depth": -8
+    },
+    {
+      "key": "bg_qingyun_near",
+      "factorX": 0.85,
+      "factorY": 1,
+      "y": 768,
+      "depth": -7
+    },
+    {
+      "key": "bg_qingyun_fg",
+      "factorX": 1.15,
+      "factorY": 1,
+      "y": 768,
+      "depth": 15,
+      "alpha": 0.9,
+      "fadeNearPlayer": true
+    }
+  ],
+  "_comment": "背景 depth 由 E-2 固定：sky=-10 far=-9 mid=-8 near=-7 fg=20，交付 depth 仅作记录；环境由 E-4 固定。r2 五盏暖光统一使用 fx_qingyun_env 图集 glow_soft 帧及 NORMAL 合成，避免 ADD 叠绿背景形成绿光斑；缺图集/帧时静默回退内存光晕。",
+  "environment": {
+    "enabled": true,
+    "areas": {
+      "qingyun": true
+    },
+    "budget": {
+      "lights": 16,
+      "fog": 4,
+      "particles": 96
+    },
+    "lights": [
+      {
+        "x": 680,
+        "y": 620,
+        "radius": 56,
+        "color": "#FFB060",
+        "alpha": 0.4,
+        "flicker": 0.08,
+        "texture": "fx_qingyun_env",
+        "frame": "glow_soft",
+        "blend": "NORMAL"
+      },
+      {
+        "x": 360,
+        "y": 640,
+        "radius": 48,
+        "color": "#FFE8A0",
+        "alpha": 0.35,
+        "flicker": 0.05,
+        "texture": "fx_qingyun_env",
+        "frame": "glow_soft",
+        "blend": "NORMAL"
+      },
+      {
+        "x": 1750,
+        "y": 640,
+        "radius": 48,
+        "color": "#FFE8A0",
+        "alpha": 0.35,
+        "flicker": 0.05,
+        "texture": "fx_qingyun_env",
+        "frame": "glow_soft",
+        "blend": "NORMAL"
+      },
+      {
+        "x": 2180,
+        "y": 620,
+        "radius": 56,
+        "color": "#FFB060",
+        "alpha": 0.4,
+        "flicker": 0.07,
+        "texture": "fx_qingyun_env",
+        "frame": "glow_soft",
+        "blend": "NORMAL"
+      },
+      {
+        "x": 600,
+        "y": 560,
+        "radius": 48,
+        "color": "#FFD080",
+        "alpha": 0.35,
+        "flicker": 0.06,
+        "texture": "fx_qingyun_env",
+        "frame": "glow_soft",
+        "blend": "NORMAL"
+      }
+    ],
+    "fog": [
+      {
+        "x": 0,
+        "y": 520,
+        "width": 2560,
+        "height": 160,
+        "alpha": 0.18,
+        "speedX": 8,
+        "scrollFactor": 0.3
+      },
+      {
+        "x": 0,
+        "y": 700,
+        "width": 2560,
+        "height": 90,
+        "alpha": 0.12,
+        "speedX": 14,
+        "scrollFactor": 0.9
+      }
+    ],
+    "particles": [
+      {
+        "kind": "firefly",
+        "x": 300,
+        "y": 400,
+        "width": 1800,
+        "height": 250,
+        "count": 40,
+        "speedX": 0.0,
+        "speedY": -11.0,
+        "alpha": 0.7
+      }
+    ]
+  }
+}

@@ -1,0 +1,53 @@
+{
+ "atlas": "fx_phantom_cloak",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  64,
+  112
+ ],
+ "blend": "NORMAL",
+ "kind": "fx",
+ "note": "原点(0.5,1)放角色脚底(32,112)。start进入隐身播一次，loop在隐身期间跟随身位，end退出时播一次后销毁；全程暗紫雾半透明。主角alpha、丢失仇恨与下一整次双针必暴由程序控制，图片只叠加雾气，NORMAL混合。",
+ "anims": [
+  {
+   "key": "fx_phantom_cloak_start",
+   "frames": [
+    "fx_phantom_cloak_start_01",
+    "fx_phantom_cloak_start_02",
+    "fx_phantom_cloak_start_03",
+    "fx_phantom_cloak_start_04",
+    "fx_phantom_cloak_start_05"
+   ],
+   "frameRate": 12,
+   "repeat": 0
+  },
+  {
+   "key": "fx_phantom_cloak_loop",
+   "frames": [
+    "fx_phantom_cloak_loop_01",
+    "fx_phantom_cloak_loop_02",
+    "fx_phantom_cloak_loop_03",
+    "fx_phantom_cloak_loop_04",
+    "fx_phantom_cloak_loop_05",
+    "fx_phantom_cloak_loop_06"
+   ],
+   "frameRate": 10,
+   "repeat": -1
+  },
+  {
+   "key": "fx_phantom_cloak_end",
+   "frames": [
+    "fx_phantom_cloak_end_01",
+    "fx_phantom_cloak_end_02",
+    "fx_phantom_cloak_end_03",
+    "fx_phantom_cloak_end_04"
+   ],
+   "frameRate": 12,
+   "repeat": 0
+  }
+ ]
+}

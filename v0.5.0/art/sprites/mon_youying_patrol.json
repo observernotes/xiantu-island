@@ -1,0 +1,278 @@
+{
+ "frames": {
+  "mon_youying_patrol_idle_01": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_youying_patrol_idle_02": {
+   "frame": {
+    "x": 80,
+    "y": 0,
+    "w": 80,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_youying_patrol_walk_01": {
+   "frame": {
+    "x": 160,
+    "y": 0,
+    "w": 80,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_youying_patrol_walk_02": {
+   "frame": {
+    "x": 240,
+    "y": 0,
+    "w": 80,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_youying_patrol_walk_03": {
+   "frame": {
+    "x": 320,
+    "y": 0,
+    "w": 80,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_youying_patrol_alert_01": {
+   "frame": {
+    "x": 400,
+    "y": 0,
+    "w": 80,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_youying_patrol_alert_02": {
+   "frame": {
+    "x": 480,
+    "y": 0,
+    "w": 80,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_youying_patrol_hit_01": {
+   "frame": {
+    "x": 560,
+    "y": 0,
+    "w": 80,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_youying_patrol_die_01": {
+   "frame": {
+    "x": 0,
+    "y": 88,
+    "w": 80,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_youying_patrol_die_02": {
+   "frame": {
+    "x": 80,
+    "y": 88,
+    "w": 80,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_youying_patrol_die_03": {
+   "frame": {
+    "x": 160,
+    "y": 88,
+    "w": 80,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 88
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  }
+ },
+ "meta": {
+  "app": "xiantu gen_trial_v05.py",
+  "image": "mon_youying_patrol.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 640,
+   "h": 176
+  },
+  "scale": "1"
+ }
+}

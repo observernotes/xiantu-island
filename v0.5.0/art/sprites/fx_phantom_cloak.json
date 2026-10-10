@@ -1,0 +1,374 @@
+{
+ "frames": {
+  "fx_phantom_cloak_start_01": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 112
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 112
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 112
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fx_phantom_cloak_start_02": {
+   "frame": {
+    "x": 64,
+    "y": 0,
+    "w": 64,
+    "h": 112
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 112
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 112
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fx_phantom_cloak_start_03": {
+   "frame": {
+    "x": 128,
+    "y": 0,
+    "w": 64,
+    "h": 112
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 112
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 112
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fx_phantom_cloak_start_04": {
+   "frame": {
+    "x": 192,
+    "y": 0,
+    "w": 64,
+    "h": 112
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 112
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 112
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fx_phantom_cloak_start_05": {
+   "frame": {
+    "x": 256,
+    "y": 0,
+    "w": 64,
+    "h": 112
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 112
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 112
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fx_phantom_cloak_loop_01": {
+   "frame": {
+    "x": 0,
+    "y": 112,
+    "w": 64,
+    "h": 112
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 112
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 112
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fx_phantom_cloak_loop_02": {
+   "frame": {
+    "x": 64,
+    "y": 112,
+    "w": 64,
+    "h": 112
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 112
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 112
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fx_phantom_cloak_loop_03": {
+   "frame": {
+    "x": 128,
+    "y": 112,
+    "w": 64,
+    "h": 112
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 112
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 112
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fx_phantom_cloak_loop_04": {
+   "frame": {
+    "x": 192,
+    "y": 112,
+    "w": 64,
+    "h": 112
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 112
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 112
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fx_phantom_cloak_loop_05": {
+   "frame": {
+    "x": 256,
+    "y": 112,
+    "w": 64,
+    "h": 112
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 112
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 112
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fx_phantom_cloak_loop_06": {
+   "frame": {
+    "x": 320,
+    "y": 112,
+    "w": 64,
+    "h": 112
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 112
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 112
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fx_phantom_cloak_end_01": {
+   "frame": {
+    "x": 0,
+    "y": 224,
+    "w": 64,
+    "h": 112
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 112
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 112
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fx_phantom_cloak_end_02": {
+   "frame": {
+    "x": 64,
+    "y": 224,
+    "w": 64,
+    "h": 112
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 112
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 112
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fx_phantom_cloak_end_03": {
+   "frame": {
+    "x": 128,
+    "y": 224,
+    "w": 64,
+    "h": 112
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 112
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 112
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fx_phantom_cloak_end_04": {
+   "frame": {
+    "x": 192,
+    "y": 224,
+    "w": 64,
+    "h": 112
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 112
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 112
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  }
+ },
+ "meta": {
+  "app": "xiantu gen_sect_skills_v05.py",
+  "image": "fx_phantom_cloak.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 384,
+   "h": 336
+  },
+  "scale": "1"
+ }
+}

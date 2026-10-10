@@ -1,0 +1,52 @@
+{
+ "atlas": "fx_talisman_draw",
+ "facing": "left",
+ "origin": [
+  0.5,
+  0.5
+ ],
+ "frameSize": [
+  64,
+  112
+ ],
+ "blend": "NORMAL",
+ "kind": "fx",
+ "note": "正式制符判定叠层，原点 (0.5,0.5) 为符纸中心，与 fx_trial_talisman 的中心/尺寸/缩放一致，NORMAL 混合。正确笔画累计复用 fx_trial_talisman_stroke_01..06：c=0 用 blank，仅正确后按累计正确笔数 c 设置 stroke_0c；错笔/超时保持底层帧不动，总笔进度独立推进，成符成功播其 done。miss 仅闪当前占位笔画并溅 4 墨点；timeout 仅将当前占位笔画灰化淡出，两者全透明底，不清空底层纸面和累计笔画；正式模式判错/超时后继续下一笔，播完销毁该叠层。当前笔形状为通用占位，程序可按笔槽调整叠层偏移。craft_fail 为凝符失败的纸面替换动画：先隐藏底层符纸及累计笔画，再同中心播一次，焦边卷起成最多 6 灰片，播完销毁；完成度不足可同样播 craft_fail，错误原因和结算由程序文案说明。不要为正式模式调用试炼 fail 后清纸重画。",
+ "anims": [
+  {
+   "key": "fx_talisman_draw_miss",
+   "frames": [
+    "fx_talisman_draw_miss_01",
+    "fx_talisman_draw_miss_02",
+    "fx_talisman_draw_miss_03",
+    "fx_talisman_draw_miss_04"
+   ],
+   "frameRate": 12,
+   "repeat": 0
+  },
+  {
+   "key": "fx_talisman_draw_timeout",
+   "frames": [
+    "fx_talisman_draw_timeout_01",
+    "fx_talisman_draw_timeout_02",
+    "fx_talisman_draw_timeout_03",
+    "fx_talisman_draw_timeout_04"
+   ],
+   "frameRate": 10,
+   "repeat": 0
+  },
+  {
+   "key": "fx_talisman_draw_craft_fail",
+   "frames": [
+    "fx_talisman_draw_craft_fail_01",
+    "fx_talisman_draw_craft_fail_02",
+    "fx_talisman_draw_craft_fail_03",
+    "fx_talisman_draw_craft_fail_04",
+    "fx_talisman_draw_craft_fail_05",
+    "fx_talisman_draw_craft_fail_06"
+   ],
+   "frameRate": 10,
+   "repeat": 0
+  }
+ ]
+}

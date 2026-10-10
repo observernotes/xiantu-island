@@ -1,0 +1,59 @@
+{
+ "atlas": "fx_breakthrough_success",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  192,
+  320
+ ],
+ "anims": [
+  {
+   "key": "fx_breakthrough_success_back",
+   "frames": [
+    "fx_breakthrough_success_back_01",
+    "fx_breakthrough_success_back_02",
+    "fx_breakthrough_success_back_03",
+    "fx_breakthrough_success_back_04",
+    "fx_breakthrough_success_back_05",
+    "fx_breakthrough_success_back_06",
+    "fx_breakthrough_success_back_07",
+    "fx_breakthrough_success_back_08",
+    "fx_breakthrough_success_back_09",
+    "fx_breakthrough_success_back_10",
+    "fx_breakthrough_success_back_11",
+    "fx_breakthrough_success_back_12"
+   ],
+   "frameRate": 8,
+   "repeat": 0
+  },
+  {
+   "key": "fx_breakthrough_success_front",
+   "frames": [
+    "fx_breakthrough_success_front_01",
+    "fx_breakthrough_success_front_02",
+    "fx_breakthrough_success_front_03",
+    "fx_breakthrough_success_front_04",
+    "fx_breakthrough_success_front_05",
+    "fx_breakthrough_success_front_06",
+    "fx_breakthrough_success_front_07",
+    "fx_breakthrough_success_front_08",
+    "fx_breakthrough_success_front_09",
+    "fx_breakthrough_success_front_10",
+    "fx_breakthrough_success_front_11",
+    "fx_breakthrough_success_front_12"
+   ],
+   "frameRate": 8,
+   "repeat": 0
+  }
+ ],
+ "blend": "NORMAL",
+ "layers": {
+  "back": "depth 低于主角（光柱、地面阵纹、漩涡后半圈）",
+  "front": "depth 高于主角（漩涡前半圈、祥云、光点）"
+ },
+ "note": "筑基成功：back 和 front 同时播（各 12 帧 8fps = 1.5s），原点都放在主角脚底。第 7 帧（front_07）爆光，适合在这一刻飘 realm.breakthrough_ok。",
+ "kind": "fx"
+}

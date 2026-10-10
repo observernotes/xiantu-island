@@ -1,0 +1,25 @@
+{
+ "atlas": "prop_enc_sign",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  32,
+  48
+ ],
+ "blend": "NORMAL",
+ "kind": "prop",
+ "note": "程序化占位；key 名待天机阁确认。采药木牌。原点 (0.5,1) 为木桩插地底边，固定 idle。牌上是占位刻痕；完整采药规矩由 enc.fragrant_herb.sign 对话显示。当前 sign 步骤 speaker=system、speakerKey=enc.actor.sign；建议事件 visual.signSprite 关联此 sprite。",
+ "anims": [
+  {
+   "key": "prop_enc_sign_idle",
+   "frames": [
+    "prop_enc_sign_idle_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  }
+ ]
+}

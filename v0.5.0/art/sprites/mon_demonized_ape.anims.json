@@ -1,0 +1,72 @@
+{
+ "atlas": "mon_demonized_ape",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  96,
+  96
+ ],
+ "anims": [
+  {
+   "key": "mon_demonized_ape_idle",
+   "frames": [
+    "mon_demonized_ape_idle_01",
+    "mon_demonized_ape_idle_02"
+   ],
+   "frameRate": 3,
+   "repeat": -1
+  },
+  {
+   "key": "mon_demonized_ape_walk",
+   "frames": [
+    "mon_demonized_ape_walk_01",
+    "mon_demonized_ape_walk_02",
+    "mon_demonized_ape_walk_03"
+   ],
+   "frameRate": 8,
+   "repeat": -1
+  },
+  {
+   "key": "mon_demonized_ape_attack",
+   "frames": [
+    "mon_demonized_ape_attack_01",
+    "mon_demonized_ape_attack_02",
+    "mon_demonized_ape_attack_03"
+   ],
+   "frameRate": 8,
+   "repeat": 0
+  },
+  {
+   "key": "mon_demonized_ape_hit",
+   "frames": [
+    "mon_demonized_ape_hit_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  },
+  {
+   "key": "mon_demonized_ape_die",
+   "frames": [
+    "mon_demonized_ape_die_01",
+    "mon_demonized_ape_die_02",
+    "mon_demonized_ape_die_03"
+   ],
+   "frameRate": 6,
+   "repeat": 0
+  }
+ ],
+ "bodySize": [
+  52,
+  66
+ ],
+ "attackFrames": {
+  "telegraph": 1,
+  "hit": 2
+ },
+ "attackFx": "fx_ape_slam",
+ "note": "attack.type slam、telegraphMs 500：attack_01 双拳举过头顶冒紫光，attack_02 拍地（判定，同帧在脚底前方 x−40 播 fx_ape_slam），attack_03 收势",
+ "kind": "monster"
+}

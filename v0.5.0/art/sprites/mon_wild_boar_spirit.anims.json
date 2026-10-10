@@ -1,0 +1,80 @@
+{
+ "atlas": "mon_wild_boar_spirit",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  96,
+  80
+ ],
+ "anims": [
+  {
+   "key": "mon_wild_boar_spirit_idle",
+   "frames": [
+    "mon_wild_boar_spirit_idle_01",
+    "mon_wild_boar_spirit_idle_02"
+   ],
+   "frameRate": 3,
+   "repeat": -1
+  },
+  {
+   "key": "mon_wild_boar_spirit_walk",
+   "frames": [
+    "mon_wild_boar_spirit_walk_01",
+    "mon_wild_boar_spirit_walk_02",
+    "mon_wild_boar_spirit_walk_03"
+   ],
+   "frameRate": 8,
+   "repeat": -1
+  },
+  {
+   "key": "mon_wild_boar_spirit_attack",
+   "frames": [
+    "mon_wild_boar_spirit_attack_01",
+    "mon_wild_boar_spirit_attack_02",
+    "mon_wild_boar_spirit_attack_03"
+   ],
+   "frameRate": 8,
+   "repeat": 0
+  },
+  {
+   "key": "mon_wild_boar_spirit_charge",
+   "frames": [
+    "mon_wild_boar_spirit_charge_01",
+    "mon_wild_boar_spirit_charge_02"
+   ],
+   "frameRate": 12,
+   "repeat": -1
+  },
+  {
+   "key": "mon_wild_boar_spirit_hit",
+   "frames": [
+    "mon_wild_boar_spirit_hit_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  },
+  {
+   "key": "mon_wild_boar_spirit_die",
+   "frames": [
+    "mon_wild_boar_spirit_die_01",
+    "mon_wild_boar_spirit_die_02",
+    "mon_wild_boar_spirit_die_03"
+   ],
+   "frameRate": 6,
+   "repeat": 0
+  }
+ ],
+ "bodySize": [
+  60,
+  40
+ ],
+ "attackFrames": {
+  "telegraph": 1,
+  "hit": 2
+ },
+ "note": "attack_01 前摇定格（telegraphMs 600，后坐刨地、眼放红光）；attack_02 起冲（判定帧）；位移 192px 期间循环 charge，结束播 attack_03 收势。fx_boar_charge 挂在脚底身后",
+ "kind": "monster"
+}

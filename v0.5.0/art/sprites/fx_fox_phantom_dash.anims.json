@@ -1,0 +1,27 @@
+{
+ "atlas": "fx_fox_phantom_dash",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  448,
+  160
+ ],
+ "anims": [
+  {
+   "key": "fx_fox_phantom_dash_play",
+   "frames": [
+    "fx_fox_phantom_dash_play_01",
+    "fx_fox_phantom_dash_play_02",
+    "fx_fox_phantom_dash_play_03",
+    "fx_fox_phantom_dash_play_04",
+    "fx_fox_phantom_dash_play_05"
+   ],
+   "frameRate": 12,
+   "repeat": 0
+  }
+ ],
+ "kind": "fx"
+}
