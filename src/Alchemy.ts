@@ -19,7 +19,20 @@ export interface AlchemyResult {
   recipe: RecipeDef; success: boolean; quality: PillQuality | null; count: number;
   rate: number; fire: FireResult; expGained: number; levels: number;
 }
-interface BrewSession { recipeId: string; furnaceId: string; fire: FireRound; }
+export interface BrewSession { recipeId: string; furnaceId: string; fire: FireRound; }
+
+/** 读档只恢复已知丹方/丹炉及完整合法的火候状态，不替损坏档编造结果。 */
+export function isBrewSession(value: unknown): value is BrewSession {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  const session = value as Partial<BrewSession>, fire = session.fire;
+  if (typeof session.recipeId !== 'string' || !RECIPES[session.recipeId] || RECIPES[session.recipeId].type
+    || typeof session.furnaceId !== 'string' || !Object.prototype.hasOwnProperty.call(ALCHEMY_RULES.furnace, session.furnaceId)
+    || !fire || typeof fire !== 'object') return false;
+  return [fire.zoneStart, fire.zoneWidth, fire.perfectWidth, fire.periodMs, fire.elapsedMs, fire.durationMs].every(Number.isFinite)
+    && fire.zoneWidth > 0 && fire.zoneWidth <= 1 && fire.perfectWidth > 0 && fire.perfectWidth <= fire.zoneWidth
+    && fire.zoneStart >= 0 && fire.zoneStart + fire.zoneWidth <= 1 + 1e-10
+    && fire.periodMs > 0 && fire.elapsedMs >= 0 && fire.durationMs > 0 && typeof fire.zoneRandomPerBrew === 'boolean';
+}
 
 /** 06 文档定稿缺省：26% / 4% / 来回一趟 1.2s；期限约 2s。 */
 export function fireConfig(input: Partial<FireConfig> = ALCHEMY_RULES.fire): FireConfig {
@@ -65,7 +78,10 @@ export function qualityRates(level: number, fire: FireResult): Record<PillQualit
 /** 一炉结算只走一次，费用在开炉时扣除；批量逐炉结算但跳过火候。 */
 export class AlchemySystem {
   active: BrewSession | null = null;
-  constructor(private prog: Progress, private quests?: QuestSystem, public random: () => number = () => Math.random()) {}
+  constructor(private prog: Progress, private quests?: QuestSystem, public random: () => number = () => Math.random()) {
+    this.active = isBrewSession(prog.pendingAlchemy) ? prog.pendingAlchemy : null;
+    prog.pendingAlchemy = this.active;
+  }
 
   get knownRecipes(): RecipeDef[] {
     return this.prog.learnedRecipes.map(id => RECIPES[id]).filter((recipe): recipe is RecipeDef => !!recipe && !recipe.type);
@@ -100,6 +116,7 @@ export class AlchemySystem {
     const config = fireConfig();
     const fire = { ...config, zoneStart: (1 - config.zoneWidth) * (config.zoneRandomPerBrew ? this.roll() : 0.5), elapsedMs: 0, durationMs: 2000 };
     this.active = { recipeId, furnaceId, fire };
+    this.prog.pendingAlchemy = this.active;
     this.prog.save();
     return { ...check, fire };
   }
@@ -132,6 +149,7 @@ export class AlchemySystem {
   private finish(fire: FireResult): AlchemyResult {
     const session = this.active!;
     this.active = null;
+    this.prog.pendingAlchemy = null;
     return this.settle(RECIPES[session.recipeId], session.furnaceId, fire);
   }
   private roll() { return Math.max(0, Math.min(1 - Number.EPSILON, Number(this.random()) || 0)); }

@@ -29,6 +29,14 @@ export class QuestSystem {
       && QUEST_ORDER.filter(id => QUESTS[id].next === q.id).every(id => this.state(id) === 'done');
   }
 
+  /** 06 文档一期入门仍归孙郎中；旧 NPC 表未挂任务时只补这一项入口。 */
+  private npcQuestIds(npcId: string) {
+    const ids = [...(NPCS[npcId]?.quests ?? [])];
+    const intro = QUESTS.q_alchemy_intro;
+    if (intro && (intro.giver === npcId || intro.turnIn === npcId) && !ids.includes(intro.id)) ids.push(intro.id);
+    return ids.filter(id => QUESTS[id]);
+  }
+
   objectiveProgress(q: QuestDef) {
     const st = this.prog.quests[q.id];
     return q.objectives.map(o => {
@@ -47,7 +55,7 @@ export class QuestSystem {
 
   /** NPC 头顶标记：可交付 ?、可接 !、进行中 … */
   mark(npcId: string): NpcMark {
-    const ids = (NPCS[npcId]?.quests ?? []).filter(id => QUESTS[id]);
+    const ids = this.npcQuestIds(npcId);
     if (ids.some(id => QUESTS[id].turnIn === npcId && this.complete(id))) return '?';
     if (ids.some(id => QUESTS[id].giver === npcId && this.available(id))) return '!';
     if (ids.some(id => this.isActive(id) && QUESTS[id].turnIn === npcId)) return '…';
@@ -62,7 +70,7 @@ export class QuestSystem {
       const st = this.prog.quests[id]; (st.talked ??= {})[npcId] = true; this.prog.save();
     }
     const fill = (ls: Line[] | undefined) => (ls ?? []).map(l => ({ ...l, text: l.text.replace(/\{name\}/g, this.prog.name) }));
-    for (const id of npc.quests) {
+    for (const id of this.npcQuestIds(npcId)) {
       const q = QUESTS[id], sc = SCRIPTS[id] ?? {};
       if (!q) continue;
       if (q.turnIn === npcId && this.complete(id)) return { lines: fill(sc.turnIn), after: () => this.turnIn(id) };

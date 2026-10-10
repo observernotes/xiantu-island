@@ -1,5 +1,5 @@
 import recipesRaw from '@xt/balance/recipes.json';
-import { ALCHEMY_RULES, RECIPES, QUESTS, ITEMS } from './data';
+import { ALCHEMY_RULES, RECIPES, QUESTS, ITEMS, NPCS } from './data';
 import { Progress } from './Progress';
 import { QuestSystem } from './QuestSystem';
 import { AlchemySystem, fireConfig, fireOutcome, firePointer, qualityRates } from './Alchemy';
@@ -32,6 +32,23 @@ function ready() {
   p.addItem('spirit_herb', 20); p.addItem('rabbit_fur', 10);
   const q = new QuestSystem(p);
   return { p, q, a: new AlchemySystem(p, q, () => 0) };
+}
+
+// NPC 表暂缺入门挂载，按06补入口但不改原表或开放其它未来任务。
+{
+  const { p, q, a } = ready();
+  p.quests.q_snake = { state: 'done', kills: {} };
+  const original = NPCS.doctor_sun.quests.join(',');
+  eq(q.mark('doctor_sun'), '!', '孙郎中显示炼丹入门可接标记');
+  const offer = q.talk('doctor_sun'); ok(offer.after, '实际NPC对话有接取回调');
+  offer.after(); eq(q.state('q_alchemy_intro'), 'active', '通过NPC回调接到炼丹入门');
+  eq(q.mark('doctor_sun'), '…', '接取后显示任务进行中');
+  a.start(recipe.id); a.skipFire(); eq(q.mark('doctor_sun'), '?', '成功炼丹后显示可交付');
+  const turnIn = q.talk('doctor_sun').after?.(); ok(turnIn, '实际NPC对话返回交付奖励');
+  eq(turnIn.quest.id, 'q_alchemy_intro', '交付炼丹入门任务');
+  p.grantQuestRecipes(turnIn.quest);
+  ok(p.learnedRecipes.includes('recipe_qi_pill'), 'NPC交付可发奖励丹方');
+  eq(NPCS.doctor_sun.quests.join(','), original, '兼容入口不修改NPC原表');
 }
 
 // 入门靠教学丹方与公共炉打通，已有背包丹药不会替代接取后的成功产物。
@@ -143,6 +160,7 @@ function ready() {
   eq(old.pillQualityCounts(recipe.output).low, 7, '旧档丹药均可按下品使用');
   ok(old.learnedRecipes.includes(recipe.id), '旧进行中任务补教学丹方'); eq(old.quests.q_alchemy_intro.crafted?.[recipe.output] ?? 0, 0, '旧任务craft默认0');
   eq(Object.keys(old.gatherRespawnAt).length, 0, '旧档采集冷却默认空');
+  eq(old.pendingAlchemy, null, '旧档进行中炉默认空');
   saved[key] = JSON.stringify({ level: 12, alchemyLevel: -2, alchemyExp: 'bad', learnedRecipes: [recipe.id, recipe.id, '__bad'],
     inventory: { hp_pill_small: 3 }, pillQualities: { hp_pill_small: { low: -1, high: 9, supreme: 99 } },
     gatherRespawnAt: { good: Date.now() + 60000, bad: -1, nan: 'oops' }, quests: { q_alchemy_intro: { state: 'done', crafted: { hp_pill_small: -4 } } } });
@@ -150,5 +168,25 @@ function ready() {
   eq(partial.learnedRecipes.join(','), 'recipe_hp_pill,recipe_qi_pill', '已完成任务补奖励方并去重');
   eq(Object.values(partial.pillQualityCounts(recipe.output)).reduce((sum, value) => sum + value, 0), 3, '损坏品质桶不会超过背包');
   eq(Object.keys(partial.gatherRespawnAt).join(','), 'good', '采集冷却清非法值'); eq(partial.quests.q_alchemy_intro.crafted?.[recipe.output], 0, '非法craft计数归0');
+}
+
+// 付料中的炉在刷新后接续，原费用不会再扣，结算与第二次刷新都不再发奖。
+{
+  const { p, q, a } = ready(); q.accept('q_alchemy_intro'); a.start(recipe.id);
+  ok(JSON.parse(saved[key]).pendingAlchemy, '开炉连同付料状态存档');
+  a.advanceFire(100); p.save();
+  const restored = Progress.load(), restoredQuests = new QuestSystem(restored);
+  const resumed = new AlchemySystem(restored, restoredQuests, () => 0);
+  ok(resumed.active, '刷新恢复原炉'); eq(resumed.active.fire.elapsedMs, 100, '火候进度随存档保留');
+  eq(restored.count('spirit_herb'), 18, '恢复不再次扣草'); eq(restored.count('rabbit_fur'), 9, '恢复不再次扣绒');
+  eq(restored.stones, 90, '恢复不再次扣燃料');
+  const finished = resumed.stopFire(); ok(finished?.success, '恢复后的原炉可结算');
+  eq(restored.count(recipe.output), 5, '恢复只发一炉产物');
+  eq(restored.pendingAlchemy, null, '结算清内存进行态'); eq(JSON.parse(saved[key]).pendingAlchemy, null, '结算清磁盘进行态');
+  eq(resumed.stopFire(), null, '恢复后同炉仍只有一次机会');
+  const final = Progress.load(), restarted = new AlchemySystem(final);
+  eq(restarted.active, null, '完成后再次刷新无进行中炉'); eq(final.count(recipe.output), 5, '完成后再次刷新不重复发丹');
+  saved[key] = JSON.stringify({ pendingAlchemy: { recipeId: recipe.id, furnaceId: 'bronze_furnace', fire: { zoneStart: -1 } } });
+  eq(Progress.load().pendingAlchemy, null, '损坏进行态清空');
 }
 console.log(`alchemy logic tests ok: ${assertions} assertions (fire, costs, qualities, crafts, batches, old saves)`);

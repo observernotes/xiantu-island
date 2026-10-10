@@ -2,6 +2,7 @@ import { GROWTH, EXP_TO_NEXT, MAX_LEVEL, ITEMS, BREAKTHROUGH_LEVELS, BREAKTHROUG
 import { HOTBAR_SLOTS, QUEST_SKILL_BACKFILL, SKILLS, SKILL_RULES, SkillDef, skillNumber, spEarnedFor } from './skills';
 import { SECT_SECLUSION } from './data';
 import { realDay } from './Seclusion';
+import { isBrewSession, type BrewSession } from './Alchemy';
 
 /** 自动加点：加点界面做好前每级自动分配（演武堂/天机阁确认：根骨 2、身法 2、悟性 1） */
 export const AUTO_STATS = { rootBone: 2, agility: 2, insight: 1, spirit: 0 } as Record<string, number>;
@@ -24,6 +25,8 @@ export class Progress {
   pillQualities: Record<string, Partial<Record<PillQuality, number>>> = {};
   /** 地图 id:采集对象名 → 再生的绝对毫秒时间，换图/刷新后保持。 */
   gatherRespawnAt: Record<string, number> = {};
+  /** 已付料的这一炉；刷新继续火候，结算前清空防止重复领奖。 */
+  pendingAlchemy: BrewSession | null = null;
   name = '少年';
   /** 已学会的功法等级。任务赠送的 1 级也写在这里。 */
   skills: Record<string, number> = {};
@@ -392,6 +395,7 @@ export class Progress {
     }
     if (!this.gatherRespawnAt || typeof this.gatherRespawnAt !== 'object' || Array.isArray(this.gatherRespawnAt)) this.gatherRespawnAt = {};
     this.gatherRespawnAt = Object.fromEntries(Object.entries(this.gatherRespawnAt).filter(([, at]) => typeof at === 'number' && Number.isFinite(at) && at > 0));
+    if (!isBrewSession(this.pendingAlchemy)) this.pendingAlchemy = null;
     for (const st of Object.values(this.quests)) {
       if (!st || typeof st !== 'object') continue;
       if (!st.kills || typeof st.kills !== 'object') st.kills = {};
