@@ -16,7 +16,7 @@ export interface SectGrowthConfig {
   realms: { id: string; name: string; levelMin: number }[];
   skills: Record<string, SkillDef>;
 }
-export interface SectGrowthReceipt { kind: 'donation' | 'shop' | 'promotion'; sect: string; sourceId: string; day: string }
+export interface SectGrowthReceipt { kind: 'donation' | 'shop' | 'shop_sale' | 'promotion'; sect: string; sourceId: string; day: string }
 export interface SectGrowthState {
   donationDay?: string;
   donationBatches?: Record<string, number>;
@@ -43,6 +43,8 @@ export interface SectDonationEntry extends SectGrowthResult {
 export interface SectDonationCatalog extends SectGrowthResult { entries: SectDonationEntry[] }
 export interface OrdinaryShopEntry extends SectGrowthResult { itemId: string; name: string; price: number }
 export interface OrdinaryShopCatalog extends SectGrowthResult { entries: OrdinaryShopEntry[] }
+export interface OrdinarySellEntry extends OrdinaryShopEntry { count: number }
+export interface OrdinarySellCatalog extends SectGrowthResult { entries: OrdinarySellEntry[] }
 
 function freeze<T>(value: T): DeepReadonly<T> {
   if (value && typeof value === 'object') {
@@ -69,7 +71,7 @@ export function validSectGrowthState(state: unknown): state is SectGrowthState {
   if (state.donationDay !== undefined && typeof state.donationDay !== 'string') return false;
   if (state.donationBatches !== undefined && (!record(state.donationBatches) || !Object.values(state.donationBatches).every(integer))) return false;
   return Object.entries(state.settledTransactions).every(([id, receipt]) => id.length > 0 && record(receipt)
-    && ['donation', 'shop', 'promotion'].includes(String(receipt.kind)) && typeof receipt.sect === 'string'
+    && ['donation', 'shop', 'shop_sale', 'promotion'].includes(String(receipt.kind)) && typeof receipt.sect === 'string'
     && typeof receipt.sourceId === 'string' && receipt.sourceId.length > 0 && typeof receipt.day === 'string');
 }
 let transactionSequence = 0;
@@ -112,7 +114,7 @@ export class SectGrowth {
 
   /** 只执行本宗已登记 NPC 的固定服务；config 不是任意资源路径。 */
   private service(npcId: string, type: SectServiceType): SectGrowthResult {
-    if (!featureEnabled(SERVICE_FEATURE[type])) return { ok: false, key: FEATURE_UNAVAILABLE };
+    if (!featureEnabled(SERVICE_FEATURE[type]) || (type === 'sect_shop' && !featureEnabled('shops'))) return { ok: false, key: FEATURE_UNAVAILABLE };
     const identity = this.identity();
     if (identity && !identity.valid) return { ok: false, key: 'sect.ui.invalid_rank' };
     if (!identity) return { ok: false, key: 'sect.ui.not_member' };
@@ -196,6 +198,7 @@ export class SectGrowth {
       rank: this.prog.sectRank, contribution: this.prog.sectContribution,
       stones: this.prog.stones,
       inventory: { ...this.prog.inventory }, state: this.prog.sectGrowthState,
+      qualities: Object.fromEntries(Object.entries(this.prog.pillQualities).map(([id, counts]) => [id, { ...counts }])),
     };
     this.busy = true;
     let saved = false, applied = false;
@@ -211,6 +214,7 @@ export class SectGrowth {
         this.prog.sectRank = previous.rank; this.prog.sectContribution = previous.contribution;
         this.prog.stones = previous.stones;
         this.prog.inventory = previous.inventory; this.prog.sectGrowthState = previous.state;
+        this.prog.pillQualities = previous.qualities;
       }
       this.busy = false;
     }
@@ -316,12 +320,20 @@ export class SectGrowth {
     }, key);
   }
 
+  private ordinaryAccess(npcId: string): SectGrowthResult {
+    if (!featureEnabled('shops')) return { ok: false, key: FEATURE_UNAVAILABLE };
+    const npc = this.config.npcs[npcId], raw = this.config.shops[npcId];
+    if (!npc || npc.shop !== true || !inPhase(npc)) return { ok: false, key: 'sect.ui.closed' };
+    if (!this.stateReady() || !Array.isArray(raw)
+      || new Set(raw.map(entry => typeof entry === 'string' ? entry : entry?.item)).size !== raw.length) return pending();
+    return { ok: true, key: '' };
+  }
+
   /** 普通商店仅消费字符串货品；对象没有灵石价回退。 */
   ordinaryCatalog(npcId: string): OrdinaryShopCatalog {
-    const npc = this.config.npcs[npcId], raw = this.config.shops[npcId];
-    if (!npc || npc.shop !== true || !inPhase(npc)) return { ok: false, key: 'sect.ui.closed', entries: [] };
-    if (!this.stateReady() || !Array.isArray(raw)
-      || new Set(raw.map(entry => typeof entry === 'string' ? entry : entry?.item)).size !== raw.length) return { ...pending(), entries: [] };
+    const access = this.ordinaryAccess(npcId);
+    if (!access.ok) return { ...access, entries: [] };
+    const raw = this.config.shops[npcId];
     const entries = raw.filter((entry): entry is string => typeof entry === 'string').flatMap(itemId => {
       const item = this.config.items[itemId];
       if (!item || !inPhase(item) || item.enabled === false || item.placeholder === true || !integer(item.price)) return [];
@@ -332,21 +344,67 @@ export class SectGrowth {
     return entries.length ? { ok: true, key: '', entries } : { ...pending(), entries };
   }
 
-  buyOrdinary(npcId: string, itemId: string, transactionId: string): SectGrowthResult {
-    const npc = this.config.npcs[npcId];
-    if (!npc || npc.shop !== true || !inPhase(npc)) return { ok: false, key: 'sect.ui.closed' };
+  buyOrdinary(npcId: string, itemId: string, transactionId: string, count = 1): SectGrowthResult {
+    const access = this.ordinaryAccess(npcId);
+    if (!access.ok) return access;
+    if (!positive(count)) return pending();
     const key = 'ui.shop.complete';
-    const repeated = this.repeated(transactionId, 'shop', `${npcId}|${itemId}`, key);
+    // 单件来源兼容已有收据；不同数量的确认不能互相重放。
+    const sourceId = `${npcId}|${itemId}${count === 1 ? '' : `|count:${count}`}`;
+    const repeated = this.repeated(transactionId, 'shop', sourceId, key);
     if (repeated) return repeated;
     const catalog = this.ordinaryCatalog(npcId);
     if (!catalog.ok) return catalog;
     const entry = catalog.entries.find(row => row.itemId === itemId);
     if (!entry || !entry.ok) return entry ?? pending();
-    return this.settle(transactionId, { kind: 'shop', sect: this.prog.sect, sourceId: `${npcId}|${itemId}`, day: dailyQuestDay() }, () => {
+    const total = entry.price * count;
+    if (!integer(total)) return pending();
+    if (this.prog.stones < total) return { ok: false, key: 'ui.shop.not_enough' };
+    if (!this.prog.canReceiveItem(itemId, count)) return { ok: false, key: 'sect.ui.bag_full' };
+    return this.settle(transactionId, { kind: 'shop', sect: this.prog.sect, sourceId, day: dailyQuestDay() }, () => {
       const before = this.prog.count(itemId);
-      this.prog.stones -= entry.price;
-      this.prog.addItem(itemId, 1);
-      return this.prog.count(itemId) === before + 1;
+      this.prog.stones -= total;
+      this.prog.addItem(itemId, count);
+      return this.prog.count(itemId) === before + count;
+    }, key);
+  }
+
+  /** 回收永久背包物品，不要求出现在售货清单；已穿戴装备独立保留。 */
+  ordinarySellCatalog(npcId: string): OrdinarySellCatalog {
+    const access = this.ordinaryAccess(npcId);
+    if (!access.ok) return { ...access, entries: [] };
+    const entries = Object.keys(this.prog.inventory).flatMap(itemId => {
+      const item = this.config.items[itemId], count = this.prog.permanentCount(itemId);
+      if (!item || !inPhase(item) || item.enabled === false || item.placeholder === true
+        || !integer(item.price) || !positive(count)) return [];
+      const price = Math.floor(item.price / 2);
+      if (price === 0) return [];
+      const key = !integer(this.prog.stones) || !integer(this.prog.stones + price) ? 'ui.shop.stones_overflow' : '';
+      return [{ itemId, name: item.name, price, count, ok: !key, key }];
+    });
+    return { ok: true, key: entries.length ? '' : 'ui.shop.empty', entries };
+  }
+
+  sellOrdinary(npcId: string, itemId: string, transactionId: string, count = 1): SectGrowthResult {
+    const access = this.ordinaryAccess(npcId);
+    if (!access.ok) return access;
+    if (!positive(count)) return pending();
+    const key = 'ui.shop.sell_complete', sourceId = `${npcId}|${itemId}|count:${count}`;
+    const repeated = this.repeated(transactionId, 'shop_sale', sourceId, key);
+    if (repeated) return repeated;
+    const entry = this.ordinarySellCatalog(npcId).entries.find(row => row.itemId === itemId);
+    if (!entry || entry.count < count) return { ok: false, key: 'ui.shop.item_short' };
+    if (!entry.ok) return entry;
+    const total = entry.price * count;
+    if (!integer(total) || !integer(this.prog.stones + total)) return { ok: false, key: 'ui.shop.stones_overflow' };
+    return this.settle(transactionId, { kind: 'shop_sale', sect: this.prog.sect, sourceId, day: dailyQuestDay() }, () => {
+      const before = this.prog.count(itemId);
+      // 品质桶属于永久丹药；移除时不把临时试炼数量算作下品。
+      this.prog.inventory[itemId] = entry.count;
+      this.prog.removeItem(itemId, count);
+      this.prog.inventory[itemId] += before - entry.count;
+      this.prog.stones += total;
+      return this.prog.count(itemId) === before - count;
     }, key);
   }
 

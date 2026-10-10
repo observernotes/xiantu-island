@@ -3,6 +3,7 @@
   "sectDaily": true,
   "sectRanks": false,
   "sectShopLibrary": false,
+  "shops": false,
   "sectDonations": false,
   "seclusion": true,
   "alchemyPhase1": true,

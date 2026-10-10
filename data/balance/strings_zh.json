@@ -616,5 +616,10 @@
   "trial.exit_return": "已退出试炼，返回山门。可找长老再次挑战。",
   "ui.shop.menu": "看看货架",
   "ui.shop.confirm": "用 {price} 枚灵石购买 {item}？",
-  "ui.shop.complete": "购买成功，{item} 已放入行囊。"
+  "ui.shop.complete": "购买成功，{item} 已放入行囊。",
+  "ui.shop.sell_confirm": "出售 {item}，获得 {price} 枚灵石？",
+  "ui.shop.sell_complete": "出售成功，获得 {price} 枚灵石。",
+  "ui.shop.empty": "暂无可出售的物品。",
+  "ui.shop.item_short": "可出售的物品数量不足。",
+  "ui.shop.stones_overflow": "灵石余额已达上限。"
 }

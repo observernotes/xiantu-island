@@ -27,7 +27,7 @@ const now = new Date(2026, 9, 10, 12).getTime();
 const originalNow = Date.now;
 const originalStorage = Object.getOwnPropertyDescriptor(globalThis, 'localStorage');
 const originalFeatures = featureFlags();
-const serviceFeatures = ['sectRanks', 'sectShopLibrary'] as const;
+const serviceFeatures = ['sectRanks', 'sectShopLibrary', 'shops'] as const;
 Date.now = () => now;
 const disk: Record<string, string> = {};
 let failStorage = false, writes = 0;

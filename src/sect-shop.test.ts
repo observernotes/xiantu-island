@@ -30,7 +30,7 @@ let now = start, failStorage = false, writes = 0;
 const originalNow = Date.now;
 const originalStorage = Object.getOwnPropertyDescriptor(globalThis, 'localStorage');
 const originalFeatures = featureFlags();
-const serviceFeatures = ['sectRanks', 'sectShopLibrary', 'sectDonations'] as const;
+const serviceFeatures = ['sectRanks', 'sectShopLibrary', 'shops', 'sectDonations'] as const;
 Date.now = () => now;
 const disk: Record<string, string> = {};
 Object.defineProperty(globalThis, 'localStorage', { configurable: true, value: {
