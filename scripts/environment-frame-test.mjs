@@ -15,7 +15,7 @@ try {
     { compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 } });
   const { EnvironmentArt, ENVIRONMENT_DEPTH } = await import(`data:text/javascript;base64,${Buffer.from(outputText).toString('base64')}`);
 
-  const create = (definitions, available = { fx_qingyun_env: Object.keys(atlas.frames), standalone: [] }) => {
+  const create = (definitions, available = { fx_qingyun_env: Object.keys(atlas.frames), standalone: [] }, particles = []) => {
     const textures = new Map(Object.entries(available).map(([key, frames]) => [key,
       { key, has: frame => frame === '__BASE' || frames.some(name => String(name) === String(frame)) }]));
     const images = [], warnings = [], canvases = [];
@@ -39,12 +39,12 @@ try {
         const pivot = key === 'fx_qingyun_env' ? atlas.frames[frameName]?.pivot : undefined;
         const image = {
           x, y, texture: { key }, frame: { name: frameName }, requestedFrame: frame, visible: true,
-          originX: pivot?.x ?? 0.5, originY: pivot?.y ?? 0.5,
+          originX: pivot?.x ?? 0.5, originY: pivot?.y ?? 0.5, tintCalls: 0,
           setName(name) { this.name = name; return this; },
           setDepth(depth) { this.depth = depth; return this; },
           setDisplaySize(width, height) { this.displayWidth = width; this.displayHeight = height; return this; },
           setOrigin(x, y) { this.originX = x; this.originY = y; return this; },
-          setTint(color) { this.tintTopLeft = color; return this; },
+          setTint(color) { this.tintTopLeft = color; this.tintCalls++; return this; },
           setAlpha(alpha) { this.alpha = alpha; return this; },
           setBlendMode(mode) { this.blendMode = mode; return this; },
           setVisible(visible) { this.visible = visible; return this; },
@@ -54,7 +54,7 @@ try {
         return image;
       } },
     };
-    const art = new EnvironmentArt(scene, 'qingyun', 3200, 720, { lights: definitions });
+    const art = new EnvironmentArt(scene, 'qingyun', 3200, 720, { lights: definitions, particles });
     return { art, images, warnings, canvases };
   };
 
@@ -110,6 +110,43 @@ try {
   assert.equal(normal.art.snapshot().lightDetails[0].blendMode, globalThis[phaserKey].BlendModes.NORMAL);
   const invalidBlend = create([{ ...definition, blend: 'invalid' }]);
   assert.equal(invalidBlend.images[0].blendMode, globalThis[phaserKey].BlendModes.ADD, 'unknown blending values fall back to ADD');
+
+  const firefly = { kind: 'firefly', x: 0, y: 0, width: 1280, height: 720, count: 1, texture: 'standalone' };
+  const defaultFirefly = create([], { standalone: [] }, [firefly]);
+  const coloredFirefly = { ...firefly, color: '#FFE8A0', alpha: 0.85 };
+  const noTail = create([], { standalone: [] }, [coloredFirefly]);
+  const withTail = create([], { standalone: [] }, [{ ...coloredFirefly, colorEnd: '#FFF6D8' }]);
+  assert.equal(defaultFirefly.images[0].tintTopLeft, 0xd8ff8e, 'default firefly tint stays unchanged');
+  assert.equal(defaultFirefly.images[0].alpha, 0.7, 'default firefly alpha stays unchanged');
+  assert.equal(defaultFirefly.images[0].blendMode, globalThis[phaserKey].BlendModes.ADD, 'default firefly blend stays ADD');
+  assert.equal(withTail.images[0].tintTopLeft, 0xffe8a0, 'tail color starts at the configured base tint');
+  let dimmest, brightest, intermediate;
+  for (let frame = 0; frame < 200; frame++) {
+    for (const fixture of [defaultFirefly, noTail, withTail]) fixture.art.update(20);
+    const plain = noTail.images[0], tail = withTail.images[0];
+    assert.equal(defaultFirefly.images[0].tintTopLeft, 0xd8ff8e, 'no tail preserves default tint throughout flicker');
+    assert.equal(plain.tintTopLeft, 0xffe8a0, 'no tail preserves a custom tint throughout flicker');
+    assert.equal(tail.alpha, plain.alpha, 'tail color leaves the existing alpha phase unchanged');
+    assert.equal(tail.blendMode, globalThis[phaserKey].BlendModes.ADD, 'tail color leaves ADD blending unchanged');
+    assert.ok(defaultFirefly.images[0].alpha >= 0.7 * 0.6 && defaultFirefly.images[0].alpha <= 0.7,
+      'default flicker retains its original opacity range');
+    const sample = { tint: tail.tintTopLeft, alpha: tail.alpha };
+    if (!dimmest || sample.alpha < dimmest.alpha) dimmest = sample;
+    if (!brightest || sample.alpha > brightest.alpha) brightest = sample;
+    if (sample.tint !== 0xffe8a0 && sample.tint !== 0xfff6d8) intermediate = sample;
+  }
+  assert.equal(brightest.tint, 0xffe8a0, 'bright phase uses the base tint');
+  assert.equal(dimmest.tint, 0xfff6d8, 'dim phase reaches the tail tint');
+  assert.equal(defaultFirefly.images[0].tintCalls, 1, 'no tail never adds per-frame tint updates');
+  assert.equal(noTail.images[0].tintCalls, 1, 'a custom color without a tail also keeps its original tint calls');
+  assert.ok(intermediate, 'flicker interpolates through an intermediate tint');
+  const tailWeight = (1 - intermediate.alpha / 0.85) / 0.4;
+  assert.equal(intermediate.tint >>> 16, 0xff);
+  assert.equal(intermediate.tint >>> 8 & 0xff, Math.round(0xe8 + (0xf6 - 0xe8) * tailWeight),
+    'green interpolates in sync with opacity');
+  assert.equal(intermediate.tint & 0xff, Math.round(0xa0 + (0xd8 - 0xa0) * tailWeight),
+    'blue interpolates in sync with opacity');
+  for (const fixture of [defaultFirefly, noTail, withTail]) fixture.art.destroy();
 
   for (const available of [{}, { fx_qingyun_env: ['glow_window'] }]) {
     const missing = create([definition, { ...definition, x: 460 }], available);

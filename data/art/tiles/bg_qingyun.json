@@ -56,7 +56,7 @@
         "y": 620,
         "radius": 56,
         "color": "#FFB060",
-        "alpha": 0.4,
+        "alpha": 0.5,
         "flicker": 0.08,
         "texture": "fx_qingyun_env",
         "frame": "glow_soft",
@@ -67,7 +67,7 @@
         "y": 640,
         "radius": 48,
         "color": "#FFE8A0",
-        "alpha": 0.35,
+        "alpha": 0.45,
         "flicker": 0.05,
         "texture": "fx_qingyun_env",
         "frame": "glow_soft",
@@ -78,7 +78,7 @@
         "y": 640,
         "radius": 48,
         "color": "#FFE8A0",
-        "alpha": 0.35,
+        "alpha": 0.45,
         "flicker": 0.05,
         "texture": "fx_qingyun_env",
         "frame": "glow_soft",
@@ -89,7 +89,7 @@
         "y": 620,
         "radius": 56,
         "color": "#FFB060",
-        "alpha": 0.4,
+        "alpha": 0.5,
         "flicker": 0.07,
         "texture": "fx_qingyun_env",
         "frame": "glow_soft",
@@ -100,7 +100,7 @@
         "y": 560,
         "radius": 48,
         "color": "#FFD080",
-        "alpha": 0.35,
+        "alpha": 0.45,
         "flicker": 0.06,
         "texture": "fx_qingyun_env",
         "frame": "glow_soft",
@@ -137,7 +137,9 @@
         "count": 40,
         "speedX": 0.0,
         "speedY": -11.0,
-        "alpha": 0.7
+        "color": "#FFE8A0",
+        "alpha": 0.85,
+        "colorEnd": "#FFF6D8"
       }
     ]
   }
