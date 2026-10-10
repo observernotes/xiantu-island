@@ -174,6 +174,7 @@ function ready() {
 {
   const { p, q, a } = ready(); q.accept('q_alchemy_intro'); a.start(recipe.id);
   ok(JSON.parse(saved[key]).pendingAlchemy, '开炉连同付料状态存档');
+  const pending = JSON.parse(saved[key]).pendingAlchemy;
   a.advanceFire(100); p.save();
   const restored = Progress.load(), restoredQuests = new QuestSystem(restored);
   const resumed = new AlchemySystem(restored, restoredQuests, () => 0);
@@ -188,5 +189,11 @@ function ready() {
   eq(restarted.active, null, '完成后再次刷新无进行中炉'); eq(final.count(recipe.output), 5, '完成后再次刷新不重复发丹');
   saved[key] = JSON.stringify({ pendingAlchemy: { recipeId: recipe.id, furnaceId: 'bronze_furnace', fire: { zoneStart: -1 } } });
   eq(Progress.load().pendingAlchemy, null, '损坏进行态清空');
+  saved[key] = JSON.stringify({ pendingAlchemy: pending, learnedRecipes: [] });
+  eq(Progress.load().pendingAlchemy, null, '未学丹方的非法进行态清空');
+  saved[key] = JSON.stringify({ pendingAlchemy: { ...pending, furnaceId: '__missing' }, learnedRecipes: [recipe.id] });
+  eq(Progress.load().pendingAlchemy, null, '未知丹炉的非法进行态清空');
+  saved[key] = JSON.stringify({ quests: { unknown_corrupt_quest: null }, learnedRecipes: null });
+  eq(Progress.load().learnedRecipes.length, 0, '损坏未知任务条目不阻断丹方默认值读档');
 }
 console.log(`alchemy logic tests ok: ${assertions} assertions (fire, costs, qualities, crafts, batches, old saves)`);

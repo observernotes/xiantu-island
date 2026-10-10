@@ -395,7 +395,7 @@ export class Progress {
     }
     if (!this.gatherRespawnAt || typeof this.gatherRespawnAt !== 'object' || Array.isArray(this.gatherRespawnAt)) this.gatherRespawnAt = {};
     this.gatherRespawnAt = Object.fromEntries(Object.entries(this.gatherRespawnAt).filter(([, at]) => typeof at === 'number' && Number.isFinite(at) && at > 0));
-    if (!isBrewSession(this.pendingAlchemy)) this.pendingAlchemy = null;
+    if (!isBrewSession(this.pendingAlchemy, this.learnedRecipes)) this.pendingAlchemy = null;
     for (const st of Object.values(this.quests)) {
       if (!st || typeof st !== 'object') continue;
       if (!st.kills || typeof st.kills !== 'object') st.kills = {};
@@ -449,7 +449,7 @@ export class Progress {
   backfillQuestRecipes() {
     let changed = false;
     for (const [id, st] of Object.entries(this.quests)) {
-      if (st.state === 'done' && QUESTS[id]) changed = this.grantQuestRecipes(QUESTS[id]).length > 0 || changed;
+      if (st?.state === 'done' && QUESTS[id]) changed = this.grantQuestRecipes(QUESTS[id]).length > 0 || changed;
     }
     // 教学回春丹必须先于 craft 目标可用；旧进行中存档同样补上。
     if (this.quests.q_alchemy_intro?.state === 'active') changed = this.grantRecipe('recipe_hp_pill') || changed;

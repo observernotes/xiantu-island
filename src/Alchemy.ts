@@ -22,10 +22,10 @@ export interface AlchemyResult {
 export interface BrewSession { recipeId: string; furnaceId: string; fire: FireRound; }
 
 /** 读档只恢复已知丹方/丹炉及完整合法的火候状态，不替损坏档编造结果。 */
-export function isBrewSession(value: unknown): value is BrewSession {
+export function isBrewSession(value: unknown, learnedRecipes: readonly string[]): value is BrewSession {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
   const session = value as Partial<BrewSession>, fire = session.fire;
-  if (typeof session.recipeId !== 'string' || !RECIPES[session.recipeId] || RECIPES[session.recipeId].type
+  if (typeof session.recipeId !== 'string' || !RECIPES[session.recipeId] || RECIPES[session.recipeId].type || !learnedRecipes.includes(session.recipeId)
     || typeof session.furnaceId !== 'string' || !Object.prototype.hasOwnProperty.call(ALCHEMY_RULES.furnace, session.furnaceId)
     || !fire || typeof fire !== 'object') return false;
   return [fire.zoneStart, fire.zoneWidth, fire.perfectWidth, fire.periodMs, fire.elapsedMs, fire.durationMs].every(Number.isFinite)
@@ -79,7 +79,7 @@ export function qualityRates(level: number, fire: FireResult): Record<PillQualit
 export class AlchemySystem {
   active: BrewSession | null = null;
   constructor(private prog: Progress, private quests?: QuestSystem, public random: () => number = () => Math.random()) {
-    this.active = isBrewSession(prog.pendingAlchemy) ? prog.pendingAlchemy : null;
+    this.active = isBrewSession(prog.pendingAlchemy, prog.learnedRecipes) ? prog.pendingAlchemy : null;
     prog.pendingAlchemy = this.active;
   }
 
