@@ -98,7 +98,8 @@ async function ready(page, mapId) {
       const art = scene.children.getByName(`chest:${object.name}`);
       return { name: object.name, objectX: object.x, objectY: object.y, type: art?.type, visible: art?.visible,
         x: art?.x, y: art?.y, width: art?.width, height: art?.height, depth: art?.depth,
-        fillColor: art?.fillColor, strokeColor: art?.strokeColor };
+        fillColor: art?.fillColor, strokeColor: art?.strokeColor,
+        texture: art?.texture?.key, frame: art?.frame?.name, originX: art?.originX, originY: art?.originY };
     });
     return { textures: Object.fromEntries(keys.map(key => [key, scene.textures.exists(key)])),
       tileSets: layer?.tileset.map(tileSet => tileSet.name) ?? [],
@@ -146,16 +147,23 @@ async function phase(outDir, label) {
     equal(village.testBridgePresent, false, `${label} 青云村必须使用正式构建`);
     check(village.chests.length > 0, `${label} 未创建真实地图宝匣对象`);
     for (const chest of village.chests) {
-      equal(chest.type, 'Rectangle', `${label} ${chest.name} 未保留宝匣代码画`);
       equal(chest.visible, true, `${label} ${chest.name} 宝匣不可见`);
-      equal([chest.x, chest.y], [chest.objectX, chest.objectY - 14], `${label} ${chest.name} 宝匣位置错误`);
-      equal([chest.width, chest.height], [34, 28], `${label} ${chest.name} 宝匣尺寸错误`);
-      equal([chest.fillColor, chest.strokeColor, chest.depth], [0xd9a43a, 0x5a3418, 4], `${label} ${chest.name} 宝匣绘制错误`);
+      if (label === 'baseline') {
+        equal(chest.type, 'Sprite', `${label} ${chest.name} 未使用精修宝匣图集`);
+        equal([chest.texture, chest.frame], ['prop_chest', 'prop_chest_closed_01'], `${label} ${chest.name} 宝匣图集或闭合帧错误`);
+        equal([chest.x, chest.y], [chest.objectX, chest.objectY], `${label} ${chest.name} 宝匣位置错误`);
+        equal([chest.originX, chest.originY, chest.depth], [0.5, 1, 4], `${label} ${chest.name} 宝匣挂点错误`);
+      } else {
+        equal(chest.type, 'Rectangle', `${label} ${chest.name} 未保留宝匣代码画`);
+        equal([chest.x, chest.y], [chest.objectX, chest.objectY - 14], `${label} ${chest.name} 宝匣位置错误`);
+        equal([chest.width, chest.height], [34, 28], `${label} ${chest.name} 宝匣尺寸错误`);
+        equal([chest.fillColor, chest.strokeColor, chest.depth], [0xd9a43a, 0x5a3418, 4], `${label} ${chest.name} 宝匣绘制错误`);
+      }
     }
     for (const [kind, rows] of Object.entries(events).filter(([kind]) => ['console', 'page', 'request', 'http', 'head'].includes(kind)))
       equal(rows.length, 0, `${label} 出现 ${kind}：${JSON.stringify(rows.slice(0, 10))}`);
     checkInterrupted();
-    console.log(JSON.stringify({ phase: label, ...counts(events), chestCodeDrawChecks: village.chests.length }));
+    console.log(JSON.stringify({ phase: label, ...counts(events), chestRenderChecks: village.chests.length }));
     return { state: { altar, village }, events };
   } finally {
     result[label] = counts(events);
@@ -219,7 +227,8 @@ try {
     const before = [baseline.state.altar, baseline.state.village][index];
     equal(state.sectTitle, before.sectTitle, '缺图改变中文职位称号');
   }
-  equal(missing.state.village.chests, baseline.state.village.chests, '缺图改变宝匣代码画');
+  const chestObjects = chests => chests.map(({ name, objectX, objectY }) => ({ name, objectX, objectY }));
+  equal(chestObjects(missing.state.village.chests), chestObjects(baseline.state.village.chests), '缺图改变地图宝匣对象');
   result.events = { baseline: sampleEvents(baseline.events), missing: sampleEvents(missing.events) };
   result.passed = true;
 } catch (error) {

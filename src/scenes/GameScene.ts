@@ -89,7 +89,7 @@ export class GameScene extends Phaser.Scene {
   private interactionPrompts: { object: MapObj; prompt: Phaser.GameObjects.Container; marker?: Phaser.GameObjects.Image | Phaser.GameObjects.Text }[] = [];
   private sectTitle!: Phaser.GameObjects.Text;
   private sectBadge!: Phaser.GameObjects.Image;
-  private portalVisuals: { object: MapObj; art: Phaser.GameObjects.Ellipse; label?: Phaser.GameObjects.Text }[] = [];
+  private portalVisuals: { object: MapObj; art: Phaser.GameObjects.Ellipse | Phaser.GameObjects.Sprite; label?: Phaser.GameObjects.Text }[] = [];
   private seclusionLabels: Phaser.GameObjects.Text[] = [];
 
   constructor() { super('game'); (window as any).__scene = this; }
@@ -144,7 +144,7 @@ export class GameScene extends Phaser.Scene {
     this.events.on('trial:complete', trialComplete);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.events.off('trial:complete', trialComplete));
     this.registry.set('progress', this.prog);
-    this.openedChests = this.registry.get('chests') ?? new Set();
+    this.openedChests = new Set(this.prog.openedChests);
     this.registry.set('chests', this.openedChests);
     this.mobs = []; this.logs = []; this.logBadges.clear(); this.hudTexts = undefined; this.hudKit = undefined;
     this.travelling = false; this.curZone = undefined; this.nextDailyUpdateAt = 0;
@@ -445,6 +445,9 @@ export class GameScene extends Phaser.Scene {
     if (time >= this.nextDailyUpdateAt) {
       this.quests.refreshDaily(); this.nextDailyUpdateAt = time + 1000;
     }
+    for (const { object, art } of this.portalVisuals)
+      if (art instanceof Phaser.GameObjects.Sprite)
+        this.playPropAnimation(art, this.portalOpen(object) ? 'prop_portal_open' : 'prop_portal_closed');
     this.player.syncAppearance();
     const k = this.keys, J = Phaser.Input.Keyboard.JustDown;
     this.clearAbandonedBossSummons();
@@ -863,7 +866,9 @@ export class GameScene extends Phaser.Scene {
     }
     for (const visual of this.portalVisuals) {
       const shut = !this.portalOpen(visual.object);
-      visual.art.setFillStyle(shut ? 0x888888 : 0x8fe3ff, 0.55).setStrokeStyle(3, shut ? 0x555555 : 0x3a9fd8);
+      if (visual.art instanceof Phaser.GameObjects.Sprite)
+        this.playPropAnimation(visual.art, shut ? 'prop_portal_closed' : 'prop_portal_open');
+      else visual.art.setFillStyle(shut ? 0x888888 : 0x8fe3ff, 0.55).setStrokeStyle(3, shut ? 0x555555 : 0x3a9fd8);
       const text = visual.object.props.featureExit ? '回青云村 ↑'
         : mapEntryOpen(visual.object.props.target, this.map.id) ? '' : FEATURE_UNAVAILABLE;
       if (text) (visual.label ??= this.portalStatusLabel(visual.object, text)).setText(text);
@@ -925,22 +930,53 @@ export class GameScene extends Phaser.Scene {
       this.interactionPrompts.push({ object: o, prompt });
     } else if (o.type === 'portal') {
       const shut = !this.portalOpen(o);
-      const g = this.add.ellipse(o.x, o.y - 40, 46, 80, shut ? 0x888888 : 0x8fe3ff, 0.55).setStrokeStyle(3, shut ? 0x555555 : 0x3a9fd8).setDepth(4);
-      if (!shut) this.tweens.add({ targets: g, scaleX: 0.85, yoyo: true, repeat: -1, duration: 700 });
+      let art: Phaser.GameObjects.Ellipse | Phaser.GameObjects.Sprite;
+      if (this.textures.exists('prop_portal')) {
+        const sprite = this.add.sprite(o.x, o.y, 'prop_portal').setOrigin(0.5, 1).setDepth(4);
+        this.playPropAnimation(sprite, shut ? 'prop_portal_closed' : 'prop_portal_open');
+        art = sprite;
+      } else {
+        const g = this.add.ellipse(o.x, o.y - 40, 46, 80, shut ? 0x888888 : 0x8fe3ff, 0.55).setStrokeStyle(3, shut ? 0x555555 : 0x3a9fd8).setDepth(4);
+        if (!shut) this.tweens.add({ targets: g, scaleX: 0.85, yoyo: true, repeat: -1, duration: 700 });
+        art = g;
+      }
       const text = o.props.featureExit ? '回青云村 ↑' : mapEntryOpen(o.props.target, this.map.id) ? '' : FEATURE_UNAVAILABLE;
       const label = text ? this.portalStatusLabel(o, text) : undefined;
-      this.portalVisuals.push({ object: o, art: g, label });
+      this.portalVisuals.push({ object: o, art, label });
     } else if (o.type === 'chest') {
-      const opened = this.openedChests.has(`${this.map.id}:${o.name}`);
-      this.add.rectangle(o.x, o.y - 14, 34, 28, opened ? 0x7a5a3a : 0xd9a43a).setStrokeStyle(2, 0x5a3418).setDepth(4).setName('chest:' + o.name);
+      const opened = this.prog.openedChests.includes(`${this.map.id}:${o.name}`);
+      if (this.textures.exists('prop_chest')) {
+        const sprite = this.add.sprite(o.x, o.y, 'prop_chest').setOrigin(0.5, 1).setDepth(4).setName('chest:' + o.name);
+        this.playPropAnimation(sprite, opened ? 'prop_chest_opened' : 'prop_chest_closed');
+      } else {
+        this.add.rectangle(o.x, o.y - 14, 34, 28, opened ? 0x7a5a3a : 0xd9a43a).setStrokeStyle(2, 0x5a3418).setDepth(4).setName('chest:' + o.name);
+      }
     } else if (o.type === 'ferry' && this.textures.exists('prop_ferry_boat')) {
       // 落霞镇的 y 是甲板面，其他停靠点的 y 是船底；图片只做演出。
       const boat = this.add.sprite(o.x + o.w / 2, o.y + (this.map.id === 'luoxia_town' ? 96 : 0), 'prop_ferry_boat')
         .setOrigin(0.5, 1).setDepth(3).setName(`ferry:${o.name}`);
       if (this.anims.exists('prop_ferry_boat_idle')) boat.play('prop_ferry_boat_idle');
     } else if (o.type === 'seclusion') {
-      this.seclusionLabels.push(this.add.text(o.x, o.y - 48, featureEnabled('seclusion') ? '闭关室 ↑' : FEATURE_UNAVAILABLE,
+      let promptY = o.y - 48;
+      if (this.textures.exists('prop_seclusion_door')) {
+        const door = this.add.sprite(o.x, o.y, 'prop_seclusion_door').setOrigin(0.5, 1).setDepth(4);
+        this.playPropAnimation(door, 'prop_seclusion_door_idle');
+        promptY = o.y - door.displayHeight - 6;
+      }
+      this.seclusionLabels.push(this.add.text(o.x, promptY, featureEnabled('seclusion') ? '闭关室 ↑' : FEATURE_UNAVAILABLE,
         { fontSize: '13px', color: '#fff8d0', stroke: '#3b2a20', strokeThickness: 3 }).setOrigin(0.5, 1).setDepth(4));
+    }
+  }
+
+  private playPropAnimation(sprite: Phaser.GameObjects.Sprite, key: string) {
+    if (sprite.getData('propAnimation') === key) return;
+    sprite.setData('propAnimation', key);
+    if (this.anims.exists(key)) {
+      sprite.play(key);
+    } else {
+      sprite.anims.stop();
+      const frame = `${key}_01`;
+      sprite.setFrame(sprite.texture.has(frame) ? frame : sprite.texture.firstFrame);
     }
   }
 
@@ -1437,9 +1473,17 @@ export class GameScene extends Phaser.Scene {
     for (const o of this.map.objects) {
       if (o.type !== 'chest' || Math.abs(o.x - p.x) > 32 || Math.abs(o.y - p.y) > 40) continue;
       const key = `${this.map.id}:${o.name}`;
-      if (this.openedChests.has(key)) return;
+      if (this.prog.openedChests.includes(key)) return;
+      this.prog.openedChests.push(key);
+      this.prog.save();
       this.openedChests.add(key);
-      (this.children.getByName('chest:' + o.name) as Phaser.GameObjects.Rectangle)?.setFillStyle(0x7a5a3a);
+      const chest = this.children.getByName('chest:' + o.name);
+      if (chest instanceof Phaser.GameObjects.Sprite) {
+        if (this.anims.exists('prop_chest_open')) {
+          chest.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => this.playPropAnimation(chest, 'prop_chest_opened'));
+          chest.play('prop_chest_open');
+        } else this.playPropAnimation(chest, 'prop_chest_opened');
+      } else if (chest instanceof Phaser.GameObjects.Rectangle) chest.setFillStyle(0x7a5a3a);
       this.spawnDrop(o.x, o.y - 30, o.props.loot, o.props.count ?? 1);
       return;
     }

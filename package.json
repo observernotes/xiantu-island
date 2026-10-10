@@ -17,6 +17,8 @@
     "test:smoke:missing-assets": "node scripts/missing-asset-smoke.mjs",
     "test:altar-fill": "node scripts/altar-fill-test.mjs",
     "test:smoke:altar-fill": "node scripts/altar-fill-smoke.mjs",
+    "test:chest-save": "node scripts/chest-save-test.mjs",
+    "test:smoke:props-missing": "node scripts/props-missing-smoke.mjs",
     "test:v05": "timeout 60s node scripts/v05-test.mjs",
     "test:appearance": "timeout 60s node scripts/appearance-test.mjs",
     "test:classes": "timeout 120s node scripts/classes-test.mjs",
