@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { FEEL, SPEC } from '../config/feel';
 import { FIELD_TEST } from '../config/maps';
-import { MONSTERS, DROPS, ITEMS, TILED_MAPS, ATLASES, MAP_AREA, AREAS, NPCS, SCRIPTS, t, MP_REGEN_FRACTION_PER_5S, BREAKTHROUGH_LEVELS } from '../data';
+import { MONSTERS, DROPS, ITEMS, TILED_MAPS, ATLASES, MAP_AREA, AREAS, SKILL_ICONS, NPCS, SCRIPTS, t, MP_REGEN_FRACTION_PER_5S, BREAKTHROUGH_LEVELS } from '../data';
 import { QuestSystem } from '../QuestSystem';
 import { QUESTS as QUESTS_REF } from '../data';
 import { DialogBox, SkillBar, SkillWindow } from '../UI';
@@ -78,7 +78,7 @@ export class GameScene extends Phaser.Scene {
       this.load.json(`${k}_anims`, `art/sprites/${k}.anims.json`);
     }
     this.load.atlas('icons_skills', 'art/icons/icons_skills.png', 'art/icons/icons_skills.json');
-    for (const s of skillsForJob(1)) if (s.icon) this.load.image(`${s.icon}@64`, `art/icons/skills/${s.icon}@64.png`);
+    for (const icon of SKILL_ICONS) this.load.image(icon.key, icon.path);
     // 葫芦三态：hud/ 目录里还没有，继续读 art/icons/ui/
     for (const tier of ['empty', 'half', 'full']) this.load.image(`icon_overflow_gourd_${tier}`, `art/icons/ui/icon_overflow_gourd_${tier}.png`);
     this.load.atlas('icons_items', 'art/icons/icons_items.png', 'art/icons/icons_items.json');

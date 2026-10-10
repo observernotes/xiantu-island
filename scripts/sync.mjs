@@ -26,7 +26,16 @@ const atlases = fs.readdirSync(spritesDir).filter(f => f.endsWith('.anims.json')
   return { key, kind: j.kind ?? (key.split('_')[0] === 'mon' ? 'monster' : key.split('_')[0]), origin: j.origin ?? [0.5, 1], bodySize: j.bodySize ?? null };
 }).filter(Boolean);
 const areas = fs.readdirSync(path.join(out, 'tiles')).map(f => f.match(/^tiles_(\w+)\.png$/)?.[1]).filter(Boolean).sort();
+// 未验收的 _pending/ 不会拷到 public；技能 @64 缺图时不进入加载清单。
+const skills = JSON.parse(fs.readFileSync(path.join(root, 'balance/skills.json'), 'utf8')).skills;
+const missingSkillIcons = [];
+const skillIcons = [...new Set(skills.map(s => s.icon).filter(Boolean))].sort().flatMap(icon => {
+  const key = `${icon}@64`, file = `icons/skills/${key}.png`;
+  if (!fs.existsSync(path.join(out, file))) { missingSkillIcons.push(file); return []; }
+  return [{ key, path: `art/${file}` }];
+});
+if (missingSkillIcons.length) console.warn('[sync] 缺技能 @64 图标，跳过（退回 32px 图集或占位框）：', missingSkillIcons.join('、'));
 fs.mkdirSync(path.join(here, 'src/gen'), { recursive: true });
-fs.writeFileSync(path.join(here, 'src/gen/assets.json'), JSON.stringify({ atlases, areas }, null, 1));
-console.log(`manifest: ${atlases.length} 个图集，区域 ${areas.join('/')}`);
+fs.writeFileSync(path.join(here, 'src/gen/assets.json'), JSON.stringify({ atlases, areas, skillIcons }, null, 1));
+console.log(`manifest: ${atlases.length} 个图集，${skillIcons.length} 个技能 @64 图标，区域 ${areas.join('/')}`);
 console.log('synced art from', root, '(' + dataMode(here) + ')');
