@@ -6,12 +6,13 @@ import os from 'node:os';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { inflateSync } from 'node:zlib';
-import { build, preview } from 'vite';
+import { build } from 'vite';
 import { findRoot } from './root.mjs';
+import { preview } from './isolated-build.mjs';
 
 const projectRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const fixtureRoot = path.join(projectRoot, 'scripts/fixtures/art-engine');
-const baselineRevision = '96e6584d26378bdef1c993faff6c62aa892f8d40';
+const baselineRevision = '5f5b34127ee7c83ba402afe80d7f922bd8da01d9';
 const fixedTime = 1791608400000;
 const port = Number(process.env.XT_TEST_PORT ?? 4337);
 for (const value of [port, port + 1]) {
@@ -41,7 +42,7 @@ async function browserPath(chromium) {
   throw new Error('未找到 Chromium；请设置 CHROMIUM_EXECUTABLE_PATH');
 }
 
-// v2 接入提交只解包到临时目录；地图和正式素材与被测构建共用输入，隔离引擎变化。
+// v2 / 青云 r2 / 刀光 v2 / E-3 已验收的候选作为基线；两端共用地图、素材和发版关口。
 async function buildBaseline() {
   if (process.env.ART_BASELINE_DIR) {
     const directory = path.resolve(process.env.ART_BASELINE_DIR);
@@ -54,6 +55,8 @@ async function buildBaseline() {
   await fs.symlink(path.join(projectRoot, 'node_modules'), path.join(temporaryRoot, 'node_modules'));
   await fs.cp(path.join(projectRoot, 'src/gen'), path.join(temporaryRoot, 'src/gen'), { recursive: true });
   await fs.cp(path.join(projectRoot, 'public'), path.join(temporaryRoot, 'public'), { recursive: true });
+  await fs.mkdir(path.join(temporaryRoot, 'data'), { recursive: true });
+  await fs.copyFile(path.join(projectRoot, 'data/features.json'), path.join(temporaryRoot, 'data/features.json'));
   const directory = path.join(temporaryRoot, 'dist');
   await build({ root: temporaryRoot, configFile: false, logLevel: 'error', base: './',
     resolve: { alias: { '@xt': findRoot(projectRoot) } },
@@ -110,21 +113,41 @@ async function prepare(page, baseURL, map = 'qingyun_village') {
   }, { fixedTime });
   const url = new URL(baseURL); url.searchParams.set('map', map);
   await page.goto(url.href, { waitUntil: 'networkidle', timeout: 30000 });
-  await page.waitForFunction(() => window.__xt && window.__scene?.player?.active && window.__scene?.quests);
+  try {
+    await page.waitForFunction(() => window.__xt && window.__scene?.player?.active && window.__scene?.quests);
+  } catch (error) {
+    const state = await page.evaluate(() => {
+      const s = window.__scene, load = s?.load, game = s?.game;
+      const files = set => Array.from(set?.entries ?? []).map(file => ({ key: file.key, type: file.type, state: file.state }));
+      return { url: location.href, bridge: !!window.__xt, scene: s?.sys?.settings?.status,
+        player: s?.player && { active: s.player.active, texture: s.player.texture?.key }, quests: !!s?.quests,
+        booted: game?.isBooted, loop: game?.loop?.running, contextLost: game?.renderer?.contextLost,
+        loader: load && { state: load.state, totalToLoad: load.totalToLoad, totalComplete: load.totalComplete,
+          totalFailed: load.totalFailed, queued: files(load.list), inflight: files(load.inflight), processing: files(load.queue) } };
+    }).catch(diagnosticError => ({ diagnosticError: diagnosticError.message }));
+    console.error(JSON.stringify({ artStartup: state }));
+    error.message += `\n场景启动状态：${JSON.stringify(state)}`;
+    throw error;
+  }
   await page.evaluate(async ({ map, fixedTime }) => {
     window.__xt.seed(123); window.__xt.clock.pause(); window.__xt.clock.setNow(fixedTime);
     await window.__xt.teleport(map, 320, 608);
   }, { map, fixedTime });
   await page.waitForTimeout(300);
-  return page.evaluate(() => {
+  return freezePose(page);
+}
+async function freezePose(page, environment, resetClock = false) {
+  return page.evaluate(({ environment, fixedTime, resetClock }) => {
     const s = window.__scene, p = s.player;
+    // 初次 prepare 已 seed；重复 seed 会复用 TileSprite 的随机内部纹理 UUID。
+    if (resetClock) { window.__xt.clock.pause(); window.__xt.clock.setNow(fixedTime); }
     s.physics.world.pause(); s.tweens.killAll(); s.time.removeAllEvents();
     s.cameras.main.resetFX(); s.cameras.main.stopFollow(); s.cameras.main.setScroll(0, 0);
     p.body.reset(320, 608); p.body.setVelocity(0, 0); p.state2 = 'ground'; p.body.blocked.down = true;
     p.play('player_sword_m_idle'); p.anims.setCurrentFrame(s.anims.get('player_sword_m_idle').frames[0]); p.anims.pause();
     // v2 基线已有正式环境效果；重建到第 0 秒，避免加载耗时改变雾/粒子/灯光相位。
     const area = s.environmentArt?.snapshot().area;
-    if (area) s.configureEnvironment(s.cache.json.get(`bg_${area}_config`)?.environment);
+    if (area) s.configureEnvironment(environment ?? s.cache.json.get(`bg_${area}_config`)?.environment);
     s.backgroundArt?.update();
     for (const { ts } of s.parallax) ts.tilePositionX = 0;
     const labels = [];
@@ -139,27 +162,42 @@ async function prepare(page, baseURL, map = 'qingyun_village') {
     return { body: { x: p.body.x, y: p.body.y, width: p.body.width, height: p.body.height, bottom: p.body.bottom },
       x: p.x, y: p.y, feet: p.feet, origin: [p.originX, p.originY], scale: p.scaleX, displayHeight: p.displayHeight,
       frameSize: [p.frame.realWidth, p.frame.realHeight], sourceBody: [p.body.sourceWidth, p.body.sourceHeight], frame: p.frame.name, labels,
-      collision: [s.map.solids, s.map.oneWays].map(group => group.getChildren().map(object => ({ x: object.body.x, y: object.body.y, width: object.body.width, height: object.body.height }))), map: { width: s.map.width, height: s.map.height } };
+      collision: [s.map.solids, s.map.oneWays].map(group => group.getChildren().map(object => ({ x: object.body.x, y: object.body.y, width: object.body.width, height: object.body.height }))), map: { width: s.map.width, height: s.map.height }, renderer: s.game.renderer.type };
+  }, { environment, fixedTime, resetClock });
+}
+async function measurementState(page) {
+  return page.evaluate(() => {
+    const s = window.__scene, image = s.textures.get('tiles_qingyun').source[0], meta = s.cache.json.get('tiles_qingyun_meta');
+    return { loop: { running: s.game.loop.running, rafRunning: s.game.loop.raf.isRunning, frame: s.game.loop.frame },
+      workload: { renderer: s.game.renderer.type, map: s.map.id,
+        tiles: { size: [image.width, image.height], columns: meta.columns, tilecount: meta.tilecount },
+        backgrounds: s.backgroundArt?.snapshot(), environment: s.environmentArt?.snapshot(),
+        children: s.children.list.length, mobs: s.mobs.length } };
   });
 }
 async function screenshot(page) { await page.bringToFront(); await page.waitForTimeout(100); return page.screenshot(); }
 async function fps(page) {
-  for (const candidate of page.context().pages()) await candidate.evaluate(() => window.__scene?.game.loop.sleep());
   await page.bringToFront();
-  await page.evaluate(() => window.__scene.game.loop.wake());
-  await page.waitForTimeout(150);
-  const result = await page.evaluate(() => new Promise(resolve => {
-    const stamps = [];
-    function tick(timestamp) {
-      stamps.push(timestamp);
+  const result = await page.evaluate(() => new Promise((resolve, reject) => {
+    const scene = window.__scene, game = scene.game, stamps = [];
+    let warmup = 0;
+    const timer = setTimeout(() => {
+      game.events.off('postrender', rendered); game.loop.sleep();
+      reject(new Error(`渲染帧采样超时：warmup=${Math.min(warmup, 12)}, frames=${stamps.length}, renderer=${game.renderer.type}`));
+    }, 15000);
+    function rendered() {
+      if (warmup++ < 12) return;
+      stamps.push(performance.now());
       if (stamps.length === 31) {
+        clearTimeout(timer);
+        game.events.off('postrender', rendered); game.loop.sleep();
         const deltas = stamps.slice(1).map((time, i) => time - stamps[i]).sort((a, b) => a - b);
-        resolve({ fps: 30000 / (stamps.at(-1) - stamps[0]), medianMs: deltas[15] });
-      } else requestAnimationFrame(tick);
+        resolve({ fps: 30000 / (stamps.at(-1) - stamps[0]), medianMs: deltas[15], renderer: game.renderer.type });
+      }
     }
-    requestAnimationFrame(tick);
+    game.loop.sleep(); game.loop.resetDelta();
+    game.events.on('postrender', rendered); scene.scene.resume(); game.loop.wake();
   }));
-  await page.evaluate(() => window.__scene.game.loop.sleep());
   return result;
 }
 function playerAnchors(snapshot) {
@@ -191,19 +229,27 @@ function variantFixture(key, atlas, anims) {
 
 let baseline, beforeServer, afterServer, browser;
 const errors = [], metrics = {};
+const started = performance.now();
+const progress = (stage, details = {}) => console.log(JSON.stringify({ test: 'art-engine', stage,
+  elapsedSeconds: Number(((performance.now() - started) / 1000).toFixed(2)), ...details }));
 try {
   await fs.access(path.join(projectRoot, 'dist/index.html'));
+  progress('baseline-build');
   baseline = await buildBaseline();
+  progress('baseline-ready');
   beforeServer = await preview({ root: projectRoot, build: { outDir: baseline.directory },
     preview: { host: '127.0.0.1', port, strictPort: true }, logLevel: 'error' });
-  afterServer = await preview({ root: projectRoot, preview: { host: '127.0.0.1', port: port + 1, strictPort: true }, logLevel: 'error' });
+  afterServer = process.env.XT_SMOKE_BASE_URL
+    ? { resolvedUrls: { local: [process.env.XT_SMOKE_BASE_URL] }, httpServer: { close(done) { done(); } } }
+    : await preview({ root: projectRoot, preview: { host: '127.0.0.1', port: port + 1, strictPort: true }, logLevel: 'error' });
   const api = await loadPlaywright();
-  browser = await api.chromium.launch({ executablePath: await browserPath(api.chromium), headless: true,
+  const launchOptions = { executablePath: await browserPath(api.chromium), headless: true,
     args: [...(process.env.ART_RENDERER === 'canvas' ? ['--disable-webgl', '--disable-gpu'] : ['--use-angle=swiftshader', '--enable-unsafe-swiftshader']),
-      '--disable-background-timer-throttling', '--disable-backgrounding-occluded-windows'] });
+      '--disable-background-timer-throttling', '--disable-backgrounding-occluded-windows'] };
+  browser = await api.chromium.launch(launchOptions);
   const context = await browser.newContext({ viewport: { width: 1280, height: 720 }, timezoneId: 'Asia/Shanghai' });
-  async function newPage() {
-    const page = await context.newPage(); page.setDefaultTimeout(15000);
+  async function newPage(targetContext = context) {
+    const page = await targetContext.newPage(); page.setDefaultTimeout(15000);
     page.on('pageerror', error => errors.push(error.message));
     page.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
     return page;
@@ -211,8 +257,13 @@ try {
   const beforePage = await newPage(), afterPage = await newPage();
   const beforeState = await prepare(beforePage, beforeServer.resolvedUrls.local[0]);
   const beforeImage = await screenshot(beforePage);
+  progress('before-ready');
+  // 已捕获的对照不再使用，关闭页面释放纹理与 WebGL 上下文。
+  await beforePage.close();
   const afterState = await prepare(afterPage, afterServer.resolvedUrls.local[0]);
   const afterImage = await screenshot(afterPage);
+  progress('after-ready');
+  await afterPage.evaluate(() => window.__scene.game.loop.sleep());
   equal(afterState.frameSize, [192, 192], '正式主角 v2 画布不是 192×192');
   equal(afterState.scale, 0.5, '正式主角 v2 displayScale 不是 0.5');
   equal(afterState.sourceBody, [52, 116], '正式主角 v2 碰撞体不是源像素 52×116');
@@ -225,13 +276,21 @@ try {
   await fs.writeFile(path.join(projectRoot, 'dist/art-engine-after.png'), afterImage);
   equal(differentPixels, 0, `主角 v2 没有测试覆盖时截图不同：${differentPixels} 像素`);
   check(await afterPage.evaluate(() => !!window.__xt.art), '测试桥缺少 __xt.art');
+  const officialTiles = await afterPage.evaluate(() => {
+    const s = window.__scene, image = s.textures.get('tiles_qingyun').source[0], meta = s.cache.json.get('tiles_qingyun_meta');
+    return { size: [image.width, image.height], columns: meta.columns, tilecount: meta.tilecount };
+  });
+  await afterPage.close();
 
   const fixturesPage = await newPage();
   const tilesMetadata = await json('tiles.json');
   await fixturesPage.route('**/art/tiles/tiles_qingyun.png', route => route.fulfill({ contentType: 'image/png', path: path.join(fixtureRoot, 'tiles.png') }));
   await fixturesPage.route('**/art/tiles/tiles_qingyun.json', route => route.fulfill({ contentType: 'application/json', body: JSON.stringify(tilesMetadata) }));
-  await prepare(fixturesPage, afterServer.resolvedUrls.local[0]);
+  const fixturesState = await prepare(fixturesPage, afterServer.resolvedUrls.local[0]);
+  progress('fixtures-ready');
+  equal(fixturesState.renderer, afterState.renderer, '示例素材与正式素材使用不同渲染器');
   const v2 = await fixturesPage.evaluate(() => window.__xt.art.snapshot());
+  await fixturesPage.evaluate(() => window.__scene.game.loop.sleep());
 
   // 旧 96 三件套独立路由；正式主角 v2 不再与旧素材的 nearest 复制图比较像素。
   const legacyPage = await newPage();
@@ -242,6 +301,7 @@ try {
   await legacyPage.route('**/art/tiles/tiles_qingyun.png', route => route.fulfill({ contentType: 'image/png', path: path.join(fixtureRoot, 'tiles.png') }));
   await legacyPage.route('**/art/tiles/tiles_qingyun.json', route => route.fulfill({ contentType: 'application/json', body: JSON.stringify(tilesMetadata) }));
   const legacyState = await prepare(legacyPage, afterServer.resolvedUrls.local[0]);
+  progress('legacy-ready');
   equal([legacyState.frameSize, legacyState.scale, legacyState.sourceBody], [[96, 96], 1, [26, 58]], '旧 atlas 缺少缩放/bodySize 时没有回退 1x');
   const oneX = await legacyPage.evaluate(() => window.__xt.art.snapshot());
   equal(playerAnchors(v2), playerAnchors(oneX), '正式 v2 相比旧 96 改变 world body / 脚底线 / 所有名牌及 HUD');
@@ -280,6 +340,7 @@ try {
   equal([noMetadata.player.frameSize, noMetadata.player.displayScale], [[96, 96], 1], '缺少元数据时未读取旧 atlas 帧尺寸/默认缩放');
   equal(playerAnchors(noMetadata), playerAnchors(oneX), '无元数据旧 atlas 回退改变 body / 脚底 / 名牌');
   await legacyPage.close();
+  await fixturesPage.evaluate(() => window.__scene.game.loop.wake());
 
   await fixturesPage.evaluate(async ({ image, atlas, anims }) => {
     await window.__xt.art.loadAtlas(anims.atlas, image, atlas, anims);
@@ -420,17 +481,93 @@ try {
   equal(simulation.stopped, 0, '关闭环境仍推进模拟');
   check(simulation.p95ms < 1000 / 144, '环境 CPU p95 超过 144Hz 帧预算');
 
-  metrics.renderer = await afterPage.evaluate(() => window.__scene.game.renderer.type === 1 ? 'canvas' : 'webgl');
+  metrics.renderer = afterState.renderer === 1 ? 'canvas' : 'webgl';
   metrics.environment144HzP95Ms = simulation.p95ms;
   metrics.maximumBudget = { lights: maximum.lights, fog: maximum.fog, particles: maximum.particles };
   metrics.differentPixels = differentPixels;
+  progress('features-done', { assertions });
   if (!process.env.ART_FEATURES_ONLY) {
-    for (const page of [beforePage, afterPage, fixturesPage]) await page.evaluate(() => window.__scene.scene.resume());
-    // 交错测三轮；每轮用完整30个帧间隔的平均 FPS，轮间取中位。
+    // 释放所有功能页；每种素材在独立且配置相同的 context 中只启动一次。
+    await browser.close(); browser = await api.chromium.launch(launchOptions);
+    // 三轮轮转顺序，12 个真实渲染帧预热，再采完整 30 个 postrender 间隔取中位。
     const beforeSamples = [], afterSamples = [], effectSamples = [];
-    for (let run = 0; run < 3; run++) {
-      beforeSamples.push(await fps(beforePage)); afterSamples.push(await fps(afterPage)); effectSamples.push(await fps(fixturesPage));
+    metrics.samples = { beforeSamples, afterSamples, effectSamples };
+    const cases = [
+      { name: 'baseline', url: beforeServer.resolvedUrls.local[0], samples: beforeSamples, fixtures: false },
+      { name: 'current', url: afterServer.resolvedUrls.local[0], samples: afterSamples, fixtures: false },
+      { name: 'effects', url: afterServer.resolvedUrls.local[0], samples: effectSamples, fixtures: true },
+    ];
+    const measurementStarted = performance.now();
+    for (const sampleCase of cases) {
+      const caseStarted = performance.now();
+      progress('measure-initialize', { case: sampleCase.name });
+      const measurementContext = await browser.newContext({ viewport: { width: 1280, height: 720 }, timezoneId: 'Asia/Shanghai' });
+      await measurementContext.addInitScript(() => localStorage.clear());
+      const page = sampleCase.page = await newPage(measurementContext);
+      // 拦截只属于示例页；两张正式页保留正常缓存，示例响应不会跨 context 串图。
+      if (sampleCase.fixtures) {
+        await page.route('**/art/tiles/tiles_qingyun.png', route => route.fulfill({
+          contentType: 'image/png', path: path.join(fixtureRoot, 'tiles.png') }));
+        await page.route('**/art/tiles/tiles_qingyun.json', route => route.fulfill({
+          contentType: 'application/json', body: JSON.stringify(tilesMetadata) }));
+      }
+      await prepare(page, sampleCase.url);
+      // Scene.pause 不停渲染；初始化完成后立即休眠，让其余页面独占渲染。
+      await page.evaluate(() => window.__scene.game.loop.sleep());
+      if (sampleCase.fixtures) {
+        for (const layer of Object.keys(background.layers)) {
+          await page.evaluate(async ({ key, url }) => window.__xt.art.loadImage(key, url),
+            { key: `art_test_${layer}`, url: await pngUrl(`${layer}.png`) });
+        }
+        await page.evaluate(config => window.__xt.art.rebuildBackground(config), background);
+      }
+      sampleCase.pose = await freezePose(page, sampleCase.fixtures ? maximumBudget : undefined, true);
+      equal(sampleCase.pose, afterState, 'FPS 对照的主角/地图/名牌或渲染器与功能验收不同');
+      sampleCase.state = await measurementState(page);
+      equal(sampleCase.state.loop.running, false, 'FPS 初始化页面渲染 loop 未停止');
+      equal(sampleCase.state.loop.rafRunning, false, 'FPS 初始化页面 RAF 未停止');
+      equal(sampleCase.state.workload.tiles, sampleCase.fixtures ? { size: [tilesMetadata.imagewidth, tilesMetadata.imageheight],
+        columns: tilesMetadata.columns, tilecount: tilesMetadata.tilecount } : officialTiles, 'FPS 示例图块串入正式缓存或未加载');
+      if (sampleCase.fixtures) {
+        equal(sampleCase.state.workload.backgrounds.length, 5, 'FPS 示例未重建五层背景');
+        equal([sampleCase.state.workload.environment.lights, sampleCase.state.workload.environment.fog, sampleCase.state.workload.environment.particles],
+          [24, 8, 96], 'FPS 示例未重建最大环境预算');
+      }
+      equal(sampleCase.state.workload.environment.simulationSeconds, 0, 'FPS 初始化环境不是第 0 秒');
+      progress('measure-initialized', { case: sampleCase.name,
+        prepareSeconds: Number(((performance.now() - caseStarted) / 1000).toFixed(2)) });
     }
+    equal(cases[0].state.workload, cases[1].state.workload, 'FPS 基线与正式对照的背景/环境/对象负载不同');
+    for (let run = 0; run < 3; run++) {
+      for (let step = 0; step < cases.length; step++) {
+        const sampleCase = cases[(run + step) % cases.length];
+        const caseStarted = performance.now();
+        progress('measure-prepare', { run: run + 1, case: sampleCase.name });
+        equal(await freezePose(sampleCase.page, sampleCase.fixtures ? maximumBudget : undefined, true),
+          sampleCase.pose, 'FPS 轮次重置改变主角/地图/名牌');
+        const current = await measurementState(sampleCase.page);
+        equal(current.workload, sampleCase.state.workload, 'FPS 轮次的环境相位/纹理/对象负载改变');
+        const idleCases = cases.filter(other => other !== sampleCase), idleStates = [];
+        for (const other of idleCases) {
+          const { loop } = await measurementState(other.page);
+          equal([loop.running, loop.rafRunning], [false, false], 'FPS 非采样页面仍在渲染');
+          idleStates.push(loop);
+        }
+        progress('measure-ready', { run: run + 1, case: sampleCase.name,
+          prepareSeconds: Number(((performance.now() - caseStarted) / 1000).toFixed(2)) });
+        const sample = await fps(sampleCase.page);
+        sampleCase.samples.push(sample);
+        equal(sample.renderer, afterState.renderer, 'FPS 采样期间改变渲染器');
+        equal((await measurementState(sampleCase.page)).loop.running, false, 'FPS 采样后渲染 loop 未停止');
+        for (const [index, other] of idleCases.entries()) {
+          equal((await measurementState(other.page)).loop, idleStates[index], 'FPS 非采样页面仍推进渲染帧');
+        }
+        progress('measure-sampled', { run: run + 1, case: sampleCase.name, fps: Number(sample.fps.toFixed(2)),
+          caseSeconds: Number(((performance.now() - caseStarted) / 1000).toFixed(2)) });
+      }
+    }
+    metrics.measurement = { pages: 3, contexts: 3, initializations: 3, event: 'postrender', warmupFrames: 12, intervals: 30,
+      elapsedSeconds: (performance.now() - measurementStarted) / 1000 };
     const baselineFrameMs = median(beforeSamples.map(sample => 1000 / sample.fps));
     const fallbackFrameMs = median(afterSamples.map(sample => 1000 / sample.fps));
     const effectsFrameMs = median(effectSamples.map(sample => 1000 / sample.fps));
@@ -450,12 +587,14 @@ try {
     check(effectsFrameMs <= frameIntervalLimitMs, `${metrics.renderer} 示例特效帧间隔超过基线容差：${effectsFrameMs.toFixed(2)} > ${baselineFrameMs.toFixed(2)} + ${frameIntervalToleranceMs.toFixed(2)} ms`);
   }
   equal(errors, [], '浏览器控制台/页面报错');
+  metrics.elapsedSeconds = (performance.now() - started) / 1000;
   const report = JSON.stringify({ baselineRevision, assertions, metrics }, null, 2);
   await fs.writeFile(path.join(projectRoot, 'dist/art-engine-test.json'), report);
   await fs.writeFile(path.join(projectRoot, `dist/art-engine-test.${metrics.renderer}.json`), report);
   const { samples: _samples, ...reportedMetrics } = metrics;
   console.log(JSON.stringify({ test: 'art-engine', assertions, ...reportedMetrics }));
 } catch (error) {
+  metrics.elapsedSeconds = (performance.now() - started) / 1000;
   await fs.writeFile(path.join(projectRoot, 'dist/art-engine-test.json'), JSON.stringify({ baselineRevision, assertions, metrics, error: error.message }, null, 2));
   if (errors.length) console.error(JSON.stringify({ browserErrors: errors }));
   throw error;
