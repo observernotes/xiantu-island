@@ -19,7 +19,7 @@ if (process.env.QA_TIER_EXPECT_FEATURES) {
     assert.equal(expected[name], value, `tier1 关口 ${name} 与目标快照不一致`);
   }
 }
-// 任务阶段是另一道关口；测试覆盖不能把 phase=6 的入口当成本期已发布。
+// 四宗拜入保留登记并由 fiveSectClasses 显式开放，默认配置仍关闭本期未发布入口。
 process.env.XT_DATA ??= 'snapshot';
 const snapshotLoader = await createServer({ root, appType: 'custom',
   server: { middlewareMode: true, hmr: false, ws: false }, logLevel: 'error' });

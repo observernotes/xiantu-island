@@ -150,9 +150,13 @@ globalThis.localStorage = {
   } finally { QUESTS[chain.id].next = oldNext; }
 }
 
-// phase 既管原表加载，也管任务入口；NPC 挂着未加载的未来任务不会抛错。
+// 四宗任务保留登记供受开关控制的试炼入口使用；其他未来内容仍由 phase 隔离。
 {
-  same(QUEST_ORDER, rawQuests.filter(q => q.phase === undefined || q.phase <= GAME_PHASE).map(q => q.id), '任务加载按原表 phase 与 GAME_PHASE 筛选');
+  const trialQuestIds = new Set(['q_sect_taixu', 'q_sect_lingfu', 'q_sect_youying', 'q_sect_wanshou']);
+  same(QUEST_ORDER, rawQuests.filter(q => inPhase(q) || trialQuestIds.has(q.id)).map(q => q.id), '任务加载按阶段筛选并保留受开关控制的四宗拜入登记');
+  for (const future of rawQuests.filter(q => !inPhase(q) && !trialQuestIds.has(q.id))) {
+    eq(QUESTS[future.id], undefined, `${future.id}: 其他未来任务不因四宗试炼接入而开放`);
+  }
   eq(inPhase({ phase: GAME_PHASE }), true, '首次阶段等于当前启用');
   eq(inPhase({ phase: GAME_PHASE + 1 }), false, '未来首次阶段不启用');
   eq(inPhase({ phase: GAME_PHASE - 1, phaseMin: GAME_PHASE + 1 }), false, 'phaseMin 与 phase 合并检查');
