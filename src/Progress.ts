@@ -2,7 +2,7 @@ import { gameNow } from './GameClock';
 import { GROWTH, EXP_TO_NEXT, MAX_LEVEL, ITEMS, BREAKTHROUGH_LEVELS, BREAKTHROUGH, REALMS, QUESTS, LIFESPAN, RECIPES, ALCHEMY_RULES, SECT_RANKS, TILED_MAPS, PillQuality, QuestDef } from './data';
 import { validSectGrowthState, type SectGrowthState } from './SectGrowth';
 import { HOTBAR_SLOTS, QUEST_SKILL_BACKFILL, SKILLS, SKILL_RULES, SkillDef, actOf, skillNumber, spEarnedFor, spBand } from './skills';
-import { CLASS_RULES, classDef, classEntryEnabled, classForQuest, classGiftSkills, classMinLevel, classRobe, skillsForClass } from './classes';
+import { CLASS_RULES, classDef, classEntryEnabled, classEntrySkill, classForQuest, classGiftSkills, classMinLevel, classRobe, skillsForClass } from './classes';
 import { DAILY_QUEST_LIMIT, dailyQuestDay, dailyContribution, dailyRewardsReady, type DailyQuestReward } from './DailyQuests';
 import { isBrewSession, type BrewSession } from './Alchemy';
 import { featureEnabled } from './features';
@@ -71,7 +71,7 @@ export class Progress {
   private transientItems: Record<string, number> = {};
   equip: Record<string, string> = {};     // 桃木剑由任务「灵根初现」发放
   job = '';                                 // 转职后的职业 id
-  /** 职业框架迁移收据；旧剑徒保留等级、技能点和自定义快捷栏。 */
+  /** 职业框架迁移版本；保留本宗等级、技能点和自定义快捷栏。 */
   classVersion = 0;
   classRewardClaims: string[] = [];
   /** 通用入门技的付费等级在拜宗后退回当前一转点池。 */
@@ -725,37 +725,43 @@ export class Progress {
   get classSkills() { return skillsForClass(this.job); }
   get sect() { return classDef(this.job)?.sect ?? ''; }
   /** 未拜入沿用原剑修技能窗口；拜宗后过滤其他宗门的技能和被动。 */
-  ownsSkill(def: SkillDef) { return !def.sect || def.sect === (this.sect || CLASS_RULES.unjoinedSkillSect); }
+  ownsSkill(def: SkillDef) {
+    return !(this.sect && CLASS_RULES.replaceCommonSkills.includes(def.id))
+      && (!def.sect || def.sect === (this.sect || CLASS_RULES.unjoinedSkillSect));
+  }
 
   /**
-   * 拜入只能发生一次。技能点来自已得点数减去现有已花点数，删入门技自然退点；
-   * 剑徒迁移不重排等级/熟练度/快捷键，其他职业重新生成本宗快捷栏。
+   * 拜入只能发生一次。通用技能的付费等级退回一转点池，原热键换成本宗入门技；
+   * 旧档同样清理残留通用技能，以删除记录保证退点幂等，保留本宗自定义键位。
    */
   advanceClass(job: string, initializeSectRank = true): boolean {
     const c = classDef(job);
     if (!c || this.level < classMinLevel(c) || (this.job && this.job !== c.id)) return false;
     if (!classEntryEnabled(c) && !this.job && this.quests[c.joinQuest]?.state !== 'done') return false;
     const firstJoin = !this.job;
-    const migrating = this.classVersion < 1;
+    const migrating = this.classVersion < 2;
     let changed = firstJoin || migrating;
     this.job = c.id;
     if (initializeSectRank && firstJoin && this.sectRank === null) this.sectRank = SECT_RANKS.rules.initialRank;
-    if (firstJoin || migrating) {
-      for (const id of Object.keys(this.skills)) {
-        const def = SKILLS[id];
-        if (CLASS_RULES.replaceCommonSkills.includes(id) || (def?.sect && def.sect !== c.sect)) {
-          if (CLASS_RULES.replaceCommonSkills.includes(id)) this.classRefundSp += Math.max(0, this.skillLevel(id) - (this.skillGifted[id] ?? 0)) * (def?.spCost ?? 1);
-          delete this.skills[id]; delete this.skillGifted[id]; delete this.skillMastery[id];
-          this.hotbar = this.hotbar.map(bound => bound === id ? null : bound);
-          this.buffs = this.buffs.filter(buff => buff.id !== id);
-          changed = true;
-        }
-      }
-      // 未入宗/已有剑徒的自定义栏位保留；四宗按本宗技能树重新绑定。
-      if (c.sect !== CLASS_RULES.unjoinedSkillSect) this.hotbar = Array.from({ length: HOTBAR_SLOTS.length }, () => null);
+    const entry = classEntrySkill(c);
+    // 也遍历配置中的通用技能，清掉只有键位、熟练度或冷却而没有等级的旧档残留。
+    for (const id of new Set([...Object.keys(this.skills), ...CLASS_RULES.replaceCommonSkills])) {
+      const def = SKILLS[id], common = CLASS_RULES.replaceCommonSkills.includes(id);
+      if (!common && !((firstJoin || migrating) && def?.sect && def.sect !== c.sect)) continue;
+      if (!(id in this.skills || id in this.skillGifted || id in this.skillMastery || id in this.skillCooldowns
+        || this.hotbar.includes(id) || this.buffs.some(buff => buff.id === id))) continue;
+      if (common) this.classRefundSp += Math.max(0, this.skillLevel(id) - (this.skillGifted[id] ?? 0)) * (def?.spCost ?? 1);
+      delete this.skills[id]; delete this.skillGifted[id]; delete this.skillMastery[id]; delete this.skillCooldowns[id];
+      const slot = common ? this.hotbar.indexOf(id) : -1;
+      this.hotbar = this.hotbar.map((bound, index) => {
+        // 入门技已有绑定时迁到原通用技能的槽位，避免同一技能占两格。
+        if (slot >= 0 && entry && bound === entry.id) return null;
+        return bound === id ? (index === slot ? entry?.id ?? null : null) : bound;
+      });
+      this.buffs = this.buffs.filter(buff => buff.id !== id);
+      changed = true;
     }
     for (const gift of classGiftSkills(c)) changed = this.grantSkill(gift.id, gift.level) || changed;
-    if (c.sect !== CLASS_RULES.unjoinedSkillSect && (firstJoin || migrating)) for (const skill of this.classSkills) this.autoBind(skill.id);
     if (!this.classRewardClaims.includes(c.id)) {
       const robe = classRobe(c);
       if (robe && this.equip.robe !== robe) {
@@ -770,7 +776,7 @@ export class Progress {
       }
       this.classRewardClaims.push(c.id); changed = true;
     }
-    this.classVersion = 1;
+    this.classVersion = Math.max(this.classVersion, 2);
     if (changed) this.save();
     return true;
   }
@@ -779,9 +785,12 @@ export class Progress {
   backfillClass(initializeSectRank = true): boolean {
     const c = classDef(this.job) ?? Object.keys(this.quests).map(classForQuest).find(candidate => candidate && this.quests[candidate.joinQuest]?.state === 'done');
     if (!c) return false;
-    const before = JSON.stringify({ job: this.job, classVersion: this.classVersion, skills: this.skills, hotbar: this.hotbar, claims: this.classRewardClaims, equip: this.equip });
+    const state = () => JSON.stringify({ job: this.job, classVersion: this.classVersion, classRefundSp: this.classRefundSp,
+      skills: this.skills, gifted: this.skillGifted, mastery: this.skillMastery, hotbar: this.hotbar,
+      cooldowns: this.skillCooldowns, buffs: this.buffs, claims: this.classRewardClaims, equip: this.equip });
+    const before = state();
     this.advanceClass(c.id, initializeSectRank);
-    return before !== JSON.stringify({ job: this.job, classVersion: this.classVersion, skills: this.skills, hotbar: this.hotbar, claims: this.classRewardClaims, equip: this.equip });
+    return before !== state();
   }
 
   /** 被动心法加成。只统计 type=passive，buff 的 speed/jump 不走这里。 */
