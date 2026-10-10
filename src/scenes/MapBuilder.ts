@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { FEEL, SPEC } from '../config/feel';
+import { pickTileVariant, tileVariantGroups, type TileVariantFrame, type TileVariantGroups } from '../TileVariants';
 
 export interface Rope { kind: 'rope' | 'ladder'; x: number; top: number; bottom: number; halfW: number; }
 export interface Spawn { x: number; y: number; w: number; monster: string; count: number; }
@@ -42,21 +43,46 @@ function autoTile(grid: Grid, r: number, c: number): number {
   return L && R ? base + 1 : L ? base + 2 : R ? base : base + 3;
 }
 
+function tilesetFrameCount(scene: Phaser.Scene, key: string): number {
+  if (!scene.textures.exists(key)) return 0;
+  const frame = scene.textures.get(key).get('__BASE');
+  return Math.floor(frame.cutWidth / FEEL.tile) * Math.floor(frame.cutHeight / FEEL.tile);
+}
+
+function chooseTile(scene: Phaser.Scene, groups: TileVariantGroups, tileset: string, base: number, col: number, row: number): TileVariantFrame {
+  const selected = pickTileVariant(groups, tileset, base, col, row);
+  if (selected.frame < tilesetFrameCount(scene, selected.tileset)) return selected;
+  const original = groups.get(base)?.base;
+  if (original && original.frame < tilesetFrameCount(scene, original.tileset)) return original;
+  return { tileset, frame: base, weight: 1 };
+}
+
 /** 碰撞体：同一行连续的地块合并成一个，避免接缝卡脚；有图块素材就铺图块，没有就画色块 */
 function buildTerrain(scene: Phaser.Scene, map: BuiltMap, grid: Grid, tileset?: string) {
   const T = FEEL.tile;
   const useTiles = !!tileset && scene.textures.exists(tileset);
   const gfx = scene.add.graphics().setDepth(-1);
   if (useTiles) {
-    const data = grid.map((line, r) => [...line].map((ch, c) => (ch === '#' || ch === '=' ? autoTile(grid, r, c) : -1)));
+    const variants = tileVariantGroups(scene.cache.json.get(`${tileset}_meta`), tileset!);
+    const offsets = new Map<string, number>([[tileset!, 0]]);
+    let nextOffset = tilesetFrameCount(scene, tileset!);
+    const tileAt = (base: number, col: number, row: number) => {
+      const chosen = chooseTile(scene, variants, tileset!, base, col, row);
+      if (!offsets.has(chosen.tileset)) {
+        offsets.set(chosen.tileset, nextOffset);
+        nextOffset += tilesetFrameCount(scene, chosen.tileset);
+      }
+      return offsets.get(chosen.tileset)! + chosen.frame;
+    };
+    const data = grid.map((line, r) => [...line].map((ch, c) => (ch === '#' || ch === '=' ? tileAt(autoTile(grid, r, c), c, r) : -1)));
     // 装饰草：地面顶上一格，按位置伪随机点缀
     grid.forEach((line, r) => [...line].forEach((ch, c) => {
       if (ch !== '#' || r === 0 || grid[r - 1][c] !== '.' || (c * 7 + r * 13) % 5 !== 0) return;
-      data[r - 1][c] = 15;
+      data[r - 1][c] = tileAt(15, c, r - 1);
     }));
     const tm = scene.make.tilemap({ data, tileWidth: T, tileHeight: T });
-    const ts = tm.addTilesetImage(tileset!, tileset!, T, T, 0, 0)!;
-    tm.createLayer(0, ts, 0, 0)!.setDepth(-1);
+    const sets = [...offsets].map(([key, firstgid]) => tm.addTilesetImage(key, key, T, T, 0, 0, firstgid)!);
+    tm.createLayer(0, sets, 0, 0)!.setDepth(-1);
   }
   grid.forEach((line, row) => {
     let c = 0;
@@ -87,6 +113,24 @@ function drawClimbable(scene: Phaser.Scene, r: Rope, tileset?: string) {
   const ss = tileset ? tileset + '_ss' : '';
   if (ss && scene.textures.exists(ss)) {
     const h = r.bottom - r.top;
+    const variants = tileVariantGroups(scene.cache.json.get(`${tileset}_meta`), tileset!);
+    const bases = r.kind === 'rope' ? [12] : [13, 14];
+    if (bases.some(base => variants.has(base))) {
+      const draw = (base: number, y: number, height: number, top = false) => {
+        let chosen = chooseTile(scene, variants, tileset!, base, Math.floor(r.x / FEEL.tile), Math.floor(y / FEEL.tile));
+        if (!scene.textures.exists(`${chosen.tileset}_ss`)) {
+          const original = variants.get(base)?.base;
+          chosen = original && scene.textures.exists(`${original.tileset}_ss`) ? original : { tileset: tileset!, frame: base, weight: 1 };
+        }
+        const key = `${chosen.tileset}_ss`, frame = chosen.frame;
+        if (top) scene.add.image(r.x, y, key, frame).setOrigin(0.5, 0).setDepth(-1);
+        else scene.add.tileSprite(r.x, y, FEEL.tile, height, key, frame).setOrigin(0.5, 0).setDepth(-1);
+      };
+      if (r.kind === 'ladder') draw(14, r.top, FEEL.tile, true);
+      for (let y = r.top + (r.kind === 'ladder' ? FEEL.tile : 0); y < r.bottom; y += FEEL.tile)
+        draw(r.kind === 'rope' ? 12 : 13, y, Math.min(FEEL.tile, r.bottom - y));
+      return;
+    }
     if (r.kind === 'rope') scene.add.tileSprite(r.x, r.top, 32, h, ss, 12).setOrigin(0.5, 0).setDepth(-1);
     else {
       scene.add.image(r.x, r.top, ss, 14).setOrigin(0.5, 0).setDepth(-1);

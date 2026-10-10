@@ -122,6 +122,15 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig): Phaser.Game
         return copy({ player: { key: p.texture.key, x: p.x, y: p.y, frame: p.frame.name,
           frameSize: spriteArtSpec(p).frameSize, origin: [p.originX, p.originY], displayScale: p.scaleX,
           displayHeight: p.displayHeight, feet: p.feet, body: { x: b.x, y: b.y, width: b.width, height: b.height, bottom: b.bottom } },
+          tiles: s.children.list.filter((object): object is Phaser.Tilemaps.TilemapLayer => object instanceof Phaser.Tilemaps.TilemapLayer)
+            .flatMap(layer => layer.layer.data.flatMap(row => row.filter(tile => tile.index >= 0).map(tile => ({ x: tile.x, y: tile.y, index: tile.index })))),
+          climbables: s.children.list.filter((object): object is Phaser.GameObjects.TileSprite | Phaser.GameObjects.Image =>
+            (object instanceof Phaser.GameObjects.TileSprite || object instanceof Phaser.GameObjects.Image) && object.depth === -1)
+            .map(object => ({ x: object.x, y: object.y, height: object.height, key: object.texture.key, frame: object.frame.name })),
+          collision: [s.map.solids, s.map.oneWays].map(group => group.getChildren().map(object => {
+            const body = object.body as Phaser.Physics.Arcade.StaticBody;
+            return { x: body.x, y: body.y, width: body.width, height: body.height };
+          })),
           labels, backgrounds: s.backgroundArt?.snapshot() ?? s.parallax.map(({ ts, f }) => ({ key: ts.texture.key, width: ts.width, depth: ts.depth, factorX: f, y: ts.y })),
           fps: s.game.loop.actualFps });
       },

@@ -145,6 +145,7 @@ export const MAP_AREA: Record<string, string> = {
   trial_youying_vault: 'youying', trial_wanshou_pen: 'wanshou',
 };
 export const AREAS: string[] = assets.areas;
+export const TILE_METADATA: { key: string; path: string }[] = assets.tileMetadata;
 export const BACKGROUND_CONFIGS: { area: string; key: string; path: string }[] = assets.backgroundConfigs;
 export const BACKGROUNDS: { key: string; path: string }[] = assets.backgrounds;
 /** sync 只登记已转正且存在的技能 @64 图标，避免加载 _pending 或缺失文件。 */

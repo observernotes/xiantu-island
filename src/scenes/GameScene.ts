@@ -2,7 +2,7 @@ import { gameNow } from '../GameClock';
 import Phaser from 'phaser';
 import { FEEL, SPEC } from '../config/feel';
 import { FIELD_TEST } from '../config/maps';
-import { MONSTERS, DROPS, ITEMS, TILED_MAPS, ATLASES, MAP_AREA, AREAS, BACKGROUNDS, BACKGROUND_CONFIGS, SKILL_ICONS, NPCS, SCRIPTS, t, questName, questDescription, MP_REGEN_FRACTION_PER_5S, BREAKTHROUGH_LEVELS } from '../data';
+import { MONSTERS, DROPS, ITEMS, TILED_MAPS, ATLASES, MAP_AREA, AREAS, TILE_METADATA, BACKGROUNDS, BACKGROUND_CONFIGS, SKILL_ICONS, NPCS, SCRIPTS, t, questName, questDescription, MP_REGEN_FRACTION_PER_5S, BREAKTHROUGH_LEVELS } from '../data';
 import { QuestSystem } from '../QuestSystem';
 import type { DailyQuestReward } from '../DailyQuests';
 import { QUESTS as QUESTS_REF } from '../data';
@@ -104,6 +104,7 @@ export class GameScene extends Phaser.Scene {
       this.load.image(`tiles_${a}`, `art/tiles/tiles_${a}.png`);
       this.load.spritesheet(`tiles_${a}_ss`, `art/tiles/tiles_${a}.png`, { frameWidth: 32, frameHeight: 32 });
     }
+    for (const metadata of TILE_METADATA) this.load.json(metadata.key, metadata.path);
     for (const config of BACKGROUND_CONFIGS) this.load.json(config.key, config.path);
     for (const background of BACKGROUNDS) this.load.image(background.key, background.path);
     for (const k of ATLASES) {
