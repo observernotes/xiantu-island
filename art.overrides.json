@@ -1,9 +1,0 @@
-{
- "//": "sync 用：未转正的工作稿以正式 key 接入（见 scripts/sync.mjs）。from 相对共享根目录、不带扩展名，需有 .png/.json/.anims.json。转正到 art/sprites 后删掉对应条目。",
- "sprites": {
-  "player_sword_m": {
-   "from": "art/trial_v2/hero/player_sword_m_v2",
-   "note": "主角 v2 r1 试样，r2 转正后删除本条"
-  }
- }
-}
