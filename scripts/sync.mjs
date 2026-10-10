@@ -37,6 +37,18 @@ if (!manifestOnly) {
       console.log(`[sync] 覆盖 ${key} ← ${spec.from}.*（${spec.note ?? '试样'}）`);
     }
   }
+  // 仓库覆盖层只在完整拷贝后浅合并；manifest-only 保留结果，不重复合并。
+  // 验收通过后可由精修把同一行写进 art/tiles/tiles_altar.json 并删除覆盖层。
+  for (const sub of ['sprites', 'tiles', 'icons']) {
+    const overlays = path.join(here, 'art-overlays', sub);
+    if (!fs.existsSync(overlays)) continue;
+    for (const name of fs.readdirSync(overlays).filter(name => name.endsWith('.json'))) {
+      const target = path.join(out, sub, name);
+      if (!fs.existsSync(target)) { console.warn('[sync] 覆盖层目标不存在，跳过', `${sub}/${name}`); continue; }
+      const merged = { ...JSON.parse(fs.readFileSync(target, 'utf8')), ...JSON.parse(fs.readFileSync(path.join(overlays, name), 'utf8')) };
+      fs.writeFileSync(target, JSON.stringify(merged, null, 1) + '\n');
+    }
+  }
 }
 // 素材清单：扫 art/sprites/*.anims.json 生成图集列表（含 kind、origin、bodySize）和区域列表（tiles_<区域>.png），写到 src/gen/assets.json
 const spritesDir = path.join(out, 'sprites');

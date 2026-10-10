@@ -15,6 +15,8 @@
     "test:optional-assets": "node scripts/optional-assets-test.mjs",
     "test:ui-cam": "node scripts/ui-cam-test.mjs",
     "test:smoke:missing-assets": "node scripts/missing-asset-smoke.mjs",
+    "test:altar-fill": "node scripts/altar-fill-test.mjs",
+    "test:smoke:altar-fill": "node scripts/altar-fill-smoke.mjs",
     "test:v05": "timeout 60s node scripts/v05-test.mjs",
     "test:appearance": "timeout 60s node scripts/appearance-test.mjs",
     "test:classes": "timeout 120s node scripts/classes-test.mjs",
