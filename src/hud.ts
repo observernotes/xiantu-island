@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import assets from './gen/assets.json';
+import { loadOptionalImage } from './optionalAssets';
 
 /**
  * HUD 精修素材（art/icons/ui/hud/，README 与 hud_ui.json）。
@@ -22,9 +23,9 @@ const CULT_IMAGES = ['ui_bar_cultivation_frame', 'ui_bar_cultivation', 'ui_bar_c
 export const HUD_FONTS = ['ui_hud_font_white', 'ui_hud_font_crit', 'ui_hud_font_hurt'];
 
 export function preloadHud(scene: Phaser.Scene) {
-  // 清单只登记转正后的实际文件，待合并徽记不发起加载请求。
+  // 清单只登记存在的转正徽记；清单外不入队，调用方保留中文职位文字。
   for (const icon of (assets as { sectRankIcons?: { key: string; path: string }[] }).sectRankIcons ?? [])
-    scene.load.image(icon.key, icon.path);
+    loadOptionalImage(scene, icon.key, icon.path);
   scene.load.json('hud_ui', `${HUD_DIR}/hud_ui.json`);
   scene.load.json('cult_slices', 'art/icons/ui/ui_bar_cultivation.slices.json');
   scene.load.json('bestiary_ui', 'art/icons/ui/bestiary/bestiary_ui.json');

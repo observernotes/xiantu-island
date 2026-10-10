@@ -32,6 +32,7 @@ import { EnvironmentArt, type EnvironmentArtConfig } from './EnvironmentArt';
 import { applySpriteArt } from '../SpriteArt';
 import { SectGrowth, newSectTransactionId } from '../SectGrowth';
 import { featureEnabled, FEATURE_UNAVAILABLE, type FeatureName } from '../features';
+import { loadOptionalImage, loadOptionalAtlas, loadOptionalJson, loadOptionalSpritesheet } from '../optionalAssets';
 
 const MAP_FALLBACK: Record<string, string> = {};
 type Drop = Phaser.Physics.Arcade.Sprite & { itemId: string; count: number; bornAt: number; label?: Phaser.GameObjects.Text; shadow?: Phaser.GameObjects.Ellipse; floatTw?: Phaser.Tweens.Tween; landed?: boolean };
@@ -105,18 +106,18 @@ export class GameScene extends Phaser.Scene {
 
   preload() {
     for (const a of AREAS) {
-      this.load.image(`tiles_${a}`, `art/tiles/tiles_${a}.png`);
-      this.load.spritesheet(`tiles_${a}_ss`, `art/tiles/tiles_${a}.png`, { frameWidth: 32, frameHeight: 32 });
+      loadOptionalImage(this, `tiles_${a}`, `art/tiles/tiles_${a}.png`);
+      loadOptionalSpritesheet(this, `tiles_${a}_ss`, `art/tiles/tiles_${a}.png`, { frameWidth: 32, frameHeight: 32 });
     }
-    for (const metadata of TILE_METADATA) this.load.json(metadata.key, metadata.path);
-    for (const config of BACKGROUND_CONFIGS) this.load.json(config.key, config.path);
-    for (const background of BACKGROUNDS) this.load.image(background.key, background.path);
+    for (const metadata of TILE_METADATA) loadOptionalJson(this, metadata.key, metadata.path);
+    for (const config of BACKGROUND_CONFIGS) loadOptionalJson(this, config.key, config.path);
+    for (const background of BACKGROUNDS) loadOptionalImage(this, background.key, background.path);
     for (const k of ATLASES) {
-      this.load.atlas(k, `art/sprites/${k}.png`, `art/sprites/${k}.json`);
-      this.load.json(`${k}_anims`, `art/sprites/${k}.anims.json`);
+      if (loadOptionalAtlas(this, k, `art/sprites/${k}.png`, `art/sprites/${k}.json`))
+        loadOptionalJson(this, `${k}_anims`, `art/sprites/${k}.anims.json`);
     }
     this.load.atlas('icons_skills', 'art/icons/icons_skills.png', 'art/icons/icons_skills.json');
-    for (const icon of SKILL_ICONS) this.load.image(icon.key, icon.path);
+    for (const icon of SKILL_ICONS) loadOptionalImage(this, icon.key, icon.path);
     // 葫芦三态：hud/ 目录里还没有，继续读 art/icons/ui/
     for (const tier of ['empty', 'half', 'full']) this.load.image(`icon_overflow_gourd_${tier}`, `art/icons/ui/icon_overflow_gourd_${tier}.png`);
     this.load.atlas('icons_items', 'art/icons/icons_items.png', 'art/icons/icons_items.json');
@@ -128,7 +129,7 @@ export class GameScene extends Phaser.Scene {
     installKeyGuard();
     for (const k of ATLASES) {
       const a = this.cache.json.get(`${k}_anims`);
-      if (!a) continue;
+      if (!a || !this.textures.exists(k)) continue;
       for (const an of a.anims) if (!this.anims.exists(an.key))
         this.anims.create({ key: an.key, frames: an.frames.map((f: string) => ({ key: k, frame: f })), frameRate: an.frameRate, repeat: an.repeat });
     }
