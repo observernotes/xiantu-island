@@ -70,7 +70,7 @@ export class GameScene extends Phaser.Scene {
   gathering!: Gathering;
   alchemySystem!: AlchemySystem;
   alchemy!: AlchemyPanel;
-  private interactionPrompts: { object: MapObj; prompt: Phaser.GameObjects.Container }[] = [];
+  private interactionPrompts: { object: MapObj; prompt: Phaser.GameObjects.Container; marker?: Phaser.GameObjects.Image | Phaser.GameObjects.Text }[] = [];
 
   constructor() { super('game'); (window as any).__scene = this; }
 
@@ -204,6 +204,7 @@ export class GameScene extends Phaser.Scene {
     this.dialog = new DialogBox(this);
     this.alchemySystem = new AlchemySystem(this.prog, this.quests);
     this.alchemy = new AlchemyPanel(this, this.prog, this.alchemySystem);
+    if (this.alchemySystem.active) this.alchemy.open(this.alchemySystem.active.furnaceId);
     this.skillBar = new SkillBar(this);
     this.skillWindow = new SkillWindow(this, () => this.prog, id => this.tryAddPoint(id));
     this.skillBar.onSlot = i => { if (this.skillWindow.open) this.skillWindow.assign(i); };
@@ -637,7 +638,12 @@ export class GameScene extends Phaser.Scene {
   }
 
   private updateInteractionPrompts(blocked: boolean) {
-    for (const { object: o, prompt } of this.interactionPrompts) {
+    for (const { object: o, prompt, marker } of this.interactionPrompts) {
+      if (marker) {
+        const marked = !!this.quests.mark(o.props.npc ?? o.name);
+        const capHeight = hudSpec(this, 'ui_hud_keycap')?.size?.[1] ?? 20;
+        prompt.setY(marked ? o.y + marker.y - marker.displayHeight - capHeight - 4 : o.y - 52);
+      }
       prompt.setVisible(!blocked && !this.player.dead && !this.hasNearbyDrop()
         && Math.abs(o.x - this.player.x) < 40 && Math.abs(o.y - this.player.y) < 48);
     }
@@ -736,7 +742,7 @@ export class GameScene extends Phaser.Scene {
       if (npc) this.npcMarks.push({ id: npc.id, text: mark, img });
       const label = npc?.id === 'doctor_sun' ? '对话 / L 炼丹' : '对话';
       const prompt = interactionPrompt(this, o.x, o.y - h - 38, 'Z', label);
-      this.interactionPrompts.push({ object: o, prompt });
+      this.interactionPrompts.push({ object: o, prompt, marker: img ?? mark });
     } else if (o.type === 'furnace' || o.type === 'alchemy') {
       const furnace = String(o.props.furnace ?? o.props.item ?? 'bronze_furnace');
       const image = `ui_alchemy_furnace_${furnace}`;

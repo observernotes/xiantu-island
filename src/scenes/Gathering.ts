@@ -104,8 +104,7 @@ export class Gathering {
     if (ratio < 1) return;
     const point = this.active.point;
     scene.prog.addItem(point.item, 1);
-    // respawnMs=0 的采集点本次采完不再刷新。
-    scene.prog.gatherRespawnAt[point.key] = point.respawnMs > 0 ? now + point.respawnMs : Number.MAX_SAFE_INTEGER;
+    scene.prog.gatherRespawnAt[point.key] = now + point.respawnMs;
     scene.prog.save();
     scene.log(`获得 ${ITEMS[point.item]?.name ?? point.item} ×1`, '#a7dbac');
     this.active = undefined; p.gathering = false; this.requireRelease = true; this.bar.setVisible(false);
