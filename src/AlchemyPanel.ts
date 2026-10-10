@@ -96,7 +96,11 @@ export class AlchemyPanel {
   }
   private onEscape(event: KeyboardEvent) { if (this.shown) { event.preventDefault(); this.close(); } }
   private get layout() { return this.scene.cache.json.get('alchemy_ui'); }
-  private add<T extends Phaser.GameObjects.GameObject>(o: T): T { this.c!.add(o); return o; }
+  private add<T extends Phaser.GameObjects.GameObject>(o: T): T {
+    // Container 的滚动系数只保证绘制；输入命中还会读取子对象自己的系数。
+    (o as T & { setScrollFactor?: (factor: number) => unknown }).setScrollFactor?.(0);
+    this.c!.add(o); return o;
+  }
   private text(x: number, y: number, text: string, size = 12, color = INK) {
     return this.add(this.scene.add.text(x, y, text, { fontFamily: HUD_FONT, fontSize: `${size}px`, color }));
   }
