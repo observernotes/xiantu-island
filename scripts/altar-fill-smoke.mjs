@@ -6,14 +6,15 @@ import os from 'node:os';
 import { createHash } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { preview } from 'vite';
+import { createIsolatedBuild, childBuildEnv, preview } from './isolated-build.mjs';
 import { chromium } from '/tmp/pwt/node_modules/playwright-core/index.mjs';
-import { findRoot } from './root.mjs';
 
-const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
+const projectRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 assert.equal(process.argv.length, 2, '筑基台冒烟使用正式 preview，不接受参数');
 const port = Number(process.env.XT_TEST_PORT ?? 4352);
 assert.ok(Number.isInteger(port) && port > 0 && port < 65536, 'XT_TEST_PORT 必须是有效端口');
+const isolated = await createIsolatedBuild(projectRoot, 'altar-fill');
+const root = isolated.root;
 const image = { relative: 'art/tiles/tiles_altar_fill_variants.png', moved: false, restored: false };
 image.file = path.join(root, 'public', image.relative);
 const metadataFile = path.join(root, 'public/art/tiles/tiles_altar.json');
@@ -59,7 +60,7 @@ async function command(executable, args, env = {}, cleanup = false) {
   console.log(JSON.stringify({ phase: 'command', command: [executable, ...args],
     manifestOnly: env.XT_SYNC_MANIFEST_ONLY === '1' }));
   await new Promise((resolve, reject) => {
-    const child = spawn(executable, args, { cwd: root, env: { ...process.env, ...env },
+    const child = spawn(executable, args, { cwd: root, env: childBuildEnv(env),
       detached: process.platform !== 'win32', stdio: ['ignore', 'pipe', 'pipe'] });
     activeChild = child;
     let output = '';
@@ -214,7 +215,7 @@ try {
   image.beforeHash = await sha256(image.file);
   const metadataHash = await sha256(metadataFile);
   equal((await json(metadataFile)).variants, expectedVariants, '正常 sync 未合并仓库覆盖层');
-  const cells = fillCells(await json(path.join(findRoot(root), 'maps/trial_foundation_altar.json')));
+  const cells = fillCells(await json(path.join(root, 'data/maps/trial_foundation_altar.json')));
   equal(cells.length, 90, '筑基台 #5 满铺坐标数量变化');
   await verifyManifestOnly('baseline', metadataHash, true);
   backupDir = await fs.mkdtemp(path.join(os.tmpdir(), 'xiantu-altar-fill-backup-'));
@@ -272,6 +273,10 @@ try {
     try { await fs.rm(temporaryDir, { recursive: true, force: true }); }
     catch (error) { result.cleanupErrors.push(`temporary build: ${error.message}`); }
   }
+  if (!result.cleanupErrors.length) {
+    try { await isolated.cleanup(); }
+    catch (error) { result.cleanupErrors.push(`isolated project: ${error.message}`); }
+  } else result.workspace = root;
   if (interrupted) { failure ??= interrupted; result.failure = interrupted.message; }
   if (failure || result.cleanupErrors.length) result.passed = false;
   result.assertions = assertions;
