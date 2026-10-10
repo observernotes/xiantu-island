@@ -23,6 +23,7 @@ import trialYouyingVault from '@xt/maps/trial_youying_vault.json';
 import trialWanshouPen from '@xt/maps/trial_wanshou_pen.json';
 import altar from '@xt/maps/trial_foundation_altar.json';
 import breakthrough from '@xt/balance/breakthrough.json';
+import strings from '@xt/balance/strings_zh.json';
 
 /** 地图与任务共用版本阶段过滤；phase 表示首次启用阶段。 */
 export const GAME_PHASE = 5;
@@ -153,19 +154,32 @@ export interface FerryRoute {
   id: string; label: string; targetMap: string; targetPortal?: string | null; cost: number;
   reqLevel?: number; unlockQuest?: string; phaseMin?: number; phaseMax?: number;
 }
-export interface NpcDef { id: string; name: string; map: string; sprite: string; dialog: string[]; quests: string[]; shop?: boolean; ferryRoutes?: FerryRoute[]; }
+export interface NpcDef { id: string; name: string; map: string; sprite: string; dialog: string[]; quests: string[]; phase?: number; shop?: boolean; ferryRoutes?: FerryRoute[]; }
 export interface QuestObjective { type: 'kill' | 'collect' | 'reach' | 'breakthrough' | 'talk' | 'craft' | 'trial'; target?: string; count?: number; consume?: boolean; map?: string; realm?: string; trial?: string; }
 export interface QuestDef {
   id: string; name: string; giver: string; turnIn: string; reqLevel: number; objectives: QuestObjective[];
   prereq?: string; phase?: number; reqRealm?: string; sect?: string; daily?: boolean; skillsPending?: string[];
+  nameKey?: string; descriptionKey?: string;
+  dialogueKeys?: { offer?: string; progress?: string; complete?: string };
+  balanceTodo?: string[];
   rewards: {
     exp: number; spiritStone: number; items: { item: string; count: number }[];
     job?: string; skills?: { id: string; level: number }[]; recipes?: string[];
+    sectContribution?: number | null;
   }; next: string | null;
+}
+/** 新任务优先读文案表，旧任务仍保留 name 兼容。 */
+export function questName(q: QuestDef) {
+  const value = (strings as unknown as Record<string, unknown>)[q.nameKey ?? ''];
+  return typeof value === 'string' ? value : q.name;
+}
+export function questDescription(q: QuestDef) {
+  const value = (strings as unknown as Record<string, unknown>)[q.descriptionKey ?? ''];
+  return typeof value === 'string' ? value : '';
 }
 export const NPCS: Record<string, NpcDef> = Object.fromEntries((npcs as NpcDef[]).map(n => [n.id, n]));
 // 锁定原因需要任务名称，未来阶段的任务也保留名称供界面展示。
-export const QUEST_NAMES: Record<string, string> = Object.fromEntries((quests as QuestDef[]).map(q => [q.id, q.name]));
+export const QUEST_NAMES: Record<string, string> = Object.fromEntries((quests as QuestDef[]).map(q => [q.id, questName(q)]));
 export const QUESTS: Record<string, QuestDef> = Object.fromEntries((quests as QuestDef[]).filter(q => inPhase(q)).map(q => [q.id, q]));
 export const QUEST_ORDER: string[] = Object.keys(QUESTS);
 export const REALMS = realms as any[];
@@ -208,7 +222,6 @@ function parseScript(md: string) {
 }
 export const SCRIPTS = parseScript(questScript);
 
-import strings from '@xt/balance/strings_zh.json';
 import pacing from '@xt/balance/solo_pacing.json';
 
 /**

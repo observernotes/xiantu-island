@@ -1,8 +1,7 @@
 import { GROWTH, EXP_TO_NEXT, MAX_LEVEL, ITEMS, BREAKTHROUGH_LEVELS, BREAKTHROUGH, REALMS, QUESTS, LIFESPAN, RECIPES, ALCHEMY_RULES, PillQuality, QuestDef } from './data';
 import { HOTBAR_SLOTS, QUEST_SKILL_BACKFILL, SKILLS, SKILL_RULES, SkillDef, actOf, skillNumber, spEarnedFor, spBand } from './skills';
 import { CLASS_RULES, classDef, classForQuest, classGiftSkills, classMinLevel, classRobe, skillsForClass } from './classes';
-import { SECT_SECLUSION } from './data';
-import { realDay } from './Seclusion';
+import { DAILY_QUEST_LIMIT, dailyQuestDay, dailyContribution, dailyRewardsReady, type DailyQuestReward } from './DailyQuests';
 import { isBrewSession, type BrewSession } from './Alchemy';
 
 /** 自动加点：加点界面做好前每级自动分配（演武堂/天机阁确认：根骨 2、身法 2、悟性 1） */
@@ -54,6 +53,9 @@ export class Progress {
   sectContribution = 0;
   sectDailyContributionDay = '';
   sectDailyContributionClaims: string[] = [];
+  /** 上次日常重置的本地日历日期（05:00 日界）；离线只补算到当前日。 */
+  dailyQuestResetDay = '';
+  dailyQuestCompletions: Record<string, string[]> = {};
   age = LIFESPAN.startAge;
   ageUpdatedAt = Date.now();
   seclusionDay = '';
@@ -105,6 +107,7 @@ export class Progress {
     p.overflowExp = Math.max(0, Math.floor(Number(p.overflowExp) || 0));
     if (Number.isFinite(p.overflowCap)) p.overflowExp = Math.min(p.overflowExp, p.overflowCap);
     p.ensureDefaults();
+    p.resetDailyQuests();
     p.advanceAge();
     const backfilled = [p.backfillRealmRewards(), p.backfillQuestSkills(), p.backfillQuestRecipes(), p.backfillClass()].some(Boolean);
     p.hp = Math.min(p.hp || p.maxHp, p.maxHp); p.mp = Math.min(p.mp || p.maxMp, p.maxMp);
@@ -134,17 +137,71 @@ export class Progress {
     return true;
   }
 
-  /**
-   * 宗门日常完成回调：调用方须先验证日常任务来源，同日同来源只发一次。
-   * TODO(策划)：quests 缺宗门日常分类、重置规则/奖励字段，NPC 也未配日常入口；暂不挂主线或虚构领取按钮。
-   */
-  onSectDailyQuestCompleted(sourceId: string, now = Date.now()) {
-    if (!sourceId) return 0;
-    const day = realDay(now);
-    if (this.sectDailyContributionDay !== day) { this.sectDailyContributionDay = day; this.sectDailyContributionClaims = []; }
-    if (this.sectDailyContributionClaims.includes(sourceId)) return 0;
+  /** 登录、接取、交付及在线检查共用；过期未交付任务也作废，不扣背包材料。 */
+  resetDailyQuests(now = Date.now()) {
+    const day = dailyQuestDay(now);
+    if (this.dailyQuestResetDay === day) return false;
+    this.dailyQuestResetDay = day;
+    for (const id of Object.keys(this.quests)) if (QUESTS[id]?.daily) delete this.quests[id];
+    if (this.sectDailyContributionDay !== day) {
+      this.sectDailyContributionDay = day;
+      this.sectDailyContributionClaims = [];
+    }
+    this.dailyQuestCompletions = {};
+    // 缺重置日期的旧档仍保留当天已领取收据，避免迁移时重新开放同一奖励。
+    for (const id of this.sectDailyContributionClaims) {
+      const q = QUESTS[id];
+      if (q?.daily && q.sect) (this.dailyQuestCompletions[q.sect] ??= []).push(id);
+    }
+    this.save();
+    return true;
+  }
+
+  canCompleteSectDailyQuest(sourceId: string, now = Date.now()) {
+    this.resetDailyQuests(now);
+    const q = QUESTS[sourceId];
+    return !!q?.daily && dailyRewardsReady(q) && this.sect === q.sect
+      && !this.sectDailyContributionClaims.includes(sourceId)
+      && !(this.dailyQuestCompletions[q.sect!] ?? []).includes(sourceId)
+      && (this.dailyQuestCompletions[q.sect!] ?? []).length < DAILY_QUEST_LIMIT;
+  }
+
+  /** 唯一领取判定：新交付与旧贡献回调共用任务 id、日界、每宗限额及存档收据。 */
+  private claimSectDailyQuest(sourceId: string, now: number): number | undefined {
+    if (!this.canCompleteSectDailyQuest(sourceId, now) || this.quests[sourceId]?.state !== 'done') return undefined;
+    const q = QUESTS[sourceId], amount = dailyContribution(q)!;
     this.sectDailyContributionClaims.push(sourceId);
-    return this.gainSectContribution(SECT_SECLUSION.dailyQuestContribution);
+    (this.dailyQuestCompletions[q.sect!] ??= []).push(sourceId);
+    return amount;
+  }
+
+  onSectDailyQuestCompleted(sourceId: string, now = Date.now()) {
+    const amount = this.claimSectDailyQuest(sourceId, now);
+    if (amount === undefined) return 0;
+    const gained = this.gainSectContribution(amount);
+    this.save(); // 显式 0 也必须落领取记录。
+    return gained;
+  }
+
+  /** 交付已验证目标并扣材料；整条日常的普通奖励与贡献在同一同步事务内保存。 */
+  settleSectDailyQuest(sourceId: string, now = Date.now()): DailyQuestReward | undefined {
+    const contribution = this.claimSectDailyQuest(sourceId, now);
+    if (contribution === undefined) return undefined;
+    const q = QUESTS[sourceId], rw = q.rewards;
+    const exp = rw.exp ? this.gainExp(rw.exp, this.level)
+      : { gained: 0, levels: 0, blocked: false, overflowed: 0, overflowFilled: false };
+    this.stones += rw.spiritStone;
+    const items = (rw.items ?? []).map(it => {
+      if (ITEMS[it.item]?.type === 'equip') return { ...it, equipped: this.gainEquip(it.item) };
+      this.addItem(it.item, it.count);
+      return { ...it };
+    });
+    this.grantQuestRecipes(q);
+    for (const skill of rw.skills ?? []) this.grantSkill(skill.id, skill.level);
+    // 贡献接口负责余额及最后的完整存档，0 时另存，不能再由旧回调追加奖励。
+    this.gainSectContribution(contribution);
+    this.save();
+    return { exp, contribution, items, skills: (rw.skills ?? []).map(skill => skill.id) };
   }
 
   private equipSum(stat: string) {
@@ -456,6 +513,11 @@ export class Progress {
     if (typeof this.sectDailyContributionDay !== 'string') this.sectDailyContributionDay = '';
     if (!Array.isArray(this.sectDailyContributionClaims)) this.sectDailyContributionClaims = [];
     this.sectDailyContributionClaims = [...new Set(this.sectDailyContributionClaims.filter(id => typeof id === 'string' && id.length > 0))];
+    if (typeof this.dailyQuestResetDay !== 'string') this.dailyQuestResetDay = '';
+    if (!this.dailyQuestCompletions || typeof this.dailyQuestCompletions !== 'object' || Array.isArray(this.dailyQuestCompletions)) this.dailyQuestCompletions = {};
+    for (const [sect, ids] of Object.entries(this.dailyQuestCompletions)) {
+      this.dailyQuestCompletions[sect] = Array.isArray(ids) ? [...new Set(ids.filter(id => typeof id === 'string' && QUESTS[id]?.daily && QUESTS[id].sect === sect))] : [];
+    }
     this.age = Number.isFinite(Number(this.age)) ? Math.max(LIFESPAN.startAge, Number(this.age)) : LIFESPAN.startAge;
     this.ageUpdatedAt = Number.isFinite(Number(this.ageUpdatedAt)) && this.ageUpdatedAt > 0 ? Math.min(Date.now(), this.ageUpdatedAt) : Date.now();
     if (typeof this.seclusionDay !== 'string') this.seclusionDay = '';

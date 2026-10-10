@@ -1,16 +1,22 @@
-import { QUESTS, QUEST_ORDER, NPCS, SCRIPTS, ITEMS, MONSTERS, Line, QuestDef, inPhase } from './data';
+import { QUESTS, QUEST_ORDER, NPCS, SCRIPTS, ITEMS, MONSTERS, Line, QuestDef, inPhase, t } from './data';
 import type { Progress } from './Progress';
 import { classForQuest } from './classes';
 import { REALMS } from './data';
+import { dailyRewardsReady, type DailyQuestReward } from './DailyQuests';
 
 export type NpcMark = '!' | '?' | '…' | null;
 
 /** 任务系统：串行任务链，状态存在 Progress.quests 里。字段见 balance/quests.json */
 export class QuestSystem {
-  constructor(private prog: Progress) {}
+  constructor(private prog: Progress, private now: () => number = () => Date.now()) { this.refreshDaily(); }
 
-  state(id: string) { return this.prog.quests[id]?.state; }
-  get activeIds() { return QUEST_ORDER.filter(id => this.state(id) === 'active'); }
+  refreshDaily() { return this.prog.resetDailyQuests(this.now()); }
+
+  state(id: string) { this.refreshDaily(); return this.prog.quests[id]?.state; }
+  get activeIds() {
+    this.refreshDaily();
+    return QUEST_ORDER.filter(id => this.prog.quests[id]?.state === 'active');
+  }
   isActive(id: string) { return this.state(id) === 'active'; }
 
   /** next 链和独立 prereq 均须完成，且版本阶段、等级、目标类型可用。 */
@@ -18,12 +24,14 @@ export class QuestSystem {
     if (this.state(id)) return false;
     const q = QUESTS[id];
     if (!q || !inPhase(q) || !supported(q) || !this.prereqsDone(q) || !this.classAllowed(q)) return false;
+    if (q.daily && !this.prog.canCompleteSectDailyQuest(id, this.now())) return false;
     return this.prog.level >= q.reqLevel;
   }
   /** 前置已完成但等级不够 */
   levelLocked(id: string) {
     const q = QUESTS[id];
-    return !!q && inPhase(q) && supported(q) && !this.state(id) && this.prereqsDone(q) && this.classAllowed(q) && this.prog.level < q.reqLevel;
+    return !!q && inPhase(q) && supported(q) && !this.state(id) && this.prereqsDone(q) && this.classAllowed(q)
+      && (!q.daily || this.prog.canCompleteSectDailyQuest(id, this.now())) && this.prog.level < q.reqLevel;
   }
 
   private classAllowed(q: QuestDef) {
@@ -49,7 +57,17 @@ export class QuestSystem {
     return ids.filter(id => QUESTS[id]);
   }
 
+  /** 本宗接引人菜单全量展示，已完成项可灰显，不让进行中的首条任务挡住其余两条。 */
+  npcDailyQuestIds(npcId: string) {
+    this.refreshDaily();
+    return this.npcQuestIds(npcId).filter(id => {
+      const q = QUESTS[id];
+      return q.daily && this.classAllowed(q) && (q.giver === npcId || q.turnIn === npcId);
+    });
+  }
+
   objectiveProgress(q: QuestDef) {
+    this.refreshDaily();
     const st = this.prog.quests[q.id];
     return q.objectives.map(o => {
       switch (o.type) {
@@ -64,34 +82,53 @@ export class QuestSystem {
       }
     });
   }
-  complete(id: string) { return this.isActive(id) && !!QUESTS[id] && this.classAllowed(QUESTS[id]) && this.objectiveProgress(QUESTS[id]).every(p => p.cur >= p.need); }
+  complete(id: string) {
+    const q = QUESTS[id];
+    return this.isActive(id) && !!q && supported(q) && this.classAllowed(q)
+      && (!q.daily || this.prog.canCompleteSectDailyQuest(id, this.now()))
+      && this.objectiveProgress(q).every(p => p.cur >= p.need);
+  }
 
   /** NPC 头顶标记：可交付 ?、可接 !、进行中 … */
   mark(npcId: string): NpcMark {
     const ids = this.npcQuestIds(npcId);
     if (ids.some(id => QUESTS[id].turnIn === npcId && this.complete(id))) return '?';
     if (ids.some(id => QUESTS[id].giver === npcId && this.available(id))) return '!';
-    if (ids.some(id => this.isActive(id) && QUESTS[id].turnIn === npcId)) return '…';
+    if (ids.some(id => this.isActive(id) && QUESTS[id].turnIn === npcId && this.classAllowed(QUESTS[id]))) return '…';
     return null;
   }
 
   /** 和 NPC 说话：返回要播放的台词和说完后要做的事 */
-  talk(npcId: string): { lines: Line[]; after?: () => QuestReward | void } {
+  onTalk(npcId: string) {
+    let changed = false;
+    for (const id of this.activeIds) {
+      if (!this.classAllowed(QUESTS[id])) continue;
+      for (const o of QUESTS[id].objectives) if (o.type === 'talk' && o.target === npcId) {
+        const st = this.prog.quests[id];
+        if (!st.talked?.[npcId]) { (st.talked ??= {})[npcId] = true; changed = true; }
+      }
+    }
+    if (changed) this.prog.save();
+  }
+
+  talk(npcId: string, questId?: string): { lines: Line[]; after?: () => QuestReward | void } {
     const npc = NPCS[npcId];
     // talk 目标：和目标 NPC 说过话就算完成
-    for (const id of this.activeIds) for (const o of QUESTS[id].objectives) if (o.type === 'talk' && o.target === npcId) {
-      const st = this.prog.quests[id]; (st.talked ??= {})[npcId] = true; this.prog.save();
-    }
+    this.onTalk(npcId);
     const fill = (ls: Line[] | undefined) => (ls ?? []).map(l => ({ ...l, text: l.text.replace(/\{name\}/g, this.prog.name) }));
-    for (const id of this.npcQuestIds(npcId)) {
+    for (const id of this.npcQuestIds(npcId).filter(id => !questId || id === questId)) {
       const q = QUESTS[id], sc = SCRIPTS[id] ?? {};
       if (!q) continue;
-      if (q.turnIn === npcId && this.complete(id)) return { lines: fill(sc.turnIn), after: () => this.turnIn(id) };
-      if (q.turnIn === npcId && this.isActive(id)) {
+      const lines = (stage: 'offer' | 'progress' | 'complete', fallback?: Line[]) => {
+        const key = q.dialogueKeys?.[stage];
+        return key ? [{ speaker: npc.name, text: t(key, { name: this.prog.name }) }] : fill(fallback);
+      };
+      if (q.turnIn === npcId && this.complete(id)) return { lines: lines('complete', sc.turnIn), after: () => this.turnIn(id) };
+      if (q.turnIn === npcId && this.isActive(id) && this.classAllowed(q)) {
         const notReady = q.objectives.some(o => o.type === 'breakthrough') && sc.notReady && this.objectiveProgress(q).some(p => p.o.type !== 'breakthrough' && p.cur >= p.need);
-        return { lines: fill(notReady ? sc.notReady : sc.progress) };
+        return { lines: lines('progress', notReady ? sc.notReady : sc.progress) };
       }
-      if (q.giver === npcId && this.available(id)) return { lines: fill(sc.accept), after: () => { this.accept(id); } };
+      if (q.giver === npcId && this.available(id)) return { lines: lines('offer', sc.accept), after: () => { this.accept(id); } };
     }
     return { lines: npc.dialog.map(t => ({ speaker: npc.name, text: t })) };
   }
@@ -108,9 +145,15 @@ export class QuestSystem {
   turnIn(id: string): QuestReward | undefined {
     if (!this.complete(id)) return undefined;
     const q = QUESTS[id];
+    const now = this.now();
+    if (q.daily && (!this.prog.canCompleteSectDailyQuest(id, now) || this.prog.quests[id]?.state !== 'active')) return undefined;
     for (const o of q.objectives) if (o.type === 'collect' && o.consume !== false) this.prog.removeItem(o.target!, o.count!);
     const broke = q.objectives.some(o => o.type === 'breakthrough') ? this.prog.breakthrough() : false;
     this.prog.quests[id].state = 'done';
+    if (q.daily) {
+      const daily = this.prog.settleSectDailyQuest(id, now);
+      return daily ? { quest: q, broke, daily } : undefined;
+    }
     return { quest: q, broke };
   }
 
@@ -147,6 +190,6 @@ export class QuestSystem {
 }
 
 const SUPPORTED = new Set(['kill', 'collect', 'reach', 'breakthrough', 'talk', 'craft', 'trial']);
-function supported(q: QuestDef) { return !q.daily && q.objectives.every(o => SUPPORTED.has(o.type)); }
+function supported(q: QuestDef) { return (!q.daily || dailyRewardsReady(q)) && q.objectives.every(o => SUPPORTED.has(o.type)); }
 
-export interface QuestReward { quest: QuestDef; broke: boolean; }
+export interface QuestReward { quest: QuestDef; broke: boolean; daily?: DailyQuestReward; }
