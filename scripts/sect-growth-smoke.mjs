@@ -153,6 +153,11 @@ try {
   const configured = await page.evaluate(({ ranks, item, cost }) => {
     const s = window.__scene, g = s.sectGrowth;
     const real = { promotion: g.promotion('tianjian_elder'), catalog: g.catalog('tianjian_envoy_sect', 'sect_shop') };
+    const transactionState = () => JSON.stringify({ inventory: s.prog.inventory, contribution: s.prog.sectContribution,
+      stones: s.prog.stones, receipts: s.prog.sectGrowthState.settledTransactions });
+    real.beforeExchange = transactionState();
+    real.exchange = g.exchange('tianjian_envoy_sect', 'sect_shop', item, 'sect-smoke-config-closed');
+    real.afterExchange = transactionState();
     const config = { ...g.config, ranks: { ...ranks, enabled: true }, shops: {
       ...g.config.shops, tianjian_envoy_sect: [{ item, reqRank: 'inner_disciple', costContribution: cost, enabled: true, balanceTodo: [] }],
     } };
@@ -161,7 +166,12 @@ try {
   }, { ranks, item: exchangeItem.id, cost: fixtureCost });
   assert.equal(configured.promotion.ok, false, '真实关门配置误开放晋升');
   assert.equal(configured.promotion.key, 'sect.ui.config_pending');
-  assert.equal(configured.catalog.entries.length, 0, '真实缺货配置误生成商品');
+  assert.equal(configured.catalog.ok, false, '真实关门配置误开放货架');
+  assert.equal(configured.catalog.key, 'sect.ui.config_pending');
+  assert.ok(configured.catalog.entries.every(entry => !entry.ok && entry.key === 'sect.ui.config_pending'), '真实关闭商品未灰显');
+  assert.equal(configured.exchange.ok, false, '真实关门配置允许兑换');
+  assert.equal(configured.exchange.key, 'sect.ui.config_pending');
+  assert.equal(configured.afterExchange, configured.beforeExchange, '真实关门兑换改变余额、背包或收据');
 
   for (let day = 0; day < days; day++) {
     await page.evaluate(day => {

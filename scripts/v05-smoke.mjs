@@ -27,6 +27,12 @@ const strings = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/string
 const pacing = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/solo_pacing.json'), 'utf8'));
 const sectSeclusion = pacing.sectSeclusion;
 const realms = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/realms.json'), 'utf8'));
+const questRows = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/quests.json'), 'utf8'));
+const contributionDaily = questRows.find(quest => quest.id === 'q_daily_tianjian_3');
+assert.ok(contributionDaily?.daily && contributionDaily.objectives.every(objective => objective.type === 'talk'),
+  '贡献夹具须使用真实天剑宗传讯日常');
+const dailyContribution = Object.hasOwn(contributionDaily.rewards, 'sectContribution')
+  ? contributionDaily.rewards.sectContribution : sectSeclusion.dailyQuestContribution;
 const trials = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/trials.json'), 'utf8'));
 const trialByMap = Object.fromEntries(trials.filter(trial => maps.some(([map]) => map === trial.map)).map(trial => [trial.map, trial]));
 const text = (key, args = {}) => strings[key].replace(/\{(\w+)\}/g, (_, name) => String(args[name] ?? ''));
@@ -118,18 +124,26 @@ async function extraInteractions(context, baseURL) {
     await go('tianjian_sect');
     assert.equal(await page.evaluate(() => window.__scene.map.objects.some(o => o.type === 'npc' && o.props.npc === 'tianjian_elder')), true);
     checks.push('phase5: 山门传功长老出现');
-    const contribution = await page.evaluate(() => {
-      const p = window.__scene.prog;
+    const contribution = await page.evaluate(quest => {
+      const scene = window.__scene, p = scene.prog;
+      p.level = Math.max(p.level, quest.reqLevel);
+      p.advanceClass('tianjian_disciple');
       p.sectContribution = 0;
-      const gained = p.onSectDailyQuestCompleted('smoke_daily');
-      const duplicate = p.onSectDailyQuestCompleted('smoke_daily');
+      const accepted = scene.quests.accept(quest.id);
+      for (const objective of quest.objectives) scene.quests.onTalk(objective.target);
+      const complete = scene.quests.complete(quest.id);
+      const reward = scene.quests.turnIn(quest.id);
+      if (reward) scene.giveRewards(reward.quest, reward.broke, reward.daily);
+      const gained = reward?.daily?.contribution;
+      const duplicate = p.onSectDailyQuestCompleted(quest.id);
       const saved = JSON.parse(localStorage.getItem('xiantu_save_v1'));
-      return { gained, duplicate, balance: p.sectContribution, savedBalance: saved.sectContribution,
+      return { accepted, complete, state: scene.quests.state(quest.id), gained, duplicate,
+        balance: p.sectContribution, savedBalance: saved.sectContribution,
         savedClaims: saved.sectDailyContributionClaims };
-    });
-    assert.deepEqual(contribution, { gained: sectSeclusion.dailyQuestContribution, duplicate: 0,
-      balance: sectSeclusion.dailyQuestContribution, savedBalance: sectSeclusion.dailyQuestContribution, savedClaims: ['smoke_daily'] });
-    checks.push('contribution: 日常完成回调按表发放，同日去重并保存');
+    }, contributionDaily);
+    assert.deepEqual(contribution, { accepted: true, complete: true, state: 'done', gained: dailyContribution, duplicate: 0,
+      balance: dailyContribution, savedBalance: dailyContribution, savedClaims: [contributionDaily.id] });
+    checks.push('contribution: 真实日常交付按表发放，旧回调同日去重并保存');
     const seclusion = await page.evaluate(({ level, contribution }) => {
       const scene = window.__scene, room = scene.map.objects.find(o => o.type === 'seclusion');
       scene.physics.pause(); scene.player.body.reset(room.x, room.y);

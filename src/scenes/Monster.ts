@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { ATLAS_INFO, type MonsterDef, type MonsterSkill } from '../data';
+import type { BuiltMap } from './MapBuilder';
 
 type MState = 'patrol' | 'idle' | 'chase' | 'attack' | 'hit' | 'dead';
 
@@ -53,7 +54,7 @@ interface Cast {
   meta?: SkillMeta;
   logged?: Record<string, boolean>;
   warn?: Phaser.GameObjects.Sprite;
-  fromX?: number; prevX?: number; moved?: boolean;
+  fromX?: number; targetX?: number; prevX?: number; moved?: boolean;
   dashStarted?: boolean; dashDone?: boolean; didHit?: boolean; recoverAt?: number;
   points?: { x: number; y: number }[];
   spawnAt?: number; spawned?: boolean;
@@ -125,7 +126,7 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
   private flashUntil = 0;
   private teleAt = 0; private teleEnd = 0; private teleBlink?: Phaser.Tweens.Tween;
   /** 野猪冲锋进行中：起点、是否已命中 */
-  private charge: { fromX: number; hit: boolean; prevX: number } | null = null;
+  private charge: { fromX: number; targetX: number; hit: boolean; prevX: number } | null = null;
   private despawnHideAt = 0; private despawnDoneAt = 0; private despawnHidden = false;
 
   constructor(scene: Phaser.Scene, x: number, y: number, def: MonsterDef) {
@@ -138,6 +139,7 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
     const [bw, bh] = ATLAS_INFO[def.sprite]?.bodySize ?? BODY_FALLBACK[def.sprite] ?? [Math.min(fs - 8, 40), Math.min(fh - 4, 56)];
     this.body.setSize(bw, bh).setOffset((fs - bw) / 2, fh - bh);
     this.body.setMaxVelocityY(670);
+    if (def.isBoss || def.attack?.type === 'charge') this.setCollideWorldBounds(true);
     if (def.moveSpeed === 0) this.body.setImmovable(true);
     this.dir = Math.random() < 0.5 ? -1 : 1;
     this.bar = scene.add.graphics().setDepth(11);
@@ -168,6 +170,69 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
   get dead() { return this.st === 'dead' || this.despawning; }
   get grounded() { return this.body.blocked.down || this.body.touching.down; }
 
+  /** 用出生点确定所属首领区，越界后仍能找到原区域。 */
+  get arenaZone() {
+    const map = (this.scene as Phaser.Scene & { map?: BuiltMap }).map;
+    return this.def.isBoss ? map?.zones.find(z => this.home.x >= z.x && this.home.x <= z.x + z.w && this.home.y >= z.y && this.home.y <= z.y + z.h) : undefined;
+  }
+
+  private get movementBounds() {
+    const map = (this.scene as Phaser.Scene & { map?: BuiltMap }).map;
+    const world = this.scene.physics.world.bounds, zone = this.arenaZone;
+    const left = Math.max(world.left, zone?.x ?? world.left);
+    const right = Math.min(world.right, map?.width ?? world.right, zone ? zone.x + zone.w : world.right);
+    const top = Math.max(world.top, zone?.y ?? world.top);
+    const bottom = Math.min(world.bottom, map?.height ?? world.bottom, zone ? zone.y + zone.h : world.bottom);
+    return new Phaser.Geom.Rectangle(left, top, right - left, bottom - top);
+  }
+
+  private clampX(x: number) {
+    const bounds = this.movementBounds, half = Math.min(this.body.width / 2, bounds.width / 2);
+    return Phaser.Math.Clamp(x, bounds.left + half, bounds.right - half);
+  }
+
+  /** Arcade 的物理坐标先于 Sprite 更新；夹物理位置才能保证本帧渲染不越界。 */
+  private clampRushPosition(targetX: number) {
+    const current = this.body.center.x;
+    const x = this.clampX(this.dir > 0 ? Math.min(current, targetX) : Math.max(current, targetX));
+    if (x !== current) this.resetAtFoot(x, this.body.bottom);
+    return x;
+  }
+
+  /** reset 默认先放在贴图左上角，须补碰撞体 offset，并消掉本帧待同步的位移。 */
+  private resetAtFoot(x: number, y: number) {
+    const b = this.body;
+    b.reset(x, y); b.updateFromGameObject();
+    b.prev.copy(b.position); b.prevFrame.copy(b.position);
+  }
+
+  /** 首领被击退越界或掉底时，回到区域里的可站立地面，保留血量和技能冷却。 */
+  recoverInBounds() {
+    if (!this.active || this.dead || !this.def.isBoss) return false;
+    const b = this.body, bounds = this.movementBounds;
+    const world = this.scene.physics.world.bounds;
+    if (this.x === this.clampX(this.x) && b.center.x === this.clampX(b.center.x) && b.top >= bounds.top && b.bottom <= bounds.bottom && b.bottom < world.bottom) return false;
+    const map = (this.scene as Phaser.Scene & { map?: BuiltMap }).map;
+    const wantedX = this.clampX(b.center.x), half = b.width / 2;
+    let point = { x: this.clampX(this.home.x), y: Phaser.Math.Clamp(this.home.y, bounds.top + b.height, bounds.bottom) };
+    let best = Infinity;
+    for (const obj of [...(map?.solids.getChildren() ?? []), ...(map?.oneWays.getChildren() ?? [])]) {
+      const ground = obj.body as Phaser.Physics.Arcade.StaticBody | null;
+      if (!ground?.enable || ground.top < bounds.top + b.height || ground.top > bounds.bottom) continue;
+      const lo = Math.max(bounds.left + half, ground.left + half), hi = Math.min(bounds.right - half, ground.right - half);
+      if (lo > hi) continue;
+      const x = Phaser.Math.Clamp(wantedX, lo, hi);
+      const score = (x - wantedX) ** 2 + (ground.top - this.home.y) ** 2;
+      if (score < best) { best = score; point = { x, y: ground.top }; }
+    }
+    this.abortCast(); this.charge = null;
+    this.teleEnd = 0; this.teleBlink?.stop(); this.teleBlink = undefined;
+    this.st = 'patrol'; this.stateUntil = 0;
+    this.resetAtFoot(point.x, point.y); b.setVelocity(0, 0);
+    this.anim('idle');
+    return true;
+  }
+
   step(time: number, player: Phaser.Physics.Arcade.Sprite & { dead?: boolean }, hidden = false) {
     if (!this.active) return;
     const d = this.def, b = this.body;
@@ -178,6 +243,7 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
     if (this.despawning) { this.tickDespawn(time); return; }
     if (this.st === 'dead') return;
     if (this.manualMotion) return;
+    if (this.recoverInBounds()) return;
     if (this.cast) { this.tickCast(time, player); return; }
     if (d.moveSpeed === 0) { b.setVelocityX(0); return; }
     // 山魈：前摇结束落下出伤害（游戏时钟，不用 delayedCall）
@@ -329,7 +395,8 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
 
   private startCharge(time: number) {
     if (DEBUG_TIMING) console.log(`[tele] ${this.def.id} 冲锋开始 实际 +${Math.round(performance.now() - this.teleAt)}ms`);
-    this.charge = { fromX: this.x, hit: false, prevX: this.x };
+    const x = this.body.center.x;
+    this.charge = { fromX: x, targetX: this.clampX(x + this.dir * this.chargeDist), hit: false, prevX: x };
     this.suppressTouch = true;   // 冲锋只按 damageRatio 结算一次，不叠接触伤害
     this.anim('walk');
     this.tickCharge(time, null);
@@ -337,11 +404,13 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
 
   private tickCharge(time: number, player: (Phaser.Physics.Arcade.Sprite & { dead?: boolean }) | null) {
     const c = this.charge!, b = this.body, a = this.def.attack!;
-    const traveled = (this.x - c.fromX) * this.dir;
+    const x = this.clampRushPosition(c.targetX);
+    const traveled = (x - c.fromX) * this.dir;
+    const remaining = (c.targetX - x) * this.dir;
     const aheadX = this.dir > 0 ? b.right + 4 : b.left - 6;
     const ground = this.scene.physics.overlapRect(aheadX, b.bottom + 2, 2, 6, false, true).length > 0;
     const wall = this.dir > 0 ? b.blocked.right : b.blocked.left;
-    if (this.st === 'dead' || traveled >= this.chargeDist || !ground || (wall && traveled > 1) || !this.grounded) {
+    if (this.st === 'dead' || remaining <= 0.5 || !ground || (wall && traveled > 1) || !this.grounded) {
       b.setVelocityX(0);
       if (DEBUG_TIMING) console.log(`[tele] ${this.def.id} 冲锋结束 距离 ${Math.round(traveled)}px${!ground ? '（平台边缘）' : wall ? '（撞墙）' : ''}`);
       this.charge = null; this.suppressTouch = false;
@@ -351,7 +420,7 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
     b.setVelocityX(this.dir * CHARGE_SPEED);
     if (player && !c.hit && !player.dead) {
       const pb = player.body as Phaser.Physics.Arcade.Body;
-      const dx = this.x - c.prevX;
+      const dx = x - c.prevX;
       const rect = new Phaser.Geom.Rectangle(Math.min(b.x, b.x - dx), b.y, b.width + Math.abs(dx), b.height);
       if (Phaser.Geom.Intersects.RectangleToRectangle(rect, new Phaser.Geom.Rectangle(pb.x, pb.y, pb.width, pb.height))) {
         c.hit = true;
@@ -359,7 +428,7 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
         this.onSkillDamage?.(this, a.damageRatio, a.knockback, this.x);
       }
     }
-    c.prevX = this.x;
+    c.prevX = x;
   }
 
   private throwTalisman(_time: number, player: Phaser.Physics.Arcade.Sprite) {
@@ -410,7 +479,7 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
     if (this.st === 'dead' || this.despawning) return;
     this.abortCast();
     this.charge = null;
-    for (const s of this.summons) if (s.despawnWithOwner && s.active && !s.dead) s.despawn();
+    this.clearSummons();
     this.st = 'dead'; this.body.enable = false; this.bar.clear();
     this.anim('die');
     this.scene.tweens.add({ targets: this, alpha: 0, delay: 350, duration: 400 });
@@ -420,7 +489,12 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
     else this.scene.time.delayedCall(this.def.respawnMs, () => this.respawn());
   }
 
-  /** 首领死亡：脚底播消散，第 2 帧藏本体，播完销毁。不走死亡奖励 */
+  /** 首领死亡、玩家败北或离区：复用消散，不走死亡奖励，不重置首领。 */
+  clearSummons() {
+    for (const s of this.summons) if (s.despawnWithOwner && s.active && !s.dead) s.despawn();
+  }
+
+  /** 脚底播消散，第 2 帧藏本体，播完销毁。不走死亡奖励 */
   despawn() {
     if (!this.active || this.despawning || this.st === 'dead') return;
     this.despawning = true; this.st = 'dead';
@@ -500,6 +574,7 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
       releaseAt: time + windup, endAt: time + Math.max(frames.length, 1) * frameMs,
       interruptible: skill.interruptible === true, released: false,
       frames, frameMs, meta,
+      targetX: skill.type === 'dash' ? this.clampX(this.body.center.x + this.dir * (skill.distance ?? 0)) : undefined,
     };
     if (skill.once) this.usedOnce.add(skill.id);
     this.armCd(skill, time);
@@ -548,27 +623,28 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
       return;
     }
     if (!cast.dashStarted) {
-      cast.dashStarted = true; cast.fromX = this.x; cast.prevX = this.x;
+      cast.dashStarted = true; cast.fromX = this.body.center.x; cast.prevX = cast.fromX;
       this.logCast('前摇结束'); this.logCast('出手');
       this.destroyWarn();
       this.dashing = true;
     }
     if (!cast.dashDone) {
-      const dist = skill.distance ?? 0;
-      const traveled = (this.x - (cast.fromX ?? this.x)) * this.dir;
+      const target = cast.targetX!;
+      const x = this.clampRushPosition(target);
+      const remaining = (target - x) * this.dir;
       const blocked = this.dir > 0 ? this.body.blocked.right : this.body.blocked.left;
-      if (traveled >= dist - 0.5 || (cast.moved && blocked)) {
-        if (!(blocked && traveled < dist)) this.body.reset((cast.fromX ?? this.x) + this.dir * dist, this.y);
+      this.tryDashHit(player);
+      if (remaining <= 0.5 || (cast.moved && blocked)) {
+        if (!blocked || remaining <= 0.5) this.resetAtFoot(target, this.body.bottom);
         this.body.setVelocityX(0);
         cast.dashDone = true; cast.recoverAt = time + cast.frameMs; this.dashing = false;
         this.pose(cast.frames, (meta?.recoverFrame ?? cast.frames.length) - 1);
-        const mid = ((cast.fromX ?? this.x) + this.x) / 2;
-        this.spawnFx(meta?.fx ?? this.fxKey(skill), mid, this.y, this.dir > 0);
+        const mid = ((cast.fromX ?? this.x) + this.body.center.x) / 2;
+        this.spawnFx(meta?.fx ?? this.fxKey(skill), mid, this.body.bottom, this.dir > 0);
       } else {
         this.body.setVelocityX(this.dir * DASH_SPEED);
         this.pose(cast.frames, (meta?.dashFrame ?? 3) - 1);
-        this.tryDashHit(player);
-        cast.moved = true; cast.prevX = this.x;
+        cast.moved = true; cast.prevX = x;
       }
       return;
     }
@@ -581,7 +657,7 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
     if (!cast || cast.didHit) return;
     const pb = player.body as Phaser.Physics.Arcade.Body;
     const mb = this.body;
-    const dx = this.x - (cast.prevX ?? this.x);
+    const dx = mb.center.x - (cast.prevX ?? mb.center.x);
     const rect = new Phaser.Geom.Rectangle(Math.min(mb.x, mb.x - dx), mb.y, mb.width + Math.abs(dx), mb.height);
     if (!Phaser.Geom.Intersects.RectangleToRectangle(rect, new Phaser.Geom.Rectangle(pb.x, pb.y, pb.width, pb.height))) return;
     cast.didHit = true;
@@ -651,12 +727,15 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
     this.placeWarn();
   }
 
-  /** 动画每帧会把原点设回图集 pivot。朝右要在渲染前改成 1 - pivotX（0.9286 → 0.0714）并 flipX */
+  /** 预警锚定夹过的落点，按实际距离缩短；动画更新后重新设置朝向对应的 pivot。 */
   private placeWarn() {
     const s = this.cast?.warn;
     if (!s) return;
     const right = this.dir > 0;
-    s.setFlipX(right).setOrigin(right ? s.getData('oxR') : s.getData('oxL'), s.getData('oy')).setPosition(this.x, this.y);
+    const target = this.cast!.targetX!;
+    const distance = this.cast!.skill.distance ?? 0;
+    const scale = distance > 0 ? Math.abs(target - this.body.center.x) / distance : 0;
+    s.setFlipX(right).setOrigin(right ? s.getData('oxL') : s.getData('oxR'), s.getData('oy')).setScale(scale, 1).setPosition(target, this.y);
   }
   private destroyWarn() { this.cast?.warn?.destroy(); if (this.cast) this.cast.warn = undefined; }
 

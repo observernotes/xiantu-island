@@ -408,6 +408,7 @@ export class GameScene extends Phaser.Scene {
     }
     this.player.syncAppearance();
     const k = this.keys, J = Phaser.Input.Keyboard.JustDown;
+    this.clearAbandonedBossSummons();
     for (const p of this.parallax) p.ts.tilePositionX = this.cameras.main.scrollX * p.f;
     this.updateShots(time);
     this.regenMp(delta);
@@ -439,6 +440,10 @@ export class GameScene extends Phaser.Scene {
       this.player.body.setVelocityX(0);
       this.player.step(time, delta / 1000, { left: false, right: false, up: false, down: false, jumpDown: false, attackDown: false }, this.map.ropes);
       this.stealth?.update(0, false);
+      for (const m of this.mobs) {
+        if (m.despawning) m.step(time, this.player);
+        else if (m.def.isBoss) m.recoverInBounds();
+      }
       this.drawHud(); return;
     }
     this.trial?.update(delta);
@@ -525,11 +530,25 @@ export class GameScene extends Phaser.Scene {
   private spawnSummon(owner: Monster, id: string, x: number, y: number, grantRewards: boolean, despawnWithOwner: boolean) {
     const def = MONSTERS[id];
     if (!def || !owner.active) return;
+    // 召唤阵延迟到第 4 帧才刷怪；败北或离区后仍让首领动作正常结束，但不补刷随主清场的召唤物。
+    if (despawnWithOwner && this.bossSummonsShouldDespawn(owner)) return;
     const m = new Monster(this, x, y, def);
     m.owner = owner; m.grantRewards = grantRewards; m.despawnWithOwner = despawnWithOwner; m.noRespawn = true;
     this.wireMob(m);
     owner.summons.push(m);
     this.mobs.push(m);
+  }
+
+  private bossSummonsShouldDespawn(owner: Monster) {
+    if (!owner.def.isBoss || owner.owner) return false;
+    if (this.player.dead) return true;
+    const zone = owner.arenaZone;
+    return !!zone && (this.player.x < zone.x || this.player.x > zone.x + zone.w
+      || this.player.y < zone.y || this.player.y > zone.y + zone.h);
+  }
+
+  private clearAbandonedBossSummons() {
+    for (const m of this.mobs) if (this.bossSummonsShouldDespawn(m)) m.clearSummons();
   }
 
   private launchVolley(v: SkillVolley) {
@@ -639,6 +658,7 @@ export class GameScene extends Phaser.Scene {
   playerDie() {
     const p = this.player;
     p.dead = true; p.state2 = 'hurt'; p.hurtUntil = Infinity;
+    this.clearAbandonedBossSummons();
     if (p.atlas) p.play(p.animationKey('die'));
     if (this.trial && !this.trial.ended) { this.trial.end('dead'); return; }
     if (this.trial) return;

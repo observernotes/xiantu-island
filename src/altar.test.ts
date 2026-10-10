@@ -109,13 +109,16 @@ function atEye(trial: AltarTrial, scene: TestHost, id: string) {
 // 近战前摇与冷却：真实 Monster.step 不在前摇开始/冷却中多扣血。
 {
   const scene = host(), trial = new AltarTrial(scene, definition()), mob = atEye(trial, scene, 'heart_demon_imp');
-  advanceMonster(mob, scene, 0); eq(trial.hp, 6000, '近战起手不扣血');
-  advanceMonster(mob, scene, 299); eq(trial.hp, 6000, '近战 300ms 前摇未结束');
-  advanceMonster(mob, scene, 300); eq(trial.hp, 5976, '前摇结束扣 24、倍率只乘一次');
-  advanceMonster(mob, scene, 599); eq(trial.hp, 5976, '收招不重复结算');
-  advanceMonster(mob, scene, 600); advanceMonster(mob, scene, 1499); eq(trial.hp, 5976, '冷却未到不攻击');
-  advanceMonster(mob, scene, 1500); eq(trial.hp, 5976, '1500ms 起第二次前摇');
-  advanceMonster(mob, scene, 1800); eq(trial.hp, 5952, '第二次前摇结束才扣血');
+  const initialHp = trial.hp;
+  // 期望独立按当前怪表计算，不能漏掉近战技能系数，也不能在 AI 和阵眼各乘一次承伤。
+  const damage = Math.round(mob.def.atk * mob.def.attack!.damageRatio * trial.def.objective!.monsterDamageMul!);
+  advanceMonster(mob, scene, 0); eq(trial.hp, initialHp, '近战起手不扣血');
+  advanceMonster(mob, scene, 299); eq(trial.hp, initialHp, '近战 300ms 前摇未结束');
+  advanceMonster(mob, scene, 300); eq(trial.hp, initialHp - damage, '前摇结束按怪表技能系数扣血、承伤只乘一次');
+  advanceMonster(mob, scene, 599); eq(trial.hp, initialHp - damage, '收招不重复结算');
+  advanceMonster(mob, scene, 600); advanceMonster(mob, scene, 1499); eq(trial.hp, initialHp - damage, '冷却未到不攻击');
+  advanceMonster(mob, scene, 1500); eq(trial.hp, initialHp - damage, '1500ms 起第二次前摇');
+  advanceMonster(mob, scene, 1800); eq(trial.hp, initialHp - 2 * damage, '第二次前摇结束才扣血');
   same(trial.hitsBy, { heart_demon_imp: 2 }, '近战命中记录');
 }
 
@@ -129,25 +132,29 @@ function atEye(trial: AltarTrial, scene: TestHost, id: string) {
   mob.def = { ...mob.def, touchDamageMul: 0.5 };
   eq(mob.objective!.useAttack, false, '飞灵覆盖禁止 attack');
   eq(mob.objective!.contact, true, '飞灵覆盖为贴身撞');
+  const initialHp = trial.hp;
+  const damage = Math.round(mob.def.atk * mob.def.touchDamageMul! * trial.def.objective!.monsterDamageMul!);
   let volleys = 0; mob.onVolley = () => { volleys++; };
-  advanceMonster(mob, scene, 20000); eq(trial.hp, 5988, 'contact 87 × 0.5 × 0.28 = 12');
-  advanceMonster(mob, scene, 20999); eq(trial.hp, 5988, 'contact 不在 1000ms 前重撞');
-  advanceMonster(mob, scene, 21000); eq(trial.hp, 5976, 'contact 每 1000ms 命中');
+  advanceMonster(mob, scene, 20000); eq(trial.hp, initialHp - damage, 'contact 按怪表攻击与 touchDamageMul，承伤只乘一次');
+  advanceMonster(mob, scene, 20999); eq(trial.hp, initialHp - damage, 'contact 不在 1000ms 前重撞');
+  advanceMonster(mob, scene, 21000); eq(trial.hp, initialHp - 2 * damage, 'contact 每 1000ms 命中');
   eq(volleys, 0, 'useAttack:false 不生成弹道');
   mob.objective!.contact = false;
-  advanceMonster(mob, scene, 22000); eq(trial.hp, 5976, 'useAttack:false 且非 contact 不攻击阵眼');
+  advanceMonster(mob, scene, 22000); eq(trial.hp, initialHp - 2 * damage, 'useAttack:false 且非 contact 不攻击阵眼');
   mob.objective!.contact = true;
   trial.def.objective!.monsterDamageMul = 0;
-  advanceMonster(mob, scene, 23000); eq(trial.hp, 5976, '零倍率 contact 真实路径不漏最少 1 点');
+  advanceMonster(mob, scene, 23000); eq(trial.hp, initialHp - 2 * damage, '零倍率 contact 真实路径不漏最少 1 点');
   eq(scene.numbers.length, 2, '零倍率 contact 不产生受击数字');
 }
 
 // 远程 attack 打阵眼当前为前摇后直接命中，并非生成实物弹道；断言其真实旧路径。
 {
   const scene = host(), trial = new AltarTrial(scene, definition()), mob = atEye(trial, scene, 'heart_demon_wisp');
+  const initialHp = trial.hp;
+  const damage = Math.round(mob.def.atk * mob.def.attack!.damageRatio * trial.def.objective!.monsterDamageMul!);
   let volleys = 0; mob.onVolley = () => { volleys++; };
-  advanceMonster(mob, scene, 0); eq(trial.hp, 6000, '远程目标前摇起手');
-  advanceMonster(mob, scene, 300); eq(trial.hp, 5981, '远程原路径 87 × 0.8 × 0.28 = 19');
+  advanceMonster(mob, scene, 0); eq(trial.hp, initialHp, '远程目标前摇起手');
+  advanceMonster(mob, scene, 300); eq(trial.hp, initialHp - damage, '远程原路径按怪表技能系数扣血、承伤只乘一次');
   eq(volleys, 0, '目标路径没有实物弹道');
   const zeroScene = host(), zeroTrial = new AltarTrial(zeroScene, definition(0)), zeroMob = atEye(zeroTrial, zeroScene, 'heart_demon_imp');
   advanceMonster(zeroMob, zeroScene, 0); advanceMonster(zeroMob, zeroScene, 300);
