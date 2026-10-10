@@ -7,7 +7,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { createServer, preview } from 'vite';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-const names = ['fiveSectClasses', 'sectDaily', 'sectRanks', 'sectShopLibrary', 'sectDonations', 'seclusion', 'alchemyPhase1', 'v05Maps'];
+const names = ['fiveSectClasses', 'sectDaily', 'sectRanks', 'sectShopLibrary', 'sectDonations', 'seclusion', 'alchemyPhase1', 'v05Maps', 'foxBoss'];
 let configured = {};
 try { configured = JSON.parse(await fs.readFile(path.join(root, 'data/features.json'), 'utf8')); }
 catch (error) { if (error.code !== 'ENOENT') throw error; }
@@ -224,17 +224,68 @@ try {
     check(s.portalOpen(portal), '新地图没有恢复');
     checked.push('v05Maps');
 
+    const foxPrereqs = { q_breakthrough: { state: 'done', kills: {} } };
+    const foxPosition = { mapId: 'lingxi_path', x: 64, y: 960 };
+    s = await load({ ...joined, ageUpdatedAt: xt.getState().time, inventory: { fox_tail: 1 },
+      quests: { ...foxPrereqs, q_fox: { state: 'active', kills: {} } }, position: foxPosition });
+    const liveFoxes = () => s.mobs.filter(m => m.def.id === 'demon_fox' && m.active && !m.dead);
+    check(liveFoxes().length > 0, '妖狐关态夹具没有生成首领');
+    const foxBefore = xt.exportSave();
+    flip('foxBoss', false);
+    check(liveFoxes().length === 0, '关闭妖狐后仍留有活跃首领');
+    same(xt.exportSave().quests.q_fox, foxBefore.quests.q_fox, '关闭妖狐回滚任务进度');
+    s.quests.onKill('demon_fox');
+    same(s.prog.quests.q_fox, foxBefore.quests.q_fox, '妖狐任务关闭仍推进击杀数');
+    check(!s.quests.complete('q_fox') && !s.quests.turnIn('q_fox'), '妖狐任务关闭仍完成或交付');
+    s.talkTo('tianjian_envoy', 'q_fox');
+    check(s.dialog.body.text.includes(unavailable), '进行中的妖狐任务没有开放提示');
+    const bossPortal = { props: { target: 'lingxi_path', bossOnly: true } };
+    check(!s.portalOpen(bossPortal), '妖狐专用传送门没有关闭');
+    check(s.map.objects.filter(o => o.type === 'portal').every(o => s.portalOpen(o)), '关闭妖狐影响山道常规出口');
+
+    s = await load({ ...joined, ageUpdatedAt: xt.getState().time, quests: foxPrereqs, position: foxPosition });
+    check(!s.quests.available('q_fox') && !s.quests.accept('q_fox'), '妖狐任务关闭仍可接取');
+    s.talkTo('tianjian_envoy');
+    check(s.dialog.body.text.includes(unavailable), '妖狐任务普通 NPC 入口没有开放提示');
+    s = await load({ ...joined, ageUpdatedAt: xt.getState().time, stones: 900,
+      inventory: { fox_tail: 1, foundation_shard: 1 }, equip: { ...joined.equip, weapon: 'azure_steel_sword' },
+      quests: { ...foxPrereqs, q_fox: { state: 'active', kills: { demon_fox: 1 } } }, position: foxPosition });
+    const killedFox = xt.exportSave();
+    check(liveFoxes().length === 0, '妖狐关闭后载入进行中存档仍生成首领');
+    s.quests.onKill('demon_fox');
+    check(!s.quests.turnIn('q_fox'), '已有击杀的妖狐任务关闭仍交付');
+    const heldFox = xt.exportSave();
+    for (const field of ['quests', 'inventory', 'equip', 'stones']) same(heldFox[field], killedFox[field], `关闭妖狐丢失已有击杀或奖励 ${field}`);
+
+    flip('foxBoss', true);
+    check(s.portalOpen(bossPortal), '妖狐专用传送门没有恢复');
+    s = await load({ ...joined, ageUpdatedAt: xt.getState().time, inventory: { fox_tail: 1 },
+      quests: foxPrereqs, position: foxPosition });
+    check(s.quests.available('q_fox'), '妖狐任务没有恢复接取');
+    xt.acceptQuest('q_fox');
+    await xt.teleport('lingxi_path'); s = window.__scene;
+    check(liveFoxes().length > 0, '重新开放妖狐后首领没有恢复生成');
+    s.quests.onKill('demon_fox');
+    check(s.quests.complete('q_fox'), '重新开放妖狐后任务没有恢复推进');
+    check(xt.completeQuest('q_fox') && s.quests.state('q_fox') === 'done', '重新开放妖狐后无法交付');
+    const foxCompleted = xt.exportSave();
+    check(foxCompleted.quests.q_fox.kills.demon_fox === 1
+      && foxCompleted.inventory.foundation_shard >= 1 && foxCompleted.inventory.pillar_shard_1 >= 1
+      && Object.values(foxCompleted.equip).includes('azure_steel_sword'), '妖狐任务完成奖励缺失');
+    checked.push('foxBoss');
+
     // 所有开关关闭后读旧档：保存字段完整，存档的 true 不能越过发版门禁。
     const preserved = { ...joined, ageUpdatedAt: xt.getState().time, flags: Object.fromEntries(names.map(name => [name, true])),
-      quests: { ...joined.quests, q_daily_tianjian_2: { state: 'active', kills: {}, crafted: {} } }, dailyQuestResetDay: '2026-01-01',
-      inventory: { spirit_herb: 7, rabbit_fur: 3 }, gatherRespawnAt: { 'bamboo_forest:save-check': now + 999999999 },
+      quests: { ...foxCompleted.quests, q_daily_tianjian_2: { state: 'active', kills: {}, crafted: {} } }, dailyQuestResetDay: '2026-01-01',
+      inventory: { ...foxCompleted.inventory, spirit_herb: 7, rabbit_fur: 3 }, equip: foxCompleted.equip,
+      skills: foxCompleted.skills, stones: foxCompleted.stones, gatherRespawnAt: { 'bamboo_forest:save-check': now + 999999999 },
       position: { mapId: 'trial_lingfu_range', x: 64, y: 64 },
       pendingAlchemy: { recipeId: 'recipe_hp_pill', furnaceId: 'bronze_furnace', fire: {
         zoneWidth: 0.26, perfectWidth: 0.04, periodMs: 1200, zoneRandomPerBrew: true, zoneStart: 0.3, elapsedMs: 400, durationMs: 2000 } } };
     for (const name of names) xt.setFlag(name, false);
     await xt.loadSave(preserved); s = window.__scene;
     const restored = xt.exportSave();
-    for (const field of ['job', 'skills', 'hotbar', 'sectRank', 'sectContribution', 'inventory', 'learnedRecipes', 'pendingAlchemy',
+    for (const field of ['job', 'skills', 'hotbar', 'sectRank', 'sectContribution', 'inventory', 'equip', 'stones', 'learnedRecipes', 'pendingAlchemy',
       'gatherRespawnAt', 'quests', 'dailyQuestResetDay', 'sectGrowthState', 'seclusionHistory']) same(restored[field], preserved[field], `关闭后读档丢失 ${field}`);
     check(names.every(name => xt.getState().features[name] === false), '存档开关越过发版配置');
     check(s.map.objects.some(o => o.type === 'portal' && o.props.target === 'qingyun_village' && s.portalOpen(o)), '未发布试炼旧档没有返程');

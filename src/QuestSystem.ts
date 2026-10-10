@@ -61,7 +61,8 @@ export class QuestSystem {
   private featureAllowed(q: QuestDef) {
     const cls = classForQuest(q.id);
     return (!cls || classEntryEnabled(cls)) && (!q.daily || featureEnabled('sectDaily'))
-      && (q.id !== 'q_alchemy_intro' || featureEnabled('alchemyPhase1'));
+      && (q.id !== 'q_alchemy_intro' || featureEnabled('alchemyPhase1'))
+      && (q.id !== 'q_fox' || featureEnabled('foxBoss'));
   }
 
   private prereqsDone(q: QuestDef) {
@@ -155,6 +156,11 @@ export class QuestSystem {
         return { lines: lines('progress', notReady ? sc.notReady : sc.progress) };
       }
       if (q.giver === npcId && this.available(id)) return { lines: lines('offer', sc.accept), after: () => { this.accept(id); } };
+    }
+    const fox = QUESTS.q_fox;
+    if (!questId && fox && !featureEnabled('foxBoss') && this.state(fox.id) !== 'done'
+      && (fox.giver === npcId || fox.turnIn === npcId)) {
+      return { lines: [{ speaker: npc.name, text: FEATURE_UNAVAILABLE }] };
     }
     return { lines: npc.dialog.map(t => ({ speaker: npc.name, text: t })) };
   }

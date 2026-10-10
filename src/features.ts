@@ -1,7 +1,7 @@
 /** 发版配置只读取当前工程的快照，不随 @xt 的 shared/snapshot 数据模式切换。 */
 export const FEATURE_NAMES = [
   'fiveSectClasses', 'sectDaily', 'sectRanks', 'sectShopLibrary',
-  'sectDonations', 'seclusion', 'alchemyPhase1', 'v05Maps',
+  'sectDonations', 'seclusion', 'alchemyPhase1', 'v05Maps', 'foxBoss',
 ] as const;
 export type FeatureName = typeof FEATURE_NAMES[number];
 export const FEATURE_UNAVAILABLE = '暂未开放';

@@ -203,6 +203,7 @@ export class GameScene extends Phaser.Scene {
     for (const sp of this.map.trial ? [] : this.map.spawns) {
       const def = MONSTERS[sp.monster];
       if (!def) { console.warn(`[spawn] 没有怪物 ${sp.monster}`); continue; }
+      if (sp.monster === 'demon_fox' && !featureEnabled('foxBoss')) continue;
       // 首领区：接了 unlockQuest 才刷（任务系统 v0.3 接入，v0.2 先不刷）
       const zone = this.map.zones.find(z => sp.x >= z.x && sp.x <= z.x + z.w && sp.y >= z.y && sp.y <= z.y + z.h);
       if (zone?.props.unlockQuest && !this.quests.isActive(zone.props.unlockQuest)) continue;
@@ -521,9 +522,10 @@ export class GameScene extends Phaser.Scene {
     const z = this.map.zones.find(z => this.player.x >= z.x && this.player.x <= z.x + z.w && this.player.y >= z.y && this.player.y <= z.y + z.h);
     if (z?.name !== this.curZone) {
       this.curZone = z?.name;
-      if (z?.props.label) this.log(`进入 ${z.props.label}`, '#ffd0ff');
+      const foxClosed = z?.props.unlockQuest === 'q_fox' && !featureEnabled('foxBoss');
+      if (z?.props.label) this.log(foxClosed ? FEATURE_UNAVAILABLE : `进入 ${z.props.label}`, '#ffd0ff');
       const boss = this.mobs.find(m => m.def.isBoss && !m.dead && z && m.x >= z.x && m.x <= z.x + z.w);
-      if (boss && !this.bossIntroShown && z?.props.unlockQuest) { this.bossIntroShown = true; this.dialog.show(SCRIPTS[z.props.unlockQuest]?.bossIntro ?? [], null); }
+      if (!foxClosed && boss && !this.bossIntroShown && z?.props.unlockQuest) { this.bossIntroShown = true; this.dialog.show(SCRIPTS[z.props.unlockQuest]?.bossIntro ?? [], null); }
     }
     // 独立检查教学区，重叠 zone 也能触发；对白空闲后才记入存档并弹出。
     if (!this.dialog.open) for (const tutorialZone of this.map.zones) {
@@ -573,6 +575,7 @@ export class GameScene extends Phaser.Scene {
   private spawnSummon(owner: Monster, id: string, x: number, y: number, grantRewards: boolean, despawnWithOwner: boolean) {
     const def = MONSTERS[id];
     if (!def || !owner.active) return;
+    if (!featureEnabled('foxBoss') && (id === 'demon_fox' || owner.def.id === 'demon_fox')) return;
     // 召唤阵延迟到第 4 帧才刷怪；败北或离区后仍让首领动作正常结束，但不补刷随主清场的召唤物。
     if (despawnWithOwner && this.bossSummonsShouldDespawn(owner)) return;
     const m = new Monster(this, x, y, def);
@@ -726,7 +729,9 @@ export class GameScene extends Phaser.Scene {
     if (!m.grantRewards) return;
     const d = m.def;
     this.quests.onKill(d.id);
-    if (d.isBoss) this.time.delayedCall(600, () => this.dialog.show(SCRIPTS.q_fox?.bossDeath ?? [], null));
+    if (d.isBoss) this.time.delayedCall(600, () => {
+      if (d.id !== 'demon_fox' || featureEnabled('foxBoss')) this.dialog.show(SCRIPTS.q_fox?.bossDeath ?? [], null);
+    });
     if (d.exp > 0) this.applyExp(this.prog.gainExp(d.exp, d.level));
     const t = d.dropTable ? DROPS[d.dropTable] : null;
     if (!t) return;
@@ -841,6 +846,14 @@ export class GameScene extends Phaser.Scene {
   /** 测试覆盖即时撤下旧回调；存档身份、材料、贡献与待炼炉次均保留。 */
   applyFeatureFlags() {
     this.dialog?.dismiss(); this.skillWindow?.close();
+    if (!featureEnabled('foxBoss')) {
+      // 只撤下战斗，不触发死亡结算，也不改任务击杀、背包或已领取奖励。
+      for (const m of this.mobs) if (m.def.id === 'demon_fox' || m.owner?.def.id === 'demon_fox') {
+        // 已死首领仍有重生计时器；销毁后原回调会因 inactive 放弃重生。
+        if (m.dead && !m.despawning) m.destroy();
+        else m.despawn();
+      }
+    }
     if (!featureEnabled('alchemyPhase1')) {
       this.alchemy?.suspend(); this.gathering?.update(0, false, true);
     }
@@ -870,7 +883,7 @@ export class GameScene extends Phaser.Scene {
         this.playPropAnimation(visual.art, shut ? 'prop_portal_closed' : 'prop_portal_open');
       else visual.art.setFillStyle(shut ? 0x888888 : 0x8fe3ff, 0.55).setStrokeStyle(3, shut ? 0x555555 : 0x3a9fd8);
       const text = visual.object.props.featureExit ? '回青云村 ↑'
-        : mapEntryOpen(visual.object.props.target, this.map.id) ? '' : FEATURE_UNAVAILABLE;
+        : this.portalFeatureOpen(visual.object) ? '' : FEATURE_UNAVAILABLE;
       if (text) (visual.label ??= this.portalStatusLabel(visual.object, text)).setText(text);
       else { visual.label?.destroy(); visual.label = undefined; }
     }
@@ -940,7 +953,7 @@ export class GameScene extends Phaser.Scene {
         if (!shut) this.tweens.add({ targets: g, scaleX: 0.85, yoyo: true, repeat: -1, duration: 700 });
         art = g;
       }
-      const text = o.props.featureExit ? '回青云村 ↑' : mapEntryOpen(o.props.target, this.map.id) ? '' : FEATURE_UNAVAILABLE;
+      const text = o.props.featureExit ? '回青云村 ↑' : this.portalFeatureOpen(o) ? '' : FEATURE_UNAVAILABLE;
       const label = text ? this.portalStatusLabel(o, text) : undefined;
       this.portalVisuals.push({ object: o, art, label });
     } else if (o.type === 'chest') {
@@ -986,8 +999,15 @@ export class GameScene extends Phaser.Scene {
       { fontSize: '13px', color: '#fff8d0', stroke: '#3b2a20', strokeThickness: 3 }).setOrigin(0.5, 1).setDepth(4);
   }
 
+  private portalFeatureOpen(o: { props: any }) {
+    // 普通灵溪道入口和旧档返程照常；仅标记为首领专用的妖狐入口随开关关闭。
+    if (!featureEnabled('foxBoss') && o.props.bossOnly
+      && (o.props.target === 'lingxi_path' || o.props.unlockQuest === 'q_fox')) return false;
+    return mapEntryOpen(o.props.target, this.map.id);
+  }
+
   portalOpen(o: { props: any }) {
-    if (!mapEntryOpen(o.props.target, this.map.id)) return false;
+    if (!this.portalFeatureOpen(o)) return false;
     if (this.prog.level < Number(o.props.reqLevel ?? 0)) return false;
     if (o.props.locked) return false;
     if (o.props.unlockQuest && this.quests.state(o.props.unlockQuest) !== 'done') return false;
@@ -1003,7 +1023,7 @@ export class GameScene extends Phaser.Scene {
       if (!nearX || Math.abs(o.y - p.y) > 40) continue;
       if (this.trialObjects?.interact(o)) return true;
       if (o.type === 'portal') {
-        if (!mapEntryOpen(o.props.target, this.map.id)) { this.log(FEATURE_UNAVAILABLE, '#aaaaaa'); return true; }
+        if (!this.portalFeatureOpen(o)) { this.log(FEATURE_UNAVAILABLE, '#aaaaaa'); return true; }
         if (this.prog.level < Number(o.props.reqLevel ?? 0)) { this.log(t('sys.portal_level', { lv: o.props.reqLevel }), '#aaaaaa'); return true; }
         if (!this.portalOpen(o)) { this.log(t('sys.portal_locked'), '#aaaaaa'); return true; }
         this.travelToMap(o.props.target, o.props.targetPortal);
@@ -1705,6 +1725,9 @@ export class GameScene extends Phaser.Scene {
       else m.text.setText(mk ?? '').setColor(mk === '…' ? '#cccccc' : '#ffd23a');
     }
     const tl: string[] = [];
+    if (!featureEnabled('foxBoss') && this.quests.isActive('q_fox')) {
+      tl.push(`【${questName(QUESTS_REF.q_fox)}】 ${FEATURE_UNAVAILABLE}`);
+    }
     for (const id of this.quests.activeIds) {
       const def = QUESTS_REF[id], q = this.quests.objectiveProgress(def);
       tl.push(def.daily && this.quests.complete(id)
