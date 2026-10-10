@@ -132,7 +132,11 @@ import quests from '@xt/balance/quests.json';
 import realms from '@xt/balance/realms.json';
 import questScript from '@xt/design/02_新手任务.md?raw';
 
-export interface NpcDef { id: string; name: string; map: string; sprite: string; dialog: string[]; quests: string[]; shop?: boolean; }
+export interface FerryRoute {
+  id: string; label: string; targetMap: string; targetPortal?: string | null; cost: number;
+  reqLevel?: number; unlockQuest?: string; phaseMin?: number; phaseMax?: number;
+}
+export interface NpcDef { id: string; name: string; map: string; sprite: string; dialog: string[]; quests: string[]; shop?: boolean; ferryRoutes?: FerryRoute[]; }
 export interface QuestObjective { type: 'kill' | 'collect' | 'reach' | 'breakthrough' | 'talk' | 'craft'; target?: string; count?: number; consume?: boolean; map?: string; realm?: string; }
 export interface QuestDef {
   id: string; name: string; giver: string; turnIn: string; reqLevel: number; objectives: QuestObjective[];
@@ -143,6 +147,8 @@ export interface QuestDef {
   }; next: string | null;
 }
 export const NPCS: Record<string, NpcDef> = Object.fromEntries((npcs as NpcDef[]).map(n => [n.id, n]));
+// 锁定原因需要任务名称，未来阶段的任务也保留名称供界面展示。
+export const QUEST_NAMES: Record<string, string> = Object.fromEntries((quests as QuestDef[]).map(q => [q.id, q.name]));
 export const QUESTS: Record<string, QuestDef> = Object.fromEntries((quests as QuestDef[]).filter(q => inPhase(q)).map(q => [q.id, q]));
 export const QUEST_ORDER: string[] = Object.keys(QUESTS);
 export const REALMS = realms as any[];

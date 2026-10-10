@@ -4,7 +4,7 @@ import type { Progress } from './Progress';
 import { HOTBAR_SLOTS, SKILLS, describeSkill, skillsForJob, typeLabel } from './skills';
 import { hasHud, hudSpec, sliced, HUD_FONT, INK, INK_60, PAPER, RED, NAVY } from './hud';
 
-interface DialogChoice { label: string; onSelect: () => void; }
+interface DialogChoice { label: string; onSelect: () => void; disabled?: boolean; reason?: string; }
 
 /** 冒险岛式 NPC 对话框：底部居中，左侧头像，Z / 空格 / 回车 / ↑ 翻页 */
 export class DialogBox {
@@ -67,22 +67,34 @@ export class DialogBox {
   choose(line: Line, portraitKey: string | null, choices: DialogChoice[]) {
     this.show([line], portraitKey);
     this.choices = choices;
-    choices.forEach((choice, i) => {
-      const x = -140 + i * 180, y = 40;
-      const bg = this.scene.add.rectangle(x, y, 170, 30, 0xece0c4).setStrokeStyle(1, 0x6b4b2a)
-        .setName(`dialog-choice:${i}`).setInteractive({ useHandCursor: true });
-      const label = this.scene.add.text(x, y, `${i + 1}. ${choice.label}`, { fontFamily: HUD_FONT, fontSize: '14px', color: INK }).setOrigin(0.5);
-      bg.on('pointerdown', () => this.selectChoice(i));
-      bg.on('pointerover', () => bg.setFillStyle(0xe0cd9e));
-      bg.on('pointerout', () => bg.setFillStyle(0xece0c4));
+    // 选项在对白框上方纵排，原因随行换行，不挤占 NPC 台词或底部提示。
+    const rows = choices.map((choice, i) => {
+      const text = `${i + 1}. ${choice.label}${choice.reason ? `\n${choice.reason}` : ''}`;
+      const label = this.scene.add.text(-224, 0, text, { fontFamily: HUD_FONT, fontSize: '14px',
+        color: choice.disabled ? INK_60 : INK, wordWrap: { width: 560, useAdvancedWrap: true } }).setOrigin(0, 0.5);
+      return { choice, label, height: Math.max(30, label.height + 12) };
+    });
+    let top = -90 - rows.reduce((sum, row) => sum + row.height + 6, 0);
+    rows.forEach(({ choice, label, height }, i) => {
+      const y = top + height / 2;
+      const bg = this.scene.add.rectangle(60, y, 592, height, choice.disabled ? 0xd4cec0 : 0xece0c4)
+        .setStrokeStyle(1, choice.disabled ? 0xaaa399 : 0x6b4b2a).setName(`dialog-choice:${i}`);
+      label.setY(y);
+      if (!choice.disabled) {
+        bg.setInteractive({ useHandCursor: true });
+        bg.on('pointerdown', () => this.selectChoice(i));
+        bg.on('pointerover', () => bg.setFillStyle(0xe0cd9e));
+        bg.on('pointerout', () => bg.setFillStyle(0xece0c4));
+      }
       this.c.add([bg, label]); this.choiceObjects.push(bg, label);
+      top += height + 6;
     });
     this.hint.setText('点击或按数字选择 · Esc 告辞');
   }
 
   selectChoice(index: number) {
     const choice = this.open ? this.choices[index] : undefined;
-    if (!choice) return;
+    if (!choice || choice.disabled) return;
     this.close();
     choice.onSelect();
   }

@@ -19,6 +19,7 @@ import { Seclusion, realDay } from '../Seclusion';
 import { LIFESPAN } from '../data';
 import { SectTrialObjects } from './SectTrialObjects';
 import { StealthVision } from './StealthVision';
+import { ferryLockedReason } from '../Ferry';
 
 const MAP_FALLBACK: Record<string, string> = {};
 type Drop = Phaser.Physics.Arcade.Sprite & { itemId: string; count: number; bornAt: number; label?: Phaser.GameObjects.Text; shadow?: Phaser.GameObjects.Ellipse; floatTw?: Phaser.Tweens.Tween; landed?: boolean };
@@ -41,12 +42,6 @@ const QS = typeof location !== 'undefined' ? new URLSearchParams(location.search
 const DEBUG_TRIAL = QS.get('debug') === 'trial';
 /** 试炼结束后传回的位置：传功长老身边 */
 const TRIAL_RETURN = { map: 'tianjian_sect', x: 2476, y: 768 };
-
-/** npcs.json 目前只有通用对白，没有航线字段；等策划补表后改为读表。 */
-const FERRY_ROUTES = [
-  { label: '万妖林', map: 'wanyao_outer_1' },
-  { label: '天剑宗', map: 'tianjian_sect' },
-];
 
 const QUEST_MARK_KEYS = ['ui_hud_quest_available', 'ui_hud_quest_turnin', 'ui_hud_quest_progress'];
 
@@ -807,7 +802,17 @@ export class GameScene extends Phaser.Scene {
     if (npcId === 'ferry_master') {
       this.player.body.setVelocityX(0);
       this.dialog.choose({ speaker: npc.name, text: npc.dialog[0] ?? '' }, npc.sprite, [
-        ...FERRY_ROUTES.map(route => ({ label: route.label, onSelect: () => this.travelToMap(route.map) })),
+        ...(npc.ferryRoutes ?? []).map(route => {
+          const reason = ferryLockedReason(route, this.prog);
+          const label = `${t(route.label)}${route.cost > 0 ? `（${route.cost} ${t('ui.stone')}）` : ''}`;
+          return { label, disabled: !!reason, reason, onSelect: () => {
+            const locked = ferryLockedReason(route, this.prog);
+            if (locked) { this.log(locked, '#aaaaaa'); return; }
+            if (this.travelling) return;
+            this.prog.stones -= route.cost;
+            this.travelToMap(route.targetMap, route.targetPortal ?? undefined);
+          } };
+        }),
         { label: t('ui.dialog.close'), onSelect: () => {} },
       ]);
       return;

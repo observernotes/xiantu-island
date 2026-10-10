@@ -2,12 +2,14 @@ import pacing from '@xt/balance/solo_pacing.json';
 import expCurve from '@xt/balance/exp_curve.json';
 import realms from '@xt/balance/realms.json';
 import rawQuests from '@xt/balance/quests.json';
+import rawNpcs from '@xt/balance/npcs.json';
 import breakthrough from '@xt/balance/breakthrough.json';
 import monsters from '@xt/balance/monsters.json';
 import youyingMap from '@xt/maps/trial_youying_vault.json';
 import lingfuMap from '@xt/maps/trial_lingfu_range.json';
 import shadowArt from '@xt/art/sprites/fx_shadow_zone.anims.json';
-import { GAME_PHASE, inPhase, NPCS, QUESTS, QUEST_ORDER } from './data';
+import { GAME_PHASE, inPhase, NPCS, QUESTS, QUEST_NAMES, QUEST_ORDER, t } from './data';
+import { ferryLockedReason } from './Ferry';
 import { Progress } from './Progress';
 import { QuestSystem } from './QuestSystem';
 import { realDay, Seclusion } from './Seclusion';
@@ -37,6 +39,35 @@ globalThis.localStorage = {
   key: (index: number) => Object.keys(saved)[index] ?? null,
   get length() { return Object.keys(saved).length; },
 };
+
+// G8：航线来自 NPC 原表；叠加门槛只能提示第一个未满足条件，任务必须交付完成。
+{
+  const routes = NPCS.ferry_master.ferryRoutes;
+  const rawRoutes = rawNpcs.find(n => n.id === 'ferry_master')?.ferryRoutes;
+  // 旧发版快照还未登记航线；只有读到新表才检查实际数据，其余门槛照常验证。
+  same(routes, rawRoutes, '航线顺序与 NPC 原表一致');
+  same(QUEST_NAMES, Object.fromEntries(rawQuests.map(q => [q.id, q.name])), '锁定任务名称包含完整原表的所有阶段');
+  const route = { id: '__gate_test', label: 'ferry.route_wanyao_outer_1', targetMap: 'wanyao_outer_1',
+    targetPortal: 'test_dock', cost: 0, phaseMin: GAME_PHASE + 1, reqLevel: 10, unlockQuest: 'q_awaken' };
+  const p = new Progress(); p.level = 1;
+  eq(ferryLockedReason(route, p), t('sys.portal_locked'), '阶段门槛优先于等级与任务');
+  route.phaseMin = GAME_PHASE;
+  eq(ferryLockedReason(route, p), t('sys.portal_level', { lv: 10 }), '等级门槛优先于任务');
+  p.level = 10;
+  const questReason = t('ferry.locked_quest', { quest: QUESTS.q_awaken.name });
+  eq(ferryLockedReason(route, p), questReason, '任务未接取时显示前置名称');
+  p.quests.q_awaken = { state: 'active', kills: {} };
+  eq(ferryLockedReason(route, p), questReason, '任务进行中不能登船');
+  p.quests.q_awaken.state = 'done';
+  eq(ferryLockedReason(route, p), undefined, '等级与阶段等于下限且任务已交付时开放');
+  eq(ferryLockedReason({ ...route, phaseMax: GAME_PHASE - 1 }, p), t('sys.portal_locked'), '阶段上限已过仍灰显');
+  eq(ferryLockedReason({ ...route, phaseMax: GAME_PHASE }, p), undefined, '阶段上限含边界');
+  eq(ferryLockedReason({ ...route, targetMap: '__missing_map' }, p), t('sys.portal_locked'), '缺目的地图不能启航');
+  p.stones = 5;
+  eq(ferryLockedReason({ ...route, cost: 6 }, p), t('ui.shop.not_enough'), '付费航线先确认灵石充足');
+  eq(ferryLockedReason({ ...route, cost: 5 }, p), undefined, '灵石等于航费可以启航');
+  eq(ferryLockedReason({ id: '__free', label: '', targetMap: route.targetMap, cost: 0 }, p), undefined, '可选门槛缺省不限制');
+}
 
 // G2：独立前置与 next 链都要已完成；等级锁不应泄漏未满足前置的任务。
 {
@@ -492,4 +523,4 @@ const actualPoints = [{ x: Number(pathProps.startX), y: path.y }, { x: Number(pa
   eq(last.x + last.width, x + width, '拼片恰好覆盖到区域右端');
 }
 
-console.log(`v0.5 logic tests ok: ${assertions} assertions (G2, seclusion, contribution, saves, patrol, vision, shadow)`);
+console.log(`v0.5 logic tests ok: ${assertions} assertions (G2/G8, seclusion, contribution, saves, patrol, vision, shadow)`);
