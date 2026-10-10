@@ -48,7 +48,7 @@ export class QuestSystem {
   }
 
   /** 06 文档一期入门仍归孙郎中；旧 NPC 表未挂任务时只补这一项入口。 */
-  private npcQuestIds(npcId: string) {
+  npcQuestIds(npcId: string) {
     const ids = [...(NPCS[npcId]?.quests ?? [])];
     const intro = QUESTS.q_alchemy_intro;
     if (intro && (intro.giver === npcId || intro.turnIn === npcId) && !ids.includes(intro.id)) ids.push(intro.id);

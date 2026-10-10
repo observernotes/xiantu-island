@@ -5,10 +5,10 @@ import { MONSTERS, DROPS, ITEMS, TILED_MAPS, ATLASES, MAP_AREA, AREAS, SKILL_ICO
 import { QuestSystem } from '../QuestSystem';
 import type { DailyQuestReward } from '../DailyQuests';
 import { QUESTS as QUESTS_REF } from '../data';
-import { DialogBox, SkillBar, SkillWindow } from '../UI';
+import { DialogBox, SkillBar, SkillWindow, type DialogChoice } from '../UI';
 import { AltarTrial, type TrialResult } from './AltarTrial';
 import { TRIALS, TRIAL_BY_MAP, REALMS, BREAKTHROUGH, SECT_SECLUSION, inPhase, type TrialDef } from '../data';
-import { preloadHud, registerHudFonts, hasHud, sliced, setSlicedWidth, HudBar, hudText, hudSpec, HUD_FONT, INK, INK_60, PAPER } from '../hud';
+import { preloadHud, registerHudFonts, hasHud, sliced, setSlicedWidth, HudBar, hudText, hudSpec, sectRankIcon, HUD_FONT, INK, INK_60, PAPER } from '../hud';
 import { SkillCombat } from '../SkillCombat';
 import { HOTBAR_SLOTS, SKILLS } from '../skills';
 import { classDef, classForQuest } from '../classes';
@@ -26,6 +26,7 @@ import { Gathering } from './Gathering';
 import { interactionPrompt } from '../InteractionPrompt';
 import { AlchemySystem, ALCHEMY_RULES } from '../Alchemy';
 import { AlchemyPanel, preloadAlchemy, registerAlchemy } from '../AlchemyPanel';
+import { SectGrowth, newSectTransactionId } from '../SectGrowth';
 
 const MAP_FALLBACK: Record<string, string> = {};
 type Drop = Phaser.Physics.Arcade.Sprite & { itemId: string; count: number; bornAt: number; label?: Phaser.GameObjects.Text; shadow?: Phaser.GameObjects.Ellipse; floatTw?: Phaser.Tweens.Tween; landed?: boolean };
@@ -57,6 +58,7 @@ export class GameScene extends Phaser.Scene {
   map!: BuiltMap;
   player!: Player;
   prog!: Progress;
+  sectGrowth!: SectGrowth;
   mobs: Monster[] = [];
   drops!: Phaser.Physics.Arcade.Group;
   keys!: Record<string, Phaser.Input.Keyboard.Key>;
@@ -76,6 +78,8 @@ export class GameScene extends Phaser.Scene {
   alchemySystem!: AlchemySystem;
   alchemy!: AlchemyPanel;
   private interactionPrompts: { object: MapObj; prompt: Phaser.GameObjects.Container; marker?: Phaser.GameObjects.Image | Phaser.GameObjects.Text }[] = [];
+  private sectTitle!: Phaser.GameObjects.Text;
+  private sectBadge!: Phaser.GameObjects.Image;
 
   constructor() { super('game'); (window as any).__scene = this; }
 
@@ -121,6 +125,7 @@ export class GameScene extends Phaser.Scene {
     }
     if (!DEBUG_CLASS && new URLSearchParams(location.search).get('reset') === '1' && !this.registry.get('progress')) Progress.reset();
     this.prog = this.registry.get('progress') ?? (DEBUG_CLASS ? this.createDebugClass() : Progress.load());
+    this.sectGrowth = new SectGrowth(this.prog);
     this.quests = new QuestSystem(this.prog);
     const trialComplete = (id: string) => this.quests.onTrialComplete(id);
     this.events.on('trial:complete', trialComplete);
@@ -220,6 +225,9 @@ export class GameScene extends Phaser.Scene {
 
     this.hud = this.add.graphics().setScrollFactor(0).setDepth(100);
     this.hudText = this.add.text(0, 0, '', { fontFamily: 'sans-serif', fontSize: '14px', color: '#ffffff' }).setScrollFactor(0).setDepth(101);
+    this.sectTitle = this.add.text(1264, 164, '', { fontFamily: HUD_FONT, fontSize: '13px', color: INK,
+      backgroundColor: '#faf2dcee', padding: { x: 6, y: 4 }, lineSpacing: 3 }).setOrigin(1, 0).setScrollFactor(0).setDepth(101).setVisible(false);
+    this.sectBadge = this.add.image(0, 176, '__DEFAULT').setDisplaySize(24, 24).setScrollFactor(0).setDepth(101).setVisible(false);
     this.debugText = this.add.text(16, 200, '', { fontFamily: 'monospace', fontSize: '12px', color: '#1d2a3a', backgroundColor: '#ffffffaa', padding: { x: 6, y: 4 } }).setScrollFactor(0).setDepth(100).setVisible(false);
     this.add.text(16, 14, `${this.map.name}${this.map.safeZone ? '（安全区）' : ''}`, { fontFamily: 'sans-serif', fontSize: '18px', color: '#1d2a3a', stroke: '#ffffff', strokeThickness: 4 }).setScrollFactor(0).setDepth(100);
     this.add.text(1264, 14,
@@ -916,7 +924,7 @@ export class GameScene extends Phaser.Scene {
     this.talkTo(id); return true;
   }
 
-  talkTo(npcId: string, questId?: string) {
+  talkTo(npcId: string, questId?: string, skipMenu = false) {
     const npc = NPCS[npcId]; if (!npc) return;
     if (this.trial || this.map.trial || TRIAL_BY_MAP[this.map.id]) return;   // 试炼图里的长老虚影只护法，不对话
     if (npcId === 'ferry_master') {
@@ -940,11 +948,12 @@ export class GameScene extends Phaser.Scene {
       return;
     }
     const dailyIds = this.quests.npcDailyQuestIds(npcId);
-    if (!questId && dailyIds.length) {
+    const services = this.sectGrowth.services(npcId);
+    if (!questId && !skipMenu && (dailyIds.length || services.length)) {
       this.player.body.setVelocityX(0);
-      const ordinaryIds = npc.quests.filter(id => QUESTS_REF[id] && !QUESTS_REF[id].daily
+      const ordinaryIds = this.quests.npcQuestIds(npcId).filter(id => QUESTS_REF[id] && !QUESTS_REF[id].daily
         && (this.quests.available(id) || this.quests.isActive(id)));
-      this.dialog.choose({ speaker: npc.name, text: t('ui.quests') }, npc.sprite, [
+      this.dialog.choose({ speaker: npc.name, text: t(dailyIds.length ? 'ui.quests' : 'sect.ui.title') }, npc.sprite, [
         ...dailyIds.map(id => {
           const q = QUESTS_REF[id], state = this.quests.state(id);
           const disabled = !this.quests.isActive(id) && !this.quests.available(id);
@@ -953,11 +962,17 @@ export class GameScene extends Phaser.Scene {
             onSelect: () => this.talkTo(npcId, id) };
         }),
         ...ordinaryIds.map(id => ({ label: questName(QUESTS_REF[id]), onSelect: () => this.talkTo(npcId, id) })),
+        ...services.map(service => ({ label: t(service.type === 'sect_promotion' ? 'sect.promotion.menu'
+          : service.type === 'sect_library' ? 'sect.library.menu' : 'sect.shop.menu'),
+          reason: service.allowed ? undefined : t(service.key),
+          onSelect: () => service.type === 'sect_promotion' ? this.openSectPromotion(npcId)
+            : this.openSectCatalog(npcId, service.type) })),
+        ...(!dailyIds.length ? [{ label: t('ui.dialog.next'), onSelect: () => this.talkTo(npcId, undefined, true) }] : []),
         { label: t('ui.dialog.close'), onSelect: () => {} },
       ]);
       return;
     }
-    const offer = QUESTS_REF[questId ?? '']?.daily ? null : this.trialOfferFor(npcId);
+    const offer = !questId ? this.trialOfferFor(npcId) : null;
     if (offer) { this.offerTrial(npcId, offer); return; }
     const talked = this.quests.talk(npcId, questId);
     const after = talked.after;
@@ -981,6 +996,78 @@ export class GameScene extends Phaser.Scene {
       this.prog.save();
       if (npcId === 'doctor_sun' && this.quests.state('q_alchemy_intro')) this.openAlchemy('bronze_furnace');
     }, (cue, next) => this.playCue(cue, next));
+  }
+
+  private sectOverview() {
+    const identity = this.sectGrowth.identity();
+    return [identity?.title ? t('sect.ui.rank', { title: identity.title }) : '',
+      t('sect.ui.contribution', { contribution: this.prog.sectContribution })].filter(Boolean).join('\n');
+  }
+
+  openSectPromotion(npcId: string) {
+    const npc = NPCS[npcId]; if (!npc) return;
+    const offer = this.sectGrowth.promotion(npcId);
+    const conditions = typeof offer.requiredContribution === 'number' && Number.isInteger(offer.requiredContribution) && offer.requiredRealmName
+      ? t('sect.ui.requirements', { contribution: offer.requiredContribution, realm: offer.requiredRealmName }) : '';
+    const reason = [conditions, conditions ? t('sect.ui.promotion_free') : '',
+      offer.ok && offer.dialogueKeys?.offer ? t(offer.dialogueKeys.offer) : t(offer.key)].filter(Boolean).join('\n');
+    this.dialog.choose({ speaker: npc.name, text: this.sectOverview() || t('sect.ui.title') }, npc.sprite, [
+      { label: offer.targetRankName ? `${t('sect.ui.confirm')}（${offer.targetRankName}）` : t('sect.ui.confirm'), disabled: !offer.ok, reason, onSelect: () => {
+        const target = offer.target; if (!target) return;
+        const transactionId = newSectTransactionId();
+        const promote = (acceptOath = false) => {
+          const result = this.sectGrowth.promote(npcId, target, transactionId, acceptOath);
+          this.sectResult(npcId, result, {});
+        };
+        if (offer.mode === 'oath') {
+          const keys = offer.dialogueKeys;
+          this.dialog.choose({ speaker: npc.name, text: keys?.question ? t(keys.question) : t('sect.ui.config_pending') }, npc.sprite, [
+            { label: keys?.accept ? t(keys.accept) : t('sect.ui.confirm'), onSelect: () => promote(true) },
+            { label: keys?.defer ? t(keys.defer) : t('sect.ui.cancel'), onSelect: () => {} },
+          ]);
+        } else promote();
+      } },
+      { label: t('sect.ui.cancel'), onSelect: () => {} },
+    ]);
+  }
+
+  openSectCatalog(npcId: string, service: 'sect_shop' | 'sect_library') {
+    const npc = NPCS[npcId]; if (!npc) return;
+    const catalog = this.sectGrowth.catalog(npcId, service);
+    const prefix = service === 'sect_library' ? 'sect.library' : 'sect.shop';
+    const rankOrder = this.sectGrowth.config.ranks.rules.rankOrder;
+    const entries = [...catalog.entries].sort((a, b) => rankOrder.indexOf(a.reqRank) - rankOrder.indexOf(b.reqRank));
+    const choices: DialogChoice[] = entries.map(entry => {
+      const preview = entry.costContribution !== null
+        ? t(`${prefix}.confirm`, { contribution: entry.costContribution, item: entry.name }) : '';
+      const rankLabel = rankOrder.includes(entry.reqRank) ? entry.rankName : '';
+      return { label: rankLabel ? `${entry.name}（${rankLabel}）` : entry.name, disabled: !entry.ok,
+        reason: [preview, entry.ok ? '' : t(entry.key, { rank: entry.rankName })].filter(Boolean).join('\n'),
+        onSelect: () => {
+          const transactionId = newSectTransactionId();
+          this.dialog.choose({ speaker: npc.name, text: this.sectOverview() }, npc.sprite, [
+            { label: t('sect.ui.confirm'), reason: preview, onSelect: () => {
+              const current = this.sectGrowth.catalog(npcId, service).entries.find(row => row.itemId === entry.itemId);
+              if (current && (current.costContribution !== entry.costContribution || current.reqRank !== entry.reqRank)) {
+                this.openSectCatalog(npcId, service); return;
+              }
+              const result = this.sectGrowth.exchange(npcId, service, entry.itemId, transactionId);
+              this.sectResult(npcId, result, { item: entry.name });
+            } },
+            { label: t('sect.ui.cancel'), onSelect: () => this.openSectCatalog(npcId, service) },
+          ]);
+        } };
+    });
+    if (!choices.length) choices.push({ label: t(catalog.key || 'sect.ui.config_pending'), disabled: true, onSelect: () => {} });
+    choices.push({ label: t('ui.dialog.close'), onSelect: () => {} });
+    this.dialog.choose({ speaker: npc.name, text: `${t(`${prefix}.menu`)}\n${t('sect.ui.contribution', { contribution: this.prog.sectContribution })}` }, npc.sprite, choices);
+  }
+
+  private sectResult(npcId: string, result: { ok: boolean; key: string; repeated?: boolean }, vars: Record<string, string>) {
+    const text = t(result.key, { ...vars, title: this.sectGrowth.identity()?.title ?? '' });
+    if (result.ok && !result.repeated) this.log(text, '#ffd23a');
+    const npc = NPCS[npcId];
+    this.dialog.show([{ speaker: npc?.name ?? null, text }], npc?.sprite ?? null);
   }
 
   applyExp(r: { gained: number; levels: number; blocked: boolean; overflowed?: number; overflowFilled?: boolean }) {
@@ -1328,6 +1415,12 @@ export class GameScene extends Phaser.Scene {
 
   private drawHudTail() {
     const pr = this.prog;
+    const identity = this.sectGrowth.identity();
+    this.sectTitle.setVisible(!!identity).setText(identity
+      ? `${identity.title || t('sect.ui.invalid_rank')}\n${t('sect.ui.contribution', { contribution: pr.sectContribution })}` : '');
+    const badge = identity?.valid ? sectRankIcon(this, identity.icon) : null;
+    this.sectBadge.setVisible(!!badge);
+    if (badge) this.sectBadge.setTexture(badge.texture, badge.frame).setDisplaySize(24, 24).setX(1264 - this.sectTitle.width - 18);
     this.skillBar.draw(pr.skillsUnlocked, this.time.now, pr.hotbar, this.combat.cds, pr);
     for (const m of this.npcMarks) {
       const mk = this.quests.mark(m.id);

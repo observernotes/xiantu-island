@@ -5,7 +5,7 @@ import type { Progress } from './Progress';
 import { HOTBAR_SLOTS, SKILLS, describeSkill, typeLabel } from './skills';
 import { hasHud, hudSpec, sliced, HUD_FONT, INK, INK_60, PAPER, RED, NAVY } from './hud';
 
-interface DialogChoice { label: string; onSelect: () => void; disabled?: boolean; reason?: string; }
+export interface DialogChoice { label: string; onSelect: () => void; disabled?: boolean; reason?: string; }
 
 /** 冒险岛式 NPC 对话框：底部居中，左侧头像，Z / 空格 / 回车 / ↑ 翻页 */
 export class DialogBox {
@@ -64,8 +64,18 @@ export class DialogBox {
     this.render();
   }
 
-  /** 航线和日常等少量选项：点击或按对应数字选择，保留现有对白框。 */
+  /** 数字键只支持 1–5；较长目录每页三项，再放前后页，保留现有对白框。 */
   choose(line: Line, portraitKey: string | null, choices: DialogChoice[]) {
+    this.choosePage(line, portraitKey, choices, 0);
+  }
+
+  private choosePage(line: Line, portraitKey: string | null, all: DialogChoice[], page: number) {
+    const pages = Math.ceil(all.length / 3);
+    const choices = all.length <= 5 ? all : [
+      ...all.slice(page * 3, page * 3 + 3),
+      ...(page > 0 ? [{ label: `‹ ${page}/${pages}`, onSelect: () => this.choosePage(line, portraitKey, all, page - 1) }] : []),
+      ...(page + 1 < pages ? [{ label: `› ${page + 2}/${pages}`, onSelect: () => this.choosePage(line, portraitKey, all, page + 1) }] : []),
+    ];
     this.show([line], portraitKey);
     this.choices = choices;
     // 选项在对白框上方纵排，原因随行换行，不挤占 NPC 台词或底部提示。

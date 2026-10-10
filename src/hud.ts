@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import assets from './gen/assets.json';
 
 /**
  * HUD 精修素材（art/icons/ui/hud/，README 与 hud_ui.json）。
@@ -21,6 +22,9 @@ const CULT_IMAGES = ['ui_bar_cultivation_frame', 'ui_bar_cultivation', 'ui_bar_c
 export const HUD_FONTS = ['ui_hud_font_white', 'ui_hud_font_crit', 'ui_hud_font_hurt'];
 
 export function preloadHud(scene: Phaser.Scene) {
+  // 清单只登记转正后的实际文件，待合并徽记不发起加载请求。
+  for (const icon of (assets as { sectRankIcons?: { key: string; path: string }[] }).sectRankIcons ?? [])
+    scene.load.image(icon.key, icon.path);
   scene.load.json('hud_ui', `${HUD_DIR}/hud_ui.json`);
   scene.load.json('cult_slices', 'art/icons/ui/ui_bar_cultivation.slices.json');
   scene.load.json('bestiary_ui', 'art/icons/ui/bestiary/bestiary_ui.json');
@@ -32,6 +36,15 @@ export function preloadHud(scene: Phaser.Scene) {
     scene.load.image(k, `art/icons/ui/alchemy/${k}.png`);
   for (const k of CULT_IMAGES) scene.load.image(k, `art/icons/ui/${k}.png`);
   for (const k of HUD_FONTS) { scene.load.image(k, `${HUD_DIR}/fonts/${k}.png`); scene.load.json(`${k}_data`, `${HUD_DIR}/fonts/${k}.json`); }
+}
+
+/** 配表徽记存在才展示；单图或已加载图集均可，缺图由调用方保留称号文字。 */
+export function sectRankIcon(scene: Phaser.Scene, key: string | undefined): { texture: string; frame?: string } | null {
+  if (!key) return null;
+  if (scene.textures.exists(key)) return { texture: key };
+  for (const atlas of ['sect_rank_v05', 'icons_items'])
+    if (scene.textures.exists(atlas) && scene.textures.get(atlas).has(key)) return { texture: atlas, frame: key };
+  return null;
 }
 
 /** sync 只拷 png/json，位图字用 json 里的 xml 字段注册（README「位图字加载」） */

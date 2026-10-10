@@ -35,7 +35,20 @@ const skillIcons = [...new Set(skills.map(s => s.icon).filter(Boolean))].sort().
   return [{ key, path: `art/${file}` }];
 });
 if (missingSkillIcons.length) console.warn('[sync] 缺技能 @64 图标，跳过（退回 32px 图集或占位框）：', missingSkillIcons.join('、'));
+// 职位徽记只从已拷出的正式 icons 查找，_pending 从不进入清单。
+const rankKeys = new Set(JSON.parse(fs.readFileSync(path.join(root, 'balance/sect_ranks.json'), 'utf8')).ranks.map(r => r.icon).filter(Boolean));
+const sectRankIcons = [];
+function findRankIcons(dir) {
+  if (!fs.existsSync(dir)) return;
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
+    const file = path.join(dir, entry.name);
+    if (entry.isDirectory()) findRankIcons(file);
+    else if (entry.name.endsWith('.png') && rankKeys.has(entry.name.slice(0, -4)))
+      sectRankIcons.push({ key: entry.name.slice(0, -4), path: `art/${path.relative(out, file).split(path.sep).join('/')}` });
+  }
+}
+findRankIcons(path.join(out, 'icons'));
 fs.mkdirSync(path.join(here, 'src/gen'), { recursive: true });
-fs.writeFileSync(path.join(here, 'src/gen/assets.json'), JSON.stringify({ atlases, areas, skillIcons }, null, 1));
+fs.writeFileSync(path.join(here, 'src/gen/assets.json'), JSON.stringify({ atlases, areas, skillIcons, sectRankIcons }, null, 1));
 console.log(`manifest: ${atlases.length} 个图集，${skillIcons.length} 个技能 @64 图标，区域 ${areas.join('/')}`);
 console.log('synced art from', root, '(' + dataMode(here) + ')');
