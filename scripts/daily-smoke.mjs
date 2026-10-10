@@ -153,7 +153,7 @@ try {
     const before = { job: p.job, available: scene.quests.available(collect.id), menu: scene.quests.npcDailyQuestIds(collect.giver) };
     scene.quests.talk(join.giver, join.id).after?.();
     const active = scene.quests.state(join.id), early = scene.quests.complete(join.id);
-    scene.events.emit('trial:complete', join.objectives.find(o => o.type === 'trial').trial);
+    scene.quests.onTrialComplete(join.objectives.find(o => o.type === 'trial').trial);
     const reward = scene.quests.talk(join.turnIn, join.id).after?.();
     if (reward) scene.giveRewards(reward.quest, reward.broke, reward.daily);
     const entrance = { active: active ?? null, early, completed: p.quests[join.id]?.state ?? null,

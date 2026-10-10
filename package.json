@@ -22,6 +22,8 @@
     "test:v05": "timeout 60s node scripts/v05-test.mjs",
     "test:appearance": "timeout 60s node scripts/appearance-test.mjs",
     "test:classes": "timeout 120s node scripts/classes-test.mjs",
+    "test:trials": "timeout 120s node scripts/trials-test.mjs",
+    "test:smoke:trials": "timeout 180s node scripts/trials-smoke.mjs",
     "test:smoke:classes": "timeout 120s node scripts/classes-smoke.mjs",
     "test:smoke:skill-learning": "timeout 120s node scripts/skill-learning-smoke.mjs",
     "test:daily": "timeout 60s node scripts/daily-test.mjs",
