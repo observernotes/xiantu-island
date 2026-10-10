@@ -138,7 +138,7 @@ async function prepare(page, baseURL, map = 'qingyun_village') {
   const url = new URL(baseURL); url.searchParams.set('map', map);
   await page.goto(url.href, { waitUntil: 'networkidle', timeout: 30000 });
   try {
-    await page.waitForFunction(() => window.__xt && window.__scene?.player?.active && window.__scene?.quests);
+    await page.waitForFunction(() => window.__xt && window.__scene?.player?.active && window.__scene?.quests, null, { timeout: 45000 });
   } catch (error) {
     const state = await page.evaluate(() => {
       const s = window.__scene, load = s?.load, game = s?.game;
@@ -203,20 +203,21 @@ async function screenshot(page) { await page.bringToFront(); await page.waitForT
 async function fps(page) {
   await page.bringToFront();
   const result = await page.evaluate(() => new Promise((resolve, reject) => {
+    const WARMUP = 8, INTERVALS = 20; // tier1 限时 130s：软件渲染 ~12fps 下 30 帧太慢
     const scene = window.__scene, game = scene.game, stamps = [];
     let warmup = 0;
     const timer = setTimeout(() => {
       game.events.off('postrender', rendered); game.loop.sleep();
-      reject(new Error(`渲染帧采样超时：warmup=${Math.min(warmup, 12)}, frames=${stamps.length}, renderer=${game.renderer.type}`));
+      reject(new Error(`渲染帧采样超时：warmup=${Math.min(warmup, WARMUP)}, frames=${stamps.length}, renderer=${game.renderer.type}`));
     }, 15000);
     function rendered() {
-      if (warmup++ < 12) return;
+      if (warmup++ < WARMUP) return;
       stamps.push(performance.now());
-      if (stamps.length === 31) {
+      if (stamps.length === INTERVALS + 1) {
         clearTimeout(timer);
         game.events.off('postrender', rendered); game.loop.sleep();
         const deltas = stamps.slice(1).map((time, i) => time - stamps[i]).sort((a, b) => a - b);
-        resolve({ fps: 30000 / (stamps.at(-1) - stamps[0]), medianMs: deltas[15], renderer: game.renderer.type });
+        resolve({ fps: INTERVALS * 1000 / (stamps.at(-1) - stamps[0]), medianMs: deltas[Math.floor(INTERVALS / 2)], renderer: game.renderer.type });
       }
     }
     game.loop.sleep(); game.loop.resetDelta();
@@ -596,7 +597,7 @@ try {
           caseSeconds: Number(((performance.now() - caseStarted) / 1000).toFixed(2)) });
       }
     }
-    metrics.measurement = { pages: 3, contexts: 3, initializations: 3, event: 'postrender', warmupFrames: 12, intervals: 30,
+    metrics.measurement = { pages: 3, contexts: 3, initializations: 3, event: 'postrender', warmupFrames: 8, intervals: 20,
       elapsedSeconds: (performance.now() - measurementStarted) / 1000 };
     const baselineFrameMs = median(beforeSamples.map(sample => 1000 / sample.fps));
     const fallbackFrameMs = median(afterSamples.map(sample => 1000 / sample.fps));
