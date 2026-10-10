@@ -1,4 +1,4 @@
-import { GROWTH, EXP_TO_NEXT, MAX_LEVEL, ITEMS, BREAKTHROUGH_LEVELS, BREAKTHROUGH, REALMS, QUESTS, LIFESPAN } from './data';
+import { GROWTH, EXP_TO_NEXT, MAX_LEVEL, ITEMS, BREAKTHROUGH_LEVELS, BREAKTHROUGH, REALMS, QUESTS, LIFESPAN, RECIPES, ALCHEMY_RULES, PillQuality, QuestDef } from './data';
 import { HOTBAR_SLOTS, QUEST_SKILL_BACKFILL, SKILLS, SKILL_RULES, SkillDef, skillNumber, spEarnedFor } from './skills';
 import { SECT_SECLUSION } from './data';
 import { realDay } from './Seclusion';
@@ -15,7 +15,15 @@ export class Progress {
   private transientItems: Record<string, number> = {};
   equip: Record<string, string> = {};     // 桃木剑由任务「灵根初现」发放
   job = '';                                 // 转职后的职业 id
-  quests: Record<string, { state: 'active' | 'done'; kills: Record<string, number>; reached?: boolean; talked?: Record<string, boolean> }> = {};
+  quests: Record<string, { state: 'active' | 'done'; kills: Record<string, number>; crafted?: Record<string, number>; reached?: boolean; talked?: Record<string, boolean> }> = {};
+  /** 已学配方包含丹方、研墨和符方；具体工作台按 type 筛选。 */
+  learnedRecipes: string[] = [];
+  alchemyLevel = 1;
+  alchemyExp = 0;
+  /** 品质分桶与普通背包共存，旧档未分桶的丹药视为下品。 */
+  pillQualities: Record<string, Partial<Record<PillQuality, number>>> = {};
+  /** 地图 id:采集对象名 → 再生的绝对毫秒时间，换图/刷新后保持。 */
+  gatherRespawnAt: Record<string, number> = {};
   name = '少年';
   /** 已学会的功法等级。任务赠送的 1 级也写在这里。 */
   skills: Record<string, number> = {};
@@ -84,7 +92,7 @@ export class Progress {
     if (Number.isFinite(p.overflowCap)) p.overflowExp = Math.min(p.overflowExp, p.overflowCap);
     p.ensureDefaults();
     p.advanceAge();
-    const backfilled = p.backfillRealmRewards() || p.backfillQuestSkills();
+    const backfilled = [p.backfillRealmRewards(), p.backfillQuestSkills(), p.backfillQuestRecipes()].some(Boolean);
     p.hp = Math.min(p.hp || p.maxHp, p.maxHp); p.mp = Math.min(p.mp || p.maxMp, p.maxMp);
     if (backfilled) p.save();
     return p;
@@ -283,7 +291,66 @@ export class Progress {
   }
 
   count(id: string) { return this.inventory[id] ?? 0; }
-  removeItem(id: string, n: number) { this.inventory[id] = Math.max(0, this.count(id) - n); }
+  removeItem(id: string, n: number) {
+    if (!Number.isFinite(n) || n <= 0) return;
+    let left = Math.min(this.count(id), Math.floor(n));
+    if (this.pillQualities[id]) {
+      const qualities = this.pillQualityCounts(id);
+      for (const quality of ['low', 'mid', 'high', 'supreme'] as PillQuality[]) {
+        const used = Math.min(left, qualities[quality]); qualities[quality] -= used; left -= used;
+      }
+      this.pillQualities[id] = qualities;
+    }
+    this.inventory[id] = Math.max(0, this.count(id) - Math.floor(n));
+  }
+
+  pillQualityCounts(id: string): Record<PillQuality, number> {
+    const counts: Record<PillQuality, number> = { low: 0, mid: 0, high: 0, supreme: 0 };
+    let remaining = Math.max(0, this.count(id));
+    for (const quality of ['low', 'mid', 'high', 'supreme'] as PillQuality[]) {
+      const raw = Number(this.pillQualities[id]?.[quality]);
+      const n = Number.isFinite(raw) ? Math.min(remaining, Math.max(0, Math.floor(raw))) : 0;
+      counts[quality] = n; remaining -= n;
+    }
+    counts.low += remaining;
+    return counts;
+  }
+  /** 与 removeItem 消耗顺序一致；老丹药及材料没有分桶时按下品。 */
+  pillQuality(id: string): PillQuality {
+    const counts = this.pillQualityCounts(id);
+    return (['low', 'mid', 'high', 'supreme'] as PillQuality[]).find(quality => counts[quality] > 0) ?? 'low';
+  }
+  addCraftedPill(id: string, n: number, quality: PillQuality) {
+    if (!Number.isFinite(n) || n <= 0) return;
+    const counts = this.pillQualityCounts(id);
+    this.addItem(id, Math.floor(n)); counts[quality] += Math.floor(n);
+    this.pillQualities[id] = counts;
+  }
+
+  grantRecipe(id: string) {
+    if (!RECIPES[id] || this.learnedRecipes.includes(id)) return false;
+    this.learnedRecipes.push(id); return true;
+  }
+  grantQuestRecipes(q: QuestDef) {
+    const granted: string[] = [];
+    for (const id of q.rewards.recipes ?? []) if (this.grantRecipe(id)) granted.push(id);
+    return granted;
+  }
+  /** 公式字段当前是说明文本；只解析明确的乘数，不执行表内表达式。 */
+  get alchemyExpNeed() {
+    const multiplier = Number(ALCHEMY_RULES.alchemyExp.toNext.match(/(\d+(?:\.\d+)?)\s*×/)?.[1] ?? 50);
+    return this.alchemyLevel >= ALCHEMY_RULES.alchemyExp.maxLevel ? Infinity : multiplier * this.alchemyLevel;
+  }
+  gainAlchemyExp(amount: number) {
+    if (!Number.isFinite(amount) || amount <= 0 || this.alchemyLevel >= ALCHEMY_RULES.alchemyExp.maxLevel) return 0;
+    this.alchemyExp += Math.floor(amount);
+    let levels = 0;
+    while (this.alchemyLevel < ALCHEMY_RULES.alchemyExp.maxLevel && this.alchemyExp >= this.alchemyExpNeed) {
+      this.alchemyExp -= this.alchemyExpNeed; this.alchemyLevel++; levels++;
+    }
+    if (this.alchemyLevel >= ALCHEMY_RULES.alchemyExp.maxLevel) this.alchemyExp = 0;
+    return levels;
+  }
   /** 获得装备：对应栏位空着或新装备更强就自动换上（装备界面做好前的过渡） */
   gainEquip(id: string) {
     const it = ITEMS[id] as any; if (!it?.slot) return false;
@@ -313,6 +380,24 @@ export class Progress {
     if (!this.inventory || typeof this.inventory !== 'object') this.inventory = {};
     if (!this.equip || typeof this.equip !== 'object') this.equip = {};
     if (!this.quests || typeof this.quests !== 'object') this.quests = {};
+    if (!Array.isArray(this.learnedRecipes)) this.learnedRecipes = [];
+    this.learnedRecipes = [...new Set(this.learnedRecipes.filter(id => typeof id === 'string' && !!RECIPES[id]))];
+    const alchemyLevel = Number(this.alchemyLevel), alchemyExp = Number(this.alchemyExp);
+    this.alchemyLevel = Number.isFinite(alchemyLevel) ? Math.min(ALCHEMY_RULES.alchemyExp.maxLevel, Math.max(1, Math.floor(alchemyLevel))) : 1;
+    this.alchemyExp = Number.isFinite(alchemyExp) ? Math.max(0, Math.floor(alchemyExp)) : 0;
+    if (!this.pillQualities || typeof this.pillQualities !== 'object' || Array.isArray(this.pillQualities)) this.pillQualities = {};
+    for (const id of Object.keys(this.pillQualities)) {
+      if (!ITEMS[id] || this.count(id) <= 0) delete this.pillQualities[id];
+      else this.pillQualities[id] = this.pillQualityCounts(id);
+    }
+    if (!this.gatherRespawnAt || typeof this.gatherRespawnAt !== 'object' || Array.isArray(this.gatherRespawnAt)) this.gatherRespawnAt = {};
+    this.gatherRespawnAt = Object.fromEntries(Object.entries(this.gatherRespawnAt).filter(([, at]) => typeof at === 'number' && Number.isFinite(at) && at > 0));
+    for (const st of Object.values(this.quests)) {
+      if (!st || typeof st !== 'object') continue;
+      if (!st.kills || typeof st.kills !== 'object') st.kills = {};
+      if (!st.crafted || typeof st.crafted !== 'object' || Array.isArray(st.crafted)) st.crafted = {};
+      st.crafted = Object.fromEntries(Object.entries(st.crafted).map(([id, n]) => [id, Number.isFinite(Number(n)) ? Math.max(0, Math.floor(Number(n))) : 0]));
+    }
     if (typeof this.job !== 'string') this.job = '';
     if (typeof this.spTipShown !== 'boolean') this.spTipShown = false;
     if (!Array.isArray(this.tutorialsSeen)) this.tutorialsSeen = [];
@@ -354,6 +439,16 @@ export class Progress {
       if (this.quests[qid]?.state !== 'done') continue;
       for (const s of QUESTS[qid]?.rewards.skills ?? []) if (this.grantSkill(s.id, s.level)) changed = true;
     }
+    return changed;
+  }
+
+  backfillQuestRecipes() {
+    let changed = false;
+    for (const [id, st] of Object.entries(this.quests)) {
+      if (st.state === 'done' && QUESTS[id]) changed = this.grantQuestRecipes(QUESTS[id]).length > 0 || changed;
+    }
+    // 教学回春丹必须先于 craft 目标可用；旧进行中存档同样补上。
+    if (this.quests.q_alchemy_intro?.state === 'active') changed = this.grantRecipe('recipe_hp_pill') || changed;
     return changed;
   }
 

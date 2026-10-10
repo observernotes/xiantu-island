@@ -38,6 +38,7 @@ export class QuestSystem {
         case 'reach': return { o, cur: st?.reached ? 1 : 0, need: 1, label: '登上望仙台' };
         case 'breakthrough': return { o, cur: this.prog.atBreakthrough ? 1 : 0, need: 1, label: '修为圆满' };
         case 'talk': return { o, cur: st?.talked?.[o.target!] ? 1 : 0, need: 1, label: `与${NPCS[o.target!]?.name ?? o.target}对话` };
+        case 'craft': return { o, cur: Math.min(st?.crafted?.[o.target!] ?? 0, o.count ?? 1), need: o.count ?? 1, label: `炼制 ${ITEMS[o.target!]?.name ?? o.target}` };
         default: return { o, cur: 0, need: 1, label: String(o.type) };   // 未支持的目标：永不完成，但不抛错
       }
     });
@@ -76,7 +77,10 @@ export class QuestSystem {
 
   accept(id: string) {
     if (!this.available(id)) return false;
-    this.prog.quests[id] = { state: 'active', kills: {} }; this.prog.save();
+    this.prog.quests[id] = { state: 'active', kills: {}, crafted: {} };
+    // 06 文档先教回春丹再要求炼成；表只有完成奖励丹方，教学时提前解锁避免闭环。
+    if (id === 'q_alchemy_intro') this.prog.grantRecipe('recipe_hp_pill');
+    this.prog.save();
     return true;
   }
 
@@ -99,9 +103,20 @@ export class QuestSystem {
   onReach(target: string) {
     for (const id of this.activeIds) if (QUESTS[id].objectives.some(o => o.type === 'reach' && o.target === target)) this.prog.quests[id].reached = true;
   }
+  /** 只接受成功产出的数量，背包拾取/旧库存不计入 craft 目标。 */
+  onCraft(itemId: string, count: number) {
+    if (!Number.isFinite(count) || count <= 0) return;
+    let changed = false;
+    for (const id of this.activeIds) {
+      if (!QUESTS[id].objectives.some(o => o.type === 'craft' && o.target === itemId)) continue;
+      const st = this.prog.quests[id];
+      (st.crafted ??= {})[itemId] = (st.crafted?.[itemId] ?? 0) + Math.floor(count); changed = true;
+    }
+    if (changed) this.prog.save();
+  }
 }
 
-const SUPPORTED = new Set(['kill', 'collect', 'reach', 'breakthrough', 'talk']);
+const SUPPORTED = new Set(['kill', 'collect', 'reach', 'breakthrough', 'talk', 'craft']);
 function supported(q: QuestDef) { return q.objectives.every(o => SUPPORTED.has(o.type)); }
 
 export interface QuestReward { quest: QuestDef; broke: boolean; }

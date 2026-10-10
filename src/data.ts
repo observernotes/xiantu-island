@@ -58,7 +58,11 @@ export interface MonsterDef {
   skills?: MonsterSkill[];
   sprite: string; dropTable: string | null; isBoss: boolean;
 }
-export interface ItemDef { id: string; name: string; type: string; slot?: string; stats?: Record<string, number>; effect?: any; icon?: string; appearance?: string; }
+export interface ItemDef {
+  id: string; name: string; type: string; slot?: string; stats?: Record<string, number>; effect?: any; icon?: string; appearance?: string;
+  kind?: string; toolType?: string;
+  gather?: { castMs: number; respawnMs: number; maps?: string[] };
+}
 export interface DropTable { spiritStone: [number, number]; items: { item: string; chance: number; count: [number, number] }[] }
 
 export const MONSTERS: Record<string, MonsterDef> = Object.fromEntries((monsters as MonsterDef[]).map(m => [m.id, m]));
@@ -66,6 +70,17 @@ export const DROPS = drops as unknown as Record<string, DropTable>;
 import materials from '@xt/balance/materials.json';
 // materials.json 结构和 items.json 一样，启动时合成一张物品表
 export const ITEMS: Record<string, ItemDef> = Object.fromEntries([...(items as ItemDef[]), ...(materials as unknown as ItemDef[])].map(i => [i.id, i]));
+import recipesRaw from '@xt/balance/recipes.json';
+export type PillQuality = 'low' | 'mid' | 'high' | 'supreme';
+export type FireResult = 'skipped' | 'inZone' | 'perfect' | 'missed';
+export interface RecipeDef {
+  id: string; name: string; output: string; outputCount: number; materials: { item: string; count: number }[];
+  recipeLevel?: number; baseRate?: number; fuelStones?: number; realm: string; price?: number; reqLevel: number;
+  type?: string; phase?: number;
+}
+/** 只读丹方规则；formula/newItems 仅为备注，物品仍只从 items/materials 读。 */
+export const RECIPES: Record<string, RecipeDef> = Object.fromEntries((recipesRaw.recipes as RecipeDef[]).filter(r => inPhase(r)).map(r => [r.id, r]));
+export const ALCHEMY_RULES = recipesRaw.rules;
 export const GROWTH = growth as any;
 export const EXP_TO_NEXT = (expCurve as any).expToNext as Record<string, number>;
 export const MAX_LEVEL = (expCurve as any).maxLevel as number;
@@ -145,7 +160,7 @@ export interface QuestDef {
   prereq?: string; phase?: number;
   rewards: {
     exp: number; spiritStone: number; items: { item: string; count: number }[];
-    job?: string; skills?: { id: string; level: number }[];
+    job?: string; skills?: { id: string; level: number }[]; recipes?: string[];
   }; next: string | null;
 }
 export const NPCS: Record<string, NpcDef> = Object.fromEntries((npcs as NpcDef[]).map(n => [n.id, n]));
