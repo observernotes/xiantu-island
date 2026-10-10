@@ -1,0 +1,40 @@
+{
+ "atlas": "fx_thunder_palm",
+ "facing": "left",
+ "origin": [
+  1,
+  0.5
+ ],
+ "frameSize": [
+  96,
+  64
+ ],
+ "blend": "NORMAL",
+ "kind": "fx",
+ "note": "原点(1,0.5)即帧右边出掌起点(96,32)，放在朝左角色的出掌位置；掌风向左伸出，cast播一次。hit雷花中心在帧内(48,32)，同atlas保留原点：朝左时hit对象放在(命中x+48,命中y)，朝右flipX后放(命中x-48,命中y)，对象缩放时偏移乘scaleX的绝对值。Phaser每帧读取pivot，不能只靠一次setOrigin改变hit定位。NORMAL混合，不循环。",
+ "anims": [
+  {
+   "key": "fx_thunder_palm_cast",
+   "frames": [
+    "fx_thunder_palm_cast_01",
+    "fx_thunder_palm_cast_02",
+    "fx_thunder_palm_cast_03",
+    "fx_thunder_palm_cast_04",
+    "fx_thunder_palm_cast_05"
+   ],
+   "frameRate": 12,
+   "repeat": 0
+  },
+  {
+   "key": "fx_thunder_palm_hit",
+   "frames": [
+    "fx_thunder_palm_hit_01",
+    "fx_thunder_palm_hit_02",
+    "fx_thunder_palm_hit_03",
+    "fx_thunder_palm_hit_04"
+   ],
+   "frameRate": 16,
+   "repeat": 0
+  }
+ ]
+}

@@ -162,7 +162,7 @@
    },
    "effects": {},
    "req": null,
-   "fx": "fx_tianjian_heart",
+   "fx": null,
    "icon": "icon_skill_tianjian_heart"
   },
   {
@@ -188,7 +188,7 @@
    },
    "effects": {},
    "req": null,
-   "fx": "fx_sword_mastery",
+   "fx": null,
    "icon": "icon_skill_sword_mastery"
   },
   {
@@ -308,7 +308,7 @@
    "req": {
     "realm": "foundation"
    },
-   "fx": "fx_sword_ride",
+   "fx": null,
    "icon": "icon_skill_sword_ride"
   },
   {
@@ -339,7 +339,7 @@
    "req": {
     "tianjian_heart": 10
    },
-   "fx": "fx_tianjian_heart_2",
+   "fx": null,
    "icon": "icon_skill_tianjian_heart_2"
   },
   {
@@ -365,7 +365,7 @@
    },
    "effects": {},
    "req": null,
-   "fx": "fx_qi_condense",
+   "fx": null,
    "icon": "icon_skill_qi_condense"
   },
   {
@@ -518,7 +518,7 @@
    "req": {
     "tianjian_heart_2": 15
    },
-   "fx": "fx_tianjian_heart_3",
+   "fx": null,
    "icon": "icon_skill_tianjian_heart_3"
   },
   {
@@ -545,7 +545,7 @@
     "skillCapBonusAtMax": 2
    },
    "req": null,
-   "fx": "fx_sword_intent",
+   "fx": null,
    "icon": "icon_skill_sword_intent"
   },
   {
@@ -675,7 +675,7 @@
    },
    "effects": {},
    "req": null,
-   "fx": "fx_taixu_heart",
+   "fx": null,
    "icon": "icon_skill_taixu_heart"
   },
   {
@@ -700,7 +700,7 @@
    },
    "effects": {},
    "req": null,
-   "fx": "fx_five_element_attune",
+   "fx": null,
    "icon": "icon_skill_five_element_attune"
   },
   {
@@ -829,7 +829,7 @@
    },
    "effects": {},
    "req": null,
-   "fx": "fx_lingfu_heart",
+   "fx": null,
    "icon": "icon_skill_lingfu_heart"
   },
   {
@@ -854,7 +854,7 @@
    },
    "effects": {},
    "req": null,
-   "fx": "fx_talisman_supply",
+   "fx": null,
    "icon": "icon_skill_talisman_supply"
   },
   {
@@ -974,7 +974,7 @@
    },
    "effects": {},
    "req": null,
-   "fx": "fx_youying_heart",
+   "fx": null,
    "icon": "icon_skill_youying_heart"
   },
   {
@@ -1001,7 +1001,7 @@
     "extraAirJumps": 1
    },
    "req": null,
-   "fx": "fx_light_foot",
+   "fx": null,
    "icon": "icon_skill_light_foot"
   },
   {
@@ -1136,7 +1136,7 @@
    },
    "effects": {},
    "req": null,
-   "fx": "fx_wanshou_heart",
+   "fx": null,
    "icon": "icon_skill_wanshou_heart"
   },
   {
@@ -1164,7 +1164,7 @@
     "maxSummons": 2
    },
    "req": null,
-   "fx": "fx_beast_mastery",
+   "fx": null,
    "icon": "icon_skill_beast_mastery"
   }
  ]

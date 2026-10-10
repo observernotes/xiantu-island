@@ -468,5 +468,107 @@
   "name": "精炼石",
   "phase": 5,
   "icon": "icon_refine_stone"
+ },
+ {
+  "id": "robe_taixu_1",
+  "name": "太虚道袍",
+  "type": "equip",
+  "slot": "robe",
+  "desc": "太虚观一转弟子的宗门道袍。",
+  "reqLevel": 10,
+  "stats": {
+   "def": 3,
+   "hp": 18,
+   "mp": 18
+  },
+  "stack": 1,
+  "price": 900,
+  "icon": "icon_robe_taixu_1",
+  "phase": 5,
+  "appearance": "outfit_taixu_1",
+  "sect": "taixu",
+  "balanceTodo": []
+ },
+ {
+  "id": "robe_lingfu_1",
+  "name": "灵符符袍",
+  "type": "equip",
+  "slot": "robe",
+  "desc": "灵符派一转弟子的宗门道袍。",
+  "reqLevel": 10,
+  "stats": {
+   "def": 3,
+   "hp": 24,
+   "mp": 12,
+   "speed": 5
+  },
+  "stack": 1,
+  "price": 900,
+  "icon": "icon_robe_lingfu_1",
+  "phase": 5,
+  "appearance": "outfit_lingfu_1",
+  "sect": "lingfu",
+  "balanceTodo": []
+ },
+ {
+  "id": "robe_youying_1",
+  "name": "幽影夜行衣",
+  "type": "equip",
+  "slot": "robe",
+  "desc": "幽影楼一转弟子的宗门道袍。",
+  "reqLevel": 10,
+  "stats": {
+   "def": 3,
+   "hp": 18,
+   "mp": 10,
+   "speed": 10
+  },
+  "stack": 1,
+  "price": 900,
+  "icon": "icon_robe_youying_1",
+  "phase": 5,
+  "appearance": "outfit_youying_1",
+  "sect": "youying",
+  "balanceTodo": []
+ },
+ {
+  "id": "robe_wanshou_1",
+  "name": "万兽兽皮衣",
+  "type": "equip",
+  "slot": "robe",
+  "desc": "万兽山一转弟子的宗门道袍。",
+  "reqLevel": 10,
+  "stats": {
+   "def": 3,
+   "hp": 42,
+   "mp": 10
+  },
+  "stack": 1,
+  "price": 900,
+  "icon": "icon_robe_wanshou_1",
+  "phase": 5,
+  "appearance": "outfit_wanshou_1",
+  "sect": "wanshou",
+  "balanceTodo": []
+ },
+ {
+  "id": "robe_tianjian_1",
+  "name": "天剑道袍",
+  "type": "equip",
+  "slot": "robe",
+  "desc": "天剑宗一转弟子的宗门道袍。",
+  "reqLevel": 10,
+  "stats": {
+   "def": 4,
+   "hp": 30,
+   "mp": 6
+  },
+  "stack": 1,
+  "price": 900,
+  "icon": "icon_robe_tianjian_1",
+  "phase": 5,
+  "appearance": "outfit_tianjian_1",
+  "sect": "tianjian",
+  "balanceTodo": []
  }
 ]

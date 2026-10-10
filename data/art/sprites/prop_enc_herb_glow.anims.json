@@ -1,0 +1,36 @@
+{
+ "atlas": "prop_enc_herb_glow",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  48,
+  48
+ ],
+ "blend": "NORMAL",
+ "kind": "prop",
+ "note": "程序化占位；key 名待天机阁确认。林隙灵芝光点。原点 (0.5,1) 对齐侧台泥土底边。循环 idle：更亮的金绿芝叶、两道香气卷云、4颗光点；采摘后定格 harvested（留根示意），整株拔走可直接隐藏。区别于已精修 prop_gather_nine_leaf_ganoderma，不替换常驻采集。金光/木描边 #A86E1E/#2E5A2A。建议 interact.target=enc_fragrant_herb_anchor 的事件物件 sprite 引用。",
+ "anims": [
+  {
+   "key": "prop_enc_herb_glow_idle",
+   "frames": [
+    "prop_enc_herb_glow_idle_01",
+    "prop_enc_herb_glow_idle_02",
+    "prop_enc_herb_glow_idle_03",
+    "prop_enc_herb_glow_idle_04"
+   ],
+   "frameRate": 5,
+   "repeat": -1
+  },
+  {
+   "key": "prop_enc_herb_glow_harvested",
+   "frames": [
+    "prop_enc_herb_glow_harvested_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  }
+ ]
+}

@@ -10,6 +10,9 @@
       "nameKey": "enc.stranded_cultivator.name",
       "phase": 5,
       "enabled": false,
+      "visual": {
+        "promptSprite": "fx_enc_help_mark"
+      },
       "maps": [
         "lingxi_path"
       ],
@@ -22,11 +25,11 @@
         "anchor": "enc_stranded_cultivator_anchor",
         "reveal": "visible"
       },
-      "weight": null,
-      "cooldownMs": null,
+      "weight": 1,
+      "cooldownMs": 1800000,
       "once": false,
       "req": {
-        "levelMin": null,
+        "levelMin": 12,
         "questsDone": [
           "q_fox"
         ],
@@ -74,10 +77,10 @@
             "spawns": [
               {
                 "monster": "mountain_mandrill",
-                "count": null
+                "count": 2
               }
             ],
-            "warningMs": null,
+            "warningMs": 800,
             "respawnMs": 0,
             "grantRewards": false,
             "objectiveKey": "enc.stranded_cultivator.objective",
@@ -127,7 +130,7 @@
             "items": [
               {
                 "item": "hp_pill_small",
-                "count": null
+                "count": 1
               }
             ]
           },
@@ -135,7 +138,7 @@
             "items": [
               {
                 "item": "hp_pill_small",
-                "count": null
+                "count": 1
               }
             ]
           }
@@ -154,8 +157,8 @@
             "enc.stranded_cultivator.rescued"
           ],
           "rewards": {
-            "exp": null,
-            "spiritStone": null,
+            "exp": 1200,
+            "spiritStone": 648,
             "items": []
           },
           "hooks": {
@@ -169,10 +172,10 @@
             "affinity": [
               {
                 "npc": "enc_wanderer",
-                "delta": null
+                "delta": 2
               }
             ],
-            "moralityDelta": null
+            "moralityDelta": 1
           }
         },
         {
@@ -182,7 +185,7 @@
             "enc.stranded_cultivator.aided"
           ],
           "rewards": {
-            "exp": null
+            "exp": 900
           },
           "hooks": {
             "oncePerEncounter": true,
@@ -195,10 +198,10 @@
             "affinity": [
               {
                 "npc": "enc_wanderer",
-                "delta": null
+                "delta": 2
               }
             ],
-            "moralityDelta": null
+            "moralityDelta": 1
           }
         },
         {
@@ -220,22 +223,7 @@
           "hooks": {}
         }
       ],
-      "balanceTodo": [
-        "weight",
-        "cooldownMs",
-        "req.levelMin",
-        "script.steps[3].spawns[0].count",
-        "script.steps[3].warningMs",
-        "choices[1].req.items[0].count",
-        "choices[1].cost.items[0].count",
-        "outcomes[0].rewards.exp",
-        "outcomes[0].rewards.spiritStone",
-        "outcomes[0].hooks.affinity[0].delta",
-        "outcomes[0].hooks.moralityDelta",
-        "outcomes[1].rewards.exp",
-        "outcomes[1].hooks.affinity[0].delta",
-        "outcomes[1].hooks.moralityDelta"
-      ]
+      "balanceTodo": []
     },
     {
       "id": "enc_fragrant_herb",
@@ -243,6 +231,16 @@
       "nameKey": "enc.fragrant_herb.name",
       "phase": 5,
       "enabled": false,
+      "visual": {
+        "promptSprite": "fx_enc_help_mark",
+        "objects": {
+          "enc_fragrant_herb_anchor": {
+            "sprite": "prop_enc_herb_glow",
+            "initialFrame": "prop_enc_herb_glow_idle_01"
+          }
+        },
+        "signSprite": "prop_enc_sign"
+      },
       "maps": [
         "wanyao_outer_2"
       ],
@@ -255,11 +253,11 @@
         "anchor": "enc_fragrant_herb_anchor",
         "reveal": "visible"
       },
-      "weight": null,
-      "cooldownMs": null,
+      "weight": 1,
+      "cooldownMs": 1800000,
       "once": true,
       "req": {
-        "levelMin": null,
+        "levelMin": 26,
         "questsDone": [
           "q_main_04"
         ],
@@ -303,10 +301,10 @@
             "spawns": [
               {
                 "monster": "vine_imp",
-                "count": null
+                "count": 1
               }
             ],
-            "warningMs": null,
+            "warningMs": 800,
             "respawnMs": 0,
             "grantRewards": false,
             "objectiveKey": "enc.fragrant_herb.objective",
@@ -381,11 +379,11 @@
             "enc.fragrant_herb.leaf_done"
           ],
           "rewards": {
-            "exp": null,
+            "exp": 1584,
             "items": [
               {
                 "item": "nine_leaf_ganoderma",
-                "count": null
+                "count": 1
               }
             ]
           },
@@ -397,7 +395,7 @@
                 "value": true
               }
             ],
-            "moralityDelta": null
+            "moralityDelta": 1
           }
         },
         {
@@ -410,7 +408,7 @@
             "items": [
               {
                 "item": "nine_leaf_ganoderma",
-                "count": null
+                "count": 2
               }
             ]
           },
@@ -422,7 +420,7 @@
                 "value": true
               }
             ],
-            "moralityDelta": null
+            "moralityDelta": -1
           }
         },
         {
@@ -444,18 +442,7 @@
           "hooks": {}
         }
       ],
-      "balanceTodo": [
-        "weight",
-        "cooldownMs",
-        "req.levelMin",
-        "script.steps[3].spawns[0].count",
-        "script.steps[3].warningMs",
-        "outcomes[0].rewards.exp",
-        "outcomes[0].rewards.items[0].count",
-        "outcomes[0].hooks.moralityDelta",
-        "outcomes[1].rewards.items[0].count",
-        "outcomes[1].hooks.moralityDelta"
-      ]
+      "balanceTodo": []
     },
     {
       "id": "enc_hidden_abode",
@@ -463,6 +450,35 @@
       "nameKey": "enc.hidden_abode.name",
       "phase": 5,
       "enabled": false,
+      "visual": {
+        "promptSprite": "fx_enc_help_mark",
+        "objects": {
+          "enc_hidden_abode_anchor": {
+            "sprite": "prop_enc_abode_entrance",
+            "initialFrame": "prop_enc_abode_entrance_hidden_01"
+          },
+          "enc_seal_earth": {
+            "sprite": "prop_enc_seal",
+            "initialFrame": "prop_enc_seal_earth_idle_01",
+            "animPrefix": "earth"
+          },
+          "enc_seal_water": {
+            "sprite": "prop_enc_seal",
+            "initialFrame": "prop_enc_seal_water_idle_01",
+            "animPrefix": "water"
+          },
+          "enc_seal_wood": {
+            "sprite": "prop_enc_seal",
+            "initialFrame": "prop_enc_seal_wood_idle_01",
+            "animPrefix": "wood"
+          },
+          "enc_hidden_abode_chest": {
+            "sprite": "prop_chest",
+            "initialFrame": "prop_chest_closed_01"
+          }
+        },
+        "scanRevealSprite": "fx_spirit_scan_reveal"
+      },
       "maps": [
         "wanyao_outer_1"
       ],
@@ -474,13 +490,13 @@
         ],
         "anchor": "enc_hidden_abode_anchor",
         "reveal": "spirit_scan",
-        "reqSpirit": null
+        "reqSpirit": 0
       },
-      "weight": null,
-      "cooldownMs": null,
+      "weight": 1,
+      "cooldownMs": 1800000,
       "once": true,
       "req": {
-        "levelMin": null,
+        "levelMin": 30,
         "questsDone": [
           "q_main_04"
         ],
@@ -629,11 +645,11 @@
             "items": [
               {
                 "item": "spirit_copper",
-                "count": null
+                "count": 3
               },
               {
                 "item": "refine_stone",
-                "count": null
+                "count": 2
               }
             ]
           },
@@ -662,7 +678,7 @@
                 "value": true
               }
             ],
-            "daoHeartDelta": null
+            "daoHeartDelta": 2
           }
         },
         {
@@ -684,15 +700,7 @@
           "hooks": {}
         }
       ],
-      "balanceTodo": [
-        "trigger.reqSpirit",
-        "weight",
-        "cooldownMs",
-        "req.levelMin",
-        "outcomes[0].rewards.items[0].count",
-        "outcomes[0].rewards.items[1].count",
-        "outcomes[1].hooks.daoHeartDelta"
-      ]
+      "balanceTodo": []
     },
     {
       "id": "enc_sage_advice",
@@ -700,6 +708,9 @@
       "nameKey": "enc.sage_advice.name",
       "phase": 5,
       "enabled": false,
+      "visual": {
+        "promptSprite": "fx_enc_help_mark"
+      },
       "maps": [
         "qingyun_village"
       ],
@@ -711,13 +722,13 @@
         ],
         "anchor": "enc_sage_advice_anchor",
         "reveal": "visible",
-        "intervalMs": null
+        "intervalMs": 60000
       },
-      "weight": null,
-      "cooldownMs": null,
+      "weight": 1,
+      "cooldownMs": 1800000,
       "once": true,
       "req": {
-        "levelMin": null,
+        "levelMin": 10,
         "questsDone": [
           "q_fox"
         ],
@@ -792,7 +803,7 @@
             "enc.sage_advice.correct"
           ],
           "rewards": {
-            "insight": null
+            "insight": 1
           },
           "hooks": {
             "oncePerEncounter": true,
@@ -823,13 +834,7 @@
           "hooks": {}
         }
       ],
-      "balanceTodo": [
-        "trigger.intervalMs",
-        "weight",
-        "cooldownMs",
-        "req.levelMin",
-        "outcomes[0].rewards.insight"
-      ]
+      "balanceTodo": []
     },
     {
       "id": "enc_demon_whisper",
@@ -837,6 +842,9 @@
       "nameKey": "enc.demon_whisper.name",
       "phase": 5,
       "enabled": false,
+      "visual": {
+        "promptSprite": "fx_enc_help_mark"
+      },
       "maps": [
         "luoxia_town"
       ],
@@ -849,11 +857,11 @@
         "anchor": "enc_demon_whisper_anchor",
         "reveal": "visible"
       },
-      "weight": null,
-      "cooldownMs": null,
+      "weight": 1,
+      "cooldownMs": 1800000,
       "once": true,
       "req": {
-        "levelMin": null,
+        "levelMin": 12,
         "questsDone": [
           "q_main_01"
         ],
@@ -861,7 +869,7 @@
           "moral_state"
         ],
         "sectJoined": true,
-        "daoHeartMax": null
+        "daoHeartMax": 30
       },
       "script": {
         "start": "offer",
@@ -927,7 +935,7 @@
             "enc.demon_whisper.accepted"
           ],
           "rewards": {
-            "exp": null,
+            "exp": 1800,
             "items": []
           },
           "hooks": {
@@ -938,8 +946,8 @@
                 "value": true
               }
             ],
-            "daoHeartDelta": null,
-            "moralityDelta": null
+            "daoHeartDelta": -2,
+            "moralityDelta": -2
           }
         },
         {
@@ -957,7 +965,7 @@
                 "value": true
               }
             ],
-            "daoHeartDelta": null
+            "daoHeartDelta": 3
           }
         },
         {
@@ -970,16 +978,7 @@
           "hooks": {}
         }
       ],
-      "balanceTodo": [
-        "weight",
-        "cooldownMs",
-        "req.levelMin",
-        "req.daoHeartMax",
-        "outcomes[0].rewards.exp",
-        "outcomes[0].hooks.daoHeartDelta",
-        "outcomes[0].hooks.moralityDelta",
-        "outcomes[1].hooks.daoHeartDelta"
-      ]
+      "balanceTodo": []
     }
   ]
 }

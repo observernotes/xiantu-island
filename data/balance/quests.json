@@ -229,6 +229,33 @@
   "phase": 4
  },
  {
+  "id": "q_talisman_intro",
+  "name": "墨落成符",
+  "giver": "lingfu_envoy",
+  "turnIn": "lingfu_envoy",
+  "reqLevel": 15,
+  "reqRealm": "qi_refining",
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "lingfu_envoy"
+   }
+  ],
+  "rewards": {
+   "recipes": [
+    "recipe_spirit_ink",
+    "recipe_talisman_fire",
+    "recipe_talisman_guard",
+    "recipe_talisman_return",
+    "recipe_talisman_gather"
+   ],
+   "exp": 120
+  },
+  "prereq": null,
+  "next": null,
+  "phase": 5
+ },
+ {
   "id": "q_sect_tianjian",
   "name": "剑心初成",
   "giver": "tianjian_envoy",
@@ -244,7 +271,12 @@
   "rewards": {
    "exp": 300,
    "spiritStone": 150,
-   "items": [],
+   "items": [
+    {
+     "item": "robe_tianjian_1",
+     "count": 1
+    }
+   ],
    "skills": [
     {
      "id": "whirl_sword",
@@ -276,7 +308,12 @@
   "rewards": {
    "exp": 300,
    "spiritStone": 150,
-   "items": []
+   "items": [
+    {
+     "item": "robe_taixu_1",
+     "count": 1
+    }
+   ]
   },
   "next": null,
   "phase": 5,
@@ -303,7 +340,12 @@
   "rewards": {
    "exp": 300,
    "spiritStone": 150,
-   "items": []
+   "items": [
+    {
+     "item": "robe_lingfu_1",
+     "count": 1
+    }
+   ]
   },
   "next": null,
   "phase": 5,
@@ -330,7 +372,12 @@
   "rewards": {
    "exp": 300,
    "spiritStone": 150,
-   "items": []
+   "items": [
+    {
+     "item": "robe_youying_1",
+     "count": 1
+    }
+   ]
   },
   "next": null,
   "phase": 5,
@@ -357,7 +404,12 @@
   "rewards": {
    "exp": 300,
    "spiritStone": 150,
-   "items": []
+   "items": [
+    {
+     "item": "robe_wanshou_1",
+     "count": 1
+    }
+   ]
   },
   "next": null,
   "phase": 5,
@@ -386,8 +438,8 @@
    }
   ],
   "rewards": {
-   "exp": 0,
-   "spiritStone": 0,
+   "exp": 60,
+   "spiritStone": 120,
    "items": []
   },
   "next": "q_main_02",
@@ -414,8 +466,8 @@
    }
   ],
   "rewards": {
-   "exp": 0,
-   "spiritStone": 0,
+   "exp": 150,
+   "spiritStone": 180,
    "items": []
   },
   "next": "q_main_03",
@@ -437,8 +489,8 @@
    }
   ],
   "rewards": {
-   "exp": 0,
-   "spiritStone": 0,
+   "exp": 1800,
+   "spiritStone": 600,
    "items": [
     {
      "item": "foundation_shard",
@@ -469,8 +521,8 @@
    }
   ],
   "rewards": {
-   "exp": 0,
-   "spiritStone": 0,
+   "exp": 5500,
+   "spiritStone": 1200,
    "items": [
     {
      "item": "clear_mind_pill",
@@ -497,8 +549,8 @@
    }
   ],
   "rewards": {
-   "exp": 0,
-   "spiritStone": 0,
+   "exp": 10000,
+   "spiritStone": 2400,
    "items": [
     {
      "item": "pillar_shard_2",
@@ -509,5 +561,545 @@
   "next": null,
   "phase": 5,
   "note": "第 6 章。古树心首领场的 unlockQuest 填 q_main_06（接取未完成才刷千年树妖）。原设计要求筑基后御剑进深处，v0.5 先用魔猿岭的 reqLevel 30 门代替。主线第一卷，见 design/04_区域与主线.md 第三节。修为和灵石【演武堂】。"
+ },
+ {
+  "id": "q_daily_tianjian_1",
+  "name": "巡剑清道",
+  "nameKey": "quest.daily_tianjian_1.name",
+  "descriptionKey": "quest.daily_tianjian_1.description",
+  "dialogueKeys": {
+   "offer": "quest.daily_tianjian_1.offer",
+   "progress": "quest.daily_tianjian_1.progress",
+   "complete": "quest.daily_tianjian_1.complete"
+  },
+  "giver": "tianjian_envoy_sect",
+  "turnIn": "tianjian_envoy_sect",
+  "reqLevel": 10,
+  "phase": 5,
+  "daily": true,
+  "sect": "tianjian",
+  "objectives": [
+   {
+    "type": "kill",
+    "target": "mountain_mandrill",
+    "map": "lingxi_path",
+    "count": 6
+   }
+  ],
+  "rewards": {
+   "exp": null,
+   "spiritStone": null,
+   "sectContribution": null,
+   "items": []
+  },
+  "balanceTodo": [
+   "rewards.exp",
+   "rewards.spiritStone",
+   "rewards.sectContribution"
+  ]
+ },
+ {
+  "id": "q_daily_tianjian_2",
+  "name": "养剑备铁",
+  "nameKey": "quest.daily_tianjian_2.name",
+  "descriptionKey": "quest.daily_tianjian_2.description",
+  "dialogueKeys": {
+   "offer": "quest.daily_tianjian_2.offer",
+   "progress": "quest.daily_tianjian_2.progress",
+   "complete": "quest.daily_tianjian_2.complete"
+  },
+  "giver": "tianjian_envoy_sect",
+  "turnIn": "tianjian_envoy_sect",
+  "reqLevel": 10,
+  "phase": 5,
+  "daily": true,
+  "sect": "tianjian",
+  "objectives": [
+   {
+    "type": "collect",
+    "target": "iron_essence",
+    "map": "lingxi_path",
+    "count": 3,
+    "consume": true
+   }
+  ],
+  "rewards": {
+   "exp": null,
+   "spiritStone": null,
+   "sectContribution": null,
+   "items": []
+  },
+  "balanceTodo": [
+   "rewards.exp",
+   "rewards.spiritStone",
+   "rewards.sectContribution"
+  ]
+ },
+ {
+  "id": "q_daily_tianjian_3",
+  "name": "问炉传讯",
+  "nameKey": "quest.daily_tianjian_3.name",
+  "descriptionKey": "quest.daily_tianjian_3.description",
+  "dialogueKeys": {
+   "offer": "quest.daily_tianjian_3.offer",
+   "progress": "quest.daily_tianjian_3.progress",
+   "complete": "quest.daily_tianjian_3.complete"
+  },
+  "giver": "tianjian_envoy_sect",
+  "turnIn": "tianjian_envoy_sect",
+  "reqLevel": 10,
+  "phase": 5,
+  "daily": true,
+  "sect": "tianjian",
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "smith_ou",
+    "map": "luoxia_town"
+   }
+  ],
+  "rewards": {
+   "exp": null,
+   "spiritStone": null,
+   "sectContribution": null,
+   "items": []
+  },
+  "balanceTodo": [
+   "rewards.exp",
+   "rewards.spiritStone",
+   "rewards.sectContribution"
+  ]
+ },
+ {
+  "id": "q_daily_taixu_1",
+  "name": "清秽护途",
+  "nameKey": "quest.daily_taixu_1.name",
+  "descriptionKey": "quest.daily_taixu_1.description",
+  "dialogueKeys": {
+   "offer": "quest.daily_taixu_1.offer",
+   "progress": "quest.daily_taixu_1.progress",
+   "complete": "quest.daily_taixu_1.complete"
+  },
+  "giver": "taixu_envoy",
+  "turnIn": "taixu_envoy",
+  "reqLevel": 10,
+  "phase": 5,
+  "daily": true,
+  "sect": "taixu",
+  "objectives": [
+   {
+    "type": "kill",
+    "target": "straw_puppet",
+    "map": "luoxia_outskirts_2",
+    "count": 6
+   }
+  ],
+  "rewards": {
+   "exp": null,
+   "spiritStone": null,
+   "sectContribution": null,
+   "items": []
+  },
+  "balanceTodo": [
+   "rewards.exp",
+   "rewards.spiritStone",
+   "rewards.sectContribution"
+  ]
+ },
+ {
+  "id": "q_daily_taixu_2",
+  "name": "清修备药",
+  "nameKey": "quest.daily_taixu_2.name",
+  "descriptionKey": "quest.daily_taixu_2.description",
+  "dialogueKeys": {
+   "offer": "quest.daily_taixu_2.offer",
+   "progress": "quest.daily_taixu_2.progress",
+   "complete": "quest.daily_taixu_2.complete"
+  },
+  "giver": "taixu_envoy",
+  "turnIn": "taixu_envoy",
+  "reqLevel": 10,
+  "phase": 5,
+  "daily": true,
+  "sect": "taixu",
+  "objectives": [
+   {
+    "type": "collect",
+    "target": "spirit_herb",
+    "map": "luoxia_outskirts_2",
+    "count": 3,
+    "consume": true
+   }
+  ],
+  "rewards": {
+   "exp": null,
+   "spiritStone": null,
+   "sectContribution": null,
+   "items": []
+  },
+  "balanceTodo": [
+   "rewards.exp",
+   "rewards.spiritStone",
+   "rewards.sectContribution"
+  ]
+ },
+ {
+  "id": "q_daily_taixu_3",
+  "name": "问丹参道",
+  "nameKey": "quest.daily_taixu_3.name",
+  "descriptionKey": "quest.daily_taixu_3.description",
+  "dialogueKeys": {
+   "offer": "quest.daily_taixu_3.offer",
+   "progress": "quest.daily_taixu_3.progress",
+   "complete": "quest.daily_taixu_3.complete"
+  },
+  "giver": "taixu_envoy",
+  "turnIn": "taixu_envoy",
+  "reqLevel": 10,
+  "phase": 5,
+  "daily": true,
+  "sect": "taixu",
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "alchemist_ge",
+    "map": "luoxia_town"
+   }
+  ],
+  "rewards": {
+   "exp": null,
+   "spiritStone": null,
+   "sectContribution": null,
+   "items": []
+  },
+  "balanceTodo": [
+   "rewards.exp",
+   "rewards.spiritStone",
+   "rewards.sectContribution"
+  ]
+ },
+ {
+  "id": "q_daily_lingfu_1",
+  "name": "收束散傀",
+  "nameKey": "quest.daily_lingfu_1.name",
+  "descriptionKey": "quest.daily_lingfu_1.description",
+  "dialogueKeys": {
+   "offer": "quest.daily_lingfu_1.offer",
+   "progress": "quest.daily_lingfu_1.progress",
+   "complete": "quest.daily_lingfu_1.complete"
+  },
+  "giver": "lingfu_envoy",
+  "turnIn": "lingfu_envoy",
+  "reqLevel": 10,
+  "phase": 5,
+  "daily": true,
+  "sect": "lingfu",
+  "objectives": [
+   {
+    "type": "kill",
+    "target": "straw_puppet",
+    "map": "luoxia_outskirts_1",
+    "count": 6
+   }
+  ],
+  "rewards": {
+   "exp": null,
+   "spiritStone": null,
+   "sectContribution": null,
+   "items": []
+  },
+  "balanceTodo": [
+   "rewards.exp",
+   "rewards.spiritStone",
+   "rewards.sectContribution"
+  ]
+ },
+ {
+  "id": "q_daily_lingfu_2",
+  "name": "研墨备草",
+  "nameKey": "quest.daily_lingfu_2.name",
+  "descriptionKey": "quest.daily_lingfu_2.description",
+  "dialogueKeys": {
+   "offer": "quest.daily_lingfu_2.offer",
+   "progress": "quest.daily_lingfu_2.progress",
+   "complete": "quest.daily_lingfu_2.complete"
+  },
+  "giver": "lingfu_envoy",
+  "turnIn": "lingfu_envoy",
+  "reqLevel": 10,
+  "phase": 5,
+  "daily": true,
+  "sect": "lingfu",
+  "objectives": [
+   {
+    "type": "collect",
+    "target": "spirit_herb",
+    "map": "luoxia_outskirts_1",
+    "count": 3,
+    "consume": true
+   }
+  ],
+  "rewards": {
+   "exp": null,
+   "spiritStone": null,
+   "sectContribution": null,
+   "items": []
+  },
+  "balanceTodo": [
+   "rewards.exp",
+   "rewards.spiritStone",
+   "rewards.sectContribution"
+  ]
+ },
+ {
+  "id": "q_daily_lingfu_3",
+  "name": "问纸归阁",
+  "nameKey": "quest.daily_lingfu_3.name",
+  "descriptionKey": "quest.daily_lingfu_3.description",
+  "dialogueKeys": {
+   "offer": "quest.daily_lingfu_3.offer",
+   "progress": "quest.daily_lingfu_3.progress",
+   "complete": "quest.daily_lingfu_3.complete"
+  },
+  "giver": "lingfu_envoy",
+  "turnIn": "lingfu_envoy",
+  "reqLevel": 10,
+  "phase": 5,
+  "daily": true,
+  "sect": "lingfu",
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "merchant_qian",
+    "map": "luoxia_town"
+   }
+  ],
+  "rewards": {
+   "exp": null,
+   "spiritStone": null,
+   "sectContribution": null,
+   "items": []
+  },
+  "balanceTodo": [
+   "rewards.exp",
+   "rewards.spiritStone",
+   "rewards.sectContribution"
+  ]
+ },
+ {
+  "id": "q_daily_youying_1",
+  "name": "截断暗哨",
+  "nameKey": "quest.daily_youying_1.name",
+  "descriptionKey": "quest.daily_youying_1.description",
+  "dialogueKeys": {
+   "offer": "quest.daily_youying_1.offer",
+   "progress": "quest.daily_youying_1.progress",
+   "complete": "quest.daily_youying_1.complete"
+  },
+  "giver": "youying_envoy",
+  "turnIn": "youying_envoy",
+  "reqLevel": 10,
+  "phase": 5,
+  "daily": true,
+  "sect": "youying",
+  "objectives": [
+   {
+    "type": "kill",
+    "target": "black_robe_minion",
+    "map": "luoxia_outskirts_2",
+    "count": 6
+   }
+  ],
+  "rewards": {
+   "exp": null,
+   "spiritStone": null,
+   "sectContribution": null,
+   "items": []
+  },
+  "balanceTodo": [
+   "rewards.exp",
+   "rewards.spiritStone",
+   "rewards.sectContribution"
+  ]
+ },
+ {
+  "id": "q_daily_youying_2",
+  "name": "夜行备药",
+  "nameKey": "quest.daily_youying_2.name",
+  "descriptionKey": "quest.daily_youying_2.description",
+  "dialogueKeys": {
+   "offer": "quest.daily_youying_2.offer",
+   "progress": "quest.daily_youying_2.progress",
+   "complete": "quest.daily_youying_2.complete"
+  },
+  "giver": "youying_envoy",
+  "turnIn": "youying_envoy",
+  "reqLevel": 10,
+  "phase": 5,
+  "daily": true,
+  "sect": "youying",
+  "objectives": [
+   {
+    "type": "collect",
+    "target": "spirit_herb",
+    "map": "luoxia_outskirts_2",
+    "count": 3,
+    "consume": true
+   }
+  ],
+  "rewards": {
+   "exp": null,
+   "spiritStone": null,
+   "sectContribution": null,
+   "items": []
+  },
+  "balanceTodo": [
+   "rewards.exp",
+   "rewards.spiritStone",
+   "rewards.sectContribution"
+  ]
+ },
+ {
+  "id": "q_daily_youying_3",
+  "name": "渡口听风",
+  "nameKey": "quest.daily_youying_3.name",
+  "descriptionKey": "quest.daily_youying_3.description",
+  "dialogueKeys": {
+   "offer": "quest.daily_youying_3.offer",
+   "progress": "quest.daily_youying_3.progress",
+   "complete": "quest.daily_youying_3.complete"
+  },
+  "giver": "youying_envoy",
+  "turnIn": "youying_envoy",
+  "reqLevel": 10,
+  "phase": 5,
+  "daily": true,
+  "sect": "youying",
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "ferry_master",
+    "map": "luoxia_town"
+   }
+  ],
+  "rewards": {
+   "exp": null,
+   "spiritStone": null,
+   "sectContribution": null,
+   "items": []
+  },
+  "balanceTodo": [
+   "rewards.exp",
+   "rewards.spiritStone",
+   "rewards.sectContribution"
+  ]
+ },
+ {
+  "id": "q_daily_wanshou_1",
+  "name": "平息兽患",
+  "nameKey": "quest.daily_wanshou_1.name",
+  "descriptionKey": "quest.daily_wanshou_1.description",
+  "dialogueKeys": {
+   "offer": "quest.daily_wanshou_1.offer",
+   "progress": "quest.daily_wanshou_1.progress",
+   "complete": "quest.daily_wanshou_1.complete"
+  },
+  "giver": "wanshou_envoy",
+  "turnIn": "wanshou_envoy",
+  "reqLevel": 10,
+  "phase": 5,
+  "daily": true,
+  "sect": "wanshou",
+  "objectives": [
+   {
+    "type": "kill",
+    "target": "wild_boar_spirit",
+    "map": "luoxia_outskirts_1",
+    "count": 6
+   }
+  ],
+  "rewards": {
+   "exp": null,
+   "spiritStone": null,
+   "sectContribution": null,
+   "items": []
+  },
+  "balanceTodo": [
+   "rewards.exp",
+   "rewards.spiritStone",
+   "rewards.sectContribution"
+  ]
+ },
+ {
+  "id": "q_daily_wanshou_2",
+  "name": "灵兽备食",
+  "nameKey": "quest.daily_wanshou_2.name",
+  "descriptionKey": "quest.daily_wanshou_2.description",
+  "dialogueKeys": {
+   "offer": "quest.daily_wanshou_2.offer",
+   "progress": "quest.daily_wanshou_2.progress",
+   "complete": "quest.daily_wanshou_2.complete"
+  },
+  "giver": "wanshou_envoy",
+  "turnIn": "wanshou_envoy",
+  "reqLevel": 10,
+  "phase": 5,
+  "daily": true,
+  "sect": "wanshou",
+  "objectives": [
+   {
+    "type": "collect",
+    "target": "spirit_herb",
+    "map": "luoxia_outskirts_1",
+    "count": 3,
+    "consume": true
+   }
+  ],
+  "rewards": {
+   "exp": null,
+   "spiritStone": null,
+   "sectContribution": null,
+   "items": []
+  },
+  "balanceTodo": [
+   "rewards.exp",
+   "rewards.spiritStone",
+   "rewards.sectContribution"
+  ]
+ },
+ {
+  "id": "q_daily_wanshou_3",
+  "name": "问仓归山",
+  "nameKey": "quest.daily_wanshou_3.name",
+  "descriptionKey": "quest.daily_wanshou_3.description",
+  "dialogueKeys": {
+   "offer": "quest.daily_wanshou_3.offer",
+   "progress": "quest.daily_wanshou_3.progress",
+   "complete": "quest.daily_wanshou_3.complete"
+  },
+  "giver": "wanshou_envoy",
+  "turnIn": "wanshou_envoy",
+  "reqLevel": 10,
+  "phase": 5,
+  "daily": true,
+  "sect": "wanshou",
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "storage_keeper",
+    "map": "luoxia_town"
+   }
+  ],
+  "rewards": {
+   "exp": null,
+   "spiritStone": null,
+   "sectContribution": null,
+   "items": []
+  },
+  "balanceTodo": [
+   "rewards.exp",
+   "rewards.spiritStone",
+   "rewards.sectContribution"
+  ]
  }
 ]

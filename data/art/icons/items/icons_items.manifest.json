@@ -229,6 +229,42 @@
    "items": [
     "shadow_token"
    ]
+  },
+  "icon_talisman_paper": {
+   "name": "符纸",
+   "items": [
+    "talisman_paper"
+   ]
+  },
+  "icon_spirit_ink": {
+   "name": "灵墨",
+   "items": [
+    "spirit_ink"
+   ]
+  },
+  "icon_talisman_fire": {
+   "name": "火符",
+   "items": [
+    "talisman_fire"
+   ]
+  },
+  "icon_talisman_guard": {
+   "name": "护身符",
+   "items": [
+    "talisman_guard"
+   ]
+  },
+  "icon_talisman_return": {
+   "name": "遁地符",
+   "items": [
+    "talisman_return"
+   ]
+  },
+  "icon_talisman_gather": {
+   "name": "聚灵符",
+   "items": [
+    "talisman_gather"
+   ]
   }
  },
  "items": {
@@ -270,7 +306,13 @@
   "spirit_stone": "icon_spirit_stone",
   "(recipe)": "icon_recipe_scroll",
   "five_sect_token": "icon_five_sect_token",
-  "shadow_token": "icon_shadow_token"
+  "shadow_token": "icon_shadow_token",
+  "talisman_paper": "icon_talisman_paper",
+  "spirit_ink": "icon_spirit_ink",
+  "talisman_fire": "icon_talisman_fire",
+  "talisman_guard": "icon_talisman_guard",
+  "talisman_return": "icon_talisman_return",
+  "talisman_gather": "icon_talisman_gather"
  },
  "placeholders": []
 }

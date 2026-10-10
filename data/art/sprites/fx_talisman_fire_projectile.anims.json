@@ -1,0 +1,28 @@
+{
+ "atlas": "fx_talisman_fire_projectile",
+ "facing": "left",
+ "origin": [
+  0.5,
+  0.5
+ ],
+ "frameSize": [
+  48,
+  32
+ ],
+ "blend": "NORMAL",
+ "kind": "fx",
+ "note": "火符弹体，原点 (0.5,0.5) 为弹体中心；原图朝左飞、右侧尾焰。发射后循环 fly，向右发射用 setFlipX(true)，速度/射程/首个敌人命中由 talisman_fire.effect 与程序碰撞控制，视觉尺寸不替代 hitWidth/hitHeight。NORMAL 混合；命中首个敌人后销毁弹体并在碰撞点播 fx_talisman_fire_hit；撞地形/超射程只销毁，不暗示额外群伤。",
+ "anims": [
+  {
+   "key": "fx_talisman_fire_projectile_fly",
+   "frames": [
+    "fx_talisman_fire_projectile_fly_01",
+    "fx_talisman_fire_projectile_fly_02",
+    "fx_talisman_fire_projectile_fly_03",
+    "fx_talisman_fire_projectile_fly_04"
+   ],
+   "frameRate": 12,
+   "repeat": -1
+  }
+ ]
+}

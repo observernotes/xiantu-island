@@ -1,0 +1,54 @@
+{
+ "atlas": "fx_talisman_guard_orbit",
+ "facing": "left",
+ "origin": [
+  0.5,
+  0.75
+ ],
+ "frameSize": [
+  96,
+  96
+ ],
+ "blend": "NORMAL",
+ "kind": "fx",
+ "note": "护身增益环，原点 (0.5,0.75) 为画布 (48,72)，将该点跟随 player 的脚底坐标；环心位于画布 (48,45)，即脚底上 27px 的躯干附近，角色身高差异用统一 offsetY 微调，不额外扣掉整帧高度。增益挂载播 start，完成后循环 loop；到期/死亡清除播 end 再销毁。NORMAL 金色细环与 3 小符；远层约半透明，近层清楚，本图为一张整合图，可整体置于角色上层。同品质刷新/更高品质替换沿用程序增益规则；视觉刷新不增加叠层，持续时间由 buff expireAt 判断。",
+ "anims": [
+  {
+   "key": "fx_talisman_guard_orbit_start",
+   "frames": [
+    "fx_talisman_guard_orbit_start_01",
+    "fx_talisman_guard_orbit_start_02",
+    "fx_talisman_guard_orbit_start_03",
+    "fx_talisman_guard_orbit_start_04"
+   ],
+   "frameRate": 12,
+   "repeat": 0
+  },
+  {
+   "key": "fx_talisman_guard_orbit_loop",
+   "frames": [
+    "fx_talisman_guard_orbit_loop_01",
+    "fx_talisman_guard_orbit_loop_02",
+    "fx_talisman_guard_orbit_loop_03",
+    "fx_talisman_guard_orbit_loop_04",
+    "fx_talisman_guard_orbit_loop_05",
+    "fx_talisman_guard_orbit_loop_06",
+    "fx_talisman_guard_orbit_loop_07",
+    "fx_talisman_guard_orbit_loop_08"
+   ],
+   "frameRate": 10,
+   "repeat": -1
+  },
+  {
+   "key": "fx_talisman_guard_orbit_end",
+   "frames": [
+    "fx_talisman_guard_orbit_end_01",
+    "fx_talisman_guard_orbit_end_02",
+    "fx_talisman_guard_orbit_end_03",
+    "fx_talisman_guard_orbit_end_04"
+   ],
+   "frameRate": 12,
+   "repeat": 0
+  }
+ ]
+}

@@ -772,5 +772,45 @@
    "knockback": 180
   },
   "phase": 5
+ },
+ {
+  "id": "spirit_wolf",
+  "name": "灵狼",
+  "level": 10,
+  "phase": 5,
+  "hp": 95,
+  "atk": 13,
+  "def": 2,
+  "exp": 0,
+  "aggressive": false,
+  "aggroRange": 320,
+  "moveSpeed": 150,
+  "patrolRange": 0,
+  "touchDamage": false,
+  "knockback": 0,
+  "respawnMs": 0,
+  "sprite": "mon_wild_wolf",
+  "tint": 8380608,
+  "dropTable": null,
+  "isBoss": false,
+  "grantRewards": false,
+  "despawnWithOwner": true,
+  "hpRatioOfOwner": 0.6,
+  "defRatioOfOwner": 0.5,
+  "followDist": 96,
+  "leashDist": 320,
+  "waitBelowRope": true,
+  "attack": {
+   "type": "melee",
+   "damageRatio": 1.2,
+   "range": {
+    "w": 96,
+    "h": 48
+   },
+   "cooldownMs": 500,
+   "telegraphMs": 0,
+   "recoverMs": 0,
+   "knockback": 0
+  }
  }
 ]

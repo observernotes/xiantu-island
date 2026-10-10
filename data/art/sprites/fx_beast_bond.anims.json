@@ -1,0 +1,41 @@
+{
+ "atlas": "fx_beast_bond",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  64,
+  96
+ ],
+ "blend": "NORMAL",
+ "kind": "fx",
+ "note": "原点(0.5,1)放角色/灵兽脚底(32,96)。施放start一次再loop循环，增益结束销毁；仅输出附着身体的苔绿光环。人与兽之间的可拉伸苔绿光丝由程序用Graphics画线，并随双方坐标更新，本atlas不含光丝。分担伤害由技能系统处理，NORMAL混合。",
+ "anims": [
+  {
+   "key": "fx_beast_bond_start",
+   "frames": [
+    "fx_beast_bond_start_01",
+    "fx_beast_bond_start_02",
+    "fx_beast_bond_start_03",
+    "fx_beast_bond_start_04"
+   ],
+   "frameRate": 12,
+   "repeat": 0
+  },
+  {
+   "key": "fx_beast_bond_loop",
+   "frames": [
+    "fx_beast_bond_loop_01",
+    "fx_beast_bond_loop_02",
+    "fx_beast_bond_loop_03",
+    "fx_beast_bond_loop_04",
+    "fx_beast_bond_loop_05",
+    "fx_beast_bond_loop_06"
+   ],
+   "frameRate": 10,
+   "repeat": -1
+  }
+ ]
+}

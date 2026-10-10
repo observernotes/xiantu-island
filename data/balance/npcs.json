@@ -61,9 +61,13 @@
    "到了山门，往东是演武坪和主殿，传功长老在传功殿。",
    "闭关室在最东头，筑基以后用宗门贡献换闭关次数。"
   ],
-  "quests": [],
+  "quests": [
+   "q_daily_tianjian_1",
+   "q_daily_tianjian_2",
+   "q_daily_tianjian_3"
+  ],
   "phase": 5,
-  "note": "与青云村 tianjian_envoy 同一人、同一套图，另开 id 放在山门；v0.5 只带路，宗门日常放到以后。"
+  "note": "与青云村 tianjian_envoy 同一人、同一套图，另开 id 放在山门；v0.5 发布、交付本宗三条日常，山门点位及日常规则待接入。"
  },
  {
   "id": "tianjian_elder",
@@ -145,6 +149,22 @@
    "飞舟要开了，去哪座岛？"
   ],
   "quests": [],
+  "ferryRoutes": [
+   {
+    "id": "wanyao_outer_1",
+    "label": "ferry.route_wanyao_outer_1",
+    "targetMap": "wanyao_outer_1",
+    "targetPortal": null,
+    "cost": 0
+   },
+   {
+    "id": "tianjian_sect",
+    "label": "ferry.route_tianjian_sect",
+    "targetMap": "tianjian_sect",
+    "targetPortal": null,
+    "cost": 0
+   }
+  ],
   "phase": 5
  },
  {
@@ -199,7 +219,11 @@
   "dialog": [
    "……"
   ],
-  "quests": [],
+  "quests": [
+   "q_daily_taixu_1",
+   "q_daily_taixu_2",
+   "q_daily_taixu_3"
+  ],
   "phase": 5
  },
  {
@@ -221,7 +245,12 @@
   "dialog": [
    "……"
   ],
-  "quests": [],
+  "quests": [
+   "q_talisman_intro",
+   "q_daily_lingfu_1",
+   "q_daily_lingfu_2",
+   "q_daily_lingfu_3"
+  ],
   "phase": 5
  },
  {
@@ -243,7 +272,11 @@
   "dialog": [
    "……"
   ],
-  "quests": [],
+  "quests": [
+   "q_daily_youying_1",
+   "q_daily_youying_2",
+   "q_daily_youying_3"
+  ],
   "phase": 5
  },
  {
@@ -265,7 +298,11 @@
   "dialog": [
    "……"
   ],
-  "quests": [],
+  "quests": [
+   "q_daily_wanshou_1",
+   "q_daily_wanshou_2",
+   "q_daily_wanshou_3"
+  ],
   "phase": 5
  },
  {
@@ -283,18 +320,18 @@
   "id": "enc_wanderer",
   "name": "季行舟",
   "phase": 5,
-  "sprite": "npc_storage_keeper"
+  "sprite": "npc_enc_wanderer"
  },
  {
   "id": "enc_sage",
   "name": "槐下老者",
   "phase": 5,
-  "sprite": "npc_doctor_sun"
+  "sprite": "npc_enc_sage"
  },
  {
   "id": "enc_inner_voice",
   "name": "心中低语",
   "phase": 5,
-  "sprite": "player_sword_m"
+  "sprite": "fx_enc_inner_voice"
  }
 ]

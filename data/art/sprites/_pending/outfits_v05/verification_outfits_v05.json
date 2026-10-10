@@ -1,0 +1,725 @@
+{
+ "generator": "gen_outfits_sects_v05.py",
+ "seed": 20261010,
+ "baseline": "player_sword_m__fox_robe",
+ "baselineMaxPixelDiff": 0,
+ "baselineFrames": 25,
+ "standardPartCountPerOutfit": 10,
+ "newPartFiles": 126,
+ "outfits": [
+  {
+   "key": "player_sword_m__outfit_tianjian_1",
+   "frames": 25,
+   "atlasSize": [
+    768,
+    384
+   ],
+   "frameSize": 96,
+   "origin": [
+    0.5,
+    1
+   ],
+   "facing": "left",
+   "blend": "NORMAL",
+   "kind": "player",
+   "matchesFox": [
+    "frameSize",
+    "origin",
+    "facing",
+    "frameNames",
+    "frameRects",
+    "frameOrder",
+    "animKeys",
+    "frameCounts",
+    "frameRates",
+    "repeat"
+   ],
+   "anims": [
+    {
+     "anim": "idle",
+     "frames": 3,
+     "frameRate": 3,
+     "repeat": -1
+    },
+    {
+     "anim": "walk",
+     "frames": 4,
+     "frameRate": 8,
+     "repeat": -1
+    },
+    {
+     "anim": "jump",
+     "frames": 1,
+     "frameRate": 1,
+     "repeat": 0
+    },
+    {
+     "anim": "djump",
+     "frames": 2,
+     "frameRate": 10,
+     "repeat": 0
+    },
+    {
+     "anim": "rope",
+     "frames": 2,
+     "frameRate": 6,
+     "repeat": -1
+    },
+    {
+     "anim": "ladder",
+     "frames": 2,
+     "frameRate": 6,
+     "repeat": -1
+    },
+    {
+     "anim": "attack",
+     "frames": 3,
+     "frameRate": 12,
+     "repeat": 0
+    },
+    {
+     "anim": "hit",
+     "frames": 1,
+     "frameRate": 1,
+     "repeat": 0
+    },
+    {
+     "anim": "die",
+     "frames": 2,
+     "frameRate": 6,
+     "repeat": 0
+    },
+    {
+     "anim": "sit",
+     "frames": 2,
+     "frameRate": 2,
+     "repeat": -1
+    },
+    {
+     "anim": "gather",
+     "frames": 3,
+     "frameRate": 8,
+     "repeat": -1
+    }
+   ],
+   "addedSlots": [],
+   "loadout": {
+    "robe": "outfit_tianjian_1",
+    "shoes": "cloth_shoes",
+    "weapon": "azure_steel_sword"
+   }
+  },
+  {
+   "key": "player_sword_m__outfit_taixu_1",
+   "frames": 25,
+   "atlasSize": [
+    768,
+    384
+   ],
+   "frameSize": 96,
+   "origin": [
+    0.5,
+    1
+   ],
+   "facing": "left",
+   "blend": "NORMAL",
+   "kind": "player",
+   "matchesFox": [
+    "frameSize",
+    "origin",
+    "facing",
+    "frameNames",
+    "frameRects",
+    "frameOrder",
+    "animKeys",
+    "frameCounts",
+    "frameRates",
+    "repeat"
+   ],
+   "anims": [
+    {
+     "anim": "idle",
+     "frames": 3,
+     "frameRate": 3,
+     "repeat": -1
+    },
+    {
+     "anim": "walk",
+     "frames": 4,
+     "frameRate": 8,
+     "repeat": -1
+    },
+    {
+     "anim": "jump",
+     "frames": 1,
+     "frameRate": 1,
+     "repeat": 0
+    },
+    {
+     "anim": "djump",
+     "frames": 2,
+     "frameRate": 10,
+     "repeat": 0
+    },
+    {
+     "anim": "rope",
+     "frames": 2,
+     "frameRate": 6,
+     "repeat": -1
+    },
+    {
+     "anim": "ladder",
+     "frames": 2,
+     "frameRate": 6,
+     "repeat": -1
+    },
+    {
+     "anim": "attack",
+     "frames": 3,
+     "frameRate": 12,
+     "repeat": 0
+    },
+    {
+     "anim": "hit",
+     "frames": 1,
+     "frameRate": 1,
+     "repeat": 0
+    },
+    {
+     "anim": "die",
+     "frames": 2,
+     "frameRate": 6,
+     "repeat": 0
+    },
+    {
+     "anim": "sit",
+     "frames": 2,
+     "frameRate": 2,
+     "repeat": -1
+    },
+    {
+     "anim": "gather",
+     "frames": 3,
+     "frameRate": 8,
+     "repeat": -1
+    }
+   ],
+   "addedSlots": [
+    {
+     "slot": "cloud_sash",
+     "src": "$robe/cloud_sash",
+     "parent": "coat",
+     "anchor": "navel"
+    }
+   ],
+   "loadout": {
+    "robe": "outfit_taixu_1",
+    "shoes": "cloth_shoes",
+    "weapon": "azure_steel_sword"
+   }
+  },
+  {
+   "key": "player_sword_m__outfit_lingfu_1",
+   "frames": 25,
+   "atlasSize": [
+    768,
+    384
+   ],
+   "frameSize": 96,
+   "origin": [
+    0.5,
+    1
+   ],
+   "facing": "left",
+   "blend": "NORMAL",
+   "kind": "player",
+   "matchesFox": [
+    "frameSize",
+    "origin",
+    "facing",
+    "frameNames",
+    "frameRects",
+    "frameOrder",
+    "animKeys",
+    "frameCounts",
+    "frameRates",
+    "repeat"
+   ],
+   "anims": [
+    {
+     "anim": "idle",
+     "frames": 3,
+     "frameRate": 3,
+     "repeat": -1
+    },
+    {
+     "anim": "walk",
+     "frames": 4,
+     "frameRate": 8,
+     "repeat": -1
+    },
+    {
+     "anim": "jump",
+     "frames": 1,
+     "frameRate": 1,
+     "repeat": 0
+    },
+    {
+     "anim": "djump",
+     "frames": 2,
+     "frameRate": 10,
+     "repeat": 0
+    },
+    {
+     "anim": "rope",
+     "frames": 2,
+     "frameRate": 6,
+     "repeat": -1
+    },
+    {
+     "anim": "ladder",
+     "frames": 2,
+     "frameRate": 6,
+     "repeat": -1
+    },
+    {
+     "anim": "attack",
+     "frames": 3,
+     "frameRate": 12,
+     "repeat": 0
+    },
+    {
+     "anim": "hit",
+     "frames": 1,
+     "frameRate": 1,
+     "repeat": 0
+    },
+    {
+     "anim": "die",
+     "frames": 2,
+     "frameRate": 6,
+     "repeat": 0
+    },
+    {
+     "anim": "sit",
+     "frames": 2,
+     "frameRate": 2,
+     "repeat": -1
+    },
+    {
+     "anim": "gather",
+     "frames": 3,
+     "frameRate": 8,
+     "repeat": -1
+    }
+   ],
+   "addedSlots": [
+    {
+     "slot": "talisman_belt",
+     "src": "$robe/talisman_belt",
+     "parent": "coat",
+     "anchor": "navel"
+    }
+   ],
+   "loadout": {
+    "robe": "outfit_lingfu_1",
+    "shoes": "cloth_shoes",
+    "weapon": "azure_steel_sword"
+   }
+  },
+  {
+   "key": "player_sword_m__outfit_youying_1",
+   "frames": 25,
+   "atlasSize": [
+    768,
+    384
+   ],
+   "frameSize": 96,
+   "origin": [
+    0.5,
+    1
+   ],
+   "facing": "left",
+   "blend": "NORMAL",
+   "kind": "player",
+   "matchesFox": [
+    "frameSize",
+    "origin",
+    "facing",
+    "frameNames",
+    "frameRects",
+    "frameOrder",
+    "animKeys",
+    "frameCounts",
+    "frameRates",
+    "repeat"
+   ],
+   "anims": [
+    {
+     "anim": "idle",
+     "frames": 3,
+     "frameRate": 3,
+     "repeat": -1
+    },
+    {
+     "anim": "walk",
+     "frames": 4,
+     "frameRate": 8,
+     "repeat": -1
+    },
+    {
+     "anim": "jump",
+     "frames": 1,
+     "frameRate": 1,
+     "repeat": 0
+    },
+    {
+     "anim": "djump",
+     "frames": 2,
+     "frameRate": 10,
+     "repeat": 0
+    },
+    {
+     "anim": "rope",
+     "frames": 2,
+     "frameRate": 6,
+     "repeat": -1
+    },
+    {
+     "anim": "ladder",
+     "frames": 2,
+     "frameRate": 6,
+     "repeat": -1
+    },
+    {
+     "anim": "attack",
+     "frames": 3,
+     "frameRate": 12,
+     "repeat": 0
+    },
+    {
+     "anim": "hit",
+     "frames": 1,
+     "frameRate": 1,
+     "repeat": 0
+    },
+    {
+     "anim": "die",
+     "frames": 2,
+     "frameRate": 6,
+     "repeat": 0
+    },
+    {
+     "anim": "sit",
+     "frames": 2,
+     "frameRate": 2,
+     "repeat": -1
+    },
+    {
+     "anim": "gather",
+     "frames": 3,
+     "frameRate": 8,
+     "repeat": -1
+    }
+   ],
+   "addedSlots": [
+    {
+     "slot": "trouserF",
+     "src": "$robe/trouser_wrap",
+     "parent": "legF",
+     "anchor": "hip",
+     "lock": true,
+     "shade": 1
+    },
+    {
+     "slot": "trouserB",
+     "src": "$robe/trouser_wrap",
+     "parent": "legB",
+     "anchor": "hip",
+     "lock": true,
+     "shade": 0.88
+    },
+    {
+     "slot": "hood_cowl",
+     "src": "$robe/hood_cowl",
+     "parent": "torso",
+     "anchor": "neck"
+    }
+   ],
+   "loadout": {
+    "robe": "outfit_youying_1",
+    "shoes": "cloth_shoes",
+    "weapon": "azure_steel_sword"
+   }
+  },
+  {
+   "key": "player_sword_m__outfit_wanshou_1",
+   "frames": 25,
+   "atlasSize": [
+    768,
+    384
+   ],
+   "frameSize": 96,
+   "origin": [
+    0.5,
+    1
+   ],
+   "facing": "left",
+   "blend": "NORMAL",
+   "kind": "player",
+   "matchesFox": [
+    "frameSize",
+    "origin",
+    "facing",
+    "frameNames",
+    "frameRects",
+    "frameOrder",
+    "animKeys",
+    "frameCounts",
+    "frameRates",
+    "repeat"
+   ],
+   "anims": [
+    {
+     "anim": "idle",
+     "frames": 3,
+     "frameRate": 3,
+     "repeat": -1
+    },
+    {
+     "anim": "walk",
+     "frames": 4,
+     "frameRate": 8,
+     "repeat": -1
+    },
+    {
+     "anim": "jump",
+     "frames": 1,
+     "frameRate": 1,
+     "repeat": 0
+    },
+    {
+     "anim": "djump",
+     "frames": 2,
+     "frameRate": 10,
+     "repeat": 0
+    },
+    {
+     "anim": "rope",
+     "frames": 2,
+     "frameRate": 6,
+     "repeat": -1
+    },
+    {
+     "anim": "ladder",
+     "frames": 2,
+     "frameRate": 6,
+     "repeat": -1
+    },
+    {
+     "anim": "attack",
+     "frames": 3,
+     "frameRate": 12,
+     "repeat": 0
+    },
+    {
+     "anim": "hit",
+     "frames": 1,
+     "frameRate": 1,
+     "repeat": 0
+    },
+    {
+     "anim": "die",
+     "frames": 2,
+     "frameRate": 6,
+     "repeat": 0
+    },
+    {
+     "anim": "sit",
+     "frames": 2,
+     "frameRate": 2,
+     "repeat": -1
+    },
+    {
+     "anim": "gather",
+     "frames": 3,
+     "frameRate": 8,
+     "repeat": -1
+    }
+   ],
+   "addedSlots": [
+    {
+     "slot": "trouserF",
+     "src": "$robe/trouser_wrap",
+     "parent": "legF",
+     "anchor": "hip",
+     "lock": true,
+     "shade": 1
+    },
+    {
+     "slot": "trouserB",
+     "src": "$robe/trouser_wrap",
+     "parent": "legB",
+     "anchor": "hip",
+     "lock": true,
+     "shade": 0.88
+    },
+    {
+     "slot": "fur_trim",
+     "src": "$robe/fur_trim",
+     "parent": "torso",
+     "anchor": "neck",
+     "lock": true
+    }
+   ],
+   "loadout": {
+    "robe": "outfit_wanshou_1",
+    "shoes": "cloth_shoes",
+    "weapon": "azure_steel_sword"
+   }
+  }
+ ],
+ "iconsMerge": {
+  "baseFrames": 43,
+  "totalFrames": 48,
+  "formalSize": [
+   256,
+   160
+  ],
+  "size": [
+   256,
+   192
+  ],
+  "preservedBaseFrames": true,
+  "preservedExistingManifest": true,
+  "newSlots": {
+   "icon_robe_tianjian_1": [
+    96,
+    160
+   ],
+   "icon_robe_taixu_1": [
+    128,
+    160
+   ],
+   "icon_robe_lingfu_1": [
+    160,
+    160
+   ],
+   "icon_robe_youying_1": [
+    192,
+    160
+   ],
+   "icon_robe_wanshou_1": [
+    224,
+    160
+   ]
+  }
+ },
+ "protectedFilesSha256": {
+  "art/icons/icons_items.json": "9395042ac5d1810fc6d7e64f0cf480dd0c1654ac03e3479acca34d339263eece",
+  "art/icons/icons_items.png": "5baf132d6958890adb4864cbac5fee9535c6d345b5fa5c320db56afc5b73ce8f",
+  "art/icons/items/icon_fox_robe.png": "f4e749b641804b2c0a89f40f42cce0584e81fcca4b54508e2630388fbeb59e1c",
+  "art/icons/items/icon_fox_robe@64.png": "369e698ba5b50a396374aa9cc704d35e0c77a73ad1cba501eecb7409afcc364e",
+  "art/icons/items/icons_items.manifest.json": "670d03378cf1cbc43a700ed7c04706112560269ba5b703b4c8520f9eaa55132a",
+  "art/parts/player_sword_m/base/arm.json": "3feae21230ad7dc467170c47d22356be16a3571b8152a49c8955e49f5d4f99d9",
+  "art/parts/player_sword_m/base/arm.png": "d581c96e58f74d42571972802a8cc21db65601a4c191e67a1e32c00528be79b2",
+  "art/parts/player_sword_m/base/cloud.json": "775519d34287cc2e415d39d857ece19c314dc0fdd78e601974e84316c33754ce",
+  "art/parts/player_sword_m/base/cloud.png": "e1c0ab9a2ad17e20868e7a8515e8a0edf53e170e764128d89e388ace98810f4f",
+  "art/parts/player_sword_m/base/cloud.small.json": "ee574f18d4a96b9013cfb3265eb152ca8c9b5d0dd8d6c78de0e65a4f81364b72",
+  "art/parts/player_sword_m/base/cloud.small.png": "95ec11d3dd836b092aacf11bf1903e7f34fcb91e894daf706b5009cdf95f2677",
+  "art/parts/player_sword_m/base/face.blink.json": "4262f5e02a9c27803556fdc26620fde99366ad077a9ccc83adf62b3fe2eca831",
+  "art/parts/player_sword_m/base/face.blink.png": "170f4a81e978ed3324d937df5473de22c4089ffe20e0bd478f559151c7cafe25",
+  "art/parts/player_sword_m/base/face.hurt.json": "57744b6fdf48c4616c08b0ef512e9711a26b0ff01974907fd88b4ec208b39339",
+  "art/parts/player_sword_m/base/face.hurt.png": "03aaee8388d303ea7b54cb6b85db2b1cf585541af36084fedfad3b342c08736c",
+  "art/parts/player_sword_m/base/face.normal.json": "fde05f8666426a3bfcd2f13ee817d47d6c6dd4f54af6329eb71543e62e147849",
+  "art/parts/player_sword_m/base/face.normal.png": "29171c735f483e21d704a9ded51af39fa8601c159fbb1734da160a074ec22ef9",
+  "art/parts/player_sword_m/base/face.pain.json": "ff36ff885318d50c54b9710078751d128f58d2f077b9f17321f3daaca5d4e7e8",
+  "art/parts/player_sword_m/base/face.pain.png": "ec20162665949e083ae2ec0f9642c19ea93daf4dd0718a914ae3a77f80c6cf94",
+  "art/parts/player_sword_m/base/face.shout.json": "f24b54b62b93ab370ea99321e6de97444c95c021c6b9072f1e0cef5f6b8105ce",
+  "art/parts/player_sword_m/base/face.shout.png": "b455bcea5f07e5d4c38acfd633d2a3929f268af25d6aa2f3ec11d6a6ba5ab707",
+  "art/parts/player_sword_m/base/hair.back.json": "4c21b646ad3fffea17a6fa5f2fb5d4d7ca02c7c6bd6487078aaec4b3759b5cd0",
+  "art/parts/player_sword_m/base/hair.back.png": "d5601db8af175dbf6011b1943615804c68a60cd19ef53de54a94f8469d91fa14",
+  "art/parts/player_sword_m/base/hair.json": "b5d4f7a64b67eaca2920ebb6886dd20509b5d21257b138ab1cecd480e9facb87",
+  "art/parts/player_sword_m/base/hair.png": "c689f10546b587b9b3a3fb74ae12a701278d7ed09f2b33b6099f088c2ba736df",
+  "art/parts/player_sword_m/base/head.back.json": "116f377afe88eef87d5d12b6de4684f11cfbf30f90578ef1626eaea0ab0e4435",
+  "art/parts/player_sword_m/base/head.back.png": "25f29c401e28ed21bfb92aeba8bfd0ba23bab62ad7831770a1fa8eb5a76bfc84",
+  "art/parts/player_sword_m/base/head.json": "4780b6023492c96e778015c48269e66d9cc30a770e1161afa59e83527c035972",
+  "art/parts/player_sword_m/base/head.png": "ad1ddf9f447d454059a7dbe24e23dbc182db21a996a96b77602e4fea09e1fd7e",
+  "art/parts/player_sword_m/base/leg.json": "1f941a46bad6a1f93ecc0658d146c849046a6a7177d21f0e9778709e1f4ee94b",
+  "art/parts/player_sword_m/base/leg.png": "650b2ee02036f54734c2bef70be367db679c3b3c762ec91d9662338c8ae9b73a",
+  "art/parts/player_sword_m/base/ribbon.json": "7328334b2851a53aab38fb9b89fcd37b68b3b4cae4c0286c5258710f3462cf16",
+  "art/parts/player_sword_m/base/ribbon.png": "9a2c141aaa0d2b81822826502147eb71a096cf3f9a217e3e78be70d6f299622e",
+  "art/parts/player_sword_m/base/torso.json": "44e408361c09b0eb8e3eb24d334f4e49194d0036c41c1a5688785b174510ab25",
+  "art/parts/player_sword_m/base/torso.png": "9441e5ca1c62bcc115f139778ea505e71831bfa8c552a91ce720d81414c2fd94",
+  "art/parts/player_sword_m/equip/robe/disciple_robe/coat.back.json": "2045fbec6298307f6ce9c638389fe421afe5bbfc8dfc2e973cd40be868fb1425",
+  "art/parts/player_sword_m/equip/robe/disciple_robe/coat.back.png": "1f7049e4852f5e3eb12eb132b02314e875a2e71277644962afa023102a5ccda5",
+  "art/parts/player_sword_m/equip/robe/disciple_robe/coat.json": "2da5198e39b3afd0f7fef155c0c9582d63cc44fc5af2c41e304926f226afc46d",
+  "art/parts/player_sword_m/equip/robe/disciple_robe/coat.png": "a6595cd6dbe88fb41b53f7b8fba1827e126e9676b0f0f737c85b328f3a63f3dc",
+  "art/parts/player_sword_m/equip/robe/disciple_robe/sash.json": "e1db4c05ddb3cb07ccf8c9ef9576fe986d04f6f68ef43e911f90cb12b59ac28b",
+  "art/parts/player_sword_m/equip/robe/disciple_robe/sash.png": "aaf35da6ea8c5777b9133356fbcc8d3c9f1a008c8c488c7ba7e67b47b662d0c1",
+  "art/parts/player_sword_m/equip/robe/disciple_robe/skirt.back.json": "829f25d152cfcf64452494af4ade90419fb064c3e932489ef1b23146e402396d",
+  "art/parts/player_sword_m/equip/robe/disciple_robe/skirt.back.png": "5c0591fdd99717ddf6cae4b34624e8fde0d01f65cdcf6b5aedf7efd3c3d56e3a",
+  "art/parts/player_sword_m/equip/robe/disciple_robe/skirt.bunch.json": "c000b4c5139f2b9b1cf2dd674b5ed0539dd13167640290d1a4d8f480ec9c1bab",
+  "art/parts/player_sword_m/equip/robe/disciple_robe/skirt.bunch.png": "e8650eeda8c0382eae43144134f18e0112e8dc2530b170dd114cabe750b2d172",
+  "art/parts/player_sword_m/equip/robe/disciple_robe/skirt.flare.json": "b786a52674764ab1fb1f434e202ca5b5bb4b98603363b8f8788f4d39f0af5e41",
+  "art/parts/player_sword_m/equip/robe/disciple_robe/skirt.flare.png": "a933ce7d563001b27185d3e5b085fbd366f6acf7ada69d56c7f0b988c898de08",
+  "art/parts/player_sword_m/equip/robe/disciple_robe/skirt.json": "2f73b567ea27d2ac7467672f1ad5477bfe9a9bd38d1a72a5dee5b586b45109b4",
+  "art/parts/player_sword_m/equip/robe/disciple_robe/skirt.png": "61da0ee668f9a27051dc5d64fa7155287dc8e18bcc3a07c476edf9c4788037b6",
+  "art/parts/player_sword_m/equip/robe/disciple_robe/skirt.sway_l.json": "c7902af93cd76818b2ee5fbdd29f9498fb64b3d1b09848e8fdbdbe78e28175e8",
+  "art/parts/player_sword_m/equip/robe/disciple_robe/skirt.sway_l.png": "40ce5c5090186002a507f08cf6f0f4516ed02cb468927f577eed31f98b70207e",
+  "art/parts/player_sword_m/equip/robe/disciple_robe/skirt.sway_r.json": "dc3733044cf099beffcf47f8847d6a70d6f8d5d4d81c306ecbef921ac4607032",
+  "art/parts/player_sword_m/equip/robe/disciple_robe/skirt.sway_r.png": "16680b6454b2e94ddc752ecb39c28c5356e9de0fda5987f9b0e4a7bef34391c1",
+  "art/parts/player_sword_m/equip/robe/disciple_robe/sleeve.json": "8a66919a5f4881f7363dd7c183208438011a3a52e6879ea7c0c4c0af741cdcbe",
+  "art/parts/player_sword_m/equip/robe/disciple_robe/sleeve.png": "6f03cc8033d59d244826d6df4538747c3d9054e3ed289140f44bd5368edafb70",
+  "art/parts/player_sword_m/equip/robe/fox_robe/coat.back.json": "0b376fa79c7d9a35f7cf14bb0678ddcbf6fd3c5abf4aea902c1935ca8aaab8f3",
+  "art/parts/player_sword_m/equip/robe/fox_robe/coat.back.png": "bda58a157654fb970b7f8a7f98e2e6c91f1d1ad1042fac808cd9319cb3779f2d",
+  "art/parts/player_sword_m/equip/robe/fox_robe/coat.json": "d9a3c2e62088edbfc43ac5ef67348efa5ed2fd3354bc59ee010833e3f5219162",
+  "art/parts/player_sword_m/equip/robe/fox_robe/coat.png": "0f40c5052efb3e0087a793c3660871ef7a08231e733e910473c701ea6890e3df",
+  "art/parts/player_sword_m/equip/robe/fox_robe/sash.json": "bbb08cfba5828067cea9f7c77148c29f704ee466cd9e4cbcfa0f0e5daf468b12",
+  "art/parts/player_sword_m/equip/robe/fox_robe/sash.png": "21a87da682e4ab2e28afaf741be4627b9c9a1f96df9b53c8dda12c4dd31e847a",
+  "art/parts/player_sword_m/equip/robe/fox_robe/skirt.back.json": "8f4f7653cbf24a25779d781d0779782f0a9e35e871c1d3b2a23ea5d8ef7fe5bf",
+  "art/parts/player_sword_m/equip/robe/fox_robe/skirt.back.png": "65ee9ac1368d15e7064e94f6aaa5843574488a01862036a6a7dd4424eb6f23ff",
+  "art/parts/player_sword_m/equip/robe/fox_robe/skirt.bunch.json": "6910c659b2229dd063e2604db938d27ea1b14977af1855f7303824e6cd7eaaf5",
+  "art/parts/player_sword_m/equip/robe/fox_robe/skirt.bunch.png": "e2849e45bb7d4ebb7f5f4bd967e5884cea59d77b33415628dbcf8dbd13ef1863",
+  "art/parts/player_sword_m/equip/robe/fox_robe/skirt.flare.json": "fb4c86b9497d56385a71a603352fd7b486fbe5b3865e0601f31af33bbb4ec701",
+  "art/parts/player_sword_m/equip/robe/fox_robe/skirt.flare.png": "6bf60d132df2e9c98186eeebe888f5670aa2f6f8de762d07f73160075941590a",
+  "art/parts/player_sword_m/equip/robe/fox_robe/skirt.json": "0314eb24510806bf85e17c369d6fef6c55712e1b9cbec5a0d84f8af14980c250",
+  "art/parts/player_sword_m/equip/robe/fox_robe/skirt.png": "5e883c10a4330832cb0221f5c78058b476667ca414d2657287b7e0ddd4b1ca09",
+  "art/parts/player_sword_m/equip/robe/fox_robe/skirt.sway_l.json": "07ea25b4e91f10763b7d80b0134320c5426174c9ab478a14feeb09aa59287aa4",
+  "art/parts/player_sword_m/equip/robe/fox_robe/skirt.sway_l.png": "e8c9d601235b2e8a622f3b5e2a20a21393f6a637b974a7ffe1156e54beb1aada",
+  "art/parts/player_sword_m/equip/robe/fox_robe/skirt.sway_r.json": "5a64fc09930eac2f2bdf8a26d675c759da29d5fc2f8880badc916f7ae3c63ab5",
+  "art/parts/player_sword_m/equip/robe/fox_robe/skirt.sway_r.png": "cadad1b85b2c15df4ff686f4a20833cfcb54926a9fc4eee74465d10bbc9ad589",
+  "art/parts/player_sword_m/equip/robe/fox_robe/sleeve.json": "5b2d2137fef8f0859ddc0f0e6a41300e5d09d88ad0c966e3e2d7e90ea0c1e57f",
+  "art/parts/player_sword_m/equip/robe/fox_robe/sleeve.png": "84dd9aace073d597e111efcd7a5f97b50e84aa27527c7423df5e37ba0e9c11c6",
+  "art/parts/player_sword_m/equip/shoes/cloth_shoes/shoe.json": "994c787fc8df1892e64a3091a214be78fb3a56017ffdd602f3e95800084d31a3",
+  "art/parts/player_sword_m/equip/shoes/cloth_shoes/shoe.png": "047cac68e403b506d425db32a42dfec24fa48580c3419926ef6c9eccb5bca5ed",
+  "art/parts/player_sword_m/equip/weapon/azure_steel_sword/weapon.json": "997ca10d94fea13b2badebfe1f04606dc50f43b00e7144f23b6736497616b108",
+  "art/parts/player_sword_m/equip/weapon/azure_steel_sword/weapon.png": "314095c9166b2582317585c7588eb2cfff42b8878d6099d995bb77a014b1352c",
+  "art/parts/player_sword_m/poses/attack.json": "6b03cd7511cf3cf45e84cbb37e2ba8bbfbccbf3018fb556970023e2c34a78a62",
+  "art/parts/player_sword_m/poses/die.json": "012d6459e68d798f1e36bb9e117d17c83ca7819a0bfc6e20cafbce2d2184f8d8",
+  "art/parts/player_sword_m/poses/djump.json": "f9949e88118549fe350cc0c6d085dda8b47f2984151da9d8418e15aab3038df2",
+  "art/parts/player_sword_m/poses/gather.json": "e1d47d48c8d1d8c0f740f4ebed1ffa972c2ffffa601c5d1a6e3418b7b90b0dec",
+  "art/parts/player_sword_m/poses/hit.json": "352de0672c08be671957b1bf21147d7de9cd21040d7929b3f76351152f9b9c65",
+  "art/parts/player_sword_m/poses/idle.json": "675cec4214a207ca89d7a365ce4f1c01ebe054fdf6a3ae9adf59296f269974f7",
+  "art/parts/player_sword_m/poses/jump.json": "dfc02f2b90f04b0d1717defd33d9ea3ba3971792357ca303df75473f6e8c7daa",
+  "art/parts/player_sword_m/poses/ladder.json": "f19b6c369c0a5f3372c4e526c355dbfa9dcc3b1bb7255abdbbcf92dbb3d823fd",
+  "art/parts/player_sword_m/poses/rope.json": "7ff5c46b2b8d574efb44488be65a27de530657ea41d6b8ed675ff3a4165c4720",
+  "art/parts/player_sword_m/poses/sit.json": "10413e22d6fc44ee9b2edc95bbd111dbadb07fc79fc7401d64e125d7ead9e9e8",
+  "art/parts/player_sword_m/poses/walk.json": "19bc300369f3eb0b014faab9e9df93f528bcd8956552417f86c69a81a5b0436d",
+  "art/parts/player_sword_m/skeleton.json": "65fb82817a3e4a5ad3f788e5a1efac2eea60428cddf7e8c6a9eee83530408e0e",
+  "art/polished.lock": "3c842cb69a1f4b2405afe0c6b354eb71ea024bd8699651d69b18d81543e791c2",
+  "art/sprites/player_sword_m.anims.json": "50ee41e30ca903b95db22b9290a49ac2220d243ca37dba3876fdec784271df92",
+  "art/sprites/player_sword_m.json": "73977aa57a69b3d4e84a1618a4e3ddb21f649aef8123497f1a64307bb50b130d",
+  "art/sprites/player_sword_m.png": "7045280946ddbbd9cbeab2732caa248ba79770deeecc6a278c09e7a7290945ae",
+  "art/sprites/player_sword_m__fox_robe.anims.json": "6e2cff339e4668bdd636b62646ad075105155356020bba4cceee7eca9a12c5cf",
+  "art/sprites/player_sword_m__fox_robe.json": "320e24e874e12511c7a344fe0f167801c97337767af995031a869a78ff92e8df",
+  "art/sprites/player_sword_m__fox_robe.png": "9cf300790d52064806ba60b7cec836624a070a76f03984f9b82858d9fe93c121"
+ },
+ "assumptions": [
+  "衣装仅改变外观，原精修身体/头/脸/发带/鞋/剑及原有姿势不修改",
+  "frameSize 按当前狐袍保持数值 96，表示 96×96",
+  "太虚观以银白浅灰为主体，紫色腰带取既有 NPC 同宗配色",
+  "短下摆缩小精修形变衣片，锚点/时序/旋转仍与精修裙摆一致",
+  "正式图标图集为256×160，已有制符稿为256×192；五格填原空位后仍256×192"
+ ]
+}
