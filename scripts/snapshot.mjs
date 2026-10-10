@@ -12,7 +12,12 @@ if (process.env.XT_SKIP_PRE !== '1') {
   try { execSync('bash qa/tools/run_all.sh --pre', { cwd: src, stdio: 'inherit' }); }
   catch { console.error('快速检查没通过，快照未刷新'); process.exit(1); }
 }
+// 发版开关归当前分支管理，刷新共享数据快照时保留原配置。
+const featurePath = path.join(out, 'features.json');
+const features = fs.existsSync(featurePath) ? fs.readFileSync(featurePath) : null;
 fs.rmSync(out, { recursive: true, force: true });
+fs.mkdirSync(out, { recursive: true });
+if (features !== null) fs.writeFileSync(featurePath, features);
 const skip = new Set(['_backup', 'preview', 'samples']);
 function copy(a, b, filter) {
   if (!fs.existsSync(a)) return;

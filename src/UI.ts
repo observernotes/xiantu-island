@@ -4,6 +4,7 @@ import { t } from './data';
 import type { Progress } from './Progress';
 import { HOTBAR_SLOTS, SKILLS, describeSkill, typeLabel } from './skills';
 import { hasHud, hudSpec, sliced, sectRankIcon, HUD_FONT, INK, INK_60, PAPER, RED, NAVY } from './hud';
+import { featureEnabled } from './features';
 
 export interface DialogChoice { label: string; onSelect: () => void; disabled?: boolean; reason?: string; rankIcon?: string; }
 
@@ -25,6 +26,7 @@ export class DialogBox {
   private kit = false;
   private choices: DialogChoice[] = [];
   private choiceObjects: Phaser.GameObjects.GameObject[] = [];
+  private version = 0;
   open = false;
 
   constructor(private scene: Phaser.Scene) {
@@ -60,6 +62,7 @@ export class DialogBox {
   }
 
   show(lines: Line[], portraitKey: string | null, done?: () => void, onCue?: (cue: string, next: () => void) => void, rankIcon?: string) {
+    this.version++;
     this.clearChoices();
     this.setRankBadge(undefined);
     if (!lines.length) { done?.(); return; }
@@ -88,7 +91,7 @@ export class DialogBox {
     // 选项在对白框上方纵排，原因随行换行，不挤占 NPC 台词或底部提示。
     const rows = choices.map((choice, i) => {
       const text = `${i + 1}. ${choice.label}${choice.reason ? `\n${choice.reason}` : ''}`;
-      const badge = sectRankIcon(this.scene, choice.rankIcon), inset = badge ? 32 : 0;
+      const badge = featureEnabled('sectRanks') ? sectRankIcon(this.scene, choice.rankIcon) : null, inset = badge ? 32 : 0;
       const label = this.scene.add.text(-224 + inset, 0, text, { fontFamily: HUD_FONT, fontSize: '14px',
         color: choice.disabled ? INK_60 : INK, wordWrap: { width: 560 - inset, useAdvancedWrap: true } }).setOrigin(0, 0.5);
       return { choice, label, badge, height: Math.max(badge ? 36 : 30, label.height + 12) };
@@ -135,7 +138,7 @@ export class DialogBox {
 
   private setRankBadge(key: string | undefined) {
     this.rankBadge?.destroy(); this.rankBadge = undefined;
-    const badge = sectRankIcon(this.scene, key), inset = badge ? 32 : 0;
+    const badge = featureEnabled('sectRanks') ? sectRankIcon(this.scene, key) : null, inset = badge ? 32 : 0;
     this.body.setX(this.bodyX + inset).setWordWrapWidth(this.bodyWrapWidth - inset, true);
     if (!badge) return;
     this.rankBadge = this.scene.add.image(this.bodyX, this.body.y - 4, badge.texture, badge.frame)
@@ -147,7 +150,11 @@ export class DialogBox {
     const l = this.lines[this.i];
     if (l.cue) {                               // 演出：先收起对话框，演完再继续
       this.c.setVisible(false); this.waiting = true;
-      this.onCue?.(l.cue, () => { this.waiting = false; this.c.setVisible(true); this.advance(); });
+      const version = this.version;
+      this.onCue?.(l.cue, () => {
+        if (!this.open || this.version !== version) return;
+        this.waiting = false; this.c.setVisible(true); this.advance();
+      });
       if (!this.onCue) { this.waiting = false; this.c.setVisible(true); this.advance(); }
       return;
     }
@@ -170,10 +177,17 @@ export class DialogBox {
   }
 
   close() {
+    this.version++;
     this.open = false; this.c.setVisible(false);
     this.clearChoices();
     this.setRankBadge(undefined);
     const d = this.done; this.done = undefined; d?.();
+  }
+
+  /** 配置切换时撤销旧菜单/对白，不执行原有交付或进图回调。 */
+  dismiss() {
+    this.done = undefined; this.onCue = undefined; this.waiting = false;
+    this.close();
   }
 }
 

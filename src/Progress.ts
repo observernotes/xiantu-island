@@ -2,9 +2,10 @@ import { gameNow } from './GameClock';
 import { GROWTH, EXP_TO_NEXT, MAX_LEVEL, ITEMS, BREAKTHROUGH_LEVELS, BREAKTHROUGH, REALMS, QUESTS, LIFESPAN, RECIPES, ALCHEMY_RULES, SECT_RANKS, TILED_MAPS, PillQuality, QuestDef } from './data';
 import { validSectGrowthState, type SectGrowthState } from './SectGrowth';
 import { HOTBAR_SLOTS, QUEST_SKILL_BACKFILL, SKILLS, SKILL_RULES, SkillDef, actOf, skillNumber, spEarnedFor, spBand } from './skills';
-import { CLASS_RULES, classDef, classForQuest, classGiftSkills, classMinLevel, classRobe, skillsForClass } from './classes';
+import { CLASS_RULES, classDef, classEntryEnabled, classForQuest, classGiftSkills, classMinLevel, classRobe, skillsForClass } from './classes';
 import { DAILY_QUEST_LIMIT, dailyQuestDay, dailyContribution, dailyRewardsReady, type DailyQuestReward } from './DailyQuests';
 import { isBrewSession, type BrewSession } from './Alchemy';
+import { featureEnabled } from './features';
 
 /** 自动加点：加点界面做好前每级自动分配（演武堂/天机阁确认：根骨 2、身法 2、悟性 1） */
 export const AUTO_STATS = { rootBone: 2, agility: 2, insight: 1, spirit: 0 } as Record<string, number>;
@@ -257,6 +258,8 @@ export class Progress {
 
   /** 登录、接取、交付及在线检查共用；过期未交付任务也作废，不扣背包材料。 */
   resetDailyQuests(now = gameNow()) {
+    // 关闭期间冻结日期、任务和收据；重新开放后再按原日界规则刷新。
+    if (!featureEnabled('sectDaily')) return false;
     const day = dailyQuestDay(now);
     if (this.dailyQuestResetDay === day) return false;
     this.dailyQuestResetDay = day;
@@ -276,6 +279,7 @@ export class Progress {
   }
 
   canCompleteSectDailyQuest(sourceId: string, now = gameNow()) {
+    if (!featureEnabled('sectDaily')) return false;
     this.resetDailyQuests(now);
     const q = QUESTS[sourceId];
     return !!q?.daily && dailyRewardsReady(q) && this.sect === q.sect
@@ -726,6 +730,7 @@ export class Progress {
   advanceClass(job: string, initializeSectRank = true): boolean {
     const c = classDef(job);
     if (!c || this.level < classMinLevel(c) || (this.job && this.job !== c.id)) return false;
+    if (!classEntryEnabled(c) && !this.job && this.quests[c.joinQuest]?.state !== 'done') return false;
     const firstJoin = !this.job;
     const migrating = this.classVersion < 1;
     let changed = firstJoin || migrating;

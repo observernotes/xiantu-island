@@ -1,9 +1,10 @@
 import { gameNow } from './GameClock';
 import { QUESTS, QUEST_ORDER, NPCS, SCRIPTS, ITEMS, MONSTERS, Line, QuestDef, inPhase, t } from './data';
 import type { Progress } from './Progress';
-import { classForQuest } from './classes';
+import { classEntryEnabled, classForQuest } from './classes';
 import { REALMS } from './data';
 import { dailyRewardsReady, type DailyQuestReward } from './DailyQuests';
+import { FEATURE_UNAVAILABLE, featureEnabled } from './features';
 
 export type NpcMark = '!' | '?' | '…' | null;
 
@@ -29,7 +30,7 @@ export class QuestSystem {
   state(id: string) { this.refreshDaily(); return this.prog.quests[id]?.state; }
   get activeIds() {
     this.refreshDaily();
-    return QUEST_ORDER.filter(id => this.prog.quests[id]?.state === 'active');
+    return QUEST_ORDER.filter(id => this.prog.quests[id]?.state === 'active' && this.featureAllowed(QUESTS[id]));
   }
   isActive(id: string) { return this.state(id) === 'active'; }
 
@@ -49,11 +50,18 @@ export class QuestSystem {
   }
 
   private classAllowed(q: QuestDef) {
+    if (!this.featureAllowed(q)) return false;
     const cls = classForQuest(q.id);
     if (cls && this.prog.job && this.prog.job !== cls.id) return false;
     if (q.sect && this.prog.sect !== q.sect) return false;
     if (q.reqRealm && REALMS.findIndex(r => r.id === this.prog.realm.id) < REALMS.findIndex(r => r.id === q.reqRealm)) return false;
     return true;
+  }
+
+  private featureAllowed(q: QuestDef) {
+    const cls = classForQuest(q.id);
+    return (!cls || classEntryEnabled(cls)) && (!q.daily || featureEnabled('sectDaily'))
+      && (q.id !== 'q_alchemy_intro' || featureEnabled('alchemyPhase1'));
   }
 
   private prereqsDone(q: QuestDef) {
@@ -68,11 +76,12 @@ export class QuestSystem {
     if (intro && (intro.giver === npcId || intro.turnIn === npcId) && !ids.includes(intro.id)) ids.push(intro.id);
     // 配表尚未将五宗拜入任务挂到 NPC.quests；按任务自身 giver/turnIn 补入口。
     for (const q of Object.values(QUESTS)) if (classForQuest(q.id) && (q.giver === npcId || q.turnIn === npcId) && !ids.includes(q.id)) ids.push(q.id);
-    return ids.filter(id => QUESTS[id]);
+    return ids.filter(id => QUESTS[id] && this.featureAllowed(QUESTS[id]));
   }
 
   /** 本宗接引人菜单全量展示，已完成项可灰显，不让进行中的首条任务挡住其余两条。 */
   npcDailyQuestIds(npcId: string) {
+    if (!featureEnabled('sectDaily')) return [];
     this.refreshDaily();
     return this.npcQuestIds(npcId).filter(id => {
       const q = QUESTS[id];
@@ -127,6 +136,9 @@ export class QuestSystem {
 
   talk(npcId: string, questId?: string): { lines: Line[]; after?: () => QuestReward | void } {
     const npc = NPCS[npcId];
+    if (questId && QUESTS[questId] && !this.featureAllowed(QUESTS[questId])) {
+      return { lines: [{ speaker: npc.name, text: FEATURE_UNAVAILABLE }] };
+    }
     // talk 目标：和目标 NPC 说过话就算完成
     this.onTalk(npcId);
     const fill = (ls: Line[] | undefined) => (ls ?? []).map(l => ({ ...l, text: l.text.replace(/\{name\}/g, this.prog.name) }));

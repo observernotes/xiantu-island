@@ -11,6 +11,7 @@
     "test:overflow": "node scripts/overflow-test.mjs",
     "test:art-engine": "timeout 240s node scripts/art-engine-test.mjs",
     "test:xt": "timeout 120s node scripts/xt-test.mjs",
+    "test:features": "timeout 120s node scripts/features-test.mjs",
     "test:v05": "timeout 60s node scripts/v05-test.mjs",
     "test:appearance": "timeout 60s node scripts/appearance-test.mjs",
     "test:classes": "timeout 120s node scripts/classes-test.mjs",

@@ -3,6 +3,7 @@ import { ITEMS, RECIPES, t, type RecipeDef } from './data';
 import type { Progress } from './Progress';
 import { AlchemySystem, firePointer, type AlchemyResult } from './Alchemy';
 import { HUD_FONT, INK, INK_60, PAPER, RED, sliced, hudSpec, setSlicedWidth } from './hud';
+import { featureEnabled, FEATURE_UNAVAILABLE } from './features';
 
 const DIR = 'art/icons/ui/alchemy';
 const IMAGES = [
@@ -62,6 +63,7 @@ export class AlchemyPanel {
 
   isOpen() { return this.shown; }
   open(furnaceId = 'bronze_furnace') {
+    if (!featureEnabled('alchemyPhase1')) { this.suspend(); return; }
     this.furnaceId = this.system.active?.furnaceId ?? furnaceId;
     this.shown = true;
     this.status = '';
@@ -69,10 +71,14 @@ export class AlchemyPanel {
     this.render();
   }
   close() {
-    if (this.system.active) {
+    if (this.system.active && featureEnabled('alchemyPhase1')) {
       this.lastResult = this.system.skipFire();
       this.onChanged();
     }
+    this.suspend();
+  }
+  /** 发版关闭或测试切换只收起面板，已扣费的炉次留待重新开放后继续。 */
+  suspend() {
     this.shown = false;
     this.clear();
     this.pointer = undefined; this.pointerTrack = undefined;
@@ -82,6 +88,7 @@ export class AlchemyPanel {
     this.selected = id; this.status = ''; this.lastResult = null; this.render();
   }
   update(delta: number) {
+    if (!featureEnabled('alchemyPhase1')) { this.suspend(); return; }
     if (!this.shown || !this.system.active) return;
     const result = this.system.advanceFire(delta);
     if (result) { this.finish(result); return; }
@@ -134,7 +141,7 @@ export class AlchemyPanel {
     hit.on('pointerdown', () => { bg?.setTexture('ui_alchemy_btn_pressed'); run(); });
   }
   private error(reason?: string) {
-    this.status = ({ materials: '材料不足', fuel: '灵石不足', furnace: '丹炉不可用', unlearned: '尚未学会这张丹方', unknown: '丹方不存在', busy: '请先完成这一炉' } as Record<string, string>)[reason ?? ''] ?? '暂时无法炼制';
+    this.status = ({ closed: FEATURE_UNAVAILABLE, materials: '材料不足', fuel: '灵石不足', furnace: '丹炉不可用', unlearned: '尚未学会这张丹方', unknown: '丹方不存在', busy: '请先完成这一炉' } as Record<string, string>)[reason ?? ''] ?? '暂时无法炼制';
     this.render();
   }
   private brew() {

@@ -1,6 +1,7 @@
 import { ALCHEMY_RULES, RECIPES, type FireResult, type PillQuality, type RecipeDef } from './data';
 import type { Progress } from './Progress';
 import type { QuestSystem } from './QuestSystem';
+import { featureEnabled } from './features';
 export { ALCHEMY_RULES } from './data';
 
 export interface FireConfig {
@@ -9,7 +10,7 @@ export interface FireConfig {
 export interface FireRound extends FireConfig {
   zoneStart: number; elapsedMs: number; durationMs: number;
 }
-export type AlchemyBlock = 'unknown' | 'unlearned' | 'materials' | 'fuel' | 'furnace' | 'busy';
+export type AlchemyBlock = 'unknown' | 'unlearned' | 'materials' | 'fuel' | 'furnace' | 'busy' | 'closed';
 export interface AlchemyCheck {
   ok: boolean; reason?: AlchemyBlock;
   materials: { item: string; have: number; need: number }[];
@@ -92,7 +93,8 @@ export class AlchemySystem {
     const materials = (recipe?.materials ?? []).map(material => ({ item: material.item, have: this.prog.count(material.item), need: material.count * count }));
     const fuelNeed = (recipe?.fuelStones ?? 0) * count;
     let reason: AlchemyBlock | undefined;
-    if (this.active) reason = 'busy';
+    if (!featureEnabled('alchemyPhase1')) reason = 'closed';
+    else if (this.active) reason = 'busy';
     else if (!recipe || recipe.type || !validCount) reason = 'unknown';
     else if (!this.prog.learnedRecipes.includes(recipeId)) reason = 'unlearned';
     else if (!Object.prototype.hasOwnProperty.call(ALCHEMY_RULES.furnace, furnaceId)) reason = 'furnace';
@@ -121,16 +123,16 @@ export class AlchemySystem {
     return { ...check, fire };
   }
   advanceFire(delta: number): AlchemyResult | null {
-    if (!this.active) return null;
+    if (!featureEnabled('alchemyPhase1') || !this.active) return null;
     this.active.fire.elapsedMs += Number.isFinite(delta) ? Math.max(0, delta) : 0;
     return this.active.fire.elapsedMs >= this.active.fire.durationMs ? this.skipFire() : null;
   }
   stopFire(): AlchemyResult | null {
-    if (!this.active) return null;
+    if (!featureEnabled('alchemyPhase1') || !this.active) return null;
     if (this.active.fire.elapsedMs >= this.active.fire.durationMs) return this.skipFire();
     return this.finish(fireOutcome(this.active.fire));
   }
-  skipFire(): AlchemyResult | null { return this.active ? this.finish('skipped') : null; }
+  skipFire(): AlchemyResult | null { return featureEnabled('alchemyPhase1') && this.active ? this.finish('skipped') : null; }
   batch(recipeId: string, count = 5, furnaceId = 'bronze_furnace'): AlchemyCheck & { results: AlchemyResult[] } {
     const check = this.check(recipeId, count, furnaceId);
     if (!check.ok) return { ...check, results: [] };

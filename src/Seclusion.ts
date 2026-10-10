@@ -1,6 +1,7 @@
 import { gameNow } from './GameClock';
 import { DENSITY_REF, REALMS, SECT_SECLUSION, SECLUSION_RULES } from './data';
 import type { Progress } from './Progress';
+import { featureEnabled } from './features';
 
 /** 本地日历日，不把游戏内闭关年份算进现实日上限。 */
 export function realDay(now = gameNow()) {
@@ -13,6 +14,7 @@ export class Seclusion {
   constructor(private prog: Progress) {}
 
   locked(request: SeclusionRequest) {
+    if (!featureEnabled('seclusion')) return true;
     const required = [request.reqRealm, SECT_SECLUSION.unlockRealm].filter(Boolean);
     return request.mode !== 'sect' || required.some(id => {
       const realm = REALMS.find(r => r.id === id);
@@ -20,7 +22,8 @@ export class Seclusion {
     });
   }
 
-  check(request: SeclusionRequest, years: number, now = gameNow()): 'locked' | 'cost' | 'daily' | 'life' | null {
+  check(request: SeclusionRequest, years: number, now = gameNow()): 'locked' | 'cost' | 'daily' | 'life' | 'closed' | null {
+    if (!featureEnabled('seclusion')) return 'closed';
     if (this.locked(request) || !SECT_SECLUSION.options.includes(years)) return 'locked';
     const cost = SECT_SECLUSION.contributionCost[String(years)];
     if (!Number.isFinite(cost) || this.prog.sectContribution < cost) return 'cost';

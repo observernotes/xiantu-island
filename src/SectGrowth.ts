@@ -3,6 +3,7 @@ import { ITEMS, NPCS, REALMS, SECT_RANKS, SECT_DONATIONS, SHOPS, inPhase, t, typ
 import { SKILLS, type SkillDef } from './skills';
 import { dailyQuestDay } from './DailyQuests';
 import type { Progress } from './Progress';
+import { FEATURE_UNAVAILABLE, featureEnabled, type FeatureName } from './features';
 
 type DeepReadonly<T> = T extends (...args: any[]) => any ? T : T extends object ? { readonly [K in keyof T]: DeepReadonly<T[K]> } : T;
 export type SectServiceType = 'sect_promotion' | 'sect_shop' | 'sect_library' | 'sect_donation';
@@ -56,6 +57,9 @@ export const SECT_GROWTH_CONFIG: DeepReadonly<SectGrowthConfig> = freeze(JSON.pa
 })));
 const V05_RANKS = ['outer_disciple', 'inner_disciple', 'direct_disciple'] as const;
 const SERVICE_CONFIG: Record<SectServiceType, string> = { sect_promotion: 'sect_ranks', sect_shop: 'shops', sect_library: 'shops', sect_donation: 'sect_donations' };
+const SERVICE_FEATURE: Record<SectServiceType, FeatureName> = {
+  sect_promotion: 'sectRanks', sect_shop: 'sectShopLibrary', sect_library: 'sectShopLibrary', sect_donation: 'sectDonations',
+};
 const pending = (): SectGrowthResult => ({ ok: false, key: 'sect.ui.config_pending' });
 const record = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v);
 const integer = (v: unknown): v is number => typeof v === 'number' && Number.isSafeInteger(v) && v >= 0;
@@ -108,6 +112,7 @@ export class SectGrowth {
 
   /** 只执行本宗已登记 NPC 的固定服务；config 不是任意资源路径。 */
   private service(npcId: string, type: SectServiceType): SectGrowthResult {
+    if (!featureEnabled(SERVICE_FEATURE[type])) return { ok: false, key: FEATURE_UNAVAILABLE };
     const identity = this.identity();
     if (identity && !identity.valid) return { ok: false, key: 'sect.ui.invalid_rank' };
     if (!identity) return { ok: false, key: 'sect.ui.not_member' };

@@ -10,6 +10,7 @@ import { MAP_AREA } from './data';
 import type { BackgroundConfig } from './scenes/BackgroundArt';
 import type { EnvironmentArtConfig } from './scenes/EnvironmentArt';
 import { SPEC } from './config/feel';
+import { featureFlags, isFeatureName, setFeatureFlag } from './features';
 
 type EventType = 'loaderror' | 'console.error' | 'error' | 'unhandledrejection' | 'scene' | 'quest:complete';
 type XtEvent = { type: EventType; time: number; data: unknown };
@@ -206,7 +207,7 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig): Phaser.Game
         realmName: p.realmName, hp: p.hp, mp: p.mp, maxHp: p.maxHp, maxMp: p.maxMp,
         inventory: p.inventory, quests: p.quests, questProgress: Object.fromEntries(s.quests.activeIds
           .map(id => [id, s.quests.objectiveProgress(QUESTS[id])])), sect: p.sect, rank: p.sectRank,
-        contribution: p.sectContribution, flags: p.flags, time: readTime() });
+        contribution: p.sectContribution, flags: p.flags, features: featureFlags(), time: readTime() });
     },
     async loadSave(obj: unknown) {
       const s = current();
@@ -278,7 +279,13 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig): Phaser.Game
       return true;
     },
     setFlag(key: string, val: boolean) {
-      if (!current().prog.setConfigFlag(key, val)) throw new Error(`${marker}: invalid flag or save failed`);
+      const s = current();
+      if (isFeatureName(key)) {
+        setFeatureFlag(key, val);
+        s.applyFeatureFlags();
+        return;
+      }
+      if (!s.prog.setConfigFlag(key, val)) throw new Error(`${marker}: invalid flag or save failed`);
       persist();
     },
     clock: {

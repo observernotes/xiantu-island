@@ -5,6 +5,7 @@ import { hasHud, hudSpec, sliced, setSlicedWidth } from '../hud';
 import { interactionPrompt } from '../InteractionPrompt';
 import type { GameScene } from './GameScene';
 import type { MapObj } from './MapBuilder';
+import { featureEnabled } from '../features';
 
 interface GatherPoint {
   object: MapObj; item: string; castMs: number; respawnMs: number; key: string;
@@ -67,7 +68,7 @@ export class Gathering {
   private refreshPoint(point: GatherPoint, now: number) {
     const cooldown = this.scene.prog.gatherRespawnAt[point.key];
     const ready = cooldown === undefined || cooldown <= now;
-    if (ready && cooldown !== undefined) delete this.scene.prog.gatherRespawnAt[point.key];
+    if (featureEnabled('alchemyPhase1') && ready && cooldown !== undefined) delete this.scene.prog.gatherRespawnAt[point.key];
     if (ready === point.ready && point.sprite?.anims.currentAnim) return;
     point.ready = ready;
     const key = `prop_gather_${point.item}_${ready ? 'idle' : 'harvested'}`;
@@ -82,6 +83,12 @@ export class Gathering {
   update(delta: number, held: boolean, blocked: boolean, moving = false) {
     const scene = this.scene, p = scene.player, now = gameNow();
     if (!held) this.requireRelease = false;
+    if (!featureEnabled('alchemyPhase1')) {
+      this.cancel();
+      this.bar.setVisible(false);
+      for (const point of this.points) point.prompt.setVisible(false);
+      return;
+    }
     for (const point of this.points) {
       this.refreshPoint(point, now);
       point.prompt.setVisible(point.ready && this.near(point) && !blocked && !this.active && !p.dead);

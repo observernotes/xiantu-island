@@ -5,6 +5,7 @@
 import registry from './config/classes.json';
 import { ITEMS, NPCS, QUESTS } from './data';
 import { SKILL_LIST, SkillDef } from './skills';
+import { featureEnabled } from './features';
 
 export interface ClassDef {
   id: string; name: string; sect: string; job: number; joinQuest: string;
@@ -24,6 +25,10 @@ export const CLASSES: Record<string, ClassDef> = Object.fromEntries(CLASS_LIST.m
 export function classDef(job: string): ClassDef | undefined { return CLASSES[job]; }
 export function classForQuest(questId: string): ClassDef | undefined {
   return CLASS_LIST.find(c => c.joinQuest === questId);
+}
+/** 发版开关仅限制四宗新拜入；已有职业的技能、奖励与迁移继续沿用原表。 */
+export function classEntryEnabled(c: ClassDef): boolean {
+  return c.sect === CLASS_RULES.unjoinedSkillSect || featureEnabled('fiveSectClasses');
 }
 export function skillsForClass(job: string): SkillDef[] {
   const c = classDef(job);

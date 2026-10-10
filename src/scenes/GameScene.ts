@@ -22,7 +22,7 @@ import { Seclusion, realDay } from '../Seclusion';
 import { LIFESPAN } from '../data';
 import { SectTrialObjects } from './SectTrialObjects';
 import { StealthVision } from './StealthVision';
-import { ferryLockedReason } from '../Ferry';
+import { ferryLockedReason, mapEntryOpen, FIRST_CLASS_TRIAL_MAPS } from '../Ferry';
 import { Gathering } from './Gathering';
 import { interactionPrompt } from '../InteractionPrompt';
 import { AlchemySystem, ALCHEMY_RULES } from '../Alchemy';
@@ -31,6 +31,7 @@ import { BackgroundArt, type BackgroundConfig } from './BackgroundArt';
 import { EnvironmentArt, type EnvironmentArtConfig } from './EnvironmentArt';
 import { applySpriteArt } from '../SpriteArt';
 import { SectGrowth, newSectTransactionId } from '../SectGrowth';
+import { featureEnabled, FEATURE_UNAVAILABLE, type FeatureName } from '../features';
 
 const MAP_FALLBACK: Record<string, string> = {};
 type Drop = Phaser.Physics.Arcade.Sprite & { itemId: string; count: number; bornAt: number; label?: Phaser.GameObjects.Text; shadow?: Phaser.GameObjects.Ellipse; floatTw?: Phaser.Tweens.Tween; landed?: boolean };
@@ -85,6 +86,8 @@ export class GameScene extends Phaser.Scene {
   private interactionPrompts: { object: MapObj; prompt: Phaser.GameObjects.Container; marker?: Phaser.GameObjects.Image | Phaser.GameObjects.Text }[] = [];
   private sectTitle!: Phaser.GameObjects.Text;
   private sectBadge!: Phaser.GameObjects.Image;
+  private portalVisuals: { object: MapObj; art: Phaser.GameObjects.Ellipse; label?: Phaser.GameObjects.Text }[] = [];
+  private seclusionLabels: Phaser.GameObjects.Text[] = [];
 
   constructor() { super('game'); (window as any).__scene = this; }
 
@@ -144,6 +147,7 @@ export class GameScene extends Phaser.Scene {
     registerHudFonts(this);
     registerAlchemy(this);
     this.interactionPrompts = [];
+    this.portalVisuals = []; this.seclusionLabels = [];
 
     const q = new URLSearchParams(location.search).get('map');
     const debugTrial = DEBUG_CLASS && QUESTS_REF[DEBUG_CLASS.joinQuest]?.objectives.find(o => o.type === 'trial')?.trial;
@@ -264,6 +268,7 @@ export class GameScene extends Phaser.Scene {
     this.buildHudKit();
     this.trial = undefined; this.bossOverride = null;
     this.setupTrial(mapId);
+    this.applyFeatureFlags();
     this.prog.setPosition(this.map.id, this.player.x, this.player.y);
   }
 
@@ -316,10 +321,15 @@ export class GameScene extends Phaser.Scene {
     const qid = realm.breakthroughQuest, q = qid ? QUESTS_REF[qid] : null;
     if (!q || q.giver !== npcId || this.quests.state(qid) !== 'done') return null;
     const tr = TRIALS[realm.trial];
-    return tr && tr.type === 'defend' && TILED_MAPS[tr.map] ? tr : null;
+    return tr && tr.type === 'defend' && TILED_MAPS[tr.map] && mapEntryOpen(tr.map, this.map.id) ? tr : null;
   }
 
   offerTrial(npcId: string, tr: TrialDef) {
+    if (!mapEntryOpen(tr.map, this.map.id)) {
+      this.log(FEATURE_UNAVAILABLE, '#aaaaaa');
+      const npc = NPCS[npcId];
+      this.dialog.show([{ speaker: npc?.name ?? null, text: FEATURE_UNAVAILABLE }], npc?.sprite ?? null); return;
+    }
     const npc = NPCS[npcId], realm = this.prog.realm, item = realm.breakthroughItem as string | null;
     const speaker = npc?.name ?? npcId;
     if (item && this.prog.count(item) < 1) {
@@ -338,15 +348,26 @@ export class GameScene extends Phaser.Scene {
 
   /** 进试炼：消耗突破丹药（和清心丹），记下本次成功率，载入试炼图 */
   enterTrial(tr: TrialDef) {
+    if (!mapEntryOpen(tr.map, this.map.id)) { this.log(FEATURE_UNAVAILABLE, '#aaaaaa'); return; }
     const pr = this.prog, item = pr.realm.breakthroughItem as string | null;
+    const itemConsumed = !!item && pr.count(item) > 0;
     const withClear = pr.count('clear_mind_pill') > 0;
-    const rate = pr.breakthroughRate(withClear, item ? pr.pillQuality(item) : 'low');
+    const itemQuality = item ? pr.pillQuality(item) : 'low', clearQuality = pr.pillQuality('clear_mind_pill');
+    const rate = pr.breakthroughRate(withClear, itemQuality);
     if (item) { pr.removeItem(item, 1); this.log(t('trial.consume', { item: ITEMS[item]?.name ?? item }), '#c8c8c8'); }
     if (withClear) { pr.removeItem('clear_mind_pill', 1); this.log(t('trial.consume', { item: ITEMS.clear_mind_pill?.name ?? '清心丹' }), '#c8c8c8'); }
     pr.hp = pr.maxHp; pr.mp = pr.maxMp; pr.save();
     this.registry.set('trialPending', tr.id); this.registry.set('trialRate', rate);
     this.cameras.main.fadeOut(200);
-    this.time.delayedCall(220, () => this.scene.restart({ map: tr.map }));
+    this.time.delayedCall(220, () => {
+      if (!mapEntryOpen(tr.map, this.map.id)) {
+        if (item && itemConsumed) pr.addCraftedPill(item, 1, itemQuality);
+        if (withClear) pr.addCraftedPill('clear_mind_pill', 1, clearQuality);
+        pr.save(); this.registry.remove('trialPending'); this.registry.remove('trialRate');
+        this.cameras.main.fadeIn(100); this.log(FEATURE_UNAVAILABLE, '#aaaaaa'); return;
+      }
+      this.scene.restart({ map: tr.map });
+    });
   }
 
   /** 试炼结束：守不住只扣丹药（进场时已扣）；守住了按成功率掷骰 */
@@ -714,17 +735,27 @@ export class GameScene extends Phaser.Scene {
 
   private updateInteractionPrompts(blocked: boolean) {
     for (const { object: o, prompt, marker } of this.interactionPrompts) {
+      const furnace = o.type === 'furnace' || o.type === 'alchemy';
+      if (o.type === 'npc' && (o.props.npc ?? o.name) === 'doctor_sun') {
+        const label = prompt.list[prompt.list.length - 1] as Phaser.GameObjects.Text;
+        const text = featureEnabled('alchemyPhase1') ? '对话 / L 炼丹' : '对话';
+        if (label.text !== text) {
+          label.setText(text);
+          prompt.setX(o.x - ((hudSpec(this, 'ui_hud_keycap')?.size?.[0] ?? 20) + 4 + label.width) / 2);
+        }
+      }
       if (marker) {
         const marked = !!this.quests.mark(o.props.npc ?? o.name);
         const capHeight = hudSpec(this, 'ui_hud_keycap')?.size?.[1] ?? 20;
         prompt.setY(marked ? o.y + marker.y - marker.displayHeight - capHeight - 4 : o.y - 52);
       }
-      prompt.setVisible(!blocked && !this.player.dead && !this.hasNearbyDrop()
+      prompt.setVisible((!furnace || featureEnabled('alchemyPhase1')) && !blocked && !this.player.dead && !this.hasNearbyDrop()
         && Math.abs(o.x - this.player.x) < 40 && Math.abs(o.y - this.player.y) < 48);
     }
   }
 
   openAlchemy(publicFurnace?: string) {
+    if (!this.requireFeature('alchemyPhase1')) return false;
     if (this.player.dead || this.trial || this.map.trial || this.dialog.open || this.skillWindow.open) return false;
     const near = this.nearNpc();
     const owned = ['dark_iron_furnace', 'purple_copper_furnace', 'bronze_furnace'].find(id => this.prog.count(id) > 0);
@@ -789,8 +820,54 @@ export class GameScene extends Phaser.Scene {
   }
 
   // ---------------- 地图物件 ----------------
+  private requireFeature(name: FeatureName, npcId?: string) {
+    if (featureEnabled(name)) return true;
+    this.log(FEATURE_UNAVAILABLE, '#aaaaaa');
+    const npc = npcId ? NPCS[npcId] : undefined;
+    this.dialog.show([{ speaker: npc?.name ?? null, text: FEATURE_UNAVAILABLE }], npc?.sprite ?? null);
+    return false;
+  }
+
+  /** 测试覆盖即时撤下旧回调；存档身份、材料、贡献与待炼炉次均保留。 */
+  applyFeatureFlags() {
+    this.dialog?.dismiss(); this.skillWindow?.close();
+    if (!featureEnabled('alchemyPhase1')) {
+      this.alchemy?.suspend(); this.gathering?.update(0, false, true);
+    }
+    if (featureEnabled('sectDaily')) {
+      const count = this.map.objects.length;
+      this.mountDailyEnvoys();
+      this.map.objects.slice(count).forEach(o => this.drawObject(o));
+    }
+    const exitName = '__feature_return';
+    const needsExit = FIRST_CLASS_TRIAL_MAPS.has(this.map.id)
+      && (!featureEnabled('v05Maps') || !featureEnabled('fiveSectClasses'));
+    const exit = this.map.objects.find(o => o.name === exitName);
+    if (needsExit && !exit) {
+      const object: MapObj = { type: 'portal', name: exitName, x: this.map.spawn.x, y: this.map.spawn.y,
+        w: 0, h: 0, props: { target: 'qingyun_village', featureExit: true } };
+      this.map.objects.unshift(object); this.drawObject(object);
+    } else if (!needsExit && exit) {
+      this.map.objects = this.map.objects.filter(o => o !== exit);
+      this.portalVisuals = this.portalVisuals.filter(visual => {
+        if (visual.object !== exit) return true;
+        this.tweens.killTweensOf(visual.art); visual.art.destroy(); visual.label?.destroy(); return false;
+      });
+    }
+    for (const visual of this.portalVisuals) {
+      const shut = !this.portalOpen(visual.object);
+      visual.art.setFillStyle(shut ? 0x888888 : 0x8fe3ff, 0.55).setStrokeStyle(3, shut ? 0x555555 : 0x3a9fd8);
+      const text = visual.object.props.featureExit ? '回青云村 ↑'
+        : mapEntryOpen(visual.object.props.target, this.map.id) ? '' : FEATURE_UNAVAILABLE;
+      if (text) (visual.label ??= this.portalStatusLabel(visual.object, text)).setText(text);
+      else { visual.label?.destroy(); visual.label = undefined; }
+    }
+    for (const label of this.seclusionLabels) label.setText(featureEnabled('seclusion') ? '闭关室 ↑' : FEATURE_UNAVAILABLE);
+  }
+
   /** NPC 表已登记日常，地图点位尚缺；四宗山门未发布时只给本宗弟子在落霞镇补同一接引人。 */
   private mountDailyEnvoys() {
+    if (!featureEnabled('sectDaily')) return;
     for (const npc of Object.values(NPCS)) {
       if (!inPhase(npc)) continue;
       const daily = (npc.quests ?? []).map(id => QUESTS_REF[id]).find(q => q?.daily && q.giver === npc.id);
@@ -830,7 +907,7 @@ export class GameScene extends Phaser.Scene {
         this.tweens.add({ targets: img, y: img.y - 6, yoyo: true, repeat: -1, duration: 500 });
       }
       if (npc) this.npcMarks.push({ id: npc.id, text: mark, img });
-      const label = npc?.id === 'doctor_sun' ? '对话 / L 炼丹' : '对话';
+      const label = npc?.id === 'doctor_sun' && featureEnabled('alchemyPhase1') ? '对话 / L 炼丹' : '对话';
       const prompt = interactionPrompt(this, o.x, o.y - h - 38, 'Z', label);
       this.interactionPrompts.push({ object: o, prompt, marker: img ?? mark });
     } else if (o.type === 'furnace' || o.type === 'alchemy') {
@@ -843,6 +920,9 @@ export class GameScene extends Phaser.Scene {
       const shut = !this.portalOpen(o);
       const g = this.add.ellipse(o.x, o.y - 40, 46, 80, shut ? 0x888888 : 0x8fe3ff, 0.55).setStrokeStyle(3, shut ? 0x555555 : 0x3a9fd8).setDepth(4);
       if (!shut) this.tweens.add({ targets: g, scaleX: 0.85, yoyo: true, repeat: -1, duration: 700 });
+      const text = o.props.featureExit ? '回青云村 ↑' : mapEntryOpen(o.props.target, this.map.id) ? '' : FEATURE_UNAVAILABLE;
+      const label = text ? this.portalStatusLabel(o, text) : undefined;
+      this.portalVisuals.push({ object: o, art: g, label });
     } else if (o.type === 'chest') {
       const opened = this.openedChests.has(`${this.map.id}:${o.name}`);
       this.add.rectangle(o.x, o.y - 14, 34, 28, opened ? 0x7a5a3a : 0xd9a43a).setStrokeStyle(2, 0x5a3418).setDepth(4).setName('chest:' + o.name);
@@ -852,13 +932,19 @@ export class GameScene extends Phaser.Scene {
         .setOrigin(0.5, 1).setDepth(3).setName(`ferry:${o.name}`);
       if (this.anims.exists('prop_ferry_boat_idle')) boat.play('prop_ferry_boat_idle');
     } else if (o.type === 'seclusion') {
-      this.add.text(o.x, o.y - 48, '闭关室 ↑', { fontSize: '13px', color: '#fff8d0', stroke: '#3b2a20', strokeThickness: 3 })
-        .setOrigin(0.5, 1).setDepth(4);
+      this.seclusionLabels.push(this.add.text(o.x, o.y - 48, featureEnabled('seclusion') ? '闭关室 ↑' : FEATURE_UNAVAILABLE,
+        { fontSize: '13px', color: '#fff8d0', stroke: '#3b2a20', strokeThickness: 3 }).setOrigin(0.5, 1).setDepth(4));
     }
   }
 
   /** G7/G8：等级先判；locked 永久关闭；任务须已完成；目标地图须已注册。 */
+  private portalStatusLabel(o: MapObj, text: string) {
+    return this.add.text(o.x, o.y - 92, text,
+      { fontSize: '13px', color: '#fff8d0', stroke: '#3b2a20', strokeThickness: 3 }).setOrigin(0.5, 1).setDepth(4);
+  }
+
   portalOpen(o: { props: any }) {
+    if (!mapEntryOpen(o.props.target, this.map.id)) return false;
     if (this.prog.level < Number(o.props.reqLevel ?? 0)) return false;
     if (o.props.locked) return false;
     if (o.props.unlockQuest && this.quests.state(o.props.unlockQuest) !== 'done') return false;
@@ -874,13 +960,14 @@ export class GameScene extends Phaser.Scene {
       if (!nearX || Math.abs(o.y - p.y) > 40) continue;
       if (this.trialObjects?.interact(o)) return true;
       if (o.type === 'portal') {
+        if (!mapEntryOpen(o.props.target, this.map.id)) { this.log(FEATURE_UNAVAILABLE, '#aaaaaa'); return true; }
         if (this.prog.level < Number(o.props.reqLevel ?? 0)) { this.log(t('sys.portal_level', { lv: o.props.reqLevel }), '#aaaaaa'); return true; }
         if (!this.portalOpen(o)) { this.log(t('sys.portal_locked'), '#aaaaaa'); return true; }
         this.travelToMap(o.props.target, o.props.targetPortal);
         return true;
       }
       if (o.type === 'ferry') {
-        if (o.props.returnTo) this.travelToMap(o.props.returnTo, o.props.targetPortal);
+        if (o.props.returnTo) this.travelToMap(o.props.returnTo, o.props.targetPortal, true);
         else if (o.props.npc) this.talkTo(o.props.npc);
         return true;
       }
@@ -901,18 +988,26 @@ export class GameScene extends Phaser.Scene {
     return false;
   }
 
-  private travelToMap(map: string, portal?: string) {
-    if (!TILED_MAPS[map] && map !== 'field_test') { this.log(t('sys.portal_locked'), '#aaaaaa'); return; }
-    if (this.travelling) return;
+  private travelToMap(map: string, portal?: string, returning = false, onCancelled?: () => void) {
+    if (!mapEntryOpen(map, this.map.id, returning)) { onCancelled?.(); this.log(FEATURE_UNAVAILABLE, '#aaaaaa'); return; }
+    if (!TILED_MAPS[map] && map !== 'field_test') { onCancelled?.(); this.log(t('sys.portal_locked'), '#aaaaaa'); return; }
+    if (this.travelling) { onCancelled?.(); return; }
     this.travelling = true;
     this.player.body.setVelocityX(0);
     this.prog.save();
     this.cameras.main.fadeOut(200);
-    this.time.delayedCall(220, () => this.scene.restart({ map, portal }));
+    this.time.delayedCall(220, () => {
+      if (!mapEntryOpen(map, this.map.id, returning)) {
+        onCancelled?.();
+        this.travelling = false; this.cameras.main.fadeIn(100); this.log(FEATURE_UNAVAILABLE, '#aaaaaa'); return;
+      }
+      this.scene.restart({ map, portal });
+    });
   }
 
   /** 配表选项确认后逐年结算；退出对白不消耗资源。 */
   private offerSeclusion(o: MapObj) {
+    if (!this.requireFeature('seclusion')) return;
     this.player.body.setVelocityX(0);
     const seclusion = new Seclusion(this.prog);
     if (seclusion.locked(o.props)) {
@@ -929,11 +1024,12 @@ export class GameScene extends Phaser.Scene {
   }
 
   private completeSeclusion(o: MapObj, years: number) {
+    if (!this.requireFeature('seclusion')) return;
     const result = new Seclusion(this.prog).settle(o.props, years);
     if (!result.ok) {
       const vars = { years, cost: SECT_SECLUSION.contributionCost[String(years)], have: this.prog.sectContribution,
         used: this.prog.seclusionDay === realDay() ? this.prog.seclusionYearsToday : 0, max: SECT_SECLUSION.maxYearsPerRealDay };
-      const text = t(result.reason === 'locked' ? 'sys.seclusion_locked' : result.reason === 'daily'
+      const text = result.reason === 'closed' ? FEATURE_UNAVAILABLE : t(result.reason === 'locked' ? 'sys.seclusion_locked' : result.reason === 'daily'
         ? 'sys.seclusion_daily' : result.reason === 'life' ? 'sys.seclusion_life' : 'sys.seclusion_cost', vars);
       this.log(text, '#ffe680'); this.dialog.show([{ speaker: null, text }], null); return;
     }
@@ -973,7 +1069,9 @@ export class GameScene extends Phaser.Scene {
             if (locked) { this.log(locked, '#aaaaaa'); return; }
             if (this.travelling) return;
             this.prog.stones -= route.cost;
-            this.travelToMap(route.targetMap, route.targetPortal ?? undefined);
+            this.travelToMap(route.targetMap, route.targetPortal ?? undefined, false, () => {
+              this.prog.stones += route.cost; this.prog.save();
+            });
           } };
         }),
         { label: t('ui.dialog.close'), onSelect: () => {} },
@@ -981,7 +1079,8 @@ export class GameScene extends Phaser.Scene {
       return;
     }
     const dailyIds = this.quests.npcDailyQuestIds(npcId);
-    const services = this.sectGrowth.services(npcId);
+    const services = this.sectGrowth.services(npcId).filter(service => featureEnabled(service.type === 'sect_promotion'
+      ? 'sectRanks' : service.type === 'sect_donation' ? 'sectDonations' : 'sectShopLibrary'));
     const ordinaryShop = this.sectGrowth.ordinaryCatalog(npcId);
     if (!questId && !skipMenu && (dailyIds.length || services.length || ordinaryShop.entries.length)) {
       this.player.body.setVelocityX(0);
@@ -1036,18 +1135,20 @@ export class GameScene extends Phaser.Scene {
 
   private sectOverview() {
     const identity = this.sectGrowth.identity();
-    return [identity?.title ? t('sect.ui.rank', { title: identity.title }) : '',
+    return [featureEnabled('sectRanks') && identity?.title ? t('sect.ui.rank', { title: identity.title }) : '',
       t('sect.ui.contribution', { contribution: this.prog.sectContribution })].filter(Boolean).join('\n');
   }
 
   /** 只读取现有身份与职位表；无效身份不展示当前或目标职位徽记。 */
   private sectRankBadgeKey(rankId?: string) {
+    if (!featureEnabled('sectRanks')) return undefined;
     const identity = this.sectGrowth.identity();
     if (!identity?.valid) return undefined;
     return rankId ? this.sectGrowth.config.ranks.ranks.find(rank => rank.id === rankId)?.icon : identity.icon;
   }
 
   openSectPromotion(npcId: string) {
+    if (!this.requireFeature('sectRanks', npcId)) return;
     const npc = NPCS[npcId]; if (!npc) return;
     const offer = this.sectGrowth.promotion(npcId);
     const conditions = typeof offer.requiredContribution === 'number' && Number.isInteger(offer.requiredContribution) && offer.requiredRealmName
@@ -1057,9 +1158,11 @@ export class GameScene extends Phaser.Scene {
     this.dialog.choose({ speaker: npc.name, text: this.sectOverview() || t('sect.ui.title') }, npc.sprite, [
       { label: offer.targetRankName ? `${t('sect.ui.confirm')}（${offer.targetRankName}）` : t('sect.ui.confirm'), rankIcon: offer.target ? this.sectRankBadgeKey(offer.target) : undefined,
         disabled: !offer.ok, reason, onSelect: () => {
+          if (!this.requireFeature('sectRanks', npcId)) return;
           const target = offer.target; if (!target) return;
           const transactionId = newSectTransactionId();
           const promote = (acceptOath = false) => {
+            if (!this.requireFeature('sectRanks', npcId)) return;
             const result = this.sectGrowth.promote(npcId, target, transactionId, acceptOath);
             this.sectResult(npcId, result, {});
           };
@@ -1076,6 +1179,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   openSectCatalog(npcId: string, service: 'sect_shop' | 'sect_library') {
+    if (!this.requireFeature('sectShopLibrary', npcId)) return;
     const npc = NPCS[npcId]; if (!npc) return;
     const catalog = this.sectGrowth.catalog(npcId, service);
     const prefix = service === 'sect_library' ? 'sect.library' : 'sect.shop';
@@ -1088,9 +1192,11 @@ export class GameScene extends Phaser.Scene {
       return { label: rankLabel ? `${entry.name}（${rankLabel}）` : entry.name, rankIcon: rankLabel ? this.sectRankBadgeKey(entry.reqRank) : undefined, disabled: !entry.ok,
         reason: [preview, entry.ok ? '' : t(entry.key, { rank: entry.rankName })].filter(Boolean).join('\n'),
         onSelect: () => {
+          if (!this.requireFeature('sectShopLibrary', npcId)) return;
           const transactionId = newSectTransactionId();
           this.dialog.choose({ speaker: npc.name, text: this.sectOverview() }, npc.sprite, [
             { label: t('sect.ui.confirm'), rankIcon: rankLabel ? this.sectRankBadgeKey(entry.reqRank) : undefined, reason: preview, onSelect: () => {
+              if (!this.requireFeature('sectShopLibrary', npcId)) return;
               const current = this.sectGrowth.catalog(npcId, service).entries.find(row => row.itemId === entry.itemId);
               if (current && (current.costContribution !== entry.costContribution || current.reqRank !== entry.reqRank)) {
                 this.openSectCatalog(npcId, service); return;
@@ -1130,6 +1236,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   openSectDonations(npcId: string) {
+    if (!this.requireFeature('sectDonations', npcId)) return;
     const npc = NPCS[npcId]; if (!npc) return;
     const catalog = this.sectGrowth.donations(npcId);
     const warning = t('sect.donation.quest_warning');
@@ -1140,10 +1247,12 @@ export class GameScene extends Phaser.Scene {
       const reason = [preview, remaining, warning, entry.ok ? '' : t(entry.key, { rank: entry.rankName })].filter(Boolean).join('\n');
       return { label: `${entry.name}（${entry.rankName}）`, rankIcon: this.sectRankBadgeKey(entry.reqRank), disabled: !entry.ok, reason,
         onSelect: () => {
+          if (!this.requireFeature('sectDonations', npcId)) return;
           // 一次预览绑定一次确认；缓存回调重试继续使用同一事务和日界。
           const transactionId = newSectTransactionId(), previewDay = entry.day;
           this.dialog.choose({ speaker: npc.name, text: `${this.sectOverview()}\n${reason}` }, npc.sprite, [
             { label: t('sect.ui.confirm'), rankIcon: this.sectRankBadgeKey(entry.reqRank), reason, onSelect: () => {
+              if (!this.requireFeature('sectDonations', npcId)) return;
               const current = this.sectGrowth.donations(npcId).entries.find(row => row.offerId === entry.offerId);
               if (current && (current.itemId !== entry.itemId || current.count !== entry.count
                 || current.contribution !== entry.contribution || current.reqRank !== entry.reqRank)) {
@@ -1529,7 +1638,7 @@ export class GameScene extends Phaser.Scene {
     const pr = this.prog;
     const identity = this.sectGrowth.identity();
     const badge = identity?.valid ? sectRankIcon(this, identity.icon) : null;
-    const visible = !!identity && !this.invText.visible;
+    const visible = featureEnabled('sectRanks') && !!identity && !this.invText.visible;
     // 徽记置于称号底板内；两行文字共用左侧留白，贡献再长也不会压住徽记。
     if (this.sectTitle.padding.left !== (badge ? 38 : 6))
       this.sectTitle.setPadding({ left: badge ? 38 : 6, right: 6, top: badge ? 6 : 4, bottom: badge ? 6 : 4 });
