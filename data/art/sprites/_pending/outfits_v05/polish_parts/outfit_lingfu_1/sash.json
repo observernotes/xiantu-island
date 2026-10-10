@@ -1,0 +1,19 @@
+{
+ "part": "sash",
+ "variant": "outfit_lingfu_1",
+ "scale": 4,
+ "size": [
+  14,
+  18
+ ],
+ "origin": [
+  6,
+  2
+ ],
+ "map": {
+  "bow": [
+   0,
+   0
+  ]
+ }
+}

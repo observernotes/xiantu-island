@@ -1,0 +1,19 @@
+{
+ "part": "skirt",
+ "variant": "outfit_youying_1.bunch",
+ "scale": 4,
+ "size": [
+  40,
+  20
+ ],
+ "origin": [
+  20,
+  2
+ ],
+ "map": {
+  "navel": [
+   0,
+   0
+  ]
+ }
+}

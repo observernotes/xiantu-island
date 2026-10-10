@@ -1,0 +1,19 @@
+{
+ "part": "skirt",
+ "variant": "outfit_taixu_1.sway_l",
+ "scale": 4,
+ "size": [
+  40,
+  20
+ ],
+ "origin": [
+  20,
+  2
+ ],
+ "map": {
+  "navel": [
+   0,
+   0
+  ]
+ }
+}

@@ -1,0 +1,19 @@
+{
+ "part": "tassel",
+ "variant": "outfit_tianjian_1.r+25",
+ "scale": 4,
+ "size": [
+  40,
+  32
+ ],
+ "origin": [
+  16,
+  4
+ ],
+ "map": {
+  "navel": [
+   -9.4,
+   -0.8
+  ]
+ }
+}

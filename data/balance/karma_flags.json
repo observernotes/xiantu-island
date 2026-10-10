@@ -230,6 +230,42 @@
       "writers": [{ "type": "encounter", "id": "enc_demon_whisper", "outcome": "refused" }],
       "readers": [{ "type": "journal", "id": "karma_history" }],
       "description": "拒绝低语；无概率抵抗，道心低也可选。"
+    },
+    {
+      "id": "se_stele_preserved",
+      "nameKey": "karma.flag.se_stele_preserved",
+      "type": "boolean", "mode": "once", "default": false, "scope": "playthrough",
+      "exclusiveGroup": "se_stele_memory",
+      "writers": [{ "type": "encounter", "id": "se_stele_memory", "outcome": "preserved" }],
+      "readers": [{ "type": "journal", "id": "karma_history" }],
+      "description": "秘境旧碑首次有效选择保留姓名；后续局次不补写拆碑标记。v0.6 草案与 nameKey 文案见 design/11_随机秘境内容.md，事件启用前补齐字符串引用。"
+    },
+    {
+      "id": "se_stele_salvaged",
+      "nameKey": "karma.flag.se_stele_salvaged",
+      "type": "boolean", "mode": "once", "default": false, "scope": "playthrough",
+      "exclusiveGroup": "se_stele_memory",
+      "writers": [{ "type": "encounter", "id": "se_stele_memory", "outcome": "salvaged" }],
+      "readers": [{ "type": "journal", "id": "karma_history" }],
+      "description": "秘境旧碑首次有效选择取走嵌铜；后续局次不补写留名标记。仅记见闻，不改地图或战力；nameKey 文案暂登记于 v0.6 草案。"
+    },
+    {
+      "id": "se_parcel_returned",
+      "nameKey": "karma.flag.se_parcel_returned",
+      "type": "boolean", "mode": "once", "default": false, "scope": "playthrough",
+      "exclusiveGroup": "se_wanderer_parcel",
+      "writers": [{ "type": "encounter", "id": "se_wanderer_parcel", "outcome": "returned" }],
+      "readers": [{ "type": "journal", "id": "karma_history" }],
+      "description": "秘境遗囊首次有效选择交还散修代寻失主；后续局次不补写自留标记。遗囊为事件叙事物件，不新建任务物品；nameKey 文案暂登记于 v0.6 草案。"
+    },
+    {
+      "id": "se_parcel_kept",
+      "nameKey": "karma.flag.se_parcel_kept",
+      "type": "boolean", "mode": "once", "default": false, "scope": "playthrough",
+      "exclusiveGroup": "se_wanderer_parcel",
+      "writers": [{ "type": "encounter", "id": "se_wanderer_parcel", "outcome": "kept" }],
+      "readers": [{ "type": "journal", "id": "karma_history" }],
+      "description": "秘境遗囊首次有效选择收下囊中药；后续局次不补写归还标记。仅记见闻，不改善恶或好感；nameKey 文案暂登记于 v0.6 草案。"
     }
   ]
 }

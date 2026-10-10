@@ -1,0 +1,23 @@
+{
+ "part": "coat",
+ "variant": "outfit_taixu_1.back",
+ "scale": 4,
+ "size": [
+  36,
+  26
+ ],
+ "origin": [
+  18,
+  18
+ ],
+ "map": {
+  "navel": [
+   0,
+   0
+  ],
+  "bow": [
+   -6,
+   1.2
+  ]
+ }
+}

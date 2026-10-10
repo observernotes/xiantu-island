@@ -1,0 +1,19 @@
+{
+ "part": "cloud_sash",
+ "variant": "outfit_taixu_1.flare",
+ "scale": 4,
+ "size": [
+  58,
+  30
+ ],
+ "origin": [
+  20,
+  8
+ ],
+ "map": {
+  "navel": [
+   0,
+   0
+  ]
+ }
+}

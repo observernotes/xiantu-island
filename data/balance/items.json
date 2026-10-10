@@ -570,5 +570,37 @@
   "appearance": "outfit_tianjian_1",
   "sect": "tianjian",
   "balanceTodo": []
+ },
+ {
+  "id": "secret_art_fragment",
+  "name": "功法残卷·万妖",
+  "type": "material",
+  "kind": "insight",
+  "desc": "万妖巢穴遗留的功法残卷，留待后续参悟拼合。",
+  "phase": 6,
+  "enabled": false,
+  "price": null,
+  "stack": null,
+  "icon": "icon_secret_art_fragment",
+  "balanceTodo": [
+   "price",
+   "stack"
+  ]
+ },
+ {
+  "id": "nest_spirit_wood",
+  "name": "巢心灵木",
+  "type": "material",
+  "kind": "artifact",
+  "desc": "巢心凝成的灵木，留待后续法宝制作。",
+  "phase": 6,
+  "enabled": false,
+  "price": null,
+  "stack": null,
+  "icon": "icon_nest_spirit_wood",
+  "balanceTodo": [
+   "price",
+   "stack"
+  ]
  }
 ]

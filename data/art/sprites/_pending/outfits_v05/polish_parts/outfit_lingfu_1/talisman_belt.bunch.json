@@ -1,0 +1,19 @@
+{
+ "part": "talisman_belt",
+ "variant": "outfit_lingfu_1.bunch",
+ "scale": 4,
+ "size": [
+  44,
+  28
+ ],
+ "origin": [
+  22,
+  4
+ ],
+ "map": {
+  "navel": [
+   0,
+   0
+  ]
+ }
+}

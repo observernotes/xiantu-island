@@ -1,0 +1,23 @@
+{
+ "part": "trouser_wrap",
+ "variant": "outfit_youying_1",
+ "scale": 4,
+ "size": [
+  12,
+  19
+ ],
+ "origin": [
+  6,
+  2
+ ],
+ "map": {
+  "hip": [
+   0,
+   0
+  ],
+  "ankle": [
+   0,
+   10.4
+  ]
+ }
+}

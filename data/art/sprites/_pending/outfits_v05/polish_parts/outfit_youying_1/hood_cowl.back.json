@@ -1,0 +1,19 @@
+{
+ "part": "hood_cowl",
+ "variant": "outfit_youying_1.back",
+ "scale": 4,
+ "size": [
+  46,
+  38
+ ],
+ "origin": [
+  20,
+  16
+ ],
+ "map": {
+  "neck": [
+   0,
+   0
+  ]
+ }
+}

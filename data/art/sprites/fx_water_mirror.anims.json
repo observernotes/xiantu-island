@@ -11,7 +11,7 @@
  ],
  "blend": "NORMAL",
  "kind": "fx",
- "note": "原点(0.5,0.75)是护盾下部定位点(48,72)，跟随角色脚底上方约16px的护盾基准点。施放播start一次，接animationcomplete后loop循环；增益消失时end一次后销毁。盾面半透明，角色仍可见；天青深描边#1F4E7A。NORMAL混合，伤害吸收由技能系统处理。",
+ "note": "原点(0.5,0.75)是护盾下部定位点(48,72)，跟随角色脚底上方约16px的护盾基准点。施放播start一次，接animationcomplete后loop循环；增益消失时end一次后销毁。盾面半透明，角色仍可见；天青深描边#2678C8。NORMAL混合，伤害吸收由技能系统处理。",
  "anims": [
   {
    "key": "fx_water_mirror_start",

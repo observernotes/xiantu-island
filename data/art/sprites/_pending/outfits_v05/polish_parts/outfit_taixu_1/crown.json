@@ -1,0 +1,19 @@
+{
+ "part": "crown",
+ "variant": "outfit_taixu_1",
+ "scale": 4,
+ "size": [
+  20,
+  18
+ ],
+ "origin": [
+  10,
+  12
+ ],
+ "map": {
+  "knot": [
+   0,
+   0
+  ]
+ }
+}

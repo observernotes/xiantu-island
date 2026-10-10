@@ -590,7 +590,7 @@
   "targetsObjective": true,
   "attack": {
    "type": "melee",
-   "damageRatio": 1.0,
+   "damageRatio": 0.6,
    "range": {
     "w": 48,
     "h": 48

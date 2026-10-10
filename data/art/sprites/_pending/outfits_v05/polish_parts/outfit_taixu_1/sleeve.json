@@ -1,0 +1,19 @@
+{
+ "part": "sleeve",
+ "variant": "outfit_taixu_1",
+ "scale": 4,
+ "size": [
+  16,
+  16
+ ],
+ "origin": [
+  8,
+  3
+ ],
+ "map": {
+  "shoulder": [
+   0,
+   0
+  ]
+ }
+}

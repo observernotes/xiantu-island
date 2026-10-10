@@ -1,0 +1,19 @@
+{
+ "part": "skirt",
+ "variant": "outfit_tianjian_1.back",
+ "scale": 4,
+ "size": [
+  40,
+  20
+ ],
+ "origin": [
+  20,
+  2
+ ],
+ "map": {
+  "navel": [
+   0,
+   0
+  ]
+ }
+}

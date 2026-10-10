@@ -1,0 +1,19 @@
+{
+ "part": "collar",
+ "variant": "outfit_taixu_1",
+ "scale": 4,
+ "size": [
+  28,
+  12
+ ],
+ "origin": [
+  14,
+  8
+ ],
+ "map": {
+  "neck": [
+   0,
+   0
+  ]
+ }
+}

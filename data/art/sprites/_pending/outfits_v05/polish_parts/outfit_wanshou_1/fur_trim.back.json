@@ -1,0 +1,19 @@
+{
+ "part": "fur_trim",
+ "variant": "outfit_wanshou_1.back",
+ "scale": 4,
+ "size": [
+  44,
+  26
+ ],
+ "origin": [
+  22,
+  8
+ ],
+ "map": {
+  "neck": [
+   0,
+   0
+  ]
+ }
+}

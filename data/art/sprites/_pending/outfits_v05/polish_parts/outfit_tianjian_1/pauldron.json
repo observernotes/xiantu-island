@@ -1,0 +1,19 @@
+{
+ "part": "pauldron",
+ "variant": "outfit_tianjian_1",
+ "scale": 4,
+ "size": [
+  24,
+  20
+ ],
+ "origin": [
+  11,
+  9
+ ],
+ "map": {
+  "shoulder": [
+   0,
+   -1.2
+  ]
+ }
+}
