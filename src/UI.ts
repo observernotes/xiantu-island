@@ -173,7 +173,14 @@ export class SkillBar {
         icon.setTexture('icons_skills', def!.icon).setVisible(true);
         if (kitMode) icon.setPosition(x + this.iconOff[0], y + this.iconOff[1]).setDisplaySize(32, 32);
         else icon.setPosition(x + SLOT_W / 2, y + SLOT_H / 2 + 2);
-      } else icon.setVisible(false);
+      } else {
+        icon.setVisible(false);
+        if (show) {
+          const ix = kitMode ? x + this.iconOff[0] : x + SLOT_W / 2 - 16;
+          const iy = kitMode ? y + this.iconOff[1] : y + SLOT_H / 2 + 2 - 16;
+          g.lineStyle(1, kitMode ? 0x6b4b2a : 0x9fd0ff, 0.65).strokeRect(ix, iy, 32, 32);
+        }
+      }
       const cd = id ? cds.get(id) : undefined;
       const left = cd ? cd.readyAt - now : 0;
       if (show && cd && left > 0 && cd.total > 0) {
@@ -232,6 +239,7 @@ export class SkillWindow {
     const sp = this.scene.add.text(x + W / 2 - 28, y - H / 2 + 24, `剩余技能点 ${prog.spLeftFor(1)}`, { fontFamily: 'sans-serif', fontSize: '18px', color: '#1a5a8a' }).setOrigin(1, 0).setScrollFactor(0).setDepth(211);
     this.objs.push(title, sp);
     const list = skillsForJob(1);
+    const atlas = this.scene.textures.exists('icons_skills') ? this.scene.textures.get('icons_skills') : null;
     list.forEach((def, i) => {
       const ry = y - H / 2 + 64 + i * 72;
       const learned = prog.skillLevel(def.id);
@@ -242,9 +250,9 @@ export class SkillWindow {
       const iconKey = `${def.icon}@64`;
       if (def.icon && this.scene.textures.exists(iconKey)) {
         this.objs.push(this.scene.add.image(x - W / 2 + 56, ry + 33, iconKey).setDisplaySize(52, 52).setScrollFactor(0).setDepth(212));
-      } else if (def.icon && this.scene.textures.exists('icons_skills')) {
-        this.objs.push(this.scene.add.image(x - W / 2 + 56, ry + 33, 'icons_skills', def.icon).setDisplaySize(48, 48).setScrollFactor(0).setDepth(212));
-      }
+      } else if (def.icon && atlas?.has(def.icon)) {
+        this.objs.push(this.scene.add.image(x - W / 2 + 56, ry + 33, 'icons_skills', def.icon).setDisplaySize(32, 32).setScrollFactor(0).setDepth(212));
+      } else row.lineStyle(1, 0x9a8766, 0.8).strokeRoundedRect(x - W / 2 + 40, ry + 17, 32, 32, 4);
       const head = `${def.name}  ${typeLabel(def.type)}  Lv ${learned}/${prog.skillCap(def)}`;
       const req = prog.reqText(def);
       const body = `${learned > 0 ? describeSkill(def, learned) : '未学  ' + describeSkill(def, 1)}${req ? '   需要 ' + req : ''}`;
@@ -268,8 +276,9 @@ export class SkillWindow {
       const box = this.scene.add.graphics().setScrollFactor(0).setDepth(212);
       box.fillStyle(0x2a3a52, 1).fillRoundedRect(sx, sy, 46, 40, 6).lineStyle(2, 0x9fd0ff).strokeRoundedRect(sx, sy, 46, 40, 6);
       this.objs.push(box);
-      if (id && SKILLS[id]?.icon && this.scene.textures.exists('icons_skills')) {
-        this.objs.push(this.scene.add.image(sx + 23, sy + 22, 'icons_skills', SKILLS[id].icon).setDisplaySize(28, 28).setScrollFactor(0).setDepth(213));
+      const iconFrame = id ? SKILLS[id]?.icon : undefined;
+      if (iconFrame && atlas?.has(iconFrame)) {
+        this.objs.push(this.scene.add.image(sx + 23, sy + 22, 'icons_skills', iconFrame).setDisplaySize(28, 28).setScrollFactor(0).setDepth(213));
       }
       this.objs.push(this.scene.add.text(sx + 3, sy + 1, s.label, { fontSize: '11px', color: '#fff', stroke: '#000', strokeThickness: 2 }).setScrollFactor(0).setDepth(214));
       const zone = this.scene.add.zone(sx, sy, 46, 40).setOrigin(0, 0).setScrollFactor(0).setDepth(215).setInteractive({ useHandCursor: true });

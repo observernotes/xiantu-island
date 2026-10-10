@@ -83,6 +83,8 @@ export const ATLASES: string[] = Object.keys(ATLAS_INFO);
 /** 地图对应的图块与背景区域（art/tiles/README.md） */
 export const MAP_AREA: Record<string, string> = { qingyun_village: 'qingyun', bamboo_forest: 'bamboo', lingxi_path: 'lingxi', luoxia_outskirts_1: 'luoxia', luoxia_outskirts_2: 'luoxia', trial_foundation_altar: 'altar', field_test: 'qingyun' };
 export const AREAS: string[] = assets.areas;
+/** sync 只登记已转正且存在的技能 @64 图标，避免加载 _pending 或缺失文件。 */
+export const SKILL_ICONS: { key: string; path: string }[] = assets.skillIcons;
 
 import npcs from '@xt/balance/npcs.json';
 import quests from '@xt/balance/quests.json';
