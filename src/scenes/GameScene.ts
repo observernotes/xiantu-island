@@ -133,7 +133,9 @@ export class GameScene extends Phaser.Scene {
     this.interactionPrompts = [];
 
     const q = new URLSearchParams(location.search).get('map');
-    let mapId = data.map ?? (q === 'test' || q === 'field' ? 'field_test' : q && TILED_MAPS[q] ? q : DEBUG_CLASS?.map ?? 'qingyun_village');
+    const debugTrial = DEBUG_CLASS && QUESTS_REF[DEBUG_CLASS.joinQuest]?.objectives.find(o => o.type === 'trial')?.trial;
+    const debugMap = DEBUG_CLASS && (TILED_MAPS[DEBUG_CLASS.map ?? ''] ? DEBUG_CLASS.map : debugTrial ? TRIALS[debugTrial]?.map : undefined);
+    let mapId = data.map ?? (q === 'test' || q === 'field' ? 'field_test' : q && TILED_MAPS[q] ? q : debugMap ?? 'qingyun_village');
     mapId = TILED_MAPS[mapId] ? mapId : (MAP_FALLBACK[mapId] ?? mapId);
     // 本版本没有的地图（存档或传送门指过去）一律回青云村，不再掉进测试图
     if (!TILED_MAPS[mapId] && mapId !== 'field_test') { mapId = 'qingyun_village'; data.portal = undefined; }

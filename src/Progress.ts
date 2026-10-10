@@ -25,6 +25,8 @@ export class Progress {
   /** 灵根元素尚无配表/角色创建字段；仅已登记元素获得五行亲和。 */
   rootElement = '';
   completedTrials: string[] = [];
+  /** 仅独立冷却使用绝对时间，切图/刷新不能绕过；剑修原后摇不写入。 */
+  skillCooldowns: Record<string, { readyAt: number; total: number }> = {};
   quests: Record<string, { state: 'active' | 'done'; kills: Record<string, number>; crafted?: Record<string, number>; reached?: boolean; talked?: Record<string, boolean> }> = {};
   /** 已学配方包含丹方、研墨和符方；具体工作台按 type 筛选。 */
   learnedRecipes: string[] = [];
@@ -443,6 +445,9 @@ export class Progress {
     if (typeof this.rootElement !== 'string') this.rootElement = '';
     if (!Array.isArray(this.completedTrials)) this.completedTrials = [];
     this.completedTrials = [...new Set(this.completedTrials.filter(id => typeof id === 'string' && id.length > 0))];
+    if (!this.skillCooldowns || typeof this.skillCooldowns !== 'object' || Array.isArray(this.skillCooldowns)) this.skillCooldowns = {};
+    this.skillCooldowns = Object.fromEntries(Object.entries(this.skillCooldowns).filter(([id, cd]) => SKILLS[id] && cd
+      && Number.isFinite(cd.readyAt) && cd.readyAt > Date.now() && Number.isFinite(cd.total) && cd.total > 0));
     if (typeof this.spTipShown !== 'boolean') this.spTipShown = false;
     if (!Array.isArray(this.tutorialsSeen)) this.tutorialsSeen = [];
     this.tutorialsSeen = [...new Set(this.tutorialsSeen.filter(id => typeof id === 'string' && id.length > 0))];

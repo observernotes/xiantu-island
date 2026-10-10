@@ -50,7 +50,16 @@ export class SkillCombat {
     this.pets.takeDamage(pet, rawDamage, fromX);
   }
 
-  constructor(private scene: GameScene) { this.pets = new FriendlySummons(scene); }
+  constructor(private scene: GameScene) {
+    this.pets = new FriendlySummons(scene);
+    const now = Date.now();
+    for (const [id, cd] of Object.entries(scene.prog.skillCooldowns)) {
+      const def = SKILLS[id];
+      if (!def || !scene.prog.ownsSkill(def) || skillNumber(def, 'cooldownMs', scene.prog.skillLevel(id)) <= 0) continue;
+      const remaining = cd.readyAt - now;
+      if (remaining > 0) this.cds.set(id, { readyAt: scene.time.now + remaining, total: cd.total });
+    }
+  }
 
   tryCast(slot: number) {
     const { prog, player } = this.scene;
@@ -77,7 +86,11 @@ export class SkillCombat {
     prog.mp -= cost;
     const total = Math.max(0, prog.skillCooldownMs(id), prog.skillRecoverMs(id));
     if (total > 0) this.cds.set(id, { readyAt: now + total, total });
+    // 独立冷却跨地图/刷新保留；剑修无独立冷却的后摇沿用旧行为。
+    const persistentCooldown = skillNumber(def, 'cooldownMs', level) > 0;
+    if (persistentCooldown) prog.skillCooldowns[id] = { readyAt: Date.now() + total, total };
     this.perform(def, level);
+    if (persistentCooldown) prog.save();
     this.scene.events.emit('skill:cast', { id, level, cost, cooldownMs: total });
   }
 
@@ -279,7 +292,7 @@ export class SkillCombat {
     const found = this.scene.prog.buffs.find(b => b.id === def.id);
     if (found) { found.expireAt = expireAt; found.warned = false; }
     else this.scene.prog.buffs.push({ id: def.id, expireAt, warned: false });
-    this.ensureBuffFx(def.id, true);
+    if (def.type !== 'active') this.ensureBuffFx(def.id, true);
     this.special(def, level, 'buff');
     this.scene.prog.save();
   }
@@ -288,7 +301,7 @@ export class SkillCombat {
     const radius = skillNumber(def, 'splashRadius', level);
     const count = skillNumber(def, 'splashTargets', level);
     if (!(radius > 0 && count > 0)) return;
-    const hits = this.scene.mobs.filter(m => m.active && !m.dead && m !== primary
+    const hits = this.scene.mobs.filter(m => m.active && !m.dead && (!def.effects?.splashExcludesPrimary || m !== primary)
       && Phaser.Math.Distance.Between(primary.x, primary.y - primary.body.height / 2, m.x, m.y - m.body.height / 2) <= radius)
       .sort((a, b) => Math.abs(a.x - primary.x) - Math.abs(b.x - primary.x)).slice(0, count);
     this.applyHits(def.id, level, hits, cast, skillNumber(def, 'splashDamageRatio', level), true);
@@ -337,6 +350,10 @@ export class SkillCombat {
     const def = SKILLS[id];
     const p = this.scene.player;
     if (!def || def.type === 'passive') return;
+    const start = `${def.fx}_start`;
+    const loop = `${def.fx}_loop`;
+    // 兽吼等范围技的短时增益仅恢复数值，不把一次性特效挂成常驻首帧。
+    if (def.type === 'active' && !this.scene.anims.exists(start) && !this.scene.anims.exists(loop)) return;
     let fx = this.buffFx.get(id);
     if (!fx?.active) {
       const made = this.fxSprite(def.fx, p.x, p.y, [0.5, 1]);
@@ -348,8 +365,6 @@ export class SkillCombat {
     }
     fx.setPosition(p.x, p.y);
     if (!restart) return;
-    const start = `${def.fx}_start`;
-    const loop = `${def.fx}_loop`;
     if (this.scene.anims.exists(start)) {
       fx.play(start);
       fx.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {

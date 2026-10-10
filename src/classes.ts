@@ -38,7 +38,9 @@ export function classGiftSkills(c: ClassDef): { id: string; level: number }[] {
   const gifts = new Map((q?.rewards.skills ?? []).map(s => [s.id, s.level]));
   // skillsPending 已在 skills.json 登记，统一读取该职业三项主动/增益，补齐缺失奖励字段。
   for (const s of skillsForClass(c.id)) if (s.type !== 'passive' && !gifts.has(s.id)) gifts.set(s.id, CLASS_RULES.giftLevel);
-  return [...gifts].filter(([id]) => skillsForClass(c.id).some(s => s.id === id)).map(([id, level]) => ({ id, level }));
+  // 按技能树顺序先发 default:A 入门技；奖励数组先列回风剑时也不抢占 A。
+  return skillsForClass(c.id).filter(skill => gifts.has(skill.id))
+    .map(skill => ({ id: skill.id, level: gifts.get(skill.id)! }));
 }
 export function classRobe(c: ClassDef): string | undefined {
   return QUESTS[c.joinQuest]?.rewards.items?.find(reward => {
