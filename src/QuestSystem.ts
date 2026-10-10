@@ -1,4 +1,4 @@
-import { QUESTS, QUEST_ORDER, NPCS, SCRIPTS, ITEMS, MONSTERS, Line, QuestDef } from './data';
+import { QUESTS, QUEST_ORDER, NPCS, SCRIPTS, ITEMS, MONSTERS, Line, QuestDef, inPhase } from './data';
 import type { Progress } from './Progress';
 
 export type NpcMark = '!' | '?' | '…' | null;
@@ -11,19 +11,22 @@ export class QuestSystem {
   get activeIds() { return QUEST_ORDER.filter(id => this.state(id) === 'active'); }
   isActive(id: string) { return this.state(id) === 'active'; }
 
-  /** 是否可接：前一个任务（指向它的 next）已完成，且等级够；目标类型本版本不支持的任务（如 craft）先不开放 */
+  /** next 链和独立 prereq 均须完成，且版本阶段、等级、目标类型可用。 */
   available(id: string) {
     if (this.state(id)) return false;
     const q = QUESTS[id];
-    if (!supported(q)) return false;
-    const prev = QUEST_ORDER.find(p => QUESTS[p].next === id);
-    if (prev && this.state(prev) !== 'done') return false;
+    if (!q || !inPhase(q) || !supported(q) || !this.prereqsDone(q)) return false;
     return this.prog.level >= q.reqLevel;
   }
   /** 前置已完成但等级不够 */
   levelLocked(id: string) {
-    const prev = QUEST_ORDER.find(p => QUESTS[p].next === id);
-    return !this.state(id) && (!prev || this.state(prev) === 'done') && this.prog.level < QUESTS[id].reqLevel;
+    const q = QUESTS[id];
+    return !!q && inPhase(q) && supported(q) && !this.state(id) && this.prereqsDone(q) && this.prog.level < q.reqLevel;
+  }
+
+  private prereqsDone(q: QuestDef) {
+    return (!q.prereq || this.state(q.prereq) === 'done')
+      && QUEST_ORDER.filter(id => QUESTS[id].next === q.id).every(id => this.state(id) === 'done');
   }
 
   objectiveProgress(q: QuestDef) {
@@ -43,7 +46,7 @@ export class QuestSystem {
 
   /** NPC 头顶标记：可交付 ?、可接 !、进行中 … */
   mark(npcId: string): NpcMark {
-    const ids = NPCS[npcId]?.quests ?? [];
+    const ids = (NPCS[npcId]?.quests ?? []).filter(id => QUESTS[id]);
     if (ids.some(id => QUESTS[id].turnIn === npcId && this.complete(id))) return '?';
     if (ids.some(id => QUESTS[id].giver === npcId && this.available(id))) return '!';
     if (ids.some(id => this.isActive(id) && QUESTS[id].turnIn === npcId)) return '…';
@@ -60,6 +63,7 @@ export class QuestSystem {
     const fill = (ls: Line[] | undefined) => (ls ?? []).map(l => ({ ...l, text: l.text.replace(/\{name\}/g, this.prog.name) }));
     for (const id of npc.quests) {
       const q = QUESTS[id], sc = SCRIPTS[id] ?? {};
+      if (!q) continue;
       if (q.turnIn === npcId && this.complete(id)) return { lines: fill(sc.turnIn), after: () => this.turnIn(id) };
       if (q.turnIn === npcId && this.isActive(id)) {
         const notReady = q.objectives.some(o => o.type === 'breakthrough') && sc.notReady && this.objectiveProgress(q).some(p => p.o.type !== 'breakthrough' && p.cur >= p.need);
@@ -70,7 +74,11 @@ export class QuestSystem {
     return { lines: npc.dialog.map(t => ({ speaker: npc.name, text: t })) };
   }
 
-  accept(id: string) { this.prog.quests[id] = { state: 'active', kills: {} }; this.prog.save(); }
+  accept(id: string) {
+    if (!this.available(id)) return false;
+    this.prog.quests[id] = { state: 'active', kills: {} }; this.prog.save();
+    return true;
+  }
 
   turnIn(id: string): QuestReward {
     const q = QUESTS[id];

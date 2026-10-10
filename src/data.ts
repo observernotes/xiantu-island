@@ -24,6 +24,13 @@ import trialWanshouPen from '@xt/maps/trial_wanshou_pen.json';
 import altar from '@xt/maps/trial_foundation_altar.json';
 import breakthrough from '@xt/balance/breakthrough.json';
 
+/** 地图与任务共用版本阶段过滤；phase 表示首次启用阶段。 */
+export const GAME_PHASE = 5;
+export function inPhase(p: { phase?: unknown; phaseMin?: unknown; phaseMax?: unknown } | undefined, phase = GAME_PHASE) {
+  const first = Number(p?.phase), lo = Number(p?.phaseMin), hi = Number(p?.phaseMax);
+  return !(Number.isFinite(first) && phase < first) && !(Number.isFinite(lo) && phase < lo) && !(Number.isFinite(hi) && phase > hi);
+}
+
 /** 首领技能。字段见 01_配置表规范 附录：interruptible 缺省 false，grantRewards 缺省 false，despawnWithOwner 缺省 true */
 export interface MonsterSkill {
   id: string; name: string; type: string;
@@ -122,14 +129,15 @@ export interface NpcDef { id: string; name: string; map: string; sprite: string;
 export interface QuestObjective { type: 'kill' | 'collect' | 'reach' | 'breakthrough' | 'talk' | 'craft'; target?: string; count?: number; consume?: boolean; map?: string; realm?: string; }
 export interface QuestDef {
   id: string; name: string; giver: string; turnIn: string; reqLevel: number; objectives: QuestObjective[];
+  prereq?: string; phase?: number;
   rewards: {
     exp: number; spiritStone: number; items: { item: string; count: number }[];
     job?: string; skills?: { id: string; level: number }[];
   }; next: string | null;
 }
 export const NPCS: Record<string, NpcDef> = Object.fromEntries((npcs as NpcDef[]).map(n => [n.id, n]));
-export const QUESTS: Record<string, QuestDef> = Object.fromEntries((quests as QuestDef[]).map(q => [q.id, q]));
-export const QUEST_ORDER: string[] = (quests as QuestDef[]).map(q => q.id);
+export const QUESTS: Record<string, QuestDef> = Object.fromEntries((quests as QuestDef[]).filter(q => inPhase(q)).map(q => [q.id, q]));
+export const QUEST_ORDER: string[] = Object.keys(QUESTS);
 export const REALMS = realms as any[];
 
 /** 一行台词：speaker 为空表示系统提示；cue 是演出标记（breakthrough / job） */
@@ -191,13 +199,6 @@ export interface SectSeclusionConfig {
   readonly maxYearsPerRealDay: number;
 }
 export const SECT_SECLUSION: Readonly<SectSeclusionConfig> = pacing.sectSeclusion;
-
-/** 当前版本所处的剧情阶段。地图 npc 对象（以后任务也一样）按 phaseMin / phaseMax 过滤，没填不限制 */
-export const GAME_PHASE = 5;
-export function inPhase(p: { phaseMin?: unknown; phaseMax?: unknown } | undefined, phase = GAME_PHASE) {
-  const lo = Number(p?.phaseMin), hi = Number(p?.phaseMax);
-  return !(Number.isFinite(lo) && phase < lo) && !(Number.isFinite(hi) && phase > hi);
-}
 
 /** strings_zh.json 里还没有的界面文案。有表内 key 时以表为准，不要改 data/。 */
 const LOCAL_STRINGS: Record<string, string> = {
