@@ -27,6 +27,7 @@ import { Gathering } from './Gathering';
 import { interactionPrompt } from '../InteractionPrompt';
 import { AlchemySystem, ALCHEMY_RULES } from '../Alchemy';
 import { AlchemyPanel, preloadAlchemy, registerAlchemy } from '../AlchemyPanel';
+import { applySpriteArt } from '../SpriteArt';
 import { SectGrowth, newSectTransactionId } from '../SectGrowth';
 
 const MAP_FALLBACK: Record<string, string> = {};
@@ -802,7 +803,8 @@ export class GameScene extends Phaser.Scene {
       if (npc && this.textures.exists(npc.sprite)) {
         const sp = this.add.sprite(0, 0, npc.sprite).setOrigin(0.5, 1).setFlipX(o.x < this.map.width / 2);
         if (this.anims.exists(`${npc.sprite}_idle`)) sp.play(`${npc.sprite}_idle`);
-        c.add(sp); h = sp.height - 10;
+        applySpriteArt(sp);
+        c.add(sp); h = sp.displayHeight - 10;
       } else {
         c.add(this.add.rectangle(0, -28, 30, 56, 0xf2d9a0).setStrokeStyle(2, 0x5a4020));
         c.add(this.add.circle(0, -62, 16, 0xffe0c2).setStrokeStyle(2, 0x5a4020));

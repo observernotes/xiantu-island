@@ -3,6 +3,7 @@ import { FEEL, SPEC } from '../config/feel';
 import { GROWTH } from '../data';
 import { pixelsFromMovePoints } from '../move';
 import { BASE_PLAYER_ATLAS, syncPlayerAppearance } from '../Appearance';
+import { applySpriteArt, spriteArtSpec } from '../SpriteArt';
 import type { Rope } from './MapBuilder';
 
 export type PState = 'ground' | 'air' | 'rope' | 'hurt';
@@ -37,7 +38,10 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   getAppearance: () => string | undefined = () => undefined;
   animationKey(action: string) { return `${this.texture.key}_${action}`; }
   syncAppearance() {
-    if (syncPlayerAppearance(this, this.getAppearance())) this.atlas = true;
+    if (syncPlayerAppearance(this, this.getAppearance())) {
+      this.atlas = true;
+      applySpriteArt(this, [SPEC.bodyW, SPEC.bodyH]);
+    }
   }
   /** 技能后摇期间锁移动。剑气斩可被跳跃取消。 */
   skillRooted = false;
@@ -71,6 +75,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     this.setOrigin(0.5, 1).setDepth(10);
     this.body.setSize(SPEC.bodyW, SPEC.bodyH);
     this.body.setOffset((SPEC.charCanvas - SPEC.bodyW) / 2, SPEC.charCanvas - SPEC.bodyH);
+    if (atlas) applySpriteArt(this, [SPEC.bodyW, SPEC.bodyH]);
     this.body.setMaxVelocityY(FEEL.maxFallSpeed);
     this.body.setCollideWorldBounds(true);
   }
@@ -266,7 +271,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     this.rope = r; this.state2 = 'rope';
     this.body.setAllowGravity(false);
     this.body.reset(r.x, feetY ?? Math.min(this.feet, r.bottom));
-    this.setScale(1, 1);
+    this.setScale(this.atlas ? spriteArtSpec(this).displayScale : 1);
   }
 
   leaveRope(time: number) {

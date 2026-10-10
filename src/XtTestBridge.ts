@@ -5,6 +5,8 @@ import { ITEMS, QUESTS, TILED_MAPS } from './data';
 import { gameNow, setGameTimeSource } from './GameClock';
 import { FIELD_TEST } from './config/maps';
 import { FEEL } from './config/feel';
+import { applySpriteArt, spriteArtSpec, type SpriteArtSpec } from './SpriteArt';
+import { SPEC } from './config/feel';
 
 type EventType = 'loaderror' | 'console.error' | 'error' | 'unhandledrejection' | 'scene' | 'quest:complete';
 type XtEvent = { type: EventType; time: number; data: unknown };
@@ -104,6 +106,56 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig): Phaser.Game
   const originalRandom = Math.random;
   const originalRnd = Phaser.Math.RND?.state();
   const api = {
+    art: {
+      snapshot() {
+        const s = current(), p = s.player, b = p.body;
+        const labels: { text: string; x: number; y: number; depth: number }[] = [];
+        const visit = (objects: Phaser.GameObjects.GameObject[], x = 0, y = 0, depth = 0) => {
+          for (const obj of objects) {
+            if (obj instanceof Phaser.GameObjects.Container) visit(obj.list, x + obj.x, y + obj.y, obj.depth);
+            else if (obj instanceof Phaser.GameObjects.Text) labels.push({ text: obj.text, x: x + obj.x, y: y + obj.y, depth: depth || obj.depth });
+          }
+        };
+        visit(s.children.list);
+        return copy({ player: { key: p.texture.key, x: p.x, y: p.y, frame: p.frame.name,
+          frameSize: spriteArtSpec(p).frameSize, origin: [p.originX, p.originY], displayScale: p.scaleX,
+          displayHeight: p.displayHeight, feet: p.feet, body: { x: b.x, y: b.y, width: b.width, height: b.height, bottom: b.bottom } },
+          labels, backgrounds: s.parallax.map(({ ts, f }) => ({ key: ts.texture.key, width: ts.width, depth: ts.depth, factorX: f, y: ts.y })),
+          fps: s.game.loop.actualFps });
+      },
+      applyAtlas(key: string, metadata?: SpriteArtSpec) {
+        const s = current(), p = s.player;
+        if (!s.textures.exists(key)) throw new Error(`${marker}: missing art atlas: ${key}`);
+        if (metadata) s.cache.json.add(`${key}_anims`, { ...s.cache.json.get(`${key}_anims`), ...copy(metadata) });
+        const previous = p.texture.key, action = p.anims.currentAnim?.key.slice(previous.length + 1) ?? 'idle';
+        const animation = s.anims.get(`${key}_${action}`);
+        if (animation?.frames.length) {
+          const index = (p.anims.currentFrame?.index ?? 1) - 1;
+          p.anims.currentAnim = animation;
+          p.anims.setCurrentFrame(animation.frames[Math.min(index, animation.frames.length - 1)]);
+        } else p.setTexture(key);
+        p.atlas = true;
+        applySpriteArt(p, [SPEC.bodyW, SPEC.bodyH]);
+        return api.art.snapshot();
+      },
+      async loadAtlas(key: string, imageUrl: string, atlasData: object, animsData: SpriteArtSpec & {
+        anims: { key: string; frames: string[]; frameRate: number; repeat: number }[];
+      }) {
+        const s = current();
+        await new Promise<void>((resolve, reject) => {
+          const failed = (file: Phaser.Loader.File) => { if (file.key === key) { cleanup(); reject(new Error(`${marker}: fixture load failed: ${key}`)); } };
+          const loaded = () => { cleanup(); resolve(); };
+          const cleanup = () => { s.load.off('loaderror', failed); s.load.off('complete', loaded); };
+          s.load.on('loaderror', failed).once('complete', loaded);
+          s.load.atlas(key, imageUrl, atlasData); s.load.start();
+        });
+        s.cache.json.add(`${key}_anims`, copy(animsData));
+        for (const anim of animsData.anims) {
+          if (s.anims.exists(anim.key)) s.anims.remove(anim.key);
+          s.anims.create({ key: anim.key, frames: anim.frames.map(frame => ({ key, frame })), frameRate: anim.frameRate, repeat: anim.repeat });
+        }
+      },
+    },
     getState() {
       const s = current(), p = s.prog;
       s.quests.refreshDaily();

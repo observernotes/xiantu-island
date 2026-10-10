@@ -130,7 +130,7 @@ export const TRIAL_BY_MAP: Record<string, TrialDef> = Object.fromEntries(Object.
 /** 已有精灵图集的 sprite 键（art/sprites/），其余用色块占位 */
 import assets from './gen/assets.json';
 /** 素材清单由 sync 扫 art/sprites/*.anims.json 自动生成（src/gen/assets.json），不再手写 */
-export interface AtlasInfo { key: string; kind: string; origin: [number, number]; bodySize: [number, number] | null; }
+export interface AtlasInfo { key: string; kind: string; origin: [number, number]; bodySize: [number, number] | null; frameSize?: number | [number, number] | null; displayScale?: number; pixelArt?: boolean; }
 export const ATLAS_INFO: Record<string, AtlasInfo> = Object.fromEntries((assets.atlases as AtlasInfo[]).map(a => [a.key, a]));
 export const ATLASES: string[] = Object.keys(ATLAS_INFO);
 /** 地图对应的图块与背景区域（art/tiles/README.md） */

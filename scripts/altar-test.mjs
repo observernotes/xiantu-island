@@ -21,7 +21,8 @@ class Body {
   get center() { return { x: this.sprite.x, y: this.sprite.y - this.height / 2 }; }
   get left() { return this.x; } get right() { return this.x + this.width; }
   get bottom() { return this.sprite.y; }
-  setSize(w, h) { this.width = w; this.height = h; return this; }
+  setSize(w, h) { this.sourceWidth = w; this.sourceHeight = h; this.width = w; this.height = h; return this; }
+  updateBounds() { this.width = this.sourceWidth * this.sprite.scaleX; this.height = this.sourceHeight * this.sprite.scaleY; }
   setOffset() { return this; } setMaxVelocityY() { return this; }
   setImmovable() { return this; }
   setAllowGravity(value) { this.allowGravity = value; return this; }
@@ -34,11 +35,13 @@ class Sprite {
   constructor(scene, x, y, _key) {
     this.scene = scene; this.x = x; this.y = y; this.active = true;
     this.visible = true; this.frame = { realWidth: 64, realHeight: 80 };
+    this.texture = { key: _key, frames: {}, setFilter() {} }; this.scaleX = this.scaleY = 1;
     this.body = new Body(this); this.anims = {
       currentAnim: null, pause() {}, resume() {}, nextFrame() {}, stop() {}
     };
   }
   setOrigin() { return this; } setDepth() { return this; }
+  setScale(x, y = x) { this.scaleX = x; this.scaleY = y; return this; }
   setFlipX() { return this; } clearTint() { return this; }
   setTint() { return this; } setTintFill() { return this; }
   setAlpha() { return this; } setFrame() { return this; }

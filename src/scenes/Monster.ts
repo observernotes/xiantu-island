@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { applySpriteArt } from '../SpriteArt';
 import { ATLAS_INFO, type MonsterDef, type MonsterSkill } from '../data';
 import type { BuiltMap } from './MapBuilder';
 
@@ -138,6 +139,7 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
     const fs = this.frame.realWidth, fh = this.frame.realHeight;
     const [bw, bh] = ATLAS_INFO[def.sprite]?.bodySize ?? BODY_FALLBACK[def.sprite] ?? [Math.min(fs - 8, 40), Math.min(fh - 4, 56)];
     this.body.setSize(bw, bh).setOffset((fs - bw) / 2, fh - bh);
+    if (atlas) applySpriteArt(this, [bw, bh]);
     this.body.setMaxVelocityY(670);
     if (def.isBoss || def.attack?.type === 'charge') this.setCollideWorldBounds(true);
     if (def.moveSpeed === 0) this.body.setImmovable(true);

@@ -23,7 +23,7 @@ const atlases = fs.readdirSync(spritesDir).filter(f => f.endsWith('.anims.json')
   const j = JSON.parse(fs.readFileSync(path.join(spritesDir, f), 'utf8'));
   const key = j.atlas ?? f.replace(/\.anims\.json$/, '');
   if (!fs.existsSync(path.join(spritesDir, key + '.png')) || !fs.existsSync(path.join(spritesDir, key + '.json'))) { console.warn('[sync] 缺图集文件，跳过', key); return null; }
-  return { key, kind: j.kind ?? (key.split('_')[0] === 'mon' ? 'monster' : key.split('_')[0]), origin: j.origin ?? [0.5, 1], bodySize: j.bodySize ?? null };
+  return { key, kind: j.kind ?? (key.split('_')[0] === 'mon' ? 'monster' : key.split('_')[0]), origin: j.origin ?? [0.5, 1], bodySize: j.bodySize ?? null, frameSize: j.frameSize ?? null, displayScale: j.displayScale ?? 1, ...(j.pixelArt === undefined ? {} : { pixelArt: j.pixelArt }) };
 }).filter(Boolean);
 const areas = fs.readdirSync(path.join(out, 'tiles')).map(f => f.match(/^tiles_(\w+)\.png$/)?.[1]).filter(Boolean).sort();
 // 图块变体不一定提供背景；只登记实际交付的背景，避免将缺省层当成待加载图片。
