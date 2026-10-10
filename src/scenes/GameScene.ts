@@ -1,8 +1,9 @@
 import Phaser from 'phaser';
 import { FEEL, SPEC } from '../config/feel';
 import { FIELD_TEST } from '../config/maps';
-import { MONSTERS, DROPS, ITEMS, TILED_MAPS, ATLASES, MAP_AREA, AREAS, SKILL_ICONS, NPCS, SCRIPTS, t, MP_REGEN_FRACTION_PER_5S, BREAKTHROUGH_LEVELS } from '../data';
+import { MONSTERS, DROPS, ITEMS, TILED_MAPS, ATLASES, MAP_AREA, AREAS, SKILL_ICONS, NPCS, SCRIPTS, t, questName, questDescription, MP_REGEN_FRACTION_PER_5S, BREAKTHROUGH_LEVELS } from '../data';
 import { QuestSystem } from '../QuestSystem';
+import type { DailyQuestReward } from '../DailyQuests';
 import { QUESTS as QUESTS_REF } from '../data';
 import { DialogBox, SkillBar, SkillWindow } from '../UI';
 import { AltarTrial, type TrialResult } from './AltarTrial';
@@ -70,6 +71,7 @@ export class GameScene extends Phaser.Scene {
   trialObjects?: SectTrialObjects;
   stealth?: StealthVision;
   private nextAgeUpdateAt = 0;
+  private nextDailyUpdateAt = 0;
   gathering!: Gathering;
   alchemySystem!: AlchemySystem;
   alchemy!: AlchemyPanel;
@@ -127,7 +129,7 @@ export class GameScene extends Phaser.Scene {
     this.openedChests = this.registry.get('chests') ?? new Set();
     this.registry.set('chests', this.openedChests);
     this.mobs = []; this.logs = []; this.hudTexts = undefined; this.hudKit = undefined;
-    this.travelling = false; this.curZone = undefined;
+    this.travelling = false; this.curZone = undefined; this.nextDailyUpdateAt = 0;
     registerHudFonts(this);
     registerAlchemy(this);
     this.interactionPrompts = [];
@@ -148,6 +150,7 @@ export class GameScene extends Phaser.Scene {
     this.physics.world.setBounds(0, 0, this.map.width, this.map.height + 200);
     // 地图 npc 对象的 phaseMin / phaseMax：不在当前版本阶段的不创建（没填不限制）
     this.map.objects = this.map.objects.filter(o => o.type !== 'npc' || inPhase(o.props));
+    this.mountDailyEnvoys();
     this.map.objects.forEach(o => this.drawObject(o));
 
     const at = data.portal ? this.map.objects.find(o => o.type === 'portal' && o.name === data.portal) : data.pos;
@@ -392,6 +395,9 @@ export class GameScene extends Phaser.Scene {
   invText!: Phaser.GameObjects.Text;
 
   update(time: number, delta: number) {
+    if (time >= this.nextDailyUpdateAt) {
+      this.quests.refreshDaily(); this.nextDailyUpdateAt = time + 1000;
+    }
     this.player.syncAppearance();
     const k = this.keys, J = Phaser.Input.Keyboard.JustDown;
     for (const p of this.parallax) p.ts.tilePositionX = this.cameras.main.scrollX * p.f;
@@ -411,7 +417,7 @@ export class GameScene extends Phaser.Scene {
     if (modal) {
       this.alchemy.update(delta);
       if (this.dialog.open) {
-        [k.one, k.two, k.three].forEach((key, i) => { if (J(key)) this.dialog.selectChoice(i); });
+        [k.one, k.two, k.three, k.four, k.five].forEach((key, i) => { if (J(key)) this.dialog.selectChoice(i); });
         if (escDown) this.dialog.dismissChoices();
       }
       if (this.dialog.open && (J(k.z) || J(k.space) || J(k.up))) this.dialog.advance();
@@ -743,6 +749,20 @@ export class GameScene extends Phaser.Scene {
   }
 
   // ---------------- 地图物件 ----------------
+  /** NPC 表已登记日常，地图点位尚缺；四宗山门未发布时只给本宗弟子在落霞镇补同一接引人。 */
+  private mountDailyEnvoys() {
+    for (const npc of Object.values(NPCS)) {
+      if (!inPhase(npc)) continue;
+      const daily = (npc.quests ?? []).map(id => QUESTS_REF[id]).find(q => q?.daily && q.giver === npc.id);
+      if (!daily) continue;
+      const atRegisteredMap = npc.map === this.map.id;
+      const atFallback = !TILED_MAPS[npc.map] && this.map.id === 'luoxia_town' && this.prog.sect === daily.sect;
+      if (!(atRegisteredMap || atFallback) || this.map.objects.some(o => o.type === 'npc' && (o.props.npc ?? o.name) === npc.id)) continue;
+      this.map.objects.push({ type: 'npc', name: npc.id, x: this.map.spawn.x + 96, y: this.map.spawn.y,
+        w: 0, h: 0, props: { npc: npc.id } });
+    }
+  }
+
   drawObject(o: MapObj) {
     if (o.type === 'npc') {
       const npc = NPCS[o.props.npc ?? o.name];
@@ -896,10 +916,12 @@ export class GameScene extends Phaser.Scene {
     this.talkTo(id); return true;
   }
 
-  talkTo(npcId: string) {
+  talkTo(npcId: string, questId?: string) {
     const npc = NPCS[npcId]; if (!npc) return;
     if (this.trial || this.map.trial || TRIAL_BY_MAP[this.map.id]) return;   // 试炼图里的长老虚影只护法，不对话
     if (npcId === 'ferry_master') {
+      // 航线菜单也算与船老大交谈，供幽影宗问讯日常记录目标。
+      this.quests.onTalk(npcId);
       this.player.body.setVelocityX(0);
       this.dialog.choose({ speaker: npc.name, text: npc.dialog[0] ?? '' }, npc.sprite, [
         ...(npc.ferryRoutes ?? []).map(route => {
@@ -917,9 +939,27 @@ export class GameScene extends Phaser.Scene {
       ]);
       return;
     }
-    const offer = this.trialOfferFor(npcId);
+    const dailyIds = this.quests.npcDailyQuestIds(npcId);
+    if (!questId && dailyIds.length) {
+      this.player.body.setVelocityX(0);
+      const ordinaryIds = npc.quests.filter(id => QUESTS_REF[id] && !QUESTS_REF[id].daily
+        && (this.quests.available(id) || this.quests.isActive(id)));
+      this.dialog.choose({ speaker: npc.name, text: t('ui.quests') }, npc.sprite, [
+        ...dailyIds.map(id => {
+          const q = QUESTS_REF[id], state = this.quests.state(id);
+          const disabled = !this.quests.isActive(id) && !this.quests.available(id);
+          return { label: questName(q), disabled,
+            reason: disabled ? state === 'done' ? t('quest.complete', { name: questName(q) }) : t('sect.ui.config_pending') : questDescription(q),
+            onSelect: () => this.talkTo(npcId, id) };
+        }),
+        ...ordinaryIds.map(id => ({ label: questName(QUESTS_REF[id]), onSelect: () => this.talkTo(npcId, id) })),
+        { label: t('ui.dialog.close'), onSelect: () => {} },
+      ]);
+      return;
+    }
+    const offer = QUESTS_REF[questId ?? '']?.daily ? null : this.trialOfferFor(npcId);
     if (offer) { this.offerTrial(npcId, offer); return; }
-    const talked = this.quests.talk(npcId);
+    const talked = this.quests.talk(npcId, questId);
     const after = talked.after;
     // 任务没有对白脚本时，用 NPC 的通用台词兜底
     const intro = this.quests.isActive('q_alchemy_intro') || this.quests.available('q_alchemy_intro');
@@ -931,11 +971,13 @@ export class GameScene extends Phaser.Scene {
     this.dialog.show(lines, npc.sprite, () => {
       const r = after?.();
       if (r) {
-        this.giveRewards(r.quest, r.broke);
+        this.giveRewards(r.quest, r.broke, r.daily);
         const ut = (r.quest.rewards as { unlockTrial?: string }).unlockTrial;
         if (ut && TRIALS[ut]) this.time.delayedCall(150, () => { const o = this.trialOfferFor(npcId); if (o) this.offerTrial(npcId, o); });
       }
-      else if (after) this.log(t('quest.accept', { name: this.quests.activeIds.map(i => QUESTS_REF[i].name).slice(-1)[0] ?? '' }), '#ffe680');
+      else if (after && (!questId || this.quests.isActive(questId))) this.log(t('quest.accept', {
+        name: questId ? questName(QUESTS_REF[questId]) : this.quests.activeIds.map(i => questName(QUESTS_REF[i])).slice(-1)[0] ?? '',
+      }), '#ffe680');
       this.prog.save();
       if (npcId === 'doctor_sun' && this.quests.state('q_alchemy_intro')) this.openAlchemy('bronze_furnace');
     }, (cue, next) => this.playCue(cue, next));
@@ -956,13 +998,27 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
-  giveRewards(q: typeof QUESTS_REF[string], broke: boolean) {
+  giveRewards(q: typeof QUESTS_REF[string], broke: boolean, daily?: DailyQuestReward) {
+    // 日常由 QuestSystem 完整结算并保存；没有本次收据时不走普通任务发奖路径。
+    if (q.daily) {
+      if (!daily) return;
+      this.log(t('quest.complete', { name: questName(q) }), '#ffe680');
+      this.applyExp(daily.exp);
+      if (q.rewards.spiritStone) this.log(t('sys.stone_gain', { n: q.rewards.spiritStone }), '#7ff0d0');
+      for (const it of daily.items) this.log(t('sys.item_gain', { item: ITEMS[it.item]?.name ?? it.item, n: it.count }), '#ffffff');
+      for (const id of daily.skills) this.log(t('skill.learned', { skill: SKILLS[id]?.name ?? id }), '#9fd0ff');
+      this.log(t('sect.ui.contribution', { contribution: this.prog.sectContribution }), '#ffd23a');
+      this.player.syncAppearance(); this.skillWindow.refresh();
+      this.player.maxHp = this.prog.maxHp; this.player.hp = this.prog.hp;
+      this.maybeSpTip();
+      return;
+    }
     const rw = q.rewards;
     const cls = classForQuest(q.id);
     // 新角色在正式拜入任务交付时定宗；旧档已有剑徒由 Progress.load 保留。
     const job = cls?.id ?? (q.id === 'q_fox' ? undefined : rw.job);
     if (job && !this.prog.advanceClass(job)) return;
-    this.log(t('quest.complete', { name: q.name }), '#ffe680');
+    this.log(t('quest.complete', { name: questName(q) }), '#ffe680');
     if (broke) {
       this.player.maxHp = this.prog.maxHp; this.player.hp = this.prog.hp;
       this.log(`突破成功，当前境界 ${this.prog.realmName}`, '#ffb0ff');
@@ -1280,9 +1336,16 @@ export class GameScene extends Phaser.Scene {
     }
     const tl: string[] = [];
     for (const id of this.quests.activeIds) {
-      const q = this.quests.objectiveProgress(QUESTS_REF[id]);
-      tl.push(`【${QUESTS_REF[id].name}】${this.quests.complete(id) ? '  可交付' : ''}`);
-      for (const o of q) tl.push(`  ${o.label} ${o.cur}/${o.need}`);
+      const def = QUESTS_REF[id], q = this.quests.objectiveProgress(def);
+      tl.push(def.daily && this.quests.complete(id)
+        ? t('quest.complete_ready', { name: questName(def), npc: NPCS[def.turnIn]?.name ?? def.turnIn })
+        : `【${questName(def)}】${!def.daily && this.quests.complete(id) ? '  可交付' : ''}`);
+      if (def.daily && questDescription(def)) tl.push(`  ${questDescription(def)}`);
+      for (const o of q) {
+        const target = def.daily ? (o.o.type === 'kill' ? MONSTERS[o.o.target ?? '']?.name
+          : o.o.type === 'collect' ? ITEMS[o.o.target ?? '']?.name : NPCS[o.o.target ?? '']?.name) ?? o.o.target ?? '' : o.label;
+        tl.push(def.daily ? `  ${t('quest.progress', { target, cur: o.cur, max: o.need })}` : `  ${target} ${o.cur}/${o.need}`);
+      }
     }
     this.tracker.setText(tl.join('\n')).setVisible(tl.length > 0);
     if (this.invText.visible) {

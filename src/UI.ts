@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import type { Line } from './data';
+import { t } from './data';
 import type { Progress } from './Progress';
 import { HOTBAR_SLOTS, SKILLS, describeSkill, typeLabel } from './skills';
 import { hasHud, hudSpec, sliced, HUD_FONT, INK, INK_60, PAPER, RED, NAVY } from './hud';
@@ -63,7 +64,7 @@ export class DialogBox {
     this.render();
   }
 
-  /** 航线等少量选项：点击或按 1 / 2 / 3 选择，保留现有对白框。 */
+  /** 航线和日常等少量选项：点击或按对应数字选择，保留现有对白框。 */
   choose(line: Line, portraitKey: string | null, choices: DialogChoice[]) {
     this.show([line], portraitKey);
     this.choices = choices;
@@ -89,7 +90,7 @@ export class DialogBox {
       this.c.add([bg, label]); this.choiceObjects.push(bg, label);
       top += height + 6;
     });
-    this.hint.setText('点击或按数字选择 · Esc 告辞');
+    this.hint.setText(`1–${choices.length} · ${t('ui.dialog.accept')} / Esc · ${t('ui.dialog.close')}`);
   }
 
   selectChoice(index: number) {
@@ -123,7 +124,7 @@ export class DialogBox {
       this.name.setText(l.speaker ?? '【提示】').setColor(l.speaker ? (l.player ? '#1a5a8a' : '#6b2a00') : '#2a7a3a');
       this.body.setText(l.text).setColor(l.speaker ? '#2b2b2b' : '#2a7a3a');
     }
-    this.hint.setText(this.i < this.lines.length - 1 ? 'Z / 空格 继续 ▼' : 'Z / 空格 结束');
+    this.hint.setText(`Z / Space · ${t(this.i < this.lines.length - 1 ? 'ui.dialog.next' : 'ui.dialog.close')}`);
   }
 
   advance() {
