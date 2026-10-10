@@ -1,13 +1,15 @@
 // 先 npm run build；timeout 120s node scripts/classes-smoke.mjs。
 // 使用真实键盘施放技能；测试木桩只提供稳定目标，不直接调用技能伤害。
+// QA_TIER_GATE_AWARE: fiveSectClasses
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { preview } from 'vite';
+import { createServer, preview } from 'vite';
 import { findRoot } from './root.mjs';
 
 const projectRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
+process.env.XT_DATA = 'snapshot';
 const dataRoot = findRoot(projectRoot);
 const { skills } = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/skills.json'), 'utf8'));
 const allSkills = Object.fromEntries(skills.map(row => [row.id, row]));
@@ -20,6 +22,37 @@ const classes = [
   ['youying_shadow', 'youying', 'trial_youying_vault'],
   ['wanshou_tamer', 'wanshou', 'trial_wanshou_pen'],
 ];
+// 读取与构建相同的工程快照，未来阶段的四宗任务不作为新拜入夹具。
+const featureLoader = await createServer({ root: projectRoot,
+  server: { middlewareMode: true, hmr: false, ws: false }, appType: 'custom', logLevel: 'error' });
+let expectedFeatures, inPhase;
+try {
+  const features = await featureLoader.ssrLoadModule('/src/features.ts');
+  let configured = {};
+  try {
+    const value = JSON.parse(await fs.readFile(path.join(projectRoot, 'data/features.json'), 'utf8'));
+    if (value && typeof value === 'object' && !Array.isArray(value)) configured = value;
+  } catch (error) { if (error.code !== 'ENOENT') throw error; }
+  expectedFeatures = Object.fromEntries(features.FEATURE_NAMES.map(name =>
+    [name, typeof configured[name] === 'boolean' ? configured[name] : true]));
+  assert.deepEqual(features.featureFlags(), expectedFeatures, '职业冒烟开关与工程快照不一致');
+  if (process.env.QA_TIER_EXPECT_FEATURES) {
+    assert.deepEqual(expectedFeatures, JSON.parse(process.env.QA_TIER_EXPECT_FEATURES), 'QA 期望与工程快照不一致');
+  }
+  ({ inPhase } = await featureLoader.ssrLoadModule('/src/data.ts'));
+} finally { await featureLoader.close(); }
+const skippedClosedEntrances = [];
+const activeClasses = classes.filter(([job, sect]) => {
+  const quest = questRows.find(row => row.id === `q_sect_${sect}`);
+  const gateClosed = sect !== 'tianjian' && !expectedFeatures.fiveSectClasses;
+  if (gateClosed || !quest || !inPhase(quest)) {
+    skippedClosedEntrances.push({ job, quest, gateClosed,
+      reason: gateClosed ? 'fiveSectClasses=false' : '任务不在当前阶段' });
+    return false;
+  }
+  return true;
+});
+assert.ok(activeClasses.length > 0, '职业冒烟没有已发布入口');
 const labels = ['A', 'S', 'D', 'F', 'G', 'H', 'Q', 'W'];
 
 function collectErrors(page) {
@@ -70,6 +103,7 @@ async function sample(page, skillId) {
 
 let server, browser;
 const results = [];
+let gateAssertions = 0;
 try {
   const { api, module } = await loadPlaywright();
   const executablePath = await browserPath(api.chromium);
@@ -84,7 +118,7 @@ try {
   const context = await browser.newContext({ viewport: { width: 1280, height: 720 } });
   console.log(JSON.stringify({ baseURL, playwright: module, browser: executablePath, headless: true }));
 
-  for (const [job, sect, map] of classes) {
+  for (const [job, sect, map] of activeClasses) {
     const page = await context.newPage(), errors = collectErrors(page), casts = [];
     // 调试必须保护原有玩家存档；之后所有保存回调和换图都应保持这个值。
     const sentinel = JSON.stringify({ level: 12, job: '', name: '冒烟保留档', inventory: { hp_pill_small: 7 } });
@@ -98,6 +132,34 @@ try {
         return scene?.map?.id === map && scene.prog?.job === job && scene.player && scene.dialog && scene.combat && scene.game.loop.frame > 3;
       }, { job, map }, { timeout: 15000 });
       await page.waitForTimeout(400);
+      const runtimeFeatures = await page.evaluate(() => window.__xt?.getState().features ?? null);
+      if (runtimeFeatures) assert.deepEqual(runtimeFeatures, expectedFeatures, '构建产物开关与工程快照不一致');
+      if (results.length === 0) {
+        const closedChecks = await page.evaluate(rows => rows.map(({ job, quest, gateClosed }) => {
+          const scene = window.__scene, P = scene.prog.constructor, Q = scene.quests.constructor;
+          const p = new P(); let saveCalls = 0;
+          p.save = () => { saveCalls++; return true; }; p.level = quest?.reqLevel ?? 30;
+          p.quests.q_fox = { state: 'done', kills: {} }; p.grantSkill('spirit_bolt', 4);
+          const q = new Q(p), before = JSON.stringify(p), storedBefore = localStorage.getItem('xiantu_save_v1');
+          saveCalls = 0;
+          const id = quest?.id ?? `q_sect_${job.split('_')[0]}`;
+          const available = q.available(id), accepted = q.accept(id);
+          const advanced = gateClosed ? p.advanceClass(job) : null;
+          return { job, available, accepted, advanced, gateClosed,
+            menuContains: q.npcQuestIds(quest?.giver ?? '').includes(id), unchanged: JSON.stringify(p) === before,
+            storedUnchanged: localStorage.getItem('xiantu_save_v1') === storedBefore, saveCalls };
+        }), skippedClosedEntrances);
+        for (const closed of closedChecks) {
+          assert.equal(closed.available, false, `${closed.job}: 关闭或未来任务仍可接`);
+          assert.equal(closed.accepted, false, `${closed.job}: 接取绕过关口`);
+          assert.equal(closed.menuContains, false, `${closed.job}: 关闭入口仍在任务菜单`);
+          if (closed.gateClosed) assert.equal(closed.advanced, false, `${closed.job}: 新拜入绕过关闭开关`);
+          assert.equal(closed.unchanged, true, `${closed.job}: 拒绝入口改变角色或奖励`);
+          assert.equal(closed.storedUnchanged, true, `${closed.job}: 拒绝入口污染存档`);
+          assert.equal(closed.saveCalls, 0, `${closed.job}: 拒绝入口不应触发保存`);
+          gateAssertions += closed.gateClosed ? 7 : 6;
+        }
+      }
       const initial = await page.evaluate(() => {
         const scene = window.__scene;
         scene.dialog.close(); scene.skillWindow.close();
@@ -379,9 +441,13 @@ try {
       console.error(JSON.stringify({ job, map, errors, failure: error.message })); throw error;
     } finally { await page.close(); }
   }
-  assert.equal(results.length, 5, '五职业未全部验证');
-  assert.equal(results.reduce((sum, result) => sum + result.castCount, 0), 15, '十五个主动/增益未全部施放');
-  console.log(JSON.stringify({ passed: 5, castCount: 15, consoleErrors: 0, pageErrors: 0, requestFailures: 0 }));
+  const castCount = activeClasses.reduce((sum, [, sect]) =>
+    sum + skills.filter(skill => skill.job === 1 && skill.sect === sect && skill.type !== 'passive').length, 0);
+  assert.equal(results.length, activeClasses.length, '已发布职业未全部验证');
+  assert.equal(results.reduce((sum, result) => sum + result.castCount, 0), castCount, '已发布主动/增益未全部施放');
+  console.log(JSON.stringify({ passed: activeClasses.length, castCount, features: expectedFeatures, gateAssertions,
+    skippedClosedEntrances: skippedClosedEntrances.map(({ job, reason }) => ({ job, reason })),
+    consoleErrors: 0, pageErrors: 0, requestFailures: 0 }));
 } finally {
   if (browser) await browser.close();
   if (server) await new Promise((resolve, reject) => server.httpServer.close(error => error ? reject(error) : resolve()));

@@ -1,4 +1,4 @@
-// 先 npm run build:test；验证快照缺省、各入口关/开、旧档和已付料炉次保留。
+// 先 XT_DATA=snapshot npm run build:test；验证发版快照、各入口关/开及旧档兼容。
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import os from 'node:os';
@@ -8,6 +8,25 @@ import { createServer, preview } from 'vite';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const names = ['fiveSectClasses', 'sectDaily', 'sectRanks', 'sectShopLibrary', 'sectDonations', 'seclusion', 'alchemyPhase1', 'v05Maps'];
+let configured = {};
+try { configured = JSON.parse(await fs.readFile(path.join(root, 'data/features.json'), 'utf8')); }
+catch (error) { if (error.code !== 'ENOENT') throw error; }
+const expected = Object.fromEntries(names.map(name => [name,
+  typeof configured?.[name] === 'boolean' ? configured[name] : true]));
+if (process.env.QA_TIER_EXPECT_FEATURES) {
+  assert.deepEqual(expected, JSON.parse(process.env.QA_TIER_EXPECT_FEATURES), 'tier1 期望与目标快照不一致');
+}
+// 任务阶段是另一道关口；测试覆盖不能把 phase=6 的入口当成本期已发布。
+process.env.XT_DATA ??= 'snapshot';
+const snapshotLoader = await createServer({ root, appType: 'custom',
+  server: { middlewareMode: true, hmr: false, ws: false }, logLevel: 'error' });
+let taixuEntryPresent;
+try {
+  const features = await snapshotLoader.ssrLoadModule('/src/features.ts');
+  assert.deepEqual(features.featureFlags(), expected, 'SSR 开关与工程快照不一致');
+  const data = await snapshotLoader.ssrLoadModule('/src/data.ts');
+  taixuEntryPresent = !!data.QUESTS.q_sect_taixu;
+} finally { await snapshotLoader.close(); }
 const port = Number(process.env.XT_TEST_PORT ?? 4312);
 assert.ok(Number.isInteger(port) && port > 0 && port < 65536, 'XT_TEST_PORT 无效');
 assert.ok(!(port >= 4186 && port <= 4190) && !(port >= 42863 && port <= 42865), '不能使用保留端口');
@@ -20,7 +39,7 @@ try {
   await fs.copyFile(path.join(root, 'src/features.ts'), path.join(fixtureRoot, 'src/features.ts'));
   for (const configured of [null, { sectDaily: false, alchemyPhase1: false }, Object.fromEntries(names.map(name => [name, false]))]) {
     if (configured) await fs.writeFile(path.join(fixtureRoot, 'data/features.json'), JSON.stringify(configured));
-    const loader = await createServer({ root: fixtureRoot, configFile: false, server: { middlewareMode: true }, logLevel: 'error' });
+    const loader = await createServer({ root: fixtureRoot, configFile: false, server: { middlewareMode: true, hmr: false, ws: false }, logLevel: 'error' });
     try {
       const features = await loader.ssrLoadModule('/src/features.ts');
       assert.deepEqual(features.featureFlags(), Object.fromEntries(names.map(name => [name, configured?.[name] ?? true])));
@@ -59,7 +78,7 @@ try {
   page.on('response', response => { if (response.status() >= 400) errors.push(`HTTP ${response.status()}: ${response.url()}`); });
   await page.goto(`${server.resolvedUrls.local[0]}?map=luoxia_town&reset=1`, { waitUntil: 'networkidle' });
   await page.waitForFunction(() => window.__xt && window.__scene?.player?.active);
-  const result = await page.evaluate(async names => {
+  const result = await page.evaluate(async ({ names, expected, taixuEntryPresent }) => {
     const xt = window.__xt, unavailable = '暂未开放', checked = [];
     let assertions = 0;
     const check = (value, message) => { if (!value) throw new Error(message); assertions++; };
@@ -69,6 +88,8 @@ try {
       check(xt.getState().features[name] === value, `${name} 切换无效`);
       check(!Object.hasOwn(xt.exportSave().flags, name), `${name} 测试覆盖污染存档`);
     };
+    same(xt.getState().features, expected, '页面初始开关与发版快照不一致');
+    // 以下关/开覆盖仅用于当前页面的隔离测试；刷新必须恢复发版快照。
     for (const name of names) xt.setFlag(name, true);
     const now = xt.clock.pause();
     const base = { ...xt.exportSave(), level: 30, exp: 0, hp: 0, mp: 0, job: '', inventory: {}, equip: {},
@@ -84,23 +105,26 @@ try {
     flip('fiveSectClasses', false);
     check(!s.quests.available('q_sect_taixu') && !s.prog.advanceClass('taixu_acolyte'), '非剑徒仍可进入');
     check(s.quests.available('q_sect_tianjian'), '剑徒被关闭');
-    s.talkTo('taixu_envoy', 'q_sect_taixu');
-    check(s.dialog.body.text.includes(unavailable), '关闭职业没有开放提示');
+    if (taixuEntryPresent) {
+      s.talkTo('taixu_envoy', 'q_sect_taixu');
+      check(s.dialog.body.text.includes(unavailable), '关闭职业没有开放提示');
+    }
     flip('fiveSectClasses', true);
-    check(s.quests.available('q_sect_taixu'), '非剑徒未恢复');
-    xt.joinSect('taixu');
+    check(s.quests.available('q_sect_taixu') === taixuEntryPresent, '非剑徒入口未遵循任务阶段');
+    xt.joinSect('tianjian');
+    check(s.prog.job === 'tianjian_disciple', '天剑正常拜入失败');
     const joined = xt.exportSave();
     checked.push('fiveSectClasses');
 
-    xt.acceptQuest('q_daily_taixu_2');
-    const dailyBefore = JSON.stringify(s.prog.quests.q_daily_taixu_2), resetBefore = s.prog.dailyQuestResetDay;
+    xt.acceptQuest('q_daily_tianjian_2');
+    const dailyBefore = JSON.stringify(s.prog.quests.q_daily_tianjian_2), resetBefore = s.prog.dailyQuestResetDay;
     flip('sectDaily', false);
-    check(s.quests.npcDailyQuestIds('taixu_envoy').length === 0, '日常菜单未隐藏');
-    check(!s.quests.turnIn('q_daily_taixu_2'), '日常关闭仍可交付');
+    check(s.quests.npcDailyQuestIds('tianjian_envoy_sect').length === 0, '日常菜单未隐藏');
+    check(!s.quests.turnIn('q_daily_tianjian_2'), '日常关闭仍可交付');
     xt.clock.advance(86400000);
-    check(JSON.stringify(s.prog.quests.q_daily_taixu_2) === dailyBefore && s.prog.dailyQuestResetDay === resetBefore, '关闭日常仍发生重置');
+    check(JSON.stringify(s.prog.quests.q_daily_tianjian_2) === dailyBefore && s.prog.dailyQuestResetDay === resetBefore, '关闭日常仍发生重置');
     flip('sectDaily', true);
-    check(s.quests.npcDailyQuestIds('taixu_envoy').includes('q_daily_taixu_2') && s.quests.available('q_daily_taixu_2'), '日常未恢复');
+    check(s.quests.npcDailyQuestIds('tianjian_envoy_sect').includes('q_daily_tianjian_2') && s.quests.available('q_daily_tianjian_2'), '日常未恢复');
     checked.push('sectDaily');
 
     s = await load({ ...joined, ageUpdatedAt: xt.getState().time });
@@ -111,26 +135,26 @@ try {
     flip('sectRanks', false);
     resumeCue();
     check(!s.dialog.open && staleCompletions === 0, '关闭后旧演出回调仍恢复对白');
-    check(s.sectGrowth.promotion('taixu_elder').key === unavailable, '晋升关闭仍可预览');
-    check(!s.sectGrowth.promote('taixu_elder', 'inner_disciple', 'features:rank').ok, '关闭晋升仍结算');
-    s.openSectPromotion('taixu_elder');
+    check(s.sectGrowth.promotion('tianjian_elder').key === unavailable, '晋升关闭仍可预览');
+    check(!s.sectGrowth.promote('tianjian_elder', 'inner_disciple', 'features:rank').ok, '关闭晋升仍结算');
+    s.openSectPromotion('tianjian_elder');
     check(s.dialog.body.text.includes(unavailable), '晋升入口没有开放提示');
     flip('sectRanks', true);
-    check(s.sectGrowth.promotion('taixu_elder').ok, '晋升没有恢复');
-    s.openSectPromotion('taixu_elder');
+    check(s.sectGrowth.promotion('tianjian_elder').ok, '晋升没有恢复');
+    s.openSectPromotion('tianjian_elder');
     check(s.dialog.choices.length > 1, '晋升菜单没有恢复');
     s.dialog.dismiss(); checked.push('sectRanks');
 
     flip('sectShopLibrary', false);
-    for (const [npc, type] of [['taixu_envoy', 'sect_shop'], ['taixu_elder', 'sect_library']]) {
+    for (const [npc, type] of [['tianjian_envoy_sect', 'sect_shop'], ['tianjian_elder', 'sect_library']]) {
       check(s.sectGrowth.catalog(npc, type).key === unavailable, `${type} 未关闭`);
       check(!s.sectGrowth.exchange(npc, type, 'qi_pill', `features:${type}`).ok, `${type} 关闭仍结算`);
       s.openSectCatalog(npc, type);
       check(s.dialog.body.text.includes(unavailable), `${type} 入口没有开放提示`);
     }
     flip('sectShopLibrary', true);
-    check(s.sectGrowth.services('taixu_envoy').some(row => row.type === 'sect_shop'), '货架服务未恢复');
-    check(s.sectGrowth.catalog('taixu_elder', 'sect_library').key !== unavailable, '藏经阁未恢复');
+    check(s.sectGrowth.services('tianjian_envoy_sect').some(row => row.type === 'sect_shop'), '货架服务未恢复');
+    check(s.sectGrowth.catalog('tianjian_elder', 'sect_library').key !== unavailable, '藏经阁未恢复');
     s.dialog.dismiss(); checked.push('sectShopLibrary');
 
     xt.setFlag('sect_donations.enabled', true);
@@ -138,12 +162,12 @@ try {
     const donations = new s.sectGrowth.constructor(s.prog, { ...config, donations: { ...config.donations,
       offers: config.donations.offers.map(offer => ({ ...offer, enabled: true })) } });
     flip('sectDonations', false);
-    check(donations.donations('taixu_envoy').key === unavailable, '上交未关闭');
-    check(!donations.donate('taixu_envoy', 'missing', 'features:donation').ok, '关闭上交仍结算');
-    s.openSectDonations('taixu_envoy');
+    check(donations.donations('tianjian_envoy_sect').key === unavailable, '上交未关闭');
+    check(!donations.donate('tianjian_envoy_sect', 'missing', 'features:donation').ok, '关闭上交仍结算');
+    s.openSectDonations('tianjian_envoy_sect');
     check(s.dialog.body.text.includes(unavailable), '上交入口没有开放提示');
     flip('sectDonations', true);
-    check(donations.donations('taixu_envoy').ok && donations.donations('taixu_envoy').entries.length > 0, '上交未恢复');
+    check(donations.donations('tianjian_envoy_sect').ok && donations.donations('tianjian_envoy_sect').entries.length > 0, '上交未恢复');
     s.dialog.dismiss(); checked.push('sectDonations');
 
     const room = { props: { mode: 'sect', reqRealm: 'foundation' } };
@@ -202,7 +226,7 @@ try {
 
     // 所有开关关闭后读旧档：保存字段完整，存档的 true 不能越过发版门禁。
     const preserved = { ...joined, ageUpdatedAt: xt.getState().time, flags: Object.fromEntries(names.map(name => [name, true])),
-      quests: { ...joined.quests, q_daily_taixu_2: { state: 'active', kills: {}, crafted: {} } }, dailyQuestResetDay: '2026-01-01',
+      quests: { ...joined.quests, q_daily_tianjian_2: { state: 'active', kills: {}, crafted: {} } }, dailyQuestResetDay: '2026-01-01',
       inventory: { spirit_herb: 7, rabbit_fur: 3 }, gatherRespawnAt: { 'bamboo_forest:save-check': now + 999999999 },
       position: { mapId: 'trial_lingfu_range', x: 64, y: 64 },
       pendingAlchemy: { recipeId: 'recipe_hp_pill', furnaceId: 'bronze_furnace', fire: {
@@ -219,11 +243,15 @@ try {
     const events = xt.events.drain().filter(event => ['console.error', 'error', 'unhandledrejection', 'loaderror'].includes(event.type));
     same(events, [], '测试事件流出现错误');
     return { assertions, checked };
-  }, names);
+  }, { names, expected, taixuEntryPresent });
   assert.deepEqual(result.checked, names);
+  await page.reload({ waitUntil: 'networkidle' });
+  await page.waitForFunction(() => window.__xt && window.__scene?.player?.active);
+  assert.deepEqual(await page.evaluate(() => window.__xt.getState().features), expected,
+    '刷新未恢复发版快照或测试覆盖泄漏');
   assert.deepEqual(errors, [], '浏览器存在错误');
   console.log(JSON.stringify({ passed: true, flags: names.length, assertions: result.assertions, snapshotCases: 3,
-    offOn: result.checked, consoleErrors: 0, pageErrors: 0, port }));
+    snapshot: expected, taixuEntryPresent, reloadRestored: true, offOn: result.checked, consoleErrors: 0, pageErrors: 0, port }));
 } finally {
   await browser?.close();
   if (server) await new Promise(resolve => server.httpServer.close(resolve));
