@@ -53,6 +53,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   get speed() { return this.getMovePoints().speed; }
   get jump() { return this.getMovePoints().jump; }
   prone = false;
+  gathering = false;
   didDouble = false;
   dead = false;
   /** 阴影反馈与受伤闪烁相乘，避免每帧 finish 覆盖渐变。 */
@@ -239,7 +240,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
       if (cur !== k + next) this.play(k + next);
       if (this.body.velocity.y === 0) this.anims.pause(); else this.anims.resume();
       return;
-    } else if (this.state2 === 'air') next = this.didDouble ? 'djump' : 'jump';
+    } else if (this.gathering) next = this.scene.anims.exists(k + 'gather') ? 'gather' : 'idle';
+    else if (this.state2 === 'air') next = this.didDouble ? 'djump' : 'jump';
     else if (this.prone) next = 'sit';
     else next = Math.abs(this.body.velocity.x) > 10 ? 'walk' : 'idle';
     if (this.anims.isPaused) this.anims.resume();

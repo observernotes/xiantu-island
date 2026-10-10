@@ -20,6 +20,10 @@ import { LIFESPAN } from '../data';
 import { SectTrialObjects } from './SectTrialObjects';
 import { StealthVision } from './StealthVision';
 import { ferryLockedReason } from '../Ferry';
+import { Gathering } from './Gathering';
+import { interactionPrompt } from '../InteractionPrompt';
+import { AlchemySystem, ALCHEMY_RULES } from '../Alchemy';
+import { AlchemyPanel, preloadAlchemy, registerAlchemy } from '../AlchemyPanel';
 
 const MAP_FALLBACK: Record<string, string> = {};
 type Drop = Phaser.Physics.Arcade.Sprite & { itemId: string; count: number; bornAt: number; label?: Phaser.GameObjects.Text; shadow?: Phaser.GameObjects.Ellipse; floatTw?: Phaser.Tweens.Tween; landed?: boolean };
@@ -63,6 +67,10 @@ export class GameScene extends Phaser.Scene {
   trialObjects?: SectTrialObjects;
   stealth?: StealthVision;
   private nextAgeUpdateAt = 0;
+  gathering!: Gathering;
+  alchemySystem!: AlchemySystem;
+  alchemy!: AlchemyPanel;
+  private interactionPrompts: { object: MapObj; prompt: Phaser.GameObjects.Container }[] = [];
 
   constructor() { super('game'); (window as any).__scene = this; }
 
@@ -83,6 +91,7 @@ export class GameScene extends Phaser.Scene {
     for (const tier of ['empty', 'half', 'full']) this.load.image(`icon_overflow_gourd_${tier}`, `art/icons/ui/icon_overflow_gourd_${tier}.png`);
     this.load.atlas('icons_items', 'art/icons/icons_items.png', 'art/icons/icons_items.json');
     preloadHud(this);
+    preloadAlchemy(this);
   }
 
   create(data: { map?: string; portal?: string; pos?: { x: number; y: number } }) {
@@ -102,6 +111,8 @@ export class GameScene extends Phaser.Scene {
     this.mobs = []; this.logs = []; this.hudTexts = undefined; this.hudKit = undefined;
     this.travelling = false; this.curZone = undefined;
     registerHudFonts(this);
+    registerAlchemy(this);
+    this.interactionPrompts = [];
 
     const q = new URLSearchParams(location.search).get('map');
     let mapId = data.map ?? (q === 'test' || q === 'field' ? 'field_test' : q && TILED_MAPS[q] ? q : 'qingyun_village');
@@ -125,6 +136,7 @@ export class GameScene extends Phaser.Scene {
     this.player.getMovePoints = () => this.prog.currentMovePoints();
     this.player.getAppearance = () => this.prog.appearance;
     this.player.syncAppearance();
+    this.gathering = new Gathering(this);
     this.combat = new SkillCombat(this);
 
     const oneWayCheck = (a: any, plat: any) => {
@@ -173,7 +185,7 @@ export class GameScene extends Phaser.Scene {
     this.keys = this.input.keyboard!.addKeys({
       left: K.LEFT, right: K.RIGHT, up: K.UP, down: K.DOWN, alt: K.ALT, space: K.SPACE, c: K.C,
       ctrl: K.CTRL, x: K.X, z: K.Z, f1: K.F1, r: K.R, one: K.ONE, two: K.TWO, three: K.THREE, four: K.FOUR, five: K.FIVE, i: K.I,
-      a: K.A, s: K.S, d: K.D, f: K.F, g: K.G, h: K.H, q: K.Q, w: K.W, k: K.K, esc: K.ESC,
+      a: K.A, s: K.S, d: K.D, f: K.F, g: K.G, h: K.H, q: K.Q, w: K.W, k: K.K, l: K.L, esc: K.ESC,
     }, true) as any;
 
     const cam = this.cameras.main;
@@ -186,10 +198,12 @@ export class GameScene extends Phaser.Scene {
     this.debugText = this.add.text(16, 200, '', { fontFamily: 'monospace', fontSize: '12px', color: '#1d2a3a', backgroundColor: '#ffffffaa', padding: { x: 6, y: 4 } }).setScrollFactor(0).setDepth(100).setVisible(false);
     this.add.text(16, 14, `${this.map.name}${this.map.safeZone ? '（安全区）' : ''}`, { fontFamily: 'sans-serif', fontSize: '18px', color: '#1d2a3a', stroke: '#ffffff', strokeThickness: 4 }).setScrollFactor(0).setDepth(100);
     this.add.text(1264, 14,
-      '方向键 移动 / ↑↓ 爬绳梯  ↑ 传送 / 上船 / 闭关\nAlt / 空格 / C 跳跃（空中再按 = 二段跳）\n↓ + 跳 穿下单向平台\nCtrl / X 普攻   Z 对话 / 拾取 / 开宝箱\nA S D F G H Q W 技能   K 功法\n1 回春丹  2 回气丹  I 背包  F1 调试',
+      '方向键 移动 / ↑↓ 爬绳梯  ↑ 传送 / 上船 / 闭关\nAlt / 空格 / C 跳跃（空中再按 = 二段跳）\n↓ + 跳 穿下单向平台\nCtrl / X 普攻   Z 对话 / 拾取 / 采集 / 开宝箱\nA S D F G H Q W 技能   K 功法  L 丹炉\n1 回春丹  2 回气丹  I 背包  F1 调试',
       { fontFamily: 'sans-serif', fontSize: '13px', color: '#1d2a3a', backgroundColor: '#ffffffaa', padding: { x: 8, y: 6 }, align: 'right' })
       .setOrigin(1, 0).setScrollFactor(0).setDepth(100);
     this.dialog = new DialogBox(this);
+    this.alchemySystem = new AlchemySystem(this.prog, this.quests);
+    this.alchemy = new AlchemyPanel(this, this.prog, this.alchemySystem);
     this.skillBar = new SkillBar(this);
     this.skillWindow = new SkillWindow(this, () => this.prog, id => this.tryAddPoint(id));
     this.skillBar.onSlot = i => { if (this.skillWindow.open) this.skillWindow.assign(i); };
@@ -268,7 +282,7 @@ export class GameScene extends Phaser.Scene {
       this.dialog.show([{ speaker, text: t('trial.need_pill', { item: ITEMS[item]?.name ?? item }) }], npc?.sprite ?? null);
       return;
     }
-    const r = this.prog.breakthroughRate();
+    const r = this.prog.breakthroughRate(undefined, item ? this.prog.pillQuality(item) : 'low');
     const pct = (v: number) => Math.round(v * 100);
     const lines = [
       { speaker, text: npc?.dialog?.[1] ?? '' },
@@ -282,7 +296,7 @@ export class GameScene extends Phaser.Scene {
   enterTrial(tr: TrialDef) {
     const pr = this.prog, item = pr.realm.breakthroughItem as string | null;
     const withClear = pr.count('clear_mind_pill') > 0;
-    const rate = pr.breakthroughRate(withClear);
+    const rate = pr.breakthroughRate(withClear, item ? pr.pillQuality(item) : 'low');
     if (item) { pr.removeItem(item, 1); this.log(t('trial.consume', { item: ITEMS[item]?.name ?? item }), '#c8c8c8'); }
     if (withClear) { pr.removeItem('clear_mind_pill', 1); this.log(t('trial.consume', { item: ITEMS.clear_mind_pill?.name ?? '清心丹' }), '#c8c8c8'); }
     pr.hp = pr.maxHp; pr.mp = pr.maxMp; pr.save();
@@ -363,10 +377,16 @@ export class GameScene extends Phaser.Scene {
     this.combat.update(time, delta);
     this.trialObjects?.update(delta);
     if (time >= this.nextAgeUpdateAt) { this.prog.advanceAge(); this.nextAgeUpdateAt = time + 60000; this.prog.save(); }
-    if (J(k.k) && !this.dialog.open) this.skillWindow.toggle();
+    if (J(k.k) && !this.dialog.open && !this.alchemy.isOpen()) this.skillWindow.toggle();
+    if (J(k.l) && !this.dialog.open && !this.skillWindow.open) this.openAlchemy();
     const escDown = J(k.esc);
     if (escDown && this.skillWindow.open) this.skillWindow.close();
-    if (this.dialog.open || this.skillWindow.open) {
+    const modal = this.dialog.open || this.skillWindow.open || this.alchemy.isOpen();
+    this.updateInteractionPrompts(modal);
+    this.gathering.update(delta, k.z.isDown, modal || this.hasNearbyDrop(),
+      k.left.isDown || k.right.isDown || k.up.isDown || k.down.isDown || k.space.isDown || k.alt.isDown || k.c.isDown || k.ctrl.isDown || k.x.isDown);
+    if (modal) {
+      this.alchemy.update(delta);
       if (this.dialog.open) {
         [k.one, k.two, k.three].forEach((key, i) => { if (J(key)) this.dialog.selectChoice(i); });
         if (escDown) this.dialog.dismissChoices();
@@ -378,6 +398,7 @@ export class GameScene extends Phaser.Scene {
         nums.forEach((key, i) => { if (J(key) && jobs[i]) this.tryAddPoint(jobs[i].id); });
       }
       J(k.alt); J(k.c);
+      J(k.space); J(k.z); J(k.up);
       this.player.body.setVelocityX(0);
       this.player.step(time, delta / 1000, { left: false, right: false, up: false, down: false, jumpDown: false, attackDown: false }, this.map.ropes);
       this.stealth?.update(0, false);
@@ -394,11 +415,12 @@ export class GameScene extends Phaser.Scene {
     if (J(k.i)) this.invText.setVisible(!this.invText.visible);
     if (J(k.one)) this.usePill('hp_pill_small');
     if (J(k.two)) this.usePill('qi_pill');
-    if (J(k.z) && this.player.state2 === 'ground' && (this.interactTrialObject() || this.talkNearby())) return;
-    if (k.z.isDown && time >= this.nextPickAt) { this.nextPickAt = time + 150; this.tryPickup(); }
+    if (J(k.z) && this.player.state2 === 'ground' && !this.gathering.active && !this.hasNearbyDrop()
+      && (this.interactTrialObject() || this.openNearbyFurnace() || this.talkNearby())) return;
+    if (k.z.isDown && !this.gathering.active && time >= this.nextPickAt) { this.nextPickAt = time + 150; this.tryPickup(); }
     if (J(k.up) && this.player.state2 === 'ground' && this.tryInteract()) return;
     const slotKey: Record<string, Phaser.Input.Keyboard.Key> = { A: k.a, S: k.s, D: k.d, F: k.f, G: k.g, H: k.h, Q: k.q, W: k.w };
-    HOTBAR_SLOTS.forEach((s, i) => { if (J(slotKey[s.label])) this.combat.tryCast(i); });
+    HOTBAR_SLOTS.forEach((s, i) => { if (J(slotKey[s.label]) && !this.gathering.active) this.combat.tryCast(i); });
     this.checkReach();
     if (this.player.y > this.map.height + 100) this.player.body.reset(this.map.spawn.x, this.map.spawn.y);
 
@@ -563,6 +585,7 @@ export class GameScene extends Phaser.Scene {
 
   hurtPlayer(dmg: number, fromX: number, knock: number) {
     if (!this.player.hurt(this.time.now, fromX, dmg, knock)) return;
+    this.gathering.cancel();
     this.prog.hp = Math.max(0, this.prog.hp - dmg);
     this.player.hp = this.prog.hp;
     this.damageNumber(this.player.x, this.player.y - 70, dmg, '#c45cff', '#2a0040');
@@ -608,6 +631,34 @@ export class GameScene extends Phaser.Scene {
   }
 
   // ---------------- 掉落与拾取 ----------------
+  private hasNearbyDrop() {
+    return (this.drops.getChildren() as Drop[]).some(d => d.active
+      && Math.abs(d.x - this.player.x) < 40 && Math.abs(d.y - this.player.y) < 40);
+  }
+
+  private updateInteractionPrompts(blocked: boolean) {
+    for (const { object: o, prompt } of this.interactionPrompts) {
+      prompt.setVisible(!blocked && !this.player.dead && !this.hasNearbyDrop()
+        && Math.abs(o.x - this.player.x) < 40 && Math.abs(o.y - this.player.y) < 48);
+    }
+  }
+
+  openAlchemy(publicFurnace?: string) {
+    if (this.player.dead || this.trial || this.map.trial || this.dialog.open || this.skillWindow.open) return false;
+    const near = this.nearNpc();
+    const owned = ['dark_iron_furnace', 'purple_copper_furnace', 'bronze_furnace'].find(id => this.prog.count(id) > 0);
+    const furnace = publicFurnace ?? (near === 'doctor_sun' ? 'bronze_furnace' : owned);
+    if (!furnace) { this.log('请到孙郎中处使用丹炉，或先获得丹炉。', '#ffb0b0'); return false; }
+    this.gathering.cancel(); this.player.body.setVelocityX(0);
+    this.alchemy.open(furnace); return true;
+  }
+
+  private openNearbyFurnace() {
+    const o = this.map.objects.find(o => (o.type === 'furnace' || o.type === 'alchemy')
+      && Math.abs(o.x - this.player.x) < 40 && Math.abs(o.y - this.player.y) < 48);
+    return !!o && this.openAlchemy(String(o.props.furnace ?? o.props.item ?? 'bronze_furnace'));
+  }
+
   spawnDrop(x: number, y: number, id: string, count: number) {
     const icon = this.dropIcon(id);
     const d = (icon ? this.physics.add.sprite(x, y, 'icons_items', icon) : this.physics.add.sprite(x, y, this.dropTex(id))).setOrigin(0.5, 1).setDepth(7) as Drop;
@@ -647,11 +698,13 @@ export class GameScene extends Phaser.Scene {
   usePill(id: string) {
     if (!this.prog.inventory[id]) { this.log(`没有${ITEMS[id]?.name ?? id}`, '#aaaaaa'); return; }
     const eff = ITEMS[id]?.effect ?? {};
-    this.prog.inventory[id]--;
-    if (eff.hp || id === 'hp_pill_small') this.prog.hp = Math.min(this.prog.maxHp, this.prog.hp + (eff.hp ?? 60));
-    if (eff.mp || id === 'qi_pill') this.prog.mp = Math.min(this.prog.maxMp, this.prog.mp + (eff.mp ?? 50));
+    const quality = this.prog.pillQuality(id), mul = ALCHEMY_RULES.quality.effectMul[quality];
+    this.prog.removeItem(id, 1);
+    if (eff.hp || id === 'hp_pill_small') this.prog.hp = Math.min(this.prog.maxHp, this.prog.hp + Math.round((eff.hp ?? 60) * mul));
+    if (eff.mp || id === 'qi_pill') this.prog.mp = Math.min(this.prog.maxMp, this.prog.mp + Math.round((eff.mp ?? 50) * mul));
     this.player.hp = this.prog.hp;
     this.log(`服用 ${ITEMS[id]?.name ?? id}`, '#9fffb0');
+    this.prog.save();
   }
 
   // ---------------- 地图物件 ----------------
@@ -681,6 +734,15 @@ export class GameScene extends Phaser.Scene {
         this.tweens.add({ targets: img, y: img.y - 6, yoyo: true, repeat: -1, duration: 500 });
       }
       if (npc) this.npcMarks.push({ id: npc.id, text: mark, img });
+      const label = npc?.id === 'doctor_sun' ? '对话 / L 炼丹' : '对话';
+      const prompt = interactionPrompt(this, o.x, o.y - h - 38, 'Z', label);
+      this.interactionPrompts.push({ object: o, prompt });
+    } else if (o.type === 'furnace' || o.type === 'alchemy') {
+      const furnace = String(o.props.furnace ?? o.props.item ?? 'bronze_furnace');
+      const image = `ui_alchemy_furnace_${furnace}`;
+      if (this.textures.exists(image)) this.add.image(o.x, o.y, image).setOrigin(0.5, 1).setDisplaySize(64, 64).setDepth(4);
+      const prompt = interactionPrompt(this, o.x, o.y - 76, 'Z', t('alchemy.title'));
+      this.interactionPrompts.push({ object: o, prompt });
     } else if (o.type === 'portal') {
       const shut = !this.portalOpen(o);
       const g = this.add.ellipse(o.x, o.y - 40, 46, 80, shut ? 0x888888 : 0x8fe3ff, 0.55).setStrokeStyle(3, shut ? 0x555555 : 0x3a9fd8).setDepth(4);
@@ -793,7 +855,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   talkNearby() {
-    const hasDrop = (this.drops.getChildren() as Drop[]).some(d => Math.abs(d.x - this.player.x) < 40 && Math.abs(d.y - this.player.y) < 40);
+    const hasDrop = this.hasNearbyDrop();
     const id = hasDrop ? null : this.nearNpc();
     if (!id) return false;
     this.talkTo(id); return true;
@@ -825,7 +887,11 @@ export class GameScene extends Phaser.Scene {
     const talked = this.quests.talk(npcId);
     const after = talked.after;
     // 任务没有对白脚本时，用 NPC 的通用台词兜底
-    const lines = talked.lines.length ? talked.lines : npc.dialog.map(tx => ({ speaker: npc.name, text: tx }));
+    const intro = this.quests.isActive('q_alchemy_intro') || this.quests.available('q_alchemy_intro');
+    const lines = talked.lines.length ? talked.lines : npcId === 'doctor_sun' && intro ? [
+      { speaker: npc.name, text: '你如今入了炼气，该学学炼丹了。修仙路上，丹药就是半条命。' },
+      { speaker: npc.name, text: '可先试炼回春丹：每炉用灵草二株、灵兔绒一份、灵石十枚。交付入门任务时，还须留足三株灵草。丹炉可在我这里用，学成后再送你。' },
+    ] : npc.dialog.map(tx => ({ speaker: npc.name, text: tx }));
     this.player.body.setVelocityX(0);
     this.dialog.show(lines, npc.sprite, () => {
       const r = after?.();
@@ -836,6 +902,7 @@ export class GameScene extends Phaser.Scene {
       }
       else if (after) this.log(t('quest.accept', { name: this.quests.activeIds.map(i => QUESTS_REF[i].name).slice(-1)[0] ?? '' }), '#ffe680');
       this.prog.save();
+      if (npcId === 'doctor_sun' && this.quests.state('q_alchemy_intro')) this.openAlchemy('bronze_furnace');
     }, (cue, next) => this.playCue(cue, next));
   }
 
@@ -871,6 +938,7 @@ export class GameScene extends Phaser.Scene {
     }
     if (rw.job) this.prog.job = rw.job;
     const granted = rw.skills ?? [];
+    this.prog.grantQuestRecipes(q);
     for (const s of granted) this.prog.grantSkill(s.id, s.level);
     const ids = granted.map(s => s.id);
     if (ids.includes('whirl_sword') && ids.includes('light_body')) this.log(t('skill.job_advance'), '#ffd23a');
