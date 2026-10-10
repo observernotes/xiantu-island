@@ -229,6 +229,8 @@ async function fps(page) {
   const result = await page.evaluate(() => new Promise((resolve, reject) => {
     const WARMUP = 8, INTERVALS = 20; // tier1 限时 130s：软件渲染 ~12fps 下 30 帧太慢
     const scene = window.__scene, game = scene.game, stamps = [];
+    const gl = game.renderer.gl, debug = gl?.getExtension('WEBGL_debug_renderer_info');
+    const rendererName = gl ? gl.getParameter(debug?.UNMASKED_RENDERER_WEBGL ?? gl.RENDERER) : 'Canvas (GPU disabled)';
     let warmup = 0;
     const timer = setTimeout(() => {
       game.events.off('postrender', rendered); game.loop.sleep();
@@ -241,7 +243,8 @@ async function fps(page) {
         clearTimeout(timer);
         game.events.off('postrender', rendered); game.loop.sleep();
         const deltas = stamps.slice(1).map((time, i) => time - stamps[i]).sort((a, b) => a - b);
-        resolve({ fps: INTERVALS * 1000 / (stamps.at(-1) - stamps[0]), medianMs: deltas[Math.floor(INTERVALS / 2)], renderer: game.renderer.type });
+        resolve({ fps: INTERVALS * 1000 / (stamps.at(-1) - stamps[0]), medianMs: deltas[Math.floor(INTERVALS / 2)],
+          renderer: game.renderer.type, rendererName });
       }
     }
     game.loop.sleep(); game.loop.resetDelta();
@@ -564,7 +567,7 @@ try {
   if (!process.env.ART_FEATURES_ONLY) {
     // 释放所有功能页；每种素材在独立且配置相同的 context 中只启动一次。
     await browser.close(); browser = await api.chromium.launch(launchOptions);
-    // 三轮轮转顺序，12 个真实渲染帧预热，再采完整 30 个 postrender 间隔取中位。
+    // 三轮轮转顺序，8 个真实渲染帧预热，再采完整 20 个 postrender 间隔取中位。
     const beforeSamples = [], afterSamples = [], effectSamples = [];
     metrics.samples = { beforeSamples, afterSamples, effectSamples };
     const cases = [
@@ -641,7 +644,8 @@ try {
           caseSeconds: Number(((performance.now() - caseStarted) / 1000).toFixed(2)) });
       }
     }
-    metrics.measurement = { pages: 3, contexts: 3, initializations: 3, event: 'postrender', warmupFrames: 8, intervals: 20,
+    check(cases.every(sampleCase => sampleCase.samples.length >= 3), 'FPS 帧间隔对照至少需要三轮采样');
+    metrics.measurement = { pages: 3, contexts: 3, initializations: 3, rounds: beforeSamples.length, event: 'postrender', warmupFrames: 8, intervals: 20,
       elapsedSeconds: (performance.now() - measurementStarted) / 1000 };
     const baselineFrameMs = median(beforeSamples.map(sample => 1000 / sample.fps));
     const fallbackFrameMs = median(afterSamples.map(sample => 1000 / sample.fps));
@@ -653,12 +657,13 @@ try {
     // 宿主若连旧版本身都不到60，只报告真实结果；不把软件渲染限制算成引擎通过60fps。
     if (metrics.baselineFps >= 59) check(metrics.target60FpsMet, '旧版可达60fps而示例素材低于60fps');
     metrics.samples = { beforeSamples, afterSamples, effectSamples };
-    // Canvas（禁用 GPU）与 WebGL（SwiftShader）均为软件渲染；qa/out_tier1/d4cd341_triage2/triage.md
-    // 的 A/A 均值波动达 16.11ms。三轮均值取中位后允许一个 60Hz 帧间隔，仍检查更大的持续退化。
-    // 软件渲染（SwiftShader）基线本身常低于 20fps，绝对 +16.67ms 会被噪声打穿；
-    // 基线 <30fps 时改用相对 50% 容差，并跳过「旧素材相对自身」回归（只约束 effects 不比基线差太多）。
-    const softRenderer = metrics.baselineFps < 30;
-    const frameIntervalToleranceMs = softRenderer ? baselineFrameMs * 0.5 : 1000 / 60;
+    // 按实际后端识别软件渲染，避免 SwiftShader 基线偶尔超过 30fps 时误走硬件阈值。
+    // 三轮帧间隔均值取中位；软件允许基线的 50% 抖动再加一帧，硬件仍只允许一帧。
+    const rendererNames = [...new Set([...beforeSamples, ...afterSamples, ...effectSamples].map(sample => sample.rendererName))];
+    const softRenderer = afterState.renderer === 1
+      || rendererNames.every(name => /swiftshader|llvmpipe|softpipe|lavapipe|software|microsoft basic render/i.test(name));
+    const frameIntervalToleranceMs = (softRenderer ? baselineFrameMs * 0.5 : 0) + 1000 / 60;
+    metrics.rendererNames = rendererNames;
     metrics.frameIntervalToleranceMs = frameIntervalToleranceMs;
     metrics.softRenderer = softRenderer;
     const frameIntervalLimitMs = baselineFrameMs + frameIntervalToleranceMs;
@@ -666,8 +671,7 @@ try {
     // 两端所有实际加载响应字节相同时是 A/A；跨进程宿主波动不能构成当前代码回归。
     // 仍采集并报告全部三轮 FPS；任一代码/配置/素材字节变化都走原帧间隔断言。
     if (metrics.identicalRuntime) equal(metrics.runtimeAfter, metrics.runtimeBefore, 'A/A 对照的实际运行产物不一致');
-    else if (!softRenderer) check(fallbackFrameMs <= frameIntervalLimitMs, `${metrics.renderer} 旧素材帧间隔超过基线容差：${fallbackFrameMs.toFixed(2)} > ${baselineFrameMs.toFixed(2)} + ${frameIntervalToleranceMs.toFixed(2)} ms`);
-    else metrics.skippedFallbackFrameInterval = true;
+    else check(fallbackFrameMs <= frameIntervalLimitMs, `${metrics.renderer} 旧素材帧间隔超过基线容差：${fallbackFrameMs.toFixed(2)} > ${baselineFrameMs.toFixed(2)} + ${frameIntervalToleranceMs.toFixed(2)} ms`);
     check(effectsFrameMs <= frameIntervalLimitMs, `${metrics.renderer} 示例特效帧间隔超过基线容差：${effectsFrameMs.toFixed(2)} > ${baselineFrameMs.toFixed(2)} + ${frameIntervalToleranceMs.toFixed(2)} ms`);
   }
   equal(errors, [], '浏览器控制台/页面报错');
