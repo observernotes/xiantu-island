@@ -10,11 +10,6 @@
  "infinite": false,
  "properties": [
   {
-   "name": "phaseMin",
-   "type": "int",
-   "value": 6
-  },
-  {
    "name": "id",
    "type": "string",
    "value": "wanshou_mountain"

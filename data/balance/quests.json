@@ -104,7 +104,7 @@
    ],
    "skills": [
     {
-     "id": "sword_qi_slash",
+     "id": "spirit_bolt",
      "level": 1
     }
    ]
@@ -145,17 +145,10 @@
     {
      "item": "pillar_shard_1",
      "count": 1
-    }
-   ],
-   "job": "tianjian_disciple",
-   "skills": [
-    {
-     "id": "whirl_sword",
-     "level": 1
     },
     {
-     "id": "light_body",
-     "level": 1
+     "item": "five_sect_token",
+     "count": 1
     }
    ]
   },
@@ -278,6 +271,10 @@
     }
    ],
    "skills": [
+    {
+     "id": "sword_qi_slash",
+     "level": 1
+    },
     {
      "id": "whirl_sword",
      "level": 1

@@ -91,7 +91,7 @@
     },
     {
       "id": "before_fox",
-      "description": "妖狐前：foxsim 实测 Lv11、剑气斩 Lv7、桃木剑、10 颗回春丹。",
+      "description": "妖狐前：foxsim 实测 Lv11、灵气弹 Lv7（赠1+6SP）、桃木剑、10 颗回春丹。",
       "map": "lingxi_path",
       "spawn": {
         "objectId": 9,
@@ -118,7 +118,7 @@
       "sectContribution": 0,
       "job": "",
       "skills": {
-        "sword_qi_slash": 7
+        "spirit_bolt": 7
       },
       "equip": {
         "weapon": "wood_sword"
@@ -153,7 +153,7 @@
         "mortal"
       ],
       "skillGifted": {
-        "sword_qi_slash": 1
+        "spirit_bolt": 1
       },
       "skillPoints": {
         "earned": 6,
@@ -183,7 +183,7 @@
     },
     {
       "id": "before_altar",
-      "description": "守阵眼前：altar.mjs 进场起点；筑基丹已消耗，载图时启动试炼。",
+      "description": "守阵眼前：altar.mjs 进场起点；已入天剑外门，三招赠送 Lv1；筑基丹已消耗，载图时启动试炼。",
       "map": "trial_foundation_altar",
       "spawn": {
         "objectId": 4,
@@ -205,14 +205,19 @@
         "insight": 28
       },
       "statPoints": 0,
-      "sect": null,
-      "rank": null,
+      "sect": "tianjian",
+      "rank": "outer_disciple",
       "sectContribution": 0,
-      "job": "",
+      "job": "tianjian_disciple",
       "skills": {
-        "sword_qi_slash": 10
+        "sword_qi_slash": 1,
+        "whirl_sword": 1,
+        "light_body": 1
       },
-      "equip": {},
+      "equip": {
+        "weapon": "azure_steel_sword",
+        "robe": "robe_tianjian_1"
+      },
       "inventory": [
         {
           "item": "hp_pill_small",
@@ -227,13 +232,13 @@
           "q_bamboo",
           "q_snake",
           "q_breakthrough",
+          "q_fox",
+          "q_sect_tianjian",
           "q_elder_exam"
         ],
-        "active": [
-          "q_fox"
-        ]
+        "active": []
       },
-      "phase": 4,
+      "phase": 5,
       "flags": {
         "trialPending": "trial_foundation_altar",
         "trialRate": {
@@ -248,19 +253,26 @@
       "realmRewards": [
         "mortal"
       ],
+      "configOverrides": {
+        "sect_ranks": {
+          "enabled": true
+        }
+      },
       "skillGifted": {
-        "sword_qi_slash": 1
+        "sword_qi_slash": 1,
+        "whirl_sword": 1,
+        "light_body": 1
       },
       "skillPoints": {
-        "earned": 60,
-        "spent": 9,
-        "remaining": 51,
+        "earned": 61,
+        "spent": 0,
+        "remaining": 61,
         "byJob": {
           "job1": {
-            "tableBudget": 60,
-            "earned": 60,
-            "spent": 9,
-            "remaining": 51
+            "tableBudget": 61,
+            "earned": 61,
+            "spent": 0,
+            "remaining": 61
           },
           "job2": {
             "tableBudget": 0,
@@ -726,7 +738,7 @@
     },
     {
       "id": "alchemy_intro",
-      "description": "炼丹入门：初识丹道已完成，两张丹方及首炉材料可用，未预发丹炉。",
+      "description": "炼丹入门：已入天剑外门，三招赠送 Lv1；初识丹道已完成，两张丹方及首炉材料可用，未预发丹炉。",
       "map": "qingyun_village",
       "spawn": {
         "objectId": 1,
@@ -748,15 +760,18 @@
         "insight": 11
       },
       "statPoints": 0,
-      "sect": null,
-      "rank": null,
+      "sect": "tianjian",
+      "rank": "outer_disciple",
       "sectContribution": 0,
-      "job": "",
+      "job": "tianjian_disciple",
       "skills": {
-        "sword_qi_slash": 7
+        "sword_qi_slash": 1,
+        "whirl_sword": 1,
+        "light_body": 1
       },
       "equip": {
-        "weapon": "bamboo_sword"
+        "weapon": "azure_steel_sword",
+        "robe": "robe_tianjian_1"
       },
       "inventory": [
         {
@@ -789,17 +804,22 @@
           "q_bamboo",
           "q_snake",
           "q_breakthrough",
+          "q_fox",
+          "q_sect_tianjian",
           "q_alchemy_intro"
         ],
-        "active": [
-          "q_fox"
-        ]
+        "active": []
       },
-      "phase": 4,
+      "phase": 5,
       "flags": {},
       "realmRewards": [
         "mortal"
       ],
+      "configOverrides": {
+        "sect_ranks": {
+          "enabled": true
+        }
+      },
       "crafting": {
         "alchemyLevel": 1,
         "alchemyExp": 10,
@@ -809,18 +829,20 @@
         ]
       },
       "skillGifted": {
-        "sword_qi_slash": 1
+        "sword_qi_slash": 1,
+        "whirl_sword": 1,
+        "light_body": 1
       },
       "skillPoints": {
-        "earned": 9,
-        "spent": 6,
-        "remaining": 3,
+        "earned": 10,
+        "spent": 0,
+        "remaining": 10,
         "byJob": {
           "job1": {
-            "tableBudget": 9,
-            "earned": 9,
-            "spent": 6,
-            "remaining": 3
+            "tableBudget": 10,
+            "earned": 10,
+            "spent": 0,
+            "remaining": 10
           },
           "job2": {
             "tableBudget": 0,
@@ -839,7 +861,7 @@
     },
     {
       "id": "talisman_intro",
-      "description": "制符入门：暂用青云村，批2b 后改回灵符小阁；墨落成符已完成，未拜宗；预载纸墨与五张配方。",
+      "description": "制符入门：暂用青云村，批2b 后改回灵符小阁；已入天剑外门，三招赠送 Lv1，墨落成符已完成；预载纸墨与五张配方。",
       "map": "qingyun_village",
       "spawn": {
         "objectId": 1,
@@ -861,15 +883,18 @@
         "insight": 14
       },
       "statPoints": 0,
-      "sect": null,
-      "rank": null,
+      "sect": "tianjian",
+      "rank": "outer_disciple",
       "sectContribution": 0,
-      "job": "",
+      "job": "tianjian_disciple",
       "skills": {
-        "spirit_bolt": 1
+        "sword_qi_slash": 1,
+        "whirl_sword": 1,
+        "light_body": 1
       },
       "equip": {
-        "weapon": "bamboo_sword"
+        "weapon": "azure_steel_sword",
+        "robe": "robe_tianjian_1"
       },
       "inventory": [
         {
@@ -911,6 +936,7 @@
           "q_snake",
           "q_breakthrough",
           "q_fox",
+          "q_sect_tianjian",
           "q_talisman_intro"
         ],
         "active": []
@@ -920,6 +946,11 @@
       "realmRewards": [
         "mortal"
       ],
+      "configOverrides": {
+        "sect_ranks": {
+          "enabled": true
+        }
+      },
       "crafting": {
         "learnedRecipes": [
           "recipe_spirit_ink",
@@ -930,18 +961,20 @@
         ]
       },
       "skillGifted": {
-        "spirit_bolt": 1
+        "sword_qi_slash": 1,
+        "whirl_sword": 1,
+        "light_body": 1
       },
       "skillPoints": {
-        "earned": 18,
+        "earned": 19,
         "spent": 0,
-        "remaining": 18,
+        "remaining": 19,
         "byJob": {
           "job1": {
-            "tableBudget": 18,
-            "earned": 18,
+            "tableBudget": 19,
+            "earned": 19,
             "spent": 0,
-            "remaining": 18
+            "remaining": 19
           },
           "job2": {
             "tableBudget": 0,
