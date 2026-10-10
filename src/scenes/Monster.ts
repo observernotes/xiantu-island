@@ -67,7 +67,9 @@ interface Cd { readyAt: number; wall: number; game: number; ms: number; logged: 
  * useAttack / contact 读 behaviorOverrides[怪物 id]（只在这场试炼里生效）
  */
 export interface ObjectiveTarget {
-  x: number; y: number; halfW: number; hit: (m: Monster, dmg: number) => void; mul: number; def: number;
+  x: number; y: number; halfW: number;
+  /** 只传原始伤害（atk × 攻击/接触倍率）；承伤和减防统一由阵眼结算。 */
+  hit: (m: Monster, rawDamage: number) => void;
   climbVy: number;
   /** false = 不用自身 attack（不打玩家，也不用攻击打阵眼） */
   useAttack?: boolean;
@@ -250,7 +252,7 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
 
   /**
    * 试炼 AI：朝阵眼走（飞行的保持在 flyY 高度），到了攻击距离就按 attack 的 telegraphMs / cooldownMs 打阵眼，
-   * 伤害 = max(1, round(atk × damageRatio × monsterDamageMul − 阵眼 def))。地面怪的贴身玩家仍走原来的出手逻辑。
+   * 命中只提交 atk × damageRatio，由 AltarTrial.damageEye 统一结算承伤和减防。地面怪的贴身玩家仍走原来的出手逻辑。
    * 返回 true 表示本帧已处理。
    */
   private stepObjective(time: number, player: Phaser.Physics.Arcade.Sprite & { dead?: boolean }) {
@@ -260,7 +262,7 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
       if (this.objTeleEnd && time >= this.objTeleEnd) {
         this.objTeleEnd = 0; this.teleBlink?.stop(); this.teleBlink = undefined; this.clearTint();
         if (this.atlas) { this.anims.resume(); this.anims.nextFrame(); }
-        if (Math.abs(o.x - this.x) <= this.objReach + 8) o.hit(this, Math.max(1, Math.round(d.atk * (a?.damageRatio ?? 1) * o.mul - o.def)));
+        if (Math.abs(o.x - this.x) <= this.objReach + 8) o.hit(this, d.atk * (a?.damageRatio ?? 1));
       }
       if (flying) b.setVelocity(0, 0);
       return this.st === 'attack' && !this.teleEnd;   // 普通拍地前摇交回原逻辑
@@ -281,7 +283,7 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
       if (time >= this.attackReadyAt) {
         this.attackReadyAt = time + ((o.useAttack !== false && a?.cooldownMs) || CONTACT_CD_MS);
         const ratio = (d as { touchDamageMul?: number }).touchDamageMul ?? 1;
-        o.hit(this, Math.max(1, Math.round(d.atk * ratio * o.mul - o.def)));
+        o.hit(this, d.atk * ratio);
       }
       return true;
     }

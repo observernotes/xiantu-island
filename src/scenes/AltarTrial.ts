@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { MONSTERS, t, type TrialDef, type TrialWave, type TrialHazard } from '../data';
 import { hudText, INK, PAPER } from '../hud';
+import { objectiveDamage } from '../ObjectiveDamage';
 import type { Monster } from './Monster';
 import type { Zone } from './MapBuilder';
 
@@ -135,9 +136,9 @@ export class AltarTrial {
     const m = this.scene.spawnTrialMob(id, gate.x, gate.y);
     if (!m) return false;
     const ob = this.def.objective, ov = this.def.behaviorOverrides?.[id];
-    m.objective = { x: this.eye.x, y: this.eye.y, halfW: ob?.hitHalfWidth ?? EYE_HALF_W_FALLBACK, mul: ob?.monsterDamageMul ?? 1, def: ob?.def ?? 0,
+    m.objective = { x: this.eye.x, y: this.eye.y, halfW: ob?.hitHalfWidth ?? EYE_HALF_W_FALLBACK,
       climbVy: ob?.climbJumpVelocity ?? CLIMB_VY_FALLBACK, useAttack: ov?.useAttack, contact: ov?.objectiveHit === 'contact',
-      hit: (mm, dmg) => this.damageEye(dmg, mm.def.id) };
+      hit: (mm, rawDamage) => this.damageEye(rawDamage, mm.def.id) };
     if (def.flying) {
       m.body.setAllowGravity(false);
       const [lo, hi] = def.flyHeight ?? [96, 128];
@@ -150,8 +151,11 @@ export class AltarTrial {
   /** 每种怪打了阵眼几下（测试和调试用） */
   hitsBy: Record<string, number> = {};
 
-  damageEye(dmg: number, by = '?') {
-    if (this.ended) return;
+  /** 怪物或环境若命中阵眼，必须提交原始伤害到此入口；禁止在来源端先乘承伤/减防。 */
+  damageEye(rawDamage: number, by = '?') {
+    if (this.ended) return 0;
+    const dmg = objectiveDamage(rawDamage, this.def.objective!);
+    if (!dmg) return 0;
     this.hitsBy[by] = (this.hitsBy[by] ?? 0) + 1;
     // anims.json note：按受击前的气血选 hit；本次跌破 30% 时，播完再切 damaged。
     const hitKey = this.hp / this.maxHp < EYE_DAMAGED_RATIO && this.scene.anims.exists(`${EYE_KEY}_hit_damaged`)
@@ -160,6 +164,7 @@ export class AltarTrial {
     const sp = this.eyeSprite;
     if (sp && this.hp > 0 && this.scene.anims.exists(hitKey)) { this.eyeHitting = true; sp.play(hitKey); }
     this.scene.damageNumber(this.eye.x, this.eye.y - 60, dmg, '#ffffff', '#3b2a20');
+    return dmg;
   }
 
   private dropThunder(h: TrialHazard) {
@@ -195,6 +200,7 @@ export class AltarTrial {
         else this.scene.time.delayedCall(400, () => s.destroy());
       }
       this.scene.cameras.main.shake(80, 0.004);
+      // design/06 2.1：天雷引导玩家走位；trials.json 只配玩家最大气血倍率，不伤阵眼。
       const p = this.scene.player, pb = p.body as Phaser.Physics.Arcade.Body;
       if (!p.dead && Phaser.Math.Distance.Between(th.x, th.y, pb.center.x, pb.center.y) <= th.r + Math.min(pb.width, pb.height) / 2)
         this.scene.hurtPlayer(Math.max(1, Math.round(this.scene.prog.maxHp * th.ratio)), th.x, THUNDER_KNOCK);
