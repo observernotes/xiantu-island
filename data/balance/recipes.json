@@ -43,6 +43,22 @@
    "perBrew": "丹方等级 × 10（失败也给一半）",
    "toNext": "50 × 当前炼丹等级",
    "maxLevel": 30
+  },
+  "talisman": {
+   "minCompletion": 0.25,
+   "minRate": 0.05,
+   "maxRate": 0.98,
+   "lingfuSuccessBonus": 0.08,
+   "qualityMin": {
+    "low": 0.25,
+    "mid": 0.5,
+    "high": 0.75,
+    "supreme": 1.0
+   },
+   "qualityCap": {
+    "lingfu": "supreme",
+    "default": "high"
+   }
   }
  },
  "recipes": [
@@ -185,6 +201,151 @@
    "realm": "foundation",
    "price": 60000,
    "reqLevel": 50
+  },
+  {
+   "id": "recipe_spirit_ink",
+   "name": "研墨",
+   "type": "grinding",
+   "output": "spirit_ink",
+   "outputCount": 4,
+   "materials": [
+    {
+     "item": "snake_gall",
+     "count": 1
+    },
+    {
+     "item": "spirit_herb",
+     "count": 1
+    }
+   ],
+   "realm": "qi_refining",
+   "reqLevel": 15,
+   "phase": 5
+  },
+  {
+   "id": "recipe_talisman_fire",
+   "name": "火符",
+   "type": "talisman",
+   "output": "talisman_fire",
+   "outputCount": 1,
+   "baseRate": 0.9,
+   "materials": [
+    {
+     "item": "talisman_paper",
+     "count": 1
+    },
+    {
+     "item": "spirit_ink",
+     "count": 1
+    }
+   ],
+   "realm": "qi_refining",
+   "reqLevel": 15,
+   "phase": 5,
+   "draw": {
+    "strokes": [
+     "up",
+     "right",
+     "down",
+     "left"
+    ],
+    "stepTimeMs": 1600
+   }
+  },
+  {
+   "id": "recipe_talisman_guard",
+   "name": "护身符",
+   "type": "talisman",
+   "output": "talisman_guard",
+   "outputCount": 1,
+   "baseRate": 0.88,
+   "materials": [
+    {
+     "item": "talisman_paper",
+     "count": 1
+    },
+    {
+     "item": "spirit_ink",
+     "count": 2
+    }
+   ],
+   "realm": "qi_refining",
+   "reqLevel": 15,
+   "phase": 5,
+   "draw": {
+    "strokes": [
+     "up",
+     "left",
+     "right",
+     "down",
+     "up"
+    ],
+    "stepTimeMs": 1700
+   }
+  },
+  {
+   "id": "recipe_talisman_return",
+   "name": "遁地符",
+   "type": "talisman",
+   "output": "talisman_return",
+   "outputCount": 1,
+   "baseRate": 0.92,
+   "materials": [
+    {
+     "item": "talisman_paper",
+     "count": 1
+    },
+    {
+     "item": "spirit_ink",
+     "count": 1
+    }
+   ],
+   "realm": "qi_refining",
+   "reqLevel": 15,
+   "phase": 5,
+   "draw": {
+    "strokes": [
+     "down",
+     "left",
+     "down",
+     "right",
+     "up",
+     "up"
+    ],
+    "stepTimeMs": 1800
+   }
+  },
+  {
+   "id": "recipe_talisman_gather",
+   "name": "聚灵符",
+   "type": "talisman",
+   "output": "talisman_gather",
+   "outputCount": 1,
+   "baseRate": 0.85,
+   "materials": [
+    {
+     "item": "talisman_paper",
+     "count": 2
+    },
+    {
+     "item": "spirit_ink",
+     "count": 3
+    }
+   ],
+   "realm": "qi_refining",
+   "reqLevel": 15,
+   "phase": 5,
+   "draw": {
+    "strokes": [
+     "up",
+     "right",
+     "up",
+     "left",
+     "down",
+     "right"
+    ],
+    "stepTimeMs": 1800
+   }
   }
  ],
  "newItems": {

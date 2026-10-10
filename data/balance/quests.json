@@ -400,6 +400,7 @@
   "giver": "luoxia_mayor",
   "turnIn": "sect_master_ling",
   "reqLevel": 10,
+  "prereq": "q_main_01",
   "objectives": [
    {
     "type": "collect",
@@ -427,6 +428,7 @@
   "giver": "luoxia_mayor",
   "turnIn": "luoxia_mayor",
   "reqLevel": 12,
+  "prereq": "q_main_02",
   "objectives": [
    {
     "type": "kill",
@@ -446,7 +448,7 @@
   },
   "next": "q_main_04",
   "phase": 5,
-  "note": "主线第一卷第 3 章（见 design/04_区域与主线.md），修为和灵石奖励【演武堂】。v0.4 先登记，落霞镇做好后启用。"
+  "note": "主线第一卷第 3 章（见 design/04_区域与主线.md），v0.5 接续上山任务，清理郊野黑袍人。修为和灵石奖励【演武堂】。"
  },
  {
   "id": "q_main_04",
@@ -454,6 +456,7 @@
   "giver": "luoxia_mayor",
   "turnIn": "tree_spirit",
   "reqLevel": 20,
+  "prereq": "q_main_03",
   "objectives": [
    {
     "type": "kill",
@@ -485,6 +488,7 @@
   "giver": "hunter_lei",
   "turnIn": "hunter_lei",
   "reqLevel": 35,
+  "prereq": "q_main_04",
   "objectives": [
    {
     "type": "kill",

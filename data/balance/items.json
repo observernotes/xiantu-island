@@ -292,5 +292,181 @@
   "icon": "icon_shadow_token",
   "quest": true,
   "phase": 5
+ },
+ {
+  "id": "talisman_fire",
+  "name": "火符",
+  "desc": "向前投出火符，命中首个敌人造成伤害。",
+  "type": "consume",
+  "icon": "icon_talisman_fire",
+  "price": 12,
+  "stack": 100,
+  "reqLevel": 15,
+  "qualityEnabled": true,
+  "phase": 5,
+  "use": {
+   "consumeCount": 1,
+   "mpCost": 0,
+   "cooldownMs": 4000,
+   "cooldownGroup": "talisman_fire"
+  },
+  "effect": {
+   "type": "talisman_fire",
+   "element": "fire",
+   "projectileSpeed": 360,
+   "rangePx": 384,
+   "hitWidth": 24,
+   "hitHeight": 24,
+   "baseDamage": 36,
+   "byQuality": {
+    "low": {
+     "baseDamage": 36
+    },
+    "mid": {
+     "baseDamage": 46
+    },
+    "high": {
+     "baseDamage": 56
+    },
+    "supreme": {
+     "baseDamage": 68
+    }
+   }
+  }
+ },
+ {
+  "id": "talisman_guard",
+  "name": "护身符",
+  "desc": "短时降低所受战斗伤害。",
+  "type": "consume",
+  "icon": "icon_talisman_guard",
+  "price": 18,
+  "stack": 100,
+  "reqLevel": 15,
+  "qualityEnabled": true,
+  "phase": 5,
+  "use": {
+   "consumeCount": 1,
+   "mpCost": 0,
+   "cooldownMs": 20000,
+   "cooldownGroup": "talisman_guard"
+  },
+  "effect": {
+   "type": "talisman_guard",
+   "buffId": "buff_talisman_guard",
+   "durationMs": 12000,
+   "reductionCap": 0.5,
+   "damageReductionRatio": 0.15,
+   "byQuality": {
+    "low": {
+     "damageReductionRatio": 0.15
+    },
+    "mid": {
+     "damageReductionRatio": 0.22
+    },
+    "high": {
+     "damageReductionRatio": 0.28
+    },
+    "supreme": {
+     "damageReductionRatio": 0.35
+    }
+   }
+  }
+ },
+ {
+  "id": "talisman_return",
+  "name": "遁地符",
+  "desc": "读条后回最近村镇，移动、攻击或受伤会中断。",
+  "type": "consume",
+  "icon": "icon_talisman_return",
+  "price": 12,
+  "stack": 100,
+  "reqLevel": 15,
+  "qualityEnabled": true,
+  "phase": 5,
+  "use": {
+   "consumeCount": 1,
+   "mpCost": 0,
+   "cooldownMs": 30000,
+   "cooldownGroup": "talisman_return"
+  },
+  "effect": {
+   "type": "talisman_return",
+   "destination": "nearest_town",
+   "castMs": 4000,
+   "byQuality": {
+    "low": {
+     "castMs": 4000
+    },
+    "mid": {
+     "castMs": 3500
+    },
+    "high": {
+     "castMs": 3000
+    },
+    "supreme": {
+     "castMs": 2500
+    }
+   }
+  }
+ },
+ {
+  "id": "talisman_gather",
+  "name": "聚灵符",
+  "desc": "提高击杀修为，持续现实时间三十分钟。",
+  "type": "consume",
+  "icon": "icon_talisman_gather",
+  "price": 30,
+  "stack": 100,
+  "reqLevel": 15,
+  "qualityEnabled": true,
+  "phase": 5,
+  "use": {
+   "consumeCount": 1,
+   "mpCost": 0,
+   "cooldownMs": 60000,
+   "cooldownGroup": "talisman_gather"
+  },
+  "effect": {
+   "type": "talisman_gather",
+   "buffId": "buff_talisman_gather",
+   "durationMs": 1800000,
+   "sources": [
+    "kill"
+   ],
+   "expBonusRatio": 0.1,
+   "byQuality": {
+    "low": {
+     "expBonusRatio": 0.1
+    },
+    "mid": {
+     "expBonusRatio": 0.15
+    },
+    "high": {
+     "expBonusRatio": 0.2
+    },
+    "supreme": {
+     "expBonusRatio": 0.25
+    }
+   }
+  }
+ },
+ {
+  "id": "nine_leaf_ganoderma",
+  "name": "九叶灵芝",
+  "phase": 5,
+  "icon": "icon_nine_leaf_ganoderma"
+ },
+ {
+  "id": "spirit_copper",
+  "name": "灵铜",
+  "phase": 5,
+  "icon": "icon_spirit_copper"
+ },
+ {
+  "id": "refine_stone",
+  "name": "精炼石",
+  "phase": 5,
+  "icon": "icon_refine_stone"
  }
 ]

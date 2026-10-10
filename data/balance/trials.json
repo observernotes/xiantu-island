@@ -16,11 +16,11 @@
      {
       "monster": "heart_demon_imp",
       "side": "both",
-      "everyMs": 4200,
+      "everyMs": 5500,
       "perSide": 1
      }
     ],
-    "total": 12
+    "total": 8
    },
    {
     "fromMs": 20000,
@@ -29,45 +29,45 @@
      {
       "monster": "heart_demon_imp",
       "side": "both",
-      "everyMs": 5600,
+      "everyMs": 7500,
       "perSide": 1
      },
      {
       "monster": "heart_demon_wisp",
       "side": "alternate",
-      "everyMs": 5600,
+      "everyMs": 7500,
       "perSide": 1
      }
     ],
-    "total": 15
+    "total": 9
    },
    {
-    "fromMs": 40000,
+    "fromMs": 45000,
     "toMs": 55000,
     "spawns": [
      {
       "monster": "heart_demon_imp",
       "side": "both",
-      "everyMs": 3500,
+      "everyMs": 5000,
       "perSide": 1
      },
      {
       "monster": "heart_demon_wisp",
       "side": "both",
-      "everyMs": 7000,
+      "everyMs": 9000,
       "perSide": 1
      }
     ],
     "hazard": {
      "type": "thunder_circle",
-     "everyMs": 4000,
+     "everyMs": 5000,
      "count": 2,
      "radius": 64,
      "telegraphMs": 1200,
      "playerDamageRatioOfMaxHp": 0.15,
      "nearObjective": 320
     },
-    "total": 24
+    "total": 8
    },
    {
     "fromMs": 55000,
@@ -82,11 +82,11 @@
    "hp": 6000,
    "def": 0,
    "x": "center",
-   "monsterDamageMul": 0.6,
+   "monsterDamageMul": 0.45,
    "hitHalfWidth": 40,
    "climbJumpVelocity": 600
   },
-  "balanceNote": "演武堂 v0.1：29 级、自动加点、只有一转技能的剑修，正常打可让阵眼剩 40% 以上；完全不管阵眼约 30 秒破阵（怪打阵眼按 0.6 倍伤害算）。",
+  "balanceNote": "演武堂 v0.4.1 二次下调：线上带药主动清怪约 42～43 秒破阵（场上 21～24 只），站桩约 33 秒破阵。刷怪间隔再延长、第三波推迟至 45 秒，按波次起点立即刷且终点不刷估计 8/9/8 共 25 只（原 10/12/16 共 38 只）；怪打阵眼按 0.45 倍伤害算。目标：29 级、自动加点、只有一转技能的剑修带药主动清怪守满 60 秒，阵眼剩 30%～60%；待同构建实机复测。",
   "behaviorOverrides": {
    "heart_demon_wisp": {
     "useAttack": false,

@@ -54,6 +54,15 @@
    ],
    "frameRate": 8,
    "repeat": 0
+  },
+  {
+   "key": "prop_formation_eye_hit_damaged",
+   "frames": [
+    "prop_formation_eye_hit_damaged_01",
+    "prop_formation_eye_hit_damaged_02"
+   ],
+   "frameRate": 16,
+   "repeat": 0
   }
  ],
  "blend": "NORMAL",
@@ -62,6 +71,6 @@
   100
  ],
  "hpBarOffsetY": -112,
- "note": "阵眼（trials.json objective spirit_array_eye）。放在 objective 对象坐标（聚灵台台面中心，脚底=台面）。idle 循环（晶核浮动、符环旋转、光柱呼吸）；气血 <30% 换 damaged 循环（晶核裂纹、少两枚符、整体变暗）；受击播一次 hit（白闪+红裂光，16fps≈0.12s）再回 idle/damaged；破阵播 broken 一次并停在最后一帧。hitArea 是建议给怪物攻击/接触用的矩形（脚底居中），血条建议画在脚底 y−112。",
+ "note": "阵眼（trials.json objective spirit_array_eye）。放在 objective 对象坐标（聚灵台台面中心，脚底=台面）。idle 循环（晶核浮动、符环旋转、光柱呼吸）；气血 <30% 换 damaged 循环（晶核裂纹、少两枚符、整体变暗）；受击播一次 hit（白闪+红裂光，16fps≈0.12s）再回 idle/damaged；破阵播 broken 一次并停在最后一帧。hitArea 是建议给怪物攻击/接触用的矩形（脚底居中），血条建议画在脚底 y−112。【10-10 追加】阵眼处于 damaged 状态（气血 <30%）时挨打播 hit_damaged（底图同 damaged：灰晶核、裂纹透红、符环断开；只闪晶核和符环，石盘不变色），播完回 damaged；完好状态挨打仍播 hit，播完回 idle。hit_damaged 帧数 / 帧率 / repeat 同 hit。",
  "kind": "prop"
 }

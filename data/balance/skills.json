@@ -547,6 +547,625 @@
    "req": null,
    "fx": "fx_sword_intent",
    "icon": "icon_skill_sword_intent"
+  },
+  {
+   "id": "fire_talisman_bolt",
+   "name": "离火诀",
+   "sect": "taixu",
+   "job": 1,
+   "type": "active",
+   "maxLevel": 20,
+   "spCost": 1,
+   "masteryPerHit": 1,
+   "masteryToCap": 500,
+   "mpCost": 9,
+   "cooldownMs": 450,
+   "damageRatio": 1.8,
+   "hitCount": 1,
+   "maxTargets": 1,
+   "range": {
+    "w": 352,
+    "h": 48
+   },
+   "durationMs": 0,
+   "perLevel": {
+    "damageRatio": 0.056
+   },
+   "effects": {
+    "damageStat": "matk",
+    "element": "fire",
+    "splashRadius": 48,
+    "splashTargets": 2,
+    "splashDamageRatio": 0.2,
+    "splashExcludesPrimary": true,
+    "recoverMs": 450
+   },
+   "req": null,
+   "fx": "fx_fire_talisman_bolt",
+   "icon": "icon_skill_fire_talisman_bolt",
+   "key": "default:A"
+  },
+  {
+   "id": "thunder_palm",
+   "name": "掌心雷",
+   "sect": "taixu",
+   "job": 1,
+   "type": "active",
+   "maxLevel": 20,
+   "spCost": 1,
+   "masteryPerHit": 1,
+   "masteryToCap": 500,
+   "mpCost": 14,
+   "cooldownMs": 450,
+   "damageRatio": 1.35,
+   "hitCount": 1,
+   "maxTargets": 3,
+   "range": {
+    "w": 240,
+    "h": 160
+   },
+   "durationMs": 0,
+   "perLevel": {
+    "damageRatio": 0.063,
+    "maxTargets": 0.2
+   },
+   "effects": {
+    "damageStat": "matk",
+    "element": "thunder",
+    "paralyzeChance": 0.1,
+    "paralyzeMs": 600,
+    "recoverMs": 450
+   },
+   "req": {
+    "fire_talisman_bolt": 1
+   },
+   "fx": "fx_thunder_palm",
+   "icon": "icon_skill_thunder_palm"
+  },
+  {
+   "id": "water_mirror",
+   "name": "水镜术",
+   "sect": "taixu",
+   "job": 1,
+   "type": "buff",
+   "maxLevel": 10,
+   "spCost": 1,
+   "masteryPerHit": 0,
+   "masteryToCap": 0,
+   "mpCost": 18,
+   "cooldownMs": 30000,
+   "damageRatio": 0,
+   "hitCount": 0,
+   "maxTargets": 0,
+   "range": null,
+   "durationMs": 60000,
+   "perLevel": {
+    "damageToMpRatio": 0.02,
+    "durationMs": 6000
+   },
+   "effects": {
+    "damageToMpRatio": 0.3,
+    "mpPerAbsorbedDamage": 1,
+    "recoverMs": 200
+   },
+   "req": null,
+   "fx": "fx_water_mirror",
+   "icon": "icon_skill_water_mirror"
+  },
+  {
+   "id": "taixu_heart",
+   "name": "太虚心法·初",
+   "sect": "taixu",
+   "job": 1,
+   "type": "passive",
+   "maxLevel": 10,
+   "spCost": 1,
+   "masteryPerHit": 0,
+   "masteryToCap": 0,
+   "mpCost": 0,
+   "cooldownMs": 0,
+   "damageRatio": 0,
+   "hitCount": 0,
+   "maxTargets": 0,
+   "range": null,
+   "durationMs": 0,
+   "perLevel": {
+    "spirit": 1,
+    "mpRegenPer10s": 2
+   },
+   "effects": {},
+   "req": null,
+   "fx": "fx_taixu_heart",
+   "icon": "icon_skill_taixu_heart"
+  },
+  {
+   "id": "five_element_attune",
+   "name": "五行亲和",
+   "sect": "taixu",
+   "job": 1,
+   "type": "passive",
+   "maxLevel": 10,
+   "spCost": 1,
+   "masteryPerHit": 0,
+   "masteryToCap": 0,
+   "mpCost": 0,
+   "cooldownMs": 0,
+   "damageRatio": 0,
+   "hitCount": 0,
+   "maxTargets": 0,
+   "range": null,
+   "durationMs": 0,
+   "perLevel": {
+    "sameElementDamageBonus": 0.005
+   },
+   "effects": {},
+   "req": null,
+   "fx": "fx_five_element_attune",
+   "icon": "icon_skill_five_element_attune"
+  },
+  {
+   "id": "paper_talisman_throw",
+   "name": "飞符术",
+   "sect": "lingfu",
+   "job": 1,
+   "type": "active",
+   "maxLevel": 20,
+   "spCost": 1,
+   "masteryPerHit": 1,
+   "masteryToCap": 500,
+   "mpCost": 5,
+   "cooldownMs": 400,
+   "damageRatio": 1.45,
+   "hitCount": 1,
+   "maxTargets": 1,
+   "range": {
+    "w": 480,
+    "h": 40
+   },
+   "durationMs": 0,
+   "perLevel": {
+    "damageRatio": 0.058
+   },
+   "effects": {
+    "ammoItem": "talisman_paper",
+    "ammoCount": 1,
+    "recoverMs": 400,
+    "attackSpeedAffectsCooldown": true
+   },
+   "req": null,
+   "fx": "fx_paper_talisman_throw",
+   "icon": "icon_skill_paper_talisman_throw",
+   "key": "default:A"
+  },
+  {
+   "id": "scatter_talisman",
+   "name": "散符",
+   "sect": "lingfu",
+   "job": 1,
+   "type": "active",
+   "maxLevel": 20,
+   "spCost": 1,
+   "masteryPerHit": 1,
+   "masteryToCap": 500,
+   "mpCost": 9,
+   "cooldownMs": 300,
+   "damageRatio": 0.86,
+   "hitCount": 1,
+   "maxTargets": 3,
+   "range": {
+    "w": 400,
+    "h": 120
+   },
+   "durationMs": 0,
+   "perLevel": {
+    "damageRatio": 0.048,
+    "maxTargets": 0.2
+   },
+   "effects": {
+    "ammoItem": "talisman_paper",
+    "ammoCount": 3,
+    "projectileCount": 3,
+    "fanAngleDeg": 45,
+    "pierce": true,
+    "recoverMs": 300,
+    "attackSpeedAffectsCooldown": true
+   },
+   "req": {
+    "paper_talisman_throw": 1
+   },
+   "fx": "fx_scatter_talisman",
+   "icon": "icon_skill_scatter_talisman"
+  },
+  {
+   "id": "talisman_step",
+   "name": "疾行符",
+   "sect": "lingfu",
+   "job": 1,
+   "type": "buff",
+   "maxLevel": 10,
+   "spCost": 1,
+   "masteryPerHit": 0,
+   "masteryToCap": 0,
+   "mpCost": 12,
+   "cooldownMs": 0,
+   "damageRatio": 0,
+   "hitCount": 0,
+   "maxTargets": 0,
+   "range": null,
+   "durationMs": 60000,
+   "perLevel": {
+    "attackSpeedRatio": 0.002,
+    "speed": 2,
+    "durationMs": 6000
+   },
+   "effects": {
+    "attackSpeedRatio": 0.08,
+    "recoverMs": 200
+   },
+   "req": null,
+   "fx": "fx_talisman_step",
+   "icon": "icon_skill_talisman_step"
+  },
+  {
+   "id": "lingfu_heart",
+   "name": "灵符心法·初",
+   "sect": "lingfu",
+   "job": 1,
+   "type": "passive",
+   "maxLevel": 10,
+   "spCost": 1,
+   "masteryPerHit": 0,
+   "masteryToCap": 0,
+   "mpCost": 0,
+   "cooldownMs": 0,
+   "damageRatio": 0,
+   "hitCount": 0,
+   "maxTargets": 0,
+   "range": null,
+   "durationMs": 0,
+   "perLevel": {
+    "agility": 1,
+    "hit": 2
+   },
+   "effects": {},
+   "req": null,
+   "fx": "fx_lingfu_heart",
+   "icon": "icon_skill_lingfu_heart"
+  },
+  {
+   "id": "talisman_supply",
+   "name": "符箓精通",
+   "sect": "lingfu",
+   "job": 1,
+   "type": "passive",
+   "maxLevel": 10,
+   "spCost": 1,
+   "masteryPerHit": 0,
+   "masteryToCap": 0,
+   "mpCost": 0,
+   "cooldownMs": 0,
+   "damageRatio": 0,
+   "hitCount": 0,
+   "maxTargets": 0,
+   "range": null,
+   "durationMs": 0,
+   "perLevel": {
+    "ammoSaveChance": 0.05
+   },
+   "effects": {},
+   "req": null,
+   "fx": "fx_talisman_supply",
+   "icon": "icon_skill_talisman_supply"
+  },
+  {
+   "id": "shadow_dart",
+   "name": "袖里针",
+   "sect": "youying",
+   "job": 1,
+   "type": "active",
+   "maxLevel": 20,
+   "spCost": 1,
+   "masteryPerHit": 1,
+   "masteryToCap": 500,
+   "mpCost": 6,
+   "cooldownMs": 400,
+   "damageRatio": 0.85,
+   "hitCount": 2,
+   "maxTargets": 1,
+   "range": {
+    "w": 320,
+    "h": 40
+   },
+   "durationMs": 0,
+   "perLevel": {
+    "damageRatio": 0.027
+   },
+   "effects": {
+    "critDamage": 1.5,
+    "recoverMs": 400
+   },
+   "req": null,
+   "fx": "fx_shadow_dart",
+   "icon": "icon_skill_shadow_dart",
+   "key": "default:A"
+  },
+  {
+   "id": "shadow_step",
+   "name": "影遁",
+   "sect": "youying",
+   "job": 1,
+   "type": "active",
+   "maxLevel": 20,
+   "spCost": 1,
+   "masteryPerHit": 0,
+   "masteryToCap": 0,
+   "mpCost": 8,
+   "cooldownMs": 3000,
+   "damageRatio": 0,
+   "hitCount": 0,
+   "maxTargets": 0,
+   "range": null,
+   "durationMs": 0,
+   "perLevel": {
+    "dashDistance": 4
+   },
+   "effects": {
+    "dashDistance": 160,
+    "dashMs": 120,
+    "decoyDurationMs": 1200,
+    "decoyTauntCount": 1,
+    "recoverMs": 120
+   },
+   "req": null,
+   "fx": "fx_shadow_step",
+   "icon": "icon_skill_shadow_step"
+  },
+  {
+   "id": "phantom_cloak",
+   "name": "隐息术",
+   "sect": "youying",
+   "job": 1,
+   "type": "buff",
+   "maxLevel": 10,
+   "spCost": 1,
+   "masteryPerHit": 0,
+   "masteryToCap": 0,
+   "mpCost": 12,
+   "cooldownMs": 30000,
+   "damageRatio": 0,
+   "hitCount": 0,
+   "maxTargets": 0,
+   "range": null,
+   "durationMs": 4000,
+   "perLevel": {
+    "durationMs": 300
+   },
+   "effects": {
+    "invisible": true,
+    "dropAggro": true,
+    "nextCastCrit": true,
+    "critDamage": 1.5,
+    "recoverMs": 200
+   },
+   "req": null,
+   "fx": "fx_phantom_cloak",
+   "icon": "icon_skill_phantom_cloak"
+  },
+  {
+   "id": "youying_heart",
+   "name": "幽影心法·初",
+   "sect": "youying",
+   "job": 1,
+   "type": "passive",
+   "maxLevel": 10,
+   "spCost": 1,
+   "masteryPerHit": 0,
+   "masteryToCap": 0,
+   "mpCost": 0,
+   "cooldownMs": 0,
+   "damageRatio": 0,
+   "hitCount": 0,
+   "maxTargets": 0,
+   "range": null,
+   "durationMs": 0,
+   "perLevel": {
+    "critRate": 0.01,
+    "evade": 0.01
+   },
+   "effects": {},
+   "req": null,
+   "fx": "fx_youying_heart",
+   "icon": "icon_skill_youying_heart"
+  },
+  {
+   "id": "light_foot",
+   "name": "踏雪无痕",
+   "sect": "youying",
+   "job": 1,
+   "type": "passive",
+   "maxLevel": 10,
+   "spCost": 1,
+   "masteryPerHit": 0,
+   "masteryToCap": 0,
+   "mpCost": 0,
+   "cooldownMs": 0,
+   "damageRatio": 0,
+   "hitCount": 0,
+   "maxTargets": 0,
+   "range": null,
+   "durationMs": 0,
+   "perLevel": {
+    "doubleJumpDistanceRatio": 0.02
+   },
+   "effects": {
+    "extraAirJumps": 1
+   },
+   "req": null,
+   "fx": "fx_light_foot",
+   "icon": "icon_skill_light_foot"
+  },
+  {
+   "id": "summon_spirit_wolf",
+   "name": "唤灵狼",
+   "sect": "wanshou",
+   "job": 1,
+   "type": "active",
+   "maxLevel": 20,
+   "spCost": 1,
+   "masteryPerHit": 1,
+   "masteryToCap": 500,
+   "mpCost": 20,
+   "cooldownMs": 10000,
+   "damageRatio": 1.2,
+   "hitCount": 1,
+   "maxTargets": 1,
+   "range": {
+    "w": 96,
+    "h": 48
+   },
+   "durationMs": 20000,
+   "perLevel": {
+    "damageRatio": 0.032,
+    "durationMs": 1000
+   },
+   "effects": {
+    "summon": "spirit_wolf",
+    "attackIntervalMs": 500,
+    "summonCount": 1,
+    "secondaryWolfDamageRatio": 0.5,
+    "recoverMs": 200,
+    "hpRatioOfOwner": 0.6,
+    "defRatioOfOwner": 0.5,
+    "moveSpeed": 150,
+    "followDist": 96,
+    "leashDist": 320,
+    "aggroRange": 320,
+    "waitBelowRope": true,
+    "refreshOldest": true
+   },
+   "req": null,
+   "fx": "fx_summon_spirit_wolf",
+   "icon": "icon_skill_summon_spirit_wolf",
+   "key": "default:A"
+  },
+  {
+   "id": "beast_roar",
+   "name": "兽吼",
+   "sect": "wanshou",
+   "job": 1,
+   "type": "active",
+   "maxLevel": 20,
+   "spCost": 1,
+   "masteryPerHit": 1,
+   "masteryToCap": 500,
+   "mpCost": 10,
+   "cooldownMs": 10000,
+   "damageRatio": 0.25,
+   "hitCount": 1,
+   "maxTargets": 3,
+   "range": {
+    "w": 160,
+    "h": 96,
+    "behind": 160
+   },
+   "durationMs": 5000,
+   "perLevel": {
+    "damageRatio": 0.01,
+    "petAtkRatio": 0.005
+   },
+   "effects": {
+    "knockback": 160,
+    "petAtkRatio": 0.1,
+    "recoverMs": 200
+   },
+   "req": {
+    "summon_spirit_wolf": 1
+   },
+   "fx": "fx_beast_roar",
+   "icon": "icon_skill_beast_roar"
+  },
+  {
+   "id": "beast_bond",
+   "name": "灵契",
+   "sect": "wanshou",
+   "job": 1,
+   "type": "buff",
+   "maxLevel": 10,
+   "spCost": 1,
+   "masteryPerHit": 0,
+   "masteryToCap": 0,
+   "mpCost": 12,
+   "cooldownMs": 0,
+   "damageRatio": 0,
+   "hitCount": 0,
+   "maxTargets": 0,
+   "range": null,
+   "durationMs": 60000,
+   "perLevel": {
+    "petDamageShareRatio": 0.015,
+    "durationMs": 6000
+   },
+   "effects": {
+    "petDamageShareRatio": 0.15,
+    "recoverMs": 200
+   },
+   "req": null,
+   "fx": "fx_beast_bond",
+   "icon": "icon_skill_beast_bond"
+  },
+  {
+   "id": "wanshou_heart",
+   "name": "万兽心法·初",
+   "sect": "wanshou",
+   "job": 1,
+   "type": "passive",
+   "maxLevel": 10,
+   "spCost": 1,
+   "masteryPerHit": 0,
+   "masteryToCap": 0,
+   "mpCost": 0,
+   "cooldownMs": 0,
+   "damageRatio": 0,
+   "hitCount": 0,
+   "maxTargets": 0,
+   "range": null,
+   "durationMs": 0,
+   "perLevel": {
+    "rootBone": 1,
+    "petHpRatio": 0.05
+   },
+   "effects": {},
+   "req": null,
+   "fx": "fx_wanshou_heart",
+   "icon": "icon_skill_wanshou_heart"
+  },
+  {
+   "id": "beast_mastery",
+   "name": "驭兽精通",
+   "sect": "wanshou",
+   "job": 1,
+   "type": "passive",
+   "maxLevel": 10,
+   "spCost": 1,
+   "masteryPerHit": 0,
+   "masteryToCap": 0,
+   "mpCost": 0,
+   "cooldownMs": 0,
+   "damageRatio": 0,
+   "hitCount": 0,
+   "maxTargets": 0,
+   "range": null,
+   "durationMs": 0,
+   "perLevel": {
+    "extraSummonCount": 0.1,
+    "petDurationMs": 500
+   },
+   "effects": {
+    "maxSummons": 2
+   },
+   "req": null,
+   "fx": "fx_beast_mastery",
+   "icon": "icon_skill_beast_mastery"
   }
  ]
 }

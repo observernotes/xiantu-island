@@ -278,5 +278,23 @@
   ],
   "quests": [],
   "phase": 5
+ },
+ {
+  "id": "enc_wanderer",
+  "name": "季行舟",
+  "phase": 5,
+  "sprite": "npc_storage_keeper"
+ },
+ {
+  "id": "enc_sage",
+  "name": "槐下老者",
+  "phase": 5,
+  "sprite": "npc_doctor_sun"
+ },
+ {
+  "id": "enc_inner_voice",
+  "name": "心中低语",
+  "phase": 5,
+  "sprite": "player_sword_m"
  }
 ]

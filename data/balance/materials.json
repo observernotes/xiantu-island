@@ -161,5 +161,29 @@
   "stack": 200,
   "icon": "icon_protect_charm",
   "note": "强化失败不掉级，商城/活动产出"
+ },
+ {
+  "id": "talisman_paper",
+  "name": "符纸",
+  "type": "material",
+  "kind": "talisman",
+  "desc": "制符用纸，也供灵符派施术。",
+  "icon": "icon_talisman_paper",
+  "price": 4,
+  "stack": 200,
+  "qualityEnabled": false,
+  "phase": 5
+ },
+ {
+  "id": "spirit_ink",
+  "name": "灵墨",
+  "type": "material",
+  "kind": "talisman",
+  "desc": "妖兽材料与灵草研成的符墨。",
+  "icon": "icon_spirit_ink",
+  "price": 6,
+  "stack": 200,
+  "qualityEnabled": false,
+  "phase": 5
  }
 ]

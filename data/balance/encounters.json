@@ -1,0 +1,985 @@
+{
+  "rules": {
+    "pacingRef": "solo_pacing.encounter",
+    "cooldownClock": "real_time"
+  },
+  "encounters": [
+    {
+      "id": "enc_stranded_cultivator",
+      "name": "灵溪援手",
+      "nameKey": "enc.stranded_cultivator.name",
+      "phase": 5,
+      "enabled": false,
+      "maps": [
+        "lingxi_path"
+      ],
+      "trigger": {
+        "type": "map_enter",
+        "chanceRef": "baseChancePerMapEnter",
+        "timeSlots": [
+          "any"
+        ],
+        "anchor": "enc_stranded_cultivator_anchor",
+        "reveal": "visible"
+      },
+      "weight": null,
+      "cooldownMs": null,
+      "once": false,
+      "req": {
+        "levelMin": null,
+        "questsDone": [
+          "q_fox"
+        ],
+        "featuresAll": [
+          "moral_state"
+        ],
+        "sectJoined": true
+      },
+      "script": {
+        "start": "offer",
+        "steps": [
+          {
+            "id": "offer",
+            "type": "dialog",
+            "speaker": "enc_wanderer",
+            "textKeys": [
+              "enc.stranded_cultivator.offer"
+            ],
+            "next": "decide",
+            "repeatTextKeys": [
+              "enc.stranded_cultivator.offer_repeat"
+            ]
+          },
+          {
+            "id": "decide",
+            "type": "choice",
+            "choiceIds": [
+              "fight",
+              "medicine",
+              "leave"
+            ]
+          },
+          {
+            "id": "fight_start",
+            "type": "dialog",
+            "speaker": "enc_wanderer",
+            "textKeys": [
+              "enc.stranded_cultivator.fight_start"
+            ],
+            "next": "battle"
+          },
+          {
+            "id": "battle",
+            "type": "battle",
+            "spawns": [
+              {
+                "monster": "mountain_mandrill",
+                "count": null
+              }
+            ],
+            "warningMs": null,
+            "respawnMs": 0,
+            "grantRewards": false,
+            "objectiveKey": "enc.stranded_cultivator.objective",
+            "onWin": "thank",
+            "onFail": "end_fail"
+          },
+          {
+            "id": "thank",
+            "type": "interact",
+            "target": "enc_wanderer",
+            "promptKey": "enc.ui.found",
+            "next": "end_rescue"
+          },
+          {
+            "id": "end_rescue",
+            "type": "finish",
+            "outcomeId": "rescued"
+          },
+          {
+            "id": "end_medicine",
+            "type": "finish",
+            "outcomeId": "aided"
+          },
+          {
+            "id": "end_fail",
+            "type": "finish",
+            "outcomeId": "failed"
+          },
+          {
+            "id": "end_leave",
+            "type": "finish",
+            "outcomeId": "missed"
+          }
+        ]
+      },
+      "choices": [
+        {
+          "id": "fight",
+          "textKey": "enc.stranded_cultivator.choice_fight",
+          "next": "fight_start"
+        },
+        {
+          "id": "medicine",
+          "textKey": "enc.stranded_cultivator.choice_medicine",
+          "next": "end_medicine",
+          "req": {
+            "items": [
+              {
+                "item": "hp_pill_small",
+                "count": null
+              }
+            ]
+          },
+          "cost": {
+            "items": [
+              {
+                "item": "hp_pill_small",
+                "count": null
+              }
+            ]
+          }
+        },
+        {
+          "id": "leave",
+          "textKey": "enc.stranded_cultivator.choice_leave",
+          "next": "end_leave"
+        }
+      ],
+      "outcomes": [
+        {
+          "id": "rescued",
+          "status": "resolved",
+          "textKeys": [
+            "enc.stranded_cultivator.rescued"
+          ],
+          "rewards": {
+            "exp": null,
+            "spiritStone": null,
+            "items": []
+          },
+          "hooks": {
+            "oncePerEncounter": true,
+            "karma": [
+              {
+                "flag": "enc_wanderer_rescued",
+                "value": true
+              }
+            ],
+            "affinity": [
+              {
+                "npc": "enc_wanderer",
+                "delta": null
+              }
+            ],
+            "moralityDelta": null
+          }
+        },
+        {
+          "id": "aided",
+          "status": "resolved",
+          "textKeys": [
+            "enc.stranded_cultivator.aided"
+          ],
+          "rewards": {
+            "exp": null
+          },
+          "hooks": {
+            "oncePerEncounter": true,
+            "karma": [
+              {
+                "flag": "enc_wanderer_aided",
+                "value": true
+              }
+            ],
+            "affinity": [
+              {
+                "npc": "enc_wanderer",
+                "delta": null
+              }
+            ],
+            "moralityDelta": null
+          }
+        },
+        {
+          "id": "failed",
+          "status": "failed",
+          "textKeys": [
+            "enc.stranded_cultivator.failed"
+          ],
+          "rewards": {},
+          "hooks": {}
+        },
+        {
+          "id": "missed",
+          "status": "missed",
+          "textKeys": [
+            "enc.stranded_cultivator.missed"
+          ],
+          "rewards": {},
+          "hooks": {}
+        }
+      ],
+      "balanceTodo": [
+        "weight",
+        "cooldownMs",
+        "req.levelMin",
+        "script.steps[3].spawns[0].count",
+        "script.steps[3].warningMs",
+        "choices[1].req.items[0].count",
+        "choices[1].cost.items[0].count",
+        "outcomes[0].rewards.exp",
+        "outcomes[0].rewards.spiritStone",
+        "outcomes[0].hooks.affinity[0].delta",
+        "outcomes[0].hooks.moralityDelta",
+        "outcomes[1].rewards.exp",
+        "outcomes[1].hooks.affinity[0].delta",
+        "outcomes[1].hooks.moralityDelta"
+      ]
+    },
+    {
+      "id": "enc_fragrant_herb",
+      "name": "林隙留香",
+      "nameKey": "enc.fragrant_herb.name",
+      "phase": 5,
+      "enabled": false,
+      "maps": [
+        "wanyao_outer_2"
+      ],
+      "trigger": {
+        "type": "map_enter",
+        "chanceRef": "baseChancePerMapEnter",
+        "timeSlots": [
+          "any"
+        ],
+        "anchor": "enc_fragrant_herb_anchor",
+        "reveal": "visible"
+      },
+      "weight": null,
+      "cooldownMs": null,
+      "once": true,
+      "req": {
+        "levelMin": null,
+        "questsDone": [
+          "q_main_04"
+        ],
+        "featuresAll": [
+          "moral_state"
+        ]
+      },
+      "script": {
+        "start": "offer",
+        "steps": [
+          {
+            "id": "offer",
+            "type": "dialog",
+            "speaker": "system",
+            "textKeys": [
+              "enc.fragrant_herb.offer"
+            ],
+            "next": "sign"
+          },
+          {
+            "id": "sign",
+            "type": "dialog",
+            "speaker": "system",
+            "textKeys": [
+              "enc.fragrant_herb.sign"
+            ],
+            "next": "decide",
+            "speakerKey": "enc.actor.sign"
+          },
+          {
+            "id": "decide",
+            "type": "choice",
+            "choiceIds": [
+              "guard",
+              "leave"
+            ]
+          },
+          {
+            "id": "battle",
+            "type": "battle",
+            "spawns": [
+              {
+                "monster": "vine_imp",
+                "count": null
+              }
+            ],
+            "warningMs": null,
+            "respawnMs": 0,
+            "grantRewards": false,
+            "objectiveKey": "enc.fragrant_herb.objective",
+            "onWin": "harvest",
+            "onFail": "end_fail"
+          },
+          {
+            "id": "harvest",
+            "type": "interact",
+            "target": "enc_fragrant_herb_anchor",
+            "promptKey": "enc.ui.found",
+            "next": "pick"
+          },
+          {
+            "id": "pick",
+            "type": "choice",
+            "choiceIds": [
+              "leaf",
+              "root",
+              "leave"
+            ]
+          },
+          {
+            "id": "end_leaf",
+            "type": "finish",
+            "outcomeId": "preserved"
+          },
+          {
+            "id": "end_root",
+            "type": "finish",
+            "outcomeId": "uprooted"
+          },
+          {
+            "id": "end_fail",
+            "type": "finish",
+            "outcomeId": "failed"
+          },
+          {
+            "id": "end_leave",
+            "type": "finish",
+            "outcomeId": "missed"
+          }
+        ]
+      },
+      "choices": [
+        {
+          "id": "guard",
+          "textKey": "enc.fragrant_herb.choice_guard",
+          "next": "battle"
+        },
+        {
+          "id": "leaf",
+          "textKey": "enc.fragrant_herb.choice_leaf",
+          "next": "end_leaf"
+        },
+        {
+          "id": "root",
+          "textKey": "enc.fragrant_herb.choice_root",
+          "next": "end_root"
+        },
+        {
+          "id": "leave",
+          "textKey": "enc.fragrant_herb.choice_leave",
+          "next": "end_leave"
+        }
+      ],
+      "outcomes": [
+        {
+          "id": "preserved",
+          "status": "resolved",
+          "textKeys": [
+            "enc.fragrant_herb.leaf_done"
+          ],
+          "rewards": {
+            "exp": null,
+            "items": [
+              {
+                "item": "nine_leaf_ganoderma",
+                "count": null
+              }
+            ]
+          },
+          "hooks": {
+            "oncePerEncounter": true,
+            "karma": [
+              {
+                "flag": "enc_herb_preserved",
+                "value": true
+              }
+            ],
+            "moralityDelta": null
+          }
+        },
+        {
+          "id": "uprooted",
+          "status": "resolved",
+          "textKeys": [
+            "enc.fragrant_herb.root_done"
+          ],
+          "rewards": {
+            "items": [
+              {
+                "item": "nine_leaf_ganoderma",
+                "count": null
+              }
+            ]
+          },
+          "hooks": {
+            "oncePerEncounter": true,
+            "karma": [
+              {
+                "flag": "enc_herb_uprooted",
+                "value": true
+              }
+            ],
+            "moralityDelta": null
+          }
+        },
+        {
+          "id": "failed",
+          "status": "failed",
+          "textKeys": [
+            "enc.fragrant_herb.failed"
+          ],
+          "rewards": {},
+          "hooks": {}
+        },
+        {
+          "id": "missed",
+          "status": "missed",
+          "textKeys": [
+            "enc.fragrant_herb.missed"
+          ],
+          "rewards": {},
+          "hooks": {}
+        }
+      ],
+      "balanceTodo": [
+        "weight",
+        "cooldownMs",
+        "req.levelMin",
+        "script.steps[3].spawns[0].count",
+        "script.steps[3].warningMs",
+        "outcomes[0].rewards.exp",
+        "outcomes[0].rewards.items[0].count",
+        "outcomes[0].hooks.moralityDelta",
+        "outcomes[1].rewards.items[0].count",
+        "outcomes[1].hooks.moralityDelta"
+      ]
+    },
+    {
+      "id": "enc_hidden_abode",
+      "name": "石隙旧居",
+      "nameKey": "enc.hidden_abode.name",
+      "phase": 5,
+      "enabled": false,
+      "maps": [
+        "wanyao_outer_1"
+      ],
+      "trigger": {
+        "type": "map_enter",
+        "chanceRef": "baseChancePerMapEnter",
+        "timeSlots": [
+          "any"
+        ],
+        "anchor": "enc_hidden_abode_anchor",
+        "reveal": "spirit_scan",
+        "reqSpirit": null
+      },
+      "weight": null,
+      "cooldownMs": null,
+      "once": true,
+      "req": {
+        "levelMin": null,
+        "questsDone": [
+          "q_main_04"
+        ],
+        "featuresAll": [
+          "moral_state",
+          "spirit_scan"
+        ],
+        "realmMin": "foundation"
+      },
+      "script": {
+        "start": "revealed",
+        "steps": [
+          {
+            "id": "revealed",
+            "type": "dialog",
+            "speaker": "system",
+            "textKeys": [
+              "enc.hidden_abode.revealed"
+            ],
+            "next": "decide"
+          },
+          {
+            "id": "decide",
+            "type": "choice",
+            "choiceIds": [
+              "enter",
+              "leave"
+            ]
+          },
+          {
+            "id": "enter_room",
+            "type": "scene",
+            "map": "enc_hidden_abode_room",
+            "returnAnchor": "enc_hidden_abode_anchor",
+            "next": "inscription"
+          },
+          {
+            "id": "inscription",
+            "type": "dialog",
+            "speaker": "system",
+            "textKeys": [
+              "enc.hidden_abode.inscription"
+            ],
+            "next": "puzzle",
+            "speakerKey": "enc.actor.inscription"
+          },
+          {
+            "id": "puzzle",
+            "type": "puzzle",
+            "objects": [
+              "enc_seal_earth",
+              "enc_seal_water",
+              "enc_seal_wood"
+            ],
+            "sequence": [
+              "enc_seal_earth",
+              "enc_seal_water",
+              "enc_seal_wood"
+            ],
+            "objectNameKeys": {
+              "enc_seal_earth": "enc.hidden_abode.seal_earth",
+              "enc_seal_water": "enc.hidden_abode.seal_water",
+              "enc_seal_wood": "enc.hidden_abode.seal_wood"
+            },
+            "objectiveKey": "enc.hidden_abode.objective",
+            "onWin": "open_chest",
+            "onFail": "end_fail"
+          },
+          {
+            "id": "open_chest",
+            "type": "interact",
+            "target": "enc_hidden_abode_chest",
+            "promptKey": "enc.ui.found",
+            "next": "chest"
+          },
+          {
+            "id": "chest",
+            "type": "dialog",
+            "speaker": "system",
+            "textKeys": [
+              "enc.hidden_abode.chest"
+            ],
+            "next": "claim",
+            "speakerKey": "enc.actor.note"
+          },
+          {
+            "id": "claim",
+            "type": "choice",
+            "choiceIds": [
+              "take",
+              "seal"
+            ]
+          },
+          {
+            "id": "end_take",
+            "type": "finish",
+            "outcomeId": "taken"
+          },
+          {
+            "id": "end_seal",
+            "type": "finish",
+            "outcomeId": "sealed"
+          },
+          {
+            "id": "end_fail",
+            "type": "finish",
+            "outcomeId": "failed"
+          },
+          {
+            "id": "end_leave",
+            "type": "finish",
+            "outcomeId": "missed"
+          }
+        ]
+      },
+      "choices": [
+        {
+          "id": "enter",
+          "textKey": "enc.hidden_abode.choice_enter",
+          "next": "enter_room"
+        },
+        {
+          "id": "take",
+          "textKey": "enc.hidden_abode.choice_take",
+          "next": "end_take"
+        },
+        {
+          "id": "seal",
+          "textKey": "enc.hidden_abode.choice_seal",
+          "next": "end_seal"
+        },
+        {
+          "id": "leave",
+          "textKey": "enc.hidden_abode.choice_leave",
+          "next": "end_leave"
+        }
+      ],
+      "outcomes": [
+        {
+          "id": "taken",
+          "status": "resolved",
+          "textKeys": [
+            "enc.hidden_abode.taken"
+          ],
+          "rewards": {
+            "items": [
+              {
+                "item": "spirit_copper",
+                "count": null
+              },
+              {
+                "item": "refine_stone",
+                "count": null
+              }
+            ]
+          },
+          "hooks": {
+            "oncePerEncounter": true,
+            "karma": [
+              {
+                "flag": "enc_abode_taken",
+                "value": true
+              }
+            ]
+          }
+        },
+        {
+          "id": "sealed",
+          "status": "resolved",
+          "textKeys": [
+            "enc.hidden_abode.sealed"
+          ],
+          "rewards": {},
+          "hooks": {
+            "oncePerEncounter": true,
+            "karma": [
+              {
+                "flag": "enc_abode_sealed",
+                "value": true
+              }
+            ],
+            "daoHeartDelta": null
+          }
+        },
+        {
+          "id": "failed",
+          "status": "failed",
+          "textKeys": [
+            "enc.hidden_abode.failed"
+          ],
+          "rewards": {},
+          "hooks": {}
+        },
+        {
+          "id": "missed",
+          "status": "missed",
+          "textKeys": [
+            "enc.hidden_abode.missed"
+          ],
+          "rewards": {},
+          "hooks": {}
+        }
+      ],
+      "balanceTodo": [
+        "trigger.reqSpirit",
+        "weight",
+        "cooldownMs",
+        "req.levelMin",
+        "outcomes[0].rewards.items[0].count",
+        "outcomes[0].rewards.items[1].count",
+        "outcomes[1].hooks.daoHeartDelta"
+      ]
+    },
+    {
+      "id": "enc_sage_advice",
+      "name": "槐下问道",
+      "nameKey": "enc.sage_advice.name",
+      "phase": 5,
+      "enabled": false,
+      "maps": [
+        "qingyun_village"
+      ],
+      "trigger": {
+        "type": "meditation_tick",
+        "chanceRef": "sageAdviceChancePerMeditationMin",
+        "timeSlots": [
+          "any"
+        ],
+        "anchor": "enc_sage_advice_anchor",
+        "reveal": "visible",
+        "intervalMs": null
+      },
+      "weight": null,
+      "cooldownMs": null,
+      "once": true,
+      "req": {
+        "levelMin": null,
+        "questsDone": [
+          "q_fox"
+        ],
+        "featuresAll": [
+          "meditation",
+          "insight_reward"
+        ],
+        "sectJoined": true
+      },
+      "script": {
+        "start": "offer",
+        "steps": [
+          {
+            "id": "offer",
+            "type": "dialog",
+            "speaker": "enc_sage",
+            "textKeys": [
+              "enc.sage_advice.offer",
+              "enc.sage_advice.teach",
+              "enc.sage_advice.question"
+            ],
+            "next": "decide"
+          },
+          {
+            "id": "decide",
+            "type": "choice",
+            "choiceIds": [
+              "steady",
+              "power",
+              "leave"
+            ]
+          },
+          {
+            "id": "end_steady",
+            "type": "finish",
+            "outcomeId": "enlightened"
+          },
+          {
+            "id": "end_power",
+            "type": "finish",
+            "outcomeId": "failed"
+          },
+          {
+            "id": "end_leave",
+            "type": "finish",
+            "outcomeId": "missed"
+          }
+        ]
+      },
+      "choices": [
+        {
+          "id": "steady",
+          "textKey": "enc.sage_advice.choice_steady",
+          "next": "end_steady"
+        },
+        {
+          "id": "power",
+          "textKey": "enc.sage_advice.choice_power",
+          "next": "end_power"
+        },
+        {
+          "id": "leave",
+          "textKey": "enc.sage_advice.choice_leave",
+          "next": "end_leave"
+        }
+      ],
+      "outcomes": [
+        {
+          "id": "enlightened",
+          "status": "resolved",
+          "textKeys": [
+            "enc.sage_advice.correct"
+          ],
+          "rewards": {
+            "insight": null
+          },
+          "hooks": {
+            "oncePerEncounter": true,
+            "karma": [
+              {
+                "flag": "enc_sage_enlightened",
+                "value": true
+              }
+            ]
+          }
+        },
+        {
+          "id": "failed",
+          "status": "failed",
+          "textKeys": [
+            "enc.sage_advice.wrong"
+          ],
+          "rewards": {},
+          "hooks": {}
+        },
+        {
+          "id": "missed",
+          "status": "missed",
+          "textKeys": [
+            "enc.sage_advice.missed"
+          ],
+          "rewards": {},
+          "hooks": {}
+        }
+      ],
+      "balanceTodo": [
+        "trigger.intervalMs",
+        "weight",
+        "cooldownMs",
+        "req.levelMin",
+        "outcomes[0].rewards.insight"
+      ]
+    },
+    {
+      "id": "enc_demon_whisper",
+      "name": "灯背低语",
+      "nameKey": "enc.demon_whisper.name",
+      "phase": 5,
+      "enabled": false,
+      "maps": [
+        "luoxia_town"
+      ],
+      "trigger": {
+        "type": "map_enter",
+        "chanceRef": "baseChancePerMapEnter",
+        "timeSlots": [
+          "any"
+        ],
+        "anchor": "enc_demon_whisper_anchor",
+        "reveal": "visible"
+      },
+      "weight": null,
+      "cooldownMs": null,
+      "once": true,
+      "req": {
+        "levelMin": null,
+        "questsDone": [
+          "q_main_01"
+        ],
+        "featuresAll": [
+          "moral_state"
+        ],
+        "sectJoined": true,
+        "daoHeartMax": null
+      },
+      "script": {
+        "start": "offer",
+        "steps": [
+          {
+            "id": "offer",
+            "type": "dialog",
+            "speaker": "enc_inner_voice",
+            "textKeys": [
+              "enc.demon_whisper.offer",
+              "enc.demon_whisper.cost"
+            ],
+            "next": "decide"
+          },
+          {
+            "id": "decide",
+            "type": "choice",
+            "choiceIds": [
+              "accept",
+              "refuse",
+              "leave"
+            ]
+          },
+          {
+            "id": "end_accept",
+            "type": "finish",
+            "outcomeId": "accepted"
+          },
+          {
+            "id": "end_refuse",
+            "type": "finish",
+            "outcomeId": "refused"
+          },
+          {
+            "id": "end_leave",
+            "type": "finish",
+            "outcomeId": "missed"
+          }
+        ]
+      },
+      "choices": [
+        {
+          "id": "accept",
+          "textKey": "enc.demon_whisper.choice_accept",
+          "next": "end_accept"
+        },
+        {
+          "id": "refuse",
+          "textKey": "enc.demon_whisper.choice_refuse",
+          "next": "end_refuse"
+        },
+        {
+          "id": "leave",
+          "textKey": "enc.demon_whisper.choice_leave",
+          "next": "end_leave"
+        }
+      ],
+      "outcomes": [
+        {
+          "id": "accepted",
+          "status": "resolved",
+          "textKeys": [
+            "enc.demon_whisper.accepted"
+          ],
+          "rewards": {
+            "exp": null,
+            "items": []
+          },
+          "hooks": {
+            "oncePerEncounter": true,
+            "karma": [
+              {
+                "flag": "enc_whisper_accepted",
+                "value": true
+              }
+            ],
+            "daoHeartDelta": null,
+            "moralityDelta": null
+          }
+        },
+        {
+          "id": "refused",
+          "status": "resolved",
+          "textKeys": [
+            "enc.demon_whisper.refused"
+          ],
+          "rewards": {},
+          "hooks": {
+            "oncePerEncounter": true,
+            "karma": [
+              {
+                "flag": "enc_whisper_refused",
+                "value": true
+              }
+            ],
+            "daoHeartDelta": null
+          }
+        },
+        {
+          "id": "missed",
+          "status": "missed",
+          "textKeys": [
+            "enc.demon_whisper.missed"
+          ],
+          "rewards": {},
+          "hooks": {}
+        }
+      ],
+      "balanceTodo": [
+        "weight",
+        "cooldownMs",
+        "req.levelMin",
+        "req.daoHeartMax",
+        "outcomes[0].rewards.exp",
+        "outcomes[0].hooks.daoHeartDelta",
+        "outcomes[0].hooks.moralityDelta",
+        "outcomes[1].hooks.daoHeartDelta"
+      ]
+    }
+  ]
+}

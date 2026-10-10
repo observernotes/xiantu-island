@@ -305,5 +305,64 @@
   "base": 25,
   "chars": "0123456789+升级（另含空格）",
   "note": "BMFont；数字连描边总高 22px，对齐 GameScene.damageNumber 的 24px Arial Black + 描边 4"
+ },
+ "ui_hud_dialog_option_selected": {
+  "size": [
+   64,
+   28
+  ],
+  "nineSlice": {
+   "left": 6,
+   "right": 6,
+   "top": 6,
+   "bottom": 6
+  },
+  "text": {
+   "size": 14,
+   "color": "#3B2A20",
+   "x": 12,
+   "centerY": 14
+  },
+  "cursor": "ui_hud_cursor",
+  "position": "金 ▶ 光标放按钮左侧：x=btn.x-14，y=btn 中心（同 ui_hud_cursor 记录）",
+  "note": "对话选项·选中：宣纸底 + 1px 朱红框（内衬淡朱红），配金 ▶ 光标｜2026-10-10 独立图，替代借用的炼丹按钮（ui_hud_dialog_option 原记录保留不动）"
+ },
+ "ui_hud_dialog_option_normal": {
+  "size": [
+   64,
+   28
+  ],
+  "nineSlice": {
+   "left": 6,
+   "right": 6,
+   "top": 6,
+   "bottom": 6
+  },
+  "text": {
+   "size": 14,
+   "color": "#3B2A20",
+   "x": 12,
+   "centerY": 14
+  },
+  "note": "对话选项·未选：宣纸底 + 1px 墨褐框｜2026-10-10 独立图，替代借用的炼丹按钮（ui_hud_dialog_option 原记录保留不动）"
+ },
+ "ui_hud_dialog_option_disabled": {
+  "size": [
+   64,
+   28
+  ],
+  "nineSlice": {
+   "left": 6,
+   "right": 6,
+   "top": 6,
+   "bottom": 6
+  },
+  "text": {
+   "size": 14,
+   "color": "#8E867C",
+   "x": 12,
+   "centerY": 14
+  },
+  "note": "对话选项·不可用：灰底 + 1px 灰框，灰字，不响应｜2026-10-10 独立图，替代借用的炼丹按钮（ui_hud_dialog_option 原记录保留不动）"
  }
 }
