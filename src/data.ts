@@ -88,6 +88,8 @@ export const ALCHEMY_RULES = recipesRaw.rules;
 export const GROWTH = growth as any;
 export const EXP_TO_NEXT = (expCurve as any).expToNext as Record<string, number>;
 export const MAX_LEVEL = (expCurve as any).maxLevel as number;
+// 批 2b 四宗山门尚未正式接入：不注册；data/maps 的 phaseMin=6 保持本阶段不可达。
+// 正式接入时同时核准注册、区域/航线与 phaseMin，再纳入地图冒烟。
 export const TILED_MAPS: Record<string, any> = {
   qingyun_village: qingyun, bamboo_forest: bamboo, lingxi_path: lingxi,
   luoxia_outskirts_1: luoxia1, luoxia_outskirts_2: luoxia2, luoxia_town: luoxiaTown,
