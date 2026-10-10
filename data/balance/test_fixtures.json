@@ -839,13 +839,13 @@
     },
     {
       "id": "talisman_intro",
-      "description": "制符入门：灵符小阁、墨落成符已完成，未拜宗；预载纸墨与五张配方。",
-      "map": "lingfu_pavilion",
+      "description": "制符入门：暂用青云村，批2b 后改回灵符小阁；墨落成符已完成，未拜宗；预载纸墨与五张配方。",
+      "map": "qingyun_village",
       "spawn": {
-        "objectId": 4,
+        "objectId": 1,
         "name": "playerStart",
-        "x": 224,
-        "y": 512
+        "x": 176,
+        "y": 704
       },
       "level": 15,
       "realm": {

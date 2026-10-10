@@ -2,22 +2,22 @@
  "frames": {
   "player_sword_m_idle_01": {
    "frame": {
-    "x": 0,
-    "y": 0,
-    "w": 96,
-    "h": 96
+    "x": 4,
+    "y": 4,
+    "w": 192,
+    "h": 192
    },
    "rotated": false,
    "trimmed": false,
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "sourceSize": {
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "pivot": {
     "x": 0.5,
@@ -26,22 +26,22 @@
   },
   "player_sword_m_idle_02": {
    "frame": {
-    "x": 96,
-    "y": 0,
-    "w": 96,
-    "h": 96
+    "x": 200,
+    "y": 4,
+    "w": 192,
+    "h": 192
    },
    "rotated": false,
    "trimmed": false,
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "sourceSize": {
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "pivot": {
     "x": 0.5,
@@ -50,22 +50,22 @@
   },
   "player_sword_m_idle_03": {
    "frame": {
-    "x": 192,
-    "y": 0,
-    "w": 96,
-    "h": 96
+    "x": 396,
+    "y": 4,
+    "w": 192,
+    "h": 192
    },
    "rotated": false,
    "trimmed": false,
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "sourceSize": {
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "pivot": {
     "x": 0.5,
@@ -74,22 +74,22 @@
   },
   "player_sword_m_walk_01": {
    "frame": {
-    "x": 288,
-    "y": 0,
-    "w": 96,
-    "h": 96
+    "x": 592,
+    "y": 4,
+    "w": 192,
+    "h": 192
    },
    "rotated": false,
    "trimmed": false,
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "sourceSize": {
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "pivot": {
     "x": 0.5,
@@ -98,22 +98,22 @@
   },
   "player_sword_m_walk_02": {
    "frame": {
-    "x": 384,
-    "y": 0,
-    "w": 96,
-    "h": 96
+    "x": 788,
+    "y": 4,
+    "w": 192,
+    "h": 192
    },
    "rotated": false,
    "trimmed": false,
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "sourceSize": {
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "pivot": {
     "x": 0.5,
@@ -122,22 +122,22 @@
   },
   "player_sword_m_walk_03": {
    "frame": {
-    "x": 480,
-    "y": 0,
-    "w": 96,
-    "h": 96
+    "x": 984,
+    "y": 4,
+    "w": 192,
+    "h": 192
    },
    "rotated": false,
    "trimmed": false,
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "sourceSize": {
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "pivot": {
     "x": 0.5,
@@ -146,22 +146,22 @@
   },
   "player_sword_m_walk_04": {
    "frame": {
-    "x": 576,
-    "y": 0,
-    "w": 96,
-    "h": 96
+    "x": 1180,
+    "y": 4,
+    "w": 192,
+    "h": 192
    },
    "rotated": false,
    "trimmed": false,
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "sourceSize": {
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "pivot": {
     "x": 0.5,
@@ -170,22 +170,22 @@
   },
   "player_sword_m_jump_01": {
    "frame": {
-    "x": 672,
-    "y": 0,
-    "w": 96,
-    "h": 96
+    "x": 1376,
+    "y": 4,
+    "w": 192,
+    "h": 192
    },
    "rotated": false,
    "trimmed": false,
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "sourceSize": {
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "pivot": {
     "x": 0.5,
@@ -194,22 +194,22 @@
   },
   "player_sword_m_djump_01": {
    "frame": {
-    "x": 0,
-    "y": 96,
-    "w": 96,
-    "h": 96
+    "x": 4,
+    "y": 200,
+    "w": 192,
+    "h": 192
    },
    "rotated": false,
    "trimmed": false,
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "sourceSize": {
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "pivot": {
     "x": 0.5,
@@ -218,22 +218,22 @@
   },
   "player_sword_m_djump_02": {
    "frame": {
-    "x": 96,
-    "y": 96,
-    "w": 96,
-    "h": 96
+    "x": 200,
+    "y": 200,
+    "w": 192,
+    "h": 192
    },
    "rotated": false,
    "trimmed": false,
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "sourceSize": {
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "pivot": {
     "x": 0.5,
@@ -242,22 +242,22 @@
   },
   "player_sword_m_rope_01": {
    "frame": {
-    "x": 192,
-    "y": 96,
-    "w": 96,
-    "h": 96
+    "x": 396,
+    "y": 200,
+    "w": 192,
+    "h": 192
    },
    "rotated": false,
    "trimmed": false,
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "sourceSize": {
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "pivot": {
     "x": 0.5,
@@ -266,22 +266,22 @@
   },
   "player_sword_m_rope_02": {
    "frame": {
-    "x": 288,
-    "y": 96,
-    "w": 96,
-    "h": 96
+    "x": 592,
+    "y": 200,
+    "w": 192,
+    "h": 192
    },
    "rotated": false,
    "trimmed": false,
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "sourceSize": {
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "pivot": {
     "x": 0.5,
@@ -290,22 +290,22 @@
   },
   "player_sword_m_ladder_01": {
    "frame": {
-    "x": 384,
-    "y": 96,
-    "w": 96,
-    "h": 96
+    "x": 788,
+    "y": 200,
+    "w": 192,
+    "h": 192
    },
    "rotated": false,
    "trimmed": false,
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "sourceSize": {
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "pivot": {
     "x": 0.5,
@@ -314,22 +314,22 @@
   },
   "player_sword_m_ladder_02": {
    "frame": {
-    "x": 480,
-    "y": 96,
-    "w": 96,
-    "h": 96
+    "x": 984,
+    "y": 200,
+    "w": 192,
+    "h": 192
    },
    "rotated": false,
    "trimmed": false,
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "sourceSize": {
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "pivot": {
     "x": 0.5,
@@ -338,22 +338,22 @@
   },
   "player_sword_m_attack_01": {
    "frame": {
-    "x": 576,
-    "y": 96,
-    "w": 96,
-    "h": 96
+    "x": 1180,
+    "y": 200,
+    "w": 192,
+    "h": 192
    },
    "rotated": false,
    "trimmed": false,
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "sourceSize": {
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "pivot": {
     "x": 0.5,
@@ -362,22 +362,22 @@
   },
   "player_sword_m_attack_02": {
    "frame": {
-    "x": 672,
-    "y": 96,
-    "w": 96,
-    "h": 96
+    "x": 1376,
+    "y": 200,
+    "w": 192,
+    "h": 192
    },
    "rotated": false,
    "trimmed": false,
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "sourceSize": {
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "pivot": {
     "x": 0.5,
@@ -386,22 +386,22 @@
   },
   "player_sword_m_attack_03": {
    "frame": {
-    "x": 0,
-    "y": 192,
-    "w": 96,
-    "h": 96
+    "x": 4,
+    "y": 396,
+    "w": 192,
+    "h": 192
    },
    "rotated": false,
    "trimmed": false,
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "sourceSize": {
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "pivot": {
     "x": 0.5,
@@ -410,22 +410,22 @@
   },
   "player_sword_m_hit_01": {
    "frame": {
-    "x": 96,
-    "y": 192,
-    "w": 96,
-    "h": 96
+    "x": 200,
+    "y": 396,
+    "w": 192,
+    "h": 192
    },
    "rotated": false,
    "trimmed": false,
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "sourceSize": {
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "pivot": {
     "x": 0.5,
@@ -434,22 +434,22 @@
   },
   "player_sword_m_die_01": {
    "frame": {
-    "x": 192,
-    "y": 192,
-    "w": 96,
-    "h": 96
+    "x": 396,
+    "y": 396,
+    "w": 192,
+    "h": 192
    },
    "rotated": false,
    "trimmed": false,
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "sourceSize": {
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "pivot": {
     "x": 0.5,
@@ -458,22 +458,22 @@
   },
   "player_sword_m_die_02": {
    "frame": {
-    "x": 288,
-    "y": 192,
-    "w": 96,
-    "h": 96
+    "x": 592,
+    "y": 396,
+    "w": 192,
+    "h": 192
    },
    "rotated": false,
    "trimmed": false,
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "sourceSize": {
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "pivot": {
     "x": 0.5,
@@ -482,22 +482,22 @@
   },
   "player_sword_m_sit_01": {
    "frame": {
-    "x": 384,
-    "y": 192,
-    "w": 96,
-    "h": 96
+    "x": 788,
+    "y": 396,
+    "w": 192,
+    "h": 192
    },
    "rotated": false,
    "trimmed": false,
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "sourceSize": {
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "pivot": {
     "x": 0.5,
@@ -506,22 +506,22 @@
   },
   "player_sword_m_sit_02": {
    "frame": {
-    "x": 480,
-    "y": 192,
-    "w": 96,
-    "h": 96
+    "x": 984,
+    "y": 396,
+    "w": 192,
+    "h": 192
    },
    "rotated": false,
    "trimmed": false,
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "sourceSize": {
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "pivot": {
     "x": 0.5,
@@ -530,22 +530,22 @@
   },
   "player_sword_m_gather_01": {
    "frame": {
-    "x": 576,
-    "y": 192,
-    "w": 96,
-    "h": 96
+    "x": 1180,
+    "y": 396,
+    "w": 192,
+    "h": 192
    },
    "rotated": false,
    "trimmed": false,
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "sourceSize": {
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "pivot": {
     "x": 0.5,
@@ -554,22 +554,22 @@
   },
   "player_sword_m_gather_02": {
    "frame": {
-    "x": 672,
-    "y": 192,
-    "w": 96,
-    "h": 96
+    "x": 1376,
+    "y": 396,
+    "w": 192,
+    "h": 192
    },
    "rotated": false,
    "trimmed": false,
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "sourceSize": {
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "pivot": {
     "x": 0.5,
@@ -578,22 +578,22 @@
   },
   "player_sword_m_gather_03": {
    "frame": {
-    "x": 0,
-    "y": 288,
-    "w": 96,
-    "h": 96
+    "x": 4,
+    "y": 592,
+    "w": 192,
+    "h": 192
    },
    "rotated": false,
    "trimmed": false,
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "sourceSize": {
-    "w": 96,
-    "h": 96
+    "w": 192,
+    "h": 192
    },
    "pivot": {
     "x": 0.5,
@@ -602,12 +602,12 @@
   }
  },
  "meta": {
-  "app": "xiantu assemble.py",
+  "app": "xiantu pack_atlas.py (trial_v2 hero)",
   "image": "player_sword_m.png",
   "format": "RGBA8888",
   "size": {
-   "w": 768,
-   "h": 384
+   "w": 1572,
+   "h": 788
   },
   "scale": "1",
   "loadout": {
