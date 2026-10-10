@@ -567,7 +567,9 @@ try {
   if (!process.env.ART_FEATURES_ONLY) {
     // 释放所有功能页；每种素材在独立且配置相同的 context 中只启动一次。
     await browser.close(); browser = await api.chromium.launch(launchOptions);
-    // 三轮轮转顺序，8 个真实渲染帧预热，再采完整 20 个 postrender 间隔取中位。
+    // 先完整预热一轮，排除各 WebGL context 的冷态，再轮转采三轮正式数据。
+    // 每次仍预热 8 个真实渲染帧，再采完整 20 个 postrender 间隔。
+    const warmupRounds = 1, measuredRounds = 3;
     const beforeSamples = [], afterSamples = [], effectSamples = [];
     metrics.samples = { beforeSamples, afterSamples, effectSamples };
     const cases = [
@@ -616,11 +618,13 @@ try {
         prepareSeconds: Number(((performance.now() - caseStarted) / 1000).toFixed(2)) });
     }
     equal(cases[0].state.workload, cases[1].state.workload, 'FPS 基线与正式对照的背景/环境/对象负载不同');
-    for (let run = 0; run < 3; run++) {
+    const warmupSamples = {};
+    for (let run = 0; run < warmupRounds + measuredRounds; run++) {
+      const phase = run < warmupRounds ? 'warmup' : 'measurement';
       for (let step = 0; step < cases.length; step++) {
         const sampleCase = cases[(run + step) % cases.length];
         const caseStarted = performance.now();
-        progress('measure-prepare', { run: run + 1, case: sampleCase.name });
+        progress('measure-prepare', { phase, run: run + 1, case: sampleCase.name });
         equal(await freezePose(sampleCase.page, sampleCase.fixtures ? maximumBudget : undefined, true),
           sampleCase.pose, 'FPS 轮次重置改变主角/地图/名牌');
         const current = await measurementState(sampleCase.page);
@@ -631,21 +635,23 @@ try {
           equal([loop.running, loop.rafRunning], [false, false], 'FPS 非采样页面仍在渲染');
           idleStates.push(loop);
         }
-        progress('measure-ready', { run: run + 1, case: sampleCase.name,
+        progress('measure-ready', { phase, run: run + 1, case: sampleCase.name,
           prepareSeconds: Number(((performance.now() - caseStarted) / 1000).toFixed(2)) });
         const sample = await fps(sampleCase.page);
-        sampleCase.samples.push(sample);
+        if (phase === 'warmup') (warmupSamples[sampleCase.name] ??= []).push(sample);
+        else sampleCase.samples.push(sample);
         equal(sample.renderer, afterState.renderer, 'FPS 采样期间改变渲染器');
         equal((await measurementState(sampleCase.page)).loop.running, false, 'FPS 采样后渲染 loop 未停止');
         for (const [index, other] of idleCases.entries()) {
           equal((await measurementState(other.page)).loop, idleStates[index], 'FPS 非采样页面仍推进渲染帧');
         }
-        progress('measure-sampled', { run: run + 1, case: sampleCase.name, fps: Number(sample.fps.toFixed(2)),
+        progress('measure-sampled', { phase, run: run + 1, case: sampleCase.name, fps: Number(sample.fps.toFixed(2)),
           caseSeconds: Number(((performance.now() - caseStarted) / 1000).toFixed(2)) });
       }
     }
     check(cases.every(sampleCase => sampleCase.samples.length >= 3), 'FPS 帧间隔对照至少需要三轮采样');
-    metrics.measurement = { pages: 3, contexts: 3, initializations: 3, rounds: beforeSamples.length, event: 'postrender', warmupFrames: 8, intervals: 20,
+    metrics.warmupSamples = warmupSamples;
+    metrics.measurement = { pages: 3, contexts: 3, initializations: 3, warmupRounds, rounds: beforeSamples.length, event: 'postrender', warmupFrames: 8, intervals: 20,
       elapsedSeconds: (performance.now() - measurementStarted) / 1000 };
     const baselineFrameMs = median(beforeSamples.map(sample => 1000 / sample.fps));
     const fallbackFrameMs = median(afterSamples.map(sample => 1000 / sample.fps));
