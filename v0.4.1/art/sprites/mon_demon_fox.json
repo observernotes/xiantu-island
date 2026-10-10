@@ -1,0 +1,638 @@
+{
+ "frames": {
+  "mon_demon_fox_idle_01": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 160
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_demon_fox_idle_02": {
+   "frame": {
+    "x": 192,
+    "y": 0,
+    "w": 192,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 160
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_demon_fox_idle_03": {
+   "frame": {
+    "x": 384,
+    "y": 0,
+    "w": 192,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 160
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_demon_fox_idle_04": {
+   "frame": {
+    "x": 576,
+    "y": 0,
+    "w": 192,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 160
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_demon_fox_walk_01": {
+   "frame": {
+    "x": 768,
+    "y": 0,
+    "w": 192,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 160
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_demon_fox_walk_02": {
+   "frame": {
+    "x": 960,
+    "y": 0,
+    "w": 192,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 160
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_demon_fox_walk_03": {
+   "frame": {
+    "x": 1152,
+    "y": 0,
+    "w": 192,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 160
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_demon_fox_walk_04": {
+   "frame": {
+    "x": 1344,
+    "y": 0,
+    "w": 192,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 160
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_demon_fox_fox_fire_01": {
+   "frame": {
+    "x": 0,
+    "y": 160,
+    "w": 192,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 160
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_demon_fox_fox_fire_02": {
+   "frame": {
+    "x": 192,
+    "y": 160,
+    "w": 192,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 160
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_demon_fox_fox_fire_03": {
+   "frame": {
+    "x": 384,
+    "y": 160,
+    "w": 192,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 160
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_demon_fox_fox_fire_04": {
+   "frame": {
+    "x": 576,
+    "y": 160,
+    "w": 192,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 160
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_demon_fox_phantom_dash_01": {
+   "frame": {
+    "x": 768,
+    "y": 160,
+    "w": 192,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 160
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_demon_fox_phantom_dash_02": {
+   "frame": {
+    "x": 960,
+    "y": 160,
+    "w": 192,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 160
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_demon_fox_phantom_dash_03": {
+   "frame": {
+    "x": 1152,
+    "y": 160,
+    "w": 192,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 160
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_demon_fox_phantom_dash_04": {
+   "frame": {
+    "x": 1344,
+    "y": 160,
+    "w": 192,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 160
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_demon_fox_fox_summon_01": {
+   "frame": {
+    "x": 0,
+    "y": 320,
+    "w": 192,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 160
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_demon_fox_fox_summon_02": {
+   "frame": {
+    "x": 192,
+    "y": 320,
+    "w": 192,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 160
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_demon_fox_fox_summon_03": {
+   "frame": {
+    "x": 384,
+    "y": 320,
+    "w": 192,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 160
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_demon_fox_fox_summon_04": {
+   "frame": {
+    "x": 576,
+    "y": 320,
+    "w": 192,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 160
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_demon_fox_hit_01": {
+   "frame": {
+    "x": 768,
+    "y": 320,
+    "w": 192,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 160
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_demon_fox_die_01": {
+   "frame": {
+    "x": 960,
+    "y": 320,
+    "w": 192,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 160
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_demon_fox_die_02": {
+   "frame": {
+    "x": 1152,
+    "y": 320,
+    "w": 192,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 160
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_demon_fox_die_03": {
+   "frame": {
+    "x": 1344,
+    "y": 320,
+    "w": 192,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 160
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_demon_fox_die_04": {
+   "frame": {
+    "x": 0,
+    "y": 480,
+    "w": 192,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 160
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_demon_fox_die_05": {
+   "frame": {
+    "x": 192,
+    "y": 480,
+    "w": 192,
+    "h": 160
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 160
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 160
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  }
+ },
+ "meta": {
+  "app": "xiantu gen_boss_fox.py",
+  "image": "mon_demon_fox.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1536,
+   "h": 640
+  },
+  "scale": "1"
+ }
+}

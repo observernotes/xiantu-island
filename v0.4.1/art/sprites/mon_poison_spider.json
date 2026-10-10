@@ -1,0 +1,302 @@
+{
+ "frames": {
+  "mon_poison_spider_idle_01": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 56
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 56
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 56
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_poison_spider_idle_02": {
+   "frame": {
+    "x": 80,
+    "y": 0,
+    "w": 80,
+    "h": 56
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 56
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 56
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_poison_spider_walk_01": {
+   "frame": {
+    "x": 160,
+    "y": 0,
+    "w": 80,
+    "h": 56
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 56
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 56
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_poison_spider_walk_02": {
+   "frame": {
+    "x": 240,
+    "y": 0,
+    "w": 80,
+    "h": 56
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 56
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 56
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_poison_spider_walk_03": {
+   "frame": {
+    "x": 320,
+    "y": 0,
+    "w": 80,
+    "h": 56
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 56
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 56
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_poison_spider_attack_01": {
+   "frame": {
+    "x": 400,
+    "y": 0,
+    "w": 80,
+    "h": 56
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 56
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 56
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_poison_spider_attack_02": {
+   "frame": {
+    "x": 480,
+    "y": 0,
+    "w": 80,
+    "h": 56
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 56
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 56
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_poison_spider_attack_03": {
+   "frame": {
+    "x": 560,
+    "y": 0,
+    "w": 80,
+    "h": 56
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 56
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 56
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_poison_spider_hit_01": {
+   "frame": {
+    "x": 0,
+    "y": 56,
+    "w": 80,
+    "h": 56
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 56
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 56
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_poison_spider_die_01": {
+   "frame": {
+    "x": 80,
+    "y": 56,
+    "w": 80,
+    "h": 56
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 56
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 56
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_poison_spider_die_02": {
+   "frame": {
+    "x": 160,
+    "y": 56,
+    "w": 80,
+    "h": 56
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 56
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 56
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_poison_spider_die_03": {
+   "frame": {
+    "x": 240,
+    "y": 56,
+    "w": 80,
+    "h": 56
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 56
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 56
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  }
+ },
+ "meta": {
+  "app": "xiantu gen_mon_v05.py",
+  "image": "mon_poison_spider.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 640,
+   "h": 112
+  },
+  "scale": "1"
+ }
+}

@@ -1,0 +1,29 @@
+{
+ "atlas": "fx_flame_envoy_lava_pillar",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  96,
+  192
+ ],
+ "anims": [
+  {
+   "key": "fx_flame_envoy_lava_pillar_play",
+   "frames": [
+    "fx_flame_envoy_lava_pillar_play_01",
+    "fx_flame_envoy_lava_pillar_play_02",
+    "fx_flame_envoy_lava_pillar_play_03",
+    "fx_flame_envoy_lava_pillar_play_04",
+    "fx_flame_envoy_lava_pillar_play_05"
+   ],
+   "frameRate": 12,
+   "repeat": 0
+  }
+ ],
+ "note": "熔岩柱：原点 (0.5,1) 放预警落点地面；判定帧 = play_02（柱高 150～176）。",
+ "blend": "normal",
+ "kind": "fx"
+}

@@ -1,0 +1,31 @@
+{
+ "atlas": "npc_merchant_qian",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": 96,
+ "anims": [
+  {
+   "key": "npc_merchant_qian_idle",
+   "frames": [
+    "npc_merchant_qian_idle_01",
+    "npc_merchant_qian_idle_02",
+    "npc_merchant_qian_idle_03"
+   ],
+   "frameRate": 3,
+   "repeat": -1
+  },
+  {
+   "key": "npc_merchant_qian_talk",
+   "frames": [
+    "npc_merchant_qian_talk_01",
+    "npc_merchant_qian_talk_02"
+   ],
+   "frameRate": 4,
+   "repeat": -1
+  }
+ ],
+ "kind": "npc"
+}

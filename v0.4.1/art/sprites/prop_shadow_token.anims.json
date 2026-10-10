@@ -1,0 +1,41 @@
+{
+ "atlas": "prop_shadow_token",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  48,
+  64
+ ],
+ "anims": [
+  {
+   "key": "prop_shadow_token_idle",
+   "frames": [
+    "prop_shadow_token_idle_01",
+    "prop_shadow_token_idle_02",
+    "prop_shadow_token_idle_03",
+    "prop_shadow_token_idle_04"
+   ],
+   "frameRate": 6,
+   "repeat": -1
+  },
+  {
+   "key": "prop_shadow_token_taken",
+   "frames": [
+    "prop_shadow_token_taken_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  }
+ ],
+ "hitArea": [
+  32,
+  40
+ ],
+ "promptOffsetY": -56,
+ "item": "shadow_token",
+ "note": "幽影楼试炼·藏宝阁令牌台：漆木台 + 紫绒垫，上面浮着幽影令牌（墨紫六角牌、银残月纹、红穗）。原点 (0.5,1) 放台面；靠近按 Z 拿取，拿到后切 taken（空垫子）并给 shadow_token。",
+ "kind": "prop"
+}

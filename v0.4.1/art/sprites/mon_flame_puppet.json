@@ -1,0 +1,230 @@
+{
+ "frames": {
+  "mon_flame_puppet_idle_01": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 96
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_flame_puppet_idle_02": {
+   "frame": {
+    "x": 80,
+    "y": 0,
+    "w": 80,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 96
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_flame_puppet_walk_01": {
+   "frame": {
+    "x": 160,
+    "y": 0,
+    "w": 80,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 96
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_flame_puppet_walk_02": {
+   "frame": {
+    "x": 240,
+    "y": 0,
+    "w": 80,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 96
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_flame_puppet_walk_03": {
+   "frame": {
+    "x": 320,
+    "y": 0,
+    "w": 80,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 96
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_flame_puppet_hit_01": {
+   "frame": {
+    "x": 400,
+    "y": 0,
+    "w": 80,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 96
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_flame_puppet_die_01": {
+   "frame": {
+    "x": 480,
+    "y": 0,
+    "w": 80,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 96
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_flame_puppet_die_02": {
+   "frame": {
+    "x": 560,
+    "y": 0,
+    "w": 80,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 96
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_flame_puppet_die_03": {
+   "frame": {
+    "x": 0,
+    "y": 96,
+    "w": 80,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 80,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 80,
+    "h": 96
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  }
+ },
+ "meta": {
+  "app": "xiantu gen_mon_v05.py",
+  "image": "mon_flame_puppet.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 640,
+   "h": 192
+  },
+  "scale": "1"
+ }
+}

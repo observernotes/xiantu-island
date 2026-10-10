@@ -1,0 +1,28 @@
+{
+ "atlas": "fx_ape_slam",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  160,
+  48
+ ],
+ "anims": [
+  {
+   "key": "fx_ape_slam_play",
+   "frames": [
+    "fx_ape_slam_play_01",
+    "fx_ape_slam_play_02",
+    "fx_ape_slam_play_03",
+    "fx_ape_slam_play_04"
+   ],
+   "frameRate": 14,
+   "repeat": 0
+  }
+ ],
+ "note": "魔化猿拍地冲击：原点 (0.5,1) 放拳头落点地面（魔化猿脚底 x−40，朝右取反）；宽 156 ≈ range.w 128 + 余量；描边土褐 #8A6A3E。",
+ "blend": "normal",
+ "kind": "fx"
+}
