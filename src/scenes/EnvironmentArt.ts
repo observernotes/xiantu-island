@@ -3,8 +3,8 @@ import type { MapObj } from './MapBuilder';
 
 /** All positions/sizes are 1x world pixels; all velocities are pixels/second. */
 export interface EnvironmentLight {
-  x: number; y: number; radius?: number; texture?: string;
-  color?: number | string; alpha?: number; flicker?: number;
+  x: number; y: number; radius?: number; texture?: string; frame?: string | number;
+  color?: number | string; alpha?: number; flicker?: number; blend?: 'ADD' | 'NORMAL';
 }
 export interface EnvironmentFog {
   x: number; y: number; width: number; height: number; texture?: string;
@@ -117,9 +117,16 @@ export class EnvironmentArt {
       if (this.lights.length >= this.budget.lights) break;
       if (!Number.isFinite(def.x) || !Number.isFinite(def.y)) continue;
       const radius = bounded(def.radius, 64, 1, 512), alpha = bounded(def.alpha, 0.35, 0, 1);
-      const image = this.scene.add.image(def.x, def.y, this.texture(def.texture, 'light'))
+      // Validate frames before image creation: Phaser otherwise warns and uses the atlas base frame.
+      const useTexture = def.texture && this.scene.textures.exists(def.texture)
+        && (def.frame === undefined || this.scene.textures.get(def.texture).has(String(def.frame)));
+      const texture = this.texture(useTexture ? def.texture : undefined, 'light');
+      const image = this.scene.add.image(def.x, def.y, texture, useTexture ? def.frame : undefined)
         .setName('environment:light').setDepth(ENVIRONMENT_DEPTH.light).setDisplaySize(radius * 2, radius * 2)
-        .setTint(tint(def.color, 0xffd78e)).setAlpha(alpha).setBlendMode(Phaser.BlendModes.ADD);
+        .setTint(tint(def.color, 0xffd78e)).setAlpha(alpha)
+        .setBlendMode(def.blend === 'NORMAL' ? Phaser.BlendModes.NORMAL : Phaser.BlendModes.ADD);
+      // Atlas pivots place props; environment light coordinates always mark the glow's center.
+      if (useTexture && def.frame !== undefined) image.setOrigin(0.5, 0.5);
       this.lights.push({ image, alpha, flicker: bounded(def.flicker, 0, 0, 1), phase: fraction(this.lights.length + 1) * Math.PI * 2 });
     }
     for (const def of this.definitions.fog) {
@@ -181,6 +188,10 @@ export class EnvironmentArt {
   snapshot() {
     return { enabled: this.active, globalEnabled: this.globalEnabled, areaEnabled: this.areas[this.area] !== false,
       area: this.area, lights: this.lights.length, fog: this.fog.length, particles: this.particles.length,
+      lightDetails: this.lights.map(({ image, alpha }) => ({
+        texture: image.texture.key, frame: image.frame.name, tint: image.tintTopLeft,
+        alpha: image.alpha, baseAlpha: alpha, radius: image.displayWidth / 2, blendMode: image.blendMode,
+      })),
       budget: { ...this.budget }, simulationSeconds: this.seconds,
       depths: { ...ENVIRONMENT_DEPTH }, objects: this.lights.length + this.fog.length + this.particles.length };
   }
