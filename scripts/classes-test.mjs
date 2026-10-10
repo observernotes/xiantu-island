@@ -177,6 +177,8 @@ try {
     console.log(JSON.stringify({ passed: true, suite: 'classes-release-gates', classes: CLASS_LIST.length,
       assertions, features: expected, openEntrances, skippedClosedEntrances, legacyClasses, skillRows, fullSuite: false }));
   }
+  // 四宗新入口关闭时也必须覆盖通用技能替换、退款及已有五宗旧档迁移。
+  await server.ssrLoadModule('/src/class-entry.test.ts');
 } finally {
   await server.close();
 }
