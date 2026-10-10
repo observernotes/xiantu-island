@@ -48,6 +48,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   prone = false;
   didDouble = false;
   dead = false;
+  /** 阴影反馈与受伤闪烁相乘，避免每帧 finish 覆盖渐变。 */
+  shadowAlpha = 1;
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
     const atlas = scene.textures.exists('player_sword_m');
@@ -208,7 +210,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     this.setFlipX(this.atlas ? this.facing > 0 : this.facing < 0);
     if (this.atlas) this.updateAnim(time);
     this.syncWalkTimeScale();
-    this.setAlpha(time < this.invulnUntil ? (Math.floor(time / 80) % 2 ? 0.35 : 0.9) : 1);
+    this.setAlpha(this.shadowAlpha * (time < this.invulnUntil ? (Math.floor(time / 80) % 2 ? 0.35 : 0.9) : 1));
   }
 
   /** 只有 walk 跟着速度点数走（满级轻身术、无其他速度加成时是 1.2），其它动画回到 1。 */

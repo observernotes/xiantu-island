@@ -35,11 +35,17 @@ export class SectTrialObjects {
   private activeDesk?: Prop;
   private tokenItem?: string;
   private tokenReturned = false;
+  private tokenGrants = new Map<string, number>();
   private spawnedTargets = 0;
   private nextTarget = 0;
   private refillAt = 0;
 
   constructor(private readonly scene: GameScene) {
+    scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      // 试炼令牌只属于本次实例，失败/离开清理，保留进图前已有数量。
+      for (const [item, count] of this.tokenGrants) scene.prog.removeTrialItem(item, count);
+      if (this.tokenGrants.size) scene.prog.save();
+    });
     this.trial = scene.map.trial ? TRIALS[scene.map.trial] : undefined;
     const lamps = scene.map.objects.filter(o => o.type === 'lamp')
       .sort((a, b) => Number(a.props.index ?? 0) - Number(b.props.index ?? 0));
@@ -103,7 +109,8 @@ export class SectTrialObjects {
       const item = String(o.props.item ?? this.trial?.item ?? 'shadow_token');
       this.tokenTaken.add(o);
       this.tokenItem = item;
-      this.scene.prog.addItem(item, 1);
+      this.scene.prog.addTrialItem(item, 1);
+      this.tokenGrants.set(item, (this.tokenGrants.get(item) ?? 0) + 1);
       this.play(p, 'taken');
       p.prompt?.setVisible(false);
       this.scene.log(`拿到${ITEMS[item]?.name ?? item}了，原路返回。`, '#d4c0ff');
@@ -159,6 +166,7 @@ export class SectTrialObjects {
       }
       // 木靶脚底固定在对象的站立面，不受普攻击退或普通怪物巡逻更新影响。
       mob.body.reset(x, target.object.y);
+      mob.body.updateFromGameObject();
       if (mob.st === 'hit' && this.scene.time.now >= mob.stateUntil) { mob.st = 'idle'; mob.anim('idle'); }
     }
     for (const zone of this.scene.map.zones) {

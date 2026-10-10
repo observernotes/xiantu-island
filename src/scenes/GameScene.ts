@@ -18,6 +18,7 @@ import { Progress } from '../Progress';
 import { Seclusion, realDay } from '../Seclusion';
 import { LIFESPAN } from '../data';
 import { SectTrialObjects } from './SectTrialObjects';
+import { StealthVision } from './StealthVision';
 
 const MAP_FALLBACK: Record<string, string> = {};
 type Drop = Phaser.Physics.Arcade.Sprite & { itemId: string; count: number; bornAt: number; label?: Phaser.GameObjects.Text; shadow?: Phaser.GameObjects.Ellipse; floatTw?: Phaser.Tweens.Tween; landed?: boolean };
@@ -65,6 +66,8 @@ export class GameScene extends Phaser.Scene {
   breakthroughNotified = false;
   private travelling = false;
   trialObjects?: SectTrialObjects;
+  stealth?: StealthVision;
+  private nextAgeUpdateAt = 0;
 
   constructor() { super('game'); (window as any).__scene = this; }
 
@@ -137,6 +140,8 @@ export class GameScene extends Phaser.Scene {
     this.physics.add.collider(this.player, this.map.oneWays, () => { if (this.player.body.touching.down) this.player.oneWayAt = this.time.now; }, oneWayCheck);
 
     this.trialObjects = new SectTrialObjects(this);
+    this.stealth = new StealthVision(this);
+    this.stealth.update(0, false);
     for (const sp of this.map.trial ? [] : this.map.spawns) {
       const def = MONSTERS[sp.monster];
       if (!def) { console.warn(`[spawn] 没有怪物 ${sp.monster}`); continue; }
@@ -359,6 +364,7 @@ export class GameScene extends Phaser.Scene {
     this.regenMp(delta);
     this.combat.update(time, delta);
     this.trialObjects?.update(delta);
+    if (time >= this.nextAgeUpdateAt) { this.prog.advanceAge(); this.nextAgeUpdateAt = time + 60000; this.prog.save(); }
     if (J(k.k) && !this.dialog.open) this.skillWindow.toggle();
     const escDown = J(k.esc);
     if (escDown && this.skillWindow.open) this.skillWindow.close();
@@ -376,6 +382,7 @@ export class GameScene extends Phaser.Scene {
       J(k.alt); J(k.c);
       this.player.body.setVelocityX(0);
       this.player.step(time, delta / 1000, { left: false, right: false, up: false, down: false, jumpDown: false, attackDown: false }, this.map.ropes);
+      this.stealth?.update(0, false);
       this.drawHud(); return;
     }
     this.trial?.update(delta);
@@ -400,6 +407,7 @@ export class GameScene extends Phaser.Scene {
     this.player.step(time, delta / 1000, inp, this.map.ropes);
     for (const m of this.mobs) m.step(time, this.player);
     for (let i = this.mobs.length - 1; i >= 0; i--) if (!this.mobs[i].active) this.mobs.splice(i, 1);
+    this.stealth?.update(delta, true);
     for (const d of this.drops.getChildren() as Drop[]) {
       if (!d.landed && d.shadow && (d.body as Phaser.Physics.Arcade.Body).blocked.down) this.landDrop(d);
       d.label?.setPosition(d.x, d.y - (d.shadow ? 34 : 22));

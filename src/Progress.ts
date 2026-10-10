@@ -11,6 +11,8 @@ const SAVE_KEY = 'xiantu_save_v1';
 export class Progress {
   level = 1; exp = 0; hp = 0; mp = 0; stones = 0;
   inventory: Record<string, number> = {};
+  /** 实例内物品可供交互读取，但不能写入永久背包。 */
+  private transientItems: Record<string, number> = {};
   equip: Record<string, string> = {};     // 桃木剑由任务「灵根初现」发放
   job = '';                                 // 转职后的职业 id
   quests: Record<string, { state: 'active' | 'done'; kills: Record<string, number>; reached?: boolean; talked?: Record<string, boolean> }> = {};
@@ -69,7 +71,12 @@ export class Progress {
   }
   get skillsUnlocked() { return this.realm.id !== 'mortal'; }
 
-  save() { try { localStorage.setItem(SAVE_KEY, JSON.stringify(this)); } catch { /* 无痕模式等 */ } }
+  save() {
+    const { transientItems, ...persistent } = this;
+    const inventory: Record<string, number> = { ...this.inventory };
+    for (const [id, count] of Object.entries(transientItems)) inventory[id] = Math.max(0, this.count(id) - count);
+    try { localStorage.setItem(SAVE_KEY, JSON.stringify({ ...persistent, inventory })); } catch { /* 无痕模式等 */ }
+  }
   static load(): Progress {
     const p = new Progress();
     try { const raw = localStorage.getItem(SAVE_KEY); if (raw) Object.assign(p, JSON.parse(raw)); } catch { /* 存档损坏就重开 */ }
@@ -280,6 +287,15 @@ export class Progress {
   }
 
   addItem(id: string, n: number) { this.inventory[id] = (this.inventory[id] ?? 0) + n; }
+  addTrialItem(id: string, n: number) {
+    this.addItem(id, n);
+    this.transientItems[id] = (this.transientItems[id] ?? 0) + n;
+  }
+  removeTrialItem(id: string, n: number) {
+    const count = Math.min(n, this.transientItems[id] ?? 0);
+    this.removeItem(id, count);
+    this.transientItems[id] = Math.max(0, (this.transientItems[id] ?? 0) - count);
+  }
 
   /** 旧档缺字段时补上，避免 Object.assign 把后面新增的数组弄丢或弄短。 */
   ensureDefaults() {

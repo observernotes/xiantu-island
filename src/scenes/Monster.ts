@@ -106,6 +106,8 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
   summons: Monster[] = [];
   /** 幻影突袭整段不出接触伤害，避免无敌帧把冲刺伤害吃掉 */
   suppressTouch = false;
+  /** 试炼折线巡逻由控制器平移，普通追击/碰墙转向不覆盖它。 */
+  manualMotion = false;
   dashing = false;
   despawning = false;
   /** 试炼：目标阵眼与飞行高度（地面 y − flyHeight） */
@@ -173,6 +175,7 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
     this.tickCooldownLogs(time);
     if (this.despawning) { this.tickDespawn(time); return; }
     if (this.st === 'dead') return;
+    if (this.manualMotion) return;
     if (this.cast) { this.tickCast(time, player); return; }
     if (d.moveSpeed === 0) { b.setVelocityX(0); return; }
     // 山魈：前摇结束落下出伤害（游戏时钟，不用 delayedCall）
