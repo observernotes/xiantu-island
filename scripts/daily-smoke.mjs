@@ -1,10 +1,11 @@
 // 先 npm run build；timeout 120s node scripts/daily-smoke.mjs。
 // 试炼胜利、采集材料只作为夹具；拜宗、NPC 菜单、交付、给奖和读档使用正式代码。
+// QA_TIER_GATE_AWARE: fiveSectClasses
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { preview } from 'vite';
+import { createServer, preview } from 'vite';
 import { findRoot } from './root.mjs';
 
 const projectRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
@@ -16,6 +17,25 @@ const join = questRows.find(q => q.id === 'q_sect_taixu');
 const collect = questRows.find(q => q.id === 'q_daily_taixu_2');
 const talk = questRows.find(q => q.id === 'q_daily_taixu_3');
 const npc = npcRows.find(n => n.id === collect.giver);
+const featureLoader = await createServer({ root: projectRoot,
+  server: { middlewareMode: true, hmr: false, ws: false }, appType: 'custom', logLevel: 'error' });
+let expectedEntrance, legacySkills, expectedServices;
+try {
+  const { QUESTS, inPhase } = await featureLoader.ssrLoadModule('/src/data.ts');
+  const { classDef, classEntryEnabled, skillsForClass } = await featureLoader.ssrLoadModule('/src/classes.ts');
+  const { featureFlags } = await featureLoader.ssrLoadModule('/src/features.ts');
+  const features = featureFlags();
+  expectedServices = { shop: features.shops && features.sectShopLibrary, donation: features.sectDonations };
+  const cls = classDef('taixu_acolyte'), tree = skillsForClass(cls.id);
+  expectedEntrance = !!QUESTS[join.id] && inPhase(join) && classEntryEnabled(cls);
+  const active = tree.filter(skill => skill.type !== 'passive');
+  legacySkills = {
+    skills: Object.fromEntries(tree.map(skill => [skill.id, skill.type === 'passive' ? 1 : 2])),
+    skillGifted: Object.fromEntries(active.map(skill => [skill.id, 1])),
+    skillMastery: Object.fromEntries(active.map(skill => [skill.id, 99])),
+    hotbar: [active[2].id, null, active[0].id, active[1].id, null, null, null, null],
+  };
+} finally { await featureLoader.close(); }
 
 function collectErrors(page) {
   const errors = { console: [], page: [], request: [], http: [] };
@@ -126,8 +146,8 @@ try {
   await sceneReady(page, 'luoxia_town');
   console.log(JSON.stringify({ baseURL, playwright: module, browser: executablePath, headless: true }));
 
-  // 正式拜入奖励只能由完成任务触发；试炼通关通过现有胜利事件模拟。
-  const joined = await page.evaluate(({ join, collect }) => {
+  // 新拜入按发布关口检查；关闭入口时用正式导入的旧太虚身份继续检查日常。
+  const joined = await page.evaluate(({ join, collect, expectedEntrance, legacySkills }) => {
     const scene = window.__scene, p = scene.prog;
     scene.dialog.close(); scene.skillWindow.close();
     const before = { job: p.job, available: scene.quests.available(collect.id), menu: scene.quests.npcDailyQuestIds(collect.giver) };
@@ -136,17 +156,40 @@ try {
     scene.events.emit('trial:complete', join.objectives.find(o => o.type === 'trial').trial);
     const reward = scene.quests.talk(join.turnIn, join.id).after?.();
     if (reward) scene.giveRewards(reward.quest, reward.broke, reward.daily);
-    return { before, active, early, completed: p.quests[join.id]?.state, job: p.job, sect: p.sect,
+    const entrance = { active: active ?? null, early, completed: p.quests[join.id]?.state ?? null,
+      available: scene.quests.available(join.id), duplicate: scene.quests.turnIn(join.id) ?? null,
+      menuContains: scene.quests.npcQuestIds(join.giver).includes(join.id), job: p.job, rewarded: !!reward };
+    let legacy = null;
+    if (!expectedEntrance) {
+      const old = { ...p.exportSave(), ...legacySkills, job: 'taixu_acolyte', classVersion: 2,
+        classRewardClaims: ['taixu_acolyte'] };
+      delete old.questRewardVersion; delete old.sectRank;
+      legacy = { imported: p.importSave(old), skills: p.skills, skillGifted: p.skillGifted,
+        skillMastery: p.skillMastery, hotbar: p.hotbar,
+        usable: p.classSkills.every(skill => p.ownsSkill(skill) && p.skillLevel(skill.id) > 0) };
+    }
+    return { before, entrance, legacy, job: p.job, sect: p.sect,
       available: scene.quests.available(collect.id), contribution: p.sectContribution };
-  }, { join, collect });
+  }, { join, collect, expectedEntrance, legacySkills });
   assert.equal(joined.before.job, '', '夹具读档时已提前入宗');
   assert.equal(joined.before.available, false, '未入宗可以领日常');
   assert.deepEqual(joined.before.menu, [], '未入宗出现日常菜单');
-  assert.equal(joined.active, 'active', '真实拜入任务未接取');
-  assert.equal(joined.early, false, '入门试炼未胜利就可交付');
-  assert.equal(joined.completed, 'done', '胜利回调后拜入任务未交付');
-  assert.equal(joined.job, 'taixu_acolyte', '正式拜入未指定职业');
-  assert.equal(joined.sect, 'taixu', '正式拜入未指定宗门');
+  if (expectedEntrance) {
+    assert.equal(joined.entrance.active, 'active', '真实拜入任务未接取');
+    assert.equal(joined.entrance.early, false, '入门试炼未胜利就可交付');
+    assert.equal(joined.entrance.completed, 'done', '胜利回调后拜入任务未交付');
+    assert.equal(joined.entrance.rewarded, true, '正式拜入没有发奖回执');
+  } else {
+    assert.deepEqual(joined.entrance, { active: null, early: false, completed: null, available: false,
+      duplicate: null, menuContains: false, job: '', rewarded: false }, '关闭或未来阶段的新拜入入口被绕过');
+    assert.equal(joined.legacy.imported, true, '旧太虚存档导入失败');
+    for (const field of ['skills', 'skillGifted', 'skillMastery', 'hotbar']) {
+      assert.deepEqual(joined.legacy[field], legacySkills[field], `旧太虚存档 ${field} 未保留`);
+    }
+    assert.equal(joined.legacy.usable, true, '关闭新入口后旧太虚功法不可用');
+  }
+  assert.equal(joined.job, 'taixu_acolyte', '日常夹具未保留太虚职业');
+  assert.equal(joined.sect, 'taixu', '日常夹具未保留太虚宗门');
   assert.equal(joined.available, true, '入宗后本宗日常未开放');
   assert.equal(joined.contribution, 0, '普通拜入任务错误发日常贡献');
   await page.evaluate(() => window.__scene.scene.restart({ map: 'luoxia_town' }));
@@ -261,13 +304,15 @@ try {
     if (next < 0) break;
     await press(page, String(next + 1));
   }
-  assert.equal(serviceChoices.filter(choice => !choice.disabled).length, 6,
-    '天剑接引没有三条可选日常、宗门商店、上交与告辞选项');
-  assert.ok(serviceChoices.some(choice => choice.label === strings['sect.donation.menu']), '缺上交菜单');
+  assert.equal(serviceChoices.filter(choice => !choice.disabled).length,
+    4 + Number(expectedServices.shop) + Number(expectedServices.donation), '天剑接引日常与服务菜单不遵循发版开关');
+  assert.equal(serviceChoices.some(choice => choice.label === strings['sect.shop.menu']), expectedServices.shop, '宗门商店菜单不遵循发版开关');
+  assert.equal(serviceChoices.some(choice => choice.label === strings['sect.donation.menu']), expectedServices.donation, '上交菜单不遵循发版开关');
   await press(page, 'Escape');
   await page.waitForTimeout(300);
   assert.deepEqual(errors, { console: [], page: [], request: [], http: [] }, '浏览器冒烟出现报错');
-  console.log(JSON.stringify({ passed: true, sect: joined.sect, joinedByTrialCallback: true, npc: npc.id,
+  console.log(JSON.stringify({ passed: true, sect: joined.sect, joinedByTrialCallback: expectedEntrance,
+    closedEntranceBlocked: !expectedEntrance, legacySaveImported: !expectedEntrance, npc: npc.id,
     completed: [collect.id, talk.id], contribution: contributionAfterTwo, reloadSameDayBlocked: true,
     crossedLocalFive: true, reaccepted: collect.id, tianjianEnvoyMounted: true,
     consoleErrors: 0, pageErrors: 0, requestFailures: 0, httpErrors: 0 }));
