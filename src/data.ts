@@ -62,6 +62,7 @@ export interface MonsterDef {
 export interface ItemDef {
   id: string; name: string; type: string; slot?: string; stats?: Record<string, number>; effect?: any; icon?: string; appearance?: string;
   kind?: string; toolType?: string; sect?: string; reqLevel?: number;
+  unlockSkill?: string;
   gather?: { castMs: number; respawnMs: number; maps?: string[] };
 }
 export interface DropTable { spiritStone: [number, number]; items: { item: string; chance: number; count: [number, number] }[] }
@@ -154,7 +155,8 @@ export interface FerryRoute {
   id: string; label: string; targetMap: string; targetPortal?: string | null; cost: number;
   reqLevel?: number; unlockQuest?: string; phaseMin?: number; phaseMax?: number;
 }
-export interface NpcDef { id: string; name: string; map: string; sprite: string; dialog: string[]; quests: string[]; phase?: number; shop?: boolean; ferryRoutes?: FerryRoute[]; }
+export interface NpcService { type: string; sect: string; config: string }
+export interface NpcDef { id: string; name: string; map: string; sprite: string; dialog: string[]; quests: string[]; phase?: number; shop?: boolean; ferryRoutes?: FerryRoute[]; services?: NpcService[]; }
 export interface QuestObjective { type: 'kill' | 'collect' | 'reach' | 'breakthrough' | 'talk' | 'craft' | 'trial'; target?: string; count?: number; consume?: boolean; map?: string; realm?: string; trial?: string; }
 export interface QuestDef {
   id: string; name: string; giver: string; turnIn: string; reqLevel: number; objectives: QuestObjective[];
@@ -183,6 +185,27 @@ export const QUEST_NAMES: Record<string, string> = Object.fromEntries((quests as
 export const QUESTS: Record<string, QuestDef> = Object.fromEntries((quests as QuestDef[]).filter(q => inPhase(q)).map(q => [q.id, q]));
 export const QUEST_ORDER: string[] = Object.keys(QUESTS);
 export const REALMS = realms as any[];
+
+import sectRanks from '@xt/balance/sect_ranks.json';
+import shops from '@xt/balance/shops.json';
+export interface SectRankDef {
+  id: string; name: string; nameKey: string; icon: string; availableInV05: boolean;
+  reqContribution: number | null; reqRealm: string | null;
+  promotion: { mode: string; dialogueKeys: Record<string, string> };
+  unlocks: { libraryTier: string; shopShelf: string; dispatch: boolean };
+  balanceTodo: string[];
+}
+export interface SectRanksConfig {
+  version: string; enabled: boolean;
+  rules: { rankOrder: string[]; initialRank: string; v05MaxRank: string; contributionBasis: string; promotionSpendsContribution: boolean; demoteOnSpend: boolean };
+  ranks: SectRankDef[];
+  sects: { id: string; name: string; promotionNpc: string; stewardNpc: string; titles: Record<string, { name: string; nameKey: string }> }[];
+}
+export interface SectShopGood { item: string; reqRank: string; costContribution: number | null; enabled: boolean; balanceTodo: string[] }
+export type ShopEntry = string | SectShopGood;
+export const SECT_RANKS = sectRanks as SectRanksConfig;
+/** 旧字符串仍是灵石货架；宗门消费者只接受明确的贡献商品对象。 */
+export const SHOPS = shops as Record<string, ShopEntry[]>;
 
 /** 一行台词：speaker 为空表示系统提示；cue 是演出标记（breakthrough / job） */
 export interface Line { speaker: string | null; text: string; player?: boolean; cue?: string; }

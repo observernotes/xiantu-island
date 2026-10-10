@@ -82,7 +82,7 @@ export class GameScene extends Phaser.Scene {
   private createDebugClass() {
     const prog = new Progress();
     // 独立调试档不写 localStorage；换图继续用 registry 内同一角色。
-    prog.save = () => {};
+    prog.save = () => true;
     prog.level = 29;
     prog.advanceClass(DEBUG_CLASS!.id);
     for (const def of prog.classSkills) prog.grantSkill(def.id, 1);

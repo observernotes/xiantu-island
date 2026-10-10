@@ -1,4 +1,5 @@
-import { GROWTH, EXP_TO_NEXT, MAX_LEVEL, ITEMS, BREAKTHROUGH_LEVELS, BREAKTHROUGH, REALMS, QUESTS, LIFESPAN, RECIPES, ALCHEMY_RULES, PillQuality, QuestDef } from './data';
+import { GROWTH, EXP_TO_NEXT, MAX_LEVEL, ITEMS, BREAKTHROUGH_LEVELS, BREAKTHROUGH, REALMS, QUESTS, LIFESPAN, RECIPES, ALCHEMY_RULES, SECT_RANKS, PillQuality, QuestDef } from './data';
+import type { SectGrowthState } from './SectGrowth';
 import { HOTBAR_SLOTS, QUEST_SKILL_BACKFILL, SKILLS, SKILL_RULES, SkillDef, actOf, skillNumber, spEarnedFor, spBand } from './skills';
 import { CLASS_RULES, classDef, classForQuest, classGiftSkills, classMinLevel, classRobe, skillsForClass } from './classes';
 import { DAILY_QUEST_LIMIT, dailyQuestDay, dailyContribution, dailyRewardsReady, type DailyQuestReward } from './DailyQuests';
@@ -51,6 +52,9 @@ export class Progress {
   tutorialsSeen: string[] = [];
   /** 宗门贡献余额；旧档缺省 0。 */
   sectContribution = 0;
+  /** 未拜入为 null；旧档只迁移缺失字段，异常值留给宗门服务诊断。 */
+  sectRank: string | null = null;
+  sectGrowthState: SectGrowthState = { donationBatches: {}, settledTransactions: {} };
   sectDailyContributionDay = '';
   sectDailyContributionClaims: string[] = [];
   /** 上次日常重置的本地日历日期（05:00 日界）；离线只补算到当前日。 */
@@ -95,23 +99,34 @@ export class Progress {
   }
   get skillsUnlocked() { return this.realm.id !== 'mortal'; }
 
-  save() {
+  save(): boolean {
     const { transientItems, ...persistent } = this;
     const inventory: Record<string, number> = { ...this.inventory };
     for (const [id, count] of Object.entries(transientItems)) inventory[id] = Math.max(0, this.count(id) - count);
-    try { localStorage.setItem(SAVE_KEY, JSON.stringify({ ...persistent, inventory })); } catch { /* 无痕模式等 */ }
+    try { localStorage.setItem(SAVE_KEY, JSON.stringify({ ...persistent, inventory })); return true; } catch { return false; }
   }
   static load(): Progress {
     const p = new Progress();
-    try { const raw = localStorage.getItem(SAVE_KEY); if (raw) Object.assign(p, JSON.parse(raw)); } catch { /* 存档损坏就重开 */ }
+    let hadStoredRank = false, storedRank: string | null = null;
+    try {
+      const raw = localStorage.getItem(SAVE_KEY);
+      if (raw) {
+        const saved = JSON.parse(raw);
+        hadStoredRank = Object.prototype.hasOwnProperty.call(saved, 'sectRank');
+        if (hadStoredRank) storedRank = saved.sectRank;
+        Object.assign(p, saved);
+      }
+    } catch { /* 存档损坏就重开 */ }
     p.overflowExp = Math.max(0, Math.floor(Number(p.overflowExp) || 0));
     if (Number.isFinite(p.overflowCap)) p.overflowExp = Math.min(p.overflowExp, p.overflowCap);
     p.ensureDefaults();
     p.resetDailyQuests();
     p.advanceAge();
-    const backfilled = [p.backfillRealmRewards(), p.backfillQuestSkills(), p.backfillQuestRecipes(), p.backfillClass()].some(Boolean);
+    const backfilled = [p.backfillRealmRewards(), p.backfillQuestSkills(), p.backfillQuestRecipes(), p.backfillClass(false)].some(Boolean);
+    // 原职业/已交付拜入任务是正式入宗事实；试炼、帖和山门位置不参与迁移。
+    p.sectRank = hadStoredRank ? storedRank : p.sect ? SECT_RANKS.rules.initialRank : null;
     p.hp = Math.min(p.hp || p.maxHp, p.maxHp); p.mp = Math.min(p.mp || p.maxMp, p.maxMp);
-    if (backfilled) p.save();
+    if (backfilled || !hadStoredRank) p.save();
     return p;
   }
   static reset() { try { localStorage.removeItem(SAVE_KEY); } catch { /* ignore */ } }
@@ -457,6 +472,12 @@ export class Progress {
   }
 
   addItem(id: string, n: number) { this.inventory[id] = (this.inventory[id] ?? 0) + n; }
+  /** 当前背包没有槽位上限；调用方先查物品表，此处拒绝非法和溢出数量。 */
+  canReceiveItem(id: string, n = 1) {
+    const count = this.count(id);
+    return !!id && Number.isSafeInteger(n) && n > 0 && Number.isSafeInteger(count) && count >= 0
+      && Number.isSafeInteger(count + n);
+  }
   addTrialItem(id: string, n: number) {
     this.addItem(id, n);
     this.transientItems[id] = (this.transientItems[id] ?? 0) + n;
@@ -579,13 +600,14 @@ export class Progress {
    * 拜入只能发生一次。技能点来自已得点数减去现有已花点数，删入门技自然退点；
    * 剑徒迁移不重排等级/熟练度/快捷键，其他职业重新生成本宗快捷栏。
    */
-  advanceClass(job: string): boolean {
+  advanceClass(job: string, initializeSectRank = true): boolean {
     const c = classDef(job);
     if (!c || this.level < classMinLevel(c) || (this.job && this.job !== c.id)) return false;
     const firstJoin = !this.job;
     const migrating = this.classVersion < 1;
     let changed = firstJoin || migrating;
     this.job = c.id;
+    if (initializeSectRank && firstJoin && this.sectRank === null) this.sectRank = SECT_RANKS.rules.initialRank;
     if (firstJoin || migrating) {
       for (const id of Object.keys(this.skills)) {
         const def = SKILLS[id];
@@ -622,11 +644,11 @@ export class Progress {
   }
 
   /** 旧档已有职业或已交付拜入任务，自动补登记/奖励；q_fox 本身不替未入宗者选宗。 */
-  backfillClass(): boolean {
+  backfillClass(initializeSectRank = true): boolean {
     const c = classDef(this.job) ?? Object.keys(this.quests).map(classForQuest).find(candidate => candidate && this.quests[candidate.joinQuest]?.state === 'done');
     if (!c) return false;
     const before = JSON.stringify({ job: this.job, classVersion: this.classVersion, skills: this.skills, hotbar: this.hotbar, claims: this.classRewardClaims, equip: this.equip });
-    this.advanceClass(c.id);
+    this.advanceClass(c.id, initializeSectRank);
     return before !== JSON.stringify({ job: this.job, classVersion: this.classVersion, skills: this.skills, hotbar: this.hotbar, claims: this.classRewardClaims, equip: this.equip });
   }
 
