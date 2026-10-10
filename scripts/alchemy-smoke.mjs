@@ -301,6 +301,31 @@ try {
     '关闭炼丹的孙郎中服务菜单仍接了入门任务');
   await page.evaluate(() => window.__xt.setFlag('alchemyPhase1', true));
   passed('关闭炼丹时孙郎中提示与任务/服务菜单隐藏，真实 L 不开炉；普通商店仍可对话');
+
+  // G16：真实 L 验证无炉公共入口及严格NPC范围，不借助对白后的自动开炉。
+  const beforePublicFurnace = await page.evaluate(() => ({ ...window.__scene.prog.inventory }));
+  assert.equal(beforePublicFurnace.bronze_furnace ?? 0, 0, '公共炉复现夹具不能持有丹炉');
+  await standAt(page, 'doctor_sun');
+  const doctor = await page.evaluate(() => {
+    const o = window.__scene.map.objects.find(o => o.name === 'doctor_sun');
+    return { x: o.x, y: o.y };
+  });
+  for (const [dx, dy] of [[0, 0], [39, 47]]) {
+    await page.evaluate(({ x, y }) => window.__scene.player.body.reset(x, y), { x: doctor.x + dx, y: doctor.y + dy });
+    await page.keyboard.press('l', { delay: 60 });
+    await page.waitForFunction(() => window.__scene.alchemy.isOpen(), null, { timeout: 3000 });
+    assert.equal(await page.evaluate(() => window.__scene.alchemy.furnaceId), 'bronze_furnace', '无炉L没有使用公共青铜炉');
+    await page.keyboard.press('Escape', { delay: 60 });
+    await page.waitForFunction(() => !window.__scene.alchemy.isOpen(), null, { timeout: 3000 });
+  }
+  for (const [dx, dy] of [[40, 0], [0, 48]]) {
+    await page.evaluate(({ x, y }) => window.__scene.player.body.reset(x, y), { x: doctor.x + dx, y: doctor.y + dy });
+    await page.keyboard.press('l', { delay: 60 }); await page.waitForTimeout(100);
+    assert.equal(await page.evaluate(() => window.__scene.alchemy.isOpen()), false, '无炉超出孙郎中交互范围仍可开公共炉');
+  }
+  assert.deepEqual(await page.evaluate(() => window.__scene.prog.inventory), beforePublicFurnace, '公共炉开关窗口改变背包');
+  passed('G16：无丹炉在孙郎中交互范围内真实 L 开公共青铜炉，40px/48px 边界外不开且不改背包');
+
   // 旧字符串货架保持灵石购买，入口与原教学任务并列，重复确认不重扣。
   const beforeShop = await page.evaluate(item => ({ stones: window.__scene.prog.stones,
     contribution: window.__scene.prog.sectContribution, count: window.__scene.prog.count(item) }), shopItem.id);
@@ -578,6 +603,17 @@ try {
     '使用背包丹炉消耗了丹炉物品');
   await page.keyboard.press('Escape'); await page.waitForTimeout(100);
   passed('真实 I 背包点击青铜炉开窗且不消耗丹炉，关闭炼丹时背包入口隐藏并不可点击');
+
+  await standAt(page, 'grocer_wang');
+  assert.notEqual(await page.evaluate(() => window.__scene.nearNpc()), 'doctor_sun', '持炉随身入口夹具仍在孙郎中范围内');
+  await page.keyboard.press('l', { delay: 60 });
+  await page.waitForFunction(() => window.__scene.alchemy.isOpen(), null, { timeout: 3000 });
+  assert.equal(await page.evaluate(() => window.__scene.alchemy.furnaceId), 'bronze_furnace', '远离孙郎中L未使用持有丹炉');
+  assert.equal(await page.evaluate(id => window.__scene.prog.count(id), inventoryFurnace.furnace), inventoryFurnace.count,
+    '随身L入口消耗了丹炉');
+  await page.keyboard.press('Escape', { delay: 60 });
+  await page.waitForFunction(() => !window.__scene.alchemy.isOpen(), null, { timeout: 3000 });
+  passed('G16：持有丹炉远离孙郎中真实 L 可开且不消耗丹炉');
 
   // 追加六炉原料/燃料夹具；实际开炉、跳过与批量均通过鼠标操作。
   await page.evaluate(recipe => {

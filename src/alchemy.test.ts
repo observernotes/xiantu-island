@@ -2,7 +2,7 @@ import recipesRaw from '@xt/balance/recipes.json';
 import { ALCHEMY_RULES, RECIPES, QUESTS, ITEMS, NPCS } from './data';
 import { Progress } from './Progress';
 import { QuestSystem } from './QuestSystem';
-import { AlchemySystem, fireConfig, fireOutcome, firePointer, qualityRates } from './Alchemy';
+import { AlchemySystem, alchemyFurnace, fireConfig, fireOutcome, firePointer, qualityRates } from './Alchemy';
 import { setFeatureFlag } from './features';
 
 setFeatureFlag('alchemyPhase1', true);
@@ -35,6 +35,27 @@ function ready() {
   p.addItem('spirit_herb', 20); p.addItem('rabbit_fur', 10);
   const q = new QuestSystem(p);
   return { p, q, a: new AlchemySystem(p, q, () => 0) };
+}
+
+// L 与背包/地图入口共用规则：无炉借公共炉，持有炉可远离孙郎中使用。
+{
+  const p = new Progress(); p.inventory = {};
+  const doctor = { type: 'npc', name: 'doctor_sun', x: 1024, y: 640, props: {} };
+  eq(alchemyFurnace(p, { x: 1024, y: 640 }, [doctor]), 'bronze_furnace', '无炉在孙郎中处可开公共炉');
+  eq(alchemyFurnace(p, { x: 1063, y: 687 }, [doctor]), 'bronze_furnace', '公共炉覆盖整个NPC交互范围');
+  eq(alchemyFurnace(p, { x: 1064, y: 640 }, [doctor]), undefined, '水平范围外无炉不能开公共炉');
+  eq(alchemyFurnace(p, { x: 1024, y: 688 }, [doctor]), undefined, '垂直范围外无炉不能开公共炉');
+  eq(alchemyFurnace(p, { x: 0, y: 0 }, []), undefined, '无炉且无孙郎中时不能开炉');
+  const other = { ...doctor, name: 'grocer_wang' };
+  eq(alchemyFurnace(p, doctor, [other, doctor]), 'bronze_furnace', '其他NPC不遮蔽孙郎中公共炉');
+  eq(alchemyFurnace(p, doctor, [{ ...doctor, name: 'doctor_object', props: { npc: 'doctor_sun' } }]),
+    'bronze_furnace', '公共炉读取NPC属性ID');
+  p.addItem('bronze_furnace', 1);
+  eq(alchemyFurnace(p, { x: 0, y: 0 }, []), 'bronze_furnace', '持炉远离孙郎中仍可开');
+  p.addItem('purple_copper_furnace', 1); p.addItem('dark_iron_furnace', 1);
+  eq(alchemyFurnace(p, doctor, [doctor]), 'dark_iron_furnace', '持有多炉在孙郎中旁仍使用最佳自用炉');
+  eq(alchemyFurnace(p, { x: 0, y: 0 }, [], 'bronze_furnace'), 'bronze_furnace', '显式地图公共炉入口保留指定炉');
+  eq(p.count('bronze_furnace'), 1, '打开入口不消耗持有丹炉');
 }
 
 // NPC 表暂缺入门挂载，按06补入口但不改原表或开放其它未来任务。

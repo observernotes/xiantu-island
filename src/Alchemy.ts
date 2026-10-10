@@ -22,6 +22,17 @@ export interface AlchemyResult {
 }
 export interface BrewSession { recipeId: string; furnaceId: string; fire: FireRound; }
 
+/** 自用丹炉随身使用；无炉时仅可借用孙郎中交互范围内的公共青铜炉。 */
+export function alchemyFurnace(prog: Pick<Progress, 'count'>, player: { x: number; y: number },
+  objects: readonly { type: string; name: string; x: number; y: number; props: { npc?: string } }[], publicFurnace?: string) {
+  if (publicFurnace) return publicFurnace;
+  const owned = ['dark_iron_furnace', 'purple_copper_furnace', 'bronze_furnace'].find(id => prog.count(id) > 0);
+  if (owned) return owned;
+  const nearDoctor = objects.some(o => o.type === 'npc' && (o.props.npc ?? o.name) === 'doctor_sun'
+    && Math.abs(o.x - player.x) < 40 && Math.abs(o.y - player.y) < 48);
+  return nearDoctor ? 'bronze_furnace' : undefined;
+}
+
 /** 读档只恢复已知丹方/丹炉及完整合法的火候状态，不替损坏档编造结果。 */
 export function isBrewSession(value: unknown, learnedRecipes: readonly string[]): value is BrewSession {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return false;

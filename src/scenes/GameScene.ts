@@ -27,7 +27,7 @@ import { StealthVision } from './StealthVision';
 import { ferryLockedReason, mapEntryOpen, sectEntryMap, FIRST_CLASS_TRIAL_MAPS } from '../Ferry';
 import { Gathering } from './Gathering';
 import { interactionPrompt } from '../InteractionPrompt';
-import { AlchemySystem, ALCHEMY_RULES } from '../Alchemy';
+import { AlchemySystem, ALCHEMY_RULES, alchemyFurnace } from '../Alchemy';
 import { AlchemyPanel, preloadAlchemy, registerAlchemy } from '../AlchemyPanel';
 import { BackgroundArt, type BackgroundConfig } from './BackgroundArt';
 import { EnvironmentArt, type EnvironmentArtConfig } from './EnvironmentArt';
@@ -870,9 +870,7 @@ export class GameScene extends Phaser.Scene {
   openAlchemy(publicFurnace?: string) {
     if (!this.requireFeature('alchemyPhase1')) return false;
     if (this.player.dead || this.trial || this.map.trial || this.dialog.open || this.skillWindow.open) return false;
-    const near = this.nearNpc();
-    const owned = ['dark_iron_furnace', 'purple_copper_furnace', 'bronze_furnace'].find(id => this.prog.count(id) > 0);
-    const furnace = publicFurnace ?? (near === 'doctor_sun' ? 'bronze_furnace' : owned);
+    const furnace = alchemyFurnace(this.prog, this.player, this.map.objects, publicFurnace);
     if (!furnace) { this.log('请到孙郎中处使用丹炉，或先获得丹炉。', '#ffb0b0'); return false; }
     this.gathering.cancel(); this.player.body.setVelocityX(0);
     this.alchemy.open(furnace); return true;
