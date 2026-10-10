@@ -13,6 +13,7 @@
     "test:xt": "timeout 120s node scripts/xt-test.mjs",
     "test:features": "timeout 120s node scripts/features-test.mjs",
     "test:optional-assets": "node scripts/optional-assets-test.mjs",
+    "test:ui-cam": "node scripts/ui-cam-test.mjs",
     "test:smoke:missing-assets": "node scripts/missing-asset-smoke.mjs",
     "test:v05": "timeout 60s node scripts/v05-test.mjs",
     "test:appearance": "timeout 60s node scripts/appearance-test.mjs",

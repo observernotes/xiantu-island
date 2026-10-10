@@ -15,6 +15,7 @@ import { HOTBAR_SLOTS, SKILLS } from '../skills';
 import { classDef, classForQuest } from '../classes';
 import { installKeyGuard } from '../keyguard';
 import { buildTiledMap, buildCharMap, BuiltMap, MapObj } from './MapBuilder';
+import { HUD_RESERVE, addFloorStrip } from './cameraFloor';
 import { Player, Input } from './Player';
 import { Monster, type SkillVolley } from './Monster';
 import { Progress } from '../Progress';
@@ -233,7 +234,8 @@ export class GameScene extends Phaser.Scene {
     }, true) as any;
 
     const cam = this.cameras.main;
-    cam.setBounds(0, 0, this.map.width, this.map.height);
+    cam.setBounds(0, 0, this.map.width, this.map.height + HUD_RESERVE);
+    addFloorStrip(this, this.map.width, this.map.height, area);
     cam.startFollow(this.player, true, 0.12, 0.1, 0, 40);
     cam.fadeIn(250);
 
