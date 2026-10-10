@@ -196,7 +196,7 @@ async function gatherDiagnostic(page) {
 
 async function usePortal(page, objectName, targetMap) {
   await standAt(page, objectName);
-  await page.keyboard.press('ArrowUp');
+  await page.keyboard.press('ArrowUp', { delay: 60 });
   await waitForMap(page, targetMap);
 }
 

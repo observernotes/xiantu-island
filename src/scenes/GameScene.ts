@@ -28,6 +28,7 @@ import { interactionPrompt } from '../InteractionPrompt';
 import { AlchemySystem, ALCHEMY_RULES } from '../Alchemy';
 import { AlchemyPanel, preloadAlchemy, registerAlchemy } from '../AlchemyPanel';
 import { BackgroundArt, type BackgroundConfig } from './BackgroundArt';
+import { EnvironmentArt, type EnvironmentArtConfig } from './EnvironmentArt';
 import { applySpriteArt } from '../SpriteArt';
 import { SectGrowth, newSectTransactionId } from '../SectGrowth';
 
@@ -161,6 +162,7 @@ export class GameScene extends Phaser.Scene {
     this.physics.world.setBounds(0, 0, this.map.width, this.map.height + 200);
     // 地图 npc 对象的 phaseMin / phaseMax：不在当前版本阶段的不创建（没填不限制）
     this.map.objects = this.map.objects.filter(o => o.type !== 'npc' || inPhase(o.props));
+    this.configureEnvironment(this.cache.json.get(`bg_${area}_config`)?.environment);
     this.mountDailyEnvoys();
     this.map.objects.forEach(o => this.drawObject(o));
 
@@ -411,6 +413,7 @@ export class GameScene extends Phaser.Scene {
   invText!: Phaser.GameObjects.Text;
 
   update(time: number, delta: number) {
+    this.environmentArt?.update(delta);
     if (time >= this.nextDailyUpdateAt) {
       this.quests.refreshDaily(); this.nextDailyUpdateAt = time + 1000;
     }
@@ -1574,6 +1577,21 @@ export class GameScene extends Phaser.Scene {
   }
 
   backgroundArt?: BackgroundArt;
+  environmentArt?: EnvironmentArt;
+  configureEnvironment(config?: EnvironmentArtConfig | null) {
+    this.environmentArt?.destroy();
+    const area = MAP_AREA[this.map.id] ?? 'qingyun';
+    const areas = { ...config?.areas, ...this.registry.get('art.environment.areas') };
+    this.environmentArt = new EnvironmentArt(this, area, this.map.width, this.map.height,
+      { ...config, enabled: this.registry.get('art.environment.enabled') ?? config?.enabled, areas }, this.map.objects);
+  }
+  setEnvironmentEnabled(enabled: boolean) {
+    this.registry.set('art.environment.enabled', enabled); this.environmentArt?.setEnabled(enabled);
+  }
+  setEnvironmentAreaEnabled(area: string, enabled: boolean) {
+    this.registry.set('art.environment.areas', { ...this.registry.get('art.environment.areas'), [area]: enabled });
+    this.environmentArt?.setAreaEnabled(area, enabled);
+  }
   private backgroundObjects: Phaser.GameObjects.GameObject[] = [];
   drawBackground(area: string, width = this.map.width, height = this.map.height) {
     this.backgroundArt?.destroy(); this.backgroundArt = undefined;

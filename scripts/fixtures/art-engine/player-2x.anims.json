@@ -1,0 +1,123 @@
+{
+ "atlas": "player_sword_m__art_test_2x",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  192,
+  192
+ ],
+ "anims": [
+  {
+   "key": "player_sword_m__art_test_2x_idle",
+   "frames": [
+    "player_sword_m_idle_01",
+    "player_sword_m_idle_02",
+    "player_sword_m_idle_03"
+   ],
+   "frameRate": 3,
+   "repeat": -1
+  },
+  {
+   "key": "player_sword_m__art_test_2x_walk",
+   "frames": [
+    "player_sword_m_walk_01",
+    "player_sword_m_walk_02",
+    "player_sword_m_walk_03",
+    "player_sword_m_walk_04"
+   ],
+   "frameRate": 8,
+   "repeat": -1
+  },
+  {
+   "key": "player_sword_m__art_test_2x_jump",
+   "frames": [
+    "player_sword_m_jump_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  },
+  {
+   "key": "player_sword_m__art_test_2x_djump",
+   "frames": [
+    "player_sword_m_djump_01",
+    "player_sword_m_djump_02"
+   ],
+   "frameRate": 10,
+   "repeat": 0
+  },
+  {
+   "key": "player_sword_m__art_test_2x_rope",
+   "frames": [
+    "player_sword_m_rope_01",
+    "player_sword_m_rope_02"
+   ],
+   "frameRate": 6,
+   "repeat": -1
+  },
+  {
+   "key": "player_sword_m__art_test_2x_ladder",
+   "frames": [
+    "player_sword_m_ladder_01",
+    "player_sword_m_ladder_02"
+   ],
+   "frameRate": 6,
+   "repeat": -1
+  },
+  {
+   "key": "player_sword_m__art_test_2x_attack",
+   "frames": [
+    "player_sword_m_attack_01",
+    "player_sword_m_attack_02",
+    "player_sword_m_attack_03"
+   ],
+   "frameRate": 12,
+   "repeat": 0
+  },
+  {
+   "key": "player_sword_m__art_test_2x_hit",
+   "frames": [
+    "player_sword_m_hit_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  },
+  {
+   "key": "player_sword_m__art_test_2x_die",
+   "frames": [
+    "player_sword_m_die_01",
+    "player_sword_m_die_02"
+   ],
+   "frameRate": 6,
+   "repeat": 0
+  },
+  {
+   "key": "player_sword_m__art_test_2x_sit",
+   "frames": [
+    "player_sword_m_sit_01",
+    "player_sword_m_sit_02"
+   ],
+   "frameRate": 2,
+   "repeat": -1
+  },
+  {
+   "key": "player_sword_m__art_test_2x_gather",
+   "frames": [
+    "player_sword_m_gather_01",
+    "player_sword_m_gather_02",
+    "player_sword_m_gather_03"
+   ],
+   "frameRate": 8,
+   "repeat": -1
+  }
+ ],
+ "kind": "player",
+ "bodySize": [
+  52,
+  116
+ ],
+ "displayScale": 0.5,
+ "pixelArt": true
+}

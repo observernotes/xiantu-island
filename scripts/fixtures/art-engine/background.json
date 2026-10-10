@@ -1,0 +1,100 @@
+{
+ "layers": {
+  "sky": {
+   "texture": "art_test_sky",
+   "scrollFactor": 0,
+   "yOffset": 0,
+   "tile": false
+  },
+  "far": {
+   "texture": "art_test_far",
+   "scrollFactor": 0.2,
+   "yOffset": -3,
+   "tile": true
+  },
+  "mid": {
+   "texture": "art_test_mid",
+   "scrollFactor": [
+    0.5,
+    0.1
+   ],
+   "yOffset": 7,
+   "tile": false
+  },
+  "near": {
+   "texture": "art_test_near",
+   "scrollFactor": 0.8,
+   "yOffset": -12,
+   "tile": true
+  },
+  "fg": {
+   "texture": "art_test_fg",
+   "scrollFactor": 1.15,
+   "yOffset": -160,
+   "tile": true
+  }
+ },
+ "environment": {
+  "enabled": true,
+  "areas": {
+   "qingyun": true
+  },
+  "budget": {
+   "lights": 2,
+   "fog": 1,
+   "particles": 20
+  },
+  "lights": [
+   {
+    "x": 340,
+    "y": 610,
+    "radius": 80,
+    "color": "#ffc966",
+    "alpha": 0.35
+   },
+   {
+    "x": 680,
+    "y": 540,
+    "radius": 100
+   },
+   {
+    "x": 1000,
+    "y": 580
+   }
+  ],
+  "fog": [
+   {
+    "x": 0,
+    "y": 640,
+    "width": 2560,
+    "height": 70,
+    "alpha": 0.15,
+    "speedX": 6
+   },
+   {
+    "x": 200,
+    "y": 400,
+    "width": 800,
+    "height": 40
+   }
+  ],
+  "particles": [
+   {
+    "kind": "leaf",
+    "x": 0,
+    "y": 380,
+    "width": 2560,
+    "height": 260,
+    "count": 12
+   },
+   {
+    "kind": "firefly",
+    "x": 0,
+    "y": 560,
+    "width": 2560,
+    "height": 160,
+    "count": 12
+   }
+  ]
+ }
+}

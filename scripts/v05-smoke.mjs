@@ -97,13 +97,13 @@ async function extraInteractions(context, baseURL) {
 
     await page.evaluate(() => window.__scene.talkTo('ferry_master'));
     assert.deepEqual(await page.evaluate(() => window.__scene.dialog.choices.map(choice => choice.label).slice(0, 2)), ['万妖林', '天剑宗']);
-    await page.keyboard.press('Escape'); await page.waitForTimeout(300);
+    await page.keyboard.press('Escape', { delay: 60 }); await page.waitForTimeout(300);
     assert.deepEqual(await page.evaluate(() => ({ open: window.__scene.dialog.open, map: window.__scene.map.id })), { open: false, map: 'luoxia_town' });
     checks.push('航线: Esc 告辞留在落霞镇');
     for (const [index, target] of [[1, 'wanyao_outer_1'], [2, 'tianjian_sect']]) {
       await go('luoxia_town');
       await page.evaluate(() => window.__scene.talkTo('ferry_master'));
-      await page.keyboard.press(String(index));
+      await page.keyboard.press(String(index), { delay: 60 });
       await landing(target);
       checks.push(`航线: ${target} 按数字上船，落在 playerStart`);
     }
@@ -279,7 +279,7 @@ async function extraInteractions(context, baseURL) {
       scene.prog.level = 29; scene.prog.inventory.foundation_pill = 1;
       scene.offerTrial('tianjian_elder', { id: 'trial_foundation_altar', map: 'trial_foundation_altar', durationMs: 60000 });
     });
-    await page.keyboard.press('Escape'); await page.waitForTimeout(300);
+    await page.keyboard.press('Escape', { delay: 60 }); await page.waitForTimeout(300);
     assert.deepEqual(await page.evaluate(() => ({ map: window.__scene.map.id, open: window.__scene.dialog.open,
       pending: window.__scene.registry.get('trialPending') ?? null, pill: window.__scene.prog.inventory.foundation_pill })),
     { map: 'tianjian_sect', open: true, pending: null, pill: 1 });

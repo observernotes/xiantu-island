@@ -1,0 +1,240 @@
+{
+ "name": "tiles_qingyun",
+ "image": "tiles_qingyun.png",
+ "tilewidth": 32,
+ "tileheight": 32,
+ "columns": 4,
+ "tilecount": 48,
+ "imagewidth": 128,
+ "imageheight": 384,
+ "margin": 0,
+ "spacing": 0,
+ "tiles": [
+  {
+   "id": 0,
+   "properties": [
+    {
+     "name": "role",
+     "type": "string",
+     "value": "ground_tl"
+    }
+   ]
+  },
+  {
+   "id": 1,
+   "properties": [
+    {
+     "name": "role",
+     "type": "string",
+     "value": "ground_t"
+    }
+   ]
+  },
+  {
+   "id": 2,
+   "properties": [
+    {
+     "name": "role",
+     "type": "string",
+     "value": "ground_tr"
+    }
+   ]
+  },
+  {
+   "id": 3,
+   "properties": [
+    {
+     "name": "role",
+     "type": "string",
+     "value": "ground_single_t"
+    }
+   ]
+  },
+  {
+   "id": 4,
+   "properties": [
+    {
+     "name": "role",
+     "type": "string",
+     "value": "ground_l"
+    }
+   ]
+  },
+  {
+   "id": 5,
+   "properties": [
+    {
+     "name": "role",
+     "type": "string",
+     "value": "ground_fill"
+    }
+   ]
+  },
+  {
+   "id": 6,
+   "properties": [
+    {
+     "name": "role",
+     "type": "string",
+     "value": "ground_r"
+    }
+   ]
+  },
+  {
+   "id": 7,
+   "properties": [
+    {
+     "name": "role",
+     "type": "string",
+     "value": "ground_single"
+    }
+   ]
+  },
+  {
+   "id": 8,
+   "properties": [
+    {
+     "name": "role",
+     "type": "string",
+     "value": "oneway_l"
+    }
+   ]
+  },
+  {
+   "id": 9,
+   "properties": [
+    {
+     "name": "role",
+     "type": "string",
+     "value": "oneway_m"
+    }
+   ]
+  },
+  {
+   "id": 10,
+   "properties": [
+    {
+     "name": "role",
+     "type": "string",
+     "value": "oneway_r"
+    }
+   ]
+  },
+  {
+   "id": 11,
+   "properties": [
+    {
+     "name": "role",
+     "type": "string",
+     "value": "oneway_single"
+    }
+   ]
+  },
+  {
+   "id": 12,
+   "properties": [
+    {
+     "name": "role",
+     "type": "string",
+     "value": "rope"
+    }
+   ]
+  },
+  {
+   "id": 13,
+   "properties": [
+    {
+     "name": "role",
+     "type": "string",
+     "value": "ladder"
+    }
+   ]
+  },
+  {
+   "id": 14,
+   "properties": [
+    {
+     "name": "role",
+     "type": "string",
+     "value": "ladder_top"
+    }
+   ]
+  },
+  {
+   "id": 15,
+   "properties": [
+    {
+     "name": "role",
+     "type": "string",
+     "value": "deco_grass"
+    }
+   ]
+  }
+ ],
+ "variants": {
+  "0": [
+   16,
+   32
+  ],
+  "1": [
+   17,
+   33
+  ],
+  "2": [
+   18,
+   34
+  ],
+  "3": [
+   19,
+   35
+  ],
+  "4": [
+   20,
+   36
+  ],
+  "5": [
+   21,
+   37
+  ],
+  "6": [
+   22,
+   38
+  ],
+  "7": [
+   23,
+   39
+  ],
+  "8": [
+   24,
+   40
+  ],
+  "9": [
+   25,
+   41
+  ],
+  "10": [
+   26,
+   42
+  ],
+  "11": [
+   27,
+   43
+  ],
+  "12": [
+   28,
+   44
+  ],
+  "13": [
+   29,
+   45
+  ],
+  "14": [
+   30,
+   46
+  ],
+  "15": [
+   31,
+   47
+  ]
+ }
+}

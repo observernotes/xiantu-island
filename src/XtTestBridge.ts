@@ -8,11 +8,13 @@ import { FEEL } from './config/feel';
 import { applySpriteArt, spriteArtSpec, type SpriteArtSpec } from './SpriteArt';
 import { MAP_AREA } from './data';
 import type { BackgroundConfig } from './scenes/BackgroundArt';
+import type { EnvironmentArtConfig } from './scenes/EnvironmentArt';
 import { SPEC } from './config/feel';
 
 type EventType = 'loaderror' | 'console.error' | 'error' | 'unhandledrejection' | 'scene' | 'quest:complete';
 type XtEvent = { type: EventType; time: number; data: unknown };
 type Listener = (event: XtEvent) => void;
+type SourceTileSprite = Phaser.GameObjects.TileSprite & { displayTexture: Phaser.Textures.Texture; displayFrame: Phaser.Textures.Frame };
 const copy = <T>(value: T): T => JSON.parse(JSON.stringify(value));
 const finite = (n: number) => typeof n === 'number' && Number.isFinite(n);
 
@@ -126,13 +128,26 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig): Phaser.Game
             .flatMap(layer => layer.layer.data.flatMap(row => row.filter(tile => tile.index >= 0).map(tile => ({ x: tile.x, y: tile.y, index: tile.index })))),
           climbables: s.children.list.filter((object): object is Phaser.GameObjects.TileSprite | Phaser.GameObjects.Image =>
             (object instanceof Phaser.GameObjects.TileSprite || object instanceof Phaser.GameObjects.Image) && object.depth === -1)
-            .map(object => ({ x: object.x, y: object.y, height: object.height, key: object.texture.key, frame: object.frame.name })),
+            .map(object => ({ x: object.x, y: object.y, height: object.height,
+              key: object instanceof Phaser.GameObjects.TileSprite ? (object as SourceTileSprite).displayTexture.key : object.texture.key,
+              frame: object instanceof Phaser.GameObjects.TileSprite ? (object as SourceTileSprite).displayFrame.name : object.frame.name })),
           collision: [s.map.solids, s.map.oneWays].map(group => group.getChildren().map(object => {
             const body = object.body as Phaser.Physics.Arcade.StaticBody;
             return { x: body.x, y: body.y, width: body.width, height: body.height };
           })),
-          labels, backgrounds: s.backgroundArt?.snapshot() ?? s.parallax.map(({ ts, f }) => ({ key: ts.texture.key, width: ts.width, depth: ts.depth, factorX: f, y: ts.y })),
-          fps: s.game.loop.actualFps });
+          labels, backgrounds: s.backgroundArt?.snapshot() ?? s.parallax.map(({ ts, f }) => ({ key: (ts as SourceTileSprite).displayTexture.key, width: ts.width, depth: ts.depth, factorX: f, y: ts.y })),
+          environment: s.environmentArt?.snapshot(), fps: s.game.loop.actualFps });
+      },
+      configureEnvironment(config: EnvironmentArtConfig | null) {
+        current().configureEnvironment(config); return api.art.snapshot();
+      },
+      setEnvironmentEnabled(enabled: boolean) { current().setEnvironmentEnabled(enabled); return api.art.snapshot(); },
+      setAreaEnabled(area: string, enabled: boolean) { current().setEnvironmentAreaEnabled(area, enabled); return api.art.snapshot(); },
+      stepEnvironment(deltaMs: number, frames = 1) {
+        if (!finite(deltaMs) || deltaMs <= 0 || !Number.isInteger(frames) || frames < 1 || frames > 10000) throw new Error(`${marker}: invalid art timestep`);
+        const s = current(), start = performance.now();
+        for (let frame = 0; frame < frames; frame++) s.environmentArt?.update(deltaMs);
+        return { elapsedMs: performance.now() - start, frames, environment: s.environmentArt?.snapshot() };
       },
       rebuildBackground(config: BackgroundConfig | null) {
         const s = current(), area = MAP_AREA[s.map.id] ?? 'qingyun';
@@ -163,6 +178,7 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig): Phaser.Game
         } else p.setTexture(key);
         p.atlas = true;
         applySpriteArt(p, [SPEC.bodyW, SPEC.bodyH]);
+        p.body.updateFromGameObject();
         return api.art.snapshot();
       },
       async loadAtlas(key: string, imageUrl: string, atlasData: object, animsData: SpriteArtSpec & {
