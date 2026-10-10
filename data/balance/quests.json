@@ -1077,5 +1077,33 @@
    "items": []
   },
   "balanceTodo": []
+ },
+ {
+  "id": "q_secret_nest_intro",
+  "name": "林下秘门",
+  "nameKey": "secret.quest.intro.name",
+  "phase": 6,
+  "enabled": false,
+  "giver": "hunter_lei",
+  "turnIn": "hunter_lei",
+  "reqLevel": 30,
+  "reqRealm": "foundation",
+  "prereq": "q_main_04",
+  "objectives": [
+   {
+    "type": "reach",
+    "map": "wanyao_outer_1",
+    "target": "secret_nest_sign"
+   }
+  ],
+  "rewards": {},
+  "next": null,
+  "dialogueKeys": {
+   "offer": "secret.quest.intro.offer",
+   "progress": "secret.quest.intro.progress",
+   "complete": "secret.quest.intro.complete"
+  },
+  "balanceTodo": [],
+  "note": "next:null 表示无后续链，不是待填数值；地图对象和入口消费者接好后再落表。"
  }
 ]

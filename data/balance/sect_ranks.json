@@ -22,8 +22,8 @@
       "nameKey": "sect.rank.outer_disciple.name",
       "icon": "icon_sect_rank_outer_disciple",
       "availableInV05": true,
-      "reqContribution": null,
-      "reqRealm": null,
+      "reqContribution": 0,
+      "reqRealm": "qi_refining",
       "promotion": {
         "mode": "on_join",
         "dialogueKeys": {
@@ -35,10 +35,7 @@
         "shopShelf": "outer_disciple",
         "dispatch": false
       },
-      "balanceTodo": [
-        "reqContribution",
-        "reqRealm"
-      ]
+      "balanceTodo": []
     },
     {
       "id": "inner_disciple",
@@ -46,8 +43,8 @@
       "nameKey": "sect.rank.inner_disciple.name",
       "icon": "icon_sect_rank_inner_disciple",
       "availableInV05": true,
-      "reqContribution": null,
-      "reqRealm": null,
+      "reqContribution": 500,
+      "reqRealm": "foundation",
       "promotion": {
         "mode": "confirm",
         "dialogueKeys": {
@@ -60,10 +57,7 @@
         "shopShelf": "inner_disciple",
         "dispatch": false
       },
-      "balanceTodo": [
-        "reqContribution",
-        "reqRealm"
-      ]
+      "balanceTodo": []
     },
     {
       "id": "direct_disciple",
@@ -71,8 +65,8 @@
       "nameKey": "sect.rank.direct_disciple.name",
       "icon": "icon_sect_rank_direct_disciple",
       "availableInV05": true,
-      "reqContribution": null,
-      "reqRealm": null,
+      "reqContribution": 1400,
+      "reqRealm": "golden_core",
       "promotion": {
         "mode": "oath",
         "dialogueKeys": {
@@ -88,10 +82,7 @@
         "shopShelf": "direct_disciple",
         "dispatch": false
       },
-      "balanceTodo": [
-        "reqContribution",
-        "reqRealm"
-      ]
+      "balanceTodo": []
     },
     {
       "id": "deacon",
@@ -99,8 +90,8 @@
       "nameKey": "sect.rank.deacon.name",
       "icon": "icon_sect_rank_deacon",
       "availableInV05": false,
-      "reqContribution": null,
-      "reqRealm": null,
+      "reqContribution": 4000,
+      "reqRealm": "golden_core",
       "promotion": {
         "mode": "reserved",
         "dialogueKeys": {
@@ -113,10 +104,7 @@
         "shopShelf": "deacon",
         "dispatch": false
       },
-      "balanceTodo": [
-        "reqContribution",
-        "reqRealm"
-      ]
+      "balanceTodo": []
     },
     {
       "id": "elder",
@@ -124,8 +112,8 @@
       "nameKey": "sect.rank.elder.name",
       "icon": "icon_sect_rank_elder",
       "availableInV05": false,
-      "reqContribution": null,
-      "reqRealm": null,
+      "reqContribution": 10000,
+      "reqRealm": "golden_core",
       "promotion": {
         "mode": "reserved",
         "dialogueKeys": {
@@ -138,10 +126,7 @@
         "shopShelf": "elder",
         "dispatch": false
       },
-      "balanceTodo": [
-        "reqContribution",
-        "reqRealm"
-      ]
+      "balanceTodo": []
     }
   ],
   "sects": [

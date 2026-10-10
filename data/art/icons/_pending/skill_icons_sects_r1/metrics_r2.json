@@ -1,0 +1,1908 @@
+{
+  "schema": "skill_icons_sects_r2_metrics_v1",
+  "patch_ids": [
+    "shadow_dart",
+    "phantom_cloak"
+  ],
+  "skill_order": [
+    "fire_talisman_bolt",
+    "thunder_palm",
+    "water_mirror",
+    "taixu_heart",
+    "five_element_attune",
+    "paper_talisman_throw",
+    "scatter_talisman",
+    "talisman_step",
+    "lingfu_heart",
+    "talisman_supply",
+    "shadow_dart",
+    "shadow_step",
+    "phantom_cloak",
+    "youying_heart",
+    "light_foot",
+    "summon_spirit_wolf",
+    "beast_roar",
+    "beast_bond",
+    "wanshou_heart",
+    "beast_mastery"
+  ],
+  "reference_order": [
+    "sword_qi_slash",
+    "whirl_sword",
+    "light_body",
+    "tianjian_heart",
+    "sword_mastery",
+    "spirit_bolt"
+  ],
+  "versions": [
+    "r0",
+    "r1",
+    "r2"
+  ],
+  "methods": {
+    "pattern": "center [5:27,5:27] (22x22); alpha>0 AND raw RGB Euclidean distance to #FAF2DC >40; coverage denominator=484.",
+    "luminance_and_contrast": "sRGB linearized at 0.04045; Rec.709 weights .2126/.7152/.0722; WCAG=(max(L1,L2)+.05)/(min(L1,L2)+.05); icon pattern uses mean relative luminance.",
+    "rgb_mad": "mean(abs(raw RGB A - raw RGB B))/255 over all 32x32x3 samples, including RGB behind alpha=0.",
+    "mask_difference": "1 - intersection/union of center pattern masks; empty union=0.",
+    "blur": "convert to RGB first, BOX downsample 32->16, BILINEAR upsample 16->32, then raw RGB MAD/255.",
+    "nearest": "Each target compared with the other 19 same-version targets and the 6 current polished references. Separate nearest/minima per metric; all pair records retain all three differences. Global pairs exclude reference/reference.",
+    "background": "far native-size x/y tiling from (0,0), mid native-size horizontal tiling with bottom alignment; source crop only, no background scaling.",
+    "preview_transparency": "RGBA icons composited over labeled solid paper/light/dark grounds or their actual HUD slot; all saved previews opaque RGB.",
+    "same_sect": "Each patched skill compared with the other four YOUYING skills in the same version; separate minima per metric, ties by neighbor name.",
+    "versions": "r0=20 old placeholders; r1=20 crops from pinned r1 merged atlas; r2=20 current standalone images; all use the six current official reference crops.",
+    "method_validation": "Recomputed r0/r1 nearest names and all three differences, coverage and WCAG must reproduce metrics_r1.json within 1e-12.",
+    "checksums": "metrics_r2.json self-MD5 is printed on stdout, outside the JSON, to avoid a circular checksum.",
+    "compare_3x": "Left region is exact NEAREST x3 of compare_1x; right region contains native 64px r1/r2 comparisons on light and dark grounds."
+  },
+  "methods_source": "art/icons/_backup/v28_skill_icons_sects_r2_20261010_143416/metrics_r1.json",
+  "icons": {
+    "r0": {
+      "shadow_dart": {
+        "pattern_pixels": 174,
+        "pattern_coverage": 0.359504132231405,
+        "pattern_mean_relative_luminance": 0.18437004392994158,
+        "paper_relative_luminance": 0.8899556195465484,
+        "pattern_paper_wcag_contrast": 4.010562117006396
+      },
+      "phantom_cloak": {
+        "pattern_pixels": 252,
+        "pattern_coverage": 0.5206611570247934,
+        "pattern_mean_relative_luminance": 0.13341743686284696,
+        "paper_relative_luminance": 0.8899556195465484,
+        "pattern_paper_wcag_contrast": 5.12467972305934
+      }
+    },
+    "r1": {
+      "shadow_dart": {
+        "pattern_pixels": 229,
+        "pattern_coverage": 0.4731404958677686,
+        "pattern_mean_relative_luminance": 0.19168231086997886,
+        "paper_relative_luminance": 0.8899556195465484,
+        "pattern_paper_wcag_contrast": 3.8892197619387594
+      },
+      "phantom_cloak": {
+        "pattern_pixels": 389,
+        "pattern_coverage": 0.8037190082644629,
+        "pattern_mean_relative_luminance": 0.16685443267932307,
+        "paper_relative_luminance": 0.8899556195465484,
+        "pattern_paper_wcag_contrast": 4.334500373974475
+      }
+    },
+    "r2": {
+      "shadow_dart": {
+        "pattern_pixels": 191,
+        "pattern_coverage": 0.39462809917355374,
+        "pattern_mean_relative_luminance": 0.17869292657854205,
+        "paper_relative_luminance": 0.8899556195465484,
+        "pattern_paper_wcag_contrast": 4.110121085112491
+      },
+      "phantom_cloak": {
+        "pattern_pixels": 358,
+        "pattern_coverage": 0.7396694214876033,
+        "pattern_mean_relative_luminance": 0.18373125114296415,
+        "paper_relative_luminance": 0.8899556195465484,
+        "pattern_paper_wcag_contrast": 4.021523073829844
+      }
+    }
+  },
+  "similarity": {
+    "r0": {
+      "shadow_dart": {
+        "candidate_count": 25,
+        "pairwise": [
+          {
+            "neighbor": "fire_talisman_bolt",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.16708154616013074,
+            "pattern_1_minus_iou": 0.4715447154471545,
+            "blur_rgb_mad": 0.1310329861111111
+          },
+          {
+            "neighbor": "thunder_palm",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.1762842116013072,
+            "pattern_1_minus_iou": 0.6058091286307055,
+            "blur_rgb_mad": 0.1371515012254902
+          },
+          {
+            "neighbor": "water_mirror",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.16368081086601308,
+            "pattern_1_minus_iou": 0.4206349206349206,
+            "blur_rgb_mad": 0.12313495710784314
+          },
+          {
+            "neighbor": "taixu_heart",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.19276194852941175,
+            "pattern_1_minus_iou": 0.4652777777777778,
+            "blur_rgb_mad": 0.13834252450980392
+          },
+          {
+            "neighbor": "five_element_attune",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.18635237949346406,
+            "pattern_1_minus_iou": 0.5984848484848485,
+            "blur_rgb_mad": 0.13835401348039217
+          },
+          {
+            "neighbor": "paper_talisman_throw",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.14294960171568627,
+            "pattern_1_minus_iou": 0.4049586776859504,
+            "blur_rgb_mad": 0.10892693014705883
+          },
+          {
+            "neighbor": "scatter_talisman",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.14806347017973856,
+            "pattern_1_minus_iou": 0.48945147679324896,
+            "blur_rgb_mad": 0.11954784517973856
+          },
+          {
+            "neighbor": "talisman_step",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.1634420955882353,
+            "pattern_1_minus_iou": 0.5683453237410072,
+            "blur_rgb_mad": 0.12239966299019608
+          },
+          {
+            "neighbor": "lingfu_heart",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.16714282066993466,
+            "pattern_1_minus_iou": 0.42068965517241375,
+            "blur_rgb_mad": 0.13361034517973858
+          },
+          {
+            "neighbor": "talisman_supply",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.18274739583333333,
+            "pattern_1_minus_iou": 0.48640483383685795,
+            "blur_rgb_mad": 0.14765880310457516
+          },
+          {
+            "neighbor": "shadow_step",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.11149790645424836,
+            "pattern_1_minus_iou": 0.5392491467576792,
+            "blur_rgb_mad": 0.0765203737745098
+          },
+          {
+            "neighbor": "phantom_cloak",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.10943499795751635,
+            "pattern_1_minus_iou": 0.4676258992805755,
+            "blur_rgb_mad": 0.08367544934640522
+          },
+          {
+            "neighbor": "youying_heart",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.11397569444444444,
+            "pattern_1_minus_iou": 0.44636678200692037,
+            "blur_rgb_mad": 0.08393841911764706
+          },
+          {
+            "neighbor": "light_foot",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.10118081086601306,
+            "pattern_1_minus_iou": 0.6255144032921811,
+            "blur_rgb_mad": 0.07341324550653595
+          },
+          {
+            "neighbor": "summon_spirit_wolf",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.12798968545751632,
+            "pattern_1_minus_iou": 0.44656488549618323,
+            "blur_rgb_mad": 0.0893139808006536
+          },
+          {
+            "neighbor": "beast_roar",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.1223077512254902,
+            "pattern_1_minus_iou": 0.4418604651162791,
+            "blur_rgb_mad": 0.08905228758169934
+          },
+          {
+            "neighbor": "beast_bond",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.12693652982026143,
+            "pattern_1_minus_iou": 0.4858299595141701,
+            "blur_rgb_mad": 0.09111902573529412
+          },
+          {
+            "neighbor": "wanshou_heart",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.13968035130718956,
+            "pattern_1_minus_iou": 0.42068965517241375,
+            "blur_rgb_mad": 0.10268714256535948
+          },
+          {
+            "neighbor": "beast_mastery",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.14717116013071896,
+            "pattern_1_minus_iou": 0.7297297297297297,
+            "blur_rgb_mad": 0.11524458741830065
+          },
+          {
+            "neighbor": "sword_qi_slash",
+            "neighbor_is_reference": true,
+            "rgb_mad": 0.20088975694444444,
+            "pattern_1_minus_iou": 0.7304964539007093,
+            "blur_rgb_mad": 0.15213184232026142
+          },
+          {
+            "neighbor": "whirl_sword",
+            "neighbor_is_reference": true,
+            "rgb_mad": 0.20666104983660133,
+            "pattern_1_minus_iou": 0.5969696969696969,
+            "blur_rgb_mad": 0.14924428104575163
+          },
+          {
+            "neighbor": "light_body",
+            "neighbor_is_reference": true,
+            "rgb_mad": 0.19040670955882352,
+            "pattern_1_minus_iou": 0.5654008438818565,
+            "blur_rgb_mad": 0.13970971200980392
+          },
+          {
+            "neighbor": "tianjian_heart",
+            "neighbor_is_reference": true,
+            "rgb_mad": 0.18421032475490196,
+            "pattern_1_minus_iou": 0.5211267605633803,
+            "blur_rgb_mad": 0.12992110906862744
+          },
+          {
+            "neighbor": "sword_mastery",
+            "neighbor_is_reference": true,
+            "rgb_mad": 0.19286151960784315,
+            "pattern_1_minus_iou": 0.6553191489361703,
+            "blur_rgb_mad": 0.14028160743464052
+          },
+          {
+            "neighbor": "spirit_bolt",
+            "neighbor_is_reference": true,
+            "rgb_mad": 0.2056627859477124,
+            "pattern_1_minus_iou": 0.646643109540636,
+            "blur_rgb_mad": 0.15053615196078432
+          }
+        ],
+        "nearest": {
+          "rgb_mad": {
+            "neighbor": "light_foot",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.10118081086601306,
+            "pattern_1_minus_iou": 0.6255144032921811,
+            "blur_rgb_mad": 0.07341324550653595
+          },
+          "pattern_1_minus_iou": {
+            "neighbor": "paper_talisman_throw",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.14294960171568627,
+            "pattern_1_minus_iou": 0.4049586776859504,
+            "blur_rgb_mad": 0.10892693014705883
+          },
+          "blur_rgb_mad": {
+            "neighbor": "light_foot",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.10118081086601306,
+            "pattern_1_minus_iou": 0.6255144032921811,
+            "blur_rgb_mad": 0.07341324550653595
+          }
+        },
+        "same_sect_candidate_count": 4,
+        "same_sect_pairwise": [
+          {
+            "neighbor": "shadow_step",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.11149790645424836,
+            "pattern_1_minus_iou": 0.5392491467576792,
+            "blur_rgb_mad": 0.0765203737745098
+          },
+          {
+            "neighbor": "phantom_cloak",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.10943499795751635,
+            "pattern_1_minus_iou": 0.4676258992805755,
+            "blur_rgb_mad": 0.08367544934640522
+          },
+          {
+            "neighbor": "youying_heart",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.11397569444444444,
+            "pattern_1_minus_iou": 0.44636678200692037,
+            "blur_rgb_mad": 0.08393841911764706
+          },
+          {
+            "neighbor": "light_foot",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.10118081086601306,
+            "pattern_1_minus_iou": 0.6255144032921811,
+            "blur_rgb_mad": 0.07341324550653595
+          }
+        ],
+        "same_sect_minimum": {
+          "rgb_mad": {
+            "neighbor": "light_foot",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.10118081086601306,
+            "pattern_1_minus_iou": 0.6255144032921811,
+            "blur_rgb_mad": 0.07341324550653595
+          },
+          "pattern_1_minus_iou": {
+            "neighbor": "youying_heart",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.11397569444444444,
+            "pattern_1_minus_iou": 0.44636678200692037,
+            "blur_rgb_mad": 0.08393841911764706
+          },
+          "blur_rgb_mad": {
+            "neighbor": "light_foot",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.10118081086601306,
+            "pattern_1_minus_iou": 0.6255144032921811,
+            "blur_rgb_mad": 0.07341324550653595
+          }
+        }
+      },
+      "phantom_cloak": {
+        "candidate_count": 25,
+        "pairwise": [
+          {
+            "neighbor": "fire_talisman_bolt",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.18116064133986928,
+            "pattern_1_minus_iou": 0.47138047138047134,
+            "blur_rgb_mad": 0.14544270833333334
+          },
+          {
+            "neighbor": "thunder_palm",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.20107102736928104,
+            "pattern_1_minus_iou": 0.6060606060606061,
+            "blur_rgb_mad": 0.16228936887254902
+          },
+          {
+            "neighbor": "water_mirror",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.1608966503267974,
+            "pattern_1_minus_iou": 0.25,
+            "blur_rgb_mad": 0.1208984375
+          },
+          {
+            "neighbor": "taixu_heart",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.20027445874183006,
+            "pattern_1_minus_iou": 0.375,
+            "blur_rgb_mad": 0.1443780637254902
+          },
+          {
+            "neighbor": "five_element_attune",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.18840379901960785,
+            "pattern_1_minus_iou": 0.4604810996563574,
+            "blur_rgb_mad": 0.14069776348039215
+          },
+          {
+            "neighbor": "paper_talisman_throw",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.1615170547385621,
+            "pattern_1_minus_iou": 0.4217687074829932,
+            "blur_rgb_mad": 0.13001302083333333
+          },
+          {
+            "neighbor": "scatter_talisman",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.14834558823529412,
+            "pattern_1_minus_iou": 0.3731343283582089,
+            "blur_rgb_mad": 0.11735983455882353
+          },
+          {
+            "neighbor": "talisman_step",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.16778875612745098,
+            "pattern_1_minus_iou": 0.42384105960264906,
+            "blur_rgb_mad": 0.12575954861111113
+          },
+          {
+            "neighbor": "lingfu_heart",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.1681372549019608,
+            "pattern_1_minus_iou": 0.32499999999999996,
+            "blur_rgb_mad": 0.12884369893790848
+          },
+          {
+            "neighbor": "talisman_supply",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.17429789624183006,
+            "pattern_1_minus_iou": 0.32173913043478264,
+            "blur_rgb_mad": 0.13554176879084967
+          },
+          {
+            "neighbor": "shadow_dart",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.10943499795751635,
+            "pattern_1_minus_iou": 0.4676258992805755,
+            "blur_rgb_mad": 0.08367544934640522
+          },
+          {
+            "neighbor": "shadow_step",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.09129391339869282,
+            "pattern_1_minus_iou": 0.34098360655737703,
+            "blur_rgb_mad": 0.05843418096405229
+          },
+          {
+            "neighbor": "youying_heart",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.10621297998366012,
+            "pattern_1_minus_iou": 0.3479623824451411,
+            "blur_rgb_mad": 0.07540083741830066
+          },
+          {
+            "neighbor": "light_foot",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.11867085375816994,
+            "pattern_1_minus_iou": 0.5232974910394266,
+            "blur_rgb_mad": 0.09400658700980392
+          },
+          {
+            "neighbor": "summon_spirit_wolf",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.12449576184640522,
+            "pattern_1_minus_iou": 0.32179930795847755,
+            "blur_rgb_mad": 0.08814721200980392
+          },
+          {
+            "neighbor": "beast_roar",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.1326235702614379,
+            "pattern_1_minus_iou": 0.4105960264900662,
+            "blur_rgb_mad": 0.10030126633986929
+          },
+          {
+            "neighbor": "beast_bond",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.1420828227124183,
+            "pattern_1_minus_iou": 0.4625850340136054,
+            "blur_rgb_mad": 0.10864098243464052
+          },
+          {
+            "neighbor": "wanshou_heart",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.1340750102124183,
+            "pattern_1_minus_iou": 0.32499999999999996,
+            "blur_rgb_mad": 0.09415722017973856
+          },
+          {
+            "neighbor": "beast_mastery",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.16699729370915034,
+            "pattern_1_minus_iou": 0.6478405315614618,
+            "blur_rgb_mad": 0.12861774918300653
+          },
+          {
+            "neighbor": "sword_qi_slash",
+            "neighbor_is_reference": true,
+            "rgb_mad": 0.23710426879084967,
+            "pattern_1_minus_iou": 0.7023809523809523,
+            "blur_rgb_mad": 0.19011948529411765
+          },
+          {
+            "neighbor": "whirl_sword",
+            "neighbor_is_reference": true,
+            "rgb_mad": 0.2239187602124183,
+            "pattern_1_minus_iou": 0.49303621169916434,
+            "blur_rgb_mad": 0.16451439950980393
+          },
+          {
+            "neighbor": "light_body",
+            "neighbor_is_reference": true,
+            "rgb_mad": 0.2223064746732026,
+            "pattern_1_minus_iou": 0.5830508474576271,
+            "blur_rgb_mad": 0.17515701593137256
+          },
+          {
+            "neighbor": "tianjian_heart",
+            "neighbor_is_reference": true,
+            "rgb_mad": 0.1963720383986928,
+            "pattern_1_minus_iou": 0.29452054794520544,
+            "blur_rgb_mad": 0.14029181985294117
+          },
+          {
+            "neighbor": "sword_mastery",
+            "neighbor_is_reference": true,
+            "rgb_mad": 0.2068231719771242,
+            "pattern_1_minus_iou": 0.572463768115942,
+            "blur_rgb_mad": 0.1563891441993464
+          },
+          {
+            "neighbor": "spirit_bolt",
+            "neighbor_is_reference": true,
+            "rgb_mad": 0.23208358864379083,
+            "pattern_1_minus_iou": 0.5683229813664596,
+            "blur_rgb_mad": 0.18086958741830064
+          }
+        ],
+        "nearest": {
+          "rgb_mad": {
+            "neighbor": "shadow_step",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.09129391339869282,
+            "pattern_1_minus_iou": 0.34098360655737703,
+            "blur_rgb_mad": 0.05843418096405229
+          },
+          "pattern_1_minus_iou": {
+            "neighbor": "water_mirror",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.1608966503267974,
+            "pattern_1_minus_iou": 0.25,
+            "blur_rgb_mad": 0.1208984375
+          },
+          "blur_rgb_mad": {
+            "neighbor": "shadow_step",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.09129391339869282,
+            "pattern_1_minus_iou": 0.34098360655737703,
+            "blur_rgb_mad": 0.05843418096405229
+          }
+        },
+        "same_sect_candidate_count": 4,
+        "same_sect_pairwise": [
+          {
+            "neighbor": "shadow_dart",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.10943499795751635,
+            "pattern_1_minus_iou": 0.4676258992805755,
+            "blur_rgb_mad": 0.08367544934640522
+          },
+          {
+            "neighbor": "shadow_step",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.09129391339869282,
+            "pattern_1_minus_iou": 0.34098360655737703,
+            "blur_rgb_mad": 0.05843418096405229
+          },
+          {
+            "neighbor": "youying_heart",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.10621297998366012,
+            "pattern_1_minus_iou": 0.3479623824451411,
+            "blur_rgb_mad": 0.07540083741830066
+          },
+          {
+            "neighbor": "light_foot",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.11867085375816994,
+            "pattern_1_minus_iou": 0.5232974910394266,
+            "blur_rgb_mad": 0.09400658700980392
+          }
+        ],
+        "same_sect_minimum": {
+          "rgb_mad": {
+            "neighbor": "shadow_step",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.09129391339869282,
+            "pattern_1_minus_iou": 0.34098360655737703,
+            "blur_rgb_mad": 0.05843418096405229
+          },
+          "pattern_1_minus_iou": {
+            "neighbor": "shadow_step",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.09129391339869282,
+            "pattern_1_minus_iou": 0.34098360655737703,
+            "blur_rgb_mad": 0.05843418096405229
+          },
+          "blur_rgb_mad": {
+            "neighbor": "shadow_step",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.09129391339869282,
+            "pattern_1_minus_iou": 0.34098360655737703,
+            "blur_rgb_mad": 0.05843418096405229
+          }
+        }
+      }
+    },
+    "r1": {
+      "shadow_dart": {
+        "candidate_count": 25,
+        "pairwise": [
+          {
+            "neighbor": "fire_talisman_bolt",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.20221098856209152,
+            "pattern_1_minus_iou": 0.4683908045977011,
+            "blur_rgb_mad": 0.12500765931372548
+          },
+          {
+            "neighbor": "thunder_palm",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.21126940359477123,
+            "pattern_1_minus_iou": 0.4948979591836735,
+            "blur_rgb_mad": 0.12290134803921568
+          },
+          {
+            "neighbor": "water_mirror",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.20596660539215686,
+            "pattern_1_minus_iou": 0.46335078534031415,
+            "blur_rgb_mad": 0.13661024305555555
+          },
+          {
+            "neighbor": "taixu_heart",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.25059742647058825,
+            "pattern_1_minus_iou": 0.5654450261780104,
+            "blur_rgb_mad": 0.16024688521241828
+          },
+          {
+            "neighbor": "five_element_attune",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.2418249591503268,
+            "pattern_1_minus_iou": 0.5,
+            "blur_rgb_mad": 0.14759114583333333
+          },
+          {
+            "neighbor": "paper_talisman_throw",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.24760135825163399,
+            "pattern_1_minus_iou": 0.4773413897280967,
+            "blur_rgb_mad": 0.14545419730392156
+          },
+          {
+            "neighbor": "scatter_talisman",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.2701031454248366,
+            "pattern_1_minus_iou": 0.5681159420289855,
+            "blur_rgb_mad": 0.16336167279411765
+          },
+          {
+            "neighbor": "talisman_step",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.28693831699346406,
+            "pattern_1_minus_iou": 0.5272277227722773,
+            "blur_rgb_mad": 0.1743030024509804
+          },
+          {
+            "neighbor": "lingfu_heart",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.24014246323529412,
+            "pattern_1_minus_iou": 0.49723756906077343,
+            "blur_rgb_mad": 0.14814389297385622
+          },
+          {
+            "neighbor": "talisman_supply",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.22416002859477124,
+            "pattern_1_minus_iou": 0.48264984227129337,
+            "blur_rgb_mad": 0.12946155024509803
+          },
+          {
+            "neighbor": "shadow_step",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.19145858864379084,
+            "pattern_1_minus_iou": 0.5022421524663677,
+            "blur_rgb_mad": 0.12837520424836601
+          },
+          {
+            "neighbor": "phantom_cloak",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.2359860089869281,
+            "pattern_1_minus_iou": 0.589041095890411,
+            "blur_rgb_mad": 0.1635123059640523
+          },
+          {
+            "neighbor": "youying_heart",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.25509599673202615,
+            "pattern_1_minus_iou": 0.5967741935483871,
+            "blur_rgb_mad": 0.16704324959150327
+          },
+          {
+            "neighbor": "light_foot",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.23109936683006535,
+            "pattern_1_minus_iou": 0.5792682926829269,
+            "blur_rgb_mad": 0.12744332107843137
+          },
+          {
+            "neighbor": "summon_spirit_wolf",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.2647543913398693,
+            "pattern_1_minus_iou": 0.5980392156862745,
+            "blur_rgb_mad": 0.18191763684640525
+          },
+          {
+            "neighbor": "beast_roar",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.25397646037581695,
+            "pattern_1_minus_iou": 0.4986876640419947,
+            "blur_rgb_mad": 0.1658969056372549
+          },
+          {
+            "neighbor": "beast_bond",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.25417687908496733,
+            "pattern_1_minus_iou": 0.4882075471698113,
+            "blur_rgb_mad": 0.17657526552287583
+          },
+          {
+            "neighbor": "wanshou_heart",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.2159045649509804,
+            "pattern_1_minus_iou": 0.5189873417721519,
+            "blur_rgb_mad": 0.1343469158496732
+          },
+          {
+            "neighbor": "beast_mastery",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.2313674428104575,
+            "pattern_1_minus_iou": 0.4738461538461538,
+            "blur_rgb_mad": 0.15620915032679739
+          },
+          {
+            "neighbor": "sword_qi_slash",
+            "neighbor_is_reference": true,
+            "rgb_mad": 0.19750816993464054,
+            "pattern_1_minus_iou": 0.6503267973856209,
+            "blur_rgb_mad": 0.13284313725490196
+          },
+          {
+            "neighbor": "whirl_sword",
+            "neighbor_is_reference": true,
+            "rgb_mad": 0.20899586397058822,
+            "pattern_1_minus_iou": 0.5449438202247191,
+            "blur_rgb_mad": 0.1290262459150327
+          },
+          {
+            "neighbor": "light_body",
+            "neighbor_is_reference": true,
+            "rgb_mad": 0.21865298202614378,
+            "pattern_1_minus_iou": 0.7694704049844237,
+            "blur_rgb_mad": 0.14946001838235295
+          },
+          {
+            "neighbor": "tianjian_heart",
+            "neighbor_is_reference": true,
+            "rgb_mad": 0.2245046977124183,
+            "pattern_1_minus_iou": 0.5429447852760736,
+            "blur_rgb_mad": 0.13934461805555554
+          },
+          {
+            "neighbor": "sword_mastery",
+            "neighbor_is_reference": true,
+            "rgb_mad": 0.20595256331699346,
+            "pattern_1_minus_iou": 0.620817843866171,
+            "blur_rgb_mad": 0.12850413602941177
+          },
+          {
+            "neighbor": "spirit_bolt",
+            "neighbor_is_reference": true,
+            "rgb_mad": 0.2091362847222222,
+            "pattern_1_minus_iou": 0.6050955414012739,
+            "blur_rgb_mad": 0.13538858251633987
+          }
+        ],
+        "nearest": {
+          "rgb_mad": {
+            "neighbor": "shadow_step",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.19145858864379084,
+            "pattern_1_minus_iou": 0.5022421524663677,
+            "blur_rgb_mad": 0.12837520424836601
+          },
+          "pattern_1_minus_iou": {
+            "neighbor": "water_mirror",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.20596660539215686,
+            "pattern_1_minus_iou": 0.46335078534031415,
+            "blur_rgb_mad": 0.13661024305555555
+          },
+          "blur_rgb_mad": {
+            "neighbor": "thunder_palm",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.21126940359477123,
+            "pattern_1_minus_iou": 0.4948979591836735,
+            "blur_rgb_mad": 0.12290134803921568
+          }
+        },
+        "same_sect_candidate_count": 4,
+        "same_sect_pairwise": [
+          {
+            "neighbor": "shadow_step",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.19145858864379084,
+            "pattern_1_minus_iou": 0.5022421524663677,
+            "blur_rgb_mad": 0.12837520424836601
+          },
+          {
+            "neighbor": "phantom_cloak",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.2359860089869281,
+            "pattern_1_minus_iou": 0.589041095890411,
+            "blur_rgb_mad": 0.1635123059640523
+          },
+          {
+            "neighbor": "youying_heart",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.25509599673202615,
+            "pattern_1_minus_iou": 0.5967741935483871,
+            "blur_rgb_mad": 0.16704324959150327
+          },
+          {
+            "neighbor": "light_foot",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.23109936683006535,
+            "pattern_1_minus_iou": 0.5792682926829269,
+            "blur_rgb_mad": 0.12744332107843137
+          }
+        ],
+        "same_sect_minimum": {
+          "rgb_mad": {
+            "neighbor": "shadow_step",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.19145858864379084,
+            "pattern_1_minus_iou": 0.5022421524663677,
+            "blur_rgb_mad": 0.12837520424836601
+          },
+          "pattern_1_minus_iou": {
+            "neighbor": "shadow_step",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.19145858864379084,
+            "pattern_1_minus_iou": 0.5022421524663677,
+            "blur_rgb_mad": 0.12837520424836601
+          },
+          "blur_rgb_mad": {
+            "neighbor": "light_foot",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.23109936683006535,
+            "pattern_1_minus_iou": 0.5792682926829269,
+            "blur_rgb_mad": 0.12744332107843137
+          }
+        }
+      },
+      "phantom_cloak": {
+        "candidate_count": 25,
+        "pairwise": [
+          {
+            "neighbor": "fire_talisman_bolt",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.26715941584967323,
+            "pattern_1_minus_iou": 0.45657015590200445,
+            "blur_rgb_mad": 0.17664802900326798
+          },
+          {
+            "neighbor": "thunder_palm",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.2522620506535948,
+            "pattern_1_minus_iou": 0.3801295896328294,
+            "blur_rgb_mad": 0.1510812397875817
+          },
+          {
+            "neighbor": "water_mirror",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.2463643790849673,
+            "pattern_1_minus_iou": 0.3509933774834437,
+            "blur_rgb_mad": 0.15990349264705883
+          },
+          {
+            "neighbor": "taixu_heart",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.278515625,
+            "pattern_1_minus_iou": 0.41255605381165916,
+            "blur_rgb_mad": 0.18004493464052287
+          },
+          {
+            "neighbor": "five_element_attune",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.287625102124183,
+            "pattern_1_minus_iou": 0.33333333333333337,
+            "blur_rgb_mad": 0.18525837418300653
+          },
+          {
+            "neighbor": "paper_talisman_throw",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.31445950776143794,
+            "pattern_1_minus_iou": 0.5178571428571428,
+            "blur_rgb_mad": 0.20951031454248367
+          },
+          {
+            "neighbor": "scatter_talisman",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.3170879289215686,
+            "pattern_1_minus_iou": 0.5237020316027088,
+            "blur_rgb_mad": 0.2091171364379085
+          },
+          {
+            "neighbor": "talisman_step",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.3125051062091503,
+            "pattern_1_minus_iou": 0.3658008658008658,
+            "blur_rgb_mad": 0.18977609272875817
+          },
+          {
+            "neighbor": "lingfu_heart",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.3022875816993464,
+            "pattern_1_minus_iou": 0.45614035087719296,
+            "blur_rgb_mad": 0.20144633374183005
+          },
+          {
+            "neighbor": "talisman_supply",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.31692453022875816,
+            "pattern_1_minus_iou": 0.5398633257403189,
+            "blur_rgb_mad": 0.21101154003267975
+          },
+          {
+            "neighbor": "shadow_dart",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.2359860089869281,
+            "pattern_1_minus_iou": 0.589041095890411,
+            "blur_rgb_mad": 0.1635123059640523
+          },
+          {
+            "neighbor": "shadow_step",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.20817121119281046,
+            "pattern_1_minus_iou": 0.26050420168067223,
+            "blur_rgb_mad": 0.12429151348039216
+          },
+          {
+            "neighbor": "youying_heart",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.2849826388888889,
+            "pattern_1_minus_iou": 0.4674157303370786,
+            "blur_rgb_mad": 0.18035386029411765
+          },
+          {
+            "neighbor": "light_foot",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.29302236519607844,
+            "pattern_1_minus_iou": 0.5165876777251185,
+            "blur_rgb_mad": 0.19392999387254903
+          },
+          {
+            "neighbor": "summon_spirit_wolf",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.27530381944444443,
+            "pattern_1_minus_iou": 0.38053097345132747,
+            "blur_rgb_mad": 0.17869944852941178
+          },
+          {
+            "neighbor": "beast_roar",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.2919845281862745,
+            "pattern_1_minus_iou": 0.38053097345132747,
+            "blur_rgb_mad": 0.18814593545751632
+          },
+          {
+            "neighbor": "beast_bond",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.2684359681372549,
+            "pattern_1_minus_iou": 0.28846153846153844,
+            "blur_rgb_mad": 0.165554789624183
+          },
+          {
+            "neighbor": "wanshou_heart",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.2848715788398693,
+            "pattern_1_minus_iou": 0.5395348837209302,
+            "blur_rgb_mad": 0.19770858864379084
+          },
+          {
+            "neighbor": "beast_mastery",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.30735549428104575,
+            "pattern_1_minus_iou": 0.5191873589164786,
+            "blur_rgb_mad": 0.21474800857843138
+          },
+          {
+            "neighbor": "sword_qi_slash",
+            "neighbor_is_reference": true,
+            "rgb_mad": 0.2862898284313726,
+            "pattern_1_minus_iou": 0.6324582338902147,
+            "blur_rgb_mad": 0.21742621527777778
+          },
+          {
+            "neighbor": "whirl_sword",
+            "neighbor_is_reference": true,
+            "rgb_mad": 0.2815270118464052,
+            "pattern_1_minus_iou": 0.4899777282850779,
+            "blur_rgb_mad": 0.19680223651960785
+          },
+          {
+            "neighbor": "light_body",
+            "neighbor_is_reference": true,
+            "rgb_mad": 0.29206750408496734,
+            "pattern_1_minus_iou": 0.6496350364963503,
+            "blur_rgb_mad": 0.22578380310457516
+          },
+          {
+            "neighbor": "tianjian_heart",
+            "neighbor_is_reference": true,
+            "rgb_mad": 0.29664266748366014,
+            "pattern_1_minus_iou": 0.5633484162895928,
+            "blur_rgb_mad": 0.2080856821895425
+          },
+          {
+            "neighbor": "sword_mastery",
+            "neighbor_is_reference": true,
+            "rgb_mad": 0.31233532475490194,
+            "pattern_1_minus_iou": 0.7357142857142858,
+            "blur_rgb_mad": 0.23002450980392156
+          },
+          {
+            "neighbor": "spirit_bolt",
+            "neighbor_is_reference": true,
+            "rgb_mad": 0.29344490400326795,
+            "pattern_1_minus_iou": 0.6157407407407407,
+            "blur_rgb_mad": 0.22320389093137255
+          }
+        ],
+        "nearest": {
+          "rgb_mad": {
+            "neighbor": "shadow_step",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.20817121119281046,
+            "pattern_1_minus_iou": 0.26050420168067223,
+            "blur_rgb_mad": 0.12429151348039216
+          },
+          "pattern_1_minus_iou": {
+            "neighbor": "shadow_step",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.20817121119281046,
+            "pattern_1_minus_iou": 0.26050420168067223,
+            "blur_rgb_mad": 0.12429151348039216
+          },
+          "blur_rgb_mad": {
+            "neighbor": "shadow_step",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.20817121119281046,
+            "pattern_1_minus_iou": 0.26050420168067223,
+            "blur_rgb_mad": 0.12429151348039216
+          }
+        },
+        "same_sect_candidate_count": 4,
+        "same_sect_pairwise": [
+          {
+            "neighbor": "shadow_dart",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.2359860089869281,
+            "pattern_1_minus_iou": 0.589041095890411,
+            "blur_rgb_mad": 0.1635123059640523
+          },
+          {
+            "neighbor": "shadow_step",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.20817121119281046,
+            "pattern_1_minus_iou": 0.26050420168067223,
+            "blur_rgb_mad": 0.12429151348039216
+          },
+          {
+            "neighbor": "youying_heart",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.2849826388888889,
+            "pattern_1_minus_iou": 0.4674157303370786,
+            "blur_rgb_mad": 0.18035386029411765
+          },
+          {
+            "neighbor": "light_foot",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.29302236519607844,
+            "pattern_1_minus_iou": 0.5165876777251185,
+            "blur_rgb_mad": 0.19392999387254903
+          }
+        ],
+        "same_sect_minimum": {
+          "rgb_mad": {
+            "neighbor": "shadow_step",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.20817121119281046,
+            "pattern_1_minus_iou": 0.26050420168067223,
+            "blur_rgb_mad": 0.12429151348039216
+          },
+          "pattern_1_minus_iou": {
+            "neighbor": "shadow_step",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.20817121119281046,
+            "pattern_1_minus_iou": 0.26050420168067223,
+            "blur_rgb_mad": 0.12429151348039216
+          },
+          "blur_rgb_mad": {
+            "neighbor": "shadow_step",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.20817121119281046,
+            "pattern_1_minus_iou": 0.26050420168067223,
+            "blur_rgb_mad": 0.12429151348039216
+          }
+        }
+      }
+    },
+    "r2": {
+      "shadow_dart": {
+        "candidate_count": 25,
+        "pairwise": [
+          {
+            "neighbor": "fire_talisman_bolt",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.21586116217320261,
+            "pattern_1_minus_iou": 0.6173184357541899,
+            "blur_rgb_mad": 0.1517310049019608
+          },
+          {
+            "neighbor": "thunder_palm",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.22017590890522876,
+            "pattern_1_minus_iou": 0.5989847715736041,
+            "blur_rgb_mad": 0.1446001838235294
+          },
+          {
+            "neighbor": "water_mirror",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.22268050449346405,
+            "pattern_1_minus_iou": 0.6065989847715736,
+            "blur_rgb_mad": 0.15666998570261437
+          },
+          {
+            "neighbor": "taixu_heart",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.2395361008986928,
+            "pattern_1_minus_iou": 0.6327077747989276,
+            "blur_rgb_mad": 0.1592843647875817
+          },
+          {
+            "neighbor": "five_element_attune",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.26387484681372547,
+            "pattern_1_minus_iou": 0.6010230179028133,
+            "blur_rgb_mad": 0.1760888991013072
+          },
+          {
+            "neighbor": "paper_talisman_throw",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.25611979166666665,
+            "pattern_1_minus_iou": 0.6334310850439883,
+            "blur_rgb_mad": 0.16364251429738563
+          },
+          {
+            "neighbor": "scatter_talisman",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.2857983558006536,
+            "pattern_1_minus_iou": 0.7506849315068493,
+            "blur_rgb_mad": 0.1947597528594771
+          },
+          {
+            "neighbor": "talisman_step",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.269476358251634,
+            "pattern_1_minus_iou": 0.5717948717948718,
+            "blur_rgb_mad": 0.16579095179738562
+          },
+          {
+            "neighbor": "lingfu_heart",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.25025403390522877,
+            "pattern_1_minus_iou": 0.6136986301369862,
+            "blur_rgb_mad": 0.16387101715686275
+          },
+          {
+            "neighbor": "talisman_supply",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.24715711805555554,
+            "pattern_1_minus_iou": 0.5981012658227849,
+            "blur_rgb_mad": 0.15699167687908497
+          },
+          {
+            "neighbor": "shadow_step",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.2118157679738562,
+            "pattern_1_minus_iou": 0.5681818181818181,
+            "blur_rgb_mad": 0.15543300653594772
+          },
+          {
+            "neighbor": "phantom_cloak",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.2014297385620915,
+            "pattern_1_minus_iou": 0.5923076923076923,
+            "blur_rgb_mad": 0.13711958741830063
+          },
+          {
+            "neighbor": "youying_heart",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.25993795955882354,
+            "pattern_1_minus_iou": 0.6518105849582172,
+            "blur_rgb_mad": 0.17972962622549019
+          },
+          {
+            "neighbor": "light_foot",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.2520105698529412,
+            "pattern_1_minus_iou": 0.7147147147147147,
+            "blur_rgb_mad": 0.1658471200980392
+          },
+          {
+            "neighbor": "summon_spirit_wolf",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.24690691380718954,
+            "pattern_1_minus_iou": 0.5606469002695418,
+            "blur_rgb_mad": 0.1737094056372549
+          },
+          {
+            "neighbor": "beast_roar",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.2651526756535948,
+            "pattern_1_minus_iou": 0.5984251968503937,
+            "blur_rgb_mad": 0.1803934334150327
+          },
+          {
+            "neighbor": "beast_bond",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.27438853145424835,
+            "pattern_1_minus_iou": 0.6009280742459397,
+            "blur_rgb_mad": 0.20256842320261437
+          },
+          {
+            "neighbor": "wanshou_heart",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.22172436683006536,
+            "pattern_1_minus_iou": 0.5324232081911262,
+            "blur_rgb_mad": 0.13691023284313725
+          },
+          {
+            "neighbor": "beast_mastery",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.25852864583333335,
+            "pattern_1_minus_iou": 0.6686046511627908,
+            "blur_rgb_mad": 0.18920036764705883
+          },
+          {
+            "neighbor": "sword_qi_slash",
+            "neighbor_is_reference": true,
+            "rgb_mad": 0.21129876429738564,
+            "pattern_1_minus_iou": 0.7373737373737373,
+            "blur_rgb_mad": 0.14807240604575161
+          },
+          {
+            "neighbor": "whirl_sword",
+            "neighbor_is_reference": true,
+            "rgb_mad": 0.22397620506535948,
+            "pattern_1_minus_iou": 0.6363636363636364,
+            "blur_rgb_mad": 0.1471813725490196
+          },
+          {
+            "neighbor": "light_body",
+            "neighbor_is_reference": true,
+            "rgb_mad": 0.20424708946078432,
+            "pattern_1_minus_iou": 0.6528301886792454,
+            "blur_rgb_mad": 0.13794551674836603
+          },
+          {
+            "neighbor": "tianjian_heart",
+            "neighbor_is_reference": true,
+            "rgb_mad": 0.21839639501633987,
+            "pattern_1_minus_iou": 0.6214511041009464,
+            "blur_rgb_mad": 0.13612515318627452
+          },
+          {
+            "neighbor": "sword_mastery",
+            "neighbor_is_reference": true,
+            "rgb_mad": 0.19751582924836603,
+            "pattern_1_minus_iou": 0.6239669421487604,
+            "blur_rgb_mad": 0.13331929125816994
+          },
+          {
+            "neighbor": "spirit_bolt",
+            "neighbor_is_reference": true,
+            "rgb_mad": 0.1992544934640523,
+            "pattern_1_minus_iou": 0.6013986013986015,
+            "blur_rgb_mad": 0.1379672181372549
+          }
+        ],
+        "nearest": {
+          "rgb_mad": {
+            "neighbor": "sword_mastery",
+            "neighbor_is_reference": true,
+            "rgb_mad": 0.19751582924836603,
+            "pattern_1_minus_iou": 0.6239669421487604,
+            "blur_rgb_mad": 0.13331929125816994
+          },
+          "pattern_1_minus_iou": {
+            "neighbor": "wanshou_heart",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.22172436683006536,
+            "pattern_1_minus_iou": 0.5324232081911262,
+            "blur_rgb_mad": 0.13691023284313725
+          },
+          "blur_rgb_mad": {
+            "neighbor": "sword_mastery",
+            "neighbor_is_reference": true,
+            "rgb_mad": 0.19751582924836603,
+            "pattern_1_minus_iou": 0.6239669421487604,
+            "blur_rgb_mad": 0.13331929125816994
+          }
+        },
+        "same_sect_candidate_count": 4,
+        "same_sect_pairwise": [
+          {
+            "neighbor": "shadow_step",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.2118157679738562,
+            "pattern_1_minus_iou": 0.5681818181818181,
+            "blur_rgb_mad": 0.15543300653594772
+          },
+          {
+            "neighbor": "phantom_cloak",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.2014297385620915,
+            "pattern_1_minus_iou": 0.5923076923076923,
+            "blur_rgb_mad": 0.13711958741830063
+          },
+          {
+            "neighbor": "youying_heart",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.25993795955882354,
+            "pattern_1_minus_iou": 0.6518105849582172,
+            "blur_rgb_mad": 0.17972962622549019
+          },
+          {
+            "neighbor": "light_foot",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.2520105698529412,
+            "pattern_1_minus_iou": 0.7147147147147147,
+            "blur_rgb_mad": 0.1658471200980392
+          }
+        ],
+        "same_sect_minimum": {
+          "rgb_mad": {
+            "neighbor": "phantom_cloak",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.2014297385620915,
+            "pattern_1_minus_iou": 0.5923076923076923,
+            "blur_rgb_mad": 0.13711958741830063
+          },
+          "pattern_1_minus_iou": {
+            "neighbor": "shadow_step",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.2118157679738562,
+            "pattern_1_minus_iou": 0.5681818181818181,
+            "blur_rgb_mad": 0.15543300653594772
+          },
+          "blur_rgb_mad": {
+            "neighbor": "phantom_cloak",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.2014297385620915,
+            "pattern_1_minus_iou": 0.5923076923076923,
+            "blur_rgb_mad": 0.13711958741830063
+          }
+        }
+      },
+      "phantom_cloak": {
+        "candidate_count": 25,
+        "pairwise": [
+          {
+            "neighbor": "fire_talisman_bolt",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.2575176164215686,
+            "pattern_1_minus_iou": 0.47113163972286376,
+            "blur_rgb_mad": 0.16775428921568628
+          },
+          {
+            "neighbor": "thunder_palm",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.2482906964869281,
+            "pattern_1_minus_iou": 0.41280353200883,
+            "blur_rgb_mad": 0.14821793300653593
+          },
+          {
+            "neighbor": "water_mirror",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.23363077001633986,
+            "pattern_1_minus_iou": 0.3727272727272727,
+            "blur_rgb_mad": 0.14931959763071898
+          },
+          {
+            "neighbor": "taixu_heart",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.2649420445261438,
+            "pattern_1_minus_iou": 0.4255813953488372,
+            "blur_rgb_mad": 0.16592754289215686
+          },
+          {
+            "neighbor": "five_element_attune",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.27779437295751636,
+            "pattern_1_minus_iou": 0.3472222222222222,
+            "blur_rgb_mad": 0.17560125612745098
+          },
+          {
+            "neighbor": "paper_talisman_throw",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.298452818627451,
+            "pattern_1_minus_iou": 0.5381062355658199,
+            "blur_rgb_mad": 0.19428232230392156
+          },
+          {
+            "neighbor": "scatter_talisman",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.30454324959150325,
+            "pattern_1_minus_iou": 0.5271867612293144,
+            "blur_rgb_mad": 0.19512995302287583
+          },
+          {
+            "neighbor": "talisman_step",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.31271063112745096,
+            "pattern_1_minus_iou": 0.4087912087912088,
+            "blur_rgb_mad": 0.18589154411764705
+          },
+          {
+            "neighbor": "lingfu_heart",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.2919819750816993,
+            "pattern_1_minus_iou": 0.4739229024943311,
+            "blur_rgb_mad": 0.1883578431372549
+          },
+          {
+            "neighbor": "talisman_supply",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.3062078737745098,
+            "pattern_1_minus_iou": 0.5545023696682465,
+            "blur_rgb_mad": 0.19680223651960785
+          },
+          {
+            "neighbor": "shadow_dart",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.2014297385620915,
+            "pattern_1_minus_iou": 0.5923076923076923,
+            "blur_rgb_mad": 0.13711958741830063
+          },
+          {
+            "neighbor": "shadow_step",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.20375561683006535,
+            "pattern_1_minus_iou": 0.3150105708245243,
+            "blur_rgb_mad": 0.1239047181372549
+          },
+          {
+            "neighbor": "youying_heart",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.27590762867647056,
+            "pattern_1_minus_iou": 0.4895591647331786,
+            "blur_rgb_mad": 0.1729715584150327
+          },
+          {
+            "neighbor": "light_foot",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.27819265727124187,
+            "pattern_1_minus_iou": 0.5199004975124378,
+            "blur_rgb_mad": 0.1773029003267974
+          },
+          {
+            "neighbor": "summon_spirit_wolf",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.26961677900326797,
+            "pattern_1_minus_iou": 0.417607223476298,
+            "blur_rgb_mad": 0.1745340584150327
+          },
+          {
+            "neighbor": "beast_roar",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.28596047794117646,
+            "pattern_1_minus_iou": 0.40681818181818186,
+            "blur_rgb_mad": 0.18359757965686274
+          },
+          {
+            "neighbor": "beast_bond",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.2727979473039216,
+            "pattern_1_minus_iou": 0.3297180043383948,
+            "blur_rgb_mad": 0.17201286764705884
+          },
+          {
+            "neighbor": "wanshou_heart",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.26924019607843136,
+            "pattern_1_minus_iou": 0.5474452554744526,
+            "blur_rgb_mad": 0.18344822303921568
+          },
+          {
+            "neighbor": "beast_mastery",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.29763710171568625,
+            "pattern_1_minus_iou": 0.518957345971564,
+            "blur_rgb_mad": 0.2065282883986928
+          },
+          {
+            "neighbor": "sword_qi_slash",
+            "neighbor_is_reference": true,
+            "rgb_mad": 0.2615004595588235,
+            "pattern_1_minus_iou": 0.6313131313131313,
+            "blur_rgb_mad": 0.19193218954248367
+          },
+          {
+            "neighbor": "whirl_sword",
+            "neighbor_is_reference": true,
+            "rgb_mad": 0.2706622753267974,
+            "pattern_1_minus_iou": 0.5228310502283104,
+            "blur_rgb_mad": 0.17976664624183006
+          },
+          {
+            "neighbor": "light_body",
+            "neighbor_is_reference": true,
+            "rgb_mad": 0.2729715584150327,
+            "pattern_1_minus_iou": 0.6564102564102564,
+            "blur_rgb_mad": 0.2000778696895425
+          },
+          {
+            "neighbor": "tianjian_heart",
+            "neighbor_is_reference": true,
+            "rgb_mad": 0.27725056168300655,
+            "pattern_1_minus_iou": 0.5788235294117647,
+            "blur_rgb_mad": 0.189148029003268
+          },
+          {
+            "neighbor": "sword_mastery",
+            "neighbor_is_reference": true,
+            "rgb_mad": 0.2939593545751634,
+            "pattern_1_minus_iou": 0.7531172069825436,
+            "blur_rgb_mad": 0.20817887050653594
+          },
+          {
+            "neighbor": "spirit_bolt",
+            "neighbor_is_reference": true,
+            "rgb_mad": 0.27230902777777777,
+            "pattern_1_minus_iou": 0.6237864077669903,
+            "blur_rgb_mad": 0.20122549019607844
+          }
+        ],
+        "nearest": {
+          "rgb_mad": {
+            "neighbor": "shadow_dart",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.2014297385620915,
+            "pattern_1_minus_iou": 0.5923076923076923,
+            "blur_rgb_mad": 0.13711958741830063
+          },
+          "pattern_1_minus_iou": {
+            "neighbor": "shadow_step",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.20375561683006535,
+            "pattern_1_minus_iou": 0.3150105708245243,
+            "blur_rgb_mad": 0.1239047181372549
+          },
+          "blur_rgb_mad": {
+            "neighbor": "shadow_step",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.20375561683006535,
+            "pattern_1_minus_iou": 0.3150105708245243,
+            "blur_rgb_mad": 0.1239047181372549
+          }
+        },
+        "same_sect_candidate_count": 4,
+        "same_sect_pairwise": [
+          {
+            "neighbor": "shadow_dart",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.2014297385620915,
+            "pattern_1_minus_iou": 0.5923076923076923,
+            "blur_rgb_mad": 0.13711958741830063
+          },
+          {
+            "neighbor": "shadow_step",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.20375561683006535,
+            "pattern_1_minus_iou": 0.3150105708245243,
+            "blur_rgb_mad": 0.1239047181372549
+          },
+          {
+            "neighbor": "youying_heart",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.27590762867647056,
+            "pattern_1_minus_iou": 0.4895591647331786,
+            "blur_rgb_mad": 0.1729715584150327
+          },
+          {
+            "neighbor": "light_foot",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.27819265727124187,
+            "pattern_1_minus_iou": 0.5199004975124378,
+            "blur_rgb_mad": 0.1773029003267974
+          }
+        ],
+        "same_sect_minimum": {
+          "rgb_mad": {
+            "neighbor": "shadow_dart",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.2014297385620915,
+            "pattern_1_minus_iou": 0.5923076923076923,
+            "blur_rgb_mad": 0.13711958741830063
+          },
+          "pattern_1_minus_iou": {
+            "neighbor": "shadow_step",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.20375561683006535,
+            "pattern_1_minus_iou": 0.3150105708245243,
+            "blur_rgb_mad": 0.1239047181372549
+          },
+          "blur_rgb_mad": {
+            "neighbor": "shadow_step",
+            "neighbor_is_reference": false,
+            "rgb_mad": 0.20375561683006535,
+            "pattern_1_minus_iou": 0.3150105708245243,
+            "blur_rgb_mad": 0.1239047181372549
+          }
+        }
+      }
+    }
+  },
+  "same_id_changes": {
+    "shadow_dart": {
+      "r0_to_r1": {
+        "rgb_mad": 0.20934563929738564,
+        "pattern_1_minus_iou": 0.7083333333333333,
+        "blur_rgb_mad": 0.15723039215686274
+      },
+      "r1_to_r2": {
+        "rgb_mad": 0.17579018586601308,
+        "pattern_1_minus_iou": 0.6956521739130435,
+        "blur_rgb_mad": 0.11646497140522875
+      },
+      "r0_to_r2": {
+        "rgb_mad": 0.18757659313725492,
+        "pattern_1_minus_iou": 0.6278195488721805,
+        "blur_rgb_mad": 0.1318295547385621
+      }
+    },
+    "phantom_cloak": {
+      "r0_to_r1": {
+        "rgb_mad": 0.26354677287581696,
+        "pattern_1_minus_iou": 0.5497737556561086,
+        "blur_rgb_mad": 0.18757276348039215
+      },
+      "r1_to_r2": {
+        "rgb_mad": 0.07370940563725491,
+        "pattern_1_minus_iou": 0.0992366412213741,
+        "blur_rgb_mad": 0.0349124285130719
+      },
+      "r0_to_r2": {
+        "rgb_mad": 0.2558963950163399,
+        "pattern_1_minus_iou": 0.5545023696682465,
+        "blur_rgb_mad": 0.181921466503268
+      }
+    }
+  },
+  "merge": {
+    "all_passed": true,
+    "atlas_dimensions": [
+      832,
+      32
+    ],
+    "frames": 26,
+    "changed_frame_count": 2,
+    "changed_pixels_per_frame": {
+      "shadow_dart": 612,
+      "phantom_cloak": 737
+    },
+    "replacement_boxes_xyxy": {
+      "shadow_dart": [
+        512,
+        0,
+        544,
+        32
+      ],
+      "phantom_cloak": [
+        576,
+        0,
+        608,
+        32
+      ]
+    },
+    "outside_targets_pixel_exact": true,
+    "outside_pixels_checked": 24576,
+    "outside_differing_pixels": 0,
+    "first_six_frames_pixel_exact_to_official": true,
+    "all_20_targets_pixel_exact_to_new_standalones": true,
+    "other_18_targets_pixel_exact_to_new_standalones": true,
+    "json_md5_equal": true,
+    "json_byte_exact": true,
+    "json_rewritten": false,
+    "all_readonly_inputs_unchanged": true,
+    "r0_r1_metric_methods_reproduced": true,
+    "official_png_md5": "939aaebb53373461e5806ca91b67c1a9",
+    "official_json_md5": "e67aaa98e478af5928e9880390715e8c",
+    "r1_merged_png_md5": "20fc4497eb8a86ebfc0a0786efc9c6c9",
+    "merged_png_md5": "645161b12d7e7a2d7ed9f9556d5389b4",
+    "merged_json_md5": "e67aaa98e478af5928e9880390715e8c",
+    "saved_png_roundtrip_pixel_exact": true,
+    "compare_3x_base_nearest_exact": true,
+    "hotbar_3x_nearest_exact": true
+  },
+  "hotbar": {
+    "screen_size": [
+      1280,
+      720
+    ],
+    "panel_box_xyxy": [
+      840,
+      632,
+      1264,
+      692
+    ],
+    "slot_origin_xy": [
+      848,
+      640
+    ],
+    "slot_size": [
+      44,
+      44
+    ],
+    "slot_stride": 52,
+    "icon_offset_xy": [
+      6,
+      6
+    ],
+    "key_order": [
+      "A",
+      "S",
+      "D",
+      "F",
+      "G",
+      "H",
+      "Q",
+      "W"
+    ],
+    "slot_ids": [
+      "shadow_dart",
+      "shadow_step",
+      "phantom_cloak",
+      "spirit_bolt",
+      "shadow_dart",
+      null,
+      null,
+      null
+    ],
+    "active_slot_index": 4,
+    "crop_box_xyxy": [
+      800,
+      610,
+      1280,
+      720
+    ],
+    "row_order": [
+      "youying/r1",
+      "youying/r2"
+    ],
+    "background_sizes": {
+      "far": [
+        1024,
+        768
+      ],
+      "mid": [
+        1024,
+        768
+      ]
+    },
+    "mid_origin_y": -48,
+    "background_scaled": false
+  },
+  "input_md5": {
+    "art/icons/icons_skills.json": "e67aaa98e478af5928e9880390715e8c",
+    "art/icons/_pending/skill_icons_sects_r1/icons_skills.merged.json": "e67aaa98e478af5928e9880390715e8c",
+    "art/icons/_backup/v28_skill_icons_sects_r2_20261010_143416/icons_skills.merged.json": "e67aaa98e478af5928e9880390715e8c",
+    "art/icons/icons_skills.png": "939aaebb53373461e5806ca91b67c1a9",
+    "art/icons/_backup/v28_skill_icons_sects_r2_20261010_143416/icons_skills.merged.png": "20fc4497eb8a86ebfc0a0786efc9c6c9",
+    "art/icons/_backup/v28_skill_icons_sects_r2_20261010_143416/metrics_r1.json": "af1844605ace1de63b508db86a80513e",
+    "art/icons/_backup/v27_skill_icons_sects_20261010_140232/skills/icon_skill_fire_talisman_bolt.png": "4f651077d245767e8bf5d27337869211",
+    "art/icons/_pending/skill_icons_sects_r1/icon_skill_fire_talisman_bolt.png": "e20b7b3b0f8bf32d2e4e1ee6875793dc",
+    "art/icons/_pending/skill_icons_sects_r1/icon_skill_fire_talisman_bolt@64.png": "9bfcf305d75bbe727ddca43175471e36",
+    "art/icons/_backup/v27_skill_icons_sects_20261010_140232/skills/icon_skill_thunder_palm.png": "5e60aeb8b6fcdd65575904179102ac51",
+    "art/icons/_pending/skill_icons_sects_r1/icon_skill_thunder_palm.png": "f4c79c91c3ec17aa80dcbaac422aa42a",
+    "art/icons/_pending/skill_icons_sects_r1/icon_skill_thunder_palm@64.png": "a8fe6cf8b6b11fd6a5aae121e71c8662",
+    "art/icons/_backup/v27_skill_icons_sects_20261010_140232/skills/icon_skill_water_mirror.png": "ce9d39e18f40398d2b823922c1360873",
+    "art/icons/_pending/skill_icons_sects_r1/icon_skill_water_mirror.png": "cd6e9c0b31b04617ff2fac578f8281cd",
+    "art/icons/_pending/skill_icons_sects_r1/icon_skill_water_mirror@64.png": "7ab7a83b28fc6420be5de75597d21ebf",
+    "art/icons/_backup/v27_skill_icons_sects_20261010_140232/skills/icon_skill_taixu_heart.png": "620cdbda352fea18a594333d319e88bc",
+    "art/icons/_pending/skill_icons_sects_r1/icon_skill_taixu_heart.png": "0a9cb6fdb9337878d1b6c56862a0ebd0",
+    "art/icons/_pending/skill_icons_sects_r1/icon_skill_taixu_heart@64.png": "0ef55af07bd4f7031316d95b1aed0133",
+    "art/icons/_backup/v27_skill_icons_sects_20261010_140232/skills/icon_skill_five_element_attune.png": "0d664d3f85dc06b085ce0c61a748155e",
+    "art/icons/_pending/skill_icons_sects_r1/icon_skill_five_element_attune.png": "62ea8131b71e0fccc7d1309580bc009c",
+    "art/icons/_pending/skill_icons_sects_r1/icon_skill_five_element_attune@64.png": "8c273279c5bbd06266cddd6ea7a211cc",
+    "art/icons/_backup/v27_skill_icons_sects_20261010_140232/skills/icon_skill_paper_talisman_throw.png": "3e60f6fa6a46e9e34d3c9f589cba646d",
+    "art/icons/_pending/skill_icons_sects_r1/icon_skill_paper_talisman_throw.png": "201299b40ce373e8122103563d1ac2bf",
+    "art/icons/_pending/skill_icons_sects_r1/icon_skill_paper_talisman_throw@64.png": "277f5e9e8a3ebbc271f7996cfa16dc2f",
+    "art/icons/_backup/v27_skill_icons_sects_20261010_140232/skills/icon_skill_scatter_talisman.png": "193772de77286a9f032edc4a97b52205",
+    "art/icons/_pending/skill_icons_sects_r1/icon_skill_scatter_talisman.png": "5f6e61eb389ba4b65723dd5a22170eda",
+    "art/icons/_pending/skill_icons_sects_r1/icon_skill_scatter_talisman@64.png": "58d85ae225636ff3ce3b6d991ed35b86",
+    "art/icons/_backup/v27_skill_icons_sects_20261010_140232/skills/icon_skill_talisman_step.png": "52fff4e0aa0067e78ee1c460c5e4748e",
+    "art/icons/_pending/skill_icons_sects_r1/icon_skill_talisman_step.png": "d03d43f387bab4dff2ff3342d7dbbb2e",
+    "art/icons/_pending/skill_icons_sects_r1/icon_skill_talisman_step@64.png": "a687433bcfaafe439501883529200b58",
+    "art/icons/_backup/v27_skill_icons_sects_20261010_140232/skills/icon_skill_lingfu_heart.png": "6da7869b187ed114d5bfbdb379809748",
+    "art/icons/_pending/skill_icons_sects_r1/icon_skill_lingfu_heart.png": "27026ab3595cae9663e7aedec8d9fa3f",
+    "art/icons/_pending/skill_icons_sects_r1/icon_skill_lingfu_heart@64.png": "3d27791a45ea6ee7c07ca9f746b8911a",
+    "art/icons/_backup/v27_skill_icons_sects_20261010_140232/skills/icon_skill_talisman_supply.png": "9a42aa8dea242f84ccafe68dcd9ef0f6",
+    "art/icons/_pending/skill_icons_sects_r1/icon_skill_talisman_supply.png": "8eb10d0d61f195edebded87fd07a7f6d",
+    "art/icons/_pending/skill_icons_sects_r1/icon_skill_talisman_supply@64.png": "cb2bbc8d19e070115708bb58df5c9d98",
+    "art/icons/_backup/v27_skill_icons_sects_20261010_140232/skills/icon_skill_shadow_dart.png": "de07b7f8af08c32d6bcec5bd89f6949f",
+    "art/icons/_pending/skill_icons_sects_r1/icon_skill_shadow_dart.png": "f9a552cf514f00babde2e49b38578655",
+    "art/icons/_pending/skill_icons_sects_r1/icon_skill_shadow_dart@64.png": "9b18b20f5addc17b079b57386a347f6d",
+    "art/icons/_backup/v28_skill_icons_sects_r2_20261010_143416/icon_skill_shadow_dart.png": "634bd3db915bf778ecdbad730f46fa29",
+    "art/icons/_backup/v28_skill_icons_sects_r2_20261010_143416/icon_skill_shadow_dart@64.png": "fcf9eff0e84429c91620d03bfac5c7cb",
+    "art/icons/_backup/v27_skill_icons_sects_20261010_140232/skills/icon_skill_shadow_step.png": "b12dbbf5ed738a72d9a5b3ec63b52e03",
+    "art/icons/_pending/skill_icons_sects_r1/icon_skill_shadow_step.png": "512c4ce85857db16c0c35b9d72f8ff39",
+    "art/icons/_pending/skill_icons_sects_r1/icon_skill_shadow_step@64.png": "62f278602bb1d7da5406fa8b76edfe9f",
+    "art/icons/_backup/v27_skill_icons_sects_20261010_140232/skills/icon_skill_phantom_cloak.png": "d38d1a25e43b6329a758dfd0cc752c02",
+    "art/icons/_pending/skill_icons_sects_r1/icon_skill_phantom_cloak.png": "5d9a17f1dac95937368efe1f0de29a2b",
+    "art/icons/_pending/skill_icons_sects_r1/icon_skill_phantom_cloak@64.png": "852a2627bdf5ae808298d6a502ce57f2",
+    "art/icons/_backup/v28_skill_icons_sects_r2_20261010_143416/icon_skill_phantom_cloak.png": "cbdd0c76f49308da32d79ea85dcfe6b7",
+    "art/icons/_backup/v28_skill_icons_sects_r2_20261010_143416/icon_skill_phantom_cloak@64.png": "e2d5cf4810a5a381583a2fffc65fbd41",
+    "art/icons/_backup/v27_skill_icons_sects_20261010_140232/skills/icon_skill_youying_heart.png": "8c8d6d11007ee29554b1f720d6bad8f9",
+    "art/icons/_pending/skill_icons_sects_r1/icon_skill_youying_heart.png": "63090b902f7c5be3e32e4cff4e1466ee",
+    "art/icons/_pending/skill_icons_sects_r1/icon_skill_youying_heart@64.png": "58d16cea39b52d7938eed4f97fe4191b",
+    "art/icons/_backup/v27_skill_icons_sects_20261010_140232/skills/icon_skill_light_foot.png": "0484ada80b5f7e528ac82e5de5c20ba2",
+    "art/icons/_pending/skill_icons_sects_r1/icon_skill_light_foot.png": "b73008208a8decb372d38fb9bb42cbe5",
+    "art/icons/_pending/skill_icons_sects_r1/icon_skill_light_foot@64.png": "d6d0392e0431222eb2f4141cf3779e37",
+    "art/icons/_backup/v27_skill_icons_sects_20261010_140232/skills/icon_skill_summon_spirit_wolf.png": "461fcbcd99b6a704d03ac59a1170f8e4",
+    "art/icons/_pending/skill_icons_sects_r1/icon_skill_summon_spirit_wolf.png": "d8a5a97ffbd5d353825f4a6f3f2f64e5",
+    "art/icons/_pending/skill_icons_sects_r1/icon_skill_summon_spirit_wolf@64.png": "0ff47a80a7a4b2671d84b1b0bac160fc",
+    "art/icons/_backup/v27_skill_icons_sects_20261010_140232/skills/icon_skill_beast_roar.png": "7b87265c46caeeac40609fa2f5d6516e",
+    "art/icons/_pending/skill_icons_sects_r1/icon_skill_beast_roar.png": "1b69d06b460acb6bd2538a6e69abac25",
+    "art/icons/_pending/skill_icons_sects_r1/icon_skill_beast_roar@64.png": "ff8c87c1fb73d2359662849abe796e18",
+    "art/icons/_backup/v27_skill_icons_sects_20261010_140232/skills/icon_skill_beast_bond.png": "08f6ff08662f23ed2ff5525ac8adcb7d",
+    "art/icons/_pending/skill_icons_sects_r1/icon_skill_beast_bond.png": "dfb7d36a1cbd58dc9791ba897a3139a9",
+    "art/icons/_pending/skill_icons_sects_r1/icon_skill_beast_bond@64.png": "8f3c5896acea2273515bab27cfcf79bd",
+    "art/icons/_backup/v27_skill_icons_sects_20261010_140232/skills/icon_skill_wanshou_heart.png": "dd0c51fe1c4e9269fa346ba83eb1fefc",
+    "art/icons/_pending/skill_icons_sects_r1/icon_skill_wanshou_heart.png": "7a57659a7bdbc499ad79bbfd80ea8a17",
+    "art/icons/_pending/skill_icons_sects_r1/icon_skill_wanshou_heart@64.png": "28370b1aecefc942daac82328ddb73e0",
+    "art/icons/_backup/v27_skill_icons_sects_20261010_140232/skills/icon_skill_beast_mastery.png": "959abfc6dfae6472840fee35f0a445c1",
+    "art/icons/_pending/skill_icons_sects_r1/icon_skill_beast_mastery.png": "5febedb0518e5a7f75c653f6851a6398",
+    "art/icons/_pending/skill_icons_sects_r1/icon_skill_beast_mastery@64.png": "6733221952a4eb7e7f10e5da8689884f",
+    "art/icons/ui/hud/hud_ui.json": "f1e6cd33f22e893ffb786b5d3ced8e01",
+    "art/icons/ui/hud/ui_hud_panel.png": "3cf2a926fd82983d1192fa7643615c84",
+    "art/icons/ui/hud/ui_hud_slot.png": "5a7afb2159fa6acc5374782737a59ddb",
+    "art/icons/ui/hud/ui_hud_slot_active.png": "fa8dca969c883a3a36382b03eb662d22",
+    "art/tiles/bg_youying_far.png": "7264caf468f29380a42bb7910e2f7f2e",
+    "art/tiles/bg_youying_mid.png": "54a8f9e5901db6a8438015acacb6eda2",
+    "art/tools/skill_icons_sects_r2_patch.py": "0ad6b0b3ce54ba87aac289744078033e"
+  },
+  "script_md5": "0ad6b0b3ce54ba87aac289744078033e",
+  "output_files": {
+    "art/icons/_pending/skill_icons_sects_r1/icons_skills.merged.png": {
+      "md5": "645161b12d7e7a2d7ed9f9556d5389b4"
+    },
+    "art/sprites/preview/76_skill_icons_r2_compare_1x.png": {
+      "md5": "c52f2b84fcffc64a201d49a1021763c3"
+    },
+    "art/sprites/preview/76_skill_icons_r2_compare_3x.png": {
+      "md5": "d9627dbc67e68c1ed1f1c6d9c64b6a70"
+    },
+    "art/sprites/preview/76_skill_icons_r2_hotbar.png": {
+      "md5": "0ea5f0d9442798be23c024cd6486ce13"
+    },
+    "art/sprites/preview/76_skill_icons_r2_hotbar_3x.png": {
+      "md5": "b024296e32e160354e7279e117c409bb"
+    },
+    "art/icons/_pending/skill_icons_sects_r1/metrics_r2.json": {
+      "md5": "See stdout; self-checksum intentionally external"
+    }
+  }
+}
