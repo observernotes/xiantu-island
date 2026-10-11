@@ -1,0 +1,90 @@
+{
+  "asset": "bg_lingfu_mid",
+  "baseline_pixel_equal": true,
+  "source_replacements": 1,
+  "size": [
+    1024,
+    768
+  ],
+  "mode": "RGBA",
+  "size_mode_equal": true,
+  "alpha_bytes_equal": true,
+  "diff_pixels": 2964,
+  "diff_bbox_xyxy_exclusive": [
+    101,
+    582,
+    749,
+    633
+  ],
+  "walls": [
+    {
+      "x": 170,
+      "scale": 2.0,
+      "w": 92.0,
+      "b": 628.6407779665874,
+      "wall_rect": [
+        103.76,
+        584.6407779665874,
+        236.24,
+        628.6407779665874
+      ],
+      "allowed_bbox_inclusive": [
+        100,
+        581,
+        240,
+        632
+      ],
+      "diff_pixels": 1497
+    },
+    {
+      "x": 680,
+      "scale": 2.4,
+      "w": 110.39999999999999,
+      "b": 630.9338854921442,
+      "wall_rect": [
+        600.5120000000001,
+        578.1338854921443,
+        759.4879999999999,
+        630.9338854921442
+      ],
+      "allowed_bbox_inclusive": [
+        597,
+        575,
+        763,
+        634
+      ],
+      "diff_pixels": 1467
+    }
+  ],
+  "lanczos_tolerance_px": 3,
+  "diff_outside_walls": 0,
+  "seam": {
+    "formula": "mean(abs(RGB*alpha/255 at column 0 - column 1023)), 0..255",
+    "before": 0.08372310729847493,
+    "after": 0.08372310729847493,
+    "tolerance": 0.01,
+    "passed": true
+  },
+  "mech_seam": {
+    "skipped": true,
+    "reason": "1024×768 背景不能按正方形 1024 图块整切；工具另写报告，本批只用自算接缝"
+  },
+  "unchanged": [
+    "npc_tree_spirit",
+    "bg_lingfu_far",
+    "bg_luoxia_far"
+  ],
+  "composition_note": "落霞 B：mid 列=(far 列+540)%1024，城墙底边露出；仅提示，未改",
+  "passed": true,
+  "read_only_inputs_equal": true,
+  "preview_sizes": [
+    [
+      1320,
+      956
+    ],
+    [
+      2472,
+      3320
+    ]
+  ]
+}

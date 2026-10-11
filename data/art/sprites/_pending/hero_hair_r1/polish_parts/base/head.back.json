@@ -1,0 +1,23 @@
+{
+ "part": "head",
+ "variant": "back",
+ "scale": 4,
+ "size": [
+  44,
+  46
+ ],
+ "origin": [
+  22,
+  42
+ ],
+ "map": {
+  "neck": [
+   0,
+   0
+  ],
+  "brow": [
+   0,
+   -18
+  ]
+ }
+}

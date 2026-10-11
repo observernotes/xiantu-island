@@ -70,7 +70,7 @@
   "id": "demon_fox",
   "name": "妖狐",
   "level": 12,
-  "hp": 1050,
+  "hp": 550,
   "atk": 45,
   "def": 10,
   "exp": 350,
@@ -87,7 +87,7 @@
     "id": "fox_fire",
     "name": "狐火",
     "type": "projectile",
-    "damageRatio": 1.0,
+    "damageRatio": 0.8,
     "count": 3,
     "speed": 260,
     "cooldownMs": 4000
@@ -96,7 +96,7 @@
     "id": "phantom_dash",
     "name": "幻影突袭",
     "type": "dash",
-    "damageRatio": 1.2,
+    "damageRatio": 1.0,
     "distance": 384,
     "telegraphMs": 600,
     "cooldownMs": 7000

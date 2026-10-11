@@ -663,5 +663,18 @@
   "qi.dialog.intro": "山川各有灵韵，寻得安稳处，再静心吐纳。",
   "qi.dialog.sect": "山门灵气与闭关室不同，入室自有聚灵之助。",
   "qi.dialog.herb": "灵地易蕴良材，采药仍须看药性与时机。",
-  "qi.dialog.alchemy": "灵药须配良方，灵气再盛也不能省去火候。"
+  "qi.dialog.alchemy": "灵药须配良方，灵气再盛也不能省去火候。",
+  "ui.shop.title": "{npc}的货摊",
+  "ui.shop.balance": "灵石：{n}",
+  "ui.shop.quantity": "数量",
+  "ui.shop.total": "合计",
+  "ui.shop.unit_price": "单价",
+  "ui.shop.held": "持有",
+  "ui.shop.req_rank": "需职位",
+  "ui.shop.max": "最多",
+  "ui.shop.exchange": "兑换",
+  "ui.shop.keys": "↑↓ 选货  ←→ 数量  Z/回车 确认  Esc 关闭",
+  "ui.shop.changed": "道友，货架已更新，请再确认。",
+  "ui.shop.price_stones": "{n} 灵石",
+  "ui.shop.price_contribution": "{n} 贡献"
 }

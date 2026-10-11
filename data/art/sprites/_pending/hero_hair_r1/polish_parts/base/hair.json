@@ -1,0 +1,23 @@
+{
+ "part": "hair",
+ "variant": "default",
+ "scale": 4,
+ "size": [
+  48,
+  48
+ ],
+ "origin": [
+  24,
+  32
+ ],
+ "map": {
+  "brow": [
+   0,
+   0
+  ],
+  "knot": [
+   10,
+   -17.2
+  ]
+ }
+}
