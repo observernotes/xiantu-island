@@ -29,6 +29,7 @@ import { Gathering } from './Gathering';
 import { interactionPrompt } from '../InteractionPrompt';
 import { AlchemySystem, ALCHEMY_RULES, alchemyFurnace } from '../Alchemy';
 import { AlchemyPanel, preloadAlchemy, registerAlchemy } from '../AlchemyPanel';
+import { ShopPanel } from '../ShopPanel';
 import { BackgroundArt, type BackgroundConfig } from './BackgroundArt';
 import { EnvironmentArt, type EnvironmentArtConfig } from './EnvironmentArt';
 import { PropLayout } from './PropLayout';
@@ -92,6 +93,7 @@ export class GameScene extends Phaser.Scene {
   gathering!: Gathering;
   alchemySystem!: AlchemySystem;
   alchemy!: AlchemyPanel;
+  shop!: ShopPanel;
   private interactionPrompts: { object: MapObj; prompt: Phaser.GameObjects.Container; marker?: Phaser.GameObjects.Image | Phaser.GameObjects.Text }[] = [];
   private sectTitle!: Phaser.GameObjects.Text;
   private sectBadge!: Phaser.GameObjects.Image;
@@ -277,6 +279,8 @@ export class GameScene extends Phaser.Scene {
     this.alchemySystem = new AlchemySystem(this.prog, this.quests);
     this.alchemy = new AlchemyPanel(this, this.prog, this.alchemySystem);
     if (this.alchemySystem.active) this.alchemy.open(this.alchemySystem.active.furnaceId);
+    this.shop = new ShopPanel(this, this.prog, () => this.sectGrowth, { log: (text, color) => this.log(text, color),
+      require: (name, npcId) => this.requireFeature(name, npcId), rankIcon: rankId => this.sectRankBadgeKey(rankId) });
     this.skillBar = new SkillBar(this);
     this.skillWindow = new SkillWindow(this, () => this.prog, id => this.tryAddPoint(id));
     this.skillBar.onSlot = i => { if (this.skillWindow.open) this.skillWindow.assign(i); };
@@ -559,19 +563,20 @@ export class GameScene extends Phaser.Scene {
     if (this.sectTrial && !this.sectTrial.ended && this.sectTrial.def.quest && this.quests.sectEntryBlock(this.sectTrial.def.quest)) {
       this.sectTrial.exit(); return;
     }
-    if (this.sectTrial && !this.dialog.open && !this.skillWindow.open && !this.alchemy.isOpen()) this.sectTrial.update(delta);
+    if (this.sectTrial && !this.dialog.open && !this.skillWindow.open && !this.alchemy.isOpen() && !this.shop.isOpen()) this.sectTrial.update(delta);
     if (this.sectTrial?.ended) { this.drawHud(); return; }
     if (time >= this.nextAgeUpdateAt) { this.prog.advanceAge(); this.nextAgeUpdateAt = time + 60000; this.prog.save(); }
-    if (J(k.k) && !this.dialog.open && !this.alchemy.isOpen()) this.skillWindow.toggle();
-    if (J(k.l) && !this.dialog.open && !this.skillWindow.open) this.openAlchemy();
+    if (J(k.k) && !this.dialog.open && !this.alchemy.isOpen() && !this.shop.isOpen()) this.skillWindow.toggle();
+    if (J(k.l) && !this.dialog.open && !this.skillWindow.open && !this.shop.isOpen()) this.openAlchemy();
     const escDown = J(k.esc);
     if (escDown && this.skillWindow.open) this.skillWindow.close();
-    const modal = this.dialog.open || this.skillWindow.open || this.alchemy.isOpen() || !!this.sectTrial?.blocksInput;
+    const modal = this.dialog.open || this.skillWindow.open || this.alchemy.isOpen() || this.shop.isOpen() || !!this.sectTrial?.blocksInput;
     this.updateInteractionPrompts(modal);
     this.gathering.update(delta, k.z.isDown, modal || this.hasNearbyDrop(),
       k.left.isDown || k.right.isDown || k.up.isDown || k.down.isDown || k.space.isDown || k.alt.isDown || k.c.isDown || k.ctrl.isDown || k.x.isDown);
     if (modal) {
       this.alchemy.update(delta);
+      this.shop.update();
       if (this.dialog.open) {
         [k.one, k.two, k.three, k.four, k.five].forEach((key, i) => { if (J(key)) this.dialog.selectChoice(i); });
         if (escDown) this.dialog.dismissChoices();
@@ -883,7 +888,7 @@ export class GameScene extends Phaser.Scene {
 
   openAlchemy(publicFurnace?: string) {
     if (!this.requireFeature('alchemyPhase1')) return false;
-    if (this.player.dead || this.trial || this.map.trial || this.dialog.open || this.skillWindow.open) return false;
+    if (this.player.dead || this.trial || this.map.trial || this.dialog.open || this.skillWindow.open || this.shop.isOpen()) return false;
     const furnace = alchemyFurnace(this.prog, this.player, this.map.objects, publicFurnace);
     if (!furnace) { this.log('请到孙郎中处使用丹炉，或先获得丹炉。', '#ffb0b0'); return false; }
     this.gathering.cancel(); this.player.body.setVelocityX(0);
@@ -960,7 +965,7 @@ export class GameScene extends Phaser.Scene {
 
   /** 测试覆盖即时撤下旧回调；存档身份、材料、贡献与待炼炉次均保留。 */
   applyFeatureFlags() {
-    this.dialog?.dismiss(); this.skillWindow?.close();
+    this.dialog?.dismiss(); this.skillWindow?.close(); this.shop?.update();
     this.refreshHelpText();
     this.inventoryFurnace?.setVisible(false);
     this.inventorySectToken?.setVisible(false);
@@ -1261,7 +1266,7 @@ export class GameScene extends Phaser.Scene {
   /** 背包中的拜帖提供明确选择；定下去向并不提前拜入。 */
   openSectToken(): boolean {
     if (this.prog.count('five_sect_token') <= 0 || this.prog.job || this.prog.pendingSectTrial || this.player.dead
-      || this.dialog.open || this.skillWindow.open || this.alchemy.isOpen()) return false;
+      || this.dialog.open || this.skillWindow.open || this.alchemy.isOpen() || this.shop.isOpen()) return false;
     this.player.body.setVelocityX(0); this.invText.setVisible(false);
     this.dialog.choose({ speaker: null, text: `${t('sect.entry.select_title')}\n${t('sect.entry.select_tip')}` }, null,
       CLASS_LIST.map(cls => {
@@ -1422,73 +1427,20 @@ export class GameScene extends Phaser.Scene {
     ], this.sectRankBadgeKey());
   }
 
+  /** UI-5：宗门商店/藏经阁走商店窗；目录、职位与贡献结算仍由 SectGrowth.catalog/exchange 负责。 */
   openSectCatalog(npcId: string, service: 'sect_shop' | 'sect_library') {
     if (!this.requireFeature('sectShopLibrary', npcId) || (service === 'sect_shop' && !this.requireFeature('shops', npcId))) return;
-    const npc = NPCS[npcId]; if (!npc) return;
-    const catalog = this.sectGrowth.catalog(npcId, service);
-    const prefix = service === 'sect_library' ? 'sect.library' : 'sect.shop';
-    const rankOrder = this.sectGrowth.config.ranks.rules.rankOrder;
-    const entries = [...catalog.entries].sort((a, b) => rankOrder.indexOf(a.reqRank) - rankOrder.indexOf(b.reqRank));
-    const choices: DialogChoice[] = entries.map(entry => {
-      const preview = entry.costContribution !== null
-        ? t(`${prefix}.confirm`, { contribution: entry.costContribution, item: entry.name }) : '';
-      const rankLabel = rankOrder.includes(entry.reqRank) ? entry.rankName : '';
-      return { label: rankLabel ? `${entry.name}（${rankLabel}）` : entry.name, rankIcon: rankLabel ? this.sectRankBadgeKey(entry.reqRank) : undefined, disabled: !entry.ok,
-        reason: [preview, entry.ok ? '' : t(entry.key, { rank: entry.rankName })].filter(Boolean).join('\n'),
-        onSelect: () => {
-          if (!this.requireFeature('sectShopLibrary', npcId) || (service === 'sect_shop' && !this.requireFeature('shops', npcId))) return;
-          const transactionId = newSectTransactionId();
-          this.dialog.choose({ speaker: npc.name, text: this.sectOverview() }, npc.sprite, [
-            { label: t('sect.ui.confirm'), rankIcon: rankLabel ? this.sectRankBadgeKey(entry.reqRank) : undefined, reason: preview, onSelect: () => {
-              if (!this.requireFeature('sectShopLibrary', npcId) || (service === 'sect_shop' && !this.requireFeature('shops', npcId))) return;
-              const current = this.sectGrowth.catalog(npcId, service).entries.find(row => row.itemId === entry.itemId);
-              if (current && (current.costContribution !== entry.costContribution || current.reqRank !== entry.reqRank)) {
-                this.openSectCatalog(npcId, service); return;
-              }
-              const result = this.sectGrowth.exchange(npcId, service, entry.itemId, transactionId);
-              this.sectResult(npcId, result, { item: entry.name });
-            } },
-            { label: t('sect.ui.cancel'), onSelect: () => this.openSectCatalog(npcId, service) },
-          ], this.sectRankBadgeKey());
-        } };
-    });
-    if (!choices.length) choices.push({ label: t(catalog.key || 'sect.ui.config_pending'), disabled: true, onSelect: () => {} });
-    choices.push({ label: t('ui.dialog.close'), onSelect: () => {} });
-    this.dialog.choose({ speaker: npc.name, text: `${this.sectOverview()}\n${t(`${prefix}.menu`)}` }, npc.sprite, choices, this.sectRankBadgeKey());
+    if (!NPCS[npcId]) return;
+    this.player.body.setVelocityX(0);
+    this.shop.open({ kind: 'sect', npcId, service });
   }
 
-  /** UI-5 前先复用对白选项；每次确认只购买或出售一件。 */
+  /** UI-5：普通买卖窗（列表、价格、数量、确认）；结算只调 buyOrdinary/sellOrdinary。 */
   openOrdinaryShop(npcId: string, mode: 'buy' | 'sell' = 'buy') {
     if (!this.requireFeature('shops', npcId)) return;
-    const npc = NPCS[npcId]; if (!npc) return;
-    const selling = mode === 'sell';
-    const catalog = selling ? this.sectGrowth.ordinarySellCatalog(npcId) : this.sectGrowth.ordinaryCatalog(npcId);
-    const choices: DialogChoice[] = catalog.entries.map(entry => {
-      const preview = t(selling ? 'ui.shop.sell_confirm' : 'ui.shop.confirm', { item: entry.name, price: entry.price });
-      const count = 'count' in entry ? entry.count : undefined;
-      return { label: selling ? `${entry.name} ×${count}` : entry.name, disabled: !entry.ok, reason: entry.ok ? preview : t(entry.key), onSelect: () => {
-        if (!this.requireFeature('shops', npcId)) return;
-        const transactionId = newSectTransactionId();
-        this.dialog.choose({ speaker: npc.name, text: preview }, npc.sprite, [
-          { label: t('sect.ui.confirm'), reason: preview, onSelect: () => {
-            if (!this.requireFeature('shops', npcId)) return;
-            const currentCatalog = selling ? this.sectGrowth.ordinarySellCatalog(npcId) : this.sectGrowth.ordinaryCatalog(npcId);
-            const current = currentCatalog.entries.find(row => row.itemId === entry.itemId);
-            if (!current || current.price !== entry.price || (selling && 'count' in current && current.count !== count)) {
-              this.openOrdinaryShop(npcId, mode); return;
-            }
-            const result = selling ? this.sectGrowth.sellOrdinary(npcId, entry.itemId, transactionId)
-              : this.sectGrowth.buyOrdinary(npcId, entry.itemId, transactionId);
-            this.sectResult(npcId, result, { item: entry.name, price: entry.price });
-          } },
-          { label: t('sect.ui.cancel'), onSelect: () => this.openOrdinaryShop(npcId, mode) },
-        ]);
-      } };
-    });
-    if (!choices.length) choices.push({ label: t(catalog.key || 'sect.ui.config_pending'), disabled: true, onSelect: () => {} });
-    choices.push({ label: t(selling ? 'ui.shop.buy' : 'ui.shop.sell'), onSelect: () => this.openOrdinaryShop(npcId, selling ? 'buy' : 'sell') });
-    choices.push({ label: t('ui.dialog.close'), onSelect: () => {} });
-    this.dialog.choose({ speaker: npc.name, text: `${t('ui.shop.menu')} · ${t(selling ? 'ui.shop.sell' : 'ui.shop.buy')}` }, npc.sprite, choices);
+    if (!NPCS[npcId]) return;
+    this.player.body.setVelocityX(0);
+    this.shop.open({ kind: 'ordinary', npcId, mode });
   }
 
   /** 丹方不是背包商品；读丹方的售价/等级，购买成功直接授方。 */
@@ -1974,11 +1926,11 @@ export class GameScene extends Phaser.Scene {
     const furnace = Object.keys(ALCHEMY_RULES.furnace).filter(id => ITEMS[id]?.toolType === 'furnace' && pr.count(id) > 0)
       .sort((a, b) => (ALCHEMY_RULES.furnace as Record<string, number>)[b] - (ALCHEMY_RULES.furnace as Record<string, number>)[a])[0];
     this.inventoryFurnace.setVisible(this.invText.visible && featureEnabled('alchemyPhase1') && !!furnace
-      && !this.dialog.open && !this.skillWindow.open && !this.alchemy.isOpen());
+      && !this.dialog.open && !this.skillWindow.open && !this.alchemy.isOpen() && !this.shop.isOpen());
     if (furnace) this.inventoryFurnace.setData('furnace', furnace).setText(`使用${ITEMS[furnace].name}`)
       .setPosition(this.invText.x - this.invText.width - 4, this.invText.y);
     this.inventorySectToken.setVisible(this.invText.visible && pr.count('five_sect_token') > 0 && !pr.job
-      && !pr.pendingSectTrial && !this.dialog.open && !this.skillWindow.open && !this.alchemy.isOpen())
+      && !pr.pendingSectTrial && !this.dialog.open && !this.skillWindow.open && !this.alchemy.isOpen() && !this.shop.isOpen())
       .setPosition(this.invText.x - this.invText.width - 4, this.invText.y + (furnace && featureEnabled('alchemyPhase1') ? 40 : 0));
     if (this.debugText.visible) {
       const p = this.player, b = p.body;

@@ -4,6 +4,7 @@ import type { Progress } from './Progress';
 import { AlchemySystem, firePointer, type AlchemyResult } from './Alchemy';
 import { HUD_FONT, INK, INK_60, PAPER, RED, sliced, hudSpec, setSlicedWidth } from './hud';
 import { featureEnabled, FEATURE_UNAVAILABLE } from './features';
+import { loadOptionalImage } from './optionalAssets';
 
 const DIR = 'art/icons/ui/alchemy';
 const IMAGES = [
@@ -19,7 +20,8 @@ const IMAGES = [
 
 /** 公共窗体、切片表由 preloadHud 加载；炉火按自身 JSONHash 图集与 meta.anim 接入。 */
 export function preloadAlchemy(scene: Phaser.Scene) {
-  for (const key of IMAGES) scene.load.image(key, `${DIR}/${key}.png`);
+  // 窗体件与商店共用，按构建清单可选加载（UI-5）；缺图时 art() 返回空，不入加载队列。
+  for (const key of IMAGES) loadOptionalImage(scene, key, `${DIR}/${key}.png`);
   scene.load.atlas('ui_alchemy_fire', `${DIR}/ui_alchemy_fire.png`, `${DIR}/ui_alchemy_fire.json`);
   scene.load.json('alchemy_fire_meta', `${DIR}/ui_alchemy_fire.json`);
   for (const icon of new Set(Object.values(RECIPES).filter(r => !r.type).map(r => ITEMS[r.output]?.icon).filter(Boolean)))
@@ -183,10 +185,14 @@ export class AlchemyPanel {
     this.text(width / 2, -12 + th / 2, t('alchemy.title'), 18).setOrigin(0.5);
     const [cx, cy] = L.window.close as Point;
     const close = this.image('ui_bestiary_btn_close', cx, cy);
-    if (close) close.setInteractive({ useHandCursor: true }).on('pointerover', () => {
-      if (this.scene.textures.exists('ui_bestiary_btn_close_hover')) close.setTexture('ui_bestiary_btn_close_hover');
-    })
-      .on('pointerout', () => close.setTexture('ui_bestiary_btn_close')).on('pointerdown', () => this.close());
+    if (close) {
+      close.setName('alchemy-close').setInteractive({ useHandCursor: true }).on('pointerdown', () => this.close())
+        .on('pointerover', () => this.scene.textures.exists('ui_bestiary_btn_close_hover') && close.setTexture('ui_bestiary_btn_close_hover'))
+        .on('pointerout', () => close.setTexture('ui_bestiary_btn_close'));
+    } else {
+      this.text(cx, cy, '×', 14).setFixedSize(20, 20).setAlign('center').setBackgroundColor(PAPER).setName('alchemy-close')
+        .setInteractive({ useHandCursor: true }).on('pointerdown', () => this.close());
+    }
     this.text(...L.levelBar.text as Point, t('alchemy.level', { n: this.prog.alchemyLevel }), 14).setOrigin(0, 0.5);
     const [ex, ey, ew, eh] = L.levelBar.frameRect as Rect;
     this.art('ui_bar_cultivation_frame', [ex, ey, ew, eh]);

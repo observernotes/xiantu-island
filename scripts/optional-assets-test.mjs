@@ -4,6 +4,7 @@ import path from 'node:path';
 import os from 'node:os';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
+import { createRequire } from 'node:module';
 import ts from 'typescript';
 
 let assertions = 0;
@@ -129,6 +130,73 @@ try {
     ['loadOptionalAtlas', ['missing_png', 'art/unknown.png', 'art/sprites/prop_test.json']],
   ]) equal(api[loader](scene, ...args), false, 'unlisted asset is rejected');
   equal(queued, expected, 'rejected assets never enter Phaser queue');
+
+  // 使用真实 Phaser 失败处理，验证静默不改变失败状态、Atlas 计数或队列完成。
+  const require = createRequire(import.meta.url);
+  const File = require('phaser/src/loader/File.js');
+  const MultiFile = require('phaser/src/loader/MultiFile.js');
+  const LoaderPlugin = require('phaser/src/loader/LoaderPlugin.js');
+  const { FILE_ERRORED } = require('phaser/src/loader/const.js');
+  const originalProcessError = File.prototype.onProcessError;
+  const originalFileFailed = MultiFile.prototype.onFileFailed;
+  const originalConsoleError = console.error;
+  const errors = [];
+  function prepareLoader(loader) {
+    return Object.assign(loader, { scene: {}, systems: { game: { pendingDestroy: false } },
+      list: new Set(), inflight: new Set(), queue: new Set(), completed: 0,
+      fileProcessComplete: LoaderPlugin.prototype.fileProcessComplete,
+      loadComplete() { this.completed++; } });
+  }
+  function fail(loader, key, type = 'image', multiFile) {
+    const file = Object.assign(Object.create(File.prototype), { loader, key, type, multiFile });
+    if (multiFile) multiFile.files.push(file);
+    loader.queue.add(file);
+    const before = loader.completed;
+    file.onProcessError();
+    equal(file.state, FILE_ERRORED, `${type} ${key}: failure state is preserved`);
+    equal(loader.queue.has(file), false, `${type} ${key}: failed file leaves process queue`);
+    equal(loader.completed, before + 1, `${type} ${key}: loader completes`);
+    return file;
+  }
+  function atlas(loader, key) {
+    return Object.assign(Object.create(MultiFile.prototype), { loader, key, type: 'atlasjson', files: [], failed: 0 });
+  }
+  try {
+    console.error = (...args) => errors.push(args);
+    const phaser = { Loader: { File, MultiFile, FILE_ERRORED } };
+    api.installOptionalAssetErrorHandler(phaser);
+    const installed = [File.prototype.onProcessError, MultiFile.prototype.onFileFailed];
+    api.installOptionalAssetErrorHandler(phaser);
+    equal([File.prototype.onProcessError, MultiFile.prototype.onFileFailed], installed, 'installation is idempotent');
+    const loader = prepareLoader(scene.load);
+    for (const { kind, args: [key] } of expected) {
+      if (kind === 'atlas') {
+        const multi = atlas(loader, key);
+        fail(loader, key, 'image', multi);
+        fail(loader, key, 'json', multi);
+        equal(multi.failed, 4, 'Atlas preserves both File and Loader failure notifications');
+        multi.onFileFailed({ key, loader });
+        equal(multi.failed, 4, 'Atlas ignores files outside its children');
+      } else fail(loader, key, kind);
+    }
+    equal(errors.length, 0, 'registered image/atlas/json/spritesheet processing errors are silent');
+    const prefixed = prepareLoader({ prefix: 'ui:', image() {} });
+    equal(api.loadOptionalImage({ load: prefixed }, 'close', 'art/icons/skills/skill_test@64.png'), true);
+    fail(prefixed, 'ui:close');
+    equal(errors.length, 0, 'loader prefix is included in optional registration');
+    fail(loader, 'missing');
+    equal(errors.length, 1, 'rejected optional key retains required-file error reporting');
+    fail(prepareLoader({}), 'image');
+    equal(errors.length, 2, 'another loader with the same key retains error reporting');
+    const requiredAtlas = atlas(loader, 'required_atlas');
+    fail(loader, 'required_atlas', 'image', requiredAtlas);
+    equal(requiredAtlas.failed, 2, 'required Atlas failure handling is preserved');
+    equal(errors.length, 5, 'required Atlas reports File and both MultiFile errors');
+  } finally {
+    File.prototype.onProcessError = originalProcessError;
+    MultiFile.prototype.onFileFailed = originalFileFailed;
+    console.error = originalConsoleError;
+  }
 
   for (const extension of ['json', 'png', 'anims.json']) {
     const file = `public/art/sprites/prop_test.${extension}`;

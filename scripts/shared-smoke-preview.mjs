@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import ts from 'typescript';
 
 const manifestFields = ['atlases', 'areas', 'tileMetadata', 'backgrounds',
-  'backgroundConfigs', 'propLayouts', 'skillIcons', 'sectRankIcons'];
+  'backgroundConfigs', 'propLayouts', 'skillIcons', 'sectRankIcons', 'uiImages'];
 
 function propertyName(node) {
   if (ts.isIdentifier(node) || ts.isStringLiteralLike(node)) return node.text;

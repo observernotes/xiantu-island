@@ -230,11 +230,17 @@ try {
 
   const beforeBuy = await page.evaluate(item => ({ count: window.__scene.prog.count(item), stones: window.__scene.prog.stones }), exchangeItem.id);
   await openNpc(page, 'tianjian_envoy_sect'); await select(page, strings['sect.shop.menu']);
-  await select(page, exchangeItem.name);
-  await page.evaluate(confirm => {
-    window.__sectBuyConfirm = window.__scene.dialog.choices.find(c => c.label.startsWith(confirm)).onSelect;
-  }, strings['sect.ui.confirm']);
-  await select(page, strings['sect.ui.confirm']); await finishDialog(page);
+  // UI-5 起宗门商店走商店窗：选货后回车两步确认，缓存同一确认用于重放去重。
+  await page.waitForFunction(() => window.__scene.shop.isOpen(), null, { timeout: 3000 });
+  const shopIndex = await page.evaluate(item => window.__scene.shop.snapshot().rows.findIndex(row => row.itemId === item), exchangeItem.id);
+  assert.ok(shopIndex >= 0, '宗门商店窗缺少兑换商品');
+  for (let i = 0; i < shopIndex; i++) await press(page, 'ArrowDown');
+  await press(page, 'Enter');
+  await page.waitForFunction(() => !!window.__scene.shop.pending, null, { timeout: 3000 });
+  await page.evaluate(() => { const shop = window.__scene.shop, pending = shop.pending; window.__sectBuyConfirm = () => shop.commit(pending); });
+  await press(page, 'Enter');
+  await page.waitForFunction(() => !window.__scene.shop.pending, null, { timeout: 3000 });
+  await page.evaluate(() => window.__scene.shop.close());
   const bought = await page.evaluate(item => ({ rank: window.__scene.prog.sectRank, count: window.__scene.prog.count(item),
     contribution: window.__scene.prog.sectContribution, stones: window.__scene.prog.stones,
     receipts: Object.values(window.__scene.prog.sectGrowthState.settledTransactions) }), exchangeItem.id);

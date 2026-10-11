@@ -22,6 +22,7 @@ class Display extends EventEmitter {
   setOrigin() { return this; } setDepth() { return this; } setScrollFactor() { return this; }
   setInteractive() { return this; } setStroke() { return this; } setLineSpacing() { return this; }
   setBackgroundColor() { return this; } setPadding() { return this; } setScale() { return this; }
+  setFixedSize() { return this; } setAlign() { return this; }
   setAlpha() { return this; } play() { return this; }
   setName(name) { this.name = name; return this; }
   setVisible(visible) { this.visible = visible; return this; }
@@ -46,7 +47,7 @@ try {
   const frameKey = 'ui_bar_cultivation_frame', qualityKey = 'ui_alchemy_quality_low';
   const cases = [
     { label: '正常关闭按钮', mode: 'click' },
-    { label: '缺关闭按钮', missing: ['ui_bestiary_btn_close'], mode: 'idle' },
+    { label: '缺关闭按钮', missing: ['ui_bestiary_btn_close'], mode: 'click' },
     { label: '缺关闭悬停图', missing: ['ui_bestiary_btn_close_hover'], mode: 'idle' },
     { label: '缺火候指针', missing: ['ui_alchemy_fire_pointer'] },
     { label: '所有图片缺失', allMissing: true, mode: 'finish' },
@@ -66,7 +67,7 @@ try {
       cache: { json: { get: key => cache[key] } }, anims: { exists: () => true }, events: new EventEmitter(),
       input: { keyboard: { on: (event, fn, context) => keyboard.on(event, fn.bind(context)), off() {} } },
       add: { container: (x, y) => { const c = add(x, y); containers.push(c); return c; },
-        image: add, sprite: add, zone: (x, y) => add(x, y), text: (x, y) => add(x, y) },
+        image: add, sprite: add, zone: (x, y) => add(x, y), text: (x, y, text) => Object.assign(add(x, y), { text }) },
       tweens: { killTweensOf() {}, add() {} }, time: { delayedCall() {} } };
     const p = new Progress(); p.level = 12; p.stones = 100; p.learnedRecipes = [recipe.id];
     recipe.materials.forEach(material => p.addItem(material.item, material.count * 3));
@@ -80,10 +81,11 @@ try {
       hit.emit('pointerover'); hit.emit('pointerout'); hit.emit('pointerdown');
       eq(!!system.active, true, `${test.label}：真实按钮仍可开炉`);
     }
-    const close = displays.findLast(d => d.key === 'ui_bestiary_btn_close');
+    const close = displays.findLast(d => d.name === 'alchemy-close');
+    if (test.allMissing || missing.has('ui_bestiary_btn_close')) eq(close.text, '×', `${test.label}：关闭钮退回文字`);
     close?.emit('pointerover'); close?.emit('pointerout');
     if (test.mode === 'click') {
-      close.emit('pointerdown'); eq(panel.isOpen(), false, '正常关闭按钮可点击'); panel.open();
+      close.emit('pointerdown'); eq(panel.isOpen(), false, `${test.label}：关闭按钮可点击`); panel.open();
     }
     panel.update(100);
     if (test.mode === 'finish') { eq(panel.skipFire()?.quality, 'low', `${test.label}：成丹后品质文字渲染`); }
