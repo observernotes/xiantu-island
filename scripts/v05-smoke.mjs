@@ -5,7 +5,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { preview } from 'vite';
-import { sharedRoot } from './root.mjs';
+import { findRoot, sharedRoot } from './root.mjs';
 
 const projectRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const maps = [
@@ -22,7 +22,7 @@ const maps = [
   ['trial_wanshou_pen', 'wanshou'],
 ];
 const screenshot = path.join(sharedRoot(projectRoot), 'qa/shots/dev_luoxia_town.png');
-const dataRoot = sharedRoot(projectRoot);
+const dataRoot = findRoot(projectRoot);
 const strings = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/strings_zh.json'), 'utf8'));
 const pacing = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/solo_pacing.json'), 'utf8'));
 const sectSeclusion = pacing.sectSeclusion;
@@ -59,11 +59,30 @@ async function extraInteractions(context, baseURL) {
   const page = await context.newPage();
   const errors = collectErrors(page);
   const checks = [];
-  const go = async mapId => {
+  const go = async (mapId, debugClass) => {
     const url = new URL(baseURL);
     url.searchParams.set('map', mapId); url.searchParams.set('reset', '1');
+    if (debugClass) url.searchParams.set('debug', `class=${debugClass}`);
     await page.goto(url.href, { waitUntil: 'networkidle', timeout: 30000 });
     await waitForMap(page, mapId);
+  };
+  const emptyTrialEntrance = async mapId => {
+    await go(mapId);
+    const state = await page.evaluate(() => {
+      const scene = window.__scene;
+      return { entrance: scene.atSectTrialEntrance, frame: scene.game.loop.frame,
+        targets: scene.mobs.filter(m => m.active && !m.dead && m.name.startsWith('target:')).length,
+        patrols: scene.stealth.patrols.length };
+    });
+    assert.equal(state.entrance, true, `${mapId}: 未进入试炼时应保留山门入口`);
+    assert.equal(state.targets, 0, `${mapId}: 未开始试炼不应刷新木靶`);
+    assert.equal(state.patrols, 0, `${mapId}: 未开始试炼不应刷新巡逻`);
+    await page.waitForFunction(({ id, frame }) => {
+      const scene = window.__scene;
+      return scene?.map?.id === id && scene.game.loop.frame >= frame + 6;
+    }, { id: mapId, frame: state.frame }, { timeout: 3000 });
+    assert.deepEqual(errors, [], `${mapId}: 入口缺靶/巡逻时 update 出现浏览器报错`);
+    checks.push(`${mapId}: 山门入口跳过未刷木靶/巡逻，连续 update 不崩`);
   };
   const landing = async (mapId, targetPortal) => {
     await waitForMap(page, mapId, true);
@@ -205,12 +224,17 @@ async function extraInteractions(context, baseURL) {
       contribution: settled.after.contribution, history: settled.after.history, yearsToday: settled.after.yearsToday });
     checks.push('seclusion: 真实交互选择 1 年，修为/贡献/寿元/日限结算、日志与读档');
 
-    await go('trial_lingfu_range');
+    await emptyTrialEntrance('trial_lingfu_range');
+    const savedBeforeDebug = await page.evaluate(() => localStorage.getItem('xiantu_save_v1'));
+    // 普通入口刻意不刷试炼怪；用已有独立调试档保留移动木靶覆盖，不改变发版开关。
+    await go('trial_lingfu_range', 'lingfu_novice');
     const movement = await page.evaluate(async () => {
       const scene = window.__scene;
       const spot = scene.map.objects.find(o => o.type === 'target_spot' && Number(o.props.moveRange) > 0);
       if (!spot) throw new Error('没有移动木靶刷新点');
-      const mob = scene.mobs.find(m => m.name === `target:${spot.name}`);
+      const targetName = `target:${spot.name}`;
+      const mob = scene.mobs.find(m => m.active && !m.dead &&
+        (m.name === targetName || m.name.startsWith(`${targetName}:`)));
       if (!mob) throw new Error(`没有移动木靶 target:${spot.name}`);
       const homeX = mob.home.x, range = Number(spot.props.moveRange), samples = [], startedAt = scene.time.now;
       return new Promise((resolve, reject) => {
@@ -238,8 +262,12 @@ async function extraInteractions(context, baseURL) {
       Math.max(...xs) >= movement.homeX + movement.range - tolerance, '移动木靶未到达左右两端');
     assert.ok(movement.reversals >= 2, '移动木靶没有真实往返');
     checks.push(`target_spot: ${movement.name} 在 ±${movement.range}px 内往返 ${movement.reversals} 次`);
+    assert.equal(await page.evaluate(() => localStorage.getItem('xiantu_save_v1')), savedBeforeDebug,
+      '灵符调试夹具污染真实存档');
 
-    await go('trial_youying_vault');
+    await emptyTrialEntrance('trial_youying_vault');
+    const savedBeforeShadowDebug = await page.evaluate(() => localStorage.getItem('xiantu_save_v1'));
+    await go('trial_youying_vault', 'youying_shadow');
     const shadow = await page.evaluate(() => {
       const scene = window.__scene, zone = scene.map.zones.find(zone => zone.props.kind === 'shadow');
       scene.physics.pause();
@@ -272,6 +300,8 @@ async function extraInteractions(context, baseURL) {
     await page.waitForFunction(() => window.__scene.player.alpha === 1 && window.__scene.player.tintTopLeft === 0xffffff,
       null, { timeout: 3000 });
     checks.push('shadow: 阴影渐变进出、免发现，灯笼 40px 与视锥缩放');
+    assert.equal(await page.evaluate(() => localStorage.getItem('xiantu_save_v1')), savedBeforeShadowDebug,
+      '幽影调试夹具污染真实存档');
 
     await go('tianjian_sect');
     await page.evaluate(() => {
