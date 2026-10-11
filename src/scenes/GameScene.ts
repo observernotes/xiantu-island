@@ -576,7 +576,7 @@ export class GameScene extends Phaser.Scene {
       k.left.isDown || k.right.isDown || k.up.isDown || k.down.isDown || k.space.isDown || k.alt.isDown || k.c.isDown || k.ctrl.isDown || k.x.isDown);
     if (modal) {
       this.alchemy.update(delta);
-      this.shop.update();
+      this.shop?.update();
       if (this.dialog.open) {
         [k.one, k.two, k.three, k.four, k.five].forEach((key, i) => { if (J(key)) this.dialog.selectChoice(i); });
         if (escDown) this.dialog.dismissChoices();

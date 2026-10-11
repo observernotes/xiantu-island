@@ -233,6 +233,13 @@ try {
     assert.equal(boss.x, 3024, '技能窗口打开时首领越出 zone 左边界也拉回');
     assert.equal(boss.body.bottom, 960, '技能窗口打开时恢复到区域内地面');
     assert.equal(boss.dashing, false, '技能窗口打开时越界兜底停止冲刺');
+
+    // 旧测试未建 ShopPanel 时可更新；正常商店作为模态窗时仍逐帧更新。
+    let shopUpdates = 0;
+    game.skillWindow.open = false;
+    game.shop = { isOpen: () => true, update() { shopUpdates++; } };
+    game.update(1032, 16);
+    assert.equal(shopUpdates, 1, '商店打开时 GameScene 仍调用商店 update');
   }
 
   console.log('fox hotfix tests ok');
