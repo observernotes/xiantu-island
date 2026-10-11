@@ -15,7 +15,8 @@ const projectRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const fixtureRoot = path.join(projectRoot, 'scripts/fixtures/art-engine');
 const dataRoot = findRoot(projectRoot);
 const legacyBodySize = [26, 58];
-const baselineRevision = '5f5b34127ee7c83ba402afe80d7f922bd8da01d9';
+// 96 旧精修回退后、丹炉/五宗帖背包入口合入的冻结基线；早于 UI-5 商店窗。
+const baselineRevision = '0dc2834a995f1cf2ed293f8b1b3823e1751b51dc';
 const fixedTime = 1791608400000;
 const port = Number(process.env.XT_TEST_PORT ?? 4337);
 for (const value of [port, port + 1]) {
@@ -49,6 +50,23 @@ async function currentPlayerSpec() {
   const worldBodySize = bodySize.map(value => value * displayScale);
   equal(worldBodySize, legacyBodySize, '当前主角 bodySize × displayScale 不等于旧 1x 世界碰撞体');
   return { frameSize, displayScale, bodySize, worldBodySize, origin: anims.origin ?? [0.5, 1] };
+}
+
+async function verifyLegacyPlayerFixture(playerSpec) {
+  // 正式素材仍为旧 96 规格时，把已保存的旧精修三件套作为独立素材基准。
+  // 192 等新规格仍由 currentPlayerSpec 和合成 1x/2x 路径验证。
+  if (playerSpec.frameSize.some(size => size !== 96) || playerSpec.displayScale !== 1) return;
+  const fingerprint = [];
+  for (const [extension, fixture] of [['png', 'player-1x.png'], ['json', 'player-1x.atlas.json'], ['anims.json', 'player-1x.anims.json']]) {
+    const [source, reference] = await Promise.all([
+      fs.readFile(path.join(dataRoot, `art/sprites/player_sword_m.${extension}`)),
+      fs.readFile(path.join(fixtureRoot, fixture))
+    ]);
+    const sha256 = buffer => createHash('sha256').update(buffer).digest('hex');
+    equal(sha256(source), sha256(reference), `正式 96 主角 ${extension} 与旧精修夹具不同`);
+    fingerprint.push({ fixture, bytes: reference.length, sha256: sha256(reference) });
+  }
+  return fingerprint;
 }
 
 async function loadPlaywright() {
@@ -287,6 +305,7 @@ const progress = (stage, details = {}) => console.log(JSON.stringify({ test: 'ar
 try {
   const playerSpec = await currentPlayerSpec();
   metrics.playerSpec = { source: path.join(dataRoot, 'art/sprites/player_sword_m'), ...playerSpec };
+  metrics.legacyPlayerFixture = await verifyLegacyPlayerFixture(playerSpec);
   await fs.access(path.join(projectRoot, 'dist/index.html'));
   progress('baseline-build');
   baseline = await buildBaseline();
