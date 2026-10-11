@@ -29,7 +29,7 @@ export function preloadAlchemy(scene: Phaser.Scene) {
 export function registerAlchemy(scene: Phaser.Scene) {
   const atlas = scene.cache.json.get('alchemy_fire_meta');
   const anim = atlas?.meta?.anim;
-  if (!anim || scene.anims.exists(anim.key)) return;
+  if (!anim || !scene.textures.exists('ui_alchemy_fire') || scene.anims.exists(anim.key)) return;
   scene.anims.create({ key: anim.key, frames: Object.keys(atlas.frames).map(frame => ({ key: 'ui_alchemy_fire', frame })),
     frameRate: anim.frameRate, repeat: anim.repeat });
 }
@@ -136,9 +136,9 @@ export class AlchemyPanel {
     const hit = this.add(this.scene.add.zone(x, y, w, h).setOrigin(0, 0));
     if (!enabled) return;
     hit.setInteractive({ useHandCursor: true });
-    hit.on('pointerover', () => bg?.setTexture('ui_alchemy_btn_hover'));
+    hit.on('pointerover', () => { if (this.scene.textures.exists('ui_alchemy_btn_hover')) bg?.setTexture('ui_alchemy_btn_hover'); });
     hit.on('pointerout', () => bg?.setTexture('ui_alchemy_btn_normal'));
-    hit.on('pointerdown', () => { bg?.setTexture('ui_alchemy_btn_pressed'); run(); });
+    hit.on('pointerdown', () => { if (this.scene.textures.exists('ui_alchemy_btn_pressed')) bg?.setTexture('ui_alchemy_btn_pressed'); run(); });
   }
   private error(reason?: string) {
     this.status = ({ closed: FEATURE_UNAVAILABLE, materials: '材料不足', fuel: '灵石不足', furnace: '丹炉不可用', unlearned: '尚未学会这张丹方', unknown: '丹方不存在', busy: '请先完成这一炉' } as Record<string, string>)[reason ?? ''] ?? '暂时无法炼制';
@@ -182,18 +182,22 @@ export class AlchemyPanel {
     this.art('ui_bestiary_title', [(width - tw) / 2, -12, tw, th]);
     this.text(width / 2, -12 + th / 2, t('alchemy.title'), 18).setOrigin(0.5);
     const [cx, cy] = L.window.close as Point;
-    const close = this.image('ui_bestiary_btn_close', cx, cy)!;
-    close.setInteractive({ useHandCursor: true }).on('pointerover', () => close.setTexture('ui_bestiary_btn_close_hover'))
+    const close = this.image('ui_bestiary_btn_close', cx, cy);
+    if (close) close.setInteractive({ useHandCursor: true }).on('pointerover', () => {
+      if (this.scene.textures.exists('ui_bestiary_btn_close_hover')) close.setTexture('ui_bestiary_btn_close_hover');
+    })
       .on('pointerout', () => close.setTexture('ui_bestiary_btn_close')).on('pointerdown', () => this.close());
     this.text(...L.levelBar.text as Point, t('alchemy.level', { n: this.prog.alchemyLevel }), 14).setOrigin(0, 0.5);
     const [ex, ey, ew, eh] = L.levelBar.frameRect as Rect;
     this.art('ui_bar_cultivation_frame', [ex, ey, ew, eh]);
-    const frameSpec = hudSpec(this.scene, 'ui_bar_cultivation_frame')!;
-    const [ix, iy, iw, ih] = frameSpec.innerRect!;
-    const fillWidth = ew - (frameSpec.size![0] - iw);
-    const fill = this.art('ui_alchemy_exp_fill', [ex + ix, ey + iy, fillWidth, ih]);
+    const frameSpec = hudSpec(this.scene, 'ui_bar_cultivation_frame');
     const capped = !Number.isFinite(this.prog.alchemyExpNeed);
-    if (fill) setSlicedWidth(this.scene, fill, 'ui_alchemy_exp_fill', fillWidth * (capped ? 1 : this.prog.alchemyExp / this.prog.alchemyExpNeed));
+    if (frameSpec?.innerRect && frameSpec.size) {
+      const [ix, iy, iw, ih] = frameSpec.innerRect;
+      const fillWidth = ew - (frameSpec.size[0] - iw);
+      const fill = this.art('ui_alchemy_exp_fill', [ex + ix, ey + iy, fillWidth, ih]);
+      if (fill) setSlicedWidth(this.scene, fill, 'ui_alchemy_exp_fill', fillWidth * (capped ? 1 : this.prog.alchemyExp / this.prog.alchemyExpNeed));
+    }
     this.text(ex + ew / 2, ey + eh / 2, capped ? '已满级' : `${this.prog.alchemyExp}/${this.prog.alchemyExpNeed}`, 12, PAPER).setOrigin(0.5).setStroke(INK, 2);
     this.art('ui_bestiary_inset', L.recipeList.panel);
     this.art('ui_bestiary_inset', L.detail.panel);
@@ -233,8 +237,8 @@ export class AlchemyPanel {
     if (this.lastResult?.quality) {
       const quality = this.lastResult.quality, [qx, qy] = D.output.qualityTag as Point;
       this.image(`ui_alchemy_quality_${quality}`, qx, qy);
-      const spec = hudSpec(this.scene, `ui_alchemy_quality_${quality}`)!;
-      this.text(qx + spec.size![0] / 2 - 3, qy + spec.size![1] / 2, t(`alchemy.quality.${quality}`), 12, PAPER).setOrigin(0.5);
+      const [qw, qh] = hudSpec(this.scene, `ui_alchemy_quality_${quality}`)?.size ?? [44, 18];
+      this.text(qx + qw / 2 - 3, qy + qh / 2, t(`alchemy.quality.${quality}`), 12, PAPER).setOrigin(0.5);
     }
     this.art(`ui_alchemy_furnace_${this.furnaceId}`, D.furnace.rect)?.setName('alchemy_furnace');
     if (busy) this.furnaceFire();
@@ -273,8 +277,8 @@ export class AlchemyPanel {
       const zoneHeight = hudSpec(this.scene, 'ui_alchemy_fire_zone')?.size?.[1] ?? h;
       this.art('ui_alchemy_fire_zone', [tx + fire.zoneStart * tw, y + (h - zoneHeight) / 2, fire.zoneWidth * tw, zoneHeight]);
       this.image('ui_alchemy_fire_perfect', tx + (fire.zoneStart + (fire.zoneWidth - fire.perfectWidth) / 2) * tw, y, fire.perfectWidth * tw, h);
-      this.pointer = this.image('ui_alchemy_fire_pointer', tx, ty)!;
-      this.pointer.setOrigin(0.5, 1);
+      this.pointer = this.image('ui_alchemy_fire_pointer', tx, ty);
+      this.pointer?.setOrigin(0.5, 1);
       this.pointerTrack = { x: tx, w: tw };
       this.movePointer();
     }
@@ -286,7 +290,7 @@ export class AlchemyPanel {
     this.pointer.x = this.pointerTrack.x + this.pointerRatio * this.pointerTrack.w;
   }
   private furnaceFire() {
-    if (!this.scene.anims.exists('ui_alchemy_fire')) return undefined;
+    if (!this.scene.textures.exists('ui_alchemy_fire') || !this.scene.anims.exists('ui_alchemy_fire')) return undefined;
     const [fx, fy] = this.layout.detail.furnace.rect as Rect;
     return this.add(this.scene.add.sprite(fx + 32, fy + 82, 'ui_alchemy_fire').setOrigin(0, 0).play('ui_alchemy_fire'));
   }
