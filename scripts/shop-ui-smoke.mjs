@@ -1,5 +1,5 @@
 // UI-5 商店窗冒烟：timeout 300s node scripts/shop-ui-smoke.mjs（自行 sync + 测试构建到临时目录，不覆盖 dist）。
-// 覆盖：发版开关关闭、购买（数量/确认/重放去重）、灵石不足、出售、目录变动重验、打开中关开关、宗门商店/藏经阁窗体、窗体缺图回退。
+// 覆盖：发版开关关闭、购买（数量/确认/重放去重）、灵石不足、出售、目录变动重验、打开中关开关、宗门商店/藏经阁窗体、清单/实体缺图回退及炼丹关闭钮。
 // 商店开关与宗门货架只在浏览器内存里打开；正式 features.json、shops.json 与交易逻辑不改。
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
@@ -41,6 +41,7 @@ let assertions = 0;
 const eq = (actual, expected, message) => { assert.deepEqual(actual, expected, message); assertions++; };
 const ok = (value, message) => { assert.ok(value, message); assertions++; };
 const passed = [];
+const missingFileChecks = {};
 for (const key of SHOP_STRING_KEYS) {
   ok(Object.hasOwn(strings, key) && typeof strings[key] === 'string', `运行时文案表缺 ${key}`);
   ok(Object.hasOwn(snapshotStrings, key) && typeof snapshotStrings[key] === 'string', `快照文案表缺 ${key}`);
@@ -111,27 +112,52 @@ try {
   browser = await api.chromium.launch({ executablePath: await browserPath(api.chromium), headless: true, timeout: 20000,
     args: ['--use-gl=swiftshader', '--enable-unsafe-swiftshader'] });
 
-  async function session(label, { missing = [], save = SAVE, map = 'qingyun_village' } = {}) {
+  async function session(label, { missing = [], save = SAVE, map = 'qingyun_village', missingFile = '' } = {}) {
     const context = await browser.newContext({ viewport: { width: 1280, height: 720 }, timezoneId: 'Asia/Shanghai' });
     if (missing.length) await installMissingManifest(context, manifest, missing);
     await context.addInitScript(save => { if (!sessionStorage.getItem('shop-seeded')) {
       localStorage.setItem('xiantu_save_v1', JSON.stringify(save)); sessionStorage.setItem('shop-seeded', '1'); } }, save);
     const page = await context.newPage();
     const errors = { console: [], page: [], request: [], http: [] };
+    const missingResponses = [];
     page.on('console', m => { if (m.type() === 'error') errors.console.push(m.text()); });
     page.on('pageerror', e => errors.page.push(e.message));
     page.on('requestfailed', r => errors.request.push(r.url()));
-    page.on('response', r => { if (r.status() >= 400) errors.http.push(`${r.status()} ${r.url()}`); });
+    page.on('response', r => {
+      if (r.status() >= 400) errors.http.push(`${r.status()} ${r.url()}`);
+      if (missingFile && new URL(r.url()).pathname === `/${missingFile}`)
+        missingResponses.push({ status: r.status(), type: r.headers()['content-type'] ?? '' });
+    });
     const url = new URL(baseURL); url.searchParams.set('map', map);
     await page.goto(url.href, { waitUntil: 'load', timeout: 60000 });
     await page.waitForFunction(id => { const s = window.__scene; return s?.map?.id === id && s.player?.active && s.dialog && s.shop && window.__xt; }, map, { timeout: 40000 });
     await page.waitForTimeout(400);
     const done = async () => {
-      eq({ console: errors.console, page: errors.page, request: errors.request, http: errors.http },
-        { console: [], page: [], request: [], http: [] }, `${label}: 浏览器出现报错`);
-      await context.close();
+      try {
+        // 实体缺图需单独记录 Chromium 的资源诊断；应用 console.error 仍必须为零。
+        const appConsole = missingFile ? errors.console.filter(message => !message.startsWith('Failed to load resource:')) : errors.console;
+        eq({ console: appConsole, page: errors.page, request: errors.request, http: errors.http },
+          { console: [], page: [], request: [], http: [] }, `${label}: 浏览器出现报错`);
+        if (missingFile) {
+          ok(missingResponses.length > 0, `${label}: 没有请求实体缺图，不能证明清单内资源仍入队`);
+          ok(missingResponses.every(({ status, type }) => status === 200 && type.includes('text/html')),
+            `${label}: 未覆盖 preview 缺图返回 200 HTML 的处理失败路径：${JSON.stringify(missingResponses)}`);
+          missingFileChecks[label] = { consoleErrors: appConsole.length,
+            failedToProcess: appConsole.filter(message => message.includes('Failed to process file:')).length,
+            pageErrors: errors.page.length, browserResourceErrors: errors.console.length - appConsole.length,
+            requestFailures: errors.request.length, httpErrors: errors.http.length, missingResponses };
+        }
+      } finally { await context.close(); }
     };
     return { page, done };
+  }
+  async function withMissingFile(file, check) {
+    ok(manifest.uiImages.some(image => image.path === file), `实体缺图夹具未包含在构建清单：${file}`);
+    const original = path.join(outDir, file), removed = `${original}.smoke-missing`;
+    await fs.rename(original, removed);
+    try { await check(); }
+    finally { await fs.rename(removed, original); }
+    await fs.access(original);
   }
   const shot = (page, name) => page.screenshot({ path: path.join(shotDir, `${name}.png`) });
   const snap = page => page.evaluate(() => window.__scene.shop.snapshot());
@@ -315,7 +341,53 @@ try {
     await shot(page, 'ui5_missing_sell');
     await done(); passed.push('窗体缺图：代码画回退、交易照常、0 报错');
   }
-  console.log(JSON.stringify({ suite: 'shop-ui', passed: true, assertions, checks: passed, shots: shotDir, buyItem, sellItem }));
+
+  // 5. G18：保留清单，只移走隔离构建的 PNG；SPA 返回 200 HTML 时不产生 Phaser 处理失败报错。
+  await withMissingFile('art/icons/ui/bestiary/ui_bestiary_window.png', async () => {
+    const { page, done } = await session('g18-missing-window-file', { missingFile: 'art/icons/ui/bestiary/ui_bestiary_window.png' });
+    await page.evaluate(() => window.__xt.setFlag('shops', true));
+    eq(await page.evaluate(() => window.__scene.textures.exists('ui_bestiary_window')), false, '实体窗体缺图未生效');
+    await talkMenu(page, grocer); await chooseMenu(page, strings['ui.shop.menu']);
+    const s = await snap(page);
+    eq([s.open, s.mode, s.target.npcId, s.artUsed.ui_bestiary_window], [true, 'buy', grocer, 'code'], '实体缺图未打开王婶购买窗/代码画回退');
+    const index = s.rows.findIndex(row => row.itemId === buyItem);
+    ok(index >= 0, '实体缺图购买窗缺测试商品');
+    await press(page, 'ArrowDown', index);
+    const before = await wallet(page, buyItem);
+    await press(page, 'Enter'); await shot(page, 'ui5_missing_window_file_confirm'); await press(page, 'Enter');
+    const after = await wallet(page, buyItem);
+    eq([after.count, after.stones, after.saved], [before.count + 1, before.stones - buyPrice, before.stones - buyPrice], '实体窗体缺图购买未正确结算/保存');
+    ok((await snap(page)).statusOk, '实体缺图购买未显示成功');
+    await shot(page, 'ui5_missing_window_file_done');
+    await done(); passed.push('G18 实体窗体缺图：清单仍入队/200 HTML、代码画、购买成功、应用报错为零、还原 PNG');
+  });
+
+  // 6. G17：实体关闭图缺失时，用真实 L 键开炼丹窗，点击代码画 × 并验证 Esc 仍可关闭。
+  await withMissingFile('art/icons/ui/bestiary/ui_bestiary_btn_close.png', async () => {
+    const save = { ...SAVE, learnedRecipes: ['recipe_hp_pill'], inventory: { ...SAVE.inventory, bronze_furnace: 1 } };
+    const { page, done } = await session('g17-missing-alchemy-close-file', { save, missingFile: 'art/icons/ui/bestiary/ui_bestiary_btn_close.png' });
+    await page.evaluate(() => window.__xt.setFlag('alchemyPhase1', true));
+    eq(await page.evaluate(() => window.__scene.textures.exists('ui_bestiary_btn_close')), false, '实体关闭钮缺图未生效');
+    await press(page, 'l');
+    await page.waitForFunction(() => window.__scene.alchemy.isOpen(), null, { timeout: 3000 });
+    const close = await page.evaluate(() => {
+      const panel = window.__scene.alchemy;
+      const button = panel.c?.getByName('alchemy-close');
+      const bounds = button?.getBounds();
+      return button && bounds ? { text: button.text, enabled: !!button.input?.enabled,
+        x: bounds.x + bounds.width / 2, y: bounds.y + bounds.height / 2 } : null;
+    });
+    ok(close?.text === '×' && close.enabled, `缺关闭图未生成可点代码画 ×：${JSON.stringify(close)}`);
+    await shot(page, 'ui5_missing_alchemy_close_file');
+    await page.mouse.click(close.x, close.y);
+    await page.waitForFunction(() => !window.__scene.alchemy.isOpen(), null, { timeout: 3000 });
+    await press(page, 'l');
+    await page.waitForFunction(() => window.__scene.alchemy.isOpen(), null, { timeout: 3000 });
+    await press(page, 'Escape');
+    eq(await page.evaluate(() => window.__scene.alchemy.isOpen()), false, '实体关闭钮缺图时 Esc 不能关闭炼丹窗');
+    await done(); passed.push('G17 实体炼丹关闭图缺失：L 开窗、可点 ×、Esc 关闭、pageerror=0、还原 PNG');
+  });
+  console.log(JSON.stringify({ suite: 'shop-ui', passed: true, assertions, checks: passed, shots: shotDir, buyItem, sellItem, missingFileChecks }));
 } finally {
   if (browser) await browser.close();
   if (server) await server.close();

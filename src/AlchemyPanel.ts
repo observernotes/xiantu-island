@@ -184,9 +184,15 @@ export class AlchemyPanel {
     this.art('ui_bestiary_title', [(width - tw) / 2, -12, tw, th]);
     this.text(width / 2, -12 + th / 2, t('alchemy.title'), 18).setOrigin(0.5);
     const [cx, cy] = L.window.close as Point;
-    const close = this.image('ui_bestiary_btn_close', cx, cy)!;
-    close.setInteractive({ useHandCursor: true }).on('pointerover', () => close.setTexture('ui_bestiary_btn_close_hover'))
-      .on('pointerout', () => close.setTexture('ui_bestiary_btn_close')).on('pointerdown', () => this.close());
+    if (this.scene.textures.exists('ui_bestiary_btn_close')) {
+      const close = this.add(this.scene.add.image(cx, cy, 'ui_bestiary_btn_close').setOrigin(0, 0)).setName('alchemy-close');
+      close.setInteractive({ useHandCursor: true }).on('pointerdown', () => this.close())
+        .on('pointerover', () => this.scene.textures.exists('ui_bestiary_btn_close_hover') && close.setTexture('ui_bestiary_btn_close_hover'))
+        .on('pointerout', () => close.setTexture('ui_bestiary_btn_close'));
+    } else {
+      this.text(cx, cy, '×', 14).setFixedSize(20, 20).setAlign('center').setBackgroundColor(PAPER).setName('alchemy-close')
+        .setInteractive({ useHandCursor: true }).on('pointerdown', () => this.close());
+    }
     this.text(...L.levelBar.text as Point, t('alchemy.level', { n: this.prog.alchemyLevel }), 14).setOrigin(0, 0.5);
     const [ex, ey, ew, eh] = L.levelBar.frameRect as Rect;
     this.art('ui_bar_cultivation_frame', [ex, ey, ew, eh]);

@@ -1,6 +1,9 @@
 import Phaser from 'phaser';
 import { FEEL } from './config/feel';
 import { GameScene } from './scenes/GameScene';
+import { installOptionalAssetErrorHandler } from './optionalAssets';
+
+installOptionalAssetErrorHandler(Phaser);
 
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
