@@ -308,7 +308,7 @@ export class ShopPanel {
     const [tw, th] = hudSpec(this.scene, 'ui_bestiary_title')?.size ?? [160, 28];
     const titleW = Math.max(tw, 180);
     this.box('ui_bestiary_title', [(W - titleW) / 2, -12, titleW, th], C.paper2, C.ink, 6);
-    this.text(W / 2, -12 + th / 2, this.title(), 18, INK, true).setOrigin(0.5);
+    this.text(W / 2, -12 + th / 2, this.title(), 18, INK, true).setOrigin(0.5).setName('shop-title');
     // 关闭钮
     if (this.scene.textures.exists('ui_bestiary_btn_close')) {
       this.artUsed.ui_bestiary_btn_close = 'art';
@@ -363,7 +363,7 @@ export class ShopPanel {
     if (this.rows.length > visible)
       this.text(list[0] + list[2] - 8, list[1] + list[3] - 4, `${this.scroll + 1}-${Math.min(this.rows.length, this.scroll + visible)} / ${this.rows.length}`, 12, INK_60).setOrigin(1, 1);
     this.detail([328, 76, W - 344, H - 108]);
-    this.text(W / 2, H - 16, label('ui.shop.keys', '↑↓ 选货  ←→ 数量  Z/回车 确认  Esc 关闭') + (target.kind === 'ordinary' ? '  Tab 买/卖' : ''), 12, INK_60).setOrigin(0.5);
+    this.text(W / 2, H - 16, label('ui.shop.keys', '↑↓ 选货  ←→ 数量  Z/回车 确认  Esc 关闭') + (target.kind === 'ordinary' ? '  Tab 买/卖' : ''), 12, INK_60).setOrigin(0.5).setName('shop-keys');
   }
 
   private detail(panel: Rect) {

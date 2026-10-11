@@ -8,6 +8,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { createRequire } from 'node:module';
+import { createServer } from 'vite';
 import { findRoot } from './root.mjs';
 import { preview } from './isolated-build.mjs';
 import { inspectSharedPreview, installMissingManifest } from './shared-smoke-preview.mjs';
@@ -16,6 +17,11 @@ const projectRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const dataRoot = findRoot(projectRoot);
 const readTable = async name => JSON.parse(await fs.readFile(path.join(dataRoot, `balance/${name}.json`), 'utf8'));
 const [strings, itemRows, materialRows, shops, ranks] = await Promise.all(['strings_zh', 'items', 'materials', 'shops', 'sect_ranks'].map(readTable));
+const snapshotStrings = JSON.parse(await fs.readFile(path.join(projectRoot, 'data/balance/strings_zh.json'), 'utf8'));
+const SHOP_STRING_KEYS = ['ui.shop.title', 'ui.shop.balance', 'ui.shop.quantity', 'ui.shop.total', 'ui.shop.unit_price',
+  'ui.shop.held', 'ui.shop.req_rank', 'ui.shop.max', 'ui.shop.exchange', 'ui.shop.keys', 'ui.shop.changed',
+  'ui.shop.price_stones', 'ui.shop.price_contribution'];
+const formatString = (key, vars = {}) => strings[key].replace(/\{(\w+)\}/g, (_, name) => String(vars[name] ?? `{${name}}`));
 const features = JSON.parse(await fs.readFile(path.join(projectRoot, 'data/features.json'), 'utf8'));
 const ITEMS = Object.fromEntries([...itemRows, ...materialRows].map(item => [item.id, item]));
 const shotDir = process.env.XT_SHOP_UI_SHOTS ?? path.join(projectRoot, 'dist/shop-ui-shots');
@@ -35,6 +41,40 @@ let assertions = 0;
 const eq = (actual, expected, message) => { assert.deepEqual(actual, expected, message); assertions++; };
 const ok = (value, message) => { assert.ok(value, message); assertions++; };
 const passed = [];
+for (const key of SHOP_STRING_KEYS) {
+  ok(Object.hasOwn(strings, key) && typeof strings[key] === 'string', `运行时文案表缺 ${key}`);
+  ok(Object.hasOwn(snapshotStrings, key) && typeof snapshotStrings[key] === 'string', `快照文案表缺 ${key}`);
+  eq(snapshotStrings[key], strings[key], `快照与运行时文案不一致：${key}`);
+}
+passed.push('13 条商店文案：运行时表与快照齐全且一致');
+
+async function checkLabelFallback() {
+  // SSR 只替换未使用的 Phaser 绘图依赖；调用真实 title/priceText -> label -> t，不读取或匹配源码。
+  const loader = await createServer({ configFile: false, root: projectRoot,
+    resolve: { alias: { '@xt': dataRoot } }, server: { middlewareMode: true, hmr: false, ws: false }, appType: 'custom', logLevel: 'error',
+    plugins: [{ name: 'shop-label-render-stub', enforce: 'pre',
+      resolveId(id) { if (id === 'phaser') return '\0shop-label-phaser'; },
+      load(id) { if (id === '\0shop-label-phaser') return 'export default {};'; },
+    }], ssr: { noExternal: ['phaser'] } });
+  try {
+    const { ShopPanel } = await loader.ssrLoadModule('/src/ShopPanel.ts');
+    const { t } = await loader.ssrLoadModule('/src/data.ts');
+    const { default: table } = await loader.ssrLoadModule(path.join(dataRoot, 'balance/strings_zh.json'));
+    const panel = Object.assign(Object.create(ShopPanel.prototype), { target: { kind: 'ordinary', npcId: grocer, mode: 'buy' } });
+    const original = Object.fromEntries(['ui.shop.title', 'ui.shop.price_stones'].map(key => [key, table[key]]));
+    try {
+      // 只改变 SSR 的内存表；磁盘数据与浏览器构建均不受影响，结束时恢复。
+      table['ui.shop.title'] = '表内货摊：{npc}';
+      eq(panel.title(), '表内货摊：王婶', 'label 未优先使用表内文案');
+      for (const key of Object.keys(original)) delete table[key];
+      eq(t('ui.shop.title'), 'ui.shop.title', '缺 key 时 t 未返回 key 本身');
+      eq(panel.title(), '王婶的货摊', '缺标题 key 时 label 未退回中文兜底/npc');
+      eq(t('ui.shop.price_stones', { n: 37 }), 'ui.shop.price_stones', '缺价格 key 时 t 未返回 key 本身');
+      eq(panel.priceText(37), '37 灵石', '缺价格 key 时 label 未退回中文兜底/n');
+    } finally { Object.assign(table, original); }
+    passed.push('文案优先/缺 key：真实 label/t 路径与中文兜底插值');
+  } finally { await loader.close(); }
+}
 
 async function loadPlaywright() {
   for (const candidate of [process.env.PLAYWRIGHT_MODULE, 'playwright', 'playwright-core', '/tmp/pwt/node_modules/playwright-core/index.mjs'].filter(Boolean)) {
@@ -62,6 +102,7 @@ let browser, server, outDir;
 try {
   outDir = await fs.mkdtemp(path.join(os.tmpdir(), 'xiantu-shop-ui-'));
   build(outDir);
+  await checkLabelFallback();
   await fs.mkdir(shotDir, { recursive: true });
   server = await preview({ root: projectRoot, build: { outDir }, preview: { port: Number(process.env.SMOKE_PORT ?? 0) } });
   const baseURL = server.resolvedUrls.local[0];
@@ -94,6 +135,7 @@ try {
   }
   const shot = (page, name) => page.screenshot({ path: path.join(shotDir, `${name}.png`) });
   const snap = page => page.evaluate(() => window.__scene.shop.snapshot());
+  const shopText = (page, name) => page.evaluate(name => window.__scene.children.getByName('shop-panel').getByName(name).text, name);
   const wallet = (page, item) => page.evaluate(item => ({ stones: window.__scene.prog.stones, count: window.__scene.prog.count(item),
     contribution: window.__scene.prog.sectContribution, saved: JSON.parse(localStorage.getItem('xiantu_save_v1')).stones }), item);
   const press = async (page, key, times = 1) => { for (let i = 0; i < times; i++) {
@@ -144,6 +186,9 @@ try {
     await chooseMenu(page, strings['ui.shop.menu']);
     let s = await snap(page);
     eq([s.open, s.mode, s.target.npcId], [true, 'buy', grocer], '未打开王婶购买窗');
+    eq(await shopText(page, 'shop-title'), formatString('ui.shop.title', { npc: '王婶' }), '商店标题未使用表内文案/npc');
+    eq(await shopText(page, 'shop-balance'), formatString('ui.shop.balance', { n: (await wallet(page, buyItem)).stones }), '灵石余额未使用表内文案/n');
+    ok((await shopText(page, 'shop-keys')).startsWith(strings['ui.shop.keys']), '按键提示未使用表内文案');
     ok(Object.values(s.artUsed).every(v => v === 'art') && Object.keys(s.artUsed).length >= 6, `精修窗体未全部使用：${JSON.stringify(s.artUsed)}`);
     const index = s.rows.findIndex(r => r.itemId === buyItem);
     eq(s.rows[index].price, buyPrice, '列表价格不读 item.price');
@@ -151,6 +196,7 @@ try {
     await press(page, 'ArrowRight', 2);
     s = await snap(page);
     eq([s.rows[s.selected].itemId, s.quantity], [buyItem, 3], '方向键选货/数量失败');
+    eq(await shopText(page, 'shop-total'), `${strings['ui.shop.total']}：${formatString('ui.shop.price_stones', { n: s.rows[s.selected].price * s.quantity })}`, '合计/灵石价格未使用表内文案/n');
     await shot(page, 'ui5_buy_list');
     const before = await wallet(page, buyItem);
     await press(page, 'Enter');
@@ -202,6 +248,7 @@ try {
     await press(page, 'Enter');
     const stale = await page.evaluate(item => { const s = window.__scene; s.prog.addItem(item, 1); const r = s.shop.commit(); return { r, snap: s.shop.snapshot() }; }, sellItem);
     eq([stale.r.ok, stale.r.key, stale.snap.pending], [false, 'ui.shop.changed', null], '目录变化未重验');
+    eq(stale.snap.status, strings['ui.shop.changed'], '目录变化提示未使用表内文案');
     eq((await wallet(page, sellItem)).stones, after.stones, '目录变化仍结算');
 
     // 打开中关开关：窗口收起，缓存的确认也不能结算。
