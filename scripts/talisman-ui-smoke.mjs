@@ -54,7 +54,7 @@ async function build(root) {
   }
 }
 
-let isolated, browser, server;
+let isolated, browser, server, report;
 try {
   progress('isolated-build');
   isolated = await createIsolatedBuild(root, 'talisman-ui');
@@ -90,8 +90,10 @@ try {
           responses.push({ status: response.status(), type: response.headers()['content-type'] ?? '' });
       });
       await page.goto(new URL('?map=qingyun_village', baseURL).href, { waitUntil: 'load', timeout: 60000 });
-      await page.waitForFunction(() => window.__scene?.player?.active && window.__xt?.openTalismanPanel, null, { timeout: 40000 });
-      await page.waitForTimeout(200);
+      await page.waitForFunction(() => {
+        if (!window.__scene?.player?.active || !window.__xt?.openTalismanPanel) return false;
+        try { return !!window.__xt.talismanSnapshot(); } catch { return false; }
+      }, null, { timeout: 40000 });
       await run(page);
       // 不过滤 Chromium 的资源日志，所有原始错误均须为零。
       eq(errors, { console: [], page: [], request: [], http: [] }, `${label}: 浏览器报错`);
@@ -108,21 +110,34 @@ try {
       }
     } finally { await context.close(); }
   }
-  const snap = page => page.evaluate(() => window.__xt.talismanSnapshot());
-  async function open(page, state = {}) {
+  // render 后等一帧，让 Phaser 把新按钮加入输入列表；不靠固定延时猜就绪。
+  async function render(page, method, state) {
     await page.mouse.move(10, 10);
-    await page.evaluate(state => window.__xt.openTalismanPanel(state), state);
-    await page.waitForTimeout(60); return snap(page);
+    return page.evaluate(({ method, state }) => {
+      window.__xt[method](state);
+      return new Promise(resolve => window.__scene.events.once('postupdate', () => resolve(window.__xt.talismanSnapshot())));
+    }, { method, state });
   }
-  async function update(page, state) {
-    await page.mouse.move(10, 10);
-    await page.evaluate(state => window.__xt.setTalismanPanelState(state), state);
-    await page.waitForTimeout(60); return snap(page);
+  const open = (page, state = {}) => render(page, 'openTalismanPanel', state);
+  const update = (page, state) => render(page, 'setTalismanPanelState', state);
+  const afterInputFrame = page => page.evaluate(() => new Promise(resolve =>
+    window.__scene.events.once('postupdate', () => resolve(window.__xt.talismanSnapshot()))));
+  async function waitSnapshot(page, { open = true, states = {}, actionCount = 0 } = {}) {
+    const handle = await page.waitForFunction(({ open, states, actionCount }) => {
+      const s = window.__xt.talismanSnapshot();
+      return s.open === open && s.actions.length >= actionCount
+        && Object.entries(states).every(([name, state]) => s.buttons[name]?.state === state) ? s : false;
+    }, { open, states, actionCount }, { polling: 'raf', timeout: 5000 });
+    try { return await handle.jsonValue(); } finally { await handle.dispose(); }
   }
   async function hover(page, s, name = 'abandonOrContinue') {
     const [x, y, w, h] = s.buttons[name].rect;
     await page.mouse.move(s.position.x + x + w / 2, s.position.y + y + h / 2);
-    await page.waitForTimeout(60); return snap(page);
+    return waitSnapshot(page, { states: { [name]: s.buttons[name].enabled ? 'hover' : 'disabled' } });
+  }
+  async function moveOut(page, name) {
+    await page.mouse.move(10, 10);
+    return waitSnapshot(page, { states: { [name]: 'normal' } });
   }
   async function shot(page, name) {
     const file = path.join(shotDir, `${name}.png`);
@@ -143,72 +158,90 @@ try {
     if (secondary) eq(button.textColor, state === 'disabled' ? S.textColor.disabled : S.textColor.normal, '次按钮字色错误');
     eq(button.enabled, state !== 'disabled', `${name}: 禁用命中区域错误`);
   }
-  // 同时覆盖两组按钮的四态；缺一张时其它状态继续使用精修件。
-  async function exercise(page, missing = [], prefix = '') {
+  async function activate(page, s, name, action, missing) {
+    s = await hover(page, s, name); verify(s, name, 'hover', missing);
+    const count = s.actions.length;
+    await page.mouse.down();
+    s = await waitSnapshot(page, { states: { [name]: 'pressed' } });
+    verify(s, name, 'pressed', missing);
+    eq(s.actions.length, count, '按下时提前执行动作');
+    await page.mouse.up();
+    s = await waitSnapshot(page, { states: { [name]: 'hover' }, actionCount: count + 1 });
+    eq(s.actions.length, count + 1, '松开按钮未执行一次回调');
+    eq(s.actions.at(-1), action, '回调意图错误');
+    return s;
+  }
+  // 正常/清单外场景完整覆盖双按钮四态和回调；截图仅在调用方各留一张。
+  async function exercise(page, missing = []) {
     let s = await open(page);
     for (const name of ['startOrAgain', 'abandonOrContinue']) {
       verify(s, name, 'normal', missing);
-      if (prefix) await shot(page, `${prefix}_${name}_normal`);
-      s = await hover(page, s, name); verify(s, name, 'hover', missing);
-      if (prefix) await shot(page, `${prefix}_${name}_hover`);
-      const count = s.actions.length;
-      await page.mouse.down(); await page.waitForTimeout(60);
-      s = await snap(page); verify(s, name, 'pressed', missing);
-      eq(s.actions.length, count, '按下时提前执行动作');
-      if (prefix) await shot(page, `${prefix}_${name}_pressed`);
-      await page.mouse.up(); await page.waitForTimeout(60);
-      s = await snap(page); eq(s.actions.length, count + 1, '松开按钮未执行一次回调');
-      eq(s.actions.at(-1), name === 'startOrAgain' ? 'start' : 'abandon', '回调意图错误');
-      await page.mouse.move(10, 10); await page.waitForTimeout(60);
-      s = await snap(page); verify(s, name, 'normal', missing);
+      await activate(page, s, name, name === 'startOrAgain' ? 'start' : 'abandon', missing);
+      s = await moveOut(page, name); verify(s, name, 'normal', missing);
     }
     s = await update(page, { primary: 'again', secondary: 'continue' });
     ok(s.buttons.startOrAgain.label.includes('再'), '再来文案错误');
     ok(s.buttons.abandonOrContinue.label.includes('继续'), '继续文案错误');
     for (const name of ['startOrAgain', 'abandonOrContinue']) {
       verify(s, name, 'normal', missing);
-      s = await hover(page, s, name); verify(s, name, 'hover', missing);
-      await page.mouse.down(); await page.waitForTimeout(60);
-      s = await snap(page); verify(s, name, 'pressed', missing);
-      await page.mouse.up(); await page.waitForTimeout(60);
-      s = await snap(page); eq(s.actions.at(-1), name === 'startOrAgain' ? 'again' : 'continue', '再来/继续回调错误');
-      await page.mouse.move(10, 10); await page.waitForTimeout(60); s = await snap(page);
+      await activate(page, s, name, name === 'startOrAgain' ? 'again' : 'continue', missing);
+      s = await moveOut(page, name); verify(s, name, 'normal', missing);
     }
-    if (prefix) await shot(page, `${prefix}_continue`);
     s = await update(page, { primaryDisabled: true, secondaryDisabled: true });
     for (const name of ['startOrAgain', 'abandonOrContinue']) {
       verify(s, name, 'disabled', missing);
       const count = s.actions.length;
       await hover(page, s, name); await page.mouse.click(s.position.x + s.buttons[name].rect[0] + 10,
         s.position.y + s.buttons[name].rect[1] + 10);
-      s = await snap(page); eq(s.actions.length, count, '禁用按钮仍执行回调'); verify(s, name, 'disabled', missing);
+      s = await afterInputFrame(page); eq(s.actions.length, count, '禁用按钮仍执行回调'); verify(s, name, 'disabled', missing);
     }
-    if (prefix) await shot(page, `${prefix}_disabled`);
     s = await update(page, { secondary: 'abandon' }); verify(s, 'abandonOrContinue', 'disabled', missing);
-    if (prefix) await shot(page, `${prefix}_abandon_disabled`);
-    await page.evaluate(() => window.__xt.setTalismanButtonDisabled(false));
-    s = await hover(page, await snap(page)); verify(s, 'abandonOrContinue', 'hover', missing);
+    s = await render(page, 'setTalismanButtonDisabled', false);
+    s = await hover(page, s); verify(s, 'abandonOrContinue', 'hover', missing);
     const count = s.actions.length;
-    await page.mouse.down(); await page.mouse.move(10, 10); await page.mouse.up(); await page.waitForTimeout(60);
-    s = await snap(page); eq(s.actions.length, count, '拖出按钮仍执行回调');
+    await page.mouse.down();
+    s = await waitSnapshot(page, { states: { abandonOrContinue: 'pressed' } });
+    verify(s, 'abandonOrContinue', 'pressed', missing);
+    await moveOut(page, 'abandonOrContinue'); await page.mouse.up();
+    s = await afterInputFrame(page); eq(s.actions.length, count, '拖出按钮仍执行回调');
     verify(s, 'abandonOrContinue', 'normal', missing);
+    return s;
+  }
+
+  async function exerciseMissingFile(page, key) {
+    const missing = [key], name = secondaryKeys.includes(key) ? 'abandonOrContinue' : 'startOrAgain';
+    let s = await open(page);
+    // render 会创建四态背景；同时检查不可见状态，确保只有缺失的那一件回退。
+    for (const relatedKey of keys)
+      eq(s.artUsed[relatedKey], relatedKey === key ? 'code' : 'art', `${key}: ${relatedKey} 逐件回退错误`);
+    for (const button of ['startOrAgain', 'abandonOrContinue']) verify(s, button, 'normal', missing);
+    const disabledKey = name === 'abandonOrContinue' ? keyOf(S.disabled) : primaryKeys[3];
+    if (key === disabledKey) {
+      const field = name === 'abandonOrContinue' ? 'secondaryDisabled' : 'primaryDisabled';
+      s = await update(page, { [field]: true }); verify(s, name, 'disabled', missing);
+      s = await update(page, { [field]: false });
+    }
+    s = await activate(page, s, name, name === 'startOrAgain' ? 'start' : 'abandon', missing);
+    await shot(page, `ui4_missing_${key}`);
     return s;
   }
 
   await session('states-and-callbacks', {}, async page => {
     const before = await page.evaluate(() => ({ inventory: { ...window.__scene.prog.inventory }, stones: window.__scene.prog.stones }));
-    let s = await exercise(page, [], 'ui4');
+    let s = await exercise(page);
+    await shot(page, 'ui4');
     eq([s.position.width, s.position.height], spec.window.size, '窗体尺寸未读表');
     eq(s.buttons.abandonOrContinue.rect, [342, 346, 112, 28], '次按钮基线坐标错误');
     for (const key of windowKeys) eq(s.artUsed[key], 'art', '公共窗体件未复用');
     const after = await page.evaluate(() => ({ inventory: { ...window.__scene.prog.inventory }, stones: window.__scene.prog.stones }));
     eq(after, before, 'UI 壳改变了材料/灵石');
-    await page.keyboard.press('Escape'); s = await snap(page);
+    await page.keyboard.press('Escape'); s = await waitSnapshot(page, { open: false });
     eq(s.open, false, 'Esc 未发出关闭请求'); eq(s.actions.at(-1), 'close', '关闭回调错误');
     s = await open(page);
     await page.locator('canvas').click({ position: {
       x: s.position.x + spec.window.close[0] + 10, y: s.position.y + spec.window.close[1] + 10 } });
-    eq((await snap(page)).open, false, '真实 × 点击未关闭');
+    s = await waitSnapshot(page, { open: false });
+    eq(s.open, false, '真实 × 点击未关闭'); eq(s.actions.at(-1), 'close', '真实 × 关闭回调错误');
     checks.push('放弃/继续、开始/再来四态；真实按下/松开/拖出/禁用/恢复/关闭；无扣料');
 
     // 改缓存而不改文件：证明专属切片不借用 HUD 表，两个按钮各读自己的字段。
@@ -234,8 +267,9 @@ try {
     checks.push('内存换表验证窗口/双按钮坐标、独立切片、图片路径与字色');
   });
   await session('manifest-missing', { missing: keys.map(imagePath) }, async page => {
-    const s = await exercise(page, keys, 'ui4_missing_manifest');
+    const s = await exercise(page, keys);
     for (const key of windowKeys) eq(s.artUsed[key], 'code', `${key}: 窗体未回退`);
+    await shot(page, 'ui4_missing_manifest');
     checks.push('所有相关图片清单外：无请求、代码回退、状态和回调可用');
   });
   for (const key of keys) {
@@ -243,18 +277,17 @@ try {
     await fs.rename(original, moved);
     try {
       await session(`file-missing:${key}`, { missingFile: imagePath(key) }, async page => {
-        const s = await exercise(page, [key]);
-        for (const windowKey of windowKeys) eq(s.artUsed[windowKey], windowKey === key ? 'code' : 'art', `${key}: 其它窗体件受影响`);
-        await shot(page, `ui4_missing_${key}`);
+        await exerciseMissingFile(page, key);
       });
     } finally { await fs.rename(moved, original); }
     await fs.access(original);
     checks.push(`${key}: 清单内实体 PNG 缺失、200 HTML 静默、逐件回退、还原`);
   }
-  const report = { suite: 'talisman-ui', passed: true, assertions, checks, browserChecks, missingFileChecks, screenshots,
-    shotDir, elapsedMs: Date.now() - startedAt };
-  await fs.writeFile(path.join(shotDir, 'talisman-ui-smoke.json'), `${JSON.stringify(report, null, 2)}\n`);
-  console.log(JSON.stringify(report, null, 2));
+  report = { suite: 'talisman-ui', passed: true, assertions, checks, browserChecks, missingFileChecks, screenshots, shotDir };
 } finally {
+  progress('cleanup');
   await browser?.close(); await server?.close(); await isolated?.cleanup();
 }
+report.elapsedMs = Date.now() - startedAt;
+await fs.writeFile(path.join(shotDir, 'talisman-ui-smoke.json'), `${JSON.stringify(report, null, 2)}\n`);
+console.log(JSON.stringify(report, null, 2));
