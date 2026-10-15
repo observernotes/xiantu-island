@@ -1,0 +1,302 @@
+{
+ "frames": {
+  "mon_heart_demon_imp_idle_01": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 72
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 72
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 72
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_heart_demon_imp_idle_02": {
+   "frame": {
+    "x": 88,
+    "y": 0,
+    "w": 88,
+    "h": 72
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 72
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 72
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_heart_demon_imp_walk_01": {
+   "frame": {
+    "x": 176,
+    "y": 0,
+    "w": 88,
+    "h": 72
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 72
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 72
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_heart_demon_imp_walk_02": {
+   "frame": {
+    "x": 264,
+    "y": 0,
+    "w": 88,
+    "h": 72
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 72
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 72
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_heart_demon_imp_walk_03": {
+   "frame": {
+    "x": 352,
+    "y": 0,
+    "w": 88,
+    "h": 72
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 72
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 72
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_heart_demon_imp_attack_01": {
+   "frame": {
+    "x": 440,
+    "y": 0,
+    "w": 88,
+    "h": 72
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 72
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 72
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_heart_demon_imp_attack_02": {
+   "frame": {
+    "x": 528,
+    "y": 0,
+    "w": 88,
+    "h": 72
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 72
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 72
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_heart_demon_imp_attack_03": {
+   "frame": {
+    "x": 616,
+    "y": 0,
+    "w": 88,
+    "h": 72
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 72
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 72
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_heart_demon_imp_hit_01": {
+   "frame": {
+    "x": 0,
+    "y": 72,
+    "w": 88,
+    "h": 72
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 72
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 72
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_heart_demon_imp_die_01": {
+   "frame": {
+    "x": 88,
+    "y": 72,
+    "w": 88,
+    "h": 72
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 72
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 72
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_heart_demon_imp_die_02": {
+   "frame": {
+    "x": 176,
+    "y": 72,
+    "w": 88,
+    "h": 72
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 72
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 72
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "mon_heart_demon_imp_die_03": {
+   "frame": {
+    "x": 264,
+    "y": 72,
+    "w": 88,
+    "h": 72
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 88,
+    "h": 72
+   },
+   "sourceSize": {
+    "w": 88,
+    "h": 72
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  }
+ },
+ "meta": {
+  "app": "xiantu gen_trial_altar.py",
+  "image": "mon_heart_demon_imp.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 704,
+   "h": 144
+  },
+  "scale": "1"
+ }
+}

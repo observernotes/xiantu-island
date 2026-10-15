@@ -1,0 +1,45 @@
+{
+ "atlas": "prop_gather_nine_leaf_ganoderma",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  48,
+  48
+ ],
+ "anims": [
+  {
+   "key": "prop_gather_nine_leaf_ganoderma_idle",
+   "frames": [
+    "prop_gather_nine_leaf_ganoderma_idle_01",
+    "prop_gather_nine_leaf_ganoderma_idle_02",
+    "prop_gather_nine_leaf_ganoderma_idle_03",
+    "prop_gather_nine_leaf_ganoderma_idle_04"
+   ],
+   "frameRate": 6,
+   "repeat": -1
+  },
+  {
+   "key": "prop_gather_nine_leaf_ganoderma_harvested",
+   "frames": [
+    "prop_gather_nine_leaf_ganoderma_harvested_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  }
+ ],
+ "blend": "NORMAL",
+ "hitArea": [
+  32,
+  32
+ ],
+ "promptOffsetY": -52,
+ "gatherItem": "nine_leaf_ganoderma",
+ "maps": [
+  "wanyao_forest（待定）"
+ ],
+ "note": "采集点占位（item=nine_leaf_ganoderma；地图暂未放置，materials.json 写的是待定）。放在对象坐标，脚底=地面；可采时循环 idle，采完切 harvested，respawnMs 后切回 idle。读条用 art/icons/ui/alchemy/ui_gather_castbar_*。",
+ "kind": "prop"
+}
