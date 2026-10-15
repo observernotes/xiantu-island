@@ -59,13 +59,14 @@ try {
   eq(p.count('spirit_herb'), 0, '松键中断不给奖励');
   eq(scene.player.gathering, false, '中断恢复动作');
   timers.splice(0).forEach(f => f());
-  gathering.update(0, false, false);
   gathering.update(100, true, false);
+  eq(!!gathering.active, true, '松键中断后下一帧重新按键即可采集，不需要第二帧松键');
   scene.player.state2 = 'hurt'; gathering.update(cfg.castMs, true, false);
   eq(p.count('spirit_herb'), 0, '受击中断不给物品');
+  scene.player.state2 = 'ground';
   gathering.update(cfg.castMs, true, false);
-  eq(gathering.active, undefined, '中断后按住键不可自动重开');
-  scene.player.state2 = 'ground'; gathering.update(0, false, false);
+  eq(gathering.active, undefined, '受击恢复后仍按住键不可自动重开');
+  gathering.update(0, false, false);
   gathering.update(cfg.castMs, true, false);
   eq(p.count('spirit_herb'), 1, '完整读条采一株');
   eq(point.sprite.anims.currentAnim.key, 'prop_gather_spirit_herb_harvested', '采后停harvested');
@@ -99,5 +100,12 @@ try {
   gathering.update(0, false, false);
   gathering.update(cfg.castMs, true, false);
   eq(scene.prog.count('spirit_herb'), 2, '重新开启可以再次真实采集');
+  now += cfg.respawnMs;
+  gathering.update(cfg.castMs, true, false);
+  eq(point.ready, true, '持续按键时采集点也按时刷新');
+  eq(scene.prog.count('spirit_herb'), 2, '完成后即使冷却到期，持续按键仍须松键才能再采');
+  gathering.update(0, false, false);
+  gathering.update(cfg.castMs, true, false);
+  eq(scene.prog.count('spirit_herb'), 3, '完成后松键再按可以采集已刷新的点');
   console.log(`gather logic ok: ${assertions} assertions`);
 } finally { Date.now = originalNow; delete globalThis.localStorage; await server.close(); }

@@ -427,6 +427,8 @@ try {
   assert.equal(await page.evaluate(() => window.__scene.prog.count('spirit_herb')), cast.count, '松开 Z 的半途采集仍发物品');
   passed('表内采集时长、y−88 读条、gather/idle、头顶键帽、松键中断');
 
+  // 与完成后的重采一致，先确认游戏帧已处理松键，避免低帧时再次按下锁住读条。
+  await page.waitForFunction(() => !window.__scene.gathering.requireRelease, null, { timeout: 3000 });
   await page.keyboard.down('z');
   await page.waitForFunction(() => window.__scene.prog.count('spirit_herb') === 5, null,
     { timeout: herb.gather.castMs + 3000 });
@@ -721,7 +723,9 @@ try {
     gathered: 1, brews: 7, output: recipe.output, outputCount: recipe.outputCount * 7, quality: brewed.result.quality,
     quest: 'q_alchemy_intro:done', screenshot }));
 } catch (error) {
-  console.error(JSON.stringify({ checks, errors, failure: error.message }));
+  const gathering = page ? await withDeadline('gatherDiagnostic', () => gatherDiagnostic(page), 1000)
+    .catch(failure => ({ unavailable: failure.message })) : undefined;
+  console.error(JSON.stringify({ checks, errors, gathering, failure: error.message }));
   throw error;
 } finally {
   if (page) await page.close();

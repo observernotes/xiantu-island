@@ -93,7 +93,11 @@ export class Gathering {
       this.refreshPoint(point, now);
       point.prompt.setVisible(point.ready && this.near(point) && !blocked && !this.active && !p.dead);
     }
-    if (this.active && (!held || blocked || moving || p.dead || p.state2 === 'hurt' || !p.onGround || !this.near(this.active.point))) this.cancel();
+    if (this.active && (!held || blocked || moving || p.dead || p.state2 === 'hurt' || !p.onGround || !this.near(this.active.point))) {
+      this.cancel();
+      // 本帧已观察到松键，不让 cancel 的锁存覆盖它；受击/移动中仍按住则必须先松键。
+      if (!held) this.requireRelease = false;
+    }
     if (!this.active && held && !blocked && !moving && !this.requireRelease && !p.dead && p.onGround && p.state2 !== 'hurt') {
       const point = this.points.find(point => point.ready && this.near(point));
       if (point) {

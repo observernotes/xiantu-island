@@ -16,6 +16,41 @@ const strings = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/string
 const classes = JSON.parse(await fs.readFile(path.join(root, 'src/config/classes.json'), 'utf8')).classes;
 assert.equal(trials.length, 4);
 const checks = [];
+const startedAt = Date.now();
+let phase = 'startup';
+function progress(next) {
+  phase = next;
+  console.log(JSON.stringify({ test: 'trials-smoke', phase, elapsedMs: Date.now() - startedAt, checks: checks.length }));
+}
+
+async function withDeadline(label, operation, timeout = 17000) {
+  let timer;
+  try {
+    return await Promise.race([
+      operation(),
+      new Promise((_, reject) => { timer = setTimeout(() => reject(new Error(`${label} timed out after ${timeout}ms`)), timeout); }),
+    ]);
+  } finally { clearTimeout(timer); }
+}
+
+async function diagnostic(page) {
+  if (!page || page.isClosed()) return { closed: true };
+  let timer;
+  try {
+    return await Promise.race([
+      page.evaluate(() => {
+        const scene = window.__scene;
+        return { map: scene?.map?.id, frame: scene?.game?.loop?.frame,
+          trial: scene?.sectTrial?.def?.id, stage: scene?.sectTrial?.stage,
+          pending: scene?.prog?.pendingSectTrial, selectedSect: scene?.prog?.selectedSect,
+          tokenVisible: scene?.children?.getByName('inventory:five-sect-token')?.visible,
+          dialog: scene?.dialog && { open: scene.dialog.open, choices: scene.dialog.choices.map(choice => choice.label) } };
+      }),
+      new Promise(resolve => { timer = setTimeout(() => resolve({ unavailable: 'diagnostic timed out' }), 1500); }),
+    ]);
+  } catch (error) { return { unavailable: error.message }; }
+  finally { clearTimeout(timer); }
+}
 
 async function loadPlaywright() {
   const candidates = process.env.PLAYWRIGHT_MODULE ? [process.env.PLAYWRIGHT_MODULE]
@@ -44,20 +79,32 @@ async function ready(page, mapId) {
   await page.waitForFunction(id => {
     const scene = window.__scene;
     return window.__xt && scene?.map?.id === id && scene.player && scene.dialog && scene.game.loop.frame > 3;
-  }, mapId, { timeout: 15000 });
+  }, mapId, { timeout: 15000, polling: 50 });
 }
 async function drainDialog(page) {
   for (let n = 0; n < 24; n++) {
-    const state = await page.evaluate(() => ({ open: window.__scene.dialog.open, choices: window.__scene.dialog.choices.length }));
+    const state = await page.evaluate(() => {
+      const dialog = window.__scene.dialog;
+      return { open: dialog.open, choices: dialog.choices.length, version: dialog.version, index: dialog.i };
+    });
     if (!state.open) return;
-    await page.keyboard.press(state.choices ? '1' : 'z', { delay: 45 });
-    await page.waitForTimeout(55);
+    const key = state.choices ? '1' : 'z';
+    await page.keyboard.down(key);
+    try {
+      // 等真实 update 消费按键；低帧时不靠固定按压时长猜测已翻页。
+      await page.waitForFunction(before => {
+        const dialog = window.__scene.dialog;
+        return !dialog.open || dialog.version !== before.version || dialog.i !== before.index;
+      }, state, { timeout: 3000, polling: 25 });
+    } finally { await page.keyboard.up(key); }
   }
   throw new Error('对白 24 次输入后仍未关闭');
 }
 async function fixture(page, mapId, quest, patch = {}) {
+  const currentPhase = phase;
+  progress(`${currentPhase}/loadSave`);
   const selectedSect = classes.find(row => row.joinQuest === quest.id)?.sect ?? '';
-  await page.evaluate(async ({ mapId, quest, selectedSect, patch }) => {
+  await withDeadline(`${phase}: loadSave`, () => page.evaluate(async ({ mapId, quest, selectedSect, patch }) => {
     const scene = window.__scene, p = scene.prog;
     const save = p.exportSave();
     Object.assign(save, { level: Math.max(12, quest.reqLevel), job: '', classVersion: 0,
@@ -73,8 +120,9 @@ async function fixture(page, mapId, quest, patch = {}) {
     fresh.prog.hp = fresh.prog.maxHp; fresh.prog.mp = fresh.prog.maxMp;
     fresh.player.hp = fresh.prog.hp; fresh.player.maxHp = fresh.prog.maxHp;
     fresh.physics.pause(); fresh.player.body.reset(fresh.map.spawn.x, fresh.map.spawn.y);
-  }, { mapId, quest, selectedSect, patch });
+  }, { mapId, quest, selectedSect, patch }));
   await ready(page, mapId);
+  progress(currentPhase);
 }
 async function standAtNpc(page, npcId) {
   const frame = await page.evaluate(id => {
@@ -91,25 +139,25 @@ async function standAtNpc(page, npcId) {
 }
 async function chooseSectToken(page, sect) {
   await page.keyboard.press('i', { delay: 45 });
-  await page.waitForFunction(() => window.__scene.children.getByName('inventory:five-sect-token')?.visible);
+  await page.waitForFunction(() => window.__scene.children.getByName('inventory:five-sect-token')?.visible,
+    null, { timeout: 3000, polling: 50 });
   const point = await page.evaluate(() => {
     const bounds = window.__scene.children.getByName('inventory:five-sect-token').getBounds();
     return { x: bounds.centerX, y: bounds.centerY };
   });
   await page.mouse.click(point.x, point.y);
-  await page.waitForFunction(() => window.__scene.dialog.choices.length === 5);
+  await page.waitForFunction(() => window.__scene.dialog.choices.length === 5, null, { timeout: 3000, polling: 50 });
   await page.keyboard.press(String(classes.findIndex(row => row.sect === sect) + 1), { delay: 45 });
   assert.deepEqual(await page.evaluate(() => ({ selected: window.__scene.prog.selectedSect, job: window.__scene.prog.job,
     stored: JSON.parse(localStorage.getItem('xiantu_save_v1')).selectedSect, token: window.__scene.prog.count('five_sect_token') })),
   { selected: sect, job: '', stored: sect, token: 1 }, `${sect}: 真正使用五宗帖只保存选择，不消耗帖或提前拜入`);
 }
 async function enter(page, trial, quest) {
-  await page.evaluate(({ quest }) => {
+  const confirmation = await page.evaluate(({ quest }) => {
     const scene = window.__scene;
     scene.dialog.close(); scene.talkTo(quest.turnIn, quest.id);
+    return { lines: scene.dialog.lines.map(line => line.text), choices: scene.dialog.choices.map(choice => choice.label) };
   }, { quest });
-  const confirmation = await page.evaluate(() => ({ lines: window.__scene.dialog.lines.map(line => line.text),
-    choices: window.__scene.dialog.choices.map(choice => choice.label) }));
   assert.ok(confirmation.lines.some(line => line.includes(strings['trial.enter_confirm'])), `${trial.sect}: 缺进入确认对白`);
   assert.ok(confirmation.choices.includes('进入试炼'), `${trial.sect}: 没有进入选择`);
   await page.keyboard.press('1', { delay: 45 });
@@ -155,47 +203,54 @@ async function returned(page, trial, quest, result) {
   } else assert.deepEqual(state.trials, [trial.id]);
 }
 async function draw(page) {
-  assert.equal(await page.evaluate(() => window.__scene.mobs.filter(m => m.def.id === 'wood_target' && !m.dead).length), 0,
-    '画符前不能预刷木靶');
-  await page.evaluate(() => {
+  const before = await page.evaluate(() => {
     const scene = window.__scene, desk = scene.map.objects.find(o => o.type === 'draw_desk');
+    const targets = scene.mobs.filter(m => m.def.id === 'wood_target' && !m.dead).length;
     scene.physics.resume();
     scene.player.body.reset(desk.x, desk.y); scene.player.body.updateFromGameObject();
+    return targets;
   });
-  await page.waitForFunction(() => window.__scene.player.state2 === 'ground', null, { timeout: 3000 });
-  await page.evaluate(() => window.__scene.physics.pause());
+  assert.equal(before, 0, '画符前不能预刷木靶');
+  await page.waitForFunction(() => {
+    const scene = window.__scene;
+    if (scene.player.state2 !== 'ground') return false;
+    scene.physics.pause(); return true;
+  }, null, { timeout: 3000, polling: 50 });
   await page.keyboard.press('z', { delay: 45 });
   await page.waitForFunction(() => window.__scene.sectTrial?.blocksInput, null, { timeout: 3000 });
   const arrows = { up: 'ArrowUp', right: 'ArrowRight', down: 'ArrowDown', left: 'ArrowLeft' };
-  await page.keyboard.press('ArrowLeft', { delay: 35 });
+  await page.keyboard.press('ArrowLeft');
+  await page.waitForFunction(() => window.__scene.logs.some(line => line.text === '笔画错了，这道符重画'),
+    null, { timeout: 3000, polling: 50 });
   assert.deepEqual(await page.evaluate(() => ({ drawn: window.__scene.sectTrial.state.drawn,
     stroke: window.__scene.sectTrial.state.strokeIndex })), { drawn: 0, stroke: 0 }, '错笔未重画当前符');
-  for (let strokes = 0; strokes < 24; strokes++) {
+  for (let talismans = 0; talismans < 24; talismans++) {
     const state = await page.evaluate(() => {
       const trial = window.__scene.sectTrial;
-      return { stage: trial.stage, direction: trial.state.strokes[trial.state.strokeIndex] };
+      return { stage: trial.stage, drawn: trial.state.drawn, strokes: trial.state.strokes.slice(trial.state.strokeIndex) };
     });
     if (state.stage !== 'draw') break;
-    await page.keyboard.press(arrows[state.direction], { delay: 35 });
+    // onKey 按事件队列逐笔处理；一道符读一次方向，仍逐笔发送真实键盘事件。
+    for (const direction of state.strokes) await page.keyboard.press(arrows[direction]);
+    await page.waitForFunction(drawn => window.__scene.sectTrial.state.drawn === drawn + 1,
+      state.drawn, { timeout: 3000, polling: 50 });
   }
   assert.equal(await page.evaluate(() => window.__scene.sectTrial.stage), 'targets', '真实方向键未完成三道符');
 }
 async function clearWaves(page, trial) {
-  const killed = [];
-  for (let attempt = 0; attempt < 12; attempt++) {
-    const step = await page.evaluate(() => {
+  const killed = await page.evaluate(() => {
+    const killed = [];
+    for (let attempt = 0; attempt < 12; attempt++) {
       const scene = window.__scene, trial = scene.sectTrial;
-      if (!trial || trial.ended) return { done: true, killed: [] };
+      if (!trial || trial.ended) break;
       trial.update(12000);
       const mobs = scene.mobs.filter(m => m.active && !m.dead && m.name.startsWith('sect-wave:'));
-      const ids = mobs.map(m => m.def.id);
+      killed.push(...mobs.map(m => m.def.id));
+      // takeHit 同步派发 onDead，下一轮 update 已能处理下一波，无需等 60ms。
       for (const mob of mobs) mob.takeHit(scene.time.now, mob.hp + 100000, 1);
-      return { done: trial.ended, killed: ids };
-    });
-    killed.push(...step.killed);
-    if (step.done) break;
-    await page.waitForTimeout(60);
-  }
+    }
+    return killed;
+  });
   assert.equal(killed.length, trial.waves.reduce((sum, wave) => sum + wave.count, 0), `${trial.sect}: 实际击杀波次总数不符`);
   assert.ok(killed.every(id => trial.waves.some(wave => wave.monster === id)), `${trial.sect}: 波次怪物不符`);
 }
@@ -208,8 +263,11 @@ async function pickupToken(page) {
     scene.stealth.patrols.forEach(p => { p.mob.active = false; });
     return scene.prog.count('shadow_token');
   });
-  await page.waitForFunction(() => window.__scene.player.state2 === 'ground', null, { timeout: 3000 });
-  await page.evaluate(() => window.__scene.physics.pause());
+  await page.waitForFunction(() => {
+    const scene = window.__scene;
+    if (scene.player.state2 !== 'ground') return false;
+    scene.physics.pause(); return true;
+  }, null, { timeout: 3000, polling: 50 });
   await page.keyboard.press('z', { delay: 45 });
   assert.deepEqual(await page.evaluate(() => ({ stage: window.__scene.sectTrial.stage,
     count: window.__scene.prog.count('shadow_token'), stored: window.__scene.prog.exportSave().inventory.shadow_token ?? 0 })),
@@ -282,7 +340,7 @@ async function win(page, trial) {
   }
 }
 
-let server, browser;
+let server, browser, page;
 let errors = [];
 try {
   const { api, module } = await loadPlaywright(), executablePath = await browserPath(api.chromium);
@@ -295,9 +353,9 @@ try {
   browser = await api.chromium.launch({ executablePath, headless: true, timeout: 20000,
     args: ['--use-gl=swiftshader', '--enable-unsafe-swiftshader'] });
   const context = await browser.newContext({ viewport: { width: 1280, height: 720 } });
-  const page = await context.newPage(); errors = collectErrors(page);
+  page = await context.newPage(); errors = collectErrors(page);
   const url = new URL(baseURL); url.searchParams.set('map', 'qingyun_village'); url.searchParams.set('reset', '1');
-  await page.goto(url.href, { waitUntil: 'networkidle', timeout: 30000 }); await ready(page, 'qingyun_village');
+  await page.goto(url.href, { waitUntil: 'domcontentloaded', timeout: 30000 }); await ready(page, 'qingyun_village');
   const initialFeatures = await page.evaluate(() => window.__xt.getState().features);
   assert.equal(initialFeatures.fiveSectClasses, false, 'v0.5b 四宗默认关口必须关闭');
   console.log(JSON.stringify({ test: 'trials-smoke', baseURL, playwright: module, browser: executablePath, dataMode: dataMode(root), initialFeatures }));
@@ -309,6 +367,7 @@ try {
       ['未选宗', { selectedSect: '' }],
       ['选错宗', { selectedSect: 'tianjian' }],
     ]) {
+      progress(`${trial.sect}/${caseName}`);
       await fixture(page, trial.map, quest, patch);
       await standAtNpc(page, quest.giver); await page.keyboard.press('z', { delay: 45 });
       const denied = await page.evaluate(id => ({ state: window.__scene.quests.state(id),
@@ -318,14 +377,15 @@ try {
       assert.equal(denied.available, false); assert.equal(denied.accept, false);
       assert.ok(denied.text.includes('五宗帖'), `${trial.sect}/${caseName}: 接引缺门槛提示`);
       await drainDialog(page);
-      await page.evaluate(({ quest, trial }) => {
+      const before = await withDeadline(`${phase}: active loadSave`, () => page.evaluate(async ({ quest, trial }) => {
         const p = window.__scene.prog;
         p.quests[quest.id] = { state: 'active', kills: {}, crafted: {} };
         p.completedTrials = [trial.id]; p.save();
-      }, { quest, trial });
-      const activeSave = await page.evaluate(() => window.__xt.exportSave());
-      await page.evaluate(async save => window.__xt.loadSave(save), activeSave); await ready(page, trial.map);
-      const before = await page.evaluate(() => window.__scene.prog.exportSave());
+        const save = window.__xt.exportSave();
+        await window.__xt.loadSave(save);
+        return window.__scene.prog.exportSave();
+      }, { quest, trial }));
+      await ready(page, trial.map);
       await standAtNpc(page, quest.turnIn); await page.keyboard.press('z', { delay: 45 });
       const blocked = await page.evaluate(({ quest, trial }) => {
         const s = window.__scene;
@@ -348,8 +408,10 @@ try {
   }
   for (const trial of trials) {
     const quest = quests.find(row => row.id === trial.quest);
+    progress(`${trial.sect}/trial`);
     await page.evaluate(() => { window.__xt.setFlag('fiveSectClasses', true); window.__xt.setFlag('v05Maps', true); });
     await fixture(page, trial.map, quest, { selectedSect: '' });
+    progress(`${trial.sect}/token`);
     await chooseSectToken(page, trial.sect);
     const entrance = await page.evaluate(({ quest }) => ({
       npcs: window.__scene.map.objects.filter(o => o.type === 'npc').map(o => o.props.npc),
@@ -383,7 +445,7 @@ try {
       await enter(page, trial, quest);
       assert.equal(await page.evaluate(() => window.__scene.prog.trialSkillCharges('phantom_cloak')), 2);
       await page.evaluate(() => { const url = new URL(location.href); url.searchParams.delete('reset'); history.replaceState(null, '', url.href); });
-      await page.reload({ waitUntil: 'networkidle', timeout: 30000 }); await ready(page, trial.map);
+      await page.reload({ waitUntil: 'domcontentloaded', timeout: 30000 }); await ready(page, trial.map);
       const interrupted = await page.evaluate(() => ({ pending: window.__scene.prog.pendingSectTrial,
         active: !!window.__scene.sectTrial, cloak: window.__scene.prog.skillLevel('phantom_cloak'),
         step: window.__scene.prog.skillLevel('shadow_step'), trials: window.__scene.prog.completedTrials }));
@@ -414,9 +476,13 @@ try {
       { token: 0, cloak: 0, invisible: false });
       checks.push('youying: 取得令牌后 R 视为主动退出，不可绕过回程通关');
     }
+    progress(`${trial.sect}/win`);
     await enter(page, trial, quest); await win(page, trial); await returned(page, trial, quest, 'win');
-    const savedWin = await page.evaluate(() => window.__xt.exportSave());
-    await page.evaluate(async save => window.__xt.loadSave(save), savedWin); await ready(page, trial.map);
+    await withDeadline(`${phase}: won loadSave`, () => page.evaluate(async () => {
+      const save = window.__xt.exportSave();
+      await window.__xt.loadSave(save);
+    }));
+    await ready(page, trial.map);
     assert.equal(await page.evaluate(id => window.__scene.quests.complete(id), quest.id), true, `${trial.sect}: 通关存读丢失`);
     const selection = await page.evaluate(() => {
       const s = window.__scene;
@@ -447,6 +513,7 @@ try {
     checks.push(`${trial.sect}: 完成全部真实目标，通关存读后正式交付并去重`);
   }
   const sword = quests.find(row => row.id === 'q_sect_tianjian');
+  progress('tianjian/join');
   await fixture(page, 'tianjian_sect', sword);
   await page.evaluate(({ quest }) => window.__scene.talkTo(quest.giver, quest.id), { quest: sword }); await drainDialog(page);
   await page.evaluate(({ quest }) => window.__scene.talkTo(quest.turnIn, quest.id), { quest: sword }); await drainDialog(page);
@@ -455,6 +522,7 @@ try {
   { job: 'tianjian_disciple', pending: null, state: 'done', trials: [] });
   checks.push('tianjian: 接引人发任务，长老对白正式拜入且免额外试炼');
   const trial = trials[0], quest = quests.find(row => row.id === trial.quest);
+  progress('feature-gates');
   await fixture(page, trial.map, quest);
   await page.evaluate(id => window.__scene.quests.accept(id), quest.id);
   for (const gate of ['fiveSectClasses', 'v05Maps']) {
@@ -477,6 +545,7 @@ try {
   console.log(JSON.stringify({ test: 'trials-smoke', checks, errors: 0 }));
   await context.close();
 } catch (error) {
-  console.error(JSON.stringify({ test: 'trials-smoke', checks, errors, failure: error.message }));
+  console.error(JSON.stringify({ test: 'trials-smoke', phase, elapsedMs: Date.now() - startedAt,
+    checks, errors, diagnostic: await diagnostic(page), failure: error.message }));
   throw error;
 } finally { await browser?.close(); if (server) await server.httpServer.close(); }

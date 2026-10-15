@@ -21,7 +21,7 @@ const maps = [
   ['trial_youying_vault', 'youying'],
   ['trial_wanshou_pen', 'wanshou'],
 ];
-const screenshot = path.join(sharedRoot(projectRoot), 'qa/shots/dev_luoxia_town.png');
+const screenshot = process.env.XT_V05_SMOKE_SHOT ?? path.join(sharedRoot(projectRoot), 'qa/shots/dev_luoxia_town.png');
 const dataRoot = findRoot(projectRoot);
 const strings = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/strings_zh.json'), 'utf8'));
 const pacing = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/solo_pacing.json'), 'utf8'));
@@ -52,7 +52,7 @@ async function waitForMap(page, mapId, pause = false) {
     if (scene?.map?.id !== id || !scene.player || !scene.dialog || scene.game.loop.frame <= 3) return false;
     if (pause) scene.physics.pause();
     return true;
-  }, { id: mapId, pause }, { timeout: 15000 });
+  }, { id: mapId, pause }, { timeout: 15000, polling: 50 });
 }
 
 async function extraInteractions(context, baseURL) {
@@ -63,7 +63,8 @@ async function extraInteractions(context, baseURL) {
     const url = new URL(baseURL);
     url.searchParams.set('map', mapId); url.searchParams.set('reset', '1');
     if (debugClass) url.searchParams.set('debug', `class=${debugClass}`);
-    await page.goto(url.href, { waitUntil: 'networkidle', timeout: 30000 });
+    // Phaser 的地图 ready 已覆盖资源加载；无需每次再等全页网络空闲。
+    await page.goto(url.href, { waitUntil: 'domcontentloaded', timeout: 30000 });
     await waitForMap(page, mapId);
   };
   const emptyTrialEntrance = async mapId => {
@@ -120,7 +121,7 @@ async function extraInteractions(context, baseURL) {
     assert.deepEqual(await page.evaluate(() => ({ open: window.__scene.dialog.open, map: window.__scene.map.id })), { open: false, map: 'luoxia_town' });
     checks.push('航线: Esc 告辞留在落霞镇');
     for (const [index, target] of [[1, 'wanyao_outer_1'], [2, 'tianjian_sect']]) {
-      await go('luoxia_town');
+      if (index !== 1) await go('luoxia_town');
       await page.evaluate(() => window.__scene.talkTo('ferry_master'));
       await page.keyboard.press(String(index), { delay: 60 });
       await landing(target);
@@ -214,7 +215,7 @@ async function extraInteractions(context, baseURL) {
     assert.deepEqual(settled.saved, { age: settled.after.age, contribution: settled.after.contribution,
       history: settled.after.history, yearsToday: settled.after.yearsToday });
     await page.evaluate(() => { const url = new URL(location.href); url.searchParams.delete('reset'); history.replaceState(null, '', url.href); });
-    await page.reload({ waitUntil: 'networkidle', timeout: 30000 }); await waitForMap(page, 'tianjian_sect');
+    await page.reload({ waitUntil: 'domcontentloaded', timeout: 30000 }); await waitForMap(page, 'tianjian_sect');
     const reloadedSeclusion = await page.evaluate(() => {
       const p = window.__scene.prog;
       return { age: p.age, contribution: p.sectContribution, history: p.seclusionHistory.length, yearsToday: p.seclusionYearsToday };
@@ -322,12 +323,13 @@ async function extraInteractions(context, baseURL) {
       return zone.props.tutorial;
     });
     const tutorial = await enterTutorial();
-    await page.waitForFunction(id => window.__scene.prog.tutorialsSeen.includes(id) && window.__scene.dialog.open, tutorial);
+    await page.waitForFunction(id => window.__scene.prog.tutorialsSeen.includes(id) && window.__scene.dialog.open,
+      tutorial, { timeout: 3000, polling: 50 });
     assert.equal(await page.evaluate(() => window.__scene.dialog.lines[0].text), text(`tip.${tutorial}`));
     await page.evaluate(() => window.__scene.dialog.close()); await page.waitForTimeout(200);
     assert.equal(await page.evaluate(() => window.__scene.dialog.open), false);
     await page.evaluate(() => { const url = new URL(location.href); url.searchParams.delete('reset'); history.replaceState(null, '', url.href); });
-    await page.reload({ waitUntil: 'networkidle', timeout: 30000 }); await waitForMap(page, 'tianjian_sword_tomb');
+    await page.reload({ waitUntil: 'domcontentloaded', timeout: 30000 }); await waitForMap(page, 'tianjian_sword_tomb');
     await enterTutorial(); await page.waitForTimeout(200);
     assert.deepEqual(await page.evaluate(id => ({ open: window.__scene.dialog.open,
       count: window.__scene.prog.tutorialsSeen.filter(seen => seen === id).length,
@@ -395,7 +397,7 @@ try {
     url.searchParams.set('map', mapId);
     url.searchParams.set('reset', '1');
     try {
-      await page.goto(url.href, { waitUntil: 'networkidle', timeout: 30000 });
+      await page.goto(url.href, { waitUntil: 'domcontentloaded', timeout: 30000 });
       await waitForMap(page, mapId);
       // 多观察一些渲染帧，覆盖 create 之后 update / 怪物行为的异步异常。
       await page.waitForTimeout(750);

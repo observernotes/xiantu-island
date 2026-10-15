@@ -1,4 +1,4 @@
-// UI-5 商店窗冒烟：timeout 300s node scripts/shop-ui-smoke.mjs（自行 sync + 测试构建到临时目录，不覆盖 dist）。
+// UI-5 商店窗冒烟：优先复用 XT_SMOKE_BASE_URL；独立运行时 sync + 测试构建到临时目录，不覆盖 dist。
 // 覆盖：发版开关关闭、购买（数量/确认/重放去重）、灵石不足、出售、目录变动重验、打开中关开关、宗门商店/藏经阁窗体、清单/实体缺图回退及炼丹关闭钮。
 // 商店开关与宗门货架只在浏览器内存里打开；正式 features.json、shops.json 与交易逻辑不改。
 import assert from 'node:assert/strict';
@@ -15,6 +15,9 @@ import { inspectSharedPreview, installMissingManifest } from './shared-smoke-pre
 
 const projectRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const dataRoot = findRoot(projectRoot);
+const externalURL = process.env.XT_SMOKE_BASE_URL?.trim() || undefined;
+const startedAt = Date.now();
+const progress = (phase, details = {}) => console.log(JSON.stringify({ suite: 'shop-ui', phase, elapsedMs: Date.now() - startedAt, ...details }));
 const readTable = async name => JSON.parse(await fs.readFile(path.join(dataRoot, `balance/${name}.json`), 'utf8'));
 const [strings, itemRows, materialRows, shops, ranks] = await Promise.all(['strings_zh', 'items', 'materials', 'shops', 'sect_ranks'].map(readTable));
 const snapshotStrings = JSON.parse(await fs.readFile(path.join(projectRoot, 'data/balance/strings_zh.json'), 'utf8'));
@@ -92,6 +95,7 @@ function build(outDir) {
   const require = createRequire(import.meta.url);
   const vite = path.join(path.dirname(require.resolve('vite/package.json')), 'bin/vite.js');
   for (const [cmd, args, env] of [[process.execPath, ['scripts/sync.mjs'], {}], [process.execPath, [vite, 'build', '--outDir', outDir, '--emptyOutDir', '--logLevel', 'error'], { VITE_XT_TEST: '1' }]]) {
+    progress(args[0] === 'scripts/sync.mjs' ? 'sync' : 'build');
     const r = spawnSync(cmd, args, { cwd: projectRoot, env: { ...process.env, ...env }, encoding: 'utf8' });
     assert.equal(r.status, 0, `${args.join(' ')} 失败\n${r.stdout}\n${r.stderr}`);
   }
@@ -101,20 +105,33 @@ const SAVE = { name: '商店冒烟修士', level: 30, exp: 0, hp: 0, mp: 0, job:
 
 let browser, server, outDir;
 try {
-  outDir = await fs.mkdtemp(path.join(os.tmpdir(), 'xiantu-shop-ui-'));
-  build(outDir);
+  let baseURL = externalURL;
+  if (!externalURL) {
+    outDir = await fs.mkdtemp(path.join(os.tmpdir(), 'xiantu-shop-ui-'));
+    build(outDir);
+    server = await preview({ root: projectRoot, build: { outDir }, preview: { port: Number(process.env.SMOKE_PORT ?? 0) } });
+    baseURL = server.resolvedUrls.local[0];
+  }
+  progress(externalURL ? 'shared-preview' : 'preview', { baseURL });
+  progress('label-fallback');
   await checkLabelFallback();
   await fs.mkdir(shotDir, { recursive: true });
-  server = await preview({ root: projectRoot, build: { outDir }, preview: { port: Number(process.env.SMOKE_PORT ?? 0) } });
-  const baseURL = server.resolvedUrls.local[0];
+  progress('inspect-manifest');
   const manifest = (await inspectSharedPreview(baseURL)).manifest;
   const api = await loadPlaywright();
   browser = await api.chromium.launch({ executablePath: await browserPath(api.chromium), headless: true, timeout: 20000,
     args: ['--use-gl=swiftshader', '--enable-unsafe-swiftshader'] });
 
   async function session(label, { missing = [], save = SAVE, map = 'qingyun_village', missingFile = '' } = {}) {
+    progress('session-start', { label, map });
     const context = await browser.newContext({ viewport: { width: 1280, height: 720 }, timezoneId: 'Asia/Shanghai' });
     if (missing.length) await installMissingManifest(context, manifest, missing);
+    if (externalURL && missingFile) {
+      // 保留构建清单中的 PNG，只让当前上下文收到 Vite SPA 缺文件时的 200 HTML 响应。
+      const missingURL = new URL(missingFile, baseURL);
+      await context.route(url => url.origin === missingURL.origin && url.pathname === missingURL.pathname,
+        route => route.fulfill({ status: 200, contentType: 'text/html', body: '<!doctype html><html><body>Missing smoke asset</body></html>' }));
+    }
     await context.addInitScript(save => { if (!sessionStorage.getItem('shop-seeded')) {
       localStorage.setItem('xiantu_save_v1', JSON.stringify(save)); sessionStorage.setItem('shop-seeded', '1'); } }, save);
     const page = await context.newPage();
@@ -147,12 +164,14 @@ try {
             pageErrors: errors.page.length, browserResourceErrors: errors.console.length - appConsole.length,
             requestFailures: errors.request.length, httpErrors: errors.http.length, missingResponses };
         }
+        progress('session-pass', { label, assertions });
       } finally { await context.close(); }
     };
     return { page, done };
   }
   async function withMissingFile(file, check) {
     ok(manifest.uiImages.some(image => image.path === file), `实体缺图夹具未包含在构建清单：${file}`);
+    if (externalURL) { await check(); return; }
     const original = path.join(outDir, file), removed = `${original}.smoke-missing`;
     await fs.rename(original, removed);
     try { await check(); }
@@ -346,7 +365,7 @@ try {
     await done(); passed.push('窗体缺图：代码画回退、交易照常、0 报错');
   }
 
-  // 5. G18：保留清单，只移走隔离构建的 PNG；SPA 返回 200 HTML 时不产生 Phaser 处理失败报错。
+  // 5. G18：保留清单，隔离构建移走 PNG/共享 preview 按上下文拦截；200 HTML 不产生 Phaser 处理失败报错。
   await withMissingFile('art/icons/ui/bestiary/ui_bestiary_window.png', async () => {
     const { page, done } = await session('g18-missing-window-file', { missingFile: 'art/icons/ui/bestiary/ui_bestiary_window.png' });
     await page.evaluate(() => window.__xt.setFlag('shops', true));
@@ -363,7 +382,7 @@ try {
     eq([after.count, after.stones, after.saved], [before.count + 1, before.stones - buyPrice, before.stones - buyPrice], '实体窗体缺图购买未正确结算/保存');
     ok((await snap(page)).statusOk, '实体缺图购买未显示成功');
     await shot(page, 'ui5_missing_window_file_done');
-    await done(); passed.push('G18 实体窗体缺图：清单仍入队/200 HTML、代码画、购买成功、应用报错为零、还原 PNG');
+    await done(); passed.push('G18 实体窗体缺图：清单仍入队/200 HTML、代码画、购买成功、应用报错为零');
   });
 
   // 6. G17：实体关闭图缺失时，用真实 L 键开炼丹窗，点击代码画 × 并验证 Esc 仍可关闭。
@@ -389,9 +408,9 @@ try {
     await page.waitForFunction(() => window.__scene.alchemy.isOpen(), null, { timeout: 3000 });
     await press(page, 'Escape');
     eq(await page.evaluate(() => window.__scene.alchemy.isOpen()), false, '实体关闭钮缺图时 Esc 不能关闭炼丹窗');
-    await done(); passed.push('G17 实体炼丹关闭图缺失：L 开窗、可点 ×、Esc 关闭、pageerror=0、还原 PNG');
+    await done(); passed.push('G17 实体炼丹关闭图缺失：L 开窗、可点 ×、Esc 关闭、pageerror=0');
   });
-  console.log(JSON.stringify({ suite: 'shop-ui', passed: true, assertions, checks: passed, shots: shotDir, buyItem, sellItem, missingFileChecks }));
+  console.log(JSON.stringify({ suite: 'shop-ui', mode: externalURL ? 'shared-preview' : 'preview', passed: true, assertions, checks: passed, shots: shotDir, buyItem, sellItem, missingFileChecks }));
 } finally {
   if (browser) await browser.close();
   if (server) await server.close();
