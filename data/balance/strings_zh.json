@@ -676,5 +676,22 @@
   "ui.shop.keys": "↑↓ 选货  ←→ 数量  Z/回车 确认  Esc 关闭",
   "ui.shop.changed": "道友，货架已更新，请再确认。",
   "ui.shop.price_stones": "{n} 灵石",
-  "ui.shop.price_contribution": "{n} 贡献"
+  "ui.shop.price_contribution": "{n} 贡献",
+  "ui.attr.attribute": "属性",
+  "ui.attr.cancel": "取消",
+  "ui.attr.confirm": "确认",
+  "ui.attr.confirm_hint": "确认分配 {n} 点？再点确认后生效。",
+  "ui.attr.current": "当前值",
+  "ui.attr.draft": "待分配",
+  "ui.attr.empty": "请先选择要分配的属性点。",
+  "ui.attr.invalid": "分配无效，请重新调整。",
+  "ui.attr.keys": "↑↓ 选择  ←→ 加减  回车 确认  Esc / P 关闭",
+  "ui.attr.overspend": "可分配点不足，请调整后再确认。",
+  "ui.attr.planned": "待分配：{n}",
+  "ui.attr.ready": "调整完毕后，点击确认提交。",
+  "ui.attr.remaining": "剩余点数：{n}",
+  "ui.attr.save_failed": "存档未成功，属性点已保留，请重试。",
+  "ui.attr.success": "加点完成。",
+  "ui.attr.title": "加点",
+  "ui.attr.value_hint": "当前值含功法加成；减号仅撤回待分配点数。"
 }
