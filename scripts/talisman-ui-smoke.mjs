@@ -9,7 +9,7 @@ import { createIsolatedBuild, childBuildEnv, preview } from './isolated-build.mj
 import { inspectSharedPreview, installMissingManifest } from './shared-smoke-preview.mjs';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-const shotDir = process.env.XT_TALISMAN_UI_SHOTS ?? '/workspace/reports/ui4';
+const shotDir = process.env.XT_TALISMAN_UI_SHOTS ?? '/workspace/reports/ui4_finish';
 const spec = JSON.parse(await fs.readFile(path.join(root, 'data/art/icons/ui/talisman/talisman_ui.json'), 'utf8'));
 const B = spec.detail.buttons, S = B.abandonOrContinueImage;
 const keyOf = image => image.split('/').pop();
@@ -259,6 +259,84 @@ try {
     return s;
   }
 
+  const craftSnapshot = page => page.evaluate(() => window.__xt.talismanCraftSnapshot());
+  async function waitCraft(page, expected = {}) {
+    const handle = await page.waitForFunction(expected => {
+      const s = window.__xt.talismanCraftSnapshot();
+      if (expected.closed) return !s;
+      if (!s?.open) return false;
+      if (expected.state && s.view.state !== expected.state) return false;
+      if (expected.current !== undefined && s.view.draw?.current !== expected.current) return false;
+      if (expected.confirming !== undefined && s.confirming !== expected.confirming) return false;
+      if (expected.ready && s.view.draw?.waitingRelease !== false) return false;
+      return s;
+    }, expected, { polling: 'raf', timeout: 7000 });
+    try { return await handle.jsonValue(); } finally { await handle.dispose(); }
+  }
+  async function clickCraft(page, name) {
+    const s = await craftSnapshot(page), [x, y, w, h] = s.buttons[name].rect;
+    await page.mouse.click(s.position.x + x + w / 2, s.position.y + y + h / 2);
+    return craftSnapshot(page);
+  }
+  async function selectCraft(page, id) {
+    const s = await craftSnapshot(page), row = s.presentation.recipes.find(row => row.id === id);
+    ok(row, `缺少配方卡 ${id}`);
+    const [x, y, w, h] = row.rect;
+    await page.mouse.click(s.position.x + x + w / 2, s.position.y + y + h / 2);
+    await page.waitForFunction(id => window.__xt.talismanCraftSnapshot()?.selectedRecipeId === id, id);
+    return craftSnapshot(page);
+  }
+  async function setupCraft(page, { inventory = { talisman_paper: 12, spirit_ink: 12 }, curve = false, random = 0 } = {}) {
+    await page.evaluate(async ({ inventory, curve, random }) => {
+      window.__xt.setFlag('talismanCraft', true);
+      window.__xt.setFlag('lifeSkillCurve', curve);
+      await window.__xt.loadSave({ name: '制符界面收尾修士', level: 15, exp: 0, hp: 9999, mp: 9999, stones: 1000,
+        questRewardVersion: 1, ageUpdatedAt: Date.now(), learnedRecipes: ['recipe_spirit_ink', 'recipe_talisman_fire'],
+        // 部分已学夹具不标教学完成，避免旧档补授方把锁定卡自动解锁。
+        quests: {}, inventory,
+        talismanLevel: 1, talismanExp: 0, position: { mapId: 'qingyun_village', x: 160, y: 352 } });
+      // 只固定注入点的随机源；扣料、输入、结算与领奖均走正式系统。
+      window.__scene.talismanSystem.random = () => random;
+      if (!window.__xt.openTalismanCraft('recipe_talisman_fire')) throw new Error('制符入口未打开');
+    }, { inventory, curve, random });
+    return waitCraft(page);
+  }
+  async function craftInput(page, directions, { resume = false, pause = false } = {}) {
+    return page.evaluate(async ({ directions, resume, pause }) => {
+      const ui = window.__scene.scene.get('talisman-craft-ui');
+      const nextFrame = () => new Promise(resolve => ui.events.once('postupdate', resolve));
+      const arrows = { up: ['ArrowUp', 38], down: ['ArrowDown', 40], left: ['ArrowLeft', 37], right: ['ArrowRight', 39] };
+      const dispatch = (type, direction) => {
+        const [code, keyCode] = arrows[direction];
+        window.dispatchEvent(new KeyboardEvent(type, { key: code, code, keyCode, which: keyCode,
+          bubbles: true, cancelable: true, repeat: false }));
+      };
+      if (resume) window.__scene.game.resume();
+      await nextFrame(); // 首帧先松键，恢复后不得把上一笔残留当成新输入。
+      const snapshots = [];
+      for (const direction of directions) {
+        dispatch('keydown', direction); await nextFrame();
+        dispatch('keyup', direction); await nextFrame();
+        snapshots.push(window.__xt.talismanCraftSnapshot());
+      }
+      if (pause) window.__scene.game.pause();
+      return { snapshots, snapshot: window.__xt.talismanCraftSnapshot() };
+    }, { directions, resume, pause });
+  }
+  function verifyMaterials(s, missing = false) {
+    eq(s.presentation.materials.map(({ item, have, need }) => ({ item, have, need })), s.view.check.materials,
+      '材料槽未原样消费 view.check.materials');
+    s.presentation.materials.forEach((material, index) => {
+      const [x, y] = spec.detail.materials.first, lack = material.have < material.need;
+      eq(material.rect, [x + index * spec.detail.materials.gap, y, 40, 40], '材料槽未读 JSON 坐标');
+      eq(material.key, lack ? 'ui_talisman_slot_lack' : 'ui_talisman_slot_ok', '材料足缺底图错误');
+      eq(material.lack, lack, '缺料状态错误');
+      eq(s.artUsed[material.key], missing ? 'code' : 'art', '材料底图未逐件回退');
+      if (lack) eq(material.mark, { x: x + index * spec.detail.materials.gap + 33.5, y: y + 33.5, scale: 0.6 },
+        '缺料角标未使用中心 +33.5,+33.5 与 0.6 缩放');
+    });
+  }
+
   await session('states-and-callbacks', {}, async page => {
     const before = await page.evaluate(() => ({ inventory: { ...window.__scene.prog.inventory }, stones: window.__scene.prog.stones }));
     let s = await exercise(page);
@@ -441,6 +519,248 @@ try {
     await page.evaluate(async () => { const save = window.__xt.exportSave(); await window.__xt.loadSave(save); });
     ok(await page.evaluate(() => window.__scene.prog.talismanUse.cooldowns.talisman_fire > window.__xt.getState().time), '重载清除了符箓冷却');
     checks.push('正式开关、真实开窗→开始扣料→方向按键→品质封顶→入包→关窗恢复→重载幂等；火符打空消耗及冷却持久');
+  });
+  await session('craft-layout-feedback', {}, async page => {
+    let s = await setupCraft(page, { inventory: { talisman_paper: 12, snake_gall: 2, spirit_herb: 2 } });
+    verifyMaterials(s);
+    eq(s.view.check.reason, 'materials', '缺料预检原因错误');
+    eq(s.buttons.startOrAgain.enabled, false, '缺料仍可开始');
+    const rows = s.presentation.recipes.filter(row => row.id !== 'recipe_spirit_ink');
+    eq(rows.length, 4, '左侧未展示四种符卡');
+    rows.forEach((row, index) => {
+      const [x, y, w, h] = spec.recipeList.row;
+      eq(row.rect, [x, y + index * (h + spec.recipeList.rowGap), w, h], '配方行未消费 JSON 坐标');
+      eq(row.key, index === 0 ? spec.recipeList.rowImages.selected : spec.recipeList.rowImages.locked,
+        '已选/未学配方卡图错误');
+      if (index) ok(row.reason, '锁定配方没有原因文案');
+    });
+    eq(s.presentation.recipes.find(row => row.id === 'recipe_spirit_ink').rect, spec.recipeList.inkTab.rect, '研墨未读独立 tab 坐标');
+    eq(s.presentation.paper.mode, 'preview', '选符未展示独立符纸');
+    eq(s.presentation.paper.rect, spec.detail.paper.rect, '纸面未读 JSON 区域');
+    eq(s.presentation.preview.rate, s.view.rate, '预览成功率偏离 view');
+    eq(s.presentation.preview.outputCount, s.view.selectedRecipe.outputCount, '预览产出数偏离配方');
+    eq(s.presentation.preview.qualityMin, await page.evaluate(() => window.__scene.talismanSystem.config.rules.qualityMin), '品质阈值未读配置');
+    ok(!s.presentation.lifeSkill, '曲线默认关闭仍显示等级条');
+    await shot(page, 'ui4_material_lack');
+
+    s = await selectCraft(page, 'recipe_spirit_ink');
+    verifyMaterials(s);
+    eq(s.view.selectedRecipe.type, 'grinding', '研墨 tab 未选择研墨配方');
+    eq(s.presentation.paper.mode, 'ink', '研墨页仍显示画符纸');
+    await shot(page, 'ui4_ink');
+    await clickCraft(page, 'startOrAgain');
+    s = await waitCraft(page, { state: 'settled' });
+    eq(s.view.result.item, 'spirit_ink', '研墨产物错误');
+    eq(s.view.result.count, s.view.selectedRecipe.outputCount, '研墨产出未使用正式结果');
+    eq(s.view.result.delivered, true, '研墨未实际入包');
+    eq(s.presentation.result.key, null, '研墨结果误挂品质签');
+
+    s = await selectCraft(page, 'recipe_talisman_fire');
+    verifyMaterials(s);
+    eq(s.buttons.startOrAgain.enabled, true, '研墨后材料余额未刷新');
+    await shot(page, 'ui4_preview');
+    await clickCraft(page, 'startOrAgain');
+    s = await waitCraft(page, { state: 'drawing', current: 0, ready: true });
+    eq(s.presentation.paper.mode, 'drawing', '绘制未切换累计纸面');
+    ok(s.presentation.paper.baseFrame.includes('blank'), '零正确笔未显示 blank');
+    eq(s.presentation.paper.fxCenter, spec.detail.paper.fxCenter, '绘制特效中心写死');
+    eq(s.presentation.paper.fxScale, spec.detail.paper.fxScale, '绘制特效缩放写死');
+    eq(s.presentation.sequence.strokes, s.view.draw.strokes, '未展示完整方向序列');
+    eq(s.presentation.sequence.current, s.view.draw.current, '当前笔未跟随 draw');
+    eq(s.presentation.stepBar.rect, spec.detail.stepBar.rect, '本笔时间条未读 JSON 坐标');
+    ok(s.presentation.stepBar.ratio > 0 && s.presentation.stepBar.ratio <= 1, '本笔剩余比例错误');
+    await page.evaluate(() => window.__scene.game.pause());
+    await shot(page, 'ui4_drawing_blank');
+    const mixed = await craftInput(page, ['up', 'up'], { resume: true, pause: true });
+    const [correct, wrong] = mixed.snapshots;
+    eq(correct.view.draw.correct, 1, '正确输入未累计');
+    ok(correct.presentation.paper.baseFrame.includes('stroke_01'), '正确笔未更新累计帧');
+    eq(correct.presentation.feedback.outcome, 'correct', '正确反馈缺失');
+    eq(wrong.view.draw.current, 2, '错误笔未独立推进序列');
+    eq(wrong.view.draw.correct, 1, '错误笔改变正确累计数');
+    eq(wrong.presentation.paper.baseFrame, correct.presentation.paper.baseFrame, '错误笔改变底层累计帧');
+    eq(wrong.presentation.feedback.outcome, 'wrong', '错误反馈缺失');
+    await shot(page, 'ui4_stroke_miss');
+    await page.evaluate(() => window.__scene.game.resume());
+    // 以真实单笔时钟触发超时；命中后立即全局暂停，避免截图耗时占用下一笔。
+    const timeoutHandle = await page.waitForFunction(() => {
+      const s = window.__xt.talismanCraftSnapshot();
+      if (s?.view.draw?.current !== 3) return false;
+      window.__scene.game.pause(); return window.__xt.talismanCraftSnapshot();
+    }, null, { polling: 'raf', timeout: 6000 });
+    try { s = await timeoutHandle.jsonValue(); } finally { await timeoutHandle.dispose(); }
+    eq(s.view.draw.timeouts, 1, '真实超时未判定');
+    eq(s.presentation.feedback.outcome, 'timeout', '超时反馈缺失');
+    eq(s.presentation.paper.baseFrame, correct.presentation.paper.baseFrame, '超时改变底层累计帧');
+    await shot(page, 'ui4_stroke_timeout');
+    s = (await craftInput(page, ['left'], { resume: true })).snapshot;
+    eq(s.view.result.completion, 0.5, '混合笔画完成度错误');
+    eq(s.view.result.quality, 'mid', '混合笔画未显示正式中品结果');
+    eq(s.presentation.paper.mode, 'done', '成功未切成符动画');
+    eq(s.presentation.result.key, 'ui_talisman_quality_mid', '成功品质签错误');
+    eq(s.presentation.result.quality, s.view.result.quality, '结果品质偏离 view.result');
+    ok(s.buttons.startOrAgain.label.includes('再'), '结果未提供再来');
+    ok(s.buttons.close?.label.includes('关'), '结果未提供关闭');
+    await shot(page, 'ui4_result_mid');
+    const delivered = await page.evaluate(() => window.__scene.prog.countQuality('talisman_fire', 'mid'));
+    eq(delivered, 1, '中品结果未自动入包');
+
+    await clickCraft(page, 'startOrAgain');
+    s = await waitCraft(page, { state: 'drawing', ready: true });
+    const attemptId = s.view.attempt.attemptId;
+    await clickCraft(page, 'abandonOrContinue');
+    s = await waitCraft(page, { confirming: true });
+    eq(s.view.state, 'drawing', '首击放弃提前中断制作');
+    eq(s.view.draw.paused, true, '放弃确认未暂停玩法时钟');
+    await shot(page, 'ui4_abandon_confirm');
+    await clickCraft(page, 'abandonOrContinue');
+    s = await waitCraft(page, { confirming: false, ready: true });
+    eq(s.view.attempt.attemptId, attemptId, '继续画符换了尝试');
+    eq(s.view.draw.paused, false, '继续未恢复计时');
+    await page.keyboard.press('Escape');
+    s = await waitCraft(page, { confirming: true });
+    eq(s.view.draw.paused, true, '绘制中关闭未先暂停确认');
+    await clickCraft(page, 'startOrAgain');
+    await waitCraft(page, { closed: true });
+    eq(await page.evaluate(() => window.__scene.prog.talisman.attempt.state), 'interrupted', '确认关闭未保存中断');
+    eq(await page.evaluate(() => window.__scene.prog.countQuality('talisman_fire', 'mid')), delivered, '确认/结果按钮重复发奖');
+    ok(await page.evaluate(() => window.__scene.scene.isActive('game')), '确认关闭未恢复地图');
+    checks.push('JSON 四符卡/锁定原因/研墨 tab/材料槽/预览/纸面/序列/本笔条；真实正确、错误、超时保持累计帧；品质结果、再来、放弃继续及关闭确认');
+  });
+  await session('craft-failure-pending-level', {}, async page => {
+    let s = await setupCraft(page, { curve: true, random: 0.999999 });
+    const skill = await page.evaluate(() => window.__scene.prog.lifeSkillView('talisman'));
+    ok(skill.enabled && skill.available, '等级测试条件未开启');
+    ok(s.presentation.lifeSkill, '曲线开启未显示只读等级条');
+    for (const key of ['level', 'exp', 'expToNext', 'maxLevel', 'maxed'])
+      eq(s.presentation.lifeSkill[key], skill[key], `等级条 ${key} 未读 lifeSkillView`);
+    const beforeSkill = await page.evaluate(() => [window.__scene.prog.talismanLevel, window.__scene.prog.talismanExp]);
+    await selectCraft(page, 'recipe_spirit_ink'); await selectCraft(page, 'recipe_talisman_fire');
+    eq(await page.evaluate(() => [window.__scene.prog.talismanLevel, window.__scene.prog.talismanExp]), beforeSkill,
+      '选择配方或展示等级条改变经验');
+    await shot(page, 'ui4_life_skill');
+    await clickCraft(page, 'startOrAgain'); await waitCraft(page, { state: 'drawing', ready: true });
+    s = (await craftInput(page, ['up', 'right', 'down', 'left'])).snapshot;
+    eq(s.view.result.reason, 'condense', '高随机值未走凝符失败');
+    eq(s.presentation.result.reason, 'condense', '凝符失败原因未展示');
+    eq(s.presentation.paper.mode, 'craft_fail', '凝符失败未隐藏累计纸并切失败动画');
+    await shot(page, 'ui4_fail_condense');
+    await clickCraft(page, 'startOrAgain'); await waitCraft(page, { state: 'drawing', ready: true });
+    s = (await craftInput(page, ['down', 'up', 'up', 'up'])).snapshot;
+    eq(s.view.result.reason, 'completion', '全错输入未走完成度失败');
+    eq(s.presentation.result.reason, 'completion', '完成度失败原因未展示');
+    await shot(page, 'ui4_fail_completion');
+    await page.evaluate(() => { window.__scene.talismanSystem.random = () => 0; });
+    await clickCraft(page, 'startOrAgain'); await waitCraft(page, { state: 'drawing', ready: true });
+    // 开始预检后模拟异常容量变化，保留正式 pending/claimPending 事务链。
+    await page.evaluate(() => {
+      const prog = window.__scene.prog;
+      window.__ui4CanAddCraftedItem = prog.canAddCraftedItem;
+      prog.canAddCraftedItem = () => false;
+    });
+    s = (await craftInput(page, ['up', 'right', 'down', 'left'])).snapshot;
+    eq(s.view.state, 'pending', '异常入包失败未形成待领取');
+    eq(s.view.result.success, true, '待领取重写了成功结果');
+    eq(s.view.result.delivered, false, '待领取提前入包');
+    eq(s.presentation.result.pending, true, '界面未提示待领取');
+    eq(s.buttons.startOrAgain.enabled, false, '待领取仍可再来');
+    const pendingId = s.view.result.attemptId;
+    await shot(page, 'ui4_output_pending');
+    await page.evaluate(() => {
+      window.__scene.prog.canAddCraftedItem = window.__ui4CanAddCraftedItem;
+      delete window.__ui4CanAddCraftedItem;
+    });
+    s = await waitCraft(page, { state: 'settled' });
+    eq(s.view.result.attemptId, pendingId, '自动领取改变尝试');
+    eq(s.view.result.delivered, true, '容量恢复后未自动领取');
+    const count = await page.evaluate(() => window.__scene.prog.countQuality('talisman_fire', 'high'));
+    eq(count, s.view.result.count, '自动领取数量与正式结果不同');
+    await clickCraft(page, 'close'); await waitCraft(page, { closed: true });
+    eq(await page.evaluate(() => window.__scene.prog.countQuality('talisman_fire', 'high')), count, '结果关闭重复领取');
+    await page.evaluate(() => { window.__xt.setFlag('lifeSkillCurve', false); window.__xt.openTalismanCraft('recipe_talisman_fire'); });
+    s = await waitCraft(page);
+    ok(!s.presentation.lifeSkill, '关闭曲线后等级条未隐藏');
+    checks.push('生活等级/经验只读及开关隐藏；凝符/完成度失败原因；异常入包待领取与恢复自动领取，结果按钮不发奖');
+  });
+  await session('craft-focus-and-selection', {}, async page => {
+    await setupCraft(page);
+    await selectCraft(page, 'recipe_spirit_ink');
+    await clickCraft(page, 'close'); await waitCraft(page, { closed: true });
+    eq(await page.evaluate(() => window.__xt.openTalismanCraft()), true, '再次打开制符失败');
+    let s = await waitCraft(page);
+    eq(s.selectedRecipeId, 'recipe_spirit_ink', '关闭重开未保留最后所选配方');
+    await selectCraft(page, 'recipe_talisman_fire');
+    await clickCraft(page, 'startOrAgain');
+    await waitCraft(page, { state: 'drawing', ready: true });
+    const focus = await page.evaluate(async () => {
+      const ui = window.__scene.scene.get('talisman-craft-ui');
+      const nextFrame = () => new Promise(resolve => ui.events.once('postupdate', resolve));
+      const dispatch = (type, code, keyCode, repeat = false) => window.dispatchEvent(new KeyboardEvent(type,
+        { key: code, code, keyCode, which: keyCode, repeat, bubbles: true, cancelable: true }));
+      dispatch('keydown', 'ArrowUp', 38); await nextFrame();
+      const before = window.__xt.talismanCraftSnapshot();
+      // 保持方向键按住，模拟失焦期间 keyup 丢失；恢复不应永久等待残留 held。
+      window.dispatchEvent(new Event('blur'));
+      const blurred = window.__xt.talismanCraftSnapshot();
+      await new Promise(resolve => setTimeout(resolve, before.view.selectedRecipe.draw.stepTimeMs + 100));
+      const afterBlurWait = window.__xt.talismanCraftSnapshot();
+      window.dispatchEvent(new Event('focus')); await nextFrame(); await nextFrame();
+      const focused = window.__xt.talismanCraftSnapshot();
+      dispatch('keydown', 'ArrowRight', 39, true); await nextFrame(); await nextFrame();
+      dispatch('keyup', 'ArrowRight', 39); await nextFrame();
+      const repeated = window.__xt.talismanCraftSnapshot();
+      dispatch('keydown', 'ArrowRight', 39); await nextFrame();
+      dispatch('keyup', 'ArrowRight', 39); await nextFrame();
+      const fresh = window.__xt.talismanCraftSnapshot();
+      window.__xt.talismanCraftAction('close');
+      return { before, blurred, afterBlurWait, focused, repeated, fresh };
+    });
+    eq(focus.before.view.draw.current, 1, '失焦测试首笔未正确判定');
+    eq(focus.blurred.view.draw.paused, true, '真实 blur 未暂停制符时钟');
+    eq(focus.afterBlurWait.view.draw.current, 1, '失焦墙钟超过本笔仍推进');
+    eq(focus.afterBlurWait.view.draw.remainingMs, focus.blurred.view.draw.remainingMs, '失焦未冻结剩余时限');
+    eq(focus.focused.view.draw.waitingRelease, false, 'focus 后丢失 keyup 的 held 残留卡住松键等待');
+    eq(focus.focused.view.draw.current, 1, 'focus 把残留按键算成新笔');
+    eq(focus.repeated.view.draw.current, 1, 'repeat 事件被当成新按下沿');
+    eq(focus.fresh.view.draw.current, 2, 'focus 后新方向按下不能继续画符');
+    s = await waitCraft(page, { confirming: true });
+    await clickCraft(page, 'startOrAgain'); await waitCraft(page, { closed: true });
+    checks.push('关闭重开记忆所选研墨；真实 blur 持键丢 keyup 仍冻结计时，focus 清残键、忽略 repeat 并接收新笔');
+  });
+  await session('craft-layout-json-missing', { missing: ['art/icons/ui/talisman/talisman_ui.json'] }, async page => {
+    const s = await setupCraft(page);
+    eq(await page.evaluate(() => !!window.__scene.cache.json.get('talisman_ui')), false, '布局 JSON 缺清单夹具未生效');
+    eq([s.position.width, s.position.height], spec.window.size, '布局 JSON 缺失未回退窗体');
+    verifyMaterials(s);
+    eq(s.presentation.paper.rect, spec.detail.paper.rect, '布局 JSON 缺失未回退纸面区域');
+    eq(s.buttons.startOrAgain.rect, spec.detail.buttons.startOrAgain, '布局 JSON 缺失未回退按钮');
+    await shot(page, 'ui4_missing_layout_json');
+    checks.push('制符布局 JSON 清单外不请求，采用默认布局正常显示材料、纸面和按钮');
+  });
+  const talismanImages = manifest.uiImages.filter(row => row.path.startsWith('art/icons/ui/talisman/'));
+  const talismanMissing = [...talismanImages.map(row => row.path),
+    'art/sprites/fx_trial_talisman.png', 'art/sprites/fx_talisman_draw.png',
+    ...(manifest.itemIcons ?? []).filter(row => ['icon_talisman_paper', 'icon_spirit_ink', 'icon_talisman_fire'].includes(row.key)).map(row => row.path)];
+  await session('craft-manifest-missing', { missing: talismanMissing }, async page => {
+    let s = await setupCraft(page, { inventory: { talisman_paper: 3 } });
+    verifyMaterials(s, true);
+    for (const row of s.presentation.recipes.filter(row => row.id !== 'recipe_spirit_ink'))
+      eq(s.artUsed[row.key], 'code', '制符配方卡缺图未回退');
+    eq(s.artUsed.ui_talisman_paper, 'code', '选符纸面缺图未回退');
+    await shot(page, 'ui4_craft_missing_preview');
+    await page.evaluate(() => window.__xt.giveItem('spirit_ink', 3));
+    await page.waitForFunction(() => window.__xt.talismanCraftSnapshot()?.view.check.ok);
+    await clickCraft(page, 'startOrAgain'); await waitCraft(page, { state: 'drawing', ready: true });
+    s = (await craftInput(page, ['up', 'up'], { pause: true })).snapshot;
+    eq(s.artUsed.fx_trial_talisman, 'code', '累计画符特效缺图未回退');
+    eq(s.artUsed.fx_talisman_draw, 'code', '错笔特效缺图未回退');
+    eq(s.presentation.paper.baseFrame.includes('stroke_01'), true, '缺图回退丢失正确累计数');
+    await shot(page, 'ui4_craft_missing_drawing');
+    s = (await craftInput(page, ['down', 'left'], { resume: true })).snapshot;
+    eq(s.presentation.result.key, 'ui_talisman_quality_high', '缺图结果未保留正式品质');
+    eq(s.artUsed.ui_talisman_quality_high, 'code', '品质签缺图未回退');
+    await shot(page, 'ui4_craft_missing_result');
+    checks.push('制符专属卡/槽/纸/反馈/品质及两套绘制 atlas 集中缺图：正式路径逐件代码回退且浏览器零错误');
   });
   await session('manifest-missing', { missing: keys.map(imagePath) }, async page => {
     const s = await exercise(page, keys);
