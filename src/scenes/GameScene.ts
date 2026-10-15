@@ -30,6 +30,7 @@ import { interactionPrompt } from '../InteractionPrompt';
 import { AlchemySystem, ALCHEMY_RULES, alchemyFurnace } from '../Alchemy';
 import { AlchemyPanel, preloadAlchemy, registerAlchemy } from '../AlchemyPanel';
 import { ShopPanel } from '../ShopPanel';
+import { AttrPanel } from '../AttrPanel';
 import { BackgroundArt, type BackgroundConfig } from './BackgroundArt';
 import { EnvironmentArt, type EnvironmentArtConfig } from './EnvironmentArt';
 import { PropLayout } from './PropLayout';
@@ -94,6 +95,7 @@ export class GameScene extends Phaser.Scene {
   alchemySystem!: AlchemySystem;
   alchemy!: AlchemyPanel;
   shop!: ShopPanel;
+  attrPanel!: AttrPanel;
   private interactionPrompts: { object: MapObj; prompt: Phaser.GameObjects.Container; marker?: Phaser.GameObjects.Image | Phaser.GameObjects.Text }[] = [];
   private sectTitle!: Phaser.GameObjects.Text;
   private sectBadge!: Phaser.GameObjects.Image;
@@ -255,7 +257,7 @@ export class GameScene extends Phaser.Scene {
     this.keys = this.input.keyboard!.addKeys({
       left: K.LEFT, right: K.RIGHT, up: K.UP, down: K.DOWN, alt: K.ALT, space: K.SPACE, c: K.C,
       ctrl: K.CTRL, x: K.X, z: K.Z, f1: K.F1, r: K.R, one: K.ONE, two: K.TWO, three: K.THREE, four: K.FOUR, five: K.FIVE, i: K.I,
-      a: K.A, s: K.S, d: K.D, f: K.F, g: K.G, h: K.H, q: K.Q, w: K.W, k: K.K, l: K.L, esc: K.ESC,
+      a: K.A, s: K.S, d: K.D, f: K.F, g: K.G, h: K.H, q: K.Q, w: K.W, k: K.K, l: K.L, p: K.P, esc: K.ESC,
     }, true) as any;
 
     const cam = this.cameras.main;
@@ -283,6 +285,10 @@ export class GameScene extends Phaser.Scene {
       require: (name, npcId) => this.requireFeature(name, npcId), rankIcon: rankId => this.sectRankBadgeKey(rankId) });
     this.skillBar = new SkillBar(this);
     this.skillWindow = new SkillWindow(this, () => this.prog, id => this.tryAddPoint(id));
+    this.attrPanel = new AttrPanel(this, this.prog, () => {
+      this.player.maxHp = this.prog.maxHp; this.player.hp = this.prog.hp;
+      this.skillWindow.refresh();
+    });
     this.skillBar.onSlot = i => { if (this.skillWindow.open) this.skillWindow.assign(i); };
     this.maybeSpTip();
     this.tracker = this.add.text(16, 44, '', { fontFamily: 'sans-serif', fontSize: '13px', color: '#ffffff', backgroundColor: '#1d2a3aaa', padding: { x: 8, y: 6 }, lineSpacing: 3 }).setScrollFactor(0).setDepth(100);
@@ -563,20 +569,26 @@ export class GameScene extends Phaser.Scene {
     if (this.sectTrial && !this.sectTrial.ended && this.sectTrial.def.quest && this.quests.sectEntryBlock(this.sectTrial.def.quest)) {
       this.sectTrial.exit(); return;
     }
-    if (this.sectTrial && !this.dialog.open && !this.skillWindow.open && !this.alchemy.isOpen() && !this.shop.isOpen()) this.sectTrial.update(delta);
+    if (this.sectTrial && !this.dialog.open && !this.skillWindow.open && !this.alchemy.isOpen() && !this.shop.isOpen() && !this.attrPanel?.isOpen()) this.sectTrial.update(delta);
     if (this.sectTrial?.ended) { this.drawHud(); return; }
     if (time >= this.nextAgeUpdateAt) { this.prog.advanceAge(); this.nextAgeUpdateAt = time + 60000; this.prog.save(); }
-    if (J(k.k) && !this.dialog.open && !this.alchemy.isOpen() && !this.shop.isOpen()) this.skillWindow.toggle();
-    if (J(k.l) && !this.dialog.open && !this.skillWindow.open && !this.shop.isOpen()) this.openAlchemy();
+    if (J(k.k) && !this.dialog.open && !this.alchemy.isOpen() && !this.shop.isOpen() && !this.attrPanel?.isOpen()) this.skillWindow.toggle();
+    if (J(k.l) && !this.dialog.open && !this.skillWindow.open && !this.shop.isOpen() && !this.attrPanel?.isOpen()) this.openAlchemy();
+    if (J(k.p)) {
+      if (this.attrPanel?.isOpen()) this.attrPanel.close();
+      else this.openAttrPanel();
+    }
     const escDown = J(k.esc);
     if (escDown && this.skillWindow.open) this.skillWindow.close();
-    const modal = this.dialog.open || this.skillWindow.open || this.alchemy.isOpen() || this.shop.isOpen() || !!this.sectTrial?.blocksInput;
+    if (escDown && this.attrPanel?.isOpen()) this.attrPanel.close();
+    const modal = this.dialog.open || this.skillWindow.open || this.alchemy.isOpen() || this.shop.isOpen() || this.attrPanel?.isOpen() || !!this.sectTrial?.blocksInput;
     this.updateInteractionPrompts(modal);
     this.gathering.update(delta, k.z.isDown, modal || this.hasNearbyDrop(),
       k.left.isDown || k.right.isDown || k.up.isDown || k.down.isDown || k.space.isDown || k.alt.isDown || k.c.isDown || k.ctrl.isDown || k.x.isDown);
     if (modal) {
       this.alchemy.update(delta);
       this.shop?.update();
+      this.attrPanel?.update();
       if (this.dialog.open) {
         [k.one, k.two, k.three, k.four, k.five].forEach((key, i) => { if (J(key)) this.dialog.selectChoice(i); });
         if (escDown) this.dialog.dismissChoices();
@@ -847,7 +859,10 @@ export class GameScene extends Phaser.Scene {
     const d = m.def;
     this.quests.onKill(d.id);
     if (d.isBoss) this.time.delayedCall(600, () => {
-      if (d.id !== 'demon_fox' || featureEnabled('foxBoss')) this.dialog.show(SCRIPTS.q_fox?.bossDeath ?? [], null);
+      if (d.id !== 'demon_fox' || featureEnabled('foxBoss')) {
+        this.attrPanel?.close();
+        this.dialog.show(SCRIPTS.q_fox?.bossDeath ?? [], null);
+      }
     });
     if (d.exp > 0) this.applyExp(this.prog.gainExp(d.exp, d.level));
     const t = d.dropTable ? DROPS[d.dropTable] : null;
@@ -887,12 +902,21 @@ export class GameScene extends Phaser.Scene {
   }
 
   openAlchemy(publicFurnace?: string) {
+    if (this.attrPanel?.isOpen()) return false;
     if (!this.requireFeature('alchemyPhase1')) return false;
     if (this.player.dead || this.trial || this.map.trial || this.dialog.open || this.skillWindow.open || this.shop.isOpen()) return false;
     const furnace = alchemyFurnace(this.prog, this.player, this.map.objects, publicFurnace);
     if (!furnace) { this.log('请到孙郎中处使用丹炉，或先获得丹炉。', '#ffb0b0'); return false; }
     this.gathering.cancel(); this.player.body.setVelocityX(0);
     this.alchemy.open(furnace); return true;
+  }
+
+  /** UI-6：P 与测试入口共用互斥检查；加点结算由 Progress 负责。 */
+  openAttrPanel(): boolean {
+    if (this.player.dead || this.dialog.open || this.skillWindow.open || this.alchemy.isOpen()
+      || this.shop.isOpen() || this.sectTrial?.blocksInput) return false;
+    this.gathering.cancel(); this.player.body.setVelocityX(0); this.invText.setVisible(false);
+    this.attrPanel.open(); return true;
   }
 
   private openNearbyFurnace() {
@@ -952,7 +976,7 @@ export class GameScene extends Phaser.Scene {
   // ---------------- 地图物件 ----------------
   private refreshHelpText() {
     const alchemy = featureEnabled('alchemyPhase1');
-    this.helpText?.setText(`方向键 移动 / ↑↓ 爬绳梯  ↑ 传送 / 上船 / 闭关\nAlt / 空格 / C 跳跃（空中再按 = 二段跳）\n↓ + 跳 穿下单向平台\nCtrl / X 普攻   Z 对话 / 拾取${alchemy ? ' / 采集' : ''} / 开宝箱\nA S D F G H Q W 技能   K 功法${alchemy ? '  L 丹炉' : ''}\n1 回春丹  2 回气丹  I 背包  F1 调试`);
+    this.helpText?.setText(`方向键 移动 / ↑↓ 爬绳梯  ↑ 传送 / 上船 / 闭关\nAlt / 空格 / C 跳跃（空中再按 = 二段跳）\n↓ + 跳 穿下单向平台\nCtrl / X 普攻   Z 对话 / 拾取${alchemy ? ' / 采集' : ''} / 开宝箱\nA S D F G H Q W 技能   K 功法  P 加点${alchemy ? '  L 丹炉' : ''}\n1 回春丹  2 回气丹  I 背包  F1 调试`);
   }
 
   private requireFeature(name: FeatureName, npcId?: string) {
@@ -1266,7 +1290,7 @@ export class GameScene extends Phaser.Scene {
   /** 背包中的拜帖提供明确选择；定下去向并不提前拜入。 */
   openSectToken(): boolean {
     if (this.prog.count('five_sect_token') <= 0 || this.prog.job || this.prog.pendingSectTrial || this.player.dead
-      || this.dialog.open || this.skillWindow.open || this.alchemy.isOpen() || this.shop.isOpen()) return false;
+      || this.dialog.open || this.skillWindow.open || this.alchemy.isOpen() || this.shop.isOpen() || this.attrPanel?.isOpen()) return false;
     this.player.body.setVelocityX(0); this.invText.setVisible(false);
     this.dialog.choose({ speaker: null, text: `${t('sect.entry.select_title')}\n${t('sect.entry.select_tip')}` }, null,
       CLASS_LIST.map(cls => {
@@ -1284,6 +1308,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   talkTo(npcId: string, questId?: string, skipMenu = false) {
+    if (this.attrPanel?.isOpen()) return;
     const npc = NPCS[npcId]; if (!npc) return;
     if (this.trial || this.sectTrial || TRIAL_BY_MAP[this.map.id]) return;
     if (npcId === 'ferry_master') {
@@ -1429,6 +1454,7 @@ export class GameScene extends Phaser.Scene {
 
   /** UI-5：宗门商店/藏经阁走商店窗；目录、职位与贡献结算仍由 SectGrowth.catalog/exchange 负责。 */
   openSectCatalog(npcId: string, service: 'sect_shop' | 'sect_library') {
+    if (this.attrPanel?.isOpen()) return;
     if (!this.requireFeature('sectShopLibrary', npcId) || (service === 'sect_shop' && !this.requireFeature('shops', npcId))) return;
     if (!NPCS[npcId]) return;
     this.player.body.setVelocityX(0);
@@ -1437,6 +1463,7 @@ export class GameScene extends Phaser.Scene {
 
   /** UI-5：普通买卖窗（列表、价格、数量、确认）；结算只调 buyOrdinary/sellOrdinary。 */
   openOrdinaryShop(npcId: string, mode: 'buy' | 'sell' = 'buy') {
+    if (this.attrPanel?.isOpen()) return;
     if (!this.requireFeature('shops', npcId)) return;
     if (!NPCS[npcId]) return;
     this.player.body.setVelocityX(0);
@@ -1926,11 +1953,11 @@ export class GameScene extends Phaser.Scene {
     const furnace = Object.keys(ALCHEMY_RULES.furnace).filter(id => ITEMS[id]?.toolType === 'furnace' && pr.count(id) > 0)
       .sort((a, b) => (ALCHEMY_RULES.furnace as Record<string, number>)[b] - (ALCHEMY_RULES.furnace as Record<string, number>)[a])[0];
     this.inventoryFurnace.setVisible(this.invText.visible && featureEnabled('alchemyPhase1') && !!furnace
-      && !this.dialog.open && !this.skillWindow.open && !this.alchemy.isOpen() && !this.shop.isOpen());
+      && !this.dialog.open && !this.skillWindow.open && !this.alchemy.isOpen() && !this.shop.isOpen() && !this.attrPanel?.isOpen());
     if (furnace) this.inventoryFurnace.setData('furnace', furnace).setText(`使用${ITEMS[furnace].name}`)
       .setPosition(this.invText.x - this.invText.width - 4, this.invText.y);
     this.inventorySectToken.setVisible(this.invText.visible && pr.count('five_sect_token') > 0 && !pr.job
-      && !pr.pendingSectTrial && !this.dialog.open && !this.skillWindow.open && !this.alchemy.isOpen() && !this.shop.isOpen())
+      && !pr.pendingSectTrial && !this.dialog.open && !this.skillWindow.open && !this.alchemy.isOpen() && !this.shop.isOpen() && !this.attrPanel?.isOpen())
       .setPosition(this.invText.x - this.invText.width - 4, this.invText.y + (furnace && featureEnabled('alchemyPhase1') ? 40 : 0));
     if (this.debugText.visible) {
       const p = this.player, b = p.body;
