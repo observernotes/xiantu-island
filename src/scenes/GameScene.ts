@@ -18,7 +18,7 @@ import { buildTiledMap, buildCharMap, BuiltMap, MapObj } from './MapBuilder';
 import { HUD_RESERVE, addFloorStrip } from './cameraFloor';
 import { Player, Input } from './Player';
 import { Monster, type SkillVolley } from './Monster';
-import { Progress } from '../Progress';
+import { Progress, type QuestRewardSettlement } from '../Progress';
 import { Seclusion, realDay } from '../Seclusion';
 import { LIFESPAN } from '../data';
 import { SectTrialObjects } from './SectTrialObjects';
@@ -1393,13 +1393,14 @@ export class GameScene extends Phaser.Scene {
     ] : npc.dialog.map(tx => ({ speaker: npc.name, text: tx }));
     this.player.body.setVelocityX(0);
     this.dialog.show(lines, npc.sprite, () => {
+      const activeBefore = this.quests.activeIds;
       const r = after?.();
       if (r) {
-        this.giveRewards(r.quest, r.broke, r.daily);
+        this.giveRewards(r.quest, r.broke, r.daily, r.settled);
         const ut = (r.quest.rewards as { unlockTrial?: string }).unlockTrial;
         if (ut && TRIALS[ut]) this.time.delayedCall(150, () => { const o = this.trialOfferFor(npcId); if (o) this.offerTrial(npcId, o); });
       }
-      else if (after && (!questId || this.quests.isActive(questId))) this.log(t('quest.accept', {
+      else if (after && this.quests.activeIds.some(id => !activeBefore.includes(id))) this.log(t('quest.accept', {
         name: questId ? questName(QUESTS_REF[questId]) : this.quests.activeIds.map(i => questName(QUESTS_REF[i])).slice(-1)[0] ?? '',
       }), '#ffe680');
       this.prog.save();
@@ -1551,13 +1552,14 @@ export class GameScene extends Phaser.Scene {
     this.dialog.show([{ speaker: npc?.name ?? null, text }], npc?.sprite ?? null, undefined, undefined, rankIcon);
   }
 
-  applyExp(r: { gained: number; levels: number; blocked: boolean; overflowed?: number; overflowFilled?: boolean }) {
+  applyExp(r: { gained: number; levels: number; blocked: boolean; overflowed?: number; overflowFilled?: boolean }, persisted = false) {
     if (r.gained > 0) this.log(t('sys.exp_gain', { exp: r.gained }), '#ffe680');
     if ((r.overflowed ?? 0) > 0) this.log(`${t('sys.exp_gain', { exp: r.overflowed ?? 0 })}${t('realm.overflow_gain')}`, '#9a9a9a');
     if (r.overflowFilled) this.log(t('realm.overflow_full'), '#ffb0ff');
     if (r.levels) {
       this.levelUpFx(); this.log(t('sys.level_up', { level: this.prog.level }), '#7fffd4');
-      this.player.maxHp = this.prog.maxHp; this.player.hp = this.prog.hp; this.prog.save();
+      this.player.maxHp = this.prog.maxHp; this.player.hp = this.prog.hp;
+      if (!persisted) this.prog.save();
       this.maybeSpTip();
     }
     if (r.blocked) {
@@ -1566,12 +1568,12 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
-  giveRewards(q: typeof QUESTS_REF[string], broke: boolean, daily?: DailyQuestReward) {
+  giveRewards(q: typeof QUESTS_REF[string], broke: boolean, daily?: DailyQuestReward, settled?: QuestRewardSettlement) {
     // 日常由 QuestSystem 完整结算并保存；没有本次收据时不走普通任务发奖路径。
     if (q.daily) {
       if (!daily) return;
       this.log(t('quest.complete', { name: questName(q) }), '#ffe680');
-      this.applyExp(daily.exp);
+      this.applyExp(daily.exp, true);
       if (q.rewards.spiritStone) this.log(t('sys.stone_gain', { n: q.rewards.spiritStone }), '#7ff0d0');
       for (const it of daily.items) this.log(t('sys.item_gain', { item: ITEMS[it.item]?.name ?? it.item, n: it.count }), '#ffffff');
       for (const id of daily.skills) this.log(t('skill.learned', { skill: SKILLS[id]?.name ?? id }), '#9fd0ff');
@@ -1581,10 +1583,11 @@ export class GameScene extends Phaser.Scene {
       this.maybeSpTip();
       return;
     }
+    // 普通任务同样先原子结算并保存；没有成功收据就不展示完成或再发奖励。
+    if (!settled) return;
     const rw = q.rewards;
     const cls = classForQuest(q.id);
     const job = cls?.id ?? rw.job;
-    if (job && !this.prog.advanceClass(job)) return;
     this.log(t('quest.complete', { name: questName(q) }), '#ffe680');
     if (broke) {
       this.player.maxHp = this.prog.maxHp; this.player.hp = this.prog.hp;
@@ -1592,18 +1595,13 @@ export class GameScene extends Phaser.Scene {
       if (this.prog.lastOverflowReturned > 0) this.log(`溢出修为返还 ${this.prog.lastOverflowReturned}`, '#c8c8c8');
       if (this.prog.breakthroughBonusLevels > 0) { this.levelUpFx(); this.log(t('sys.level_up', { level: this.prog.level }), '#7fffd4'); }
     }
-    if (rw.exp) this.applyExp(this.prog.gainExp(rw.exp, this.prog.level));
-    if (rw.spiritStone) { this.prog.stones += rw.spiritStone; this.log(`获得灵石 ${rw.spiritStone}`, '#7ff0d0'); }
-    for (const it of rw.items ?? []) {
-      // advanceClass 已按拜入奖励发本宗道袍并换装。
-      if (it.item === cls?.robeId) continue;
-      if (ITEMS[it.item]?.type === 'equip') { const on = this.prog.gainEquip(it.item); this.player.syncAppearance(); this.log(`获得 ${ITEMS[it.item].name}${on ? '（已自动装备）' : ''}`, '#9fd0ff'); }
-      else { this.prog.addItem(it.item, it.count); this.log(`获得 ${ITEMS[it.item]?.name ?? it.item} ×${it.count}`, '#ffffff'); }
+    this.applyExp(settled.exp, true);
+    if (rw.spiritStone) this.log(`获得灵石 ${rw.spiritStone}`, '#7ff0d0');
+    for (const it of settled.items) {
+      if (ITEMS[it.item]?.type === 'equip') this.log(`获得 ${ITEMS[it.item].name}${it.equipped ? '（已自动装备）' : ''}`, '#9fd0ff');
+      else this.log(`获得 ${ITEMS[it.item]?.name ?? it.item} ×${it.count}`, '#ffffff');
     }
-    const granted = rw.skills ?? [];
-    this.prog.grantQuestRecipes(q);
-    for (const s of granted) this.prog.grantSkill(s.id, s.level);
-    const ids = granted.map(s => s.id);
+    const ids = settled.skills;
     if (job && ids.includes('whirl_sword') && ids.includes('light_body')) this.log(t('skill.job_advance'), '#ffd23a');
     else if (ids.includes('sword_qi_slash')) this.log(t('skill.learned_first'), '#9fd0ff');
     else for (const id of ids) this.log(t('skill.learned', { skill: SKILLS[id]?.name ?? id }), '#9fd0ff');
@@ -1612,7 +1610,6 @@ export class GameScene extends Phaser.Scene {
     this.skillWindow.refresh();
     this.player.maxHp = this.prog.maxHp; this.player.hp = this.prog.hp;
     this.maybeSpTip();
-    this.prog.save();
   }
 
   /** 突破失败演出（v0.4 筑基台用）：同样放在 dim 层上方 */

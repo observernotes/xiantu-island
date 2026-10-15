@@ -1,0 +1,8 @@
+
+> xiantu-island@0.0.1 test:classes
+> timeout 120s node scripts/classes-test.mjs
+
+{"passed":true,"suite":"classes-release-gates","classes":5,"assertions":12318,"features":{"fiveSectClasses":false,"sectDaily":true,"sectRanks":false,"sectShopLibrary":false,"shops":false,"sectDonations":false,"seclusion":true,"alchemyPhase1":true,"v05Maps":true,"foxBoss":true},"openEntrances":["tianjian_disciple"],"skippedClosedEntrances":[{"job":"taixu_acolyte","reason":"fiveSectClasses=false"},{"job":"lingfu_novice","reason":"fiveSectClasses=false"},{"job":"youying_shadow","reason":"fiveSectClasses=false"},{"job":"wanshou_tamer","reason":"fiveSectClasses=false"}],"legacyClasses":5,"skillRows":25,"fullSuite":false}
+{"suite":"quest-rewards-atomic-save","passed":true,"assertions":128,"formalClass":"tianjian_disciple","scenarios":["first-save-only","all-saves-fail-retry","class-refusal","class-throw","collect-rollback","breakthrough-rollback"],"features":{"fiveSectClasses":false,"sectDaily":true,"sectRanks":false,"sectShopLibrary":false,"shops":false,"sectDonations":false,"seclusion":true,"alchemyPhase1":true,"v05Maps":true,"foxBoss":true}}
+{"suite":"class-entry-replacement","passed":true,"assertions":1615,"classes":5,"openEntrances":["tianjian_disciple"]}
+{"test":"sect-entry","assertions":672,"fourSects":["taixu","lingfu","youying","wanshou"],"flagsBefore":{"fiveSectClasses":false,"sectDaily":true,"sectRanks":false,"sectShopLibrary":false,"shops":false,"sectDonations":false,"seclusion":true,"alchemyPhase1":true,"v05Maps":true,"foxBoss":true}}

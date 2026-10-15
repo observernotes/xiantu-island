@@ -13,6 +13,12 @@ export const STAT_KEYS = Object.freeze(['rootBone', 'agility', 'spirit', 'insigh
 export type StatKey = typeof STAT_KEYS[number];
 export type AllocateCheck = { ok: true } | { ok: false; reason: 'invalid' | 'overspend' };
 export type AllocateResult = AllocateCheck | { ok: false; reason: 'save' };
+/** 已结算的普通任务奖励；场景仅用来显示日志和刷新外观。 */
+export interface QuestRewardSettlement {
+  exp: ReturnType<Progress['gainExp']>;
+  items: { item: string; count: number; equipped?: boolean }[];
+  skills: string[];
+}
 const SAVE_KEY = 'xiantu_save_v1';
 /** 妖狐任务改为五宗帖的奖励版本；无此字段的已交付旧档保留原天剑身份。 */
 const QUEST_REWARD_VERSION = 1;
@@ -89,6 +95,8 @@ function validSaveData(saved: unknown): saved is Record<string, unknown> {
 
 /** 角色成长与背包（跨地图保留）。公式见 balance/player_growth.json */
 export class Progress {
+  /** 同步交付期间的内部 save 只表示暂存，不写入半份存档。 */
+  #saveMuted = false;
   level = 1; exp = 0; hp = 0; mp = 0; stones = 0;
   /** 已确认的四维加点；待确认草稿只保留在 AttrPanel。 */
   allocatedStats: Record<string, number> = normalizedStats(undefined);
@@ -232,7 +240,27 @@ export class Progress {
       skillCooldowns: Object.fromEntries(Object.entries(this.skillCooldowns).filter(([id]) => !temporaryIds.includes(id))) }));
   }
   save(): boolean {
+    if (this.#saveMuted) return true;
     try { localStorage.setItem(SAVE_KEY, JSON.stringify(this.exportSave())); return true; } catch { return false; }
+  }
+  /** 一次真实保存提交整笔修改；拒绝、异常或写盘失败都恢复内存，允许重试。 */
+  runSaveTransaction<T>(apply: () => T | undefined): T | undefined {
+    if (this.#saveMuted) return undefined;
+    // 不用 exportSave：回滚也要保留试炼临时物品/技能等当前内存数据。
+    const previous = JSON.parse(JSON.stringify(this));
+    let saved = false;
+    this.#saveMuted = true;
+    try {
+      const result = apply();
+      if (result === undefined) return undefined;
+      this.#saveMuted = false;
+      saved = this.save();
+      return saved ? result : undefined;
+    } catch { return undefined; }
+    finally {
+      this.#saveMuted = false;
+      if (!saved) Object.assign(this, previous);
+    }
   }
   /** 导入和读取存档共用迁移；只接收数据字段，不允许覆盖实例方法。 */
   importSave(saved: unknown): boolean {
@@ -398,6 +426,25 @@ export class Progress {
     const gained = this.gainSectContribution(amount);
     this.save(); // 显式 0 也必须落领取记录。
     return gained;
+  }
+
+  /** 由任务交付事务调用；完成状态、授职和全部奖励一起写盘后才通知场景。 */
+  settleQuestRewards(q: QuestDef): QuestRewardSettlement | undefined {
+    if (!this.#saveMuted || q.daily || this.quests[q.id]?.state !== 'done') return undefined;
+    const rw = q.rewards, cls = classForQuest(q.id), job = cls?.id ?? rw.job;
+    if (job && !this.advanceClass(job)) return undefined;
+    const exp = rw.exp ? this.gainExp(rw.exp, this.level)
+      : { gained: 0, levels: 0, blocked: false, overflowed: 0, overflowFilled: false };
+    if (rw.spiritStone) this.stones += rw.spiritStone;
+    // 拜入道袍已由 advanceClass 发放并换装，不能重复进背包。
+    const items = (rw.items ?? []).filter(it => it.item !== cls?.robeId).map(it => {
+      if (ITEMS[it.item]?.type === 'equip') return { ...it, equipped: this.gainEquip(it.item) };
+      this.addItem(it.item, it.count);
+      return { ...it };
+    });
+    this.grantQuestRecipes(q);
+    for (const skill of rw.skills ?? []) this.grantSkill(skill.id, skill.level);
+    return { exp, items, skills: (rw.skills ?? []).map(skill => skill.id) };
   }
 
   /** 交付已验证目标并扣材料；整条日常的普通奖励与贡献在同一同步事务内保存。 */

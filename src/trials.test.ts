@@ -295,8 +295,8 @@ for (const job of CLASS_LIST) {
     prog: p, player: { syncAppearance() {} }, skillWindow: { refresh() {} },
     log() {}, levelUpFx() {}, maybeSpTip() {},
   }) as GameScene;
-  scene.giveRewards(reward.quest, reward.broke, reward.daily);
-  eq(p.job, job.id, `${job.id}: 正式发奖才确定职业`);
+  scene.giveRewards(reward.quest, reward.broke, reward.daily, reward.settled);
+  eq(p.job, job.id, `${job.id}: 正式交付已确定职业，奖励界面保留职业`);
   eq(p.skillLevel('spirit_bolt'), 0, `${job.id}: 正式拜入替换灵气弹`);
   eq(p.classRefundSp, 3, `${job.id}: 退还三点付费灵气弹 SP`);
   for (const gift of quest.rewards.skills ?? []) eq(p.skillLevel(gift.id), gift.level, `${job.id}: ${gift.id} 赠技按表`);

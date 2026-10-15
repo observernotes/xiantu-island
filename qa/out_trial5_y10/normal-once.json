@@ -1,0 +1,1115 @@
+{
+  "name": "normal-once",
+  "mode": "none",
+  "before": {
+    "map": "trial_taixu_stage",
+    "dialog": {
+      "open": true,
+      "index": 0,
+      "version": 5,
+      "choices": []
+    },
+    "memory": {
+      "quests": {
+        "q_awaken": {
+          "state": "done",
+          "kills": {},
+          "crafted": {},
+          "reached": true
+        },
+        "q_bamboo": {
+          "state": "done",
+          "kills": {
+            "spirit_rabbit": 8
+          },
+          "crafted": {}
+        },
+        "q_snake": {
+          "state": "done",
+          "kills": {},
+          "crafted": {}
+        },
+        "q_breakthrough": {
+          "state": "done",
+          "kills": {
+            "mountain_mandrill": 10
+          },
+          "crafted": {}
+        },
+        "q_fox": {
+          "state": "done",
+          "kills": {
+            "demon_fox": 1
+          },
+          "crafted": {}
+        },
+        "q_sect_taixu": {
+          "state": "active",
+          "kills": {},
+          "crafted": {}
+        }
+      },
+      "job": "",
+      "selectedSect": "taixu",
+      "skills": {
+        "spirit_bolt": 1
+      },
+      "skillGifted": {
+        "spirit_bolt": 1
+      },
+      "skillMastery": {},
+      "skillCooldowns": {},
+      "hotbar": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "buffs": [],
+      "classRewardClaims": [],
+      "equip": {
+        "weapon": "azure_steel_sword"
+      },
+      "inventory": {
+        "hp_pill_small": 3,
+        "qi_pill": 2,
+        "foundation_shard": 1,
+        "pillar_shard_1": 1,
+        "five_sect_token": 1,
+        "wood_sword": 1
+      },
+      "stones": 560,
+      "exp": 342,
+      "level": 11,
+      "overflowExp": 0,
+      "sectRank": null,
+      "classVersion": 0,
+      "classRefundSp": 0,
+      "completedTrials": [
+        "trial_sect_taixu"
+      ],
+      "pendingSectTrial": null,
+      "realmRewards": [
+        "mortal"
+      ],
+      "breakthroughBonusLevels": 0,
+      "breakthroughFails": 0,
+      "unstableUntil": 0,
+      "unstableRatio": 0,
+      "unstableStats": [],
+      "lastOverflowReturned": 0
+    },
+    "stored": {
+      "quests": {
+        "q_awaken": {
+          "state": "done",
+          "kills": {},
+          "crafted": {},
+          "reached": true
+        },
+        "q_bamboo": {
+          "state": "done",
+          "kills": {
+            "spirit_rabbit": 8
+          },
+          "crafted": {}
+        },
+        "q_snake": {
+          "state": "done",
+          "kills": {},
+          "crafted": {}
+        },
+        "q_breakthrough": {
+          "state": "done",
+          "kills": {
+            "mountain_mandrill": 10
+          },
+          "crafted": {}
+        },
+        "q_fox": {
+          "state": "done",
+          "kills": {
+            "demon_fox": 1
+          },
+          "crafted": {}
+        },
+        "q_sect_taixu": {
+          "state": "active",
+          "kills": {},
+          "crafted": {}
+        }
+      },
+      "job": "",
+      "selectedSect": "taixu",
+      "skills": {
+        "spirit_bolt": 1
+      },
+      "skillGifted": {
+        "spirit_bolt": 1
+      },
+      "skillMastery": {},
+      "skillCooldowns": {},
+      "hotbar": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "buffs": [],
+      "classRewardClaims": [],
+      "equip": {
+        "weapon": "azure_steel_sword"
+      },
+      "inventory": {
+        "hp_pill_small": 3,
+        "qi_pill": 2,
+        "foundation_shard": 1,
+        "pillar_shard_1": 1,
+        "five_sect_token": 1,
+        "wood_sword": 1
+      },
+      "stones": 560,
+      "exp": 342,
+      "level": 11,
+      "overflowExp": 0,
+      "sectRank": null,
+      "classVersion": 0,
+      "classRefundSp": 0,
+      "completedTrials": [
+        "trial_sect_taixu"
+      ],
+      "pendingSectTrial": null,
+      "realmRewards": [
+        "mortal"
+      ],
+      "breakthroughBonusLevels": 0,
+      "breakthroughFails": 0,
+      "unstableUntil": 0,
+      "unstableRatio": 0,
+      "unstableStats": [],
+      "lastOverflowReturned": 0
+    }
+  },
+  "inMemory": {
+    "map": "trial_taixu_stage",
+    "dialog": {
+      "open": false,
+      "index": 1,
+      "version": 6,
+      "choices": []
+    },
+    "memory": {
+      "quests": {
+        "q_awaken": {
+          "state": "done",
+          "kills": {},
+          "crafted": {},
+          "reached": true
+        },
+        "q_bamboo": {
+          "state": "done",
+          "kills": {
+            "spirit_rabbit": 8
+          },
+          "crafted": {}
+        },
+        "q_snake": {
+          "state": "done",
+          "kills": {},
+          "crafted": {}
+        },
+        "q_breakthrough": {
+          "state": "done",
+          "kills": {
+            "mountain_mandrill": 10
+          },
+          "crafted": {}
+        },
+        "q_fox": {
+          "state": "done",
+          "kills": {
+            "demon_fox": 1
+          },
+          "crafted": {}
+        },
+        "q_sect_taixu": {
+          "state": "done",
+          "kills": {},
+          "crafted": {}
+        }
+      },
+      "job": "taixu_acolyte",
+      "selectedSect": "taixu",
+      "skills": {
+        "fire_talisman_bolt": 1,
+        "thunder_palm": 1,
+        "water_mirror": 1
+      },
+      "skillGifted": {
+        "fire_talisman_bolt": 1,
+        "thunder_palm": 1,
+        "water_mirror": 1
+      },
+      "skillMastery": {},
+      "skillCooldowns": {},
+      "hotbar": [
+        "fire_talisman_bolt",
+        "thunder_palm",
+        "water_mirror",
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "buffs": [],
+      "classRewardClaims": [
+        "taixu_acolyte"
+      ],
+      "equip": {
+        "weapon": "azure_steel_sword",
+        "robe": "robe_taixu_1"
+      },
+      "inventory": {
+        "hp_pill_small": 3,
+        "qi_pill": 2,
+        "foundation_shard": 1,
+        "pillar_shard_1": 1,
+        "five_sect_token": 1,
+        "wood_sword": 1
+      },
+      "stones": 710,
+      "exp": 273,
+      "level": 12,
+      "overflowExp": 0,
+      "sectRank": "outer_disciple",
+      "classVersion": 2,
+      "classRefundSp": 0,
+      "completedTrials": [
+        "trial_sect_taixu"
+      ],
+      "pendingSectTrial": null,
+      "realmRewards": [
+        "mortal"
+      ],
+      "breakthroughBonusLevels": 0,
+      "breakthroughFails": 0,
+      "unstableUntil": 0,
+      "unstableRatio": 0,
+      "unstableStats": [],
+      "lastOverflowReturned": 0
+    },
+    "stored": {
+      "quests": {
+        "q_awaken": {
+          "state": "done",
+          "kills": {},
+          "crafted": {},
+          "reached": true
+        },
+        "q_bamboo": {
+          "state": "done",
+          "kills": {
+            "spirit_rabbit": 8
+          },
+          "crafted": {}
+        },
+        "q_snake": {
+          "state": "done",
+          "kills": {},
+          "crafted": {}
+        },
+        "q_breakthrough": {
+          "state": "done",
+          "kills": {
+            "mountain_mandrill": 10
+          },
+          "crafted": {}
+        },
+        "q_fox": {
+          "state": "done",
+          "kills": {
+            "demon_fox": 1
+          },
+          "crafted": {}
+        },
+        "q_sect_taixu": {
+          "state": "done",
+          "kills": {},
+          "crafted": {}
+        }
+      },
+      "job": "taixu_acolyte",
+      "selectedSect": "taixu",
+      "skills": {
+        "fire_talisman_bolt": 1,
+        "thunder_palm": 1,
+        "water_mirror": 1
+      },
+      "skillGifted": {
+        "fire_talisman_bolt": 1,
+        "thunder_palm": 1,
+        "water_mirror": 1
+      },
+      "skillMastery": {},
+      "skillCooldowns": {},
+      "hotbar": [
+        "fire_talisman_bolt",
+        "thunder_palm",
+        "water_mirror",
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "buffs": [],
+      "classRewardClaims": [
+        "taixu_acolyte"
+      ],
+      "equip": {
+        "weapon": "azure_steel_sword",
+        "robe": "robe_taixu_1"
+      },
+      "inventory": {
+        "hp_pill_small": 3,
+        "qi_pill": 2,
+        "foundation_shard": 1,
+        "pillar_shard_1": 1,
+        "five_sect_token": 1,
+        "wood_sword": 1
+      },
+      "stones": 710,
+      "exp": 273,
+      "level": 12,
+      "overflowExp": 0,
+      "sectRank": "outer_disciple",
+      "classVersion": 2,
+      "classRefundSp": 0,
+      "completedTrials": [
+        "trial_sect_taixu"
+      ],
+      "pendingSectTrial": null,
+      "realmRewards": [
+        "mortal"
+      ],
+      "breakthroughBonusLevels": 0,
+      "breakthroughFails": 0,
+      "unstableUntil": 0,
+      "unstableRatio": 0,
+      "unstableStats": [],
+      "lastOverflowReturned": 0
+    }
+  },
+  "trace": [
+    {
+      "n": 1,
+      "willFail": false,
+      "quest": "done",
+      "job": "taixu_acolyte",
+      "stones": 710,
+      "level": 12,
+      "exp": 273,
+      "skills": {
+        "fire_talisman_bolt": 1,
+        "thunder_palm": 1,
+        "water_mirror": 1
+      },
+      "skillGifted": {
+        "fire_talisman_bolt": 1,
+        "thunder_palm": 1,
+        "water_mirror": 1
+      },
+      "inventory": {
+        "hp_pill_small": 3,
+        "qi_pill": 2,
+        "foundation_shard": 1,
+        "pillar_shard_1": 1,
+        "five_sect_token": 1,
+        "wood_sword": 1
+      },
+      "equip": {
+        "weapon": "azure_steel_sword",
+        "robe": "robe_taixu_1"
+      },
+      "classRewardClaims": [
+        "taixu_acolyte"
+      ]
+    },
+    {
+      "n": 2,
+      "willFail": false,
+      "quest": "done",
+      "job": "taixu_acolyte",
+      "stones": 710,
+      "level": 12,
+      "exp": 273,
+      "skills": {
+        "fire_talisman_bolt": 1,
+        "thunder_palm": 1,
+        "water_mirror": 1
+      },
+      "skillGifted": {
+        "fire_talisman_bolt": 1,
+        "thunder_palm": 1,
+        "water_mirror": 1
+      },
+      "inventory": {
+        "hp_pill_small": 3,
+        "qi_pill": 2,
+        "foundation_shard": 1,
+        "pillar_shard_1": 1,
+        "five_sect_token": 1,
+        "wood_sword": 1
+      },
+      "equip": {
+        "weapon": "azure_steel_sword",
+        "robe": "robe_taixu_1"
+      },
+      "classRewardClaims": [
+        "taixu_acolyte"
+      ]
+    }
+  ],
+  "refreshed": {
+    "map": "trial_taixu_stage",
+    "dialog": {
+      "open": false,
+      "index": 0,
+      "version": 3,
+      "choices": []
+    },
+    "memory": {
+      "quests": {
+        "q_awaken": {
+          "state": "done",
+          "kills": {},
+          "crafted": {},
+          "reached": true
+        },
+        "q_bamboo": {
+          "state": "done",
+          "kills": {
+            "spirit_rabbit": 8
+          },
+          "crafted": {}
+        },
+        "q_snake": {
+          "state": "done",
+          "kills": {},
+          "crafted": {}
+        },
+        "q_breakthrough": {
+          "state": "done",
+          "kills": {
+            "mountain_mandrill": 10
+          },
+          "crafted": {}
+        },
+        "q_fox": {
+          "state": "done",
+          "kills": {
+            "demon_fox": 1
+          },
+          "crafted": {}
+        },
+        "q_sect_taixu": {
+          "state": "done",
+          "kills": {},
+          "crafted": {}
+        }
+      },
+      "job": "taixu_acolyte",
+      "selectedSect": "taixu",
+      "skills": {
+        "fire_talisman_bolt": 1,
+        "thunder_palm": 1,
+        "water_mirror": 1
+      },
+      "skillGifted": {
+        "fire_talisman_bolt": 1,
+        "thunder_palm": 1,
+        "water_mirror": 1
+      },
+      "skillMastery": {},
+      "skillCooldowns": {},
+      "hotbar": [
+        "fire_talisman_bolt",
+        "thunder_palm",
+        "water_mirror",
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "buffs": [],
+      "classRewardClaims": [
+        "taixu_acolyte"
+      ],
+      "equip": {
+        "weapon": "azure_steel_sword",
+        "robe": "robe_taixu_1"
+      },
+      "inventory": {
+        "hp_pill_small": 3,
+        "qi_pill": 2,
+        "foundation_shard": 1,
+        "pillar_shard_1": 1,
+        "five_sect_token": 1,
+        "wood_sword": 1
+      },
+      "stones": 710,
+      "exp": 273,
+      "level": 12,
+      "overflowExp": 0,
+      "sectRank": "outer_disciple",
+      "classVersion": 2,
+      "classRefundSp": 0,
+      "completedTrials": [
+        "trial_sect_taixu"
+      ],
+      "pendingSectTrial": null,
+      "realmRewards": [
+        "mortal"
+      ],
+      "breakthroughBonusLevels": 0,
+      "breakthroughFails": 0,
+      "unstableUntil": 0,
+      "unstableRatio": 0,
+      "unstableStats": [],
+      "lastOverflowReturned": 0
+    },
+    "stored": {
+      "quests": {
+        "q_awaken": {
+          "state": "done",
+          "kills": {},
+          "crafted": {},
+          "reached": true
+        },
+        "q_bamboo": {
+          "state": "done",
+          "kills": {
+            "spirit_rabbit": 8
+          },
+          "crafted": {}
+        },
+        "q_snake": {
+          "state": "done",
+          "kills": {},
+          "crafted": {}
+        },
+        "q_breakthrough": {
+          "state": "done",
+          "kills": {
+            "mountain_mandrill": 10
+          },
+          "crafted": {}
+        },
+        "q_fox": {
+          "state": "done",
+          "kills": {
+            "demon_fox": 1
+          },
+          "crafted": {}
+        },
+        "q_sect_taixu": {
+          "state": "done",
+          "kills": {},
+          "crafted": {}
+        }
+      },
+      "job": "taixu_acolyte",
+      "selectedSect": "taixu",
+      "skills": {
+        "fire_talisman_bolt": 1,
+        "thunder_palm": 1,
+        "water_mirror": 1
+      },
+      "skillGifted": {
+        "fire_talisman_bolt": 1,
+        "thunder_palm": 1,
+        "water_mirror": 1
+      },
+      "skillMastery": {},
+      "skillCooldowns": {},
+      "hotbar": [
+        "fire_talisman_bolt",
+        "thunder_palm",
+        "water_mirror",
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "buffs": [],
+      "classRewardClaims": [
+        "taixu_acolyte"
+      ],
+      "equip": {
+        "weapon": "azure_steel_sword",
+        "robe": "robe_taixu_1"
+      },
+      "inventory": {
+        "hp_pill_small": 3,
+        "qi_pill": 2,
+        "foundation_shard": 1,
+        "pillar_shard_1": 1,
+        "five_sect_token": 1,
+        "wood_sword": 1
+      },
+      "stones": 710,
+      "exp": 273,
+      "level": 12,
+      "overflowExp": 0,
+      "sectRank": "outer_disciple",
+      "classVersion": 2,
+      "classRefundSp": 0,
+      "completedTrials": [
+        "trial_sect_taixu"
+      ],
+      "pendingSectTrial": null,
+      "realmRewards": [
+        "mortal"
+      ],
+      "breakthroughBonusLevels": 0,
+      "breakthroughFails": 0,
+      "unstableUntil": 0,
+      "unstableRatio": 0,
+      "unstableStats": [],
+      "lastOverflowReturned": 0
+    }
+  },
+  "retry": {
+    "map": "trial_taixu_stage",
+    "dialog": {
+      "open": false,
+      "index": 1,
+      "version": 6,
+      "choices": []
+    },
+    "memory": {
+      "quests": {
+        "q_awaken": {
+          "state": "done",
+          "kills": {},
+          "crafted": {},
+          "reached": true
+        },
+        "q_bamboo": {
+          "state": "done",
+          "kills": {
+            "spirit_rabbit": 8
+          },
+          "crafted": {}
+        },
+        "q_snake": {
+          "state": "done",
+          "kills": {},
+          "crafted": {}
+        },
+        "q_breakthrough": {
+          "state": "done",
+          "kills": {
+            "mountain_mandrill": 10
+          },
+          "crafted": {}
+        },
+        "q_fox": {
+          "state": "done",
+          "kills": {
+            "demon_fox": 1
+          },
+          "crafted": {}
+        },
+        "q_sect_taixu": {
+          "state": "done",
+          "kills": {},
+          "crafted": {}
+        }
+      },
+      "job": "taixu_acolyte",
+      "selectedSect": "taixu",
+      "skills": {
+        "fire_talisman_bolt": 1,
+        "thunder_palm": 1,
+        "water_mirror": 1
+      },
+      "skillGifted": {
+        "fire_talisman_bolt": 1,
+        "thunder_palm": 1,
+        "water_mirror": 1
+      },
+      "skillMastery": {},
+      "skillCooldowns": {},
+      "hotbar": [
+        "fire_talisman_bolt",
+        "thunder_palm",
+        "water_mirror",
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "buffs": [],
+      "classRewardClaims": [
+        "taixu_acolyte"
+      ],
+      "equip": {
+        "weapon": "azure_steel_sword",
+        "robe": "robe_taixu_1"
+      },
+      "inventory": {
+        "hp_pill_small": 3,
+        "qi_pill": 2,
+        "foundation_shard": 1,
+        "pillar_shard_1": 1,
+        "five_sect_token": 1,
+        "wood_sword": 1
+      },
+      "stones": 710,
+      "exp": 273,
+      "level": 12,
+      "overflowExp": 0,
+      "sectRank": "outer_disciple",
+      "classVersion": 2,
+      "classRefundSp": 0,
+      "completedTrials": [
+        "trial_sect_taixu"
+      ],
+      "pendingSectTrial": null,
+      "realmRewards": [
+        "mortal"
+      ],
+      "breakthroughBonusLevels": 0,
+      "breakthroughFails": 0,
+      "unstableUntil": 0,
+      "unstableRatio": 0,
+      "unstableStats": [],
+      "lastOverflowReturned": 0
+    },
+    "stored": {
+      "quests": {
+        "q_awaken": {
+          "state": "done",
+          "kills": {},
+          "crafted": {},
+          "reached": true
+        },
+        "q_bamboo": {
+          "state": "done",
+          "kills": {
+            "spirit_rabbit": 8
+          },
+          "crafted": {}
+        },
+        "q_snake": {
+          "state": "done",
+          "kills": {},
+          "crafted": {}
+        },
+        "q_breakthrough": {
+          "state": "done",
+          "kills": {
+            "mountain_mandrill": 10
+          },
+          "crafted": {}
+        },
+        "q_fox": {
+          "state": "done",
+          "kills": {
+            "demon_fox": 1
+          },
+          "crafted": {}
+        },
+        "q_sect_taixu": {
+          "state": "done",
+          "kills": {},
+          "crafted": {}
+        }
+      },
+      "job": "taixu_acolyte",
+      "selectedSect": "taixu",
+      "skills": {
+        "fire_talisman_bolt": 1,
+        "thunder_palm": 1,
+        "water_mirror": 1
+      },
+      "skillGifted": {
+        "fire_talisman_bolt": 1,
+        "thunder_palm": 1,
+        "water_mirror": 1
+      },
+      "skillMastery": {},
+      "skillCooldowns": {},
+      "hotbar": [
+        "fire_talisman_bolt",
+        "thunder_palm",
+        "water_mirror",
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "buffs": [],
+      "classRewardClaims": [
+        "taixu_acolyte"
+      ],
+      "equip": {
+        "weapon": "azure_steel_sword",
+        "robe": "robe_taixu_1"
+      },
+      "inventory": {
+        "hp_pill_small": 3,
+        "qi_pill": 2,
+        "foundation_shard": 1,
+        "pillar_shard_1": 1,
+        "five_sect_token": 1,
+        "wood_sword": 1
+      },
+      "stones": 710,
+      "exp": 273,
+      "level": 12,
+      "overflowExp": 0,
+      "sectRank": "outer_disciple",
+      "classVersion": 2,
+      "classRefundSp": 0,
+      "completedTrials": [
+        "trial_sect_taixu"
+      ],
+      "pendingSectTrial": null,
+      "realmRewards": [
+        "mortal"
+      ],
+      "breakthroughBonusLevels": 0,
+      "breakthroughFails": 0,
+      "unstableUntil": 0,
+      "unstableRatio": 0,
+      "unstableStats": [],
+      "lastOverflowReturned": 0
+    }
+  },
+  "retryRefreshed": {
+    "map": "trial_taixu_stage",
+    "dialog": {
+      "open": false,
+      "index": 0,
+      "version": 3,
+      "choices": []
+    },
+    "memory": {
+      "quests": {
+        "q_awaken": {
+          "state": "done",
+          "kills": {},
+          "crafted": {},
+          "reached": true
+        },
+        "q_bamboo": {
+          "state": "done",
+          "kills": {
+            "spirit_rabbit": 8
+          },
+          "crafted": {}
+        },
+        "q_snake": {
+          "state": "done",
+          "kills": {},
+          "crafted": {}
+        },
+        "q_breakthrough": {
+          "state": "done",
+          "kills": {
+            "mountain_mandrill": 10
+          },
+          "crafted": {}
+        },
+        "q_fox": {
+          "state": "done",
+          "kills": {
+            "demon_fox": 1
+          },
+          "crafted": {}
+        },
+        "q_sect_taixu": {
+          "state": "done",
+          "kills": {},
+          "crafted": {}
+        }
+      },
+      "job": "taixu_acolyte",
+      "selectedSect": "taixu",
+      "skills": {
+        "fire_talisman_bolt": 1,
+        "thunder_palm": 1,
+        "water_mirror": 1
+      },
+      "skillGifted": {
+        "fire_talisman_bolt": 1,
+        "thunder_palm": 1,
+        "water_mirror": 1
+      },
+      "skillMastery": {},
+      "skillCooldowns": {},
+      "hotbar": [
+        "fire_talisman_bolt",
+        "thunder_palm",
+        "water_mirror",
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "buffs": [],
+      "classRewardClaims": [
+        "taixu_acolyte"
+      ],
+      "equip": {
+        "weapon": "azure_steel_sword",
+        "robe": "robe_taixu_1"
+      },
+      "inventory": {
+        "hp_pill_small": 3,
+        "qi_pill": 2,
+        "foundation_shard": 1,
+        "pillar_shard_1": 1,
+        "five_sect_token": 1,
+        "wood_sword": 1
+      },
+      "stones": 710,
+      "exp": 273,
+      "level": 12,
+      "overflowExp": 0,
+      "sectRank": "outer_disciple",
+      "classVersion": 2,
+      "classRefundSp": 0,
+      "completedTrials": [
+        "trial_sect_taixu"
+      ],
+      "pendingSectTrial": null,
+      "realmRewards": [
+        "mortal"
+      ],
+      "breakthroughBonusLevels": 0,
+      "breakthroughFails": 0,
+      "unstableUntil": 0,
+      "unstableRatio": 0,
+      "unstableStats": [],
+      "lastOverflowReturned": 0
+    },
+    "stored": {
+      "quests": {
+        "q_awaken": {
+          "state": "done",
+          "kills": {},
+          "crafted": {},
+          "reached": true
+        },
+        "q_bamboo": {
+          "state": "done",
+          "kills": {
+            "spirit_rabbit": 8
+          },
+          "crafted": {}
+        },
+        "q_snake": {
+          "state": "done",
+          "kills": {},
+          "crafted": {}
+        },
+        "q_breakthrough": {
+          "state": "done",
+          "kills": {
+            "mountain_mandrill": 10
+          },
+          "crafted": {}
+        },
+        "q_fox": {
+          "state": "done",
+          "kills": {
+            "demon_fox": 1
+          },
+          "crafted": {}
+        },
+        "q_sect_taixu": {
+          "state": "done",
+          "kills": {},
+          "crafted": {}
+        }
+      },
+      "job": "taixu_acolyte",
+      "selectedSect": "taixu",
+      "skills": {
+        "fire_talisman_bolt": 1,
+        "thunder_palm": 1,
+        "water_mirror": 1
+      },
+      "skillGifted": {
+        "fire_talisman_bolt": 1,
+        "thunder_palm": 1,
+        "water_mirror": 1
+      },
+      "skillMastery": {},
+      "skillCooldowns": {},
+      "hotbar": [
+        "fire_talisman_bolt",
+        "thunder_palm",
+        "water_mirror",
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "buffs": [],
+      "classRewardClaims": [
+        "taixu_acolyte"
+      ],
+      "equip": {
+        "weapon": "azure_steel_sword",
+        "robe": "robe_taixu_1"
+      },
+      "inventory": {
+        "hp_pill_small": 3,
+        "qi_pill": 2,
+        "foundation_shard": 1,
+        "pillar_shard_1": 1,
+        "five_sect_token": 1,
+        "wood_sword": 1
+      },
+      "stones": 710,
+      "exp": 273,
+      "level": 12,
+      "overflowExp": 0,
+      "sectRank": "outer_disciple",
+      "classVersion": 2,
+      "classRefundSp": 0,
+      "completedTrials": [
+        "trial_sect_taixu"
+      ],
+      "pendingSectTrial": null,
+      "realmRewards": [
+        "mortal"
+      ],
+      "breakthroughBonusLevels": 0,
+      "breakthroughFails": 0,
+      "unstableUntil": 0,
+      "unstableRatio": 0,
+      "unstableStats": [],
+      "lastOverflowReturned": 0
+    }
+  }
+}

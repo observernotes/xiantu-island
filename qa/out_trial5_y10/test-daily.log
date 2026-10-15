@@ -1,0 +1,5 @@
+
+> xiantu-island@0.0.1 test:daily
+> timeout 60s node scripts/daily-test.mjs
+
+宗门日常逻辑断言通过：575 条；15 条任务、本地 05:00 日界、领取去重、离线补算、贡献回退、闭关接口。

@@ -1,0 +1,75 @@
+{
+  "results": [
+    {
+      "name": "normal-once",
+      "status": "PASS",
+      "mode": "none",
+      "saveAttempts": 2,
+      "successfulWrites": 2,
+      "failedWrites": 0,
+      "refreshed": {
+        "state": "done",
+        "job": "taixu_acolyte",
+        "stones": 710,
+        "level": 12,
+        "exp": 273
+      },
+      "afterRetry": {
+        "state": "done",
+        "job": "taixu_acolyte",
+        "stones": 710,
+        "level": 12,
+        "exp": 273
+      }
+    },
+    {
+      "name": "first-write-success",
+      "status": "PASS",
+      "mode": "after-first",
+      "saveAttempts": 2,
+      "successfulWrites": 1,
+      "failedWrites": 1,
+      "refreshed": {
+        "state": "done",
+        "job": "taixu_acolyte",
+        "stones": 710,
+        "level": 12,
+        "exp": 273
+      },
+      "afterRetry": {
+        "state": "done",
+        "job": "taixu_acolyte",
+        "stones": 710,
+        "level": 12,
+        "exp": 273
+      }
+    },
+    {
+      "name": "all-writes-fail-retry",
+      "status": "PASS",
+      "mode": "all",
+      "saveAttempts": 2,
+      "successfulWrites": 0,
+      "failedWrites": 2,
+      "refreshed": {
+        "state": "active",
+        "job": "",
+        "stones": 560,
+        "level": 11,
+        "exp": 342
+      },
+      "afterRetry": {
+        "state": "done",
+        "job": "taixu_acolyte",
+        "stones": 710,
+        "level": 12,
+        "exp": 273
+      }
+    }
+  ],
+  "errors": {
+    "console": [],
+    "page": [],
+    "http": []
+  }
+}

@@ -277,7 +277,7 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig): Phaser.Game
       }
       const reward = s.quests.turnIn(id);
       if (!reward) { persist(); throw new Error(`${marker}: cannot complete quest: ${id}`); }
-      s.giveRewards(reward.quest, reward.broke, reward.daily); persist();
+      s.giveRewards(reward.quest, reward.broke, reward.daily, reward.settled); persist();
       return true;
     },
     setFlag(key: string, val: boolean) {

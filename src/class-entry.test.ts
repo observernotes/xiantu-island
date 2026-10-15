@@ -354,8 +354,8 @@ try {
     equal(p.hotbar[commonSlot], 'spirit_bolt', `${cls.id}: 仅完成目标保留通用热键`);
     const reward = qs.turnIn(q.id);
     equal(reward?.quest.id, q.id, `${cls.id}: 正式任务可交付`);
-    // 普通任务由场景奖励接入授职；在这里显式调用同一 advanceClass。
-    equal(p.advanceClass(cls.id), true, `${cls.id}: 正式奖励授职成功`);
+    equal(p.job, cls.id, `${cls.id}: 正式交付已原子结算授职`);
+    check(reward?.settled, `${cls.id}: 正式交付返回已落盘奖励收据`);
     equal(p.hotbar[commonSlot], entry, `${cls.id}: 首次拜入保留通用技原槽位`);
     equal(p.hotbar[1], buff.id, `${cls.id}: 首次拜入保留本宗增益原槽位`);
     equal(p.hotbar[3], otherActive.id, `${cls.id}: 首次拜入保留本宗其他主动原槽位`);

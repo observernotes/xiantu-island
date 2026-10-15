@@ -1,0 +1,14 @@
+{
+  "source": "/workspace/xiantu/wt/dev",
+  "project": "/workspace/xiantu/wt/dev",
+  "revision": "0c533c2c38ad8b065056954ab179e7a5c243f429",
+  "dataRoot": "/workspace/xiantu/wt/dev/data",
+  "indexSha256": "e817546b3e4431628c792ee5816c3082a804e2324c6cfeb375470e10ca2cf78b",
+  "sourceHashes": {
+    "src/Progress.ts": "7e39c45ef94ae0a1dab5179653a62639aa196d88191117272fd6821e7251b8ce",
+    "src/QuestSystem.ts": "7074ca2947382f9d24317a061906bcec14230bb404a4d37cfd4890d760c13dc2",
+    "src/scenes/GameScene.ts": "289ecce7b8d65cd6088ee8c411e5fcc0939e702494123938ce3ad8846fd1fdcc"
+  },
+  "at": "2026-10-15T11:35:46.676Z",
+  "originalRepro": "/workspace/xiantu/qa/out_trial5_edaa7d6/storage-delivery.mjs"
+}

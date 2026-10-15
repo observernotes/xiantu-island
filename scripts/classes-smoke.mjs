@@ -414,15 +414,15 @@ try {
       const quest = questRows.find(row => row.id === `q_sect_${sect}`);
       const questCheck = await page.evaluate(quest => {
         const scene = window.__scene, P = scene.prog.constructor, Q = scene.quests.constructor;
-        const p = new P(); p.save = () => {}; p.level = quest.reqLevel; p.quests.q_fox = { state: 'done', kills: {} };
+        const p = new P(); p.save = () => true; p.level = quest.reqLevel; p.quests.q_fox = { state: 'done', kills: {} };
         scene.prog = p; scene.quests = new Q(p);
         const accepted = scene.quests.accept(quest.id);
         const early = scene.quests.complete(quest.id);
         const trial = quest.objectives.find(objective => objective.type === 'trial')?.trial;
         if (trial) scene.quests.onTrialComplete(trial);
-        const reward = scene.quests.talk(quest.turnIn).after?.();
         const beforeRewardJob = p.job;
-        if (reward) scene.giveRewards(reward.quest, reward.broke);
+        const reward = scene.quests.talk(quest.turnIn).after?.();
+        if (reward) scene.giveRewards(reward.quest, reward.broke, reward.daily, reward.settled);
         return { accepted, early, beforeRewardJob, completed: p.quests[quest.id]?.state, job: p.job, appearance: p.appearance,
           skills: p.skills, gifted: p.skillGifted, refund: p.classRefundSp,
           playerTexture: scene.player.texture.key, hotbar: p.hotbar, robe: p.equip.robe, stones: p.stones,
@@ -431,8 +431,8 @@ try {
       assert.equal(questCheck.accepted, true, `${job}: 真实任务不可接`);
       assert.equal(questCheck.early, false, `${job}: 未通关任务可交`);
       assert.equal(questCheck.completed, 'done', `${job}: 真实交付未完成`);
-      assert.equal(questCheck.beforeRewardJob, '', `${job}: 正式发奖前已经定职`);
-      assert.equal(questCheck.job, job, `${job}: GameScene任务奖励未定下职业`);
+      assert.equal(questCheck.beforeRewardJob, '', `${job}: 正式交付前已经定职`);
+      assert.equal(questCheck.job, job, `${job}: 正式交付未定下职业`);
       const gifted = Object.fromEntries((quest.rewards.skills ?? []).map(skill => [skill.id, skill.level]));
       assert.deepEqual(questCheck.skills, gifted, `${job}: 正式拜入赠技不完全遵循当前任务表`);
       assert.deepEqual(questCheck.gifted, gifted, `${job}: 正式拜入赠技被计为付费等级`);

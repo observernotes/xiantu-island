@@ -153,7 +153,7 @@ async function extraInteractions(context, baseURL) {
       for (const objective of quest.objectives) scene.quests.onTalk(objective.target);
       const complete = scene.quests.complete(quest.id);
       const reward = scene.quests.turnIn(quest.id);
-      if (reward) scene.giveRewards(reward.quest, reward.broke, reward.daily);
+      if (reward) scene.giveRewards(reward.quest, reward.broke, reward.daily, reward.settled);
       const gained = reward?.daily?.contribution;
       const duplicate = p.onSectDailyQuestCompleted(quest.id);
       const saved = JSON.parse(localStorage.getItem('xiantu_save_v1'));

@@ -1,0 +1,5 @@
+
+> xiantu-island@0.0.1 test:stats
+> timeout 60s node scripts/stats-test.mjs
+
+stats.test: 239 条断言通过（旧档迁移/升级与突破发点/四维校验/原子确认/存档往返）

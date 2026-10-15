@@ -1,0 +1,5 @@
+
+> xiantu-island@0.0.1 test:trials
+> timeout 120s node scripts/trials-test.mjs
+
+{"test":"trials","assertions":511,"sectTrials":4,"formalJoins":["tianjian_disciple","taixu_acolyte","lingfu_novice","youying_shadow","wanshou_tamer"],"initialFlags":{"fiveSectClasses":false,"sectDaily":true,"sectRanks":false,"sectShopLibrary":false,"shops":false,"sectDonations":false,"seclusion":true,"alchemyPhase1":true,"v05Maps":true,"foxBoss":true}}

@@ -1,0 +1,15 @@
+工作区 /workspace/xiantu/wt/dev；开工 HEAD 0c533c2，git status --short 无输出。
+PASS npx tsc --noEmit (exit 0)
+PASS XT_DATA=snapshot npm run build:test (exit 0; build-test.log)
+PASS npm run test:classes (exit 0; 12318 classes + 128 Y10 + 1615 class-entry + 672 sect-entry assertions)
+PASS npm run test:trials (exit 0; 511 assertions)
+PASS npm run test:daily (exit 0; 575 assertions)
+PASS npm run test:stats (exit 0; 239 assertions)
+PASS XT_DATA=snapshot npm run test:features (exit 0; 137 assertions; console/page errors=0)
+PASS XT_DATA=snapshot node qa/out_trial5_y10/storage-delivery.mjs (exit 0; 3 paths; console/page/http errors=0)
+PASS node --check scripts/classes-smoke.mjs
+PASS node --check scripts/daily-smoke.mjs
+PASS node --check scripts/v05-smoke.mjs
+PASS git diff --check
+首次 features 与构建并行时等待页面启动超时；完成 snapshot 构建后重跑通过。
+未运行完整 tier1；正式 data/features.json 未改。

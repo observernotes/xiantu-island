@@ -1,6 +1,6 @@
 import { gameNow } from './GameClock';
 import { QUESTS, QUEST_ORDER, NPCS, SCRIPTS, ITEMS, MONSTERS, Line, QuestDef, questInPhase, t } from './data';
-import type { Progress } from './Progress';
+import type { Progress, QuestRewardSettlement } from './Progress';
 import { CLASS_RULES, classEntryEnabled, classForQuest } from './classes';
 import { REALMS } from './data';
 import { dailyRewardsReady, type DailyQuestReward } from './DailyQuests';
@@ -205,15 +205,21 @@ export class QuestSystem {
     const q = QUESTS[id];
     const now = this.now();
     if (q.daily && (!this.prog.canCompleteSectDailyQuest(id, now) || this.prog.quests[id]?.state !== 'active')) return undefined;
+    if (!q.daily) {
+      const reward = this.prog.runSaveTransaction(() => {
+        for (const o of q.objectives) if (o.type === 'collect' && o.consume !== false) this.prog.removeItem(o.target!, o.count!);
+        const broke = q.objectives.some(o => o.type === 'breakthrough') ? this.prog.breakthrough() : false;
+        this.prog.quests[id].state = 'done';
+        const settled = this.prog.settleQuestRewards(q);
+        return settled ? { quest: q, broke, settled } : undefined;
+      });
+      return reward ? this.notifyCompleted(reward) : undefined;
+    }
     for (const o of q.objectives) if (o.type === 'collect' && o.consume !== false) this.prog.removeItem(o.target!, o.count!);
     const broke = q.objectives.some(o => o.type === 'breakthrough') ? this.prog.breakthrough() : false;
     this.prog.quests[id].state = 'done';
-    if (q.daily) {
-      const daily = this.prog.settleSectDailyQuest(id, now);
-      return daily ? this.notifyCompleted({ quest: q, broke, daily }) : undefined;
-    }
-    this.prog.save();
-    return this.notifyCompleted({ quest: q, broke });
+    const daily = this.prog.settleSectDailyQuest(id, now);
+    return daily ? this.notifyCompleted({ quest: q, broke, daily }) : undefined;
   }
 
   onKill(monsterId: string) {
@@ -256,4 +262,4 @@ export class QuestSystem {
 const SUPPORTED = new Set(['kill', 'collect', 'reach', 'breakthrough', 'talk', 'craft', 'trial']);
 function supported(q: QuestDef) { return (!q.daily || dailyRewardsReady(q)) && q.objectives.every(o => SUPPORTED.has(o.type)); }
 
-export interface QuestReward { quest: QuestDef; broke: boolean; daily?: DailyQuestReward; }
+export interface QuestReward { quest: QuestDef; broke: boolean; daily?: DailyQuestReward; settled?: QuestRewardSettlement; }

@@ -1,0 +1,25 @@
+
+> xiantu-island@0.0.1 build:test
+> npm run sync && tsc --noEmit && VITE_XT_TEST=1 vite build
+
+
+> xiantu-island@0.0.1 sync
+> node scripts/sync.mjs
+
+[sync] 缺技能 @64 图标，跳过（退回 32px 图集或占位框）： icons/skills/icon_skill_flying_sword@64.png、icons/skills/icon_skill_golden_core_sword@64.png、icons/skills/icon_skill_heart_sword@64.png、icons/skills/icon_skill_qi_condense@64.png、icons/skills/icon_skill_sword_domain@64.png、icons/skills/icon_skill_sword_intent@64.png、icons/skills/icon_skill_sword_rain@64.png、icons/skills/icon_skill_sword_ride@64.png、icons/skills/icon_skill_sword_shield@64.png、icons/skills/icon_skill_ten_thousand_swords@64.png、icons/skills/icon_skill_tianjian_heart_2@64.png、icons/skills/icon_skill_tianjian_heart_3@64.png
+manifest: 137 个图集，26 个技能 @64 图标，区域 altar/altar_fill_variants/bamboo/chiyan/lingfu/lingxi/luoxia/qingyun/taixu/tianjian/wanshou/wanyao/youying
+synced art from /workspace/xiantu/wt/dev/data (snapshot)
+vite v5.4.21 building for production...
+transforming...
+✓ 92 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                           0.37 kB │ gzip:   0.33 kB
+dist/assets/XtTestBridge-BZn96haB.js     10.06 kB │ gzip:   4.11 kB
+dist/assets/index-0h1vL3Il.js         2,180.41 kB │ gzip: 500.42 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 5.75s

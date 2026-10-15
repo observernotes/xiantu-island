@@ -205,7 +205,7 @@ try {
       }
       const breakthrough = qs.turnIn('q_breakthrough');
       check(breakthrough?.broke, `付点${paidLevels}: 实际交付完成突破`);
-      scene.giveRewards(breakthrough.quest, breakthrough.broke);
+      scene.giveRewards(breakthrough.quest, breakthrough.broke, breakthrough.daily, breakthrough.settled);
       equal(p.job, '', `付点${paidLevels}: 突破不定职业`);
       equal(p.skillLevel('spirit_bolt'), 1, `付点${paidLevels}: 突破真实发奖只赠灵气弹Lv1`);
       equal(p.skillGifted.spirit_bolt, 1, `付点${paidLevels}: 灵气弹赠级记录`);
@@ -218,7 +218,7 @@ try {
       qs.onKill('demon_fox'); p.addItem('fox_tail', 1);
       const fox = qs.turnIn('q_fox');
       check(fox, `付点${paidLevels}: 实际交付妖狐任务`);
-      scene.giveRewards(fox.quest, fox.broke);
+      scene.giveRewards(fox.quest, fox.broke, fox.daily, fox.settled);
       equal(p.job, '', `付点${paidLevels}: 交妖狐后不定职业`);
       equal(p.count('five_sect_token'), 1, `付点${paidLevels}: 妖狐真实发奖五宗帖`);
       equal(['sword_qi_slash', 'whirl_sword', 'light_body'].map(id => p.skillLevel(id)), [0, 0, 0],
@@ -235,9 +235,9 @@ try {
       equal(p.job, '', `付点${paidLevels}: 接取正式任务仍未入宗`);
       const joined = qs.talk(QUESTS.q_sect_tianjian.turnIn, 'q_sect_tianjian').after?.();
       check(joined?.quest.id === 'q_sect_tianjian', `付点${paidLevels}: 对话交付正式天剑任务`);
-      equal(p.job, '', `付点${paidLevels}: 正式任务发奖前未定职业`);
-      scene.giveRewards(joined.quest, joined.broke);
-      equal(p.job, 'tianjian_disciple', `付点${paidLevels}: 正式发奖才落定天剑职业`);
+      equal(p.job, 'tianjian_disciple', `付点${paidLevels}: 正式交付已原子结算职业`);
+      scene.giveRewards(joined.quest, joined.broke, joined.daily, joined.settled);
+      equal(p.job, 'tianjian_disciple', `付点${paidLevels}: 奖励界面保留已结算的天剑职业`);
       equal(p.skillLevel('spirit_bolt'), 0, `付点${paidLevels}: 入宗替换灵气弹`);
       equal(p.classRefundSp, paidLevels * SKILLS.spirit_bolt.spCost, `付点${paidLevels}: 仅付费灵气弹等级返点`);
       equal(p.hotbar[6], 'sword_qi_slash', `付点${paidLevels}: 入门技继承通用技能自定义热键`);
@@ -291,7 +291,7 @@ try {
     else qs.talk(QUESTS[cls.joinQuest].turnIn);
     const reward = qs.turnIn(cls.joinQuest);
     equal(reward?.quest.id, cls.joinQuest, `${cls.id}: 正式拜入任务可交付`);
-    rewardScene(p).giveRewards(reward.quest, reward.broke);
+    rewardScene(p).giveRewards(reward.quest, reward.broke, reward.daily, reward.settled);
     equal(p.job, cls.id, `${cls.id}: 正式交付确定职业`);
     equal(p.equip.robe, classRobe(cls), `${cls.id}: 正式拜入奖励道袍`);
     equal(qs.turnIn(cls.joinQuest), undefined, `${cls.id}: 拜入奖励不可重复领取`);
@@ -387,6 +387,8 @@ try {
     console.log(JSON.stringify({ passed: true, suite: 'classes-release-gates', classes: CLASS_LIST.length,
       assertions, features: expected, openEntrances, skippedClosedEntrances, legacyClasses, skillRows, fullSuite: false }));
   }
+  // Y10：正式关口不变，覆盖交付与奖励的一次存档和失败后安全重试。
+  await server.ssrLoadModule('/src/quest-rewards.test.ts');
   // 四宗新入口关闭时也必须覆盖通用技能替换、退款及已有五宗旧档迁移。
   await server.ssrLoadModule('/src/class-entry.test.ts');
   // Y8 的四宗帖门槛须在默认关闭入口的快照下独立开启、检查并恢复。

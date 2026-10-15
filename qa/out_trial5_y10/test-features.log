@@ -1,0 +1,5 @@
+
+> xiantu-island@0.0.1 test:features
+> timeout 120s node scripts/features-test.mjs
+
+{"passed":true,"flags":10,"assertions":137,"snapshotCases":3,"snapshot":{"fiveSectClasses":false,"sectDaily":true,"sectRanks":false,"sectShopLibrary":false,"shops":false,"sectDonations":false,"seclusion":true,"alchemyPhase1":true,"v05Maps":true,"foxBoss":true},"taixuEntryPresent":true,"reloadRestored":true,"offOn":["fiveSectClasses","sectDaily","sectRanks","sectShopLibrary","shops","sectDonations","seclusion","alchemyPhase1","v05Maps","foxBoss"],"consoleErrors":0,"pageErrors":0,"port":4312}
