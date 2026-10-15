@@ -55,6 +55,7 @@ async function build(root) {
 }
 
 let isolated, browser, server, report;
+let contextCount = 0, pageCount = 0;
 try {
   progress('isolated-build');
   isolated = await createIsolatedBuild(root, 'talisman-ui');
@@ -72,13 +73,37 @@ try {
   browser = await api.chromium.launch({ executablePath: await browserPath(api.chromium), headless: true, timeout: 20000,
     args: ['--use-gl=swiftshader', '--enable-unsafe-swiftshader'] });
 
-  async function session(label, { missing = [], missingFile = '' } = {}, run) {
-    progress(label);
+  async function createSessionContext() {
     const context = await browser.newContext({ viewport: { width: 1280, height: 720 }, timezoneId: 'Asia/Shanghai' });
+    contextCount++;
+    await context.addInitScript(save => localStorage.setItem('xiantu_save_v1', JSON.stringify(save)), save);
+    return context;
+  }
+  async function session(label, { missing = [], missingFile = '', sharedContext } = {}, run) {
+    progress(label);
+    const context = sharedContext ?? await createSessionContext();
+    let page;
     try {
       const filtered = missing.length ? await installMissingManifest(context, manifest, missing) : undefined;
-      await context.addInitScript(save => localStorage.setItem('xiantu_save_v1', JSON.stringify(save)), save);
-      const page = await context.newPage();
+      page = await context.newPage(); pageCount++;
+      if (missingFile) await page.addInitScript(({ missingFile, token }) => {
+        // Keep unrelated HTTP/decoded-image caches warm without Playwright routing, which disables HTTP cache.
+        // Only the physically missing file gets a unique URL, so an earlier valid PNG can never mask this case.
+        const freshMissingUrl = value => {
+          const url = new URL(String(value), location.href);
+          if (url.pathname !== `/${missingFile}`) return value;
+          url.searchParams.set('talismanMissingCase', token); return url.href;
+        };
+        const open = XMLHttpRequest.prototype.open;
+        XMLHttpRequest.prototype.open = function(method, url, ...args) {
+          return open.call(this, method, freshMissingUrl(url), ...args);
+        };
+        // Phaser normally uses XHR blobs; retain the same guarantee if its image-load mode uses Image.src.
+        const src = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
+        if (src?.set) Object.defineProperty(HTMLImageElement.prototype, 'src', { ...src,
+          set(value) { return src.set.call(this, freshMissingUrl(value)); },
+        });
+      }, { missingFile, token: `${startedAt}:${label}` });
       const errors = { console: [], page: [], request: [], http: [] }, responses = [], requests = [];
       page.on('console', event => { if (event.type() === 'error') errors.console.push(event.text()); });
       page.on('pageerror', error => errors.page.push(error.message));
@@ -87,7 +112,8 @@ try {
       page.on('response', response => {
         if (response.status() >= 400) errors.http.push(`${response.status()} ${response.url()}`);
         if (missingFile && new URL(response.url()).pathname === `/${missingFile}`)
-          responses.push({ status: response.status(), type: response.headers()['content-type'] ?? '' });
+          responses.push({ status: response.status(), type: response.headers()['content-type'] ?? '',
+            caseToken: new URL(response.url()).searchParams.get('talismanMissingCase') });
       });
       await page.goto(new URL('?map=qingyun_village', baseURL).href, { waitUntil: 'load', timeout: 60000 });
       await page.waitForFunction(() => {
@@ -106,9 +132,13 @@ try {
       if (missingFile) {
         ok(responses.length > 0, `${label}: 清单内实体缺图未请求`);
         ok(responses.every(row => row.status === 200 && row.type.includes('text/html')), `${label}: 未覆盖 200 HTML 解码失败`);
+        ok(responses.every(row => row.caseToken === `${startedAt}:${label}`), `${label}: 缺件未使用独立请求地址`);
         missingFileChecks[label] = { ...browserChecks[label], responses };
       }
-    } finally { await context.close(); }
+    } finally {
+      await page?.close();
+      if (!sharedContext) await context.close();
+    }
   }
   // render 后等一帧，让 Phaser 把新按钮加入输入列表；不靠固定延时猜就绪。
   async function render(page, method, state) {
@@ -364,24 +394,29 @@ try {
     });
     // Wait longer than a full stroke: paused wall time must not consume the gameplay deadline.
     await page.waitForTimeout(s.view.selectedRecipe.draw.stepTimeMs + 100);
-    // Sample in the resume call itself: subsequent Playwright round trips are unpaused gameplay time.
-    const afterPause = await page.evaluate(() => {
+    // Resume, release and draw within one browser turn: CDP round trips must not spend the real stroke budget.
+    // DOM events still traverse the installed Phaser KeyboardManager and TalismanScene listeners.
+    const drawing = await page.evaluate(async strokes => {
+      const ui = window.__scene.scene.get('talisman-craft-ui');
+      const nextFrame = () => new Promise(resolve => ui.events.once('postupdate', resolve));
+      const arrows = { up: ['ArrowUp', 38], down: ['ArrowDown', 40], left: ['ArrowLeft', 37], right: ['ArrowRight', 39] };
+      const dispatch = (type, direction) => {
+        const [code, keyCode] = arrows[direction];
+        window.dispatchEvent(new KeyboardEvent(type, { key: code, code, keyCode, which: keyCode,
+          bubbles: true, cancelable: true, repeat: false }));
+      };
       window.__scene.game.resume();
-      return window.__xt.talismanCraftSnapshot().view.draw;
-    });
-    eq(afterPause.current, 0, '全局暂停期间画符超时推进');
-    ok(Math.abs(afterPause.remainingMs - beforePause) < 1, '全局暂停未保留本笔剩余时间');
-    await page.waitForFunction(() => window.__xt.talismanCraftSnapshot()?.view.draw?.waitingRelease === false);
-    const strokes = s.view.selectedRecipe.draw.strokes;
-    const arrow = { up: 'ArrowUp', down: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' };
-    for (let i = 0; i < strokes.length; i++) {
-      await page.keyboard.press(arrow[strokes[i]]);
-      await page.waitForFunction(index => {
-        const view = window.__xt.talismanCraftSnapshot()?.view;
-        return view?.state === 'settled' || view?.draw?.current > index;
-      }, i);
-    }
-    s = await page.evaluate(() => window.__xt.talismanCraftSnapshot());
+      const afterPause = window.__xt.talismanCraftSnapshot().view.draw;
+      await nextFrame(); // First resumed frame observes released directions before any new stroke.
+      for (const direction of strokes) {
+        dispatch('keydown', direction); await nextFrame();
+        dispatch('keyup', direction); await nextFrame();
+      }
+      return { afterPause, snapshot: window.__xt.talismanCraftSnapshot() };
+    }, s.view.selectedRecipe.draw.strokes);
+    eq(drawing.afterPause.current, 0, '全局暂停期间画符超时推进');
+    ok(Math.abs(drawing.afterPause.remainingMs - beforePause) < 1, '全局暂停未保留本笔剩余时间');
+    s = drawing.snapshot;
     eq(s.view.state, 'settled', '全笔画后未结算');
     eq(s.view.result.success, true, '固定种子全对未成功');
     eq(s.view.result.completion, 1, '实际方向输入完成度错误');
@@ -410,18 +445,23 @@ try {
     await shot(page, 'ui4_missing_manifest');
     checks.push('所有相关图片清单外：无请求、代码回退、状态和回调可用');
   });
-  for (const key of keys) {
-    const original = path.join(isolated.root, 'dist', imagePath(key)), moved = `${original}.smoke-missing`;
-    await fs.rename(original, moved);
-    try {
-      await session(`file-missing:${key}`, { missingFile: imagePath(key) }, async page => {
-        await exerciseMissingFile(page, key);
-      });
-    } finally { await fs.rename(moved, original); }
-    await fs.access(original);
-    checks.push(`${key}: 清单内实体 PNG 缺失、200 HTML 静默、逐件回退、还原`);
-  }
-  report = { suite: 'talisman-ui', passed: true, assertions, checks, browserChecks, missingFileChecks, screenshots, shotDir };
+  // Reuse the HTTP/decoded-image cache; every case still owns a new Page, base save and JS realm.
+  const fileContext = await createSessionContext();
+  try {
+    for (const key of keys) {
+      const original = path.join(isolated.root, 'dist', imagePath(key)), moved = `${original}.smoke-missing`;
+      await fs.rename(original, moved);
+      try {
+        await session(`file-missing:${key}`, { missingFile: imagePath(key), sharedContext: fileContext }, async page => {
+          await exerciseMissingFile(page, key);
+        });
+      } finally { await fs.rename(moved, original); }
+      await fs.access(original);
+      checks.push(`${key}: 清单内实体 PNG 缺失、200 HTML 静默、逐件回退、还原`);
+    }
+  } finally { await fileContext.close(); }
+  report = { suite: 'talisman-ui', passed: true, assertions, checks, browserChecks, missingFileChecks, screenshots, shotDir,
+    isolation: { contexts: contextCount, pages: pageCount, fileCasesShareContext: true } };
 } finally {
   progress('cleanup');
   await browser?.close(); await server?.close(); await isolated?.cleanup();
