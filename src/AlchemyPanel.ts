@@ -143,7 +143,7 @@ export class AlchemyPanel {
     hit.on('pointerdown', () => { if (this.scene.textures.exists('ui_alchemy_btn_pressed')) bg?.setTexture('ui_alchemy_btn_pressed'); run(); });
   }
   private error(reason?: string) {
-    this.status = ({ closed: FEATURE_UNAVAILABLE, materials: '材料不足', fuel: '灵石不足', furnace: '丹炉不可用', unlearned: '尚未学会这张丹方', unknown: '丹方不存在', busy: '请先完成这一炉' } as Record<string, string>)[reason ?? ''] ?? '暂时无法炼制';
+    this.status = ({ closed: FEATURE_UNAVAILABLE, materials: '材料不足', fuel: '灵石不足', furnace: '丹炉不可用', unlearned: '尚未学会这张丹方', unknown: '丹方不存在', busy: '请先完成这一炉', config: '生活技能配置错误', skill_level: '炼丹等级不足' } as Record<string, string>)[reason ?? ''] ?? '暂时无法炼制';
     this.render();
   }
   private brew() {

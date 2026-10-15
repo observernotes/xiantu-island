@@ -1,5 +1,6 @@
 import { gameNow } from './GameClock';
-import { GROWTH, EXP_TO_NEXT, MAX_LEVEL, ITEMS, BREAKTHROUGH_LEVELS, BREAKTHROUGH, REALMS, QUESTS, LIFESPAN, RECIPES, ALCHEMY_RULES, SECT_RANKS, TILED_MAPS, PillQuality, QuestDef, syncTalismanMapAvailability } from './data';
+import { GROWTH, EXP_TO_NEXT, MAX_LEVEL, ITEMS, BREAKTHROUGH_LEVELS, BREAKTHROUGH, REALMS, QUESTS, LIFESPAN, RECIPES, ALCHEMY_RULES, LIFE_SKILLS, LIFE_SKILL_ERRORS, SECT_RANKS, TILED_MAPS, PillQuality, QuestDef, syncTalismanMapAvailability } from './data';
+import { advanceLifeSkillProgress, lifeSkillLevel, lifeSkillProgressView, lifeSkillRecipe, normalizeLifeSkillProgress, type LifeSkillId } from './LifeSkills';
 import { validSectGrowthState, type SectGrowthState } from './SectGrowth';
 import { HOTBAR_SLOTS, QUEST_SKILL_BACKFILL, SKILLS, SKILL_RULES, SkillDef, actOf, skillNumber, spEarnedFor, spBand } from './skills';
 import { CLASS_LIST, CLASS_RULES, classDef, classEntryEnabled, classEntrySkill, classForQuest, classGiftSkills, classMinLevel, classRobe, skillsForClass } from './classes';
@@ -139,6 +140,11 @@ export class Progress {
   talismanQuickSlots: ({ item: string; quality: PillQuality } | null)[] = Array.from({ length: HOTBAR_SLOTS.length }, () => null);
   alchemyLevel = 1;
   alchemyExp = 0;
+  talismanLevel = LIFE_SKILLS?.curve.initialLevel ?? 1;
+  talismanExp = LIFE_SKILLS?.curve.initialExp ?? 0;
+  /** 仅预留存档及只读视图；v0.5 没有打造结算入口。 */
+  forgingLevel = LIFE_SKILLS?.curve.initialLevel ?? 1;
+  forgingExp = LIFE_SKILLS?.curve.initialExp ?? 0;
   /** 品质分桶与普通背包共存，旧档未分桶的丹药视为下品。 */
   pillQualities: Record<string, Partial<Record<PillQuality, number>>> = {};
   /** 地图 id:采集对象名 → 再生的绝对毫秒时间，换图/刷新后保持。 */
@@ -240,7 +246,11 @@ export class Progress {
   get skillsUnlocked() { return this.realm.id !== 'mortal'; }
 
   exportSave(): Record<string, unknown> {
-    const { transientItems, trialSkills, trialHotbarBefore, talisman, talismanUse, visitedMaps, talismanQuickSlots, ...persistent } = this;
+    const { transientItems, trialSkills, trialHotbarBefore, talisman, talismanUse, visitedMaps, talismanQuickSlots,
+      talismanLevel, talismanExp, forgingLevel, forgingExp, ...persistent } = this;
+    const lifeSkillFields = featureEnabled('lifeSkillCurve') || talismanLevel !== (LIFE_SKILLS?.curve.initialLevel ?? 1)
+      || talismanExp !== (LIFE_SKILLS?.curve.initialExp ?? 0) || forgingLevel !== (LIFE_SKILLS?.curve.initialLevel ?? 1)
+      || forgingExp !== (LIFE_SKILLS?.curve.initialExp ?? 0) ? { talismanLevel, talismanExp, forgingLevel, forgingExp } : {};
     // 发版关口关闭且从未用过制符时，保持 v0.5.2 的存档形状；已存在的记录继续保存。
     const talismanFields = {
       ...(featureEnabled('talismanCraft') || JSON.stringify(talisman) !== JSON.stringify(emptyTalismanSave()) ? { talisman } : {}),
@@ -251,7 +261,7 @@ export class Progress {
     const inventory: Record<string, number> = { ...this.inventory };
     for (const [id, count] of Object.entries(transientItems)) inventory[id] = Math.max(0, this.count(id) - count);
     const temporaryIds = Object.keys(trialSkills);
-    return JSON.parse(JSON.stringify({ ...persistent, ...talismanFields, inventory, hotbar: trialHotbarBefore ?? this.hotbar,
+    return JSON.parse(JSON.stringify({ ...persistent, ...talismanFields, ...lifeSkillFields, inventory, hotbar: trialHotbarBefore ?? this.hotbar,
       allocatedStats: normalizedStats(this.allocatedStats), unspentStatPoints: count(this.unspentStatPoints) ? this.unspentStatPoints : 0,
       buffs: this.buffs.filter(b => !temporaryIds.includes(b.id)),
       skillCooldowns: Object.fromEntries(Object.entries(this.skillCooldowns).filter(([id]) => !temporaryIds.includes(id))) }));
@@ -304,6 +314,8 @@ export class Progress {
     try {
       if (saved && typeof saved === 'object' && !Array.isArray(saved)) {
         const fields = saved as Record<string, unknown>;
+        if (featureEnabled('lifeSkillCurve') && LIFE_SKILLS
+          && ['talismanLevel', 'talismanExp', 'forgingLevel', 'forgingExp'].some(key => !Object.prototype.hasOwnProperty.call(fields, key))) p.save();
         if (!Object.prototype.hasOwnProperty.call(fields, 'questRewardVersion')) p.questRewardVersion = 0;
         hadStoredRank = Object.prototype.hasOwnProperty.call(fields, 'sectRank');
         if (hadStoredRank) storedRank = fields.sectRank as string | null;
@@ -759,7 +771,20 @@ export class Progress {
 
   grantRecipe(id: string) {
     if (!RECIPES[id] || this.learnedRecipes.includes(id)) return false;
+    if (!this.recipeSkillPermission(id).ok) return false;
     this.learnedRecipes.push(id); return true;
+  }
+  /** 仅生活技能许可；角色、境界、任务条件仍由原入口检查。 */
+  recipeSkillPermission(id: string): Readonly<{ ok: boolean; reason?: 'config' | 'skill_level'; rank?: number; minSkillLevel?: number }> {
+    if (!featureEnabled('lifeSkillCurve')) return Object.freeze({ ok: true });
+    const recipe = RECIPES[id];
+    const skill = recipe?.type === 'talisman' || recipe?.type === 'grinding' ? 'talisman' : 'alchemy';
+    const entry = LIFE_SKILLS && recipe ? lifeSkillRecipe(LIFE_SKILLS, skill, recipe) : null;
+    if (!entry) return Object.freeze({ ok: false, reason: 'config' });
+    const level = skill === 'alchemy' ? this.alchemyLevel : this.talismanLevel;
+    if (!Number.isSafeInteger(level) || level < 1 || level > LIFE_SKILLS!.curve.maxLevel) return Object.freeze({ ok: false, reason: 'config' });
+    return Object.freeze({ ...entry, ok: level >= entry.minSkillLevel,
+      ...(level < entry.minSkillLevel ? { reason: 'skill_level' as const } : {}) });
   }
   grantQuestRecipes(q: QuestDef) {
     if (q.id === 'q_talisman_intro' && !featureEnabled('talismanCraft')) return [];
@@ -769,10 +794,15 @@ export class Progress {
   }
   /** 公式字段当前是说明文本；只解析明确的乘数，不执行表内表达式。 */
   get alchemyExpNeed() {
+    if (featureEnabled('lifeSkillCurve')) {
+      return LIFE_SKILLS && this.alchemyLevel < LIFE_SKILLS.curve.maxLevel
+        ? lifeSkillLevel(LIFE_SKILLS, 'alchemy', this.alchemyLevel).expToNext : Infinity;
+    }
     const multiplier = Number(ALCHEMY_RULES.alchemyExp.toNext.match(/(\d+(?:\.\d+)?)\s*×/)?.[1] ?? 50);
     return this.alchemyLevel >= ALCHEMY_RULES.alchemyExp.maxLevel ? Infinity : multiplier * this.alchemyLevel;
   }
   gainAlchemyExp(amount: number) {
+    if (featureEnabled('lifeSkillCurve')) return this.gainLifeSkillExp('alchemy', amount);
     if (!Number.isFinite(amount) || amount <= 0 || this.alchemyLevel >= ALCHEMY_RULES.alchemyExp.maxLevel) return 0;
     this.alchemyExp += Math.floor(amount);
     let levels = 0;
@@ -781,6 +811,31 @@ export class Progress {
     }
     if (this.alchemyLevel >= ALCHEMY_RULES.alchemyExp.maxLevel) this.alchemyExp = 0;
     return levels;
+  }
+  get talismanExpNeed() {
+    return featureEnabled('lifeSkillCurve') && LIFE_SKILLS && this.talismanLevel < LIFE_SKILLS.curve.maxLevel
+      ? lifeSkillLevel(LIFE_SKILLS, 'talisman', this.talismanLevel).expToNext : Infinity;
+  }
+  gainTalismanExp(amount: number) { return this.gainLifeSkillExp('talisman', amount); }
+  private gainLifeSkillExp(id: 'alchemy' | 'talisman', amount: number) {
+    if (!featureEnabled('lifeSkillCurve') || !LIFE_SKILLS || !Number.isFinite(amount) || amount <= 0) return 0;
+    const levelKey = id === 'alchemy' ? 'alchemyLevel' : 'talismanLevel';
+    const expKey = id === 'alchemy' ? 'alchemyExp' : 'talismanExp';
+    const next = advanceLifeSkillProgress(LIFE_SKILLS, id, this[levelKey], this[expKey], amount);
+    this[levelKey] = next.level; this[expKey] = next.exp;
+    return next.levels;
+  }
+  lifeSkillView(id: LifeSkillId) {
+    const level = id === 'alchemy' ? this.alchemyLevel : id === 'talisman' ? this.talismanLevel : this.forgingLevel;
+    const exp = id === 'alchemy' ? this.alchemyExp : id === 'talisman' ? this.talismanExp : this.forgingExp;
+    const enabled = featureEnabled('lifeSkillCurve');
+    if (LIFE_SKILLS) return Object.freeze({ id, enabled, available: id !== 'forging',
+      ...lifeSkillProgressView(LIFE_SKILLS, id, level, exp), configErrors: LIFE_SKILL_ERRORS });
+    return Object.freeze({ id, enabled, available: false, level, exp,
+      expToNext: id === 'alchemy' && !enabled && Number.isFinite(this.alchemyExpNeed) ? this.alchemyExpNeed : null,
+      maxLevel: id === 'alchemy' && !enabled ? ALCHEMY_RULES.alchemyExp.maxLevel : null,
+      maxed: id === 'alchemy' && !enabled && this.alchemyLevel >= ALCHEMY_RULES.alchemyExp.maxLevel,
+      configErrors: LIFE_SKILL_ERRORS });
   }
   /** 获得装备：对应栏位空着或新装备更强就自动换上（装备界面做好前的过渡） */
   gainEquip(id: string) {
@@ -883,9 +938,20 @@ export class Progress {
     if (!this.quests || typeof this.quests !== 'object') this.quests = {};
     if (!Array.isArray(this.learnedRecipes)) this.learnedRecipes = [];
     this.learnedRecipes = [...new Set(this.learnedRecipes.filter(id => typeof id === 'string' && !!RECIPES[id]))];
-    const alchemyLevel = Number(this.alchemyLevel), alchemyExp = Number(this.alchemyExp);
-    this.alchemyLevel = Number.isFinite(alchemyLevel) ? Math.min(ALCHEMY_RULES.alchemyExp.maxLevel, Math.max(1, Math.floor(alchemyLevel))) : 1;
-    this.alchemyExp = Number.isFinite(alchemyExp) ? Math.max(0, Math.floor(alchemyExp)) : 0;
+    if (featureEnabled('lifeSkillCurve') && LIFE_SKILLS) {
+      const before = JSON.stringify([this.alchemyLevel, this.alchemyExp, this.talismanLevel, this.talismanExp, this.forgingLevel, this.forgingExp]);
+      const alchemy = normalizeLifeSkillProgress(LIFE_SKILLS, this.alchemyLevel, this.alchemyExp);
+      const talisman = normalizeLifeSkillProgress(LIFE_SKILLS, this.talismanLevel, this.talismanExp);
+      const forging = normalizeLifeSkillProgress(LIFE_SKILLS, this.forgingLevel, this.forgingExp);
+      this.alchemyLevel = alchemy.level; this.alchemyExp = alchemy.exp;
+      this.talismanLevel = talisman.level; this.talismanExp = talisman.exp;
+      this.forgingLevel = forging.level; this.forgingExp = forging.exp;
+      if (before !== JSON.stringify([this.alchemyLevel, this.alchemyExp, this.talismanLevel, this.talismanExp, this.forgingLevel, this.forgingExp])) this.save();
+    } else {
+      const alchemyLevel = Number(this.alchemyLevel), alchemyExp = Number(this.alchemyExp);
+      this.alchemyLevel = Number.isFinite(alchemyLevel) ? Math.min(ALCHEMY_RULES.alchemyExp.maxLevel, Math.max(1, Math.floor(alchemyLevel))) : 1;
+      this.alchemyExp = Number.isFinite(alchemyExp) ? Math.max(0, Math.floor(alchemyExp)) : 0;
+    }
     if (!this.pillQualities || typeof this.pillQualities !== 'object' || Array.isArray(this.pillQualities)) this.pillQualities = {};
     for (const id of Object.keys(this.pillQualities)) {
       if (!ITEMS[id] || this.count(id) <= 0) delete this.pillQualities[id];

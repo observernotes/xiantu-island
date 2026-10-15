@@ -7,7 +7,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { createServer, preview } from 'vite';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-const names = ['fiveSectClasses', 'sectDaily', 'sectRanks', 'sectShopLibrary', 'shops', 'sectDonations', 'seclusion', 'alchemyPhase1', 'v05Maps', 'foxBoss', 'talismanCraft'];
+const names = ['fiveSectClasses', 'sectDaily', 'sectRanks', 'sectShopLibrary', 'shops', 'sectDonations', 'seclusion', 'alchemyPhase1', 'v05Maps', 'foxBoss', 'talismanCraft', 'lifeSkillCurve'];
 let configured = {};
 try { configured = JSON.parse(await fs.readFile(path.join(root, 'data/features.json'), 'utf8')); }
 catch (error) { if (error.code !== 'ENOENT') throw error; }
@@ -306,6 +306,16 @@ try {
     flip('talismanCraft', true);
     check(s.quests.available('q_talisman_intro'), '制符重新开放未恢复学习');
     checked.push('talismanCraft');
+
+    // 生活曲线关口独立于制符开放，保存中的同名 flag 不控制运行配置。
+    flip('talismanCraft', false);
+    flip('lifeSkillCurve', true);
+    check(!xt.getState().features.talismanCraft && !s.quests.available('q_talisman_intro'), '生活曲线自动开放了制符');
+    const lifeBefore = s.prog.talismanExp;
+    flip('lifeSkillCurve', false);
+    s.prog.gainTalismanExp(10);
+    check(s.prog.talismanExp === lifeBefore, '关闭生活曲线仍增加制符经验');
+    checked.push('lifeSkillCurve');
 
     // 所有开关关闭后读旧档：保存字段完整，存档的 true 不能越过发版门禁。
     const preserved = { ...joined, ageUpdatedAt: xt.getState().time, flags: Object.fromEntries(names.map(name => [name, true])),

@@ -1,6 +1,7 @@
 import recipesRaw from '@xt/balance/recipes.json';
-import { ITEMS, REALMS, inPhase, type PillQuality } from './data';
+import { ITEMS, LIFE_SKILLS, LIFE_SKILL_ERRORS, REALMS, inPhase, type PillQuality } from './data';
 import { featureEnabled } from './features';
+import { lifeSkillExperience, lifeSkillLevel, lifeSkillRecipe } from './LifeSkills';
 
 export const TALISMAN_QUALITIES = ['low', 'mid', 'high', 'supreme'] as const;
 export const TALISMAN_DIRECTIONS = ['up', 'down', 'left', 'right'] as const;
@@ -11,7 +12,7 @@ export type StrokeOutcome = 'correct' | 'wrong' | 'timeout';
 export interface TalismanRecipe {
   id: string; name: string; type: 'talisman' | 'grinding'; output: string; outputCount: number;
   materials: { item: string; count: number }[]; realm: string; reqLevel: number;
-  baseRate?: number; draw?: { strokes: TalismanDirection[]; stepTimeMs: number };
+  recipeLevel?: number; baseRate?: number; draw?: { strokes: TalismanDirection[]; stepTimeMs: number };
 }
 export interface TalismanRules {
   minCompletion: number; minRate: number; maxRate: number; lingfuSuccessBonus: number;
@@ -115,9 +116,11 @@ export interface TalismanResult {
 }
 export interface TalismanAttempt {
   attemptId: string; recipeId: string; state: 'drawing' | 'settled' | 'interrupted'; result: TalismanResult | null;
-  craftEmitted: boolean;
+  craftEmitted: boolean; lifeSkillExpGranted?: boolean;
 }
-export interface TalismanPendingOutput { attemptId: string; item: string; count: number; quality: PillQuality | null }
+export interface TalismanPendingOutput {
+  attemptId: string; item: string; count: number; quality: PillQuality | null; lifeSkillExpGranted?: boolean;
+}
 export interface TalismanSave {
   version: 1; nextAttempt: number; attempt: TalismanAttempt | null; pendingOutput: TalismanPendingOutput | null;
 }
@@ -133,7 +136,8 @@ export function normalizeTalismanSave(value: unknown, interruptDrawing = true): 
     || !['drawing', 'settled', 'interrupted'].includes(String(a.state))) return result;
   result.attempt = { attemptId: a.attemptId, recipeId: a.recipeId,
     state: a.state === 'drawing' && interruptDrawing ? 'interrupted' : a.state as TalismanAttempt['state'], result: null,
-    craftEmitted: a.craftEmitted === true };
+    craftEmitted: a.craftEmitted === true,
+    ...(typeof a.lifeSkillExpGranted === 'boolean' ? { lifeSkillExpGranted: a.lifeSkillExpGranted } : {}) };
   const previousSequence = /^talisman_(\d+)$/.exec(a.attemptId)?.[1];
   if (previousSequence && positiveCount(Number(previousSequence)) && Number(previousSequence) < Number.MAX_SAFE_INTEGER) {
     result.nextAttempt = Math.max(result.nextAttempt, Number(previousSequence) + 1);
@@ -152,10 +156,18 @@ export function normalizeTalismanSave(value: unknown, interruptDrawing = true): 
   const pending = value.pendingOutput, settled = result.attempt.result;
   if (record(pending) && settled?.success && !settled.delivered && result.attempt.state === 'settled'
     && pending.attemptId === a.attemptId && pending.item === settled.item && pending.count === settled.count
-    && pending.quality === settled.quality) result.pendingOutput = { ...pending } as unknown as TalismanPendingOutput;
+    && pending.quality === settled.quality) {
+    result.pendingOutput = { ...pending } as unknown as TalismanPendingOutput;
+    // 任一凭据已提交经验时保留 true；旧结果没有标记也只领取，绝不追授。
+    if (a.lifeSkillExpGranted === true || pending.lifeSkillExpGranted === true) {
+      result.attempt.lifeSkillExpGranted = result.pendingOutput.lifeSkillExpGranted = true;
+    } else if (typeof a.lifeSkillExpGranted === 'boolean') result.pendingOutput.lifeSkillExpGranted = a.lifeSkillExpGranted;
+    else if (typeof pending.lifeSkillExpGranted === 'boolean') result.attempt.lifeSkillExpGranted = pending.lifeSkillExpGranted;
+  }
   // 一份已确定但未入包的成功结果就是待领取凭据，不能因缺少冗余字段而遗失。
   else if (settled?.success && !settled.delivered && result.attempt.state === 'settled') {
-    result.pendingOutput = { attemptId: a.attemptId, item: settled.item, count: settled.count, quality: settled.quality };
+    result.pendingOutput = { attemptId: a.attemptId, item: settled.item, count: settled.count, quality: settled.quality,
+      ...(typeof a.lifeSkillExpGranted === 'boolean' ? { lifeSkillExpGranted: a.lifeSkillExpGranted } : {}) };
   }
   if (result.attempt.state === 'drawing' || result.attempt.state === 'interrupted') {
     result.attempt.result = null; result.attempt.craftEmitted = false; result.pendingOutput = null;
@@ -165,13 +177,18 @@ export function normalizeTalismanSave(value: unknown, interruptDrawing = true): 
 
 export interface TalismanHost {
   talisman: TalismanSave; learnedRecipes: string[]; level: number; realm: { id: string }; sect: string;
+  readonly talismanLevel?: number; readonly talismanExp?: number; gainTalismanExp?(amount: number): number;
   count(item: string): number; removeItem(item: string, count: number): void;
   canAddCraftedItem(item: string, count: number): boolean;
   addCraftedItem(item: string, count: number, quality?: PillQuality): boolean;
   save(): boolean; runSaveTransaction<T>(apply: () => T | undefined): T | undefined;
 }
-export type TalismanBlock = 'closed' | 'busy' | 'pending' | 'unknown' | 'config' | 'unlearned' | 'level' | 'realm' | 'state' | 'materials' | 'bag_full' | 'save';
+export type TalismanBlock = 'closed' | 'busy' | 'pending' | 'unknown' | 'config' | 'unlearned' | 'level' | 'skill_level' | 'realm' | 'state' | 'materials' | 'bag_full' | 'save';
 export interface TalismanCheck { ok: boolean; reason?: TalismanBlock; materials: { item: string; have: number; need: number }[] }
+export interface TalismanRecipePreview {
+  readonly recipeId: string; readonly successRate: number; readonly qualityDistribution: Readonly<Record<PillQuality, number>>;
+  readonly allowed: boolean; readonly reason?: TalismanBlock; readonly outputCount: number; readonly minSkillLevel: number | null;
+}
 export interface TalismanOptions {
   context?: () => { inCombat?: boolean; inTrial?: boolean }; config?: unknown; report?: (message: string) => void;
 }
@@ -222,6 +239,7 @@ export class TalismanSystem {
   private draw: DrawStroke | null = null;
   private selected = '';
   private candidates = new Map<string, TalismanResult>();
+  private startedLifeSkillLevel: number | null = null;
   constructor(private prog: TalismanHost, private quests?: { onCraft(item: string, count: number): void },
     public random: () => number = () => Math.random(), private options: TalismanOptions = {}) {
     this.config = readTalismanConfig(options.config ?? recipesRaw);
@@ -229,16 +247,20 @@ export class TalismanSystem {
       // 关闭开关时保留的原始旧字段，在本次真正启用时才迁移。
       this.prog.talisman = normalizeTalismanSave(this.prog.talisman, false);
       this.config.errors.forEach(message => (options.report ?? console.error)(message));
+      if (featureEnabled('lifeSkillCurve')) LIFE_SKILL_ERRORS.forEach(message => (options.report ?? console.error)(message));
       this.recover();
     }
     this.selected = prog.talisman?.attempt?.recipeId ?? Object.keys(this.config.recipes)[0] ?? '';
   }
   get active() { return this.prog.talisman.attempt?.state === 'drawing' ? this.prog.talisman.attempt : null; }
   get knownRecipes() { return Object.values(this.config.recipes).filter(recipe => this.prog.learnedRecipes.includes(recipe.id)); }
-  rate(recipeId: string) {
+  rate(recipeId: string) { return this.rateAtLevel(recipeId, this.prog.talismanLevel); }
+  private rateAtLevel(recipeId: string, level: number | undefined) {
     const recipe = this.config.recipes[recipeId], r = this.config.rules;
     if (!recipe || recipe.type !== 'talisman' || !r) return 0;
-    return Math.max(r.minRate, Math.min(r.maxRate, recipe.baseRate! + (this.prog.sect === 'lingfu' ? r.lingfuSuccessBonus : 0)));
+    if (featureEnabled('lifeSkillCurve') && (!LIFE_SKILLS || !this.curveReady(recipe) || !positiveCount(level))) return 0;
+    const bonus = featureEnabled('lifeSkillCurve') ? lifeSkillLevel(LIFE_SKILLS!, 'talisman', level!).successBonus : 0;
+    return Math.max(r.minRate, Math.min(r.maxRate, recipe.baseRate! + (this.prog.sect === 'lingfu' ? r.lingfuSuccessBonus : 0) + bonus));
   }
   check(recipeId: string): TalismanCheck {
     const recipe = this.config.recipes[recipeId];
@@ -250,12 +272,14 @@ export class TalismanSystem {
     else if (this.active) reason = 'busy';
     else if (this.config.invalid.has(recipeId)) reason = 'config';
     else if (!recipe) reason = 'unknown';
+    else if (featureEnabled('lifeSkillCurve') && !this.curveReady(recipe)) reason = 'config';
     else if (!this.prog.learnedRecipes.includes(recipeId)) reason = 'unlearned';
     else if (this.prog.level < recipe.reqLevel) reason = 'level';
+    else if (featureEnabled('lifeSkillCurve') && this.prog.talismanLevel! < lifeSkillRecipe(LIFE_SKILLS!, 'talisman', recipe)!.minSkillLevel) reason = 'skill_level';
     else if (REALMS.findIndex(r => r.id === this.prog.realm.id) < REALMS.findIndex(r => r.id === recipe.realm)) reason = 'realm';
     else if (context.inCombat || context.inTrial) reason = 'state';
     else if (materials.some(m => !finite(m.have) || m.have < m.need)) reason = 'materials';
-    else if (!this.prog.canAddCraftedItem(recipe.output, recipe.outputCount)) reason = 'bag_full';
+    else if (!this.prog.canAddCraftedItem(recipe.output, this.outputCount(recipe))) reason = 'bag_full';
     return { ok: !reason, reason, materials };
   }
   start(recipeId: string, now = 0): TalismanCheck & { attempt?: TalismanAttempt } {
@@ -265,6 +289,7 @@ export class TalismanSystem {
     if (!finite(now)) return { ...check, ok: false, reason: 'state' };
     const attempt = this.prog.runSaveTransaction(() => this.begin(recipe));
     if (!attempt) return { ...check, ok: false, reason: 'save' };
+    this.startedLifeSkillLevel = featureEnabled('lifeSkillCurve') ? this.prog.talismanLevel! : null;
     this.selected = recipeId; this.draw = new DrawStroke('craft', recipe.draw!.strokes, recipe.draw!.stepTimeMs, now);
     return { ...check, attempt };
   }
@@ -296,10 +321,12 @@ export class TalismanSystem {
   settle(attemptId: string): TalismanResult | null {
     const attempt = this.active;
     if (!featureEnabled('talismanCraft') || !attempt || attempt.attemptId !== attemptId || !this.draw?.done) return null;
+    if (featureEnabled('lifeSkillCurve') && !this.curveReady(this.config.recipes[attempt.recipeId])) return null;
     let result = this.candidates.get(attemptId);
     if (!result) {
       const recipe = this.config.recipes[attempt.recipeId], r = this.config.rules!, d = this.draw.view();
-      const completion = d.correct / d.total, rate = this.rate(recipe.id);
+      const completion = d.correct / d.total, craftLevel = this.startedLifeSkillLevel ?? this.prog.talismanLevel;
+      const rate = this.rateAtLevel(recipe.id, craftLevel);
       const roll = completion < r.minCompletion ? null : this.random();
       // 非法随机源不能产生默认必成；合法源仅调用一次且严格 r < p。
       const success = roll !== null && probability(roll) && roll < 1 && roll < rate;
@@ -307,7 +334,7 @@ export class TalismanSystem {
       const cap = this.prog.sect === 'lingfu' ? r.qualityCap.lingfu : r.qualityCap.default;
       const finalQuality = rawQuality && TALISMAN_QUALITIES.indexOf(rawQuality) > TALISMAN_QUALITIES.indexOf(cap) ? cap : rawQuality;
       result = { attemptId, recipeId: recipe.id, item: recipe.output, success, quality: finalQuality,
-        rawQuality, capApplied: rawQuality !== finalQuality, count: success ? recipe.outputCount : 0,
+        rawQuality, capApplied: rawQuality !== finalQuality, count: success ? this.outputCount(recipe, craftLevel) : 0,
         completion, correct: d.correct, wrong: d.wrong, timeouts: d.timeouts, total: d.total, rate,
         roll: roll !== null && probability(roll) && roll < 1 ? roll : null, delivered: false,
         ...(!success ? { reason: completion < r.minCompletion ? 'completion' as const : 'condense' as const } : {}) };
@@ -315,7 +342,7 @@ export class TalismanSystem {
     }
     const committed = this.prog.runSaveTransaction(() => { this.commitResult(this.prog.talisman.attempt!, { ...result! }); return this.prog.talisman.attempt!.result!; });
     if (!committed) return null;
-    this.candidates.delete(attemptId); this.draw = null; return committed;
+    this.candidates.delete(attemptId); this.draw = null; this.startedLifeSkillLevel = null; return committed;
   }
   abandon() {
     if (!featureEnabled('talismanCraft') || !this.active) return false;
@@ -349,6 +376,22 @@ export class TalismanSystem {
       this.emitCraft(current); return true;
     });
   }
+  /** 指定完成度后的条件成功品质分布；品质仍只由笔画与宗门上限决定。 */
+  preview(recipeId: string, completion = 1): TalismanRecipePreview {
+    const recipe = this.config.recipes[recipeId], check = this.check(recipeId), r = this.config.rules;
+    const qualityDistribution: Record<PillQuality, number> = { low: 0, mid: 0, high: 0, supreme: 0 };
+    const qualified = probability(completion) && !!r && completion >= r.minCompletion;
+    if (qualified && recipe?.type === 'talisman') {
+      const raw = [...TALISMAN_QUALITIES].reverse().find(q => completion >= r!.qualityMin[q])!;
+      const cap = this.prog.sect === 'lingfu' ? r!.qualityCap.lingfu : r!.qualityCap.default;
+      qualityDistribution[TALISMAN_QUALITIES[Math.min(TALISMAN_QUALITIES.indexOf(raw), TALISMAN_QUALITIES.indexOf(cap))]] = 1;
+    }
+    const mapping = featureEnabled('lifeSkillCurve') && LIFE_SKILLS && recipe ? lifeSkillRecipe(LIFE_SKILLS, 'talisman', recipe) : null;
+    return Object.freeze({ recipeId, successRate: recipe?.type === 'grinding' ? 1 : qualified ? this.rate(recipeId) : 0,
+      qualityDistribution: Object.freeze(qualityDistribution), allowed: check.ok, reason: check.reason,
+      outputCount: recipe && (!featureEnabled('lifeSkillCurve') || this.curveReady(recipe)) ? this.outputCount(recipe) : 0,
+      minSkillLevel: mapping?.minSkillLevel ?? (featureEnabled('lifeSkillCurve') ? null : 1) });
+  }
   view(recipeId = this.selected): TalismanView {
     const recipe = this.config.recipes[recipeId] ?? null;
     if (recipe && !this.active) this.selected = recipeId;
@@ -358,23 +401,50 @@ export class TalismanSystem {
       draw: this.draw?.view() ?? null, result: attempt?.result ?? null, pendingOutput: this.prog.talisman.pendingOutput,
       rate: this.rate(recipeId), sectBonus: this.prog.sect === 'lingfu' ? rules?.lingfuSuccessBonus ?? 0 : 0,
       qualityCap: rules ? this.prog.sect === 'lingfu' ? rules.qualityCap.lingfu : rules.qualityCap.default : null,
-      configErrors: [...this.config.errors], buttons: { start: check.ok && recipe?.type === 'talisman',
+      configErrors: [...this.config.errors, ...(featureEnabled('lifeSkillCurve') ? this.curveErrors(recipe) : [])], buttons: { start: check.ok && recipe?.type === 'talisman',
         grind: check.ok && recipe?.type === 'grinding', again: check.ok && !!attempt,
         abandon: !!this.active, close: !this.active, continue: !!this.active } };
   }
   private begin(recipe: TalismanRecipe): TalismanAttempt {
     for (const m of recipe.materials) this.prog.removeItem(m.item, m.count);
     const attempt: TalismanAttempt = { attemptId: `talisman_${this.prog.talisman.nextAttempt++}`, recipeId: recipe.id,
-      state: 'drawing', result: null, craftEmitted: false };
+      state: 'drawing', result: null, craftEmitted: false,
+      ...(featureEnabled('lifeSkillCurve') ? { lifeSkillExpGranted: false } : {}) };
     this.prog.talisman.attempt = attempt; this.prog.talisman.pendingOutput = null; return attempt;
   }
   private commitResult(attempt: TalismanAttempt, result: TalismanResult) {
     attempt.state = 'settled'; attempt.result = result;
+    if (featureEnabled('lifeSkillCurve') && !attempt.lifeSkillExpGranted) {
+      const recipe = this.config.recipes[attempt.recipeId];
+      if (!this.curveReady(recipe)) throw new Error('[life skills config] talisman settlement unavailable');
+      const exp = recipe.type === 'talisman' ? lifeSkillExperience(LIFE_SKILLS!, 'talisman', recipe, 'talisman', result.success,
+        result.completion >= this.config.rules!.minCompletion) : 0;
+      // 结果、经验及去重标记同事务落盘；领取和恢复都不再调用经验接口。
+      if (exp > 0) this.prog.gainTalismanExp!(exp);
+      attempt.lifeSkillExpGranted = true;
+    }
     if (!result.success) return;
     if (this.prog.canAddCraftedItem(result.item, result.count)
       && this.prog.addCraftedItem(result.item, result.count, result.quality ?? undefined)) {
       result.delivered = true; this.emitCraft(attempt);
-    } else this.prog.talisman.pendingOutput = { attemptId: attempt.attemptId, item: result.item, count: result.count, quality: result.quality };
+    } else this.prog.talisman.pendingOutput = { attemptId: attempt.attemptId, item: result.item, count: result.count, quality: result.quality,
+      ...(typeof attempt.lifeSkillExpGranted === 'boolean' ? { lifeSkillExpGranted: attempt.lifeSkillExpGranted } : {}) };
+  }
+  private curveReady(recipe: TalismanRecipe | undefined) {
+    return !!LIFE_SKILLS && !!recipe && positiveCount(this.prog.talismanLevel)
+      && this.prog.talismanLevel <= LIFE_SKILLS.curve.maxLevel && count(this.prog.talismanExp)
+      && typeof this.prog.gainTalismanExp === 'function' && !!lifeSkillRecipe(LIFE_SKILLS, 'talisman', recipe);
+  }
+  private curveErrors(recipe: TalismanRecipe | null) {
+    if (!LIFE_SKILLS) return [...LIFE_SKILL_ERRORS];
+    if (recipe && !this.curveReady(recipe)) return [`[life skills config] talisman: invalid progress or unregistered recipe ${recipe.id}`];
+    return [];
+  }
+  private outputCount(recipe: TalismanRecipe, level = this.prog.talismanLevel) {
+    if (!featureEnabled('lifeSkillCurve') || recipe.type === 'grinding') return recipe.outputCount;
+    // levels 是计算源，与技能全局项由导入校验保证一致，禁止重复叠加。
+    const bonus = lifeSkillLevel(LIFE_SKILLS!, 'talisman', level!).outputBonusRate;
+    return Math.floor(recipe.outputCount * (1 + bonus));
   }
   private emitCraft(attempt: TalismanAttempt) {
     if (attempt.craftEmitted || !attempt.result?.success || !attempt.result.delivered) return;

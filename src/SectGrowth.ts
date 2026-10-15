@@ -393,7 +393,9 @@ export class SectGrowth {
         || !integer(recipe.price) || !positive(recipe.reqLevel)
         || !output || !inPhase(output) || output.enabled === false || output.placeholder === true) return [];
       const learned = this.prog.learnedRecipes.includes(recipeId);
+      const lifePermission = this.prog.recipeSkillPermission(recipeId);
       const key = learned ? 'alchemy.recipe.learned'
+        : !lifePermission.ok ? lifePermission.reason === 'skill_level' ? 'alchemy.recipe.level' : 'sect.ui.config_pending'
         : !positive(this.prog.level) || this.prog.level < recipe.reqLevel ? 'alchemy.recipe.level'
         : !integer(this.prog.stones) || this.prog.stones < recipe.price ? 'ui.shop.not_enough' : '';
       return [{ recipeId, name: recipe.name, price: recipe.price, reqLevel: recipe.reqLevel, learned, ok: !key, key }];
