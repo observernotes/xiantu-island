@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { FEEL } from './config/feel';
 import { GameScene } from './scenes/GameScene';
 import { installOptionalAssetErrorHandler } from './optionalAssets';
+import { installCrashGuard } from './crashGuard';
 
 installOptionalAssetErrorHandler(Phaser);
 
@@ -25,7 +26,7 @@ async function start() {
     const { startTestGame } = await import('./XtTestBridge');
     startTestGame(config);
   } else {
-    new Phaser.Game(config);
+    installCrashGuard(new Phaser.Game(config));
   }
 }
 void start();
