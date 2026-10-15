@@ -1,12 +1,15 @@
 import Phaser from 'phaser';
-import { ITEMS, t } from '../data';
-import { TalismanPanel, type TalismanPanelAction } from '../TalismanPanel';
-import { TalismanSystem, type TalismanDirection } from '../Talisman';
+import { REALMS, t } from '../data';
+import { TalismanPanel, type TalismanPanelAction, type TalismanPanelState } from '../TalismanPanel';
+import { TalismanSystem, type TalismanBlock, type TalismanDirection } from '../Talisman';
 import type { GameScene } from './GameScene';
 
 const DIRECTIONS: Record<string, TalismanDirection> = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right' };
-const ARROWS: Record<string, string> = { up: '↑', down: '↓', left: '←', right: '→' };
-const qualities: Record<string, string> = { low: '下品', mid: '中品', high: '上品', supreme: '极品' };
+const BLOCK_KEYS: Partial<Record<TalismanBlock, string>> = {
+  unlearned: 'talisman.not_learned', level: 'talisman.locked', realm: 'talisman.locked', skill_level: 'talisman.locked',
+  materials: 'talisman.material_lack', bag_full: 'sys.bag_full', pending: 'talisman.output_pending', config: 'talisman.config_error',
+};
+const blockedText = (reason?: TalismanBlock) => t(BLOCK_KEYS[reason ?? 'unknown'] ?? 'talisman.entry_unavailable');
 
 /** 正式画符独立场景。地图、物理和人物输入停在原场景，现实时间增益继续到期。 */
 export class TalismanScene extends Phaser.Scene {
@@ -25,8 +28,10 @@ export class TalismanScene extends Phaser.Scene {
   constructor() { super('talisman-craft-ui'); }
   create(data: { owner: GameScene; system: TalismanSystem; recipeId?: string; initialHeld?: TalismanDirection[] }) {
     this.owner = data.owner; this.system = data.system;
-    this.selected = data.recipeId ?? this.system.view().recipes[0]?.id ?? '';
-    this.held.clear(); this.edges.clear(); this.frame = 0; this.confirming = false; this.blurred = false; this.pauseReasons.clear(); this.fingerprint = '';
+    const initialView = this.system.view();
+    this.selected = data.recipeId ?? initialView.selectedRecipe?.id ?? initialView.recipes[0]?.id ?? '';
+    this.held.clear(); this.edges.clear(); this.frame = 0; this.confirming = false; this.exitAfterAbandon = false;
+    this.blurred = false; this.pauseReasons.clear(); this.fingerprint = '';
     for (const direction of data.initialHeld ?? []) this.held.add(direction);
     this.panel = new TalismanPanel(this, action => this.action(action), id => this.select(id));
     this.input.keyboard?.on('keydown', this.down, this);
@@ -53,11 +58,11 @@ export class TalismanScene extends Phaser.Scene {
     const direction = DIRECTIONS[event.code];
     if (!direction) return;
     event.preventDefault();
-    if (event.repeat) { this.held.add(direction); return; }
+    if (event.repeat) return;
     if (this.held.has(direction)) return;
     this.held.add(direction);
     if (this.pauseReasons.size) return;
-    // event.timeStamp shares performance.now's time origin. Preserve the event instant at a deadline.
+    // 事件时间与 performance.now 共用起点，截止附近仍按真实按下时刻判定。
     const at = event.timeStamp > 1e12 ? event.timeStamp - performance.timeOrigin : event.timeStamp;
     this.edges.set(direction, at);
   }
@@ -80,7 +85,7 @@ export class TalismanScene extends Phaser.Scene {
   private sceneResume() { this.resumeFor('scene'); }
   private blur() { this.blurred = true; this.pauseFor('blur'); }
   private focus() {
-    this.blurred = false; this.edges.clear(); this.input.keyboard?.resetKeys();
+    this.blurred = false; this.held.clear(); this.edges.clear(); this.input.keyboard?.resetKeys();
     this.resumeFor('blur');
   }
   select(id: string) {
@@ -123,48 +128,45 @@ export class TalismanScene extends Phaser.Scene {
   snapshot() { return { ...this.panel.snapshot(), selectedRecipeId: this.selected, confirming: this.confirming, view: this.system.view(this.selected) }; }
   private refresh(force = false) {
     const view = this.system.view(this.selected), draw = view.draw, recipe = view.selectedRecipe;
-    const showResult = view.attempt?.recipeId === this.selected ? view.result : null;
+    const selectedAttempt = view.attempt?.recipeId === this.selected;
+    const showResult = selectedAttempt ? view.result : null;
+    const interrupted = selectedAttempt && view.state === 'interrupted';
     const message: string[] = [];
     if (this.confirming) message.push(t('talisman.abandon_confirm'));
     else if (draw && view.state === 'drawing') {
       message.push(draw.paused ? t('talisman.paused') : draw.waitingRelease ? t('talisman.release_keys') : t('talisman.draw_prompt'));
-      message.push(draw.strokes.map((direction, index) => `${index === draw.current ? '【' : ''}${ARROWS[direction]}${index === draw.current ? '】' : ''}`).join(' '));
-      message.push(t('talisman.stroke_progress', { current: Math.min(draw.current + 1, draw.strokes.length), total: draw.strokes.length, correct: draw.correct }));
-      message.push(`错误 ${draw.wrong} / 超时 ${draw.timeouts}`);
-      message.push(t('talisman.completion', { rate: Math.round(draw.completion * 100) }));
-      message.push(t('talisman.step_time', { seconds: (Math.ceil((draw.remainingMs ?? 0) / 100) / 10).toFixed(1) }));
     } else if (view.pendingOutput) message.push(t('talisman.output_pending'));
     else if (showResult) {
-      const result = showResult;
-      if (result.success) message.push(t('talisman.success', { quality: result.quality ? qualities[result.quality] : '', name: ITEMS[result.item]?.name ?? result.item, count: result.count }));
-      else message.push(t(result.reason === 'interrupted' ? 'talisman.interrupted' : result.reason === 'completion' ? 'talisman.fail_completion' : 'talisman.fail_condense'));
-      if (result.completion !== undefined) message.push(t('talisman.completion', { rate: Math.round(result.completion * 100) }));
-      if (result.capApplied) message.push(t('talisman.cap_applied'));
-    } else if (view.state === 'interrupted') message.push(t('talisman.interrupted'));
-    else if (recipe) {
-      message.push(recipe.name, t('talisman.quality_cap', { quality: qualities[view.qualityCap ?? 'low'] }));
-      if (recipe.type !== 'grinding') {
-        message.push(t('talisman.rate', { rate: Math.round(view.rate * 100) }), t('talisman.sect_bonus', { bonus: Math.round(view.sectBonus * 100) }));
-        for (const quality of ['low', 'mid', 'high', 'supreme'] as const) {
-          const threshold = this.system.config.rules?.qualityMin[quality];
-          if (threshold !== undefined) message.push(t('talisman.quality_threshold', { quality: qualities[quality], rate: threshold * 100 }));
-        }
-      }
-      for (const material of view.check.materials) message.push(t('talisman.material_count', { name: ITEMS[material.item]?.name ?? material.item, owned: material.have, need: material.need }));
-      message.push(t('talisman.output_count', { count: recipe.outputCount }), t('talisman.start_cost'));
-      if (!view.check.ok) {
-        const reasons: Record<string, string> = { unlearned: 'talisman.not_learned', level: 'talisman.locked', realm: 'talisman.locked',
-          materials: 'talisman.material_lack', bag_full: 'sys.bag_full', pending: 'talisman.output_pending', config: 'talisman.config_error' };
-        message.push(t(reasons[view.check.reason ?? ''] ?? 'talisman.entry_unavailable'));
-      }
-    }
-    const state = { primary: this.confirming ? 'abandon' as const : showResult || view.state === 'interrupted' ? 'again' as const : 'start' as const,
+      if (!showResult.success) message.push(t(showResult.reason === 'interrupted' ? 'talisman.interrupted' : showResult.reason === 'completion' ? 'talisman.fail_completion' : 'talisman.fail_condense'));
+      if (showResult.capApplied) message.push(t('talisman.cap_applied'));
+    } else if (interrupted) message.push(t('talisman.interrupted'));
+    else if (!view.check.ok) message.push(blockedText(view.check.reason));
+    const known = new Set(this.system.knownRecipes.map(row => row.id));
+    const primary = this.confirming ? 'abandon' : showResult || interrupted ? 'again' : 'start';
+    const primaryEnabled = primary === 'abandon' ? view.buttons.abandon
+      : primary === 'again' ? view.buttons.again : recipe?.type === 'grinding' ? view.buttons.grind : view.buttons.start;
+    const state: TalismanPanelState = { primary,
       secondary: this.confirming ? 'continue' as const : 'abandon' as const,
-      primaryDisabled: !this.confirming && (view.state === 'drawing' || !view.check.ok),
-      secondaryDisabled: !this.confirming && view.state !== 'drawing',
+      primaryDisabled: !primaryEnabled,
+      secondaryDisabled: !(this.confirming ? view.buttons.continue : view.buttons.abandon),
       primaryLabel: !this.confirming && !showResult && recipe?.type === 'grinding' ? t('talisman.ink_grind') : undefined, message: message.join('\n'),
-      recipes: view.recipes.map(row => ({ id: row.id, name: row.type === 'grinding' ? t('talisman.ink_tab') : row.name, selected: row.id === this.selected })),
-      selectionDisabled: view.state === 'drawing' || this.confirming };
+      recipes: view.recipes.map(row => {
+        const check = this.system.check(row.id), permission = this.owner.prog.recipeSkillPermission(row.id);
+        // check 的忙碌/待领取会先返回；符卡仍以只读许可和配方条件保持原有锁定说明。
+        // 这里只决定卡面，实际开始与扣料始终由系统再次预检。
+        const lock = this.system.config.invalid.has(row.id) || permission.reason === 'config' ? 'config'
+          : !known.has(row.id) ? 'unlearned'
+          : this.owner.prog.level < row.reqLevel ? 'level'
+          : !permission.ok ? permission.reason
+          : REALMS.findIndex(realm => realm.id === this.owner.prog.realm.id) < REALMS.findIndex(realm => realm.id === row.realm) ? 'realm'
+          : check.reason && ['unlearned', 'level', 'realm', 'skill_level', 'config'].includes(check.reason) ? check.reason : undefined;
+        return { id: row.id, name: row.type === 'grinding' ? t('talisman.ink_tab') : row.name,
+          type: row.type, output: row.output, selected: row.id === this.selected,
+          disabled: !!lock, reason: lock ? blockedText(lock) : undefined };
+      }),
+      selectionDisabled: view.state === 'drawing' || this.confirming,
+      view, qualityMin: this.system.config.rules?.qualityMin, confirming: this.confirming,
+      lifeSkill: this.owner.prog.lifeSkillView('talisman') };
     const fingerprint = JSON.stringify(state);
     if (force || this.fingerprint !== fingerprint) { this.panel.setState(state); this.fingerprint = fingerprint; }
   }

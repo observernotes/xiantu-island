@@ -55,7 +55,8 @@ try {
   check(!manifestSync.stderr.includes('tiles/tiles_missing.json'), 'manifest-only does not process overlays');
 
   // 独立 snapshot 工程验证真实 sync；不会触碰当前工作树的素材或清单。
-  for (const directory of ['scripts', 'data/balance', 'public/art/sprites', 'public/art/tiles', 'public/art/icons/skills', 'public/art/icons/ui/sect_rank'])
+  for (const directory of ['scripts', 'data/balance', 'public/art/sprites', 'public/art/tiles', 'public/art/icons/skills',
+    'public/art/icons/items', 'public/art/icons/ui/sect_rank', 'public/art/icons/ui/talisman'])
     await fs.mkdir(path.join(temporary, directory), { recursive: true });
   for (const file of ['sync.mjs', 'root.mjs'])
     await fs.copyFile(new URL(`scripts/${file}`, root), path.join(temporary, 'scripts', file));
@@ -77,6 +78,11 @@ try {
   await write('public/art/tiles/bg_altar.json', { layers: { far: { texture: 'bg_altar_far' }, mid: { texture: 'bg_missing' } } });
   await write('public/art/icons/skills/skill_test@64.png', 'fixture');
   await write('public/art/icons/ui/sect_rank/rank_test.png', 'fixture');
+  await write('public/art/icons/items/icon_talisman_paper.png', 'fixture');
+  await write('public/art/icons/items/icon_talisman_paper@64.png', 'fixture');
+  await write('public/art/icons/ui/talisman/ui_talisman_paper.png', 'fixture');
+  await write('public/art/icons/ui/talisman/ui_talisman_paper@2x.png', 'fixture');
+  await write('public/art/icons/ui/talisman/talisman_ui.json', { assets: ['ui_talisman_paper'] });
   const sync = () => execFileSync(process.execPath, ['scripts/sync.mjs'], { cwd: temporary,
     env: { ...process.env, XT_DATA: 'snapshot', XT_SYNC_MANIFEST_ONLY: '1' }, stdio: 'pipe' });
   const manifest = async () => JSON.parse(await fs.readFile(path.join(temporary, 'src/gen/assets.json'), 'utf8'));
@@ -90,6 +96,10 @@ try {
   equal(baseline.backgrounds.map(({ path }) => path), ['art/tiles/bg_altar_far.png']);
   equal(baseline.skillIcons.map(({ key }) => key), ['skill_test@64']);
   equal(baseline.sectRankIcons.map(({ key }) => key), ['rank_test']);
+  equal(baseline.itemIcons, [{ key: 'icon_talisman_paper', path: 'art/icons/items/icon_talisman_paper.png' }], 'only 1x item icons are optional');
+  check(baseline.uiImages.some(({ key }) => key === 'ui_talisman_paper'), 'talisman images are optional');
+  check(!baseline.uiImages.some(({ key }) => key.includes('@')), '2x UI images are omitted');
+  equal(baseline.uiConfigs, [{ key: 'talisman_ui', path: 'art/icons/ui/talisman/talisman_ui.json' }], 'talisman layout JSON is optional');
 
   // 用真实生成的清单注入 Node 模块；Phaser 仅 type import，测试记录加载队列。
   const source = await fs.readFile(new URL('src/optionalAssets.ts', root), 'utf8');
@@ -115,10 +125,13 @@ try {
   const expected = [];
   const loadCases = [
     ['loadOptionalImage', 'image', ['image', 'art/icons/skills/skill_test@64.png']],
+    ['loadOptionalImage', 'image', ['item_icon', 'art/icons/items/icon_talisman_paper.png']],
+    ['loadOptionalImage', 'image', ['talisman_paper', 'art/icons/ui/talisman/ui_talisman_paper.png']],
     ['loadOptionalAtlas', 'atlas', ['atlas', 'art/sprites/prop_test.png', 'art/sprites/prop_test.json']],
     ['loadOptionalJson', 'json', ['anims', 'art/sprites/prop_test.anims.json']],
     ['loadOptionalJson', 'json', ['tile_meta', 'art/tiles/tiles_altar.json']],
     ['loadOptionalJson', 'json', ['bg_config', 'art/tiles/bg_altar.json']],
+    ['loadOptionalJson', 'json', ['talisman_ui', 'art/icons/ui/talisman/talisman_ui.json']],
     ['loadOptionalSpritesheet', 'spritesheet', ['tiles', 'art/tiles/tiles_altar_fill_variants.png', frameConfig]],
   ];
   for (const [loader, kind, args] of loadCases) {
@@ -243,6 +256,20 @@ try {
     equal(missingApi.loadOptionalAtlas(scene, 'missing', 'art/sprites/prop_test.png', 'art/sprites/prop_test.json'), false);
     equal(queued.length, before, `atlas missing ${extension} queues nothing`);
     await fs.writeFile(path.join(temporary, file), saved);
+  }
+  for (const [field, file, loader] of [
+    ['itemIcons', 'art/icons/items/icon_talisman_paper.png', 'loadOptionalImage'],
+    ['uiImages', 'art/icons/ui/talisman/ui_talisman_paper.png', 'loadOptionalImage'],
+    ['uiConfigs', 'art/icons/ui/talisman/talisman_ui.json', 'loadOptionalJson'],
+  ]) {
+    const physical = path.join(temporary, 'public', file), saved = await fs.readFile(physical);
+    await fs.unlink(physical); sync();
+    const missing = await manifest();
+    check(!missing[field].some(({ path }) => path === file), `${file} is omitted when missing`);
+    const missingApi = await moduleFor(missing), before = queued.length;
+    equal(missingApi[loader](scene, 'missing_talisman', file), false, 'missing talisman asset is rejected');
+    equal(queued.length, before, 'missing talisman asset never enters Phaser queue');
+    await fs.writeFile(physical, saved);
   }
   check(!/probeOptionalAssets/.test(await fs.readFile(new URL('src/main.ts', root), 'utf8')), 'startup has no probe');
   const preload = await fs.readFile(new URL('src/scenes/GameScene.ts', root), 'utf8');

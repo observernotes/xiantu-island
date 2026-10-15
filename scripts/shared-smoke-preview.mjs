@@ -4,6 +4,7 @@ import ts from 'typescript';
 
 const manifestFields = ['atlases', 'areas', 'tileMetadata', 'backgrounds',
   'backgroundConfigs', 'propLayouts', 'skillIcons', 'sectRankIcons', 'uiImages'];
+const optionalManifestFields = ['itemIcons', 'uiConfigs'];
 
 function propertyName(node) {
   if (ts.isIdentifier(node) || ts.isStringLiteralLike(node)) return node.text;
@@ -77,6 +78,8 @@ function inspectModule(source, filename) {
   assert.equal(candidates.length, 1, `${filename} 的完整素材清单必须唯一`);
   const node = candidates[0], manifest = readLiteral(node, bindings);
   for (const field of manifestFields) assert.ok(Array.isArray(manifest[field]), `素材清单 ${field} 必须是数组`);
+  for (const field of optionalManifestFields)
+    if (field in manifest) assert.ok(Array.isArray(manifest[field]), `素材清单 ${field} 必须是数组`);
   return { manifest, testBridgePresent, start: node.getStart(ast), end: node.end };
 }
 
@@ -115,7 +118,8 @@ function filterManifest(manifest, missingPaths) {
   filtered.atlases = filtered.atlases.filter(({ key }) =>
     !['png', 'json', 'anims.json'].some(extension => missing.has(`art/sprites/${key}.${extension}`)));
   filtered.areas = filtered.areas.filter(area => !missing.has(`art/tiles/tiles_${area}.png`));
-  for (const field of manifestFields.filter(field => field !== 'atlases' && field !== 'areas'))
+  for (const field of [...manifestFields, ...optionalManifestFields]
+    .filter(field => field !== 'atlases' && field !== 'areas' && Array.isArray(filtered[field])))
     filtered[field] = filtered[field].filter(({ path }) => !missing.has(path));
   // sync 从存在的 tiles_<area>.png 登记 metadata 和背景；布局独立登记。
   const removedAreas = manifest.areas.filter(area => !filtered.areas.includes(area));

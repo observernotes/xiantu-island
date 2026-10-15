@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import assets from './gen/assets.json';
-import { loadOptionalImage } from './optionalAssets';
+import { loadOptionalImage, loadOptionalJson } from './optionalAssets';
 
 /**
  * HUD 精修素材（art/icons/ui/hud/，README 与 hud_ui.json）。
@@ -20,6 +20,7 @@ const HUD_IMAGES = [
   'ui_hud_keycap',
 ];
 const CULT_IMAGES = ['ui_bar_cultivation_frame', 'ui_bar_cultivation', 'ui_bar_cultivation_bottleneck', 'ui_bar_cultivation_bottleneck_glow'];
+const TALISMAN_ITEMS = ['icon_talisman_paper', 'icon_spirit_ink', 'icon_talisman_fire', 'icon_talisman_guard', 'icon_talisman_return', 'icon_talisman_gather'];
 export const HUD_FONTS = ['ui_hud_font_white', 'ui_hud_font_crit', 'ui_hud_font_hurt'];
 
 export function preloadHud(scene: Phaser.Scene) {
@@ -30,7 +31,11 @@ export function preloadHud(scene: Phaser.Scene) {
   scene.load.json('cult_slices', 'art/icons/ui/ui_bar_cultivation.slices.json');
   scene.load.json('bestiary_ui', 'art/icons/ui/bestiary/bestiary_ui.json');
   scene.load.json('alchemy_ui', 'art/icons/ui/alchemy/alchemy_ui.json');
-  scene.load.json('talisman_ui', 'art/icons/ui/talisman/talisman_ui.json');
+  // 制符表与单张素材都可选；缺一件只回退对应代码绘制，不发探测请求。
+  loadOptionalJson(scene, 'talisman_ui', 'art/icons/ui/talisman/talisman_ui.json');
+  for (const image of assets.uiImages.filter(image => image.path.startsWith('art/icons/ui/talisman/')))
+    loadOptionalImage(scene, image.key, image.path);
+  for (const key of TALISMAN_ITEMS) loadOptionalImage(scene, key, `art/icons/items/${key}.png`);
   for (const k of HUD_IMAGES) {
     if (k === 'ui_hud_slot') loadOptionalImage(scene, k, `${HUD_DIR}/${k}.png`);
     else scene.load.image(k, `${HUD_DIR}/${k}.png`);
@@ -84,6 +89,7 @@ export interface HudSpec {
 export function hudSpec(scene: Phaser.Scene, key: string): HudSpec | undefined {
   const raw = scene.cache.json.get('hud_ui')?.[key] ?? scene.cache.json.get('cult_slices')?.[key]
     ?? scene.cache.json.get('bestiary_ui')?.[key] ?? scene.cache.json.get('alchemy_ui')?.[key]
+    ?? scene.cache.json.get('talisman_ui')?.[key]
     ?? scene.cache.json.get('gather_ui')?.[key];
   if (raw) {
     const nine = raw.nineSlice ?? raw.slice, three = raw.threeSlice;
