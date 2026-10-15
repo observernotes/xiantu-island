@@ -62,7 +62,7 @@ try {
     if (requested === blockedImage && route.request().method() === 'GET') await route.abort('failed');
     else await route.continue();
   });
-  // HTTP 200 的无效 PNG 走图片解码失败入口，仍须收录 loaderror / console.error。
+  // HTTP 200 的无效可选 PNG 仍收录 loaderror；可选素材按既有规则静默 console.error。
   await page.route('**/art/tiles/bg_*_mid.png', async route => {
     const requested = route.request().url();
     malformedImage ??= requested;
@@ -86,8 +86,8 @@ try {
   check(blockedKey && initial.events.some(event => event.type === 'loaderror' && event.data?.key === blockedKey), '初始 preload 缺图未进入事件流');
   check(malformedKey && initial.events.some(event => event.type === 'loaderror' && event.data?.key === malformedKey),
     'HTTP 200 图片解码失败未通过 onProcessError 进入 loaderror');
-  check(malformedKey && initial.events.some(event => event.type === 'console.error' && JSON.stringify(event.data).includes(malformedKey)),
-    '图片解码失败的 console.error 未进入事件流');
+  check(malformedKey && !initial.events.some(event => event.type === 'console.error' && JSON.stringify(event.data).includes(malformedKey)),
+    '可选图片解码失败未沿用静默回退规则');
   check(initial.events.some(event => event.type === 'scene'), '首次场景创建未进入事件流');
   check(initial.events.every(event => Number.isFinite(event.time) && Object.hasOwn(event, 'data')), '事件缺少 time/data');
   equal(await page.evaluate(() => window.__xt.events.drain()), [], 'drain 没有清空事件队列');
@@ -107,6 +107,10 @@ try {
   check(frozen >= later, '第二次 pause 导致时钟倒退');
   await page.evaluate(now => window.__xt.clock.setNow(now), boundary);
 
+  // 此处开始验证测试桥功能；只在本页面开放测试所需入口，发版门禁由 test:features 检查。
+  await page.evaluate(() => {
+    for (const name of ['fiveSectClasses', 'sectRanks', 'sectDonations', 'sectShopLibrary', 'shops', 'sectDaily', 'seclusion']) window.__xt.setFlag(name, true);
+  });
   const fixture = { ...initial.save, level: 30, exp: 0, hp: 0, mp: 0, job: '', inventory: {}, quests: {},
     equip: {}, skills: {}, skillGifted: {}, hotbar: Array(8).fill(null), completedTrials: [],
     classVersion: 0, classRewardClaims: [], sectRank: null, sectContribution: 0,
