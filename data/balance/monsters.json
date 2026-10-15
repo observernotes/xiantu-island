@@ -70,7 +70,7 @@
   "id": "demon_fox",
   "name": "妖狐",
   "level": 12,
-  "hp": 550,
+  "hp": 1000,
   "atk": 45,
   "def": 10,
   "exp": 350,
