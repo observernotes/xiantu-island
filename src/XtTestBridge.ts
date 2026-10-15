@@ -14,6 +14,8 @@ import { featureFlags, isFeatureName, setFeatureFlag } from './features';
 import type { DialogChoice } from './UI';
 import { TalismanScene } from './scenes/TalismanScene';
 import { TalismanPanel, type TalismanPanelAction, type TalismanPanelState } from './TalismanPanel';
+import { installCrashGuard } from './crashGuard';
+import type { SkillVolley } from './scenes/Monster';
 
 type EventType = 'loaderror' | 'console.error' | 'error' | 'unhandledrejection' | 'scene' | 'quest:complete';
 type XtEvent = { type: EventType; time: number; data: unknown };
@@ -54,6 +56,7 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig): Phaser.Game
   let talismanPanel: TalismanPanel;
   const talismanActions: TalismanPanelAction[] = [];
   let ready = false, restarting = false;
+  let sceneGeneration = 0, updateCalls = 0, queuedVolleys = 0, injectedUpdateErrors = 0;
   let previousMap: string | null = null;
   let unsubscribeQuest: (() => void) | undefined;
   let resolveRestart: (() => void) | undefined;
@@ -76,6 +79,8 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig): Phaser.Game
   const create = scene.create.bind(scene);
   scene.create = data => {
     create(data);
+    sceneGeneration++;
+    queuedVolleys = 0; injectedUpdateErrors = 0;
     talismanActions.length = 0;
     talismanPanel = new TalismanPanel(scene, action => {
       talismanActions.push(action);
@@ -88,6 +93,30 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig): Phaser.Game
     previousMap = scene.map.id;
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => { ready = false; unsubscribeQuest?.(); });
     resolveRestart?.();
+  };
+  // 私有战斗状态只在这个测试构建模块内读取，正式构建不会包含这些钩子。
+  type ShotRuntime = {
+    launchVolley(volley: SkillVolley): void;
+    impactShot(shot: ShotRuntime['shots'][number], hitPlayer: boolean): void;
+    shots: { sprite: Phaser.Physics.Arcade.Sprite }[];
+    shotOf: Map<Phaser.GameObjects.GameObject, unknown>;
+    shotGroup?: Phaser.Physics.Arcade.Group;
+  };
+  const shotRuntime = () => scene as unknown as ShotRuntime;
+  function launchTestVolley() {
+    const player = scene.player;
+    shotRuntime().launchVolley({ fx: 'xt_freeze_fixture_missing', maxDist: 240, ratio: 0.01,
+      knockback: 0, atk: 1, shots: [{ x: player.x + 300, y: player.y - 100, vx: -120, vy: 0 }] });
+  }
+  const update = scene.update.bind(scene);
+  scene.update = (time, delta) => {
+    updateCalls++;
+    if (injectedUpdateErrors > 0) {
+      injectedUpdateErrors--;
+      throw new Error(`${marker}: injected update failure`);
+    }
+    while (queuedVolleys > 0) { queuedVolleys--; launchTestVolley(); }
+    update(time, delta);
   };
   function current() {
     if (!ready || restarting) throw new Error(`${marker}: game scene is not ready`);
@@ -122,6 +151,56 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig): Phaser.Game
   const originalRandom = Math.random;
   const originalRnd = Phaser.Math.RND?.state();
   const api = {
+    get errors() { return copy(crashGuard.errors); },
+    guardState() { return copy(crashGuard.getState()); },
+    loopSnapshot() {
+      const s = current(), shots = shotRuntime();
+      return { frame: s.game.loop.frame, updateCalls, sceneGeneration, mapId: s.map.id,
+        x: s.player.x, y: s.player.y, shots: shots.shots.length, shotOf: shots.shotOf.size,
+        liveShots: shots.shots.filter(shot => shot.sprite.active && !!shot.sprite.body).length,
+        groupAlive: !!shots.shotGroup?.children,
+        groupInCurrentWorld: shots.shotGroup?.world === s.physics.world,
+        queuedVolleys, injectedUpdateErrors };
+    },
+    fireVolley({ inUpdate = true }: { inUpdate?: boolean } = {}) {
+      current();
+      if (inUpdate) queuedVolleys++;
+      else launchTestVolley();
+    },
+    injectUpdateError(n: number) {
+      current();
+      if (!Number.isInteger(n) || n < 0 || n > 10000) throw new Error(`${marker}: invalid error count`);
+      injectedUpdateErrors = n;
+    },
+    invalidateShot(kind: 'sprite' | 'body') {
+      current();
+      const runtime = shotRuntime(), shot = runtime.shots[runtime.shots.length - 1];
+      if (!shot) throw new Error(`${marker}: no projectile to invalidate`);
+      if (kind === 'sprite') shot.sprite.destroy();
+      else if (kind === 'body') {
+        runtime.shotGroup?.remove(shot.sprite);
+        shot.sprite.body?.destroy();
+        (shot.sprite as unknown as { body: null }).body = null;
+      } else throw new Error(`${marker}: invalid projectile fixture`);
+      // 同时覆盖 collider 已排队、sprite 却已被外部销毁的 impact 路径。
+      runtime.impactShot(shot, false);
+    },
+    injectCallbackError(source: 'collider' | 'render') {
+      const s = current();
+      const fail = () => { throw new Error(`${marker}: injected ${source} failure`); };
+      if (source === 'render') s.game.events.once(Phaser.Core.Events.PRE_RENDER, fail);
+      else if (source === 'collider') {
+        const trigger = s.physics.add.image(s.player.x, s.player.y, '__WHITE').setVisible(false);
+        trigger.body.setAllowGravity(false).setSize(s.player.width + 40, s.player.height + 40);
+        const collider = s.physics.add.overlap(s.player, trigger, () => {
+          collider.destroy(); trigger.destroy(); fail();
+        });
+        s.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+          if (collider.active) collider.destroy();
+          if (trigger.scene) trigger.destroy();
+        });
+      } else throw new Error(`${marker}: invalid callback source`);
+    },
     art: {
       snapshot() {
         const s = current(), p = s.player, b = p.body;
@@ -387,7 +466,11 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig): Phaser.Game
   };
   (window as Window & { __xt?: typeof api }).__xt = api;
   const game = new Phaser.Game({ ...config, scene: [scene] });
+  const crashGuard = installCrashGuard(game);
+  // 已被安全网捕获的循环错误仍进入测试事件流，不能因兜底而掩盖回归。
+  const unsubscribeCrash = crashGuard.onError(record => emit('error', record));
   game.events.once(Phaser.Core.Events.DESTROY, () => {
+    unsubscribeCrash();
     unsubscribeQuest?.(); listeners.clear(); pending.length = 0;
     if (console.error === wrappedError) console.error = consoleError;
     window.removeEventListener('error', onError); window.removeEventListener('unhandledrejection', onRejection);
