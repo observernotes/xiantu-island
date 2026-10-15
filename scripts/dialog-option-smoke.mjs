@@ -144,6 +144,7 @@ try {
         return { name: btn.name, state: btn.getData('state'), artUsed: btn.getData('artUsed'), enabled: !!btn.input?.enabled,
           x: btn.x, y: btn.y, width: btn.width, height: btn.height, world: { x: world.tx, y: world.ty },
           bg: { type: bg.type, texture: bg.texture?.key, width: bg.width, height: bg.height,
+            displayWidth: bg.displayWidth, displayHeight: bg.displayHeight,
             slice: [bg.leftWidth, bg.rightWidth, bg.topHeight, bg.bottomHeight], fillColor: bg.fillColor },
           label: { text: label.text, x: label.x, y: label.y, color: label.style.color, size: label.style.fontSize },
           cursor: cursor ? { visible: cursor.visible, artUsed: cursor.getData('artUsed'), texture: cursor.texture?.key,
@@ -173,10 +174,16 @@ try {
     for (const row of s.rows) {
       const spec = specs[`ui_hud_dialog_option_${row.state}`];
       eq(row.artUsed, 'art', '正常素材未使用 art');
-      eq(row.bg.type, 'NineSlice', 'WebGL 未使用九切片');
       eq(row.bg.texture, `ui_hud_dialog_option_${row.state}`, '三态纹理映射不符');
-      eq(row.bg.slice, ['left', 'right', 'top', 'bottom'].map(key => spec.nineSlice[key]), '切片未读 HUD 表');
-      eq([row.width, row.bg.width, row.bg.height], [592, 592, row.height], '拉伸宽高不符');
+      if (row.bg.type === 'NineSlice') {
+        eq(row.bg.slice, ['left', 'right', 'top', 'bottom'].map(key => spec.nineSlice[key]), '切片未读 HUD 表');
+      } else {
+        eq(row.bg.type, 'Image', 'Canvas 背景未使用 Image');
+      }
+      // Image 的 width/height 是素材尺寸；Canvas 应校验拉伸后的显示尺寸。
+      const backgroundSize = row.bg.type === 'Image'
+        ? [row.bg.displayWidth, row.bg.displayHeight] : [row.bg.width, row.bg.height];
+      eq([row.width, ...backgroundSize], [592, 592, row.height], '拉伸宽高不符');
       ok(row.height >= spec.size[1] && row.world.y + row.height < 404, '行高或对白框上方布局错误');
       eq(row.label.color, spec.text.color, '字色不符 HUD 表');
       eq(row.label.size, `${spec.text.size}px`, '字号不符 HUD 表');
@@ -236,7 +243,7 @@ try {
     });
     s = await open(page);
     for (const row of s.rows) {
-      eq(row.bg.slice, [7, 8, 5, 9], 'slice 数组未通过 hudSpec 转换');
+      if (row.bg.type === 'NineSlice') eq(row.bg.slice, [7, 8, 5, 9], 'slice 数组未通过 hudSpec 转换');
       ok(row.height >= 48, '行高未遵循素材高度');
       eq([row.label.x, row.label.size, row.label.color], [19 + (row.rank ? 32 : 0), '15px', '#654321'], '文本未读 HUD 表');
     }
