@@ -359,16 +359,19 @@ try {
     eq(await page.evaluate(() => window.__scene.prog.count('talisman_paper')), 2, '开始未一次扣料');
     await page.waitForFunction(() => window.__xt.talismanCraftSnapshot()?.view.draw?.waitingRelease === false);
     const beforePause = await page.evaluate(() => {
-      const value = window.__xt.talismanCraftSnapshot().view.draw.remainingMs;
-      window.__scene.game.pause(); return value;
+      window.__scene.game.pause();
+      return window.__xt.talismanCraftSnapshot().view.draw.remainingMs;
     });
     // Wait longer than a full stroke: paused wall time must not consume the gameplay deadline.
     await page.waitForTimeout(s.view.selectedRecipe.draw.stepTimeMs + 100);
-    await page.evaluate(() => window.__scene.game.resume());
-    await page.waitForFunction(() => window.__xt.talismanCraftSnapshot()?.view.draw?.waitingRelease === false);
-    const afterPause = await page.evaluate(() => window.__xt.talismanCraftSnapshot().view.draw);
+    // Sample in the resume call itself: subsequent Playwright round trips are unpaused gameplay time.
+    const afterPause = await page.evaluate(() => {
+      window.__scene.game.resume();
+      return window.__xt.talismanCraftSnapshot().view.draw;
+    });
     eq(afterPause.current, 0, '全局暂停期间画符超时推进');
-    ok(afterPause.remainingMs > beforePause - 300, '全局暂停未保留本笔剩余时间');
+    ok(Math.abs(afterPause.remainingMs - beforePause) < 1, '全局暂停未保留本笔剩余时间');
+    await page.waitForFunction(() => window.__xt.talismanCraftSnapshot()?.view.draw?.waitingRelease === false);
     const strokes = s.view.selectedRecipe.draw.strokes;
     const arrow = { up: 'ArrowUp', down: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' };
     for (let i = 0; i < strokes.length; i++) {
