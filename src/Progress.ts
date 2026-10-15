@@ -7,8 +7,12 @@ import { DAILY_QUEST_LIMIT, dailyQuestDay, dailyContribution, dailyRewardsReady,
 import { isBrewSession, type BrewSession } from './Alchemy';
 import { featureEnabled } from './features';
 
-/** 自动加点：加点界面做好前每级自动分配（演武堂/天机阁确认：根骨 2、身法 2、悟性 1） */
+/** 自动加点：加点界面做好前的旧档公式，仅用于迁移种子；UI-6 起升级只发未分配点。 */
 export const AUTO_STATS = { rootBone: 2, agility: 2, insight: 1, spirit: 0 } as Record<string, number>;
+export const STAT_KEYS = Object.freeze(['rootBone', 'agility', 'spirit', 'insight'] as const);
+export type StatKey = typeof STAT_KEYS[number];
+export type AllocateCheck = { ok: true } | { ok: false; reason: 'invalid' | 'overspend' };
+export type AllocateResult = AllocateCheck | { ok: false; reason: 'save' };
 const SAVE_KEY = 'xiantu_save_v1';
 /** 妖狐任务改为五宗帖的奖励版本；无此字段的已交付旧档保留原天剑身份。 */
 const QUEST_REWARD_VERSION = 1;
@@ -20,6 +24,15 @@ const dataRecord = (value: unknown): value is Record<string, unknown> => !!value
 const safeKey = (key: string) => !['__proto__', 'prototype', 'constructor'].includes(key);
 const nonnegative = (value: unknown): value is number => typeof value === 'number' && Number.isFinite(value) && value >= 0;
 const count = (value: unknown): value is number => nonnegative(value) && Number.isSafeInteger(value);
+const statKey = (key: string): key is StatKey => STAT_KEYS.some(k => k === key);
+const statRecord = (value: unknown): value is Record<string, number> => dataRecord(value)
+  && [Object.prototype, null].includes(Object.getPrototypeOf(value))
+  && Reflect.ownKeys(value).every(key => typeof key === 'string' && statKey(key)
+    && count(Object.getOwnPropertyDescriptor(value, key)?.value));
+const normalizedStats = (value: unknown): Record<string, number> => Object.fromEntries(STAT_KEYS.map(key => {
+  const n = dataRecord(value) ? Object.getOwnPropertyDescriptor(value, key)?.value : undefined;
+  return [key, count(n) ? n : 0];
+}));
 const numbers = (value: unknown, integer = true) => dataRecord(value)
   && Object.entries(value).every(([key, n]) => safeKey(key) && (integer ? count(n) : nonnegative(n)));
 const strings = (value: unknown) => Array.isArray(value) && value.every(entry => typeof entry === 'string');
@@ -32,9 +45,10 @@ function validSaveData(saved: unknown): saved is Record<string, unknown> {
   for (const key of ['exp', 'hp', 'mp', 'stones', 'age', 'ageUpdatedAt', 'overflowExp', 'unstableUntil', 'lastOverflowReturned', 'alchemyExp']) {
     if (has(key) && !nonnegative(saved[key])) return false;
   }
-  for (const key of ['sectContribution', 'classVersion', 'questRewardVersion', 'classRefundSp', 'seclusionYearsToday', 'breakthroughFails', 'breakthroughBonusLevels', 'alchemyLevel']) {
+  for (const key of ['sectContribution', 'classVersion', 'questRewardVersion', 'classRefundSp', 'seclusionYearsToday', 'breakthroughFails', 'breakthroughBonusLevels', 'alchemyLevel', 'unspentStatPoints']) {
     if (has(key) && !count(saved[key])) return false;
   }
+  if (has('allocatedStats') && !statRecord(saved.allocatedStats)) return false;
   for (const key of ['inventory', 'skills', 'skillGifted']) if (has(key) && !numbers(saved[key])) return false;
   for (const key of ['skillMastery', 'gatherRespawnAt']) if (has(key) && !numbers(saved[key], false)) return false;
   for (const key of ['job', 'selectedSect', 'name', 'rootElement', 'sectDailyContributionDay', 'dailyQuestResetDay', 'seclusionDay']) {
@@ -76,6 +90,9 @@ function validSaveData(saved: unknown): saved is Record<string, unknown> {
 /** 角色成长与背包（跨地图保留）。公式见 balance/player_growth.json */
 export class Progress {
   level = 1; exp = 0; hp = 0; mp = 0; stones = 0;
+  /** 已确认的四维加点；待确认草稿只保留在 AttrPanel。 */
+  allocatedStats: Record<string, number> = normalizedStats(undefined);
+  unspentStatPoints = 0;
   inventory: Record<string, number> = {};
   /** 实例内物品可供交互读取，但不能写入永久背包。 */
   private transientItems: Record<string, number> = {};
@@ -161,8 +178,35 @@ export class Progress {
 
   constructor() { this.hp = this.maxHp; this.mp = this.maxMp; }
 
-  /** 属性点：每升一级按 AUTO_STATS 自动分配 */
-  stat(k: string) { return (AUTO_STATS[k] ?? 0) * (this.level - 1) + this.passiveBonus(k); }
+  statKeys(): readonly StatKey[] { return STAT_KEYS; }
+  allocatedStat(k: string) { return statKey(k) && Object.prototype.hasOwnProperty.call(this.allocatedStats, k) ? this.allocatedStats[k] : 0; }
+  /** 四维总值 = 已确认加点 + 被动心法；升级不再自动分配。 */
+  stat(k: string) { return this.allocatedStat(k) + this.passiveBonus(k); }
+
+  /** delta 只接受四维的非负整数增量；缺键视为 0，不支持洗点。 */
+  checkAllocate(delta: Record<string, number>): AllocateCheck {
+    if (!statRecord(delta) || !statRecord(this.allocatedStats) || !count(this.unspentStatPoints)) return { ok: false, reason: 'invalid' };
+    const entries = Object.entries(delta), total = entries.reduce((sum, [, n]) => sum + n, 0);
+    if (!count(total) || entries.some(([key, n]) => !count(this.allocatedStat(key) + n))) return { ok: false, reason: 'invalid' };
+    if (total > this.unspentStatPoints) return { ok: false, reason: 'overspend' };
+    return { ok: true };
+  }
+
+  /** 确认时复检、一次扣点并保存；保存失败恢复原状态，草稿可重试。 */
+  applyAllocate(delta: Record<string, number>): AllocateResult {
+    const result = this.checkAllocate(delta);
+    if (!result.ok) return result;
+    const total = Object.values(delta).reduce((sum, n) => sum + n, 0);
+    if (!total) return result;
+    const previous = this.allocatedStats, previousUnspent = this.unspentStatPoints;
+    this.allocatedStats = { ...previous };
+    for (const [key, n] of Object.entries(delta)) this.allocatedStats[key] = this.allocatedStat(key) + n;
+    this.unspentStatPoints -= total;
+    try { if (this.save()) return result; } catch { /* 自定义存储也遵守原子回滚。 */ }
+    this.allocatedStats = previous;
+    this.unspentStatPoints = previousUnspent;
+    return { ok: false, reason: 'save' };
+  }
   private statBonus(attr: string) {
     let v = 0;
     for (const [k, eff] of Object.entries(GROWTH.statEffects as Record<string, Record<string, number>>)) v += (eff[attr] ?? 0) * this.stat(k);
@@ -183,6 +227,7 @@ export class Progress {
     for (const [id, count] of Object.entries(transientItems)) inventory[id] = Math.max(0, this.count(id) - count);
     const temporaryIds = Object.keys(trialSkills);
     return JSON.parse(JSON.stringify({ ...persistent, inventory, hotbar: trialHotbarBefore ?? this.hotbar,
+      allocatedStats: normalizedStats(this.allocatedStats), unspentStatPoints: count(this.unspentStatPoints) ? this.unspentStatPoints : 0,
       buffs: this.buffs.filter(b => !temporaryIds.includes(b.id)),
       skillCooldowns: Object.fromEntries(Object.entries(this.skillCooldowns).filter(([id]) => !temporaryIds.includes(id))) }));
   }
@@ -219,7 +264,18 @@ export class Progress {
         for (const key of Object.keys(p)) if (!['transientItems', 'trialSkills', 'trialHotbarBefore'].includes(key) && Object.prototype.hasOwnProperty.call(fields, key)) {
           Object.assign(p, { [key]: fields[key] });
         }
+        if (!Object.prototype.hasOwnProperty.call(fields, 'allocatedStats')) {
+          // 只将旧公式结算一次；保留既有四维/战力，不补发已花掉的等级点。
+          const levels = count(p.level) && p.level >= 1 ? p.level - 1 : 0;
+          p.allocatedStats = Object.fromEntries(STAT_KEYS.map(key => [key, AUTO_STATS[key] * levels]));
+          p.unspentStatPoints = 0;
+          p.save();
+        } else if (!Object.prototype.hasOwnProperty.call(fields, 'unspentStatPoints')) p.save();
       }
+      const statsBefore = JSON.stringify([p.allocatedStats, p.unspentStatPoints]);
+      p.allocatedStats = normalizedStats(p.allocatedStats);
+      p.unspentStatPoints = count(p.unspentStatPoints) ? p.unspentStatPoints : 0;
+      if (statsBefore !== JSON.stringify([p.allocatedStats, p.unspentStatPoints])) p.save();
       p.overflowExp = Math.max(0, Math.floor(Number(p.overflowExp) || 0));
       if (Number.isFinite(p.overflowCap)) p.overflowExp = Math.min(p.overflowExp, p.overflowCap);
       p.ensureDefaults();
@@ -491,6 +547,7 @@ export class Progress {
         break;
       }
       this.exp -= this.expNeed; this.level++; levels++;
+      this.unspentStatPoints += Number(GROWTH.perLevel.statPoints) || 0;
     }
     if (levels) { this.hp = this.maxHp; this.mp = this.maxMp; }   // G2：升级回满（瓶颈级本身不升级，不会走到这里）
     // G3：瓶颈期没进修为条的部分不算“获得”；溢出池另计
@@ -534,11 +591,13 @@ export class Progress {
     this.overflowExp = 0;
     this.lastOverflowReturned = pool;
     this.exp = 0; this.level++;
+    this.unspentStatPoints += Number(GROWTH.perLevel.statPoints) || 0;
     this.exp = pool;
     let bonus = 0;
     while (this.level < MAX_LEVEL && this.exp >= this.expNeed) {
       if (BREAKTHROUGH_LEVELS.includes(this.level)) { this.exp = this.expNeed; break; }
       this.exp -= this.expNeed; this.level++; bonus++;
+      this.unspentStatPoints += Number(GROWTH.perLevel.statPoints) || 0;
     }
     this.breakthroughBonusLevels = bonus;
     this.hp = this.maxHp; this.mp = this.maxMp;
@@ -642,6 +701,8 @@ export class Progress {
 
   /** 旧档缺字段时补上，避免 Object.assign 把后面新增的数组弄丢或弄短。 */
   ensureDefaults() {
+    this.allocatedStats = normalizedStats(this.allocatedStats);
+    this.unspentStatPoints = count(this.unspentStatPoints) ? this.unspentStatPoints : 0;
     if (typeof this.selectedSect !== 'string' || !CLASS_LIST.some(c => c.sect === this.selectedSect)) this.selectedSect = '';
     if (!this.position || typeof this.position !== 'object'
       || (this.position.mapId !== 'field_test' && !Object.prototype.hasOwnProperty.call(TILED_MAPS, this.position.mapId))

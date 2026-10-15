@@ -217,6 +217,8 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig): Phaser.Game
       await restart(pos?.mapId ?? s.map.id, pos ?? undefined);
     },
     exportSave() { current(); persist(); return scene.prog.exportSave(); },
+    openAttrPanel() { const s = current(); s.openAttrPanel(); return copy(s.attrPanel.snapshot()); },
+    attrSnapshot() { return copy(current().attrPanel.snapshot()); },
     joinSect(id: string) {
       const s = current(), cls = CLASS_LIST.find(c => c.sect === id);
       if (!cls || !s.prog.advanceClass(cls.id)) throw new Error(`${marker}: sect unavailable: ${id}`);
