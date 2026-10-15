@@ -1,0 +1,56 @@
+{
+  "task": "backlog/程序.md #13：144Hz 稳定性",
+  "baseCommit": "9df09973a748b45fd703973e8f82e84ce20a2dd7",
+  "environment": {
+    "XT_DATA": "snapshot",
+    "PLAYWRIGHT_MODULE": "/tmp/pwt/node_modules/playwright-core/index.mjs",
+    "XT_SMOKE_BASE_URL": "http://127.0.0.1:4213/",
+    "chromium": "/usr/bin/google-chrome"
+  },
+  "measurement": {
+    "baseline": "qa/fixed-step-baseline.json",
+    "after": "qa/fixed-step-after.json",
+    "baselineBuild": "Only test bridge/probe added; Player/GameScene/main gameplay logic unchanged from baseCommit.",
+    "method": "Test-only query config + full Game.step calls with exact 1000/hz render delta; real Playwright keyboard events; per-worldstep body sampling.",
+    "physics": "60 Hz; fixed dt=1/60; one World.update/postUpdate and one Player.step per tick",
+    "tolerances": {
+      "distance": "max(2px, 3% of 60Hz)",
+      "landingMs": 34
+    },
+    "result": "All distance and landing-time differences versus 60Hz are exactly zero after the fix.",
+    "input": "All three rates: single jump consumes 1 edge; double jump consumes 2 edges and triggers exactly once; short jump/attack consume 1 edge each; held attack still attacks twice per second. At 144Hz short pulses span a render frame with zero physics ticks.",
+    "consoleErrors": 0,
+    "pageErrors": 0
+  },
+  "finalExitCodes": {
+    "npx tsc --noEmit": 0,
+    "npm run build (including xt-leak-check: 903 files)": 0,
+    "npm run build:test": 0,
+    "npm run test:smoke:fixed-step -- --baseline --output qa/fixed-step-baseline.json": 0,
+    "npm run test:smoke:fixed-step -- --output qa/fixed-step-after.json": 0,
+    "npm run test:player-input (24 assertions)": 0,
+    "npm run test:trials (516 assertions)": 0,
+    "npm run test:smoke:trials (30 checks)": 0,
+    "npm run test:smoke:v05 (11 maps, 17 interactions)": 0,
+    "npm run test:smoke:classes (current feature gates; 1 class, 28 gate assertions)": 0,
+    "npm run test:smoke:freeze (2 variants)": 0,
+    "npm run test:stats (239 assertions)": 0,
+    "npm run test:v05 (242 assertions)": 0
+  },
+  "regressionFixes": [
+    {
+      "command": "npm run test:smoke:trials",
+      "initialExitCode": 1,
+      "finalExitCode": 0,
+      "reason": "The return-position test paused a freshly created scene before the new body's first physics synchronization.",
+      "fix": "Wait for onGround && state2 === 'ground' before pausing and checking the return location; no sleep or timeout increase."
+    }
+  ],
+  "scope": {
+    "feelChanged": false,
+    "dataChanged": false,
+    "featureFlagsChanged": false,
+    "committed": false,
+    "pushed": false
+  }
+}

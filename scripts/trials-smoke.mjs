@@ -180,6 +180,7 @@ async function returned(page, trial, quest, result) {
   await page.waitForFunction(({ trial, quest }) => {
     const scene = window.__scene;
     return scene?.map?.id === trial.map && !scene.sectTrial && !scene.prog.pendingSectTrial
+      && scene.player.onGround && scene.player.state2 === 'ground'
       && scene.map.objects.some(o => o.type === 'npc' && o.props.npc === quest.turnIn);
   }, { trial, quest }, { timeout: 10000 });
   const state = await page.evaluate(({ quest }) => {

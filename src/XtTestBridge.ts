@@ -17,6 +17,7 @@ import { TalismanPanel, type TalismanPanelAction, type TalismanPanelState } from
 import { installCrashGuard } from './crashGuard';
 import type { SkillVolley } from './scenes/Monster';
 import { getRendererInfo, recordRendererChoice, type RendererChoice } from './rendererChoice';
+import { fixedStepTestProbe } from './FixedStepTestProbe';
 
 type EventType = 'loaderror' | 'console.error' | 'error' | 'unhandledrejection' | 'scene' | 'quest:complete';
 type XtEvent = { type: EventType; time: number; data: unknown };
@@ -54,6 +55,10 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig, rendererChoi
   window.addEventListener('unhandledrejection', onRejection);
 
   const scene = new GameScene();
+  const query = new URLSearchParams(location.search);
+  const renderHz = Number(query.get('xtRenderHz') ?? 60);
+  const manualLoop = query.get('xtManualLoop') === '1';
+  const fixedStep = fixedStepTestProbe(scene, renderHz, manualLoop);
   let talismanPanel: TalismanPanel;
   const talismanActions: TalismanPanelAction[] = [];
   let ready = false, restarting = false;
@@ -80,6 +85,7 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig, rendererChoi
   const create = scene.create.bind(scene);
   scene.create = data => {
     create(data);
+    fixedStep.attach();
     sceneGeneration++;
     queuedVolleys = 0; injectedUpdateErrors = 0;
     talismanActions.length = 0;
@@ -152,6 +158,7 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig, rendererChoi
   const originalRandom = Math.random;
   const originalRnd = Phaser.Math.RND?.state();
   const api = {
+    fixedStep,
     get errors() { return copy(crashGuard.errors); },
     guardState() { return copy(crashGuard.getState()); },
     rendererSnapshot() {
@@ -471,7 +478,9 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig, rendererChoi
     },
   };
   (window as Window & { __xt?: typeof api }).__xt = api;
-  const game = new Phaser.Game({ ...config, scene: [scene] });
+  const testFps = query.has('xtRenderHz') && [30, 60, 144].includes(renderHz)
+    ? { fps: { target: renderHz, forceSetTimeOut: true, smoothStep: false } } : {};
+  const game = new Phaser.Game({ ...config, ...testFps, scene: [scene] });
   recordRendererChoice(game, rendererChoice);
   const crashGuard = installCrashGuard(game);
   // 已被安全网捕获的循环错误仍进入测试事件流，不能因兜底而掩盖回归。

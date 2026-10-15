@@ -5,13 +5,11 @@ import { pixelsFromMovePoints } from '../move';
 import { BASE_PLAYER_ATLAS, syncPlayerAppearance } from '../Appearance';
 import { applySpriteArt, spriteArtSpec } from '../SpriteArt';
 import type { Rope } from './MapBuilder';
+import type { PlayerInput } from '../PlayerInput';
 
 export type PState = 'ground' | 'air' | 'rope' | 'hurt';
 
-export interface Input {
-  left: boolean; right: boolean; up: boolean; down: boolean;
-  jumpDown: boolean; attackDown: boolean;
-}
+export type Input = PlayerInput;
 
 export class Player extends Phaser.Physics.Arcade.Sprite {
   declare body: Phaser.Physics.Arcade.Body;
@@ -198,7 +196,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     if (dir !== 0 && time >= this.attackLockUntil) this.facing = dir;   // 出刀期间锁朝向（地面空中都锁）
 
     // ---- 普攻 ----
-    if (inp.attackDown && time >= this.attackReadyAt && time >= this.attackLockUntil) {
+    if ((inp.attackDown || inp.attackHeld) && time >= this.attackReadyAt && time >= this.attackLockUntil) {
       this.attackReadyAt = time + FEEL.attackCooldownMs;
       this.attackLockUntil = time + FEEL.attackCooldownMs * 0.8;
       if (this.atlas) this.play(this.animationKey('attack'), true);
@@ -223,6 +221,9 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     const key = this.anims.currentAnim?.key;
     if (key?.endsWith('_attack') && this.anims.isPlaying) this.anims.stop();
   }
+
+  /** Cosmetics still follow render time, including while the physics world is paused. */
+  refreshVisuals(time: number) { this.finish(time); }
 
   private finish(time: number) {
     this.setFlipX(this.atlas ? this.facing > 0 : this.facing < 0);

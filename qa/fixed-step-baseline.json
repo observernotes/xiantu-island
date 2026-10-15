@@ -1,0 +1,299 @@
+{
+  "baseline": true,
+  "passed": false,
+  "rates": [
+    {
+      "hz": 60,
+      "walkPx": 125.33333333333326,
+      "brakePx": 4,
+      "jumpHeightPx": 73.77777777777771,
+      "landingMs": 566.6666666666666,
+      "doubleHorizontalPx": 198,
+      "doubleVerticalPx": 51.888888888888914,
+      "doubleTotalHeightPx": 123.66666666666674,
+      "doubleLandingMs": 950,
+      "doubleTriggered": true,
+      "singleLanded": true,
+      "doubleLanded": true,
+      "jumpEdges": {
+        "single": 1,
+        "double": 2
+      },
+      "attackPulse": {
+        "physicsStepsDuringPress": 1,
+        "consumed": 1,
+        "attacks": 1
+      },
+      "jumpPulse": {
+        "physicsStepsDuringPress": 1,
+        "consumed": 1,
+        "triggered": true,
+        "landed": true,
+        "doubleJumps": 0
+      },
+      "heldAttack": {
+        "attacks": 2
+      },
+      "stopped": true,
+      "movementSteps": {
+        "physics": 60,
+        "player": 60
+      },
+      "errors": {
+        "stored": [],
+        "guarded": [],
+        "events": []
+      },
+      "pageerror": 0,
+      "consoleError": 0,
+      "pageErrors": [],
+      "consoleErrors": []
+    },
+    {
+      "hz": 144,
+      "walkPx": 124.94444444444434,
+      "brakePx": 4.416666666666657,
+      "jumpHeightPx": 73.77777777777771,
+      "landingMs": 566.6666666666666,
+      "doubleHorizontalPx": 198,
+      "doubleVerticalPx": 51.888888888888914,
+      "doubleTotalHeightPx": 123.66666666666674,
+      "doubleLandingMs": 950,
+      "doubleTriggered": true,
+      "singleLanded": true,
+      "doubleLanded": true,
+      "jumpEdges": {
+        "single": 1,
+        "double": 2
+      },
+      "attackPulse": {
+        "physicsStepsDuringPress": 0,
+        "consumed": 1,
+        "attacks": 1
+      },
+      "jumpPulse": {
+        "physicsStepsDuringPress": 0,
+        "consumed": 1,
+        "triggered": true,
+        "landed": true,
+        "doubleJumps": 0
+      },
+      "heldAttack": {
+        "attacks": 2
+      },
+      "stopped": true,
+      "movementSteps": {
+        "physics": 60,
+        "player": 144
+      },
+      "errors": {
+        "stored": [],
+        "guarded": [],
+        "events": []
+      },
+      "pageerror": 0,
+      "consoleError": 0,
+      "pageErrors": [],
+      "consoleErrors": []
+    },
+    {
+      "hz": 30,
+      "walkPx": 123.99999999999983,
+      "brakePx": 5.333333333333314,
+      "jumpHeightPx": 73.77777777777771,
+      "landingMs": 583.3333333333334,
+      "doubleHorizontalPx": 198,
+      "doubleVerticalPx": 50.66666666666674,
+      "doubleTotalHeightPx": 123.66666666666674,
+      "doubleLandingMs": 966.6666666666666,
+      "doubleTriggered": true,
+      "singleLanded": true,
+      "doubleLanded": true,
+      "jumpEdges": {
+        "single": 1,
+        "double": 2
+      },
+      "attackPulse": {
+        "physicsStepsDuringPress": 2,
+        "consumed": 1,
+        "attacks": 1
+      },
+      "jumpPulse": {
+        "physicsStepsDuringPress": 2,
+        "consumed": 1,
+        "triggered": true,
+        "landed": true,
+        "doubleJumps": 0
+      },
+      "heldAttack": {
+        "attacks": 2
+      },
+      "stopped": true,
+      "movementSteps": {
+        "physics": 60,
+        "player": 30
+      },
+      "errors": {
+        "stored": [],
+        "guarded": [],
+        "events": []
+      },
+      "pageerror": 0,
+      "consoleError": 0,
+      "pageErrors": [],
+      "consoleErrors": []
+    }
+  ],
+  "differences": [
+    {
+      "hz": 144,
+      "referenceHz": 60,
+      "metrics": {
+        "walkPx": {
+          "difference": 0.38888888888891415,
+          "tolerance": 3.7599999999999976,
+          "passed": true
+        },
+        "brakePx": {
+          "difference": 0.4166666666666572,
+          "tolerance": 2,
+          "passed": true
+        },
+        "jumpHeightPx": {
+          "difference": 0,
+          "tolerance": 2.213333333333331,
+          "passed": true
+        },
+        "doubleHorizontalPx": {
+          "difference": 0,
+          "tolerance": 5.9399999999999995,
+          "passed": true
+        },
+        "doubleVerticalPx": {
+          "difference": 0,
+          "tolerance": 2,
+          "passed": true
+        },
+        "landingMs": {
+          "difference": 0,
+          "tolerance": 34,
+          "passed": true
+        },
+        "doubleLandingMs": {
+          "difference": 0,
+          "tolerance": 34,
+          "passed": true
+        }
+      },
+      "passed": true
+    },
+    {
+      "hz": 30,
+      "referenceHz": 60,
+      "metrics": {
+        "walkPx": {
+          "difference": 1.333333333333428,
+          "tolerance": 3.7599999999999976,
+          "passed": true
+        },
+        "brakePx": {
+          "difference": 1.3333333333333144,
+          "tolerance": 2,
+          "passed": true
+        },
+        "jumpHeightPx": {
+          "difference": 0,
+          "tolerance": 2.213333333333331,
+          "passed": true
+        },
+        "doubleHorizontalPx": {
+          "difference": 0,
+          "tolerance": 5.9399999999999995,
+          "passed": true
+        },
+        "doubleVerticalPx": {
+          "difference": 1.2222222222221717,
+          "tolerance": 2,
+          "passed": true
+        },
+        "landingMs": {
+          "difference": 16.666666666666742,
+          "tolerance": 34,
+          "passed": true
+        },
+        "doubleLandingMs": {
+          "difference": 16.66666666666663,
+          "tolerance": 34,
+          "passed": true
+        }
+      },
+      "passed": true
+    }
+  ],
+  "violations": [
+    "144 Hz: 玩家逻辑与物理步未同步: {\"physics\":60,\"player\":144}",
+    "30 Hz: 玩家逻辑与物理步未同步: {\"physics\":60,\"player\":30}"
+  ],
+  "units": {
+    "distance": "px",
+    "time": "ms",
+    "landingClock": "physicsSteps * 1000 / 60"
+  },
+  "script": {
+    "spawn": {
+      "map": "field_test",
+      "x": 80,
+      "y": 704
+    },
+    "warmupMs": 1000,
+    "walking": [
+      {
+        "atMs": 0,
+        "key": "ArrowRight",
+        "down": true
+      },
+      {
+        "atMs": 1000,
+        "key": "ArrowRight",
+        "down": false
+      }
+    ],
+    "singleJump": [
+      {
+        "atMs": 0,
+        "key": "c",
+        "down": true
+      },
+      {
+        "atMs": 166.66666666666666,
+        "key": "c",
+        "down": false
+      }
+    ],
+    "doubleJump": [
+      {
+        "atMs": 0,
+        "key": "c",
+        "down": true
+      },
+      {
+        "atMs": 166.66666666666666,
+        "key": "c",
+        "down": false
+      },
+      {
+        "atMs": 333.3333333333333,
+        "key": "c",
+        "down": true
+      },
+      {
+        "atMs": 500,
+        "key": "c",
+        "down": false
+      }
+    ],
+    "doubleDisplacement": "second key press to landing (horizontal), second key press to apex (vertical)",
+    "attackPulse": "x down, one render frame, x up; 144 Hz has no physics step during press",
+    "jumpPulse": "c down, one render frame, c up; 144 Hz has no physics step during press"
+  }
+}

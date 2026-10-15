@@ -17,7 +17,7 @@ const config: Phaser.Types.Core.GameConfig = {
   pixelArt: false,
   physics: {
     default: 'arcade',
-    arcade: { gravity: { x: 0, y: FEEL.gravity }, debug: false, tileBias: 16 },
+    arcade: { gravity: { x: 0, y: FEEL.gravity }, fps: 60, fixedStep: true, debug: false, tileBias: 16 },
   },
   scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
   scene: [GameScene],

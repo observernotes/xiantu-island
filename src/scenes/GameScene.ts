@@ -18,6 +18,7 @@ import { installKeyGuard } from '../keyguard';
 import { buildTiledMap, buildCharMap, BuiltMap, MapObj } from './MapBuilder';
 import { HUD_RESERVE, addFloorStrip } from './cameraFloor';
 import { Player, Input } from './Player';
+import { PlayerInputLatch } from '../PlayerInput';
 import { Monster, type SkillVolley } from './Monster';
 import { Progress, type QuestRewardSettlement } from '../Progress';
 import { Seclusion, realDay } from '../Seclusion';
@@ -70,6 +71,8 @@ const DEBUG_CLASS = QS.get('debug')?.startsWith('class=') ? classDef(QS.get('deb
 const TRIAL_RETURN = { map: 'tianjian_sect', x: 2476, y: 768 };
 
 const QUEST_MARK_KEYS = ['ui_hud_quest_available', 'ui_hud_quest_turnin', 'ui_hud_quest_progress'];
+const PLAYER_PHYSICS_DT = 1 / 60;
+const PLAYER_PHYSICS_MS = 1000 * PLAYER_PHYSICS_DT;
 
 export class GameScene extends Phaser.Scene {
   map!: BuiltMap;
@@ -95,6 +98,9 @@ export class GameScene extends Phaser.Scene {
   stealth?: StealthVision;
   private nextAgeUpdateAt = 0;
   private nextDailyUpdateAt = 0;
+  private playerPhysicsAccumulator = 0;
+  private playerPhysicsAdvanced = false;
+  private playerInput = new PlayerInputLatch();
   gathering!: Gathering;
   alchemySystem!: AlchemySystem;
   alchemy!: AlchemyPanel;
@@ -120,6 +126,7 @@ export class GameScene extends Phaser.Scene {
     this.mobs = []; this.logs = []; this.logBadges.clear();
     this.nextPickAt = 0; this.openedChests = new Set();
     this.travelling = false; this.curZone = undefined; this.nextDailyUpdateAt = 0;
+    this.playerPhysicsAccumulator = 0; this.playerPhysicsAdvanced = false; this.playerInput.clear();
     this.sectTrial = undefined; this.trial = undefined; this.bossOverride = null;
     this.trialObjects = undefined; this.stealth = undefined; this.atSectTrialEntrance = false;
     this.npcMarks = []; this.hudTexts = undefined; this.hudKit = undefined; this.bossIntroShown = false;
@@ -201,6 +208,7 @@ export class GameScene extends Phaser.Scene {
 
   create(data: { map?: string; portal?: string; pos?: { x: number; y: number } }) {
     this.resetRunState();
+    this.physics.disableUpdate();
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.clearShots());
     syncTalismanMapAvailability();
     installKeyGuard();
@@ -610,6 +618,45 @@ export class GameScene extends Phaser.Scene {
   invText!: Phaser.GameObjects.Text;
 
   update(time: number, delta: number) {
+    this.playerPhysicsAdvanced = false;
+    try {
+      this.updateFrame(time, delta);
+    } finally {
+      // Interactions and trial transitions can return before the normal movement point.
+      if (!this.playerPhysicsAdvanced) this.advancePlayerPhysics(time, delta);
+      this.player.refreshVisuals(time);
+    }
+  }
+
+  private advancePlayerPhysics(time: number, delta: number, input?: Input) {
+    this.playerPhysicsAdvanced = true;
+    const neutral = !input || this.player.dead || !!this.sectTrial?.ended;
+    if (neutral) this.playerInput.clear();
+    else this.playerInput.capture(input);
+    const world = this.physics.world;
+    if (world.isPaused) {
+      // Paused wall time must not become a burst of simulation when a panel closes.
+      this.playerPhysicsAccumulator = 0;
+      return;
+    }
+    this.playerPhysicsAccumulator += delta;
+    while (this.playerPhysicsAccumulator + 1e-8 >= PLAYER_PHYSICS_MS) {
+      this.playerPhysicsAccumulator = Math.max(0, this.playerPhysicsAccumulator - PLAYER_PHYSICS_MS);
+      if (neutral) this.player.body.setVelocityX(0);
+      // World.step() catch-up skips Body.preUpdate(), leaving contact flags from
+      // the first tick. Separate updates reset them and sync Sprite positions.
+      world.update(time, PLAYER_PHYSICS_MS);
+      const stepped = world.stepsLastFrame > 0;
+      world.postUpdate();
+      if (stepped) {
+        if (this.player.dead || this.sectTrial?.ended) this.playerInput.clear();
+        // Keep all millisecond deadlines in the scene/render clock domain.
+        this.player.step(time, PLAYER_PHYSICS_DT, this.playerInput.consume(), this.map.ropes);
+      }
+    }
+  }
+
+  private updateFrame(time: number, delta: number) {
     if (this.sectTrial?.ended) { this.drawHud(); return; }
     this.environmentArt?.update(delta);
     if (time >= this.nextDailyUpdateAt) {
@@ -666,9 +713,8 @@ export class GameScene extends Phaser.Scene {
         nums.forEach((key, i) => { if (J(key)) this.skillWindow.addPoint(i); });
       }
       J(k.alt); J(k.c);
-      J(k.space); J(k.z); J(k.up);
-      this.player.body.setVelocityX(0);
-      this.player.step(time, delta / 1000, { left: false, right: false, up: false, down: false, jumpDown: false, attackDown: false }, this.map.ropes);
+      J(k.space); J(k.z); J(k.up); J(k.ctrl); J(k.x);
+      this.advancePlayerPhysics(time, delta);
       this.stealth?.update(0, false);
       for (const m of this.mobs) {
         if (m.despawning) m.step(time, this.player);
@@ -677,14 +723,18 @@ export class GameScene extends Phaser.Scene {
       this.drawHud(); return;
     }
     this.trial?.update(delta);
+    const jumpAlt = J(k.alt), jumpSpace = J(k.space), jumpC = J(k.c);
+    const attackCtrl = J(k.ctrl), attackX = J(k.x);
     const inp: Input = {
       left: k.left.isDown, right: k.right.isDown, up: k.up.isDown, down: k.down.isDown,
-      jumpDown: J(k.alt) || J(k.space) || J(k.c),
-      attackDown: k.ctrl.isDown || k.x.isDown,
+      jumpDown: jumpAlt || jumpSpace || jumpC,
+      attackDown: attackCtrl || attackX,
+      attackHeld: k.ctrl.isDown || k.x.isDown,
     };
     if (J(k.f1)) this.toggleDebug();
     if (J(k.r)) {
       if (this.sectTrial) { this.sectTrial.exit(); return; }
+      this.playerInput.clear();
       this.interruptTalisman('move'); this.player.leaveRope(time); this.player.body.reset(this.map.spawn.x, this.map.spawn.y);
     }
     if (J(k.one)) this.usePill('hp_pill_small');
@@ -703,10 +753,11 @@ export class GameScene extends Phaser.Scene {
     if (this.player.y > this.map.height + 100) {
       this.interruptTalisman('move');
       if (this.sectTrial) { this.sectTrial.playerDown(); return; }
+      this.playerInput.clear();
       this.player.body.reset(this.map.spawn.x, this.map.spawn.y);
     }
 
-    this.player.step(time, delta / 1000, inp, this.map.ropes);
+    this.advancePlayerPhysics(time, delta, inp);
     for (const m of this.mobs) m.step(time, this.player, this.prog.hasBuffEffect('invisible'));
     if (this.sectTrial?.ended) { this.drawHud(); return; }
     for (let i = this.mobs.length - 1; i >= 0; i--) if (!this.mobs[i].active) this.mobs.splice(i, 1);
@@ -1105,6 +1156,7 @@ export class GameScene extends Phaser.Scene {
       || this.travelling || this.inTalismanCombat()) return false;
     if (!this.talismanSystem) this.setupTalisman();
     this.gathering.cancel(); this.closeItemPanels(); this.player.body.setVelocity(0, 0);
+    this.playerInput.clear(); this.playerPhysicsAccumulator = 0;
     const initialHeld = (['up', 'down', 'left', 'right'] as const).filter(direction => this.keys[direction]?.isDown);
     this.input.keyboard?.resetKeys();
     if (this.input.keyboard) this.input.keyboard.enabled = false;
