@@ -11,6 +11,7 @@ import type { BackgroundConfig } from './scenes/BackgroundArt';
 import type { EnvironmentArtConfig } from './scenes/EnvironmentArt';
 import { SPEC } from './config/feel';
 import { featureFlags, isFeatureName, setFeatureFlag } from './features';
+import type { DialogChoice } from './UI';
 
 type EventType = 'loaderror' | 'console.error' | 'error' | 'unhandledrejection' | 'scene' | 'quest:complete';
 type XtEvent = { type: EventType; time: number; data: unknown };
@@ -217,6 +218,13 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig): Phaser.Game
       await restart(pos?.mapId ?? s.map.id, pos ?? undefined);
     },
     exportSave() { current(); persist(); return scene.prog.exportSave(); },
+    // UI-2：仅测试构建的展示夹具；仍走真实 choose/分页/键鼠，回调以对白显示所选 label。
+    openDialogChoices(choices: Omit<DialogChoice, 'onSelect'>[], rankIcon?: string) {
+      const s = current();
+      s.dialog.choose({ speaker: null, text: 'UI-2' }, null, choices.map(choice => ({ ...choice,
+        onSelect: () => s.dialog.show([{ speaker: null, text: choice.label }], null),
+      })), rankIcon);
+    },
     openAttrPanel() { const s = current(); s.openAttrPanel(); return copy(s.attrPanel.snapshot()); },
     attrSnapshot() { return copy(current().attrPanel.snapshot()); },
     openInventoryPanel() { const s = current(); s.openInventoryPanel(); return copy(s.inventoryPanel.snapshot()); },

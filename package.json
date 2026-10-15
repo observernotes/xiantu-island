@@ -36,6 +36,7 @@
     "test:stats": "timeout 60s node scripts/stats-test.mjs",
     "test:smoke:attr-ui": "timeout 300s node scripts/attr-ui-smoke.mjs",
     "test:smoke:shop-ui": "timeout 300s node scripts/shop-ui-smoke.mjs",
+    "test:smoke:dialog-ui": "timeout 300s node scripts/dialog-option-smoke.mjs",
     "test:smoke:sect-growth": "timeout 120s node scripts/sect-growth-smoke.mjs",
     "test:altar": "timeout 60s node scripts/altar-test.mjs",
     "test:alchemy": "timeout 60s node scripts/alchemy-test.mjs && timeout 60s node scripts/gather-test.mjs",
