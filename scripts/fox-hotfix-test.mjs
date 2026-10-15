@@ -44,6 +44,7 @@ const server = await createServer({
 try {
   const { Monster } = await server.ssrLoadModule('/src/scenes/Monster.ts');
   const { GameScene } = await server.ssrLoadModule('/src/scenes/GameScene.ts');
+  const { PlayerInputLatch } = await server.ssrLoadModule('/src/PlayerInput.ts');
   const { MONSTERS, GAME_PHASE } = await server.ssrLoadModule('/src/data.ts');
   const packs = Object.fromEntries(['mon_demon_fox', 'fx_fox_phantom_dash_warn', 'fx_summon_despawn'].map(key =>
     [key, JSON.parse(fs.readFileSync(new URL(`../data/art/sprites/${key}.anims.json`, import.meta.url), 'utf8'))]));
@@ -68,8 +69,12 @@ try {
     const fx = [];
     const floor = { active: true, body: { enable: true, x: 0, y: 960, left: 0, right: 3840, top: 960, bottom: 1024, width: 3840, height: 64 } };
     const scene = {
-      map: { width: 3840, height: 1024, zones, solids: { getChildren: () => [floor] }, oneWays: { getChildren: () => [] }, spawn: { x: 64, y: 960 } },
-      physics: { world: { bounds: { x: 0, y: 0, left: 0, top: 0, right: 3840, bottom: 1224, width: 3840, height: 1224 } }, overlapRect: () => [floor] },
+      map: { width: 3840, height: 1024, zones, ropes: [], solids: { getChildren: () => [floor] }, oneWays: { getChildren: () => [] }, spawn: { x: 64, y: 960 } },
+      physics: { world: {
+        bounds: { x: 0, y: 0, left: 0, top: 0, right: 3840, bottom: 1224, width: 3840, height: 1224 },
+        isPaused: false, stepsLastFrame: 0,
+        update() { this.stepsLastFrame = 1; }, postUpdate() {},
+      }, overlapRect: () => [floor] },
       time: { now: 0 }, cache: { json: { get: key => packs[key.replace(/_anims$/, '')] } },
       textures: { exists: () => true }, anims: { exists: () => true },
       add: { sprite: (x, y, key) => { const s = fxSprite(x, y, key); fx.push(s); return s; } },
@@ -99,7 +104,8 @@ try {
       setVelocityX(v) { this.velocity.x = v; return this; }, setVelocityY(v) { this.velocity.y = v; return this; },
       setVelocity(x, y) { this.velocity.x = x; this.velocity.y = y; return this; },
     };
-    const player = { x: x + 100, y: 960, dead: false, body: { x: -100, y: 896, width: 26, height: 64,
+    const player = { x: x + 100, y: 960, dead: false, syncAppearance() {}, refreshVisuals() {}, step() {},
+      body: { x: -100, y: 896, width: 26, height: 64,
       reset(x, y) { player.x = x; player.y = y; }, setVelocityX() {} } };
     return { m, scene, player, fx };
   }
@@ -180,6 +186,8 @@ try {
     boss.startSkill(dash, 0, player);
     const game = Object.assign(Object.create(GameScene.prototype), scene, {
       player, mobs: [boss, summoned, kept], portalVisuals: [],
+      // Object.create 不执行 GameScene 的字段初始化，显式启用真实固定步进路径。
+      playerPhysicsAccumulator: 0, playerInput: new PlayerInputLatch(),
       prog: { hp: 0, mp: 0, maxHp: 194, maxMp: 46 }, log() {},
     });
     const calls = [];
@@ -225,8 +233,13 @@ try {
       attrPanel: { isOpen: () => false, update() {}, close() {} },
       updateShots() {}, regenMp() {}, drawHud() {} });
     Object.assign(game.prog, { advanceAge() {}, save() {} });
-    game.player.syncAppearance = () => {};
-    game.player.step = () => {};
+    const playerSteps = [], visualTimes = [];
+    game.player.step = (time, dt, input, ropes) => {
+      assert.equal(dt, 1 / 60, '假玩家收到固定步长（秒）');
+      assert.equal(ropes, game.map.ropes, '固定步进传入假地图绳索');
+      playerSteps.push(time);
+    };
+    game.player.refreshVisuals = time => visualTimes.push(time);
     game.player.x = 2999;
     game.update(1000, 16);
     assert.equal(summoned.active, false, '技能窗口打开也完成召唤物消散');
@@ -243,6 +256,8 @@ try {
     game.shop = { isOpen: () => true, update() { shopUpdates++; } };
     game.update(1032, 16);
     assert.equal(shopUpdates, 1, '商店打开时 GameScene 仍调用商店 update');
+    assert.deepEqual(playerSteps, [1016, 1032], '三个 16ms 帧实际完成两次固定物理步进');
+    assert.deepEqual(visualTimes, [1000, 1016, 1032], '每帧刷新玩家视觉');
   }
 
   console.log('fox hotfix tests ok');
