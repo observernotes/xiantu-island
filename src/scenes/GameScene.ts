@@ -113,6 +113,55 @@ export class GameScene extends Phaser.Scene {
 
   constructor() { super('game'); (window as any).__scene = this; }
 
+  /** Scene 实例会被 restart 复用；这里只重置本张图的状态，不能复用旧物理世界的引用。 */
+  private resetRunState() {
+    this.clearShots();
+    this.mobs = []; this.logs = []; this.logBadges.clear();
+    this.nextPickAt = 0; this.openedChests = new Set();
+    this.travelling = false; this.curZone = undefined; this.nextDailyUpdateAt = 0;
+    this.sectTrial = undefined; this.trial = undefined; this.bossOverride = null;
+    this.trialObjects = undefined; this.stealth = undefined; this.atSectTrialEntrance = false;
+    this.npcMarks = []; this.hudTexts = undefined; this.hudKit = undefined; this.bossIntroShown = false;
+    this.interactionPrompts = []; this.portalVisuals = []; this.seclusionLabels = [];
+    this.backgroundArt?.destroy(); this.propLayout?.destroy(); this.environmentArt?.destroy();
+    this.backgroundArt = undefined; this.propLayout = undefined; this.environmentArt = undefined;
+    for (const object of this.backgroundObjects) object.destroy();
+    this.backgroundObjects = []; this.parallax = [];
+
+    // 必建对象在 create 中按依赖顺序重建；先释放旧引用，避免部分 create 失败后使用上一图对象。
+    this.map = undefined!; this.player = undefined!; this.sectGrowth = undefined!;
+    this.drops = undefined!; this.keys = undefined!; this.gathering = undefined!;
+    this.quests = undefined!; this.combat = undefined!; this.alchemySystem = undefined!;
+    this.hud = undefined!; this.hudText = undefined!; this.debugText = undefined!; this.helpText = undefined!;
+    this.sectTitle = undefined!; this.sectBadge = undefined!; this.invText = undefined!; this.tracker = undefined!;
+    this.gourd = undefined!; this.gourdTip = undefined!; this.bossName = undefined!; this.bossHpText = undefined!;
+    this.dialog = undefined!; this.skillBar = undefined!; this.skillWindow = undefined!;
+    this.alchemy = undefined!; this.shop = undefined!; this.attrPanel = undefined!;
+    this.inventoryPanel = undefined!; this.equipPanel = undefined!;
+
+    // 制符为每图重建：系统实例和火符弹体不跨图保留；进度/冷却在 prog。
+    this.talismanSystem = undefined!; this.talismanUse = undefined!; this.talismanCastText = undefined;
+    for (const projectile of this.talismanProjectiles) if (projectile.sprite.scene) projectile.sprite.destroy();
+    this.talismanProjectiles = [];
+
+    // prog 由 registry 持有并沿用角色/存档；不能在换图时新建或重置角色进度。
+    // mpPool 是跨图回蓝的小数余量，清零会少回灵力；breakthroughNotified 是会话内一次提示。
+    // nextAgeUpdateAt 使用游戏累计时钟，保留跨图的 60 秒寿元结算/存档节流。
+    // registry 中的试炼交接、宝箱存档和环境偏好也有意跨图保留，由各自流程读写。
+  }
+
+  private clearShots() {
+    for (const shot of this.shots) this.removeShot(shot);
+    this.shots = []; this.shotOf.clear(); this.shotGroup = undefined;
+  }
+
+  private removeShot(shot: Shot) {
+    this.shotOf.delete(shot.sprite);
+    shot.dead = true;
+    // destroy 后 Phaser 会清掉 scene/body；重复清理不再访问已销毁的物理体。
+    if (shot.sprite.scene) shot.sprite.destroy();
+  }
+
   private createDebugClass() {
     const prog = new Progress();
     // 独立调试档不写 localStorage；换图继续用 registry 内同一角色。
@@ -148,6 +197,8 @@ export class GameScene extends Phaser.Scene {
   }
 
   create(data: { map?: string; portal?: string; pos?: { x: number; y: number } }) {
+    this.resetRunState();
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.clearShots());
     syncTalismanMapAvailability();
     installKeyGuard();
     for (const k of ATLASES) {
@@ -178,13 +229,8 @@ export class GameScene extends Phaser.Scene {
     this.registry.set('progress', this.prog);
     this.openedChests = new Set(this.prog.openedChests);
     this.registry.set('chests', this.openedChests);
-    this.mobs = []; this.logs = []; this.logBadges.clear(); this.hudTexts = undefined; this.hudKit = undefined;
-    this.talismanSystem = undefined!; this.talismanUse = undefined!; this.talismanCastText = undefined;
-    this.travelling = false; this.curZone = undefined; this.nextDailyUpdateAt = 0; this.sectTrial = undefined;
     registerHudFonts(this);
     registerAlchemy(this);
-    this.interactionPrompts = [];
-    this.portalVisuals = []; this.seclusionLabels = [];
 
     const q = new URLSearchParams(location.search).get('map');
     const debugTrial = DEBUG_CLASS && QUESTS_REF[DEBUG_CLASS.joinQuest]?.objectives.find(o => o.type === 'trial')?.trial;
@@ -203,7 +249,6 @@ export class GameScene extends Phaser.Scene {
       && Object.values(TRIALS).some(def => def.quest && def.map === this.map.id);
     this.propLayout?.destroy();
     this.propLayout = new PropLayout(this, mapId, this.cache.json.get(`props_${area}_layout`));
-    this.npcMarks = [];
     this.physics.world.setBounds(0, 0, this.map.width, this.map.height + 200);
     // 地图 npc 对象的 phaseMin / phaseMax：不在当前版本阶段的不创建（没填不限制）
     this.map.objects = this.map.objects.filter(o => o.type !== 'npc' || inPhase(o.props));
@@ -315,7 +360,6 @@ export class GameScene extends Phaser.Scene {
     this.skillBar.onSlot = i => { if (this.skillWindow.open) this.skillWindow.assign(i); };
     this.maybeSpTip();
     this.tracker = this.add.text(16, 44, '', { fontFamily: 'sans-serif', fontSize: '13px', color: '#ffffff', backgroundColor: '#1d2a3aaa', padding: { x: 8, y: 6 }, lineSpacing: 3 }).setScrollFactor(0).setDepth(100);
-    this.bossIntroShown = false;
     this.input.keyboard!.addKey(K.ENTER).on('down', () => this.dialog.advance());
     this.invText = this.add.text(1264, 130, '', { fontFamily: 'sans-serif', fontSize: '14px', color: '#ffffff', backgroundColor: '#1d2a3acc', padding: { x: 10, y: 8 } }).setOrigin(1, 0).setScrollFactor(0).setDepth(100).setVisible(false);
     this.gourd = this.add.image(1220, 718, 'icon_overflow_gourd_empty').setOrigin(0.5, 1).setScrollFactor(0).setDepth(103).setVisible(false).setInteractive({ useHandCursor: true });
@@ -325,7 +369,6 @@ export class GameScene extends Phaser.Scene {
     this.bossName = this.add.text(0, 0, '', { fontFamily: 'serif', fontSize: '18px', color: '#fff6e8', stroke: '#3a1020', strokeThickness: 4 }).setScrollFactor(0).setDepth(130).setVisible(false);
     this.bossHpText = this.add.text(0, 0, '', { fontFamily: 'sans-serif', fontSize: '13px', color: '#ffe0e0', stroke: '#000000', strokeThickness: 3 }).setScrollFactor(0).setDepth(130).setVisible(false);
     this.buildHudKit();
-    this.trial = undefined; this.bossOverride = null;
     this.setupTrial(mapId);
     const pending = this.prog.pendingSectTrial;
     const sectDef = pending ? TRIALS[pending.id] : undefined;
@@ -782,6 +825,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private impactShot(s: Shot, hitPlayer: boolean) {
+    if (s.dead || !s.sprite.scene || !s.sprite.active || !s.sprite.body) { this.removeShot(s); return; }
     if (s.state !== 'fly') return;
     s.state = 'hit';
     const body = s.sprite.body as Phaser.Physics.Arcade.Body;
@@ -793,11 +837,12 @@ export class GameScene extends Phaser.Scene {
 
   private updateShots(time: number) {
     for (const s of this.shots) {
+      if (s.dead || !s.sprite.scene || !s.sprite.active || !s.sprite.body) { this.removeShot(s); continue; }
       const gone = s.state === 'hit' ? time >= s.until
         : (s.maxDist && Math.abs(s.sprite.x - (s.fromX ?? s.sprite.x)) >= s.maxDist) ? (this.impactShot(s, false), false)
         : s.sprite.x < -80 || s.sprite.x > this.map.width + 80 || s.sprite.y < -120 || s.sprite.y > this.map.height + 120;
       if (!gone) continue;
-      this.shotOf.delete(s.sprite); s.sprite.destroy(); s.dead = true;
+      this.removeShot(s);
     }
     if (this.shots.some(s => s.dead)) this.shots = this.shots.filter(s => !s.dead);
   }
