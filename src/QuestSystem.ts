@@ -5,6 +5,7 @@ import { CLASS_RULES, classEntryEnabled, classForQuest } from './classes';
 import { REALMS } from './data';
 import { dailyRewardsReady, type DailyQuestReward } from './DailyQuests';
 import { FEATURE_UNAVAILABLE, featureEnabled } from './features';
+import { isCheatEnabled } from './cheatFlags';
 
 export type NpcMark = '!' | '?' | '…' | null;
 
@@ -200,17 +201,23 @@ export class QuestSystem {
     return false;
   }
 
-  turnIn(id: string): QuestReward | undefined {
-    if (!this.complete(id)) return undefined;
+  turnIn(id: string, force = false): QuestReward | undefined {
     const q = QUESTS[id];
+    // 内部作弊仅跳过普通任务的接取/职业门槛；目标与事务发奖仍走原路径。
+    const forced = force && isCheatEnabled() && !!q && !q.daily && this.isActive(id)
+      && this.objectiveProgress(q).every(p => p.cur >= p.need || p.o.type === 'breakthrough'
+        && REALMS.some(realm => realm.id === p.o.realm && this.prog.level >= realm.levelMin));
+    if (!this.complete(id) && !forced) return undefined;
     const now = this.now();
     if (q.daily && (!this.prog.canCompleteSectDailyQuest(id, now) || this.prog.quests[id]?.state !== 'active')) return undefined;
     if (!q.daily) {
       const reward = this.prog.runSaveTransaction(() => {
         for (const o of q.objectives) if (o.type === 'collect' && o.consume !== false) this.prog.removeItem(o.target!, o.count!);
-        const broke = q.objectives.some(o => o.type === 'breakthrough') ? this.prog.breakthrough() : false;
+        const needsBreakthrough = q.objectives.some(o => o.type === 'breakthrough' && (!forced
+          || !REALMS.some(realm => realm.id === o.realm && this.prog.level >= realm.levelMin)));
+        const broke = needsBreakthrough ? this.prog.breakthrough() : false;
         this.prog.quests[id].state = 'done';
-        const settled = this.prog.settleQuestRewards(q);
+        const settled = this.prog.settleQuestRewards(q, forced);
         return settled ? { quest: q, broke, settled } : undefined;
       });
       return reward ? this.notifyCompleted(reward) : undefined;

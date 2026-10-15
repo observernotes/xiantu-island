@@ -9,6 +9,8 @@
     "build:test": "npm run sync && tsc --noEmit && VITE_XT_TEST=1 vite build",
     "preview": "vite preview --host 0.0.0.0 --port 4173",
     "test:overflow": "node scripts/overflow-test.mjs",
+    "test:cheat": "node scripts/cheat-test.mjs",
+    "test:smoke:cheat": "timeout 180s node scripts/cheat-smoke.mjs",
     "test:art-engine": "timeout 240s node scripts/art-engine-test.mjs",
     "test:xt": "timeout 120s node scripts/xt-test.mjs",
     "test:features": "timeout 120s node scripts/features-test.mjs",

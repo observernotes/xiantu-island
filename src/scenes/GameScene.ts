@@ -1,5 +1,6 @@
 import { gameNow } from '../GameClock';
 import Phaser from 'phaser';
+import { notifyCheatSceneReady } from '../cheatFlags';
 import { FEEL, SPEC } from '../config/feel';
 import { FIELD_TEST } from '../config/maps';
 import { MONSTERS, DROPS, ITEMS, TILED_MAPS, ATLASES, MAP_AREA, AREAS, TILE_METADATA, BACKGROUNDS, BACKGROUND_CONFIGS, PROP_LAYOUTS, SKILL_ICONS, NPCS, SCRIPTS, t, questName, questDescription, MP_REGEN_FRACTION_PER_5S, BREAKTHROUGH_LEVELS } from '../data';
@@ -222,7 +223,7 @@ export class GameScene extends Phaser.Scene {
     const q = new URLSearchParams(location.search).get('map');
     const debugTrial = DEBUG_CLASS && QUESTS_REF[DEBUG_CLASS.joinQuest]?.objectives.find(o => o.type === 'trial')?.trial;
     const debugMap = DEBUG_CLASS && (TILED_MAPS[DEBUG_CLASS.map ?? ''] ? DEBUG_CLASS.map : debugTrial ? TRIALS[debugTrial]?.map : undefined);
-    let mapId = data.map ?? (q === 'test' || q === 'field' ? 'field_test' : q && TILED_MAPS[q] ? q : debugMap ?? this.prog.position?.mapId ?? 'qingyun_village');
+    let mapId = data.map ?? (q === 'test' || q === 'field' || q === 'field_test' ? 'field_test' : q && TILED_MAPS[q] ? q : debugMap ?? this.prog.position?.mapId ?? 'qingyun_village');
     mapId = TILED_MAPS[mapId] ? mapId : (MAP_FALLBACK[mapId] ?? mapId);
     // 本版本没有的地图（存档或传送门指过去）一律回青云村，不再掉进测试图
     if (!TILED_MAPS[mapId] && mapId !== 'field_test') { mapId = 'qingyun_village'; data.portal = undefined; }
@@ -370,6 +371,7 @@ export class GameScene extends Phaser.Scene {
     const returned = this.registry.get('sectTrialReturnMessage');
     this.registry.remove('sectTrialReturnMessage');
     if (returned || interrupted) this.log(returned ?? t('trial.exit_return'), '#ffe680');
+    notifyCheatSceneReady(this);
   }
 
   /** 已接取本宗任务且尚未通关，才可由交付长老开启试炼。 */
@@ -1649,7 +1651,7 @@ export class GameScene extends Phaser.Scene {
     if (!settled) return;
     const rw = q.rewards;
     const cls = classForQuest(q.id);
-    const job = cls?.id ?? rw.job;
+    const job = (cls?.id ?? rw.job) === this.prog.job ? this.prog.job : undefined;
     this.log(t('quest.complete', { name: questName(q) }), '#ffe680');
     if (broke) {
       this.player.maxHp = this.prog.maxHp; this.player.hp = this.prog.hp;

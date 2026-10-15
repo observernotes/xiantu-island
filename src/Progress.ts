@@ -6,6 +6,7 @@ import { CLASS_LIST, CLASS_RULES, classDef, classEntryEnabled, classEntrySkill, 
 import { DAILY_QUEST_LIMIT, dailyQuestDay, dailyContribution, dailyRewardsReady, type DailyQuestReward } from './DailyQuests';
 import { isBrewSession, type BrewSession } from './Alchemy';
 import { featureEnabled } from './features';
+import { isCheatEnabled, isCheatSkillsUnlocked } from './cheatFlags';
 
 /** 自动加点：加点界面做好前的旧档公式，仅用于迁移种子；UI-6 起升级只发未分配点。 */
 export const AUTO_STATS = { rootBone: 2, agility: 2, insight: 1, spirit: 0 } as Record<string, number>;
@@ -230,7 +231,7 @@ export class Progress {
     let i = 0; r.stageLevels.forEach((lv: number, k: number) => { if (this.level >= lv) i = k; });
     return `${r.name}·${r.stages[i]}`;
   }
-  get skillsUnlocked() { return this.realm.id !== 'mortal'; }
+  get skillsUnlocked() { return isCheatSkillsUnlocked() || this.realm.id !== 'mortal'; }
 
   exportSave(): Record<string, unknown> {
     const { transientItems, trialSkills, trialHotbarBefore, ...persistent } = this;
@@ -432,22 +433,24 @@ export class Progress {
   }
 
   /** 由任务交付事务调用；完成状态、授职和全部奖励一起写盘后才通知场景。 */
-  settleQuestRewards(q: QuestDef): QuestRewardSettlement | undefined {
+  settleQuestRewards(q: QuestDef, force = false): QuestRewardSettlement | undefined {
     if (!this.#saveMuted || q.daily || this.quests[q.id]?.state !== 'done') return undefined;
     const rw = q.rewards, cls = classForQuest(q.id), job = cls?.id ?? rw.job;
-    if (job && !this.advanceClass(job)) return undefined;
+    const advanced = !!job && this.advanceClass(job);
+    // 作弊强制交付可领取奖励，但不改换已有职业。
+    if (job && !advanced && !(force && isCheatEnabled())) return undefined;
     const exp = rw.exp ? this.gainExp(rw.exp, this.level)
       : { gained: 0, levels: 0, blocked: false, overflowed: 0, overflowFilled: false };
     if (rw.spiritStone) this.stones += rw.spiritStone;
     // 拜入道袍已由 advanceClass 发放并换装，不能重复进背包。
-    const items = (rw.items ?? []).filter(it => it.item !== cls?.robeId).map(it => {
+    const items = (rw.items ?? []).filter(it => !advanced || it.item !== cls?.robeId).map(it => {
       if (ITEMS[it.item]?.type === 'equip') return { ...it, equipped: this.gainEquip(it.item) };
       this.addItem(it.item, it.count);
       return { ...it };
     });
     this.grantQuestRecipes(q);
-    for (const skill of rw.skills ?? []) this.grantSkill(skill.id, skill.level);
-    return { exp, items, skills: (rw.skills ?? []).map(skill => skill.id) };
+    for (const skill of rw.skills ?? []) this.grantSkill(skill.id, skill.level, force);
+    return { exp, items, skills: (rw.skills ?? []).filter(skill => (this.skills[skill.id] ?? 0) >= skill.level).map(skill => skill.id) };
   }
 
   /** 交付已验证目标并扣材料；整条日常的普通奖励与贡献在同一同步事务内保存。 */
@@ -941,6 +944,7 @@ export class Progress {
   get sect() { return classDef(this.job)?.sect ?? ''; }
   /** 未拜入仅有通用技能资格；宗门和转职阶段均须与当前职业匹配。 */
   ownsSkill(def: SkillDef) {
+    if (isCheatSkillsUnlocked()) return true;
     if (!this.job) return def.sect === null && def.job === 0;
     const c = classDef(this.job);
     return !!c && def.sect === c.sect && def.job === c.job;
@@ -1132,9 +1136,10 @@ export class Progress {
    * 直接学会到至少 level 级。任务奖励用这条，不检查前置。
    * 新给的等级记进 skillGifted，升级不花技能点。
    */
-  grantSkill(id: string, level: number) {
-    if (!SKILLS[id] || !this.ownsSkill(SKILLS[id]) || !(level > 0)) return false;
-    const cur = this.skillLevel(id);
+  grantSkill(id: string, level: number, force = false) {
+    if (!SKILLS[id] || (!this.ownsSkill(SKILLS[id]) && !(force && isCheatEnabled())) || !(level > 0)) return false;
+    // 赠技写永久等级，不应被试炼的临时技能遮住。
+    const cur = this.skills[id] ?? 0;
     if (level <= cur) return false;
     this.skillGifted[id] = (this.skillGifted[id] ?? 0) + (level - cur);
     this.skills[id] = level;

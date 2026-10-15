@@ -3,6 +3,7 @@ import { FEEL } from './config/feel';
 import { GameScene } from './scenes/GameScene';
 import { installOptionalAssetErrorHandler } from './optionalAssets';
 import { installCrashGuard } from './crashGuard';
+import { isCheatEnabled } from './cheatFlags';
 
 installOptionalAssetErrorHandler(Phaser);
 
@@ -22,6 +23,10 @@ const config: Phaser.Types.Core.GameConfig = {
 };
 
 async function start() {
+  if (isCheatEnabled()) {
+    const { installCheat } = await import('./Cheat');
+    installCheat();
+  }
   if (import.meta.env.VITE_XT_TEST === '1') {
     const { startTestGame } = await import('./XtTestBridge');
     startTestGame(config);
