@@ -1,0 +1,942 @@
+{
+  "schemaVersion": 1,
+  "integrationState": "pending",
+  "curve": {
+    "initialLevel": 1,
+    "initialExp": 0,
+    "maxLevel": 30,
+    "expToNextCoefficient": 50
+  },
+  "futureRecipeRankGate": true,
+  "skills": [
+    {
+      "id": "alchemy",
+      "name": "炼丹",
+      "eligibleActions": [
+        "alchemy"
+      ],
+      "expSuccessPerRank": 10,
+      "expFailureRatio": 0.5,
+      "expFailureRequiresQualification": false,
+      "successPerLevel": 0.01,
+      "bonusLevelOffset": 0,
+      "qualityShiftPerLevel": 0.01,
+      "qualityWeights": {
+        "mid": 0.75,
+        "high": 0.225,
+        "supreme": 0.025
+      },
+      "outputBonusRate": 0.0,
+      "recipeRanks": [
+        {
+          "recipeId": "recipe_hp_pill",
+          "rank": 1,
+          "minSkillLevel": 1
+        },
+        {
+          "recipeId": "recipe_qi_pill",
+          "rank": 1,
+          "minSkillLevel": 1
+        },
+        {
+          "recipeId": "recipe_clear_mind",
+          "rank": 5,
+          "minSkillLevel": 1
+        },
+        {
+          "recipeId": "recipe_buff_atk",
+          "rank": 10,
+          "minSkillLevel": 1
+        },
+        {
+          "recipeId": "recipe_foundation",
+          "rank": 12,
+          "minSkillLevel": 1
+        },
+        {
+          "recipeId": "recipe_golden_core",
+          "rank": 25,
+          "minSkillLevel": 1
+        }
+      ],
+      "levels": [
+        {
+          "level": 1,
+          "expToNext": 50,
+          "totalExp": 0,
+          "successBonus": 0.01,
+          "qualityShift": 0.01,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 1
+        },
+        {
+          "level": 2,
+          "expToNext": 100,
+          "totalExp": 50,
+          "successBonus": 0.02,
+          "qualityShift": 0.02,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 2
+        },
+        {
+          "level": 3,
+          "expToNext": 150,
+          "totalExp": 150,
+          "successBonus": 0.03,
+          "qualityShift": 0.03,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 3
+        },
+        {
+          "level": 4,
+          "expToNext": 200,
+          "totalExp": 300,
+          "successBonus": 0.04,
+          "qualityShift": 0.04,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 4
+        },
+        {
+          "level": 5,
+          "expToNext": 250,
+          "totalExp": 500,
+          "successBonus": 0.05,
+          "qualityShift": 0.05,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 5
+        },
+        {
+          "level": 6,
+          "expToNext": 300,
+          "totalExp": 750,
+          "successBonus": 0.06,
+          "qualityShift": 0.06,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 6
+        },
+        {
+          "level": 7,
+          "expToNext": 350,
+          "totalExp": 1050,
+          "successBonus": 0.07,
+          "qualityShift": 0.07,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 7
+        },
+        {
+          "level": 8,
+          "expToNext": 400,
+          "totalExp": 1400,
+          "successBonus": 0.08,
+          "qualityShift": 0.08,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 8
+        },
+        {
+          "level": 9,
+          "expToNext": 450,
+          "totalExp": 1800,
+          "successBonus": 0.09,
+          "qualityShift": 0.09,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 9
+        },
+        {
+          "level": 10,
+          "expToNext": 500,
+          "totalExp": 2250,
+          "successBonus": 0.1,
+          "qualityShift": 0.1,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 10
+        },
+        {
+          "level": 11,
+          "expToNext": 550,
+          "totalExp": 2750,
+          "successBonus": 0.11,
+          "qualityShift": 0.11,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 11
+        },
+        {
+          "level": 12,
+          "expToNext": 600,
+          "totalExp": 3300,
+          "successBonus": 0.12,
+          "qualityShift": 0.12,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 12
+        },
+        {
+          "level": 13,
+          "expToNext": 650,
+          "totalExp": 3900,
+          "successBonus": 0.13,
+          "qualityShift": 0.13,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 13
+        },
+        {
+          "level": 14,
+          "expToNext": 700,
+          "totalExp": 4550,
+          "successBonus": 0.14,
+          "qualityShift": 0.14,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 14
+        },
+        {
+          "level": 15,
+          "expToNext": 750,
+          "totalExp": 5250,
+          "successBonus": 0.15,
+          "qualityShift": 0.15,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 15
+        },
+        {
+          "level": 16,
+          "expToNext": 800,
+          "totalExp": 6000,
+          "successBonus": 0.16,
+          "qualityShift": 0.16,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 16
+        },
+        {
+          "level": 17,
+          "expToNext": 850,
+          "totalExp": 6800,
+          "successBonus": 0.17,
+          "qualityShift": 0.17,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 17
+        },
+        {
+          "level": 18,
+          "expToNext": 900,
+          "totalExp": 7650,
+          "successBonus": 0.18,
+          "qualityShift": 0.18,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 18
+        },
+        {
+          "level": 19,
+          "expToNext": 950,
+          "totalExp": 8550,
+          "successBonus": 0.19,
+          "qualityShift": 0.19,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 19
+        },
+        {
+          "level": 20,
+          "expToNext": 1000,
+          "totalExp": 9500,
+          "successBonus": 0.2,
+          "qualityShift": 0.2,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 20
+        },
+        {
+          "level": 21,
+          "expToNext": 1050,
+          "totalExp": 10500,
+          "successBonus": 0.21,
+          "qualityShift": 0.21,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 21
+        },
+        {
+          "level": 22,
+          "expToNext": 1100,
+          "totalExp": 11550,
+          "successBonus": 0.22,
+          "qualityShift": 0.22,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 22
+        },
+        {
+          "level": 23,
+          "expToNext": 1150,
+          "totalExp": 12650,
+          "successBonus": 0.23,
+          "qualityShift": 0.23,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 23
+        },
+        {
+          "level": 24,
+          "expToNext": 1200,
+          "totalExp": 13800,
+          "successBonus": 0.24,
+          "qualityShift": 0.24,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 24
+        },
+        {
+          "level": 25,
+          "expToNext": 1250,
+          "totalExp": 15000,
+          "successBonus": 0.25,
+          "qualityShift": 0.25,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 25
+        },
+        {
+          "level": 26,
+          "expToNext": 1300,
+          "totalExp": 16250,
+          "successBonus": 0.26,
+          "qualityShift": 0.26,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 26
+        },
+        {
+          "level": 27,
+          "expToNext": 1350,
+          "totalExp": 17550,
+          "successBonus": 0.27,
+          "qualityShift": 0.27,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 27
+        },
+        {
+          "level": 28,
+          "expToNext": 1400,
+          "totalExp": 18900,
+          "successBonus": 0.28,
+          "qualityShift": 0.28,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 28
+        },
+        {
+          "level": 29,
+          "expToNext": 1450,
+          "totalExp": 20300,
+          "successBonus": 0.29,
+          "qualityShift": 0.29,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 29
+        },
+        {
+          "level": 30,
+          "expToNext": 0,
+          "totalExp": 21750,
+          "successBonus": 0.3,
+          "qualityShift": 0.3,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 30
+        }
+      ]
+    },
+    {
+      "id": "forging",
+      "name": "炼器",
+      "eligibleActions": [
+        "forge"
+      ],
+      "expSuccessPerRank": 10,
+      "expFailureRatio": 0.5,
+      "expFailureRequiresQualification": false,
+      "successPerLevel": 0.0,
+      "bonusLevelOffset": 0,
+      "qualityShiftPerLevel": 0.01,
+      "qualityWeights": {
+        "fine": 0.75,
+        "spirit": 0.225,
+        "treasure": 0.025
+      },
+      "outputBonusRate": 0.0,
+      "recipeRanks": [],
+      "levels": [
+        {
+          "level": 1,
+          "expToNext": 50,
+          "totalExp": 0,
+          "successBonus": 0.0,
+          "qualityShift": 0.01,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 1
+        },
+        {
+          "level": 2,
+          "expToNext": 100,
+          "totalExp": 50,
+          "successBonus": 0.0,
+          "qualityShift": 0.02,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 2
+        },
+        {
+          "level": 3,
+          "expToNext": 150,
+          "totalExp": 150,
+          "successBonus": 0.0,
+          "qualityShift": 0.03,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 3
+        },
+        {
+          "level": 4,
+          "expToNext": 200,
+          "totalExp": 300,
+          "successBonus": 0.0,
+          "qualityShift": 0.04,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 4
+        },
+        {
+          "level": 5,
+          "expToNext": 250,
+          "totalExp": 500,
+          "successBonus": 0.0,
+          "qualityShift": 0.05,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 5
+        },
+        {
+          "level": 6,
+          "expToNext": 300,
+          "totalExp": 750,
+          "successBonus": 0.0,
+          "qualityShift": 0.06,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 6
+        },
+        {
+          "level": 7,
+          "expToNext": 350,
+          "totalExp": 1050,
+          "successBonus": 0.0,
+          "qualityShift": 0.07,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 7
+        },
+        {
+          "level": 8,
+          "expToNext": 400,
+          "totalExp": 1400,
+          "successBonus": 0.0,
+          "qualityShift": 0.08,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 8
+        },
+        {
+          "level": 9,
+          "expToNext": 450,
+          "totalExp": 1800,
+          "successBonus": 0.0,
+          "qualityShift": 0.09,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 9
+        },
+        {
+          "level": 10,
+          "expToNext": 500,
+          "totalExp": 2250,
+          "successBonus": 0.0,
+          "qualityShift": 0.1,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 10
+        },
+        {
+          "level": 11,
+          "expToNext": 550,
+          "totalExp": 2750,
+          "successBonus": 0.0,
+          "qualityShift": 0.11,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 11
+        },
+        {
+          "level": 12,
+          "expToNext": 600,
+          "totalExp": 3300,
+          "successBonus": 0.0,
+          "qualityShift": 0.12,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 12
+        },
+        {
+          "level": 13,
+          "expToNext": 650,
+          "totalExp": 3900,
+          "successBonus": 0.0,
+          "qualityShift": 0.13,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 13
+        },
+        {
+          "level": 14,
+          "expToNext": 700,
+          "totalExp": 4550,
+          "successBonus": 0.0,
+          "qualityShift": 0.14,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 14
+        },
+        {
+          "level": 15,
+          "expToNext": 750,
+          "totalExp": 5250,
+          "successBonus": 0.0,
+          "qualityShift": 0.15,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 15
+        },
+        {
+          "level": 16,
+          "expToNext": 800,
+          "totalExp": 6000,
+          "successBonus": 0.0,
+          "qualityShift": 0.16,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 16
+        },
+        {
+          "level": 17,
+          "expToNext": 850,
+          "totalExp": 6800,
+          "successBonus": 0.0,
+          "qualityShift": 0.17,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 17
+        },
+        {
+          "level": 18,
+          "expToNext": 900,
+          "totalExp": 7650,
+          "successBonus": 0.0,
+          "qualityShift": 0.18,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 18
+        },
+        {
+          "level": 19,
+          "expToNext": 950,
+          "totalExp": 8550,
+          "successBonus": 0.0,
+          "qualityShift": 0.19,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 19
+        },
+        {
+          "level": 20,
+          "expToNext": 1000,
+          "totalExp": 9500,
+          "successBonus": 0.0,
+          "qualityShift": 0.2,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 20
+        },
+        {
+          "level": 21,
+          "expToNext": 1050,
+          "totalExp": 10500,
+          "successBonus": 0.0,
+          "qualityShift": 0.21,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 21
+        },
+        {
+          "level": 22,
+          "expToNext": 1100,
+          "totalExp": 11550,
+          "successBonus": 0.0,
+          "qualityShift": 0.22,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 22
+        },
+        {
+          "level": 23,
+          "expToNext": 1150,
+          "totalExp": 12650,
+          "successBonus": 0.0,
+          "qualityShift": 0.23,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 23
+        },
+        {
+          "level": 24,
+          "expToNext": 1200,
+          "totalExp": 13800,
+          "successBonus": 0.0,
+          "qualityShift": 0.24,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 24
+        },
+        {
+          "level": 25,
+          "expToNext": 1250,
+          "totalExp": 15000,
+          "successBonus": 0.0,
+          "qualityShift": 0.25,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 25
+        },
+        {
+          "level": 26,
+          "expToNext": 1300,
+          "totalExp": 16250,
+          "successBonus": 0.0,
+          "qualityShift": 0.26,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 26
+        },
+        {
+          "level": 27,
+          "expToNext": 1350,
+          "totalExp": 17550,
+          "successBonus": 0.0,
+          "qualityShift": 0.27,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 27
+        },
+        {
+          "level": 28,
+          "expToNext": 1400,
+          "totalExp": 18900,
+          "successBonus": 0.0,
+          "qualityShift": 0.28,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 28
+        },
+        {
+          "level": 29,
+          "expToNext": 1450,
+          "totalExp": 20300,
+          "successBonus": 0.0,
+          "qualityShift": 0.29,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 29
+        },
+        {
+          "level": 30,
+          "expToNext": 0,
+          "totalExp": 21750,
+          "successBonus": 0.0,
+          "qualityShift": 0.3,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 30
+        }
+      ]
+    },
+    {
+      "id": "talisman",
+      "name": "制符",
+      "eligibleActions": [
+        "talisman"
+      ],
+      "expSuccessPerRank": 10,
+      "expFailureRatio": 0.5,
+      "expFailureRequiresQualification": true,
+      "successPerLevel": 0.001,
+      "bonusLevelOffset": 1,
+      "qualityShiftPerLevel": 0.0,
+      "qualityWeights": {},
+      "outputBonusRate": 0.0,
+      "recipeRanks": [
+        {
+          "recipeId": "recipe_spirit_ink",
+          "rank": 0,
+          "minSkillLevel": 1
+        },
+        {
+          "recipeId": "recipe_talisman_fire",
+          "rank": 1,
+          "minSkillLevel": 1
+        },
+        {
+          "recipeId": "recipe_talisman_guard",
+          "rank": 1,
+          "minSkillLevel": 1
+        },
+        {
+          "recipeId": "recipe_talisman_return",
+          "rank": 1,
+          "minSkillLevel": 1
+        },
+        {
+          "recipeId": "recipe_talisman_gather",
+          "rank": 1,
+          "minSkillLevel": 1
+        }
+      ],
+      "levels": [
+        {
+          "level": 1,
+          "expToNext": 50,
+          "totalExp": 0,
+          "successBonus": 0.0,
+          "qualityShift": 0.0,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 1
+        },
+        {
+          "level": 2,
+          "expToNext": 100,
+          "totalExp": 50,
+          "successBonus": 0.001,
+          "qualityShift": 0.0,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 2
+        },
+        {
+          "level": 3,
+          "expToNext": 150,
+          "totalExp": 150,
+          "successBonus": 0.002,
+          "qualityShift": 0.0,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 3
+        },
+        {
+          "level": 4,
+          "expToNext": 200,
+          "totalExp": 300,
+          "successBonus": 0.003,
+          "qualityShift": 0.0,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 4
+        },
+        {
+          "level": 5,
+          "expToNext": 250,
+          "totalExp": 500,
+          "successBonus": 0.004,
+          "qualityShift": 0.0,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 5
+        },
+        {
+          "level": 6,
+          "expToNext": 300,
+          "totalExp": 750,
+          "successBonus": 0.005,
+          "qualityShift": 0.0,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 6
+        },
+        {
+          "level": 7,
+          "expToNext": 350,
+          "totalExp": 1050,
+          "successBonus": 0.006,
+          "qualityShift": 0.0,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 7
+        },
+        {
+          "level": 8,
+          "expToNext": 400,
+          "totalExp": 1400,
+          "successBonus": 0.007,
+          "qualityShift": 0.0,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 8
+        },
+        {
+          "level": 9,
+          "expToNext": 450,
+          "totalExp": 1800,
+          "successBonus": 0.008,
+          "qualityShift": 0.0,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 9
+        },
+        {
+          "level": 10,
+          "expToNext": 500,
+          "totalExp": 2250,
+          "successBonus": 0.009,
+          "qualityShift": 0.0,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 10
+        },
+        {
+          "level": 11,
+          "expToNext": 550,
+          "totalExp": 2750,
+          "successBonus": 0.01,
+          "qualityShift": 0.0,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 11
+        },
+        {
+          "level": 12,
+          "expToNext": 600,
+          "totalExp": 3300,
+          "successBonus": 0.011,
+          "qualityShift": 0.0,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 12
+        },
+        {
+          "level": 13,
+          "expToNext": 650,
+          "totalExp": 3900,
+          "successBonus": 0.012,
+          "qualityShift": 0.0,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 13
+        },
+        {
+          "level": 14,
+          "expToNext": 700,
+          "totalExp": 4550,
+          "successBonus": 0.013,
+          "qualityShift": 0.0,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 14
+        },
+        {
+          "level": 15,
+          "expToNext": 750,
+          "totalExp": 5250,
+          "successBonus": 0.014,
+          "qualityShift": 0.0,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 15
+        },
+        {
+          "level": 16,
+          "expToNext": 800,
+          "totalExp": 6000,
+          "successBonus": 0.015,
+          "qualityShift": 0.0,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 16
+        },
+        {
+          "level": 17,
+          "expToNext": 850,
+          "totalExp": 6800,
+          "successBonus": 0.016,
+          "qualityShift": 0.0,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 17
+        },
+        {
+          "level": 18,
+          "expToNext": 900,
+          "totalExp": 7650,
+          "successBonus": 0.017,
+          "qualityShift": 0.0,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 18
+        },
+        {
+          "level": 19,
+          "expToNext": 950,
+          "totalExp": 8550,
+          "successBonus": 0.018,
+          "qualityShift": 0.0,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 19
+        },
+        {
+          "level": 20,
+          "expToNext": 1000,
+          "totalExp": 9500,
+          "successBonus": 0.019,
+          "qualityShift": 0.0,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 20
+        },
+        {
+          "level": 21,
+          "expToNext": 1050,
+          "totalExp": 10500,
+          "successBonus": 0.02,
+          "qualityShift": 0.0,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 21
+        },
+        {
+          "level": 22,
+          "expToNext": 1100,
+          "totalExp": 11550,
+          "successBonus": 0.021,
+          "qualityShift": 0.0,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 22
+        },
+        {
+          "level": 23,
+          "expToNext": 1150,
+          "totalExp": 12650,
+          "successBonus": 0.022,
+          "qualityShift": 0.0,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 23
+        },
+        {
+          "level": 24,
+          "expToNext": 1200,
+          "totalExp": 13800,
+          "successBonus": 0.023,
+          "qualityShift": 0.0,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 24
+        },
+        {
+          "level": 25,
+          "expToNext": 1250,
+          "totalExp": 15000,
+          "successBonus": 0.024,
+          "qualityShift": 0.0,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 25
+        },
+        {
+          "level": 26,
+          "expToNext": 1300,
+          "totalExp": 16250,
+          "successBonus": 0.025,
+          "qualityShift": 0.0,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 26
+        },
+        {
+          "level": 27,
+          "expToNext": 1350,
+          "totalExp": 17550,
+          "successBonus": 0.026,
+          "qualityShift": 0.0,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 27
+        },
+        {
+          "level": 28,
+          "expToNext": 1400,
+          "totalExp": 18900,
+          "successBonus": 0.027,
+          "qualityShift": 0.0,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 28
+        },
+        {
+          "level": 29,
+          "expToNext": 1450,
+          "totalExp": 20300,
+          "successBonus": 0.028,
+          "qualityShift": 0.0,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 29
+        },
+        {
+          "level": 30,
+          "expToNext": 0,
+          "totalExp": 21750,
+          "successBonus": 0.029,
+          "qualityShift": 0.0,
+          "outputBonusRate": 0.0,
+          "maxNewRecipeRank": 30
+        }
+      ]
+    }
+  ]
+}

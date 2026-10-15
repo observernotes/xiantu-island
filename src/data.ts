@@ -79,6 +79,8 @@ import materials from '@xt/balance/materials.json';
 // materials.json 结构和 items.json 一样，启动时合成一张物品表
 export const ITEMS: Record<string, ItemDef> = Object.fromEntries([...(items as ItemDef[]), ...(materials as unknown as ItemDef[])].map(i => [i.id, i]));
 import recipesRaw from '@xt/balance/recipes.json';
+import lifeSkillsRaw from '@xt/balance/life_skills.json';
+import { validateLifeSkills } from './LifeSkills';
 export type PillQuality = 'low' | 'mid' | 'high' | 'supreme';
 export type FireResult = 'skipped' | 'inZone' | 'perfect' | 'missed';
 export interface RecipeDef {
@@ -90,6 +92,10 @@ export interface RecipeDef {
 /** 只读丹方规则；formula/newItems 仅为备注，物品仍只从 items/materials 读。 */
 export const RECIPES: Record<string, RecipeDef> = Object.fromEntries((recipesRaw.recipes as RecipeDef[]).filter(r => inPhase(r)).map(r => [r.id, r]));
 export const ALCHEMY_RULES = recipesRaw.rules;
+/** 与其他 @xt 表共用 shared/snapshot 解析规则；pending 仅为交付标记。 */
+const lifeSkillsValidation = validateLifeSkills(lifeSkillsRaw, recipesRaw.recipes);
+export const LIFE_SKILLS = lifeSkillsValidation.config;
+export const LIFE_SKILL_ERRORS = lifeSkillsValidation.errors;
 export const GROWTH = growth as any;
 export const EXP_TO_NEXT = (expCurve as any).expToNext as Record<string, number>;
 export const MAX_LEVEL = (expCurve as any).maxLevel as number;

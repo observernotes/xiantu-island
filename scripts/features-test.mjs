@@ -12,7 +12,7 @@ let configured = {};
 try { configured = JSON.parse(await fs.readFile(path.join(root, 'data/features.json'), 'utf8')); }
 catch (error) { if (error.code !== 'ENOENT') throw error; }
 const expected = Object.fromEntries(names.map(name => [name,
-  typeof configured?.[name] === 'boolean' ? configured[name] : name !== 'shops' && name !== 'talismanCraft']));
+  typeof configured?.[name] === 'boolean' ? configured[name] : name !== 'shops' && name !== 'talismanCraft' && name !== 'lifeSkillCurve']));
 if (process.env.QA_TIER_EXPECT_FEATURES) {
   // tier1 的清单可早于新开关；完整运行时开关仍在下方与工程快照核对。
   for (const [name, value] of Object.entries(JSON.parse(process.env.QA_TIER_EXPECT_FEATURES))) {
@@ -45,7 +45,7 @@ try {
     const loader = await createServer({ root: fixtureRoot, configFile: false, server: { middlewareMode: true, hmr: false, ws: false }, logLevel: 'error' });
     try {
       const features = await loader.ssrLoadModule('/src/features.ts');
-      assert.deepEqual(features.featureFlags(), Object.fromEntries(names.map(name => [name, configured?.[name] ?? (name !== 'shops' && name !== 'talismanCraft')])));
+      assert.deepEqual(features.featureFlags(), Object.fromEntries(names.map(name => [name, configured?.[name] ?? (name !== 'shops' && name !== 'talismanCraft' && name !== 'lifeSkillCurve')])));
     } finally { await loader.close(); }
   }
 } finally { await fs.rm(fixtureRoot, { recursive: true, force: true }); }
