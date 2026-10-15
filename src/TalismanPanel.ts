@@ -8,11 +8,14 @@ type State = 'normal' | 'hover' | 'pressed' | 'disabled';
 type ButtonName = 'startOrAgain' | 'abandonOrContinue';
 export type TalismanPanelAction = 'start' | 'again' | 'abandon' | 'continue' | 'close';
 export interface TalismanPanelState {
-  primary: 'start' | 'again';
+  primary: 'start' | 'again' | 'abandon';
   secondary: 'abandon' | 'continue';
   primaryDisabled: boolean;
   secondaryDisabled: boolean;
   message: string;
+  primaryLabel?: string;
+  recipes?: { id: string; name: string; selected: boolean; disabled?: boolean }[];
+  selectionDisabled?: boolean;
 }
 interface Layout {
   window: { size: [number, number]; image: string; nineSlice: Slice; close: [number, number]; closeImage: string };
@@ -35,12 +38,13 @@ const label = (key: string, fallback: string) => { const value = t(key); return 
 /** UI-4 受控窗壳：只展示按钮状态、发出意图；预检、确认和结算由调用方负责。 */
 export class TalismanPanel {
   private c?: Phaser.GameObjects.Container;
+  private messageText?: Phaser.GameObjects.Text;
   private model: TalismanPanelState = this.defaults();
   private buttons: Partial<Record<ButtonName, ButtonView>> = {};
   private artUsed: Record<string, 'art' | 'code'> = {};
   private position = { x: 0, y: 0, width: 0, height: 0 };
 
-  constructor(private scene: Phaser.Scene, private onAction: (action: TalismanPanelAction) => void) {
+  constructor(private scene: Phaser.Scene, private onAction: (action: TalismanPanelAction) => void, private onSelect?: (id: string) => void) {
     scene.input.keyboard?.on('keydown-ESC', this.onEscape, this);
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
       this.close();
@@ -56,10 +60,14 @@ export class TalismanPanel {
     this.render();
   }
   setState(state: Partial<TalismanPanelState>) {
+    const before = JSON.stringify({ ...this.model, message: undefined });
     this.model = { ...this.model, ...state };
-    if (this.isOpen()) this.render();
+    if (!this.isOpen()) return;
+    // Countdown changes must preserve an in-progress pointer press on the existing buttons.
+    if (before === JSON.stringify({ ...this.model, message: undefined }) && this.messageText) this.messageText.setText(this.model.message);
+    else this.render();
   }
-  close() { this.c?.destroy(); this.c = undefined; this.buttons = {}; this.artUsed = {}; }
+  close() { this.c?.destroy(); this.c = undefined; this.buttons = {}; this.artUsed = {}; this.messageText = undefined; }
   private onEscape(event: KeyboardEvent) {
     if (this.isOpen() && !event.repeat) { event.preventDefault(); this.onAction('close'); }
   }
@@ -105,7 +113,7 @@ export class TalismanPanel {
       container.add(bg);
       return { state, key, bg, artUsed: this.artUsed[key] };
     });
-    const text = this.scene.add.text(w / 2, h / 2, label(`talisman.${action}`, fallbacks[action]), {
+    const text = this.scene.add.text(w / 2, h / 2, (!secondary && this.model.primaryLabel) || label(`talisman.${action}`, fallbacks[action]), {
       fontFamily: HUD_FONT, fontSize: '14px', color: secondary ? disabled ? S.textColor.disabled : S.textColor.normal : PAPER,
     }).setOrigin(0.5).setScrollFactor(0).setName('talisman-button-label');
     container.add(text);
@@ -142,8 +150,16 @@ export class TalismanPanel {
     this.text(width / 2, -12 + th / 2, label('talisman.title', '制符'), 18).setOrigin(0.5);
     this.box(L.recipeList.panelImage, L.recipeList.panel);
     this.box(L.detail.panelImage, L.detail.panel);
+    const [rx, ry, rw] = L.recipeList.panel;
+    this.model.recipes?.forEach((recipe, index) => {
+      const y = ry + 18 + index * 42;
+      this.text(rx + 12, y, `${recipe.selected ? '› ' : ''}${recipe.name}`, 14, recipe.disabled ? INK_60 : INK)
+        .setWordWrapWidth(rw - 20);
+      if (!this.model.selectionDisabled) this.add(this.scene.add.zone(rx + 4, y - 5, rw - 8, 34).setOrigin(0, 0))
+        .setInteractive({ useHandCursor: true }).on('pointerup', () => this.onSelect?.(recipe.id));
+    });
     const [dx, dy, dw] = L.detail.panel;
-    if (this.model.message) this.text(dx + 16, dy + 20, this.model.message, 14, INK_60).setWordWrapWidth(dw - 32);
+    this.messageText = this.text(dx + 16, dy + 20, this.model.message, 14, INK_60).setWordWrapWidth(dw - 32);
     const [cx, cy] = L.window.close, key = textureKey(L.window.closeImage);
     this.artUsed[key] = this.scene.textures.exists(key) ? 'art' : 'code';
     const close = this.scene.textures.exists(key)

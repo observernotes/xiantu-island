@@ -266,6 +266,71 @@ try {
     eq(s.buttons.abandonOrContinue.textColor, '#765432', 'disabled 字色写死');
     checks.push('内存换表验证窗口/双按钮坐标、独立切片、图片路径与字色');
   });
+  await session('craft-gameplay-save', {}, async page => {
+    eq(await page.evaluate(() => window.__xt.openTalismanCraft('recipe_talisman_fire')), false, '默认开关关闭仍可进入正式制符');
+    await page.evaluate(async () => {
+      window.__xt.setFlag('talismanCraft', true);
+      await window.__xt.loadSave({ name: '制符玩法修士', level: 15, exp: 0, hp: 9999, mp: 9999, stones: 1000,
+        questRewardVersion: 1, ageUpdatedAt: Date.now(), learnedRecipes: ['recipe_spirit_ink', 'recipe_talisman_fire'],
+        quests: { q_talisman_intro: { state: 'done', kills: {} } },
+        inventory: { talisman_paper: 3, spirit_ink: 3 }, position: { mapId: 'qingyun_village', x: 160, y: 352 } });
+      // The core accepts an injected RNG. Keep the real input path deterministic despite Phaser's random calls.
+      window.__scene.talismanSystem.random = () => 0;
+    });
+    const opened = await page.evaluate(() => window.__xt.openTalismanCraft('recipe_talisman_fire'));
+    eq(opened, true, '真实制符入口未打开');
+    await page.waitForFunction(() => window.__xt.talismanCraftSnapshot()?.open === true);
+    let s = await page.evaluate(() => window.__xt.talismanCraftSnapshot());
+    eq(s.view.check.ok, true, '制符预检未通过');
+    ok(await page.evaluate(() => window.__scene.scene.isPaused('game')), '正式窗口未暂停地图');
+    const [x, y, w, h] = s.buttons.startOrAgain.rect;
+    await page.mouse.click(s.position.x + x + w / 2, s.position.y + y + h / 2);
+    await page.waitForFunction(() => window.__xt.talismanCraftSnapshot()?.view.state === 'drawing');
+    eq(await page.evaluate(() => window.__scene.prog.count('talisman_paper')), 2, '开始未一次扣料');
+    await page.waitForFunction(() => window.__xt.talismanCraftSnapshot()?.view.draw?.waitingRelease === false);
+    const beforePause = await page.evaluate(() => {
+      const value = window.__xt.talismanCraftSnapshot().view.draw.remainingMs;
+      window.__scene.game.pause(); return value;
+    });
+    // Wait longer than a full stroke: paused wall time must not consume the gameplay deadline.
+    await page.waitForTimeout(s.view.selectedRecipe.draw.stepTimeMs + 100);
+    await page.evaluate(() => window.__scene.game.resume());
+    await page.waitForFunction(() => window.__xt.talismanCraftSnapshot()?.view.draw?.waitingRelease === false);
+    const afterPause = await page.evaluate(() => window.__xt.talismanCraftSnapshot().view.draw);
+    eq(afterPause.current, 0, '全局暂停期间画符超时推进');
+    ok(afterPause.remainingMs > beforePause - 300, '全局暂停未保留本笔剩余时间');
+    const strokes = s.view.selectedRecipe.draw.strokes;
+    const arrow = { up: 'ArrowUp', down: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' };
+    for (let i = 0; i < strokes.length; i++) {
+      await page.keyboard.press(arrow[strokes[i]]);
+      await page.waitForFunction(index => {
+        const view = window.__xt.talismanCraftSnapshot()?.view;
+        return view?.state === 'settled' || view?.draw?.current > index;
+      }, i);
+    }
+    s = await page.evaluate(() => window.__xt.talismanCraftSnapshot());
+    eq(s.view.state, 'settled', '全笔画后未结算');
+    eq(s.view.result.success, true, '固定种子全对未成功');
+    eq(s.view.result.completion, 1, '实际方向输入完成度错误');
+    eq(s.view.result.quality, 'high', '普通宗门极品未封上品');
+    eq(s.view.result.delivered, true, '成功未实际入包');
+    eq(await page.evaluate(() => window.__scene.prog.countQuality('talisman_fire', 'high')), 1, '品质堆数量错误');
+    const attemptId = s.view.result.attemptId;
+    await page.keyboard.press('Escape');
+    await page.waitForFunction(() => !window.__xt.talismanCraftSnapshot());
+    ok(await page.evaluate(() => window.__scene.scene.isActive('game')), '关闭未恢复地图');
+    await page.evaluate(async () => { const save = window.__xt.exportSave(); await window.__xt.loadSave(save); });
+    eq(await page.evaluate(() => window.__scene.prog.countQuality('talisman_fire', 'high')), 1, '重载重复入包或丢品质');
+    eq(await page.evaluate(() => window.__scene.prog.talisman.attempt.result.attemptId), attemptId, '重载改变已结算attempt');
+    eq(await page.evaluate(() => window.__scene.prog.count('talisman_paper')), 2, '重载重复扣料');
+    const used = await page.evaluate(() => window.__xt.useTalisman('talisman_fire', 'high'));
+    eq(used.ok, true, '实际火符打空发射未成立');
+    eq(await page.evaluate(() => window.__scene.prog.countQuality('talisman_fire', 'high')), 0, '火符打空未扣数量');
+    ok(await page.evaluate(() => window.__scene.prog.talismanUse.cooldowns.talisman_fire > window.__xt.getState().time), '火符打空未存冷却');
+    await page.evaluate(async () => { const save = window.__xt.exportSave(); await window.__xt.loadSave(save); });
+    ok(await page.evaluate(() => window.__scene.prog.talismanUse.cooldowns.talisman_fire > window.__xt.getState().time), '重载清除了符箓冷却');
+    checks.push('正式开关、真实开窗→开始扣料→方向按键→品质封顶→入包→关窗恢复→重载幂等；火符打空消耗及冷却持久');
+  });
   await session('manifest-missing', { missing: keys.map(imagePath) }, async page => {
     const s = await exercise(page, keys);
     for (const key of windowKeys) eq(s.artUsed[key], 'code', `${key}: 窗体未回退`);

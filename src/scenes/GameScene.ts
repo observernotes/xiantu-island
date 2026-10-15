@@ -32,6 +32,9 @@ import { AlchemyPanel, preloadAlchemy, registerAlchemy } from '../AlchemyPanel';
 import { ShopPanel } from '../ShopPanel';
 import { AttrPanel } from '../AttrPanel';
 import { InventoryPanel } from '../InventoryPanel';
+import { TalismanSystem } from '../Talisman';
+import { TalismanUseSystem, nearestTalismanTown, type TalismanFireEffect } from '../TalismanUse';
+import { TalismanScene } from './TalismanScene';
 import { EquipPanel } from '../EquipPanel';
 import { BackgroundArt, type BackgroundConfig } from './BackgroundArt';
 import { EnvironmentArt, type EnvironmentArtConfig } from './EnvironmentArt';
@@ -94,6 +97,10 @@ export class GameScene extends Phaser.Scene {
   gathering!: Gathering;
   alchemySystem!: AlchemySystem;
   alchemy!: AlchemyPanel;
+  talismanSystem!: TalismanSystem;
+  talismanUse!: TalismanUseSystem;
+  private talismanProjectiles: { sprite: Phaser.GameObjects.Image; effect: TalismanFireEffect; x: number; y: number; distance: number; facing: number }[] = [];
+  private talismanCastText?: Phaser.GameObjects.Text;
   shop!: ShopPanel;
   attrPanel!: AttrPanel;
   inventoryPanel!: InventoryPanel;
@@ -171,6 +178,7 @@ export class GameScene extends Phaser.Scene {
     this.openedChests = new Set(this.prog.openedChests);
     this.registry.set('chests', this.openedChests);
     this.mobs = []; this.logs = []; this.logBadges.clear(); this.hudTexts = undefined; this.hudKit = undefined;
+    this.talismanSystem = undefined!; this.talismanUse = undefined!; this.talismanCastText = undefined;
     this.travelling = false; this.curZone = undefined; this.nextDailyUpdateAt = 0; this.sectTrial = undefined;
     registerHudFonts(this);
     registerAlchemy(this);
@@ -214,6 +222,8 @@ export class GameScene extends Phaser.Scene {
     this.player.syncAppearance();
     this.gathering = new Gathering(this);
     this.combat = new SkillCombat(this);
+    this.events.on('skill:cast', () => this.interruptTalisman('attack'));
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.events.removeAllListeners('skill:cast'));
 
     const oneWayCheck = (a: any, plat: any) => {
       const body: Phaser.Physics.Arcade.Body = a.body;
@@ -283,6 +293,7 @@ export class GameScene extends Phaser.Scene {
     this.alchemySystem = new AlchemySystem(this.prog, this.quests);
     this.alchemy = new AlchemyPanel(this, this.prog, this.alchemySystem);
     if (this.alchemySystem.active) this.alchemy.open(this.alchemySystem.active.furnaceId);
+    if (featureEnabled('talismanCraft')) this.setupTalisman();
     this.shop = new ShopPanel(this, this.prog, () => this.sectGrowth, { log: (text, color) => this.log(text, color),
       require: (name, npcId) => this.requireFeature(name, npcId), rankIcon: rankId => this.sectRankBadgeKey(rankId) });
     this.skillBar = new SkillBar(this);
@@ -297,7 +308,8 @@ export class GameScene extends Phaser.Scene {
       this.skillWindow.refresh();
     };
     this.inventoryPanel = new InventoryPanel(this, this.prog, { onChanged: equipmentChanged,
-      openAlchemy: id => this.openAlchemy(id), openSectToken: () => this.openSectToken() });
+      openAlchemy: id => this.openAlchemy(id), openSectToken: () => this.openSectToken(), useTalisman: (id, quality) => this.useTalisman(id, quality),
+      bindTalisman: (slot, id, quality) => this.prog.bindTalismanSlot(slot, id, quality) });
     this.equipPanel = new EquipPanel(this, this.prog, equipmentChanged);
     this.skillBar.onSlot = i => { if (this.skillWindow.open) this.skillWindow.assign(i); };
     this.maybeSpTip();
@@ -325,8 +337,12 @@ export class GameScene extends Phaser.Scene {
     this.stealth.update(0, false);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
       this.sectTrial?.destroy(); this.prog.endTrialSkills();
+      this.talismanUse?.interrupt('map');
+      if (this.scene.isActive('talisman-craft-ui')) this.scene.stop('talisman-craft-ui');
+      this.talismanProjectiles = [];
     });
     this.applyFeatureFlags();
+    if (featureEnabled('talismanCraft')) this.prog.markMapVisited(this.map.id);
     this.prog.setPosition(this.map.id, this.player.x, this.player.y);
     const returned = this.registry.get('sectTrialReturnMessage');
     this.registry.remove('sectTrialReturnMessage');
@@ -561,6 +577,8 @@ export class GameScene extends Phaser.Scene {
     this.backgroundArt?.update(this.player, delta);
     for (const p of this.parallax) p.ts.tilePositionX = this.cameras.main.scrollX * p.f;
     this.updateShots(time);
+    this.updateTalismanUse(delta);
+    if (featureEnabled('talismanCraft')) this.talismanSystem?.claimPending();
     this.regenMp(delta);
     this.combat.update(time, delta);
     this.trialObjects?.update(delta);
@@ -620,7 +638,7 @@ export class GameScene extends Phaser.Scene {
     if (J(k.f1)) this.toggleDebug();
     if (J(k.r)) {
       if (this.sectTrial) { this.sectTrial.exit(); return; }
-      this.player.leaveRope(time); this.player.body.reset(this.map.spawn.x, this.map.spawn.y);
+      this.interruptTalisman('move'); this.player.leaveRope(time); this.player.body.reset(this.map.spawn.x, this.map.spawn.y);
     }
     if (J(k.one)) this.usePill('hp_pill_small');
     if (J(k.two)) this.usePill('qi_pill');
@@ -629,9 +647,14 @@ export class GameScene extends Phaser.Scene {
     if (k.z.isDown && !this.gathering.active && time >= this.nextPickAt) { this.nextPickAt = time + 150; this.tryPickup(); }
     if (J(k.up) && this.player.state2 === 'ground' && this.tryInteract()) return;
     const slotKey: Record<string, Phaser.Input.Keyboard.Key> = { A: k.a, S: k.s, D: k.d, F: k.f, G: k.g, H: k.h, Q: k.q, W: k.w };
-    HOTBAR_SLOTS.forEach((s, i) => { if (J(slotKey[s.label]) && !this.gathering.active) this.combat.tryCast(i); });
+    HOTBAR_SLOTS.forEach((s, i) => { if (J(slotKey[s.label]) && !this.gathering.active) {
+      const talisman = featureEnabled('talismanCraft') ? this.prog.talismanQuickSlots[i] : null;
+      if (talisman) this.useTalisman(talisman.item, talisman.quality);
+      else this.combat.tryCast(i);
+    } });
     this.checkReach();
     if (this.player.y > this.map.height + 100) {
+      this.interruptTalisman('move');
       if (this.sectTrial) { this.sectTrial.playerDown(); return; }
       this.player.body.reset(this.map.spawn.x, this.map.spawn.y);
     }
@@ -779,6 +802,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   doAttack(rect: Phaser.Geom.Rectangle) {
+    this.interruptTalisman('attack');
     if (this.sectTrial?.ended) return;
     const p = this.player, s = p.facing;
     if (this.anims.exists('fx_sword_slash_play')) {      // 刀光：第 2 帧播放，普通混合（加色在白云背景上看不见）
@@ -824,6 +848,7 @@ export class GameScene extends Phaser.Scene {
     if (!this.player.hurt(this.time.now, fromX, dmg, knock)) return;
     this.prog.mp = Math.max(0, this.prog.mp - absorbed * mpPerDamage);
     this.gathering.cancel();
+    this.interruptTalisman('damage');
     this.prog.hp = Math.max(0, this.prog.hp - dmg);
     this.player.hp = this.prog.hp;
     this.damageNumber(this.player.x, this.player.y - 70, dmg, '#c45cff', '#2a0040');
@@ -831,6 +856,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   playerDie() {
+    this.talismanUse?.onDeath();
     const p = this.player;
     p.dead = true; p.state2 = 'hurt'; p.hurtUntil = Infinity;
     this.clearAbandonedBossSummons();
@@ -901,6 +927,152 @@ export class GameScene extends Phaser.Scene {
       prompt.setVisible((!furnace || featureEnabled('alchemyPhase1')) && !blocked && !this.player.dead && !this.hasNearbyDrop()
         && Math.abs(o.x - this.player.x) < 40 && Math.abs(o.y - this.player.y) < 48);
     }
+  }
+
+  private inTalismanCombat() {
+    return this.player.dead || this.player.state2 === 'hurt' || this.time.now < this.player.attackLockUntil
+      || this.mobs.some(mob => !mob.dead && (mob.st === 'chase' || mob.st === 'attack' || mob.st === 'hit'));
+  }
+  private setupTalisman() {
+    this.talismanSystem = new TalismanSystem(this.prog, this.quests, () => Math.random(), {
+      context: () => ({ inCombat: this.inTalismanCombat(), inTrial: !!(this.trial || this.sectTrial || this.map.trial || TRIAL_BY_MAP[this.map.id]) }),
+    });
+    this.setupTalismanUse();
+  }
+  private setupTalismanUse() {
+    this.talismanProjectiles = [];
+    this.talismanUse = new TalismanUseSystem(this.prog, {
+      context: () => ({ mapId: this.map.id, alive: !this.player.dead && this.prog.hp > 0,
+        available: !this.travelling && !this.dialog?.open && !this.skillWindow?.open && !this.alchemy?.isOpen()
+          && !this.shop?.isOpen() && !this.attrPanel?.isOpen() && !this.scene.isActive('talisman-craft-ui')
+          && this.player.state2 !== 'hurt' && this.player.state2 !== 'rope' && this.time.now >= this.player.attackLockUntil,
+        inTrial: !!(this.trial || this.sectTrial || this.map.trial || TRIAL_BY_MAP[this.map.id]),
+        closedBossFight: this.mobs.some(mob => { const zone = mob.arenaZone;
+          return !mob.dead && !!zone?.props.bossOnly && this.player.x >= zone.x && this.player.x <= zone.x + zone.w
+            && this.player.y >= zone.y && this.player.y <= zone.y + zone.h; }),
+        facing: this.player.facing, visitedMaps: this.prog.visitedMaps }),
+      emitProjectile: effect => this.emitTalismanFire(effect),
+      returnDestination: () => this.talismanDestination(),
+      validateDestination: destination => {
+        if (!this.prog.visitedMaps.includes(destination.mapId)) return false;
+        const reachable = this.talismanDestination([destination.mapId]);
+        return !!reachable && reachable.mapId === destination.mapId && reachable.x === destination.x && reachable.y === destination.y;
+      },
+      teleport: destination => {
+        if (!TILED_MAPS[destination.mapId] || this.travelling) return false;
+        // The source data and safe landing are validated synchronously before committing the save.
+        // Queue the scene transition only after the inventory transaction has had a chance to save.
+        this.prog.position = { mapId: destination.mapId, x: destination.x, y: destination.y };
+        const timer = this.time.delayedCall(0, () => {
+          this.travelling = true; this.player.body.setVelocity(0, 0);
+          this.scene.restart({ map: destination.mapId, pos: { x: destination.x, y: destination.y } });
+        });
+        return () => timer.remove(false);
+      },
+    }, { now: gameNow });
+  }
+  private talismanDestination(visitedMaps = this.prog.visitedMaps) {
+    return nearestTalismanTown(this.map.id, { level: this.prog.level, quests: this.prog.quests, visitedMaps,
+      edgeOpen: edge => mapEntryOpen(edge.target, edge.source) && !(!featureEnabled('foxBoss') && edge.props.bossOnly
+        && (edge.target === 'lingxi_path' || edge.props.unlockQuest === 'q_fox')) });
+  }
+  useTalisman(id: string, quality: 'low' | 'mid' | 'high' | 'supreme') {
+    if (!featureEnabled('talismanCraft')) return { ok: false, key: 'talisman.use_unavailable' };
+    if (!this.talismanUse) this.setupTalisman();
+    const result = this.talismanUse.use(id, quality);
+    if (result.key) this.log(t(result.key, result.params), result.ok ? '#7fe0c0' : '#ffb0b0');
+    if (result.ok && result.casting) { this.closeItemPanels(); this.gathering.cancel(); this.player.body.setVelocityX(0); }
+    return result;
+  }
+  private interruptTalisman(reason: 'move' | 'attack' | 'damage' | 'death' | 'map') {
+    if (this.talismanUse?.interrupt(reason)) this.log(t('talisman.return_interrupted'), '#ffb0b0');
+  }
+  private emitTalismanFire(effect: TalismanFireEffect) {
+    if (!this.player.active || this.player.dead) return false;
+    const key = 'fx_talisman_fire_fallback';
+    if (!this.textures.exists(key)) {
+      const graphics = this.make.graphics({}, false);
+      graphics.fillStyle(0xf2d04a).fillRect(0, 0, 18, 24).lineStyle(2, 0xe5483a).strokeRect(1, 1, 16, 22);
+      graphics.generateTexture(key, 18, 24); graphics.destroy();
+    }
+    const x = this.player.x, y = this.player.y - SPEC.bodyH / 2;
+    const sprite = this.add.image(x, y, key).setDepth(12).setName('talisman-fire-projectile');
+    const projectile = { sprite, effect, x, y, distance: 0, facing: effect.facing };
+    this.talismanProjectiles.push(projectile);
+    return () => { sprite.destroy(); this.talismanProjectiles = this.talismanProjectiles.filter(p => p !== projectile); };
+  }
+  private updateTalismanUse(delta: number) {
+    if (!featureEnabled('talismanCraft')) return;
+    const cast = this.talismanUse?.cast;
+    if (cast) {
+      const keys = this.keys;
+      if (keys.left.isDown || keys.right.isDown || keys.up.isDown || keys.down.isDown || keys.space.isDown || keys.alt.isDown || keys.c.isDown || keys.r.isDown
+        || Math.abs(this.player.body.velocity.x) > 0 || Math.abs(this.player.body.velocity.y) > 0) this.interruptTalisman('move');
+      if (keys.ctrl.isDown || keys.x.isDown || ['a', 's', 'd', 'f', 'g', 'h', 'q', 'w'].some(key => keys[key]?.isDown)) this.interruptTalisman('attack');
+    }
+    const result = this.talismanUse?.update();
+    if (result?.key) this.log(t(result.key, result.params), result.ok ? '#7fe0c0' : '#ffb0b0');
+    const currentCast = this.talismanUse?.cast;
+    if (currentCast) {
+      if (!this.talismanCastText) this.talismanCastText = this.add.text(640, 545, '', { fontFamily: HUD_FONT, fontSize: '18px', color: PAPER,
+        backgroundColor: '#3b2a20dd', padding: { x: 10, y: 6 } }).setOrigin(0.5).setScrollFactor(0).setDepth(145);
+      this.talismanCastText.setVisible(true).setText(t('talisman.return_cast', { town: currentCast.destination.name ?? currentCast.destination.mapId,
+        seconds: (Math.max(0, currentCast.endsAt - gameNow()) / 1000).toFixed(1) }));
+    } else this.talismanCastText?.setVisible(false);
+    for (const projectile of this.talismanProjectiles) {
+      if (!projectile.sprite.active) continue;
+      const effect = projectile.effect, distance = Math.min(effect.projectileSpeed * delta / 1000, effect.rangePx - projectile.distance);
+      const fromX = projectile.sprite.x, toX = fromX + projectile.facing * distance, y = projectile.sprite.y;
+      const hit = new Phaser.Geom.Rectangle(Math.min(fromX, toX) - effect.hitWidth / 2, y - effect.hitHeight / 2,
+        Math.abs(toX - fromX) + effect.hitWidth, effect.hitHeight);
+      const solids = this.map.solids.getChildren().filter(obj => {
+        const body = obj.body as Phaser.Physics.Arcade.StaticBody;
+        return Phaser.Geom.Intersects.RectangleToRectangle(hit, new Phaser.Geom.Rectangle(body.x, body.y, body.width, body.height));
+      });
+      const contactDistance = (body: Phaser.Physics.Arcade.Body | Phaser.Physics.Arcade.StaticBody) => Math.max(0, projectile.facing > 0
+        ? body.left - effect.hitWidth / 2 - fromX : fromX - body.right - effect.hitWidth / 2);
+      const firstSolid = solids.map(obj => contactDistance(obj.body as Phaser.Physics.Arcade.StaticBody)).sort((a, b) => a - b)[0];
+      const monster = this.mobs.filter(mob => !mob.dead && Phaser.Geom.Intersects.RectangleToRectangle(hit,
+        new Phaser.Geom.Rectangle(mob.body.x, mob.body.y, mob.body.width, mob.body.height)))
+        .sort((a, b) => contactDistance(a.body) - contactDistance(b.body))[0];
+      if (monster && (firstSolid === undefined || contactDistance(monster.body) < firstSolid)) {
+        // Reuse the existing defense, level gap, hit, death, quest and loot pipeline with absolute configured attack.
+        const dmg = this.prog.fixedDamageTo(effect.baseDamage, monster.def.level, monster.def.def);
+        monster.takeHit(this.time.now, dmg, projectile.facing);
+        this.damageNumber(monster.x, monster.y - monster.body.height - 10, dmg, '#ffb02e', '#6b2a00');
+        projectile.sprite.destroy();
+      } else if (firstSolid !== undefined) projectile.sprite.destroy();
+      else { projectile.sprite.x = toX; projectile.distance += distance;
+        if (projectile.distance >= effect.rangePx) projectile.sprite.destroy(); }
+    }
+    this.talismanProjectiles = this.talismanProjectiles.filter(projectile => projectile.sprite.active);
+  }
+  talismanView(recipeId?: string) {
+    return featureEnabled('talismanCraft') ? this.talismanSystem?.view(recipeId) ?? null : null;
+  }
+  openTalisman(recipeId?: string) {
+    if (!featureEnabled('talismanCraft') || this.player.dead || this.dialog.open || this.skillWindow.open || this.alchemy.isOpen()
+      || this.shop.isOpen() || this.attrPanel?.isOpen() || this.trial || this.sectTrial || this.map.trial || TRIAL_BY_MAP[this.map.id]
+      || this.travelling || this.inTalismanCombat()) return false;
+    if (!this.talismanSystem) this.setupTalisman();
+    this.gathering.cancel(); this.closeItemPanels(); this.player.body.setVelocity(0, 0);
+    const initialHeld = (['up', 'down', 'left', 'right'] as const).filter(direction => this.keys[direction]?.isDown);
+    this.input.keyboard?.resetKeys();
+    if (this.input.keyboard) this.input.keyboard.enabled = false;
+    if (!this.scene.get('talisman-craft-ui')) this.scene.add('talisman-craft-ui', TalismanScene, false);
+    this.physics.pause(); this.scene.launch('talisman-craft-ui', { owner: this, system: this.talismanSystem, recipeId, initialHeld }); this.scene.pause();
+    return true;
+  }
+  private learnTalisman(npcId: string) {
+    if (!featureEnabled('talismanCraft')) return;
+    const npc = NPCS[npcId];
+    if (this.quests.state('q_talisman_intro') === 'done') {
+      this.dialog.show([{ speaker: npc.name, text: t('talisman.intro_done') }], npc.sprite); return;
+    }
+    if (!this.quests.isActive('q_talisman_intro') && !this.quests.available('q_talisman_intro')) {
+      this.dialog.show([{ speaker: npc.name, text: t('talisman.locked') }], npc.sprite); return;
+    }
+    this.talkTo(npcId, 'q_talisman_intro', true);
   }
 
   openAlchemy(publicFurnace?: string) {
@@ -1009,6 +1181,8 @@ export class GameScene extends Phaser.Scene {
   applyFeatureFlags() {
     this.dialog?.dismiss(); this.skillWindow?.close(); this.shop?.update();
     this.refreshHelpText();
+    if (featureEnabled('talismanCraft') && !this.talismanSystem) { this.setupTalisman(); this.prog.markMapVisited(this.map.id); }
+    if (!featureEnabled('talismanCraft')) { this.interruptTalisman('map'); if (this.scene.isActive('talisman-craft-ui')) this.scene.stop('talisman-craft-ui'); }
     this.inventoryPanel?.update(); this.equipPanel?.update();
     if (this.sectTrial && !this.sectTrial.ended && (!featureEnabled('fiveSectClasses') || !featureEnabled('v05Maps'))) this.sectTrial.exit();
     if (!featureEnabled('foxBoss')) {
@@ -1238,6 +1412,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private travelToMap(map: string, portal?: string, returning = false, onCancelled?: () => void) {
+    this.interruptTalisman('map');
     if (this.sectTrial && !this.sectTrial.ended) { this.sectTrial.exit(); return; }
     map = sectEntryMap(map);
     if (!mapEntryOpen(map, this.map.id, returning)) { onCancelled?.(); this.log(FEATURE_UNAVAILABLE, '#aaaaaa'); return; }
@@ -1367,13 +1542,14 @@ export class GameScene extends Phaser.Scene {
     const sectOffer = this.sectTrialOfferFor(npcId, questId);
     if (sectOffer) { this.offerSectTrial(npcId, sectOffer); return; }
     const dailyIds = this.quests.npcDailyQuestIds(npcId);
+    const hasTalismanService = featureEnabled('talismanCraft') && npcId === 'lingfu_envoy';
     const services = this.sectGrowth.services(npcId).filter(service => (service.type !== 'sect_shop' || featureEnabled('shops'))
       && featureEnabled(service.type === 'sect_promotion'
         ? 'sectRanks' : service.type === 'sect_donation' ? 'sectDonations' : 'sectShopLibrary'));
     const ordinaryShop = this.sectGrowth.ordinaryCatalog(npcId);
     const hasOrdinaryShop = featureEnabled('shops') && (ordinaryShop.ok || this.sectGrowth.ordinarySellCatalog(npcId).ok);
     const hasRecipeShop = this.sectGrowth.recipeCatalog(npcId).ok;
-    if (!questId && !skipMenu && (dailyIds.length || services.length || hasOrdinaryShop || hasRecipeShop)) {
+    if (!questId && !skipMenu && (dailyIds.length || services.length || hasOrdinaryShop || hasRecipeShop || hasTalismanService)) {
       this.player.body.setVelocityX(0);
       const ordinaryIds = this.quests.npcQuestIds(npcId).filter(id => QUESTS_REF[id] && !QUESTS_REF[id].daily
         && (this.quests.available(id) || this.quests.isActive(id)));
@@ -1386,7 +1562,11 @@ export class GameScene extends Phaser.Scene {
             reason: disabled ? state === 'done' ? t('quest.complete', { name: questName(q) }) : t('sect.ui.config_pending') : questDescription(q),
             onSelect: () => this.talkTo(npcId, id) };
         }),
-        ...ordinaryIds.map(id => ({ label: questName(QUESTS_REF[id]), onSelect: () => this.talkTo(npcId, id) })),
+        ...ordinaryIds.filter(id => !hasTalismanService || id !== 'q_talisman_intro').map(id => ({ label: questName(QUESTS_REF[id]), onSelect: () => this.talkTo(npcId, id) })),
+        ...(hasTalismanService ? [
+          { label: t('talisman.entry_learn'), onSelect: () => this.learnTalisman(npcId) },
+          { label: t('talisman.entry_craft'), onSelect: () => this.openTalisman() },
+        ] : []),
         ...services.map(service => ({ label: t(service.type === 'sect_promotion' ? 'sect.promotion.menu'
           : service.type === 'sect_library' ? 'sect.library.menu' : service.type === 'sect_donation' ? 'sect.donation.menu' : 'sect.shop.menu'),
           reason: service.allowed ? undefined : t(service.key),

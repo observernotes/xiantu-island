@@ -1,4 +1,4 @@
-import { ITEMS, TILED_MAPS, type PillQuality } from './data';
+import { ITEMS, NPCS, TILED_MAPS, type PillQuality } from './data';
 import {
   TalismanUseSystem, emptyTalismanUseState, normalizeTalismanUseState, talismanUseConfigErrors,
   talismanDamageMultiplier, talismanGatherBonus, nearestTalismanTown, reachableTalismanTown,
@@ -65,14 +65,13 @@ for (const edit of [
   eq(f.system.use('talisman_gather', 'low').ok, true, 'different talismans have independent cooldown groups');
   f.advance(f.items.talisman_fire.use.cooldownMs); eq(f.system.use('talisman_fire', 'low').ok, true, 'exact cooldown boundary permits use');
 }
-for (const scenario of ['disabled', 'quantity', 'level', 'dead', 'state', 'trial', 'mp', 'spawn', 'save'] as const) {
+for (const scenario of ['disabled', 'quantity', 'level', 'dead', 'state', 'mp', 'spawn', 'save'] as const) {
   const f = ready();
   if (scenario === 'disabled') f.disable();
   if (scenario === 'quantity') f.prog.inventory['talisman_fire:low'] = 0;
   if (scenario === 'level') f.prog.level = 14;
   if (scenario === 'dead') f.context.alive = false;
   if (scenario === 'state') f.context.available = false;
-  if (scenario === 'trial') f.context.inTrial = true;
   if (scenario === 'mp') { f.items.talisman_fire.use.mpCost = 5; f.prog.mp = 4; }
   if (scenario === 'spawn') f.noProjectile();
   if (scenario === 'save') f.saveFail();
@@ -147,6 +146,17 @@ for (const scenario of ['town', 'closedBoss', 'noDestination', 'badLanding', 'te
   eq(f.teleports.length, 0, `${scenario} no migration`);
 }
 
+// Trial restrictions are specific to return; the other items use their normal state checks.
+for (const id of ['talisman_fire', 'talisman_guard', 'talisman_gather']) {
+  const f = ready(); f.context.inTrial = true;
+  eq(f.system.use(id, 'low').ok, true, `${id} has no invented blanket trial prohibition`);
+}
+{
+  const f = ready(); f.context.inTrial = true;
+  eq(f.system.use('talisman_return', 'low').key, 'talisman.return_blocked', 'trial forbids return specifically');
+  eq(f.prog.countQuality('talisman_return', 'low'), 10, 'trial return rejection consumes nothing');
+}
+
 // Invalid shared-field quality overrides cannot bypass validation.
 for (const [id, field, value] of [['talisman_guard', 'durationMs', -1], ['talisman_guard', 'reductionCap', 1], ['talisman_gather', 'sources', ['quest']], ['talisman_fire', 'projectileSpeed', 0], ['talisman_return', 'destination', 'safe_zone']] as const) {
   const f = ready(); f.items[id].effect.byQuality.low[field] = value;
@@ -169,6 +179,30 @@ for (const [id, field, value] of [['talisman_guard', 'durationMs', -1], ['talism
   eq(Object.keys(normalizeTalismanUseState(raw, expiry).cooldowns).length, 0, 'offline expires saved cooldowns');
   const doubled: TalismanUseState = { ...restored, buffs: [...restored.buffs, { ...restored.buffs[0], quality: 'low' }] };
   eq(normalizeTalismanUseState(doubled, f.time()).buffs.length, 2, 'duplicate type sanitized without stacking');
+}
+
+// Turning the flag on after loading malformed legacy state never dereferences null.
+{
+  const f = ready();
+  f.prog.talismanUse = null as unknown as TalismanUseState;
+  const normalized = new TalismanUseSystem(f.prog, f.host, { now: f.time, enabled: () => true });
+  eq(f.prog.talismanUse.version, 1, 'enabled constructor defaults malformed old state');
+  eq(normalized.use('talisman_fire', 'low').ok, true, 'legacy null state permits valid use after defaulting');
+  f.prog.talismanUse = null as unknown as TalismanUseState;
+  new TalismanUseSystem(f.prog, f.host, { now: f.time, enabled: () => false });
+  eq(f.prog.talismanUse, null, 'disabled constructor preserves malformed old data');
+  let enabled = false;
+  const lazy = new TalismanUseSystem(f.prog, f.host, { now: f.time, enabled: () => enabled });
+  enabled = true; eq(lazy.use('talisman_guard', 'low').ok, true, 'runtime enable normalizes before precheck');
+  const future = { version: 2, opaque: { newField: 'keep' } } as unknown as TalismanUseState;
+  f.prog.talismanUse = future;
+  eq(JSON.stringify(normalizeTalismanUseState(future, f.time())), JSON.stringify(future), 'future schema preserved verbatim');
+  const unsupported = new TalismanUseSystem(f.prog, f.host, { now: f.time, enabled: () => true });
+  eq(unsupported.use('talisman_fire', 'low').key, 'talisman.config_error', 'future schema safely rejects actions');
+  unsupported.onDeath();
+  eq(JSON.stringify(f.prog.talismanUse), JSON.stringify(future), 'unsupported state not downgraded by constructor/death');
+  eq(talismanGatherBonus(future, f.time()), 0, 'future schema never grants unknown gather effect');
+  eq(talismanDamageMultiplier(future, f.time()), 1, 'future schema never applies unknown guard effect');
 }
 
 // Return navigation uses reachable visited towns, ignores safeZone, and honors explicit map flags.
@@ -199,6 +233,32 @@ function map(id: string, targetIds: string[] = [], properties: Record<string, un
   eq(isTalismanTown('qingyun_village', maps), true, 'explicit design village fallback');
   maps.qingyun_village.properties.returnTown = false; eq(isTalismanTown('qingyun_village', maps), false, 'explicit table value wins over fallback');
   eq(isTalismanTown('sect', maps), false, 'safeZone alone never town');
+}
+{
+  const maps: Record<string, any> = { field: map('field', ['mid', 'b']), mid: map('mid', ['a', 'field']),
+    a: map('a', [], { returnTown: true }), b: map('b', [], { returnTown: true }) };
+  const access = { level: 15, quests: {}, visitedMaps: ['a', 'b'], edgeOpen: () => true };
+  eq(nearestTalismanTown('field', access, maps)?.mapId, 'b', 'shortest route wins before alphabetical order');
+  maps.b.layers[0].objects[0].x = -1;
+  eq(nearestTalismanTown('field', access, maps)?.mapId, 'a', 'invalid nearest landing falls back to next reachable town');
+  maps.a.layers.push({ name: 'ground', data: Array.from({ length: 100 }, (_, i) => i === 11 ? 1 : 0) });
+  eq(nearestTalismanTown('field', access, maps), undefined, 'blocked playerStart never chosen; cycles terminate');
+}
+{
+  const npcId = '__talisman_test_ferry', previous = NPCS[npcId];
+  NPCS[npcId] = { id: npcId, name: '', map: 'dock', sprite: '', dialog: [], quests: [], ferryRoutes: [
+    { id: 'sail', label: '', targetMap: 'town', cost: 0, reqLevel: 15, unlockQuest: 'sailing' },
+  ] };
+  try {
+    const dock = map('dock'); dock.layers[0].objects.push({ type: 'npc', name: npcId } as any);
+    const maps = { dock, town: map('town', [], { returnTown: true }) };
+    const access = { level: 15, quests: {} as Record<string, { state: string }>, visitedMaps: ['town'], edgeOpen: () => true };
+    eq(nearestTalismanTown('dock', access, maps), undefined, 'locked ferry connection excluded');
+    access.quests.sailing = { state: 'done' };
+    eq(nearestTalismanTown('dock', access, maps)?.mapId, 'town', 'unlocked ferry connection traversed');
+    NPCS[npcId].phase = 99;
+    eq(nearestTalismanTown('dock', access, maps), undefined, 'future ferry NPC cannot create an accessible edge');
+  } finally { if (previous) NPCS[npcId] = previous; else delete NPCS[npcId]; }
 }
 {
   const f = ready();

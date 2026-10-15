@@ -1,6 +1,6 @@
 import recipesRaw from '@xt/balance/recipes.json';
 import { DrawStroke, TalismanSystem, TALISMAN_QUALITIES, emptyTalismanSave, normalizeTalismanSave,
-  readTalismanConfig, type TalismanHost, type TalismanDirection, type TalismanResult } from './Talisman';
+  readTalismanConfig, type TalismanHost, type TalismanSave, type TalismanDirection, type TalismanResult } from './Talisman';
 import { type PillQuality } from './data';
 import { setFeatureFlag } from './features';
 
@@ -122,6 +122,10 @@ for (const id of ['recipe_talisman_fire', 'recipe_talisman_guard', 'recipe_talis
   d.input(['up'], 10001); eq(d.view().current, 0, '恢复先等全松开'); d.input([], 10010);
   eq(d.view().remainingMs, 50, '恢复前等待释放也不占剩余时限');
   eq(d.input(['up'], 10059), 'correct', '暂停前剩余时间继续');
+  const opening = new DrawStroke('craft', ['up'], 100);
+  opening.input(['right'], 40); opening.pause(50); opening.resume(10000); opening.input([], 10010);
+  eq(opening.view().remainingMs, 100, '打开时等待释放期间失焦不消耗首笔预算');
+  eq(opening.input(['up'], 10109), 'correct', '初始等待恢复后保留完整时间');
 }
 // 试炼策略不设时限，错笔只重画当前道，不读取正式材料、品质、概率。
 {
@@ -194,11 +198,20 @@ for (const mutate of [
   (table: any) => { table.recipes.find((r: any) => r.id === 'recipe_talisman_fire').baseRate = undefined; },
   (table: any) => { table.recipes.find((r: any) => r.id === 'recipe_talisman_fire').draw.strokes = []; },
   (table: any) => { table.recipes.find((r: any) => r.id === 'recipe_talisman_fire').draw.stepTimeMs = 0; },
+  (table: any) => { table.recipes.find((r: any) => r.id === 'recipe_talisman_fire').output = 'spirit_ink'; },
 ]) {
   const table = JSON.parse(JSON.stringify(recipesRaw)); mutate(table); const messages: string[] = [];
   const { h, system } = ready({ config: table, report: message => messages.push(message) });
   ok(messages.length, '配置错误已报告'); eq(system.start('recipe_talisman_fire').reason, 'config', '非法方禁用');
   eq(h.talisman.attempt, null, '非法方不消耗不开始'); eq(system.grind().ok, true, '研墨不借用画符规则');
+}
+{
+  const table = JSON.parse(JSON.stringify(recipesRaw));
+  table.recipes.find((r: any) => r.id === 'recipe_talisman_fire').id = '__proto__';
+  const { system } = ready({ config: table, report() {} });
+  eq(system.check('__proto__').reason, 'config', '保留id不会落入对象原型');
+  const { system: invalidRoll } = ready(); invalidRoll.random = () => NaN; invalidRoll.start('recipe_talisman_fire');
+  eq(draw(invalidRoll, 4)?.success, false, '非法随机源不能默认必成');
 }
 {
   const { h, system } = ready(); system.start('recipe_talisman_fire');
@@ -214,4 +227,10 @@ for (const mutate of [
 }
 same(normalizeTalismanSave(undefined), emptyTalismanSave(), '旧档缺字段补默认');
 same(normalizeTalismanSave({ version: 99, attempt: {} }), emptyTalismanSave(), '损坏旧字段安全默认');
+{
+  const h = new Host(); h.talisman = null as unknown as TalismanSave;
+  setFeatureFlag('talismanCraft', false); new TalismanSystem(h); eq(h.talisman, null, '关闭时构造不迁移损坏的新增字段');
+  setFeatureFlag('talismanCraft', true); const system = new TalismanSystem(h);
+  same(h.talisman, emptyTalismanSave(), '运行时开启才安全迁移旧容器'); eq(system.check('recipe_talisman_fire').ok, true, '迁移后可正常制作');
+}
 console.log(`talisman craft tests ok: ${assertions} assertions (quality boundaries, draw edges, trial strategy, transactions, pending output, recovery, feature gate)`);

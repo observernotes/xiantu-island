@@ -12,6 +12,7 @@ import type { EnvironmentArtConfig } from './scenes/EnvironmentArt';
 import { SPEC } from './config/feel';
 import { featureFlags, isFeatureName, setFeatureFlag } from './features';
 import type { DialogChoice } from './UI';
+import { TalismanScene } from './scenes/TalismanScene';
 import { TalismanPanel, type TalismanPanelAction, type TalismanPanelState } from './TalismanPanel';
 
 type EventType = 'loaderror' | 'console.error' | 'error' | 'unhandledrejection' | 'scene' | 'quest:complete';
@@ -100,6 +101,7 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig): Phaser.Game
     scene.skillWindow.refresh();
   }
   async function restart(mapId: string, pos?: { x: number; y: number }) {
+    if (scene.scene.isActive('talisman-craft-ui')) scene.scene.stop('talisman-craft-ui');
     restarting = true;
     try {
       await new Promise<void>((resolve, reject) => {
@@ -245,6 +247,30 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig): Phaser.Game
       return api.setTalismanPanelState({ secondaryDisabled: disabled });
     },
     talismanSnapshot() { current(); return copy({ ...talismanPanel.snapshot(), actions: [...talismanActions] }); },
+    openTalismanCraft(recipeId?: string) {
+      const s = current(); talismanPanel.close();
+      return s.openTalisman(recipeId);
+    },
+    talismanCraftSnapshot() {
+      const s = current();
+      return s.scene.isActive('talisman-craft-ui') ? copy((s.scene.get('talisman-craft-ui') as TalismanScene).snapshot()) : null;
+    },
+    talismanCraftAction(action: TalismanPanelAction, recipeId?: string) {
+      const s = current(), ui = s.scene.get('talisman-craft-ui') as TalismanScene | null;
+      if (!s.scene.isActive('talisman-craft-ui') || !ui) throw new Error(`${marker}: talisman panel closed`);
+      if (recipeId) ui.select(recipeId);
+      ui.action(action); return api.talismanCraftSnapshot();
+    },
+    useTalisman(id: string, quality: 'low' | 'mid' | 'high' | 'supreme') { return copy(current().useTalisman(id, quality)); },
+    bindTalismanSlot(index: number, item: string | null, quality: 'low' | 'mid' | 'high' | 'supreme' = 'low') {
+      const s = current(); return s.prog.bindTalismanSlot(index, item, quality);
+    },
+    giveCraftedItem(id: string, n: number, quality: 'low' | 'mid' | 'high' | 'supreme') {
+      const s = current();
+      if (!ITEMS[id] || !Number.isSafeInteger(n) || n <= 0 || !['low', 'mid', 'high', 'supreme'].includes(quality)
+        || !s.prog.addCraftedItem(id, n, quality)) throw new Error(`${marker}: invalid quality item`);
+      persist();
+    },
     attrSnapshot() { return copy(current().attrPanel.snapshot()); },
     openInventoryPanel() { const s = current(); s.openInventoryPanel(); return copy(s.inventoryPanel.snapshot()); },
     inventorySnapshot() { return copy(current().inventoryPanel.snapshot()); },

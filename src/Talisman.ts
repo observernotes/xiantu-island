@@ -76,7 +76,11 @@ export class DrawStroke {
     return now >= this.stepStartedAt + this.stepTimeMs ? this.judge('timeout', now, frame) : null;
   }
   pause(now = this.now) {
-    if (!this.paused && finite(now) && now >= this.now) { this.now = this.pauseAt = now; this.paused = true; }
+    if (!this.paused && finite(now) && now >= this.now) {
+      // 等待全松开的时间也须冻结；否则在等待阶段失焦会吃掉未亮起的首笔预算。
+      if (this.waitingRelease) { this.stepStartedAt += now - this.releaseWaitAt; this.releaseWaitAt = now; }
+      this.now = this.pauseAt = now; this.paused = true;
+    }
   }
   resume(now = this.now) {
     if (!this.paused || !finite(now) || now < this.now) return;
@@ -203,7 +207,7 @@ export function readTalismanConfig(input: unknown = recipesRaw) {
       || !Array.isArray(entry.materials) || !entry.materials.length
       || !entry.materials.every(m => record(m) && typeof m.item === 'string' && Object.prototype.hasOwnProperty.call(ITEMS, m.item) && positiveCount(m.count))
       || new Set(entry.materials.map(m => (m as Record<string, unknown>).item)).size !== entry.materials.length) { fail(id, 'invalid required recipe / output / materials / requirements'); continue; }
-    if (entry.type === 'talisman' && (!(ITEMS[entry.output as string] as unknown as Record<string, unknown>).qualityEnabled
+    if (entry.type === 'talisman' && ((ITEMS[entry.output as string] as unknown as Record<string, unknown>).qualityEnabled !== true
       || !rules || !probability(entry.baseRate) || !record(entry.draw)
       || !Array.isArray(entry.draw.strokes) || !entry.draw.strokes.length || !entry.draw.strokes.every(direction)
       || !finite(entry.draw.stepTimeMs) || entry.draw.stepTimeMs <= 0)) { fail(id, 'invalid rules / baseRate / draw'); continue; }
@@ -222,10 +226,12 @@ export class TalismanSystem {
     public random: () => number = () => Math.random(), private options: TalismanOptions = {}) {
     this.config = readTalismanConfig(options.config ?? recipesRaw);
     if (featureEnabled('talismanCraft')) {
+      // 关闭开关时保留的原始旧字段，在本次真正启用时才迁移。
+      this.prog.talisman = normalizeTalismanSave(this.prog.talisman, false);
       this.config.errors.forEach(message => (options.report ?? console.error)(message));
       this.recover();
     }
-    this.selected = prog.talisman.attempt?.recipeId ?? Object.keys(this.config.recipes)[0] ?? '';
+    this.selected = prog.talisman?.attempt?.recipeId ?? Object.keys(this.config.recipes)[0] ?? '';
   }
   get active() { return this.prog.talisman.attempt?.state === 'drawing' ? this.prog.talisman.attempt : null; }
   get knownRecipes() { return Object.values(this.config.recipes).filter(recipe => this.prog.learnedRecipes.includes(recipe.id)); }

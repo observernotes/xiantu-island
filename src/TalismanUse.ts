@@ -24,6 +24,8 @@ const ratio = (v: unknown, max = 1): v is number => nonnegative(v) && v <= max;
 export function normalizeTalismanUseState(raw: unknown, now = gameNow()): TalismanUseState {
   const state = emptyTalismanUseState();
   if (!record(raw)) return state;
+  // Preserve unknown future schemas verbatim; runtime actions will refuse to interpret them.
+  if (raw.version !== undefined && raw.version !== 1) return raw as unknown as TalismanUseState;
   if (record(raw.cooldowns)) for (const [group, expireAt] of Object.entries(raw.cooldowns)) {
     if (group && !['__proto__', 'constructor', 'prototype'].includes(group) && positive(expireAt) && expireAt > now) state.cooldowns[group] = expireAt;
   }
@@ -48,7 +50,7 @@ export function normalizeTalismanUseState(raw: unknown, now = gameNow()): Talism
 
 /** Apply after defense and before the combat pipeline's single final rounding. */
 export function talismanDamageMultiplier(state: TalismanUseState | undefined, now = gameNow(), otherRatios: number[] = []): number {
-  const guard = state?.buffs?.find(b => b.itemId === 'talisman_guard' && b.expireAt > now);
+  const guard = state?.version === 1 && Array.isArray(state.buffs) ? state.buffs.find(b => b.itemId === 'talisman_guard' && b.expireAt > now) : undefined;
   let multiplier = otherRatios.filter(v => ratio(v)).reduce((result, r) => result * (1 - r), 1);
   if (guard && ratio(guard.damageReductionRatio, 0.5) && ratio(guard.reductionCap, 0.5)) {
     multiplier *= 1 - guard.damageReductionRatio;
@@ -58,7 +60,7 @@ export function talismanDamageMultiplier(state: TalismanUseState | undefined, no
 }
 export function talismanGatherBonus(state: TalismanUseState | undefined, now = gameNow(), source = 'kill'): number {
   if (source !== 'kill') return 0;
-  const buff = state?.buffs?.find(b => b.itemId === 'talisman_gather' && b.expireAt > now);
+  const buff = state?.version === 1 && Array.isArray(state.buffs) ? state.buffs.find(b => b.itemId === 'talisman_gather' && b.expireAt > now) : undefined;
   return buff && ratio(buff.expBonusRatio) ? buff.expBonusRatio : 0;
 }
 
@@ -154,6 +156,18 @@ export class TalismanUseSystem {
       const errors = talismanUseConfigErrors(this.items[id]);
       if (errors.length) this.configErrors[id] = errors;
     }
+    if (this.enabled()) this.ensureState();
+  }
+  private ensureState(): boolean {
+    const raw: unknown = this.prog.talismanUse;
+    if (record(raw) && raw.version !== undefined && raw.version !== 1) {
+      this.configErrors.$save = [`talismanUse.version: unsupported ${String(raw.version)}`]; return false;
+    }
+    delete this.configErrors.$save;
+    if (!record(raw) || raw.version !== 1 || !Array.isArray(raw.buffs) || !record(raw.cooldowns)) {
+      this.prog.talismanUse = normalizeTalismanUseState(raw, this.now());
+    }
+    return true;
   }
   private item(id: string, quality: PillQuality): ValidItem | undefined {
     const raw = this.items[id];
@@ -163,10 +177,11 @@ export class TalismanUseSystem {
   private reject(key: string, params?: Record<string, string | number>): TalismanUseResult { return { ok: false, key, ...(params ? { params } : {}) }; }
   precheck(id: string, quality: PillQuality, completingReturn = false): TalismanUseResult {
     if (!this.enabled()) return this.reject('talisman.use_unavailable');
+    if (!this.ensureState()) return this.reject('talisman.config_error');
     const item = this.item(id, quality);
     if (!item) return this.reject('talisman.config_error');
     const context = this.host.context();
-    if (!context.alive || this.prog.hp <= 0 || !context.available || context.inTrial || this.casting && !completingReturn) return this.reject('talisman.use_unavailable');
+    if (!context.alive || this.prog.hp <= 0 || !context.available || this.casting && !completingReturn) return this.reject('talisman.use_unavailable');
     if (this.prog.level < item.reqLevel) return this.reject('talisman.use_level', { level: item.reqLevel });
     if (this.prog.countQuality(id, quality) < item.use.consumeCount) return this.reject('talisman.use_lack');
     const remaining = (this.prog.talismanUse.cooldowns[item.use.cooldownGroup] ?? 0) - this.now();
@@ -176,7 +191,7 @@ export class TalismanUseSystem {
       const current = this.prog.talismanUse.buffs.find(b => b.itemId === id && b.expireAt > this.now());
       if (current && TALISMAN_QUALITIES.indexOf(current.quality) > TALISMAN_QUALITIES.indexOf(quality)) return this.reject('talisman.use_stronger');
     }
-    if (id === 'talisman_return' && (context.closedBossFight || !mapAllowsReturn(TILED_MAPS[context.mapId]))) return this.reject('talisman.return_blocked');
+    if (id === 'talisman_return' && (context.inTrial || context.closedBossFight || !mapAllowsReturn(TILED_MAPS[context.mapId]))) return this.reject('talisman.return_blocked');
     return { ok: true };
   }
   use(id: string, quality: PillQuality): TalismanUseResult {
@@ -246,7 +261,7 @@ export class TalismanUseSystem {
     if (!this.casting) return false; this.casting = null; return true;
   }
   onDeath(): void {
-    this.interrupt('death'); if (!this.enabled()) return;
+    this.interrupt('death'); if (!this.enabled() || !this.ensureState()) return;
     if (this.prog.talismanUse.buffs.some(b => b.itemId === 'talisman_guard')) this.prog.runSaveTransaction(() => {
       this.prog.talismanUse.buffs = this.prog.talismanUse.buffs.filter(b => b.itemId !== 'talisman_guard'); return true;
     });
@@ -313,6 +328,7 @@ export function nearestTalismanTown(currentMap: string, access: TalismanTownAcce
     if (object.type === 'ferry' && typeof props.returnTo === 'string') edges.push({ source, target: props.returnTo, kind: 'ferry', props });
     if (object.type !== 'npc' && object.type !== 'ferry') continue;
     const npc = NPCS[props.npc ?? object.name];
+    if (!inPhase(props) || !inPhase(npc)) continue;
     for (const route of npc?.ferryRoutes ?? []) edges.push({ source, target: route.targetMap, kind: 'ferry', props: route });
   }
   const visited = new Set([currentMap]), queue = [currentMap], towns = new Set(access.visitedMaps);

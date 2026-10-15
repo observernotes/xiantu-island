@@ -734,7 +734,8 @@ export class Progress {
   }
   /** 当前无格数上限，只拒绝非法物品、数量及计数溢出。 */
   canAddCraftedItem(id: string, n: number): boolean {
-    return !!ITEMS[id] && Number.isSafeInteger(n) && n > 0 && Number.isSafeInteger(this.count(id) + n);
+    return Object.prototype.hasOwnProperty.call(ITEMS, id) && Number.isSafeInteger(n) && n > 0
+      && Number.isSafeInteger(this.count(id)) && this.count(id) >= 0 && Number.isSafeInteger(this.count(id) + n);
   }
   addCraftedItem(id: string, n: number, quality?: PillQuality): boolean {
     if (!this.canAddCraftedItem(id, n)) return false;
