@@ -591,22 +591,27 @@ try {
   passed('刷新读档保留任务、丹方、品质、炼丹经验、采集冷却和丹炉');
 
   await page.keyboard.press('i', { delay: 60 });
-  await page.waitForFunction(() => window.__scene.invText.visible && window.__scene.inventoryFurnace.visible,
+  await page.waitForFunction(() => window.__scene.inventoryPanel.isOpen(),
     null, { timeout: 3000 });
+  const itemPoint = await page.evaluate(() => {
+    const bounds = window.__scene.children.getByName('inventory-panel').getByName('inventory-item-bronze_furnace').getBounds();
+    return { x: bounds.centerX, y: bounds.centerY };
+  });
+  await page.mouse.click(itemPoint.x, itemPoint.y); await page.waitForTimeout(100);
   const inventoryFurnace = await page.evaluate(() => {
-    const scene = window.__scene, button = scene.inventoryFurnace, bounds = button.getBounds();
+    const scene = window.__scene, button = scene.children.getByName('inventory-panel').getByName('inventory-activate'), bounds = button.getBounds();
     return { x: bounds.x + bounds.width / 2, y: bounds.y + bounds.height / 2,
-      furnace: button.getData('furnace'), count: scene.prog.count(button.getData('furnace')) };
+      furnace: scene.inventoryPanel.snapshot().selectedId, count: scene.prog.count('bronze_furnace') };
   });
   assert.equal(inventoryFurnace.furnace, 'bronze_furnace', '背包丹炉入口未使用获得的青铜炉');
   await page.evaluate(() => window.__xt.setFlag('alchemyPhase1', false));
-  assert.equal(await page.evaluate(() => window.__scene.inventoryFurnace.visible), false, '关闭炼丹仍显示背包丹炉入口');
+  assert.equal(await page.evaluate(() => window.__scene.inventoryPanel.snapshot().action), '', '关闭炼丹仍显示背包丹炉操作');
   await page.mouse.click(inventoryFurnace.x, inventoryFurnace.y); await page.waitForTimeout(100);
   assert.equal(await page.evaluate(() => window.__scene.alchemy.isOpen()), false, '关闭炼丹的背包入口仍可点击开炉');
   await page.evaluate(() => window.__xt.setFlag('alchemyPhase1', true));
-  await page.waitForFunction(() => window.__scene.inventoryFurnace.visible, null, { timeout: 3000 });
+  await page.waitForFunction(() => window.__scene.inventoryPanel.snapshot().action === 'furnace', null, { timeout: 3000 });
   await page.mouse.click(inventoryFurnace.x, inventoryFurnace.y);
-  await page.waitForFunction(() => window.__scene.alchemy.isOpen() && !window.__scene.invText.visible,
+  await page.waitForFunction(() => window.__scene.alchemy.isOpen() && !window.__scene.inventoryPanel.isOpen(),
     null, { timeout: 3000 });
   assert.equal(await page.evaluate(id => window.__scene.prog.count(id), inventoryFurnace.furnace), inventoryFurnace.count,
     '使用背包丹炉消耗了丹炉物品');

@@ -43,7 +43,7 @@ async function diagnostic(page) {
         return { map: scene?.map?.id, frame: scene?.game?.loop?.frame,
           trial: scene?.sectTrial?.def?.id, stage: scene?.sectTrial?.stage,
           pending: scene?.prog?.pendingSectTrial, selectedSect: scene?.prog?.selectedSect,
-          tokenVisible: scene?.children?.getByName('inventory:five-sect-token')?.visible,
+          inventory: scene?.inventoryPanel?.snapshot(),
           dialog: scene?.dialog && { open: scene.dialog.open, choices: scene.dialog.choices.map(choice => choice.label) } };
       }),
       new Promise(resolve => { timer = setTimeout(() => resolve({ unavailable: 'diagnostic timed out' }), 1500); }),
@@ -139,13 +139,15 @@ async function standAtNpc(page, npcId) {
 }
 async function chooseSectToken(page, sect) {
   await page.keyboard.press('i', { delay: 45 });
-  await page.waitForFunction(() => window.__scene.children.getByName('inventory:five-sect-token')?.visible,
+  await page.waitForFunction(() => window.__scene.inventoryPanel.isOpen(),
     null, { timeout: 3000, polling: 50 });
-  const point = await page.evaluate(() => {
-    const bounds = window.__scene.children.getByName('inventory:five-sect-token').getBounds();
-    return { x: bounds.centerX, y: bounds.centerY };
-  });
-  await page.mouse.click(point.x, point.y);
+  for (const name of ['inventory-item-five_sect_token', 'inventory-activate']) {
+    const point = await page.evaluate(name => {
+      const bounds = window.__scene.children.getByName('inventory-panel').getByName(name).getBounds();
+      return { x: bounds.centerX, y: bounds.centerY };
+    }, name);
+    await page.mouse.click(point.x, point.y); await page.waitForTimeout(80);
+  }
   await page.waitForFunction(() => window.__scene.dialog.choices.length === 5, null, { timeout: 3000, polling: 50 });
   await page.keyboard.press(String(classes.findIndex(row => row.sect === sect) + 1), { delay: 45 });
   assert.deepEqual(await page.evaluate(() => ({ selected: window.__scene.prog.selectedSect, job: window.__scene.prog.job,

@@ -219,6 +219,10 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig): Phaser.Game
     exportSave() { current(); persist(); return scene.prog.exportSave(); },
     openAttrPanel() { const s = current(); s.openAttrPanel(); return copy(s.attrPanel.snapshot()); },
     attrSnapshot() { return copy(current().attrPanel.snapshot()); },
+    openInventoryPanel() { const s = current(); s.openInventoryPanel(); return copy(s.inventoryPanel.snapshot()); },
+    inventorySnapshot() { return copy(current().inventoryPanel.snapshot()); },
+    openEquipPanel() { const s = current(); s.openEquipPanel(); return copy(s.equipPanel.snapshot()); },
+    equipSnapshot() { return copy(current().equipPanel.snapshot()); },
     joinSect(id: string) {
       const s = current(), cls = CLASS_LIST.find(c => c.sect === id);
       if (!cls || !s.prog.advanceClass(cls.id)) throw new Error(`${marker}: sect unavailable: ${id}`);
