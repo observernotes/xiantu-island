@@ -12,6 +12,7 @@ import type { EnvironmentArtConfig } from './scenes/EnvironmentArt';
 import { SPEC } from './config/feel';
 import { featureFlags, isFeatureName, setFeatureFlag } from './features';
 import type { DialogChoice } from './UI';
+import { TalismanPanel, type TalismanPanelAction, type TalismanPanelState } from './TalismanPanel';
 
 type EventType = 'loaderror' | 'console.error' | 'error' | 'unhandledrejection' | 'scene' | 'quest:complete';
 type XtEvent = { type: EventType; time: number; data: unknown };
@@ -49,6 +50,8 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig): Phaser.Game
   window.addEventListener('unhandledrejection', onRejection);
 
   const scene = new GameScene();
+  let talismanPanel: TalismanPanel;
+  const talismanActions: TalismanPanelAction[] = [];
   let ready = false, restarting = false;
   let previousMap: string | null = null;
   let unsubscribeQuest: (() => void) | undefined;
@@ -72,6 +75,11 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig): Phaser.Game
   const create = scene.create.bind(scene);
   scene.create = data => {
     create(data);
+    talismanActions.length = 0;
+    talismanPanel = new TalismanPanel(scene, action => {
+      talismanActions.push(action);
+      if (action === 'close') talismanPanel.close();
+    });
     ready = true;
     unsubscribeQuest?.();
     unsubscribeQuest = scene.quests.onCompleted(reward => emit('quest:complete', { id: reward.quest.id, daily: !!reward.daily }));
@@ -226,6 +234,17 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig): Phaser.Game
       })), rankIcon);
     },
     openAttrPanel() { const s = current(); s.openAttrPanel(); return copy(s.attrPanel.snapshot()); },
+    // UI-4 展示夹具：只记录意图，不启动制符或改变材料/存档。
+    openTalismanPanel(state: Partial<TalismanPanelState> = {}) {
+      current(); talismanActions.length = 0; talismanPanel.open(state); return api.talismanSnapshot();
+    },
+    setTalismanPanelState(state: Partial<TalismanPanelState>) {
+      current(); talismanPanel.setState(state); return api.talismanSnapshot();
+    },
+    setTalismanButtonDisabled(disabled: boolean) {
+      return api.setTalismanPanelState({ secondaryDisabled: disabled });
+    },
+    talismanSnapshot() { current(); return copy({ ...talismanPanel.snapshot(), actions: [...talismanActions] }); },
     attrSnapshot() { return copy(current().attrPanel.snapshot()); },
     openInventoryPanel() { const s = current(); s.openInventoryPanel(); return copy(s.inventoryPanel.snapshot()); },
     inventorySnapshot() { return copy(current().inventoryPanel.snapshot()); },
