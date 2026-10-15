@@ -6,6 +6,8 @@ import { CLASS_LIST, CLASS_RULES, classDef, classEntryEnabled, classEntrySkill, 
 import { DAILY_QUEST_LIMIT, dailyQuestDay, dailyContribution, dailyRewardsReady, type DailyQuestReward } from './DailyQuests';
 import { isBrewSession, type BrewSession } from './Alchemy';
 import { featureEnabled } from './features';
+import { emptyTalismanSave, normalizeTalismanSave, type TalismanSave } from './Talisman';
+import { emptyTalismanUseState, normalizeTalismanUseState, talismanDamageMultiplier, talismanGatherBonus, type TalismanUseState } from './TalismanUse';
 
 /** 自动加点：加点界面做好前的旧档公式，仅用于迁移种子；UI-6 起升级只发未分配点。 */
 export const AUTO_STATS = { rootBone: 2, agility: 2, insight: 1, spirit: 0 } as Record<string, number>;
@@ -130,6 +132,11 @@ export class Progress {
   quests: Record<string, { state: 'active' | 'done'; kills: Record<string, number>; crafted?: Record<string, number>; reached?: boolean; talked?: Record<string, boolean> }> = {};
   /** 已学配方包含丹方、研墨和符方；具体工作台按 type 筛选。 */
   learnedRecipes: string[] = [];
+  /** 制符版本独立于丹炉；关闭入口时保留已有记录。 */
+  talisman: TalismanSave = emptyTalismanSave();
+  talismanUse: TalismanUseState = emptyTalismanUseState();
+  visitedMaps: string[] = [];
+  talismanQuickSlots: ({ item: string; quality: PillQuality } | null)[] = Array.from({ length: HOTBAR_SLOTS.length }, () => null);
   alchemyLevel = 1;
   alchemyExp = 0;
   /** 品质分桶与普通背包共存，旧档未分桶的丹药视为下品。 */
@@ -233,11 +240,18 @@ export class Progress {
   get skillsUnlocked() { return this.realm.id !== 'mortal'; }
 
   exportSave(): Record<string, unknown> {
-    const { transientItems, trialSkills, trialHotbarBefore, ...persistent } = this;
+    const { transientItems, trialSkills, trialHotbarBefore, talisman, talismanUse, visitedMaps, talismanQuickSlots, ...persistent } = this;
+    // 发版关口关闭且从未用过制符时，保持 v0.5.2 的存档形状；已存在的记录继续保存。
+    const talismanFields = {
+      ...(featureEnabled('talismanCraft') || JSON.stringify(talisman) !== JSON.stringify(emptyTalismanSave()) ? { talisman } : {}),
+      ...(featureEnabled('talismanCraft') || JSON.stringify(talismanUse) !== JSON.stringify(emptyTalismanUseState()) ? { talismanUse } : {}),
+      ...(featureEnabled('talismanCraft') || visitedMaps.length ? { visitedMaps } : {}),
+      ...(featureEnabled('talismanCraft') || talismanQuickSlots.some(Boolean) ? { talismanQuickSlots } : {}),
+    };
     const inventory: Record<string, number> = { ...this.inventory };
     for (const [id, count] of Object.entries(transientItems)) inventory[id] = Math.max(0, this.count(id) - count);
     const temporaryIds = Object.keys(trialSkills);
-    return JSON.parse(JSON.stringify({ ...persistent, inventory, hotbar: trialHotbarBefore ?? this.hotbar,
+    return JSON.parse(JSON.stringify({ ...persistent, ...talismanFields, inventory, hotbar: trialHotbarBefore ?? this.hotbar,
       allocatedStats: normalizedStats(this.allocatedStats), unspentStatPoints: count(this.unspentStatPoints) ? this.unspentStatPoints : 0,
       buffs: this.buffs.filter(b => !temporaryIds.includes(b.id)),
       skillCooldowns: Object.fromEntries(Object.entries(this.skillCooldowns).filter(([id]) => !temporaryIds.includes(id))) }));
@@ -436,7 +450,7 @@ export class Progress {
     if (!this.#saveMuted || q.daily || this.quests[q.id]?.state !== 'done') return undefined;
     const rw = q.rewards, cls = classForQuest(q.id), job = cls?.id ?? rw.job;
     if (job && !this.advanceClass(job)) return undefined;
-    const exp = rw.exp ? this.gainExp(rw.exp, this.level)
+    const exp = rw.exp ? this.gainExp(rw.exp, this.level, 'quest')
       : { gained: 0, levels: 0, blocked: false, overflowed: 0, overflowFilled: false };
     if (rw.spiritStone) this.stones += rw.spiritStone;
     // 拜入道袍已由 advanceClass 发放并换装，不能重复进背包。
@@ -455,7 +469,7 @@ export class Progress {
     const contribution = this.claimSectDailyQuest(sourceId, now);
     if (contribution === undefined) return undefined;
     const q = QUESTS[sourceId], rw = q.rewards;
-    const exp = rw.exp ? this.gainExp(rw.exp, this.level)
+    const exp = rw.exp ? this.gainExp(rw.exp, this.level, 'quest')
       : { gained: 0, levels: 0, blocked: false, overflowed: 0, overflowFilled: false };
     this.stones += rw.spiritStone;
     const items = (rw.items ?? []).map(it => {
@@ -557,6 +571,12 @@ export class Progress {
     const attack = damageStat === 'matk' ? this.matk : this.atk;
     return Math.max(1, Math.round((attack * ratio * roll * (crit ? critMultiplier : 1) - monDef) * gap));
   }
+  /** 符箓绝对基础伤害，只复用等级差和扣防，不乘角色攻击/职业技能增幅。 */
+  fixedDamageTo(baseDamage: number, monLevel: number, monDef: number) {
+    const n = monLevel - this.level;
+    const gap = n > 0 ? Math.max(0.6, 1 - 0.05 * n) : 1;
+    return Math.max(1, Math.round((baseDamage * (0.9 + Math.random() * 0.2) - monDef) * gap));
+  }
   /** 单次技能伤害：元素和暴击先乘攻击，之后每段分别扣防。剑修旧公式保持原样。 */
   skillDamageTo(id: string, level: number, monLevel: number, monDef: number, ratio: number, forceCrit = false) {
     const def = SKILLS[id];
@@ -568,14 +588,17 @@ export class Progress {
     return this.damageTo(monLevel, monDef, ratio * (1 + elementBonus + this.buffBonus('damageBonus')), stat, forceCrit, critMultiplier);
   }
   /** 怪打玩家：同一公式 */
-  damageFrom(monAtk: number, ratio = 1) {
-    return Math.max(1, Math.round(monAtk * ratio * (0.9 + Math.random() * 0.2) - this.def));
+  damageFrom(monAtk: number, ratio = 1, otherReductions: number[] = []) {
+    const raw = Math.max(1, monAtk * ratio * (0.9 + Math.random() * 0.2) - this.def);
+    const multiplier = featureEnabled('talismanCraft') ? talismanDamageMultiplier(this.talismanUse, gameNow(), otherReductions) : 1;
+    return Math.max(1, Math.round(raw * multiplier));
   }
 
   /** 加修为，返回升了几级。怪比玩家低 5 级以上按 max(0.2, 1−0.1(n−4)) 衰减；突破关口停住 */
-  gainExp(base: number, monLevel: number): { gained: number; levels: number; blocked: boolean; overflowed: number; overflowFilled: boolean } {
+  gainExp(base: number, monLevel: number, source: 'kill' | 'quest' = 'kill'): { gained: number; levels: number; blocked: boolean; overflowed: number; overflowFilled: boolean } {
     const n = this.level - monLevel;
-    const raw = Math.max(1, Math.round(base * (n >= 5 ? Math.max(0.2, 1 - 0.1 * (n - 4)) : 1) * (1 + this.statBonus('expBonus'))));
+    const talismanBonus = featureEnabled('talismanCraft') ? talismanGatherBonus(this.talismanUse, gameNow(), source) : 0;
+    const raw = Math.max(1, Math.round(base * (n >= 5 ? Math.max(0.2, 1 - 0.1 * (n - 4)) : 1) * (1 + this.statBonus('expBonus') + talismanBonus)));
     return this.settleExp(raw);
   }
 
@@ -697,11 +720,47 @@ export class Progress {
     this.pillQualities[id] = counts;
   }
 
+  /** 与旧丹药共用同一品质账本，普通物品保持 itemId → count。 */
+  qualityEnabled(id: string) { return ITEMS[id]?.qualityEnabled === true; }
+  qualityCounts(id: string) { return this.pillQualityCounts(id); }
+  countQuality(id: string, quality: PillQuality): number { return this.qualityCounts(id)[quality] ?? 0; }
+  removeQuality(id: string, n: number, quality: PillQuality): boolean {
+    if (!Number.isSafeInteger(n) || n <= 0 || !['low', 'mid', 'high', 'supreme'].includes(quality) || this.countQuality(id, quality) < n) return false;
+    const qualities = this.qualityCounts(id);
+    qualities[quality] -= n;
+    this.pillQualities[id] = qualities;
+    this.inventory[id] = this.count(id) - n;
+    return true;
+  }
+  /** 当前无格数上限，只拒绝非法物品、数量及计数溢出。 */
+  canAddCraftedItem(id: string, n: number): boolean {
+    return !!ITEMS[id] && Number.isSafeInteger(n) && n > 0 && Number.isSafeInteger(this.count(id) + n);
+  }
+  addCraftedItem(id: string, n: number, quality?: PillQuality): boolean {
+    if (!this.canAddCraftedItem(id, n)) return false;
+    if (this.qualityEnabled(id)) {
+      if (!quality || !['low', 'mid', 'high', 'supreme'].includes(quality)) return false;
+      this.addCraftedPill(id, n, quality);
+    } else this.addItem(id, n);
+    return true;
+  }
+  bindTalismanSlot(index: number, item: string | null, quality?: PillQuality): boolean {
+    if (!featureEnabled('talismanCraft') || !Number.isSafeInteger(index) || index < 0 || index >= HOTBAR_SLOTS.length) return false;
+    if (item !== null && (!['talisman_fire', 'talisman_guard', 'talisman_return', 'talisman_gather'].includes(item)
+      || !this.qualityEnabled(item) || !quality || !['low', 'mid', 'high', 'supreme'].includes(quality))) return false;
+    return this.runSaveTransaction(() => { this.talismanQuickSlots[index] = item === null ? null : { item, quality: quality! }; return true; }) === true;
+  }
+  markMapVisited(id: string): boolean {
+    if (!featureEnabled('talismanCraft') || !Object.prototype.hasOwnProperty.call(TILED_MAPS, id) || this.visitedMaps.includes(id)) return false;
+    return this.runSaveTransaction(() => { this.visitedMaps.push(id); return true; }) === true;
+  }
+
   grantRecipe(id: string) {
     if (!RECIPES[id] || this.learnedRecipes.includes(id)) return false;
     this.learnedRecipes.push(id); return true;
   }
   grantQuestRecipes(q: QuestDef) {
+    if (q.id === 'q_talisman_intro' && !featureEnabled('talismanCraft')) return [];
     const granted: string[] = [];
     for (const id of q.rewards.recipes ?? []) if (this.grantRecipe(id)) granted.push(id);
     return granted;
@@ -818,6 +877,22 @@ export class Progress {
     for (const id of Object.keys(this.pillQualities)) {
       if (!ITEMS[id] || this.count(id) <= 0) delete this.pillQualities[id];
       else this.pillQualities[id] = this.pillQualityCounts(id);
+    }
+    if (!Array.isArray(this.visitedMaps)) this.visitedMaps = [];
+    if (!Array.isArray(this.talismanQuickSlots)) this.talismanQuickSlots = Array.from({ length: HOTBAR_SLOTS.length }, () => null);
+    if (featureEnabled('talismanCraft')) {
+      const before = JSON.stringify([this.talisman, this.talismanUse, this.visitedMaps, this.pillQualities, this.talismanQuickSlots]);
+      this.talismanQuickSlots = Array.from({ length: HOTBAR_SLOTS.length }, (_, index) => {
+        const slot = this.talismanQuickSlots[index];
+        return slot && ['talisman_fire', 'talisman_guard', 'talisman_return', 'talisman_gather'].includes(slot.item)
+          && ['low', 'mid', 'high', 'supreme'].includes(slot.quality) ? { item: slot.item, quality: slot.quality } : null;
+      });
+      this.talisman = normalizeTalismanSave(this.talisman);
+      this.talismanUse = normalizeTalismanUseState(this.talismanUse, gameNow());
+      this.visitedMaps = [...new Set((Array.isArray(this.visitedMaps) ? this.visitedMaps : []).filter(id => typeof id === 'string' && Object.prototype.hasOwnProperty.call(TILED_MAPS, id)))];
+      if (this.position && !this.visitedMaps.includes(this.position.mapId) && TILED_MAPS[this.position.mapId]) this.visitedMaps.push(this.position.mapId);
+      for (const id of Object.keys(this.inventory)) if (this.qualityEnabled(id) && this.count(id) > 0) this.pillQualities[id] = this.qualityCounts(id);
+      if (before !== JSON.stringify([this.talisman, this.talismanUse, this.visitedMaps, this.pillQualities, this.talismanQuickSlots])) this.save();
     }
     if (!this.gatherRespawnAt || typeof this.gatherRespawnAt !== 'object' || Array.isArray(this.gatherRespawnAt)) this.gatherRespawnAt = {};
     this.gatherRespawnAt = Object.fromEntries(Object.entries(this.gatherRespawnAt).filter(([, at]) => typeof at === 'number' && Number.isFinite(at) && at > 0));

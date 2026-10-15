@@ -296,6 +296,7 @@ export const LIFESPAN = pacing.lifespan;
 
 /** strings_zh.json 里还没有的界面文案。有表内 key 时以表为准，不要改 data/。 */
 const LOCAL_STRINGS: Record<string, string> = {
+  'talisman.config_error': '制符配置有误，暂不可用。',
   'talisman.intro_offer': '炼气十五级后，我便教你制符。',
   'talisman.intro_material': '符纸去商店买，妖兽材料配灵草研成灵墨。',
   'talisman.intro_draw': '依次按方向键，画得越准，成符品质越好。',

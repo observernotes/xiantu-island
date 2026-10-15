@@ -40,6 +40,7 @@
     "test:smoke:talisman-ui": "timeout 300s node scripts/talisman-ui-smoke.mjs",
     "test:smoke:sect-growth": "timeout 120s node scripts/sect-growth-smoke.mjs",
     "test:altar": "timeout 60s node scripts/altar-test.mjs",
+    "test:talisman": "timeout 120s node scripts/talisman-test.mjs",
     "test:alchemy": "timeout 60s node scripts/alchemy-test.mjs && timeout 60s node scripts/gather-test.mjs",
     "test:smoke:alchemy": "timeout 120s node scripts/alchemy-smoke.mjs",
     "test:smoke:v05": "timeout 120s node scripts/v05-smoke.mjs",
