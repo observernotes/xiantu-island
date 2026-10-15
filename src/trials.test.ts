@@ -5,6 +5,7 @@ import { Progress } from './Progress';
 import { QuestSystem } from './QuestSystem';
 import { SectTrialState, type SectTrialConfig, type TrialDirection } from './SectTrialState';
 import { GameScene } from './scenes/GameScene';
+import { SectTrialObjects } from './scenes/SectTrialObjects';
 import { SKILLS } from './skills';
 
 let assertions = 0;
@@ -207,6 +208,44 @@ function finishObjectives(trial: SectTrialState, context: string) {
   eq(failed.result, 'fail', '靶场目标不足到达 30 秒即失败');
   const stored = JSON.stringify(failed); failed.targetDead('late'); failed.returnToken(); failed.exit();
   eq(JSON.stringify(failed), stored, '超时后目标事件不能转为胜利');
+}
+
+// 画符 modal 期间的脚底偏移不能关桌；解除 modal 或完成画符仍正常清理。
+{
+  const def = sectTrials.find(row => row.sect === 'lingfu')!;
+  const desk = { type: 'draw_desk', name: 'draw_desk', x: 100, y: 200, w: 0, h: 0, props: {} };
+  const player = { x: desk.x, feet: desk.y };
+  const trial = { stage: 'draw', ended: false, blocksInput: false };
+  const actions: string[] = [];
+  const prompt = { setOrigin() { return this; }, setDepth() { return this; }, setVisible() { return this; } };
+  const scene = {
+    atSectTrialEntrance: false, map: { trial: def.id, objects: [desk], spawns: [], zones: [] },
+    player, sectTrial: trial, time: { now: 0 },
+    events: { once() {}, emit(_name: string, event: { action: string }) { actions.push(event.action); } },
+    textures: { exists: () => false }, cache: { json: { get: () => undefined } },
+    add: { text: () => prompt }, log() {},
+  } as unknown as GameScene;
+  const objects = new SectTrialObjects(scene);
+  actions.length = 0;
+  eq(objects.interact(desk), true, '真实画符桌交互被接管');
+  same(actions, ['draw_start'], '画符桌交互派发开画事件');
+  trial.blocksInput = true;
+  for (const [x, feet] of [[desk.x + 81, desk.y], [desk.x, desk.y + 65]]) {
+    Object.assign(player, { x, feet });
+    objects.update(16);
+  }
+  same(actions, ['draw_start'], '画符 modal 横向或脚底超距仍保留画符交互');
+  trial.blocksInput = false;
+  objects.update(16); objects.update(16);
+  same(actions, ['draw_start', 'draw_leave'], '解除 modal 后超距离桌一次并清理');
+  Object.assign(player, { x: desk.x, feet: desk.y });
+  objects.interact(desk);
+  trial.blocksInput = true;
+  objects.finishDrawing();
+  trial.blocksInput = false;
+  player.x = desk.x + 81;
+  objects.update(16);
+  same(actions, ['draw_start', 'draw_leave', 'draw_start'], '完成画符清理后超距不再派发离桌');
 }
 
 // 偷到令牌是中间目标；必须带回起点。发现判定在去程与回程都生效。

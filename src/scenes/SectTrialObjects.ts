@@ -148,7 +148,9 @@ export class SectTrialObjects {
       p.prompt.setVisible(near && !this.tokenTaken.has(p.object)
         && (p.object.type !== 'draw_desk' || !this.scene.sectTrial || this.scene.sectTrial.stage === 'draw'));
     }
-    if (this.activeDesk && (Math.abs(this.activeDesk.object.x - player.x) > 80 || Math.abs(this.activeDesk.object.y - feet) > 64)) {
+    // 画符已锁定移动，面板交给完成/结束逻辑关闭，避免脚底偏移误触发离桌。
+    if (this.activeDesk && !this.scene.sectTrial?.blocksInput
+      && (Math.abs(this.activeDesk.object.x - player.x) > 80 || Math.abs(this.activeDesk.object.y - feet) > 64)) {
       this.play(this.activeDesk, 'idle');
       this.emit('draw_leave', this.activeDesk.object);
       this.activeDesk = undefined;

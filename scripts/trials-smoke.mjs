@@ -215,11 +215,14 @@ async function draw(page) {
   assert.equal(before, 0, '画符前不能预刷木靶');
   await page.waitForFunction(() => {
     const scene = window.__scene;
-    if (scene.player.state2 !== 'ground') return false;
-    scene.physics.pause(); return true;
+    // reset 会清空 blocked；等真实落地后再暂停，不能只看上一帧的 ground。
+    if (scene.player.state2 !== 'ground' || !scene.player.body.blocked.down) return false;
+    scene.physics.pause(); scene.player.state2 = 'ground'; return true;
   }, null, { timeout: 3000, polling: 50 });
-  await page.keyboard.press('z', { delay: 45 });
-  await page.waitForFunction(() => window.__scene.sectTrial?.blocksInput, null, { timeout: 3000 });
+  await page.keyboard.down('z');
+  try {
+    await page.waitForFunction(() => window.__scene.sectTrial?.blocksInput, null, { timeout: 3000 });
+  } finally { await page.keyboard.up('z'); }
   const arrows = { up: 'ArrowUp', right: 'ArrowRight', down: 'ArrowDown', left: 'ArrowLeft' };
   await page.keyboard.press('ArrowLeft', { delay: 45 });
   await page.waitForFunction(() => window.__scene.logs.some(line => line.text === '笔画错了，这道符重画'),
@@ -270,8 +273,8 @@ async function pickupToken(page) {
   });
   await page.waitForFunction(() => {
     const scene = window.__scene;
-    if (scene.player.state2 !== 'ground') return false;
-    scene.physics.pause(); return true;
+    if (scene.player.state2 !== 'ground' || !scene.player.body.blocked.down) return false;
+    scene.physics.pause(); scene.player.state2 = 'ground'; return true;
   }, null, { timeout: 3000, polling: 50 });
   await page.keyboard.press('z', { delay: 45 });
   assert.deepEqual(await page.evaluate(() => ({ stage: window.__scene.sectTrial.stage,
