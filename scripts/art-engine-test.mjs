@@ -15,8 +15,8 @@ const projectRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const fixtureRoot = path.join(projectRoot, 'scripts/fixtures/art-engine');
 const dataRoot = findRoot(projectRoot);
 const legacyBodySize = [26, 58];
-// 96 旧精修回退后、丹炉/五宗帖背包入口合入的冻结基线；早于 UI-5 商店窗。
-const baselineRevision = '0dc2834a995f1cf2ed293f8b1b3823e1751b51dc';
+// 本次修复前的冻结基线，包含 UI-6 加点 / UI-7 背包装备 HUD 及功能开关隐藏文案。
+const baselineRevision = 'd449ad02fc39ebd6dac64774a23f96dd4e45fe58';
 const fixedTime = 1791608400000;
 const port = Number(process.env.XT_TEST_PORT ?? 4337);
 for (const value of [port, port + 1]) {
