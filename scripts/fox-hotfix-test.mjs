@@ -220,6 +220,9 @@ try {
     Object.assign(game, { keys, parallax: [], combat: { update() {} }, skillWindow: { open: true }, dialog: { open: false },
       quests: { refreshDaily() {} }, nextDailyUpdateAt: 0, nextAgeUpdateAt: 0, interactionPrompts: [],
       alchemy: { isOpen: () => false, update() {} }, gathering: { update() {} },
+      inventoryPanel: { isOpen: () => false, update() {}, close() {} },
+      equipPanel: { isOpen: () => false, update() {}, close() {} },
+      attrPanel: { isOpen: () => false, update() {}, close() {} },
       updateShots() {}, regenMp() {}, drawHud() {} });
     Object.assign(game.prog, { advanceAge() {}, save() {} });
     game.player.syncAppearance = () => {};

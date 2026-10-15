@@ -570,8 +570,8 @@ export class GameScene extends Phaser.Scene {
     if (this.sectTrial && !this.dialog.open && !this.skillWindow.open && !this.alchemy.isOpen() && !this.shop.isOpen() && !this.attrPanel?.isOpen() && !this.itemPanelOpen()) this.sectTrial.update(delta);
     if (this.sectTrial?.ended) { this.drawHud(); return; }
     if (time >= this.nextAgeUpdateAt) { this.prog.advanceAge(); this.nextAgeUpdateAt = time + 60000; this.prog.save(); }
-    if (J(k.i)) { if (this.inventoryPanel.isOpen()) this.inventoryPanel.close(); else this.openInventoryPanel(); }
-    if (J(k.e)) { if (this.equipPanel.isOpen()) this.equipPanel.close(); else this.openEquipPanel(); }
+    if (J(k.i)) { if (this.inventoryPanel?.isOpen()) this.inventoryPanel?.close(); else this.openInventoryPanel(); }
+    if (J(k.e)) { if (this.equipPanel?.isOpen()) this.equipPanel?.close(); else this.openEquipPanel(); }
     if (J(k.k) && !this.dialog.open && !this.alchemy.isOpen() && !this.shop.isOpen() && !this.attrPanel?.isOpen() && !this.itemPanelOpen() && !this.sectTrial?.blocksInput) this.skillWindow.toggle();
     if (J(k.l) && !this.dialog.open && !this.skillWindow.open && !this.shop.isOpen() && !this.attrPanel?.isOpen() && !this.itemPanelOpen() && !this.sectTrial?.blocksInput) this.openAlchemy();
     if (J(k.p) && !this.itemPanelOpen()) {
@@ -590,7 +590,7 @@ export class GameScene extends Phaser.Scene {
       this.alchemy.update(delta);
       this.shop?.update();
       this.attrPanel?.update();
-      this.inventoryPanel.update(); this.equipPanel.update();
+      this.inventoryPanel?.update(); this.equipPanel?.update();
       if (this.dialog.open) {
         [k.one, k.two, k.three, k.four, k.five].forEach((key, i) => { if (J(key)) this.dialog.selectChoice(i); });
         if (escDown) this.dialog.dismissChoices();
@@ -926,8 +926,8 @@ export class GameScene extends Phaser.Scene {
   private itemPanelOpen() { return !!(this.inventoryPanel?.isOpen() || this.equipPanel?.isOpen()); }
   private closeItemPanels() { this.inventoryPanel?.close(); this.equipPanel?.close(); }
   /** UI-7：I/E 与测试桥共用检查；背包/装备互相切换，其他 modal 内禁止打开。 */
-  private openItemPanel(panel: InventoryPanel | EquipPanel): boolean {
-    if (this.player.dead || this.dialog.open || this.skillWindow.open || this.alchemy.isOpen()
+  private openItemPanel(panel: InventoryPanel | EquipPanel | undefined): boolean {
+    if (!panel || this.player.dead || this.dialog.open || this.skillWindow.open || this.alchemy.isOpen()
       || this.shop.isOpen() || this.attrPanel?.isOpen() || this.sectTrial?.blocksInput) return false;
     this.gathering.cancel(); this.player.body.setVelocityX(0); this.invText.setVisible(false);
     this.closeItemPanels(); panel.open(); return true;
