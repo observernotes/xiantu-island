@@ -28,6 +28,13 @@ const SAVE = { name: '背包冒烟修士', level: 10, exp: 0, hp: 50, mp: 10, st
 let assertions = 0;
 const eq = (actual, expected, message) => { assert.deepEqual(actual, expected, message); assertions++; };
 const ok = (actual, message) => { assert.ok(actual, message); assertions++; };
+const requiredStringKeys = [
+  ...'title/tab_all/tab_equip/tab_consume/tab_material/tab_other/empty/stones/select/equip/furnace/token/held/equipped/unavailable/keys'
+    .split('/').map(key => `ui.inv.${key}`),
+  ...'title/base/weapon/robe/shoes/click/atk/def/hp/mp/speed/matk/removed/keys/reason_invalid/reason_missing/reason_sect/reason_level/reason_empty/reason_overflow/reason_save'
+    .split('/').map(key => `ui.equip.${key}`),
+];
+for (const key of requiredStringKeys) ok(typeof strings[key] === 'string' && strings[key].length > 0, `快照缺少 UI-7 文案：${key}`);
 const checks = [], missingFileChecks = {}, browserChecks = {};
 
 async function playwright() {
