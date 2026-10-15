@@ -1,5 +1,5 @@
 import { gameNow } from './GameClock';
-import { GROWTH, EXP_TO_NEXT, MAX_LEVEL, ITEMS, BREAKTHROUGH_LEVELS, BREAKTHROUGH, REALMS, QUESTS, LIFESPAN, RECIPES, ALCHEMY_RULES, LIFE_SKILLS, LIFE_SKILL_ERRORS, SECT_RANKS, TILED_MAPS, PillQuality, QuestDef, syncTalismanMapAvailability } from './data';
+import { GROWTH, EXP_TO_NEXT, MAX_LEVEL, ITEMS, BREAKTHROUGH_LEVELS, BREAKTHROUGH, REALMS, QUESTS, LIFESPAN, RECIPES, ALCHEMY_RULES, LIFE_SKILLS, LIFE_SKILL_ERRORS, MORAL_STATE, SECT_RANKS, TILED_MAPS, PillQuality, QuestDef, syncTalismanMapAvailability } from './data';
 import { advanceLifeSkillProgress, lifeSkillLevel, lifeSkillProgressView, lifeSkillRecipe, normalizeLifeSkillProgress, type LifeSkillId } from './LifeSkills';
 import { validSectGrowthState, type SectGrowthState } from './SectGrowth';
 import { HOTBAR_SLOTS, QUEST_SKILL_BACKFILL, SKILLS, SKILL_RULES, SkillDef, actOf, skillNumber, spEarnedFor, spBand } from './skills';
@@ -28,6 +28,8 @@ export type EquipResult = { ok: true } | { ok: false; reason: 'invalid' | 'missi
 const SAVE_KEY = 'xiantu_save_v1';
 /** 妖狐任务改为五宗帖的奖励版本；无此字段的已交付旧档保留原天剑身份。 */
 const QUEST_REWARD_VERSION = 1;
+/** 道心与善恶存档版本；旧档只补缺失初值，不推断历史选择。 */
+export const MORAL_VERSION = 1;
 export interface SavePosition { mapId: string; x: number; y: number }
 export interface SectTrialAttempt { id: string; returnPosition: SavePosition }
 const flagKey = (key: string) => typeof key === 'string' && /^[a-zA-Z][\w.-]*$/.test(key)
@@ -57,8 +59,12 @@ function validSaveData(saved: unknown): saved is Record<string, unknown> {
   for (const key of ['exp', 'hp', 'mp', 'stones', 'age', 'ageUpdatedAt', 'overflowExp', 'unstableUntil', 'lastOverflowReturned', 'alchemyExp']) {
     if (has(key) && !nonnegative(saved[key])) return false;
   }
-  for (const key of ['sectContribution', 'classVersion', 'questRewardVersion', 'classRefundSp', 'seclusionYearsToday', 'breakthroughFails', 'breakthroughBonusLevels', 'alchemyLevel', 'unspentStatPoints']) {
+  for (const key of ['sectContribution', 'classVersion', 'questRewardVersion', 'moralVersion', 'classRefundSp', 'seclusionYearsToday', 'breakthroughFails', 'breakthroughBonusLevels', 'alchemyLevel', 'unspentStatPoints']) {
     if (has(key) && !count(saved[key])) return false;
+  }
+  for (const key of ['daoHeart', 'morality'] as const) {
+    const value = saved[key], rule = MORAL_STATE[key];
+    if (has(key) && (typeof value !== 'number' || !Number.isSafeInteger(value) || value < rule.min || value > rule.max)) return false;
   }
   if (has('allocatedStats') && !statRecord(saved.allocatedStats)) return false;
   for (const key of ['inventory', 'skills', 'skillGifted']) if (has(key) && !numbers(saved[key])) return false;
@@ -118,6 +124,9 @@ export class Progress {
   classVersion = 0;
   /** 新角色从当前奖励版本开始，交妖狐后读档不会被旧入宗规则迁移。 */
   questRewardVersion = QUEST_REWARD_VERSION;
+  daoHeart = MORAL_STATE.daoHeart.initial;
+  morality = MORAL_STATE.morality.initial;
+  moralVersion = MORAL_VERSION;
   classRewardClaims: string[] = [];
   /** 通用入门技的付费等级在拜宗后退回当前一转点池。 */
   classRefundSp = 0;
@@ -317,6 +326,7 @@ export class Progress {
         if (featureEnabled('lifeSkillCurve') && LIFE_SKILLS
           && ['talismanLevel', 'talismanExp', 'forgingLevel', 'forgingExp'].some(key => !Object.prototype.hasOwnProperty.call(fields, key))) p.save();
         if (!Object.prototype.hasOwnProperty.call(fields, 'questRewardVersion')) p.questRewardVersion = 0;
+        if (!Object.prototype.hasOwnProperty.call(fields, 'moralVersion')) p.moralVersion = 0;
         hadStoredRank = Object.prototype.hasOwnProperty.call(fields, 'sectRank');
         if (hadStoredRank) storedRank = fields.sectRank as string | null;
         for (const key of Object.keys(p)) if (!['transientItems', 'trialSkills', 'trialHotbarBefore'].includes(key) && Object.prototype.hasOwnProperty.call(fields, key)) {
@@ -1025,6 +1035,16 @@ export class Progress {
     if (!Array.isArray(this.buffs)) this.buffs = [];
     const now = gameNow();
     this.buffs = this.buffs.filter(b => b && typeof b.expireAt === 'number' && b.expireAt > now);
+    // 两轴分别修复，不从旧 flags/任务推断；有限整数裁剪，损坏值回退配表初值。
+    const { daoHeart, morality, moralVersion } = this;
+    for (const key of ['daoHeart', 'morality'] as const) {
+      const value = this[key], rule = MORAL_STATE[key];
+      this[key] = typeof value === 'number' && Number.isFinite(value) && Number.isInteger(value)
+        ? Math.min(rule.max, Math.max(rule.min, value)) : rule.initial;
+    }
+    if (!count(this.moralVersion)) this.moralVersion = 0;
+    this.moralVersion = Math.max(this.moralVersion, MORAL_VERSION);
+    if (daoHeart !== this.daoHeart || morality !== this.morality || moralVersion !== this.moralVersion) this.save();
   }
 
   get lifespanCap() { return Number((LIFESPAN.cap as Record<string, number>)[this.realm.id] ?? LIFESPAN.cap.mortal); }

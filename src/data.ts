@@ -24,8 +24,12 @@ import trialWanshouPen from '@xt/maps/trial_wanshou_pen.json';
 import altar from '@xt/maps/trial_foundation_altar.json';
 import breakthrough from '@xt/balance/breakthrough.json';
 import strings from '@xt/balance/strings_zh.json';
+import karmaFlags from '@xt/balance/karma_flags.json';
 import lingfuPavilion from '@xt/maps/lingfu_pavilion.json';
 import { featureEnabled } from './features';
+
+/** 两轴存档的边界与初值只读配表；moral_state 仍是独立的功能就绪标识。 */
+export const MORAL_STATE = karmaFlags.rules.moralState;
 
 /** 地图与任务共用版本阶段过滤；phase 表示首次启用阶段。 */
 export const GAME_PHASE = 5;

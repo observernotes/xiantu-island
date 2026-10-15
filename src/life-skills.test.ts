@@ -1,7 +1,7 @@
 import lifeSkillsRaw from '@xt/balance/life_skills.json';
-import { ALCHEMY_RULES, LIFE_SKILLS, LIFE_SKILL_ERRORS, RECIPES, type FireResult, type PillQuality } from './data';
+import { ALCHEMY_RULES, LIFE_SKILLS, LIFE_SKILL_ERRORS, MORAL_STATE, RECIPES, type FireResult, type PillQuality } from './data';
 import { validateLifeSkills, lifeSkillDefinition, lifeSkillLevel, lifeSkillRecipe, lifeSkillExperience, normalizeLifeSkillProgress } from './LifeSkills';
-import { Progress } from './Progress';
+import { MORAL_VERSION, Progress } from './Progress';
 import { AlchemySystem, qualityRates } from './Alchemy';
 import { DrawStroke, TalismanSystem, normalizeTalismanSave, type TalismanDirection, type TalismanResult } from './Talisman';
 import { featureEnabled, featureFlags, setFeatureFlag } from './features';
@@ -124,9 +124,9 @@ try {
   eq(lifeSkillExperience(fractionalConfig, 'talisman', RECIPES.recipe_talisman_fire, 'talisman', false, true), 5, '失败经验向下取整');
 
   setFeatureFlag('alchemyPhase1', true); setFeatureFlag('talismanCraft', false); setFeatureFlag('lifeSkillCurve', false);
-  // 改动前 dev、固定 gameNow、未开启制符的新档完整字节基线。
-  const oldSaveBaseline = '{"level":1,"exp":0,"hp":50,"mp":10,"stones":0,"allocatedStats":{"rootBone":0,"agility":0,"spirit":0,"insight":0},"unspentStatPoints":0,"inventory":{},"equip":{},"job":"","selectedSect":"","classVersion":0,"questRewardVersion":1,"classRewardClaims":[],"classRefundSp":0,"rootElement":"","completedTrials":[],"pendingSectTrial":null,"skillCooldowns":{},"quests":{},"learnedRecipes":[],"alchemyLevel":1,"alchemyExp":0,"pillQualities":{},"gatherRespawnAt":{},"openedChests":[],"pendingAlchemy":null,"name":"少年","skills":{},"skillGifted":{},"skillMastery":{},"hotbar":[null,null,null,null,null,null,null,null],"buffs":[],"spTipShown":false,"tutorialsSeen":[],"sectContribution":0,"sectRank":null,"position":null,"flags":{},"sectGrowthState":{"donationBatches":{},"settledTransactions":{}},"sectDailyContributionDay":"","sectDailyContributionClaims":[],"dailyQuestResetDay":"","dailyQuestCompletions":{},"age":16,"ageUpdatedAt":1800000000000,"seclusionDay":"","seclusionYearsToday":0,"seclusionHistory":[],"overflowExp":0,"breakthroughFails":0,"unstableUntil":0,"realmRewards":[],"unstableRatio":0,"unstableStats":[],"lastOverflowReturned":0,"breakthroughBonusLevels":0}';
-  eq(JSON.stringify(new Progress().exportSave()), oldSaveBaseline, 'lifeSkillCurve关新档完整字节与接入前dev相同');
+  // 固定 gameNow、未开启制符的原字节基线，仅补新增两轴与版本字段。
+  const oldSaveBaseline = `{"level":1,"exp":0,"hp":50,"mp":10,"stones":0,"allocatedStats":{"rootBone":0,"agility":0,"spirit":0,"insight":0},"unspentStatPoints":0,"inventory":{},"equip":{},"job":"","selectedSect":"","classVersion":0,"questRewardVersion":1,"daoHeart":${MORAL_STATE.daoHeart.initial},"morality":${MORAL_STATE.morality.initial},"moralVersion":${MORAL_VERSION},"classRewardClaims":[],"classRefundSp":0,"rootElement":"","completedTrials":[],"pendingSectTrial":null,"skillCooldowns":{},"quests":{},"learnedRecipes":[],"alchemyLevel":1,"alchemyExp":0,"pillQualities":{},"gatherRespawnAt":{},"openedChests":[],"pendingAlchemy":null,"name":"少年","skills":{},"skillGifted":{},"skillMastery":{},"hotbar":[null,null,null,null,null,null,null,null],"buffs":[],"spTipShown":false,"tutorialsSeen":[],"sectContribution":0,"sectRank":null,"position":null,"flags":{},"sectGrowthState":{"donationBatches":{},"settledTransactions":{}},"sectDailyContributionDay":"","sectDailyContributionClaims":[],"dailyQuestResetDay":"","dailyQuestCompletions":{},"age":16,"ageUpdatedAt":1800000000000,"seclusionDay":"","seclusionYearsToday":0,"seclusionHistory":[],"overflowExp":0,"breakthroughFails":0,"unstableUntil":0,"realmRewards":[],"unstableRatio":0,"unstableStats":[],"lastOverflowReturned":0,"breakthroughBonusLevels":0}`;
+  eq(JSON.stringify(new Progress().exportSave()), oldSaveBaseline, 'lifeSkillCurve关新档符合仅补新增两轴与版本字段的原字节基线');
   {
     const p = new Progress(); p.talismanLevel = 9; p.talismanExp = 17;
     const before = JSON.stringify(p.exportSave()); eq(p.gainTalismanExp(100), 0, '关不授制符经验');
