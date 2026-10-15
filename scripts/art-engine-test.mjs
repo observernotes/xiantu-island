@@ -601,7 +601,10 @@ try {
       const caseStarted = performance.now();
       progress('measure-initialize', { case: sampleCase.name });
       const measurementContext = await browser.newContext({ viewport: { width: 1280, height: 720 }, timezoneId: 'Asia/Shanghai' });
-      await measurementContext.addInitScript(() => localStorage.clear());
+      await measurementContext.addInitScript(() => {
+        if (location.protocol !== 'http:' && location.protocol !== 'https:') return;
+        localStorage.clear();
+      });
       const page = sampleCase.page = await newPage(measurementContext);
       // 拦截只属于示例页；两张正式页保留正常缓存，示例响应不会跨 context 串图。
       if (sampleCase.fixtures) {
