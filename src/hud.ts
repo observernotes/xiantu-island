@@ -30,6 +30,7 @@ export function preloadHud(scene: Phaser.Scene) {
   scene.load.json('cult_slices', 'art/icons/ui/ui_bar_cultivation.slices.json');
   scene.load.json('bestiary_ui', 'art/icons/ui/bestiary/bestiary_ui.json');
   scene.load.json('alchemy_ui', 'art/icons/ui/alchemy/alchemy_ui.json');
+  scene.load.json('talisman_ui', 'art/icons/ui/talisman/talisman_ui.json');
   for (const k of HUD_IMAGES) {
     if (k === 'ui_hud_slot') loadOptionalImage(scene, k, `${HUD_DIR}/${k}.png`);
     else scene.load.image(k, `${HUD_DIR}/${k}.png`);
