@@ -1,4 +1,5 @@
 import { gameNow } from './GameClock';
+import { invalidateSenseSession, type SenseState } from './Sense';
 import { GROWTH, EXP_TO_NEXT, MAX_LEVEL, ITEMS, BREAKTHROUGH_LEVELS, BREAKTHROUGH, REALMS, QUESTS, LIFESPAN, RECIPES, ALCHEMY_RULES, LIFE_SKILLS, LIFE_SKILL_ERRORS, MORAL_STATE, SECT_RANKS, TILED_MAPS, PillQuality, QuestDef, syncTalismanMapAvailability } from './data';
 import { advanceLifeSkillProgress, lifeSkillLevel, lifeSkillProgressView, lifeSkillRecipe, normalizeLifeSkillProgress, type LifeSkillId } from './LifeSkills';
 import { validSectGrowthState, type SectGrowthState } from './SectGrowth';
@@ -160,6 +161,10 @@ export class Progress {
   gatherRespawnAt: Record<string, number> = {};
   /** 已开宝匣的地图 id:对象名，换图与刷新后不再重复掉落。 */
   openedChests: string[] = [];
+  /** 缺省无扫描历史；损坏记录原样保留，由神识服务诊断并暂停施放。 */
+  senseState: SenseState | undefined = undefined;
+  /** 静态地图以 mapId 为实例；刷新/往返地图均不撤销显形，无奖励归属。 */
+  senseRevealed: Record<string, true> | undefined = undefined;
   /** 已付料的这一炉；刷新继续火候，结算前清空防止重复领奖。 */
   pendingAlchemy: BrewSession | null = null;
   name = '少年';
@@ -256,7 +261,11 @@ export class Progress {
 
   exportSave(): Record<string, unknown> {
     const { transientItems, trialSkills, trialHotbarBefore, talisman, talismanUse, visitedMaps, talismanQuickSlots,
-      talismanLevel, talismanExp, forgingLevel, forgingExp, ...persistent } = this;
+      talismanLevel, talismanExp, forgingLevel, forgingExp, senseState, senseRevealed, ...persistent } = this;
+    const senseFields = featureEnabled('spiritScan') ? {
+      ...(senseState !== undefined ? { senseState } : {}),
+      ...(senseRevealed !== undefined && (!dataRecord(senseRevealed) || Object.keys(senseRevealed).length) ? { senseRevealed } : {}),
+    } : {};
     const lifeSkillFields = featureEnabled('lifeSkillCurve') || talismanLevel !== (LIFE_SKILLS?.curve.initialLevel ?? 1)
       || talismanExp !== (LIFE_SKILLS?.curve.initialExp ?? 0) || forgingLevel !== (LIFE_SKILLS?.curve.initialLevel ?? 1)
       || forgingExp !== (LIFE_SKILLS?.curve.initialExp ?? 0) ? { talismanLevel, talismanExp, forgingLevel, forgingExp } : {};
@@ -270,7 +279,7 @@ export class Progress {
     const inventory: Record<string, number> = { ...this.inventory };
     for (const [id, count] of Object.entries(transientItems)) inventory[id] = Math.max(0, this.count(id) - count);
     const temporaryIds = Object.keys(trialSkills);
-    return JSON.parse(JSON.stringify({ ...persistent, ...talismanFields, ...lifeSkillFields, inventory, hotbar: trialHotbarBefore ?? this.hotbar,
+    return JSON.parse(JSON.stringify({ ...persistent, ...talismanFields, ...lifeSkillFields, ...senseFields, inventory, hotbar: trialHotbarBefore ?? this.hotbar,
       allocatedStats: normalizedStats(this.allocatedStats), unspentStatPoints: count(this.unspentStatPoints) ? this.unspentStatPoints : 0,
       buffs: this.buffs.filter(b => !temporaryIds.includes(b.id)),
       skillCooldowns: Object.fromEntries(Object.entries(this.skillCooldowns).filter(([id]) => !temporaryIds.includes(id))) }));
@@ -309,7 +318,7 @@ export class Progress {
     } catch { return false; }
     const previous = { ...this };
     Object.assign(this, restored);
-    if (this.save()) return true;
+    if (this.save()) { invalidateSenseSession(this); return true; }
     Object.assign(this, previous);
     return false;
   }
@@ -355,7 +364,9 @@ export class Progress {
       backfilled = [p.backfillRealmRewards(), p.backfillClass(false), p.backfillQuestSkills(), p.backfillQuestRecipes()].some(Boolean);
       // 原职业/已交付拜入任务是正式入宗事实；试炼、帖和山门位置不参与迁移。
       p.sectRank = hadStoredRank && !(legacyFoxJoin && storedRank === null) ? storedRank : p.sect ? SECT_RANKS.rules.initialRank : null;
-      p.hp = Math.min(p.hp || p.maxHp, p.maxHp); p.mp = Math.min(p.mp || p.maxMp, p.maxMp);
+      p.hp = Math.min(p.hp || p.maxHp, p.maxHp);
+      // 已提交神识可恰好耗尽灵力；仅新玩法有历史时保留 0，关闭时沿用旧档行为。
+      p.mp = Math.min(featureEnabled('spiritScan') && p.senseState?.lastScanId && p.mp === 0 ? 0 : p.mp || p.maxMp, p.maxMp);
     } finally { Reflect.deleteProperty(p, 'save'); }
     if (persistMigrations && (saveRequested || backfilled || !hadStoredRank)) p.save();
     return p;

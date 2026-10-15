@@ -24,6 +24,10 @@ import trialWanshouPen from '@xt/maps/trial_wanshou_pen.json';
 import altar from '@xt/maps/trial_foundation_altar.json';
 import breakthrough from '@xt/balance/breakthrough.json';
 import strings from '@xt/balance/strings_zh.json';
+import sense from '@xt/balance/sense.json';
+import type { MonsterSenseBlock } from './Sense';
+/** 神识表与其他 @xt 表共用 shared/snapshot；运行时校验，不用默认值吞掉 null。 */
+export const SENSE = sense;
 import karmaFlags from '@xt/balance/karma_flags.json';
 import lingfuPavilion from '@xt/maps/lingfu_pavilion.json';
 import { featureEnabled } from './features';
@@ -47,6 +51,7 @@ export interface MonsterSkill {
   interruptible?: boolean; fx?: string; knockback?: number;
 }
 export interface MonsterDef {
+  sense?: MonsterSenseBlock;
   id: string; name: string; level: number; hp: number; atk: number; def: number; exp: number;
   aggressive: boolean; aggroRange?: number; moveSpeed: number; patrolRange: number;
   touchDamage: boolean; noDamage?: boolean; knockback: number;

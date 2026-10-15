@@ -5,7 +5,12 @@ import { pickTileVariant, tileVariantGroups, type TileVariantFrame, type TileVar
 export interface Rope { kind: 'rope' | 'ladder'; x: number; top: number; bottom: number; halfW: number; }
 export interface Spawn { x: number; y: number; w: number; monster: string; count: number; }
 export interface Zone { name: string; x: number; y: number; w: number; h: number; props: Record<string, any>; }
-export interface MapObj { type: string; name: string; x: number; y: number; w: number; h: number; props: Record<string, any>; points?: { x: number; y: number }[]; }
+export interface MapObj { type: string; name: string; x: number; y: number; w: number; h: number; props: Record<string, any>; points?: { x: number; y: number }[]; hiddenGeometryValid?: boolean; }
+/** G16 静态地图实例为 map.id；hidden 只控制原生对象，不建立第二套宝箱或入口。 */
+export interface HiddenMapObject {
+  object: MapObj; kind: 'chest' | 'platform' | 'entrance'; reqSpirit: number;
+  x: number; y: number; target?: MapObj; encounter?: string; valid: boolean;
+}
 export interface BuiltMap {
   id: string; name: string; safeZone: boolean;
   trial?: string; night: boolean;
@@ -17,6 +22,7 @@ export interface BuiltMap {
   spawns: Spawn[];
   spawnGates: MapObj[];  // 命名刷怪口，保留 side / flying 等属性供召唤与试炼使用
   objects: MapObj[];   // npc / portal / chest
+  hidden: HiddenMapObject[];
   zones: Zone[];
 }
 
@@ -26,8 +32,43 @@ function emptyMap(scene: Phaser.Scene, id: string, name: string, safe: boolean, 
   return {
     id, name, safeZone: safe, night: false, width: cols * FEEL.tile, height: rows * FEEL.tile,
     solids: scene.physics.add.staticGroup(), oneWays: scene.physics.add.staticGroup(),
-    ropes: [], spawn: { x: 64, y: 64 }, spawns: [], spawnGates: [], objects: [], zones: [],
+    ropes: [], spawn: { x: 64, y: 64 }, spawns: [], spawnGates: [], objects: [], hidden: [], zones: [],
   };
+}
+
+/** 不把缺失/null 数值变成默认门槛；非法绑定仍交给适配器封锁原生目标。 */
+export function parseHiddenObjects(objects: MapObj[]): HiddenMapObject[] {
+  const names = new Map<string, MapObj[]>();
+  for (const object of objects) names.set(object.name, [...(names.get(object.name) ?? []), object]);
+  const controllers = objects.filter(object => object.type === 'hidden');
+  const bindingCount = new Map<string, number>();
+  for (const object of controllers) {
+    const target = object.props.targetObject;
+    if (typeof target === 'string') bindingCount.set(target, (bindingCount.get(target) ?? 0) + 1);
+  }
+  const finite = (value: unknown): value is number => typeof value === 'number' && Number.isFinite(value);
+  return controllers.map(object => {
+    const p = object.props, kind = p.reveal;
+    const hasTarget = Object.prototype.hasOwnProperty.call(p, 'targetObject');
+    const hasEncounter = Object.prototype.hasOwnProperty.call(p, 'encounter');
+    const target = typeof p.targetObject === 'string' ? names.get(p.targetObject)?.[0] : undefined;
+    let valid = typeof object.name === 'string' && !!object.name && !object.name.includes('|') && names.get(object.name)?.length === 1
+      && finite(object.x) && finite(object.y) && finite(object.w) && object.w >= 0
+      && finite(object.h) && object.h >= 0 && finite(p.reqSpirit) && p.reqSpirit >= 0
+      && (object.w === 0 && object.h === 0 || object.w > 0 && object.h > 0)
+      && object.hiddenGeometryValid !== false && !object.points
+      && (kind === 'chest' || kind === 'platform' || kind === 'entrance') && !(hasTarget && hasEncounter);
+    if (kind === 'platform') valid &&= object.w > 0 && object.h > 0 && !hasTarget && !hasEncounter;
+    else if (kind === 'chest' || kind === 'entrance' && !hasEncounter) {
+      valid &&= hasTarget && typeof p.targetObject === 'string' && p.targetObject.length > 0
+        && names.get(p.targetObject)?.length === 1 && bindingCount.get(p.targetObject) === 1
+        && target?.type === (kind === 'chest' ? 'chest' : 'portal') && !hasEncounter;
+      if (kind === 'chest') valid &&= typeof target?.props.loot === 'string' && target.props.loot.length > 0;
+      if (kind === 'entrance') valid &&= typeof target?.props.target === 'string' && target.props.target.length > 0;
+    } else if (kind === 'entrance') valid &&= typeof p.encounter === 'string' && /^enc_/.test(p.encounter);
+    return { object, kind, reqSpirit: p.reqSpirit, x: object.x + object.w / 2, y: object.y + object.h / 2,
+      target, encounter: hasEncounter ? p.encounter : undefined, valid };
+  });
 }
 
 /** 按邻格自动选图块（规则见 art/tiles/README.md） */
@@ -167,25 +208,32 @@ export function buildTiledMap(scene: Phaser.Scene, tj: any, tileset?: string): B
     if (l.type !== 'objectgroup') continue;
     for (const o of l.objects) {
       const p = prop(o.properties);
-      switch (o.type) {
+      const type = o.type || o.class;
+      switch (type) {
         case 'playerStart': map.spawn = { x: o.x, y: o.y }; break;
         case 'rope': case 'ladder': {
-          const r: Rope = { kind: o.type, x: o.type === 'ladder' ? o.x + o.width / 2 : o.x, top: o.y, bottom: o.y + o.height,
-            halfW: o.type === 'ladder' ? Math.max(12, o.width / 2) : FEEL.ropeGrabRangeX };
+          const r: Rope = { kind: type, x: type === 'ladder' ? o.x + o.width / 2 : o.x, top: o.y, bottom: o.y + o.height,
+            halfW: type === 'ladder' ? Math.max(12, o.width / 2) : FEEL.ropeGrabRangeX };
           map.ropes.push(r); drawClimbable(scene, r, tileset); break;
         }
         case 'spawn': map.spawns.push({ x: o.x, y: o.y, w: o.width ?? 0, monster: p.monster, count: p.count ?? 1 }); break;
         case 'spawnGate': {
-          const gate: MapObj = { type: o.type, name: o.name, x: o.x, y: o.y, w: o.width ?? 0, h: o.height ?? 0, props: p };
+          const gate: MapObj = { type, name: o.name, x: o.x, y: o.y, w: o.width ?? 0, h: o.height ?? 0, props: p };
           map.spawnGates.push(gate);
           map.objects.push(gate);  // 现有筑基台仍按 objects 查找刷怪口
           break;
         }
         case 'zone': map.zones.push({ name: o.name, x: o.x, y: o.y, w: o.width, h: o.height, props: p }); break;
-        default: map.objects.push({ type: o.type, name: o.name, x: o.x, y: o.y, w: o.width ?? 0, h: o.height ?? 0, props: p,
+        default: map.objects.push({ type, name: o.name, x: o.x, y: o.y, w: o.width ?? 0, h: o.height ?? 0, props: p,
+          ...(type === 'hidden' ? { hiddenGeometryValid: !o.ellipse && !o.polygon && !o.polyline && !(o.rotation ?? 0) } : {}),
           points: o.polyline?.map((point: { x: number; y: number }) => ({ x: o.x + point.x, y: o.y + point.y })) });
       }
     }
+  }
+  map.hidden = parseHiddenObjects(map.objects);
+  for (const hidden of map.hidden) {
+    const object = hidden.object;
+    hidden.valid &&= object.x >= 0 && object.y >= 0 && object.x + object.w <= map.width && object.y + object.h <= map.height;
   }
   return map;
 }

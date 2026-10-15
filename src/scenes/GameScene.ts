@@ -3,7 +3,7 @@ import Phaser from 'phaser';
 import { getRendererInfo } from '../rendererChoice';
 import { FEEL, SPEC } from '../config/feel';
 import { FIELD_TEST } from '../config/maps';
-import { MONSTERS, DROPS, ITEMS, TILED_MAPS, ATLASES, MAP_AREA, AREAS, TILE_METADATA, BACKGROUNDS, BACKGROUND_CONFIGS, PROP_LAYOUTS, SKILL_ICONS, NPCS, SCRIPTS, syncTalismanMapAvailability, t, questName, questDescription, MP_REGEN_FRACTION_PER_5S, BREAKTHROUGH_LEVELS } from '../data';
+import { MONSTERS, DROPS, ITEMS, TILED_MAPS, ATLASES, MAP_AREA, AREAS, TILE_METADATA, BACKGROUNDS, BACKGROUND_CONFIGS, PROP_LAYOUTS, SKILL_ICONS, NPCS, SCRIPTS, SENSE, syncTalismanMapAvailability, t, questName, questDescription, MP_REGEN_FRACTION_PER_5S, BREAKTHROUGH_LEVELS } from '../data';
 import { QuestSystem } from '../QuestSystem';
 import type { DailyQuestReward } from '../DailyQuests';
 import { QUESTS as QUESTS_REF } from '../data';
@@ -45,6 +45,8 @@ import { applySpriteArt } from '../SpriteArt';
 import { SectGrowth, newSectTransactionId } from '../SectGrowth';
 import { featureEnabled, FEATURE_UNAVAILABLE, type FeatureName } from '../features';
 import { loadOptionalImage, loadOptionalAtlas, loadOptionalJson, loadOptionalSpritesheet } from '../optionalAssets';
+import { Sense } from '../Sense';
+import { SenseMapAdapter, sceneMonsterTargets } from './SenseScene';
 
 const MAP_FALLBACK: Record<string, string> = {};
 type Drop = Phaser.Physics.Arcade.Sprite & { itemId: string; count: number; bornAt: number; label?: Phaser.GameObjects.Text; shadow?: Phaser.GameObjects.Ellipse; floatTw?: Phaser.Tweens.Tween; landed?: boolean };
@@ -78,6 +80,10 @@ export class GameScene extends Phaser.Scene {
   map!: BuiltMap;
   player!: Player;
   prog!: Progress;
+  sense!: Sense;
+  senseMap!: SenseMapAdapter;
+  private senseCueDepth = 0;
+  private senseBusyProviders = new Set<() => boolean>();
   sectGrowth!: SectGrowth;
   mobs: Monster[] = [];
   drops!: Phaser.Physics.Arcade.Group;
@@ -122,6 +128,9 @@ export class GameScene extends Phaser.Scene {
 
   /** Scene 实例会被 restart 复用；这里只重置本张图的状态，不能复用旧物理世界的引用。 */
   private resetRunState() {
+    this.sense?.clearIntel();
+    this.sense = undefined!; this.senseMap = undefined!;
+    this.senseCueDepth = 0; this.senseBusyProviders.clear();
     this.clearShots();
     this.mobs = []; this.logs = []; this.logBadges.clear();
     this.nextPickAt = 0; this.openedChests = new Set();
@@ -266,6 +275,7 @@ export class GameScene extends Phaser.Scene {
     this.configureEnvironment(this.cache.json.get(`bg_${area}_config`)?.environment);
     this.mountDailyEnvoys();
     this.mountSectTrialEntrance();
+    this.senseMap = new SenseMapAdapter(this);
     this.map.objects.forEach(o => this.drawObject(o));
 
     const savedPosition = !data.map && !q && this.prog.position?.mapId === mapId ? this.prog.position : undefined;
@@ -390,7 +400,9 @@ export class GameScene extends Phaser.Scene {
     this.trialObjects = new SectTrialObjects(this);
     this.stealth = new StealthVision(this);
     this.stealth.update(0, false);
+    this.setupSense();
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      this.sense?.clearIntel();
       this.sectTrial?.destroy(); this.prog.endTrialSkills();
       this.talismanUse?.interrupt('map');
       if (this.scene.isActive('talisman-craft-ui')) this.scene.stop('talisman-craft-ui');
@@ -618,6 +630,7 @@ export class GameScene extends Phaser.Scene {
   invText!: Phaser.GameObjects.Text;
 
   update(time: number, delta: number) {
+    this.sense?.tick();
     this.playerPhysicsAdvanced = false;
     try {
       this.updateFrame(time, delta);
@@ -981,6 +994,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   onMobDead(m: Monster) {
+    this.sense?.removeMonsterIntel(m);
     // grantRewards 默认 false 的召唤物：不给修为、不掉落、不计任务击杀，也不进任何击杀统计
     if (!m.grantRewards) return;
     const d = m.def;
@@ -1032,6 +1046,37 @@ export class GameScene extends Phaser.Scene {
   private inTalismanCombat() {
     return this.player.dead || this.player.state2 === 'hurt' || this.time.now < this.player.attackLockUntil
       || this.mobs.some(mob => !mob.dead && (mob.st === 'chase' || mob.st === 'attack' || mob.st === 'hit'));
+  }
+
+  /** 后续打坐、模态窗口和生活技能须登记真实 busy 状态；不注册扫描按键。 */
+  registerSenseBusy(check: () => boolean): () => void {
+    this.senseBusyProviders.add(check);
+    return () => this.senseBusyProviders.delete(check);
+  }
+
+  private senseBusy(): boolean {
+    return this.travelling || this.senseCueDepth > 0 || !!this.dialog?.open || !!this.skillWindow?.open
+      || !!this.alchemy?.isOpen() || !!this.shop?.isOpen() || !!this.attrPanel?.isOpen() || this.itemPanelOpen()
+      || !!this.gathering?.active || !!this.player?.gathering || !!this.alchemySystem?.active || !!this.talismanSystem?.active
+      || !!this.talismanUse?.cast || this.scene.isActive('talisman-craft-ui') || this.scene.isPaused()
+      || this.physics.world.isPaused || !!this.sectTrial?.blocksInput || !!this.sectTrial?.ended || !!this.trial?.ended
+      || [...this.senseBusyProviders].some(check => check());
+  }
+
+  private setupSense() {
+    const service: Sense = new Sense({ progress: this.prog, config: () => SENSE, realms: REALMS,
+      enabled: () => featureEnabled('spiritScan'),
+      context: () => {
+        const body = this.player?.body;
+        return { instanceId: this.map?.id ?? '', center: { x: body?.center.x ?? Number.NaN, y: body?.center.y ?? Number.NaN },
+          alive: !!this.player && !this.player.dead && this.prog.hp > 0, busy: this.senseBusy(), ready: this.sense === service && !!this.senseMap && !!body };
+      },
+      targets: () => [...this.senseMap.targets(), ...sceneMonsterTargets(this)],
+      sources: () => [{ label: '角色加点', value: this.prog.allocatedStat('spirit') },
+        { label: '已生效心法', value: this.prog.passiveBonus('spirit') }],
+      text: key => { const value = t(key); return value === key ? undefined : value; },
+      emit: (event, payload) => this.events.emit(event, payload) });
+    this.sense = service;
   }
   private setupTalisman() {
     this.talismanSystem = new TalismanSystem(this.prog, this.quests, () => Math.random(), {
@@ -1442,14 +1487,17 @@ export class GameScene extends Phaser.Scene {
       }
       const text = o.props.featureExit ? '回青云村 ↑' : this.portalFeatureOpen(o) ? '' : FEATURE_UNAVAILABLE;
       const label = text ? this.portalStatusLabel(o, text) : undefined;
+      this.senseMap?.bindVisual(o, art);
       this.portalVisuals.push({ object: o, art, label });
     } else if (o.type === 'chest') {
       const opened = this.prog.openedChests.includes(`${this.map.id}:${o.name}`);
       if (this.textures.exists('prop_chest')) {
         const sprite = this.add.sprite(o.x, o.y, 'prop_chest').setOrigin(0.5, 1).setDepth(4).setName('chest:' + o.name);
         this.playPropAnimation(sprite, opened ? 'prop_chest_opened' : 'prop_chest_closed');
+        this.senseMap?.bindVisual(o, sprite);
       } else {
-        this.add.rectangle(o.x, o.y - 14, 34, 28, opened ? 0x7a5a3a : 0xd9a43a).setStrokeStyle(2, 0x5a3418).setDepth(4).setName('chest:' + o.name);
+        const chest = this.add.rectangle(o.x, o.y - 14, 34, 28, opened ? 0x7a5a3a : 0xd9a43a).setStrokeStyle(2, 0x5a3418).setDepth(4).setName('chest:' + o.name);
+        this.senseMap?.bindVisual(o, chest);
       }
     } else if (o.type === 'ferry' && this.textures.exists('prop_ferry_boat')) {
       // 落霞镇的 y 是甲板面，其他停靠点的 y 是船底；图片只做演出。
@@ -1482,8 +1530,10 @@ export class GameScene extends Phaser.Scene {
 
   /** G7/G8：等级先判；locked 永久关闭；任务须已完成；目标地图须已注册。 */
   private portalStatusLabel(o: MapObj, text: string) {
-    return this.add.text(o.x, o.y - 92, text,
+    const label = this.add.text(o.x, o.y - 92, text,
       { fontSize: '13px', color: '#fff8d0', stroke: '#3b2a20', strokeThickness: 3 }).setOrigin(0.5, 1).setDepth(4);
+    this.senseMap?.bindVisual(o, label);
+    return label;
   }
 
   private portalFeatureOpen(o: { props: any }) {
@@ -1494,6 +1544,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   portalOpen(o: { props: any }) {
+    if (this.senseMap && 'type' in o && !this.senseMap.objectVisible(o as MapObj)) return false;
     if (!this.portalFeatureOpen(o)) return false;
     if (this.prog.level < Number(o.props.reqLevel ?? 0)) return false;
     if (o.props.locked) return false;
@@ -1506,6 +1557,7 @@ export class GameScene extends Phaser.Scene {
     if (this.travelling) return true;
     const p = this.player;
     for (const o of this.map.objects) {
+      if (this.senseMap?.objectVisible(o) === false) continue;
       const nearX = o.type === 'ferry' && o.w > 0 ? p.x >= o.x - 28 && p.x <= o.x + o.w + 28 : Math.abs(o.x - p.x) <= 28;
       if (!nearX || Math.abs(o.y - p.y) > 40) continue;
       if (this.trialObjects?.interact(o)) return true;
@@ -1980,6 +2032,7 @@ export class GameScene extends Phaser.Scene {
 
   /** 演出：突破 / 转职 */
   playCue(cue: string, next: () => void, title?: string) {
+    this.senseCueDepth++;
     const p = this.player, cam = this.cameras.main;
     const dim = this.add.rectangle(640, 360, 1280, 720, 0x000000, 0).setScrollFactor(0).setDepth(150);
     this.tweens.add({ targets: dim, fillAlpha: 0.6, duration: 400 });
@@ -2007,7 +2060,7 @@ export class GameScene extends Phaser.Scene {
       this.tweens.add({ targets: ring, scale: 8, alpha: 0, duration: 700, onComplete: () => ring.destroy() });
       const t = this.add.text(640, 260, title ?? (cue === 'breakthrough' ? '突破成功 · 炼气期' : '拜入天剑宗 · 剑徒'), { fontFamily: 'serif', fontSize: '44px', color: '#fff6c8', stroke: '#7a4a00', strokeThickness: 6 }).setOrigin(0.5).setScrollFactor(0).setDepth(170).setAlpha(0);
       this.tweens.add({ targets: t, alpha: 1, y: 240, duration: 500, hold: 1200, yoyo: true, onComplete: () => {
-        t.destroy(); this.tweens.add({ targets: dim, fillAlpha: 0, duration: 300, onComplete: () => { dim.destroy(); p.setDepth(pDepth); next(); } });
+        t.destroy(); this.tweens.add({ targets: dim, fillAlpha: 0, duration: 300, onComplete: () => { dim.destroy(); p.setDepth(pDepth); this.senseCueDepth = Math.max(0, this.senseCueDepth - 1); next(); } });
       } });
     });
   }
@@ -2015,13 +2068,13 @@ export class GameScene extends Phaser.Scene {
   /** reach 目标：走到对应地图物件附近就算到达 */
   checkReach() {
     const p = this.player;
-    for (const o of this.map.objects) if (o.type === 'chest' && Math.abs(o.x - p.x) < 48 && Math.abs(o.y - p.y) < 48) this.quests.onReach(o.name);
+    for (const o of this.map.objects) if (o.type === 'chest' && this.senseMap?.objectVisible(o) !== false && Math.abs(o.x - p.x) < 48 && Math.abs(o.y - p.y) < 48) this.quests.onReach(o.name);
   }
 
   tryOpenChest() {
     const p = this.player;
     for (const o of this.map.objects) {
-      if (o.type !== 'chest' || Math.abs(o.x - p.x) > 32 || Math.abs(o.y - p.y) > 40) continue;
+      if (o.type !== 'chest' || this.senseMap?.objectVisible(o) === false || Math.abs(o.x - p.x) > 32 || Math.abs(o.y - p.y) > 40) continue;
       const key = `${this.map.id}:${o.name}`;
       if (this.prog.openedChests.includes(key)) return;
       this.prog.openedChests.push(key);

@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { GameScene } from './scenes/GameScene';
 import { CLASS_LIST } from './classes';
-import { ITEMS, QUESTS, TILED_MAPS } from './data';
+import { ITEMS, MONSTERS, QUESTS, SENSE, TILED_MAPS } from './data';
 import { gameNow, setGameTimeSource } from './GameClock';
 import { FIELD_TEST } from './config/maps';
 import { FEEL } from './config/feel';
@@ -19,7 +19,8 @@ import type { SkillVolley } from './scenes/Monster';
 import { getRendererInfo, recordRendererChoice, type RendererChoice } from './rendererChoice';
 import { fixedStepTestProbe } from './FixedStepTestProbe';
 
-type EventType = 'loaderror' | 'console.error' | 'error' | 'unhandledrejection' | 'scene' | 'quest:complete';
+type EventType = 'loaderror' | 'console.error' | 'error' | 'unhandledrejection' | 'scene' | 'quest:complete'
+  | 'sense:scan' | 'sense:intel-expired' | 'sense:blocked';
 type XtEvent = { type: EventType; time: number; data: unknown };
 type Listener = (event: XtEvent) => void;
 type SourceTileSprite = Phaser.GameObjects.TileSprite & { displayTexture: Phaser.Textures.Texture; displayFrame: Phaser.Textures.Frame };
@@ -66,6 +67,8 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig, rendererChoi
   let previousMap: string | null = null;
   let unsubscribeQuest: (() => void) | undefined;
   let resolveRestart: (() => void) | undefined;
+  const senseFixtureNames = { chest: 'xt_sense_chest', hiddenChest: 'xt_sense_hidden_chest', platform: 'xt_sense_platform', monster: 'xt_sense_monster' };
+  let senseFixtureMap: string | undefined;
   const preload = scene.preload.bind(scene);
   scene.preload = () => {
     scene.load.off('loaderror', onLoadError);
@@ -96,6 +99,11 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig, rendererChoi
     ready = true;
     unsubscribeQuest?.();
     unsubscribeQuest = scene.quests.onCompleted(reward => emit('quest:complete', { id: reward.quest.id, daily: !!reward.daily }));
+    for (const name of ['sense:scan', 'sense:intel-expired', 'sense:blocked'] as const) {
+      const listener = (result: unknown) => emit(name, result);
+      scene.events.on(name, listener);
+      scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => scene.events.off(name, listener));
+    }
     emit('scene', { from: previousMap, to: scene.map.id });
     previousMap = scene.map.id;
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => { ready = false; unsubscribeQuest?.(); });
@@ -364,6 +372,75 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig, rendererChoi
       persist();
     },
     attrSnapshot() { return copy(current().attrPanel.snapshot()); },
+    sensePreview() { return copy(current().sense.preview()); },
+    senseScan(source: 'key' | 'button', scanId?: string) { return copy(current().sense.requestScan(source, scanId)); },
+    senseIntelList() { return copy(current().sense.intelList()); },
+    senseMonsterIntel() {
+      const s = current(), monster = s.mobs.find(mob => mob.name === senseFixtureNames.monster);
+      return monster ? copy(s.sense.monsterIntel(monster) ?? null) : null;
+    },
+    senseHitMonster(damage: number) {
+      const s = current(), monster = s.mobs.find(mob => mob.name === senseFixtureNames.monster);
+      if (!monster || !finite(damage) || damage < 0) throw new Error(`${marker}: invalid sense monster hit`);
+      monster.takeHit(s.time.now, damage, 0);
+      return monster.hp;
+    },
+    senseSpawnMonster() {
+      const s = current();
+      for (const old of s.mobs.filter(mob => mob.name === senseFixtureNames.monster)) old.destroy();
+      const base = MONSTERS.bamboo_snake ?? Object.values(MONSTERS).find(monster => !monster.immortal && !monster.isBoss);
+      if (!base) throw new Error(`${marker}: missing sense monster fixture base`);
+      const monster = s.spawnTrialMob(base.id, 304, s.map.spawn.y);
+      if (!monster) throw new Error(`${marker}: sense monster fixture spawn failed`);
+      monster.def = { ...copy(base), aggressive: false, moveSpeed: 0, touchDamage: false, exp: 0, dropTable: null,
+        sense: { enabled: true, profile: 'sense_monster_basic', visibleInfo: ['hp', 'abilities'], abilityKeys: [] } } as typeof monster.def;
+      monster.setName(senseFixtureNames.monster); monster.grantRewards = false; monster.noRespawn = true;
+      monster.body.setAllowGravity(false).setVelocity(0, 0);
+      return { hp: monster.hp, maxHp: monster.def.hp, name: monster.name };
+    },
+    async senseFixture(options: { enabled?: boolean; cooldownMs?: number; inspectDurationMs?: number } = {}) {
+      const s = current(), mapId = s.map.id;
+      if (!TILED_MAPS[mapId]) throw new Error(`${marker}: sense fixture requires a Tiled map`);
+      const table = SENSE as unknown as { enabled: boolean; scan: { cooldownMs: number }; inspect: { durationMs: number };
+        targetProfiles: { id: string; enabled: boolean }[] };
+      table.enabled = options.enabled ?? true;
+      for (const value of [options.cooldownMs, options.inspectDurationMs]) {
+        if (value !== undefined && (!Number.isSafeInteger(value) || value <= 0)) throw new Error(`${marker}: invalid sense fixture duration`);
+      }
+      if (options.cooldownMs !== undefined) table.scan.cooldownMs = options.cooldownMs;
+      if (options.inspectDurationMs !== undefined) table.inspect.durationMs = options.inspectDurationMs;
+      for (const profile of table.targetProfiles) profile.enabled = true;
+      const map = TILED_MAPS[mapId];
+      const prop = (name: string, value: unknown) => ({ name, type: typeof value === 'number' ? 'float' : 'string', value });
+      const objects = [
+        { id: 910001, type: 'chest', name: senseFixtureNames.chest, x: 224, y: mapId === 'qingyun_village' ? 704 : s.map.spawn.y,
+          width: 0, height: 0, properties: [prop('loot', 'hp_pill_small'), prop('count', 1)] },
+        { id: 910002, type: 'hidden', name: senseFixtureNames.hiddenChest, x: 224, y: mapId === 'qingyun_village' ? 704 : s.map.spawn.y,
+          width: 0, height: 0, properties: [prop('reqSpirit', 0), prop('reveal', 'chest'), prop('targetObject', senseFixtureNames.chest)] },
+        { id: 910003, class: 'hidden', name: senseFixtureNames.platform, x: 144, y: s.map.spawn.y - 120,
+          width: 160, height: 12, properties: [prop('reqSpirit', 0), prop('reveal', 'platform')] },
+      ];
+      map.layers = map.layers.filter((layer: { name?: string }) => layer.name !== 'xt_sense_fixture');
+      map.layers.push({ id: 910000, type: 'objectgroup', name: 'xt_sense_fixture', objects });
+      senseFixtureMap = mapId;
+      await restart(mapId, { x: s.map.spawn.x, y: s.map.spawn.y });
+      const fresh = current(); fresh.physics.resume(); fresh.dialog.close();
+      fresh.player.body.setAllowGravity(false).setVelocity(0, 0);
+      fresh.prog.hp = fresh.prog.maxHp; fresh.prog.mp = fresh.prog.maxMp;
+      fresh.player.hp = fresh.prog.hp; fresh.player.maxHp = fresh.prog.maxHp;
+      api.senseSpawnMonster();
+      return api.senseFixtureSnapshot();
+    },
+    senseFixtureSnapshot() {
+      const s = current(), body = s.senseMap.platformBody(senseFixtureNames.platform);
+      const chest = s.children.getByName('chest:' + senseFixtureNames.chest) as Phaser.GameObjects.GameObject & { visible?: boolean } | null;
+      return copy({ names: senseFixtureNames, mapId: s.map.id, fixtureMap: senseFixtureMap, mp: s.prog.mp,
+        openedChests: [...s.prog.openedChests], chestVisible: chest?.visible ?? false,
+        platform: body ? { enabled: body.enable, top: body.top, left: body.left, right: body.right,
+          checkCollision: { up: body.checkCollision.up, down: body.checkCollision.down, left: body.checkCollision.left, right: body.checkCollision.right } } : null,
+        player: { x: s.player.x, y: s.player.y, bottom: s.player.body.bottom, onGround: s.player.onGround },
+        revealed: s.sense.revealedHidden(s.map.id), intel: s.sense.intelList(), preview: s.sense.preview() });
+    },
     openInventoryPanel() { const s = current(); s.openInventoryPanel(); return copy(s.inventoryPanel.snapshot()); },
     inventorySnapshot() { return copy(current().inventoryPanel.snapshot()); },
     openEquipPanel() { const s = current(); s.openEquipPanel(); return copy(s.equipPanel.snapshot()); },

@@ -10,5 +10,6 @@
   "v05Maps": true,
   "foxBoss": true,
   "talismanCraft": false,
-  "lifeSkillCurve": false
+  "lifeSkillCurve": false,
+  "spiritScan": false
 }

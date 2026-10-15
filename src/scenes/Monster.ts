@@ -34,6 +34,7 @@ const SUMMON_SPAWN_FRAME = 4;
 const DEPTH_WARN = 5;
 /** 狐火、召唤阵、冲刺残影、消散：画在角色上面 */
 const DEPTH_SKILL_FX = 12;
+let nextSenseInstanceId = 0;
 
 interface AnimDef { key: string; frames: string[]; frameRate: number; repeat: number; }
 interface AnimPack {
@@ -92,6 +93,8 @@ export interface SkillVolley {
 
 /** 小怪：巡逻 / 追击 / 山魈拍地。首领技能（妖狐）数值全部来自 monsters.json 和 anims.json */
 export class Monster extends Phaser.Physics.Arcade.Sprite {
+  /** 仅会话内区分重生/生成实体，不进入存档或图鉴。 */
+  readonly senseInstanceId = ++nextSenseInstanceId;
   declare body: Phaser.Physics.Arcade.Body;
   def: MonsterDef; hp: number; home: { x: number; y: number };
   st: MState = 'patrol'; dir = -1; stateUntil = 0; attackReadyAt = 0;
