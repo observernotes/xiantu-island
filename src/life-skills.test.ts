@@ -273,12 +273,14 @@ try {
     eq(JSON.stringify(loadedAgain.exportSave()), savedAgain, '结果恢复幂等');
   }
   {
-    const { p, system } = talismanReady(); system.start('recipe_talisman_fire');
+    let rolls = 0;
+    const { p, system } = talismanReady(() => { rolls++; return 0; }); system.start('recipe_talisman_fire');
     const paid = JSON.stringify(p.exportSave()), onDisk = disk[key]; writeFails = true;
     eq(draw(system, 4), null, '结果写盘失败不提交'); eq(JSON.stringify(p.exportSave()), paid, '经验、产物、结果在同事务全部回滚');
     eq(disk[key], onDisk, '失败保持已扣料存档'); writeFails = false;
     const result = system.settle(p.talisman.attempt!.attemptId); ok(result?.success, '原结果可重试提交');
     eq(p.talismanExp, 10, '重试只授一次经验'); system.settle(result.attemptId); eq(p.talismanExp, 10, '二次重试不再授经验');
+    eq(rolls, 1, '曲线开启的保存失败与重试不重掷判定');
   }
   {
     const { p, system } = talismanReady(); p.addCraftedItem = () => false;

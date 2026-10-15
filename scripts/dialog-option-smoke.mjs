@@ -80,7 +80,10 @@ try {
     progress(label);
     const context = await browser.newContext({ viewport: { width: 1280, height: 720 }, timezoneId: 'Asia/Shanghai' });
     const filtered = missing.length ? await installMissingManifest(context, manifest, missing) : undefined;
-    await context.addInitScript(save => localStorage.setItem('xiantu_save_v1', JSON.stringify(save)), save);
+    await context.addInitScript(save => {
+      if (location.protocol !== 'http:' && location.protocol !== 'https:') return;
+      localStorage.setItem('xiantu_save_v1', JSON.stringify(save));
+    }, save);
     const page = await context.newPage();
     const errors = { console: [], page: [], request: [], http: [] }, responses = [], requests = [];
     page.on('console', event => { if (event.type() === 'error') errors.console.push(event.text()); });

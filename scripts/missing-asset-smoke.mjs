@@ -134,6 +134,7 @@ async function phase(outDir, label) {
     }
     // 独立浏览器档提供外门身份，产品发版开关仍读取工程配置。
     await context.addInitScript(() => {
+      if (location.protocol !== 'http:' && location.protocol !== 'https:') return;
       localStorage.setItem('xiantu_save_v1', JSON.stringify({ name: '缺图冒烟修士', level: 30, exp: 0,
         hp: 0, mp: 0, job: 'tianjian_disciple', sectRank: 'outer_disciple', sectContribution: 0,
         inventory: {}, quests: {}, ageUpdatedAt: Date.now() }));

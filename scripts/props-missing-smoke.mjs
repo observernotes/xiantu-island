@@ -152,6 +152,7 @@ async function phase(outDir, label) {
     }
     // 两阶段独立存档；保留工程的发版开关，不调用测试桥或覆写 feature 配置。
     await context.addInitScript(() => {
+      if (location.protocol !== 'http:' && location.protocol !== 'https:') return;
       localStorage.setItem('xiantu_save_v1', JSON.stringify({ name: '道具缺图冒烟修士', level: 30, exp: 0,
         hp: 0, mp: 0, job: 'tianjian_disciple', sectRank: 'outer_disciple', sectContribution: 0,
         inventory: {}, quests: {}, openedChests: [], ageUpdatedAt: Date.now() }));

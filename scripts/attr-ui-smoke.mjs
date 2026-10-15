@@ -77,6 +77,7 @@ try {
     const context = await browser.newContext({ viewport: { width: 1280, height: 720 }, timezoneId: 'Asia/Shanghai' });
     const filtered = missing.length ? await installMissingManifest(context, manifest, missing) : undefined;
     await context.addInitScript(save => {
+      if (location.protocol !== 'http:' && location.protocol !== 'https:') return;
       if (!sessionStorage.getItem('attr-seeded')) {
         localStorage.setItem('xiantu_save_v1', JSON.stringify(save)); sessionStorage.setItem('attr-seeded', '1');
       }

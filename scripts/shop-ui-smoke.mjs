@@ -132,8 +132,12 @@ try {
       await context.route(url => url.origin === missingURL.origin && url.pathname === missingURL.pathname,
         route => route.fulfill({ status: 200, contentType: 'text/html', body: '<!doctype html><html><body>Missing smoke asset</body></html>' }));
     }
-    await context.addInitScript(save => { if (!sessionStorage.getItem('shop-seeded')) {
-      localStorage.setItem('xiantu_save_v1', JSON.stringify(save)); sessionStorage.setItem('shop-seeded', '1'); } }, save);
+    await context.addInitScript(save => {
+      if (location.protocol !== 'http:' && location.protocol !== 'https:') return;
+      if (!sessionStorage.getItem('shop-seeded')) {
+        localStorage.setItem('xiantu_save_v1', JSON.stringify(save)); sessionStorage.setItem('shop-seeded', '1');
+      }
+    }, save);
     const page = await context.newPage();
     const errors = { console: [], page: [], request: [], http: [] };
     const missingResponses = [];

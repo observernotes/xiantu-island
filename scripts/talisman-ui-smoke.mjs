@@ -76,7 +76,10 @@ try {
   async function createSessionContext() {
     const context = await browser.newContext({ viewport: { width: 1280, height: 720 }, timezoneId: 'Asia/Shanghai' });
     contextCount++;
-    await context.addInitScript(save => localStorage.setItem('xiantu_save_v1', JSON.stringify(save)), save);
+    await context.addInitScript(save => {
+      if (location.protocol !== 'http:' && location.protocol !== 'https:') return;
+      localStorage.setItem('xiantu_save_v1', JSON.stringify(save));
+    }, save);
     return context;
   }
   async function session(label, { missing = [], missingFile = '', sharedContext } = {}, run) {
