@@ -49,6 +49,9 @@ function collectErrors(page) {
   return errors;
 }
 async function press(page, key) {
+  await page.waitForFunction(() => { const s = window.__scene;
+    return !s.shop.isOpen() || s.time.now - s.shop.openedAt >= 120;
+  }, null, { timeout: 3000 });
   await page.keyboard.down(key); await page.waitForTimeout(60); await page.keyboard.up(key);
 }
 async function sceneReady(page) {
