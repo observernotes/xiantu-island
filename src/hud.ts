@@ -34,6 +34,9 @@ export function preloadHud(scene: Phaser.Scene) {
     if (k === 'ui_hud_slot') loadOptionalImage(scene, k, `${HUD_DIR}/${k}.png`);
     else scene.load.image(k, `${HUD_DIR}/${k}.png`);
   }
+  // UI-2：三态和光标各自可选；清单外不入队，实体缺失/解码失败也静默退回代码画。
+  for (const k of ['ui_hud_dialog_option_selected', 'ui_hud_dialog_option_normal', 'ui_hud_dialog_option_disabled', 'ui_hud_cursor'])
+    loadOptionalImage(scene, k, `${HUD_DIR}/${k}.png`);
   // 公共窗体件（图鉴/炼丹/商店共用）按构建清单可选加载，缺图时各窗体退回代码画。
   for (const k of ['ui_bestiary_window', 'ui_bestiary_title', 'ui_bestiary_inset', 'ui_bestiary_btn_close', 'ui_bestiary_btn_close_hover',
     'ui_bestiary_tab', 'ui_bestiary_tab_active'])
@@ -75,7 +78,7 @@ export interface HudSpec {
   origin?: [number, number];
   contentInset?: number;
   pad?: number;
-  text?: { size?: number; bold?: boolean; color?: string; centerY?: number };
+  text?: { size?: number; bold?: boolean; color?: string; x?: number; centerY?: number };
 }
 export function hudSpec(scene: Phaser.Scene, key: string): HudSpec | undefined {
   const raw = scene.cache.json.get('hud_ui')?.[key] ?? scene.cache.json.get('cult_slices')?.[key]

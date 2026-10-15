@@ -26,6 +26,8 @@ export class DialogBox {
   private kit = false;
   private choices: DialogChoice[] = [];
   private choiceObjects: Phaser.GameObjects.GameObject[] = [];
+  private choicePainters: ((selected: boolean) => void)[] = [];
+  private choiceFocus = -1;
   private version = 0;
   open = false;
 
@@ -88,36 +90,80 @@ export class DialogBox {
     ];
     this.show([line], portraitKey, undefined, undefined, rankIcon);
     this.choices = choices;
+    this.choiceFocus = choices.findIndex(choice => !choice.disabled);
     // 选项在对白框上方纵排，原因随行换行，不挤占 NPC 台词或底部提示。
+    const left = 60 - 592 / 2, width = 592;
+    const minHeight = Math.max(28, ...['selected', 'normal', 'disabled'].map(state =>
+      hudSpec(this.scene, `ui_hud_dialog_option_${state}`)?.size?.[1] ?? 0));
     const rows = choices.map((choice, i) => {
       const text = `${i + 1}. ${choice.label}${choice.reason ? `\n${choice.reason}` : ''}`;
       const badge = featureEnabled('sectRanks') ? sectRankIcon(this.scene, choice.rankIcon) : null, inset = badge ? 32 : 0;
-      const label = this.scene.add.text(-224 + inset, 0, text, { fontFamily: HUD_FONT, fontSize: '14px',
-        color: choice.disabled ? INK_60 : INK, wordWrap: { width: 560 - inset, useAdvancedWrap: true } }).setOrigin(0, 0.5);
-      return { choice, label, badge, height: Math.max(badge ? 36 : 30, label.height + 12) };
+      const key = `ui_hud_dialog_option_${choice.disabled ? 'disabled' : 'normal'}`;
+      const style = hasHud(this.scene, key) ? hudSpec(this.scene, key)?.text : undefined;
+      const textX = style?.x ?? 12;
+      const label = this.scene.add.text(textX + inset, 0, text, { fontFamily: HUD_FONT, fontSize: `${style?.size ?? 14}px`,
+        color: style?.color ?? (choice.disabled ? INK_60 : INK),
+        wordWrap: { width: width - textX - 20 - inset, useAdvancedWrap: true } }).setOrigin(0, 0.5);
+      return { choice, label, badge, inset, height: Math.max(minHeight, badge ? 36 : 30, label.height + 12) };
     });
     let top = -90 - rows.reduce((sum, row) => sum + row.height + 6, 0);
-    rows.forEach(({ choice, label, badge, height }, i) => {
-      const y = top + height / 2;
-      const bg = this.scene.add.rectangle(60, y, 592, height, choice.disabled ? 0xd4cec0 : 0xece0c4)
-        .setStrokeStyle(1, choice.disabled ? 0xaaa399 : 0x6b4b2a).setName(`dialog-choice:${i}`);
-      label.setY(y);
-      if (!choice.disabled) {
-        bg.setInteractive({ useHandCursor: true });
-        bg.on('pointerdown', () => this.selectChoice(i));
-        bg.on('pointerover', () => bg.setFillStyle(0xe0cd9e));
-        bg.on('pointerout', () => bg.setFillStyle(0xece0c4));
-      }
-      this.c.add([bg, label]); this.choiceObjects.push(bg, label);
+    rows.forEach(({ choice, label, badge, inset, height }, i) => {
+      // btn 的 x/y 就是左上角；光标与所有状态底板共用这一坐标系。
+      const btn = this.scene.add.container(left, top).setSize(width, height).setScrollFactor(0).setName(`dialog-choice:${i}`);
+      this.c.add(btn); this.choiceObjects.push(btn);
+      const states = choice.disabled ? ['disabled'] : ['normal', 'selected'];
+      const views = states.map(state => {
+        const key = `ui_hud_dialog_option_${state}`;
+        const art = sliced(this.scene, key, 0, 0, width, height);
+        const bg = art ?? this.scene.add.rectangle(0, 0, width, height,
+          state === 'disabled' ? 0xd4cec0 : state === 'selected' ? 0xe0cd9e : 0xece0c4)
+          .setOrigin(0, 0).setStrokeStyle(1, state === 'disabled' ? 0xaaa399 : 0x6b4b2a);
+        bg.setName(`dialog-choice-bg:${state}`).setData('artUsed', art ? 'art' : 'code');
+        btn.add(bg);
+        return { state, key, bg, art: !!art };
+      });
+      label.setName(`dialog-choice-label:${i}`).setY(height / 2); btn.add(label);
       if (badge) {
-        const icon = this.scene.add.image(-224, y - label.height / 2 - 4, badge.texture, badge.frame)
+        const icon = this.scene.add.image(label.x - inset, height / 2 - label.height / 2 - 4, badge.texture, badge.frame)
           .setOrigin(0, 0).setDisplaySize(24, 24).setName(`dialog-choice-rank:${i}`).setScrollFactor(0)
           .setAlpha(choice.disabled ? 0.6 : 1);
-        this.c.add(icon); this.choiceObjects.push(icon);
+        btn.add(icon);
+      }
+      const cursorSpec = hudSpec(this.scene, 'ui_hud_cursor');
+      const cursor = choice.disabled ? null : hasHud(this.scene, 'ui_hud_cursor')
+        ? this.scene.add.image(-14, height / 2, 'ui_hud_cursor').setOrigin(...(cursorSpec?.origin ?? [0, 0.5]))
+        : this.scene.add.text(-14, height / 2, '▶', { fontFamily: HUD_FONT, fontSize: '14px', color: '#D9A441' }).setOrigin(0, 0.5);
+      if (cursor) btn.add(cursor.setName(`dialog-choice-cursor:${i}`).setScrollFactor(0)
+        .setData('artUsed', hasHud(this.scene, 'ui_hud_cursor') ? 'art' : 'code'));
+      this.choicePainters.push(selected => {
+        const state = choice.disabled ? 'disabled' : selected ? 'selected' : 'normal';
+        const view = views.find(view => view.state === state)!;
+        views.forEach(view => view.bg.setVisible(view.state === state));
+        const style = view.art ? hudSpec(this.scene, view.key)?.text : undefined;
+        const textX = style?.x ?? 12;
+        label.setColor(style?.color ?? (choice.disabled ? INK_60 : INK)).setFontSize(style?.size ?? 14)
+          .setX(textX + inset).setWordWrapWidth(width - textX - 20 - inset, true);
+        cursor?.setVisible(state === 'selected');
+        btn.setData('state', state).setData('artUsed', view.art ? 'art' : 'code');
+      });
+      if (!choice.disabled) {
+        btn.setInteractive(new Phaser.Geom.Rectangle(0, 0, width, height), Phaser.Geom.Rectangle.Contains);
+        btn.input!.cursor = 'pointer';
+        btn.on('pointerdown', () => this.selectChoice(i));
+        btn.on('pointerover', () => this.focusChoice(i));
+        btn.on('pointerout', () => this.focusChoice(this.choiceFocus));
       }
       top += height + 6;
     });
+    this.focusChoice(this.choiceFocus);
     this.hint.setText(`1–${choices.length} · ${t('ui.dialog.accept')} / Esc · ${t('ui.dialog.close')}`);
+  }
+
+  /** 默认首个可用项；悬停保留焦点，分页/关闭时清理。数字键仍直接 selectChoice。 */
+  private focusChoice(index: number) {
+    if (this.choices[index]?.disabled) return;
+    this.choiceFocus = index;
+    this.choicePainters.forEach((paint, i) => paint(i === index));
   }
 
   selectChoice(index: number) {
@@ -133,7 +179,7 @@ export class DialogBox {
 
   private clearChoices() {
     this.choiceObjects.forEach(o => o.destroy());
-    this.choiceObjects = []; this.choices = [];
+    this.choiceObjects = []; this.choices = []; this.choicePainters = []; this.choiceFocus = -1;
   }
 
   private setRankBadge(key: string | undefined) {
