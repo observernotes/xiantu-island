@@ -70,8 +70,8 @@ function ready() {
   a.start(recipe.id); a.skipFire(); eq(q.mark('doctor_sun'), '?', '成功炼丹后显示可交付');
   const turnIn = q.talk('doctor_sun').after?.(); ok(turnIn, '实际NPC对话返回交付奖励');
   eq(turnIn.quest.id, 'q_alchemy_intro', '交付炼丹入门任务');
-  p.grantQuestRecipes(turnIn.quest);
   ok(p.learnedRecipes.includes('recipe_qi_pill'), 'NPC交付可发奖励丹方');
+  eq(p.grantQuestRecipes(turnIn.quest).length, 0, 'NPC交付已授奖励丹方，重复授方不重复');
   eq(NPCS.doctor_sun.quests.join(','), original, '兼容入口不修改NPC原表');
 }
 
@@ -95,10 +95,12 @@ function ready() {
   eq(a.skipFire(), null, '同炉结果不可重复结算');
   eq(q.complete('q_alchemy_intro'), true, '采集持有量与成功炼丹均完成');
   q.turnIn('q_alchemy_intro');
-  eq(p.count('spirit_herb'), 15, '交付扣表中三草');
+  eq(p.count('spirit_herb'), 18, '交付扣三草后按表回赠三草');
+  eq(p.count('bronze_furnace'), 1, '交付按表奖励自用青铜炉');
   eq(q.state('q_alchemy_intro'), 'done', '可真实交付');
+  ok(p.learnedRecipes.includes('recipe_qi_pill'), '交付已授奖励第二方');
   const granted = p.grantQuestRecipes(QUESTS.q_alchemy_intro);
-  eq(granted.join(','), 'recipe_qi_pill', '完成奖励补第二方并去重教学方');
+  eq(granted.length, 0, '交付已授丹方，手动授方返回空');
   eq(p.grantQuestRecipes(QUESTS.q_alchemy_intro).length, 0, '重复授方不重复');
   q.onCraft(recipe.output, 7); eq(p.quests.q_alchemy_intro.crafted?.[recipe.output], 5, '完成后产物不再记任务');
 }
