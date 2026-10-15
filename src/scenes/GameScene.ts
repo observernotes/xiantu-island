@@ -975,6 +975,7 @@ export class GameScene extends Phaser.Scene {
     if (d.itemId === 'spirit_stone') { this.prog.stones += d.count; this.log(`获得灵石 ${d.count}`, '#7ff0d0'); }
     else if (ITEMS[d.itemId]?.type === 'equip') { const on = this.prog.gainEquip(d.itemId); this.player.syncAppearance(); this.log(`获得 ${ITEMS[d.itemId].name}${on ? '（已自动装备）' : ''}`, '#9fd0ff'); }
     else { this.prog.addItem(d.itemId, d.count); this.log(`获得 ${ITEMS[d.itemId]?.name ?? d.itemId} ×${d.count}`, '#ffffff'); }
+    this.prog.save();
   }
 
   usePill(id: string) {

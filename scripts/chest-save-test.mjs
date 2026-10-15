@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { createServer } from 'vite';
 
-// 跑真实 Progress 与 GameScene 开箱/绘制方法，Phaser 只替换渲染对象。
+// 跑真实 Progress 与 GameScene 开箱/拾取/绘制方法，Phaser 只替换渲染对象。
 const server = await createServer({
   server: { middlewareMode: true, hmr: false, ws: false }, appType: 'custom', logLevel: 'error',
   plugins: [{ name: 'chest-render-stub', enforce: 'pre',
@@ -86,6 +86,29 @@ try {
   otherMap.scene.tryOpenChest();
   eq(otherMap.drops.length, 1, '不同地图的同名宝匣仍可正常掉落');
   eq(Progress.load().openedChests, ['map_a:shared_chest', 'map_b:shared_chest'], '不同地图同名宝匣各自持久化');
+
+  const lootProgress = new Progress();
+  lootProgress.level = 10; lootProgress.stones = 360; lootProgress.equip.weapon = 'wood_sword';
+  lootProgress.quests.q_fox = { state: 'active', kills: { demon_fox: 1 } };
+  lootProgress.save();
+  const lootScene = Object.assign(Object.create(GameScene.prototype), {
+    prog: lootProgress,
+    player: { x: 80, y: 160, syncAppearance() {} },
+    drops: { remove() {} }, tweens: { add() {} }, log() {},
+  });
+  for (const [itemId, count, stones, weapon, inventory] of [
+    ['spirit_stone', 401, 761, 'wood_sword', {}],
+    ['azure_steel_sword', 1, 761, 'azure_steel_sword', { wood_sword: 1 }],
+    ['fox_tail', 1, 761, 'azure_steel_sword', { wood_sword: 1, fox_tail: 1 }],
+  ]) {
+    lootScene.collect({ itemId, count, body: { enable: true } });
+    // 不主动保存，模拟拾取后立刻整页重载，并用读档结果继续拾取。
+    lootScene.prog = Progress.load();
+    eq([lootScene.prog.stones, lootScene.prog.equip.weapon, lootScene.prog.inventory],
+      [stones, weapon, inventory], `${itemId} 拾取后立即读档，灵石/装备/物品均保留`);
+  }
+  eq([lootScene.prog.quests.q_fox.state, lootScene.prog.quests.q_fox.kills],
+    ['active', { demon_fox: 1 }], '拾取存档保留妖狐任务击杀进度');
 
   console.log(`chest save ok: ${assertions} assertions`);
 } finally {
