@@ -15,8 +15,8 @@ const projectRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const fixtureRoot = path.join(projectRoot, 'scripts/fixtures/art-engine');
 const dataRoot = findRoot(projectRoot);
 const legacyBodySize = [26, 58];
-// 本次修复前的冻结基线，包含 UI-6 加点 / UI-7 背包装备 HUD 及功能开关隐藏文案。
-const baselineRevision = 'd449ad02fc39ebd6dac64774a23f96dd4e45fe58';
+// P1 性能改动后的冻结基线，包含 F1 调试/渲染文案及软件 WebGL 自动回退 Canvas。
+const baselineRevision = '050bbc978e4a1452d0685f6f0655de50d5c856f8';
 const fixedTime = 1791608400000;
 const port = Number(process.env.XT_TEST_PORT ?? 4337);
 for (const value of [port, port + 1]) {
@@ -93,8 +93,10 @@ async function buildBaseline() {
     return { directory };
   }
   const temporaryRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'xiantu-art-before-'));
-  const archive = execFileSync('git', ['archive', baselineRevision, 'src', 'index.html'], { cwd: projectRoot });
-  execFileSync('tar', ['-x', '-C', temporaryRoot], { input: archive });
+  const archive = path.join(temporaryRoot, 'baseline.tar');
+  execFileSync('git', ['archive', '--output', archive, baselineRevision, 'src', 'index.html'], { cwd: projectRoot });
+  execFileSync('tar', ['-xf', archive, '-C', temporaryRoot]);
+  await fs.unlink(archive);
   await fs.symlink(path.join(projectRoot, 'node_modules'), path.join(temporaryRoot, 'node_modules'));
   await fs.cp(path.join(projectRoot, 'src/gen'), path.join(temporaryRoot, 'src/gen'), { recursive: true });
   await fs.cp(path.join(projectRoot, 'public'), path.join(temporaryRoot, 'public'), { recursive: true });
@@ -347,6 +349,8 @@ try {
   equal([afterState.x, afterState.y, afterState.feet, afterState.origin, afterState.displayHeight],
     [320, 608, 608, playerSpec.origin, playerSpec.frameSize[1] * playerSpec.displayScale], '正式主角脚底线/原点/显示高度改变');
   equal(afterState, beforeState, '主角无覆盖时 world body / 脚底 / 所有名牌及 HUD 与基线不同');
+  metrics.baselineComparison = Object.fromEntries([['before', beforeState], ['after', afterState]].map(([name, state]) =>
+    [name, { renderer: state.renderer, helpText: state.labels.find(label => label.text.includes('F1 调试'))?.text }]));
   const differentPixels = pixelDifference(beforeImage, afterImage);
   await fs.writeFile(path.join(projectRoot, 'dist/art-engine-before.png'), beforeImage);
   await fs.writeFile(path.join(projectRoot, 'dist/art-engine-after.png'), afterImage);

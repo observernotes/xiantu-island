@@ -221,7 +221,7 @@ async function draw(page) {
   await page.keyboard.press('z', { delay: 45 });
   await page.waitForFunction(() => window.__scene.sectTrial?.blocksInput, null, { timeout: 3000 });
   const arrows = { up: 'ArrowUp', right: 'ArrowRight', down: 'ArrowDown', left: 'ArrowLeft' };
-  await page.keyboard.press('ArrowLeft');
+  await page.keyboard.press('ArrowLeft', { delay: 45 });
   await page.waitForFunction(() => window.__scene.logs.some(line => line.text === '笔画错了，这道符重画'),
     null, { timeout: 3000, polling: 50 });
   assert.deepEqual(await page.evaluate(() => ({ drawn: window.__scene.sectTrial.state.drawn,
@@ -232,8 +232,11 @@ async function draw(page) {
       return { stage: trial.stage, drawn: trial.state.drawn, strokes: trial.state.strokes.slice(trial.state.strokeIndex) };
     });
     if (state.stage !== 'draw') break;
-    // onKey 按事件队列逐笔处理；一道符读一次方向，仍逐笔发送真实键盘事件。
-    for (const direction of state.strokes) await page.keyboard.press(arrows[direction]);
+    // 等画符面板接管输入，并留出真实按压时间，避免同帧 keydown/keyup 丢笔。
+    for (const direction of state.strokes) {
+      await page.waitForFunction(() => window.__scene.sectTrial?.blocksInput, null, { timeout: 3000, polling: 50 });
+      await page.keyboard.press(arrows[direction], { delay: 45 });
+    }
     await page.waitForFunction(drawn => window.__scene.sectTrial.state.drawn === drawn + 1,
       state.drawn, { timeout: 3000, polling: 50 });
   }
