@@ -16,6 +16,7 @@ import { TalismanScene } from './scenes/TalismanScene';
 import { TalismanPanel, type TalismanPanelAction, type TalismanPanelState } from './TalismanPanel';
 import { installCrashGuard } from './crashGuard';
 import type { SkillVolley } from './scenes/Monster';
+import { getRendererInfo, recordRendererChoice, type RendererChoice } from './rendererChoice';
 
 type EventType = 'loaderror' | 'console.error' | 'error' | 'unhandledrejection' | 'scene' | 'quest:complete';
 type XtEvent = { type: EventType; time: number; data: unknown };
@@ -25,7 +26,7 @@ const copy = <T>(value: T): T => JSON.parse(JSON.stringify(value));
 const finite = (n: number) => typeof n === 'number' && Number.isFinite(n);
 
 /** 此模块只由 VITE_XT_TEST=1 的动态分支加载。 */
-export function startTestGame(config: Phaser.Types.Core.GameConfig): Phaser.Game {
+export function startTestGame(config: Phaser.Types.Core.GameConfig, rendererChoice: RendererChoice): Phaser.Game {
   const marker = 'XT_TEST_INTERFACE_V1';
   const pending: XtEvent[] = [];
   const listeners = new Map<string, Set<Listener>>();
@@ -153,6 +154,11 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig): Phaser.Game
   const api = {
     get errors() { return copy(crashGuard.errors); },
     guardState() { return copy(crashGuard.getState()); },
+    rendererSnapshot() {
+      const s = current();
+      return { ...getRendererInfo(s.game), debugVisible: s.debugText.visible,
+        debugText: s.debugText.text, startup: { ...rendererChoice } };
+    },
     loopSnapshot() {
       const s = current(), shots = shotRuntime();
       return { frame: s.game.loop.frame, updateCalls, sceneGeneration, mapId: s.map.id,
@@ -466,6 +472,7 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig): Phaser.Game
   };
   (window as Window & { __xt?: typeof api }).__xt = api;
   const game = new Phaser.Game({ ...config, scene: [scene] });
+  recordRendererChoice(game, rendererChoice);
   const crashGuard = installCrashGuard(game);
   // 已被安全网捕获的循环错误仍进入测试事件流，不能因兜底而掩盖回归。
   const unsubscribeCrash = crashGuard.onError(record => emit('error', record));

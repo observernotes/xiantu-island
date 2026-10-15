@@ -28,6 +28,8 @@
     "test:smoke:trials": "timeout 180s node scripts/trials-smoke.mjs",
     "test:smoke:classes": "timeout 120s node scripts/classes-smoke.mjs",
     "test:smoke:freeze": "timeout 180s node scripts/freeze-regress-smoke.mjs",
+    "test:smoke:perf-assets": "timeout 180s node scripts/perf-assets-smoke.mjs",
+    "test:smoke:perf-renderer": "timeout 300s node scripts/perf-renderer-smoke.mjs",
     "test:smoke:crash-guard": "timeout 180s node scripts/crash-guard-smoke.mjs",
     "test:smoke:skill-learning": "timeout 120s node scripts/skill-learning-smoke.mjs",
     "test:daily": "timeout 60s node scripts/daily-test.mjs",

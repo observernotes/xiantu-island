@@ -22,7 +22,8 @@ const IMAGES = [
 export function preloadAlchemy(scene: Phaser.Scene) {
   // 窗体件与商店共用，按构建清单可选加载（UI-5）；缺图时 art() 返回空，不入加载队列。
   for (const key of IMAGES) loadOptionalImage(scene, key, `${DIR}/${key}.png`);
-  scene.load.atlas('ui_alchemy_fire', `${DIR}/ui_alchemy_fire.png`, `${DIR}/ui_alchemy_fire.json`);
+  if (!scene.textures.exists('ui_alchemy_fire'))
+    scene.load.atlas('ui_alchemy_fire', `${DIR}/ui_alchemy_fire.png`, `${DIR}/ui_alchemy_fire.json`);
   scene.load.json('alchemy_fire_meta', `${DIR}/ui_alchemy_fire.json`);
   for (const icon of new Set(Object.values(RECIPES).filter(r => !r.type).map(r => ITEMS[r.output]?.icon).filter(Boolean)))
     scene.load.image(`${icon}@64`, `art/icons/items/${icon}@64.png`);

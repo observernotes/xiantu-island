@@ -1,5 +1,6 @@
 import { gameNow } from '../GameClock';
 import Phaser from 'phaser';
+import { getRendererInfo } from '../rendererChoice';
 import { FEEL, SPEC } from '../config/feel';
 import { FIELD_TEST } from '../config/maps';
 import { MONSTERS, DROPS, ITEMS, TILED_MAPS, ATLASES, MAP_AREA, AREAS, TILE_METADATA, BACKGROUNDS, BACKGROUND_CONFIGS, PROP_LAYOUTS, SKILL_ICONS, NPCS, SCRIPTS, syncTalismanMapAvailability, t, questName, questDescription, MP_REGEN_FRACTION_PER_5S, BREAKTHROUGH_LEVELS } from '../data';
@@ -187,11 +188,13 @@ export class GameScene extends Phaser.Scene {
       if (loadOptionalAtlas(this, k, `art/sprites/${k}.png`, `art/sprites/${k}.json`))
         loadOptionalJson(this, `${k}_anims`, `art/sprites/${k}.anims.json`);
     }
-    this.load.atlas('icons_skills', 'art/icons/icons_skills.png', 'art/icons/icons_skills.json');
+    if (!this.textures.exists('icons_skills'))
+      this.load.atlas('icons_skills', 'art/icons/icons_skills.png', 'art/icons/icons_skills.json');
     for (const icon of SKILL_ICONS) loadOptionalImage(this, icon.key, icon.path);
     // 葫芦三态：hud/ 目录里还没有，继续读 art/icons/ui/
     for (const tier of ['empty', 'half', 'full']) this.load.image(`icon_overflow_gourd_${tier}`, `art/icons/ui/icon_overflow_gourd_${tier}.png`);
-    this.load.atlas('icons_items', 'art/icons/icons_items.png', 'art/icons/icons_items.json');
+    if (!this.textures.exists('icons_items'))
+      this.load.atlas('icons_items', 'art/icons/icons_items.png', 'art/icons/icons_items.json');
     preloadHud(this);
     preloadAlchemy(this);
   }
@@ -1211,7 +1214,7 @@ export class GameScene extends Phaser.Scene {
   // ---------------- 地图物件 ----------------
   private refreshHelpText() {
     const alchemy = featureEnabled('alchemyPhase1');
-    this.helpText?.setText(`方向键 移动 / ↑↓ 爬绳梯  ↑ 传送 / 上船 / 闭关\nAlt / 空格 / C 跳跃（空中再按 = 二段跳）\n↓ + 跳 穿下单向平台\nCtrl / X 普攻   Z 对话 / 拾取${alchemy ? ' / 采集' : ''} / 开宝箱\nA S D F G H Q W 技能   K 功法  P 加点${alchemy ? '  L 丹炉' : ''}\n1 回春丹  2 回气丹  I 背包  E 装备  F1 调试`);
+    this.helpText?.setText(`方向键 移动 / ↑↓ 爬绳梯  ↑ 传送 / 上船 / 闭关\nAlt / 空格 / C 跳跃（空中再按 = 二段跳）\n↓ + 跳 穿下单向平台\nCtrl / X 普攻   Z 对话 / 拾取${alchemy ? ' / 采集' : ''} / 开宝箱\nA S D F G H Q W 技能   K 功法  P 加点${alchemy ? '  L 丹炉' : ''}\n1 回春丹  2 回气丹  I 背包  E 装备  F1 调试/渲染`);
   }
 
   private requireFeature(name: FeatureName, npcId?: string) {
@@ -2218,7 +2221,10 @@ export class GameScene extends Phaser.Scene {
     this.tracker.setText(tl.join('\n')).setVisible(tl.length > 0);
     if (this.debugText.visible) {
       const p = this.player, b = p.body;
-      this.debugText.setText(`状态 ${p.state2}  二段跳 ${p.canDouble ? '可用' : '已用'}  单向平台 ${p.onOneWay}\n速度 vx ${b.velocity.x.toFixed(0)} vy ${b.velocity.y.toFixed(0)}  位置 ${p.x.toFixed(0)},${p.y.toFixed(0)}  FPS ${this.game.loop.actualFps.toFixed(0)}`);
+      const renderer = getRendererInfo(this.game);
+      const glName = renderer.glRenderer?.replace(/\s+/g, ' ').trim();
+      const shortName = glName && (glName.length > 72 ? `${glName.slice(0, 69)}…` : glName);
+      this.debugText.setText(`渲染 ${renderer.name}  FPS ${renderer.actualFps.toFixed(0)}${shortName ? `\nGL ${shortName}` : ''}\n状态 ${p.state2}  二段跳 ${p.canDouble ? '可用' : '已用'}  单向平台 ${p.onOneWay}\n速度 vx ${b.velocity.x.toFixed(0)} vy ${b.velocity.y.toFixed(0)}  位置 ${p.x.toFixed(0)},${p.y.toFixed(0)}`);
     }
   }
 

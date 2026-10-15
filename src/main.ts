@@ -3,11 +3,13 @@ import { FEEL } from './config/feel';
 import { GameScene } from './scenes/GameScene';
 import { installOptionalAssetErrorHandler } from './optionalAssets';
 import { installCrashGuard } from './crashGuard';
+import { chooseRenderer, recordRendererChoice } from './rendererChoice';
 
 installOptionalAssetErrorHandler(Phaser);
 
+const rendererChoice = chooseRenderer(window.location.search);
 const config: Phaser.Types.Core.GameConfig = {
-  type: Phaser.AUTO,
+  type: rendererChoice.type,
   parent: 'game',
   width: 1280,
   height: 720,
@@ -24,9 +26,11 @@ const config: Phaser.Types.Core.GameConfig = {
 async function start() {
   if (import.meta.env.VITE_XT_TEST === '1') {
     const { startTestGame } = await import('./XtTestBridge');
-    startTestGame(config);
+    startTestGame(config, rendererChoice);
   } else {
-    installCrashGuard(new Phaser.Game(config));
+    const game = new Phaser.Game(config);
+    recordRendererChoice(game, rendererChoice);
+    installCrashGuard(game);
   }
 }
 void start();

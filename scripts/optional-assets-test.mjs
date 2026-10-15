@@ -106,17 +106,22 @@ try {
   for (const url of inventory) equal(api.assetAvailable(url), true, `listed URL available: ${url}`);
   equal(api.assetAvailable('art/unknown.png'), false);
   const queued = [];
-  const scene = { load: Object.fromEntries(['image', 'atlas', 'json', 'spritesheet'].map(kind => [kind, (...args) => queued.push({ kind, args })])) };
+  const loadingScene = (queue, prefix = '', textures = new Set(), json = new Set()) => ({
+    load: { prefix, ...Object.fromEntries(['image', 'atlas', 'json', 'spritesheet'].map(kind => [kind, (...args) => queue.push({ kind, args })])) },
+    textures: { exists: key => textures.has(key) }, cache: { json: { exists: key => json.has(key) } },
+  });
+  const scene = loadingScene(queued);
   const frameConfig = { frameWidth: 32, frameHeight: 32 };
   const expected = [];
-  for (const [loader, kind, args] of [
+  const loadCases = [
     ['loadOptionalImage', 'image', ['image', 'art/icons/skills/skill_test@64.png']],
     ['loadOptionalAtlas', 'atlas', ['atlas', 'art/sprites/prop_test.png', 'art/sprites/prop_test.json']],
     ['loadOptionalJson', 'json', ['anims', 'art/sprites/prop_test.anims.json']],
     ['loadOptionalJson', 'json', ['tile_meta', 'art/tiles/tiles_altar.json']],
     ['loadOptionalJson', 'json', ['bg_config', 'art/tiles/bg_altar.json']],
     ['loadOptionalSpritesheet', 'spritesheet', ['tiles', 'art/tiles/tiles_altar_fill_variants.png', frameConfig]],
-  ]) {
+  ];
+  for (const [loader, kind, args] of loadCases) {
     equal(api[loader](scene, ...args), true, `${kind} listed asset queues`);
     expected.push({ kind, args });
   }
@@ -130,6 +135,34 @@ try {
     ['loadOptionalAtlas', ['missing_png', 'art/unknown.png', 'art/sprites/prop_test.json']],
   ]) equal(api[loader](scene, ...args), false, 'unlisted asset is rejected');
   equal(queued, expected, 'rejected assets never enter Phaser queue');
+
+  // 模拟首次 preload 完成后重启场景：Atlas 只存纹理，独立 JSON 只存 JSON cache。
+  for (const prefix of ['', 'map:']) {
+    const repeatQueue = [], textures = new Set(), json = new Set();
+    const repeatScene = loadingScene(repeatQueue, prefix, textures, json);
+    for (const [loader, kind, args] of loadCases) {
+      equal(api[loader](repeatScene, ...args), true, `${prefix}${kind}: first preload queues`);
+      (kind === 'json' ? json : textures).add(`${prefix}${args[0]}`);
+    }
+    equal(repeatQueue, expected, `${prefix}first preload queues every asset once`);
+    for (let restart = 1; restart <= 2; restart++) {
+      for (const [loader, kind, args] of loadCases)
+        equal(api[loader](repeatScene, ...args), true, `${prefix}${kind}: cached resource remains available after restart ${restart}`);
+      equal(repeatQueue, expected, `${prefix}restart ${restart} queues no cached PNG/atlas/anims JSON`);
+    }
+    // 已有纹理的 Atlas 仍返回 true，允许单独补载未成功进入缓存的 anims JSON。
+    json.delete(`${prefix}anims`);
+    equal(api.loadOptionalAtlas(repeatScene, 'atlas', 'art/sprites/prop_test.png', 'art/sprites/prop_test.json'), true,
+      `${prefix}cached atlas remains usable when anims JSON is absent`);
+    equal(api.loadOptionalJson(repeatScene, 'anims', 'art/sprites/prop_test.anims.json'), true,
+      `${prefix}missing anims JSON can retry independently`);
+    equal(repeatQueue.slice(expected.length), [{ kind: 'json', args: ['anims', 'art/sprites/prop_test.anims.json'] }],
+      `${prefix}only the absent anims JSON is queued`);
+  }
+  const prefixedQueue = [];
+  const prefixedScene = loadingScene(prefixedQueue, 'other:', new Set(['image', 'atlas', 'tiles']), new Set(['anims', 'tile_meta', 'bg_config']));
+  for (const [loader, , args] of loadCases) equal(api[loader](prefixedScene, ...args), true);
+  equal(prefixedQueue, expected, 'cache entries without the current loader prefix do not suppress requests');
 
   // 使用真实 Phaser 失败处理，验证静默不改变失败状态、Atlas 计数或队列完成。
   const require = createRequire(import.meta.url);
@@ -181,7 +214,7 @@ try {
     }
     equal(errors.length, 0, 'registered image/atlas/json/spritesheet processing errors are silent');
     const prefixed = prepareLoader({ prefix: 'ui:', image() {} });
-    equal(api.loadOptionalImage({ load: prefixed }, 'close', 'art/icons/skills/skill_test@64.png'), true);
+    equal(api.loadOptionalImage({ ...loadingScene([]), load: prefixed }, 'close', 'art/icons/skills/skill_test@64.png'), true);
     fail(prefixed, 'ui:close');
     equal(errors.length, 0, 'loader prefix is included in optional registration');
     fail(loader, 'missing');

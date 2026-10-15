@@ -66,7 +66,8 @@ try {
   const optionalSource = await fs.readFile(new URL('src/optionalAssets.ts', root), 'utf8');
   const optional = await importTs(optionalSource.replace("import assets from './gen/assets.json';", `const assets = ${JSON.stringify(inventory)};`));
   const queued = [];
-  const loading = { load: { json: (...args) => queued.push(args) } };
+  const loading = { load: { json: (...args) => queued.push(args) },
+    textures: { exists: () => false }, cache: { json: { exists: () => false } } };
   equal(optional.loadOptionalJson(loading, 'props_fixture_layout', inventory.propLayouts[0].path), true, 'formal layout enters optional JSON loader');
   equal(optional.loadOptionalJson(loading, 'props_missing_layout', 'art/tiles/props_missing.layout.json'), false, 'absent layout never requests a URL');
   equal(queued, [['props_fixture_layout', 'art/tiles/props_fixture.layout.json']], 'missing layout queues no request');

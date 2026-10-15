@@ -34,16 +34,20 @@ export function optionalAssetUrls(manifest: OptionalAssetManifest): string[] {
 const availableUrls = new Set(optionalAssetUrls(assets));
 export function assetAvailable(url: string): boolean { return availableUrls.has(url); }
 
-type LoadingScene = Pick<Phaser.Scene, 'load'>;
+type LoadingScene = Pick<Phaser.Scene, 'load' | 'textures' | 'cache'>;
 
 // 按 Loader 隔离登记，避免其它场景中同名的必需资源也被静默。
 const optionalKeys = new WeakMap<Phaser.Loader.LoaderPlugin, Set<string>>();
 let errorHandlerInstalled = false;
 
+function cacheKey(scene: LoadingScene, key: string): string {
+  return `${scene.load.prefix ?? ''}${key}`;
+}
+
 function registerOptionalKey(scene: LoadingScene, key: string): void {
   let keys = optionalKeys.get(scene.load);
   if (!keys) { keys = new Set(); optionalKeys.set(scene.load, keys); }
-  keys.add(`${scene.load.prefix ?? ''}${key}`);
+  keys.add(cacheKey(scene, key));
 }
 
 function isOptionalFile(file: Phaser.Loader.File | Phaser.Loader.MultiFile): boolean {
@@ -70,8 +74,10 @@ export function installOptionalAssetErrorHandler(phaser: typeof Phaser): void {
   };
 }
 
+// true 表示资源可用（已缓存或已入队）；换图时复用全局缓存，不再请求同一素材。
 export function loadOptionalImage(scene: LoadingScene, key: string, url: string): boolean {
   if (!assetAvailable(url)) return false;
+  if (scene.textures.exists(cacheKey(scene, key))) return true;
   registerOptionalKey(scene, key);
   scene.load.image(key, url);
   return true;
@@ -79,6 +85,8 @@ export function loadOptionalImage(scene: LoadingScene, key: string, url: string)
 
 export function loadOptionalAtlas(scene: LoadingScene, key: string, pngUrl: string, jsonUrl: string): boolean {
   if (!assetAvailable(pngUrl) || !assetAvailable(jsonUrl)) return false;
+  // Atlas JSON 不进 cache.json，须按合成后的纹理判断是否已加载。
+  if (scene.textures.exists(cacheKey(scene, key))) return true;
   registerOptionalKey(scene, key);
   scene.load.atlas(key, pngUrl, jsonUrl);
   return true;
@@ -86,6 +94,7 @@ export function loadOptionalAtlas(scene: LoadingScene, key: string, pngUrl: stri
 
 export function loadOptionalJson(scene: LoadingScene, key: string, url: string): boolean {
   if (!assetAvailable(url)) return false;
+  if (scene.cache.json.exists(cacheKey(scene, key))) return true;
   registerOptionalKey(scene, key);
   scene.load.json(key, url);
   return true;
@@ -94,6 +103,7 @@ export function loadOptionalJson(scene: LoadingScene, key: string, url: string):
 export function loadOptionalSpritesheet(scene: LoadingScene, key: string, url: string,
   frameConfig: Phaser.Types.Loader.FileTypes.ImageFrameConfig): boolean {
   if (!assetAvailable(url)) return false;
+  if (scene.textures.exists(cacheKey(scene, key))) return true;
   registerOptionalKey(scene, key);
   scene.load.spritesheet(key, url, frameConfig);
   return true;
