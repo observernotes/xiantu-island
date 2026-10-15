@@ -71,6 +71,7 @@ export class QuestSystem {
     const cls = classForQuest(q.id);
     return (!cls || classEntryEnabled(cls)) && (!q.daily || featureEnabled('sectDaily'))
       && (q.id !== 'q_alchemy_intro' || featureEnabled('alchemyPhase1'))
+      && (q.id !== 'q_talisman_intro' || featureEnabled('talismanCraft'))
       && (q.id !== 'q_fox' || featureEnabled('foxBoss'));
   }
 
@@ -82,6 +83,8 @@ export class QuestSystem {
   /** 06 文档一期入门仍归孙郎中；旧 NPC 表未挂任务时只补这一项入口。 */
   npcQuestIds(npcId: string) {
     const ids = [...(NPCS[npcId]?.quests ?? [])];
+    const talisman = QUESTS.q_talisman_intro;
+    if (featureEnabled('talismanCraft') && talisman && (talisman.giver === npcId || talisman.turnIn === npcId) && !ids.includes(talisman.id)) ids.push(talisman.id);
     const intro = QUESTS.q_alchemy_intro;
     if (intro && (intro.giver === npcId || intro.turnIn === npcId) && !ids.includes(intro.id)) ids.push(intro.id);
     // 配表尚未将五宗拜入任务挂到 NPC.quests；按任务自身 giver/turnIn 补入口。
@@ -160,6 +163,10 @@ export class QuestSystem {
         return { lines: [{ speaker: npc.name, text: blocked }] };
       }
       const lines = (stage: 'offer' | 'progress' | 'complete', fallback?: Line[]) => {
+        if (id === 'q_talisman_intro' && !q.dialogueKeys?.[stage]) {
+          const keys = stage === 'offer' ? ['intro_offer'] : stage === 'complete' ? ['intro_material', 'intro_draw', 'intro_done'] : ['intro_material', 'intro_draw'];
+          return keys.map(key => ({ speaker: npc.name, text: t(`talisman.${key}`) }));
+        }
         const key = q.dialogueKeys?.[stage];
         return key ? [{ speaker: npc.name, text: t(key, { name: this.prog.name }) }] : fill(fallback);
       };

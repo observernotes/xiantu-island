@@ -7,12 +7,12 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { createServer, preview } from 'vite';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-const names = ['fiveSectClasses', 'sectDaily', 'sectRanks', 'sectShopLibrary', 'shops', 'sectDonations', 'seclusion', 'alchemyPhase1', 'v05Maps', 'foxBoss'];
+const names = ['fiveSectClasses', 'sectDaily', 'sectRanks', 'sectShopLibrary', 'shops', 'sectDonations', 'seclusion', 'alchemyPhase1', 'v05Maps', 'foxBoss', 'talismanCraft'];
 let configured = {};
 try { configured = JSON.parse(await fs.readFile(path.join(root, 'data/features.json'), 'utf8')); }
 catch (error) { if (error.code !== 'ENOENT') throw error; }
 const expected = Object.fromEntries(names.map(name => [name,
-  typeof configured?.[name] === 'boolean' ? configured[name] : name !== 'shops']));
+  typeof configured?.[name] === 'boolean' ? configured[name] : name !== 'shops' && name !== 'talismanCraft']));
 if (process.env.QA_TIER_EXPECT_FEATURES) {
   // tier1 的清单可早于新开关；完整运行时开关仍在下方与工程快照核对。
   for (const [name, value] of Object.entries(JSON.parse(process.env.QA_TIER_EXPECT_FEATURES))) {
@@ -45,7 +45,7 @@ try {
     const loader = await createServer({ root: fixtureRoot, configFile: false, server: { middlewareMode: true, hmr: false, ws: false }, logLevel: 'error' });
     try {
       const features = await loader.ssrLoadModule('/src/features.ts');
-      assert.deepEqual(features.featureFlags(), Object.fromEntries(names.map(name => [name, configured?.[name] ?? (name !== 'shops')])));
+      assert.deepEqual(features.featureFlags(), Object.fromEntries(names.map(name => [name, configured?.[name] ?? (name !== 'shops' && name !== 'talismanCraft')])));
     } finally { await loader.close(); }
   }
 } finally { await fs.rm(fixtureRoot, { recursive: true, force: true }); }
@@ -294,6 +294,18 @@ try {
       && foxCompleted.inventory.foundation_shard >= 1 && foxCompleted.inventory.pillar_shard_1 >= 1
       && Object.values(foxCompleted.equip).includes('azure_steel_sword'), '妖狐任务完成奖励缺失');
     checked.push('foxBoss');
+
+    // 新制符关口：关闭不提供学习，不改库存/品质/制作记录，重开后恢复学习条件。
+    s = await load({ ...joined, ageUpdatedAt: xt.getState().time, level: 30,
+      quests: {}, learnedRecipes: [], inventory: { talisman_paper: 2, spirit_ink: 2 } });
+    flip('talismanCraft', false);
+    const talismanBefore = JSON.stringify({ inventory: s.prog.inventory, qualities: s.prog.pillQualities, attempt: s.prog.talisman });
+    check(!s.quests.available('q_talisman_intro') && !s.quests.accept('q_talisman_intro'), '制符关闭仍可学习');
+    check(!s.quests.npcQuestIds('lingfu_envoy').includes('q_talisman_intro'), '制符关闭仍显示教学');
+    same(JSON.stringify({ inventory: s.prog.inventory, qualities: s.prog.pillQualities, attempt: s.prog.talisman }), talismanBefore, '制符关闭改变了库存或尝试');
+    flip('talismanCraft', true);
+    check(s.quests.available('q_talisman_intro'), '制符重新开放未恢复学习');
+    checked.push('talismanCraft');
 
     // 所有开关关闭后读旧档：保存字段完整，存档的 true 不能越过发版门禁。
     const preserved = { ...joined, ageUpdatedAt: xt.getState().time, flags: Object.fromEntries(names.map(name => [name, true])),
