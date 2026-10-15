@@ -62,8 +62,9 @@ try {
     if (requested === blockedImage && route.request().method() === 'GET') await route.abort('failed');
     else await route.continue();
   });
-  // HTTP 200 的无效 PNG 走图片解码失败入口，仍须收录 loaderror / console.error。
-  await page.route('**/art/tiles/bg_*_mid.png', async route => {
+  // 必需图片的 HTTP 200 无效 PNG 应收录真实 loaderror / console.error。
+  // 可选背景的解码错误按产品约定静默 console，不能用于此断言。
+  await page.route('**/art/icons/ui/icon_overflow_gourd_empty.png', async route => {
     const requested = route.request().url();
     malformedImage ??= requested;
     if (requested === malformedImage) await route.fulfill({ status: 200, contentType: 'image/png', body: 'xt invalid PNG' });
@@ -91,6 +92,12 @@ try {
   check(initial.events.some(event => event.type === 'scene'), '首次场景创建未进入事件流');
   check(initial.events.every(event => Number.isFinite(event.time) && Object.hasOwn(event, 'data')), '事件缺少 time/data');
   equal(await page.evaluate(() => window.__xt.events.drain()), [], 'drain 没有清空事件队列');
+
+  // 此脚本覆盖接口全部路径，显式开放会话夹具所需入口；发布默认由 test:features 验证。
+  // 使用既有测试 API，不改工程配置或存档，后续仍验证各存档配置开关的正反路径。
+  await page.evaluate(() => {
+    for (const name of ['fiveSectClasses', 'sectRanks', 'sectDonations']) window.__xt.setFlag(name, true);
+  });
 
   // pause 固定绝对时间；resume 恢复系统时间的推进，setNow/advance 给出精确边界。
   const paused = await page.evaluate(() => window.__xt.clock.pause());
