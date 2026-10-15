@@ -1,5 +1,5 @@
 import { gameNow } from './GameClock';
-import { GROWTH, EXP_TO_NEXT, MAX_LEVEL, ITEMS, BREAKTHROUGH_LEVELS, BREAKTHROUGH, REALMS, QUESTS, LIFESPAN, RECIPES, ALCHEMY_RULES, SECT_RANKS, TILED_MAPS, PillQuality, QuestDef } from './data';
+import { GROWTH, EXP_TO_NEXT, MAX_LEVEL, ITEMS, BREAKTHROUGH_LEVELS, BREAKTHROUGH, REALMS, QUESTS, LIFESPAN, RECIPES, ALCHEMY_RULES, SECT_RANKS, TILED_MAPS, PillQuality, QuestDef, syncTalismanMapAvailability } from './data';
 import { validSectGrowthState, type SectGrowthState } from './SectGrowth';
 import { HOTBAR_SLOTS, QUEST_SKILL_BACKFILL, SKILLS, SKILL_RULES, SkillDef, actOf, skillNumber, spEarnedFor, spBand } from './skills';
 import { CLASS_LIST, CLASS_RULES, classDef, classEntryEnabled, classEntrySkill, classForQuest, classGiftSkills, classMinLevel, classRobe, skillsForClass } from './classes';
@@ -75,14 +75,14 @@ function validSaveData(saved: unknown): saved is Record<string, unknown> {
   if (has('flags') && (!dataRecord(saved.flags) || !Object.entries(saved.flags).every(([key, value]) => flagKey(key) && typeof value === 'boolean'))) return false;
   if (has('position') && saved.position !== null) {
     const p = saved.position;
-    if (!dataRecord(p) || typeof p.mapId !== 'string' || (p.mapId !== 'field_test' && !Object.prototype.hasOwnProperty.call(TILED_MAPS, p.mapId))
+    if (!dataRecord(p) || typeof p.mapId !== 'string' || (p.mapId !== 'field_test' && p.mapId !== 'lingfu_pavilion' && !Object.prototype.hasOwnProperty.call(TILED_MAPS, p.mapId))
       || typeof p.x !== 'number' || !Number.isFinite(p.x) || typeof p.y !== 'number' || !Number.isFinite(p.y)) return false;
   }
   if (has('pendingSectTrial') && saved.pendingSectTrial !== null) {
     const attempt = saved.pendingSectTrial;
     if (!dataRecord(attempt) || typeof attempt.id !== 'string' || !/^trial_sect_(taixu|lingfu|youying|wanshou)$/.test(attempt.id)) return false;
     const at = attempt.returnPosition;
-    if (!dataRecord(at) || typeof at.mapId !== 'string' || !Object.prototype.hasOwnProperty.call(TILED_MAPS, at.mapId)
+    if (!dataRecord(at) || typeof at.mapId !== 'string' || (at.mapId !== 'lingfu_pavilion' && !Object.prototype.hasOwnProperty.call(TILED_MAPS, at.mapId))
       || typeof at.x !== 'number' || !Number.isFinite(at.x) || typeof at.y !== 'number' || !Number.isFinite(at.y)) return false;
   }
   if (has('quests')) {
@@ -295,6 +295,7 @@ export class Progress {
     return false;
   }
   private static restore(saved: unknown, persistMigrations: boolean): Progress {
+    syncTalismanMapAvailability();
     const p = new Progress();
     let saveRequested = false;
     Object.defineProperty(p, 'save', { configurable: true, value: () => { saveRequested = true; return true; } });
@@ -849,6 +850,17 @@ export class Progress {
     this.allocatedStats = normalizedStats(this.allocatedStats);
     this.unspentStatPoints = count(this.unspentStatPoints) ? this.unspentStatPoints : 0;
     if (typeof this.selectedSect !== 'string' || !CLASS_LIST.some(c => c.sect === this.selectedSect)) this.selectedSect = '';
+    // 制符专属地图关闭后，已保存的落点安全回到现成落霞出生点；不恢复气血灵力。
+    if (!featureEnabled('talismanCraft')) {
+      const town = TILED_MAPS.luoxia_town;
+      const spawn = (town?.layers ?? []).flatMap((layer: any) => layer.objects ?? [])
+        .find((object: any) => object.type === 'playerStart' || object.name === 'playerStart');
+      if (spawn && Number.isFinite(spawn.x) && Number.isFinite(spawn.y)) {
+        const at = { mapId: 'luoxia_town', x: spawn.x, y: spawn.y };
+        if (this.position?.mapId === 'lingfu_pavilion') { this.position = { ...at }; this.save(); }
+        if (this.pendingSectTrial?.returnPosition?.mapId === 'lingfu_pavilion') { this.pendingSectTrial.returnPosition = { ...at }; this.save(); }
+      }
+    }
     if (!this.position || typeof this.position !== 'object'
       || (this.position.mapId !== 'field_test' && !Object.prototype.hasOwnProperty.call(TILED_MAPS, this.position.mapId))
       || !Number.isFinite(this.position.x) || !Number.isFinite(this.position.y)) this.position = null;

@@ -2,7 +2,7 @@ import { gameNow } from '../GameClock';
 import Phaser from 'phaser';
 import { FEEL, SPEC } from '../config/feel';
 import { FIELD_TEST } from '../config/maps';
-import { MONSTERS, DROPS, ITEMS, TILED_MAPS, ATLASES, MAP_AREA, AREAS, TILE_METADATA, BACKGROUNDS, BACKGROUND_CONFIGS, PROP_LAYOUTS, SKILL_ICONS, NPCS, SCRIPTS, t, questName, questDescription, MP_REGEN_FRACTION_PER_5S, BREAKTHROUGH_LEVELS } from '../data';
+import { MONSTERS, DROPS, ITEMS, TILED_MAPS, ATLASES, MAP_AREA, AREAS, TILE_METADATA, BACKGROUNDS, BACKGROUND_CONFIGS, PROP_LAYOUTS, SKILL_ICONS, NPCS, SCRIPTS, syncTalismanMapAvailability, t, questName, questDescription, MP_REGEN_FRACTION_PER_5S, BREAKTHROUGH_LEVELS } from '../data';
 import { QuestSystem } from '../QuestSystem';
 import type { DailyQuestReward } from '../DailyQuests';
 import { QUESTS as QUESTS_REF } from '../data';
@@ -148,6 +148,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   create(data: { map?: string; portal?: string; pos?: { x: number; y: number } }) {
+    syncTalismanMapAvailability();
     installKeyGuard();
     for (const k of ATLASES) {
       const a = this.cache.json.get(`${k}_anims`);
@@ -1179,6 +1180,30 @@ export class GameScene extends Phaser.Scene {
 
   /** 测试覆盖即时撤下旧回调；存档身份、材料、贡献与待炼炉次均保留。 */
   applyFeatureFlags() {
+    syncTalismanMapAvailability();
+    if (!featureEnabled('talismanCraft') && (this.map.id === 'lingfu_pavilion'
+      || this.prog.pendingSectTrial?.returnPosition.mapId === 'lingfu_pavilion')) {
+      const town = TILED_MAPS.luoxia_town;
+      const spawn = town.layers.flatMap((layer: { objects?: { type: string; x: number; y: number }[] }) => layer.objects ?? [])
+        .find((object: { type: string }) => object.type === 'playerStart');
+      if (spawn) {
+        const position = { mapId: 'luoxia_town', x: spawn.x, y: spawn.y };
+        if (this.prog.pendingSectTrial?.returnPosition.mapId === 'lingfu_pavilion') {
+          this.prog.runSaveTransaction(() => { this.prog.pendingSectTrial!.returnPosition = { ...position }; return true; });
+        }
+        if (this.map.id === 'lingfu_pavilion' && !this.travelling) {
+          this.interruptTalisman('map');
+          if (this.scene.isActive('talisman-craft-ui')) this.scene.stop('talisman-craft-ui');
+          this.closeItemPanels(); this.dialog?.dismiss();
+          // Gate closure is a safe relocation, with no death or restoration settlement.
+          if (this.prog.setPosition(position.mapId, position.x, position.y)) {
+            this.travelling = true; this.player.body.setVelocity(0, 0);
+            this.scene.restart({ map: position.mapId, pos: { x: position.x, y: position.y } });
+            return;
+          }
+        }
+      }
+    }
     this.dialog?.dismiss(); this.skillWindow?.close(); this.shop?.update();
     this.refreshHelpText();
     if (featureEnabled('talismanCraft') && !this.talismanSystem) { this.setupTalisman(); this.prog.markMapVisited(this.map.id); }
@@ -1253,7 +1278,9 @@ export class GameScene extends Phaser.Scene {
     const def = Object.values(TRIALS).find(tr => tr.quest && tr.map === this.map.id);
     if (!def?.quest || this.prog.pendingSectTrial) return;
     const quest = QUESTS_REF[def.quest];
-    if (!quest || TILED_MAPS[NPCS[quest.turnIn]?.map]) return;
+    // The crafting gate must not remove the established #12 trial foyer and its return route.
+    const keepLingfuFoyer = this.map.id === 'trial_lingfu_range';
+    if (!quest || TILED_MAPS[NPCS[quest.turnIn]?.map] && !keepLingfuFoyer) return;
     for (const [index, id] of [quest.giver, quest.turnIn].entries()) {
       if (this.map.objects.some(o => o.type === 'npc' && (o.props.npc ?? o.name) === id)) continue;
       this.map.objects.push({ type: 'npc', name: id, x: this.map.spawn.x + 48 + index * 80, y: this.map.spawn.y,

@@ -1,6 +1,6 @@
 import { Progress } from './Progress';
 import { QuestSystem } from './QuestSystem';
-import { QUESTS, RECIPES, ITEMS, GROWTH, t } from './data';
+import { QUESTS, RECIPES, ITEMS, GROWTH, t, TILED_MAPS, syncTalismanMapAvailability } from './data';
 import { featureFlags, setFeatureFlag } from './features';
 import { setGameTimeSource } from './GameClock';
 
@@ -109,10 +109,28 @@ try {
   setFeatureFlag('talismanCraft', false);
   eq(boosted.gainExp(100, 15, 'kill').gained, Math.round(100 * (1 + insightBonus)), '关闭不应用聚灵');
   eq(boosted.exportSave().talismanUse, boosted.talismanUse, '关闭保留已有增益和冷却记录');
+  setFeatureFlag('talismanCraft', true); syncTalismanMapAvailability();
+  ok(TILED_MAPS.lingfu_pavilion, '制符开启只注册现成灵符阁');
+  const traveller = new Progress(); traveller.level = 15; traveller.hp = 7; traveller.mp = 3;
+  traveller.inventory = { talisman_paper: 2 }; traveller.position = { mapId: 'lingfu_pavilion', x: 224, y: 512 };
+  traveller.pendingSectTrial = { id: 'trial_sect_lingfu', returnPosition: { ...traveller.position } };
+  traveller.save();
+  eq(Progress.load().position?.mapId, 'lingfu_pavilion', '开启时灵符阁落点存档可读');
+  setFeatureFlag('talismanCraft', false);
+  const closedMap = Progress.load();
+  eq(TILED_MAPS.lingfu_pavilion, undefined, '关闭撤下制符专属地图注册');
+  eq(closedMap.position?.mapId, 'luoxia_town', '关闭后灵符阁存档安全回镇');
+  eq(closedMap.pendingSectTrial?.returnPosition.mapId, 'luoxia_town', '关闭后试炼返程落点安全回镇');
+  eq([closedMap.hp, closedMap.mp], [7, 3], '关闭专属地图不恢复气血灵力');
+  eq(closedMap.inventory, traveller.inventory, '地图兼容不丢背包');
+  const imported = new Progress();
+  ok(imported.importSave({ ...traveller.exportSave(), position: { mapId: 'lingfu_pavilion', x: 224, y: 512 } }), '关闭时导入灵符阁旧档不拒绝整档');
+  eq(imported.position?.mapId, 'luoxia_town', '导入兼容落点同读档');
   console.log(`talisman save tests ok: ${assertions} assertions`);
 } finally {
   fail = false;
   setGameTimeSource(null);
   for (const [name, enabled] of Object.entries(flags)) setFeatureFlag(name as keyof typeof flags, enabled);
+  syncTalismanMapAvailability();
   if (storage) Object.defineProperty(globalThis, 'localStorage', storage); else Reflect.deleteProperty(globalThis, 'localStorage');
 }

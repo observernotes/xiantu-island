@@ -24,6 +24,8 @@ import trialWanshouPen from '@xt/maps/trial_wanshou_pen.json';
 import altar from '@xt/maps/trial_foundation_altar.json';
 import breakthrough from '@xt/balance/breakthrough.json';
 import strings from '@xt/balance/strings_zh.json';
+import lingfuPavilion from '@xt/maps/lingfu_pavilion.json';
+import { featureEnabled } from './features';
 
 /** 地图与任务共用版本阶段过滤；phase 表示首次启用阶段。 */
 export const GAME_PHASE = 5;
@@ -91,8 +93,7 @@ export const ALCHEMY_RULES = recipesRaw.rules;
 export const GROWTH = growth as any;
 export const EXP_TO_NEXT = (expCurve as any).expToNext as Record<string, number>;
 export const MAX_LEVEL = (expCurve as any).maxLevel as number;
-// 批 2b 四宗山门尚未正式接入：不注册；data/maps 的 phaseMin=6 保持本阶段不可达。
-// 正式接入时同时核准注册、区域/航线与 phaseMin，再纳入地图冒烟。
+// 四宗山门默认维持未注册；制符仅按独立开关接入现成灵符派地图，其余三宗不变。
 export const TILED_MAPS: Record<string, any> = {
   qingyun_village: qingyun, bamboo_forest: bamboo, lingxi_path: lingxi,
   luoxia_outskirts_1: luoxia1, luoxia_outskirts_2: luoxia2, luoxia_town: luoxiaTown,
@@ -154,6 +155,16 @@ export const MAP_AREA: Record<string, string> = {
   trial_taixu_stage: 'taixu', trial_lingfu_range: 'lingfu',
   trial_youying_vault: 'youying', trial_wanshou_pen: 'wanshou',
 };
+/** 单图按制符开关挂载；关闭时运行地图集合与 v0.5.2 相同，不改地图/配表文件。 */
+export function syncTalismanMapAvailability() {
+  if (featureEnabled('talismanCraft')) {
+    TILED_MAPS.lingfu_pavilion = lingfuPavilion;
+    MAP_AREA.lingfu_pavilion = 'lingfu';
+  } else {
+    delete TILED_MAPS.lingfu_pavilion;
+    delete MAP_AREA.lingfu_pavilion;
+  }
+}
 export const AREAS: string[] = assets.areas;
 export const TILE_METADATA: { key: string; path: string }[] = assets.tileMetadata;
 export const BACKGROUND_CONFIGS: { area: string; key: string; path: string }[] = assets.backgroundConfigs;

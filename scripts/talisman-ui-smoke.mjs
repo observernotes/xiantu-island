@@ -266,6 +266,76 @@ try {
     eq(s.buttons.abandonOrContinue.textColor, '#765432', 'disabled 字色写死');
     checks.push('内存换表验证窗口/双按钮坐标、独立切片、图片路径与字色');
   });
+  await session('talisman-npc-route', {}, async page => {
+    await page.evaluate(async () => {
+      window.__xt.setFlag('talismanCraft', true);
+      await window.__xt.loadSave({ name: '未拜师制符学徒', level: 15, exp: 0, hp: 9999, mp: 9999,
+        questRewardVersion: 1, inventory: {}, quests: {}, ageUpdatedAt: Date.now() });
+      await window.__xt.teleport('luoxia_town');
+    });
+    async function approachNpc(id) {
+      await page.evaluate(id => {
+        const s = window.__scene, npc = s.map.objects.find(o => o.type === 'npc' && (o.props.npc ?? o.name) === id);
+        if (!npc) throw new Error(`地图未摆放NPC ${id}`);
+        s.player.body.reset(npc.x, npc.y); s.player.body.setVelocity(0, 0);
+      }, id);
+      await page.waitForFunction(() => window.__scene.player.state2 === 'ground');
+      await page.keyboard.press('z', { delay: 60 });
+      await page.waitForFunction(() => window.__scene.dialog.open && window.__scene.dialog.choices.length > 0);
+    }
+    async function choose(label) {
+      for (let pageIndex = 0; pageIndex < 8; pageIndex++) {
+        const labels = await page.evaluate(() => window.__scene.dialog.choices.map(choice => choice.label));
+        const index = labels.indexOf(label);
+        if (index >= 0) {
+          eq(await page.evaluate(index => !!window.__scene.dialog.choices[index].disabled, index), false, `${label}被禁用`);
+          await page.keyboard.press(String(index + 1), { delay: 60 }); return;
+        }
+        const next = labels.findIndex(value => value.startsWith('›'));
+        ok(next >= 0, `菜单未提供${label}`);
+        await page.keyboard.press(String(next + 1), { delay: 60 });
+        await page.waitForFunction(before => JSON.stringify(window.__scene.dialog.choices.map(choice => choice.label)) !== before, JSON.stringify(labels));
+      }
+      throw new Error(`翻页未找到${label}`);
+    }
+    async function finishTeaching() {
+      for (let line = 0; line < 10 && await page.evaluate(() => window.__scene.dialog.open); line++) {
+        eq(await page.evaluate(() => window.__scene.dialog.choices.length), 0, '教学对白意外出现选项');
+        await page.keyboard.press('Enter', { delay: 60 });
+      }
+      eq(await page.evaluate(() => window.__scene.dialog.open), false, '教学对白未结束');
+    }
+    await approachNpc('ferry_master');
+    await choose('前往灵符派');
+    await page.waitForFunction(() => window.__scene.map.id === 'lingfu_pavilion' && window.__scene.player.active);
+    eq(await page.evaluate(() => window.__scene.prog.sect), '', '未拜师乘飞舟被强制入宗');
+    await approachNpc('lingfu_envoy');
+    await choose('学习制符'); await finishTeaching();
+    eq(await page.evaluate(() => window.__scene.quests.state('q_talisman_intro')), 'active', '第一轮对白未接取入门任务');
+    eq(await page.evaluate(() => window.__scene.prog.learnedRecipes.length), 0, '接取前对话提前授方');
+    await approachNpc('lingfu_envoy');
+    await choose('学习制符'); await finishTeaching();
+    eq(await page.evaluate(() => window.__scene.quests.state('q_talisman_intro')), 'done', '第二轮教学未交付入门任务');
+    eq(await page.evaluate(() => window.__scene.prog.learnedRecipes.length), 5, '自然NPC教学未发五张配方');
+    await approachNpc('lingfu_envoy'); await choose('制符');
+    await page.waitForFunction(() => window.__xt.talismanCraftSnapshot()?.open === true);
+    await page.keyboard.press('Escape');
+    await page.waitForFunction(() => !window.__xt.talismanCraftSnapshot());
+    const sourceSave = await page.evaluate(() => window.__xt.exportSave());
+    eq(sourceSave.position.mapId, 'lingfu_pavilion', '新地图位置未进入合法存档');
+    await page.evaluate(async save => window.__xt.loadSave(save), sourceSave);
+    eq(await page.evaluate(() => window.__scene.map.id), 'lingfu_pavilion', '开关开启重载新图失败');
+    const vital = await page.evaluate(() => [window.__scene.prog.hp, window.__scene.prog.mp]);
+    await page.evaluate(() => window.__xt.setFlag('talismanCraft', false));
+    await page.waitForFunction(() => window.__scene.map.id === 'luoxia_town');
+    eq(await page.evaluate(() => [window.__scene.prog.hp, window.__scene.prog.mp]), vital, '关闭开关回镇修改气血灵力');
+    eq(await page.evaluate(() => window.__scene.map.objects.some(o => o.type === 'npc' && (o.props.npc ?? o.name) === 'lingfu_envoy')), false,
+      '关闭开关仍向未拜师角色追加墨符使');
+    await page.evaluate(async save => window.__xt.loadSave(save), sourceSave);
+    eq(await page.evaluate(() => window.__scene.map.id), 'luoxia_town', '关闭开关无法兼容新地图存档回镇');
+    eq(await page.evaluate(() => [window.__scene.prog.hp, window.__scene.prog.mp]), vital, '关闭开关读新图档修改气血灵力');
+    checks.push('真实船老大航线→灵符派现成地图→墨符使两轮教学授五方→正式制符入口；新图档重载及关闭开关无恢复回镇');
+  });
   await session('craft-gameplay-save', {}, async page => {
     eq(await page.evaluate(() => window.__xt.openTalismanCraft('recipe_talisman_fire')), false, '默认开关关闭仍可进入正式制符');
     await page.evaluate(async () => {
