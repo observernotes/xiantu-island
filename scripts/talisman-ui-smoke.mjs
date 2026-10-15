@@ -176,7 +176,17 @@ try {
     const file = path.join(shotDir, `${name}.png`);
     await page.screenshot({ path: file }); screenshots.push(file);
   }
-  function verify(s, name, state, missing = []) {
+  async function backgroundSize(page, s, name) {
+    const { background, state } = s.buttons[name];
+    if (background.type !== 'Image') return [background.width, background.height];
+    // Image 的 width/height 是素材尺寸；Canvas 的 setDisplaySize 应校验显示尺寸。
+    return page.evaluate(({ name, state }) => {
+      const button = window.__scene.children.getByName('talisman-panel').getByName(`talisman-${name}`);
+      const background = button.getByName(`talisman-bg:${state}`);
+      return [background.displayWidth, background.displayHeight];
+    }, { name, state });
+  }
+  async function verify(page, s, name, state, missing = []) {
     const button = s.buttons[name], secondary = name === 'abandonOrContinue';
     const key = keyOf(secondary ? S[state] : B.image.replace(/\{[^}]+\}/, state));
     const absent = missing.includes(key);
@@ -184,19 +194,27 @@ try {
     eq(button.key, key, `${name}: 图路径未正确映射 texture key`);
     eq(button.artUsed, absent ? 'code' : 'art', `${key}: 逐件回退错误`);
     eq(s.artUsed[key], absent ? 'code' : 'art', `${key}: artUsed 错误`);
-    eq(button.background.type, absent ? 'Rectangle' : 'NineSlice', `${key}: 背景类型错误`);
+    if (absent) {
+      eq(button.background.type, 'Rectangle', `${key}: 背景类型错误`);
+      eq(button.background.nineSlice, null, `${name}: 缺图仍有切片`);
+    } else if (button.background.type === 'NineSlice') {
+      eq(button.background.nineSlice, secondary ? S.nineSlice : B.nineSlice, `${name}: 未读切片`);
+    } else {
+      eq(button.background.type, 'Image', `${key}: 背景类型错误`);
+      eq(button.background.nineSlice, null, `${name}: Canvas 图片仍有切片`);
+    }
+    eq(button.background.texture, absent ? null : key, `${key}: 背景 texture key 错误`);
     eq(button.rect, B[name], `${name}: 未读坐标`);
-    eq([button.background.width, button.background.height], B[name].slice(2), `${name}: 尺寸错误`);
-    eq(button.background.nineSlice, absent ? null : secondary ? S.nineSlice : B.nineSlice, `${name}: 未读切片`);
+    eq(await backgroundSize(page, s, name), B[name].slice(2), `${name}: 尺寸错误`);
     if (secondary) eq(button.textColor, state === 'disabled' ? S.textColor.disabled : S.textColor.normal, '次按钮字色错误');
     eq(button.enabled, state !== 'disabled', `${name}: 禁用命中区域错误`);
   }
   async function activate(page, s, name, action, missing) {
-    s = await hover(page, s, name); verify(s, name, 'hover', missing);
+    s = await hover(page, s, name); await verify(page, s, name, 'hover', missing);
     const count = s.actions.length;
     await page.mouse.down();
     s = await waitSnapshot(page, { states: { [name]: 'pressed' } });
-    verify(s, name, 'pressed', missing);
+    await verify(page, s, name, 'pressed', missing);
     eq(s.actions.length, count, '按下时提前执行动作');
     await page.mouse.up();
     s = await waitSnapshot(page, { states: { [name]: 'hover' }, actionCount: count + 1 });
@@ -208,36 +226,36 @@ try {
   async function exercise(page, missing = []) {
     let s = await open(page);
     for (const name of ['startOrAgain', 'abandonOrContinue']) {
-      verify(s, name, 'normal', missing);
+      await verify(page, s, name, 'normal', missing);
       await activate(page, s, name, name === 'startOrAgain' ? 'start' : 'abandon', missing);
-      s = await moveOut(page, name); verify(s, name, 'normal', missing);
+      s = await moveOut(page, name); await verify(page, s, name, 'normal', missing);
     }
     s = await update(page, { primary: 'again', secondary: 'continue' });
     ok(s.buttons.startOrAgain.label.includes('再'), '再来文案错误');
     ok(s.buttons.abandonOrContinue.label.includes('继续'), '继续文案错误');
     for (const name of ['startOrAgain', 'abandonOrContinue']) {
-      verify(s, name, 'normal', missing);
+      await verify(page, s, name, 'normal', missing);
       await activate(page, s, name, name === 'startOrAgain' ? 'again' : 'continue', missing);
-      s = await moveOut(page, name); verify(s, name, 'normal', missing);
+      s = await moveOut(page, name); await verify(page, s, name, 'normal', missing);
     }
     s = await update(page, { primaryDisabled: true, secondaryDisabled: true });
     for (const name of ['startOrAgain', 'abandonOrContinue']) {
-      verify(s, name, 'disabled', missing);
+      await verify(page, s, name, 'disabled', missing);
       const count = s.actions.length;
       await hover(page, s, name); await page.mouse.click(s.position.x + s.buttons[name].rect[0] + 10,
         s.position.y + s.buttons[name].rect[1] + 10);
-      s = await afterInputFrame(page); eq(s.actions.length, count, '禁用按钮仍执行回调'); verify(s, name, 'disabled', missing);
+      s = await afterInputFrame(page); eq(s.actions.length, count, '禁用按钮仍执行回调'); await verify(page, s, name, 'disabled', missing);
     }
-    s = await update(page, { secondary: 'abandon' }); verify(s, 'abandonOrContinue', 'disabled', missing);
+    s = await update(page, { secondary: 'abandon' }); await verify(page, s, 'abandonOrContinue', 'disabled', missing);
     s = await render(page, 'setTalismanButtonDisabled', false);
-    s = await hover(page, s); verify(s, 'abandonOrContinue', 'hover', missing);
+    s = await hover(page, s); await verify(page, s, 'abandonOrContinue', 'hover', missing);
     const count = s.actions.length;
     await page.mouse.down();
     s = await waitSnapshot(page, { states: { abandonOrContinue: 'pressed' } });
-    verify(s, 'abandonOrContinue', 'pressed', missing);
+    await verify(page, s, 'abandonOrContinue', 'pressed', missing);
     await moveOut(page, 'abandonOrContinue'); await page.mouse.up();
     s = await afterInputFrame(page); eq(s.actions.length, count, '拖出按钮仍执行回调');
-    verify(s, 'abandonOrContinue', 'normal', missing);
+    await verify(page, s, 'abandonOrContinue', 'normal', missing);
     return s;
   }
 
@@ -247,11 +265,11 @@ try {
     // render 会创建四态背景；同时检查不可见状态，确保只有缺失的那一件回退。
     for (const relatedKey of keys)
       eq(s.artUsed[relatedKey], relatedKey === key ? 'code' : 'art', `${key}: ${relatedKey} 逐件回退错误`);
-    for (const button of ['startOrAgain', 'abandonOrContinue']) verify(s, button, 'normal', missing);
+    for (const button of ['startOrAgain', 'abandonOrContinue']) await verify(page, s, button, 'normal', missing);
     const disabledKey = name === 'abandonOrContinue' ? keyOf(S.disabled) : primaryKeys[3];
     if (key === disabledKey) {
       const field = name === 'abandonOrContinue' ? 'secondaryDisabled' : 'primaryDisabled';
-      s = await update(page, { [field]: true }); verify(s, name, 'disabled', missing);
+      s = await update(page, { [field]: true }); await verify(page, s, name, 'disabled', missing);
       s = await update(page, { [field]: false });
     }
     s = await activate(page, s, name, name === 'startOrAgain' ? 'start' : 'abandon', missing);
@@ -340,6 +358,7 @@ try {
   await session('states-and-callbacks', {}, async page => {
     const before = await page.evaluate(() => ({ inventory: { ...window.__scene.prog.inventory }, stones: window.__scene.prog.stones }));
     let s = await exercise(page);
+    checks.push(`按钮背景：${s.buttons.startOrAgain.background.type} / ${s.buttons.abandonOrContinue.background.type}；纹理、显示尺寸与切片按实际类型校验`);
     await shot(page, 'ui4');
     eq([s.position.width, s.position.height], spec.window.size, '窗体尺寸未读表');
     eq(s.buttons.abandonOrContinue.rect, [342, 346, 112, 28], '次按钮基线坐标错误');
@@ -367,11 +386,23 @@ try {
     s = await open(page);
     eq([s.position.width, s.position.height], [660, 410], '缓存窗体尺寸未生效');
     eq(s.buttons.startOrAgain.rect, [224, 334, 118, 32], '主按钮坐标写死');
+    eq(await backgroundSize(page, s, 'startOrAgain'), [118, 32], '主按钮背景尺寸写死');
     eq(s.buttons.startOrAgain.key, 'ui_alchemy_btn_disabled', '主按钮未读 image');
-    eq(s.buttons.startOrAgain.background.nineSlice, [8, 7, 4, 5], '主按钮切片写死');
+    if (s.buttons.startOrAgain.background.type === 'NineSlice')
+      eq(s.buttons.startOrAgain.background.nineSlice, [8, 7, 4, 5], '主按钮切片写死');
+    else {
+      eq(s.buttons.startOrAgain.background.type, 'Image', '主按钮 Canvas 背景类型错误');
+      eq(s.buttons.startOrAgain.background.nineSlice, null, '主按钮 Canvas 图片仍有切片');
+    }
     eq(s.buttons.abandonOrContinue.rect, [354, 334, 124, 32], '次按钮坐标写死');
+    eq(await backgroundSize(page, s, 'abandonOrContinue'), [124, 32], '次按钮背景尺寸写死');
     eq(s.buttons.abandonOrContinue.key, 'ui_alchemy_btn_normal', '次按钮未读 abandonOrContinueImage');
-    eq(s.buttons.abandonOrContinue.background.nineSlice, [7, 8, 5, 9], '次按钮切片未独立读表');
+    if (s.buttons.abandonOrContinue.background.type === 'NineSlice')
+      eq(s.buttons.abandonOrContinue.background.nineSlice, [7, 8, 5, 9], '次按钮切片未独立读表');
+    else {
+      eq(s.buttons.abandonOrContinue.background.type, 'Image', '次按钮 Canvas 背景类型错误');
+      eq(s.buttons.abandonOrContinue.background.nineSlice, null, '次按钮 Canvas 图片仍有切片');
+    }
     eq(s.buttons.abandonOrContinue.textColor, '#123456', 'normal 字色写死');
     s = await update(page, { secondaryDisabled: true });
     eq(s.buttons.abandonOrContinue.textColor, '#765432', 'disabled 字色写死');
