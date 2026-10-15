@@ -21,6 +21,8 @@
     "test:smoke:props-missing": "node scripts/props-missing-smoke.mjs",
     "test:v05": "timeout 60s node scripts/v05-test.mjs",
     "test:appearance": "timeout 60s node scripts/appearance-test.mjs",
+    "test:equip": "timeout 60s node scripts/equip-test.mjs",
+    "test:smoke:inv-ui": "timeout 300s node scripts/inv-ui-smoke.mjs",
     "test:classes": "timeout 120s node scripts/classes-test.mjs",
     "test:trials": "timeout 120s node scripts/trials-test.mjs",
     "test:smoke:trials": "timeout 180s node scripts/trials-smoke.mjs",

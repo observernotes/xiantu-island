@@ -19,6 +19,9 @@ export interface QuestRewardSettlement {
   items: { item: string; count: number; equipped?: boolean }[];
   skills: string[];
 }
+export const EQUIP_SLOTS = Object.freeze(['weapon', 'robe', 'shoes'] as const);
+export type EquipSlot = typeof EQUIP_SLOTS[number];
+export type EquipResult = { ok: true } | { ok: false; reason: 'invalid' | 'missing' | 'sect' | 'level' | 'empty' | 'overflow' | 'save' };
 const SAVE_KEY = 'xiantu_save_v1';
 /** 妖狐任务改为五宗帖的奖励版本；无此字段的已交付旧档保留原天剑身份。 */
 const QUEST_REWARD_VERSION = 1;
@@ -727,6 +730,41 @@ export class Progress {
     const score = (x?: string) => x ? Object.values(ITEMS[x]?.stats ?? {}).reduce((a, b) => a + b, 0) : -1;
     if (score(id) > score(cur)) { if (cur) this.addItem(cur, 1); this.equip[it.slot] = id; return true; }
     this.addItem(id, 1); return false;
+  }
+
+  /** UI-7 手动穿戴：只搬运永久背包库存，宗门/等级限制与 gainEquip 一致，不比较强弱。 */
+  equipItem(id: string): EquipResult {
+    const it = Object.prototype.hasOwnProperty.call(ITEMS, id) ? ITEMS[id] : undefined;
+    if (!it || it.type !== 'equip' || !EQUIP_SLOTS.some(slot => slot === it.slot)) return { ok: false, reason: 'invalid' };
+    if (!(this.permanentCount(id) > 0)) return { ok: false, reason: 'missing' };
+    if (it.sect && it.sect !== this.sect) return { ok: false, reason: 'sect' };
+    if ((it.reqLevel ?? 1) > this.level) return { ok: false, reason: 'level' };
+    const slot = it.slot as EquipSlot, old = this.equip[slot];
+    if (old && old !== id && !this.canReceiveItem(old)) return { ok: false, reason: 'overflow' };
+    return this.changeEquip(() => {
+      this.inventory[id] = this.count(id) - 1;
+      if (old) this.addItem(old, 1);
+      this.equip[slot] = id;
+    });
+  }
+
+  /** 卸下不重新检查穿戴条件；旧档装备仍能安全回到背包。 */
+  unequipSlot(slot: string): EquipResult {
+    if (!EQUIP_SLOTS.some(key => key === slot)) return { ok: false, reason: 'invalid' };
+    const old = this.equip[slot];
+    if (!old) return { ok: false, reason: 'empty' };
+    if (!this.canReceiveItem(old)) return { ok: false, reason: 'overflow' };
+    return this.changeEquip(() => { this.addItem(old, 1); delete this.equip[slot]; });
+  }
+
+  private changeEquip(change: () => void): EquipResult {
+    const inventory = this.inventory, equip = this.equip, hp = this.hp, mp = this.mp;
+    this.inventory = { ...inventory }; this.equip = { ...equip };
+    change();
+    this.hp = Math.min(this.hp, this.maxHp); this.mp = Math.min(this.mp, this.maxMp);
+    try { if (this.save()) return { ok: true }; } catch { /* 与 applyAllocate 相同：保存异常原子回滚。 */ }
+    this.inventory = inventory; this.equip = equip; this.hp = hp; this.mp = mp;
+    return { ok: false, reason: 'save' };
   }
 
   addItem(id: string, n: number) { this.inventory[id] = (this.inventory[id] ?? 0) + n; }
