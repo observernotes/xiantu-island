@@ -76,7 +76,7 @@ try {
   eq(Progress.load().learnedRecipes, intro.rewards.recipes, '已学状态重载');
   eq(t('talisman.intro_done'), strings['talisman.intro_done'], '教学完成提示使用 strings_zh 表内文案');
   const talismanStrings = Object.entries(strings).filter(([key]) => key.startsWith('talisman.'));
-  eq(talismanStrings.length, 60, 'strings_zh 表内包含全部 60 条制符文案');
+  eq(talismanStrings.length, 61, 'strings_zh 表内包含全部 61 条制符文案（含等级文案）');
   for (const [key, value] of talismanStrings) {
     ok(typeof value === 'string' && value.length > 0, `${key} 表内存在`);
     eq(t(key), value, `${key} 使用 strings_zh 表内文案`);

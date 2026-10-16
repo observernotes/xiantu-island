@@ -1,10 +1,18 @@
 import Phaser from 'phaser';
 import { ITEMS, RECIPES, t, type RecipeDef } from './data';
 import type { Progress } from './Progress';
-import { AlchemySystem, firePointer, type AlchemyResult } from './Alchemy';
+import { AlchemySystem, firePointer, type AlchemyBlock, type AlchemyResult } from './Alchemy';
 import { HUD_FONT, INK, INK_60, PAPER, RED, sliced, hudSpec, setSlicedWidth } from './hud';
 import { featureEnabled, FEATURE_UNAVAILABLE } from './features';
 import { loadOptionalImage } from './optionalAssets';
+
+const BLOCK_KEYS: Partial<Record<AlchemyBlock, string>> = {
+  materials: 'alchemy.reason.materials', fuel: 'alchemy.reason.fuel', furnace: 'alchemy.reason.furnace',
+  unlearned: 'alchemy.reason.unlearned', unknown: 'alchemy.reason.unknown', busy: 'alchemy.reason.busy',
+  config: 'alchemy.reason.config', skill_level: 'alchemy.reason.skill_level',
+};
+const blockedText = (reason?: AlchemyBlock) => reason === 'closed' ? FEATURE_UNAVAILABLE
+  : t((reason ? BLOCK_KEYS[reason] : undefined) ?? 'alchemy.reason.unavailable');
 
 const DIR = 'art/icons/ui/alchemy';
 const IMAGES = [
@@ -143,8 +151,8 @@ export class AlchemyPanel {
     hit.on('pointerout', () => bg?.setTexture('ui_alchemy_btn_normal'));
     hit.on('pointerdown', () => { if (this.scene.textures.exists('ui_alchemy_btn_pressed')) bg?.setTexture('ui_alchemy_btn_pressed'); run(); });
   }
-  private error(reason?: string) {
-    this.status = ({ closed: FEATURE_UNAVAILABLE, materials: '材料不足', fuel: '灵石不足', furnace: '丹炉不可用', unlearned: '尚未学会这张丹方', unknown: '丹方不存在', busy: '请先完成这一炉', config: '生活技能配置错误', skill_level: '炼丹等级不足' } as Record<string, string>)[reason ?? ''] ?? '暂时无法炼制';
+  private error(reason?: AlchemyBlock) {
+    this.status = blockedText(reason);
     this.render();
   }
   private brew() {
@@ -240,7 +248,7 @@ export class AlchemyPanel {
     this.item(recipe.output, ox, oy, 64);
     this.text(...D.output.name as Point, `${recipe.name} ×${recipe.outputCount}`, 14);
     const [nx, ny] = D.output.name as Point;
-    this.text(nx, ny + 38, `丹方等级 ${recipe.recipeLevel ?? 1}`, 12, INK_60);
+    this.text(nx, ny + 38, t('alchemy.recipe_level', { n: recipe.recipeLevel ?? 1 }), 12, INK_60);
     if (this.lastResult?.quality) {
       const quality = this.lastResult.quality, [qx, qy] = D.output.qualityTag as Point;
       this.image(`ui_alchemy_quality_${quality}`, qx, qy);
@@ -289,7 +297,7 @@ export class AlchemyPanel {
       this.pointerTrack = { x: tx, w: tw };
       this.movePointer();
     }
-    this.text(x, y + 30, fire ? t('alchemy.fire_hint') : '单炉按空格控火；批量自动跳过', 12, INK_60);
+    this.text(x, y + 30, fire ? t('alchemy.fire_hint') : t('alchemy.fire_batch_hint'), 12, INK_60);
   }
   private movePointer() {
     if (!this.system.active || !this.pointer || !this.pointerTrack) return;
