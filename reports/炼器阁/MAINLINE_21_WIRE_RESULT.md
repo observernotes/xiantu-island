@@ -9,7 +9,7 @@
 - **成功**：`q_main_01`–`04` 展示字段与 NPC 入口已接到 tip；tracker 展示主线 `questDescription`；dialogueKeys→`t()` 与日常同路。
 - **未发版、未合 master**；`features.json` **未改**；奖励数值未改。
 - `#19`/`#20`/`lifeSkillCurve`/v0.5c 开态 **仍关**（本轮未动开关）。
-- tip SHA：`a4654b1`
+- tip SHA：`7311c1b`
 
 ## 做了什么
 
@@ -60,5 +60,5 @@ npm run snapshot           # PRE 0 问题后刷入
 
 ## tip
 
-- `origin/dev` @ `a4654b1`
+- `origin/dev` @ `7311c1b`
 - 推送目标：`origin/dev`（本任务有权推 tip，不发版）
