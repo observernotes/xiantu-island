@@ -66,5 +66,5 @@
 `data/features.json`、`src/features.ts`、#19 功法品阶 / #20 灵气浓度配置均未修改；`lifeSkillCurve=false`，#19 全 46 个布尔开关、#20 全 4 个布尔开关仍 false。不改无关玩法、不合 master、不建 tag、不调用 release。山门美术构图仍由美术另验，本报告收口程序航线与回程体验。
 
 请执法堂：验开态五宗+v05Maps 下飞舟去四山门；试炼 win/fail/exit 回山门非 trial_*；无 pending 误落试炼图软回山门或有出口；关 features 行为不回归。
-tip SHA：代码/测试 `08ed28e`；含文档最终 tip `45a5bc5`（= origin/dev HEAD）。
+tip SHA：代码/测试 `08ed28e`；交付文档 tip = `origin/dev` HEAD（本文件随 tip 走，以 `git rev-parse origin/dev` 为准）。
 SCOPE：#19#20/lifeSkillCurve 勿开；本轮非发版。
