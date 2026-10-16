@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { t } from './data';
 import type { Progress } from './Progress';
 import { HUD_FONT, INK, INK_60, PAPER, RED, sliced, hudSpec } from './hud';
+import type { SensePreview } from './Sense';
 
 type Rect = [number, number, number, number];
 type AllocationResult = ReturnType<Progress['applyAllocate']>;
@@ -9,6 +10,12 @@ export interface AttrRow {
   key: string; name: string; allocated: number; value: number; draft: number; next: number;
 }
 export interface AttrPending { delta: Record<string, number>; total: number }
+export interface AttrSenseOptions {
+  sensePreview?: () => SensePreview | undefined;
+  senseEnabled?: () => boolean;
+  senseKeyHint?: () => string;
+  senseBlockText?: (preview: SensePreview) => string;
+}
 
 const NAMES: Record<string, string> = { rootBone: '根骨', agility: '身法', spirit: '神识', insight: '悟性' };
 const C = { ink: 0x3b2a20, paper: 0xfaf2dc, paper2: 0xece0c4, wood: 0x966a42, sky: 0x4096dc, skyFill: 0xd7eeff, greyBtn: 0xb8afa4 };
@@ -27,13 +34,17 @@ export class AttrPanel {
   private draft: Record<string, number> = {};
   private selected = 0;
   private openedAt = 0;
+  private senseExpanded = false;
+  private senseContent = '';
+  private renderedSenseEnabled = false;
   pending: AttrPending | null = null;
   status = '';
   statusOk = true;
   artUsed: Record<string, 'art' | 'code'> = {};
   position = { x: 0, y: 0, width: 600, height: 420 };
 
-  constructor(private scene: Phaser.Scene, private prog: Progress, private onChanged: () => void = () => {}) {
+  constructor(private scene: Phaser.Scene, private prog: Progress, private onChanged: () => void = () => {},
+    private senseOptions: AttrSenseOptions = {}) {
     const kb = scene.input.keyboard;
     kb?.on('keydown', this.onKey, this);
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
@@ -45,11 +56,42 @@ export class AttrPanel {
   isOpen() { return this.shown; }
   open() {
     this.resetDraft(); this.pending = null; this.status = ''; this.statusOk = true; this.selected = 0;
+    this.senseExpanded = false;
     this.shown = true; this.openedAt = this.scene.time.now; this.render();
   }
   close() { this.shown = false; this.pending = null; this.resetDraft(); this.clear(); }
   toggle() { if (this.shown) this.close(); else this.open(); }
-  update() {}
+  update() {
+    if (!this.shown) return;
+    const enabled = !!this.senseOptions.senseEnabled?.();
+    if (enabled !== this.renderedSenseEnabled) { this.senseExpanded = false; this.render(); }
+    else if (this.senseExpanded && this.senseDetails() !== this.senseContent) this.render();
+  }
+
+  private senseDetails() {
+    if (!this.senseOptions.senseEnabled?.()) return t('sense.block.unavailable');
+    const preview = this.senseOptions.sensePreview?.();
+    if (!preview) return t('sense.block.unavailable');
+    const valid = (value: unknown): value is number => typeof value === 'number' && Number.isFinite(value);
+    const number = (value: number) => String(Math.round(value * 10) / 10);
+    const lines: string[] = [], stats: string[] = [], costs: string[] = [];
+    if (valid(preview.strength)) stats.push(t('sense.ui.strength', { value: number(preview.strength) }));
+    if (valid(preview.radius)) stats.push(t('sense.ui.radius', { radius: number(preview.radius) }));
+    if (valid(preview.mpCost)) costs.push(t('sense.ui.cost', { mp: number(preview.mpCost) }));
+    if (valid(preview.cooldownMs)) costs.push(t('sense.ui.cooldown', { seconds: number(preview.cooldownMs / 1000) }));
+    if (stats.length) lines.push(stats.join('　'));
+    if (costs.length) lines.push(costs.join('　'));
+    if (preview.ready) lines.push(t('sense.ui.ready'));
+    else if (preview.blockKey) lines.push(this.senseOptions.senseBlockText?.(preview) ?? t(preview.blockKey));
+    const sources = preview.sources.flatMap(source => {
+      if (!source || typeof source !== 'object') return [];
+      const { label, value } = source as { label?: unknown; value?: unknown };
+      return typeof label === 'string' && label && valid(value) ? [`${label} ${value >= 0 ? '+' : ''}${number(value)}`] : [];
+    });
+    if (sources.length) lines.push(t('sense.ui.sources', { sources: sources.join('、') }));
+    lines.push(this.senseOptions.senseKeyHint?.() ?? t('sense.ui.no_binding'));
+    return lines.join('\n');
+  }
 
   /** 只接受四维整数草稿增减；已确认分配始终由 Progress 管理。 */
   adjust(key: string, amount: number) {
@@ -160,6 +202,10 @@ export class AttrPanel {
   private render() {
     if (!this.shown) return;
     this.clear(); this.artUsed = {};
+    this.renderedSenseEnabled = !!this.senseOptions.senseEnabled?.();
+    const expanded = this.senseExpanded && !!this.senseOptions.senseEnabled?.();
+    const extra = expanded ? 176 : 0;
+    this.position.height = 420 + extra;
     const { width: W, height: H } = this.position;
     this.position.x = Math.round((this.scene.scale.width - W) / 2);
     this.position.y = Math.round((this.scene.scale.height - H) / 2);
@@ -178,15 +224,20 @@ export class AttrPanel {
     this.text(439, 86, label('ui.attr.draft', '待分配'), 12, INK_60).setOrigin(0.5);
     this.rows().forEach((row, i) => this.row(row, i));
     this.text(28, 290, label('ui.attr.value_hint', '当前值含功法加成；减号仅撤回待分配点数。'), 12, INK_60).setOrigin(0, 0.5);
+    if (expanded) {
+      this.senseContent = this.senseDetails();
+      this.box('ui_bestiary_inset', [16, 306, W - 32, 160], C.paper2, C.ink);
+      this.text(28, 318, this.senseContent, 13).setWordWrapWidth(W - 56).setLineSpacing(6).setName('attr-sense-details');
+    }
     if (this.pending) {
-      this.text(28, 324, label('ui.attr.confirm_hint', '确认分配 {n} 点？再点确认后生效。', { n: this.pending.total }), 14, INK, true)
+      this.text(28, 324 + extra, label('ui.attr.confirm_hint', '确认分配 {n} 点？再点确认后生效。', { n: this.pending.total }), 14, INK, true)
         .setWordWrapWidth(W - 56).setName('attr-confirm-text');
     } else if (this.status) {
-      this.text(28, 324, this.status, 14, this.statusOk ? '#2E7D32' : RED, true).setWordWrapWidth(W - 56).setName('attr-status');
-    } else this.text(28, 324, this.check().message || label('ui.attr.ready', '调整完毕后，点击确认提交。'), 14, INK_60).setWordWrapWidth(W - 56);
-    this.button([W - 256, 354, 108, 32], label('ui.attr.cancel', '取消'), !!this.pending || this.total() > 0,
+      this.text(28, 324 + extra, this.status, 14, this.statusOk ? '#2E7D32' : RED, true).setWordWrapWidth(W - 56).setName('attr-status');
+    } else this.text(28, 324 + extra, this.check().message || label('ui.attr.ready', '调整完毕后，点击确认提交。'), 14, INK_60).setWordWrapWidth(W - 56);
+    this.button([W - 256, 354 + extra, 108, 32], label('ui.attr.cancel', '取消'), !!this.pending || this.total() > 0,
       () => { if (this.pending) this.cancelConfirm(); else this.cancel(); }, 'attr-cancel');
-    this.button([W - 136, 354, 108, 32], label('ui.attr.confirm', '确认'), this.check().ok,
+    this.button([W - 136, 354 + extra, 108, 32], label('ui.attr.confirm', '确认'), this.check().ok,
       () => { if (this.pending) this.confirm(); else this.requestConfirm(); }, this.pending ? 'attr-commit' : 'attr-confirm');
     this.text(28, H - 18, label('ui.attr.keys', '↑↓ 选择  ←→ 加减  回车 确认  Esc / P 关闭'), 12, INK_60).setOrigin(0, 0.5);
   }
@@ -194,6 +245,10 @@ export class AttrPanel {
     const y = 102 + index * 44, selected = this.selected === index;
     this.box(selected ? 'ui_alchemy_list_row_selected' : 'ui_alchemy_list_row_normal', [24, y, 552, 38], selected ? C.skyFill : C.paper, selected ? C.sky : C.ink, 5);
     this.text(36, y + 19, row.name, 16, INK, true).setOrigin(0, 0.5);
+    if (row.key === 'spirit' && this.senseOptions.senseEnabled?.()) {
+      this.text(92, y + 19, this.senseExpanded ? t('sense.ui.close') : '展开', 12, '#2678C8').setOrigin(0, 0.5);
+      this.zone([28, y + 2, 116, 34], () => { this.senseExpanded = !this.senseExpanded; this.render(); }).setName('attr-sense-toggle');
+    }
     this.text(218, y + 19, row.draft ? `${row.value} → ${row.next}` : String(row.value), 16, INK, true).setOrigin(0.5).setName(`attr-${row.key}-value`);
     this.button([370, y + 4, 32, 30], '−', !this.pending && row.draft > 0, () => this.adjust(row.key, -1), `attr-${row.key}-minus`);
     this.text(439, y + 19, `+${row.draft}`, 16, row.draft ? '#2B4C7E' : INK_60, true).setOrigin(0.5).setName(`attr-${row.key}-draft`);
