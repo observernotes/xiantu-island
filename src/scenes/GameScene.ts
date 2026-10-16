@@ -1,5 +1,6 @@
 import { gameNow } from '../GameClock';
 import Phaser from 'phaser';
+import { notifyCheatSceneReady } from '../cheatFlags';
 import { getRendererInfo } from '../rendererChoice';
 import { FEEL, SPEC } from '../config/feel';
 import { FIELD_TEST } from '../config/maps';
@@ -414,6 +415,7 @@ export class GameScene extends Phaser.Scene {
     const returned = this.registry.get('sectTrialReturnMessage');
     this.registry.remove('sectTrialReturnMessage');
     if (returned || interrupted) this.log(returned ?? t('trial.exit_return'), '#ffe680');
+    notifyCheatSceneReady(this);
   }
 
   /** 已接取本宗任务且尚未通关，才可由交付长老开启试炼。 */

@@ -14,6 +14,9 @@ const trials = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/trials.
 const quests = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/quests.json'), 'utf8'));
 const strings = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/strings_zh.json'), 'utf8'));
 const classes = JSON.parse(await fs.readFile(path.join(root, 'src/config/classes.json'), 'utf8')).classes;
+// 发版开关始终来自工程快照，与 XT_DATA 指向的平衡表目录独立。
+const features = JSON.parse(await fs.readFile(path.join(root, 'data/features.json'), 'utf8'));
+assert.equal(typeof features.fiveSectClasses, 'boolean', '工程快照缺少 fiveSectClasses 布尔开关');
 assert.equal(trials.length, 4);
 const checks = [];
 const startedAt = Date.now();
@@ -366,7 +369,7 @@ try {
   const url = new URL(baseURL); url.searchParams.set('map', 'qingyun_village'); url.searchParams.set('reset', '1');
   await page.goto(url.href, { waitUntil: 'domcontentloaded', timeout: 30000 }); await ready(page, 'qingyun_village');
   const initialFeatures = await page.evaluate(() => window.__xt.getState().features);
-  assert.equal(initialFeatures.fiveSectClasses, false, 'v0.5b 四宗默认关口必须关闭');
+  assert.equal(initialFeatures.fiveSectClasses, features.fiveSectClasses, '四宗初始关口与工程快照不一致');
   console.log(JSON.stringify({ test: 'trials-smoke', baseURL, playwright: module, browser: executablePath, dataMode: dataMode(root), initialFeatures }));
   await page.evaluate(() => { window.__xt.setFlag('fiveSectClasses', true); window.__xt.setFlag('v05Maps', true); });
   for (const trial of trials) {
@@ -548,7 +551,15 @@ try {
     assert.equal(denied.offer, false); assert.equal(denied.entered, false); assert.equal(denied.pending, null);
     assert.deepEqual(denied.after, denied.before);
     await page.evaluate(gate => window.__xt.setFlag(gate, true), gate);
-    checks.push(`${gate}: 关闭后确认及直接入场均拒绝，无奖励变化`);
+    const reopened = await page.evaluate(({ gate, quest }) => {
+      const scene = window.__scene;
+      scene.talkTo(quest.turnIn, quest.id);
+      const offer = scene.dialog.choices.some(choice => choice.label === '进入试炼');
+      scene.dialog.dismiss();
+      return { enabled: window.__xt.getState().features[gate], offer };
+    }, { gate, quest });
+    assert.deepEqual(reopened, { enabled: true, offer: true }, `${gate}: 会话重新开放后须恢复入场确认`);
+    checks.push(`${gate}: 关闭后确认及直接入场均拒绝，无奖励变化；重新开放恢复入场确认`);
   }
   assert.deepEqual(errors, [], '试炼无头冒烟出现浏览器报错');
   console.log(JSON.stringify({ test: 'trials-smoke', checks, errors: 0 }));

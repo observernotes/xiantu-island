@@ -1,6 +1,6 @@
 // UI-5 商店窗冒烟：优先复用 XT_SMOKE_BASE_URL；独立运行时 sync + 测试构建到临时目录，不覆盖 dist。
-// 覆盖：发版开关关闭、购买（数量/确认/重放去重）、灵石不足、出售、目录变动重验、打开中关开关、宗门商店/藏经阁窗体、清单/实体缺图回退及炼丹关闭钮。
-// 商店开关与宗门货架只在浏览器内存里打开；正式 features.json、shops.json 与交易逻辑不改。
+// 覆盖：构建开关核对、会话内关开关、购买（数量/确认/重放去重）、灵石不足、出售、目录变动重验、打开中关开关、宗门商店/藏经阁窗体、清单/实体缺图回退及炼丹关闭钮。
+// 开关覆盖与宗门货架夹具只作用于浏览器会话；features.json、shops.json 与交易逻辑不改。
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import os from 'node:os';
@@ -38,7 +38,7 @@ const buyItem = shops[grocer].find(id => Number.isInteger(ITEMS[id]?.price) && I
 const sellItem = shops[doctor].find(id => Number.isInteger(ITEMS[id]?.price) && Math.floor(ITEMS[id].price / 2) > 0);
 assert.ok(buyItem && sellItem, '货架缺可用于冒烟的有价商品');
 const buyPrice = ITEMS[buyItem].price, sellPrice = Math.floor(ITEMS[sellItem].price / 2);
-assert.equal(features.shops, false, '正式 shops 开关必须保持关闭');
+assert.equal(typeof features.shops, 'boolean', '工程快照缺少 shops 布尔开关');
 
 let assertions = 0;
 const eq = (actual, expected, message) => { assert.deepEqual(actual, expected, message); assertions++; };
@@ -153,6 +153,7 @@ try {
     await page.goto(url.href, { waitUntil: 'load', timeout: 60000 });
     await page.waitForFunction(id => { const s = window.__scene; return s?.map?.id === id && s.player?.active && s.dialog && s.shop && window.__xt; }, map, { timeout: 40000 });
     await page.waitForTimeout(400);
+    eq(await page.evaluate(() => window.__xt.getState().features), features, `${label}: 初始运行时开关与工程快照不一致`);
     const done = async () => {
       try {
         // 实体缺图需单独记录 Chromium 的资源诊断；应用 console.error 仍必须为零。
@@ -212,9 +213,11 @@ try {
     await page.waitForTimeout(250);
   }
 
-  // 1. 正式开关关闭：NPC 无货架入口，直接调用也只提示暂未开放，余额不变。
+  // 1. 会话内显式关闭 shops：NPC 无货架入口，直接调用也只提示暂未开放，余额不变。
   {
     const { page, done } = await session('shops-off');
+    await page.evaluate(() => window.__xt.setFlag('shops', false));
+    eq(await page.evaluate(() => window.__xt.getState().features), { ...features, shops: false }, '关闭 shops 覆盖未生效或改变其他开关');
     const before = await wallet(page, buyItem);
     const menu = await talkMenu(page, grocer);
     ok(!menu.includes(strings['ui.shop.menu']), '关闭时仍显示看看货架');
@@ -233,6 +236,7 @@ try {
   {
     const { page, done } = await session('ordinary');
     await page.evaluate(() => window.__xt.setFlag('shops', true));
+    eq(await page.evaluate(() => window.__xt.getState().features), { ...features, shops: true }, '开启 shops 覆盖未生效或改变其他开关');
     const menu = await talkMenu(page, grocer);
     ok(menu.includes(strings['ui.shop.menu']), '开启后无看看货架');
     await chooseMenu(page, strings['ui.shop.menu']);

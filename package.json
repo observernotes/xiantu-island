@@ -55,7 +55,10 @@
     "test:smoke:alchemy": "timeout 120s node scripts/alchemy-smoke.mjs",
     "test:smoke:v05": "timeout 120s node scripts/v05-smoke.mjs",
     "sync": "node scripts/sync.mjs",
-    "snapshot": "node scripts/snapshot.mjs"
+    "snapshot": "node scripts/snapshot.mjs",
+    "test:cheat": "node scripts/cheat-test.mjs",
+    "test:smoke:cheat": "timeout 180s node scripts/cheat-smoke.mjs",
+    "test:smoke:cheat-gate": "timeout 180s node scripts/cheat-gate-smoke.mjs"
   },
   "dependencies": {
     "phaser": "^3.80.1"

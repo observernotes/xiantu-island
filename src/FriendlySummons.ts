@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { isCheatGod } from './cheatFlags';
 import { ATLAS_INFO, MONSTERS } from './data';
 import type { GameScene } from './scenes/GameScene';
 import type { Monster } from './scenes/Monster';
@@ -155,7 +156,7 @@ export class FriendlySummons {
     const share = Math.min(1, Math.max(0, this.scene.prog.buffBonus('petDamageShareRatio')));
     const ownerDamage = Math.round(damage * share);
     pet.hp = Math.max(0, pet.hp - (damage - ownerDamage));
-    if (ownerDamage > 0) {
+    if (ownerDamage > 0 && !isCheatGod()) {
       this.scene.prog.hp = Math.max(0, this.scene.prog.hp - ownerDamage);
       this.scene.player.hp = this.scene.prog.hp;
       this.scene.damageNumber(this.scene.player.x, this.scene.player.y - 70, ownerDamage, '#c45cff', '#2a0040');

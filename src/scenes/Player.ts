@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { isCheatGod } from '../cheatFlags';
 import { FEEL, SPEC } from '../config/feel';
 import { GROWTH } from '../data';
 import { pixelsFromMovePoints } from '../move';
@@ -283,6 +284,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   hurt(time: number, fromX: number, dmg: number, knock = FEEL.hurtKnockVx): boolean {
+    if (isCheatGod()) return false;
     if (time < this.invulnUntil || this.dead) return false;
     const armor = time < this.superArmorUntil;
     if (this.state2 === 'rope' && !armor) this.leaveRope(time);

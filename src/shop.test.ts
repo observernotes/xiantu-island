@@ -82,8 +82,8 @@ function rejected(action: () => { ok: boolean; key: string }, p: Progress, messa
 }
 
 try {
-  eq(releaseFeatures.shops, false, '发版 shops 默认关闭');
-  eq(originalFeatures.shops, false, '运行时 shops 默认关闭');
+  eq(typeof releaseFeatures.shops, 'boolean', '工程快照 shops 为布尔开关');
+  eq(originalFeatures.shops, releaseFeatures.shops, '运行时 shops 初始值与工程快照一致');
   same(SECT_GROWTH_CONFIG.shops, rawShops, '商店从唯一 shops.json 读取');
   for (const key of ['ui.shop.menu', 'ui.shop.confirm', 'ui.shop.complete'] as const) {
     ok(typeof strings[key] === 'string' && strings[key].length > 0, `${key} 表内存在`);
