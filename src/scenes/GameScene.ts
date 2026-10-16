@@ -117,6 +117,7 @@ export class GameScene extends Phaser.Scene {
   openedChests = new Set<string>();
   breakthroughNotified = false;
   private travelling = false;
+  private loadingProgress = false;
   trialObjects?: SectTrialObjects;
   sectTrial?: SectTrial;
   atSectTrialEntrance = false;
@@ -246,6 +247,21 @@ export class GameScene extends Phaser.Scene {
   }
 
   create(data: { map?: string; portal?: string; pos?: { x: number; y: number }; talismanReturnLand?: boolean; secretTheme?: string }) {
+    // main 正常会注入异步读档；直接启动场景时也不能退回同步 IDB 读取。
+    if (featureEnabled('indexedDbSaves') && !this.registry.get('progress')) {
+      this.loadingProgress = true;
+      let cancelled = false;
+      const cancel = () => { cancelled = true; };
+      this.events.once(Phaser.Scenes.Events.SHUTDOWN, cancel);
+      void Progress.load({ async: true }).then(progress => {
+        this.events.off(Phaser.Scenes.Events.SHUTDOWN, cancel);
+        if (cancelled) return;
+        this.registry.set('progress', progress);
+        this.scene.restart(data);
+      });
+      return;
+    }
+    this.loadingProgress = false;
     this.resetRunState();
     this.physics.disableUpdate();
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.clearShots());
@@ -271,7 +287,7 @@ export class GameScene extends Phaser.Scene {
       data = { map: at.mapId, pos: { x: at.x, y: at.y } };
       this.prog.pendingSectTrial = null; this.prog.endTrialSkills();
       this.prog.hp = this.prog.maxHp; this.prog.mp = this.prog.maxMp;
-      this.prog.setPosition(at.mapId, at.x, at.y);
+      this.rememberPosition(at.mapId, at.x, at.y);
     }
     this.registry.remove('sectTrialEntering');
     this.sectGrowth = new SectGrowth(this.prog);
@@ -468,8 +484,8 @@ export class GameScene extends Phaser.Scene {
       this.clearTalismanFx();
     });
     this.applyFeatureFlags();
-    if (featureEnabled('talismanCraft')) this.prog.markMapVisited(this.map.id);
-    this.prog.setPosition(this.map.id, this.player.x, this.player.y);
+    this.rememberPosition(this.map.id, this.player.x, this.player.y);
+    if (featureEnabled('talismanCraft')) this.rememberMapVisited();
     if (featureEnabled('talismanCraft') && data.talismanReturnLand && data.map === this.map.id
       && data.pos?.x === this.player.x && data.pos?.y === this.player.y)
       this.createTalismanFx('fx_talisman_return_land', 'land', this.player.x, this.player.y, true);
@@ -519,7 +535,7 @@ export class GameScene extends Phaser.Scene {
     if (!at) return false;
     const returnPosition = { mapId, x: at.x, y: at.y };
     this.prog.pendingSectTrial = { id: def.id, returnPosition };
-    this.prog.save();
+    this.prog.persistSoon();
     this.travelling = true;
     this.registry.set('sectTrialEntering', true);
     this.player.body.setVelocityX(0);
@@ -537,7 +553,7 @@ export class GameScene extends Phaser.Scene {
     this.prog.endTrialSkills();
     this.prog.hp = this.prog.maxHp; this.prog.mp = this.prog.maxMp;
     const at = sectTrialReturnPosition(attempt.returnPosition);
-    this.prog.setPosition(at.mapId, at.x, at.y);
+    this.rememberPosition(at.mapId, at.x, at.y);
     const trial = TRIALS[attempt.id];
     this.registry.set('sectTrialReturnMessage', won ? `${sectTrialText(`trial.sect_${trial?.sect}_success`, '试炼已成！')}找长老交付入门任务即可拜入。`
       : t(result === 'fail' ? 'trial.fail_return' : 'trial.exit_return'));
@@ -634,14 +650,14 @@ export class GameScene extends Phaser.Scene {
     const rate = pr.breakthroughRate(withClear, itemQuality);
     if (item) { pr.removeItem(item, 1); this.log(t('trial.consume', { item: ITEMS[item]?.name ?? item }), '#c8c8c8'); }
     if (withClear) { pr.removeItem('clear_mind_pill', 1); this.log(t('trial.consume', { item: ITEMS.clear_mind_pill?.name ?? '清心丹' }), '#c8c8c8'); }
-    pr.hp = pr.maxHp; pr.mp = pr.maxMp; pr.save();
+    pr.hp = pr.maxHp; pr.mp = pr.maxMp; pr.persistSoon();
     this.registry.set('trialPending', tr.id); this.registry.set('trialRate', rate);
     this.cameras.main.fadeOut(200);
     this.time.delayedCall(220, () => {
       if (!mapEntryOpen(tr.map, this.map.id)) {
         if (item && itemConsumed) pr.addCraftedPill(item, 1, itemQuality);
         if (withClear) pr.addCraftedPill('clear_mind_pill', 1, clearQuality);
-        pr.save(); this.registry.remove('trialPending'); this.registry.remove('trialRate');
+        pr.persistSoon(); this.registry.remove('trialPending'); this.registry.remove('trialRate');
         this.cameras.main.fadeIn(100); this.log(FEATURE_UNAVAILABLE, '#aaaaaa'); return;
       }
       this.scene.restart({ map: tr.map });
@@ -680,7 +696,7 @@ export class GameScene extends Phaser.Scene {
           this.log(`突破成功，当前境界 ${pr.realmName}`, '#ffb0ff');
           if (pr.lastOverflowReturned > 0) this.log(`溢出修为返还 ${pr.lastOverflowReturned}`, '#c8c8c8');
           this.registry.set('lastTrialResult', 'win');
-          pr.save();
+          pr.persistSoon();
           this.time.delayedCall(1200, () => this.returnFromTrial());
         }, t('realm.breakthrough_ok', { realm: next?.name ?? '' }));
       } else {
@@ -699,7 +715,7 @@ export class GameScene extends Phaser.Scene {
         if (lost.lost > 0) this.log(`修为 −${lost.lost}${lost.fromPool ? `（溢出池 −${lost.fromPool}）` : ''}`, '#c8c8c8');
         if (pen.debuffMs) this.log(t('realm.unstable', { min: Math.round(Number(pen.debuffMs) / 60000) }), '#ffb0b0');
         this.registry.set('lastTrialResult', 'lose');
-        pr.save();
+        pr.persistSoon();
         this.time.delayedCall(3000, () => this.returnFromTrial());
       }
     });
@@ -707,7 +723,7 @@ export class GameScene extends Phaser.Scene {
 
   private returnFromTrial() {
     const pr = this.prog;
-    pr.hp = pr.maxHp; pr.mp = pr.maxMp; pr.save();
+    pr.hp = pr.maxHp; pr.mp = pr.maxMp; pr.persistSoon();
     this.registry.set('trialRate', null);
     this.cameras.main.fadeOut(250);
     this.time.delayedCall(270, () => this.scene.restart({ map: TRIAL_RETURN.map, pos: { x: TRIAL_RETURN.x, y: TRIAL_RETURN.y } }));
@@ -715,6 +731,7 @@ export class GameScene extends Phaser.Scene {
   invText!: Phaser.GameObjects.Text;
 
   update(time: number, delta: number) {
+    if (this.loadingProgress) return;
     const encounterOpen = this.encounterUi?.isOpen() === true;
     if (!encounterOpen && this.encounterOwnsPause) { this.physics.resume(); this.encounterOwnsPause = false; }
     const meditationInterrupted = ['left', 'right', 'up', 'down', 'space', 'alt', 'c', 'ctrl', 'x', 'i', 'e', 'k', 'l', 'p', 'r']
@@ -798,7 +815,7 @@ export class GameScene extends Phaser.Scene {
     }
     if (this.sectTrial && !this.dialog.open && !this.skillWindow.open && !this.alchemy.isOpen() && !this.shop.isOpen() && !this.attrPanel?.isOpen() && !this.itemPanelOpen()) this.sectTrial.update(delta);
     if (this.sectTrial?.ended) { this.drawHud(); return; }
-    if (time >= this.nextAgeUpdateAt) { this.prog.advanceAge(); this.nextAgeUpdateAt = time + 60000; this.prog.save(); }
+    if (time >= this.nextAgeUpdateAt) { this.prog.advanceAge(); this.nextAgeUpdateAt = time + 60000; this.prog.persistSoon(); }
     if (J(k.i)) { if (this.inventoryPanel?.isOpen()) this.inventoryPanel?.close(); else this.openInventoryPanel(); }
     if (J(k.e)) { if (this.equipPanel?.isOpen()) this.equipPanel?.close(); else this.openEquipPanel(); }
     if (J(k.k) && !this.dialog.open && !this.alchemy.isOpen() && !this.shop.isOpen() && !this.attrPanel?.isOpen() && !this.itemPanelOpen() && !this.sectTrial?.blocksInput) this.skillWindow.toggle();
@@ -1638,7 +1655,7 @@ export class GameScene extends Phaser.Scene {
     if (d.itemId === 'spirit_stone') { this.prog.stones += d.count; this.log(`获得灵石 ${d.count}`, '#7ff0d0'); }
     else if (ITEMS[d.itemId]?.type === 'equip') { const on = this.prog.gainEquip(d.itemId); this.player.syncAppearance(); this.log(`获得 ${ITEMS[d.itemId].name}${on ? '（已自动装备）' : ''}`, '#9fd0ff'); }
     else { this.prog.addItem(d.itemId, d.count); this.log(`获得 ${ITEMS[d.itemId]?.name ?? d.itemId} ×${d.count}`, '#ffffff'); }
-    this.prog.save();
+    this.prog.persistSoon();
   }
 
   usePill(id: string) {
@@ -1650,10 +1667,23 @@ export class GameScene extends Phaser.Scene {
     if (eff.mp || id === 'qi_pill') this.prog.mp = Math.min(this.prog.maxMp, this.prog.mp + Math.round((eff.mp ?? 50) * mul));
     this.player.hp = this.prog.hp;
     this.log(`服用 ${ITEMS[id]?.name ?? id}`, '#9fffb0');
-    this.prog.save();
+    this.prog.persistSoon();
   }
 
   // ---------------- 地图物件 ----------------
+  private rememberPosition(mapId: string, x: number, y: number): void {
+    if (featureEnabled('indexedDbSaves')) void this.prog.setPosition(mapId, x, y, { async: true });
+    else this.prog.setPosition(mapId, x, y);
+  }
+
+  private rememberMapVisited(): void {
+    const id = this.map.id;
+    if (this.prog.visitedMaps.includes(id) || !TILED_MAPS[id]) return;
+    if (featureEnabled('indexedDbSaves')) {
+      void this.prog.runSaveTransactionAsync(draft => draft.markMapVisited(id) || undefined);
+    } else this.prog.markMapVisited(id);
+  }
+
   private refreshHelpText() {
     const alchemy = featureEnabled('alchemyPhase1');
     this.helpText?.setText(`方向键 移动 / ↑↓ 爬绳梯  ↑ 传送 / 上船 / 闭关\nAlt / 空格 / C 跳跃（空中再按 = 二段跳）\n↓ + 跳 穿下单向平台\nCtrl / X 普攻   Z 对话 / 拾取${alchemy ? ' / 采集' : ''} / 开宝箱\nA S D F G H Q W 技能   K 功法  P 加点${alchemy ? '  L 丹炉' : ''}\n1 回春丹  2 回气丹  I 背包  E 装备  F1 调试/渲染`);
@@ -1669,7 +1699,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   /** 测试覆盖即时撤下旧回调；存档身份、材料、贡献与待炼炉次均保留。 */
-  applyFeatureFlags() {
+  async applyFeatureFlags() {
     this.senseMap?.syncRevealed();
     this.senseUi?.refresh(); this.attrPanel?.update();
     syncTalismanMapAvailability();
@@ -1681,14 +1711,19 @@ export class GameScene extends Phaser.Scene {
       if (spawn) {
         const position = { mapId: 'luoxia_town', x: spawn.x, y: spawn.y };
         if (this.prog.pendingSectTrial && removedGate(this.prog.pendingSectTrial.returnPosition.mapId)) {
-          this.prog.runSaveTransaction(() => { this.prog.pendingSectTrial!.returnPosition = { ...position }; return true; });
+          if (featureEnabled('indexedDbSaves')) {
+            await this.prog.runSaveTransactionAsync(draft => { draft.pendingSectTrial!.returnPosition = { ...position }; return true; });
+          } else this.prog.runSaveTransaction(() => { this.prog.pendingSectTrial!.returnPosition = { ...position }; return true; });
         }
         if (removedGate(this.map.id) && !this.travelling) {
           this.interruptTalisman('map');
           if (this.scene.isActive('talisman-craft-ui')) this.scene.stop('talisman-craft-ui');
           this.closeItemPanels(); this.dialog?.dismiss();
           // Gate closure is a safe relocation, with no death or restoration settlement.
-          if (this.prog.setPosition(position.mapId, position.x, position.y)) {
+          const saved = featureEnabled('indexedDbSaves')
+            ? await this.prog.setPosition(position.mapId, position.x, position.y, { async: true })
+            : this.prog.setPosition(position.mapId, position.x, position.y);
+          if (saved) {
             this.travelling = true; this.player.body.setVelocity(0, 0);
             this.scene.restart({ map: position.mapId, pos: { x: position.x, y: position.y } });
             return;
@@ -1698,7 +1733,7 @@ export class GameScene extends Phaser.Scene {
     }
     this.dialog?.dismiss(); this.skillWindow?.close(); this.shop?.update();
     this.refreshHelpText();
-    if (featureEnabled('talismanCraft') && !this.talismanSystem) { this.setupTalisman(); this.prog.markMapVisited(this.map.id); }
+    if (featureEnabled('talismanCraft') && !this.talismanSystem) { this.setupTalisman(); this.rememberMapVisited(); }
     if (!featureEnabled('talismanCraft')) { this.interruptTalisman('map'); this.clearTalismanFx(); if (this.scene.isActive('talisman-craft-ui')) this.scene.stop('talisman-craft-ui'); }
     this.inventoryPanel?.update(); this.equipPanel?.update();
     if (this.sectTrial && !this.sectTrial.ended && (!featureEnabled('fiveSectClasses') || !featureEnabled('v05Maps'))) this.sectTrial.exit();
@@ -1972,7 +2007,7 @@ export class GameScene extends Phaser.Scene {
     }
     this.travelling = true;
     this.player.body.setVelocityX(0);
-    this.prog.save();
+    this.prog.persistSoon();
     this.cameras.main.fadeOut(200);
     this.time.delayedCall(220, () => {
       if (!mapEntryOpen(map, this.map.id, returning)) {
@@ -2044,8 +2079,11 @@ export class GameScene extends Phaser.Scene {
           .some(tr => tr.quest && classForQuest(tr.quest) && this.prog.completedTrials.includes(tr.id));
         return { label: name, disabled: !classEntryEnabled(cls) || locked,
           reason: !classEntryEnabled(cls) ? FEATURE_UNAVAILABLE : locked ? t('sect.entry.trial_complete') : undefined,
-          onSelect: () => {
-            if (this.prog.selectSect(cls.sect)) this.log(t('sect.entry.selected', { sect: name }), '#ffe680');
+          onSelect: async () => {
+            const saved = featureEnabled('indexedDbSaves')
+              ? await this.prog.runSaveTransactionAsync(draft => draft.selectSect(cls.sect) || undefined)
+              : this.prog.selectSect(cls.sect);
+            if (saved) this.log(t('sect.entry.selected', { sect: name }), '#ffe680');
             else this.log(t('sect.ui.save_failed'), '#ffb0b0');
           } };
       }));
@@ -2071,7 +2109,7 @@ export class GameScene extends Phaser.Scene {
             if (this.travelling) return;
             this.prog.stones -= route.cost;
             this.travelToMap(route.targetMap, route.targetPortal ?? undefined, false, () => {
-              this.prog.stones += route.cost; this.prog.save();
+              this.prog.stones += route.cost; this.prog.persistSoon();
             });
           } };
         }),
@@ -2088,8 +2126,10 @@ export class GameScene extends Phaser.Scene {
     if (blockedQuest) {
       this.player.body.setVelocityX(0);
       this.dialog.choose({ speaker: npc.name, text: this.quests.sectEntryBlock(blockedQuest)! }, npc.sprite, [
-        ...(this.quests.isActive(blockedQuest) ? [{ label: t('sect.entry.abandon'), onSelect: () => {
-          if (this.quests.abandon(blockedQuest)) this.log(t('sect.entry.abandoned'), '#ffe680');
+        ...(this.quests.isActive(blockedQuest) ? [{ label: t('sect.entry.abandon'), onSelect: async () => {
+          const abandoned = featureEnabled('indexedDbSaves')
+            ? await this.quests.abandon(blockedQuest, { async: true }) : this.quests.abandon(blockedQuest);
+          if (abandoned) this.log(t('sect.entry.abandoned'), '#ffe680');
         } }] : []),
         { label: t('ui.dialog.close'), onSelect: () => {} },
       ]);
@@ -2138,7 +2178,8 @@ export class GameScene extends Phaser.Scene {
     }
     const offer = !questId ? this.trialOfferFor(npcId) : null;
     if (offer) { this.offerTrial(npcId, offer); return; }
-    const talked = this.quests.talk(npcId, questId);
+    const talked = featureEnabled('indexedDbSaves')
+      ? this.quests.talk(npcId, questId, { async: true }) : this.quests.talk(npcId, questId);
     const after = talked.after;
     // 任务没有对白脚本时，用 NPC 的通用台词兜底
     const intro = featureEnabled('alchemyPhase1')
@@ -2148,9 +2189,10 @@ export class GameScene extends Phaser.Scene {
       { speaker: npc.name, text: '可先试炼回春丹：每炉用灵草二株、灵兔绒一份、灵石十枚。交付入门任务时，还须留足三株灵草。丹炉可在我这里用，学成后再送你。' },
     ] : npc.dialog.map(tx => ({ speaker: npc.name, text: tx }));
     this.player.body.setVelocityX(0);
-    this.dialog.show(lines, npc.sprite, () => {
+    this.dialog.show(lines, npc.sprite, async () => {
       const activeBefore = this.quests.activeIds;
-      const r = after?.();
+      const pending = after?.();
+      const r = pending instanceof Promise ? await pending : pending;
       if (r) {
         this.giveRewards(r.quest, r.broke, r.daily, r.settled);
         const ut = (r.quest.rewards as { unlockTrial?: string }).unlockTrial;
@@ -2159,7 +2201,7 @@ export class GameScene extends Phaser.Scene {
       else if (after && this.quests.activeIds.some(id => !activeBefore.includes(id))) this.log(t('quest.accept', {
         name: questId ? questName(QUESTS_REF[questId]) : this.quests.activeIds.map(i => questName(QUESTS_REF[i])).slice(-1)[0] ?? '',
       }), '#ffe680');
-      this.prog.save();
+      this.prog.persistSoon();
       if (npcId === 'doctor_sun' && featureEnabled('alchemyPhase1') && this.quests.state('q_alchemy_intro')) this.openAlchemy('bronze_furnace');
     }, (cue, next) => this.playCue(cue, next));
   }
@@ -2192,9 +2234,11 @@ export class GameScene extends Phaser.Scene {
           if (!this.requireFeature('sectRanks', npcId)) return;
           const target = offer.target; if (!target) return;
           const transactionId = newSectTransactionId();
-          const promote = (acceptOath = false) => {
+          const promote = async (acceptOath = false) => {
             if (!this.requireFeature('sectRanks', npcId)) return;
-            const result = this.sectGrowth.promote(npcId, target, transactionId, acceptOath);
+            const result = featureEnabled('indexedDbSaves')
+              ? await this.sectGrowth.promoteAsync(npcId, target, transactionId, acceptOath)
+              : this.sectGrowth.promote(npcId, target, transactionId, acceptOath);
             this.sectResult(npcId, result, {});
           };
           if (offer.mode === 'oath') {
@@ -2242,13 +2286,15 @@ export class GameScene extends Phaser.Scene {
           if (!this.requireFeature('alchemyPhase1', npcId) || !this.requireFeature('shops', npcId)) return;
           const transactionId = newSectTransactionId();
           this.dialog.choose({ speaker: npc.name, text: preview }, npc.sprite, [
-            { label: t('sect.ui.confirm'), reason: preview, onSelect: () => {
+            { label: t('sect.ui.confirm'), reason: preview, onSelect: async () => {
               if (!this.requireFeature('alchemyPhase1', npcId) || !this.requireFeature('shops', npcId)) return;
               const current = this.sectGrowth.recipeCatalog(npcId).entries.find(row => row.recipeId === entry.recipeId);
               if (!current || current.price !== entry.price || current.reqLevel !== entry.reqLevel) {
                 this.openRecipeShop(npcId); return;
               }
-              const result = this.sectGrowth.buyRecipe(npcId, entry.recipeId, transactionId);
+              const result = featureEnabled('indexedDbSaves')
+                ? await this.sectGrowth.buyRecipeAsync(npcId, entry.recipeId, transactionId)
+                : this.sectGrowth.buyRecipe(npcId, entry.recipeId, transactionId);
               const fallback: Record<string, string> = { 'alchemy.recipe.complete': `已学会${entry.name}丹方`,
                 'alchemy.recipe.learned': '已学会这张丹方', 'alchemy.recipe.level': `需达到 ${entry.reqLevel} 级` };
               this.sectResult(npcId, { ...result, key: t(result.key) === result.key ? fallback[result.key] ?? result.key : result.key },
@@ -2279,14 +2325,16 @@ export class GameScene extends Phaser.Scene {
           // 一次预览绑定一次确认；缓存回调重试继续使用同一事务和日界。
           const transactionId = newSectTransactionId(), previewDay = entry.day;
           this.dialog.choose({ speaker: npc.name, text: `${this.sectOverview()}\n${reason}` }, npc.sprite, [
-            { label: t('sect.ui.confirm'), rankIcon: this.sectRankBadgeKey(entry.reqRank), reason, onSelect: () => {
+            { label: t('sect.ui.confirm'), rankIcon: this.sectRankBadgeKey(entry.reqRank), reason, onSelect: async () => {
               if (!this.requireFeature('sectDonations', npcId)) return;
               const current = this.sectGrowth.donations(npcId).entries.find(row => row.offerId === entry.offerId);
               if (current && (current.itemId !== entry.itemId || current.count !== entry.count
                 || current.contribution !== entry.contribution || current.reqRank !== entry.reqRank)) {
                 this.openSectDonations(npcId); return;
               }
-              const result = this.sectGrowth.donate(npcId, entry.offerId, transactionId, previewDay);
+              const result = featureEnabled('indexedDbSaves')
+                ? await this.sectGrowth.donateAsync(npcId, entry.offerId, transactionId, previewDay)
+                : this.sectGrowth.donate(npcId, entry.offerId, transactionId, previewDay);
               if (result.key === 'sect.donation.day_changed') {
                 this.dialog.show([{ speaker: npc.name, text: t(result.key) }], npc.sprite, () => this.openSectDonations(npcId));
                 return;
@@ -2317,7 +2365,7 @@ export class GameScene extends Phaser.Scene {
     if (r.levels) {
       this.levelUpFx(); this.log(t('sys.level_up', { level: this.prog.level }), '#7fffd4');
       this.player.maxHp = this.prog.maxHp; this.player.hp = this.prog.hp;
-      if (!persisted) this.prog.save();
+      if (!persisted) this.prog.persistSoon();
       this.maybeSpTip();
     }
     if (r.blocked) {
@@ -2391,7 +2439,7 @@ export class GameScene extends Phaser.Scene {
     if (this.prog.spTipShown || this.prog.spLeftFor(1) <= 0) return;
     this.prog.spTipShown = true;
     this.log(t('tip.first_sp'), '#ffe680');
-    this.prog.save();
+    this.prog.persistSoon();
   }
 
   /** 自然回蓝：每 5 秒最大灵力 × MP_REGEN_FRACTION_PER_5S，再加上被动的 mpRegenPer10s。 */
@@ -2456,7 +2504,7 @@ export class GameScene extends Phaser.Scene {
       const key = `${this.map.id}:${o.name}`;
       if (this.prog.openedChests.includes(key)) return;
       this.prog.openedChests.push(key);
-      this.prog.save();
+      this.prog.persistSoon();
       this.openedChests.add(key);
       const chest = this.children.getByName('chest:' + o.name);
       if (chest instanceof Phaser.GameObjects.Sprite) {

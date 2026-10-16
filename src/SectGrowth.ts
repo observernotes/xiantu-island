@@ -90,6 +90,39 @@ export class SectGrowth {
   private busy = false;
   constructor(readonly prog: Progress, readonly config: DeepReadonly<SectGrowthConfig> = SECT_GROWTH_CONFIG) {}
 
+  /** 旧业务只在隔离 draft 内暂存，IDB 确认后才返回成功。 */
+  private async withDraft(apply: (growth: SectGrowth) => SectGrowthResult): Promise<SectGrowthResult> {
+    if (this.busy) return pending();
+    this.busy = true;
+    let rejected: SectGrowthResult | undefined;
+    try {
+      const committed = await this.prog.runSaveTransactionAsync(draft => {
+        const result = apply(new SectGrowth(draft, this.config));
+        if (!result.ok) { rejected = result; return undefined; }
+        return result;
+      });
+      return committed ?? rejected ?? { ok: false, key: 'sect.ui.save_failed' };
+    } finally { this.busy = false; }
+  }
+  promoteAsync(...args: Parameters<SectGrowth['promote']>): Promise<SectGrowthResult> {
+    return this.withDraft(growth => growth.promote(...args));
+  }
+  exchangeAsync(...args: Parameters<SectGrowth['exchange']>): Promise<SectGrowthResult> {
+    return this.withDraft(growth => growth.exchange(...args));
+  }
+  buyOrdinaryAsync(...args: Parameters<SectGrowth['buyOrdinary']>): Promise<SectGrowthResult> {
+    return this.withDraft(growth => growth.buyOrdinary(...args));
+  }
+  buyRecipeAsync(...args: Parameters<SectGrowth['buyRecipe']>): Promise<SectGrowthResult> {
+    return this.withDraft(growth => growth.buyRecipe(...args));
+  }
+  sellOrdinaryAsync(...args: Parameters<SectGrowth['sellOrdinary']>): Promise<SectGrowthResult> {
+    return this.withDraft(growth => growth.sellOrdinary(...args));
+  }
+  donateAsync(...args: Parameters<SectGrowth['donate']>): Promise<SectGrowthResult> {
+    return this.withDraft(growth => growth.donate(...args));
+  }
+
   private rank(id: string) { return this.config.ranks.ranks.find(rank => rank.id === id); }
   private rankIndex(id: string) { return this.config.ranks.rules.rankOrder.indexOf(id); }
   private sect() { return this.config.ranks.sects.find(sect => sect.id === this.prog.sect); }

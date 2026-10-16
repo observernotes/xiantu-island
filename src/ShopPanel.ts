@@ -52,6 +52,7 @@ export class ShopPanel {
   private scroll = 0;
   private quantity = 1;
   private openedAt = 0;
+  private committing = false;
   pending: ShopPending | null = null;
   status = '';
   statusOk = true;
@@ -128,11 +129,26 @@ export class ShopPanel {
   cancelConfirm() { this.pending = null; this.render(); }
   /** 第二步：重读目录比对价格/数量/职位，再交给逻辑层结算。可用同一 pending 重放，由收据去重。 */
   commit(pending = this.pending): SectGrowthResult | null {
+    return this.performCommit(pending, false);
+  }
+  async commitAsync(pending = this.pending): Promise<SectGrowthResult | null> {
+    if (this.committing) return null;
+    this.committing = true;
+    try { return await this.performCommit(pending, true); }
+    finally { this.committing = false; }
+  }
+  private submit() {
+    if (featureEnabled('indexedDbSaves')) void this.commitAsync();
+    else this.commit();
+  }
+  private performCommit(pending: ShopPending | null, async: false): SectGrowthResult | null;
+  private performCommit(pending: ShopPending | null, async: true): SectGrowthResult | Promise<SectGrowthResult> | null;
+  private performCommit(pending: ShopPending | null, async: boolean): SectGrowthResult | Promise<SectGrowthResult> | null {
     if (!pending) return null;
     const target = pending.target;
     if (!this.allowed(target, true)) return { ok: false, key: 'closed' };
     const g = this.growth();
-    let result: SectGrowthResult;
+    let result: SectGrowthResult | Promise<SectGrowthResult>;
     const vars: Record<string, string | number> = { item: pending.name };
     if (target.kind === 'ordinary') {
       const selling = target.mode === 'sell';
@@ -141,21 +157,28 @@ export class ShopPanel {
       const held = current && 'count' in current ? (current as { count: number }).count : undefined;
       if (!current || current.price !== pending.price || (selling && (held !== pending.held || (held ?? 0) < pending.count)))
         return this.stale(pending);
-      result = selling ? g.sellOrdinary(target.npcId, pending.itemId, pending.transactionId, pending.count)
-        : g.buyOrdinary(target.npcId, pending.itemId, pending.transactionId, pending.count);
+      result = async
+        ? selling ? g.sellOrdinaryAsync(target.npcId, pending.itemId, pending.transactionId, pending.count)
+          : g.buyOrdinaryAsync(target.npcId, pending.itemId, pending.transactionId, pending.count)
+        : selling ? g.sellOrdinary(target.npcId, pending.itemId, pending.transactionId, pending.count)
+          : g.buyOrdinary(target.npcId, pending.itemId, pending.transactionId, pending.count);
       vars.price = (pending.price ?? 0) * pending.count;
       vars.item = pending.count > 1 ? `${pending.name} ×${pending.count}` : pending.name;
     } else {
       const current = g.catalog(target.npcId, target.service).entries.find(row => row.itemId === pending.itemId);
       if (current && (current.costContribution !== pending.price || current.reqRank !== pending.reqRank)) return this.stale(pending);
-      result = g.exchange(target.npcId, target.service, pending.itemId, pending.transactionId);
+      result = async ? g.exchangeAsync(target.npcId, target.service, pending.itemId, pending.transactionId)
+        : g.exchange(target.npcId, target.service, pending.itemId, pending.transactionId);
     }
-    if (this.pending === pending) this.pending = null;
-    this.status = t(result.key, { ...vars, rank: '' });
-    this.statusOk = result.ok;
-    if (result.ok && !result.repeated) this.hooks.log(this.status, '#ffd23a');
-    if (this.shown && this.target === target) { this.reload(); this.render(); }
-    return result;
+    const finish = (result: SectGrowthResult): SectGrowthResult => {
+      if (this.pending === pending) this.pending = null;
+      this.status = t(result.key, { ...vars, rank: '' });
+      this.statusOk = result.ok;
+      if (result.ok && !result.repeated) this.hooks.log(this.status, '#ffd23a');
+      if (this.shown && this.target === target) { this.reload(); this.render(); }
+      return result;
+    };
+    return result instanceof Promise ? result.then(finish) : finish(result);
   }
   /** 测试与快检读取的只读状态。 */
   snapshot() {
@@ -207,7 +230,7 @@ export class ShopPanel {
     if (!this.shown || this.scene.time.now - this.openedAt < 120) return;
     const key = event.key;
     if (this.pending) {
-      if (key === 'Enter' || key === 'z' || key === 'Z' || key === ' ') this.commit();
+      if (key === 'Enter' || key === 'z' || key === 'Z' || key === ' ') this.submit();
       else if (key === 'Escape' || key === 'x' || key === 'X') this.cancelConfirm();
       else return;
     } else if (key === 'Escape') this.close();
@@ -411,7 +434,7 @@ export class ShopPanel {
       ? t(`${target.service === 'sect_library' ? 'sect.library' : 'sect.shop'}.confirm`, { contribution: total, item })
       : t(target.mode === 'sell' ? 'ui.shop.sell_confirm' : 'ui.shop.confirm', { item, price: total });
     this.text(rect[0] + 12, rect[1] + 12, text, 14, INK, true).setWordWrapWidth(rect[2] - 24).setName('shop-confirm-text');
-    this.button([rect[0] + rect[2] - 228, rect[1] + rect[3] - 40, 104, 30], t('sect.ui.confirm'), true, () => this.commit(), 'shop-commit');
+    this.button([rect[0] + rect[2] - 228, rect[1] + rect[3] - 40, 104, 30], t('sect.ui.confirm'), true, () => this.submit(), 'shop-commit');
     this.button([rect[0] + rect[2] - 116, rect[1] + rect[3] - 40, 104, 30], t('sect.ui.cancel'), true, () => this.cancelConfirm(), 'shop-cancel');
   }
 }

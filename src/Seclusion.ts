@@ -55,7 +55,7 @@ export class Seclusion {
     }
     p.seclusionHistory.push({ at: now, years, cost, gained, overflowed });
     p.seclusionHistory = p.seclusionHistory.slice(-20);
-    p.save();
+    p.persistSoon();
     return { ok: true as const, years, cost, gained, overflowed, levels, blocked, overflowFilled };
   }
 }

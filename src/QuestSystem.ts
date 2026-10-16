@@ -148,10 +148,12 @@ export class QuestSystem {
         if (!st.talked?.[npcId]) { (st.talked ??= {})[npcId] = true; changed = true; }
       }
     }
-    if (changed) this.prog.save();
+    if (changed) this.prog.persistSoon();
   }
 
-  talk(npcId: string, questId?: string): { lines: Line[]; after?: () => QuestReward | void } {
+  talk(npcId: string, questId: string | undefined, options: { async: true }): { lines: Line[]; after?: () => Promise<QuestReward | void> };
+  talk(npcId: string, questId?: string): { lines: Line[]; after?: () => QuestReward | void };
+  talk(npcId: string, questId?: string, options?: { async: true }): { lines: Line[]; after?: () => QuestReward | void | Promise<QuestReward | void> } {
     const npc = NPCS[npcId];
     if (questId && QUESTS[questId] && !this.featureAllowed(QUESTS[questId])) {
       return { lines: [{ speaker: npc.name, text: FEATURE_UNAVAILABLE }] };
@@ -174,12 +176,12 @@ export class QuestSystem {
         const key = q.dialogueKeys?.[stage];
         return key ? [{ speaker: npc.name, text: t(key, { name: this.prog.name }) }] : fill(fallback);
       };
-      if (q.turnIn === npcId && this.complete(id)) return { lines: lines('complete', sc.turnIn), after: () => this.turnIn(id) };
+      if (q.turnIn === npcId && this.complete(id)) return { lines: lines('complete', sc.turnIn), after: options?.async ? () => this.turnInAsync(id) : () => this.turnIn(id) };
       if (q.turnIn === npcId && this.isActive(id) && this.classAllowed(q)) {
         const notReady = q.objectives.some(o => o.type === 'breakthrough') && sc.notReady && this.objectiveProgress(q).some(p => p.o.type !== 'breakthrough' && p.cur >= p.need);
         return { lines: lines('progress', notReady ? sc.notReady : sc.progress) };
       }
-      if (q.giver === npcId && this.available(id)) return { lines: lines('offer', sc.accept), after: () => { this.accept(id); } };
+      if (q.giver === npcId && this.available(id)) return { lines: lines('offer', sc.accept), after: options?.async ? async () => { this.accept(id); } : () => { this.accept(id); } };
     }
     const fox = QUESTS.q_fox;
     if (!questId && fox && !featureEnabled('foxBoss') && this.state(fox.id) !== 'done'
@@ -194,12 +196,15 @@ export class QuestSystem {
     this.prog.quests[id] = { state: 'active', kills: {}, crafted: {} };
     // 06 文档先教回春丹再要求炼成；表只有完成奖励丹方，教学时提前解锁避免闭环。
     if (id === 'q_alchemy_intro') this.prog.grantRecipe('recipe_hp_pill');
-    this.prog.save();
+    this.prog.persistSoon();
     return true;
   }
 
   /** 旧档或改选后可退回未接；清除本次试炼记录，不能带旧通关重接领奖。 */
-  abandon(id: string): boolean {
+  abandon(id: string): boolean;
+  abandon(id: string, options: { async: true }): Promise<boolean>;
+  abandon(id: string, options?: { async: true }): boolean | Promise<boolean> {
+    if (options?.async) return this.abandonAsync(id);
     const cls = classForQuest(id), q = QUESTS[id];
     if (!cls || cls.sect === CLASS_RULES.unjoinedSkillSect || !q || !this.isActive(id) || this.prog.pendingSectTrial) return false;
     const previous = this.prog.quests[id], trials = this.prog.completedTrials;
@@ -209,6 +214,15 @@ export class QuestSystem {
     this.prog.quests[id] = previous;
     this.prog.completedTrials = trials;
     return false;
+  }
+
+  async abandonAsync(id: string): Promise<boolean> {
+    if (!featureEnabled('indexedDbSaves')) return this.abandon(id);
+    const now = this.now();
+    return await this.prog.runSaveTransactionAsync(draft => {
+      const staged = new QuestSystem(draft, () => now, this.affinityConfig, this.questHooksConfig);
+      return staged.abandon(id) ? true : undefined;
+    }) === true;
   }
 
   /** 选择 UI 可传入显式 choice；关态或两轴未就绪沿用原交付，不推断答案。 */
@@ -222,7 +236,10 @@ export class QuestSystem {
     return stageQuestHookChoice(this.questHooksConfig, hook.id, choiceId, this.prog).status === 'applied';
   }
 
-  turnIn(id: string, force = false, choiceId?: string): QuestReward | undefined {
+  turnIn(id: string, force?: boolean, choiceId?: string): QuestReward | undefined;
+  turnIn(id: string, force: boolean | undefined, choiceId: string | undefined, options: { async: true }): Promise<QuestReward | undefined>;
+  turnIn(id: string, force = false, choiceId?: string, options?: { async: true }): QuestReward | undefined | Promise<QuestReward | undefined> {
+    if (options?.async) return this.turnInAsync(id, force, choiceId);
     const q = QUESTS[id];
     // 内部作弊仅跳过普通任务的接取/职业门槛；目标与事务发奖仍走原路径。
     const forced = force && isCheatEnabled() && !!q && !q.daily && this.isActive(id)
@@ -258,20 +275,31 @@ export class QuestSystem {
     return reward ? this.notifyCompleted(reward) : undefined;
   }
 
+  async turnInAsync(id: string, force = false, choiceId?: string): Promise<QuestReward | undefined> {
+    if (!featureEnabled('indexedDbSaves')) return this.turnIn(id, force, choiceId);
+    const now = this.now();
+    const reward = await this.prog.runSaveTransactionAsync(draft => {
+      // 旧同步结算仅在隔离 draft 内暂存；原实例及通知等待外层槽提交成功。
+      const staged = new QuestSystem(draft, () => now, this.affinityConfig, this.questHooksConfig);
+      return staged.turnIn(id, force, choiceId);
+    });
+    return reward ? this.notifyCompleted(reward) : undefined;
+  }
+
   onKill(monsterId: string) {
     let changed = false;
     for (const id of this.activeIds) {
       const st = this.prog.quests[id];
       if (QUESTS[id].objectives.some(o => o.type === 'kill' && o.target === monsterId)) { st.kills[monsterId] = (st.kills[monsterId] ?? 0) + 1; changed = true; }
     }
-    if (changed) this.prog.save();   // G8：击杀数立即存档
+    if (changed) this.prog.persistSoon();   // G8：击杀数立即存档
   }
   onReach(target: string) {
     let changed = false;
     for (const id of this.activeIds) if (!this.prog.quests[id].reached && QUESTS[id].objectives.some(o => o.type === 'reach' && o.target === target)) {
       this.prog.quests[id].reached = true; changed = true;
     }
-    if (changed) this.prog.save();
+    if (changed) this.prog.persistSoon();
   }
   /** 完整试炼控制器胜利时调用；进图、局部机关、失败均不能算通关。 */
   onTrialComplete(trialId: string) {
@@ -279,7 +307,7 @@ export class QuestSystem {
       && QUESTS[id].objectives.some(o => o.type === 'trial' && o.trial === trialId))) return false;
     if (this.prog.completedTrials.includes(trialId)) return false;
     this.prog.completedTrials.push(trialId);
-    this.prog.save();
+    this.prog.persistSoon();
     return true;
   }
   /** 只接受成功产出的数量，背包拾取/旧库存不计入 craft 目标。 */
@@ -291,7 +319,7 @@ export class QuestSystem {
       const st = this.prog.quests[id];
       (st.crafted ??= {})[itemId] = (st.crafted?.[itemId] ?? 0) + Math.floor(count); changed = true;
     }
-    if (changed) this.prog.save();
+    if (changed) this.prog.persistSoon();
   }
 }
 

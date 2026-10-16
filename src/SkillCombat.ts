@@ -95,7 +95,7 @@ export class SkillCombat {
     const persistentCooldown = skillNumber(def, 'cooldownMs', level) > 0;
     if (persistentCooldown) prog.skillCooldowns[id] = { readyAt: now + total, total };
     this.perform(def, level);
-    if (persistentCooldown) prog.save();
+    if (persistentCooldown) prog.persistSoon();
     this.scene.events.emit('skill:cast', { id, level, cost, cooldownMs: total });
   }
 
@@ -303,7 +303,7 @@ export class SkillCombat {
     else this.scene.prog.buffs.push({ id: def.id, expireAt, warned: false });
     if (def.type !== 'active') this.ensureBuffFx(def.id, true);
     this.special(def, level, 'buff');
-    this.scene.prog.save();
+    this.scene.prog.persistSoon();
   }
 
   private splash(def: SkillDef, level: number, primary: Monster, cast: SkillCast) {

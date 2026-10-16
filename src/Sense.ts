@@ -1,4 +1,4 @@
-/** 神识纯逻辑：不依赖 Phaser、输入、贴图或游戏时钟。所有施放事务同步提交。 */
+/** 神识纯逻辑：不依赖 Phaser、输入、贴图或游戏时钟。施放在保存确认后发布结果。 */
 export interface SenseState { cooldownUntil?: number; lastScanId?: string; tutorialSeen: boolean }
 export interface MonsterSenseBlock { enabled: boolean; profile: string; visibleInfo: string[]; abilityKeys: string[] }
 export interface SenseConfig {
@@ -10,7 +10,7 @@ export interface SenseConfig {
 export type SenseBlockKey = `sense.block.${'realm' | 'unavailable' | 'dead' | 'busy' | 'cooldown' | 'mp' | 'save_failed'}`;
 export interface SenseContext { instanceId: string; center: { x: number; y: number }; alive: boolean; busy: boolean; ready: boolean }
 export interface SenseProgress {
-  realm: { id: string }; hp: number; mp: number; stat(key: string): number; save(): boolean;
+  realm: { id: string }; hp: number; mp: number; stat(key: string): number; save(): boolean; saveAsync?(): Promise<boolean>;
   senseState?: SenseState; senseRevealed?: Record<string, true>;
 }
 export interface SenseMonster {
@@ -169,6 +169,14 @@ export class Sense {
     return result;
   }
   requestScan(source: 'key' | 'button', scanId?: string): SenseScanResult {
+    return this.scan(source, scanId, false);
+  }
+  async requestScanAsync(source: 'key' | 'button', scanId?: string): Promise<SenseScanResult> {
+    return await this.scan(source, scanId, true);
+  }
+  private scan(source: 'key' | 'button', scanId: string | undefined, async: false): SenseScanResult;
+  private scan(source: 'key' | 'button', scanId: string | undefined, async: true): SenseScanResult | Promise<SenseScanResult>;
+  private scan(source: 'key' | 'button', scanId: string | undefined, async: boolean): SenseScanResult | Promise<SenseScanResult> {
     this.syncLoadVersion();
     const o = this.options, p = o.progress, preview = this.preview();
     if (source !== 'key' && source !== 'button' || scanId !== undefined && (typeof scanId !== 'string' || !scanId)) return this.blocked('sense.block.unavailable', source, scanId);
@@ -191,7 +199,7 @@ export class Sense {
     this.pending = true;
     const rollback: (() => void)[] = [];
     const previous = { mp: p.mp, state: p.senseState, revealed: p.senseRevealed };
-    let mutated = false;
+    let mutated = false, awaitingSave = false;
     try {
       const targets = [...o.targets(), ...[...this.adapters.values()].flatMap(adapter => adapter.targets(context))];
       const visited = new Set<string>();
@@ -235,33 +243,45 @@ export class Sense {
         p.senseRevealed = { ...p.senseRevealed };
         for (const target of reveals) if (target.persistence !== 'adapter') p.senseRevealed[`${instanceId}|${target.id}`] = true;
       }
+      const finish = (saved: boolean): SenseScanResult => {
+        if (!saved) {
+          // 等待 IDB 期间战斗仍可耗蓝；失败只退还本次扫描费用。
+          p.mp = async ? p.mp + config!.scan.mpCost : previous.mp; p.senseState = previous.state; p.senseRevealed = previous.revealed;
+          for (const undo of rollback.reverse()) undo();
+          rollback.length = 0;
+          return this.blocked('sense.block.save_failed', source, operation);
+        }
+        // 事务已写盘；表现/原生适配回调异常不得造成内存与磁盘相反的回滚。
+        for (const target of reveals) { try { target.applyReveal?.(); } catch { /* 下次构图按持久状态恢复。 */ } }
+        for (const snapshot of snapshots) {
+          snapshot.intel.scannedAt = submittedAt;
+          snapshot.intel.expiresAt = submittedAt + config!.inspect.durationMs;
+          this.intel.set(snapshot.monster.instance, { value: snapshot.intel, alive: snapshot.monster.alive });
+        }
+        const result = reveals.length ? 'found' : hits.length ? 'known' : faint ? 'faint' : 'empty';
+        const success: SenseScanSuccess = { ok: true, replayed: false, scanId: operation, instanceId, center, radius, strength,
+          count: reveals.length, result, resultKey: `sense.result.${result}`, faint, hits };
+        this.committed.set(operation, clone(success));
+        this.emit('sense:scan', { ...success, source, highlightMs: config!.reveal.highlightMs });
+        return success;
+      };
+      if (async) {
+        awaitingSave = true;
+        let saving: Promise<boolean>;
+        try { saving = p.saveAsync?.() ?? Promise.resolve(false); }
+        catch { saving = Promise.resolve(false); }
+        return saving.then(saved => finish(saved === true), () => finish(false))
+          .finally(() => { this.pending = false; });
+      }
       let saved = false;
       try { saved = p.save() === true; } catch { /* 统一回滚。 */ }
-      if (!saved) {
-        p.mp = previous.mp; p.senseState = previous.state; p.senseRevealed = previous.revealed;
-        for (const undo of rollback.reverse()) undo();
-        rollback.length = 0;
-        return this.blocked('sense.block.save_failed', source, operation);
-      }
-      // 事务已写盘；表现/原生适配回调异常不得造成内存与磁盘相反的回滚。
-      for (const target of reveals) { try { target.applyReveal?.(); } catch { /* 下次构图按持久状态恢复。 */ } }
-      for (const snapshot of snapshots) {
-        snapshot.intel.scannedAt = submittedAt;
-        snapshot.intel.expiresAt = submittedAt + config.inspect.durationMs;
-        this.intel.set(snapshot.monster.instance, { value: snapshot.intel, alive: snapshot.monster.alive });
-      }
-      const result = reveals.length ? 'found' : hits.length ? 'known' : faint ? 'faint' : 'empty';
-      const success: SenseScanSuccess = { ok: true, replayed: false, scanId: operation, instanceId, center, radius, strength,
-        count: reveals.length, result, resultKey: `sense.result.${result}`, faint, hits };
-      this.committed.set(operation, clone(success));
-      this.emit('sense:scan', { ...success, source, highlightMs: config.reveal.highlightMs });
-      return success;
+      return finish(saved);
     } catch {
       // 候选/所属系统适配器异常必须在提交之前停止，不把异常当作空扫。
       if (mutated) { p.mp = previous.mp; p.senseState = previous.state; p.senseRevealed = previous.revealed; }
       for (const undo of rollback.reverse()) undo();
       return this.blocked('sense.block.unavailable', source, operation);
-    } finally { this.pending = false; }
+    } finally { if (!awaitingSave) this.pending = false; }
   }
   private monsterSnapshot(target: SenseTarget, config: SenseConfig): { reqSpirit: number; intel: MonsterIntel } | undefined {
     const monster = target.monster, block = monster?.definition.sense;
@@ -304,6 +324,16 @@ export class Sense {
     if (!identity(mapId) || !record(this.options.progress.senseRevealed)) return [];
     const prefix = `${mapId}|`;
     return Object.entries(this.options.progress.senseRevealed).filter(([key, value]) => key.startsWith(prefix) && value === true).map(([key]) => key.slice(prefix.length));
+  }
+  async markTutorialSeenAsync(): Promise<boolean> {
+    const p = this.options.progress;
+    if (!this.options.enabled() || this.diagnostics().length) return false;
+    if (p.senseState?.tutorialSeen) return true;
+    const previous = p.senseState;
+    p.senseState = { ...previous, tutorialSeen: true };
+    try { if (await p.saveAsync?.()) return true; } catch { /* 恢复原记录。 */ }
+    p.senseState = previous;
+    return false;
   }
   /** 由界面在实际展示教学后调用；保存失败不把教学标为已看。 */
   markTutorialSeen(): boolean {

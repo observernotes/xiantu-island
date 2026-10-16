@@ -1,5 +1,9 @@
-import { MORAL_STATE } from './data';
+import releaseFeatures from '../data/features.json';
+import { MORAL_STATE, QUESTS, REALMS, SENSE } from './data';
 import { MORAL_VERSION, Progress, RELATIONSHIP_BACKUP_KEY } from './Progress';
+import { QuestSystem } from './QuestSystem';
+import { SectGrowth } from './SectGrowth';
+import { Sense } from './Sense';
 import { featureEnabled, setFeatureFlag } from './features';
 import { SaveStore, createMemorySaveBackend, createIndexedDbBackend, saveStore, setSaveBackend,
   SAVE_DB_NAME, SAVE_DB_VERSION, SAVE_OBJECT_STORE, SAVE_SLOT_KEYS, type SaveBackend, type SlotKey } from './SaveStore';
@@ -159,6 +163,7 @@ function deferNextWrite(backend: SaveBackend) {
 try {
   Date.now = () => now;
   Object.defineProperty(globalThis, 'localStorage', { configurable: true, writable: true, value: storage });
+  eq(releaseFeatures.indexedDbSaves, false, '关态正式 data/features.json indexedDbSaves 严格布尔 false');
   eq(featureEnabled('indexedDbSaves'), false, 'indexedDbSaves 发布配置默认关闭');
   setFeatureFlag('indexedDbSaves', false);
 
@@ -302,6 +307,135 @@ try {
     eq(await failedStore.migrateLegacyLocalStorage(storage), 'failed', 'IDB 打开失败迁移返回失败');
     eq(disk[saveKey], raw, 'IDB 打开失败保留 localStorage');
     storage.clear();
+  }
+
+  // 玩法主路径：只克隆内存开关，确认真实调用方与权威 async 入口都命中 IDB/槽。
+  {
+    storage.clear();
+    const backend = createMemorySaveBackend(); setSaveBackend(backend);
+    setFeatureFlag('indexedDbSaves', true);
+    Progress.setActiveSlot(1);
+    eq(releaseFeatures.indexedDbSaves, false, '玩法开态只覆盖内存，正式 indexedDbSaves 仍严格 false');
+    const mainline = await Progress.load({ async: true, slot: 1 });
+    mainline.name = '玩法异步修士'; mainline.stones += 7;
+    eq(await mainline.save({ async: true }), true, '玩法主路径内存变更后 save({async:true}) 命中 IDB/槽');
+    same((await backend.read(1))?.data, mainline.exportSave(), '玩法主路径命中 IDB/槽 backend 而非仅更新内存');
+    same((await saveStore.readSlot(1))?.data, mainline.exportSave(), '玩法主路径 saveStore.readSlot 命中 IDB/槽完整快照');
+    eq(await mainline.runSaveTransaction(draft => {
+      ok(draft !== mainline, '玩法主路径异步事务只修改隔离 draft');
+      draft.stones += 11; draft.addItem('spirit_herb', 2);
+      return 'mainline-committed';
+    }, { async: true }), 'mainline-committed', '玩法主路径异步事务等待命中 IDB/槽后返回结果');
+    same((await saveStore.readSlot(1))?.data, mainline.exportSave(), '玩法主路径事务提交后内存与命中 IDB/槽的数据一致');
+    same((await Progress.load({ async: true, slot: 1 })).exportSave(), mainline.exportSave(),
+      '玩法主路径 load({async:true}) 再次命中 IDB/槽读回已提交进度');
+
+    const questProgress = await Progress.load({ async: true, slot: 2 });
+    const quests = new QuestSystem(questProgress, () => now, null, null);
+    let completed = 0; quests.onCompleted(() => { completed++; });
+    eq(quests.accept('q_awaken'), true, '玩法主路径真实 QuestSystem 接取任务');
+    await questProgress.flushSaves();
+    eq(((await saveStore.readSlot(2))?.data.quests as Progress['quests']).q_awaken.state,
+      'active', '玩法主路径 QuestSystem.accept 命中 IDB/槽');
+    quests.onReach('chest_lookout');
+    await questProgress.flushSaves();
+    eq(((await saveStore.readSlot(2))?.data.quests as Progress['quests']).q_awaken.reached, true,
+      '玩法主路径 QuestSystem.onReach 命中 IDB/槽');
+    const delayed = deferNextWrite(backend); setSaveBackend(delayed.backend);
+    const turnIn = quests.turnInAsync('q_awaken'); await delayed.started;
+    eq(completed, 0, '玩法主路径交付尚未命中 IDB/槽提交时不通知完成');
+    eq(questProgress.quests.q_awaken.state, 'active', '玩法主路径交付待提交时奖励与 done 留在 draft');
+    delayed.release();
+    ok((await turnIn)?.settled, '玩法主路径真实 QuestSystem.turnInAsync 命中 IDB/槽后交付成功');
+    eq(completed, 1, '玩法主路径交付命中 IDB/槽成功后才通知一次');
+    same((await saveStore.readSlot(2))?.data, questProgress.exportSave(), '玩法主路径交付奖励与 done 一起命中 IDB/槽');
+
+    setSaveBackend(backend);
+    questProgress.level = Math.max(questProgress.level, QUESTS.q_bamboo.reqLevel);
+    eq(quests.accept('q_bamboo'), true, '玩法主路径真实接取后续击杀任务');
+    questProgress.addItem('rabbit_fur', 5);
+    for (let i = 0; i < 8; i++) quests.onKill('spirit_rabbit');
+    await questProgress.flushSaves();
+    eq(((await saveStore.readSlot(2))?.data.quests as Progress['quests']).q_bamboo.kills.spirit_rabbit, 8,
+      '玩法主路径 QuestSystem.onKill 连续进度命中 IDB/槽');
+    const beforeFailedTurnIn = questProgress.exportSave(), slotBeforeFailedTurnIn = await saveStore.readSlot(2);
+    setSaveBackend(failingBackend(backend));
+    eq(await quests.turnInAsync('q_bamboo'), undefined, '玩法主路径 IDB/槽提交失败不报任务交付成功');
+    same(questProgress.exportSave(), beforeFailedTurnIn, '玩法主路径失败交付保留任务、材料和奖励原内存');
+    same(await backend.read(2), slotBeforeFailedTurnIn, '玩法主路径失败交付保留原 IDB/槽');
+    eq(completed, 1, '玩法主路径失败交付不发完成通知');
+    setSaveBackend(backend);
+    ok((await quests.turnInAsync('q_bamboo'))?.settled, '玩法主路径失败后可重试命中 IDB/槽');
+    eq(completed, 2, '玩法主路径重试成功只增加一次完成通知');
+    same((await Progress.load({ async: true, slot: 2 })).exportSave(), questProgress.exportSave(),
+      '玩法主路径真实任务交付后 load({async:true}) 命中 IDB/槽读回');
+
+    const trialProgress = await Progress.load({ async: true, slot: 3 });
+    trialProgress.level = QUESTS.q_sect_taixu.reqLevel; trialProgress.selectedSect = 'taixu';
+    trialProgress.addItem('five_sect_token', 1);
+    trialProgress.quests.q_fox = { state: 'done', kills: {} };
+    const trialQuests = new QuestSystem(trialProgress, () => now, null, null);
+    eq(trialQuests.accept('q_sect_taixu'), true, '玩法主路径真实接取宗门试炼任务');
+    eq(trialQuests.onTrialComplete('trial_sect_taixu'), true, '玩法主路径记录真实试炼完成');
+    await trialProgress.flushSaves();
+    ok(((await saveStore.readSlot(3))?.data.completedTrials as string[]).includes('trial_sect_taixu'),
+      '玩法主路径 QuestSystem.onTrialComplete 命中 IDB/槽');
+    const beforeAbandon = trialProgress.exportSave(), trialsBeforeAbandon = trialProgress.completedTrials;
+    const slotBeforeAbandon = await saveStore.readSlot(3);
+    setSaveBackend(failingBackend(backend));
+    eq(await trialQuests.abandonAsync('q_sect_taixu'), false, '玩法主路径放弃任务等待 IDB/槽失败后返回 false');
+    same(trialProgress.exportSave(), beforeAbandon, '玩法主路径放弃保存失败恢复任务与试炼');
+    eq(trialProgress.completedTrials, trialsBeforeAbandon, '玩法主路径放弃失败恢复试炼原引用');
+    same(await backend.read(3), slotBeforeAbandon, '玩法主路径放弃失败保留原 IDB/槽');
+    setSaveBackend(backend);
+    eq(await trialQuests.abandon('q_sect_taixu', { async: true }), true, '玩法主路径放弃成功等待命中 IDB/槽');
+    eq(trialProgress.quests.q_sect_taixu, undefined, '玩法主路径放弃成功清除任务');
+    eq(trialProgress.completedTrials.includes('trial_sect_taixu'), false, '玩法主路径放弃成功清除旧试炼凭据');
+    same((await saveStore.readSlot(3))?.data, trialProgress.exportSave(), '玩法主路径放弃后完整内存命中 IDB/槽');
+
+    const serviceBackend = createMemorySaveBackend(); setSaveBackend(serviceBackend);
+    const shopProgress = await Progress.load({ async: true, slot: 1 }); shopProgress.stones = 1000;
+    eq(await shopProgress.save({ async: true }), true, '玩法主路径商店准备档命中 IDB/槽');
+    const growth = new SectGrowth(shopProgress);
+    const good = growth.ordinaryCatalog('doctor_sun').entries.find(entry => entry.itemId === 'hp_pill_small');
+    ok(good, '玩法主路径使用真实普通商店目录');
+    const beforePurchase = shopProgress.exportSave(), slotBeforePurchase = await saveStore.readSlot(1);
+    setSaveBackend(failingBackend(serviceBackend));
+    eq((await growth.buyOrdinaryAsync('doctor_sun', good.itemId, 'async-shop-proof')).ok, false,
+      '玩法主路径商店 IDB/槽失败不报购买成功');
+    same(shopProgress.exportSave(), beforePurchase, '玩法主路径商店失败不扣款、不加物品、不发收据');
+    same(await serviceBackend.read(1), slotBeforePurchase, '玩法主路径商店失败保留原 IDB/槽');
+    setSaveBackend(serviceBackend);
+    eq((await growth.buyOrdinaryAsync('doctor_sun', good.itemId, 'async-shop-proof')).ok, true,
+      '玩法主路径 SectGrowth 购买事务命中 IDB/槽');
+    eq(shopProgress.stones, 1000 - good.price, '玩法主路径购买成功只扣实际价格');
+    eq(shopProgress.count(good.itemId), 1, '玩法主路径购买成功增加一件物品');
+    same((await saveStore.readSlot(1))?.data, shopProgress.exportSave(), '玩法主路径购买余额、物品和收据一起命中 IDB/槽');
+
+    const senseProgress = await Progress.load({ async: true, slot: 2 }); senseProgress.level = 30;
+    senseProgress.hp = senseProgress.maxHp; senseProgress.mp = senseProgress.maxMp;
+    eq(await senseProgress.save({ async: true }), true, '玩法主路径神识准备档命中 IDB/槽');
+    const senseConfig = structuredClone(SENSE); senseConfig.enabled = true;
+    const sense = new Sense({ progress: senseProgress, config: () => senseConfig, realms: REALMS,
+      enabled: () => true, context: () => ({ instanceId: 'async_fixture', center: { x: 0, y: 0 }, alive: true, busy: false, ready: true }),
+      targets: () => [], now: () => 1000 });
+    const beforeScan = senseProgress.exportSave(), slotBeforeScan = await saveStore.readSlot(2), mpBeforeScan = senseProgress.mp;
+    setSaveBackend(failingBackend(serviceBackend));
+    const failedScan = await sense.requestScanAsync('key', 'async-sense-proof');
+    eq(failedScan.ok, false, '玩法主路径神识 IDB/槽失败不报扫描成功');
+    ok(!failedScan.ok && failedScan.blockKey === 'sense.block.save_failed', '玩法主路径神识返回保存失败原因');
+    same(senseProgress.exportSave(), beforeScan, '玩法主路径神识失败恢复灵力、冷却和扫描收据');
+    same(await serviceBackend.read(2), slotBeforeScan, '玩法主路径神识失败保留原 IDB/槽');
+    setSaveBackend(serviceBackend);
+    eq((await sense.requestScanAsync('key', 'async-sense-proof')).ok, true, '玩法主路径 Sense 扫描成功命中 IDB/槽');
+    eq(senseProgress.mp, mpBeforeScan - senseConfig.scan.mpCost, '玩法主路径神识重试成功仅扣一次灵力');
+    eq(((await saveStore.readSlot(2))?.data.senseState as Progress['senseState'])?.lastScanId,
+      'async-sense-proof', '玩法主路径神识扫描收据命中 IDB/槽');
+    eq(await sense.markTutorialSeenAsync(), true, '玩法主路径神识教学记录异步提交');
+    same((await saveStore.readSlot(2))?.data, senseProgress.exportSave(), '玩法主路径神识灵力、冷却和教学记录一起命中 IDB/槽');
+    eq(disk[saveKey], undefined, '玩法主路径开态全程没有回写 localStorage 主档');
+    setSaveBackend(createMemorySaveBackend());
+    Progress.setActiveSlot(1);
   }
 
   // 开态 Progress 绑定手动槽，既有道心善恶/关系字段与严格导入校验原样回归。

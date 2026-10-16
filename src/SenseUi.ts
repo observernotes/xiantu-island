@@ -79,10 +79,11 @@ export class SenseUi {
   }
 
   /** 同一按下期间显式重试沿用 scanId；松开后的下一次按下才创建新标识。 */
-  requestScan(source: Source): SenseScanResult | undefined {
+  requestScan(source: Source): SenseScanResult | Promise<SenseScanResult> | undefined {
     if (!featureEnabled('spiritScan')) return;
     const scanId = this.operations[source] ??= this.newOperation();
-    return this.scene.sense.requestScan(source, scanId);
+    return featureEnabled('indexedDbSaves') ? this.scene.sense.requestScanAsync(source, scanId)
+      : this.scene.sense.requestScan(source, scanId);
   }
 
   private newOperation() { return `sense-ui-${Date.now()}-${++sequence}`; }
@@ -158,7 +159,8 @@ export class SenseUi {
     const key = this.keyName();
     this.scene.log(`${t('sense.unlock.notice', realm ? { realm } : {})} ${key ? t('sense.unlock.tutorial', { key }) : t('sense.ui.no_binding')}`, '#9FD8FF');
     this.tutorialShown = true;
-    this.scene.sense.markTutorialSeen();
+    if (featureEnabled('indexedDbSaves')) void this.scene.sense.markTutorialSeenAsync();
+    else this.scene.sense.markTutorialSeen();
   }
 
   private playFx(textureKey: string, animationKey: string, x: number, y: number, scale = 1) {

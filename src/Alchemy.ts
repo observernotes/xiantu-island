@@ -155,7 +155,7 @@ export class AlchemySystem {
     this.active = { recipeId, furnaceId, fire,
       ...(featureEnabled('lifeSkillCurve') ? { lifeSkillLevel: this.prog.alchemyLevel } : {}) };
     this.prog.pendingAlchemy = this.active;
-    this.prog.save();
+    this.prog.persistSoon();
     return { ...check, fire };
   }
   advanceFire(delta: number): AlchemyResult | null {
@@ -177,7 +177,7 @@ export class AlchemySystem {
       const recipe = RECIPES[recipeId];
       this.consume(recipe); results.push(this.settle(recipe, furnaceId, 'skipped'));
     }
-    this.prog.save();
+    this.prog.persistSoon();
     return { ...check, results };
   }
   private consume(recipe: RecipeDef) {
@@ -227,7 +227,7 @@ export class AlchemySystem {
       ? lifeSkillExperience(LIFE_SKILLS!, 'alchemy', recipe, 'alchemy', success, true)
       : Math.floor((recipe.recipeLevel ?? 1) * multiplier * (success ? 1 : 0.5));
     const levels = this.prog.gainAlchemyExp(expGained);
-    this.prog.save();
+    this.prog.persistSoon();
     return { recipe, success, quality, count: success ? outputCount : 0, rate, fire, expGained, levels };
   }
 }

@@ -117,7 +117,7 @@ export class Gathering {
     const point = this.active.point;
     scene.prog.addItem(point.item, 1);
     scene.prog.gatherRespawnAt[point.key] = now + point.respawnMs;
-    scene.prog.save();
+    scene.prog.persistSoon();
     scene.log(`获得 ${ITEMS[point.item]?.name ?? point.item} ×1`, '#a7dbac');
     this.active = undefined; p.gathering = false; this.requireRelease = true; this.bar.setVisible(false);
     this.refreshPoint(point, now); point.prompt.setVisible(false);

@@ -329,6 +329,11 @@ export class Progress {
     if (featureEnabled('indexedDbSaves')) return false;
     try { localStorage.setItem(SAVE_KEY, JSON.stringify(this.exportSave())); return true; } catch { return false; }
   }
+  /** 沿用玩法忽略保存返回值的语义；开态提交到实例绑定的异步槽。 */
+  persistSoon(): void {
+    if (featureEnabled('indexedDbSaves')) void this.save({ async: true });
+    else this.save();
+  }
   /** 三槽提交以 IDB transaction.complete 为准；失败保留当前未确认的内存，允许重试。 */
   async saveAsync(): Promise<boolean> {
     if (!featureEnabled('indexedDbSaves')) return this.save();
@@ -624,10 +629,19 @@ export class Progress {
     return false;
   }
 
-  setPosition(mapId: string, x: number, y: number): boolean {
+  setPosition(mapId: string, x: number, y: number): boolean;
+  setPosition(mapId: string, x: number, y: number, options: { async: true }): Promise<boolean>;
+  setPosition(mapId: string, x: number, y: number, options?: { async: true }): boolean | Promise<boolean> {
+    if (options?.async) return this.setPositionAsync(mapId, x, y);
     if ((mapId !== 'field_test' && !Object.prototype.hasOwnProperty.call(TILED_MAPS, mapId)) || !Number.isFinite(x) || !Number.isFinite(y)) return false;
     this.position = { mapId, x, y };
     return this.save();
+  }
+  private async setPositionAsync(mapId: string, x: number, y: number): Promise<boolean> {
+    if (!featureEnabled('indexedDbSaves')) return this.setPosition(mapId, x, y);
+    if ((mapId !== 'field_test' && !Object.prototype.hasOwnProperty.call(TILED_MAPS, mapId)) || !Number.isFinite(x) || !Number.isFinite(y)) return false;
+    this.position = { mapId, x, y };
+    return this.save({ async: true });
   }
   setSectRank(rank: string | null): boolean {
     if (!this.sect || rank === null || !SECT_RANKS.ranks.some(entry => entry.id === rank)) return false;
@@ -647,20 +661,20 @@ export class Progress {
   markTutorialSeen(id: string): boolean {
     if (!id || this.tutorialsSeen.includes(id)) return false;
     this.tutorialsSeen.push(id);
-    this.save();
+    this.persistSoon();
     return true;
   }
 
   gainSectContribution(amount: number) {
     if (!Number.isFinite(amount) || amount <= 0) return 0;
     const gained = Math.floor(amount);
-    this.sectContribution += gained; this.save();
+    this.sectContribution += gained; this.persistSoon();
     return gained;
   }
 
   spendSectContribution(amount: number) {
     if (!Number.isFinite(amount) || amount < 0 || !Number.isInteger(amount) || this.sectContribution < amount) return false;
-    this.sectContribution -= amount; this.save();
+    this.sectContribution -= amount; this.persistSoon();
     return true;
   }
 
@@ -682,7 +696,7 @@ export class Progress {
       const q = QUESTS[id];
       if (q?.daily && q.sect) (this.dailyQuestCompletions[q.sect] ??= []).push(id);
     }
-    this.save();
+    this.persistSoon();
     return true;
   }
 
@@ -709,7 +723,7 @@ export class Progress {
     const amount = this.claimSectDailyQuest(sourceId, now);
     if (amount === undefined) return 0;
     const gained = this.gainSectContribution(amount);
-    this.save(); // 显式 0 也必须落领取记录。
+    this.persistSoon(); // 显式 0 也必须落领取记录。
     return gained;
   }
 
@@ -752,7 +766,7 @@ export class Progress {
     for (const skill of rw.skills ?? []) this.grantSkill(skill.id, skill.level);
     // 贡献接口负责余额及最后的完整存档，0 时另存，不能再由旧回调追加奖励。
     this.gainSectContribution(contribution);
-    this.save();
+    this.persistSoon();
     return { exp, contribution, items, skills: (rw.skills ?? []).map(skill => skill.id) };
   }
 
@@ -1177,8 +1191,8 @@ export class Progress {
         .find((object: any) => object.type === 'playerStart' || object.name === 'playerStart');
       if (spawn && Number.isFinite(spawn.x) && Number.isFinite(spawn.y)) {
         const at = { mapId: 'luoxia_town', x: spawn.x, y: spawn.y };
-        if (unavailableGate(this.position?.mapId)) { this.position = { ...at }; this.save(); }
-        if (this.pendingSectTrial && unavailableGate(this.pendingSectTrial.returnPosition?.mapId)) { this.pendingSectTrial.returnPosition = { ...at }; this.save(); }
+        if (unavailableGate(this.position?.mapId)) { this.position = { ...at }; this.persistSoon(); }
+        if (this.pendingSectTrial && unavailableGate(this.pendingSectTrial.returnPosition?.mapId)) { this.pendingSectTrial.returnPosition = { ...at }; this.persistSoon(); }
       }
     }
     if (!this.position || typeof this.position !== 'object'
@@ -1211,7 +1225,7 @@ export class Progress {
       this.alchemyLevel = alchemy.level; this.alchemyExp = alchemy.exp;
       this.talismanLevel = talisman.level; this.talismanExp = talisman.exp;
       this.forgingLevel = forging.level; this.forgingExp = forging.exp;
-      if (before !== JSON.stringify([this.alchemyLevel, this.alchemyExp, this.talismanLevel, this.talismanExp, this.forgingLevel, this.forgingExp])) this.save();
+      if (before !== JSON.stringify([this.alchemyLevel, this.alchemyExp, this.talismanLevel, this.talismanExp, this.forgingLevel, this.forgingExp])) this.persistSoon();
     } else {
       const alchemyLevel = Number(this.alchemyLevel), alchemyExp = Number(this.alchemyExp);
       this.alchemyLevel = Number.isFinite(alchemyLevel) ? Math.min(ALCHEMY_RULES.alchemyExp.maxLevel, Math.max(1, Math.floor(alchemyLevel))) : 1;
@@ -1236,7 +1250,7 @@ export class Progress {
       this.visitedMaps = [...new Set((Array.isArray(this.visitedMaps) ? this.visitedMaps : []).filter(id => typeof id === 'string' && Object.prototype.hasOwnProperty.call(TILED_MAPS, id)))];
       if (this.position && !this.visitedMaps.includes(this.position.mapId) && TILED_MAPS[this.position.mapId]) this.visitedMaps.push(this.position.mapId);
       for (const id of Object.keys(this.inventory)) if (this.qualityEnabled(id) && this.count(id) > 0) this.pillQualities[id] = this.qualityCounts(id);
-      if (before !== JSON.stringify([this.talisman, this.talismanUse, this.visitedMaps, this.pillQualities, this.talismanQuickSlots])) this.save();
+      if (before !== JSON.stringify([this.talisman, this.talismanUse, this.visitedMaps, this.pillQualities, this.talismanQuickSlots])) this.persistSoon();
     }
     if (!this.gatherRespawnAt || typeof this.gatherRespawnAt !== 'object' || Array.isArray(this.gatherRespawnAt)) this.gatherRespawnAt = {};
     this.gatherRespawnAt = Object.fromEntries(Object.entries(this.gatherRespawnAt).filter(([, at]) => typeof at === 'number' && Number.isFinite(at) && at > 0));
@@ -1264,10 +1278,10 @@ export class Progress {
       || !Number.isFinite(attempt.returnPosition.x) || !Number.isFinite(attempt.returnPosition.y)) this.pendingSectTrial = null;
     if (this.pendingSectTrial) {
       const at = sectTrialReturnPosition(this.pendingSectTrial.returnPosition);
-      if (at !== this.pendingSectTrial.returnPosition) { this.pendingSectTrial.returnPosition = at; this.save(); }
+      if (at !== this.pendingSectTrial.returnPosition) { this.pendingSectTrial.returnPosition = at; this.persistSoon(); }
     } else if (this.position) {
       const at = sectTrialReturnPosition(this.position);
-      if (at !== this.position) { this.position = at; this.save(); }
+      if (at !== this.position) { this.position = at; this.persistSoon(); }
     }
     if (!this.skillCooldowns || typeof this.skillCooldowns !== 'object' || Array.isArray(this.skillCooldowns)) this.skillCooldowns = {};
     this.skillCooldowns = Object.fromEntries(Object.entries(this.skillCooldowns).filter(([id, cd]) => SKILLS[id] && cd
@@ -1306,7 +1320,7 @@ export class Progress {
     }
     if (!count(this.moralVersion)) this.moralVersion = 0;
     this.moralVersion = Math.max(this.moralVersion, MORAL_VERSION);
-    if (daoHeart !== this.daoHeart || morality !== this.morality || moralVersion !== this.moralVersion) this.save();
+    if (daoHeart !== this.daoHeart || morality !== this.morality || moralVersion !== this.moralVersion) this.persistSoon();
   }
 
   get lifespanCap() { return Number((LIFESPAN.cap as Record<string, number>)[this.realm.id] ?? LIFESPAN.cap.mortal); }
@@ -1431,7 +1445,7 @@ export class Progress {
       this.classRewardClaims.push(c.id); changed = true;
     }
     this.classVersion = Math.max(this.classVersion, 2);
-    if (changed) this.save();
+    if (changed) this.persistSoon();
     return true;
   }
 
@@ -1455,7 +1469,7 @@ export class Progress {
     this.questRewardVersion = Math.max(this.questRewardVersion, QUEST_REWARD_VERSION);
     const changed = before !== state();
     // 旧档尚未交妖狐也登记新规则，以后交付、刷新不能被再次当成旧入宗事实。
-    if (changed) this.save();
+    if (changed) this.persistSoon();
     return changed;
   }
 
@@ -1599,7 +1613,7 @@ export class Progress {
     const def = SKILLS[id];
     this.skills[id] = this.skillLevel(id) + 1;
     if (def.type !== 'passive') this.autoBind(id);
-    this.save();
+    this.persistSoon();
     return result;
   }
 
@@ -1656,7 +1670,7 @@ export class Progress {
       this.hotbar = this.hotbar.map(s => (s === id ? null : s));
     }
     this.hotbar[slot] = id;
-    this.save();
+    this.persistSoon();
     return true;
   }
 }

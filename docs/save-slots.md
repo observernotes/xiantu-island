@@ -20,7 +20,9 @@ const deleted = await Progress.reset({ async: true, slot: 3 });
 
 IndexedDB 不能同步确认写盘。开态直接调用同步 `save()` 会返回 `false`，同步 `runSaveTransaction()` 会拒绝操作，直接调用同步 `Progress.load()` 会提示使用异步接口。已有同步玩法可在异步事务的 `draft` 上执行；只有 IDB 事务完成，草稿才发布到当前角色。回调必须同步，且只修改 `draft`。不得在等待提交期间并发修改草稿正在操作的原角色字段。
 
-当前切片保留关态发布：既有玩法的同步持久化调用尚未全部改为等待异步提交，不能直接把开关作为完整玩法开放。三槽面板和异步存档 API 可以独立验证；全面开放前必须完成玩法调用方接线。这项限制属于持久化接线债。
+玩法主路径已异步接线：任务接取与目标进度、显式存档、换图、炼丹、闭关、战斗技能和采集等保存，在开态使用异步槽接口；原来忽略保存返回值的回调仍在发出保存请求后继续执行。任务交付、放弃以及宗门成长、神识等依赖提交结果的路径等待异步保存，失败遵守各自的回滚规则；交付成功后才通知完成。关态保留原同步 localStorage 行为。正式 `data/features.json.indexedDbSaves` 仍为严格布尔 `false`，待负责人翻表令。
+
+本次为最小主路径接线，制符 / 用符的旧同步原子事务及测试辅助入口等边缘调用仍有后续接线债，不把本次范围扩展为全部历史入口迁移。HUD overlay / SaveSlotsPanel 的视觉和交互统一也不纳入本次任务。
 
 活跃槽默认 `1`，可通过 `Progress.setActiveSlot(1 | 2 | 3)` 修改。异步读出的角色实例绑定所读槽；之后修改全局活跃槽不会把该实例的保存重定向。未绑定实例在发出保存请求时记录当前活跃槽，排队期间切槽不会改写目标。
 
@@ -32,4 +34,6 @@ IndexedDB 不能同步确认写盘。开态直接调用同步 `save()` 会返回
 
 开态页面提供「存档」按钮；`?saves=1` 可直接打开面板，但查询参数不会开启功能。面板包含三槽摘要、保存、读档、删除确认、文件导入和导出，关态不显示。UI 仍是轻量 DOM overlay，尚未统一接入主 HUD 的视觉与交互规范。
 
-验证入口：`npm run test:save-slots`，同时回归 `npm run test:moral-save`、`npm run test:life-skills` 和 `npx tsc --noEmit`。
+开态增量验证入口：`npm run test:save-slots`。其中「玩法主路径」段只用 `setFeatureFlag('indexedDbSaves', true)` 覆盖内存开关并注入 memory backend，断言文案包含「命中 IDB/槽」：覆盖内存变更后异步保存、draft 事务与槽一致、异步重载读回，以及真实任务接取、到达、击杀、试炼、交付成功后通知和交付 / 放弃失败回滚；另验证真实商店扣款、物品、收据原子提交与失败回滚，以及神识灵力、冷却、扫描收据和教学记录的异步保存。神识总开关只克隆内存配置。该段不修改正式 features；同一套件开头仍验证正式默认严格 `false` 及同步 save/load。固定 IDB schema、事务完成和中止语义由独立 mockIndexedDB 段覆盖。
+
+必要回归：`npx tsc --noEmit`、`npm run test:save-slots`、`npm run test:mainline-56` 和 `git diff --check`。
