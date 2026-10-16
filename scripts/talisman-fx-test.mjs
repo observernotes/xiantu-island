@@ -8,7 +8,7 @@ let assertions = 0;
 const equal = (actual, expected, message) => { assert.deepEqual(actual, expected, message); assertions++; };
 const check = (value, message) => { assert.ok(value, message); assertions++; };
 const root = new URL('../', import.meta.url);
-equal(JSON.parse(await fs.readFile(new URL('data/features.json', root), 'utf8')).talismanCraft, false, 'release talismanCraft remains false');
+equal(JSON.parse(await fs.readFile(new URL('data/features.json', root), 'utf8')).talismanCraft, true, 'tip 临时开态 talismanCraft === true');
 const transpile = async source => {
   const { outputText } = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 } });
   return import(`data:text/javascript;base64,${Buffer.from(`${outputText}\n//# sourceURL=talisman-fx-isolated.js`).toString('base64')}`);

@@ -9,7 +9,7 @@
   "alchemyPhase1": true,
   "v05Maps": true,
   "foxBoss": true,
-  "talismanCraft": false,
+  "talismanCraft": true,
   "lifeSkillCurve": false,
   "spiritScan": false
 }
