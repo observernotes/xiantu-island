@@ -15,9 +15,9 @@
 
 | 项 | 值 |
 |----|----|
-| tip SHA | `eda42b3`（origin/dev） |
+| tip HEAD | `f2fb449`（origin/dev，本 RESULT docs） |
+| maps 提交 | `eda42b3` `chore(maps): snapshot 神识续投5图（enabled=false）` |
 | 父提交 | `950f22c`（职位三开态 docs） |
-| 提交 | `chore(maps): snapshot 神识续投5图（enabled=false）` |
 
 ## 五图校验
 
@@ -29,7 +29,7 @@
 | `chiyan_slope_2` | match | 2× false |
 | `chiyan_core` | match | 2× false |
 
-PRE（artcheck/datalint）通过后刷入；仅上述 5 图 + `data/SNAPSHOT.txt` 入提交。
+PRE（artcheck/datalint）通过后刷入；仅上述 5 图 + `data/SNAPSHOT.txt` 入 maps 提交。
 
 ## 请执法堂 / 演武堂
 
