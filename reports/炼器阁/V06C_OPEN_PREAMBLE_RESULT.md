@@ -3,8 +3,8 @@
 日期：2026-10-17 01:17:46 UTC+8；工作区：`/workspace/xiantu/wt/dev`；分支：`dev`。
 
 - 基线：`c532e8f44555d574eaec2cd809460651654a09e8`；开始及 fetch 后 HEAD / origin/dev 一致。
-- TIP_SHA：`待提交后补录`（本 preamble 的翻表、测试与自检内容提交；随后仅用极短文档提交补录该 SHA）。
-- BRANCH_TIP（origin/dev）：最终包含上述 TIP_SHA 与本报告补录的远端 dev tip；普通 `git push origin dev`，最终值以交付回执及 `git ls-remote origin refs/heads/dev` 为准，文档补录不改变表或测试。
+- TIP_SHA：`8feda196e0b9fa2e4f464fd7add32e451cfb8efd`（本 preamble 的翻表、测试与自检内容提交；随后仅后接本报告/status 的文档补录 tip）。
+- BRANCH_TIP（origin/dev）：最终包含上述 TIP_SHA 与本报告补录的远端 dev tip；preamble 内容首次推送已核验 `8feda196e0b9fa2e4f464fd7add32e451cfb8efd`，随后仅文档补录；普通 `git push origin dev`，最终值以交付回执及 `git ls-remote origin refs/heads/dev` 为准，文档补录不改变表或测试。
 - Blocker：无。程序自检通过，交执法堂冒烟本 preamble tip；待执法堂 PASS。本刀未 release、未发版。
 
 ## 翻前快照与三处同字节旁证
@@ -49,8 +49,8 @@
 
 本刀未修改玩法生产代码；未扩房/boon/loot，禁 gifts/6d；未改 companions/fly_zones/features/GAME_PHASE、secret_* 玩法四表或 maps。未运行 release.sh / 发版 / Pages / force-push。dist-test、qa/out_*、待审 sprites/_pending、无关 TALISMAN/TIER1 报告均未纳入提交。报告同步到 `/workspace/xiantu/reports/炼器阁/V06C_OPEN_PREAMBLE_RESULT.md`；工作树内报告为准。
 
-【执法堂 1/3】以本报告 TIP_SHA 的 6c intro 正式软开 preamble 为冒烟基线（含同步 snapshot）；入口 `npm run test:v06c-open` + `npm run test:v06c-closed`；程序自检 682 / 10706 条通过，请对该 tip 冒烟。
+【执法堂 1/3】TIP_SHA=8feda196e0b9fa2e4f464fd7add32e451cfb8efd，6c intro 正式软开 preamble 为冒烟基线（含同步 snapshot）；入口 `npm run test:v06c-open` + `npm run test:v06c-closed`；程序自检 682 / 10706 条通过，请对该 tip 冒烟。
 
 【执法堂 2/3】formalOpen:true；closedFixtureOnly:true；intro 正式 true/5，quests SHA=c45466827247b9e61260bbd2b681ae7207bf84a017aff5d8b028c0ec3463482b；共享=快照=game；gifts 仍关，companions/fly 未回滚，IDB true。
 
-【执法堂 3/3】本刀未 release、禁 gifts/6d；tip 已出待执法堂冒烟。PASS 后由主程序另行 ff master→release v0.6.3；本任务不执行，FAIL 勿发。
+【执法堂 3/3】本刀未 release、禁 gifts/6d；tip `8feda196e0b9fa2e4f464fd7add32e451cfb8efd` 已出待执法堂冒烟。PASS 后由主程序另行 ff master→release v0.6.3；本任务不执行，FAIL 勿发。
