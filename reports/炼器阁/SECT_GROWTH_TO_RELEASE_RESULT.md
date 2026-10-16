@@ -12,7 +12,7 @@
 | 可发版分支 | **master**（与 tip 同线；执法堂请拉 **origin/master** HEAD） |
 | 开态内容起点 | `45b1c25`（features+表）；执法堂 PASS 报告参考 `qa/out_sect_growth_open_950f22c/` |
 | 正式试玩包 | **v0.5.4 未动**；本轮**未**跑 `tools/release.sh` |
-| 推送远程 | `origin/master` + `origin/dev` 已含开态（本定稿 tip HEAD=`4bd41b7`（推送后 origin/master 同）） |
+| 推送远程 | `origin/master` + `origin/dev` 已含开态（已推送；开态起自 `45b1c25`，请拉 **origin/master**（本轮推送点 `093b18d`，其后 docs 以远程 HEAD 为准）） |
 
 ## 正式包开关（features + 表）
 
