@@ -27,7 +27,16 @@ function enabledValues(value: unknown): unknown[] {
 same(GONGFA_GRADES_ERRORS, [], '真表没有配置错误'); ok(GONGFA_GRADES, 'data 导出已校验配置');
 const config = GONGFA_GRADES;
 const gates = enabledValues(gongfaRaw);
-eq(gates.length, 46, '正式功法表共 46 个门禁'); ok(gates.every(value => value === false), '正式表所有 enabled 保持 false');
+eq(gates.length, 46, '正式功法表共 46 个门禁');
+eq(gongfaRaw.enabled, true, 'tip 开态：发布快照功法总开关已开启');
+eq(config.enabled, true, 'tip 开态：已校验功法配置总开关已开启');
+eq(gongfaRaw.bindings.length, 38, '正式功法表共 38 个绑定');
+ok(gongfaRaw.bindings.every(binding => binding.enabled === true), 'tip 开态：正式表 38 个绑定全部开启');
+const futureGates = enabledValues(gongfaRaw.future);
+eq(futureGates.length, 7, '正式功法表共 7 个未来门禁');
+ok(futureGates.every(value => value === false), '正式表 future 七处 enabled 仍全部关闭');
+eq(gates.filter(value => value === true).length, 39, 'tip 开态：正式表 enabled=true 共 39 处');
+eq(gates.filter(value => value === false).length, 7, 'tip 开态：正式表 enabled=false 共 7 处');
 ok(allFrozen(config) && Object.isFrozen(GONGFA_GRADES_ERRORS) && Object.isFrozen(GONGFA_GRADE_IDS), '配置、诊断与品阶枚举深只读');
 {
   const input = clone(), checked = parseGongfaGradesConfig(input, SKILL_LIST);
@@ -37,10 +46,22 @@ ok(allFrozen(config) && Object.isFrozen(GONGFA_GRADES_ERRORS) && Object.isFrozen
   eq(checked.config.grades[0].effectMul, config.grades[0].effectMul, '校验快照不受调用者后改影响');
 }
 
+const disabledInput = clone();
+disabledInput.enabled = false;
+for (const binding of disabledInput.bindings) binding.enabled = false;
+const closed = parsed(disabledInput);
+eq(closed.enabled, false, '关态夹具总开关关闭');
+ok(closed.bindings.every(binding => binding.enabled === false), '关态夹具全部绑定关闭');
+same(enabledValues(closed.future), futureGates, '关态夹具保留 future 七处关闭');
 for (const skill of SKILL_LIST) {
-  eq(effectMul(config, skill.id), 1, `${skill.id} 关态倍率为 1`);
+  eq(effectMul(closed, skill.id), 1, `${skill.id} 关态夹具倍率为 1`);
   eq(effectMul(null, skill.id), 1, `${skill.id} 坏表沿 legacy`);
-  eq(levelCap(config, skill.id, skill.maxLevel), skill.maxLevel, `${skill.id} 保留原 maxLevel`);
+  eq(levelCap(closed, skill.id, skill.maxLevel), skill.maxLevel, `${skill.id} 关态夹具保留原 maxLevel`);
+  const binding = config.bindings.find(row => row.skillId === skill.id);
+  const expected = binding?.effectMode === 'damage_ratio'
+    ? config.grades.find(row => row.id === binding.initialGrade)!.effectMul : 1;
+  eq(effectMul(config, skill.id), expected, `${skill.id} tip 开态正式配置按 effectMode 读取倍率`);
+  eq(levelCap(config, skill.id, skill.maxLevel), skill.maxLevel, `${skill.id} tip 开态仍保留原 maxLevel`);
 }
 eq(effectMul(config, '__missing_binding'), 1, '缺绑定不默认黄阶');
 eq(levelCap(null, '__missing_binding', 77), 77, '坏表及缺绑定上限仍为原值');
@@ -129,4 +150,4 @@ for (const invalid of [null, undefined, [], 0, 'invalid']) eq(parseGongfaGradesC
     same(result, { available: false, reason: 'unimplemented' }, '未来门禁打开也未实现玩法'); ok(Object.isFrozen(result), '未来查询只读');
   }
 }
-console.log(`gongfa grades tests ok: ${assertions} assertions (real tables, all gates off, legacy caps, effect whitelist, fail-open legacy, freeze, future unavailable)`);
+console.log(`gongfa grades tests ok: ${assertions} assertions (tip open tables, closed fixtures, legacy caps, effect whitelist, fail-open legacy, freeze, future unavailable)`);

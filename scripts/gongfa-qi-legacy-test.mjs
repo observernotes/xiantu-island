@@ -1,4 +1,4 @@
-// 新表仅在内存克隆；原版模块由 git show 读取，不创建临时源码、不修改正式门禁。
+// 正式功法 tip 已开启；关态夹具与其他变体仅在内存克隆，原版模块由 git show 读取，不修改正式门禁。
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs/promises';
@@ -33,15 +33,31 @@ function allDisabled(value) {
   if (!value || typeof value !== 'object') return true;
   return Object.entries(value).every(([key, child]) => key === 'enabled' ? child === false : allDisabled(child));
 }
-check(allDisabled(rawGongfa), '正式功法表的全部 enabled 均为 false');
+function enabledFlags(value) {
+  if (!value || typeof value !== 'object') return [];
+  return Object.entries(value).flatMap(([key, child]) => key === 'enabled' ? [child] : enabledFlags(child));
+}
+check(rawGongfa.enabled === true, 'tip 发布快照正式功法表根门禁已开启');
+equal(rawGongfa.bindings.length, 38, 'tip 正式功法表保留 38 条绑定');
+check(rawGongfa.bindings.every(binding => binding.enabled === true), 'tip 正式功法表 38 条绑定全部开启');
+check(allDisabled(rawGongfa.future), 'tip 正式功法表 future 门禁仍全部关闭');
+equal(enabledFlags(rawGongfa.future).length, 7, 'tip 正式功法表保留 7 处 future 关门禁');
+const gongfaGates = enabledFlags(rawGongfa);
+equal([gongfaGates.length, gongfaGates.filter(enabled => enabled === true).length,
+  gongfaGates.filter(enabled => enabled === false).length], [46, 39, 7], 'tip 正式功法表 enabled 总数及开关计数保持 46/39/7');
 check(allDisabled(rawQi), '正式灵气表的全部 enabled 均为 false');
 
 async function withRuntime(variant, run) {
   const gongfa = structuredClone(rawGongfa), qi = structuredClone(rawQi);
-  if (variant === 'broken') {
+  if (variant === 'closed') {
+    gongfa.enabled = false;
+    for (const binding of gongfa.bindings) binding.enabled = false;
+    check(allDisabled(gongfa), '关态夹具关闭根与全部绑定，future 保持关闭');
+  } else if (variant === 'broken') {
     delete gongfa.grades;
     delete qi.tiers;
   } else if (variant === 'open-clone') {
+    // tip 正式功法已开启；重复设为开态让此内存变体保持幂等。
     gongfa.enabled = true;
     for (const binding of gongfa.bindings) binding.enabled = true;
     // 用真实表最高品阶倍率检查 none：即使品阶可用，也不能读取伤害倍率。
@@ -225,7 +241,7 @@ function exerciseLegacyEntries(runtime) {
 
 await withRuntime('closed', runtime => {
   check(runtime.data.GONGFA_GRADES && runtime.data.GONGFA_GRADES.enabled === false,
-    '正式功法配置校验成功且保持关闭');
+    '关态夹具功法配置校验成功且保持关闭');
   check(runtime.data.QI_DENSITY && runtime.data.QI_DENSITY.enabled === false,
     '正式灵气配置校验成功且保持关闭');
   compareCombat(runtime);
@@ -252,6 +268,6 @@ await withRuntime('open-clone', runtime => {
   compareSeclusion(runtime);
 });
 console.log(JSON.stringify({ passed: true, suite: 'gongfa-qi-legacy', baseline, assertions, combatCases, seclusionCases,
-  coverage: ['closed-and-malformed-tables', 'all-positive-damageRatio-skills', 'ratio-IEEE754-bytes-and-hit-JSON',
+  coverage: ['tip-open-closed-fixture-and-malformed-tables', 'all-positive-damageRatio-skills', 'ratio-IEEE754-bytes-and-hit-JSON',
     'levels-crit-derived-segments', 'open-clone-once-and-none', 'real-skill-learning-upgrade', 'exploration-position-save',
     'real-quest-accept-turnIn', 'real-seclusion-check-settle-and-save', 'empty-relationship-save-defaults'] }));

@@ -1,6 +1,6 @@
 {
   "version": "v0.5",
-  "enabled": false,
+  "enabled": true,
   "rules": {
     "gradeOrder": [
       "huang",
@@ -49,266 +49,266 @@
       "initialGrade": "huang",
       "capMode": "legacy",
       "effectMode": "damage_ratio",
-      "enabled": false
+      "enabled": true
     },
     {
       "skillId": "sword_qi_slash",
       "initialGrade": "huang",
       "capMode": "legacy",
       "effectMode": "damage_ratio",
-      "enabled": false
+      "enabled": true
     },
     {
       "skillId": "fire_talisman_bolt",
       "initialGrade": "huang",
       "capMode": "legacy",
       "effectMode": "damage_ratio",
-      "enabled": false
+      "enabled": true
     },
     {
       "skillId": "paper_talisman_throw",
       "initialGrade": "huang",
       "capMode": "legacy",
       "effectMode": "damage_ratio",
-      "enabled": false
+      "enabled": true
     },
     {
       "skillId": "shadow_dart",
       "initialGrade": "huang",
       "capMode": "legacy",
       "effectMode": "damage_ratio",
-      "enabled": false
+      "enabled": true
     },
     {
       "skillId": "light_body",
       "initialGrade": "huang",
       "capMode": "legacy",
       "effectMode": "none",
-      "enabled": false
+      "enabled": true
     },
     {
       "skillId": "tianjian_heart",
       "initialGrade": "huang",
       "capMode": "legacy",
       "effectMode": "none",
-      "enabled": false
+      "enabled": true
     },
     {
       "skillId": "water_mirror",
       "initialGrade": "huang",
       "capMode": "legacy",
       "effectMode": "none",
-      "enabled": false
+      "enabled": true
     },
     {
       "skillId": "taixu_heart",
       "initialGrade": "huang",
       "capMode": "legacy",
       "effectMode": "none",
-      "enabled": false
+      "enabled": true
     },
     {
       "skillId": "talisman_step",
       "initialGrade": "huang",
       "capMode": "legacy",
       "effectMode": "none",
-      "enabled": false
+      "enabled": true
     },
     {
       "skillId": "lingfu_heart",
       "initialGrade": "huang",
       "capMode": "legacy",
       "effectMode": "none",
-      "enabled": false
+      "enabled": true
     },
     {
       "skillId": "phantom_cloak",
       "initialGrade": "huang",
       "capMode": "legacy",
       "effectMode": "none",
-      "enabled": false
+      "enabled": true
     },
     {
       "skillId": "youying_heart",
       "initialGrade": "huang",
       "capMode": "legacy",
       "effectMode": "none",
-      "enabled": false
+      "enabled": true
     },
     {
       "skillId": "summon_spirit_wolf",
       "initialGrade": "huang",
       "capMode": "legacy",
       "effectMode": "none",
-      "enabled": false
+      "enabled": true
     },
     {
       "skillId": "beast_bond",
       "initialGrade": "huang",
       "capMode": "legacy",
       "effectMode": "none",
-      "enabled": false
+      "enabled": true
     },
     {
       "skillId": "wanshou_heart",
       "initialGrade": "huang",
       "capMode": "legacy",
       "effectMode": "none",
-      "enabled": false
+      "enabled": true
     },
     {
       "skillId": "whirl_sword",
       "initialGrade": "xuan",
       "capMode": "legacy",
       "effectMode": "damage_ratio",
-      "enabled": false
+      "enabled": true
     },
     {
       "skillId": "thunder_palm",
       "initialGrade": "xuan",
       "capMode": "legacy",
       "effectMode": "damage_ratio",
-      "enabled": false
+      "enabled": true
     },
     {
       "skillId": "scatter_talisman",
       "initialGrade": "xuan",
       "capMode": "legacy",
       "effectMode": "damage_ratio",
-      "enabled": false
+      "enabled": true
     },
     {
       "skillId": "beast_roar",
       "initialGrade": "xuan",
       "capMode": "legacy",
       "effectMode": "damage_ratio",
-      "enabled": false
+      "enabled": true
     },
     {
       "skillId": "flying_sword",
       "initialGrade": "xuan",
       "capMode": "legacy",
       "effectMode": "damage_ratio",
-      "enabled": false
+      "enabled": true
     },
     {
       "skillId": "sword_rain",
       "initialGrade": "xuan",
       "capMode": "legacy",
       "effectMode": "damage_ratio",
-      "enabled": false
+      "enabled": true
     },
     {
       "skillId": "sword_mastery",
       "initialGrade": "xuan",
       "capMode": "legacy",
       "effectMode": "none",
-      "enabled": false
+      "enabled": true
     },
     {
       "skillId": "five_element_attune",
       "initialGrade": "xuan",
       "capMode": "legacy",
       "effectMode": "none",
-      "enabled": false
+      "enabled": true
     },
     {
       "skillId": "talisman_supply",
       "initialGrade": "xuan",
       "capMode": "legacy",
       "effectMode": "none",
-      "enabled": false
+      "enabled": true
     },
     {
       "skillId": "shadow_step",
       "initialGrade": "xuan",
       "capMode": "legacy",
       "effectMode": "none",
-      "enabled": false
+      "enabled": true
     },
     {
       "skillId": "light_foot",
       "initialGrade": "xuan",
       "capMode": "legacy",
       "effectMode": "none",
-      "enabled": false
+      "enabled": true
     },
     {
       "skillId": "beast_mastery",
       "initialGrade": "xuan",
       "capMode": "legacy",
       "effectMode": "none",
-      "enabled": false
+      "enabled": true
     },
     {
       "skillId": "sword_shield",
       "initialGrade": "xuan",
       "capMode": "legacy",
       "effectMode": "none",
-      "enabled": false
+      "enabled": true
     },
     {
       "skillId": "sword_ride",
       "initialGrade": "xuan",
       "capMode": "legacy",
       "effectMode": "none",
-      "enabled": false
+      "enabled": true
     },
     {
       "skillId": "tianjian_heart_2",
       "initialGrade": "xuan",
       "capMode": "legacy",
       "effectMode": "none",
-      "enabled": false
+      "enabled": true
     },
     {
       "skillId": "qi_condense",
       "initialGrade": "xuan",
       "capMode": "legacy",
       "effectMode": "none",
-      "enabled": false
+      "enabled": true
     },
     {
       "skillId": "sword_domain",
       "initialGrade": "di",
       "capMode": "legacy",
       "effectMode": "damage_ratio",
-      "enabled": false
+      "enabled": true
     },
     {
       "skillId": "heart_sword",
       "initialGrade": "di",
       "capMode": "legacy",
       "effectMode": "damage_ratio",
-      "enabled": false
+      "enabled": true
     },
     {
       "skillId": "golden_core_sword",
       "initialGrade": "di",
       "capMode": "legacy",
       "effectMode": "none",
-      "enabled": false
+      "enabled": true
     },
     {
       "skillId": "tianjian_heart_3",
       "initialGrade": "di",
       "capMode": "legacy",
       "effectMode": "none",
-      "enabled": false
+      "enabled": true
     },
     {
       "skillId": "sword_intent",
       "initialGrade": "di",
       "capMode": "legacy",
       "effectMode": "none",
-      "enabled": false
+      "enabled": true
     },
     {
       "skillId": "ten_thousand_swords",
       "initialGrade": "tian",
       "capMode": "legacy",
       "effectMode": "damage_ratio",
-      "enabled": false
+      "enabled": true
     }
   ],
   "future": {

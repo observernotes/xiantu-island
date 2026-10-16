@@ -1,3 +1,5 @@
+// 每种数据模式独立模块图；tip 已开 #19/lifeSkillCurve/五事件/九人好感/两题 questHooks，#20/gifts 仍关。
+// 关态仅用 structuredClone fixture，正式表前后逐字节守护。
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
@@ -8,7 +10,7 @@ import { createServer } from 'vite';
 import { sharedRoot } from './root.mjs';
 
 const md5 = bytes => createHash('md5').update(bytes).digest('hex');
-function assertAllDisabled(parsed, file, label) {
+function enabledValues(parsed) {
   const enabled = [];
   const visit = value => {
     if (!value || typeof value !== 'object') return;
@@ -18,6 +20,10 @@ function assertAllDisabled(parsed, file, label) {
     }
   };
   visit(parsed);
+  return enabled;
+}
+function assertAllDisabled(parsed, file, label) {
+  const enabled = enabledValues(parsed);
   assert.ok(enabled.length > 0, `${file}: 找到 ${label} 关闭门禁`);
   assert.ok(enabled.every(value => value === false), `${file}: ${label} 全部 enabled 严格 false`);
 }
@@ -44,7 +50,16 @@ async function guardedTables() {
       assert.deepEqual(parsed.questHooks.map(row => row.id).sort(), ['prologue_medicine', 'sect_tianjian_sword'], `${file}: 正式两题 questHooks`);
       assert.ok(parsed.questHooks.every(row => row.enabled === true), `${file}: tip 开态，两题 questHooks.enabled 全部严格 true`);
     } else if (file.endsWith('/gongfa_grades.json')) {
-      assertAllDisabled(parsed, file, '#19 功法品阶');
+      assert.equal(parsed.enabled, true, `${file}: tip 开态，#19 功法品阶根 enabled 严格 true`);
+      assert.equal(parsed.bindings.length, 38, `${file}: 正式 38 个功法绑定`);
+      assert.ok(parsed.bindings.every(row => row.enabled === true), `${file}: tip 开态，38 个 bindings.enabled 全部严格 true`);
+      const futureEnabled = enabledValues(parsed.future);
+      assert.equal(futureEnabled.length, 7, `${file}: future 七处 enabled`);
+      assert.ok(futureEnabled.every(value => value === false), `${file}: future enabled 全部严格 false`);
+      const enabled = enabledValues(parsed);
+      assert.equal(enabled.length, 46, `${file}: 正式 46 处 enabled`);
+      assert.equal(enabled.filter(value => value === true).length, 39, `${file}: tip 开态，39 处 enabled 严格 true`);
+      assert.equal(enabled.filter(value => value === false).length, 7, `${file}: future 七处 enabled 严格 false`);
     } else if (file.endsWith('/qi_density.json')) {
       assertAllDisabled(parsed, file, '#20 灵气浓度');
     }
@@ -52,8 +67,6 @@ async function guardedTables() {
   }));
 }
 
-// 每种数据模式独立模块图；tip 已开 lifeSkillCurve/五事件/九人好感/两题 questHooks，#19/#20/gifts 仍关。
-// 关态仅用 structuredClone fixture，正式表前后逐字节守护。
 if (!process.argv.includes('--single-mode')) {
   const initial = await guardedTables();
   try {
