@@ -17,14 +17,18 @@ const join = questRows.find(q => q.id === 'q_sect_taixu');
 const collect = questRows.find(q => q.id === 'q_daily_taixu_2');
 const talk = questRows.find(q => q.id === 'q_daily_taixu_3');
 const npc = npcRows.find(n => n.id === collect.giver);
+const talkTarget = npcRows.find(n => n.id === talk.objectives.find(o => o.type === 'talk').target);
 const featureLoader = await createServer({ root: projectRoot,
   server: { middlewareMode: true, hmr: false, ws: false }, appType: 'custom', logLevel: 'error' });
-let expectedEntrance, legacySkills, expectedServices;
+let expectedEntrance, legacySkills, expectedServices, envoyMap;
 try {
-  const { QUESTS, questInPhase } = await featureLoader.ssrLoadModule('/src/data.ts');
+  const { QUESTS, questInPhase, TILED_MAPS, syncTalismanMapAvailability } = await featureLoader.ssrLoadModule('/src/data.ts');
   const { classDef, classEntryEnabled, skillsForClass } = await featureLoader.ssrLoadModule('/src/classes.ts');
   const { featureFlags } = await featureLoader.ssrLoadModule('/src/features.ts');
   const features = featureFlags();
+  syncTalismanMapAvailability();
+  // 山门已注册时去 NPC 登记地图；关态仍在落霞验证本宗接引人补挂。
+  envoyMap = TILED_MAPS[npc.map] ? npc.map : 'luoxia_town';
   expectedServices = { shop: features.shops && features.sectShopLibrary, donation: features.sectDonations };
   const cls = classDef('taixu_acolyte'), tree = skillsForClass(cls.id);
   expectedEntrance = !!QUESTS[join.id] && questInPhase(join) && classEntryEnabled(cls);
@@ -70,6 +74,10 @@ async function sceneReady(page, map) {
     return scene?.map?.id === map && scene.player?.active && scene.dialog && scene.quests && scene.skillWindow && scene.game.loop.frame > 3;
   }, map, { timeout: 15000 });
   await page.waitForTimeout(250);
+}
+async function restartAt(page, map) {
+  await page.evaluate(map => window.__scene.scene.restart({ map }), map);
+  await sceneReady(page, map);
 }
 async function finishDialog(page) {
   for (let index = 0; index < 20; index++) {
@@ -141,9 +149,9 @@ try {
       sessionStorage.setItem('daily-smoke-created', '1');
     }
   });
-  const url = new URL(baseURL); url.searchParams.set('map', 'luoxia_town');
+  const url = new URL(baseURL); url.searchParams.set('map', envoyMap);
   await page.goto(url.href, { waitUntil: 'networkidle', timeout: 30000 });
-  await sceneReady(page, 'luoxia_town');
+  await sceneReady(page, envoyMap);
   console.log(JSON.stringify({ baseURL, playwright: module, browser: executablePath, headless: true }));
 
   // 新拜入按发布关口检查；关闭入口时用正式导入的旧太虚身份继续检查日常。
@@ -199,8 +207,7 @@ try {
   assert.equal(joined.sect, 'taixu', '日常夹具未保留太虚宗门');
   assert.equal(joined.available, true, '入宗后本宗日常未开放');
   assert.equal(joined.contribution, 0, '普通拜入任务错误发日常贡献');
-  await page.evaluate(() => window.__scene.scene.restart({ map: 'luoxia_town' }));
-  await sceneReady(page, 'luoxia_town');
+  await restartAt(page, envoyMap);
 
   const mounted = await page.evaluate(({ giver, sect }) => {
     const scene = window.__scene;
@@ -256,18 +263,20 @@ try {
 
   // 同一接引人仍可以选择第三条；走真实目标 NPC 对话，回宗交付。
   await acceptDaily(page, talk);
-  await openNpc(page, talk.objectives.find(o => o.type === 'talk').target);
+  if (talkTarget.map !== envoyMap) await restartAt(page, talkTarget.map);
+  await openNpc(page, talkTarget.id);
   await finishDialog(page);
   assert.equal(await page.evaluate(id => window.__scene.quests.complete(id), talk.id), true, '真实目标 NPC 对话没有满足目标');
+  if (talkTarget.map !== envoyMap) await restartAt(page, envoyMap);
   await deliverDaily(page, talk);
   const contributionAfterTwo = await page.evaluate(() => window.__scene.prog.sectContribution);
   assert.equal(contributionAfterTwo, collect.rewards.sectContribution + talk.rewards.sectContribution, '两条日常累计贡献错误');
 
   // 同日读档仍不可接，模拟恰跨本地 05:00 再读档补算，旧任务重新开放。
-  await page.reload({ waitUntil: 'networkidle', timeout: 30000 }); await sceneReady(page, 'luoxia_town');
+  await page.reload({ waitUntil: 'networkidle', timeout: 30000 }); await sceneReady(page, envoyMap);
   assert.equal(await page.evaluate(id => window.__scene.quests.available(id), collect.id), false, '同日读档可重复接取');
   await page.evaluate(() => sessionStorage.setItem('daily-smoke-now', String(new Date(2026, 9, 10, 5).getTime())));
-  await page.reload({ waitUntil: 'networkidle', timeout: 30000 }); await sceneReady(page, 'luoxia_town');
+  await page.reload({ waitUntil: 'networkidle', timeout: 30000 }); await sceneReady(page, envoyMap);
   const reset = await page.evaluate(({ id, oldDay }) => ({ available: window.__scene.quests.available(id),
     state: window.__scene.quests.state(id) ?? null, day: window.__scene.prog.dailyQuestResetDay,
     changed: window.__scene.prog.dailyQuestResetDay !== oldDay, contribution: window.__scene.prog.sectContribution,
@@ -319,7 +328,7 @@ try {
   await page.waitForTimeout(300);
   assert.deepEqual(errors, { console: [], page: [], request: [], http: [] }, '浏览器冒烟出现报错');
   console.log(JSON.stringify({ passed: true, sect: joined.sect, joinedByTrialCallback: expectedEntrance,
-    closedEntranceBlocked: !expectedEntrance, legacySaveImported: !expectedEntrance, npc: npc.id,
+    closedEntranceBlocked: !expectedEntrance, legacySaveImported: !expectedEntrance, npc: npc.id, envoyMap,
     completed: [collect.id, talk.id], contribution: contributionAfterTwo, reloadSameDayBlocked: true,
     crossedLocalFive: true, reaccepted: collect.id, tianjianEnvoyMounted: true,
     consoleErrors: 0, pageErrors: 0, requestFailures: 0, httpErrors: 0 }));
