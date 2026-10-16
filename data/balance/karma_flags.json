@@ -33,7 +33,7 @@
   "questHooks": [
     {
       "id": "prologue_medicine",
-      "enabled": false,
+      "enabled": true,
       "quest": "q_awaken",
       "node": "turn_in_moral",
       "on": "turn_in",
@@ -65,7 +65,7 @@
     },
     {
       "id": "sect_tianjian_sword",
-      "enabled": false,
+      "enabled": true,
       "quest": "q_sect_tianjian",
       "node": "sword_purpose",
       "on": "turn_in",

@@ -22,7 +22,7 @@ function frozen(value: unknown): boolean {
 }
 function fixture(hookId = 'prologue_medicine', mutate?: (raw: Mutable) => void) {
   const raw = structuredClone(karmaFlagsRaw);
-  raw.questHooks.find(hook => hook.id === hookId)!.enabled = true;
+  for (const hook of raw.questHooks) hook.enabled = hook.id === hookId;
   mutate?.(raw);
   const parsed = parseQuestHooks(raw);
   eq(parsed.errors.length, 0, `${hookId} 开态 fixture 无坏表`);
@@ -42,6 +42,14 @@ eq(QUEST_HOOKS_ERRORS.length, 0, 'data.ts 导出真表无错误'); ok(QUEST_HOOK
 const config = QUEST_HOOKS;
 eq(config.questHooks.length, 2, '本期两个选择已加载');
 same(config.questHooks.map(hook => hook.id), ['prologue_medicine', 'sect_tianjian_sword'], '两题身份正确');
+const formalEnabledCount = config.questHooks.filter(hook => hook.enabled).length;
+if (formalEnabledCount === 2) {
+  eq(formalEnabledCount, 2, 'tip 开态：正式表 questHooks.enabled===true 共 2');
+} else if (formalEnabledCount === 0) {
+  eq(formalEnabledCount, 0, '未翻表时根门禁仍全 false');
+} else {
+  eq(formalEnabledCount, 2, '正式表根门禁只允许全关或全开，不允许半开');
+}
 same(MORAL_STATE, karmaFlagsRaw.rules.moralState, '仍复用既有两轴配置');
 const checked = parseQuestHooks(karmaFlagsRaw);
 ok(checked.config, '真表通过独立解析'); eq(checked.errors.length, 0, '没有被忽略的错误');
@@ -52,19 +60,28 @@ ok(independent, '可建立独立快照'); eq(Object.isFrozen(mutableRaw.questHoo
 mutableRaw.questHooks[0].choices[0].hooks.moralityDelta = 99;
 eq(independent.questHooks[0].choices[0].hooks.moralityDelta, 1, '调用方变更不改变快照');
 
+const disabledRaw = structuredClone(karmaFlagsRaw);
+for (const hook of disabledRaw.questHooks) hook.enabled = false;
+const disabledParsed = parseQuestHooks(disabledRaw);
+eq(disabledParsed.errors.length, 0, '关态夹具通过真实表校验');
+ok(disabledParsed.config, '关态夹具有可用配置');
+const closed = disabledParsed.config;
+eq(closed.questHooks.length, 2, '关态夹具保留两题');
+eq(closed.questHooks.filter(hook => hook.enabled).length, 0, '关态夹具两题全 false');
+
 const state = { daoHeart: MORAL_STATE.daoHeart.initial, morality: MORAL_STATE.morality.initial, karmaFlags: {} };
 const before = JSON.stringify(state);
 const poison = new Proxy({}, { get() { throw new Error('关态不得读取状态'); }, set() { throw new Error('不得写入状态'); } });
-for (const hook of config.questHooks) {
-  eq(hook.enabled, false, '正式表两题 enabled 全 false');
+for (const hook of closed.questHooks) {
+  eq(hook.enabled, false, '关态夹具两题 enabled 全 false');
   for (const choice of hook.choices) {
-    same(previewQuestHook(config, hook.id, choice.id, state), { status: 'unavailable', reason: 'disabled' }, '关态不弹选择');
-    same(settleQuestHook(config, hook.id, choice.id, state), { status: 'rejected', reason: 'disabled' }, '关态拒绝结算');
-    eq(reason(previewQuestHook(config, hook.id, choice.id, poison)), 'disabled', '关态预览不读状态');
-    eq(reason(settleQuestHook(config, hook.id, choice.id, poison)), 'disabled', '关态结算不读写状态');
+    same(previewQuestHook(closed, hook.id, choice.id, state), { status: 'unavailable', reason: 'disabled' }, '关态夹具不弹选择');
+    same(settleQuestHook(closed, hook.id, choice.id, state), { status: 'rejected', reason: 'disabled' }, '关态夹具拒绝结算');
+    eq(reason(previewQuestHook(closed, hook.id, choice.id, poison)), 'disabled', '关态夹具预览不读状态');
+    eq(reason(settleQuestHook(closed, hook.id, choice.id, poison)), 'disabled', '关态夹具结算不读写状态');
   }
-  eq(reason(settleQuestHook(config, hook.id, 'unknown', poison)), 'disabled', '关态在选项查找前短路');
-  eq(reason(previewQuestHook(config, hook.id, 'unknown', poison)), 'disabled', '关态预览也先于选项查找和状态读取');
+  eq(reason(settleQuestHook(closed, hook.id, 'unknown', poison)), 'disabled', '关态夹具在选项查找前短路');
+  eq(reason(previewQuestHook(closed, hook.id, 'unknown', poison)), 'disabled', '关态夹具预览也先于选项查找和状态读取');
 }
 eq(JSON.stringify(state), before, '两轴和 karmaFlags 无变化');
 same(previewQuestHook(null, 'prologue_medicine', 'return', poison), { status: 'unavailable', reason: 'invalid' }, '坏表无预览');
@@ -75,7 +92,7 @@ const enabled = fixture();
 eq(reason(settleQuestHook(enabled, 'prologue_medicine', 'unknown')), 'missing', '开态可诊断缺选项');
 eq(reason(previewQuestHook(enabled, 'prologue_medicine', 'unknown', poison)), 'missing', '缺选项先于状态读取');
 eq(reason(settleQuestHook(enabled, 'prologue_medicine', 'unknown', poison)), 'missing', '结算缺选项先于状态读取');
-ok(Object.isFrozen(settleQuestHook(config, 'prologue_medicine', 'return')), '查询结果只读');
+ok(Object.isFrozen(settleQuestHook(closed, 'prologue_medicine', 'return')), '查询结果只读');
 
 const storageBefore = Object.getOwnPropertyDescriptor(globalThis, 'localStorage');
 const saveKey = 'xiantu_save_v1', disk: Record<string, string> = {};
@@ -90,7 +107,7 @@ try {
     removeItem: (key: string) => { delete disk[key]; },
   } });
 
-  // 真实表仅在内存启用目标题；四个正式选项都用真实 Progress 完成预览、保存和重放检查。
+  // 开态夹具仅在内存启用目标题；四个正式选项都用真实 Progress 完成预览、保存和重放检查。
   for (const originalHook of config.questHooks) {
     const open = fixture(originalHook.id), hook = open.questHooks.find(row => row.id === originalHook.id)!;
     for (const choice of hook.choices) {
@@ -347,5 +364,7 @@ for (const [label, mutate] of [
 for (const raw of [null, undefined, [], false, 'questHooks']) {
   const result = parseQuestHooks(raw); eq(result.config, null, '非对象配置拒绝'); ok(result.errors.length, '非对象保留诊断');
 }
-eq(karmaFlagsRaw.questHooks.filter(hook => hook.enabled).length, 0, '测试未开启正式表');
-console.log(`quest hooks tests ok: ${assertions} assertions (two hooks, fail-closed schema, disabled short-circuit, enabled preview/settlement, quest once, clamp, no retroactivity, atomic rollback)`);
+const endEnabled = parseQuestHooks(karmaFlagsRaw).config!.questHooks.filter(hook => hook.enabled).length;
+ok(endEnabled === 0 || endEnabled === 2, '正式表根门禁旁证只允许 0 或 2');
+eq(endEnabled, formalEnabledCount, '测试未改变正式表根门禁');
+console.log(`quest hooks tests ok: ${assertions} assertions (dual-state preamble; closed-fixture; two hooks, fail-closed schema, disabled short-circuit, enabled preview/settlement, quest once, clamp, no retroactivity, atomic rollback)`);

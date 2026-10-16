@@ -15,18 +15,38 @@ function same(actual: unknown, expected: unknown, message: string) { eq(JSON.str
 function snapshot(progress: Progress) { return JSON.stringify(progress.exportSave()); }
 function enabledFixture(hookId: string) {
   const raw = structuredClone(karmaFlagsRaw);
-  raw.questHooks.find(hook => hook.id === hookId)!.enabled = true;
+  for (const hook of raw.questHooks) hook.enabled = hook.id === hookId;
   const parsed = parseQuestHooks(raw);
   eq(parsed.errors.length, 0, `${hookId} 交付 fixture 无坏表`);
   ok(parsed.config, `${hookId} 交付 fixture 可解析`);
+  eq(parsed.config.questHooks.filter(hook => hook.enabled).length, 1, `${hookId} 交付 fixture 仅打开目标 hook`);
   return parsed.config;
 }
+
+ok(QUEST_HOOKS, '正式两个任务选择配置可用');
+eq(QUEST_HOOKS.questHooks.length, 2, '正式表两个任务选择全部加载');
+const formalEnabledCount = QUEST_HOOKS.questHooks.filter(hook => hook.enabled).length;
+if (formalEnabledCount === 2) {
+  eq(formalEnabledCount, 2, 'tip 开态：正式表 questHooks.enabled===true 共 2');
+} else if (formalEnabledCount === 0) {
+  eq(formalEnabledCount, 0, '未翻表时根门禁仍全 false');
+} else {
+  eq(formalEnabledCount, 2, '正式表根门禁只允许全关或全开，不允许半开');
+}
+const disabledRaw = structuredClone(karmaFlagsRaw);
+for (const hook of disabledRaw.questHooks) hook.enabled = false;
+const disabledParsed = parseQuestHooks(disabledRaw);
+eq(disabledParsed.errors.length, 0, '关态夹具通过真实表校验');
+ok(disabledParsed.config, '关态夹具有可用配置');
+const closed = disabledParsed.config;
+eq(closed.questHooks.length, 2, '关态夹具保留两个任务选择');
+eq(closed.questHooks.filter(hook => hook.enabled).length, 0, '关态夹具两个任务选择全 false');
 
 const now = Date.now(), saveKey = 'xiantu_save_v1';
 const disk: Record<string, string> = {};
 const storageBefore = Object.getOwnPropertyDescriptor(globalThis, 'localStorage');
 let writes = 0;
-function ready(hook: QuestHook, config: QuestHooksConfig | null = QUEST_HOOKS) {
+function ready(hook: QuestHook, config: QuestHooksConfig | null) {
   const p = new Progress();
   p.level = QUESTS[hook.quest].reqLevel;
   p.stones = 37;
@@ -58,11 +78,10 @@ try {
     setItem: (key: string, value: string) => { writes++; disk[key] = value; },
     removeItem: (key: string) => { delete disk[key]; },
   } });
-  ok(QUEST_HOOKS, '正式两个任务选择配置可用');
-  for (const hook of QUEST_HOOKS.questHooks) {
-    eq(hook.enabled, false, `${hook.id} 正式关态`);
+  for (const hook of closed.questHooks) {
+    eq(hook.enabled, false, `${hook.id} 关态夹具`);
     for (const choiceId of [undefined, 'unknown']) {
-      const { p, quests } = ready(hook), beforeWrites = writes;
+      const { p, quests } = ready(hook, closed), beforeWrites = writes;
       const moral = { daoHeart: p.daoHeart, morality: p.morality };
       originalReward(hook, p, quests.turnIn(hook.quest, false, choiceId));
       same({ daoHeart: p.daoHeart, morality: p.morality }, moral, '关态交付不改两轴');
@@ -150,4 +169,7 @@ try {
   if (storageBefore) Object.defineProperty(globalThis, 'localStorage', storageBefore);
   else Reflect.deleteProperty(globalThis, 'localStorage');
 }
-console.log(`quest hooks turn-in tests ok: ${assertions} assertions (disabled fallback, explicit fixture choices, one atomic save, rollback and retry)`);
+const endEnabledCount = parseQuestHooks(karmaFlagsRaw).config!.questHooks.filter(hook => hook.enabled).length;
+ok(endEnabledCount === 0 || endEnabledCount === 2, '正式表旁证只允许全关或全开');
+eq(endEnabledCount, formalEnabledCount, '测试未改变正式表根门禁');
+console.log(`quest hooks turn-in tests ok: ${assertions} assertions (dual-state preamble, closed-fixture fallback, explicit fixture choices, one atomic save, rollback and retry)`);
