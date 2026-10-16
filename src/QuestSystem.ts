@@ -1,18 +1,19 @@
 import { gameNow } from './GameClock';
-import { QUESTS, QUEST_ORDER, NPCS, SCRIPTS, ITEMS, MONSTERS, Line, QuestDef, questInPhase, t } from './data';
+import { AFFINITY, QUESTS, QUEST_ORDER, NPCS, SCRIPTS, ITEMS, MONSTERS, Line, QuestDef, questInPhase, t } from './data';
 import type { Progress, QuestRewardSettlement } from './Progress';
 import { CLASS_RULES, classEntryEnabled, classForQuest } from './classes';
 import { REALMS } from './data';
 import { dailyRewardsReady, type DailyQuestReward } from './DailyQuests';
 import { FEATURE_UNAVAILABLE, featureEnabled } from './features';
 import { isCheatEnabled } from './cheatFlags';
+import { stageQuestAffinityCompletion, type AffinityConfig } from './Affinity';
 
 export type NpcMark = '!' | '?' | '…' | null;
 
 /** 任务系统：串行任务链，状态存在 Progress.quests 里。字段见 balance/quests.json */
 export class QuestSystem {
   private completionListeners = new Set<(reward: QuestReward) => void>();
-  constructor(private prog: Progress, private now: () => number = () => gameNow()) { this.refreshDaily(); }
+  constructor(private prog: Progress, private now: () => number = () => gameNow(), private affinityConfig: AffinityConfig | null = AFFINITY) { this.refreshDaily(); }
 
   /** 交付成功后通知订阅者；返回的函数可解除订阅。 */
   onCompleted(listener: (reward: QuestReward) => void): () => void {
@@ -224,16 +225,21 @@ export class QuestSystem {
           || !REALMS.some(realm => realm.id === o.realm && this.prog.level >= realm.levelMin)));
         const broke = needsBreakthrough ? this.prog.breakthrough() : false;
         this.prog.quests[id].state = 'done';
+        if (!stageQuestAffinityCompletion(this.affinityConfig, id, this.prog)) return undefined;
         const settled = this.prog.settleQuestRewards(q, forced);
         return settled ? { quest: q, broke, settled } : undefined;
       });
       return reward ? this.notifyCompleted(reward) : undefined;
     }
-    for (const o of q.objectives) if (o.type === 'collect' && o.consume !== false) this.prog.removeItem(o.target!, o.count!);
-    const broke = q.objectives.some(o => o.type === 'breakthrough') ? this.prog.breakthrough() : false;
-    this.prog.quests[id].state = 'done';
-    const daily = this.prog.settleSectDailyQuest(id, now);
-    return daily ? this.notifyCompleted({ quest: q, broke, daily }) : undefined;
+    const reward = this.prog.runSaveTransaction(() => {
+      for (const o of q.objectives) if (o.type === 'collect' && o.consume !== false) this.prog.removeItem(o.target!, o.count!);
+      const broke = q.objectives.some(o => o.type === 'breakthrough') ? this.prog.breakthrough() : false;
+      this.prog.quests[id].state = 'done';
+      if (!stageQuestAffinityCompletion(this.affinityConfig, id, this.prog)) return undefined;
+      const daily = this.prog.settleSectDailyQuest(id, now);
+      return daily ? { quest: q, broke, daily } : undefined;
+    });
+    return reward ? this.notifyCompleted(reward) : undefined;
   }
 
   onKill(monsterId: string) {

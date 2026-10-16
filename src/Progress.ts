@@ -13,6 +13,8 @@ import { isCheatEnabled, isCheatSkillsUnlocked } from './cheatFlags';
 import { emptyTalismanSave, normalizeTalismanSave, type TalismanSave } from './Talisman';
 import { emptyTalismanUseState, normalizeTalismanUseState, talismanDamageMultiplier, talismanGatherBonus, type TalismanUseState } from './TalismanUse';
 import type { EncounterSave, EncounterState } from './Encounter';
+import { createRelationshipState, isValidAffinity, isValidRelationshipState, normalizeAffinity, normalizeRelationshipState,
+  RELATIONSHIP_VERSION, type RelationshipState } from './RelationshipState';
 
 /** 自动加点：加点界面做好前的旧档公式，仅用于迁移种子；UI-6 起升级只发未分配点。 */
 export const AUTO_STATS = { rootBone: 2, agility: 2, insight: 1, spirit: 0 } as Record<string, number>;
@@ -30,6 +32,8 @@ export const EQUIP_SLOTS = Object.freeze(['weapon', 'robe', 'shoes'] as const);
 export type EquipSlot = typeof EQUIP_SLOTS[number];
 export type EquipResult = { ok: true } | { ok: false; reason: 'invalid' | 'missing' | 'sect' | 'level' | 'empty' | 'overflow' | 'save' };
 const SAVE_KEY = 'xiantu_save_v1';
+/** 保留关系结构首次迁移前的原档，便于人工恢复；不覆盖已有备份。 */
+export const RELATIONSHIP_BACKUP_KEY = 'xiantu_save_relationship_v1_backup';
 /** 妖狐任务改为五宗帖的奖励版本；无此字段的已交付旧档保留原天剑身份。 */
 const QUEST_REWARD_VERSION = 1;
 /** 道心与善恶存档版本；旧档只补缺失初值，不推断历史选择。 */
@@ -74,6 +78,8 @@ function validSaveData(saved: unknown): saved is Record<string, unknown> {
   if (has('encounters') && !dataRecord(saved.encounters)) return false;
   if (has('bonusStats') && (!dataRecord(saved.bonusStats) || ('insight' in saved.bonusStats && !count(saved.bonusStats.insight)))) return false;
   if (has('karmaFlags') && (!dataRecord(saved.karmaFlags) || !Object.entries(saved.karmaFlags).every(([key, value]) => safeKey(key) && typeof value === 'boolean'))) return false;
+  if (has('affinity') && !isValidAffinity(saved.affinity)) return false;
+  if (has('relationshipState') && !isValidRelationshipState(saved.relationshipState)) return false;
   for (const key of ['inventory', 'skills', 'skillGifted']) if (has(key) && !numbers(saved[key])) return false;
   for (const key of ['skillMastery', 'gatherRespawnAt']) if (has(key) && !numbers(saved[key], false)) return false;
   for (const key of ['job', 'selectedSect', 'name', 'rootElement', 'sectDailyContributionDay', 'dailyQuestResetDay', 'seclusionDay']) {
@@ -138,6 +144,9 @@ export class Progress {
   daoHeart = MORAL_STATE.daoHeart.initial;
   morality = MORAL_STATE.morality.initial;
   moralVersion = MORAL_VERSION;
+  /** 仅懒初始化可用 NPC；旧档完成历史不会反推好感。 */
+  affinity: Record<string, number> = {};
+  relationshipState: RelationshipState = createRelationshipState();
   classRewardClaims: string[] = [];
   /** 通用入门技的付费等级在拜宗后退回当前一转点池。 */
   classRefundSp = 0;
@@ -362,6 +371,7 @@ export class Progress {
     try {
       const fields: unknown = JSON.parse(JSON.stringify(saved));
       if (!validSaveData(fields)) return false;
+      if (Progress.needsRelationshipMigration(fields) && !Progress.backupRelationshipSave(JSON.stringify(fields))) return false;
       restored = Progress.restore(fields, false);
     } catch { return false; }
     const previous = { ...this };
@@ -370,7 +380,7 @@ export class Progress {
     Object.assign(this, previous);
     return false;
   }
-  private static restore(saved: unknown, persistMigrations: boolean): Progress {
+  private static restore(saved: unknown, persistMigrations: boolean, relationshipMigrationReady = true): Progress {
     syncTalismanMapAvailability();
     const p = new Progress();
     let saveRequested = false;
@@ -380,6 +390,7 @@ export class Progress {
     try {
       if (saved && typeof saved === 'object' && !Array.isArray(saved)) {
         const fields = saved as Record<string, unknown>;
+        if (relationshipMigrationReady && Progress.needsRelationshipMigration(fields)) p.save();
         if (featureEnabled('lifeSkillCurve') && LIFE_SKILLS
           && ['talismanLevel', 'talismanExp', 'forgingLevel', 'forgingExp'].some(key => !Object.prototype.hasOwnProperty.call(fields, key))) p.save();
         if (!Object.prototype.hasOwnProperty.call(fields, 'questRewardVersion')) p.questRewardVersion = 0;
@@ -403,7 +414,12 @@ export class Progress {
       if (statsBefore !== JSON.stringify([p.allocatedStats, p.unspentStatPoints])) p.save();
       p.overflowExp = Math.max(0, Math.floor(Number(p.overflowExp) || 0));
       if (Number.isFinite(p.overflowCap)) p.overflowExp = Math.min(p.overflowExp, p.overflowCap);
+      if (relationshipMigrationReady && dataRecord(p.relationshipState) && p.relationshipState.version === 0) {
+        p.relationshipState = { ...p.relationshipState, version: RELATIONSHIP_VERSION };
+      }
       p.ensureDefaults();
+      // 备份失败时留在未就绪版本；普通读档继续，关系消费者不得结算。
+      if (!relationshipMigrationReady) p.relationshipState = { ...p.relationshipState, version: 0 };
       p.resetDailyQuests();
       p.advanceAge();
       const legacyFoxJoin = p.questRewardVersion < QUEST_REWARD_VERSION && p.quests.q_fox?.state === 'done'
@@ -416,13 +432,31 @@ export class Progress {
       // 已提交神识可恰好耗尽灵力；仅新玩法有历史时保留 0，关闭时沿用旧档行为。
       p.mp = Math.min(featureEnabled('spiritScan') && p.senseState?.lastScanId && p.mp === 0 ? 0 : p.mp || p.maxMp, p.maxMp);
     } finally { Reflect.deleteProperty(p, 'save'); }
-    if (persistMigrations && (saveRequested || backfilled || !hadStoredRank)) p.save();
+    if (persistMigrations && relationshipMigrationReady && (saveRequested || backfilled || !hadStoredRank)) p.save();
     return p;
+  }
+  private static needsRelationshipMigration(saved: Record<string, unknown>): boolean {
+    const state = saved.relationshipState;
+    return !Object.prototype.hasOwnProperty.call(saved, 'affinity') || !Object.prototype.hasOwnProperty.call(saved, 'relationshipState')
+      || dataRecord(state) && (!Object.prototype.hasOwnProperty.call(state, 'version') || state.version === 0);
+  }
+  private static backupRelationshipSave(raw: string): boolean {
+    try {
+      if (localStorage.getItem(RELATIONSHIP_BACKUP_KEY) === null) localStorage.setItem(RELATIONSHIP_BACKUP_KEY, raw);
+      return true;
+    } catch { return false; }
   }
   static load(): Progress {
     let saved: unknown;
-    try { const raw = localStorage.getItem(SAVE_KEY); if (raw) saved = JSON.parse(raw); } catch { /* 存档损坏就重开 */ }
-    try { return Progress.restore(saved, true); } catch { return Progress.restore(undefined, true); }
+    let relationshipMigrationReady = true;
+    try {
+      const raw = localStorage.getItem(SAVE_KEY);
+      if (raw) {
+        saved = JSON.parse(raw);
+        if (dataRecord(saved) && Progress.needsRelationshipMigration(saved)) relationshipMigrationReady = Progress.backupRelationshipSave(raw);
+      }
+    } catch { /* 存档损坏就重开 */ }
+    try { return Progress.restore(saved, true, relationshipMigrationReady); } catch { return Progress.restore(undefined, true); }
   }
   static reset() { try { localStorage.removeItem(SAVE_KEY); } catch { /* ignore */ } }
 
@@ -975,6 +1009,10 @@ export class Progress {
   /** 旧档缺字段时补上，避免 Object.assign 把后面新增的数组弄丢或弄短。 */
   ensureDefaults() {
     syncTalismanMapAvailability();
+    this.affinity = normalizeAffinity(this.affinity);
+    // 缺失容器可迁移；显式坏收据原样保留，由消费者 fail-closed，不能清空重发。
+    const relationship = normalizeRelationshipState(this.relationshipState);
+    if (relationship) this.relationshipState = relationship;
     this.allocatedStats = normalizedStats(this.allocatedStats);
     this.unspentStatPoints = count(this.unspentStatPoints) ? this.unspentStatPoints : 0;
     if (typeof this.selectedSect !== 'string' || !CLASS_LIST.some(c => c.sect === this.selectedSect)) this.selectedSect = '';

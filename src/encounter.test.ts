@@ -24,13 +24,13 @@ eq(ENCOUNTERS_ERRORS.length, 0, 'data.ts 真表无错误');
 ok(ENCOUNTERS, 'data.ts 导出已校验奇遇快照');
 const config = ENCOUNTERS, metadata = listEncounters(config);
 eq(config.encounters.length, 5, '真表加载五事件');
-eq(metadata.length, 5, '关态仍可读取五条登记元数据');
+eq(metadata.length, 5, '真表可读取五条登记元数据');
 same(metadata.map(row => row.id), encountersRaw.encounters.map(row => row.id), '列表来自真表');
-eq(metadata.filter(row => row.enabled).length, 0, '正式五事件 enabled 全 false');
+eq(metadata.filter(row => row.enabled).length, 5, '正式五事件 enabled 全 true');
 same(metadata[0], {
   id: encountersRaw.encounters[0].id, nameKey: encountersRaw.encounters[0].nameKey,
-  maps: encountersRaw.encounters[0].maps, enabled: false,
-}, '元数据包含身份、名称、地图与关态门禁');
+  maps: encountersRaw.encounters[0].maps, enabled: true,
+}, '元数据包含身份、名称、地图与正式门禁');
 ok(Object.isFrozen(config) && Object.isFrozen(config.rules) && Object.isFrozen(config.encounters)
   && Object.isFrozen(config.encounters[0].script.steps[0]) && Object.isFrozen(config.encounters[0].outcomes[0]), '配置递归冻结');
 ok(Object.isFrozen(metadata) && Object.isFrozen(metadata[0]) && Object.isFrozen(metadata[0].maps), '列表元数据只读');
@@ -56,18 +56,22 @@ const freshSave = (): Mutable => ({
   unrelated: { keep: ['unchanged'] },
 });
 const save = freshSave(), before = JSON.stringify(save);
-for (const row of config.encounters) {
+const closedRaw = structuredClone(encountersRaw);
+closedRaw.encounters.forEach(row => { row.enabled = false; });
+const closed = parseEncountersConfig(closedRaw).config;
+ok(closed, '关态 fixture 经校验，不改正式表');
+for (const row of closed.encounters) {
   eq(row.enabled, false, `${row.id} 保持关态`);
-  same(evaluateEncounterEligibility(config, row.id, forbiddenContext), { eligible: false, reason: 'disabled' }, `${row.id} 资格关态`);
-  same(previewEncounter(config, row.id, forbiddenContext), { status: 'unavailable', reason: 'disabled' }, `${row.id} 预览不可用`);
-  same(triggerEncounter(config, row.id, forbiddenContext), { status: 'rejected', reason: 'disabled' }, `${row.id} 触发被拒绝`);
-  same(previewEncounterOutcome(config, row.id, String(row.outcomes[0].id)), { status: 'unavailable', reason: 'disabled' }, `${row.id} 结局预览关态`);
-  same(settleEncounterOutcome(config, row.id, String(row.outcomes[0].id), forbiddenContext, forbiddenContext as any), { status: 'rejected', reason: 'disabled' }, `${row.id} 结算先关态不读存档或选项`);
-  triggerEncounter(config, row.id, save);
-  settleEncounterOutcome(config, row.id, String(row.outcomes[0].id), save);
+  same(evaluateEncounterEligibility(closed, row.id, forbiddenContext), { eligible: false, reason: 'disabled' }, `${row.id} 资格关态`);
+  same(previewEncounter(closed, row.id, forbiddenContext), { status: 'unavailable', reason: 'disabled' }, `${row.id} 预览不可用`);
+  same(triggerEncounter(closed, row.id, forbiddenContext), { status: 'rejected', reason: 'disabled' }, `${row.id} 触发被拒绝`);
+  same(previewEncounterOutcome(closed, row.id, String(row.outcomes[0].id)), { status: 'unavailable', reason: 'disabled' }, `${row.id} 结局预览关态`);
+  same(settleEncounterOutcome(closed, row.id, String(row.outcomes[0].id), forbiddenContext, forbiddenContext as any), { status: 'rejected', reason: 'disabled' }, `${row.id} 结算先关态不读存档或选项`);
+  triggerEncounter(closed, row.id, save);
+  settleEncounterOutcome(closed, row.id, String(row.outcomes[0].id), save);
 }
-eq(JSON.stringify(save), before, '正式关态所有入口不改变存档、物资、两轴或因果');
-same(listEligibleEncounters(config, forbiddenContext), [], '全关列表不消费 ctx');
+eq(JSON.stringify(save), before, '关态 fixture 所有入口不改变存档、物资、两轴或因果');
+same(listEligibleEncounters(closed, forbiddenContext), [], '全关列表不消费 ctx');
 for (const [lookup, id, reason] of [[config, 'missing', 'missing'], [null, config.encounters[0].id, 'invalid']] as const) {
   same(evaluateEncounterEligibility(lookup, id, forbiddenContext), { eligible: false, reason }, `${reason} 资格`);
   same(previewEncounter(lookup, id, forbiddenContext), { status: 'unavailable', reason }, `${reason} 预览`);
@@ -81,6 +85,7 @@ same(listEligibleEncounters(null, forbiddenContext), [], '坏表候选列表为�
 // 每次只打开内存克隆中的一个事件；raw JSON 全程不改。
 function fixture(id: string, mutate?: (row: Mutable) => void) {
   const candidate: Mutable = structuredClone(encountersRaw);
+  candidate.encounters.forEach((entry: Mutable) => { entry.enabled = false; });
   const row = candidate.encounters.find((value: Mutable) => value.id === id);
   ok(row, `fixture 事件存在：${id}`);
   row.enabled = true; mutate?.(row);
@@ -302,7 +307,7 @@ for (const invalidSave of [null, [], { exp: Infinity }, { stones: -1 }, { invent
   same(settleEncounterOutcome(rescue, rescueId, 'rescued', invalidSave as any, { nowMs: NOW, attemptId: 'bad-save' }), { status: 'rejected', reason: 'invalid_save' }, '无效存档拒绝');
 }
 eq(JSON.stringify(encountersRaw), rawBefore, '全部 fixture 与坏表测试后正式导入 raw 字节内容未变');
-eq(encountersRaw.encounters.filter(row => row.enabled).length, 0, 'fixture 结算后正式五事件仍 0 enabled');
+eq(encountersRaw.encounters.filter(row => row.enabled).length, 5, 'fixture 结算后正式五事件仍 5 enabled');
 
 for (const field of ['rules', 'encounters']) bad(`缺顶层 ${field}`, raw => { delete raw[field]; });
 for (const field of ['pacingRef', 'cooldownClock']) bad(`缺 rules.${field}`, raw => { delete raw.rules[field]; });
@@ -379,4 +384,4 @@ for (const value of [null, undefined, [], false, 'encounters']) {
 }
 
 eq(JSON.stringify(encountersRaw), rawBefore, '坏表测试仍未改写正式 raw');
-console.log(`encounter tests ok: ${assertions} assertions, 5 loaded / 0 enabled, fixture eligibility / outcomes / settlement / idempotency PASS`);
+console.log(`encounter tests ok: ${assertions} assertions, 5 loaded / 5 enabled, closed/open fixture eligibility / outcomes / settlement / idempotency PASS`);

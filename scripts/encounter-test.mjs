@@ -18,8 +18,8 @@ async function guardedTables() {
     if (file.endsWith('features.json')) assert.equal(parsed.lifeSkillCurve, false, `${file}: lifeSkillCurve 必须保持 false`);
     else {
       assert.equal(parsed.encounters.length, 5, `${file}: 五事件`);
-      assert.equal(parsed.encounters.filter(row => row.enabled === true).length, 0, `${file}: 正式 enabled 计数 0`);
-      assert.ok(parsed.encounters.every(row => row.enabled === false), `${file}: 正式五事件全部严格 false`);
+      assert.equal(parsed.encounters.filter(row => row.enabled === true).length, 5, `${file}: 正式 enabled 计数 5`);
+      assert.ok(parsed.encounters.every(row => row.enabled === true), `${file}: 正式五事件全部严格 true`);
     }
     return { file, bytes, hash: md5(bytes) };
   }));
@@ -44,7 +44,7 @@ if (!process.argv.includes('--single-mode')) {
       assert.equal(final[index].file, snapshot.file);
       assert.deepEqual(final[index].bytes, snapshot.bytes, `${snapshot.file}: suite 前后原始字节不变`);
       assert.equal(final[index].hash, snapshot.hash, `${snapshot.file}: suite 前后 MD5 不变`);
-      console.log(`encounter closed-table guard PASS: ${snapshot.file} md5=${snapshot.hash}, bytes unchanged`);
+      console.log(`encounter open-table guard PASS: ${snapshot.file} md5=${snapshot.hash}, bytes unchanged`);
     }
   }
 } else {

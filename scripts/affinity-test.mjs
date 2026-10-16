@@ -29,7 +29,10 @@ if (!process.argv.includes('--single-mode')) {
     }] : [],
   });
   try {
-    if (!invalid) await server.ssrLoadModule('/src/affinity.test.ts');
+    if (!invalid) {
+      await server.ssrLoadModule('/src/affinity.test.ts');
+      await server.ssrLoadModule('/src/relationship-save.test.ts');
+    }
     else {
       const { AFFINITY, AFFINITY_ERRORS, NPCS, QUESTS } = await server.ssrLoadModule('/src/data.ts');
       const { getAffinity, applyAffinityDelta } = await server.ssrLoadModule('/src/Affinity.ts');

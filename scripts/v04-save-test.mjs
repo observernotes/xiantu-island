@@ -23,7 +23,7 @@ const legacyFields = [
   'lastOverflowReturned', 'breakthroughBonusLevels',
 ];
 equal(Object.keys(legacy).sort(), legacyFields.sort(), '样档包含 v0.4.3 Progress 的全部 24 个字段');
-for (const field of ['questRewardVersion', 'classVersion', 'moralVersion', 'senseState', 'talismanLevel', 'position']) {
+for (const field of ['questRewardVersion', 'classVersion', 'moralVersion', 'affinity', 'relationshipState', 'senseState', 'talismanLevel', 'position']) {
   equal(Object.hasOwn(legacy, field), false, `原档没有后加字段 ${field}`);
 }
 equal(legacy.job, 'tianjian_disciple', '真实旧妖狐奖励已经授予天剑职业');
@@ -42,7 +42,7 @@ const storageBefore = Object.getOwnPropertyDescriptor(globalThis, 'localStorage'
 const dateNowBefore = Date.now;
 const disk = {};
 const saveKey = 'xiantu_save_v1';
-let writes = 0;
+let writes = 0, backupWrites = 0;
 const server = await createServer({
   root, server: { middlewareMode: true, hmr: false, ws: false },
   appType: 'custom', logLevel: 'error',
@@ -52,13 +52,14 @@ try {
   Date.now = () => Date.UTC(2026, 9, 16, 4);
   Object.defineProperty(globalThis, 'localStorage', { configurable: true, writable: true, value: {
     getItem: key => disk[key] ?? null,
-    setItem: (key, value) => { writes++; disk[key] = String(value); },
+    setItem: (key, value) => { if (key === saveKey) writes++; else backupWrites++; disk[key] = String(value); },
     removeItem: key => { delete disk[key]; },
     clear: () => { for (const key of Object.keys(disk)) delete disk[key]; },
     key: index => Object.keys(disk)[index] ?? null,
     get length() { return Object.keys(disk).length; },
   } });
-  const { Progress, AUTO_STATS, MORAL_VERSION } = await server.ssrLoadModule('/src/Progress.ts');
+  const { Progress, AUTO_STATS, MORAL_VERSION, RELATIONSHIP_BACKUP_KEY } = await server.ssrLoadModule('/src/Progress.ts');
+  const { createRelationshipState } = await server.ssrLoadModule('/src/RelationshipState.ts');
   const { QuestSystem } = await server.ssrLoadModule('/src/QuestSystem.ts');
   const { MORAL_STATE, SECT_RANKS } = await server.ssrLoadModule('/src/data.ts');
   const { classDef, classRobe } = await server.ssrLoadModule('/src/classes.ts');
@@ -103,6 +104,8 @@ try {
     equal(p.unspentStatPoints, 0, `${context}: 不重发历史等级属性点`);
     equal([p.daoHeart, p.morality, p.moralVersion],
       [MORAL_STATE.daoHeart.initial, MORAL_STATE.morality.initial, MORAL_VERSION], `${context}: 两轴按缺省补齐`);
+    equal(p.affinity, {}, `${context}: 不从历史已交任务补发好感`);
+    equal(p.relationshipState, createRelationshipState(), `${context}: 关系收据补空，不伪造历史来源`);
     equal([p.alchemyLevel, p.alchemyExp, p.sectContribution, p.seclusionHistory, p.pendingAlchemy],
       [1, 0, 0, [], null], `${context}: 炼丹、贡献与闭关状态安全补缺省`);
   };
@@ -130,6 +133,8 @@ try {
   disk[saveKey] = raw;
   const loaded = Progress.load();
   equal(writes, 1, 'load 将完整迁移结果一次写盘');
+  equal(backupWrites, 1, '关系升级单独写一次原档备份');
+  equal(disk[RELATIONSHIP_BACKUP_KEY], raw, '关系升级前备份保留完整v0.4.3原档字节');
   assertMigrated(loaded, '原始全档 load');
   const expected = loaded.exportSave();
   equal(JSON.parse(disk[saveKey]), expected, 'load 落盘含补齐版本和全部迁移结果');
@@ -143,6 +148,7 @@ try {
   assertMigrated(imported, '原始全档 importSave');
   equal(imported.exportSave(), expected, 'load 与 importSave 两条入口得到相同完整状态');
   assertStable(imported, '原始全档 importSave');
+  equal(backupWrites, 1, '迁移后重复读档与导入不重复写备份');
   equal(JSON.stringify(legacy), originalFixture, '导入不修改读取的原始样档对象');
   equal(await fs.readFile(fixturePath, 'utf8'), raw, '迁移测试不改样档文件');
   equal(featureFlags(), flagsBefore, '迁移测试保持当前功能开关');

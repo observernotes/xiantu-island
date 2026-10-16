@@ -185,7 +185,15 @@ function compareSeclusion(runtime) {
       const config = { years, position, ...state };
       const old = seclusionTrace(runtime, runtime.OldSeclusion, config);
       const current = seclusionTrace(runtime, runtime.Seclusion, config);
-      equal(JSON.stringify(current), JSON.stringify(old), `${runtime.variant}/闭关${JSON.stringify(config)}: 资格预览、收益和存档逐字节相同`);
+      const label = `${runtime.variant}/闭关${JSON.stringify(config)}`;
+      equal(current.saved.affinity, {}, `${label}: 新增好感存档保持空默认，不产生玩法效果`);
+      equal(current.saved.relationshipState, {
+        version: 1, questChoices: {}, appliedQuestHooks: [], appliedAffinitySources: [],
+        claimedAffinityRewards: [], pendingAffinitySources: [], quarantinedFlags: {},
+      }, `${label}: 新增关系存档保持空默认，无来源、收据或选择效果`);
+      // 只排除已逐字段断言的两项新增存档，其余预览、收益及历史字段仍逐字节比较。
+      const { affinity, relationshipState, ...legacySaved } = current.saved;
+      equal(JSON.stringify({ ...current, saved: legacySaved }), JSON.stringify(old), `${label}: 资格预览、收益和历史存档逐字节相同`);
       if (!Object.keys(state).length) check(current.result.ok && current.result.gained + current.result.overflowed > 0,
         `${runtime.variant}: 真实宗门闭关仍有收益`);
       seclusionCases++;
@@ -246,4 +254,4 @@ await withRuntime('open-clone', runtime => {
 console.log(JSON.stringify({ passed: true, suite: 'gongfa-qi-legacy', baseline, assertions, combatCases, seclusionCases,
   coverage: ['closed-and-malformed-tables', 'all-positive-damageRatio-skills', 'ratio-IEEE754-bytes-and-hit-JSON',
     'levels-crit-derived-segments', 'open-clone-once-and-none', 'real-skill-learning-upgrade', 'exploration-position-save',
-    'real-quest-accept-turnIn', 'real-seclusion-check-settle-and-save'] }));
+    'real-quest-accept-turnIn', 'real-seclusion-check-settle-and-save', 'empty-relationship-save-defaults'] }));
