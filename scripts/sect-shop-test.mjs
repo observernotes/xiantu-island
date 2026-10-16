@@ -1,4 +1,5 @@
 // 只使用内存配置与存档；Vite SSR 不监听端口、不写真实 localStorage。
+// QA_TIER_GATE_AWARE: fiveSectClasses sectRanks sectShopLibrary sectDonations
 import { createServer } from 'vite';
 
 const server = await createServer({

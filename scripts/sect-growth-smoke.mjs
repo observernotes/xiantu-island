@@ -1,5 +1,6 @@
 // npm run build:test 后执行：timeout 120s node scripts/sect-growth-smoke.mjs。
 // 未发布服务只在浏览器内存启用；真实配置、data/ 与系统时间保持原样。
+// QA_TIER_GATE_AWARE: sectRanks sectShopLibrary sectDonations
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';

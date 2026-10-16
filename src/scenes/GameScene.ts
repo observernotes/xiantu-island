@@ -1709,7 +1709,10 @@ export class GameScene extends Phaser.Scene {
       ]);
       return;
     }
-    const blockedQuest = (questId || !this.prog.job) && this.quests.npcQuestIds(npcId).find(id => (!questId || id === questId)
+    const hasTalismanService = featureEnabled('talismanCraft') && npcId === 'lingfu_envoy';
+    // 独立制符菜单不受拜帖门槛影响；显式拜师或继续普通对话仍检查原门槛。
+    const talismanMenu = hasTalismanService && !questId && !skipMenu;
+    const blockedQuest = !talismanMenu && (questId || !this.prog.job) && this.quests.npcQuestIds(npcId).find(id => (!questId || id === questId)
       && this.quests.state(id) !== 'done' && this.quests.sectEntryBlock(id));
     if (blockedQuest) {
       this.player.body.setVelocityX(0);
@@ -1724,7 +1727,6 @@ export class GameScene extends Phaser.Scene {
     const sectOffer = this.sectTrialOfferFor(npcId, questId);
     if (sectOffer) { this.offerSectTrial(npcId, sectOffer); return; }
     const dailyIds = this.quests.npcDailyQuestIds(npcId);
-    const hasTalismanService = featureEnabled('talismanCraft') && npcId === 'lingfu_envoy';
     const services = this.sectGrowth.services(npcId).filter(service => (service.type !== 'sect_shop' || featureEnabled('shops'))
       && featureEnabled(service.type === 'sect_promotion'
         ? 'sectRanks' : service.type === 'sect_donation' ? 'sectDonations' : 'sectShopLibrary'));

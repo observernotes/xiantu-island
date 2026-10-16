@@ -451,6 +451,8 @@ try {
     await choose('前往灵符派');
     await page.waitForFunction(() => window.__scene.map.id === 'lingfu_pavilion' && window.__scene.player.active);
     eq(await page.evaluate(() => window.__scene.prog.sect), '', '未拜师乘飞舟被强制入宗');
+    eq(await page.evaluate(() => [window.__scene.prog.job, window.__scene.prog.selectedSect,
+      window.__scene.prog.count('five_sect_token')]), ['', '', 0], '教学夹具应保持未入宗、未选宗且无拜帖');
     await approachNpc('lingfu_envoy');
     await choose('学习制符'); await finishTeaching();
     eq(await page.evaluate(() => window.__scene.quests.state('q_talisman_intro')), 'active', '第一轮对白未接取入门任务');
@@ -459,6 +461,9 @@ try {
     await choose('学习制符'); await finishTeaching();
     eq(await page.evaluate(() => window.__scene.quests.state('q_talisman_intro')), 'done', '第二轮教学未交付入门任务');
     eq(await page.evaluate(() => window.__scene.prog.learnedRecipes.length), 5, '自然NPC教学未发五张配方');
+    eq(await page.evaluate(() => [window.__scene.prog.job, window.__scene.prog.sect, window.__scene.prog.selectedSect,
+      window.__scene.prog.count('five_sect_token'), window.__scene.quests.state('q_sect_lingfu') ?? null]),
+    ['', '', '', 0, null], '独立制符教学不得拜入、选宗、发帖或接取宗门任务');
     await approachNpc('lingfu_envoy'); await choose('制符');
     await page.waitForFunction(() => window.__xt.talismanCraftSnapshot()?.open === true);
     await page.keyboard.press('Escape');
@@ -780,7 +785,13 @@ try {
     eq(s.artUsed.ui_talisman_paper, 'code', '选符纸面缺图未回退');
     await shot(page, 'ui4_craft_missing_preview');
     await page.evaluate(() => window.__xt.giveItem('spirit_ink', 3));
-    await page.waitForFunction(() => window.__xt.talismanCraftSnapshot()?.view.check.ok);
+    await page.waitForFunction(() => {
+      const s = window.__xt.talismanCraftSnapshot();
+      return s?.view.check.ok && s.buttons.startOrAgain.enabled;
+    });
+    // 材料预检是实时值；按钮须先完成重绘，再等下一帧加入 Phaser 输入列表。
+    await page.evaluate(() => new Promise(resolve =>
+      window.__scene.scene.get('talisman-craft-ui').events.once('postupdate', () => resolve())));
     await clickCraft(page, 'startOrAgain'); await waitCraft(page, { state: 'drawing', ready: true });
     s = (await craftInput(page, ['up', 'up'], { pause: true })).snapshot;
     eq(s.artUsed.fx_trial_talisman, 'code', '累计画符特效缺图未回退');

@@ -22,10 +22,10 @@ const classes = [
   ['youying_shadow', 'youying', 'trial_youying_vault'],
   ['wanshou_tamer', 'wanshou', 'trial_wanshou_pen'],
 ];
-// 读取与构建相同的工程快照，未来阶段的四宗任务不作为新拜入夹具。
+// 读取与构建相同的工程快照，拜入阶段口径与 QuestSystem 保持一致。
 const featureLoader = await createServer({ root: projectRoot,
   server: { middlewareMode: true, hmr: false, ws: false }, appType: 'custom', logLevel: 'error' });
-let expectedFeatures, inPhase;
+let expectedFeatures, questInPhase;
 try {
   const features = await featureLoader.ssrLoadModule('/src/features.ts');
   let configured = {};
@@ -42,13 +42,13 @@ try {
       assert.equal(expectedFeatures[name], value, `QA 关口 ${name} 与工程快照不一致`);
     }
   }
-  ({ inPhase } = await featureLoader.ssrLoadModule('/src/data.ts'));
+  ({ questInPhase } = await featureLoader.ssrLoadModule('/src/data.ts'));
 } finally { await featureLoader.close(); }
 const skippedClosedEntrances = [];
 const activeClasses = classes.filter(([job, sect]) => {
   const quest = questRows.find(row => row.id === `q_sect_${sect}`);
   const gateClosed = sect !== 'tianjian' && !expectedFeatures.fiveSectClasses;
-  if (gateClosed || !quest || !inPhase(quest)) {
+  if (gateClosed || !quest || !questInPhase(quest)) {
     skippedClosedEntrances.push({ job, quest, gateClosed,
       reason: gateClosed ? 'fiveSectClasses=false' : '任务不在当前阶段' });
     return false;
@@ -143,6 +143,9 @@ try {
           const p = new P(); let saveCalls = 0;
           p.save = () => { saveCalls++; return true; }; p.level = quest?.reqLevel ?? 30;
           p.quests.q_fox = { state: 'done', kills: {} }; p.grantSkill('spirit_bolt', 4);
+          if (quest?.id !== 'q_sect_tianjian') {
+            p.addItem('five_sect_token', 1); p.selectedSect = quest?.id.replace('q_sect_', '') ?? '';
+          }
           const q = new Q(p), before = JSON.stringify(p), storedBefore = localStorage.getItem('xiantu_save_v1');
           saveCalls = 0;
           const id = quest?.id ?? `q_sect_${job.split('_')[0]}`;
@@ -415,7 +418,11 @@ try {
       const questCheck = await page.evaluate(quest => {
         const scene = window.__scene, P = scene.prog.constructor, Q = scene.quests.constructor;
         const p = new P(); p.save = () => true; p.level = quest.reqLevel; p.quests.q_fox = { state: 'done', kills: {} };
+        if (quest.id !== 'q_sect_tianjian') {
+          p.addItem('five_sect_token', 1); p.selectSect(quest.id.replace('q_sect_', ''));
+        }
         scene.prog = p; scene.quests = new Q(p);
+        const available = scene.quests.available(quest.id);
         const accepted = scene.quests.accept(quest.id);
         const early = scene.quests.complete(quest.id);
         const trial = quest.objectives.find(objective => objective.type === 'trial')?.trial;
@@ -423,11 +430,12 @@ try {
         const beforeRewardJob = p.job;
         const reward = scene.quests.talk(quest.turnIn).after?.();
         if (reward) scene.giveRewards(reward.quest, reward.broke, reward.daily, reward.settled);
-        return { accepted, early, beforeRewardJob, completed: p.quests[quest.id]?.state, job: p.job, appearance: p.appearance,
+        return { available, accepted, early, beforeRewardJob, completed: p.quests[quest.id]?.state, job: p.job, appearance: p.appearance,
           skills: p.skills, gifted: p.skillGifted, refund: p.classRefundSp,
           playerTexture: scene.player.texture.key, hotbar: p.hotbar, robe: p.equip.robe, stones: p.stones,
           duplicate: scene.quests.turnIn(quest.id) ?? null, save: localStorage.getItem('xiantu_save_v1') };
       }, quest);
+      assert.equal(questCheck.available, true, `${job}: 真实任务入口不可用`);
       assert.equal(questCheck.accepted, true, `${job}: 真实任务不可接`);
       assert.equal(questCheck.early, false, `${job}: 未通关任务可交`);
       assert.equal(questCheck.completed, 'done', `${job}: 真实交付未完成`);

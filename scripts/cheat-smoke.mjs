@@ -1,9 +1,9 @@
-// 先 npm run build；用独立浏览器存档验收正式构建的 URL 门控及作弊路径。
+// 默认先 npm run build，独立 preview 正式 dist；仅显式 XT_CHEAT_TEST_BRIDGE=1 时验收测试构建。
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { preview } from 'vite';
+import { preview } from './isolated-build.mjs';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const testBridge = process.env.XT_CHEAT_TEST_BRIDGE === '1';
@@ -33,8 +33,14 @@ let server, browser;
 const pageErrors = [], consoleErrors = [];
 try {
   await fs.access(path.join(root, 'dist/index.html'));
+  const files = await fs.readdir(path.join(root, 'dist/assets'));
+  check(files.some(file => /^Cheat(?:Panel)?-[^/]+\.js$/i.test(file)),
+    'dist 必须含独立动态 Cheat chunk；请先运行 npm run build');
+  if (!testBridge) equal(files.filter(file => /^XtTestBridge-[^/]+\.js$/i.test(file)), [],
+    '正式 dist 不应包含测试桥 chunk；请先运行 npm run build，测试桥验收须显式设置 XT_CHEAT_TEST_BRIDGE=1');
   const playwright = await loadPlaywright();
-  server = await preview({ root, preview: { host: '127.0.0.1', port, strictPort: true }, logLevel: 'error' });
+  // 与 cheat-gate 一样清空子进程 NODE_OPTIONS，避免 tier1 loader 重定向到共享 dist-test。
+  server = await preview({ root, preview: { port } });
   browser = await playwright.chromium.launch({ executablePath: await browserPath(playwright.chromium), headless: true,
     args: ['--use-gl=swiftshader', '--enable-unsafe-swiftshader'] });
   const context = await browser.newContext({ viewport: { width: 1280, height: 720 } });
@@ -266,6 +272,6 @@ try {
   equal(consoleErrors, [], '所有路径无 console.error');
   console.log(`作弊器${testBridge ? '测试' : '正式'}构建冒烟通过：${assertions} 项断言`);
 } finally {
-  await browser?.close();
-  if (server) await new Promise((resolve, reject) => server.httpServer.close(error => error ? reject(error) : resolve()));
+  try { await browser?.close(); }
+  finally { await server?.close(); }
 }

@@ -1,4 +1,5 @@
 // 先 npm run build:test；无头验证测试接口，端口可用 XT_TEST_PORT 覆盖。
+// QA_TIER_GATE_AWARE: fiveSectClasses sectDaily sectRanks sectDonations seclusion
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';

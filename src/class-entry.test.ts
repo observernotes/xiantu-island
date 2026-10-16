@@ -1,4 +1,4 @@
-import { QUESTS, SECT_RANKS, inPhase } from './data';
+import { QUESTS, SECT_RANKS, questInPhase } from './data';
 import { dailyQuestDay } from './DailyQuests';
 import { Progress } from './Progress';
 import { QuestSystem } from './QuestSystem';
@@ -334,13 +334,17 @@ try {
   const openEntrances: string[] = [];
   for (const cls of CLASS_LIST) {
     const q = QUESTS[cls.joinQuest];
-    if (!classEntryEnabled(cls) || !q || !inPhase(q)) continue;
+    if (!classEntryEnabled(cls) || !q || !questInPhase(q)) continue;
     const { old, entry, otherActive, buff } = fixture(cls);
     const p = new Progress();
     Object.assign(p, old, { job: '', classVersion: 0, classRewardClaims: [], quests: { q_fox: { state: 'done', kills: {} } } });
     delete p.skills[entry]; delete p.skillGifted[entry]; delete p.skillMastery[entry];
     p.hotbar[priorEntrySlot] = null;
     p.ensureDefaults(); p.backfillRealmRewards();
+    if (cls.sect !== CLASS_RULES.unjoinedSkillSect) {
+      p.addItem('five_sect_token', 1);
+      equal(p.selectSect(cls.sect), true, `${cls.id}: 持帖可选择开放宗门`);
+    }
     const qs = new QuestSystem(p);
     const beforeJoin = JSON.stringify({ job: p.job, skills: p.skills, gifted: p.skillGifted, hotbar: p.hotbar, refund: p.classRefundSp });
     equal(qs.accept(q.id), true, `${cls.id}: 开放入口可真实接取`);

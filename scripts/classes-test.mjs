@@ -51,7 +51,7 @@ try {
   const { Progress } = await server.ssrLoadModule('/src/Progress.ts');
   const { QuestSystem } = await server.ssrLoadModule('/src/QuestSystem.ts');
   const { GameScene } = await server.ssrLoadModule('/src/scenes/GameScene.ts');
-  const { ITEMS, QUESTS, inPhase } = await server.ssrLoadModule('/src/data.ts');
+  const { ITEMS, QUESTS, questInPhase } = await server.ssrLoadModule('/src/data.ts');
   const { SKILLS, SKILL_LIST, SKILL_RULES, skillNumber, spEarnedFor } = await server.ssrLoadModule('/src/skills.ts');
   const { dailyQuestDay } = await server.ssrLoadModule('/src/DailyQuests.ts');
   const rawQuests = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/quests.json'), 'utf8'));
@@ -274,7 +274,7 @@ try {
     }
     p.grantSkill('spirit_bolt', 4);
     const before = JSON.stringify(p), storedBefore = saved[saveKey];
-    if (!gateOpen || !QUESTS[cls.joinQuest] || !inPhase(raw)) {
+    if (!gateOpen || !QUESTS[cls.joinQuest] || !questInPhase(raw)) {
       equal(qs.available(cls.joinQuest), false, `${cls.id}: 关闭或未来阶段任务不可接`);
       equal(qs.accept(cls.joinQuest), false, `${cls.id}: 接取不能绕过关口`);
       if (!gateOpen) equal(p.advanceClass(cls.id), false, `${cls.id}: 新拜入不能绕过关闭开关`);

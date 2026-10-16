@@ -21,13 +21,13 @@ const featureLoader = await createServer({ root: projectRoot,
   server: { middlewareMode: true, hmr: false, ws: false }, appType: 'custom', logLevel: 'error' });
 let expectedEntrance, legacySkills, expectedServices;
 try {
-  const { QUESTS, inPhase } = await featureLoader.ssrLoadModule('/src/data.ts');
+  const { QUESTS, questInPhase } = await featureLoader.ssrLoadModule('/src/data.ts');
   const { classDef, classEntryEnabled, skillsForClass } = await featureLoader.ssrLoadModule('/src/classes.ts');
   const { featureFlags } = await featureLoader.ssrLoadModule('/src/features.ts');
   const features = featureFlags();
   expectedServices = { shop: features.shops && features.sectShopLibrary, donation: features.sectDonations };
   const cls = classDef('taixu_acolyte'), tree = skillsForClass(cls.id);
-  expectedEntrance = !!QUESTS[join.id] && inPhase(join) && classEntryEnabled(cls);
+  expectedEntrance = !!QUESTS[join.id] && questInPhase(join) && classEntryEnabled(cls);
   const active = tree.filter(skill => skill.type !== 'passive');
   legacySkills = {
     skills: Object.fromEntries(tree.map(skill => [skill.id, skill.type === 'passive' ? 1 : 2])),
@@ -151,6 +151,12 @@ try {
     const scene = window.__scene, p = scene.prog;
     scene.dialog.close(); scene.skillWindow.close();
     const before = { job: p.job, available: scene.quests.available(collect.id), menu: scene.quests.npcDailyQuestIds(collect.giver) };
+    let ready = null;
+    if (expectedEntrance) {
+      p.addItem('five_sect_token', 1);
+      ready = { selected: p.selectSect('taixu'), available: scene.quests.available(join.id),
+        menuContains: scene.quests.npcQuestIds(join.giver).includes(join.id) };
+    }
     scene.quests.talk(join.giver, join.id).after?.();
     const active = scene.quests.state(join.id), early = scene.quests.complete(join.id);
     scene.quests.onTrialComplete(join.objectives.find(o => o.type === 'trial').trial);
@@ -168,13 +174,14 @@ try {
         skillMastery: p.skillMastery, hotbar: p.hotbar,
         usable: p.classSkills.every(skill => p.ownsSkill(skill) && p.skillLevel(skill.id) > 0) };
     }
-    return { before, entrance, legacy, job: p.job, sect: p.sect,
+    return { before, ready, entrance, legacy, job: p.job, sect: p.sect,
       available: scene.quests.available(collect.id), contribution: p.sectContribution };
   }, { join, collect, expectedEntrance, legacySkills });
   assert.equal(joined.before.job, '', '夹具读档时已提前入宗');
   assert.equal(joined.before.available, false, '未入宗可以领日常');
   assert.deepEqual(joined.before.menu, [], '未入宗出现日常菜单');
   if (expectedEntrance) {
+    assert.deepEqual(joined.ready, { selected: true, available: true, menuContains: true }, '持帖选宗后真实拜入入口不可用');
     assert.equal(joined.entrance.active, 'active', '真实拜入任务未接取');
     assert.equal(joined.entrance.early, false, '入门试炼未胜利就可交付');
     assert.equal(joined.entrance.completed, 'done', '胜利回调后拜入任务未交付');

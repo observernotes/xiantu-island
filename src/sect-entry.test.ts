@@ -273,6 +273,61 @@ try {
     }
   }
 
+  // 独立制符教学不要求拜入灵符派；拜帖提示只拦宗门任务和继续普通对话。
+  const lingfu = fourSects.find(cls => cls.sect === 'lingfu')!;
+  for (const [context, token, selected, entryActive] of [
+    ['未持帖未选宗', 0, '', false], ['持帖未选宗', 1, '', false],
+    ['已选灵符且入门任务进行中', 1, 'lingfu', true],
+  ] as const) {
+    const p = fixture(lingfu), qs = new QuestSystem(p);
+    p.level = 15;
+    if (token) p.addItem('five_sect_token', token);
+    p.selectedSect = selected;
+    if (entryActive) p.quests[lingfu.joinQuest] = { state: 'active', kills: {} };
+    let choices: DialogChoice[] = [], menuText = '', completion: (() => void) | undefined;
+    const scene = Object.assign(Object.create(GameScene.prototype), {
+      prog: p, quests: qs, map: { id: 'lingfu_pavilion', objects: [] },
+      player: { body: { setVelocityX() {} } },
+      closeItemPanels() {},
+      dialog: {
+        choose(line: Line, _sprite: unknown, nextChoices: DialogChoice[]) { menuText = line.text; choices = nextChoices; },
+        show(_lines: Line[], _sprite: unknown, after?: () => void) { completion = after; choices = []; },
+      },
+      sectGrowth: {
+        services: () => [], ordinaryCatalog: () => ({ ok: false }), ordinarySellCatalog: () => ({ ok: false }),
+        recipeCatalog: () => ({ ok: false }),
+      },
+      giveRewards() {}, log() {},
+    }) as GameScene;
+    setFeatureFlag('talismanCraft', true);
+    scene.talkTo('lingfu_envoy');
+    check(choices.some(choice => choice.label === t('talisman.entry_learn')), `${context}: 普通对话提供独立制符教学`);
+    check(choices.some(choice => choice.label === t('talisman.entry_craft')), `${context}: 普通对话提供独立制符入口`);
+    const blocked = qs.sectEntryBlock(lingfu.joinQuest);
+    if (blocked) {
+      const before = p.exportSave();
+      scene.talkTo('lingfu_envoy', lingfu.joinQuest);
+      equal(menuText, blocked, `${context}: 显式宗门任务仍提示拜帖门槛`);
+      check(!choices.some(choice => choice.label === t('talisman.entry_learn')), `${context}: 显式门槛不提供制符菜单`);
+      scene.talkTo('lingfu_envoy', undefined, true);
+      equal(menuText, blocked, `${context}: 继续普通对话仍提示拜帖门槛`);
+      setFeatureFlag('talismanCraft', false);
+      scene.talkTo('lingfu_envoy');
+      equal(menuText, blocked, `${context}: 制符关闭时保留原拜帖提示`);
+      setFeatureFlag('talismanCraft', true);
+      equal(p.exportSave(), before, `${context}: 显式门槛和关闭制符不改变角色`);
+    }
+    scene.talkTo('lingfu_envoy');
+    choices.find(choice => choice.label === t('talisman.entry_learn'))!.onSelect();
+    check(completion, `${context}: 独立制符教学提供真实任务对白回调`);
+    completion();
+    equal(qs.state('q_talisman_intro'), 'active', `${context}: 制符教学可接取入门任务`);
+    equal([p.job, p.sect, p.selectedSect, p.count('five_sect_token')], ['', '', selected, token],
+      `${context}: 制符教学不改变入宗、选宗和拜帖`);
+    equal(qs.state(lingfu.joinQuest), entryActive ? 'active' : undefined, `${context}: 制符教学不改变宗门任务`);
+  }
+  setFeatureFlag('talismanCraft', flagsBefore.talismanCraft);
+
   // 本次修复明确保留天剑：妖狐完成后，不加四宗的持帖与选宗门槛。
   const tianjian = CLASS_LIST.find(cls => cls.sect === 'tianjian')!;
   const p = fixture(tianjian), qs = new QuestSystem(p);
