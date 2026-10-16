@@ -1,0 +1,30 @@
+{
+ "atlas": "fx_talisman_step",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  64,
+  96
+ ],
+ "blend": "NORMAL",
+ "kind": "fx",
+ "note": "原点(0.5,1)是角色脚底(32,96)；朱红小符阵在脚下、风纹与符签在足边。增益有效时loop循环跟随脚底；结束即销毁，攻速加成及冷却/后摇缩短由技能系统处理。NORMAL混合。",
+ "anims": [
+  {
+   "key": "fx_talisman_step_loop",
+   "frames": [
+    "fx_talisman_step_loop_01",
+    "fx_talisman_step_loop_02",
+    "fx_talisman_step_loop_03",
+    "fx_talisman_step_loop_04",
+    "fx_talisman_step_loop_05",
+    "fx_talisman_step_loop_06"
+   ],
+   "frameRate": 12,
+   "repeat": -1
+  }
+ ]
+}

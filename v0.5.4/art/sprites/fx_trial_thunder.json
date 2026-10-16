@@ -1,0 +1,158 @@
+{
+ "frames": {
+  "fx_trial_thunder_strike_01": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 400
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 400
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 400
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.8
+   }
+  },
+  "fx_trial_thunder_strike_02": {
+   "frame": {
+    "x": 160,
+    "y": 0,
+    "w": 160,
+    "h": 400
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 400
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 400
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.8
+   }
+  },
+  "fx_trial_thunder_strike_03": {
+   "frame": {
+    "x": 320,
+    "y": 0,
+    "w": 160,
+    "h": 400
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 400
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 400
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.8
+   }
+  },
+  "fx_trial_thunder_strike_04": {
+   "frame": {
+    "x": 480,
+    "y": 0,
+    "w": 160,
+    "h": 400
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 400
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 400
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.8
+   }
+  },
+  "fx_trial_thunder_strike_05": {
+   "frame": {
+    "x": 640,
+    "y": 0,
+    "w": 160,
+    "h": 400
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 400
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 400
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.8
+   }
+  },
+  "fx_trial_thunder_strike_06": {
+   "frame": {
+    "x": 800,
+    "y": 0,
+    "w": 160,
+    "h": 400
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 160,
+    "h": 400
+   },
+   "sourceSize": {
+    "w": 160,
+    "h": 400
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.8
+   }
+  }
+ },
+ "meta": {
+  "app": "xiantu gen_trial_altar.py",
+  "image": "fx_trial_thunder.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 960,
+   "h": 400
+  },
+  "scale": "1"
+ }
+}
