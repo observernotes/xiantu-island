@@ -52,7 +52,7 @@ function draw(system: TalismanSystem, correct: number): TalismanResult | null {
 }
 
 try {
-  eq(featureEnabled('lifeSkillCurve'), false, '发布快照显式默认关，pending不自动开放');
+  eq(featureEnabled('lifeSkillCurve'), true, 'tip 开态，发布快照 lifeSkillCurve 已开启');
   eq(LIFE_SKILL_ERRORS.length, 0, '真实表无配置错误');
   ok(LIFE_SKILLS, '真实生活技能表已接入 data.ts');
   const config = LIFE_SKILLS;

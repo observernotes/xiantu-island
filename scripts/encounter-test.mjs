@@ -15,7 +15,7 @@ async function guardedTables() {
   const files = [...new Set([path.resolve('data/features.json'), ...roots.map(root => path.join(root, 'balance/encounters.json'))])];
   return Promise.all(files.map(async file => {
     const bytes = await readFile(file), parsed = JSON.parse(bytes.toString());
-    if (file.endsWith('features.json')) assert.equal(parsed.lifeSkillCurve, false, `${file}: lifeSkillCurve 必须保持 false`);
+    if (file.endsWith('features.json')) assert.equal(parsed.lifeSkillCurve, true, `${file}: tip 开态，lifeSkillCurve 已开启`);
     else {
       assert.equal(parsed.encounters.length, 5, `${file}: 五事件`);
       assert.equal(parsed.encounters.filter(row => row.enabled === true).length, 5, `${file}: 正式 enabled 计数 5`);

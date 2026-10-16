@@ -8,6 +8,19 @@ import { createServer } from 'vite';
 import { sharedRoot } from './root.mjs';
 
 const md5 = bytes => createHash('md5').update(bytes).digest('hex');
+function assertAllDisabled(parsed, file, label) {
+  const enabled = [];
+  const visit = value => {
+    if (!value || typeof value !== 'object') return;
+    for (const [key, child] of Object.entries(value)) {
+      if (key === 'enabled') enabled.push(child);
+      visit(child);
+    }
+  };
+  visit(parsed);
+  assert.ok(enabled.length > 0, `${file}: 找到 ${label} 关闭门禁`);
+  assert.ok(enabled.every(value => value === false), `${file}: ${label} 全部 enabled 严格 false`);
+}
 async function guardedTables() {
   const roots = [path.resolve('data')];
   try { roots.push(sharedRoot(process.cwd())); } catch { /* 沿既有 snapshot 回退。 */ }
@@ -17,29 +30,30 @@ async function guardedTables() {
   return Promise.all(files.map(async file => {
     const bytes = await readFile(file), parsed = JSON.parse(bytes.toString());
     if (file.endsWith('/features.json')) {
-      assert.equal(md5(bytes), 'a06c3638796fd1bed9af3d45c038c954', 'features 固定 MD5');
-      assert.equal(parsed.lifeSkillCurve, false, 'lifeSkillCurve 保持 false');
+      assert.equal(md5(bytes), '8b016fe74a812852e2d92e2f94857903', 'tip 开态 features 固定 MD5');
+      assert.equal(parsed.lifeSkillCurve, true, 'tip 开态，lifeSkillCurve 已开启');
     } else if (file.endsWith('/encounters.json')) {
       assert.equal(parsed.encounters.length, 5, `${file}: 五事件`);
       assert.ok(parsed.encounters.every(row => row.enabled === true), `${file}: tip 临时开态，正式五事件全部严格 true`);
-    } else {
-      const enabled = [];
-      const visit = value => {
-        if (!value || typeof value !== 'object') return;
-        for (const [key, child] of Object.entries(value)) {
-          if (key === 'enabled') enabled.push(child);
-          visit(child);
-        }
-      };
-      visit(parsed);
-      assert.ok(enabled.length > 0, `${file}: 找到关闭门禁`);
-      assert.ok(enabled.every(value => value === false), `${file}: #19/#20/affinity/questHooks 关态`);
+    } else if (file.endsWith('/npcs.json')) {
+      const affinities = parsed.filter(row => Object.hasOwn(row, 'affinity')).map(row => row.affinity);
+      assert.equal(affinities.length, 9, `${file}: 正式九人好感块`);
+      assert.ok(affinities.every(row => row?.enabled === true), `${file}: tip 开态，九人 affinity.enabled 全部严格 true`);
+      assert.equal(affinities.filter(row => row?.gifts?.enabled === false).length, 9, `${file}: 九个 affinity.gifts.enabled 全部严格 false`);
+    } else if (file.endsWith('/karma_flags.json')) {
+      assert.deepEqual(parsed.questHooks.map(row => row.id).sort(), ['prologue_medicine', 'sect_tianjian_sword'], `${file}: 正式两题 questHooks`);
+      assert.ok(parsed.questHooks.every(row => row.enabled === true), `${file}: tip 开态，两题 questHooks.enabled 全部严格 true`);
+    } else if (file.endsWith('/gongfa_grades.json')) {
+      assertAllDisabled(parsed, file, '#19 功法品阶');
+    } else if (file.endsWith('/qi_density.json')) {
+      assertAllDisabled(parsed, file, '#20 灵气浓度');
     }
     return { file, bytes, hash: md5(bytes) };
   }));
 }
 
-// 每种数据模式独立模块图；正式五事件为 tip 开态，关态仅用 structuredClone fixture，正式表前后逐字节守护。
+// 每种数据模式独立模块图；tip 已开 lifeSkillCurve/五事件/九人好感/两题 questHooks，#19/#20/gifts 仍关。
+// 关态仅用 structuredClone fixture，正式表前后逐字节守护。
 if (!process.argv.includes('--single-mode')) {
   const initial = await guardedTables();
   try {
