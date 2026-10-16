@@ -740,7 +740,7 @@ try {
     const hiddenCount = placements.reduce((count, map) => count + map.objects.filter(object => object.type === 'hidden').length, 0);
     if (hiddenCount === 0) console.log('sense.test: snapshot 无神识投放，跳过 shared 真实投放断言');
     else {
-      eq(hiddenCount, 12, '共享六图真实登记 12 个 hidden 点位');
+      eq(hiddenCount, 13, '共享六图真实登记 13 个 hidden 点位');
       const registered = Object.values(MONSTERS).filter(def => def.sense);
       eq(registered.length, 22, '共享怪物真实登记 22 个 sense 块');
       ok(registered.every(def => def.sense!.enabled === deploymentEnabled), `真实怪物 sense 块符合${deploymentState}`);
@@ -752,7 +752,9 @@ try {
         const sharedMaps = placements.map(({ id, raw, objects }) => {
           const m = mapFixture(f, clone(objects), id, raw.width * raw.tilewidth, raw.height * raw.tileheight);
           same(m.scene.map.hidden.map((hidden: any) => hidden.object.name).sort(),
-            ['sense_hidden_chest_01', 'sense_hidden_platform_01'], `${id} 使用真实宝箱/平台点位`);
+            id === 'wanyao_outer_1'
+              ? ['enc_hidden_abode_anchor', 'sense_hidden_chest_01', 'sense_hidden_platform_01']
+              : ['sense_hidden_chest_01', 'sense_hidden_platform_01'], `${id} 使用真实 hidden 点位`);
           ok(m.scene.map.hidden.every((hidden: any) => hidden.valid && hidden.object.props.enabled === deploymentEnabled), `${id} 真实点位合法且符合${deploymentState}`);
           eq(m.adapter.targets().length, 0, `${id} 模板 false 时零候选`);
           for (const hidden of m.scene.map.hidden) hidden.object.props.enabled = true;
@@ -771,6 +773,7 @@ try {
         same(off.hits, [], '真实怪物模板关闭不产生命中'); eq(off.faint, false, '模板关闭的真实怪物不计 faint');
         for (const profile of f.config.targetProfiles) profile.enabled = true;
         for (const m of sharedMaps) {
+          // 奇遇锚点由独立适配器处理，普通地图适配器仍只扫描宝箱和平台。
           eq(m.adapter.targets().length, 2, `${m.scene.map.id} 内存开模板和点位后有两个候选`);
           f.context.instanceId = m.scene.map.id; f.p.senseState = undefined; f.p.mp = f.p.maxMp;
           const sense = service(f, { targets: () => m.adapter.targets() });
