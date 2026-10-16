@@ -1,5 +1,5 @@
 import { CLASS_LIST, classRobe } from './classes';
-import { BREAKTHROUGH_LEVELS, ITEMS, MAX_LEVEL, MONSTERS, QUESTS, REALMS, TILED_MAPS } from './data';
+import { BREAKTHROUGH_LEVELS, ITEMS, MAX_LEVEL, MONSTERS, QUEST_HOOKS, QUESTS, REALMS, TILED_MAPS } from './data';
 import { SKILLS } from './skills';
 import { FIELD_TEST } from './config/maps';
 import { FEEL } from './config/feel';
@@ -100,7 +100,10 @@ export function installCheat() {
         default: throw new Error(`暂不支持的任务目标 ${o.type}`);
       }
     }
-    const reward = s.quests.turnIn(id, true);
+    // 强制完成没有选择 UI，使用已开启交付节点的首项选择。
+    const hook = QUEST_HOOKS?.questHooks.find(candidate => candidate.quest === id
+      && candidate.on === 'turn_in' && candidate.enabled);
+    const reward = s.quests.turnIn(id, true, hook?.choices[0].id);
     if (reward) s.giveRewards(reward.quest, reward.broke, reward.daily, reward.settled);
     const saved = persist(s);
     return !!reward && saved;

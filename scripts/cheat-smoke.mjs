@@ -146,14 +146,20 @@ try {
   equal(quest.afterStones, quest.stones, '已完成任务不重复发奖励');
   const skipped = await page.evaluate(() => {
     const api = window.__cheat, p = window.__scene.prog;
-    api.acceptQuest('q_awaken'); api.acceptQuest('q_snake'); api.acceptQuest('q_daily_taixu_2');
+    api.acceptQuest('q_awaken'); api.acceptQuest('q_snake'); api.acceptQuest('q_sect_tianjian'); api.acceptQuest('q_daily_taixu_2');
     const ok = api.skipQuests();
+    const saved = JSON.parse(localStorage.getItem('xiantu_save_v1'));
     return { ok, awaken: p.quests.q_awaken?.state, snake: p.quests.q_snake?.state,
+      tianjian: p.quests.q_sect_tianjian?.state,
       daily: p.quests.q_daily_taixu_2?.state,
-      saved: JSON.parse(localStorage.getItem('xiantu_save_v1')).quests };
+      choices: { ...p.relationshipState.questChoices }, savedChoices: saved.relationshipState.questChoices,
+      saved: saved.quests };
   });
   equal(skipped.ok, true, '强制完成全部当前非日常任务');
   equal([skipped.awaken, skipped.snake], ['done', 'done'], '批量完成 reach 和 collect 任务');
+  equal(skipped.tianjian, 'done', '批量完成带交付选择的宗门任务');
+  equal([skipped.choices.q_awaken, skipped.choices.q_sect_tianjian], ['return', 'protect'], '开启的交付 hook 默认使用首项选择');
+  equal(skipped.savedChoices, skipped.choices, '默认交付选择写入存档');
   equal(skipped.daily, 'active', '跳任务保留日常任务');
   equal(skipped.saved.q_snake.state, 'done', '批量任务写存档');
 
