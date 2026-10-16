@@ -6,7 +6,7 @@
 
 同步基线：`22006bec08aecf59921697d413216bd541ef5008`（v0.6a 关态 handoff / #12c + TD-V06-01），已执行 `git fetch origin`、`git pull --ff-only origin dev`，Already up to date。
 
-TIP_SHA：`PLACEHOLDER`（docs-only；基线测例绿于 `22006bec08aecf59921697d413216bd541ef5008`，无产品/测例改动；已普通 push 至 `origin/dev`，未 force-push）。
+TIP_SHA：`0bd0442174f9daa9db0641c1f7e8c09cbd96084e`（docs-only；基线测例绿于 `22006bec08aecf59921697d413216bd541ef5008`，无产品/测例改动；已普通 push 至 `origin/dev`，未 force-push）。
 
 ## 结果与改动范围
 
@@ -70,4 +70,4 @@ npm run test:mainline-56
 
 【执法堂 2/3】正式 `features.indexedDbSaves=false`（SHA-256=f5326ab47ca72919592a933bcd4f77127a44f87943ddeb648a6cd5616b9ef50f）；gifts 仍关 9/9 false；lifeSkillCurve 保持 true；UI 债（overlay/异步）旁注不挡。
 
-【执法堂 3/3】TIP_SHA=PLACEHOLDER（基线 22006bec08aecf59921697d413216bd541ef5008；或其后含本 RESULT 的 origin/dev HEAD）；请出 `qa/out_v06a_open_<sha>/`；本 PASS ≠ 翻开关 ≠ 进包，未发版；禁止据此改正式 features.indexedDbSaves。
+【执法堂 3/3】TIP_SHA=0bd0442174f9daa9db0641c1f7e8c09cbd96084e（基线 22006bec08aecf59921697d413216bd541ef5008；或其后含本 RESULT 的 origin/dev HEAD）；请出 `qa/out_v06a_open_<sha>/`；本 PASS ≠ 翻开关 ≠ 进包，未发版；禁止据此改正式 features.indexedDbSaves。
