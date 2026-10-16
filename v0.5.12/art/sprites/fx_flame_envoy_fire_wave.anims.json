@@ -1,0 +1,38 @@
+{
+ "atlas": "fx_flame_envoy_fire_wave",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  96,
+  64
+ ],
+ "anims": [
+  {
+   "key": "fx_flame_envoy_fire_wave_fly",
+   "frames": [
+    "fx_flame_envoy_fire_wave_fly_01",
+    "fx_flame_envoy_fire_wave_fly_02",
+    "fx_flame_envoy_fire_wave_fly_03",
+    "fx_flame_envoy_fire_wave_fly_04"
+   ],
+   "frameRate": 12,
+   "repeat": -1
+  },
+  {
+   "key": "fx_flame_envoy_fire_wave_hit",
+   "frames": [
+    "fx_flame_envoy_fire_wave_hit_01",
+    "fx_flame_envoy_fire_wave_hit_02",
+    "fx_flame_envoy_fire_wave_hit_03"
+   ],
+   "frameRate": 16,
+   "repeat": 0
+  }
+ ],
+ "note": "炎浪：原点 (0.5,1) 贴地，浪头朝左，朝右 setFlipX(true)；speed 320。",
+ "blend": "normal",
+ "kind": "fx"
+}
