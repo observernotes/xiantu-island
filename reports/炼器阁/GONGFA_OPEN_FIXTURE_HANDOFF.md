@@ -6,9 +6,9 @@
 
 同步基线：`2ec326541a9bc6bf197ff81607537a92a414a381`（v0.5.14 lifeSkillCurve），已执行 `git fetch origin`、`git pull --ff-only origin dev`。
 
-TIP_SHA：`d1b71059db4bd58441ae3abe58ef1179bcf24995`（已普通 push 至 `origin/dev`，未 force-push）。
+TIP_SHA：`d1b71059db4bd58441ae3abe58ef1179bcf24995`（测例绿；其后 docs 提交含本 RESULT，均已普通 push 至 `origin/dev`，未 force-push）。
 
-提交：`test(gongfa): adapt qi-legacy turnIn for open questHooks choice`（测例最小修补）；本交接文档另以 docs commit 钉 SHA。
+测例提交：`test(gongfa): adapt qi-legacy turnIn for open questHooks choice`。
 
 ## 结果与改动范围
 
@@ -59,7 +59,7 @@ npm run test:gongfa-qi-legacy
 | `npx tsc --noEmit` | PASS，退出码 0 |
 | `git diff --check` | PASS，退出码 0 |
 | 测例提交 | 仅 `scripts/gongfa-qi-legacy-test.mjs`，1 行；`2ec3265..d1b7105` 已普通 push |
-| 本交接 | docs commit 钉 TIP（见推送后 HEAD） |
+| 交接文档 | `reports/炼器阁/GONGFA_OPEN_FIXTURE_HANDOFF.md` + `status/炼器阁.md` 已普通 push |
 
 ## 请执法堂（三行交接）
 
@@ -67,4 +67,4 @@ npm run test:gongfa-qi-legacy
 
 【执法堂 2/3】正式 gongfa_grades SHA-256=48cca756168dc7dabdac4d126ba61805e23139a48c857df98d0542642d9c52e1；46 enabled 全 false；#20/gifts 仍关；lifeSkillCurve 保持 true（勿改回）。
 
-【执法堂 3/3】TIP_SHA=d1b71059db4bd58441ae3abe58ef1179bcf24995；本 PASS ≠ 翻开关 ≠ 进包，未发版；禁止据此改正式 gongfa_grades 任一 enabled。
+【执法堂 3/3】TIP_SHA=d1b71059db4bd58441ae3abe58ef1179bcf24995（或其后含本 RESULT 的 origin/dev HEAD）；本 PASS ≠ 翻开关 ≠ 进包，未发版；禁止据此改正式 gongfa_grades 任一 enabled。
