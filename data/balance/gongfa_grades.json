@@ -1,0 +1,392 @@
+{
+  "version": "v0.5",
+  "enabled": false,
+  "rules": {
+    "gradeOrder": [
+      "huang",
+      "xuan",
+      "di",
+      "tian"
+    ],
+    "missingBinding": "legacy",
+    "scope": "playthrough",
+    "masteryRulesRef": "skills.rules",
+    "sourceOwnership": "originating_system"
+  },
+  "grades": [
+    {
+      "id": "huang",
+      "nameKey": "gongfa.grade.huang",
+      "levelCap": 10,
+      "effectMul": 1.0,
+      "balanceTodo": []
+    },
+    {
+      "id": "xuan",
+      "nameKey": "gongfa.grade.xuan",
+      "levelCap": 15,
+      "effectMul": 1.05,
+      "balanceTodo": []
+    },
+    {
+      "id": "di",
+      "nameKey": "gongfa.grade.di",
+      "levelCap": 20,
+      "effectMul": 1.15,
+      "balanceTodo": []
+    },
+    {
+      "id": "tian",
+      "nameKey": "gongfa.grade.tian",
+      "levelCap": 30,
+      "effectMul": 1.25,
+      "balanceTodo": []
+    }
+  ],
+  "bindings": [
+    {
+      "skillId": "spirit_bolt",
+      "initialGrade": "huang",
+      "capMode": "legacy",
+      "effectMode": "damage_ratio",
+      "enabled": false
+    },
+    {
+      "skillId": "sword_qi_slash",
+      "initialGrade": "huang",
+      "capMode": "legacy",
+      "effectMode": "damage_ratio",
+      "enabled": false
+    },
+    {
+      "skillId": "fire_talisman_bolt",
+      "initialGrade": "huang",
+      "capMode": "legacy",
+      "effectMode": "damage_ratio",
+      "enabled": false
+    },
+    {
+      "skillId": "paper_talisman_throw",
+      "initialGrade": "huang",
+      "capMode": "legacy",
+      "effectMode": "damage_ratio",
+      "enabled": false
+    },
+    {
+      "skillId": "shadow_dart",
+      "initialGrade": "huang",
+      "capMode": "legacy",
+      "effectMode": "damage_ratio",
+      "enabled": false
+    },
+    {
+      "skillId": "light_body",
+      "initialGrade": "huang",
+      "capMode": "legacy",
+      "effectMode": "none",
+      "enabled": false
+    },
+    {
+      "skillId": "tianjian_heart",
+      "initialGrade": "huang",
+      "capMode": "legacy",
+      "effectMode": "none",
+      "enabled": false
+    },
+    {
+      "skillId": "water_mirror",
+      "initialGrade": "huang",
+      "capMode": "legacy",
+      "effectMode": "none",
+      "enabled": false
+    },
+    {
+      "skillId": "taixu_heart",
+      "initialGrade": "huang",
+      "capMode": "legacy",
+      "effectMode": "none",
+      "enabled": false
+    },
+    {
+      "skillId": "talisman_step",
+      "initialGrade": "huang",
+      "capMode": "legacy",
+      "effectMode": "none",
+      "enabled": false
+    },
+    {
+      "skillId": "lingfu_heart",
+      "initialGrade": "huang",
+      "capMode": "legacy",
+      "effectMode": "none",
+      "enabled": false
+    },
+    {
+      "skillId": "phantom_cloak",
+      "initialGrade": "huang",
+      "capMode": "legacy",
+      "effectMode": "none",
+      "enabled": false
+    },
+    {
+      "skillId": "youying_heart",
+      "initialGrade": "huang",
+      "capMode": "legacy",
+      "effectMode": "none",
+      "enabled": false
+    },
+    {
+      "skillId": "summon_spirit_wolf",
+      "initialGrade": "huang",
+      "capMode": "legacy",
+      "effectMode": "none",
+      "enabled": false
+    },
+    {
+      "skillId": "beast_bond",
+      "initialGrade": "huang",
+      "capMode": "legacy",
+      "effectMode": "none",
+      "enabled": false
+    },
+    {
+      "skillId": "wanshou_heart",
+      "initialGrade": "huang",
+      "capMode": "legacy",
+      "effectMode": "none",
+      "enabled": false
+    },
+    {
+      "skillId": "whirl_sword",
+      "initialGrade": "xuan",
+      "capMode": "legacy",
+      "effectMode": "damage_ratio",
+      "enabled": false
+    },
+    {
+      "skillId": "thunder_palm",
+      "initialGrade": "xuan",
+      "capMode": "legacy",
+      "effectMode": "damage_ratio",
+      "enabled": false
+    },
+    {
+      "skillId": "scatter_talisman",
+      "initialGrade": "xuan",
+      "capMode": "legacy",
+      "effectMode": "damage_ratio",
+      "enabled": false
+    },
+    {
+      "skillId": "beast_roar",
+      "initialGrade": "xuan",
+      "capMode": "legacy",
+      "effectMode": "damage_ratio",
+      "enabled": false
+    },
+    {
+      "skillId": "flying_sword",
+      "initialGrade": "xuan",
+      "capMode": "legacy",
+      "effectMode": "damage_ratio",
+      "enabled": false
+    },
+    {
+      "skillId": "sword_rain",
+      "initialGrade": "xuan",
+      "capMode": "legacy",
+      "effectMode": "damage_ratio",
+      "enabled": false
+    },
+    {
+      "skillId": "sword_mastery",
+      "initialGrade": "xuan",
+      "capMode": "legacy",
+      "effectMode": "none",
+      "enabled": false
+    },
+    {
+      "skillId": "five_element_attune",
+      "initialGrade": "xuan",
+      "capMode": "legacy",
+      "effectMode": "none",
+      "enabled": false
+    },
+    {
+      "skillId": "talisman_supply",
+      "initialGrade": "xuan",
+      "capMode": "legacy",
+      "effectMode": "none",
+      "enabled": false
+    },
+    {
+      "skillId": "shadow_step",
+      "initialGrade": "xuan",
+      "capMode": "legacy",
+      "effectMode": "none",
+      "enabled": false
+    },
+    {
+      "skillId": "light_foot",
+      "initialGrade": "xuan",
+      "capMode": "legacy",
+      "effectMode": "none",
+      "enabled": false
+    },
+    {
+      "skillId": "beast_mastery",
+      "initialGrade": "xuan",
+      "capMode": "legacy",
+      "effectMode": "none",
+      "enabled": false
+    },
+    {
+      "skillId": "sword_shield",
+      "initialGrade": "xuan",
+      "capMode": "legacy",
+      "effectMode": "none",
+      "enabled": false
+    },
+    {
+      "skillId": "sword_ride",
+      "initialGrade": "xuan",
+      "capMode": "legacy",
+      "effectMode": "none",
+      "enabled": false
+    },
+    {
+      "skillId": "tianjian_heart_2",
+      "initialGrade": "xuan",
+      "capMode": "legacy",
+      "effectMode": "none",
+      "enabled": false
+    },
+    {
+      "skillId": "qi_condense",
+      "initialGrade": "xuan",
+      "capMode": "legacy",
+      "effectMode": "none",
+      "enabled": false
+    },
+    {
+      "skillId": "sword_domain",
+      "initialGrade": "di",
+      "capMode": "legacy",
+      "effectMode": "damage_ratio",
+      "enabled": false
+    },
+    {
+      "skillId": "heart_sword",
+      "initialGrade": "di",
+      "capMode": "legacy",
+      "effectMode": "damage_ratio",
+      "enabled": false
+    },
+    {
+      "skillId": "golden_core_sword",
+      "initialGrade": "di",
+      "capMode": "legacy",
+      "effectMode": "none",
+      "enabled": false
+    },
+    {
+      "skillId": "tianjian_heart_3",
+      "initialGrade": "di",
+      "capMode": "legacy",
+      "effectMode": "none",
+      "enabled": false
+    },
+    {
+      "skillId": "sword_intent",
+      "initialGrade": "di",
+      "capMode": "legacy",
+      "effectMode": "none",
+      "enabled": false
+    },
+    {
+      "skillId": "ten_thousand_swords",
+      "initialGrade": "tian",
+      "capMode": "legacy",
+      "effectMode": "damage_ratio",
+      "enabled": false
+    }
+  ],
+  "future": {
+    "version": "v0.7",
+    "study": {
+      "enabled": false,
+      "attribute": "insight",
+      "clock": "online_active",
+      "durationBaseMs": 300000,
+      "durationMinMs": 60000,
+      "speedBase": 1.0,
+      "speedPerInsight": 0.02,
+      "masteryGain": 50,
+      "balanceTodo": []
+    },
+    "epiphany": {
+      "enabled": false,
+      "intervalMs": 60000,
+      "baseChance": 0.05,
+      "chancePerInsight": 0.001,
+      "chanceMax": 0.25,
+      "masteryGain": 100,
+      "variantChance": 0.2,
+      "balanceTodo": []
+    },
+    "upgradeProfiles": [
+      {
+        "id": "huang_to_xuan",
+        "fromGrade": "huang",
+        "toGrade": "xuan",
+        "enabled": false,
+        "fragmentCount": 3,
+        "costStones": 500,
+        "workRequiredMs": 300000,
+        "balanceTodo": []
+      },
+      {
+        "id": "xuan_to_di",
+        "fromGrade": "xuan",
+        "toGrade": "di",
+        "enabled": false,
+        "fragmentCount": 4,
+        "costStones": 2000,
+        "workRequiredMs": 600000,
+        "balanceTodo": []
+      },
+      {
+        "id": "di_to_tian",
+        "fromGrade": "di",
+        "toGrade": "tian",
+        "enabled": false,
+        "fragmentCount": 5,
+        "costStones": 8000,
+        "workRequiredMs": 1200000,
+        "balanceTodo": []
+      }
+    ],
+    "assemblyProfiles": [
+      {
+        "id": "assemble_di",
+        "grade": "di",
+        "enabled": false,
+        "fragmentCount": 4,
+        "resultCount": 1,
+        "workRequiredMs": 600000,
+        "balanceTodo": []
+      },
+      {
+        "id": "assemble_tian",
+        "grade": "tian",
+        "enabled": false,
+        "fragmentCount": 5,
+        "resultCount": 1,
+        "workRequiredMs": 1200000,
+        "balanceTodo": []
+      }
+    ],
+    "recipes": [],
+    "variants": []
+  }
+}

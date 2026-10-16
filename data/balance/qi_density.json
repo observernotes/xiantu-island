@@ -1,0 +1,86 @@
+{
+  "version": "v0.5c",
+  "enabled": false,
+  "rules": {
+    "tierOrder": [
+      "sparse",
+      "normal",
+      "abundant",
+      "rich"
+    ],
+    "mapDensitySource": "tiled_property",
+    "mapDensityProperty": "qiDensity",
+    "densityRef": "solo_pacing.densityRef",
+    "meditationRef": "solo_pacing.meditation",
+    "seclusionRef": "solo_pacing.seclusion",
+    "sectSeclusionRef": "solo_pacing.sectSeclusion",
+    "abodeBaseRef": "solo_pacing.qiDensity.cave_abode_base",
+    "abodeRef": "solo_pacing.spiritAbode",
+    "offlineRef": "solo_pacing.offline",
+    "invalidDensity": "unavailable",
+    "sourceOwnership": "originating_system"
+  },
+  "display": {
+    "enabled": false
+  },
+  "meditation": {
+    "enabled": false
+  },
+  "tiers": [
+    {
+      "id": "sparse",
+      "nameKey": "qi.tier.sparse",
+      "min": 1,
+      "balanceTodo": []
+    },
+    {
+      "id": "normal",
+      "nameKey": "qi.tier.normal",
+      "min": 3,
+      "balanceTodo": []
+    },
+    {
+      "id": "abundant",
+      "nameKey": "qi.tier.abundant",
+      "min": 5,
+      "balanceTodo": []
+    },
+    {
+      "id": "rich",
+      "nameKey": "qi.tier.rich",
+      "min": 7,
+      "balanceTodo": []
+    }
+  ],
+  "future": {
+    "gathering": {
+      "version": "v0.7+",
+      "enabled": false,
+      "mode": "weighted_variant",
+      "snapshotAt": "resource_spawn",
+      "tierModifiers": [
+        {
+          "tier": "sparse",
+          "qualityWeightMul": 1.0,
+          "balanceTodo": []
+        },
+        {
+          "tier": "normal",
+          "qualityWeightMul": 1.25,
+          "balanceTodo": []
+        },
+        {
+          "tier": "abundant",
+          "qualityWeightMul": 1.5,
+          "balanceTodo": []
+        },
+        {
+          "tier": "rich",
+          "qualityWeightMul": 2.0,
+          "balanceTodo": []
+        }
+      ],
+      "bindings": []
+    }
+  }
+}

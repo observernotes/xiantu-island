@@ -1,6 +1,7 @@
 import { gameNow } from './GameClock';
 import Phaser from 'phaser';
-import { ITEMS, t } from './data';
+import { GONGFA_GRADES, ITEMS, t } from './data';
+import { effectMul as gongfaEffectMul } from './GongfaGrades';
 import { FriendlySummons, type FriendlySummon } from './FriendlySummons';
 import type { Monster } from './scenes/Monster';
 import type { GameScene } from './scenes/GameScene';
@@ -271,7 +272,11 @@ export class SkillCombat {
   private applyHits(id: string, level: number, mobs: Monster[], cast: SkillCast, multiplier = 1, splash = false) {
     const def = SKILLS[id];
     if (!def || def.type === 'passive') return;
-    const ratio = skillNumber(def, 'damageRatio', level) * multiplier;
+    const baseRatio = skillNumber(def, 'damageRatio', level);
+    const gradeMul = gongfaEffectMul(GONGFA_GRADES, id);
+    // 仅修正等级求值后的根系数一次；溅射等派生系数仍沿原 multiplier。
+    // 关态跳过新增乘法，保留原浮点求值顺序。
+    const ratio = (gradeMul === 1 ? baseRatio : baseRatio * gradeMul) * multiplier;
     const times = Math.max(1, skillNumber(def, 'hitCount', level) || 1);
     const p = this.scene.player;
     for (const m of mobs) {

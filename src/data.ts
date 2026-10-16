@@ -25,10 +25,22 @@ import altar from '@xt/maps/trial_foundation_altar.json';
 import breakthrough from '@xt/balance/breakthrough.json';
 import strings from '@xt/balance/strings_zh.json';
 import sense from '@xt/balance/sense.json';
+import gongfaGradesRaw from '@xt/balance/gongfa_grades.json';
+import qiDensityRaw from '@xt/balance/qi_density.json';
+import { parseGongfaGradesConfig } from './GongfaGrades';
+import { parseQiDensityConfig } from './QiDensity';
+import { SKILL_LIST } from './skills';
 import type { MonsterSenseBlock } from './Sense';
 import type { SectTrialDraw } from './SectTrialState';
 /** 神识表与其他 @xt 表共用 shared/snapshot；运行时校验，不用默认值吞掉 null。 */
 export const SENSE = sense;
+/** 表内 enabled 独立门禁；坏表仅停用新增查询，保留原技能和修炼。 */
+const gongfaGradesValidation = parseGongfaGradesConfig(gongfaGradesRaw, SKILL_LIST);
+export const GONGFA_GRADES = gongfaGradesValidation.config;
+export const GONGFA_GRADES_ERRORS = gongfaGradesValidation.errors;
+const qiDensityValidation = parseQiDensityConfig(qiDensityRaw);
+export const QI_DENSITY = qiDensityValidation.config;
+export const QI_DENSITY_ERRORS = qiDensityValidation.errors;
 import karmaFlags from '@xt/balance/karma_flags.json';
 import taixuTemple from '@xt/maps/taixu_temple.json';
 import lingfuPavilion from '@xt/maps/lingfu_pavilion.json';
