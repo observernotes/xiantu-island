@@ -1,0 +1,44 @@
+{
+ "atlas": "prop_target_spot",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  64,
+  24
+ ],
+ "anims": [
+  {
+   "key": "prop_target_spot_idle",
+   "frames": [
+    "prop_target_spot_idle_01",
+    "prop_target_spot_idle_02",
+    "prop_target_spot_idle_03",
+    "prop_target_spot_idle_04"
+   ],
+   "frameRate": 3,
+   "repeat": -1
+  },
+  {
+   "key": "prop_target_spot_spawn",
+   "frames": [
+    "prop_target_spot_spawn_01",
+    "prop_target_spot_spawn_02",
+    "prop_target_spot_spawn_03",
+    "prop_target_spot_spawn_04"
+   ],
+   "frameRate": 12,
+   "repeat": 0
+  }
+ ],
+ "mapObject": "target_spot",
+ "maps": [
+  "trial_lingfu_range"
+ ],
+ "blend": "NORMAL",
+ "depth": "behindMonsters",
+ "note": "灵符派试炼·木靶刷新点地标：贴地的朱红虚线环 + 中心黄符 + 两侧小木钉，低调不抢木靶。原点 (0.5,1) 放 target_spot 对象坐标（站立面）。平时循环 idle（3fps 轻微呼吸）；木靶在这里刷出那一刻播一次 spawn（金边一闪）再回 idle。moveRange 128 的点：地标固定在对象原位不跟着平移（平移范围是左右各 128px，只移木靶）；high 的点同图。可选：靶在场时把地标 alpha 压到 0.5。",
+ "kind": "prop"
+}

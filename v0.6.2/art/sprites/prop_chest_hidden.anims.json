@@ -1,0 +1,64 @@
+{
+ "atlas": "prop_chest_hidden",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  48,
+  40
+ ],
+ "blend": "NORMAL",
+ "kind": "prop",
+ "note": "程序化占位（v0.6 秘境 #13）。秘境隐藏宝箱。原点 (0.5,1) 箱底。神识揭示前定格 hidden（半隐）；扫描命中播 reveal 一次后切 closed；开启播 open→定格 opened。中性青灰箱体（可 tint），勿与已锁 prop_chest（朱漆金箍）混用。普通宝箱继续复用 prop_chest。",
+ "anims": [
+  {
+   "key": "prop_chest_hidden_hidden",
+   "frames": [
+    "prop_chest_hidden_hidden_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  },
+  {
+   "key": "prop_chest_hidden_reveal",
+   "frames": [
+    "prop_chest_hidden_reveal_01",
+    "prop_chest_hidden_reveal_02",
+    "prop_chest_hidden_reveal_03",
+    "prop_chest_hidden_reveal_04"
+   ],
+   "frameRate": 10,
+   "repeat": 0
+  },
+  {
+   "key": "prop_chest_hidden_closed",
+   "frames": [
+    "prop_chest_hidden_closed_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  },
+  {
+   "key": "prop_chest_hidden_open",
+   "frames": [
+    "prop_chest_hidden_open_01",
+    "prop_chest_hidden_open_02",
+    "prop_chest_hidden_open_03",
+    "prop_chest_hidden_open_04",
+    "prop_chest_hidden_open_05"
+   ],
+   "frameRate": 10,
+   "repeat": 0
+  },
+  {
+   "key": "prop_chest_hidden_opened",
+   "frames": [
+    "prop_chest_hidden_opened_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  }
+ ]
+}

@@ -1,0 +1,30 @@
+{
+ "atlas": "fx_flame_envoy_floor_collapse_warn",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  96,
+  24
+ ],
+ "anims": [
+  {
+   "key": "fx_flame_envoy_floor_collapse_warn_warn",
+   "frames": [
+    "fx_flame_envoy_floor_collapse_warn_warn_01",
+    "fx_flame_envoy_floor_collapse_warn_warn_02",
+    "fx_flame_envoy_floor_collapse_warn_warn_03",
+    "fx_flame_envoy_floor_collapse_warn_warn_04",
+    "fx_flame_envoy_floor_collapse_warn_warn_05",
+    "fx_flame_envoy_floor_collapse_warn_warn_06"
+   ],
+   "frameRate": 8,
+   "repeat": -1
+  }
+ ],
+ "note": "地裂预警：原点 (0.5,1) 放要塌的那段平台顶面中心；宽 96，程序按段宽横向拉伸（setDisplaySize）；循环到平台移除为止。",
+ "blend": "normal",
+ "kind": "fx"
+}
