@@ -1,0 +1,89 @@
+{
+  "level": 12,
+  "exp": 287,
+  "hp": 216,
+  "mp": 48,
+  "stones": 1567,
+  "inventory": {
+    "rabbit_fur": 0,
+    "hp_pill_small": 17,
+    "snake_gall": 0,
+    "mandrill_fang": 9,
+    "qi_pill": 6,
+    "fox_tail": 0,
+    "wood_sword": 1,
+    "foundation_shard": 1,
+    "pillar_shard_1": 1
+  },
+  "equip": {
+    "weapon": "azure_steel_sword"
+  },
+  "job": "tianjian_disciple",
+  "quests": {
+    "q_awaken": {
+      "state": "done",
+      "kills": {},
+      "reached": true
+    },
+    "q_bamboo": {
+      "state": "done",
+      "kills": {
+        "spirit_rabbit": 18
+      }
+    },
+    "q_snake": {
+      "state": "done",
+      "kills": {}
+    },
+    "q_breakthrough": {
+      "state": "done",
+      "kills": {
+        "mountain_mandrill": 18
+      }
+    },
+    "q_fox": {
+      "state": "done",
+      "kills": {
+        "demon_fox": 1
+      }
+    }
+  },
+  "name": "少年",
+  "skills": {
+    "sword_qi_slash": 3,
+    "whirl_sword": 2,
+    "light_body": 1,
+    "tianjian_heart": 1
+  },
+  "skillGifted": {
+    "sword_qi_slash": 1,
+    "whirl_sword": 1,
+    "light_body": 1
+  },
+  "skillMastery": {
+    "sword_qi_slash": 23,
+    "whirl_sword": 7
+  },
+  "hotbar": [
+    null,
+    null,
+    null,
+    "whirl_sword",
+    null,
+    null,
+    "sword_qi_slash",
+    "light_body"
+  ],
+  "buffs": [],
+  "spTipShown": true,
+  "overflowExp": 0,
+  "breakthroughFails": 0,
+  "unstableUntil": 0,
+  "realmRewards": [
+    "mortal"
+  ],
+  "unstableRatio": 0,
+  "unstableStats": [],
+  "lastOverflowReturned": 21,
+  "breakthroughBonusLevels": 0
+}

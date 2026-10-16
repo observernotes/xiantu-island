@@ -19,14 +19,36 @@ const classes = JSON.parse(await fs.readFile(path.join(root, 'src/config/classes
 const features = JSON.parse(await fs.readFile(path.join(root, 'data/features.json'), 'utf8'));
 assert.equal(typeof features.fiveSectClasses, 'boolean', '工程快照缺少 fiveSectClasses 布尔开关');
 assert.equal(trials.length, 4);
+const sectStringKeys = [
+  'taixu_lamps', 'taixu_waves', 'taixu_success',
+  'lingfu_draw', 'lingfu_wrong', 'lingfu_targets', 'lingfu_fail_left', 'lingfu_success',
+  'youying_skills', 'youying_stealth', 'youying_token', 'youying_success',
+  'wanshou_half', 'wanshou_flute', 'wanshou_interrupt', 'wanshou_wolves', 'wanshou_success',
+].map(suffix => `trial.sect_${suffix}`);
+for (const key of sectStringKeys) assert.ok(typeof strings[key] === 'string' && strings[key].trim(), `缺少宗门试炼文案：${key}`);
+for (const trial of trials) {
+  const quest = quests.find(row => row.id === trial.quest);
+  assert.ok(npcs.find(npc => npc.id === quest.giver)?.quests?.includes(quest.id), `${trial.sect}: 接引人表未挂拜入任务 ${quest.id}`);
+}
 const gateMap = trial => npcs.find(npc => npc.id === quests.find(quest => quest.id === trial.quest)?.turnIn)?.map;
 const returnPositions = new Map();
+const drawnSequences = new Map();
 const checks = [];
 const startedAt = Date.now();
 let phase = 'startup';
 function progress(next) {
   phase = next;
   console.log(JSON.stringify({ test: 'trials-smoke', phase, elapsedMs: Date.now() - startedAt, checks: checks.length }));
+}
+function trialText(key, vars = {}) {
+  return strings[key].replace(/\{(\w+)\}/g, (_, name) => String(vars[name] ?? `{${name}}`));
+}
+function assertTrialText(actual, key, vars = {}) {
+  assert.ok(actual.includes(trialText(key, vars)), `${key}: 运行时提示未读表或参数不符：${actual}`);
+  assert.equal(/\{(?:n|key|left)\}/.test(actual), false, `${key}: 运行时提示遗留未替换参数`);
+}
+async function statusIncludes(page, key, vars = {}) {
+  assertTrialText(await page.evaluate(() => window.__scene.sectTrial.status.text), key, vars);
 }
 
 async function withDeadline(label, operation, timeout = 17000) {
@@ -175,6 +197,28 @@ async function chooseSectToken(page, sect) {
     stored: JSON.parse(localStorage.getItem('xiantu_save_v1')).selectedSect, token: window.__scene.prog.count('five_sect_token') })),
   { selected: sect, job: '', stored: sect, token: 1 }, `${sect}: 真正使用五宗帖只保存选择，不消耗帖或提前拜入`);
 }
+async function acceptAtEnvoy(page, trial, quest) {
+  await standAtNpc(page, quest.giver);
+  await page.keyboard.press('z', { delay: 45 });
+  await page.waitForFunction(() => window.__scene.dialog.open, null, { timeout: 3000, polling: 50 });
+  const menu = await page.evaluate(({ quest }) => ({
+    ids: window.__scene.quests.npcQuestIds(quest.giver),
+    available: window.__scene.quests.available(quest.id),
+    choices: window.__scene.dialog.choices.map(choice => choice.label),
+  }), { quest });
+  assert.ok(menu.ids.includes(quest.id), `${trial.sect}: 开态接引任务目录缺 ${quest.id}`);
+  assert.equal(menu.available, true, `${trial.sect}: 持帖并选宗后拜入任务应可接`);
+  if (menu.choices.length) {
+    const index = await choiceIndex(page, strings[quest.nameKey] ?? quest.name);
+    const version = await page.evaluate(() => window.__scene.dialog.version);
+    await page.keyboard.press(String(index + 1), { delay: 45 });
+    await page.waitForFunction(version => window.__scene.dialog.version !== version,
+      version, { timeout: 3000, polling: 25 });
+  }
+  await drainDialog(page);
+  assert.equal(await page.evaluate(id => window.__scene.quests.state(id), quest.id), 'active', `${trial.sect}: 接引人真实菜单未发放 ${quest.id}`);
+  checks.push(`${trial.sect}: 开态接引目录含 ${quest.id}，真实 Z/数字键接取拜入任务`);
+}
 async function enter(page, trial, quest) {
   const confirmation = await page.evaluate(({ quest }) => {
     const scene = window.__scene;
@@ -202,6 +246,10 @@ async function enter(page, trial, quest) {
   assert.equal(landing.completed, false, `${trial.sect}: 进图错误地完成任务`);
   assert.deepEqual(landing.returnPosition, confirmation.returnPosition, `${trial.sect}: pending 返回位置必须记录正式山门长老旁坐标`);
   returnPositions.set(trial.id, landing.returnPosition);
+  const initialKeys = { taixu: 'taixu_lamps', lingfu: 'lingfu_draw', youying: 'youying_stealth', wanshou: 'wanshou_half' };
+  await statusIncludes(page, `trial.sect_${initialKeys[trial.sect]}`, {
+    n: trial.sect === 'lingfu' ? 1 : 0, key: 'S',
+  });
 }
 async function returned(page, trial, quest, result) {
   await page.waitForFunction(({ mapId, quest }) => {
@@ -232,9 +280,16 @@ async function returned(page, trial, quest, result) {
     assert.ok(state.logs.includes(strings[result === 'fail' ? 'trial.fail_return' : 'trial.exit_return']), `${trial.sect}: ${result} 提示缺失`);
     assert.deepEqual(state.resources, { exp: 0, stones: 123, inventory: { five_sect_token: 1 }, skills: { spirit_bolt: 4 } },
       `${trial.sect}: 失败或退出改变永久资源`);
-  } else assert.deepEqual(state.trials, [trial.id]);
+    if (result === 'fail' && trial.sect === 'lingfu') {
+      assert.ok(state.logs.some(line => line.includes(trialText('trial.sect_lingfu_fail_left', { left: trial.targets.total }))),
+        '灵符超时返回缺少按表替换 {left} 的剩余木靶提示');
+    }
+  } else {
+    assert.deepEqual(state.trials, [trial.id]);
+    assert.ok(state.logs.some(line => line.includes(strings[`trial.sect_${trial.sect}_success`])), `${trial.sect}: 返回日志缺少本宗成功文案`);
+  }
 }
-async function draw(page) {
+async function draw(page, trial) {
   const before = await page.evaluate(() => {
     const scene = window.__scene, desk = scene.map.objects.find(o => o.type === 'draw_desk');
     const targets = scene.mobs.filter(m => m.def.id === 'wood_target' && !m.dead).length;
@@ -254,17 +309,26 @@ async function draw(page) {
     await page.waitForFunction(() => window.__scene.sectTrial?.blocksInput, null, { timeout: 3000 });
   } finally { await page.keyboard.up('z'); }
   const arrows = { up: 'ArrowUp', right: 'ArrowRight', down: 'ArrowDown', left: 'ArrowLeft' };
-  await page.keyboard.press('ArrowLeft', { delay: 45 });
-  await page.waitForFunction(() => window.__scene.logs.some(line => line.text === '笔画错了，这道符重画'),
-    null, { timeout: 3000, polling: 50 });
+  const firstStrokes = await page.evaluate(() => window.__scene.sectTrial.state.strokes.slice());
+  const wrongDirection = Object.keys(arrows).find(direction => direction !== firstStrokes[0]);
+  await page.keyboard.press(arrows[wrongDirection], { delay: 45 });
+  await page.waitForFunction(message => window.__scene.logs.some(line => line.text === message),
+    strings['trial.sect_lingfu_wrong'], { timeout: 3000, polling: 50 });
   assert.deepEqual(await page.evaluate(() => ({ drawn: window.__scene.sectTrial.state.drawn,
     stroke: window.__scene.sectTrial.state.strokeIndex })), { drawn: 0, stroke: 0 }, '错笔未重画当前符');
+  assert.deepEqual(await page.evaluate(() => window.__scene.sectTrial.state.strokes), firstStrokes, '错笔重画必须保留当前模板');
+  const sequences = [];
   for (let talismans = 0; talismans < 24; talismans++) {
     const state = await page.evaluate(() => {
       const trial = window.__scene.sectTrial;
-      return { stage: trial.stage, drawn: trial.state.drawn, strokes: trial.state.strokes.slice(trial.state.strokeIndex) };
+      return { stage: trial.stage, drawn: trial.state.drawn, strokes: trial.state.strokes.slice(trial.state.strokeIndex), status: trial.status.text };
     });
     if (state.stage !== 'draw') break;
+    assertTrialText(state.status, 'trial.sect_lingfu_draw', { n: state.drawn + 1 });
+    const template = trial.draw.templates?.[state.drawn];
+    if (template) assert.deepEqual(state.strokes, template, `灵符第 ${state.drawn + 1} 道未按配表模板生成`);
+    assert.ok(state.strokes.every(direction => trial.draw.directions.includes(direction)), '画符出现配表 directions 以外的方向');
+    sequences.push(state.strokes);
     // 等画符面板接管输入，并留出真实按压时间，避免同帧 keydown/keyup 丢笔。
     for (const direction of state.strokes) {
       await page.waitForFunction(() => window.__scene.sectTrial?.blocksInput, null, { timeout: 3000, polling: 50 });
@@ -274,6 +338,13 @@ async function draw(page) {
       state.drawn, { timeout: 3000, polling: 50 });
   }
   assert.equal(await page.evaluate(() => window.__scene.sectTrial.stage), 'targets', '真实方向键未完成三道符');
+  await statusIncludes(page, 'trial.sect_lingfu_targets', { n: 0 });
+  assert.equal(sequences.length, trial.draw.talismans, '实际绘符道数不符');
+  const previous = drawnSequences.get(trial.id);
+  if (previous) {
+    assert.deepEqual(sequences, previous, '灵符失败重进后的模板序列不可复现');
+    checks.push('lingfu: 按表逐道绘符，错笔保留模板，失败重进后模板序列可复现');
+  } else drawnSequences.set(trial.id, sequences);
 }
 async function clearWaves(page, trial) {
   const killed = await page.evaluate(() => {
@@ -310,6 +381,7 @@ async function pickupToken(page) {
   assert.deepEqual(await page.evaluate(() => ({ stage: window.__scene.sectTrial.stage,
     count: window.__scene.prog.count('shadow_token'), stored: window.__scene.prog.exportSave().inventory.shadow_token ?? 0 })),
   { stage: 'return', count: before + 1, stored: 0 }, '拿令牌只推进回程且不进永久背包');
+  await statusIncludes(page, 'trial.sect_youying_token');
 }
 async function win(page, trial) {
   if (trial.sect === 'taixu') {
@@ -324,9 +396,10 @@ async function win(page, trial) {
     });
     assert.equal(lit.wrong, false, '太虚普通剑术不能点灯');
     assert.equal(lit.lit, trial.lamps.count); assert.equal(lit.stage, 'waves');
+    await statusIncludes(page, 'trial.sect_taixu_waves', { n: 0 });
     await clearWaves(page, trial);
   } else if (trial.sect === 'lingfu') {
-    await draw(page);
+    await draw(page, trial);
     let killed = 0;
     for (let n = 0; n < 12; n++) {
       const step = await page.evaluate(() => {
@@ -357,6 +430,7 @@ async function win(page, trial) {
       return { hp: mob.hp, minHp: mob.def.minHp, dead: mob.dead, stage: scene.sectTrial.stage };
     });
     assert.deepEqual(low, { hp: low.minHp, minHp: low.minHp, dead: false, stage: 'flute' }, '山魈真实受击应保底并跪地');
+    await statusIncludes(page, 'trial.sect_wanshou_flute', { key: 'Z' });
     await page.waitForFunction(() => window.__scene.player.state2 === 'ground', null, { timeout: 3000 });
     await page.evaluate(() => window.__scene.physics.pause());
     await page.keyboard.down('z');
@@ -365,6 +439,8 @@ async function win(page, trial) {
     await page.keyboard.down('ArrowRight'); await page.waitForTimeout(90); await page.keyboard.up('ArrowRight');
     await page.keyboard.up('z');
     assert.equal(await page.evaluate(() => window.__scene.sectTrial.state.fluteMs), 0, '移动中断未清空骨笛读条');
+    assert.ok(await page.evaluate(message => window.__scene.logs.some(line => line.text === message), strings['trial.sect_wanshou_interrupt']),
+      '移动中断未记录表内骨笛打断文案');
     await page.keyboard.down('z');
     await page.waitForFunction(() => window.__scene.sectTrial?.stage === 'waves', null, { timeout: 6000 });
     await page.keyboard.up('z');
@@ -374,6 +450,7 @@ async function win(page, trial) {
     });
     assert.deepEqual(companion, { id: trial.companion.id, hp: trial.companion.hp, atk: trial.companion.atk, learned: 0 },
       '驯服后仅建立表内临时伙伴');
+    await statusIncludes(page, 'trial.sect_wanshou_wolves', { n: 0 });
     await clearWaves(page, trial);
   }
 }
@@ -472,11 +549,9 @@ try {
     assert.ok(entrance.npcs.includes(quest.giver) && entrance.npcs.includes(quest.turnIn), `${trial.sect}: 正式山门缺接引人或长老`);
     assert.equal(entrance.mobs, 0, `${trial.sect}: 入口等待时不应有试炼敌人`);
     assert.equal(entrance.patrols, 0, `${trial.sect}: 入口等待时不应有巡逻发现`);
-    await page.evaluate(({ quest }) => window.__scene.talkTo(quest.giver, quest.id), { quest });
-    await drainDialog(page);
-    assert.equal(await page.evaluate(id => window.__scene.quests.state(id), quest.id), 'active', `${trial.sect}: 接引人未发放任务`);
+    await acceptAtEnvoy(page, trial, quest);
     await enter(page, trial, quest);
-    if (trial.sect === 'lingfu') { await draw(page); await page.evaluate(ms => window.__scene.sectTrial.update(ms), trial.targets.timeLimitMs); }
+    if (trial.sect === 'lingfu') { await draw(page, trial); await page.evaluate(ms => window.__scene.sectTrial.update(ms), trial.targets.timeLimitMs); }
     else if (trial.sect === 'taixu') await page.evaluate(ms => window.__scene.sectTrial.update(ms), trial.lamps.timeLimitMs);
     else if (trial.sect === 'youying') {
       await page.evaluate(() => {

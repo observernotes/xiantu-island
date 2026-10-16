@@ -1,9 +1,11 @@
+import strings from '@xt/balance/strings_zh.json';
 import { CLASS_LIST, classRobe } from './classes';
-import { QUESTS, TRIALS, type TrialDef } from './data';
+import { NPCS, QUESTS, TRIALS, t, type TrialDef } from './data';
 import { featureFlags, setFeatureFlag } from './features';
 import { Progress } from './Progress';
 import { QuestSystem } from './QuestSystem';
 import { SectTrialState, type SectTrialConfig, type TrialDirection } from './SectTrialState';
+import { sectTrialText } from './SectTrialText';
 import { GameScene } from './scenes/GameScene';
 import { SectTrialObjects } from './scenes/SectTrialObjects';
 import { SKILLS } from './skills';
@@ -36,6 +38,45 @@ setFeatureFlag('fiveSectClasses', true);
 setFeatureFlag('v05Maps', true);
 const sectTrials = Object.values(TRIALS).filter(row => row.id.startsWith('trial_sect_'));
 same(sectTrials.map(row => row.sect).sort(), ['lingfu', 'taixu', 'wanshou', 'youying'], '四宗试炼逐项完整');
+
+// 交表的 17 条阶段文案必须进入运行时；变量保留到调用时再替换。
+{
+  const required: Record<string, string[]> = {
+    'trial.sect_taixu_lamps': ['n'], 'trial.sect_taixu_waves': ['n'], 'trial.sect_taixu_success': [],
+    'trial.sect_lingfu_draw': ['n'], 'trial.sect_lingfu_wrong': [], 'trial.sect_lingfu_targets': ['n'],
+    'trial.sect_lingfu_fail_left': ['left'], 'trial.sect_lingfu_success': [],
+    'trial.sect_youying_skills': [], 'trial.sect_youying_stealth': ['key'],
+    'trial.sect_youying_token': [], 'trial.sect_youying_success': [],
+    'trial.sect_wanshou_half': [], 'trial.sect_wanshou_flute': ['key'], 'trial.sect_wanshou_interrupt': [],
+    'trial.sect_wanshou_wolves': ['n'], 'trial.sect_wanshou_success': [],
+  };
+  const table = strings as unknown as Record<string, string>, vars = { n: 2, key: 'F', left: 7 };
+  eq(Object.keys(required).length, 17, '四宗交表包含 17 条正式文案');
+  for (const [key, parameters] of Object.entries(required)) {
+    const raw = table[key];
+    ok(typeof raw === 'string' && raw.length > 0, `${key}: 快照字符串存在`);
+    same([...raw.matchAll(/\{(\w+)\}/g)].map(match => match[1]).sort(), [...parameters].sort(), `${key}: 表内参数完整`);
+    eq(t(key), raw, `${key}: 无参数时保留占位符`);
+    const rendered = t(key, vars);
+    eq(sectTrialText(key, '未使用的本地文案', vars), rendered, `${key}: 试炼提示优先正式表内文案`);
+    ok(!/\{\w+\}/.test(rendered), `${key}: 提示替换所有参数`);
+    for (const parameter of parameters) ok(rendered.includes(String(vars[parameter as keyof typeof vars])), `${key}: 保留 ${parameter} 的实际值`);
+  }
+  eq(sectTrialText('trial.sect_missing_test', '第 {n} 道，按 {key}，剩 {left}', vars), '第 2 道，按 F，剩 7', '缺 key 时 fallback 仍替换 n/key/left');
+  eq(sectTrialText('trial.sect_missing_test', '第 {n} 道，按 {key}，剩 {left}', { n: 0 }), '第 0 道，按 {key}，剩 {left}', 'fallback 保留未传参数且不丢零值');
+}
+
+// 开态从 NPC 配表取得拜入任务，不依赖任务系统的旧表补入口。
+for (const def of sectTrials) {
+  const quest = QUESTS[def.quest!], npc = NPCS[quest.giver];
+  ok(npc.quests.includes(quest.id), `${def.sect}: envoy 正式挂载 ${quest.id}`);
+  const p = new Progress(); p.level = quest.reqLevel;
+  p.quests.q_fox = { state: 'done', kills: {} };
+  p.addItem('five_sect_token', 1); p.selectedSect = def.sect!;
+  const quests = new QuestSystem(p);
+  ok(quests.npcQuestIds(npc.id).includes(quest.id), `${def.sect}: 开态菜单候选含拜入任务 id`);
+  eq(quests.available(quest.id), true, `${def.sect}: 拜帖和选宗满足后拜入任务可接`);
+}
 
 function state(sect: string) {
   const definition = sectTrials.find(row => row.sect === sect);
@@ -90,6 +131,80 @@ function finishObjectives(trial: SectTrialState, context: string) {
       trial.tameReady(); trial.flute(trial.def.tame!.fluteMs, true, false); wavesAll(trial, context); break;
   }
   eq(trial.result, 'win', `${context}: 完成表内实际目标得到 win`);
+}
+
+// 按道次使用固定模板；模板用尽后才由模式和合法方向生成新序列。
+{
+  const definition = sectTrials.find(row => row.sect === 'lingfu')!;
+  const base = definition.draw!;
+  const expected: TrialDirection[][] = [
+    ['up', 'right', 'down', 'left', 'up'],
+    ['left', 'up', 'right', 'up', 'down', 'right'],
+    ['down', 'left', 'up', 'right'],
+  ];
+  same(base.directions, ['up', 'down', 'left', 'right'], '灵符正式方向枚举来自交表');
+  eq(base.sequenceMode, 'random', '灵符交表的模板后备模式为 random');
+  same(base.templates, expected, '灵符三道模板完整进入快照');
+  const originalRandom = Math.random;
+  function fixture(overrides: Partial<NonNullable<SectTrialConfig['draw']>>) {
+    return new SectTrialState({ id: 'draw-fixture', type: 'draw_then_targets', draw: { ...base, ...overrides },
+      targets: { total: 1, timeLimitMs: 30000 } });
+  }
+  function completeCurrent(trial: SectTrialState) {
+    const strokes = [...trial.strokes];
+    for (const direction of strokes) trial.drawStroke(direction);
+    return strokes;
+  }
+  try {
+    Math.random = () => { throw new Error('完整模板不得调用随机生成'); };
+    const first = state('lingfu'), second = state('lingfu');
+    for (let index = 0; index < expected.length; index++) {
+      same(first.strokes, expected[index], `第 ${index + 1} 道严格使用对应模板`);
+      same(second.strokes, first.strokes, `第 ${index + 1} 道重进试炼可复现`);
+      const wrong = (['up', 'right', 'down', 'left'] as TrialDirection[]).find(direction => direction !== first.strokes[0])!;
+      eq(first.drawStroke(wrong), 'wrong', `第 ${index + 1} 道错笔要求重画`);
+      same(first.strokes, expected[index], `第 ${index + 1} 道错笔保留同一模板`);
+      completeCurrent(first); completeCurrent(second);
+    }
+    eq(first.stage, 'targets', '三个模板完成后进入靶场');
+    const short = fixture({ talismans: 2, templates: [['left'], ['up', 'right', 'down', 'left', 'up', 'right', 'down']] });
+    same(short.strokes, ['left'], '模板优先级高于 strokesMin');
+    completeCurrent(short);
+    eq(short.strokes.length, 7, '模板优先级高于 strokesMax');
+
+    // 旧模式保持道次偏移和笔数区间；当前道缺模板时不循环使用第一道。
+    const legacy = fixture({ talismans: 4, sequenceMode: undefined, directions: undefined, templates: [['left', 'up']] });
+    same(completeCurrent(legacy), ['left', 'up'], '旧模式也优先取当前道模板');
+    same(legacy.strokes, ['right', 'down', 'left', 'up', 'right'], '模板用尽后恢复第二道旧循环');
+    completeCurrent(legacy);
+    same(legacy.strokes, ['down', 'left', 'up', 'right', 'down', 'left'], '旧循环按道次取 min~max 笔数');
+    const sparse = fixture({ sequenceMode: undefined, directions: undefined, templates: [[], ['left', 'up']] });
+    same(completeCurrent(sparse), ['up', 'right', 'down', 'left'], '空模板仅对当前道回退');
+    same(sparse.strokes, ['left', 'up'], '空模板不挪用下一道模板');
+
+    Math.random = () => 0;
+    const randomLow = fixture({ talismans: 3, templates: [['left', 'up']], directions: ['up', 'left'], sequenceMode: 'random' });
+    completeCurrent(randomLow);
+    eq(randomLow.strokes.length, base.strokesMin, 'random 回退可取最少笔数');
+    ok(randomLow.strokes.every(direction => direction === 'up'), 'random 回退可选方向表首项');
+    Math.random = () => 0.999999;
+    const randomHigh = fixture({ templates: [], directions: ['up', 'left'], sequenceMode: 'random' });
+    eq(randomHigh.strokes.length, base.strokesMax, 'random 回退可取最多笔数');
+    ok(randomHigh.strokes.every(direction => direction === 'left'), 'random 回退可选方向表末项');
+
+    const constrained = fixture({ sequenceMode: 'random', directions: ['up', 'invalid', 'left'] as TrialDirection[],
+      templates: [['up', 'right', 'invalid', 'left']] as TrialDirection[][] });
+    same(constrained.strokes, ['up', 'left'], '模板过滤非法枚举与方向白名单外笔画');
+    completeCurrent(constrained);
+    ok(constrained.strokes.every(direction => direction === 'up' || direction === 'left'), '随机生成也受过滤后的 directions 约束');
+    const invalidTemplate = fixture({ sequenceMode: 'random', directions: ['left'], templates: [['invalid']] as unknown as TrialDirection[][] });
+    ok(invalidTemplate.strokes.length >= base.strokesMin && invalidTemplate.strokes.every(direction => direction === 'left'), '模板全非法时回退生成合法序列');
+    Math.random = () => { throw new Error('旧模式不得调用随机生成'); };
+    for (const directions of [[], ['invalid'] as unknown as TrialDirection[]]) {
+      const invalidDirections = fixture({ sequenceMode: undefined, directions, templates: [] });
+      same(invalidDirections.strokes, ['up', 'right', 'down', 'left'], '空或全非法 directions 恢复四方向默认');
+    }
+  } finally { Math.random = originalRandom; }
 }
 
 // 幽影教学技能和试炼令牌属于当前实例，导出/读档保持正式技能与原快捷栏。
@@ -215,7 +330,7 @@ function finishObjectives(trial: SectTrialState, context: string) {
   const def = sectTrials.find(row => row.sect === 'lingfu')!;
   const desk = { type: 'draw_desk', name: 'draw_desk', x: 100, y: 200, w: 0, h: 0, props: {} };
   const player = { x: desk.x, feet: desk.y };
-  const trial = { stage: 'draw', ended: false, blocksInput: false };
+  const trial = { stage: 'draw', ended: false, blocksInput: false, state: { drawn: 0 } };
   const actions: string[] = [];
   const prompt = { setOrigin() { return this; }, setDepth() { return this; }, setVisible() { return this; } };
   const scene = {

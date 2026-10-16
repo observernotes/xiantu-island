@@ -26,6 +26,7 @@ import { Seclusion, realDay } from '../Seclusion';
 import { LIFESPAN } from '../data';
 import { SectTrialObjects } from './SectTrialObjects';
 import { SectTrial } from './SectTrial';
+import { sectTrialText } from '../SectTrialText';
 import { StealthVision } from './StealthVision';
 import { ferryLockedReason, mapEntryOpen, sectEntryMap, FIRST_CLASS_TRIAL_MAPS, SECT_GATE_MAPS } from '../Ferry';
 import { Gathering } from './Gathering';
@@ -397,6 +398,8 @@ export class GameScene extends Phaser.Scene {
     if (sectDef && sectDef.map === mapId && featureEnabled('fiveSectClasses') && featureEnabled('v05Maps')) {
       this.prog.beginTrialSkills(sectDef.grantSkills ?? []);
       this.sectTrial = new SectTrial(this, sectDef);
+      if (sectDef.sect === 'youying') this.log(sectTrialText('trial.sect_youying_skills',
+        '已获得试炼技能：隐息术（剩余 {n} 次）、影遁', { n: this.prog.trialSkillCharges('phantom_cloak') ?? 0 }), '#d4c0ff');
     }
     this.trialObjects = new SectTrialObjects(this);
     this.stealth = new StealthVision(this);
@@ -413,8 +416,11 @@ export class GameScene extends Phaser.Scene {
     if (featureEnabled('talismanCraft')) this.prog.markMapVisited(this.map.id);
     this.prog.setPosition(this.map.id, this.player.x, this.player.y);
     const returned = this.registry.get('sectTrialReturnMessage');
+    const returnDetail = this.registry.get('sectTrialReturnDetail');
     this.registry.remove('sectTrialReturnMessage');
+    this.registry.remove('sectTrialReturnDetail');
     if (returned || interrupted) this.log(returned ?? t('trial.exit_return'), '#ffe680');
+    if (returnDetail) this.log(returnDetail, '#ffb0b0');
     notifyCheatSceneReady(this);
   }
 
@@ -462,7 +468,7 @@ export class GameScene extends Phaser.Scene {
     return true;
   }
 
-  onSectTrialEnd(result: 'win' | 'fail' | 'exit') {
+  onSectTrialEnd(result: 'win' | 'fail' | 'exit', failureHint?: string) {
     const attempt = this.prog.pendingSectTrial;
     if (!attempt) return;
     const won = result === 'win' && this.quests.onTrialComplete(attempt.id);
@@ -473,8 +479,10 @@ export class GameScene extends Phaser.Scene {
     this.prog.hp = this.prog.maxHp; this.prog.mp = this.prog.maxMp;
     const at = attempt.returnPosition;
     this.prog.setPosition(at.mapId, at.x, at.y);
-    this.registry.set('sectTrialReturnMessage', won ? '试炼已成，找长老交付入门任务即可拜入。'
+    const trial = TRIALS[attempt.id];
+    this.registry.set('sectTrialReturnMessage', won ? `${sectTrialText(`trial.sect_${trial?.sect}_success`, '试炼已成！')}找长老交付入门任务即可拜入。`
       : t(result === 'fail' ? 'trial.fail_return' : 'trial.exit_return'));
+    this.registry.set('sectTrialReturnDetail', result === 'fail' ? failureHint ?? '' : '');
     this.travelling = true;
     this.time.delayedCall(0, () => this.scene.restart({ map: at.mapId, pos: { x: at.x, y: at.y } }));
   }

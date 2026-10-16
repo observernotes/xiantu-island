@@ -86,7 +86,7 @@
    "hitHalfWidth": 40,
    "climbJumpVelocity": 600
   },
-  "balanceNote": "演武堂 v0.4.1 承伤单变量下调（负责人拍板）：objective.monsterDamageMul 从 0.28 降至 0.20；0.35 实测守满 60 秒阵眼剩 13%/19%，0.28 实测剩 21%/25%/30%；拟合阵眼损失≈39%+128.6×承伤（炼器阁 dev 1192ff8 已查明没有漏乘，四成固定损失更可能是每局挨打次数不一样；v0.4.2 hotfix 实测 0.20 阵眼剩 48～50%，角色吃了 19 颗丹），此前取 0.20 预计均值剩约 35%、波动 30～40%。其余阵眼属性、行为覆盖及波次全部不动。沿用二次下调的波次起点立即刷、终点不刷，8/9/8 共 25 只，第三波 45 秒开始。目标：29 级、自动加点、只有一转技能的剑修带药主动清怪守满 60 秒，阵眼剩 30%～60%。；v0.5.2 hotfix：UI-6 后验收档未分配四维导致均伤≈翻倍，心魔·地/飞 touchDamageMul 0.75→0.35（演武堂协助），objective.monsterDamageMul 仍 0.20。",
+  "balanceNote": "演武堂 v0.4.1 承伤单变量下调（负责人拍板）：objective.monsterDamageMul 从 0.28 降至 0.20；0.35 实测守满 60 秒阵眼剩 13%/19%，0.28 实测剩 21%/25%/30%；拟合阵眼损失≈39%+128.6×承伤（炼器阁 dev 1192ff8 已查明没有漏乘，四成固定损失更可能是每局挨打次数不一样；v0.4.2 hotfix 实测 0.20 阵眼剩 48～50%，角色吃了 19 颗丹），此前取 0.20 预计均值剩约 35%、波动 30～40%。其余阵眼属性、行为覆盖及波次全部不动。沿用二次下调的波次起点立即刷、终点不刷，8/9/8 共 25 只，第三波 45 秒开始。目标：29 级、自动加点、只有一转技能的剑修带药主动清怪守满 60 秒，阵眼剩 30%～60%。；v0.5.2 hotfix：UI-6 手动加点后验收档未分配四维（缺约28防），心魔·地/飞 touchDamageMul 0.75→0.40，使无加点守阵耗丹回到≤10。",
   "behaviorOverrides": {
    "heart_demon_wisp": {
     "useAttack": false,
@@ -172,7 +172,14 @@
    "strokesMin": 4,
    "strokesMax": 6,
    "wrongStroke": "redrawCurrent",
-   "timeLimitMs": 0
+   "timeLimitMs": 0,
+   "directions": ["up", "down", "left", "right"],
+   "sequenceMode": "random",
+   "templates": [
+    ["up", "right", "down", "left", "up"],
+    ["left", "up", "right", "up", "down", "right"],
+    ["down", "left", "up", "right"]
+   ]
   },
   "targets": {
    "monster": "wood_target",

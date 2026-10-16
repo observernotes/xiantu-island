@@ -26,6 +26,7 @@ import breakthrough from '@xt/balance/breakthrough.json';
 import strings from '@xt/balance/strings_zh.json';
 import sense from '@xt/balance/sense.json';
 import type { MonsterSenseBlock } from './Sense';
+import type { SectTrialDraw } from './SectTrialState';
 /** 神识表与其他 @xt 表共用 shared/snapshot；运行时校验，不用默认值吞掉 null。 */
 export const SENSE = sense;
 import karmaFlags from '@xt/balance/karma_flags.json';
@@ -147,7 +148,7 @@ export interface TrialDef {
   /** 按怪物 id 覆盖行为，只在这场试炼里生效 */
   behaviorOverrides?: Record<string, { useAttack?: boolean; objectiveHit?: 'contact' | 'attack' }>;
   lamps?: { count: number; timeLimitMs: number; hitSkill: string };
-  draw?: { talismans: number; strokesMin: number; strokesMax: number; wrongStroke: string; timeLimitMs: number };
+  draw?: SectTrialDraw;
   targets?: { monster: string; total: number; timeLimitMs: number; maxActive: number; refillDelayMs: number; moveSpeed: number };
   patrols?: { monster: string; count: number; turnPauseMs: number };
   item?: string;

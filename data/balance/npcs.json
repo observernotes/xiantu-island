@@ -345,9 +345,13 @@
   "map": "taixu_temple",
   "sprite": "npc_taixu_envoy",
   "dialog": [
-   "……"
+   "施主是来拜观的？观主说了，太虚观收人只看准头。",
+   "演法台上有五盏灯，用你的灵气弹点亮它们。",
+   "点完了还有纸傀儡陪你练手，别被围住了。",
+   "五灯齐明，我带你去见玄微真人。"
   ],
   "quests": [
+   "q_sect_taixu",
    "q_daily_taixu_1",
    "q_daily_taixu_2",
    "q_daily_taixu_3"
@@ -364,7 +368,8 @@
   "map": "taixu_temple",
   "sprite": "npc_taixu_elder",
   "dialog": [
-   "……"
+   "法修以神驭气，气随念走。念头稳，便能走得远。",
+   "离火诀、掌心雷、水镜术，先学这三样。灵力省着用。"
   ],
   "quests": [],
   "phase": 5,
@@ -400,9 +405,13 @@
   "map": "lingfu_pavilion",
   "sprite": "npc_lingfu_envoy",
   "dialog": [
-   "……"
+   "来学符的？别急着动手，符是一笔一笔画出来的。",
+   "照着亮起来的笔画画，错一笔就重来。",
+   "画完去靶场，三十息之内打碎十个木靶。",
+   "手稳，眼准。符老在楼上等你。"
   ],
   "quests": [
+   "q_sect_lingfu",
    "q_talisman_intro",
    "q_daily_lingfu_1",
    "q_daily_lingfu_2",
@@ -420,7 +429,8 @@
   "map": "lingfu_pavilion",
   "sprite": "npc_lingfu_elder",
   "dialog": [
-   "……"
+   "符纸是死的，灵力是活的。把活的灌进死的，它就听你的。",
+   "飞符术、散符、疾行符，拿去。符纸常备。"
   ],
   "quests": [],
   "phase": 5,
@@ -456,9 +466,13 @@
   "map": "youying_tower",
   "sprite": "npc_youying_envoy",
   "dialog": [
-   "……"
+   "嘘——小声些。幽影楼的门，从来不是走进来的。",
+   "藏宝阁里有块令牌，拿出来给我，就算你过了。",
+   "巡夜师兄提着灯笼，别让光照到你。",
+   "手脚干净。楼主要见你。"
   ],
   "quests": [
+   "q_sect_youying",
    "q_daily_youying_1",
    "q_daily_youying_2",
    "q_daily_youying_3"
@@ -475,7 +489,8 @@
   "map": "youying_tower",
   "sprite": "npc_youying_elder",
   "dialog": [
-   "……"
+   "你不必记住我的脸。只要记住：出手之前，先藏好自己。",
+   "袖里针、影遁、隐息术，从今天起是你的了。"
   ],
   "quests": [],
   "phase": 5,
@@ -511,9 +526,12 @@
   "map": "wanshou_mountain",
   "sprite": "npc_wanshou_envoy",
   "dialog": [
-   "……"
+   "你是来入山的？正好，兽栏里那只山魈又发疯了！",
+   "别打死它！打到它没力气了，吹这支骨笛，它就听你的。",
+   "哇，它居然蹭你的手！兽王大人会喜欢你的。"
   ],
   "quests": [
+   "q_sect_wanshou",
    "q_daily_wanshou_1",
    "q_daily_wanshou_2",
    "q_daily_wanshou_3"
@@ -530,7 +548,8 @@
   "map": "wanshou_mountain",
   "sprite": "npc_wanshou_elder",
   "dialog": [
-   "……"
+   "万兽山的人，不靠一双拳头，靠肯为你拼命的伙伴。",
+   "唤灵狼、兽吼、灵契，都传你。对它们好些。"
   ],
   "quests": [],
   "phase": 5,

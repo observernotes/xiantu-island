@@ -4,6 +4,7 @@ import type { GameScene } from './GameScene';
 import type { MapObj, Zone } from './MapBuilder';
 import type { Monster } from './Monster';
 import { targetMotion } from '../TrialMotion';
+import { sectTrialText } from '../SectTrialText';
 
 interface AnimPack {
   origin?: [number, number];
@@ -105,7 +106,9 @@ export class SectTrialObjects {
       this.activeDesk = p;
       this.play(p, 'active');
       const talismans = this.trial?.draw?.talismans ?? Number(o.props.talismans ?? 3);
-      this.scene.log(`画符桌前凝神，准备连画 ${talismans} 道符。`, '#ffe680');
+      this.scene.log(sectTrialText('trial.sect_lingfu_draw', '按提示画符（第 {n}/{total} 道）', {
+        n: (this.scene.sectTrial?.state.drawn ?? 0) + 1, total: talismans,
+      }), '#ffe680');
       this.emit('draw_start', o, { talismans });
     } else if (!this.tokenTaken.has(o)) {
       const item = String(o.props.item ?? this.trial?.item ?? 'shadow_token');
@@ -115,7 +118,9 @@ export class SectTrialObjects {
       this.tokenGrants.set(item, (this.tokenGrants.get(item) ?? 0) + 1);
       this.play(p, 'taken');
       p.prompt?.setVisible(false);
-      this.scene.log(`拿到${ITEMS[item]?.name ?? item}了，原路返回。`, '#d4c0ff');
+      this.scene.log(sectTrialText('trial.sect_youying_token', '拿到{item}了，原路返回。', {
+        item: ITEMS[item]?.name ?? item,
+      }), '#d4c0ff');
       this.emit('token_taken', o, { item });
     }
     return true;
@@ -132,7 +137,9 @@ export class SectTrialObjects {
       lamp.lit = true; hit = true;
       this.playOnce(lamp, 'ignite', 'lit');
       const count = this.lamps.filter(l => l.lit).length;
-      this.scene.log(`点亮试炼灯（${count}/${this.lamps.length}）`, '#ffe680');
+      this.scene.log(sectTrialText('trial.sect_taixu_lamps', '点亮全部试炼灯（{n}/{total}）', {
+        n: count, total: this.lamps.length,
+      }), '#ffe680');
       this.emit('lamp_lit', lamp.object, { skill: skillId, count, total: this.lamps.length });
     }
     return hit;

@@ -2,6 +2,8 @@ import Phaser from 'phaser';
 import { type TrialDef } from '../data';
 import { FriendlySummons } from '../FriendlySummons';
 import { SectTrialState, type SectTrialConfig, type SectTrialResult, type TrialDirection } from '../SectTrialState';
+import { sectTrialText } from '../SectTrialText';
+import { HOTBAR_SLOTS } from '../skills';
 import type { GameScene } from './GameScene';
 import type { Monster } from './Monster';
 
@@ -26,6 +28,7 @@ export class SectTrial {
   private lastHp: number;
   private lastPosition: { x: number; y: number };
   private fluteInterrupted = false;
+  private failureHint?: string;
 
   constructor(private readonly scene: GameScene, readonly def: TrialDef) {
     this.state = new SectTrialState(def as unknown as SectTrialConfig);
@@ -46,7 +49,14 @@ export class SectTrial {
     if (this.ended || this.destroyed) return;
     if (this.stage === 'tame' || this.stage === 'flute') this.updateTame(delta);
     if (this.ended) { this.finish(); return; }
+    const tickingStage = this.stage;
     this.state.tick(delta);
+    // tick 只会在当前阶段计时耗尽时失败；倒地、被发现等路径不使用靶场超时文案。
+    if (tickingStage === 'targets' && this.state.result === 'fail') {
+      this.failureHint = sectTrialText('trial.sect_lingfu_fail_left', '时辰到了，靶子还剩 {left} 个。', {
+        left: Math.max(0, (this.def.targets?.total ?? 10) - this.state.targets),
+      });
+    }
     for (const request of this.state.takeSpawnRequests()) {
       if (this.ended) break;
       const gate = this.scene.map.objects.find(o => o.type === 'spawnGate'
@@ -96,14 +106,17 @@ export class SectTrial {
     event.preventDefault();
     const result = this.state.drawStroke(direction);
     if (result === 'wrong') {
-      this.drawHint?.setText('笔画错了，这道符重画');
-      this.scene.log('笔画错了，这道符重画', '#ffb0b0');
+      const wrong = sectTrialText('trial.sect_lingfu_wrong', '笔画错了，这道符重画');
+      this.drawHint?.setText(wrong);
+      this.scene.log(wrong, '#ffb0b0');
     } else this.drawHint?.setText('依次按亮起的方向键');
     if (result === 'done') {
       for (const key of Object.keys(ARROWS)) this.scene.keys[key]?.reset();
       this.closeDrawing();
       this.scene.trialObjects?.finishDrawing();
-      this.scene.log('三道符画成了，开始靶场试炼。', '#ffe680');
+      this.scene.log(sectTrialText('trial.sect_lingfu_targets', '打碎木靶（{n}/{total}）', {
+        n: this.state.targets, total: this.def.targets?.total ?? 10,
+      }), '#ffe680');
     } else this.drawStrokes();
     this.drawStatus(); this.finish();
   }
@@ -143,7 +156,9 @@ export class SectTrial {
       mob.onSlam = undefined; mob.onVolley = undefined; mob.onSkillDamage = undefined;
       mob.body.setAllowGravity(false).setVelocity(0, 0);
       mob.anim(scene.anims.exists(`${mob.texture.key}_kneel`) ? 'kneel' : 'idle');
-      scene.log('山魈没力气了！靠近后按住 Z 吹骨笛安抚它。', '#ffe680');
+      scene.log(sectTrialText('trial.sect_wanshou_flute', '山魈没力气了！靠近后按住 {key} 吹骨笛安抚它。', {
+        key: 'Z',
+      }), '#ffe680');
     }
     if (this.stage !== 'flute') return;
     if (this.tamePoint) mob.body.reset(this.tamePoint.x, this.tamePoint.y);
@@ -160,7 +175,8 @@ export class SectTrial {
     const interrupted = !near || causes.includes('move') && moving || causes.includes('attack') && attacking || causes.includes('hurt') && hurt;
     const wasPlaying = this.state.fluteMs > 0;
     const tamed = this.state.flute(delta, keys.z.isDown && near, interrupted);
-    if (wasPlaying && interrupted && !this.fluteInterrupted) scene.log('骨笛声被打断了，再吹一次', '#ffb0b0');
+    if (wasPlaying && interrupted && !this.fluteInterrupted) scene.log(
+      sectTrialText('trial.sect_wanshou_interrupt', '骨笛声被打断了，再吹一次'), '#ffb0b0');
     this.fluteInterrupted = interrupted;
     if (!tamed) return;
     mob.despawn();
@@ -169,18 +185,30 @@ export class SectTrial {
       this.pets = new FriendlySummons(scene);
       this.pets.summonTrialCompanion(companion);
     }
-    scene.log('山魈愿意跟着你了！一起击退野狼。', '#7fe0c0');
+    scene.log(sectTrialText('trial.sect_wanshou_wolves', '山魈愿意跟着你了！一起击退 {total} 波野狼（{n}/{total}）', {
+      n: this.state.waveIndex, total: this.state.waveCount,
+    }), '#7fe0c0');
   }
   private drawStatus() {
     const state = this.state;
-    let text = this.stage === 'lamps' ? `点亮全部试炼灯（${state.lit}/${this.def.lamps?.count ?? 5}）`
-      : this.stage === 'draw' ? `按提示画符（第 ${state.drawn + 1}/${this.def.draw?.talismans ?? 3} 道），到桌前按 Z`
-      : this.stage === 'targets' ? `打碎木靶（${state.targets}/${this.def.targets?.total ?? 10}）`
-      : this.stage === 'stealth' ? '避开灯笼视线，取出令牌后回起点'
-      : this.stage === 'return' ? '拿到令牌了，原路返回'
-      : this.stage === 'tame' ? '把发狂的山魈打到半血以下'
-      : this.stage === 'flute' ? `靠近山魈，按住 Z 吹骨笛（${Math.round(state.fluteRatio * 100)}%）`
-      : this.stage === 'waves' ? `击退 ${state.waveCount} 波（第 ${state.waveIndex + 1} 波，已击退 ${state.waveKilled}）` : '';
+    const stealthKey = HOTBAR_SLOTS[this.scene.prog.hotbar.indexOf('phantom_cloak')]?.label ?? '功法快捷键';
+    let text = this.stage === 'lamps' ? sectTrialText('trial.sect_taixu_lamps', '点亮全部试炼灯（{n}/{total}）', {
+      n: state.lit, total: this.def.lamps?.count ?? 5,
+    })
+      : this.stage === 'draw' ? `${sectTrialText('trial.sect_lingfu_draw', '按提示画符（第 {n}/{total} 道）', {
+        n: state.drawn + 1, total: this.def.draw?.talismans ?? 3,
+      })}，到桌前按 Z`
+      : this.stage === 'targets' ? sectTrialText('trial.sect_lingfu_targets', '打碎木靶（{n}/{total}）', {
+        n: state.targets, total: this.def.targets?.total ?? 10,
+      })
+      : this.stage === 'stealth' ? sectTrialText('trial.sect_youying_stealth', '避开灯笼视线，按 {key} 隐息，取出令牌后回起点', { key: stealthKey })
+      : this.stage === 'return' ? sectTrialText('trial.sect_youying_token', '拿到令牌了，原路返回')
+      : this.stage === 'tame' ? sectTrialText('trial.sect_wanshou_half', '把发狂的山魈打到半血以下')
+      : this.stage === 'flute' ? `${sectTrialText('trial.sect_wanshou_flute', '山魈没力气了！按 {key} 吹骨笛安抚它', {
+        key: 'Z',
+      })}（靠近后按住，${Math.round(state.fluteRatio * 100)}%）`
+      : this.stage === 'waves' ? `${sectTrialText(this.def.sect === 'wanshou' ? 'trial.sect_wanshou_wolves' : 'trial.sect_taixu_waves',
+        '击退 {total} 波（{n}/{total}）', { n: state.waveIndex, total: state.waveCount })}，第 ${state.waveIndex + 1} 波，已击退 ${state.waveKilled}` : '';
     if (state.timeLeftMs !== undefined) text += `  剩余 ${Math.ceil(state.timeLeftMs / 1000)} 秒`;
     this.status.setText(text ? `${text}\nEsc 退出试炼` : '').setVisible(!this.ended);
   }
@@ -190,7 +218,7 @@ export class SectTrial {
     this.closeDrawing(); this.status.setVisible(false);
     for (const mob of this.waveMobs) if (mob.active && !mob.dead) mob.despawn();
     this.pets?.destroy(); this.pets = undefined;
-    this.scene.onSectTrialEnd(this.state.result as SectTrialResult);
+    this.scene.onSectTrialEnd(this.state.result as SectTrialResult, this.failureHint);
   }
   destroy() {
     if (this.destroyed) return;

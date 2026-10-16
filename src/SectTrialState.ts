@@ -8,10 +8,16 @@ export interface SectTrialCompanion {
   attack: { type: string; damageRatio: number; range: { w: number; h: number }; telegraphMs: number; recoverMs: number; cooldownMs: number; knockback: number };
   onZeroHp: string;
 }
+export interface SectTrialDraw {
+  talismans: number; strokesMin: number; strokesMax: number; wrongStroke: string; timeLimitMs: number;
+  directions?: TrialDirection[];
+  sequenceMode?: string;
+  templates?: TrialDirection[][];
+}
 export interface SectTrialConfig {
   id: string; type: string;
   lamps?: { count: number; timeLimitMs: number; hitSkill: string };
-  draw?: { talismans: number; strokesMin: number; strokesMax: number; wrongStroke: string; timeLimitMs: number };
+  draw?: SectTrialDraw;
   targets?: { total: number; timeLimitMs: number };
   tame?: { fluteMs: number; interruptOn: string[] };
   waves?: SectTrialWave[];
@@ -131,10 +137,20 @@ export class SectTrialState {
     return true;
   }
   private prepareStrokes() {
-    const min = Math.max(1, count(this.def.draw?.strokesMin, 4));
-    const max = Math.max(min, count(this.def.draw?.strokesMax, 6));
-    const length = min + this.drawn % (max - min + 1);
-    this.strokes = Array.from({ length }, (_, index) => DIRECTIONS[(index + this.drawn) % DIRECTIONS.length]);
+    const draw = this.def.draw;
+    const configured = Array.isArray(draw?.directions)
+      ? draw.directions.filter(direction => DIRECTIONS.includes(direction)) : [];
+    const directions = configured.length ? [...new Set(configured)] : DIRECTIONS;
+    const template = draw?.templates?.[this.drawn];
+    const strokes = Array.isArray(template) ? template.filter(direction => directions.includes(direction)) : [];
+    // 模板按道次优先，错笔保留当前序列；空缺的道次才使用生成规则。
+    if (strokes.length) { this.strokes = strokes; return; }
+    const min = Math.max(1, count(draw?.strokesMin, 4));
+    const max = Math.max(min, count(draw?.strokesMax, 6));
+    const random = draw?.sequenceMode === 'random';
+    const length = min + (random ? Math.floor(Math.random() * (max - min + 1)) : this.drawn % (max - min + 1));
+    this.strokes = Array.from({ length }, (_, index) => directions[random
+      ? Math.floor(Math.random() * directions.length) : (index + this.drawn) % directions.length]);
   }
   private beginWaves() { this.setStage('waves'); if (!this.waveCount) this.end('win'); }
   private setStage(stage: SectTrialStage) { this.stage = stage; this.elapsed = 0; }
