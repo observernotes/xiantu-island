@@ -8,7 +8,7 @@
 
 ## tip
 - 推送前 tip：`0ebdb60`
-- 本提交 tip：`e372704`
+- 本提交 tip：`d9081c4`
 
 ## 天机改动落点
 共享表 `/workspace/xiantu/balance/`（mtime 约 12:44 CST）：
