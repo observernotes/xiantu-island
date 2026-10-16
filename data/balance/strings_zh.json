@@ -807,5 +807,18 @@
   "talisman.return_cast": "正在遁往{town}，剩余 {seconds}秒。",
   "talisman.return_interrupted": "遁地中断，符箓未消耗。",
   "talisman.return_failed": "无法抵达村镇，符箓未消耗。",
-  "talisman.gather_duration": "击杀修为加成持续现实时间三十分钟。"
+  "talisman.gather_duration": "击杀修为加成持续现实时间三十分钟。",
+  "alchemy.reason.materials": "材料不足",
+  "alchemy.reason.fuel": "灵石不足",
+  "alchemy.reason.furnace": "丹炉不可用",
+  "alchemy.reason.unlearned": "尚未学会这张丹方",
+  "alchemy.reason.unknown": "丹方不存在",
+  "alchemy.reason.busy": "请先完成这一炉",
+  "alchemy.reason.config": "生活技能配置错误",
+  "alchemy.reason.skill_level": "炼丹等级不足",
+  "alchemy.reason.unavailable": "暂时无法炼制",
+  "alchemy.fire_batch_hint": "单炉按空格控火；批量自动跳过",
+  "alchemy.recipe_level": "丹方等级 {n}",
+  "life.skill.config_error": "生活技能配置错误",
+  "talisman.level": "制符 Lv.{n}"
 }

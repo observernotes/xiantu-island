@@ -1,5 +1,6 @@
 import recipesRaw from '@xt/balance/recipes.json';
-import { ALCHEMY_RULES, RECIPES, QUESTS, ITEMS, NPCS } from './data';
+import strings from '@xt/balance/strings_zh.json';
+import { ALCHEMY_RULES, RECIPES, QUESTS, ITEMS, NPCS, t } from './data';
 import { Progress } from './Progress';
 import { QuestSystem } from './QuestSystem';
 import { AlchemySystem, alchemyFurnace, fireConfig, fireOutcome, firePointer, qualityRates } from './Alchemy';
@@ -14,6 +15,17 @@ function eq(actual: unknown, expected: unknown, message: string) {
 }
 function ok(value: unknown, message: string): asserts value { eq(!!value, true, message); }
 function near(actual: number, expected: number, message: string) { ok(Math.abs(actual - expected) < 1e-9, message); }
+
+for (const key of [
+  'alchemy.reason.materials', 'alchemy.reason.fuel', 'alchemy.reason.furnace',
+  'alchemy.reason.unlearned', 'alchemy.reason.unknown', 'alchemy.reason.busy',
+  'alchemy.reason.config', 'alchemy.reason.skill_level', 'alchemy.reason.unavailable',
+  'alchemy.fire_batch_hint', 'alchemy.recipe_level', 'life.skill.config_error', 'talisman.level',
+] as const) {
+  ok(typeof strings[key] === 'string' && strings[key].length > 0, `${key} 表内存在`);
+  eq(t(key), strings[key], `${key} 使用 strings_zh 表内文案`);
+}
+ok(t('alchemy.recipe_level', { n: 3 }).includes('3'), '丹方等级文案替换 n 参数');
 
 const saved: Record<string, string> = {};
 const key = 'xiantu_save_v1';
