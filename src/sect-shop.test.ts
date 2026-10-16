@@ -100,19 +100,21 @@ function donate(growth: SectGrowth, row: ReturnType<typeof offer>, id: string, d
 try {
   // 注入业务夹具对应的会话开关；发版关闭入口另由 test:classes/test:features 覆盖。
   for (const name of serviceFeatures) setFeatureFlag(name, true);
-  // 真实配置保持禁用；测试仅克隆打开，不改快照与共享 JSON。
+  // tip 临时开态：真实上交与贡献货架开放，高阶剑谱仍保持关闭。
   same(SECT_GROWTH_CONFIG.donations, rawDonations, '上交从唯一共享表读取');
   same(SECT_GROWTH_CONFIG.shops, rawShops, '两种货品均完整读取');
-  eq(rawDonations.enabled, false, '真实上交总开关关闭');
+  eq(rawDonations.enabled, true, 'tip 真实上交总开关打开');
   eq(rawDonations.offers.length, 5, '真实上交五宗各一条');
   const actualGoods = Object.values(rawShops).flat().filter(entry => typeof entry !== 'string');
   eq(actualGoods.length, 16, '真实宗门货架含 16 个对象');
-  ok(actualGoods.every(entry => entry.enabled === false), '真实宗门商品全部关闭');
+  eq(actualGoods.filter(entry => entry.enabled === true).length, 15, 'tip 真实宗门贡献货架 15 项打开');
+  same(rawShops.tianjian_elder.map(entry => ({ item: entry.item, enabled: entry.enabled })),
+    [{ item: 'scroll_ten_thousand_swords', enabled: false }], '高阶书目五宗未齐，天剑长老剑谱仍关闭');
   for (const row of rawDonations.offers) {
-    eq(row.enabled, false, `${row.id} 条目保持关闭`);
+    eq(row.enabled, true, `${row.id} 条目打开`);
     const p = joined(row.sect), growth = new SectGrowth(p);
-    eq(growth.donations(row.npc, now).ok, false, `${row.sect} 默认不开放上交`);
-    eq(growth.services(row.npc).find(service => service.type === 'sect_donation')?.allowed, false, `${row.sect} 上交服务注册不等于可扣料`);
+    eq(growth.donations(row.npc, now).ok, true, `${row.sect} tip 开放上交目录`);
+    eq(growth.services(row.npc).find(service => service.type === 'sect_donation')?.allowed, true, `${row.sect} 上交服务目录可用`);
   }
 
   // 普通 NPC 只消费字符串，单件付灵石；注入贡献对象不改变普通分流。

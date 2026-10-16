@@ -14,21 +14,21 @@
    "item": "hp_pill_small",
    "reqRank": "outer_disciple",
    "costContribution": 8,
-   "enabled": false,
+   "enabled": true,
    "balanceTodo": []
   },
   {
    "item": "clear_mind_pill",
    "reqRank": "inner_disciple",
    "costContribution": 30,
-   "enabled": false,
+   "enabled": true,
    "balanceTodo": []
   },
   {
    "item": "protect_charm",
    "reqRank": "direct_disciple",
    "costContribution": 400,
-   "enabled": false,
+   "enabled": true,
    "balanceTodo": []
   }
  ],
@@ -37,21 +37,21 @@
    "item": "hp_pill_small",
    "reqRank": "outer_disciple",
    "costContribution": 8,
-   "enabled": false,
+   "enabled": true,
    "balanceTodo": []
   },
   {
    "item": "clear_mind_pill",
    "reqRank": "inner_disciple",
    "costContribution": 30,
-   "enabled": false,
+   "enabled": true,
    "balanceTodo": []
   },
   {
    "item": "protect_charm",
    "reqRank": "direct_disciple",
    "costContribution": 400,
-   "enabled": false,
+   "enabled": true,
    "balanceTodo": []
   }
  ],
@@ -60,21 +60,21 @@
    "item": "hp_pill_small",
    "reqRank": "outer_disciple",
    "costContribution": 8,
-   "enabled": false,
+   "enabled": true,
    "balanceTodo": []
   },
   {
    "item": "clear_mind_pill",
    "reqRank": "inner_disciple",
    "costContribution": 30,
-   "enabled": false,
+   "enabled": true,
    "balanceTodo": []
   },
   {
    "item": "protect_charm",
    "reqRank": "direct_disciple",
    "costContribution": 400,
-   "enabled": false,
+   "enabled": true,
    "balanceTodo": []
   },
   "talisman_paper"
@@ -84,21 +84,21 @@
    "item": "hp_pill_small",
    "reqRank": "outer_disciple",
    "costContribution": 8,
-   "enabled": false,
+   "enabled": true,
    "balanceTodo": []
   },
   {
    "item": "clear_mind_pill",
    "reqRank": "inner_disciple",
    "costContribution": 30,
-   "enabled": false,
+   "enabled": true,
    "balanceTodo": []
   },
   {
    "item": "protect_charm",
    "reqRank": "direct_disciple",
    "costContribution": 400,
-   "enabled": false,
+   "enabled": true,
    "balanceTodo": []
   }
  ],
@@ -107,21 +107,21 @@
    "item": "hp_pill_small",
    "reqRank": "outer_disciple",
    "costContribution": 8,
-   "enabled": false,
+   "enabled": true,
    "balanceTodo": []
   },
   {
    "item": "clear_mind_pill",
    "reqRank": "inner_disciple",
    "costContribution": 30,
-   "enabled": false,
+   "enabled": true,
    "balanceTodo": []
   },
   {
    "item": "protect_charm",
    "reqRank": "direct_disciple",
    "costContribution": 400,
-   "enabled": false,
+   "enabled": true,
    "balanceTodo": []
   }
  ],

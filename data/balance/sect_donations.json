@@ -1,6 +1,6 @@
 {
   "version": "v0.5",
-  "enabled": false,
+  "enabled": true,
   "offers": [
     {
       "id": "donate_tianjian_iron",
@@ -8,7 +8,7 @@
       "npc": "tianjian_envoy_sect",
       "item": "iron_essence",
       "reqRank": "outer_disciple",
-      "enabled": false,
+      "enabled": true,
       "count": 10,
       "rewards": {
         "sectContribution": 50
@@ -22,7 +22,7 @@
       "npc": "taixu_envoy",
       "item": "spirit_herb",
       "reqRank": "outer_disciple",
-      "enabled": false,
+      "enabled": true,
       "count": 12,
       "rewards": {
         "sectContribution": 48
@@ -36,7 +36,7 @@
       "npc": "lingfu_envoy",
       "item": "spirit_ink",
       "reqRank": "outer_disciple",
-      "enabled": false,
+      "enabled": true,
       "count": 16,
       "rewards": {
         "sectContribution": 48
@@ -50,7 +50,7 @@
       "npc": "youying_envoy",
       "item": "spirit_herb",
       "reqRank": "outer_disciple",
-      "enabled": false,
+      "enabled": true,
       "count": 12,
       "rewards": {
         "sectContribution": 48
@@ -64,7 +64,7 @@
       "npc": "wanshou_envoy",
       "item": "spirit_herb",
       "reqRank": "outer_disciple",
-      "enabled": false,
+      "enabled": true,
       "count": 12,
       "rewards": {
         "sectContribution": 48

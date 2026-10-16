@@ -115,8 +115,8 @@ function firstJobBooks(config: SectGrowthConfig) {
 try {
   // 注入业务夹具对应的会话开关；发版关闭入口另由 test:classes/test:features 覆盖。
   for (const name of serviceFeatures) setFeatureFlag(name, true);
-  // 共享表关闭晋升与兑换；读表与身份显示仍正常，未来预留档不会被总开关放行。
-  eq(rawRanks.enabled, false, '共享职位总开关当前关闭');
+  // tip 临时开态：职位与贡献货架已启用；晋升门槛和五宗同档书目仍须满足。
+  eq(rawRanks.enabled, true, 'tip 共享职位总开关临时开启');
   same(SECT_GROWTH_CONFIG.ranks.rules.rankOrder, rawRanks.rules.rankOrder, '唯一职位顺序读取共享配置');
   same(SECT_GROWTH_CONFIG.shops, rawShops, '字符串与已落表贡献对象货架完整读取');
   same(rawRanks.ranks.filter(row => row.availableInV05).map(row => row.id), [outer, inner, direct], 'v0.5 只登记前三档');
@@ -137,10 +137,11 @@ try {
     eq(identity.icon, rawRanks.ranks[0].icon, `${entry.id} 无图不影响徽记 key`);
     same(identity.libraryTiers, ['entry'], `${entry.id} 外门只开入门权限`);
     same(identity.shopShelves, [outer], `${entry.id} 外门只开本档货架`);
-    rejected(() => growth.promote(entry.promotionNpc, inner, `closed-${entry.id}`), p, `${entry.id} 总开关关闭不得晋升`);
-    eq(growth.catalog(entry.stewardNpc, shop).ok, false, `${entry.id} 已落表贡献货架开关仍关闭`);
+    eq(growth.promotion(entry.promotionNpc).key, 'sect.ui.requirements_unmet', `${entry.id} 默认外门晋升需求不满足`);
+    rejected(() => growth.promote(entry.promotionNpc, inner, `requirements-${entry.id}`), p, `${entry.id} 贡献不足不得晋升`);
+    eq(growth.catalog(entry.stewardNpc, shop).ok, true, `${entry.id} tip 已落表贡献货架临时开放`);
     eq(growth.catalog(entry.promotionNpc, library).ok, false, `${entry.id} 未齐真实书目仍筹备`);
-    eq(growth.services(entry.stewardNpc).some(service => service.allowed), false, `${entry.id} 未落表服务不可扣款`);
+    eq(growth.services(entry.stewardNpc).some(service => service.allowed), true, `${entry.id} 使者已开放贡献货架服务`);
   }
 
   // 缺字段才迁移，余额不推断职位；现有合法值及冲突值均不静默改写。

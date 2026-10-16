@@ -1,10 +1,10 @@
 {
   "fiveSectClasses": true,
   "sectDaily": true,
-  "sectRanks": false,
-  "sectShopLibrary": false,
+  "sectRanks": true,
+  "sectShopLibrary": true,
   "shops": true,
-  "sectDonations": false,
+  "sectDonations": true,
   "seclusion": true,
   "alchemyPhase1": true,
   "v05Maps": true,
