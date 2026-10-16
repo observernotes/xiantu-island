@@ -264,7 +264,12 @@ function map(id: string, targetIds: string[] = [], properties: Record<string, un
   const f = ready();
   const destination = nearestTalismanTown('bamboo_forest', { level: 15, quests: {}, visitedMaps: ['qingyun_village'], edgeOpen: () => true });
   eq(destination?.mapId, 'qingyun_village', 'actual shared/snapshot bamboo portal resolves village playerStart');
-  eq(isTalismanTown('qingyun_village', TILED_MAPS), true, 'actual village fallback recorded');
-  eq(talismanMapGaps().some(g => g === 'qingyun_village.returnTown'), true, 'missing returnTown listed as configuration gap');
+  eq(isTalismanTown('qingyun_village', TILED_MAPS), true, 'actual village returnTown from map table');
+  eq(talismanMapGaps().length, 0, 'snapshotted/shared maps declare returnTown and allowTalismanReturn');
+  // Gap listing still covers incomplete fixtures; production maps above must stay gap-free.
+  const incomplete = { qingyun_village: map('qingyun_village'), field: map('field') };
+  eq(talismanMapGaps(incomplete).includes('qingyun_village.returnTown'), true, 'missing returnTown listed as configuration gap');
+  eq(talismanMapGaps(incomplete).includes('qingyun_village.allowTalismanReturn'), true, 'missing allow listed for village');
+  eq(talismanMapGaps(incomplete).includes('field.allowTalismanReturn'), true, 'missing allow listed for ordinary map');
 }
 console.log(`talisman use tests ok: ${assertions} assertions`);

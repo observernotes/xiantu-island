@@ -33,6 +33,16 @@
    "name": "area",
    "type": "string",
    "value": "wanyao"
+  },
+  {
+   "name": "returnTown",
+   "type": "bool",
+   "value": false
+  },
+  {
+   "name": "allowTalismanReturn",
+   "type": "bool",
+   "value": true
   }
  ],
  "tilesets": [

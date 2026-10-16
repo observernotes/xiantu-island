@@ -43,6 +43,16 @@
    "name": "night",
    "type": "bool",
    "value": true
+  },
+  {
+   "name": "returnTown",
+   "type": "bool",
+   "value": false
+  },
+  {
+   "name": "allowTalismanReturn",
+   "type": "bool",
+   "value": false
   }
  ],
  "tilesets": [

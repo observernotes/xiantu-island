@@ -28,6 +28,16 @@
    "name": "qiDensity",
    "type": "int",
    "value": 4
+  },
+  {
+   "name": "returnTown",
+   "type": "bool",
+   "value": false
+  },
+  {
+   "name": "allowTalismanReturn",
+   "type": "bool",
+   "value": true
   }
  ],
  "tilesets": [

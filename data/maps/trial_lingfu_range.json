@@ -38,6 +38,16 @@
    "name": "trial",
    "type": "string",
    "value": "trial_sect_lingfu"
+  },
+  {
+   "name": "returnTown",
+   "type": "bool",
+   "value": false
+  },
+  {
+   "name": "allowTalismanReturn",
+   "type": "bool",
+   "value": false
   }
  ],
  "tilesets": [

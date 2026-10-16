@@ -33,6 +33,16 @@
    "name": "bgm",
    "type": "string",
    "value": "bgm_qingyun"
+  },
+  {
+   "name": "returnTown",
+   "type": "bool",
+   "value": true
+  },
+  {
+   "name": "allowTalismanReturn",
+   "type": "bool",
+   "value": true
   }
  ],
  "tilesets": [
