@@ -19,10 +19,10 @@ import type { MapObj } from './scenes/MapBuilder';
 type After = (() => unknown) | undefined;
 type Choice = { label: string; disabled?: boolean; onSelect: () => unknown };
 
-/** runner 为开态建立独立 SSR 图，只替换导入的 quests JSON 克隆，不修改运行时 QUESTS。 */
+/** openFixture 表示当前独立 SSR 图读到开态；正式开态直接导入 JSON，关态只读 runner 注入的克隆。 */
 export async function runV06cOpenTests(options: { openFixture: boolean; dataMode?: string }): Promise<{ assertions: number }> {
   const { openFixture, dataMode = 'fixture' } = options;
-  const label = `${dataMode}/${openFixture ? 'memory-open' : 'formal-closed'}`;
+  const label = `${dataMode}/${openFixture ? 'formal-open' : 'memory-closed'}`;
   let assertions = 0;
   const eq = (actual: unknown, expected: unknown, message: string) => {
     assertions++;
@@ -41,13 +41,13 @@ export async function runV06cOpenTests(options: { openFixture: boolean; dataMode
   const intro = questsRaw.find(quest => quest.id === id);
   ok(intro, '导入任务表有唯一引导条目');
   eq(GAME_PHASE, 5, '全局阶段仍为 5');
-  eq([intro.enabled, intro.phase], openFixture ? [true, 5] : [false, 6], '仅 SSR 开态克隆修改 enabled 和可见性 phase');
+  eq([intro.enabled, intro.phase], openFixture ? [true, 5] : [false, 6], '正式开态为 true/5，SSR 关态克隆仅改为 false/6');
   eq(intro.rewards, {}, '引导奖励始终为空');
   eq([intro.giver, intro.turnIn, intro.prereq, intro.reqRealm, intro.reqLevel, intro.next],
     ['hunter_lei', 'hunter_lei', 'q_main_04', 'foundation', 30, null], '资格、NPC、前置与 next 均沿用正式表');
   eq(intro.objectives, [{ type: 'reach', map: 'wanyao_outer_1', target: 'secret_nest_sign' }], '引导只推进路牌 reach');
   eq(isSecretNestIntroEnabled(), openFixture, '门禁读导入 JSON 的开关');
-  eq(!!QUESTS[id], openFixture, '开态由 JSON 克隆进入阶段表，正式关态仍被 phase 筛除');
+  eq(!!QUESTS[id], openFixture, '正式开态 JSON 进入阶段表，关态克隆被 phase 筛除');
   eq(featureEnabled('indexedDbSaves'), true, 'IDB 正式开关保持 true');
   eq([companionsRaw.enabled, companionsRaw.companions[0].enabled, flyZonesRaw.enabled], [true, true, true], '同门与御剑沿用已软开正式值');
   let giftsChecked = 0;
@@ -331,24 +331,24 @@ export async function runV06cOpenTests(options: { openFixture: boolean; dataMode
       eq(startSecretNest().allowed, false, '开态也不开放完整开局或房间池');
       eq(rewardSecretNest().allowed, false, '开态也不开放收益领取');
     } else {
-      // 同一测试文件保留无 JSON 注入的正式关态对照，包括遗留 active/reached/done。
+      // 同一测试文件保留 JSON 内存关态对照，包括遗留 active/reached/done。
       for (const state of ['none', 'active', 'done'] as const) {
         const { p, qs } = await fixture(true);
         if (state !== 'none') p.quests[id] = { state, kills: {}, reached: true };
         const before = p.exportSave(), writesBefore = writes, tips: { tipKey: string }[] = [];
         qs.onBlocked(tip => tips.push(tip));
-        eq(qs.available(id), false, '正式关态不可接取');
-        eq(qs.accept(id), false, '正式关态 accept 拒绝');
-        eq(last(tips)?.tipKey, 'secret.closed.quest_offer', '正式关态 accept tipKey 不变');
-        eq(await qs.turnInAsync(id), undefined, '正式关态异步交付拒绝');
-        eq(last(tips)?.tipKey, 'secret.closed.quest_progress', '正式关态交付 tipKey 不变');
+        eq(qs.available(id), false, '内存关态不可接取');
+        eq(qs.accept(id), false, '内存关态 accept 拒绝');
+        eq(last(tips)?.tipKey, 'secret.closed.quest_offer', '内存关态 accept tipKey 不变');
+        eq(await qs.turnInAsync(id), undefined, '内存关态异步交付拒绝');
+        eq(last(tips)?.tipKey, 'secret.closed.quest_progress', '内存关态交付 tipKey 不变');
         qs.onReach('secret_nest_sign');
-        eq(qs.complete(id), false, '正式关态不可推进或完成');
-        eq(readSecretNestSign().allowed, false, '正式路牌 API 仍关闭');
-        eq(enterSecretNest(p, returnPosition), refuseEnter(), '正式进巢 API 保留 no_enter 拒绝');
+        eq(qs.complete(id), false, '内存关态不可推进或完成');
+        eq(readSecretNestSign().allowed, false, '内存关态路牌 API 关闭');
+        eq(enterSecretNest(p, returnPosition), refuseEnter(), '内存关态进巢 API 保留 no_enter 拒绝');
         eq(exitSecretNest({ id: 'secret_nest_gate_stub', returnPosition }), refuseEnter(), '关态伪造内存房间不能绕过门禁');
-        eq(startSecretNest(), refuseStart(), '正式开局 API 保留 no_start');
-        eq(rewardSecretNest(), refuseReward(), '正式收益 API 保留 no_reward');
+        eq(startSecretNest(), refuseStart(), '内存关态开局 API 保留 no_start');
+        eq(rewardSecretNest(), refuseReward(), '内存关态收益 API 保留 no_reward');
         const view = sceneFixture(p, qs);
         for (const [object, tipKey] of [[sign, 'secret.closed.sign_readable'], [entrance, 'secret.closed.entrance']] as const) {
           view.scene.player.x = object!.x;
@@ -359,10 +359,10 @@ export async function runV06cOpenTests(options: { openFixture: boolean; dataMode
         }
         view.scene.player.x = 490;
         eq(view.scene.tryInteractSecretNest(), false, '关态营地 return 不抢猎户交互');
-        eq(view.scene.secretNestRoom, undefined, '正式关态不建立最小房间');
-        eq(view.transitions, [], '正式关态不传送或重启');
-        eq(p.exportSave(), before, '正式关态所有请求完整状态零变化');
-        eq(writes, writesBefore, '正式关态不写存档');
+        eq(view.scene.secretNestRoom, undefined, '内存关态不建立最小房间');
+        eq(view.transitions, [], '内存关态不传送或重启');
+        eq(p.exportSave(), before, '内存关态所有请求完整状态零变化');
+        eq(writes, writesBefore, '内存关态不写存档');
       }
     }
     eq(JSON.stringify([questsRaw, stringsRaw, campRaw, companionsRaw, flyZonesRaw, npcsRaw]), importedBefore, '测试不修改任何导入表或内存克隆');
@@ -370,7 +370,8 @@ export async function runV06cOpenTests(options: { openFixture: boolean; dataMode
     eq(featureFlags(), flagsBefore, '测试全程不翻任何 feature');
     eq(featureEnabled('indexedDbSaves'), true, '测试后 IDB 正式开关仍 true');
     eq(localWrites, 0, '真实异步路径无需 localStorage 写入');
-    console.log(JSON.stringify({ suite: 'v06c-open-fixture-runtime', dataMode, openFixture, passed: true,
+    console.log(JSON.stringify({ suite: 'v06c-open-runtime', dataMode, graph: openFixture ? 'formal-open' : 'memory-closed',
+      openFixture, formalOpen: true, closedFixtureOnly: true, passed: true,
       assertions, giftsChecked, indexedDbSaves: true, persistentRewards: false }));
     return { assertions };
   } finally {

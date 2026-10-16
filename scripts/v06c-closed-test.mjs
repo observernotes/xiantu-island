@@ -1,4 +1,4 @@
-// 双数据根加载真实关态 API / 任务 / 地图交互；只在内存注入旧档和伪开任务。
+// 正式开态 SHA 旁证 + 双数据根关态内存 JSON 夹具；不写正式表、开关或地图。
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import fs from 'node:fs/promises';
@@ -10,6 +10,14 @@ import { sharedRoot } from './root.mjs';
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const modes = [['shared', sharedRoot(root)], ['snapshot', path.join(root, 'data')]];
 const introId = 'q_secret_nest_intro';
+const expectedSha = {
+  'balance/quests.json': 'c45466827247b9e61260bbd2b681ae7207bf84a017aff5d8b028c0ec3463482b',
+  'balance/strings_zh.json': '4a32b19b8e1f318cfcbbf8b9a4e9382f17e7fc3fd951d040f9ec4749524f7385',
+  'maps/wanyao_outer_1.json': '9c05955fb39631e1236f2583f3be65e66823be2da3b30efaafc10ff443074b10',
+  'balance/companions.json': 'e4eb87c1f9400514a084d630f179903e0926d706c85614481f1e2618a01bb115',
+  'balance/fly_zones.json': '2940fe5952246a3669f87d8b9f3fc6226c2adf7080353be7de94da81e031b8e4',
+  'balance/npcs.json': '2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6',
+};
 const closedStrings = {
   'secret.closed.feature': '万妖巢穴尚未开放。',
   'secret.closed.entrance': '石门尚未开放，可查看说明，暂不可进入。',
@@ -31,9 +39,9 @@ const introStrings = {
   'secret.quest.intro.complete': '路已记下。准备妥当，就去门前启程吧。',
   'secret.quest.intro.description': '听雷猎户说石门已开，先去读路牌。',
 };
-const originalIntro = {
+const originalOpenIntro = {
   id: introId, name: '林下秘门', nameKey: 'secret.quest.intro.name',
-  descriptionKey: 'secret.quest.intro.description', phase: 6, enabled: false,
+  descriptionKey: 'secret.quest.intro.description', phase: 5, enabled: true,
   giver: 'hunter_lei', turnIn: 'hunter_lei', reqLevel: 30, reqRealm: 'foundation', prereq: 'q_main_04',
   objectives: [{ type: 'reach', map: 'wanyao_outer_1', target: 'secret_nest_sign' }], rewards: {}, next: null,
   dialogueKeys: { offer: 'secret.quest.intro.offer', progress: 'secret.quest.intro.progress', complete: 'secret.quest.intro.complete' },
@@ -71,12 +79,15 @@ async function protectTables() {
       before.set(file, await shaOrNull(file));
     }
   }
+  const featuresSource = path.join(root, 'src/features.ts');
+  before.set(featuresSource, await shaOrNull(featuresSource));
 }
 
 async function checkFormal(mode, dataRoot) {
   const data = {};
-  for (const name of ['balance/quests.json', 'balance/strings_zh.json', 'maps/wanyao_outer_1.json']) {
+  for (const [name, expected] of Object.entries(expectedSha)) {
     const bytes = await fs.readFile(path.join(dataRoot, name));
+    eq(hash(bytes), expected, `${mode}: ${name} 正式 SHA`);
     if (mode === 'shared') sharedBytes.set(name, bytes);
     else {
       eq(bytes.equals(sharedBytes.get(name)), true, `${name}: 共享/快照同字节`);
@@ -87,7 +98,15 @@ async function checkFormal(mode, dataRoot) {
   const quests = data['balance/quests.json'], strings = data['balance/strings_zh.json'];
   const intros = quests.filter(q => q.id === introId);
   eq(intros.length, 1, `${mode}: 只有一条既有秘境引导`);
-  eq(intros[0], originalIntro, `${mode}: intro 关态和全部既有字段不变`);
+  eq(intros[0], originalOpenIntro, `${mode}: intro 正式软开且全部既有字段不变`);
+  eq(data['balance/companions.json'].enabled, true, `${mode}: companions 根保持软开`);
+  eq(data['balance/companions.json'].companions[0].enabled, true, `${mode}: 苏条目保持软开`);
+  eq(data['balance/fly_zones.json'].enabled, true, `${mode}: fly 根保持软开`);
+  const featuresFile = path.join(dataRoot, 'features.json');
+  if (before.get(featuresFile) !== null) {
+    const features = JSON.parse(await fs.readFile(featuresFile, 'utf8'));
+    eq(features.indexedDbSaves, true, `${mode}: 正式 IDB 保持 true`);
+  }
   for (const [key, text] of Object.entries({ ...closedStrings, ...introStrings })) {
     eq(strings[key], text, `${mode}: ${key} 原文`);
     if (key.startsWith('secret.closed.')) ok(Array.from(text).length <= 40, `${mode}: ${key} ≤40字`);
@@ -102,7 +121,7 @@ async function checkFormal(mode, dataRoot) {
   }
   ok(map.nextobjectid > Math.max(...objects.map(object => object.id)), `${mode}: nextobjectid 正确`);
   eq(new Set(objects.map(object => object.id)).size, objects.length, `${mode}: 对象 ID 不重复`);
-  const npcs = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/npcs.json'), 'utf8'));
+  const npcs = data['balance/npcs.json'];
   let gifts = 0;
   const visit = value => {
     if (!value || typeof value !== 'object') return;
@@ -114,18 +133,25 @@ async function checkFormal(mode, dataRoot) {
   visit(npcs);
   ok(gifts > 0, `${mode}: 实际核查 gifts 配置`);
   staticData.set(mode, data);
-  console.log(JSON.stringify({ suite: 'v06c-closed-formal', dataMode: mode, introEnabled: false, giftsEnabled: false,
+  console.log(JSON.stringify({ suite: 'v06c-closed-formal-open', dataMode: mode,
+    formalOpen: true, introEnabled: true, introPhase: 5, giftsEnabled: false,
+    companionsEnabled: true, flyZonesEnabled: true, indexedDbSaves: true,
     questsSha: hash(sharedBytes.get('balance/quests.json')), stringsSha: hash(sharedBytes.get('balance/strings_zh.json')),
     mapSha: hash(sharedBytes.get('maps/wanyao_outer_1.json')) }));
 }
 
-async function runGraph(mode, dataRoot) {
+async function runGraph(mode, dataRoot, memoryClosed) {
+  const closedFixtureOnly = memoryClosed !== null;
   const server = await createServer({
     root, configFile: false, resolve: { alias: { '@xt': dataRoot } },
     server: { middlewareMode: true, hmr: false, ws: false }, appType: 'custom', logLevel: 'error',
-    plugins: [{ name: 'v06c-closed-render-stub', enforce: 'pre',
-      resolveId(id) { if (id === 'phaser') return '\0v06c-phaser'; },
+    plugins: [{ name: 'v06c-closed-memory-fixture', enforce: 'pre',
+      resolveId(id) {
+        if (id === 'phaser') return '\0v06c-phaser';
+        if (closedFixtureOnly && id.endsWith('/balance/quests.json')) return '\0v06c-closed-quests.mjs';
+      },
       load(id) {
+        if (id === '\0v06c-closed-quests.mjs') return `export default ${JSON.stringify(memoryClosed)};`;
         if (id !== '\0v06c-phaser') return;
         return `class Sprite {} export default { WEBGL: 2, Scene: class {}, BlendModes: { NORMAL: 0 },
           Physics: { Arcade: { Sprite } }, GameObjects: { Sprite, NineSlice: class {} },
@@ -148,17 +174,26 @@ async function runGraph(mode, dataRoot) {
   try {
     const api = await server.ssrLoadModule('/src/SecretNestClosed.ts');
     const { QUESTS, QUEST_ORDER, NPCS } = await server.ssrLoadModule('/src/data.ts');
+    const features = await server.ssrLoadModule('/src/features.ts');
+    eq(features.featureEnabled('indexedDbSaves'), true, `${mode}: SSR 正式 IDB 保持 true`);
+    eq(api.SECRET_NEST_INTRO_ID, introId, `${mode}: 既有 intro 对象 ID`);
+    eq(api.isSecretNestIntroEnabled(), !closedFixtureOnly, `${mode}: 门禁必须读取 SSR JSON 的真实状态`);
+    if (!closedFixtureOnly) {
+      eq([QUESTS[introId]?.enabled, QUESTS[introId]?.phase], [true, 5], `${mode}: 正式开态进入运行时 QUESTS`);
+      console.log(JSON.stringify({ suite: 'v06c-closed-formal-graph', dataMode: mode, formalOpen: true,
+        introEnabled: true, introPhase: 5, assertions }));
+      return;
+    }
     const { Progress } = await server.ssrLoadModule('/src/Progress.ts');
     const { QuestSystem } = await server.ssrLoadModule('/src/QuestSystem.ts');
     const { GameScene } = await server.ssrLoadModule('/src/scenes/GameScene.ts');
-    const features = await server.ssrLoadModule('/src/features.ts');
     const { gameNow } = await server.ssrLoadModule('/src/GameClock.ts');
     const flagsBefore = clone(features.featureFlags());
     const runtimeBefore = QUESTS[introId], orderBefore = [...QUEST_ORDER], npcBefore = [...NPCS.hunter_lei.quests];
-    eq(api.SECRET_NEST_INTRO_ID, introId, `${mode}: 正式关态对象 ID`);
-    eq(api.isSecretNestIntroEnabled(), false, `${mode}: 正式 enabled:false 明确关闭`);
     const phaseFilteredOut = !QUESTS[introId];
-    const sourceIntro = staticData.get(mode)['balance/quests.json'].find(q => q.id === introId);
+    eq(phaseFilteredOut, true, `${mode}: 关态 JSON 夹具 phase 6 不进入运行时 QUESTS`);
+    const sourceIntro = memoryClosed.find(q => q.id === introId);
+    eq([sourceIntro.enabled, sourceIntro.phase], [false, 6], `${mode}: 内存关态 JSON 仅 intro false/6`);
     let fixtures = 0;
 
     async function exercise(p, qs, label) {
@@ -176,7 +211,7 @@ async function runGraph(mode, dataRoot) {
           for (const [name, key] of Object.entries(apiTips)) {
             eq(api[name](), { allowed: false, tipKey: key, text: closedStrings[key] }, `${label}: ${name} 可重复只读`);
           }
-          eq(api.isSecretNestIntroEnabled(), false, `${label}: 资格/旧档/伪开 QUESTS 不能覆盖正式关态`);
+          eq(api.isSecretNestIntroEnabled(), false, `${label}: 资格/旧档/伪开 QUESTS 不能覆盖关态 JSON 夹具`);
           eq(qs.available(introId), false, `${label}: 不可 available`);
           eq(qs.levelLocked(introId), false, `${label}: 关态优先于等级锁`);
           eq(qs.isActive(introId), false, `${label}: 旧档 active 不可执行`);
@@ -316,7 +351,7 @@ async function runGraph(mode, dataRoot) {
 
     try {
       verifyRenderedInteractions();
-      // 先测实际 phase 过滤表；再注入 enabled:true + phase:5，证明不是借“不在 QUESTS”拒绝。
+      // 先测关态 JSON 夹具的 phase 过滤表；再伪开 QUESTS，证明门禁仍以 JSON 为准。
       for (const inject of [false, true]) {
         if (inject) {
           QUESTS[introId] = { ...clone(sourceIntro), enabled: true, phase: 5 };
@@ -365,9 +400,10 @@ async function runGraph(mode, dataRoot) {
       NPCS.hunter_lei.quests.splice(0, NPCS.hunter_lei.quests.length, ...npcBefore);
     }
     eq(features.featureFlags(), flagsBefore, `${mode}: 内存 feature 夹具已恢复`);
-    eq(api.isSecretNestIntroEnabled(), false, `${mode}: 测试结束正式 intro 仍关`);
+    eq(api.isSecretNestIntroEnabled(), false, `${mode}: 测试结束内存关态 JSON 仍关`);
     console.log(JSON.stringify({ suite: 'v06c-closed-runtime', dataMode: mode, passed: true, fixtures,
-      phaseFilteredOut, runtimeEnabledFixtureRejected: true, saveReloadChecked: true, assertions }));
+      formalOpen: true, closedFixtureOnly: true, phaseFilteredOut,
+      runtimeEnabledFixtureRejected: true, saveReloadChecked: true, assertions }));
   } finally {
     if (storageDescriptor) Object.defineProperty(globalThis, 'localStorage', storageDescriptor);
     else delete globalThis.localStorage;
@@ -378,8 +414,22 @@ async function runGraph(mode, dataRoot) {
 try {
   await protectTables();
   for (const [mode, dataRoot] of modes) await checkFormal(mode, dataRoot);
-  for (const [mode, dataRoot] of modes) await runGraph(mode, dataRoot);
+  for (const [mode, dataRoot] of modes) {
+    const formal = staticData.get(mode)['balance/quests.json'], formalBefore = clone(formal);
+    await runGraph(mode, dataRoot, null);
+    const memoryClosed = clone(formal);
+    Object.assign(memoryClosed.find(q => q.id === introId), { enabled: false, phase: 6 });
+    const restored = clone(memoryClosed);
+    Object.assign(restored.find(q => q.id === introId), { enabled: true, phase: 5 });
+    eq(restored, formal, `${mode}: 关态克隆只改 intro enabled/phase 两字段`);
+    await runGraph(mode, dataRoot, memoryClosed);
+    eq(formal, formalBefore, `${mode}: 关态夹具不得污染正式内存数据`);
+  }
 } finally {
   for (const [file, sha] of before) eq(await shaOrNull(file), sha, `关态测试前后不得写表/地图/features: ${file}`);
+  for (const [mode, dataRoot] of modes) {
+    const formal = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/quests.json'), 'utf8'));
+    eq(formal.find(q => q.id === introId), originalOpenIntro, `${mode}: 结束磁盘 intro 仍为正式开态 true/5`);
+  }
 }
-console.log(`v06c closed tests ok: ${assertions} assertions; shared/snapshot 同字节；intro/gifts 仍关；交互可重读、任务/场景/资产零变化；全部保护表前后 SHA 不变`);
+console.log(`v06c closed tests ok: ${assertions} assertions; shared/snapshot 同字节；formalOpen:true、closedFixtureOnly:true；gifts 仍关、companions/fly 保持软开、IDB true；关态交互可重读且任务/场景/资产零变化；全部保护文件 SHA 不变`);

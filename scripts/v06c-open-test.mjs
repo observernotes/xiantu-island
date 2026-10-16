@@ -1,4 +1,4 @@
-// 仅 Vite SSR 图内替换 quests JSON；正式表和 features 在双根均只读。
+// 正式开态双根验收；关态仅在 Vite SSR 图内替换 quests JSON 克隆，正式表和 features 均只读。
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import fs from 'node:fs/promises';
@@ -11,7 +11,7 @@ const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const modes = [['shared', sharedRoot(root)], ['snapshot', path.join(root, 'data')]];
 const introId = 'q_secret_nest_intro';
 const expectedSha = {
-  'balance/quests.json': '22d443c17df97906e87c947b21adad94136006dccb6973e13877448105d2334e',
+  'balance/quests.json': 'c45466827247b9e61260bbd2b681ae7207bf84a017aff5d8b028c0ec3463482b',
   'balance/strings_zh.json': '4a32b19b8e1f318cfcbbf8b9a4e9382f17e7fc3fd951d040f9ec4749524f7385',
   'maps/wanyao_outer_1.json': '9c05955fb39631e1236f2583f3be65e66823be2da3b30efaafc10ff443074b10',
   'balance/companions.json': 'e4eb87c1f9400514a084d630f179903e0926d706c85614481f1e2618a01bb115',
@@ -51,8 +51,8 @@ async function checkFormal(mode, dataRoot) {
   const intros = data['balance/quests.json'].filter(q => q.id === introId);
   assert.equal(intros.length, 1, `${mode}: intro 唯一`);
   const intro = intros[0];
-  assert.equal(intro.enabled, false, `${mode}: 正式 intro 仍关`);
-  assert.equal(intro.phase, 6, `${mode}: 正式 intro 仍 phase 6`);
+  assert.equal(intro.enabled, true, `${mode}: 正式 intro 已软开`);
+  assert.equal(intro.phase, 5, `${mode}: 正式 intro 为 phase 5`);
   assert.deepEqual(intro.rewards, {}, `${mode}: intro 无收益`);
   assert.equal(intro.giver, 'hunter_lei');
   assert.equal(intro.turnIn, 'hunter_lei');
@@ -80,23 +80,24 @@ async function checkFormal(mode, dataRoot) {
     assert.equal(features.indexedDbSaves, true, `${mode}: IDB 保持 true`);
   }
   tables.set(mode, data);
-  console.log(JSON.stringify({ suite: 'v06c-open-formal', dataMode: mode, introEnabled: false, introPhase: 6,
+  console.log(JSON.stringify({ suite: 'v06c-open-formal', dataMode: mode, introEnabled: true, introPhase: 5,
+    formalOpen: true, closedFixtureOnly: true,
     giftsChecked: gifts, giftsEnabled: false, companionsEnabled: true, flyZonesEnabled: true,
     protectedSha: expectedSha }));
 }
 
-async function runGraph(mode, dataRoot, memoryQuests) {
-  const openFixture = memoryQuests !== null;
+async function runGraph(mode, dataRoot, memoryClosed) {
+  const openFixture = memoryClosed === null;
   const server = await createServer({
     root, configFile: false, resolve: { alias: { '@xt': dataRoot } },
     server: { middlewareMode: true, hmr: false, ws: false }, appType: 'custom', logLevel: 'error',
     plugins: [{ name: 'v06c-open-memory-only', enforce: 'pre',
       resolveId(id) {
         if (id === 'phaser') return '\0v06c-open-phaser';
-        if (openFixture && id.endsWith('/balance/quests.json')) return '\0v06c-open-quests.mjs';
+        if (memoryClosed !== null && id.endsWith('/balance/quests.json')) return '\0v06c-open-quests.mjs';
       },
       load(id) {
-        if (id === '\0v06c-open-quests.mjs') return `export default ${JSON.stringify(memoryQuests)};`;
+        if (id === '\0v06c-open-quests.mjs') return `export default ${JSON.stringify(memoryClosed)};`;
         if (id !== '\0v06c-open-phaser') return;
         return `class Sprite {} export default { WEBGL: 2, Scene: class {}, BlendModes: { NORMAL: 0 },
           Physics: { Arcade: { Sprite } }, GameObjects: { Sprite, NineSlice: class {} },
@@ -114,7 +115,7 @@ async function runGraph(mode, dataRoot, memoryQuests) {
     const api = await server.ssrLoadModule('/src/SecretNestClosed.ts');
     assert.equal(api.isSecretNestIntroEnabled(), openFixture, `${mode}: 门禁必须读到 SSR JSON 的真实状态`);
     const { QUESTS } = await server.ssrLoadModule('/src/data.ts');
-    assert.equal(!!QUESTS[introId], openFixture, `${mode}: 克隆 phase 5 才进入运行时 QUESTS`);
+    assert.equal(!!QUESTS[introId], openFixture, `${mode}: 正式 phase 5 进入 QUESTS，关态克隆 phase 6 被筛除`);
     if (openFixture) {
       assert.equal(QUESTS[introId].enabled, true);
       assert.equal(QUESTS[introId].phase, 5);
@@ -122,7 +123,8 @@ async function runGraph(mode, dataRoot, memoryQuests) {
     const suite = await server.ssrLoadModule('/src/v06c-open.test.ts');
     const result = await suite.runV06cOpenTests({ openFixture, dataMode: mode });
     if (typeof result?.assertions === 'number') totalAssertions += result.assertions;
-    console.log(JSON.stringify({ suite: 'v06c-open-graph', dataMode: mode, openFixture, result }));
+    console.log(JSON.stringify({ suite: 'v06c-open-graph', dataMode: mode, openFixture,
+      formalOpen: true, closedFixtureOnly: true, result }));
   } finally { await server.close(); }
 }
 
@@ -133,19 +135,19 @@ try {
   for (const [mode, dataRoot] of modes) {
     const formal = tables.get(mode)['balance/quests.json'];
     const formalBefore = clone(formal);
-    const memoryQuests = clone(formal);
-    const intro = memoryQuests.find(q => q.id === introId);
-    // 全局 GAME_PHASE=5；只为夹具可见性改克隆 phase，不改正式表或 GAME_PHASE。
-    intro.enabled = true; intro.phase = 5;
-    const restored = clone(memoryQuests);
-    Object.assign(restored.find(q => q.id === introId), { enabled: false, phase: 6 });
+    const memoryClosed = clone(formal);
+    const intro = memoryClosed.find(q => q.id === introId);
+    // 全局 GAME_PHASE=5；关态对照仅改克隆的 enabled/phase，不改正式表或 GAME_PHASE。
+    intro.enabled = false; intro.phase = 6;
+    const restored = clone(memoryClosed);
+    Object.assign(restored.find(q => q.id === introId), { enabled: true, phase: 5 });
     assert.deepEqual(restored, formal, `${mode}: 内存克隆只改 intro enabled/phase 两字段`);
-    await runGraph(mode, dataRoot, null); // 同套件、无 quests 注入的正式关态对照。
-    await runGraph(mode, dataRoot, memoryQuests);
+    await runGraph(mode, dataRoot, null); // 无 quests 注入，正式 JSON 即开态真相。
+    await runGraph(mode, dataRoot, memoryClosed);
     assert.deepEqual(formal, formalBefore, `${mode}: 正式内存对象不受夹具污染`);
   }
 } finally {
   for (const [file, sha] of before) assert.equal(await shaOrNull(file), sha, `夹具不得写正式表/features: ${file}`);
   console.log(JSON.stringify({ suite: 'v06c-open-sha-guard', protectedFiles: before.size, passed: true }));
 }
-console.log(`v06c open tests ok: shared/snapshot 开态内存夹具 + 正式关态对照；${totalAssertions} 断言；intro 正式 disabled/phase6、gifts 全关、IDB true；全部保护文件 SHA 不变`);
+console.log(`v06c open tests ok: shared/snapshot；formalOpen:true、closedFixtureOnly:true；${totalAssertions} 断言；intro 正式 enabled/phase5、gifts 全关、IDB true；全部保护文件 SHA 不变`);
