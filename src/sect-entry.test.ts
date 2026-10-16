@@ -1,5 +1,5 @@
 import { CLASS_LIST, type ClassDef } from './classes';
-import { NPCS, QUESTS, TRIALS, TILED_MAPS, syncTalismanMapAvailability, questName, t, type Line } from './data';
+import { NPCS, QUEST_HOOKS, QUESTS, TRIALS, TILED_MAPS, syncTalismanMapAvailability, questName, t, type Line } from './data';
 import { FEATURE_UNAVAILABLE, featureFlags, setFeatureFlag } from './features';
 import { ferryLockedReason, mapEntryOpen, sectTrialReturnPosition } from './Ferry';
 import { Progress } from './Progress';
@@ -536,8 +536,19 @@ try {
   equal(qs.available(tianjian.joinQuest), true, '天剑仍按妖狐前置提供任务');
   equal(qs.accept(tianjian.joinQuest), true, '天剑无帖未选仍可走原入口');
   equal(qs.abandon(tianjian.joinQuest), false, '天剑不进入四宗放弃路径');
-  const reward = qs.talk(QUESTS[tianjian.joinQuest].turnIn, tianjian.joinQuest).after?.();
-  equal(reward?.quest.id, tianjian.joinQuest, '天剑仍对话即交付');
+  const turnIn = qs.talk(QUESTS[tianjian.joinQuest].turnIn, tianjian.joinQuest);
+  equal(qs.complete(tianjian.joinQuest), true, '天剑对话已推进正式目标');
+  const beforeChoice = p.exportSave(), storedBeforeChoice = saved[saveKey];
+  let reward = turnIn.after?.();
+  if (QUEST_HOOKS?.questHooks.some(hook => hook.quest === tianjian.joinQuest && hook.enabled)) {
+    equal(reward, undefined, '天剑正魔开态无选择的对话回调不交付');
+    equal(qs.state(tianjian.joinQuest), 'active', '天剑无选择保留 active 节点');
+    equal(p.exportSave(), beforeChoice, '天剑无选择不拜入或发奖');
+    equal(saved[saveKey], storedBeforeChoice, '天剑无选择不写存档');
+    reward = qs.turnIn(tianjian.joinQuest, false, 'seek_dao');
+  }
+  equal(reward?.quest.id, tianjian.joinQuest, '天剑按正魔开关用显式选择或原对话路径交付');
+  equal(qs.state(tianjian.joinQuest), 'done', '天剑正式交付完成任务');
   p.quests.q_breakthrough = { state: 'active', kills: {} };
   equal(qs.abandon('q_breakthrough'), false, '普通 active 任务不走四宗放弃');
 } finally {

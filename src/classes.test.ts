@@ -1,4 +1,4 @@
-import { GROWTH, ITEMS, QUESTS, REALMS } from './data';
+import { GROWTH, ITEMS, QUEST_HOOKS, QUESTS, REALMS } from './data';
 import { Progress } from './Progress';
 import { QuestSystem } from './QuestSystem';
 import { CLASS_LIST, classDef, classForQuest, classRobe, skillsForClass } from './classes';
@@ -184,7 +184,16 @@ for (const job of CLASS_LIST) {
   } else qs.talk(quest.turnIn);
   eq(qs.complete(quest.id), true, `${job.id}: 完成表内目标后可以交付`);
   eq(qs.mark(quest.turnIn), '?', `${job.id}: 交付 NPC 标记`);
-  eq(qs.turnIn(quest.id)?.quest.id, quest.id, `${job.id}: 真实交付返回本宗奖励`);
+  const needsChoice = QUEST_HOOKS?.questHooks.some(hook => hook.quest === quest.id && hook.enabled);
+  if (needsChoice) {
+    const beforeChoice = p.exportSave(), storedBeforeChoice = saved[saveKey];
+    eq(qs.turnIn(quest.id), undefined, `${job.id}: 正魔开态无选择不交付`);
+    eq(qs.state(quest.id), 'active', `${job.id}: 无选择保留 active 节点`);
+    same(p.exportSave(), beforeChoice, `${job.id}: 无选择不拜入或发奖`);
+    eq(saved[saveKey], storedBeforeChoice, `${job.id}: 无选择不写存档`);
+  }
+  const reward = needsChoice ? qs.turnIn(quest.id, false, 'protect') : qs.turnIn(quest.id);
+  eq(reward?.quest.id, quest.id, `${job.id}: 真实交付返回本宗奖励`);
   eq(qs.turnIn(quest.id), undefined, `${job.id}: 不可重复交付`);
   p.save(); const migrated = Progress.load();
   eq(migrated.job, job.id, `${job.id}: 完成任务的旧档自动落定职业`);

@@ -1,4 +1,4 @@
-import { QUESTS, SECT_RANKS, questInPhase } from './data';
+import { QUEST_HOOKS, QUESTS, SECT_RANKS, questInPhase } from './data';
 import { dailyQuestDay } from './DailyQuests';
 import { Progress } from './Progress';
 import { QuestSystem } from './QuestSystem';
@@ -356,7 +356,15 @@ try {
     else qs.talk(q.turnIn);
     equal(p.job, '', `${cls.id}: 仅完成目标尚未正式拜入`);
     equal(p.hotbar[commonSlot], 'spirit_bolt', `${cls.id}: 仅完成目标保留通用热键`);
-    const reward = qs.turnIn(q.id);
+    const needsChoice = QUEST_HOOKS?.questHooks.some(hook => hook.quest === q.id && hook.enabled);
+    if (needsChoice) {
+      const beforeChoice = p.exportSave(), storedBeforeChoice = saved[saveKey];
+      equal(qs.turnIn(q.id), undefined, `${cls.id}: 正魔开态无选择不交付`);
+      equal(qs.state(q.id), 'active', `${cls.id}: 无选择保留 active 节点`);
+      equal(p.exportSave(), beforeChoice, `${cls.id}: 无选择不换技、退点或发奖`);
+      equal(saved[saveKey], storedBeforeChoice, `${cls.id}: 无选择不写存档`);
+    }
+    const reward = needsChoice ? qs.turnIn(q.id, false, 'protect') : qs.turnIn(q.id);
     equal(reward?.quest.id, q.id, `${cls.id}: 正式任务可交付`);
     equal(p.job, cls.id, `${cls.id}: 正式交付已原子结算授职`);
     check(reward?.settled, `${cls.id}: 正式交付返回已落盘奖励收据`);

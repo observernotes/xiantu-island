@@ -11,10 +11,12 @@ import { findRoot } from './root.mjs';
 const projectRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const dataRoot = findRoot(projectRoot);
 const readTable = async name => JSON.parse(await fs.readFile(path.join(dataRoot, `balance/${name}.json`), 'utf8'));
-const [quests, ranks, strings, itemRows, donations, materialRows] = await Promise.all(
-  ['quests', 'sect_ranks', 'strings_zh', 'items', 'sect_donations', 'materials'].map(readTable));
+const [quests, ranks, strings, itemRows, donations, materialRows, karmaFlags] = await Promise.all(
+  ['quests', 'sect_ranks', 'strings_zh', 'items', 'sect_donations', 'materials', 'karma_flags'].map(readTable));
 const items = [...itemRows, ...materialRows];
 const join = quests.find(q => q.id === 'q_sect_tianjian');
+const joinHook = karmaFlags.questHooks.find(hook => hook.quest === join.id && hook.on === 'turn_in');
+assert.ok(joinHook, '天剑拜入正魔选择配置缺失');
 const dailies = quests.filter(q => q.daily && q.sect === 'tianjian');
 const inner = ranks.ranks.find(r => r.id === 'inner_disciple');
 const dailyContribution = dailies.reduce((total, q) => total + q.rewards.sectContribution, 0);
@@ -179,10 +181,23 @@ try {
   assert.deepEqual(beforeJoin, { job: '', rank: null, contribution: 0 });
   // 长老 services 菜单必须仍能办理原拜入任务，不能遮掉自动登记的任务入口。
   await openNpc(page, join.turnIn); await select(page, join.name); await finishDialog(page);
+  const delivered = await page.evaluate(id => {
+    const s = window.__scene;
+    return { state: s.quests.state(id), axesReady: Number.isSafeInteger(s.prog.daoHeart) && Number.isSafeInteger(s.prog.morality),
+      choice: s.prog.relationshipState.questChoices[id] };
+  }, join.id);
+  const needsChoice = joinHook.enabled && delivered.axesReady;
+  assert.equal(delivered.state, needsChoice ? 'active' : 'done', '无 choice 对白须在开态保留节点、关态沿用旧交付');
+  assert.equal(delivered.choice, undefined, '无 choice 对白不得替玩家选择');
+  // services 菜单保留无 choice 的产品行为；仅本测例为开态节点显式提供答案。
+  if (needsChoice) assert.equal(await page.evaluate(id => !!window.__scene.quests.turnIn(id, false, 'protect'), join.id), true,
+    '天剑开态显式 protect 必须完成交付');
   const joined = await page.evaluate(id => ({ job: window.__scene.prog.job, rank: window.__scene.prog.sectRank,
-    state: window.__scene.quests.state(id), contribution: window.__scene.prog.sectContribution }), join.id);
+    state: window.__scene.quests.state(id), contribution: window.__scene.prog.sectContribution,
+    choice: window.__scene.prog.relationshipState.questChoices[id] }), join.id);
   assert.equal(joined.job, 'tianjian_disciple'); assert.equal(joined.rank, 'outer_disciple');
   assert.equal(joined.state, 'done'); assert.equal(joined.contribution, 0);
+  assert.equal(joined.choice, needsChoice ? 'protect' : undefined, '仅开态显式答案记录拜入选择');
 
   // 真实表：关态须 config_pending；开态外门/贡献 0 须 requirements_unmet 等门槛键，不得误结算。
   // 随后只在内存装夹具（现有门槛 + 一件内门商品），供正向日常→晋升→兑换→上交。

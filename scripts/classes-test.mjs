@@ -52,7 +52,7 @@ try {
   const { Progress } = await server.ssrLoadModule('/src/Progress.ts');
   const { QuestSystem } = await server.ssrLoadModule('/src/QuestSystem.ts');
   const { GameScene } = await server.ssrLoadModule('/src/scenes/GameScene.ts');
-  const { ITEMS, QUESTS, questInPhase } = await server.ssrLoadModule('/src/data.ts');
+  const { ITEMS, QUEST_HOOKS, QUESTS, questInPhase } = await server.ssrLoadModule('/src/data.ts');
   const { SKILLS, SKILL_LIST, SKILL_RULES, skillNumber, spEarnedFor } = await server.ssrLoadModule('/src/skills.ts');
   const { dailyQuestDay } = await server.ssrLoadModule('/src/DailyQuests.ts');
   const rawQuests = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/quests.json'), 'utf8'));
@@ -234,8 +234,18 @@ try {
 
       equal(qs.accept('q_sect_tianjian'), true, `付点${paidLevels}: 实际接取正式天剑任务`);
       equal(p.job, '', `付点${paidLevels}: 接取正式任务仍未入宗`);
-      const joined = qs.talk(QUESTS.q_sect_tianjian.turnIn, 'q_sect_tianjian').after?.();
-      check(joined?.quest.id === 'q_sect_tianjian', `付点${paidLevels}: 对话交付正式天剑任务`);
+      const turnIn = qs.talk(QUESTS.q_sect_tianjian.turnIn, 'q_sect_tianjian');
+      equal(qs.complete('q_sect_tianjian'), true, `付点${paidLevels}: 对话已推进天剑正式目标`);
+      const beforeChoice = p.exportSave(), storedBeforeChoice = saved[saveKey];
+      let joined = turnIn.after?.();
+      if (QUEST_HOOKS?.questHooks.some(hook => hook.quest === 'q_sect_tianjian' && hook.enabled)) {
+        equal(joined, undefined, `付点${paidLevels}: 正魔开态无选择的对话回调不交付`);
+        equal(qs.state('q_sect_tianjian'), 'active', `付点${paidLevels}: 无选择保留 active 节点`);
+        equal(p.exportSave(), beforeChoice, `付点${paidLevels}: 无选择不换技、退点或发奖`);
+        equal(saved[saveKey], storedBeforeChoice, `付点${paidLevels}: 无选择不写存档`);
+        joined = qs.turnIn('q_sect_tianjian', false, 'protect');
+      }
+      check(joined?.quest.id === 'q_sect_tianjian', `付点${paidLevels}: 按正魔开关交付正式天剑任务`);
       equal(p.job, 'tianjian_disciple', `付点${paidLevels}: 正式交付已原子结算职业`);
       scene.giveRewards(joined.quest, joined.broke, joined.daily, joined.settled);
       equal(p.job, 'tianjian_disciple', `付点${paidLevels}: 奖励界面保留已结算的天剑职业`);
@@ -290,7 +300,15 @@ try {
     const trial = QUESTS[cls.joinQuest].objectives.find(objective => objective.type === 'trial')?.trial;
     if (trial) equal(qs.onTrialComplete(trial), true, `${cls.id}: 胜利回调完成正式目标`);
     else qs.talk(QUESTS[cls.joinQuest].turnIn);
-    const reward = qs.turnIn(cls.joinQuest);
+    const needsChoice = QUEST_HOOKS?.questHooks.some(hook => hook.quest === cls.joinQuest && hook.enabled);
+    if (needsChoice) {
+      const beforeChoice = p.exportSave(), storedBeforeChoice = saved[saveKey];
+      equal(qs.turnIn(cls.joinQuest), undefined, `${cls.id}: 正魔开态无选择不交付`);
+      equal(qs.state(cls.joinQuest), 'active', `${cls.id}: 无选择保留 active 节点`);
+      equal(p.exportSave(), beforeChoice, `${cls.id}: 无选择不拜入或发奖`);
+      equal(saved[saveKey], storedBeforeChoice, `${cls.id}: 无选择不写存档`);
+    }
+    const reward = needsChoice ? qs.turnIn(cls.joinQuest, false, 'protect') : qs.turnIn(cls.joinQuest);
     equal(reward?.quest.id, cls.joinQuest, `${cls.id}: 正式拜入任务可交付`);
     rewardScene(p).giveRewards(reward.quest, reward.broke, reward.daily, reward.settled);
     equal(p.job, cls.id, `${cls.id}: 正式交付确定职业`);

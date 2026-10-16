@@ -25,7 +25,7 @@ const classes = [
 // 读取与构建相同的工程快照，拜入阶段口径与 QuestSystem 保持一致。
 const featureLoader = await createServer({ root: projectRoot,
   server: { middlewareMode: true, hmr: false, ws: false }, appType: 'custom', logLevel: 'error' });
-let expectedFeatures, questInPhase;
+let expectedFeatures, questInPhase, tianjianHookEnabled;
 try {
   const features = await featureLoader.ssrLoadModule('/src/features.ts');
   let configured = {};
@@ -42,7 +42,9 @@ try {
       assert.equal(expectedFeatures[name], value, `QA 关口 ${name} 与工程快照不一致`);
     }
   }
-  ({ questInPhase } = await featureLoader.ssrLoadModule('/src/data.ts'));
+  const data = await featureLoader.ssrLoadModule('/src/data.ts');
+  ({ questInPhase } = data);
+  tianjianHookEnabled = data.QUEST_HOOKS?.questHooks.find(hook => hook.quest === 'q_sect_tianjian')?.enabled === true;
 } finally { await featureLoader.close(); }
 const skippedClosedEntrances = [];
 const activeClasses = classes.filter(([job, sect]) => {
@@ -415,7 +417,7 @@ try {
       }
       // 调用真实任务 after/turnIn 与 GameScene.giveRewards，通关仅由胜利回调模拟。
       const quest = questRows.find(row => row.id === `q_sect_${sect}`);
-      const questCheck = await page.evaluate(quest => {
+      const questCheck = await page.evaluate(({ quest, tianjianHookEnabled }) => {
         const scene = window.__scene, P = scene.prog.constructor, Q = scene.quests.constructor;
         const p = new P(); p.save = () => true; p.level = quest.reqLevel; p.quests.q_fox = { state: 'done', kills: {} };
         if (quest.id !== 'q_sect_tianjian') {
@@ -428,16 +430,29 @@ try {
         const trial = quest.objectives.find(objective => objective.type === 'trial')?.trial;
         if (trial) scene.quests.onTrialComplete(trial);
         const beforeRewardJob = p.job;
-        const reward = scene.quests.talk(quest.turnIn).after?.();
+        // talk 先推进交谈目标；开态无 choice 保留节点，再由测试显式作答。
+        const after = scene.quests.talk(quest.turnIn, quest.id).after;
+        const ready = scene.quests.complete(quest.id);
+        const noChoiceReward = after?.();
+        const noChoiceState = scene.quests.state(quest.id);
+        const choiceId = quest.id === 'q_sect_tianjian' && tianjianHookEnabled ? 'protect' : undefined;
+        const reward = choiceId ? scene.quests.turnIn(quest.id, false, choiceId) : noChoiceReward;
         if (reward) scene.giveRewards(reward.quest, reward.broke, reward.daily, reward.settled);
-        return { available, accepted, early, beforeRewardJob, completed: p.quests[quest.id]?.state, job: p.job, appearance: p.appearance,
+        return { available, accepted, early, ready, beforeRewardJob, noChoiceState, noChoiceReward: !!noChoiceReward, choiceId,
+          choice: p.relationshipState.questChoices[quest.id],
+          completed: p.quests[quest.id]?.state, job: p.job, appearance: p.appearance,
           skills: p.skills, gifted: p.skillGifted, refund: p.classRefundSp,
           playerTexture: scene.player.texture.key, hotbar: p.hotbar, robe: p.equip.robe, stones: p.stones,
           duplicate: scene.quests.turnIn(quest.id) ?? null, save: localStorage.getItem('xiantu_save_v1') };
-      }, quest);
+      }, { quest, tianjianHookEnabled });
       assert.equal(questCheck.available, true, `${job}: 真实任务入口不可用`);
       assert.equal(questCheck.accepted, true, `${job}: 真实任务不可接`);
       assert.equal(questCheck.early, false, `${job}: 未通关任务可交`);
+      assert.equal(questCheck.ready, true, `${job}: 交谈/试炼后目标未就绪`);
+      const awaitingChoice = sect === 'tianjian' && tianjianHookEnabled;
+      assert.equal(questCheck.noChoiceState, awaitingChoice ? 'active' : 'done', `${job}: 无 choice 交付不符合正式门禁`);
+      assert.equal(questCheck.noChoiceReward, !awaitingChoice, `${job}: 无 choice 奖励不符合正式门禁`);
+      assert.equal(questCheck.choice, awaitingChoice ? 'protect' : undefined, `${job}: 选择收据不符合显式答案`);
       assert.equal(questCheck.completed, 'done', `${job}: 真实交付未完成`);
       assert.equal(questCheck.beforeRewardJob, '', `${job}: 正式交付前已经定职`);
       assert.equal(questCheck.job, job, `${job}: 正式交付未定下职业`);
@@ -453,7 +468,8 @@ try {
       await page.waitForTimeout(250);
       assert.deepEqual(errors, [], `${job}: 浏览器出现报错`);
       const result = { job, map, appearance: initial.appearance, castCount: casts.length, casts, effectChecks,
-        missingFx, cooldownAcrossMap, questCheck: { completed: questCheck.completed, job: questCheck.job, robe: questCheck.robe }, errors: 0 };
+        missingFx, cooldownAcrossMap, questCheck: { noChoiceState: questCheck.noChoiceState, choiceId: questCheck.choiceId,
+          completed: questCheck.completed, job: questCheck.job, robe: questCheck.robe }, errors: 0 };
       results.push(result); console.log(JSON.stringify(result));
     } catch (error) {
       console.error(JSON.stringify({ job, map, errors, failure: error.message })); throw error;

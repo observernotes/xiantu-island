@@ -1,6 +1,6 @@
 import { CLASS_LIST, classEntryEnabled, classRobe } from './classes';
 import { dailyQuestDay } from './DailyQuests';
-import { QUESTS, inPhase } from './data';
+import { QUEST_HOOKS, QUESTS, inPhase } from './data';
 import { featureFlags } from './features';
 import { Progress } from './Progress';
 import { QuestSystem, type QuestReward } from './QuestSystem';
@@ -30,6 +30,8 @@ const cls = CLASS_LIST.find(row => row.sect === 'taixu' && classEntryEnabled(row
   ?? CLASS_LIST.find(row => classEntryEnabled(row) && QUESTS[row.joinQuest] && inPhase(QUESTS[row.joinQuest]));
 check(cls, 'Y10 回归需要一个正式开放的授职任务，不覆盖发版开关');
 const quest = QUESTS[cls.joinQuest];
+// 正魔开态必须显式选择，才能实际进入本套要验证的发奖/写盘事务。
+const joinChoice = QUEST_HOOKS?.questHooks.some(hook => hook.quest === quest.id && hook.enabled) ? 'protect' : undefined;
 
 function armStorage(successfulWrites: number) { writes = 0; rejectAfter = successfulWrites; }
 function baseProgress() {
@@ -118,7 +120,7 @@ try {
       check(reward.settled, '完成通知包含已结算奖励收据');
     });
     armStorage(1);
-    const reward = quests.turnIn(quest.id);
+    const reward = quests.turnIn(quest.id, false, joinChoice);
     check(reward, '首笔成功、后续失败时正式交付成功');
     equal(writes, 1, '含嵌套 advanceClass 的交付只执行一次真实写盘');
     assertJoinSettled(p, reward, '首笔成功');
@@ -129,11 +131,11 @@ try {
     scene.giveRewards(reward.quest, reward.broke, reward.daily, reward.settled);
     equal(p.exportSave(), snapshot, '奖励 UI 重复显示不重新结算');
     equal(writes, 1, '奖励 UI 包含升级反馈也不追加写盘');
-    equal(quests.turnIn(quest.id), undefined, '同会话无法重复交付');
+    equal(quests.turnIn(quest.id, false, joinChoice), undefined, '同会话无法重复交付');
     equal(notified, 1, '一次交付只发一次完成通知');
     const reloaded = Progress.load();
     equal(reloaded.exportSave(), snapshot, '故障注入后刷新保留完整交付奖励');
-    equal(new QuestSystem(reloaded, () => now).turnIn(quest.id), undefined, '刷新后不能重复交付');
+    equal(new QuestSystem(reloaded, () => now).turnIn(quest.id, false, joinChoice), undefined, '刷新后不能重复交付');
     equal(writes, 1, '刷新不依赖补奖或迁移写盘');
   }
 
@@ -145,7 +147,7 @@ try {
     let notified = 0;
     quests.onCompleted(() => { notified++; });
     armStorage(0);
-    equal(quests.turnIn(quest.id), undefined, '首笔失败时交付返回失败');
+    equal(quests.turnIn(quest.id, false, joinChoice), undefined, '首笔失败时交付返回失败');
     equal(writes, 1, '失败交付只有一次真实写盘尝试');
     equal(JSON.stringify(p), before, '失败完整恢复职业、技能、赠级、热键、增益、收据、装备、背包与成长状态');
     equal(saved[saveKey], diskBefore, '失败保留原磁盘态');
@@ -154,13 +156,13 @@ try {
     const reloaded = Progress.load();
     equal(new QuestSystem(reloaded, () => now).complete(quest.id), true, '失败后刷新仍可再交补领');
     armStorage(Infinity);
-    const reward = quests.turnIn(quest.id);
+    const reward = quests.turnIn(quest.id, false, joinChoice);
     check(reward, '存储恢复后可重试成功');
     assertJoinSettled(p, reward, '失败重试');
     equal(writes, 1, '重试同样只写盘一次');
     equal(notified, 1, '成功重试只发送一次完成通知');
     const snapshot = p.exportSave();
-    equal(quests.turnIn(quest.id), undefined, '重试成功后不可重复交付');
+    equal(quests.turnIn(quest.id, false, joinChoice), undefined, '重试成功后不可重复交付');
     equal(p.exportSave(), snapshot, '重复交付不再增加奖励');
   }
 
@@ -178,7 +180,7 @@ try {
     let notified = 0;
     quests.onCompleted(() => { notified++; });
     armStorage(Infinity);
-    equal(quests.turnIn(quest.id), undefined, `${failure}: 授职失败则交付失败`);
+    equal(quests.turnIn(quest.id, false, joinChoice), undefined, `${failure}: 授职失败则交付失败`);
     equal(writes, 0, `${failure}: 授职失败不写半份存档`);
     equal(JSON.stringify(p), before, `${failure}: 授职失败恢复全部实例数据`);
     equal(saved[saveKey], diskBefore, `${failure}: 授职失败保留原磁盘态`);
