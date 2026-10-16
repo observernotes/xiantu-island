@@ -67,5 +67,6 @@
 
 ## tip 合入
 
-- 已 ff 合入 origin/dev；最终 tip SHA：（Asia/Shanghai 2026-10-16）。
-- lifeSkillCurve 仍 false；未发版。
+- 已 ff 合入 origin/dev；实现 SHA：`6c1f957df8c706d7e8cf6eeb36fa4b90f583b6fd`；最终 tip SHA：`60b47594e46ad4174dabb3561a603c5a1943618f`（Asia/Shanghai 2026-10-16）。
+- 已对照天机 `20261016_v05c关态_09_10与主线文案抽检.md`、`20261016_v05b收尾_lifeSkillCurve口径与炼丹文案.md` + design/12。
+- lifeSkillCurve 仍 false；encounters/affinity/questHooks 全 enabled:false；未发版。
