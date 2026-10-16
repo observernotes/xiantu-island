@@ -66,11 +66,12 @@ if (!process.argv.includes('--single-mode')) {
     server: { middlewareMode: true, hmr: false, ws: false }, appType: 'custom', logLevel: 'error',
     plugins: [{ name: 'encounter-runner-render-stub', enforce: 'pre',
       resolveId(id) { if (id === 'phaser') return '\0encounter-runner-phaser'; },
-      load(id) { if (id === '\0encounter-runner-phaser') return 'export default {GameObjects:{NineSlice:class {}},Scenes:{Events:{SHUTDOWN:"shutdown"}}};'; },
+      load(id) { if (id === '\0encounter-runner-phaser') return 'export default {Scene:class {},Physics:{Arcade:{Sprite:class {}}},GameObjects:{NineSlice:class {}},Scenes:{Events:{SHUTDOWN:"shutdown"}},Math:{Clamp:(n,min,max)=>Math.max(min,Math.min(max,n))},Geom:{Rectangle:class {constructor(x,y,width,height){Object.assign(this,{x,y,width,height});}}}};'; },
     }], ssr: { noExternal: ['phaser'] },
   });
   try {
     await server.ssrLoadModule('/src/encounter-runner.test.ts');
+    await server.ssrLoadModule('/src/encounter-battle.test.ts');
     console.log(`encounter-runner XT_DATA=${process.env.XT_DATA}: passed`);
   } finally { await server.close(); }
 }

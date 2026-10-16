@@ -52,6 +52,7 @@ import { Sense } from '../Sense';
 import { SenseUi } from '../SenseUi';
 import { EncounterUi } from '../EncounterUi';
 import { EncounterSceneRuntime, type EncounterMeditationProvider } from '../EncounterSceneRuntime';
+import { createEncounterBattleProvider } from '../EncounterBattle';
 import { SenseMapAdapter, sceneMonsterTargets } from './SenseScene';
 import { openPropChest, playPropAnimation, resolveSecretProp } from '../SecretProps';
 
@@ -146,6 +147,7 @@ export class GameScene extends Phaser.Scene {
   private resetRunState() {
     this.senseUi?.destroy(); this.senseUi = undefined;
     this.encounterUi?.destroy(); this.encounterUi = undefined;
+    this.encounterRuntime?.destroy();
     this.encounterRuntime = undefined;
     this.encounterOwnsPause = false;
     this.sense?.clearIntel();
@@ -440,10 +442,12 @@ export class GameScene extends Phaser.Scene {
     this.encounterUi = new EncounterUi(this);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
       // 刷新/销毁保留可恢复节点；明确跨图由 travel/新地图 enter 结算 missed。
+      this.encounterRuntime?.destroy();
       this.encounterRuntime = undefined;
       if (this.encounterOwnsPause) { this.physics.resume(); this.encounterOwnsPause = false; }
       this.events.off('encounter:ui-advance', this.advanceEncounter, this);
       this.events.off('encounter:ui-choice', this.chooseEncounter, this);
+      this.events.off('encounter:ui-puzzle', this.puzzleEncounter, this);
       this.encounterUi?.destroy(); this.encounterUi = undefined;
       this.sense?.clearIntel();
       this.sectTrial?.destroy(); this.prog.endTrialSkills();
@@ -1153,6 +1157,31 @@ export class GameScene extends Phaser.Scene {
 
   private setupEncounters() {
     this.encounterRuntime = new EncounterSceneRuntime({ progress: this.prog, config: ENCOUNTERS, pacing: pacing.encounter,
+      battle: createEncounterBattleProvider<Monster>({
+        fallbackAnchor: () => ({ x: this.player.x, y: this.player.feet }),
+        schedule: (delayMs, callback) => {
+          const timer = this.time.delayedCall(delayMs, callback);
+          return { dispose: () => timer.remove(false) };
+        },
+        warn: point => {
+          const x = Phaser.Math.Clamp(point.x, 32, this.map.width - 32);
+          const mark = this.add.ellipse(x, point.y - 4, 58, 14, 0x8f5b25, 0.3).setStrokeStyle(2, 0xe7c86a).setDepth(7);
+          return { dispose: () => mark.destroy() };
+        },
+        spawn: (id, x, y) => this.spawnTrialMob(id, Phaser.Math.Clamp(x, 32, this.map.width - 32), y),
+        onDeath: (mob, callback) => {
+          const previous = mob.onDead;
+          const listener = (dead: Monster) => { previous?.(dead); callback(); };
+          mob.onDead = listener;
+          return { dispose: () => { if (mob.onDead === listener) mob.onDead = previous; } };
+        },
+        destroy: mob => {
+          mob.retire();
+          // Phaser 的 collider/overlap 持有同一数组，必须原位移除，且不能同步毁掉正在 step 的 body。
+          const index = this.mobs.indexOf(mob);
+          if (index >= 0) this.mobs.splice(index, 1);
+        },
+      }),
       context: () => ({ mapId: this.map.id, level: this.prog.level, realmId: this.prog.realm.id,
         questsDone: this.prog.quests, sectJoined: !!this.prog.sect, daoHeart: this.prog.daoHeart, nowMs: gameNow(),
         luck: 0, blocked: this.encounterBlocked(),
@@ -1164,11 +1193,12 @@ export class GameScene extends Phaser.Scene {
         return object ? { x: object.x, y: object.y, height: object.h } : undefined;
       },
       near: target => Math.abs(target.x - this.player.x) <= 40 && Math.abs(target.y - this.player.feet) <= 48,
-      emit: (name, payload) => this.events.emit(name, payload ? { ...payload, vars: { player: this.prog.name } } : undefined),
+      emit: (name, payload) => this.events.emit(name, payload ? { ...payload, vars: { ...payload.vars, player: this.prog.name } } : undefined),
       onCommit: () => { this.player.maxHp = this.prog.maxHp; this.player.hp = this.prog.hp; this.player.syncAppearance(); },
     });
     this.events.on('encounter:ui-advance', this.advanceEncounter, this);
     this.events.on('encounter:ui-choice', this.chooseEncounter, this);
+    this.events.on('encounter:ui-puzzle', this.puzzleEncounter, this);
     // 同地图刷新沿已保存 visit；真正跨图才生成新 visit，不依赖随机数。
     const visit = this.prog.encounters?.visit as { id?: string; map?: string } | undefined;
     const sequence = Number(this.registry.get('encounterVisitSequence') ?? 0) + 1;
@@ -1178,6 +1208,7 @@ export class GameScene extends Phaser.Scene {
 
   private advanceEncounter(payload: Parameters<EncounterSceneRuntime['advance']>[0]) { this.encounterRuntime?.advance(payload); }
   private chooseEncounter(payload: Parameters<EncounterSceneRuntime['choose']>[0]) { this.encounterRuntime?.choose(payload); }
+  private puzzleEncounter(payload: Parameters<EncounterSceneRuntime['puzzle']>[0]) { this.encounterRuntime?.puzzle(payload); }
 
   private encounterBlocked(): boolean {
     const p = this.player;

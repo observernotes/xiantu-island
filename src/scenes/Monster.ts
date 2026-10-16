@@ -132,6 +132,7 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
   /** 野猪冲锋进行中：起点、是否已命中 */
   private charge: { fromX: number; targetX: number; hit: boolean; prevX: number } | null = null;
   private despawnHideAt = 0; private despawnDoneAt = 0; private despawnHidden = false;
+  private retiring = false;
 
   constructor(scene: Phaser.Scene, x: number, y: number, def: MonsterDef) {
     const atlas = scene.textures.exists(def.sprite);
@@ -263,6 +264,8 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
         else this.doSlam();
       }
     }
+    // 伤害回调可同步终止奇遇并退场攻击者，不能继续本帧的追击/落地逻辑。
+    if (this.dead || !this.active) return;
     if (this.charge) { this.tickCharge(time, player); return this.face(); }
     if (this.objective && this.stepObjective(time, player)) return this.face();
     if ((this.st === 'hit' || this.st === 'attack') && time < this.stateUntil) {
@@ -497,6 +500,22 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
   /** 首领死亡、玩家败北或离区：复用消散，不走死亡奖励，不重置首领。 */
   clearSummons() {
     for (const s of this.summons) if (s.despawnWithOwner && s.active && !s.dead) s.despawn();
+  }
+
+  /** 独立事件清场：可能从本怪 step/onDead 的调用栈重入，body 留到下一拍再销毁。 */
+  retire() {
+    if (this.retiring) return;
+    this.retiring = true;
+    this.abortCast(); this.clearSummons();
+    this.charge = null; this.teleEnd = 0; this.objTeleEnd = 0;
+    this.teleBlink?.stop(); this.teleBlink = undefined;
+    this.st = 'dead';
+    if (this.body) { this.body.setVelocity(0, 0); this.body.enable = false; }
+    this.setVisible(false);
+    for (const fx of this.fxTimers) fx.sprite.destroy();
+    this.fxTimers = [];
+    this.bar.destroy();
+    if (this.active && this.scene) this.scene.time.delayedCall(0, () => { if (this.active) this.destroy(); });
   }
 
   /** 脚底播消散，第 2 帧藏本体，播完销毁。不走死亡奖励 */

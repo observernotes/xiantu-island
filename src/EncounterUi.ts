@@ -27,7 +27,7 @@ export interface EncounterOffer {
 }
 
 type Fields = Readonly<Record<string, unknown>>;
-type ChoiceView = { id: string; label: string; lack: string; preview: string };
+type ChoiceView = { id: string; label: string; lack: string; preview: string; puzzle?: boolean };
 const finite = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v);
 const text = (v: unknown): v is string => typeof v === 'string' && v.length > 0;
 const fields = (v: unknown): Fields => v && typeof v === 'object' && !Array.isArray(v) ? v as Fields : {};
@@ -131,15 +131,23 @@ export class EncounterUi {
     const outcome = definition?.outcomes.find(row => row.id === offer?.outcomeId);
     const step = definition?.script.steps.find(step => step.id === (offer?.stepId ?? definition.script.start));
     if (!offer || !definition || !step && !outcome) { this.clearVisuals(); return; }
+    if (!outcome && ['battle', 'scene'].includes(String(step?.type))) { this.clearVisuals(); return; }
     if (offer.markerOnly) { this.panel?.destroy(); this.panel = undefined; this.rendered = ''; this.refreshMark(offer); return; }
     const choices: ChoiceView[] = keys(outcome ? undefined : step?.choiceIds).flatMap(id => {
       const choice = definition.choices.find(choice => choice.id === id);
       return choice && text(choice.textKey) ? [{ id, label: t(choice.textKey, offer.vars),
         lack: this.lack(choice), preview: previewLines(definition, choice).join('\n') }] : [];
     });
+    if (!outcome && step?.type === 'puzzle') {
+      const names = fields(step.objectNameKeys);
+      choices.push(...keys(step.objects).map(id => ({ id, label: t(String(names[id] ?? id), offer.vars),
+        lack: '', preview: '', puzzle: true })));
+    }
     const title = t(definition.nameKey, offer.vars);
     const repeat = !!this.scene.prog.encounters?.resolved?.[offer.encounterId] && keys(step?.repeatTextKeys).length > 0;
-    const dialog = keys(outcome?.textKeys ?? (repeat ? step?.repeatTextKeys : step?.textKeys)).map(key => t(key, offer.vars)).join('\n');
+    const dialogKeys = keys(outcome?.textKeys ?? (repeat ? step?.repeatTextKeys : step?.textKeys));
+    if (!outcome && step?.type === 'puzzle' && text(step.objectiveKey)) dialogKeys.push(step.objectiveKey);
+    const dialog = dialogKeys.map(key => t(key, offer.vars)).join('\n');
     const model = JSON.stringify({ title, dialog, choices, outcome: outcome?.id, step: step?.id });
     if (model !== this.rendered) {
       this.panel?.destroy();
@@ -165,14 +173,14 @@ export class EncounterUi {
     if (dialog) line(dialog, 'encounter-dialog');
     if (choices.some(choice => choice.preview)) line(t('encounter.ui.preview_title'), 'encounter-preview-title', '#65584A', 12);
     for (const choice of choices) {
-      const label = line(choice.label, `encounter-choice:${choice.id}`, '#2B4C7E')
+      const label = line(choice.label, `encounter-${choice.puzzle ? 'puzzle' : 'choice'}:${choice.id}`, '#2B4C7E')
         .setData('disabled', !!choice.lack).setAlpha(choice.lack ? 0.45 : 1);
       if (!choice.lack) label.setInteractive({ useHandCursor: true });
       label.on('pointerdown', (pointer?: Phaser.Input.Pointer) => {
         if (pointer && pointer.button !== 0 || this.offer !== offer) return;
         // 点击时再次读门禁/材料，避免本帧库存变化后沿用旧的可点状态。
         const current = this.definition(offer)?.choices.find(row => row.id === choice.id);
-        if (!current || this.lack(current)) { this.refresh(); return; }
+        if (!choice.puzzle && (!current || this.lack(current))) { this.refresh(); return; }
         this.selectChoice(choices.findIndex(row => row.id === choice.id));
       });
       if (choice.lack) line(choice.lack, `encounter-lack:${choice.id}`, '#9C3932', 12);
@@ -201,6 +209,12 @@ export class EncounterUi {
   selectChoice(index: number) {
     const offer = this.offer, definition = offer && this.definition(offer);
     const step = definition?.script.steps.find(row => row.id === (offer?.stepId ?? definition.script.start));
+    if (offer && !offer.markerOnly && !offer.outcomeId && step?.type === 'puzzle') {
+      const objectId = keys(step.objects)[index];
+      if (objectId) this.scene.events.emit('encounter:ui-puzzle', { encounterId: offer.encounterId, stepId: step.id,
+        ...(offer.attemptId ? { attemptId: offer.attemptId } : {}), objectId, mock: offer.mock === true });
+      return;
+    }
     const id = keys(step?.choiceIds)[index], choice = definition?.choices.find(row => row.id === id);
     if (!offer || offer.markerOnly || offer.outcomeId || !step || !choice || this.lack(choice)) { this.refresh(); return; }
     this.scene.events.emit('encounter:ui-choice', { encounterId: offer.encounterId, stepId: step.id, choiceId: id,

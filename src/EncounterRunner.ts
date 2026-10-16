@@ -65,7 +65,7 @@ const idle = (): EncounterRunnerResult => ({ status: 'idle' });
 /**
  * 唯一的抽签与脚本写入口。概率、visit、占额、冷却、节点、扣料和结局均先在深克隆上计算，
  * 只通过 store.commit 发布；保存失败保留本次抽签草稿，重试不会重新掷骰。
- * 战斗/机关/子场景只提供受信 completeChallenge 接口，advance 绝不替它们判胜。
+ * Runtime 的实体战斗/机关执行器或 fixture 通过受信 completeChallenge 回报，advance 绝不代判胜。
  */
 export class EncounterRunner {
   private readonly config: EncountersConfig | null;
@@ -248,7 +248,7 @@ export class EncounterRunner {
         draft.state.visit = visit;
       } else if (draft.state.active) {
         const active = draft.state.active, step = this.definition(active.encounterId)!.script.steps.find(step => step.id === active.stepId)!;
-        // 当前尚无可恢复的地图战斗/机关实例，刷新这些节点安全结束；本实例重入不误判。
+        // 实体/机关进度仅存本次 Runtime，刷新不能重建旧波次，安全结束；本实例重入不误判。
         if (!this.ownedAttempts.has(active.attemptId) && ['battle', 'puzzle', 'scene'].includes(String(step.type))) {
           return this.settle(draft, ctx.nowMs, 'failed');
         }

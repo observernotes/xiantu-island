@@ -190,7 +190,7 @@ export class FriendlySummons {
       this.scene.damageNumber(mob.x, mob.y - mob.body.height - 10, damage, '#7fe0c0', '#123d31');
       this.scene.events.emit('skill:hit', { id: def.id, target: mob.def.id, damage, secondary: pet.secondary });
     }
-    if (!pet.trial) prog.addMastery(def.id);
+    if (!pet.trial && mob.grantRewards !== false) prog.addMastery(def.id);
   }
 
   private definition(pet: FriendlySummon): SkillDef {

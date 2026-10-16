@@ -291,7 +291,7 @@ export class SkillCombat {
       const knock = skillNumber(def, 'knockback', level);
       if (knock > 0 && !m.dead && !m.def.immortal) m.body.setVelocityX(Math.sign(m.x - p.x) * knock);
       this.special(def, level, 'hit', m);
-      this.scene.prog.addMastery(id);
+      if (m.grantRewards !== false) this.scene.prog.addMastery(id);
     }
   }
 

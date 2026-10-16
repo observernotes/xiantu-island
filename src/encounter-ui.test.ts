@@ -439,9 +439,277 @@ try {
   ok(deathRuntime.runner.offer(), '死亡恢复后冷却到期新visit可正常触发');
   eq(deathRolls, 4, '死亡恢复不补掷，只有新visit再掷概率与weight'); deathUi.ui.destroy();
 
+  // 关态Runtime所有入口（含新增实体/机关入口）不能碰上下文、存档、随机或实体provider。
+  for (const config of [ENCOUNTERS, null]) {
+    let forbiddenCalls = 0;
+    const forbidden = () => { forbiddenCalls++; throw new Error('关态不允许访问玩法依赖'); };
+    const proxy = new Proxy({}, { get: forbidden, ownKeys: forbidden });
+    const beforeDisabledWrites = saveAttempts;
+    const disabledRuntime = new EncounterSceneRuntime({ config, progress: proxy as Progress, pacing: pacingRaw.encounter,
+      context: forbidden, anchor: forbidden, near: forbidden, emit: forbidden, onCommit: forbidden, rng: forbidden,
+      battle: { start: forbidden } });
+    disabledRuntime.enter('disabled-runtime'); disabledRuntime.update(60000, proxy);
+    eq(disabledRuntime.interact(), false, '关态Runtime没有交互');
+    disabledRuntime.advance(proxy); disabledRuntime.choose(proxy); disabledRuntime.puzzle(proxy);
+    disabledRuntime.reveal('attempt'); disabledRuntime.completeChallenge('attempt', 'battle', true);
+    disabledRuntime.completeChallenge('attempt', 'scene', true); disabledRuntime.completeChallenge('attempt', 'puzzle', false);
+    eq(disabledRuntime.terminate('failed'), true, '关态死亡无需事务');
+    eq(disabledRuntime.terminate('missed'), true, '关态离图无需事务');
+    const unregisterDisabled = disabledRuntime.registerMeditation(proxy as Parameters<EncounterSceneRuntime['registerMeditation']>[0]);
+    disabledRuntime.update(60000); disabledRuntime.interrupt(); unregisterDisabled(); disabledRuntime.destroy(); disabledRuntime.update(16);
+    eq(disabledRuntime.runner.offer(), undefined, '关态Runtime无offer');
+    eq(forbiddenCalls, 0, '关态Runtime全部入口零上下文/存档读取/随机/provider/emit');
+    eq(saveAttempts, beforeDisabledWrites, '关态Runtime全部入口零写盘');
+  }
+
+  // 真实Runtime接实体provider；怪物显示/物理由provider负责，胜负回报走真实事务。
+  type BattleRequest = Parameters<NonNullable<ConstructorParameters<typeof EncounterSceneRuntime>[0]['battle']>['start']>[0];
+  const entityFixture = (encounterId: string, noAnchor = false) => {
+    const ui = fixture(), row = encountersRaw.encounters.find(row => row.id === encounterId)!;
+    ui.prog.encounters = undefined; ui.prog.inventory = {}; ui.prog.level = 30; ui.prog.daoHeart = 20; ui.prog.morality = 0;
+    const config = configWith(raw => { raw.encounters.forEach(row => { row.enabled = row.id === encounterId; }); });
+    const requests: BattleRequest[] = [], completions: ((success: boolean) => void)[] = [], disposals: number[] = [];
+    const emitted: string[] = []; let blocked = false, rolls = 0, now = 10_000_000;
+    const runtime = new EncounterSceneRuntime({ progress: ui.prog, config, pacing: pacingRaw.encounter,
+      context: () => ({ ...runtimeCtx(row.maps[0]), blocked, nowMs: now,
+        questsDone: new Set(['q_fox', 'q_main_04']), featuresReady: new Set(['moral_state', 'spirit_scan']) }),
+      rng: () => { rolls++; return 0; }, anchor: () => noAnchor ? undefined : { x: 60, y: 90 }, near: () => true,
+      emit: (name, payload) => { emitted.push(name); ui.events.emit(name, payload); },
+      battle: { start(request, complete) {
+        const index = requests.length; requests.push(request); completions.push(complete); disposals.push(0);
+        return { dispose: () => { disposals[index]++; } };
+      } },
+    });
+    ui.events.on('encounter:ui-advance', payload => runtime.advance(payload));
+    ui.events.on('encounter:ui-choice', payload => runtime.choose(payload));
+    ui.events.on('encounter:ui-puzzle', payload => runtime.puzzle(payload));
+    const current = () => { const offer = runtime.runner.offer(); ok(offer, `${encounterId}有当前真实节点`); return offer; };
+    const advance = () => runtime.advance(current());
+    const choose = (choiceId: string) => runtime.choose({ ...current(), choiceId });
+    runtime.enter(`entity-${encounterId}`);
+    return { ...ui, row, runtime, requests, completions, disposals, emitted, current, advance, choose,
+      block: (value: boolean) => { blocked = value; }, setNow: (value: number) => { now = value; }, rolls: () => rolls,
+      destroy: () => { runtime.destroy(); ui.ui.destroy(); } };
+  };
+  const startBattle = (f: ReturnType<typeof entityFixture>) => {
+    if (f.row.id === 'enc_stranded_cultivator') {
+      f.advance(); f.choose('fight');
+      eq(f.requests.length, 0, '救援fight_start对白尚未结束不刷怪'); f.advance();
+    } else { f.advance(); f.advance(); f.choose('guard'); }
+    eq(f.current().stepId, 'battle', `${f.row.id}选择后到达真实battle`);
+    eq(f.requests.length, 1, `${f.row.id}自动仅启动一波实体`);
+  };
+  for (const encounterId of ['enc_stranded_cultivator', 'enc_fragrant_herb']) {
+    const f = entityFixture(encounterId); ok(f.runtime.interact(), `${encounterId}真实锚点可交互`);
+    f.ui.advance();
+    if (encounterId === 'enc_stranded_cultivator') {
+      f.named('encounter-choice:fight').emit('pointerdown', pointer);
+      eq(f.requests.length, 0, '选fight先展示真实出战对白'); f.ui.advance();
+    } else { f.ui.advance(); f.named('encounter-choice:guard').emit('pointerdown', pointer); }
+    const request = f.requests[0]; ok(request, `${encounterId}UI选择自动启动实体provider`);
+    const step = f.row.script.steps.find(step => step.id === 'battle')!;
+    same(request.spawns, (step as unknown as { spawns: unknown }).spawns, '刷怪数量与合法id取正式spawns');
+    eq(request.warningMs, 800, '事件怪出场预警取真表800ms'); eq(request.respawnMs, 0, '事件波禁重生');
+    eq(request.grantRewards, false, '事件怪走无击杀奖励隔离'); eq(request.encounterId, encounterId, 'provider收到真实事件id');
+    eq(request.attemptId, f.current().attemptId, 'provider绑定真实attempt'); eq(request.stepId, 'battle', 'provider绑定当前挑战节点');
+    same(request.anchor, { x: 60, y: 90 }, '刷怪使用已登记锚点');
+    eq(f.ui.isOpen(), false, '实体战开始自动清理模态UI以释放战斗暂停');
+    const beforeBattle = JSON.stringify(f.prog.exportSave()), beforeWrites = successfulSaves;
+    f.runtime.update(16); f.runtime.update(16); f.advance();
+    eq(f.requests.length, 1, '逐帧/非法advance不能重刷实体或跳过战斗');
+    eq(f.ui.isOpen(), false, '实体战帧更新不重新打开阻挡战斗的面板');
+    eq(JSON.stringify(f.prog.exportSave()), beforeBattle, '实体完成前无分段奖励或额外写状态');
+    eq(successfulSaves, beforeWrites, '实体完成前逐帧不重复写盘');
+    f.completions[0](true);
+    eq(f.current().stepId, encounterId === 'enc_stranded_cultivator' ? 'thank' : 'harvest', '清完本波自动开放onWin交互节点');
+    eq(f.disposals[0], 1, '胜利推进后清理本波句柄一次');
+    eq(f.prog.stones, 0, '答谢/采摘确认前不给分段灵石');
+    eq(f.prog.count('nine_leaf_ganoderma'), 0, '采摘确认前不给材料');
+    const afterWin = successfulSaves; f.completions[0](true); f.completions[0](false);
+    eq(successfulSaves, afterWin, '同波重复/过期胜负回报均不重复保存');
+    f.advance();
+    if (encounterId === 'enc_fragrant_herb') f.choose('leaf');
+    const outcome = encounterId === 'enc_stranded_cultivator' ? 'rescued' : 'preserved';
+    eq(f.prog.encounterSave().encounters?.resolved?.[encounterId], outcome, '实体路径通过runner提交正式有效结局');
+    eq(f.prog.encounterSave().encounters?.settledAttempts?.length, 1, '实体路径只结算一份attempt');
+    eq(f.prog.stones, encounterId === 'enc_stranded_cultivator' ? 648 : 0, '灵石奖励只取当前正式结局表');
+    eq(f.prog.count('nine_leaf_ganoderma'), encounterId === 'enc_fragrant_herb' ? 1 : 0, '材料奖励只取当前正式结局表');
+    const settledWrites = successfulSaves; f.completions[0](true); f.runtime.update(16);
+    eq(successfulSaves, settledWrites, '结算后的过期回报与后续帧不二次发奖');
+    eq(f.requests.length, 1, '整条实体路径只创建一波'); eq(f.rolls(), 2, '实体交互全程只有触发两次随机'); f.destroy();
+    eq(f.disposals[0], 1, '胜利后destroy不二次销毁句柄');
+  }
+
+  // 保存故障发生在入战/清波两端：必须先落盘再刷实体，清波重试不刷第二波。
+  const battleRetry = entityFixture('enc_stranded_cultivator'); battleRetry.advance(); battleRetry.choose('fight');
+  const beforeBattleEntry = JSON.stringify(battleRetry.prog.exportSave()); saveFails = true; battleRetry.advance();
+  eq(battleRetry.requests.length, 0, 'battle节点保存失败不抢先刷怪');
+  eq(JSON.stringify(battleRetry.prog.exportSave()), beforeBattleEntry, '入战保存失败完整回滚');
+  saveFails = false; battleRetry.runtime.update(16); eq(battleRetry.requests.length, 1, '下帧事务恢复后只启动一波');
+  const beforeComplete = JSON.stringify(battleRetry.prog.exportSave()); saveFails = true; battleRetry.completions[0](true);
+  eq(JSON.stringify(battleRetry.prog.exportSave()), beforeComplete, '实体清波推进保存失败完整回滚');
+  battleRetry.runtime.update(16); eq(battleRetry.requests.length, 1, '清波事务待保存期间不重刷实体');
+  saveFails = false; battleRetry.runtime.update(16);
+  eq(battleRetry.current().stepId, 'thank', '清波保存恢复后自动推进到答谢');
+  eq(battleRetry.requests.length, 1, '清波保存重试不生成第二波'); eq(battleRetry.disposals[0], 1, '重试清理实体句柄一次');
+  const afterCompleteRetry = successfulSaves; battleRetry.completions[0](true); battleRetry.runtime.update(16);
+  eq(successfulSaves, afterCompleteRetry, '清波重试完成后旧callback无二次事务'); battleRetry.destroy();
+
+  const staleBattle = entityFixture('enc_stranded_cultivator'); startBattle(staleBattle);
+  saveFails = true; staleBattle.completions[0](true);
+  staleBattle.prog.inventory.hp_pill_small = 3; staleBattle.prog.hp = 17;
+  saveFails = false; staleBattle.runtime.update(16); staleBattle.runtime.update(16);
+  eq(staleBattle.current().stepId, 'thank', '清波失败草稿过期后保留胜负并基于新快照自动重放');
+  eq(staleBattle.prog.count('hp_pill_small'), 3, '清波草稿过期不得覆盖后来库存');
+  eq(staleBattle.prog.hp, 17, '清波草稿过期不得覆盖后来气血');
+  eq(staleBattle.requests.length, 1, '清波草稿过期重放也不重新刷怪');
+  eq(staleBattle.disposals[0], 1, '清波草稿过期恢复仍只销毁一次句柄'); staleBattle.destroy();
+
+  const blockedBattle = entityFixture('enc_fragrant_herb'); startBattle(blockedBattle); blockedBattle.block(true);
+  blockedBattle.completions[0](true); eq(blockedBattle.current().stepId, 'battle', '互斥期间实体回报不能越过runner门禁');
+  blockedBattle.block(false); blockedBattle.runtime.update(16);
+  eq(blockedBattle.current().stepId, 'harvest', '互斥解除后保留的清波回报自动推进');
+  eq(blockedBattle.requests.length, 1, '互斥等待不重刷实体'); blockedBattle.destroy();
+
+  for (const reason of ['failed', 'missed', 'provider-failed', 'destroy'] as const) {
+    const f = entityFixture('enc_fragrant_herb'); startBattle(f);
+    const beforeRewards = [f.prog.exp, f.prog.stones, f.prog.count('nine_leaf_ganoderma')];
+    if (reason === 'provider-failed') f.completions[0](false);
+    else if (reason === 'destroy') f.runtime.destroy();
+    else ok(f.runtime.terminate(reason), `${reason}终止成功`);
+    eq(f.disposals[0], 1, `${reason}清理事件实体句柄`);
+    const afterTermination = successfulSaves, state = JSON.stringify(f.prog.exportSave());
+    f.completions[0](true); f.completions[0](false);
+    eq(successfulSaves, afterTermination, `${reason}后的过期回报不能保存`);
+    eq(JSON.stringify(f.prog.exportSave()), state, `${reason}后的过期回报不能推进或改奖`);
+    same([f.prog.exp, f.prog.stones, f.prog.count('nine_leaf_ganoderma')], beforeRewards, `${reason}不发额外奖励`);
+    if (reason !== 'destroy') {
+      eq(f.prog.encounterSave().encounters?.active, null, `${reason}清空active`);
+      eq(f.prog.encounterSave().encounters?.resolved?.[f.row.id], undefined, `${reason}不消耗once`);
+      ok(f.emitted.includes('encounter:result'), `${reason}展示正式失败/错过结果`);
+    }
+    f.destroy(); eq(f.disposals[0], 1, `${reason}重复destroy安全`);
+  }
+
+  const deathBattle = entityFixture('enc_stranded_cultivator'); startBattle(deathBattle);
+  const deathBattleSave = JSON.stringify(deathBattle.prog.exportSave()); saveFails = true;
+  eq(deathBattle.runtime.terminate('failed'), false, '实体战倒地保存失败可由帧循环重试');
+  eq(deathBattle.disposals[0], 1, '倒地保存失败也立即清事件实体');
+  eq(JSON.stringify(deathBattle.prog.exportSave()), deathBattleSave, '倒地失败事务保留原快照');
+  deathBattle.completions[0](true); saveFails = false; deathBattle.runtime.update(16);
+  eq(deathBattle.prog.encounterSave().encounters?.active, null, '倒地恢复后结束active而非卡battle');
+  eq(deathBattle.prog.encounterSave().encounters?.resolved?.[deathBattle.row.id], undefined, '倒地后旧胜利回报不能变rescued');
+  eq(deathBattle.prog.stones, 0, '倒地恢复无胜利灵石'); eq(deathBattle.requests.length, 1, '倒地待保存不重刷');
+  eq(deathBattle.named('encounter-dialog').text, t('enc.stranded_cultivator.failed'), '倒地恢复沿正式failed文案'); deathBattle.destroy();
+
+  const blockedDeath = entityFixture('enc_fragrant_herb'); startBattle(blockedDeath); blockedDeath.block(true);
+  blockedDeath.completions[0](true); ok(blockedDeath.runtime.terminate('failed'), '倒地优先终止尚受互斥阻塞的清波回报');
+  blockedDeath.block(false); const blockedDeathWrites = successfulSaves;
+  blockedDeath.completions[0](true); blockedDeath.runtime.update(16);
+  eq(blockedDeath.prog.encounterSave().encounters?.active, null, '倒地后解除互斥不再恢复胜利节点');
+  eq(blockedDeath.named('encounter-dialog').text, t('enc.fragrant_herb.failed'), '倒地优先保留正式failed结局');
+  eq(successfulSaves, blockedDeathWrites, '倒地后的旧胜利与解除互斥无额外保存'); blockedDeath.destroy();
+
+  const noAnchorBattle = entityFixture('enc_fragrant_herb', true); eq(noAnchorBattle.runtime.interact(), false, '缺锚点仍不可凭空交互');
+  startBattle(noAnchorBattle); eq(noAnchorBattle.requests[0].anchor, undefined, '缺锚点fixture仍可启动受信战斗适配');
+  eq(noAnchorBattle.controls().length, 0, '缺锚点fixture启动前后不伪造可见offer');
+  const trustedBattle = noAnchorBattle.current(); noAnchorBattle.runtime.completeChallenge(trustedBattle.attemptId, trustedBattle.stepId, true);
+  eq(noAnchorBattle.current().stepId, 'harvest', '缺锚点fixture仍保留公开受信completeChallenge');
+  noAnchorBattle.destroy();
+
+  // 洞府在父地图原地推进scene，机关与奖励使用正式steps；不依赖未布置的小图。
+  for (const outcome of ['taken', 'sealed', 'failed', 'missed'] as const) {
+    const f = entityFixture('enc_hidden_abode');
+    eq(f.runtime.runner.offer(), undefined, '洞府显形前无offer'); eq(f.controls().length, 0, '洞府显形前无UI');
+    const active = f.prog.encounterSave().encounters?.active as { attemptId: string };
+    ok(active, '未显形洞府已占用active');
+    eq((f.prog.encounterSave().encounters?.seen as string[]).includes(f.row.id), false, '未显形洞府不记seen');
+    f.runtime.reveal('stale-attempt'); eq(f.runtime.runner.offer(), undefined, '旧attempt不能显形洞府');
+    f.runtime.reveal(active.attemptId); eq((f.prog.encounterSave().encounters?.seen as string[]).includes(f.row.id), true, '受信reveal显形并记seen');
+    ok(f.runtime.interact(), '显形洞府可主动交互'); f.ui.advance();
+    if (outcome === 'missed') f.choose('leave');
+    else {
+      f.named('encounter-choice:enter').emit('pointerdown', pointer);
+      eq(f.current().stepId, 'inscription', 'enter后scene由Runtime自动原地推进石刻');
+      eq(f.requests.length, 0, '洞府scene不会误刷战斗怪');
+      eq(f.named('encounter-dialog').text, t('enc.hidden_abode.inscription'), '原地路径展示正式石刻对白'); f.ui.advance();
+      eq(f.current().stepId, 'puzzle', '继续石刻进入真实机关节点');
+      const puzzleEvents: unknown[] = []; f.events.on('encounter:ui-puzzle', payload => puzzleEvents.push(payload));
+      for (const [objectId, label] of [['enc_seal_earth', 'earth'], ['enc_seal_water', 'water'], ['enc_seal_wood', 'wood']]) {
+        eq(f.named(`encounter-puzzle:${objectId}`).text, t(`enc.hidden_abode.seal_${label}`), '机关按钮沿真表objectNameKeys');
+      }
+      const puzzleOffer = f.current(), prePuzzleWrites = successfulSaves;
+      f.runtime.puzzle({ ...puzzleOffer, objectId: 'enc_seal_earth', mock: true });
+      f.runtime.puzzle({ ...puzzleOffer, attemptId: 'stale-attempt', objectId: 'enc_seal_earth' });
+      eq(successfulSaves, prePuzzleWrites, 'mock/过期机关输入不推进或保存');
+      if (outcome === 'failed') f.named('encounter-puzzle:enc_seal_water').emit('pointerdown', pointer);
+      else {
+        f.named('encounter-puzzle:enc_seal_earth').emit('pointerdown', pointer);
+        same(puzzleEvents[0], { encounterId: f.row.id, stepId: 'puzzle', attemptId: active.attemptId, objectId: 'enc_seal_earth', mock: false }, '机关点击只发带身份的UI表现事件');
+        eq(f.current().stepId, 'puzzle', '只按土仍停留机关节点');
+        eq(successfulSaves, prePuzzleWrites, '中间机关序列仅内存态，不新增存盘事务');
+        f.ui.selectChoice(1); eq(f.current().stepId, 'puzzle', '数字键选择水机关仍等待木');
+        f.named('encounter-puzzle:enc_seal_wood').emit('pointerdown', pointer);
+        eq(f.current().stepId, 'open_chest', '土水木完整顺序自动走正式onWin');
+        eq(f.prog.count('spirit_copper'), 0, '解谜成功未确认宝匣时无分段材料');
+        f.advance(); f.advance(); eq(f.current().stepId, 'claim', '宝匣交互与手记对白推进选择');
+        f.choose(outcome === 'taken' ? 'take' : 'seal');
+      }
+    }
+    eq(f.prog.encounterSave().encounters?.active, null, `洞府${outcome}清空active`);
+    eq(f.prog.encounterSave().encounters?.resolved?.[f.row.id], ['taken', 'sealed'].includes(outcome) ? outcome : undefined, '只有有效洞府结局消耗once');
+    eq(f.prog.count('spirit_copper'), outcome === 'taken' ? 3 : 0, '洞府灵铜按正式taken结局一次发放');
+    eq(f.prog.count('refine_stone'), outcome === 'taken' ? 2 : 0, '洞府精炼石按正式taken结局一次发放');
+    eq(f.prog.daoHeart, outcome === 'sealed' ? 22 : 20, '封存道心按正式sealed结局一次兑现');
+    eq(f.named('encounter-dialog').text, t(`enc.hidden_abode.${outcome}`), '洞府四结局使用正式文案');
+    const afterAbode = successfulSaves; f.runtime.puzzle({ encounterId: f.row.id, attemptId: active.attemptId, stepId: 'puzzle', objectId: 'enc_seal_wood' });
+    f.runtime.reveal(active.attemptId); f.runtime.update(16);
+    eq(successfulSaves, afterAbode, '洞府结算后旧机关/显形输入不会二次提交');
+    eq(f.rolls(), 2, '洞府进出/机关不重新随机'); f.destroy();
+  }
+
+  const openPuzzle = (f: ReturnType<typeof entityFixture>) => {
+    const active = f.prog.encounterSave().encounters?.active as { attemptId: string };
+    f.runtime.reveal(active.attemptId); f.advance(); f.choose('enter'); f.advance();
+    eq(f.current().stepId, 'puzzle', 'fixture经真实Runtime进入机关');
+  };
+  for (const stale of [false, true]) {
+    const f = entityFixture('enc_hidden_abode'); openPuzzle(f);
+    f.runtime.puzzle({ ...f.current(), objectId: 'enc_seal_earth' });
+    f.runtime.puzzle({ ...f.current(), objectId: 'enc_seal_water' });
+    const beforeLastSeal = JSON.stringify(f.prog.exportSave()); saveFails = true;
+    f.runtime.puzzle({ ...f.current(), objectId: 'enc_seal_wood' });
+    eq(JSON.stringify(f.prog.exportSave()), beforeLastSeal, '最后机关确认保存失败完整回滚');
+    eq(f.current().stepId, 'puzzle', '最后机关保存失败仍停真实puzzle');
+    f.runtime.update(16); eq(f.current().stepId, 'puzzle', '机关待保存不会自行越过节点');
+    if (stale) { f.prog.inventory.hp_pill_small = 4; f.prog.hp = 19; }
+    saveFails = false; f.runtime.update(16); f.runtime.update(16);
+    eq(f.current().stepId, 'open_chest', `最后机关${stale ? '过期草稿' : '普通'}重试保留成功判定`);
+    if (stale) {
+      eq(f.prog.count('hp_pill_small'), 4, '机关过期重放不覆盖后来库存');
+      eq(f.prog.hp, 19, '机关过期重放不覆盖后来气血');
+    }
+    eq(f.prog.count('spirit_copper'), 0, '机关保存重试仍不给分段奖励');
+    const completedWrites = successfulSaves;
+    f.runtime.puzzle({ ...f.current(), stepId: 'puzzle', objectId: 'enc_seal_wood' }); f.runtime.update(16);
+    eq(successfulSaves, completedWrites, '已重试完成的机关输入不重复提交'); f.destroy();
+  }
+  const failedPuzzle = entityFixture('enc_hidden_abode'); openPuzzle(failedPuzzle);
+  failedPuzzle.runtime.puzzle({ ...failedPuzzle.current(), objectId: 'enc_seal_water' });
+  eq(failedPuzzle.prog.encounterSave().encounters?.active, null, '错序按真表onFail提交failed');
+  eq(failedPuzzle.prog.encounterSave().encounters?.resolved?.[failedPuzzle.row.id], undefined, '错序failed不消耗once');
+  const failedCooldown = (failedPuzzle.prog.encounterSave().encounters?.cooldownUntil as Record<string, number>)[failedPuzzle.row.id];
+  failedPuzzle.setNow(failedCooldown - 1); failedPuzzle.runtime.enter('abode-before-cooldown');
+  eq(failedPuzzle.prog.encounterSave().encounters?.active, null, '机关失败冷却内新visit不能重遇');
+  eq(failedPuzzle.rolls(), 2, '机关失败冷却内不掷随机');
+  failedPuzzle.setNow(failedCooldown); failedPuzzle.runtime.enter('abode-after-cooldown');
+  ok(failedPuzzle.prog.encounterSave().encounters?.active, '机关失败冷却到期后的新visit仍可重遇once洞府');
+  eq(failedPuzzle.runtime.runner.offer(), undefined, '再次抽中洞府仍从隐藏态开始');
+  eq(failedPuzzle.rolls(), 4, '仅冷却后新visit再次共享概率与weight'); failedPuzzle.destroy();
+
   eq(JSON.stringify(ENCOUNTERS), officialBefore, '真实runtime/UI联调后正式配置仍完全未改');
   eq(JSON.stringify(encountersRaw), rawBefore, '真实runtime/UI联调后正式原始五事件仍完全未改');
-  console.log(`encounter-ui tests ok: ${assertions} assertions, disabled / rendering / real runner runtime / Progress rollback / medicine / insight`);
+  console.log(`encounter-ui tests ok: ${assertions} assertions, disabled / rendering / real runner runtime / Progress rollback / medicine / insight / entity battle / abode puzzle`);
 } finally {
   if (storageBefore) Object.defineProperty(globalThis, 'localStorage', storageBefore);
   else delete (globalThis as { localStorage?: Storage }).localStorage;
