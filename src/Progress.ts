@@ -18,6 +18,7 @@ import { createRelationshipState, isValidAffinity, isValidRelationshipState, nor
 import { saveStore, setSaveValidator, SAVE_SLOT_KEYS, type SlotKey } from './SaveStore';
 import { isValidCompanionRelations, type CompanionRelations } from './Companions';
 import { isValidTowerProgress, type TowerProgress } from './TowerProgress';
+import { isValidMarketProgress, type MarketProgress } from './MarketProgress';
 
 /** 自动加点：加点界面做好前的旧档公式，仅用于迁移种子；UI-6 起升级只发未分配点。 */
 export const AUTO_STATS = { rootBone: 2, agility: 2, insight: 1, spirit: 0 } as Record<string, number>;
@@ -85,6 +86,7 @@ function validSaveData(saved: unknown): saved is Record<string, unknown> {
   if (has('relationshipState') && !isValidRelationshipState(saved.relationshipState)) return false;
   if (has('companionRelations') && !isValidCompanionRelations(saved.companionRelations)) return false;
   if (has('tower') && !isValidTowerProgress(saved.tower)) return false;
+  if (has('market') && !isValidMarketProgress(saved.market)) return false;
   for (const key of ['inventory', 'skills', 'skillGifted']) if (has(key) && !numbers(saved[key])) return false;
   for (const key of ['skillMastery', 'gatherRespawnAt']) if (has(key) && !numbers(saved[key], false)) return false;
   for (const key of ['job', 'selectedSect', 'name', 'rootElement', 'sectDailyContributionDay', 'dailyQuestResetDay', 'seclusionDay']) {
@@ -172,6 +174,8 @@ export class Progress {
   companionRelations: CompanionRelations | undefined = undefined;
   /** 只在内存开态图产生已提交的塔进度；正式关态与无塔旧档不补字段或奖励。 */
   tower: TowerProgress | undefined = undefined;
+  /** 仅 SSR 内存开态夹具提交；缺字段旧档不补袋，正式关态原样保留历史。 */
+  market: MarketProgress | undefined = undefined;
   classRewardClaims: string[] = [];
   /** 通用入门技的付费等级在拜宗后退回当前一转点池。 */
   classRefundSp = 0;

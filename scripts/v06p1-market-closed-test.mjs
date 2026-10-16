@@ -1,4 +1,4 @@
-// 关态 API 只读验收：真实 Vite SSR，shared/snapshot 双数据根；不接线 UI、不消费寄售数值表。
+// 关态 API 只读验收：真实 Vite SSR，shared/snapshot 双数据根；不接线 UI，关态 API 不消费寄售数值表。
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import fs from 'node:fs/promises';
@@ -16,6 +16,10 @@ const stringsSha = 'c115b6deadf85d1aa9958de1097321ab65624b456e0fddeca42a5fe39743
 const previousStringsSha = '6b0861110a6af78f7bbfb78eb32e7579ecd41d5a33c3eff3da9e157794f5951f';
 const originalStringsSha = '4a32b19b8e1f318cfcbbf8b9a4e9382f17e7fc3fd951d040f9ec4749524f7385';
 const originalSemanticSha = '81d364627ea128a3125c1def299f1d94804cee7b7e511ff417dd4bf9ff24c7a9';
+// 本窗只授权可选 Progress.market 袋与四个夹具源码；正式 MarketClosed 的八 tip 契约不变。
+const openFixtureSources = ['MarketOpenFlag.ts', 'MarketProgress.ts', 'MarketGate.ts', 'v06p1-market-open.test.ts'];
+const openFixtureProgressSha = '3e1f4a258b384d5f0d1a2967d0228fcd792cb9a58979efcd5648d9baf9f2e7da';
+const marketTableSha = '5bd59bbed50ea437c96e9e3b6712e68fed7d956bfc02c8c21b322e856b93bed1';
 const closedStrings = {
   'market.closed.feature': '坊市寄售尚未开放。',
   'market.closed.list': '坊市寄售尚未开放，暂不可上架。',
@@ -76,10 +80,12 @@ async function checkProtection() {
   for (const [key, expected] of Object.entries(baseline)) {
     const file = protectedPath(key);
     if (!file || (expected !== null && (typeof expected !== 'string' || !/^[a-f0-9]{64}$/u.test(expected)))) continue;
-    // 演武另窗的表不读取、不删改，也不能授权本窗写入。
+    // 演武另窗表不沿用旧窗缺席基线；下方单独保护现有字节/缺席且 enabled=false，不授权写入。
     if (key.endsWith('/market_consign.json')) continue;
     const actual = await shaOrNull(file);
-    eq(actual, key.endsWith(':balance/strings_zh.json') ? stringsSha : expected, `C12 写前 SHA 保护：${key}`);
+    const authorizedSha = key === 'wt:src/Progress.ts' ? openFixtureProgressSha
+      : key.endsWith(':balance/strings_zh.json') ? stringsSha : expected;
+    eq(actual, authorizedSha, `C12 写前 SHA 保护：${key}`);
     readOnlyBefore.set(file, actual);
     protectedFiles[key] = actual;
   }
@@ -93,12 +99,20 @@ async function checkProtection() {
     }
   }
   const expectedSource = Object.keys(baseline).filter(key => key.startsWith('wt:src/')).map(key => key.slice('wt:src/'.length));
-  eq(await filesUnder(path.join(root, 'src')), [...expectedSource, 'MarketClosed.ts'].sort(), 'C12 src 仅新增关态 API，无服务、拍卖、UI 或正式存档字段');
+  eq(await filesUnder(path.join(root, 'src')), [...expectedSource, 'MarketClosed.ts', ...openFixtureSources].sort(), 'C12 src 仅新增关态 API 及明确授权的四个开态夹具文件，无 UI 接线');
+  for (const [mode, dataRoot] of dataRoots) {
+    const file = path.join(dataRoot, 'balance/market_consign.json');
+    const actual = await shaOrNull(file);
+    eq(actual, mode === 'wt' ? null : marketTableSha, `C12 ${mode}: 演武表写前字节与缺席状态受保护，不授权写入`);
+    readOnlyBefore.set(file, actual);
+    if (actual !== null) eq(JSON.parse(await fs.readFile(file, 'utf8')).enabled, false, `C12 ${mode}: 演武表 enabled=false`);
+  }
   for (const name of ['src/scenes/GameScene.ts', 'src/Progress.ts', 'src/ShopPanel.ts', 'src/data.ts', 'src/features.ts']) {
     ok(Object.hasOwn(protectedFiles, `wt:${name}`), `C12 写前证据覆盖 ${name}`);
   }
   report({ suite: 'v06p1-market-closed-protection', passed: true, protectedFiles: Object.keys(protectedFiles).length,
-    sourcesOnlyAdded: ['src/MarketClosed.ts'], marketTableConsumed: false, uiAdded: false });
+    sourcesOnlyAdded: ['src/MarketClosed.ts', ...openFixtureSources.map(name => `src/${name}`)],
+    optionalMarketBagAdded: true, marketTableConsumedByClosedApi: false, uiAdded: false });
 }
 
 async function checkStatic(mode, dataRoot) {
@@ -146,14 +160,22 @@ async function checkSource() {
   ok(!/\benabled\b|\b(?:setTimeout|setInterval|queueMicrotask|requestIdleCallback|fetch)\s*\(/u.test(code), 'C12 不新增开态字段、结算、后台延后或网络写入口');
   const consumers = [];
   for (const name of await filesUnder(path.join(root, 'src'))) {
-    if (name === 'MarketClosed.ts' || /\.test\.[cm]?[jt]sx?$/u.test(name)) continue;
-    const text = await fs.readFile(path.join(root, 'src', name), 'utf8');
+    if (name === 'MarketClosed.ts' || openFixtureSources.includes(name) || /\.test\.[cm]?[jt]sx?$/u.test(name)) continue;
+    let text = await fs.readFile(path.join(root, 'src', name), 'utf8');
+    if (name === 'Progress.ts') {
+      // 仅豁免已钉 SHA 的可选袋声明与纯校验两行，其余 Progress 内容仍全量扫描。
+      for (const line of ["  if (has('market') && !isValidMarketProgress(saved.market)) return false;",
+        '  market: MarketProgress | undefined = undefined;']) {
+        eq(text.split(line).length - 1, 1, `C12 Progress 可选袋授权行精确出现一次：${line.trim()}`);
+        text = text.replace(line, '');
+      }
+    }
     if (/\bMarket\b|MarketClosed|consign|listing|寄售|auction|拍卖/iu.test(text)) consumers.push(name);
   }
-  eq(consumers, [], 'C01/C12 全量源文件无寄售消费者、拍卖或前台 stub，不改 GameScene 接线');
+  eq(consumers, [], 'C01/C12 除明确授权的四个开态夹具文件外，全量源文件无寄售消费者、拍卖或前台 stub，不改 GameScene 接线');
 }
 
-// 所有寄售语义字段仅在测试夹具中存在，不扩展 Progress 正式 schema。
+// 本套件历史单据仍挂测试字段；新增可选 Progress.market 袋由开态四图套件另验。
 function legacyFixtures() {
   const listed = { listingId: 'fixture-listed', itemInstanceId: 'fixture-owned-instance', state: 'listed',
     heldItemRef: { id: 'wood_sword', instanceId: 'fixture-owned-instance', count: 1 }, pendingRewardRef: null, slotIndex: 0,
@@ -261,7 +283,7 @@ async function runGraph(mode, dataRoot, refreshPayloads = null) {
     eq(features.featureFlags(), flagsBefore, `${mode}/C12: 所有开关保持原值`);
     eq(storageWrites, 0, `${mode}: 所有拒绝、并发、真实读档、刷新零存储写入`);
     report({ suite: 'v06p1-market-closed-runtime', dataMode: mode, passed: true, fixtures, invocations,
-      freshSsrRefresh: !!refreshPayloads, legacyFixtureOnly: true, formalMarketSchemaAdded: false,
+      freshSsrRefresh: !!refreshPayloads, legacyFixtureOnly: true, optionalMarketBagAdded: true,
       cases: Object.keys(caseApis), zeroArgumentApis: 8, storageWrites, closed: true, softOpened: false, released: false });
     return payloads;
   } finally {
@@ -291,7 +313,7 @@ try {
   for (const [file, sha] of readOnlyBefore) eq(await shaOrNull(file), sha, `只读测试前后 SHA 不变：${file}`);
   await fs.writeFile(path.join(out, 'v06p1-market-closed-evidence.json'), `${JSON.stringify({ passed, assertions,
     stringsSha, cases: [...Object.keys(caseApis), 'C12'], closed: true, softOpened: false, released: false,
-    noFrontendMarketUi: true, noMarketTableConsumed: true, formalMarketSchemaAdded: false,
+    noFrontendMarketUi: true, noMarketTableConsumedByClosedApi: true, optionalMarketBagAdded: true,
     protectedFiles: Object.fromEntries(readOnlyBefore), evidence }, null, 2)}\n`);
 }
-console.log(`v06p1 market closed tests ok: ${assertions} assertions; C01–C12 自动化部分通过；shared/snapshot 双根及 game 文案同字节；八 API 零参数、零副作用、零存储写入；shops/禁改表/地图/Progress 不变，gifts 10×false，GAME_PHASE=5；无前台寄售 UI、不开态、未软开、未发版`);
+console.log(`v06p1 market closed tests ok: ${assertions} assertions; C01–C12 自动化部分通过；shared/snapshot 双根及 game 文案同字节；八 API 零参数、零副作用、零存储写入；shops/禁改表/地图不变，Progress仅授权可选market袋，gifts 10×false，GAME_PHASE=5；无前台寄售 UI、正式仍关、未软开、未发版`);
