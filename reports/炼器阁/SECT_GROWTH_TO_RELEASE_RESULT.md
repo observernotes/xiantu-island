@@ -9,8 +9,9 @@
 |----|------|
 | 方式 | `game` master `merge --ff-only` ← origin/dev（含 tip 开态） |
 | tip 基线 | 开态 feat `45b1c25`；文档 tip `950f22c`；HEAD 含后续 maps/docs（神识 snapshot 等） |
-| 可发版分支 | **master** @ 推送 SHA（见下） |
+| 可发版分支 | **master** @ `7d4a6e2`（= tip HEAD，含开态 `45b1c25`） |
 | 正式试玩包 | **v0.5.4 未动**；本轮**未**跑 `tools/release.sh` |
+| 推送远程 | `origin/master` + `origin/dev` @ `7d4a6e2` |
 
 ## 正式包开关（features + 表）
 
