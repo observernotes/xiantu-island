@@ -1,9 +1,11 @@
 import senseTable from '@xt/balance/sense.json';
-import { MONSTERS, REALMS, t } from './data';
+import chiyanSlope from '@xt/maps/chiyan_slope_1.json';
+import { ITEMS, MONSTERS, REALMS, SENSE, TILED_MAPS, t } from './data';
 import { featureEnabled, setFeatureFlag } from './features';
 import { Progress } from './Progress';
 import { Sense, validateSenseConfig, type SenseOptions } from './Sense';
 import { oneWayPlatformTiles, oneWayTileBase, parseHiddenObjects, type MapObj } from './scenes/MapBuilder';
+import { SenseMapAdapter, sceneMonsterTargets } from './scenes/SenseScene';
 
 let assertions = 0;
 function eq(actual: unknown, expected: unknown, message: string) {
@@ -90,6 +92,49 @@ function blocked(f: Fixture, reason: string, message: string) {
   eq(f.events[f.events.length - 1]?.name, 'sense:blocked', `${message} 发 blocked 事件`);
 }
 
+// 场景适配器读正式单例；只临时替换内存配置，并在每组断言后原样恢复。
+function sceneConfig(f: Fixture, run: () => void) {
+  const previous = clone(SENSE);
+  Object.assign(SENSE, f.config); f.config = SENSE;
+  try { run(); } finally { Object.assign(SENSE, previous); }
+}
+function mapObjects(): MapObj[] {
+  return [
+    { type: 'chest', name: 'native_chest', x: 100, y: 100, w: 0, h: 0, props: { loot: Object.keys(ITEMS)[0] } },
+    { type: 'hidden', name: 'hidden_chest', x: 100, y: 100, w: 0, h: 0,
+      props: { reveal: 'chest', reqSpirit: 0, targetObject: 'native_chest' } },
+    { type: 'hidden', name: 'hidden_platform', x: 92, y: 96, w: 16, h: 8, props: { reveal: 'platform', reqSpirit: 0 } },
+  ];
+}
+function mapFixture(f: Fixture, objects = mapObjects(), mapId = f.context.instanceId, width = 1000, height = 1000) {
+  // 保留真实 adapter / platform visual 工厂，只替代 Phaser 对象分配。
+  const visual = () => ({ scene: {}, visible: true, body: { enable: true, checkCollision: {} },
+    setVisible(value: boolean) { this.visible = value; return this; },
+    setName() { return this; }, setOrigin() { return this; }, setDepth() { return this; },
+    setAlpha() { return this; }, add() { return this; } });
+  const scene: any = { prog: f.p, map: { id: mapId, width, height, objects,
+    hidden: parseHiddenObjects(objects), oneWays: { add() {} }, useTiles: false },
+    add: { zone: visual, container: visual, rectangle: visual } };
+  const adapter = new SenseMapAdapter(scene);
+  const native = objects.find(object => object.type === 'chest');
+  const nativeVisual = visual();
+  if (native) adapter.bindVisual(native, nativeVisual as any);
+  return { scene, adapter, native, nativeVisual };
+}
+function hostileInstance(definition: any, patch: Record<string, unknown> = {}): any {
+  return { active: true, dead: false, hp: 10, visible: true, alpha: 1,
+    body: { enable: true, center: { x: 100, y: 100 } }, scene: {}, senseInstanceId: 'fixture_mob',
+    def: definition, ...patch };
+}
+function tiledObjects(raw: any): MapObj[] {
+  return raw.layers.filter((layer: any) => layer.type === 'objectgroup').flatMap((layer: any) =>
+    layer.objects.map((object: any) => ({ type: object.type || object.class, name: object.name,
+      x: object.x, y: object.y, w: object.width ?? 0, h: object.height ?? 0,
+      props: Object.fromEntries((object.properties ?? []).map((property: any) => [property.name, property.value])),
+      ...(object.type === 'hidden' ? { hiddenGeometryValid: !object.ellipse && !object.polygon && !object.polyline && !(object.rotation ?? 0) } : {}),
+    })));
+}
+
 try {
   // 与普通 '=' 共用端头选择；任意对象宽度必须无缝覆盖且不越过碰撞体左右边。
   {
@@ -131,7 +176,7 @@ try {
     }
   }
 
-  // MapBuilder 只解析内存对象；正式地图没有任何 hidden 投放。
+  // MapBuilder 先解析结构合法性；模板与点位开关由运行期统一门控。
   {
     const native = (type: string, name: string, props: Record<string, unknown>): MapObj => ({ type, name, props, x: 100, y: 100, w: 0, h: 0 });
     const controller = (name: string, props: Record<string, unknown>, patch: Partial<MapObj> = {}): MapObj => ({
@@ -168,6 +213,161 @@ try {
     const encounter = parseHiddenObjects([{ type: 'hidden', name: 'enc_hidden_abode_anchor', x: 100, y: 100, w: 0, h: 0,
       props: { reveal: 'entrance', reqSpirit: 5, encounter: 'enc_hidden_abode' } }])[0];
     eq(encounter.valid, true, '奇遇入口只解析显式归属'); eq(encounter.target, undefined, '奇遇入口不伪造第二道原生门');
+  }
+
+  // 静态宝箱/平台必须分别登记 exact id + kind 的已启用模板；点位值仍独立决定强度。
+  for (const kind of ['chest', 'platform'] as const) {
+    for (const condition of ['disabled', 'missing']) {
+      const f = fixture();
+      const profile = f.config.targetProfiles.find((entry: any) => entry.id === `sense_hidden_${kind}`);
+      if (condition === 'disabled') profile.enabled = false;
+      else f.config.targetProfiles = f.config.targetProfiles.filter((entry: any) => entry !== profile);
+      const h = hidden(f, `${condition}_${kind}`, { kind, reqSpirit: 999 });
+      const result = f.sense.requestScan('key', `${condition}_template_${kind}`);
+      ok(result.ok, `${kind}/${condition} 不阻塞空扫`);
+      eq(result.result, 'empty', `${kind}/${condition} 服务拒绝未门控的原始候选`);
+      eq(result.faint, false, `${kind}/${condition} 不产生 faint`);
+      same(result.hits, [], `${kind}/${condition} 不泄漏命中`);
+      eq(h.state.visible, false, `${kind}/${condition} 不执行显形`);
+    }
+  }
+
+  {
+    const f = fixture();
+    f.config.targetProfiles = [];
+    let revealed = false;
+    f.sense.registerAdapter('secret_chest', { targets: () => [{
+      kind: 'chest', instanceId: f.context.instanceId, id: 'native_secret_chest', x: 100, y: 100,
+      reqSpirit: 0, active: true, persistence: 'adapter', revealed: () => revealed,
+      stageReveal: () => { revealed = true; return () => { revealed = false; }; },
+    }] });
+    const result = f.sense.requestScan('key', 'secret_chest_without_generic_template');
+    ok(result.ok, '所属系统适配宝箱不要求通用静态地图模板');
+    eq(result.count, 1, '原秘境箱维持自身显形契约');
+    eq(revealed, true, '所属系统保存自身显形状态');
+  }
+  for (const kind of ['chest', 'platform'] as const) {
+    for (const condition of ['disabled', 'missing', 'wrong_kind', 'wrong_id', 'invalid_threshold']) {
+      const f = fixture();
+      sceneConfig(f, () => {
+        for (const profile of f.config.targetProfiles) profile.enabled = false;
+        const profile = f.config.targetProfiles.find((entry: any) => entry.id === `sense_hidden_${kind}`);
+        if (condition !== 'disabled') profile.enabled = true;
+        if (condition === 'missing') f.config.targetProfiles = f.config.targetProfiles.filter((entry: any) => entry !== profile);
+        if (condition === 'wrong_kind') profile.kind = kind === 'chest' ? 'platform' : 'chest';
+        if (condition === 'wrong_id') profile.id = `unregistered_${kind}`;
+        if (condition === 'invalid_threshold') profile.reqSpirit = null;
+        const objects = mapObjects();
+        for (const object of objects.filter(object => object.type === 'hidden')) object.props.reqSpirit = 999;
+        f.p.senseRevealed = { 'sense_fixture|hidden_chest': true, 'sense_fixture|hidden_platform': true };
+        const m = mapFixture(f, objects);
+        eq(m.adapter.targets().length, 0, `${kind}/${condition} 点位不入适配器候选`);
+        eq(m.adapter.revealed(`hidden_${kind}`), false, `${kind}/${condition} 旧显形不可见`);
+        eq(m.nativeVisual.visible, false, `${kind}/${condition} 原生箱维持隐藏不可交互`);
+        eq(m.adapter.platformBody('hidden_platform')?.enable, false, `${kind}/${condition} 平台无碰撞`);
+        eq(m.adapter.platformVisual('hidden_platform'), undefined, `${kind}/${condition} 未分配平台画面`);
+        f.sense = service(f, { targets: () => m.adapter.targets() });
+        const result = f.sense.requestScan('key', `${kind}_${condition}`);
+        if (condition === 'invalid_threshold') {
+          ok(!result.ok, '启用模板的非法阈值仍遵守整表校验');
+          eq(result.blockKey, 'sense.block.unavailable', '非法模板不以默认值执行');
+        } else {
+          ok(result.ok, `${kind}/${condition} 正常空扫`);
+          eq(result.faint, false, `${kind}/${condition} 不产生 faint`);
+          same(result.hits, [], `${kind}/${condition} 没有扫描命中`);
+        }
+      });
+    }
+  }
+  {
+    const f = fixture();
+    sceneConfig(f, () => {
+      for (const profile of f.config.targetProfiles) profile.enabled = false;
+      const m = mapFixture(f);
+      f.sense = service(f, { targets: () => m.adapter.targets() });
+      eq(m.adapter.targets().length, 0, '两个隐藏模板关闭时无候选');
+      const off = f.sense.requestScan('key', 'map_templates_off'); ok(off.ok, '模板关闭可正常空扫');
+      eq(off.faint, false, '模板关闭不计 faint'); eq(m.nativeVisual.visible, false, '模板关闭原生箱不提前露出');
+      eq(m.adapter.platformBody('hidden_platform')?.enable, false, '模板关闭平台不产生碰撞');
+      for (const profile of f.config.targetProfiles) {
+        profile.enabled = true; profile.reqSpirit = 999;
+      }
+      eq(m.adapter.targets().length, 2, '内存启用模板且点位缺省 enabled 后可扫描');
+      now += 1000;
+      const on = f.sense.requestScan('key', 'map_templates_on'); ok(on.ok, '启用模板后扫描提交');
+      eq(on.count, 2, '点位使用自身 reqSpirit，不再叠加模板门槛');
+      eq(m.nativeVisual.visible, true, '提交显形后原生箱才可见');
+      eq(m.adapter.objectVisible(m.native!), true, '原生交互复用显形结果');
+      eq(m.adapter.platformBody('hidden_platform')?.enable, true, '提交后平台开启碰撞');
+      eq(m.adapter.platformVisual('hidden_platform')?.object.visible, true, '提交后平台有实际画面');
+      const persisted = clone(f.p.senseRevealed);
+      for (const profile of f.config.targetProfiles) profile.enabled = false;
+      m.adapter.syncRevealed();
+      eq(m.adapter.revealed('hidden_chest'), false, '模板禁用后已显形箱也视为未显形');
+      eq(m.nativeVisual.visible, false, '禁用模板隐藏原生箱');
+      eq(m.adapter.platformBody('hidden_platform')?.enable, false, '禁用模板撤去已显形平台碰撞');
+      eq(m.adapter.platformVisual('hidden_platform')?.object.visible, false, '禁用模板隐藏已创建平台画面');
+      same(f.p.senseRevealed, persisted, '禁用模板保留原有显形记录');
+      for (const profile of f.config.targetProfiles) profile.enabled = true;
+      m.adapter.syncRevealed();
+      eq(m.nativeVisual.visible, true, '模板重新启用恢复旧箱显形');
+      eq(m.adapter.platformBody('hidden_platform')?.enable, true, '模板重新启用恢复平台碰撞');
+      eq(m.adapter.platformVisual('hidden_platform')?.object.visible, true, '模板重新启用恢复平台画面');
+
+      for (const hidden of m.scene.map.hidden) hidden.object.props.enabled = false;
+      m.adapter.syncRevealed();
+      eq(m.adapter.targets().length, 0, '点位 enabled:false 无扫描候选');
+      eq(m.adapter.revealed('hidden_platform'), false, '点位关闭也遮蔽旧显形');
+      eq(m.nativeVisual.visible, false, '点位关闭原生箱不可见不可交互');
+      eq(m.adapter.platformBody('hidden_platform')?.enable, false, '点位关闭平台无碰撞');
+      now += 1000;
+      const pointOff = f.sense.requestScan('key', 'map_points_off'); ok(pointOff.ok, '点位关闭允许空扫');
+      eq(pointOff.faint, false, '关闭点位不计 faint'); same(pointOff.hits, [], '关闭点位不入命中');
+      same(f.p.senseRevealed, persisted, '点位关闭不删除显形记录');
+      for (const hidden of m.scene.map.hidden) delete hidden.object.props.enabled;
+      m.adapter.syncRevealed();
+      eq(m.nativeVisual.visible, true, '点位缺省 enabled 恢复箱子');
+      eq(m.adapter.platformBody('hidden_platform')?.enable, true, '点位重新启用恢复平台');
+
+      const gates: [string, () => void, () => void][] = [
+        ['features.spiritScan', () => setFeatureFlag('spiritScan', false), () => setFeatureFlag('spiritScan', true)],
+        ['sense.enabled', () => { f.config.enabled = false; }, () => { f.config.enabled = true; }],
+        ['公共配置非法', () => { f.config.scan.mpCost = 0; }, () => { f.config.scan.mpCost = 8; }],
+      ];
+      for (const [name, disable, enable] of gates) {
+        disable(); m.adapter.syncRevealed();
+        eq(m.adapter.targets().length, 0, `${name} 关闭扫描候选`);
+        eq(m.adapter.revealed('hidden_chest'), false, `${name} 关闭读档显形`);
+        eq(m.nativeVisual.visible, false, `${name} 关闭原生箱可见及交互`);
+        eq(m.adapter.platformBody('hidden_platform')?.enable, false, `${name} 关闭平台碰撞`);
+        eq(m.adapter.platformVisual('hidden_platform')?.object.visible, false, `${name} 关闭平台渲染`);
+        eq(f.sense.requestScan('key', `global_gate_${name}`).ok, false, `${name} 扫描与恢复采用同一口径`);
+        same(f.p.senseRevealed, persisted, `${name} 不删除显形记录`);
+        enable(); m.adapter.syncRevealed();
+        eq(m.nativeVisual.visible, true, `${name} 恢复后原生箱重新显形`);
+        eq(m.adapter.platformBody('hidden_platform')?.enable, true, `${name} 恢复后平台重新生效`);
+      }
+    });
+  }
+  {
+    const f = fixture();
+    sceneConfig(f, () => {
+      f.config.targetProfiles = [];
+      const objects: MapObj[] = [
+        { type: 'portal', name: 'native_portal', x: 100, y: 100, w: 0, h: 0, props: { target: 'field_test' } },
+        { type: 'hidden', name: 'hidden_entrance', x: 100, y: 100, w: 0, h: 0,
+          props: { reveal: 'entrance', reqSpirit: 0, targetObject: 'native_portal' } },
+      ];
+      const m = mapFixture(f, objects);
+      f.sense = service(f, { targets: () => m.adapter.targets() });
+      eq(m.adapter.targets().length, 1, 'entrance 没有模板仍可按原条件扫描');
+      const result = f.sense.requestScan('key', 'entrance_without_template'); ok(result.ok, '入口无模板可提交');
+      eq(result.count, 1, '入口正常显形');
+      eq(m.adapter.objectVisible(objects[0]), true, '原生入口沿用显形状态');
+      objects[1].props.enabled = false;
+      eq(m.adapter.targets().length, 0, '入口也遵守点位 enabled:false');
+      eq(m.adapter.objectVisible(objects[0]), false, '禁用入口绑定的原生门保持隐藏');
+    });
   }
 
   // 开关关闭不产生新字段、不扣费、不写盘；预览也是只读。
@@ -477,6 +677,110 @@ try {
     try { eq(f.sense.markTutorialSeen(), false, '教学保存失败返回失败'); }
     finally { failStorage = false; }
     eq(f.p.senseState, undefined, '教学保存失败恢复无历史状态'); eq(writes, writesBefore, '教学保存失败不写部分记录');
+  }
+
+  // 定义排除字段与运行期敌我属性分别判定；敌方召唤物的运行期奖励关闭仍可探知。
+  {
+    const f = fixture();
+    sceneConfig(f, () => {
+      const player = {}, enemyOwner = {};
+      const cases: [string, Record<string, unknown>, Record<string, unknown>, boolean][] = [
+        ['普通敌人', {}, {}, false],
+        ['training_dummy 显式排除', { id: 'training_dummy' }, {}, true],
+        ['noDamage', { noDamage: true }, {}, true],
+        ['immortal', { immortal: true }, {}, true],
+        ['invulnerable', { invulnerable: true }, {}, true],
+        ['minHp 正数', { minHp: 1 }, {}, true],
+        ['kneelBelow 正数', { kneelBelow: 0.25 }, {}, true],
+        ['kneelBelow 为零仍存在', { kneelBelow: 0 }, {}, true],
+        ['kneelBelow 显式 undefined 仍存在', { kneelBelow: undefined }, {}, true],
+        ['定义 grantRewards:false', { grantRewards: false }, {}, true],
+        ['定义 despawnWithOwner:true', { despawnWithOwner: true }, {}, true],
+        ['运行期 friendly:true', {}, { friendly: true }, true],
+        ['运行期 owner 为玩家', {}, { owner: player }, true],
+        ['敌方首领召唤', {}, { owner: enemyOwner, grantRewards: false, despawnWithOwner: true }, false],
+        ['运行期 grantRewards:false', {}, { grantRewards: false }, false],
+        ['各排除布尔为 false', { noDamage: false, immortal: false, invulnerable: false, grantRewards: true, despawnWithOwner: false }, { friendly: false }, false],
+        ['minHp 为零', { minHp: 0 }, {}, false],
+        ['minHp 为负数', { minHp: -1 }, {}, false],
+        ['未激活', {}, { active: false }, true],
+        ['死亡', {}, { dead: true }, true],
+        ['零气血', {}, { hp: 0 }, true],
+        ['未显形', {}, { visible: false }, true],
+        ['全透明', {}, { alpha: 0 }, true],
+        ['无碰撞体', {}, { body: undefined }, true],
+        ['碰撞体禁用', {}, { body: { enable: false, center: { x: 100, y: 100 } } }, true],
+        ['实例在地图外', {}, { body: { enable: true, center: { x: -1, y: 100 } } }, true],
+      ];
+      for (const [label, defPatch, runtimePatch, excluded] of cases) {
+        const def: any = { id: 'sense_enemy', name: '妖兽', level: 1, hp: 10,
+          sense: { enabled: true, profile: 'sense_monster_basic', visibleInfo: ['hp'], abilityKeys: [] }, ...defPatch };
+        const instance = hostileInstance(def, runtimePatch);
+        const scene: any = { map: { id: f.context.instanceId, width: 1000, height: 1000 }, player, mobs: [instance] };
+        const targets = sceneMonsterTargets(scene);
+        eq(targets.length, excluded ? 0 : 1, `${label} 场景候选数量`);
+        const sense = service(f, { targets: () => targets });
+        f.p.senseState = undefined; f.p.mp = f.p.maxMp;
+        const result = sense.requestScan('key', `monster_matrix_${label}`); ok(result.ok, `${label} 扫描提交`);
+        eq(result.hits.length, excluded ? 0 : 1, `${label} 命中与排除一致`);
+        eq(result.faint, false, `${label} 排除不泄漏 faint`);
+        eq(Boolean(sense.monsterIntel(instance)), !excluded, `${label} 仅合法敌人建立情报`);
+      }
+    });
+  }
+
+  // shared 直接读取真实投放；snapshot 尚未同步时跳过这组投放数量断言，仍运行上方全部夹具。
+  {
+    const maps = ['bamboo_forest', 'lingxi_path', 'luoxia_outskirts_1', 'luoxia_outskirts_2', 'wanyao_outer_1']
+      .map(id => ({ id, raw: TILED_MAPS[id] }));
+    maps.push({ id: 'chiyan_slope_1', raw: chiyanSlope });
+    const placements = maps.map(({ id, raw }) => ({ id, raw, objects: tiledObjects(raw) }));
+    const hiddenCount = placements.reduce((count, map) => count + map.objects.filter(object => object.type === 'hidden').length, 0);
+    if (hiddenCount === 0) console.log('sense.test: snapshot 无神识投放，跳过 shared 真实投放断言');
+    else {
+      eq(hiddenCount, 12, '共享六图真实登记 12 个 hidden 点位');
+      const registered = Object.values(MONSTERS).filter(def => def.sense);
+      eq(registered.length, 22, '共享怪物真实登记 22 个 sense 块');
+      ok(registered.every(def => def.sense!.enabled === false), '真实怪物 sense 块保持全部禁用');
+      const f = fixture();
+      sceneConfig(f, () => {
+        f.p.allocatedStats.spirit = 100;
+        Object.assign(f.config.scan, { radiusBasePx: 100000, radiusMaxPx: 100000 });
+        for (const profile of f.config.targetProfiles) profile.enabled = false;
+        const sharedMaps = placements.map(({ id, raw, objects }) => {
+          const m = mapFixture(f, clone(objects), id, raw.width * raw.tilewidth, raw.height * raw.tileheight);
+          same(m.scene.map.hidden.map((hidden: any) => hidden.object.name).sort(),
+            ['sense_hidden_chest_01', 'sense_hidden_platform_01'], `${id} 使用真实宝箱/平台点位`);
+          ok(m.scene.map.hidden.every((hidden: any) => hidden.valid && hidden.object.props.enabled === false), `${id} 真实点位合法且全部禁用`);
+          eq(m.adapter.targets().length, 0, `${id} 模板 false 时零候选`);
+          for (const hidden of m.scene.map.hidden) hidden.object.props.enabled = true;
+          eq(m.adapter.targets().length, 0, `${id} 只开点位，模板 false 仍零候选`);
+          return m;
+        });
+        const instances = registered.map((def, index) => hostileInstance(clone(def), { senseInstanceId: `shared_mob_${index}` }));
+        const monsterScene: any = { map: { id: f.context.instanceId, width: 1000, height: 1000 }, player: {}, mobs: instances };
+        let targets = sceneMonsterTargets(monsterScene);
+        eq(targets.filter(target => Number.isFinite(target.reqSpirit)).length, 0, '真实怪物模板 false 无有效门槛候选');
+        f.sense = service(f, { targets: () => targets });
+        const off = f.sense.requestScan('key', 'shared_templates_off'); ok(off.ok, '真实怪物关态可空扫');
+        same(off.hits, [], '真实禁用 sense 块及模板不产生命中'); eq(off.faint, false, '真实禁用怪物不计 faint');
+        for (const profile of f.config.targetProfiles) profile.enabled = true;
+        for (const m of sharedMaps) {
+          eq(m.adapter.targets().length, 2, `${m.scene.map.id} 内存开模板和点位后有两个候选`);
+          f.context.instanceId = m.scene.map.id; f.p.senseState = undefined; f.p.mp = f.p.maxMp;
+          const sense = service(f, { targets: () => m.adapter.targets() });
+          const result = sense.requestScan('key', `shared_map_${m.scene.map.id}`); ok(result.ok, `${m.scene.map.id} 真实点位可扫`);
+          eq(result.count, 2, `${m.scene.map.id} 真实宝箱及平台均可显形`);
+        }
+        f.context.instanceId = monsterScene.map.id; f.p.senseState = undefined; f.p.mp = f.p.maxMp;
+        for (const instance of instances) instance.def.sense.enabled = true;
+        targets = sceneMonsterTargets(monsterScene);
+        eq(targets.length, 22, '真实普通怪物定义通过通用排除规则');
+        const on = f.sense.requestScan('key', 'shared_monsters_on'); ok(on.ok, '内存开真实怪物 sense 块及模板后可扫');
+        eq(on.hits.length, 22, '真实 22 个已登记怪物均可建立情报');
+        eq(f.sense.intelList().length, 22, '真实怪物逐实例记录临时情报');
+      });
+    }
   }
 
   // 怪物需显式登记 + 已启用 monster_info 模板；白名单严格限制公开快照。

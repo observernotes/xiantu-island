@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { SPEC } from '../config/feel';
 import { ITEMS, SENSE, TILED_MAPS } from '../data';
 import { featureEnabled } from '../features';
-import type { SenseTarget } from '../Sense';
+import { hiddenSenseProfileEnabled, validateSenseConfig, type SenseConfig, type SenseTarget } from '../Sense';
 import type { GameScene } from './GameScene';
 import { createOneWayPlatformVisual, type HiddenMapObject, type MapObj, type OneWayPlatformVisual } from './MapBuilder';
 
@@ -31,8 +31,27 @@ export class SenseMapAdapter {
 
   revealed(objectName: string): boolean {
     const hidden = this.scene.map.hidden.find(entry => entry.object.name === objectName);
-    return featureEnabled('spiritScan') && !!hidden?.valid && !hidden.encounter
+    const config = this.config();
+    return !!hidden && !!config && this.available(hidden, config)
       && this.scene.prog.senseRevealed?.[`${this.scene.map.id}|${objectName}`] === true;
+  }
+
+  private config(): SenseConfig | undefined {
+    if (!featureEnabled('spiritScan')) return;
+    const config = validateSenseConfig(SENSE).config;
+    return config?.enabled === true ? config : undefined;
+  }
+
+  /** 候选与已显形恢复共用内容门控；开关变化不删除存档记录。 */
+  private available(hidden: HiddenMapObject, config: SenseConfig): boolean {
+    const scene = this.scene, object = hidden.object;
+    return hidden.valid && !hidden.encounter && object.props.enabled !== false
+      && hiddenSenseProfileEnabled(config, hidden.kind) && scene.map.objects.includes(object)
+      && object.x >= 0 && object.y >= 0 && object.x + object.w <= scene.map.width
+      && object.y + object.h <= scene.map.height
+      && (!hidden.target || scene.map.objects.includes(hidden.target))
+      && (hidden.kind !== 'chest' || !!ITEMS[hidden.target!.props.loot])
+      && (hidden.kind !== 'entrance' || hidden.target!.props.target === 'field_test' || !!TILED_MAPS[hidden.target!.props.target]);
   }
 
   platformBody(objectName: string): Phaser.Physics.Arcade.StaticBody | undefined {
@@ -81,14 +100,10 @@ export class SenseMapAdapter {
   }
 
   targets(): SenseTarget[] {
-    const scene = this.scene;
-    return scene.map.hidden.filter(hidden => hidden.valid && !hidden.encounter && scene.map.objects.includes(hidden.object)
-      && hidden.object.x >= 0 && hidden.object.y >= 0 && hidden.object.x + hidden.object.w <= scene.map.width
-      && hidden.object.y + hidden.object.h <= scene.map.height
-      && (!hidden.target || scene.map.objects.includes(hidden.target))
-      && (hidden.kind !== 'chest' || !!ITEMS[hidden.target!.props.loot]
-        && !scene.prog.openedChests.includes(`${scene.map.id}:${hidden.target!.name}`))
-      && (hidden.kind !== 'entrance' || hidden.target!.props.target === 'field_test' || !!TILED_MAPS[hidden.target!.props.target]))
+    const scene = this.scene, config = this.config();
+    if (!config) return [];
+    return scene.map.hidden.filter(hidden => this.available(hidden, config)
+      && (hidden.kind !== 'chest' || !scene.prog.openedChests.includes(`${scene.map.id}:${hidden.target!.name}`)))
       .map(hidden => ({ kind: hidden.kind, instanceId: scene.map.id, id: hidden.object.name,
         x: hidden.x, y: hidden.y, reqSpirit: hidden.reqSpirit, active: true,
         revealed: () => this.revealed(hidden.object.name), applyReveal: () => this.applyReveal(hidden) }));
@@ -97,11 +112,20 @@ export class SenseMapAdapter {
 
 /** 怪物必须由自身机制实际激活；本适配器不生成怪物或读取未公开技能。 */
 export function sceneMonsterTargets(scene: GameScene): SenseTarget[] {
-  return scene.mobs.filter(monster => monster.active && !monster.dead && monster.hp > 0 && monster.visible
-    && monster.alpha > 0 && !!monster.body?.enable && monster.def.id !== 'training_dummy'
-    && monster.body.center.x >= 0 && monster.body.center.x <= scene.map.width
-    && monster.body.center.y >= 0 && monster.body.center.y <= scene.map.height
-    && !monster.def.immortal && !monster.def.invulnerable)
+  return scene.mobs.filter(monster => {
+    const def = monster.def as typeof monster.def & { grantRewards?: boolean; despawnWithOwner?: boolean };
+    // FriendlySummons 的 sprite 不进入 mobs；也防止混入带显式友方标记或玩家 owner 的实例。
+    const runtime = monster as unknown as { friendly?: boolean; owner?: unknown };
+    // 首领召唤的敌对小怪仍可扫描：不据运行期 grantRewards/despawnWithOwner 判断阵营。
+    return monster.active && !monster.dead && monster.hp > 0 && monster.visible
+      && monster.alpha > 0 && !!monster.body?.enable && def.id !== 'training_dummy'
+      && monster.body.center.x >= 0 && monster.body.center.x <= scene.map.width
+      && monster.body.center.y >= 0 && monster.body.center.y <= scene.map.height
+      && def.noDamage !== true && !def.immortal && !def.invulnerable
+      && !((def.minHp ?? 0) > 0) && !('kneelBelow' in def)
+      && def.grantRewards !== false && def.despawnWithOwner !== true
+      && runtime.friendly !== true && !(runtime.owner != null && runtime.owner === scene.player);
+  })
     .map(monster => ({ kind: 'monster_info', instanceId: scene.map.id, id: String(monster.senseInstanceId),
       x: monster.body.center.x, y: monster.body.center.y, active: true,
       reqSpirit: SENSE.targetProfiles.find(profile => profile.kind === 'monster_info' && profile.enabled

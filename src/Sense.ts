@@ -90,6 +90,14 @@ export function validateSenseConfig(value: unknown): { config?: SenseConfig; err
   return errors.length ? { errors } : { config: value as SenseConfig, errors };
 }
 
+/** 通用 hidden 只借模板确认启用与填妥；实际强度门槛仍读地图对象，不叠加模板。 */
+export function hiddenSenseProfileEnabled(config: SenseConfig, kind: 'chest' | 'platform' | 'entrance'): boolean {
+  if (kind === 'entrance') return true;
+  const id = kind === 'chest' ? 'sense_hidden_chest' : 'sense_hidden_platform';
+  return config.targetProfiles.some(profile => profile.id === id && profile.kind === kind
+    && profile.enabled === true && nonnegative(profile.reqSpirit));
+}
+
 export class Sense {
   private readonly intel = new Map<object, { value: MonsterIntel; alive: () => boolean }>();
   private readonly committed = new Map<string, SenseScanSuccess>();
@@ -190,6 +198,8 @@ export class Sense {
       for (const target of targets) {
         if (!target || !target.active || target.instanceId !== instanceId || !identity(target.id) || !nonnegative(target.reqSpirit)
           || !finite(target.x) || !finite(target.y) || !['chest', 'platform', 'entrance', 'monster_info'].includes(target.kind)) continue;
+        // 所属系统的秘境箱沿原契约；普通地图箱／平台须先启用对应模板，禁用不报异息。
+        if (target.persistence !== 'adapter' && target.kind !== 'monster_info' && !hiddenSenseProfileEnabled(config, target.kind)) continue;
         const key = `${target.kind}|${target.id}`;
         if (visited.has(key)) continue;
         visited.add(key);
