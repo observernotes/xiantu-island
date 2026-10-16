@@ -8,6 +8,20 @@ export interface PlayerInput {
   attackHeld?: boolean;
 }
 
+export type InputAction = 'spirit_scan';
+
+/** 会话内可配置的动作槽；独立于物理边沿 latch，不占技能栏、不写角色存档。 */
+export class InputBindings {
+  private readonly codes: Partial<Record<InputAction, number>> = {};
+
+  keyCode(action: InputAction): number | undefined { return this.codes[action]; }
+  bind(action: InputAction, keyCode?: number): void {
+    if (keyCode !== undefined && (!Number.isSafeInteger(keyCode) || keyCode <= 0)) throw new RangeError('Invalid key code');
+    if (keyCode === undefined) delete this.codes[action];
+    else this.codes[action] = keyCode;
+  }
+}
+
 /** Render frames sample held keys; physics ticks consume each sampled press once. */
 export class PlayerInputLatch {
   private left = false;

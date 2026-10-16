@@ -1,4 +1,4 @@
-import { PlayerInputLatch, type PlayerInput } from './PlayerInput';
+import { InputBindings, PlayerInputLatch, type PlayerInput } from './PlayerInput';
 
 let assertions = 0;
 function eq(actual: unknown, expected: unknown, message: string) {
@@ -12,6 +12,25 @@ function input(changes: Partial<PlayerInput> = {}): PlayerInput {
   return { left: false, right: false, up: false, down: false, jumpDown: false, attackDown: false, ...changes };
 }
 const idle = { ...input(), attackHeld: false };
+
+// 新动作不抢占已有键；绑定与角色/物理输入分离，可重绑、解绑且实例之间不串用。
+{
+  const bindings = new InputBindings(), other = new InputBindings();
+  eq(bindings.keyCode('spirit_scan'), undefined, '神识默认不绑定任何键');
+  bindings.bind('spirit_scan', 113); // F2，开发配置示例，非默认值。
+  eq(bindings.keyCode('spirit_scan'), 113, '读取真实配置键码');
+  eq(other.keyCode('spirit_scan'), undefined, '动作绑定不污染其他会话');
+  bindings.bind('spirit_scan', 114);
+  eq(bindings.keyCode('spirit_scan'), 114, '重新绑定替换旧键');
+  for (const invalid of [NaN, Infinity, 0, -1, 1.5]) {
+    let rejected = false;
+    try { bindings.bind('spirit_scan', invalid); } catch { rejected = true; }
+    eq(rejected, true, '非法键码被拒绝');
+    eq(bindings.keyCode('spirit_scan'), 114, '失败保留旧绑定');
+  }
+  bindings.bind('spirit_scan');
+  eq(bindings.keyCode('spirit_scan'), undefined, '解除绑定恢复按钮入口');
+}
 
 // 高刷渲染帧可以没有物理步；按下后已经松键，边沿仍必须交给下一物理步。
 {

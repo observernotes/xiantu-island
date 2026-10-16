@@ -19,7 +19,7 @@ import { installKeyGuard } from '../keyguard';
 import { buildTiledMap, buildCharMap, BuiltMap, MapObj } from './MapBuilder';
 import { HUD_RESERVE, addFloorStrip } from './cameraFloor';
 import { Player, Input } from './Player';
-import { PlayerInputLatch } from '../PlayerInput';
+import { InputBindings, PlayerInputLatch } from '../PlayerInput';
 import { Monster, type SkillVolley } from './Monster';
 import { Progress, type QuestRewardSettlement } from '../Progress';
 import { Seclusion, realDay } from '../Seclusion';
@@ -48,6 +48,7 @@ import { SectGrowth, newSectTransactionId } from '../SectGrowth';
 import { featureEnabled, FEATURE_UNAVAILABLE, type FeatureName } from '../features';
 import { loadOptionalImage, loadOptionalAtlas, loadOptionalJson, loadOptionalSpritesheet } from '../optionalAssets';
 import { Sense } from '../Sense';
+import { SenseUi } from '../SenseUi';
 import { SenseMapAdapter, sceneMonsterTargets } from './SenseScene';
 
 const MAP_FALLBACK: Record<string, string> = {};
@@ -84,6 +85,8 @@ export class GameScene extends Phaser.Scene {
   prog!: Progress;
   sense!: Sense;
   senseMap!: SenseMapAdapter;
+  senseUi?: SenseUi;
+  readonly inputBindings = new InputBindings();
   private senseCueDepth = 0;
   private senseBusyProviders = new Set<() => boolean>();
   sectGrowth!: SectGrowth;
@@ -134,6 +137,7 @@ export class GameScene extends Phaser.Scene {
 
   /** Scene 实例会被 restart 复用；这里只重置本张图的状态，不能复用旧物理世界的引用。 */
   private resetRunState() {
+    this.senseUi?.destroy(); this.senseUi = undefined;
     this.sense?.clearIntel();
     this.sense = undefined!; this.senseMap = undefined!;
     this.senseCueDepth = 0; this.senseBusyProviders.clear();
@@ -373,7 +377,9 @@ export class GameScene extends Phaser.Scene {
     this.attrPanel = new AttrPanel(this, this.prog, () => {
       this.player.maxHp = this.prog.maxHp; this.player.hp = this.prog.hp;
       this.skillWindow.refresh();
-    });
+    }, { senseEnabled: () => featureEnabled('spiritScan'), sensePreview: () => this.sense?.preview(),
+      senseKeyHint: () => this.senseUi?.keyHint() ?? t('sense.ui.no_binding'),
+      senseBlockText: preview => this.senseUi?.blockText(preview) ?? t(preview.blockKey ?? 'sense.block.unavailable') });
     const equipmentChanged = () => {
       this.player.syncAppearance();
       this.player.maxHp = this.prog.maxHp; this.player.hp = this.prog.hp;
@@ -408,6 +414,7 @@ export class GameScene extends Phaser.Scene {
     this.stealth = new StealthVision(this);
     this.stealth.update(0, false);
     this.setupSense();
+    this.senseUi = new SenseUi(this, () => this.senseBusy());
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
       this.sense?.clearIntel();
       this.sectTrial?.destroy(); this.prog.endTrialSkills();
@@ -656,9 +663,10 @@ export class GameScene extends Phaser.Scene {
 
   update(time: number, delta: number) {
     this.sense?.tick();
+    const senseKeyDown = this.senseUi?.update() ?? false;
     this.playerPhysicsAdvanced = false;
     try {
-      this.updateFrame(time, delta);
+      this.updateFrame(time, delta, senseKeyDown);
     } finally {
       // Interactions and trial transitions can return before the normal movement point.
       if (!this.playerPhysicsAdvanced) this.advancePlayerPhysics(time, delta);
@@ -694,7 +702,7 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
-  private updateFrame(time: number, delta: number) {
+  private updateFrame(time: number, delta: number, senseKeyDown: boolean) {
     if (this.sectTrial?.ended) { this.drawHud(); return; }
     this.environmentArt?.update(delta);
     if (time >= this.nextDailyUpdateAt) {
@@ -760,6 +768,7 @@ export class GameScene extends Phaser.Scene {
       }
       this.drawHud(); return;
     }
+    if (senseKeyDown) this.senseUi?.requestScan('key');
     this.trial?.update(delta);
     const jumpAlt = J(k.alt), jumpSpace = J(k.space), jumpC = J(k.c);
     const attackCtrl = J(k.ctrl), attackX = J(k.x);
@@ -1429,6 +1438,7 @@ export class GameScene extends Phaser.Scene {
   /** 测试覆盖即时撤下旧回调；存档身份、材料、贡献与待炼炉次均保留。 */
   applyFeatureFlags() {
     this.senseMap?.syncRevealed();
+    this.senseUi?.refresh(); this.attrPanel?.update();
     syncTalismanMapAvailability();
     const removedGate = (id: string | undefined) => !!id && SECT_GATE_MAPS.has(id) && !TILED_MAPS[id];
     if (removedGate(this.map.id) || removedGate(this.prog.pendingSectTrial?.returnPosition.mapId)) {
@@ -1589,6 +1599,7 @@ export class GameScene extends Phaser.Scene {
       }
       const text = o.props.featureExit ? '回青云村 ↑' : this.portalFeatureOpen(o) ? '' : FEATURE_UNAVAILABLE;
       const label = text ? this.portalStatusLabel(o, text) : undefined;
+      art.setName('portal:' + o.name);
       this.senseMap?.bindVisual(o, art);
       this.portalVisuals.push({ object: o, art, label });
     } else if (o.type === 'chest') {
