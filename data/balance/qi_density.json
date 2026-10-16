@@ -1,6 +1,6 @@
 {
   "version": "v0.5c",
-  "enabled": false,
+  "enabled": true,
   "rules": {
     "tierOrder": [
       "sparse",
@@ -21,10 +21,10 @@
     "sourceOwnership": "originating_system"
   },
   "display": {
-    "enabled": false
+    "enabled": true
   },
   "meditation": {
-    "enabled": false
+    "enabled": true
   },
   "tiers": [
     {

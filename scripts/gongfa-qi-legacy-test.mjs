@@ -1,4 +1,4 @@
-// 正式功法 tip 已开启；关态夹具与其他变体仅在内存克隆，原版模块由 git show 读取，不修改正式门禁。
+// #19 功法与 #20 灵气 tip 已开启，gifts 仍关闭；关态夹具与其他变体仅在内存克隆，原版模块由 git show 读取，不修改正式门禁。
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs/promises';
@@ -45,7 +45,12 @@ equal(enabledFlags(rawGongfa.future).length, 7, 'tip 正式功法表保留 7 处
 const gongfaGates = enabledFlags(rawGongfa);
 equal([gongfaGates.length, gongfaGates.filter(enabled => enabled === true).length,
   gongfaGates.filter(enabled => enabled === false).length], [46, 39, 7], 'tip 正式功法表 enabled 总数及开关计数保持 46/39/7');
-check(allDisabled(rawQi), '正式灵气表的全部 enabled 均为 false');
+check(rawQi.enabled === true && rawQi.display.enabled === true && rawQi.meditation.enabled === true,
+  'tip 正式灵气表根、display 与 meditation 门禁已开启');
+check(rawQi.future.gathering.enabled === false, 'tip 正式灵气表 future.gathering 门禁仍关闭');
+const qiGates = enabledFlags(rawQi);
+equal([qiGates.length, qiGates.filter(enabled => enabled === true).length,
+  qiGates.filter(enabled => enabled === false).length], [4, 3, 1], 'tip 正式灵气表 enabled 总数及开关计数保持 4/3/1');
 
 async function withRuntime(variant, run) {
   const gongfa = structuredClone(rawGongfa), qi = structuredClone(rawQi);
@@ -53,13 +58,22 @@ async function withRuntime(variant, run) {
     gongfa.enabled = false;
     for (const binding of gongfa.bindings) binding.enabled = false;
     check(allDisabled(gongfa), '关态夹具关闭根与全部绑定，future 保持关闭');
+    qi.enabled = false;
+    qi.display.enabled = false;
+    qi.meditation.enabled = false;
+    qi.future.gathering.enabled = false;
+    check(allDisabled(qi), '关态夹具关闭灵气表全部四处 enabled 门禁');
   } else if (variant === 'broken') {
     delete gongfa.grades;
     delete qi.tiers;
   } else if (variant === 'open-clone') {
-    // tip 正式功法已开启；重复设为开态让此内存变体保持幂等。
+    // #19 功法与 #20 灵气 tip 已开启；重复设为开态让此内存变体保持幂等，gathering 仍关闭。
     gongfa.enabled = true;
     for (const binding of gongfa.bindings) binding.enabled = true;
+    qi.enabled = true;
+    qi.display.enabled = true;
+    qi.meditation.enabled = true;
+    qi.future.gathering.enabled = false;
     // 用真实表最高品阶倍率检查 none：即使品阶可用，也不能读取伤害倍率。
     const none = gongfa.bindings.find(binding => binding.skillId === 'spirit_bolt');
     none.effectMode = 'none';
@@ -243,7 +257,7 @@ await withRuntime('closed', runtime => {
   check(runtime.data.GONGFA_GRADES && runtime.data.GONGFA_GRADES.enabled === false,
     '关态夹具功法配置校验成功且保持关闭');
   check(runtime.data.QI_DENSITY && runtime.data.QI_DENSITY.enabled === false,
-    '正式灵气配置校验成功且保持关闭');
+    '关态夹具灵气配置校验成功且保持关闭');
   compareCombat(runtime);
   compareSeclusion(runtime);
   exerciseLegacyEntries(runtime);

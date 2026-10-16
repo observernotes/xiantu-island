@@ -1,4 +1,4 @@
-// 每种数据模式独立模块图；tip 已开 #19/lifeSkillCurve/五事件/九人好感/两题 questHooks，#20/gifts 仍关。
+// 每种数据模式独立模块图；tip 已开 #19/#20/lifeSkillCurve/五事件/九人好感/两题 questHooks，gifts 仍关。
 // 关态仅用 structuredClone fixture，正式表前后逐字节守护。
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
@@ -21,11 +21,6 @@ function enabledValues(parsed) {
   };
   visit(parsed);
   return enabled;
-}
-function assertAllDisabled(parsed, file, label) {
-  const enabled = enabledValues(parsed);
-  assert.ok(enabled.length > 0, `${file}: 找到 ${label} 关闭门禁`);
-  assert.ok(enabled.every(value => value === false), `${file}: ${label} 全部 enabled 严格 false`);
 }
 async function guardedTables() {
   const roots = [path.resolve('data')];
@@ -61,7 +56,14 @@ async function guardedTables() {
       assert.equal(enabled.filter(value => value === true).length, 39, `${file}: tip 开态，39 处 enabled 严格 true`);
       assert.equal(enabled.filter(value => value === false).length, 7, `${file}: future 七处 enabled 严格 false`);
     } else if (file.endsWith('/qi_density.json')) {
-      assertAllDisabled(parsed, file, '#20 灵气浓度');
+      assert.equal(parsed.enabled, true, `${file}: tip 开态，#20 灵气浓度根 enabled 严格 true`);
+      assert.equal(parsed.display.enabled, true, `${file}: tip 开态，display.enabled 严格 true`);
+      assert.equal(parsed.meditation.enabled, true, `${file}: tip 开态，meditation.enabled 严格 true`);
+      assert.equal(parsed.future.gathering.enabled, false, `${file}: future.gathering.enabled 严格 false`);
+      const enabled = enabledValues(parsed);
+      assert.equal(enabled.length, 4, `${file}: 正式四处 enabled`);
+      assert.equal(enabled.filter(value => value === true).length, 3, `${file}: tip 开态，三处 enabled 严格 true`);
+      assert.equal(enabled.filter(value => value === false).length, 1, `${file}: future 一处 enabled 严格 false`);
     }
     return { file, bytes, hash: md5(bytes) };
   }));

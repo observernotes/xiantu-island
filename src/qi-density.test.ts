@@ -12,8 +12,13 @@ function eq(actual: unknown, expected: unknown, message: string) {
 function ok(value: unknown, message: string): asserts value { eq(!!value, true, message); }
 function same(actual: unknown, expected: unknown, message: string) { eq(JSON.stringify(actual), JSON.stringify(expected), message); }
 type Mutable = Record<string, any>;
-function clonedConfig(mutate: (raw: Mutable) => void): QiDensityConfig {
-  const raw = structuredClone(qiDensityRaw); mutate(raw);
+const closedRaw = structuredClone(qiDensityRaw);
+closedRaw.enabled = false;
+closedRaw.display.enabled = false;
+closedRaw.meditation.enabled = false;
+closedRaw.future.gathering.enabled = false;
+function clonedConfig(mutate: (raw: Mutable) => void = () => {}): QiDensityConfig {
+  const raw = structuredClone(closedRaw); mutate(raw);
   const result = parseQiDensityConfig(raw); ok(result.config, `测试克隆通过校验：${result.errors.join('; ')}`);
   return result.config;
 }
@@ -23,19 +28,26 @@ function bad(label: string, mutate: (raw: Mutable) => void) {
   eq(result.config, null, `坏表拒绝：${label}`); ok(result.errors.length, `保留字段诊断：${label}`);
   ok(result.errors.every(error => error.startsWith('qi_density.json $')), `诊断含表名和路径：${label}`);
 }
-function allEnabledFalse(value: unknown) {
-  if (!value || typeof value !== 'object') return;
-  for (const [key, child] of Object.entries(value)) {
-    if (key === 'enabled') eq(child, false, '正式表所有 enabled 保持 false');
-    allEnabledFalse(child);
-  }
+function enabledValues(value: unknown): unknown[] {
+  if (!value || typeof value !== 'object') return [];
+  return Object.entries(value).flatMap(([key, child]) => key === 'enabled' ? [child] : enabledValues(child));
+}
+function tipOpenPreamble() {
+  eq(qiDensityRaw.enabled, true, 'tip 开态：正式灵气表根门禁已开启');
+  eq(qiDensityRaw.display.enabled, true, 'tip 开态：正式灵气表显示门禁已开启');
+  eq(qiDensityRaw.meditation.enabled, true, 'tip 开态：正式灵气表打坐门禁已开启');
+  eq(qiDensityRaw.future.gathering.enabled, false, '正式灵气表 future.gathering 门禁仍关闭');
+  const gates = enabledValues(qiDensityRaw);
+  eq(gates.length, 4, '正式灵气表共 4 个门禁');
+  eq(gates.filter(value => value === true).length, 3, 'tip 开态：正式表 enabled=true 共 3 处');
+  eq(gates.filter(value => value === false).length, 1, 'tip 开态：正式表 enabled=false 共 1 处');
 }
 
 eq(QI_DENSITY_ERRORS.length, 0, 'data.ts 导出的真表无错误'); ok(QI_DENSITY, 'data.ts 导出已校验配置');
 const config = QI_DENSITY;
 const checked = parseQiDensityConfig(qiDensityRaw);
 ok(checked.config, '真表通过独立校验'); eq(checked.errors.length, 0, '无忽略的错误');
-allEnabledFalse(qiDensityRaw);
+tipOpenPreamble();
 ok(Object.isFrozen(config) && Object.isFrozen(config.rules.tierOrder) && Object.isFrozen(config.tiers[0])
   && Object.isFrozen(config.future.gathering.tierModifiers), '导出深冻结');
 ok(Object.isFrozen(checked) && Object.isFrozen(checked.errors), '校验结果及错误只读');
@@ -43,6 +55,9 @@ const mutableRaw = structuredClone(qiDensityRaw), independent = parseQiDensityCo
 ok(independent, '可建立独立快照'); eq(Object.isFrozen(mutableRaw), false, '不冻结调用方');
 mutableRaw.tiers[0].nameKey = 'changed';
 eq(independent.tiers[0].nameKey, qiDensityRaw.tiers[0].nameKey, '调用方改动不改变快照');
+
+const closed = clonedConfig();
+same(enabledValues(closed), [false, false, false, false], '关态夹具四处门禁全部关闭');
 
 for (const field of ['version', 'enabled', 'rules', 'display', 'meditation', 'tiers', 'future']) bad(`缺 ${field}`, raw => { delete raw[field]; });
 for (const field of Object.keys(qiDensityRaw.rules)) bad(`缺 rules.${field}`, raw => { delete raw.rules[field]; });
@@ -102,7 +117,8 @@ for (const value of [null, undefined, '3', 0, -1, 11, 1.5, NaN, Infinity, true])
 }
 for (const type of ['float', 'string', undefined, '']) eq(mapDensity({ properties: [{ ...actualProperty, type }] }), null, '仅接受 Tiled int');
 
-same(resolveTier(config, actualProperty.value), { status: 'pending' }, '根关态不推导档位');
+eq(resolveTier(config, actualProperty.value).status, 'ready', 'tip 开态正式配置根与显示已开，可推导档位');
+same(resolveTier(closed, actualProperty.value), { status: 'pending' }, '关态夹具不推导档位');
 eq(resolveTier(null, actualProperty.value).status, 'unavailable', '坏表档位不可用');
 const displayOnly = clonedConfig(raw => { raw.display.enabled = true; });
 eq(resolveTier(displayOnly, actualProperty.value).status, 'pending', '显示开关无法绕过根门禁');
@@ -124,24 +140,25 @@ const maximum = resolveTier(displayOn, 10); ok(maximum.status === 'ready', '最�
 eq(maximum.tier.id, displayOn.tiers[displayOn.tiers.length - 1].id, '末档覆盖合法域上限');
 for (const value of [null, undefined, '3', 0, 11, Infinity, NaN]) eq(resolveTier(displayOn, value).status, 'unavailable', '非法浓度不可分档');
 
-same(meditationFactor(config, null, null), { status: 'legacy', factor: 1 }, '正式关态不读取浓度或参数');
+same(meditationFactor(closed, null, null), { status: 'legacy', factor: 1 }, '关态夹具不读取浓度或参数');
 same(meditationFactor(rootOnly, null, null), { status: 'legacy', factor: 1 }, '根开但打坐关时沿旧逻辑');
 const meditationOnly = clonedConfig(raw => { raw.meditation.enabled = true; });
 same(meditationFactor(meditationOnly, null, null), { status: 'legacy', factor: 1 }, '打坐无法绕过根门禁');
 const poison = { get densityRef(): number { throw new Error('关态不得读取参数'); } };
-eq(meditationFactor(config, null, poison).status, 'legacy', '关态甚至不读取参数 getter');
+eq(meditationFactor(closed, null, poison).status, 'legacy', '关态夹具甚至不读取参数 getter');
 const meditationOn = clonedConfig(raw => { raw.enabled = true; raw.meditation.enabled = true; });
 const factor = meditationFactor(meditationOn, actualProperty.value, soloPacingRaw);
 ok(factor.status === 'ready', '开态读取既有节奏表');
 eq(factor.factor, soloPacingRaw.meditation.ratioOfGrind * Number(actualProperty.value) / soloPacingRaw.densityRef, '只算原 B 所用因子，不乘档位或宗门室');
+same(meditationFactor(config, actualProperty.value, soloPacingRaw), factor, 'tip 开态正式配置根与打坐已开，可读相同浓度因子');
 eq(meditationFactor(null, actualProperty.value, soloPacingRaw).status, 'unavailable', '坏新表不生成零收益');
 for (const pacing of [{}, { densityRef: null, meditation: soloPacingRaw.meditation }, { densityRef: Infinity, meditation: soloPacingRaw.meditation },
   { densityRef: soloPacingRaw.densityRef, meditation: {} }, { densityRef: soloPacingRaw.densityRef, meditation: { ratioOfGrind: null } }]) {
   eq(meditationFactor(meditationOn, actualProperty.value, pacing).status, 'unavailable', '启用动作实际参数缺失/非法不可用');
 }
 for (const value of [null, 0, 11, NaN]) eq(meditationFactor(meditationOn, value, soloPacingRaw).status, 'unavailable', '开态非法浓度不回退');
-eq(gatheringAvailability(config).status, 'unavailable', '后期采集关态不可用');
+eq(gatheringAvailability(config).status, 'unavailable', 'tip 开态正式配置后期采集仍不可用');
 const gatheringOn = clonedConfig(raw => { raw.enabled = true; raw.future.gathering.enabled = true; });
 eq(gatheringAvailability(gatheringOn).status, 'unavailable', '后期只有校验，不因克隆门禁开启而实现玩法');
-allEnabledFalse(qiDensityRaw);
-console.log(`qi density tests ok: ${assertions} assertions (schema/fail-closed, gates, named Tiled property, tier boundaries, readonly factors)`);
+tipOpenPreamble();
+console.log(`qi density tests ok: ${assertions} assertions (tip open tables, closed fixtures, schema/fail-closed, gates, named Tiled property, tier boundaries, readonly factors)`);
