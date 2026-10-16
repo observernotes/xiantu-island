@@ -49,6 +49,7 @@ import { featureEnabled, FEATURE_UNAVAILABLE, type FeatureName } from '../featur
 import { loadOptionalImage, loadOptionalAtlas, loadOptionalJson, loadOptionalSpritesheet } from '../optionalAssets';
 import { Sense } from '../Sense';
 import { SenseUi } from '../SenseUi';
+import { EncounterUi } from '../EncounterUi';
 import { SenseMapAdapter, sceneMonsterTargets } from './SenseScene';
 import { openPropChest, playPropAnimation, resolveSecretProp } from '../SecretProps';
 
@@ -87,6 +88,7 @@ export class GameScene extends Phaser.Scene {
   sense!: Sense;
   senseMap!: SenseMapAdapter;
   senseUi?: SenseUi;
+  encounterUi?: EncounterUi;
   readonly inputBindings = new InputBindings();
   private senseCueDepth = 0;
   private senseBusyProviders = new Set<() => boolean>();
@@ -139,6 +141,7 @@ export class GameScene extends Phaser.Scene {
   /** Scene 实例会被 restart 复用；这里只重置本张图的状态，不能复用旧物理世界的引用。 */
   private resetRunState() {
     this.senseUi?.destroy(); this.senseUi = undefined;
+    this.encounterUi?.destroy(); this.encounterUi = undefined;
     this.sense?.clearIntel();
     this.sense = undefined!; this.senseMap = undefined!;
     this.senseCueDepth = 0; this.senseBusyProviders.clear();
@@ -426,7 +429,9 @@ export class GameScene extends Phaser.Scene {
     this.stealth.update(0, false);
     this.setupSense();
     this.senseUi = new SenseUi(this, () => this.senseBusy());
+    this.encounterUi = new EncounterUi(this);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      this.encounterUi?.destroy(); this.encounterUi = undefined;
       this.sense?.clearIntel();
       this.sectTrial?.destroy(); this.prog.endTrialSkills();
       this.talismanUse?.interrupt('map');

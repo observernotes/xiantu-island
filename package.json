@@ -57,6 +57,7 @@
     "test:gongfa-grades": "timeout 120s node scripts/gongfa-grades-test.mjs",
     "test:qi-density": "timeout 120s node scripts/qi-density-test.mjs",
     "test:encounter": "timeout 120s node scripts/encounter-test.mjs",
+    "test:encounter-ui": "timeout 120s node scripts/encounter-ui-test.mjs",
     "test:affinity": "timeout 120s node scripts/affinity-test.mjs",
     "test:quest-hooks": "timeout 120s node scripts/quest-hooks-test.mjs",
     "test:gongfa-qi-legacy": "timeout 120s node scripts/gongfa-qi-legacy-test.mjs",
