@@ -1,0 +1,6 @@
+
+> xiantu-island@0.0.1 test:shop
+> timeout 60s node scripts/shop-test.mjs
+
+legacy save fixture: indexedDbSaves=false (SSR memory override only)
+shop.test: 596 条断言通过（普通买卖/一期丹方/G15/门禁/原子存档，仅内存配置与存档）

@@ -1,0 +1,438 @@
+diff --git a/scripts/v06p1-forge-closed-test.mjs b/scripts/v06p1-forge-closed-test.mjs
+index 627c65d..b814f2f 100644
+--- a/scripts/v06p1-forge-closed-test.mjs
++++ b/scripts/v06p1-forge-closed-test.mjs
+@@ -1 +1 @@
+-// 炼器关态只读验收：真实 Vite SSR，shared/snapshot 双根；不接前台打造或服务。
++// 正式旗已软开；关态只由 Vite SSR 内存 false 注入，保留八 tip 零写与最小入口边界。
+@@ -12 +12,2 @@ const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
+-const shared = sharedRoot(root), out = path.join(root, 'qa/out_v06p1_forge_closed');
++const shared = sharedRoot(root), out = path.join(root, 'qa/out_v06p1_forge_open_preamble/closed');
++const baselineDir = path.join(root, 'qa/out_v06p1_forge_closed');
+@@ -69 +70,30 @@ function protectedPath(key) {
+-// 只剥本窗获准的四个完整行；其余 Progress 字节仍与原基线 SHA 逐字比对。
++// 仅剥本窗明确授权的欧冶匠提示；其余 GameScene 字节仍逐字核对软开前 SHA。
++function stripForgeSceneWiring(source) {
++  let original = source;
++  for (const line of ["import { featureClosed as forgeFeatureClosed } from '../ForgeClosed';\n",
++    "import { isForgeOpenForFixture } from '../ForgeOpenFlag';\n",
++    "import { ForgeGate } from '../ForgeGate';\n"]) {
++    eq(original.split(line).length - 1, 1, `C12 GameScene 炼器授权 import 精确一次：${line.trim()}`);
++    original = original.replace(line, '');
++  }
++  const entry = source.match(/  \/\*\* 仅接既有欧冶匠冒烟提示；未布置对象的地图保持安静。 \*\/\n  private tryInteractForgeEntrance\(\): boolean \{[\s\S]*?\n  \}\n\n/u)?.[0];
++  ok(entry, 'C01/C12 GameScene 存在最小欧冶匠入口提示方法');
++  eq(hash(entry), 'f351b1220b3362b840e1b11538b5607cb2eb80079d201371034ab7d980e81b43',
++    'C01/C12 欧冶匠方法仅含本窗授权提示完整字节，禁止夹带其他操作');
++  ok(entry.includes("(o.name === 'smith_ou' || o.props?.npc === 'smith_ou')"), 'C01/C12 只查当前地图既有 smith_ou 对象');
++  ok(entry.includes('this.senseMap?.objectVisible(o) !== false'), 'C01/C12 隐藏欧冶匠不接交互');
++  ok(entry.includes('Math.abs(o.x - this.player.x) <= 28 && Math.abs(o.y - this.player.y) <= 40'), 'C01/C12 欧冶匠沿用 28×40 邻近范围');
++  ok(/if \(!entrance\) return false;/u.test(entry), 'C01/C12 无欧冶匠对象安静 no-op');
++  ok(/!isForgeOpenForFixture\(\)[\s\S]*forgeFeatureClosed\(\)\.text/u.test(entry), 'C01/C12 内存关态显示 ForgeClosed.featureClosed tip');
++  ok(/new ForgeGate\(this\.prog\)\.entrance\(\)/u.test(entry), 'C01/C12 正式开态只问 Gate.entrance');
++  ok(!/\.(?:craft|submit|result|grade|loadRefresh|laterService|save|persistSoon)\(|ShopPanel|Panel|services|auction|拍卖/u.test(entry), 'C01/C12 入口不铺完整 UI、不接服务或发起打造写操作');
++  original = original.replace(entry, '');
++  const zCall = 'this.tryInteractMarketConsign() || this.tryInteractForgeEntrance() || this.tryInteractSecretNest()';
++  eq(original.split(zCall).length - 1, 1, 'C01/C12 Z 键在 talkNearby 之前同级接最小炼器入口');
++  original = original.replace(zCall, 'this.tryInteractMarketConsign() || this.tryInteractSecretNest()');
++  const interactCall = '    if (this.tryInteractForgeEntrance()) return true;\n';
++  eq(original.split(interactCall).length - 1, 1, 'C01/C12 通用交互仅接同一炼器提示入口');
++  return original.replace(interactCall, '');
++}
++
++// 只剥夹具窗获准的四个完整行；其余 Progress 字节仍与原基线 SHA 逐字比对。
+@@ -85 +115 @@ async function checkProtection() {
+-  const baseline = JSON.parse(await fs.readFile(path.join(out, 'protected-before.json'), 'utf8'));
++  const baseline = JSON.parse(await fs.readFile(path.join(baselineDir, 'protected-before.json'), 'utf8'));
+@@ -91,2 +121,3 @@ async function checkProtection() {
+-      ? hash(stripForgeProgress(await fs.readFile(file, 'utf8'))) : actual;
+-    eq(compared, key.endsWith(':balance/strings_zh.json') ? stringsSha : expected, `禁改表/地图/源码写前 SHA（Progress 仅剥四行）：${key}`);
++      ? hash(stripForgeProgress(await fs.readFile(file, 'utf8')))
++      : key === 'wt:src/scenes/GameScene.ts' ? hash(stripForgeSceneWiring(await fs.readFile(file, 'utf8'))) : actual;
++    eq(compared, key.endsWith(':balance/strings_zh.json') ? stringsSha : expected, `C12 禁改表/地图/源码写前 SHA（Progress 四行及 GameScene 最小提示接线精确剥离）：${key}`);
+@@ -96 +127 @@ async function checkProtection() {
+-  const sourceBefore = JSON.parse(await fs.readFile(path.join(out, 'source-before.json'), 'utf8'));
++  const sourceBefore = JSON.parse(await fs.readFile(path.join(baselineDir, 'source-before.json'), 'utf8'));
+@@ -101,2 +132,3 @@ async function checkProtection() {
+-    const compared = name === 'src/Progress.ts' ? hash(stripForgeProgress(await fs.readFile(file, 'utf8'))) : actual;
+-    eq(compared, expected, `既有源码完整字节不变（Progress 仅剥四行）：${name}`);
++    const compared = name === 'src/Progress.ts' ? hash(stripForgeProgress(await fs.readFile(file, 'utf8')))
++      : name === 'src/scenes/GameScene.ts' ? hash(stripForgeSceneWiring(await fs.readFile(file, 'utf8'))) : actual;
++    eq(compared, expected, `C12 既有源码完整字节不变（仅剥可选袋四行与最小欧冶匠接线）：${name}`);
+@@ -109 +141 @@ async function checkProtection() {
+-  const dataFiles = JSON.parse(await fs.readFile(path.join(out, 'data-files-before.json'), 'utf8'));
++  const dataFiles = JSON.parse(await fs.readFile(path.join(baselineDir, 'data-files-before.json'), 'utf8'));
+@@ -115 +147,2 @@ async function checkProtection() {
+-    optionalForgeBagOnly: true, gameSceneUnchanged: true });
++    optionalForgeBagOnly: true, minimalFrontendWiring: true, fullForgeUiAdded: false,
++    formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false });
+@@ -150 +183 @@ async function checkStatic(mode, dataRoot) {
+-    giftsFalseCount: gifts, smithServices: false, smithQuests: [], closed: true, softOpened: false, released: false });
++    giftsFalseCount: gifts, smithServices: false, smithQuests: [], formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false });
+@@ -155,2 +188,2 @@ async function checkSource() {
+-  eq(flag, '/** 正式恒关；仅 Vite SSR 开态夹具图可由 resolve/load 内存模块注入 true。 */\nexport function isForgeOpenForFixture(): boolean { return false; }\n',
+-    '正式 ForgeOpenFlag 精确恒 false，开态只能由 SSR 内存模块注入');
++  eq(flag, '/** 正式路径恒 true；仅 Vite SSR 关态图可注入 false。 */\nexport function isForgeOpenForFixture(): boolean { return true; }\n',
++    '正式 ForgeOpenFlag 精确恒 true，关态仅由 SSR 内存模块注入 false');
+@@ -175 +208,2 @@ async function checkSource() {
+-    if (name !== 'ForgeClosed.ts' && !openFixtureSources.includes(name)) ok(!/ForgeClosed|forge\.closed\./u.test(text), `${name}: 无关态 API 前台消费者或打造接线`);
++    const scanned = name === 'scenes/GameScene.ts' ? stripForgeSceneWiring(text) : text;
++    if (name !== 'ForgeClosed.ts' && !openFixtureSources.includes(name)) ok(!/ForgeClosed|forge\.closed\./u.test(scanned), `${name}: 除最小提示外无关态 API 前台消费者或打造接线`);
+@@ -181 +215 @@ async function checkSource() {
+-  ok(!/ForgeClosed|smith_ou|forge\.closed\./u.test(scene), 'GameScene 无炼器/欧冶匠专用接线');
++  ok(!/ForgeClosed|smith_ou|forge\.closed\./u.test(stripForgeSceneWiring(scene)), 'GameScene 仅最小欧冶匠提示，无其他炼器专用接线');
+@@ -184 +218,2 @@ async function checkSource() {
+-    noFrontendForgeWiring: true, formalFlagFalse: true, openFixtureSources, sourceSearch: 'source-search.json', matches: search.length });
++    minimalFrontendWiring: true, fullForgeUiAdded: false, formalOpen: true, closedFixtureOnly: true,
++    softOpened: true, released: false, openFixtureSources, sourceSearch: 'source-search.json', matches: search.length });
+@@ -204 +239,3 @@ function legacyFixtures() {
+-async function runGraph(mode, dataRoot, refreshPayloads = null) {
++async function runGraph(mode, dataRoot, closedFixtureOnly, refreshPayloads = null) {
++  let flagLoads = 0;
++  const flagId = '\0v06p1-memory-closed-forge-flag';
+@@ -206 +243,10 @@ async function runGraph(mode, dataRoot, refreshPayloads = null) {
+-    server: { middlewareMode: true, hmr: false, ws: false }, appType: 'custom', logLevel: 'error' });
++    server: { middlewareMode: true, hmr: false, ws: false }, appType: 'custom', logLevel: 'error',
++    plugins: [{ name: 'v06p1-forge-memory-closed', enforce: 'pre',
++      resolveId(id) {
++        if (closedFixtureOnly && /(?:^|\/)ForgeOpenFlag(?:\.ts)?$/u.test(id)) return flagId;
++      },
++      load(id) {
++        if (id === flagId) { flagLoads++; return 'export function isForgeOpenForFixture() { return false; }'; }
++      },
++    }],
++  });
+@@ -216,0 +263,8 @@ async function runGraph(mode, dataRoot, refreshPayloads = null) {
++    const flag = await server.ssrLoadModule('/src/ForgeOpenFlag.ts');
++    eq(flag.isForgeOpenForFixture(), !closedFixtureOnly, `${mode}: 正式旗 true，关态仅 SSR 内存 false`);
++    eq(flagLoads, closedFixtureOnly ? 1 : 0, `${mode}: 正式图 flagLoads=0，内存关态图 flagLoads=1`);
++    if (!closedFixtureOnly) {
++      report({ suite: 'formal-graph', dataMode: mode, graph: 'formal-open', passed: true, flagLoads, storageWrites,
++        formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false });
++      return;
++    }
+@@ -218,0 +273,8 @@ async function runGraph(mode, dataRoot, refreshPayloads = null) {
++    const { ForgeGate } = await server.ssrLoadModule('/src/ForgeGate.ts');
++    const gateProgress = new Progress(), beforeGate = clone(gateProgress.exportSave()), gate = new ForgeGate(gateProgress);
++    for (const [method, apiName] of Object.entries({ feature: 'featureClosed', entrance: 'refuseEntrance', craft: 'refuseCraft',
++      submit: 'refuseSubmit', result: 'refuseResult', grade: 'refuseGrade', loadRefresh: 'refuseLoadRefresh', laterService: 'refuseLaterService' })) {
++      eq(await gate[method](), api[apiName](), `${mode}: 内存关态 Gate.${method} 首旗路由原八 tip`);
++    }
++    eq(gateProgress.exportSave(), beforeGate, `${mode}: 内存关态 Gate 八入口完整存档零增量`);
++    eq(storageWrites, 0, `${mode}: 内存关态 Gate 八入口存储写入0`);
+@@ -299 +361 @@ async function runGraph(mode, dataRoot, refreshPayloads = null) {
+-    report({ suite: 'runtime', dataMode: mode, passed: true, fixtures, invocations, freshSsrRefresh: !!refreshPayloads,
++    report({ suite: 'runtime', dataMode: mode, graph: 'memory-closed', flagLoads, passed: true, fixtures, invocations, freshSsrRefresh: !!refreshPayloads,
+@@ -301 +363 @@ async function runGraph(mode, dataRoot, refreshPayloads = null) {
+-      legacyFixtureOnly: true, optionalForgeBagAdded: true, closed: true, softOpened: false, released: false });
++      legacyFixtureOnly: true, optionalForgeBagAdded: true, formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false });
+@@ -319,2 +381,3 @@ try {
+-    const payloads = await runGraph(mode, dataRoot);
+-    await runGraph(mode, dataRoot, payloads);
++    await runGraph(mode, dataRoot, false);
++    const payloads = await runGraph(mode, dataRoot, true);
++    await runGraph(mode, dataRoot, true, payloads);
+@@ -325 +388 @@ try {
+-  const baseline = JSON.parse(await fs.readFile(path.join(out, 'protected-before.json'), 'utf8'));
++  const baseline = JSON.parse(await fs.readFile(path.join(baselineDir, 'protected-before.json'), 'utf8'));
+@@ -332,2 +395,2 @@ try {
+-    gameSceneUnchanged: baseline['wt:src/scenes/GameScene.ts'] === after['wt:src/scenes/GameScene.ts'],
+-    giftsFalseCount: 10, GAME_PHASE: 5, smithServices: false, closed: true, softOpened: false, released: false }, null, 2)}\n`);
++    minimalFrontendWiring: true, fullForgeUiAdded: false, gameSceneOnlyAuthorizedWiring: true,
++    giftsFalseCount: 10, GAME_PHASE: 5, smithServices: false, formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false }, null, 2)}\n`);
+@@ -335 +398 @@ try {
+-    cases: caseApis, totalFixtures, totalInvocations, protectedFiles, evidence, closed: true, softOpened: false, released: false }, null, 2)}\n`);
++    cases: caseApis, totalFixtures, totalInvocations, protectedFiles, evidence, formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false }, null, 2)}\n`);
+@@ -337 +400 @@ try {
+-console.log(`v06p1 forge closed tests ok: ${assertions} assertions; C01–C12; ${totalFixtures} fixtures; ${totalInvocations} API calls; shared/snapshot SSR; localStorage写入0; gifts 10×false; GAME_PHASE=5; 不挂smith_ou.services; 无前台打造接线; 不开态/不软开/不release`);
++console.log(`v06p1 forge closed tests ok: ${assertions} assertions; C01–C12; ${totalFixtures} fixtures; ${totalInvocations} API calls; shared/snapshot SSR; localStorage写入0; gifts 10×false; GAME_PHASE=5; 不挂smith_ou.services; 仅最小欧冶匠提示、无完整打造 UI; formalOpen:true; closedFixtureOnly:true; softOpened:true; released:false`);
+diff --git a/scripts/v06p1-forge-open-test.mjs b/scripts/v06p1-forge-open-test.mjs
+index a1d3cc6..8391c66 100644
+--- a/scripts/v06p1-forge-open-test.mjs
++++ b/scripts/v06p1-forge-open-test.mjs
+@@ -1 +1 @@
+-// 双根隔离：正式旗标恒false；仅独立Vite SSR开态夹具图由resolve/load内存注入true。
++// 双根隔离：正式旗标恒 true；仅独立 Vite SSR 关态图由 resolve/load 内存注入 false。
+@@ -15 +15 @@ const dataRoots = [['shared', shared], ['wt', path.join(root, 'data')], ['game',
+-const out = path.join(root, 'qa/out_v06p1_forge_open_fixture');
++const out = path.join(root, 'qa/out_v06p1_forge_open_preamble');
+@@ -55,2 +55,2 @@ async function checkFormal() {
+-  ok(/export function isForgeOpenForFixture\(\): boolean\s*\{\s*return false;\s*\}/u.test(flag), '正式磁盘ForgeOpenFlag恒false');
+-  ok(!/import\s|process\.|globalThis|localStorage|sessionStorage|featureEnabled|enabled/u.test(flag), '正式旗标不受配表环境或会话翻开');
++  ok(/export function isForgeOpenForFixture\(\): boolean\s*\{\s*return true;\s*\}/u.test(flag), '正式磁盘ForgeOpenFlag恒true');
++  ok(!/import\s|process\.|globalThis|localStorage|sessionStorage|featureEnabled|enabled/u.test(flag), '正式旗标不受配表环境或会话翻转');
+@@ -65,3 +65,11 @@ async function checkFormal() {
+-  for (const name of ['src/scenes/GameScene.ts', 'src/ShopPanel.ts'])
+-    ok(!/ForgeGate|ForgeOpenFlag|ForgeProgress|tryInteractForge|openForge|submitForge/u.test(await fs.readFile(path.join(root, name), 'utf8')),
+-      `${name}不接可执行打造前台`);
++  const scene = await fs.readFile(path.join(root, 'src/scenes/GameScene.ts'), 'utf8');
++  for (const name of ['ForgeClosed', 'ForgeOpenFlag', 'ForgeGate', 'tryInteractForgeEntrance'])
++    ok(scene.includes(name), `GameScene仅接既有smith_ou最小冒烟：${name}`);
++  ok(/this\.tryInteractTowerClosed\(\)\s*\|\|\s*this\.tryInteractMarketConsign\(\)\s*\|\|\s*this\.tryInteractForgeEntrance\(\)[^\n]*this\.talkNearby\(\)/u.test(scene),
++    'Z键链在talkNearby前同级接入炼器');
++  ok(/if \(this\.tryInteractMarketConsign\(\)\) return true;\s*if \(this\.tryInteractForgeEntrance\(\)\) return true;/u.test(scene),
++    '通用交互链在既有market旁接入炼器');
++  ok(/new ForgeGate\(this\.prog\)\.entrance\(\)/u.test(scene), '正式Scene只读入口不注入fixtureRecipes');
++  ok(!/ForgePanel|CraftPanel|openForge|submitForge|ForgeProgress|fixtureRecipes/u.test(scene), 'GameScene无完整打造UI或提交面板');
++  ok(!/ForgeGate|ForgeOpenFlag|ForgeProgress|tryInteractForge|openForge|submitForge/u.test(await fs.readFile(path.join(root, 'src/ShopPanel.ts'), 'utf8')),
++    'ShopPanel不接打造');
+@@ -73 +81 @@ async function checkFormal() {
+-  eq(consumers, [], 'ForgeGate只由夹具测试消费，前台与正式调用图无接线');
++  eq(consumers, ['scenes/GameScene.ts'], 'ForgeGate正式消费者仅为GameScene只读冒烟入口');
+@@ -74,0 +83,2 @@ async function checkFormal() {
++    const dataFiles = [...await filesUnder(path.join(dataRoot, 'balance')), ...await filesUnder(path.join(dataRoot, 'maps'))];
++    eq(dataFiles.filter(name => /^forge_.*\.json$/u.test(path.basename(name))), [], `${mode} 无forge_*.json正式配方表`);
+@@ -78,0 +89,3 @@ async function checkFormal() {
++    const skills = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/life_skills.json'), 'utf8'));
++    eq(skills.integrationState, 'pending', `${mode} forging仍pending`);
++    ok(skills.skills.some(skill => skill.id === 'forging'), `${mode} forging仅保留既有登记`);
+@@ -96,2 +109,3 @@ async function checkFormal() {
+-    report({ suite: 'v06p1-forge-open-formal', dataMode: mode, formalOpen: false, fixtureOnly: true,
+-      enhanceSha, giftsChecked, smithServices: false, frontEndWired: false, softOpened: false, released: false });
++    report({ suite: 'v06p1-forge-open-formal', dataMode: mode, formalOpen: true, closedFixtureOnly: true,
++      enhanceSha, giftsChecked, smithServices: false, minimalSceneWiring: true, fullForgeUi: false,
++      softOpened: true, released: false });
+@@ -102 +116 @@ async function runGraph(mode, dataRoot, openFixture, refreshPayloads = null) {
+-  const flagId = '\0v06p1-memory-open-forge-flag';
++  const flagId = '\0v06p1-memory-closed-forge-flag', phaserId = '\0v06p1-forge-phaser';
+@@ -106,3 +120,14 @@ async function runGraph(mode, dataRoot, openFixture, refreshPayloads = null) {
+-    plugins: [{ name: 'v06p1-forge-memory-only-open', enforce: 'pre',
+-      resolveId(id) { if (openFixture && /(?:^|\/)ForgeOpenFlag(?:\.ts)?$/u.test(id)) return flagId; },
+-      load(id) { if (id === flagId) { flagLoads++; return 'export function isForgeOpenForFixture() { return true; }'; } },
++    plugins: [{ name: 'v06p1-forge-memory-closed', enforce: 'pre',
++      resolveId(id) {
++        if (id === 'phaser') return phaserId;
++        if (!openFixture && /(?:^|\/)ForgeOpenFlag(?:\.ts)?$/u.test(id)) return flagId;
++      },
++      load(id) {
++        if (id === flagId) { flagLoads++; return 'export function isForgeOpenForFixture() { return false; }'; }
++        if (id !== phaserId) return;
++        return `class Sprite {} export default { WEBGL: 2, Scene: class {}, BlendModes: { NORMAL: 0 },
++          Physics: { Arcade: { Sprite } }, GameObjects: { Sprite, NineSlice: class {} },
++          Scenes: { Events: { SHUTDOWN: 'shutdown' } }, Animations: { Events: { ANIMATION_COMPLETE: 'animationcomplete' } },
++          Input: { Keyboard: { JustDown: key => { const down = !!key?._justDown; if (key) key._justDown = false; return down; } } },
++          Math: { Clamp: (value, min, max) => Math.min(max, Math.max(min, value)), Linear: (from, to, amount) => from + (to - from) * amount } };`;
++      },
+@@ -114 +139 @@ async function runGraph(mode, dataRoot, openFixture, refreshPayloads = null) {
+-    }],
++    }], ssr: { noExternal: ['phaser'] },
+@@ -122 +147 @@ async function runGraph(mode, dataRoot, openFixture, refreshPayloads = null) {
+-    eq(flag.isForgeOpenForFixture(), openFixture, `${mode} 正式图false，开态夹具仅内存true`);
++    eq(flag.isForgeOpenForFixture(), openFixture, `${mode} 正式图true，关态图仅内存false`);
+@@ -132 +157 @@ async function runGraph(mode, dataRoot, openFixture, refreshPayloads = null) {
+-    eq(flagLoads, openFixture ? 1 : 0, `${mode} 正式图无注入，夹具图虚拟flag仅加载一次`);
++    eq(flagLoads, openFixture ? 0 : 1, `${mode} 正式图无注入，关态图虚拟flag仅加载一次`);
+@@ -134,2 +159,2 @@ async function runGraph(mode, dataRoot, openFixture, refreshPayloads = null) {
+-    report({ suite: 'v06p1-forge-open-graph', dataMode: mode, graph: openFixture ? 'memory-open' : 'formal-closed',
+-      freshSsrRefresh: refreshPayloads !== null, formalOpen: false, fixtureOnly: true, flagLoads, featureOverrideCalls,
++    report({ suite: 'v06p1-forge-open-graph', dataMode: mode, graph: openFixture ? 'formal-open' : 'memory-closed',
++      freshSsrRefresh: refreshPayloads !== null, formalOpen: true, closedFixtureOnly: true, flagLoads, featureOverrideCalls,
+@@ -137 +162 @@ async function runGraph(mode, dataRoot, openFixture, refreshPayloads = null) {
+-        ({ state, craftRequestId, saveSha: hash(JSON.stringify(save)) })), softOpened: false, released: false });
++        ({ state, craftRequestId, saveSha: hash(JSON.stringify(save)) })), softOpened: true, released: false });
+@@ -152 +176,0 @@ try {
+-    await runGraph(mode, dataRoot, false);
+@@ -153,0 +178 @@ try {
++    await runGraph(mode, dataRoot, false);
+@@ -156 +181 @@ try {
+-    // 将夹具已提交历史结果带入全新正式关态图，关态优先并保留合法既有资产。
++    // 将已提交历史结果带入全新内存关态图，关态优先并保留合法既有资产。
+@@ -167 +192 @@ try {
+-    formalOpen: false, fixtureOnly: true, softOpened: false, released: false,
++    formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false,
+@@ -170 +195 @@ try {
+-console.log(`v06p1 forge open fixture tests ok: ${assertions + runtimeAssertions} assertions; shared/snapshot双根正式关态+SSR内存开态及fresh SSR读回；O01–O08；正式flag=false；ForgeClosed原字节；gifts 10×false；enhance未改；GAME_PHASE=5；PASS≠soft-open≠release`);
++console.log(`v06p1 forge open preamble tests ok: ${assertions + runtimeAssertions} assertions; shared/snapshot双根formal-open+memory-closed及fresh SSR四品质读回；O01–O08；Scene最小smith_ou冒烟零写；正式flag=true；无正式配方；ForgeClosed原字节；gifts 10×false；enhance未改；GAME_PHASE=5；formalOpen:true、closedFixtureOnly:true、softOpened:true、released:false；未进包、未发版`);
+diff --git a/scripts/v06p1-market-closed-test.mjs b/scripts/v06p1-market-closed-test.mjs
+index 13c2930..dda7b76 100644
+--- a/scripts/v06p1-market-closed-test.mjs
++++ b/scripts/v06p1-market-closed-test.mjs
+@@ -14 +14 @@ const dataRoots = new Map([['shared', shared], ['wt', path.join(root, 'data')],
+-const out = path.join(root, 'qa/out_v06p1_market_open_preamble/closed');
++const out = path.join(root, 'qa/out_v06p1_forge_open_preamble/market-closed');
+@@ -21 +21 @@ const originalSemanticSha = '81d364627ea128a3125c1def299f1d94804cee7b7e511ff417d
+-// 沿用既有寄售接线；炼器窗只追加四个明确夹具源码与可选袋四行，八 tip 契约不变。
++// 沿用既有寄售接线；炼器窗仅追加四个明确源码、可选袋四行与最小欧冶匠提示，八 tip 契约不变。
+@@ -88,0 +89,29 @@ function protectedPath(key) {
++// 仅剥本窗明确授权的欧冶匠提示；其余 GameScene 字节仍逐字核对软开前 SHA。
++function stripForgeSceneWiring(source) {
++  let original = source;
++  for (const line of ["import { featureClosed as forgeFeatureClosed } from '../ForgeClosed';\n",
++    "import { isForgeOpenForFixture } from '../ForgeOpenFlag';\n",
++    "import { ForgeGate } from '../ForgeGate';\n"]) {
++    eq(original.split(line).length - 1, 1, `C12 GameScene 炼器授权 import 精确一次：${line.trim()}`);
++    original = original.replace(line, '');
++  }
++  const entry = source.match(/  \/\*\* 仅接既有欧冶匠冒烟提示；未布置对象的地图保持安静。 \*\/\n  private tryInteractForgeEntrance\(\): boolean \{[\s\S]*?\n  \}\n\n/u)?.[0];
++  ok(entry, 'C01/C12 GameScene 存在最小欧冶匠入口提示方法');
++  eq(hash(entry), 'f351b1220b3362b840e1b11538b5607cb2eb80079d201371034ab7d980e81b43',
++    'C01/C12 欧冶匠方法仅含本窗授权提示完整字节，禁止夹带其他操作');
++  ok(entry.includes("(o.name === 'smith_ou' || o.props?.npc === 'smith_ou')"), 'C01/C12 只查当前地图既有 smith_ou 对象');
++  ok(entry.includes('this.senseMap?.objectVisible(o) !== false'), 'C01/C12 隐藏欧冶匠不接交互');
++  ok(entry.includes('Math.abs(o.x - this.player.x) <= 28 && Math.abs(o.y - this.player.y) <= 40'), 'C01/C12 欧冶匠沿用 28×40 邻近范围');
++  ok(/if \(!entrance\) return false;/u.test(entry), 'C01/C12 无欧冶匠对象安静 no-op');
++  ok(/!isForgeOpenForFixture\(\)[\s\S]*forgeFeatureClosed\(\)\.text/u.test(entry), 'C01/C12 内存关态显示 ForgeClosed.featureClosed tip');
++  ok(/new ForgeGate\(this\.prog\)\.entrance\(\)/u.test(entry), 'C01/C12 正式开态只问 Gate.entrance');
++  ok(!/\.(?:craft|submit|result|grade|loadRefresh|laterService|save|persistSoon)\(|ShopPanel|Panel|services|auction|拍卖/u.test(entry), 'C01/C12 入口不铺完整 UI、不接服务或发起打造写操作');
++  original = original.replace(entry, '');
++  const zCall = 'this.tryInteractMarketConsign() || this.tryInteractForgeEntrance() || this.tryInteractSecretNest()';
++  eq(original.split(zCall).length - 1, 1, 'C01/C12 Z 键在 talkNearby 之前同级接最小炼器入口');
++  original = original.replace(zCall, 'this.tryInteractMarketConsign() || this.tryInteractSecretNest()');
++  const interactCall = '    if (this.tryInteractForgeEntrance()) return true;\n';
++  eq(original.split(interactCall).length - 1, 1, 'C01/C12 通用交互仅接同一炼器提示入口');
++  return original.replace(interactCall, '');
++}
++
+@@ -143,2 +172,2 @@ async function checkProtection() {
+-      eq(hash(stripMarketSceneWiring(await fs.readFile(file, 'utf8'))), authorizedSha,
+-        'C12 GameScene 仅增加三 import、入口提示方法、Z/通用交互两处最小接线，其余字节保持');
++      eq(hash(stripMarketSceneWiring(stripForgeSceneWiring(await fs.readFile(file, 'utf8')))), authorizedSha,
++        'C12 GameScene 仅增加寄售及欧冶匠各三 import、提示方法、Z/通用交互最小接线，其余字节保持');
+@@ -227 +256 @@ async function checkSource() {
+-    if (name === 'scenes/GameScene.ts') text = stripMarketSceneWiring(text);
++    if (name === 'scenes/GameScene.ts') text = stripMarketSceneWiring(stripForgeSceneWiring(text));
+diff --git a/src/ForgeOpenFlag.ts b/src/ForgeOpenFlag.ts
+index baf4b2e..f0154bd 100644
+--- a/src/ForgeOpenFlag.ts
++++ b/src/ForgeOpenFlag.ts
+@@ -1,2 +1,2 @@
+-/** 正式恒关；仅 Vite SSR 开态夹具图可由 resolve/load 内存模块注入 true。 */
+-export function isForgeOpenForFixture(): boolean { return false; }
++/** 正式路径恒 true；仅 Vite SSR 关态图可注入 false。 */
++export function isForgeOpenForFixture(): boolean { return true; }
+diff --git a/src/scenes/GameScene.ts b/src/scenes/GameScene.ts
+index c84b6b5..f2b9fdb 100644
+--- a/src/scenes/GameScene.ts
++++ b/src/scenes/GameScene.ts
+@@ -72,0 +73,3 @@ import { MarketGate } from '../MarketGate';
++import { featureClosed as forgeFeatureClosed } from '../ForgeClosed';
++import { isForgeOpenForFixture } from '../ForgeOpenFlag';
++import { ForgeGate } from '../ForgeGate';
+@@ -932 +935 @@ export class GameScene extends Phaser.Scene {
+-      && (this.tryInteractTowerClosed() || this.tryInteractMarketConsign() || this.tryInteractSecretNest() || this.encounterRuntime?.interact() || this.interactTrialObject() || this.openNearbyFurnace() || this.talkNearby())) return;
++      && (this.tryInteractTowerClosed() || this.tryInteractMarketConsign() || this.tryInteractForgeEntrance() || this.tryInteractSecretNest() || this.encounterRuntime?.interact() || this.interactTrialObject() || this.openNearbyFurnace() || this.talkNearby())) return;
+@@ -2094,0 +2098 @@ export class GameScene extends Phaser.Scene {
++    if (this.tryInteractForgeEntrance()) return true;
+@@ -2149,0 +2154,14 @@ export class GameScene extends Phaser.Scene {
++  /** 仅接既有欧冶匠冒烟提示；未布置对象的地图保持安静。 */
++  private tryInteractForgeEntrance(): boolean {
++    const entrance = this.map.objects.find(o => (o.name === 'smith_ou' || o.props?.npc === 'smith_ou')
++      && this.senseMap?.objectVisible(o) !== false
++      && Math.abs(o.x - this.player.x) <= 28 && Math.abs(o.y - this.player.y) <= 40);
++    if (!entrance) return false;
++    if (!isForgeOpenForFixture()) this.log(forgeFeatureClosed().text, '#aaaaaa');
++    else {
++      const result = new ForgeGate(this.prog).entrance();
++      this.log(result.allowed ? '炼器打造已开放。' : result.text, result.allowed ? '#fff8d0' : '#aaaaaa');
++    }
++    return true;
++  }
++
+diff --git a/src/v06p1-forge-open.test.ts b/src/v06p1-forge-open.test.ts
+index 74a5a47..8a49c3d 100644
+--- a/src/v06p1-forge-open.test.ts
++++ b/src/v06p1-forge-open.test.ts
+@@ -1 +1 @@
+-// 正式炼器恒关；只有独立 Vite SSR 夹具图可将 ForgeOpenFlag 内存注入 true。
++// 正式炼器恒开；只有独立 Vite SSR 关态图可将 ForgeOpenFlag 内存注入 false。
+@@ -10,0 +11 @@ import { isValidForgeProgress } from './ForgeProgress';
++import { GameScene } from './scenes/GameScene';
+@@ -100 +101 @@ export async function runForgeOpenFixtureTests(options: {
+-  const label = `${dataMode}/${openFixture ? 'memory-open' : 'formal-closed'}`;
++  const label = `${dataMode}/${openFixture ? 'formal-open' : 'memory-closed'}`;
+@@ -166,2 +167,2 @@ export async function runForgeOpenFixtureTests(options: {
+-  async function formalClosed(p: Progress, message: string) {
+-    const fail = () => { throw new Error('正式关态禁止查询资格、事务、随机或夹具映射'); };
++  async function memoryClosed(p: Progress, message: string) {
++    const fail = () => { throw new Error('内存关态禁止查询资格、事务、随机或夹具映射'); };
+@@ -216 +217 @@ export async function runForgeOpenFixtureTests(options: {
+-    if (!openFixture) { await formalClosed(loaded, `${payload.state}/正式关态历史袋`); return; }
++    if (!openFixture) { await memoryClosed(loaded, `${payload.state}/内存关态历史袋`); return; }
+@@ -227,0 +229,69 @@ export async function runForgeOpenFixtureTests(options: {
++  function sceneSmoke() {
++    const { p } = fixture(), logs: { text: string; color: string }[] = [];
++    const before = p.exportSave(), writes = idb.writes;
++    const entrance = { name: 'smith_ou', type: 'npc', props: { npc: 'smith_ou' }, x: 100, y: 200 };
++    const scene: any = Object.assign(Object.create(GameScene.prototype), {
++      prog: p, map: { id: 'luoxia_town', objects: [] }, player: { x: 100, y: 200 },
++      log: (text: string, color: string) => logs.push({ text, color }),
++      encounterRuntime: { interact() { throw new Error('欧冶匠入口须先于遭遇与NPC交互'); } },
++    });
++    eq(typeof scene.tryInteractForgeEntrance, 'function', 'Scene最小炼器入口存在');
++    eq(scene.tryInteractForgeEntrance(), false, '没有对象时安静no-op');
++    scene.map.objects = [{ ...entrance, name: 'npc_shop', props: { npc: 'npc_shop' } }];
++    eq(scene.tryInteractForgeEntrance(), false, '普通NPC商店不是炼器入口');
++    scene.map.objects = [entrance]; scene.player.x = entrance.x + 29;
++    eq(scene.tryInteractForgeEntrance(), false, '入口横向超距不交互');
++    scene.player.x = entrance.x; scene.player.y = entrance.y + 41;
++    eq(scene.tryInteractForgeEntrance(), false, '入口纵向超距不交互');
++    scene.player.y = entrance.y; scene.senseMap = { objectVisible: () => false };
++    eq(scene.tryInteractForgeEntrance(), false, '隐藏欧冶匠不交互');
++    eq(logs, [], '无对象/商店/超距/隐藏时均无提示');
++    scene.senseMap = undefined;
++    for (const object of [{ ...entrance, props: {} }, { ...entrance, name: 'forge-smoke-alias' }]) {
++      scene.map.objects = [object];
++      eq(scene.tryInteractForgeEntrance(), true, `${object.name}邻近欧冶匠被消费`);
++      eq(logs[logs.length - 1], openFixture
++        ? { text: '炼器打造已开放。', color: '#fff8d0' }
++        : { text: Closed.featureClosed().text, color: '#aaaaaa' }, 'Scene按正式开态/内存关态显示提示');
++    }
++    scene.map.objects = [entrance]; scene.player.x = entrance.x + 28; scene.player.y = entrance.y + 40;
++    eq(scene.tryInteractForgeEntrance(), true, '28×40范围边界内仍可冒烟');
++    scene.player.x = entrance.x; scene.player.y = entrance.y;
++    eq(scene.tryInteract(), true, '通用交互在遭遇/NPC前消费欧冶匠入口');
++    const originalEntrance = ForgeGate.prototype.entrance;
++    let entranceCalls = 0;
++    try {
++      ForgeGate.prototype.entrance = function () {
++        entranceCalls++;
++        if (!openFixture) throw new Error('内存关态不得查询ForgeGate');
++        return { allowed: false, tipKey: 'forge.fixture.smoke', text: '炼器冒烟拒绝。' };
++      };
++      eq(scene.tryInteractForgeEntrance(), true, '最小入口保留Gate拒绝提示分支');
++      eq(entranceCalls, openFixture ? 1 : 0, '只有正式开态查询ForgeGate.entrance');
++      eq(logs[logs.length - 1], { text: openFixture ? '炼器冒烟拒绝。' : Closed.featureClosed().text,
++        color: '#aaaaaa' }, 'Gate拒绝原文或内存关态文案被展示');
++    } finally { ForgeGate.prototype.entrance = originalEntrance; }
++    eq(p.exportSave(), before, 'Scene冒烟不修改角色或炼器袋');
++    eq(idb.writes, writes, 'Scene冒烟存档写入0');
++    return { noObjectNoop: true, npcShopIgnored: true, nearbyOnly: true, hiddenIgnored: true,
++      objectName: 'smith_ou', npcProp: 'smith_ou', genericInteraction: true,
++      graph: openFixture ? 'formal-open' : 'memory-closed', gateDeniedRouting: openFixture,
++      closedBypassesGate: !openFixture, saveWrites: idb.writes - writes };
++  }
++  async function defaultGateDenied() {
++    const { p } = fixture(), gate = new ForgeGate(p), samples = sampleCount;
++    ok(gate.feature().allowed, '正式默认Gate说明只读允许');
++    ok(gate.entrance().allowed, '正式默认Gate入口只读允许');
++    for (const method of ['craft', 'submit'] as const) {
++      await unchanged(p, async () => {
++        const result = await gate[method](request(`default-${method}`));
++        eq('tipKey' in result ? result.tipKey : null, 'forge.fixture.recipe', `正式无fixtureRecipes的${method}明确拒recipe`);
++        return result;
++      }, `正式无fixtureRecipes的${method}拒绝新请求`);
++    }
++    eq(gate.laterService(), Closed.refuseLaterService(), '正式默认Gate后续强化附灵分解仍关');
++    eq(sampleCount, samples, '正式默认Gate无配方授权不抽样');
++    eq(p.forge, undefined, '正式默认Gate不建立炼器袋或请求');
++    return { fixtureRecipesAbsent: true, craftDeniedRecipe: true, submitDeniedRecipe: true,
++      readOnlyEntranceAllowed: true, laterServiceClosed: true, saveWrites: 0 };
++  }
+@@ -228,0 +299,2 @@ export async function runForgeOpenFixtureTests(options: {
++    const sceneSmokeEvidence = sceneSmoke();
++    const defaultGateEvidence = openFixture ? await defaultGateDenied() : null;
+@@ -238 +310 @@ export async function runForgeOpenFixtureTests(options: {
+-        await formalClosed(p, '正式关态/无袋或歧义旧请求');
++        await memoryClosed(p, '内存关态/无袋或歧义旧请求');
+@@ -244 +316 @@ export async function runForgeOpenFixtureTests(options: {
+-      ok(gate.feature().allowed, 'O01夹具说明入口可访问');
++      ok(gate.feature().allowed, 'O01正式图只读说明入口可访问');
+@@ -429,2 +501,3 @@ export async function runForgeOpenFixtureTests(options: {
+-    return { assertions, payloads, openFixture, graph: openFixture ? 'memory-open' : 'formal-closed',
+-      formalOpen: false, fixtureOnly: true, softOpened: false, released: false,
++    return { assertions, payloads, openFixture, graph: openFixture ? 'formal-open' : 'memory-closed',
++      formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false,
++      sceneSmoke: sceneSmokeEvidence, defaultGate: defaultGateEvidence,
+@@ -432 +505 @@ export async function runForgeOpenFixtureTests(options: {
+-      cases: openFixture ? ['O01','O02','O03','O04','O05','O06','O07','O08'] : ['formal-eight-tips','zero-side-effects','historical-baggage'] };
++      cases: openFixture ? ['O01','O02','O03','O04','O05','O06','O07','O08'] : ['memory-closed-eight-tips','zero-side-effects','historical-baggage'] };

@@ -1,0 +1,98 @@
+{
+  "passed": true,
+  "baseline": "048dcf4250ec4775e1240fdefddc90cc8b97fc87",
+  "cwd": "/workspace/xiantu/wt/dev",
+  "stdin": "/dev/null",
+  "formalOpen": true,
+  "closedFixtureOnly": true,
+  "softOpened": true,
+  "released": false,
+  "checks": [
+    {
+      "command": "npx tsc --noEmit",
+      "exitCode": 0,
+      "log": "tsc.log"
+    },
+    {
+      "command": "npm run test:v06p1-forge-open",
+      "exitCode": 0,
+      "assertions": 3729,
+      "evidence": "v06p1-forge-open-evidence.json",
+      "log": "open-agent.log"
+    },
+    {
+      "command": "npm run test:v06p1-forge-closed",
+      "exitCode": 0,
+      "assertions": 20326,
+      "evidence": "closed/v06p1-forge-closed-evidence.json",
+      "log": "forge-closed.agent.log"
+    },
+    {
+      "command": "npm run test:v06p1-market-closed",
+      "exitCode": 0,
+      "assertions": 24148,
+      "evidence": "market-closed/v06p1-market-closed-evidence.json",
+      "log": "market-closed.agent.log"
+    },
+    {
+      "command": "npm run test:v06d-closed",
+      "exitCode": 0,
+      "assertions": 15048,
+      "log": "qa/out_v06p1_forge_open_preamble/v06d-closed.log",
+      "seconds": 5.765
+    },
+    {
+      "command": "npm run test:v06c-closed",
+      "exitCode": 0,
+      "assertions": 10708,
+      "log": "qa/out_v06p1_forge_open_preamble/v06c-closed.log",
+      "seconds": 4.545
+    },
+    {
+      "command": "npm run test:shop",
+      "exitCode": 0,
+      "assertions": 596,
+      "log": "qa/out_v06p1_forge_open_preamble/shop.log",
+      "seconds": 1.89
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 Python os.chdir + runpy datalint (shared)",
+      "exitCode": 0,
+      "problems": 0,
+      "log": "datalint-shared.log"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 Python os.chdir + runpy datalint (snapshot)",
+      "exitCode": 0,
+      "problems": 0,
+      "log": "datalint-snapshot.log"
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0,
+      "log": "diff-check.log"
+    },
+    {
+      "command": "python3 verify-protection.py",
+      "exitCode": 0,
+      "protectedFiles": 1379,
+      "unchangedFiles": 1373,
+      "authorizedDifferences": 6,
+      "unauthorizedDifferences": 0,
+      "evidence": "protected-diff.json"
+    },
+    {
+      "command": "git diff --cached --check",
+      "exitCode": 0,
+      "scope": "implementation then documentation and QA evidence"
+    }
+  ],
+  "implementationTip": "e519e70f1014bbf7dbad088ff95b8360c402307d",
+  "implementationPushed": true,
+  "documentation": {
+    "utf8CopiesIdentical": true,
+    "statusLines": 27,
+    "report": "reports/炼器阁/V06P1_FORGE_OPEN_PREAMBLE_RESULT.md",
+    "status": "status/炼器阁.md"
+  }
+}

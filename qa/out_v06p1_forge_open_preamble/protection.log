@@ -1,0 +1,50 @@
+{
+  "passed": true,
+  "baseline": "048dcf4250ec4775e1240fdefddc90cc8b97fc87",
+  "protectedFiles": 1379,
+  "unchangedFiles": 1373,
+  "authorizedDifferences": [
+    {
+      "file": "/workspace/xiantu/wt/dev/src/ForgeOpenFlag.ts",
+      "before": "05cf306350d89b58f025a6edf9c5e79fcd17fa98335f566b01be824cf2987565",
+      "after": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
+      "authorized": true
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/src/scenes/GameScene.ts",
+      "before": "1279682ae18633aec1c0032d5a30d484f2e6de05deba34c2c80a9a423a203047",
+      "after": "294b934b52a8b6537214360fffb93497643ce8261bea03aba8caf405cf5fcedf",
+      "authorized": true
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/src/v06p1-forge-open.test.ts",
+      "before": "b8d54b0b719dcaea9e0945ed1bd8bd6c5168782288b082ea7368231c2c0a7072",
+      "after": "7fe06b7a6b505a4314f42c263c7cbf639076fb8fde16294cf166818f1ff1cdb5",
+      "authorized": true
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/scripts/v06p1-forge-open-test.mjs",
+      "before": "b4d2f5a63f0dec27eefbd893b670c133006b55eacc1011da1f10cf6932804af5",
+      "after": "eaf21a7daa72a6772afe855d7ff255d516602dd2a345e102152e2441ba403a51",
+      "authorized": true
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/scripts/v06p1-forge-closed-test.mjs",
+      "before": "29c0e26efc54d09395491a7447a8334e05f3104f87558d59814812a974858e78",
+      "after": "da275f9445add6c86959b7bab5a4cc491664ad38340df2870ad623ad47bd7484",
+      "authorized": true
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/scripts/v06p1-market-closed-test.mjs",
+      "before": "c30b6b8851979a23de7d6c0dbfe230d7e642914a112820d50e6565ae0f05b474",
+      "after": "e30b6254b66c2c7bcb8dc93be2da209a95f339c3f05b7c95b43b126b37ae0d80",
+      "authorized": true
+    }
+  ],
+  "unauthorizedDifferences": [],
+  "directoryDifferences": [],
+  "formalOpen": true,
+  "closedFixtureOnly": true,
+  "softOpened": true,
+  "released": false
+}

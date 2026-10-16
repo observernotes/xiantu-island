@@ -1,0 +1,62 @@
+{
+  "cwd": "/workspace/xiantu/wt/dev",
+  "stdin": "/dev/null",
+  "passed": true,
+  "results": [
+    {
+      "command": "npm run test:v06d-closed",
+      "exitCode": 0,
+      "assertions": 15048,
+      "log": "qa/out_v06p1_forge_open_preamble/v06d-closed.log",
+      "seconds": 5.765
+    },
+    {
+      "command": "npm run test:v06c-closed",
+      "exitCode": 0,
+      "assertions": 10708,
+      "log": "qa/out_v06p1_forge_open_preamble/v06c-closed.log",
+      "seconds": 4.545
+    },
+    {
+      "command": "npm run test:shop",
+      "exitCode": 0,
+      "assertions": 596,
+      "log": "qa/out_v06p1_forge_open_preamble/shop.log",
+      "seconds": 1.89
+    }
+  ],
+  "protectedOutputDirsRestored": true,
+  "protectedOutputManifests": {
+    "/workspace/xiantu/wt/dev/qa/out_v06d_closed": {
+      "boundary-check.log": "3f219ca30561a6817b5f3fccdc7d410d9867a1b50cfa83aa6ebd0f2679562a6a",
+      "datalint-shared.log": "062cff9b1def1124f005b9d72adf9476958912100acd913037950b77373dd4cd",
+      "datalint-snapshot.log": "062cff9b1def1124f005b9d72adf9476958912100acd913037950b77373dd4cd",
+      "diff-check.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "final-receipt.json": "3297bd5c38be8b08911b5f5f4c767e372d9235bba95c984dda01267ccfbe975c",
+      "mainline-21.log": "3d9b51a4c8b712fb3b12856661e90e3aa89bb4f979e5e39b14f559dc64d82638",
+      "mainline-56.log": "d5a61085793acd6c7df77eb58aa144b189075ea9ecde15e43755f00663242bcd",
+      "protected-after.json": "e6219e612d5214169c103e03f7cc407e87fa5a9617602d2bd359841b5cc2ea60",
+      "protected-before.json": "d404887d4bd663708251abfa4ae38a7ea7e9ed1e236dfe1c704ffae8f62f57a8",
+      "staged-files.log": "6d2756529006dfe42a189ecf1fd26bcd2ff70850e2ee188478646d98fbab71ae",
+      "status-before.md": "66893ac83aa94374743c8a9c632668c846ebf6d75d2602deafc5bfc7b195cb97",
+      "status-shared-before.md": "3caaa8758da24e2aae0b71f5ff81f8d8eb9dd36202dfda3459d52b9107c170c8",
+      "test-exits.json": "7d099eb0c1764f6587dd4d92181e703e309f908eecf90c1ecd933d597cb0e445",
+      "tsc.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "v06c-closed.log": "22e32f6eba0e9c73cdde62a7277073bba110ea5692269b840b10bd5ee6483f25",
+      "v06d-closed-evidence.json": "c09c49d83609a2bfc4f16b0b1b21c169df76d080d9fe15fc2c604922490f208c",
+      "v06d-closed.log": "15cff106bc72ab4712e3148df6ff0856ec05811356a7328d16e10d2e55587a73"
+    },
+    "/workspace/xiantu/wt/dev/qa/out_v06c_closed": {
+      "datalint-shared.log": "062cff9b1def1124f005b9d72adf9476958912100acd913037950b77373dd4cd",
+      "datalint-snapshot.log": "062cff9b1def1124f005b9d72adf9476958912100acd913037950b77373dd4cd",
+      "diff-check.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mainline-21.log": "3d9b51a4c8b712fb3b12856661e90e3aa89bb4f979e5e39b14f559dc64d82638",
+      "mainline-56.log": "d3c4d51c2272081a4429cfb4eac5de2d5ba3d99699c21abd1d0232cdc50c1684",
+      "protected-before.json": "096638eaf4f7bc931291d52e8c9603ef8a5fd0db65dea38fc4dcb725a5c35f50",
+      "quest-hooks.log": "73760b093bef55707727247a1cc32cd97c8afaf5d4819a169351350d892e1af3",
+      "tsc.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "v06c-closed.log": "60a8a7d5838e04b679583ac50f190bac9467991c808b8a6d996df83e17b6448b"
+    }
+  },
+  "backup": "/tmp/forge-preamble-regression-iczohm0w"
+}
