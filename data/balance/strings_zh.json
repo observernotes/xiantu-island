@@ -844,5 +844,20 @@
   "quest.main_04.description": "前往万妖林外围，清除二十只藤妖，与古树灵交谈并向其交付。",
   "quest.main_04.offer": "黑袍人逃向万妖林外围，劳你清开藤妖，向古树灵问个明白。",
   "quest.main_04.progress": "林边藤妖还在作乱，劳你再去清一清。",
-  "quest.main_04.complete": "多谢你护住林边。是外来的灵气逼疯了妖兽，祸根还在深处。"
+  "quest.main_04.complete": "多谢你护住林边。是外来的灵气逼疯了妖兽，祸根还在深处。",
+  "encounter.ui.lack_item": "缺料：需要 {item} ×{n}（现有 {have}）",
+  "encounter.ui.cost_item": "消耗：{item} ×{n}",
+  "encounter.ui.reward_exp": "修为：{n}",
+  "encounter.ui.reward_stones": "灵石：{n}",
+  "encounter.ui.reward_item": "物品：{item} ×{n}",
+  "encounter.ui.reward_insight": "悟性：{n}",
+  "encounter.ui.hook_dao_heart": "道心：{n}",
+  "encounter.ui.hook_morality": "善恶：{n}",
+  "encounter.ui.hook_karma": "因果：{flag}（{value}）",
+  "encounter.ui.hook_affinity": "好感：{npc} {n}",
+  "encounter.ui.hook_once": "以上关系变化仅首次有效结局生效",
+  "encounter.ui.flag_on": "记入",
+  "encounter.ui.flag_off": "移除",
+  "encounter.ui.preview_title": "奖励与代价预览",
+  "encounter.ui.close_hint": "关闭对白（保留当前节点）"
 }
