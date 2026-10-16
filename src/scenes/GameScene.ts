@@ -65,6 +65,8 @@ import { SECRET_NEST_INTRO_ID, isSecretNestIntroEnabled, featureClosed, readSign
   refuseQuestOffer, refuseQuestProgress } from '../SecretNestClosed';
 import { readSecretNestSign, enterSecretNest, exitSecretNest, type SecretNestRoom } from '../SecretNestGate';
 import { featureClosed as towerFeatureClosed, interactEntranceClosed as towerEntranceClosed } from '../TowerClosed';
+import { isTowerOpenForFixture } from '../TowerOpenFlag';
+import { TowerGate } from '../TowerGate';
 
 const MAP_FALLBACK: Record<string, string> = {};
 type Drop = Phaser.Physics.Arcade.Sprite & { itemId: string; count: number; bornAt: number; label?: Phaser.GameObjects.Text; shadow?: Phaser.GameObjects.Ellipse; floatTw?: Phaser.Tweens.Tween; landed?: boolean };
@@ -111,6 +113,11 @@ export class GameScene extends Phaser.Scene {
   private secretNestRoomView?: Phaser.GameObjects.Container;
   private secretNestOwnsPause = false;
   private secretNestOwnsTimerPause = false;
+  private towerGate?: TowerGate;
+  private towerRoomView?: Phaser.GameObjects.Container;
+  private towerOwnsPause = false;
+  private towerOwnsTimerPause = false;
+  private towerBusy = false;
   readonly inputBindings = new InputBindings();
   private senseCueDepth = 0;
   private senseBusyProviders = new Set<() => boolean>();
@@ -163,6 +170,9 @@ export class GameScene extends Phaser.Scene {
 
   /** Scene 实例会被 restart 复用；这里只重置本张图的状态，不能复用旧物理世界的引用。 */
   private resetRunState() {
+    this.towerRoomView?.destroy(); this.towerRoomView = undefined;
+    this.towerGate = undefined; this.towerBusy = false;
+    this.towerOwnsPause = false; this.towerOwnsTimerPause = false;
     this.secretNestRoomView?.destroy(); this.secretNestRoomView = undefined;
     this.secretNestRoom = undefined; this.secretNestOwnsPause = false; this.secretNestOwnsTimerPause = false;
     this.senseUi?.destroy(); this.senseUi = undefined;
@@ -493,6 +503,10 @@ export class GameScene extends Phaser.Scene {
       this.secretNestRoom = undefined;
       if (this.secretNestOwnsPause) { this.physics.resume(); this.secretNestOwnsPause = false; }
       if (this.secretNestOwnsTimerPause) { this.time.paused = false; this.secretNestOwnsTimerPause = false; }
+      this.towerRoomView?.destroy(); this.towerRoomView = undefined;
+      this.towerGate = undefined; this.towerBusy = false;
+      if (this.towerOwnsPause) { this.physics.resume(); this.towerOwnsPause = false; }
+      if (this.towerOwnsTimerPause) { this.time.paused = false; this.towerOwnsTimerPause = false; }
       this.events.off('encounter:ui-advance', this.advanceEncounter, this);
       this.events.off('encounter:ui-choice', this.chooseEncounter, this);
       this.events.off('encounter:ui-puzzle', this.puzzleEncounter, this);
@@ -754,6 +768,12 @@ export class GameScene extends Phaser.Scene {
 
   update(time: number, delta: number) {
     if (this.loadingProgress) return;
+    // 塔内占位暂停山门模拟；清怪由门禁的可控接口驱动，退出不借长帧补结算。
+    if (this.towerGate?.session) {
+      const J = Phaser.Input.Keyboard.JustDown, k = this.keys;
+      if (J(k.z) || J(k.up) || J(k.esc)) void this.exitTowerRoom();
+      return;
+    }
     // 单房占位期间不更新营地、战斗、任务、寿元或存档；只保留退出输入。
     if (this.secretNestRoom) {
       const J = Phaser.Input.Keyboard.JustDown, k = this.keys;
@@ -1905,14 +1925,14 @@ export class GameScene extends Phaser.Scene {
 
   drawObject(o: MapObj, secretTheme?: string) {
     if (this.map?.id === 'youying_tower' && o.name === 'tower_climb_entrance') {
-      // 山门仍可抵达；此处只画关闭入口，不借渡口或通用传送创建爬塔。
+      // 正式路径仍只画关闭入口；独立内存图可由同一对象进入塔内占位。
       this.add.rectangle(o.x, o.y - 34, 48, 68, 0x55536b).setStrokeStyle(2, 0x292638).setDepth(4)
         .setName(o.name).setInteractive({ useHandCursor: true }).on('pointerdown', () => {
-          if (!this.player.dead && !this.dialog.open && !this.travelling) this.showTowerClosed();
+          if (!this.player.dead && !this.dialog.open && !this.travelling) void this.interactTowerEntrance();
         });
-      this.add.text(o.x, o.y + 6, towerFeatureClosed().text,
+      this.add.text(o.x, o.y + 6, isTowerOpenForFixture() ? '锁妖塔' : towerFeatureClosed().text,
         { fontSize: '12px', color: '#fff8d0', stroke: '#3b2a20', strokeThickness: 3 }).setOrigin(0.5, 0).setDepth(4);
-      const prompt = interactionPrompt(this, o.x, o.y - 96, 'Z', '查看说明（未开放）');
+      const prompt = interactionPrompt(this, o.x, o.y - 96, 'Z', isTowerOpenForFixture() ? '进入锁妖塔' : '查看说明（未开放）');
       this.interactionPrompts.push({ object: o, prompt });
     } else if (o.name === 'secret_nest_sign' || o.name === 'secret_nest_entrance') {
       const entrance = o.name === 'secret_nest_entrance';
@@ -2104,7 +2124,8 @@ export class GameScene extends Phaser.Scene {
       && this.senseMap?.objectVisible(o) !== false
       && Math.abs(o.x - this.player.x) <= 28 && Math.abs(o.y - this.player.y) <= 40);
     if (!entrance) return false;
-    this.showTowerClosed();
+    if (isTowerOpenForFixture()) void this.interactTowerEntrance();
+    else this.showTowerClosed();
     return true;
   }
 
@@ -2114,6 +2135,98 @@ export class GameScene extends Phaser.Scene {
     this.player.body.setVelocityX(0);
     this.log(entrance.text, '#aaaaaa');
     this.dialog.show([{ speaker: null, text: entrance.text }, { speaker: null, text: feature.text }], null);
+  }
+
+  /** 只认山门既有爬塔对象；异步保存确认后才创建房内视图。 */
+  private async interactTowerEntrance(): Promise<boolean> {
+    if (!isTowerOpenForFixture()) { this.showTowerClosed(); return false; }
+    if (this.towerBusy || this.towerGate?.session || this.secretNestRoom) return false;
+    const entrance = this.map.id === 'youying_tower'
+      ? this.map.objects.find(object => object.name === 'tower_climb_entrance') : undefined;
+    if (!entrance) return false;
+    const gate = new TowerGate(this.prog);
+    this.towerGate = gate; this.towerBusy = true;
+    try {
+      const result = await gate.startClimb(entrance.name, { mapId: this.map.id, x: entrance.x, y: entrance.y });
+      // 保存期间若场景已经销毁，不能在新场景补建旧房间。
+      if (this.towerGate !== gate) return false;
+      if (!result.allowed) { this.log(result.text, '#aaaaaa'); return false; }
+      this.enterTowerRoom();
+      return true;
+    } finally { if (this.towerGate === gate) this.towerBusy = false; }
+  }
+
+  /** 占位房只持有视图与暂停所有权，进度及清层口径始终由真实门禁管理。 */
+  private enterTowerRoom() {
+    if (!isTowerOpenForFixture() || !this.towerGate?.session || this.towerRoomView) return;
+    this.closeItemPanels(); this.gathering?.cancel();
+    this.player.body.setVelocityX(0); this.playerInput?.clear(); this.playerPhysicsAccumulator = 0;
+    this.towerOwnsPause = !this.physics.world.isPaused;
+    if (this.towerOwnsPause) this.physics.pause();
+    this.towerOwnsTimerPause = !this.time.paused;
+    if (this.towerOwnsTimerPause) this.time.paused = true;
+    this.renderTowerRoom();
+  }
+
+  private renderTowerRoom() {
+    if (!isTowerOpenForFixture()) return;
+    const room = this.towerGate?.session;
+    if (!room) return;
+    this.towerRoomView?.destroy();
+    const width = this.scale.width, height = this.scale.height, cx = width / 2, cy = height / 2;
+    const view = this.add.container(0, 0).setScrollFactor(0).setDepth(4000).setName('tower_room_stub');
+    this.towerRoomView = view;
+    const backdrop = this.add.rectangle(cx, cy, width, height, 0x151421).setInteractive();
+    const chamber = this.add.rectangle(cx, cy, Math.min(640, width - 48), Math.min(360, height - 80), 0x363249)
+      .setStrokeStyle(3, 0x9283ad);
+    const title = this.add.text(cx, cy - 112, `锁妖塔·第 ${room.floor} 层`,
+      { fontSize: '22px', color: '#fff1c7' }).setOrigin(0.5);
+    const description = this.add.text(cx, cy - 48, room.completed ? '三十层妖物已清，通塔完成。'
+      : room.cleared ? '本层已清，可前往下一层。' : `本层尚余妖物 ${room.mobs.filter(mob => mob.alive).length} 只。`,
+      { fontSize: '16px', color: '#ddd4ed' }).setOrigin(0.5);
+    const next = this.add.text(cx, cy + 16, room.completed ? '已通塔' : '前往下一层',
+      { fontSize: '18px', color: '#fff1c7', backgroundColor: '#514667', padding: { x: 16, y: 10 } })
+      .setOrigin(0.5).setName('tower_stub_next').setInteractive({ useHandCursor: true })
+      .on('pointerdown', () => { void this.advanceTowerRoom(); });
+    const exit = this.add.text(cx, cy + 104, '返回山门  [Z / ↑ / Esc]',
+      { fontSize: '18px', color: '#fff1c7', backgroundColor: '#514667', padding: { x: 16, y: 10 } })
+      .setOrigin(0.5).setName('tower_stub_exit').setInteractive({ useHandCursor: true })
+      .on('pointerdown', () => { void this.exitTowerRoom(); });
+    view.add([backdrop, chamber, title, description, next, exit]);
+  }
+
+  private async advanceTowerRoom(): Promise<boolean> {
+    if (!isTowerOpenForFixture() || this.towerBusy || !this.towerGate?.session) return false;
+    const gate = this.towerGate; this.towerBusy = true;
+    try {
+      const result = await gate.advanceFloor();
+      if (this.towerGate !== gate) return false;
+      if (!result.allowed) this.log(result.text, '#aaaaaa');
+      this.renderTowerRoom();
+      return result.allowed;
+    } finally { if (this.towerGate === gate) this.towerBusy = false; }
+  }
+
+  private async exitTowerRoom(): Promise<boolean> {
+    if (!isTowerOpenForFixture() || this.towerBusy || !this.towerGate?.session) return false;
+    const gate = this.towerGate; this.towerBusy = true;
+    try {
+      const result = await gate.exitClimb();
+      if (this.towerGate !== gate) return false;
+      if (!result.allowed) { this.log(result.text, '#aaaaaa'); return false; }
+      if (!result.returnPosition) return false;
+      this.towerRoomView?.destroy(); this.towerRoomView = undefined;
+      this.towerGate = undefined;
+      this.player.body.reset(result.returnPosition.x, result.returnPosition.y);
+      this.player.body.setVelocityX(0); this.playerInput?.clear(); this.playerPhysicsAccumulator = 0;
+      // 等待保存时可能又按了退出键；消费残留，避免回山门后同一按键再次开爬。
+      for (const key of [this.keys.z, this.keys.up, this.keys.esc]) Phaser.Input.Keyboard.JustDown(key);
+      if (this.towerOwnsPause) this.physics.resume();
+      if (this.towerOwnsTimerPause) this.time.paused = false;
+      this.towerOwnsPause = false; this.towerOwnsTimerPause = false;
+      this.log('已退出锁妖塔，返回幽影楼山门。', '#ffe680');
+      return true;
+    } finally { if (this.towerGate === gate || !this.towerGate) this.towerBusy = false; }
   }
 
   /** 门禁先于通用传送/试炼路径；return 只在占位房内执行，不抢营地 NPC。 */
