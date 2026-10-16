@@ -15,6 +15,7 @@ import { emptyTalismanUseState, normalizeTalismanUseState, talismanDamageMultipl
 import type { EncounterSave, EncounterState } from './Encounter';
 import { createRelationshipState, isValidAffinity, isValidRelationshipState, normalizeAffinity, normalizeRelationshipState,
   RELATIONSHIP_VERSION, type RelationshipState } from './RelationshipState';
+import { saveStore, setSaveValidator, SAVE_SLOT_KEYS, type SlotKey } from './SaveStore';
 
 /** 自动加点：加点界面做好前的旧档公式，仅用于迁移种子；UI-6 起升级只发未分配点。 */
 export const AUTO_STATS = { rootBone: 2, agility: 2, insight: 1, spirit: 0 } as Record<string, number>;
@@ -118,10 +119,26 @@ function validSaveData(saved: unknown): saved is Record<string, unknown> {
   return true;
 }
 
+setSaveValidator(validSaveData);
+
 /** 角色成长与背包（跨地图保留）。公式见 balance/player_growth.json */
 export class Progress {
   /** 同步交付期间的内部 save 只表示暂存，不写入半份存档。 */
   #saveMuted = false;
+  static #activeSlot: SlotKey = 1;
+  #slot: SlotKey | undefined;
+  #writeQueue: Promise<unknown> = Promise.resolve();
+  #transactionPending = false;
+  #asyncDraft = false;
+  #storageError: string | undefined;
+
+  get storageError(): string | undefined { return this.#storageError; }
+
+  static getActiveSlot(): SlotKey { return Progress.#activeSlot; }
+  static setActiveSlot(slot: SlotKey): void {
+    if (!SAVE_SLOT_KEYS.some(key => key === slot)) throw new TypeError('存档位只允许 1、2、3');
+    Progress.#activeSlot = slot;
+  }
   level = 1; exp = 0; hp = 0; mp = 0; stones = 0;
   /** 已确认的四维加点；待确认草稿只保留在 AttrPanel。 */
   allocatedStats: Record<string, number> = normalizedStats(undefined);
@@ -303,20 +320,91 @@ export class Progress {
       buffs: this.buffs.filter(b => !temporaryIds.includes(b.id)),
       skillCooldowns: Object.fromEntries(Object.entries(this.skillCooldowns).filter(([id]) => !temporaryIds.includes(id))) }));
   }
-  save(): boolean {
+  save(): boolean;
+  save(options: { async: true }): Promise<boolean>;
+  save(options?: { async: true }): boolean | Promise<boolean> {
+    if (options?.async) return this.saveAsync();
     if (this.#saveMuted) return true;
+    // IDB 无同步提交；旧玩法调用方须在异步事务 draft 内暂存，不能提前宣称成功。
+    if (featureEnabled('indexedDbSaves')) return false;
     try { localStorage.setItem(SAVE_KEY, JSON.stringify(this.exportSave())); return true; } catch { return false; }
   }
+  /** 三槽提交以 IDB transaction.complete 为准；失败保留当前未确认的内存，允许重试。 */
+  async saveAsync(): Promise<boolean> {
+    if (!featureEnabled('indexedDbSaves')) return this.save();
+    if (this.#saveMuted) return true;
+    if (this.#transactionPending || this.#storageError) return false;
+    let data: Record<string, unknown>;
+    try { data = this.exportSave(); } catch { return false; }
+    const slot = this.#slot ?? Progress.#activeSlot;
+    return this.enqueueWrite(() => saveStore.writeSlot(slot, data));
+  }
+  private enqueueWrite<T>(write: () => Promise<T>): Promise<T> {
+    const queued = this.#writeQueue.then(write, write);
+    this.#writeQueue = queued.catch(() => undefined);
+    return queued;
+  }
+  /** 面板删档、导入或换槽前等待当前实例的已排队提交。 */
+  async flushSaves(): Promise<void> { await this.#writeQueue; }
+  /**
+   * 同步玩法可在隔离 draft 上暂存；只有 IDB 确认后才把整份内存交给当前角色。
+   * apply 不跨 await，也不接收 Promise；失败不会抹掉原对象尚未确认的内存修改。
+   */
+  async runSaveTransactionAsync<T>(apply: (draft: Progress) => T | undefined): Promise<T | undefined> {
+    if (!featureEnabled('indexedDbSaves')) return this.runSaveTransaction(() => apply(this));
+    if (this.#transactionPending || this.#saveMuted || this.#storageError) return undefined;
+    const slot = this.#slot ?? Progress.#activeSlot;
+    this.#transactionPending = true;
+    try {
+      return await this.enqueueWrite(async () => {
+        const before = structuredClone(Object.fromEntries(Object.entries(this).filter(([, value]) => typeof value !== 'function')));
+        const draft = new Progress();
+        Object.assign(draft, structuredClone(before));
+        draft.#slot = slot;
+        draft.#saveMuted = true;
+        draft.#asyncDraft = true;
+        const result = apply(draft);
+        if (result instanceof Promise) { void result.catch(() => undefined); return undefined; }
+        if (result === undefined) return undefined;
+        const next = draft.exportSave();
+        // 同步回调不得修改原实例，避免把别的进度一起覆盖到槽里。
+        if (JSON.stringify(before) !== JSON.stringify(Object.fromEntries(Object.entries(this).filter(([, value]) => typeof value !== 'function')))) return undefined;
+        if (!await saveStore.writeSlot(draft.#slot, next)) return undefined;
+        // 只发布 draft 改过的字段，保留等待 IDB 时原对象的其它内存变化。
+        for (const key of new Set([...Object.keys(before), ...Object.keys(draft)])) {
+          if (JSON.stringify(before[key]) === JSON.stringify(Reflect.get(draft, key))) continue;
+          if (Object.prototype.hasOwnProperty.call(draft, key)) Reflect.set(this, key, structuredClone(Reflect.get(draft, key)));
+          else Reflect.deleteProperty(this, key);
+        }
+        invalidateSenseSession(this);
+        return result;
+      });
+    } catch { return undefined; }
+    finally { this.#transactionPending = false; }
+  }
   /** 一次真实保存提交整笔修改；拒绝、异常或写盘失败都恢复内存，允许重试。 */
-  runSaveTransaction<T>(apply: () => T | undefined): T | undefined {
-    if (this.#saveMuted) return undefined;
+  runSaveTransaction<T>(apply: () => T | undefined): T | undefined;
+  runSaveTransaction<T>(apply: (draft: Progress) => T | undefined, options: { async: true }): Promise<T | undefined>;
+  runSaveTransaction<T>(apply: (draft: Progress) => T | undefined, options?: { async: true }): T | undefined | Promise<T | undefined> {
+    if (options?.async) return this.runSaveTransactionAsync(apply);
+    if (this.#asyncDraft) {
+      const previous = structuredClone(Object.fromEntries(Object.entries(this).filter(([, value]) => typeof value !== 'function')));
+      try {
+        const result = apply(this);
+        if (result !== undefined && !(result instanceof Promise)) return result;
+      } catch { /* draft 内嵌事务同样回滚，最终只由外层 IDB 提交。 */ }
+      for (const key of Object.keys(this)) if (!Object.prototype.hasOwnProperty.call(previous, key)) Reflect.deleteProperty(this, key);
+      Object.assign(this, previous);
+      return undefined;
+    }
+    if (this.#saveMuted || featureEnabled('indexedDbSaves')) return undefined;
     // 不用 exportSave：回滚也要保留试炼临时物品/技能等当前内存数据。
     const previous = structuredClone(Object.fromEntries(Object.entries(this).filter(([, value]) => typeof value !== 'function')));
     const previousKeys = new Set(Object.keys(this));
     let saved = false;
     this.#saveMuted = true;
     try {
-      const result = apply();
+      const result = apply(this);
       if (result === undefined) return undefined;
       this.#saveMuted = false;
       saved = this.save();
@@ -365,7 +453,10 @@ export class Progress {
     }) === true;
   }
   /** 导入和读取存档共用迁移；只接收数据字段，不允许覆盖实例方法。 */
-  importSave(saved: unknown): boolean {
+  importSave(saved: unknown): boolean;
+  importSave(saved: unknown, options: { async: true }): Promise<boolean>;
+  importSave(saved: unknown, options?: { async: true }): boolean | Promise<boolean> {
+    if (options?.async) return this.importSaveAsync(saved);
     if (!saved || typeof saved !== 'object' || Array.isArray(saved)) return false;
     let restored: Progress;
     try {
@@ -379,6 +470,19 @@ export class Progress {
     if (this.save()) { invalidateSenseSession(this); return true; }
     Object.assign(this, previous);
     return false;
+  }
+  async importSaveAsync(saved: unknown): Promise<boolean> {
+    if (!featureEnabled('indexedDbSaves')) return this.importSave(saved);
+    let fields: unknown;
+    try { fields = JSON.parse(JSON.stringify(saved)); } catch { return false; }
+    if (!validSaveData(fields)) return false;
+    if (Progress.needsRelationshipMigration(fields) && !Progress.backupRelationshipSave(JSON.stringify(fields))) return false;
+    let restored: Progress;
+    try { restored = Progress.restore(fields, false); } catch { return false; }
+    return await this.runSaveTransactionAsync(draft => {
+      Object.assign(draft, restored);
+      return true;
+    }) === true;
   }
   private static restore(saved: unknown, persistMigrations: boolean, relationshipMigrationReady = true): Progress {
     syncTalismanMapAvailability();
@@ -446,7 +550,11 @@ export class Progress {
       return true;
     } catch { return false; }
   }
-  static load(): Progress {
+  static load(): Progress;
+  static load(options: { async: true; slot?: SlotKey }): Promise<Progress>;
+  static load(options?: { async: true; slot?: SlotKey }): Progress | Promise<Progress> {
+    if (options?.async) return Progress.loadAsync(options.slot);
+    if (featureEnabled('indexedDbSaves')) throw new Error('IndexedDB 存档须 await Progress.loadAsync()');
     let saved: unknown;
     let relationshipMigrationReady = true;
     try {
@@ -458,7 +566,51 @@ export class Progress {
     } catch { /* 存档损坏就重开 */ }
     try { return Progress.restore(saved, true, relationshipMigrationReady); } catch { return Progress.restore(undefined, true); }
   }
-  static reset() { try { localStorage.removeItem(SAVE_KEY); } catch { /* ignore */ } }
+  static reset(): boolean;
+  static reset(options: { async: true; slot?: SlotKey }): Promise<boolean>;
+  static reset(options?: { async: true; slot?: SlotKey }): boolean | Promise<boolean> {
+    if (options?.async) return Progress.resetAsync(options.slot);
+    if (featureEnabled('indexedDbSaves')) return false;
+    try { localStorage.removeItem(SAVE_KEY); return true; } catch { return false; }
+  }
+  /** 不可读的槽返回带 storageError 的只读角色，禁止误当空槽覆盖。 */
+  static async loadAsync(slot: SlotKey = Progress.#activeSlot): Promise<Progress> {
+    if (!featureEnabled('indexedDbSaves')) return Progress.load();
+    if (!SAVE_SLOT_KEYS.some(key => key === slot)) throw new TypeError('存档位只允许 1、2、3');
+    let saved: Record<string, unknown> | undefined;
+    let storageError: string | undefined;
+    try {
+      const migration = await saveStore.migrateLegacyLocalStorage();
+      const record = await saveStore.readSlot(slot);
+      saved = record?.data;
+      if (migration === 'failed' && !record) throw new Error('旧存档迁移失败');
+    } catch {
+      // 错误不是空槽：可展示仍在 localStorage 的原角色，但必须禁止覆盖写入。
+      storageError = '存档读取或迁移失败，原档已保留，请重试读档';
+      if (slot === 1) try {
+        const raw = localStorage.getItem(SAVE_KEY);
+        const fields: unknown = raw ? JSON.parse(raw) : undefined;
+        if (validSaveData(fields)) saved = fields;
+      } catch { /* 旧档也不可读时只展示新角色，保持禁止写入。 */ }
+    }
+    let relationshipMigrationReady = true;
+    if (saved && Progress.needsRelationshipMigration(saved)) {
+      relationshipMigrationReady = Progress.backupRelationshipSave(JSON.stringify(saved));
+    }
+    let p: Progress;
+    try { p = Progress.restore(saved, false, relationshipMigrationReady); }
+    catch {
+      p = Progress.restore(undefined, false);
+      storageError = '存档结构无法读取，原档已保留，请恢复备份后重试';
+    }
+    p.#slot = slot;
+    p.#storageError = storageError;
+    Progress.setActiveSlot(slot);
+    return p;
+  }
+  static async resetAsync(slot: SlotKey = Progress.#activeSlot): Promise<boolean> {
+    return featureEnabled('indexedDbSaves') ? saveStore.deleteSlot(slot) : Progress.reset();
+  }
 
   /** 持帖可在试炼成功前改选；不消耗拜帖，也不授予职业或奖励。 */
   selectSect(sectId: string): boolean {

@@ -1,7 +1,7 @@
 /** 发版配置只读取当前工程的快照，不随 @xt 的 shared/snapshot 数据模式切换。 */
 export const FEATURE_NAMES = [
   'fiveSectClasses', 'sectDaily', 'sectRanks', 'sectShopLibrary',
-  'shops', 'sectDonations', 'seclusion', 'alchemyPhase1', 'v05Maps', 'foxBoss', 'talismanCraft', 'lifeSkillCurve', 'spiritScan',
+  'shops', 'sectDonations', 'seclusion', 'alchemyPhase1', 'v05Maps', 'foxBoss', 'talismanCraft', 'lifeSkillCurve', 'spiritScan', 'indexedDbSaves',
 ] as const;
 export type FeatureName = typeof FEATURE_NAMES[number];
 export const FEATURE_UNAVAILABLE = '暂未开放';
@@ -12,7 +12,7 @@ const snapshot: unknown = snapshots['../data/features.json'];
 const configured = snapshot && typeof snapshot === 'object' && !Array.isArray(snapshot)
   ? snapshot as Record<string, unknown> : {};
 const defaults = Object.fromEntries(FEATURE_NAMES.map(name =>
-  [name, typeof configured[name] === 'boolean' ? configured[name] : name !== 'shops' && name !== 'talismanCraft' && name !== 'lifeSkillCurve' && name !== 'spiritScan'])) as Record<FeatureName, boolean>;
+  [name, typeof configured[name] === 'boolean' ? configured[name] : name !== 'shops' && name !== 'talismanCraft' && name !== 'lifeSkillCurve' && name !== 'spiritScan' && name !== 'indexedDbSaves'])) as Record<FeatureName, boolean>;
 // 测试覆盖只存在于本次页面会话；不会被存档覆盖，也不会写入存档。
 const overrides = new Map<FeatureName, boolean>();
 

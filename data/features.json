@@ -11,5 +11,6 @@
   "foxBoss": true,
   "talismanCraft": true,
   "lifeSkillCurve": true,
-  "spiritScan": true
+  "spiritScan": true,
+  "indexedDbSaves": false
 }
