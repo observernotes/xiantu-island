@@ -32,8 +32,15 @@ function bad(label: string, mutate: (raw: MutableNpc[]) => void) {
 eq(AFFINITY_ERRORS.length, 0, 'data.ts 真表无错误'); ok(AFFINITY, 'data.ts 导出只读好感索引');
 const config = AFFINITY, entries = Object.values(config);
 eq(entries.length, 9, '正式表 9 名 NPC 好感块全部加载');
-eq(entries.filter(entry => entry.enabled).length, 0, '9 块根门禁全部 false');
+const formalEnabledCount = entries.filter(entry => entry.enabled).length;
 eq(entries.filter(entry => entry.gifts.enabled).length, 0, '送礼门禁全部 false');
+if (formalEnabledCount === 9) {
+  eq(formalEnabledCount, 9, 'tip 开态：正式表 affinity.enabled===true 共 9');
+} else if (formalEnabledCount === 0) {
+  eq(formalEnabledCount, 0, '未翻表时根门禁仍全 false');
+} else {
+  eq(formalEnabledCount, 9, '正式表根门禁只允许全关或全开，不允许半开');
+}
 const parsed = parseAffinityIndex(npcsRaw); ok(parsed.config, '独立解析真表成功'); eq(parsed.errors.length, 0, '无忽略错误');
 ok(Object.isFrozen(config) && Object.isFrozen(config.village_elder) && Object.isFrozen(config.village_elder.tiers[0])
   && Object.isFrozen(config.enc_wanderer.sources[0]) && Object.isFrozen(config.village_elder.unlocks[0].items), '索引深冻结');
@@ -43,22 +50,32 @@ ok(independent, '可创建独立快照'); eq(Object.isFrozen(first(raw).affinity
 first(raw).affinity.tiers[0].nameKey = 'changed';
 eq(independent.village_elder.tiers[0].nameKey, config.village_elder.tiers[0].nameKey, '调用方改动不影响快照');
 
+const disabledRaw = structuredClone(npcsRaw);
+for (const npc of disabledRaw) if (npc.affinity) npc.affinity.enabled = false;
+const disabledParsed = parseAffinityIndex(disabledRaw);
+eq(disabledParsed.errors.length, 0, '关态夹具通过真实表校验');
+ok(disabledParsed.config, '关态夹具有可用配置');
+const closed = disabledParsed.config;
+const closedEntries = Object.values(closed);
+eq(closedEntries.filter(entry => entry.enabled).length, 0, '关态夹具 9 块全 false');
+eq(closedEntries.filter(entry => entry.gifts.enabled).length, 0, '关态夹具送礼仍全 false');
+
 const saved: Record<string, number> = { village_elder: 40 }, before = JSON.stringify(saved);
 const poison = new Proxy({} as SaveAffinity, { get() { throw new Error('关态不得读取存档'); } });
-for (const entry of entries) {
-  same(getAffinity(config, entry.npcId, poison), { status: 'unavailable', reason: 'disabled' }, '关态不读存档、不造零值');
-  same(previewAffinityDelta(config, entry.npcId, 40, poison), { status: 'unavailable', reason: 'disabled' }, '关态不预览变化');
-  same(applyAffinityDelta(config, entry.npcId, 40, saved), { status: 'rejected', reason: 'disabled' }, '关态拒绝结算');
-  eq(reason(applyAffinityDelta(config, entry.npcId, null, poison)), 'disabled', '关态先于参数和存档检查');
+for (const entry of closedEntries) {
+  same(getAffinity(closed, entry.npcId, poison), { status: 'unavailable', reason: 'disabled' }, '关态夹具不读存档、不造零值');
+  same(previewAffinityDelta(closed, entry.npcId, 40, poison), { status: 'unavailable', reason: 'disabled' }, '关态夹具不预览变化');
+  same(applyAffinityDelta(closed, entry.npcId, 40, saved), { status: 'rejected', reason: 'disabled' }, '关态夹具拒绝结算');
+  eq(reason(applyAffinityDelta(closed, entry.npcId, null, poison)), 'disabled', '关态夹具先于参数和存档检查');
 }
 eq(JSON.stringify(saved), before, 'apply 不改变传入存档');
 same(getAffinity(null, 'village_elder', poison), { status: 'unavailable', reason: 'invalid' }, '坏表查询不可用');
 same(applyAffinityDelta(null, 'village_elder', 40, poison), { status: 'rejected', reason: 'invalid' }, '坏表拒绝结算');
 same(getAffinity(config, 'tianjian_envoy', poison), { status: 'unavailable', reason: 'missing' }, '无配置 NPC 不补零');
 eq(reason(applyAffinityDelta(config, 'toString', 40, poison)), 'missing', '原型键不当作 NPC');
-ok(Object.isFrozen(applyAffinityDelta(config, 'village_elder', 40)), 'API 结果冻结');
+ok(Object.isFrozen(applyAffinityDelta(closed, 'village_elder', 40)), 'API 结果冻结');
 
-// 所有开态均来自调用方内存克隆，送礼门禁继续 false。
+// 开态业务使用调用方内存克隆，送礼门禁继续 false。
 function fixture(npcId = 'village_elder', initial?: number) {
   const candidate = clone(), npc = candidate.find(row => row.id === npcId)!;
   npc.affinity.enabled = true;
@@ -230,13 +247,13 @@ try {
     const after = snapshot(p); eq(quest.turnIn('q_awaken'), undefined, '已完成任务不能再次提交'); eq(snapshot(p), after, '重交不二次发好感');
   }
   {
-    const { p, quest } = readyQuest(config);
-    ok(quest.turnIn('q_awaken'), '正式关态不阻挡旧任务交付');
+    const { p, quest } = readyQuest(closed);
+    ok(quest.turnIn('q_awaken'), '关态夹具不阻挡旧任务交付');
     same(p.affinity, {}, '关态来源不初始化好感');
     same(p.relationshipState.pendingAffinitySources, [{ sourceId: 'village_elder|quest|q_awaken', npc: 'village_elder', quest: 'q_awaken' }], '关态来源记录标准待消费项');
     same(p.relationshipState.appliedAffinitySources, [], '关态不伪标已应用');
     const pending = snapshot(p);
-    details(consumeQuestAffinitySources(config, p), 'consumed', '仍关态消费者可安全检查');
+    details(consumeQuestAffinitySources(closed, p), 'consumed', '关态夹具消费者可安全检查');
     eq(snapshot(p), pending, '仍关态保持 pending 原样');
     eq(details(consumeQuestAffinitySources(enabled, p), 'consumed', '开态消费真实任务 pending').count, 1, '消费一条');
     eq(p.affinity.village_elder, 40, '开态只补 pending 40'); same(p.relationshipState.pendingAffinitySources, [], '成功清除任务 pending');
@@ -247,7 +264,7 @@ try {
     eq(quest.turnIn('q_awaken'), undefined, '任务事务写盘失败不报成功');
     eq(snapshot(p), before, '失败回滚 done、常规奖励、好感与收据'); eq(disk[saveKey], beforeDisk, '任务失败原盘完整');
     restoreSave(p); ok(quest.turnIn('q_awaken'), '失败任务可再次提交'); eq(p.affinity.village_elder, 40, '重试任务好感一次');
-    const queued = readyQuest(config); ok(queued.quest.turnIn('q_awaken'), '准备待消费任务');
+    const queued = readyQuest(closed); ok(queued.quest.turnIn('q_awaken'), '准备待消费任务');
     const pending = snapshot(queued.p); failSave(queued.p, throws);
     details(consumeQuestAffinitySources(enabled, queued.p), 'rejected', '任务 pending 保存失败拒绝');
     eq(snapshot(queued.p), pending, '任务 pending 保存失败保留来源且不加值'); restoreSave(queued.p);
@@ -294,7 +311,7 @@ try {
   }
   {
     const p = pendingEncounter(), pending = snapshot(p), beforeWrites = writes;
-    eq(details(consumeEncounterAffinityHooks(config, p), 'consumed', '正式关态不消费奇遇').count, 0, '关态消费数量零');
+    eq(details(consumeEncounterAffinityHooks(closed, p), 'consumed', '关态夹具不消费奇遇').count, 0, '关态消费数量零');
     eq(snapshot(p), pending, '对应 NPC 未启用保留整个队列');
     eq(writes, beforeWrites, '没有就绪消费者不写盘');
     eq(details(consumeEncounterAffinityHooks(wandererEnabled, p), 'consumed', 'NPC 开态消费既有好感').count, 1, '只消费一个好感动作');
@@ -349,7 +366,7 @@ try {
     details(claimAffinityUnlock(enabled, 'village_elder', 'confidant_gift', p), 'claimed', `${mode} 失败后可以重试`);
     eq(p.permanentCount('hp_pill_small'), 1, `${mode} 重试仅一份礼`); same(p.relationshipState.claimedAffinityRewards, ['village_elder|confidant_gift'], `${mode} 重试仅一份收据`);
   }
-  same(claimAffinityUnlock(config, 'village_elder', 'unknown', poison as any), { status: 'rejected', reason: 'disabled' }, '领取关态先于解锁参数和 poison 存档');
+  same(claimAffinityUnlock(closed, 'village_elder', 'unknown', poison as any), { status: 'rejected', reason: 'disabled' }, '关态夹具领取先于解锁参数和 poison 存档');
   same(claimAffinityUnlock(null, 'village_elder', 'confidant_gift', poison as any), { status: 'rejected', reason: 'invalid' }, '坏表不读取领取存档');
   same(claimAffinityUnlock(enabled, 'missing', 'confidant_gift', poison as any), { status: 'rejected', reason: 'missing' }, '缺 NPC 不读取领取存档');
 } finally {
@@ -386,6 +403,11 @@ for (const [label, mutate] of [
   ['解锁物品数量空', (raw: MutableNpc[]) => { first(raw).affinity.unlocks[0].items[0].count = null; }],
 ] as const) bad(label, mutate);
 for (const value of [null, undefined, {}, 'npcs', true]) eq(parseAffinityIndex(value).config, null, '非数组拒绝');
-eq(Object.values(parseAffinityIndex(npcsRaw).config!).filter(entry => entry.enabled).length, 0, '测试未改变正式表');
-eq(Object.values(parseAffinityIndex(npcsRaw).config!).filter(entry => entry.gifts.enabled).length, 0, '测试未开启正式送礼门禁');
-console.log(`affinity tests ok: ${assertions} assertions (9 disabled NPCs; fixture initialization/delta/tiers, quest and encounter once, unlock rollback)`);
+const endEntries = Object.values(parseAffinityIndex(npcsRaw).config!);
+eq(endEntries.filter(entry => entry.gifts.enabled).length, 0, '测试未开启正式送礼门禁');
+const endEnabled = endEntries.filter(entry => entry.enabled).length;
+ok(endEnabled === 0 || endEnabled === 9, '正式表根门禁旁证只允许 0 或 9');
+eq(endEnabled, formalEnabledCount, '测试未改变正式表根门禁');
+if (endEnabled === 9) eq(endEnabled, 9, 'tip 开态 9 true');
+else eq(endEnabled, 0, '未翻表旁证仍 0');
+console.log(`affinity tests ok: ${assertions} assertions (dual-state preamble; closed-fixture; fixture initialization/delta/tiers, quest and encounter once, unlock rollback)`);

@@ -12,7 +12,7 @@
       "q_awaken"
     ],
     "affinity": {
-      "enabled": false,
+      "enabled": true,
       "min": 0,
       "max": 1000,
       "initial": 0,
@@ -93,7 +93,7 @@
       "q_bamboo"
     ],
     "affinity": {
-      "enabled": false,
+      "enabled": true,
       "min": 0,
       "max": 1000,
       "initial": 0,
@@ -175,7 +175,7 @@
       "q_snake"
     ],
     "affinity": {
-      "enabled": false,
+      "enabled": true,
       "min": 0,
       "max": 1000,
       "initial": 0,
@@ -311,7 +311,7 @@
     ],
     "phase": 3,
     "affinity": {
-      "enabled": false,
+      "enabled": true,
       "min": 0,
       "max": 1000,
       "initial": 0,
@@ -607,7 +607,7 @@
     "quests": [],
     "phase": 5,
     "affinity": {
-      "enabled": false,
+      "enabled": true,
       "min": 0,
       "max": 1000,
       "initial": 0,
@@ -737,7 +737,7 @@
     "quests": [],
     "phase": 5,
     "affinity": {
-      "enabled": false,
+      "enabled": true,
       "min": 0,
       "max": 1000,
       "initial": 0,
@@ -860,7 +860,7 @@
     "quests": [],
     "phase": 5,
     "affinity": {
-      "enabled": false,
+      "enabled": true,
       "min": 0,
       "max": 1000,
       "initial": 0,
@@ -982,7 +982,7 @@
     "quests": [],
     "phase": 5,
     "affinity": {
-      "enabled": false,
+      "enabled": true,
       "min": 0,
       "max": 1000,
       "initial": 0,
@@ -1056,7 +1056,7 @@
     "phase": 5,
     "sprite": "npc_enc_wanderer",
     "affinity": {
-      "enabled": false,
+      "enabled": true,
       "min": 0,
       "max": 1000,
       "initial": 0,
