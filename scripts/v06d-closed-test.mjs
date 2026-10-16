@@ -1,4 +1,4 @@
-// 双数据根只读验收：锁妖塔永久关态；仅在 qa/out_v06d_closed 留证，不保存正式表。
+// 正式旗已软开；双数据根关态只替换 Vite SSR 内存模块，仅在 qa/out_v06d_closed 留证，不保存正式表。
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import fs from 'node:fs/promises';
@@ -70,7 +70,7 @@ async function protectTables() {
       before.set(file, await shaOrNull(file));
     }
   }
-  for (const file of [path.join(root, 'src/features.ts'), path.join(root, 'src/data.ts'),
+  for (const file of [path.join(root, 'src/features.ts'), path.join(root, 'src/data.ts'), path.join(root, 'src/TowerOpenFlag.ts'),
     ...['balance/strings_zh.json', 'balance/tower_floors.json', 'balance/titles.json', 'balance/npcs.json',
       'features.json', 'maps/youying_tower.json'].map(name => path.join(gameData, name))]) {
     before.set(file, await shaOrNull(file));
@@ -147,7 +147,8 @@ async function checkFormal(mode, dataRoot) {
   eq(hash(JSON.stringify(originalMap)), originalMapSemanticSha, `${mode}: 只新增说明对象，既有山门对象与地形不变`);
   data['maps/youying_tower.json'] = map;
   dataByMode.set(mode, data);
-  report({ suite: 'v06d-closed-static', dataMode: mode, passed: true, strings: entries.length, giftsEnabled: false,
+  report({ suite: 'v06d-closed-static', dataMode: mode, formalOpen: true, closedFixtureOnly: true,
+    softOpened: true, released: false, passed: true, strings: entries.length, giftsEnabled: false,
     floorCount: 30, towerSha: expectedSha['balance/tower_floors.json'], titlesSha: expectedSha['balance/titles.json'],
     stringsSha: expectedSha['balance/strings_zh.json'], npcsSha: expectedSha['balance/npcs.json'], mapSha: hash(bytes) });
 }
@@ -166,13 +167,18 @@ function displayFactory(visuals) {
   };
 }
 
-async function runGraph(mode, dataRoot, refreshPayload = null) {
+async function runGraph(mode, dataRoot, closedFixtureOnly, refreshPayload = null) {
+  const flagId = '\0v06d-memory-tower-flag';
   const server = await createServer({
     root, configFile: false, resolve: { alias: { '@xt': dataRoot } },
     server: { middlewareMode: true, hmr: false, ws: false }, appType: 'custom', logLevel: 'error',
-    plugins: [{ name: 'v06d-closed-phaser-stub', enforce: 'pre',
-      resolveId(id) { if (id === 'phaser') return '\0v06d-phaser'; },
+    plugins: [{ name: 'v06d-closed-memory-fixture', enforce: 'pre',
+      resolveId(id) {
+        if (id === 'phaser') return '\0v06d-phaser';
+        if (closedFixtureOnly && /(?:^|\/)TowerOpenFlag(?:\.ts)?$/u.test(id)) return flagId;
+      },
       load(id) {
+        if (id === flagId) return 'export function isTowerOpenForFixture() { return false; }';
         if (id !== '\0v06d-phaser') return;
         return `class Sprite {} export default { WEBGL: 2, Scene: class {}, BlendModes: { NORMAL: 0 },
           Physics: { Arcade: { Sprite } }, GameObjects: { Sprite, NineSlice: class {} },
@@ -191,6 +197,13 @@ async function runGraph(mode, dataRoot, refreshPayload = null) {
     key: index => [...saved.keys()][index] ?? null, get length() { return saved.size; },
   } });
   try {
+    const flag = await server.ssrLoadModule('/src/TowerOpenFlag.ts');
+    eq(flag.isTowerOpenForFixture(), !closedFixtureOnly, `${mode}: 正式旗 true；关态仅 SSR 内存注入 false`);
+    if (!closedFixtureOnly) {
+      report({ suite: 'v06d-closed-formal-graph', dataMode: mode, graph: 'formal-open',
+        formalOpen: true, softOpened: true, released: false, passed: true, assertions });
+      return;
+    }
     const api = await server.ssrLoadModule('/src/TowerClosed.ts');
     const { Progress } = await server.ssrLoadModule('/src/Progress.ts');
     const { GameScene } = await server.ssrLoadModule('/src/scenes/GameScene.ts');
@@ -332,9 +345,10 @@ async function runGraph(mode, dataRoot, refreshPayload = null) {
     exercise(memoryReload, `${mode}/json-save-reload/legacy`);
     eq(features.featureFlags(), flagsBefore, `${mode}: 测试全程不改 feature 开关`);
     eq(storageWrites, 0, `${mode}: 所有拒绝、读档、刷新、渡口检查均未触发存储写入`);
-    report({ suite: 'v06d-closed-runtime', dataMode: mode, freshSsrRefresh: !!refreshPayload, passed: true, fixtures,
+    report({ suite: 'v06d-closed-runtime', dataMode: mode, graph: 'memory-closed',
+      formalOpen: true, closedFixtureOnly: true, freshSsrRefresh: !!refreshPayload, passed: true, fixtures,
       cases: ['C01', 'C02', 'C03', 'C04', 'C05', 'C06', 'C07', 'C08', 'C09'],
-      zeroArgumentApis: 8, storageWrites, closed: true, opened: false, softOpened: false, released: false,
+      zeroArgumentApis: 8, storageWrites, closed: true, softOpened: true, released: false,
       legacyFixtureOnly: true, formalTowerSchemaAdded: false, assertions });
     return payload;
   } finally {
@@ -356,12 +370,15 @@ try {
   ok(/J\(k\.z\)[\s\S]{0,200}this\.tryInteractTowerClosed\(\)/u.test(source), '真实 Z 键交互链先接关态入口');
   ok(/J\(k\.up\)[^\n]+this\.tryInteract\(\)/u.test(source), '真实 ↑ 键接通用 tryInteract 门禁');
   for (const [mode, dataRoot] of modes) {
-    const payload = await runGraph(mode, dataRoot);
+    await runGraph(mode, dataRoot, false);
+    const payload = await runGraph(mode, dataRoot, true);
     // 新 Vite SSR 图模拟刷新，模块和 Progress 均重新构造，旧记录仍不能授权放行。
-    await runGraph(mode, dataRoot, payload);
+    await runGraph(mode, dataRoot, true, payload);
   }
 } finally {
   for (const [file, sha] of before) eq(await shaOrNull(file), sha, `只读测试前后 SHA 不变：${file}`);
-  await fs.writeFile(path.join(out, 'v06d-closed-evidence.json'), `${JSON.stringify({ assertions, protectedFiles: Object.fromEntries(before), evidence }, null, 2)}\n`);
+  await fs.writeFile(path.join(out, 'v06d-closed-evidence.json'), `${JSON.stringify({ assertions,
+    formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false,
+    protectedFiles: Object.fromEntries(before), evidence }, null, 2)}\n`);
 }
-console.log(`v06d closed tests ok: ${assertions} assertions; C01–C10 自动化部分通过；shared/snapshot/game 字符串与山门地图同字节；tower_floors/titles/gifts/原904文案保持；永久关态、无收益/通层/首通/称号/存储增量；未开态、未软开、未发版`);
+console.log(`v06d closed tests ok: ${assertions} assertions; C01–C10 自动化部分通过；shared/snapshot/game 字符串与山门地图同字节；tower_floors/titles/gifts/原904文案保持；formalOpen:true、closedFixtureOnly:true；正式已软开；关态仅内存夹具，无收益/通层/首通/称号/存储增量；未发版`);

@@ -1,4 +1,4 @@
-// 双根四图验收：正式图保持关态，开态只替换 Vite SSR 内存模块，不改正式配置。
+// 双根四图验收：正式旗标恒 true；关态只替换 Vite SSR 内存模块，不改正式配置。
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import fs from 'node:fs/promises';
@@ -90,25 +90,25 @@ async function checkFormal(mode, dataRoot) {
   };
   visit(data['balance/npcs.json']);
   eq(giftsChecked, 10, `${mode}: 全部十处 gifts 已核查`);
-  report({ suite: 'v06d-open-formal', dataMode: mode, formalOpen: false, memoryOpenOnly: true,
+  report({ suite: 'v06d-open-formal', dataMode: mode, formalOpen: true, closedFixtureOnly: true,
     giftsChecked, giftsEnabled: 0, floorCount: 30, protectedSha: expectedSha });
 }
 
 async function runGraph(mode, dataRoot, openFixture) {
   let featureOverrideCalls = 0, flagLoads = 0;
-  const flagId = '\0v06d-memory-tower-flag';
+  const flagId = '\0v06d-memory-closed-tower-flag';
   const server = await createServer({
     root, configFile: false, resolve: { alias: { '@xt': dataRoot } },
     server: { middlewareMode: true, hmr: false, ws: false }, appType: 'custom', logLevel: 'error',
-    plugins: [{ name: 'v06d-memory-only-open', enforce: 'pre',
+    plugins: [{ name: 'v06d-memory-only-closed', enforce: 'pre',
       resolveId(id) {
         if (id === 'phaser') return '\0v06d-open-phaser';
-        if (openFixture && /(?:^|\/)TowerOpenFlag(?:\.ts)?$/u.test(id)) return flagId;
+        if (!openFixture && /(?:^|\/)TowerOpenFlag(?:\.ts)?$/u.test(id)) return flagId;
       },
       load(id) {
         if (id === flagId) {
           flagLoads++;
-          return 'export function isTowerOpenForFixture() { return true; }';
+          return 'export function isTowerOpenForFixture() { return false; }';
         }
         if (id !== '\0v06d-open-phaser') return;
         return `class Sprite {} export default { WEBGL: 2, Scene: class {}, BlendModes: { NORMAL: 0 },
@@ -131,14 +131,14 @@ async function runGraph(mode, dataRoot, openFixture) {
   } });
   try {
     const flag = await server.ssrLoadModule('/src/TowerOpenFlag.ts');
-    eq(flag.isTowerOpenForFixture(), openFixture, `${mode}: 当前图门禁严格符合内存注入`);
+    eq(flag.isTowerOpenForFixture(), openFixture, `${mode}: 正式图读 true，关态图仅内存注入 false`);
     const suite = await server.ssrLoadModule('/src/v06d-open.test.ts');
     const result = await suite.runV06dOpenTests({ openFixture, dataMode: mode });
     runtimeAssertions += result.assertions;
-    eq(featureOverrideCalls, 0, `${mode}: 正式/开态图均不调用 feature 覆盖`);
-    eq(flagLoads, openFixture ? 1 : 0, `${mode}: 正式图无注入，开态只装载一次内存 flag`);
-    report({ suite: 'v06d-open-graph', dataMode: mode, graph: openFixture ? 'memory-open' : 'formal-closed',
-      formalOpen: false, memoryOpenOnly: true, featureOverrideCalls, result });
+    eq(featureOverrideCalls, 0, `${mode}: 正式/关态图均不调用 feature 覆盖`);
+    eq(flagLoads, openFixture ? 0 : 1, `${mode}: 正式图无注入，关态只装载一次内存 flag`);
+    report({ suite: 'v06d-open-graph', dataMode: mode, graph: openFixture ? 'formal-open' : 'memory-closed',
+      formalOpen: true, closedFixtureOnly: true, featureOverrideCalls, result });
   } finally {
     if (descriptor) Object.defineProperty(globalThis, '__v06dFeatureOverrideAttempt', descriptor);
     else Reflect.deleteProperty(globalThis, '__v06dFeatureOverrideAttempt');
@@ -152,11 +152,11 @@ try {
   await protectTables();
   for (const [name, expected] of Object.entries(sourceSha)) eq(await shaOrNull(path.join(root, name)), expected, `${name} 禁改 SHA`);
   const flag = await fs.readFile(path.join(root, 'src/TowerOpenFlag.ts'), 'utf8');
-  ok(/export function isTowerOpenForFixture\(\): boolean\s*\{\s*return false;\s*\}/u.test(flag), '正式磁盘 flag 恒 false');
+  ok(/export function isTowerOpenForFixture\(\): boolean\s*\{\s*return true;\s*\}/u.test(flag), '正式磁盘 flag 恒 true');
   for (const [mode, dataRoot] of modes) await checkFormal(mode, dataRoot);
   for (const [mode, dataRoot] of modes) {
-    await runGraph(mode, dataRoot, false);
     await runGraph(mode, dataRoot, true);
+    await runGraph(mode, dataRoot, false);
   }
   passed = true;
 } finally {
@@ -164,7 +164,7 @@ try {
   report({ suite: 'v06d-open-sha-guard', protectedFiles: before.size, passed: true });
   await fs.writeFile(path.join(out, 'v06d-open-evidence.json'), `${JSON.stringify({ passed,
     assertions: assertions + runtimeAssertions, staticAssertions: assertions, runtimeAssertions,
-    formalOpen: false, memoryOpenOnly: true, softOpened: false, released: false,
+    formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false,
     protectedFiles: Object.fromEntries(before), evidence }, null, 2)}\n`);
 }
-console.log(`v06d open tests ok: ${assertions + runtimeAssertions} assertions; shared/snapshot 双根正式关态+内存开态四图；O01–O08 自动化通过；tower_floors/titles/strings/gifts/地图/features SHA 不变；gifts0；GAME_PHASE=5；正式 flag=false；未 soft-open、未发版`);
+console.log(`v06d open tests ok: ${assertions + runtimeAssertions} assertions; shared/snapshot 双根正式开态+内存关态四图；O01–O08 自动化通过；tower_floors/titles/strings/gifts/地图/features SHA 不变；gifts0；GAME_PHASE=5；formalOpen:true、closedFixtureOnly:true；正式 flag=true，已软开；未发版`);

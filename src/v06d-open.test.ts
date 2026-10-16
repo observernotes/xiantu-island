@@ -1,3 +1,4 @@
+// 正式旗标恒 true；关态只替换 Vite SSR 内存模块。
 import floorsRaw from '@xt/balance/tower_floors.json';
 import titlesRaw from '@xt/balance/titles.json';
 import stringsRaw from '@xt/balance/strings_zh.json';
@@ -98,10 +99,10 @@ function memoryIndexedDb() {
   };
 }
 
-/** 四张独立 SSR 图运行同一产品接口；只有内存开态图替换恒 false 的门禁模块。 */
+/** 四张独立 SSR 图运行同一产品接口；openFixture=true 为正式开态，false 为内存关态。 */
 export async function runV06dOpenTests(options: { openFixture: boolean; dataMode?: string }) {
   const { openFixture, dataMode = 'fixture' } = options;
-  const label = `${dataMode}/${openFixture ? 'memory-open' : 'formal-closed'}`;
+  const label = `${dataMode}/${openFixture ? 'formal-open' : 'memory-closed'}`;
   let assertions = 0;
   const eq = (actual: unknown, expected: unknown, message: string) => {
     assertions++;
@@ -200,7 +201,7 @@ export async function runV06dOpenTests(options: { openFixture: boolean; dataMode
         eq(await p.importSave(p.exportSave(), { async: true }), true, '关态真实导入安全接纳旧塔进度');
         eq(p.tower, original.p.tower, '关态导入不补发或清空旧塔记录');
         const gate = new TowerGate(p), before = p.exportSave(), writesBefore = idb.writes;
-        // 正式关态要先拒绝，连提交保存或奖励修改的意图也不可传到 Progress。
+        // 内存关态要先拒绝，连提交保存或奖励修改的意图也不可传到 Progress。
         for (const method of ['persistSoon', 'save', 'saveAsync', 'runSaveTransaction', 'runSaveTransactionAsync', 'addItem']) {
           Object.defineProperty(p, method, { configurable: true, value() { throw new Error(`关态禁止调用 ${method}`); } });
         }
@@ -488,8 +489,9 @@ export async function runV06dOpenTests(options: { openFixture: boolean; dataMode
     eq(GAME_PHASE, 5, '所有 API 完成后 GAME_PHASE 仍为 5');
     eq(localWrites, 0, '真实 IDB 异步事务无 localStorage 写入');
     console.log(JSON.stringify({ suite: 'v06d-open-runtime', dataMode, openFixture, assertions, giftsChecked,
-      cases: openFixture ? ['O01', 'O02', 'O03', 'O04', 'O05', 'O06', 'O07', 'O08'] : ['formal-closed-all-api'],
-      idbWrites: idb.writes, idbCommits: idb.commits, formalOpen: false, memoryOpenOnly: true, localWrites }));
+      graph: openFixture ? 'formal-open' : 'memory-closed',
+      cases: openFixture ? ['O01', 'O02', 'O03', 'O04', 'O05', 'O06', 'O07', 'O08'] : ['memory-closed-all-api'],
+      idbWrites: idb.writes, idbCommits: idb.commits, formalOpen: true, closedFixtureOnly: true, localWrites }));
     return { assertions, idbWrites: idb.writes, idbCommits: idb.commits, giftsChecked };
   } finally {
     await Promise.all(progresses.map(progress => progress.flushSaves()));
