@@ -64,3 +64,8 @@
 
 - 已对照 `reports/天机阁/20261016_v05c关态_09_10与主线文案抽检.md`：表齐、enabled 仍 false、运行时由本骨架关态接入。
 - 已对照 `reports/天机阁/20261016_v05b收尾_lifeSkillCurve口径与炼丹文案.md` + `design/12`：**lifeSkillCurve 保持关**，关态等同无等级；本骨架未开该开关、未改 features。
+
+## tip 合入
+
+- 已 ff 合入 origin/dev；最终 tip SHA：（Asia/Shanghai 2026-10-16）。
+- lifeSkillCurve 仍 false；未发版。
