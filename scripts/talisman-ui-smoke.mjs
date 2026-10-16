@@ -500,7 +500,8 @@ try {
     checks.push('五宗开态且制符关闭仍可乘前往灵符派；会话开启制符后无帖教学授五方；关闭制符保留五宗山门，双关回镇，制符单开恢复地图与航线');
   });
   await session('craft-gameplay-save', {}, async page => {
-    eq(await page.evaluate(() => window.__xt.openTalismanCraft('recipe_talisman_fire')), false, '默认开关关闭仍可进入正式制符');
+    await page.evaluate(() => window.__xt.setFlag('talismanCraft', false));
+    eq(await page.evaluate(() => window.__xt.openTalismanCraft('recipe_talisman_fire')), false, '关闭开关后仍可进入正式制符');
     await page.evaluate(async () => {
       window.__xt.setFlag('talismanCraft', true);
       await window.__xt.loadSave({ name: '制符玩法修士', level: 15, exp: 0, hp: 9999, mp: 9999, stones: 1000,
