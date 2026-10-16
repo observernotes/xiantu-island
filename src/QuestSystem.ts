@@ -106,13 +106,16 @@ export class QuestSystem {
       && QUEST_ORDER.filter(id => QUESTS[id].next === q.id).every(id => this.state(id) === 'done');
   }
 
-  /** 06 文档一期入门仍归孙郎中；旧 NPC 表未挂任务时只补这一项入口。 */
+  /** 旧 NPC 表未挂独立引导时，按任务自身 giver/turnIn 补入口。 */
   npcQuestIds(npcId: string) {
     const ids = [...(NPCS[npcId]?.quests ?? [])];
     const talisman = QUESTS.q_talisman_intro;
     if (featureEnabled('talismanCraft') && talisman && (talisman.giver === npcId || talisman.turnIn === npcId) && !ids.includes(talisman.id)) ids.push(talisman.id);
     const intro = QUESTS.q_alchemy_intro;
     if (intro && (intro.giver === npcId || intro.turnIn === npcId) && !ids.includes(intro.id)) ids.push(intro.id);
+    const secretIntro = QUESTS[SECRET_NEST_INTRO_ID];
+    if (isSecretNestIntroEnabled() && secretIntro && (secretIntro.giver === npcId || secretIntro.turnIn === npcId)
+      && !ids.includes(secretIntro.id)) ids.push(secretIntro.id);
     // 配表尚未将五宗拜入任务挂到 NPC.quests；按任务自身 giver/turnIn 补入口。
     for (const q of Object.values(QUESTS)) if (classForQuest(q.id) && (q.giver === npcId || q.turnIn === npcId) && !ids.includes(q.id)) ids.push(q.id);
     return ids.filter(id => QUESTS[id] && this.featureAllowed(QUESTS[id]));
@@ -136,7 +139,7 @@ export class QuestSystem {
       switch (o.type) {
         case 'kill': { const n = st?.kills[o.target!] ?? 0; return { o, cur: Math.min(n, o.count!), need: o.count!, label: `击杀 ${MONSTERS[o.target!]?.name ?? o.target}` }; }
         case 'collect': return { o, cur: Math.min(this.prog.count(o.target!), o.count!), need: o.count!, label: `收集 ${ITEMS[o.target!]?.name ?? o.target}` };
-        case 'reach': return { o, cur: st?.reached ? 1 : 0, need: 1, label: '登上望仙台' };
+        case 'reach': return { o, cur: st?.reached ? 1 : 0, need: 1, label: q.id === SECRET_NEST_INTRO_ID ? '阅读巢穴路牌' : '登上望仙台' };
         case 'breakthrough': return { o, cur: this.prog.atBreakthrough ? 1 : 0, need: 1, label: '修为圆满' };
         case 'talk': return { o, cur: st?.talked?.[o.target!] ? 1 : 0, need: 1, label: `与${NPCS[o.target!]?.name ?? o.target}对话` };
         case 'craft': return { o, cur: Math.min(st?.crafted?.[o.target!] ?? 0, o.count ?? 1), need: o.count ?? 1, label: `炼制 ${ITEMS[o.target!]?.name ?? o.target}` };

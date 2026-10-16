@@ -63,6 +63,7 @@ import { invite, SU_COMPANION_ID } from '../Companions';
 import { requestSustainFlight } from '../FlyZones';
 import { SECRET_NEST_INTRO_ID, isSecretNestIntroEnabled, featureClosed, readSignClosed, interactEntranceClosed,
   refuseQuestOffer, refuseQuestProgress } from '../SecretNestClosed';
+import { readSecretNestSign, enterSecretNest, exitSecretNest, type SecretNestRoom } from '../SecretNestGate';
 
 const MAP_FALLBACK: Record<string, string> = {};
 type Drop = Phaser.Physics.Arcade.Sprite & { itemId: string; count: number; bornAt: number; label?: Phaser.GameObjects.Text; shadow?: Phaser.GameObjects.Ellipse; floatTw?: Phaser.Tweens.Tween; landed?: boolean };
@@ -105,6 +106,10 @@ export class GameScene extends Phaser.Scene {
   private encounterProps = new Map<MapObj, { sprite: Phaser.GameObjects.Sprite; visual: EncounterPropVisual; attemptId: string; revealed: boolean }>();
   private unregisterEncounterSense?: () => void;
   private encounterOwnsPause = false;
+  private secretNestRoom?: SecretNestRoom;
+  private secretNestRoomView?: Phaser.GameObjects.Container;
+  private secretNestOwnsPause = false;
+  private secretNestOwnsTimerPause = false;
   readonly inputBindings = new InputBindings();
   private senseCueDepth = 0;
   private senseBusyProviders = new Set<() => boolean>();
@@ -157,6 +162,8 @@ export class GameScene extends Phaser.Scene {
 
   /** Scene 实例会被 restart 复用；这里只重置本张图的状态，不能复用旧物理世界的引用。 */
   private resetRunState() {
+    this.secretNestRoomView?.destroy(); this.secretNestRoomView = undefined;
+    this.secretNestRoom = undefined; this.secretNestOwnsPause = false; this.secretNestOwnsTimerPause = false;
     this.senseUi?.destroy(); this.senseUi = undefined;
     this.encounterUi?.destroy(); this.encounterUi = undefined;
     this.encounterRuntime?.destroy();
@@ -481,6 +488,10 @@ export class GameScene extends Phaser.Scene {
       this.encounterProps.clear();
       this.encounterRuntime = undefined;
       if (this.encounterOwnsPause) { this.physics.resume(); this.encounterOwnsPause = false; }
+      this.secretNestRoomView?.destroy(); this.secretNestRoomView = undefined;
+      this.secretNestRoom = undefined;
+      if (this.secretNestOwnsPause) { this.physics.resume(); this.secretNestOwnsPause = false; }
+      if (this.secretNestOwnsTimerPause) { this.time.paused = false; this.secretNestOwnsTimerPause = false; }
       this.events.off('encounter:ui-advance', this.advanceEncounter, this);
       this.events.off('encounter:ui-choice', this.chooseEncounter, this);
       this.events.off('encounter:ui-puzzle', this.puzzleEncounter, this);
@@ -742,6 +753,12 @@ export class GameScene extends Phaser.Scene {
 
   update(time: number, delta: number) {
     if (this.loadingProgress) return;
+    // 单房占位期间不更新营地、战斗、任务、寿元或存档；只保留退出输入。
+    if (this.secretNestRoom) {
+      const J = Phaser.Input.Keyboard.JustDown, k = this.keys;
+      if (J(k.z) || J(k.up) || J(k.esc)) this.exitSecretNestRoom();
+      return;
+    }
     const encounterOpen = this.encounterUi?.isOpen() === true;
     if (!encounterOpen && this.encounterOwnsPause) { this.physics.resume(); this.encounterOwnsPause = false; }
     const meditationInterrupted = ['left', 'right', 'up', 'down', 'space', 'alt', 'c', 'ctrl', 'x', 'i', 'e', 'k', 'l', 'p', 'r']
@@ -1899,11 +1916,13 @@ export class GameScene extends Phaser.Scene {
           entrance ? 0x777367 : 0xc1a578).setStrokeStyle(2, 0x554a38).setDepth(4);
       }
       visual.setName(o.name).setInteractive({ useHandCursor: true }).on('pointerdown', () => {
-        if (!this.player.dead && !this.dialog.open && !this.travelling) this.showSecretNestClosed(o.name);
+        if (!this.player.dead && !this.dialog.open && !this.travelling && !this.secretNestRoom) this.interactSecretNest(o.name);
       });
-      this.add.text(o.x, o.y + 6, entrance ? featureClosed().text : '巢穴路牌',
+      const enabled = isSecretNestIntroEnabled();
+      this.add.text(o.x, o.y + 6, entrance ? enabled ? '万妖巢穴入口' : featureClosed().text : '巢穴路牌',
         { fontSize: '12px', color: '#fff8d0', stroke: '#3b2a20', strokeThickness: 3 }).setOrigin(0.5, 0).setDepth(4);
-      const prompt = interactionPrompt(this, o.x, o.y - 96, 'Z', entrance ? '查看说明（未开放）' : '阅读路牌（未开放）');
+      const prompt = interactionPrompt(this, o.x, o.y - 96, 'Z', entrance
+        ? enabled ? '进入巢穴' : '查看说明（未开放）' : enabled ? '阅读路牌' : '阅读路牌（未开放）');
       this.interactionPrompts.push({ object: o, prompt });
     } else if (o.type === 'encounter_anchor' || o.type === 'hidden' && o.props.encounter) {
       this.syncEncounterProps();
@@ -2066,15 +2085,89 @@ export class GameScene extends Phaser.Scene {
     return false;
   }
 
-  /** 关态说明先于通用传送/试炼路径；阅读不派发 reach，也不建立秘境会话。 */
+  /** 门禁先于通用传送/试炼路径；return 只在占位房内执行，不抢营地 NPC。 */
   private tryInteractSecretNest(): boolean {
     for (const o of this.map.objects) {
       if (!['secret_nest_sign', 'secret_nest_entrance'].includes(o.name)
         || this.senseMap?.objectVisible(o) === false || Math.abs(o.x - this.player.x) > 28 || Math.abs(o.y - this.player.y) > 40) continue;
-      this.showSecretNestClosed(o.name);
+      this.interactSecretNest(o.name);
       return true;
     }
     return false;
+  }
+
+  private interactSecretNest(name: string) {
+    if (!isSecretNestIntroEnabled()) { this.showSecretNestClosed(name); return; }
+    if (this.secretNestRoom) return;
+    if (name === 'secret_nest_sign') {
+      const sign = readSecretNestSign();
+      if (!sign.allowed) { this.showSecretNestClosed(name); return; }
+      this.player.body.setVelocityX(0);
+      this.log(sign.lines.join('\n'), '#ffe680');
+      this.dialog.show(sign.lines.map(text => ({ speaker: null, text })), null);
+      if (this.quests.isActive(SECRET_NEST_INTRO_ID)) this.quests.onReach('secret_nest_sign');
+      return;
+    }
+    if (name !== 'secret_nest_entrance') return;
+    const camp = this.map.objects.find(object => object.name === 'secret_nest_return') ?? this.map.spawn;
+    const result = enterSecretNest(this.prog, { mapId: this.map.id, x: camp.x, y: camp.y });
+    if (!result.allowed) {
+      this.player.body.setVelocityX(0);
+      this.log(result.text, '#aaaaaa');
+      this.dialog.show([{ speaker: null, text: result.text }], null);
+      return;
+    }
+    this.enterSecretNestRoom(result.room);
+  }
+
+  /** 可进入和退出的独立单房占位，仅存在于当前场景内存。 */
+  private enterSecretNestRoom(room: SecretNestRoom) {
+    if (this.secretNestRoom) return;
+    const checked = enterSecretNest(this.prog, room.returnPosition);
+    if (!checked.allowed) { this.log(checked.text, '#aaaaaa'); return; }
+    this.closeItemPanels(); this.gathering?.cancel();
+    this.player.body.setVelocityX(0); this.playerInput?.clear();
+    this.playerPhysicsAccumulator = 0;
+    this.secretNestOwnsPause = !this.physics.world.isPaused;
+    if (this.secretNestOwnsPause) this.physics.pause();
+    this.secretNestOwnsTimerPause = !this.time.paused;
+    if (this.secretNestOwnsTimerPause) this.time.paused = true;
+    this.secretNestRoom = checked.room;
+    const width = this.scale.width, height = this.scale.height;
+    const cx = width / 2, cy = height / 2;
+    const view = this.add.container(0, 0).setScrollFactor(0).setDepth(4000).setName(checked.room.id);
+    this.secretNestRoomView = view;
+    const backdrop = this.add.rectangle(cx, cy, width, height, 0x121717)
+      .setInteractive();
+    const chamber = this.add.rectangle(cx, cy, Math.min(640, width - 48), Math.min(360, height - 80), 0x333a35)
+      .setStrokeStyle(3, 0x8d9472);
+    const title = this.add.text(cx, cy - 112, '万妖巢穴·入口石室',
+      { fontSize: '22px', color: '#fff1c7' }).setOrigin(0.5);
+    const description = this.add.text(cx, cy - 56, '前方通道暂未开放，本次进出不发放收益。',
+      { fontSize: '16px', color: '#d0d4c1' }).setOrigin(0.5);
+    const visitor = this.add.text(cx, cy + 4, '◆\n你在石室中',
+      { fontSize: '18px', color: '#efe6c6', align: 'center' }).setOrigin(0.5);
+    const exit = this.add.text(cx, cy + 104, '返回营地  [Z / ↑ / Esc]',
+      { fontSize: '18px', color: '#fff1c7', backgroundColor: '#535d48', padding: { x: 16, y: 10 } })
+      .setOrigin(0.5).setName('secret_nest_stub_exit').setInteractive({ useHandCursor: true })
+      .on('pointerdown', () => this.exitSecretNestRoom());
+    view.add([backdrop, chamber, title, description, visitor, exit]);
+  }
+
+  private exitSecretNestRoom(): boolean {
+    if (!this.secretNestRoom) return false;
+    const result = exitSecretNest(this.secretNestRoom);
+    if (!result.allowed) { this.log(result.text, '#aaaaaa'); return false; }
+    this.secretNestRoomView?.destroy(); this.secretNestRoomView = undefined;
+    this.secretNestRoom = undefined;
+    this.player.body.reset(result.returnPosition.x, result.returnPosition.y);
+    this.player.body.setVelocityX(0); this.playerInput?.clear(); this.playerPhysicsAccumulator = 0;
+    if (this.secretNestOwnsPause) this.physics.resume();
+    this.secretNestOwnsPause = false;
+    if (this.secretNestOwnsTimerPause) this.time.paused = false;
+    this.secretNestOwnsTimerPause = false;
+    this.log('已退出万妖巢穴，返回营地。', '#ffe680');
+    return true;
   }
 
   private showSecretNestClosed(name: string) {
@@ -2253,11 +2346,13 @@ export class GameScene extends Phaser.Scene {
     const ordinaryShop = this.sectGrowth.ordinaryCatalog(npcId);
     const hasOrdinaryShop = featureEnabled('shops') && (ordinaryShop.ok || this.sectGrowth.ordinarySellCatalog(npcId).ok);
     const hasRecipeShop = this.sectGrowth.recipeCatalog(npcId).ok;
-    if (!questId && !skipMenu && (dailyIds.length || services.length || hasOrdinaryShop || hasRecipeShop || hasTalismanService)) {
+    const hasSecretIntro = npcId === 'hunter_lei' && isSecretNestIntroEnabled()
+      && (this.quests.available(SECRET_NEST_INTRO_ID) || this.quests.isActive(SECRET_NEST_INTRO_ID));
+    if (!questId && !skipMenu && (dailyIds.length || services.length || hasOrdinaryShop || hasRecipeShop || hasTalismanService || hasSecretIntro)) {
       this.player.body.setVelocityX(0);
       const ordinaryIds = this.quests.npcQuestIds(npcId).filter(id => QUESTS_REF[id] && !QUESTS_REF[id].daily
         && (this.quests.available(id) || this.quests.isActive(id)));
-      const menuTitle = t(dailyIds.length ? 'ui.quests' : services.length ? 'sect.ui.title' : 'ui.shop.menu');
+      const menuTitle = t(dailyIds.length || hasSecretIntro ? 'ui.quests' : services.length ? 'sect.ui.title' : 'ui.shop.menu');
       this.dialog.choose({ speaker: npc.name, text: services.length ? `${this.sectOverview()}\n${menuTitle}` : menuTitle }, npc.sprite, [
         ...dailyIds.map(id => {
           const q = QUESTS_REF[id], state = this.quests.state(id);
