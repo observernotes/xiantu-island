@@ -1,0 +1,77 @@
+{
+ "atlas": "fx_shadow_zone",
+ "facing": "left",
+ "origin": [
+  0,
+  1
+ ],
+ "frameSize": [
+  32,
+  96
+ ],
+ "anims": [
+  {
+   "key": "fx_shadow_zone_left",
+   "frames": [
+    "fx_shadow_zone_left_01",
+    "fx_shadow_zone_left_02",
+    "fx_shadow_zone_left_03",
+    "fx_shadow_zone_left_04"
+   ],
+   "frameRate": 4,
+   "repeat": -1
+  },
+  {
+   "key": "fx_shadow_zone_mid",
+   "frames": [
+    "fx_shadow_zone_mid_01",
+    "fx_shadow_zone_mid_02",
+    "fx_shadow_zone_mid_03",
+    "fx_shadow_zone_mid_04"
+   ],
+   "frameRate": 4,
+   "repeat": -1
+  },
+  {
+   "key": "fx_shadow_zone_right",
+   "frames": [
+    "fx_shadow_zone_right_01",
+    "fx_shadow_zone_right_02",
+    "fx_shadow_zone_right_03",
+    "fx_shadow_zone_right_04"
+   ],
+   "frameRate": 4,
+   "repeat": -1
+  }
+ ],
+ "blend": "NORMAL",
+ "depth": "aboveGroundBelowPlayer",
+ "pieceWidth": 32,
+ "bodyHeight": 64,
+ "featherHeight": 32,
+ "mapObject": "zone(kind=shadow)",
+ "maps": [
+  "trial_youying_vault"
+ ],
+ "zonesAtGen": {
+  "shadow_18": [
+   576,
+   576,
+   64,
+   64
+  ],
+  "shadow_36": [
+   1152,
+   576,
+   64,
+   64
+  ]
+ },
+ "playerInShadow": {
+  "tint": "#8A80B0",
+  "alpha": 0.6,
+  "fadeMs": 150
+ },
+ "note": "幽影楼·可藏身阴影区（地图 zone kind=shadow，夜藏宝阁 shadow_18 / shadow_36 都是 64×64）。三段拼接，每段 32×96，原点 (0,1) = 片的左下角。拼法：区域 (x, y, w, h) 的地面线是 y+h；left 放 (x, y+h)，mid 从 x+32 起每 32px 一块共 (w-64)/32 块，right 放 (x+w-32, y+h)。w=64 时只有 left+right、没有 mid；w 最好是 32 的倍数，不是的话最后一块 mid 用 setCrop 截到 x+w-32，别和 right 叠（叠了会加深）。帧高 96：下面 64px 是实心阴影（对应区高 64），上面 32px 是柔边；区高不是 64 时 setScale(1,(h+32)/96)。三段都循环 4 帧 4fps，同一区域的几段要同一时刻 play（或共用一个计时器同步 setFrame），上沿起伏周期 32px，帧号一致才接得上。层级：画在地面图块之上、主角 / 巡卫 / 视野锥之下（depth 介于 ground 和 actors 之间），NORMAL 混合，不带碰撞。主角脚底在区内（按区判定）时建议：setTint(0x8A80B0) + setAlpha(0.6)，150ms 渐变进出；出区 clearTint + alpha 1。配合规则：站在阴影里不算被视野锥看见（炼器阁 backlog），着色就是给玩家的「我藏住了」反馈。画法：墨紫 #0C0818，地面处 α0.66、身顶 0.58，外端 6px 软收；地面 1px 月紫虚线 #C4B8F0（4 实 4 空）+ 两端竖点线（贴满 64px 身高、往上渐隐）和底角折角，像「」括住藏身范围；上沿一道很淡的月紫月晕（α≤0.16）勾轮廓；每段 3 颗淡月紫尘点缓慢上飘。",
+ "kind": "fx"
+}
