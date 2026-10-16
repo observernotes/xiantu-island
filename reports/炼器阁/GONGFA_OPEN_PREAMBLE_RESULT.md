@@ -6,7 +6,7 @@
 
 基线：`acfa94a`（完整 SHA：`acfa94a479c01dcbe41c5215a44e636c3c5d3aaf`）
 
-TIP_SHA：
+TIP_SHA：`fee6cc795a4e39c748d23213bbed400d4dd1721a`
 
 交付分支：`origin/dev`
 
@@ -51,6 +51,6 @@ TIP_SHA：
 
 ## 给执法堂的三行交接
 
-- tip 含 #19 开态快照 + preamble，可交翻表抽检（）。
+- tip 含 #19 开态快照 + preamble，可交翻表抽检（`fee6cc795a4e39c748d23213bbed400d4dd1721a`）。
 - #20/gifts 仍关；lifeSkillCurve 仍 true；future 七处仍 false。
 - PASS 前勿发版，PASS → v0.5.15；本次未发版；线上仍 v0.5.14。
