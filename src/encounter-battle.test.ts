@@ -1,4 +1,5 @@
 import encountersRaw from '@xt/balance/encounters.json';
+import { parseEncountersConfig } from './Encounter';
 import { createEncounterBattleProvider, type EncounterBattleHandle, type EncounterBattleRequest } from './EncounterBattle';
 import { MONSTERS } from './data';
 import { GameScene } from './scenes/GameScene';
@@ -166,6 +167,12 @@ for (const spawns of [[], [{ monster: 'missing_monster', count: 1 }],
 
 // 真实 GameScene 创建的 provider 桥接：替换显示、timer、Monster 分配与 Sense 注册宿主。
 {
+  // provider 桥接仅需关态宿主；正式表已临时开启，关态行为改用显式内存夹具。
+  const disabledRaw = structuredClone(encountersRaw);
+  for (const row of disabledRaw.encounters) row.enabled = false;
+  const disabled = parseEncountersConfig(disabledRaw);
+  eq(disabled.errors.length, 0, 'battle 桥接关态夹具配置有效');
+  ok(disabled.config, 'battle 桥接关态夹具通过真实配置校验');
   const time = clock(), spawned: any[] = [], markers: any[] = [], results: boolean[] = [];
   const senseAdapters = new Map<string, SenseAdapter>();
   const senseRegistrations: { name: string; adapter: SenseAdapter; unregister: () => void }[] = [];
@@ -196,14 +203,14 @@ for (const spawns of [[], [{ monster: 'missing_monster', count: 1 }],
         destroy() { this.active = false; (this as any).body = undefined; this.scene = undefined; } });
       spawned.push(mob); game.mobs.push(mob); return mob;
     } });
-  game.setupEncounters();
+  game.setupEncounters(disabled.config);
   eq(senseRegistrations.length, 1, 'GameScene setup 真实调用 Sense registerAdapter 一次');
   eq(senseRegistrations[0].name, 'encounter', 'GameScene 注册 encounter adapter');
   eq(senseAdapters.get('encounter'), senseRegistrations[0].adapter, 'Sense mock 保存已注册 adapter');
   eq(typeof senseRegistrations[0].adapter.targets, 'function', 'GameScene adapter 提供 targets 回调');
   eq(game.unregisterEncounterSense, senseRegistrations[0].unregister, 'GameScene 保存 Sense 返回的注销函数');
   same(senseRegistrations[0].adapter.targets({ instanceId: game.map.id, center: { x: 12, y: 420 }, alive: true, busy: false, ready: true }),
-    [], '正式关态下注册的真实 targets 桥接不产生扫描候选');
+    [], '关态夹具下注册的真实 targets 桥接不产生扫描候选');
   const battle = game.encounterRuntime.options.battle;
   const handle = battle.start({ ...request(herb), anchor: undefined }, (success: boolean) => { results.push(success); handle.dispose(); });
   eq(markers[0].x, 32, 'GameScene 预警坐标裁剪到地图内');
@@ -248,7 +255,7 @@ for (const spawns of [[], [{ monster: 'missing_monster', count: 1 }],
   fighting.dispose(); eq(barDestroyed, 3, '重入/重复清理保持幂等');
 
   game.encounterRuntime.destroy();
-  game.setupEncounters();
+  game.setupEncounters(disabled.config);
   eq(senseRegistrations.length, 2, 'GameScene 再 setup 重新注册 Sense adapter');
   eq(senseUnregistered, 1, 'GameScene 再 setup 真实调用旧 unregister');
   eq(senseAdapters.get('encounter'), senseRegistrations[1].adapter, '再 setup 后只保留新 adapter');

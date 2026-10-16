@@ -130,14 +130,17 @@ Object.defineProperty(globalThis, 'localStorage', { configurable: true, value: {
 } });
 try {
   ok(ENCOUNTERS, '真实奇遇表有效');
+  // tip 临时开态：正式五事件均已启用；关态行为只使用内存夹具验证。
+  eq(ENCOUNTERS.encounters.length, 5, 'tip 临时开态保留正式五事件');
+  for (const encounter of ENCOUNTERS.encounters) eq(encounter.enabled, true, `${encounter.id} tip 临时开态`);
   const officialBefore = JSON.stringify(ENCOUNTERS), rawBefore = JSON.stringify(encountersRaw);
+  const disabledConfig = configWith(raw => { raw.encounters.forEach(row => { row.enabled = false; }); });
   const f = fixture(), before = JSON.stringify(f.prog.exportSave());
   eq(f.controls().length, 0, '无 offer 时 0 个可见奇遇 UI 控件');
   for (const name of uiNames) eq(f.events.listenerCount(name), 1, `订阅 ${name}`);
-  for (const encounter of ENCOUNTERS.encounters) {
-    eq(encounter.enabled, false, `${encounter.id} 正式表保持 disabled`);
-    f.ui.showOffer({ encounterId: encounter.id, x: 80, y: 120 });
-    eq(f.controls().length, 0, `${encounter.id} 关态不显示任何控件`);
+  for (const encounter of disabledConfig.encounters) {
+    f.ui.showOffer({ encounterId: encounter.id, attemptId: 'disabled-ui-attempt', config: disabledConfig, x: 80, y: 120 });
+    eq(f.controls().length, 0, `${encounter.id} 关态夹具不显示任何控件`);
   }
   const id = ENCOUNTERS.encounters[0].id;
   for (const offer of [
@@ -246,8 +249,8 @@ try {
   eq(JSON.stringify(f.prog.exportSave()), raceSave, '点击复查不修改 Progress');
   f.prog.inventory.hp_pill_small = 1;
   eq(JSON.stringify(f.prog.exportSave()), withMedicine, '测试库存恢复，后续保持同一只读快照');
-  f.ui.showOffer({ encounterId: id, stepId: 'decide', x: 80, y: 120 });
-  eq(f.controls().length, 0, 'mock 切回正式关态立即全隐藏');
+  f.ui.showOffer({ encounterId: id, attemptId: 'disabled-ui-attempt', stepId: 'decide', config: disabledConfig, x: 80, y: 120 });
+  eq(f.controls().length, 0, 'mock 切回关态夹具立即全隐藏');
 
   f.events.emit('encounter:offer', offer);
   ok(f.controls().length > 0, 'offer 事件显示显式 mock');
@@ -286,7 +289,7 @@ try {
     setItem: (key: string, value: string) => { saveAttempts++; if (saveFails) throw new Error('fixture storage failure'); disk.set(key, value); successfulSaves++; },
     removeItem: (key: string) => { disk.delete(key); },
   } });
-  const runtimeConfig = configWith(raw => { raw.encounters[0].enabled = true; });
+  const runtimeConfig = configWith(raw => { raw.encounters.forEach((row, index) => { row.enabled = index === 0; }); });
   const live = fixture(); live.prog.encounters = undefined; live.prog.inventory = { hp_pill_small: 2 };
   live.prog.level = 12; live.prog.daoHeart = 20; live.prog.morality = 0;
   live.prog.pillQualities.hp_pill_small = { low: 1, high: 1 };
@@ -353,7 +356,7 @@ try {
   ok(committed >= 3, 'runtime通知真实事务完成'); live.ui.destroy();
 
   const meditationUi = fixture(); meditationUi.prog.encounters = undefined; meditationUi.prog.inventory = {};
-  const meditationConfig = configWith(raw => { raw.encounters[3].enabled = true; });
+  const meditationConfig = configWith(raw => { raw.encounters.forEach((row, index) => { row.enabled = index === 3; }); });
   let active = true, stopped = 0, meditationRolls = 0;
   const meditationRuntime = new EncounterSceneRuntime({ progress: meditationUi.prog, config: meditationConfig, pacing: pacingRaw.encounter,
     rng: () => { meditationRolls++; return 0; }, context: () => runtimeCtx('qingyun_village'), anchor: () => ({ x: 60, y: 90 }),
@@ -439,8 +442,8 @@ try {
   ok(deathRuntime.runner.offer(), '死亡恢复后冷却到期新visit可正常触发');
   eq(deathRolls, 4, '死亡恢复不补掷，只有新visit再掷概率与weight'); deathUi.ui.destroy();
 
-  // 关态Runtime所有入口（含新增实体/机关入口）不能碰上下文、存档、随机或实体provider。
-  for (const config of [ENCOUNTERS, null]) {
+  // 关态夹具Runtime所有入口（含新增实体/机关入口）不能碰上下文、存档、随机或实体provider。
+  for (const config of [disabledConfig, null]) {
     let forbiddenCalls = 0;
     const forbidden = () => { forbiddenCalls++; throw new Error('关态不允许访问玩法依赖'); };
     const proxy = new Proxy({}, { get: forbidden, ownKeys: forbidden });
@@ -709,7 +712,7 @@ try {
 
   eq(JSON.stringify(ENCOUNTERS), officialBefore, '真实runtime/UI联调后正式配置仍完全未改');
   eq(JSON.stringify(encountersRaw), rawBefore, '真实runtime/UI联调后正式原始五事件仍完全未改');
-  console.log(`encounter-ui tests ok: ${assertions} assertions, disabled / rendering / real runner runtime / Progress rollback / medicine / insight / entity battle / abode puzzle`);
+  console.log(`encounter-ui tests ok: ${assertions} assertions, tip open preamble / disabled fixtures / rendering / real runner runtime / Progress rollback / medicine / insight / entity battle / abode puzzle`);
 } finally {
   if (storageBefore) Object.defineProperty(globalThis, 'localStorage', storageBefore);
   else delete (globalThis as { localStorage?: Storage }).localStorage;

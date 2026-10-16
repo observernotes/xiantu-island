@@ -21,7 +21,7 @@ async function guardedTables() {
       assert.equal(parsed.lifeSkillCurve, false, 'lifeSkillCurve 保持 false');
     } else if (file.endsWith('/encounters.json')) {
       assert.equal(parsed.encounters.length, 5, `${file}: 五事件`);
-      assert.ok(parsed.encounters.every(row => row.enabled === false), `${file}: 正式五事件全部严格 false`);
+      assert.ok(parsed.encounters.every(row => row.enabled === true), `${file}: tip 临时开态，正式五事件全部严格 true`);
     } else {
       const enabled = [];
       const visit = value => {
@@ -39,7 +39,7 @@ async function guardedTables() {
   }));
 }
 
-// 每种数据模式独立模块图，开态只在 structuredClone fixture 内，正式表前后逐字节守护。
+// 每种数据模式独立模块图；正式五事件为 tip 开态，关态仅用 structuredClone fixture，正式表前后逐字节守护。
 if (!process.argv.includes('--single-mode')) {
   const initial = await guardedTables();
   try {
@@ -58,7 +58,7 @@ if (!process.argv.includes('--single-mode')) {
       assert.equal(final[index].file, snapshot.file);
       assert.deepEqual(final[index].bytes, snapshot.bytes, `${snapshot.file}: suite 前后原始字节不变`);
       assert.equal(final[index].hash, snapshot.hash, `${snapshot.file}: suite 前后 MD5 不变`);
-      console.log(`encounter-runner closed-table guard PASS: ${snapshot.file} md5=${snapshot.hash}, bytes unchanged`);
+      console.log(`encounter-runner open-table guard PASS: ${snapshot.file} md5=${snapshot.hash}, bytes unchanged`);
     }
   }
 } else {

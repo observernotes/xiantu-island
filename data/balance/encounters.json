@@ -9,7 +9,7 @@
       "name": "灵溪援手",
       "nameKey": "enc.stranded_cultivator.name",
       "phase": 5,
-      "enabled": false,
+      "enabled": true,
       "visual": {
         "promptSprite": "fx_enc_help_mark"
       },
@@ -230,7 +230,7 @@
       "name": "林隙留香",
       "nameKey": "enc.fragrant_herb.name",
       "phase": 5,
-      "enabled": false,
+      "enabled": true,
       "visual": {
         "promptSprite": "fx_enc_help_mark",
         "objects": {
@@ -449,7 +449,7 @@
       "name": "石隙旧居",
       "nameKey": "enc.hidden_abode.name",
       "phase": 5,
-      "enabled": false,
+      "enabled": true,
       "visual": {
         "promptSprite": "fx_enc_help_mark",
         "objects": {
@@ -707,7 +707,7 @@
       "name": "槐下问道",
       "nameKey": "enc.sage_advice.name",
       "phase": 5,
-      "enabled": false,
+      "enabled": true,
       "visual": {
         "promptSprite": "fx_enc_help_mark"
       },
@@ -841,7 +841,7 @@
       "name": "灯背低语",
       "nameKey": "enc.demon_whisper.name",
       "phase": 5,
-      "enabled": false,
+      "enabled": true,
       "visual": {
         "promptSprite": "fx_enc_help_mark"
       },

@@ -130,13 +130,17 @@ try {
   } });
   Math.random = () => 0; setGameTimeSource(() => 10_000_000);
   SENSE.enabled = true; setFeatureFlag('spiritScan', true);
-  ok(ENCOUNTERS, '正式奇遇表有效'); eq(ENCOUNTERS.encounters.length, 5, '正式五事件');
-  for (const row of ENCOUNTERS.encounters) eq(row.enabled, false, `${row.id} 保持关态`);
-  const closed = fixture(ENCOUNTERS, [anchor(herb), anchor(abode)], readyProgress());
+  ok(ENCOUNTERS, 'tip 临时开态：正式奇遇表有效'); eq(ENCOUNTERS.encounters.length, 5, 'tip 临时开态：正式五事件');
+  for (const row of ENCOUNTERS.encounters) eq(row.enabled, true, `tip 临时开态：${row.id} 已启用`);
+  const disabledRaw: Mutable = structuredClone(encountersRaw);
+  for (const row of disabledRaw.encounters) row.enabled = false;
+  const disabled = parseEncountersConfig(disabledRaw);
+  eq(disabled.errors.length, 0, '关态夹具通过真实表校验'); ok(disabled.config, '关态夹具有可用配置');
+  const closed = fixture(disabled.config, [anchor(herb), anchor(abode)], readyProgress());
   closed.setup(); for (const object of closed.scene.map.objects) closed.scene.drawObject(object);
-  eq(closed.displays.length, 0, '正式关态即使放入 fixture 锚点也零精灵');
-  eq(closed.scene.encounterSenseTargets().length, 0, '正式关态无扫描候选');
-  eq(closed.runtime().runner.offer(), undefined, '正式关态无 offer');
+  eq(closed.displays.length, 0, '关态夹具即使放入 fixture 锚点也零精灵');
+  eq(closed.scene.encounterSenseTargets().length, 0, '关态夹具无扫描候选');
+  eq(closed.runtime().runner.offer(), undefined, '关态夹具无 offer');
 
   const visibleConfig = configWith(herb), missing = fixture(visibleConfig, [], readyProgress());
   missing.setup(); ok(missing.runtime().runner.offer(), '缺锚 fixture 确实已抽中 offer');

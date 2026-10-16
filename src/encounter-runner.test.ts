@@ -67,9 +67,16 @@ function choose(m: ReturnType<typeof memory>, ctx: EncounterContext, choiceId: s
 }
 
 ok(ENCOUNTERS, '真实data.ts奇遇配置存在');
-eq(ENCOUNTERS.encounters.filter(row => row.enabled).length, 0, '正式五事件关态');
+// tip 临时开态：正式五事件已启用；关态静默与零依赖只用显式内存夹具验证。
+eq(ENCOUNTERS.encounters.length, 5, 'tip 正式表恰有五事件');
+for (const row of ENCOUNTERS.encounters) eq(row.enabled, true, `tip 正式事件${row.id}临时开启`);
+const closedRaw: Mutable = structuredClone(encountersRaw);
+for (const row of closedRaw.encounters) row.enabled = false;
+const closedParsed = parseEncountersConfig(closedRaw);
+eq(closedParsed.errors.length, 0, '关态夹具配置有效');
+ok(closedParsed.config, '关态夹具通过真实配置校验');
 const forbidden = new Proxy({}, { get() { throw new Error('全关不可读上下文/存档'); }, ownKeys() { throw new Error('全关不可遍历上下文/存档'); } });
-for (const config of [ENCOUNTERS, null]) {
+for (const config of [closedParsed.config, null]) {
   const closed = memory(config, []);
   eq(closed.runner.enter(forbidden as EncounterContext, 'closed').status, 'idle', '关态enter直接静默');
   eq(closed.runner.tick(forbidden as EncounterContext, 60000, { meditating: true, atAnchor: true }).status, 'idle', '关态冥想静默');
@@ -374,4 +381,4 @@ for (const mutate of [
 }
 eq(JSON.stringify(encountersRaw), originalRaw, '正式原始五事件enabled及全部字段不变');
 eq(JSON.stringify(ENCOUNTERS), originalConfig, 'data.ts正式配置不变');
-console.log(`encounter-runner tests ok: ${assertions} assertions, probability / transactions / medicine / restoration / meditation / closed table`);
+console.log(`encounter-runner tests ok: ${assertions} assertions, probability / transactions / medicine / restoration / meditation / open table / closed fixture`);
