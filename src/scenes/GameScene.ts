@@ -61,6 +61,8 @@ import { openPropChest, playPropAnimation, resolveSecretProp } from '../SecretPr
 import { AFFINITY, COMPANIONS, FLY_ZONES } from '../data';
 import { invite, SU_COMPANION_ID } from '../Companions';
 import { requestSustainFlight } from '../FlyZones';
+import { SECRET_NEST_INTRO_ID, isSecretNestIntroEnabled, featureClosed, readSignClosed, interactEntranceClosed,
+  refuseQuestOffer, refuseQuestProgress } from '../SecretNestClosed';
 
 const MAP_FALLBACK: Record<string, string> = {};
 type Drop = Phaser.Physics.Arcade.Sprite & { itemId: string; count: number; bornAt: number; label?: Phaser.GameObjects.Text; shadow?: Phaser.GameObjects.Ellipse; floatTw?: Phaser.Tweens.Tween; landed?: boolean };
@@ -295,6 +297,8 @@ export class GameScene extends Phaser.Scene {
     this.registry.remove('sectTrialEntering');
     this.sectGrowth = new SectGrowth(this.prog);
     this.quests = new QuestSystem(this.prog);
+    const stopClosedTips = this.quests.onBlocked(tip => this.log(tip.text, '#aaaaaa'));
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, stopClosedTips);
     this.registry.set('progress', this.prog);
     this.openedChests = new Set(this.prog.openedChests);
     this.registry.set('chests', this.openedChests);
@@ -884,7 +888,7 @@ export class GameScene extends Phaser.Scene {
     if (J(k.one)) this.usePill('hp_pill_small');
     if (J(k.two)) this.usePill('qi_pill');
     if (J(k.z) && this.player.state2 === 'ground' && !this.gathering.active && !this.hasNearbyDrop()
-      && (this.encounterRuntime?.interact() || this.interactTrialObject() || this.openNearbyFurnace() || this.talkNearby())) return;
+      && (this.tryInteractSecretNest() || this.encounterRuntime?.interact() || this.interactTrialObject() || this.openNearbyFurnace() || this.talkNearby())) return;
     if (k.z.isDown && !this.gathering.active && time >= this.nextPickAt) { this.nextPickAt = time + 150; this.tryPickup(); }
     if (J(k.up) && this.player.state2 === 'ground' && this.tryInteract()) return;
     // ↑ + 既有跳跃键触发御剑冲刺；交互和绳上跳跃仍由原入口处理。
@@ -1882,7 +1886,26 @@ export class GameScene extends Phaser.Scene {
   }
 
   drawObject(o: MapObj, secretTheme?: string) {
-    if (o.type === 'encounter_anchor' || o.type === 'hidden' && o.props.encounter) {
+    if (o.name === 'secret_nest_sign' || o.name === 'secret_nest_entrance') {
+      const entrance = o.name === 'secret_nest_entrance';
+      let visual: Phaser.GameObjects.Sprite | Phaser.GameObjects.Rectangle;
+      if (entrance && this.textures.exists('prop_secret_door')) {
+        const door = this.add.sprite(o.x, o.y, 'prop_secret_door').setOrigin(0.5, 1).setDepth(4);
+        this.playPropAnimation(door, 'prop_secret_door_closed');
+        visual = door;
+      } else {
+        if (!entrance) this.add.rectangle(o.x, o.y - 16, 6, 32, 0x6b4b2b).setDepth(4);
+        visual = this.add.rectangle(o.x, o.y - (entrance ? 34 : 42), entrance ? 48 : 40, entrance ? 68 : 28,
+          entrance ? 0x777367 : 0xc1a578).setStrokeStyle(2, 0x554a38).setDepth(4);
+      }
+      visual.setName(o.name).setInteractive({ useHandCursor: true }).on('pointerdown', () => {
+        if (!this.player.dead && !this.dialog.open && !this.travelling) this.showSecretNestClosed(o.name);
+      });
+      this.add.text(o.x, o.y + 6, entrance ? featureClosed().text : '巢穴路牌',
+        { fontSize: '12px', color: '#fff8d0', stroke: '#3b2a20', strokeThickness: 3 }).setOrigin(0.5, 0).setDepth(4);
+      const prompt = interactionPrompt(this, o.x, o.y - 96, 'Z', entrance ? '查看说明（未开放）' : '阅读路牌（未开放）');
+      this.interactionPrompts.push({ object: o, prompt });
+    } else if (o.type === 'encounter_anchor' || o.type === 'hidden' && o.props.encounter) {
       this.syncEncounterProps();
     } else if (o.type === 'npc') {
       const npc = NPCS[o.props.npc ?? o.name];
@@ -2014,6 +2037,7 @@ export class GameScene extends Phaser.Scene {
 
   tryInteract(): boolean {
     if (this.travelling) return true;
+    if (this.tryInteractSecretNest()) return true;
     if (this.encounterRuntime?.interact()) return true;
     const p = this.player;
     for (const o of this.map.objects) {
@@ -2040,6 +2064,25 @@ export class GameScene extends Phaser.Scene {
       if (o.type === 'npc') { this.talkTo(o.props.npc ?? o.name); return true; }
     }
     return false;
+  }
+
+  /** 关态说明先于通用传送/试炼路径；阅读不派发 reach，也不建立秘境会话。 */
+  private tryInteractSecretNest(): boolean {
+    for (const o of this.map.objects) {
+      if (!['secret_nest_sign', 'secret_nest_entrance'].includes(o.name)
+        || this.senseMap?.objectVisible(o) === false || Math.abs(o.x - this.player.x) > 28 || Math.abs(o.y - this.player.y) > 40) continue;
+      this.showSecretNestClosed(o.name);
+      return true;
+    }
+    return false;
+  }
+
+  private showSecretNestClosed(name: string) {
+    const tip = name === 'secret_nest_sign' ? readSignClosed()
+      : name === 'secret_nest_entrance' ? interactEntranceClosed() : featureClosed();
+    this.player.body.setVelocityX(0);
+    this.log(tip.text, '#aaaaaa');
+    this.dialog.show([{ speaker: null, text: tip.text }], null);
   }
 
   private interactTrialObject() {
@@ -2154,6 +2197,13 @@ export class GameScene extends Phaser.Scene {
     const npc = NPCS[npcId]; if (!npc) return;
     if (this.trial || this.sectTrial || TRIAL_BY_MAP[this.map.id]) return;
     this.closeItemPanels();
+    if (questId === SECRET_NEST_INTRO_ID && !isSecretNestIntroEnabled()) {
+      const tip = this.prog.quests[questId] ? refuseQuestProgress() : refuseQuestOffer();
+      this.player.body.setVelocityX(0);
+      this.log(tip.text, '#aaaaaa');
+      this.dialog.show([{ speaker: npc.name, text: tip.text }], npc.sprite);
+      return;
+    }
     if (npcId === 'ferry_master') {
       // 航线菜单也算与船老大交谈，供幽影宗问讯日常记录目标。
       this.quests.onTalk(npcId);
@@ -2239,6 +2289,12 @@ export class GameScene extends Phaser.Scene {
     if (offer) { this.offerTrial(npcId, offer); return; }
     const talked = featureEnabled('indexedDbSaves')
       ? this.quests.talk(npcId, questId, { async: true }) : this.quests.talk(npcId, questId);
+    if (talked.blockedTip && !talked.after && talked.lines.every(line => line.text === talked.blockedTip!.text)) {
+      this.player.body.setVelocityX(0);
+      this.log(talked.blockedTip.text, '#aaaaaa');
+      this.dialog.show(talked.lines, npc.sprite);
+      return;
+    }
     const after = talked.after;
     // 任务没有对白脚本时，用 NPC 的通用台词兜底
     const intro = featureEnabled('alchemyPhase1')

@@ -6186,6 +6186,36 @@
        "value": "enc_hidden_abode"
       }
      ]
+    },
+    {
+     "id": 27,
+     "name": "secret_nest_sign",
+     "type": "sign",
+     "x": 392,
+     "y": 832,
+     "width": 0,
+     "height": 0,
+     "properties": []
+    },
+    {
+     "id": 28,
+     "name": "secret_nest_entrance",
+     "type": "secretEntrance",
+     "x": 456,
+     "y": 832,
+     "width": 0,
+     "height": 0,
+     "properties": []
+    },
+    {
+     "id": 29,
+     "name": "secret_nest_return",
+     "type": "point",
+     "x": 464,
+     "y": 832,
+     "width": 0,
+     "height": 0,
+     "properties": []
     }
    ],
    "visible": true,
@@ -6207,5 +6237,5 @@
   }
  ],
  "nextlayerid": 7,
- "nextobjectid": 27
+ "nextobjectid": 30
 }

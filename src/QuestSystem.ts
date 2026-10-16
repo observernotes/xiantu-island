@@ -8,12 +8,16 @@ import { FEATURE_UNAVAILABLE, featureEnabled } from './features';
 import { isCheatEnabled } from './cheatFlags';
 import { stageQuestAffinityCompletion, type AffinityConfig } from './Affinity';
 import { previewQuestHook, stageQuestHookChoice, type QuestHooksConfig } from './QuestHooks';
+import { SECRET_NEST_INTRO_ID, isSecretNestIntroEnabled, refuseQuestOffer, refuseQuestProgress,
+  type SecretNestClosedTip } from './SecretNestClosed';
 
 export type NpcMark = '!' | '?' | '…' | null;
+type QuestTalkResult<T> = { lines: Line[]; after?: () => T; blockedTip?: SecretNestClosedTip };
 
 /** 任务系统：串行任务链，状态存在 Progress.quests 里。字段见 balance/quests.json */
 export class QuestSystem {
   private completionListeners = new Set<(reward: QuestReward) => void>();
+  private blockedListeners = new Set<(tip: SecretNestClosedTip) => void>();
   constructor(private prog: Progress, private now: () => number = () => gameNow(), private affinityConfig: AffinityConfig | null = AFFINITY,
     private questHooksConfig: QuestHooksConfig | null = QUEST_HOOKS) { this.refreshDaily(); }
 
@@ -21,6 +25,20 @@ export class QuestSystem {
   onCompleted(listener: (reward: QuestReward) => void): () => void {
     this.completionListeners.add(listener);
     return () => { this.completionListeners.delete(listener); };
+  }
+  /** 拒绝提示交给界面展示；沿用 accept/turnIn 的原返回结构，不写入存档。 */
+  onBlocked(listener: (tip: SecretNestClosedTip) => void): () => void {
+    this.blockedListeners.add(listener);
+    return () => { this.blockedListeners.delete(listener); };
+  }
+  private notifyBlocked(tip: SecretNestClosedTip) {
+    for (const listener of [...this.blockedListeners]) {
+      try { listener(tip); } catch (error) { console.error(error); }
+    }
+  }
+  private secretNestClosed(id: string) { return id === SECRET_NEST_INTRO_ID && !isSecretNestIntroEnabled(); }
+  private secretNestQuestTip() {
+    return this.prog.quests[SECRET_NEST_INTRO_ID] ? refuseQuestProgress() : refuseQuestOffer();
   }
   private notifyCompleted(reward: QuestReward): QuestReward {
     for (const listener of [...this.completionListeners]) {
@@ -34,12 +52,14 @@ export class QuestSystem {
   state(id: string) { this.refreshDaily(); return this.prog.quests[id]?.state; }
   get activeIds() {
     this.refreshDaily();
-    return QUEST_ORDER.filter(id => this.prog.quests[id]?.state === 'active' && this.featureAllowed(QUESTS[id]));
+    return QUEST_ORDER.filter(id => !this.secretNestClosed(id)
+      && this.prog.quests[id]?.state === 'active' && this.featureAllowed(QUESTS[id]));
   }
-  isActive(id: string) { return this.state(id) === 'active'; }
+  isActive(id: string) { return !this.secretNestClosed(id) && this.state(id) === 'active'; }
 
   /** next 链和独立 prereq 均须完成，且版本阶段、等级、目标类型可用。 */
   available(id: string) {
+    if (this.secretNestClosed(id)) return false;
     if (this.state(id)) return false;
     const q = QUESTS[id];
     if (!q || !questInPhase(q) || !supported(q) || !this.prereqsDone(q) || !this.classAllowed(q)) return false;
@@ -48,6 +68,7 @@ export class QuestSystem {
   }
   /** 前置已完成但等级不够 */
   levelLocked(id: string) {
+    if (this.secretNestClosed(id)) return false;
     const q = QUESTS[id];
     return !!q && questInPhase(q) && supported(q) && !this.state(id) && this.prereqsDone(q) && this.classAllowed(q)
       && (!q.daily || this.prog.canCompleteSectDailyQuest(id, this.now())) && this.prog.level < q.reqLevel;
@@ -72,6 +93,7 @@ export class QuestSystem {
   }
 
   private featureAllowed(q: QuestDef) {
+    if (this.secretNestClosed(q.id)) return false;
     const cls = classForQuest(q.id);
     return (!cls || classEntryEnabled(cls)) && (!q.daily || featureEnabled('sectDaily'))
       && (q.id !== 'q_alchemy_intro' || featureEnabled('alchemyPhase1'))
@@ -107,6 +129,7 @@ export class QuestSystem {
   }
 
   objectiveProgress(q: QuestDef) {
+    if (this.secretNestClosed(q.id)) return q.objectives.map(o => ({ o, cur: 0, need: o.count ?? 1, label: refuseQuestProgress().text }));
     this.refreshDaily();
     const st = this.prog.quests[q.id];
     return q.objectives.map(o => {
@@ -123,6 +146,7 @@ export class QuestSystem {
     });
   }
   complete(id: string) {
+    if (this.secretNestClosed(id)) return false;
     const q = QUESTS[id];
     return this.isActive(id) && !!q && supported(q) && this.classAllowed(q)
       && (!q.daily || this.prog.canCompleteSectDailyQuest(id, this.now()))
@@ -151,10 +175,23 @@ export class QuestSystem {
     if (changed) this.prog.persistSoon();
   }
 
-  talk(npcId: string, questId: string | undefined, options: { async: true }): { lines: Line[]; after?: () => Promise<QuestReward | void> };
-  talk(npcId: string, questId?: string): { lines: Line[]; after?: () => QuestReward | void };
-  talk(npcId: string, questId?: string, options?: { async: true }): { lines: Line[]; after?: () => QuestReward | void | Promise<QuestReward | void> } {
+  talk(npcId: string, questId: string | undefined, options: { async: true }): QuestTalkResult<Promise<QuestReward | void>>;
+  talk(npcId: string, questId?: string): QuestTalkResult<QuestReward | void>;
+  talk(npcId: string, questId?: string, options?: { async: true }): QuestTalkResult<QuestReward | void | Promise<QuestReward | void>> {
     const npc = NPCS[npcId];
+    // 必须先于 phase/资格/旧档状态及 onTalk；显式尝试绝不派发其他任务 talk 目标。
+    if (questId && this.secretNestClosed(questId)) {
+      const blockedTip = this.secretNestQuestTip();
+      return { lines: [{ speaker: npc?.name ?? NPCS.hunter_lei?.name ?? '雷猎户', text: blockedTip.text }], blockedTip };
+    }
+    const blockedTip = !questId && npcId === 'hunter_lei' && !isSecretNestIntroEnabled()
+      ? this.secretNestQuestTip() : undefined;
+    // 正常主线保留原对白与 after；秘境说明由界面提示事件展示，不抢占主线对话。
+    const reply = (result: QuestTalkResult<QuestReward | void | Promise<QuestReward | void>>) => {
+      if (!blockedTip) return result;
+      this.notifyBlocked(blockedTip);
+      return { ...result, blockedTip };
+    };
     if (questId && QUESTS[questId] && !this.featureAllowed(QUESTS[questId])) {
       return { lines: [{ speaker: npc.name, text: FEATURE_UNAVAILABLE }] };
     }
@@ -166,7 +203,7 @@ export class QuestSystem {
       if (!q) continue;
       const blocked = this.sectEntryBlock(id);
       if (blocked && (questId || !this.prog.job) && this.state(id) !== 'done' && (q.giver === npcId || q.turnIn === npcId)) {
-        return { lines: [{ speaker: npc.name, text: blocked }] };
+        return reply({ lines: [{ speaker: npc.name, text: blocked }] });
       }
       const lines = (stage: 'offer' | 'progress' | 'complete', fallback?: Line[]) => {
         if (id === 'q_talisman_intro' && !q.dialogueKeys?.[stage]) {
@@ -176,22 +213,24 @@ export class QuestSystem {
         const key = q.dialogueKeys?.[stage];
         return key ? [{ speaker: npc.name, text: t(key, { name: this.prog.name }) }] : fill(fallback);
       };
-      if (q.turnIn === npcId && this.complete(id)) return { lines: lines('complete', sc.turnIn), after: options?.async ? () => this.turnInAsync(id) : () => this.turnIn(id) };
+      if (q.turnIn === npcId && this.complete(id)) return reply({ lines: lines('complete', sc.turnIn), after: options?.async ? () => this.turnInAsync(id) : () => this.turnIn(id) });
       if (q.turnIn === npcId && this.isActive(id) && this.classAllowed(q)) {
         const notReady = q.objectives.some(o => o.type === 'breakthrough') && sc.notReady && this.objectiveProgress(q).some(p => p.o.type !== 'breakthrough' && p.cur >= p.need);
-        return { lines: lines('progress', notReady ? sc.notReady : sc.progress) };
+        return reply({ lines: lines('progress', notReady ? sc.notReady : sc.progress) });
       }
-      if (q.giver === npcId && this.available(id)) return { lines: lines('offer', sc.accept), after: options?.async ? async () => { this.accept(id); } : () => { this.accept(id); } };
+      if (q.giver === npcId && this.available(id)) return reply({ lines: lines('offer', sc.accept), after: options?.async ? async () => { this.accept(id); } : () => { this.accept(id); } });
     }
     const fox = QUESTS.q_fox;
     if (!questId && fox && !featureEnabled('foxBoss') && this.state(fox.id) !== 'done'
       && (fox.giver === npcId || fox.turnIn === npcId)) {
-      return { lines: [{ speaker: npc.name, text: FEATURE_UNAVAILABLE }] };
+      return reply({ lines: [{ speaker: npc.name, text: FEATURE_UNAVAILABLE }] });
     }
+    if (blockedTip) return { lines: [{ speaker: npc.name, text: blockedTip.text }], blockedTip };
     return { lines: npc.dialog.map(t => ({ speaker: npc.name, text: t })) };
   }
 
   accept(id: string) {
+    if (this.secretNestClosed(id)) { this.notifyBlocked(refuseQuestOffer()); return false; }
     if (!this.available(id)) return false;
     this.prog.quests[id] = { state: 'active', kills: {}, crafted: {} };
     // 06 文档先教回春丹再要求炼成；表只有完成奖励丹方，教学时提前解锁避免闭环。
@@ -240,6 +279,7 @@ export class QuestSystem {
   turnIn(id: string, force: boolean | undefined, choiceId: string | undefined, options: { async: true }): Promise<QuestReward | undefined>;
   turnIn(id: string, force = false, choiceId?: string, options?: { async: true }): QuestReward | undefined | Promise<QuestReward | undefined> {
     if (options?.async) return this.turnInAsync(id, force, choiceId);
+    if (this.secretNestClosed(id)) { this.notifyBlocked(refuseQuestProgress()); return undefined; }
     const q = QUESTS[id];
     // 内部作弊仅跳过普通任务的接取/职业门槛；目标与事务发奖仍走原路径。
     const forced = force && isCheatEnabled() && !!q && !q.daily && this.isActive(id)
@@ -276,6 +316,7 @@ export class QuestSystem {
   }
 
   async turnInAsync(id: string, force = false, choiceId?: string): Promise<QuestReward | undefined> {
+    if (this.secretNestClosed(id)) { this.notifyBlocked(refuseQuestProgress()); return undefined; }
     if (!featureEnabled('indexedDbSaves')) return this.turnIn(id, force, choiceId);
     const now = this.now();
     const reward = await this.prog.runSaveTransactionAsync(draft => {
@@ -295,6 +336,7 @@ export class QuestSystem {
     if (changed) this.prog.persistSoon();   // G8：击杀数立即存档
   }
   onReach(target: string) {
+    if (target === 'secret_nest_sign' && !isSecretNestIntroEnabled()) { this.notifyBlocked(refuseQuestProgress()); return; }
     let changed = false;
     for (const id of this.activeIds) if (!this.prog.quests[id].reached && QUESTS[id].objectives.some(o => o.type === 'reach' && o.target === target)) {
       this.prog.quests[id].reached = true; changed = true;

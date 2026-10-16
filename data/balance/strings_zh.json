@@ -898,5 +898,13 @@
   "fly.zone_unavailable": "此处不可御剑飞行。",
   "fly.mp_low": "灵力不足，无法御剑。",
   "fly.knockdown": "御剑受阻，已被击落。",
-  "fly.cannot_attack": "御剑飞行时不可攻击。"
+  "fly.cannot_attack": "御剑飞行时不可攻击。",
+  "secret.closed.feature": "万妖巢穴尚未开放。",
+  "secret.closed.entrance": "石门尚未开放，可查看说明，暂不可进入。",
+  "secret.closed.sign_readable": "路牌可反复阅读，仅作说明，不推进任务。",
+  "secret.closed.quest_offer": "万妖巢穴引导尚未开放，暂不可接取。",
+  "secret.closed.quest_progress": "引导尚未开放，暂不可推进或交付。",
+  "secret.closed.no_enter": "秘境尚未开放，暂不可进入。",
+  "secret.closed.no_start": "秘境尚未开放，暂不可开局或抽取房间。",
+  "secret.closed.no_reward": "秘境尚未开放，机缘与各类收益暂不可领取。"
 }
