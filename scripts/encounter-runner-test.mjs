@@ -31,8 +31,9 @@ async function guardedTables() {
   return Promise.all(files.map(async file => {
     const bytes = await readFile(file), parsed = JSON.parse(bytes.toString());
     if (file.endsWith('/features.json')) {
-      assert.equal(md5(bytes), '8b016fe74a812852e2d92e2f94857903', 'tip 开态 features 固定 MD5');
+      assert.equal(md5(bytes), '16fa150878794fd82cccf76a25b48d5a', 'tip 开态 features 固定 MD5');
       assert.equal(parsed.lifeSkillCurve, true, 'tip 开态，lifeSkillCurve 已开启');
+      assert.equal(parsed.indexedDbSaves, true, 'tip 开态，indexedDbSaves 已开启');
     } else if (file.endsWith('/encounters.json')) {
       assert.equal(parsed.encounters.length, 5, `${file}: 五事件`);
       assert.ok(parsed.encounters.every(row => row.enabled === true), `${file}: tip 临时开态，正式五事件全部严格 true`);

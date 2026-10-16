@@ -12,5 +12,5 @@
   "talismanCraft": true,
   "lifeSkillCurve": true,
   "spiritScan": true,
-  "indexedDbSaves": false
+  "indexedDbSaves": true
 }

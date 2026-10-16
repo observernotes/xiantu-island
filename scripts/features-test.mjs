@@ -7,12 +7,12 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { createServer, preview } from 'vite';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-const names = ['fiveSectClasses', 'sectDaily', 'sectRanks', 'sectShopLibrary', 'shops', 'sectDonations', 'seclusion', 'alchemyPhase1', 'v05Maps', 'foxBoss', 'talismanCraft', 'lifeSkillCurve', 'spiritScan'];
+const names = ['fiveSectClasses', 'sectDaily', 'sectRanks', 'sectShopLibrary', 'shops', 'sectDonations', 'seclusion', 'alchemyPhase1', 'v05Maps', 'foxBoss', 'talismanCraft', 'lifeSkillCurve', 'spiritScan', 'indexedDbSaves'];
 let configured = {};
 try { configured = JSON.parse(await fs.readFile(path.join(root, 'data/features.json'), 'utf8')); }
 catch (error) { if (error.code !== 'ENOENT') throw error; }
 const expected = Object.fromEntries(names.map(name => [name,
-  typeof configured?.[name] === 'boolean' ? configured[name] : name !== 'shops' && name !== 'talismanCraft' && name !== 'lifeSkillCurve' && name !== 'spiritScan']));
+  typeof configured?.[name] === 'boolean' ? configured[name] : name !== 'shops' && name !== 'talismanCraft' && name !== 'lifeSkillCurve' && name !== 'spiritScan' && name !== 'indexedDbSaves']));
 if (process.env.QA_TIER_EXPECT_FEATURES) {
   // tier1 的清单可早于新开关；完整运行时开关仍在下方与工程快照核对。
   for (const [name, value] of Object.entries(JSON.parse(process.env.QA_TIER_EXPECT_FEATURES))) {
@@ -45,7 +45,7 @@ try {
     const loader = await createServer({ root: fixtureRoot, configFile: false, server: { middlewareMode: true, hmr: false, ws: false }, logLevel: 'error' });
     try {
       const features = await loader.ssrLoadModule('/src/features.ts');
-      assert.deepEqual(features.featureFlags(), Object.fromEntries(names.map(name => [name, configured?.[name] ?? (name !== 'shops' && name !== 'talismanCraft' && name !== 'lifeSkillCurve' && name !== 'spiritScan')])));
+      assert.deepEqual(features.featureFlags(), Object.fromEntries(names.map(name => [name, configured?.[name] ?? (name !== 'shops' && name !== 'talismanCraft' && name !== 'lifeSkillCurve' && name !== 'spiritScan' && name !== 'indexedDbSaves')])));
     } finally { await loader.close(); }
   }
 } finally { await fs.rm(fixtureRoot, { recursive: true, force: true }); }
@@ -94,6 +94,8 @@ try {
     same(xt.getState().features, expected, '页面初始开关与发版快照不一致');
     // 以下关/开覆盖仅用于当前页面的隔离测试；刷新必须恢复发版快照。
     for (const name of names) xt.setFlag(name, true);
+    // 旧矩阵沿用同步测试桥 loadSave/importSave；此处使用关态夹具。
+    flip('indexedDbSaves', false);
     const now = xt.clock.pause();
     const base = { ...xt.exportSave(), level: 30, exp: 0, hp: 0, mp: 0, job: '', inventory: {}, equip: {},
       quests: { q_fox: { state: 'done', kills: {} } }, skills: {}, skillGifted: {}, hotbar: Array(8).fill(null),
@@ -327,6 +329,10 @@ try {
     check(s.prog.mp === senseMp && !Object.hasOwn(xt.exportSave(), 'senseState'), '神识表关闭仍扣费或写盘');
     flip('spiritScan', false);
     checked.push('spiritScan');
+
+    flip('indexedDbSaves', false);
+    flip('indexedDbSaves', true);
+    checked.push('indexedDbSaves');
 
     // 所有开关关闭后读旧档：保存字段完整，存档的 true 不能越过发版门禁。
     const preserved = { ...joined, ageUpdatedAt: xt.getState().time, flags: Object.fromEntries(names.map(name => [name, true])),

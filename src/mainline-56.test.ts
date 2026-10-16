@@ -1,8 +1,9 @@
 import rawQuests from '@xt/balance/quests.json';
 import rawNpcs from '@xt/balance/npcs.json';
 import strings from '@xt/balance/strings_zh.json';
+import releaseFeatures from '../data/features.json';
 import { BREAKTHROUGH, NPCS, QUESTS, REALMS, SCRIPTS, TILED_MAPS, TRIALS, questName, questDescription, t, type NpcDef, type QuestDef } from './data';
-import { featureFlags } from './features';
+import { featureEnabled, featureFlags, setFeatureFlag } from './features';
 import { gameNow } from './GameClock';
 import { Progress } from './Progress';
 import { QuestSystem } from './QuestSystem';
@@ -45,7 +46,6 @@ const expectedStrings = {
 };
 const stringTable: Record<string, unknown> = strings;
 const storageBefore = Object.getOwnPropertyDescriptor(globalThis, 'localStorage');
-const flagsBefore = featureFlags();
 const saved: Record<string, string> = {};
 const saveKey = 'xiantu_save_v1';
 const now = Date.now();
@@ -127,6 +127,11 @@ function trialScene(f: Fixture) {
 }
 
 try {
+  eq(releaseFeatures.indexedDbSaves, true, '正式 data/features.json indexedDbSaves 严格布尔 true');
+  eq(featureEnabled('indexedDbSaves'), true, 'indexedDbSaves 发布配置默认开启');
+  // 关态夹具保留本套件的同步事务与 localStorage 断言。
+  setFeatureFlag('indexedDbSaves', false);
+  const flagsBefore = featureFlags();
   Object.defineProperty(globalThis, 'localStorage', { configurable: true, writable: true, value: {
     getItem: (key: string) => saved[key] ?? null,
     setItem: (key: string, value: string) => { saved[key] = String(value); },
@@ -389,9 +394,10 @@ try {
     }
   }
 
-  eq(featureFlags(), flagsBefore, '卷一5–6章测试不覆写任何正式开关');
+  eq(featureFlags(), flagsBefore, '卷一5–6章测试保持关态夹具开关不变');
   console.log(JSON.stringify({ suite: 'mainline-56', passed: true, assertions, quests: ids }));
 } finally {
+  setFeatureFlag('indexedDbSaves', false);
   if (storageBefore) Object.defineProperty(globalThis, 'localStorage', storageBefore);
   else Reflect.deleteProperty(globalThis, 'localStorage');
 }

@@ -163,23 +163,25 @@ function deferNextWrite(backend: SaveBackend) {
 try {
   Date.now = () => now;
   Object.defineProperty(globalThis, 'localStorage', { configurable: true, writable: true, value: storage });
-  eq(releaseFeatures.indexedDbSaves, false, '关态正式 data/features.json indexedDbSaves 严格布尔 false');
-  eq(featureEnabled('indexedDbSaves'), false, 'indexedDbSaves 发布配置默认关闭');
+  eq(releaseFeatures.indexedDbSaves, true, '正式 data/features.json indexedDbSaves 严格布尔 true');
+  eq(featureEnabled('indexedDbSaves'), true, 'indexedDbSaves 发布配置默认开启');
+
+  // 关态夹具只覆盖内存，回归既有同步 localStorage 单槽路径。
   setFeatureFlag('indexedDbSaves', false);
 
   const p = sample();
-  eq(p.save(), true, '关态仍同步写 localStorage 单槽');
-  same(fields(Progress.load()), fields(p), '关态既有 Progress.load 保留道心善恶与全部关系字段');
-  same(Object.keys(disk), [saveKey], '关态不额外创建槽或自动档键');
+  eq(p.save(), true, '关态夹具仍同步写 localStorage 单槽');
+  same(fields(Progress.load()), fields(p), '关态夹具既有 Progress.load 保留道心善恶与全部关系字段');
+  same(Object.keys(disk), [saveKey], '关态夹具不额外创建槽或自动档键');
   const diskBefore = disk[saveKey], memoryBefore = p.exportSave();
   rejectLegacyWrite = true;
   eq(p.runSaveTransaction(() => { p.stones += 7; p.affinity.village_elder++; return true; }), undefined,
-    '关态配额满继续返回事务失败');
-  same(p.exportSave(), memoryBefore, '关态事务失败恢复内存全部字段');
-  eq(disk[saveKey], diskBefore, '关态事务失败保留磁盘原档');
+    '关态夹具配额满继续返回事务失败');
+  same(p.exportSave(), memoryBefore, '关态夹具事务失败恢复内存全部字段');
+  eq(disk[saveKey], diskBefore, '关态夹具事务失败保留磁盘原档');
   rejectLegacyWrite = false;
   Progress.reset();
-  eq(disk[saveKey], undefined, '关态 reset 仍只删除 localStorage 主档');
+  eq(disk[saveKey], undefined, '关态夹具 reset 仍只删除 localStorage 主档');
 
   // 三个手动槽独立读写，输入和读出都是数据快照，永远没有 auto 槽。
   {
@@ -309,13 +311,13 @@ try {
     storage.clear();
   }
 
-  // 玩法主路径：只克隆内存开关，确认真实调用方与权威 async 入口都命中 IDB/槽。
+  // 玩法主路径：对齐正式开态，确认真实调用方与权威 async 入口都命中 IDB/槽。
   {
     storage.clear();
     const backend = createMemorySaveBackend(); setSaveBackend(backend);
     setFeatureFlag('indexedDbSaves', true);
     Progress.setActiveSlot(1);
-    eq(releaseFeatures.indexedDbSaves, false, '玩法开态只覆盖内存，正式 indexedDbSaves 仍严格 false');
+    eq(releaseFeatures.indexedDbSaves, true, '玩法开态对齐正式 indexedDbSaves 严格布尔 true');
     const mainline = await Progress.load({ async: true, slot: 1 });
     mainline.name = '玩法异步修士'; mainline.stones += 7;
     eq(await mainline.save({ async: true }), true, '玩法主路径内存变更后 save({async:true}) 命中 IDB/槽');
@@ -440,6 +442,7 @@ try {
 
   // 开态 Progress 绑定手动槽，既有道心善恶/关系字段与严格导入校验原样回归。
   {
+    eq(releaseFeatures.indexedDbSaves, true, 'Progress 三槽开态对齐正式 indexedDbSaves=true');
     const backend = createMemorySaveBackend();
     setSaveBackend(backend);
     setFeatureFlag('indexedDbSaves', true);
@@ -576,6 +579,7 @@ try {
 
   // 原有入口的显式 async 重载与 async 别名使用同一套槽提交路径。
   {
+    eq(releaseFeatures.indexedDbSaves, true, '显式 async 入口开态对齐正式 indexedDbSaves=true');
     setSaveBackend(createMemorySaveBackend());
     Progress.setActiveSlot(1);
     const original = sample('原入口修士');
@@ -598,6 +602,7 @@ try {
 
   // 模拟历史字段在迁移代码中触发异常；即便基础校验通过，也不能用回退角色覆盖原档。
   {
+    eq(releaseFeatures.indexedDbSaves, true, '历史档恢复开态对齐正式 indexedDbSaves=true');
     const ensureDefaultsBefore = Progress.prototype.ensureDefaults;
     try {
       Progress.prototype.ensureDefaults = function () {
@@ -633,7 +638,7 @@ try {
   }
 
   console.log(JSON.stringify({ suite: 'save-slots', passed: true, assertions,
-    indexedDbSavesDefault: false, slotKeys: SAVE_SLOT_KEYS, autoSlot: false }));
+    indexedDbSavesDefault: true, slotKeys: SAVE_SLOT_KEYS, autoSlot: false }));
 } finally {
   Date.now = dateNowBefore;
   setFeatureFlag('indexedDbSaves', false);
