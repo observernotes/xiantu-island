@@ -92,11 +92,12 @@ try {
 
   {
     const { page, done } = await session(baseURL);
+    await page.evaluate(() => window.__xt.setFlag('spiritScan', false));
     const before = await page.evaluate(() => {
       const s = window.__scene; s.physics.pause();
       return { mp: s.prog.mp, save: localStorage.getItem('xiantu_save_v1'), result: window.__xt.senseScan('key', 'off') };
     });
-    eq(before.result.blockKey, 'sense.block.unavailable', '关态 requestScan 必须 unavailable');
+    eq(before.result.blockKey, 'sense.block.unavailable', '关闭开关后 requestScan 必须 unavailable');
     eq(await page.evaluate(() => window.__scene.prog.mp), before.mp, '关态扣了灵力');
     eq(await page.evaluate(() => localStorage.getItem('xiantu_save_v1')), before.save, '关态请求写了存档');
     const saved = await page.evaluate(() => { window.__scene.prog.save(); return JSON.parse(localStorage.getItem('xiantu_save_v1')); });
@@ -104,7 +105,7 @@ try {
     const disabledFixture = await page.evaluate(() => window.__xt.senseFixture());
     ok(disabledFixture.platform && !disabledFixture.platform.enabled, '关态夹具平台提前启用碰撞');
     noPlatformRender(disabledFixture, '默认关态夹具');
-    await done('disabled'); checks.push('默认关态 unavailable、不扣蓝、不写盘，正常 save 无 senseState，hidden 平台无画面/碰撞');
+    await done('disabled'); checks.push('关闭开关后 unavailable、不扣蓝、不写盘，正常 save 无 senseState，hidden 平台无画面/碰撞');
   }
 
   {
