@@ -8,7 +8,7 @@
 | 项 | 内容 |
 |----|------|
 | 起始 tip | `578f9cd`（与 master / v0.5.6 同线） |
-| 本提交 tip | 见下方 push 后 SHA |
+| 本提交 tip | `38bed8b`（origin/dev） |
 | 工作区 | `/workspace/xiantu/wt/dev`（branch `dev`） |
 | 正式试玩包 | **v0.5.6** @`578f9cd` **未动**（不开神识、不合 master、不发版） |
 | 目的 | 交执法堂做神识**开态正向矩阵**；进包等负责人下一令 |
