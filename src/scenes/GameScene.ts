@@ -114,8 +114,12 @@ export class GameScene extends Phaser.Scene {
   alchemy!: AlchemyPanel;
   talismanSystem!: TalismanSystem;
   talismanUse!: TalismanUseSystem;
-  private talismanProjectiles: { sprite: Phaser.GameObjects.Image; effect: TalismanFireEffect; x: number; y: number; distance: number; facing: number }[] = [];
+  private talismanProjectiles: { sprite: Phaser.GameObjects.Image | Phaser.GameObjects.Sprite; effect: TalismanFireEffect; x: number; y: number; distance: number; facing: number }[] = [];
   private talismanCastText?: Phaser.GameObjects.Text;
+  private talismanFx = new Set<Phaser.GameObjects.Sprite>();
+  private talismanBuffFx = new Map<string, Phaser.GameObjects.Sprite>();
+  private talismanBuffIcons = new Map<string, Phaser.GameObjects.Image>();
+  private talismanReturnFx?: Phaser.GameObjects.Sprite;
   shop!: ShopPanel;
   attrPanel!: AttrPanel;
   inventoryPanel!: InventoryPanel;
@@ -159,9 +163,8 @@ export class GameScene extends Phaser.Scene {
     this.inventoryPanel = undefined!; this.equipPanel = undefined!;
 
     // 制符为每图重建：系统实例和火符弹体不跨图保留；进度/冷却在 prog。
+    this.clearTalismanFx();
     this.talismanSystem = undefined!; this.talismanUse = undefined!; this.talismanCastText = undefined;
-    for (const projectile of this.talismanProjectiles) if (projectile.sprite.scene) projectile.sprite.destroy();
-    this.talismanProjectiles = [];
 
     // prog 由 registry 持有并沿用角色/存档；不能在换图时新建或重置角色进度。
     // mpPool 是跨图回蓝的小数余量，清零会少回灵力；breakthroughNotified 是会话内一次提示。
@@ -217,7 +220,7 @@ export class GameScene extends Phaser.Scene {
     preloadAlchemy(this);
   }
 
-  create(data: { map?: string; portal?: string; pos?: { x: number; y: number } }) {
+  create(data: { map?: string; portal?: string; pos?: { x: number; y: number }; talismanReturnLand?: boolean }) {
     this.resetRunState();
     this.physics.disableUpdate();
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.clearShots());
@@ -410,11 +413,14 @@ export class GameScene extends Phaser.Scene {
       this.sectTrial?.destroy(); this.prog.endTrialSkills();
       this.talismanUse?.interrupt('map');
       if (this.scene.isActive('talisman-craft-ui')) this.scene.stop('talisman-craft-ui');
-      this.talismanProjectiles = [];
+      this.clearTalismanFx();
     });
     this.applyFeatureFlags();
     if (featureEnabled('talismanCraft')) this.prog.markMapVisited(this.map.id);
     this.prog.setPosition(this.map.id, this.player.x, this.player.y);
+    if (featureEnabled('talismanCraft') && data.talismanReturnLand && data.map === this.map.id
+      && data.pos?.x === this.player.x && data.pos?.y === this.player.y)
+      this.createTalismanFx('fx_talisman_return_land', 'land', this.player.x, this.player.y, true);
     const returned = this.registry.get('sectTrialReturnMessage');
     const returnDetail = this.registry.get('sectTrialReturnDetail');
     this.registry.remove('sectTrialReturnMessage');
@@ -1129,7 +1135,7 @@ export class GameScene extends Phaser.Scene {
         this.prog.position = { mapId: destination.mapId, x: destination.x, y: destination.y };
         const timer = this.time.delayedCall(0, () => {
           this.travelling = true; this.player.body.setVelocity(0, 0);
-          this.scene.restart({ map: destination.mapId, pos: { x: destination.x, y: destination.y } });
+          this.scene.restart({ map: destination.mapId, pos: { x: destination.x, y: destination.y }, talismanReturnLand: true });
         });
         return () => timer.remove(false);
       },
@@ -1149,24 +1155,100 @@ export class GameScene extends Phaser.Scene {
     return result;
   }
   private interruptTalisman(reason: 'move' | 'attack' | 'damage' | 'death' | 'map') {
-    if (this.talismanUse?.interrupt(reason)) this.log(t('talisman.return_interrupted'), '#ffb0b0');
+    if (this.talismanUse?.interrupt(reason)) {
+      this.talismanReturnFx?.destroy(); this.talismanReturnFx = undefined;
+      this.talismanCastText?.setVisible(false);
+      this.log(t('talisman.return_interrupted'), '#ffb0b0');
+    }
+  }
+  /** FX 只读用符状态；缺纹理或动画时保留黄块/纯逻辑，不参与结算。 */
+  private createTalismanFx(atlas: string, phase: string, x: number, y: number, once = false) {
+    const key = `${atlas}_${phase}`;
+    if (!this.textures.exists(atlas) || !this.anims.exists(key)) return undefined;
+    const animation = this.anims.get(key), texture = this.textures.get(atlas);
+    if (!animation.frames.length || animation.frames.some(frame => frame.textureKey !== atlas || !texture.has(String(frame.textureFrame)))) return undefined;
+    const fx = this.add.sprite(x, y, atlas, animation.frames[0].textureFrame).setDepth(12).setName(atlas)
+      .setBlendMode(Phaser.BlendModes.NORMAL);
+    applySpriteArt(fx);
+    this.talismanFx.add(fx);
+    fx.once(Phaser.GameObjects.Events.DESTROY, () => this.talismanFx.delete(fx));
+    if (once) fx.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => fx.destroy());
+    return fx.play(key);
+  }
+  private clearTalismanFx() {
+    for (const fx of this.talismanFx) fx.destroy();
+    this.talismanFx.clear(); this.talismanBuffFx.clear();
+    for (const icon of this.talismanBuffIcons.values()) icon.destroy();
+    this.talismanBuffIcons.clear(); this.talismanReturnFx = undefined;
+    for (const projectile of this.talismanProjectiles) if (projectile.sprite.active) projectile.sprite.destroy();
+    this.talismanProjectiles = []; this.talismanCastText?.setVisible(false);
+  }
+  private syncTalismanFx() {
+    const now = gameNow(), state = this.prog.talismanUse;
+    const buffs = state?.version === 1 && Array.isArray(state.buffs) ? state.buffs.filter(buff => buff.expireAt > now) : [];
+    const layout = this.cache.json.get('talisman_ui')?.hud;
+    for (const [index, id] of ['talisman_guard', 'talisman_gather'].entries()) {
+      const active = buffs.some(buff => buff.itemId === id);
+      let fx = this.talismanBuffFx.get(id);
+      const atlas = id === 'talisman_guard' ? 'fx_talisman_guard_orbit' : 'fx_talisman_gather_buff';
+      if (active) {
+        if (!fx?.active) {
+          fx = this.createTalismanFx(atlas, 'loop', this.player.x, this.player.y);
+          if (fx) {
+            this.talismanBuffFx.set(id, fx);
+            if (id === 'talisman_gather') fx.setAlpha(0.65);
+            const start = `${atlas}_start`, loop = `${atlas}_loop`;
+            if (id === 'talisman_guard' && this.anims.exists(start)) {
+              const sprite = fx;
+              sprite.play(start).once(Phaser.Animations.Events.ANIMATION_COMPLETE_KEY + start, () => {
+                if (sprite.active && this.talismanBuffFx.get(id) === sprite) sprite.play(loop);
+              });
+            }
+          }
+        }
+        fx?.setPosition(this.player.x, this.player.y);
+        const iconKey = layout?.icons?.[`buff_${id}`];
+        if (!this.talismanBuffIcons.has(id) && typeof iconKey === 'string' && hasHud(this, iconKey)) {
+          const size = layout.size ?? [16, 16];
+          this.talismanBuffIcons.set(id, this.add.image(264 + index * 22, 34, iconKey)
+            .setDisplaySize(size[0], size[1]).setScrollFactor(0).setDepth(103).setName(`buff-${id}`));
+        }
+      } else {
+        this.talismanBuffFx.delete(id);
+        if (fx?.active) {
+          fx.removeAllListeners(Phaser.Animations.Events.ANIMATION_COMPLETE_KEY + `${atlas}_start`);
+          const end = `${atlas}_end`;
+          if (this.anims.exists(end)) fx.play(end).once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => fx!.destroy());
+          else fx.destroy();
+        }
+        this.talismanBuffIcons.get(id)?.destroy(); this.talismanBuffIcons.delete(id);
+      }
+    }
+    if (this.talismanUse?.cast) {
+      if (!this.talismanReturnFx?.active) this.talismanReturnFx = this.createTalismanFx('fx_talisman_return_cast', 'loop', this.player.x, this.player.y);
+      this.talismanReturnFx?.setPosition(this.player.x, this.player.y);
+    } else { this.talismanReturnFx?.destroy(); this.talismanReturnFx = undefined; }
   }
   private emitTalismanFire(effect: TalismanFireEffect) {
     if (!this.player.active || this.player.dead) return false;
-    const key = 'fx_talisman_fire_fallback';
-    if (!this.textures.exists(key)) {
-      const graphics = this.make.graphics({}, false);
-      graphics.fillStyle(0xf2d04a).fillRect(0, 0, 18, 24).lineStyle(2, 0xe5483a).strokeRect(1, 1, 16, 22);
-      graphics.generateTexture(key, 18, 24); graphics.destroy();
-    }
     const x = this.player.x, y = this.player.y - SPEC.bodyH / 2;
-    const sprite = this.add.image(x, y, key).setDepth(12).setName('talisman-fire-projectile');
+    let sprite: Phaser.GameObjects.Image | Phaser.GameObjects.Sprite | undefined = this.createTalismanFx('fx_talisman_fire_projectile', 'fly', x, y);
+    if (!sprite) {
+      const key = 'fx_talisman_fire_fallback';
+      if (!this.textures.exists(key)) {
+        const graphics = this.make.graphics({}, false);
+        graphics.fillStyle(0xf2d04a).fillRect(0, 0, 18, 24).lineStyle(2, 0xe5483a).strokeRect(1, 1, 16, 22);
+        graphics.generateTexture(key, 18, 24); graphics.destroy();
+      }
+      sprite = this.add.image(x, y, key).setDepth(12);
+    }
+    sprite.setFlipX(effect.facing > 0).setName('talisman-fire-projectile');
     const projectile = { sprite, effect, x, y, distance: 0, facing: effect.facing };
     this.talismanProjectiles.push(projectile);
     return () => { sprite.destroy(); this.talismanProjectiles = this.talismanProjectiles.filter(p => p !== projectile); };
   }
   private updateTalismanUse(delta: number) {
-    if (!featureEnabled('talismanCraft')) return;
+    if (!featureEnabled('talismanCraft')) { this.clearTalismanFx(); return; }
     const cast = this.talismanUse?.cast;
     if (cast) {
       const keys = this.keys;
@@ -1183,6 +1265,7 @@ export class GameScene extends Phaser.Scene {
       this.talismanCastText.setVisible(true).setText(t('talisman.return_cast', { town: currentCast.destination.name ?? currentCast.destination.mapId,
         seconds: (Math.max(0, currentCast.endsAt - gameNow()) / 1000).toFixed(1) }));
     } else this.talismanCastText?.setVisible(false);
+    this.syncTalismanFx();
     for (const projectile of this.talismanProjectiles) {
       if (!projectile.sprite.active) continue;
       const effect = projectile.effect, distance = Math.min(effect.projectileSpeed * delta / 1000, effect.rangePx - projectile.distance);
@@ -1202,6 +1285,7 @@ export class GameScene extends Phaser.Scene {
       if (monster && (firstSolid === undefined || contactDistance(monster.body) < firstSolid)) {
         // Reuse the existing defense, level gap, hit, death, quest and loot pipeline with absolute configured attack.
         const dmg = this.prog.fixedDamageTo(effect.baseDamage, monster.def.level, monster.def.def);
+        this.createTalismanFx('fx_talisman_fire_hit', 'hit', fromX + projectile.facing * contactDistance(monster.body), y, true);
         monster.takeHit(this.time.now, dmg, projectile.facing);
         this.damageNumber(monster.x, monster.y - monster.body.height - 10, dmg, '#ffb02e', '#6b2a00');
         projectile.sprite.destroy();
@@ -1372,7 +1456,7 @@ export class GameScene extends Phaser.Scene {
     this.dialog?.dismiss(); this.skillWindow?.close(); this.shop?.update();
     this.refreshHelpText();
     if (featureEnabled('talismanCraft') && !this.talismanSystem) { this.setupTalisman(); this.prog.markMapVisited(this.map.id); }
-    if (!featureEnabled('talismanCraft')) { this.interruptTalisman('map'); if (this.scene.isActive('talisman-craft-ui')) this.scene.stop('talisman-craft-ui'); }
+    if (!featureEnabled('talismanCraft')) { this.interruptTalisman('map'); this.clearTalismanFx(); if (this.scene.isActive('talisman-craft-ui')) this.scene.stop('talisman-craft-ui'); }
     this.inventoryPanel?.update(); this.equipPanel?.update();
     if (this.sectTrial && !this.sectTrial.ended && (!featureEnabled('fiveSectClasses') || !featureEnabled('v05Maps'))) this.sectTrial.exit();
     if (!featureEnabled('foxBoss')) {

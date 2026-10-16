@@ -11,6 +11,7 @@ if (!process.argv.includes('--single-mode')) {
       child.on('error', reject); child.on('exit', code => code === 0 ? resolve() : reject(new Error(`talisman ${mode} failed: ${code}`)));
     });
   }
+  await import('./talisman-fx-test.mjs');
 } else {
   const server = await createServer({ server: { middlewareMode: true, hmr: false, ws: false }, appType: 'custom', logLevel: 'error' });
   try {
