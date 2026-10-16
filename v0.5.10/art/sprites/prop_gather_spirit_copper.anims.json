@@ -1,0 +1,48 @@
+{
+ "atlas": "prop_gather_spirit_copper",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  48,
+  48
+ ],
+ "anims": [
+  {
+   "key": "prop_gather_spirit_copper_idle",
+   "frames": [
+    "prop_gather_spirit_copper_idle_01",
+    "prop_gather_spirit_copper_idle_02",
+    "prop_gather_spirit_copper_idle_03",
+    "prop_gather_spirit_copper_idle_04"
+   ],
+   "frameRate": 6,
+   "repeat": -1
+  },
+  {
+   "key": "prop_gather_spirit_copper_harvested",
+   "frames": [
+    "prop_gather_spirit_copper_harvested_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  }
+ ],
+ "blend": "NORMAL",
+ "hitArea": [
+  32,
+  32
+ ],
+ "promptOffsetY": -52,
+ "gatherItem": "spirit_copper",
+ "maps": [
+  "wanyao_outer_1",
+  "wanyao_outer_2",
+  "wanyao_deep_1",
+  "wanyao_deep_2"
+ ],
+ "note": "采集点占位（item=spirit_copper，灵铜矿脉；materials.json gather: castMs 3500 / respawnMs 120000，万妖林 4 张图）。放在对象坐标，脚底=地面；可采时循环 idle，采完切 harvested，respawnMs 后切回 idle。读条用 art/icons/ui/alchemy/ui_gather_castbar_*，读条小图标用 icon_gather_ore。",
+ "kind": "prop"
+}
