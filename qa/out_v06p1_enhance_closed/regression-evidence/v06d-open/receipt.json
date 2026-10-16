@@ -1,0 +1,21 @@
+{
+  "TIP_SHA": "401a3cb630276931c0f9eb030a9f3bb5fa4a5811",
+  "branchTip": "9aa064a592d1fb5f20408d268f32eab0bb450531",
+  "originDev": "9aa064a592d1fb5f20408d268f32eab0bb450531",
+  "handoff": "/workspace/xiantu/wt/dev/reports/炼器阁/V06D_OPEN_FIXTURE_HANDOFF.md",
+  "testOpen": {
+    "exit": 0,
+    "assertions": 3012
+  },
+  "testClosed": {
+    "exit": 0,
+    "assertions": 15031
+  },
+  "towerFloorsSha": "735000b538b06142053fc2aa8e106a1e9e4f500755712b4df095e690b80c37b6",
+  "titlesSha": "d765004ff1c75e11c0f64bc05d5eb07b96b00122264692140c01233df96fdb8c",
+  "protectedFiles": 111,
+  "giftsEnabled": 0,
+  "formalTowerOpen": false,
+  "softOpened": false,
+  "released": false
+}

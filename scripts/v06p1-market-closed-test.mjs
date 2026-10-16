@@ -13,7 +13,8 @@ const modes = [['shared', shared], ['snapshot', path.join(root, 'data')]];
 const dataRoots = new Map([['shared', shared], ['wt', path.join(root, 'data')], ['game', gameData]]);
 const out = path.join(root, 'qa/out_v06p1_forge_formal/market-closed');
 const baselineFile = path.join(root, 'qa/out_v06p1_market_closed/protected-before.json');
-const stringsSha = 'fad9b3e604a3af23e99939bf22f77a55de803842daa297ab7fb2c2a6ed0b8967';
+const stringsSha = '92d5525c86562a870f45bf53c0c2010e961b83ec9c257a0cf8257178f45b4cab';
+const preEnhanceStringsSha = 'fad9b3e604a3af23e99939bf22f77a55de803842daa297ab7fb2c2a6ed0b8967';
 const marketStringsSha = 'c115b6deadf85d1aa9958de1097321ab65624b456e0fddeca42a5fe39743db27';
 const previousStringsSha = '6b0861110a6af78f7bbfb78eb32e7579ecd41d5a33c3eff3da9e157794f5951f';
 const originalStringsSha = '4a32b19b8e1f318cfcbbf8b9a4e9382f17e7fc3fd951d040f9ec4749524f7385';
@@ -21,11 +22,12 @@ const originalSemanticSha = '81d364627ea128a3125c1def299f1d94804cee7b7e511ff417d
 // 沿用既有寄售接线；炼器窗仅追加四个明确源码、可选袋四行与最小欧冶匠提示，八 tip 契约不变。
 const openFixtureSources = ['MarketOpenFlag.ts', 'MarketProgress.ts', 'MarketGate.ts', 'v06p1-market-open.test.ts',
   'ForgeOpenFlag.ts', 'ForgeGate.ts', 'ForgeProgress.ts', 'v06p1-forge-open.test.ts'];
+const enhanceClosedSources = ['EnhanceClosed.ts', 'EnhanceOpenFlag.ts'];
 const openFixtureProgressSha = '3e1f4a258b384d5f0d1a2967d0228fcd792cb9a58979efcd5648d9baf9f2e7da';
 const marketTableSha = 'e4725b4724dea9abf67baf2ee467a30e841fee3ee1a9137f5dc25225c09debde';
 // 仅认可本窗权威配方及 wt 镜像的固定 SHA，game/data 和其他表继续钉历史值。
 const formalRecipesSha = '1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f';
-const formalRecipeKeys = new Set(['shared:balance/recipes.json', 'wt:balance/recipes.json']);
+const formalRecipeKeys = new Set(['shared:balance/recipes.json', 'wt:balance/recipes.json', 'game:balance/recipes.json']);
 const closedStrings = {
   'market.closed.feature': '坊市寄售尚未开放。',
   'market.closed.list': '坊市寄售尚未开放，暂不可上架。',
@@ -45,6 +47,16 @@ const forgeClosedStrings = {
   'forge.closed.no_grade': '炼器打造尚未开放，不展示或结算品质档。',
   'forge.closed.load_refresh': '读档或刷新后炼器仍未开放，暂不可打造。',
   'forge.closed.later_service': '强化、附灵与分解等后续服务尚未开放。',
+};
+const enhanceClosedStrings = {
+  'enhance.closed.feature': '装备强化尚未开放。',
+  'enhance.closed.entrance': '欧冶匠暂不提供强化，可查看说明。',
+  'enhance.closed.enhance': '装备强化尚未开放，暂不可强化。',
+  'enhance.closed.no_submit': '装备强化尚未开放，暂不可提交强化。',
+  'enhance.closed.no_level': '装备强化尚未开放，不变更强化等级。',
+  'enhance.closed.no_consume': '装备强化尚未开放，不扣灵石或精炼石。',
+  'enhance.closed.load_refresh': '读档或刷新后强化仍未开放，暂不可强化。',
+  'enhance.closed.later_service': '附灵与分解等后续服务尚未开放。',
 };
 const apiTips = {
   featureClosed: 'market.closed.feature', refuseList: 'market.closed.list',
@@ -189,7 +201,7 @@ async function checkProtection() {
     }
   }
   const expectedSource = Object.keys(baseline).filter(key => key.startsWith('wt:src/')).map(key => key.slice('wt:src/'.length));
-  eq(await filesUnder(path.join(root, 'src')), [...expectedSource, 'MarketClosed.ts', 'ForgeClosed.ts', ...openFixtureSources].sort(), 'C12 src 仅新增关态 API 及精确列明的寄售/炼器夹具源码，无完整寄售 UI 文件');
+  eq(await filesUnder(path.join(root, 'src')), [...expectedSource, 'MarketClosed.ts', 'ForgeClosed.ts', ...openFixtureSources, ...enhanceClosedSources].sort(), 'C12 src 仅新增关态 API 及精确列明的寄售/炼器夹具源码与强化关态 API/Flag，无完整寄售 UI 文件');
   for (const [mode, dataRoot] of dataRoots) {
     const file = path.join(dataRoot, 'balance/market_consign.json');
     const actual = await shaOrNull(file);
@@ -201,7 +213,7 @@ async function checkProtection() {
     ok(Object.hasOwn(protectedFiles, `wt:${name}`), `C12 写前证据覆盖 ${name}`);
   }
   report({ suite: 'v06p1-market-closed-protection', passed: true, protectedFiles: Object.keys(protectedFiles).length,
-    sourcesOnlyAdded: ['src/MarketClosed.ts', ...openFixtureSources.map(name => `src/${name}`)],
+    sourcesOnlyAdded: ['src/MarketClosed.ts', ...openFixtureSources.map(name => `src/${name}`), ...enhanceClosedSources.map(name => `src/${name}`)],
     optionalMarketBagAdded: true, marketTableConsumedByClosedApi: false, minimalFrontendWiring: true,
     fullMarketUiAdded: false, formalRecipesSha, formalRecipeKeys: [...formalRecipeKeys],
     formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false });
@@ -211,13 +223,16 @@ async function checkStatic(mode, dataRoot) {
   const raw = await fs.readFile(path.join(dataRoot, 'balance/strings_zh.json'), 'utf8');
   const strings = JSON.parse(raw), entries = Object.entries(strings);
   eq(hash(raw), stringsSha, `${mode}: strings 为权威目标 SHA`);
-  eq(entries.length, 928, `${mode}: 原 912 键加 market、forge 各八键，共 928 键`);
+  eq(entries.length, 936, `${mode}: 原 912 键加 market、forge、enhance 各八键，共 936 键`);
   eq(entries.slice(912, 920), Object.entries(closedStrings), `${mode}: market 八键区间及文案逐字相等`);
-  eq(entries.slice(920), Object.entries(forgeClosedStrings), `${mode}: 末尾 forge 八键及文案逐字相等`);
+  eq(entries.slice(920, 928), Object.entries(forgeClosedStrings), `${mode}: forge 八键区间及文案逐字相等`);
+  eq(entries.slice(928), Object.entries(enhanceClosedStrings), `${mode}: 末尾 enhance 八键及文案逐字相等`);
   eq(entries.filter(([key]) => key.startsWith('market.closed.')), Object.entries(closedStrings), `${mode}: 恰有八个 market.closed 键`);
   eq(hash(JSON.stringify(entries.slice(0, 904))), originalSemanticSha, `${mode}: 原 904 键语义保持`);
-  const market = raw.replace(/,\n(?: {2}"forge\.closed\.[^\n]+\n?){8}/u, '\n');
-  eq(hash(market), marketStringsSha, `${mode}: 只剥末尾 forge 八行即还原原 920 项完整字节`);
+  const preEnhance = raw.replace(/,\n(?: {2}"enhance\.closed\.[^\n]+\n?){8}/u, '\n');
+  eq(hash(preEnhance), preEnhanceStringsSha, `${mode}: 剥 enhance 八行即还原原 928 项完整字节`);
+  const market = preEnhance.replace(/,\n(?: {2}"forge\.closed\.[^\n]+\n?){8}/u, '\n');
+  eq(hash(market), marketStringsSha, `${mode}: 再剥 forge 八行即还原原 920 项完整字节`);
   const previous = market.replace(/,\n(?: {2}"market\.closed\.[^\n]+\n?){8}/u, '\n');
   eq(hash(previous), previousStringsSha, `${mode}: 再剥 market 八行即还原原 912 项完整字节`);
   const original = previous.replace(/,\n(?: {2}"tower\.closed\.[^\n]+\n?){8}/u, '\n');

@@ -1,0 +1,5 @@
+{
+  "command": "npm run test:v06p1-forge-closed",
+  "exitCode": 0,
+  "assertions": 20334
+}

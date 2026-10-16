@@ -1,0 +1,32 @@
+[
+  {
+    "command": "npm run test:v06p1-forge-closed",
+    "exitCode": 1,
+    "log": "v06p1-forge-closed.log",
+    "legacyEvidenceRestored": true
+  },
+  {
+    "command": "npm run test:v06p1-market-closed",
+    "exitCode": 1,
+    "log": "v06p1-market-closed.log",
+    "legacyEvidenceRestored": true
+  },
+  {
+    "command": "npm run test:v06d-closed",
+    "exitCode": 0,
+    "log": "v06d-closed.log",
+    "legacyEvidenceRestored": true
+  },
+  {
+    "command": "npm run test:v06c-closed",
+    "exitCode": 0,
+    "log": "v06c-closed.log",
+    "legacyEvidenceRestored": true
+  },
+  {
+    "command": "npm run test:v06d-open",
+    "exitCode": 0,
+    "log": "v06d-open.log",
+    "legacyEvidenceRestored": true
+  }
+]

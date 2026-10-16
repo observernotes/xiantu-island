@@ -1,0 +1,147 @@
+[
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 3,
+    "text": "export type EnhanceClosedTipKey = 'enhance.closed.feature' | 'enhance.closed.entrance'"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 4,
+    "text": "  | 'enhance.closed.enhance' | 'enhance.closed.no_submit' | 'enhance.closed.no_level'"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 5,
+    "text": "  | 'enhance.closed.no_consume' | 'enhance.closed.load_refresh' | 'enhance.closed.later_service';"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 7,
+    "text": "export interface EnhanceClosedTip {"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 9,
+    "text": "  readonly tipKey: EnhanceClosedTipKey;"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 13,
+    "text": "/** 本窗恒定关态；装备、资源和旧档均不能授权强化。 */"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 14,
+    "text": "function closed(tipKey: EnhanceClosedTipKey): EnhanceClosedTip {"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 19,
+    "text": "export function featureClosed() { return closed('enhance.closed.feature'); }"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 20,
+    "text": "export function refuseEntrance() { return closed('enhance.closed.entrance'); }"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 21,
+    "text": "export function refuseEnhance() { return closed('enhance.closed.enhance'); }"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 22,
+    "text": "export function refuseSubmit() { return closed('enhance.closed.no_submit'); }"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 23,
+    "text": "export function refuseLevel() { return closed('enhance.closed.no_level'); }"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 24,
+    "text": "export function refuseConsume() { return closed('enhance.closed.no_consume'); }"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 25,
+    "text": "export function refuseLoadRefresh() { return closed('enhance.closed.load_refresh'); }"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 26,
+    "text": "export function refuseLaterService() { return closed('enhance.closed.later_service'); }"
+  },
+  {
+    "file": "src/EnhanceOpenFlag.ts",
+    "line": 1,
+    "text": "/** 正式路径恒 false；强化关态未开。 */"
+  },
+  {
+    "file": "src/EnhanceOpenFlag.ts",
+    "line": 2,
+    "text": "export function isEnhanceOpenForFixture(): boolean { return false; }"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 1,
+    "text": "import enhance from '@xt/balance/enhance.json';"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 149,
+    "text": "    const grades = enhance.forge.grade;"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 160,
+    "text": "      cumulative += enhance.forge.grade[grade];"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 2,
+    "text": "import enhance from '@xt/balance/enhance.json';"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 112,
+    "text": "  const flags = copy(featureFlags()), tableBefore = JSON.stringify(enhance), recipesBefore = JSON.stringify(recipes);"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 121,
+    "text": "  eq(enhance.forge.grade, { common: 0.6, fine: 0.3, spirit: 0.09, treasure: 0.01 }, '品质只读既有enhance.forge.grade');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 306,
+    "text": "    ok(Object.keys(enhance.forge.grade).includes(result.resultGrade), '默认品质来自enhance.forge.grade枚举');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 316,
+    "text": "      eq(record.resultGrade, grade, '正式路径四品质仅按enhance.forge.grade抽样');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 319,
+    "text": "    eq(gate.laterService(), Closed.refuseLaterService(), '正式默认Gate后续强化附灵分解仍关');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 430,
+    "text": "      eq(gate.laterService(), Closed.refuseLaterService(), 'O01后续强化附灵分解仍拒绝');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 441,
+    "text": "        eq(result.resultGrade, grade, `O03 ${grade}按enhance.forge.grade累积概率抽样`);"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 609,
+    "text": "    eq(JSON.stringify(enhance), tableBefore, 'enhance内存数值未写改');"
+  }
+]

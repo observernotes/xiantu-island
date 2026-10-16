@@ -12,7 +12,7 @@ const modes = [['shared', sharedRoot(root)], ['snapshot', path.join(root, 'data'
 const introId = 'q_secret_nest_intro';
 const expectedSha = {
   'balance/quests.json': 'c45466827247b9e61260bbd2b681ae7207bf84a017aff5d8b028c0ec3463482b',
-  'balance/strings_zh.json': 'fad9b3e604a3af23e99939bf22f77a55de803842daa297ab7fb2c2a6ed0b8967',
+  'balance/strings_zh.json': '92d5525c86562a870f45bf53c0c2010e961b83ec9c257a0cf8257178f45b4cab',
   'maps/wanyao_outer_1.json': '9c05955fb39631e1236f2583f3be65e66823be2da3b30efaafc10ff443074b10',
   'balance/companions.json': 'e4eb87c1f9400514a084d630f179903e0926d706c85614481f1e2618a01bb115',
   'balance/fly_zones.json': '2940fe5952246a3669f87d8b9f3fc6226c2adf7080353be7de94da81e031b8e4',

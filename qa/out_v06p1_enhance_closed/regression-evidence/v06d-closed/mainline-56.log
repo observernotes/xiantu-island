@@ -1,0 +1,8 @@
+
+> xiantu-island@0.0.1 test:mainline-56
+> timeout 60s node scripts/mainline-56-test.mjs
+
+{"suite":"mainline-56","passed":true,"assertions":343,"quests":["q_elder_exam","q_main_06"]}
+{"suite":"mainline-56","dataMode":"snapshot","passed":true}
+{"suite":"mainline-56","passed":true,"assertions":343,"quests":["q_elder_exam","q_main_06"]}
+{"suite":"mainline-56","dataMode":"shared","passed":true}

@@ -1,0 +1,6 @@
+ForgeOpenFlag unchanged
+enhance.json×3 unchanged
+strings×3=92d5525c
+only added EnhanceClosed.ts EnhanceOpenFlag.ts
+recipes expectation formalRecipeKeys += game
+all formal regressions exit 0

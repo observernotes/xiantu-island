@@ -14,11 +14,13 @@ const baselineDir = path.join(root, 'qa/out_v06p1_forge_closed');
 const roots = new Map([['shared', shared], ['wt', path.join(root, 'data')], ['game', path.join(shared, 'game/data')]]);
 const modes = [['shared', shared], ['snapshot', roots.get('wt')]];
 const openFixtureSources = ['ForgeOpenFlag.ts', 'ForgeGate.ts', 'ForgeProgress.ts', 'v06p1-forge-open.test.ts'];
+const enhanceClosedSources = ['EnhanceClosed.ts', 'EnhanceOpenFlag.ts'];
 const forgeClosedSha = 'f7e4216be7767f481c96ae7f1dc5796574fe9b231ada91d57a137c1dc8a8c90c';
 // 正式配方窗只同步权威与 wt 快照；game/data 保持历史基线，其他表仍逐字保护。
 const formalRecipesSha = '1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f';
-const formalRecipeKeys = new Set(['shared:balance/recipes.json', 'wt:balance/recipes.json']);
-const stringsSha = 'fad9b3e604a3af23e99939bf22f77a55de803842daa297ab7fb2c2a6ed0b8967';
+const formalRecipeKeys = new Set(['shared:balance/recipes.json', 'wt:balance/recipes.json', 'game:balance/recipes.json']);
+const stringsSha = '92d5525c86562a870f45bf53c0c2010e961b83ec9c257a0cf8257178f45b4cab';
+const preEnhanceStringsSha = 'fad9b3e604a3af23e99939bf22f77a55de803842daa297ab7fb2c2a6ed0b8967';
 const previousStringsSha = 'c115b6deadf85d1aa9958de1097321ab65624b456e0fddeca42a5fe39743db27';
 const preMarketStringsSha = '6b0861110a6af78f7bbfb78eb32e7579ecd41d5a33c3eff3da9e157794f5951f';
 const closedStrings = {
@@ -30,6 +32,16 @@ const closedStrings = {
   'forge.closed.no_grade': '炼器打造尚未开放，不展示或结算品质档。',
   'forge.closed.load_refresh': '读档或刷新后炼器仍未开放，暂不可打造。',
   'forge.closed.later_service': '强化、附灵与分解等后续服务尚未开放。',
+};
+const enhanceClosedStrings = {
+  'enhance.closed.feature': '装备强化尚未开放。',
+  'enhance.closed.entrance': '欧冶匠暂不提供强化，可查看说明。',
+  'enhance.closed.enhance': '装备强化尚未开放，暂不可强化。',
+  'enhance.closed.no_submit': '装备强化尚未开放，暂不可提交强化。',
+  'enhance.closed.no_level': '装备强化尚未开放，不变更强化等级。',
+  'enhance.closed.no_consume': '装备强化尚未开放，不扣灵石或精炼石。',
+  'enhance.closed.load_refresh': '读档或刷新后强化仍未开放，暂不可强化。',
+  'enhance.closed.later_service': '附灵与分解等后续服务尚未开放。',
 };
 const apiTips = {
   featureClosed: 'forge.closed.feature', refuseEntrance: 'forge.closed.entrance',
@@ -129,8 +141,8 @@ async function checkProtection() {
     protectedFiles[key] = actual;
   }
   const sourceBefore = JSON.parse(await fs.readFile(path.join(baselineDir, 'source-before.json'), 'utf8'));
-  eq(await filesUnder(path.join(root, 'src')), [...Object.keys(sourceBefore).map(name => name.slice(4)), 'ForgeClosed.ts', ...openFixtureSources].sort(),
-    '仅追加 ForgeClosed.ts 及明确授权的四个开态夹具源码，无服务、配方表或前台打造文件');
+  eq(await filesUnder(path.join(root, 'src')), [...Object.keys(sourceBefore).map(name => name.slice(4)), 'ForgeClosed.ts', ...openFixtureSources, ...enhanceClosedSources].sort(),
+    '仅追加 ForgeClosed.ts、明确授权的四个开态夹具源码及强化关态 API/Flag，无服务、配方表或前台打造文件');
   for (const [name, expected] of Object.entries(sourceBefore)) {
     const file = path.join(root, name), actual = await shaOrNull(file);
     const compared = name === 'src/Progress.ts' ? hash(stripForgeProgress(await fs.readFile(file, 'utf8')))
@@ -147,7 +159,7 @@ async function checkProtection() {
     eq(await filesUnder(path.join(dataRoot, directory)), dataFiles[mode][directory], `${mode}/${directory} 无新增/删除表、地图或入口`);
   }
   report({ suite: 'protection', passed: true, baselineFiles: Object.keys(protectedFiles).length,
-    existingSourceFiles: Object.keys(sourceBefore).length, sourcesOnlyAdded: ['src/ForgeClosed.ts', ...openFixtureSources.map(name => `src/${name}`)],
+    existingSourceFiles: Object.keys(sourceBefore).length, sourcesOnlyAdded: ['src/ForgeClosed.ts', ...openFixtureSources.map(name => `src/${name}`), ...enhanceClosedSources.map(name => `src/${name}`)],
     optionalForgeBagOnly: true, minimalFrontendWiring: true, fullForgeUiAdded: false,
     formalRecipesSha, formalRecipeKeys: [...formalRecipeKeys],
     formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false });
@@ -157,11 +169,14 @@ async function checkStatic(mode, dataRoot) {
   const raw = await fs.readFile(path.join(dataRoot, 'balance/strings_zh.json'), 'utf8');
   const strings = JSON.parse(raw), entries = Object.entries(strings);
   eq(hash(raw), stringsSha, `${mode}: strings 权威 SHA`);
-  eq(entries.length, 928, `${mode}: 928 个顶层键`);
-  eq(entries.slice(920), Object.entries(closedStrings), `${mode}: 末尾八键及文案逐字`);
+  eq(entries.length, 936, `${mode}: 936 个顶层键`);
+  eq(entries.slice(920, 928), Object.entries(closedStrings), `${mode}: forge 八键区间及文案逐字`);
+  eq(entries.slice(928), Object.entries(enhanceClosedStrings), `${mode}: 末尾 enhance 八键及文案逐字`);
   eq(entries.filter(([key]) => key.startsWith('forge.closed.')), Object.entries(closedStrings), `${mode}: 恰有 forge 八键`);
   ok(entries.slice(912, 920).every(([key]) => key.startsWith('market.closed.')), `${mode}: 原 market 八键仍在 slice(912,920)`);
-  const previous = raw.replace(/,\n(?: {2}"forge\.closed\.[^\n]+\n?){8}/u, '\n');
+  const preEnhance = raw.replace(/,\n(?: {2}"enhance\.closed\.[^\n]+\n?){8}/u, '\n');
+  eq(hash(preEnhance), preEnhanceStringsSha, `${mode}: 剥 enhance 八行还原原 928 键完整字节`);
+  const previous = preEnhance.replace(/,\n(?: {2}"forge\.closed\.[^\n]+\n?){8}/u, '\n');
   eq(hash(previous), previousStringsSha, `${mode}: 剥 forge 八行还原原 920 键完整字节`);
   const preMarket = previous.replace(/,\n(?: {2}"market\.closed\.[^\n]+\n?){8}/u, '\n');
   eq(hash(preMarket), preMarketStringsSha, `${mode}: 再剥 market 八行还原 912 键完整字节`);
@@ -395,7 +410,7 @@ try {
   await fs.writeFile(path.join(out, 'protected-after.json'), `${JSON.stringify(after, null, 2)}\n`);
   const changes = Object.keys(protectedFiles).filter(key => baseline[key] !== protectedFiles[key]);
   await fs.writeFile(path.join(out, 'boundary-check.log'), `${JSON.stringify({ passed, baselineEntries: Object.keys(baseline).length,
-    protectedFiles: Object.keys(protectedFiles).length, authorizedChanges: changes, sourceOnlyAdded: ['src/ForgeClosed.ts', ...openFixtureSources.map(name => `src/${name}`)],
+    protectedFiles: Object.keys(protectedFiles).length, authorizedChanges: changes, sourceOnlyAdded: ['src/ForgeClosed.ts', ...openFixtureSources.map(name => `src/${name}`), ...enhanceClosedSources.map(name => `src/${name}`)],
     stringsSha, sharedStringsUnchanged: baseline['shared:balance/strings_zh.json'] === after['shared:balance/strings_zh.json'],
     minimalFrontendWiring: true, fullForgeUiAdded: false, gameSceneOnlyAuthorizedWiring: true,
     giftsFalseCount: 10, GAME_PHASE: 5, smithServices: false, formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false }, null, 2)}\n`);

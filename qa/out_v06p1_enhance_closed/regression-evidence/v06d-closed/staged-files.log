@@ -1,0 +1,11 @@
+data/balance/strings_zh.json
+data/maps/youying_tower.json
+package.json
+scripts/v06c-closed-test.mjs
+scripts/v06d-closed-test.mjs
+src/TowerClosed.ts
+src/scenes/GameScene.ts
+
+紧随纯文档提交：
+reports/炼器阁/V06D_CLOSED_HANDOFF.md
+status/炼器阁.md

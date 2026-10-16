@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/workspace/xiantu/qa/tools/datalint.py", line 14, in <module>
+    items={**ids(L(f'{B}/items.json')),**ids(L(f'{B}/materials.json'))}
+                 ~^^^^^^^^^^^^^^^^^^^
+  File "/workspace/xiantu/qa/tools/datalint.py", line 6, in L
+    d=json.load(open(f))
+                ~~~~^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'balance/items.json'

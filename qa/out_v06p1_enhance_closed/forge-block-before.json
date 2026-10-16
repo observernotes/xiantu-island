@@ -1,0 +1,14 @@
+{
+  "shared": {
+    "rawLinesSha256": "d2b8867181ef9a0f8e14c57e0d3dcd19a42896b146650a187ec13fdc511034dd",
+    "normalizedLinesSha256": "fa6451ac7be94a0ecfb9b2ce11ef9f8c4c4bc60befda83bbe3169b61b90f2f11"
+  },
+  "wt": {
+    "rawLinesSha256": "d2b8867181ef9a0f8e14c57e0d3dcd19a42896b146650a187ec13fdc511034dd",
+    "normalizedLinesSha256": "fa6451ac7be94a0ecfb9b2ce11ef9f8c4c4bc60befda83bbe3169b61b90f2f11"
+  },
+  "game": {
+    "rawLinesSha256": "d2b8867181ef9a0f8e14c57e0d3dcd19a42896b146650a187ec13fdc511034dd",
+    "normalizedLinesSha256": "fa6451ac7be94a0ecfb9b2ce11ef9f8c4c4bc60befda83bbe3169b61b90f2f11"
+  }
+}

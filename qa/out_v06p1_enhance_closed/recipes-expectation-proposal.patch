@@ -1,0 +1,12 @@
+diff --git a/scripts/v06p1-forge-closed-test.mjs b/scripts/v06p1-forge-closed-test.mjs
+--- a/scripts/v06p1-forge-closed-test.mjs
++++ b/scripts/v06p1-forge-closed-test.mjs
+@@
+-const formalRecipeKeys = new Set(['shared:balance/recipes.json', 'wt:balance/recipes.json']);
++const formalRecipeKeys = new Set(['shared:balance/recipes.json', 'wt:balance/recipes.json', 'game:balance/recipes.json']);
+diff --git a/scripts/v06p1-market-closed-test.mjs b/scripts/v06p1-market-closed-test.mjs
+--- a/scripts/v06p1-market-closed-test.mjs
++++ b/scripts/v06p1-market-closed-test.mjs
+@@
+-const formalRecipeKeys = new Set(['shared:balance/recipes.json', 'wt:balance/recipes.json']);
++const formalRecipeKeys = new Set(['shared:balance/recipes.json', 'wt:balance/recipes.json', 'game:balance/recipes.json']);

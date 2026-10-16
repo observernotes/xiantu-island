@@ -1,0 +1,91 @@
+scripts/v06p1-forge-closed-test.mjs:17:const enhanceClosedSources = ['EnhanceClosed.ts', 'EnhanceOpenFlag.ts'];
+scripts/v06p1-forge-closed-test.mjs:23:const preEnhanceStringsSha = 'fad9b3e604a3af23e99939bf22f77a55de803842daa297ab7fb2c2a6ed0b8967';
+scripts/v06p1-forge-closed-test.mjs:34:  'forge.closed.later_service': '强化、附灵与分解等后续服务尚未开放。',
+scripts/v06p1-forge-closed-test.mjs:36:const enhanceClosedStrings = {
+scripts/v06p1-forge-closed-test.mjs:37:  'enhance.closed.feature': '装备强化尚未开放。',
+scripts/v06p1-forge-closed-test.mjs:38:  'enhance.closed.entrance': '欧冶匠暂不提供强化，可查看说明。',
+scripts/v06p1-forge-closed-test.mjs:39:  'enhance.closed.enhance': '装备强化尚未开放，暂不可强化。',
+scripts/v06p1-forge-closed-test.mjs:40:  'enhance.closed.no_submit': '装备强化尚未开放，暂不可提交强化。',
+scripts/v06p1-forge-closed-test.mjs:41:  'enhance.closed.no_level': '装备强化尚未开放，不变更强化等级。',
+scripts/v06p1-forge-closed-test.mjs:42:  'enhance.closed.no_consume': '装备强化尚未开放，不扣灵石或精炼石。',
+scripts/v06p1-forge-closed-test.mjs:43:  'enhance.closed.load_refresh': '读档或刷新后强化仍未开放，暂不可强化。',
+scripts/v06p1-forge-closed-test.mjs:44:  'enhance.closed.later_service': '附灵与分解等后续服务尚未开放。',
+scripts/v06p1-forge-closed-test.mjs:144:  eq(await filesUnder(path.join(root, 'src')), [...Object.keys(sourceBefore).map(name => name.slice(4)), 'ForgeClosed.ts', ...openFixtureSources, ...enhanceClosedSources].sort(),
+scripts/v06p1-forge-closed-test.mjs:145:    '仅追加 ForgeClosed.ts、明确授权的四个开态夹具源码及强化关态 API/Flag，无服务、配方表或前台打造文件');
+scripts/v06p1-forge-closed-test.mjs:162:    existingSourceFiles: Object.keys(sourceBefore).length, sourcesOnlyAdded: ['src/ForgeClosed.ts', ...openFixtureSources.map(name => `src/${name}`), ...enhanceClosedSources.map(name => `src/${name}`)],
+scripts/v06p1-forge-closed-test.mjs:174:  eq(entries.slice(928), Object.entries(enhanceClosedStrings), `${mode}: 末尾 enhance 八键及文案逐字`);
+scripts/v06p1-forge-closed-test.mjs:177:  const preEnhance = raw.replace(/,\n(?: {2}"enhance\.closed\.[^\n]+\n?){8}/u, '\n');
+scripts/v06p1-forge-closed-test.mjs:178:  eq(hash(preEnhance), preEnhanceStringsSha, `${mode}: 剥 enhance 八行还原原 928 键完整字节`);
+scripts/v06p1-forge-closed-test.mjs:179:  const previous = preEnhance.replace(/,\n(?: {2}"forge\.closed\.[^\n]+\n?){8}/u, '\n');
+scripts/v06p1-forge-closed-test.mjs:413:    protectedFiles: Object.keys(protectedFiles).length, authorizedChanges: changes, sourceOnlyAdded: ['src/ForgeClosed.ts', ...openFixtureSources.map(name => `src/${name}`), ...enhanceClosedSources.map(name => `src/${name}`)],
+scripts/v06d-closed-test.mjs:42:  'forge.closed.later_service': '强化、附灵与分解等后续服务尚未开放。',
+scripts/v06d-closed-test.mjs:44:const enhanceClosedStrings = {
+scripts/v06d-closed-test.mjs:45:  'enhance.closed.feature': '装备强化尚未开放。',
+scripts/v06d-closed-test.mjs:46:  'enhance.closed.entrance': '欧冶匠暂不提供强化，可查看说明。',
+scripts/v06d-closed-test.mjs:47:  'enhance.closed.enhance': '装备强化尚未开放，暂不可强化。',
+scripts/v06d-closed-test.mjs:48:  'enhance.closed.no_submit': '装备强化尚未开放，暂不可提交强化。',
+scripts/v06d-closed-test.mjs:49:  'enhance.closed.no_level': '装备强化尚未开放，不变更强化等级。',
+scripts/v06d-closed-test.mjs:50:  'enhance.closed.no_consume': '装备强化尚未开放，不扣灵石或精炼石。',
+scripts/v06d-closed-test.mjs:51:  'enhance.closed.load_refresh': '读档或刷新后强化仍未开放，暂不可强化。',
+scripts/v06d-closed-test.mjs:52:  'enhance.closed.later_service': '附灵与分解等后续服务尚未开放。',
+scripts/v06d-closed-test.mjs:69:const preEnhanceStringsSha = 'fad9b3e604a3af23e99939bf22f77a55de803842daa297ab7fb2c2a6ed0b8967';
+scripts/v06d-closed-test.mjs:124:  eq(entries.length, 936, `${mode}/C10: 只有原 904 与 tower、market、forge、enhance 各八键`);
+scripts/v06d-closed-test.mjs:128:  eq(entries.slice(928), Object.entries(enhanceClosedStrings), `${mode}/C10: enhance 八键只追加在末尾，文案逐字相等`);
+scripts/v06d-closed-test.mjs:130:  // 依次还原 enhance、forge、market、tower 末项逗号与新增八行，证明原 904 项每个字节都未改。
+scripts/v06d-closed-test.mjs:132:  const preEnhance = rawStrings.replace(/,\n(?: {2}"enhance\.closed\.[^\n]+\n?){8}/u, '\n');
+scripts/v06d-closed-test.mjs:133:  eq(hash(preEnhance), preEnhanceStringsSha, `${mode}/C10: 删除 enhance 八行即还原原 928 项完整文件 SHA`);
+scripts/v06d-closed-test.mjs:134:  const marketBytes = preEnhance.replace(/,\n(?: {2}"forge\.closed\.[^\n]+\n?){8}/u, '\n');
+src/EnhanceClosed.ts:3:export type EnhanceClosedTipKey = 'enhance.closed.feature' | 'enhance.closed.entrance'
+src/EnhanceClosed.ts:4:  | 'enhance.closed.enhance' | 'enhance.closed.no_submit' | 'enhance.closed.no_level'
+src/EnhanceClosed.ts:5:  | 'enhance.closed.no_consume' | 'enhance.closed.load_refresh' | 'enhance.closed.later_service';
+src/EnhanceClosed.ts:7:export interface EnhanceClosedTip {
+src/EnhanceClosed.ts:9:  readonly tipKey: EnhanceClosedTipKey;
+src/EnhanceClosed.ts:13:/** 本窗恒定关态；装备、资源和旧档均不能授权强化。 */
+src/EnhanceClosed.ts:14:function closed(tipKey: EnhanceClosedTipKey): EnhanceClosedTip {
+src/EnhanceClosed.ts:19:export function featureClosed() { return closed('enhance.closed.feature'); }
+src/EnhanceClosed.ts:20:export function refuseEntrance() { return closed('enhance.closed.entrance'); }
+src/EnhanceClosed.ts:21:export function refuseEnhance() { return closed('enhance.closed.enhance'); }
+src/EnhanceClosed.ts:22:export function refuseSubmit() { return closed('enhance.closed.no_submit'); }
+src/EnhanceClosed.ts:23:export function refuseLevel() { return closed('enhance.closed.no_level'); }
+src/EnhanceClosed.ts:24:export function refuseConsume() { return closed('enhance.closed.no_consume'); }
+src/EnhanceClosed.ts:25:export function refuseLoadRefresh() { return closed('enhance.closed.load_refresh'); }
+src/EnhanceClosed.ts:26:export function refuseLaterService() { return closed('enhance.closed.later_service'); }
+src/EnhanceOpenFlag.ts:1:/** 正式路径恒 false；强化关态未开。 */
+src/EnhanceOpenFlag.ts:2:export function isEnhanceOpenForFixture(): boolean { return false; }
+scripts/v06d-open-test.mjs:76:  eq(Object.keys(strings).length, 936, `${mode}: 原 904 键及 tower、market、forge、enhance 关态各八键不增改`);
+scripts/v06p1-market-closed-test.mjs:17:const preEnhanceStringsSha = 'fad9b3e604a3af23e99939bf22f77a55de803842daa297ab7fb2c2a6ed0b8967';
+scripts/v06p1-market-closed-test.mjs:25:const enhanceClosedSources = ['EnhanceClosed.ts', 'EnhanceOpenFlag.ts'];
+scripts/v06p1-market-closed-test.mjs:49:  'forge.closed.later_service': '强化、附灵与分解等后续服务尚未开放。',
+scripts/v06p1-market-closed-test.mjs:51:const enhanceClosedStrings = {
+scripts/v06p1-market-closed-test.mjs:52:  'enhance.closed.feature': '装备强化尚未开放。',
+scripts/v06p1-market-closed-test.mjs:53:  'enhance.closed.entrance': '欧冶匠暂不提供强化，可查看说明。',
+scripts/v06p1-market-closed-test.mjs:54:  'enhance.closed.enhance': '装备强化尚未开放，暂不可强化。',
+scripts/v06p1-market-closed-test.mjs:55:  'enhance.closed.no_submit': '装备强化尚未开放，暂不可提交强化。',
+scripts/v06p1-market-closed-test.mjs:56:  'enhance.closed.no_level': '装备强化尚未开放，不变更强化等级。',
+scripts/v06p1-market-closed-test.mjs:57:  'enhance.closed.no_consume': '装备强化尚未开放，不扣灵石或精炼石。',
+scripts/v06p1-market-closed-test.mjs:58:  'enhance.closed.load_refresh': '读档或刷新后强化仍未开放，暂不可强化。',
+scripts/v06p1-market-closed-test.mjs:59:  'enhance.closed.later_service': '附灵与分解等后续服务尚未开放。',
+scripts/v06p1-market-closed-test.mjs:204:  eq(await filesUnder(path.join(root, 'src')), [...expectedSource, 'MarketClosed.ts', 'ForgeClosed.ts', ...openFixtureSources, ...enhanceClosedSources].sort(), 'C12 src 仅新增关态 API 及精确列明的寄售/炼器夹具源码与强化关态 API/Flag，无完整寄售 UI 文件');
+scripts/v06p1-market-closed-test.mjs:216:    sourcesOnlyAdded: ['src/MarketClosed.ts', ...openFixtureSources.map(name => `src/${name}`), ...enhanceClosedSources.map(name => `src/${name}`)],
+scripts/v06p1-market-closed-test.mjs:226:  eq(entries.length, 936, `${mode}: 原 912 键加 market、forge、enhance 各八键，共 936 键`);
+scripts/v06p1-market-closed-test.mjs:229:  eq(entries.slice(928), Object.entries(enhanceClosedStrings), `${mode}: 末尾 enhance 八键及文案逐字相等`);
+scripts/v06p1-market-closed-test.mjs:232:  const preEnhance = raw.replace(/,\n(?: {2}"enhance\.closed\.[^\n]+\n?){8}/u, '\n');
+scripts/v06p1-market-closed-test.mjs:233:  eq(hash(preEnhance), preEnhanceStringsSha, `${mode}: 剥 enhance 八行即还原原 928 项完整字节`);
+scripts/v06p1-market-closed-test.mjs:234:  const market = preEnhance.replace(/,\n(?: {2}"forge\.closed\.[^\n]+\n?){8}/u, '\n');
+scripts/v06p1-forge-open-test.mjs:17:const enhanceSha = 'd5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954';
+scripts/v06p1-forge-open-test.mjs:87:    eq(await shaOrNull(path.join(dataRoot, 'balance/enhance.json')), enhanceSha, `${mode} enhance保持指定SHA`);
+scripts/v06p1-forge-open-test.mjs:96:    const table = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/enhance.json'), 'utf8'));
+scripts/v06p1-forge-open-test.mjs:120:      enhanceSha, ...(mode !== 'game' ? { recipesSha, formalForgeRows: 1 } : {}),
+scripts/v06p1-forge-open-test.mjs:206:console.log(`v06p1 forge formal recipe tests ok: ${assertions + runtimeAssertions} assertions; shared/snapshot双根formal-open+memory-closed及fresh SSR四品质读回；正式配方闭环/outputCount/fixture隔离；O01–O08；Scene最小smith_ou冒烟零写；正式flag=true；ForgeClosed原字节；gifts 10×false；enhance未改；GAME_PHASE=5；formalOpen:true、closedFixtureOnly:true、softOpened:true、released:false；未进包、未发版`);
+src/v06p1-forge-open.test.ts:2:import enhance from '@xt/balance/enhance.json';
+src/v06p1-forge-open.test.ts:112:  const flags = copy(featureFlags()), tableBefore = JSON.stringify(enhance), recipesBefore = JSON.stringify(recipes);
+src/v06p1-forge-open.test.ts:121:  eq(enhance.forge.grade, { common: 0.6, fine: 0.3, spirit: 0.09, treasure: 0.01 }, '品质只读既有enhance.forge.grade');
+src/v06p1-forge-open.test.ts:306:    ok(Object.keys(enhance.forge.grade).includes(result.resultGrade), '默认品质来自enhance.forge.grade枚举');
+src/v06p1-forge-open.test.ts:316:      eq(record.resultGrade, grade, '正式路径四品质仅按enhance.forge.grade抽样');
+src/v06p1-forge-open.test.ts:319:    eq(gate.laterService(), Closed.refuseLaterService(), '正式默认Gate后续强化附灵分解仍关');
+src/v06p1-forge-open.test.ts:430:      eq(gate.laterService(), Closed.refuseLaterService(), 'O01后续强化附灵分解仍拒绝');
+src/v06p1-forge-open.test.ts:441:        eq(result.resultGrade, grade, `O03 ${grade}按enhance.forge.grade累积概率抽样`);
+src/v06p1-forge-open.test.ts:609:    eq(JSON.stringify(enhance), tableBefore, 'enhance内存数值未写改');
+src/ForgeGate.ts:1:import enhance from '@xt/balance/enhance.json';
+src/ForgeGate.ts:149:    const grades = enhance.forge.grade;
+src/ForgeGate.ts:160:      cumulative += enhance.forge.grade[grade];

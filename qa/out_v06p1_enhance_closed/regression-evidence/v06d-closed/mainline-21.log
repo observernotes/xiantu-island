@@ -1,0 +1,6 @@
+
+> xiantu-island@0.0.1 test:mainline-21
+> timeout 60s node scripts/mainline-21-test.mjs
+
+legacy save fixture: indexedDbSaves=false (SSR memory override only)
+{"suite":"mainline-21","passed":true,"assertions":349,"quests":["q_main_01","q_main_02","q_main_03","q_main_04"]}

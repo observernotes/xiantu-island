@@ -1,0 +1,5 @@
+{
+  "command": "npm run test:v06d-closed",
+  "exitCode": 0,
+  "assertions": 15052
+}

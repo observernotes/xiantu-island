@@ -1,0 +1,33 @@
+{
+  "tsc": {
+    "exit_code": 0,
+    "log": "tsc.log"
+  },
+  "datalint-shared": {
+    "exit_code": 0,
+    "log": "datalint-shared.log"
+  },
+  "datalint-snapshot": {
+    "exit_code": 0,
+    "log": "datalint-snapshot.log"
+  },
+  "test:v06c-closed": {
+    "exit_code": 0,
+    "log": "v06c-closed.log"
+  },
+  "test:mainline-56": {
+    "exit_code": 0,
+    "log": "mainline-56.log"
+  },
+  "test:mainline-21": {
+    "exit_code": 0,
+    "log": "mainline-21.log"
+  },
+  "test:v06d-closed": {
+    "exit_code": 0,
+    "assertions": 15031,
+    "fixtures": 120,
+    "protected_files": 80,
+    "log": "v06d-closed.log"
+  }
+}

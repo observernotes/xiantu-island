@@ -1,0 +1,25 @@
+{
+  "TIP_SHA": "80fee5db0e66ab8f885eb465aa58296ce3a30a07",
+  "IMPLEMENTATION_TIP": "051f75ee0b827431eabc3a0863c7fe33da9e403e",
+  "branch": "dev",
+  "remote": "origin/dev",
+  "remote_verified": "80fee5db0e66ab8f885eb465aa58296ce3a30a07",
+  "sha256": {
+    "strings_zh": "6b0861110a6af78f7bbfb78eb32e7579ecd41d5a33c3eff3da9e157794f5951f",
+    "tower_floors": "735000b538b06142053fc2aa8e106a1e9e4f500755712b4df095e690b80c37b6",
+    "titles": "d765004ff1c75e11c0f64bc05d5eb07b96b00122264692140c01233df96fdb8c",
+    "npcs": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6"
+  },
+  "test_exits": {
+    "tsc": 0,
+    "datalint-shared": 0,
+    "datalint-snapshot": 0,
+    "test:v06c-closed": 0,
+    "test:mainline-56": 0,
+    "test:mainline-21": 0,
+    "test:v06d-closed": 0
+  },
+  "opened": false,
+  "soft_opened": false,
+  "released": false
+}

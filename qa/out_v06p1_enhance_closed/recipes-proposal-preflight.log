@@ -1,0 +1,16 @@
+[
+  {
+    "case": "forge",
+    "exitCode": 0,
+    "formalScriptModified": false,
+    "formalNpmRegressionPassed": false,
+    "proposalOnly": true
+  },
+  {
+    "case": "market",
+    "exitCode": 0,
+    "formalScriptModified": false,
+    "formalNpmRegressionPassed": false,
+    "proposalOnly": true
+  }
+]

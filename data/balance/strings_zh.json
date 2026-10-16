@@ -930,5 +930,13 @@
   "forge.closed.no_result": "炼器打造尚未开放，不产出成品。",
   "forge.closed.no_grade": "炼器打造尚未开放，不展示或结算品质档。",
   "forge.closed.load_refresh": "读档或刷新后炼器仍未开放，暂不可打造。",
-  "forge.closed.later_service": "强化、附灵与分解等后续服务尚未开放。"
+  "forge.closed.later_service": "强化、附灵与分解等后续服务尚未开放。",
+  "enhance.closed.feature": "装备强化尚未开放。",
+  "enhance.closed.entrance": "欧冶匠暂不提供强化，可查看说明。",
+  "enhance.closed.enhance": "装备强化尚未开放，暂不可强化。",
+  "enhance.closed.no_submit": "装备强化尚未开放，暂不可提交强化。",
+  "enhance.closed.no_level": "装备强化尚未开放，不变更强化等级。",
+  "enhance.closed.no_consume": "装备强化尚未开放，不扣灵石或精炼石。",
+  "enhance.closed.load_refresh": "读档或刷新后强化仍未开放，暂不可强化。",
+  "enhance.closed.later_service": "附灵与分解等后续服务尚未开放。"
 }

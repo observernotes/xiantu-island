@@ -1,0 +1,37 @@
+{
+  "checks": {
+    "npx tsc --noEmit": {
+      "exit": 0
+    },
+    "npm run test:v06d-open": {
+      "exit": 0,
+      "assertions": 3012,
+      "formalClosedPerRoot": 385,
+      "memoryOpenPerRoot": 1036,
+      "staticAssertions": 170
+    },
+    "npm run test:v06d-closed": {
+      "exit": 0,
+      "assertions": 15031
+    },
+    "shared datalint": {
+      "exit": 0,
+      "issues": 0
+    },
+    "snapshot datalint": {
+      "exit": 0,
+      "issues": 0
+    },
+    "git diff --check": {
+      "exit": 0
+    }
+  },
+  "protectedFiles": 111,
+  "protectedShaUnchanged": true,
+  "formalFlag": false,
+  "giftsEnabled": 0,
+  "GAME_PHASE": 5,
+  "softOpened": false,
+  "released": false,
+  "implementationTip": "401a3cb630276931c0f9eb030a9f3bb5fa4a5811"
+}

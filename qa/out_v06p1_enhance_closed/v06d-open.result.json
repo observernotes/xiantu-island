@@ -1,0 +1,6 @@
+{
+  "command": "npm run test:v06d-open",
+  "exitCode": 0,
+  "log": "v06d-open.log",
+  "legacyEvidenceRestored": true
+}
