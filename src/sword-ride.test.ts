@@ -1,4 +1,4 @@
-import { REALMS, t } from './data';
+import { AFFINITY, COMPANIONS, FLY_ZONES, REALMS, t } from './data';
 import { featureEnabled, featureFlags } from './features';
 import { setGameTimeSource } from './GameClock';
 import { Progress } from './Progress';
@@ -7,8 +7,8 @@ import { createIndexedDbBackend, createMemorySaveBackend, saveStore, setSaveBack
 import { SKILLS, skillNumber } from './skills';
 import { GameScene } from './scenes/GameScene';
 
-/** 真表关态、真实 Progress/SkillCombat；只替换存储、渲染和时间。 */
-export async function runSwordRideTests() {
+/** 默认真表关态；开态仅由独立 SSR 图注入内存克隆，复用真实 Progress/SkillCombat。 */
+export async function runSwordRideTests({ openFixture = false }: { openFixture?: boolean } = {}) {
   let assertions = 0, writes = 0;
   const eq = (actual: unknown, expected: unknown, message: string) => {
     assertions++;
@@ -20,6 +20,9 @@ export async function runSwordRideTests() {
   const refining = REALMS.find(realm => realm.levelMax + 1 === foundation.levelMin)!;
   const beforeFlags = featureFlags();
   eq(featureEnabled('indexedDbSaves'), true, '沿用正式异步存档配置，不覆盖 flag');
+  eq([COMPANIONS?.enabled, COMPANIONS?.companions[0]?.enabled, FLY_ZONES?.enabled],
+    [openFixture, openFixture, openFixture], '御剑测试必须实际读取本轮关态或临时双开配置');
+  eq(AFFINITY?.senior_sister_su.gifts.enabled, false, '御剑开关态测试均保持苏师姐赠礼关闭');
   ok(refining.reward?.unlock?.includes(def.id), '御剑来源是离开炼气的 reward.unlock');
   let now = Date.UTC(2026, 9, 16, 8);
   setGameTimeSource(() => now);
@@ -121,19 +124,19 @@ export async function runSwordRideTests() {
       await Progress.load({ async: true });
       eq(writes, writesBefore, '已有御剑的重复读档不补发、不重复保存');
 
-      const closedLogs: string[] = [], closedBefore = loaded.exportSave();
-      const closedScene = Object.assign(Object.create(GameScene.prototype), {
-        prog: loaded, map: { id: 'wanyao_deep_1' }, log: (message: string) => closedLogs.push(message),
+      const gateLogs: string[] = [], gateBefore = loaded.exportSave();
+      const gateScene = Object.assign(Object.create(GameScene.prototype), {
+        prog: loaded, map: { id: FLY_ZONES!.maps[0] }, log: (message: string) => gateLogs.push(message),
       }) as GameScene;
-      closedScene.requestCompanionInvite();
-      eq(closedLogs, [t('companion.invite.disabled')], '真实失效邀请钩子仅提示 companion.invite.disabled');
-      eq(loaded.exportSave(), closedBefore, '真实关态邀请钩子不写关系或其它进度');
-      closedScene.requestSustainFlight();
-      eq(closedLogs[closedLogs.length - 1], t('fly.zone_disabled'), '筑基角色在白名单地图尝试持续飞仍提示 fly.zone_disabled');
-      eq(loaded.exportSave(), closedBefore, '真实持续飞拒绝钩子不扣蓝、不改进度');
+      gateScene.requestCompanionInvite();
+      eq(gateLogs, [t(openFixture ? 'companion.invite.need_confidant' : 'companion.invite.disabled')], '真实邀请钩子服从当轮同门开关与知交门槛');
+      eq(loaded.exportSave(), gateBefore, '真实邀请拒绝钩子不写关系或其它进度');
+      gateScene.requestSustainFlight();
+      eq(gateLogs[gateLogs.length - 1], t(openFixture ? 'fly.zone_unavailable' : 'fly.zone_disabled'), '临时开态也不能将白名单整图当作有效飞行区域');
+      eq(loaded.exportSave(), gateBefore, '真实持续飞拒绝钩子不扣蓝、不改进度');
 
       const dash = combatScene(loaded), cost = loaded.skillMpCost(def.id), mp = loaded.mp;
-      eq(dash.combat.trySwordRide(), true, '持续飞行正式表关闭时仍能基础冲刺');
+      eq(dash.combat.trySwordRide(), true, '持续飞行关态或临时开态均不拦截基础冲刺');
       eq(dash.player.x - 100, skillNumber(def, 'dashDistance', 1), '冲刺位移读取现 skills 参数');
       eq(dash.durations, [skillNumber(def, 'dashMs', 1)], '冲刺时长读取现 skills 参数');
       eq(loaded.mp, mp - cost, '有效冲刺才扣现表灵力');
