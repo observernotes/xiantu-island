@@ -914,5 +914,13 @@
   "tower.closed.no_reward": "锁妖塔尚未开放，首通奖励暂不可领取。",
   "tower.closed.no_title": "锁妖塔尚未开放，称号暂不可解锁。",
   "tower.closed.exit_or_save": "锁妖塔尚未开放，退出与存档不推进爬塔。",
-  "tower.closed.load_refresh": "锁妖塔仍未开放，读档后不可开爬或领奖。"
+  "tower.closed.load_refresh": "锁妖塔仍未开放，读档后不可开爬或领奖。",
+  "market.closed.feature": "坊市寄售尚未开放。",
+  "market.closed.list": "坊市寄售尚未开放，暂不可上架。",
+  "market.closed.withdraw": "坊市寄售尚未开放，暂不可撤回。",
+  "market.closed.claim": "坊市寄售尚未开放，暂不可领取。",
+  "market.closed.no_deal": "坊市寄售尚未开放，不成交、不写收益收据。",
+  "market.closed.no_reward": "坊市寄售尚未开放，寄售收益暂不可领取。",
+  "market.closed.load_refresh": "读档或刷新后仍未开放，寄售操作暂不可用。",
+  "market.closed.slot_or_item": "坊市寄售尚未开放，栏位或物品异常，暂不可操作。"
 }

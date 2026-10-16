@@ -1,0 +1,8 @@
+protected files/absence states: 977
+authorized strings changes: ['game:balance/strings_zh.json', 'wt:balance/strings_zh.json']
+other protected byte changes: 0
+GAME_PHASE=5; gifts.enabled=false x10
+market_consign.json excluded: separate window; not read by MarketClosed.ts
+project root /workspace/xiantu is not a git repository; tracked handoff uses wt/dev/reports and wt/dev/status
+baseline tip: 8ea3466f89fecfc39a8eca1f9888d27d72aa669d
+外部旁证 shared:features.json 的 SHA 实为快照 features SHA；共享根现场无此文件，按现场缺席记 null；外部原旁证未改。src/features.ts 只读当前工程 data/features.json，wt/game 两根继续按原 SHA 守护。

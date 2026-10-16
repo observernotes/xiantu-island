@@ -1,0 +1,43 @@
+[
+  {
+    "command": "npx tsc --noEmit",
+    "log": "tsc.log",
+    "exitCode": 0
+  },
+  {
+    "command": "npm run test:v06d-closed",
+    "log": "v06d-closed.log",
+    "exitCode": 0
+  },
+  {
+    "command": "npm run test:v06c-closed",
+    "log": "v06c-closed.log",
+    "exitCode": 0
+  },
+  {
+    "command": "npm run test:shop",
+    "log": "shop.log",
+    "exitCode": 0
+  },
+  {
+    "command": "PYTHONDONTWRITEBYTECODE=1 python3 /workspace/xiantu/qa/tools/datalint.py (cwd=/workspace/xiantu)",
+    "log": "datalint-shared.log",
+    "exitCode": 0
+  },
+  {
+    "command": "PYTHONDONTWRITEBYTECODE=1 python3 /workspace/xiantu/qa/tools/datalint.py (cwd=/workspace/xiantu/wt/dev/data)",
+    "log": "datalint-snapshot.log",
+    "exitCode": 0
+  },
+  {
+    "command": "npm run test:v06p1-market-closed",
+    "log": "v06p1-market-closed.log",
+    "exitCode": 0,
+    "assertions": 24065
+  },
+  {
+    "command": "git diff --check",
+    "log": "diff-check.log",
+    "exitCode": 0
+  }
+]
