@@ -86,6 +86,13 @@ export class EncounterSceneRuntime {
   }
   interrupt(): void { this.interrupted = true; }
 
+  /** 扫描所属适配器完成保存后发布入口；事务仍由 runner 负责。 */
+  reveal(attemptId: string): EncounterRunnerResult {
+    const result = this.runner.reveal(this.context(), attemptId);
+    this.publish(result, false);
+    return result;
+  }
+
   /** 只在真实锚点附近打开；缺地图锚点时保持不可见，不借用出生点。 */
   interact(): boolean {
     if (!this.enabled || !this.flushPending() || !this.flushSeen() || this.context().blocked) return false;
