@@ -1,0 +1,182 @@
+{
+  "frames": {
+    "prop_portal_open_01": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 80,
+        "h": 112
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 80,
+        "h": 112
+      },
+      "sourceSize": {
+        "w": 80,
+        "h": 112
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    "prop_portal_open_02": {
+      "frame": {
+        "x": 80,
+        "y": 0,
+        "w": 80,
+        "h": 112
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 80,
+        "h": 112
+      },
+      "sourceSize": {
+        "w": 80,
+        "h": 112
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    "prop_portal_open_03": {
+      "frame": {
+        "x": 160,
+        "y": 0,
+        "w": 80,
+        "h": 112
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 80,
+        "h": 112
+      },
+      "sourceSize": {
+        "w": 80,
+        "h": 112
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    "prop_portal_open_04": {
+      "frame": {
+        "x": 240,
+        "y": 0,
+        "w": 80,
+        "h": 112
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 80,
+        "h": 112
+      },
+      "sourceSize": {
+        "w": 80,
+        "h": 112
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    "prop_portal_open_05": {
+      "frame": {
+        "x": 320,
+        "y": 0,
+        "w": 80,
+        "h": 112
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 80,
+        "h": 112
+      },
+      "sourceSize": {
+        "w": 80,
+        "h": 112
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    "prop_portal_open_06": {
+      "frame": {
+        "x": 400,
+        "y": 0,
+        "w": 80,
+        "h": 112
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 80,
+        "h": 112
+      },
+      "sourceSize": {
+        "w": 80,
+        "h": 112
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    "prop_portal_closed_01": {
+      "frame": {
+        "x": 480,
+        "y": 0,
+        "w": 80,
+        "h": 112
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 80,
+        "h": 112
+      },
+      "sourceSize": {
+        "w": 80,
+        "h": 112
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    }
+  },
+  "meta": {
+    "app": "xiantu gen_encounter_v05.py",
+    "image": "prop_portal.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 560,
+      "h": 112
+    },
+    "scale": "1"
+  }
+}

@@ -1,0 +1,30 @@
+{
+ "atlas": "fx_flame_envoy_lava_pillar_warn",
+ "facing": "left",
+ "origin": [
+  0.5,
+  0.5
+ ],
+ "frameSize": [
+  112,
+  40
+ ],
+ "anims": [
+  {
+   "key": "fx_flame_envoy_lava_pillar_warn_warn",
+   "frames": [
+    "fx_flame_envoy_lava_pillar_warn_warn_01",
+    "fx_flame_envoy_lava_pillar_warn_warn_02",
+    "fx_flame_envoy_lava_pillar_warn_warn_03",
+    "fx_flame_envoy_lava_pillar_warn_warn_04",
+    "fx_flame_envoy_lava_pillar_warn_warn_05",
+    "fx_flame_envoy_lava_pillar_warn_warn_06"
+   ],
+   "frameRate": 6,
+   "repeat": 0
+  }
+ ],
+ "note": "熔岩柱预警：原点 (0.5,0.5) = 地面落点，半径 48 = radius；朱红边 + 闪烁；telegraphMs 1000 用 play({duration:1000})。",
+ "blend": "normal",
+ "kind": "fx"
+}
