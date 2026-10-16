@@ -1,0 +1,100 @@
+{
+  "passed": true,
+  "baselineTip": "348b74e2398d4cda8b0417a875e9fa916ed811b6",
+  "checks": {
+    "datalint-snapshot.result": {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 /workspace/xiantu/qa/tools/datalint.py",
+      "cwd": "/workspace/xiantu/wt/dev/data",
+      "exitCode": 0
+    },
+    "v06p1-forge-closed.result": {
+      "command": "npm run test:v06p1-forge-closed",
+      "cwd": "/workspace/xiantu/wt/dev",
+      "stdin": "/dev/null",
+      "exitCode": 0,
+      "assertions": 20218,
+      "originalEvidenceFilesRestored": 31,
+      "originalEvidenceBytesPreserved": true,
+      "evidenceFiles": [
+        "v06p1-forge-closed-evidence/boundary-check.log",
+        "v06p1-forge-closed-evidence/protected-after.json",
+        "v06p1-forge-closed-evidence/source-search.json",
+        "v06p1-forge-closed-evidence/v06p1-forge-closed-evidence.json"
+      ],
+      "backup": "/tmp/xiantu-forge-open-v06p1-forge-closed-gg816c9i/evidence"
+    },
+    "v06c-closed.result": {
+      "command": "npm run test:v06c-closed",
+      "cwd": "/workspace/xiantu/wt/dev",
+      "stdin": "/dev/null",
+      "exitCode": 0,
+      "assertions": 10708,
+      "originalEvidenceFilesRestored": 9,
+      "originalEvidenceBytesPreserved": true,
+      "evidenceFiles": [],
+      "backup": "/tmp/xiantu-forge-open-v06c-closed-b7_9vurh/evidence"
+    },
+    "protection.result": {
+      "command": "node qa/out_v06p1_forge_open_fixture/capture-protection-task.mjs",
+      "exitCode": 0
+    },
+    "datalint-shared.result": {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 /workspace/xiantu/qa/tools/datalint.py",
+      "cwd": "/workspace/xiantu",
+      "exitCode": 0
+    },
+    "v06p1-market-closed.result": {
+      "command": "npm run test:v06p1-market-closed",
+      "cwd": "/workspace/xiantu/wt/dev",
+      "stdin": "/dev/null",
+      "exitCode": 0,
+      "assertions": 24120,
+      "originalEvidenceFilesRestored": 2,
+      "originalEvidenceBytesPreserved": true,
+      "evidenceFiles": [
+        "v06p1-market-closed-evidence/v06p1-market-closed-evidence.json"
+      ],
+      "backup": "/tmp/xiantu-forge-open-v06p1-market-closed-wrf_mxba/evidence"
+    },
+    "diff-check.result": {
+      "command": "git diff --cached --check",
+      "exitCode": 0
+    },
+    "v06d-closed.result": {
+      "command": "npm run test:v06d-closed",
+      "cwd": "/workspace/xiantu/wt/dev",
+      "stdin": "/dev/null",
+      "exitCode": 0,
+      "assertions": 15048,
+      "originalEvidenceFilesRestored": 17,
+      "originalEvidenceBytesPreserved": true,
+      "evidenceFiles": [],
+      "backup": "/tmp/xiantu-forge-open-v06d-closed-gjlz70wp/evidence"
+    },
+    "v06p1-forge-open.result": {
+      "command": "npm run test:v06p1-forge-open",
+      "exitCode": 0,
+      "elapsedSec": 9.28
+    },
+    "tsc.result": {
+      "command": "npx tsc --noEmit",
+      "exitCode": 0,
+      "elapsedSec": 7.508
+    }
+  },
+  "openAssertions": 3501,
+  "closedAssertions": 20218,
+  "formalFlag": false,
+  "formalEightTipsGateWrites": 0,
+  "O01-O08": "PASS: SSR fixture only",
+  "protectedFiles": 572,
+  "unauthorizedChanges": [],
+  "oldForgeClosedEvidenceFilesPreserved": 31,
+  "GAME_PHASE": 5,
+  "giftsFalseCount": 10,
+  "smithServices": false,
+  "frontEndWired": false,
+  "forgingExperienceWritten": false,
+  "softOpened": false,
+  "released": false
+}

@@ -1,0 +1,4 @@
+{
+  "command": "node qa/out_v06p1_forge_open_fixture/capture-protection-task.mjs",
+  "exitCode": 0
+}

@@ -1,0 +1,13 @@
+{
+  "command": "npm run test:v06p1-market-closed",
+  "cwd": "/workspace/xiantu/wt/dev",
+  "stdin": "/dev/null",
+  "exitCode": 0,
+  "assertions": 24120,
+  "originalEvidenceFilesRestored": 2,
+  "originalEvidenceBytesPreserved": true,
+  "evidenceFiles": [
+    "v06p1-market-closed-evidence/v06p1-market-closed-evidence.json"
+  ],
+  "backup": "/tmp/xiantu-forge-open-v06p1-market-closed-wrf_mxba/evidence"
+}

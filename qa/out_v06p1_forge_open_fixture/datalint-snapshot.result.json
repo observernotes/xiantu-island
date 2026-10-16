@@ -1,0 +1,5 @@
+{
+  "command": "PYTHONDONTWRITEBYTECODE=1 python3 /workspace/xiantu/qa/tools/datalint.py",
+  "cwd": "/workspace/xiantu/wt/dev/data",
+  "exitCode": 0
+}

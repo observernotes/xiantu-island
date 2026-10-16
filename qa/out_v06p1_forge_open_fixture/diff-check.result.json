@@ -1,0 +1,4 @@
+{
+  "command": "git diff --cached --check",
+  "exitCode": 0
+}

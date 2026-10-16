@@ -1,0 +1,11 @@
+{
+  "command": "npm run test:v06d-closed",
+  "cwd": "/workspace/xiantu/wt/dev",
+  "stdin": "/dev/null",
+  "exitCode": 0,
+  "assertions": 15048,
+  "originalEvidenceFilesRestored": 17,
+  "originalEvidenceBytesPreserved": true,
+  "evidenceFiles": [],
+  "backup": "/tmp/xiantu-forge-open-v06d-closed-gjlz70wp/evidence"
+}

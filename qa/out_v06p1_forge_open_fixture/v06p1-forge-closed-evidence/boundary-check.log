@@ -1,0 +1,26 @@
+{
+  "passed": true,
+  "baselineEntries": 318,
+  "protectedFiles": 311,
+  "authorizedChanges": [
+    "wt:balance/strings_zh.json",
+    "game:balance/strings_zh.json",
+    "wt:src/Progress.ts"
+  ],
+  "sourceOnlyAdded": [
+    "src/ForgeClosed.ts",
+    "src/ForgeOpenFlag.ts",
+    "src/ForgeGate.ts",
+    "src/ForgeProgress.ts",
+    "src/v06p1-forge-open.test.ts"
+  ],
+  "stringsSha": "fad9b3e604a3af23e99939bf22f77a55de803842daa297ab7fb2c2a6ed0b8967",
+  "sharedStringsUnchanged": true,
+  "gameSceneUnchanged": true,
+  "giftsFalseCount": 10,
+  "GAME_PHASE": 5,
+  "smithServices": false,
+  "closed": true,
+  "softOpened": false,
+  "released": false
+}

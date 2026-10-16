@@ -18,8 +18,9 @@ const marketStringsSha = 'c115b6deadf85d1aa9958de1097321ab65624b456e0fddeca42a5f
 const previousStringsSha = '6b0861110a6af78f7bbfb78eb32e7579ecd41d5a33c3eff3da9e157794f5951f';
 const originalStringsSha = '4a32b19b8e1f318cfcbbf8b9a4e9382f17e7fc3fd951d040f9ec4749524f7385';
 const originalSemanticSha = '81d364627ea128a3125c1def299f1d94804cee7b7e511ff417dd4bf9ff24c7a9';
-// 沿用可选 Progress.market 袋与四个源码；本窗仅授权 GameScene 最小入口提示接线，八 tip 契约不变。
-const openFixtureSources = ['MarketOpenFlag.ts', 'MarketProgress.ts', 'MarketGate.ts', 'v06p1-market-open.test.ts'];
+// 沿用既有寄售接线；炼器窗只追加四个明确夹具源码与可选袋四行，八 tip 契约不变。
+const openFixtureSources = ['MarketOpenFlag.ts', 'MarketProgress.ts', 'MarketGate.ts', 'v06p1-market-open.test.ts',
+  'ForgeOpenFlag.ts', 'ForgeGate.ts', 'ForgeProgress.ts', 'v06p1-forge-open.test.ts'];
 const openFixtureProgressSha = '3e1f4a258b384d5f0d1a2967d0228fcd792cb9a58979efcd5648d9baf9f2e7da';
 const marketTableSha = 'e4725b4724dea9abf67baf2ee467a30e841fee3ee1a9137f5dc25225c09debde';
 const closedStrings = {
@@ -109,6 +110,21 @@ function stripMarketSceneWiring(source) {
   return original.replace(interactCall, '');
 }
 
+// 只剥本窗获准的四个完整行；其余 Progress 字节仍与原基线 SHA 逐字比对。
+const forgeProgressAddedLines = [
+  "import { isValidForgeProgress, type ForgeProgress } from './ForgeProgress';",
+  "  if (has('forge') && !isValidForgeProgress(saved.forge)) return false;",
+  '  /** 仅保留完整夹具事实；缺袋旧档不补建，读回不结算。 */',
+  '  forge: ForgeProgress | undefined = undefined;',
+];
+function stripForgeProgress(source) {
+  for (const line of forgeProgressAddedLines) {
+    eq(source.split(`${line}\n`).length - 1, 1, `Progress 炼器可选袋授权完整行精确一次：${line.trim()}`);
+    source = source.replace(`${line}\n`, '');
+  }
+  return source;
+}
+
 async function checkProtection() {
   const baseline = JSON.parse(await fs.readFile(baselineFile, 'utf8'));
   const protectedFiles = {};
@@ -120,7 +136,10 @@ async function checkProtection() {
     const actual = await shaOrNull(file);
     const authorizedSha = key === 'wt:src/Progress.ts' ? openFixtureProgressSha
       : key.endsWith(':balance/strings_zh.json') ? stringsSha : expected;
-    if (key === 'wt:src/scenes/GameScene.ts') {
+    if (key === 'wt:src/Progress.ts') {
+      eq(hash(stripForgeProgress(await fs.readFile(file, 'utf8'))), authorizedSha,
+        'C12 Progress 仅增加炼器可选袋四完整行，剥离后原寄售基线字节保持');
+    } else if (key === 'wt:src/scenes/GameScene.ts') {
       eq(hash(stripMarketSceneWiring(await fs.readFile(file, 'utf8'))), authorizedSha,
         'C12 GameScene 仅增加三 import、入口提示方法、Z/通用交互两处最小接线，其余字节保持');
     } else eq(actual, authorizedSha, `C12 写前 SHA 保护：${key}`);
@@ -137,7 +156,7 @@ async function checkProtection() {
     }
   }
   const expectedSource = Object.keys(baseline).filter(key => key.startsWith('wt:src/')).map(key => key.slice('wt:src/'.length));
-  eq(await filesUnder(path.join(root, 'src')), [...expectedSource, 'MarketClosed.ts', 'ForgeClosed.ts', ...openFixtureSources].sort(), 'C12 src 仅新增关态 API 及四个既有源码，无完整寄售 UI 文件');
+  eq(await filesUnder(path.join(root, 'src')), [...expectedSource, 'MarketClosed.ts', 'ForgeClosed.ts', ...openFixtureSources].sort(), 'C12 src 仅新增关态 API 及精确列明的寄售/炼器夹具源码，无完整寄售 UI 文件');
   for (const [mode, dataRoot] of dataRoots) {
     const file = path.join(dataRoot, 'balance/market_consign.json');
     const actual = await shaOrNull(file);

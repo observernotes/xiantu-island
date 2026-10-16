@@ -65,6 +65,7 @@
     "test:v06d-open": "timeout 180s node scripts/v06d-open-test.mjs",
     "test:v06p1-market-closed": "timeout 120s node scripts/v06p1-market-closed-test.mjs",
     "test:v06p1-forge-closed": "timeout 120s node scripts/v06p1-forge-closed-test.mjs",
+    "test:v06p1-forge-open": "timeout 180s node scripts/v06p1-forge-open-test.mjs",
     "test:v06p1-market-open": "timeout 180s node scripts/v06p1-market-open-test.mjs",
     "test:v06c-open": "timeout 120s node scripts/v06c-open-test.mjs",
     "test:v06b-open": "timeout 120s node scripts/v06b-open-test.mjs",

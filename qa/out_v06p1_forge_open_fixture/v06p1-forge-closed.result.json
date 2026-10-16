@@ -1,0 +1,16 @@
+{
+  "command": "npm run test:v06p1-forge-closed",
+  "cwd": "/workspace/xiantu/wt/dev",
+  "stdin": "/dev/null",
+  "exitCode": 0,
+  "assertions": 20218,
+  "originalEvidenceFilesRestored": 31,
+  "originalEvidenceBytesPreserved": true,
+  "evidenceFiles": [
+    "v06p1-forge-closed-evidence/boundary-check.log",
+    "v06p1-forge-closed-evidence/protected-after.json",
+    "v06p1-forge-closed-evidence/source-search.json",
+    "v06p1-forge-closed-evidence/v06p1-forge-closed-evidence.json"
+  ],
+  "backup": "/tmp/xiantu-forge-open-v06p1-forge-closed-gg816c9i/evidence"
+}
