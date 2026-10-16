@@ -7,6 +7,7 @@ import { SkillCombat } from './SkillCombat';
 import { FriendlySummons } from './FriendlySummons';
 import { Progress } from './Progress';
 import { SKILL_LIST, skillNumber } from './skills';
+import type { SenseAdapter } from './Sense';
 
 let assertions = 0;
 function eq(actual: unknown, expected: unknown, message: string) {
@@ -163,13 +164,25 @@ for (const spawns of [[], [{ monster: 'missing_monster', count: 1 }],
   first.dispose(); second.dispose();
 }
 
-// 真实 GameScene 创建的 provider 桥接：只替换显示分配、timer 与 Monster 分配。
+// 真实 GameScene 创建的 provider 桥接：替换显示、timer、Monster 分配与 Sense 注册宿主。
 {
   const time = clock(), spawned: any[] = [], markers: any[] = [], results: boolean[] = [];
+  const senseAdapters = new Map<string, SenseAdapter>();
+  const senseRegistrations: { name: string; adapter: SenseAdapter; unregister: () => void }[] = [];
+  let senseUnregistered = 0;
   let barDestroyed = 0, priorDeaths = 0, blinkStopped = 0, fxDestroyed = 0, warnDestroyed = 0, movementAfterCancel = 0;
   const game = Object.create(GameScene.prototype) as any;
   Object.assign(game, { map: { id: 'entity-fixture', width: 1000 }, mobs: [], player: { x: 12, feet: 420 },
     prog: { encounters: undefined }, events: { on() {} }, registry: { get() { return 0; }, set() {} },
+    sense: { registerAdapter(name: string, adapter: SenseAdapter) {
+      senseAdapters.set(name, adapter);
+      const unregister = () => {
+        senseUnregistered++;
+        if (senseAdapters.get(name) === adapter) senseAdapters.delete(name);
+      };
+      senseRegistrations.push({ name, adapter, unregister });
+      return unregister;
+    } },
     time: { delayedCall(ms: number, callback: () => void) { const timer = time.schedule(ms, callback); return { remove() { timer.dispose(); } }; } },
     add: { ellipse(x: number, y: number) { const mark = { x, y, active: true, setStrokeStyle() { return this; }, setDepth() { return this; }, destroy() { this.active = false; } }; markers.push(mark); return mark; } },
     spawnTrialMob(id: string, x: number, y: number) {
@@ -184,6 +197,13 @@ for (const spawns of [[], [{ monster: 'missing_monster', count: 1 }],
       spawned.push(mob); game.mobs.push(mob); return mob;
     } });
   game.setupEncounters();
+  eq(senseRegistrations.length, 1, 'GameScene setup 真实调用 Sense registerAdapter 一次');
+  eq(senseRegistrations[0].name, 'encounter', 'GameScene 注册 encounter adapter');
+  eq(senseAdapters.get('encounter'), senseRegistrations[0].adapter, 'Sense mock 保存已注册 adapter');
+  eq(typeof senseRegistrations[0].adapter.targets, 'function', 'GameScene adapter 提供 targets 回调');
+  eq(game.unregisterEncounterSense, senseRegistrations[0].unregister, 'GameScene 保存 Sense 返回的注销函数');
+  same(senseRegistrations[0].adapter.targets({ instanceId: game.map.id, center: { x: 12, y: 420 }, alive: true, busy: false, ready: true }),
+    [], '正式关态下注册的真实 targets 桥接不产生扫描候选');
   const battle = game.encounterRuntime.options.battle;
   const handle = battle.start({ ...request(herb), anchor: undefined }, (success: boolean) => { results.push(success); handle.dispose(); });
   eq(markers[0].x, 32, 'GameScene 预警坐标裁剪到地图内');
@@ -226,6 +246,24 @@ for (const spawns of [[], [{ monster: 'missing_monster', count: 1 }],
   eq(barDestroyed, 3, '清理三只独立血条且无重复销毁');
   same(cancelled, [], '攻击导致退场不会误报清波胜利');
   fighting.dispose(); eq(barDestroyed, 3, '重入/重复清理保持幂等');
+
+  game.encounterRuntime.destroy();
+  game.setupEncounters();
+  eq(senseRegistrations.length, 2, 'GameScene 再 setup 重新注册 Sense adapter');
+  eq(senseUnregistered, 1, 'GameScene 再 setup 真实调用旧 unregister');
+  eq(senseAdapters.get('encounter'), senseRegistrations[1].adapter, '再 setup 后只保留新 adapter');
+  eq(game.unregisterEncounterSense, senseRegistrations[1].unregister, '再 setup 保存新的注销函数');
+
+  // Object.create 未执行 create；这里验证 SHUTDOWN 使用的 runtime.destroy + unregister 清理顺序。
+  for (let i = 0; i < 2; i++) {
+    game.encounterRuntime?.destroy(); game.encounterRuntime = undefined;
+    game.unregisterEncounterSense?.(); game.unregisterEncounterSense = undefined;
+  }
+  eq(senseUnregistered, 2, 'shutdown 清理实际调用新 unregister 且重复清理安全');
+  eq(senseAdapters.size, 0, 'shutdown 清理后无残留 Sense adapter');
+  time.advance(10_000);
+  eq(time.pending(), 0, 'dispose/shutdown 清理后无残留 timer');
+  eq(markers.filter(mark => mark.active).length, 0, 'dispose/shutdown 清理后无残留预警');
 }
 
 // 真实 SkillCombat 命中与真实 Progress 熟练度：事件怪仍受伤，但不增加熟练度。
@@ -271,4 +309,4 @@ for (const spawns of [[], [{ monster: 'missing_monster', count: 1 }],
   }
   ok(hitEvents > 0, '灵狼真实命中事件仍发出，未破坏攻击反馈');
 }
-console.log(`encounter-battle: ${assertions} assertions passed; 800ms waves, kill isolation, cleanup, real GameScene/SkillCombat`);
+console.log(`encounter-battle: ${assertions} assertions passed; 800ms waves, kill isolation, cleanup, Sense register/unregister, real GameScene/SkillCombat`);
