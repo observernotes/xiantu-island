@@ -1,3 +1,4 @@
+import strings from '@xt/balance/strings_zh.json';
 import { Progress } from './Progress';
 import { QuestSystem } from './QuestSystem';
 import { QUESTS, RECIPES, ITEMS, GROWTH, t, TILED_MAPS, SECT_GATE_MAPS, NPCS, syncTalismanMapAvailability } from './data';
@@ -73,7 +74,13 @@ try {
   eq(student.grantQuestRecipes(intro), [], '授方去重');
   student.save();
   eq(Progress.load().learnedRecipes, intro.rewards.recipes, '已学状态重载');
-  ok(t('talisman.intro_done').includes('研墨'), '缺文案读设计兜底');
+  eq(t('talisman.intro_done'), strings['talisman.intro_done'], '教学完成提示使用 strings_zh 表内文案');
+  const talismanStrings = Object.entries(strings).filter(([key]) => key.startsWith('talisman.'));
+  eq(talismanStrings.length, 60, 'strings_zh 表内包含全部 60 条制符文案');
+  for (const [key, value] of talismanStrings) {
+    ok(typeof value === 'string' && value.length > 0, `${key} 表内存在`);
+    eq(t(key), value, `${key} 使用 strings_zh 表内文案`);
+  }
 
   // 保存失败既不丢已有品质，也不提交一半配方奖励。
   const retry = new Progress(); retry.level = 15;

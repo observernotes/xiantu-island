@@ -52,7 +52,6 @@ interface ButtonView {
   views: { state: State; key: string; bg: Background; artUsed: 'art' | 'code' }[];
 }
 const textureKey = (image: string) => image.split('/').pop()!;
-const label = (key: string, fallback: string) => { const value = t(key); return value === key ? fallback : value; };
 const ARROWS = { up: '↑', down: '↓', left: '←', right: '→' };
 // 布局 JSON 自身缺失时仍能开窗；专用坐标以美术 JSON 为准。
 const FALLBACK_LAYOUT: Layout = {
@@ -164,7 +163,6 @@ export class TalismanPanel {
     const [x, y, w, h] = B[name], slice = secondary ? S.nineSlice : B.nineSlice;
     const disabled = name === 'close' ? false : secondary ? this.model.secondaryDisabled : this.model.primaryDisabled;
     const action = name === 'close' ? 'close' : secondary ? this.model.secondary : this.model.primary;
-    const fallbacks = { start: '开始制符', again: '再来', abandon: '放弃画符', continue: '继续画符', close: '关闭' };
     const container = this.add(this.scene.add.container(x, y).setSize(w, h).setName(`talisman-${name}`));
     const views = (['normal', 'hover', 'pressed', 'disabled'] as const).map(state => {
       const key = textureKey(secondary ? S[state] : B.image.replace(/\{[^}]+\}/, state));
@@ -174,7 +172,7 @@ export class TalismanPanel {
       container.add(bg);
       return { state, key, bg, artUsed: this.artUsed[key] };
     });
-    const text = this.scene.add.text(w / 2, h / 2, (name === 'startOrAgain' && this.model.primaryLabel) || label(`talisman.${action}`, fallbacks[action]), {
+    const text = this.scene.add.text(w / 2, h / 2, (name === 'startOrAgain' && this.model.primaryLabel) || t(`talisman.${action}`), {
       fontFamily: HUD_FONT, fontSize: '14px', color: secondary ? disabled ? S.textColor.disabled : S.textColor.normal : PAPER,
     }).setOrigin(0.5).setScrollFactor(0).setName('talisman-button-label');
     container.add(text);
@@ -426,7 +424,7 @@ export class TalismanPanel {
     this.box(L.window.image, [0, 0, width, height], L.window.nineSlice);
     const [tw, th] = hudSpec(this.scene, 'ui_bestiary_title')?.size ?? [160, 28];
     this.box('bestiary/ui_bestiary_title', [(width - tw) / 2, -12, tw, th]);
-    this.text(width / 2, -12 + th / 2, label('talisman.title', '制符'), 18).setOrigin(0.5);
+    this.text(width / 2, -12 + th / 2, t('talisman.title'), 18).setOrigin(0.5);
     this.box(L.recipeList.panelImage, L.recipeList.panel);
     this.box(L.detail.panelImage, L.detail.panel);
     this.recipeRows(); this.details(); this.updateDrawing();
