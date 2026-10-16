@@ -1,3 +1,4 @@
+import { legacySaveFixture } from './legacy-save-fixture.mjs';
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { createServer } from 'vite';
@@ -23,6 +24,7 @@ if (!process.argv.includes('--single-mode')) {
     }] : [],
   });
   try {
+    await legacySaveFixture(server);
     if (!invalid) await server.ssrLoadModule('/src/life-skills.test.ts');
     else {
       const { LIFE_SKILLS, LIFE_SKILL_ERRORS } = await server.ssrLoadModule('/src/data.ts');

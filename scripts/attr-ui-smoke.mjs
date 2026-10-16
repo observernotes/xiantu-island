@@ -1,3 +1,4 @@
+import { installBrowserSaveReader } from './browser-save.mjs';
 // UI-6 加点窗浏览器冒烟；独立快照工程构建/preview，不覆盖工作树 dist，也不在浏览器冒烟内执行 tsc。
 // timeout 300s node scripts/attr-ui-smoke.mjs；XT_ATTR_UI_SHOTS 可覆盖默认截图目录。
 import assert from 'node:assert/strict';
@@ -75,6 +76,7 @@ try {
 
   async function session(label, { missing = [], missingFile = '', save = SAVE } = {}) {
     const context = await browser.newContext({ viewport: { width: 1280, height: 720 }, timezoneId: 'Asia/Shanghai' });
+    await installBrowserSaveReader(context);
     const filtered = missing.length ? await installMissingManifest(context, manifest, missing) : undefined;
     await context.addInitScript(save => {
       if (location.protocol !== 'http:' && location.protocol !== 'https:') return;
@@ -122,8 +124,8 @@ try {
   }
   const shot = (page, name) => page.screenshot({ path: path.join(shotDir, `${name}.png`) });
   const snap = page => page.evaluate(() => window.__xt.attrSnapshot());
-  const progress = page => page.evaluate(() => {
-    const p = window.__scene.prog, saved = JSON.parse(localStorage.getItem('xiantu_save_v1'));
+  const progress = page => page.evaluate(async () => {
+    const p = window.__scene.prog, saved = (await window.__xtReadPersistedSave());
     return { unspent: p.unspentStatPoints, allocated: { ...p.allocatedStats }, savedUnspent: saved.unspentStatPoints,
       savedAllocated: saved.allocatedStats };
   });
@@ -212,7 +214,7 @@ try {
   // 真键位与真实 NPC 菜单证明 modal 输入互斥；开关只在本测试浏览器内存启用。
   {
     const { page, done } = await session('modal');
-    await page.evaluate(() => { window.__xt.setFlag('alchemyPhase1', true); window.__xt.setFlag('shops', true); });
+    await page.evaluate(async () => { await window.__xt.setFlag('alchemyPhase1', true); await window.__xt.setFlag('shops', true); });
     await nearNpc(page); await open(page); await press(page, 'k'); await press(page, 'l'); await press(page, 'z');
     eq(await page.evaluate(() => ({ attr: window.__xt.attrSnapshot().open, skill: window.__scene.skillWindow.open,
       alchemy: window.__scene.alchemy.isOpen(), shop: window.__scene.shop.isOpen(), dialog: window.__scene.dialog.open })),

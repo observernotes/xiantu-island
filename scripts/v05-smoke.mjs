@@ -1,3 +1,4 @@
+import { installBrowserSaveReader } from './browser-save.mjs';
 // 先 npm run build:test，再 npm run test:smoke:v05（外层 timeout 120s，无头 Chromium）。
 // 可用 PLAYWRIGHT_MODULE / CHROMIUM_EXECUTABLE_PATH 指定本机工具，XT_SMOKE_BASE_URL 测已有服务。
 import assert from 'node:assert/strict';
@@ -117,7 +118,7 @@ async function extraInteractions(context, baseURL) {
         const legacy = { mapId: trial.map, x: 64, y: 64 };
         const read = () => ({ map: window.__scene.map.id, pending: window.__scene.prog.pendingSectTrial,
           active: !!window.__scene.sectTrial, position: window.__scene.prog.position });
-        const save = window.__xt.exportSave();
+        const save = await window.__xt.exportSave();
         await window.__xt.loadSave({ ...save, position: legacy, pendingSectTrial: null });
         const position = read();
         await window.__xt.loadSave({ ...save, position: legacy, job: '', selectedSect: trial.sect,
@@ -227,7 +228,7 @@ async function extraInteractions(context, baseURL) {
     await go('tianjian_sect');
     assert.equal(await page.evaluate(() => window.__scene.map.objects.some(o => o.type === 'npc' && o.props.npc === 'tianjian_elder')), true);
     checks.push('phase5: 山门传功长老出现');
-    const contribution = await page.evaluate(quest => {
+    const contribution = await page.evaluate(async quest => {
       const scene = window.__scene, p = scene.prog;
       p.level = Math.max(p.level, quest.reqLevel);
       p.advanceClass('tianjian_disciple');
@@ -235,11 +236,11 @@ async function extraInteractions(context, baseURL) {
       const accepted = scene.quests.accept(quest.id);
       for (const objective of quest.objectives) scene.quests.onTalk(objective.target);
       const complete = scene.quests.complete(quest.id);
-      const reward = scene.quests.turnIn(quest.id);
+      const reward = await scene.quests.turnInAsync(quest.id);
       if (reward) scene.giveRewards(reward.quest, reward.broke, reward.daily, reward.settled);
       const gained = reward?.daily?.contribution;
       const duplicate = p.onSectDailyQuestCompleted(quest.id);
-      const saved = JSON.parse(localStorage.getItem('xiantu_save_v1'));
+      const saved = (await window.__xtReadPersistedSave());
       return { accepted, complete, state: scene.quests.state(quest.id), gained, duplicate,
         balance: p.sectContribution, savedBalance: saved.sectContribution,
         savedClaims: saved.sectDailyContributionClaims };
@@ -268,7 +269,7 @@ async function extraInteractions(context, baseURL) {
     })]);
     assert.deepEqual(seclusion.after, seclusion.before);
     checks.push('seclusion: 境界提示、贡献不足不结算');
-    const settled = await page.evaluate(({ level, contribution }) => {
+    const settled = await page.evaluate(async ({ level, contribution }) => {
       const scene = window.__scene, room = scene.map.objects.find(o => o.type === 'seclusion'), p = scene.prog;
       scene.dialog.close(); scene.player.body.reset(room.x, room.y);
       p.level = level; p.exp = 0; p.sectContribution = contribution;
@@ -278,7 +279,7 @@ async function extraInteractions(context, baseURL) {
       scene.dialog.selectChoice(0);
       const after = { level: p.level, exp: p.exp, age: p.age, contribution: p.sectContribution,
         history: p.seclusionHistory.length, yearsToday: p.seclusionYearsToday };
-      const saved = JSON.parse(localStorage.getItem('xiantu_save_v1'));
+      const saved = (await window.__xtReadPersistedSave());
       return { before, after, choices, log: scene.logs.map(line => line.text),
         saved: { age: saved.age, contribution: saved.sectContribution, history: saved.seclusionHistory.length,
           yearsToday: saved.seclusionYearsToday } };
@@ -309,7 +310,7 @@ async function extraInteractions(context, baseURL) {
     checks.push('seclusion: 真实交互选择 1 年，修为/贡献/寿元/日限结算、日志与读档');
 
     for (const mapId of Object.keys(trialByMap)) await emptyTrialEntrance(mapId);
-    const savedBeforeDebug = await page.evaluate(() => localStorage.getItem('xiantu_save_v1'));
+    const savedBeforeDebug = await page.evaluate(async () => JSON.stringify((await window.__xtReadPersistedSave())));
     // 普通误入优先回山门；用已有独立调试档保留移动木靶覆盖，不改变发版开关。
     await go('trial_lingfu_range', 'lingfu_novice');
     const movement = await page.evaluate(async () => {
@@ -346,10 +347,10 @@ async function extraInteractions(context, baseURL) {
       Math.max(...xs) >= movement.homeX + movement.range - tolerance, '移动木靶未到达左右两端');
     assert.ok(movement.reversals >= 2, '移动木靶没有真实往返');
     checks.push(`target_spot: ${movement.name} 在 ±${movement.range}px 内往返 ${movement.reversals} 次`);
-    assert.equal(await page.evaluate(() => localStorage.getItem('xiantu_save_v1')), savedBeforeDebug,
+    assert.equal(await page.evaluate(async () => JSON.stringify((await window.__xtReadPersistedSave()))), savedBeforeDebug,
       '灵符调试夹具污染真实存档');
 
-    const savedBeforeShadowDebug = await page.evaluate(() => localStorage.getItem('xiantu_save_v1'));
+    const savedBeforeShadowDebug = await page.evaluate(async () => JSON.stringify((await window.__xtReadPersistedSave())));
     await go('trial_youying_vault', 'youying_shadow');
     const shadow = await page.evaluate(() => {
       const scene = window.__scene, zone = scene.map.zones.find(zone => zone.props.kind === 'shadow');
@@ -383,7 +384,7 @@ async function extraInteractions(context, baseURL) {
     await page.waitForFunction(() => window.__scene.player.alpha === 1 && window.__scene.player.tintTopLeft === 0xffffff,
       null, { timeout: 3000 });
     checks.push('shadow: 阴影渐变进出、免发现，灯笼 40px 与视锥缩放');
-    assert.equal(await page.evaluate(() => localStorage.getItem('xiantu_save_v1')), savedBeforeShadowDebug,
+    assert.equal(await page.evaluate(async () => JSON.stringify((await window.__xtReadPersistedSave()))), savedBeforeShadowDebug,
       '幽影调试夹具污染真实存档');
 
     await go('tianjian_sect');
@@ -413,9 +414,9 @@ async function extraInteractions(context, baseURL) {
     await page.evaluate(() => { const url = new URL(location.href); url.searchParams.delete('reset'); history.replaceState(null, '', url.href); });
     await page.reload({ waitUntil: 'domcontentloaded', timeout: 30000 }); await waitForMap(page, 'tianjian_sword_tomb');
     await enterTutorial(); await page.waitForTimeout(200);
-    assert.deepEqual(await page.evaluate(id => ({ open: window.__scene.dialog.open,
+    assert.deepEqual(await page.evaluate(async id => ({ open: window.__scene.dialog.open,
       count: window.__scene.prog.tutorialsSeen.filter(seen => seen === id).length,
-      saved: JSON.parse(localStorage.getItem('xiantu_save_v1')).tutorialsSeen.includes(id) }), tutorial),
+      saved: (await window.__xtReadPersistedSave()).tutorialsSeen.includes(id) }), tutorial),
     { open: false, count: 1, saved: true });
     checks.push('tutorial: 首次进入提示，持续站区与刷新都不重复');
     for (const gate of sectGates) {
@@ -475,6 +476,7 @@ try {
     args: ['--use-gl=swiftshader', '--enable-unsafe-swiftshader'],
   });
   const context = await browser.newContext({ viewport: { width: 1280, height: 720 } });
+  await installBrowserSaveReader(context);
   await fs.mkdir(path.dirname(screenshot), { recursive: true });
   console.log(JSON.stringify({ baseURL, playwright: module, browser: executablePath, headless: true }));
 

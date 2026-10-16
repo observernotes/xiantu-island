@@ -1,4 +1,5 @@
 // 每个数据模式用独立进程，避免 Vite / 模块缓存串用 @xt 根目录。
+import { legacySaveFixture } from './legacy-save-fixture.mjs';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { createServer } from 'vite';
@@ -17,6 +18,7 @@ if (process.env.XT_SENSE_TEST_CHILD !== '1') {
     appType: 'custom', logLevel: 'error',
   });
   try {
+    await legacySaveFixture(server);
     await server.ssrLoadModule('/src/sense.test.ts');
     console.log(`sense-test XT_DATA=${process.env.XT_DATA}: passed`);
   } finally {

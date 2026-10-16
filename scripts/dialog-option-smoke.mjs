@@ -154,7 +154,7 @@ try {
   });
   async function open(page, choices = fixture) {
     await page.mouse.move(10, 10);
-    await page.evaluate(({ choices, rankKey }) => { window.__xt.setFlag('sectRanks', true); window.__xt.openDialogChoices(choices, rankKey); }, { choices, rankKey });
+    await page.evaluate(async ({ choices, rankKey }) => { await window.__xt.setFlag('sectRanks', true); window.__xt.openDialogChoices(choices, rankKey); }, { choices, rankKey });
     await page.waitForTimeout(100);
     return snap(page);
   }

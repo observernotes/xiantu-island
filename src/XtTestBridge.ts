@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { GameScene } from './scenes/GameScene';
 import { CLASS_LIST } from './classes';
-import { ITEMS, MONSTERS, QUESTS, SENSE, TILED_MAPS } from './data';
+import { ITEMS, MONSTERS, QUEST_HOOKS, QUESTS, SENSE, TILED_MAPS } from './data';
 import { gameNow, setGameTimeSource } from './GameClock';
 import { FIELD_TEST } from './config/maps';
 import { FEEL } from './config/feel';
@@ -165,8 +165,10 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig, rendererChoi
     if (!ready || restarting) throw new Error(`${marker}: game scene is not ready`);
     return scene;
   }
-  function persist() {
-    if (!scene.prog.setPosition(scene.map.id, scene.player.x, scene.player.y)) throw new Error(`${marker}: save failed`);
+  async function persist() {
+    // 场景重建会先提交地图访问等事务，落点保存须等该笔槽提交结束。
+    await scene.prog.flushSaves();
+    if (!await scene.prog.setPosition(scene.map.id, scene.player.x, scene.player.y, { async: true })) throw new Error(`${marker}: save failed`);
     scene.player.hp = scene.prog.hp;
     scene.player.maxHp = scene.prog.maxHp;
     scene.player.syncAppearance();
@@ -181,14 +183,14 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig, rendererChoi
         resolveRestart = () => { window.clearTimeout(timeout); resolve(); };
         scene.scene.restart({ map: mapId, pos });
       });
-      persist();
+      await persist();
     } finally { resolveRestart = undefined; restarting = false; }
   }
   let paused = false, now = Date.now(), anchor = now;
   const readTime = () => paused ? now : now + Date.now() - anchor;
   setGameTimeSource(readTime);
-  function settleClock() {
-    if (ready) { scene.quests.refreshDaily(); scene.prog.advanceAge(); persist(); }
+  async function settleClock() {
+    if (ready) { scene.quests.refreshDaily(); scene.prog.advanceAge(); await persist(); }
     return readTime();
   }
   const originalRandom = Math.random;
@@ -350,12 +352,12 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig, rendererChoi
     },
     async loadSave(obj: unknown) {
       const s = current();
-      if (!s.prog.importSave(obj)) throw new Error(`${marker}: invalid save or save failed`);
+      if (!await s.prog.importSave(obj, { async: true })) throw new Error(`${marker}: invalid save or save failed`);
       s.registry.set('chests', new Set());
       const pos = s.prog.position;
       await restart(pos?.mapId ?? s.map.id, pos ?? undefined);
     },
-    exportSave() { current(); persist(); return scene.prog.exportSave(); },
+    async exportSave() { current(); await persist(); return scene.prog.exportSave(); },
     // UI-2：仅测试构建的展示夹具；仍走真实 choose/分页/键鼠，回调以对白显示所选 label。
     openDialogChoices(choices: Omit<DialogChoice, 'onSelect'>[], rankIcon?: string) {
       const s = current();
@@ -390,18 +392,20 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig, rendererChoi
       ui.action(action); return api.talismanCraftSnapshot();
     },
     useTalisman(id: string, quality: 'low' | 'mid' | 'high' | 'supreme') { return copy(current().useTalisman(id, quality)); },
-    bindTalismanSlot(index: number, item: string | null, quality: 'low' | 'mid' | 'high' | 'supreme' = 'low') {
-      const s = current(); return s.prog.bindTalismanSlot(index, item, quality);
+    async bindTalismanSlot(index: number, item: string | null, quality: 'low' | 'mid' | 'high' | 'supreme' = 'low') {
+      const s = current();
+      await s.prog.flushSaves();
+      return await s.prog.runSaveTransactionAsync(draft => draft.bindTalismanSlot(index, item, quality) ? true : undefined) === true;
     },
-    giveCraftedItem(id: string, n: number, quality: 'low' | 'mid' | 'high' | 'supreme') {
+    async giveCraftedItem(id: string, n: number, quality: 'low' | 'mid' | 'high' | 'supreme') {
       const s = current();
       if (!ITEMS[id] || !Number.isSafeInteger(n) || n <= 0 || !['low', 'mid', 'high', 'supreme'].includes(quality)
         || !s.prog.addCraftedItem(id, n, quality)) throw new Error(`${marker}: invalid quality item`);
-      persist();
+      await persist();
     },
     attrSnapshot() { return copy(current().attrPanel.snapshot()); },
     sensePreview() { return copy(current().sense.preview()); },
-    senseScan(source: 'key' | 'button', scanId?: string) { return copy(current().sense.requestScan(source, scanId)); },
+    async senseScan(source: 'key' | 'button', scanId?: string) { return copy(await current().sense.requestScanAsync(source, scanId)); },
     senseIntelList() { return copy(current().sense.intelList()); },
     senseMonsterIntel() {
       const s = current(), monster = s.mobs.find(mob => mob.name === senseFixtureNames.monster);
@@ -494,14 +498,16 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig, rendererChoi
     inventorySnapshot() { return copy(current().inventoryPanel.snapshot()); },
     openEquipPanel() { const s = current(); s.openEquipPanel(); return copy(s.equipPanel.snapshot()); },
     equipSnapshot() { return copy(current().equipPanel.snapshot()); },
-    joinSect(id: string) {
+    async joinSect(id: string) {
       const s = current(), cls = CLASS_LIST.find(c => c.sect === id);
       if (!cls || !s.prog.advanceClass(cls.id)) throw new Error(`${marker}: sect unavailable: ${id}`);
-      persist();
+      await persist();
     },
-    setRank(rank: string) {
-      if (!current().prog.setSectRank(rank)) throw new Error(`${marker}: invalid rank or save failed: ${rank}`);
-      persist();
+    async setRank(rank: string) {
+      const p = current().prog;
+      await p.flushSaves();
+      if (!await p.runSaveTransactionAsync(draft => draft.setSectRank(rank) ? true : undefined)) throw new Error(`${marker}: invalid rank or save failed: ${rank}`);
+      await persist();
     },
     async teleport(mapId: string, x?: number, y?: number) {
       current();
@@ -515,19 +521,19 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig, rendererChoi
         .find((object: { type: string }) => object.type === 'playerStart') ?? { x: 64, y: 64 };
       await restart(mapId, x !== undefined || y !== undefined ? { x: x ?? spawn.x, y: y ?? spawn.y } : undefined);
     },
-    giveItem(id: string, n: number) {
+    async giveItem(id: string, n: number) {
       const p = current().prog;
       if (!Object.prototype.hasOwnProperty.call(ITEMS, id) || !Number.isSafeInteger(n) || n <= 0 || !Number.isSafeInteger(p.count(id) + n)) {
         throw new Error(`${marker}: invalid item or count`);
       }
-      p.addItem(id, n); persist();
+      p.addItem(id, n); await persist();
     },
-    acceptQuest(id: string) {
+    async acceptQuest(id: string) {
       const s = current();
       if (!s.quests.accept(id)) throw new Error(`${marker}: quest unavailable: ${id}`);
-      persist();
+      await persist();
     },
-    completeQuest(id: string) {
+    async completeQuest(id: string, choiceId?: string) {
       const s = current(), q = Object.prototype.hasOwnProperty.call(QUESTS, id) ? QUESTS[id] : undefined;
       if (!q) throw new Error(`${marker}: unknown quest: ${id}`);
       if (s.quests.state(id) === 'done') return false;
@@ -550,20 +556,25 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig, rendererChoi
           }
         }
       }
-      const reward = s.quests.turnIn(id);
-      if (!reward) { persist(); throw new Error(`${marker}: cannot complete quest: ${id}`); }
-      s.giveRewards(reward.quest, reward.broke, reward.daily, reward.settled); persist();
+      // 与作弊器一致：强制完成夹具没有选择 UI，未指定答案时使用已开启节点首项。
+      const hook = QUEST_HOOKS?.questHooks.find(candidate => candidate.quest === id
+        && candidate.on === 'turn_in' && candidate.enabled);
+      await s.prog.flushSaves();
+      const reward = await s.quests.turnInAsync(id, false, choiceId ?? hook?.choices[0].id);
+      if (!reward) { await persist(); throw new Error(`${marker}: cannot complete quest: ${id}`); }
+      s.giveRewards(reward.quest, reward.broke, reward.daily, reward.settled); await persist();
       return true;
     },
-    setFlag(key: string, val: boolean) {
+    async setFlag(key: string, val: boolean) {
       const s = current();
       if (isFeatureName(key)) {
         setFeatureFlag(key, val);
         s.applyFeatureFlags();
         return;
       }
-      if (!s.prog.setConfigFlag(key, val)) throw new Error(`${marker}: invalid flag or save failed`);
-      persist();
+      await s.prog.flushSaves();
+      if (!await s.prog.runSaveTransactionAsync(draft => draft.setConfigFlag(key, val) ? true : undefined)) throw new Error(`${marker}: invalid flag or save failed`);
+      await persist();
     },
     clock: {
       pause() { current(); now = readTime(); paused = true; return settleClock(); },
@@ -579,7 +590,7 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig, rendererChoi
         now = ts; anchor = Date.now(); return settleClock();
       },
     },
-    seed(n: number) {
+    async seed(n: number) {
       current();
       if (!Number.isSafeInteger(n)) throw new Error(`${marker}: invalid seed`);
       let state = n >>> 0;
@@ -590,7 +601,7 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig, rendererChoi
         return ((v ^ v >>> 14) >>> 0) / 4294967296;
       };
       Phaser.Math.RND.sow([String(n)]);
-      persist();
+      await persist();
     },
     events: {
       on(type: EventType | '*', fn: Listener) {

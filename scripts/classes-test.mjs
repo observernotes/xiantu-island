@@ -1,5 +1,6 @@
 // 按本工程发版快照检查新拜入关口；已有五宗职业继续检查技能与读档。
 // QA_TIER_GATE_AWARE: fiveSectClasses
+import { legacySaveFixture } from './legacy-save-fixture.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -46,6 +47,9 @@ try {
       equal(expected[name], value, `QA 关口 ${name} 与工程发版快照不一致`);
     }
   }
+
+  const restoreSaveFeature = await legacySaveFixture(server);
+  const fixtureFlags = features.featureFlags();
 
   const { CLASS_LIST, CLASS_RULES, classDef, classEntryEnabled, skillsForClass, classRobe } =
     await server.ssrLoadModule('/src/classes.ts');
@@ -400,7 +404,7 @@ try {
       equal(migrated.job, cls.id, `${cls.id}: 缺迁移版本的旧档职业保留`);
       equal(migrated.skills, old.skills, `${cls.id}: 旧版本迁移保留已学等级`);
       equal(migrated.skillMastery, old.skillMastery, `${cls.id}: 旧版本迁移保留熟练度`);
-      equal(features.featureFlags(), expected, `${cls.id}: 存档 flags 不能越过发版快照`);
+      equal(features.featureFlags(), fixtureFlags, `${cls.id}: 存档 flags 不能越过发版快照与关态存档夹具`);
       legacyClasses++;
     }
     console.log(JSON.stringify({ passed: true, suite: 'classes-release-gates', classes: CLASS_LIST.length,
@@ -412,7 +416,9 @@ try {
   await server.ssrLoadModule('/src/class-entry.test.ts');
   // Y8 的四宗帖门槛须在默认关闭入口的快照下独立开启、检查并恢复。
   await server.ssrLoadModule('/src/sect-entry.test.ts');
-  equal(features.featureFlags(), expected, '四宗帖回归结束后恢复发版关口');
+  equal(features.featureFlags(), fixtureFlags, '四宗帖回归结束后恢复关态存档夹具');
+  restoreSaveFeature();
+  equal(features.featureFlags(), expected, '存档夹具结束后恢复发版关口');
 } finally {
   await server.close();
 }

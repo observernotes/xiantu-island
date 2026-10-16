@@ -86,18 +86,18 @@ try {
     let assertions = 0;
     const check = (value, message) => { if (!value) throw new Error(message); assertions++; };
     const same = (a, b, message) => check(JSON.stringify(a) === JSON.stringify(b), `${message}: ${JSON.stringify(a)} / ${JSON.stringify(b)}`);
-    const flip = (name, value) => {
-      xt.setFlag(name, value);
+    const flip = async (name, value) => {
+      await xt.setFlag(name, value);
       check(xt.getState().features[name] === value, `${name} 切换无效`);
-      check(!Object.hasOwn(xt.exportSave().flags, name), `${name} 测试覆盖污染存档`);
+      check(!Object.hasOwn((await xt.exportSave()).flags, name), `${name} 测试覆盖污染存档`);
     };
     same(xt.getState().features, expected, '页面初始开关与发版快照不一致');
     // 以下关/开覆盖仅用于当前页面的隔离测试；刷新必须恢复发版快照。
-    for (const name of names) xt.setFlag(name, true);
-    // 旧矩阵沿用同步测试桥 loadSave/importSave；此处使用关态夹具。
-    flip('indexedDbSaves', false);
-    const now = xt.clock.pause();
-    const base = { ...xt.exportSave(), level: 30, exp: 0, hp: 0, mp: 0, job: '', inventory: {}, equip: {},
+    for (const name of names) await xt.setFlag(name, true);
+    // 历史玩法矩阵使用关态夹具；测试桥提交仍统一 await。
+    await flip('indexedDbSaves', false);
+    const now = await xt.clock.pause();
+    const base = { ...(await xt.exportSave()), level: 30, exp: 0, hp: 0, mp: 0, job: '', inventory: {}, equip: {},
       quests: { q_fox: { state: 'done', kills: {} } }, skills: {}, skillGifted: {}, hotbar: Array(8).fill(null),
       learnedRecipes: ['recipe_hp_pill'], pendingAlchemy: null, completedTrials: [], classVersion: 0, classRewardClaims: [],
       sectRank: null, sectContribution: 10000, flags: {}, sectGrowthState: { donationBatches: {}, settledTransactions: {} },
@@ -107,68 +107,68 @@ try {
       position: { mapId: 'luoxia_town', x: 320, y: 400 } };
     const load = async (patch = {}) => { await xt.loadSave({ ...base, ...patch }); return window.__scene; };
     let s = await load();
-    flip('fiveSectClasses', false);
+    await flip('fiveSectClasses', false);
     check(!s.quests.available('q_sect_taixu') && !s.prog.advanceClass('taixu_acolyte'), '非剑徒仍可进入');
     check(s.quests.available('q_sect_tianjian'), '剑徒被关闭');
     if (taixuEntryPresent) {
       s.talkTo('taixu_envoy', 'q_sect_taixu');
       check(s.dialog.body.text.includes(unavailable), '关闭职业没有开放提示');
     }
-    flip('fiveSectClasses', true);
+    await flip('fiveSectClasses', true);
     check(!s.quests.available('q_sect_taixu'), '开放四宗后缺帖仍可接取');
     s.prog.addItem('five_sect_token', 1);
     check(!s.quests.available('q_sect_taixu'), '有帖未选宗仍可接取');
     check(s.prog.selectSect('taixu'), '选择太虚回归夹具失败');
     check(s.quests.available('q_sect_taixu') === taixuEntryPresent, '非剑徒入口未遵循任务阶段');
-    xt.joinSect('tianjian');
+    await xt.joinSect('tianjian');
     check(s.prog.job === 'tianjian_disciple', '天剑正常拜入失败');
-    const joined = xt.exportSave();
+    const joined = await xt.exportSave();
     checked.push('fiveSectClasses');
 
-    xt.acceptQuest('q_daily_tianjian_2');
+    await xt.acceptQuest('q_daily_tianjian_2');
     const dailyBefore = JSON.stringify(s.prog.quests.q_daily_tianjian_2), resetBefore = s.prog.dailyQuestResetDay;
-    flip('sectDaily', false);
+    await flip('sectDaily', false);
     check(s.quests.npcDailyQuestIds('tianjian_envoy_sect').length === 0, '日常菜单未隐藏');
-    check(!s.quests.turnIn('q_daily_tianjian_2'), '日常关闭仍可交付');
-    xt.clock.advance(86400000);
+    check(!(await s.quests.turnInAsync('q_daily_tianjian_2')), '日常关闭仍可交付');
+    await xt.clock.advance(86400000);
     check(JSON.stringify(s.prog.quests.q_daily_tianjian_2) === dailyBefore && s.prog.dailyQuestResetDay === resetBefore, '关闭日常仍发生重置');
-    flip('sectDaily', true);
+    await flip('sectDaily', true);
     check(s.quests.npcDailyQuestIds('tianjian_envoy_sect').includes('q_daily_tianjian_2') && s.quests.available('q_daily_tianjian_2'), '日常未恢复');
     checked.push('sectDaily');
 
     s = await load({ ...joined, ageUpdatedAt: xt.getState().time });
-    xt.setFlag('sect_ranks.enabled', true);
+    await xt.setFlag('sect_ranks.enabled', true);
     let resumeCue, staleCompletions = 0;
     s.dialog.show([{ speaker: null, text: '', cue: 'feature-test' }, { speaker: null, text: '旧对白' }], null,
       () => staleCompletions++, (_cue, next) => { resumeCue = next; });
-    flip('sectRanks', false);
+    await flip('sectRanks', false);
     resumeCue();
     check(!s.dialog.open && staleCompletions === 0, '关闭后旧演出回调仍恢复对白');
     check(s.sectGrowth.promotion('tianjian_elder').key === unavailable, '晋升关闭仍可预览');
     check(!s.sectGrowth.promote('tianjian_elder', 'inner_disciple', 'features:rank').ok, '关闭晋升仍结算');
     s.openSectPromotion('tianjian_elder');
     check(s.dialog.body.text.includes(unavailable), '晋升入口没有开放提示');
-    flip('sectRanks', true);
+    await flip('sectRanks', true);
     check(s.sectGrowth.promotion('tianjian_elder').ok, '晋升没有恢复');
     s.openSectPromotion('tianjian_elder');
     check(s.dialog.choices.length > 1, '晋升菜单没有恢复');
     s.dialog.dismiss(); checked.push('sectRanks');
 
-    flip('sectShopLibrary', false);
+    await flip('sectShopLibrary', false);
     for (const [npc, type] of [['tianjian_envoy_sect', 'sect_shop'], ['tianjian_elder', 'sect_library']]) {
       check(s.sectGrowth.catalog(npc, type).key === unavailable, `${type} 未关闭`);
       check(!s.sectGrowth.exchange(npc, type, 'qi_pill', `features:${type}`).ok, `${type} 关闭仍结算`);
       s.openSectCatalog(npc, type);
       check(s.dialog.body.text.includes(unavailable), `${type} 入口没有开放提示`);
     }
-    flip('sectShopLibrary', true);
+    await flip('sectShopLibrary', true);
     check(s.sectGrowth.services('tianjian_envoy_sect').some(row => row.type === 'sect_shop'), '货架服务未恢复');
     check(s.sectGrowth.catalog('tianjian_elder', 'sect_library').key !== unavailable, '藏经阁未恢复');
     s.dialog.dismiss(); checked.push('sectShopLibrary');
 
     s.prog.stones = 1000; s.prog.addItem('qi_pill', 1);
     const shopBefore = JSON.stringify({ inventory: s.prog.inventory, stones: s.prog.stones, growth: s.prog.sectGrowthState });
-    flip('shops', false);
+    await flip('shops', false);
     check(s.sectGrowth.ordinaryCatalog('doctor_sun').entries.length === 0, '普通货架关闭仍展示');
     check(s.sectGrowth.ordinarySellCatalog('doctor_sun').entries.length === 0, '出售目录关闭仍展示');
     check(!s.sectGrowth.buyOrdinary('doctor_sun', 'qi_pill', 'features:shop-buy').ok, 'shops 关闭仍购买');
@@ -176,30 +176,30 @@ try {
     check(s.sectGrowth.catalog('tianjian_envoy_sect', 'sect_shop').key === unavailable, 'shops 关闭仍开放宗门商店');
     check(s.sectGrowth.catalog('tianjian_elder', 'sect_library').key !== unavailable, 'shops 关闭影响藏经阁');
     same(JSON.stringify({ inventory: s.prog.inventory, stones: s.prog.stones, growth: s.prog.sectGrowthState }), shopBefore, '关闭商店仍变更余额、库存或收据');
-    flip('shops', true);
+    await flip('shops', true);
     check(s.sectGrowth.ordinaryCatalog('doctor_sun').ok && s.sectGrowth.ordinarySellCatalog('doctor_sun').ok, '普通买卖没有恢复');
     checked.push('shops');
 
-    xt.setFlag('sect_donations.enabled', true);
+    await xt.setFlag('sect_donations.enabled', true);
     const config = s.sectGrowth.config;
     const donations = new s.sectGrowth.constructor(s.prog, { ...config, donations: { ...config.donations,
       offers: config.donations.offers.map(offer => ({ ...offer, enabled: true })) } });
-    flip('sectDonations', false);
+    await flip('sectDonations', false);
     check(donations.donations('tianjian_envoy_sect').key === unavailable, '上交未关闭');
     check(!donations.donate('tianjian_envoy_sect', 'missing', 'features:donation').ok, '关闭上交仍结算');
     s.openSectDonations('tianjian_envoy_sect');
     check(s.dialog.body.text.includes(unavailable), '上交入口没有开放提示');
-    flip('sectDonations', true);
+    await flip('sectDonations', true);
     check(donations.donations('tianjian_envoy_sect').ok && donations.donations('tianjian_envoy_sect').entries.length > 0, '上交未恢复');
     s.dialog.dismiss(); checked.push('sectDonations');
 
     const room = { props: { mode: 'sect', reqRealm: 'foundation' } };
     const history = s.prog.seclusionHistory.length, contribution = s.prog.sectContribution;
-    flip('seclusion', false);
+    await flip('seclusion', false);
     s.completeSeclusion(room, 1);
     check(s.prog.seclusionHistory.length === history && s.prog.sectContribution === contribution, '关闭闭关仍扣费');
     check(s.dialog.body.text.includes(unavailable), '闭关没有开放提示');
-    flip('seclusion', true);
+    await flip('seclusion', true);
     s.completeSeclusion(room, 1);
     check(s.prog.seclusionHistory.length === history + 1 && s.prog.sectContribution < contribution, '闭关未恢复');
     s.dialog.dismiss(); checked.push('seclusion');
@@ -208,21 +208,21 @@ try {
       inventory: { spirit_herb: 20, rabbit_fur: 20, bronze_furnace: 1 }, position: { mapId: 'bamboo_forest', x: 352, y: 480 } });
     check(s.openAlchemy('bronze_furnace') && s.alchemySystem.start('recipe_hp_pill').ok, '开炉夹具失败');
     const paid = JSON.stringify(s.prog.pendingAlchemy), materials = JSON.stringify(s.prog.inventory), stones = s.prog.stones;
-    flip('alchemyPhase1', false);
+    await flip('alchemyPhase1', false);
     check(!s.alchemy.isOpen() && !s.openAlchemy('bronze_furnace'), '丹炉入口未关闭');
     check(!s.alchemySystem.start('recipe_hp_pill').ok && !s.alchemySystem.advanceFire(5000)
       && !s.alchemySystem.stopFire() && !s.alchemySystem.skipFire(), '关闭丹炉仍能开炉或结算');
     s.gathering.update(10000, true, false);
     check(s.gathering.points.length > 0 && s.gathering.points.every(point => !point.prompt.visible), '采集提示没有关闭');
     check(JSON.stringify(s.prog.pendingAlchemy) === paid && JSON.stringify(s.prog.inventory) === materials && s.prog.stones === stones, '已付料炉次或材料丢失');
-    flip('alchemyPhase1', true);
+    await flip('alchemyPhase1', true);
     check(s.openAlchemy('bronze_furnace') && s.alchemySystem.skipFire(), '丹炉与火候未恢复');
     check(s.prog.stones === stones && !s.prog.pendingAlchemy, '恢复丹炉重复扣费');
     s.alchemy.suspend(); checked.push('alchemyPhase1');
 
     s = await load({ ...joined, ageUpdatedAt: xt.getState().time, stones: 10000 });
     const portal = { props: { target: 'wanyao_outer_1' } }, oldPortal = { props: { target: 'bamboo_forest' } };
-    flip('v05Maps', false);
+    await flip('v05Maps', false);
     check(!s.portalOpen(portal) && s.portalOpen(oldPortal), '新地图门禁或旧地图兼容错误');
     let routes = [];
     const choose = s.dialog.choose;
@@ -243,7 +243,7 @@ try {
       }, 50);
     }); s = window.__scene;
     check(s.map.id === 'luoxia_town', '旧档无法沿渡船返回旧地图');
-    flip('v05Maps', true);
+    await flip('v05Maps', true);
     check(s.portalOpen(portal), '新地图没有恢复');
     checked.push('v05Maps');
 
@@ -253,13 +253,13 @@ try {
       quests: { ...foxPrereqs, q_fox: { state: 'active', kills: {} } }, position: foxPosition });
     const liveFoxes = () => s.mobs.filter(m => m.def.id === 'demon_fox' && m.active && !m.dead);
     check(liveFoxes().length > 0, '妖狐关态夹具没有生成首领');
-    const foxBefore = xt.exportSave();
-    flip('foxBoss', false);
+    const foxBefore = await xt.exportSave();
+    await flip('foxBoss', false);
     check(liveFoxes().length === 0, '关闭妖狐后仍留有活跃首领');
-    same(xt.exportSave().quests.q_fox, foxBefore.quests.q_fox, '关闭妖狐回滚任务进度');
+    same((await xt.exportSave()).quests.q_fox, foxBefore.quests.q_fox, '关闭妖狐回滚任务进度');
     s.quests.onKill('demon_fox');
     same(s.prog.quests.q_fox, foxBefore.quests.q_fox, '妖狐任务关闭仍推进击杀数');
-    check(!s.quests.complete('q_fox') && !s.quests.turnIn('q_fox'), '妖狐任务关闭仍完成或交付');
+    check(!s.quests.complete('q_fox') && !(await s.quests.turnInAsync('q_fox')), '妖狐任务关闭仍完成或交付');
     s.talkTo('tianjian_envoy', 'q_fox');
     check(s.dialog.body.text.includes(unavailable), '进行中的妖狐任务没有开放提示');
     const bossPortal = { props: { target: 'lingxi_path', bossOnly: true } };
@@ -273,25 +273,25 @@ try {
     s = await load({ ...joined, ageUpdatedAt: xt.getState().time, stones: 900,
       inventory: { fox_tail: 1, foundation_shard: 1 }, equip: { ...joined.equip, weapon: 'azure_steel_sword' },
       quests: { ...foxPrereqs, q_fox: { state: 'active', kills: { demon_fox: 1 } } }, position: foxPosition });
-    const killedFox = xt.exportSave();
+    const killedFox = await xt.exportSave();
     check(liveFoxes().length === 0, '妖狐关闭后载入进行中存档仍生成首领');
     s.quests.onKill('demon_fox');
-    check(!s.quests.turnIn('q_fox'), '已有击杀的妖狐任务关闭仍交付');
-    const heldFox = xt.exportSave();
+    check(!(await s.quests.turnInAsync('q_fox')), '已有击杀的妖狐任务关闭仍交付');
+    const heldFox = await xt.exportSave();
     for (const field of ['quests', 'inventory', 'equip', 'stones']) same(heldFox[field], killedFox[field], `关闭妖狐丢失已有击杀或奖励 ${field}`);
 
-    flip('foxBoss', true);
+    await flip('foxBoss', true);
     check(s.portalOpen(bossPortal), '妖狐专用传送门没有恢复');
     s = await load({ ...joined, ageUpdatedAt: xt.getState().time, inventory: { fox_tail: 1 },
       quests: foxPrereqs, position: foxPosition });
     check(s.quests.available('q_fox'), '妖狐任务没有恢复接取');
-    xt.acceptQuest('q_fox');
+    await xt.acceptQuest('q_fox');
     await xt.teleport('lingxi_path'); s = window.__scene;
     check(liveFoxes().length > 0, '重新开放妖狐后首领没有恢复生成');
     s.quests.onKill('demon_fox');
     check(s.quests.complete('q_fox'), '重新开放妖狐后任务没有恢复推进');
-    check(xt.completeQuest('q_fox') && s.quests.state('q_fox') === 'done', '重新开放妖狐后无法交付');
-    const foxCompleted = xt.exportSave();
+    check((await xt.completeQuest('q_fox')) && s.quests.state('q_fox') === 'done', '重新开放妖狐后无法交付');
+    const foxCompleted = await xt.exportSave();
     check(foxCompleted.quests.q_fox.kills.demon_fox === 1
       && foxCompleted.inventory.foundation_shard >= 1 && foxCompleted.inventory.pillar_shard_1 >= 1
       && Object.values(foxCompleted.equip).includes('azure_steel_sword'), '妖狐任务完成奖励缺失');
@@ -300,38 +300,38 @@ try {
     // 新制符关口：关闭不提供学习，不改库存/品质/制作记录，重开后恢复学习条件。
     s = await load({ ...joined, ageUpdatedAt: xt.getState().time, level: 30,
       quests: {}, learnedRecipes: [], inventory: { talisman_paper: 2, spirit_ink: 2 } });
-    flip('talismanCraft', false);
+    await flip('talismanCraft', false);
     const talismanBefore = JSON.stringify({ inventory: s.prog.inventory, qualities: s.prog.pillQualities, attempt: s.prog.talisman });
     check(!s.quests.available('q_talisman_intro') && !s.quests.accept('q_talisman_intro'), '制符关闭仍可学习');
     check(!s.quests.npcQuestIds('lingfu_envoy').includes('q_talisman_intro'), '制符关闭仍显示教学');
     same(JSON.stringify({ inventory: s.prog.inventory, qualities: s.prog.pillQualities, attempt: s.prog.talisman }), talismanBefore, '制符关闭改变了库存或尝试');
-    flip('talismanCraft', true);
+    await flip('talismanCraft', true);
     check(s.quests.available('q_talisman_intro'), '制符重新开放未恢复学习');
     checked.push('talismanCraft');
 
     // 生活曲线关口独立于制符开放，保存中的同名 flag 不控制运行配置。
-    flip('talismanCraft', false);
-    flip('lifeSkillCurve', true);
+    await flip('talismanCraft', false);
+    await flip('lifeSkillCurve', true);
     check(!xt.getState().features.talismanCraft && !s.quests.available('q_talisman_intro'), '生活曲线自动开放了制符');
     const lifeBefore = s.prog.talismanExp;
-    flip('lifeSkillCurve', false);
+    await flip('lifeSkillCurve', false);
     s.prog.gainTalismanExp(10);
     check(s.prog.talismanExp === lifeBefore, '关闭生活曲线仍增加制符经验');
     checked.push('lifeSkillCurve');
 
-    flip('spiritScan', false);
-    const senseBefore = JSON.stringify(xt.exportSave()), senseMp = s.prog.mp;
+    await flip('spiritScan', false);
+    const senseBefore = JSON.stringify(await xt.exportSave()), senseMp = s.prog.mp;
     check(s.sense.requestScan('key').blockKey === 'sense.block.unavailable', '关闭神识仍可施放');
-    check(s.prog.mp === senseMp && JSON.stringify(xt.exportSave()) === senseBefore, '关闭神识改变灵力或存档');
-    check(!Object.hasOwn(xt.exportSave(), 'senseState'), '关闭神识仍写 senseState');
-    flip('spiritScan', true);
+    check(s.prog.mp === senseMp && JSON.stringify(await xt.exportSave()) === senseBefore, '关闭神识改变灵力或存档');
+    check(!Object.hasOwn(await xt.exportSave(), 'senseState'), '关闭神识仍写 senseState');
+    await flip('spiritScan', true);
     check(s.sense.requestScan('button').blockKey === 'sense.block.unavailable', '只打开功能开关绕过禁用神识表');
-    check(s.prog.mp === senseMp && !Object.hasOwn(xt.exportSave(), 'senseState'), '神识表关闭仍扣费或写盘');
-    flip('spiritScan', false);
+    check(s.prog.mp === senseMp && !Object.hasOwn(await xt.exportSave(), 'senseState'), '神识表关闭仍扣费或写盘');
+    await flip('spiritScan', false);
     checked.push('spiritScan');
 
-    flip('indexedDbSaves', false);
-    flip('indexedDbSaves', true);
+    await flip('indexedDbSaves', false);
+    await flip('indexedDbSaves', true);
     checked.push('indexedDbSaves');
 
     // 所有开关关闭后读旧档：保存字段完整，存档的 true 不能越过发版门禁。
@@ -342,14 +342,14 @@ try {
       position: { mapId: 'trial_lingfu_range', x: 64, y: 64 },
       pendingAlchemy: { recipeId: 'recipe_hp_pill', furnaceId: 'bronze_furnace', fire: {
         zoneWidth: 0.26, perfectWidth: 0.04, periodMs: 1200, zoneRandomPerBrew: true, zoneStart: 0.3, elapsedMs: 400, durationMs: 2000 } } };
-    for (const name of names) xt.setFlag(name, false);
+    for (const name of names) await xt.setFlag(name, false);
     await xt.loadSave(preserved); s = window.__scene;
-    const restored = xt.exportSave();
+    const restored = await xt.exportSave();
     for (const field of ['job', 'skills', 'hotbar', 'sectRank', 'sectContribution', 'inventory', 'equip', 'stones', 'learnedRecipes', 'pendingAlchemy',
       'gatherRespawnAt', 'quests', 'dailyQuestResetDay', 'sectGrowthState', 'seclusionHistory']) same(restored[field], preserved[field], `关闭后读档丢失 ${field}`);
     check(names.every(name => xt.getState().features[name] === false), '存档开关越过发版配置');
     check(s.map.objects.some(o => o.type === 'portal' && o.props.target === 'qingyun_village' && s.portalOpen(o)), '未发布试炼旧档没有返程');
-    for (const name of names) xt.setFlag(name, true);
+    for (const name of names) await xt.setFlag(name, true);
     check(!s.map.objects.some(o => o.name === '__feature_return'), '重新开放仍残留临时返程');
     const events = xt.events.drain().filter(event => ['console.error', 'error', 'unhandledrejection', 'loaderror'].includes(event.type));
     same(events, [], '测试事件流出现错误');

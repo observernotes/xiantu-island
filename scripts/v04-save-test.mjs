@@ -1,4 +1,5 @@
 // 直接消费 v0.4.3 Progress.save() 写出的完整原档；来源与重建命令见 fixtures/v0.4/README.md。
+import { legacySaveFixture } from './legacy-save-fixture.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -58,6 +59,7 @@ try {
     key: index => Object.keys(disk)[index] ?? null,
     get length() { return Object.keys(disk).length; },
   } });
+  await legacySaveFixture(server);
   const { Progress, AUTO_STATS, MORAL_VERSION, RELATIONSHIP_BACKUP_KEY } = await server.ssrLoadModule('/src/Progress.ts');
   const { createRelationshipState } = await server.ssrLoadModule('/src/RelationshipState.ts');
   const { QuestSystem } = await server.ssrLoadModule('/src/QuestSystem.ts');

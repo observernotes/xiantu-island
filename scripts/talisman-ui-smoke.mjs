@@ -306,8 +306,8 @@ try {
   }
   async function setupCraft(page, { inventory = { talisman_paper: 12, spirit_ink: 12 }, curve = false, random = 0 } = {}) {
     await page.evaluate(async ({ inventory, curve, random }) => {
-      window.__xt.setFlag('talismanCraft', true);
-      window.__xt.setFlag('lifeSkillCurve', curve);
+      await window.__xt.setFlag('talismanCraft', true);
+      await window.__xt.setFlag('lifeSkillCurve', curve);
       await window.__xt.loadSave({ name: '制符界面收尾修士', level: 15, exp: 0, hp: 9999, mp: 9999, stones: 1000,
         questRewardVersion: 1, ageUpdatedAt: Date.now(), learnedRecipes: ['recipe_spirit_ink', 'recipe_talisman_fire'],
         // 部分已学夹具不标教学完成，避免旧档补授方把锁定卡自动解锁。
@@ -410,8 +410,8 @@ try {
   });
   await session('talisman-npc-route', {}, async page => {
     await page.evaluate(async () => {
-      window.__xt.setFlag('fiveSectClasses', true);
-      window.__xt.setFlag('talismanCraft', false);
+      await window.__xt.setFlag('fiveSectClasses', true);
+      await window.__xt.setFlag('talismanCraft', false);
       await window.__xt.loadSave({ name: '未拜师制符学徒', level: 15, exp: 0, hp: 9999, mp: 9999,
         questRewardVersion: 1, inventory: {}, quests: {}, ageUpdatedAt: Date.now() });
       await window.__xt.teleport('luoxia_town');
@@ -455,7 +455,7 @@ try {
     eq(await page.evaluate(() => window.__scene.prog.sect), '', '未拜师乘飞舟被强制入宗');
     eq(await page.evaluate(() => [window.__scene.prog.job, window.__scene.prog.selectedSect,
       window.__scene.prog.count('five_sect_token')]), ['', '', 0], '教学夹具应保持未入宗、未选宗且无拜帖');
-    await page.evaluate(() => window.__xt.setFlag('talismanCraft', true));
+    await page.evaluate(async () => (await window.__xt.setFlag('talismanCraft', true)));
     await approachNpc('lingfu_envoy');
     await choose('学习制符'); await finishTeaching();
     eq(await page.evaluate(() => window.__scene.quests.state('q_talisman_intro')), 'active', '第一轮对白未接取入门任务');
@@ -471,17 +471,17 @@ try {
     await page.waitForFunction(() => window.__xt.talismanCraftSnapshot()?.open === true);
     await page.keyboard.press('Escape');
     await page.waitForFunction(() => !window.__xt.talismanCraftSnapshot());
-    const sourceSave = await page.evaluate(() => window.__xt.exportSave());
+    const sourceSave = await page.evaluate(async () => (await window.__xt.exportSave()));
     eq(sourceSave.position.mapId, 'lingfu_pavilion', '新地图位置未进入合法存档');
     await page.evaluate(async save => window.__xt.loadSave(save), sourceSave);
     eq(await page.evaluate(() => window.__scene.map.id), 'lingfu_pavilion', '开关开启重载新图失败');
     const vital = await page.evaluate(() => [window.__scene.prog.hp, window.__scene.prog.mp]);
-    await page.evaluate(() => window.__xt.setFlag('talismanCraft', false));
+    await page.evaluate(async () => (await window.__xt.setFlag('talismanCraft', false)));
     eq(await page.evaluate(() => window.__scene.map.id), 'lingfu_pavilion', '五宗开态关闭制符不得撤离正式山门');
     eq(await page.evaluate(() => window.__xt.openTalismanCraft('recipe_talisman_fire')), false, '关闭制符会话后仍可打开正式制符');
     await page.evaluate(async save => window.__xt.loadSave(save), sourceSave);
     eq(await page.evaluate(() => window.__scene.map.id), 'lingfu_pavilion', '五宗开态须保留灵符山门旧档');
-    await page.evaluate(() => window.__xt.setFlag('fiveSectClasses', false));
+    await page.evaluate(async () => (await window.__xt.setFlag('fiveSectClasses', false)));
     await page.waitForFunction(() => window.__scene.map.id === 'luoxia_town');
     eq(await page.evaluate(() => [window.__scene.prog.hp, window.__scene.prog.mp]), vital, '关闭开关回镇修改气血灵力');
     eq(await page.evaluate(() => window.__scene.map.objects.some(o => o.type === 'npc' && (o.props.npc ?? o.name) === 'lingfu_envoy')), false,
@@ -490,7 +490,7 @@ try {
     eq(await page.evaluate(() => window.__scene.map.id), 'luoxia_town', '关闭开关无法兼容新地图存档回镇');
     eq(await page.evaluate(() => [window.__scene.prog.hp, window.__scene.prog.mp]), vital, '关闭开关读新图档修改气血灵力');
     await page.evaluate(async save => {
-      window.__xt.setFlag('talismanCraft', true);
+      await window.__xt.setFlag('talismanCraft', true);
       await window.__xt.loadSave(save);
     }, sourceSave);
     eq(await page.evaluate(() => window.__scene.map.id), 'lingfu_pavilion', '制符单独开启须重新登记灵符山门');
@@ -500,10 +500,10 @@ try {
     checks.push('五宗开态且制符关闭仍可乘前往灵符派；会话开启制符后无帖教学授五方；关闭制符保留五宗山门，双关回镇，制符单开恢复地图与航线');
   });
   await session('craft-gameplay-save', {}, async page => {
-    await page.evaluate(() => window.__xt.setFlag('talismanCraft', false));
+    await page.evaluate(async () => (await window.__xt.setFlag('talismanCraft', false)));
     eq(await page.evaluate(() => window.__xt.openTalismanCraft('recipe_talisman_fire')), false, '关闭开关后仍可进入正式制符');
     await page.evaluate(async () => {
-      window.__xt.setFlag('talismanCraft', true);
+      await window.__xt.setFlag('talismanCraft', true);
       await window.__xt.loadSave({ name: '制符玩法修士', level: 15, exp: 0, hp: 9999, mp: 9999, stones: 1000,
         questRewardVersion: 1, ageUpdatedAt: Date.now(), learnedRecipes: ['recipe_spirit_ink', 'recipe_talisman_fire'],
         quests: { q_talisman_intro: { state: 'done', kills: {} } },
@@ -561,7 +561,7 @@ try {
     await page.keyboard.press('Escape');
     await page.waitForFunction(() => !window.__xt.talismanCraftSnapshot());
     ok(await page.evaluate(() => window.__scene.scene.isActive('game')), '关闭未恢复地图');
-    await page.evaluate(async () => { const save = window.__xt.exportSave(); await window.__xt.loadSave(save); });
+    await page.evaluate(async () => { const save = await window.__xt.exportSave(); await window.__xt.loadSave(save); });
     eq(await page.evaluate(() => window.__scene.prog.countQuality('talisman_fire', 'high')), 1, '重载重复入包或丢品质');
     eq(await page.evaluate(() => window.__scene.prog.talisman.attempt.result.attemptId), attemptId, '重载改变已结算attempt');
     eq(await page.evaluate(() => window.__scene.prog.count('talisman_paper')), 2, '重载重复扣料');
@@ -569,7 +569,7 @@ try {
     eq(used.ok, true, '实际火符打空发射未成立');
     eq(await page.evaluate(() => window.__scene.prog.countQuality('talisman_fire', 'high')), 0, '火符打空未扣数量');
     ok(await page.evaluate(() => window.__scene.prog.talismanUse.cooldowns.talisman_fire > window.__xt.getState().time), '火符打空未存冷却');
-    await page.evaluate(async () => { const save = window.__xt.exportSave(); await window.__xt.loadSave(save); });
+    await page.evaluate(async () => { const save = await window.__xt.exportSave(); await window.__xt.loadSave(save); });
     ok(await page.evaluate(() => window.__scene.prog.talismanUse.cooldowns.talisman_fire > window.__xt.getState().time), '重载清除了符箓冷却');
     checks.push('正式开关、真实开窗→开始扣料→方向按键→品质封顶→入包→关窗恢复→重载幂等；火符打空消耗及冷却持久');
   });
@@ -730,7 +730,7 @@ try {
     eq(count, s.view.result.count, '自动领取数量与正式结果不同');
     await clickCraft(page, 'close'); await waitCraft(page, { closed: true });
     eq(await page.evaluate(() => window.__scene.prog.countQuality('talisman_fire', 'high')), count, '结果关闭重复领取');
-    await page.evaluate(() => { window.__xt.setFlag('lifeSkillCurve', false); window.__xt.openTalismanCraft('recipe_talisman_fire'); });
+    await page.evaluate(async () => { await window.__xt.setFlag('lifeSkillCurve', false); window.__xt.openTalismanCraft('recipe_talisman_fire'); });
     s = await waitCraft(page);
     ok(!s.presentation.lifeSkill, '关闭曲线后等级条未隐藏');
     checks.push('生活等级/经验只读及开关隐藏；凝符/完成度失败原因；异常入包待领取与恢复自动领取，结果按钮不发奖');
@@ -801,7 +801,7 @@ try {
       eq(s.artUsed[row.key], 'code', '制符配方卡缺图未回退');
     eq(s.artUsed.ui_talisman_paper, 'code', '选符纸面缺图未回退');
     await shot(page, 'ui4_craft_missing_preview');
-    await page.evaluate(() => window.__xt.giveItem('spirit_ink', 3));
+    await page.evaluate(async () => (await window.__xt.giveItem('spirit_ink', 3)));
     await page.waitForFunction(() => {
       const s = window.__xt.talismanCraftSnapshot();
       return s?.view.check.ok && s.buttons.startOrAgain.enabled;

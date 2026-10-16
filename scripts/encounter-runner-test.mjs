@@ -1,5 +1,6 @@
 // 每种数据模式独立模块图；tip 已开 #19/#20/lifeSkillCurve/五事件/九人好感/两题 questHooks，gifts 仍关。
 // 关态仅用 structuredClone fixture，正式表前后逐字节守护。
+import { legacySaveFixture } from './legacy-save-fixture.mjs';
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
@@ -100,6 +101,7 @@ if (!process.argv.includes('--single-mode')) {
     }], ssr: { noExternal: ['phaser'] },
   });
   try {
+    await legacySaveFixture(server);
     await server.ssrLoadModule('/src/encounter-runner.test.ts');
     await server.ssrLoadModule('/src/encounter-battle.test.ts');
     console.log(`encounter-runner XT_DATA=${process.env.XT_DATA}: passed`);

@@ -32,9 +32,9 @@ export function installCheat() {
     console[failed ? 'warn' : 'info'](`[Cheat] ${message}`);
     scene?.log(`[作弊] ${message}`, failed ? '#ffbe91' : '#ffe680');
   };
-  const run = (label: string, action: (s: GameScene) => boolean) => {
+  const run = async (label: string, action: (s: GameScene) => boolean | Promise<boolean>) => {
     try {
-      const ok = action(current());
+      const ok = await action(current());
       if (!ok) log(`${label}未执行（条件不符或存档失败）`, true);
       return ok;
     } catch (error) {
@@ -42,10 +42,11 @@ export function installCheat() {
       return false;
     }
   };
-  const persist = (s: GameScene) => {
+  const persist = async (s: GameScene) => {
+    await s.prog.flushSaves();
     s.player.hp = s.prog.hp; s.player.maxHp = s.prog.maxHp;
     s.player.syncAppearance(); s.skillWindow.refresh();
-    return s.prog.setPosition(s.map.id, s.player.x, s.player.y);
+    return await s.prog.setPosition(s.map.id, s.player.x, s.player.y, { async: true });
   };
   const applyLevel = (s: GameScene, level: number) => {
     if (!integer(level, 1)) return false;
@@ -69,7 +70,7 @@ export function installCheat() {
     if (!registered(ITEMS, id) || !s.prog.canReceiveItem(id, n)) throw new Error(`未知物品或非法数量 ${id} x ${n}`);
     s.prog.addItem(id, n);
   };
-  const complete = (s: GameScene, id: string) => {
+  const complete = async (s: GameScene, id: string) => {
     if (!registered(QUESTS, id)) throw new Error(`未知任务 ${id}`);
     if (s.quests.state(id) === 'done') return false;
     if (!accept(s, id)) return false;
@@ -103,9 +104,10 @@ export function installCheat() {
     // 强制完成没有选择 UI，使用已开启交付节点的首项选择。
     const hook = QUEST_HOOKS?.questHooks.find(candidate => candidate.quest === id
       && candidate.on === 'turn_in' && candidate.enabled);
-    const reward = s.quests.turnIn(id, true, hook?.choices[0].id);
+    await s.prog.flushSaves();
+    const reward = await s.quests.turnInAsync(id, true, hook?.choices[0].id);
     if (reward) s.giveRewards(reward.quest, reward.broke, reward.daily, reward.settled);
-    const saved = persist(s);
+    const saved = await persist(s);
     return !!reward && saved;
   };
 
@@ -138,12 +140,12 @@ export function installCheat() {
     }),
     acceptQuest: id => run(`接取 ${id}`, s => accept(s, id) && persist(s)),
     completeQuest: id => run(`完成 ${id}`, s => complete(s, id)),
-    skipQuests: () => run('完成当前主支线', s => {
+    skipQuests: () => run('完成当前主支线', async s => {
       const ids = Object.keys(s.prog.quests).filter(id => registered(QUESTS, id)
         && !QUESTS[id].daily && s.prog.quests[id].state === 'active');
       let ok = true;
-      for (const id of ids) ok = api.completeQuest(id) && ok;
-      return persist(s) && ok;
+      for (const id of ids) ok = await api.completeQuest(id) && ok;
+      return await persist(s) && ok;
     }),
     spawnMon: id => run(`生成怪物 ${id}`, s => {
       if (!registered(MONSTERS, id)) throw new Error(`未知怪物 ${id}`);
@@ -168,7 +170,7 @@ export function installCheat() {
       }
       return persist(s);
     }),
-    teleport: id => run(`传送 ${id}`, s => {
+    teleport: id => run(`传送 ${id}`, async s => {
       if (!registered(TILED_MAPS, id) && id !== 'field_test') throw new Error(`未知地图 ${id}`);
       const row = FIELD_TEST.rows.findIndex(row => row.includes('P'));
       const pos = id === 'field_test'
@@ -176,43 +178,46 @@ export function installCheat() {
         : TILED_MAPS[id].layers.flatMap((layer: { objects?: { type: string; x: number; y: number }[] }) => layer.objects ?? [])
           .find((object: { type: string }) => object.type === 'playerStart') ?? { x: 64, y: 64 };
       s.prog.pendingSectTrial = null; s.prog.endTrialSkills();
-      if (!s.prog.setPosition(id, pos.x, pos.y)) return false;
+      await s.prog.flushSaves();
+      if (!await s.prog.setPosition(id, pos.x, pos.y, { async: true })) return false;
       travelling = true;
       s.scene.restart({ map: id, pos: { x: pos.x, y: pos.y } });
       return true;
     }),
   };
 
-  onCheatSceneReady(s => {
+  onCheatSceneReady(async s => {
     scene = s; travelling = false;
     if (booted) return;
     booted = true;
-    window.__cheat = api;
-    if (query.stones !== undefined) api.setStones(query.stones);
-    if (query.contrib !== undefined) api.setContrib(query.contrib);
-    if (query.realm) api.setRealm(query.realm);
-    if (query.level !== undefined) api.setLevel(query.level);
-    if (query.fillExp) api.fillExp();
+    await s.prog.flushSaves();
+    if (query.stones !== undefined) await api.setStones(query.stones);
+    if (query.contrib !== undefined) await api.setContrib(query.contrib);
+    if (query.realm) await api.setRealm(query.realm);
+    if (query.level !== undefined) await api.setLevel(query.level);
+    if (query.fillExp) await api.fillExp();
     for (const action of query.quests) {
-      if (action === 'skip') api.skipQuests();
-      else if (action.startsWith('accept:')) api.acceptQuest(action.slice(7));
-      else if (action.startsWith('complete:')) api.completeQuest(action.slice(9));
+      if (action === 'skip') await api.skipQuests();
+      else if (action.startsWith('accept:')) await api.acceptQuest(action.slice(7));
+      else if (action.startsWith('complete:')) await api.completeQuest(action.slice(9));
       else log(`未知任务指令 ${action}`, true);
     }
     for (const action of query.spawns) {
-      if (action.startsWith('mon:')) api.spawnMon(action.slice(4));
+      if (action.startsWith('mon:')) await api.spawnMon(action.slice(4));
       else if (action.startsWith('item:')) {
         const value = action.slice(5);
         // 优先认完整物品 id，避免合法 id 本身以 x数字结尾时被拆错。
         const match = registered(ITEMS, value) ? null : value.match(/^(.*)x(\d+)$/);
-        api.spawnItem(match ? match[1] : value, match ? Number(match[2]) : 1);
+        await api.spawnItem(match ? match[1] : value, match ? Number(match[2]) : 1);
       } else log(`未知生成指令 ${action}`, true);
     }
     for (const unlock of query.unlocks) {
-      if (unlock === 'skills') api.unlockSkills();
-      else if (unlock === 'outfits') api.unlockOutfits();
+      if (unlock === 'skills') await api.unlockSkills();
+      else if (unlock === 'outfits') await api.unlockOutfits();
       else log(`未知解锁项 ${unlock}`, true);
     }
+    // API 和面板出现即代表 URL 夹具已经逐项提交，测试入口可据此等待就绪。
+    window.__cheat = api;
     const removePanel = installPanel(api);
     const panel = document.getElementById('xt-cheat-panel')!;
     panel.addEventListener('focusin', () => scene?.input.keyboard?.resetKeys());

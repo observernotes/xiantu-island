@@ -1,3 +1,4 @@
+import { legacySaveFixture } from './legacy-save-fixture.mjs';
 import { createServer } from 'vite';
 import { spawn } from 'node:child_process';
 
@@ -15,6 +16,7 @@ if (!process.argv.includes('--single-mode')) {
 } else {
   const server = await createServer({ server: { middlewareMode: true, hmr: false, ws: false }, appType: 'custom', logLevel: 'error' });
   try {
+    await legacySaveFixture(server);
     for (const file of ['talisman.test.ts', 'talisman-use.test.ts', 'talisman-save.test.ts']) await server.ssrLoadModule(`/src/${file}`);
     console.log(`talisman ${process.env.XT_DATA} suite ok`);
   } finally { await server.close(); }

@@ -62,10 +62,10 @@ async function sceneReady(page) {
     const s = window.__scene;
     return s?.map?.id === 'tianjian_sect' && s.player?.active && s.dialog && s.quests && s.sectGrowth;
   }, null, { timeout: 15000 });
-  await page.evaluate(() => {
+  await page.evaluate(async () => {
     if (!window.__xt) throw new Error('宗门服务冒烟需要测试构建，请先执行 npm run build:test');
     // 会话开关不入存档；每次刷新仅在测试页面内重新开启。
-    for (const feature of ['shops', 'sectRanks', 'sectShopLibrary', 'sectDonations']) window.__xt.setFlag(feature, true);
+    for (const feature of ['shops', 'sectRanks', 'sectShopLibrary', 'sectDonations']) await window.__xt.setFlag(feature, true);
   });
   await page.waitForTimeout(250);
 }
@@ -123,11 +123,11 @@ async function daily(page, quest) {
 }
 
 async function enableDonationFixture(page, addMaterials = false) {
-  await page.evaluate(({ ranks, donations, offer, addMaterials }) => {
+  await page.evaluate(async ({ ranks, donations, offer, addMaterials }) => {
     const s = window.__scene, g = s.sectGrowth;
     s.sectGrowth = new g.constructor(s.prog, { ...g.config, ranks: { ...ranks, enabled: true },
       donations: { ...donations, enabled: true, offers: donations.offers.map(row => ({ ...row, enabled: row.id === offer.id })) } });
-    if (addMaterials) { s.prog.addItem(offer.item, offer.count * 4); s.prog.save(); }
+    if (addMaterials) { s.prog.addItem(offer.item, offer.count * 4); await s.prog.save({ async: true }); }
   }, { ranks, donations, offer: donationOffer, addMaterials });
 }
 async function donationState(page) {
@@ -172,10 +172,10 @@ try {
   await page.goto(url.href, { waitUntil: 'networkidle', timeout: 30000 }); await sceneReady(page);
   console.log(JSON.stringify({ baseURL, playwright: module, browser: executablePath, headless: true }));
 
-  const beforeJoin = await page.evaluate(join => {
+  const beforeJoin = await page.evaluate(async join => {
     const s = window.__scene, p = s.prog;
     const before = { job: p.job, rank: p.sectRank, contribution: p.sectContribution };
-    s.quests.talk(join.giver, join.id).after?.();
+    await s.quests.talk(join.giver, join.id, { async: true }).after?.();
     return before;
   }, join);
   assert.deepEqual(beforeJoin, { job: '', rank: null, contribution: 0 });
@@ -190,7 +190,7 @@ try {
   assert.equal(delivered.state, needsChoice ? 'active' : 'done', '无 choice 对白须在开态保留节点、关态沿用旧交付');
   assert.equal(delivered.choice, undefined, '无 choice 对白不得替玩家选择');
   // services 菜单保留无 choice 的产品行为；仅本测例为开态节点显式提供答案。
-  if (needsChoice) assert.equal(await page.evaluate(id => !!window.__scene.quests.turnIn(id, false, 'protect'), join.id), true,
+  if (needsChoice) assert.equal(await page.evaluate(async id => !!(await window.__scene.quests.turnInAsync(id, false, 'protect')), join.id), true,
     '天剑开态显式 protect 必须完成交付');
   const joined = await page.evaluate(id => ({ job: window.__scene.prog.job, rank: window.__scene.prog.sectRank,
     state: window.__scene.quests.state(id), contribution: window.__scene.prog.sectContribution,

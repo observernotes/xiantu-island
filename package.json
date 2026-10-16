@@ -11,6 +11,7 @@
     "test:overflow": "node scripts/overflow-test.mjs",
     "test:art-engine": "timeout 240s node scripts/art-engine-test.mjs",
     "test:xt": "timeout 120s node scripts/xt-test.mjs",
+    "test:xt-async-save": "timeout 120s node scripts/xt-async-save-test.mjs",
     "test:features": "timeout 120s node scripts/features-test.mjs",
     "test:optional-assets": "node scripts/optional-assets-test.mjs",
     "test:secret-props": "node scripts/secret-props-test.mjs",

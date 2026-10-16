@@ -1,3 +1,4 @@
+import { installBrowserSaveReader } from './browser-save.mjs';
 // 先 npm run build:test；只在当前浏览器内存启用表与夹具，不改正式地图或 balance。
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
@@ -60,6 +61,7 @@ async function browserPath(chromium) {
 }
 async function session(baseURL) {
   const context = await browser.newContext({ viewport: { width: 1280, height: 720 }, timezoneId: 'Asia/Shanghai' });
+  await installBrowserSaveReader(context);
   await context.addInitScript(save => {
     if (location.protocol !== 'http:' && location.protocol !== 'https:') return;
     if (!sessionStorage.getItem('sense-seeded')) {
@@ -92,15 +94,15 @@ try {
 
   {
     const { page, done } = await session(baseURL);
-    await page.evaluate(() => window.__xt.setFlag('spiritScan', false));
-    const before = await page.evaluate(() => {
+    await page.evaluate(async () => (await window.__xt.setFlag('spiritScan', false)));
+    const before = await page.evaluate(async () => {
       const s = window.__scene; s.physics.pause();
-      return { mp: s.prog.mp, save: localStorage.getItem('xiantu_save_v1'), result: window.__xt.senseScan('key', 'off') };
+      return { mp: s.prog.mp, save: JSON.stringify((await window.__xtReadPersistedSave())), result: await window.__xt.senseScan('key', 'off') };
     });
     eq(before.result.blockKey, 'sense.block.unavailable', '关闭开关后 requestScan 必须 unavailable');
     eq(await page.evaluate(() => window.__scene.prog.mp), before.mp, '关态扣了灵力');
-    eq(await page.evaluate(() => localStorage.getItem('xiantu_save_v1')), before.save, '关态请求写了存档');
-    const saved = await page.evaluate(() => { window.__scene.prog.save(); return JSON.parse(localStorage.getItem('xiantu_save_v1')); });
+    eq(await page.evaluate(async () => JSON.stringify((await window.__xtReadPersistedSave()))), before.save, '关态请求写了存档');
+    const saved = await page.evaluate(async () => { await window.__scene.prog.save({ async: true }); return (await window.__xtReadPersistedSave()); });
     eq(Object.hasOwn(saved, 'senseState'), false, '关态正常 save 不得写 senseState');
     const disabledFixture = await page.evaluate(() => window.__xt.senseFixture());
     ok(disabledFixture.platform && !disabledFixture.platform.enabled, '关态夹具平台提前启用碰撞');
@@ -110,7 +112,7 @@ try {
 
   {
     const { page, done } = await session(baseURL);
-    await page.evaluate(() => window.__xt.setFlag('spiritScan', true));
+    await page.evaluate(async () => (await window.__xt.setFlag('spiritScan', true)));
     const before = await page.evaluate(() => window.__xt.senseFixture({ cooldownMs: 1500, inspectDurationMs: 800 }));
     eq(before.preview.unlocked, true, '旧筑基档未按境界解锁');
     eq(before.preview.ready, true, '已填内存表没有就绪');
@@ -143,13 +145,13 @@ try {
       s.tryOpenChest(); return [...s.prog.openedChests];
     });
     eq(hiddenChest.includes(`${before.mapId}:${before.names.chest}`), false, '未显形宝箱可交互');
-    const transaction = await page.evaluate(() => {
+    const transaction = await page.evaluate(async () => {
       const s = window.__scene, xt = window.__xt; xt.events.drain();
       const mp = s.prog.mp, center = { x: s.player.body.center.x, y: s.player.body.center.y };
-      const first = xt.senseScan('key', 'smoke-first');
-      const retry = xt.senseScan('button', 'smoke-first');
-      const repeated = xt.senseScan('button', 'smoke-second');
-      const intel = xt.senseMonsterIntel(), saved = JSON.parse(localStorage.getItem('xiantu_save_v1'));
+      const first = await xt.senseScan('key', 'smoke-first');
+      const retry = await xt.senseScan('button', 'smoke-first');
+      const repeated = await xt.senseScan('button', 'smoke-second');
+      const intel = xt.senseMonsterIntel(), saved = (await window.__xtReadPersistedSave());
       return { mp, center, first, retry, repeated, intel, saved, after: xt.senseFixtureSnapshot(), events: xt.events.drain(), now: Date.now() };
     });
     eq(transaction.first.ok, true, '扫描未成功提交');
@@ -175,10 +177,10 @@ try {
     eq(Object.hasOwn(transaction.intel, 'name'), false, '情报泄漏未授权姓名');
     eq(Object.hasOwn(transaction.intel, 'level'), false, '情报泄漏未授权等级');
     eq(transaction.intel.abilities, ['尚未辨明'], '空公开能力列表没有沿用 unknown 文案');
-    const changed = await page.evaluate(() => {
+    const changed = await page.evaluate(async () => {
       const xt = window.__xt, intel = xt.senseMonsterIntel(); xt.senseHitMonster(1);
-      xt.clock.advance(60000);
-      return { intel: xt.senseMonsterIntel(), scan: xt.senseScan('key', 'game-clock-must-not-expire'), snapshot: intel };
+      await xt.clock.advance(60000);
+      return { intel: xt.senseMonsterIntel(), scan: await xt.senseScan('key', 'game-clock-must-not-expire'), snapshot: intel };
     });
     eq(changed.intel, changed.snapshot, '怪物受击后情报变成实时血量');
     eq(changed.scan.blockKey, 'sense.block.cooldown', '游戏时钟推进清除了真实冷却');
@@ -186,7 +188,7 @@ try {
     const expired = await page.evaluate(() => window.__xt.events.drain().filter(event => event.type === 'sense:intel-expired'));
     eq(expired.length, 1, '怪物情报到期未发一次 expired 事件');
     await page.waitForFunction(() => window.__xt.sensePreview().cooldownRemainingMs === 0, null, { timeout: 4000 });
-    const known = await page.evaluate(() => window.__xt.senseScan('button', 'smoke-known'));
+    const known = await page.evaluate(async () => (await window.__xt.senseScan('button', 'smoke-known')));
     eq(known.ok, true, '冷却到期后无法重新扫描');
     eq(known.count, 0, '重复扫描把已知物件计为首次显形');
     eq(known.result, 'known', '重复扫描没有使用 known 结果');
@@ -196,18 +198,18 @@ try {
     checks.push('真实扣蓝/冷却/同标识重试、键鼠重按、冻结事件、白名单/血量快照、过期与死亡清除');
 
     await page.waitForFunction(() => window.__xt.sensePreview().cooldownRemainingMs === 0, null, { timeout: 4000 });
-    const beforeLoadIntel = await page.evaluate(() => {
+    const beforeLoadIntel = await page.evaluate(async () => {
       const xt = window.__xt; xt.senseSpawnMonster();
-      return { result: xt.senseScan('button', 'smoke-reload'), intel: xt.senseIntelList() };
+      return { result: await xt.senseScan('button', 'smoke-reload'), intel: xt.senseIntelList() };
     });
     eq(beforeLoadIntel.result.ok, true, '读档情报夹具扫描未成功');
     eq(beforeLoadIntel.intel.length, 1, '读档前必须有仍有效的情报记录');
     const restored = await page.evaluate(async () => {
       const xt = window.__xt, s = window.__scene, before = xt.senseFixtureSnapshot();
-      const save = xt.exportSave(); save.position = { mapId: s.map.id, x: before.platform.centerX, y: before.platform.top };
+      const save = await xt.exportSave(); save.position = { mapId: s.map.id, x: before.platform.centerX, y: before.platform.top };
       await xt.loadSave(save);
       const fresh = window.__scene; fresh.physics.pause();
-      return { snapshot: xt.senseFixtureSnapshot(), save: JSON.parse(localStorage.getItem('xiantu_save_v1')) };
+      return { snapshot: xt.senseFixtureSnapshot(), save: (await window.__xtReadPersistedSave()) };
     });
     eq(restored.snapshot.platform.enabled, true, '读档未恢复平台碰撞');
     platformRender(restored.snapshot, '读档重进');
@@ -233,13 +235,13 @@ try {
     await page.waitForFunction(() => window.__xt?.senseFixture && window.__scene?.sense && window.__scene.player?.active,
       null, { timeout: 30000 });
     const refreshed = await page.evaluate(async () => {
-      window.__xt.setFlag('spiritScan', true);
+      await window.__xt.setFlag('spiritScan', true);
       return window.__xt.senseFixture();
     });
     eq(refreshed.platform.enabled, true, '浏览器刷新读档丢失平台碰撞');
     platformRender(refreshed, '浏览器刷新读档');
-    const toggledOff = await page.evaluate(() => {
-      window.__xt.setFlag('spiritScan', false);
+    const toggledOff = await page.evaluate(async () => {
+      await window.__xt.setFlag('spiritScan', false);
       return window.__xt.senseFixtureSnapshot();
     });
     noPlatformRender(toggledOff, '已显形后关态');
@@ -252,10 +254,10 @@ try {
   {
     const { page, done } = await session(baseURL);
     const fallback = await page.evaluate(async () => {
-      const xt = window.__xt; xt.setFlag('spiritScan', true);
+      const xt = window.__xt; await xt.setFlag('spiritScan', true);
       await xt.senseFixture();
       window.__scene.map.useTiles = false;
-      return { result: xt.senseScan('key', 'smoke-fallback'), snapshot: xt.senseFixtureSnapshot() };
+      return { result: await xt.senseScan('key', 'smoke-fallback'), snapshot: xt.senseFixtureSnapshot() };
     });
     eq(fallback.result.ok, true, '色块回退扫描未提交');
     eq(fallback.snapshot.platform.render.fallback, true, 'useTiles=false 未标记色块 fallback');

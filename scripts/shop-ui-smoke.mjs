@@ -1,3 +1,4 @@
+import { installBrowserSaveReader } from './browser-save.mjs';
 // UI-5 商店窗冒烟：优先复用 XT_SMOKE_BASE_URL；独立运行时 sync + 测试构建到临时目录，不覆盖 dist。
 // 覆盖：构建开关核对、会话内关开关、购买（数量/确认/重放去重）、灵石不足、出售、目录变动重验、打开中关开关、宗门商店/藏经阁窗体、清单/实体缺图回退及炼丹关闭钮。
 // 开关覆盖与宗门货架夹具只作用于浏览器会话；features.json、shops.json 与交易逻辑不改。
@@ -125,6 +126,7 @@ try {
   async function session(label, { missing = [], save = SAVE, map = 'qingyun_village', missingFile = '' } = {}) {
     progress('session-start', { label, map });
     const context = await browser.newContext({ viewport: { width: 1280, height: 720 }, timezoneId: 'Asia/Shanghai' });
+    await installBrowserSaveReader(context);
     if (missing.length) await installMissingManifest(context, manifest, missing);
     if (externalURL && missingFile) {
       // 保留构建清单中的 PNG，只让当前上下文收到 Vite SPA 缺文件时的 200 HTML 响应。
@@ -186,8 +188,8 @@ try {
   const shot = (page, name) => page.screenshot({ path: path.join(shotDir, `${name}.png`) });
   const snap = page => page.evaluate(() => window.__scene.shop.snapshot());
   const shopText = (page, name) => page.evaluate(name => window.__scene.children.getByName('shop-panel').getByName(name).text, name);
-  const wallet = (page, item) => page.evaluate(item => ({ stones: window.__scene.prog.stones, count: window.__scene.prog.count(item),
-    contribution: window.__scene.prog.sectContribution, saved: JSON.parse(localStorage.getItem('xiantu_save_v1')).stones }), item);
+  const wallet = (page, item) => page.evaluate(async item => ({ stones: window.__scene.prog.stones, count: window.__scene.prog.count(item),
+    contribution: window.__scene.prog.sectContribution, saved: (await window.__xtReadPersistedSave()).stones }), item);
   const press = async (page, key, times = 1) => { for (let i = 0; i < times; i++) {
     await page.waitForFunction(() => { const s = window.__scene;
       return !s.shop.isOpen() || s.time.now - s.shop.openedAt >= 120;
@@ -216,7 +218,7 @@ try {
   // 1. 会话内显式关闭 shops：NPC 无货架入口，直接调用也只提示暂未开放，余额不变。
   {
     const { page, done } = await session('shops-off');
-    await page.evaluate(() => window.__xt.setFlag('shops', false));
+    await page.evaluate(async () => (await window.__xt.setFlag('shops', false)));
     eq(await page.evaluate(() => window.__xt.getState().features), { ...features, shops: false }, '关闭 shops 覆盖未生效或改变其他开关');
     const before = await wallet(page, buyItem);
     const menu = await talkMenu(page, grocer);
@@ -235,7 +237,7 @@ try {
   // 2. 购买 + 灵石不足 + 出售 + 重验 + 中途关开关（精修窗体）。
   {
     const { page, done } = await session('ordinary');
-    await page.evaluate(() => window.__xt.setFlag('shops', true));
+    await page.evaluate(async () => (await window.__xt.setFlag('shops', true)));
     eq(await page.evaluate(() => window.__xt.getState().features), { ...features, shops: true }, '开启 shops 覆盖未生效或改变其他开关');
     const menu = await talkMenu(page, grocer);
     ok(menu.includes(strings['ui.shop.menu']), '开启后无看看货架');
@@ -271,7 +273,7 @@ try {
     eq(await wallet(page, buyItem), after, '重放重复扣款');
 
     // 灵石不足：数量上限压到可买数，余额不足时确认禁用并提示。
-    await page.evaluate(price => { const s = window.__scene; s.prog.stones = price - 1; s.prog.save(); s.shop.close(); s.openOrdinaryShop('grocer_wang'); }, buyPrice);
+    await page.evaluate(async price => { const s = window.__scene; s.prog.stones = price - 1; await s.prog.save({ async: true }); s.shop.close(); s.openOrdinaryShop('grocer_wang'); }, buyPrice);
     await page.waitForTimeout(150);
     await press(page, 'ArrowDown', index);
     s = await snap(page);
@@ -286,7 +288,7 @@ try {
     eq((await snap(page)).quantity, 2, '数量上限没有按余额约束');
 
     // 出售：孙郎中回收价 floor(price/2)，数量选择后一次结算。
-    await page.evaluate(() => { const s = window.__scene; s.shop.close(); s.prog.stones = 100; s.prog.save(); });
+    await page.evaluate(async () => { const s = window.__scene; s.shop.close(); s.prog.stones = 100; await s.prog.save({ async: true }); });
     await talkMenu(page, doctor);
     await chooseMenu(page, strings['ui.shop.menu']);
     await press(page, 'Tab');
@@ -310,7 +312,7 @@ try {
     // 打开中关开关：窗口收起，缓存的确认也不能结算。
     await press(page, 'Enter');
     const cached = (await snap(page)).pending;
-    await page.evaluate(() => window.__xt.setFlag('shops', false)); await page.waitForTimeout(200);
+    await page.evaluate(async () => (await window.__xt.setFlag('shops', false))); await page.waitForTimeout(200);
     eq((await snap(page)).open, false, '关开关后窗口未收起');
     const blocked = await page.evaluate(p => { const r = window.__scene.shop.commit(p); const text = window.__scene.dialog.body.text; window.__scene.dialog.close(); return { r, text }; }, cached);
     eq(blocked.r.ok, false, '关开关后缓存确认仍结算'); ok(blocked.text.includes('暂未开放'), '关开关后无提示');
@@ -321,7 +323,7 @@ try {
   // 3. 宗门商店与藏经阁：内存夹具开放货架，只扣贡献、职位不足灰显。
   {
     const { page, done } = await session('sect', { map: 'tianjian_sect' });
-    await page.evaluate(() => { for (const f of ['shops', 'sectRanks', 'sectShopLibrary']) window.__xt.setFlag(f, true); });
+    await page.evaluate(async () => { for (const f of ['shops', 'sectRanks', 'sectShopLibrary']) await window.__xt.setFlag(f, true); });
     const goods = shops.tianjian_envoy_sect.map(g => ({ ...g, enabled: !!ITEMS[g.item] }));
     const library = shops.tianjian_elder.map(g => ({ ...g, enabled: !!ITEMS[g.item] }));
     await page.evaluate(({ ranks, goods, library }) => {
@@ -356,7 +358,7 @@ try {
   // 4. 窗体缺图：清单里去掉全部窗体件，窗口退回代码画，买卖照常，console.error=0。
   {
     const { page, done } = await session('missing-art', { missing: WINDOW_ART });
-    await page.evaluate(() => window.__xt.setFlag('shops', true));
+    await page.evaluate(async () => (await window.__xt.setFlag('shops', true)));
     const textures = await page.evaluate(() => ['ui_bestiary_window', 'ui_alchemy_btn_normal', 'ui_alchemy_list_row_normal'].map(k => window.__scene.textures.exists(k)));
     eq(textures, [false, false, false], '缺图模拟未生效');
     await talkMenu(page, grocer); await chooseMenu(page, strings['ui.shop.menu']);
@@ -376,7 +378,7 @@ try {
   // 5. G18：保留清单，隔离构建移走 PNG/共享 preview 按上下文拦截；200 HTML 不产生 Phaser 处理失败报错。
   await withMissingFile('art/icons/ui/bestiary/ui_bestiary_window.png', async () => {
     const { page, done } = await session('g18-missing-window-file', { missingFile: 'art/icons/ui/bestiary/ui_bestiary_window.png' });
-    await page.evaluate(() => window.__xt.setFlag('shops', true));
+    await page.evaluate(async () => (await window.__xt.setFlag('shops', true)));
     eq(await page.evaluate(() => window.__scene.textures.exists('ui_bestiary_window')), false, '实体窗体缺图未生效');
     await talkMenu(page, grocer); await chooseMenu(page, strings['ui.shop.menu']);
     const s = await snap(page);
@@ -397,7 +399,7 @@ try {
   await withMissingFile('art/icons/ui/bestiary/ui_bestiary_btn_close.png', async () => {
     const save = { ...SAVE, learnedRecipes: ['recipe_hp_pill'], inventory: { ...SAVE.inventory, bronze_furnace: 1 } };
     const { page, done } = await session('g17-missing-alchemy-close-file', { save, missingFile: 'art/icons/ui/bestiary/ui_bestiary_btn_close.png' });
-    await page.evaluate(() => window.__xt.setFlag('alchemyPhase1', true));
+    await page.evaluate(async () => (await window.__xt.setFlag('alchemyPhase1', true)));
     eq(await page.evaluate(() => window.__scene.textures.exists('ui_bestiary_btn_close')), false, '实体关闭钮缺图未生效');
     await press(page, 'l');
     await page.waitForFunction(() => window.__scene.alchemy.isOpen(), null, { timeout: 3000 });

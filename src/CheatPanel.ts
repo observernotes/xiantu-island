@@ -2,21 +2,21 @@ import { REALMS, TILED_MAPS } from './data';
 
 export interface CheatPanelApi {
   readonly god: boolean;
-  setGod(enabled: boolean): boolean;
-  setStones(n?: number): boolean;
-  setContrib(n?: number): boolean;
-  setRealm(value: string): boolean;
-  setLevel(n: number): boolean;
-  fillExp(): boolean;
-  acceptQuest(id: string): boolean;
-  completeQuest(id: string): boolean;
-  skipQuests(): boolean;
-  spawnMon(id: string): boolean;
-  spawnItem(id: string, n?: number): boolean;
-  unlockSkills(): boolean;
-  unlockOutfits(): boolean;
-  teleport(id: string): boolean;
-  nextRealm(): boolean;
+  setGod(enabled: boolean): Promise<boolean>;
+  setStones(n?: number): Promise<boolean>;
+  setContrib(n?: number): Promise<boolean>;
+  setRealm(value: string): Promise<boolean>;
+  setLevel(n: number): Promise<boolean>;
+  fillExp(): Promise<boolean>;
+  acceptQuest(id: string): Promise<boolean>;
+  completeQuest(id: string): Promise<boolean>;
+  skipQuests(): Promise<boolean>;
+  spawnMon(id: string): Promise<boolean>;
+  spawnItem(id: string, n?: number): Promise<boolean>;
+  unlockSkills(): Promise<boolean>;
+  unlockOutfits(): Promise<boolean>;
+  teleport(id: string): Promise<boolean>;
+  nextRealm(): Promise<boolean>;
 }
 
 let removePanel: (() => void) | undefined;
@@ -95,20 +95,20 @@ export function installPanel(api: CheatPanelApi): () => void {
     parent.append(element);
     return element;
   }
-  function run(label: string, action: () => boolean) {
+  async function run(label: string, action: () => Promise<boolean>) {
     let success = false;
-    try { success = action(); }
+    try { success = await action(); }
     catch (error) { console.warn(`[Cheat] ${label}失败`, error); }
     syncGod();
     status.textContent = `${label}${success ? '：完成' : '：未执行，请检查 id 或数值'}`;
     status.style.color = success ? '#b9dba6' : '#efbc8f';
   }
-  function button(parent: HTMLElement, id: string, label: string, action: () => boolean) {
+  function button(parent: HTMLElement, id: string, label: string, action: () => Promise<boolean>) {
     const element = document.createElement('button');
     element.type = 'button';
     element.textContent = label;
     element.dataset.cheatAction = id;
-    element.addEventListener('click', () => run(label, action));
+    element.addEventListener('click', () => { void run(label, action); });
     parent.append(element);
     return element;
   }

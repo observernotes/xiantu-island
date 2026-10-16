@@ -1,3 +1,4 @@
+import { legacySaveFixture } from './legacy-save-fixture.mjs';
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
@@ -57,6 +58,7 @@ if (!process.argv.includes('--single-mode')) {
     }] : [],
   });
   try {
+    await legacySaveFixture(server);
     if (!invalid) await server.ssrLoadModule('/src/encounter.test.ts');
     else {
       const data = await server.ssrLoadModule('/src/data.ts');

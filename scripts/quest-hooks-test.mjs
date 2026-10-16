@@ -1,3 +1,4 @@
+import { legacySaveFixture } from './legacy-save-fixture.mjs';
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
@@ -28,6 +29,7 @@ if (!process.argv.includes('--single-mode')) {
   });
   try {
     if (!invalid) {
+      await legacySaveFixture(server);
       await server.ssrLoadModule('/src/quest-hooks.test.ts');
       await server.ssrLoadModule('/src/quest-hooks-turn-in.test.ts');
     }

@@ -1,4 +1,5 @@
 // 不启动浏览器，不监听端口；只载入 Phaser 的动画组件与 Vite SSR 逻辑模块。
+import { legacySaveFixture } from './legacy-save-fixture.mjs';
 import { createRequire } from 'node:module';
 import { createServer } from 'vite';
 
@@ -13,6 +14,7 @@ const server = await createServer({
   logLevel: 'error',
 });
 try {
+  await legacySaveFixture(server);
   await server.ssrLoadModule('/src/appearance.test.ts');
 } finally {
   await server.close();

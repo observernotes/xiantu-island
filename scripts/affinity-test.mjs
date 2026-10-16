@@ -1,3 +1,4 @@
+import { legacySaveFixture } from './legacy-save-fixture.mjs';
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { readFileSync } from 'node:fs';
@@ -30,6 +31,7 @@ if (!process.argv.includes('--single-mode')) {
   });
   try {
     if (!invalid) {
+      await legacySaveFixture(server);
       await server.ssrLoadModule('/src/affinity.test.ts');
       await server.ssrLoadModule('/src/relationship-save.test.ts');
     }

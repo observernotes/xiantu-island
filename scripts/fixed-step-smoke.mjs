@@ -54,7 +54,7 @@ async function loadBrowser() {
 
 const snapshot = page => page.evaluate(() => window.__xt.fixedStep.snapshot());
 const drain = page => page.evaluate(() => window.__xt.fixedStep.drain());
-const advance = (page, frames) => page.evaluate(n => window.__xt.fixedStep.advance(n), frames);
+const advance = (page, frames) => page.evaluate(async n => (await window.__xt.fixedStep.advance(n)), frames);
 const framesFor = (hz, ms) => {
   const frames = hz * ms / 1000;
   assert.ok(Math.abs(frames - Math.round(frames)) < 1e-8, `时间 ${ms} ms 不在 ${hz} Hz 帧边界上`);

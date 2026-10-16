@@ -1,4 +1,5 @@
 // timeout 60s node scripts/mainline-21-test.mjs：只在内存中跑卷一主线与 tracker 断言。
+import { legacySaveFixture } from './legacy-save-fixture.mjs';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import fs from 'node:fs/promises';
@@ -32,6 +33,7 @@ const server = await createServer({
   }], ssr: { noExternal: ['phaser'] },
 });
 try {
+  await legacySaveFixture(server);
   await server.ssrLoadModule('/src/mainline-21.test.ts');
 } finally {
   await server.close();

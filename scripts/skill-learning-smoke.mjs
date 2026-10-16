@@ -82,7 +82,7 @@ try {
   console.log(JSON.stringify({ baseURL, data: dataMode(projectRoot), playwright: module, browser: executablePath, headless: true }));
   await page.goto(url.href, { waitUntil: 'networkidle', timeout: 30000 });
   await ready(page);
-  const rewardVersion = await page.evaluate(() => {
+  const rewardVersion = await page.evaluate(async () => {
     const Progress = window.__scene.prog.constructor, prog = new Progress();
     // 从当前运行时取新档奖励版本，避免夹具被当成已交妖狐的旧天剑档。
     prog.level = 10;
@@ -90,7 +90,7 @@ try {
     prog.quests.q_breakthrough = { state: 'done', kills: {} };
     prog.skills = { spirit_bolt: 1 }; prog.skillGifted = { spirit_bolt: 1 };
     prog.hotbar[0] = 'spirit_bolt'; prog.spTipShown = true;
-    if (!prog.save()) throw new Error('技能学习回归夹具未保存');
+    if (!(await prog.save({ async: true }))) throw new Error('技能学习回归夹具未保存');
     return prog.questRewardVersion;
   });
   assert.ok(Number.isInteger(rewardVersion) && rewardVersion > 0, '夹具须使用当前新档奖励版本');

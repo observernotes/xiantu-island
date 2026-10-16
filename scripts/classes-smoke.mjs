@@ -1,4 +1,4 @@
-// 先 npm run build；timeout 120s node scripts/classes-smoke.mjs。
+// 先 npm run build:test；timeout 120s node scripts/classes-smoke.mjs。
 // 使用真实键盘施放技能；测试木桩只提供稳定目标，不直接调用技能伤害。
 // QA_TIER_GATE_AWARE: fiveSectClasses
 import assert from 'node:assert/strict';
@@ -138,7 +138,10 @@ try {
       }, { job, map }, { timeout: 15000 });
       await page.waitForTimeout(400);
       const runtimeFeatures = await page.evaluate(() => window.__xt?.getState().features ?? null);
-      if (runtimeFeatures) assert.deepEqual(runtimeFeatures, expectedFeatures, '构建产物开关与工程快照不一致');
+      assert.ok(runtimeFeatures, '职业内存夹具需要测试桥，请先执行 npm run build:test');
+      assert.deepEqual(runtimeFeatures, expectedFeatures, '构建产物开关与工程快照不一致');
+      // 后续 new Progress + save stub 验历史玩法，使用会话关态以隔离真实 IDB 槽。
+      await page.evaluate(async () => { await window.__xt.setFlag('indexedDbSaves', false); });
       if (results.length === 0) {
         const closedChecks = await page.evaluate(rows => rows.map(({ job, quest, gateClosed }) => {
           const scene = window.__scene, P = scene.prog.constructor, Q = scene.quests.constructor;
@@ -417,7 +420,7 @@ try {
       }
       // 调用真实任务 after/turnIn 与 GameScene.giveRewards，通关仅由胜利回调模拟。
       const quest = questRows.find(row => row.id === `q_sect_${sect}`);
-      const questCheck = await page.evaluate(({ quest, tianjianHookEnabled }) => {
+      const questCheck = await page.evaluate(async ({ quest, tianjianHookEnabled }) => {
         const scene = window.__scene, P = scene.prog.constructor, Q = scene.quests.constructor;
         const p = new P(); p.save = () => true; p.level = quest.reqLevel; p.quests.q_fox = { state: 'done', kills: {} };
         if (quest.id !== 'q_sect_tianjian') {
@@ -431,19 +434,19 @@ try {
         if (trial) scene.quests.onTrialComplete(trial);
         const beforeRewardJob = p.job;
         // talk 先推进交谈目标；开态无 choice 保留节点，再由测试显式作答。
-        const after = scene.quests.talk(quest.turnIn, quest.id).after;
+        const after = scene.quests.talk(quest.turnIn, quest.id, { async: true }).after;
         const ready = scene.quests.complete(quest.id);
-        const noChoiceReward = after?.();
+        const noChoiceReward = await after?.();
         const noChoiceState = scene.quests.state(quest.id);
         const choiceId = quest.id === 'q_sect_tianjian' && tianjianHookEnabled ? 'protect' : undefined;
-        const reward = choiceId ? scene.quests.turnIn(quest.id, false, choiceId) : noChoiceReward;
+        const reward = choiceId ? (await scene.quests.turnInAsync(quest.id, false, choiceId)) : noChoiceReward;
         if (reward) scene.giveRewards(reward.quest, reward.broke, reward.daily, reward.settled);
         return { available, accepted, early, ready, beforeRewardJob, noChoiceState, noChoiceReward: !!noChoiceReward, choiceId,
           choice: p.relationshipState.questChoices[quest.id],
           completed: p.quests[quest.id]?.state, job: p.job, appearance: p.appearance,
           skills: p.skills, gifted: p.skillGifted, refund: p.classRefundSp,
           playerTexture: scene.player.texture.key, hotbar: p.hotbar, robe: p.equip.robe, stones: p.stones,
-          duplicate: scene.quests.turnIn(quest.id) ?? null, save: localStorage.getItem('xiantu_save_v1') };
+          duplicate: (await scene.quests.turnInAsync(quest.id)) ?? null, save: localStorage.getItem('xiantu_save_v1') };
       }, { quest, tianjianHookEnabled });
       assert.equal(questCheck.available, true, `${job}: 真实任务入口不可用`);
       assert.equal(questCheck.accepted, true, `${job}: 真实任务不可接`);

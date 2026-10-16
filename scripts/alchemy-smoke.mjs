@@ -1,3 +1,4 @@
+import { installBrowserSaveReader } from './browser-save.mjs';
 // 先 npm run build:test，再 npm run test:smoke:alchemy（外层 timeout，无头 Chromium）。
 // 只夹具等级、原料、燃料及落点；接受/采集/开炉/炼制/交付均走真实键鼠。
 // 炼制随机数固定为 0；正中线时暂停画面时钟，按下真实空格再恢复，避免 CI 调度漂移。
@@ -71,11 +72,11 @@ async function waitForMap(page, mapId) {
     try { return !window.__xt || window.__xt.getState().mapId === id; }
     catch { return false; }
   }, mapId, { timeout: 15000, polling: 50 });
-  await page.evaluate(() => {
+  await page.evaluate(async () => {
     if (!window.__xt) throw new Error('炼丹冒烟需要测试构建，请先执行 npm run build:test');
     // 会话开关不入存档；刷新后重新开启，不修改正式 features.json。
-    window.__xt.setFlag('shops', true);
-    window.__xt.setFlag('alchemyPhase1', true);
+    await window.__xt.setFlag('shops', true);
+    await window.__xt.setFlag('alchemyPhase1', true);
   });
 }
 
@@ -260,6 +261,7 @@ try {
   browser = await api.chromium.launch({ executablePath, headless: true, timeout: 20000,
     args: ['--use-gl=swiftshader', '--enable-unsafe-swiftshader'] });
   const context = await browser.newContext({ viewport: { width: 1280, height: 720 } });
+  await installBrowserSaveReader(context);
   page = await context.newPage();
   errors = collectErrors(page);
   console.log(JSON.stringify({ baseURL, dataMode: dataMode(projectRoot), dataRoot, playwright: module, browser: executablePath, headless: true,
@@ -268,13 +270,13 @@ try {
   url.searchParams.set('map', 'qingyun_village'); url.searchParams.set('reset', '1');
   await page.goto(url.href, { waitUntil: 'load', timeout: 15000 });
   await waitForMap(page, 'qingyun_village');
-  await page.evaluate(() => {
+  await page.evaluate(async () => {
     const p = window.__scene.prog;
     p.level = 12; p.exp = 0; p.stones = 100;
     p.inventory = { spirit_herb: 4, rabbit_fur: 1 };
-    p.hp = p.maxHp; p.mp = p.maxMp; p.save();
+    p.hp = p.maxHp; p.mp = p.maxMp; await p.save({ async: true });
   });
-  await page.evaluate(() => window.__xt.setFlag('alchemyPhase1', false));
+  await page.evaluate(async () => (await window.__xt.setFlag('alchemyPhase1', false)));
   await standAt(page, 'doctor_sun');
   await page.waitForFunction(() => {
     const entry = window.__scene.interactionPrompts.find(entry => entry.object.name === 'doctor_sun');
@@ -299,7 +301,7 @@ try {
   await page.waitForFunction(() => !window.__scene.dialog.open, null, { timeout: 3000 });
   assert.equal(await page.evaluate(() => window.__scene.quests.state('q_alchemy_intro')), undefined,
     '关闭炼丹的孙郎中服务菜单仍接了入门任务');
-  await page.evaluate(() => window.__xt.setFlag('alchemyPhase1', true));
+  await page.evaluate(async () => (await window.__xt.setFlag('alchemyPhase1', true)));
   passed('关闭炼丹时孙郎中提示与任务/服务菜单隐藏，真实 L 不开炉；普通商店仍可对话');
 
   // G16：真实 L 验证无炉公共入口及严格NPC范围，不借助对白后的自动开炉。
@@ -352,16 +354,16 @@ try {
   passed('孙郎中字符串货架仅扣灵石，同一确认不重复扣款或交货');
   await openDoctorDialogue(page);
   await finishDialogue(page);
-  const accepted = await page.evaluate(() => ({
+  const accepted = await page.evaluate(async () => ({
     state: window.__scene.quests.state('q_alchemy_intro'),
     recipes: window.__scene.prog.learnedRecipes,
-    saved: JSON.parse(localStorage.getItem('xiantu_save_v1')),
+    saved: (await window.__xtReadPersistedSave()),
   }));
   assert.equal(accepted.state, 'active', '孙郎中真实对白结束后未接受炼丹入门');
   assert.ok(accepted.recipes.includes(recipe.id), '入门教学未先发回春丹方');
   assert.ok(accepted.saved.learnedRecipes.includes(recipe.id), '教学丹方未存档');
   passed('Z 与孙郎中对话，after 接任务并学回春丹方');
-  await page.evaluate(() => window.__xt.setFlag('alchemyPhase1', false));
+  await page.evaluate(async () => (await window.__xt.setFlag('alchemyPhase1', false)));
   await page.waitForFunction(label => !window.__scene.tracker.text.includes(label),
     strings[quest.nameKey] ?? quest.name, { timeout: 3000 });
   const hiddenActive = await page.evaluate(() => ({ open: window.__scene.alchemy.isOpen(),
@@ -378,7 +380,7 @@ try {
     '关闭开关的普通对白仍泄漏进行中入门教学');
   await finishDialogue(page);
   assert.equal(await page.evaluate(() => window.__scene.alchemy.isOpen()), false, '关闭开关对白结束后自动开炉');
-  await page.evaluate(() => window.__xt.setFlag('alchemyPhase1', true));
+  await page.evaluate(async () => (await window.__xt.setFlag('alchemyPhase1', true)));
   passed('运行中关闭炼丹收起窗口和已接任务追踪，保留任务存档，重新开启可继续');
   await page.keyboard.press('Escape'); await page.waitForTimeout(100);
 
@@ -395,8 +397,8 @@ try {
   }, pointName);
   assert.equal(point.castMs, herb.gather.castMs); assert.equal(point.respawnMs, herb.gather.respawnMs);
   assert.ok(point.ready && point.promptVisible && point.keycap, '采集提示未接 HUD 键帽');
-  const closedGatherCount = await page.evaluate(() => {
-    window.__xt.setFlag('alchemyPhase1', false);
+  const closedGatherCount = await page.evaluate(async () => {
+    await window.__xt.setFlag('alchemyPhase1', false);
     return window.__scene.prog.count('spirit_herb');
   });
   await page.keyboard.down('z'); await page.waitForTimeout(200);
@@ -406,7 +408,7 @@ try {
   await page.keyboard.up('z');
   assert.deepEqual(closedGather, { count: closedGatherCount, active: false, bar: false, prompts: false },
     '关闭炼丹时仍能真实 Z 采集或显示采集入口');
-  await page.evaluate(() => window.__xt.setFlag('alchemyPhase1', true));
+  await page.evaluate(async () => (await window.__xt.setFlag('alchemyPhase1', true)));
   await page.waitForFunction(name => window.__scene.gathering.points.find(point => point.object.name === name)?.prompt.visible,
     pointName, { timeout: 3000 });
   passed('关闭炼丹时竹林采集提示和读条隐藏，按住真实 Z 不采集；重新开启恢复提示');
@@ -435,9 +437,9 @@ try {
   await page.keyboard.up('z');
   // 成功采集要求实际游戏帧先看到松键，才允许第二个点再次开始。
   await page.waitForFunction(() => !window.__scene.gathering.requireRelease, null, { timeout: 3000 });
-  const harvested = await page.evaluate(name => {
+  const harvested = await page.evaluate(async name => {
     const scene = window.__scene, point = scene.gathering.points.find(point => point.object.name === name);
-    const saved = JSON.parse(localStorage.getItem('xiantu_save_v1'));
+    const saved = (await window.__xtReadPersistedSave());
     return { count: scene.prog.count('spirit_herb'), ready: point.ready, active: !!scene.gathering.active,
       promptVisible: point.prompt.visible, remaining: scene.prog.gatherRespawnAt[point.key] - Date.now(),
       cooldown: scene.prog.gatherRespawnAt[point.key], savedCooldown: saved.gatherRespawnAt[point.key] };
@@ -497,9 +499,9 @@ try {
   // 坐标随面板位置和 UI 素材表取值。
   await clickAlchemyButton(page, 'brew');
   await page.waitForFunction(() => !!(window.__scene.alchemy ?? window.__scene.alchemyPanel).system.active, null, { timeout: 3000 });
-  const startedBrew = await page.evaluate(() => {
+  const startedBrew = await page.evaluate(async () => {
     const scene = window.__scene;
-    const saved = JSON.parse(localStorage.getItem('xiantu_save_v1'));
+    const saved = (await window.__xtReadPersistedSave());
     const url = new URL(location.href); url.searchParams.delete('reset'); history.replaceState(null, '', url.href);
     return { pending: saved.pendingAlchemy, herb: scene.prog.count('spirit_herb'), fur: scene.prog.count('rabbit_fur'),
       stones: scene.prog.stones, pill: scene.prog.count('hp_pill_small') };
@@ -559,10 +561,10 @@ try {
   assert.equal(await page.evaluate(() => (window.__scene.alchemy ?? window.__scene.alchemyPanel).isOpen()), false);
   await openDoctorDialogue(page);
   await finishDialogue(page);
-  const delivered = await page.evaluate(() => ({
+  const delivered = await page.evaluate(async () => ({
     quest: window.__scene.prog.quests.q_alchemy_intro, recipes: window.__scene.prog.learnedRecipes,
     inventory: window.__scene.prog.inventory, exp: window.__scene.prog.alchemyExp, now: Date.now(),
-    saved: JSON.parse(localStorage.getItem('xiantu_save_v1')),
+    saved: (await window.__xtReadPersistedSave()),
   }));
   assert.equal(delivered.quest.state, 'done', '孙郎中真实对白结束后入门任务未交付');
   for (const id of quest.rewards.recipes) {
@@ -604,11 +606,11 @@ try {
       furnace: scene.inventoryPanel.snapshot().selectedId, count: scene.prog.count('bronze_furnace') };
   });
   assert.equal(inventoryFurnace.furnace, 'bronze_furnace', '背包丹炉入口未使用获得的青铜炉');
-  await page.evaluate(() => window.__xt.setFlag('alchemyPhase1', false));
+  await page.evaluate(async () => (await window.__xt.setFlag('alchemyPhase1', false)));
   assert.equal(await page.evaluate(() => window.__scene.inventoryPanel.snapshot().action), '', '关闭炼丹仍显示背包丹炉操作');
   await page.mouse.click(inventoryFurnace.x, inventoryFurnace.y); await page.waitForTimeout(100);
   assert.equal(await page.evaluate(() => window.__scene.alchemy.isOpen()), false, '关闭炼丹的背包入口仍可点击开炉');
-  await page.evaluate(() => window.__xt.setFlag('alchemyPhase1', true));
+  await page.evaluate(async () => (await window.__xt.setFlag('alchemyPhase1', true)));
   await page.waitForFunction(() => window.__scene.inventoryPanel.snapshot().action === 'furnace', null, { timeout: 3000 });
   await page.mouse.click(inventoryFurnace.x, inventoryFurnace.y);
   await page.waitForFunction(() => window.__scene.alchemy.isOpen() && !window.__scene.inventoryPanel.isOpen(),
@@ -630,10 +632,10 @@ try {
   passed('G16：持有丹炉远离孙郎中真实 L 可开且不消耗丹炉');
 
   // 追加六炉原料/燃料夹具；实际开炉、跳过与批量均通过鼠标操作。
-  await page.evaluate(recipe => {
-    for (const material of recipe.materials) window.__xt.giveItem(material.item, material.count * 6);
+  await page.evaluate(async recipe => {
+    for (const material of recipe.materials) await window.__xt.giveItem(material.item, material.count * 6);
     const prog = window.__scene.prog;
-    prog.stones += recipe.fuelStones * 6; prog.save();
+    prog.stones += recipe.fuelStones * 6; await prog.save({ async: true });
   }, recipe);
   await standAt(page, 'doctor_sun');
   await page.keyboard.press('l', { delay: 60 });
@@ -673,10 +675,10 @@ try {
   passed('材料不足时炼制和 ×5 按钮禁用，真实点击不扣料、不产丹');
 
   await page.keyboard.press('Escape'); await page.waitForTimeout(100);
-  await page.evaluate(recipes => {
+  await page.evaluate(async recipes => {
     const prog = window.__scene.prog;
     prog.level = 15; prog.exp = 0; prog.stones += recipes.reduce((sum, recipe) => sum + recipe.price, 0);
-    prog.save();
+    await prog.save({ async: true });
   }, [clearMindRecipe, foundationRecipe]);
   const beforeRecipes = await page.evaluate(() => ({ stones: window.__scene.prog.stones,
     recipes: window.__scene.prog.learnedRecipes, contribution: window.__scene.prog.sectContribution }));
@@ -707,7 +709,7 @@ try {
   await finishDialogue(page);
   passed('孙郎中学习丹方：15 级可购买清心方，筑基方按 20 级门槛灰显，重复确认不重扣');
 
-  await page.evaluate(level => { window.__scene.prog.level = level; window.__scene.prog.save(); }, foundationRecipe.reqLevel);
+  await page.evaluate(async level => { window.__scene.prog.level = level; await window.__scene.prog.save({ async: true }); }, foundationRecipe.reqLevel);
   await openDoctorDialogue(page); await selectChoice(page, '学习丹方');
   await selectChoice(page, `${foundationRecipe.name}丹方`);
   await selectChoice(page, strings['sect.ui.confirm']); await finishDialogue(page);

@@ -1,4 +1,5 @@
 // #19 功法与 #20 灵气 tip 已开启，gifts 仍关闭；关态夹具与其他变体仅在内存克隆，原版模块由 git show 读取，不修改正式门禁。
+import { legacySaveFixture } from './legacy-save-fixture.mjs';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs/promises';
@@ -108,6 +109,7 @@ async function withRuntime(variant, run) {
     }], ssr: { noExternal: ['phaser'] },
   });
   try {
+    await legacySaveFixture(server);
     const clock = await server.ssrLoadModule('/src/GameClock.ts');
     clock.setGameTimeSource(() => fixedNow);
     const data = await server.ssrLoadModule('/src/data.ts');

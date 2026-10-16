@@ -1,3 +1,4 @@
+import { legacySaveFixture } from './legacy-save-fixture.mjs';
 import { createServer } from 'vite';
 import assert from 'node:assert/strict';
 import { EventEmitter } from 'node:events';
@@ -33,6 +34,7 @@ class Display extends EventEmitter {
   destroy() { this.destroyed = true; this.list.forEach(child => child.destroy()); this.removeAllListeners(); }
 }
 try {
+  await legacySaveFixture(server);
   await server.ssrLoadModule('/src/alchemy.test.ts');
   const { AlchemyPanel } = await server.ssrLoadModule('/src/AlchemyPanel.ts');
   const { AlchemySystem } = await server.ssrLoadModule('/src/Alchemy.ts');

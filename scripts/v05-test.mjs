@@ -1,4 +1,5 @@
 // 无监听端口：通过 Vite 的 SSR 转译直接跑逻辑回归。
+import { legacySaveFixture } from './legacy-save-fixture.mjs';
 import { createServer } from 'vite';
 
 const server = await createServer({
@@ -8,6 +9,7 @@ const server = await createServer({
   logLevel: 'error',
 });
 try {
+  await legacySaveFixture(server);
   await server.ssrLoadModule('/src/v05.test.ts');
 } finally {
   await server.close();

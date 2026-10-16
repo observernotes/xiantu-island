@@ -1,3 +1,4 @@
+import { installBrowserSaveReader } from './browser-save.mjs';
 // 先 npm run build:test；timeout 120s node scripts/daily-smoke.mjs；XT_SMOKE_BASE_URL 可复用已有服务。
 // 试炼胜利、采集材料只作为夹具；拜宗、NPC 菜单、交付、给奖和读档使用正式代码。
 // QA_TIER_GATE_AWARE: fiveSectClasses sectShopLibrary shops sectDonations
@@ -138,6 +139,7 @@ try {
   browser = await api.chromium.launch({ executablePath, headless: true, timeout: 20000,
     args: ['--use-gl=swiftshader', '--enable-unsafe-swiftshader'] });
   const context = await browser.newContext({ viewport: { width: 1280, height: 720 }, timezoneId: 'Asia/Shanghai' });
+  await installBrowserSaveReader(context);
   const page = await context.newPage(); errors = collectErrors(page);
   await page.addInitScript(() => {
     const initial = new Date(2026, 9, 10, 4, 59, 30).getTime();
@@ -155,30 +157,31 @@ try {
   console.log(JSON.stringify({ baseURL, playwright: module, browser: executablePath, headless: true }));
 
   // 新拜入按发布关口检查；关闭入口时用正式导入的旧太虚身份继续检查日常。
-  const joined = await page.evaluate(({ join, collect, expectedEntrance, legacySkills }) => {
+  const joined = await page.evaluate(async ({ join, collect, expectedEntrance, legacySkills }) => {
     const scene = window.__scene, p = scene.prog;
     scene.dialog.close(); scene.skillWindow.close();
     const before = { job: p.job, available: scene.quests.available(collect.id), menu: scene.quests.npcDailyQuestIds(collect.giver) };
     let ready = null;
     if (expectedEntrance) {
       p.addItem('five_sect_token', 1);
-      ready = { selected: p.selectSect('taixu'), available: scene.quests.available(join.id),
+      ready = { selected: await p.runSaveTransactionAsync(draft => draft.selectSect('taixu') ? true : undefined) === true,
+        available: scene.quests.available(join.id),
         menuContains: scene.quests.npcQuestIds(join.giver).includes(join.id) };
     }
-    scene.quests.talk(join.giver, join.id).after?.();
+    await scene.quests.talk(join.giver, join.id, { async: true }).after?.();
     const active = scene.quests.state(join.id), early = scene.quests.complete(join.id);
     scene.quests.onTrialComplete(join.objectives.find(o => o.type === 'trial').trial);
-    const reward = scene.quests.talk(join.turnIn, join.id).after?.();
+    const reward = await scene.quests.talk(join.turnIn, join.id, { async: true }).after?.();
     if (reward) scene.giveRewards(reward.quest, reward.broke, reward.daily, reward.settled);
     const entrance = { active: active ?? null, early, completed: p.quests[join.id]?.state ?? null,
-      available: scene.quests.available(join.id), duplicate: scene.quests.turnIn(join.id) ?? null,
+      available: scene.quests.available(join.id), duplicate: (await scene.quests.turnInAsync(join.id)) ?? null,
       menuContains: scene.quests.npcQuestIds(join.giver).includes(join.id), job: p.job, rewarded: !!reward };
     let legacy = null;
     if (!expectedEntrance) {
       const old = { ...p.exportSave(), ...legacySkills, job: 'taixu_acolyte', classVersion: 2,
         classRewardClaims: ['taixu_acolyte'] };
       delete old.questRewardVersion; delete old.sectRank;
-      legacy = { imported: p.importSave(old), skills: p.skills, skillGifted: p.skillGifted,
+      legacy = { imported: await p.importSave(old, { async: true }), skills: p.skills, skillGifted: p.skillGifted,
         skillMastery: p.skillMastery, hotbar: p.hotbar,
         usable: p.classSkills.every(skill => p.ownsSkill(skill) && p.skillLevel(skill.id) > 0) };
     }
@@ -241,12 +244,12 @@ try {
   assert.equal(await page.evaluate(id => window.__scene.quests.complete(id), collect.id), true, '收集夹具没有满足目标');
   assert.equal(await page.evaluate(id => window.__scene.quests.mark(id), collect.turnIn), '?', '材料齐备后没有可交付标记');
   await deliverDaily(page, collect);
-  const after = await page.evaluate(({ quest, giver }) => {
+  const after = await page.evaluate(async ({ quest, giver }) => {
     const scene = window.__scene, p = scene.prog;
     scene.talkTo(giver);
     const choice = scene.dialog.choices.find(choice => choice.label === quest.name);
     const result = { contribution: p.sectContribution, stones: p.stones, material: p.count(quest.objectives[0].target),
-      duplicate: scene.quests.turnIn(quest.id) ?? null, legacyClaim: p.onSectDailyQuestCompleted(quest.id),
+      duplicate: (await scene.quests.turnInAsync(quest.id)) ?? null, legacyClaim: p.onSectDailyQuestCompleted(quest.id),
       claimCount: p.sectDailyContributionClaims.filter(id => id === quest.id).length,
       doneDisabled: choice?.disabled, rewards: window.__dailyRewards, resetDay: p.dailyQuestResetDay };
     scene.dialog.close(); return result;
@@ -277,11 +280,11 @@ try {
   assert.equal(await page.evaluate(id => window.__scene.quests.available(id), collect.id), false, '同日读档可重复接取');
   await page.evaluate(() => sessionStorage.setItem('daily-smoke-now', String(new Date(2026, 9, 10, 5).getTime())));
   await page.reload({ waitUntil: 'networkidle', timeout: 30000 }); await sceneReady(page, envoyMap);
-  const reset = await page.evaluate(({ id, oldDay }) => ({ available: window.__scene.quests.available(id),
+  const reset = await page.evaluate(async ({ id, oldDay }) => ({ available: window.__scene.quests.available(id),
     state: window.__scene.quests.state(id) ?? null, day: window.__scene.prog.dailyQuestResetDay,
     changed: window.__scene.prog.dailyQuestResetDay !== oldDay, contribution: window.__scene.prog.sectContribution,
     completions: window.__scene.prog.dailyQuestCompletions,
-    savedDay: JSON.parse(localStorage.getItem('xiantu_save_v1')).dailyQuestResetDay }), { id: collect.id, oldDay: after.resetDay });
+    savedDay: (await window.__xtReadPersistedSave()).dailyQuestResetDay }), { id: collect.id, oldDay: after.resetDay });
   assert.equal(reset.available, true, '跨 05:00 读档后不能再接');
   assert.equal(reset.state, null, '跨 05:00 已完成状态没有清除');
   assert.equal(reset.changed, true, '跨 05:00 未记录新日期');

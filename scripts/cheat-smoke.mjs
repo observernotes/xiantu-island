@@ -1,3 +1,4 @@
+import { installBrowserSaveReader } from './browser-save.mjs';
 // 默认先 npm run build，独立 preview 正式 dist；仅显式 XT_CHEAT_TEST_BRIDGE=1 时验收测试构建。
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
@@ -44,6 +45,7 @@ try {
   browser = await playwright.chromium.launch({ executablePath: await browserPath(playwright.chromium), headless: true,
     args: ['--use-gl=swiftshader', '--enable-unsafe-swiftshader'] });
   const context = await browser.newContext({ viewport: { width: 1280, height: 720 } });
+  await installBrowserSaveReader(context);
   const page = await context.newPage();
   page.setDefaultTimeout(20000);
   page.on('pageerror', error => pageErrors.push(error.message));
@@ -57,12 +59,12 @@ try {
     await page.waitForFunction(() => window.__scene?.player?.active && window.__scene?.quests);
   }
   async function readState() {
-    return page.evaluate(() => {
+    return page.evaluate(async () => {
       const s = window.__scene, p = s.prog;
       return { map: s.map.id, level: p.level, realm: p.realm.id, exp: p.exp, expNeed: p.expNeed,
         stones: p.stones, contrib: p.sectContribution, hp: s.player.hp, maxHp: p.maxHp, mp: p.mp, maxMp: p.maxMp,
         inventory: { ...p.inventory }, skills: { ...p.skills }, quests: structuredClone(p.quests),
-        saved: JSON.parse(localStorage.getItem('xiantu_save_v1')) };
+        saved: (await window.__xtReadPersistedSave()) };
     });
   }
 
@@ -126,16 +128,16 @@ try {
   equal(god.result, false, 'god hurt 直接返回 false');
   equal(god.after, god.before, 'god 不掉血、不进入受击、不改速度与无敌计时');
 
-  const quest = await page.evaluate(() => {
+  const quest = await page.evaluate(async () => {
     const api = window.__cheat, s = window.__scene;
-    const accepted = api.acceptQuest('q_bamboo');
+    const accepted = await api.acceptQuest('q_bamboo');
     const active = s.prog.quests.q_bamboo?.state;
-    const completed = api.completeQuest('q_bamboo');
+    const completed = await api.completeQuest('q_bamboo');
     const state = s.prog.quests.q_bamboo?.state;
     const stones = s.prog.stones;
-    const duplicate = api.completeQuest('q_bamboo');
+    const duplicate = await api.completeQuest('q_bamboo');
     return { accepted, active, completed, state, duplicate, stones, afterStones: s.prog.stones,
-      savedState: JSON.parse(localStorage.getItem('xiantu_save_v1')).quests.q_bamboo?.state };
+      savedState: (await window.__xtReadPersistedSave()).quests.q_bamboo?.state };
   });
   equal(quest.accepted, true, '允许强制接取未满足前置的任务');
   equal(quest.active, 'active', '接任务进入 active');
@@ -144,11 +146,11 @@ try {
   equal(quest.savedState, 'done', '任务完成写存档');
   equal(quest.duplicate, false, '已完成任务跳过');
   equal(quest.afterStones, quest.stones, '已完成任务不重复发奖励');
-  const skipped = await page.evaluate(() => {
+  const skipped = await page.evaluate(async () => {
     const api = window.__cheat, p = window.__scene.prog;
-    api.acceptQuest('q_awaken'); api.acceptQuest('q_snake'); api.acceptQuest('q_sect_tianjian'); api.acceptQuest('q_daily_taixu_2');
-    const ok = api.skipQuests();
-    const saved = JSON.parse(localStorage.getItem('xiantu_save_v1'));
+    await api.acceptQuest('q_awaken'); await api.acceptQuest('q_snake'); await api.acceptQuest('q_sect_tianjian'); await api.acceptQuest('q_daily_taixu_2');
+    const ok = await api.skipQuests();
+    const saved = (await window.__xtReadPersistedSave());
     return { ok, awaken: p.quests.q_awaken?.state, snake: p.quests.q_snake?.state,
       tianjian: p.quests.q_sect_tianjian?.state,
       daily: p.quests.q_daily_taixu_2?.state,
@@ -163,15 +165,15 @@ try {
   equal(skipped.daily, 'active', '跳任务保留日常任务');
   equal(skipped.saved.q_snake.state, 'done', '批量任务写存档');
 
-  const invalid = await page.evaluate(() => {
-    const api = window.__cheat, before = localStorage.getItem('xiantu_save_v1');
-    const results = [api.spawnItem('missing_item'), api.spawnMon('missing_monster'), api.acceptQuest('missing_quest'),
-      api.completeQuest('missing_quest'), api.setStones(-1), api.setContrib(NaN), api.setLevel(0), api.setRealm('missing_realm')];
-    return { results, sameSave: localStorage.getItem('xiantu_save_v1') === before };
+  const invalid = await page.evaluate(async () => {
+    const api = window.__cheat, before = (await window.__xtReadPersistedSave());
+    const results = [(await api.spawnItem('missing_item')), (await api.spawnMon('missing_monster')), (await api.acceptQuest('missing_quest')),
+      (await api.completeQuest('missing_quest')), (await api.setStones(-1)), (await api.setContrib(NaN)), (await api.setLevel(0)), (await api.setRealm('missing_realm'))];
+    return { results, before, after: (await window.__xtReadPersistedSave()) };
   });
   equal(invalid.results, Array(8).fill(false), '非法 id/数值被拒绝且不崩溃');
-  equal(invalid.sameSave, true, '非法操作不污染存档');
-  equal(await page.evaluate(() => window.__cheat.teleport('field_test')), true, '允许传送测试地图');
+  equal(invalid.after, invalid.before, '非法操作不污染存档');
+  equal(await page.evaluate(async () => (await window.__cheat.teleport('field_test'))), true, '允许传送测试地图');
   await page.waitForFunction(() => window.__scene?.map?.id === 'field_test' && window.__scene.player?.active);
   equal(await page.evaluate(() => window.__cheat.god), true, '切图保持 god');
   equal(await page.locator('#xt-cheat-panel').count(), 1, '切图保留单个面板');
@@ -179,8 +181,8 @@ try {
   equal(teleported.inventory.fox_tail, 3, '切图不重复执行 URL 刷物');
   equal(teleported.saved.position.mapId, 'field_test', '传送保存当前地图');
   if (testBridge) {
-    const bridge = await page.evaluate(() => {
-      window.__xt.giveItem('rabbit_fur', 2);
+    const bridge = await page.evaluate(async () => {
+      await window.__xt.giveItem('rabbit_fur', 2);
       return { map: window.__xt.getState().mapId, count: window.__scene.prog.count('rabbit_fur'),
         enabled: window.__cheat.enabled, events: window.__xt.events.drain().map(event => event.type) };
     });
@@ -189,7 +191,7 @@ try {
     check(bridge.events.includes('scene'), '测试桥保留场景事件');
     check(!bridge.events.includes('error') && !bridge.events.includes('unhandledrejection'), '测试桥未捕获运行异常');
   }
-  await page.evaluate(() => window.__cheat.spawnItem('fox_tail', 2));
+  await page.evaluate(async () => (await window.__cheat.spawnItem('fox_tail', 2)));
   equal((await readState()).saved.inventory.fox_tail, 5, '切图后 API 绑定当前场景并存档');
 
   const panel = page.locator('#xt-cheat-panel');
@@ -213,33 +215,38 @@ try {
   equal(await questInput.inputValue(), 'q_snake', '面板输入框可输入游戏热键字母');
   equal(await page.evaluate(() => Object.entries(window.__scene.keys).filter(([, key]) => key.isDown).map(([id]) => id)), [],
     '面板输入不把按键传给角色');
-  await page.evaluate(() => {
+  await page.evaluate(async () => {
     const p = window.__scene.player;
     p.invulnUntil = 0; p.superArmorUntil = 0;
-    window.__cheat.setGod(true);
+    await window.__cheat.setGod(true);
   });
-  await page.evaluate(() => localStorage.clear());
+  await page.evaluate(async () => {
+    const p = window.__scene.prog;
+    await p.flushSaves();
+    if (!await p.constructor.resetAsync()) throw new Error('作弊回归夹具清档失败');
+    localStorage.clear();
+  });
   await visit('?cheat=1&god=1&map=field&quest=accept:q_snake&quest=accept:q_bamboo&quest=skip&spawn=item:fox_tail');
   await page.waitForFunction(() => window.__cheat?.enabled);
   const urlSkip = await readState();
   equal(urlSkip.map, 'field_test', 'URL 沿用 dev 的 field 入口且不与场景启动冲突');
   equal([urlSkip.quests.q_snake?.state, urlSkip.quests.q_bamboo?.state], ['done', 'done'], 'URL 重复接取和 skip 顺序执行');
   equal(urlSkip.saved.inventory.fox_tail, 1, 'URL 刷物省略数量默认 1');
-  const breakthrough = await page.evaluate(() => {
+  const breakthrough = await page.evaluate(async () => {
     const api = window.__cheat, p = window.__scene.prog;
-    api.setLevel(30); api.fillExp();
-    const ok = api.completeQuest('q_breakthrough');
+    await api.setLevel(30); await api.fillExp();
+    const ok = await api.completeQuest('q_breakthrough');
     return { ok, level: p.level, realm: p.realm.id, state: p.quests.q_breakthrough?.state };
   });
   equal(breakthrough.ok, true, '高境界仍可交付旧突破任务');
   equal(breakthrough.state, 'done', '旧突破任务完成');
   equal(breakthrough.realm, 'foundation', '旧任务不能突破当前筑基境界');
   check(breakthrough.level >= 30 && breakthrough.level < 59, '旧任务只发经验奖励，不跳当前境界关口');
-  const crossSect = await page.evaluate(() => {
+  const crossSect = await page.evaluate(async () => {
     const p = window.__scene.prog;
     p.job = 'tianjian_disciple'; p.equip.robe = 'robe_tianjian_1';
-    const ok = window.__cheat.completeQuest('q_sect_taixu');
-    const saved = JSON.parse(localStorage.getItem('xiantu_save_v1'));
+    const ok = await window.__cheat.completeQuest('q_sect_taixu');
+    const saved = (await window.__xtReadPersistedSave());
     return { ok, job: p.job, robe: p.count('robe_taixu_1'), skills: { ...p.skills }, saved };
   });
   equal(crossSect.ok, true, '已有职业仍可强制完成外宗任务');
@@ -248,14 +255,14 @@ try {
   for (const id of ['fire_talisman_bolt', 'thunder_palm', 'water_mirror']) {
     check(crossSect.skills[id] >= 1 && crossSect.saved.skills[id] >= 1, `外宗任务永久技能 ${id} 写存档`);
   }
-  const temporarySkill = await page.evaluate(() => {
+  const temporarySkill = await page.evaluate(async () => {
     const p = window.__scene.prog;
     delete p.skills.phantom_cloak; delete p.skillGifted.phantom_cloak;
     p.beginTrialSkills([{ id: 'phantom_cloak', level: 1 }]);
-    const ok = window.__cheat.unlockSkills(), permanent = p.skills.phantom_cloak;
+    const ok = await window.__cheat.unlockSkills(), permanent = p.skills.phantom_cloak;
     p.endTrialSkills();
     return { ok, permanent, after: p.skillLevel('phantom_cloak'),
-      saved: JSON.parse(localStorage.getItem('xiantu_save_v1')).skills.phantom_cloak };
+      saved: (await window.__xtReadPersistedSave()).skills.phantom_cloak };
   });
   equal(temporarySkill.ok, true, '临时试炼技能期间可解锁全部技能');
   equal(temporarySkill.permanent, 1, '临时等级不遮蔽永久技能授予');

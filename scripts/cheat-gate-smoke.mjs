@@ -1,3 +1,4 @@
+import { installBrowserSaveReader } from './browser-save.mjs';
 // 先运行 npm run build：只验收已有的正式 dist，不使用 build:test 或外部共享 preview。
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
@@ -59,6 +60,7 @@ try {
     const label = `/${search}`;
     // 各入口使用全新缓存和存档，既不复用已加载模块，也不让作弊存档影响普通入口。
     const context = await browser.newContext({ viewport: { width: 1280, height: 720 } });
+    await installBrowserSaveReader(context);
     const page = await context.newPage();
     const pageErrors = [], consoleErrors = [], requests = [];
     page.setDefaultTimeout(20000);
@@ -79,11 +81,11 @@ try {
       equal(await page.locator('#xt-cheat-panel').count(), enabled ? 1 : 0, `${label}：面板遵守 URL 门控`);
       if (enabled) {
         check(loadedCheats.length > 0, `${label}：显式开启才请求 Cheat chunk`);
-        const state = await page.evaluate(() => {
+        const state = await page.evaluate(async () => {
           const api = window.__cheat;
-          const ok = api.setStones(2468);
+          const ok = await api.setStones(2468);
           return { enabled: api.enabled, ok, stones: window.__scene.prog.stones,
-            savedStones: JSON.parse(localStorage.getItem('xiantu_save_v1')).stones };
+            savedStones: (await window.__xtReadPersistedSave()).stones };
         });
         equal(state, { enabled: true, ok: true, stones: 2468, savedStones: 2468 }, `${label}：API 可调用并写入隔离存档`);
       } else {

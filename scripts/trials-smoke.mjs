@@ -1,3 +1,4 @@
+import { installBrowserSaveReader } from './browser-save.mjs';
 // npm run build:test 后运行；Chromium 无头、真实场景/键盘/机关/怪物受击。
 // 不用 trial:complete 或 __xt.questComplete 模拟胜利；只在测试构建会话中打开四宗关口。
 import assert from 'node:assert/strict';
@@ -193,8 +194,8 @@ async function chooseSectToken(page, sect) {
   }
   await page.waitForFunction(() => window.__scene.dialog.choices.length === 5, null, { timeout: 3000, polling: 50 });
   await page.keyboard.press(String(classes.findIndex(row => row.sect === sect) + 1), { delay: 45 });
-  assert.deepEqual(await page.evaluate(() => ({ selected: window.__scene.prog.selectedSect, job: window.__scene.prog.job,
-    stored: JSON.parse(localStorage.getItem('xiantu_save_v1')).selectedSect, token: window.__scene.prog.count('five_sect_token') })),
+  assert.deepEqual(await page.evaluate(async () => ({ selected: window.__scene.prog.selectedSect, job: window.__scene.prog.job,
+    stored: (await window.__xtReadPersistedSave()).selectedSect, token: window.__scene.prog.count('five_sect_token') })),
   { selected: sect, job: '', stored: sect, token: 1 }, `${sect}: 真正使用五宗帖只保存选择，不消耗帖或提前拜入`);
 }
 async function acceptAtEnvoy(page, trial, quest) {
@@ -258,7 +259,7 @@ async function returned(page, trial, quest, result) {
       && scene.player.onGround && scene.player.state2 === 'ground'
       && scene.map.objects.some(o => o.type === 'npc' && o.props.npc === quest.turnIn);
   }, { mapId: gateMap(trial), quest }, { timeout: 10000 });
-  const state = await page.evaluate(({ quest }) => {
+  const state = await page.evaluate(async ({ quest }) => {
     const scene = window.__scene; scene.physics.pause();
     const elder = scene.map.objects.find(o => o.type === 'npc' && o.props.npc === quest.turnIn);
     return { completed: scene.quests.complete(quest.id), trials: scene.prog.completedTrials, job: scene.prog.job,
@@ -266,7 +267,7 @@ async function returned(page, trial, quest, result) {
         inventory: Object.fromEntries(Object.entries(scene.prog.exportSave().inventory).filter(([, count]) => count > 0)),
         skills: scene.prog.skills },
       map: scene.map.id, point: [scene.player.x, scene.player.feet], elder: [elder.x, elder.y], logs: scene.logs.map(log => log.text),
-      pendingSaved: JSON.parse(localStorage.getItem('xiantu_save_v1')).pendingSectTrial };
+      pendingSaved: (await window.__xtReadPersistedSave()).pendingSectTrial };
   }, { quest });
   assert.equal(state.completed, result === 'win', `${trial.sect}: ${result} 目标完成状态错误`);
   assert.equal(state.job, '', `${trial.sect}: 正式交付前不能落定职业`);
@@ -468,6 +469,7 @@ try {
   browser = await api.chromium.launch({ executablePath, headless: true, timeout: 20000,
     args: ['--use-gl=swiftshader', '--enable-unsafe-swiftshader'] });
   const context = await browser.newContext({ viewport: { width: 1280, height: 720 } });
+  await installBrowserSaveReader(context);
   page = await context.newPage(); errors = collectErrors(page);
   const url = new URL(baseURL); url.searchParams.set('map', 'qingyun_village'); url.searchParams.set('reset', '1');
   await page.goto(url.href, { waitUntil: 'domcontentloaded', timeout: 30000 }); await ready(page, 'qingyun_village');
@@ -476,9 +478,9 @@ try {
   console.log(JSON.stringify({ test: 'trials-smoke', baseURL, playwright: module, browser: executablePath, dataMode: dataMode(root), initialFeatures }));
   // 本套验证五宗门控与试炼返程；关闭会话制符入口，避免灵符接引菜单分流。
   // 制符独立开放时的山门保留行为由原相关单测覆盖，不改正式 features 默认值。
-  await page.evaluate(() => {
-    window.__xt.setFlag('fiveSectClasses', true); window.__xt.setFlag('v05Maps', true);
-    window.__xt.setFlag('talismanCraft', false);
+  await page.evaluate(async () => {
+    await window.__xt.setFlag('fiveSectClasses', true); await window.__xt.setFlag('v05Maps', true);
+    await window.__xt.setFlag('talismanCraft', false);
   });
   for (const trial of trials) {
     const quest = quests.find(row => row.id === trial.quest);
@@ -500,18 +502,18 @@ try {
       const before = await withDeadline(`${phase}: active loadSave`, () => page.evaluate(async ({ quest, trial }) => {
         const p = window.__scene.prog;
         p.quests[quest.id] = { state: 'active', kills: {}, crafted: {} };
-        p.completedTrials = [trial.id]; p.save();
-        const save = window.__xt.exportSave();
+        p.completedTrials = [trial.id]; await p.save({ async: true });
+        const save = await window.__xt.exportSave();
         await window.__xt.loadSave(save);
         return window.__scene.prog.exportSave();
       }, { quest, trial }));
       await ready(page, gateMap(trial));
       await standAtNpc(page, quest.turnIn); await page.keyboard.press('z', { delay: 45 });
-      const blocked = await page.evaluate(({ quest, trial }) => {
+      const blocked = await page.evaluate(async ({ quest, trial }) => {
         const s = window.__scene;
         return { choices: s.dialog.choices.map(choice => choice.label), text: s.dialog.lines.map(line => line.text).join('\n'),
           entered: s.enterSectTrial(quest.turnIn, trial), complete: s.quests.complete(quest.id),
-          reward: s.quests.turnIn(quest.id), won: s.quests.onTrialComplete(trial.id), save: s.prog.exportSave() };
+          reward: await s.quests.turnInAsync(quest.id), won: s.quests.onTrialComplete(trial.id), save: s.prog.exportSave() };
       }, { quest, trial });
       assert.equal(blocked.choices.includes('进入试炼'), false, `${trial.sect}/${caseName}: 长老隐藏入场`);
       assert.ok(blocked.choices.includes(strings['sect.entry.abandon'] ?? '放弃入门任务'));
@@ -520,8 +522,8 @@ try {
       for (const field of ['job', 'exp', 'stones', 'inventory', 'skills', 'skillGifted', 'classRefundSp', 'classRewardClaims', 'completedTrials'])
         assert.deepEqual(blocked.save[field], before[field], `${trial.sect}/${caseName}: 旧 active 不发奖或改资源 ${field}`);
       await page.keyboard.press('1', { delay: 45 });
-      assert.deepEqual(await page.evaluate(id => ({ state: window.__scene.quests.state(id),
-        trials: window.__scene.prog.completedTrials, stored: JSON.parse(localStorage.getItem('xiantu_save_v1')).quests[id] }), quest.id),
+      assert.deepEqual(await page.evaluate(async id => ({ state: window.__scene.quests.state(id),
+        trials: window.__scene.prog.completedTrials, stored: (await window.__xtReadPersistedSave()).quests[id] }), quest.id),
       { state: undefined, trials: [], stored: undefined }, `${trial.sect}/${caseName}: 真实放弃回未接并清通关`);
       checks.push(`${trial.sect}/${caseName}: 真实 Z 接引/长老均拒绝，旧 active 存读不奖，真实选项放弃`);
     }
@@ -529,7 +531,7 @@ try {
   for (const trial of trials) {
     const quest = quests.find(row => row.id === trial.quest);
     progress(`${trial.sect}/trial`);
-    await page.evaluate(() => { window.__xt.setFlag('fiveSectClasses', true); window.__xt.setFlag('v05Maps', true); });
+    await page.evaluate(async () => { await window.__xt.setFlag('fiveSectClasses', true); await window.__xt.setFlag('v05Maps', true); });
     await fixture(page, 'luoxia_town', quest, { selectedSect: '' });
     const ferryRoute = npcs.find(npc => npc.id === 'ferry_master').ferryRoutes.find(route => route.targetMap === gateMap(trial));
     await page.evaluate(() => window.__scene.talkTo('ferry_master'));
@@ -573,7 +575,7 @@ try {
     checks.push(`${trial.sect}: 失败后即刻重进，Esc 主动退出`);
     await enter(page, trial, quest);
     await withDeadline(`${phase}: interrupted loadSave`, () => page.evaluate(async () => {
-      const save = window.__xt.exportSave();
+      const save = await window.__xt.exportSave();
       await window.__xt.loadSave(save);
     }));
     await returned(page, trial, quest, 'exit');
@@ -611,7 +613,7 @@ try {
     progress(`${trial.sect}/win`);
     await enter(page, trial, quest); await win(page, trial); await returned(page, trial, quest, 'win');
     await withDeadline(`${phase}: won loadSave`, () => page.evaluate(async () => {
-      const save = window.__xt.exportSave();
+      const save = await window.__xt.exportSave();
       await window.__xt.loadSave(save);
     }));
     await ready(page, gateMap(trial));
@@ -667,10 +669,10 @@ try {
       `${trial.sect}: 跨图入场必须从目标山门读取长老坐标`);
     await page.keyboard.press('Escape', { delay: 45 });
     await returned(page, trial, quest, 'exit');
-    await page.evaluate(() => window.__xt.setFlag('fiveSectClasses', false));
+    await page.evaluate(async () => (await window.__xt.setFlag('fiveSectClasses', false)));
     await ready(page, 'luoxia_town');
     assert.equal(await page.evaluate(() => window.__scene.prog.position.mapId), 'luoxia_town', `${trial.sect}: 关闭五宗须保存撤离落点`);
-    await page.evaluate(() => window.__xt.setFlag('fiveSectClasses', true));
+    await page.evaluate(async () => (await window.__xt.setFlag('fiveSectClasses', true)));
     checks.push(`${trial.sect}: 跨图入场仍记录正式山门长老坐标，关闭五宗后撤离该山门到落霞镇`);
   }
   const trial = trials[0], quest = quests.find(row => row.id === trial.quest);
@@ -678,7 +680,7 @@ try {
   for (const gate of ['fiveSectClasses', 'v05Maps']) {
     await fixture(page, gateMap(trial), quest);
     await page.evaluate(id => window.__scene.quests.accept(id), quest.id);
-    await page.evaluate(gate => window.__xt.setFlag(gate, false), gate);
+    await page.evaluate(async gate => (await window.__xt.setFlag(gate, false)), gate);
     if (gate === 'fiveSectClasses') await ready(page, 'luoxia_town');
     const denied = await page.evaluate(({ quest, trial }) => {
       const scene = window.__scene, before = scene.prog.exportSave();
@@ -691,7 +693,7 @@ try {
     }, { quest, trial });
     assert.equal(denied.offer, false); assert.equal(denied.entered, false); assert.equal(denied.pending, null);
     assert.deepEqual(denied.after, denied.before);
-    await page.evaluate(gate => window.__xt.setFlag(gate, true), gate);
+    await page.evaluate(async gate => (await window.__xt.setFlag(gate, true)), gate);
     await fixture(page, gateMap(trial), quest);
     await page.evaluate(id => window.__scene.quests.accept(id), quest.id);
     const reopened = await page.evaluate(({ gate, quest }) => {
@@ -704,7 +706,7 @@ try {
     assert.deepEqual(reopened, { enabled: true, offer: true }, `${gate}: 会话重新开放后须恢复入场确认`);
     checks.push(`${gate}: 关闭后确认及直接入场均拒绝，无奖励变化；重新开放恢复入场确认`);
   }
-  await page.evaluate(value => window.__xt.setFlag('talismanCraft', value), initialFeatures.talismanCraft);
+  await page.evaluate(async value => (await window.__xt.setFlag('talismanCraft', value)), initialFeatures.talismanCraft);
   assert.deepEqual(errors, [], '试炼无头冒烟出现浏览器报错');
   console.log(JSON.stringify({ test: 'trials-smoke', checks, errors: 0 }));
   await context.close();

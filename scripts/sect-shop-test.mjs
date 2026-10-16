@@ -1,5 +1,6 @@
 // 只使用内存配置与存档；Vite SSR 不监听端口、不写真实 localStorage。
 // QA_TIER_GATE_AWARE: fiveSectClasses sectRanks sectShopLibrary sectDonations
+import { legacySaveFixture } from './legacy-save-fixture.mjs';
 import { createServer } from 'vite';
 
 const server = await createServer({
@@ -7,6 +8,7 @@ const server = await createServer({
   appType: 'custom', logLevel: 'error',
 });
 try {
+  await legacySaveFixture(server);
   await server.ssrLoadModule('/src/sect-shop.test.ts');
 } finally {
   await server.close();

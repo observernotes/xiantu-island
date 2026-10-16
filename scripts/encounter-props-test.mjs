@@ -1,3 +1,4 @@
+import { legacySaveFixture } from './legacy-save-fixture.mjs';
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
@@ -12,7 +13,7 @@ const md5 = bytes => createHash('md5').update(bytes).digest('hex');
 
 if (!process.argv.includes('--single-mode')) {
   const before = await fs.readFile(features);
-  assert.equal(md5(before), 'a06c3638796fd1bed9af3d45c038c954', '正式 features 字节基线');
+  assert.equal(md5(before), '16fa150878794fd82cccf76a25b48d5a', 'indexedDbSaves 正式开态 features 字节基线');
   try {
     for (const mode of ['snapshot', 'shared']) {
       await new Promise((resolve, reject) => {
@@ -45,6 +46,7 @@ if (!process.argv.includes('--single-mode')) {
     }], ssr: { noExternal: ['phaser'] },
   });
   try {
+    await legacySaveFixture(server);
     await server.ssrLoadModule('/src/encounter-props.test.ts');
     console.log(`encounter-props XT_DATA=${process.env.XT_DATA}: passed`);
   } finally { await server.close(); }

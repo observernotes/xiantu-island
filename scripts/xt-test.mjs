@@ -1,3 +1,4 @@
+import { installBrowserSaveReader } from './browser-save.mjs';
 // 先 npm run build:test；无头验证测试接口，端口可用 XT_TEST_PORT 覆盖。
 // QA_TIER_GATE_AWARE: fiveSectClasses sectDaily sectRanks sectDonations seclusion
 import assert from 'node:assert/strict';
@@ -52,6 +53,7 @@ try {
   browser = await api.chromium.launch({ executablePath: await browserPath(api.chromium), headless: true,
     timeout: 20000, args: ['--use-gl=swiftshader', '--enable-unsafe-swiftshader'] });
   const context = await browser.newContext({ viewport: { width: 1280, height: 720 }, timezoneId: 'Asia/Shanghai' });
+  await installBrowserSaveReader(context);
   const page = await context.newPage();
   page.setDefaultTimeout(15000);
   page.on('pageerror', error => browserErrors.push(error.message));
@@ -73,8 +75,14 @@ try {
   const url = new URL(server.resolvedUrls.local[0]); url.searchParams.set('map', 'luoxia_town');
   await page.goto(url.href, { waitUntil: 'networkidle', timeout: 30000 });
   await page.waitForFunction(() => window.__xt && window.__scene?.player?.active && window.__scene?.quests);
+  // API 精确坐标夹具：等待槽提交时允许浏览器继续渲染，关闭重力推进以保持指定落点。
+  await page.evaluate(() => {
+    const scene = window.__scene;
+    scene.physics.world.pause();
+    scene.events.on('create', () => scene.physics.world.pause());
+  });
 
-  const initial = await page.evaluate(() => ({ state: window.__xt.getState(), save: window.__xt.exportSave(),
+  const initial = await page.evaluate(async () => ({ state: window.__xt.getState(), save: await window.__xt.exportSave(),
     events: window.__xt.events.drain() }));
   initialEventTypes = initial.events.map(event => event.type);
   for (const key of ['mapId', 'x', 'y', 'level', 'realm', 'hp', 'mp', 'inventory', 'quests', 'sect', 'rank', 'contribution', 'time']) {
@@ -94,23 +102,23 @@ try {
   equal(await page.evaluate(() => window.__xt.events.drain()), [], 'drain 没有清空事件队列');
 
   // pause 固定绝对时间；resume 恢复系统时间的推进，setNow/advance 给出精确边界。
-  const paused = await page.evaluate(() => window.__xt.clock.pause());
+  const paused = await page.evaluate(async () => (await window.__xt.clock.pause()));
   await page.waitForTimeout(60);
   equal(await page.evaluate(() => window.__xt.getState().time), paused, 'pause 后时间仍推进');
-  const resumed = await page.evaluate(() => window.__xt.clock.resume());
+  const resumed = await page.evaluate(async () => (await window.__xt.clock.resume()));
   await page.waitForTimeout(60);
   const later = await page.evaluate(() => window.__xt.getState().time);
   check(Number.isFinite(resumed) && later > resumed, 'resume 未恢复时间推进');
-  const frozen = await page.evaluate(() => window.__xt.clock.pause());
+  const frozen = await page.evaluate(async () => (await window.__xt.clock.pause()));
   const boundary = await page.evaluate(() => new Date(2026, 9, 10, 4, 59, 30).getTime());
-  equal(await page.evaluate(now => window.__xt.clock.setNow(now), boundary), boundary, 'setNow 返回时间不准确');
-  equal(await page.evaluate(() => window.__xt.clock.advance(1)), boundary + 1, 'advance 返回时间不准确');
+  equal(await page.evaluate(async now => (await window.__xt.clock.setNow(now)), boundary), boundary, 'setNow 返回时间不准确');
+  equal(await page.evaluate(async () => (await window.__xt.clock.advance(1))), boundary + 1, 'advance 返回时间不准确');
   check(frozen >= later, '第二次 pause 导致时钟倒退');
-  await page.evaluate(now => window.__xt.clock.setNow(now), boundary);
+  await page.evaluate(async now => (await window.__xt.clock.setNow(now)), boundary);
 
   // 此处开始验证测试桥功能；只在本页面开放测试所需入口，发版门禁由 test:features 检查。
-  await page.evaluate(() => {
-    for (const name of ['fiveSectClasses', 'sectRanks', 'sectDonations', 'sectShopLibrary', 'shops', 'sectDaily', 'seclusion']) window.__xt.setFlag(name, true);
+  await page.evaluate(async () => {
+    for (const name of ['fiveSectClasses', 'sectRanks', 'sectDonations', 'sectShopLibrary', 'shops', 'sectDaily', 'seclusion']) await window.__xt.setFlag(name, true);
   });
   const fixture = { ...initial.save, level: 30, exp: 0, hp: 0, mp: 0, job: '', inventory: {}, quests: {},
     equip: {}, skills: {}, skillGifted: {}, hotbar: Array(8).fill(null), completedTrials: [],
@@ -122,20 +130,20 @@ try {
     position: { mapId: 'luoxia_town', x: 320, y: 400 } };
   for (const cls of classes) {
     const joined = await page.evaluate(async ({ fixture, cls }) => {
-      await window.__xt.loadSave(fixture); window.__xt.joinSect(cls.sect);
-      return { state: window.__xt.getState(), saved: JSON.parse(localStorage.getItem('xiantu_save_v1')) };
+      await window.__xt.loadSave(fixture); await window.__xt.joinSect(cls.sect);
+      return { state: window.__xt.getState(), saved: (await window.__xtReadPersistedSave()) };
     }, { fixture, cls });
     equal(joined.state.sect, cls.sect, `joinSect(${cls.sect}) 未入宗`);
     equal(joined.saved.job, cls.id, `joinSect(${cls.sect}) 未调用正式职业 API/存档`);
     equal(joined.state.rank, 'outer_disciple', `joinSect(${cls.sect}) 未初始化职位`);
   }
-  await page.evaluate(async fixture => { await window.__xt.loadSave(fixture); window.__xt.joinSect('taixu'); }, fixture);
-  const ranked = await page.evaluate(() => {
-    window.__xt.setRank('inner_disciple');
-    window.__xt.setFlag('sect_ranks.enabled', true);
-    window.__xt.setFlag('sect_donations.enabled', true);
-    window.__xt.giveItem('spirit_herb', 4);
-    return { state: window.__xt.getState(), save: window.__xt.exportSave(), stored: JSON.parse(localStorage.getItem('xiantu_save_v1')) };
+  await page.evaluate(async fixture => { await window.__xt.loadSave(fixture); await window.__xt.joinSect('taixu'); }, fixture);
+  const ranked = await page.evaluate(async () => {
+    await window.__xt.setRank('inner_disciple');
+    await window.__xt.setFlag('sect_ranks.enabled', true);
+    await window.__xt.setFlag('sect_donations.enabled', true);
+    await window.__xt.giveItem('spirit_herb', 4);
+    return { state: window.__xt.getState(), save: await window.__xt.exportSave(), stored: (await window.__xtReadPersistedSave()) };
   });
   equal(ranked.state.rank, 'inner_disciple', 'setRank 未设置职位');
   equal(ranked.stored.sectRank, 'inner_disciple', 'setRank 未存档');
@@ -145,19 +153,19 @@ try {
   equal(ranked.state.inventory.spirit_herb, 4, 'giveItem 数量错误');
   equal(ranked.stored.inventory.spirit_herb, 4, 'giveItem 未存档');
 
-  const gates = await page.evaluate(() => {
+  const gates = await page.evaluate(async () => {
     const s = window.__scene;
-    window.__xt.setFlag('sect_ranks.enabled', false);
+    await window.__xt.setFlag('sect_ranks.enabled', false);
     const rankClosed = s.sectGrowth.promotion('taixu_elder');
-    window.__xt.setFlag('sect_ranks.enabled', true);
+    await window.__xt.setFlag('sect_ranks.enabled', true);
     const rankOpen = s.sectGrowth.promotion('taixu_elder');
     // 策划表的每条上交 offer 仍独立关闭；只为验配置总开关注入启用的 offer 副本。
     const config = s.sectGrowth.config;
     const service = new s.sectGrowth.constructor(s.prog, { ...config, donations: { ...config.donations,
       offers: config.donations.offers.map(offer => ({ ...offer, enabled: true })) } });
-    window.__xt.setFlag('sect_donations.enabled', false);
+    await window.__xt.setFlag('sect_donations.enabled', false);
     const donationClosed = service.donations('taixu_envoy');
-    window.__xt.setFlag('sect_donations.enabled', true);
+    await window.__xt.setFlag('sect_donations.enabled', true);
     const donationOpen = service.donations('taixu_envoy');
     return { rankClosed, rankOpen, donationClosed, donationOpen };
   });
@@ -169,20 +177,20 @@ try {
 
   const invalid = await page.evaluate(async () => {
     const xt = window.__xt, before = xt.getState();
-    const storedBefore = localStorage.getItem('xiantu_save_v1');
+    const storedBefore = JSON.stringify((await window.__xtReadPersistedSave()));
     const cases = {
       loadNull: () => xt.loadSave(null), loadArray: () => xt.loadSave([]),
       invalidLevel: () => xt.loadSave({ level: 'oops' }),
       negativeInventory: () => xt.loadSave({ inventory: { spirit_herb: -4 } }),
       prototypeQuest: () => xt.loadSave({ quests: { constructor: { state: 'done', kills: {} } } }),
-      unknownSect: () => xt.joinSect('missing_sect'), unknownRank: () => xt.setRank('missing_rank'),
+      unknownSect: async () => (await xt.joinSect('missing_sect')), unknownRank: async () => (await xt.setRank('missing_rank')),
       unknownMap: () => xt.teleport('missing_map'), invalidCoordinate: () => xt.teleport('luoxia_town', NaN),
-      unknownItem: () => xt.giveItem('missing_item', 1), zeroItem: () => xt.giveItem('spirit_herb', 0),
-      fractionalItem: () => xt.giveItem('spirit_herb', 1.5),
-      unknownAccept: () => xt.acceptQuest('missing_quest'), unknownComplete: () => xt.completeQuest('missing_quest'),
-      unsafeFlag: () => xt.setFlag('__proto__', true), nonBooleanFlag: () => xt.setFlag('sect_ranks.enabled', 1),
-      negativeAdvance: () => xt.clock.advance(-1), infiniteAdvance: () => xt.clock.advance(Infinity),
-      invalidNow: () => xt.clock.setNow(NaN), invalidSeed: () => xt.seed(NaN),
+      unknownItem: async () => (await xt.giveItem('missing_item', 1)), zeroItem: async () => (await xt.giveItem('spirit_herb', 0)),
+      fractionalItem: async () => (await xt.giveItem('spirit_herb', 1.5)),
+      unknownAccept: async () => (await xt.acceptQuest('missing_quest')), unknownComplete: async () => (await xt.completeQuest('missing_quest')),
+      unsafeFlag: async () => (await xt.setFlag('__proto__', true)), nonBooleanFlag: async () => (await xt.setFlag('sect_ranks.enabled', 1)),
+      negativeAdvance: async () => (await xt.clock.advance(-1)), infiniteAdvance: async () => (await xt.clock.advance(Infinity)),
+      invalidNow: async () => (await xt.clock.setNow(NaN)), invalidSeed: async () => (await xt.seed(NaN)),
       invalidListener: () => xt.events.on('scene', null),
     };
     const rejected = {};
@@ -190,25 +198,28 @@ try {
       try { rejected[name] = await run() === false; } catch { rejected[name] = true; }
     }
     const after = xt.getState();
-    return { rejected, before, after, storedBefore, storedAfter: localStorage.getItem('xiantu_save_v1') };
+    return { rejected, before, after, storedBefore, storedAfter: JSON.stringify((await window.__xtReadPersistedSave())) };
   });
   for (const [name, rejected] of Object.entries(invalid.rejected)) check(rejected, `${name} 非法参数未被拒绝`);
   for (const key of ['mapId', 'level', 'inventory', 'quests', 'sect', 'rank', 'flags', 'time']) {
     equal(invalid.after[key], invalid.before[key], `${key} 被非法参数修改`);
   }
-  equal(invalid.storedAfter, invalid.storedBefore, '非法参数改变了 localStorage 存档');
+  equal(invalid.storedAfter, invalid.storedBefore, '非法参数改变了存档');
 
   const failedSave = await page.evaluate(async () => {
-    const xt = window.__xt, before = xt.getState(), candidate = xt.exportSave();
-    const storedBefore = localStorage.getItem('xiantu_save_v1');
+    const xt = window.__xt, before = xt.getState(), candidate = await xt.exportSave();
+    const storedBefore = JSON.stringify((await window.__xtReadPersistedSave()));
     candidate.inventory.spirit_herb = 99;
-    const descriptor = Object.getOwnPropertyDescriptor(Storage.prototype, 'setItem');
+    const indexed = xt.getState().features.indexedDbSaves;
+    const prototype = indexed ? IDBObjectStore.prototype : Storage.prototype;
+    const method = indexed ? 'put' : 'setItem';
+    const descriptor = Object.getOwnPropertyDescriptor(prototype, method);
     let rejected = false;
     try {
-      Object.defineProperty(Storage.prototype, 'setItem', { ...descriptor, value() { throw new Error('xt expected storage failure'); } });
+      Object.defineProperty(prototype, method, { ...descriptor, value() { throw new Error('xt expected storage failure'); } });
       try { await xt.loadSave(candidate); } catch { rejected = true; }
-    } finally { Object.defineProperty(Storage.prototype, 'setItem', descriptor); }
-    return { rejected, before, after: xt.getState(), storedBefore, storedAfter: localStorage.getItem('xiantu_save_v1') };
+    } finally { Object.defineProperty(prototype, method, descriptor); }
+    return { rejected, before, after: xt.getState(), storedBefore, storedAfter: JSON.stringify((await window.__xtReadPersistedSave())) };
   });
   check(failedSave.rejected, '存储失败的导入未报错');
   for (const key of ['level', 'inventory', 'quests', 'sect', 'rank', 'flags']) {
@@ -217,21 +228,21 @@ try {
   equal(failedSave.storedAfter, failedSave.storedBefore, '导入保存失败改变了磁盘存档');
 
   const unknownSaveFields = await page.evaluate(async () => {
-    const xt = window.__xt, progress = window.__scene.prog, candidate = xt.exportSave();
+    const xt = window.__xt, progress = window.__scene.prog, candidate = await xt.exportSave();
     candidate.save = 'overwritten'; candidate.unregisteredField = 'ignored';
     await xt.loadSave(candidate);
-    const exported = xt.exportSave();
+    const exported = await xt.exportSave();
     return { sameInstance: progress === window.__scene.prog, saveCallable: typeof window.__scene.prog.save === 'function',
       saveOverwritten: Object.hasOwn(exported, 'save'), unknownPersisted: Object.hasOwn(exported, 'unregisteredField') };
   });
   equal(unknownSaveFields, { sameInstance: true, saveCallable: true, saveOverwritten: false, unknownPersisted: false },
     '导入未保留 Progress 实例或未知字段覆盖了方法');
 
-  const ordinary = await page.evaluate(({ awaken, bamboo }) => {
-    const xt = window.__xt, before = xt.exportSave();
-    xt.acceptQuest(awaken.id); const accepted = xt.getState().quests[awaken.id];
-    xt.completeQuest(awaken.id); xt.acceptQuest(bamboo.id); xt.completeQuest(bamboo.id);
-    return { before, accepted, after: xt.exportSave(), events: xt.events.drain() };
+  const ordinary = await page.evaluate(async ({ awaken, bamboo }) => {
+    const xt = window.__xt, before = await xt.exportSave();
+    await xt.acceptQuest(awaken.id); const accepted = xt.getState().quests[awaken.id];
+    await xt.completeQuest(awaken.id); await xt.acceptQuest(bamboo.id); await xt.completeQuest(bamboo.id);
+    return { before, accepted, after: await xt.exportSave(), events: xt.events.drain() };
   }, { awaken, bamboo });
   equal(ordinary.accepted.state, 'active', '非日常任务 acceptQuest 未调用正式接取路径');
   equal(ordinary.after.quests[awaken.id].reached, true, '非日常 reach 没有经过 QuestSystem.onReach');
@@ -245,15 +256,15 @@ try {
   equal(ordinary.events.filter(event => event.type === 'quest:complete').length, 2, '非日常任务完成事件数量错误');
 
   // NPC 接取和交付调用同一 QuestSystem；同步验证事件订阅、取消与奖励不重复。
-  const completed = await page.evaluate(daily => {
+  const completed = await page.evaluate(async daily => {
     window.__xtSeen = [];
     window.__xtQuestListener = event => window.__xtSeen.push(event);
     window.__xt.events.on('quest:complete', window.__xtQuestListener);
-    window.__xt.acceptQuest(daily.id);
+    await window.__xt.acceptQuest(daily.id);
     const accepted = window.__xt.getState().quests[daily.id];
     const before = window.__xt.getState().contribution;
-    window.__xt.completeQuest(daily.id);
-    const state = window.__xt.getState(), stored = JSON.parse(localStorage.getItem('xiantu_save_v1'));
+    await window.__xt.completeQuest(daily.id);
+    const state = window.__xt.getState(), stored = (await window.__xtReadPersistedSave());
     window.__xt.events.off('quest:complete', window.__xtQuestListener);
     return { accepted, state, before, stored, seen: window.__xtSeen.slice(), events: window.__xt.events.drain() };
   }, daily);
@@ -265,21 +276,21 @@ try {
   equal(completed.seen.length, 1, 'on 订阅的完成事件数量错误');
   equal(completed.seen[0].type, 'quest:complete', '任务完成订阅类型错误');
   check(completed.events.some(event => event.type === 'quest:complete'), '任务完成未进入 drain');
-  const duplicate = await page.evaluate(id => {
+  const duplicate = await page.evaluate(async id => {
     let rejected = false;
-    try { const result = window.__xt.completeQuest(id); rejected = result === false; } catch { rejected = true; }
+    try { const result = await window.__xt.completeQuest(id); rejected = result === false; } catch { rejected = true; }
     return { rejected, contribution: window.__xt.getState().contribution };
   }, daily.id);
   check(duplicate.rejected, '已完成任务被重复交付');
   equal(duplicate.contribution, completed.state.contribution, '重复交付再次获得贡献');
-  await page.evaluate(() => window.__xt.clock.advance(30000));
-  const reset = await page.evaluate(id => ({ state: window.__xt.getState(), stored: JSON.parse(localStorage.getItem('xiantu_save_v1')),
+  await page.evaluate(async () => (await window.__xt.clock.advance(30000)));
+  const reset = await page.evaluate(async id => ({ state: window.__xt.getState(), stored: (await window.__xtReadPersistedSave()),
     available: window.__scene.quests.available(id) }), daily.id);
   equal(reset.state.quests[daily.id] ?? null, null, '跨本地 05:00 未重置日常');
   equal(reset.stored.quests[daily.id] ?? null, null, '跨日重置未存档');
   equal(reset.available, true, '跨日后日常不可重新接取');
   equal(reset.state.contribution, completed.state.contribution, '重置日常错误清空贡献');
-  await page.evaluate(id => { window.__xt.giveItem('spirit_herb', 3); window.__xt.acceptQuest(id); window.__xt.completeQuest(id); }, daily.id);
+  await page.evaluate(async id => { await window.__xt.giveItem('spirit_herb', 3); await window.__xt.acceptQuest(id); await window.__xt.completeQuest(id); }, daily.id);
   equal(await page.evaluate(() => window.__xtSeen.length), 1, 'off 后仍收到完成事件');
 
   // 导出的对象是独立快照；读档保留位置、物品、任务、宗门、职位与配置。
@@ -288,7 +299,7 @@ try {
     window.__xtSceneListener = event => window.__xtSceneSeen.push(event);
     window.__xt.events.on('scene', window.__xtSceneListener);
     await window.__xt.teleport('qingyun_village', 352, 480);
-    const state = window.__xt.getState(), save = window.__xt.exportSave();
+    const state = window.__xt.getState(), save = await window.__xt.exportSave();
     window.__xt.events.off('scene', window.__xtSceneListener);
     return { state, save, seen: window.__xtSceneSeen.slice() };
   });
@@ -298,8 +309,8 @@ try {
   equal(travel.seen.length, 1, '场景切换订阅没有恰好收到一次事件');
   const roundtrip = await page.evaluate(async save => {
     await window.__xt.loadSave(save);
-    const state = window.__xt.getState(), exported = window.__xt.exportSave();
-    const detached = window.__xt.exportSave(); detached.inventory.spirit_herb = 9999;
+    const state = window.__xt.getState(), exported = await window.__xt.exportSave();
+    const detached = await window.__xt.exportSave(); detached.inventory.spirit_herb = 9999;
     return { state, exported, detachedAffectedState: window.__xt.getState().inventory.spirit_herb === 9999 };
   }, travel.save);
   for (const key of ['mapId', 'x', 'y', 'level', 'realm', 'inventory', 'quests', 'sect', 'rank', 'contribution', 'flags']) {
@@ -319,16 +330,16 @@ try {
   equal([singleAxis.yOnly.x, singleAxis.yOnly.y], [defaultPosition.x, 480], 'teleport y-only 未保留默认出生 X / 指定 Y');
 
   // 固定种子同时验证 Math.random 和真实 Phaser Tilemap 的 RND 消费者。
-  const seeded = await page.evaluate(() => {
-    const sample = seed => {
-      window.__xt.seed(seed);
+  const seeded = await page.evaluate(async () => {
+    const sample = async seed => {
+      await window.__xt.seed(seed);
       const random = Array.from({ length: 12 }, () => Math.random());
       const map = window.__scene.make.tilemap({ data: [Array(24).fill(0)], tileWidth: 1, tileHeight: 1 });
       map.weightedRandomize([{ index: [1, 2], weight: 1 }, { index: [3, 4], weight: 2 }], 0, 0, 24, 1, 0);
       const phaser = map.layers[0].data[0].map(tile => tile.index); map.destroy();
       return { random, phaser };
     };
-    return { first: sample(12345), second: sample(12345), other: sample(98765) };
+    return { first: await sample(12345), second: await sample(12345), other: await sample(98765) };
   });
   equal(seeded.first, seeded.second, 'seed 相同种子未复现 Math.random / Phaser.Math.RND');
   check(JSON.stringify(seeded.first.random) !== JSON.stringify(seeded.other.random), 'Math.random 不随种子改变');
@@ -343,15 +354,15 @@ try {
     const scene = window.__scene, before = scene.prog.mp;
     scene.combat.tryCast(0);
     return { before, after: scene.prog.mp, readyAt: scene.combat.cds.get('water_mirror')?.readyAt,
-      stored: window.__xt.exportSave().skillCooldowns.water_mirror?.readyAt };
+      stored: (await window.__xtReadPersistedSave()).skillCooldowns.water_mirror?.readyAt };
   }, cooldownFixture);
   equal(cooldown.after, cooldown.before, '持久冷却到期前仍施法扣 MP');
   equal(cooldown.readyAt, now + 30000, '切图没有恢复持久技能冷却');
   equal(cooldown.stored, now + 30000, '持久冷却未进入导出存档');
-  const cast = await page.evaluate(() => {
-    window.__xt.clock.advance(30001);
+  const cast = await page.evaluate(async () => {
+    await window.__xt.clock.advance(30001);
     const scene = window.__scene, before = scene.prog.mp; scene.combat.tryCast(0);
-    return { before, after: scene.prog.mp, readyAt: window.__xt.exportSave().skillCooldowns.water_mirror?.readyAt,
+    return { before, after: scene.prog.mp, readyAt: (await window.__xtReadPersistedSave()).skillCooldowns.water_mirror?.readyAt,
       now: window.__xt.getState().time };
   });
   check(cast.after < cast.before && cast.readyAt > cast.now, 'advance 未让既有技能冷却到期并重新开始');
@@ -361,18 +372,18 @@ try {
   const seclusionFixture = { ...cooldownFixture, level: 30, exp: 0, sectContribution: 10000, age: 16,
     seclusionDay: '', seclusionYearsToday: 0, seclusionHistory: [], ageUpdatedAt: midnight - 1000,
     skillCooldowns: {}, buffs: [] };
-  await page.evaluate(now => window.__xt.clock.setNow(now), midnight - 1000);
+  await page.evaluate(async now => (await window.__xt.clock.setNow(now)), midnight - 1000);
   const secluded = await page.evaluate(async ({ fixture, pacing }) => {
     await window.__xt.loadSave(fixture);
     const object = { props: { mode: 'sect', reqRealm: 'foundation' } };
     const years = Math.max(...pacing.options), count = pacing.maxYearsPerRealDay / years;
     for (let i = 0; i < count; i++) window.__scene.completeSeclusion(object, years);
-    const before = window.__xt.exportSave();
+    const before = await window.__xtReadPersistedSave();
     window.__scene.completeSeclusion(object, years);
-    const blocked = window.__xt.exportSave();
-    window.__xt.clock.advance(1000);
+    const blocked = await window.__xtReadPersistedSave();
+    await window.__xt.clock.advance(1000);
     window.__scene.completeSeclusion(object, years);
-    return { before, blocked, next: window.__xt.exportSave(), years, count };
+    return { before, blocked, next: await window.__xtReadPersistedSave(), years, count };
   }, { fixture: seclusionFixture, pacing });
   equal(secluded.before.seclusionYearsToday, pacing.maxYearsPerRealDay, '闭关累计日额度错误');
   equal(secluded.blocked.seclusionHistory.length, secluded.before.seclusionHistory.length, '午夜前闭关超额仍可结算');

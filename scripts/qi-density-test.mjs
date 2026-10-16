@@ -39,6 +39,7 @@ if (!process.argv.includes('--single-mode')) {
           level: realm.levelMin, realm, sectContribution: data.SECT_SECLUSION.contributionCost[String(years)],
           seclusionDay: realDay(now), seclusionYearsToday: 0, age: 16, remainingLife: 1000, expNeed: 1000,
           seclusionHistory: [], advanceAge() {}, save() { return true; },
+          persistSoon() { return this.save(); },
           spendSectContribution(cost) { this.sectContribution -= cost; return true; },
           gainCultivation(base) { bases.push(base); return { gained: base, overflowed: 0, levels: 0, blocked: false, overflowFilled: false }; },
         };

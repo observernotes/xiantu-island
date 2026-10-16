@@ -1,3 +1,4 @@
+import { legacySaveFixture } from './legacy-save-fixture.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -28,6 +29,7 @@ class Display {
   add(children) { (this.children ??= []).push(...(Array.isArray(children) ? children : [children])); return this; }
 }
 try {
+  await legacySaveFixture(server);
   const { Gathering } = await server.ssrLoadModule('/src/scenes/Gathering.ts');
   const { Progress } = await server.ssrLoadModule('/src/Progress.ts');
   const { ITEMS } = await server.ssrLoadModule('/src/data.ts');

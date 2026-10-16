@@ -1,5 +1,6 @@
 // 无浏览器、无端口：胜负逻辑、地图机关和怪物受击均加载真实代码。
 // Phaser 仅替换绘制/物理容器；snapshot 与 shared 可分别验证。
+import { legacySaveFixture } from './legacy-save-fixture.mjs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createServer } from 'vite';
@@ -76,5 +77,5 @@ const server = await createServer({
     load(id) { if (id === '\0trials-phaser') return phaserStub; },
   }],
 });
-try { await server.ssrLoadModule('/src/trials.test.ts'); }
+try { await legacySaveFixture(server); await server.ssrLoadModule('/src/trials.test.ts'); }
 finally { await server.close(); }

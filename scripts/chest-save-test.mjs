@@ -1,3 +1,4 @@
+import { legacySaveFixture } from './legacy-save-fixture.mjs';
 import assert from 'node:assert/strict';
 import { createServer } from 'vite';
 
@@ -40,6 +41,7 @@ globalThis.localStorage = {
 let assertions = 0;
 const eq = (actual, expected, message) => { assert.deepEqual(actual, expected, message); assertions++; };
 try {
+  await legacySaveFixture(server);
   const { Progress } = await server.ssrLoadModule('/src/Progress.ts');
   const { GameScene } = await server.ssrLoadModule('/src/scenes/GameScene.ts');
   const { default: Phaser } = await server.ssrLoadModule('phaser');

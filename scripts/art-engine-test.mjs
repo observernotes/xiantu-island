@@ -198,17 +198,17 @@ async function prepare(page, baseURL, map = 'qingyun_village') {
     throw error;
   }
   await page.evaluate(async ({ map, fixedTime }) => {
-    window.__xt.seed(123); window.__xt.clock.pause(); window.__xt.clock.setNow(fixedTime);
+    await window.__xt.seed(123); await window.__xt.clock.pause(); await window.__xt.clock.setNow(fixedTime);
     await window.__xt.teleport(map, 320, 608);
   }, { map, fixedTime });
   await page.waitForTimeout(300);
   return freezePose(page);
 }
 async function freezePose(page, environment, resetClock = false) {
-  return page.evaluate(({ environment, fixedTime, resetClock }) => {
+  return page.evaluate(async ({ environment, fixedTime, resetClock }) => {
     const s = window.__scene, p = s.player;
     // 初次 prepare 已 seed；重复 seed 会复用 TileSprite 的随机内部纹理 UUID。
-    if (resetClock) { window.__xt.clock.pause(); window.__xt.clock.setNow(fixedTime); }
+    if (resetClock) { await window.__xt.clock.pause(); await window.__xt.clock.setNow(fixedTime); }
     s.physics.world.pause(); s.tweens.killAll(); s.time.removeAllEvents();
     s.cameras.main.resetFX(); s.cameras.main.stopFollow(); s.cameras.main.setScroll(0, 0);
     p.body.reset(320, 608); p.body.setVelocity(0, 0); p.state2 = 'ground'; p.body.blocked.down = true;

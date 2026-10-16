@@ -1,3 +1,4 @@
+import { installBrowserSaveReader } from './browser-save.mjs';
 // UI-7 背包/装备窗浏览器冒烟；独立快照工程构建/preview，不覆盖工作树 dist，也不在浏览器冒烟内执行 tsc。
 // timeout 300s node scripts/inv-ui-smoke.mjs；XT_INV_UI_SHOTS 可覆盖默认截图目录。
 import assert from 'node:assert/strict';
@@ -79,6 +80,7 @@ try {
 
   async function session(label, { missing = [], missingFile = '', save = SAVE } = {}) {
     const context = await browser.newContext({ viewport: { width: 1280, height: 720 }, timezoneId: 'Asia/Shanghai' });
+    await installBrowserSaveReader(context);
     const filtered = missing.length ? await installMissingManifest(context, manifest, missing) : undefined;
     await context.addInitScript(save => {
       if (location.protocol !== 'http:' && location.protocol !== 'https:') return;
@@ -127,8 +129,8 @@ try {
   const shot = (page, name) => page.screenshot({ path: path.join(shotDir, `${name}.png`) });
   const inv = page => page.evaluate(() => window.__xt.inventorySnapshot());
   const equip = page => page.evaluate(() => window.__xt.equipSnapshot());
-  const state = page => page.evaluate(() => {
-    const s = window.__scene, p = s.prog, saved = JSON.parse(localStorage.getItem('xiantu_save_v1'));
+  const state = page => page.evaluate(async () => {
+    const s = window.__scene, p = s.prog, saved = (await window.__xtReadPersistedSave());
     return { inventory: p.inventory, equip: p.equip, savedInventory: saved.inventory, savedEquip: saved.equip,
       appearance: p.appearance ?? null, playerHp: s.player.hp, hp: p.hp, playerMaxHp: s.player.maxHp, maxHp: p.maxHp };
   });
@@ -249,7 +251,7 @@ try {
   // 真键位互斥、停止移动/取消采集、持有丹炉与五宗令入口；延迟对白先收窗。
   {
     const { page, done } = await session('modal-and-entries');
-    await page.evaluate(() => { window.__xt.setFlag('alchemyPhase1', true); window.__xt.setFlag('shops', true); });
+    await page.evaluate(async () => { await window.__xt.setFlag('alchemyPhase1', true); await window.__xt.setFlag('shops', true); });
     await nearNpc(page); await open(page);
     for (const key of ['k', 'l', 'p']) await press(page, key);
     eq(await page.evaluate(() => ({ inv: window.__xt.inventorySnapshot().open, skill: window.__scene.skillWindow.open,

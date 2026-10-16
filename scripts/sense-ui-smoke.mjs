@@ -1,3 +1,4 @@
+import { installBrowserSaveReader } from './browser-save.mjs';
 // 先 npm run build:test；仅用浏览器会话内的开关、绑定和 Sense 夹具，不改正式数据。
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
@@ -49,6 +50,7 @@ try {
 
   async function session() {
     const context = await browser.newContext({ viewport: { width: 1280, height: 720 }, timezoneId: 'Asia/Shanghai' });
+    await installBrowserSaveReader(context);
     await context.addInitScript(seed => { localStorage.setItem('xiantu_save_v1', JSON.stringify(seed)); }, seed);
     const page = await context.newPage(), errors = [];
     page.on('pageerror', error => errors.push(error.message));
@@ -62,15 +64,15 @@ try {
   // 关态无入口、无展开、无教学写档；仍订阅的事件处理器必须静默。
   {
     const { page, done } = await session();
-    const off = await page.evaluate(() => {
-      window.__xt.setFlag('spiritScan', false);
-      const s = window.__scene, before = localStorage.getItem('xiantu_save_v1'), logs = [...(window.__logs ?? [])];
+    const off = await page.evaluate(async () => {
+      await window.__xt.setFlag('spiritScan', false);
+      const s = window.__scene, before = JSON.stringify((await window.__xtReadPersistedSave())), logs = [...(window.__logs ?? [])];
       s.events.emit('sense:blocked', { ok: false, blockKey: 'sense.block.mp', source: 'button' });
       s.events.emit('sense:scan', { ok: true, resultKey: 'sense.result.empty', hits: [], count: 0, faint: false });
       s.events.emit('sense:intel-expired', { instanceId: s.map.id, id: 'not-viewing' });
       s.senseUi.requestScan('button'); s.attrPanel.open();
       return { button: !!s.children.getByName('sense-scan-button'), toggle: !!s.children.getByName('attr-panel')?.getByName('attr-sense-toggle'),
-        before, after: localStorage.getItem('xiantu_save_v1'), state: s.prog.senseState ?? null,
+        before, after: JSON.stringify((await window.__xtReadPersistedSave())), state: s.prog.senseState ?? null,
         logs, afterLogs: window.__logs ?? [], binding: s.inputBindings.keyCode('spirit_scan') ?? null };
     });
     eq(off.button, false, '关态不创建扫描按钮'); eq(off.toggle, false, '关态不显示神识展开');
@@ -82,19 +84,26 @@ try {
 
   {
     const { page, done } = await session();
-    await page.evaluate(async () => { window.__xt.setFlag('spiritScan', true); await window.__xt.senseFixture({ cooldownMs: 300, inspectDurationMs: 300 }); });
+    await page.evaluate(async () => { await window.__xt.setFlag('spiritScan', true); await window.__xt.senseFixture({ cooldownMs: 300, inspectDurationMs: 300 }); });
     await page.waitForTimeout(350);
     const start = await page.evaluate(() => {
-      const s = window.__scene, original = s.sense.requestScan.bind(s.sense);
+      const s = window.__scene;
+      const method = window.__xt.getState().features.indexedDbSaves ? 'requestScanAsync' : 'requestScan';
+      const original = s.sense[method].bind(s.sense);
       // 固定回蓝这个外部变量，才能精确断言每次扫描/只读浏览的灵力差额。
       s.regenMp = () => {};
       window.__uiRequests = [];
-      s.sense.requestScan = (source, scanId) => { const result = original(source, scanId); window.__uiRequests.push({ source, scanId, result }); return result; };
+      s.sense[method] = (source, scanId) => {
+        const record = result => { window.__uiRequests.push({ source, scanId, result }); return result; };
+        const result = original(source, scanId);
+        return result instanceof Promise ? result.then(record) : record(result);
+      };
       window.__xt.events.drain();
       return { mp: s.prog.mp, cost: s.sense.preview().mpCost, hint: s.children.getByName('sense-scan-key-hint').text };
     });
     ok(start.hint.includes('未绑定'), '键帽读真实未绑定状态');
     await page.mouse.move(480, 622); await page.mouse.down(); await page.waitForTimeout(80);
+    await page.waitForFunction(() => window.__uiRequests.length > 0);
     const first = await page.evaluate(() => {
       const s = window.__scene, requests = window.__uiRequests, result = requests[0]?.result;
       const wave = s.children.getByName('fx_spirit_scan_wave');
@@ -128,11 +137,11 @@ try {
     const second = await page.evaluate(() => window.__uiRequests.at(-1));
     ok(second.scanId !== first.result.scanId, '新按下使用新 operationId'); eq(second.result.ok, true, '新按下重新扫描');
 
-    const attrBefore = await page.evaluate(() => ({ mp: window.__scene.prog.mp, save: localStorage.getItem('xiantu_save_v1') }));
+    const attrBefore = await page.evaluate(async () => ({ mp: window.__scene.prog.mp, save: JSON.stringify((await window.__xtReadPersistedSave())) }));
     await page.keyboard.press('p', { delay: 80 }); await page.waitForTimeout(180);
     await clickNamed(page, 'attr-sense-toggle', true);
-    const details = await page.evaluate(() => ({ text: window.__scene.children.getByName('attr-panel').getByName('attr-sense-details').text,
-      mp: window.__scene.prog.mp, save: localStorage.getItem('xiantu_save_v1') }));
+    const details = await page.evaluate(async () => ({ text: window.__scene.children.getByName('attr-panel').getByName('attr-sense-details').text,
+      mp: window.__scene.prog.mp, save: JSON.stringify((await window.__xtReadPersistedSave())) }));
     for (const text of ['神识强度', '探查范围', '消耗灵力', '冷却', '神识来源', '角色加点', '已生效心法', '未绑定']) ok(details.text.includes(text), `属性展开包含${text}`);
     ok(!details.text.includes('NaN'), '属性预览无 NaN'); eq(details.mp, attrBefore.mp, '浏览神识不扣蓝'); eq(details.save, attrBefore.save, '浏览神识不写盘');
     await page.screenshot({ path: path.join(shotDir, 'expanded.png') });
@@ -187,9 +196,9 @@ try {
     await page.screenshot({ path: path.join(shotDir, 'hud.png') });
 
     // 运行期关态立即撤下按钮；显式销毁逐一注销监听。
-    const cleaned = await page.evaluate(() => {
+    const cleaned = await page.evaluate(async () => {
       const s = window.__scene, baseline = ['sense:scan', 'sense:blocked', 'sense:intel-expired'].map(e => s.events.listenerCount(e));
-      window.__xt.setFlag('spiritScan', false);
+      await window.__xt.setFlag('spiritScan', false);
       const hidden = !s.children.getByName('sense-scan-button');
       s.senseUi.destroy();
       return { hidden, baseline, after: ['sense:scan', 'sense:blocked', 'sense:intel-expired'].map(e => s.events.listenerCount(e)) };
@@ -202,7 +211,7 @@ try {
   // 必须首次显形，才能真实覆盖缺 reveal 纹理的分支；关闭真实 Scene 验证 SHUTDOWN。
   {
     const { page, done } = await session();
-    await page.evaluate(async () => { window.__xt.setFlag('spiritScan', true); await window.__xt.senseFixture(); });
+    await page.evaluate(async () => { await window.__xt.setFlag('spiritScan', true); await window.__xt.senseFixture(); });
     await page.waitForTimeout(350);
     const before = await page.evaluate(() => {
       const s = window.__scene;

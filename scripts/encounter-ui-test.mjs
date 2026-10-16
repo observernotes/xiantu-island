@@ -1,3 +1,4 @@
+import { legacySaveFixture } from './legacy-save-fixture.mjs';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { createServer } from 'vite';
@@ -23,6 +24,7 @@ if (!process.argv.includes('--single-mode')) {
     }], ssr: { noExternal: ['phaser'] },
   });
   try {
+    await legacySaveFixture(server);
     await server.ssrLoadModule('/src/encounter-ui.test.ts');
     console.log(`encounter-ui XT_DATA=${process.env.XT_DATA}: passed`);
   } finally {

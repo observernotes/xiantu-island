@@ -232,7 +232,7 @@ try {
       equipPanel: { isOpen: () => false, update() {}, close() {} },
       attrPanel: { isOpen: () => false, update() {}, close() {} },
       updateShots() {}, regenMp() {}, drawHud() {} });
-    Object.assign(game.prog, { advanceAge() {}, save() {} });
+    Object.assign(game.prog, { advanceAge() {}, save() {}, persistSoon() {} });
     const playerSteps = [], visualTimes = [];
     game.player.step = (time, dt, input, ropes) => {
       assert.equal(dt, 1 / 60, '假玩家收到固定步长（秒）');
