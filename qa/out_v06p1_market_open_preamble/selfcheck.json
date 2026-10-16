@@ -1,0 +1,128 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "name": "datalint-shared",
+      "command": [
+        "python3",
+        "-c",
+        "import os,runpy;os.chdir('/workspace/xiantu');g=runpy.run_path('/workspace/xiantu/qa/tools/datalint.py',run_name='__main__');assert not g['P']"
+      ],
+      "exitCode": 0,
+      "started": "2026-10-17T04:17:30.836377",
+      "ended": "2026-10-17T04:17:30.896332",
+      "log": "qa/out_v06p1_market_open_preamble/datalint-shared.log"
+    },
+    {
+      "name": "datalint-snapshot",
+      "command": [
+        "python3",
+        "-c",
+        "import os,runpy;os.chdir('/workspace/xiantu/wt/dev/data');g=runpy.run_path('/workspace/xiantu/qa/tools/datalint.py',run_name='__main__');assert not g['P']"
+      ],
+      "exitCode": 0,
+      "started": "2026-10-17T04:17:30.896688",
+      "ended": "2026-10-17T04:17:30.943459",
+      "log": "qa/out_v06p1_market_open_preamble/datalint-snapshot.log"
+    },
+    {
+      "name": "diff-check",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "started": "2026-10-17T04:18:34.575164",
+      "ended": "2026-10-17T04:18:34.582474",
+      "log": "qa/out_v06p1_market_open_preamble/diff-check.log"
+    },
+    {
+      "name": "protection",
+      "command": [
+        "python3",
+        "qa/out_v06p1_market_open_preamble/capture-protection.py"
+      ],
+      "exitCode": 0,
+      "started": "2026-10-17T04:18:34.472969",
+      "ended": "2026-10-17T04:18:34.574914",
+      "log": "qa/out_v06p1_market_open_preamble/protection.log"
+    },
+    {
+      "name": "shop",
+      "command": [
+        "npm",
+        "run",
+        "test:shop"
+      ],
+      "exitCode": 0,
+      "started": "2026-10-17T04:17:28.430944",
+      "ended": "2026-10-17T04:17:30.835566",
+      "log": "qa/out_v06p1_market_open_preamble/shop.log"
+    },
+    {
+      "name": "tsc",
+      "command": [
+        "npx",
+        "tsc",
+        "--noEmit"
+      ],
+      "exitCode": 0,
+      "started": "2026-10-17T04:18:28.537440",
+      "ended": "2026-10-17T04:18:34.472453",
+      "log": "qa/out_v06p1_market_open_preamble/tsc.log"
+    },
+    {
+      "name": "v06c-closed",
+      "command": [
+        "npm",
+        "run",
+        "test:v06c-closed"
+      ],
+      "exitCode": 0,
+      "started": "2026-10-17T04:17:28.432142",
+      "ended": "2026-10-17T04:17:33.667744",
+      "log": "qa/out_v06p1_market_open_preamble/v06c-closed.log"
+    },
+    {
+      "name": "v06d-closed",
+      "command": [
+        "npm",
+        "run",
+        "test:v06d-closed"
+      ],
+      "exitCode": 0,
+      "started": "2026-10-17T04:17:28.431336",
+      "ended": "2026-10-17T04:17:34.843435",
+      "log": "qa/out_v06p1_market_open_preamble/v06d-closed.log"
+    },
+    {
+      "name": "v06p1-market-closed",
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-market-closed"
+      ],
+      "exitCode": 0,
+      "assertions": 24112,
+      "log": "qa/out_v06p1_market_open_preamble/closed/selfcheck.log",
+      "verifiedBy": "delegated execution, exit 0 reported and passed evidence inspected"
+    },
+    {
+      "name": "v06p1-market-open",
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-market-open"
+      ],
+      "exitCode": 0,
+      "assertions": 2577,
+      "log": "qa/out_v06p1_market_open_preamble/open/agent-validation.log",
+      "verifiedBy": "delegated execution, exit 0 reported and passed evidence inspected"
+    }
+  ],
+  "formalOpen": true,
+  "closedFixtureOnly": true,
+  "softOpened": true,
+  "released": false
+}

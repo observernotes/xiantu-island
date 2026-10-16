@@ -1,0 +1,145 @@
+diff --git a/src/MarketGate.ts b/src/MarketGate.ts
+index 281166b..7823bf2 100644
+--- a/src/MarketGate.ts
++++ b/src/MarketGate.ts
+@@ -39 +39 @@ const active = (entry: MarketListing) => entry.state === 'listed' || entry.state
+-/** 无前台接线。正式每入口首先走 Closed；只有 Vite SSR 内存图可进入真实 Progress 事务。 */
++/** 正式 soft-open；每入口保留关态拦截，仅 Vite SSR 内存关态图注入 false。 */
+@@ -208 +208 @@ export class MarketGate {
+-    return rules.enabled === false && rules.listingPrice.mode === 'player_set' && rules.listingPrice.reference === 'items.price'
++    return rules.enabled === true && rules.listingPrice.mode === 'player_set' && rules.listingPrice.reference === 'items.price'
+diff --git a/src/MarketOpenFlag.ts b/src/MarketOpenFlag.ts
+index 33f8814..286455e 100644
+--- a/src/MarketOpenFlag.ts
++++ b/src/MarketOpenFlag.ts
+@@ -1,2 +1,2 @@
+-/** 正式恒关；仅 Vite SSR 开态夹具图可由 resolve/load 内存模块注入 true。 */
+-export function isMarketOpenForFixture(): boolean { return false; }
++/** 正式路径恒 true；仅 Vite SSR 关态图可注入 false。 */
++export function isMarketOpenForFixture(): boolean { return true; }
+diff --git a/src/scenes/GameScene.ts b/src/scenes/GameScene.ts
+index d21887b..c84b6b5 100644
+--- a/src/scenes/GameScene.ts
++++ b/src/scenes/GameScene.ts
+@@ -69,0 +70,3 @@ import { TowerGate } from '../TowerGate';
++import { featureClosed as marketFeatureClosed } from '../MarketClosed';
++import { isMarketOpenForFixture } from '../MarketOpenFlag';
++import { MarketGate } from '../MarketGate';
+@@ -929 +932 @@ export class GameScene extends Phaser.Scene {
+-      && (this.tryInteractTowerClosed() || this.tryInteractSecretNest() || this.encounterRuntime?.interact() || this.interactTrialObject() || this.openNearbyFurnace() || this.talkNearby())) return;
++      && (this.tryInteractTowerClosed() || this.tryInteractMarketConsign() || this.tryInteractSecretNest() || this.encounterRuntime?.interact() || this.interactTrialObject() || this.openNearbyFurnace() || this.talkNearby())) return;
+@@ -2090,0 +2094 @@ export class GameScene extends Phaser.Scene {
++    if (this.tryInteractMarketConsign()) return true;
+@@ -2131,0 +2136,14 @@ export class GameScene extends Phaser.Scene {
++  /** 仅接既有寄售入口的冒烟提示；未布置对象的地图保持安静。 */
++  private tryInteractMarketConsign(): boolean {
++    const entrance = this.map.objects.find(o => ['market_consign_entrance', 'fangshi_consign'].includes(o.name)
++      && this.senseMap?.objectVisible(o) !== false
++      && Math.abs(o.x - this.player.x) <= 28 && Math.abs(o.y - this.player.y) <= 40);
++    if (!entrance) return false;
++    if (!isMarketOpenForFixture()) this.log(marketFeatureClosed().text, '#aaaaaa');
++    else {
++      const result = new MarketGate(this.prog).feature();
++      this.log(result.allowed ? '坊市寄售已开放。' : result.text, result.allowed ? '#fff8d0' : '#aaaaaa');
++    }
++    return true;
++  }
++
+diff --git a/src/v06p1-market-open.test.ts b/src/v06p1-market-open.test.ts
+index ca85122..30b097f 100644
+--- a/src/v06p1-market-open.test.ts
++++ b/src/v06p1-market-open.test.ts
+@@ -1 +1 @@
+-// 正式坊市恒关；仅 runner 的 Vite SSR 虚拟旗标图可运行最小链路。
++// 正式坊市旗标恒 true；仅 runner 的 Vite SSR 内存关态图可注入 false。
+@@ -10,0 +11 @@ import { isValidMarketProgress } from './MarketProgress';
++import { GameScene } from './scenes/GameScene';
+@@ -97 +98 @@ export async function runMarketOpenFixtureTests(options: {
+-  open: boolean; dataMode?: string; refreshPayloads?: Payload[] | null;
++  openFixture: boolean; dataMode?: string; refreshPayloads?: Payload[] | null;
+@@ -99,2 +100,2 @@ export async function runMarketOpenFixtureTests(options: {
+-  const { open, dataMode = 'fixture', refreshPayloads } = options;
+-  const label = `${dataMode}/${open ? 'memory-open' : 'formal-closed'}`;
++  const { openFixture, dataMode = 'fixture', refreshPayloads } = options;
++  const label = `${dataMode}/${openFixture ? 'formal-open' : 'memory-closed'}`;
+@@ -110,2 +111,2 @@ export async function runMarketOpenFixtureTests(options: {
+-  eq(isMarketOpenForFixture(), open, '旗标来自当前SSR图');
+-  eq(rules.enabled, false, '数值表不能授权开态');
++  eq(isMarketOpenForFixture(), openFixture, '旗标来自当前SSR图');
++  eq(rules.enabled, true, '正式软开数值表 enabled=true');
+@@ -145 +146 @@ export async function runMarketOpenFixtureTests(options: {
+-  async function formalClosed(p: Progress, message: string) {
++  async function memoryClosed(p: Progress, message: string) {
+@@ -147 +148 @@ export async function runMarketOpenFixtureTests(options: {
+-    // 连资格、时钟、品类和收益承载哨兵都不得在关态求值。
++    // 内存关态连资格、时钟、品类和收益承载哨兵都不得求值。
+@@ -182 +183 @@ export async function runMarketOpenFixtureTests(options: {
+-    if (!open) { await formalClosed(loaded, `${payload.state}/跨关态旧档`); return; }
++    if (!openFixture) { await memoryClosed(loaded, `${payload.state}/跨关态旧档`); return; }
+@@ -191,0 +193,49 @@ export async function runMarketOpenFixtureTests(options: {
++  function sceneSmoke() {
++    const { p } = fixture(), logs: { text: string; color: string }[] = [];
++    const before = p.exportSave(), writes = idb.writes;
++    const entrance = { name: 'market_consign_entrance', x: 100, y: 200 };
++    const scene: any = Object.assign(Object.create(GameScene.prototype), {
++      prog: p, map: { id: 'market-smoke', objects: [] }, player: { x: 100, y: 200 },
++      log: (text: string, color: string) => logs.push({ text, color }),
++      encounterRuntime: { interact() { throw new Error('寄售入口须先于其他交互'); } },
++    });
++    eq(typeof scene.tryInteractMarketConsign, 'function', 'Scene 最小寄售入口存在');
++    eq(scene.tryInteractMarketConsign(), false, '没有地图对象时安静 no-op');
++    scene.map.objects = [{ ...entrance, name: 'npc_shop' }];
++    eq(scene.tryInteractMarketConsign(), false, 'NPC 商店不是寄售入口');
++    scene.map.objects = [entrance]; scene.player.x = entrance.x + 29;
++    eq(scene.tryInteractMarketConsign(), false, '入口横向超距不交互');
++    scene.player.x = entrance.x; scene.player.y = entrance.y + 41;
++    eq(scene.tryInteractMarketConsign(), false, '入口纵向超距不交互');
++    scene.player.y = entrance.y; scene.senseMap = { objectVisible: () => false };
++    eq(scene.tryInteractMarketConsign(), false, '不可见入口不交互');
++    eq(logs, [], '无对象/商店/超距/隐藏入口均无提示');
++    scene.senseMap = undefined;
++    for (const name of ['market_consign_entrance', 'fangshi_consign']) {
++      scene.map.objects = [{ ...entrance, name }];
++      eq(scene.tryInteractMarketConsign(), true, `${name} 邻近入口被消费`);
++      eq(logs[logs.length - 1], openFixture
++        ? { text: '坊市寄售已开放。', color: '#fff8d0' }
++        : { text: Closed.featureClosed().text, color: '#aaaaaa' }, 'Scene 按正式开态/内存关态显示提示');
++    }
++    eq(scene.tryInteract(), true, '通用交互在遭遇/NPC 前消费寄售入口');
++    const originalFeature = MarketGate.prototype.feature;
++    let featureCalls = 0;
++    try {
++      MarketGate.prototype.feature = function () {
++        featureCalls++;
++        if (!openFixture) throw new Error('内存关态不得查询 MarketGate');
++        return { allowed: false, tipKey: 'market.fixture.smoke', text: '寄售冒烟拒绝。' };
++      };
++      eq(scene.tryInteractMarketConsign(), true, '最小入口保留拒绝提示分支');
++      eq(featureCalls, openFixture ? 1 : 0, '只有正式开态查询 MarketGate.feature');
++      eq(logs[logs.length - 1], { text: openFixture ? '寄售冒烟拒绝。' : Closed.featureClosed().text,
++        color: '#aaaaaa' }, 'Gate 拒绝原文或内存关态文案被展示');
++    } finally { MarketGate.prototype.feature = originalFeature; }
++    eq(p.exportSave(), before, 'Scene 冒烟不修改角色或寄售袋');
++    eq(idb.writes, writes, 'Scene 冒烟不写存档');
++    return { noObjectNoop: true, npcShopIgnored: true, nearbyOnly: true, hiddenIgnored: true,
++      aliases: ['market_consign_entrance', 'fangshi_consign'], genericInteraction: true,
++      graph: openFixture ? 'formal-open' : 'memory-closed', gateDeniedRouting: openFixture,
++      closedBypassesGate: !openFixture, saveWrites: idb.writes - writes };
++  }
+@@ -192,0 +243 @@ export async function runMarketOpenFixtureTests(options: {
++    const sceneSmokeEvidence = sceneSmoke();
+@@ -198 +249 @@ export async function runMarketOpenFixtureTests(options: {
+-    if (!open) {
++    if (!openFixture) {
+@@ -202 +253 @@ export async function runMarketOpenFixtureTests(options: {
+-        await formalClosed(p, '正式首图/无袋或歧义旧袋');
++        await memoryClosed(p, '内存关态/无袋或歧义旧袋');
+@@ -208 +259 @@ export async function runMarketOpenFixtureTests(options: {
+-      ok(gate.feature().allowed, 'O01说明在内存开态可查看');
++      ok(gate.feature().allowed, 'O01说明在正式开态可查看');
+@@ -395,2 +446,3 @@ export async function runMarketOpenFixtureTests(options: {
+-    return { assertions, payloads, open, formalClosed: !open, storageWrites: idb.writes, commits: idb.commits,
+-      sampleCount, cases: open ? ['O01','O02','O03','O04','O05','O06','O07','O08','O09','O10'] : ['formal-eight-tips','zero-side-effects'] };
++    return { assertions, payloads, openFixture, graph: openFixture ? 'formal-open' : 'memory-closed', sceneSmoke: sceneSmokeEvidence,
++      formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false, storageWrites: idb.writes, commits: idb.commits,
++      sampleCount, cases: openFixture ? ['O01','O02','O03','O04','O05','O06','O07','O08','O09','O10'] : ['memory-closed-eight-tips','zero-side-effects'] };

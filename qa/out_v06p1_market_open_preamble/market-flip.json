@@ -1,0 +1,36 @@
+{
+  "beforeSha256": "5bd59bbed50ea437c96e9e3b6712e68fed7d956bfc02c8c21b322e856b93bed1",
+  "afterSha256": "e4725b4724dea9abf67baf2ee467a30e841fee3ee1a9137f5dc25225c09debde",
+  "changedFields": {
+    "enabled": {
+      "before": false,
+      "after": true
+    },
+    "meta.status": {
+      "before": "演武正式数值已定，表根关态且未接线；v0.6-draft 表示接入阶段，不表示数值待定，开放仍需另令。",
+      "after": "演武正式数值已定，表根已 soft-open（enabled=true）；仍未接线/未发版，开放玩法仍需另令。"
+    }
+  },
+  "numericFieldsUnchanged": true,
+  "tableHandoff": "共享与 game 在本窗写前取证后由演武同步翻表；本窗只读验收已有翻旗并同步原缺席的 wt/dev/data 表。",
+  "roots": {
+    "shared": {
+      "path": "/workspace/xiantu/balance/market_consign.json",
+      "beforePresent": true,
+      "enabled": true,
+      "sha256": "e4725b4724dea9abf67baf2ee467a30e841fee3ee1a9137f5dc25225c09debde"
+    },
+    "game": {
+      "path": "/workspace/xiantu/game/data/balance/market_consign.json",
+      "beforePresent": true,
+      "enabled": true,
+      "sha256": "e4725b4724dea9abf67baf2ee467a30e841fee3ee1a9137f5dc25225c09debde"
+    },
+    "wt": {
+      "path": "/workspace/xiantu/wt/dev/data/balance/market_consign.json",
+      "beforePresent": false,
+      "enabled": true,
+      "sha256": "e4725b4724dea9abf67baf2ee467a30e841fee3ee1a9137f5dc25225c09debde"
+    }
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "passed": true,
+  "protectedPaths": 1121,
+  "unchangedPaths": 1114,
+  "authorizedChanges": [
+    {
+      "key": "shared:balance/market_consign.json",
+      "before": "5bd59bbed50ea437c96e9e3b6712e68fed7d956bfc02c8c21b322e856b93bed1",
+      "after": "e4725b4724dea9abf67baf2ee467a30e841fee3ee1a9137f5dc25225c09debde"
+    },
+    {
+      "key": "wt:balance/market_consign.json",
+      "before": null,
+      "after": "e4725b4724dea9abf67baf2ee467a30e841fee3ee1a9137f5dc25225c09debde"
+    },
+    {
+      "key": "game:balance/market_consign.json",
+      "before": "5bd59bbed50ea437c96e9e3b6712e68fed7d956bfc02c8c21b322e856b93bed1",
+      "after": "e4725b4724dea9abf67baf2ee467a30e841fee3ee1a9137f5dc25225c09debde"
+    },
+    {
+      "key": "wt:src/MarketGate.ts",
+      "before": "42bff8b89c21e97e1ad78b739a4392ba8cddda0bd60054b0ae2f893949546133",
+      "after": "760fd619e1bcd6d87ea2ae73e257be8af8459650ed740c803fa4622a5c4d901d"
+    },
+    {
+      "key": "wt:src/MarketOpenFlag.ts",
+      "before": "806494287a7247f41f1d57894a8f85e6dce1c18278628f4cb401d5a69430b6f9",
+      "after": "c56249abe10afc6db77d9aebbe28e0656229606f5b2ecb636ed24239729ca59b"
+    },
+    {
+      "key": "wt:src/scenes/GameScene.ts",
+      "before": "2b3ffc4e33a80ee1571210a37490d4603a1cfba3c3a97a677e6899675d46ec10",
+      "after": "1279682ae18633aec1c0032d5a30d484f2e6de05deba34c2c80a9a423a203047"
+    },
+    {
+      "key": "wt:src/v06p1-market-open.test.ts",
+      "before": "ce3e13d3db9e387af6ffe8e32073bd24bc008b006918f46423b86c4c6ebd90a8",
+      "after": "cbdeb1e7e2582d6e6e81f20142f2fe363dd5af08face0be2ab88b0832ed52134"
+    }
+  ],
+  "unauthorizedChanges": [],
+  "marketNumericFieldsUnchanged": true,
+  "marketThreeRootsSameBytes": true,
+  "marketEnabled": true,
+  "marketTableSha": "e4725b4724dea9abf67baf2ee467a30e841fee3ee1a9137f5dc25225c09debde",
+  "gifts": {
+    "shared": {
+      "count": 10,
+      "allFalse": true
+    },
+    "wt": {
+      "count": 10,
+      "allFalse": true
+    },
+    "game": {
+      "count": 10,
+      "allFalse": true
+    }
+  },
+  "gamePhase": 5,
+  "ShopPanelUnchanged": true,
+  "mapsUnchanged": true,
+  "gameSourcesUnchanged": true,
+  "sourceDiff": "authorized-source.diff"
+}
