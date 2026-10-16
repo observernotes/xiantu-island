@@ -1,0 +1,63 @@
+{
+ "atlas": "mon_mountain_mandrill",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": 80,
+ "anims": [
+  {
+   "key": "mon_mountain_mandrill_idle",
+   "frames": [
+    "mon_mountain_mandrill_idle_01",
+    "mon_mountain_mandrill_idle_02"
+   ],
+   "frameRate": 3,
+   "repeat": -1
+  },
+  {
+   "key": "mon_mountain_mandrill_walk",
+   "frames": [
+    "mon_mountain_mandrill_walk_01",
+    "mon_mountain_mandrill_walk_02",
+    "mon_mountain_mandrill_walk_03"
+   ],
+   "frameRate": 8,
+   "repeat": -1
+  },
+  {
+   "key": "mon_mountain_mandrill_attack",
+   "frames": [
+    "mon_mountain_mandrill_attack_01",
+    "mon_mountain_mandrill_attack_02",
+    "mon_mountain_mandrill_attack_03"
+   ],
+   "frameRate": 12,
+   "repeat": 0
+  },
+  {
+   "key": "mon_mountain_mandrill_hit",
+   "frames": [
+    "mon_mountain_mandrill_hit_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  },
+  {
+   "key": "mon_mountain_mandrill_die",
+   "frames": [
+    "mon_mountain_mandrill_die_01",
+    "mon_mountain_mandrill_die_02",
+    "mon_mountain_mandrill_die_03"
+   ],
+   "frameRate": 6,
+   "repeat": 0
+  }
+ ],
+ "bodySize": [
+  46,
+  58
+ ],
+ "kind": "monster"
+}
