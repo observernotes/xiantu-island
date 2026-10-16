@@ -1,0 +1,90 @@
+{
+  "implementationTip": "189fe4cab72902f2eddd57df8137f946671dbbd2",
+  "baselineTip": "9258487a1e8d2740e0917c49f32fdcb54b9ea4c2",
+  "branch": "dev",
+  "checkedAt": "2026-10-17 04:05:45 CST",
+  "passed": true,
+  "formalOpen": false,
+  "fixtureOnly": true,
+  "softOpened": false,
+  "released": false,
+  "gamePhase": 5,
+  "checks": [
+    {
+      "command": "npx tsc --noEmit",
+      "exitCode": 0,
+      "log": "tsc.log"
+    },
+    {
+      "command": "npm run test:v06p1-market-open",
+      "exitCode": 0,
+      "log": "v06p1-market-open.log",
+      "assertionsOrIssues": 2435
+    },
+    {
+      "command": "npm run test:v06p1-market-closed",
+      "exitCode": 0,
+      "log": "closed.log",
+      "assertionsOrIssues": 24075
+    },
+    {
+      "command": "npm run test:shop",
+      "exitCode": 0,
+      "log": "shop.log",
+      "assertionsOrIssues": 596
+    },
+    {
+      "command": "npm run test:v06d-closed",
+      "exitCode": 0,
+      "log": "v06d-closed.log",
+      "assertionsOrIssues": 15043
+    },
+    {
+      "command": "npm run test:v06c-closed",
+      "exitCode": 0,
+      "log": "v06c-closed.log",
+      "assertionsOrIssues": 10707
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 /workspace/xiantu/qa/tools/datalint.py (cwd=/workspace/xiantu)",
+      "exitCode": 0,
+      "log": "datalint-shared.log",
+      "assertionsOrIssues": 0
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 /workspace/xiantu/qa/tools/datalint.py (cwd=/workspace/xiantu/wt/dev/data)",
+      "exitCode": 0,
+      "log": "datalint-snapshot.log",
+      "assertionsOrIssues": 0
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0,
+      "log": "diff-check.log"
+    }
+  ],
+  "protection": {
+    "protectedFiles": 262,
+    "unchanged": 261,
+    "authorizedChanges": [
+      "src/Progress.ts: 4 added lines"
+    ],
+    "unauthorizedChanges": [],
+    "runtimeProtectedFiles": 265
+  },
+  "marketTable": {
+    "sha256": "5bd59bbed50ea437c96e9e3b6712e68fed7d956bfc02c8c21b322e856b93bed1",
+    "sharedEnabled": false,
+    "gameEnabled": false,
+    "snapshotPresent": false,
+    "snapshotSsrReadOnlyFallback": "/workspace/xiantu/balance/market_consign.json"
+  },
+  "limitations": [
+    "fixtureAllowedItemIds only, no formal category authorization",
+    "configuration id + share sequence, not formal instance schema",
+    "capacity refusal simulated via fixture sentinels",
+    "controlled milliseconds clock, no browser online timer",
+    "snapshot market table absent; SSR read-only shared fallback",
+    "races use multiple Gates sharing a Progress, not cross-tab storage arbitration"
+  ]
+}

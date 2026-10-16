@@ -1,0 +1,38 @@
+{
+  "protectedFiles": 262,
+  "unchanged": 261,
+  "authorizedChanges": [
+    {
+      "key": "wt:src/Progress.ts",
+      "before": "3ca4967394c7b3a5cceaf0afdf4f4b7ce66450e49c639323e6645d33c536238d",
+      "after": "3e1f4a258b384d5f0d1a2967d0228fcd792cb9a58979efcd5648d9baf9f2e7da",
+      "authorization": "optional Progress.market bag only"
+    }
+  ],
+  "authorizedProgressLineChanges": [
+    {
+      "before": null,
+      "after": "import { isValidMarketProgress, type MarketProgress } from './MarketProgress';"
+    },
+    {
+      "before": null,
+      "after": "  if (has('market') && !isValidMarketProgress(saved.market)) return false;"
+    },
+    {
+      "before": null,
+      "after": "  /** 仅 SSR 内存开态夹具提交；缺字段旧档不补袋，正式关态原样保留历史。 */"
+    },
+    {
+      "before": null,
+      "after": "  market: MarketProgress | undefined = undefined;"
+    }
+  ],
+  "unauthorizedChanges": [],
+  "authorizedNewSources": {
+    "src/MarketOpenFlag.ts": "806494287a7247f41f1d57894a8f85e6dce1c18278628f4cb401d5a69430b6f9",
+    "src/MarketProgress.ts": "ea6ccbe5d6049e3844cde5c6fa2e2349b658384cd48fd45244704fce2c7e9404",
+    "src/MarketGate.ts": "42bff8b89c21e97e1ad78b739a4392ba8cddda0bd60054b0ae2f893949546133",
+    "src/v06p1-market-open.test.ts": "ce3e13d3db9e387af6ffe8e32073bd24bc008b006918f46423b86c4c6ebd90a8"
+  },
+  "marketConsignEnabled": false
+}
