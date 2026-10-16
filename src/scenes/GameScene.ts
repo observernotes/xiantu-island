@@ -64,6 +64,7 @@ import { requestSustainFlight } from '../FlyZones';
 import { SECRET_NEST_INTRO_ID, isSecretNestIntroEnabled, featureClosed, readSignClosed, interactEntranceClosed,
   refuseQuestOffer, refuseQuestProgress } from '../SecretNestClosed';
 import { readSecretNestSign, enterSecretNest, exitSecretNest, type SecretNestRoom } from '../SecretNestGate';
+import { featureClosed as towerFeatureClosed, interactEntranceClosed as towerEntranceClosed } from '../TowerClosed';
 
 const MAP_FALLBACK: Record<string, string> = {};
 type Drop = Phaser.Physics.Arcade.Sprite & { itemId: string; count: number; bornAt: number; label?: Phaser.GameObjects.Text; shadow?: Phaser.GameObjects.Ellipse; floatTw?: Phaser.Tweens.Tween; landed?: boolean };
@@ -905,7 +906,7 @@ export class GameScene extends Phaser.Scene {
     if (J(k.one)) this.usePill('hp_pill_small');
     if (J(k.two)) this.usePill('qi_pill');
     if (J(k.z) && this.player.state2 === 'ground' && !this.gathering.active && !this.hasNearbyDrop()
-      && (this.tryInteractSecretNest() || this.encounterRuntime?.interact() || this.interactTrialObject() || this.openNearbyFurnace() || this.talkNearby())) return;
+      && (this.tryInteractTowerClosed() || this.tryInteractSecretNest() || this.encounterRuntime?.interact() || this.interactTrialObject() || this.openNearbyFurnace() || this.talkNearby())) return;
     if (k.z.isDown && !this.gathering.active && time >= this.nextPickAt) { this.nextPickAt = time + 150; this.tryPickup(); }
     if (J(k.up) && this.player.state2 === 'ground' && this.tryInteract()) return;
     // ↑ + 既有跳跃键触发御剑冲刺；交互和绳上跳跃仍由原入口处理。
@@ -1903,7 +1904,17 @@ export class GameScene extends Phaser.Scene {
   }
 
   drawObject(o: MapObj, secretTheme?: string) {
-    if (o.name === 'secret_nest_sign' || o.name === 'secret_nest_entrance') {
+    if (this.map?.id === 'youying_tower' && o.name === 'tower_climb_entrance') {
+      // 山门仍可抵达；此处只画关闭入口，不借渡口或通用传送创建爬塔。
+      this.add.rectangle(o.x, o.y - 34, 48, 68, 0x55536b).setStrokeStyle(2, 0x292638).setDepth(4)
+        .setName(o.name).setInteractive({ useHandCursor: true }).on('pointerdown', () => {
+          if (!this.player.dead && !this.dialog.open && !this.travelling) this.showTowerClosed();
+        });
+      this.add.text(o.x, o.y + 6, towerFeatureClosed().text,
+        { fontSize: '12px', color: '#fff8d0', stroke: '#3b2a20', strokeThickness: 3 }).setOrigin(0.5, 0).setDepth(4);
+      const prompt = interactionPrompt(this, o.x, o.y - 96, 'Z', '查看说明（未开放）');
+      this.interactionPrompts.push({ object: o, prompt });
+    } else if (o.name === 'secret_nest_sign' || o.name === 'secret_nest_entrance') {
       const entrance = o.name === 'secret_nest_entrance';
       let visual: Phaser.GameObjects.Sprite | Phaser.GameObjects.Rectangle;
       if (entrance && this.textures.exists('prop_secret_door')) {
@@ -2056,6 +2067,7 @@ export class GameScene extends Phaser.Scene {
 
   tryInteract(): boolean {
     if (this.travelling) return true;
+    if (this.tryInteractTowerClosed()) return true;
     if (this.tryInteractSecretNest()) return true;
     if (this.encounterRuntime?.interact()) return true;
     const p = this.player;
@@ -2083,6 +2095,25 @@ export class GameScene extends Phaser.Scene {
       if (o.type === 'npc') { this.talkTo(o.props.npc ?? o.name); return true; }
     }
     return false;
+  }
+
+  /** 只拦山门中的爬塔对象；抵达渡口、宗门 NPC 和试炼仍走既有交互。 */
+  private tryInteractTowerClosed(): boolean {
+    if (this.map.id !== 'youying_tower') return false;
+    const entrance = this.map.objects.find(o => o.name === 'tower_climb_entrance'
+      && this.senseMap?.objectVisible(o) !== false
+      && Math.abs(o.x - this.player.x) <= 28 && Math.abs(o.y - this.player.y) <= 40);
+    if (!entrance) return false;
+    this.showTowerClosed();
+    return true;
+  }
+
+  /** 说明可关闭重读；没有开爬选项、传送目标或结束后写入回调。 */
+  private showTowerClosed() {
+    const entrance = towerEntranceClosed(), feature = towerFeatureClosed();
+    this.player.body.setVelocityX(0);
+    this.log(entrance.text, '#aaaaaa');
+    this.dialog.show([{ speaker: null, text: entrance.text }, { speaker: null, text: feature.text }], null);
   }
 
   /** 门禁先于通用传送/试炼路径；return 只在占位房内执行，不抢营地 NPC。 */

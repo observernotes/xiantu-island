@@ -2851,6 +2851,16 @@
        "value": "长老·试炼"
       }
      ]
+    },
+    {
+     "id": 11,
+     "name": "tower_climb_entrance",
+     "type": "tower_climb",
+     "x": 880,
+     "y": 512,
+     "width": 0,
+     "height": 0,
+     "properties": []
     }
    ],
    "visible": true,
@@ -2872,5 +2882,5 @@
   }
  ],
  "nextlayerid": 8,
- "nextobjectid": 11
+ "nextobjectid": 12
 }

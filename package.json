@@ -61,6 +61,7 @@
     "test:qi-density": "timeout 120s node scripts/qi-density-test.mjs",
     "test:v06b-closed": "timeout 120s node scripts/v06b-closed-test.mjs",
     "test:v06c-closed": "timeout 120s node scripts/v06c-closed-test.mjs",
+    "test:v06d-closed": "timeout 120s node scripts/v06d-closed-test.mjs",
     "test:v06c-open": "timeout 120s node scripts/v06c-open-test.mjs",
     "test:v06b-open": "timeout 120s node scripts/v06b-open-test.mjs",
     "test:encounter": "timeout 120s node scripts/encounter-test.mjs",

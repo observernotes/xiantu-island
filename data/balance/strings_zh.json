@@ -906,5 +906,13 @@
   "secret.closed.quest_progress": "引导尚未开放，暂不可推进或交付。",
   "secret.closed.no_enter": "秘境尚未开放，暂不可进入。",
   "secret.closed.no_start": "秘境尚未开放，暂不可开局或抽取房间。",
-  "secret.closed.no_reward": "秘境尚未开放，机缘与各类收益暂不可领取。"
+  "secret.closed.no_reward": "秘境尚未开放，机缘与各类收益暂不可领取。",
+  "tower.closed.feature": "锁妖塔尚未开放。",
+  "tower.closed.entrance": "锁妖塔入口暂不可用，可查看说明。",
+  "tower.closed.no_climb": "锁妖塔尚未开放，暂不可开爬。",
+  "tower.closed.no_floor": "锁妖塔尚未开放，暂不可进入楼层。",
+  "tower.closed.no_reward": "锁妖塔尚未开放，首通奖励暂不可领取。",
+  "tower.closed.no_title": "锁妖塔尚未开放，称号暂不可解锁。",
+  "tower.closed.exit_or_save": "锁妖塔尚未开放，退出与存档不推进爬塔。",
+  "tower.closed.load_refresh": "锁妖塔仍未开放，读档后不可开爬或领奖。"
 }
