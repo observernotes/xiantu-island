@@ -156,12 +156,12 @@ export class QuestSystem {
       && this.objectiveProgress(q).every(p => p.cur >= p.need);
   }
 
-  /** NPC 头顶标记：可交付 ?、可接 !、进行中 … */
+  /** NPC 头顶标记：可交付 ?、进行中 …、可接 ! */
   mark(npcId: string): NpcMark {
     const ids = this.npcQuestIds(npcId);
     if (ids.some(id => QUESTS[id].turnIn === npcId && this.complete(id))) return '?';
-    if (ids.some(id => QUESTS[id].giver === npcId && this.available(id))) return '!';
     if (ids.some(id => this.isActive(id) && QUESTS[id].turnIn === npcId && this.classAllowed(QUESTS[id]))) return '…';
+    if (ids.some(id => QUESTS[id].giver === npcId && this.available(id))) return '!';
     return null;
   }
 

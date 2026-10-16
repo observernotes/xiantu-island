@@ -223,6 +223,22 @@ try {
     eq(f.p.count('foundation_pill'), 1, '补齐丹后交付仍不扣丹');
   }
 
+  // 正式 intro 开态与主线06共用雷猎户；可接引导不能盖住进行中或可交付主线。
+  {
+    const intro = rawQuests.find(q => q.id === 'q_secret_nest_intro');
+    ok(intro, '正式 quests 包含秘境引导');
+    eq([intro.enabled, intro.phase, intro.giver, intro.turnIn, intro.prereq],
+      [true, 5, 'hunter_lei', 'hunter_lei', 'q_main_04'], '正式 intro 保持 true/5，与主线06共用 NPC 和前置');
+    const f = fixture('q_main_06');
+    eq(f.qs.state('q_main_04'), 'done', '同 NPC 盖标回归已完成主线04前置');
+    eq(f.qs.available(intro.id), true, '正式开态 intro 在主线04完成后可接');
+    eq(f.qs.accept(f.q.id), true, '同 NPC 盖标回归接取主线06');
+    eq(f.qs.available(intro.id), true, '接取主线06后正式 intro 仍可接');
+    eq(f.qs.mark('hunter_lei'), '…', '正式 intro 开态下主线06进行中标记不被同 NPC 的 intro 可接 ! 盖住');
+    f.qs.onKill('millennium_tree_demon');
+    eq(f.qs.mark('hunter_lei'), '?', '主线06可交付 ? 仍优先于进行中 … 和 intro 可接 !');
+  }
+
   {
     const f = fixture('q_main_06');
     delete f.p.quests.q_main_04;
