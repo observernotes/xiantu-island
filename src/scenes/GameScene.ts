@@ -48,11 +48,14 @@ import { applySpriteArt } from '../SpriteArt';
 import { SectGrowth, newSectTransactionId } from '../SectGrowth';
 import { featureEnabled, FEATURE_UNAVAILABLE, type FeatureName } from '../features';
 import { loadOptionalImage, loadOptionalAtlas, loadOptionalJson, loadOptionalSpritesheet } from '../optionalAssets';
-import { Sense } from '../Sense';
+import { Sense, type SenseTarget } from '../Sense';
 import { SenseUi } from '../SenseUi';
 import { EncounterUi } from '../EncounterUi';
 import { EncounterSceneRuntime, type EncounterMeditationProvider } from '../EncounterSceneRuntime';
 import { createEncounterBattleProvider } from '../EncounterBattle';
+import type { EncounterDefinition, EncountersConfig } from '../Encounter';
+import type { EncounterActive } from '../EncounterRunner';
+import { createEncounterProp, playEncounterProp, resolveEncounterProp, revealEncounterProp, type EncounterPropVisual } from '../EncounterProps';
 import { SenseMapAdapter, sceneMonsterTargets } from './SenseScene';
 import { openPropChest, playPropAnimation, resolveSecretProp } from '../SecretProps';
 
@@ -93,6 +96,9 @@ export class GameScene extends Phaser.Scene {
   senseUi?: SenseUi;
   encounterUi?: EncounterUi;
   encounterRuntime?: EncounterSceneRuntime;
+  private encounterConfig: EncountersConfig | null = ENCOUNTERS;
+  private encounterProps = new Map<MapObj, { sprite: Phaser.GameObjects.Sprite; visual: EncounterPropVisual; attemptId: string; revealed: boolean }>();
+  private unregisterEncounterSense?: () => void;
   private encounterOwnsPause = false;
   readonly inputBindings = new InputBindings();
   private senseCueDepth = 0;
@@ -148,6 +154,9 @@ export class GameScene extends Phaser.Scene {
     this.senseUi?.destroy(); this.senseUi = undefined;
     this.encounterUi?.destroy(); this.encounterUi = undefined;
     this.encounterRuntime?.destroy();
+    this.unregisterEncounterSense?.(); this.unregisterEncounterSense = undefined;
+    for (const prop of this.encounterProps.values()) prop.sprite.destroy();
+    this.encounterProps.clear();
     this.encounterRuntime = undefined;
     this.encounterOwnsPause = false;
     this.sense?.clearIntel();
@@ -443,6 +452,9 @@ export class GameScene extends Phaser.Scene {
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
       // 刷新/销毁保留可恢复节点；明确跨图由 travel/新地图 enter 结算 missed。
       this.encounterRuntime?.destroy();
+      this.unregisterEncounterSense?.(); this.unregisterEncounterSense = undefined;
+      for (const prop of this.encounterProps.values()) prop.sprite.destroy();
+      this.encounterProps.clear();
       this.encounterRuntime = undefined;
       if (this.encounterOwnsPause) { this.physics.resume(); this.encounterOwnsPause = false; }
       this.events.off('encounter:ui-advance', this.advanceEncounter, this);
@@ -702,6 +714,7 @@ export class GameScene extends Phaser.Scene {
       .some(key => this.keys[key]?.isDown) || this.player.state2 === 'hurt' || this.player.dead;
     this.encounterRuntime?.update(delta > 1000 ? 0 : delta, { paused: this.scene.isPaused() || this.physics.world.isPaused
       || typeof document !== 'undefined' && document.hidden, interrupted: encounterOpen || meditationInterrupted || delta > 1000 });
+    this.syncEncounterProps();
     if (encounterOpen || this.encounterUi?.isOpen()) {
       if (!this.physics.world.isPaused) { this.physics.pause(); this.encounterOwnsPause = true; }
       this.playerInput.clear(); this.playerPhysicsAccumulator = 0;
@@ -1155,8 +1168,10 @@ export class GameScene extends Phaser.Scene {
     return this.encounterRuntime?.registerMeditation(provider) ?? (() => {});
   }
 
-  private setupEncounters() {
-    this.encounterRuntime = new EncounterSceneRuntime({ progress: this.prog, config: ENCOUNTERS, pacing: pacing.encounter,
+  private setupEncounters(config: EncountersConfig | null = ENCOUNTERS) {
+    this.encounterConfig = config;
+    this.encounterProps ??= new Map();
+    this.encounterRuntime = new EncounterSceneRuntime({ progress: this.prog, config, pacing: pacing.encounter,
       battle: createEncounterBattleProvider<Monster>({
         fallbackAnchor: () => ({ x: this.player.x, y: this.player.feet }),
         schedule: (delayMs, callback) => {
@@ -1188,14 +1203,22 @@ export class GameScene extends Phaser.Scene {
         featuresReady: { moral_state: Number.isSafeInteger(this.prog.daoHeart) && Number.isSafeInteger(this.prog.morality),
           insight_reward: true, spirit_scan: featureEnabled('spiritScan') } }),
       anchor: definition => {
-        const object = this.map.objects.find(row => row.name === definition.trigger.anchor
-          && (row.type === 'encounter_anchor' || row.type === 'hidden') && row.props.encounter === definition.id);
-        return object ? { x: object.x, y: object.y, height: object.h } : undefined;
+        const object = this.encounterAnchor(definition);
+        const sprite = object && this.encounterProps.get(object)?.sprite;
+        return object ? { x: object.x, y: object.y, height: sprite?.displayHeight ?? object.h } : undefined;
       },
       near: target => Math.abs(target.x - this.player.x) <= 40 && Math.abs(target.y - this.player.feet) <= 48,
       emit: (name, payload) => this.events.emit(name, payload ? { ...payload, vars: { ...payload.vars, player: this.prog.name } } : undefined),
-      onCommit: () => { this.player.maxHp = this.prog.maxHp; this.player.hp = this.prog.hp; this.player.syncAppearance(); },
+      onCommit: () => {
+        this.player.maxHp = this.prog.maxHp; this.player.hp = this.prog.hp; this.player.syncAppearance();
+        this.syncEncounterProps();
+      },
     });
+    this.unregisterEncounterSense?.();
+    // fixture / 局部桥接可不构造 Sense；正式 create 路径 setupSense 在前。
+    if (this.sense?.registerAdapter) {
+      this.unregisterEncounterSense = this.sense.registerAdapter('encounter', { targets: () => this.encounterSenseTargets() });
+    }
     this.events.on('encounter:ui-advance', this.advanceEncounter, this);
     this.events.on('encounter:ui-choice', this.chooseEncounter, this);
     this.events.on('encounter:ui-puzzle', this.puzzleEncounter, this);
@@ -1204,6 +1227,84 @@ export class GameScene extends Phaser.Scene {
     const sequence = Number(this.registry.get('encounterVisitSequence') ?? 0) + 1;
     this.registry.set('encounterVisitSequence', sequence);
     this.encounterRuntime.enter(visit?.map === this.map.id && visit.id ? visit.id : `${this.map.id}:${gameNow()}:${sequence}`);
+    this.syncEncounterProps();
+  }
+
+  private encounterAnchor(definition: EncounterDefinition): MapObj | undefined {
+    return this.map.objects.find(row => row.name === definition.trigger.anchor
+      && (row.type === 'encounter_anchor' || row.type === 'hidden') && row.props.encounter === definition.id);
+  }
+
+  private currentEncounter() {
+    if (!this.encounterRuntime) return;
+    const active = this.prog.encounters?.active as EncounterActive | null | undefined;
+    if (!active || typeof active !== 'object' || Array.isArray(active)
+      || typeof active.attemptId !== 'string' || !active.attemptId
+      || !active.locals || typeof active.locals !== 'object' || Array.isArray(active.locals)) return;
+    const definition = active && this.encounterConfig?.encounters.find(row => row.enabled && row.id === active.encounterId);
+    if (!definition || active.parentMap !== this.map.id || !definition.maps.includes(this.map.id)
+      || !definition.script.steps.some(step => step.id === active.stepId) || typeof active.costApplied !== 'boolean') return;
+    const object = this.encounterAnchor(definition);
+    if (object) return { active, definition, object };
+  }
+
+  /** 只构建当前已抽中的真实锚点；关态与缺锚点都不分配图元。 */
+  private syncEncounterProps() {
+    this.encounterProps ??= new Map();
+    const current = this.currentEncounter();
+    for (const [object, prop] of this.encounterProps) {
+      if (object !== current?.object || prop.attemptId !== current.active.attemptId) {
+        prop.sprite.destroy(); this.encounterProps.delete(object);
+      }
+    }
+    if (!current) return;
+    const { active, definition, object } = current;
+    const revealed = definition.trigger.reveal !== 'spirit_scan' || active.locals.revealed === true;
+    const visual = resolveEncounterProp(object, this.encounterConfig, { active: true, revealed });
+    if (!visual) return;
+    let prop = this.encounterProps.get(object);
+    if (!prop) {
+      const sprite = createEncounterProp(this, object, visual);
+      if (!sprite) return;
+      prop = { sprite, visual, attemptId: active.attemptId, revealed };
+      this.encounterProps.set(object, prop);
+    } else {
+      if (revealed && !prop.revealed) revealEncounterProp(this, prop.sprite, visual, { fx: true });
+      else playEncounterProp(this, prop.sprite, visual);
+      prop.revealed = revealed; prop.visual = visual;
+    }
+    prop.sprite.setVisible(visual.visible);
+  }
+
+  private encounterSenseTargets(): SenseTarget[] {
+    const current = this.currentEncounter();
+    if (!current || this.encounterBlocked() || current.definition.trigger.reveal !== 'spirit_scan'
+      || current.active.locals.revealed === true) return [];
+    const { active, definition, object } = current;
+    const requirement = object.props.reqSpirit ?? definition.trigger.reqSpirit ?? 0;
+    const reqSpirit = typeof requirement === 'number' && Number.isFinite(requirement) && requirement >= 0 ? requirement : NaN;
+    return [{ kind: 'entrance', instanceId: this.map.id, id: object.name,
+      x: object.x, y: object.y, reqSpirit, active: true, persistence: 'adapter',
+      revealed: () => this.currentEncounter()?.active.attemptId === active.attemptId
+        && this.currentEncounter()?.active.locals.revealed === true,
+      stageReveal: () => {
+        const latest = this.currentEncounter();
+        if (!latest || this.encounterBlocked() || latest.active.attemptId !== active.attemptId || latest.object !== object
+          || latest.definition.trigger.reveal !== 'spirit_scan') throw new Error('stale_encounter_anchor');
+        // 仅暂存 runner.reveal 所属的两个字段，随 Sense.save 一起写盘；失败恢复原引用。
+        // 不能在 stage 调 runner.reveal：其待保存事务会在扫描扣费失败后被自动重试。
+        const previous = this.prog.encounters;
+        const staged = structuredClone(previous!) as Record<string, unknown>;
+        const stagedActive = staged.active as EncounterActive;
+        stagedActive.locals.revealed = true;
+        const seen = staged.seen;
+        if (seen !== undefined && (!Array.isArray(seen) || !seen.every(id => typeof id === 'string'))) throw new Error('invalid_encounter_seen');
+        staged.seen = [...new Set([...(seen ?? []), active.encounterId])];
+        this.prog.encounters = staged;
+        return () => { this.prog.encounters = previous; };
+      },
+      applyReveal: () => { this.encounterRuntime?.reveal(active.attemptId); this.syncEncounterProps(); },
+    }];
   }
 
   private advanceEncounter(payload: Parameters<EncounterSceneRuntime['advance']>[0]) { this.encounterRuntime?.advance(payload); }
@@ -1683,7 +1784,9 @@ export class GameScene extends Phaser.Scene {
   }
 
   drawObject(o: MapObj, secretTheme?: string) {
-    if (o.type === 'npc') {
+    if (o.type === 'encounter_anchor' || o.type === 'hidden' && o.props.encounter) {
+      this.syncEncounterProps();
+    } else if (o.type === 'npc') {
       const npc = NPCS[o.props.npc ?? o.name];
       const c = this.add.container(o.x, o.y).setDepth(5).setAlpha(o.props.phantom ? 0.55 : 1);
       let h = 70;

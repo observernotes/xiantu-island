@@ -35,7 +35,7 @@ const rows = (v: unknown): Fields[] => Array.isArray(v) ? v.map(fields) : [];
 const keys = (v: unknown): string[] => Array.isArray(v) ? v.filter(text) : [];
 const signed = (v: number) => v > 0 ? `+${v}` : String(v);
 const itemName = (id: string) => ITEMS[id]?.name ?? id;
-const HELP = 'fx_enc_help_mark', HELP_ANIM = `${HELP}_idle`;
+const HELP = 'fx_enc_help_mark';
 const FONT = '"Noto Sans CJK SC", "Source Han Sans SC", sans-serif';
 
 /** 只沿无分支的展示节点读配置；不跨战斗、机关或下一组选项猜结局。 */
@@ -225,16 +225,19 @@ export class EncounterUi {
     const target = offer.target ?? offer;
     if (!finite(target.x) || !finite(target.y)) { this.mark?.destroy(); this.mark = undefined; return; }
     const scene = this.scene;
-    if (!this.mark && scene.textures.exists(HELP)) {
-      const texture = scene.textures.get(HELP);
-      const frame = texture.has(`${HELP}_idle_01`) ? `${HELP}_idle_01` : texture.getFrameNames().sort()[0];
-      this.mark = scene.add.sprite(0, 0, HELP, frame).setDepth(12).setName('encounter-help-mark');
+    const promptSprite = fields(fields(this.definition(offer)).visual).promptSprite;
+    const help = text(promptSprite) ? promptSprite : HELP, animationKey = `${help}_idle`;
+    if (this.mark && this.mark.texture.key !== help) { this.mark.destroy(); this.mark = undefined; }
+    if (!this.mark && scene.textures.exists(help)) {
+      const texture = scene.textures.get(help);
+      const frame = texture.has(`${help}_idle_01`) ? `${help}_idle_01` : texture.getFrameNames().sort()[0];
+      this.mark = scene.add.sprite(0, 0, help, frame).setDepth(12).setName('encounter-help-mark');
       applySpriteArt(this.mark);
       this.mark.setOrigin(0.5, 1);
-      if (scene.anims.exists(HELP_ANIM)) {
-        const animation = scene.anims.get(HELP_ANIM);
-        if (animation.frames.length && animation.frames.every(frame => frame.textureKey === HELP && texture.has(String(frame.textureFrame))))
-          this.mark.play(HELP_ANIM);
+      if (scene.anims.exists(animationKey)) {
+        const animation = scene.anims.get(animationKey);
+        if (animation.frames.length && animation.frames.every(frame => frame.textureKey === help && texture.has(String(frame.textureFrame))))
+          this.mark.play(animationKey);
       }
     }
     const height = 'displayHeight' in target && finite(target.displayHeight) ? target.displayHeight : target.height ?? 0;
