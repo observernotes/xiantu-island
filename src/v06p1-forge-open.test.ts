@@ -1,4 +1,4 @@
-// 正式炼器恒关；只有独立 Vite SSR 夹具图可将 ForgeOpenFlag 内存注入 true。
+// 正式炼器恒开；只有独立 Vite SSR 关态图可将 ForgeOpenFlag 内存注入 false。
 import enhance from '@xt/balance/enhance.json';
 import { GAME_PHASE, ITEMS } from './data';
 import { featureEnabled, featureFlags } from './features';
@@ -8,6 +8,7 @@ import * as Closed from './ForgeClosed';
 import { ForgeGate } from './ForgeGate';
 import { isForgeOpenForFixture } from './ForgeOpenFlag';
 import { isValidForgeProgress } from './ForgeProgress';
+import { GameScene } from './scenes/GameScene';
 
 type Payload = { state: string; save: Record<string, unknown>; craftRequestId: string };
 type GateResult = Awaited<ReturnType<ForgeGate['submit']>>;
@@ -97,7 +98,7 @@ export async function runForgeOpenFixtureTests(options: {
   openFixture: boolean; dataMode?: string; refreshPayloads?: Payload[] | null;
 }) {
   const { openFixture, dataMode = 'fixture', refreshPayloads } = options;
-  const label = `${dataMode}/${openFixture ? 'memory-open' : 'formal-closed'}`;
+  const label = `${dataMode}/${openFixture ? 'formal-open' : 'memory-closed'}`;
   let assertions = 0, sampleCount = 0, ledgerSeq = 0;
   let sampled = 0.1;
   const eq = (actual: unknown, expected: unknown, message: string) => {
@@ -163,8 +164,8 @@ export async function runForgeOpenFixtureTests(options: {
     eq(idb.writes, writes, `${message}：重放零写`);
     eq(sampleCount, samples, `${message}：重放不重抽品质`);
   }
-  async function formalClosed(p: Progress, message: string) {
-    const fail = () => { throw new Error('正式关态禁止查询资格、事务、随机或夹具映射'); };
+  async function memoryClosed(p: Progress, message: string) {
+    const fail = () => { throw new Error('内存关态禁止查询资格、事务、随机或夹具映射'); };
     const opts = fixtureOptions();
     Object.defineProperty(opts, 'fixtureRecipes', { configurable: true, get: fail });
     const gate = new ForgeGate(p, { ...fixtureOptions(), random: fail, ledgerId: fail, canReceiveResult: fail });
@@ -213,7 +214,7 @@ export async function runForgeOpenFixtureTests(options: {
     eq(loaded.forge, payload.save.forge, `${payload.state}：真实IDB读档保留完整炼器袋`);
     eq(loaded.inventory, payload.save.inventory, `${payload.state}：真实IDB读档库存一致`);
     eq(experience(loaded), experience(p), `${payload.state}：读档经验等级一致`);
-    if (!openFixture) { await formalClosed(loaded, `${payload.state}/正式关态历史袋`); return; }
+    if (!openFixture) { await memoryClosed(loaded, `${payload.state}/内存关态历史袋`); return; }
     const gate = new ForgeGate(loaded, fixtureOptions());
     const before = loaded.exportSave(), writes = idb.writes, samples = sampleCount;
     ok(gate.loadRefresh().allowed, `${payload.state}：只读刷新可查看`);
@@ -225,7 +226,78 @@ export async function runForgeOpenFixtureTests(options: {
     eq(sampleCount, samples, `${payload.state}：读回不重抽品质`);
     await replay(loaded, gate, request(payload.craftRequestId), `${payload.state}/读回同请求`);
   }
+  function sceneSmoke() {
+    const { p } = fixture(), logs: { text: string; color: string }[] = [];
+    const before = p.exportSave(), writes = idb.writes;
+    const entrance = { name: 'smith_ou', type: 'npc', props: { npc: 'smith_ou' }, x: 100, y: 200 };
+    const scene: any = Object.assign(Object.create(GameScene.prototype), {
+      prog: p, map: { id: 'luoxia_town', objects: [] }, player: { x: 100, y: 200 },
+      log: (text: string, color: string) => logs.push({ text, color }),
+      encounterRuntime: { interact() { throw new Error('欧冶匠入口须先于遭遇与NPC交互'); } },
+    });
+    eq(typeof scene.tryInteractForgeEntrance, 'function', 'Scene最小炼器入口存在');
+    eq(scene.tryInteractForgeEntrance(), false, '没有对象时安静no-op');
+    scene.map.objects = [{ ...entrance, name: 'npc_shop', props: { npc: 'npc_shop' } }];
+    eq(scene.tryInteractForgeEntrance(), false, '普通NPC商店不是炼器入口');
+    scene.map.objects = [entrance]; scene.player.x = entrance.x + 29;
+    eq(scene.tryInteractForgeEntrance(), false, '入口横向超距不交互');
+    scene.player.x = entrance.x; scene.player.y = entrance.y + 41;
+    eq(scene.tryInteractForgeEntrance(), false, '入口纵向超距不交互');
+    scene.player.y = entrance.y; scene.senseMap = { objectVisible: () => false };
+    eq(scene.tryInteractForgeEntrance(), false, '隐藏欧冶匠不交互');
+    eq(logs, [], '无对象/商店/超距/隐藏时均无提示');
+    scene.senseMap = undefined;
+    for (const object of [{ ...entrance, props: {} }, { ...entrance, name: 'forge-smoke-alias' }]) {
+      scene.map.objects = [object];
+      eq(scene.tryInteractForgeEntrance(), true, `${object.name}邻近欧冶匠被消费`);
+      eq(logs[logs.length - 1], openFixture
+        ? { text: '炼器打造已开放。', color: '#fff8d0' }
+        : { text: Closed.featureClosed().text, color: '#aaaaaa' }, 'Scene按正式开态/内存关态显示提示');
+    }
+    scene.map.objects = [entrance]; scene.player.x = entrance.x + 28; scene.player.y = entrance.y + 40;
+    eq(scene.tryInteractForgeEntrance(), true, '28×40范围边界内仍可冒烟');
+    scene.player.x = entrance.x; scene.player.y = entrance.y;
+    eq(scene.tryInteract(), true, '通用交互在遭遇/NPC前消费欧冶匠入口');
+    const originalEntrance = ForgeGate.prototype.entrance;
+    let entranceCalls = 0;
+    try {
+      ForgeGate.prototype.entrance = function () {
+        entranceCalls++;
+        if (!openFixture) throw new Error('内存关态不得查询ForgeGate');
+        return { allowed: false, tipKey: 'forge.fixture.smoke', text: '炼器冒烟拒绝。' };
+      };
+      eq(scene.tryInteractForgeEntrance(), true, '最小入口保留Gate拒绝提示分支');
+      eq(entranceCalls, openFixture ? 1 : 0, '只有正式开态查询ForgeGate.entrance');
+      eq(logs[logs.length - 1], { text: openFixture ? '炼器冒烟拒绝。' : Closed.featureClosed().text,
+        color: '#aaaaaa' }, 'Gate拒绝原文或内存关态文案被展示');
+    } finally { ForgeGate.prototype.entrance = originalEntrance; }
+    eq(p.exportSave(), before, 'Scene冒烟不修改角色或炼器袋');
+    eq(idb.writes, writes, 'Scene冒烟存档写入0');
+    return { noObjectNoop: true, npcShopIgnored: true, nearbyOnly: true, hiddenIgnored: true,
+      objectName: 'smith_ou', npcProp: 'smith_ou', genericInteraction: true,
+      graph: openFixture ? 'formal-open' : 'memory-closed', gateDeniedRouting: openFixture,
+      closedBypassesGate: !openFixture, saveWrites: idb.writes - writes };
+  }
+  async function defaultGateDenied() {
+    const { p } = fixture(), gate = new ForgeGate(p), samples = sampleCount;
+    ok(gate.feature().allowed, '正式默认Gate说明只读允许');
+    ok(gate.entrance().allowed, '正式默认Gate入口只读允许');
+    for (const method of ['craft', 'submit'] as const) {
+      await unchanged(p, async () => {
+        const result = await gate[method](request(`default-${method}`));
+        eq('tipKey' in result ? result.tipKey : null, 'forge.fixture.recipe', `正式无fixtureRecipes的${method}明确拒recipe`);
+        return result;
+      }, `正式无fixtureRecipes的${method}拒绝新请求`);
+    }
+    eq(gate.laterService(), Closed.refuseLaterService(), '正式默认Gate后续强化附灵分解仍关');
+    eq(sampleCount, samples, '正式默认Gate无配方授权不抽样');
+    eq(p.forge, undefined, '正式默认Gate不建立炼器袋或请求');
+    return { fixtureRecipesAbsent: true, craftDeniedRecipe: true, submitDeniedRecipe: true,
+      readOnlyEntranceAllowed: true, laterServiceClosed: true, saveWrites: 0 };
+  }
   try {
+    const sceneSmokeEvidence = sceneSmoke();
+    const defaultGateEvidence = openFixture ? await defaultGateDenied() : null;
     if (refreshPayloads) {
       eq(refreshPayloads.map(row => row.state), ['common', 'fine', 'spirit', 'treasure'], '独立SSR覆盖四品质完整历史结果');
       for (const payload of refreshPayloads) await roundtrip(payload);
@@ -235,13 +307,13 @@ export async function runForgeOpenFixtureTests(options: {
       for (const forge of [undefined, { craftRequestId: 'old-request', state: 'pending' },
         { state: 'unknown', raw: 'must-keep' }, { craftResultRef: 'broken', resultGrade: 'unknown' }]) {
         const { p } = fixture(); (p as any).forge = copy(forge);
-        await formalClosed(p, '正式关态/无袋或歧义旧请求');
+        await memoryClosed(p, '内存关态/无袋或歧义旧请求');
       }
     } else if (!refreshPayloads) {
       const { p, gate } = fixture(), initial = p.exportSave(), exp = experience(p), writes = idb.writes, samples = sampleCount;
       eq(p.forge, undefined, '缺字段旧档forge保持undefined');
       eq(Object.prototype.hasOwnProperty.call(initial, 'forge'), false, '旧档export不凭空补袋');
-      ok(gate.feature().allowed, 'O01夹具说明入口可访问');
+      ok(gate.feature().allowed, 'O01正式图只读说明入口可访问');
       ok(gate.entrance().allowed, 'O01获令授权入口API允许访问');
       ok(gate.craft(request()).allowed, 'O02合法图纸材料可只读选择');
       ok(gate.loadRefresh().allowed, 'O01空袋只读刷新允许');
@@ -426,10 +498,11 @@ export async function runForgeOpenFixtureTests(options: {
     eq(featureFlags(), flags, 'features原值保持不变');
     eq(JSON.stringify(enhance), tableBefore, 'enhance内存数值未写改');
     eq(localWrites, 0, '真实IDB事务不用localStorage旁路');
-    return { assertions, payloads, openFixture, graph: openFixture ? 'memory-open' : 'formal-closed',
-      formalOpen: false, fixtureOnly: true, softOpened: false, released: false,
+    return { assertions, payloads, openFixture, graph: openFixture ? 'formal-open' : 'memory-closed',
+      formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false,
+      sceneSmoke: sceneSmokeEvidence, defaultGate: defaultGateEvidence,
       forgingExperienceWritten: false, storageWrites: idb.writes, commits: idb.commits, sampleCount,
-      cases: openFixture ? ['O01','O02','O03','O04','O05','O06','O07','O08'] : ['formal-eight-tips','zero-side-effects','historical-baggage'] };
+      cases: openFixture ? ['O01','O02','O03','O04','O05','O06','O07','O08'] : ['memory-closed-eight-tips','zero-side-effects','historical-baggage'] };
   } finally {
     for (const p of progresses) await p.flushSaves();
     Progress.setActiveSlot(oldSlot); setSaveBackend(createIndexedDbBackend());

@@ -11,14 +11,14 @@ const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const shared = sharedRoot(root), gameData = path.join(shared, 'game/data');
 const modes = [['shared', shared], ['snapshot', path.join(root, 'data')]];
 const dataRoots = new Map([['shared', shared], ['wt', path.join(root, 'data')], ['game', gameData]]);
-const out = path.join(root, 'qa/out_v06p1_market_open_preamble/closed');
+const out = path.join(root, 'qa/out_v06p1_forge_open_preamble/market-closed');
 const baselineFile = path.join(root, 'qa/out_v06p1_market_closed/protected-before.json');
 const stringsSha = 'fad9b3e604a3af23e99939bf22f77a55de803842daa297ab7fb2c2a6ed0b8967';
 const marketStringsSha = 'c115b6deadf85d1aa9958de1097321ab65624b456e0fddeca42a5fe39743db27';
 const previousStringsSha = '6b0861110a6af78f7bbfb78eb32e7579ecd41d5a33c3eff3da9e157794f5951f';
 const originalStringsSha = '4a32b19b8e1f318cfcbbf8b9a4e9382f17e7fc3fd951d040f9ec4749524f7385';
 const originalSemanticSha = '81d364627ea128a3125c1def299f1d94804cee7b7e511ff417dd4bf9ff24c7a9';
-// 沿用既有寄售接线；炼器窗只追加四个明确夹具源码与可选袋四行，八 tip 契约不变。
+// 沿用既有寄售接线；炼器窗仅追加四个明确源码、可选袋四行与最小欧冶匠提示，八 tip 契约不变。
 const openFixtureSources = ['MarketOpenFlag.ts', 'MarketProgress.ts', 'MarketGate.ts', 'v06p1-market-open.test.ts',
   'ForgeOpenFlag.ts', 'ForgeGate.ts', 'ForgeProgress.ts', 'v06p1-forge-open.test.ts'];
 const openFixtureProgressSha = '3e1f4a258b384d5f0d1a2967d0228fcd792cb9a58979efcd5648d9baf9f2e7da';
@@ -86,6 +86,35 @@ function protectedPath(key) {
   return path.join(mode === 'wt' && name.startsWith('src/') ? root : dataRoots.get(mode), name);
 }
 
+// 仅剥本窗明确授权的欧冶匠提示；其余 GameScene 字节仍逐字核对软开前 SHA。
+function stripForgeSceneWiring(source) {
+  let original = source;
+  for (const line of ["import { featureClosed as forgeFeatureClosed } from '../ForgeClosed';\n",
+    "import { isForgeOpenForFixture } from '../ForgeOpenFlag';\n",
+    "import { ForgeGate } from '../ForgeGate';\n"]) {
+    eq(original.split(line).length - 1, 1, `C12 GameScene 炼器授权 import 精确一次：${line.trim()}`);
+    original = original.replace(line, '');
+  }
+  const entry = source.match(/  \/\*\* 仅接既有欧冶匠冒烟提示；未布置对象的地图保持安静。 \*\/\n  private tryInteractForgeEntrance\(\): boolean \{[\s\S]*?\n  \}\n\n/u)?.[0];
+  ok(entry, 'C01/C12 GameScene 存在最小欧冶匠入口提示方法');
+  eq(hash(entry), 'f351b1220b3362b840e1b11538b5607cb2eb80079d201371034ab7d980e81b43',
+    'C01/C12 欧冶匠方法仅含本窗授权提示完整字节，禁止夹带其他操作');
+  ok(entry.includes("(o.name === 'smith_ou' || o.props?.npc === 'smith_ou')"), 'C01/C12 只查当前地图既有 smith_ou 对象');
+  ok(entry.includes('this.senseMap?.objectVisible(o) !== false'), 'C01/C12 隐藏欧冶匠不接交互');
+  ok(entry.includes('Math.abs(o.x - this.player.x) <= 28 && Math.abs(o.y - this.player.y) <= 40'), 'C01/C12 欧冶匠沿用 28×40 邻近范围');
+  ok(/if \(!entrance\) return false;/u.test(entry), 'C01/C12 无欧冶匠对象安静 no-op');
+  ok(/!isForgeOpenForFixture\(\)[\s\S]*forgeFeatureClosed\(\)\.text/u.test(entry), 'C01/C12 内存关态显示 ForgeClosed.featureClosed tip');
+  ok(/new ForgeGate\(this\.prog\)\.entrance\(\)/u.test(entry), 'C01/C12 正式开态只问 Gate.entrance');
+  ok(!/\.(?:craft|submit|result|grade|loadRefresh|laterService|save|persistSoon)\(|ShopPanel|Panel|services|auction|拍卖/u.test(entry), 'C01/C12 入口不铺完整 UI、不接服务或发起打造写操作');
+  original = original.replace(entry, '');
+  const zCall = 'this.tryInteractMarketConsign() || this.tryInteractForgeEntrance() || this.tryInteractSecretNest()';
+  eq(original.split(zCall).length - 1, 1, 'C01/C12 Z 键在 talkNearby 之前同级接最小炼器入口');
+  original = original.replace(zCall, 'this.tryInteractMarketConsign() || this.tryInteractSecretNest()');
+  const interactCall = '    if (this.tryInteractForgeEntrance()) return true;\n';
+  eq(original.split(interactCall).length - 1, 1, 'C01/C12 通用交互仅接同一炼器提示入口');
+  return original.replace(interactCall, '');
+}
+
 function stripMarketSceneWiring(source) {
   let original = source;
   for (const line of ["import { featureClosed as marketFeatureClosed } from '../MarketClosed';\n",
@@ -140,8 +169,8 @@ async function checkProtection() {
       eq(hash(stripForgeProgress(await fs.readFile(file, 'utf8'))), authorizedSha,
         'C12 Progress 仅增加炼器可选袋四完整行，剥离后原寄售基线字节保持');
     } else if (key === 'wt:src/scenes/GameScene.ts') {
-      eq(hash(stripMarketSceneWiring(await fs.readFile(file, 'utf8'))), authorizedSha,
-        'C12 GameScene 仅增加三 import、入口提示方法、Z/通用交互两处最小接线，其余字节保持');
+      eq(hash(stripMarketSceneWiring(stripForgeSceneWiring(await fs.readFile(file, 'utf8')))), authorizedSha,
+        'C12 GameScene 仅增加寄售及欧冶匠各三 import、提示方法、Z/通用交互最小接线，其余字节保持');
     } else eq(actual, authorizedSha, `C12 写前 SHA 保护：${key}`);
     readOnlyBefore.set(file, actual);
     protectedFiles[key] = actual;
@@ -224,7 +253,7 @@ async function checkSource() {
   for (const name of await filesUnder(path.join(root, 'src'))) {
     if (name === 'MarketClosed.ts' || openFixtureSources.includes(name) || /\.test\.[cm]?[jt]sx?$/u.test(name)) continue;
     let text = await fs.readFile(path.join(root, 'src', name), 'utf8');
-    if (name === 'scenes/GameScene.ts') text = stripMarketSceneWiring(text);
+    if (name === 'scenes/GameScene.ts') text = stripMarketSceneWiring(stripForgeSceneWiring(text));
     if (name === 'Progress.ts') {
       // 仅豁免已钉 SHA 的可选袋声明与纯校验两行，其余 Progress 内容仍全量扫描。
       for (const line of ["  if (has('market') && !isValidMarketProgress(saved.market)) return false;",
