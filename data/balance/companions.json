@@ -1,9 +1,9 @@
 {
   "version": "v0.6-draft",
-  "enabled": false,
+  "enabled": true,
   "meta": {
     "generator": "balance/tools/gen_companions.py",
-    "status": "预备草案，等待软开令；未接入运行程序。",
+    "status": "v0.6.2 已正式软开。",
     "basis": [
       "design/GDD_总体设计.md §15.1",
       "balance/solo_pacing.json companion",
@@ -12,7 +12,7 @@
     ],
     "typeNote": "fellow 表示同门人形同伴；本表仅登记苏师姐。",
     "damageBudgetNote": "damageRatioOfPlayer 是同伴全部伤害的总预算，包含技能与反伤；三个技能只复用既有 skillId，不各自叠加一份 0.35。总伤害归一化与 AI 调度留待正式接线验证。",
-    "affinityDependency": "senior_sister_su.affinity 已由专用生成器回填并启用，送礼仍关闭；confidant 沿现有九人知交 min=300。同伴表及条目仍关闭，正式邀请与 AI 调度等待后续接线。"
+    "affinityDependency": "senior_sister_su.affinity 已由专用生成器回填并启用，送礼仍关闭；confidant 沿现有九人知交 min=300。同伴表及苏师姐条目已正式软开。"
   },
   "maxHumanoidCompanions": 1,
   "damageRatioOfPlayer": 0.35,
@@ -25,7 +25,7 @@
   "companions": [
     {
       "id": "companion_senior_sister_su",
-      "enabled": false,
+      "enabled": true,
       "npcId": "senior_sister_su",
       "inviteTier": "confidant",
       "type": "fellow",

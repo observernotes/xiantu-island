@@ -11,7 +11,7 @@ import { canSustainFlight, parseFlyZonesConfig, requestSustainFlight,
 import { Progress } from './Progress';
 import { createIndexedDbBackend, createMemorySaveBackend, saveStore, setSaveBackend } from './SaveStore';
 
-/** 开态仅来自内存克隆；正式表、features、地图和运行时物理均不改。 */
+/** 正式表为开态真相；关态只用内存夹具，不改表、features、地图或运行时物理。 */
 export async function runV06bOpenTests(): Promise<void> {
   let assertions = 0;
   const eq = (actual: unknown, expected: unknown, message: string) => {
@@ -21,13 +21,13 @@ export async function runV06bOpenTests(): Promise<void> {
     }
   };
   function ok(value: unknown, message: string): asserts value { eq(!!value, true, message); }
-  const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value));
+  const clone = <T>(value: T): T => structuredClone(value);
   const formalBefore = JSON.stringify([companionsRaw, flyZonesRaw, npcsRaw]);
   const flagsBefore = featureFlags();
   eq(featureEnabled('indexedDbSaves'), true, '沿用正式 IDB 开态，禁止覆盖 flag');
-  eq(companionsRaw.enabled, false, '正式同门根保持关闭');
-  eq(companionsRaw.companions[0].enabled, false, '正式苏师姐条目保持关闭');
-  eq(flyZonesRaw.enabled, false, '正式持续飞行根保持关闭');
+  eq(companionsRaw.enabled, true, '正式同门根已软开');
+  eq(companionsRaw.companions[0].enabled, true, '正式苏师姐条目已软开');
+  eq(flyZonesRaw.enabled, true, '正式持续飞行根已软开');
   const affinityChecked = parseAffinityIndex(npcsRaw);
   eq(affinityChecked.errors, [], '正式好感配置有效');
   const affinity = affinityChecked.config;
@@ -38,22 +38,25 @@ export async function runV06bOpenTests(): Promise<void> {
   const threshold = su.tiers.find(tier => tier.id === 'confidant')?.min;
   ok(threshold !== undefined && threshold > su.min, '知交阈值读取正式 tiers.min');
 
-  // 只改克隆中的三处 enabled，绝不向文件或会话 feature 写入。
+  // 开态克隆沿用正式表；关态夹具只关闭克隆中的三处 enabled。
   const openRaw = clone(companionsRaw), openFlyRaw = clone(flyZonesRaw);
-  openRaw.enabled = true;
-  openRaw.companions[0].enabled = true;
-  openFlyRaw.enabled = true;
+  const closedRaw = clone(companionsRaw), closedFlyRaw = clone(flyZonesRaw);
+  closedRaw.enabled = false;
+  closedRaw.companions[0].enabled = false;
+  closedFlyRaw.enabled = false;
   const checked = parseCompanionsConfig(openRaw), flyChecked = parseFlyZonesConfig(openFlyRaw);
-  eq(checked.errors, [], '双开同门夹具通过原解析器');
-  eq(flyChecked.errors, [], '开态飞行夹具通过原解析器');
+  eq(checked.errors, [], '正式开态同门克隆通过原解析器');
+  eq(flyChecked.errors, [], '正式开态飞行克隆通过原解析器');
   const open = checked.config, fly = flyChecked.config;
-  const closed = parseCompanionsConfig(companionsRaw).config;
-  const closedFly = parseFlyZonesConfig(flyZonesRaw).config;
+  const closed = parseCompanionsConfig(closedRaw).config;
+  const closedFly = parseFlyZonesConfig(closedFlyRaw).config;
   ok(open && fly && closed && closedFly, '开关态对照配置均可用');
-  eq([open.enabled, open.companions[0].enabled, fly.enabled], [true, true, true], '仅夹具临时双开');
-  const restored = clone(openRaw), restoredFly = clone(openFlyRaw);
-  restored.enabled = false; restored.companions[0].enabled = false; restoredFly.enabled = false;
-  eq([restored, restoredFly], [companionsRaw, flyZonesRaw], '夹具除三处开关外与正式表完全相同');
+  eq([open.enabled, open.companions[0].enabled, fly.enabled], [true, true, true], '开态克隆沿用正式三处开关');
+  eq([closed.enabled, closed.companions[0].enabled, closedFly.enabled], [false, false, false], '关态夹具显式关闭三处开关');
+  eq([openRaw, openFlyRaw], [companionsRaw, flyZonesRaw], '开态克隆与正式开表完全相同');
+  const restored = clone(closedRaw), restoredFly = clone(closedFlyRaw);
+  restored.enabled = true; restored.companions[0].enabled = true; restoredFly.enabled = true;
+  eq([restored, restoredFly], [companionsRaw, flyZonesRaw], '关态夹具除三处开关为 false 外与正式开表完全相同');
 
   const expectedInvite = (status: CompanionInviteStatus) => ({ status, canInvite: status === 'ok',
     showInvite: status === 'ok', hintKey: `companion.invite.${status}` });
@@ -172,8 +175,8 @@ export async function runV06bOpenTests(): Promise<void> {
       eq(activeCompanion(open, loaded), { id: SU_COMPANION_ID, mode: 'follow' }, '开态只读投影唯一关系，不创建 AI');
       const repeatWrites = writes;
       eq(invite(open, affinity, loaded), expectedInvite('already'), '重载后再邀不重复建立关系');
-      assertRejected(closed, affinity, loaded, 'disabled', '同一已存关系换回正式关态仍先拒绝');
-      eq(activeCompanion(closed, loaded), null, '正式关态不激活保存的关系');
+      assertRejected(closed, affinity, loaded, 'disabled', '同一已存关系换回关态夹具仍先拒绝');
+      eq(activeCompanion(closed, loaded), null, '关态夹具不激活保存的关系');
       eq(writes, repeatWrites, '重复与关态请求均不新增写盘');
       await loaded.flushSaves();
     }
@@ -200,9 +203,9 @@ export async function runV06bOpenTests(): Promise<void> {
   assertFlight(fly, { ...request, realmId: '__missing_realm' }, 'locked_realm', '无效境界不能绕过门禁');
   for (const ownsSkill of [false, true]) for (const mapId of ['__outside', ...fly.maps]) for (const inFlyZone of [false, true]) {
     const input = { ...request, ownsSkill, mapId, inFlyZone, mp: 0 };
-    assertFlight(closedFly, input, 'disabled', '正式关态先于技能、白名单、区域和灵力');
+    assertFlight(closedFly, input, 'disabled', '关态夹具先于技能、白名单、区域和灵力');
     if (!ownsSkill || !fly.maps.includes(mapId) || !inFlyZone) {
-      assertFlight(fly, input, 'unavailable', '临时开态必须同时满足技能、地图白名单与有效区域，优先于缺蓝');
+      assertFlight(fly, input, 'unavailable', '正式开态必须同时满足技能、地图白名单与有效区域，优先于缺蓝');
       assertFlight(fly, { ...input, mp: request.mp }, 'unavailable', '灵力充足也不能绕过技能或区域门禁');
     } else {
       assertFlight(fly, input, 'mp_low', '技能与区域均满足后才检查持续耗蓝');
@@ -223,10 +226,10 @@ export async function runV06bOpenTests(): Promise<void> {
   for (const key of ['ownsSkill', 'mapId', 'inFlyZone', 'mp']) {
     Object.defineProperty(closedOnly, key, { get() { throw new Error(`关态不得读取 ${key}`); } });
   }
-  eq(canSustainFlight(closedFly, closedOnly).reason, 'disabled', '正式关态短路，不读取开态依赖');
+  eq(canSustainFlight(closedFly, closedOnly).reason, 'disabled', '关态夹具短路，不读取开态依赖');
   // 本轮只验门禁拒绝优先级，不承诺全条件满足后的真实持续飞行。
   eq(JSON.stringify([companionsRaw, flyZonesRaw, npcsRaw]), formalBefore, '测试结束正式导入表原样保留');
   eq(featureFlags(), flagsBefore, '测试不翻任何正式或会话 feature flag');
   eq(featureEnabled('indexedDbSaves'), true, '测试结束 IDB 仍为 true');
-  console.log(`v06b open fixture tests ok: ${assertions} assertions (邀请优先级、无领礼依赖、真实异步存档、持续飞行拒绝门禁、正式关态对照)`);
+  console.log(`v06b formal-open tests ok: ${assertions} assertions (正式开态、邀请优先级、无领礼依赖、真实异步存档、持续飞行拒绝门禁、内存关态夹具对照)`);
 }

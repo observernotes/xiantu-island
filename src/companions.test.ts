@@ -4,7 +4,7 @@ import { parseAffinityIndex } from './Affinity';
 import { activeCompanion, canControlCompanion, canInvite, COMPANION_MODES, invite,
   isValidCompanionRelations, parseCompanionsConfig, SU_COMPANION_ID, type CompanionsConfig } from './Companions';
 
-/** 仅关态夹具：从不同时开启根与条目，也不创建同行 AI。 */
+/** 正式表开态旁证；显式关态夹具验证门禁，不创建同行 AI。 */
 export function runCompanionsTests(): void {
   let assertions = 0;
   const eq = (actual: unknown, expected: unknown, message: string) => {
@@ -12,7 +12,7 @@ export function runCompanionsTests(): void {
     if (actual !== expected) throw new Error(`${message}: ${String(actual)}，期望 ${String(expected)}`);
   };
   const same = (actual: unknown, expected: unknown, message: string) => eq(JSON.stringify(actual), JSON.stringify(expected), message);
-  const clone = (): Record<string, any> => JSON.parse(JSON.stringify(companionsRaw));
+  const clone = (): Record<string, any> => structuredClone(companionsRaw);
   const parse = (input: unknown): CompanionsConfig => {
     const checked = parseCompanionsConfig(input);
     same(checked.errors, [], '关态配置通过校验');
@@ -21,14 +21,17 @@ export function runCompanionsTests(): void {
   };
   const allFrozen = (value: unknown): boolean => !value || typeof value !== 'object'
     || Object.isFrozen(value) && Object.values(value).every(allFrozen);
-  const config = parse(companionsRaw);
+  const closedInput = clone();
+  closedInput.enabled = false;
+  closedInput.companions[0].enabled = false;
+  const config = parse(closedInput);
   const affinity = parseAffinityIndex(npcsRaw);
   same(affinity.errors, [], '真好感表校验通过');
-  eq(companionsRaw.enabled, false, '真表同门根仍关闭');
+  eq(companionsRaw.enabled, true, '正式同门根已软开');
   eq(companionsRaw.companions.length, 1, '真表唯一同门');
   eq(companionsRaw.companions[0].id, SU_COMPANION_ID, '真表仅苏师姐');
-  eq(companionsRaw.companions[0].enabled, false, '真表唯一条目仍关闭');
-  eq(affinity.config?.senior_sister_su.enabled, true, '苏好感已开不能推定同门开放');
+  eq(companionsRaw.companions[0].enabled, true, '正式苏师姐条目已软开');
+  eq(affinity.config?.senior_sister_su.enabled, true, '正式苏好感保持开态');
   eq(affinity.config?.senior_sister_su.gifts.enabled, false, '苏 gifts 仍关闭');
   eq(allFrozen(config), true, '配置深只读');
   eq(allFrozen(COMPANION_MODES), true, '模式枚举只读');
@@ -41,7 +44,7 @@ export function runCompanionsTests(): void {
   }
 
   const entryClosedInput = clone();
-  entryClosedInput.enabled = true; // 根开而条目保持 false：仍是关态，无双开 fixture。
+  entryClosedInput.companions[0].enabled = false; // 正式根保持开启，显式关闭条目。
   const missingInput = clone(); missingInput.enabled = true; missingInput.companions = [];
   const closedConfigs = [config, parse(entryClosedInput), parse(missingInput)];
   const expected = { status: 'disabled', canInvite: false, showInvite: false, hintKey: 'companion.invite.disabled' };
@@ -102,5 +105,5 @@ export function runCompanionsTests(): void {
     eq(checked.errors.some(error => error.includes(path)), true, `坏表保留 ${path} 诊断`);
     eq(activeCompanion(checked.config, { companionRelations: { [SU_COMPANION_ID]: { mode: 'follow' } } }), null, '坏表不激活既有关系');
   }
-  console.log(`companions closed tests ok: ${assertions} assertions (closed gates, no writes/entities/control, preserved relations, readonly validation)`);
+  console.log(`companions closed tests ok: ${assertions} assertions (formal open, closed fixture gates, no writes/entities/control, preserved relations, readonly validation)`);
 }

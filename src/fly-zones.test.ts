@@ -2,7 +2,7 @@ import flyZonesRaw from '@xt/balance/fly_zones.json';
 import { FLY_ZONES, FLY_ZONES_ERRORS, REALMS } from './data';
 import { canSustainFlight, parseFlyZonesConfig, requestSustainFlight, type SustainFlightRequest } from './FlyZones';
 
-/** 只验证正式关态与坏表降级；不创建或运行开态 fixture。 */
+/** 正式开态旁证；显式关态夹具验证门禁与坏表降级。 */
 export function runFlyZonesTests() {
   let assertions = 0;
   function eq(actual: unknown, expected: unknown, message: string) {
@@ -14,17 +14,20 @@ export function runFlyZonesTests() {
   function allFrozen(value: unknown): boolean {
     return !value || typeof value !== 'object' || (Object.isFrozen(value) && Object.values(value).every(allFrozen));
   }
-  const clone = (): Record<string, any> => JSON.parse(JSON.stringify(flyZonesRaw));
+  const clone = (): Record<string, any> => structuredClone(flyZonesRaw);
   same(FLY_ZONES_ERRORS, [], '正式飞行表通过只读校验');
   ok(FLY_ZONES, 'data 导出已校验飞行表');
-  eq(flyZonesRaw.enabled, false, '正式飞行表保持关态');
-  eq(FLY_ZONES.enabled, false, '运行时飞行表保持关态');
+  eq(flyZonesRaw.enabled, true, '正式飞行表已软开');
+  eq(FLY_ZONES.enabled, true, '运行时飞行表读取正式开态');
   ok(allFrozen(FLY_ZONES) && allFrozen(FLY_ZONES_ERRORS), '配置与诊断深只读');
   const input = clone(), checked = parseFlyZonesConfig(input);
   ok(checked.config && allFrozen(checked), '解析结果整体深只读');
   ok(!Object.isFrozen(input) && !Object.isFrozen(input.maps), '不冻结调用方输入');
   input.maps.push('__changed_after_parse');
   same(checked.config.maps, FLY_ZONES.maps, '只读快照不随调用者后改变化');
+  const closedInput = clone(); closedInput.enabled = false;
+  const closed = parseFlyZonesConfig(closedInput).config;
+  ok(closed, '显式关态夹具通过校验');
 
   const request: SustainFlightRequest = {
     realmId: FLY_ZONES.unlockRealm, realmOrder: REALMS.map(realm => realm.id),
@@ -33,21 +36,21 @@ export function runFlyZonesTests() {
   const before = JSON.stringify(request);
   for (const mapId of [...FLY_ZONES.maps, '__not_whitelisted']) {
     for (const ownsSkill of [true, false]) for (const inFlyZone of [true, false]) for (const mp of [0, request.mp]) {
-      same(canSustainFlight(FLY_ZONES, { ...request, mapId, ownsSkill, inFlyZone, mp }),
+      same(canSustainFlight(closed, { ...request, mapId, ownsSkill, inFlyZone, mp }),
         { ok: false, reason: 'disabled', messageKey: 'fly.zone_disabled' }, '关态优先于技能、区域与灵力条件');
     }
   }
-  const denied = requestSustainFlight(FLY_ZONES, request);
+  const denied = requestSustainFlight(closed, request);
   same(denied, { ok: false, reason: 'disabled', messageKey: 'fly.zone_disabled', entered: false, mpSpent: 0 }, '持续飞行请求拒绝且不扣蓝');
   ok(allFrozen(denied), '请求结果只读');
   same(request, JSON.parse(before), '请求未写入飞行姿态、灵力或其他状态');
-  same(canSustainFlight(FLY_ZONES, { ...request, realmId: REALMS[0].id, mp: 0 }),
+  same(canSustainFlight(closed, { ...request, realmId: REALMS[0].id, mp: 0 }),
     { ok: false, reason: 'locked_realm', messageKey: 'fly.locked_realm' }, '筑基前境界提示优先于表关闭');
   const noOtherReads = { realmId: FLY_ZONES.unlockRealm, realmOrder: request.realmOrder } as SustainFlightRequest;
   for (const key of ['ownsSkill', 'mapId', 'inFlyZone', 'mp']) {
     Object.defineProperty(noOtherReads, key, { get() { throw new Error(`关态不得读取 ${key}`); } });
   }
-  eq(canSustainFlight(FLY_ZONES, noOtherReads).messageKey, 'fly.zone_disabled', '关态短路不查询后续依赖与耗蓝');
+  eq(canSustainFlight(closed, noOtherReads).messageKey, 'fly.zone_disabled', '关态短路不查询后续依赖与耗蓝');
   eq(requestSustainFlight(null, request).mpSpent, 0, '坏表拒绝也不扣蓝');
   eq(canSustainFlight(null, request).messageKey, 'fly.zone_unavailable', '坏表不可持续飞行');
 
@@ -73,5 +76,5 @@ export function runFlyZonesTests() {
     eq(requestSustainFlight(invalid.config, request).mpSpent, 0, '坏表请求无扣费');
   }
   for (const invalid of [null, undefined, [], 0, 'invalid']) eq(parseFlyZonesConfig(invalid).config, null, '根必须为对象');
-  console.log(`fly zones tests ok: ${assertions} assertions (closed table, realm priority, no MP mutation, immutable parsing)`);
+  console.log(`fly zones tests ok: ${assertions} assertions (formal open, closed fixture, realm priority, no MP mutation, immutable parsing)`);
 }

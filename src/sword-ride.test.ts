@@ -7,8 +7,8 @@ import { createIndexedDbBackend, createMemorySaveBackend, saveStore, setSaveBack
 import { SKILLS, skillNumber } from './skills';
 import { GameScene } from './scenes/GameScene';
 
-/** 默认真表关态；开态仅由独立 SSR 图注入内存克隆，复用真实 Progress/SkillCombat。 */
-export async function runSwordRideTests({ openFixture = false }: { openFixture?: boolean } = {}) {
+/** 默认正式开态；关态由独立 SSR 图注入显式夹具，复用真实 Progress/SkillCombat。 */
+export async function runSwordRideTests({ openFixture = true }: { openFixture?: boolean } = {}) {
   let assertions = 0, writes = 0;
   const eq = (actual: unknown, expected: unknown, message: string) => {
     assertions++;
@@ -21,7 +21,7 @@ export async function runSwordRideTests({ openFixture = false }: { openFixture?:
   const beforeFlags = featureFlags();
   eq(featureEnabled('indexedDbSaves'), true, '沿用正式异步存档配置，不覆盖 flag');
   eq([COMPANIONS?.enabled, COMPANIONS?.companions[0]?.enabled, FLY_ZONES?.enabled],
-    [openFixture, openFixture, openFixture], '御剑测试必须实际读取本轮关态或临时双开配置');
+    [openFixture, openFixture, openFixture], '御剑测试必须实际读取正式开态或显式关态夹具');
   eq(AFFINITY?.senior_sister_su.gifts.enabled, false, '御剑开关态测试均保持苏师姐赠礼关闭');
   ok(refining.reward?.unlock?.includes(def.id), '御剑来源是离开炼气的 reward.unlock');
   let now = Date.UTC(2026, 9, 16, 8);
@@ -132,11 +132,11 @@ export async function runSwordRideTests({ openFixture = false }: { openFixture?:
       eq(gateLogs, [t(openFixture ? 'companion.invite.need_confidant' : 'companion.invite.disabled')], '真实邀请钩子服从当轮同门开关与知交门槛');
       eq(loaded.exportSave(), gateBefore, '真实邀请拒绝钩子不写关系或其它进度');
       gateScene.requestSustainFlight();
-      eq(gateLogs[gateLogs.length - 1], t(openFixture ? 'fly.zone_unavailable' : 'fly.zone_disabled'), '临时开态也不能将白名单整图当作有效飞行区域');
+      eq(gateLogs[gateLogs.length - 1], t(openFixture ? 'fly.zone_unavailable' : 'fly.zone_disabled'), '正式开态也不能将白名单整图当作有效飞行区域');
       eq(loaded.exportSave(), gateBefore, '真实持续飞拒绝钩子不扣蓝、不改进度');
 
       const dash = combatScene(loaded), cost = loaded.skillMpCost(def.id), mp = loaded.mp;
-      eq(dash.combat.trySwordRide(), true, '持续飞行关态或临时开态均不拦截基础冲刺');
+      eq(dash.combat.trySwordRide(), true, '持续飞行关态夹具或正式开态均不拦截基础冲刺');
       eq(dash.player.x - 100, skillNumber(def, 'dashDistance', 1), '冲刺位移读取现 skills 参数');
       eq(dash.durations, [skillNumber(def, 'dashMs', 1)], '冲刺时长读取现 skills 参数');
       eq(loaded.mp, mp - cost, '有效冲刺才扣现表灵力');
@@ -178,7 +178,7 @@ export async function runSwordRideTests({ openFixture = false }: { openFixture?:
       eq(again.canCastSkill(def), true, '非天剑御剑能力不受宗门分类阻挡');
     }
     eq(featureFlags(), beforeFlags, '整套御剑测试不翻正式或会话 flag');
-    console.log(`sword ride tests ok: ${assertions} assertions (success/failure, free idempotent grants, async save/backfill, combat dash parameters/collision/MP/cooldown)`);
+    console.log(`sword ride tests ok: ${assertions} assertions (${openFixture ? 'formal open' : 'closed fixture'}, success/failure, free idempotent grants, async save/backfill, combat dash parameters/collision/MP/cooldown)`);
     return assertions;
   } finally {
     setGameTimeSource(null); setSaveBackend(createIndexedDbBackend());

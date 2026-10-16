@@ -1,9 +1,9 @@
 {
   "version": "v0.6-draft",
-  "enabled": false,
+  "enabled": true,
   "meta": {
     "generator": "balance/tools/gen_fly_zones.py",
-    "status": "6b 预备草案，等待软开令；未接入运行程序。",
+    "status": "6b 已正式软开。",
     "basis": [
       "design/GDD_总体设计.md §21.4",
       "balance/skills.json sword_ride"

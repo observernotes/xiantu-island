@@ -6,7 +6,7 @@ import { featureEnabled } from './features';
 import { Progress } from './Progress';
 import { createIndexedDbBackend, createMemorySaveBackend, saveStore, setSaveBackend } from './SaveStore';
 
-/** 使用正式异步存档接口验证关态关系保留；不执行邀请成功或创建实体。 */
+/** 正式开态旁证；用关态夹具和正式异步存档接口验证关系保留。 */
 export async function runCompanionsSaveTests(): Promise<void> {
   let assertions = 0;
   const eq = (actual: unknown, expected: unknown, message: string) => {
@@ -14,7 +14,10 @@ export async function runCompanionsSaveTests(): Promise<void> {
     if (actual !== expected) throw new Error(`${message}: ${String(actual)}，期望 ${String(expected)}`);
   };
   const same = (actual: unknown, expected: unknown, message: string) => eq(JSON.stringify(actual), JSON.stringify(expected), message);
-  const config = parseCompanionsConfig(companionsRaw).config;
+  const closedInput = structuredClone(companionsRaw);
+  closedInput.enabled = false;
+  closedInput.companions[0].enabled = false;
+  const config = parseCompanionsConfig(closedInput).config;
   const affinity = parseAffinityIndex(npcsRaw).config;
   const storageBefore = Object.getOwnPropertyDescriptor(globalThis, 'localStorage');
   const activeSlotBefore = Progress.getActiveSlot();
@@ -29,7 +32,9 @@ export async function runCompanionsSaveTests(): Promise<void> {
   } });
   try {
     eq(featureEnabled('indexedDbSaves'), true, '正式异步存档开态，不修改任何功能开关');
-    eq(config?.enabled, false, '真实同门表总开关仍关');
+    eq(companionsRaw.enabled, true, '正式同门根已软开');
+    eq(companionsRaw.companions[0].enabled, true, '正式苏师姐条目已软开');
+    eq(config?.enabled, false, '显式关态夹具关闭同门根');
     {
       const oldSave = new Progress().exportSave();
       delete oldSave.companionRelations;
@@ -71,7 +76,7 @@ export async function runCompanionsSaveTests(): Promise<void> {
         same(loaded.exportSave(), before, '坏关系导入不覆盖现有 mode');
       }
     }
-    console.log(`companions save tests ok: ${assertions} assertions (async save/load/import, modes retained while closed, legacy shape, invalid import rejected)`);
+    console.log(`companions save tests ok: ${assertions} assertions (formal open, closed fixture, async save/load/import, modes retained while closed, legacy shape, invalid import rejected)`);
   } finally {
     Progress.setActiveSlot(activeSlotBefore);
     setSaveBackend(createIndexedDbBackend());
