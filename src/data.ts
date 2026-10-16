@@ -190,6 +190,14 @@ export const MAP_AREA: Record<string, string> = {
   tianjian_sect: 'tianjian', tianjian_sword_tomb: 'tianjian',
   trial_taixu_stage: 'taixu', trial_lingfu_range: 'lingfu',
   trial_youying_vault: 'youying', trial_wanshou_pen: 'wanshou',
+  // 秘境房间统一使用中性 secret 套；主题换皮归运行时。
+  start_01: 'secret', start_02: 'secret',
+  combat_01: 'secret', combat_02: 'secret', combat_03: 'secret', combat_04: 'secret', combat_05: 'secret',
+  combat_06: 'secret', combat_07: 'secret', combat_08: 'secret', combat_09: 'secret', combat_10: 'secret',
+  elite_01: 'secret', elite_02: 'secret', elite_03: 'secret',
+  treasure_01: 'secret', treasure_02: 'secret', treasure_03: 'secret',
+  event_01: 'secret', event_02: 'secret', event_03: 'secret',
+  rest_01: 'secret', rest_02: 'secret', boss_01: 'secret', boss_02: 'secret',
 };
 /** 五宗开关挂载四宗山门；制符仍可独立保留灵符阁。保留原函数名供旧调用方使用。 */
 export function syncTalismanMapAvailability() {
