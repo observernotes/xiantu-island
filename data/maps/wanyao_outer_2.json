@@ -7121,7 +7121,7 @@
       {
        "name": "enabled",
        "type": "bool",
-       "value": false
+       "value": true
       },
       {
        "name": "reqSpirit",
@@ -7152,7 +7152,7 @@
       {
        "name": "enabled",
        "type": "bool",
-       "value": false
+       "value": true
       },
       {
        "name": "reqSpirit",

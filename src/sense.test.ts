@@ -729,8 +729,10 @@ try {
     });
   }
 
-  // shared 直接读取真实投放；snapshot 尚未同步时跳过这组投放数量断言，仍运行上方全部夹具。
+  // 真实投放随 sense 表根开关校验 tip 开态 / 权威关态；门控矩阵只修改内存夹具。
   {
+    const deploymentEnabled = senseTable.enabled;
+    const deploymentState = deploymentEnabled ? 'tip 开态' : '权威关态';
     const maps = ['bamboo_forest', 'lingxi_path', 'luoxia_outskirts_1', 'luoxia_outskirts_2', 'wanyao_outer_1']
       .map(id => ({ id, raw: TILED_MAPS[id] }));
     maps.push({ id: 'chiyan_slope_1', raw: chiyanSlope });
@@ -741,7 +743,7 @@ try {
       eq(hiddenCount, 12, '共享六图真实登记 12 个 hidden 点位');
       const registered = Object.values(MONSTERS).filter(def => def.sense);
       eq(registered.length, 22, '共享怪物真实登记 22 个 sense 块');
-      ok(registered.every(def => def.sense!.enabled === false), '真实怪物 sense 块保持全部禁用');
+      ok(registered.every(def => def.sense!.enabled === deploymentEnabled), `真实怪物 sense 块符合${deploymentState}`);
       const f = fixture();
       sceneConfig(f, () => {
         f.p.allocatedStats.spirit = 100;
@@ -751,7 +753,7 @@ try {
           const m = mapFixture(f, clone(objects), id, raw.width * raw.tilewidth, raw.height * raw.tileheight);
           same(m.scene.map.hidden.map((hidden: any) => hidden.object.name).sort(),
             ['sense_hidden_chest_01', 'sense_hidden_platform_01'], `${id} 使用真实宝箱/平台点位`);
-          ok(m.scene.map.hidden.every((hidden: any) => hidden.valid && hidden.object.props.enabled === false), `${id} 真实点位合法且全部禁用`);
+          ok(m.scene.map.hidden.every((hidden: any) => hidden.valid && hidden.object.props.enabled === deploymentEnabled), `${id} 真实点位合法且符合${deploymentState}`);
           eq(m.adapter.targets().length, 0, `${id} 模板 false 时零候选`);
           for (const hidden of m.scene.map.hidden) hidden.object.props.enabled = true;
           eq(m.adapter.targets().length, 0, `${id} 只开点位，模板 false 仍零候选`);
@@ -761,9 +763,12 @@ try {
         const monsterScene: any = { map: { id: f.context.instanceId, width: 1000, height: 1000 }, player: {}, mobs: instances };
         let targets = sceneMonsterTargets(monsterScene);
         eq(targets.filter(target => Number.isFinite(target.reqSpirit)).length, 0, '真实怪物模板 false 无有效门槛候选');
+        for (const instance of instances) instance.def.sense.enabled = true;
+        targets = sceneMonsterTargets(monsterScene);
+        eq(targets.filter(target => Number.isFinite(target.reqSpirit)).length, 0, '只开真实怪物 sense 块，模板 false 仍无有效门槛候选');
         f.sense = service(f, { targets: () => targets });
-        const off = f.sense.requestScan('key', 'shared_templates_off'); ok(off.ok, '真实怪物关态可空扫');
-        same(off.hits, [], '真实禁用 sense 块及模板不产生命中'); eq(off.faint, false, '真实禁用怪物不计 faint');
+        const off = f.sense.requestScan('key', 'shared_templates_off'); ok(off.ok, '真实怪物模板关态可空扫');
+        same(off.hits, [], '真实怪物模板关闭不产生命中'); eq(off.faint, false, '模板关闭的真实怪物不计 faint');
         for (const profile of f.config.targetProfiles) profile.enabled = true;
         for (const m of sharedMaps) {
           eq(m.adapter.targets().length, 2, `${m.scene.map.id} 内存开模板和点位后有两个候选`);
@@ -773,7 +778,6 @@ try {
           eq(result.count, 2, `${m.scene.map.id} 真实宝箱及平台均可显形`);
         }
         f.context.instanceId = monsterScene.map.id; f.p.senseState = undefined; f.p.mp = f.p.maxMp;
-        for (const instance of instances) instance.def.sense.enabled = true;
         targets = sceneMonsterTargets(monsterScene);
         eq(targets.length, 22, '真实普通怪物定义通过通用排除规则');
         const on = f.sense.requestScan('key', 'shared_monsters_on'); ok(on.ok, '内存开真实怪物 sense 块及模板后可扫');
