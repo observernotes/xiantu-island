@@ -184,7 +184,9 @@ try {
   assert.equal(joined.job, 'tianjian_disciple'); assert.equal(joined.rank, 'outer_disciple');
   assert.equal(joined.state, 'done'); assert.equal(joined.contribution, 0);
 
-  // 真实表的关门/缺货不会意外开放；测试夹具只启用现有门槛与一件内门商品。
+  // 真实表：关态须 config_pending；开态外门/贡献 0 须 requirements_unmet 等门槛键，不得误结算。
+  // 随后只在内存装夹具（现有门槛 + 一件内门商品），供正向日常→晋升→兑换→上交。
+  const tablesOpen = ranks.enabled === true && donations.enabled === true;
   const configured = await page.evaluate(({ ranks, item, cost, offer }) => {
     const s = window.__scene, g = s.sectGrowth;
     const real = { promotion: g.promotion('tianjian_elder'), catalog: g.catalog('tianjian_envoy_sect', 'sect_shop') };
@@ -201,16 +203,27 @@ try {
     s.sectGrowth = new g.constructor(s.prog, config);
     return real;
   }, { ranks, item: exchangeItem.id, cost: fixtureCost, offer: donationOffer.id });
-  assert.equal(configured.promotion.ok, false, '真实关门配置误开放晋升');
-  assert.equal(configured.promotion.key, 'sect.ui.config_pending');
-  assert.equal(configured.catalog.ok, false, '真实关门配置误开放货架');
-  assert.equal(configured.catalog.key, 'sect.ui.config_pending');
-  assert.ok(configured.catalog.entries.every(entry => !entry.ok && entry.key === 'sect.ui.config_pending'), '真实关闭商品未灰显');
-  assert.equal(configured.exchange.ok, false, '真实关门配置允许兑换');
-  assert.equal(configured.exchange.key, 'sect.ui.config_pending');
-  assert.equal(configured.donations.ok, false, '真实关门配置误开放上交');
-  assert.equal(configured.donate.ok, false, '真实关门配置允许上交');
-  assert.equal(configured.afterExchange, configured.beforeExchange, '真实关门兑换改变余额、背包或收据');
+  assert.equal(configured.promotion.ok, false, tablesOpen ? '开态外门门槛未满不得晋升' : '真实关门配置误开放晋升');
+  if (tablesOpen) {
+    assert.equal(configured.promotion.key, 'sect.ui.requirements_unmet');
+    assert.equal(configured.catalog.ok, true, '开态贡献货架应可打开');
+    assert.ok(configured.catalog.entries.every(entry => !entry.ok), '外门贡献0不得兑换货架商品');
+    assert.equal(configured.exchange.ok, false, '外门不得兑内门货');
+    assert.equal(configured.exchange.key, 'sect.ui.locked_rank');
+    assert.equal(configured.donations.ok, true, '开态上交目录应可打开');
+    assert.equal(configured.donate.ok, false, '无材料不得上交');
+    assert.equal(configured.donate.key, 'sect.donation.material_short');
+  } else {
+    assert.equal(configured.promotion.key, 'sect.ui.config_pending');
+    assert.equal(configured.catalog.ok, false, '真实关门配置误开放货架');
+    assert.equal(configured.catalog.key, 'sect.ui.config_pending');
+    assert.ok(configured.catalog.entries.every(entry => !entry.ok && entry.key === 'sect.ui.config_pending'), '真实关闭商品未灰显');
+    assert.equal(configured.exchange.ok, false, '真实关门配置允许兑换');
+    assert.equal(configured.exchange.key, 'sect.ui.config_pending');
+    assert.equal(configured.donations.ok, false, '真实关门配置误开放上交');
+    assert.equal(configured.donate.ok, false, '真实关门配置允许上交');
+  }
+  assert.equal(configured.afterExchange, configured.beforeExchange, '门槛未满兑换改变余额、背包或收据');
 
   for (let day = 0; day < days; day++) {
     await page.evaluate(day => {
