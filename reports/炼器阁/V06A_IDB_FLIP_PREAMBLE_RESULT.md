@@ -6,7 +6,7 @@
 
 基线：`abeaa00`（完整 SHA：`abeaa00094c0b1bdb7813cfbe05b2bcb718a7a20`；含异步接线 `50d3674` / cheat FIX `abeaa00`，含 `b1342fa`）。开始时 HEAD 与 `origin/dev` 一致。
 
-TIP_SHA：本 RESULT 所在提交，以 origin/dev HEAD 为准。
+TIP_SHA：9538f1a616cb2c23a28965dec669f0ed1f2870d0
 
 交付分支：`origin/dev`；本轮只改工作区文件，未 commit/push，未发版。
 
@@ -56,4 +56,4 @@ TIP_SHA：本 RESULT 所在提交，以 origin/dev HEAD 为准。
 
 【执法堂 2/3】正式 indexedDbSaves=true（SHA-256=69302e3a0dec48fb963548ab5dc1e0b950b2a050864ee7a746335a8386be9fd8）；gifts 仍关；无自动档；槽 1/2/3；HUD overlay 不纳入。
 
-【执法堂 3/3】TIP_SHA=本 RESULT 所在提交，以 origin/dev HEAD 为准；请出 `qa/out_v06a_idb_flip_<sha>/`；入口 test:save-slots + test:mainline-56；未发版；禁 gifts/6b+。
+【执法堂 3/3】TIP_SHA=9538f1a616cb2c23a28965dec669f0ed1f2870d0；请出 `qa/out_v06a_idb_flip_<sha>/`；入口 test:save-slots + test:mainline-56；未发版；禁 gifts/6b+。
