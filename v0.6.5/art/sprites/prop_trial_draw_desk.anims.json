@@ -1,0 +1,50 @@
+{
+ "atlas": "prop_trial_draw_desk",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  96,
+  64
+ ],
+ "anims": [
+  {
+   "key": "prop_trial_draw_desk_idle",
+   "frames": [
+    "prop_trial_draw_desk_idle_01",
+    "prop_trial_draw_desk_idle_02",
+    "prop_trial_draw_desk_idle_03",
+    "prop_trial_draw_desk_idle_04"
+   ],
+   "frameRate": 4,
+   "repeat": -1
+  },
+  {
+   "key": "prop_trial_draw_desk_active",
+   "frames": [
+    "prop_trial_draw_desk_active_01",
+    "prop_trial_draw_desk_active_02",
+    "prop_trial_draw_desk_active_03",
+    "prop_trial_draw_desk_active_04"
+   ],
+   "frameRate": 8,
+   "repeat": -1
+  }
+ ],
+ "hitArea": [
+  72,
+  40
+ ],
+ "hitAreaOffsetY": -4,
+ "promptOffsetY": -68,
+ "mapObject": "draw_desk",
+ "maps": [
+  "trial_lingfu_range"
+ ],
+ "blend": "NORMAL",
+ "depth": "behindPlayer",
+ "note": "灵符派试炼·画符桌（翘头案：一摞黄符纸、摊开的朱砂符、砚台墨锭、笔架毛笔）。原点 (0.5,1) 放在 draw_desk 对象坐标（符阁地面）。平时循环 idle（笔穗轻摆）；玩家靠近按交互开始画符时切 active（符纸金光 + 浮起的金色符字火星，金光类描边 #A86E1E），画符界面关掉切回 idle。画了几张（talismans: 3）由 fx_trial_talisman 表现，桌子不分张数。不带碰撞，层级放角色后面。",
+ "kind": "prop"
+}

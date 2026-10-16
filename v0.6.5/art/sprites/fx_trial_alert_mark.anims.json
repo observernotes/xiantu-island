@@ -1,0 +1,38 @@
+{
+ "atlas": "fx_trial_alert_mark",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  24,
+  32
+ ],
+ "anims": [
+  {
+   "key": "fx_trial_alert_mark_suspect",
+   "frames": [
+    "fx_trial_alert_mark_suspect_01",
+    "fx_trial_alert_mark_suspect_02",
+    "fx_trial_alert_mark_suspect_03",
+    "fx_trial_alert_mark_suspect_04"
+   ],
+   "frameRate": 4,
+   "repeat": 0
+  },
+  {
+   "key": "fx_trial_alert_mark_alert",
+   "frames": [
+    "fx_trial_alert_mark_alert_01",
+    "fx_trial_alert_mark_alert_02",
+    "fx_trial_alert_mark_alert_03"
+   ],
+   "frameRate": 12,
+   "repeat": 0
+  }
+ ],
+ "blend": "normal",
+ "note": "头顶提示：原点 (0.5,1) 放在角色头顶（巡逻弟子脚底 y−72）。suspect = 「?」由下往上填满（被灯照到时播，play({ key, duration: 被发现所需毫秒 })，离开光就停播隐藏）；alert = 朱红「!」弹出（被发现，配「什么人！」气泡）。通用，以后潜行玩法也能用。",
+ "kind": "fx"
+}
