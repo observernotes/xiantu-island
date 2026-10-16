@@ -1,0 +1,30 @@
+{
+  "version": "v0.6-draft",
+  "enabled": false,
+  "meta": {
+    "generator": "balance/tools/gen_fly_zones.py",
+    "status": "6b 预备草案，等待软开令；未接入运行程序。",
+    "basis": [
+      "design/GDD_总体设计.md §21.4",
+      "balance/skills.json sword_ride"
+    ],
+    "mpRationale": "sword_ride 战斗冲刺耗蓝 8、冷却 3000ms，按冷却折算 8/3≈2.67 MP/s，场景持续飞取整为 3 MP/s；不按 180ms 冲刺时长折算高耗蓝。",
+    "durationRationale": "每次飞行最长 12000ms，对应最多 36 MP，用于短程空中平台移动。",
+    "mapWhitelistNote": "maps 仅列空中平台候选 mapId，不表示整张地图可飞；正式开放仍依赖地图 flyZone 对象与区域判定，本刀不落地图对象。",
+    "worldTravelNote": "大地图御剑代步属于后续程序项，不由本表提供。"
+  },
+  "skillId": "sword_ride",
+  "unlockRealm": "foundation",
+  "mpPerSecond": 3,
+  "maxFlightMs": 12000,
+  "knockdownOnHit": true,
+  "cannotAttackWhileFlying": true,
+  "maps": [
+    "wanyao_deep_1",
+    "wanyao_deep_2",
+    "chiyan_core",
+    "chiyan_slope_1",
+    "chiyan_slope_2"
+  ],
+  "balanceTodo": []
+}

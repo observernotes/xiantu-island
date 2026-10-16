@@ -64,30 +64,45 @@ export class SkillCombat {
   }
 
   tryCast(slot: number) {
-    if (this.scene.sectTrial?.ended) return;
+    const id = this.scene.prog.hotbar[slot];
+    if (!id) return false;
+    return id === 'sword_ride' ? this.trySwordRide() : this.cast(id);
+  }
+
+  /** 由既有移动输入触发；场景持续飞行的门禁不参与战斗冲刺。 */
+  trySwordRide() {
+    const def = SKILLS.sword_ride;
+    if (!def) return false;
+    if (!this.scene.prog.skillRealmMet(def)) {
+      this.hint('fly.locked_realm', {}, '#d0d0d0');
+      return false;
+    }
+    return this.cast(def.id);
+  }
+
+  private cast(id: string) {
+    if (this.scene.sectTrial?.ended) return false;
     const { prog, player } = this.scene;
-    if (!prog.skillsUnlocked || player.dead) return;
-    if (player.state2 === 'hurt' || player.state2 === 'rope') return;
-    const id = prog.hotbar[slot];
-    if (!id) return;
+    if (!prog.skillsUnlocked || player.dead) return false;
+    if (player.state2 === 'hurt' || player.state2 === 'rope') return false;
     const def = SKILLS[id];
     const level = prog.skillLevel(id);
-    if (!def || !prog.canCastSkill(def) || level <= 0 || def.type === 'passive') return;
-    if (prog.trialSkillCharges(id) === 0) { this.scene.log('试炼隐息术次数已用尽。', '#d0d0d0'); return; }
+    if (!def || !prog.canCastSkill(def) || level <= 0 || def.type === 'passive' && id !== 'sword_ride') return false;
+    if (prog.trialSkillCharges(id) === 0) { this.scene.log('试炼隐息术次数已用尽。', '#d0d0d0'); return false; }
     const now = gameNow();
     const cd = this.cds.get(id);
-    if (cd && now < cd.readyAt) { this.hint('skill.cooldown', {}, '#d0d0d0'); return; }
-    if (player.skillRooted && this.scene.time.now < player.attackLockUntil) return;
+    if (cd && now < cd.readyAt) { this.hint('skill.cooldown', {}, '#d0d0d0'); return false; }
+    if (player.skillRooted && this.scene.time.now < player.attackLockUntil) return false;
     const cost = prog.skillMpCost(id);
-    if (prog.mp + 1e-6 < cost) { this.hint('sys.mp_low', {}, '#8ec8ff'); return; }
+    if (prog.mp + 1e-6 < cost) { this.hint(id === 'sword_ride' ? 'fly.mp_low' : 'sys.mp_low', {}, '#8ec8ff'); return false; }
     // 符纸还没有登记时保留射击，待制符配表上线后自动启用消耗与免耗判定。
     const ammo = typeof def.effects?.ammoItem === 'string' ? def.effects.ammoItem : '';
     const ammoCount = Math.max(0, skillNumber(def, 'ammoCount', level));
     if (ammo && ITEMS[ammo]) {
-      if (prog.count(ammo) < ammoCount) { this.scene.log(`${ITEMS[ammo].name}不足。`, '#ffd6a0'); return; }
+      if (prog.count(ammo) < ammoCount) { this.scene.log(`${ITEMS[ammo].name}不足。`, '#ffd6a0'); return false; }
       if (Math.random() >= Math.min(1, Math.max(0, prog.passiveBonus('ammoSaveChance')))) prog.removeItem(ammo, ammoCount);
     }
-    if (!prog.consumeTrialSkill(id)) return;
+    if (!prog.consumeTrialSkill(id)) return false;
     prog.mp -= cost;
     const total = Math.max(0, prog.skillCooldownMs(id), prog.skillRecoverMs(id));
     if (total > 0) this.cds.set(id, { readyAt: now + total, total });
@@ -97,6 +112,7 @@ export class SkillCombat {
     this.perform(def, level);
     if (persistentCooldown) prog.persistSoon();
     this.scene.events.emit('skill:cast', { id, level, cost, cooldownMs: total });
+    return true;
   }
 
   update(_time: number, delta: number) {

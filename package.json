@@ -59,6 +59,7 @@
     "test:life-skills": "timeout 120s node scripts/life-skills-test.mjs",
     "test:gongfa-grades": "timeout 120s node scripts/gongfa-grades-test.mjs",
     "test:qi-density": "timeout 120s node scripts/qi-density-test.mjs",
+    "test:v06b-closed": "timeout 120s node scripts/v06b-closed-test.mjs",
     "test:encounter": "timeout 120s node scripts/encounter-test.mjs",
     "test:encounter-ui": "timeout 120s node scripts/encounter-ui-test.mjs",
     "test:encounter-props": "timeout 120s node scripts/encounter-props-test.mjs",

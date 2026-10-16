@@ -58,6 +58,9 @@ import type { EncounterActive } from '../EncounterRunner';
 import { createEncounterProp, playEncounterProp, resolveEncounterProp, revealEncounterProp, type EncounterPropVisual } from '../EncounterProps';
 import { SenseMapAdapter, sceneMonsterTargets } from './SenseScene';
 import { openPropChest, playPropAnimation, resolveSecretProp } from '../SecretProps';
+import { AFFINITY, COMPANIONS, FLY_ZONES } from '../data';
+import { invite, SU_COMPANION_ID } from '../Companions';
+import { requestSustainFlight } from '../FlyZones';
 
 const MAP_FALLBACK: Record<string, string> = {};
 type Drop = Phaser.Physics.Arcade.Sprite & { itemId: string; count: number; bornAt: number; label?: Phaser.GameObjects.Text; shadow?: Phaser.GameObjects.Ellipse; floatTw?: Phaser.Tweens.Tween; landed?: boolean };
@@ -690,10 +693,12 @@ export class GameScene extends Phaser.Scene {
       if (win) {
         const next = REALMS[REALMS.indexOf(realm) + 1];
         this.playCue('breakthrough', () => {
+          const hadSwordRide = (pr.skills.sword_ride ?? 0) > 0;
           pr.breakthrough(); pr.breakthroughFails = 0; pr.unstableUntil = 0;
           pr.hp = pr.maxHp; pr.mp = pr.maxMp;
           this.player.maxHp = pr.maxHp; this.player.hp = pr.hp;
           this.log(`突破成功，当前境界 ${pr.realmName}`, '#ffb0ff');
+          if (!hadSwordRide && (pr.skills.sword_ride ?? 0) > 0) this.log(t('fly.skill_granted'), '#bfefff');
           if (pr.lastOverflowReturned > 0) this.log(`溢出修为返还 ${pr.lastOverflowReturned}`, '#c8c8c8');
           this.registry.set('lastTrialResult', 'win');
           pr.persistSoon();
@@ -878,6 +883,12 @@ export class GameScene extends Phaser.Scene {
       && (this.encounterRuntime?.interact() || this.interactTrialObject() || this.openNearbyFurnace() || this.talkNearby())) return;
     if (k.z.isDown && !this.gathering.active && time >= this.nextPickAt) { this.nextPickAt = time + 150; this.tryPickup(); }
     if (J(k.up) && this.player.state2 === 'ground' && this.tryInteract()) return;
+    // ↑ + 既有跳跃键触发御剑冲刺；交互和绳上跳跃仍由原入口处理。
+    if (inp.up && inp.jumpDown && this.player.state2 !== 'rope' && !this.gathering.active) {
+      const direction = (inp.right ? 1 : 0) - (inp.left ? 1 : 0);
+      if (direction) this.player.facing = direction;
+      if (this.combat.trySwordRide()) inp.jumpDown = false;
+    }
     const slotKey: Record<string, Phaser.Input.Keyboard.Key> = { A: k.a, S: k.s, D: k.d, F: k.f, G: k.g, H: k.h, Q: k.q, W: k.w };
     HOTBAR_SLOTS.forEach((s, i) => { if (J(slotKey[s.label]) && !this.gathering.active) {
       const talisman = featureEnabled('talismanCraft') ? this.prog.talismanQuickSlots[i] : null;
@@ -933,6 +944,24 @@ export class GameScene extends Phaser.Scene {
   skillBar!: SkillBar;
   skillWindow!: SkillWindow;
   combat!: SkillCombat;
+
+  /** 失效交互的拒绝钩子；关态不创建邀请按钮、关系或同行实体。 */
+  requestCompanionInvite(companionId: string = SU_COMPANION_ID) {
+    const result = invite(COMPANIONS, AFFINITY, this.prog, companionId);
+    this.log(t(result.hintKey), '#d0d0d0');
+    return result;
+  }
+
+  /** 本 tip 仅接拒绝钩子，无持续飞行输入或地图区域，尝试不会扣蓝。 */
+  requestSustainFlight() {
+    const result = requestSustainFlight(FLY_ZONES, {
+      realmId: this.prog.realm.id, realmOrder: REALMS.map(realm => realm.id),
+      ownsSkill: this.prog.skillLevel(FLY_ZONES?.skillId ?? 'sword_ride') > 0,
+      mapId: this.map.id, inFlyZone: false, mp: this.prog.mp,
+    });
+    this.log(t(result.messageKey), '#d0d0d0');
+    return result;
+  }
   private mpPool = 0;
   tracker!: Phaser.GameObjects.Text;
   bossIntroShown = false;

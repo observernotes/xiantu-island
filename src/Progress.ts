@@ -16,6 +16,7 @@ import type { EncounterSave, EncounterState } from './Encounter';
 import { createRelationshipState, isValidAffinity, isValidRelationshipState, normalizeAffinity, normalizeRelationshipState,
   RELATIONSHIP_VERSION, type RelationshipState } from './RelationshipState';
 import { saveStore, setSaveValidator, SAVE_SLOT_KEYS, type SlotKey } from './SaveStore';
+import { isValidCompanionRelations, type CompanionRelations } from './Companions';
 
 /** 自动加点：加点界面做好前的旧档公式，仅用于迁移种子；UI-6 起升级只发未分配点。 */
 export const AUTO_STATS = { rootBone: 2, agility: 2, insight: 1, spirit: 0 } as Record<string, number>;
@@ -81,6 +82,7 @@ function validSaveData(saved: unknown): saved is Record<string, unknown> {
   if (has('karmaFlags') && (!dataRecord(saved.karmaFlags) || !Object.entries(saved.karmaFlags).every(([key, value]) => safeKey(key) && typeof value === 'boolean'))) return false;
   if (has('affinity') && !isValidAffinity(saved.affinity)) return false;
   if (has('relationshipState') && !isValidRelationshipState(saved.relationshipState)) return false;
+  if (has('companionRelations') && !isValidCompanionRelations(saved.companionRelations)) return false;
   for (const key of ['inventory', 'skills', 'skillGifted']) if (has(key) && !numbers(saved[key])) return false;
   for (const key of ['skillMastery', 'gatherRespawnAt']) if (has(key) && !numbers(saved[key], false)) return false;
   for (const key of ['job', 'selectedSect', 'name', 'rootElement', 'sectDailyContributionDay', 'dailyQuestResetDay', 'seclusionDay']) {
@@ -164,6 +166,8 @@ export class Progress {
   /** 仅懒初始化可用 NPC；旧档完成历史不会反推好感。 */
   affinity: Record<string, number> = {};
   relationshipState: RelationshipState = createRelationshipState();
+  /** 关态旧档不新建关系；已有关系与模式原样保存，激活另受同门双开关约束。 */
+  companionRelations: CompanionRelations | undefined = undefined;
   classRewardClaims: string[] = [];
   /** 通用入门技的付费等级在拜宗后退回当前一转点池。 */
   classRefundSp = 0;
@@ -534,7 +538,7 @@ export class Progress {
       const legacyFoxJoin = p.questRewardVersion < QUEST_REWARD_VERSION && p.quests.q_fox?.state === 'done'
         && !classDef(p.job) && !Object.keys(p.quests).some(id => classForQuest(id) && p.quests[id]?.state === 'done');
       // 先登记老玩家的宗门，避免按新突破表补通用技时抢动既有快捷栏。
-      backfilled = [p.backfillRealmRewards(), p.backfillClass(false), p.backfillQuestSkills(), p.backfillQuestRecipes()].some(Boolean);
+      backfilled = [p.backfillRealmRewards(), p.backfillClass(false), p.backfillQuestSkills(), p.backfillQuestRecipes(), p.ensureSwordRideGranted()].some(Boolean);
       // 原职业/已交付拜入任务是正式入宗事实；试炼、帖和山门位置不参与迁移。
       p.sectRank = hadStoredRank && !(legacyFoxJoin && storedRank === null) ? storedRank : p.sect ? SECT_RANKS.rules.initialRank : null;
       p.hp = Math.min(p.hp || p.maxHp, p.maxHp);
@@ -602,6 +606,8 @@ export class Progress {
     if (saved && Progress.needsRelationshipMigration(saved)) {
       relationshipMigrationReady = Progress.backupRelationshipSave(JSON.stringify(saved));
     }
+    const previousSkills = saved?.skills;
+    const previouslyOwned = dataRecord(previousSkills) && typeof previousSkills.sword_ride === 'number' && previousSkills.sword_ride > 0;
     let p: Progress;
     try { p = Progress.restore(saved, false, relationshipMigrationReady); }
     catch {
@@ -611,6 +617,10 @@ export class Progress {
     p.#slot = slot;
     p.#storageError = storageError;
     Progress.setActiveSlot(slot);
+    // 御剑补缺与同步读档走同一规则；已拥有的档不重复写入、升级或播提示。
+    if (saved && !previouslyOwned && (p.skills.sword_ride ?? 0) > 0 && !storageError && relationshipMigrationReady) {
+      if (!await p.save({ async: true })) p.#storageError = '御剑技能补齐保存失败，原档已保留，请重试读档';
+    }
     return p;
   }
   static async resetAsync(slot: SlotKey = Progress.#activeSlot): Promise<boolean> {
@@ -958,6 +968,12 @@ export class Progress {
       this.unspentStatPoints += Number(GROWTH.perLevel.statPoints) || 0;
     }
     this.breakthroughBonusLevels = bonus;
+    // reward.unlock 是离开旧境界的奖励；只把已登记的技能接入赠技链。
+    for (const id of REALMS.find((r: { id: string }) => r.id === left)?.reward?.unlock ?? []) {
+      if (!SKILLS[id]) continue;
+      if (id === 'sword_ride') this.ensureSwordRideGranted();
+      else this.grantSkill(id, 1);
+    }
     this.hp = this.maxHp; this.mp = this.maxMp;
     return true;
   }
@@ -1361,6 +1377,23 @@ export class Progress {
 
   skillLevel(id: string) { return this.trialSkills[id]?.level ?? this.skills?.[id] ?? 0; }
 
+  /** 御剑是筑基奖励能力；领取与使用的境界均读取 skills.req.realm。 */
+  skillRealmMet(def: SkillDef) {
+    const required = def.req?.realm;
+    if (required === undefined) return true;
+    const realm = typeof required === 'string' ? REALMS.find((r: { id: string }) => r.id === required) : undefined;
+    return !!realm && this.level >= realm.levelMin;
+  }
+
+  /** 已筑基缺技的旧档也补齐一次；不花 SP，不把已有技能再次升级。 */
+  ensureSwordRideGranted() {
+    const def = SKILLS.sword_ride;
+    if (!def || typeof def.req?.realm !== 'string' || !this.skillRealmMet(def) || (this.skills.sword_ride ?? 0) > 0) return false;
+    const unlocked = REALMS.some((realm: { levelMax: number; reward?: { unlock?: string[] } }) =>
+      realm.levelMax < this.level && realm.reward?.unlock?.includes(def.id));
+    return unlocked && this.grantSkill(def.id, 1);
+  }
+
   beginTrialSkills(grants: { id: string; level: number; charges?: number; durationMs?: number }[]) {
     this.endTrialSkills();
     this.trialHotbarBefore = [...this.hotbar];
@@ -1392,6 +1425,8 @@ export class Progress {
   /** 未拜入仅有通用技能资格；宗门和转职阶段均须与当前职业匹配。 */
   ownsSkill(def: SkillDef) {
     if (isCheatSkillsUnlocked()) return true;
+    // 表内保留天剑二转分类；筑基自动获得的移动能力不以拜宗/转职为前提。
+    if (def.id === 'sword_ride') return this.skillRealmMet(def);
     if (!this.job) return def.sect === null && def.job === 0;
     const c = classDef(this.job);
     return !!c && def.sect === c.sect && def.job === c.job;
@@ -1414,6 +1449,7 @@ export class Progress {
     const entry = classEntrySkill(c);
     // 也遍历配置中的通用技能，清掉只有键位、熟练度或冷却而没有等级的旧档残留。
     for (const id of new Set([...Object.keys(this.skills), ...CLASS_RULES.replaceCommonSkills])) {
+      if (id === 'sword_ride') continue;
       const def = SKILLS[id], common = CLASS_RULES.replaceCommonSkills.includes(id);
       if (!common && !((firstJoin || migrating) && def?.sect && def.sect !== c.sect)) continue;
       if (!(id in this.skills || id in this.skillGifted || id in this.skillMastery || id in this.skillCooldowns
@@ -1587,7 +1623,7 @@ export class Progress {
     const forced = force && isCheatEnabled();
     if (!SKILLS[id] || (!this.ownsSkill(SKILLS[id]) && !forced) || !(level > 0)) return false;
     // 作弊赠技写永久等级，不应被试炼的临时技能遮住；普通赠技沿用现有规则。
-    const cur = forced || isCheatSkillsUnlocked() ? this.skills[id] ?? 0 : this.skillLevel(id);
+    const cur = forced || isCheatSkillsUnlocked() || id === 'sword_ride' ? this.skills[id] ?? 0 : this.skillLevel(id);
     if (level <= cur) return false;
     this.skillGifted[id] = (this.skillGifted[id] ?? 0) + (level - cur);
     this.skills[id] = level;

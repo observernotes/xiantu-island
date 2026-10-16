@@ -526,7 +526,65 @@
       "师弟（师妹），宗门里的路我带你走一遍。"
     ],
     "quests": [],
-    "phase": 5
+    "phase": 5,
+    "affinity": {
+      "enabled": true,
+      "min": 0,
+      "max": 1000,
+      "initial": 0,
+      "tiers": [
+        {
+          "id": "stranger",
+          "min": 0,
+          "nameKey": "affinity.tier.stranger",
+          "dialogKey": "affinity.senior_sister_su.stranger"
+        },
+        {
+          "id": "acquaintance",
+          "min": 100,
+          "nameKey": "affinity.tier.acquaintance",
+          "dialogKey": "affinity.senior_sister_su.acquaintance"
+        },
+        {
+          "id": "confidant",
+          "min": 300,
+          "nameKey": "affinity.tier.confidant",
+          "dialogKey": "affinity.senior_sister_su.confidant"
+        },
+        {
+          "id": "close_friend",
+          "min": 600,
+          "nameKey": "affinity.tier.close_friend",
+          "dialogKey": "affinity.senior_sister_su.close_friend"
+        },
+        {
+          "id": "sworn_friend",
+          "min": 1000,
+          "nameKey": "affinity.tier.sworn_friend",
+          "dialogKey": "affinity.senior_sister_su.sworn_friend"
+        }
+      ],
+      "sources": [],
+      "gifts": {
+        "enabled": false,
+        "likedItems": [],
+        "delta": 20
+      },
+      "unlocks": [
+        {
+          "id": "confidant_gift",
+          "tier": "confidant",
+          "once": true,
+          "items": [
+            {
+              "item": "hp_pill_small",
+              "count": 1
+            }
+          ]
+        }
+      ],
+      "balanceTodo": []
+    }
   },
   {
     "id": "hunter_lei",

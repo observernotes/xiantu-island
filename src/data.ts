@@ -27,9 +27,13 @@ import strings from '@xt/balance/strings_zh.json';
 import sense from '@xt/balance/sense.json';
 import gongfaGradesRaw from '@xt/balance/gongfa_grades.json';
 import qiDensityRaw from '@xt/balance/qi_density.json';
+import companionsRaw from '@xt/balance/companions.json';
+import flyZonesRaw from '@xt/balance/fly_zones.json';
 import encountersRaw from '@xt/balance/encounters.json';
 import { parseGongfaGradesConfig } from './GongfaGrades';
 import { parseQiDensityConfig } from './QiDensity';
+import { parseCompanionsConfig } from './Companions';
+import { parseFlyZonesConfig } from './FlyZones';
 import { parseEncountersConfig } from './Encounter';
 import { parseAffinityIndex } from './Affinity';
 import { parseQuestHooks } from './QuestHooks';
@@ -45,6 +49,13 @@ export const GONGFA_GRADES_ERRORS = gongfaGradesValidation.errors;
 const qiDensityValidation = parseQiDensityConfig(qiDensityRaw);
 export const QI_DENSITY = qiDensityValidation.config;
 export const QI_DENSITY_ERRORS = qiDensityValidation.errors;
+/** 6b 关态表独立加载；持续飞行开关不参与御剑授予与战斗冲刺。 */
+const companionsValidation = parseCompanionsConfig(companionsRaw, SKILL_LIST);
+export const COMPANIONS = companionsValidation.config;
+export const COMPANIONS_ERRORS = companionsValidation.errors;
+const flyZonesValidation = parseFlyZonesConfig(flyZonesRaw);
+export const FLY_ZONES = flyZonesValidation.config;
+export const FLY_ZONES_ERRORS = flyZonesValidation.errors;
 /** v0.5c 仅加载并校验关态配置；不挂载地图、战斗或奖励入口。 */
 const encountersValidation = parseEncountersConfig(encountersRaw);
 export const ENCOUNTERS = encountersValidation.config;

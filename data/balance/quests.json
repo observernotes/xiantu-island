@@ -1121,6 +1121,7 @@
   "id": "q_secret_nest_intro",
   "name": "林下秘门",
   "nameKey": "secret.quest.intro.name",
+  "descriptionKey": "secret.quest.intro.description",
   "phase": 6,
   "enabled": false,
   "giver": "hunter_lei",
