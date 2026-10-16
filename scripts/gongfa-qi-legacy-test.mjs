@@ -218,7 +218,7 @@ function exerciseLegacyEntries(runtime) {
   const q = new runtime.Progress(), quests = new runtime.QuestSystem(q);
   check(quests.accept('q_awaken'), `${runtime.variant}: 坏表不阻塞真实任务接取`);
   quests.onReach('chest_lookout');
-  const result = quests.turnIn('q_awaken');
+  const result = quests.turnIn('q_awaken', false, 'return');
   equal(result?.quest.id, 'q_awaken', `${runtime.variant}: 坏表不阻塞真实任务交付`);
   equal(q.quests.q_awaken?.state, 'done', `${runtime.variant}: 任务实际完成`);
 }
