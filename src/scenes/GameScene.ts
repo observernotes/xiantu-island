@@ -1809,7 +1809,8 @@ export class GameScene extends Phaser.Scene {
       ]);
       return;
     }
-    const hasTalismanService = featureEnabled('talismanCraft') && npcId === 'lingfu_envoy';
+    const hasTalismanService = featureEnabled('talismanCraft')
+      && !!npc.services?.some(service => service.type === 'talisman_craft');
     // 独立制符菜单不受拜帖门槛影响；显式拜师或继续普通对话仍检查原门槛。
     const talismanMenu = hasTalismanService && !questId && !skipMenu;
     const blockedQuest = !talismanMenu && (questId || !this.prog.job) && this.quests.npcQuestIds(npcId).find(id => (!questId || id === questId)

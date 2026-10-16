@@ -222,7 +222,9 @@
   "dialog": [
    "客官，看看兵刃？童叟无欺！"
   ],
-  "quests": [],
+  "quests": [
+   "q_c21_trial_kill_sample"
+  ],
   "phase": 5
  },
  {
@@ -399,11 +401,13 @@
   "id": "lingfu_envoy",
   "services": [
    {"type": "sect_shop", "sect": "lingfu", "config": "shops"},
-   {"type": "sect_donation", "sect": "lingfu", "config": "sect_donations"}
+   {"type": "sect_donation", "sect": "lingfu", "config": "sect_donations"},
+   {"type": "talisman_craft", "sect": "lingfu", "config": "talisman"}
   ],
   "name": "墨符使",
   "map": "lingfu_pavilion",
   "sprite": "npc_lingfu_envoy",
+  "shop": true,
   "dialog": [
    "来学符的？别急着动手，符是一笔一笔画出来的。",
    "照着亮起来的笔画画，错一笔就重来。",

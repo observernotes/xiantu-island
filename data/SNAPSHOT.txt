@@ -1,3 +1,2 @@
 快照来源 /workspace/xiantu
-时间 2026-10-15T16:44:57.178Z
-局部同步 2026-10-16T04:03:12+00:00：仅 balance/npcs.json、balance/strings_zh.json、balance/trials.json 来自 /workspace/xiantu/balance（#27② 接引任务、阶段文案、画符模板）；其余沿用原快照。
+时间 2026-10-16T04:46:24.046Z

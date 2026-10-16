@@ -15,7 +15,18 @@
   "respawnMs": 7000,
   "sprite": "mon_spirit_rabbit",
   "dropTable": "drop_rabbit",
-  "isBoss": false
+  "isBoss": false,
+  "sense": {
+   "enabled": false,
+   "profile": "sense_monster_basic",
+   "visibleInfo": [
+    "name",
+    "level",
+    "hp",
+    "abilities"
+   ],
+   "abilityKeys": []
+  }
  },
  {
   "id": "bamboo_snake",
@@ -34,7 +45,18 @@
   "respawnMs": 8000,
   "sprite": "mon_bamboo_snake",
   "dropTable": "drop_snake",
-  "isBoss": false
+  "isBoss": false,
+  "sense": {
+   "enabled": false,
+   "profile": "sense_monster_basic",
+   "visibleInfo": [
+    "name",
+    "level",
+    "hp",
+    "abilities"
+   ],
+   "abilityKeys": []
+  }
  },
  {
   "id": "mountain_mandrill",
@@ -64,7 +86,18 @@
   },
   "sprite": "mon_mountain_mandrill",
   "dropTable": "drop_mandrill",
-  "isBoss": false
+  "isBoss": false,
+  "sense": {
+   "enabled": false,
+   "profile": "sense_monster_basic",
+   "visibleInfo": [
+    "name",
+    "level",
+    "hp",
+    "abilities"
+   ],
+   "abilityKeys": []
+  }
  },
  {
   "id": "demon_fox",
@@ -115,7 +148,18 @@
   ],
   "sprite": "mon_demon_fox",
   "dropTable": "drop_fox",
-  "isBoss": true
+  "isBoss": true,
+  "sense": {
+   "enabled": false,
+   "profile": "sense_monster_basic",
+   "visibleInfo": [
+    "name",
+    "level",
+    "hp",
+    "abilities"
+   ],
+   "abilityKeys": []
+  }
  },
  {
   "id": "training_dummy",
@@ -168,6 +212,17 @@
    "telegraphMs": 600,
    "cooldownMs": 4000,
    "knockback": 280
+  },
+  "sense": {
+   "enabled": false,
+   "profile": "sense_monster_basic",
+   "visibleInfo": [
+    "name",
+    "level",
+    "hp",
+    "abilities"
+   ],
+   "abilityKeys": []
   }
  },
  {
@@ -186,7 +241,18 @@
   "respawnMs": 9000,
   "sprite": "mon_straw_puppet",
   "dropTable": "drop_straw_puppet",
-  "isBoss": false
+  "isBoss": false,
+  "sense": {
+   "enabled": false,
+   "profile": "sense_monster_basic",
+   "visibleInfo": [
+    "name",
+    "level",
+    "hp",
+    "abilities"
+   ],
+   "abilityKeys": []
+  }
  },
  {
   "id": "black_robe_minion",
@@ -218,6 +284,17 @@
    "telegraphMs": 400,
    "cooldownMs": 3500,
    "knockback": 120
+  },
+  "sense": {
+   "enabled": false,
+   "profile": "sense_monster_basic",
+   "visibleInfo": [
+    "name",
+    "level",
+    "hp",
+    "abilities"
+   ],
+   "abilityKeys": []
   }
  },
  {
@@ -237,7 +314,18 @@
   "respawnMs": 9000,
   "sprite": "mon_vine_imp",
   "dropTable": "drop_vine_imp",
-  "isBoss": false
+  "isBoss": false,
+  "sense": {
+   "enabled": false,
+   "profile": "sense_monster_basic",
+   "visibleInfo": [
+    "name",
+    "level",
+    "hp",
+    "abilities"
+   ],
+   "abilityKeys": []
+  }
  },
  {
   "id": "shadow_wolf",
@@ -256,7 +344,18 @@
   "respawnMs": 9000,
   "sprite": "mon_shadow_wolf",
   "dropTable": "drop_shadow_wolf",
-  "isBoss": false
+  "isBoss": false,
+  "sense": {
+   "enabled": false,
+   "profile": "sense_monster_basic",
+   "visibleInfo": [
+    "name",
+    "level",
+    "hp",
+    "abilities"
+   ],
+   "abilityKeys": []
+  }
  },
  {
   "id": "poison_spider",
@@ -288,6 +387,17 @@
    "telegraphMs": 400,
    "cooldownMs": 4000,
    "knockback": 80
+  },
+  "sense": {
+   "enabled": false,
+   "profile": "sense_monster_basic",
+   "visibleInfo": [
+    "name",
+    "level",
+    "hp",
+    "abilities"
+   ],
+   "abilityKeys": []
   }
  },
  {
@@ -318,6 +428,17 @@
    "telegraphMs": 500,
    "cooldownMs": 3500,
    "knockback": 340
+  },
+  "sense": {
+   "enabled": false,
+   "profile": "sense_monster_basic",
+   "visibleInfo": [
+    "name",
+    "level",
+    "hp",
+    "abilities"
+   ],
+   "abilityKeys": []
   }
  },
  {
@@ -337,7 +458,18 @@
   "respawnMs": 9000,
   "sprite": "mon_tree_demon_sapling",
   "dropTable": "drop_tree_demon_sapling",
-  "isBoss": false
+  "isBoss": false,
+  "sense": {
+   "enabled": false,
+   "profile": "sense_monster_basic",
+   "visibleInfo": [
+    "name",
+    "level",
+    "hp",
+    "abilities"
+   ],
+   "abilityKeys": []
+  }
  },
  {
   "id": "millennium_tree_demon",
@@ -388,7 +520,18 @@
     "grantRewards": false,
     "despawnWithOwner": true
    }
-  ]
+  ],
+  "sense": {
+   "enabled": false,
+   "profile": "sense_monster_basic",
+   "visibleInfo": [
+    "name",
+    "level",
+    "hp",
+    "abilities"
+   ],
+   "abilityKeys": []
+  }
  },
  {
   "id": "lava_lizard",
@@ -407,7 +550,18 @@
   "respawnMs": 9000,
   "sprite": "mon_lava_lizard",
   "dropTable": "drop_lava_lizard",
-  "isBoss": false
+  "isBoss": false,
+  "sense": {
+   "enabled": false,
+   "profile": "sense_monster_basic",
+   "visibleInfo": [
+    "name",
+    "level",
+    "hp",
+    "abilities"
+   ],
+   "abilityKeys": []
+  }
  },
  {
   "id": "fire_crow",
@@ -438,6 +592,17 @@
    "telegraphMs": 500,
    "cooldownMs": 4000,
    "knockback": 200
+  },
+  "sense": {
+   "enabled": false,
+   "profile": "sense_monster_basic",
+   "visibleInfo": [
+    "name",
+    "level",
+    "hp",
+    "abilities"
+   ],
+   "abilityKeys": []
   }
  },
  {
@@ -457,7 +622,18 @@
   "respawnMs": 9000,
   "sprite": "mon_flame_puppet",
   "dropTable": "drop_flame_puppet",
-  "isBoss": false
+  "isBoss": false,
+  "sense": {
+   "enabled": false,
+   "profile": "sense_monster_basic",
+   "visibleInfo": [
+    "name",
+    "level",
+    "hp",
+    "abilities"
+   ],
+   "abilityKeys": []
+  }
  },
  {
   "id": "black_robe_guard",
@@ -489,6 +665,17 @@
    "telegraphMs": 400,
    "cooldownMs": 3000,
    "knockback": 150
+  },
+  "sense": {
+   "enabled": false,
+   "profile": "sense_monster_basic",
+   "visibleInfo": [
+    "name",
+    "level",
+    "hp",
+    "abilities"
+   ],
+   "abilityKeys": []
   }
  },
  {
@@ -567,7 +754,18 @@
     "restoreMs": 12000,
     "damageRatio": 0.5
    }
-  ]
+  ],
+  "sense": {
+   "enabled": false,
+   "profile": "sense_monster_basic",
+   "visibleInfo": [
+    "name",
+    "level",
+    "hp",
+    "abilities"
+   ],
+   "abilityKeys": []
+  }
  },
  {
   "id": "heart_demon_imp",
@@ -599,6 +797,17 @@
    "telegraphMs": 300,
    "cooldownMs": 1500,
    "knockback": 100
+  },
+  "sense": {
+   "enabled": false,
+   "profile": "sense_monster_basic",
+   "visibleInfo": [
+    "name",
+    "level",
+    "hp",
+    "abilities"
+   ],
+   "abilityKeys": []
   }
  },
  {
@@ -638,6 +847,17 @@
    "telegraphMs": 300,
    "cooldownMs": 2000,
    "knockback": 60
+  },
+  "sense": {
+   "enabled": false,
+   "profile": "sense_monster_basic",
+   "visibleInfo": [
+    "name",
+    "level",
+    "hp",
+    "abilities"
+   ],
+   "abilityKeys": []
   }
  },
  {
@@ -658,7 +878,18 @@
   "sprite": "mon_paper_puppet",
   "dropTable": null,
   "isBoss": false,
-  "phase": 5
+  "phase": 5,
+  "sense": {
+   "enabled": false,
+   "profile": "sense_monster_basic",
+   "visibleInfo": [
+    "name",
+    "level",
+    "hp",
+    "abilities"
+   ],
+   "abilityKeys": []
+  }
  },
  {
   "id": "wood_target",
@@ -773,7 +1004,18 @@
    "cooldownMs": 3500,
    "knockback": 180
   },
-  "phase": 5
+  "phase": 5,
+  "sense": {
+   "enabled": false,
+   "profile": "sense_monster_basic",
+   "visibleInfo": [
+    "name",
+    "level",
+    "hp",
+    "abilities"
+   ],
+   "abilityKeys": []
+  }
  },
  {
   "id": "spirit_wolf",

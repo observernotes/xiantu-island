@@ -1102,5 +1102,34 @@
   },
   "balanceTodo": [],
   "note": "next:null 表示无后续链，不是待填数值；地图对象和入口消费者接好后再落表。"
+ },
+ {
+  "id": "q_c21_trial_kill_sample",
+  "name": "试炼影形核验",
+  "note": "C21/#27⑤ QA 样例，仅供执法堂正向矩阵；正式玩法不依赖。排除 wood_target（noDamage）与 youying_patrol（invulnerable/noDamage），不作为 kill 目标。",
+  "giver": "merchant_qian",
+  "turnIn": "merchant_qian",
+  "reqLevel": 10,
+  "phase": 5,
+  "objectives": [
+   {
+    "type": "kill",
+    "target": "paper_puppet",
+    "count": 1
+   },
+   {
+    "type": "kill",
+    "target": "wild_wolf",
+    "count": 1
+   }
+  ],
+  "rewards": {
+   "exp": 0,
+   "spiritStone": 0,
+   "items": []
+  },
+  "balanceTodo": [
+   "演武堂可改奖励；QA 只关心 kill 目标命中"
+  ]
  }
 ]

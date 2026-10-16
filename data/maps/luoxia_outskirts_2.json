@@ -7103,6 +7103,84 @@
        "value": 90000
       }
      ]
+    },
+    {
+     "id": 25,
+     "name": "sense_chest_01",
+     "type": "chest",
+     "x": 592,
+     "y": 640,
+     "width": 0,
+     "height": 0,
+     "properties": [
+      {
+       "name": "loot",
+       "type": "string",
+       "value": "qi_pill"
+      },
+      {
+       "name": "count",
+       "type": "int",
+       "value": 1
+      }
+     ]
+    },
+    {
+     "id": 26,
+     "name": "sense_hidden_chest_01",
+     "type": "hidden",
+     "x": 592,
+     "y": 640,
+     "width": 0,
+     "height": 0,
+     "properties": [
+      {
+       "name": "enabled",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "reqSpirit",
+       "type": "int",
+       "value": 0
+      },
+      {
+       "name": "reveal",
+       "type": "string",
+       "value": "chest"
+      },
+      {
+       "name": "targetObject",
+       "type": "string",
+       "value": "sense_chest_01"
+      }
+     ]
+    },
+    {
+     "id": 27,
+     "name": "sense_hidden_platform_01",
+     "type": "hidden",
+     "x": 3072,
+     "y": 448,
+     "width": 96,
+     "height": 32,
+     "properties": [
+      {
+       "name": "enabled",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "reqSpirit",
+       "type": "int",
+       "value": 10
+      },
+      {
+       "name": "reveal",
+       "type": "string",
+       "value": "platform"
+      }
+     ]
     }
    ],
    "visible": true,
@@ -7124,5 +7202,5 @@
   }
  ],
  "nextlayerid": 7,
- "nextobjectid": 25
+ "nextobjectid": 28
 }
