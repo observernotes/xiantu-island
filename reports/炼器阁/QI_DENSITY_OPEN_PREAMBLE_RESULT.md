@@ -6,7 +6,7 @@
 
 基线：`5fd80bc`（完整 SHA：`5fd80bc6dd41479dc75f1884f826f09ead35c6f6`）
 
-TIP_SHA：（提交后回填）
+TIP_SHA：`cf57d664961c21eacaa3134c5819911f40907baa`
 
 交付分支：`origin/dev`
 
@@ -52,6 +52,6 @@ TIP_SHA：（提交后回填）
 
 ## 给执法堂的三行交接
 
-- tip 含 #20 开态快照 + preamble，可交翻表抽检（入口：`npm run test:qi-density` + `npm run test:gongfa-qi-legacy`；正式表 SHA `03b685a…`；开态真相；关态仅夹具）。
+- tip 含 #20 开态快照 + preamble，可交翻表抽检（`cf57d664961c21eacaa3134c5819911f40907baa`；入口：`npm run test:qi-density` + `npm run test:gongfa-qi-legacy`；正式表 SHA `03b685a…`；开态真相；关态仅夹具）。
 - gifts 仍关；#19 / lifeSkillCurve 保持开；future.gathering 仍 false。
 - 本 PASS 后由经理转负责人令进包（建议 v0.5.16）；本次未发版；线上仍 v0.5.15。
