@@ -67,6 +67,9 @@ import { readSecretNestSign, enterSecretNest, exitSecretNest, type SecretNestRoo
 import { featureClosed as towerFeatureClosed, interactEntranceClosed as towerEntranceClosed } from '../TowerClosed';
 import { isTowerOpenForFixture } from '../TowerOpenFlag';
 import { TowerGate } from '../TowerGate';
+import { featureClosed as marketFeatureClosed } from '../MarketClosed';
+import { isMarketOpenForFixture } from '../MarketOpenFlag';
+import { MarketGate } from '../MarketGate';
 
 const MAP_FALLBACK: Record<string, string> = {};
 type Drop = Phaser.Physics.Arcade.Sprite & { itemId: string; count: number; bornAt: number; label?: Phaser.GameObjects.Text; shadow?: Phaser.GameObjects.Ellipse; floatTw?: Phaser.Tweens.Tween; landed?: boolean };
@@ -926,7 +929,7 @@ export class GameScene extends Phaser.Scene {
     if (J(k.one)) this.usePill('hp_pill_small');
     if (J(k.two)) this.usePill('qi_pill');
     if (J(k.z) && this.player.state2 === 'ground' && !this.gathering.active && !this.hasNearbyDrop()
-      && (this.tryInteractTowerClosed() || this.tryInteractSecretNest() || this.encounterRuntime?.interact() || this.interactTrialObject() || this.openNearbyFurnace() || this.talkNearby())) return;
+      && (this.tryInteractTowerClosed() || this.tryInteractMarketConsign() || this.tryInteractSecretNest() || this.encounterRuntime?.interact() || this.interactTrialObject() || this.openNearbyFurnace() || this.talkNearby())) return;
     if (k.z.isDown && !this.gathering.active && time >= this.nextPickAt) { this.nextPickAt = time + 150; this.tryPickup(); }
     if (J(k.up) && this.player.state2 === 'ground' && this.tryInteract()) return;
     // ↑ + 既有跳跃键触发御剑冲刺；交互和绳上跳跃仍由原入口处理。
@@ -2088,6 +2091,7 @@ export class GameScene extends Phaser.Scene {
   tryInteract(): boolean {
     if (this.travelling) return true;
     if (this.tryInteractTowerClosed()) return true;
+    if (this.tryInteractMarketConsign()) return true;
     if (this.tryInteractSecretNest()) return true;
     if (this.encounterRuntime?.interact()) return true;
     const p = this.player;
@@ -2126,6 +2130,20 @@ export class GameScene extends Phaser.Scene {
     if (!entrance) return false;
     if (isTowerOpenForFixture()) void this.interactTowerEntrance();
     else this.showTowerClosed();
+    return true;
+  }
+
+  /** 仅接既有寄售入口的冒烟提示；未布置对象的地图保持安静。 */
+  private tryInteractMarketConsign(): boolean {
+    const entrance = this.map.objects.find(o => ['market_consign_entrance', 'fangshi_consign'].includes(o.name)
+      && this.senseMap?.objectVisible(o) !== false
+      && Math.abs(o.x - this.player.x) <= 28 && Math.abs(o.y - this.player.y) <= 40);
+    if (!entrance) return false;
+    if (!isMarketOpenForFixture()) this.log(marketFeatureClosed().text, '#aaaaaa');
+    else {
+      const result = new MarketGate(this.prog).feature();
+      this.log(result.allowed ? '坊市寄售已开放。' : result.text, result.allowed ? '#fff8d0' : '#aaaaaa');
+    }
     return true;
   }
 

@@ -1,4 +1,4 @@
-// 正式坊市恒关；仅 runner 的 Vite SSR 虚拟旗标图可运行最小链路。
+// 正式坊市旗标恒 true；仅 runner 的 Vite SSR 内存关态图可注入 false。
 import rules from '@xt/balance/market_consign.json';
 import { GAME_PHASE, ITEMS } from './data';
 import { featureEnabled, featureFlags } from './features';
@@ -8,6 +8,7 @@ import * as Closed from './MarketClosed';
 import { MarketGate, type MarketGateResult } from './MarketGate';
 import { isMarketOpenForFixture } from './MarketOpenFlag';
 import { isValidMarketProgress } from './MarketProgress';
+import { GameScene } from './scenes/GameScene';
 
 type Payload = { state: string; save: Record<string, unknown> };
 /** 只替换存储介质：真实 IDB 后端仍须等待 transaction.complete 才能发布进度。 */
@@ -94,10 +95,10 @@ function memoryIndexedDb() {
 
 
 export async function runMarketOpenFixtureTests(options: {
-  open: boolean; dataMode?: string; refreshPayloads?: Payload[] | null;
+  openFixture: boolean; dataMode?: string; refreshPayloads?: Payload[] | null;
 }) {
-  const { open, dataMode = 'fixture', refreshPayloads } = options;
-  const label = `${dataMode}/${open ? 'memory-open' : 'formal-closed'}`;
+  const { openFixture, dataMode = 'fixture', refreshPayloads } = options;
+  const label = `${dataMode}/${openFixture ? 'formal-open' : 'memory-closed'}`;
   let assertions = 0, sampleCount = 0, ledgerSeq = 0, now = 1_000_000;
   const eq = (actual: unknown, expected: unknown, message: string) => {
     assertions++;
@@ -107,8 +108,8 @@ export async function runMarketOpenFixtureTests(options: {
   function ok(value: unknown, message: string): asserts value { eq(!!value, true, message); }
   const copy = <T>(value: T): T => structuredClone(value);
   const flags = copy(featureFlags()), tableBefore = JSON.stringify(rules);
-  eq(isMarketOpenForFixture(), open, '旗标来自当前SSR图');
-  eq(rules.enabled, false, '数值表不能授权开态');
+  eq(isMarketOpenForFixture(), openFixture, '旗标来自当前SSR图');
+  eq(rules.enabled, true, '正式软开数值表 enabled=true');
   eq(GAME_PHASE, 5, 'GAME_PHASE=5');
   eq(featureEnabled('indexedDbSaves'), true, '使用正式异步事务');
   ok(!Object.keys(flags).some(key => /market|consign/iu.test(key)), '不增加配表开放开关');
@@ -142,9 +143,9 @@ export async function runMarketOpenFixtureTests(options: {
     eq(p.exportSave(), before, `${message}：整档保留`);
     eq(idb.writes, writes, `${message}：无持久写入`);
   }
-  async function formalClosed(p: Progress, message: string) {
+  async function memoryClosed(p: Progress, message: string) {
     const opts = fixtureOptions();
-    // 连资格、时钟、品类和收益承载哨兵都不得在关态求值。
+    // 内存关态连资格、时钟、品类和收益承载哨兵都不得求值。
     const fail = () => { throw new Error('关态禁止查询夹具依赖'); };
     const gate = new MarketGate(p, { ...opts, now: fail, random: fail, canReturnItem: fail, canReceiveReward: fail });
     for (const method of ['persistSoon', 'save', 'saveAsync', 'runSaveTransaction', 'runSaveTransactionAsync', 'addItem', 'removeItem', 'addCraftedItem'])
@@ -179,7 +180,7 @@ export async function runMarketOpenFixtureTests(options: {
     eq(loaded.market, payload.save.market, `${payload.state}：真实异步读档/刷新保留`);
     eq(loaded.inventory, payload.save.inventory, `${payload.state}：读档库存一致`);
     eq(loaded.stones, payload.save.stones, `${payload.state}：读档收益一致`);
-    if (!open) { await formalClosed(loaded, `${payload.state}/跨关态旧档`); return; }
+    if (!openFixture) { await memoryClosed(loaded, `${payload.state}/跨关态旧档`); return; }
     const gate = new MarketGate(loaded, fixtureOptions()), before = loaded.exportSave(), writes = idb.writes;
     ok(gate.loadProgress().allowed, `${payload.state}：只读刷新可查看`);
     eq(loaded.exportSave(), before, `${payload.state}：读档不推进状态`);
@@ -189,23 +190,73 @@ export async function runMarketOpenFixtureTests(options: {
     if (payload.state === 'claimed') await unchanged(loaded, () => gate.claim(historical.listingId), 'O09刷新终态不重发');
     if (payload.state === 'sold_pending_claim') await unchanged(loaded, () => gate.settle(historical.listingId), 'O09刷新待领不重复成交');
   }
+  function sceneSmoke() {
+    const { p } = fixture(), logs: { text: string; color: string }[] = [];
+    const before = p.exportSave(), writes = idb.writes;
+    const entrance = { name: 'market_consign_entrance', x: 100, y: 200 };
+    const scene: any = Object.assign(Object.create(GameScene.prototype), {
+      prog: p, map: { id: 'market-smoke', objects: [] }, player: { x: 100, y: 200 },
+      log: (text: string, color: string) => logs.push({ text, color }),
+      encounterRuntime: { interact() { throw new Error('寄售入口须先于其他交互'); } },
+    });
+    eq(typeof scene.tryInteractMarketConsign, 'function', 'Scene 最小寄售入口存在');
+    eq(scene.tryInteractMarketConsign(), false, '没有地图对象时安静 no-op');
+    scene.map.objects = [{ ...entrance, name: 'npc_shop' }];
+    eq(scene.tryInteractMarketConsign(), false, 'NPC 商店不是寄售入口');
+    scene.map.objects = [entrance]; scene.player.x = entrance.x + 29;
+    eq(scene.tryInteractMarketConsign(), false, '入口横向超距不交互');
+    scene.player.x = entrance.x; scene.player.y = entrance.y + 41;
+    eq(scene.tryInteractMarketConsign(), false, '入口纵向超距不交互');
+    scene.player.y = entrance.y; scene.senseMap = { objectVisible: () => false };
+    eq(scene.tryInteractMarketConsign(), false, '不可见入口不交互');
+    eq(logs, [], '无对象/商店/超距/隐藏入口均无提示');
+    scene.senseMap = undefined;
+    for (const name of ['market_consign_entrance', 'fangshi_consign']) {
+      scene.map.objects = [{ ...entrance, name }];
+      eq(scene.tryInteractMarketConsign(), true, `${name} 邻近入口被消费`);
+      eq(logs[logs.length - 1], openFixture
+        ? { text: '坊市寄售已开放。', color: '#fff8d0' }
+        : { text: Closed.featureClosed().text, color: '#aaaaaa' }, 'Scene 按正式开态/内存关态显示提示');
+    }
+    eq(scene.tryInteract(), true, '通用交互在遭遇/NPC 前消费寄售入口');
+    const originalFeature = MarketGate.prototype.feature;
+    let featureCalls = 0;
+    try {
+      MarketGate.prototype.feature = function () {
+        featureCalls++;
+        if (!openFixture) throw new Error('内存关态不得查询 MarketGate');
+        return { allowed: false, tipKey: 'market.fixture.smoke', text: '寄售冒烟拒绝。' };
+      };
+      eq(scene.tryInteractMarketConsign(), true, '最小入口保留拒绝提示分支');
+      eq(featureCalls, openFixture ? 1 : 0, '只有正式开态查询 MarketGate.feature');
+      eq(logs[logs.length - 1], { text: openFixture ? '寄售冒烟拒绝。' : Closed.featureClosed().text,
+        color: '#aaaaaa' }, 'Gate 拒绝原文或内存关态文案被展示');
+    } finally { MarketGate.prototype.feature = originalFeature; }
+    eq(p.exportSave(), before, 'Scene 冒烟不修改角色或寄售袋');
+    eq(idb.writes, writes, 'Scene 冒烟不写存档');
+    return { noObjectNoop: true, npcShopIgnored: true, nearbyOnly: true, hiddenIgnored: true,
+      aliases: ['market_consign_entrance', 'fangshi_consign'], genericInteraction: true,
+      graph: openFixture ? 'formal-open' : 'memory-closed', gateDeniedRouting: openFixture,
+      closedBypassesGate: !openFixture, saveWrites: idb.writes - writes };
+  }
   try {
+    const sceneSmokeEvidence = sceneSmoke();
     if (refreshPayloads) {
       eq(refreshPayloads.map(row => row.state), ['listed', 'withdrawn', 'sold_pending_claim', 'claimed'], '刷新覆盖四状态');
       for (const payload of refreshPayloads) await roundtrip(payload);
       payloads.push(...copy(refreshPayloads));
     }
-    if (!open) {
+    if (!openFixture) {
       for (const market of [undefined, { state: 'listed', heldItemRef: { id: 'rabbit_fur' } },
         { state: 'sold_pending_claim', pendingRewardRef: { amount: 73 } }, { state: 'unknown', raw: 'keep' }]) {
         const { p } = fixture(); (p as any).market = copy(market);
-        await formalClosed(p, '正式首图/无袋或歧义旧袋');
+        await memoryClosed(p, '内存关态/无袋或歧义旧袋');
       }
     } else if (!refreshPayloads) {
       const { p, gate } = fixture();
       eq(p.market, undefined, '旧档缺market保持undefined');
       eq(Object.prototype.hasOwnProperty.call(p.exportSave(), 'market'), false, '旧档导出不凭空建袋');
-      ok(gate.feature().allowed, 'O01说明在内存开态可查看');
+      ok(gate.feature().allowed, 'O01说明在正式开态可查看');
       ok(gate.loadProgress().allowed, '空袋查看可用');
       eq(p.market, undefined, '只读查看不建袋');
       const first = listing(await gate.listItem({ itemId: 'rabbit_fur', itemInstanceId: 'rabbit_fur#1', listingPrice: 1 }));
@@ -392,8 +443,9 @@ export async function runMarketOpenFixtureTests(options: {
     }
     eq(featureFlags(), flags, 'feature原值保持'); eq(JSON.stringify(rules), tableBefore, '数值表内存对象未修改');
     eq(localWrites, 0, '全部事务不用localStorage');
-    return { assertions, payloads, open, formalClosed: !open, storageWrites: idb.writes, commits: idb.commits,
-      sampleCount, cases: open ? ['O01','O02','O03','O04','O05','O06','O07','O08','O09','O10'] : ['formal-eight-tips','zero-side-effects'] };
+    return { assertions, payloads, openFixture, graph: openFixture ? 'formal-open' : 'memory-closed', sceneSmoke: sceneSmokeEvidence,
+      formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false, storageWrites: idb.writes, commits: idb.commits,
+      sampleCount, cases: openFixture ? ['O01','O02','O03','O04','O05','O06','O07','O08','O09','O10'] : ['memory-closed-eight-tips','zero-side-effects'] };
   } finally {
     for (const p of progresses) await p.flushSaves();
     Progress.setActiveSlot(oldSlot); setSaveBackend(createIndexedDbBackend());

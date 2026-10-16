@@ -1,4 +1,4 @@
-// 关态 API 只读验收：真实 Vite SSR，shared/snapshot 双数据根；不接线 UI，关态 API 不消费寄售数值表。
+// 正式旗已软开；双数据根关态只替换 Vite SSR 内存模块，关态 API 不消费寄售数值表。
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import fs from 'node:fs/promises';
@@ -11,15 +11,16 @@ const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const shared = sharedRoot(root), gameData = path.join(shared, 'game/data');
 const modes = [['shared', shared], ['snapshot', path.join(root, 'data')]];
 const dataRoots = new Map([['shared', shared], ['wt', path.join(root, 'data')], ['game', gameData]]);
-const out = path.join(root, 'qa/out_v06p1_market_closed');
+const out = path.join(root, 'qa/out_v06p1_market_open_preamble/closed');
+const baselineFile = path.join(root, 'qa/out_v06p1_market_closed/protected-before.json');
 const stringsSha = 'c115b6deadf85d1aa9958de1097321ab65624b456e0fddeca42a5fe39743db27';
 const previousStringsSha = '6b0861110a6af78f7bbfb78eb32e7579ecd41d5a33c3eff3da9e157794f5951f';
 const originalStringsSha = '4a32b19b8e1f318cfcbbf8b9a4e9382f17e7fc3fd951d040f9ec4749524f7385';
 const originalSemanticSha = '81d364627ea128a3125c1def299f1d94804cee7b7e511ff417dd4bf9ff24c7a9';
-// 本窗只授权可选 Progress.market 袋与四个夹具源码；正式 MarketClosed 的八 tip 契约不变。
+// 沿用可选 Progress.market 袋与四个源码；本窗仅授权 GameScene 最小入口提示接线，八 tip 契约不变。
 const openFixtureSources = ['MarketOpenFlag.ts', 'MarketProgress.ts', 'MarketGate.ts', 'v06p1-market-open.test.ts'];
 const openFixtureProgressSha = '3e1f4a258b384d5f0d1a2967d0228fcd792cb9a58979efcd5648d9baf9f2e7da';
-const marketTableSha = '5bd59bbed50ea437c96e9e3b6712e68fed7d956bfc02c8c21b322e856b93bed1';
+const marketTableSha = 'e4725b4724dea9abf67baf2ee467a30e841fee3ee1a9137f5dc25225c09debde';
 const closedStrings = {
   'market.closed.feature': '坊市寄售尚未开放。',
   'market.closed.list': '坊市寄售尚未开放，暂不可上架。',
@@ -73,19 +74,45 @@ function protectedPath(key) {
   return path.join(mode === 'wt' && name.startsWith('src/') ? root : dataRoots.get(mode), name);
 }
 
+function stripMarketSceneWiring(source) {
+  let original = source;
+  for (const line of ["import { featureClosed as marketFeatureClosed } from '../MarketClosed';\n",
+    "import { isMarketOpenForFixture } from '../MarketOpenFlag';\n",
+    "import { MarketGate } from '../MarketGate';\n"]) {
+    eq(original.split(line).length - 1, 1, `C12 GameScene 授权 import 精确一次：${line.trim()}`);
+    original = original.replace(line, '');
+  }
+  const entry = source.match(/  \/\*\* 仅接既有寄售入口的冒烟提示；未布置对象的地图保持安静。 \*\/\n  private tryInteractMarketConsign\(\): boolean \{[\s\S]*?\n  \}\n\n/u)?.[0];
+  ok(entry, 'C01/C12 GameScene 存在最小寄售入口提示方法');
+  ok(entry.includes("['market_consign_entrance', 'fangshi_consign'].includes(o.name)"), 'C01/C12 只查当前地图既有寄售对象');
+  ok(/if \(!entrance\) return false;/u.test(entry), 'C01/C12 无入口对象安静 no-op');
+  ok(/!isMarketOpenForFixture\(\)[\s\S]*marketFeatureClosed\(\)\.text/u.test(entry), 'C01/C12 内存关态显示 MarketClosed.featureClosed tip');
+  ok(/new MarketGate\(this\.prog\)\.feature\(\)/u.test(entry), 'C01/C12 正式开态只问 Gate.feature');
+  ok(!/\.(?:listItem|withdraw|settle|claim|rewards|loadProgress)\(|ShopPanel|Panel|auction|拍卖/u.test(entry), 'C01/C12 入口不铺完整 UI、不发起寄售写操作或混拍卖');
+  original = original.replace(entry, '');
+  const zCall = 'this.tryInteractTowerClosed() || this.tryInteractMarketConsign() || this.tryInteractSecretNest()';
+  eq(original.split(zCall).length - 1, 1, 'C01/C12 Z 键在 talkNearby 之前同级接最小寄售入口');
+  original = original.replace(zCall, 'this.tryInteractTowerClosed() || this.tryInteractSecretNest()');
+  const interactCall = '    if (this.tryInteractMarketConsign()) return true;\n';
+  eq(original.split(interactCall).length - 1, 1, 'C01/C12 通用交互仅接同一最小提示入口');
+  return original.replace(interactCall, '');
+}
+
 async function checkProtection() {
-  const beforeFile = path.join(out, 'protected-before.json');
-  const baseline = JSON.parse(await fs.readFile(beforeFile, 'utf8'));
+  const baseline = JSON.parse(await fs.readFile(baselineFile, 'utf8'));
   const protectedFiles = {};
   for (const [key, expected] of Object.entries(baseline)) {
     const file = protectedPath(key);
     if (!file || (expected !== null && (typeof expected !== 'string' || !/^[a-f0-9]{64}$/u.test(expected)))) continue;
-    // 演武另窗表不沿用旧窗缺席基线；下方单独保护现有字节/缺席且 enabled=false，不授权写入。
+    // 演武已翻 enabled=true；下方钉最终三根同字节 SHA，仅授权该表软开翻旗。
     if (key.endsWith('/market_consign.json')) continue;
     const actual = await shaOrNull(file);
     const authorizedSha = key === 'wt:src/Progress.ts' ? openFixtureProgressSha
       : key.endsWith(':balance/strings_zh.json') ? stringsSha : expected;
-    eq(actual, authorizedSha, `C12 写前 SHA 保护：${key}`);
+    if (key === 'wt:src/scenes/GameScene.ts') {
+      eq(hash(stripMarketSceneWiring(await fs.readFile(file, 'utf8'))), authorizedSha,
+        'C12 GameScene 仅增加三 import、入口提示方法、Z/通用交互两处最小接线，其余字节保持');
+    } else eq(actual, authorizedSha, `C12 写前 SHA 保护：${key}`);
     readOnlyBefore.set(file, actual);
     protectedFiles[key] = actual;
   }
@@ -99,20 +126,21 @@ async function checkProtection() {
     }
   }
   const expectedSource = Object.keys(baseline).filter(key => key.startsWith('wt:src/')).map(key => key.slice('wt:src/'.length));
-  eq(await filesUnder(path.join(root, 'src')), [...expectedSource, 'MarketClosed.ts', ...openFixtureSources].sort(), 'C12 src 仅新增关态 API 及明确授权的四个开态夹具文件，无 UI 接线');
+  eq(await filesUnder(path.join(root, 'src')), [...expectedSource, 'MarketClosed.ts', ...openFixtureSources].sort(), 'C12 src 仅新增关态 API 及四个既有源码，无完整寄售 UI 文件');
   for (const [mode, dataRoot] of dataRoots) {
     const file = path.join(dataRoot, 'balance/market_consign.json');
     const actual = await shaOrNull(file);
-    eq(actual, mode === 'wt' ? null : marketTableSha, `C12 ${mode}: 演武表写前字节与缺席状态受保护，不授权写入`);
+    eq(actual, marketTableSha, `C12 ${mode}: market_consign 三根同字节，演武数值仅翻软开旗及状态说明`);
     readOnlyBefore.set(file, actual);
-    if (actual !== null) eq(JSON.parse(await fs.readFile(file, 'utf8')).enabled, false, `C12 ${mode}: 演武表 enabled=false`);
+    eq(JSON.parse(await fs.readFile(file, 'utf8')).enabled, true, `C12 ${mode}: 演武表 enabled=true`);
   }
   for (const name of ['src/scenes/GameScene.ts', 'src/Progress.ts', 'src/ShopPanel.ts', 'src/data.ts', 'src/features.ts']) {
     ok(Object.hasOwn(protectedFiles, `wt:${name}`), `C12 写前证据覆盖 ${name}`);
   }
   report({ suite: 'v06p1-market-closed-protection', passed: true, protectedFiles: Object.keys(protectedFiles).length,
     sourcesOnlyAdded: ['src/MarketClosed.ts', ...openFixtureSources.map(name => `src/${name}`)],
-    optionalMarketBagAdded: true, marketTableConsumedByClosedApi: false, uiAdded: false });
+    optionalMarketBagAdded: true, marketTableConsumedByClosedApi: false, minimalFrontendWiring: true,
+    fullMarketUiAdded: false, formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false });
 }
 
 async function checkStatic(mode, dataRoot) {
@@ -149,7 +177,8 @@ async function checkStatic(mode, dataRoot) {
   const features = JSON.parse(await fs.readFile(path.join(root, 'data/features.json'), 'utf8'));
   ok(!/"[^"\n]*(?:market|consign)[^"\n]*"/iu.test(JSON.stringify(features)), `${mode}/C12: 无新增寄售开态开关`);
   report({ suite: 'v06p1-market-closed-static', dataMode: mode, passed: true, strings: entries.length,
-    stringsSha, giftsFalseCount: gifts, shopsUnchanged: true, mapsUnchanged: true, closed: true, softOpened: false, released: false });
+    stringsSha, marketTableSha, marketEnabled: true, giftsFalseCount: gifts, shopsUnchanged: true,
+    mapsUnchanged: true, formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false });
 }
 
 async function checkSource() {
@@ -162,6 +191,7 @@ async function checkSource() {
   for (const name of await filesUnder(path.join(root, 'src'))) {
     if (name === 'MarketClosed.ts' || openFixtureSources.includes(name) || /\.test\.[cm]?[jt]sx?$/u.test(name)) continue;
     let text = await fs.readFile(path.join(root, 'src', name), 'utf8');
+    if (name === 'scenes/GameScene.ts') text = stripMarketSceneWiring(text);
     if (name === 'Progress.ts') {
       // 仅豁免已钉 SHA 的可选袋声明与纯校验两行，其余 Progress 内容仍全量扫描。
       for (const line of ["  if (has('market') && !isValidMarketProgress(saved.market)) return false;",
@@ -172,7 +202,12 @@ async function checkSource() {
     }
     if (/\bMarket\b|MarketClosed|consign|listing|寄售|auction|拍卖/iu.test(text)) consumers.push(name);
   }
-  eq(consumers, [], 'C01/C12 除明确授权的四个开态夹具文件外，全量源文件无寄售消费者、拍卖或前台 stub，不改 GameScene 接线');
+  eq(consumers, [], 'C01/C12 除四个既有源码及 GameScene 最小提示接线外，无寄售消费者或拍卖接线');
+  ok(!/market|consign|寄售|auction|拍卖/iu.test(await fs.readFile(path.join(root, 'src/ShopPanel.ts'), 'utf8')),
+    'C12 ShopPanel 保持 NPC 商店，不接寄售或拍卖');
+  const flag = await fs.readFile(path.join(root, 'src/MarketOpenFlag.ts'), 'utf8');
+  ok(/export function isMarketOpenForFixture\(\): boolean\s*\{\s*return true;\s*\}/u.test(flag),
+    'C12 正式磁盘 MarketOpenFlag 恒返回 true，关态仅 SSR 内存 false');
 }
 
 // 本套件历史单据仍挂测试字段；新增可选 Progress.market 袋由开态四图套件另验。
@@ -197,9 +232,20 @@ function legacyFixtures() {
   ];
 }
 
-async function runGraph(mode, dataRoot, refreshPayloads = null) {
+async function runGraph(mode, dataRoot, closedFixtureOnly, refreshPayloads = null) {
+  let flagLoads = 0;
+  const flagId = '\0v06p1-memory-closed-market-flag';
   const server = await createServer({ root, configFile: false, resolve: { alias: { '@xt': dataRoot } },
-    server: { middlewareMode: true, hmr: false, ws: false }, appType: 'custom', logLevel: 'error' });
+    server: { middlewareMode: true, hmr: false, ws: false }, appType: 'custom', logLevel: 'error',
+    plugins: [{ name: 'v06p1-market-closed-memory-fixture', enforce: 'pre',
+      resolveId(id) {
+        if (closedFixtureOnly && /(?:^|\/)MarketOpenFlag(?:\.ts)?$/u.test(id)) return flagId;
+      },
+      load(id) {
+        if (id === flagId) { flagLoads++; return 'export function isMarketOpenForFixture() { return false; }'; }
+      },
+    }],
+  });
   const storageDescriptor = Object.getOwnPropertyDescriptor(globalThis, 'localStorage');
   const saved = new Map();
   let storageWrites = 0, fixtures = 0, invocations = 0;
@@ -210,6 +256,14 @@ async function runGraph(mode, dataRoot, refreshPayloads = null) {
     key: index => [...saved.keys()][index] ?? null, get length() { return saved.size; },
   } });
   try {
+    const flag = await server.ssrLoadModule('/src/MarketOpenFlag.ts');
+    eq(flag.isMarketOpenForFixture(), !closedFixtureOnly, `${mode}: 正式旗 true；关态仅 SSR 内存注入 false`);
+    eq(flagLoads, closedFixtureOnly ? 1 : 0, `${mode}: 正式图 flagLoads=0，内存关态图 flagLoads=1`);
+    if (!closedFixtureOnly) {
+      report({ suite: 'v06p1-market-closed-formal-graph', dataMode: mode, graph: 'formal-open',
+        flagLoads, formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false, passed: true });
+      return;
+    }
     const api = await server.ssrLoadModule('/src/MarketClosed.ts');
     const { Progress } = await server.ssrLoadModule('/src/Progress.ts');
     const data = await server.ssrLoadModule('/src/data.ts');
@@ -282,9 +336,10 @@ async function runGraph(mode, dataRoot, refreshPayloads = null) {
     }
     eq(features.featureFlags(), flagsBefore, `${mode}/C12: 所有开关保持原值`);
     eq(storageWrites, 0, `${mode}: 所有拒绝、并发、真实读档、刷新零存储写入`);
-    report({ suite: 'v06p1-market-closed-runtime', dataMode: mode, passed: true, fixtures, invocations,
+    report({ suite: 'v06p1-market-closed-runtime', dataMode: mode, graph: 'memory-closed', flagLoads,
+      formalOpen: true, closedFixtureOnly: true, passed: true, fixtures, invocations,
       freshSsrRefresh: !!refreshPayloads, legacyFixtureOnly: true, optionalMarketBagAdded: true,
-      cases: Object.keys(caseApis), zeroArgumentApis: 8, storageWrites, closed: true, softOpened: false, released: false });
+      cases: Object.keys(caseApis), zeroArgumentApis: 8, storageWrites, closed: true, softOpened: true, released: false });
     return payloads;
   } finally {
     if (storageDescriptor) Object.defineProperty(globalThis, 'localStorage', storageDescriptor);
@@ -304,16 +359,18 @@ try {
     eq((await fs.readFile(path.join(dataRoot, 'balance/strings_zh.json'))).equals(sharedStrings), true, `${mode}: 三根 strings 最终同字节`);
   }
   for (const [mode, dataRoot] of modes) {
-    const payloads = await runGraph(mode, dataRoot);
+    await runGraph(mode, dataRoot, false);
+    const payloads = await runGraph(mode, dataRoot, true);
     // 新 SSR 图重新加载真实模块和 Progress，模拟刷新后仍拒绝全部历史状态。
-    await runGraph(mode, dataRoot, payloads);
+    await runGraph(mode, dataRoot, true, payloads);
   }
   passed = true;
 } finally {
   for (const [file, sha] of readOnlyBefore) eq(await shaOrNull(file), sha, `只读测试前后 SHA 不变：${file}`);
   await fs.writeFile(path.join(out, 'v06p1-market-closed-evidence.json'), `${JSON.stringify({ passed, assertions,
-    stringsSha, cases: [...Object.keys(caseApis), 'C12'], closed: true, softOpened: false, released: false,
-    noFrontendMarketUi: true, noMarketTableConsumedByClosedApi: true, optionalMarketBagAdded: true,
+    stringsSha, marketTableSha, marketEnabled: true, cases: [...Object.keys(caseApis), 'C12'],
+    formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false,
+    minimalFrontendWiring: true, fullMarketUiAdded: false, noMarketTableConsumedByClosedApi: true, optionalMarketBagAdded: true,
     protectedFiles: Object.fromEntries(readOnlyBefore), evidence }, null, 2)}\n`);
 }
-console.log(`v06p1 market closed tests ok: ${assertions} assertions; C01–C12 自动化部分通过；shared/snapshot 双根及 game 文案同字节；八 API 零参数、零副作用、零存储写入；shops/禁改表/地图不变，Progress仅授权可选market袋，gifts 10×false，GAME_PHASE=5；无前台寄售 UI、正式仍关、未软开、未发版`);
+console.log(`v06p1 market closed tests ok: ${assertions} assertions; C01–C12 自动化部分通过；shared/snapshot 双根及 game 文案同字节；八 API 零参数、零副作用、零存储写入；shops/禁改表/地图不变，Progress仅授权可选market袋，gifts 10×false，GAME_PHASE=5；仅前台入口最小提示、无完整寄售 UI；formalOpen:true、closedFixtureOnly:true、softOpened:true、released:false；正式旗及三根 enabled=true，关态仅 SSR 内存 false、未发版`);

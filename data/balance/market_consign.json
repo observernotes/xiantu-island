@@ -1,0 +1,72 @@
+{
+  "version": "v0.6-draft",
+  "enabled": true,
+  "meta": {
+    "generator": "balance/tools/gen_market_consign.py",
+    "status": "演武正式数值已定，表根已 soft-open（enabled=true）；仍未接线/未发版，开放玩法仍需另令。",
+    "basis": [
+      "2026-10-17 负责人令·数值另窗 via 项目经理：七字段正式定值",
+      "design/23_v06_P1②关态_坊市寄售.md §2.2、§2.4、§3",
+      "design/GDD_总体设计.md §14.6、§15.8 与 balance/solo_pacing.json stones/offline 仅作只读差异对照，不作取值源"
+    ],
+    "rationale": {
+      "listingPrice": "玩家自定挂牌价，参考 items.price 的 NPC 标价；钳制在 NPC 售价 0.5×–2.0×，以半价购回为下界约束、防购回套利，并限制离谱抬价；本字段是定价规则对象，不是单笔固定灵石数。",
+      "consignFee": "单机无玩家交易税，寄售是主要灵石回收口之一；在半价购回的隐性折损叙事上增加明确的寄售回收成本，取成交价的 6%，低于拍卖会规划 10%，不是照搬 solo_pacing 的 0.05；6% 与半价折损 50% 不是同一成本口径，不作大小倒置比较。",
+      "marketPriceSwing": "v0.6 寄售 NPC 收购参考市价日波动 ±15%；比 GDD 草案 ±20% 收窄 5 个百分点，降低一期定价抽检噪声。",
+      "saleDelay": "上架后在线最短等待 1800 秒（30 分钟）才允许 NPC 成交回调；避免即挂即售破坏节奏，达到等待时限不等于保证成交。",
+      "offlineSettlementWindow": "寄售离线可累计结算窗为 28800 秒（8 小时），与洞府离线上限同量级，但使用寄售专用字段，不改 solo_pacing.offline；依 design/23，关态期间不累计可补发收益、不补算成交。",
+      "rewardAmount": "成交毛额为 listingPrice × marketFactor，按成交价扣除 6% 手续费后形成待领收益；marketFactor 在 [1-swing, 1+swing] 内于成交时只抽样一次，领取或重试不重新抽样；成交不自动领取，关态不生成或预发收益。",
+      "slotCapacity": "每角色同时活动寄售栏上限 5；listed 与 sold_pending_claim 合计占栏，避免未领取单被新单覆盖；满栏拒绝新上架，终态与去重规则沿 design/23 §2.2。"
+    },
+    "fieldMapping": {
+      "saleDelay": {
+        "jsonField": "saleDelaySec",
+        "unit": "sec",
+        "clock": "online"
+      },
+      "offlineSettlementWindow": {
+        "jsonField": "offlineSettlementWindowSec",
+        "unit": "sec"
+      }
+    },
+    "units": {
+      "listingPrice": "ratio_of_items.price",
+      "consignFee": "ratio_of_gross_sale_price",
+      "marketPriceSwing": "symmetric_ratio_per_day",
+      "rewardAmount": "same_currency_as_listingPrice",
+      "slotCapacity": "active_listings_per_character"
+    },
+    "slotCapacityScope": {
+      "per": "character",
+      "activeStates": [
+        "listed",
+        "sold_pending_claim"
+      ],
+      "whenFull": "reject_new_listing"
+    },
+    "closedPolicy": {
+      "allowStateTransitions": false,
+      "offlineCatchUp": false,
+      "preGrantRewards": false,
+      "note": "关态仅只读保留合法历史单据及资产；不得新建、推进、补算、预发或排队延后写入。"
+    }
+  },
+  "listingPrice": {
+    "mode": "player_set",
+    "reference": "items.price",
+    "minRatioOfNpcSell": 0.5,
+    "maxRatioOfNpcSell": 2.0
+  },
+  "consignFee": 0.06,
+  "marketPriceSwing": 0.15,
+  "saleDelaySec": 1800,
+  "offlineSettlementWindowSec": 28800,
+  "rewardAmount": {
+    "formula": "listingPrice*(1-consignFee)*marketFactor",
+    "marketFactorMin": 0.85,
+    "marketFactorMax": 1.15,
+    "sampleAt": "sale",
+    "samplesPerSale": 1
+  },
+  "slotCapacity": 5
+}

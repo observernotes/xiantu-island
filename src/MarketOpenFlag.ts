@@ -1,2 +1,2 @@
-/** 正式恒关；仅 Vite SSR 开态夹具图可由 resolve/load 内存模块注入 true。 */
-export function isMarketOpenForFixture(): boolean { return false; }
+/** 正式路径恒 true；仅 Vite SSR 关态图可注入 false。 */
+export function isMarketOpenForFixture(): boolean { return true; }

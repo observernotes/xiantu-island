@@ -36,7 +36,7 @@ const safeId = (value: unknown): value is string => typeof value === 'string' &&
   && !['__proto__', 'prototype', 'constructor'].includes(value);
 const active = (entry: MarketListing) => entry.state === 'listed' || entry.state === 'sold_pending_claim';
 
-/** 无前台接线。正式每入口首先走 Closed；只有 Vite SSR 内存图可进入真实 Progress 事务。 */
+/** 正式 soft-open；每入口保留关态拦截，仅 Vite SSR 内存关态图注入 false。 */
 export class MarketGate {
   #busy = false;
   constructor(private readonly progress: Progress, private readonly fixture: MarketFixtureOptions = {}) {}
@@ -205,7 +205,7 @@ export class MarketGate {
       && !Object.values(progress.equip).includes(itemId);
   }
   private validRules(): boolean {
-    return rules.enabled === false && rules.listingPrice.mode === 'player_set' && rules.listingPrice.reference === 'items.price'
+    return rules.enabled === true && rules.listingPrice.mode === 'player_set' && rules.listingPrice.reference === 'items.price'
       && positive(rules.listingPrice.minRatioOfNpcSell) && positive(rules.listingPrice.maxRatioOfNpcSell)
       && rules.listingPrice.minRatioOfNpcSell <= rules.listingPrice.maxRatioOfNpcSell
       && nonnegative(rules.consignFee) && rules.consignFee < 1 && nonnegative(rules.marketPriceSwing) && rules.marketPriceSwing < 1
