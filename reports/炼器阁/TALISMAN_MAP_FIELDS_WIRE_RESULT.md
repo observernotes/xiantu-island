@@ -46,4 +46,4 @@
 ## 请执法堂
 
 - 关态抽检：表字段存在、`talismanCraft=false`、试炼仍禁遁地文案/逻辑；开态整期仍等负责人。
-- tip sha：见提交后回报（本文件提交时写入 status）。
+- tip：`99ec29c`（origin/dev）。
