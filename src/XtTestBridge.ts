@@ -69,6 +69,34 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig, rendererChoi
   let resolveRestart: (() => void) | undefined;
   const senseFixtureNames = { chest: 'xt_sense_chest', hiddenChest: 'xt_sense_hidden_chest', platform: 'xt_sense_platform', monster: 'xt_sense_monster' };
   let senseFixtureMap: string | undefined;
+  type SenseFixturePlatform = { x: number; y: number; w: number; h: number };
+  function senseFixtureClearance(s: GameScene, platform: SenseFixturePlatform) {
+    // 留出玩家宽度、两倍身高的下落空间，以及完整地砖高度；同时避开原地形上方的站立区。
+    const area = { left: platform.x - SPEC.bodyW / 2, right: platform.x + platform.w + SPEC.bodyW / 2,
+      top: platform.y - SPEC.bodyH * 2, bottom: platform.y + Math.max(FEEL.tile, platform.h, SPEC.oneWayEdge) };
+    const collisions = (['solids', 'oneWays'] as const).flatMap(kind => s.map[kind].getChildren()
+      .filter(object => object.name !== `sense-platform:${senseFixtureNames.platform}`)
+      .map(object => {
+        const body = object.body as Phaser.Physics.Arcade.StaticBody;
+        const bounds = { left: body.left, right: body.right, top: body.top, bottom: body.bottom };
+        return { kind, name: object.name, enabled: body.enable, bounds,
+          landingArea: { ...bounds, top: body.top - SPEC.bodyH } };
+      }));
+    const overlaps = collisions.filter(({ landingArea: bounds }) => area.left < bounds.right && area.right > bounds.left
+      && area.top < bounds.bottom && area.bottom > bounds.top);
+    return { area, checkedBodies: collisions.length, overlaps };
+  }
+  function senseFixturePlatform(s: GameScene): SenseFixturePlatform {
+    // 青云村首选 [32, 189] / y584，完全绕开 x224 起的原单向平台；非整格宽度覆盖末格对齐。
+    const platform = { x: FEEL.tile, y: s.map.spawn.y - 120, w: 157, h: 12 };
+    for (let y = platform.y; y >= SPEC.bodyH * 2; y -= FEEL.tile) {
+      for (let x = FEEL.tile; x + platform.w + SPEC.bodyW / 2 <= s.map.width; x += FEEL.tile) {
+        const candidate = { ...platform, x, y }, clearance = senseFixtureClearance(s, candidate);
+        if (clearance.area.top >= 0 && clearance.area.bottom <= s.map.height && clearance.overlaps.length === 0) return candidate;
+      }
+    }
+    throw new Error(`${marker}: no clear sense platform fixture position`);
+  }
   const preload = scene.preload.bind(scene);
   scene.preload = () => {
     scene.load.off('loaderror', onLoadError);
@@ -411,14 +439,15 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig, rendererChoi
       if (options.inspectDurationMs !== undefined) table.inspect.durationMs = options.inspectDurationMs;
       for (const profile of table.targetProfiles) profile.enabled = true;
       const map = TILED_MAPS[mapId];
+      const platform = senseFixturePlatform(s);
       const prop = (name: string, value: unknown) => ({ name, type: typeof value === 'number' ? 'float' : 'string', value });
       const objects = [
         { id: 910001, type: 'chest', name: senseFixtureNames.chest, x: 224, y: mapId === 'qingyun_village' ? 704 : s.map.spawn.y,
           width: 0, height: 0, properties: [prop('loot', 'hp_pill_small'), prop('count', 1)] },
         { id: 910002, type: 'hidden', name: senseFixtureNames.hiddenChest, x: 224, y: mapId === 'qingyun_village' ? 704 : s.map.spawn.y,
           width: 0, height: 0, properties: [prop('reqSpirit', 0), prop('reveal', 'chest'), prop('targetObject', senseFixtureNames.chest)] },
-        { id: 910003, class: 'hidden', name: senseFixtureNames.platform, x: 144, y: s.map.spawn.y - 120,
-          width: 160, height: 12, properties: [prop('reqSpirit', 0), prop('reveal', 'platform')] },
+        { id: 910003, class: 'hidden', name: senseFixtureNames.platform, x: platform.x, y: platform.y,
+          width: platform.w, height: platform.h, properties: [prop('reqSpirit', 0), prop('reveal', 'platform')] },
       ];
       map.layers = map.layers.filter((layer: { name?: string }) => layer.name !== 'xt_sense_fixture');
       map.layers.push({ id: 910000, type: 'objectgroup', name: 'xt_sense_fixture', objects });
@@ -433,10 +462,30 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig, rendererChoi
     },
     senseFixtureSnapshot() {
       const s = current(), body = s.senseMap.platformBody(senseFixtureNames.platform);
+      const platform = s.map.hidden.find(hidden => hidden.object.name === senseFixtureNames.platform)?.object;
+      const visual = s.senseMap.platformVisual(senseFixtureNames.platform);
+      const bounds = visual?.object.getBounds();
+      const render = {
+        exists: !!visual?.object.scene, visible: visual?.object.visible ?? false,
+        bounds: bounds ? { left: bounds.left, right: bounds.right, top: bounds.top, bottom: bounds.bottom,
+          width: bounds.width, height: bounds.height } : null,
+        alpha: visual?.object.alpha ?? null, depth: visual?.object.depth ?? null,
+        fallback: visual?.fallback ?? false, tileset: visual?.tileset ?? null, tiles: visual?.tiles ?? [],
+        images: visual?.object.list.filter((child): child is Phaser.GameObjects.Image => child instanceof Phaser.GameObjects.Image)
+          .map(image => {
+            const tileBounds = image.getBounds();
+            return { texture: image.texture.key, frame: image.frame.name, visible: image.visible, alpha: image.alpha,
+              bounds: { left: tileBounds.left, right: tileBounds.right, top: tileBounds.top, bottom: tileBounds.bottom,
+                width: tileBounds.width, height: tileBounds.height } };
+          }) ?? [],
+      };
       const chest = s.children.getByName('chest:' + senseFixtureNames.chest) as Phaser.GameObjects.GameObject & { visible?: boolean } | null;
       return copy({ names: senseFixtureNames, mapId: s.map.id, fixtureMap: senseFixtureMap, mp: s.prog.mp,
+        spawn: s.map.spawn,
         openedChests: [...s.prog.openedChests], chestVisible: chest?.visible ?? false,
         platform: body ? { enabled: body.enable, top: body.top, left: body.left, right: body.right,
+          bottom: body.bottom, centerX: body.center.x, width: body.width, render,
+          clearance: platform ? senseFixtureClearance(s, platform) : null,
           checkCollision: { up: body.checkCollision.up, down: body.checkCollision.down, left: body.checkCollision.left, right: body.checkCollision.right } } : null,
         player: { x: s.player.x, y: s.player.y, bottom: s.player.body.bottom, onGround: s.player.onGround },
         revealed: s.sense.revealedHidden(s.map.id), intel: s.sense.intelList(), preview: s.sense.preview() });

@@ -15,6 +15,8 @@ export interface BuiltMap {
   id: string; name: string; safeZone: boolean;
   trial?: string; night: boolean;
   width: number; height: number;
+  /** 记录实际构图模式；显形平台复用同一地砖与缺图回退。 */
+  tileset?: string; useTiles: boolean;
   solids: Phaser.Physics.Arcade.StaticGroup;
   oneWays: Phaser.Physics.Arcade.StaticGroup;
   ropes: Rope[];
@@ -30,7 +32,7 @@ type Grid = string[];  // '#' 实心  '=' 单向  '.' 空
 
 function emptyMap(scene: Phaser.Scene, id: string, name: string, safe: boolean, cols: number, rows: number): BuiltMap {
   return {
-    id, name, safeZone: safe, night: false, width: cols * FEEL.tile, height: rows * FEEL.tile,
+    id, name, safeZone: safe, night: false, width: cols * FEEL.tile, height: rows * FEEL.tile, useTiles: false,
     solids: scene.physics.add.staticGroup(), oneWays: scene.physics.add.staticGroup(),
     ropes: [], spawn: { x: 64, y: 64 }, spawns: [], spawnGates: [], objects: [], hidden: [], zones: [],
   };
@@ -74,14 +76,30 @@ export function parseHiddenObjects(objects: MapObj[]): HiddenMapObject[] {
 /** 按邻格自动选图块（规则见 art/tiles/README.md） */
 function autoTile(grid: Grid, r: number, c: number): number {
   const ch = grid[r][c], at = (rr: number, cc: number) => grid[rr]?.[cc] ?? '.';
-  if (ch === '=') {
-    const L = at(r, c - 1) === '=', R = at(r, c + 1) === '=';
-    return L && R ? 9 : L ? 10 : R ? 8 : 11;
-  }
+  if (ch === '=') return oneWayTileBase(at(r, c - 1) === '=', at(r, c + 1) === '=');
   const top = at(r - 1, c) !== '#';
   const L = at(r, c - 1) === '#' || c === 0, R = at(r, c + 1) === '#' || c === grid[r].length - 1;
   const base = top ? 0 : 4;
   return L && R ? base + 1 : L ? base + 2 : R ? base : base + 3;
+}
+
+/** '=' 与显形平台共用左右端/中段/独立块的选择规则。 */
+export function oneWayTileBase(left: boolean, right: boolean): number {
+  return left && right ? 9 : left ? 10 : right ? 8 : 11;
+}
+
+export interface OneWayPlatformTile {
+  x: number; width: number; base: number; col: number; row: number;
+}
+
+/** 尾格缩放到剩余宽度；不让非整格平台的画面伸出碰撞体。 */
+export function oneWayPlatformTiles(x: number, y: number, width: number, tileSize = FEEL.tile): OneWayPlatformTile[] {
+  if (![x, y, width, tileSize].every(Number.isFinite) || width <= 0 || tileSize <= 0) return [];
+  const count = Math.ceil(width / tileSize), col = Math.floor(x / tileSize), row = Math.floor(y / tileSize);
+  return Array.from({ length: count }, (_, index) => ({
+    x: x + index * tileSize, width: Math.min(tileSize, width - index * tileSize),
+    base: oneWayTileBase(index > 0, index < count - 1), col: col + index, row,
+  }));
 }
 
 function tilesetFrameCount(scene: Phaser.Scene, key: string): number {
@@ -98,10 +116,47 @@ function chooseTile(scene: Phaser.Scene, groups: TileVariantGroups, tileset: str
   return { tileset, frame: base, weight: 1 };
 }
 
+/** 地砖不可用时，与原 '=' 平台共用完全相同的落脚上沿和土色块。 */
+function oneWayFallback(scene: Phaser.Scene, x: number, y: number, width: number): Phaser.GameObjects.Rectangle[] {
+  return [
+    scene.add.rectangle(x, y, width, 14, 0xc9a56b).setOrigin(0, 0).setDepth(-1),
+    scene.add.rectangle(x, y, width, SPEC.oneWayEdge, 0x6fd25a).setOrigin(0, 0).setDepth(-1),
+  ];
+}
+
+export interface OneWayPlatformVisual {
+  object: Phaser.GameObjects.Container;
+  fallback: boolean;
+  tileset?: string;
+  tiles: (OneWayPlatformTile & { tileset: string; frame: number })[];
+}
+
+/** 只在显形后调用；不创建额外专用素材，也不依赖另一次 spritesheet 加载。 */
+export function createOneWayPlatformVisual(scene: Phaser.Scene, map: BuiltMap, object: MapObj): OneWayPlatformVisual {
+  const container = scene.add.container(object.x, object.y).setName(`sense-platform-visual:${object.name}`).setDepth(-1).setAlpha(0.85);
+  const tiles: OneWayPlatformVisual['tiles'] = [];
+  const useTiles = map.useTiles && !!map.tileset && scene.textures.exists(map.tileset);
+  if (useTiles) {
+    const variants = tileVariantGroups(scene.cache.json.get(`${map.tileset}_meta`), map.tileset!);
+    for (const part of oneWayPlatformTiles(object.x, object.y, object.w)) {
+      const chosen = chooseTile(scene, variants, map.tileset!, part.base, part.col, part.row);
+      const texture = scene.textures.get(chosen.tileset), frameName = `one-way:${chosen.frame}`;
+      if (!texture.has(frameName)) {
+        const columns = Math.floor(texture.get('__BASE').cutWidth / FEEL.tile);
+        texture.add(frameName, 0, chosen.frame % columns * FEEL.tile, Math.floor(chosen.frame / columns) * FEEL.tile, FEEL.tile, FEEL.tile);
+      }
+      container.add(scene.add.image(part.x - object.x, 0, chosen.tileset, frameName).setOrigin(0, 0).setDisplaySize(part.width, FEEL.tile));
+      tiles.push({ ...part, tileset: chosen.tileset, frame: chosen.frame });
+    }
+  } else container.add(oneWayFallback(scene, 0, 0, object.w));
+  return { object: container, fallback: !useTiles, tileset: map.tileset, tiles };
+}
+
 /** 碰撞体：同一行连续的地块合并成一个，避免接缝卡脚；有图块素材就铺图块，没有就画色块 */
 function buildTerrain(scene: Phaser.Scene, map: BuiltMap, grid: Grid, tileset?: string) {
   const T = FEEL.tile;
   const useTiles = !!tileset && scene.textures.exists(tileset);
+  map.tileset = tileset; map.useTiles = useTiles;
   const gfx = scene.add.graphics().setDepth(-1);
   if (useTiles) {
     const variants = tileVariantGroups(scene.cache.json.get(`${tileset}_meta`), tileset!);
@@ -139,7 +194,7 @@ function buildTerrain(scene: Phaser.Scene, map: BuiltMap, grid: Grid, tileset?: 
         }
         map.solids.add(scene.add.zone(x + w / 2, y + T / 2, w, T));
       } else {
-        if (!useTiles) { gfx.fillStyle(0xc9a56b).fillRect(x, y, w, 14); gfx.fillStyle(0x6fd25a).fillRect(x, y, w, SPEC.oneWayEdge); }
+        if (!useTiles) oneWayFallback(scene, x, y, w);
         const z = scene.add.zone(x + w / 2, y + SPEC.oneWayEdge / 2, w, SPEC.oneWayEdge);
         map.oneWays.add(z);
         const b = z.body as Phaser.Physics.Arcade.StaticBody;

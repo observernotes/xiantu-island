@@ -1325,6 +1325,7 @@ export class GameScene extends Phaser.Scene {
 
   /** 测试覆盖即时撤下旧回调；存档身份、材料、贡献与待炼炉次均保留。 */
   applyFeatureFlags() {
+    this.senseMap?.syncRevealed();
     syncTalismanMapAvailability();
     if (!featureEnabled('talismanCraft') && (this.map.id === 'lingfu_pavilion'
       || this.prog.pendingSectTrial?.returnPosition.mapId === 'lingfu_pavilion')) {

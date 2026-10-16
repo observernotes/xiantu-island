@@ -3,7 +3,7 @@ import { MONSTERS, REALMS, t } from './data';
 import { featureEnabled, setFeatureFlag } from './features';
 import { Progress } from './Progress';
 import { Sense, validateSenseConfig, type SenseOptions } from './Sense';
-import { parseHiddenObjects, type MapObj } from './scenes/MapBuilder';
+import { oneWayPlatformTiles, oneWayTileBase, parseHiddenObjects, type MapObj } from './scenes/MapBuilder';
 
 let assertions = 0;
 function eq(actual: unknown, expected: unknown, message: string) {
@@ -91,6 +91,46 @@ function blocked(f: Fixture, reason: string, message: string) {
 }
 
 try {
+  // 与普通 '=' 共用端头选择；任意对象宽度必须无缝覆盖且不越过碰撞体左右边。
+  {
+    same([oneWayTileBase(false, false), oneWayTileBase(false, true),
+      oneWayTileBase(true, true), oneWayTileBase(true, false)], [11, 8, 9, 10], '单格/左端/中间/右端沿用普通单向平台索引');
+    same(oneWayPlatformTiles(13.5, 65.25, 16), [
+      { x: 13.5, width: 16, base: 11, col: 0, row: 2 },
+    ], '不足一格仍使用单格地砖，位置保留小数精度');
+    same(oneWayPlatformTiles(32, 96, 64), [
+      { x: 32, width: 32, base: 8, col: 1, row: 3 },
+      { x: 64, width: 32, base: 10, col: 2, row: 3 },
+    ], '两整格不多生成尾格，端头和变体网格坐标正确');
+    same(oneWayPlatformTiles(13.5, 65.25, 157).map(tile => tile.base), [8, 9, 9, 9, 10], '非整格平台保留两端与中段地砖');
+    for (const width of [0.5, 16, 32, 32.5, 64, 157, 160]) {
+      const x = 13.5, y = 65.25, tiles = oneWayPlatformTiles(x, y, width);
+      ok(tiles.length > 0, `合法平台宽 ${width} 提供地砖`);
+      let edge = x;
+      for (const tile of tiles) {
+        eq(tile.x, edge, `宽 ${width} 地砖之间不留缝隙或重叠`);
+        ok(tile.width > 0 && tile.width <= 32, `宽 ${width} 各地砖不超过一格`);
+        eq(tile.row, 2, `宽 ${width} 每格使用对象上沿所在行选变体`);
+        edge += tile.width;
+      }
+      eq(edge, x + width, `宽 ${width} 画面右侧精确对齐碰撞体右侧`);
+    }
+    same(oneWayPlatformTiles(-8, -0.5, 20, 16), [
+      { x: -8, width: 16, base: 8, col: -1, row: -1 },
+      { x: 8, width: 4, base: 10, col: 0, row: -1 },
+    ], '自定义格尺寸与负坐标仍按地砖网格选变体并保持边界');
+    for (const invalid of [NaN, Infinity, -Infinity]) {
+      same(oneWayPlatformTiles(invalid, 0, 32), [], '非法横坐标不创建地砖');
+      same(oneWayPlatformTiles(0, invalid, 32), [], '非法上沿坐标不创建地砖');
+      same(oneWayPlatformTiles(0, 0, invalid), [], '非法宽度不创建地砖');
+      same(oneWayPlatformTiles(0, 0, 32, invalid), [], '非法格尺寸不创建地砖');
+    }
+    for (const empty of [0, -1]) {
+      same(oneWayPlatformTiles(0, 0, empty), [], '非正宽度不创建地砖');
+      same(oneWayPlatformTiles(0, 0, 32, empty), [], '非正格尺寸不创建地砖');
+    }
+  }
+
   // MapBuilder 只解析内存对象；正式地图没有任何 hidden 投放。
   {
     const native = (type: string, name: string, props: Record<string, unknown>): MapObj => ({ type, name, props, x: 100, y: 100, w: 0, h: 0 });
@@ -528,7 +568,7 @@ try {
     eq(f.p.mp, mp - 8, '导入旧档后旧 scanId 不命中已废弃缓存');
     eq(writes - writesBefore, 1, '导入旧档后新操作重新保存一笔');
   }
-  console.log(`sense.test: ${assertions} 条断言通过（开关/配表/顺序/原子提交/边界/静态实例存档/怪物快照）`);
+  console.log(`sense.test: ${assertions} 条断言通过（地砖齐边/开关/配表/顺序/原子提交/边界/静态实例存档/怪物快照）`);
 } finally {
   Date.now = originalNow; setFeatureFlag('spiritScan', previousFlag);
   if (originalStorage) Object.defineProperty(globalThis, 'localStorage', originalStorage);

@@ -1,19 +1,21 @@
 import Phaser from 'phaser';
 import { SPEC } from '../config/feel';
 import { ITEMS, SENSE, TILED_MAPS } from '../data';
+import { featureEnabled } from '../features';
 import type { SenseTarget } from '../Sense';
 import type { GameScene } from './GameScene';
-import type { HiddenMapObject, MapObj } from './MapBuilder';
+import { createOneWayPlatformVisual, type HiddenMapObject, type MapObj, type OneWayPlatformVisual } from './MapBuilder';
 
 type VisibleObject = Phaser.GameObjects.GameObject & { setVisible(value: boolean): unknown };
 
 /** 静态图的隐藏状态只归 mapId|objectName；不接管原生奖励或通行条件。 */
 export class SenseMapAdapter {
   private readonly platforms = new Map<string, Phaser.GameObjects.Zone>();
+  private readonly platformVisuals = new Map<string, OneWayPlatformVisual>();
   private readonly visuals = new Map<MapObj, Set<VisibleObject>>();
 
   constructor(private readonly scene: GameScene) {
-    // 必须早于 Player 构建。zone 仅提供落脚面，显形轮廓交给界面/表现接入。
+    // 必须早于 Player 构建：读档的落脚面和本体画面同时恢复，显形高亮仍由界面接入。
     for (const hidden of scene.map.hidden) {
       if (!hidden.valid || hidden.kind !== 'platform' || hidden.encounter) continue;
       const object = hidden.object;
@@ -22,20 +24,43 @@ export class SenseMapAdapter {
       scene.map.oneWays.add(zone);
       const body = zone.body as Phaser.Physics.Arcade.StaticBody;
       body.checkCollision.down = body.checkCollision.left = body.checkCollision.right = false;
-      body.enable = this.revealed(object.name);
-      zone.setVisible(body.enable);
       this.platforms.set(object.name, zone);
     }
+    this.syncRevealed();
   }
 
   revealed(objectName: string): boolean {
     const hidden = this.scene.map.hidden.find(entry => entry.object.name === objectName);
-    return !!hidden?.valid && !hidden.encounter
+    return featureEnabled('spiritScan') && !!hidden?.valid && !hidden.encounter
       && this.scene.prog.senseRevealed?.[`${this.scene.map.id}|${objectName}`] === true;
   }
 
   platformBody(objectName: string): Phaser.Physics.Arcade.StaticBody | undefined {
     return this.platforms.get(objectName)?.body as Phaser.Physics.Arcade.StaticBody | undefined;
+  }
+
+  /** 尚未显形时没有任何平台本体图元；测试读取真实渲染对象和所选地砖。 */
+  platformVisual(objectName: string): OneWayPlatformVisual | undefined {
+    return this.platformVisuals.get(objectName);
+  }
+
+  /** 扫描、读档与运行期切换开关都走同一路径；半透明不影响碰撞强度。 */
+  syncRevealed() {
+    for (const hidden of this.scene.map.hidden) {
+      const zone = this.platforms.get(hidden.object.name);
+      if (!zone) continue;
+      const visible = this.revealed(hidden.object.name);
+      (zone.body as Phaser.Physics.Arcade.StaticBody).enable = visible;
+      zone.setVisible(visible);
+      let visual = this.platformVisuals.get(hidden.object.name);
+      if (visible && !visual) {
+        visual = createOneWayPlatformVisual(this.scene, this.scene.map, hidden.object);
+        this.platformVisuals.set(hidden.object.name, visual);
+      }
+      visual?.object.setVisible(visible);
+    }
+    for (const [object, visuals] of this.visuals) for (const visual of visuals)
+      if (visual.scene) visual.setVisible(this.objectVisible(object));
   }
 
   objectVisible(object: MapObj): boolean {
@@ -50,8 +75,7 @@ export class SenseMapAdapter {
   }
 
   private applyReveal(hidden: HiddenMapObject) {
-    const zone = this.platforms.get(hidden.object.name);
-    if (zone) { (zone.body as Phaser.Physics.Arcade.StaticBody).enable = true; zone.setVisible(true); }
+    if (hidden.kind === 'platform') this.syncRevealed();
     if (hidden.target) for (const visual of this.visuals.get(hidden.target) ?? [])
       if (visual.scene) visual.setVisible(this.objectVisible(hidden.target));
   }
