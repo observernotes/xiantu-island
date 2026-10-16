@@ -1,0 +1,158 @@
+{
+ "frames": {
+  "fx_tree_demon_vine_burst_warn_warn_01": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 144,
+    "h": 48
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 144,
+    "h": 48
+   },
+   "sourceSize": {
+    "w": 144,
+    "h": 48
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "fx_tree_demon_vine_burst_warn_warn_02": {
+   "frame": {
+    "x": 144,
+    "y": 0,
+    "w": 144,
+    "h": 48
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 144,
+    "h": 48
+   },
+   "sourceSize": {
+    "w": 144,
+    "h": 48
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "fx_tree_demon_vine_burst_warn_warn_03": {
+   "frame": {
+    "x": 288,
+    "y": 0,
+    "w": 144,
+    "h": 48
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 144,
+    "h": 48
+   },
+   "sourceSize": {
+    "w": 144,
+    "h": 48
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "fx_tree_demon_vine_burst_warn_warn_04": {
+   "frame": {
+    "x": 432,
+    "y": 0,
+    "w": 144,
+    "h": 48
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 144,
+    "h": 48
+   },
+   "sourceSize": {
+    "w": 144,
+    "h": 48
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "fx_tree_demon_vine_burst_warn_warn_05": {
+   "frame": {
+    "x": 576,
+    "y": 0,
+    "w": 144,
+    "h": 48
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 144,
+    "h": 48
+   },
+   "sourceSize": {
+    "w": 144,
+    "h": 48
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  },
+  "fx_tree_demon_vine_burst_warn_warn_06": {
+   "frame": {
+    "x": 720,
+    "y": 0,
+    "w": 144,
+    "h": 48
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 144,
+    "h": 48
+   },
+   "sourceSize": {
+    "w": 144,
+    "h": 48
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   }
+  }
+ },
+ "meta": {
+  "app": "xiantu gen_mon_v05.py",
+  "image": "fx_tree_demon_vine_burst_warn.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 864,
+   "h": 48
+  },
+  "scale": "1"
+ }
+}
