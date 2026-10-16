@@ -1,0 +1,39 @@
+{
+ "atlas": "fx_paper_talisman_throw",
+ "facing": "left",
+ "origin": [
+  0.5,
+  0.5
+ ],
+ "frameSize": [
+  32,
+  24
+ ],
+ "blend": "NORMAL",
+ "kind": "fx",
+ "note": "原点(0.5,0.5)是飞符/碰撞中心(16,12)。每枚符纸独立朝左运动并循环fly；碰撞点播hit一次后销毁。单枚黄符，占位笔画不对应QTE。NORMAL混合，符纸消耗与射程按技能表处理。",
+ "anims": [
+  {
+   "key": "fx_paper_talisman_throw_fly",
+   "frames": [
+    "fx_paper_talisman_throw_fly_01",
+    "fx_paper_talisman_throw_fly_02",
+    "fx_paper_talisman_throw_fly_03",
+    "fx_paper_talisman_throw_fly_04"
+   ],
+   "frameRate": 16,
+   "repeat": -1
+  },
+  {
+   "key": "fx_paper_talisman_throw_hit",
+   "frames": [
+    "fx_paper_talisman_throw_hit_01",
+    "fx_paper_talisman_throw_hit_02",
+    "fx_paper_talisman_throw_hit_03",
+    "fx_paper_talisman_throw_hit_04"
+   ],
+   "frameRate": 16,
+   "repeat": 0
+  }
+ ]
+}
