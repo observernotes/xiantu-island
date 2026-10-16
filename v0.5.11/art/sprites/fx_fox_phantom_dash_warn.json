@@ -1,0 +1,110 @@
+{
+ "frames": {
+  "fx_fox_phantom_dash_warn_loop_01": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 448,
+    "h": 48
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 448,
+    "h": 48
+   },
+   "sourceSize": {
+    "w": 448,
+    "h": 48
+   },
+   "pivot": {
+    "x": 0.9286,
+    "y": 1
+   }
+  },
+  "fx_fox_phantom_dash_warn_loop_02": {
+   "frame": {
+    "x": 448,
+    "y": 0,
+    "w": 448,
+    "h": 48
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 448,
+    "h": 48
+   },
+   "sourceSize": {
+    "w": 448,
+    "h": 48
+   },
+   "pivot": {
+    "x": 0.9286,
+    "y": 1
+   }
+  },
+  "fx_fox_phantom_dash_warn_loop_03": {
+   "frame": {
+    "x": 896,
+    "y": 0,
+    "w": 448,
+    "h": 48
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 448,
+    "h": 48
+   },
+   "sourceSize": {
+    "w": 448,
+    "h": 48
+   },
+   "pivot": {
+    "x": 0.9286,
+    "y": 1
+   }
+  },
+  "fx_fox_phantom_dash_warn_loop_04": {
+   "frame": {
+    "x": 1344,
+    "y": 0,
+    "w": 448,
+    "h": 48
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 448,
+    "h": 48
+   },
+   "sourceSize": {
+    "w": 448,
+    "h": 48
+   },
+   "pivot": {
+    "x": 0.9286,
+    "y": 1
+   }
+  }
+ },
+ "meta": {
+  "app": "xiantu gen_boss_fox.py",
+  "image": "fx_fox_phantom_dash_warn.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1792,
+   "h": 48
+  },
+  "scale": "1"
+ }
+}
