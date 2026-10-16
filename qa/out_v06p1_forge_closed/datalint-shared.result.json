@@ -1,0 +1,10 @@
+{
+  "name": "datalint-shared",
+  "argv": [
+    "python3",
+    "/workspace/xiantu/qa/tools/datalint.py"
+  ],
+  "cwd": "/workspace/xiantu",
+  "exitCode": 0,
+  "elapsedSeconds": 0.06
+}

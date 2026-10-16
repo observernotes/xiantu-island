@@ -1,0 +1,12 @@
+{
+  "name": "v06p1-market-closed",
+  "argv": [
+    "npm",
+    "run",
+    "test:v06p1-market-closed"
+  ],
+  "cwd": "/workspace/xiantu/wt/dev",
+  "exitCode": 0,
+  "elapsedSeconds": 22.04,
+  "assertions": 24116
+}

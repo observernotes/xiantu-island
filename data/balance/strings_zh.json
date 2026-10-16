@@ -922,5 +922,13 @@
   "market.closed.no_deal": "坊市寄售尚未开放，不成交、不写收益收据。",
   "market.closed.no_reward": "坊市寄售尚未开放，寄售收益暂不可领取。",
   "market.closed.load_refresh": "读档或刷新后仍未开放，寄售操作暂不可用。",
-  "market.closed.slot_or_item": "坊市寄售尚未开放，栏位或物品异常，暂不可操作。"
+  "market.closed.slot_or_item": "坊市寄售尚未开放，栏位或物品异常，暂不可操作。",
+  "forge.closed.feature": "炼器打造尚未开放。",
+  "forge.closed.entrance": "欧冶匠暂不提供打造，可查看说明。",
+  "forge.closed.craft": "炼器打造尚未开放，暂不可打造。",
+  "forge.closed.no_submit": "炼器打造尚未开放，暂不可提交图纸或材料。",
+  "forge.closed.no_result": "炼器打造尚未开放，不产出成品。",
+  "forge.closed.no_grade": "炼器打造尚未开放，不展示或结算品质档。",
+  "forge.closed.load_refresh": "读档或刷新后炼器仍未开放，暂不可打造。",
+  "forge.closed.later_service": "强化、附灵与分解等后续服务尚未开放。"
 }

@@ -31,6 +31,16 @@ const marketClosedStrings = {
   'market.closed.load_refresh': '读档或刷新后仍未开放，寄售操作暂不可用。',
   'market.closed.slot_or_item': '坊市寄售尚未开放，栏位或物品异常，暂不可操作。',
 };
+const forgeClosedStrings = {
+  'forge.closed.feature': '炼器打造尚未开放。',
+  'forge.closed.entrance': '欧冶匠暂不提供打造，可查看说明。',
+  'forge.closed.craft': '炼器打造尚未开放，暂不可打造。',
+  'forge.closed.no_submit': '炼器打造尚未开放，暂不可提交图纸或材料。',
+  'forge.closed.no_result': '炼器打造尚未开放，不产出成品。',
+  'forge.closed.no_grade': '炼器打造尚未开放，不展示或结算品质档。',
+  'forge.closed.load_refresh': '读档或刷新后炼器仍未开放，暂不可打造。',
+  'forge.closed.later_service': '强化、附灵与分解等后续服务尚未开放。',
+};
 const apiTips = {
   featureClosed: 'tower.closed.feature', interactEntranceClosed: 'tower.closed.entrance',
   refuseClimb: 'tower.closed.no_climb', refuseFloor: 'tower.closed.no_floor',
@@ -44,8 +54,9 @@ const expectedSha = {
   'balance/companions.json': 'e4eb87c1f9400514a084d630f179903e0926d706c85614481f1e2618a01bb115',
   'balance/fly_zones.json': '2940fe5952246a3669f87d8b9f3fc6226c2adf7080353be7de94da81e031b8e4',
   'balance/quests.json': 'c45466827247b9e61260bbd2b681ae7207bf84a017aff5d8b028c0ec3463482b',
-  'balance/strings_zh.json': 'c115b6deadf85d1aa9958de1097321ab65624b456e0fddeca42a5fe39743db27',
+  'balance/strings_zh.json': 'fad9b3e604a3af23e99939bf22f77a55de803842daa297ab7fb2c2a6ed0b8967',
 };
+const marketStringsSha = 'c115b6deadf85d1aa9958de1097321ab65624b456e0fddeca42a5fe39743db27';
 const towerStringsSha = '6b0861110a6af78f7bbfb78eb32e7579ecd41d5a33c3eff3da9e157794f5951f';
 const originalStringsSha = '4a32b19b8e1f318cfcbbf8b9a4e9382f17e7fc3fd951d040f9ec4749524f7385';
 const originalStringsSemanticSha = '81d364627ea128a3125c1def299f1d94804cee7b7e511ff417dd4bf9ff24c7a9';
@@ -99,16 +110,19 @@ async function checkFormal(mode, dataRoot) {
   }
   const strings = data['balance/strings_zh.json'];
   const entries = Object.entries(strings);
-  eq(entries.length, 920, `${mode}/C10: 只有原 904 与 tower、market 各八键`);
+  eq(entries.length, 928, `${mode}/C10: 只有原 904 与 tower、market、forge 各八键`);
   eq(entries.slice(904, 912), Object.entries(closedStrings), `${mode}/C10: tower 八键顺序及文案逐字相等`);
-  eq(entries.slice(912), Object.entries(marketClosedStrings), `${mode}/C10: market 八键只追加在末尾，文案逐字相等`);
+  eq(entries.slice(912, 920), Object.entries(marketClosedStrings), `${mode}/C10: market 八键区间及文案逐字相等`);
+  eq(entries.slice(920), Object.entries(forgeClosedStrings), `${mode}/C10: forge 八键只追加在末尾，文案逐字相等`);
   eq(hash(JSON.stringify(entries.slice(0, 904))), originalStringsSemanticSha, `${mode}/C10: 原 904 键语义不变`);
-  // 依次还原 market、tower 末项逗号与新增八行，证明原 904 项每个字节都未改。
+  // 依次还原 forge、market、tower 末项逗号与新增八行，证明原 904 项每个字节都未改。
   const rawStrings = sharedBytes.get('balance/strings_zh.json').toString('utf8');
-  const towerBytes = rawStrings.replace(/,\n(?: {2}"market\.closed\.[^\n]+\n?){8}/u, '\n');
-  eq(hash(towerBytes), towerStringsSha, `${mode}/C10: 删除 market 八行即还原原 912 项完整文件 SHA`);
+  const marketBytes = rawStrings.replace(/,\n(?: {2}"forge\.closed\.[^\n]+\n?){8}/u, '\n');
+  eq(hash(marketBytes), marketStringsSha, `${mode}/C10: 删除 forge 八行即还原原 920 项完整文件 SHA`);
+  const towerBytes = marketBytes.replace(/,\n(?: {2}"market\.closed\.[^\n]+\n?){8}/u, '\n');
+  eq(hash(towerBytes), towerStringsSha, `${mode}/C10: 删除 forge、market 十六行即还原原 912 项完整文件 SHA`);
   const originalBytes = towerBytes.replace(/,\n(?: {2}"tower\.closed\.[^\n]+\n?){8}/u, '\n');
-  eq(hash(originalBytes), originalStringsSha, `${mode}/C10: 删除 market、tower 十六行即还原原 904 项完整文件 SHA`);
+  eq(hash(originalBytes), originalStringsSha, `${mode}/C10: 删除 forge、market、tower 二十四行即还原原 904 项完整文件 SHA`);
   for (const [key, text] of Object.entries(closedStrings)) {
     eq(strings[key], text, `${mode}: ${key} 正式文案`);
     ok(Array.from(text).length <= 40, `${mode}: ${key} 不超过 40 字`);

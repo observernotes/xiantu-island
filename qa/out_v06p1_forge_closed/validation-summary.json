@@ -1,0 +1,113 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "name": "tsc",
+      "argv": [
+        "npx",
+        "tsc",
+        "--noEmit"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "exitCode": 0,
+      "elapsedSeconds": 22.53
+    },
+    {
+      "name": "v06p1-forge-closed",
+      "argv": [
+        "npm",
+        "run",
+        "test:v06p1-forge-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "exitCode": 0,
+      "elapsedSeconds": 21.33,
+      "assertions": 20207
+    },
+    {
+      "name": "v06p1-market-closed",
+      "argv": [
+        "npm",
+        "run",
+        "test:v06p1-market-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "exitCode": 0,
+      "elapsedSeconds": 22.04,
+      "assertions": 24116
+    },
+    {
+      "name": "v06d-closed",
+      "argv": [
+        "npm",
+        "run",
+        "test:v06d-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "exitCode": 0,
+      "elapsedSeconds": 22.08,
+      "assertions": 15048
+    },
+    {
+      "name": "v06c-closed",
+      "argv": [
+        "npm",
+        "run",
+        "test:v06c-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "exitCode": 0,
+      "elapsedSeconds": 6.06,
+      "assertions": 10708
+    },
+    {
+      "name": "datalint-shared",
+      "argv": [
+        "python3",
+        "/workspace/xiantu/qa/tools/datalint.py"
+      ],
+      "cwd": "/workspace/xiantu",
+      "exitCode": 0,
+      "elapsedSeconds": 0.06
+    },
+    {
+      "name": "datalint-snapshot",
+      "argv": [
+        "python3",
+        "/workspace/xiantu/qa/tools/datalint.py"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev/data",
+      "exitCode": 0,
+      "elapsedSeconds": 0.06
+    }
+  ],
+  "additionalRegression": {
+    "name": "v06d-open",
+    "argv": [
+      "npm",
+      "run",
+      "test:v06d-open"
+    ],
+    "cwd": "/workspace/xiantu/wt/dev",
+    "exitCode": 0,
+    "elapsedSeconds": 5.95,
+    "assertions": 3014,
+    "retainedFromPreviousLeg": true
+  },
+  "sourceAllowlistException": {
+    "authorized": true,
+    "applied": true,
+    "addedSource": "ForgeClosed.ts",
+    "patch": "market-source-allowlist-proposal.patch",
+    "gameplayAssertionsUnchanged": true
+  },
+  "historicalProposalPreview": {
+    "log": "market-proposal.log",
+    "result": "market-proposal.result.json",
+    "note": "Historical preview retained; superseded by the actual npm run test:v06p1-market-closed exit0 result above."
+  },
+  "stringsSha": "fad9b3e604a3af23e99939bf22f77a55de803842daa297ab7fb2c2a6ed0b8967",
+  "closed": true,
+  "softOpened": false,
+  "released": false
+}

@@ -1,0 +1,11 @@
+{
+  "name": "v06d-open",
+  "argv": [
+    "npm",
+    "run",
+    "test:v06d-open"
+  ],
+  "cwd": "/workspace/xiantu/wt/dev",
+  "exitCode": 0,
+  "elapsedSeconds": 5.95
+}

@@ -1,0 +1,115 @@
+/workspace/xiantu/balance/quests.json:724:    "target": "smith_ou",
+/workspace/xiantu/game/data/balance/quests.json:724:    "target": "smith_ou",
+/workspace/xiantu/balance/10_奇遇与主线数值.md:152:| `q_daily_tianjian_3` | 问炉传讯 | 10 | talk smith_ou | 264 | 90 | 20 |
+/workspace/xiantu/balance/03_数值填表.md:14:| `enhance.json` | 强化、打造、附灵、分解 |
+/workspace/xiantu/balance/03_数值填表.md:75:- 打造品阶：凡品 60%、良品 30%、灵品 9%、宝品 1%，附加属性条数是 0、1、2、3。附灵：五行伤害 +5%，和灵根同属性再 +5%。
+/workspace/xiantu/balance/enhance.json:110: "forge": {
+/workspace/xiantu/game/data/balance/enhance.json:110: "forge": {
+src/v06p1-market-open.test.ts:421:        m => { m.listings[0].settlementRef = 'foreign'; }, m => { m.listings[0].claimRef = 'forged'; },
+src/v06p1-market-open.test.ts:422:        m => { m.listings[0].pendingRewardRef = { id: 'forged', amount: -1 }; },
+/workspace/xiantu/balance/strings_zh.json:926:  "forge.closed.feature": "炼器打造尚未开放。",
+/workspace/xiantu/balance/strings_zh.json:927:  "forge.closed.entrance": "欧冶匠暂不提供打造，可查看说明。",
+/workspace/xiantu/balance/strings_zh.json:928:  "forge.closed.craft": "炼器打造尚未开放，暂不可打造。",
+/workspace/xiantu/balance/strings_zh.json:929:  "forge.closed.no_submit": "炼器打造尚未开放，暂不可提交图纸或材料。",
+/workspace/xiantu/balance/strings_zh.json:930:  "forge.closed.no_result": "炼器打造尚未开放，不产出成品。",
+/workspace/xiantu/balance/strings_zh.json:931:  "forge.closed.no_grade": "炼器打造尚未开放，不展示或结算品质档。",
+/workspace/xiantu/balance/strings_zh.json:932:  "forge.closed.load_refresh": "读档或刷新后炼器仍未开放，暂不可打造。",
+/workspace/xiantu/balance/strings_zh.json:933:  "forge.closed.later_service": "强化、附灵与分解等后续服务尚未开放。"
+/workspace/xiantu/game/data/balance/strings_zh.json:926:  "forge.closed.feature": "炼器打造尚未开放。",
+/workspace/xiantu/game/data/balance/strings_zh.json:927:  "forge.closed.entrance": "欧冶匠暂不提供打造，可查看说明。",
+/workspace/xiantu/game/data/balance/strings_zh.json:928:  "forge.closed.craft": "炼器打造尚未开放，暂不可打造。",
+/workspace/xiantu/game/data/balance/strings_zh.json:929:  "forge.closed.no_submit": "炼器打造尚未开放，暂不可提交图纸或材料。",
+/workspace/xiantu/game/data/balance/strings_zh.json:930:  "forge.closed.no_result": "炼器打造尚未开放，不产出成品。",
+/workspace/xiantu/game/data/balance/strings_zh.json:931:  "forge.closed.no_grade": "炼器打造尚未开放，不展示或结算品质档。",
+/workspace/xiantu/game/data/balance/strings_zh.json:932:  "forge.closed.load_refresh": "读档或刷新后炼器仍未开放，暂不可打造。",
+/workspace/xiantu/game/data/balance/strings_zh.json:933:  "forge.closed.later_service": "强化、附灵与分解等后续服务尚未开放。"
+/workspace/xiantu/balance/life_skills.json:339:        "forge"
+/workspace/xiantu/game/data/maps/luoxia_town.json:4913:     "name": "smith_ou",
+/workspace/xiantu/game/data/maps/luoxia_town.json:4923:       "value": "smith_ou"
+/workspace/xiantu/game/data/balance/life_skills.json:339:        "forge"
+src/daily.test.ts:158:    p.quests[kill.id].talked = { smith_ou: true }; p.quests[kill.id].crafted = { hp_pill_small: 2 }; p.quests[kill.id].reached = true;
+src/daily.test.ts:234:      own[0].objectives = [...original, { type: 'talk', target: 'smith_ou' }, { type: 'craft', target: 'hp_pill_small', count: 1 }];
+src/daily.test.ts:237:      else if (event === 'talk') qs.onTalk('smith_ou');
+/workspace/xiantu/balance/04_第三阶段怪物与试炼.md:67:强化只花灵石和精炼石，不用寒铁，寒铁只给以后的高阶打造图纸用。所以第三阶段强化上限照样是 +12，不用为了寒铁去卡。
+/workspace/xiantu/game/data/balance/npcs.json:418:    "id": "smith_ou",
+/workspace/xiantu/game/data/balance/npcs.json:421:    "sprite": "npc_smith_ou",
+src/Progress.ts:203:  /** 仅预留存档及只读视图；v0.5 没有打造结算入口。 */
+/workspace/xiantu/balance/npcs.json:418:    "id": "smith_ou",
+/workspace/xiantu/balance/npcs.json:421:    "sprite": "npc_smith_ou",
+src/encounter-runner.test.ts:184:  { ...initialOffer, attemptId: 'forged', choiceId: 'medicine' },
+/workspace/xiantu/maps/luoxia_town.json:4913:     "name": "smith_ou",
+/workspace/xiantu/maps/luoxia_town.json:4923:       "value": "smith_ou"
+src/LifeSkills.ts:4:export type LifeSkillAction = 'alchemy' | 'forge' | 'talisman';
+src/LifeSkills.ts:53:  return recipe.type === 'forge' || recipe.type === 'forging';
+src/LifeSkills.ts:90:    const expectedAction = skillId === 'forging' ? 'forge' : skillId;
+/workspace/xiantu/balance/tools/sim_life_skills.py:15:def model(skill_id, target, route="basic", sect="default", forge_rate=0.8):
+/workspace/xiantu/balance/tools/sim_life_skills.py:49:            # 无实际打造图纸，阶梯阶数与成功率仅为敏感性代理；不虚构灵石或材料价格。
+/workspace/xiantu/balance/tools/sim_life_skills.py:51:            rid, recipe, p, duration = f"假设技艺阶{rank}", {}, forge_rate, 10.0
+/workspace/xiantu/balance/tools/sim_life_skills.py:84:            "forgeRate": forge_rate if skill_id == "forging" else None,
+/workspace/xiantu/balance/tools/sim_life_skills.py:105:            scenarios.append(model("forging", 30, route, forge_rate=rate))
+/workspace/xiantu/balance/tools/sim_life_skills.py:116:        if s["forgeRate"] is not None:
+/workspace/xiantu/balance/tools/sim_life_skills.py:117:            label += f"/p={s['forgeRate']:g}"
+data/maps/luoxia_town.json:4913:     "name": "smith_ou",
+data/maps/luoxia_town.json:4923:       "value": "smith_ou"
+src/ForgeClosed.ts:3:export type ForgeClosedTipKey = 'forge.closed.feature' | 'forge.closed.entrance'
+src/ForgeClosed.ts:4:  | 'forge.closed.craft' | 'forge.closed.no_submit' | 'forge.closed.no_result'
+src/ForgeClosed.ts:5:  | 'forge.closed.no_grade' | 'forge.closed.load_refresh' | 'forge.closed.later_service';
+src/ForgeClosed.ts:7:export interface ForgeClosedTip {
+src/ForgeClosed.ts:9:  readonly tipKey: ForgeClosedTipKey;
+src/ForgeClosed.ts:13:/** 本窗恒定关态；图纸、材料和旧档均不能授权打造，不另造开放开关。 */
+src/ForgeClosed.ts:14:function closed(tipKey: ForgeClosedTipKey): ForgeClosedTip {
+src/ForgeClosed.ts:19:export function featureClosed() { return closed('forge.closed.feature'); }
+src/ForgeClosed.ts:20:export function refuseEntrance() { return closed('forge.closed.entrance'); }
+src/ForgeClosed.ts:21:export function refuseCraft() { return closed('forge.closed.craft'); }
+src/ForgeClosed.ts:22:export function refuseSubmit() { return closed('forge.closed.no_submit'); }
+src/ForgeClosed.ts:23:export function refuseResult() { return closed('forge.closed.no_result'); }
+src/ForgeClosed.ts:24:export function refuseGrade() { return closed('forge.closed.no_grade'); }
+src/ForgeClosed.ts:25:export function refuseLoadRefresh() { return closed('forge.closed.load_refresh'); }
+src/ForgeClosed.ts:26:export function refuseLaterService() { return closed('forge.closed.later_service'); }
+/workspace/xiantu/balance/tools/gen_life_skills.py:39:        ("forging", "炼器", "forge", 0.0, 0,
+/workspace/xiantu/balance/tools/gen_life_skills.py:40:         enhance["forge"]["forgingLevelShift"], {"fine": 0.75, "spirit": 0.225, "treasure": 0.025}),
+/workspace/xiantu/balance/tools/gen_life_skills.py:105:    assert forging["qualityShiftPerLevel"] == enhance["forge"]["forgingLevelShift"]
+/workspace/xiantu/balance/tools/gen_towns.py:256:    t.npc("smith_ou", 69, 22)                               # 匠作街：炼器
+/workspace/xiantu/balance/tools/gen_stage3.py:118: "forge": {"grade": {"common": 0.60, "fine": 0.30, "spirit": 0.09, "treasure": 0.01},
+src/life-skills.test.ts:114:  eq(lifeSkillRecipe(config, 'forging', { ...RECIPES.recipe_hp_pill, id: '__future_forge', type: 'forge' } as never), null, '未知炼器图纸不得按默认rank开造');
+/workspace/xiantu/game/data/art/sprites/npc_smith_ou.anims.json:2: "atlas": "npc_smith_ou",
+/workspace/xiantu/game/data/art/sprites/npc_smith_ou.anims.json:11:   "key": "npc_smith_ou_idle",
+/workspace/xiantu/game/data/art/sprites/npc_smith_ou.anims.json:13:    "npc_smith_ou_idle_01",
+/workspace/xiantu/game/data/art/sprites/npc_smith_ou.anims.json:14:    "npc_smith_ou_idle_02",
+/workspace/xiantu/game/data/art/sprites/npc_smith_ou.anims.json:15:    "npc_smith_ou_idle_03"
+/workspace/xiantu/game/data/art/sprites/npc_smith_ou.anims.json:21:   "key": "npc_smith_ou_talk",
+/workspace/xiantu/game/data/art/sprites/npc_smith_ou.anims.json:23:    "npc_smith_ou_talk_01",
+/workspace/xiantu/game/data/art/sprites/npc_smith_ou.anims.json:24:    "npc_smith_ou_talk_02"
+data/art/sprites/npc_smith_ou.anims.json:2: "atlas": "npc_smith_ou",
+data/art/sprites/npc_smith_ou.anims.json:11:   "key": "npc_smith_ou_idle",
+data/art/sprites/npc_smith_ou.anims.json:13:    "npc_smith_ou_idle_01",
+data/art/sprites/npc_smith_ou.anims.json:14:    "npc_smith_ou_idle_02",
+data/art/sprites/npc_smith_ou.anims.json:15:    "npc_smith_ou_idle_03"
+data/art/sprites/npc_smith_ou.anims.json:21:   "key": "npc_smith_ou_talk",
+data/art/sprites/npc_smith_ou.anims.json:23:    "npc_smith_ou_talk_01",
+data/art/sprites/npc_smith_ou.anims.json:24:    "npc_smith_ou_talk_02"
+data/balance/quests.json:724:    "target": "smith_ou",
+data/balance/enhance.json:110: "forge": {
+data/balance/strings_zh.json:926:  "forge.closed.feature": "炼器打造尚未开放。",
+data/balance/strings_zh.json:927:  "forge.closed.entrance": "欧冶匠暂不提供打造，可查看说明。",
+data/balance/strings_zh.json:928:  "forge.closed.craft": "炼器打造尚未开放，暂不可打造。",
+data/balance/strings_zh.json:929:  "forge.closed.no_submit": "炼器打造尚未开放，暂不可提交图纸或材料。",
+data/balance/strings_zh.json:930:  "forge.closed.no_result": "炼器打造尚未开放，不产出成品。",
+data/balance/strings_zh.json:931:  "forge.closed.no_grade": "炼器打造尚未开放，不展示或结算品质档。",
+data/balance/strings_zh.json:932:  "forge.closed.load_refresh": "读档或刷新后炼器仍未开放，暂不可打造。",
+data/balance/strings_zh.json:933:  "forge.closed.later_service": "强化、附灵与分解等后续服务尚未开放。"
+data/balance/life_skills.json:339:        "forge"
+data/balance/npcs.json:418:    "id": "smith_ou",
+data/balance/npcs.json:421:    "sprite": "npc_smith_ou",
+data/art/sprites/npc_smith_ou.json:3:  "npc_smith_ou_idle_01": {
+data/art/sprites/npc_smith_ou.json:27:  "npc_smith_ou_idle_02": {
+data/art/sprites/npc_smith_ou.json:51:  "npc_smith_ou_idle_03": {
+data/art/sprites/npc_smith_ou.json:75:  "npc_smith_ou_talk_01": {
+data/art/sprites/npc_smith_ou.json:99:  "npc_smith_ou_talk_02": {
+data/art/sprites/npc_smith_ou.json:126:  "image": "npc_smith_ou.png",
+/workspace/xiantu/game/data/art/sprites/npc_smith_ou.json:3:  "npc_smith_ou_idle_01": {
+/workspace/xiantu/game/data/art/sprites/npc_smith_ou.json:27:  "npc_smith_ou_idle_02": {
+/workspace/xiantu/game/data/art/sprites/npc_smith_ou.json:51:  "npc_smith_ou_idle_03": {
+/workspace/xiantu/game/data/art/sprites/npc_smith_ou.json:75:  "npc_smith_ou_talk_01": {
+/workspace/xiantu/game/data/art/sprites/npc_smith_ou.json:99:  "npc_smith_ou_talk_02": {
+/workspace/xiantu/game/data/art/sprites/npc_smith_ou.json:126:  "image": "npc_smith_ou.png",

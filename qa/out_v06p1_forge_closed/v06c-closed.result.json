@@ -1,0 +1,12 @@
+{
+  "name": "v06c-closed",
+  "argv": [
+    "npm",
+    "run",
+    "test:v06c-closed"
+  ],
+  "cwd": "/workspace/xiantu/wt/dev",
+  "exitCode": 0,
+  "elapsedSeconds": 6.06,
+  "assertions": 10708
+}

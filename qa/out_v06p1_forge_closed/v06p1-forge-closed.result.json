@@ -1,0 +1,12 @@
+{
+  "name": "v06p1-forge-closed",
+  "argv": [
+    "npm",
+    "run",
+    "test:v06p1-forge-closed"
+  ],
+  "cwd": "/workspace/xiantu/wt/dev",
+  "exitCode": 0,
+  "elapsedSeconds": 21.33,
+  "assertions": 20207
+}

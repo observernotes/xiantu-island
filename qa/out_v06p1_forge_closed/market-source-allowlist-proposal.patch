@@ -1,0 +1,11 @@
+--- a/scripts/v06p1-market-closed-test.mjs
++++ b/scripts/v06p1-market-closed-test.mjs
+@@ -137,7 +137,7 @@
+     }
+   }
+   const expectedSource = Object.keys(baseline).filter(key => key.startsWith('wt:src/')).map(key => key.slice('wt:src/'.length));
+-  eq(await filesUnder(path.join(root, 'src')), [...expectedSource, 'MarketClosed.ts', ...openFixtureSources].sort(), 'C12 src 仅新增关态 API 及四个既有源码，无完整寄售 UI 文件');
++  eq(await filesUnder(path.join(root, 'src')), [...expectedSource, 'MarketClosed.ts', 'ForgeClosed.ts', ...openFixtureSources].sort(), 'C12 src 仅新增关态 API 及四个既有源码，无完整寄售 UI 文件');
+   for (const [mode, dataRoot] of dataRoots) {
+     const file = path.join(dataRoot, 'balance/market_consign.json');
+     const actual = await shaOrNull(file);

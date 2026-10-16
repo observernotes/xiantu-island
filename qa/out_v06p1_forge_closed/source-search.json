@@ -1,0 +1,132 @@
+[
+  {
+    "file": "src/ForgeClosed.ts",
+    "line": 3,
+    "text": "export type ForgeClosedTipKey = 'forge.closed.feature' | 'forge.closed.entrance'"
+  },
+  {
+    "file": "src/ForgeClosed.ts",
+    "line": 4,
+    "text": "  | 'forge.closed.craft' | 'forge.closed.no_submit' | 'forge.closed.no_result'"
+  },
+  {
+    "file": "src/ForgeClosed.ts",
+    "line": 5,
+    "text": "  | 'forge.closed.no_grade' | 'forge.closed.load_refresh' | 'forge.closed.later_service';"
+  },
+  {
+    "file": "src/ForgeClosed.ts",
+    "line": 7,
+    "text": "export interface ForgeClosedTip {"
+  },
+  {
+    "file": "src/ForgeClosed.ts",
+    "line": 9,
+    "text": "  readonly tipKey: ForgeClosedTipKey;"
+  },
+  {
+    "file": "src/ForgeClosed.ts",
+    "line": 13,
+    "text": "/** 本窗恒定关态；图纸、材料和旧档均不能授权打造，不另造开放开关。 */"
+  },
+  {
+    "file": "src/ForgeClosed.ts",
+    "line": 14,
+    "text": "function closed(tipKey: ForgeClosedTipKey): ForgeClosedTip {"
+  },
+  {
+    "file": "src/ForgeClosed.ts",
+    "line": 19,
+    "text": "export function featureClosed() { return closed('forge.closed.feature'); }"
+  },
+  {
+    "file": "src/ForgeClosed.ts",
+    "line": 20,
+    "text": "export function refuseEntrance() { return closed('forge.closed.entrance'); }"
+  },
+  {
+    "file": "src/ForgeClosed.ts",
+    "line": 21,
+    "text": "export function refuseCraft() { return closed('forge.closed.craft'); }"
+  },
+  {
+    "file": "src/ForgeClosed.ts",
+    "line": 22,
+    "text": "export function refuseSubmit() { return closed('forge.closed.no_submit'); }"
+  },
+  {
+    "file": "src/ForgeClosed.ts",
+    "line": 23,
+    "text": "export function refuseResult() { return closed('forge.closed.no_result'); }"
+  },
+  {
+    "file": "src/ForgeClosed.ts",
+    "line": 24,
+    "text": "export function refuseGrade() { return closed('forge.closed.no_grade'); }"
+  },
+  {
+    "file": "src/ForgeClosed.ts",
+    "line": 25,
+    "text": "export function refuseLoadRefresh() { return closed('forge.closed.load_refresh'); }"
+  },
+  {
+    "file": "src/ForgeClosed.ts",
+    "line": 26,
+    "text": "export function refuseLaterService() { return closed('forge.closed.later_service'); }"
+  },
+  {
+    "file": "src/LifeSkills.ts",
+    "line": 4,
+    "text": "export type LifeSkillAction = 'alchemy' | 'forge' | 'talisman';"
+  },
+  {
+    "file": "src/LifeSkills.ts",
+    "line": 53,
+    "text": "  return recipe.type === 'forge' || recipe.type === 'forging';"
+  },
+  {
+    "file": "src/LifeSkills.ts",
+    "line": 90,
+    "text": "    const expectedAction = skillId === 'forging' ? 'forge' : skillId;"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 203,
+    "text": "  /** 仅预留存档及只读视图；v0.5 没有打造结算入口。 */"
+  },
+  {
+    "file": "src/daily.test.ts",
+    "line": 158,
+    "text": "    p.quests[kill.id].talked = { smith_ou: true }; p.quests[kill.id].crafted = { hp_pill_small: 2 }; p.quests[kill.id].reached = true;"
+  },
+  {
+    "file": "src/daily.test.ts",
+    "line": 234,
+    "text": "      own[0].objectives = [...original, { type: 'talk', target: 'smith_ou' }, { type: 'craft', target: 'hp_pill_small', count: 1 }];"
+  },
+  {
+    "file": "src/daily.test.ts",
+    "line": 237,
+    "text": "      else if (event === 'talk') qs.onTalk('smith_ou');"
+  },
+  {
+    "file": "src/encounter-runner.test.ts",
+    "line": 184,
+    "text": "  { ...initialOffer, attemptId: 'forged', choiceId: 'medicine' },"
+  },
+  {
+    "file": "src/life-skills.test.ts",
+    "line": 114,
+    "text": "  eq(lifeSkillRecipe(config, 'forging', { ...RECIPES.recipe_hp_pill, id: '__future_forge', type: 'forge' } as never), null, '未知炼器图纸不得按默认rank开造');"
+  },
+  {
+    "file": "src/v06p1-market-open.test.ts",
+    "line": 421,
+    "text": "        m => { m.listings[0].settlementRef = 'foreign'; }, m => { m.listings[0].claimRef = 'forged'; },"
+  },
+  {
+    "file": "src/v06p1-market-open.test.ts",
+    "line": 422,
+    "text": "        m => { m.listings[0].pendingRewardRef = { id: 'forged', amount: -1 }; },"
+  }
+]

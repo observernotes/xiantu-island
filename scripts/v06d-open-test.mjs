@@ -17,7 +17,7 @@ const expectedSha = {
   'balance/companions.json': 'e4eb87c1f9400514a084d630f179903e0926d706c85614481f1e2618a01bb115',
   'balance/fly_zones.json': '2940fe5952246a3669f87d8b9f3fc6226c2adf7080353be7de94da81e031b8e4',
   'balance/quests.json': 'c45466827247b9e61260bbd2b681ae7207bf84a017aff5d8b028c0ec3463482b',
-  'balance/strings_zh.json': 'c115b6deadf85d1aa9958de1097321ab65624b456e0fddeca42a5fe39743db27',
+  'balance/strings_zh.json': 'fad9b3e604a3af23e99939bf22f77a55de803842daa297ab7fb2c2a6ed0b8967',
   'maps/youying_tower.json': '6c5393853301e449482db4c3dbc140b289189a1d8d627c7e3934f5dbcfdd6f56',
 };
 const sourceSha = {
@@ -73,7 +73,7 @@ async function checkFormal(mode, dataRoot) {
   ok(!Object.hasOwn(tower, 'enabled') && !Object.hasOwn(tower.meta, 'enabled'), `${mode}: 无正式塔 enabled 字段`);
   eq(titles.map(title => title.name), ['镇妖·十层', '镇妖·二十层', '镇妖·三十层'], `${mode}: 正式称号非旧占位名`);
   const strings = data['balance/strings_zh.json'];
-  eq(Object.keys(strings).length, 920, `${mode}: 原 904 键及 tower、market 关态各八键不增改`);
+  eq(Object.keys(strings).length, 928, `${mode}: 原 904 键及 tower、market、forge 关态各八键不增改`);
   for (const floor of [10, 20, 30]) {
     const title = titles.find(title => title.id === `title_tower_${floor}`);
     eq([title.name, title.desc], [strings[`title.tower_${floor}.name`], strings[`title.tower_${floor}.desc`]], `${mode}: 称号名和描述沿用 strings`);
