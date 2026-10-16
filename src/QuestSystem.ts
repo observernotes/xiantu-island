@@ -1,5 +1,5 @@
 import { gameNow } from './GameClock';
-import { AFFINITY, QUESTS, QUEST_ORDER, NPCS, SCRIPTS, ITEMS, MONSTERS, Line, QuestDef, questInPhase, t } from './data';
+import { AFFINITY, QUEST_HOOKS, QUESTS, QUEST_ORDER, NPCS, SCRIPTS, ITEMS, MONSTERS, Line, QuestDef, questInPhase, t } from './data';
 import type { Progress, QuestRewardSettlement } from './Progress';
 import { CLASS_RULES, classEntryEnabled, classForQuest } from './classes';
 import { REALMS } from './data';
@@ -7,13 +7,15 @@ import { dailyRewardsReady, type DailyQuestReward } from './DailyQuests';
 import { FEATURE_UNAVAILABLE, featureEnabled } from './features';
 import { isCheatEnabled } from './cheatFlags';
 import { stageQuestAffinityCompletion, type AffinityConfig } from './Affinity';
+import { previewQuestHook, stageQuestHookChoice, type QuestHooksConfig } from './QuestHooks';
 
 export type NpcMark = '!' | '?' | '…' | null;
 
 /** 任务系统：串行任务链，状态存在 Progress.quests 里。字段见 balance/quests.json */
 export class QuestSystem {
   private completionListeners = new Set<(reward: QuestReward) => void>();
-  constructor(private prog: Progress, private now: () => number = () => gameNow(), private affinityConfig: AffinityConfig | null = AFFINITY) { this.refreshDaily(); }
+  constructor(private prog: Progress, private now: () => number = () => gameNow(), private affinityConfig: AffinityConfig | null = AFFINITY,
+    private questHooksConfig: QuestHooksConfig | null = QUEST_HOOKS) { this.refreshDaily(); }
 
   /** 交付成功后通知订阅者；返回的函数可解除订阅。 */
   onCompleted(listener: (reward: QuestReward) => void): () => void {
@@ -209,7 +211,18 @@ export class QuestSystem {
     return false;
   }
 
-  turnIn(id: string, force = false): QuestReward | undefined {
+  /** 选择 UI 可传入显式 choice；关态或两轴未就绪沿用原交付，不推断答案。 */
+  private questHookTurnIn(id: string, choiceId: string | undefined, stage: boolean): boolean {
+    const hook = this.questHooksConfig?.questHooks.find(candidate => candidate.quest === id && candidate.on === 'turn_in');
+    if (!hook || !hook.enabled) return true;
+    const view = previewQuestHook(this.questHooksConfig, hook.id, choiceId ?? hook.choices[0].id, this.prog);
+    if (view.status === 'unavailable') return view.reason === 'disabled' || view.reason === 'not_ready';
+    if (choiceId === undefined) return false;
+    if (!stage) return true;
+    return stageQuestHookChoice(this.questHooksConfig, hook.id, choiceId, this.prog).status === 'applied';
+  }
+
+  turnIn(id: string, force = false, choiceId?: string): QuestReward | undefined {
     const q = QUESTS[id];
     // 内部作弊仅跳过普通任务的接取/职业门槛；目标与事务发奖仍走原路径。
     const forced = force && isCheatEnabled() && !!q && !q.daily && this.isActive(id)
@@ -219,7 +232,10 @@ export class QuestSystem {
     const now = this.now();
     if (q.daily && (!this.prog.canCompleteSectDailyQuest(id, now) || this.prog.quests[id]?.state !== 'active')) return undefined;
     if (!q.daily) {
+      if (!this.questHookTurnIn(id, choiceId, false)) return undefined;
       const reward = this.prog.runSaveTransaction(() => {
+        // done 前复检并暂存选择；两轴、收据、原任务和奖励共用本次保存。
+        if (!this.questHookTurnIn(id, choiceId, true)) return undefined;
         for (const o of q.objectives) if (o.type === 'collect' && o.consume !== false) this.prog.removeItem(o.target!, o.count!);
         const needsBreakthrough = q.objectives.some(o => o.type === 'breakthrough' && (!forced
           || !REALMS.some(realm => realm.id === o.realm && this.prog.level >= realm.levelMin)));

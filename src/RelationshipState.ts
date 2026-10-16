@@ -1,4 +1,4 @@
-/** 好感与因果同属角色存档；本期仅结算好感，预留的正魔记录不产生效果。 */
+/** 好感、任务两轴选择与因果共用角色存档；收据本世保留。 */
 export const RELATIONSHIP_VERSION = 1;
 export interface PendingAffinitySource { sourceId: string; npc: string; quest: string }
 export interface RelationshipState {

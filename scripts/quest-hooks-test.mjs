@@ -27,7 +27,10 @@ if (!process.argv.includes('--single-mode')) {
     }] : [],
   });
   try {
-    if (!invalid) await server.ssrLoadModule('/src/quest-hooks.test.ts');
+    if (!invalid) {
+      await server.ssrLoadModule('/src/quest-hooks.test.ts');
+      await server.ssrLoadModule('/src/quest-hooks-turn-in.test.ts');
+    }
     else {
       const { QUEST_HOOKS, QUEST_HOOKS_ERRORS, MORAL_STATE } = await server.ssrLoadModule('/src/data.ts');
       const { previewQuestHook, settleQuestHook } = await server.ssrLoadModule('/src/QuestHooks.ts');
