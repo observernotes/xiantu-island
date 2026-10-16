@@ -8,8 +8,9 @@ import monsters from '@xt/balance/monsters.json';
 import youyingMap from '@xt/maps/trial_youying_vault.json';
 import lingfuMap from '@xt/maps/trial_lingfu_range.json';
 import shadowArt from '@xt/art/sprites/fx_shadow_zone.anims.json';
-import { GAME_PHASE, inPhase, NPCS, QUESTS, QUEST_NAMES, QUEST_ORDER, t } from './data';
-import { ferryLockedReason } from './Ferry';
+import { GAME_PHASE, inPhase, MAP_AREA, NPCS, QUESTS, QUEST_NAMES, QUEST_ORDER, syncTalismanMapAvailability, TILED_MAPS, t } from './data';
+import { ferryLockedReason, mapEntryOpen, sectEntryMap, V05_MAPS } from './Ferry';
+import { FEATURE_UNAVAILABLE, featureFlags, setFeatureFlag } from './features';
 import { Progress } from './Progress';
 import { QuestSystem } from './QuestSystem';
 import { SKILLS } from './skills';
@@ -106,6 +107,98 @@ globalThis.localStorage = {
   eq(ferryLockedReason({ ...route, cost: 6 }, p), t('ui.shop.not_enough'), '付费航线先确认灵石充足');
   eq(ferryLockedReason({ ...route, cost: 5 }, p), undefined, '灵石等于航费可以启航');
   eq(ferryLockedReason({ id: '__free', label: '', targetMap: route.targetMap, cost: 0 }, p), undefined, '可选门槛缺省不限制');
+}
+
+// v0.5b：五宗职业挂载四宗山门；单开制符保留灵符派地图与航线。
+{
+  const before = featureFlags();
+  const gates = [
+    ['taixu_temple', 'taixu', 'trial_taixu_stage'],
+    ['lingfu_pavilion', 'lingfu', 'trial_lingfu_range'],
+    ['youying_tower', 'youying', 'trial_youying_vault'],
+    ['wanshou_mountain', 'wanshou', 'trial_wanshou_pen'],
+  ] as const;
+  const p = new Progress(); p.level = 99; p.stones = 999;
+  p.quests.q_fox = { state: 'done', kills: {} };
+  const routeFor = (map: string) => {
+    const route = NPCS.ferry_master.ferryRoutes?.find(route => route.targetMap === map);
+    ok(route, `${map}: 落霞镇有正式山门航线`);
+    return route;
+  };
+  try {
+    setFeatureFlag('fiveSectClasses', false);
+    setFeatureFlag('talismanCraft', false);
+    for (const v05 of [false, true]) {
+      setFeatureFlag('v05Maps', v05);
+      syncTalismanMapAvailability();
+      for (const [map, , trial] of gates) {
+        eq(TILED_MAPS[map], undefined, `${map}/v05=${v05}: 五宗关闭不注册山门`);
+        eq(MAP_AREA[map], undefined, `${map}/v05=${v05}: 五宗关闭不遗留区域`);
+        eq(sectEntryMap(map), trial, `${map}/v05=${v05}: 未注册时保留本宗试炼入口兜底`);
+        eq(mapEntryOpen(map), false, `${map}/v05=${v05}: 正式山门航线不可达`);
+        eq(mapEntryOpen(trial), false, `${map}/v05=${v05}: 试炼兜底也不可达`);
+        eq(ferryLockedReason(routeFor(map), p), FEATURE_UNAVAILABLE, `${map}/v05=${v05}: 航线显示功能关闭`);
+      }
+    }
+
+    setFeatureFlag('talismanCraft', true);
+    syncTalismanMapAvailability();
+    for (const v05 of [false, true]) {
+      setFeatureFlag('v05Maps', v05);
+      for (const [map, area, trial] of gates) {
+        const talismanGate = map === 'lingfu_pavilion', reachable = talismanGate && v05;
+        eq(!!TILED_MAPS[map], talismanGate, `${map}/v05=${v05}: 单开制符只保留灵符派`);
+        eq(MAP_AREA[map], talismanGate ? area : undefined, `${map}/v05=${v05}: 单开制符同步区域`);
+        eq(sectEntryMap(map), talismanGate ? map : trial, `${map}/v05=${v05}: 制符兼容实际已注册地图`);
+        eq(mapEntryOpen(map), reachable, `${map}/v05=${v05}: 单开制符只允许灵符航线并遵循新地图开关`);
+        eq(mapEntryOpen(trial), false, `${map}/v05=${v05}: 单开制符仍不开放宗门试炼`);
+        eq(ferryLockedReason(routeFor(map), p), reachable ? undefined : FEATURE_UNAVAILABLE,
+          `${map}/v05=${v05}: 单开制符的航线状态与地图准入一致`);
+      }
+    }
+
+    setFeatureFlag('fiveSectClasses', true);
+    setFeatureFlag('talismanCraft', false);
+    syncTalismanMapAvailability();
+    for (const [map, area] of gates) {
+      ok(TILED_MAPS[map], `${map}: 五宗开启注册正式山门`);
+      eq(MAP_AREA[map], area, `${map}: 五宗开启登记正确区域`);
+      eq(TILED_MAPS[map].properties.find((row: { name: string }) => row.name === 'area')?.value,
+        area, `${map}: 区域来自山门地图 properties`);
+      eq(sectEntryMap(map), map, `${map}: 注册后入口不再回退试炼图`);
+      eq(V05_MAPS.has(map), true, `${map}: 山门也受 v05Maps 控制`);
+      eq(mapEntryOpen(map), true, `${map}: 两道开关开启可达山门`);
+      eq(ferryLockedReason(routeFor(map), p), undefined, `${map}: 正式航线可达`);
+    }
+    // 制符会话开关不能撤掉五宗已经开放的正式山门与航线。
+    for (const talisman of [true, false]) {
+      setFeatureFlag('talismanCraft', talisman);
+      syncTalismanMapAvailability();
+      for (const [map, area] of gates) {
+        ok(TILED_MAPS[map], `${map}/talisman=${talisman}: 五宗开启持续注册山门`);
+        eq(MAP_AREA[map], area, `${map}/talisman=${talisman}: 制符会话开关保留山门区域`);
+        eq(mapEntryOpen(map), true, `${map}/talisman=${talisman}: 制符会话开关保留山门准入`);
+        eq(ferryLockedReason(routeFor(map), p), undefined,
+          `${map}/talisman=${talisman}: 制符会话开关保留正式航线`);
+      }
+    }
+    setFeatureFlag('v05Maps', false);
+    for (const [map] of gates) {
+      eq(mapEntryOpen(map), false, `${map}: 新地图关闭时不允许新入场`);
+      eq(ferryLockedReason(routeFor(map), p), FEATURE_UNAVAILABLE, `${map}: 新地图关闭锁定正式航线`);
+      eq(mapEntryOpen('luoxia_town', map), true, `${map}: 新地图关闭仍可沿回程返回落霞镇`);
+    }
+    setFeatureFlag('fiveSectClasses', false);
+    syncTalismanMapAvailability();
+    for (const [map] of gates) {
+      eq(TILED_MAPS[map], undefined, `${map}: 五宗重新关闭撤下地图`);
+      eq(MAP_AREA[map], undefined, `${map}: 五宗重新关闭撤下区域`);
+    }
+  } finally {
+    for (const [name, value] of Object.entries(before)) setFeatureFlag(name as keyof typeof before, value);
+    syncTalismanMapAvailability();
+  }
+  same(featureFlags(), before, '四宗山门注册回归恢复原有功能开关');
 }
 
 // G2：独立前置与 next 链都要已完成；等级锁不应泄漏未满足前置的任务。

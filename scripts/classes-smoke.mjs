@@ -16,11 +16,11 @@ const allSkills = Object.fromEntries(skills.map(row => [row.id, row]));
 const questRows = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/quests.json'), 'utf8'));
 const classes = [
   ['tianjian_disciple', 'tianjian', 'tianjian_sect'],
-  // 四宗山门地图尚未供图；用已登记的本宗试炼图检查技能运行。
-  ['taixu_acolyte', 'taixu', 'trial_taixu_stage'],
-  ['lingfu_novice', 'lingfu', 'trial_lingfu_range'],
-  ['youying_shadow', 'youying', 'trial_youying_vault'],
-  ['wanshou_tamer', 'wanshou', 'trial_wanshou_pen'],
+  // fiveSectClasses 开态使用已登记的正式山门，默认关态仍跳过四宗职业。
+  ['taixu_acolyte', 'taixu', 'taixu_temple'],
+  ['lingfu_novice', 'lingfu', 'lingfu_pavilion'],
+  ['youying_shadow', 'youying', 'youying_tower'],
+  ['wanshou_tamer', 'wanshou', 'wanshou_mountain'],
 ];
 // 读取与构建相同的工程快照，拜入阶段口径与 QuestSystem 保持一致。
 const featureLoader = await createServer({ root: projectRoot,
@@ -126,7 +126,7 @@ try {
     // 调试必须保护原有玩家存档；之后所有保存回调和换图都应保持这个值。
     const sentinel = JSON.stringify({ level: 12, job: '', name: '冒烟保留档', inventory: { hp_pill_small: 7 } });
     await page.addInitScript(value => localStorage.setItem('xiantu_save_v1', value), sentinel);
-    // 只输入执法堂使用的入口，覆盖山门缺图时自动转入本宗已登记试炼图。
+    // 只输入执法堂使用的职业调试入口，开态应落在本宗正式山门。
     const url = new URL(baseURL); url.searchParams.set('debug', `class=${job}`);
     try {
       await page.goto(url.href, { waitUntil: 'networkidle', timeout: 30000 });

@@ -27,7 +27,7 @@ import { LIFESPAN } from '../data';
 import { SectTrialObjects } from './SectTrialObjects';
 import { SectTrial } from './SectTrial';
 import { StealthVision } from './StealthVision';
-import { ferryLockedReason, mapEntryOpen, sectEntryMap, FIRST_CLASS_TRIAL_MAPS } from '../Ferry';
+import { ferryLockedReason, mapEntryOpen, sectEntryMap, FIRST_CLASS_TRIAL_MAPS, SECT_GATE_MAPS } from '../Ferry';
 import { Gathering } from './Gathering';
 import { interactionPrompt } from '../InteractionPrompt';
 import { AlchemySystem, ALCHEMY_RULES, alchemyFurnace } from '../Alchemy';
@@ -442,8 +442,17 @@ export class GameScene extends Phaser.Scene {
   enterSectTrial(npcId: string, def: TrialDef): boolean {
     if (this.travelling || this.sectTrialOfferFor(npcId, def.quest)?.id !== def.id) return false;
     const mapId = sectEntryMap(NPCS[npcId].map);
-    const at = this.map.objects.find(o => o.type === 'npc' && (o.props.npc ?? o.name) === npcId);
-    const returnPosition = { mapId, x: at?.x ?? this.player.x, y: at?.y ?? this.player.y };
+    // 正常从山门长老旁返回；旧试炼图入口或调试入口也必须使用目标山门的坐标。
+    const localElder = this.map.id === mapId
+      ? this.map.objects.find(o => o.type === 'npc' && (o.props.npc ?? o.name) === npcId) : undefined;
+    type TiledNpc = {
+      type?: string; class?: string; name: string; x: number; y: number; properties?: { name: string; value: unknown }[];
+    };
+    const at = localElder ?? TILED_MAPS[mapId]?.layers.flatMap((layer: { objects?: TiledNpc[] }) => layer.objects ?? [])
+      .find((o: TiledNpc) => (o.type || o.class) === 'npc'
+      && (o.properties?.find(p => p.name === 'npc')?.value ?? o.name) === npcId);
+    if (!at) return false;
+    const returnPosition = { mapId, x: at.x, y: at.y };
     this.prog.pendingSectTrial = { id: def.id, returnPosition };
     this.prog.save();
     this.travelling = true;
@@ -1329,17 +1338,17 @@ export class GameScene extends Phaser.Scene {
   applyFeatureFlags() {
     this.senseMap?.syncRevealed();
     syncTalismanMapAvailability();
-    if (!featureEnabled('talismanCraft') && (this.map.id === 'lingfu_pavilion'
-      || this.prog.pendingSectTrial?.returnPosition.mapId === 'lingfu_pavilion')) {
+    const removedGate = (id: string | undefined) => !!id && SECT_GATE_MAPS.has(id) && !TILED_MAPS[id];
+    if (removedGate(this.map.id) || removedGate(this.prog.pendingSectTrial?.returnPosition.mapId)) {
       const town = TILED_MAPS.luoxia_town;
       const spawn = town.layers.flatMap((layer: { objects?: { type: string; x: number; y: number }[] }) => layer.objects ?? [])
         .find((object: { type: string }) => object.type === 'playerStart');
       if (spawn) {
         const position = { mapId: 'luoxia_town', x: spawn.x, y: spawn.y };
-        if (this.prog.pendingSectTrial?.returnPosition.mapId === 'lingfu_pavilion') {
+        if (this.prog.pendingSectTrial && removedGate(this.prog.pendingSectTrial.returnPosition.mapId)) {
           this.prog.runSaveTransaction(() => { this.prog.pendingSectTrial!.returnPosition = { ...position }; return true; });
         }
-        if (this.map.id === 'lingfu_pavilion' && !this.travelling) {
+        if (removedGate(this.map.id) && !this.travelling) {
           this.interruptTalisman('map');
           if (this.scene.isActive('talisman-craft-ui')) this.scene.stop('talisman-craft-ui');
           this.closeItemPanels(); this.dialog?.dismiss();
@@ -1426,9 +1435,7 @@ export class GameScene extends Phaser.Scene {
     const def = Object.values(TRIALS).find(tr => tr.quest && tr.map === this.map.id);
     if (!def?.quest || this.prog.pendingSectTrial) return;
     const quest = QUESTS_REF[def.quest];
-    // The crafting gate must not remove the established #12 trial foyer and its return route.
-    const keepLingfuFoyer = this.map.id === 'trial_lingfu_range';
-    if (!quest || TILED_MAPS[NPCS[quest.turnIn]?.map] && !keepLingfuFoyer) return;
+    if (!quest || TILED_MAPS[NPCS[quest.turnIn]?.map]) return;
     for (const [index, id] of [quest.giver, quest.turnIn].entries()) {
       if (this.map.objects.some(o => o.type === 'npc' && (o.props.npc ?? o.name) === id)) continue;
       this.map.objects.push({ type: 'npc', name: id, x: this.map.spawn.x + 48 + index * 80, y: this.map.spawn.y,
@@ -1594,6 +1601,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private travelToMap(map: string, portal?: string, returning = false, onCancelled?: () => void) {
+    syncTalismanMapAvailability();
     this.interruptTalisman('map');
     if (this.sectTrial && !this.sectTrial.ended) { this.sectTrial.exit(); return; }
     map = sectEntryMap(map);

@@ -1,6 +1,7 @@
 import { CLASS_LIST, type ClassDef } from './classes';
-import { NPCS, QUESTS, TRIALS, questName, t, type Line } from './data';
-import { featureFlags, setFeatureFlag } from './features';
+import { NPCS, QUESTS, TRIALS, TILED_MAPS, syncTalismanMapAvailability, questName, t, type Line } from './data';
+import { FEATURE_UNAVAILABLE, featureFlags, setFeatureFlag } from './features';
+import { ferryLockedReason, mapEntryOpen } from './Ferry';
 import { Progress } from './Progress';
 import { QuestSystem } from './QuestSystem';
 import { GameScene } from './scenes/GameScene';
@@ -45,15 +46,94 @@ try {
     key: index => Object.keys(saved)[index] ?? null,
     get length() { return Object.keys(saved).length; },
   };
+  setFeatureFlag('v05Maps', true);
+  const traveler = new Progress(); traveler.level = 99; traveler.stones = 999;
+  for (const [fiveSectClasses, talismanCraft] of [[false, false], [false, true], [true, false]] as const) {
+    setFeatureFlag('fiveSectClasses', fiveSectClasses);
+    setFeatureFlag('talismanCraft', talismanCraft);
+    syncTalismanMapAvailability();
+    for (const cls of fourSects) {
+      const gateId = NPCS[QUESTS[cls.joinQuest].turnIn].map;
+      const context = `${cls.id}/五宗=${fiveSectClasses}/制符=${talismanCraft}`;
+      const accessible = fiveSectClasses || cls.sect === 'lingfu' && talismanCraft;
+      const route = NPCS.ferry_master.ferryRoutes?.find(row => row.targetMap === gateId);
+      check(route, `${context}: 存在正式山门航线`);
+      if (route.unlockQuest) traveler.quests[route.unlockQuest] = { state: 'done', kills: {} };
+      equal(!!TILED_MAPS[gateId], accessible, `${context}: 山门注册遵循五宗与独立制符开关`);
+      equal(mapEntryOpen(gateId), accessible, `${context}: 山门准入与地图注册一致`);
+      equal(ferryLockedReason(route, traveler), accessible ? undefined : FEATURE_UNAVAILABLE,
+        `${context}: 满足普通航行门槛后只有已开放山门可达`);
+    }
+  }
+  setFeatureFlag('talismanCraft', flagsBefore.talismanCraft);
   setFeatureFlag('fiveSectClasses', true);
   setFeatureFlag('v05Maps', true);
   setFeatureFlag('sectDaily', true);
   setFeatureFlag('sectShopLibrary', true);
+  syncTalismanMapAvailability();
   equal(fourSects.length, 4, 'Y8 覆盖四宗而非仅太虚');
 
   for (const cls of fourSects) {
     const other = fourSects.find(row => row.sect !== cls.sect)!;
     const trial = trialFor(cls);
+
+    // 正式入口、旧试炼入口与缺 NPC 对象时都须保存可重试的本宗山门落点。
+    const elderId = QUESTS[cls.joinQuest].turnIn, gateId = NPCS[elderId].map;
+    const gate = TILED_MAPS[gateId];
+    check(gate, `${cls.id}: 五宗开启后正式山门已注册`);
+    const elder = gate.layers.flatMap((layer: { objects?: { type: string; name: string; x: number; y: number }[] }) => layer.objects ?? [])
+      .find((object: { type: string; name: string }) => object.type === 'npc' && object.name === elderId);
+    check(elder, `${cls.id}: 山门有本宗长老对象`);
+    for (const [result, entrance] of [
+      ['fail', 'gate'], ['exit', 'gate'], ['exit', 'legacy'], ['exit', 'missing-npc'], ['exit', 'tiled-properties'],
+    ] as const) {
+      const context = `${cls.id}/${entrance}/${result}`, p = fixture(cls), qs = new QuestSystem(p);
+      p.addItem('five_sect_token', 1); p.selectSect(cls.sect);
+      equal(qs.accept(cls.joinQuest), true, `${context}: 真实接取本宗试炼任务`);
+      const playerPosition = { x: elder.x - 24, y: elder.y };
+      const expected = { mapId: gateId, x: elder.x, y: elder.y };
+      const restarts: unknown[] = [], registry = new Map<string, unknown>();
+      const scene = Object.assign(Object.create(GameScene.prototype), {
+        prog: p, quests: qs,
+        map: { id: entrance === 'legacy' || entrance === 'tiled-properties' ? trial.map : gateId,
+          objects: entrance === 'missing-npc' ? [] : [{ type: 'npc', name: elderId, props: { npc: elderId },
+            x: entrance === 'legacy' ? 128 : elder.x, y: entrance === 'legacy' ? 576 : elder.y }] },
+        player: { ...playerPosition, body: { setVelocityX() {}, setVelocity() {} } }, mobs: [],
+        registry: { set: (key: string, value: unknown) => registry.set(key, value) },
+        scene: { restart: (data: unknown) => { restarts.push(data); } },
+        time: { delayedCall: (_delay: number, callback: () => void) => callback() },
+      }) as GameScene;
+      let entered: boolean;
+      try {
+        if (entrance === 'tiled-properties') {
+          // Tiled 可用 class 标对象类型、properties.npc 关联 NPC，不要求对象名等于 NPC id。
+          TILED_MAPS[gateId] = { ...gate, layers: gate.layers.map((layer: { objects?: unknown[] }) => ({
+            ...layer, objects: layer.objects?.map(object => object === elder ? { ...elder,
+              type: '', class: 'npc', name: 'elder_marker', properties: [{ name: 'npc', type: 'string', value: elderId }],
+            } : object),
+          })) };
+        }
+        entered = scene.enterSectTrial(elderId, trial);
+      } finally { TILED_MAPS[gateId] = gate; }
+      equal(entered, true, `${context}: 长老真实入口进入试炼`);
+      equal(p.pendingSectTrial, { id: trial.id, returnPosition: expected }, `${context}: 进入时记录正式山门和正确坐标`);
+      equal(restarts, [{ map: trial.map }], `${context}: 入场仍重载本宗独立试炼图`);
+      equal(registry.get('sectTrialEntering'), true, `${context}: 场景切换标记当前尝试`);
+      equal(JSON.parse(saved[saveKey]).pendingSectTrial, p.pendingSectTrial, `${context}: 返回落点已写存档`);
+      equal(Progress.load().pendingSectTrial, p.pendingSectTrial, `${context}: 中断读档保留相同山门落点`);
+      equal(scene.enterSectTrial(elderId, trial), false, `${context}: 切图中不能覆盖本次返回位置`);
+      p.hp = 1; p.mp = 0;
+      scene.onSectTrialEnd(result);
+      equal(p.pendingSectTrial, null, `${context}: 失败或退出清除本局 pending`);
+      equal(p.position, expected, `${context}: 失败或退出写回原山门落点`);
+      equal(restarts[1], { map: gateId, pos: { x: expected.x, y: expected.y } }, `${context}: 失败或退出切回原山门落点`);
+      equal(p.completedTrials, [], `${context}: 返回不伪造通关记录`);
+      equal(qs.state(cls.joinQuest), 'active', `${context}: 返回仍可重试本宗任务`);
+      equal(p.count('five_sect_token'), 1, `${context}: 返回保留五宗帖`);
+      scene.onSectTrialEnd(result);
+      equal(restarts.length, 2, `${context}: 重复结算不重复切图`);
+    }
+
     for (const [name, token, selected] of [
       ['无帖且未选择', 0, ''], ['无帖但选择本宗', 0, cls.sect],
       ['有帖未选择', 1, ''], ['有帖选择外宗', 1, other.sect],
@@ -341,6 +421,7 @@ try {
   equal(qs.abandon('q_breakthrough'), false, '普通 active 任务不走四宗放弃');
 } finally {
   for (const [name, value] of Object.entries(flagsBefore)) setFeatureFlag(name as keyof typeof flagsBefore, value);
+  syncTalismanMapAvailability();
   if (storageBefore) Object.defineProperty(globalThis, 'localStorage', storageBefore);
   else Reflect.deleteProperty(globalThis, 'localStorage');
 }

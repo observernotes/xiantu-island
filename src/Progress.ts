@@ -1,6 +1,6 @@
 import { gameNow } from './GameClock';
 import { invalidateSenseSession, type SenseState } from './Sense';
-import { GROWTH, EXP_TO_NEXT, MAX_LEVEL, ITEMS, BREAKTHROUGH_LEVELS, BREAKTHROUGH, REALMS, QUESTS, LIFESPAN, RECIPES, ALCHEMY_RULES, LIFE_SKILLS, LIFE_SKILL_ERRORS, MORAL_STATE, SECT_RANKS, TILED_MAPS, PillQuality, QuestDef, syncTalismanMapAvailability } from './data';
+import { GROWTH, EXP_TO_NEXT, MAX_LEVEL, ITEMS, BREAKTHROUGH_LEVELS, BREAKTHROUGH, REALMS, QUESTS, LIFESPAN, RECIPES, ALCHEMY_RULES, LIFE_SKILLS, LIFE_SKILL_ERRORS, MORAL_STATE, SECT_RANKS, TILED_MAPS, SECT_GATE_MAPS, PillQuality, QuestDef, syncTalismanMapAvailability } from './data';
 import { advanceLifeSkillProgress, lifeSkillLevel, lifeSkillProgressView, lifeSkillRecipe, normalizeLifeSkillProgress, type LifeSkillId } from './LifeSkills';
 import { validSectGrowthState, type SectGrowthState } from './SectGrowth';
 import { HOTBAR_SLOTS, QUEST_SKILL_BACKFILL, SKILLS, SKILL_RULES, SkillDef, actOf, skillNumber, spEarnedFor, spBand } from './skills';
@@ -84,14 +84,14 @@ function validSaveData(saved: unknown): saved is Record<string, unknown> {
   if (has('flags') && (!dataRecord(saved.flags) || !Object.entries(saved.flags).every(([key, value]) => flagKey(key) && typeof value === 'boolean'))) return false;
   if (has('position') && saved.position !== null) {
     const p = saved.position;
-    if (!dataRecord(p) || typeof p.mapId !== 'string' || (p.mapId !== 'field_test' && p.mapId !== 'lingfu_pavilion' && !Object.prototype.hasOwnProperty.call(TILED_MAPS, p.mapId))
+    if (!dataRecord(p) || typeof p.mapId !== 'string' || (p.mapId !== 'field_test' && !SECT_GATE_MAPS.has(p.mapId) && !Object.prototype.hasOwnProperty.call(TILED_MAPS, p.mapId))
       || typeof p.x !== 'number' || !Number.isFinite(p.x) || typeof p.y !== 'number' || !Number.isFinite(p.y)) return false;
   }
   if (has('pendingSectTrial') && saved.pendingSectTrial !== null) {
     const attempt = saved.pendingSectTrial;
     if (!dataRecord(attempt) || typeof attempt.id !== 'string' || !/^trial_sect_(taixu|lingfu|youying|wanshou)$/.test(attempt.id)) return false;
     const at = attempt.returnPosition;
-    if (!dataRecord(at) || typeof at.mapId !== 'string' || (at.mapId !== 'lingfu_pavilion' && !Object.prototype.hasOwnProperty.call(TILED_MAPS, at.mapId))
+    if (!dataRecord(at) || typeof at.mapId !== 'string' || (!SECT_GATE_MAPS.has(at.mapId) && !Object.prototype.hasOwnProperty.call(TILED_MAPS, at.mapId))
       || typeof at.x !== 'number' || !Number.isFinite(at.x) || typeof at.y !== 'number' || !Number.isFinite(at.y)) return false;
   }
   if (has('quests')) {
@@ -927,18 +927,21 @@ export class Progress {
 
   /** 旧档缺字段时补上，避免 Object.assign 把后面新增的数组弄丢或弄短。 */
   ensureDefaults() {
+    syncTalismanMapAvailability();
     this.allocatedStats = normalizedStats(this.allocatedStats);
     this.unspentStatPoints = count(this.unspentStatPoints) ? this.unspentStatPoints : 0;
     if (typeof this.selectedSect !== 'string' || !CLASS_LIST.some(c => c.sect === this.selectedSect)) this.selectedSect = '';
-    // 制符专属地图关闭后，已保存的落点安全回到现成落霞出生点；不恢复气血灵力。
-    if (!featureEnabled('talismanCraft')) {
+    // 未注册山门的旧档落点安全回落霞；已由五宗或制符开关注册的山门保留原坐标。
+    const unavailableGate = (mapId?: string) => typeof mapId === 'string' && SECT_GATE_MAPS.has(mapId)
+      && !Object.prototype.hasOwnProperty.call(TILED_MAPS, mapId);
+    if (unavailableGate(this.position?.mapId) || unavailableGate(this.pendingSectTrial?.returnPosition?.mapId)) {
       const town = TILED_MAPS.luoxia_town;
       const spawn = (town?.layers ?? []).flatMap((layer: any) => layer.objects ?? [])
         .find((object: any) => object.type === 'playerStart' || object.name === 'playerStart');
       if (spawn && Number.isFinite(spawn.x) && Number.isFinite(spawn.y)) {
         const at = { mapId: 'luoxia_town', x: spawn.x, y: spawn.y };
-        if (this.position?.mapId === 'lingfu_pavilion') { this.position = { ...at }; this.save(); }
-        if (this.pendingSectTrial?.returnPosition?.mapId === 'lingfu_pavilion') { this.pendingSectTrial.returnPosition = { ...at }; this.save(); }
+        if (unavailableGate(this.position?.mapId)) { this.position = { ...at }; this.save(); }
+        if (this.pendingSectTrial && unavailableGate(this.pendingSectTrial.returnPosition?.mapId)) { this.pendingSectTrial.returnPosition = { ...at }; this.save(); }
       }
     }
     if (!this.position || typeof this.position !== 'object'

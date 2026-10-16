@@ -12,12 +12,15 @@ const dataRoot = findRoot(root);
 const trials = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/trials.json'), 'utf8'))
   .filter(row => row.id.startsWith('trial_sect_'));
 const quests = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/quests.json'), 'utf8'));
+const npcs = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/npcs.json'), 'utf8'));
 const strings = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/strings_zh.json'), 'utf8'));
 const classes = JSON.parse(await fs.readFile(path.join(root, 'src/config/classes.json'), 'utf8')).classes;
 // 发版开关始终来自工程快照，与 XT_DATA 指向的平衡表目录独立。
 const features = JSON.parse(await fs.readFile(path.join(root, 'data/features.json'), 'utf8'));
 assert.equal(typeof features.fiveSectClasses, 'boolean', '工程快照缺少 fiveSectClasses 布尔开关');
 assert.equal(trials.length, 4);
+const gateMap = trial => npcs.find(npc => npc.id === quests.find(quest => quest.id === trial.quest)?.turnIn)?.map;
+const returnPositions = new Map();
 const checks = [];
 const startedAt = Date.now();
 let phase = 'startup';
@@ -103,6 +106,21 @@ async function drainDialog(page) {
   }
   throw new Error('对白 24 次输入后仍未关闭');
 }
+async function choiceIndex(page, label) {
+  for (let n = 0; n < 8; n++) {
+    const state = await page.evaluate(label => {
+      const dialog = window.__scene.dialog;
+      return { index: dialog.choices.findIndex(choice => choice.label === label),
+        next: dialog.choices.findIndex(choice => choice.label.startsWith('›')), version: dialog.version };
+    }, label);
+    if (state.index >= 0) return state.index;
+    assert.ok(state.next >= 0, `对白目录找不到选项：${label}`);
+    await page.keyboard.press(String(state.next + 1), { delay: 45 });
+    await page.waitForFunction(version => window.__scene.dialog.version !== version,
+      state.version, { timeout: 3000, polling: 25 });
+  }
+  throw new Error(`对白目录翻页过多：${label}`);
+}
 async function fixture(page, mapId, quest, patch = {}) {
   const currentPhase = phase;
   progress(`${currentPhase}/loadSave`);
@@ -161,8 +179,11 @@ async function enter(page, trial, quest) {
   const confirmation = await page.evaluate(({ quest }) => {
     const scene = window.__scene;
     scene.dialog.close(); scene.talkTo(quest.turnIn, quest.id);
-    return { lines: scene.dialog.lines.map(line => line.text), choices: scene.dialog.choices.map(choice => choice.label) };
+    const elder = scene.map.objects.find(o => o.type === 'npc' && o.props.npc === quest.turnIn);
+    return { lines: scene.dialog.lines.map(line => line.text), choices: scene.dialog.choices.map(choice => choice.label),
+      returnPosition: { mapId: scene.map.id, x: elder.x, y: elder.y } };
   }, { quest });
+  assert.equal(confirmation.returnPosition.mapId, gateMap(trial), `${trial.sect}: 必须从正式山门进入试炼`);
   assert.ok(confirmation.lines.some(line => line.includes(strings['trial.enter_confirm'])), `${trial.sect}: 缺进入确认对白`);
   assert.ok(confirmation.choices.includes('进入试炼'), `${trial.sect}: 没有进入选择`);
   await page.keyboard.press('1', { delay: 45 });
@@ -172,20 +193,23 @@ async function enter(page, trial, quest) {
     const scene = window.__scene;
     scene.physics.pause();
     return { actual: [scene.player.x, scene.player.feet], expected: [scene.map.spawn.x, scene.map.spawn.y],
+      returnPosition: scene.prog.pendingSectTrial.returnPosition,
       repeated: scene.enterSectTrial(quest.turnIn, scene.sectTrial.def), completed: scene.quests.complete(quest.id) };
   }, { quest });
   assert.ok(Math.abs(landing.actual[0] - landing.expected[0]) < 2 && Math.abs(landing.actual[1] - landing.expected[1]) < 8,
     `${trial.sect}: 入场未落在 playerStart: ${JSON.stringify(landing)}`);
   assert.equal(landing.repeated, false, `${trial.sect}: 重复进场未拒绝`);
   assert.equal(landing.completed, false, `${trial.sect}: 进图错误地完成任务`);
+  assert.deepEqual(landing.returnPosition, confirmation.returnPosition, `${trial.sect}: pending 返回位置必须记录正式山门长老旁坐标`);
+  returnPositions.set(trial.id, landing.returnPosition);
 }
 async function returned(page, trial, quest, result) {
-  await page.waitForFunction(({ trial, quest }) => {
+  await page.waitForFunction(({ mapId, quest }) => {
     const scene = window.__scene;
-    return scene?.map?.id === trial.map && !scene.sectTrial && !scene.prog.pendingSectTrial
+    return scene?.map?.id === mapId && !scene.sectTrial && !scene.prog.pendingSectTrial
       && scene.player.onGround && scene.player.state2 === 'ground'
       && scene.map.objects.some(o => o.type === 'npc' && o.props.npc === quest.turnIn);
-  }, { trial, quest }, { timeout: 10000 });
+  }, { mapId: gateMap(trial), quest }, { timeout: 10000 });
   const state = await page.evaluate(({ quest }) => {
     const scene = window.__scene; scene.physics.pause();
     const elder = scene.map.objects.find(o => o.type === 'npc' && o.props.npc === quest.turnIn);
@@ -193,13 +217,15 @@ async function returned(page, trial, quest, result) {
       resources: { exp: scene.prog.exp, stones: scene.prog.stones,
         inventory: Object.fromEntries(Object.entries(scene.prog.exportSave().inventory).filter(([, count]) => count > 0)),
         skills: scene.prog.skills },
-      point: [scene.player.x, scene.player.feet], elder: [elder.x, elder.y], logs: scene.logs.map(log => log.text),
+      map: scene.map.id, point: [scene.player.x, scene.player.feet], elder: [elder.x, elder.y], logs: scene.logs.map(log => log.text),
       pendingSaved: JSON.parse(localStorage.getItem('xiantu_save_v1')).pendingSectTrial };
   }, { quest });
   assert.equal(state.completed, result === 'win', `${trial.sect}: ${result} 目标完成状态错误`);
   assert.equal(state.job, '', `${trial.sect}: 正式交付前不能落定职业`);
   assert.equal(state.pendingSaved, null, `${trial.sect}: 返回后 pending 未保存清除`);
-  assert.ok(Math.abs(state.point[0] - state.elder[0]) < 2 && Math.abs(state.point[1] - state.elder[1]) < 8,
+  const expected = returnPositions.get(trial.id);
+  assert.equal(state.map, expected.mapId, `${trial.sect}: 返回地图必须保留进入试炼时的正式山门`);
+  assert.ok(Math.abs(state.point[0] - expected.x) < 2 && Math.abs(state.point[1] - expected.y) < 8,
     `${trial.sect}: 未返回本宗长老门口 ${JSON.stringify(state)}`);
   if (result !== 'win') {
     assert.deepEqual(state.trials, [], `${trial.sect}: ${result} 错误登记通关`);
@@ -380,7 +406,7 @@ try {
       ['选错宗', { selectedSect: 'tianjian' }],
     ]) {
       progress(`${trial.sect}/${caseName}`);
-      await fixture(page, trial.map, quest, patch);
+      await fixture(page, gateMap(trial), quest, patch);
       await standAtNpc(page, quest.giver); await page.keyboard.press('z', { delay: 45 });
       const denied = await page.evaluate(id => ({ state: window.__scene.quests.state(id),
         text: window.__scene.dialog.lines.map(line => line.text).join('\n'),
@@ -397,7 +423,7 @@ try {
         await window.__xt.loadSave(save);
         return window.__scene.prog.exportSave();
       }, { quest, trial }));
-      await ready(page, trial.map);
+      await ready(page, gateMap(trial));
       await standAtNpc(page, quest.turnIn); await page.keyboard.press('z', { delay: 45 });
       const blocked = await page.evaluate(({ quest, trial }) => {
         const s = window.__scene;
@@ -422,7 +448,19 @@ try {
     const quest = quests.find(row => row.id === trial.quest);
     progress(`${trial.sect}/trial`);
     await page.evaluate(() => { window.__xt.setFlag('fiveSectClasses', true); window.__xt.setFlag('v05Maps', true); });
-    await fixture(page, trial.map, quest, { selectedSect: '' });
+    await fixture(page, 'luoxia_town', quest, { selectedSect: '' });
+    const ferryRoute = npcs.find(npc => npc.id === 'ferry_master').ferryRoutes.find(route => route.targetMap === gateMap(trial));
+    await page.evaluate(() => window.__scene.talkTo('ferry_master'));
+    const routeIndex = await choiceIndex(page, strings[ferryRoute.label]);
+    const route = await page.evaluate(index => {
+      const scene = window.__scene;
+      const choice = scene.dialog.choices[index];
+      return { disabled: !!choice.disabled, reason: choice.reason ?? null };
+    }, routeIndex);
+    assert.deepEqual(route, { disabled: false, reason: null }, `${trial.sect}: 开态正式山门航线应可达`);
+    await page.keyboard.press(String(routeIndex + 1), { delay: 45 });
+    await ready(page, gateMap(trial));
+    checks.push(`${trial.sect}: setFlag 后航线真实上船进入正式山门 ${gateMap(trial)}`);
     progress(`${trial.sect}/token`);
     await chooseSectToken(page, trial.sect);
     const entrance = await page.evaluate(({ quest }) => ({
@@ -431,7 +469,7 @@ try {
       patrols: window.__scene.stealth.patrols.length,
       accepted: window.__scene.quests.state(quest.id), completed: window.__scene.quests.complete(quest.id),
     }), { quest });
-    assert.ok(entrance.npcs.includes(quest.giver) && entrance.npcs.includes(quest.turnIn), `${trial.sect}: 试炼图门口没有兜底 NPC`);
+    assert.ok(entrance.npcs.includes(quest.giver) && entrance.npcs.includes(quest.turnIn), `${trial.sect}: 正式山门缺接引人或长老`);
     assert.equal(entrance.mobs, 0, `${trial.sect}: 入口等待时不应有试炼敌人`);
     assert.equal(entrance.patrols, 0, `${trial.sect}: 入口等待时不应有巡逻发现`);
     await page.evaluate(({ quest }) => window.__scene.talkTo(quest.giver, quest.id), { quest });
@@ -453,18 +491,20 @@ try {
     await enter(page, trial, quest); await page.keyboard.press('Escape', { delay: 45 });
     await returned(page, trial, quest, 'exit');
     checks.push(`${trial.sect}: 失败后即刻重进，Esc 主动退出`);
+    await enter(page, trial, quest);
+    await withDeadline(`${phase}: interrupted loadSave`, () => page.evaluate(async () => {
+      const save = window.__xt.exportSave();
+      await window.__xt.loadSave(save);
+    }));
+    await returned(page, trial, quest, 'exit');
+    const interrupted = await page.evaluate(() => ({ pending: window.__scene.prog.pendingSectTrial,
+      active: !!window.__scene.sectTrial, cloak: window.__scene.prog.skillLevel('phantom_cloak'),
+      step: window.__scene.prog.skillLevel('shadow_step'), trials: window.__scene.prog.completedTrials }));
+    assert.deepEqual(interrupted, { pending: null, active: false, cloak: 0, step: 0, trials: [] }, `${trial.sect}: 存读中断必须返回正式山门且不泄漏教学技能`);
+    checks.push(`${trial.sect}: pending 存读重建场景中断尝试，返回原山门坐标，教学技能不存档`);
     if (trial.sect === 'youying') {
       await enter(page, trial, quest);
       assert.equal(await page.evaluate(() => window.__scene.prog.trialSkillCharges('phantom_cloak')), 2);
-      await page.evaluate(() => { const url = new URL(location.href); url.searchParams.delete('reset'); history.replaceState(null, '', url.href); });
-      await page.reload({ waitUntil: 'domcontentloaded', timeout: 30000 }); await ready(page, trial.map);
-      const interrupted = await page.evaluate(() => ({ pending: window.__scene.prog.pendingSectTrial,
-        active: !!window.__scene.sectTrial, cloak: window.__scene.prog.skillLevel('phantom_cloak'),
-        step: window.__scene.prog.skillLevel('shadow_step'), trials: window.__scene.prog.completedTrials }));
-      assert.deepEqual(interrupted, { pending: null, active: false, cloak: 0, step: 0, trials: [] }, '刷新尝试未中断返回或泄漏教学技能');
-      checks.push('youying: 未结算尝试刷新回入口，教学技能不存档');
-      await page.evaluate(() => { window.__xt.setFlag('fiveSectClasses', true); window.__xt.setFlag('v05Maps', true); });
-      await enter(page, trial, quest);
       await page.evaluate(() => window.__scene.physics.resume());
       await page.waitForFunction(() => window.__scene.player.state2 === 'ground', null, { timeout: 3000 });
       await page.evaluate(() => window.__scene.physics.pause());
@@ -494,7 +534,7 @@ try {
       const save = window.__xt.exportSave();
       await window.__xt.loadSave(save);
     }));
-    await ready(page, trial.map);
+    await ready(page, gateMap(trial));
     assert.equal(await page.evaluate(id => window.__scene.quests.complete(id), quest.id), true, `${trial.sect}: 通关存读丢失`);
     const selection = await page.evaluate(() => {
       const s = window.__scene;
@@ -533,12 +573,33 @@ try {
     state: window.__scene.prog.quests.q_sect_tianjian.state, trials: window.__scene.prog.completedTrials })),
   { job: 'tianjian_disciple', pending: null, state: 'done', trials: [] });
   checks.push('tianjian: 接引人发任务，长老对白正式拜入且免额外试炼');
+  for (const trial of trials) {
+    const quest = quests.find(row => row.id === trial.quest);
+    progress(`${trial.sect}/cross-map-return`);
+    await fixture(page, 'luoxia_town', quest);
+    assert.equal(await page.evaluate(({ quest, trial }) => {
+      const scene = window.__scene;
+      scene.quests.accept(quest.id);
+      return scene.enterSectTrial(quest.turnIn, trial);
+    }, { quest, trial }), true, `${trial.sect}: 跨图试炼夹具未入场`);
+    await ready(page, trial.map);
+    assert.deepEqual(await page.evaluate(() => window.__scene.prog.pendingSectTrial.returnPosition), returnPositions.get(trial.id),
+      `${trial.sect}: 跨图入场必须从目标山门读取长老坐标`);
+    await page.keyboard.press('Escape', { delay: 45 });
+    await returned(page, trial, quest, 'exit');
+    await page.evaluate(() => window.__xt.setFlag('fiveSectClasses', false));
+    await ready(page, 'luoxia_town');
+    assert.equal(await page.evaluate(() => window.__scene.prog.position.mapId), 'luoxia_town', `${trial.sect}: 关闭五宗须保存撤离落点`);
+    await page.evaluate(() => window.__xt.setFlag('fiveSectClasses', true));
+    checks.push(`${trial.sect}: 跨图入场仍记录正式山门长老坐标，关闭五宗后撤离该山门到落霞镇`);
+  }
   const trial = trials[0], quest = quests.find(row => row.id === trial.quest);
   progress('feature-gates');
-  await fixture(page, trial.map, quest);
-  await page.evaluate(id => window.__scene.quests.accept(id), quest.id);
   for (const gate of ['fiveSectClasses', 'v05Maps']) {
+    await fixture(page, gateMap(trial), quest);
+    await page.evaluate(id => window.__scene.quests.accept(id), quest.id);
     await page.evaluate(gate => window.__xt.setFlag(gate, false), gate);
+    if (gate === 'fiveSectClasses') await ready(page, 'luoxia_town');
     const denied = await page.evaluate(({ quest, trial }) => {
       const scene = window.__scene, before = scene.prog.exportSave();
       scene.talkTo(quest.turnIn, quest.id);
@@ -551,6 +612,8 @@ try {
     assert.equal(denied.offer, false); assert.equal(denied.entered, false); assert.equal(denied.pending, null);
     assert.deepEqual(denied.after, denied.before);
     await page.evaluate(gate => window.__xt.setFlag(gate, true), gate);
+    await fixture(page, gateMap(trial), quest);
+    await page.evaluate(id => window.__scene.quests.accept(id), quest.id);
     const reopened = await page.evaluate(({ gate, quest }) => {
       const scene = window.__scene;
       scene.talkTo(quest.turnIn, quest.id);

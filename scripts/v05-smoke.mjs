@@ -28,6 +28,11 @@ const pacing = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/solo_pa
 const sectSeclusion = pacing.sectSeclusion;
 const realms = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/realms.json'), 'utf8'));
 const questRows = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/quests.json'), 'utf8'));
+const npcRows = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/npcs.json'), 'utf8'));
+const sectGates = ['taixu_temple', 'lingfu_pavilion', 'youying_tower', 'wanshou_mountain'];
+const features = JSON.parse(await fs.readFile(path.join(projectRoot, 'data/features.json'), 'utf8'));
+const gateRegistered = gate => features.fiveSectClasses || gate === 'lingfu_pavilion' && features.talismanCraft;
+maps.push(...sectGates.filter(gateRegistered).map(gate => [gate, gate.split('_')[0]]));
 const contributionDaily = questRows.find(quest => quest.id === 'q_daily_tianjian_3');
 assert.ok(contributionDaily?.daily && contributionDaily.objectives.every(objective => objective.type === 'talk'),
   '贡献夹具须使用真实天剑宗传讯日常');
@@ -53,6 +58,22 @@ async function waitForMap(page, mapId, pause = false) {
     if (pause) scene.physics.pause();
     return true;
   }, { id: mapId, pause }, { timeout: 15000, polling: 50 });
+}
+
+async function choiceIndex(page, label) {
+  for (let n = 0; n < 8; n++) {
+    const state = await page.evaluate(label => {
+      const dialog = window.__scene.dialog;
+      return { index: dialog.choices.findIndex(choice => choice.label === label),
+        next: dialog.choices.findIndex(choice => choice.label.startsWith('›')), version: dialog.version };
+    }, label);
+    if (state.index >= 0) return state.index;
+    assert.ok(state.next >= 0, `航线目录找不到选项：${label}`);
+    await page.keyboard.press(String(state.next + 1), { delay: 60 });
+    await page.waitForFunction(version => window.__scene.dialog.version !== version,
+      state.version, { timeout: 3000, polling: 25 });
+  }
+  throw new Error(`航线目录翻页过多：${label}`);
 }
 
 async function extraInteractions(context, baseURL) {
@@ -117,6 +138,33 @@ async function extraInteractions(context, baseURL) {
 
     await page.evaluate(() => window.__scene.talkTo('ferry_master'));
     assert.deepEqual(await page.evaluate(() => window.__scene.dialog.choices.map(choice => choice.label).slice(0, 2)), ['万妖林', '天剑宗']);
+    const routes = npcRows.find(npc => npc.id === 'ferry_master').ferryRoutes;
+    for (const gate of sectGates) {
+      const route = routes.find(route => route.targetMap === gate);
+      assert.ok(route, `${gate}: 缺正式航线`);
+      await page.evaluate(() => window.__scene.talkTo('ferry_master'));
+      const index = await choiceIndex(page, text(route.label));
+      const open = gateRegistered(gate) && features.v05Maps;
+      assert.deepEqual(await page.evaluate(index => {
+        const choice = window.__scene.dialog.choices[index];
+        return { disabled: !!choice.disabled, reason: choice.reason ?? null };
+      }, index), { disabled: !open, reason: open ? null : '暂未开放' }, `${gate}: 航线门控须与工程开关一致`);
+      await page.keyboard.press(String(index + 1), { delay: 60 });
+      if (open) {
+        await landing(gate);
+        await page.evaluate(() => {
+          const scene = window.__scene, ferry = scene.map.objects.find(o => o.type === 'ferry');
+          if (!ferry) throw new Error('正式山门缺返程飞舟');
+          scene.player.body.reset(ferry.x + ferry.w / 2, ferry.y);
+          scene.dialog.close(); scene.tryInteract();
+        });
+        await landing('luoxia_town');
+        checks.push(`${gate}: 开态真实航线到达正式山门，返程飞舟回落霞镇`);
+      } else {
+        assert.equal(await page.evaluate(() => window.__scene.map.id), 'luoxia_town', `${gate}: 关态航线不得进入山门或试炼图`);
+        checks.push(`${gate}: 关态航线锁定且不能误入试炼图`);
+      }
+    }
     await page.keyboard.press('Escape', { delay: 60 }); await page.waitForTimeout(300);
     assert.deepEqual(await page.evaluate(() => ({ open: window.__scene.dialog.open, map: window.__scene.map.id })), { open: false, map: 'luoxia_town' });
     checks.push('航线: Esc 告辞留在落霞镇');
@@ -336,6 +384,12 @@ async function extraInteractions(context, baseURL) {
       saved: JSON.parse(localStorage.getItem('xiantu_save_v1')).tutorialsSeen.includes(id) }), tutorial),
     { open: false, count: 1, saved: true });
     checks.push('tutorial: 首次进入提示，持续站区与刷新都不重复');
+    for (const gate of sectGates) {
+      const url = new URL(baseURL); url.searchParams.set('map', gate); url.searchParams.set('reset', '1');
+      await page.goto(url.href, { waitUntil: 'domcontentloaded', timeout: 30000 });
+      await waitForMap(page, gateRegistered(gate) ? gate : 'qingyun_village');
+      checks.push(`?map=${gate}: ${gateRegistered(gate) ? '正式山门已登记' : '未登记直达回青云村'}`);
+    }
     assert.deepEqual(errors, [], '交互验证出现浏览器报错');
     console.log(JSON.stringify({ interactionChecks: checks, errors: 0 }));
     return checks.length;
@@ -468,7 +522,7 @@ try {
     }
   }
   const interactionChecks = await extraInteractions(context, baseURL);
-  assert.equal(results.length, 11, '七张新图和四张试炼图未全部验证');
+  assert.equal(results.length, maps.length, '已登记的新图、正式山门和试炼图未全部验证');
   console.log(JSON.stringify({ passed: results.length, newMaps: results.filter(result => !result.trial).length,
     trialMaps: results.filter(result => result.trial).length, interactionChecks, consoleErrors: 0, screenshot }));
 } finally {

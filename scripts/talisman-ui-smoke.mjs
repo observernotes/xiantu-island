@@ -410,7 +410,8 @@ try {
   });
   await session('talisman-npc-route', {}, async page => {
     await page.evaluate(async () => {
-      window.__xt.setFlag('talismanCraft', true);
+      window.__xt.setFlag('fiveSectClasses', true);
+      window.__xt.setFlag('talismanCraft', false);
       await window.__xt.loadSave({ name: '未拜师制符学徒', level: 15, exp: 0, hp: 9999, mp: 9999,
         questRewardVersion: 1, inventory: {}, quests: {}, ageUpdatedAt: Date.now() });
       await window.__xt.teleport('luoxia_town');
@@ -450,9 +451,11 @@ try {
     await approachNpc('ferry_master');
     await choose('前往灵符派');
     await page.waitForFunction(() => window.__scene.map.id === 'lingfu_pavilion' && window.__scene.player.active);
+    eq(await page.evaluate(() => window.__xt.getState().features.talismanCraft), false, '五宗航线不应依赖制符开关');
     eq(await page.evaluate(() => window.__scene.prog.sect), '', '未拜师乘飞舟被强制入宗');
     eq(await page.evaluate(() => [window.__scene.prog.job, window.__scene.prog.selectedSect,
       window.__scene.prog.count('five_sect_token')]), ['', '', 0], '教学夹具应保持未入宗、未选宗且无拜帖');
+    await page.evaluate(() => window.__xt.setFlag('talismanCraft', true));
     await approachNpc('lingfu_envoy');
     await choose('学习制符'); await finishTeaching();
     eq(await page.evaluate(() => window.__scene.quests.state('q_talisman_intro')), 'active', '第一轮对白未接取入门任务');
@@ -474,6 +477,11 @@ try {
     eq(await page.evaluate(() => window.__scene.map.id), 'lingfu_pavilion', '开关开启重载新图失败');
     const vital = await page.evaluate(() => [window.__scene.prog.hp, window.__scene.prog.mp]);
     await page.evaluate(() => window.__xt.setFlag('talismanCraft', false));
+    eq(await page.evaluate(() => window.__scene.map.id), 'lingfu_pavilion', '五宗开态关闭制符不得撤离正式山门');
+    eq(await page.evaluate(() => window.__xt.openTalismanCraft('recipe_talisman_fire')), false, '关闭制符会话后仍可打开正式制符');
+    await page.evaluate(async save => window.__xt.loadSave(save), sourceSave);
+    eq(await page.evaluate(() => window.__scene.map.id), 'lingfu_pavilion', '五宗开态须保留灵符山门旧档');
+    await page.evaluate(() => window.__xt.setFlag('fiveSectClasses', false));
     await page.waitForFunction(() => window.__scene.map.id === 'luoxia_town');
     eq(await page.evaluate(() => [window.__scene.prog.hp, window.__scene.prog.mp]), vital, '关闭开关回镇修改气血灵力');
     eq(await page.evaluate(() => window.__scene.map.objects.some(o => o.type === 'npc' && (o.props.npc ?? o.name) === 'lingfu_envoy')), false,
@@ -481,7 +489,15 @@ try {
     await page.evaluate(async save => window.__xt.loadSave(save), sourceSave);
     eq(await page.evaluate(() => window.__scene.map.id), 'luoxia_town', '关闭开关无法兼容新地图存档回镇');
     eq(await page.evaluate(() => [window.__scene.prog.hp, window.__scene.prog.mp]), vital, '关闭开关读新图档修改气血灵力');
-    checks.push('真实船老大航线→灵符派现成地图→墨符使两轮教学授五方→正式制符入口；新图档重载及关闭开关无恢复回镇');
+    await page.evaluate(async save => {
+      window.__xt.setFlag('talismanCraft', true);
+      await window.__xt.loadSave(save);
+    }, sourceSave);
+    eq(await page.evaluate(() => window.__scene.map.id), 'lingfu_pavilion', '制符单独开启须重新登记灵符山门');
+    await page.evaluate(() => window.__xt.teleport('luoxia_town'));
+    await approachNpc('ferry_master'); await choose('前往灵符派');
+    await page.waitForFunction(() => window.__scene.map.id === 'lingfu_pavilion' && window.__scene.player.active);
+    checks.push('五宗开态且制符关闭仍可乘前往灵符派；会话开启制符后无帖教学授五方；关闭制符保留五宗山门，双关回镇，制符单开恢复地图与航线');
   });
   await session('craft-gameplay-save', {}, async page => {
     eq(await page.evaluate(() => window.__xt.openTalismanCraft('recipe_talisman_fire')), false, '默认开关关闭仍可进入正式制符');

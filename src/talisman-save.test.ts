@@ -1,7 +1,8 @@
 import { Progress } from './Progress';
 import { QuestSystem } from './QuestSystem';
-import { QUESTS, RECIPES, ITEMS, GROWTH, t, TILED_MAPS, syncTalismanMapAvailability } from './data';
-import { featureFlags, setFeatureFlag } from './features';
+import { QUESTS, RECIPES, ITEMS, GROWTH, t, TILED_MAPS, SECT_GATE_MAPS, NPCS, syncTalismanMapAvailability } from './data';
+import { FEATURE_UNAVAILABLE, featureFlags, setFeatureFlag } from './features';
+import { ferryLockedReason, mapEntryOpen } from './Ferry';
 import { setGameTimeSource } from './GameClock';
 
 let assertions = 0;
@@ -21,7 +22,9 @@ Object.defineProperty(globalThis, 'localStorage', { configurable: true, value: {
 const now = 1_800_000_000_000;
 setGameTimeSource(() => now);
 try {
+  setFeatureFlag('fiveSectClasses', false);
   setFeatureFlag('talismanCraft', false);
+  setFeatureFlag('v05Maps', true);
   const p = new Progress();
   const off = p.exportSave();
   for (const field of ['talisman', 'talismanUse', 'visitedMaps', 'talismanQuickSlots']) eq(Object.prototype.hasOwnProperty.call(off, field), false, `关口关闭新档不添加 ${field}`);
@@ -126,6 +129,58 @@ try {
   const imported = new Progress();
   ok(imported.importSave({ ...traveller.exportSave(), position: { mapId: 'lingfu_pavilion', x: 224, y: 512 } }), '关闭时导入灵符阁旧档不拒绝整档');
   eq(imported.position?.mapId, 'luoxia_town', '导入兼容落点同读档');
+
+  const trials: Record<string, string> = {
+    taixu_temple: 'trial_sect_taixu', lingfu_pavilion: 'trial_sect_lingfu',
+    youying_tower: 'trial_sect_youying', wanshou_mountain: 'trial_sect_wanshou',
+  };
+  const passenger = new Progress(); passenger.level = 99; passenger.stones = 999;
+  passenger.quests.q_fox = { state: 'done', kills: {} };
+  for (const mapId of SECT_GATE_MAPS) {
+    const route = NPCS.ferry_master.ferryRoutes?.find(route => route.targetMap === mapId);
+    ok(route, `${mapId} 有正式山门航线`);
+    const position = { mapId, x: 224, y: 512 };
+    const saved = { ...traveller.exportSave(), position, pendingSectTrial: { id: trials[mapId], returnPosition: { ...position } } };
+    setFeatureFlag('fiveSectClasses', true);
+    setFeatureFlag('talismanCraft', false);
+    disk[key] = JSON.stringify(saved);
+    const openGate = Progress.load();
+    ok(TILED_MAPS[mapId], `${mapId} 五宗开启且制符关闭仍注册山门`);
+    eq(mapEntryOpen(mapId), true, `${mapId} 五宗开启且制符关闭山门可达`);
+    eq(ferryLockedReason(route!, passenger), undefined, `${mapId} 五宗开启且制符关闭航线可达`);
+    eq(openGate.position, position, `${mapId} 五宗开启且制符关闭保留山门落点`);
+    eq(openGate.pendingSectTrial?.returnPosition, position, `${mapId} 五宗开启保留试炼返程坐标`);
+    const openImport = new Progress();
+    ok(openImport.importSave(saved), `${mapId} 五宗开启可导入山门旧档`);
+    eq(openImport.position, position, `${mapId} 导入保留山门落点`);
+    eq(openImport.pendingSectTrial?.returnPosition, position, `${mapId} 导入保留试炼返程坐标`);
+    setFeatureFlag('fiveSectClasses', false);
+    disk[key] = JSON.stringify(saved);
+    const closedGate = Progress.load();
+    eq(TILED_MAPS[mapId], undefined, `${mapId} 双关不注册山门`);
+    eq(mapEntryOpen(mapId), false, `${mapId} 双关山门不可达`);
+    eq(ferryLockedReason(route!, passenger), FEATURE_UNAVAILABLE, `${mapId} 双关航线不可达`);
+    eq(closedGate.position?.mapId, 'luoxia_town', `${mapId} 关闭后旧档安全回镇`);
+    eq(closedGate.pendingSectTrial?.returnPosition.mapId, 'luoxia_town', `${mapId} 关闭后试炼返程安全回镇`);
+    eq([closedGate.hp, closedGate.mp], [7, 3], `${mapId} 地图迁移不恢复气血灵力`);
+    const closedImport = new Progress();
+    ok(closedImport.importSave(saved), `${mapId} 关闭时仍接受合法山门旧档`);
+    eq(closedImport.position?.mapId, 'luoxia_town', `${mapId} 关闭导入安全回镇`);
+    eq(closedImport.pendingSectTrial?.returnPosition.mapId, 'luoxia_town', `${mapId} 关闭导入返程安全回镇`);
+    setFeatureFlag('talismanCraft', true);
+    disk[key] = JSON.stringify(saved);
+    const craftOnly = Progress.load(), expectedMap = mapId === 'lingfu_pavilion' ? mapId : 'luoxia_town';
+    const craftGateOpen = mapId === 'lingfu_pavilion';
+    eq(!!TILED_MAPS[mapId], craftGateOpen, `${mapId} 单开制符只注册灵符阁`);
+    eq(mapEntryOpen(mapId), craftGateOpen, `${mapId} 单开制符山门准入与注册一致`);
+    eq(ferryLockedReason(route!, passenger), craftGateOpen ? undefined : FEATURE_UNAVAILABLE, `${mapId} 单开制符仅灵符航线可达`);
+    eq(craftOnly.position?.mapId, expectedMap, `${mapId} 单开制符按山门注册状态迁移`);
+    eq(craftOnly.pendingSectTrial?.returnPosition.mapId, expectedMap, `${mapId} 单开制符返程按注册状态迁移`);
+    const craftImport = new Progress();
+    ok(craftImport.importSave(saved), `${mapId} 单开制符仍接受合法山门旧档`);
+    eq(craftImport.position?.mapId, expectedMap, `${mapId} 单开制符导入按山门注册状态迁移`);
+    eq(craftImport.pendingSectTrial?.returnPosition.mapId, expectedMap, `${mapId} 单开制符导入返程按注册状态迁移`);
+  }
   console.log(`talisman save tests ok: ${assertions} assertions`);
 } finally {
   fail = false;

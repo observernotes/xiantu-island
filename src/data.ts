@@ -29,7 +29,10 @@ import type { MonsterSenseBlock } from './Sense';
 /** 神识表与其他 @xt 表共用 shared/snapshot；运行时校验，不用默认值吞掉 null。 */
 export const SENSE = sense;
 import karmaFlags from '@xt/balance/karma_flags.json';
+import taixuTemple from '@xt/maps/taixu_temple.json';
 import lingfuPavilion from '@xt/maps/lingfu_pavilion.json';
+import youyingTower from '@xt/maps/youying_tower.json';
+import wanshouMountain from '@xt/maps/wanshou_mountain.json';
 import { featureEnabled } from './features';
 
 /** 两轴存档的边界与初值只读配表；moral_state 仍是独立的功能就绪标识。 */
@@ -108,7 +111,12 @@ export const LIFE_SKILL_ERRORS = lifeSkillsValidation.errors;
 export const GROWTH = growth as any;
 export const EXP_TO_NEXT = (expCurve as any).expToNext as Record<string, number>;
 export const MAX_LEVEL = (expCurve as any).maxLevel as number;
-// 四宗山门默认维持未注册；制符仅按独立开关接入现成灵符派地图，其余三宗不变。
+const SECT_GATE_TILED_MAPS = {
+  taixu_temple: taixuTemple, lingfu_pavilion: lingfuPavilion,
+  youying_tower: youyingTower, wanshou_mountain: wanshouMountain,
+};
+export const SECT_GATE_MAPS = new Set(Object.keys(SECT_GATE_TILED_MAPS));
+// 四宗山门按既有开关同步注册；关态地图集合保持不变。
 export const TILED_MAPS: Record<string, any> = {
   qingyun_village: qingyun, bamboo_forest: bamboo, lingxi_path: lingxi,
   luoxia_outskirts_1: luoxia1, luoxia_outskirts_2: luoxia2, luoxia_town: luoxiaTown,
@@ -170,14 +178,16 @@ export const MAP_AREA: Record<string, string> = {
   trial_taixu_stage: 'taixu', trial_lingfu_range: 'lingfu',
   trial_youying_vault: 'youying', trial_wanshou_pen: 'wanshou',
 };
-/** 单图按制符开关挂载；关闭时运行地图集合与 v0.5.2 相同，不改地图/配表文件。 */
+/** 五宗开关挂载四宗山门；制符仍可独立保留灵符阁。保留原函数名供旧调用方使用。 */
 export function syncTalismanMapAvailability() {
-  if (featureEnabled('talismanCraft')) {
-    TILED_MAPS.lingfu_pavilion = lingfuPavilion;
-    MAP_AREA.lingfu_pavilion = 'lingfu';
-  } else {
-    delete TILED_MAPS.lingfu_pavilion;
-    delete MAP_AREA.lingfu_pavilion;
+  for (const [id, map] of Object.entries(SECT_GATE_TILED_MAPS)) {
+    if (featureEnabled('fiveSectClasses') || id === 'lingfu_pavilion' && featureEnabled('talismanCraft')) {
+      TILED_MAPS[id] = map;
+      MAP_AREA[id] = map.properties.find(p => p.name === 'area')!.value as string;
+    } else {
+      delete TILED_MAPS[id];
+      delete MAP_AREA[id];
+    }
   }
 }
 export const AREAS: string[] = assets.areas;

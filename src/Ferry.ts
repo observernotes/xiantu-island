@@ -1,11 +1,13 @@
-import { inPhase, QUEST_NAMES, TILED_MAPS, TRIALS, NPCS, QUESTS, t, type FerryRoute } from './data';
+import { inPhase, QUEST_NAMES, TILED_MAPS, TRIALS, NPCS, QUESTS, SECT_GATE_MAPS, t, type FerryRoute } from './data';
 import type { Progress } from './Progress';
 import { featureEnabled, FEATURE_UNAVAILABLE } from './features';
+export { SECT_GATE_MAPS } from './data';
 
 /** v0.5 新增地图；旧地图与筑基台不受新地图入口开关影响。 */
 export const V05_MAPS = new Set([
   'luoxia_town', 'wanyao_outer_1', 'wanyao_outer_2', 'wanyao_deep_1', 'wanyao_deep_2',
   'tianjian_sect', 'tianjian_sword_tomb',
+  ...SECT_GATE_MAPS,
   'trial_taixu_stage', 'trial_lingfu_range', 'trial_youying_vault', 'trial_wanshou_pen',
 ]);
 export const FIRST_CLASS_TRIAL_MAPS = new Set([
@@ -15,9 +17,11 @@ const RETURN_MAPS: Record<string, string> = {
   wanyao_deep_2: 'wanyao_deep_1', wanyao_deep_1: 'wanyao_outer_2',
   wanyao_outer_2: 'wanyao_outer_1', wanyao_outer_1: 'luoxia_town',
   tianjian_sword_tomb: 'tianjian_sect', tianjian_sect: 'luoxia_town',
+  taixu_temple: 'luoxia_town', lingfu_pavilion: 'luoxia_town',
+  youying_tower: 'luoxia_town', wanshou_mountain: 'luoxia_town',
 };
 
-/** 山门尚未接图时，正式航线落在本宗现有试炼图的长老入口。 */
+/** 山门未注册时保留本宗试炼图入口兜底；是否准入仍由门控判定。 */
 export function sectEntryMap(map: string): string {
   if (TILED_MAPS[map]) return map;
   const trial = Object.values(TRIALS).find(tr => tr.quest && NPCS[QUESTS[tr.quest]?.turnIn]?.map === map);
@@ -26,6 +30,8 @@ export function sectEntryMap(map: string): string {
 
 /** 关闭新地图入口时仍保留旧存档沿回程路径离开的能力。 */
 export function mapEntryOpen(targetMap: string, currentMap?: string, returning = false): boolean {
+  if (!featureEnabled('fiveSectClasses') && SECT_GATE_MAPS.has(targetMap)
+    && !(targetMap === 'lingfu_pavilion' && featureEnabled('talismanCraft'))) return false;
   targetMap = sectEntryMap(targetMap);
   if (!featureEnabled('fiveSectClasses') && FIRST_CLASS_TRIAL_MAPS.has(targetMap)) return false;
   return featureEnabled('v05Maps') || !V05_MAPS.has(targetMap)
