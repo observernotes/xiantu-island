@@ -6,7 +6,7 @@
 
 同步基线：`d5edaed275b0c1ae28f384ad6ab8c07a86642e41`（v0.5.15 / #19 已软开），已执行 `git fetch origin`、`git pull --ff-only origin tip/dev`（`git checkout -B tip origin/dev` 后 `git pull --ff-only origin dev`），Already up to date。
 
-TIP_SHA：`2bd2e58ff94c6d915e184442ba4071123ecf8791`（docs-only；基线测例绿于 `d5edaed`，无产品/测例改动；已普通 push 至 `origin/dev`，未 force-push）。
+TIP_SHA：`5de3c3c8e2c5e4dd78a90fabd603bee145e5eff4`（docs-only；基线测例绿于 `d5edaed`，无产品/测例改动；已普通 push 至 `origin/dev`，未 force-push）。
 
 ## 结果与改动范围
 
@@ -74,4 +74,4 @@ npm run test:gongfa-qi-legacy
 
 【执法堂 2/3】正式 qi_density SHA-256=c1c3694179d9053652ab27f8fa2153442e33716329c8c863ecc87a020c06af16；4 enabled 全 false；gifts 仍关；#19 保持开（勿改回）；lifeSkillCurve 保持 true。
 
-【执法堂 3/3】TIP_SHA=2bd2e58ff94c6d915e184442ba4071123ecf8791（基线 d5edaed275b0c1ae28f384ad6ab8c07a86642e41）；本 PASS ≠ 翻开关 ≠ 进包，未发版；禁止据此改正式 qi_density 任一 enabled。
+【执法堂 3/3】TIP_SHA=5de3c3c8e2c5e4dd78a90fabd603bee145e5eff4（基线 d5edaed275b0c1ae28f384ad6ab8c07a86642e41）；本 PASS ≠ 翻开关 ≠ 进包，未发版；禁止据此改正式 qi_density 任一 enabled。
