@@ -2,9 +2,9 @@
 
 - **时间**：2026-10-16 14:41（UTC+8）
 - **动作**：`master` 干净后 `git fetch` + `merge --ff-only origin/dev`
-- **origin/master 最终**：`5fbd7b5acf3173b45fd2ca219841a7f9e735be0c`
+- **tiles 内容落地**：`5fbd7b5`（ff `72be6eb..5fbd7b5`；含 merge `11f0dfa` + `391d069`）
 - **含** `391d069` feat(ui) tiles_secret：**是**（ancestor）
-- **合入区间**：`72be6eb..5fbd7b5`（含 merge `11f0dfa`、status `132f2ac`、V057 docs `5fbd7b5`）
+- **docs**：本 RESULT + status 随后 tip→master ff；以推送后 `origin/master` HEAD 为准
 
 ## 校验
 
