@@ -1,0 +1,88 @@
+{
+ "atlas": "mon_mad_mandrill",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  80,
+  80
+ ],
+ "anims": [
+  {
+   "key": "mon_mad_mandrill_idle",
+   "frames": [
+    "mon_mad_mandrill_idle_01",
+    "mon_mad_mandrill_idle_02"
+   ],
+   "frameRate": 3,
+   "repeat": -1
+  },
+  {
+   "key": "mon_mad_mandrill_walk",
+   "frames": [
+    "mon_mad_mandrill_walk_01",
+    "mon_mad_mandrill_walk_02",
+    "mon_mad_mandrill_walk_03"
+   ],
+   "frameRate": 8,
+   "repeat": -1
+  },
+  {
+   "key": "mon_mad_mandrill_attack",
+   "frames": [
+    "mon_mad_mandrill_attack_01",
+    "mon_mad_mandrill_attack_02",
+    "mon_mad_mandrill_attack_03"
+   ],
+   "frameRate": 12,
+   "repeat": 0
+  },
+  {
+   "key": "mon_mad_mandrill_hit",
+   "frames": [
+    "mon_mad_mandrill_hit_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  },
+  {
+   "key": "mon_mad_mandrill_die",
+   "frames": [
+    "mon_mad_mandrill_die_01",
+    "mon_mad_mandrill_die_02",
+    "mon_mad_mandrill_die_03"
+   ],
+   "frameRate": 6,
+   "repeat": 0
+  },
+  {
+   "key": "mon_mad_mandrill_tired",
+   "frames": [
+    "mon_mad_mandrill_tired_01",
+    "mon_mad_mandrill_tired_02"
+   ],
+   "frameRate": 3,
+   "repeat": -1
+  }
+ ],
+ "bodySize": [
+  46,
+  58
+ ],
+ "attackFrames": {
+  "telegraph": 1,
+  "hit": 2
+ },
+ "minHp": 1,
+ "sourceAtlas": "mon_mountain_mandrill",
+ "tamedAtlas": "mon_mountain_mandrill",
+ "flutePromptOffset": [
+  0,
+  -66
+ ],
+ "flutePromptFx": "fx_trial_flute_prompt",
+ "note": "万兽山试炼·发狂山魈（mad_mandrill）：直接拿 mon_mountain_mandrill 的帧染色（毛色压暗偏赤、蓝颊转紫红、头顶朱红怒筋），帧数 / 帧率 / 判定帧和山魈完全一样。多一个 tired（跪地喘气，2 帧 3fps 循环）：打到半血以下切 tired 并停止 AI，头顶 脚底 + flutePromptOffset 播 fx_trial_flute_prompt。驯服成功后**不另出图**：播 fx_trial_tame_bond，然后把图集换回 mon_mountain_mandrill（平静原色 = 已驯服），作为临时灵兽跟随/攻击。",
+ "kind": "monster"
+}
