@@ -4944,6 +4944,22 @@
        "value": "portal_to_town"
       }
      ]
+    },
+    {
+     "id": 18,
+     "name": "enc_demon_whisper_anchor",
+     "type": "encounter_anchor",
+     "x": 2128,
+     "y": 704,
+     "width": 0,
+     "height": 0,
+     "properties": [
+      {
+       "name": "encounter",
+       "type": "string",
+       "value": "enc_demon_whisper"
+      }
+     ]
     }
    ],
    "visible": true,
@@ -4965,5 +4981,5 @@
   }
  ],
  "nextlayerid": 7,
- "nextobjectid": 18
+ "nextobjectid": 19
 }

@@ -7165,6 +7165,22 @@
        "value": "platform"
       }
      ]
+    },
+    {
+     "id": 26,
+     "name": "enc_fragrant_herb_anchor",
+     "type": "encounter_anchor",
+     "x": 1712,
+     "y": 640,
+     "width": 0,
+     "height": 0,
+     "properties": [
+      {
+       "name": "encounter",
+       "type": "string",
+       "value": "enc_fragrant_herb"
+      }
+     ]
     }
    ],
    "visible": true,
@@ -7186,5 +7202,5 @@
   }
  ],
  "nextlayerid": 7,
- "nextobjectid": 26
+ "nextobjectid": 27
 }

@@ -4219,6 +4219,22 @@
        "value": 4
       }
      ]
+    },
+    {
+     "id": 17,
+     "name": "enc_sage_advice_anchor",
+     "type": "encounter_anchor",
+     "x": 1552,
+     "y": 704,
+     "width": 0,
+     "height": 0,
+     "properties": [
+      {
+       "name": "encounter",
+       "type": "string",
+       "value": "enc_sage_advice"
+      }
+     ]
     }
    ],
    "visible": true,
@@ -4240,5 +4256,5 @@
   }
  ],
  "nextlayerid": 7,
- "nextobjectid": 17
+ "nextobjectid": 18
 }

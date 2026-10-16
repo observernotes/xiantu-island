@@ -6155,6 +6155,37 @@
        "value": "platform"
       }
      ]
+    },
+    {
+     "id": 26,
+     "name": "enc_hidden_abode_anchor",
+     "type": "hidden",
+     "x": 656,
+     "y": 832,
+     "width": 0,
+     "height": 0,
+     "properties": [
+      {
+       "name": "enabled",
+       "type": "bool",
+       "value": false
+      },
+      {
+       "name": "reqSpirit",
+       "type": "int",
+       "value": 0
+      },
+      {
+       "name": "reveal",
+       "type": "string",
+       "value": "entrance"
+      },
+      {
+       "name": "encounter",
+       "type": "string",
+       "value": "enc_hidden_abode"
+      }
+     ]
     }
    ],
    "visible": true,
@@ -6176,5 +6207,5 @@
   }
  ],
  "nextlayerid": 7,
- "nextobjectid": 26
+ "nextobjectid": 27
 }

@@ -8297,6 +8297,22 @@
        "value": "platform"
       }
      ]
+    },
+    {
+     "id": 29,
+     "name": "enc_stranded_cultivator_anchor",
+     "type": "encounter_anchor",
+     "x": 1712,
+     "y": 640,
+     "width": 0,
+     "height": 0,
+     "properties": [
+      {
+       "name": "encounter",
+       "type": "string",
+       "value": "enc_stranded_cultivator"
+      }
+     ]
     }
    ],
    "visible": true,
@@ -8318,5 +8334,5 @@
   }
  ],
  "nextlayerid": 7,
- "nextobjectid": 29
+ "nextobjectid": 30
 }
