@@ -106,6 +106,12 @@
     "result": "market-proposal.result.json",
     "note": "Historical preview retained; superseded by the actual npm run test:v06p1-market-closed exit0 result above."
   },
+  "implementationCommitted": true,
+  "implementationTip": "6e94f87b60b0fb6f6c6540a97000f2badabad10b",
+  "delivery": {
+    "pushCommand": "git push origin dev",
+    "documentationTipAndPushVerification": "Final delivery receipt and origin/dev after the documentation commit."
+  },
   "stringsSha": "fad9b3e604a3af23e99939bf22f77a55de803842daa297ab7fb2c2a6ed0b8967",
   "closed": true,
   "softOpened": false,
