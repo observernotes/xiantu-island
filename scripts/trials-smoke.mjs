@@ -474,7 +474,12 @@ try {
   const initialFeatures = await page.evaluate(() => window.__xt.getState().features);
   assert.equal(initialFeatures.fiveSectClasses, features.fiveSectClasses, '四宗初始关口与工程快照不一致');
   console.log(JSON.stringify({ test: 'trials-smoke', baseURL, playwright: module, browser: executablePath, dataMode: dataMode(root), initialFeatures }));
-  await page.evaluate(() => { window.__xt.setFlag('fiveSectClasses', true); window.__xt.setFlag('v05Maps', true); });
+  // 本套验证五宗门控与试炼返程；关闭会话制符入口，避免灵符接引菜单分流。
+  // 制符独立开放时的山门保留行为由原相关单测覆盖，不改正式 features 默认值。
+  await page.evaluate(() => {
+    window.__xt.setFlag('fiveSectClasses', true); window.__xt.setFlag('v05Maps', true);
+    window.__xt.setFlag('talismanCraft', false);
+  });
   for (const trial of trials) {
     const quest = quests.find(row => row.id === trial.quest);
     for (const [caseName, patch] of [
@@ -699,6 +704,7 @@ try {
     assert.deepEqual(reopened, { enabled: true, offer: true }, `${gate}: 会话重新开放后须恢复入场确认`);
     checks.push(`${gate}: 关闭后确认及直接入场均拒绝，无奖励变化；重新开放恢复入场确认`);
   }
+  await page.evaluate(value => window.__xt.setFlag('talismanCraft', value), initialFeatures.talismanCraft);
   assert.deepEqual(errors, [], '试炼无头冒烟出现浏览器报错');
   console.log(JSON.stringify({ test: 'trials-smoke', checks, errors: 0 }));
   await context.close();

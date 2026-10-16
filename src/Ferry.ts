@@ -1,5 +1,5 @@
 import { inPhase, QUEST_NAMES, TILED_MAPS, TRIALS, NPCS, QUESTS, SECT_GATE_MAPS, t, type FerryRoute } from './data';
-import type { Progress } from './Progress';
+import type { Progress, SavePosition } from './Progress';
 import { featureEnabled, FEATURE_UNAVAILABLE } from './features';
 export { SECT_GATE_MAPS } from './data';
 
@@ -19,6 +19,8 @@ const RETURN_MAPS: Record<string, string> = {
   tianjian_sword_tomb: 'tianjian_sect', tianjian_sect: 'luoxia_town',
   taixu_temple: 'luoxia_town', lingfu_pavilion: 'luoxia_town',
   youying_tower: 'luoxia_town', wanshou_mountain: 'luoxia_town',
+  trial_taixu_stage: 'taixu_temple', trial_lingfu_range: 'lingfu_pavilion',
+  trial_youying_vault: 'youying_tower', trial_wanshou_pen: 'wanshou_mountain',
 };
 
 /** 山门未注册时保留本宗试炼图入口兜底；是否准入仍由门控判定。 */
@@ -26,6 +28,25 @@ export function sectEntryMap(map: string): string {
   if (TILED_MAPS[map]) return map;
   const trial = Object.values(TRIALS).find(tr => tr.quest && NPCS[QUESTS[tr.quest]?.turnIn]?.map === map);
   return trial && TILED_MAPS[trial.map] ? trial.map : map;
+}
+
+/** 旧试炼入口落点升到已注册山门；缺山门时保留原试炼兜底。 */
+export function sectTrialReturnPosition(position: SavePosition): SavePosition {
+  if (!FIRST_CLASS_TRIAL_MAPS.has(position.mapId)) return position;
+  const trial = Object.values(TRIALS).find(tr => tr.quest && tr.map === position.mapId);
+  const elderId = trial?.quest ? QUESTS[trial.quest]?.turnIn : undefined;
+  const mapId = elderId ? NPCS[elderId]?.map : undefined;
+  if (!mapId || !SECT_GATE_MAPS.has(mapId) || !TILED_MAPS[mapId]) return position;
+  type TiledObject = {
+    type?: string; class?: string; name?: string; x: number; y: number;
+    properties?: { name: string; value: unknown }[];
+  };
+  const objects: TiledObject[] = TILED_MAPS[mapId].layers.flatMap((layer: { objects?: TiledObject[] }) => layer.objects ?? []);
+  const valid = (o: TiledObject) => Number.isFinite(o.x) && Number.isFinite(o.y);
+  const at = objects.find(o => valid(o) && (o.type || o.class) === 'npc'
+    && (o.properties?.find(p => p.name === 'npc')?.value ?? o.name) === elderId)
+    ?? objects.find(o => valid(o) && ((o.type || o.class) === 'playerStart' || o.name === 'playerStart'));
+  return at ? { mapId, x: at.x, y: at.y } : position;
 }
 
 /** 关闭新地图入口时仍保留旧存档沿回程路径离开的能力。 */

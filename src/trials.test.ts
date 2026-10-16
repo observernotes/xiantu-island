@@ -1,6 +1,6 @@
 import strings from '@xt/balance/strings_zh.json';
 import { CLASS_LIST, classRobe } from './classes';
-import { NPCS, QUESTS, TRIALS, t, type TrialDef } from './data';
+import { NPCS, QUESTS, TRIALS, TILED_MAPS, t, type TrialDef } from './data';
 import { featureFlags, setFeatureFlag } from './features';
 import { Progress } from './Progress';
 import { QuestSystem } from './QuestSystem';
@@ -240,7 +240,12 @@ function finishObjectives(trial: SectTrialState, context: string) {
   eq('trialHotbarBefore' in exported, false, '导出不包含 private 快捷栏快照');
   p.save();
   const reloaded = Progress.load();
-  same(reloaded.pendingSectTrial, p.pendingSectTrial, '未结算试炼返回位置保存在读档中供场景恢复');
+  const elderId = QUESTS[trial.quest!].turnIn, gateId = NPCS[elderId].map;
+  const elder = TILED_MAPS[gateId].layers.flatMap((layer: { objects?: { type: string; name: string; x: number; y: number }[] }) => layer.objects ?? [])
+    .find((object: { type: string; name: string }) => object.type === 'npc' && object.name === elderId);
+  ok(elder, '幽影正式山门有可恢复的长老落点');
+  same(reloaded.pendingSectTrial, { id: trial.id, returnPosition: { mapId: gateId, x: elder.x, y: elder.y } },
+    '未结算试炼旧返回位置读档升到正式山门，供场景恢复');
   eq(reloaded.skillLevel('phantom_cloak'), 0, '读档不能重建本局隐息等级');
   eq(reloaded.skillLevel('shadow_step'), 0, '读档不能重建本局影遁等级');
   same(reloaded.hotbar, hotbar, '读档保持进入试炼之前的快捷栏');
@@ -249,6 +254,7 @@ function finishObjectives(trial: SectTrialState, context: string) {
     trialHotbarBefore: ['phantom_cloak'], transientItems: { shadow_token: 99 } };
   const imported = new Progress();
   eq(imported.importSave(injection), true, '允许兼容档携带未知 private 字段');
+  same(imported.pendingSectTrial, reloaded.pendingSectTrial, '兼容档导入也把旧试炼返回位置升到山门');
   eq(imported.skillLevel('phantom_cloak'), 0, '导入忽略 private 教学等级注入');
   eq(imported.trialSkillCharges('phantom_cloak'), undefined, '导入忽略 private 次数注入');
   same(imported.hotbar, hotbar, '导入忽略 private 快捷栏快照注入');

@@ -1,4 +1,4 @@
-// 先 npm run build，再 npm run test:smoke:v05（外层 timeout 120s，无头 Chromium）。
+// 先 npm run build:test，再 npm run test:smoke:v05（外层 timeout 120s，无头 Chromium）。
 // 可用 PLAYWRIGHT_MODULE / CHROMIUM_EXECUTABLE_PATH 指定本机工具，XT_SMOKE_BASE_URL 测已有服务。
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
@@ -40,6 +40,8 @@ const dailyContribution = Object.hasOwn(contributionDaily.rewards, 'sectContribu
   ? contributionDaily.rewards.sectContribution : sectSeclusion.dailyQuestContribution;
 const trials = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/trials.json'), 'utf8'));
 const trialByMap = Object.fromEntries(trials.filter(trial => maps.some(([map]) => map === trial.map)).map(trial => [trial.map, trial]));
+const classes = JSON.parse(await fs.readFile(path.join(projectRoot, 'src/config/classes.json'), 'utf8')).classes;
+const debugClassForTrial = trial => classes.find(cls => cls.joinQuest === trial.quest)?.id;
 const text = (key, args = {}) => strings[key].replace(/\{(\w+)\}/g, (_, name) => String(args[name] ?? ''));
 
 function collectErrors(page) {
@@ -80,31 +82,64 @@ async function extraInteractions(context, baseURL) {
   const page = await context.newPage();
   const errors = collectErrors(page);
   const checks = [];
-  const go = async (mapId, debugClass) => {
+  const go = async (mapId, debugClass, expectedMap = mapId) => {
     const url = new URL(baseURL);
     url.searchParams.set('map', mapId); url.searchParams.set('reset', '1');
     if (debugClass) url.searchParams.set('debug', `class=${debugClass}`);
     // Phaser 的地图 ready 已覆盖资源加载；无需每次再等全页网络空闲。
     await page.goto(url.href, { waitUntil: 'domcontentloaded', timeout: 30000 });
-    await waitForMap(page, mapId);
+    await waitForMap(page, expectedMap);
   };
   const emptyTrialEntrance = async mapId => {
-    await go(mapId);
+    const trial = trialByMap[mapId], quest = questRows.find(quest => quest.id === trial.quest);
+    const gate = npcRows.find(npc => npc.id === quest.turnIn).map;
+    const expectedMap = gateRegistered(gate) ? gate : mapId;
+    await go(mapId, undefined, expectedMap);
     const state = await page.evaluate(() => {
       const scene = window.__scene;
       return { entrance: scene.atSectTrialEntrance, frame: scene.game.loop.frame,
+        pending: scene.prog.pendingSectTrial, active: !!scene.sectTrial, position: scene.prog.position,
+        fallbackNpcs: scene.map.objects.filter(o => o.type === 'npc' && o.props.sectTrialEntrance).length,
         targets: scene.mobs.filter(m => m.active && !m.dead && m.name.startsWith('target:')).length,
         patrols: scene.stealth.patrols.length };
     });
-    assert.equal(state.entrance, true, `${mapId}: 未进入试炼时应保留山门入口`);
+    assert.equal(state.entrance, expectedMap === mapId, `${mapId}: 已注册山门时误入试炼图须软回山门`);
+    assert.equal(state.pending, null, `${mapId}: 误入不应建立试炼尝试`);
+    assert.equal(state.active, false, `${mapId}: 误入不应启动试炼`);
+    if (expectedMap === gate) {
+      assert.equal(state.fallbackNpcs, 0, `${mapId}: 已注册山门时不应挂兜底接引人`);
+      const source = JSON.parse(await fs.readFile(path.join(dataRoot, 'maps', `${gate}.json`), 'utf8'));
+      const elder = source.layers.flatMap(layer => layer.objects ?? []).find(o => o.type === 'npc'
+        && (o.properties?.find(prop => prop.name === 'npc')?.value ?? o.name) === quest.turnIn);
+      assert.ok(elder, `${gate}: 误入返回夹具缺长老落点`);
+      assert.deepEqual(state.position, { mapId: gate, x: elder.x, y: elder.y }, `${mapId}: 软回山门须保存长老落点`);
+      const restored = await page.evaluate(async ({ trial, quest }) => {
+        const legacy = { mapId: trial.map, x: 64, y: 64 };
+        const read = () => ({ map: window.__scene.map.id, pending: window.__scene.prog.pendingSectTrial,
+          active: !!window.__scene.sectTrial, position: window.__scene.prog.position });
+        const save = window.__xt.exportSave();
+        await window.__xt.loadSave({ ...save, position: legacy, pendingSectTrial: null });
+        const position = read();
+        await window.__xt.loadSave({ ...save, position: legacy, job: '', selectedSect: trial.sect,
+          inventory: { ...save.inventory, five_sect_token: 1 },
+          quests: { ...save.quests, [quest.id]: { state: 'active', kills: {}, crafted: {} } },
+          pendingSectTrial: { id: trial.id, returnPosition: legacy } });
+        return { position, pending: read() };
+      }, { trial, quest });
+      for (const [name, result] of Object.entries(restored)) assert.deepEqual(result,
+        { map: gate, pending: null, active: false, position: { mapId: gate, x: elder.x, y: elder.y } },
+        `${mapId}: 旧 ${name} 存档须迁移并中断回山门长老`);
+    }
     assert.equal(state.targets, 0, `${mapId}: 未开始试炼不应刷新木靶`);
     assert.equal(state.patrols, 0, `${mapId}: 未开始试炼不应刷新巡逻`);
     await page.waitForFunction(({ id, frame }) => {
       const scene = window.__scene;
       return scene?.map?.id === id && scene.game.loop.frame >= frame + 6;
-    }, { id: mapId, frame: state.frame }, { timeout: 3000 });
+    }, { id: expectedMap, frame: state.frame }, { timeout: 3000 });
     assert.deepEqual(errors, [], `${mapId}: 入口缺靶/巡逻时 update 出现浏览器报错`);
-    checks.push(`${mapId}: 山门入口跳过未刷木靶/巡逻，连续 update 不崩`);
+    checks.push(expectedMap === gate
+      ? `${mapId}: 无 pending 误入及旧 position/pending 存读均回 ${gate} 长老，保存落点且不启动试炼`
+      : `${mapId}: 缺山门时保留试炼入口，未刷木靶/巡逻且连续 update 不崩`);
   };
   const landing = async (mapId, targetPortal) => {
     await waitForMap(page, mapId, true);
@@ -273,9 +308,9 @@ async function extraInteractions(context, baseURL) {
       contribution: settled.after.contribution, history: settled.after.history, yearsToday: settled.after.yearsToday });
     checks.push('seclusion: 真实交互选择 1 年，修为/贡献/寿元/日限结算、日志与读档');
 
-    await emptyTrialEntrance('trial_lingfu_range');
+    for (const mapId of Object.keys(trialByMap)) await emptyTrialEntrance(mapId);
     const savedBeforeDebug = await page.evaluate(() => localStorage.getItem('xiantu_save_v1'));
-    // 普通入口刻意不刷试炼怪；用已有独立调试档保留移动木靶覆盖，不改变发版开关。
+    // 普通误入优先回山门；用已有独立调试档保留移动木靶覆盖，不改变发版开关。
     await go('trial_lingfu_range', 'lingfu_novice');
     const movement = await page.evaluate(async () => {
       const scene = window.__scene;
@@ -314,7 +349,6 @@ async function extraInteractions(context, baseURL) {
     assert.equal(await page.evaluate(() => localStorage.getItem('xiantu_save_v1')), savedBeforeDebug,
       '灵符调试夹具污染真实存档');
 
-    await emptyTrialEntrance('trial_youying_vault');
     const savedBeforeShadowDebug = await page.evaluate(() => localStorage.getItem('xiantu_save_v1'));
     await go('trial_youying_vault', 'youying_shadow');
     const shadow = await page.evaluate(() => {
@@ -450,6 +484,11 @@ try {
     const url = new URL(baseURL);
     url.searchParams.set('map', mapId);
     url.searchParams.set('reset', '1');
+    if (trialByMap[mapId]) {
+      const debugClass = debugClassForTrial(trialByMap[mapId]);
+      assert.ok(debugClass, `${mapId}: 缺对应职业调试夹具`);
+      url.searchParams.set('debug', `class=${debugClass}`);
+    }
     try {
       await page.goto(url.href, { waitUntil: 'domcontentloaded', timeout: 30000 });
       await waitForMap(page, mapId);

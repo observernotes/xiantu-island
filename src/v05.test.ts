@@ -183,16 +183,23 @@ globalThis.localStorage = {
       }
     }
     setFeatureFlag('v05Maps', false);
-    for (const [map] of gates) {
+    for (const [map, , trial] of gates) {
       eq(mapEntryOpen(map), false, `${map}: 新地图关闭时不允许新入场`);
       eq(ferryLockedReason(routeFor(map), p), FEATURE_UNAVAILABLE, `${map}: 新地图关闭锁定正式航线`);
+      eq(mapEntryOpen(map, trial), true, `${map}: 新地图关闭仍可由本宗试炼回到山门`);
       eq(mapEntryOpen('luoxia_town', map), true, `${map}: 新地图关闭仍可沿回程返回落霞镇`);
+      eq(mapEntryOpen(trial, map), false, `${map}: 回程例外不会反向打开试炼入口`);
+      for (const [otherGate] of gates.filter(([other]) => other !== map)) {
+        eq(mapEntryOpen(otherGate, trial), false, `${map}: 回程例外不能进入其他宗山门`);
+      }
     }
     setFeatureFlag('fiveSectClasses', false);
     syncTalismanMapAvailability();
-    for (const [map] of gates) {
+    for (const [map, , trial] of gates) {
       eq(TILED_MAPS[map], undefined, `${map}: 五宗重新关闭撤下地图`);
       eq(MAP_AREA[map], undefined, `${map}: 五宗重新关闭撤下区域`);
+      eq(mapEntryOpen(map, trial), false, `${map}: 五宗关闭时不借试炼回程开放山门`);
+      eq(mapEntryOpen('qingyun_village', trial), true, `${map}: 五宗关闭仍保留离开试炼的安全旧地图`);
     }
   } finally {
     for (const [name, value] of Object.entries(before)) setFeatureFlag(name as keyof typeof before, value);

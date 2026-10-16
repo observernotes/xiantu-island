@@ -28,7 +28,7 @@ import { SectTrialObjects } from './SectTrialObjects';
 import { SectTrial } from './SectTrial';
 import { sectTrialText } from '../SectTrialText';
 import { StealthVision } from './StealthVision';
-import { ferryLockedReason, mapEntryOpen, sectEntryMap, FIRST_CLASS_TRIAL_MAPS, SECT_GATE_MAPS } from '../Ferry';
+import { ferryLockedReason, mapEntryOpen, sectEntryMap, sectTrialReturnPosition, FIRST_CLASS_TRIAL_MAPS, SECT_GATE_MAPS } from '../Ferry';
 import { Gathering } from './Gathering';
 import { interactionPrompt } from '../InteractionPrompt';
 import { AlchemySystem, ALCHEMY_RULES, alchemyFurnace } from '../Alchemy';
@@ -242,7 +242,7 @@ export class GameScene extends Phaser.Scene {
       && this.prog.count('five_sect_token') > 0 && this.prog.selectedSect === pendingClass.sect;
     const interrupted = this.prog.pendingSectTrial && (!this.registry.get('sectTrialEntering') || !pendingAllowed);
     if (interrupted && this.prog.pendingSectTrial) {
-      const at = this.prog.pendingSectTrial.returnPosition;
+      const at = sectTrialReturnPosition(this.prog.pendingSectTrial.returnPosition);
       data = { map: at.mapId, pos: { x: at.x, y: at.y } };
       this.prog.pendingSectTrial = null; this.prog.endTrialSkills();
       this.prog.hp = this.prog.maxHp; this.prog.mp = this.prog.maxMp;
@@ -264,6 +264,14 @@ export class GameScene extends Phaser.Scene {
     mapId = TILED_MAPS[mapId] ? mapId : (MAP_FALLBACK[mapId] ?? mapId);
     // 本版本没有的地图（存档或传送门指过去）一律回青云村，不再掉进测试图
     if (!TILED_MAPS[mapId] && mapId !== 'field_test') { mapId = 'qingyun_village'; data.portal = undefined; }
+    // URL、旧落点或旧入口误入试炼图时，非本局玩家优先落回已注册山门。
+    if (!DEBUG_CLASS && !this.prog.pendingSectTrial) {
+      const at = sectTrialReturnPosition({ mapId, x: 0, y: 0 });
+      if (at.mapId !== mapId) {
+        mapId = at.mapId;
+        data = { map: mapId, pos: { x: at.x, y: at.y } };
+      }
+    }
 
     const area = MAP_AREA[mapId] ?? 'qingyun';
     this.drawBackground(area, TILED_MAPS[mapId]?.width * FEEL.tile || Math.max(...FIELD_TEST.rows.map(row => row.length)) * FEEL.tile,
@@ -483,7 +491,7 @@ export class GameScene extends Phaser.Scene {
     for (const mob of this.mobs) if (mob.active && !mob.dead) mob.despawn();
     this.prog.endTrialSkills();
     this.prog.hp = this.prog.maxHp; this.prog.mp = this.prog.maxMp;
-    const at = attempt.returnPosition;
+    const at = sectTrialReturnPosition(attempt.returnPosition);
     this.prog.setPosition(at.mapId, at.x, at.y);
     const trial = TRIALS[attempt.id];
     this.registry.set('sectTrialReturnMessage', won ? `${sectTrialText(`trial.sect_${trial?.sect}_success`, '试炼已成！')}找长老交付入门任务即可拜入。`
@@ -1480,7 +1488,10 @@ export class GameScene extends Phaser.Scene {
     this.map.objects.slice(entranceObjects).forEach(o => this.drawObject(o));
     const exitName = '__feature_return';
     const needsExit = FIRST_CLASS_TRIAL_MAPS.has(this.map.id)
-      && (!featureEnabled('v05Maps') || !featureEnabled('fiveSectClasses'));
+      && (!featureEnabled('v05Maps') || !featureEnabled('fiveSectClasses'))
+      && !this.map.objects.some(o => o.name === '__sect_trial_gate_return'
+        && SECT_GATE_MAPS.has(o.props.target) && TILED_MAPS[o.props.target]
+        && mapEntryOpen(o.props.target, this.map.id));
     const exit = this.map.objects.find(o => o.name === exitName);
     if (needsExit && !exit) {
       const object: MapObj = { type: 'portal', name: exitName, x: this.map.spawn.x, y: this.map.spawn.y,
@@ -1521,21 +1532,26 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
-  /** 未接入山门的四宗，在试炼图出生点保留接取、确认和交付入口。 */
+  /** 误落试炼图时优先留回山门出口；缺山门才补本宗接取、确认和交付入口。 */
   private mountSectTrialEntrance() {
-    if (!featureEnabled('fiveSectClasses') || !featureEnabled('v05Maps')) return;
     const def = Object.values(TRIALS).find(tr => tr.quest && tr.map === this.map.id);
     if (!def?.quest || this.prog.pendingSectTrial) return;
     const quest = QUESTS_REF[def.quest];
-    if (!quest || TILED_MAPS[NPCS[quest.turnIn]?.map]) return;
-    for (const [index, id] of [quest.giver, quest.turnIn].entries()) {
-      if (this.map.objects.some(o => o.type === 'npc' && (o.props.npc ?? o.name) === id)) continue;
-      this.map.objects.push({ type: 'npc', name: id, x: this.map.spawn.x + 48 + index * 80, y: this.map.spawn.y,
-        w: 0, h: 0, props: { npc: id, sectTrialEntrance: true } });
+    if (!quest) return;
+    const gateId = NPCS[quest.turnIn]?.map;
+    const hasGate = !!TILED_MAPS[gateId];
+    if (!hasGate) {
+      if (!featureEnabled('fiveSectClasses') || !featureEnabled('v05Maps')) return;
+      for (const [index, id] of [quest.giver, quest.turnIn].entries()) {
+        if (this.map.objects.some(o => o.type === 'npc' && (o.props.npc ?? o.name) === id)) continue;
+        this.map.objects.push({ type: 'npc', name: id, x: this.map.spawn.x + 48 + index * 80, y: this.map.spawn.y,
+          w: 0, h: 0, props: { npc: id, sectTrialEntrance: true } });
+      }
     }
-    if (!this.map.objects.some(o => o.type === 'portal' && o.props.target === 'luoxia_town')) {
+    const target = hasGate ? gateId : 'luoxia_town';
+    if (!this.map.objects.some(o => o.type === 'portal' && o.props.target === target)) {
       this.map.objects.push({ type: 'portal', name: '__sect_trial_gate_return', x: this.map.spawn.x - 48, y: this.map.spawn.y,
-        w: 0, h: 0, props: { target: 'luoxia_town' } });
+        w: 0, h: 0, props: { target } });
     }
   }
 

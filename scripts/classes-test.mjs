@@ -21,6 +21,7 @@ const server = await createServer({
       if (id !== '\0classes-phaser') return;
       return `class Sprite {} export default { WEBGL: 2, Scene: class {},
         Physics: { Arcade: { Sprite } }, GameObjects: { Sprite, NineSlice: class {} },
+        Scenes: { Events: { SHUTDOWN: 'shutdown' } },
         Animations: { Events: { ANIMATION_COMPLETE: 'animationcomplete' } } };`;
     },
   }], ssr: { noExternal: ['phaser'] },

@@ -8,6 +8,7 @@ import { CLASS_LIST, CLASS_RULES, classDef, classEntryEnabled, classEntrySkill, 
 import { DAILY_QUEST_LIMIT, dailyQuestDay, dailyContribution, dailyRewardsReady, type DailyQuestReward } from './DailyQuests';
 import { isBrewSession, type BrewSession } from './Alchemy';
 import { featureEnabled } from './features';
+import { sectTrialReturnPosition } from './Ferry';
 import { isCheatEnabled, isCheatSkillsUnlocked } from './cheatFlags';
 import { emptyTalismanSave, normalizeTalismanSave, type TalismanSave } from './Talisman';
 import { emptyTalismanUseState, normalizeTalismanUseState, talismanDamageMultiplier, talismanGatherBonus, type TalismanUseState } from './TalismanUse';
@@ -1025,6 +1026,13 @@ export class Progress {
     if (!attempt || typeof attempt.id !== 'string' || !QUESTS[`q_sect_${attempt.id.replace('trial_sect_', '')}`]
       || !attempt.returnPosition || !TILED_MAPS[attempt.returnPosition.mapId]
       || !Number.isFinite(attempt.returnPosition.x) || !Number.isFinite(attempt.returnPosition.y)) this.pendingSectTrial = null;
+    if (this.pendingSectTrial) {
+      const at = sectTrialReturnPosition(this.pendingSectTrial.returnPosition);
+      if (at !== this.pendingSectTrial.returnPosition) { this.pendingSectTrial.returnPosition = at; this.save(); }
+    } else if (this.position) {
+      const at = sectTrialReturnPosition(this.position);
+      if (at !== this.position) { this.position = at; this.save(); }
+    }
     if (!this.skillCooldowns || typeof this.skillCooldowns !== 'object' || Array.isArray(this.skillCooldowns)) this.skillCooldowns = {};
     this.skillCooldowns = Object.fromEntries(Object.entries(this.skillCooldowns).filter(([id, cd]) => SKILLS[id] && cd
       && Number.isFinite(cd.readyAt) && cd.readyAt > gameNow() && Number.isFinite(cd.total) && cd.total > 0));

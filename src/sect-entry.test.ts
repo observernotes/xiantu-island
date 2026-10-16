@@ -1,11 +1,13 @@
 import { CLASS_LIST, type ClassDef } from './classes';
 import { NPCS, QUESTS, TRIALS, TILED_MAPS, syncTalismanMapAvailability, questName, t, type Line } from './data';
 import { FEATURE_UNAVAILABLE, featureFlags, setFeatureFlag } from './features';
-import { ferryLockedReason, mapEntryOpen } from './Ferry';
+import { ferryLockedReason, mapEntryOpen, sectTrialReturnPosition } from './Ferry';
 import { Progress } from './Progress';
 import { QuestSystem } from './QuestSystem';
 import { GameScene } from './scenes/GameScene';
 import type { DialogChoice } from './UI';
+import type { MapObj } from './scenes/MapBuilder';
+import { FEEL } from './config/feel';
 
 let assertions = 0;
 function equal(actual: unknown, expected: unknown, message: string) {
@@ -35,6 +37,37 @@ function trialFor(cls: ClassDef) {
   const trial = Object.values(TRIALS).find(row => row.quest === cls.joinQuest);
   check(trial, `${cls.id}: 四宗任务存在实际试炼`);
   return trial;
+}
+
+// 运行真实 create 的读档、中断和选图代码；在绘制背景处停下，避免用绘制桩复制恢复逻辑。
+function previewCreate(p: Progress, data: Parameters<GameScene['create']>[0], entering = false, search = '') {
+  const windowBefore = Object.getOwnPropertyDescriptor(globalThis, 'window');
+  const locationBefore = Object.getOwnPropertyDescriptor(globalThis, 'location');
+  const registry = new Map<string, unknown>([['progress', p], ['sectTrialEntering', entering]]);
+  const stop = new Error('sect-entry: 地图选择已完成');
+  let selected: { width: number; height: number } | undefined;
+  const scene = Object.assign(Object.create(GameScene.prototype), {
+    resetRunState() {}, physics: { disableUpdate() {} }, events: { once() {} },
+    cache: { json: { get() {} }, bitmapFont: { exists: () => true } },
+    textures: { exists: () => false },
+    registry: {
+      get: (key: string) => registry.get(key), set: (key: string, value: unknown) => registry.set(key, value),
+      remove: (key: string) => registry.delete(key),
+    },
+    drawBackground(_area: string, width: number, height: number) { selected = { width, height }; throw stop; },
+  }) as GameScene;
+  try {
+    Object.defineProperty(globalThis, 'window', { configurable: true, value: { addEventListener() {} } });
+    Object.defineProperty(globalThis, 'location', { configurable: true, value: { search } });
+    try { scene.create(data); } catch (error) { if (error !== stop) throw error; }
+    check(selected, '真实 create 已执行到地图选择后的首个绘制点');
+    return selected;
+  } finally {
+    if (windowBefore) Object.defineProperty(globalThis, 'window', windowBefore);
+    else Reflect.deleteProperty(globalThis, 'window');
+    if (locationBefore) Object.defineProperty(globalThis, 'location', locationBefore);
+    else Reflect.deleteProperty(globalThis, 'location');
+  }
 }
 
 try {
@@ -85,7 +118,8 @@ try {
       .find((object: { type: string; name: string }) => object.type === 'npc' && object.name === elderId);
     check(elder, `${cls.id}: 山门有本宗长老对象`);
     for (const [result, entrance] of [
-      ['fail', 'gate'], ['exit', 'gate'], ['exit', 'legacy'], ['exit', 'missing-npc'], ['exit', 'tiled-properties'],
+      ['win', 'gate'], ['fail', 'gate'], ['exit', 'gate'], ['exit', 'legacy'], ['exit', 'missing-npc'], ['exit', 'tiled-properties'],
+      ['win', 'legacy-return'], ['fail', 'legacy-return'], ['exit', 'legacy-return'],
     ] as const) {
       const context = `${cls.id}/${entrance}/${result}`, p = fixture(cls), qs = new QuestSystem(p);
       p.addItem('five_sect_token', 1); p.selectSect(cls.sect);
@@ -123,16 +157,103 @@ try {
       equal(Progress.load().pendingSectTrial, p.pendingSectTrial, `${context}: 中断读档保留相同山门落点`);
       equal(scene.enterSectTrial(elderId, trial), false, `${context}: 切图中不能覆盖本次返回位置`);
       p.hp = 1; p.mp = 0;
+      if (entrance === 'legacy-return') p.pendingSectTrial!.returnPosition = { mapId: trial.map, x: 128, y: 576 };
       scene.onSectTrialEnd(result);
-      equal(p.pendingSectTrial, null, `${context}: 失败或退出清除本局 pending`);
-      equal(p.position, expected, `${context}: 失败或退出写回原山门落点`);
-      equal(restarts[1], { map: gateId, pos: { x: expected.x, y: expected.y } }, `${context}: 失败或退出切回原山门落点`);
-      equal(p.completedTrials, [], `${context}: 返回不伪造通关记录`);
-      equal(qs.state(cls.joinQuest), 'active', `${context}: 返回仍可重试本宗任务`);
+      equal(p.pendingSectTrial, null, `${context}: 结算清除本局 pending`);
+      equal(p.position, expected, `${context}: 结算写回原山门落点`);
+      equal(restarts[1], { map: gateId, pos: { x: expected.x, y: expected.y } }, `${context}: 结算切回原山门落点`);
+      equal(p.completedTrials, result === 'win' ? [trial.id] : [], `${context}: 只有胜利登记本宗通关`);
+      equal(qs.state(cls.joinQuest), 'active', `${context}: 返回保留本宗 active 任务，等待重试或交付`);
       equal(p.count('five_sect_token'), 1, `${context}: 返回保留五宗帖`);
       scene.onSectTrialEnd(result);
       equal(restarts.length, 2, `${context}: 重复结算不重复切图`);
     }
+
+    const expected = { mapId: gateId, x: elder.x, y: elder.y };
+    const legacy = { mapId: trial.map, x: 128, y: 576 };
+    const dimensions = (mapId: string) => ({ width: TILED_MAPS[mapId].width * FEEL.tile, height: TILED_MAPS[mapId].height * FEEL.tile });
+    equal(sectTrialReturnPosition(legacy), expected, `${cls.id}: 历史试炼落点升级到本宗长老`);
+    check(sectTrialReturnPosition(expected) === expected, `${cls.id}: 正式山门落点保持原对象与坐标`);
+    for (const pending of [false, true]) {
+      const old = fixture(cls), context = `${cls.id}/旧档pending=${pending}`;
+      old.addItem('five_sect_token', 1); old.selectSect(cls.sect);
+      old.position = { ...legacy };
+      if (pending) {
+        new QuestSystem(old).accept(cls.joinQuest);
+        old.pendingSectTrial = { id: trial.id, returnPosition: { ...legacy } };
+      }
+      const original = old.exportSave();
+      saved[saveKey] = JSON.stringify(original);
+      const loaded = Progress.load();
+      equal(loaded.position, pending ? legacy : expected, `${context}: 只把无 pending 的误落位置迁到山门`);
+      equal(loaded.pendingSectTrial, pending ? { id: trial.id, returnPosition: expected } : null,
+        `${context}: pending 返回位置升级，进行中状态保留`);
+      equal([loaded.job, loaded.completedTrials, loaded.count('five_sect_token')], ['', [], 1], `${context}: 迁移不结算试炼或拜入`);
+      equal(JSON.parse(saved[saveKey]).position, loaded.position, `${context}: 新落点已持久化`);
+      equal(JSON.parse(saved[saveKey]).pendingSectTrial, loaded.pendingSectTrial, `${context}: 返回落点已持久化`);
+      const again = Progress.load();
+      equal([again.position, again.pendingSectTrial], [loaded.position, loaded.pendingSectTrial], `${context}: 二次读档稳定`);
+      const imported = new Progress();
+      equal(imported.importSave(original), true, `${context}: 旧落点可导入`);
+      equal([imported.position, imported.pendingSectTrial], [loaded.position, loaded.pendingSectTrial], `${context}: 导入采用相同迁移`);
+    }
+
+    for (const source of ['position', 'data', 'query'] as const) {
+      const p = fixture(cls); p.position = { ...legacy };
+      equal(previewCreate(p, source === 'data' ? { map: trial.map, pos: { x: legacy.x, y: legacy.y } } : {}, false,
+        source === 'query' ? `?map=${trial.map}` : ''), dimensions(gateId), `${cls.id}/${source}: 真实 create 误落软回山门`);
+      equal(p.pendingSectTrial, null, `${cls.id}/${source}: 软回不创建试炼`);
+    }
+    for (const entering of [false, true]) {
+      const p = fixture(cls); p.addItem('five_sect_token', 1); p.selectSect(cls.sect);
+      new QuestSystem(p).accept(cls.joinQuest);
+      p.position = { ...legacy }; p.pendingSectTrial = { id: trial.id, returnPosition: { ...legacy } };
+      equal(previewCreate(p, { map: trial.map }, entering), dimensions(entering ? trial.map : gateId),
+        `${cls.id}/entering=${entering}: 真实 create 区分正常进入与中断`);
+      if (entering) check(p.pendingSectTrial, `${cls.id}: 正常进入仍保留 pending`);
+      else {
+        equal(p.pendingSectTrial, null, `${cls.id}: 中断清除 pending`);
+        equal(p.position, expected, `${cls.id}: 中断旧返程位置升级并写回山门`);
+      }
+    }
+
+    const entranceScene = () => Object.assign(Object.create(GameScene.prototype), {
+      prog: fixture(cls), map: { id: trial.map, spawn: { x: 128, y: 576 }, objects: [] as MapObj[] },
+    }) as GameScene;
+    for (const v05 of [true, false]) {
+      setFeatureFlag('v05Maps', v05);
+      const scene = entranceScene();
+      scene['mountSectTrialEntrance'](); scene['mountSectTrialEntrance']();
+      equal(scene.map.objects.filter(o => o.type === 'npc'), [], `${cls.id}/v05=${v05}: 山门已注册不挂旧试炼入口 NPC`);
+      equal(scene.map.objects.filter(o => o.type === 'portal').map(o => [o.name, o.props.target]),
+        [['__sect_trial_gate_return', gateId]], `${cls.id}/v05=${v05}: 无 pending 逃生出口唯一且优先本宗山门`);
+      equal(scene.portalOpen(scene.map.objects[0]), true, `${cls.id}/v05=${v05}: 逃生出口真实准入可用`);
+      scene.prog.pendingSectTrial = { id: trial.id, returnPosition: expected };
+      scene.map.objects = [];
+      scene['mountSectTrialEntrance']();
+      equal(scene.map.objects, [], `${cls.id}/v05=${v05}: 正式试炼 pending 不挂入口或出口`);
+    }
+    setFeatureFlag('v05Maps', true);
+    try {
+      delete TILED_MAPS[gateId];
+      check(sectTrialReturnPosition(legacy) === legacy, `${cls.id}: 缺山门时历史试炼落点保持兜底原对象`);
+      const scene = entranceScene();
+      scene['mountSectTrialEntrance'](); scene['mountSectTrialEntrance']();
+      equal(scene.map.objects.filter(o => o.type === 'npc').map(o => o.props.npc),
+        [QUESTS[cls.joinQuest].giver, elderId], `${cls.id}: 缺山门时仍保留接取和交付 NPC，且不重复挂载`);
+      equal(scene.map.objects.filter(o => o.type === 'portal').map(o => o.props.target), ['luoxia_town'],
+        `${cls.id}: 缺山门时保留落霞出口`);
+    } finally { TILED_MAPS[gateId] = gate; }
+
+    try {
+      TILED_MAPS[gateId] = { ...gate, layers: gate.layers.map((layer: { objects?: unknown[] }) => ({
+        ...layer, objects: layer.objects?.filter(object => object !== elder),
+      })) };
+      const spawn = gate.layers.flatMap((layer: { objects?: { type: string; x: number; y: number }[] }) => layer.objects ?? [])
+        .find((object: { type: string }) => object.type === 'playerStart');
+      check(spawn, `${cls.id}: 山门有安全出生点`);
+      equal(sectTrialReturnPosition(legacy), { mapId: gateId, x: spawn.x, y: spawn.y }, `${cls.id}: 缺长老时软回山门出生点`);
+    } finally { TILED_MAPS[gateId] = gate; }
 
     for (const [name, token, selected] of [
       ['无帖且未选择', 0, ''], ['无帖但选择本宗', 0, cls.sect],
