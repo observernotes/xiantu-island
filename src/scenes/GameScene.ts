@@ -2461,7 +2461,7 @@ export class GameScene extends Phaser.Scene {
       tl.push(def.daily && this.quests.complete(id)
         ? t('quest.complete_ready', { name: questName(def), npc: NPCS[def.turnIn]?.name ?? def.turnIn })
         : `【${questName(def)}】${!def.daily && this.quests.complete(id) ? '  可交付' : ''}`);
-      if (def.daily && questDescription(def)) tl.push(`  ${questDescription(def)}`);
+      if (questDescription(def)) tl.push(`  ${questDescription(def)}`);
       for (const o of q) {
         const target = def.daily ? (o.o.type === 'kill' ? MONSTERS[o.o.target ?? '']?.name
           : o.o.type === 'collect' ? ITEMS[o.o.target ?? '']?.name : NPCS[o.o.target ?? '']?.name) ?? o.o.target ?? '' : o.label;

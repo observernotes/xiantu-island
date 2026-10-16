@@ -456,6 +456,13 @@
  {
   "id": "q_main_01",
   "name": "入城",
+  "nameKey": "quest.main_01.name",
+  "descriptionKey": "quest.main_01.description",
+  "dialogueKeys": {
+   "offer": "quest.main_01.offer",
+   "progress": "quest.main_01.progress",
+   "complete": "quest.main_01.complete"
+  },
   "giver": "luoxia_mayor",
   "turnIn": "luoxia_mayor",
   "reqLevel": 10,
@@ -482,6 +489,13 @@
  {
   "id": "q_main_02",
   "name": "上山",
+  "nameKey": "quest.main_02.name",
+  "descriptionKey": "quest.main_02.description",
+  "dialogueKeys": {
+   "offer": "quest.main_02.offer",
+   "progress": "quest.main_02.progress",
+   "complete": "quest.main_02.complete"
+  },
   "giver": "luoxia_mayor",
   "turnIn": "sect_master_ling",
   "reqLevel": 10,
@@ -510,6 +524,13 @@
  {
   "id": "q_main_03",
   "name": "黑袍疑踪",
+  "nameKey": "quest.main_03.name",
+  "descriptionKey": "quest.main_03.description",
+  "dialogueKeys": {
+   "offer": "quest.main_03.offer",
+   "progress": "quest.main_03.progress",
+   "complete": "quest.main_03.complete"
+  },
   "giver": "luoxia_mayor",
   "turnIn": "luoxia_mayor",
   "reqLevel": 12,
@@ -538,6 +559,13 @@
  {
   "id": "q_main_04",
   "name": "入林",
+  "nameKey": "quest.main_04.name",
+  "descriptionKey": "quest.main_04.description",
+  "dialogueKeys": {
+   "offer": "quest.main_04.offer",
+   "progress": "quest.main_04.progress",
+   "complete": "quest.main_04.complete"
+  },
   "giver": "luoxia_mayor",
   "turnIn": "tree_spirit",
   "reqLevel": 20,

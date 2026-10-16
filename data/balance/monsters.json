@@ -17,7 +17,7 @@
   "dropTable": "drop_rabbit",
   "isBoss": false,
   "sense": {
-   "enabled": true,
+   "enabled": false,
    "profile": "sense_monster_basic",
    "visibleInfo": [
     "name",
@@ -47,7 +47,7 @@
   "dropTable": "drop_snake",
   "isBoss": false,
   "sense": {
-   "enabled": true,
+   "enabled": false,
    "profile": "sense_monster_basic",
    "visibleInfo": [
     "name",
@@ -88,7 +88,7 @@
   "dropTable": "drop_mandrill",
   "isBoss": false,
   "sense": {
-   "enabled": true,
+   "enabled": false,
    "profile": "sense_monster_basic",
    "visibleInfo": [
     "name",
@@ -150,7 +150,7 @@
   "dropTable": "drop_fox",
   "isBoss": true,
   "sense": {
-   "enabled": true,
+   "enabled": false,
    "profile": "sense_monster_basic",
    "visibleInfo": [
     "name",
@@ -214,7 +214,7 @@
    "knockback": 280
   },
   "sense": {
-   "enabled": true,
+   "enabled": false,
    "profile": "sense_monster_basic",
    "visibleInfo": [
     "name",
@@ -243,7 +243,7 @@
   "dropTable": "drop_straw_puppet",
   "isBoss": false,
   "sense": {
-   "enabled": true,
+   "enabled": false,
    "profile": "sense_monster_basic",
    "visibleInfo": [
     "name",
@@ -286,7 +286,7 @@
    "knockback": 120
   },
   "sense": {
-   "enabled": true,
+   "enabled": false,
    "profile": "sense_monster_basic",
    "visibleInfo": [
     "name",
@@ -316,7 +316,7 @@
   "dropTable": "drop_vine_imp",
   "isBoss": false,
   "sense": {
-   "enabled": true,
+   "enabled": false,
    "profile": "sense_monster_basic",
    "visibleInfo": [
     "name",
@@ -346,7 +346,7 @@
   "dropTable": "drop_shadow_wolf",
   "isBoss": false,
   "sense": {
-   "enabled": true,
+   "enabled": false,
    "profile": "sense_monster_basic",
    "visibleInfo": [
     "name",
@@ -389,7 +389,7 @@
    "knockback": 80
   },
   "sense": {
-   "enabled": true,
+   "enabled": false,
    "profile": "sense_monster_basic",
    "visibleInfo": [
     "name",
@@ -430,7 +430,7 @@
    "knockback": 340
   },
   "sense": {
-   "enabled": true,
+   "enabled": false,
    "profile": "sense_monster_basic",
    "visibleInfo": [
     "name",
@@ -460,7 +460,7 @@
   "dropTable": "drop_tree_demon_sapling",
   "isBoss": false,
   "sense": {
-   "enabled": true,
+   "enabled": false,
    "profile": "sense_monster_basic",
    "visibleInfo": [
     "name",
@@ -522,7 +522,7 @@
    }
   ],
   "sense": {
-   "enabled": true,
+   "enabled": false,
    "profile": "sense_monster_basic",
    "visibleInfo": [
     "name",
@@ -552,7 +552,7 @@
   "dropTable": "drop_lava_lizard",
   "isBoss": false,
   "sense": {
-   "enabled": true,
+   "enabled": false,
    "profile": "sense_monster_basic",
    "visibleInfo": [
     "name",
@@ -594,7 +594,7 @@
    "knockback": 200
   },
   "sense": {
-   "enabled": true,
+   "enabled": false,
    "profile": "sense_monster_basic",
    "visibleInfo": [
     "name",
@@ -624,7 +624,7 @@
   "dropTable": "drop_flame_puppet",
   "isBoss": false,
   "sense": {
-   "enabled": true,
+   "enabled": false,
    "profile": "sense_monster_basic",
    "visibleInfo": [
     "name",
@@ -667,7 +667,7 @@
    "knockback": 150
   },
   "sense": {
-   "enabled": true,
+   "enabled": false,
    "profile": "sense_monster_basic",
    "visibleInfo": [
     "name",
@@ -756,7 +756,7 @@
    }
   ],
   "sense": {
-   "enabled": true,
+   "enabled": false,
    "profile": "sense_monster_basic",
    "visibleInfo": [
     "name",
@@ -799,7 +799,7 @@
    "knockback": 100
   },
   "sense": {
-   "enabled": true,
+   "enabled": false,
    "profile": "sense_monster_basic",
    "visibleInfo": [
     "name",
@@ -849,7 +849,7 @@
    "knockback": 60
   },
   "sense": {
-   "enabled": true,
+   "enabled": false,
    "profile": "sense_monster_basic",
    "visibleInfo": [
     "name",
@@ -880,7 +880,7 @@
   "isBoss": false,
   "phase": 5,
   "sense": {
-   "enabled": true,
+   "enabled": false,
    "profile": "sense_monster_basic",
    "visibleInfo": [
     "name",
@@ -1006,7 +1006,7 @@
   },
   "phase": 5,
   "sense": {
-   "enabled": true,
+   "enabled": false,
    "profile": "sense_monster_basic",
    "visibleInfo": [
     "name",

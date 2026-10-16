@@ -8253,7 +8253,7 @@
       {
        "name": "enabled",
        "type": "bool",
-       "value": true
+       "value": false
       },
       {
        "name": "reqSpirit",
@@ -8284,7 +8284,7 @@
       {
        "name": "enabled",
        "type": "bool",
-       "value": true
+       "value": false
       },
       {
        "name": "reqSpirit",

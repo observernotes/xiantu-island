@@ -8073,6 +8073,11 @@
        "value": "古树心（千年树妖）"
       },
       {
+       "name": "unlockQuest",
+       "type": "string",
+       "value": "q_main_06"
+      },
+      {
        "name": "bossOnly",
        "type": "bool",
        "value": true
@@ -8165,7 +8170,7 @@
       {
        "name": "enabled",
        "type": "bool",
-       "value": true
+       "value": false
       },
       {
        "name": "reqSpirit",
@@ -8196,7 +8201,7 @@
       {
        "name": "enabled",
        "type": "bool",
-       "value": true
+       "value": false
       },
       {
        "name": "reqSpirit",
