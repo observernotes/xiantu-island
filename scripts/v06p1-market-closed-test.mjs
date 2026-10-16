@@ -11,7 +11,7 @@ const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const shared = sharedRoot(root), gameData = path.join(shared, 'game/data');
 const modes = [['shared', shared], ['snapshot', path.join(root, 'data')]];
 const dataRoots = new Map([['shared', shared], ['wt', path.join(root, 'data')], ['game', gameData]]);
-const out = path.join(root, 'qa/out_v06p1_forge_open_preamble/market-closed');
+const out = path.join(root, 'qa/out_v06p1_forge_formal/market-closed');
 const baselineFile = path.join(root, 'qa/out_v06p1_market_closed/protected-before.json');
 const stringsSha = 'fad9b3e604a3af23e99939bf22f77a55de803842daa297ab7fb2c2a6ed0b8967';
 const marketStringsSha = 'c115b6deadf85d1aa9958de1097321ab65624b456e0fddeca42a5fe39743db27';
@@ -23,6 +23,9 @@ const openFixtureSources = ['MarketOpenFlag.ts', 'MarketProgress.ts', 'MarketGat
   'ForgeOpenFlag.ts', 'ForgeGate.ts', 'ForgeProgress.ts', 'v06p1-forge-open.test.ts'];
 const openFixtureProgressSha = '3e1f4a258b384d5f0d1a2967d0228fcd792cb9a58979efcd5648d9baf9f2e7da';
 const marketTableSha = 'e4725b4724dea9abf67baf2ee467a30e841fee3ee1a9137f5dc25225c09debde';
+// 仅认可本窗权威配方及 wt 镜像的固定 SHA，game/data 和其他表继续钉历史值。
+const formalRecipesSha = '1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f';
+const formalRecipeKeys = new Set(['shared:balance/recipes.json', 'wt:balance/recipes.json']);
 const closedStrings = {
   'market.closed.feature': '坊市寄售尚未开放。',
   'market.closed.list': '坊市寄售尚未开放，暂不可上架。',
@@ -164,7 +167,8 @@ async function checkProtection() {
     if (key.endsWith('/market_consign.json')) continue;
     const actual = await shaOrNull(file);
     const authorizedSha = key === 'wt:src/Progress.ts' ? openFixtureProgressSha
-      : key.endsWith(':balance/strings_zh.json') ? stringsSha : expected;
+      : key.endsWith(':balance/strings_zh.json') ? stringsSha
+      : formalRecipeKeys.has(key) ? formalRecipesSha : expected;
     if (key === 'wt:src/Progress.ts') {
       eq(hash(stripForgeProgress(await fs.readFile(file, 'utf8'))), authorizedSha,
         'C12 Progress 仅增加炼器可选袋四完整行，剥离后原寄售基线字节保持');
@@ -199,7 +203,8 @@ async function checkProtection() {
   report({ suite: 'v06p1-market-closed-protection', passed: true, protectedFiles: Object.keys(protectedFiles).length,
     sourcesOnlyAdded: ['src/MarketClosed.ts', ...openFixtureSources.map(name => `src/${name}`)],
     optionalMarketBagAdded: true, marketTableConsumedByClosedApi: false, minimalFrontendWiring: true,
-    fullMarketUiAdded: false, formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false });
+    fullMarketUiAdded: false, formalRecipesSha, formalRecipeKeys: [...formalRecipeKeys],
+    formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false });
 }
 
 async function checkStatic(mode, dataRoot) {

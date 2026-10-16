@@ -1,0 +1,79 @@
+{
+  "passed": true,
+  "baseline": "801c3ab4d435748dc4942ed46612a6d7065c0760",
+  "cwd": "/workspace/xiantu/wt/dev",
+  "stdin": "/dev/null",
+  "formalOpen": true,
+  "closedFixtureOnly": true,
+  "released": false,
+  "packaged": false,
+  "checks": [
+    {
+      "command": "npx tsc --noEmit",
+      "exitCode": 0,
+      "log": "tsc.log"
+    },
+    {
+      "command": "npm run test:v06p1-forge-open",
+      "exitCode": 0,
+      "log": "forge-open.log",
+      "assertions": 6354
+    },
+    {
+      "command": "npm run test:v06p1-forge-closed",
+      "exitCode": 0,
+      "log": "forge-closed.agent.log",
+      "assertions": 20326
+    },
+    {
+      "command": "npm run test:v06p1-market-closed",
+      "exitCode": 0,
+      "log": "market-closed.agent.log",
+      "assertions": 24148
+    },
+    {
+      "command": "npm run test:v06d-closed",
+      "exitCode": 0,
+      "log": "v06d-closed.log",
+      "assertions": 15048
+    },
+    {
+      "command": "npm run test:v06c-closed",
+      "exitCode": 0,
+      "log": "v06c-closed.log",
+      "assertions": 10708
+    },
+    {
+      "command": "shared PYTHONDONTWRITEBYTECODE=1 datalint",
+      "exitCode": 0,
+      "log": "datalint-shared.log"
+    },
+    {
+      "command": "snapshot PYTHONDONTWRITEBYTECODE=1 datalint",
+      "exitCode": 0,
+      "log": "datalint-snapshot.log"
+    },
+    {
+      "command": "python3 -m json.tool data/balance/recipes.json",
+      "exitCode": 0,
+      "log": "recipes-check.log"
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0,
+      "log": "diff-check.log"
+    },
+    {
+      "command": "SHA protection and boundary check",
+      "exitCode": 0,
+      "log": "protection.log"
+    }
+  ],
+  "protectedFiles": 1528,
+  "authorizedChanges": 6,
+  "unauthorizedDifferences": 0,
+  "recipesSha": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+  "forgeRows": 1,
+  "independentReview": "PASS",
+  "developmentNote": "An earlier in-flight open run detected a concurrent final Gate edit through its SHA guard; edits were frozen and the complete suite rerun successfully against the final files."
+}

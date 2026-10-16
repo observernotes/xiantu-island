@@ -1,0 +1,59 @@
+{
+  "path": "/workspace/xiantu/wt/dev/qa/out_v06p1_forge_formal/protected-after.json",
+  "files": 1528,
+  "recipes": {
+    "/workspace/xiantu/balance/recipes.json": {
+      "sha256": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+      "recipes": 12,
+      "forge": [
+        {
+          "id": "recipe_forge_bamboo_sword",
+          "name": "青竹剑",
+          "type": "forge",
+          "blueprint": "scroll_ten_thousand_swords",
+          "materials": [
+            {
+              "item": "spirit_copper",
+              "count": 1
+            },
+            {
+              "item": "refine_stone",
+              "count": 1
+            }
+          ],
+          "output": "bamboo_sword",
+          "outputCount": 1
+        }
+      ]
+    },
+    "/workspace/xiantu/wt/dev/data/balance/recipes.json": {
+      "sha256": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+      "recipes": 12,
+      "forge": [
+        {
+          "id": "recipe_forge_bamboo_sword",
+          "name": "青竹剑",
+          "type": "forge",
+          "blueprint": "scroll_ten_thousand_swords",
+          "materials": [
+            {
+              "item": "spirit_copper",
+              "count": 1
+            },
+            {
+              "item": "refine_stone",
+              "count": 1
+            }
+          ],
+          "output": "bamboo_sword",
+          "outputCount": 1
+        }
+      ]
+    }
+  },
+  "git": {
+    "head": "801c3ab4d435748dc4942ed46612a6d7065c0760",
+    "originDev": "801c3ab4d435748dc4942ed46612a6d7065c0760",
+    "baselineAncestor": true
+  }
+}

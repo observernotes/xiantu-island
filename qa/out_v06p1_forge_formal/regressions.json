@@ -1,0 +1,35 @@
+{
+  "passed": true,
+  "tests": [
+    {
+      "case": "v06d-closed",
+      "command": "npm run test:v06d-closed",
+      "exitCode": 0,
+      "assertions": 15048,
+      "log": "qa/out_v06p1_forge_formal/v06d-closed.log",
+      "newOrChangedEvidence": [
+        "qa/out_v06p1_forge_formal/regressions/v06d-closed/v06d-closed-evidence.json"
+      ]
+    },
+    {
+      "case": "v06c-closed",
+      "command": "npm run test:v06c-closed",
+      "exitCode": 0,
+      "assertions": 10708,
+      "log": "qa/out_v06p1_forge_formal/v06c-closed.log",
+      "newOrChangedEvidence": []
+    }
+  ],
+  "outputPreservation": {
+    "v06d-closed": {
+      "restoredExactly": true,
+      "filesBefore": 17,
+      "filesAfter": 17
+    },
+    "v06c-closed": {
+      "restoredExactly": true,
+      "filesBefore": 9,
+      "filesAfter": 9
+    }
+  }
+}

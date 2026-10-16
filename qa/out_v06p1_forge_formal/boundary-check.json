@@ -1,0 +1,61 @@
+{
+  "passed": true,
+  "protectedFiles": 1528,
+  "unauthorizedDifferenceCount": 0,
+  "recipes": {
+    "/workspace/xiantu/balance/recipes.json": {
+      "sha256": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+      "recipes": 12,
+      "forgeCount": 1
+    },
+    "/workspace/xiantu/wt/dev/data/balance/recipes.json": {
+      "sha256": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+      "recipes": 12,
+      "forgeCount": 1
+    }
+  },
+  "recipesOnlyAppendOneFormalRow": true,
+  "ForgeOpenFlag": {
+    "unchanged": true,
+    "sha256": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
+    "formalTrue": true
+  },
+  "GAME_PHASE": 5,
+  "gifts": {
+    "/workspace/xiantu": {
+      "count": 10,
+      "allFalse": true
+    },
+    "/workspace/xiantu/wt/dev/data": {
+      "count": 10,
+      "allFalse": true
+    },
+    "/workspace/xiantu/game/data": {
+      "count": 10,
+      "allFalse": true
+    }
+  },
+  "smithOu": {
+    "/workspace/xiantu": {
+      "servicesPresent": false,
+      "quests": []
+    },
+    "/workspace/xiantu/wt/dev/data": {
+      "servicesPresent": false,
+      "quests": []
+    },
+    "/workspace/xiantu/game/data": {
+      "servicesPresent": false,
+      "quests": []
+    }
+  },
+  "forgeConfigFiles": [],
+  "gameSceneUnchanged": true,
+  "fullForgeUiAdded": false,
+  "marketConsignUnchanged": true,
+  "oldForgeQaUnchanged": true,
+  "oldForgeQaChanges": [],
+  "formalOpen": true,
+  "released": false,
+  "packaged": false
+}

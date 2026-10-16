@@ -1,0 +1,40 @@
+{
+  "passed": true,
+  "beforeFiles": 1528,
+  "afterFiles": 1528,
+  "authorizedChanges": [
+    {
+      "path": "/workspace/xiantu/wt/dev/scripts/v06p1-forge-closed-test.mjs",
+      "before": "da275f9445add6c86959b7bab5a4cc491664ad38340df2870ad623ad47bd7484",
+      "after": "d54ba6d60bcfbbb88eeb565a3fef9b7c58a4815cd23e454bf4f7b800591a6b01"
+    },
+    {
+      "path": "/workspace/xiantu/wt/dev/scripts/v06p1-forge-open-test.mjs",
+      "before": "eaf21a7daa72a6772afe855d7ff255d516602dd2a345e102152e2441ba403a51",
+      "after": "d2d6c26c4e1474513e1d98f6791e63008bd448d3b95cd696d7451e161e78d8d1"
+    },
+    {
+      "path": "/workspace/xiantu/wt/dev/scripts/v06p1-market-closed-test.mjs",
+      "before": "e30b6254b66c2c7bcb8dc93be2da209a95f339c3f05b7c95b43b126b37ae0d80",
+      "after": "a7779e2ea83985f4a8bdd794bb3437d68e01867ec00568704c456aa12e008df6"
+    },
+    {
+      "path": "/workspace/xiantu/wt/dev/src/ForgeGate.ts",
+      "before": "d5382594f9672319f34a2cc1b18e05cb0e810140360c95b5692ad70158f227a0",
+      "after": "44f556147408019188da0cd793076993491653d62e7e9996c67a20303ecbee86"
+    },
+    {
+      "path": "/workspace/xiantu/wt/dev/src/ForgeProgress.ts",
+      "before": "1e1bcd7a248b8b5e93a4c03e062d86ecdbce90ee3a1b40045b92fd76484f5224",
+      "after": "4d90e916ffb1ff2aa5efa99efe7d552eecf897410d9cb69b0a757d6b8eec4807"
+    },
+    {
+      "path": "/workspace/xiantu/wt/dev/src/v06p1-forge-open.test.ts",
+      "before": "7fe06b7a6b505a4314f42c263c7cbf639076fb8fde16294cf166818f1ff1cdb5",
+      "after": "c1d8bb9971a572a5a99ec50095d5eeaf297e1aa5f53767828eb80e835a55891d"
+    }
+  ],
+  "unauthorizedChanges": [],
+  "unauthorizedDifferenceCount": 0,
+  "existenceChanges": []
+}

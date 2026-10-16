@@ -1,4 +1,5 @@
 import enhance from '@xt/balance/enhance.json';
+import recipes from '@xt/balance/recipes.json';
 import { ITEMS, inPhase } from './data';
 import type { Progress } from './Progress';
 import { isForgeOpenForFixture } from './ForgeOpenFlag';
@@ -8,14 +9,19 @@ import { isForgeId, isValidForgeMaterials, isValidForgeProgress,
 
 export interface ForgeFixtureRecipe {
   blueprintId: string;
-  /** 是否消耗及数量只由本地夹具明确授权，不推定正式图纸规则。 */
+  /** 夹具图纸消耗由测试显式授权；正式配方图纸固定消耗 1。 */
   blueprintCount: number;
   materials: readonly ForgeMaterial[];
   resultItemId: string;
+  /** 既有夹具省略时仍产出 1；正式表必须显式提供合法 outputCount。 */
+  outputCount?: number;
 }
+interface ForgeRecipe extends ForgeFixtureRecipe { outputCount: number; }
 export interface ForgeFixtureOptions {
-  /** 缺省没有任何合法配方；不读取或生成正式配方表。 */
+  /** 显式传入时仅用此测试授权集，绝不与正式配方混用或互相回退。 */
   fixtureRecipes?: readonly ForgeFixtureRecipe[];
+  /** 测试替换正式原始行；缺省生产只读 recipes.json 的 forge 条目。 */
+  formalRecipes?: readonly unknown[];
   random?: () => number;
   ledgerId?: () => string;
   /** 当前背包无格数上限，夹具用此哨兵模拟满包/承载失败。 */
@@ -36,11 +42,17 @@ const positiveInteger = (n: unknown): n is number => typeof n === 'number' && Nu
 const sameMaterials = (a: readonly ForgeMaterial[], b: readonly ForgeMaterial[]) => a.length === b.length
   && a.every(row => b.some(other => other.itemId === row.itemId && other.count === row.count));
 const ownFields = (value: unknown, keys: string[]): boolean => !!value && typeof value === 'object'
-  && !Array.isArray(value) && keys.every(key => Object.prototype.hasOwnProperty.call(value, key))
+  && !Array.isArray(value) && [Object.prototype, null].includes(Object.getPrototypeOf(value))
+  && keys.every(key => Object.prototype.hasOwnProperty.call(value, key))
   && Reflect.ownKeys(value).every(key => typeof key === 'string' && keys.includes(key)
     && Object.prototype.hasOwnProperty.call(Object.getOwnPropertyDescriptor(value, key), 'value'));
+const dataArray = (value: unknown): value is unknown[] => Array.isArray(value)
+  && Object.getPrototypeOf(value) === Array.prototype
+  && Reflect.ownKeys(value).every(key => key === 'length' || typeof key === 'string' && /^(0|[1-9]\d*)$/.test(key)
+    && Number(key) < value.length && Object.prototype.hasOwnProperty.call(Object.getOwnPropertyDescriptor(value, key), 'value'))
+  && Array.from(value).every((_, index) => Object.prototype.hasOwnProperty.call(value, index));
 
-/** 正式恒关；只有独立 Vite SSR 内存图能执行本地授权夹具，前台无消费者。 */
+/** 关态先拒绝；开态默认只读正式 forge 配方，夹具必须由测试显式授权。 */
 export class ForgeGate {
   #busy = false;
   constructor(private readonly progress: Progress, private readonly fixture: ForgeFixtureOptions = {}) {}
@@ -59,7 +71,7 @@ export class ForgeGate {
     try {
       if (!this.valid(this.progress)) return denied('progress', '打造档案不完整，已阻止歧义操作。');
       const recipe = this.recipe(request);
-      if (!recipe) return denied('recipe', '图纸、材料或本地授权映射无效。');
+      if (!recipe) return denied('recipe', '图纸、材料或配方映射无效。');
       return this.ownsInputs(this.progress, recipe) ? { allowed: true } : denied('ownership', '没有足够的永久图纸或材料。');
     } catch { return denied('request', '打造选择无效。'); }
   }
@@ -69,7 +81,7 @@ export class ForgeGate {
     try {
       if (!this.valid(this.progress)) return denied('progress', '打造档案不完整，已阻止歧义操作。');
       const recipe = this.recipe(request);
-      if (!recipe) return denied('recipe', '图纸、材料或本地授权映射无效。');
+      if (!recipe) return denied('recipe', '图纸、材料或配方映射无效。');
       // 已提交请求只读重放；无新事务、扣料或品质抽样。身份冲突不认作重试。
       const old = this.progress.forge?.crafts.find(row => row.craftRequestId === request.craftRequestId);
       if (old) return this.replay(old, recipe);
@@ -80,7 +92,7 @@ export class ForgeGate {
         if (current?.crafts.some(row => row.craftRequestId === intent.craftRequestId)) return reject('duplicate', '该请求已提交，请读取既有结果。');
         if (!this.ownsInputs(draft, authorized)) return reject('ownership', '没有足够的永久图纸或材料。');
         if (!this.supportedItem(draft, authorized.resultItemId)
-          || !draft.canAddCraftedItem(authorized.resultItemId, 1)
+          || !draft.canAddCraftedItem(authorized.resultItemId, authorized.outputCount)
           || this.fixture.canReceiveResult?.(draft, authorized.resultItemId) === false) return reject('capacity', '成品承载失败，保持原库存。');
         const ledgerId = current?.ledgerId ?? (this.fixture.ledgerId ? this.fixture.ledgerId() : `forge_${crypto.randomUUID()}`);
         if (!isForgeId(ledgerId)) return reject('identity', '打造账本身份无效。');
@@ -90,14 +102,14 @@ export class ForgeGate {
         const result: ForgeCraftResult = {
           state: 'committed', craftRequestId: intent.craftRequestId, craftResultRef,
           blueprintId: authorized.blueprintId, blueprintCount: authorized.blueprintCount, materials: copy([...authorized.materials]),
-          resultItem: { itemId: authorized.resultItemId, count: 1, instanceRef: `${craftResultRef}:item` }, resultGrade: grade,
+          resultItem: { itemId: authorized.resultItemId, count: authorized.outputCount, instanceRef: `${craftResultRef}:item` }, resultGrade: grade,
         };
         const costs = [{ itemId: authorized.blueprintId, count: authorized.blueprintCount }, ...authorized.materials];
         const beforeCosts = costs.map(cost => draft.count(cost.itemId)), beforeResult = draft.count(authorized.resultItemId);
         for (const cost of costs) draft.removeItem(cost.itemId, cost.count);
         if (!costs.every((cost, index) => draft.count(cost.itemId) === beforeCosts[index] - cost.count)
-          || !draft.addCraftedItem(authorized.resultItemId, 1)
-          || draft.count(authorized.resultItemId) !== beforeResult + 1) return reject('capacity', '成品入库失败，保持原库存。');
+          || !draft.addCraftedItem(authorized.resultItemId, authorized.outputCount)
+          || draft.count(authorized.resultItemId) !== beforeResult + authorized.outputCount) return reject('capacity', '成品入库失败，保持原库存。');
         const forge: ForgeProgress = current ?? { version: 1, ledgerId, crafts: [], receipts: [] };
         forge.crafts.push(result); forge.receipts.push(craftResultRef); draft.forge = forge;
         return { allowed: true, result: copy(result), progress: copy(forge), replayed: false };
@@ -127,9 +139,10 @@ export class ForgeGate {
     const result = this.progress.forge?.crafts.find(row => row.craftRequestId === requestId);
     return result ? { allowed: true, result: copy(result), replayed: true } : denied('result', '没有完整提交的打造结果。');
   }
-  private replay(result: ForgeCraftResult, recipe: ForgeFixtureRecipe): ForgeGateResult {
+  private replay(result: ForgeCraftResult, recipe: ForgeRecipe): ForgeGateResult {
     return result.blueprintId === recipe.blueprintId && result.blueprintCount === recipe.blueprintCount
       && sameMaterials(result.materials, recipe.materials) && result.resultItem.itemId === recipe.resultItemId
+      && result.resultItem.count === recipe.outputCount
       ? { allowed: true, result: copy(result), replayed: true } : denied('identity', '请求身份与既有结果不符。');
   }
   private validRules(): boolean {
@@ -149,27 +162,53 @@ export class ForgeGate {
     }
     return undefined;
   }
-  private recipe(request: ForgeCraftRequest | undefined): ForgeFixtureRecipe | undefined {
+  private recipe(request: ForgeCraftRequest | undefined): ForgeRecipe | undefined {
     if (!ownFields(request, ['craftRequestId', 'blueprintId', 'materials']) || !request
       || !isForgeId(request.craftRequestId) || !isForgeId(request.blueprintId) || !isValidForgeMaterials(request.materials)) return undefined;
-    const matches = this.fixture.fixtureRecipes?.filter(row => row.blueprintId === request.blueprintId);
-    if (matches?.length !== 1) return undefined;
-    const recipe = matches[0];
-    if (!ownFields(recipe, ['blueprintId', 'blueprintCount', 'materials', 'resultItemId'])
-      || !isForgeId(recipe.blueprintId) || !positiveInteger(recipe.blueprintCount) || !isValidForgeMaterials(recipe.materials)
+    let recipe: ForgeRecipe | undefined;
+    if (this.fixture.fixtureRecipes !== undefined) {
+      // 显式测试授权优先；即使此集为空或无匹配，也不读取正式表补充。
+      const matches = this.fixture.fixtureRecipes.filter(row => row?.blueprintId === request.blueprintId);
+      if (matches.length !== 1) return undefined;
+      const row = matches[0], hasCount = Object.prototype.hasOwnProperty.call(row, 'outputCount');
+      if (!ownFields(row, ['blueprintId', 'blueprintCount', 'materials', 'resultItemId', ...(hasCount ? ['outputCount'] : [])])) return undefined;
+      recipe = { ...row, outputCount: hasCount ? row.outputCount! : 1 };
+    } else {
+      // 生产只读 type===forge；丹方、制符、研墨和缺 type 行都没有打造授权。
+      const rows = this.fixture.formalRecipes !== undefined ? this.fixture.formalRecipes : recipes.recipes;
+      if (!Array.isArray(rows)) return undefined;
+      const matches = rows.filter(row => row && typeof row === 'object'
+        && Reflect.get(row, 'type') === 'forge' && Reflect.get(row, 'blueprint') === request.blueprintId);
+      if (matches.length !== 1) return undefined;
+      const row = matches[0];
+      if (!ownFields(row, ['id', 'name', 'type', 'blueprint', 'materials', 'output', 'outputCount'])
+        || !isForgeId(row.id) || Object.prototype.hasOwnProperty.call(ITEMS, row.id)
+        || typeof row.name !== 'string' || row.name.trim().length === 0
+        || rows.filter(other => other && typeof other === 'object' && Reflect.get(other, 'id') === row.id).length !== 1
+        || !dataArray(row.materials) || !row.materials.every((material: unknown) => ownFields(material, ['item', 'count']))) return undefined;
+      recipe = {
+        blueprintId: row.blueprint, blueprintCount: 1,
+        materials: row.materials.map((material: { item: string; count: number }) => ({ itemId: material.item, count: material.count })),
+        resultItemId: row.output, outputCount: row.outputCount,
+      };
+    }
+    if (!isForgeId(recipe.blueprintId) || !positiveInteger(recipe.blueprintCount) || !isValidForgeMaterials(recipe.materials)
       || !isForgeId(recipe.resultItemId) || recipe.blueprintId === recipe.resultItemId
+      || !positiveInteger(recipe.outputCount)
       || recipe.materials.some(row => row.itemId === recipe.blueprintId || row.itemId === recipe.resultItemId)
-      || !sameMaterials(request.materials, recipe.materials) || ITEMS[recipe.resultItemId]?.type !== 'equip') return undefined;
+      || !sameMaterials(request.materials, recipe.materials) || ITEMS[recipe.resultItemId]?.type !== 'equip'
+      || ![recipe.blueprintId, ...recipe.materials.map(row => row.itemId), recipe.resultItemId].every(id => this.configItem(id))) return undefined;
     return recipe;
   }
   private valid(progress: Progress): boolean {
     if (!this.validRules()) return false;
     if (progress.forge === undefined) return true;
     if (!isValidForgeProgress(progress.forge)) return false;
-    // 存档结构检查与本地授权映射分离；损坏或外来引用不补配方、不改原档。
+    // 存档结构检查与配方授权分离；损坏或外来引用不补配方、不改原档。
     return progress.forge.crafts.every(row => {
       const recipe = this.recipe({ craftRequestId: row.craftRequestId, blueprintId: row.blueprintId, materials: row.materials });
       return !!recipe && row.blueprintCount === recipe.blueprintCount && row.resultItem.itemId === recipe.resultItemId
+        && row.resultItem.count === recipe.outputCount
         && [row.blueprintId, ...row.materials.map(material => material.itemId), row.resultItem.itemId].every(id => this.configItem(id));
     });
   }

@@ -346,6 +346,24 @@
     ],
     "stepTimeMs": 1800
    }
+  },
+  {
+   "id": "recipe_forge_bamboo_sword",
+   "name": "青竹剑",
+   "type": "forge",
+   "blueprint": "scroll_ten_thousand_swords",
+   "materials": [
+    {
+     "item": "spirit_copper",
+     "count": 1
+    },
+    {
+     "item": "refine_stone",
+     "count": 1
+    }
+   ],
+   "output": "bamboo_sword",
+   "outputCount": 1
   }
  ],
  "newItems": {

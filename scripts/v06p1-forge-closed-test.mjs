@@ -9,12 +9,15 @@ import { createServer } from 'vite';
 import { sharedRoot } from './root.mjs';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-const shared = sharedRoot(root), out = path.join(root, 'qa/out_v06p1_forge_open_preamble/closed');
+const shared = sharedRoot(root), out = path.join(root, 'qa/out_v06p1_forge_formal/closed');
 const baselineDir = path.join(root, 'qa/out_v06p1_forge_closed');
 const roots = new Map([['shared', shared], ['wt', path.join(root, 'data')], ['game', path.join(shared, 'game/data')]]);
 const modes = [['shared', shared], ['snapshot', roots.get('wt')]];
 const openFixtureSources = ['ForgeOpenFlag.ts', 'ForgeGate.ts', 'ForgeProgress.ts', 'v06p1-forge-open.test.ts'];
 const forgeClosedSha = 'f7e4216be7767f481c96ae7f1dc5796574fe9b231ada91d57a137c1dc8a8c90c';
+// 正式配方窗只同步权威与 wt 快照；game/data 保持历史基线，其他表仍逐字保护。
+const formalRecipesSha = '1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f';
+const formalRecipeKeys = new Set(['shared:balance/recipes.json', 'wt:balance/recipes.json']);
 const stringsSha = 'fad9b3e604a3af23e99939bf22f77a55de803842daa297ab7fb2c2a6ed0b8967';
 const previousStringsSha = 'c115b6deadf85d1aa9958de1097321ab65624b456e0fddeca42a5fe39743db27';
 const preMarketStringsSha = '6b0861110a6af78f7bbfb78eb32e7579ecd41d5a33c3eff3da9e157794f5951f';
@@ -120,7 +123,8 @@ async function checkProtection() {
     const compared = key === 'wt:src/Progress.ts'
       ? hash(stripForgeProgress(await fs.readFile(file, 'utf8')))
       : key === 'wt:src/scenes/GameScene.ts' ? hash(stripForgeSceneWiring(await fs.readFile(file, 'utf8'))) : actual;
-    eq(compared, key.endsWith(':balance/strings_zh.json') ? stringsSha : expected, `C12 禁改表/地图/源码写前 SHA（Progress 四行及 GameScene 最小提示接线精确剥离）：${key}`);
+    eq(compared, key.endsWith(':balance/strings_zh.json') ? stringsSha : formalRecipeKeys.has(key) ? formalRecipesSha : expected,
+      `C12 禁改表/地图/源码写前 SHA（正式 recipes 仅 shared/wt 精确授权；Progress 四行及 GameScene 最小提示接线精确剥离）：${key}`);
     readOnlyBefore.set(file, actual);
     protectedFiles[key] = actual;
   }
@@ -145,6 +149,7 @@ async function checkProtection() {
   report({ suite: 'protection', passed: true, baselineFiles: Object.keys(protectedFiles).length,
     existingSourceFiles: Object.keys(sourceBefore).length, sourcesOnlyAdded: ['src/ForgeClosed.ts', ...openFixtureSources.map(name => `src/${name}`)],
     optionalForgeBagOnly: true, minimalFrontendWiring: true, fullForgeUiAdded: false,
+    formalRecipesSha, formalRecipeKeys: [...formalRecipeKeys],
     formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false });
 }
 

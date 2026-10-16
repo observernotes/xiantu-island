@@ -1,5 +1,6 @@
 // 正式炼器恒开；只有独立 Vite SSR 关态图可将 ForgeOpenFlag 内存注入 false。
 import enhance from '@xt/balance/enhance.json';
+import recipes from '@xt/balance/recipes.json';
 import { GAME_PHASE, ITEMS } from './data';
 import { featureEnabled, featureFlags } from './features';
 import { Progress } from './Progress';
@@ -108,7 +109,7 @@ export async function runForgeOpenFixtureTests(options: {
   };
   function ok(value: unknown, message: string): asserts value { eq(!!value, true, message); }
   const copy = <T>(value: T): T => structuredClone(value);
-  const flags = copy(featureFlags()), tableBefore = JSON.stringify(enhance);
+  const flags = copy(featureFlags()), tableBefore = JSON.stringify(enhance), recipesBefore = JSON.stringify(recipes);
   const recipe = { blueprintId: 'scroll_ten_thousand_swords', blueprintCount: 1,
     materials: [{ itemId: 'spirit_copper', count: 1 }, { itemId: 'refine_stone', count: 1 }],
     resultItemId: 'bamboo_sword' };
@@ -168,6 +169,7 @@ export async function runForgeOpenFixtureTests(options: {
     const fail = () => { throw new Error('内存关态禁止查询资格、事务、随机或夹具映射'); };
     const opts = fixtureOptions();
     Object.defineProperty(opts, 'fixtureRecipes', { configurable: true, get: fail });
+    Object.defineProperty(opts, 'formalRecipes', { configurable: true, get: fail });
     const gate = new ForgeGate(p, { ...fixtureOptions(), random: fail, ledgerId: fail, canReceiveResult: fail });
     // 不求值输入本身；即使请求带旧字段也必须由旗标直接回原八tip。
     const hostile = new Proxy({}, { get: fail }) as ReturnType<typeof request>;
@@ -278,26 +280,134 @@ export async function runForgeOpenFixtureTests(options: {
       graph: openFixture ? 'formal-open' : 'memory-closed', gateDeniedRouting: openFixture,
       closedBypassesGate: !openFixture, saveWrites: idb.writes - writes };
   }
-  async function defaultGateDenied() {
-    const { p } = fixture(), gate = new ForgeGate(p), samples = sampleCount;
+  async function formalGateTests() {
+    const formalRows = recipes.recipes.filter(row => 'type' in row && row.type === 'forge');
+    eq(formalRows.length, 1, '正式表forge恰一条');
+    const formal = copy(formalRows[0]) as Record<string, any>;
+    eq(formal, { id: 'recipe_forge_bamboo_sword', name: '青竹剑', type: 'forge',
+      blueprint: recipe.blueprintId, materials: recipe.materials.map(({ itemId, count }) => ({ item: itemId, count })),
+      output: recipe.resultItemId, outputCount: 1 }, '正式行严格对应design25');
+    const { p } = fixture(), gate = new ForgeGate(p);
     ok(gate.feature().allowed, '正式默认Gate说明只读允许');
     ok(gate.entrance().allowed, '正式默认Gate入口只读允许');
-    for (const method of ['craft', 'submit'] as const) {
-      await unchanged(p, async () => {
-        const result = await gate[method](request(`default-${method}`));
-        eq('tipKey' in result ? result.tipKey : null, 'forge.fixture.recipe', `正式无fixtureRecipes的${method}明确拒recipe`);
-        return result;
-      }, `正式无fixtureRecipes的${method}拒绝新请求`);
+    const before = p.exportSave(), writes = idb.writes, exp = experience(p);
+    ok(gate.craft(request('formal-default')).allowed, '默认无fixtureRecipes可解析正式图纸材料');
+    eq(p.exportSave(), before, '正式craft只读不预扣或建单');
+    eq(idb.writes, writes, '正式craft零写');
+    const result = committed(await gate.submit(request('formal-default')));
+    eq(result.blueprintId, formal.blueprint, '正式blueprint映射');
+    eq(result.blueprintCount, 1, '正式图纸缺省消耗1');
+    eq(result.materials, recipe.materials, '正式materials.item映射itemId');
+    eq(result.resultItem.itemId, formal.output, '正式output映射resultItemId');
+    eq(result.resultItem.count, formal.outputCount, '正式result count读取outputCount');
+    eq(p.count(formal.output), 2 + formal.outputCount, '正式成品按表数量入库');
+    eq(p.count(formal.blueprint), 3, '正式图纸消耗一份');
+    for (const material of recipe.materials) eq(p.count(material.itemId), 3, '正式材料逐项扣除');
+    ok(Object.keys(enhance.forge.grade).includes(result.resultGrade), '默认品质来自enhance.forge.grade枚举');
+    eq(p.forge!.receipts, [result.craftResultRef], '正式原子提交唯一收据');
+    eq(idb.writes, writes + 1, '正式完整结果仅一笔保存');
+    eq(experience(p), exp, '正式提交forging经验等级零变化');
+    eq((await saveStore.readSlot(1))!.data.forge, p.exportSave().forge, '正式结果真实IDB一致');
+    await replay(p, gate, request('formal-default'), '正式默认同请求重放');
+    for (const [grade, random] of [['common', 0.1], ['fine', 0.75], ['spirit', 0.95], ['treasure', 0.995]] as const) {
+      const f = fixture(), expBefore = experience(f.p);
+      const formalGate = new ForgeGate(f.p, { random: () => random });
+      const record = committed(await formalGate.submit(request(`formal-${grade}`)));
+      eq(record.resultGrade, grade, '正式路径四品质仅按enhance.forge.grade抽样');
+      eq(experience(f.p), expBefore, '正式四品质均不写经验等级');
     }
     eq(gate.laterService(), Closed.refuseLaterService(), '正式默认Gate后续强化附灵分解仍关');
-    eq(sampleCount, samples, '正式默认Gate无配方授权不抽样');
-    eq(p.forge, undefined, '正式默认Gate不建立炼器袋或请求');
-    return { fixtureRecipesAbsent: true, craftDeniedRecipe: true, submitDeniedRecipe: true,
-      readOnlyEntranceAllowed: true, laterServiceClosed: true, saveWrites: 0 };
+
+    async function rejectsRows(rows: readonly unknown[], message: string) {
+      const f = fixture(), samples = sampleCount;
+      const rejected = new ForgeGate(f.p, { formalRecipes: rows, random: () => { sampleCount++; return 0.1; } });
+      for (const method of ['craft', 'submit'] as const) await unchanged(f.p, async () => {
+        const rejectedResult = await rejected[method](request(`formal-invalid-${method}`));
+        eq('tipKey' in rejectedResult ? rejectedResult.tipKey : null, 'forge.fixture.recipe', `${message}：明确拒recipe`);
+        return rejectedResult;
+      }, `${message}/${method}`);
+      eq(sampleCount, samples, `${message}：无抽样`);
+      eq(f.p.forge, undefined, `${message}：无请求或袋`);
+    }
+    await rejectsRows([], '正式空集不得回退fixture');
+    await rejectsRows(recipes.recipes.filter(row => !('type' in row) || row.type !== 'forge'), '丹方制符研墨不可消费');
+    await rejectsRows([{ ...formal, blueprint: 'secret_art_fragment' }], '正式无匹配不得回退fixture');
+    const missingFields = ['id', 'name', 'type', 'blueprint', 'materials', 'output', 'outputCount'];
+    for (const field of missingFields) {
+      const bad = copy(formal); delete bad[field];
+      await rejectsRows([bad], `正式缺字段${field}`);
+    }
+    for (const type of ['talisman', 'grinding', 'pill', '', null])
+      await rejectsRows([{ ...formal, type }], `正式类型${type}不得打造`);
+    for (const outputCount of [0, -1, 1.5, Number.MAX_SAFE_INTEGER + 1, '1', null, undefined, NaN, Infinity])
+      await rejectsRows([{ ...formal, outputCount }], `正式非法outputCount=${outputCount}`);
+    const badRows = [
+      { ...formal, id: '' }, { ...formal, id: 'missing id' }, { ...formal, id: formal.output },
+      { ...formal, blueprint: 'missing-item' }, { ...formal, blueprint: formal.output },
+      { ...formal, output: 'missing-item' }, { ...formal, output: 'spirit_copper' },
+      { ...formal, materials: [] }, { ...formal, materials: [{ item: 'missing-item', count: 1 }] },
+      { ...formal, materials: [{ item: 'spirit_copper', count: 0 }] },
+      { ...formal, materials: [{ item: 'spirit_copper', count: 1.5 }] },
+      { ...formal, materials: [{ itemId: 'spirit_copper', count: 1 }] },
+      { ...formal, materials: [{ item: 'spirit_copper', count: 1 }, { item: 'spirit_copper', count: 1 }] },
+      { ...formal, materials: [{ item: formal.blueprint, count: 1 }] },
+      { ...formal, materials: [{ item: formal.output, count: 1 }] },
+    ];
+    for (const bad of badRows) await rejectsRows([bad], '正式非法引用或材料');
+    await rejectsRows([copy(formal), copy(formal)], '正式重复id拒绝');
+    await rejectsRows([{ ...formal, type: 'talisman' }, copy(formal)], '正式id与非forge配方重复仍拒绝');
+    await rejectsRows([copy(formal), { ...formal, id: 'recipe_forge_ambiguous' }], '正式同图纸歧义拒绝');
+
+    const isolated = fixture();
+    const explicit = new ForgeGate(isolated.p, { fixtureRecipes: [copy(recipe)], formalRecipes: [] });
+    ok(explicit.craft(request('explicit')).allowed, '显式fixture在正式空集仍授权');
+    committed(await explicit.submit(request('explicit')));
+    const fixtureOnly = fixture();
+    const emptyFixture = new ForgeGate(fixtureOnly.p, { fixtureRecipes: [], formalRecipes: [copy(formal)] });
+    for (const method of ['craft', 'submit'] as const)
+      await unchanged(fixtureOnly.p, () => emptyFixture[method](request()), '显式空fixture不得混用正式表');
+    const foreignFixture = new ForgeGate(fixtureOnly.p, { formalRecipes: [copy(formal)], fixtureRecipes: [
+      { ...copy(recipe), materials: [{ itemId: 'rabbit_fur', count: 1 }] },
+    ] });
+    await unchanged(fixtureOnly.p, () => foreignFixture.submit(request()), '显式fixture无匹配不得补正式配方');
+
+    // 用测试局部正式行证明数量贯通；不改变磁盘正式表的outputCount=1。
+    const multiRow = { ...formal, outputCount: 3 }, multi = fixture();
+    const multiGate = new ForgeGate(multi.p, { formalRecipes: [multiRow], random: () => 0.75 });
+    const countCalls: [string, number][] = [];
+    const oldCanAdd = Progress.prototype.canAddCraftedItem, oldAdd = Progress.prototype.addCraftedItem;
+    try {
+      Progress.prototype.canAddCraftedItem = function (itemId, count) {
+        countCalls.push(['capacity', count]); return oldCanAdd.call(this, itemId, count);
+      };
+      Progress.prototype.addCraftedItem = function (itemId, count) {
+        countCalls.push(['add', count]); return oldAdd.call(this, itemId, count);
+      };
+      const multiResult = committed(await multiGate.submit(request('formal-multi')));
+      eq(multiResult.resultItem.count, 3, '测试局部outputCount=3结果不可写死1');
+      eq(multi.p.count(formal.output), 5, 'outputCount=3成品入库增量');
+      ok(countCalls.some(([method, count]) => method === 'capacity' && count === 3), 'canAddCraftedItem读取outputCount');
+      ok(countCalls.some(([method, count]) => method === 'add' && count === 3), 'addCraftedItem读取outputCount');
+      ok(isValidForgeProgress(multi.p.forge), '多数量结果保存结构合法');
+    } finally {
+      Progress.prototype.canAddCraftedItem = oldCanAdd; Progress.prototype.addCraftedItem = oldAdd;
+    }
+    await replay(multi.p, multiGate, request('formal-multi'), '多数量结果去重');
+    const multiSave = multi.p.exportSave(), imported = fixture();
+    eq(await imported.p.importSave(copy(multiSave), { async: true }), true, '多数量真实importSave保留');
+    eq(imported.p.forge, multi.p.forge, '多数量导入不变');
+    ok(new ForgeGate(imported.p, { formalRecipes: [multiRow] }).loadRefresh().allowed, '多数量读回匹配表数量');
+    await unchanged(imported.p, () => new ForgeGate(imported.p).loadRefresh(), '历史数量与当前正式表不符阻写不修复');
+    const overflow = fixture(); overflow.p.inventory[formal.output] = Number.MAX_SAFE_INTEGER - 1;
+    await unchanged(overflow.p, () => new ForgeGate(overflow.p, { formalRecipes: [multiRow] }).submit(request()),
+      'outputCount=3承载溢出整笔拒绝');
+    return { fixtureRecipesAbsent: true, recipeId: formal.id, craftAllowed: true, submitCommitted: true,
+      outputCount: formal.outputCount, injectedOutputCount: 3, fixtureIsolation: true, noProductionFallback: true,
+      invalidFormalRowsDenied: true, forgingExperienceWritten: false, laterServiceClosed: true };
   }
   try {
     const sceneSmokeEvidence = sceneSmoke();
-    const defaultGateEvidence = openFixture ? await defaultGateDenied() : null;
+    const defaultGateEvidence = openFixture ? await formalGateTests() : null;
     if (refreshPayloads) {
       eq(refreshPayloads.map(row => row.state), ['common', 'fine', 'spirit', 'treasure'], '独立SSR覆盖四品质完整历史结果');
       for (const payload of refreshPayloads) await roundtrip(payload);
@@ -368,7 +478,7 @@ export async function runForgeOpenFixtureTests(options: {
         await unchanged(f.p, () => f.gate.submit(request()), `O05缺少图纸或材料${itemId}`);
       }
       const noMapping = fixture();
-      await unchanged(noMapping.p, () => new ForgeGate(noMapping.p).submit(request()), 'O05缺夹具本地授权映射');
+      await unchanged(noMapping.p, () => new ForgeGate(noMapping.p, { fixtureRecipes: [] }).submit(request()), 'O05显式空夹具授权映射');
       const badRecipes = [
         { ...copy(recipe), blueprintCount: 0 }, { ...copy(recipe), resultItemId: 'missing-item' },
         { ...copy(recipe), materials: [] },
@@ -497,6 +607,7 @@ export async function runForgeOpenFixtureTests(options: {
     }
     eq(featureFlags(), flags, 'features原值保持不变');
     eq(JSON.stringify(enhance), tableBefore, 'enhance内存数值未写改');
+    eq(JSON.stringify(recipes), recipesBefore, '正式recipes内存未写改');
     eq(localWrites, 0, '真实IDB事务不用localStorage旁路');
     return { assertions, payloads, openFixture, graph: openFixture ? 'formal-open' : 'memory-closed',
       formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false,

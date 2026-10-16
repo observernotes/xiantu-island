@@ -12,9 +12,10 @@ const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const shared = sharedRoot(root);
 const modes = [['shared', shared], ['snapshot', path.join(root, 'data')]];
 const dataRoots = [['shared', shared], ['wt', path.join(root, 'data')], ['game', path.join(shared, 'game/data')]];
-const out = path.join(root, 'qa/out_v06p1_forge_open_preamble');
+const out = path.join(root, 'qa/out_v06p1_forge_formal');
 const before = new Map(), directoryBefore = new Map(), evidence = [];
 const enhanceSha = 'd5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954';
+const recipesSha = '1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f';
 let assertions = 0, runtimeAssertions = 0;
 const eq = (actual, expected, message) => { assertions++; assert.deepEqual(actual, expected, message); };
 const ok = (value, message) => { assertions++; assert.ok(value, message); };
@@ -57,6 +58,7 @@ async function checkFormal() {
   const oldClosed = execFileSync('git', ['show', '6e94f87:src/ForgeClosed.ts'], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] });
   eq(await fs.readFile(path.join(root, 'src/ForgeClosed.ts')), oldClosed, 'ForgeClosed保留关态基线原字节');
   const gate = await fs.readFile(path.join(root, 'src/ForgeGate.ts'), 'utf8');
+  ok(/import recipes from ['"]@xt\/balance\/recipes\.json['"]/u.test(gate), '生产Gate从权威alias读recipes.json');
   const methods = { feature: 'featureClosed', entrance: 'refuseEntrance', craft: 'refuseCraft', submit: 'refuseSubmit',
     result: 'refuseResult', grade: 'refuseGrade', loadRefresh: 'refuseLoadRefresh', laterService: 'refuseLaterService' };
   for (const [method, closed] of Object.entries(methods))
@@ -83,6 +85,14 @@ async function checkFormal() {
     const dataFiles = [...await filesUnder(path.join(dataRoot, 'balance')), ...await filesUnder(path.join(dataRoot, 'maps'))];
     eq(dataFiles.filter(name => /^forge_.*\.json$/u.test(path.basename(name))), [], `${mode} 无forge_*.json正式配方表`);
     eq(await shaOrNull(path.join(dataRoot, 'balance/enhance.json')), enhanceSha, `${mode} enhance保持指定SHA`);
+    if (mode !== 'game') {
+      eq(await shaOrNull(path.join(dataRoot, 'balance/recipes.json')), recipesSha, `${mode} recipes精确权威SHA`);
+      const recipeTable = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/recipes.json'), 'utf8'));
+      eq(recipeTable.recipes.length, 12, `${mode} 保留11条并追加forge一条`);
+      eq(recipeTable.recipes.filter(row => row.type === 'forge').map(row => row.id), ['recipe_forge_bamboo_sword'], `${mode} 仅授权正式forge行`);
+      const previous = JSON.parse(execFileSync('git', ['show', '801c3ab:data/balance/recipes.json'], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] }));
+      eq({ ...recipeTable, recipes: recipeTable.recipes.slice(0, -1) }, previous, `${mode} 既有11条/rules/newItems保留`);
+    }
     const table = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/enhance.json'), 'utf8'));
     eq(table.forge.grade, { common: 0.6, fine: 0.3, spirit: 0.09, treasure: 0.01 }, `${mode} 品质只读既有四项概率`);
     ok(!Object.prototype.hasOwnProperty.call(table.forge, 'enabled'), `${mode} 不新增forge.enabled配表开关`);
@@ -107,7 +117,8 @@ async function checkFormal() {
     ok(Object.values(shops).every(Array.isArray), `${mode} shops保持既有NPC货单`);
     ok(!Object.keys(shops).some(key => /forge|smith_ou|auction|consign/iu.test(key)), `${mode} 不混打造寄售拍卖服务`);
     report({ suite: 'v06p1-forge-open-formal', dataMode: mode, formalOpen: true, closedFixtureOnly: true,
-      enhanceSha, giftsChecked, smithServices: false, minimalSceneWiring: true, fullForgeUi: false,
+      enhanceSha, ...(mode !== 'game' ? { recipesSha, formalForgeRows: 1 } : {}),
+      giftsChecked, smithServices: false, minimalSceneWiring: true, fullForgeUi: false,
       softOpened: true, released: false });
   }
 }
@@ -192,4 +203,4 @@ try {
     formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false,
     protectedFiles: Object.fromEntries(before), protectedDirectories: Object.fromEntries(directoryBefore), evidence }, null, 2)}\n`);
 }
-console.log(`v06p1 forge open preamble tests ok: ${assertions + runtimeAssertions} assertions; shared/snapshot双根formal-open+memory-closed及fresh SSR四品质读回；O01–O08；Scene最小smith_ou冒烟零写；正式flag=true；无正式配方；ForgeClosed原字节；gifts 10×false；enhance未改；GAME_PHASE=5；formalOpen:true、closedFixtureOnly:true、softOpened:true、released:false；未进包、未发版`);
+console.log(`v06p1 forge formal recipe tests ok: ${assertions + runtimeAssertions} assertions; shared/snapshot双根formal-open+memory-closed及fresh SSR四品质读回；正式配方闭环/outputCount/fixture隔离；O01–O08；Scene最小smith_ou冒烟零写；正式flag=true；ForgeClosed原字节；gifts 10×false；enhance未改；GAME_PHASE=5；formalOpen:true、closedFixtureOnly:true、softOpened:true、released:false；未进包、未发版`);

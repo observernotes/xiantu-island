@@ -7,8 +7,8 @@ export interface ForgeCraftResult {
   blueprintId: string;
   blueprintCount: number;
   materials: ForgeMaterial[];
-  /** 夹具库存仍按配置计数；此引用只绑定这笔成品品质，不是正式装备实例 schema。 */
-  resultItem: { itemId: string; count: 1; instanceRef: string };
+  /** 库存按正式配方数量计数；此引用只绑定这笔成品品质，不是装备实例 schema。 */
+  resultItem: { itemId: string; count: number; instanceRef: string };
   resultGrade: ForgeGrade;
 }
 /** 仅记录完整提交事实；没有待处理请求，也不在读档时补做。 */
@@ -54,7 +54,7 @@ export function isValidForgeProgress(value: unknown): value is ForgeProgress {
         || row.craftResultRef !== `${value.ledgerId}:craft:${row.craftRequestId}`
         || !isForgeId(row.blueprintId) || !integer(row.blueprintCount) || !isValidForgeMaterials(row.materials)
         || !fields(row.resultItem, ['itemId', 'count', 'instanceRef']) || !isForgeId(row.resultItem.itemId)
-        || row.resultItem.count !== 1 || row.resultItem.instanceRef !== `${row.craftResultRef}:item`
+        || !integer(row.resultItem.count) || row.resultItem.instanceRef !== `${row.craftResultRef}:item`
         || row.blueprintId === row.resultItem.itemId
         || row.materials.some(material => material.itemId === row.blueprintId)
         || !isForgeGrade(row.resultGrade)) return false;
