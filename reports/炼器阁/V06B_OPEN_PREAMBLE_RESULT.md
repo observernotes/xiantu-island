@@ -3,7 +3,7 @@
 日期：2026-10-16（Asia/Shanghai）；工作区：`/workspace/xiantu/wt/dev`。
 
 - 基线：`80b1174e2b1292b8b4fb3bbc9509d40c9f5e8118`，含开态 fixture `d40016e09ae922f17828447996317e6b0e45a8fc`；开始时 HEAD、origin/dev 及 fetch 后远端 dev 一致。
-- TIP_SHA：翻表内容提交，提交后在极短交接文档提交中补录完整 SHA。
+- TIP_SHA：`0edc51a78958f37ee0bb744be9b7441946ed78e9`（翻表内容与自检提交；仅后接极短 docs tip 补录此 SHA）。
 - 交付分支：`origin/dev`（普通 push）；最终 BRANCH_TIP 以远端 dev 为准，文档补录不再改变表或测试。
 - Blocker：无。翻表 tip 已交执法堂冒烟；本报告是程序自检，等待执法堂 PASS；未发版。
 
