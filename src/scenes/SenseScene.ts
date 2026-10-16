@@ -1,8 +1,9 @@
-import Phaser from 'phaser';
+import type Phaser from 'phaser';
 import { SPEC } from '../config/feel';
 import { ITEMS, SENSE, TILED_MAPS } from '../data';
 import { featureEnabled } from '../features';
 import { hiddenSenseProfileEnabled, validateSenseConfig, type SenseConfig, type SenseTarget } from '../Sense';
+import { playPropAnimation, revealHiddenChest } from '../SecretProps';
 import type { GameScene } from './GameScene';
 import { createOneWayPlatformVisual, type HiddenMapObject, type MapObj, type OneWayPlatformVisual } from './MapBuilder';
 
@@ -13,6 +14,7 @@ export class SenseMapAdapter {
   private readonly platforms = new Map<string, Phaser.GameObjects.Zone>();
   private readonly platformVisuals = new Map<string, OneWayPlatformVisual>();
   private readonly visuals = new Map<MapObj, Set<VisibleObject>>();
+  private readonly visualVisibility = new WeakMap<VisibleObject, boolean>();
 
   constructor(private readonly scene: GameScene) {
     // 必须早于 Player 构建：读档的落脚面和本体画面同时恢复，显形高亮仍由界面接入。
@@ -65,6 +67,12 @@ export class SenseMapAdapter {
 
   /** 扫描、读档与运行期切换开关都走同一路径；半透明不影响碰撞强度。 */
   syncRevealed() {
+    this.syncPlatforms();
+    for (const [object, visuals] of this.visuals) for (const visual of visuals)
+      if (visual.scene) this.syncVisual(object, visual);
+  }
+
+  private syncPlatforms() {
     for (const hidden of this.scene.map.hidden) {
       const zone = this.platforms.get(hidden.object.name);
       if (!zone) continue;
@@ -78,8 +86,6 @@ export class SenseMapAdapter {
       }
       visual?.object.setVisible(visible);
     }
-    for (const [object, visuals] of this.visuals) for (const visual of visuals)
-      if (visual.scene) visual.setVisible(this.objectVisible(object));
   }
 
   objectVisible(object: MapObj): boolean {
@@ -90,13 +96,33 @@ export class SenseMapAdapter {
   bindVisual(object: MapObj, visual: VisibleObject) {
     const visuals = this.visuals.get(object) ?? new Set<VisibleObject>();
     visuals.add(visual); this.visuals.set(object, visuals);
-    visual.setVisible(this.objectVisible(object));
+    this.syncVisual(object, visual);
+  }
+
+  /** 只操作已有原生视觉；矩形降级和只有 setVisible 的替身沿用可见性同步。 */
+  private syncVisual(object: MapObj, visual: VisibleObject, reveal = false) {
+    const previous = this.visualVisibility.get(visual), visible = this.objectVisible(object);
+    visual.setVisible(visible);
+    this.visualVisibility.set(visual, visible);
+    const sprite = visual as Phaser.GameObjects.Sprite;
+    if (object.type !== 'chest' || object.props.hidden !== true || sprite.texture?.key !== 'prop_chest_hidden'
+      || typeof sprite.play !== 'function' || typeof sprite.getData !== 'function' || typeof sprite.setData !== 'function') return;
+    const opened = this.scene.prog.openedChests.includes(`${this.scene.map.id}:${object.name}`);
+    // props.hidden 自身没有扫描身份；必须沿用现有 hidden 控制器的持久显形结果。
+    const controlled = this.scene.map.hidden.some(hidden => hidden.object.props.targetObject === object.name);
+    if (reveal && controlled && visible && previous === false && !opened) {
+      revealHiddenChest(this.scene, sprite);
+    } else if (previous === undefined || previous !== visible) {
+      const state = opened ? 'opened' : controlled && visible ? 'closed' : 'hidden';
+      playPropAnimation(this.scene, sprite, `prop_chest_hidden_${state}`);
+    }
   }
 
   private applyReveal(hidden: HiddenMapObject) {
-    if (hidden.kind === 'platform') this.syncRevealed();
+    // 同次扫描先提交全部记录；平台显形不能提前把待播 reveal 的箱子恢复成 closed。
+    if (hidden.kind === 'platform') this.syncPlatforms();
     if (hidden.target) for (const visual of this.visuals.get(hidden.target) ?? [])
-      if (visual.scene) visual.setVisible(this.objectVisible(hidden.target));
+      if (visual.scene) this.syncVisual(hidden.target, visual, true);
   }
 
   targets(): SenseTarget[] {

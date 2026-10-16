@@ -13,7 +13,17 @@ const server = await createServer({
         setName(name) { this.name = name; return this; }
         setStrokeStyle() { return this; } setFillStyle(fill) { this.fill = fill; return this; }
       }
-      class Sprite extends Display {} class Rectangle extends Display {}
+      class Sprite extends Display {
+        constructor() {
+          super(); this.data = new Map(); this.scene = {};
+          this.texture = { key: 'prop_chest', has: () => true, firstFrame: 'prop_chest_closed_01' };
+          this.anims = { stop() {} };
+        }
+        getData(key) { return this.data.get(key); }
+        setData(key, value) { this.data.set(key, value); return this; }
+        setFrame(frame) { this.animation = frame.replace(/_01$/, ''); return this; }
+      }
+      class Rectangle extends Display {}
       export default { WEBGL: 2, Scene: class {}, Physics: { Arcade: { Sprite } },
         GameObjects: { Sprite, Rectangle, NineSlice: class {} },
         Animations: { Events: { ANIMATION_COMPLETE: 'animationcomplete' } } };`;
@@ -59,7 +69,6 @@ try {
       rectangle: (_x, _y, _w, _h, fill) => { const d = new Phaser.GameObjects.Rectangle(); d.fill = fill; displays.push(d); return d; },
     };
     scene.children = { getByName: name => displays.find(d => d.name === name) };
-    scene.playPropAnimation = (sprite, key) => { sprite.animation = key; };
     scene.spawnDrop = (...args) => drops.push(args);
     scene.drawObject(chest);
     return { scene, displays, drops };

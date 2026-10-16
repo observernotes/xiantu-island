@@ -49,6 +49,7 @@ import { featureEnabled, FEATURE_UNAVAILABLE, type FeatureName } from '../featur
 import { loadOptionalImage, loadOptionalAtlas, loadOptionalJson, loadOptionalSpritesheet } from '../optionalAssets';
 import { Sense } from '../Sense';
 import { SenseMapAdapter, sceneMonsterTargets } from './SenseScene';
+import { openPropChest, playPropAnimation, resolveSecretProp } from '../SecretProps';
 
 const MAP_FALLBACK: Record<string, string> = {};
 type Drop = Phaser.Physics.Arcade.Sprite & { itemId: string; count: number; bornAt: number; label?: Phaser.GameObjects.Text; shadow?: Phaser.GameObjects.Ellipse; floatTw?: Phaser.Tweens.Tween; landed?: boolean };
@@ -220,7 +221,7 @@ export class GameScene extends Phaser.Scene {
     preloadAlchemy(this);
   }
 
-  create(data: { map?: string; portal?: string; pos?: { x: number; y: number }; talismanReturnLand?: boolean }) {
+  create(data: { map?: string; portal?: string; pos?: { x: number; y: number }; talismanReturnLand?: boolean; secretTheme?: string }) {
     this.resetRunState();
     this.physics.disableUpdate();
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.clearShots());
@@ -281,7 +282,9 @@ export class GameScene extends Phaser.Scene {
     this.mountDailyEnvoys();
     this.mountSectTrialEntrance();
     this.senseMap = new SenseMapAdapter(this);
-    this.map.objects.forEach(o => this.drawObject(o));
+    this.map.objects.forEach(o => this.drawObject(o, data.secretTheme));
+    // zone 在 MapBuilder 中独立保留；这里只绘制皮肤，不增加伤害或触发规则。
+    this.drawSecretTrapZones(data.secretTheme);
 
     const savedPosition = !data.map && !q && this.prog.position?.mapId === mapId ? this.prog.position : undefined;
     const at = data.portal ? this.map.objects.find(o => o.type === 'portal' && o.name === data.portal) : data.pos ?? savedPosition;
@@ -1539,7 +1542,7 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
-  drawObject(o: MapObj) {
+  drawObject(o: MapObj, secretTheme?: string) {
     if (o.type === 'npc') {
       const npc = NPCS[o.props.npc ?? o.name];
       const c = this.add.container(o.x, o.y).setDepth(5).setAlpha(o.props.phantom ? 0.55 : 1);
@@ -1593,13 +1596,28 @@ export class GameScene extends Phaser.Scene {
       this.portalVisuals.push({ object: o, art, label });
     } else if (o.type === 'chest') {
       const opened = this.prog.openedChests.includes(`${this.map.id}:${o.name}`);
-      if (this.textures.exists('prop_chest')) {
-        const sprite = this.add.sprite(o.x, o.y, 'prop_chest').setOrigin(0.5, 1).setDepth(4).setName('chest:' + o.name);
-        this.playPropAnimation(sprite, opened ? 'prop_chest_opened' : 'prop_chest_closed');
+      const revealed = this.map.hidden?.some(hidden => hidden.target === o) && this.senseMap?.objectVisible(o) === true;
+      const prop = resolveSecretProp(o, secretTheme, { opened, revealed })!;
+      if (this.textures.exists(prop.atlas)) {
+        const sprite = this.add.sprite(o.x, o.y, prop.atlas).setOrigin(0.5, 1).setDepth(4).setName('chest:' + o.name);
+        this.playPropAnimation(sprite, `${prop.atlas}_${prop.state}`);
         this.senseMap?.bindVisual(o, sprite);
       } else {
         const chest = this.add.rectangle(o.x, o.y - 14, 34, 28, opened ? 0x7a5a3a : 0xd9a43a).setStrokeStyle(2, 0x5a3418).setDepth(4).setName('chest:' + o.name);
         this.senseMap?.bindVisual(o, chest);
+      }
+    } else if (o.type === 'roomDoor' || o.type === 'restPoint' || o.type === 'event' || o.type === 'zone') {
+      const prop = resolveSecretProp(o, secretTheme);
+      if (!prop || !this.textures.exists(prop.atlas)) return;
+      // 陷阱矩形覆盖整段站面；64×32 原图按脚底平铺，不改变 zone 碰撞或布局。
+      const count = o.type === 'zone' ? Math.max(1, Math.ceil(o.w / 64)) : 1;
+      for (let index = 0; index < count; index++) {
+        const x = o.type !== 'zone' ? o.x : count === 1 ? o.x + o.w / 2 : o.x + 32 + index * (o.w - 64) / (count - 1);
+        const y = o.type === 'zone' ? o.y + o.h : o.y;
+        const sprite = this.add.sprite(x, y, prop.atlas).setOrigin(0.5, 1).setDepth(4)
+          .setName(`${o.type}:${o.name}${o.type === 'zone' ? ':' + index : ''}`);
+        this.playPropAnimation(sprite, `${prop.atlas}_${prop.state}`);
+        this.senseMap?.bindVisual(o, sprite);
       }
     } else if (o.type === 'ferry' && this.textures.exists('prop_ferry_boat')) {
       // 落霞镇的 y 是甲板面，其他停靠点的 y 是船底；图片只做演出。
@@ -1619,15 +1637,12 @@ export class GameScene extends Phaser.Scene {
   }
 
   private playPropAnimation(sprite: Phaser.GameObjects.Sprite, key: string) {
-    if (sprite.getData('propAnimation') === key) return;
-    sprite.setData('propAnimation', key);
-    if (this.anims.exists(key)) {
-      sprite.play(key);
-    } else {
-      sprite.anims.stop();
-      const frame = `${key}_01`;
-      sprite.setFrame(sprite.texture.has(frame) ? frame : sprite.texture.firstFrame);
-    }
+    playPropAnimation(this, sprite, key);
+  }
+
+  /** 主题由秘境调用方传入；未建立主题会话时使用默认地刺皮。 */
+  drawSecretTrapZones(secretTheme?: string) {
+    for (const zone of this.map.zones) if (zone.props.hazard === 'trap') this.drawObject({ ...zone, type: 'zone' }, secretTheme);
   }
 
   /** G7/G8：等级先判；locked 永久关闭；任务须已完成；目标地图须已注册。 */
@@ -2188,10 +2203,7 @@ export class GameScene extends Phaser.Scene {
       this.openedChests.add(key);
       const chest = this.children.getByName('chest:' + o.name);
       if (chest instanceof Phaser.GameObjects.Sprite) {
-        if (this.anims.exists('prop_chest_open')) {
-          chest.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => this.playPropAnimation(chest, 'prop_chest_opened'));
-          chest.play('prop_chest_open');
-        } else this.playPropAnimation(chest, 'prop_chest_opened');
+        openPropChest(this, chest, resolveSecretProp(o)!.atlas);
       } else if (chest instanceof Phaser.GameObjects.Rectangle) chest.setFillStyle(0x7a5a3a);
       this.spawnDrop(o.x, o.y - 30, o.props.loot, o.props.count ?? 1);
       return;
