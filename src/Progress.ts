@@ -12,6 +12,7 @@ import { sectTrialReturnPosition } from './Ferry';
 import { isCheatEnabled, isCheatSkillsUnlocked } from './cheatFlags';
 import { emptyTalismanSave, normalizeTalismanSave, type TalismanSave } from './Talisman';
 import { emptyTalismanUseState, normalizeTalismanUseState, talismanDamageMultiplier, talismanGatherBonus, type TalismanUseState } from './TalismanUse';
+import type { EncounterSave, EncounterState } from './Encounter';
 
 /** 自动加点：加点界面做好前的旧档公式，仅用于迁移种子；UI-6 起升级只发未分配点。 */
 export const AUTO_STATS = { rootBone: 2, agility: 2, insight: 1, spirit: 0 } as Record<string, number>;
@@ -70,6 +71,9 @@ function validSaveData(saved: unknown): saved is Record<string, unknown> {
     if (has(key) && (typeof value !== 'number' || !Number.isSafeInteger(value) || value < rule.min || value > rule.max)) return false;
   }
   if (has('allocatedStats') && !statRecord(saved.allocatedStats)) return false;
+  if (has('encounters') && !dataRecord(saved.encounters)) return false;
+  if (has('bonusStats') && (!dataRecord(saved.bonusStats) || ('insight' in saved.bonusStats && !count(saved.bonusStats.insight)))) return false;
+  if (has('karmaFlags') && (!dataRecord(saved.karmaFlags) || !Object.entries(saved.karmaFlags).every(([key, value]) => safeKey(key) && typeof value === 'boolean'))) return false;
   for (const key of ['inventory', 'skills', 'skillGifted']) if (has(key) && !numbers(saved[key])) return false;
   for (const key of ['skillMastery', 'gatherRespawnAt']) if (has(key) && !numbers(saved[key], false)) return false;
   for (const key of ['job', 'selectedSect', 'name', 'rootElement', 'sectDailyContributionDay', 'dailyQuestResetDay', 'seclusionDay']) {
@@ -117,6 +121,10 @@ export class Progress {
   allocatedStats: Record<string, number> = normalizedStats(undefined);
   unspentStatPoints = 0;
   inventory: Record<string, number> = {};
+  /** 只有首次真实奇遇事务才落字段；关态旧档保持原有形状。 */
+  encounters: EncounterState | undefined = undefined;
+  bonusStats: { insight?: number } | undefined = undefined;
+  karmaFlags: Record<string, boolean> | undefined = undefined;
   /** 实例内物品可供交互读取，但不能写入永久背包。 */
   private transientItems: Record<string, number> = {};
   equip: Record<string, string> = {};     // 桃木剑由任务「灵根初现」发放
@@ -221,7 +229,7 @@ export class Progress {
   statKeys(): readonly StatKey[] { return STAT_KEYS; }
   allocatedStat(k: string) { return statKey(k) && Object.prototype.hasOwnProperty.call(this.allocatedStats, k) ? this.allocatedStats[k] : 0; }
   /** 四维总值 = 已确认加点 + 被动心法；升级不再自动分配。 */
-  stat(k: string) { return this.allocatedStat(k) + this.passiveBonus(k); }
+  stat(k: string) { return this.allocatedStat(k) + this.passiveBonus(k) + (k === 'insight' && count(this.bonusStats?.insight) ? this.bonusStats.insight : 0); }
 
   /** delta 只接受四维的非负整数增量；缺键视为 0，不支持洗点。 */
   checkAllocate(delta: Record<string, number>): AllocateCheck {
@@ -294,7 +302,8 @@ export class Progress {
   runSaveTransaction<T>(apply: () => T | undefined): T | undefined {
     if (this.#saveMuted) return undefined;
     // 不用 exportSave：回滚也要保留试炼临时物品/技能等当前内存数据。
-    const previous = JSON.parse(JSON.stringify(this));
+    const previous = structuredClone(Object.fromEntries(Object.entries(this).filter(([, value]) => typeof value !== 'function')));
+    const previousKeys = new Set(Object.keys(this));
     let saved = false;
     this.#saveMuted = true;
     try {
@@ -306,8 +315,45 @@ export class Progress {
     } catch { return undefined; }
     finally {
       this.#saveMuted = false;
-      if (!saved) Object.assign(this, previous);
+      if (!saved) {
+        for (const key of Object.keys(this)) if (!previousKeys.has(key)) Reflect.deleteProperty(this, key);
+        Object.assign(this, previous);
+      }
     }
+  }
+  /** Runner 的数据快照；不暴露试炼临时物品，也不在读取时迁移或保存。 */
+  encounterSave(): EncounterSave {
+    return structuredClone({ exp: this.exp, stones: this.stones,
+      inventory: Object.fromEntries(Object.keys(this.inventory).map(id => [id, this.permanentCount(id)])),
+      daoHeart: this.daoHeart, morality: this.morality,
+      ...(this.encounters !== undefined ? { encounters: this.encounters } : {}),
+      ...(this.bonusStats !== undefined ? { bonusStats: this.bonusStats } : {}),
+      ...(this.karmaFlags !== undefined ? { karmaFlags: this.karmaFlags } : {}) });
+  }
+  /** 扣药分桶、修为升级/溢出池与 runner 状态只写一次；写盘失败一起回滚。 */
+  commitEncounterSave(next: EncounterSave): boolean {
+    const baseExp = next.exp ?? this.exp, inventory = next.inventory ?? {};
+    if (!count(baseExp) || baseExp < this.exp || !count(next.stones) || !dataRecord(inventory)
+      || !Object.entries(inventory).every(([id, n]) => !!ITEMS[id] && count(n))
+      || !dataRecord(next.encounters) || !count(next.daoHeart) || next.daoHeart > 100
+      || !Number.isSafeInteger(next.morality) || next.morality! < -100 || next.morality! > 100
+      || next.bonusStats !== undefined && (!dataRecord(next.bonusStats) || 'insight' in next.bonusStats && !count(next.bonusStats.insight))) return false;
+    return this.runSaveTransaction(() => {
+      for (const id of new Set([...Object.keys(this.inventory), ...Object.keys(inventory)])) {
+        const owned = this.permanentCount(id), wanted = inventory[id] ?? 0;
+        if (!count(owned)) return undefined;
+        if (wanted < owned) this.removeItem(id, owned - wanted);
+        else if (wanted > owned) this.addItem(id, wanted - owned);
+      }
+      this.stones = next.stones!;
+      this.daoHeart = next.daoHeart!; this.morality = next.morality!;
+      this.encounters = structuredClone(next.encounters);
+      this.bonusStats = next.bonusStats === undefined ? undefined : structuredClone(next.bonusStats);
+      this.karmaFlags = next.karmaFlags === undefined ? undefined : structuredClone(next.karmaFlags);
+      const gained = baseExp - this.exp;
+      if (gained > 0) this.gainExp(gained, this.level, 'quest');
+      return true;
+    }) === true;
   }
   /** 导入和读取存档共用迁移；只接收数据字段，不允许覆盖实例方法。 */
   importSave(saved: unknown): boolean {

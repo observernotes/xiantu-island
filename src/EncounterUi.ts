@@ -1,6 +1,6 @@
 import type Phaser from 'phaser';
 import { ENCOUNTERS, ITEMS, NPCS, t } from './data';
-import { previewEncounter, type EncounterDefinition, type EncountersConfig } from './Encounter';
+import type { EncounterDefinition, EncountersConfig } from './Encounter';
 import { applySpriteArt } from './SpriteArt';
 import type { GameScene } from './scenes/GameScene';
 
@@ -11,7 +11,11 @@ export interface EncounterUiTarget {
 }
 export interface EncounterOffer {
   readonly encounterId: string;
+  readonly attemptId?: string;
   readonly stepId?: string;
+  readonly outcomeId?: string;
+  /** runner 抽中后仅提示；玩家靠近交互再展开。 */
+  readonly markerOnly?: boolean;
   readonly vars?: Readonly<Record<string, string | number>>;
   readonly target?: EncounterUiTarget;
   readonly x?: number; readonly y?: number; readonly height?: number; readonly headY?: number;
@@ -86,6 +90,7 @@ export class EncounterUi {
   constructor(private readonly scene: GameScene) {
     scene.events.on('encounter:offer', this.showOffer, this);
     scene.events.on('encounter:step', this.showOffer, this);
+    scene.events.on('encounter:result', this.showOffer, this);
     scene.events.on('encounter:clear', this.clear, this);
     scene.events.on('update', this.refresh, this);
     scene.events.once('shutdown', this.destroy, this);
@@ -103,41 +108,48 @@ export class EncounterUi {
     const config = offer.config === undefined ? ENCOUNTERS : offer.config;
     const definition = config?.encounters.find(row => row.id === offer.encounterId);
     if (!definition) return;
-    if (offer.mock !== true && (definition.enabled !== true
-      || previewEncounter(config, offer.encounterId).status === 'unavailable')) return;
+    if (offer.mock !== true && (definition.enabled !== true || !text(offer.attemptId))) return;
     return definition;
   }
 
   private lack(choice: Fields): string {
-    return rows(fields(choice.req).items).flatMap(row => {
-      if (!text(row.item) || !finite(row.count)) return [];
-      const have = this.scene.prog.count(row.item);
-      return have < row.count ? [t('encounter.ui.lack_item', { item: itemName(row.item), n: row.count, have })] : [];
+    const required = new Map<string, number>();
+    for (const source of [choice.req, choice.cost]) {
+      const totals = new Map<string, number>();
+      for (const row of rows(fields(source).items)) if (text(row.item) && finite(row.count)) totals.set(row.item, (totals.get(row.item) ?? 0) + row.count);
+      for (const [id, n] of totals) required.set(id, Math.max(required.get(id) ?? 0, n));
+    }
+    return [...required].flatMap(([item, count]) => {
+      const have = this.scene.prog.permanentCount(item);
+      return !finite(have) || have < count ? [t('encounter.ui.lack_item', { item: itemName(item), n: count, have })] : [];
     }).join('\n');
   }
 
   refresh() {
     if (this.destroyed) return;
     const offer = this.offer, definition = offer && this.definition(offer);
+    const outcome = definition?.outcomes.find(row => row.id === offer?.outcomeId);
     const step = definition?.script.steps.find(step => step.id === (offer?.stepId ?? definition.script.start));
-    if (!offer || !definition || !step) { this.clearVisuals(); return; }
-    const choices: ChoiceView[] = keys(step.choiceIds).flatMap(id => {
+    if (!offer || !definition || !step && !outcome) { this.clearVisuals(); return; }
+    if (offer.markerOnly) { this.panel?.destroy(); this.panel = undefined; this.rendered = ''; this.refreshMark(offer); return; }
+    const choices: ChoiceView[] = keys(outcome ? undefined : step?.choiceIds).flatMap(id => {
       const choice = definition.choices.find(choice => choice.id === id);
       return choice && text(choice.textKey) ? [{ id, label: t(choice.textKey, offer.vars),
         lack: this.lack(choice), preview: previewLines(definition, choice).join('\n') }] : [];
     });
     const title = t(definition.nameKey, offer.vars);
-    const dialog = keys(step.textKeys).map(key => t(key, offer.vars)).join('\n');
-    const model = JSON.stringify({ title, dialog, choices });
+    const repeat = !!this.scene.prog.encounters?.resolved?.[offer.encounterId] && keys(step?.repeatTextKeys).length > 0;
+    const dialog = keys(outcome?.textKeys ?? (repeat ? step?.repeatTextKeys : step?.textKeys)).map(key => t(key, offer.vars)).join('\n');
+    const model = JSON.stringify({ title, dialog, choices, outcome: outcome?.id, step: step?.id });
     if (model !== this.rendered) {
       this.panel?.destroy();
-      this.buildPanel(offer, String(step.id), title, dialog, choices);
+      this.buildPanel(offer, String(step?.id ?? ''), title, dialog, choices, !outcome && ['dialog', 'interact'].includes(String(step?.type)));
       this.rendered = model;
     }
-    this.refreshMark(offer);
+    if (outcome) { this.mark?.destroy(); this.mark = undefined; } else this.refreshMark(offer);
   }
 
-  private buildPanel(offer: EncounterOffer, stepId: string, title: string, dialog: string, choices: ChoiceView[]) {
+  private buildPanel(offer: EncounterOffer, stepId: string, title: string, dialog: string, choices: ChoiceView[], canAdvance: boolean) {
     const scene = this.scene, width = 760, wrap = width - 48;
     const panel = this.panel = scene.add.container(0, 0).setScrollFactor(0).setDepth(205).setName('encounter-panel');
     const background = scene.add.rectangle(0, 0, width, 1, 0xfaf2dc, 0.98).setOrigin(0, 0).setStrokeStyle(2, 0x6b4b2a);
@@ -161,17 +173,38 @@ export class EncounterUi {
         // 点击时再次读门禁/材料，避免本帧库存变化后沿用旧的可点状态。
         const current = this.definition(offer)?.choices.find(row => row.id === choice.id);
         if (!current || this.lack(current)) { this.refresh(); return; }
-        scene.events.emit('encounter:ui-choice', { encounterId: offer.encounterId, stepId, choiceId: choice.id, mock: offer.mock === true });
+        this.selectChoice(choices.findIndex(row => row.id === choice.id));
       });
       if (choice.lack) line(choice.lack, `encounter-lack:${choice.id}`, '#9C3932', 12);
       if (choice.preview) line(choice.preview, `encounter-preview:${choice.id}`, '#65584A', 12);
     }
+    if (canAdvance) line(t('ui.dialog.next'), 'encounter-continue', '#2B4C7E')
+      .setInteractive({ useHandCursor: true }).on('pointerdown', (pointer?: Phaser.Input.Pointer) => {
+        if (!pointer || pointer.button === 0) this.advance();
+      });
     line(t('encounter.ui.close_hint'), 'encounter-close', '#65584A', 12)
       .setInteractive({ useHandCursor: true }).on('pointerdown', (pointer?: Phaser.Input.Pointer) => {
         if (!pointer || pointer.button === 0) this.clear();
       });
     background.setSize(width, y + 8);
     panel.setPosition(((scene.scale?.width ?? 1280) - width) / 2, Math.max(20, ((scene.scale?.height ?? 720) - y - 8) / 2));
+  }
+
+  isOpen(): boolean { return !!this.panel; }
+  advance() {
+    const offer = this.offer, definition = offer && this.definition(offer);
+    const step = definition?.script.steps.find(row => row.id === (offer?.stepId ?? definition.script.start));
+    if (!offer || offer.markerOnly || offer.outcomeId || !step || !['dialog', 'interact'].includes(String(step.type))) return;
+    this.scene.events.emit('encounter:ui-advance', { encounterId: offer.encounterId, stepId: step.id,
+      ...(offer.attemptId ? { attemptId: offer.attemptId } : {}), mock: offer.mock === true });
+  }
+  selectChoice(index: number) {
+    const offer = this.offer, definition = offer && this.definition(offer);
+    const step = definition?.script.steps.find(row => row.id === (offer?.stepId ?? definition.script.start));
+    const id = keys(step?.choiceIds)[index], choice = definition?.choices.find(row => row.id === id);
+    if (!offer || offer.markerOnly || offer.outcomeId || !step || !choice || this.lack(choice)) { this.refresh(); return; }
+    this.scene.events.emit('encounter:ui-choice', { encounterId: offer.encounterId, stepId: step.id, choiceId: id,
+      ...(offer.attemptId ? { attemptId: offer.attemptId } : {}), mock: offer.mock === true });
   }
 
   private refreshMark(offer: EncounterOffer) {
@@ -209,6 +242,7 @@ export class EncounterUi {
     this.destroyed = true;
     this.scene.events.off('encounter:offer', this.showOffer, this);
     this.scene.events.off('encounter:step', this.showOffer, this);
+    this.scene.events.off('encounter:result', this.showOffer, this);
     this.scene.events.off('encounter:clear', this.clear, this);
     this.scene.events.off('update', this.refresh, this);
     this.scene.events.off('shutdown', this.destroy, this);

@@ -123,6 +123,11 @@ export function parseEncountersConfig(raw: unknown): EncountersValidation {
     const trigger = record(row.trigger) ? row.trigger : {};
     check(record(row.trigger), `${p}.trigger`, '必须为对象');
     for (const key of ['type', 'chanceRef', 'anchor', 'reveal']) check(text(trigger[key]), `${p}.trigger.${key}`, '必须为非空字符串');
+    check(trigger.type === 'map_enter' || trigger.type === 'meditation_tick', `${p}.trigger.type`, '一期仅支持进图或连续打坐');
+    check(trigger.chanceRef === (trigger.type === 'map_enter' ? 'baseChancePerMapEnter' : 'sageAdviceChancePerMeditationMin'),
+      `${p}.trigger.chanceRef`, '必须引用对应触发类型的公共概率');
+    if (trigger.type === 'meditation_tick') check(count(trigger.intervalMs) && trigger.intervalMs > 0,
+      `${p}.trigger.intervalMs`, '连续打坐间隔必须为正安全整数毫秒');
     check(texts(trigger.timeSlots) && trigger.timeSlots.length > 0, `${p}.trigger.timeSlots`, '必须为非空字符串数组');
     for (const key of ['intervalMs', 'reqSpirit']) if (key in trigger) check(nonnegative(trigger[key]), `${p}.trigger.${key}`, '必须为非负有限数');
     const req = record(row.req) ? row.req : {};
@@ -155,7 +160,31 @@ export function parseEncountersConfig(raw: unknown): EncountersValidation {
       unique(choice.id, choiceIds, `${cp}.id`);
       check(text(choice.textKey), `${cp}.textKey`, '必须为非空字符串');
       check(text(choice.next) && stepIds.has(choice.next), `${cp}.next`, '必须引用现有步骤');
-      for (const key of ['req', 'cost']) if (key in choice) check(record(choice[key]), `${cp}.${key}`, '必须为对象');
+      for (const key of ['req', 'cost']) if (key in choice) {
+        const value = choice[key];
+        check(record(value), `${cp}.${key}`, '必须为对象');
+        if (!record(value)) continue;
+        for (const field of Object.keys(value)) check(field === 'items', `${cp}.${key}.${field}`, '一期选项仅支持物品门槛或消耗');
+        if (!('items' in value)) continue;
+        check(Array.isArray(value.items), `${cp}.${key}.items`, '必须为物品数组');
+        if (!Array.isArray(value.items)) continue;
+        const seen = new Set<string>();
+        Array.from(value.items).forEach((item: unknown, j: number) => {
+          check(record(item) && text(item.item) && itemIds.has(item.item) && count(item.count) && item.count > 0,
+            `${cp}.${key}.items[${j}]`, '必须为已登记物品和正安全整数数量');
+          if (record(item) && text(item.item)) {
+            check(!seen.has(item.item), `${cp}.${key}.items[${j}].item`, '同一物品不能重复登记');
+            seen.add(item.item);
+          }
+        });
+      }
+      if (row.id === 'enc_stranded_cultivator' && choice.id === 'medicine') {
+        for (const key of ['req', 'cost']) {
+          const value = record(choice[key]) ? choice[key] : {};
+          check(Array.isArray(value.items) && value.items.some(item => record(item) && item.item === 'hp_pill_small' && item.count === 1),
+            `${cp}.${key}.items`, '援手药物门槛与消耗都必须为回春丹·小 ×1');
+        }
+      }
     });
     const outcomes = Array.isArray(row.outcomes) ? row.outcomes : [], outcomeIds = new Set<string>();
     check(Array.isArray(row.outcomes) && outcomes.length > 0, `${p}.outcomes`, '必须为非空结局数组');

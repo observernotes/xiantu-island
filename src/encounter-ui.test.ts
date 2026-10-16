@@ -1,8 +1,11 @@
 import encountersRaw from '@xt/balance/encounters.json';
+import pacingRaw from '@xt/balance/solo_pacing.json';
 import { ENCOUNTERS, ITEMS, NPCS, t } from './data';
 import { parseEncountersConfig, type EncountersConfig } from './Encounter';
 import { EncounterUi, type EncounterOffer } from './EncounterUi';
 import { Progress } from './Progress';
+import { EncounterSceneRuntime } from './EncounterSceneRuntime';
+import type { EncounterContext } from './Encounter';
 import type { GameScene } from './scenes/GameScene';
 
 let assertions = 0;
@@ -83,9 +86,9 @@ class Display extends Events {
 }
 const visible = (display: Display): boolean => !display.destroyed && display.visible && display.alpha > 0
   && (!display.parentContainer || visible(display.parentContainer));
-const uiNames = ['encounter:offer', 'encounter:step', 'encounter:clear', 'update', 'shutdown'];
+const uiNames = ['encounter:offer', 'encounter:step', 'encounter:result', 'encounter:clear', 'update', 'shutdown'];
 const pointer = { button: 0, id: 1, leftButtonDown: () => true };
-const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value));
+const clone = <T>(value: T): T => structuredClone(value);
 function configWith(mutate: (raw: typeof encountersRaw) => void): EncountersConfig {
   const raw = clone(encountersRaw); mutate(raw);
   const parsed = parseEncountersConfig(raw); ok(parsed.config, `测试克隆通过配置校验：${parsed.errors.join('; ')}`);
@@ -93,7 +96,7 @@ function configWith(mutate: (raw: typeof encountersRaw) => void): EncountersConf
 }
 function fixture(options: { missingTexture?: boolean; missingAnimation?: boolean; invalidAnimation?: boolean } = {}) {
   const displays: Display[] = [], events = new Events();
-  const prog = Object.assign(new Progress(), { encounters: { sentinel: { cooldownUntil: 123, resolved: false } } });
+  const prog: Progress = Object.assign(new Progress(), { encounters: { sentinel: { cooldownUntil: 123, resolved: false } } });
   prog.inventory = { hp_pill_small: 0, nine_leaf_ganoderma: 7 };
   const add = (x: number, y: number, key?: string, frame?: string | number) => {
     const display = new Display(x, y, key, frame); display.scene = scene; displays.push(display); return display;
@@ -275,7 +278,170 @@ try {
   eq(JSON.stringify(ENCOUNTERS), officialBefore, '正式已校验奇遇表完全未改');
   eq(JSON.stringify(encountersRaw), rawBefore, '正式原始表 enabled 与其他字段完全未改');
   eq(writes, 0, '全部 UI 测试零写盘');
-  console.log(`encounter-ui tests ok: ${assertions} assertions, disabled hidden / mock visible / choice read-only / shutdown cleaned`);
+
+  // GameScene使用的真实runtime + Progress事务 + UI，只替换显示对象与localStorage介质。
+  const disk = new Map<string, string>(); let saveAttempts = 0, successfulSaves = 0, saveFails = false;
+  Object.defineProperty(globalThis, 'localStorage', { configurable: true, value: {
+    getItem: (key: string) => disk.get(key) ?? null,
+    setItem: (key: string, value: string) => { saveAttempts++; if (saveFails) throw new Error('fixture storage failure'); disk.set(key, value); successfulSaves++; },
+    removeItem: (key: string) => { disk.delete(key); },
+  } });
+  const runtimeConfig = configWith(raw => { raw.encounters[0].enabled = true; });
+  const live = fixture(); live.prog.encounters = undefined; live.prog.inventory = { hp_pill_small: 2 };
+  live.prog.level = 12; live.prog.daoHeart = 20; live.prog.morality = 0;
+  live.prog.pillQualities.hp_pill_small = { low: 1, high: 1 };
+  const runtimeCtx = (mapId: string): EncounterContext => ({ mapId, level: 99, realmId: 'foundation', sectJoined: true,
+    questsDone: new Set(['q_fox']), featuresReady: new Set(['moral_state', 'insight_reward']), daoHeart: 20, nowMs: 10_000_000 });
+  const emitted: string[] = []; let near = false, hasAnchor = false, rngCalls = 0, committed = 0;
+  const runtime = new EncounterSceneRuntime({ progress: live.prog, config: runtimeConfig, pacing: pacingRaw.encounter,
+    rng: () => { rngCalls++; return 0; }, context: () => runtimeCtx('lingxi_path'),
+    anchor: () => hasAnchor ? { x: 80, y: 120 } : undefined, near: () => near,
+    emit: (name, payload) => { emitted.push(name); live.events.emit(name, payload); }, onCommit: () => { committed++; },
+  });
+  live.events.on('encounter:ui-advance', payload => runtime.advance(payload));
+  live.events.on('encounter:ui-choice', payload => runtime.choose(payload));
+  runtime.enter('runtime-visit');
+  eq(rngCalls, 2, '真实runtime进图只掷共享概率与weight'); eq(successfulSaves, 1, 'trigger只真实保存一次');
+  eq(live.controls().length, 0, '地图缺已登记锚点时真实offer保持0可见');
+  eq((live.prog.encounterSave().encounters?.seen as string[]).includes(id), false, '无真实锚点不提前记seen');
+  hasAnchor = true; runtime.update(16);
+  eq(live.controls().length, 0, '未靠近真实锚点也不提前展示');
+  near = true; runtime.update(16);
+  eq(successfulSaves, 2, '真实锚点首次展示另保存seen');
+  eq((live.prog.encounterSave().encounters?.seen as string[]).includes(id), true, '真实锚点展示才记seen');
+  eq(live.ui.isOpen(), false, 'runner自动offer只显示marker，不自动打开模态面板');
+  ok(visible(live.named('encounter-help-mark')), 'runner offer接通UI锚点提示');
+  near = false; eq(runtime.interact(), false, '不在锚点附近不可打开'); near = true; hasAnchor = false;
+  eq(runtime.interact(), false, '缺地图锚点保持不可见'); hasAnchor = true;
+  ok(runtime.interact(), '走近锚点交互打开真实offer'); eq(live.ui.isOpen(), true, 'UI打开真实runner节点');
+  eq(live.named('encounter-dialog').text, t('enc.stranded_cultivator.offer'), '真实offer中文对白');
+  runtime.update(16); runtime.update(16);
+  eq(live.ui.isOpen(), true, '真实GameScene逐帧update不收起玩家已打开的面板');
+  const savedOffer = JSON.stringify(live.prog.encounters), beforeCloseWrites = saveAttempts;
+  live.named('encounter-close').emit('pointerdown', pointer);
+  eq(live.ui.isOpen(), false, '关闭真实对白仅隐藏'); eq(JSON.stringify(live.prog.encounters), savedOffer, '关闭不终止/代选');
+  eq(saveAttempts, beforeCloseWrites, '关闭不提交存档'); runtime.interact();
+  const beforeContinue = successfulSaves; live.named('encounter-continue').emit('pointerdown', pointer);
+  eq(runtime.runner.offer()?.stepId, 'decide', '真实continue事件经runtime推进runner');
+  eq(successfulSaves, beforeContinue + 1, '节点推进一次保存');
+  eq(live.named('encounter-choice:medicine').getData('disabled'), false, '真实库存2药时medicine可选');
+  const pendingSave = JSON.stringify(live.prog.exportSave()), diskBefore = JSON.stringify([...disk]);
+  const attemptsBeforeMedicine = saveAttempts, successesBeforeMedicine = successfulSaves;
+  saveFails = true; live.named('encounter-choice:medicine').emit('pointerdown', pointer);
+  eq(saveAttempts, attemptsBeforeMedicine + 1, '扣药结算失败仅一次真实save尝试');
+  eq(successfulSaves, successesBeforeMedicine, '失败未写入磁盘');
+  eq(JSON.stringify(live.prog.exportSave()), pendingSave, '真实Progress保存失败回滚全部内存字段');
+  eq(JSON.stringify([...disk]), diskBefore, '保存失败磁盘保持原节点');
+  same(live.prog.pillQualityCounts('hp_pill_small'), { low: 1, mid: 0, high: 1, supreme: 0 }, '失败恢复药品品质分桶');
+  eq(runtime.runner.offer()?.stepId, 'decide', '失败仍停留选择节点可重试');
+  saveFails = false; live.named('encounter-choice:medicine').emit('pointerdown', pointer);
+  eq(successfulSaves, successesBeforeMedicine + 1, '扣药/奖励/冷却/attempt同一次真实保存');
+  eq(live.prog.count('hp_pill_small'), 1, 'UI选择真实扣药1');
+  same(live.prog.pillQualityCounts('hp_pill_small'), { low: 0, mid: 0, high: 1, supreme: 0 }, '扣药沿已有品质分桶顺序');
+  eq(live.prog.encounterSave().encounters?.resolved?.[id], 'aided', 'UI分支真实结算aided');
+  ok(emitted.includes('encounter:step') && emitted.includes('encounter:result'), 'runner step与settled结果都路由到UI');
+  eq(live.named('encounter-dialog').text, t('enc.stranded_cultivator.aided'), '结果面板显示真实outcome文案');
+  ok(!live.displays.some(display => display.name === 'encounter-continue' && visible(display)), '结果没有继续发奖入口');
+  const resultSaves = saveAttempts, resultState = JSON.stringify(live.prog.exportSave());
+  live.ui.advance(); live.ui.selectChoice(1); live.named('encounter-close').emit('pointerdown', pointer);
+  eq(saveAttempts, resultSaves, '点击结果与关闭不会重复提交'); eq(JSON.stringify(live.prog.exportSave()), resultState, '结果交互无二次扣药发奖');
+  eq(rngCalls, 2, '交互/重试/结果全程无额外随机');
+  const loaded = Progress.load();
+  eq(loaded.count('hp_pill_small'), 1, '真实Progress.load恢复已消耗库存');
+  eq(loaded.encounters?.resolved?.[id], 'aided', '真实存档恢复已结算记录');
+  same(loaded.pillQualityCounts('hp_pill_small'), { low: 0, mid: 0, high: 1, supreme: 0 }, '读档保留已扣药品质账本');
+  ok(committed >= 3, 'runtime通知真实事务完成'); live.ui.destroy();
+
+  const meditationUi = fixture(); meditationUi.prog.encounters = undefined; meditationUi.prog.inventory = {};
+  const meditationConfig = configWith(raw => { raw.encounters[3].enabled = true; });
+  let active = true, stopped = 0, meditationRolls = 0;
+  const meditationRuntime = new EncounterSceneRuntime({ progress: meditationUi.prog, config: meditationConfig, pacing: pacingRaw.encounter,
+    rng: () => { meditationRolls++; return 0; }, context: () => runtimeCtx('qingyun_village'), anchor: () => ({ x: 60, y: 90 }),
+    near: () => true, emit: (name, payload) => meditationUi.events.emit(name, payload),
+  });
+  meditationUi.events.on('encounter:ui-advance', payload => meditationRuntime.advance(payload));
+  meditationUi.events.on('encounter:ui-choice', payload => meditationRuntime.choose(payload));
+  meditationRuntime.enter('runtime-meditation'); meditationRuntime.update(60000);
+  eq(meditationRolls, 0, '未注册打坐provider时仙人不入池');
+  const unregister = meditationRuntime.registerMeditation({ active: () => active, atAnchor: () => true,
+    stop: () => { active = false; stopped++; } });
+  meditationRuntime.update(59000); meditationRuntime.update(600000, { paused: true });
+  eq(meditationRolls, 0, '暂停/后台通过真实runtime不累计也不补掷'); meditationRuntime.update(1000);
+  eq(meditationRolls, 2, '注册provider后累计满一分钟按独立概率触发'); eq(stopped, 1, '仙人命中自动结束打坐');
+  ok(meditationRuntime.interact(), '仙人真实锚点交互'); meditationUi.ui.advance();
+  meditationRuntime.update(16); meditationRuntime.update(16);
+  eq(meditationUi.ui.isOpen(), true, '问道打开后帧更新保持面板'); eq(stopped, 1, 'active期间帧更新不重复停止打坐');
+  const insightBefore = meditationUi.prog.stat('insight'), insightWrites = successfulSaves;
+  meditationUi.ui.selectChoice(0);
+  eq(successfulSaves, insightWrites + 1, '永久悟性与结算记录一次保存');
+  eq(meditationUi.prog.stat('insight'), insightBefore + 1, '永久悟性立即进入真实stat计算');
+  eq(meditationUi.prog.bonusStats?.insight, 1, '永久悟性按bonusStats记录');
+  const loadedInsight = Progress.load(); eq(loadedInsight.bonusStats?.insight, 1, '真实存档恢复永久悟性');
+  eq(loadedInsight.stat('insight'), meditationUi.prog.stat('insight'), '刷新后属性计算继续包含永久悟性');
+  eq(meditationUi.named('encounter-dialog').text, t('enc.sage_advice.correct'), '问道结果路由中文文案');
+  unregister(); meditationUi.ui.destroy();
+
+  // 保存失败后即使Esc关闭面板，也由正式帧循环完成已经授权的选择/推进。
+  for (const action of ['advance', 'choose'] as const) {
+    const retryUi = fixture(); retryUi.prog.encounters = undefined; retryUi.prog.inventory = { hp_pill_small: 2 };
+    let rolls = 0;
+    const retryRuntime = new EncounterSceneRuntime({ progress: retryUi.prog, config: runtimeConfig, pacing: pacingRaw.encounter,
+      rng: () => { rolls++; return 0; }, context: () => runtimeCtx('lingxi_path'), anchor: () => ({ x: 60, y: 90 }),
+      near: () => true, emit: (name, payload) => retryUi.events.emit(name, payload),
+    });
+    retryUi.events.on('encounter:ui-advance', payload => retryRuntime.advance(payload));
+    retryUi.events.on('encounter:ui-choice', payload => retryRuntime.choose(payload));
+    retryRuntime.enter(`closed-pending-${action}`); ok(retryRuntime.interact(), '保存失败场景打开真实面板');
+    if (action === 'choose') retryUi.ui.advance();
+    const beforeAction = JSON.stringify(retryUi.prog.exportSave()), completedBefore = successfulSaves;
+    saveFails = true;
+    if (action === 'advance') retryUi.ui.advance(); else retryUi.ui.selectChoice(1);
+    eq(JSON.stringify(retryUi.prog.exportSave()), beforeAction, `${action}保存失败完整回滚`);
+    retryUi.ui.clear(); eq(retryUi.ui.isOpen(), false, 'Esc/clear关闭失败动作面板');
+    saveFails = false; retryRuntime.update(16);
+    eq(successfulSaves, completedBefore + 1, `${action}关闭后下帧只提交一次原动作`);
+    eq(retryUi.ui.isOpen(), true, `${action}重试后恢复可见节点/结果`);
+    if (action === 'advance') {
+      eq(retryRuntime.runner.offer()?.stepId, 'decide', '关闭后自动恢复推进的选择节点');
+      eq(retryUi.prog.count('hp_pill_small'), 2, '恢复推进不代选扣药');
+    } else {
+      eq(retryUi.prog.encounterSave().encounters?.resolved?.[id], 'aided', '关闭后自动完成已确认medicine');
+      eq(retryUi.prog.count('hp_pill_small'), 1, '自动重试只扣一次药');
+      eq(retryUi.named('encounter-dialog').text, t('enc.stranded_cultivator.aided'), '关闭后重试恢复真实结果文案');
+    }
+    const afterRetry = successfulSaves; retryRuntime.update(16);
+    eq(successfulSaves, afterRetry, '后续帧不重复提交原动作'); eq(rolls, 2, '跨帧自动重试不重新掷概率');
+    retryUi.ui.destroy();
+  }
+
+  // 死亡只调用一次terminate；保存恢复后帧循环负责结束，不能永久卡pending_save。
+  const deathUi = fixture(); deathUi.prog.encounters = undefined; deathUi.prog.inventory = { hp_pill_small: 2 };
+  let deathNow = 10_000_000, deathRolls = 0;
+  const deathRuntime = new EncounterSceneRuntime({ progress: deathUi.prog, config: runtimeConfig, pacing: pacingRaw.encounter,
+    rng: () => { deathRolls++; return 0; }, context: () => ({ ...runtimeCtx('lingxi_path'), nowMs: deathNow }),
+    anchor: () => ({ x: 60, y: 90 }), near: () => true, emit: (name, payload) => deathUi.events.emit(name, payload),
+  });
+  deathRuntime.enter('death-pending');
+  const beforeDeath = JSON.stringify(deathUi.prog.exportSave());
+  const deathRewards = [deathUi.prog.exp, deathUi.prog.stones, deathUi.prog.count('hp_pill_small')];
+  const deathWrites = successfulSaves; saveFails = true;
+  eq(deathRuntime.terminate('failed'), false, '死亡终止保存失败向调用方返回未完成');
+  eq(JSON.stringify(deathUi.prog.exportSave()), beforeDeath, '死亡终止保存失败保留原状态');
+  deathUi.ui.clear(); saveFails = false; deathRuntime.update(16);
+  eq(successfulSaves, deathWrites + 1, '死亡调用方未重调也由帧更新提交failed一次');
+  eq(deathUi.prog.encounterSave().encounters?.active, null, '死亡保存恢复后清空active');
+  same([deathUi.prog.exp, deathUi.prog.stones, deathUi.prog.count('hp_pill_small')], deathRewards, '死亡failed无奖励无额外消耗');
+  eq(deathUi.prog.encounterSave().encounters?.resolved?.[id], undefined, '死亡failed不封存有效结局');
+  eq(deathUi.named('encounter-dialog').text, t('enc.stranded_cultivator.failed'), '死亡恢复提交显示failed结果');
+  const deathCommitted = successfulSaves; deathRuntime.update(16);
+  eq(successfulSaves, deathCommitted, '死亡failed后续帧不重复保存');
+  deathNow += 1_800_001; deathRuntime.enter('death-new-visit');
+  ok(deathRuntime.runner.offer(), '死亡恢复后冷却到期新visit可正常触发');
+  eq(deathRolls, 4, '死亡恢复不补掷，只有新visit再掷概率与weight'); deathUi.ui.destroy();
+
+  eq(JSON.stringify(ENCOUNTERS), officialBefore, '真实runtime/UI联调后正式配置仍完全未改');
+  eq(JSON.stringify(encountersRaw), rawBefore, '真实runtime/UI联调后正式原始五事件仍完全未改');
+  console.log(`encounter-ui tests ok: ${assertions} assertions, disabled / rendering / real runner runtime / Progress rollback / medicine / insight`);
 } finally {
   if (storageBefore) Object.defineProperty(globalThis, 'localStorage', storageBefore);
   else delete (globalThis as { localStorage?: Storage }).localStorage;

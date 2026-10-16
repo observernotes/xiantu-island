@@ -4,7 +4,8 @@ import { notifyCheatSceneReady } from '../cheatFlags';
 import { getRendererInfo } from '../rendererChoice';
 import { FEEL, SPEC } from '../config/feel';
 import { FIELD_TEST } from '../config/maps';
-import { MONSTERS, DROPS, ITEMS, TILED_MAPS, ATLASES, MAP_AREA, AREAS, TILE_METADATA, BACKGROUNDS, BACKGROUND_CONFIGS, PROP_LAYOUTS, SKILL_ICONS, NPCS, SCRIPTS, SENSE, syncTalismanMapAvailability, t, questName, questDescription, MP_REGEN_FRACTION_PER_5S, BREAKTHROUGH_LEVELS } from '../data';
+import { MONSTERS, DROPS, ITEMS, TILED_MAPS, ATLASES, MAP_AREA, AREAS, TILE_METADATA, BACKGROUNDS, BACKGROUND_CONFIGS, PROP_LAYOUTS, SKILL_ICONS, NPCS, SCRIPTS, SENSE, ENCOUNTERS, syncTalismanMapAvailability, t, questName, questDescription, MP_REGEN_FRACTION_PER_5S, BREAKTHROUGH_LEVELS } from '../data';
+import pacing from '@xt/balance/solo_pacing.json';
 import { QuestSystem } from '../QuestSystem';
 import type { DailyQuestReward } from '../DailyQuests';
 import { QUESTS as QUESTS_REF } from '../data';
@@ -50,6 +51,7 @@ import { loadOptionalImage, loadOptionalAtlas, loadOptionalJson, loadOptionalSpr
 import { Sense } from '../Sense';
 import { SenseUi } from '../SenseUi';
 import { EncounterUi } from '../EncounterUi';
+import { EncounterSceneRuntime, type EncounterMeditationProvider } from '../EncounterSceneRuntime';
 import { SenseMapAdapter, sceneMonsterTargets } from './SenseScene';
 import { openPropChest, playPropAnimation, resolveSecretProp } from '../SecretProps';
 
@@ -89,6 +91,8 @@ export class GameScene extends Phaser.Scene {
   senseMap!: SenseMapAdapter;
   senseUi?: SenseUi;
   encounterUi?: EncounterUi;
+  encounterRuntime?: EncounterSceneRuntime;
+  private encounterOwnsPause = false;
   readonly inputBindings = new InputBindings();
   private senseCueDepth = 0;
   private senseBusyProviders = new Set<() => boolean>();
@@ -142,6 +146,8 @@ export class GameScene extends Phaser.Scene {
   private resetRunState() {
     this.senseUi?.destroy(); this.senseUi = undefined;
     this.encounterUi?.destroy(); this.encounterUi = undefined;
+    this.encounterRuntime = undefined;
+    this.encounterOwnsPause = false;
     this.sense?.clearIntel();
     this.sense = undefined!; this.senseMap = undefined!;
     this.senseCueDepth = 0; this.senseBusyProviders.clear();
@@ -406,7 +412,9 @@ export class GameScene extends Phaser.Scene {
     this.skillBar.onSlot = i => { if (this.skillWindow.open) this.skillWindow.assign(i); };
     this.maybeSpTip();
     this.tracker = this.add.text(16, 44, '', { fontFamily: 'sans-serif', fontSize: '13px', color: '#ffffff', backgroundColor: '#1d2a3aaa', padding: { x: 8, y: 6 }, lineSpacing: 3 }).setScrollFactor(0).setDepth(100);
-    this.input.keyboard!.addKey(K.ENTER).on('down', () => this.dialog.advance());
+    this.input.keyboard!.addKey(K.ENTER).on('down', () => {
+      if (this.encounterUi?.isOpen()) this.encounterUi.advance(); else this.dialog.advance();
+    });
     this.invText = this.add.text(1264, 130, '', { fontFamily: 'sans-serif', fontSize: '14px', color: '#ffffff', backgroundColor: '#1d2a3acc', padding: { x: 10, y: 8 } }).setOrigin(1, 0).setScrollFactor(0).setDepth(100).setVisible(false);
     this.gourd = this.add.image(1220, 718, 'icon_overflow_gourd_empty').setOrigin(0.5, 1).setScrollFactor(0).setDepth(103).setVisible(false).setInteractive({ useHandCursor: true });
     this.gourdTip = this.add.text(1220, 680, '', { fontFamily: 'sans-serif', fontSize: '12px', color: '#fff8e8', backgroundColor: '#1d2a3aee', padding: { x: 6, y: 3 } }).setOrigin(1, 1).setScrollFactor(0).setDepth(140).setVisible(false);
@@ -431,6 +439,11 @@ export class GameScene extends Phaser.Scene {
     this.senseUi = new SenseUi(this, () => this.senseBusy());
     this.encounterUi = new EncounterUi(this);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      // 刷新/销毁保留可恢复节点；明确跨图由 travel/新地图 enter 结算 missed。
+      this.encounterRuntime = undefined;
+      if (this.encounterOwnsPause) { this.physics.resume(); this.encounterOwnsPause = false; }
+      this.events.off('encounter:ui-advance', this.advanceEncounter, this);
+      this.events.off('encounter:ui-choice', this.chooseEncounter, this);
       this.encounterUi?.destroy(); this.encounterUi = undefined;
       this.sense?.clearIntel();
       this.sectTrial?.destroy(); this.prog.endTrialSkills();
@@ -450,6 +463,7 @@ export class GameScene extends Phaser.Scene {
     this.registry.remove('sectTrialReturnDetail');
     if (returned || interrupted) this.log(returned ?? t('trial.exit_return'), '#ffe680');
     if (returnDetail) this.log(returnDetail, '#ffb0b0');
+    this.setupEncounters();
     notifyCheatSceneReady(this);
   }
 
@@ -678,6 +692,23 @@ export class GameScene extends Phaser.Scene {
   invText!: Phaser.GameObjects.Text;
 
   update(time: number, delta: number) {
+    const encounterOpen = this.encounterUi?.isOpen() === true;
+    if (!encounterOpen && this.encounterOwnsPause) { this.physics.resume(); this.encounterOwnsPause = false; }
+    const meditationInterrupted = ['left', 'right', 'up', 'down', 'space', 'alt', 'c', 'ctrl', 'x', 'i', 'e', 'k', 'l', 'p', 'r']
+      .some(key => this.keys[key]?.isDown) || this.player.state2 === 'hurt' || this.player.dead;
+    this.encounterRuntime?.update(delta > 1000 ? 0 : delta, { paused: this.scene.isPaused() || this.physics.world.isPaused
+      || typeof document !== 'undefined' && document.hidden, interrupted: encounterOpen || meditationInterrupted || delta > 1000 });
+    if (encounterOpen || this.encounterUi?.isOpen()) {
+      if (!this.physics.world.isPaused) { this.physics.pause(); this.encounterOwnsPause = true; }
+      this.playerInput.clear(); this.playerPhysicsAccumulator = 0;
+      const J = Phaser.Input.Keyboard.JustDown, k = this.keys;
+      if (J(k.esc)) this.encounterUi?.clear();
+      else {
+        [k.one, k.two, k.three, k.four, k.five].forEach((key, i) => { if (J(key)) this.encounterUi?.selectChoice(i); });
+        if (J(k.z) || J(k.space) || J(k.up)) this.encounterUi?.advance();
+      }
+      this.drawHud(); return;
+    }
     this.sense?.tick();
     const senseKeyDown = this.senseUi?.update() ?? false;
     this.playerPhysicsAdvanced = false;
@@ -803,7 +834,7 @@ export class GameScene extends Phaser.Scene {
     if (J(k.one)) this.usePill('hp_pill_small');
     if (J(k.two)) this.usePill('qi_pill');
     if (J(k.z) && this.player.state2 === 'ground' && !this.gathering.active && !this.hasNearbyDrop()
-      && (this.interactTrialObject() || this.openNearbyFurnace() || this.talkNearby())) return;
+      && (this.encounterRuntime?.interact() || this.interactTrialObject() || this.openNearbyFurnace() || this.talkNearby())) return;
     if (k.z.isDown && !this.gathering.active && time >= this.nextPickAt) { this.nextPickAt = time + 150; this.tryPickup(); }
     if (J(k.up) && this.player.state2 === 'ground' && this.tryInteract()) return;
     const slotKey: Record<string, Phaser.Input.Keyboard.Key> = { A: k.a, S: k.s, D: k.d, F: k.f, G: k.g, H: k.h, Q: k.q, W: k.w };
@@ -1011,6 +1042,7 @@ export class GameScene extends Phaser.Scene {
     if (!this.player.hurt(this.time.now, fromX, dmg, knock)) return;
     this.prog.mp = Math.max(0, this.prog.mp - absorbed * mpPerDamage);
     this.gathering.cancel();
+    this.encounterRuntime?.interrupt();
     this.interruptTalisman('damage');
     this.prog.hp = Math.max(0, this.prog.hp - dmg);
     this.player.hp = this.prog.hp;
@@ -1019,6 +1051,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   playerDie() {
+    this.encounterRuntime?.terminate('failed');
     this.talismanUse?.onDeath();
     const p = this.player;
     p.dead = true; p.state2 = 'hurt'; p.hurtUntil = Infinity;
@@ -1105,12 +1138,57 @@ export class GameScene extends Phaser.Scene {
   }
 
   private senseBusy(): boolean {
-    return this.travelling || this.senseCueDepth > 0 || !!this.dialog?.open || !!this.skillWindow?.open
+    return this.travelling || this.senseCueDepth > 0 || !!this.encounterUi?.isOpen() || !!this.dialog?.open || !!this.skillWindow?.open
       || !!this.alchemy?.isOpen() || !!this.shop?.isOpen() || !!this.attrPanel?.isOpen() || this.itemPanelOpen()
       || !!this.gathering?.active || !!this.player?.gathering || !!this.alchemySystem?.active || !!this.talismanSystem?.active
       || !!this.talismanUse?.cast || this.scene.isActive('talisman-craft-ui') || this.scene.isPaused()
       || this.physics.world.isPaused || !!this.sectTrial?.blocksInput || !!this.sectTrial?.ended || !!this.trial?.ended
       || [...this.senseBusyProviders].some(check => check());
+  }
+
+  /** 持续打坐系统尚未开放；仅由真实系统注册，不从坐姿动画推断状态。 */
+  registerEncounterMeditation(provider: EncounterMeditationProvider): () => void {
+    return this.encounterRuntime?.registerMeditation(provider) ?? (() => {});
+  }
+
+  private setupEncounters() {
+    this.encounterRuntime = new EncounterSceneRuntime({ progress: this.prog, config: ENCOUNTERS, pacing: pacing.encounter,
+      context: () => ({ mapId: this.map.id, level: this.prog.level, realmId: this.prog.realm.id,
+        questsDone: this.prog.quests, sectJoined: !!this.prog.sect, daoHeart: this.prog.daoHeart, nowMs: gameNow(),
+        luck: 0, blocked: this.encounterBlocked(),
+        featuresReady: { moral_state: Number.isSafeInteger(this.prog.daoHeart) && Number.isSafeInteger(this.prog.morality),
+          insight_reward: true, spirit_scan: featureEnabled('spiritScan') } }),
+      anchor: definition => {
+        const object = this.map.objects.find(row => row.name === definition.trigger.anchor
+          && (row.type === 'encounter_anchor' || row.type === 'hidden') && row.props.encounter === definition.id);
+        return object ? { x: object.x, y: object.y, height: object.h } : undefined;
+      },
+      near: target => Math.abs(target.x - this.player.x) <= 40 && Math.abs(target.y - this.player.feet) <= 48,
+      emit: (name, payload) => this.events.emit(name, payload ? { ...payload, vars: { player: this.prog.name } } : undefined),
+      onCommit: () => { this.player.maxHp = this.prog.maxHp; this.player.hp = this.prog.hp; this.player.syncAppearance(); },
+    });
+    this.events.on('encounter:ui-advance', this.advanceEncounter, this);
+    this.events.on('encounter:ui-choice', this.chooseEncounter, this);
+    // 同地图刷新沿已保存 visit；真正跨图才生成新 visit，不依赖随机数。
+    const visit = this.prog.encounters?.visit as { id?: string; map?: string } | undefined;
+    const sequence = Number(this.registry.get('encounterVisitSequence') ?? 0) + 1;
+    this.registry.set('encounterVisitSequence', sequence);
+    this.encounterRuntime.enter(visit?.map === this.map.id && visit.id ? visit.id : `${this.map.id}:${gameNow()}:${sequence}`);
+  }
+
+  private advanceEncounter(payload: Parameters<EncounterSceneRuntime['advance']>[0]) { this.encounterRuntime?.advance(payload); }
+  private chooseEncounter(payload: Parameters<EncounterSceneRuntime['choose']>[0]) { this.encounterRuntime?.choose(payload); }
+
+  private encounterBlocked(): boolean {
+    const p = this.player;
+    return !p || p.dead || this.travelling || this.senseCueDepth > 0 || this.dialog.open || this.skillWindow.open
+      || this.alchemy.isOpen() || this.shop.isOpen() || this.attrPanel.isOpen() || this.itemPanelOpen()
+      || !!this.trial || !!this.sectTrial || !!this.map.trial || !!TRIAL_BY_MAP[this.map.id]
+      || this.gathering.active || p.gathering || this.inTalismanCombat()
+      || this.scene.isPaused() || this.physics.world.isPaused && !this.encounterOwnsPause
+      || typeof document !== 'undefined' && document.hidden
+      || this.map.objects.some(o => o.type === 'ferry' && Math.abs(o.x - p.x) < 64 && Math.abs(o.y - p.feet) < 64)
+      || this.map.zones.some(zone => !!zone.props.unlockQuest && p.x >= zone.x && p.x <= zone.x + zone.w && p.y >= zone.y && p.y <= zone.y + zone.h);
   }
 
   private setupSense() {
@@ -1704,6 +1782,7 @@ export class GameScene extends Phaser.Scene {
 
   tryInteract(): boolean {
     if (this.travelling) return true;
+    if (this.encounterRuntime?.interact()) return true;
     const p = this.player;
     for (const o of this.map.objects) {
       if (this.senseMap?.objectVisible(o) === false) continue;
@@ -1747,6 +1826,9 @@ export class GameScene extends Phaser.Scene {
     if (!mapEntryOpen(map, this.map.id, returning)) { onCancelled?.(); this.log(FEATURE_UNAVAILABLE, '#aaaaaa'); return; }
     if (!TILED_MAPS[map] && map !== 'field_test') { onCancelled?.(); this.log(t('sys.portal_locked'), '#aaaaaa'); return; }
     if (this.travelling) { onCancelled?.(); return; }
+    if (this.encounterRuntime?.terminate('missed') === false) {
+      onCancelled?.(); this.log(t('sect.ui.save_failed'), '#ffb0b0'); return;
+    }
     this.travelling = true;
     this.player.body.setVelocityX(0);
     this.prog.save();
