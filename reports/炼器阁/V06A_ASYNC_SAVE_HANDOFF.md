@@ -1,8 +1,8 @@
 # v0.6a 玩法 save 异步接线交接
 
-更新时间：2026-10-16 21:22:10 UTC+8
+更新时间：2026-10-16 21:26:36 UTC+8
 
-- TIP_SHA=63f4a3dc64c9fd89fb7a80d82ea9adbc4b36aca5（普通 commit 已 push origin/dev；远端分支同 SHA）
+- TIP_SHA=50d3674fbd2d9e2484132eb94f6c987af666dfad（docs pin；接线 feat 63f4a3dc64c9fd89fb7a80d82ea9adbc4b36aca5；已 push origin/dev）
 - 基线：dda785288f71b7ca5008e35760ad0155a295cd14；仅修改 `/workspace/xiantu/wt/dev` 的代码工作树，报告/status 按指令写共享根目录。
 - Commit：`feat(v0.6a): wire gameplay saves to async slots`。
 
@@ -53,8 +53,8 @@ python3 -c "import json;assert json.load(open('data/features.json'))['indexedDbS
 
 ## 执法堂三行（开态增量）
 
-【执法堂 1/3】TIP_SHA=63f4a3dc64c9fd89fb7a80d82ea9adbc4b36aca5；请做开态增量 `npm run test:save-slots`（252 断言），核查「玩法主路径」「命中 IDB/槽」：save → 槽/backend、draft 事务 → 内存一致、load 读回及交付成功后通知/失败回滚。
+【执法堂 1/3】TIP_SHA=50d3674fbd2d9e2484132eb94f6c987af666dfad（接线 63f4a3d）；请做开态增量 `npm run test:save-slots`（252 断言），核查「玩法主路径」「命中 IDB/槽」：save → 槽/backend、draft 事务 → 内存一致、load 读回及交付成功后通知/失败回滚。
 
 【执法堂 2/3】tsc / save-slots / mainline-56 / diff-check / 正式 false 断言均 exit 0；正式 indexedDbSaves=false，SHA-256=f5326ab47ca72919592a933bcd4f77127a44f87943ddeb648a6cd5616b9ef50f；gifts 仍关，未发版，禁 6b+。
 
-【执法堂 3/3】仅测例 setFeatureFlag 内存克隆开态；请出 `qa/out_v06a_async_63f4a3d/`，保存命令、退出码和证明点；HUD overlay / SaveSlotsPanel 视觉不纳入；不得据此翻正式表或加自动档。
+【执法堂 3/3】仅测例 setFeatureFlag 内存克隆开态；请出 `qa/out_v06a_async_50d3674/`，保存命令、退出码和证明点；HUD overlay / SaveSlotsPanel 视觉不纳入；不得据此翻正式表或加自动档。
