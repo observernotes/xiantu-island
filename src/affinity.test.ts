@@ -1,10 +1,12 @@
 import npcsRaw from '@xt/balance/npcs.json';
 import encountersRaw from '@xt/balance/encounters.json';
+import karmaFlagsRaw from '@xt/balance/karma_flags.json';
 import { AFFINITY, AFFINITY_ERRORS } from './data';
 import { parseAffinityIndex, getAffinity, previewAffinityDelta, applyAffinityDelta,
   consumeQuestAffinitySources, consumeEncounterAffinityHooks, claimAffinityUnlock, stageQuestAffinityCompletion, type SaveAffinity } from './Affinity';
 import { Progress } from './Progress';
 import { QuestSystem } from './QuestSystem';
+import { parseQuestHooks } from './QuestHooks';
 import { parseEncountersConfig, settleEncounterOutcome } from './Encounter';
 
 let assertions = 0;
@@ -59,6 +61,19 @@ const closed = disabledParsed.config;
 const closedEntries = Object.values(closed);
 eq(closedEntries.filter(entry => entry.enabled).length, 0, '关态夹具 9 块全 false');
 eq(closedEntries.filter(entry => entry.gifts.enabled).length, 0, '关态夹具送礼仍全 false');
+
+// 好感主路径隔离任务选择；开态共存另用显式 choice 冒烟覆盖。
+function questHooksFixture(enabledHookId?: string) {
+  const raw = structuredClone(karmaFlagsRaw);
+  for (const hook of raw.questHooks) hook.enabled = hook.id === enabledHookId;
+  const label = enabledHookId ?? '全关态', parsed = parseQuestHooks(raw);
+  eq(parsed.errors.length, 0, `${label} questHooks 夹具无坏表`);
+  ok(parsed.config, `${label} questHooks 夹具可解析`);
+  eq(parsed.config.questHooks.length, 2, `${label} questHooks 夹具保留两题`);
+  eq(parsed.config.questHooks.filter(hook => hook.enabled).length, enabledHookId ? 1 : 0, `${label} questHooks 夹具仅开指定题`);
+  return parsed.config;
+}
+const hooksClosed = questHooksFixture(), hooksOpen = questHooksFixture('prologue_medicine');
 
 const saved: Record<string, number> = { village_elder: 40 }, before = JSON.stringify(saved);
 const poison = new Proxy({} as SaveAffinity, { get() { throw new Error('关态不得读取存档'); } });
@@ -233,8 +248,8 @@ try {
     eq(stageQuestAffinityCompletion(enabled, 'q_awaken', p), false, '有好感来源任务对坏关系状态继续 fail-closed');
     eq(snapshot(p), before, '有来源拒绝不留下半状态'); eq(writes, beforeWrites, '关系检查不额外写盘');
   }
-  function readyQuest(open = enabled) {
-    const p = new Progress(), quest = new QuestSystem(p, () => 10_000_000, open);
+  function readyQuest(affinityCfg = enabled, hooksCfg = hooksClosed) {
+    const p = new Progress(), quest = new QuestSystem(p, () => 10_000_000, affinityCfg, hooksCfg);
     p.quests.q_awaken = { state: 'active', kills: {}, reached: true };
     return { p, quest };
   }
@@ -245,6 +260,23 @@ try {
     same(p.relationshipState.appliedAffinitySources, ['village_elder|quest|q_awaken'], '真实交付标准收据');
     eq(writes, beforeWrites + 1, '任务奖励、done、好感同一事务写盘');
     const after = snapshot(p); eq(quest.turnIn('q_awaken'), undefined, '已完成任务不能再次提交'); eq(snapshot(p), after, '重交不二次发好感');
+  }
+  for (const choiceId of ['return', 'keep'] as const) {
+    const { p, quest } = readyQuest(enabled, hooksOpen), beforeWrites = writes;
+    ok(quest.turnIn('q_awaken', false, choiceId)?.settled, `${choiceId} 开态显式选择交付成功`);
+    eq(p.quests.q_awaken.state, 'done', `${choiceId} 开态交付成为 done`);
+    eq(p.affinity.village_elder, 40, `${choiceId} 与正魔共存仍加好感 40`);
+    same(p.relationshipState.appliedAffinitySources, ['village_elder|quest|q_awaken'], `${choiceId} 好感标准收据只一条`);
+    eq(writes, beforeWrites + 1, `${choiceId} 交付与好感同一事务仅写盘一次`);
+    const persisted = JSON.parse(disk[saveKey]);
+    eq(persisted.affinity.village_elder, 40, `${choiceId} 好感值确实落盘`);
+    same(persisted.relationshipState.appliedAffinitySources, ['village_elder|quest|q_awaken'], `${choiceId} 好感收据确实落盘`);
+    const after = snapshot(p);
+    for (const repeated of ['return', 'keep'] as const) {
+      eq(quest.turnIn('q_awaken', false, repeated), undefined, `${choiceId} 后重交 ${repeated} 不重复结算`);
+    }
+    eq(snapshot(p), after, `${choiceId} 重交不重复发好感或收据`);
+    eq(writes, beforeWrites + 1, `${choiceId} 重交不额外写盘`);
   }
   {
     const { p, quest } = readyQuest(closed);
@@ -291,7 +323,7 @@ try {
   {
     const legacy = new Progress().exportSave(); delete legacy.affinity; delete legacy.relationshipState;
     legacy.quests = { q_awaken: { state: 'done', kills: {} } }; disk[saveKey] = JSON.stringify(legacy);
-    const p = Progress.load(); new QuestSystem(p, () => 10_000_000, enabled);
+    const p = Progress.load(); new QuestSystem(p, () => 10_000_000, enabled, hooksClosed);
     eq(details(consumeQuestAffinitySources(enabled, p), 'consumed', '旧档完成历史不扫描').count, 0, '旧档缺来源不补发');
     same(p.affinity, {}, '旧档好感仅迁移空结构'); same(p.relationshipState.pendingAffinitySources, [], '不猜测旧任务来源');
   }
@@ -410,4 +442,4 @@ ok(endEnabled === 0 || endEnabled === 9, '正式表根门禁旁证只允许 0 �
 eq(endEnabled, formalEnabledCount, '测试未改变正式表根门禁');
 if (endEnabled === 9) eq(endEnabled, 9, 'tip 开态 9 true');
 else eq(endEnabled, 0, '未翻表旁证仍 0');
-console.log(`affinity tests ok: ${assertions} assertions (dual-state preamble; closed-fixture; fixture initialization/delta/tiers, quest and encounter once, unlock rollback)`);
+console.log(`affinity tests ok: ${assertions} assertions (dual-state preamble; questHooks closed fixture + open explicit choices; fixture initialization/delta/tiers, quest and encounter once, unlock rollback)`);
