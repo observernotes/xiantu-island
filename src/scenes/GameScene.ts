@@ -624,6 +624,10 @@ export class GameScene extends Phaser.Scene {
   enterTrial(tr: TrialDef) {
     if (!mapEntryOpen(tr.map, this.map.id)) { this.log(FEATURE_UNAVAILABLE, '#aaaaaa'); return; }
     const pr = this.prog, item = pr.realm.breakthroughItem as string | null;
+    // 对话结束才入台；期间丹药可能已移走，缺丹时不能扣清心丹或切图。
+    if (item && pr.count(item) < 1) {
+      this.log(t('trial.need_pill', { item: ITEMS[item]?.name ?? item }), '#ffb0b0'); return;
+    }
     const itemConsumed = !!item && pr.count(item) > 0;
     const withClear = pr.count('clear_mind_pill') > 0;
     const itemQuality = item ? pr.pillQuality(item) : 'low', clearQuality = pr.pillQuality('clear_mind_pill');
@@ -649,13 +653,15 @@ export class GameScene extends Phaser.Scene {
     const pr = this.prog, p = this.player;
     const realm = pr.realm, pen = realm.failPenalty ?? {};
     const banner = (text: string, color = '#fff6c8') => {
-      const tx = this.add.text(640, 250, text, { fontFamily: 'serif', fontSize: '40px', color, stroke: '#3b2a20', strokeThickness: 6 }).setOrigin(0.5).setScrollFactor(0).setDepth(170);
+      const tx = this.add.text(640, 250, text, { fontFamily: 'serif', fontSize: '40px', color, stroke: '#3b2a20', strokeThickness: 6,
+        align: 'center', wordWrap: { width: 1120, useAdvancedWrap: true } }).setOrigin(0.5).setScrollFactor(0).setDepth(170);
       this.tweens.add({ targets: tx, alpha: { from: 0, to: 1 }, duration: 400, hold: 1600, yoyo: true, onComplete: () => tx.destroy() });
     };
     this.registry.set('lastTrialResult', null);
     if (result !== 'held') {
       const msg = result === 'broken' ? t('trial.altar_broken') : t('trial.player_down');
       this.log(msg, '#ff8080'); banner(msg, '#ffb0b0');
+      this.log('丹药已在入台时消耗，修为没有损失，突破保底不变。备好丹药后可再次入台。', '#ffe680');
       this.registry.set('lastTrialResult', result);
       this.time.delayedCall(2600, () => this.returnFromTrial());
       return;
@@ -688,6 +694,7 @@ export class GameScene extends Phaser.Scene {
         const bonus = Math.round((BREAKTHROUGH.pityPerFail ?? 0) * 100);
         banner(t('realm.breakthrough_fail'), '#d0d0d0');
         this.log(t('realm.breakthrough_fail'), '#d0d0d0');
+        this.log('阵眼已守住，但本次突破未成。丹药已在入台时消耗，修为圆满并备好丹药后可再次入台。', '#ffe680');
         this.log(t('realm.next_bonus', { bonus }), '#ffe680');
         if (lost.lost > 0) this.log(`修为 −${lost.lost}${lost.fromPool ? `（溢出池 −${lost.fromPool}）` : ''}`, '#c8c8c8');
         if (pen.debuffMs) this.log(t('realm.unstable', { min: Math.round(Number(pen.debuffMs) / 60000) }), '#ffb0b0');
@@ -2110,7 +2117,9 @@ export class GameScene extends Phaser.Scene {
             reason: disabled ? state === 'done' ? t('quest.complete', { name: questName(q) }) : t('sect.ui.config_pending') : questDescription(q),
             onSelect: () => this.talkTo(npcId, id) };
         }),
-        ...ordinaryIds.filter(id => !hasTalismanService || id !== 'q_talisman_intro').map(id => ({ label: questName(QUESTS_REF[id]), onSelect: () => this.talkTo(npcId, id) })),
+        ...ordinaryIds.filter(id => !hasTalismanService || id !== 'q_talisman_intro').map(id => ({
+          label: questName(QUESTS_REF[id]), reason: questDescription(QUESTS_REF[id]), onSelect: () => this.talkTo(npcId, id),
+        })),
         ...(hasTalismanService ? [
           { label: t('talisman.entry_learn'), onSelect: () => this.learnTalisman(npcId) },
           { label: t('talisman.entry_craft'), onSelect: () => this.openTalisman() },

@@ -859,5 +859,15 @@
   "encounter.ui.flag_on": "记入",
   "encounter.ui.flag_off": "移除",
   "encounter.ui.preview_title": "奖励与代价预览",
-  "encounter.ui.close_hint": "关闭对白（保留当前节点）"
+  "encounter.ui.close_hint": "关闭对白（保留当前节点）",
+  "quest.elder_exam.name": "长老考核",
+  "quest.elder_exam.description": "持有一枚筑基丹，与传功长老交谈并交付考核，开启筑基台。",
+  "quest.elder_exam.offer": "备好一枚筑基丹，再来见我。苏师姐会为你护法。",
+  "quest.elder_exam.progress": "筑基丹可备好了？带在身上，再与我说说入台之事。",
+  "quest.elder_exam.complete": "考核已过，筑基台已开。入台守住阵眼，提防黑袍人偷袭。",
+  "quest.main_06.name": "深林",
+  "quest.main_06.description": "前往万妖林深处，击败一只千年树妖，再向雷猎户复命。",
+  "quest.main_06.offer": "林子深处的千年树妖中了黑袍人的魔种，劳你去除掉它。",
+  "quest.main_06.progress": "深处那千年树妖还在作乱，劳你再走一趟。",
+  "quest.main_06.complete": "千年树妖已除，辛苦了。第二块天柱残片可要收好。"
 }

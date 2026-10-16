@@ -37,6 +37,7 @@
     "test:smoke:skill-learning": "timeout 120s node scripts/skill-learning-smoke.mjs",
     "test:daily": "timeout 60s node scripts/daily-test.mjs",
     "test:mainline-21": "timeout 60s node scripts/mainline-21-test.mjs",
+    "test:mainline-56": "timeout 60s node scripts/mainline-56-test.mjs",
     "test:moral-save": "timeout 60s node scripts/moral-save-test.mjs",
     "test:save-slots": "timeout 60s node scripts/save-slots-test.mjs",
     "test:v04-save": "timeout 60s node scripts/v04-save-test.mjs",

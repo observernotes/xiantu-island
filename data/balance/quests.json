@@ -157,6 +157,13 @@
  {
   "id": "q_elder_exam",
   "name": "长老考核",
+  "nameKey": "quest.elder_exam.name",
+  "descriptionKey": "quest.elder_exam.description",
+  "dialogueKeys": {
+   "offer": "quest.elder_exam.offer",
+   "progress": "quest.elder_exam.progress",
+   "complete": "quest.elder_exam.complete"
+  },
   "giver": "tianjian_elder",
   "turnIn": "tianjian_elder",
   "reqLevel": 29,
@@ -598,6 +605,13 @@
  {
   "id": "q_main_06",
   "name": "深林",
+  "nameKey": "quest.main_06.name",
+  "descriptionKey": "quest.main_06.description",
+  "dialogueKeys": {
+   "offer": "quest.main_06.offer",
+   "progress": "quest.main_06.progress",
+   "complete": "quest.main_06.complete"
+  },
   "giver": "hunter_lei",
   "turnIn": "hunter_lei",
   "reqLevel": 35,
