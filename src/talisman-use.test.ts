@@ -1,4 +1,5 @@
 import { ITEMS, NPCS, TILED_MAPS, type PillQuality } from './data';
+import { featureEnabled, setFeatureFlag } from './features';
 import {
   TalismanUseSystem, emptyTalismanUseState, normalizeTalismanUseState, talismanUseConfigErrors,
   talismanDamageMultiplier, talismanGatherBonus, nearestTalismanTown, reachableTalismanTown,
@@ -43,6 +44,27 @@ function ready() {
   return { prog, host, context, system, items, projectiles, teleports, advance: (ms: number) => { now += ms; }, time: () => now,
     disable: () => { enabled = false; }, saveFail: () => { canSave = false; }, noProjectile: () => { projectileValid = false; },
     noDestination: () => { destination = undefined; }, badLanding: () => { landingValid = false; }, noTeleport: () => { teleportValid = false; } };
+}
+function readyAsync() {
+  const f = ready();
+  let prepared = 0, rolledBack = 0, prepareValid = true;
+  let decision: { resolve: (saved: boolean) => void; reject: () => void } | undefined;
+  f.prog.runSaveTransactionAsync = async <T>(apply: (draft: TalismanUseProgress) => T | undefined) => {
+    const draft = { ...f.prog, inventory: structuredClone(f.prog.inventory), talismanUse: structuredClone(f.prog.talismanUse) };
+    const result = apply(draft); if (result === undefined) return undefined;
+    const saved = await new Promise<boolean>((resolve, reject) => { decision = { resolve, reject: () => reject(new Error('save_failed')) }; });
+    if (!saved) return undefined;
+    f.prog.inventory = draft.inventory; f.prog.mp = draft.mp; f.prog.talismanUse = draft.talismanUse; f.prog.saves++;
+    return result;
+  };
+  f.host.prepareProjectile = effect => {
+    if (!prepareValid) return false;
+    prepared++;
+    return { commit: () => { f.projectiles.push(effect); }, rollback: () => { rolledBack++; } };
+  };
+  return { ...f, prepared: () => prepared, rolledBack: () => rolledBack, noPrepare: () => { prepareValid = false; },
+    finish: (saved: boolean) => { const pending = decision; decision = undefined; if (!pending) throw new Error('no async save pending'); pending.resolve(saved); },
+    reject: () => { const pending = decision; decision = undefined; if (!pending) throw new Error('no async save pending'); pending.reject(); } };
 }
 
 // Effects/quality/costs are table-driven, with no silent success on malformed configuration.
@@ -272,4 +294,57 @@ function map(id: string, targetIds: string[] = [], properties: Record<string, un
   eq(talismanMapGaps(incomplete).includes('qingyun_village.allowTalismanReturn'), true, 'missing allow listed for village');
   eq(talismanMapGaps(incomplete).includes('field.allowTalismanReturn'), true, 'missing allow listed for ordinary map');
 }
+const priorIndexedDbSaves = featureEnabled('indexedDbSaves');
+try {
+setFeatureFlag('indexedDbSaves', false);
+{
+  const f = ready(); let asyncCalls = 0;
+  f.prog.runSaveTransactionAsync = async () => { asyncCalls++; return undefined; };
+  eq((await f.system.useAsync('talisman_fire', 'low')).ok, true, 'IDB disabled uses legacy sync transaction even with async host');
+  eq(asyncCalls, 0, 'IDB disabled never opens an outer async transaction');
+  eq(f.prog.saves, 1, 'IDB disabled commits exactly one sync transaction');
+  eq(f.projectiles.length, 1, 'IDB disabled activates normal legacy projectile');
+}
+setFeatureFlag('indexedDbSaves', true);
+// IDB 的事务确认前不能发射、扣符或发布冷却；失败销毁待发效果，保留重试条件。
+{
+  const f = readyAsync(), before = JSON.stringify({ inventory: f.prog.inventory, mp: f.prog.mp, state: f.prog.talismanUse });
+  const used = f.system.useAsync('talisman_fire', 'high');
+  eq(f.prepared(), 1, 'async fire prepares one dormant effect');
+  eq(f.projectiles.length, 0, 'async fire does not activate before save confirmation');
+  eq(JSON.stringify({ inventory: f.prog.inventory, mp: f.prog.mp, state: f.prog.talismanUse }), before, 'async fire keeps live resources before save confirmation');
+  eq((await f.system.useAsync('talisman_fire', 'high')).ok, false, 'concurrent async use cannot duplicate an in-flight effect');
+  eq(f.prepared(), 1, 'concurrent async use prepares no second effect');
+  f.finish(true);
+  eq((await used).ok, true, 'async fire succeeds after confirmed save');
+  eq(f.projectiles.length, 1, 'async fire activates exactly once after save');
+  eq(f.prog.countQuality('talisman_fire', 'high'), 9, 'async fire consumes locked quality once');
+  eq(f.prog.talismanUse.cooldowns.talisman_fire, f.time() + f.items.talisman_fire.use.cooldownMs, 'async fire saves table cooldown');
+  eq(f.rolledBack(), 0, 'successful async effect is not rolled back');
+}
+for (const failure of ['save', 'reject', 'prepare'] as const) {
+  const f = readyAsync(), before = JSON.stringify({ inventory: f.prog.inventory, mp: f.prog.mp, state: f.prog.talismanUse });
+  if (failure === 'prepare') f.noPrepare();
+  const used = f.system.useAsync('talisman_fire', 'low');
+  if (failure === 'save') f.finish(false);
+  if (failure === 'reject') f.reject();
+  eq((await used).ok, false, `${failure} async fire returns failure`);
+  eq(f.projectiles.length, 0, `${failure} async fire leaves no active projectile`);
+  eq(JSON.stringify({ inventory: f.prog.inventory, mp: f.prog.mp, state: f.prog.talismanUse }), before, `${failure} async fire keeps inventory/mp/cooldown unchanged`);
+  eq(f.rolledBack(), failure === 'prepare' ? 0 : 1, `${failure} discards any prepared effect exactly once`);
+  if (failure !== 'prepare') {
+    const retry = f.system.useAsync('talisman_fire', 'low'); f.finish(true);
+    eq((await retry).ok, true, `${failure} async fire can retry normally`);
+    eq(f.prog.countQuality('talisman_fire', 'low'), 9, `${failure} retry consumes only once`);
+    eq(f.projectiles.length, 1, `${failure} retry activates only one projectile`);
+  }
+}
+for (const id of ['talisman_guard', 'talisman_gather']) {
+  const f = readyAsync(), used = f.system.useAsync(id, 'high');
+  eq(f.prog.talismanUse.buffs.length, 0, `${id} async buff is hidden before confirmation`);
+  f.finish(true); eq((await used).ok, true, `${id} async buff succeeds after save`);
+  eq(f.prog.talismanUse.buffs.length, 1, `${id} async buff publishes once`);
+  eq(f.prog.countQuality(id, 'high'), 9, `${id} async buff consumes one item`);
+}
+} finally { setFeatureFlag('indexedDbSaves', priorIndexedDbSaves); }
 console.log(`talisman use tests ok: ${assertions} assertions`);

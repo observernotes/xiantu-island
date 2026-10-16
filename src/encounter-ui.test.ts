@@ -7,6 +7,7 @@ import { Progress } from './Progress';
 import { EncounterSceneRuntime } from './EncounterSceneRuntime';
 import type { EncounterContext } from './Encounter';
 import type { GameScene } from './scenes/GameScene';
+import { featureEnabled, setFeatureFlag } from './features';
 
 let assertions = 0;
 function eq(actual: unknown, expected: unknown, message: string) {
@@ -441,6 +442,91 @@ try {
   deathNow += 1_800_001; deathRuntime.enter('death-new-visit');
   ok(deathRuntime.runner.offer(), '死亡恢复后冷却到期新visit可正常触发');
   eq(deathRolls, 4, '死亡恢复不补掷，只有新visit再掷概率与weight'); deathUi.ui.destroy();
+
+  // IDB 提交确认由受控 Promise 代替介质，Runtime 仍使用真实 Progress 校验和提交逻辑。
+  const indexedDbBefore = featureEnabled('indexedDbSaves');
+  setFeatureFlag('indexedDbSaves', true);
+  try {
+    type Save = Parameters<Progress['commitEncounterSave']>[0];
+    type ControlledCommit = { next: Save; finish(saved: boolean): void; reject(): void };
+    const microtasks = async () => { for (let i = 0; i < 16; i++) await Promise.resolve(); };
+    const asyncFixture = (visit: string) => {
+      const ui = fixture(); ui.prog.encounters = undefined; ui.prog.inventory = { hp_pill_small: 2 };
+      ui.prog.level = 12; ui.prog.daoHeart = 20; ui.prog.morality = 0;
+      const commit = ui.prog.commitEncounterSave.bind(ui.prog), commits: ControlledCommit[] = [], events: string[] = [];
+      let rolls = 0, notifications = 0, blocked = false;
+      ui.prog.commitEncounterSaveAsync = next => new Promise<boolean>((resolve, reject) => {
+        commits.push({ next: structuredClone(next), finish: saved => {
+          if (!saved) { resolve(false); return; }
+          const flag = featureEnabled('indexedDbSaves');
+          setFeatureFlag('indexedDbSaves', false);
+          try { resolve(commit(next)); } finally { setFeatureFlag('indexedDbSaves', flag); }
+        }, reject: () => reject(new Error('controlled IDB rejection')) });
+      });
+      const runtime = new EncounterSceneRuntime({ progress: ui.prog, config: runtimeConfig, pacing: pacingRaw.encounter,
+        rng: () => { rolls++; return 0; }, context: () => ({ ...runtimeCtx('lingxi_path'), blocked }), anchor: () => ({ x: 60, y: 90 }),
+        near: () => true, emit: (name, payload) => { events.push(name); ui.events.emit(name, payload); },
+        onCommit: () => { notifications++; } });
+      runtime.enter(visit);
+      return { ...ui, runtime, commits, events, rolls: () => rolls, notifications: () => notifications,
+        setBlocked: () => { blocked = true; },
+        destroy: () => { runtime.destroy(); ui.ui.destroy(); } };
+    };
+
+    const pendingTravel = asyncFixture('async-travel');
+    eq(pendingTravel.commits.length, 1, 'IDB进图发起一次提交');
+    eq(pendingTravel.runtime.runner.offer(), undefined, 'IDB确认前不公开抽签草稿');
+    eq(pendingTravel.events.length, 0, 'IDB确认前不展示offer或结果');
+    eq(pendingTravel.notifications(), 0, 'IDB确认前不通知已提交');
+    pendingTravel.runtime.update(16); pendingTravel.runtime.update(16);
+    eq(pendingTravel.commits.length, 1, '进图提交未完成时帧循环不重复写入');
+    pendingTravel.setBlocked();
+    eq(pendingTravel.runtime.interact(), false, '旅行阻塞期间仍不可开始普通交互');
+    let terminated = false;
+    const travelDone = pendingTravel.runtime.terminateAsync('missed').then(value => { terminated = true; return value; });
+    await microtasks();
+    eq(terminated, false, '离图等待未确认的进图事务');
+    pendingTravel.commits[0].finish(true); await microtasks();
+    eq(terminated, false, '进图保存完成后仍等待seen和终止事务');
+    eq(pendingTravel.commits.length, 2, '实际展示后另提交seen');
+    ok((pendingTravel.commits[1].next.encounters?.seen as string[]).includes(id), 'seen事务保留真实展示记录');
+    pendingTravel.runtime.update(16); pendingTravel.runtime.update(16);
+    eq(pendingTravel.commits.length, 2, '异步终止等待期间帧循环不抢占seen事务');
+    pendingTravel.commits[1].finish(true); await microtasks();
+    eq(pendingTravel.commits.length, 3, 'seen确认后才提交missed终止');
+    eq(terminated, false, 'missed存档确认前不能宣告离图成功');
+    eq(pendingTravel.commits[2].next.encounters?.active, null, '终止草稿清除active');
+    pendingTravel.commits[2].finish(true);
+    eq(await travelDone, true, '旅行阻塞不拦住真实seen记账和IDB确认后的离图');
+    eq(pendingTravel.prog.encounterSave().encounters?.active, null, '离图成功已发布终止存档');
+    eq(pendingTravel.rolls(), 2, '等待与帧更新不重新抽签'); pendingTravel.destroy();
+
+    for (const failure of ['false', 'reject'] as const) {
+      const failedTravel = asyncFixture(`async-travel-${failure}`);
+      const before = JSON.stringify(failedTravel.prog.encounterSave());
+      failedTravel.setBlocked();
+      const failed = failedTravel.runtime.terminateAsync('missed');
+      if (failure === 'false') failedTravel.commits[0].finish(false); else failedTravel.commits[0].reject();
+      eq(await failed, false, `IDB${failure}不误报终止成功`);
+      eq(JSON.stringify(failedTravel.prog.encounterSave()), before, `IDB${failure}保持原存档`);
+      eq(failedTravel.events.length, 0, `IDB${failure}不提前展示抽签结果`);
+      const retry = failedTravel.runtime.terminateAsync('missed'); await microtasks();
+      eq(failedTravel.commits.length, 2, `IDB${failure}保留原事务可重试`);
+      same(failedTravel.commits[1].next, failedTravel.commits[0].next, `IDB${failure}重试同一草稿`);
+      failedTravel.commits[1].finish(true); await microtasks();
+      failedTravel.commits[2].finish(true); await microtasks();
+      failedTravel.commits[3].finish(true);
+      eq(await retry, true, `IDB${failure}后可以完成离图`);
+      eq(failedTravel.rolls(), 2, `IDB${failure}重试不重掷`); failedTravel.destroy();
+    }
+
+    const destroyedTravel = asyncFixture('async-travel-destroyed');
+    const destroyedDone = destroyedTravel.runtime.terminateAsync('missed');
+    destroyedTravel.destroy(); destroyedTravel.commits[0].finish(true);
+    eq(await destroyedDone, false, '等待期间Runtime销毁不能宣告终止成功');
+    eq(destroyedTravel.events.length, 0, 'Runtime销毁后不发布异步UI结果');
+    eq(destroyedTravel.commits.length, 1, 'Runtime销毁后不另造seen或终止事务');
+  } finally { setFeatureFlag('indexedDbSaves', indexedDbBefore); }
 
   // 关态夹具Runtime所有入口（含新增实体/机关入口）不能碰上下文、存档、随机或实体provider。
   for (const config of [disabledConfig, null]) {

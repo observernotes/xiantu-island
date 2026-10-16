@@ -65,6 +65,25 @@ function choose(m: ReturnType<typeof memory>, ctx: EncounterContext, choiceId: s
   const offer = m.runner.offer(); ok(offer, `选择${choiceId}前存在offer`);
   return m.runner.choose(ctx, { attemptId: offer.attemptId, encounterId: offer.encounterId, stepId: offer.stepId, choiceId });
 }
+function asyncMemory(config: EncountersConfig, values: readonly number[]) {
+  const rng = random(values);
+  let save = freshSave(), commits = 0;
+  const attempts: { save: EncounterSave; resolve: (saved: boolean) => void; reject: (error: Error) => void }[] = [];
+  const store = { read: (): EncounterSave => save, commit: (next: EncounterSave): Promise<boolean> => {
+    commits++;
+    return new Promise((resolve, reject) => attempts.push({ save: structuredClone(next), resolve, reject }));
+  } };
+  return { runner: new EncounterRunner(config, pacing, store, rng.next), rng, save: () => save, commits: () => commits,
+    draft: () => attempts[0]?.save,
+    publish: () => { save = structuredClone(attempts[0].save) as Mutable; },
+    finish: (saved: boolean) => {
+      const attempt = attempts.shift(); ok(attempt, '存在待确认异步写入');
+      if (saved) save = structuredClone(attempt.save) as Mutable;
+      attempt.resolve(saved);
+    },
+    reject: () => { const attempt = attempts.shift(); ok(attempt, '存在待拒绝异步写入'); attempt.reject(new Error('save_failed')); },
+  };
+}
 
 ok(ENCOUNTERS, '真实data.ts奇遇配置存在');
 // tip 临时开态：正式五事件已启用；关态静默与零依赖只用显式内存夹具验证。
@@ -381,4 +400,56 @@ for (const mutate of [
 }
 eq(JSON.stringify(encountersRaw), originalRaw, '正式原始五事件enabled及全部字段不变');
 eq(JSON.stringify(ENCOUNTERS), originalConfig, 'data.ts正式配置不变');
-console.log(`encounter-runner tests ok: ${assertions} assertions, probability / transactions / medicine / restoration / meditation / open table / closed fixture`);
+
+// 正式 IDB 异步契约：写入在飞不重入，真实成功后才确认；失败不丢草稿也不自动重试。
+const asyncConfig = fixture([rescue]);
+const asyncSuccess = asyncMemory(asyncConfig, [0, 0]);
+eq(asyncSuccess.runner.enter(ctx, 'async-success').status, 'deferred', '异步触发提交完成前延后');
+eq(asyncSuccess.runner.offer(), undefined, '异步触发完成前不公开offer');
+const awaitedEntry = asyncSuccess.runner.retryPending({ async: true });
+eq(asyncSuccess.runner.enter(ctx, 'async-success').status, 'deferred', '同key帧轮询加入在飞提交');
+eq(asyncSuccess.runner.enter(ctx, 'other-visit').reason, 'pending_save', '不同key不能覆盖在飞草稿');
+eq(asyncSuccess.commits(), 1, '同步轮询与异步等待共用唯一写入');
+// store.read 可能先更新，Promise 稍后 resolve；此窗口不能误报 stale_save。
+asyncSuccess.publish();
+eq(asyncSuccess.runner.enter(ctx, 'async-success').status, 'deferred', '在飞写入更新read时仍等待确认');
+asyncSuccess.finish(true);
+eq((await awaitedEntry).status, 'offered', 'await真实成功后返回完整offer结果');
+eq(asyncSuccess.runner.retryPending().status, 'idle', '已确认异步结果不会重复发布');
+eq(asyncSuccess.rng.calls(), 2, '异步轮询没有重新抽签');
+const asyncOffer = asyncSuccess.runner.offer(); ok(asyncOffer, '异步成功公开当前offer');
+eq(asyncSuccess.runner.advance(ctx, asyncOffer.attemptId, asyncOffer.stepId).status, 'deferred', '异步推进先延后');
+asyncSuccess.finish(true);
+await Promise.resolve();
+eq(asyncSuccess.runner.retryPending().status, 'advanced', '无人await时下帧仍消费完整推进结果');
+eq(asyncSuccess.runner.offer()?.stepId, 'decide', '异步推进准确保存选择节点');
+const asyncAction = { ...asyncSuccess.runner.offer()!, choiceId: 'medicine' };
+const beforeAsyncSettle = JSON.stringify(asyncSuccess.save());
+eq(asyncSuccess.runner.choose(ctx, asyncAction).status, 'deferred', '异步扣药结算先延后');
+const awaitedSettle = asyncSuccess.runner.retryPending({ async: true });
+const secondWaiter = asyncSuccess.runner.retryPending({ async: true });
+eq(JSON.stringify(asyncSuccess.save()), beforeAsyncSettle, '异步确认前不提前扣药发奖');
+asyncSuccess.finish(true);
+eq((await awaitedSettle).status, 'settled', '异步真实成功返回完整结算结果');
+eq((await secondWaiter).status, 'idle', '多个等待者仅确认一次完整结果');
+eq(asyncSuccess.save().inventory.hp_pill_small, 1, '异步成功只扣一份药');
+eq(asyncSuccess.save().exp, 1000, '异步成功只发一份奖励');
+eq(asyncSuccess.save().encounters.settledAttempts.length, 1, '异步成功只记录一份结算');
+
+for (const failure of ['false', 'reject'] as const) {
+  const asyncFailure = asyncMemory(asyncConfig, [0, 0]), original = JSON.stringify(asyncFailure.save());
+  eq(asyncFailure.runner.enter(ctx, `async-${failure}`).status, 'deferred', `${failure}异步触发先延后`);
+  const firstDraft = JSON.stringify(asyncFailure.draft()), awaitedFailure = asyncFailure.runner.retryPending({ async: true });
+  if (failure === 'false') asyncFailure.finish(false); else asyncFailure.reject();
+  eq((await awaitedFailure).status, 'deferred', `${failure}结果保持deferred`);
+  eq(asyncFailure.commits(), 1, `${failure}一次await失败不隐式重试`);
+  eq(JSON.stringify(asyncFailure.save()), original, `${failure}失败不改变存档`);
+  eq(asyncFailure.runner.offer(), undefined, `${failure}失败不确认offer`);
+  const awaitedRetry = asyncFailure.runner.retryPending({ async: true });
+  eq(asyncFailure.commits(), 2, `${failure}显式retry只发起一次新提交`);
+  eq(JSON.stringify(asyncFailure.draft()), firstDraft, `${failure}重试保留同一事务草稿`);
+  asyncFailure.finish(true);
+  eq((await awaitedRetry).status, 'offered', `${failure}原事务重试成功后才公开offer`);
+  eq(asyncFailure.rng.calls(), 2, `${failure}重试没有重新抽签`);
+}
+console.log(`encounter-runner tests ok: ${assertions} assertions, probability / transactions / async commits / medicine / restoration / meditation / open table / closed fixture`);

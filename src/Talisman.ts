@@ -182,6 +182,7 @@ export interface TalismanHost {
   canAddCraftedItem(item: string, count: number): boolean;
   addCraftedItem(item: string, count: number, quality?: PillQuality): boolean;
   save(): boolean; runSaveTransaction<T>(apply: () => T | undefined): T | undefined;
+  runSaveTransactionAsync?<T>(apply: (draft: TalismanHost) => T | undefined): Promise<T | undefined>;
 }
 export type TalismanBlock = 'closed' | 'busy' | 'pending' | 'unknown' | 'config' | 'unlearned' | 'level' | 'skill_level' | 'realm' | 'state' | 'materials' | 'bag_full' | 'save';
 export interface TalismanCheck { ok: boolean; reason?: TalismanBlock; materials: { item: string; have: number; need: number }[] }
@@ -191,6 +192,7 @@ export interface TalismanRecipePreview {
 }
 export interface TalismanOptions {
   context?: () => { inCombat?: boolean; inTrial?: boolean }; config?: unknown; report?: (message: string) => void;
+  questsForDraft?: (draft: TalismanHost) => { onCraft(item: string, count: number): void };
 }
 export interface TalismanView {
   recipes: TalismanRecipe[]; selectedRecipe: TalismanRecipe | null; check: TalismanCheck;
@@ -240,6 +242,7 @@ export class TalismanSystem {
   private selected = '';
   private candidates = new Map<string, TalismanResult>();
   private startedLifeSkillLevel: number | null = null;
+  private storagePending = false;
   constructor(private prog: TalismanHost, private quests?: { onCraft(item: string, count: number): void },
     public random: () => number = () => Math.random(), private options: TalismanOptions = {}) {
     this.config = readTalismanConfig(options.config ?? recipesRaw);
@@ -248,11 +251,13 @@ export class TalismanSystem {
       this.prog.talisman = normalizeTalismanSave(this.prog.talisman, false);
       this.config.errors.forEach(message => (options.report ?? console.error)(message));
       if (featureEnabled('lifeSkillCurve')) LIFE_SKILL_ERRORS.forEach(message => (options.report ?? console.error)(message));
-      this.recover();
+      if (featureEnabled('indexedDbSaves') && this.prog.runSaveTransactionAsync) void this.recoverAsync();
+      else this.recover();
     }
     this.selected = prog.talisman?.attempt?.recipeId ?? Object.keys(this.config.recipes)[0] ?? '';
   }
   get active() { return this.prog.talisman.attempt?.state === 'drawing' ? this.prog.talisman.attempt : null; }
+  get saving() { return this.storagePending; }
   get knownRecipes() { return Object.values(this.config.recipes).filter(recipe => this.prog.learnedRecipes.includes(recipe.id)); }
   rate(recipeId: string) { return this.rateAtLevel(recipeId, this.prog.talismanLevel); }
   private rateAtLevel(recipeId: string, level: number | undefined) {
@@ -293,11 +298,44 @@ export class TalismanSystem {
     this.selected = recipeId; this.draw = new DrawStroke('craft', recipe.draw!.strokes, recipe.draw!.stepTimeMs, now);
     return { ...check, attempt };
   }
+  async startAsync(recipeId: string, now: number | (() => number) = 0): Promise<TalismanCheck & { attempt?: TalismanAttempt }> {
+    const check = this.check(recipeId), recipe = this.config.recipes[recipeId];
+    if (!check.ok) return check;
+    if (recipe.type === 'grinding') return this.grindAsync(recipeId);
+    if (!finite(typeof now === 'function' ? now() : now)) return { ...check, ok: false, reason: 'state' };
+    let startedLevel: number | null = null;
+    const attempt = await this.transactionAsync(() => {
+      if (!this.check(recipeId).ok) return undefined;
+      startedLevel = featureEnabled('lifeSkillCurve') ? this.prog.talismanLevel! : null;
+      return this.begin(recipe);
+    });
+    if (!attempt) return { ...check, ok: false, reason: 'save' };
+    this.startedLifeSkillLevel = startedLevel;
+    // 付料确认之前没有画符计时；IDB 等待不消耗第一笔预算。
+    const startedAt = typeof now === 'function' ? now() : now;
+    this.selected = recipeId; this.draw = new DrawStroke('craft', recipe.draw!.strokes, recipe.draw!.stepTimeMs, startedAt);
+    return { ...check, attempt };
+  }
   grind(recipeId = 'recipe_spirit_ink'): TalismanCheck & { result?: TalismanResult } {
     const check = this.check(recipeId), recipe = this.config.recipes[recipeId];
     if (!check.ok) return check;
     if (recipe.type !== 'grinding') return { ...check, ok: false, reason: 'unknown' };
     const result = this.prog.runSaveTransaction(() => {
+      const attempt = this.begin(recipe);
+      const result: TalismanResult = { attemptId: attempt.attemptId, recipeId, item: recipe.output, success: true,
+        quality: null, rawQuality: null, capApplied: false, count: recipe.outputCount, completion: 1,
+        correct: 0, wrong: 0, timeouts: 0, total: 0, rate: 1, roll: null, delivered: false };
+      this.commitResult(attempt, result); return result;
+    });
+    if (!result) return { ...check, ok: false, reason: 'save' };
+    this.selected = recipeId; this.draw = null; return { ...check, result };
+  }
+  async grindAsync(recipeId = 'recipe_spirit_ink'): Promise<TalismanCheck & { result?: TalismanResult }> {
+    const check = this.check(recipeId), recipe = this.config.recipes[recipeId];
+    if (!check.ok) return check;
+    if (recipe.type !== 'grinding') return { ...check, ok: false, reason: 'unknown' };
+    const result = await this.transactionAsync(() => {
+      if (!this.check(recipeId).ok) return undefined;
       const attempt = this.begin(recipe);
       const result: TalismanResult = { attemptId: attempt.attemptId, recipeId, item: recipe.output, success: true,
         quality: null, rawQuality: null, capApplied: false, count: recipe.outputCount, completion: 1,
@@ -316,9 +354,36 @@ export class TalismanSystem {
     if (!this.active || !this.draw) { this.claimPending(); return null; }
     this.draw.advance(now, frame); return this.draw.done ? this.settle(this.active.attemptId) : null;
   }
+  async inputAsync(down: readonly TalismanDirection[], now: number, frame?: number): Promise<TalismanResult | null> {
+    if (this.storagePending || !featureEnabled('talismanCraft') || !this.active || !this.draw) return null;
+    this.draw.input(down, now, frame); return this.draw.done ? this.settleAsync(this.active.attemptId) : null;
+  }
+  async advanceAsync(now: number, frame?: number): Promise<TalismanResult | null> {
+    if (this.storagePending || !featureEnabled('talismanCraft')) return null;
+    if (!this.active || !this.draw) { await this.claimPendingAsync(); return null; }
+    this.draw.advance(now, frame); return this.draw.done ? this.settleAsync(this.active.attemptId) : null;
+  }
   pause(now?: number) { if (featureEnabled('talismanCraft')) this.draw?.pause(now); }
   resume(now?: number) { if (featureEnabled('talismanCraft')) this.draw?.resume(now); }
   settle(attemptId: string): TalismanResult | null {
+    const result = this.settlementCandidate(attemptId);
+    if (!result) return null;
+    const committed = this.prog.runSaveTransaction(() => { this.commitResult(this.prog.talisman.attempt!, { ...result }); return this.prog.talisman.attempt!.result!; });
+    if (!committed) return null;
+    this.candidates.delete(attemptId); this.draw = null; this.startedLifeSkillLevel = null; return committed;
+  }
+  async settleAsync(attemptId: string): Promise<TalismanResult | null> {
+    if (this.storagePending) return null;
+    const result = this.settlementCandidate(attemptId);
+    if (!result) return null;
+    const committed = await this.transactionAsync(() => {
+      if (this.active?.attemptId !== attemptId || !this.draw?.done) return undefined;
+      this.commitResult(this.prog.talisman.attempt!, { ...result }); return this.prog.talisman.attempt!.result!;
+    });
+    if (!committed) return null;
+    this.candidates.delete(attemptId); this.draw = null; this.startedLifeSkillLevel = null; return committed;
+  }
+  private settlementCandidate(attemptId: string): TalismanResult | null {
     const attempt = this.active;
     if (!featureEnabled('talismanCraft') || !attempt || attempt.attemptId !== attemptId || !this.draw?.done) return null;
     if (featureEnabled('lifeSkillCurve') && !this.curveReady(this.config.recipes[attempt.recipeId])) return null;
@@ -340,9 +405,7 @@ export class TalismanSystem {
         ...(!success ? { reason: completion < r.minCompletion ? 'completion' as const : 'condense' as const } : {}) };
       this.candidates.set(attemptId, result);
     }
-    const committed = this.prog.runSaveTransaction(() => { this.commitResult(this.prog.talisman.attempt!, { ...result! }); return this.prog.talisman.attempt!.result!; });
-    if (!committed) return null;
-    this.candidates.delete(attemptId); this.draw = null; this.startedLifeSkillLevel = null; return committed;
+    return result;
   }
   abandon() {
     if (!featureEnabled('talismanCraft') || !this.active) return false;
@@ -352,6 +415,17 @@ export class TalismanSystem {
     });
     if (committed) { this.draw = null; this.candidates.clear(); }
     return !!committed;
+  }
+  async abandonAsync(): Promise<boolean> {
+    if (!featureEnabled('talismanCraft') || !this.active) return false;
+    const attemptId = this.active.attemptId;
+    const committed = await this.transactionAsync(() => {
+      if (this.active?.attemptId !== attemptId) return undefined;
+      const attempt = this.prog.talisman.attempt!; attempt.state = 'interrupted'; attempt.result = null;
+      return true;
+    });
+    if (committed) { this.draw = null; this.candidates.clear(); }
+    return committed === true;
   }
   again(now = 0) { return this.start(this.selected, now); }
   close(confirmAbandon = false) { return this.active ? confirmAbandon && this.abandon() : true; }
@@ -364,6 +438,11 @@ export class TalismanSystem {
     });
     return this.claimPending() || changed;
   }
+  async recoverAsync(): Promise<boolean> {
+    if (!featureEnabled('talismanCraft')) return false;
+    const changed = this.active ? await this.abandonAsync() : false;
+    return await this.claimPendingAsync() || changed;
+  }
   claimPending() {
     if (!featureEnabled('talismanCraft')) return false;
     const pending = this.prog.talisman.pendingOutput, attempt = this.prog.talisman.attempt;
@@ -375,6 +454,21 @@ export class TalismanSystem {
       current.result!.delivered = true; this.prog.talisman.pendingOutput = null;
       this.emitCraft(current); return true;
     });
+  }
+  async claimPendingAsync(): Promise<boolean> {
+    if (this.storagePending || !featureEnabled('talismanCraft')) return false;
+    const pending = this.prog.talisman.pendingOutput, attempt = this.prog.talisman.attempt;
+    if (!pending || !attempt || attempt.attemptId !== pending.attemptId || attempt.state !== 'settled'
+      || !attempt.result?.success || attempt.result.delivered || !this.prog.canAddCraftedItem(pending.item, pending.count)) return false;
+    return await this.transactionAsync(() => {
+      const current = this.prog.talisman.attempt, output = this.prog.talisman.pendingOutput;
+      if (!current || !output || current.attemptId !== pending.attemptId || output.attemptId !== pending.attemptId
+        || current.state !== 'settled' || !current.result?.success || current.result.delivered
+        || !this.prog.canAddCraftedItem(output.item, output.count)
+        || !this.prog.addCraftedItem(output.item, output.count, output.quality ?? undefined)) return undefined;
+      current.result.delivered = true; this.prog.talisman.pendingOutput = null;
+      this.emitCraft(current); return true;
+    }) === true;
   }
   /** 指定完成度后的条件成功品质分布；品质仍只由笔画与宗门上限决定。 */
   preview(recipeId: string, completion = 1): TalismanRecipePreview {
@@ -404,6 +498,26 @@ export class TalismanSystem {
       configErrors: [...this.config.errors, ...(featureEnabled('lifeSkillCurve') ? this.curveErrors(recipe) : [])], buttons: { start: check.ok && recipe?.type === 'talisman',
         grind: check.ok && recipe?.type === 'grinding', again: check.ok && !!attempt,
         abandon: !!this.active, close: !this.active, continue: !!this.active } };
+  }
+  private async transactionAsync<T>(apply: () => T | undefined): Promise<T | undefined> {
+    if (this.storagePending) return undefined;
+    const host = this.prog;
+    this.storagePending = true;
+    try {
+      if (!featureEnabled('indexedDbSaves') || !host.runSaveTransactionAsync) return host.runSaveTransaction(apply);
+      return await host.runSaveTransactionAsync(draft => {
+        if (Object.prototype.hasOwnProperty.call(host, 'canAddCraftedItem')) {
+          Object.defineProperty(draft, 'canAddCraftedItem', { configurable: true, value: host.canAddCraftedItem });
+        }
+        const originalQuests = this.quests, draftQuests = originalQuests ? this.options.questsForDraft?.(draft) : undefined;
+        // 任务事件与产物/凭据写进同一个 draft，不能在 IDB 确认前改原角色。
+        if (originalQuests && !draftQuests) return undefined;
+        this.prog = draft; this.quests = draftQuests;
+        try { return apply(); }
+        finally { this.prog = host; this.quests = originalQuests; }
+      });
+    } catch { return undefined; }
+    finally { this.storagePending = false; }
   }
   private begin(recipe: TalismanRecipe): TalismanAttempt {
     for (const m of recipe.materials) this.prog.removeItem(m.item, m.count);

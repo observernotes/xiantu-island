@@ -10,10 +10,10 @@ export interface EncounterRunnerPacing {
   readonly sageAdviceChancePerMeditationMin: number;
   readonly maxPerMapEnter: number;
 }
-/** commit 必须一次提交整份快照；false/抛错时不得改变 read() 返回的存档。 */
+/** commit 必须一次提交整份快照；false/抛错/reject 时不得改变 read() 返回的存档。 */
 export interface EncounterRunnerStore {
   read(): EncounterSave;
-  commit(next: EncounterSave): boolean;
+  commit(next: EncounterSave): boolean | Promise<boolean>;
 }
 export interface EncounterRunnerContext extends EncounterContext {
   /** 只接受气运接口的显式值；接口未接时缺省为零。 */
@@ -50,7 +50,10 @@ interface RuntimeState extends Fields {
   settledAttempts: string[]; visit: EncounterVisit | null; active: EncounterActive | null;
 }
 interface Draft { save: EncounterSave; state: RuntimeState }
-interface PendingCommit { key: string; before: string; save: EncounterSave; result: EncounterRunnerResult }
+interface PendingCommit {
+  key: string; before: string; save: EncounterSave; result: EncounterRunnerResult;
+  inFlight?: Promise<boolean>; saved?: boolean;
+}
 const record = (v: unknown): v is Fields => !!v && typeof v === 'object' && !Array.isArray(v)
   && [Object.prototype, null].includes(Object.getPrototypeOf(v));
 const finite = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v);
@@ -143,7 +146,7 @@ export class EncounterRunner {
     try {
       if (this.pending) {
         if (this.pending.key !== key) return rejected('pending_save');
-        if (JSON.stringify(this.store.read()) !== this.pending.before) {
+        if (!this.pending.inFlight && !this.pending.saved && JSON.stringify(this.store.read()) !== this.pending.before) {
           // 外部背包/成长已改变：丢弃旧快照，下次基于新档重算；保留随机数，不重掷。
           this.pending = undefined;
           return rejected('stale_save');
@@ -163,9 +166,27 @@ export class EncounterRunner {
 
   private commitPending(): EncounterRunnerResult {
     const pending = this.pending!;
-    let saved = false;
-    try { saved = this.store.commit(structuredClone(pending.save)) === true; } catch { /* 保留同一草稿以便重试。 */ }
-    if (!saved) return { status: 'deferred', reason: 'save' };
+    if (pending.saved) return this.confirmPending(pending);
+    if (pending.inFlight) return { status: 'deferred', reason: 'save' };
+    try {
+      const saved = this.store.commit(structuredClone(pending.save));
+      if (typeof saved !== 'boolean') {
+        pending.inFlight = Promise.resolve(saved).then(value => {
+          pending.saved = value === true; pending.inFlight = undefined; return pending.saved;
+        }, () => {
+          pending.saved = false; pending.inFlight = undefined; return false;
+        });
+        // 成功结果保留到显式重试/轮询消费，不能只在 Promise 回调中清掉 pending。
+        return { status: 'deferred', reason: 'save' };
+      }
+      if (saved) return this.confirmPending(pending);
+    } catch { /* 保留同一草稿以便重试。 */ }
+    return { status: 'deferred', reason: 'save' };
+  }
+
+  private confirmPending(pending: PendingCommit): EncounterRunnerResult {
+    // 同一写入可能同时被帧轮询和异步调用等待，完整结果只确认一次。
+    if (this.pending !== pending) return idle();
     this.pending = undefined;
     this.draws.delete(pending.key);
     const active = (pending.save.encounters as RuntimeState).active;
@@ -174,9 +195,19 @@ export class EncounterRunner {
   }
 
   /** 重试已经确认过的同一事务；没有待保存事务时不读存档，也不消费随机数。 */
-  retryPending(): EncounterRunnerResult {
+  retryPending(): EncounterRunnerResult;
+  retryPending(options: { async: true }): Promise<EncounterRunnerResult>;
+  retryPending(options?: { async: true }): EncounterRunnerResult | Promise<EncounterRunnerResult> {
+    if (options?.async) return this.retryPendingAsync();
     if (!this.pending) return idle();
     return this.mutate(this.pending.key, () => idle());
+  }
+
+  private async retryPendingAsync(): Promise<EncounterRunnerResult> {
+    const result = this.retryPending(), pending = this.pending;
+    if (!pending?.inFlight || result.status !== 'deferred' || result.reason !== 'save') return result;
+    // 只等待本次提交；false/reject 不在同一次 await 中自动重试。
+    return await pending.inFlight ? this.confirmPending(pending) : { status: 'deferred', reason: 'save' };
   }
 
   private offerFrom(state: RuntimeState): EncounterRunnerOffer | undefined {

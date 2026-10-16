@@ -438,28 +438,35 @@ export class Progress {
   }
   /** 扣药分桶、修为升级/溢出池与 runner 状态只写一次；写盘失败一起回滚。 */
   commitEncounterSave(next: EncounterSave): boolean {
+    return this.runSaveTransaction(() => this.applyEncounterSave(next)) === true;
+  }
+  /** IDB 确认事务后才发布奇遇结果；失败保留原进度供 runner 重试。 */
+  async commitEncounterSaveAsync(next: EncounterSave): Promise<boolean> {
+    let snapshot: EncounterSave;
+    try { snapshot = structuredClone(next); } catch { return false; }
+    return await this.runSaveTransactionAsync(draft => draft.applyEncounterSave(snapshot)) === true;
+  }
+  private applyEncounterSave(next: EncounterSave): true | undefined {
     const baseExp = next.exp ?? this.exp, inventory = next.inventory ?? {};
     if (!count(baseExp) || baseExp < this.exp || !count(next.stones) || !dataRecord(inventory)
       || !Object.entries(inventory).every(([id, n]) => !!ITEMS[id] && count(n))
       || !dataRecord(next.encounters) || !count(next.daoHeart) || next.daoHeart > 100
       || !Number.isSafeInteger(next.morality) || next.morality! < -100 || next.morality! > 100
-      || next.bonusStats !== undefined && (!dataRecord(next.bonusStats) || 'insight' in next.bonusStats && !count(next.bonusStats.insight))) return false;
-    return this.runSaveTransaction(() => {
-      for (const id of new Set([...Object.keys(this.inventory), ...Object.keys(inventory)])) {
-        const owned = this.permanentCount(id), wanted = inventory[id] ?? 0;
-        if (!count(owned)) return undefined;
-        if (wanted < owned) this.removeItem(id, owned - wanted);
-        else if (wanted > owned) this.addItem(id, wanted - owned);
-      }
-      this.stones = next.stones!;
-      this.daoHeart = next.daoHeart!; this.morality = next.morality!;
-      this.encounters = structuredClone(next.encounters);
-      this.bonusStats = next.bonusStats === undefined ? undefined : structuredClone(next.bonusStats);
-      this.karmaFlags = next.karmaFlags === undefined ? undefined : structuredClone(next.karmaFlags);
-      const gained = baseExp - this.exp;
-      if (gained > 0) this.gainExp(gained, this.level, 'quest');
-      return true;
-    }) === true;
+      || next.bonusStats !== undefined && (!dataRecord(next.bonusStats) || 'insight' in next.bonusStats && !count(next.bonusStats.insight))) return undefined;
+    for (const id of new Set([...Object.keys(this.inventory), ...Object.keys(inventory)])) {
+      const owned = this.permanentCount(id), wanted = inventory[id] ?? 0;
+      if (!count(owned)) return undefined;
+      if (wanted < owned) this.removeItem(id, owned - wanted);
+      else if (wanted > owned) this.addItem(id, wanted - owned);
+    }
+    this.stones = next.stones!;
+    this.daoHeart = next.daoHeart!; this.morality = next.morality!;
+    this.encounters = structuredClone(next.encounters);
+    this.bonusStats = next.bonusStats === undefined ? undefined : structuredClone(next.bonusStats);
+    this.karmaFlags = next.karmaFlags === undefined ? undefined : structuredClone(next.karmaFlags);
+    const gained = baseExp - this.exp;
+    if (gained > 0) this.gainExp(gained, this.level, 'quest');
+    return true;
   }
   /** 导入和读取存档共用迁移；只接收数据字段，不允许覆盖实例方法。 */
   importSave(saved: unknown): boolean;

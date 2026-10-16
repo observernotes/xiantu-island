@@ -352,6 +352,7 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig, rendererChoi
     },
     async loadSave(obj: unknown) {
       const s = current();
+      await s.prog.flushSaves();
       if (!await s.prog.importSave(obj, { async: true })) throw new Error(`${marker}: invalid save or save failed`);
       s.registry.set('chests', new Set());
       const pos = s.prog.position;
@@ -391,7 +392,11 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig, rendererChoi
       if (recipeId) ui.select(recipeId);
       ui.action(action); return api.talismanCraftSnapshot();
     },
-    useTalisman(id: string, quality: 'low' | 'mid' | 'high' | 'supreme') { return copy(current().useTalisman(id, quality)); },
+    async useTalisman(id: string, quality: 'low' | 'mid' | 'high' | 'supreme') {
+      const s = current();
+      await s.prog.flushSaves();
+      return copy(await s.useTalismanAsync(id, quality));
+    },
     async bindTalismanSlot(index: number, item: string | null, quality: 'low' | 'mid' | 'high' | 'supreme' = 'low') {
       const s = current();
       await s.prog.flushSaves();
@@ -568,8 +573,10 @@ export function startTestGame(config: Phaser.Types.Core.GameConfig, rendererChoi
     async setFlag(key: string, val: boolean) {
       const s = current();
       if (isFeatureName(key)) {
+        await s.prog.flushSaves();
         setFeatureFlag(key, val);
-        s.applyFeatureFlags();
+        await s.applyFeatureFlags();
+        await s.prog.flushSaves();
         return;
       }
       await s.prog.flushSaves();

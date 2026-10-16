@@ -72,11 +72,15 @@ export interface TalismanUseProgress {
   countQuality(id: string, quality: PillQuality): number;
   removeQuality(id: string, n: number, quality: PillQuality): boolean;
   runSaveTransaction<T>(apply: () => T | undefined): T | undefined;
+  runSaveTransactionAsync?<T>(apply: (draft: TalismanUseProgress) => T | undefined): Promise<T | undefined>;
 }
+/** prepare 完成校验并暂存实体；commit 只激活，不再拒绝，rollback 销毁未确认的实体。 */
+export interface TalismanPreparedEffect { commit(): void; rollback(): void }
 /** A successful external effect may return a rollback callback for storage failure. */
 export interface TalismanUseHost {
   context(): TalismanUseContext;
   emitProjectile(effect: TalismanFireEffect): false | void | (() => void);
+  prepareProjectile?(effect: TalismanFireEffect): false | TalismanPreparedEffect;
   returnDestination(): TalismanReturnDestination | undefined;
   validateDestination(destination: TalismanReturnDestination): boolean;
   teleport(destination: TalismanReturnDestination): false | void | (() => void);
@@ -149,6 +153,7 @@ export class TalismanUseSystem {
   private readonly now: () => number;
   private readonly enabled: () => boolean;
   private casting: TalismanReturnCast | null = null;
+  private committing = false;
   get cast(): Readonly<TalismanReturnCast> | null { return this.casting ? { ...this.casting, destination: { ...this.casting.destination } } : null; }
   constructor(private readonly prog: TalismanUseProgress, private readonly host: TalismanUseHost, options: TalismanUseOptions = {}) {
     this.items = options.items ?? ITEMS; this.now = options.now ?? gameNow; this.enabled = options.enabled ?? (() => featureEnabled('talismanCraft'));
@@ -195,6 +200,7 @@ export class TalismanUseSystem {
     return { ok: true };
   }
   use(id: string, quality: PillQuality): TalismanUseResult {
+    if (this.committing) return this.reject('talisman.use_unavailable');
     const check = this.precheck(id, quality); if (!check.ok) return check;
     const item = this.item(id, quality)!;
     if (id === 'talisman_return') {
@@ -208,6 +214,42 @@ export class TalismanUseSystem {
       return { ok: true, casting: true, key: 'talisman.return_cast', params: { town: destination.name ?? destination.mapId, seconds: item.effect.castMs / 1000 } };
     }
     return this.commit(item, quality);
+  }
+  /** IDB 只在确认道具/冷却事务后激活外部效果；同步内存调用仍沿用 use。 */
+  async useAsync(id: string, quality: PillQuality): Promise<TalismanUseResult> {
+    if (!featureEnabled('indexedDbSaves') || !this.prog.runSaveTransactionAsync || id === 'talisman_return') return this.use(id, quality);
+    if (this.committing) return this.reject('talisman.use_unavailable');
+    const check = this.precheck(id, quality); if (!check.ok) return check;
+    this.committing = true;
+    const prepared = new Set<TalismanPreparedEffect>();
+    let failed = this.reject('talisman.use_unavailable');
+    try {
+      const result = await this.prog.runSaveTransactionAsync(draft => {
+        const staged = new TalismanUseSystem(draft, {
+          context: () => this.host.context(),
+          returnDestination: () => this.host.returnDestination(),
+          validateDestination: destination => this.host.validateDestination(destination),
+          teleport: destination => this.host.teleport(destination),
+          emitProjectile: effect => {
+            const pending = this.host.prepareProjectile?.(effect);
+            if (!pending) return false;
+            prepared.add(pending);
+            return () => { prepared.delete(pending); pending.rollback(); };
+          },
+        }, { items: this.items, now: this.now, enabled: this.enabled });
+        const used = staged.use(id, quality);
+        if (!used.ok) { failed = used; return undefined; }
+        return used;
+      });
+      if (!result) return failed;
+      for (const effect of prepared) effect.commit();
+      prepared.clear();
+      return result;
+    } catch { return failed; }
+    finally {
+      for (const effect of prepared) effect.rollback();
+      this.committing = false;
+    }
   }
   private commit(item: ValidItem, quality: PillQuality, destination?: TalismanReturnDestination): TalismanUseResult {
     let rollback: void | (() => void) = undefined, effectFailed = false;

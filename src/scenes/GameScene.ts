@@ -38,7 +38,7 @@ import { ShopPanel } from '../ShopPanel';
 import { AttrPanel } from '../AttrPanel';
 import { InventoryPanel } from '../InventoryPanel';
 import { TalismanSystem } from '../Talisman';
-import { TalismanUseSystem, nearestTalismanTown, type TalismanFireEffect } from '../TalismanUse';
+import { TalismanUseSystem, nearestTalismanTown, type TalismanFireEffect, type TalismanUseResult } from '../TalismanUse';
 import { TalismanScene } from './TalismanScene';
 import { EquipPanel } from '../EquipPanel';
 import { BackgroundArt, type BackgroundConfig } from './BackgroundArt';
@@ -436,7 +436,8 @@ export class GameScene extends Phaser.Scene {
       this.skillWindow.refresh();
     };
     this.inventoryPanel = new InventoryPanel(this, this.prog, { onChanged: equipmentChanged,
-      openAlchemy: id => this.openAlchemy(id), openSectToken: () => this.openSectToken(), useTalisman: (id, quality) => this.useTalisman(id, quality),
+      openAlchemy: id => this.openAlchemy(id), openSectToken: () => this.openSectToken(),
+      useTalisman: (id, quality) => featureEnabled('indexedDbSaves') ? this.useTalismanAsync(id, quality) : this.useTalisman(id, quality),
       bindTalisman: (slot, id, quality) => this.prog.bindTalismanSlot(slot, id, quality) });
     this.equipPanel = new EquipPanel(this, this.prog, equipmentChanged);
     this.skillBar.onSlot = i => { if (this.skillWindow.open) this.skillWindow.assign(i); };
@@ -811,7 +812,10 @@ export class GameScene extends Phaser.Scene {
     for (const p of this.parallax) p.ts.tilePositionX = this.cameras.main.scrollX * p.f;
     this.updateShots(time);
     this.updateTalismanUse(delta);
-    if (featureEnabled('talismanCraft')) this.talismanSystem?.claimPending();
+    if (featureEnabled('talismanCraft')) {
+      if (featureEnabled('indexedDbSaves')) void this.talismanSystem?.claimPendingAsync();
+      else this.talismanSystem?.claimPending();
+    }
     this.regenMp(delta);
     this.combat.update(time, delta);
     this.trialObjects?.update(delta);
@@ -892,7 +896,10 @@ export class GameScene extends Phaser.Scene {
     const slotKey: Record<string, Phaser.Input.Keyboard.Key> = { A: k.a, S: k.s, D: k.d, F: k.f, G: k.g, H: k.h, Q: k.q, W: k.w };
     HOTBAR_SLOTS.forEach((s, i) => { if (J(slotKey[s.label]) && !this.gathering.active) {
       const talisman = featureEnabled('talismanCraft') ? this.prog.talismanQuickSlots[i] : null;
-      if (talisman) this.useTalisman(talisman.item, talisman.quality);
+      if (talisman) {
+        if (featureEnabled('indexedDbSaves')) void this.useTalismanAsync(talisman.item, talisman.quality);
+        else this.useTalisman(talisman.item, talisman.quality);
+      }
       else this.combat.tryCast(i);
     } });
     this.checkReach();
@@ -1394,6 +1401,7 @@ export class GameScene extends Phaser.Scene {
   private setupTalisman() {
     this.talismanSystem = new TalismanSystem(this.prog, this.quests, () => Math.random(), {
       context: () => ({ inCombat: this.inTalismanCombat(), inTrial: !!(this.trial || this.sectTrial || this.map.trial || TRIAL_BY_MAP[this.map.id]) }),
+      questsForDraft: draft => new QuestSystem(draft as Progress),
     });
     this.setupTalismanUse();
   }
@@ -1410,6 +1418,7 @@ export class GameScene extends Phaser.Scene {
             && this.player.y >= zone.y && this.player.y <= zone.y + zone.h; }),
         facing: this.player.facing, visitedMaps: this.prog.visitedMaps }),
       emitProjectile: effect => this.emitTalismanFire(effect),
+      prepareProjectile: effect => this.prepareTalismanFire(effect),
       returnDestination: () => this.talismanDestination(),
       validateDestination: destination => {
         if (!this.prog.visitedMaps.includes(destination.mapId)) return false;
@@ -1438,6 +1447,15 @@ export class GameScene extends Phaser.Scene {
     if (!featureEnabled('talismanCraft')) return { ok: false, key: 'talisman.use_unavailable' };
     if (!this.talismanUse) this.setupTalisman();
     const result = this.talismanUse.use(id, quality);
+    return this.presentTalismanUse(result);
+  }
+  async useTalismanAsync(id: string, quality: 'low' | 'mid' | 'high' | 'supreme') {
+    if (!featureEnabled('talismanCraft')) return { ok: false, key: 'talisman.use_unavailable' };
+    if (!this.talismanUse) this.setupTalisman();
+    const result = await this.talismanUse.useAsync(id, quality);
+    return this.presentTalismanUse(result);
+  }
+  private presentTalismanUse(result: TalismanUseResult) {
     if (result.key) this.log(t(result.key, result.params), result.ok ? '#7fe0c0' : '#ffb0b0');
     if (result.ok && result.casting) { this.closeItemPanels(); this.gathering.cancel(); this.player.body.setVelocityX(0); }
     return result;
@@ -1518,6 +1536,12 @@ export class GameScene extends Phaser.Scene {
     } else { this.talismanReturnFx?.destroy(); this.talismanReturnFx = undefined; }
   }
   private emitTalismanFire(effect: TalismanFireEffect) {
+    const prepared = this.prepareTalismanFire(effect);
+    if (prepared === false) return false;
+    prepared.commit();
+    return prepared.rollback;
+  }
+  private prepareTalismanFire(effect: TalismanFireEffect) {
     if (!this.player.active || this.player.dead) return false;
     const x = this.player.x, y = this.player.y - SPEC.bodyH / 2;
     let sprite: Phaser.GameObjects.Image | Phaser.GameObjects.Sprite | undefined = this.createTalismanFx('fx_talisman_fire_projectile', 'fly', x, y);
@@ -1532,8 +1556,11 @@ export class GameScene extends Phaser.Scene {
     }
     sprite.setFlipX(effect.facing > 0).setName('talisman-fire-projectile');
     const projectile = { sprite, effect, x, y, distance: 0, facing: effect.facing };
-    this.talismanProjectiles.push(projectile);
-    return () => { sprite.destroy(); this.talismanProjectiles = this.talismanProjectiles.filter(p => p !== projectile); };
+    sprite.setActive(false).setVisible(false);
+    return {
+      commit: () => { sprite.setActive(true).setVisible(true); this.talismanProjectiles.push(projectile); },
+      rollback: () => { sprite.destroy(); this.talismanProjectiles = this.talismanProjectiles.filter(p => p !== projectile); },
+    };
   }
   private updateTalismanUse(delta: number) {
     if (!featureEnabled('talismanCraft')) { this.clearTalismanFx(); return; }
@@ -2023,7 +2050,7 @@ export class GameScene extends Phaser.Scene {
     return false;
   }
 
-  private travelToMap(map: string, portal?: string, returning = false, onCancelled?: () => void) {
+  private async travelToMap(map: string, portal?: string, returning = false, onCancelled?: () => void) {
     syncTalismanMapAvailability();
     this.interruptTalisman('map');
     if (this.sectTrial && !this.sectTrial.ended) { this.sectTrial.exit(); return; }
@@ -2031,11 +2058,14 @@ export class GameScene extends Phaser.Scene {
     if (!mapEntryOpen(map, this.map.id, returning)) { onCancelled?.(); this.log(FEATURE_UNAVAILABLE, '#aaaaaa'); return; }
     if (!TILED_MAPS[map] && map !== 'field_test') { onCancelled?.(); this.log(t('sys.portal_locked'), '#aaaaaa'); return; }
     if (this.travelling) { onCancelled?.(); return; }
-    if (this.encounterRuntime?.terminate('missed') === false) {
-      onCancelled?.(); this.log(t('sect.ui.save_failed'), '#ffb0b0'); return;
-    }
     this.travelling = true;
     this.player.body.setVelocityX(0);
+    const terminated = featureEnabled('indexedDbSaves')
+      ? await this.encounterRuntime?.terminateAsync('missed') : this.encounterRuntime?.terminate('missed');
+    if (terminated === false) {
+      this.travelling = false;
+      onCancelled?.(); this.log(t('sect.ui.save_failed'), '#ffb0b0'); return;
+    }
     this.prog.persistSoon();
     this.cameras.main.fadeOut(200);
     this.time.delayedCall(220, () => {
@@ -2132,12 +2162,12 @@ export class GameScene extends Phaser.Scene {
         ...(npc.ferryRoutes ?? []).map(route => {
           const reason = ferryLockedReason(route, this.prog);
           const label = `${t(route.label)}${route.cost > 0 ? `（${route.cost} ${t('ui.stone')}）` : ''}`;
-          return { label, disabled: !!reason, reason, onSelect: () => {
+          return { label, disabled: !!reason, reason, onSelect: async () => {
             const locked = ferryLockedReason(route, this.prog);
             if (locked) { this.log(locked, '#aaaaaa'); return; }
             if (this.travelling) return;
             this.prog.stones -= route.cost;
-            this.travelToMap(route.targetMap, route.targetPortal ?? undefined, false, () => {
+            await this.travelToMap(route.targetMap, route.targetPortal ?? undefined, false, () => {
               this.prog.stones += route.cost; this.prog.persistSoon();
             });
           } };

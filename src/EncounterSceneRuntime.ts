@@ -3,6 +3,7 @@ import { EncounterRunner, type EncounterRunnerContext, type EncounterRunnerPacin
 import type { EncounterOffer } from './EncounterUi';
 import type { Progress } from './Progress';
 import type { EncounterBattleProvider } from './EncounterBattle';
+import { featureEnabled } from './features';
 
 export interface EncounterMeditationProvider {
   active(): boolean;
@@ -45,12 +46,14 @@ export class EncounterSceneRuntime {
   /** 保存失败或模态阻塞不丢弃已经发生的实体胜负。 */
   private completedChallenge?: Challenge;
   private terminating?: 'missed' | 'failed';
+  private terminationPending?: Promise<boolean>;
 
   constructor(private readonly options: EncounterSceneRuntimeOptions) {
     this.enabled = !!options.config?.encounters.some(row => row.enabled);
     this.runner = new EncounterRunner(options.config, options.pacing, {
       read: () => options.progress.encounterSave(),
-      commit: next => options.progress.commitEncounterSave(next),
+      commit: next => featureEnabled('indexedDbSaves')
+        ? options.progress.commitEncounterSaveAsync(next) : options.progress.commitEncounterSave(next),
     }, options.rng);
   }
 
@@ -82,7 +85,7 @@ export class EncounterSceneRuntime {
   }
 
   update(deltaMs: number, state: { paused?: boolean; interrupted?: boolean } = {}): void {
-    if (!this.enabled || this.destroyed) return;
+    if (!this.enabled || this.destroyed || this.terminationPending) return;
     if (!this.flushPending()) return;
     if (this.terminating && !this.terminate(this.terminating)) return;
     this.checkEntry();
@@ -101,7 +104,7 @@ export class EncounterSceneRuntime {
 
   /** 只在真实锚点附近打开；缺地图锚点时保持不可见，不借用出生点。 */
   interact(): boolean {
-    if (!this.enabled || this.destroyed || !this.flushPending() || !this.flushSeen() || this.context().blocked) return false;
+    if (!this.enabled || this.destroyed || this.terminating || !this.flushPending() || !this.flushSeen() || this.context().blocked) return false;
     const offer = this.runner.offer();
     const definition = offer && this.options.config?.encounters.find(row => row.id === offer.encounterId);
     const step = definition?.script.steps.find(row => row.id === offer?.stepId);
@@ -119,12 +122,12 @@ export class EncounterSceneRuntime {
   }
 
   advance(payload: AdvanceInput): void {
-    if (!this.enabled || this.destroyed) return;
+    if (!this.enabled || this.destroyed || this.terminating) return;
     if (!this.flushPending() || !this.flushSeen() || !this.matches(payload) || !payload.attemptId || !payload.stepId) return;
     this.publish(this.runner.advance(this.context(), payload.attemptId, payload.stepId), true);
   }
   choose(payload: ChoiceInput): void {
-    if (!this.enabled || this.destroyed) return;
+    if (!this.enabled || this.destroyed || this.terminating) return;
     if (!this.flushPending() || !this.flushSeen() || !this.matches(payload) || !payload.attemptId || !payload.encounterId || !payload.stepId || !payload.choiceId) return;
     this.publish(this.runner.choose(this.context(), { attemptId: payload.attemptId, encounterId: payload.encounterId,
       stepId: payload.stepId, choiceId: payload.choiceId }), true);
@@ -146,7 +149,7 @@ export class EncounterSceneRuntime {
   }
   /** 一次点击/JustDown 只接受一个机关；进度仅在本 Runtime 内，刷新仍按 runner 安全 failed。 */
   puzzle(payload: PuzzleInput): void {
-    if (!this.enabled || this.destroyed) return;
+    if (!this.enabled || this.destroyed || this.terminating) return;
     if (!this.flushPending() || !this.flushSeen() || !this.matches(payload) || this.context().blocked || this.completedChallenge) return;
     const offer = this.runner.offer()!;
     const step = offer.config.encounters.find(row => row.id === offer.encounterId)?.script.steps.find(row => row.id === offer.stepId);
@@ -168,16 +171,42 @@ export class EncounterSceneRuntime {
   }
   terminate(reason: 'missed' | 'failed'): boolean {
     if (!this.enabled) return true;
-    if (this.destroyed) return false;
+    if (this.destroyed || this.terminationPending) return false;
     this.terminating = reason;
     this.clearChallenges();
     if (!this.flushPending()) return false;
-    if (!this.flushSeen()) return false;
+    if (!this.flushSeen(true)) return false;
     const result = this.runner.terminate(this.context(), reason);
     this.publish(result, false);
     const done = result.status !== 'rejected' && result.status !== 'deferred';
     if (done) this.terminating = undefined;
     return done;
+  }
+
+  /** 旅行等待真实提交；失败仍保留同一 pending，由下次调用或帧循环重试。 */
+  terminateAsync(reason: 'missed' | 'failed'): Promise<boolean> {
+    if (!this.enabled) return Promise.resolve(true);
+    if (this.destroyed) return Promise.resolve(false);
+    if (this.terminationPending) return this.terminationPending;
+    this.terminating = reason;
+    this.clearChallenges();
+    const pending = (async () => {
+      if (!await this.flushPendingAsync() || this.destroyed) return false;
+      if (!this.flushSeen(true)) {
+        if (!await this.flushPendingAsync() || this.destroyed || !this.flushSeen(true)) return false;
+      }
+      let result = this.runner.terminate(this.context(), reason);
+      if (result.status === 'deferred' && result.reason === 'save') {
+        result = await this.runner.retryPending({ async: true });
+      }
+      if (this.destroyed) return false;
+      this.publish(result, false);
+      const done = result.status !== 'rejected' && result.status !== 'deferred';
+      if (done) this.terminating = undefined;
+      return done;
+    })().finally(() => { this.terminationPending = undefined; });
+    this.terminationPending = pending;
+    return pending;
   }
 
   /** 场景销毁只收实体，不另造 missed/保存事务。 */
@@ -273,9 +302,11 @@ export class EncounterSceneRuntime {
     this.presentedAttempts.add(offer.attemptId);
     this.pendingSeen = offer.attemptId; this.flushSeen();
   }
-  private flushSeen(): boolean {
+  private flushSeen(terminating = false): boolean {
     if (!this.pendingSeen) return true;
-    const result = this.runner.markSeen(this.context(), this.pendingSeen);
+    // 展示已真实发生；死亡/旅行的阻塞不能拦住其记账，其余身份和存档校验仍由 runner 执行。
+    const ctx = this.context();
+    const result = this.runner.markSeen(terminating ? { ...ctx, blocked: false } : ctx, this.pendingSeen);
     if (result.status === 'rejected' || result.status === 'deferred') return false;
     this.pendingSeen = undefined;
     return true;
@@ -283,6 +314,14 @@ export class EncounterSceneRuntime {
   /** 已确认的动作保存失败后按原事务重试；关闭展示不撤销玩家已作的选择。 */
   private flushPending(): boolean {
     const result = this.runner.retryPending();
+    return this.publishPending(result);
+  }
+  private async flushPendingAsync(): Promise<boolean> {
+    const result = await this.runner.retryPending({ async: true });
+    if (this.destroyed) return false;
+    return this.publishPending(result);
+  }
+  private publishPending(result: EncounterRunnerResult): boolean {
     if (result.status === 'deferred') return false;
     if (result.status === 'rejected') return result.reason === 'stale_save';
     this.publish(result, result.status !== 'offered');

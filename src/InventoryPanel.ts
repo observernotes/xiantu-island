@@ -15,7 +15,7 @@ export interface InventoryHooks {
   openAlchemy: (id: string) => boolean;
   openSectToken: () => boolean;
   bindTalisman?: (slot: number, id: string, quality: PillQuality) => boolean;
-  useTalisman?: (id: string, quality: PillQuality) => TalismanUseResult;
+  useTalisman?: (id: string, quality: PillQuality) => TalismanUseResult | Promise<TalismanUseResult>;
 }
 
 /** UI-7 背包：分页只改变展示，穿戴与存档完全交给 Progress。 */
@@ -24,6 +24,7 @@ export class InventoryPanel extends ItemPanelView {
   private page = 0;
   private selected = 0;
   private revision = '';
+  private usingTalisman = false;
   constructor(scene: Phaser.Scene, prog: Progress, private hooks: InventoryHooks) { super(scene, prog, 360, 440); }
   open() { this.tab = 'all'; this.page = 0; this.selected = 0; super.open(); }
   private rows() {
@@ -61,8 +62,8 @@ export class InventoryPanel extends ItemPanelView {
     if (id === 'five_sect_token' && !this.prog.job && !this.prog.pendingSectTrial) return 'token';
     return '';
   }
-  activate() {
-    if (!this.shown) return;
+  async activate() {
+    if (!this.shown || this.usingTalisman) return;
     const row = this.rows()[this.selected];
     if (!row) return;
     const action = this.action(row.id);
@@ -71,7 +72,12 @@ export class InventoryPanel extends ItemPanelView {
       this.status = result.ok ? label('ui.inv.equipped', '已穿上{item}。', { item: row.name }) : equipReason(result);
       if (result.ok) this.hooks.onChanged();
     } else if (action === 'talisman') {
-      const result = this.hooks.useTalisman?.(row.id, row.quality ?? 'low');
+      const pending = this.hooks.useTalisman?.(row.id, row.quality ?? 'low');
+      let result: TalismanUseResult | undefined;
+      if (pending instanceof Promise) {
+        this.usingTalisman = true;
+        try { result = await pending; } finally { this.usingTalisman = false; }
+      } else result = pending;
       this.statusOk = result?.ok === true;
       this.status = result?.key ? t(result.key, result.params) : this.statusOk ? '符箓已使用。' : t('talisman.use_unavailable');
       if (result?.ok && result.casting) { this.close(); return; }

@@ -335,6 +335,9 @@ try {
       for (const direction of directions) {
         dispatch('keydown', direction); await nextFrame();
         dispatch('keyup', direction); await nextFrame();
+        if (window.__xt.talismanCraftSnapshot()?.view.draw?.done) {
+          await window.__scene.prog.flushSaves(); await nextFrame();
+        }
         snapshots.push(window.__xt.talismanCraftSnapshot());
       }
       if (pause) window.__scene.game.pause();
@@ -416,6 +419,18 @@ try {
         questRewardVersion: 1, inventory: {}, quests: {}, ageUpdatedAt: Date.now() });
       await window.__xt.teleport('luoxia_town');
     });
+    async function pressUntilChanged(key) {
+      const before = await page.evaluate(() => ({ version: window.__scene.dialog.version, index: window.__scene.dialog.i,
+        map: window.__scene.map.id }));
+      await page.keyboard.down(key);
+      try {
+        // 等正式输入消费本次按键；低帧时松键会清掉尚未消费的 JustDown。
+        await page.waitForFunction(before => {
+          const s = window.__scene;
+          return s.map.id !== before.map || s.dialog.version !== before.version || s.dialog.i !== before.index;
+        }, before, { timeout: 5000, polling: 'raf' });
+      } finally { await page.keyboard.up(key); }
+    }
     async function approachNpc(id) {
       await page.evaluate(id => {
         const s = window.__scene, npc = s.map.objects.find(o => o.type === 'npc' && (o.props.npc ?? o.name) === id);
@@ -423,8 +438,10 @@ try {
         s.player.body.reset(npc.x, npc.y); s.player.body.setVelocity(0, 0);
       }, id);
       await page.waitForFunction(() => window.__scene.player.state2 === 'ground');
-      await page.keyboard.press('z', { delay: 60 });
-      await page.waitForFunction(() => window.__scene.dialog.open && window.__scene.dialog.choices.length > 0);
+      await page.keyboard.down('z');
+      try {
+        await page.waitForFunction(() => window.__scene.dialog.open && window.__scene.dialog.choices.length > 0);
+      } finally { await page.keyboard.up('z'); }
     }
     async function choose(label) {
       for (let pageIndex = 0; pageIndex < 8; pageIndex++) {
@@ -432,11 +449,11 @@ try {
         const index = labels.indexOf(label);
         if (index >= 0) {
           eq(await page.evaluate(index => !!window.__scene.dialog.choices[index].disabled, index), false, `${label}被禁用`);
-          await page.keyboard.press(String(index + 1), { delay: 60 }); return;
+          await pressUntilChanged(String(index + 1)); return;
         }
         const next = labels.findIndex(value => value.startsWith('›'));
         ok(next >= 0, `菜单未提供${label}`);
-        await page.keyboard.press(String(next + 1), { delay: 60 });
+        await pressUntilChanged(String(next + 1));
         await page.waitForFunction(before => JSON.stringify(window.__scene.dialog.choices.map(choice => choice.label)) !== before, JSON.stringify(labels));
       }
       throw new Error(`翻页未找到${label}`);
@@ -444,9 +461,11 @@ try {
     async function finishTeaching() {
       for (let line = 0; line < 10 && await page.evaluate(() => window.__scene.dialog.open); line++) {
         eq(await page.evaluate(() => window.__scene.dialog.choices.length), 0, '教学对白意外出现选项');
-        await page.keyboard.press('Enter', { delay: 60 });
+        await pressUntilChanged('Enter');
       }
       eq(await page.evaluate(() => window.__scene.dialog.open), false, '教学对白未结束');
+      // 关闭对白会启动异步任务结算；等真实提交完成后再检查授方与任务状态。
+      await page.evaluate(() => window.__scene.prog.flushSaves());
     }
     await approachNpc('ferry_master');
     await choose('前往灵符派');
@@ -546,6 +565,7 @@ try {
         dispatch('keydown', direction); await nextFrame();
         dispatch('keyup', direction); await nextFrame();
       }
+      await window.__scene.prog.flushSaves(); await nextFrame();
       return { afterPause, snapshot: window.__xt.talismanCraftSnapshot() };
     }, s.view.selectedRecipe.draw.strokes);
     eq(drawing.afterPause.current, 0, '全局暂停期间画符超时推进');

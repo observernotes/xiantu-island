@@ -89,17 +89,20 @@ export class TalismanScene extends Phaser.Scene {
     this.resumeFor('blur');
   }
   select(id: string) {
-    if (this.system.view(this.selected).state === 'drawing' || this.confirming) return false;
+    if (this.system.saving || this.system.view(this.selected).state === 'drawing' || this.confirming) return false;
     if (!this.system.view().recipes.some(recipe => recipe.id === id)) return false;
     this.selected = id; this.refresh(true); return true;
   }
-  action(action: TalismanPanelAction) {
+  action(action: TalismanPanelAction) { void this.applyAction(action); }
+  private async applyAction(action: TalismanPanelAction) {
+    if (this.system.saving) return;
     const drawing = this.system.view(this.selected).state === 'drawing';
     if (action === 'continue') {
       this.confirming = false; this.edges.clear();
       this.resumeFor('confirm');
     } else if (action === 'abandon' && this.confirming) {
-      if (!this.system.abandon()) return;
+      const abandoned = this.system.abandonAsync(); this.refresh(true);
+      if (!await abandoned) { this.refresh(true); return; }
       this.confirming = false; this.resumeFor('confirm');
       if (this.exitAfterAbandon) { this.finish(); return; }
     } else if ((action === 'abandon' || action === 'close') && drawing) {
@@ -108,22 +111,26 @@ export class TalismanScene extends Phaser.Scene {
     else if (action === 'start' || action === 'again') {
       if (this.pauseReasons.size) return;
       const recipe = this.system.view(this.selected).selectedRecipe;
-      if (recipe?.type === 'grinding') this.system.grind(this.selected);
-      else this.system.start(this.selected, performance.now());
+      const started = recipe?.type === 'grinding' ? this.system.grindAsync(this.selected)
+        : this.system.startAsync(this.selected, () => performance.now());
+      this.refresh(true); await started;
       this.edges.clear();
+      if (this.pauseReasons.size) this.system.pause(performance.now());
     }
     this.refresh(true);
   }
   private finish() { this.scene.stop(); }
   update() {
     const time = performance.now();
-    if (!this.pauseReasons.size) {
+    if (!this.pauseReasons.size && !this.system.saving) {
       const down = [...new Set([...this.held, ...this.edges.keys()])];
       const eventTime = this.edges.size ? Math.min(...this.edges.values()) : time;
-      this.system.input(down, eventTime, ++this.frame);
-      this.system.advance(time, this.frame);
+      void this.system.inputAsync(down, eventTime, ++this.frame);
+      if (!this.system.saving) void this.system.advanceAsync(time, this.frame);
     }
-    this.edges.clear(); this.system.claimPending(); this.refresh();
+    this.edges.clear();
+    if (!this.system.saving) void this.system.claimPendingAsync();
+    this.refresh();
   }
   snapshot() { return { ...this.panel.snapshot(), selectedRecipeId: this.selected, confirming: this.confirming, view: this.system.view(this.selected) }; }
   private refresh(force = false) {
@@ -147,8 +154,8 @@ export class TalismanScene extends Phaser.Scene {
       : primary === 'again' ? view.buttons.again : recipe?.type === 'grinding' ? view.buttons.grind : view.buttons.start;
     const state: TalismanPanelState = { primary,
       secondary: this.confirming ? 'continue' as const : 'abandon' as const,
-      primaryDisabled: !primaryEnabled,
-      secondaryDisabled: !(this.confirming ? view.buttons.continue : view.buttons.abandon),
+      primaryDisabled: this.system.saving || !primaryEnabled,
+      secondaryDisabled: this.system.saving || !(this.confirming ? view.buttons.continue : view.buttons.abandon),
       primaryLabel: !this.confirming && !showResult && recipe?.type === 'grinding' ? t('talisman.ink_grind') : undefined, message: message.join('\n'),
       recipes: view.recipes.map(row => {
         const check = this.system.check(row.id), permission = this.owner.prog.recipeSkillPermission(row.id);
@@ -164,7 +171,7 @@ export class TalismanScene extends Phaser.Scene {
           type: row.type, output: row.output, selected: row.id === this.selected,
           disabled: !!lock, reason: lock ? blockedText(lock) : undefined };
       }),
-      selectionDisabled: view.state === 'drawing' || this.confirming,
+      selectionDisabled: this.system.saving || view.state === 'drawing' || this.confirming,
       view, qualityMin: this.system.config.rules?.qualityMin, confirming: this.confirming,
       lifeSkill: this.owner.prog.lifeSkillView('talisman') };
     const fingerprint = JSON.stringify(state);
