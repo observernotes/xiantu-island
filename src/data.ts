@@ -27,8 +27,12 @@ import strings from '@xt/balance/strings_zh.json';
 import sense from '@xt/balance/sense.json';
 import gongfaGradesRaw from '@xt/balance/gongfa_grades.json';
 import qiDensityRaw from '@xt/balance/qi_density.json';
+import encountersRaw from '@xt/balance/encounters.json';
 import { parseGongfaGradesConfig } from './GongfaGrades';
 import { parseQiDensityConfig } from './QiDensity';
+import { parseEncountersConfig } from './Encounter';
+import { parseAffinityIndex } from './Affinity';
+import { parseQuestHooks } from './QuestHooks';
 import { SKILL_LIST } from './skills';
 import type { MonsterSenseBlock } from './Sense';
 import type { SectTrialDraw } from './SectTrialState';
@@ -41,6 +45,10 @@ export const GONGFA_GRADES_ERRORS = gongfaGradesValidation.errors;
 const qiDensityValidation = parseQiDensityConfig(qiDensityRaw);
 export const QI_DENSITY = qiDensityValidation.config;
 export const QI_DENSITY_ERRORS = qiDensityValidation.errors;
+/** v0.5c 仅加载并校验关态配置；不挂载地图、战斗或奖励入口。 */
+const encountersValidation = parseEncountersConfig(encountersRaw);
+export const ENCOUNTERS = encountersValidation.config;
+export const ENCOUNTERS_ERRORS = encountersValidation.errors;
 import karmaFlags from '@xt/balance/karma_flags.json';
 import taixuTemple from '@xt/maps/taixu_temple.json';
 import lingfuPavilion from '@xt/maps/lingfu_pavilion.json';
@@ -50,6 +58,9 @@ import { featureEnabled } from './features';
 
 /** 两轴存档的边界与初值只读配表；moral_state 仍是独立的功能就绪标识。 */
 export const MORAL_STATE = karmaFlags.rules.moralState;
+const questHooksValidation = parseQuestHooks(karmaFlags);
+export const QUEST_HOOKS = questHooksValidation.config;
+export const QUEST_HOOKS_ERRORS = questHooksValidation.errors;
 
 /** 地图与任务共用版本阶段过滤；phase 表示首次启用阶段。 */
 export const GAME_PHASE = 5;
@@ -220,6 +231,10 @@ export const PROP_LAYOUTS: { area: string; key: string; path: string }[] = asset
 export const SKILL_ICONS: { key: string; path: string }[] = assets.skillIcons;
 
 import npcs from '@xt/balance/npcs.json';
+/** 独立只读索引；不向 NPC 实例或 Progress 新增好感存档。 */
+const affinityValidation = parseAffinityIndex(npcs);
+export const AFFINITY = affinityValidation.config;
+export const AFFINITY_ERRORS = affinityValidation.errors;
 import quests from '@xt/balance/quests.json';
 import realms from '@xt/balance/realms.json';
 import questScript from '@xt/design/02_新手任务.md?raw';
