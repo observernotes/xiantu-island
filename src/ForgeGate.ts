@@ -1,7 +1,8 @@
 import enhance from '@xt/balance/enhance.json';
 import recipes from '@xt/balance/recipes.json';
 import { ITEMS, inPhase } from './data';
-import type { Progress } from './Progress';
+import { Progress } from './Progress';
+import { saveStore, type SlotKey } from './SaveStore';
 import { isForgeOpenForFixture } from './ForgeOpenFlag';
 import * as ForgeClosed from './ForgeClosed';
 import { isForgeId, isValidForgeMaterials, isValidForgeProgress,
@@ -54,6 +55,7 @@ const dataArray = (value: unknown): value is unknown[] => Array.isArray(value)
 
 /** 关态先拒绝；开态默认只读正式 forge 配方，夹具必须由测试显式授权。 */
 export class ForgeGate {
+  static #formalSlots = new Set<SlotKey>();
   #busy = false;
   constructor(private readonly progress: Progress, private readonly fixture: ForgeFixtureOptions = {}) {}
 
@@ -229,20 +231,39 @@ export class ForgeGate {
       this.supportedItem(progress, row.itemId) && positiveInteger(progress.permanentCount(row.itemId))
       && progress.permanentCount(row.itemId) >= row.count);
   }
+  /** 整槽写回须核对全部持久事实，不能覆盖另一服务已提交的资源或结果。 */
+  private snapshot(progress: Progress | Record<string, unknown>): string {
+    const data = progress instanceof Progress ? progress.exportSave() : progress;
+    return JSON.stringify(data, (_key, value: unknown) => value && typeof value === 'object' && !Array.isArray(value)
+      ? Object.fromEntries(Object.entries(value).sort(([left], [right]) => left < right ? -1 : left > right ? 1 : 0)) : value);
+  }
   private async transact(apply: (draft: Progress, reject: (reason: string, text: string) => undefined) => ForgeAllowed | undefined): Promise<ForgeGateResult> {
     if (this.#busy) return denied('busy', '正在保存打造结果，请稍候。');
+    const slot = this.fixture.fixtureRecipes === undefined && this.fixture.formalRecipes === undefined
+      ? this.progress.getSaveSlot() : undefined;
+    if (slot !== undefined && ForgeGate.#formalSlots.has(slot)) return denied('busy', '正在保存本档打造结果，请稍候。');
     this.#busy = true;
+    if (slot !== undefined) ForgeGate.#formalSlots.add(slot);
     let rejection: ForgeDenied | undefined;
     const reject = (reason: string, text: string): undefined => { rejection = denied(reason, text); return undefined; };
     try {
+      const expected = this.snapshot(this.progress);
+      if (slot !== undefined) {
+        const stored = await saveStore.readSlot(slot);
+        if (!stored || this.snapshot(stored.data) !== expected) return denied('stale', '存档事实已更新，请重新读档。');
+      }
       const saved = await this.progress.runSaveTransactionAsync(draft => {
+        if (this.snapshot(draft) !== expected) return reject('stale', '提交期间存档事实已变化，请重新选择。');
         if (!this.valid(draft)) return reject('progress', '打造档案不完整，已阻止歧义操作。');
         const result = apply(draft, reject);
         if (result && !this.valid(draft)) return reject('progress', '打造结果校验失败，保持原档。');
         return result;
-      });
+      }, slot === undefined ? undefined : expected);
       return saved ?? rejection ?? denied('save', '打造保存失败，请重试。');
     } catch { return denied('save', '打造保存失败，请重试。'); }
-    finally { this.#busy = false; }
+    finally {
+      if (slot !== undefined) ForgeGate.#formalSlots.delete(slot);
+      this.#busy = false;
+    }
   }
 }

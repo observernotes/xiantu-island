@@ -8,10 +8,14 @@ import { fileURLToPath } from 'node:url';
 import { createServer } from 'vite';
 import { sharedRoot } from './root.mjs';
 import { assertSmithServicesScene } from './v06p1-smith-services-scene-compat.mjs';
+import { checkSettlement, authorizedDependencySources, closedOutDirs } from './v06p1-smith-services-open-protection.mjs';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const shared = sharedRoot(root);
-const out = process.env.SMITH_SERVICES_OPEN_OUT ?? path.join(root, 'qa/out_v06p1_smith_services_open_fixture');
+const tip = gitTip();
+function gitTip() { return execFileSync('git', ['rev-parse', '--short', 'HEAD'], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] }).toString().trim(); }
+const out = path.resolve(process.env.SMITH_SERVICES_OPEN_OUT ?? path.join(root, `qa/out_v06p1_smith_services_open_${tip}`, 'fixture-regression'));
+for (const folder of closedOutDirs) assert.ok(out !== folder && !out.startsWith(folder + path.sep), 'preserved evidence cannot be overwritten');
 const baseline = '7b06f5ac4e76a2c48e98431e1ccf0011a8ca0a41';
 const services = ['forge', 'enhance', 'enchant', 'salvage'];
 const names = ['Forge', 'Enhance', 'Enchant', 'Salvage'];
@@ -95,12 +99,13 @@ function memoryBackend() {
     } };
 }
 async function sourceChecks() {
+  await checkSettlement();
   eq(git('merge-base', '--is-ancestor', baseline, 'HEAD').length, 0, 'baseline contains authorized merged UI tip');
   for (const [file, sha] of Object.entries(frozenSources)) await capture(path.join(root, file), sha);
   for (const file of ['src/ForgeGate.ts', 'src/EnhanceGate.ts', 'src/EnchantGate.ts', 'src/SalvageGate.ts',
     'src/Progress.ts', 'src/SaveStore.ts', 'src/EquipInstBinding.ts', 'src/SmithServices.ts',
     'src/SmithServicesController.ts', 'src/SmithServicesPanel.ts', 'src/scenes/GameScene.ts'])
-    await capture(path.join(root, file), hash(git('show', `${baseline}:${file}`)));
+    await capture(path.join(root, file), authorizedDependencySources.includes(file) ? undefined : hash(git('show', `39d006d:${file}`)));
   for (const dataRoot of [path.join(root, 'data'), shared]) {
     for (const [name, sha] of Object.entries(frozen)) await capture(path.join(dataRoot, 'balance', name), sha);
     await capture(path.join(dataRoot, 'balance/npcs.json'), hash(git('show', `${baseline}:data/balance/npcs.json`)));
@@ -161,6 +166,7 @@ async function uiEvidence(server, mode, memoryClosed = false) {
     const p = new Progress(); progresses.push(p); p.level = 20; p.rootElement = '火'; p.stones = 1000000;
     p.inventory = { [recipe.blueprint]: 50, refine_stone: 1000, protect_charm: 20, beast_core: 50,
       ...Object.fromEntries(recipe.materials.map(row => [row.item, 1000])) };
+    ok(await p.saveAsync(), mode + ' explicit formal seed baseline persisted before CAS');
     // Every candidate is created by the default formal ForgeGate, never inferred from item counts.
     const seedGate = new ForgeGate(p);
     const seed = [];
@@ -480,7 +486,8 @@ try {
     stringsDiskKeys: 1013, sharedStringsDiskKeys: 1013, stringsSsrInjected43: false, GAME_PHASE: 5, gifts0: true,
     enhanceSha: frozen['enhance.json'], stringsSha: frozen['strings_zh.json'],
     acceptanceDesign: 'design/32 §4.3 O01–O11', graphCount: independentGraphCount, evidenceGroupCount: graphs.length,
-    explicitSsrFixtureOnly: true, productionSalvageDefault: 'new SalvageGate(progress)',
+    explicitSsrFixtureOnly: true, isolatedFixtureRegressionOnly: true, productionO05Claimed: false,
+    productionSalvageDefault: 'new SalvageGate(progress)',
     scope: '开态夹具全表 ≠ soft-open ≠ release ≠ 进包', cases,
     oTableAssertCounts: Object.fromEntries(Object.entries(cases).map(([id, row]) => [id, row.assertions])),
     o05BlockReason: cases.O05.status === 'blocked' ? cases.O05.blockReason : null,

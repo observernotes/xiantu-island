@@ -108,8 +108,8 @@ try {
     await runGraph(dataMode, dataRoot, true);
   }
   assert.equal(Object.keys(cases).length, 11, 'O01–O11 each has evidence in both roots');
-  assert.ok(Object.values(cases).every(record => record.executed && record.evidenceKeys.length > 0 && (record.passed || record.blocked)),
-    'every O case executed and has PASS or explicit blocking evidence');
+  assert.ok(Object.values(cases).every(record => record.executed && record.evidenceKeys.length > 0 && record.passed && !record.blocked),
+    'every O case must pass; formal Salvage and cross-Progress CAS blockers must be cleared');
   executionPassed = true;
 } catch (error) { failure = error; }
 finally {
@@ -130,6 +130,11 @@ finally {
     closedOutUnchanged: protection.closedOutUnchanged === true,
     managerEnforcementO01ToO11Pending: true, historicalCOTablesModified: false,
     fixtureOnly: true, noProductionAuthorizationInjection: true, cases, blocked, graphs,
+    productionFormalPath: executionPassed && graphs.filter(row => !row.invalidProtectMapping).every(row => row.cases.O05.evidence.productionFormalPath === true),
+    o05FormalProductionSuccess: executionPassed && graphs.filter(row => !row.invalidProtectMapping).every(row => row.cases.O05.evidence.o05FormalProductionSuccess === true),
+    o09StaleForgeEnhanceBlocked: executionPassed && graphs.filter(row => !row.invalidProtectMapping).every(row => row.cases.O09.evidence.o09StaleForgeEnhanceBlocked === true),
+    fixtureQualificationInjected: false, fixtureCarrierInstalled: false,
+    singleGameSceneCurrentProgressBypassClaimed: false,
     ...(failure ? { error: String(failure.stack ?? failure) } : {}) };
   await fs.writeFile(path.join(out, 'protection-check.json'), `${JSON.stringify(protection, null, 2)}\n`);
   await fs.writeFile(path.join(out, 'v06p1-smith-services-open-evidence.json'), `${JSON.stringify(evidence, null, 2)}\n`);

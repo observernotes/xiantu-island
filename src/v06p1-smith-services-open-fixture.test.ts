@@ -1,4 +1,5 @@
-// O02–O10: isolated SSR graph only; every business write is delegated to the existing Gate.
+// O02–O10: isolated fixture regression only; production O05 is proven in open-gates without this provider.
+// Every business write is delegated to the existing Gate.
 import recipes from '@xt/balance/recipes.json';
 import enhance from '@xt/balance/enhance.json';
 import protectCharmMap from '@xt/balance/enhance_protect_charm.json';
@@ -70,6 +71,7 @@ export async function withSmithServicesOpenFixtureEnvironment<T>(run: (env: Smit
       materials: recipe.materials.map(row => ({ itemId: row.item, count: row.count })) }; },
     async source(count = 1) {
       const p = env.bare(), router = new SmithServices(p), refs: string[] = [];
+      if (!await p.saveAsync()) throw new Error('formal source baseline save failed');
       for (let index = 0; index < count; index++) {
         const request = env.forgeRequest();
         if (!router.select('forge', request).allowed) throw new Error('formal source selection failed');
@@ -169,6 +171,7 @@ export async function runSmithServicesOpenFixtureTests(options: { dataMode: stri
 
     start('O02');
     const forgeP = env.bare(), forgeRouter = new SmithServices(forgeP), forgeRequest = env.forgeRequest();
+    ok(await forgeP.saveAsync(), 'formal forge baseline saved before full snapshot CAS');
     const forgeBefore = assets(forgeP), forgeCalls = env.randomCalls, forgeReply = await complete(forgeP, forgeRouter, 'forge', forgeRequest);
     ok(forgeReply.result && 'resultItem' in forgeReply.result, 'forge full result has output and grade');
     const forgeResult = forgeReply.result;

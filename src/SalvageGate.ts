@@ -11,6 +11,7 @@ import { enhanceFields, isEnhanceId, isEnhanceInstanceRef, isValidEnhanceProgres
   type EnhanceFixtureInstance, type FormalEnhanceSource } from './EnhanceProgress';
 import { isForgeGrade, isValidForgeProgress, type ForgeGrade } from './ForgeProgress';
 import { isValidEnchantProgress } from './EnchantProgress';
+import { listBagFormalEquipBindings, resolveFormalEquipSlotBinding, resolveFormalInventoryEquipBinding } from './EquipInstBinding';
 import { isValidSalvageLocation, isValidSalvageProgress,
   type SalvageLocation, type SalvageProgress, type SalvageResult } from './SalvageProgress';
 
@@ -20,8 +21,8 @@ export interface SalvageRequest {
   fromGrade: ForgeGrade;
   fromEnhanceLevel: number;
 }
-/** 可剥离测试证据；不是正式绑定/本命 schema，也不登记、补造或授权实例来源。 */
-export interface SalvageFixtureQualification {
+/** 正式来源和精确位置已核实后的分解资格；不登记、补造或授权实例来源。 */
+export interface SalvageQualification {
   instanceRef: string;
   ownerSlot: SlotKey;
   bound: boolean;
@@ -30,8 +31,10 @@ export interface SalvageFixtureQualification {
   unsalvageable: boolean;
   location: SalvageLocation;
 }
+/** 可剥离测试证据；显式覆盖只服务隔离回归，不充当生产资格来源。 */
+export interface SalvageFixtureQualification extends SalvageQualification {}
 export interface SalvageFixtureOptions {
-  /** 现有正式绑定与精确位置字段未齐；缺此显式测试证据时整拒，不作生产回退。 */
+  /** 仅隔离回归显式覆盖资格；生产从正式来源及 EquipInstBinding 精确位置核实。 */
   qualification?: (progress: Readonly<Progress>, instanceRef: string) => SalvageFixtureQualification | undefined;
   ledgerId?: () => string;
   /** 当前正式背包无槽上限；仅测试显式施加有限收纳约束，不能扩大物品堆叠上限。 */
@@ -126,7 +129,7 @@ export class SalvageFixtureCarrier {
 }
 export const createSalvageFixtureCarrier = (backend: SaveBackend): SalvageFixtureCarrier => new SalvageFixtureCarrier(backend);
 
-/** 正式旗恒 false；本 API 仅由 SSR resolve/load 内存开态图执行，不挂前台入口。 */
+/** 正式提交只消费本档来源及精确位置证明；测试选项不作为生产默认依赖。 */
 export class SalvageGate {
   static #slots = new Set<SlotKey>();
   #busy = false;
@@ -161,8 +164,9 @@ export class SalvageGate {
       if (previous) return this.replay(previous, request);
       const selected = this.selection(this.progress, request);
       if (!selected.allowed) return selected;
-      if (!(this.fixture.atomicCarrier instanceof SalvageFixtureCarrier) || !featureEnabled('indexedDbSaves'))
-        return denied('carrier', '缺少开态夹具原子承载，保持原合法状态。');
+      if (!featureEnabled('indexedDbSaves')
+        || this.fixture.atomicCarrier !== undefined && !(this.fixture.atomicCarrier instanceof SalvageFixtureCarrier))
+        return denied('carrier', '分解原子保存不可用，保持原合法状态。');
       if (!this.canReceive(this.progress, selected)) return denied('capacity', '背包无法完整接收精炼石。');
       const intent = copy(request);
       return await this.transact(selected.ownerSlot, (draft, reject) => {
@@ -247,14 +251,35 @@ export class SalvageGate {
       ? { allowed: true, result: copy(result), output: copy(result.output), replayed: true }
       : denied('conflict', '同一分解请求载荷冲突，不能冒认原结果。');
   }
-  private qualification(progress: Progress, instanceRef: string): SalvageFixtureQualification | undefined {
-    if (!this.fixture.qualification) return undefined;
+  private qualification(progress: Progress, instanceRef: string): SalvageQualification | undefined {
+    if (!this.fixture.qualification) return this.formalQualification(progress, instanceRef);
     // 外置夹具只获隔离视图，预览不能借测试回调修改业务对象。
     const view = Object.assign(new Progress(), copy(ownData(progress))), before = this.snapshot(ownData(view));
     const evidence = this.fixture.qualification(view, instanceRef);
     return this.snapshot(ownData(view)) === before && evidence ? copy(evidence) : undefined;
   }
-  private validQualification(value: unknown, instanceRef: string, ownerSlot: SlotKey, selected = true): value is SalvageFixtureQualification {
+  private formalQualification(progress: Progress, instanceRef: string): SalvageQualification | undefined {
+    if (progress.formalEnhanceInstanceStatus(instanceRef) !== 'registered') return undefined;
+    const source = progress.enhance?.formalSources?.find(row => row.instanceRef === instanceRef);
+    const instance = progress.formalEnhanceInstances().find(row => row.instanceRef === instanceRef);
+    if (!source || !instance) return undefined;
+    let location: SalvageLocation | undefined;
+    for (const slot of ['weapon', 'robe', 'shoes'] as const) {
+      const binding = resolveFormalEquipSlotBinding(progress, slot);
+      if (binding.kind === 'verified' && binding.instanceRef === instanceRef) location = { kind: 'equip', slot };
+    }
+    if (!location) {
+      const row = listBagFormalEquipBindings(progress).find(row => row.instanceRef === instanceRef && row.id === instance.itemId);
+      const binding = resolveFormalInventoryEquipBinding(progress, row);
+      if (binding.kind !== 'verified' || binding.instanceRef !== instanceRef) return undefined;
+      location = { kind: 'inventory' };
+    }
+    // 正式装备当前没有绑定/本命/精血/不可分解的对立 schema；合法正式实例按可分解默认核实。
+    // 身份及位置始终由正式来源和显式 instanceRef 证明，绝不按 itemId、数量或唯一候选选件。
+    return { instanceRef, ownerSlot: source.ownerSlot, bound: false, natal: false, bloodBound: false,
+      unsalvageable: false, location };
+  }
+  private validQualification(value: unknown, instanceRef: string, ownerSlot: SlotKey, selected = true): value is SalvageQualification {
     return enhanceFields(value, ['instanceRef', 'ownerSlot', 'bound', 'natal', 'bloodBound', 'unsalvageable', 'location'])
       && value.instanceRef === instanceRef && value.ownerSlot === ownerSlot
       && [value.bound, value.natal, value.bloodBound, value.unsalvageable].every(mark => typeof mark === 'boolean' && (!selected || mark === false))
@@ -280,7 +305,7 @@ export class SalvageGate {
     if (!craft || !isForgeGrade(craft.resultGrade) || craft.resultGrade !== request.fromGrade)
       return denied('grade', '无法核实装备已存品质，或选择已经过期。');
     const ownerSlot = source.ownerSlot;
-    if (ownerSlot !== Progress.getActiveSlot() || progress.salvage && progress.salvage.ownerSlot !== ownerSlot)
+    if (ownerSlot !== progress.getSaveSlot() || progress.salvage && progress.salvage.ownerSlot !== ownerSlot)
       return denied('foreign', '分解来源或结果不属于当前存档。');
     const evidence = this.qualification(progress, instance.instanceRef);
     if (!this.validQualification(evidence, instance.instanceRef, ownerSlot))
@@ -362,7 +387,7 @@ export class SalvageGate {
       if (progress.enhance?.formalSources?.some(row => progress.formalEnhanceInstanceStatus(row.instanceRef) !== 'registered')) return false;
       if (progress.salvage === undefined) return true;
       const bag = progress.salvage;
-      if (!isValidSalvageProgress(bag) || bag.ownerSlot !== Progress.getActiveSlot()) return false;
+      if (!isValidSalvageProgress(bag) || bag.ownerSlot !== progress.getSaveSlot()) return false;
       return bag.destructions.every(result => {
         const craft = progress.forge?.crafts.find(row => row.craftResultRef === result.formalSource.craftResultRef);
         const historical = progress.enhance?.instances.find(row => row.instanceRef === result.instanceRef);
@@ -387,14 +412,16 @@ export class SalvageGate {
     try {
       const expected = this.snapshot(this.progress), stored = await saveStore.readSlot(ownerSlot);
       if (!stored || this.snapshot(stored.data) !== expected) return denied('stale', '存档事实已更新，请重新读档。');
-      if (!(this.fixture.atomicCarrier instanceof SalvageFixtureCarrier)) return denied('carrier', '缺少开态夹具原子承载。');
-      const result = await this.fixture.atomicCarrier.run(ownerSlot, expected, () => this.progress.runSaveTransactionAsync(draft => {
+      const commit = () => this.progress.runSaveTransactionAsync(draft => {
         if (this.snapshot(draft) !== expected) return reject(denied('stale', '提交期间装备或库存已变化，请重新选择。'));
         if (!this.valid(draft)) return reject(denied('progress', '分解档案存在歧义，已阻止写入。'));
         const result = apply(draft, reject);
         if (result && !this.valid(draft)) return reject(denied('progress', '分解完整结果校验失败，保持原档。'));
         return result;
-      }));
+      }, expected);
+      // 正式路径由 Progress 一次保存完整销毁/产出/收据；显式夹具载体只保留隔离回归用途。
+      const result = this.fixture.atomicCarrier instanceof SalvageFixtureCarrier
+        ? await this.fixture.atomicCarrier.run(ownerSlot, expected, commit) : await commit();
       return result ?? rejection ?? denied('save', '分解保存失败，保持原合法状态。');
     } catch { return denied('save', '分解保存失败，保持原合法状态。'); }
     finally { this.#busy = false; SalvageGate.#slots.delete(ownerSlot); }

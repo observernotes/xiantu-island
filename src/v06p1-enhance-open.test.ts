@@ -13,6 +13,7 @@ import { ForgeGate } from './ForgeGate';
 import { isEnhanceOpenForFixture } from './EnhanceOpenFlag';
 import { isEnhanceInstanceRef, isValidEnhanceProgress } from './EnhanceProgress';
 import { GameScene } from './scenes/GameScene';
+import { setGameTimeSource } from './GameClock';
 
 type Payload = { state: string; save: Record<string, unknown>; enhanceRequestId: string; formalInstanceSource?: boolean };
 type GateResult = Awaited<ReturnType<EnhanceGate['submit']>>;
@@ -102,6 +103,7 @@ export async function runEnhanceOpenFixtureTests(options: {
   openFixture: boolean; dataMode?: string; refreshPayloads?: Payload[] | null; invalidTable?: string;
 }) {
   const { openFixture, dataMode = 'fixture', refreshPayloads, invalidTable } = options;
+  const fixtureTime = Date.now(); setGameTimeSource(() => fixtureTime);
   const label = `${dataMode}/${openFixture ? 'formal-open' : 'memory-closed'}/${invalidTable ?? 'formal-table'}`;
   let assertions = 0, sampleCount = 0, ledgerSeq = 0, sampled = 0;
   const eq = (actual: unknown, expected: unknown, message: string) => {
@@ -650,6 +652,8 @@ export async function runEnhanceOpenFixtureTests(options: {
     async function source(name: string, level = 0) {
       const p = new Progress(); progresses.push(p); p.stones = 100000;
       p.inventory = { [recipe.blueprint!]: 10, spirit_copper: 10, refine_stone: 100, protect_charm: 3, rabbit_fur: 7 };
+      Object.assign(p, (Progress as any).restore(p.exportSave(), false));
+      ok(await p.saveAsync(), 'design28 正式打造前保存库存准备和完整 CAS 基线');
       const forge = new ForgeGate(p, { random: () => 0, ledgerId: () => `${dataMode}-protect-source-${++sourceSequence}` });
       const craft = (id: string) => forge.submit({ craftRequestId: id, blueprintId: recipe.blueprint!,
         materials: recipe.materials.map(row => ({ itemId: row.item, count: row.count })) });
@@ -728,6 +732,7 @@ export async function runEnhanceOpenFixtureTests(options: {
         const other = await f.craft('protect-open-second-asset'); ok(other.allowed && other.result, 'design28 O04共享护符的第二件装备来自正式打造');
         refs[1] = other.result.resultItem.instanceRef; f.p.inventory.protect_charm = n;
       }
+      ok(await f.p.saveAsync(), 'design28 O04 共享护符库存准备先保存');
       const before = f.p.exportSave(), writes = idb.writes, samples = sampleCount; sampled = 0;
       const inputs = refs.map((ref, i) => inputFor(`protect-open-race-${kind}-${kind === 'same-id' ? 0 : i}`, ref));
       const results = await Promise.all(inputs.map(input => new EnhanceGate(f.p, options()).submit(input)));
@@ -759,6 +764,7 @@ export async function runEnhanceOpenFixtureTests(options: {
       'design28 O04重读磁盘仅一份结果和N消费事实');
 
     const historic = await source('historical-false'); historic.p.inventory.protect_charm = 0; sampled = 0;
+    ok(await historic.p.saveAsync(), 'design28 O05 无符历史库存准备先保存');
     const historicalInput = request('protect-open-historical-false', 0, historic.ref);
     const historicalResult = committed(await historic.gate.submit(historicalInput)), historicalBefore = historic.p.exportSave();
     eq(historicalResult.useProtectCharm, false, 'design28 O05历史无符提交仍不依赖护符');
@@ -809,12 +815,13 @@ export async function runEnhanceOpenFixtureTests(options: {
       const disk = (await saveStore.readSlot(1))!.data, writes = idb.writes, samples = sampleCount;
       let expected!: Record<string, unknown>;
       try {
-        f.p.runSaveTransactionAsync = function <T>(apply: (draft: Progress) => T | undefined) {
+        f.p.runSaveTransactionAsync = function <T>(apply: (draft: Progress) => T | undefined, expectedSnapshot?: string) {
           if (resource === 'stones') this.stones = 0; else this.inventory[resource] = 0;
-          expected = this.exportSave(); return original.call(this, apply) as Promise<T | undefined>;
+          expected = this.exportSave(); return original.call(this, apply, expectedSnapshot) as Promise<T | undefined>;
         };
-        formalDenied(await f.gate.submit(inputFor(`protect-open-transaction-change-${resource}`, f.ref)), 'resources',
-          'design28 O06预检后事务前资源变化须在真实草稿再次拒绝');
+        const changed = await f.gate.submit(inputFor(`protect-open-transaction-change-${resource}`, f.ref));
+        businessDenied(changed, 'design28 O06预检后事务前资源变化须在真实草稿再次拒绝');
+        eq('tipKey' in changed ? changed.tipKey : null, 'enhance.fixture.stale', 'design28 O06完整快照先拒绝已变化的资源事实');
       } finally { f.p.runSaveTransactionAsync = original; }
       eq(f.p.exportSave(), expected, 'design28 O06保留外部合法资源变化，不补扣或产生半等级');
       eq((await saveStore.readSlot(1))!.data, disk, 'design28 O06事务再校验拒绝保持原磁盘');
@@ -823,7 +830,8 @@ export async function runEnhanceOpenFixtureTests(options: {
     const failedSave = await source('save-failure'), failedDisk = (await saveStore.readSlot(1))!.data;
     const backend = createIndexedDbBackend(idb.factory); let failedWrites = 0; sampled = 0;
     try {
-      setSaveBackend({ ...backend, async write() { failedWrites++; throw new Error('design28 O06受控存储写入失败'); } });
+      const failWrite = async (): Promise<never> => { failedWrites++; throw new Error('design28 O06受控存储写入失败'); };
+      setSaveBackend({ ...backend, write: failWrite, compareAndWrite: failWrite });
       await unchanged(failedSave.p, () => failedSave.gate.submit(inputFor('protect-open-save-failure', failedSave.ref)),
         'design28 O06保存后端失败费用等级结果整笔保留原状态');
     } finally { setSaveBackend(createIndexedDbBackend(idb.factory)); }
@@ -880,9 +888,11 @@ export async function runEnhanceOpenFixtureTests(options: {
     let forgeSequence = 0, forgeSamples = 0;
     const productionOptions = () => ({ random: () => { sampleCount++; return sampled; } });
     eq(Object.prototype.hasOwnProperty.call(productionOptions(), 'fixtureInstances'), false, 'O01正式O表强化选项不注入fixtureInstances');
-    function prepare() {
+    async function prepare() {
       const p = new Progress(); progresses.push(p); p.stones = 100000;
       p.inventory = { [recipe.blueprint!]: 10, refine_stone: 100, spirit_copper: 10, rabbit_fur: 7 };
+      Object.assign(p, (Progress as any).restore(p.exportSave(), false));
+      ok(await p.saveAsync(), 'O01 正式打造前保存库存准备和完整 CAS 基线');
       const forge = new ForgeGate(p, { random: () => { forgeSamples++; return 0; },
         ledgerId: () => `${dataMode}-formal-forge-${++forgeSequence}` });
       const craft = (id: string) => forge.submit({ craftRequestId: id, blueprintId: recipe.blueprint!,
@@ -890,7 +900,7 @@ export async function runEnhanceOpenFixtureTests(options: {
       return { p, forge, craft };
     }
     async function crafted(id: string) {
-      const f = prepare(), writes = idb.writes, result = await f.craft(id);
+      const f = await prepare(), writes = idb.writes, result = await f.craft(id);
       ok(result.allowed && result.result, 'O01默认正式ForgeGate返回完整committed成品');
       eq(result.result.state, 'committed', 'O01未完成打造不作正式源');
       const ref = result.result.resultItem.instanceRef;
@@ -936,7 +946,7 @@ export async function runEnhanceOpenFixtureTests(options: {
     committed(await selected.gate.submit(request('formal-one-of-two', 0, selected.ref)));
     eq(selected.p.enhance!.instances.map(row => [row.instanceRef, row.enhanceLevel]), [[selected.ref, 1], [secondRef, 0]],
       'O01/O02强化一件不改同原型第二件');
-    const longSource = prepare(), longId = 'r'.repeat(128), longLedger = 'l'.repeat(128);
+    const longSource = await prepare(), longId = 'r'.repeat(128), longLedger = 'l'.repeat(128);
     const longResult = await new ForgeGate(longSource.p, { random: () => 0, ledgerId: () => longLedger }).submit({
       craftRequestId: longId, blueprintId: recipe.blueprint!,
       materials: recipe.materials.map(row => ({ itemId: row.item, count: row.count })),
@@ -946,7 +956,7 @@ export async function runEnhanceOpenFixtureTests(options: {
     ok(new EnhanceGate(longSource.p).enhance(request('formal-long-ref', 0, longResult.result.resultItem.instanceRef)).allowed,
       'O01合法最长Forge成品无需fixture可选');
     eq(isEnhanceInstanceRef(`${longResult.result.resultItem.instanceRef}x`), false, 'O06拒269字符非法instanceRef');
-    const injected = prepare(), fixtureRecipe = { blueprintId: recipe.blueprint!, blueprintCount: 1,
+    const injected = await prepare(), fixtureRecipe = { blueprintId: recipe.blueprint!, blueprintCount: 1,
       materials: [{ itemId: 'spirit_copper', count: 2 }, { itemId: 'refine_stone', count: 1 }], resultItemId: recipe.output! };
     const injectedResult = await new ForgeGate(injected.p, { fixtureRecipes: [fixtureRecipe], random: () => 0,
       ledgerId: () => `${dataMode}-fixture-forge-source` }).submit({ craftRequestId: 'fixture-cannot-register',
@@ -1034,6 +1044,7 @@ export async function runEnhanceOpenFixtureTests(options: {
     const race = await crafted('formal-race-source'), another = await race.craft('formal-race-source-two');
     ok(another.allowed && another.result, 'O07第二件正式争用实例来自实际打造');
     race.p.stones = enhance.levels[0].stones; race.p.inventory.refine_stone = enhance.levels[0].refineStones;
+    ok(await race.p.saveAsync(), 'O07 正式实例竞争前保存共享资源基线');
     const raceWrites = idb.writes, raceSamples = sampleCount; sampled = 0;
     const competed = await Promise.all([race.ref, another.result.resultItem.instanceRef].map((ref, index) =>
       new EnhanceGate(race.p, productionOptions()).submit(request(`formal-race-${index}`, 0, ref))));
@@ -1067,6 +1078,12 @@ export async function runEnhanceOpenFixtureTests(options: {
       eq(await seed.p.save({ async: true }), true, 'O07独立Progress竞争前保存同槽单次资源基线');
       const contenders = await Promise.all([Progress.load({ async: true, slot: 1 }), Progress.load({ async: true, slot: 1 })]);
       progresses.push(...contenders);
+      const storedBaseline = (await saveStore.readSlot(1))!.data;
+      eq(contenders.map(p => {
+        const loaded = p.exportSave();
+        return Object.keys(storedBaseline).filter(key => JSON.stringify(loaded[key]) !== JSON.stringify(storedBaseline[key]))
+          .map(key => ({ key, stored: storedBaseline[key], loaded: loaded[key] }));
+      }), [[], []], 'O07 独立 Progress 读档后使用同一完整事实基线');
       const gates = contenders.map(p => new EnhanceGate(p, productionOptions())), inputs = contenders.map((_, index) =>
         request(`formal-independent-${sameRequest}-${sameRequest ? 'shared' : index}`, 0, index === 0 ? seed.ref : otherRef));
       const writes = idb.writes, samples = sampleCount;
@@ -1085,7 +1102,7 @@ export async function runEnhanceOpenFixtureTests(options: {
       eq(reloaded.enhance!.instances.reduce((sum, row) => sum + row.enhanceLevel, 0), 1, 'O07重新加载磁盘所有实例等级合计只升一次');
       await replay(reloaded, new EnhanceGate(reloaded), inputs[winner], 'O07独立对象竞争后fresh reload只读duplicate');
     }
-    const forgeInterrupted = prepare(), beforeForge = forgeInterrupted.p.exportSave(), forgeHold = idb.holdNextCommit(), pendingForge = forgeInterrupted.craft('formal-forge-aborted');
+    const forgeInterrupted = await prepare(), beforeForge = forgeInterrupted.p.exportSave(), forgeHold = idb.holdNextCommit(), pendingForge = forgeInterrupted.craft('formal-forge-aborted');
     await forgeHold.started; eq(forgeInterrupted.p.exportSave(), beforeForge, 'O01/O07打造complete前不发布成品或正式登记');
     idb.abortNextCommit(); forgeHold.release(); eq((await pendingForge).allowed, false, 'O07打造中断不留下正式授权');
     eq(forgeInterrupted.p.exportSave(), beforeForge, 'O07打造费用成品来源一同回滚'); eq(forgeInterrupted.p.enhance, undefined, 'O07中断不补空正式袋');
@@ -1143,6 +1160,7 @@ export async function runEnhanceOpenFixtureTests(options: {
       const recipe = recipes.recipes.find(row => row.type === 'forge' && row.output === 'bamboo_sword')!;
       const formal = new Progress(); progresses.push(formal); formal.stones = 100000;
       formal.inventory = { [recipe.blueprint!]: 1, spirit_copper: 1, refine_stone: 100 };
+      ok(await formal.saveAsync(), 'O06 坏强化表图打造前保存正式库存基线');
       const forged = await new ForgeGate(formal, { random: () => 0, ledgerId: () => `invalid-${invalidTable}` }).submit({
         craftRequestId: 'invalid-table-source', blueprintId: recipe.blueprint!,
         materials: recipe.materials.map(row => ({ itemId: row.item, count: row.count })),
@@ -1381,6 +1399,7 @@ export async function runEnhanceOpenFixtureTests(options: {
       cases: openFixture ? invalidTable ? ['O06'] : ['C01', 'C02', 'C03', 'C04', 'C05', 'C06', 'C07', 'C08', 'C09', 'C10',
         'O01', 'O02', 'O03', 'O04', 'O05', 'O06', 'O07', 'O08'] : ['memory-closed-eight-tips', 'zero-side-effects', 'historical-baggage'] };
   } finally {
+    setGameTimeSource(null);
     for (const p of progresses) await p.flushSaves(); Progress.setActiveSlot(oldSlot); setSaveBackend(createIndexedDbBackend());
     if (storage) Object.defineProperty(globalThis, 'localStorage', storage); else Reflect.deleteProperty(globalThis, 'localStorage');
   }
