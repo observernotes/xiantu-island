@@ -1,0 +1,11 @@
+
+> xiantu-island@0.0.1 test:v06p1-salvage-closed
+> timeout 120s node scripts/v06p1-salvage-closed-test.mjs
+
+{"suite":"formal-graph","dataMode":"shared","graph":"formal-open","flagLoads":0,"SalvageOpenFlag":true,"passed":true}
+{"suite":"v06p1-salvage-closed-graph","dataMode":"shared","graph":"initial","passed":true,"assertions":4779,"fixtures":58,"invocations":845,"ordinarySaveSetupWrites":2,"storageWrites":0,"sentinelCalls":0,"SalvageOpenFlag":false,"flagInjection":true,"flagLoads":1,"memoryClosed":true}
+{"suite":"v06p1-salvage-closed-graph","dataMode":"shared","graph":"fresh-ssr-refresh","passed":true,"assertions":4770,"fixtures":58,"invocations":845,"ordinarySaveSetupWrites":0,"storageWrites":0,"sentinelCalls":0,"SalvageOpenFlag":false,"flagInjection":true,"flagLoads":1,"memoryClosed":true}
+{"suite":"formal-graph","dataMode":"snapshot","graph":"formal-open","flagLoads":0,"SalvageOpenFlag":true,"passed":true}
+{"suite":"v06p1-salvage-closed-graph","dataMode":"snapshot","graph":"initial","passed":true,"assertions":4779,"fixtures":58,"invocations":845,"ordinarySaveSetupWrites":2,"storageWrites":0,"sentinelCalls":0,"SalvageOpenFlag":false,"flagInjection":true,"flagLoads":1,"memoryClosed":true}
+{"suite":"v06p1-salvage-closed-graph","dataMode":"snapshot","graph":"fresh-ssr-refresh","passed":true,"assertions":4770,"fixtures":58,"invocations":845,"ordinarySaveSetupWrites":0,"storageWrites":0,"sentinelCalls":0,"SalvageOpenFlag":false,"flagInjection":true,"flagLoads":1,"memoryClosed":true}
+v06p1 salvage closed tests ok: 19413 assertions; C01–C10; 232 semantic/state fixtures; 3380 zero-argument API calls; shared/snapshot 正式 flagLoads=0 + SSR false/fresh flagLoads=1; writes=0; three prior Flags=true; SalvageOpenFlag=true; softOpenedSalvage=true; released=false; O表未执行；分解 soft-open ≠ 进包 ≠ 发版；fixture≠正式；release 预期 v0.6.12 另令

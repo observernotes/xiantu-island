@@ -5,7 +5,7 @@ import { QuestSystem } from './QuestSystem';
 import { SectGrowth } from './SectGrowth';
 import { Sense } from './Sense';
 import { featureEnabled, setFeatureFlag } from './features';
-import { SaveStore, createMemorySaveBackend, createIndexedDbBackend, saveStore, setSaveBackend,
+import { SaveStore, createMemorySaveBackend, createIndexedDbBackend, saveSnapshot, saveStore, setSaveBackend,
   SAVE_DB_NAME, SAVE_DB_VERSION, SAVE_OBJECT_STORE, SAVE_SLOT_KEYS, type SaveBackend, type SlotKey } from './SaveStore';
 
 let assertions = 0;
@@ -27,6 +27,8 @@ function mockIndexedDB() {
   const stores = new Map<string, string | null>();
   const opened: { name: string; version: number | undefined }[] = [];
   let failOpen = false, quotaNextWrite = false, abortNextCommit = false;
+  // 同一 object store 的写事务按 IDB 规则排队；事务开始时才读取已确认的数据。
+  let writesFinished: Promise<void> = Promise.resolve();
   const factory = {
     open(name: string, version?: number) {
       opened.push({ name, version });
@@ -41,18 +43,21 @@ function mockIndexedDB() {
           close() {}, onversionchange: null,
           transaction(storeName: string, mode: IDBTransactionMode = 'readonly') {
             if (!stores.has(storeName)) throw new DOMException('Missing store', 'NotFoundError');
-            const staged = new Map(rows);
-            let pending = 0, finished = false;
+            let staged = new Map<IDBValidKey, unknown>();
+            let pending = 0, finished = false, started = false;
+            const ready = writesFinished;
+            let releaseWrite: (() => void) | undefined;
+            if (mode === 'readwrite') writesFinished = new Promise<void>(resolve => { releaseWrite = resolve; });
             const tx = { error: null as DOMException | null,
               oncomplete: null as (() => void) | null, onerror: null as (() => void) | null,
               onabort: null as (() => void) | null,
-              abort() { if (finished) return; finished = true; tx.error ??= new DOMException('Injected abort', 'AbortError'); tx.onabort?.(); },
+              abort() { if (finished) return; finished = true; tx.error ??= new DOMException('Injected abort', 'AbortError'); tx.onabort?.(); releaseWrite?.(); },
               objectStore() {
                 const operation = (apply: () => unknown, write = false) => {
                   pending++;
                   const req = { result: undefined as unknown, error: null as DOMException | null,
                     onsuccess: null as (() => void) | null, onerror: null as (() => void) | null };
-                  setTimeout(() => {
+                  void ready.then(() => setTimeout(() => {
                     if (finished) return;
                     if (write && quotaNextWrite) {
                       quotaNextWrite = false;
@@ -60,7 +65,7 @@ function mockIndexedDB() {
                       req.onerror?.(); tx.onerror?.(); tx.abort(); return;
                     }
                     req.result = apply(); req.onsuccess?.(); pending--; scheduleComplete();
-                  }, 0);
+                  }, 0));
                   return req;
                 };
                 return {
@@ -85,12 +90,12 @@ function mockIndexedDB() {
               },
             };
             const scheduleComplete = () => setTimeout(() => {
-              if (finished || pending) return;
+              if (!started || finished || pending) return;
               if (mode === 'readwrite' && abortNextCommit) { abortNextCommit = false; tx.abort(); return; }
               if (mode === 'readwrite') { rows.clear(); for (const [key, value] of staged) rows.set(key, value); }
-              finished = true; tx.oncomplete?.();
+              finished = true; tx.oncomplete?.(); releaseWrite?.();
             }, 0);
-            scheduleComplete();
+            void ready.then(() => { staged = new Map(rows); started = true; scheduleComplete(); });
             return tx;
           },
         };
@@ -309,6 +314,65 @@ try {
     eq(await failedStore.migrateLegacyLocalStorage(storage), 'failed', 'IDB 打开失败迁移返回失败');
     eq(disk[saveKey], raw, 'IDB 打开失败保留 localStorage');
     storage.clear();
+  }
+
+  // 全量 CAS 在 IDB 的同一写事务核对旧事实；不同 SaveStore 不能靠各自的内存队列互相避让。
+  {
+    const idb = mockIndexedDB();
+    const firstStore = new SaveStore(createIndexedDbBackend(idb.factory));
+    const secondStore = new SaveStore(createIndexedDbBackend(idb.factory));
+    const original = sample('CAS 原档').exportSave();
+    original.stones = 100;
+    original.inventory = { refine_stone: 10, bamboo_sword: 1 };
+    eq(await firstStore.writeSlot(1, original), true, 'IDB CAS 原档完整落盘');
+    const expected = saveSnapshot(original);
+    const candidates = [
+      { ...original, name: 'CAS 甲提交', stones: 90, inventory: { refine_stone: 9, bamboo_sword: 1 } },
+      { ...original, name: 'CAS 乙提交', stones: 80, inventory: { refine_stone: 8, bamboo_sword: 1 } },
+    ];
+    const results = await Promise.all([
+      firstStore.writeSlot(1, candidates[0], expected), secondStore.writeSlot(1, candidates[1], expected),
+    ]);
+    eq(results.filter(Boolean).length, 1, '不同 SaveStore 同槽相同 expected 并发仅一次成功');
+    const committed = candidates[results[0] ? 0 : 1];
+    same((await firstStore.readSlot(1))?.data, committed, 'IDB CAS 只保留获胜者全部事实，不混写失败者资源');
+    const beforeStale = await firstStore.readSlot(1);
+    eq(await secondStore.writeSlot(1, original, expected), false, '旧全量 expected 不能恢复已扣资源或覆盖新结果');
+    same(await firstStore.readSlot(1), beforeStale, 'IDB CAS 冲突保留已提交整槽原字节');
+    eq(await secondStore.writeSlot(2, original, expected), false, '全量 CAS 不把空槽认作已核实旧档');
+    eq(await secondStore.readSlot(2), null, '空槽冲突不创建存档');
+
+    // 两个实际 Progress 共享原生 IDB carrier；失败的 draft 永不发布到调用者内存。
+    storage.clear();
+    setFeatureFlag('indexedDbSaves', true);
+    setSaveBackend(createIndexedDbBackend(idb.factory));
+    const left = await Progress.loadAsync(1), right = await Progress.loadAsync(1);
+    eq(left.storageError, undefined, 'CAS 甲对象真实 loadAsync 成功');
+    eq(right.storageError, undefined, 'CAS 乙对象真实 loadAsync 成功');
+    const leftBefore = left.exportSave(), rightBefore = right.exportSave();
+    const progressExpected = saveSnapshot((await saveStore.readSlot(1))!.data);
+    Progress.setActiveSlot(3);
+    eq(left.getSaveSlot(), 1, 'CAS 使用已加载实例绑定槽，不随界面活跃槽切换');
+    const progressResults = await Promise.all([
+      left.runSaveTransactionAsync(draft => { draft.stones -= 3; draft.inventory.refine_stone -= 1; draft.name = 'CAS Progress 甲'; return 'left'; }, progressExpected),
+      right.runSaveTransactionAsync(draft => { draft.stones -= 4; draft.inventory.refine_stone -= 2; draft.name = 'CAS Progress 乙'; return 'right'; }, progressExpected),
+    ]);
+    eq(progressResults.filter(result => result !== undefined).length, 1, '同槽两真实 Progress 相同 expected 并发仅一次提交');
+    const winner = progressResults[0] ? left : right, loser = progressResults[0] ? right : left;
+    same(loser.exportSave(), progressResults[0] ? rightBefore : leftBefore, 'CAS 失败不向旧 Progress 发布扣料、扣石或结果');
+    same((await saveStore.readSlot(1))?.data, winner.exportSave(), 'CAS 获胜 Progress 内存与完整存盘一致');
+    eq(await saveStore.readSlot(3), null, 'CAS 提交不污染切换后的活跃槽');
+    const beforeAbort = winner.exportSave(), savedBeforeAbort = await saveStore.readSlot(1);
+    const retryExpected = saveSnapshot(savedBeforeAbort!.data);
+    idb.abortNextCommit();
+    eq(await winner.runSaveTransactionAsync(draft => { draft.stones -= 7; draft.inventory.refine_stone -= 1; return 'aborted'; }, retryExpected), undefined,
+      'CAS request 成功后 IDB abort 仍拒绝业务结果');
+    same(winner.exportSave(), beforeAbort, 'CAS IDB abort 保留原内存，不发布半笔结果');
+    same(await saveStore.readSlot(1), savedBeforeAbort, 'CAS IDB abort 保留原槽所有资源与结果');
+    eq(await winner.runSaveTransactionAsync(draft => { draft.stones -= 7; draft.inventory.refine_stone -= 1; return 'retried'; }, retryExpected), 'retried',
+      'CAS abort 后可用同一 expected 重试一次成功');
+    same((await saveStore.readSlot(1))?.data, winner.exportSave(), 'CAS 重试提交全部资源与结果后才发布内存');
+    Progress.setActiveSlot(1);
   }
 
   // 玩法主路径：对齐正式开态，确认真实调用方与权威 async 入口都命中 IDB/槽。

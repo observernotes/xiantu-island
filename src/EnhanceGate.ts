@@ -2,7 +2,7 @@ import enhance from '@xt/balance/enhance.json';
 import protectCharmMap from '@xt/balance/enhance_protect_charm.json';
 import strings from '@xt/balance/strings_zh.json';
 import { ITEMS, inPhase } from './data';
-import type { Progress } from './Progress';
+import { Progress } from './Progress';
 import { saveStore } from './SaveStore';
 import { isEnhanceOpenForFixture } from './EnhanceOpenFlag';
 import * as EnhanceClosed from './EnhanceClosed';
@@ -329,30 +329,36 @@ export class EnhanceGate {
         && sameAttributes(result.attributes, this.attributes(result.type, result.finalLevel));
     });
   }
+  /** 整槽写回须核对全部持久事实，不能只比较未被附灵提交改动的强化袋。 */
+  private snapshot(progress: Progress | Record<string, unknown>): string {
+    const data = progress instanceof Progress ? progress.exportSave() : progress;
+    return JSON.stringify(data, (_key, value: unknown) => value && typeof value === 'object' && !Array.isArray(value)
+      ? Object.fromEntries(Object.entries(value).sort(([left], [right]) => left < right ? -1 : left > right ? 1 : 0)) : value);
+  }
   private async transact(apply: (draft: Progress, reject: (rejection: EnhanceDenied) => undefined) => EnhanceAllowed | undefined): Promise<EnhanceGateResult> {
     if (this.#busy) return denied('busy', '正在保存强化结果，请稍候。');
-    const slot = this.usesFixtureInstances() ? undefined : this.progress.enhance?.formalSources?.[0]?.ownerSlot;
+    const slot = this.usesFixtureInstances() ? undefined : this.progress.getSaveSlot();
     if (slot !== undefined && EnhanceGate.#formalSlots.has(slot)) return denied('busy', '正在保存强化结果，请稍候。');
     this.#busy = true;
     if (slot !== undefined) EnhanceGate.#formalSlots.add(slot);
-    const expected = slot === undefined ? undefined : copy(this.progress.enhance);
     let rejection: EnhanceDenied | undefined;
     const reject = (result: EnhanceDenied): undefined => { rejection = result; return undefined; };
     try {
+      const expected = this.snapshot(this.progress);
       if (slot !== undefined) {
-        // 同档不同 Progress 也必须串行；旧对象在竞争结束后不能覆盖已提交等级或重新抽样。
+        // 同档不同 Progress 也必须核对整槽；另一服务的已提交结果与消耗不得被旧对象覆盖。
         const saved = await saveStore.readSlot(slot);
-        if (!saved || JSON.stringify(saved.data.enhance) !== JSON.stringify(expected))
-          return denied('stale', '强化档案已更新，请重新读档。');
+        if (!saved || this.snapshot(saved.data) !== expected)
+          return denied('stale', '存档事实已更新，请重新读档。');
       }
       const saved = await this.progress.runSaveTransactionAsync(draft => {
-        if (slot !== undefined && JSON.stringify(draft.enhance) !== JSON.stringify(expected))
-          return reject(denied('stale', '强化档案已更新，请重新读档。'));
+        if (this.snapshot(draft) !== expected)
+          return reject(denied('stale', '提交期间存档事实已变化，请重新选择。'));
         if (!this.valid(draft)) return reject(denied('progress', '强化档案存在歧义，已阻止写入。'));
         const result = apply(draft, reject);
         if (result && !this.valid(draft)) return reject(denied('progress', '强化结果校验失败，保持原档。'));
         return result;
-      });
+      }, slot === undefined ? undefined : expected);
       return saved ?? rejection ?? denied('save', '强化保存失败，保持原库存与等级。');
     } catch { return denied('save', '强化保存失败，保持原库存与等级。'); }
     finally {

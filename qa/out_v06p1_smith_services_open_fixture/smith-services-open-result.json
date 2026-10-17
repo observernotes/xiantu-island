@@ -1,0 +1,207 @@
+{
+  "passed": true,
+  "exitCode": 0,
+  "assertions": 2897,
+  "cases": {
+    "O01": {
+      "executed": true,
+      "passed": true,
+      "status": "passed",
+      "assertions": 336,
+      "evidenceKeys": [
+        "snapshot/real-GameScene-dialogue-Panel-pointer-keyboard-four-services",
+        "shared/real-GameScene-dialogue-Panel-pointer-keyboard-four-services"
+      ]
+    },
+    "O02": {
+      "executed": true,
+      "passed": true,
+      "status": "passed",
+      "assertions": 102,
+      "evidenceKeys": [
+        "snapshot/adapter-gates/O02/formal-blueprint-materials-full-gate-result",
+        "snapshot/formal-forge-full-UI-roundtrip-and-Gate-result",
+        "shared/adapter-gates/O02/formal-blueprint-materials-full-gate-result",
+        "shared/formal-forge-full-UI-roundtrip-and-Gate-result"
+      ]
+    },
+    "O03": {
+      "executed": true,
+      "passed": true,
+      "status": "passed",
+      "assertions": 782,
+      "evidenceKeys": [
+        "snapshot/adapter-gates/O03/without-charm-probability-failure",
+        "snapshot/adapter-gates/O03/without-charm-success-and-max-refusal",
+        "snapshot/adapter-gates/O03/with-charm-probability-failure",
+        "snapshot/adapter-gates/O03/with-charm-success-and-max-refusal",
+        "snapshot/formal-enhance-success-and-protected-probability-failure-UI-roundtrips",
+        "shared/adapter-gates/O03/without-charm-probability-failure",
+        "shared/adapter-gates/O03/without-charm-success-and-max-refusal",
+        "shared/adapter-gates/O03/with-charm-probability-failure",
+        "shared/adapter-gates/O03/with-charm-success-and-max-refusal",
+        "shared/formal-enhance-success-and-protected-probability-failure-UI-roundtrips"
+      ]
+    },
+    "O04": {
+      "executed": true,
+      "passed": true,
+      "status": "passed",
+      "assertions": 360,
+      "evidenceKeys": [
+        "snapshot/adapter-gates/O04/five-elements-金",
+        "snapshot/adapter-gates/O04/five-elements-木",
+        "snapshot/adapter-gates/O04/five-elements-水",
+        "snapshot/adapter-gates/O04/five-elements-火",
+        "snapshot/adapter-gates/O04/five-elements-土",
+        "snapshot/adapter-gates/O04/illegal-and-stale-targets-rejected",
+        "snapshot/formal-first-enchant-and-element-overwrite-full-UI-roundtrips",
+        "shared/adapter-gates/O04/five-elements-金",
+        "shared/adapter-gates/O04/five-elements-木",
+        "shared/adapter-gates/O04/five-elements-水",
+        "shared/adapter-gates/O04/five-elements-火",
+        "shared/adapter-gates/O04/five-elements-土",
+        "shared/adapter-gates/O04/illegal-and-stale-targets-rejected",
+        "shared/formal-first-enchant-and-element-overwrite-full-UI-roundtrips"
+      ]
+    },
+    "O05": {
+      "executed": true,
+      "passed": true,
+      "status": "passed",
+      "assertions": 184,
+      "evidenceKeys": [
+        "snapshot/adapter-gates/O05/full-inventory-destruction-exact-position-retirement-and-atomic-carrier",
+        "snapshot/adapter-gates/O05/full-equipped-destruction-precise-slot",
+        "snapshot/explicit-SSR-qualification-carrier-full-salvage-UI-roundtrip",
+        "shared/adapter-gates/O05/full-inventory-destruction-exact-position-retirement-and-atomic-carrier",
+        "shared/adapter-gates/O05/full-equipped-destruction-precise-slot",
+        "shared/explicit-SSR-qualification-carrier-full-salvage-UI-roundtrip"
+      ]
+    },
+    "O06": {
+      "executed": true,
+      "passed": true,
+      "status": "passed",
+      "assertions": 22,
+      "evidenceKeys": [
+        "snapshot/formal-equip-and-bag-binding-actual-EI-readonly-roundtrip",
+        "shared/formal-equip-and-bag-binding-actual-EI-readonly-roundtrip"
+      ]
+    },
+    "O07": {
+      "executed": true,
+      "passed": true,
+      "status": "passed",
+      "assertions": 166,
+      "evidenceKeys": [
+        "snapshot/adapter-gates/O07/missing-blueprint",
+        "snapshot/adapter-gates/O07/missing-material",
+        "snapshot/adapter-gates/O07/missing-stones",
+        "snapshot/adapter-gates/O07/missing-refine_stone",
+        "snapshot/adapter-gates/O07/missing-protect_charm",
+        "snapshot/adapter-gates/O07/malformed-charm-map-memory-only",
+        "snapshot/adapter-gates/O07/qualification-grade-identity-and-full-carrier-refusals",
+        "shared/adapter-gates/O07/missing-blueprint",
+        "shared/adapter-gates/O07/missing-material",
+        "shared/adapter-gates/O07/missing-stones",
+        "shared/adapter-gates/O07/missing-refine_stone",
+        "shared/adapter-gates/O07/missing-protect_charm",
+        "shared/adapter-gates/O07/malformed-charm-map-memory-only",
+        "shared/adapter-gates/O07/qualification-grade-identity-and-full-carrier-refusals"
+      ]
+    },
+    "O08": {
+      "executed": true,
+      "passed": true,
+      "status": "passed",
+      "assertions": 168,
+      "evidenceKeys": [
+        "snapshot/adapter-gates/O08/forge-save-load-refresh-replay-conflict",
+        "snapshot/adapter-gates/O08/enhance-save-load-refresh-replay-conflict",
+        "snapshot/adapter-gates/O08/enchant-save-load-refresh-replay-conflict",
+        "snapshot/adapter-gates/O08/salvage-save-load-refresh-replay-conflict",
+        "shared/adapter-gates/O08/forge-save-load-refresh-replay-conflict",
+        "shared/adapter-gates/O08/enhance-save-load-refresh-replay-conflict",
+        "shared/adapter-gates/O08/enchant-save-load-refresh-replay-conflict",
+        "shared/adapter-gates/O08/salvage-save-load-refresh-replay-conflict"
+      ]
+    },
+    "O09": {
+      "executed": true,
+      "passed": true,
+      "status": "passed",
+      "assertions": 52,
+      "evidenceKeys": [
+        "snapshot/adapter-gates/O09/repeated-click-and-existing-equip-operation",
+        "snapshot/adapter-gates/O09/same-instance-and-cross-service-shared-resources",
+        "snapshot/adapter-gates/O09/cross-service-exact-capacity-and-material-concurrent-race",
+        "snapshot/adapter-gates/O09/cross-service-output-carrier-and-stale-writer-cas",
+        "shared/adapter-gates/O09/repeated-click-and-existing-equip-operation",
+        "shared/adapter-gates/O09/same-instance-and-cross-service-shared-resources",
+        "shared/adapter-gates/O09/cross-service-exact-capacity-and-material-concurrent-race",
+        "shared/adapter-gates/O09/cross-service-output-carrier-and-stale-writer-cas"
+      ]
+    },
+    "O10": {
+      "executed": true,
+      "passed": true,
+      "status": "passed",
+      "assertions": 218,
+      "evidenceKeys": [
+        "snapshot/adapter-gates/O10/forge-save-failure-atomic-original-state",
+        "snapshot/adapter-gates/O10/enhance-save-failure-atomic-original-state",
+        "snapshot/adapter-gates/O10/enchant-save-failure-atomic-original-state",
+        "snapshot/adapter-gates/O10/salvage-save-failure-atomic-original-state",
+        "snapshot/adapter-gates/O10/forge-durable-write-lost-acknowledgement",
+        "snapshot/adapter-gates/O10/enhance-durable-write-lost-acknowledgement",
+        "snapshot/adapter-gates/O10/enchant-durable-write-lost-acknowledgement",
+        "snapshot/adapter-gates/O10/salvage-durable-write-lost-acknowledgement",
+        "snapshot/adapter-gates/O10/old-async-close-result-hidden",
+        "snapshot/adapter-gates/O10/old-async-switch-slot-result-hidden",
+        "snapshot/adapter-gates/O10/unknown-half-result-refused-without-repair",
+        "snapshot/adapter-gates/O10/unknown-schema-version-refused-without-repair",
+        "snapshot/real-Controller-Gate-pending-close-switch-and-character-replacement",
+        "shared/adapter-gates/O10/forge-save-failure-atomic-original-state",
+        "shared/adapter-gates/O10/enhance-save-failure-atomic-original-state",
+        "shared/adapter-gates/O10/enchant-save-failure-atomic-original-state",
+        "shared/adapter-gates/O10/salvage-save-failure-atomic-original-state",
+        "shared/adapter-gates/O10/forge-durable-write-lost-acknowledgement",
+        "shared/adapter-gates/O10/enhance-durable-write-lost-acknowledgement",
+        "shared/adapter-gates/O10/enchant-durable-write-lost-acknowledgement",
+        "shared/adapter-gates/O10/salvage-durable-write-lost-acknowledgement",
+        "shared/adapter-gates/O10/old-async-close-result-hidden",
+        "shared/adapter-gates/O10/old-async-switch-slot-result-hidden",
+        "shared/adapter-gates/O10/unknown-half-result-refused-without-repair",
+        "shared/adapter-gates/O10/unknown-schema-version-refused-without-repair",
+        "shared/real-Controller-Gate-pending-close-switch-and-character-replacement"
+      ]
+    },
+    "O11": {
+      "executed": true,
+      "passed": true,
+      "status": "passed",
+      "assertions": 374,
+      "evidenceKeys": [
+        "snapshot/four-full-results-return-to-real-rendered-menu-and-flags-preserved",
+        "snapshot/isolated-memory-closed/ui-scopes-and-four-independent-gates",
+        "shared/four-full-results-return-to-real-rendered-menu-and-flags-preserved",
+        "shared/isolated-memory-closed/ui-scopes-and-four-independent-gates"
+      ]
+    }
+  },
+  "oTableAssertCounts": {
+    "O01": 336,
+    "O02": 102,
+    "O03": 782,
+    "O04": 360,
+    "O05": 184,
+    "O06": 22,
+    "O07": 166,
+    "O08": 168,
+    "O09": 52,
+    "O10": 218,
+    "O11": 374
+  },
+  "error": null
+}

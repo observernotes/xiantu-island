@@ -1,0 +1,18 @@
+{
+  "file": "scripts/v06p1-smith-services-closed-test.mjs",
+  "originalSha": "ef5de2f51370ce958be790f5851d9794233bd968dac30c4f581568ce7140a832",
+  "pinnedOriginalSha": "ef5de2f51370ce958be790f5851d9794233bd968dac30c4f581568ce7140a832",
+  "adaptedSha": "9a10e9544d1ff9928435fd9bb42644c87f9593d5e2410b83f027bebd06f9dad1",
+  "changes": [
+    {
+      "label": "redirect closed C-table evidence without touching old output",
+      "before": "out = path.join(root, 'qa/out_v06p1_smith_services_closed')",
+      "after": "out = \"/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06p1-smith-services-closed\"",
+      "occurrences": 1
+    }
+  ],
+  "productModuleTransformations": [],
+  "diskWritten": false,
+  "businessAssertionsChanged": false,
+  "policy": "Pinned test-only historical strings SHA/count/inventory and prior attr-ui byte proof; actual Vite SSR product modules use current disk."
+}

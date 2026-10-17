@@ -1,0 +1,30 @@
+{
+  "file": "scripts/v06p1-attr-ui-closed-test.mjs",
+  "originalSha": "2aeebfc3dec47d012b4ae9d52432c98204ed29ef7b7a3a510d9d59529d1affcc",
+  "pinnedOriginalSha": "2aeebfc3dec47d012b4ae9d52432c98204ed29ef7b7a3a510d9d59529d1affcc",
+  "adaptedSha": "06a94cee799c120cd53bb899f8a4b2e181d3d65606d161042fe6d841d028ba08",
+  "changes": [
+    {
+      "label": "current frozen strings1013 SHA",
+      "before": "ae51319b82a6486cc7f3d9b26c5ae89719e23c32ff9debdcfbb86ef7b5aea08b",
+      "after": "d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841",
+      "occurrences": 1
+    },
+    {
+      "label": "current key count1013",
+      "before": "eq(Object.keys(strings).length, 970,",
+      "after": "eq(Object.keys(strings).length, 1013,",
+      "occurrences": 1
+    },
+    {
+      "label": "existing970 suffix proof after exact smith43 restoration",
+      "before": "const text = await fs.readFile(stringsFile, 'utf8'), strings = JSON.parse(text);",
+      "after": "const rawCurrent = await fs.readFile(stringsFile, 'utf8'), text = stripSmithKeys(rawCurrent), strings = JSON.parse(rawCurrent);",
+      "occurrences": 1
+    }
+  ],
+  "productModuleTransformations": [],
+  "diskWritten": false,
+  "businessAssertionsChanged": false,
+  "policy": "Pinned test-only historical strings SHA/count/inventory and prior attr-ui byte proof; actual Vite SSR product modules use current disk."
+}

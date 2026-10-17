@@ -20,6 +20,7 @@ import { isSalvageOpenForFixture } from './SalvageOpenFlag';
 import { isForgeOpenForFixture } from './ForgeOpenFlag';
 import { isEnhanceOpenForFixture } from './EnhanceOpenFlag';
 import { isEnchantOpenForFixture } from './EnchantOpenFlag';
+import { setGameTimeSource } from './GameClock';
 
 type Grade = 'common' | 'fine' | 'spirit' | 'treasure';
 type Request = { salvageRequestId: string; instanceRef: string; fromGrade: Grade; fromEnhanceLevel: number };
@@ -113,6 +114,7 @@ export async function runSalvageOpenFixtureTests(options: {
   invalidDependency?: string; dependencyPayload?: Seed | null;
 }) {
   const { openFixture, dataMode, refreshPayloads = null, invalidDependency, armorFixture = false } = options;
+  const fixtureTime = Date.now(); setGameTimeSource(() => fixtureTime);
   const graph = armorFixture ? 'explicit-armor-fixture' : openFixture ? 'formal-open' : 'memory-closed', label = dataMode + '/' + graph;
   let assertions = 0, sequence = 0, randomCalls = 0, localWrites = 0;
   const eq = (actual: unknown, expected: unknown, message: string) => {
@@ -126,7 +128,10 @@ export async function runSalvageOpenFixtureTests(options: {
   const idb = memoryIndexedDb(), progresses: Progress[] = [], payloads: Payload[] = [];
   const flags = copy(featureFlags()), tableBefore = JSON.stringify(enhance);
   const cases: Record<string, { executed: boolean; evidenceKeys: string[] }> = {};
-  const mark = (key: string, evidenceKeys: string[]) => { cases[key] = { executed: true, evidenceKeys }; };
+  const mark = (key: string, evidenceKeys: string[]) => {
+    cases[key] = { executed: true, evidenceKeys };
+    console.log(JSON.stringify({ suite: 'v06p1-salvage-open-case', dataMode, graph, case: key, executed: true }));
+  };
   let dependencyPayload: Seed | null = null;
   Object.defineProperty(globalThis, 'localStorage', { configurable: true, value: {
     getItem: () => null, setItem: () => { localWrites++; }, removeItem: () => { localWrites++; },
@@ -140,6 +145,7 @@ export async function runSalvageOpenFixtureTests(options: {
     idb.rows.delete(Progress.getActiveSlot()); // 独立用例显式播种空介质，计数不冒充业务写。
     const p = new Progress(); progresses.push(p); p.stones = 100000; p.rootElement = '金'; p.equip = {};
     p.inventory = { rabbit_fur: 20, protect_charm: 3, refine_stone: 100, beast_core: 20 };
+    Object.assign(p, (Progress as any).restore(p.exportSave(), false));
     return p;
   }
   function request(p: Progress, ref: string, id: string): Request {
@@ -147,7 +153,7 @@ export async function runSalvageOpenFixtureTests(options: {
       fromGrade: p.forge!.crafts.find(row => row.resultItem.instanceRef === ref)!.resultGrade,
       fromEnhanceLevel: p.enhance!.instances.find(row => row.instanceRef === ref)!.enhanceLevel };
   }
-  // 资格适配器只证明已登记正式身份的绑定和位置；缺适配器的生产模式必须整拒。
+  // 显式资格/原子载体仅服务隔离回归；生产默认路径另用无包装后端验证。
   function gate(p: Progress, extra: Record<string, unknown> = {}, positions = new Map<string, string>()) {
     return new SalvageGate(p, {
       qualification: (_detached: Progress, ref: string) => ({ instanceRef: ref, ownerSlot: 1,
@@ -162,6 +168,7 @@ export async function runSalvageOpenFixtureTests(options: {
     p.inventory[recipe.blueprint!] = Math.max(p.count(recipe.blueprint!), 20);
     for (const material of recipe.materials) p.inventory[material.item] = Math.max(p.count(material.item), material.count * 20);
     const samples = { common: 0, fine: 0.65, spirit: 0.95, treasure: 0.995 };
+    ok(await p.saveAsync(), '正式打造前保存显式库存准备，CAS 核对同一完整基线');
     const result = await new ForgeGate(p, { random: () => samples[grade], ledgerId: () => dataMode + '-salvage-source-' + (++sequence) }).submit({
       craftRequestId: 'source-' + (++sequence), blueprintId: recipe.blueprint!,
       materials: recipe.materials.map(row => ({ itemId: row.item, count: row.count })),
@@ -424,8 +431,20 @@ export async function runSalvageOpenFixtureTests(options: {
           if (field === 'bad-slot') base.location = { kind: 'equip', slot: 'ring' };
           await unchanged(f.p, () => gate(f.p, { qualification: () => field === 'missing' ? undefined : base }).submit(request(f.p, f.ref, 'binding-' + field)), 'O03 不可分解/未齐字段 ' + field);
         }
-        const noQualification = await source();
-        await unchanged(noQualification.p, () => new SalvageGate(noQualification.p).submit(request(noQualification.p, noQualification.ref, 'production-no-binding')), 'O03 正式默认缺绑定资格绝不放行');
+        const noQualification = await source(), productionInput = request(noQualification.p, noQualification.ref, 'production-formal-default');
+        const productionBefore = copy(noQualification.p.exportSave()), productionWrites = idb.writes, productionCommits = idb.commits;
+        setSaveBackend(createIndexedDbBackend(idb.factory));
+        try {
+          const productionResult = committed(await new SalvageGate(noQualification.p).submit(productionInput));
+          eq([productionResult.instanceRef, productionResult.location, productionResult.destroyed],
+            [noQualification.ref, { kind: 'inventory' }, true], 'O03 空 fixture 正式来源和精确背包引用完整提交');
+          eq([noQualification.p.count('bamboo_sword'), noQualification.p.count('refine_stone')],
+            [0, Number((productionBefore.inventory as any).refine_stone) + productionResult.refineStones], 'O03 正式默认一次销毁并完整产出');
+          eq(noQualification.p.formalEnhanceInstanceStatus(noQualification.ref), 'missing', 'O03 正式来源同事务退役');
+          eq(noQualification.p.salvage!.receipts, [productionResult.salvageResultRef], 'O03 正式结果和唯一收据同事务成立');
+          eq([idb.writes, idb.commits], [productionWrites + 1, productionCommits + 1], 'O03 无夹具原子载体一次正式保存');
+          eq((await saveStore.readSlot(1))!.data, noQualification.p.exportSave(), 'O03 正式完整事实磁盘与内存一致');
+        } finally { setSaveBackend(carrier.backend); }
         for (const input of [null, {}, { salvageRequestId: '', instanceRef: 'x', fromGrade: 'common', fromEnhanceLevel: 0 },
           { ...request(dependency.p, dependency.ref, 'extra'), extra: true },
           { ...request(dependency.p, dependency.ref, 'missing'), fromGrade: undefined }])
@@ -436,7 +455,7 @@ export async function runSalvageOpenFixtureTests(options: {
         eq(new EnhanceGate(quantityOnly).laterService(), EnhanceClosed.refuseLaterService(), 'O03 强化窗混入分解仍 later_service');
         eq(new EnchantGate(quantityOnly).laterService(), EnchantClosed.refuseLaterService(), 'O03 附灵窗混入分解仍 later_service');
         eq(gate(quantityOnly).laterService(), Closed.refuseLaterService(), 'O03 独立分解 laterService 仍原拒绝');
-        mark('O03', ['missing-foreign-unowned-source-and-itemId-spoof-denied', 'bad-type-grade-and-stale-intent-denied', 'binding-natal-blood-and-unsalvageable-true-or-missing-denied', 'default-production-without-qualification-denied', 'ssr-json-invalid-config-registration-and-equipment-graphs', 'three-existing-service-laterService-preserved']);
+        mark('O03', ['missing-foreign-unowned-source-and-itemId-spoof-denied', 'bad-type-grade-and-stale-intent-denied', 'binding-natal-blood-and-unsalvageable-true-or-missing-denied', 'default-production-formal-source-and-position-without-fixture-qualification-or-carrier', 'ssr-json-invalid-config-registration-and-equipment-graphs', 'three-existing-service-laterService-preserved']);
 
         for (const canFit of [true, false]) {
           const f = await source('bamboo_sword', 'treasure'), positions = new Map([[f.ref, 'weapon']]);
@@ -554,7 +573,7 @@ export async function runSalvageOpenFixtureTests(options: {
         }
         for (const atomicCarrier of [undefined, createSalvageFixtureCarrier(createIndexedDbBackend(idb.factory))]) {
           const f = await source();
-          await unchanged(f.p, () => gate(f.p, { atomicCarrier }).submit(request(f.p, f.ref, 'missing-carrier')), 'O08 缺失或未安装原子夹具载体不能提交');
+          await unchanged(f.p, () => gate(f.p, { atomicCarrier }).submit(request(f.p, f.ref, 'missing-carrier')), 'O08 显式隔离后端拒绝缺失或未安装的匹配夹具租约');
         }
         const originalRemove = Progress.prototype.removeItem, originalAdd = Progress.prototype.addItem;
         try {
@@ -642,7 +661,7 @@ export async function runSalvageOpenFixtureTests(options: {
         const absent = bare(), oldSave = copy(absent.exportSave());
         eq(await absent.importSave(oldSave, { async: true }), true, 'O08 缺字段旧档合法');
         eq(absent.salvage, undefined, 'O08 缺字段保持undefined'); eq(Object.prototype.hasOwnProperty.call(absent.exportSave(), 'salvage'), false, 'O08 export不补业务袋');
-        mark('O08', ['missing-or-uninstalled-atomic-carrier-zero-write', 'carrier-false-throw-draft-tamper-atomic-refusal', 'actual-destroy-output-failure-zero-delta', 'idb-before-complete-invisible-abort-and-explicit-retry', 'serialization-failure-lock-release', 'unknown-corrupt-record-real-load-storageError-no-repair', 'old-save-missing-field-undefined', 'existing-protect-enhance-history-retained', 'selected-enchant-relation-refused-unrelated-enchant-still-works', 'memory-closed-fresh-ssr-old-callback-zero-write']);
+        mark('O08', ['explicit-fixture-backend-missing-or-uninstalled-matching-carrier-zero-write', 'carrier-false-throw-draft-tamper-atomic-refusal', 'actual-destroy-output-failure-zero-delta', 'idb-before-complete-invisible-abort-and-explicit-retry', 'serialization-failure-lock-release', 'unknown-corrupt-record-real-load-storageError-no-repair', 'old-save-missing-field-undefined', 'existing-protect-enhance-history-retained', 'selected-enchant-relation-refused-unrelated-enchant-still-works', 'memory-closed-fresh-ssr-old-callback-zero-write']);
       }
     } finally { Math.random = random; }
     eq(randomCalls, 0, '全程分解确定性零概率调用'); eq(featureFlags(), flags, 'features保持');
@@ -657,6 +676,7 @@ export async function runSalvageOpenFixtureTests(options: {
         armorRecipesDiskChanged: false, armorForgeProductionAuthorized: false },
       boundary: '本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权' };
   } finally {
+    setGameTimeSource(null);
     for (const p of progresses) await p.flushSaves();
     Progress.setActiveSlot(oldSlot); setSaveBackend(createIndexedDbBackend());
     if (storage) Object.defineProperty(globalThis, 'localStorage', storage); else Reflect.deleteProperty(globalThis, 'localStorage');

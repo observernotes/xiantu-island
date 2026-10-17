@@ -204,10 +204,10 @@ export async function runUiOpenCases(options: UiOptions = {}): Promise<{ cases: 
       record('O10', { actualGateTransactions: true, saveTransportFaultsOnly: true, interruptions, unknownRestoredRecords: unknownRecords, automaticRetry: false, crossSlotRendering: false, secondRecoveryQueue: false, completeStateOrOriginalState: true },
       ['O10/real-Gate-pending-close-switch-replace-and-ui-close', 'O10/save-failure-atomic-original-state', 'O10/unknown-half-records-rejected-without-repair', 'O10/lost-reply-fixed-intent-readonly-recovery']);
     }
-    // O11: three real available result routes; unavailable salvage success is never checked off.
+    // O11: all four production Gate result routes return through the actual rendered Menu action.
     {
       const returns: Row[] = [];
-      for (const service of ['forge', 'enhance', 'enchant'] as const) {
+      for (const service of ['forge', 'enhance', 'enchant', 'salvage'] as const) {
         const { progress: p } = await fresh(1), render = mockScene(), panel = new SmithServicesPanel(render.scene, p, { tip: (key, vars) => tips.push({ key, vars }), currentProgress: () => p });
         const pending = prepare(panel.controller, service), result = await panel.controller.submit(pending); ok(result?.allowed && 'result' in result && result.result, `${service}: real complete Gate result`); eq(panel.controller.state.stage, 'result', `${service}: result view`);
         const before = JSON.stringify(p.exportSave()), writes = store.writes; pointer(panel, actionIndex(panel, t('ui.smith.title'))); eq(panel.controller.state.stage, 'menu', `${service}: actual result Menu pointer`); eq(panel.controller.state.resultLines, [], `${service}: old success cleared`); eq(JSON.stringify(p.exportSave()), before, `${service}: return readonly`); eq(store.writes, writes, `${service}: return no save`); returns.push({ service, realCompleteResult: true, actualRenderedMenuPointer: true, returnWrites: 0 });
@@ -226,8 +226,9 @@ export async function runUiOpenCases(options: UiOptions = {}): Promise<{ cases: 
       e.open(); i.open(); i.setTab('equip'); const eBefore = copy(e.snapshot()), iBefore = copy(i.snapshot()); access({ entrance: false, menu: false, forge: false, enhance: false, enchant: false, salvage: false });
       await readonly(p, () => { e.update(); i.update(); eq(e.snapshot(), eBefore, 'six scope closure E independent'); eq(i.snapshot(), iBefore, 'six scope closure I independent'); }, 'O11 E-I independent'); eq(flags(), [true, true, true, true], 'final four flags preserved'); access();
       record('O11', { completedResultReturns: returns, deliberateClosedScopes: closedScopes, realEiPreserved: true, closedRegressionRequired: true, frozenByteChecksOwnedByRunner: true,
-        salvageResultReturnExecuted: false, salvageNewSubmissionAuthorizedByFixture: false, smithServicesUiWired: true, softOpenedSmithServicesUi: false, released: false, newOpenFlag: false },
-      ['O11/forge-enhance-enchant-real-results-return-menu', 'O11/six-scope-deliberate-closed-zero-write', 'O11/E-I-independent-of-all-UI-scopes', 'O11/salvage-result-return-blocked-by-formal-dependency'], 'O11_partial_salvage_result_return_requires_O05_formal_qualification');
+        salvageResultReturnExecuted: true, salvageProductionFormalPath: true, fixtureQualificationInjected: false, fixtureCarrierInstalled: false,
+        salvageNewSubmissionAuthorizedByFixture: false, smithServicesUiWired: true, softOpenedSmithServicesUi: false, released: false, newOpenFlag: false },
+      ['O11/four-production-Gate-real-results-return-menu', 'O11/six-scope-deliberate-closed-zero-write', 'O11/E-I-independent-of-all-UI-scopes', 'O11/salvage-production-formal-result-return-menu']);
     }
     return { cases, assertions };
   } finally {

@@ -1,0 +1,184 @@
+{
+  "passed": true,
+  "checkedAt": "2026-10-17T11:39:47.856Z",
+  "baselineTip": "7b06f5ac4e76a2c48e98431e1ccf0011a8ca0a41",
+  "frozenChecks": [
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/enhance.json",
+      "expectedSha": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+      "actualSha": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+      "match": true
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/recipes.json",
+      "expectedSha": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+      "actualSha": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+      "match": true
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/materials.json",
+      "expectedSha": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+      "actualSha": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+      "match": true
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/items.json",
+      "expectedSha": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+      "actualSha": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+      "match": true
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/life_skills.json",
+      "expectedSha": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+      "actualSha": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+      "match": true
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/enhance_protect_charm.json",
+      "expectedSha": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+      "actualSha": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+      "match": true
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/strings_zh.json",
+      "expectedSha": "d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841",
+      "actualSha": "d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841",
+      "match": true,
+      "keys": 1013
+    },
+    {
+      "file": "/workspace/xiantu/balance/enhance.json",
+      "expectedSha": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+      "actualSha": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+      "match": true
+    },
+    {
+      "file": "/workspace/xiantu/balance/recipes.json",
+      "expectedSha": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+      "actualSha": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+      "match": true
+    },
+    {
+      "file": "/workspace/xiantu/balance/materials.json",
+      "expectedSha": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+      "actualSha": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+      "match": true
+    },
+    {
+      "file": "/workspace/xiantu/balance/items.json",
+      "expectedSha": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+      "actualSha": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+      "match": true
+    },
+    {
+      "file": "/workspace/xiantu/balance/life_skills.json",
+      "expectedSha": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+      "actualSha": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+      "match": true
+    },
+    {
+      "file": "/workspace/xiantu/balance/enhance_protect_charm.json",
+      "expectedSha": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+      "actualSha": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+      "match": true
+    },
+    {
+      "file": "/workspace/xiantu/balance/strings_zh.json",
+      "expectedSha": "d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841",
+      "actualSha": "d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841",
+      "match": true,
+      "keys": 1013
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/src/ForgeOpenFlag.ts",
+      "expectedSha": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
+      "actualSha": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
+      "match": true
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/src/EnhanceOpenFlag.ts",
+      "expectedSha": "d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e",
+      "actualSha": "d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e",
+      "match": true
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/src/EnchantOpenFlag.ts",
+      "expectedSha": "bd5445b8ddfed56a32811cedd28db72e8676c7a5eff321e2fedb0ec5fe4c505a",
+      "actualSha": "bd5445b8ddfed56a32811cedd28db72e8676c7a5eff321e2fedb0ec5fe4c505a",
+      "match": true
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/src/SalvageOpenFlag.ts",
+      "expectedSha": "69aace852957c52bf7ca0214345ede7df29d6d36ec1dfd4849462e54552edff3",
+      "actualSha": "69aace852957c52bf7ca0214345ede7df29d6d36ec1dfd4849462e54552edff3",
+      "match": true
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/src/data.ts",
+      "expectedSha": "aad725652f5c0eb57a5c699726e570b146d5ded52d5c31715444dbbf4117024a",
+      "actualSha": "aad725652f5c0eb57a5c699726e570b146d5ded52d5c31715444dbbf4117024a",
+      "match": true
+    }
+  ],
+  "flagMatch": true,
+  "stringsDiskKeys": 1013,
+  "stringsSsrInjected43": false,
+  "GAME_PHASE": 5,
+  "gifts": [
+    {
+      "folder": "/workspace/xiantu/wt/dev/data/balance",
+      "checked": 10,
+      "enabled": 0
+    },
+    {
+      "folder": "/workspace/xiantu/balance",
+      "checked": 10,
+      "enabled": 0
+    }
+  ],
+  "settlementUnchanged": true,
+  "newOpenFlag": false,
+  "ui": [
+    {
+      "file": "src/SmithServicesController.ts",
+      "before": "02230518b379ef33b445717d0f15282a84829a4ade56e09ed0b561e6e19836cb",
+      "after": "02230518b379ef33b445717d0f15282a84829a4ade56e09ed0b561e6e19836cb",
+      "match": true
+    },
+    {
+      "file": "src/SmithServicesPanel.ts",
+      "before": "252dd71dae89d77a56ff258789f25ffef8f5563bc435640ec974dc32bbf91dd3",
+      "after": "252dd71dae89d77a56ff258789f25ffef8f5563bc435640ec974dc32bbf91dd3",
+      "match": true
+    },
+    {
+      "file": "src/scenes/GameScene.ts",
+      "before": "4a53de4590efdabb920e7e1eee04ccd2269530e42c8177a79bd7edf4f5b95a98",
+      "after": "4a53de4590efdabb920e7e1eee04ccd2269530e42c8177a79bd7edf4f5b95a98",
+      "match": true
+    }
+  ],
+  "oldArtifactCount": 2902,
+  "oldArtifactsMatch": true,
+  "productionSourceCount": 706,
+  "productionSourcesMatch": true,
+  "allTablesCount": 72,
+  "allTablesMatch": true,
+  "runnerLog": {
+    "file": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/codex_launch.log",
+    "prefixLength": 355144,
+    "prefixSha": "b834738c7c881caec87ea05765d9083d7f59187bedc347ebde5f1a6b2e5c1e69",
+    "runtimeAppendOnly": true,
+    "prefixMatch": true,
+    "currentLength": 619326,
+    "appendBytes": 264182,
+    "excludedFromFullFileMatch": true,
+    "reason": "The active codex runner appends this pre-existing launch log; original prefix remains byte-exact and this task never opens it for writing."
+  },
+  "artifactChanges": [],
+  "productChanges": [],
+  "tableChanges": [],
+  "softOpenedSmithServicesUi": false,
+  "released": false,
+  "notSoftOpenReleasePack": true
+}

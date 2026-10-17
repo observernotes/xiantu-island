@@ -1,0 +1,19 @@
+{
+  "name": "tsc",
+  "command": [
+    "npx",
+    "tsc",
+    "--noEmit"
+  ],
+  "cwd": "/workspace/xiantu/wt/dev",
+  "environment": {},
+  "stdin": "/dev/null",
+  "startedAt": "2026-10-17T11:38:32.518Z",
+  "finishedAt": "2026-10-17T11:38:38.895Z",
+  "exitCode": 0,
+  "signal": null,
+  "assertions": null,
+  "assertionCountAvailable": false,
+  "assertionCountMeaning": "Reported suite aggregate; no extra synthetic assertions added.",
+  "log": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/audit/tsc.log"
+}

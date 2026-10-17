@@ -1,0 +1,26 @@
+
+> xiantu-island@0.0.1 test:v06p1-market-closed
+> timeout 120s node scripts/v06p1-market-closed-test.mjs
+
+{"suite":"enchant-soft-open-compatibility-proof","passed":true,"realDiskRead":true,"productModuleTransformations":[],"tableChecks":[{"mode":"shared","name":"materials.json","currentSha":"86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d","historicalSha":"79c68429d763054ac1715467d1743575e179ecaecb2529e4b6ed7df137ef4052","matched":true},{"mode":"shared","name":"items.json","currentSha":"dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99","historicalSha":"f8b587634e5c9d43a475e85724aa34172e2945abda7654c2ef98fda07d1566f3","matched":true},{"mode":"shared","name":"strings_zh.json","currentSha":"d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841","historicalSha":"d7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09","matched":true},{"mode":"snapshot","name":"materials.json","currentSha":"86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d","historicalSha":"79c68429d763054ac1715467d1743575e179ecaecb2529e4b6ed7df137ef4052","matched":true},{"mode":"snapshot","name":"items.json","currentSha":"dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99","historicalSha":"f8b587634e5c9d43a475e85724aa34172e2945abda7654c2ef98fda07d1566f3","matched":true},{"mode":"snapshot","name":"strings_zh.json","currentSha":"d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841","historicalSha":"d7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09","matched":true}],"salvageCompatibility":{"suite":"salvage-soft-open-compatibility-proof","passed":true,"realDiskRead":true,"productModuleTransformations":[],"sameHitForgeThenEnhanceThenEnchantThenSalvage":true,"SalvageOpenFlag":true,"softOpenedSalvage":true,"released":false},"sameHitForgeThenEnhanceThenEnchant":true,"EnchantOpenFlag":true,"softOpenedEnchant":true,"released":false}
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: C01/C12 GameScene 强化授权 import 精确一次：import { featureClosed as enhanceFeatureClosed } from '../EnhanceClosed';
+
+0 !== 1
+
+    at eq (file:///workspace/xiantu/wt/dev/scripts/v06p1-market-closed-test.mjs:90:66)
+    at stripEnhanceSceneWiring (file:///workspace/xiantu/wt/dev/scripts/v06p1-market-closed-test.mjs:124:5)
+    at stripForgeSceneWiring (file:///workspace/xiantu/wt/dev/scripts/v06p1-market-closed-test.mjs:143:12)
+    at checkProtection (file:///workspace/xiantu/wt/dev/scripts/v06p1-market-closed-test.mjs:239:38)
+    at async file:///workspace/xiantu/wt/dev/scripts/v06p1-market-closed-test.mjs:498:3 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 0,
+  expected: 1,
+  operator: 'deepStrictEqual'
+}
+
+Node.js v20.19.2

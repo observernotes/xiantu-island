@@ -137,6 +137,7 @@ export async function runEnchantOpenFixtureTests(options: {
     ok(recipe, '正式源只使用已登记 recipes 打造行');
     const p = bare(); p.inventory[recipe.blueprint!] = 10;
     for (const material of recipe.materials) p.inventory[material.item] = Math.max(p.inventory[material.item] ?? 0, material.count * 10);
+    ok(await p.saveAsync(), '正式打造前保存显式库存准备和完整 CAS 基线');
     const forged = await new ForgeGate(p, { random: () => 0, ledgerId: () => dataMode + '-enchant-source-' + (++sequence) }).submit({
       craftRequestId: 'enchant-source-' + (++sequence), blueprintId: recipe.blueprint!,
       materials: recipe.materials.map(row => ({ itemId: row.item, count: row.count })),

@@ -278,7 +278,7 @@ export class EnchantGate {
         const result = apply(draft, reject);
         if (result && !this.valid(draft)) return reject(denied('progress', '附灵结果校验失败，保持原档。'));
         return result;
-      });
+      }, this.#fixtureInstancesProvided ? undefined : expected);
       return result ?? rejection ?? denied('save', '附灵保存失败，保持原库存与元素。');
     } catch { return denied('save', '附灵保存失败，保持原库存与元素。'); }
     finally {

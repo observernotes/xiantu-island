@@ -1,0 +1,25 @@
+
+> xiantu-island@0.0.1 test:v06p1-forge-closed
+> timeout 120s node scripts/v06p1-forge-closed-test.mjs
+
+
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+AssertionError [ERR_ASSERTION]: scripts/v06p1-forge-closed-test.mjs: new service adapter and closed-test consumer allowlist exact occurrences
+
+0 !== 1
+
+    at replace (file:///workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/regression-loader.mjs:23:40)
+    at load (file:///workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/regression-loader.mjs:80:9)
+    at async nextLoad (node:internal/modules/esm/hooks:864:22)
+    at async Hooks.load (node:internal/modules/esm/hooks:451:20)
+    at async MessagePort.handleMessage (node:internal/modules/esm/worker:196:18) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 0,
+  expected: 1,
+  operator: 'strictEqual'
+}
+
+Node.js v20.19.2

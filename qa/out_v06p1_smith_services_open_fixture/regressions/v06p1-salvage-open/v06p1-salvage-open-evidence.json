@@ -1,0 +1,3563 @@
+{
+  "passed": true,
+  "assertions": 7052,
+  "runnerAssertions": 1164,
+  "runtimeAssertions": 5888,
+  "salvageClosedTipsWired": true,
+  "refineStoneMapped": true,
+  "salvageOpenFixtureTableExecuted": true,
+  "formalInstanceSource": true,
+  "softOpenedSalvage": true,
+  "SalvageOpenFlag": true,
+  "released": false,
+  "enchantSoftOpenPreserved": true,
+  "EnhanceOpenFlagPreserved": true,
+  "EnchantOpenFlagPreserved": true,
+  "protectCharmSoftOpenPreserved": true,
+  "cases": {
+    "O01": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/formal-open/initial/default-ForgeGate-formal-weapon-all-four-grades",
+        "shared/formal-open/initial/read-only-feature-entrance-preview",
+        "shared/formal-open/initial/one-atomic-destroy-output-result-dedupe",
+        "shared/formal-open/initial/no-extra-stones-no-probability-no-fixtureInstances",
+        "shared/explicit-armor-fixture/initial/default-ForgeGate-formal-weapon-all-four-grades",
+        "shared/explicit-armor-fixture/initial/read-only-feature-entrance-preview",
+        "shared/explicit-armor-fixture/initial/one-atomic-destroy-output-result-dedupe",
+        "shared/explicit-armor-fixture/initial/no-extra-stones-no-probability-no-fixtureInstances",
+        "snapshot/formal-open/initial/default-ForgeGate-formal-weapon-all-four-grades",
+        "snapshot/formal-open/initial/read-only-feature-entrance-preview",
+        "snapshot/formal-open/initial/one-atomic-destroy-output-result-dedupe",
+        "snapshot/formal-open/initial/no-extra-stones-no-probability-no-fixtureInstances",
+        "snapshot/explicit-armor-fixture/initial/default-ForgeGate-formal-weapon-all-four-grades",
+        "snapshot/explicit-armor-fixture/initial/read-only-feature-entrance-preview",
+        "snapshot/explicit-armor-fixture/initial/one-atomic-destroy-output-result-dedupe",
+        "snapshot/explicit-armor-fixture/initial/no-extra-stones-no-probability-no-fixtureInstances"
+      ]
+    },
+    "O02": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/formal-open/initial/formal-weapon-bag-and-equipped-armor-unregistered-source-refused",
+        "shared/formal-open/initial/disk-recipes-unmodified-armor-cannot-invent-instanceRef-from-count-or-slot",
+        "shared/formal-open/initial/same-prototype-selected-ref-only",
+        "shared/formal-open/initial/location-proof-required-and-links-invalidated",
+        "shared/explicit-armor-fixture/initial/explicit-armor-fixture-weapon-robe-shoes-bag-and-equipped",
+        "shared/explicit-armor-fixture/initial/ssr-only-armor-recipes-explicit-not-production",
+        "shared/explicit-armor-fixture/initial/same-prototype-selected-ref-only",
+        "shared/explicit-armor-fixture/initial/location-proof-required-and-links-invalidated",
+        "snapshot/formal-open/initial/formal-weapon-bag-and-equipped-armor-unregistered-source-refused",
+        "snapshot/formal-open/initial/disk-recipes-unmodified-armor-cannot-invent-instanceRef-from-count-or-slot",
+        "snapshot/formal-open/initial/same-prototype-selected-ref-only",
+        "snapshot/formal-open/initial/location-proof-required-and-links-invalidated",
+        "snapshot/explicit-armor-fixture/initial/explicit-armor-fixture-weapon-robe-shoes-bag-and-equipped",
+        "snapshot/explicit-armor-fixture/initial/ssr-only-armor-recipes-explicit-not-production",
+        "snapshot/explicit-armor-fixture/initial/same-prototype-selected-ref-only",
+        "snapshot/explicit-armor-fixture/initial/location-proof-required-and-links-invalidated"
+      ]
+    },
+    "O03": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/formal-open/initial/missing-foreign-unowned-source-and-itemId-spoof-denied",
+        "shared/formal-open/initial/bad-type-grade-and-stale-intent-denied",
+        "shared/formal-open/initial/binding-natal-blood-and-unsalvageable-true-or-missing-denied",
+        "shared/formal-open/initial/default-production-without-qualification-denied",
+        "shared/formal-open/initial/ssr-json-invalid-config-registration-and-equipment-graphs",
+        "shared/formal-open/initial/three-existing-service-laterService-preserved",
+        "shared/invalid-dependency/missing-salvage/ssr-json-dependency-missing-salvage",
+        "shared/invalid-dependency/missing-salvage/zero-destruction-output-records",
+        "shared/invalid-dependency/missing-grade/ssr-json-dependency-missing-grade",
+        "shared/invalid-dependency/missing-grade/zero-destruction-output-records",
+        "shared/invalid-dependency/zero-count/ssr-json-dependency-zero-count",
+        "shared/invalid-dependency/zero-count/zero-destruction-output-records",
+        "shared/invalid-dependency/negative-count/ssr-json-dependency-negative-count",
+        "shared/invalid-dependency/negative-count/zero-destruction-output-records",
+        "shared/invalid-dependency/unsafe-count/ssr-json-dependency-unsafe-count",
+        "shared/invalid-dependency/unsafe-count/zero-destruction-output-records",
+        "shared/invalid-dependency/wrong-count/ssr-json-dependency-wrong-count",
+        "shared/invalid-dependency/wrong-count/zero-destruction-output-records",
+        "shared/invalid-dependency/extra-grade/ssr-json-dependency-extra-grade",
+        "shared/invalid-dependency/extra-grade/zero-destruction-output-records",
+        "shared/invalid-dependency/rate-forbidden/ssr-json-dependency-rate-forbidden",
+        "shared/invalid-dependency/rate-forbidden/zero-destruction-output-records",
+        "shared/invalid-dependency/cost-forbidden/ssr-json-dependency-cost-forbidden",
+        "shared/invalid-dependency/cost-forbidden/zero-destruction-output-records",
+        "shared/invalid-dependency/items-registration-missing/ssr-json-dependency-items-registration-missing",
+        "shared/invalid-dependency/items-registration-missing/zero-destruction-output-records",
+        "shared/invalid-dependency/materials-missing/ssr-json-dependency-materials-missing",
+        "shared/invalid-dependency/materials-missing/zero-destruction-output-records",
+        "shared/invalid-dependency/duplicate-registration/ssr-json-dependency-duplicate-registration",
+        "shared/invalid-dependency/duplicate-registration/zero-destruction-output-records",
+        "shared/invalid-dependency/stone-phase/ssr-json-dependency-stone-phase",
+        "shared/invalid-dependency/stone-phase/zero-destruction-output-records",
+        "shared/invalid-dependency/stone-disabled/ssr-json-dependency-stone-disabled",
+        "shared/invalid-dependency/stone-disabled/zero-destruction-output-records",
+        "shared/invalid-dependency/stone-placeholder/ssr-json-dependency-stone-placeholder",
+        "shared/invalid-dependency/stone-placeholder/zero-destruction-output-records",
+        "shared/invalid-dependency/stone-quality/ssr-json-dependency-stone-quality",
+        "shared/invalid-dependency/stone-quality/zero-destruction-output-records",
+        "shared/invalid-dependency/weapon-phase/ssr-json-dependency-weapon-phase",
+        "shared/invalid-dependency/weapon-phase/zero-destruction-output-records",
+        "shared/invalid-dependency/weapon-disabled/ssr-json-dependency-weapon-disabled",
+        "shared/invalid-dependency/weapon-disabled/zero-destruction-output-records",
+        "shared/invalid-dependency/weapon-placeholder/ssr-json-dependency-weapon-placeholder",
+        "shared/invalid-dependency/weapon-placeholder/zero-destruction-output-records",
+        "shared/invalid-dependency/weapon-quality/ssr-json-dependency-weapon-quality",
+        "shared/invalid-dependency/weapon-quality/zero-destruction-output-records",
+        "shared/invalid-dependency/weapon-slot/ssr-json-dependency-weapon-slot",
+        "shared/invalid-dependency/weapon-slot/zero-destruction-output-records",
+        "shared/invalid-dependency/weapon-type/ssr-json-dependency-weapon-type",
+        "shared/invalid-dependency/weapon-type/zero-destruction-output-records",
+        "shared/explicit-armor-fixture/initial/missing-foreign-unowned-source-and-itemId-spoof-denied",
+        "shared/explicit-armor-fixture/initial/bad-type-grade-and-stale-intent-denied",
+        "shared/explicit-armor-fixture/initial/binding-natal-blood-and-unsalvageable-true-or-missing-denied",
+        "shared/explicit-armor-fixture/initial/default-production-without-qualification-denied",
+        "shared/explicit-armor-fixture/initial/ssr-json-invalid-config-registration-and-equipment-graphs",
+        "shared/explicit-armor-fixture/initial/three-existing-service-laterService-preserved",
+        "snapshot/formal-open/initial/missing-foreign-unowned-source-and-itemId-spoof-denied",
+        "snapshot/formal-open/initial/bad-type-grade-and-stale-intent-denied",
+        "snapshot/formal-open/initial/binding-natal-blood-and-unsalvageable-true-or-missing-denied",
+        "snapshot/formal-open/initial/default-production-without-qualification-denied",
+        "snapshot/formal-open/initial/ssr-json-invalid-config-registration-and-equipment-graphs",
+        "snapshot/formal-open/initial/three-existing-service-laterService-preserved",
+        "snapshot/invalid-dependency/missing-salvage/ssr-json-dependency-missing-salvage",
+        "snapshot/invalid-dependency/missing-salvage/zero-destruction-output-records",
+        "snapshot/invalid-dependency/missing-grade/ssr-json-dependency-missing-grade",
+        "snapshot/invalid-dependency/missing-grade/zero-destruction-output-records",
+        "snapshot/invalid-dependency/zero-count/ssr-json-dependency-zero-count",
+        "snapshot/invalid-dependency/zero-count/zero-destruction-output-records",
+        "snapshot/invalid-dependency/negative-count/ssr-json-dependency-negative-count",
+        "snapshot/invalid-dependency/negative-count/zero-destruction-output-records",
+        "snapshot/invalid-dependency/unsafe-count/ssr-json-dependency-unsafe-count",
+        "snapshot/invalid-dependency/unsafe-count/zero-destruction-output-records",
+        "snapshot/invalid-dependency/wrong-count/ssr-json-dependency-wrong-count",
+        "snapshot/invalid-dependency/wrong-count/zero-destruction-output-records",
+        "snapshot/invalid-dependency/extra-grade/ssr-json-dependency-extra-grade",
+        "snapshot/invalid-dependency/extra-grade/zero-destruction-output-records",
+        "snapshot/invalid-dependency/rate-forbidden/ssr-json-dependency-rate-forbidden",
+        "snapshot/invalid-dependency/rate-forbidden/zero-destruction-output-records",
+        "snapshot/invalid-dependency/cost-forbidden/ssr-json-dependency-cost-forbidden",
+        "snapshot/invalid-dependency/cost-forbidden/zero-destruction-output-records",
+        "snapshot/invalid-dependency/items-registration-missing/ssr-json-dependency-items-registration-missing",
+        "snapshot/invalid-dependency/items-registration-missing/zero-destruction-output-records",
+        "snapshot/invalid-dependency/materials-missing/ssr-json-dependency-materials-missing",
+        "snapshot/invalid-dependency/materials-missing/zero-destruction-output-records",
+        "snapshot/invalid-dependency/duplicate-registration/ssr-json-dependency-duplicate-registration",
+        "snapshot/invalid-dependency/duplicate-registration/zero-destruction-output-records",
+        "snapshot/invalid-dependency/stone-phase/ssr-json-dependency-stone-phase",
+        "snapshot/invalid-dependency/stone-phase/zero-destruction-output-records",
+        "snapshot/invalid-dependency/stone-disabled/ssr-json-dependency-stone-disabled",
+        "snapshot/invalid-dependency/stone-disabled/zero-destruction-output-records",
+        "snapshot/invalid-dependency/stone-placeholder/ssr-json-dependency-stone-placeholder",
+        "snapshot/invalid-dependency/stone-placeholder/zero-destruction-output-records",
+        "snapshot/invalid-dependency/stone-quality/ssr-json-dependency-stone-quality",
+        "snapshot/invalid-dependency/stone-quality/zero-destruction-output-records",
+        "snapshot/invalid-dependency/weapon-phase/ssr-json-dependency-weapon-phase",
+        "snapshot/invalid-dependency/weapon-phase/zero-destruction-output-records",
+        "snapshot/invalid-dependency/weapon-disabled/ssr-json-dependency-weapon-disabled",
+        "snapshot/invalid-dependency/weapon-disabled/zero-destruction-output-records",
+        "snapshot/invalid-dependency/weapon-placeholder/ssr-json-dependency-weapon-placeholder",
+        "snapshot/invalid-dependency/weapon-placeholder/zero-destruction-output-records",
+        "snapshot/invalid-dependency/weapon-quality/ssr-json-dependency-weapon-quality",
+        "snapshot/invalid-dependency/weapon-quality/zero-destruction-output-records",
+        "snapshot/invalid-dependency/weapon-slot/ssr-json-dependency-weapon-slot",
+        "snapshot/invalid-dependency/weapon-slot/zero-destruction-output-records",
+        "snapshot/invalid-dependency/weapon-type/ssr-json-dependency-weapon-type",
+        "snapshot/invalid-dependency/weapon-type/zero-destruction-output-records",
+        "snapshot/explicit-armor-fixture/initial/missing-foreign-unowned-source-and-itemId-spoof-denied",
+        "snapshot/explicit-armor-fixture/initial/bad-type-grade-and-stale-intent-denied",
+        "snapshot/explicit-armor-fixture/initial/binding-natal-blood-and-unsalvageable-true-or-missing-denied",
+        "snapshot/explicit-armor-fixture/initial/default-production-without-qualification-denied",
+        "snapshot/explicit-armor-fixture/initial/ssr-json-invalid-config-registration-and-equipment-graphs",
+        "snapshot/explicit-armor-fixture/initial/three-existing-service-laterService-preserved"
+      ]
+    },
+    "O04": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/formal-open/initial/full-equipped-target-complete-existing-stack-accepts",
+        "shared/formal-open/initial/full-no-complete-stack-zero-delta",
+        "shared/formal-open/initial/illegal-slots-stackLimit-and-inventory-denied",
+        "shared/formal-open/initial/no-overflow-partial-mail-pending",
+        "shared/explicit-armor-fixture/initial/full-equipped-target-complete-existing-stack-accepts",
+        "shared/explicit-armor-fixture/initial/full-no-complete-stack-zero-delta",
+        "shared/explicit-armor-fixture/initial/illegal-slots-stackLimit-and-inventory-denied",
+        "shared/explicit-armor-fixture/initial/no-overflow-partial-mail-pending",
+        "snapshot/formal-open/initial/full-equipped-target-complete-existing-stack-accepts",
+        "snapshot/formal-open/initial/full-no-complete-stack-zero-delta",
+        "snapshot/formal-open/initial/illegal-slots-stackLimit-and-inventory-denied",
+        "snapshot/formal-open/initial/no-overflow-partial-mail-pending",
+        "snapshot/explicit-armor-fixture/initial/full-equipped-target-complete-existing-stack-accepts",
+        "snapshot/explicit-armor-fixture/initial/full-no-complete-stack-zero-delta",
+        "snapshot/explicit-armor-fixture/initial/illegal-slots-stackLimit-and-inventory-denied",
+        "snapshot/explicit-armor-fixture/initial/no-overflow-partial-mail-pending"
+      ]
+    },
+    "O05": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/formal-open/initial/matching-old-success-read-only-without-instance-binding-capacity",
+        "shared/formal-open/initial/same-request-grade-or-ref-conflict",
+        "shared/formal-open/initial/new-request-destroyed-instance-no-replacement",
+        "shared/explicit-armor-fixture/initial/matching-old-success-read-only-without-instance-binding-capacity",
+        "shared/explicit-armor-fixture/initial/same-request-grade-or-ref-conflict",
+        "shared/explicit-armor-fixture/initial/new-request-destroyed-instance-no-replacement",
+        "snapshot/formal-open/initial/matching-old-success-read-only-without-instance-binding-capacity",
+        "snapshot/formal-open/initial/same-request-grade-or-ref-conflict",
+        "snapshot/formal-open/initial/new-request-destroyed-instance-no-replacement",
+        "snapshot/explicit-armor-fixture/initial/matching-old-success-read-only-without-instance-binding-capacity",
+        "snapshot/explicit-armor-fixture/initial/same-request-grade-or-ref-conflict",
+        "snapshot/explicit-armor-fixture/initial/new-request-destroyed-instance-no-replacement"
+      ]
+    },
+    "O06": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/formal-open/initial/real-save-load-import-export-restore-stable-destruction-inventory-results-dedupe",
+        "shared/formal-open/initial/fresh-independent-ssr-open-and-formal-closed",
+        "shared/formal-open/initial/cross-slot-source-request-result-isolation",
+        "shared/formal-open/fresh-ssr/fresh-ssr-real-save-load-export-import-restore",
+        "shared/formal-open/fresh-ssr/no-revival-no-refill-no-redo",
+        "shared/explicit-armor-fixture/initial/real-save-load-import-export-restore-stable-destruction-inventory-results-dedupe",
+        "shared/explicit-armor-fixture/initial/fresh-independent-ssr-open-and-formal-closed",
+        "shared/explicit-armor-fixture/initial/cross-slot-source-request-result-isolation",
+        "snapshot/formal-open/initial/real-save-load-import-export-restore-stable-destruction-inventory-results-dedupe",
+        "snapshot/formal-open/initial/fresh-independent-ssr-open-and-formal-closed",
+        "snapshot/formal-open/initial/cross-slot-source-request-result-isolation",
+        "snapshot/formal-open/fresh-ssr/fresh-ssr-real-save-load-export-import-restore",
+        "snapshot/formal-open/fresh-ssr/no-revival-no-refill-no-redo",
+        "snapshot/explicit-armor-fixture/initial/real-save-load-import-export-restore-stable-destruction-inventory-results-dedupe",
+        "snapshot/explicit-armor-fixture/initial/fresh-independent-ssr-open-and-formal-closed",
+        "snapshot/explicit-armor-fixture/initial/cross-slot-source-request-result-isolation"
+      ]
+    },
+    "O07": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/formal-open/initial/same-request-concurrent-one-commit",
+        "shared/formal-open/initial/same-instance-different-requests-one-destruction",
+        "shared/formal-open/initial/formal-two-inventory-weapon-targets-shared-capacity-no-overcapacity",
+        "shared/formal-open/initial/existing-EnhanceGate-race-preserves-complete-facts",
+        "shared/formal-open/initial/two-object-ordinary-first-salvage-CAS-refuses-after-pre-read",
+        "shared/formal-open/initial/two-object-salvage-first-stale-ordinary-writer-refused-after-pre-read",
+        "shared/formal-open/initial/stale-progress-rejected-after-other-save",
+        "shared/explicit-armor-fixture/initial/same-request-concurrent-one-commit",
+        "shared/explicit-armor-fixture/initial/same-instance-different-requests-one-destruction",
+        "shared/explicit-armor-fixture/initial/explicit-fixture-two-equipped-targets-shared-stack-no-overcapacity",
+        "shared/explicit-armor-fixture/initial/existing-EnhanceGate-race-preserves-complete-facts",
+        "shared/explicit-armor-fixture/initial/two-object-ordinary-first-salvage-CAS-refuses-after-pre-read",
+        "shared/explicit-armor-fixture/initial/two-object-salvage-first-stale-ordinary-writer-refused-after-pre-read",
+        "shared/explicit-armor-fixture/initial/stale-progress-rejected-after-other-save",
+        "snapshot/formal-open/initial/same-request-concurrent-one-commit",
+        "snapshot/formal-open/initial/same-instance-different-requests-one-destruction",
+        "snapshot/formal-open/initial/formal-two-inventory-weapon-targets-shared-capacity-no-overcapacity",
+        "snapshot/formal-open/initial/existing-EnhanceGate-race-preserves-complete-facts",
+        "snapshot/formal-open/initial/two-object-ordinary-first-salvage-CAS-refuses-after-pre-read",
+        "snapshot/formal-open/initial/two-object-salvage-first-stale-ordinary-writer-refused-after-pre-read",
+        "snapshot/formal-open/initial/stale-progress-rejected-after-other-save",
+        "snapshot/explicit-armor-fixture/initial/same-request-concurrent-one-commit",
+        "snapshot/explicit-armor-fixture/initial/same-instance-different-requests-one-destruction",
+        "snapshot/explicit-armor-fixture/initial/explicit-fixture-two-equipped-targets-shared-stack-no-overcapacity",
+        "snapshot/explicit-armor-fixture/initial/existing-EnhanceGate-race-preserves-complete-facts",
+        "snapshot/explicit-armor-fixture/initial/two-object-ordinary-first-salvage-CAS-refuses-after-pre-read",
+        "snapshot/explicit-armor-fixture/initial/two-object-salvage-first-stale-ordinary-writer-refused-after-pre-read",
+        "snapshot/explicit-armor-fixture/initial/stale-progress-rejected-after-other-save"
+      ]
+    },
+    "O08": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/formal-open/initial/missing-or-uninstalled-atomic-carrier-zero-write",
+        "shared/formal-open/initial/carrier-false-throw-draft-tamper-atomic-refusal",
+        "shared/formal-open/initial/actual-destroy-output-failure-zero-delta",
+        "shared/formal-open/initial/idb-before-complete-invisible-abort-and-explicit-retry",
+        "shared/formal-open/initial/serialization-failure-lock-release",
+        "shared/formal-open/initial/unknown-corrupt-record-real-load-storageError-no-repair",
+        "shared/formal-open/initial/old-save-missing-field-undefined",
+        "shared/formal-open/initial/existing-protect-enhance-history-retained",
+        "shared/formal-open/initial/selected-enchant-relation-refused-unrelated-enchant-still-works",
+        "shared/formal-open/initial/memory-closed-fresh-ssr-old-callback-zero-write",
+        "shared/memory-closed/initial/memory-closed-flag-false-eight-tips",
+        "shared/memory-closed/initial/hostile-getters-unread",
+        "shared/memory-closed/initial/closed-fresh-ssr-keeps-open-result",
+        "shared/memory-closed/fresh-ssr/memory-closed-flag-false-eight-tips",
+        "shared/memory-closed/fresh-ssr/hostile-getters-unread",
+        "shared/memory-closed/fresh-ssr/closed-fresh-ssr-keeps-open-result",
+        "shared/explicit-armor-fixture/initial/missing-or-uninstalled-atomic-carrier-zero-write",
+        "shared/explicit-armor-fixture/initial/carrier-false-throw-draft-tamper-atomic-refusal",
+        "shared/explicit-armor-fixture/initial/actual-destroy-output-failure-zero-delta",
+        "shared/explicit-armor-fixture/initial/idb-before-complete-invisible-abort-and-explicit-retry",
+        "shared/explicit-armor-fixture/initial/serialization-failure-lock-release",
+        "shared/explicit-armor-fixture/initial/unknown-corrupt-record-real-load-storageError-no-repair",
+        "shared/explicit-armor-fixture/initial/old-save-missing-field-undefined",
+        "shared/explicit-armor-fixture/initial/existing-protect-enhance-history-retained",
+        "shared/explicit-armor-fixture/initial/selected-enchant-relation-refused-unrelated-enchant-still-works",
+        "shared/explicit-armor-fixture/initial/memory-closed-fresh-ssr-old-callback-zero-write",
+        "snapshot/formal-open/initial/missing-or-uninstalled-atomic-carrier-zero-write",
+        "snapshot/formal-open/initial/carrier-false-throw-draft-tamper-atomic-refusal",
+        "snapshot/formal-open/initial/actual-destroy-output-failure-zero-delta",
+        "snapshot/formal-open/initial/idb-before-complete-invisible-abort-and-explicit-retry",
+        "snapshot/formal-open/initial/serialization-failure-lock-release",
+        "snapshot/formal-open/initial/unknown-corrupt-record-real-load-storageError-no-repair",
+        "snapshot/formal-open/initial/old-save-missing-field-undefined",
+        "snapshot/formal-open/initial/existing-protect-enhance-history-retained",
+        "snapshot/formal-open/initial/selected-enchant-relation-refused-unrelated-enchant-still-works",
+        "snapshot/formal-open/initial/memory-closed-fresh-ssr-old-callback-zero-write",
+        "snapshot/memory-closed/initial/memory-closed-flag-false-eight-tips",
+        "snapshot/memory-closed/initial/hostile-getters-unread",
+        "snapshot/memory-closed/initial/closed-fresh-ssr-keeps-open-result",
+        "snapshot/memory-closed/fresh-ssr/memory-closed-flag-false-eight-tips",
+        "snapshot/memory-closed/fresh-ssr/hostile-getters-unread",
+        "snapshot/memory-closed/fresh-ssr/closed-fresh-ssr-keeps-open-result",
+        "snapshot/explicit-armor-fixture/initial/missing-or-uninstalled-atomic-carrier-zero-write",
+        "snapshot/explicit-armor-fixture/initial/carrier-false-throw-draft-tamper-atomic-refusal",
+        "snapshot/explicit-armor-fixture/initial/actual-destroy-output-failure-zero-delta",
+        "snapshot/explicit-armor-fixture/initial/idb-before-complete-invisible-abort-and-explicit-retry",
+        "snapshot/explicit-armor-fixture/initial/serialization-failure-lock-release",
+        "snapshot/explicit-armor-fixture/initial/unknown-corrupt-record-real-load-storageError-no-repair",
+        "snapshot/explicit-armor-fixture/initial/old-save-missing-field-undefined",
+        "snapshot/explicit-armor-fixture/initial/existing-protect-enhance-history-retained",
+        "snapshot/explicit-armor-fixture/initial/selected-enchant-relation-refused-unrelated-enchant-still-works",
+        "snapshot/explicit-armor-fixture/initial/memory-closed-fresh-ssr-old-callback-zero-write"
+      ]
+    }
+  },
+  "acceptanceDesign": "design/30 §4.3 O01–O08",
+  "graphCount": 54,
+  "memoryClosedGraphCount": 4,
+  "formalOpenGraphCount": 4,
+  "invalidDependencies": [
+    "missing-salvage",
+    "missing-grade",
+    "zero-count",
+    "negative-count",
+    "unsafe-count",
+    "wrong-count",
+    "extra-grade",
+    "rate-forbidden",
+    "cost-forbidden",
+    "items-registration-missing",
+    "materials-missing",
+    "duplicate-registration",
+    "stone-phase",
+    "stone-disabled",
+    "stone-placeholder",
+    "stone-quality",
+    "weapon-phase",
+    "weapon-disabled",
+    "weapon-placeholder",
+    "weapon-quality",
+    "weapon-slot",
+    "weapon-type"
+  ],
+  "formalGraph": {
+    "SalvageOpenFlag": true,
+    "flagLoads": 0,
+    "productModuleTransformations": []
+  },
+  "memoryClosedGraph": {
+    "injectedFlag": false,
+    "flagLoads": 1
+  },
+  "armorFixtureGraphCount": 2,
+  "armorBoundary": "磁盘无 robe/shoes 打造配方；正式图对缺正式来源防具整拒；独立显式配方夹具仅保留消费者成功覆盖，不生产授权",
+  "freshSsrRoundtrip": true,
+  "productionFixtureInstances": false,
+  "deterministic": true,
+  "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+  "frozenShas": {
+    "enhance.json": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+    "recipes.json": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+    "materials.json": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+    "items.json": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+    "strings_zh.json": "d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841",
+    "npcs.json": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+    "life_skills.json": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+    "enhance_protect_charm.json": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772"
+  },
+  "frozenSourceShas": {
+    "src/ForgeOpenFlag.ts": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
+    "src/EnhanceOpenFlag.ts": "d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e",
+    "src/EnchantOpenFlag.ts": "bd5445b8ddfed56a32811cedd28db72e8676c7a5eff321e2fedb0ec5fe4c505a",
+    "src/SalvageClosed.ts": "287a55d7025018629235d45ca4386d75134fc39362532a4c47bf121b574ae211",
+    "src/data.ts": "aad725652f5c0eb57a5c699726e570b146d5ded52d5c31715444dbbf4117024a"
+  },
+  "evidence": [
+    {
+      "passed": true,
+      "assertions": 1114,
+      "dataMode": "shared",
+      "graph": "formal-open",
+      "cases": {
+        "O01": {
+          "executed": true,
+          "evidenceKeys": [
+            "default-ForgeGate-formal-weapon-all-four-grades",
+            "read-only-feature-entrance-preview",
+            "one-atomic-destroy-output-result-dedupe",
+            "no-extra-stones-no-probability-no-fixtureInstances"
+          ]
+        },
+        "O02": {
+          "executed": true,
+          "evidenceKeys": [
+            "formal-weapon-bag-and-equipped-armor-unregistered-source-refused",
+            "disk-recipes-unmodified-armor-cannot-invent-instanceRef-from-count-or-slot",
+            "same-prototype-selected-ref-only",
+            "location-proof-required-and-links-invalidated"
+          ]
+        },
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "missing-foreign-unowned-source-and-itemId-spoof-denied",
+            "bad-type-grade-and-stale-intent-denied",
+            "binding-natal-blood-and-unsalvageable-true-or-missing-denied",
+            "default-production-without-qualification-denied",
+            "ssr-json-invalid-config-registration-and-equipment-graphs",
+            "three-existing-service-laterService-preserved"
+          ]
+        },
+        "O04": {
+          "executed": true,
+          "evidenceKeys": [
+            "full-equipped-target-complete-existing-stack-accepts",
+            "full-no-complete-stack-zero-delta",
+            "illegal-slots-stackLimit-and-inventory-denied",
+            "no-overflow-partial-mail-pending"
+          ]
+        },
+        "O05": {
+          "executed": true,
+          "evidenceKeys": [
+            "matching-old-success-read-only-without-instance-binding-capacity",
+            "same-request-grade-or-ref-conflict",
+            "new-request-destroyed-instance-no-replacement"
+          ]
+        },
+        "O06": {
+          "executed": true,
+          "evidenceKeys": [
+            "real-save-load-import-export-restore-stable-destruction-inventory-results-dedupe",
+            "fresh-independent-ssr-open-and-formal-closed",
+            "cross-slot-source-request-result-isolation"
+          ]
+        },
+        "O07": {
+          "executed": true,
+          "evidenceKeys": [
+            "same-request-concurrent-one-commit",
+            "same-instance-different-requests-one-destruction",
+            "formal-two-inventory-weapon-targets-shared-capacity-no-overcapacity",
+            "existing-EnhanceGate-race-preserves-complete-facts",
+            "two-object-ordinary-first-salvage-CAS-refuses-after-pre-read",
+            "two-object-salvage-first-stale-ordinary-writer-refused-after-pre-read",
+            "stale-progress-rejected-after-other-save"
+          ]
+        },
+        "O08": {
+          "executed": true,
+          "evidenceKeys": [
+            "missing-or-uninstalled-atomic-carrier-zero-write",
+            "carrier-false-throw-draft-tamper-atomic-refusal",
+            "actual-destroy-output-failure-zero-delta",
+            "idb-before-complete-invisible-abort-and-explicit-retry",
+            "serialization-failure-lock-release",
+            "unknown-corrupt-record-real-load-storageError-no-repair",
+            "old-save-missing-field-undefined",
+            "existing-protect-enhance-history-retained",
+            "selected-enchant-relation-refused-unrelated-enchant-still-works",
+            "memory-closed-fresh-ssr-old-callback-zero-write"
+          ]
+        }
+      },
+      "storageWrites": 101,
+      "commits": 100,
+      "sceneSmoke": {
+        "noObjectNoop": true,
+        "nonSmithIgnored": true,
+        "nearbyOnly": true,
+        "hiddenIgnored": true,
+        "genericInteraction": true,
+        "smithServicesUiWired": true,
+        "menuRouted": true,
+        "consumedInteraction": true,
+        "graph": "formal-open",
+        "saveWrites": 0
+      },
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": true,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [],
+      "invalidDependency": null,
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 48,
+      "dataMode": "shared",
+      "graph": "memory-closed",
+      "cases": {
+        "O08": {
+          "executed": true,
+          "evidenceKeys": [
+            "memory-closed-flag-false-eight-tips",
+            "hostile-getters-unread",
+            "closed-fresh-ssr-keeps-open-result"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": {
+        "noObjectNoop": true,
+        "nonSmithIgnored": true,
+        "nearbyOnly": true,
+        "hiddenIgnored": true,
+        "genericInteraction": true,
+        "smithServicesUiWired": true,
+        "menuRouted": true,
+        "consumedInteraction": true,
+        "graph": "memory-closed",
+        "saveWrites": 0
+      },
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": false,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 1,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "SalvageOpenFlag.ts"
+      ],
+      "invalidDependency": null,
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 89,
+      "dataMode": "shared",
+      "graph": "formal-open",
+      "cases": {
+        "O06": {
+          "executed": true,
+          "evidenceKeys": [
+            "fresh-ssr-real-save-load-export-import-restore",
+            "no-revival-no-refill-no-redo"
+          ]
+        }
+      },
+      "storageWrites": 4,
+      "commits": 4,
+      "sceneSmoke": {
+        "noObjectNoop": true,
+        "nonSmithIgnored": true,
+        "nearbyOnly": true,
+        "hiddenIgnored": true,
+        "genericInteraction": true,
+        "smithServicesUiWired": true,
+        "menuRouted": true,
+        "consumedInteraction": true,
+        "graph": "formal-open",
+        "saveWrites": 0
+      },
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [],
+      "invalidDependency": null,
+      "freshSsr": true
+    },
+    {
+      "passed": true,
+      "assertions": 88,
+      "dataMode": "shared",
+      "graph": "memory-closed",
+      "cases": {
+        "O08": {
+          "executed": true,
+          "evidenceKeys": [
+            "memory-closed-flag-false-eight-tips",
+            "hostile-getters-unread",
+            "closed-fresh-ssr-keeps-open-result"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": {
+        "noObjectNoop": true,
+        "nonSmithIgnored": true,
+        "nearbyOnly": true,
+        "hiddenIgnored": true,
+        "genericInteraction": true,
+        "smithServicesUiWired": true,
+        "menuRouted": true,
+        "consumedInteraction": true,
+        "graph": "memory-closed",
+        "saveWrites": 0
+      },
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": false,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 1,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "SalvageOpenFlag.ts"
+      ],
+      "invalidDependency": null,
+      "freshSsr": true
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "shared",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-missing-salvage",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "missing-salvage",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "shared",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-missing-grade",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "missing-grade",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "shared",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-zero-count",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "zero-count",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "shared",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-negative-count",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "negative-count",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "shared",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-unsafe-count",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "unsafe-count",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "shared",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-wrong-count",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "wrong-count",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "shared",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-extra-grade",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "extra-grade",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "shared",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-rate-forbidden",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "rate-forbidden",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "shared",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-cost-forbidden",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "cost-forbidden",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "shared",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-items-registration-missing",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "items-registration-missing",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "shared",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-materials-missing",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "materials-missing",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "shared",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-duplicate-registration",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "duplicate-registration",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "shared",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-stone-phase",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "stone-phase",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "shared",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-stone-disabled",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "stone-disabled",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "shared",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-stone-placeholder",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "stone-placeholder",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "shared",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-stone-quality",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "stone-quality",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "shared",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-weapon-phase",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "weapon-phase",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "shared",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-weapon-disabled",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "weapon-disabled",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "shared",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-weapon-placeholder",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "weapon-placeholder",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "shared",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-weapon-quality",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "weapon-quality",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "shared",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-weapon-slot",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "weapon-slot",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "shared",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-weapon-type",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "weapon-type",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 1187,
+      "dataMode": "shared",
+      "graph": "explicit-armor-fixture",
+      "cases": {
+        "O01": {
+          "executed": true,
+          "evidenceKeys": [
+            "default-ForgeGate-formal-weapon-all-four-grades",
+            "read-only-feature-entrance-preview",
+            "one-atomic-destroy-output-result-dedupe",
+            "no-extra-stones-no-probability-no-fixtureInstances"
+          ]
+        },
+        "O02": {
+          "executed": true,
+          "evidenceKeys": [
+            "explicit-armor-fixture-weapon-robe-shoes-bag-and-equipped",
+            "ssr-only-armor-recipes-explicit-not-production",
+            "same-prototype-selected-ref-only",
+            "location-proof-required-and-links-invalidated"
+          ]
+        },
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "missing-foreign-unowned-source-and-itemId-spoof-denied",
+            "bad-type-grade-and-stale-intent-denied",
+            "binding-natal-blood-and-unsalvageable-true-or-missing-denied",
+            "default-production-without-qualification-denied",
+            "ssr-json-invalid-config-registration-and-equipment-graphs",
+            "three-existing-service-laterService-preserved"
+          ]
+        },
+        "O04": {
+          "executed": true,
+          "evidenceKeys": [
+            "full-equipped-target-complete-existing-stack-accepts",
+            "full-no-complete-stack-zero-delta",
+            "illegal-slots-stackLimit-and-inventory-denied",
+            "no-overflow-partial-mail-pending"
+          ]
+        },
+        "O05": {
+          "executed": true,
+          "evidenceKeys": [
+            "matching-old-success-read-only-without-instance-binding-capacity",
+            "same-request-grade-or-ref-conflict",
+            "new-request-destroyed-instance-no-replacement"
+          ]
+        },
+        "O06": {
+          "executed": true,
+          "evidenceKeys": [
+            "real-save-load-import-export-restore-stable-destruction-inventory-results-dedupe",
+            "fresh-independent-ssr-open-and-formal-closed",
+            "cross-slot-source-request-result-isolation"
+          ]
+        },
+        "O07": {
+          "executed": true,
+          "evidenceKeys": [
+            "same-request-concurrent-one-commit",
+            "same-instance-different-requests-one-destruction",
+            "explicit-fixture-two-equipped-targets-shared-stack-no-overcapacity",
+            "existing-EnhanceGate-race-preserves-complete-facts",
+            "two-object-ordinary-first-salvage-CAS-refuses-after-pre-read",
+            "two-object-salvage-first-stale-ordinary-writer-refused-after-pre-read",
+            "stale-progress-rejected-after-other-save"
+          ]
+        },
+        "O08": {
+          "executed": true,
+          "evidenceKeys": [
+            "missing-or-uninstalled-atomic-carrier-zero-write",
+            "carrier-false-throw-draft-tamper-atomic-refusal",
+            "actual-destroy-output-failure-zero-delta",
+            "idb-before-complete-invisible-abort-and-explicit-retry",
+            "serialization-failure-lock-release",
+            "unknown-corrupt-record-real-load-storageError-no-repair",
+            "old-save-missing-field-undefined",
+            "existing-protect-enhance-history-retained",
+            "selected-enchant-relation-refused-unrelated-enchant-still-works",
+            "memory-closed-fresh-ssr-old-callback-zero-write"
+          ]
+        }
+      },
+      "storageWrites": 121,
+      "commits": 120,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [
+          "fox_robe",
+          "cloth_shoes"
+        ],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": true,
+      "productModuleTransformations": [
+        "balance/recipes.json"
+      ],
+      "invalidDependency": null,
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 1114,
+      "dataMode": "snapshot",
+      "graph": "formal-open",
+      "cases": {
+        "O01": {
+          "executed": true,
+          "evidenceKeys": [
+            "default-ForgeGate-formal-weapon-all-four-grades",
+            "read-only-feature-entrance-preview",
+            "one-atomic-destroy-output-result-dedupe",
+            "no-extra-stones-no-probability-no-fixtureInstances"
+          ]
+        },
+        "O02": {
+          "executed": true,
+          "evidenceKeys": [
+            "formal-weapon-bag-and-equipped-armor-unregistered-source-refused",
+            "disk-recipes-unmodified-armor-cannot-invent-instanceRef-from-count-or-slot",
+            "same-prototype-selected-ref-only",
+            "location-proof-required-and-links-invalidated"
+          ]
+        },
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "missing-foreign-unowned-source-and-itemId-spoof-denied",
+            "bad-type-grade-and-stale-intent-denied",
+            "binding-natal-blood-and-unsalvageable-true-or-missing-denied",
+            "default-production-without-qualification-denied",
+            "ssr-json-invalid-config-registration-and-equipment-graphs",
+            "three-existing-service-laterService-preserved"
+          ]
+        },
+        "O04": {
+          "executed": true,
+          "evidenceKeys": [
+            "full-equipped-target-complete-existing-stack-accepts",
+            "full-no-complete-stack-zero-delta",
+            "illegal-slots-stackLimit-and-inventory-denied",
+            "no-overflow-partial-mail-pending"
+          ]
+        },
+        "O05": {
+          "executed": true,
+          "evidenceKeys": [
+            "matching-old-success-read-only-without-instance-binding-capacity",
+            "same-request-grade-or-ref-conflict",
+            "new-request-destroyed-instance-no-replacement"
+          ]
+        },
+        "O06": {
+          "executed": true,
+          "evidenceKeys": [
+            "real-save-load-import-export-restore-stable-destruction-inventory-results-dedupe",
+            "fresh-independent-ssr-open-and-formal-closed",
+            "cross-slot-source-request-result-isolation"
+          ]
+        },
+        "O07": {
+          "executed": true,
+          "evidenceKeys": [
+            "same-request-concurrent-one-commit",
+            "same-instance-different-requests-one-destruction",
+            "formal-two-inventory-weapon-targets-shared-capacity-no-overcapacity",
+            "existing-EnhanceGate-race-preserves-complete-facts",
+            "two-object-ordinary-first-salvage-CAS-refuses-after-pre-read",
+            "two-object-salvage-first-stale-ordinary-writer-refused-after-pre-read",
+            "stale-progress-rejected-after-other-save"
+          ]
+        },
+        "O08": {
+          "executed": true,
+          "evidenceKeys": [
+            "missing-or-uninstalled-atomic-carrier-zero-write",
+            "carrier-false-throw-draft-tamper-atomic-refusal",
+            "actual-destroy-output-failure-zero-delta",
+            "idb-before-complete-invisible-abort-and-explicit-retry",
+            "serialization-failure-lock-release",
+            "unknown-corrupt-record-real-load-storageError-no-repair",
+            "old-save-missing-field-undefined",
+            "existing-protect-enhance-history-retained",
+            "selected-enchant-relation-refused-unrelated-enchant-still-works",
+            "memory-closed-fresh-ssr-old-callback-zero-write"
+          ]
+        }
+      },
+      "storageWrites": 101,
+      "commits": 100,
+      "sceneSmoke": {
+        "noObjectNoop": true,
+        "nonSmithIgnored": true,
+        "nearbyOnly": true,
+        "hiddenIgnored": true,
+        "genericInteraction": true,
+        "smithServicesUiWired": true,
+        "menuRouted": true,
+        "consumedInteraction": true,
+        "graph": "formal-open",
+        "saveWrites": 0
+      },
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": true,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [],
+      "invalidDependency": null,
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 48,
+      "dataMode": "snapshot",
+      "graph": "memory-closed",
+      "cases": {
+        "O08": {
+          "executed": true,
+          "evidenceKeys": [
+            "memory-closed-flag-false-eight-tips",
+            "hostile-getters-unread",
+            "closed-fresh-ssr-keeps-open-result"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": {
+        "noObjectNoop": true,
+        "nonSmithIgnored": true,
+        "nearbyOnly": true,
+        "hiddenIgnored": true,
+        "genericInteraction": true,
+        "smithServicesUiWired": true,
+        "menuRouted": true,
+        "consumedInteraction": true,
+        "graph": "memory-closed",
+        "saveWrites": 0
+      },
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": false,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 1,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "SalvageOpenFlag.ts"
+      ],
+      "invalidDependency": null,
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 89,
+      "dataMode": "snapshot",
+      "graph": "formal-open",
+      "cases": {
+        "O06": {
+          "executed": true,
+          "evidenceKeys": [
+            "fresh-ssr-real-save-load-export-import-restore",
+            "no-revival-no-refill-no-redo"
+          ]
+        }
+      },
+      "storageWrites": 4,
+      "commits": 4,
+      "sceneSmoke": {
+        "noObjectNoop": true,
+        "nonSmithIgnored": true,
+        "nearbyOnly": true,
+        "hiddenIgnored": true,
+        "genericInteraction": true,
+        "smithServicesUiWired": true,
+        "menuRouted": true,
+        "consumedInteraction": true,
+        "graph": "formal-open",
+        "saveWrites": 0
+      },
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [],
+      "invalidDependency": null,
+      "freshSsr": true
+    },
+    {
+      "passed": true,
+      "assertions": 88,
+      "dataMode": "snapshot",
+      "graph": "memory-closed",
+      "cases": {
+        "O08": {
+          "executed": true,
+          "evidenceKeys": [
+            "memory-closed-flag-false-eight-tips",
+            "hostile-getters-unread",
+            "closed-fresh-ssr-keeps-open-result"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": {
+        "noObjectNoop": true,
+        "nonSmithIgnored": true,
+        "nearbyOnly": true,
+        "hiddenIgnored": true,
+        "genericInteraction": true,
+        "smithServicesUiWired": true,
+        "menuRouted": true,
+        "consumedInteraction": true,
+        "graph": "memory-closed",
+        "saveWrites": 0
+      },
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": false,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 1,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "SalvageOpenFlag.ts"
+      ],
+      "invalidDependency": null,
+      "freshSsr": true
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "snapshot",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-missing-salvage",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "missing-salvage",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "snapshot",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-missing-grade",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "missing-grade",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "snapshot",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-zero-count",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "zero-count",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "snapshot",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-negative-count",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "negative-count",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "snapshot",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-unsafe-count",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "unsafe-count",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "snapshot",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-wrong-count",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "wrong-count",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "snapshot",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-extra-grade",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "extra-grade",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "snapshot",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-rate-forbidden",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "rate-forbidden",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "snapshot",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-cost-forbidden",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "cost-forbidden",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "snapshot",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-items-registration-missing",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "items-registration-missing",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "snapshot",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-materials-missing",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "materials-missing",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "snapshot",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-duplicate-registration",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "duplicate-registration",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "snapshot",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-stone-phase",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "stone-phase",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "snapshot",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-stone-disabled",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "stone-disabled",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "snapshot",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-stone-placeholder",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "stone-placeholder",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "snapshot",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-stone-quality",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "stone-quality",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "snapshot",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-weapon-phase",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "weapon-phase",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "snapshot",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-weapon-disabled",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "weapon-disabled",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "snapshot",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-weapon-placeholder",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "weapon-placeholder",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "snapshot",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-weapon-quality",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "weapon-quality",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "snapshot",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-weapon-slot",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "weapon-slot",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 19,
+      "dataMode": "snapshot",
+      "graph": "invalid-dependency",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "ssr-json-dependency-weapon-type",
+            "zero-destruction-output-records"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": false,
+      "productModuleTransformations": [
+        "balance/enhance.json",
+        "balance/items.json",
+        "balance/materials.json"
+      ],
+      "invalidDependency": "weapon-type",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 1187,
+      "dataMode": "snapshot",
+      "graph": "explicit-armor-fixture",
+      "cases": {
+        "O01": {
+          "executed": true,
+          "evidenceKeys": [
+            "default-ForgeGate-formal-weapon-all-four-grades",
+            "read-only-feature-entrance-preview",
+            "one-atomic-destroy-output-result-dedupe",
+            "no-extra-stones-no-probability-no-fixtureInstances"
+          ]
+        },
+        "O02": {
+          "executed": true,
+          "evidenceKeys": [
+            "explicit-armor-fixture-weapon-robe-shoes-bag-and-equipped",
+            "ssr-only-armor-recipes-explicit-not-production",
+            "same-prototype-selected-ref-only",
+            "location-proof-required-and-links-invalidated"
+          ]
+        },
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "missing-foreign-unowned-source-and-itemId-spoof-denied",
+            "bad-type-grade-and-stale-intent-denied",
+            "binding-natal-blood-and-unsalvageable-true-or-missing-denied",
+            "default-production-without-qualification-denied",
+            "ssr-json-invalid-config-registration-and-equipment-graphs",
+            "three-existing-service-laterService-preserved"
+          ]
+        },
+        "O04": {
+          "executed": true,
+          "evidenceKeys": [
+            "full-equipped-target-complete-existing-stack-accepts",
+            "full-no-complete-stack-zero-delta",
+            "illegal-slots-stackLimit-and-inventory-denied",
+            "no-overflow-partial-mail-pending"
+          ]
+        },
+        "O05": {
+          "executed": true,
+          "evidenceKeys": [
+            "matching-old-success-read-only-without-instance-binding-capacity",
+            "same-request-grade-or-ref-conflict",
+            "new-request-destroyed-instance-no-replacement"
+          ]
+        },
+        "O06": {
+          "executed": true,
+          "evidenceKeys": [
+            "real-save-load-import-export-restore-stable-destruction-inventory-results-dedupe",
+            "fresh-independent-ssr-open-and-formal-closed",
+            "cross-slot-source-request-result-isolation"
+          ]
+        },
+        "O07": {
+          "executed": true,
+          "evidenceKeys": [
+            "same-request-concurrent-one-commit",
+            "same-instance-different-requests-one-destruction",
+            "explicit-fixture-two-equipped-targets-shared-stack-no-overcapacity",
+            "existing-EnhanceGate-race-preserves-complete-facts",
+            "two-object-ordinary-first-salvage-CAS-refuses-after-pre-read",
+            "two-object-salvage-first-stale-ordinary-writer-refused-after-pre-read",
+            "stale-progress-rejected-after-other-save"
+          ]
+        },
+        "O08": {
+          "executed": true,
+          "evidenceKeys": [
+            "missing-or-uninstalled-atomic-carrier-zero-write",
+            "carrier-false-throw-draft-tamper-atomic-refusal",
+            "actual-destroy-output-failure-zero-delta",
+            "idb-before-complete-invisible-abort-and-explicit-retry",
+            "serialization-failure-lock-release",
+            "unknown-corrupt-record-real-load-storageError-no-repair",
+            "old-save-missing-field-undefined",
+            "existing-protect-enhance-history-retained",
+            "selected-enchant-relation-refused-unrelated-enchant-still-works",
+            "memory-closed-fresh-ssr-old-callback-zero-write"
+          ]
+        }
+      },
+      "storageWrites": 121,
+      "commits": 120,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [
+          "fox_robe",
+          "cloth_shoes"
+        ],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权",
+      "flagLoads": 0,
+      "armorFixture": true,
+      "productModuleTransformations": [
+        "balance/recipes.json"
+      ],
+      "invalidDependency": null,
+      "freshSsr": false
+    }
+  ]
+}

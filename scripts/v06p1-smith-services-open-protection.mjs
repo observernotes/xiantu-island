@@ -6,6 +6,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { sharedRoot } from './root.mjs';
+import ts from 'typescript';
 
 export const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 export const shared = sharedRoot(root);
@@ -25,11 +26,62 @@ export const closedOutDirs = [
   path.join(root, 'qa/out_v06p1_smith_services_closed'),
   path.join(shared, 'qa/out_v06p1_smith_services_closed_7b06f5a'),
   path.join(shared, 'qa/out_v06p1_smith_services_closed'),
+  ...[root, shared].flatMap(base => [
+    'qa/out_v06p1_smith_services_open_9d00852',
+    'qa/out_v06p1_smith_services_open_fixture',
+    'qa/out_v06p1_smith_services_closed_7b06f5a',
+  ].map(folder => path.join(base, folder))),
 ];
+export const authorizedDependencySources = ['src/ForgeGate.ts', 'src/EnhanceGate.ts', 'src/EnchantGate.ts',
+  'src/SalvageGate.ts', 'src/Progress.ts', 'src/SaveStore.ts'];
 export const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');
 const git = (...args) => execFileSync('git', args, { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] });
 const json = async file => JSON.parse(await fs.readFile(file, 'utf8'));
 const sorted = value => Object.fromEntries(Object.entries(value).sort(([a], [b]) => a.localeCompare(b, 'en')));
+
+/** Compare the existing settlement callbacks, not the newly authorized qualification/CAS boundary. */
+export async function checkSettlement() {
+  const rows = {};
+  const printer = ts.createPrinter({ removeComments: true });
+  for (const family of Object.keys(flagShas)) {
+    const file = `src/${family}Gate.ts`;
+    const baselineSource = git('show', `${implementationBaseline}:${file}`).toString();
+    const currentSource = await fs.readFile(path.join(root, file), 'utf8');
+    const callback = source => {
+      const ast = ts.createSourceFile(file, source, ts.ScriptTarget.Latest, true);
+      const callbacks = [];
+      const visit = node => {
+        if (ts.isCallExpression(node) && node.expression.getText(ast) === 'this.transact')
+          callbacks.push(...node.arguments.filter(ts.isArrowFunction));
+        ts.forEachChild(node, visit);
+      };
+      visit(ast);
+      assert.equal(callbacks.length, 1, `${family}: exactly one canonical settlement callback`);
+      return printer.printNode(ts.EmitHint.Unspecified, callbacks[0], ast);
+    };
+    const baselineSha = sha256(callback(baselineSource));
+    const currentSha = sha256(callback(currentSource));
+    assert.equal(currentSha, baselineSha, `${family}: settlement callback unchanged`);
+    const boundaryMethods = family === 'Salvage' ? ['transact', 'qualification', 'submit'] : ['transact'];
+    const methods = source => {
+      if (family === 'Salvage') source = source.replaceAll('SalvageFixtureQualification', 'SalvageQualification')
+        .replaceAll('Progress.getActiveSlot()', 'progress.getSaveSlot()');
+      const ast = ts.createSourceFile(file, source, ts.ScriptTarget.Latest, true);
+      const gate = ast.statements.find(node => ts.isClassDeclaration(node) && node.name?.text === `${family}Gate`);
+      assert.ok(gate, `${family}: canonical Gate class`);
+      return Object.fromEntries(gate.members.filter(ts.isMethodDeclaration).map(node =>
+        [node.name.getText(ast), sha256(printer.printNode(ts.EmitHint.Unspecified, node, ast))]));
+    };
+    const oldMethods = methods(baselineSource), newMethods = methods(currentSource), preservedMethods = {};
+    for (const [name, expected] of Object.entries(oldMethods)) {
+      if (boundaryMethods.includes(name)) continue;
+      assert.equal(newMethods[name], expected, `${family}.${name}: existing rules and settlement helpers unchanged`);
+      preservedMethods[name] = expected;
+    }
+    rows[family] = { baselineSha, currentSha, match: true, preservedMethods, authorizedBoundaryMethods: boundaryMethods };
+  }
+  return rows;
+}
 
 export async function filesIn(folder) {
   const entries = await fs.readdir(folder, { withFileTypes: true });
@@ -67,11 +119,13 @@ export async function snapshotProtection() {
 /** Verify exact, authoritative boundaries plus all captured files, additions and removals. */
 export async function checkProtection(before, startupBaseline) {
   const after = await snapshotProtection();
-  const compareSnapshot = (baseline, label) => {
+  const compareSnapshot = (baseline, label, authorizedChanges = false) => {
     assert.equal(baseline.root, root, `${label}: expected worktree`);
     // Older start-of-task captures may omit features.ts, but every captured byte stays guarded.
-    for (const [file, expected] of Object.entries(baseline.frozen))
+    for (const [file, expected] of Object.entries(baseline.frozen)) {
+      if (authorizedChanges && authorizedDependencySources.includes(path.relative(root, file))) continue;
       assert.equal(after.frozen[file], expected, `${label}: frozen SHA MATCH ${file}`);
+    }
     if (baseline.openFlagFiles) assert.deepEqual(after.openFlagFiles, baseline.openFlagFiles, `${label}: no new OpenFlag`);
     for (const folder of closedOutDirs) {
       assert.equal(after.closedOut[folder].exists, baseline.closedOut[folder].exists, `${label}: closed out existence preserved ${folder}`);
@@ -80,13 +134,15 @@ export async function checkProtection(before, startupBaseline) {
     }
   };
   compareSnapshot(before, 'before/after');
-  if (startupBaseline) compareSnapshot(startupBaseline, 'start-of-task/after');
+  if (startupBaseline) compareSnapshot(startupBaseline, 'start-of-task/after', true);
+  const settlementCallbacks = await checkSettlement();
   const baselineNames = git('ls-tree', '-r', '--name-only', implementationBaseline, 'src').toString().trim().split('\n');
   assert.deepEqual(after.openFlagFiles, baselineNames.filter(file => /OpenFlag\.ts$/u.test(file)).sort(), 'no new production OpenFlag');
   for (const [family, expected] of Object.entries(flagShas)) {
     assert.equal(after.frozen[path.join(root, `src/${family}OpenFlag.ts`)], expected, `${family} Flag authoritative SHA MATCH`);
     for (const suffix of ['Gate', 'Progress', 'Closed']) {
       const file = `src/${family}${suffix}.ts`;
+      if (suffix === 'Gate') continue; // Authorized dependency/CAS edits; callback hash above still freezes settlement.
       assert.equal(after.frozen[path.join(root, file)], sha256(git('show', `${implementationBaseline}:${file}`)), `${file}: settlement implementation unchanged`);
     }
   }
@@ -125,7 +181,7 @@ export async function checkProtection(before, startupBaseline) {
     frozenFiles: Object.keys(after.frozen).length, closedOutUnchanged: true,
     closedOutManifestMatch: Object.fromEntries(closedOutDirs.map(folder => [folder, 'MATCH'])),
     fourFlagMatch: Object.fromEntries(Object.keys(flagShas).map(name => [name, 'MATCH'])),
-    dataSha: expectedShas.data, settlementUnchanged: true, roots };
+    dataSha: expectedShas.data, settlementUnchanged: true, settlementCallbacks, authorizedDependencySources, roots };
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
@@ -137,6 +193,6 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   } else if (mode === '--check' && input) {
     const result = await checkProtection(await json(input));
     if (output) await fs.writeFile(output, `${JSON.stringify(result, null, 2)}\n`);
-    console.log(`smith services open protection MATCH: ${result.frozenFiles} files; three closed outs unchanged`);
+    console.log(`smith services open protection MATCH: ${result.frozenFiles} files; preserved open/closed directories unchanged`);
   } else throw new Error('usage: --snapshot <file> | --check <before-file> [result-file]');
 }

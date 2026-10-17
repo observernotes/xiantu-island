@@ -1,0 +1,25 @@
+
+> xiantu-island@0.0.1 test:v06p1-salvage-closed
+> timeout 120s node scripts/v06p1-salvage-closed-test.mjs
+
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: 冻结/目标 SHA MATCH（仅精确剥授权分解增量）: /workspace/xiantu/wt/dev/src/scenes/GameScene.ts
++ actual - expected
+
++ '34a40898e746d2cabb0dcf3f854b5c7954dfcf0282b659f7096201dd30e930bf'
+- 'f5d7defb24dda3ef1956e331479e9ee96794f1f45515bbb7951f3c3e19a0726c'
+    at eq (file:///workspace/xiantu/wt/dev/scripts/v06p1-salvage-closed-test.mjs:56:66)
+    at guard (file:///workspace/xiantu/wt/dev/scripts/v06p1-salvage-closed-test.mjs:70:5)
+    at async sourceChecks (file:///workspace/xiantu/wt/dev/scripts/v06p1-salvage-closed-test.mjs:75:60)
+    at async file:///workspace/xiantu/wt/dev/scripts/v06p1-salvage-closed-test.mjs:245:3 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: '34a40898e746d2cabb0dcf3f854b5c7954dfcf0282b659f7096201dd30e930bf',
+  expected: 'f5d7defb24dda3ef1956e331479e9ee96794f1f45515bbb7951f3c3e19a0726c',
+  operator: 'deepStrictEqual'
+}
+
+Node.js v20.19.2

@@ -292,6 +292,7 @@ export async function runForgeOpenFixtureTests(options: {
     const { p } = fixture(), gate = new ForgeGate(p);
     ok(gate.feature().allowed, '正式默认Gate说明只读允许');
     ok(gate.entrance().allowed, '正式默认Gate入口只读允许');
+    ok(await p.saveAsync(), '正式准备档先落盘，提交核对全量存档事实');
     const before = p.exportSave(), writes = idb.writes, exp = experience(p);
     ok(gate.craft(request('formal-default')).allowed, '默认无fixtureRecipes可解析正式图纸材料');
     eq(p.exportSave(), before, '正式craft只读不预扣或建单');
@@ -313,6 +314,7 @@ export async function runForgeOpenFixtureTests(options: {
     await replay(p, gate, request('formal-default'), '正式默认同请求重放');
     for (const [grade, random] of [['common', 0.1], ['fine', 0.75], ['spirit', 0.95], ['treasure', 0.995]] as const) {
       const f = fixture(), expBefore = experience(f.p);
+      ok(await f.p.saveAsync(), '正式品质准备档先落盘');
       const formalGate = new ForgeGate(f.p, { random: () => random });
       const record = committed(await formalGate.submit(request(`formal-${grade}`)));
       eq(record.resultGrade, grade, '正式路径四品质仅按enhance.forge.grade抽样');

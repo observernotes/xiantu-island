@@ -1,0 +1,450 @@
+{
+  "executed": true,
+  "passed": true,
+  "status": "passed",
+  "assertions": 166,
+  "evidenceKeys": [
+    "snapshot/adapter-gates/O07/missing-blueprint",
+    "snapshot/adapter-gates/O07/missing-material",
+    "snapshot/adapter-gates/O07/missing-stones",
+    "snapshot/adapter-gates/O07/missing-refine_stone",
+    "snapshot/adapter-gates/O07/missing-protect_charm",
+    "snapshot/adapter-gates/O07/malformed-charm-map-memory-only",
+    "snapshot/adapter-gates/O07/qualification-grade-identity-and-full-carrier-refusals",
+    "shared/adapter-gates/O07/missing-blueprint",
+    "shared/adapter-gates/O07/missing-material",
+    "shared/adapter-gates/O07/missing-stones",
+    "shared/adapter-gates/O07/missing-refine_stone",
+    "shared/adapter-gates/O07/missing-protect_charm",
+    "shared/adapter-gates/O07/malformed-charm-map-memory-only",
+    "shared/adapter-gates/O07/qualification-grade-identity-and-full-carrier-refusals"
+  ],
+  "case": "O07",
+  "evidence": [
+    {
+      "case": "O07",
+      "label": "snapshot/adapter-gates/O07/missing-blueprint",
+      "passed": true,
+      "refusal": {
+        "allowed": false,
+        "status": "denied",
+        "route": "panel",
+        "service": "forge",
+        "gate": {
+          "allowed": false,
+          "tipKey": "forge.fixture.ownership",
+          "text": "没有足够的永久图纸或材料。"
+        },
+        "tipKey": "ui.smith.result_unknown",
+        "text": "暂未取得可核实的结果，请稍后查看；请勿重复提交。"
+      },
+      "dataMode": "snapshot",
+      "source": "canonical-Services-Gates-runtime"
+    },
+    {
+      "case": "O07",
+      "label": "snapshot/adapter-gates/O07/missing-material",
+      "passed": true,
+      "refusal": {
+        "allowed": false,
+        "status": "denied",
+        "route": "panel",
+        "service": "forge",
+        "gate": {
+          "allowed": false,
+          "tipKey": "forge.fixture.ownership",
+          "text": "没有足够的永久图纸或材料。"
+        },
+        "tipKey": "ui.smith.result_unknown",
+        "text": "暂未取得可核实的结果，请稍后查看；请勿重复提交。"
+      },
+      "dataMode": "snapshot",
+      "source": "canonical-Services-Gates-runtime"
+    },
+    {
+      "case": "O07",
+      "label": "snapshot/adapter-gates/O07/missing-stones",
+      "passed": true,
+      "refusal": {
+        "allowed": false,
+        "status": "denied",
+        "route": "panel",
+        "service": "enhance",
+        "gate": {
+          "allowed": false,
+          "tipKey": "enhance.formal.resources",
+          "text": "灵石或精炼石不足。"
+        },
+        "tipKey": "enhance.formal.resources",
+        "text": "灵石或精炼石不足。"
+      },
+      "noSilentCharmFallback": true,
+      "dataMode": "snapshot",
+      "source": "canonical-Services-Gates-runtime"
+    },
+    {
+      "case": "O07",
+      "label": "snapshot/adapter-gates/O07/missing-refine_stone",
+      "passed": true,
+      "refusal": {
+        "allowed": false,
+        "status": "denied",
+        "route": "panel",
+        "service": "enhance",
+        "gate": {
+          "allowed": false,
+          "tipKey": "enhance.formal.resources",
+          "text": "灵石或精炼石不足。"
+        },
+        "tipKey": "enhance.formal.resources",
+        "text": "灵石或精炼石不足。"
+      },
+      "noSilentCharmFallback": true,
+      "dataMode": "snapshot",
+      "source": "canonical-Services-Gates-runtime"
+    },
+    {
+      "case": "O07",
+      "label": "snapshot/adapter-gates/O07/missing-protect_charm",
+      "passed": true,
+      "refusal": {
+        "allowed": false,
+        "status": "denied",
+        "route": "panel",
+        "service": "enhance",
+        "gate": {
+          "allowed": false,
+          "tipKey": "enhance.formal.resources",
+          "text": "灵石或精炼石不足。"
+        },
+        "tipKey": "ui.smith.charm_short",
+        "text": "护器符数量不足。"
+      },
+      "noSilentCharmFallback": true,
+      "dataMode": "snapshot",
+      "source": "canonical-Services-Gates-runtime"
+    },
+    {
+      "case": "O07",
+      "label": "snapshot/adapter-gates/O07/malformed-charm-map-memory-only",
+      "passed": true,
+      "refusal": "enhance.formal.protect",
+      "sourceBytesEdited": false,
+      "dataMode": "snapshot",
+      "source": "canonical-Services-Gates-runtime"
+    },
+    {
+      "case": "O07",
+      "label": "snapshot/adapter-gates/O07/qualification-grade-identity-and-full-carrier-refusals",
+      "passed": true,
+      "qualificationRefusal": {
+        "allowed": false,
+        "status": "denied",
+        "route": "panel",
+        "service": "salvage",
+        "gate": {
+          "allowed": false,
+          "tipKey": "salvage.fixture.qualification",
+          "text": "绑定、本命、精血或精确持有关系字段未齐，不能分解。"
+        },
+        "tipKey": "ui.smith.result_unknown",
+        "text": "暂未取得可核实的结果，请稍后查看；请勿重复提交。"
+      },
+      "gradeRefusal": {
+        "allowed": false,
+        "status": "denied",
+        "route": "panel",
+        "service": "salvage",
+        "gate": {
+          "allowed": false,
+          "tipKey": "salvage.fixture.request",
+          "text": "分解请求无效。"
+        },
+        "tipKey": "ui.smith.invalid",
+        "text": "当前目标或材料不可用于分解，请重新选择。"
+      },
+      "identityRefusal": {
+        "allowed": false,
+        "status": "denied",
+        "route": "panel",
+        "service": "enhance",
+        "gate": {
+          "allowed": false,
+          "tipKey": "enhance.formal.no_instance",
+          "text": "无正式装备实例，不可强化。"
+        },
+        "tipKey": "enhance.formal.no_instance",
+        "text": "无正式装备实例，不可强化。"
+      },
+      "typeRefusal": {
+        "allowed": false,
+        "status": "denied",
+        "route": "panel",
+        "service": "enchant",
+        "gate": {
+          "allowed": false,
+          "tipKey": "enchant.fixture.bad_type",
+          "text": "附灵仅接受合法正式武器。"
+        },
+        "tipKey": "ui.smith.invalid",
+        "text": "当前目标或材料不可用于附灵，请重新选择。"
+      },
+      "storedGradeRefusal": {
+        "allowed": false,
+        "status": "denied",
+        "route": "panel",
+        "service": "salvage",
+        "gate": {
+          "allowed": false,
+          "tipKey": "salvage.fixture.progress",
+          "text": "分解档案存在歧义，已阻止写入。"
+        },
+        "tipKey": "ui.smith.result_unknown",
+        "text": "暂未取得可核实的结果，请稍后查看；请勿重复提交。"
+      },
+      "capacityRefusal": {
+        "allowed": false,
+        "status": "denied",
+        "route": "panel",
+        "service": "salvage",
+        "gate": {
+          "allowed": false,
+          "tipKey": "salvage.fixture.capacity",
+          "text": "背包无法完整接收精炼石。"
+        },
+        "tipKey": "ui.smith.result_unknown",
+        "text": "暂未取得可核实的结果，请稍后查看；请勿重复提交。"
+      },
+      "overflowRefusal": {
+        "allowed": false,
+        "status": "denied",
+        "route": "panel",
+        "service": "forge",
+        "gate": {
+          "allowed": false,
+          "tipKey": "forge.fixture.capacity",
+          "text": "成品承载失败，保持原库存。"
+        },
+        "tipKey": "ui.smith.result_unknown",
+        "text": "暂未取得可核实的结果，请稍后查看；请勿重复提交。"
+      },
+      "finiteBagCapacityFixtureOnly": true,
+      "fullSaveZeroDelta": true,
+      "dataMode": "snapshot",
+      "source": "canonical-Services-Gates-runtime"
+    },
+    {
+      "case": "O07",
+      "label": "shared/adapter-gates/O07/missing-blueprint",
+      "passed": true,
+      "refusal": {
+        "allowed": false,
+        "status": "denied",
+        "route": "panel",
+        "service": "forge",
+        "gate": {
+          "allowed": false,
+          "tipKey": "forge.fixture.ownership",
+          "text": "没有足够的永久图纸或材料。"
+        },
+        "tipKey": "ui.smith.result_unknown",
+        "text": "暂未取得可核实的结果，请稍后查看；请勿重复提交。"
+      },
+      "dataMode": "shared",
+      "source": "canonical-Services-Gates-runtime"
+    },
+    {
+      "case": "O07",
+      "label": "shared/adapter-gates/O07/missing-material",
+      "passed": true,
+      "refusal": {
+        "allowed": false,
+        "status": "denied",
+        "route": "panel",
+        "service": "forge",
+        "gate": {
+          "allowed": false,
+          "tipKey": "forge.fixture.ownership",
+          "text": "没有足够的永久图纸或材料。"
+        },
+        "tipKey": "ui.smith.result_unknown",
+        "text": "暂未取得可核实的结果，请稍后查看；请勿重复提交。"
+      },
+      "dataMode": "shared",
+      "source": "canonical-Services-Gates-runtime"
+    },
+    {
+      "case": "O07",
+      "label": "shared/adapter-gates/O07/missing-stones",
+      "passed": true,
+      "refusal": {
+        "allowed": false,
+        "status": "denied",
+        "route": "panel",
+        "service": "enhance",
+        "gate": {
+          "allowed": false,
+          "tipKey": "enhance.formal.resources",
+          "text": "灵石或精炼石不足。"
+        },
+        "tipKey": "enhance.formal.resources",
+        "text": "灵石或精炼石不足。"
+      },
+      "noSilentCharmFallback": true,
+      "dataMode": "shared",
+      "source": "canonical-Services-Gates-runtime"
+    },
+    {
+      "case": "O07",
+      "label": "shared/adapter-gates/O07/missing-refine_stone",
+      "passed": true,
+      "refusal": {
+        "allowed": false,
+        "status": "denied",
+        "route": "panel",
+        "service": "enhance",
+        "gate": {
+          "allowed": false,
+          "tipKey": "enhance.formal.resources",
+          "text": "灵石或精炼石不足。"
+        },
+        "tipKey": "enhance.formal.resources",
+        "text": "灵石或精炼石不足。"
+      },
+      "noSilentCharmFallback": true,
+      "dataMode": "shared",
+      "source": "canonical-Services-Gates-runtime"
+    },
+    {
+      "case": "O07",
+      "label": "shared/adapter-gates/O07/missing-protect_charm",
+      "passed": true,
+      "refusal": {
+        "allowed": false,
+        "status": "denied",
+        "route": "panel",
+        "service": "enhance",
+        "gate": {
+          "allowed": false,
+          "tipKey": "enhance.formal.resources",
+          "text": "灵石或精炼石不足。"
+        },
+        "tipKey": "ui.smith.charm_short",
+        "text": "护器符数量不足。"
+      },
+      "noSilentCharmFallback": true,
+      "dataMode": "shared",
+      "source": "canonical-Services-Gates-runtime"
+    },
+    {
+      "case": "O07",
+      "label": "shared/adapter-gates/O07/malformed-charm-map-memory-only",
+      "passed": true,
+      "refusal": "enhance.formal.protect",
+      "sourceBytesEdited": false,
+      "dataMode": "shared",
+      "source": "canonical-Services-Gates-runtime"
+    },
+    {
+      "case": "O07",
+      "label": "shared/adapter-gates/O07/qualification-grade-identity-and-full-carrier-refusals",
+      "passed": true,
+      "qualificationRefusal": {
+        "allowed": false,
+        "status": "denied",
+        "route": "panel",
+        "service": "salvage",
+        "gate": {
+          "allowed": false,
+          "tipKey": "salvage.fixture.qualification",
+          "text": "绑定、本命、精血或精确持有关系字段未齐，不能分解。"
+        },
+        "tipKey": "ui.smith.result_unknown",
+        "text": "暂未取得可核实的结果，请稍后查看；请勿重复提交。"
+      },
+      "gradeRefusal": {
+        "allowed": false,
+        "status": "denied",
+        "route": "panel",
+        "service": "salvage",
+        "gate": {
+          "allowed": false,
+          "tipKey": "salvage.fixture.request",
+          "text": "分解请求无效。"
+        },
+        "tipKey": "ui.smith.invalid",
+        "text": "当前目标或材料不可用于分解，请重新选择。"
+      },
+      "identityRefusal": {
+        "allowed": false,
+        "status": "denied",
+        "route": "panel",
+        "service": "enhance",
+        "gate": {
+          "allowed": false,
+          "tipKey": "enhance.formal.no_instance",
+          "text": "无正式装备实例，不可强化。"
+        },
+        "tipKey": "enhance.formal.no_instance",
+        "text": "无正式装备实例，不可强化。"
+      },
+      "typeRefusal": {
+        "allowed": false,
+        "status": "denied",
+        "route": "panel",
+        "service": "enchant",
+        "gate": {
+          "allowed": false,
+          "tipKey": "enchant.fixture.bad_type",
+          "text": "附灵仅接受合法正式武器。"
+        },
+        "tipKey": "ui.smith.invalid",
+        "text": "当前目标或材料不可用于附灵，请重新选择。"
+      },
+      "storedGradeRefusal": {
+        "allowed": false,
+        "status": "denied",
+        "route": "panel",
+        "service": "salvage",
+        "gate": {
+          "allowed": false,
+          "tipKey": "salvage.fixture.progress",
+          "text": "分解档案存在歧义，已阻止写入。"
+        },
+        "tipKey": "ui.smith.result_unknown",
+        "text": "暂未取得可核实的结果，请稍后查看；请勿重复提交。"
+      },
+      "capacityRefusal": {
+        "allowed": false,
+        "status": "denied",
+        "route": "panel",
+        "service": "salvage",
+        "gate": {
+          "allowed": false,
+          "tipKey": "salvage.fixture.capacity",
+          "text": "背包无法完整接收精炼石。"
+        },
+        "tipKey": "ui.smith.result_unknown",
+        "text": "暂未取得可核实的结果，请稍后查看；请勿重复提交。"
+      },
+      "overflowRefusal": {
+        "allowed": false,
+        "status": "denied",
+        "route": "panel",
+        "service": "forge",
+        "gate": {
+          "allowed": false,
+          "tipKey": "forge.fixture.capacity",
+          "text": "成品承载失败，保持原库存。"
+        },
+        "tipKey": "ui.smith.result_unknown",
+        "text": "暂未取得可核实的结果，请稍后查看；请勿重复提交。"
+      },
+      "finiteBagCapacityFixtureOnly": true,
+      "fullSaveZeroDelta": true,
+      "dataMode": "shared",
+      "source": "canonical-Services-Gates-runtime"
+    }
+  ],
+  "scope": "开态夹具全表 ≠ soft-open ≠ release ≠ 进包"
+}

@@ -1,0 +1,18 @@
+{
+  "file": "scripts/v06p1-market-open-test.mjs",
+  "originalSha": "f732d31f60fca03882d12ec740247faef7a9a3c7831b2451b2805d02e1efeacf",
+  "pinnedOriginalSha": "f732d31f60fca03882d12ec740247faef7a9a3c7831b2451b2805d02e1efeacf",
+  "adaptedSha": "f835163aa8c71f1bd0ffd9d7ac5a1e2c25d4b7c4bbd77c508d5d8f4f8e25823f",
+  "changes": [
+    {
+      "label": "redirect market-open evidence without touching old output",
+      "before": "path.join(root, 'qa/out_v06p1_market_open_preamble/open')",
+      "after": "\"/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06p1-market-open\"",
+      "occurrences": 1
+    }
+  ],
+  "productModuleTransformations": [],
+  "diskWritten": false,
+  "businessAssertionsChanged": false,
+  "policy": "Pinned test-only historical strings SHA/count/inventory and prior attr-ui byte proof; actual Vite SSR product modules use current disk."
+}

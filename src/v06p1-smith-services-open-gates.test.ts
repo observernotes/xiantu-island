@@ -11,9 +11,10 @@ import { ForgeGate } from './ForgeGate';
 import { EnhanceGate } from './EnhanceGate';
 import { EnchantGate } from './EnchantGate';
 import { SalvageGate } from './SalvageGate';
-import { resolveFormalInventoryEquipBinding } from './EquipInstBinding';
+import { resolveFormalEquipSlotBinding, resolveFormalInventoryEquipBinding, listBagFormalEquipBindings } from './EquipInstBinding';
 import { setSaveBackend, type SaveSlot, type SlotKey } from './SaveStore';
 import { featureEnabled } from './features';
+import { setGameTimeSource } from './GameClock';
 
 type Row = Record<string, unknown>;
 export interface SmithOpenCase {
@@ -53,6 +54,7 @@ export async function createFormalSmithProgress(options: { slot?: SlotKey; copie
   progress.level = 20; progress.rootElement = '金'; progress.stones = 1000000;
   progress.forgingLevel = 3; progress.forgingExp = 7;
   progress.inventory = { [recipe.blueprint!]: 50, spirit_copper: 1000, refine_stone: 1000, beast_core: 50, protect_charm: 50 };
+  assert(await progress.saveAsync(), '正式准备基线先保存，供全量存档 CAS 核实');
   const refs: string[] = [];
   for (let index = 0; index < (options.copies ?? 1); index++) {
     const forged = await new ForgeGate(progress, { random: () => 0 }).submit({
@@ -124,6 +126,7 @@ async function commit(progress: Progress, service: SmithService, selected: strin
 export async function runGateOpenCases(_options?: unknown): Promise<{ cases: Record<string, SmithOpenCase>; assertions: number }> {
   assertions = 0;
   const backend = installSmithMemoryBackend(), originalSlot = Progress.getActiveSlot();
+  const caseTime = Date.now(); setGameTimeSource(() => caseTime);
   const oldStorage = Object.getOwnPropertyDescriptor(globalThis, 'localStorage');
   let localWrites = 0;
   Object.defineProperty(globalThis, 'localStorage', { configurable: true, value: {
@@ -218,16 +221,66 @@ export async function runGateOpenCases(_options?: unknown): Promise<{ cases: Rec
       mark('O04', { fiveElementsAndOverwrite: rounds, sameElementRefused: { tipKey: same.tips[same.tips.length - 1], fullBusinessDelta: 0 }, staleTargetRefused: { tipKey: stale.tips[stale.tips.length - 1], fullBusinessDelta: 0 }, noLayerStacking: true });
     }
     {
-      const { progress: p, refs } = await createFormalSmithProgress();
-      const ui = prepare(p, 'salvage', refs[0]);
-      equal(await unchanged(p, () => ui.ui.requestConfirm(), '正式分解资格未齐'), null, '分解资格不齐不能确认');
-      const source = p.enhance!.formalSources![0], craft = p.forge!.crafts.find(row => row.craftResultRef === source.craftResultRef)!;
-      const request: SmithRequests['salvage'] = { salvageRequestId: requestId('salvage_blocked'), instanceRef: refs[0], fromGrade: craft.resultGrade, fromEnhanceLevel: 0 };
-      const direct = await unchanged(p, () => new SalvageGate(p).submit(request), '正式 Gate 分解整拒');
-      assert(!direct.allowed && direct.tipKey === 'salvage.fixture.qualification', '保留 Gate 正式资格拒绝');
-      const adapter = await unchanged(p, () => new SmithServices(p).select('salvage', request), '分解适配层整拒');
-      equal(adapter.allowed, false, '适配层不绕过分解资格');
-      mark('O05', { O05_blocked_formal_qualification: { request, gate: direct, uiTipKey: ui.tips[ui.tips.length - 1], formalIdentity: 'registered', exactInventoryBinding: resolveFormalInventoryEquipBinding(p, { id: craft.resultItem.itemId, instanceRef: refs[0] }), missingEvidence: ['production-bound-lifeblood-qualification', 'complete-related-enchant-retirement', 'production-atomic-carrier'], fullBusinessDelta: 0, completeSuccessClaimed: false, fixtureQualificationInjected: false, fixtureCarrierInstalled: false } }, 'O05_blocked_formal_qualification');
+      assert(!Reflect.has(globalThis, '__smithServicesOpenSalvageFixture'), '生产分解图没有 fixture provider');
+      const { progress: p, refs } = await createFormalSmithProgress({ copies: 3 });
+      await commit(p, 'enchant', refs[0], { element: '金' });
+      await commit(p, 'enhance', refs[1]);
+      const instance = p.formalEnhanceInstances().find(row => row.instanceRef === refs[1])!;
+      const source = p.enhance!.formalSources!.find(row => row.instanceRef === refs[1])!;
+      const craft = p.forge!.crafts.find(row => row.craftResultRef === source.craftResultRef)!;
+      const binding = resolveFormalInventoryEquipBinding(p, { id: instance.itemId, instanceRef: refs[1] });
+      equal(binding, { kind: 'verified', instanceRef: refs[1] }, 'O05 正式 resolver 精确指向所选背包实例');
+      const request: SmithRequests['salvage'] = { salvageRequestId: requestId('salvage_formal'), instanceRef: refs[1],
+        fromGrade: craft.resultGrade, fromEnhanceLevel: instance.enhanceLevel };
+      const gate = new SalvageGate(p), before = clone(p.exportSave()), writes = backend.writes;
+      const selected = await unchanged(p, () => gate.salvage(request), '正式分解只读资格/位置预览');
+      assert(selected.allowed, 'new SalvageGate(progress) 无任何 fixture 参数确认正式资格');
+      const direct = await gate.submit(request);
+      assert(direct.allowed && direct.result, 'O05 无 fixture qualification/carrier 的生产分解完整提交成功');
+      const result = direct.result, after = clone(p.exportSave());
+      equal(result.instanceRef, refs[1], '只销毁明确所选实例，不取同原型首条');
+      equal(result.location, { kind: 'inventory' }, '完整结果保存精确背包位置');
+      equal(result.destroyed, true, '完整分解结果确认销毁');
+      equal(p.permanentCount(result.itemId), Number(Reflect.get(before.inventory as object, result.itemId)) - 1, '只扣所选装备一件');
+      equal(p.permanentCount(result.output.itemId), Number(Reflect.get(before.inventory as object, result.output.itemId)) + result.output.count, 'Gate 完整产出一次入库');
+      equal(p.salvage!.receipts, [result.salvageResultRef], '销毁/产出/收据同档一次');
+      equal(backend.writes, writes + 1, '生产承载只提交一次完整保存');
+      equal(backend.rows.get(1)!.data, p.exportSave(), '同一持久事务保存完整销毁、产出及收据');
+      equal(p.formalEnhanceInstanceStatus(refs[1]), 'missing', '所选正式来源同步退役');
+      equal(resolveFormalInventoryEquipBinding(p, { id: result.itemId, instanceRef: refs[1] }), { kind: 'no_instance' }, '销毁实例不再由背包 resolver 提供');
+      equal(p.enchant, before.enchant, '未选附灵实例与完整附灵历史保持');
+      equal(p.forge, before.forge, '打造历史保持');
+      equal(p.formalEnhanceInstanceStatus(refs[0]), 'registered', '同原型第一件未选实例保持正式来源');
+      equal(p.formalEnhanceInstanceStatus(refs[2]), 'registered', '同原型另一件未选实例保持正式来源');
+      const relationRequest: SmithRequests['salvage'] = { salvageRequestId: requestId('salvage_enchanted'), instanceRef: refs[0],
+        fromGrade: p.forge!.crafts.find(row => row.resultItem.instanceRef === refs[0])!.resultGrade, fromEnhanceLevel: 0 };
+      const relation = await unchanged(p, () => new SalvageGate(p).submit(relationRequest), '已附灵目标关联无法完整退役时整拒');
+      assert(!relation.allowed && relation.tipKey === 'salvage.fixture.relation', '已附灵实例保留正式 relation 拒绝');
+      const slot = ITEMS[result.itemId].slot;
+      assert(slot === 'weapon' || slot === 'robe' || slot === 'shoes', '完整正式分解结果对应支持装备槽');
+      equal(await p.runSaveTransactionAsync(draft => draft.equipItem(result.itemId, refs[2]).ok ? true : undefined), true, '正式装备事务准备明确槽位实例');
+      equal(resolveFormalEquipSlotBinding(p, slot), { kind: 'verified', instanceRef: refs[2] }, '正式装备槽 resolver 明确映射');
+      const historicalRefs = clone(p.equipInstanceRefs);
+      const equipped = await commit(p, 'salvage', refs[2]);
+      assert('salvageRequestId' in equipped.result, 'Controller 正式路径分解完整结果');
+      equal(equipped.result.location, { kind: 'equip', slot }, 'Controller 结果沿精确装备槽');
+      equal(resolveFormalEquipSlotBinding(p, slot), { kind: 'empty' }, '销毁后空槽 resolver empty');
+      equal(p.equipInstanceRefs, historicalRefs, '历史 equipInstanceRefs 与既有夹具旁证一致');
+      equal(p.formalEnhanceInstanceStatus(refs[2]), 'missing', '装备槽所选来源同步退役');
+      equal(equipped.resultLines[0], t('ui.smith.result_salvage', { item: ITEMS[equipped.result.itemId].name,
+        output: `${ITEMS[equipped.result.output.itemId].name} ×${equipped.result.output.count}` }), '分解结果文字只沿 Gate 完整结果');
+      equal(listBagFormalEquipBindings(p), [{ id: result.itemId, instanceRef: refs[0] }], '只保留未选正式实例的背包映射');
+      mark('O05', { o05FormalProductionSuccess: true, productionFormalPath: true, fixtureQualificationInjected: false,
+        fixtureCarrierInstalled: false, formalProductionSuccess: { request, result, exactInventoryBinding: binding,
+          qualificationSource: 'formalSources + EquipInstBinding exact location; production schema has no contrary eligibility fields',
+          productionEligibility: { bound: false, natal: false, bloodBound: false, unsalvageable: false },
+          before, after, completeSuccessClaimed: true, productionFormalPath: true,
+          fixtureQualificationInjected: false, fixtureCarrierInstalled: false, atomicSaveWrites: 1,
+          destructionOutputReceiptSameTransaction: true, selectedFormalSourceRetired: true, unselectedFormalInstancesPreserved: true },
+        controllerGateRoundtrip: { request: equipped.pending.request, result: equipped.result,
+          resultLines: equipped.resultLines, returnedToMenu: true, exactEquipBinding: true, resolverAfterDestruction: 'empty',
+          historicalEquipInstanceRefsPreserved: true, selectedFormalSourceRetired: true },
+        enchantedAssociationRefused: { request: relationRequest, gate: relation, fullBusinessDelta: 0 } });
     }
     {
       const refusals: Row[] = [];
@@ -268,19 +321,26 @@ export async function runGateOpenCases(_options?: unknown): Promise<{ cases: Rec
       refusals.push({ label: 'illegal-formal-equipment-type', tipKey: badReply.tipKey, gate: badReply.gate, fullBusinessDelta: 0 });
       const { progress: full, blueprintId } = await createFormalSmithProgress({ copies: 0 });
       full.inventory[recipe.output] = Number.MAX_SAFE_INTEGER;
+      assert(await full.saveAsync(), '实际容量准备基线保存');
       const cap = prepare(full, 'forge', blueprintId), pending = cap.ui.requestConfirm(); assert(pending, '实际整数承载边界保留只读确认');
       const outcome = await unchanged(full, () => cap.ui.submit(pending), '成品无法完整承载');
       assert(outcome && !outcome.allowed && outcome.tipKey === 'forge.fixture.capacity', '真实安全整数承载拒绝');
       equal(cap.ui.state.stage, 'panel', '承载拒绝不展示成功');
       refusals.push({ label: 'actual-inventory-overflow', gate: outcome, tipKey: cap.tips[cap.tips.length - 1], fullBusinessDelta: 0, finiteSlotsExistInProduction: false });
-      mark('O07', { refusals, qualificationRefusal: cases.O05.evidence.O05_blocked_formal_qualification,
+      const { progress: noPosition, refs: noPositionRefs } = await createFormalSmithProgress();
+      noPosition.inventory[recipe.output] = 0;
+      const invalidQualification: SmithRequests['salvage'] = { salvageRequestId: requestId('no_position'), instanceRef: noPositionRefs[0],
+        fromGrade: noPosition.forge!.crafts[0].resultGrade, fromEnhanceLevel: 0 };
+      const qualificationRefusal = await unchanged(noPosition, () => new SalvageGate(noPosition).submit(invalidQualification), '缺精确持有证据资格整拒');
+      assert(!qualificationRefusal.allowed && qualificationRefusal.tipKey === 'salvage.fixture.qualification', '生产资格缺精确位置不能用 itemId/数量推断');
+      mark('O07', { refusals, qualificationRefusal: { request: invalidQualification, gate: qualificationRefusal, fullBusinessDelta: 0, fixtureQualificationInjected: false },
         formalCharmMappingRead: { itemId: charm.itemId, countPerSettlement: charm.countPerSettlement },
         mappingAnomalyGraph: 'O07.invalidProtectMappingIsolatedGraph (separate runner graph; disk mapping preserved)',
         capacityScope: '生产背包无有限格数；实际整数溢出已拒绝，有限格数满包不伪造正式支持' });
     }
     {
       const replayRows: Row[] = [];
-      for (const service of ['forge', 'enhance', 'enchant'] as const) {
+      for (const service of ['forge', 'enhance', 'enchant', 'salvage'] as const) {
         const { progress: p, refs, blueprintId } = await createFormalSmithProgress();
         const settled = await commit(p, service, service === 'forge' ? blueprintId : refs[0], { element: '火' });
         assert(await p.saveAsync(), '提交后正式保存');
@@ -296,7 +356,7 @@ export async function runGateOpenCases(_options?: unknown): Promise<{ cases: Rec
         const old = oldRead.value;
         assert(old.allowed && old.replayed, '匹配请求只读返回旧结果');
         equal(old.result, settled.result, '完整旧结果逐字段相同');
-        const conflicting = { ...request, ...(service === 'forge' ? { materials: [] } : service === 'enhance' ? { useProtectCharm: true } : { element: '水' }) };
+        const conflicting = { ...request, ...(service === 'forge' ? { materials: [] } : service === 'enhance' ? { useProtectCharm: true } : service === 'enchant' ? { element: '水' } : { fromEnhanceLevel: 1 }) };
         const collisionRead = await withRandom(0, () => unchanged(loaded, () => Reflect.apply(services.result, services, [service, conflicting]), `${service} 同 id 改载荷`));
         equal(collisionRead.calls, 0, '同 id 冲突读取实际随机调用零次');
         const collision = collisionRead.value;
@@ -304,21 +364,28 @@ export async function runGateOpenCases(_options?: unknown): Promise<{ cases: Rec
         const replayRead = await withRandom(0, () => unchanged<SmithGateResult>(loaded, () => {
             if (service === 'forge') return new ForgeGate(loaded).submit(request as SmithRequests['forge']);
             if (service === 'enhance') return new EnhanceGate(loaded).submit(request as SmithRequests['enhance']);
-            return new EnchantGate(loaded).submit(request as SmithRequests['enchant']);
+            if (service === 'enchant') return new EnchantGate(loaded).submit(request as SmithRequests['enchant']);
+            return new SalvageGate(loaded).submit(request as SmithRequests['salvage']);
           }, `${service} Gate 原请求重放`));
         const replay = replayRead.value;
         equal(replayRead.calls, 0, '旧请求重放实际随机调用零次');
         equal(fullResult(replay), settled.result, '唯一 Gate 返回同一个完整旧结果');
         equal('replayed' in replay && replay.replayed, true, '业务去重明确为重放');
+        if (service === 'salvage') {
+          equal(loaded.formalEnhanceInstanceStatus(refs[0]), 'missing', '分解读档重放不复活正式来源');
+          equal(resolveFormalInventoryEquipBinding(loaded, { id: recipe.output, instanceRef: refs[0] }), { kind: 'no_instance' }, '分解重放后精确背包映射仍不可用');
+          equal(loaded.salvage!.destructions.length, 1, '分解重放不新增销毁收据');
+        }
         replayRows.push({ service, request, result: old.result, conflictingTipKey: collision.tipKey, replayed: true, fullBusinessDelta: 0,
           duplicateRandomCalls: replayRead.calls, resultReadRandomCalls: oldRead.calls, conflictReadRandomCalls: collisionRead.calls,
           persistedReloaded: true, controllerRefresh: true });
       }
-      mark('O08', { replayedServices: replayRows, salvageReplayBlocked: { reason: 'O05_blocked_formal_qualification', submitted: false, completeSuccessClaimed: false }, noSecondDeductionOrDraw: true }, 'O08_salvage_submit_reload_replay_blocked_by_O05');
+      mark('O08', { replayedServices: replayRows, salvageFormalSubmitReloadReplayPassed: true, productionFormalPath: true,
+        fixtureQualificationInjected: false, fixtureCarrierInstalled: false, noSecondDeductionOrDraw: true, noDestroyedInstanceRevival: true });
     }
     {
       const raceRows: Row[] = [];
-      for (const service of ['forge', 'enhance', 'enchant'] as const) {
+      for (const service of ['forge', 'enhance', 'enchant', 'salvage'] as const) {
         const { progress: p, refs, blueprintId } = await createFormalSmithProgress();
         const ctx = prepare(p, service, service === 'forge' ? blueprintId : refs[0], { element: '火' });
         const pending = ctx.ui.requestConfirm(); assert(pending, '并发明确确认');
@@ -327,15 +394,16 @@ export async function runGateOpenCases(_options?: unknown): Promise<{ cases: Rec
         const result = answers.value.find(row => row && 'result' in row && row.result);
         assert(result, '同请求连点至少一次完整结果');
         equal(answers.value.filter(row => row && 'result' in row && row.result).length, 1, 'Controller 同请求连点只委托一次成功');
-        equal(answers.calls, service === 'enchant' ? 0 : 1, '连点不重抽');
+        equal(answers.calls, service === 'enchant' || service === 'salvage' ? 0 : 1, '连点不重抽');
         assert(ctx.tips.includes('ui.smith.busy'), '连点忙提示');
         const r = fullResult(result);
         if ('craftRequestId' in r) equal(p.forge!.crafts.length, (before.forge ? Reflect.get(before.forge as object, 'crafts').length : 0) + 1, '只增加一次打造事实');
         if ('enhanceRequestId' in r) equal(p.enhance!.enhancements.length, 1, '只增加一次强化事实');
         if ('enchantRequestId' in r) equal(p.enchant!.enchantments.length, 1, '只增加一次附灵事实');
+        if ('salvageRequestId' in r) { equal(p.salvage!.destructions.length, 1, '只增加一次正式销毁事实'); equal(p.formalEnhanceInstanceStatus(refs[0]), 'missing', '同请求连点不复活销毁来源'); }
         raceRows.push({ service, scenario: 'same-request-eight-clicks', accepted: 1, busyTips: ctx.tips.filter(key => key === 'ui.smith.busy').length, randomCalls: answers.calls, result: r });
       }
-      for (const service of ['enhance', 'enchant'] as const) {
+      for (const service of ['enhance', 'enchant', 'salvage'] as const) {
         const { progress: p, refs } = await createFormalSmithProgress();
         const contenders = Array.from({ length: 3 }, (_, index) => {
           const ctx = prepare(p, service, refs[0], { element: (['金', '水', '火'] as const)[index] });
@@ -343,7 +411,7 @@ export async function runGateOpenCases(_options?: unknown): Promise<{ cases: Rec
         });
         const answers = await withRandom(0, () => Promise.all(contenders.map(row => row.ctx.ui.submit(row.pending))));
         equal(answers.value.filter(row => row && 'result' in row && row.result).length, 1, '同实例多请求仅一个提交成立');
-        equal(service === 'enhance' ? p.enhance!.enhancements.length : p.enchant!.enchantments.length, 1, '不覆盖新状态/叠层');
+        equal(service === 'enhance' ? p.enhance!.enhancements.length : service === 'enchant' ? p.enchant!.enchantments.length : p.salvage!.destructions.length, 1, '不覆盖新状态/叠层/多次销毁');
         raceRows.push({ service, scenario: 'same-instance-three-intents', accepted: 1, rejected: 2, results: answers.value });
       }
       {
@@ -372,6 +440,7 @@ export async function runGateOpenCases(_options?: unknown): Promise<{ cases: Rec
       {
         const { progress: p, refs, blueprintId } = await createFormalSmithProgress({ copies: 0 });
         p.inventory[recipe.output] = Number.MAX_SAFE_INTEGER - 1;
+        assert(await p.saveAsync(), '真实容量竞争基线保存');
         const first = prepare(p, 'forge', blueprintId), second = prepare(p, 'forge', blueprintId);
         const left = first.ui.requestConfirm(), right = second.ui.requestConfirm(); assert(left && right, '真实容量竞争确认');
         const answers = await withRandom(0, () => Promise.all([first.ui.submit(left), second.ui.submit(right)]));
@@ -392,12 +461,14 @@ export async function runGateOpenCases(_options?: unknown): Promise<{ cases: Rec
         equal(resolveFormalInventoryEquipBinding(p, { id: recipe.output, instanceRef: refs[0] }).kind, 'verified', '原本档背包实例保持可核实');
         raceRows.push({ scenario: 'existing-equip-operation-competition', equipResult: equip, enhanceResult: settled, exactBindingPreserved: true });
       }
-      const staleWriterGaps: Row[] = [];
+      const staleCrossObjectWriters: Row[] = [];
       for (const staleService of ['forge', 'enhance'] as const) {
-        const { progress: fresh, refs, blueprintId } = await createFormalSmithProgress();
+        const { refs, blueprintId } = await createFormalSmithProgress();
+        const fresh = await Progress.loadAsync(1);
+        assert(await fresh.saveAsync(), '正式读档规范化基线先保存');
         const stale = await Progress.loadAsync(1);
+        equal(stale.exportSave(), fresh.exportSave(), '两真实对象完整初始快照一致，竞争前无元数据伪冲突');
         equal(stale.storageError, undefined, '同槽真实 loadAsync 创建第二对象');
-        // loadAsync also advances ordinary age/daily metadata; compare the complete service assets here.
         equal([stale.inventory, stale.stones, stale.forge, stale.enhance, stale.enchant, stale.salvage],
           [fresh.inventory, fresh.stones, fresh.forge, fresh.enhance, fresh.enchant, fresh.salvage],
           '两个对象开始于相同库存/费用/四服务完整事实');
@@ -409,33 +480,105 @@ export async function runGateOpenCases(_options?: unknown): Promise<{ cases: Rec
         assert(freshResult?.allowed && 'result' in freshResult && freshResult.result, '新对象附灵已完整提交');
         const beforeOld = clone(backend.rows.get(1)!.data);
         assert(beforeOld.enchant, '旧 writer 前存储具有完整附灵结果');
-        const staleAttempt = await withRandom(0, () => oldUi.ui.submit(oldIntent));
+        const staleAttempt = await withRandom(0, () => unchanged(stale, () => oldUi.ui.submit(oldIntent), `跨 Progress 旧 ${staleService} CAS 拒绝`));
         const afterOld = clone(backend.rows.get(1)!.data);
-        // Reproduce the existing Gate boundary defect explicitly; this observation is BLOCKED, never PASS.
-        assert(staleAttempt.value?.allowed && 'result' in staleAttempt.value && staleAttempt.value.result,
-          '已知缺口：旧对象 Gate 仍返回完整提交');
-        equal(afterOld.enchant, undefined, '已知缺口：旧 writer 覆盖新附灵完整事实');
-        equal(afterOld.stones, staleService === 'forge' ? 1000000 : 1000000 - rules.levels[0].stones,
-          '已知缺口：旧 writer 恢复另一服务已消费灵石');
-        assert(afterOld.stones !== fresh.stones, '持久资产与先前完整提交不一致，不能宣称并发安全');
-        staleWriterGaps.push({ scenario: `same-slot-stale-${staleService}-overwrites-completed-enchant`, ownerSlot: 1,
-          twoRealControllers: true, secondObjectSource: 'Progress.loadAsync(1)',
-          currentProgressHooks: 'Each independent Controller is bound to its own Progress object; this diagnoses the formal Gate cross-object boundary.',
+        assert(staleAttempt.value && !staleAttempt.value.allowed && staleAttempt.value.tipKey === `${staleService}.fixture.stale`,
+          '旧对象正式 Gate 以完整存档 stale 拒绝');
+        equal(staleAttempt.calls, 0, '跨对象 stale 在结算抽样前拒绝');
+        equal(afterOld, beforeOld, '旧对象不能覆盖已提交完整存档');
+        equal(afterOld.enchant, fresh.enchant, '已提交附灵完整事实保留');
+        equal(afterOld.stones, fresh.stones, '已消费灵石不被旧快照恢复');
+        assert(Number(afterOld.stones) >= 0 && Object.values(afterOld.inventory as Record<string, number>).every(value => value >= 0), 'CAS 拒绝后无负库存');
+        equal(oldUi.ui.state.resultLines, [], '旧对象拒绝不渲染成功结果');
+        equal(oldUi.tips[oldUi.tips.length - 1], 'ui.smith.changed', 'Controller 提示必须重新确认');
+        staleCrossObjectWriters.push({ scenario: `same-slot-stale-${staleService}-blocked-after-completed-enchant`, ownerSlot: 1,
+          twoRealControllers: true, secondObjectSource: 'Progress.loadAsync(1)', initialCompleteSnapshotsMatched: true,
+          currentProgressHooks: 'Each independent Controller remains bound to its own Progress object.',
           singleGameSceneCurrentProgressBypassClaimed: false,
           freshRequest: newIntent.request, freshResult, staleRequest: oldIntent.request, staleResult: staleAttempt.value,
           beforeOldWriter: { sha256: await saveHash(beforeOld), completeSave: beforeOld },
           afterOldWriter: { sha256: await saveHash(afterOld), completeSave: afterOld },
-          restoredSpentStones: true, lostCompletedEnchant: true, safetyPassed: false,
-          gateOwnerActionRequired: 'formal cross-object shared-save CAS/serialization; no UI second transaction' });
+          restoredSpentStones: false, lostCompletedEnchant: false, noNegativeInventory: true, staleRandomCalls: staleAttempt.calls, safetyPassed: true,
+          formalFullSnapshotCas: true, uiSecondLedger: false });
       }
-      mark('O09', { concurrency: raceRows, staleCrossObjectWritersBlocked: staleWriterGaps,
-        salvageConcurrencyBlocked: { reason: 'O05_blocked_formal_qualification', submitted: false, completeSuccessClaimed: false },
-        uiSecondLedger: false }, 'O09_blocked_stale_forge_and_enhance_overwrite_other_service; O09_salvage_competition_blocked_by_O05');
+      const salvageCompetition: Row[] = [];
+      for (const [staleService, freshService] of [['salvage', 'enhance'], ['enhance', 'salvage']] as const) {
+        const { refs } = await createFormalSmithProgress();
+        const fresh = await Progress.loadAsync(1);
+        assert(await fresh.saveAsync(), '分解竞争正式读档规范化基线保存');
+        const stale = await Progress.loadAsync(1);
+        equal(stale.exportSave(), fresh.exportSave(), '分解竞争两真实对象完整初始快照一致');
+        equal(stale.storageError, undefined, '分解竞争第二对象沿正式 loadAsync');
+        const oldUi = prepare(stale, staleService, refs[0]), oldIntent = oldUi.ui.requestConfirm();
+        assert(oldIntent, '分解竞争旧对象明确正式实例确认');
+        const newUi = prepare(fresh, freshService, refs[0]), newIntent = newUi.ui.requestConfirm();
+        assert(newIntent, '分解竞争新对象明确正式实例确认');
+        const freshAttempt = await withRandom(0, () => newUi.ui.submit(newIntent));
+        assert(freshAttempt.value?.allowed && 'result' in freshAttempt.value && freshAttempt.value.result, '分解竞争先提交者完成正式事务');
+        const beforeOld = clone(backend.rows.get(1)!.data);
+        const staleAttempt = await withRandom(0, () => unchanged(stale, () => oldUi.ui.submit(oldIntent), `分解竞争旧 ${staleService} 不覆盖 ${freshService}`));
+        assert(staleAttempt.value && !staleAttempt.value.allowed && staleAttempt.value.tipKey === `${staleService}.fixture.stale`, '分解/强化跨对象竞争旧快照 stale 整拒');
+        equal(staleAttempt.calls, 0, '分解竞争旧请求不二次抽样');
+        equal(backend.rows.get(1)!.data, beforeOld, '分解竞争已提交销毁或等级及产出不回退');
+        if (freshService === 'salvage') {
+          equal(fresh.formalEnhanceInstanceStatus(refs[0]), 'missing', '完整销毁后来源退役');
+          equal(fresh.salvage!.destructions.length, 1, '分解竞争只产生一次销毁与收据');
+          const reloaded = await Progress.loadAsync(1);
+          equal(reloaded.formalEnhanceInstanceStatus(refs[0]), 'missing', '旧强化不能在磁盘复活正式实例');
+          equal(reloaded.salvage, fresh.salvage, '旧强化不能写掉持久销毁收据');
+        } else equal(fresh.formalEnhanceInstances()[0].enhanceLevel, 1, '旧分解不能销毁已变化等级目标');
+        salvageCompetition.push({ scenario: `same-slot-stale-${staleService}-blocked-after-${freshService}`, twoRealControllers: true,
+          secondObjectSource: 'Progress.loadAsync(1)', initialCompleteSnapshotsMatched: true, productionFormalPath: true,
+          fixtureQualificationInjected: false, fixtureCarrierInstalled: false, singleGameSceneCurrentProgressBypassClaimed: false,
+          freshRequest: newIntent.request, freshResult: freshAttempt.value, staleRequest: oldIntent.request, staleResult: staleAttempt.value,
+          beforeOldWriter: { sha256: await saveHash(beforeOld), completeSave: beforeOld },
+          afterOldWriter: { sha256: await saveHash(backend.rows.get(1)!.data), completeSave: clone(backend.rows.get(1)!.data) },
+          staleRandomCalls: staleAttempt.calls, completedFactsPreserved: true, destroyedInstanceRevived: false, safetyPassed: true });
+      }
+      for (const otherService of ['forge', 'enchant'] as const) {
+        const { refs, blueprintId } = await createFormalSmithProgress({ copies: 2 });
+        const left = await Progress.loadAsync(1);
+        assert(await left.saveAsync(), '跨服务真实并发读档规范化基线保存');
+        const right = await Progress.loadAsync(1);
+        equal(left.exportSave(), right.exportSave(), '跨服务两个 Progress 从全量相同持久事实开始');
+        const salvageUi = prepare(left, 'salvage', refs[1]), otherUi = prepare(right, otherService,
+          otherService === 'forge' ? blueprintId : refs[0], { element: '火' });
+        const salvageIntent = salvageUi.ui.requestConfirm(), otherIntent = otherUi.ui.requestConfirm();
+        assert(salvageIntent && otherIntent, '跨服务两真实 Controller 均已确认');
+        const before = clone(backend.rows.get(1)!.data), writes = backend.writes;
+        const answers = await withRandom(0, () => Promise.all([salvageUi.ui.submit(salvageIntent), otherUi.ui.submit(otherIntent)]));
+        const accepted = answers.value.filter(value => value?.allowed && 'result' in value && value.result);
+        equal(accepted.length, 1, '不同 Progress 分解与其他服务同时提交只有一笔存档 CAS 成立');
+        equal(backend.writes, writes + 1, '跨服务最终存储只提交一笔完整事务');
+        const winner = answers.value[0]?.allowed ? left : right;
+        equal(backend.rows.get(1)!.data, winner.exportSave(), '最终存档逐字段等于唯一成功 Controller 的完整结果');
+        const stored = backend.rows.get(1)!.data;
+        assert(Number(stored.stones) >= 0 && Object.values(stored.inventory as Record<string, number>).every(value => value >= 0), '跨服务真实并发无负库存');
+        const reloaded = await Progress.loadAsync(1);
+        equal(reloaded.storageError, undefined, '跨服务竞争后真实档合法可读');
+        if (answers.value[0]?.allowed) {
+          equal(reloaded.formalEnhanceInstanceStatus(refs[1]), 'missing', '分解胜出后竞争服务不能复活销毁目标');
+          equal(reloaded.salvage, left.salvage, '分解胜出完整收据保留');
+        } else if (otherService === 'enchant') equal(reloaded.enchant, right.enchant, '附灵胜出后分解不能覆盖完整附灵');
+        else equal(reloaded.forge, right.forge, '打造胜出后分解不能覆盖完整打造');
+        salvageCompetition.push({ scenario: `simultaneous-two-Progress-salvage-vs-${otherService}`, twoRealControllers: true,
+          secondObjectSource: 'Progress.loadAsync(1)', initialCompleteSnapshotsMatched: true, finalStorageSnapshotCas: true,
+          productionFormalPath: true, fixtureQualificationInjected: false, fixtureCarrierInstalled: false,
+          singleGameSceneCurrentProgressBypassClaimed: false, accepted: 1, rejected: 1, writes: 1,
+          requests: [salvageIntent.request, otherIntent.request], results: answers.value,
+          before: { sha256: await saveHash(before), completeSave: before },
+          after: { sha256: await saveHash(stored), completeSave: clone(stored) },
+          completedFactsPreserved: true, destroyedInstanceRevived: false, noNegativeInventory: true, safetyPassed: true });
+      }
+      mark('O09', { concurrency: raceRows, staleCrossObjectWritersBlocked: staleCrossObjectWriters,
+        o09StaleForgeEnhanceBlocked: true, salvageCompetition, salvageFormalCompetitionPassed: true,
+        productionFormalPath: true, fixtureQualificationInjected: false, fixtureCarrierInstalled: false,
+        singleGameSceneCurrentProgressBypassClaimed: false, uiSecondLedger: false });
     }
     equal(localWrites, 0, '开态夹具业务不写旧 localStorage');
     return { cases, assertions };
   } finally {
-    Progress.setActiveSlot(originalSlot);
+    Progress.setActiveSlot(originalSlot); setGameTimeSource(null);
     if (oldStorage) Object.defineProperty(globalThis, 'localStorage', oldStorage); else Reflect.deleteProperty(globalThis, 'localStorage');
   }
 }

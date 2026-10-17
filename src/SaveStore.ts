@@ -21,12 +21,17 @@ export interface SaveBackend {
   delete(slotKey: SlotKey): Promise<void>;
   /** 在同一写事务中判断空槽并插入，迁档不得覆盖另一窗口刚写入的 1 号位。 */
   insertIfEmpty(slot: SaveSlot): Promise<boolean>;
+  /** 在同一写事务中核对整槽旧事实；生产 IDB 不允许读写之间被另一窗口插入。 */
+  compareAndWrite?(slot: SaveSlot, expectedSnapshot: string): Promise<boolean>;
 }
 type LegacyStorage = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>;
 export type MigrationResult = 'migrated' | 'none' | 'occupied' | 'failed';
 const objectData = (data: unknown): data is SaveData => !!data && typeof data === 'object' && !Array.isArray(data);
 const validSlotKey = (key: unknown): key is SlotKey => SAVE_SLOT_KEYS.some(slot => slot === key);
 const clone = <T>(data: T): T => structuredClone(data);
+export const saveSnapshot = (data: unknown): string => JSON.stringify(data,
+  (_key, value: unknown) => value && typeof value === 'object' && !Array.isArray(value)
+    ? Object.fromEntries(Object.entries(value).sort(([left], [right]) => left < right ? -1 : left > right ? 1 : 0)) : value);
 function assertSlotKey(key: SlotKey): void {
   if (!validSlotKey(key)) throw new Error('存档位只允许 1、2、3');
 }
@@ -118,6 +123,16 @@ export function createIndexedDbBackend(factory?: IDBFactory): SaveBackend {
       assertSlotKey(slot.slotKey);
       return transaction<void>('readwrite', (store, result) => { store.put(slot); result(undefined); });
     },
+    async compareAndWrite(slot, expectedSnapshot) {
+      assertSlotKey(slot.slotKey);
+      return transaction<boolean>('readwrite', (store, result) => {
+        const request = store.get(slot.slotKey);
+        request.onsuccess = () => {
+          if (!request.result || saveSnapshot((request.result as SaveSlot).data) !== expectedSnapshot) { result(false); return; }
+          try { store.put(slot); result(true); } catch { store.transaction.abort(); }
+        };
+      });
+    },
     async delete(slotKey) {
       assertSlotKey(slotKey);
       return transaction<void>('readwrite', (store, result) => { store.delete(slotKey); result(undefined); });
@@ -158,6 +173,7 @@ export function createMemorySaveBackend(): SaveBackend {
 }
 
 export class SaveStore {
+  #slotWrites = new Map<SlotKey, Promise<unknown>>();
   constructor(private backend: SaveBackend = createIndexedDbBackend(), private validate: SaveValidator = objectData) {}
   setBackend(backend: SaveBackend): void { this.backend = backend; }
   setValidator(validate: SaveValidator): void { this.validate = validate; }
@@ -175,17 +191,33 @@ export class SaveStore {
     return clone(slot);
   }
 
-  async writeSlot(slotKey: SlotKey, data: SaveData): Promise<boolean> {
+  private serializeSlot<T>(slotKey: SlotKey, action: () => Promise<T>): Promise<T> {
+    const queued = (this.#slotWrites.get(slotKey) ?? Promise.resolve()).then(action, action);
+    this.#slotWrites.set(slotKey, queued);
+    void queued.finally(() => { if (this.#slotWrites.get(slotKey) === queued) this.#slotWrites.delete(slotKey); }).catch(() => undefined);
+    return queued;
+  }
+
+  async writeSlot(slotKey: SlotKey, data: SaveData, expectedSnapshot?: string): Promise<boolean> {
     try {
       assertSlotKey(slotKey);
       if (!objectData(data) || !this.validate(data)) return false;
-      await this.backend.write({ slotKey, data: clone(data), lastSaveAt: Date.now() });
-      return true;
+      const backend = this.backend, slot = { slotKey, data: clone(data), lastSaveAt: Date.now() };
+      return await this.serializeSlot(slotKey, async () => {
+        if (expectedSnapshot !== undefined) {
+          if (backend.compareAndWrite) return backend.compareAndWrite(slot, expectedSnapshot);
+          // 自定义/隔离后端与全部普通 writer 共用此槽队列；不安装任何 fixture carrier。
+          const current = await backend.read(slotKey);
+          if (!current || saveSnapshot(current.data) !== expectedSnapshot) return false;
+        }
+        await backend.write(slot);
+        return true;
+      });
     } catch { return false; }
   }
 
   async deleteSlot(slotKey: SlotKey): Promise<boolean> {
-    try { assertSlotKey(slotKey); await this.backend.delete(slotKey); return true; } catch { return false; }
+    try { assertSlotKey(slotKey); const backend = this.backend; await this.serializeSlot(slotKey, () => backend.delete(slotKey)); return true; } catch { return false; }
   }
 
   /**

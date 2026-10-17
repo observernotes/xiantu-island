@@ -152,6 +152,8 @@ export class Progress {
   get storageError(): string | undefined { return this.#storageError; }
 
   static getActiveSlot(): SlotKey { return Progress.#activeSlot; }
+  /** 已绑定角色始终读写原槽，不能用当前界面切槽替代实例归属。 */
+  getSaveSlot(): SlotKey { return this.#slot ?? Progress.#activeSlot; }
   static setActiveSlot(slot: SlotKey): void {
     if (!SAVE_SLOT_KEYS.some(key => key === slot)) throw new TypeError('存档位只允许 1、2、3');
     Progress.#activeSlot = slot;
@@ -388,7 +390,7 @@ export class Progress {
    * 同步玩法可在隔离 draft 上暂存；只有 IDB 确认后才把整份内存交给当前角色。
    * apply 不跨 await，也不接收 Promise；失败不会抹掉原对象尚未确认的内存修改。
    */
-  async runSaveTransactionAsync<T>(apply: (draft: Progress) => T | undefined): Promise<T | undefined> {
+  async runSaveTransactionAsync<T>(apply: (draft: Progress) => T | undefined, expectedSnapshot?: string): Promise<T | undefined> {
     if (!featureEnabled('indexedDbSaves')) return this.runSaveTransaction(() => apply(this));
     if (this.#transactionPending || this.#saveMuted || this.#storageError) return undefined;
     const slot = this.#slot ?? Progress.#activeSlot;
@@ -407,7 +409,7 @@ export class Progress {
         const next = draft.exportSave();
         // 同步回调不得修改原实例，避免把别的进度一起覆盖到槽里。
         if (JSON.stringify(before) !== JSON.stringify(Object.fromEntries(Object.entries(this).filter(([, value]) => typeof value !== 'function')))) return undefined;
-        if (!await saveStore.writeSlot(draft.#slot, next)) return undefined;
+        if (!await saveStore.writeSlot(draft.#slot, next, expectedSnapshot)) return undefined;
         // 首次成功提交即绑定本实例；切换全局 activeSlot 不能把既有实例写到另一档。
         this.#slot ??= slot;
         // 只发布 draft 改过的字段，保留等待 IDB 时原对象的其它内存变化。
