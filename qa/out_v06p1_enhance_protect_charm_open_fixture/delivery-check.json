@@ -1,0 +1,31 @@
+{
+  "passed": true,
+  "implementationTip": "be00bb185414f2aba95521e8d30a5b289dc8bdaf",
+  "files": [
+    {
+      "path": "reports/炼器阁/V06P1_ENHANCE_PROTECT_CHARM_OPEN_FIXTURE_HANDOFF.md",
+      "sharedPath": "/workspace/xiantu/reports/炼器阁/V06P1_ENHANCE_PROTECT_CHARM_OPEN_FIXTURE_HANDOFF.md",
+      "utf8": true,
+      "match": true,
+      "sha256": "1fc81e284f3c93ee2eb7d27a16c94a8b760f41ffa73a7b00dde5b81b05331dc6"
+    },
+    {
+      "path": "reports/炼器阁/V06P1_ENHANCE_PROTECT_CHARM_OPEN_FIXTURE_RESULT.md",
+      "sharedPath": "/workspace/xiantu/reports/炼器阁/V06P1_ENHANCE_PROTECT_CHARM_OPEN_FIXTURE_RESULT.md",
+      "utf8": true,
+      "match": true,
+      "sha256": "089a08a6a78cd6269495a8c939fbaac2f11afa1b7931092c361751e5e29178b8"
+    },
+    {
+      "path": "status/炼器阁.md",
+      "sharedPath": "/workspace/xiantu/status/炼器阁.md",
+      "utf8": true,
+      "match": true,
+      "sha256": "e46b482bf90b4103aabc9daae5c3a0991f1396b8f72ce382767e3e9480aa1e2c"
+    }
+  ],
+  "statusLines": 20,
+  "statusContentParagraphs": 4,
+  "evidenceKeys": 9,
+  "stdin": "/dev/null"
+}
