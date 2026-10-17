@@ -11,12 +11,22 @@ import { stripFormalEnhanceInstanceSource } from './v06p1-enhance-instance-sourc
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const shared = sharedRoot(root), baselineOut = path.join(root, 'qa/out_v06p1_enhance_closed');
-const out = process.env.ENHANCE_CLOSED_OUT ?? (process.env.XT_ENHANCE_QA_OUT ? path.join(process.env.XT_ENHANCE_QA_OUT, 'closed') : process.env.OUT_DIR) ?? path.join(root, 'qa/out_v06p1_enhance_open_preamble/closed');
+const out = process.env.ENHANCE_CLOSED_OUT ?? (process.env.XT_ENHANCE_QA_OUT ? path.join(process.env.XT_ENHANCE_QA_OUT, 'closed') : process.env.OUT_DIR) ?? path.join(root, 'qa/out_v06p1_enhance_protect_charm_closed/closed');
 const roots = new Map([['shared', shared], ['wt', path.join(root, 'data')], ['game', path.join(shared, 'game/data')]]);
 const modes = [['shared', shared], ['snapshot', roots.get('wt')]];
 const stringsSha = 'd7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09';
 const preFormalStringsSha = '92d5525c86562a870f45bf53c0c2010e961b83ec9c257a0cf8257178f45b4cab';
 const enhanceFlagSha = 'd7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e';
+const protectCharmTableShas = {
+  'materials.json': '79c68429d763054ac1715467d1743575e179ecaecb2529e4b6ed7df137ef4052',
+  'items.json': 'f8b587634e5c9d43a475e85724aa34172e2945abda7654c2ef98fda07d1566f3',
+  'enhance_protect_charm.json': '0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772',
+};
+const protectCharmGenerator = { name: 'tools/gen_enhance_protect_charm.py',
+  sha: '59b821c259724feaa47368034f6e9f297c246d01a0aa845aa1c7faf6b7c64828' };
+const protectCharmEvidence = { protectCharmWired: true, protectCharmN: 1, formalTipsWired: true,
+  formalInstanceSource: true, softOpenedEntrance: true, softOpenedFormalSettle: true,
+  softOpenedProtectCharm: false, released: false };
 const formalStrings = {
   'enhance.formal.no_instance': '无正式装备实例，不可强化。',
   'enhance.formal.bad_type': '该装备类型不可强化。',
@@ -71,7 +81,7 @@ const eq = (actual, expected, message) => { assertions++; assert.deepEqual(actua
 const ok = (value, message) => { assertions++; assert.ok(value, message); };
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const clone = value => JSON.parse(JSON.stringify(value));
-const report = row => { row = { compatibilityMeaning: 'formalOpen/softOpened 仅沿用入口状态；实例源已接线 ≠ soft-open 进包', formalTipsWired: true, formalInstanceSource: true, softOpenedEntrance: true, ...row }; evidence.push(row); console.log(JSON.stringify(row)); };
+const report = row => { row = { ...protectCharmEvidence, compatibilityMeaning: '本窗=护符映射接线 ≠ 开态全表 ≠ soft-open 进包 ≠ release；formalOpen/softOpened 沿用既有无符正式状态', ...row }; evidence.push(row); console.log(JSON.stringify(row)); };
 async function shaOrNull(file) {
   try { return hash(await fs.readFile(file)); }
   catch (error) { if (error.code === 'ENOENT') return null; throw error; }
@@ -160,7 +170,7 @@ async function checkProtection() {
     const file = keyPath(key), actual = await shaOrNull(file);
     const compared = key === 'GameScene.ts' ? hash(stripEnhanceSceneWiring(await fs.readFile(file, 'utf8')))
       : key === 'ForgeGate.ts' ? hash(stripFormalForgeRegistration(await fs.readFile(file, 'utf8'))) : actual;
-    eq(compared, ['strings.shared', 'strings.wt'].includes(key) ? stringsSha : expected, `权威写前/写后保护字节（仅剥获准强化接线）：${key}`);
+    eq(compared, ['strings.shared', 'strings.wt', 'strings.game'].includes(key) ? stringsSha : expected, `权威写前/写后保护字节（仅剥获准强化接线）：${key}`);
     protectedFiles[key] = actual; readOnlyBefore.set(file, actual);
   }
   const sourceBefore = JSON.parse(await fs.readFile(path.join(baselineOut, 'source-before.json'), 'utf8'));
@@ -191,8 +201,17 @@ async function checkProtection() {
     currentData[`${mode}:features.json`] = actual;
     if (actual !== null) readOnlyBefore.set(file, actual);
   }
-  for (const mode of ['shared', 'wt']) dataBefore[`${mode}:balance/strings_zh.json`] = stringsSha;
-  eq(currentData, dataBefore, '三根 balance/maps/features 仅shared/wt strings正式八键获准变化，其余逐字 SHA 均不变');
+  for (const mode of ['shared', 'wt']) {
+    dataBefore[`${mode}:balance/strings_zh.json`] = stringsSha;
+    for (const [name, sha] of Object.entries(protectCharmTableShas)) dataBefore[`${mode}:balance/${name}`] = sha;
+  }
+  dataBefore['game:balance/strings_zh.json'] = stringsSha; // 开工前 game 已有正式944键；本窗逐字保留。
+  dataBefore[`shared:balance/${protectCharmGenerator.name}`] = protectCharmGenerator.sha;
+  const generatorFile = path.join(shared, 'balance', protectCharmGenerator.name), generatorSha = await shaOrNull(generatorFile);
+  eq(generatorSha, protectCharmGenerator.sha, 'shared 既有护符落表工具固定 SHA，wt/game 不新增或复制');
+  readOnlyBefore.set(generatorFile, generatorSha);
+  protectedFiles[`shared:balance/${protectCharmGenerator.name}`] = generatorSha;
+  eq(currentData, dataBefore, '三根 balance/maps/features 仅 shared/wt 护符三表固定 SHA；三根既有 strings944 保留，其余 game 历史快照不变');
   const forgeBefore = JSON.parse(await fs.readFile(path.join(baselineOut, 'forge-block-before.json'), 'utf8'));
   for (const [mode, dataRoot] of roots) {
     const raw = await fs.readFile(path.join(dataRoot, 'balance/strings_zh.json'), 'utf8');
@@ -209,12 +228,18 @@ async function checkProtection() {
 }
 
 async function checkStatic(mode, dataRoot) {
+  if (mode !== 'game') {
+    for (const [name, expected] of Object.entries(protectCharmTableShas))
+      eq(await shaOrNull(path.join(dataRoot, 'balance', name)), expected, `${mode}: 护符三表固定权威 SHA ${name}`);
+    eq(JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/enhance_protect_charm.json'), 'utf8')),
+      { itemId: 'protect_charm', countPerSettlement: 1 }, `${mode}: 护符映射仅登记既有 id 与 N=1`);
+  }
   const raw = await fs.readFile(path.join(dataRoot, 'balance/strings_zh.json'), 'utf8');
   const strings = JSON.parse(raw), entries = Object.entries(strings);
   const formal = mode !== 'game';
-  eq(hash(raw), formal ? stringsSha : preFormalStringsSha, `${mode}: strings 权威 SHA（game旧快照不动）`);
-  eq(entries.length, formal ? 944 : 936, `${mode}: strings键数含_meta`);
-  const preFormal = formal ? raw.replace(/,\n(?: {2}"enhance\.formal\.[^\n]+\n?){8}/u, '\n') : raw;
+  eq(hash(raw), stringsSha, `${mode}: strings 既有944键权威 SHA（game 本窗不改）`);
+  eq(entries.length, 944, `${mode}: strings既有944键含_meta`);
+  const preFormal = raw.replace(/,\n(?: {2}"enhance\.formal\.[^\n]+\n?){8}/u, '\n');
   eq(hash(preFormal), preFormalStringsSha, `${mode}: 原936键完整字节保留`);
   if (formal) {
     eq(entries.slice(936), Object.entries(formalStrings), `${mode}: 正式八键及文案逐字`);
@@ -247,7 +272,7 @@ async function checkStatic(mode, dataRoot) {
   ok(smith, `${mode}: 既有 smith_ou 存在`);
   ok(!Object.hasOwn(smith, 'services'), `${mode}: smith_ou 无 services`);
   eq(smith.quests, [], `${mode}: smith_ou quests=[]`);
-  report({ suite: 'static', dataMode: mode, passed: true, stringsSha: formal ? stringsSha : preFormalStringsSha, strings: entries.length,
+  report({ suite: 'static', dataMode: mode, passed: true, stringsSha, strings: entries.length,
     enhanceJsonSha: enhanceSha, giftsFalseCount: gifts, smithServices: false, smithQuests: [],
     EnhanceOpenFlag: true, formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false });
 }
@@ -292,6 +317,7 @@ async function checkSource() {
   }
   const scene = await fs.readFile(path.join(root, 'src/scenes/GameScene.ts'), 'utf8');
   ok(!/EnhanceClosed|EnhanceOpenFlag|EnhanceGate|enhance\.closed\.|tryInteractEnhance|submitEnhance/u.test(stripEnhanceSceneWiring(scene)), 'GameScene 只接既有 smith_ou 最小强化提示');
+  ok(!/fixtureInstances/u.test(scene), 'design/28 C08：GameScene 生产入口无 fixtureInstances 注入或回退');
   ok(!/EnhanceClosed|EnhanceOpenFlag|EnhanceGate|enhance\.closed\.|submitEnhance/u.test(await fs.readFile(path.join(root, 'src/ShopPanel.ts'), 'utf8')), 'ShopPanel 不接强化');
   const gateSource = await fs.readFile(path.join(root, 'src/ForgeGate.ts'), 'utf8');
   ok(/laterService\(\): ForgeGateResult \{\s*if \(!isForgeOpenForFixture\(\)\) return ForgeClosed\.refuseLaterService\(\);\s*return ForgeClosed\.refuseLaterService\(\);\s*\}/u.test(gateSource),
@@ -386,6 +412,36 @@ async function runGraph(mode, dataRoot, closedFixtureOnly, refreshPayloads = nul
     eq(api.refuseLaterService().tipKey, 'enhance.closed.later_service', `${mode}: 强化附灵/分解只用 enhance.closed.later_service`);
     eq(isolationProgress.exportSave(), isolationBefore, `${mode}: Forge 后续提示抽检存档零增量`);
     const forgeFlagBefore = forgeFlag.isForgeOpenForFixture();
+    eq(forgeFlagBefore, true, `${mode}/design28-C01: Forge 正式开态不授权独立强化 memory-closed`);
+    const protectedProgress = new Progress();
+    protectedProgress.stones = 100000;
+    protectedProgress.inventory = { bamboo_sword: 1, refine_stone: 100, protect_charm: 3 };
+    const protectedInstance = { instanceRef: 'closed-protect-owned', itemId: 'bamboo_sword', type: 'weapon', enhanceLevel: 5 };
+    let protectedRandomCalls = 0, protectedTransactionCalls = 0;
+    const protectedGate = new EnhanceGate(protectedProgress, { fixtureInstances: [protectedInstance],
+      random: () => { protectedRandomCalls++; throw new Error('关态不得抽样'); } });
+    for (const name of ['persistSoon', 'save', 'saveAsync', 'runSaveTransaction', 'runSaveTransactionAsync'])
+      Object.defineProperty(protectedProgress, name, { configurable: true, value() {
+        protectedTransactionCalls++; throw new Error('关态不得事务、保存或排队');
+      } });
+    const protectedBefore = clone(protectedProgress.exportSave());
+    for (const useProtectCharm of [false, true]) {
+      const request = { enhanceRequestId: `closed-protect-${useProtectCharm}`, instanceRef: protectedInstance.instanceRef,
+        fromLevel: 5, to: 6, useProtectCharm };
+      eq(protectedGate.enhance(request), api.refuseEnhance(), `${mode}/design28-C01: 携足量护符和合法实例 enhance(${useProtectCharm}) 仍 closed.enhance`);
+      eq(await protectedGate.submit(request), api.refuseSubmit(), `${mode}/design28-C01: 携足量护符和合法实例 submit(${useProtectCharm}) 仍 closed.no_submit`);
+      eq(await protectedGate.submit(request), api.refuseSubmit(), `${mode}/design28-C06: 关态重复请求不生成去重事实`);
+      eq(protectedProgress.exportSave(), protectedBefore, `${mode}/design28-C05: 关态拒绝整档零增量`);
+    }
+    eq(protectedGate.laterService(), api.refuseLaterService(), `${mode}/design28-C05: 附灵/分解仍 later_service`);
+    eq(protectedRandomCalls, 0, `${mode}/design28-C01/C05: 关态抽样0`);
+    eq(protectedTransactionCalls, 0, `${mode}/design28-C01/C05: 关态事务及保存0`);
+    eq(protectedProgress.count('protect_charm'), 3, `${mode}/design28-C01/C05: 护符原数保留`);
+    report({ suite: 'protect-charm-memory-closed', acceptanceDesign: 'design/28', cases: ['C01', 'C05', 'C06', 'C08'],
+      dataMode: mode, passed: true, memoryClosedFlag: false, ForgeOpenFlag: forgeFlagBefore,
+      requestsProtect: [false, true], explicitTestFixtureOnly: true, protectCharmCount: 3,
+      randomCalls: protectedRandomCalls, transactionCalls: protectedTransactionCalls, zeroSideEffects: true,
+      openFixtureTableExecuted: false });
 
     async function exercise(p, label) {
       for (const method of ['persistSoon', 'save', 'saveAsync', 'runSaveTransaction', 'runSaveTransactionAsync',
@@ -487,7 +543,7 @@ try {
   for (const [mode, dataRoot] of roots) await checkStatic(mode, dataRoot);
   const sharedStrings = await fs.readFile(path.join(shared, 'balance/strings_zh.json'));
   eq((await fs.readFile(path.join(roots.get('wt'), 'balance/strings_zh.json'))).equals(sharedStrings), true, 'shared/wt: strings944同字节');
-  eq(await shaOrNull(path.join(roots.get('game'), 'balance/strings_zh.json')), preFormalStringsSha, 'game旧strings936快照保持原字节');
+  eq(await shaOrNull(path.join(roots.get('game'), 'balance/strings_zh.json')), stringsSha, 'game既有strings944指定SHA保持原字节');
   for (const [mode, dataRoot] of modes) {
     await runGraph(mode, dataRoot, false);
     const payloads = await runGraph(mode, dataRoot, true);
@@ -501,6 +557,6 @@ try {
     forgeFlagSha, cases: caseApis, totalFixtures, totalInvocations, protectedFiles, evidence,
     EnhanceOpenFlag: true, enhanceGateFixtureSourceAllowed: true, minimalFrontendWiring: true, fullEnhanceUiAdded: false, formalOpen: true, closedFixtureOnly: true,
     semanticFixtureOnly: true, formalEnhanceSchemaAdded: true, softOpened: true, released: false,
-    formalTipsWired: true, formalInstanceSource: true, softOpenedEntrance: true, enhanceFlagSha }, null, 2)}\n`);
+    ...protectCharmEvidence, protectCharmTableShas, acceptanceDesign: 'design/28', openFixtureTableExecuted: false, enhanceFlagSha }, null, 2)}\n`);
 }
-console.log(`v06p1 enhance closed tests ok: ${assertions} assertions; C01–C12; ${totalFixtures} semantic fixtures; ${totalInvocations} API calls; shared/snapshot + fresh SSR; localStorage写入0; shared/wt strings944、game旧936; gifts10×false; GAME_PHASE=5; EnhanceOpenFlag=true; 不挂smith_ou.services; smith_ou同次命中仅提示、无完整强化UI; formalOpen:true; closedFixtureOnly:true; softOpened:true; formalTipsWired:true; formalInstanceSource:true; softOpenedEntrance:true; released:false`);
+console.log(`v06p1 enhance closed tests ok: ${assertions} assertions; C01–C12; ${totalFixtures} semantic fixtures; ${totalInvocations} API calls; shared/snapshot + fresh SSR; localStorage写入0; 三根既有strings944; gifts10×false; GAME_PHASE=5; EnhanceOpenFlag=true; 不挂smith_ou.services; smith_ou同次命中仅提示、无完整强化UI; formalOpen:true; closedFixtureOnly:true; softOpened:true; formalTipsWired:true; formalInstanceSource:true; softOpenedEntrance:true; softOpenedFormalSettle:true; protectCharmWired:true; protectCharmN:1; softOpenedProtectCharm:false; released:false; 本窗=护符映射接线≠开态全表≠soft-open进包`);

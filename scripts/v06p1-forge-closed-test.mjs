@@ -21,6 +21,15 @@ const forgeClosedSha = 'f7e4216be7767f481c96ae7f1dc5796574fe9b231ada91d57a137c1d
 // 正式配方窗只同步权威与 wt 快照；game/data 保持历史基线，其他表仍逐字保护。
 const formalRecipesSha = '1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f';
 const formalRecipeKeys = new Set(['shared:balance/recipes.json', 'wt:balance/recipes.json', 'game:balance/recipes.json']);
+const protectCharmTableShas = {
+  'materials.json': '79c68429d763054ac1715467d1743575e179ecaecb2529e4b6ed7df137ef4052',
+  'items.json': 'f8b587634e5c9d43a475e85724aa34172e2945abda7654c2ef98fda07d1566f3',
+  'enhance_protect_charm.json': '0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772',
+};
+const protectCharmGenerator = { name: 'tools/gen_enhance_protect_charm.py',
+  sha: '59b821c259724feaa47368034f6e9f297c246d01a0aa845aa1c7faf6b7c64828' };
+const protectCharmSha = key => /^(shared|wt):balance\/(?:materials|items|enhance_protect_charm)\.json$/u.test(key)
+  ? protectCharmTableShas[key.slice(key.lastIndexOf('/') + 1)] : undefined;
 const stringsSha = 'd7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09';
 const preFormalStringsSha = '92d5525c86562a870f45bf53c0c2010e961b83ec9c257a0cf8257178f45b4cab';
 const preEnhanceStringsSha = 'fad9b3e604a3af23e99939bf22f77a55de803842daa297ab7fb2c2a6ed0b8967';
@@ -172,7 +181,7 @@ async function checkProtection() {
     const compared = key === 'wt:src/Progress.ts'
       ? hash(stripForgeProgress(await fs.readFile(file, 'utf8')))
       : key === 'wt:src/scenes/GameScene.ts' ? hash(stripForgeSceneWiring(await fs.readFile(file, 'utf8'))) : actual;
-    eq(compared, key.endsWith(':balance/strings_zh.json') ? (key.startsWith('game:') ? preFormalStringsSha : stringsSha) : formalRecipeKeys.has(key) ? formalRecipesSha : expected,
+    eq(compared, key.endsWith(':balance/strings_zh.json') ? stringsSha : formalRecipeKeys.has(key) ? formalRecipesSha : protectCharmSha(key) ?? expected,
       `C12 禁改表/地图/源码写前 SHA（正式 recipes 仅 shared/wt 精确授权；Progress 四行及 GameScene 最小提示接线精确剥离）：${key}`);
     readOnlyBefore.set(file, actual);
     protectedFiles[key] = actual;
@@ -193,7 +202,18 @@ async function checkProtection() {
   ok(Object.hasOwn(sourceBefore, 'src/features.ts'), '补充保护 features.ts 全文，不新增炼器开态字段');
   const dataFiles = JSON.parse(await fs.readFile(path.join(baselineDir, 'data-files-before.json'), 'utf8'));
   for (const [mode, dataRoot] of roots) for (const directory of ['balance', 'maps']) {
-    eq(await filesUnder(path.join(dataRoot, directory)), dataFiles[mode][directory], `${mode}/${directory} 无新增/删除表、地图或入口`);
+    const expectedFiles = [...dataFiles[mode][directory], ...(mode !== 'game' && directory === 'balance' ? ['enhance_protect_charm.json'] : []),
+      ...(mode === 'shared' && directory === 'balance' ? [protectCharmGenerator.name] : [])].sort();
+    eq(await filesUnder(path.join(dataRoot, directory)), expectedFiles, `${mode}/${directory} 仅 shared/wt 新增护符映射表；其他表/地图/入口不增删`);
+  }
+  const generatorFile = path.join(shared, 'balance', protectCharmGenerator.name), generatorSha = await shaOrNull(generatorFile);
+  eq(generatorSha, protectCharmGenerator.sha, 'shared 既有护符落表工具固定 SHA，wt/game 不新增或复制');
+  readOnlyBefore.set(generatorFile, generatorSha);
+  protectedFiles[`shared:balance/${protectCharmGenerator.name}`] = generatorSha;
+  for (const mode of ['shared', 'wt']) for (const [name, expected] of Object.entries(protectCharmTableShas)) {
+    const file = path.join(roots.get(mode), 'balance', name), actual = await shaOrNull(file);
+    eq(actual, expected, `${mode}: 护符三表仅接受权威固定 SHA ${name}`);
+    readOnlyBefore.set(file, actual); protectedFiles[`${mode}:balance/${name}`] = actual;
   }
   report({ suite: 'protection', passed: true, baselineFiles: Object.keys(protectedFiles).length,
     existingSourceFiles: Object.keys(sourceBefore).length, sourcesOnlyAdded: ['src/ForgeClosed.ts', ...openFixtureSources.map(name => `src/${name}`), ...enhanceClosedSources.map(name => `src/${name}`)],
@@ -205,10 +225,9 @@ async function checkProtection() {
 async function checkStatic(mode, dataRoot) {
   const raw = await fs.readFile(path.join(dataRoot, 'balance/strings_zh.json'), 'utf8');
   const strings = JSON.parse(raw), entries = Object.entries(strings);
-  const formal = mode !== 'game';
-  eq(hash(raw), formal ? stringsSha : preFormalStringsSha, `${mode}: strings指定SHA（game旧快照不动）`);
-  eq(entries.length, formal ? 944 : 936, `${mode}: strings键数含_meta`);
-  const preFormal = formal ? raw.replace(/,\n(?: {2}"enhance\.formal\.[^\n]+\n?){8}/u, '\n') : raw;
+  eq(hash(raw), stringsSha, `${mode}: strings既有944键指定SHA（game本窗不改）`);
+  eq(entries.length, 944, `${mode}: strings既有944键含_meta`);
+  const preFormal = raw.replace(/,\n(?: {2}"enhance\.formal\.[^\n]+\n?){8}/u, '\n');
   eq(hash(preFormal), preFormalStringsSha, `${mode}: 剥正式八键还原原936键完整字节`);
   eq(entries.slice(920, 928), Object.entries(closedStrings), `${mode}: forge 八键区间及文案逐字`);
   eq(entries.slice(928, 936), Object.entries(enhanceClosedStrings), `${mode}: enhance.closed 八键区间及文案逐字`);
@@ -239,7 +258,7 @@ async function checkStatic(mode, dataRoot) {
   ok(smith, `${mode}: smith_ou 既有 NPC 存在`);
   ok(!Object.hasOwn(smith, 'services'), `${mode}: 不挂 smith_ou.services`);
   eq(smith.quests, [], `${mode}: smith_ou quests=[]`);
-  report({ suite: 'static', dataMode: mode, passed: true, strings: entries.length, stringsSha: formal ? stringsSha : preFormalStringsSha,
+  report({ suite: 'static', dataMode: mode, passed: true, strings: entries.length, stringsSha,
     giftsFalseCount: gifts, smithServices: false, smithQuests: [], formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false });
 }
 
@@ -437,7 +456,7 @@ try {
   for (const [mode, dataRoot] of roots) await checkStatic(mode, dataRoot);
   const sharedStrings = await fs.readFile(path.join(shared, 'balance/strings_zh.json'));
   eq((await fs.readFile(path.join(roots.get('wt'), 'balance/strings_zh.json'))).equals(sharedStrings), true, 'shared/wt: strings944同字节');
-  eq(await shaOrNull(path.join(roots.get('game'), 'balance/strings_zh.json')), preFormalStringsSha, 'game: strings936旧快照保持原字节');
+  eq(await shaOrNull(path.join(roots.get('game'), 'balance/strings_zh.json')), stringsSha, 'game: 既有strings944指定SHA保持原字节');
   for (const [mode, dataRoot] of modes) {
     await runGraph(mode, dataRoot, false);
     const payloads = await runGraph(mode, dataRoot, true);

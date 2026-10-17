@@ -34,7 +34,7 @@ export interface EnhanceResult {
   stones: number;
   refineStones: number;
   dropOnFail: boolean;
-  useProtectCharm: false;
+  useProtectCharm: boolean;
   success: boolean;
   finalLevel: number;
   attributes: EnhanceAttributes;
@@ -111,8 +111,8 @@ export function isValidEnhanceProgress(value: unknown): value is EnhanceProgress
         || !isEnhanceInstanceRef(row.instanceRef) || !isEnhanceId(row.itemId) || !equipmentType(row.type)
         || !count(row.fromLevel) || !positive(row.to) || row.to !== row.fromLevel + 1
         || !ratio(row.rate) || row.rate > 1 || !positive(row.stones) || !positive(row.refineStones)
-        || typeof row.dropOnFail !== 'boolean' || row.useProtectCharm !== false || typeof row.success !== 'boolean'
-        || !count(row.finalLevel) || row.finalLevel !== (row.success ? row.to : row.fromLevel - (row.dropOnFail ? 1 : 0))
+        || typeof row.dropOnFail !== 'boolean' || typeof row.useProtectCharm !== 'boolean' || typeof row.success !== 'boolean'
+        || !count(row.finalLevel) || row.finalLevel !== (row.success ? row.to : (row.useProtectCharm ? row.fromLevel : row.fromLevel - (row.dropOnFail ? 1 : 0)))
         || !isValidEnhanceAttributes(row.attributes)) return false;
       const instance = value.instances.find(other => other.instanceRef === row.instanceRef);
       if (!instance || instance.itemId !== row.itemId || instance.type !== row.type

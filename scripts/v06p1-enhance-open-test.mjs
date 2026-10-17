@@ -12,7 +12,7 @@ const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const shared = sharedRoot(root);
 const modes = [['shared', shared], ['snapshot', path.join(root, 'data')]];
 const dataRoots = [['shared', shared], ['wt', path.join(root, 'data')], ['game', path.join(shared, 'game/data')]];
-const out = process.env.XT_ENHANCE_QA_OUT ?? process.env.OUT_DIR ?? path.join(root, 'qa/out_v06p1_enhance_formal_soft_open');
+const out = process.env.XT_ENHANCE_QA_OUT ?? process.env.OUT_DIR ?? path.join(root, 'qa/out_v06p1_enhance_protect_charm_closed');
 const before = new Map(), directoryBefore = new Map(), evidence = [];
 const recipesSha = '1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f';
 const forgeFlagSha = '0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e';
@@ -34,8 +34,14 @@ let assertions = 0, runtimeAssertions = 0;
 const eq = (actual, expected, message) => { assertions++; assert.deepEqual(actual, expected, message); };
 const ok = (value, message) => { assertions++; assert.ok(value, message); };
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
-const compatibilityMeaning = 'formalOpen/softOpened 表示正式实例源 soft-open；PASS≠进包≠发版';
-const report = row => { row = { formalTipsWired: true, formalInstanceSource: true, softOpenedEntrance: true, softOpenedFormalSettle: true, compatibilityMeaning, ...row }; evidence.push(row); console.log(JSON.stringify(row)); };
+const compatibilityMeaning = 'formalOpen/softOpened 沿用既有无符正式实例源 soft-open；本窗=护符映射接线≠护符开态夹具全表≠护符soft-open≠进包≠release';
+const charmEvidence = { protectCharmWired: true, protectCharmN: 1, formalTipsWired: true, formalInstanceSource: true, softOpenedEntrance: true, softOpenedFormalSettle: true, softOpenedProtectCharm: false, released: false };
+const charmSnapshots = {
+  'materials.json': '79c68429d763054ac1715467d1743575e179ecaecb2529e4b6ed7df137ef4052',
+  'items.json': 'f8b587634e5c9d43a475e85724aa34172e2945abda7654c2ef98fda07d1566f3',
+  'enhance_protect_charm.json': '0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772',
+};
+const report = row => { row = { ...charmEvidence, compatibilityMeaning, ...row }; evidence.push(row); console.log(JSON.stringify(row)); };
 async function shaOrNull(file) {
   try { return hash(await fs.readFile(file)); }
   catch (error) { if (error.code === 'ENOENT') return null; throw error; }
@@ -85,6 +91,15 @@ async function checkFormal() {
     ok(!gate.includes(text), `Gate不硬编码正式中文：${tipKey}`);
   }
   ok(!/ForgeOpenFlag|forge\.closed\.|fixtureRates|fixtureCosts/u.test(gate), '强化不借打造旗或夹具费用概率回退');
+  ok(/@xt\/balance\/enhance_protect_charm\.json/u.test(gate), 'Gate只读正式护符映射表');
+  ok(/removeItem\('protect_charm',/u.test(gate), 'Gate同草稿实际消费正式protect_charm而非虚拟item id');
+  ok(!/requestsProtect\(request\)/u.test(gate), '已替换true一律protect的提前拦截');
+  for (const [mode, dataRoot] of modes) {
+    for (const [name, sha] of Object.entries(charmSnapshots))
+      eq(await shaOrNull(path.join(dataRoot, 'balance', name)), sha, `${mode} ${name} 精确快照权威SHA MATCH`);
+    eq(JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/enhance_protect_charm.json'), 'utf8')),
+      { itemId: 'protect_charm', countPerSettlement: 1 }, `${mode} 护符正式唯一id与N=1`);
+  }
   ok(/formalEnhanceInstances/u.test(gate), '正式Gate显式读取本档正式登记而不依赖fixtureInstances');
   const progress = await fs.readFile(path.join(root, 'src/Progress.ts'), 'utf8');
   ok(/registerFormalEnhanceInstance/u.test(progress) && /formalEnhanceInstanceStatus/u.test(progress), '正式登记API及本档来源检查已接线');
@@ -119,8 +134,8 @@ async function checkFormal() {
   for (const [mode, dataRoot] of dataRoots) {
     const rawStrings = await fs.readFile(path.join(dataRoot, 'balance/strings_zh.json'), 'utf8');
     const entries = Object.entries(JSON.parse(rawStrings));
-    eq(hash(rawStrings), mode === 'game' ? previousStringsSha : stringsSha, `${mode} strings仅shared/wt追加正式八键，game旧快照不动`);
-    eq(entries.length, mode === 'game' ? 936 : 944, `${mode} strings键数含_meta`);
+    eq(hash(rawStrings), stringsSha, `${mode} strings保持开工前指定944键完整SHA`);
+    eq(entries.length, 944, `${mode} strings键数保持944含_meta`);
     if (mode !== 'game') {
       eq(entries.slice(936), Object.entries(formalStrings), `${mode} 正式八键及文案完全取表`);
       eq(hash(rawStrings.replace(/,\n(?: {2}"enhance\.formal\.[^\n]+\n?){8}/u, '\n')), previousStringsSha,
@@ -196,9 +211,13 @@ async function runGraph(mode, dataRoot, openFixture, refreshPayloads = null, inv
     const suite = await server.ssrLoadModule('/src/v06p1-enhance-open.test.ts');
     const result = await suite.runEnhanceOpenFixtureTests({ openFixture, dataMode: mode, refreshPayloads, invalidTable: invalidTable?.name });
     ok(Number.isSafeInteger(result.assertions) && result.assertions > 0, `${mode} 自动化断言实际执行`);
+    for (const [key, value] of Object.entries(charmEvidence)) eq(result[key], value, `${mode} evidence ${key}保持本窗授权值`);
     eq(result.softOpenedFormalSettle, true, `${mode} 明确登记正式实例源soft-open结算口径`);
     eq(result.released, false, `${mode} 正式实例源soft-open不授权进包发版`);
     if (openFixture && refreshPayloads === null && invalidTable === null) {
+      eq(result.protectCharmMapping?.cases, ['C01', 'C02', 'C03', 'C04', 'C05', 'C06', 'C07', 'C08'], `${mode} design28护符接线C01–C08实际旁证`);
+      eq(result.protectCharmMapping?.openFixtureTableExecuted, false, `${mode} 未代勾design28 O01–O06开态全表`);
+      eq(result.protectCharmMapping?.falseCharmReads, 0, `${mode} false路径护符映射资格库存零读取`);
       eq(result.formalInstances?.source, 'default-ForgeGate-committed-result', `${mode} 正式O表只取默认Forge完整结果来源`);
       eq(result.formalInstances?.productionFixtureInstances, false, `${mode} 正式O表不依赖fixtureInstances`);
       eq(result.formalInstances?.registeredAtForgeCommit, true, `${mode} 打造完整提交同事务登记正式实例`);
@@ -230,7 +249,7 @@ try {
   for (const [mode, dataRoot] of modes) {
     const opened = await runGraph(mode, dataRoot, true);
     await runGraph(mode, dataRoot, false);
-    eq(opened.payloads.length, 6, `${mode} 提供夹具与正式来源各自成功/两种正常失败完整保存载荷`);
+    eq(opened.payloads.length, 8, `${mode} 既有六条无符载荷及两条护符最小成功/失败保级载荷供fresh SSR读回`);
     eq(opened.payloads.filter(row => row.formalInstanceSource).length, 3, `${mode} 正式来源保存载荷均无fixtureInstances依赖`);
     await runGraph(mode, dataRoot, true, opened.payloads);
     // 将已提交历史结果带入全新内存关态图，关态优先并保留合法既有资产。
@@ -263,7 +282,8 @@ try {
   await fs.writeFile(path.join(out, 'v06p1-enhance-open-evidence.json'), `${JSON.stringify({ passed,
     assertions: assertions + runtimeAssertions, staticAssertions: assertions, runtimeAssertions,
     formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false,
-    formalTipsWired: true, formalInstanceSource: true, softOpenedEntrance: true, softOpenedFormalSettle: true, compatibilityMeaning, stringsSha, enhanceFlagSha,
+    ...charmEvidence, acceptanceDesign: 'design/28 C01–C08', protectCharmOpenFixtureTableExecuted: false,
+    legacyRegressionDesign: 'design/27 existing no-charm C/O cases', compatibilityMeaning, stringsSha, enhanceFlagSha, charmSnapshots,
     protectedFiles: Object.fromEntries(before), protectedDirectories: Object.fromEntries(directoryBefore), evidence }, null, 2)}\n`);
 }
-console.log(`v06p1 enhance formal soft-open tests ok: ${assertions + runtimeAssertions} assertions; shared/snapshot双根formal-open+memory-closed及fresh SSR读回；formal C01–C10 + fixture兼容/正式来源 O01–O08；strings944；Scene最小smith_ou同命中冒烟零写；正式flag=true；EnhanceClosed原字节；gifts 10×false；enhance未改；GAME_PHASE=5；formalOpen:true、closedFixtureOnly:true、softOpened:true、formalTipsWired:true、formalInstanceSource:true、softOpenedEntrance:true、softOpenedFormalSettle:true、released:false；正式实例源soft-open；PASS≠进包≠release≠发版`);
+console.log(`v06p1 enhance protect charm closed mapping tests ok: ${assertions + runtimeAssertions} assertions; shared/snapshot双根formal-open+memory-closed及fresh SSR读回；design28 C01–C08护符映射接线+最小成功/失败保级扣N/缺符旁证；既有design27 C/O回归保留；未代勾design28 O01–O06；strings944；Scene只读无fixture；GAME_PHASE=5；${JSON.stringify(charmEvidence)}；${compatibilityMeaning}`);

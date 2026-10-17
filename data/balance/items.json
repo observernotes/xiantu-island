@@ -596,5 +596,11 @@
   "stack": 200,
   "icon": "icon_nest_spirit_wood",
   "balanceTodo": []
+ },
+ {
+  "id": "protect_charm",
+  "name": "护器符",
+  "phase": 5,
+  "icon": "icon_protect_charm"
  }
 ]

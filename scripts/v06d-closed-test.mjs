@@ -411,7 +411,10 @@ try {
     if (name === 'balance/strings_zh.json') {
       const preFormal = sharedBytes.get(name).toString('utf8').replace(/,\n(?: {2}"enhance\.formal\.[^\n]+\n?){8}/u, '\n');
       eq(hash(preFormal), preFormalStringsSha, 'game文案对照为完整原936键');
-      eq(await fs.readFile(path.join(gameData, name), 'utf8'), preFormal, 'game旧strings936与shared剥正式八键后同字节');
+      const gameStrings = await fs.readFile(path.join(gameData, name), 'utf8');
+      eq(hash(gameStrings), expectedSha[name], 'game既有strings944指定SHA保持原字节');
+      eq(Object.keys(JSON.parse(gameStrings)).length, 944, 'game既有strings944键数');
+      eq(gameStrings, sharedBytes.get(name).toString('utf8'), 'game既有strings944与shared完整同字节');
     } else eq((await fs.readFile(path.join(gameData, name))).equals(sharedBytes.get(name)), true, `game 根 ${name} 与共享、wt 快照同字节`);
   }
   eq(await shaOrNull(path.join(root, 'data/features.json')), featureSha, '正式 features 未改开放状态');
@@ -430,4 +433,4 @@ try {
     formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false,
     protectedFiles: Object.fromEntries(before), evidence }, null, 2)}\n`);
 }
-console.log(`v06d closed tests ok: ${assertions} assertions; C01–C10 自动化部分通过；shared/snapshot strings944同字节、game旧936不动，三根山门地图同字节；tower_floors/titles/gifts/原904文案保持；formalOpen:true、closedFixtureOnly:true；正式已软开；关态仅内存夹具，无收益/通层/首通/称号/存储增量；未发版`);
+console.log(`v06d closed tests ok: ${assertions} assertions; C01–C10 自动化部分通过；三根既有strings944同字节且game本窗不改，三根山门地图同字节；tower_floors/titles/gifts/原904文案保持；formalOpen:true、closedFixtureOnly:true；正式已软开；关态仅内存夹具，无收益/通层/首通/称号/存储增量；未发版`);

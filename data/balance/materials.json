@@ -160,7 +160,8 @@
   "price": 800,
   "stack": 200,
   "icon": "icon_protect_charm",
-  "note": "强化失败不掉级，商城/活动产出"
+  "note": "强化失败不掉级，商城/活动产出",
+  "phase": 5
  },
  {
   "id": "talisman_paper",

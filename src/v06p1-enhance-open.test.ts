@@ -1,5 +1,6 @@
 // 正式强化恒开；只有独立 Vite SSR 关态图可将 EnhanceOpenFlag 内存注入 false。
 import enhance from '@xt/balance/enhance.json';
+import protectCharmMap from '@xt/balance/enhance_protect_charm.json';
 import recipes from '@xt/balance/recipes.json';
 import strings from '@xt/balance/strings_zh.json';
 import { GAME_PHASE, ITEMS } from './data';
@@ -219,6 +220,10 @@ export async function runEnhanceOpenFixtureTests(options: {
     const operations: [() => unknown | Promise<unknown>, () => unknown][] = [
       [() => gate.feature(), Closed.featureClosed], [() => gate.entrance(), Closed.refuseEntrance],
       [() => gate.enhance(hostile), Closed.refuseEnhance], [() => gate.submit(hostile), Closed.refuseSubmit],
+      ...[false, true].flatMap(useProtectCharm => [
+        [() => gate.enhance({ ...request('closed-protect-preview'), useProtectCharm }), Closed.refuseEnhance],
+        [() => gate.submit({ ...request('closed-protect-submit'), useProtectCharm }), Closed.refuseSubmit],
+      ] as [() => unknown | Promise<unknown>, () => unknown][]),
       [() => gate.level('old-request'), Closed.refuseLevel], [() => gate.consume('old-request'), Closed.refuseConsume],
       [() => gate.loadRefresh(), Closed.refuseLoadRefresh], [() => gate.laterService(), Closed.refuseLaterService],
     ];
@@ -381,14 +386,6 @@ export async function runEnhanceOpenFixtureTests(options: {
       } finally { ITEMS.bamboo_sword = original; }
     }
 
-    for (const hasFixture of [false, true]) for (const level of [0, 5, 11]) {
-      const f = fixture(level); f.p.inventory.protect_charm = 7;
-      const gate = hasFixture ? f.gate : new EnhanceGate(f.p);
-      const protectedRequest = { ...request(`formal-charm-${hasFixture}-${level}`, level), useProtectCharm: true };
-      await formalUnchanged(f.p, () => gate.enhance(protectedRequest), 'protect', `C05护符true预览整笔拒绝/fixture=${hasFixture}/+${level}`);
-      await formalUnchanged(f.p, () => gate.submit(protectedRequest), 'protect', `C05护符true提交整笔拒绝/fixture=${hasFixture}/+${level}`);
-      eq(f.p.count('protect_charm'), 7, 'C05护符候选库存不消费不授权映射');
-    }
     for (const resource of ['stones', 'refine_stone']) {
       const f = fixture();
       if (resource === 'stones') f.p.stones = enhance.levels[0].stones - 1;
@@ -443,13 +440,17 @@ export async function runEnhanceOpenFixtureTests(options: {
     eq(committed(gate.consume(payload.enhanceRequestId)), result, `${payload.state}：费用结果同次一致`);
     eq(loaded.exportSave(), before, `${payload.state}：读回不重复改级`);
     eq(idb.writes, writes, `${payload.state}：读回零写`); eq(sampleCount, samples, `${payload.state}：读回不重抽`);
-    await replay(loaded, gate, request(payload.enhanceRequestId, result.fromLevel, result.instanceRef), `${payload.state}/读回同请求`);
+    await replay(loaded, gate, { ...request(payload.enhanceRequestId, result.fromLevel, result.instanceRef), useProtectCharm: result.useProtectCharm }, `${payload.state}/读回同请求`);
     const duplicate = await formalUnchanged(loaded,
-      () => gate.submit(request(payload.enhanceRequestId, result.fromLevel, result.instanceRef)), 'duplicate', `C08${payload.state}：旧结果拒绝再次结算`);
+      () => gate.submit({ ...request(payload.enhanceRequestId, result.fromLevel, result.instanceRef), useProtectCharm: result.useProtectCharm }), 'duplicate', `C08${payload.state}：旧结果拒绝再次结算`);
     eq('result' in duplicate ? duplicate.result : null, result, `C08${payload.state}：旧请求只读结果原样保留`);
     const conflict = await formalUnchanged(loaded,
-      () => gate.submit(request(payload.enhanceRequestId, result.fromLevel, 'different-instance')), 'duplicate', `C08${payload.state}：旧请求载荷冲突拒绝`);
+      () => gate.submit({ ...request(payload.enhanceRequestId, result.fromLevel, 'different-instance'), useProtectCharm: result.useProtectCharm }), 'duplicate', `C08${payload.state}：旧请求载荷冲突拒绝`);
     eq('result' in conflict && conflict.result !== undefined, false, `C08${payload.state}：载荷冲突不冒认旧结果`);
+    const charmConflict = await formalUnchanged(loaded,
+      () => gate.submit({ ...request(payload.enhanceRequestId, result.fromLevel, result.instanceRef), useProtectCharm: !result.useProtectCharm }),
+      'duplicate', `design28 C06/C07${payload.state}：护符意图冲突仍拒绝重复`);
+    eq('result' in charmConflict && charmConflict.result !== undefined, false, `design28 C06/C07${payload.state}：护符意图冲突不附旧结果`);
     if (payload.formalInstanceSource) {
       const samples = sampleCount, writes = idb.writes, before = loaded.exportSave();
       ok(gate.enhance(request('fresh-formal-preview', result.finalLevel, result.instanceRef)).allowed,
@@ -458,6 +459,191 @@ export async function runEnhanceOpenFixtureTests(options: {
       eq([sampleCount, idb.writes], [samples, writes], 'O05正式重新选择不重抽不扣费');
     } else await formalUnchanged(loaded, () => gate.submit(request('fresh-without-authorization', result.finalLevel, result.instanceRef)),
       'no_instance', `C02/C08${payload.state}：完整历史夹具袋不授权新submit`);
+  }
+  /** design/28 C 表及接线自洽所需最小旁证；不代勾 design/28 O01–O06。 */
+  async function protectCharmMappingCases() {
+    const mapping = protectCharmMap as Record<string, unknown>;
+    eq(mapping, { itemId: 'protect_charm', countPerSettlement: 1 }, 'design28 C08正式映射只读取得本窗N=1');
+    ok(ITEMS.protect_charm, 'design28 C08合并后的ITEMS存在正式护符资格记录');
+    const mappingBefore = Object.getOwnPropertyDescriptors(mapping), itemBefore = ITEMS.protect_charm;
+    async function withMappingMutation(mutate: () => void, action: () => Promise<void>) {
+      try { mutate(); await action(); }
+      finally {
+        for (const key of Reflect.ownKeys(mapping)) Reflect.deleteProperty(mapping, key);
+        Object.defineProperties(mapping, mappingBefore);
+        ITEMS.protect_charm = itemBefore;
+      }
+    }
+    const brokenMappings: [string, () => void][] = [
+      ['missing-map-fields', () => { delete mapping.itemId; delete mapping.countPerSettlement; }],
+      ['missing-itemId', () => { delete mapping.itemId; }],
+      ['wrong-itemId', () => { mapping.itemId = 'refine_stone'; }],
+      ['missing-N', () => { delete mapping.countPerSettlement; }],
+      ...[0, -1, 0.5, NaN, Infinity, Number.MAX_SAFE_INTEGER + 1, '1', null].map(value =>
+        [`invalid-N-${String(value)}`, () => { mapping.countPerSettlement = value; }] as [string, () => void]),
+      ['missing-ITEMS-registration', () => { delete ITEMS.protect_charm; }],
+      ...[
+        ['phase', { phase: GAME_PHASE + 1 }], ['phaseMin', { phaseMin: GAME_PHASE + 1 }],
+        ['phaseMax', { phaseMax: GAME_PHASE - 1 }], ['enabled', { enabled: false }],
+        ['placeholder', { placeholder: true }], ['qualityEnabled', { qualityEnabled: true }],
+      ].map(([name, patch]) => [String(name), () => { ITEMS.protect_charm = { ...itemBefore, ...patch as object }; }] as [string, () => void]),
+    ];
+    for (const [name, mutate] of brokenMappings) await withMappingMutation(mutate, async () => {
+      const f = fixture(); f.p.inventory.protect_charm = 7;
+      const input = { ...request(`mapping-${name}`), useProtectCharm: true };
+      await formalUnchanged(f.p, () => f.gate.enhance(input), 'protect', `design28 C02/C05${name}即使库存有符仍拒绝预览`);
+      await formalUnchanged(f.p, () => f.gate.submit(input), 'protect', `design28 C02/C05${name}即使库存有符仍拒绝提交`);
+      eq(f.p.count('protect_charm'), 7, 'design28 C02映射未齐不消费也不静默改false');
+    });
+    // false 路径不得读取护符映射、登记或库存。Getter 若被触碰会立即抛错并使分类断言失败。
+    let falseCharmReads = 0;
+    await withMappingMutation(() => {
+      const fail = () => { falseCharmReads++; throw new Error('false路径不得读护符映射或资格'); };
+      Object.defineProperties(mapping, { itemId: { configurable: true, get: fail }, countPerSettlement: { configurable: true, get: fail } });
+      delete ITEMS.protect_charm;
+    }, async () => {
+      for (const [kind, hasInstance, resources] of [['missing-instance', false, true], ['missing-base-resources', true, false]] as const) {
+        const f = fixture(); delete f.p.inventory.protect_charm;
+        if (!resources) f.p.stones = 0;
+        const gate = hasInstance ? f.gate : new EnhanceGate(f.p);
+        const originalCount = f.p.count, originalPermanent = f.p.permanentCount;
+        try {
+          f.p.count = function (id: string) { if (id === 'protect_charm') falseCharmReads++; return originalCount.call(this, id); };
+          f.p.permanentCount = function (id: string) { if (id === 'protect_charm') falseCharmReads++; return originalPermanent.call(this, id); };
+          await formalUnchanged(f.p, () => gate.enhance(request(`false-${kind}-preview`)), hasInstance ? 'resources' : 'no_instance', `design28 C03${kind}无映射无符预览`);
+          await formalUnchanged(f.p, () => gate.submit(request(`false-${kind}-submit`)), hasInstance ? 'resources' : 'no_instance', `design28 C03${kind}无映射无符提交`);
+        } finally { f.p.count = originalCount; f.p.permanentCount = originalPermanent; }
+      }
+      const f = fixture(); delete f.p.inventory.protect_charm;
+      ok(f.gate.enhance(request('false-valid-no-map')).allowed, 'design28 C03无符合法实例预览不依赖护符映射');
+      sampled = 0;
+      eq(committed(await f.gate.submit(request('false-committed-no-map'))).useProtectCharm, false, 'design28 C03既有false路径无护符登记/N/库存仍可结算');
+    });
+    eq(falseCharmReads, 0, 'design28 C03 false对护符映射资格库存零读取');
+
+    // 携符不授予装备身份、类型、等级或跨档权限。
+    for (const [name, instances, input, reason, missingOwned] of [
+      ['no-source', undefined, request('charm-no-source'), 'no_instance', false],
+      ['itemId-is-not-instanceRef', [instance()], request('charm-item-id', 0, 'bamboo_sword'), 'no_instance', false],
+      ['foreign', [instance()], request('charm-foreign'), 'foreign', true],
+      ['bad-type', [{ ...instance(), type: 'shoes' }], request('charm-bad-type'), 'bad_type', false],
+      ['stale-level', [instance(1)], request('charm-stale-level'), 'max_level', false],
+      ['max-level', [instance(enhance.maxLevel)], request('charm-max-level', enhance.maxLevel), 'max_level', false],
+    ] as const) {
+      const f = fixture(0, 'weapon', instances as Instance[] | undefined); f.p.inventory.protect_charm = 7;
+      if (missingOwned) delete f.p.inventory.bamboo_sword;
+      const gate = instances === undefined ? new EnhanceGate(f.p) : f.gate;
+      const protectedInput = { ...input, useProtectCharm: true };
+      await formalUnchanged(f.p, () => gate.enhance(protectedInput), reason, `design28 C04/C05携符${name}预览仍拒绝`);
+      await formalUnchanged(f.p, () => gate.submit(protectedInput), reason, `design28 C04/C05携符${name}提交仍拒绝`);
+    }
+    for (const pollution of ['zero', 'transient', 'pillQualities']) {
+      const f = fixture(); f.p.inventory.protect_charm = pollution === 'zero' ? 0 : 7;
+      if (pollution === 'transient') (f.p as any).transientItems = { protect_charm: 1 };
+      if (pollution === 'pillQualities') f.p.pillQualities.protect_charm = { low: 7 };
+      const input = { ...request(`charm-inventory-${pollution}`), useProtectCharm: true };
+      await formalUnchanged(f.p, () => f.gate.enhance(input), 'resources', `design28 C05${pollution}不可消费护符拒绝预览`);
+      await formalUnchanged(f.p, () => f.gate.submit(input), 'resources', `design28 C05${pollution}不可消费护符拒绝提交`);
+    }
+    await withMappingMutation(() => { mapping.countPerSettlement = 2; }, async () => {
+      const f = fixture(); f.p.inventory.protect_charm = 1;
+      await formalUnchanged(f.p, () => f.gate.submit({ ...request('charm-less-than-N'), useProtectCharm: true }),
+        'resources', 'design28 C05库存小于映射N整笔拒绝，不猜N或部分扣除');
+    });
+
+    const protectedPayloads: Payload[] = [];
+    for (const [name, level, random, success] of [['success', 0, 0, true], ['failure-kept', 5, 0.999999, false]] as const) {
+      const f = fixture(level); f.p.inventory.protect_charm = 3;
+      const input = { ...request(`protect-charm-${name}`, level), useProtectCharm: true };
+      const row = enhance.levels.find(row => row.to === input.to)!, before = f.p.exportSave(), writes = idb.writes,
+        samples = sampleCount, commits = idb.commits;
+      sampled = random;
+      ok(f.gate.enhance(input).allowed, 'design28 C08齐备足量护符只读预览允许且不消费');
+      eq(f.p.exportSave(), before, 'design28 C08带符预览保持整档原样');
+      const result = committed(await f.gate.submit(input)), finalLevel = success ? input.to : level;
+      eq(result.useProtectCharm, true, 'design28最小接线旁证结果持久记录护符true');
+      eq(result.success, success, 'design28最小接线旁证按目标原rate正常抽样');
+      eq({ to: result.to, rate: result.rate, stones: result.stones, refineStones: result.refineStones, dropOnFail: result.dropOnFail }, row,
+        'design28最小接线旁证不改目标rate且dropOnFail保留原审计值');
+      if (!success) eq(row.dropOnFail, true, 'design28最小失败旁证明确覆盖原配置会掉级的目标行');
+      eq(result.finalLevel, finalLevel, 'design28最小接线旁证成功升to、护符失败保fromLevel');
+      eq(result.attributes, attributes('weapon', finalLevel), 'design28最小接线旁证属性严格对应最终等级');
+      eq(f.p.enhance!.instances[0].enhanceLevel, finalLevel, 'design28最小接线旁证最终等级同次入袋');
+      eq([f.p.stones, f.p.count('refine_stone'), f.p.count('protect_charm')],
+        [Number(before.stones) - row.stones, 100 - row.refineStones, 2], 'design28成功与正常失败同扣灵石精炼石及护符N=1');
+      eq([f.p.count('bamboo_sword'), f.p.count('rabbit_fur')], [2, 7], 'design28失败不碎装、不变更旁路资产');
+      eq([idb.writes, idb.commits, sampleCount], [writes + 1, commits + 1, samples + 1], 'design28费用等级属性结果去重同一提交且只抽一次');
+      const disk = (await saveStore.readSlot(1))!.data;
+      eq([disk.enhance, disk.inventory, disk.stones], [f.p.enhance, f.p.inventory, f.p.stones], 'design28护符消费与完整结果同次落盘');
+      ok(isValidEnhanceProgress(f.p.enhance), 'design28 true结果及失败保级满足最小结构放开');
+      for (const value of [undefined, 'true', null]) {
+        const corrupt = copy(f.p.enhance) as any; corrupt.enhancements[0].useProtectCharm = value;
+        eq(isValidEnhanceProgress(corrupt), false, 'design28结构仍要求useProtectCharm为boolean');
+      }
+      await replay(f.p, new EnhanceGate(f.p), input, 'design28 C06护符请求只读重放不二次消费');
+      const conflict = await formalUnchanged(f.p, () => f.gate.submit({ ...input, useProtectCharm: false }), 'duplicate', 'design28 C06护符true旧请求改false仍拒绝');
+      eq('result' in conflict && conflict.result !== undefined, false, 'design28 C06护符载荷冲突不附旧结果');
+      await withMappingMutation(() => { delete mapping.countPerSettlement; delete ITEMS.protect_charm; }, async () => {
+        await replay(f.p, new EnhanceGate(f.p), input, 'design28 C06/C07已提交true结果不依赖后来失效的映射');
+        const refreshed = await formalUnchanged(f.p, () => new EnhanceGate(f.p).loadRefresh(), 'load_dedupe', 'design28 C07后来缺N和登记仍只读已提交完整结果');
+        eq('progress' in refreshed ? refreshed.progress : null, f.p.enhance, 'design28 C07映射失效后load_dedupe不补扣不改旧结果');
+        eq(committed(new EnhanceGate(f.p).level(input.enhanceRequestId)), result, 'design28 C07映射失效后level仅读旧结果');
+        eq(committed(new EnhanceGate(f.p).consume(input.enhanceRequestId)), result, 'design28 C07映射失效后consume不补做消费');
+      });
+      // 已提交去重不再要求补齐当下护符；这里只读改变测试库存，随后恢复原已提交快照。
+      f.p.inventory.protect_charm = 0;
+      await replay(f.p, new EnhanceGate(f.p), input, 'design28 C06已消费后当前无符仍只读识别旧结果');
+      f.p.inventory.protect_charm = 2;
+      protectedPayloads.push({ state: `protect-charm-${name}`, enhanceRequestId: input.enhanceRequestId, save: f.p.exportSave() });
+    }
+    for (const payload of protectedPayloads) await roundtrip(payload);
+    payloads.push(...protectedPayloads);
+    const originalRemove = Progress.prototype.removeItem;
+    try {
+      for (const throws of [false, true]) {
+        Progress.prototype.removeItem = function (id: string, amount: number) {
+          if (id === 'protect_charm') { if (throws) throw new Error('护符消费端受控失败'); return; }
+          return originalRemove.call(this, id, amount);
+        };
+        const f = fixture(); f.p.inventory.protect_charm = 2; sampled = 0;
+        await unchanged(f.p, () => f.gate.submit({ ...request(`charm-remove-failed-${throws}`), useProtectCharm: true }),
+          'design28 C05护符真实扣除端无效或抛错时基础费用结果等级同笔回滚');
+      }
+    } finally { Progress.prototype.removeItem = originalRemove; }
+    const aborted = fixture(); aborted.p.inventory.protect_charm = 2; sampled = 0;
+    eq(await aborted.p.save({ async: true }), true, 'design28 C05新增护符消费中断前保存完整旧档');
+    const beforeAbort = aborted.p.exportSave(), abortDisk = (await saveStore.readSlot(1))!.data;
+    const hold = idb.holdNextCommit(), pending = aborted.gate.submit({ ...request('charm-aborted'), useProtectCharm: true });
+    await hold.started;
+    eq(aborted.p.exportSave(), beforeAbort, 'design28 C05IDB complete前不发布护符费用等级结果');
+    idb.abortNextCommit(); hold.release(); businessDenied(await pending, 'design28 C05护符同事务中断明确拒绝');
+    eq(aborted.p.exportSave(), beforeAbort, 'design28 C05护符消费中断内存整笔回滚');
+    eq((await saveStore.readSlot(1))!.data, abortDisk, 'design28 C05护符消费中断磁盘整笔回滚');
+    const rapid = fixture(); rapid.p.inventory.protect_charm = 2; sampled = 0;
+    const input = { ...request('protect-charm-rapid'), useProtectCharm: true }, writes = idb.writes, samples = sampleCount;
+    const rapidResults = await Promise.all([rapid.gate.submit(input), new EnhanceGate(rapid.p, fixtureOptions()).submit(copy(input)), rapid.gate.submit(copy(input))]);
+    eq(rapidResults.filter(result => result.allowed).length, 1, 'design28 C06带符连点与跨Gate同请求只完整提交一次');
+    eq([rapid.p.count('protect_charm'), rapid.p.enhance!.enhancements.length, rapid.p.enhance!.receipts.length], [1, 1, 1], 'design28 C06带符连点只消费N并产生一份结果去重');
+    eq([idb.writes, sampleCount], [writes + 1, samples + 1], 'design28 C06带符连点只写一次抽一次');
+    await replay(rapid.p, rapid.gate, input, 'design28 C06带符连点完成后duplicate只读');
+    const oldSlot = Progress.getActiveSlot();
+    try {
+      Progress.setActiveSlot(2); const other = fixture(); other.p.inventory.protect_charm = 2;
+      await formalUnchanged(other.p, () => new EnhanceGate(other.p).submit(input), 'no_instance', 'design28 C07另一档同请求有符也不借原档授权');
+      await formalUnchanged(other.p, () => new EnhanceGate(other.p).level(input.enhanceRequestId), 'no_instance', 'design28 C07另一档不读取原档结果或消费事实');
+      const result = committed(await other.gate.submit(input));
+      ok(result.enhanceResultRef !== rapid.p.enhance!.enhancements[0].enhanceResultRef, 'design28 C07显式夹具另档同id拥有独立账本');
+      eq(other.p.count('protect_charm'), 1, 'design28 C07另一档只扣本档护符N');
+      eq(rapid.p.count('protect_charm'), 1, 'design28 C07跨档不修改原档库存');
+    } finally { Progress.setActiveSlot(oldSlot); }
+    eq(mapping, { itemId: 'protect_charm', countPerSettlement: 1 }, 'design28测试后恢复正式映射原值');
+    eq(ITEMS.protect_charm, itemBefore, 'design28测试后恢复正式ITEMS资格对象');
+    return { cases: ['C01', 'C02', 'C03', 'C04', 'C05', 'C06', 'C07', 'C08'],
+      acceptanceDesign: 'design/28', mappingMutations: brokenMappings.map(([name]) => name),
+      falseCharmReads, missingCharmTip: 'enhance.formal.resources', incompleteMappingTip: 'enhance.formal.protect',
+      zeroSideEffects: true, duplicatePayloadIncludesUseProtectCharm: true, loadDedupeWithoutSupplement: true,
+      explicitFixtureOnly: true, productionFixtureInstances: false, minimalWiringProof: ['success-consumes-N', 'dropOnFail-failure-keeps-level-and-consumes-N', 'missing-charm-resources'],
+      openFixtureTableExecuted: false, softOpenedProtectCharm: false, released: false };
   }
   /** 正式 O 表：只从默认 ForgeGate 的完整成品登记取实例，强化从不注入 fixtureInstances。 */
   async function formalInstanceCases() {
@@ -592,9 +778,10 @@ export async function runEnhanceOpenFixtureTests(options: {
     for (const payload of formalPayloads) await roundtrip(payload);
     payloads.push(...formalPayloads);
 
-    const refusals = await crafted('formal-refusal-source'); refusals.p.inventory.protect_charm = 7;
+    const refusals = await crafted('formal-refusal-source'); refusals.p.inventory.protect_charm = 0;
     await formalUnchanged(refusals.p, () => refusals.gate.submit({ ...request('formal-protect', 0, refusals.ref), useProtectCharm: true }),
-      'protect', 'O04正式来源仍拒护符true'); eq(refusals.p.count('protect_charm'), 7, 'O04护符库存原样保留');
+      'resources', 'design28 C05正式来源映射齐备但缺符整笔拒绝'); eq(refusals.p.count('protect_charm'), 0, 'design28 C05缺符不补造库存');
+    refusals.p.inventory.protect_charm = 7;
     for (const ref of ['missing-instance', 'bamboo_sword'])
       await formalUnchanged(refusals.p, () => refusals.gate.submit(request('formal-missing', 0, ref)), 'no_instance', 'O06数量和itemId不能冒充实例');
     for (const [name, patch] of [['slot', { slot: 'ring' }], ['phase', { phase: GAME_PHASE + 1 }], ['enabled', { enabled: false }],
@@ -706,10 +893,11 @@ export async function runEnhanceOpenFixtureTests(options: {
     const sceneSmokeEvidence = invalidTable ? null : sceneSmoke();
     const defaultGateEvidence = openFixture && !invalidTable ? await defaultGateDenied() : null;
     const formalRefusalEvidence = openFixture && !invalidTable && !refreshPayloads ? await formalRefusalCases() : null;
+    let protectCharmEvidence: Awaited<ReturnType<typeof protectCharmMappingCases>> | null = null;
     let formalInstanceEvidence: Awaited<ReturnType<typeof formalInstanceCases>> | null = null;
     if (refreshPayloads) {
       eq(refreshPayloads.map(row => row.state), ['success', 'failure-no-drop', 'failure-drop',
-        'formal-success', 'formal-failure-no-drop', 'formal-failure-drop'], '独立fresh SSR覆盖夹具与正式来源成功/两种失败');
+        'formal-success', 'formal-failure-no-drop', 'formal-failure-drop', 'protect-charm-success', 'protect-charm-failure-kept'], '独立fresh SSR覆盖夹具与正式来源成功/两种失败');
       for (const payload of refreshPayloads) await roundtrip(payload);
       payloads.push(...copy(refreshPayloads));
     }
@@ -805,13 +993,7 @@ export async function runEnhanceOpenFixtureTests(options: {
       await unchanged(chain.p, () => new EnhanceGate(chain.p, fixtureOptions([instance(enhance.maxLevel + 1)]))
         .submit(request('illegal-permission-level', 2)), 'O06有合法历史袋仍拒非法授权等级');
 
-      // O04：没有正式护器符映射，绝不猜数量、item id 或消费时点。
-      for (const level of [0, 5, 11]) {
-        const f = fixture(level), beforeSamples = sampleCount;
-        await unchanged(f.p, () => f.gate.submit({ ...request(`charm-${level}`, level), useProtectCharm: true }), 'O04请求使用护器符依据缺失整笔拒绝');
-        eq(sampleCount, beforeSamples, 'O04无依据护符不进入概率结算');
-      }
-
+      // 既有无符 design/27 O 表保留；design/28 只执行关态映射 C 表与最小接线旁证。
       const invalidRequests: unknown[] = [null, {}, { ...request(), enhanceRequestId: '' },
         { ...request(), instanceRef: 'foreign-instance' }, { ...request(), instanceRef: 'bamboo_sword' },
         { ...request(), fromLevel: -1 }, { ...request(), fromLevel: 0.5 }, { ...request(), fromLevel: 1 },
@@ -950,17 +1132,20 @@ export async function runEnhanceOpenFixtureTests(options: {
       eq(absent.p.enhance, undefined, 'O08缺字段旧档不补袋');
       eq(Object.prototype.hasOwnProperty.call(absent.p.exportSave(), 'enhance'), false, 'O08旧档export不建待补做记录');
       formalInstanceEvidence = await formalInstanceCases();
+      protectCharmEvidence = await protectCharmMappingCases();
     }
     eq(featureFlags(), flags, 'features原值保持不变'); eq(JSON.stringify(enhance), tableBefore, 'enhance内存表未修改');
     eq(localWrites, 0, '真实IDB保存无localStorage写旁路');
     return { assertions, payloads, openFixture, graph: openFixture ? 'formal-open' : 'memory-closed',
       formalOpen: true, closedFixtureOnly: true, softOpened: true, softOpenedEntrance: true, softOpenedFormalSettle: true,
-      formalTipsWired: true, formalInstanceSource: true, released: false,
-      compatibilityMeaning: 'formalOpen/softOpened 表示正式实例源 soft-open；PASS≠进包≠发版',
+      formalTipsWired: true, formalInstanceSource: true, protectCharmWired: true, protectCharmN: 1, softOpenedProtectCharm: false, released: false,
+      compatibilityMeaning: 'formalOpen/softOpened 沿用既有无符正式实例源 soft-open；本窗=护符映射接线≠护符开态夹具全表≠护符soft-open≠进包≠release',
       sceneSmoke: sceneSmokeEvidence, defaultGateDenied: defaultGateEvidence, formalRefusals: formalRefusalEvidence,
-      formalInstances: formalInstanceEvidence,
+      formalInstances: formalInstanceEvidence, protectCharmMapping: protectCharmEvidence,
+      acceptanceDesign: 'design/28 C01–C08', protectCharmOpenFixtureTableExecuted: false,
+      legacyRegressionDesign: 'design/27 existing no-charm C/O cases',
       storageWrites: idb.writes, commits: idb.commits, sampleCount,
-      forgingExperienceWritten: false, protectorPath: 'missing-basis-denied',
+      forgingExperienceWritten: false, protectorPath: 'mapped-atomic-settlement-or-protect/resources-denied',
       cases: openFixture ? invalidTable ? ['O06'] : ['C01', 'C02', 'C03', 'C04', 'C05', 'C06', 'C07', 'C08', 'C09', 'C10',
         'O01', 'O02', 'O03', 'O04', 'O05', 'O06', 'O07', 'O08'] : ['memory-closed-eight-tips', 'zero-side-effects', 'historical-baggage'] };
   } finally {

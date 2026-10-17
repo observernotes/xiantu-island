@@ -31,6 +31,13 @@ const marketTableSha = 'e4725b4724dea9abf67baf2ee467a30e841fee3ee1a9137f5dc25225
 // 仅认可本窗权威配方及 wt 镜像的固定 SHA，game/data 和其他表继续钉历史值。
 const formalRecipesSha = '1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f';
 const formalRecipeKeys = new Set(['shared:balance/recipes.json', 'wt:balance/recipes.json', 'game:balance/recipes.json']);
+const protectCharmTableShas = {
+  'materials.json': '79c68429d763054ac1715467d1743575e179ecaecb2529e4b6ed7df137ef4052',
+  'items.json': 'f8b587634e5c9d43a475e85724aa34172e2945abda7654c2ef98fda07d1566f3',
+  'enhance_protect_charm.json': '0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772',
+};
+const protectCharmSha = key => /^(shared|wt):balance\/(?:materials|items|enhance_protect_charm)\.json$/u.test(key)
+  ? protectCharmTableShas[key.slice(key.lastIndexOf('/') + 1)] : undefined;
 const closedStrings = {
   'market.closed.feature': '坊市寄售尚未开放。',
   'market.closed.list': '坊市寄售尚未开放，暂不可上架。',
@@ -216,8 +223,8 @@ async function checkProtection() {
     if (key.endsWith('/market_consign.json')) continue;
     const actual = await shaOrNull(file);
     const authorizedSha = key === 'wt:src/Progress.ts' ? openFixtureProgressSha
-      : key.endsWith(':balance/strings_zh.json') ? (key.startsWith('game:') ? preFormalStringsSha : stringsSha)
-      : formalRecipeKeys.has(key) ? formalRecipesSha : expected;
+      : key.endsWith(':balance/strings_zh.json') ? stringsSha
+      : formalRecipeKeys.has(key) ? formalRecipesSha : protectCharmSha(key) ?? expected;
     if (key === 'wt:src/Progress.ts') {
       eq(hash(stripForgeProgress(await fs.readFile(file, 'utf8'))), authorizedSha,
         'C12 Progress 仅增加炼器可选袋四完整行，剥离后原寄售基线字节保持');
@@ -233,9 +240,16 @@ async function checkProtection() {
       const actual = (await filesUnder(path.join(dataRoot, directory))).filter(name => name.endsWith('.json') && !(directory === 'balance' && name === 'market_consign.json'));
       const prefix = `${mode}:${directory}/`;
       const expected = Object.keys(baseline).filter(key => key.startsWith(prefix) && !(directory === 'balance' && key.endsWith('/market_consign.json')))
-        .map(key => key.slice(prefix.length)).sort();
+        .map(key => key.slice(prefix.length));
+      if (mode !== 'game' && directory === 'balance') expected.push('enhance_protect_charm.json');
+      expected.sort();
       eq(actual, expected, `C12 ${mode}/${directory} 没有新增/删除表、地图或入口文件`);
     }
+  }
+  for (const mode of ['shared', 'wt']) for (const [name, expected] of Object.entries(protectCharmTableShas)) {
+    const file = path.join(dataRoots.get(mode), 'balance', name), actual = await shaOrNull(file);
+    eq(actual, expected, `${mode}: 护符三表仅接受权威固定 SHA ${name}`);
+    readOnlyBefore.set(file, actual); protectedFiles[`${mode}:balance/${name}`] = actual;
   }
   const expectedSource = Object.keys(baseline).filter(key => key.startsWith('wt:src/')).map(key => key.slice('wt:src/'.length));
   eq(await filesUnder(path.join(root, 'src')), [...expectedSource, 'MarketClosed.ts', 'ForgeClosed.ts', ...openFixtureSources, ...enhanceClosedSources].sort(), 'C12 src 仅新增关态 API 及精确列明的寄售/炼器夹具源码与强化关态 API/Flag，无完整寄售 UI 文件');
@@ -477,7 +491,7 @@ try {
   for (const [mode, dataRoot] of modes) await checkStatic(mode, dataRoot);
   const sharedStrings = await fs.readFile(path.join(shared, 'balance/strings_zh.json'));
   eq((await fs.readFile(path.join(root, 'data/balance/strings_zh.json'))).equals(sharedStrings), true, 'shared/snapshot: strings944同字节');
-  eq(await shaOrNull(path.join(gameData, 'balance/strings_zh.json')), preFormalStringsSha, 'game: strings936旧快照保持原字节');
+  eq(await shaOrNull(path.join(gameData, 'balance/strings_zh.json')), stringsSha, 'game: 既有strings944指定SHA保持原字节');
   for (const [mode, dataRoot] of modes) {
     await runGraph(mode, dataRoot, false);
     const payloads = await runGraph(mode, dataRoot, true);
@@ -493,4 +507,4 @@ try {
     minimalFrontendWiring: true, fullMarketUiAdded: false, noMarketTableConsumedByClosedApi: true, optionalMarketBagAdded: true,
     protectedFiles: Object.fromEntries(readOnlyBefore), evidence }, null, 2)}\n`);
 }
-console.log(`v06p1 market closed tests ok: ${assertions} assertions; C01–C12 自动化部分通过；shared/snapshot strings944同字节、game旧strings936不动；八 API 零参数、零副作用、零存储写入；shops/禁改表/地图不变，Progress仅授权可选market袋，gifts 10×false，GAME_PHASE=5；仅前台入口最小提示、无完整寄售 UI；formalOpen:true、closedFixtureOnly:true、softOpened:true、released:false；正式旗及三根 enabled=true，关态仅 SSR 内存 false、未发版`);
+console.log(`v06p1 market closed tests ok: ${assertions} assertions; C01–C12 自动化部分通过；三根既有strings944同字节且game本窗不改；八 API 零参数、零副作用、零存储写入；shops/禁改表/地图不变，Progress仅授权可选market袋，gifts 10×false，GAME_PHASE=5；仅前台入口最小提示、无完整寄售 UI；formalOpen:true、closedFixtureOnly:true、softOpened:true、released:false；正式旗及三根 enabled=true，关态仅 SSR 内存 false、未发版`);

@@ -1,4 +1,5 @@
 import enhance from '@xt/balance/enhance.json';
+import protectCharmMap from '@xt/balance/enhance_protect_charm.json';
 import strings from '@xt/balance/strings_zh.json';
 import { ITEMS, inPhase } from './data';
 import type { Progress } from './Progress';
@@ -78,7 +79,6 @@ export class EnhanceGate {
   enhance(request?: EnhanceRequest): EnhanceGateResult {
     if (!isEnhanceOpenForFixture()) return EnhanceClosed.refuseEnhance();
     try {
-      if (this.requestsProtect(request)) return formalDenied('enhance.formal.protect');
       const boundary = this.formalSelectionBoundary(this.progress, request);
       if (boundary) return boundary;
       if (!this.valid(this.progress)) return this.hasFixtureAuthorization()
@@ -86,13 +86,14 @@ export class EnhanceGate {
       const selected = this.selection(this.progress, request);
       if (!selected.allowed) return selected;
       if (!this.ownsCosts(this.progress, selected.row)) return formalDenied('enhance.formal.resources');
+      const protectCharmN = this.protectCharmCost(this.progress, request?.useProtectCharm === true);
+      if (typeof protectCharmN !== 'number') return protectCharmN;
       return { allowed: true, instance: copy(selected.instance), attributes: this.attributes(selected.instance.type, selected.instance.enhanceLevel), row: copy(selected.row) };
     } catch { return denied('request', '强化选择无效。'); }
   }
   async submit(request: EnhanceRequest): Promise<EnhanceGateResult> {
     if (!isEnhanceOpenForFixture()) return EnhanceClosed.refuseSubmit();
     try {
-      if (this.requestsProtect(request)) return formalDenied('enhance.formal.protect');
       if (this.#busy) return denied('busy', '正在保存强化结果，请稍候。');
       const boundary = this.formalSelectionBoundary(this.progress, request);
       if (!this.valid(this.progress)) return boundary ?? (this.hasFixtureAuthorization()
@@ -105,6 +106,8 @@ export class EnhanceGate {
       const selected = this.selection(this.progress, request);
       if (!selected.allowed) return selected;
       if (!this.ownsCosts(this.progress, selected.row)) return formalDenied('enhance.formal.resources');
+      const protectCharmN = this.protectCharmCost(this.progress, request.useProtectCharm);
+      if (typeof protectCharmN !== 'number') return protectCharmN;
       // 第一次 await 之前固定请求和授权，外部对象变化不能改变本次含义。
       const intent = copy(request), authorized = this.usesFixtureInstances() ? copy(this.fixture.fixtureInstances) : undefined;
       return await this.transact((draft, reject) => {
@@ -113,24 +116,28 @@ export class EnhanceGate {
         const selection = this.selection(draft, intent, authorized);
         if (!selection.allowed) return reject(selection);
         if (!this.ownsCosts(draft, selection.row)) return reject(formalDenied('enhance.formal.resources'));
+        const protectCharmN = this.protectCharmCost(draft, intent.useProtectCharm);
+        if (typeof protectCharmN !== 'number') return reject(protectCharmN);
         const ledgerId = draft.enhance?.ledgerId ?? (this.fixture.ledgerId ? this.fixture.ledgerId() : `enhance_${crypto.randomUUID()}`);
         if (!isEnhanceId(ledgerId)) return reject(denied('identity', '强化夹具账本身份无效。'));
         const random = this.fixture.random ? this.fixture.random() : Math.random();
         if (!ratio(random) || random >= 1) return reject(denied('random', '强化抽样无效，保持原状态。'));
         const success = random < selection.row.rate;
-        const finalLevel = success ? intent.to : intent.fromLevel - (selection.row.dropOnFail ? 1 : 0);
+        const finalLevel = success ? intent.to : (intent.useProtectCharm ? intent.fromLevel : intent.fromLevel - (selection.row.dropOnFail ? 1 : 0));
         const result: EnhanceResult = {
           state: 'committed', enhanceRequestId: intent.enhanceRequestId, enhanceResultRef: `${ledgerId}:enhance:${intent.enhanceRequestId}`,
           instanceRef: selection.instance.instanceRef, itemId: selection.instance.itemId, type: selection.instance.type,
-          fromLevel: intent.fromLevel, ...copy(selection.row), useProtectCharm: false, success, finalLevel,
+          fromLevel: intent.fromLevel, ...copy(selection.row), useProtectCharm: intent.useProtectCharm, success, finalLevel,
           attributes: this.attributes(selection.instance.type, finalLevel),
         };
         const bag: EnhanceProgress = draft.enhance ?? { version: 1, ledgerId, instances: copy([...authorized!]), enhancements: [], receipts: [] };
         const instance = bag.instances.find(row => row.instanceRef === intent.instanceRef)!;
         const stones = draft.stones, refineStones = draft.count('refine_stone');
+        const protectCharms = intent.useProtectCharm ? draft.count('protect_charm') : undefined;
         const equipmentCounts = bag.instances.map(row => [row.itemId, draft.count(row.itemId)] as const);
         draft.stones -= result.stones;
         draft.removeItem('refine_stone', result.refineStones);
+        if (intent.useProtectCharm) draft.removeItem('protect_charm', protectCharmN);
         instance.enhanceLevel = finalLevel;
         bag.enhancements.push(result); bag.receipts.push(result.enhanceResultRef); draft.enhance = bag;
         const settled = JSON.stringify(Object.fromEntries(Object.entries(draft).filter(([, value]) => typeof value !== 'function')));
@@ -138,6 +145,7 @@ export class EnhanceGate {
           || settled !== JSON.stringify(Object.fromEntries(Object.entries(draft).filter(([, value]) => typeof value !== 'function'))))
           return reject(denied('commit', '强化结果承载失败，保持原库存与等级。'));
         if (draft.stones !== stones - result.stones || draft.count('refine_stone') !== refineStones - result.refineStones
+          || intent.useProtectCharm && draft.count('protect_charm') !== protectCharms! - protectCharmN
           || instance.enhanceLevel !== finalLevel || equipmentCounts.some(([id, before]) => draft.count(id) !== before)
           || !this.ownsInstances(draft, this.usesFixtureInstances() ? bag.instances : draft.formalEnhanceInstances()))
           return reject(denied('commit', '强化结果承载失败，保持原库存与等级。'));
@@ -177,6 +185,7 @@ export class EnhanceGate {
   }
   private replay(result: EnhanceResult, request: EnhanceRequest): EnhanceDenied {
     return result.instanceRef === request.instanceRef && result.fromLevel === request.fromLevel && result.to === request.to
+      && result.useProtectCharm === request.useProtectCharm
       ? { ...formalDenied('enhance.formal.duplicate'), result: copy(result), replayed: true }
       : formalDenied('enhance.formal.duplicate');
   }
@@ -184,9 +193,6 @@ export class EnhanceGate {
     return enhanceFields(value, ['enhanceRequestId', 'instanceRef', 'fromLevel', 'to', 'useProtectCharm'])
       && isEnhanceId(value.enhanceRequestId) && isEnhanceInstanceRef(value.instanceRef)
       && typeof value.fromLevel === 'number' && typeof value.to === 'number' && typeof value.useProtectCharm === 'boolean';
-  }
-  private requestsProtect(value: unknown): boolean {
-    return !!value && typeof value === 'object' && Object.getOwnPropertyDescriptor(value, 'useProtectCharm')?.value === true;
   }
   private usesFixtureInstances(): boolean {
     return this.#fixtureInstancesProvided;
@@ -214,7 +220,6 @@ export class EnhanceGate {
     if (boundary) return boundary;
     if (!this.validRequest(request) || !enhanceArray(authorized) || !authorized.length)
       return formalDenied('enhance.formal.no_instance');
-    if (request.useProtectCharm) return formalDenied('enhance.formal.protect');
     // 显式夹具与正式源各自封闭，不能互补或缺源回退。
     for (const row of authorized) {
       if (!enhanceFields(row, ['instanceRef', 'itemId', 'type', 'enhanceLevel'])
@@ -263,6 +268,19 @@ export class EnhanceGate {
       && count(progress.permanentCount('refine_stone')) && progress.permanentCount('refine_stone') >= row.refineStones
       && progress.count('refine_stone') === progress.permanentCount('refine_stone')
       && !Object.prototype.hasOwnProperty.call(progress.pillQualities, 'refine_stone');
+  }
+  /** false 路径不读取护符映射或库存；true 的映射与可消费量在预检、事务内各核一次。 */
+  private protectCharmCost(progress: Progress, useProtectCharm: boolean): number | EnhanceDenied {
+    if (!useProtectCharm) return 0;
+    const item = Object.prototype.hasOwnProperty.call(ITEMS, 'protect_charm') ? ITEMS.protect_charm : undefined;
+    if (protectCharmMap.itemId !== 'protect_charm' || !positive(protectCharmMap.countPerSettlement)
+      || !item || !inPhase(item) || item.enabled === false || item.placeholder === true || item.qualityEnabled === true)
+      return formalDenied('enhance.formal.protect');
+    const needed = protectCharmMap.countPerSettlement;
+    return count(progress.permanentCount('protect_charm')) && progress.permanentCount('protect_charm') >= needed
+      && progress.count('protect_charm') === progress.permanentCount('protect_charm')
+      && !Object.prototype.hasOwnProperty.call(progress.pillQualities, 'protect_charm')
+      ? needed : formalDenied('enhance.formal.resources');
   }
   private validRules(): boolean {
     try {
