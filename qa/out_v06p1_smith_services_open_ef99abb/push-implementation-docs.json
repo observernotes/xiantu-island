@@ -1,0 +1,11 @@
+{
+  "command": [
+    "git",
+    "push",
+    "origin",
+    "feat/smith-services-open-fix"
+  ],
+  "exitCode": 0,
+  "pushedTip": "d6aeca58f43d9cea20545a86212ab1bc4f8c0e53",
+  "output": "remote: \nremote: Create a pull request for 'feat/smith-services-open-fix' on GitHub by visiting:        \nremote:      https://github.com/observernotes/xiantu-island/pull/new/feat/smith-services-open-fix        \nremote: \nTo https://github.com/observernotes/xiantu-island.git\n * [new branch]      feat/smith-services-open-fix -> feat/smith-services-open-fix\n"
+}
