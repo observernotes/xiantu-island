@@ -1,0 +1,94 @@
+{
+  "passed": true,
+  "baseline": "c5738a9a12f8bf05e5320485788330cfdae7612b",
+  "checks": [
+    {
+      "command": "npx tsc --noEmit",
+      "exitCode": 0,
+      "assertions": null,
+      "log": "tsc.log"
+    },
+    {
+      "command": "npm run test:v06p1-enhance-open",
+      "exitCode": 0,
+      "assertions": 5979,
+      "log": "v06p1-enhance-open.log"
+    },
+    {
+      "command": "npm run test:v06p1-enhance-closed",
+      "exitCode": 0,
+      "assertions": 30630,
+      "log": "enhance-closed.log"
+    },
+    {
+      "command": "npm run test:v06p1-forge-closed",
+      "exitCode": 0,
+      "assertions": 20342,
+      "log": "forge-closed.log"
+    },
+    {
+      "command": "npm run test:v06p1-market-closed",
+      "exitCode": 0,
+      "assertions": 24156,
+      "log": "market-closed.log"
+    },
+    {
+      "command": "npm run test:v06d-closed",
+      "exitCode": 0,
+      "assertions": 15052,
+      "log": "v06d-closed.log"
+    },
+    {
+      "command": "npm run test:v06c-closed",
+      "exitCode": 0,
+      "assertions": 10708,
+      "log": "v06c-closed.log"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 /workspace/xiantu/qa/tools/datalint.py [cwd=/workspace/xiantu]",
+      "exitCode": 0,
+      "assertions": null,
+      "log": "datalint-shared.log"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 /workspace/xiantu/qa/tools/datalint.py [cwd=wt/dev/data]",
+      "exitCode": 0,
+      "assertions": null,
+      "log": "datalint-snapshot.log"
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0,
+      "assertions": null,
+      "log": "diff-check.log"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 qa/out_v06p1_enhance_open_fixture/selfcheck-protection.py",
+      "exitCode": 0,
+      "assertions": null,
+      "log": "protection.log"
+    }
+  ],
+  "openAssertions": 5979,
+  "ssrGraphs": 28,
+  "protection": {
+    "passed": true,
+    "protectedFiles": 665,
+    "protectedDirectories": 7,
+    "authorizedChanges": [
+      "/workspace/xiantu/wt/dev/src/Progress.ts",
+      "/workspace/xiantu/wt/dev/src/EnhanceOpenFlag.ts"
+    ],
+    "unauthorizedDifferences": [],
+    "EnhanceClosedPreserved": true,
+    "oldEnhanceClosedQaPreserved": true,
+    "formalOpen": false,
+    "softOpened": false,
+    "released": false
+  },
+  "formalOpen": false,
+  "softOpened": false,
+  "released": false,
+  "stdin": "/dev/null",
+  "codexLog": "/workspace/xiantu/logs/codex/46eb5faf5f35b279_20261017_074203_1175678.log"
+}

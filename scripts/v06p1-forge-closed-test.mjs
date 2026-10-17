@@ -9,11 +9,12 @@ import { createServer } from 'vite';
 import { sharedRoot } from './root.mjs';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-const shared = sharedRoot(root), out = path.join(root, 'qa/out_v06p1_forge_formal/closed');
+const shared = sharedRoot(root), out = process.env.FORGE_CLOSED_OUT ?? process.env.OUT_DIR ?? path.join(root, 'qa/out_v06p1_forge_formal/closed');
 const baselineDir = path.join(root, 'qa/out_v06p1_forge_closed');
 const roots = new Map([['shared', shared], ['wt', path.join(root, 'data')], ['game', path.join(shared, 'game/data')]]);
 const modes = [['shared', shared], ['snapshot', roots.get('wt')]];
-const openFixtureSources = ['ForgeOpenFlag.ts', 'ForgeGate.ts', 'ForgeProgress.ts', 'v06p1-forge-open.test.ts'];
+const openFixtureSources = ['ForgeOpenFlag.ts', 'ForgeGate.ts', 'ForgeProgress.ts', 'v06p1-forge-open.test.ts',
+  'EnhanceGate.ts', 'EnhanceProgress.ts', 'v06p1-enhance-open.test.ts'];
 const enhanceClosedSources = ['EnhanceClosed.ts', 'EnhanceOpenFlag.ts'];
 const forgeClosedSha = 'f7e4216be7767f481c96ae7f1dc5796574fe9b231ada91d57a137c1dc8a8c90c';
 // 正式配方窗只同步权威与 wt 快照；game/data 保持历史基线，其他表仍逐字保护。
@@ -118,7 +119,17 @@ const forgeProgressAddedLines = [
   '  /** 仅保留完整夹具事实；缺袋旧档不补建，读回不结算。 */',
   '  forge: ForgeProgress | undefined = undefined;',
 ];
+const enhanceProgressAddedLines = [
+  "import { isValidEnhanceProgress, type EnhanceProgress } from './EnhanceProgress';",
+  "  if (has('enhance') && !isValidEnhanceProgress(saved.enhance)) return false;",
+  '  /** 仅承载明确授权的强化夹具事实；缺袋旧档不补建，读回不结算。 */',
+  '  enhance: EnhanceProgress | undefined = undefined;',
+];
 function stripForgeProgress(source) {
+  for (const line of enhanceProgressAddedLines) {
+    eq(source.split(`${line}\n`).length - 1, 1, `Progress 强化可选夹具袋授权完整行精确一次：${line.trim()}`);
+    source = source.replace(`${line}\n`, '');
+  }
   for (const line of forgeProgressAddedLines) {
     eq(source.split(`${line}\n`).length - 1, 1, `Progress 炼器可选袋授权完整行精确一次：${line.trim()}`);
     source = source.replace(`${line}\n`, '');
@@ -142,7 +153,7 @@ async function checkProtection() {
   }
   const sourceBefore = JSON.parse(await fs.readFile(path.join(baselineDir, 'source-before.json'), 'utf8'));
   eq(await filesUnder(path.join(root, 'src')), [...Object.keys(sourceBefore).map(name => name.slice(4)), 'ForgeClosed.ts', ...openFixtureSources, ...enhanceClosedSources].sort(),
-    '仅追加 ForgeClosed.ts、明确授权的四个开态夹具源码及强化关态 API/Flag，无服务、配方表或前台打造文件');
+    '仅追加 ForgeClosed.ts、明确授权的炼器/强化开态夹具源码及强化关态 API/Flag，无服务、配方表或前台打造文件');
   for (const [name, expected] of Object.entries(sourceBefore)) {
     const file = path.join(root, name), actual = await shaOrNull(file);
     const compared = name === 'src/Progress.ts' ? hash(stripForgeProgress(await fs.readFile(file, 'utf8')))

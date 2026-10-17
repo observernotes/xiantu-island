@@ -1,4 +1,4 @@
-// 强化正式路径恒关；仅验真实 Closed + Flag，不注入开态、不接 Gate 或前台。
+// 强化正式路径恒关；真实 Closed + Flag 继续零写，精确允许独立 SSR 开态夹具源码。
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import fs from 'node:fs/promises';
@@ -9,7 +9,8 @@ import { createServer } from 'vite';
 import { sharedRoot } from './root.mjs';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-const shared = sharedRoot(root), out = path.join(root, 'qa/out_v06p1_enhance_closed');
+const shared = sharedRoot(root), baselineOut = path.join(root, 'qa/out_v06p1_enhance_closed');
+const out = process.env.ENHANCE_CLOSED_OUT ?? process.env.OUT_DIR ?? baselineOut;
 const roots = new Map([['shared', shared], ['wt', path.join(root, 'data')], ['game', path.join(shared, 'game/data')]]);
 const modes = [['shared', shared], ['snapshot', roots.get('wt')]];
 const stringsSha = '92d5525c86562a870f45bf53c0c2010e961b83ec9c257a0cf8257178f45b4cab';
@@ -17,6 +18,8 @@ const previousStringsSha = 'fad9b3e604a3af23e99939bf22f77a55de803842daa297ab7fb2
 const enhanceSha = 'd5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954';
 const forgeFlagSha = '0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e';
 const newSources = ['EnhanceClosed.ts', 'EnhanceOpenFlag.ts'];
+const openFixtureSources = ['EnhanceGate.ts', 'EnhanceProgress.ts', 'v06p1-enhance-open.test.ts'];
+const enhanceClosedSha = 'c52ffbfc269f3a41c309184d9781f23cf2511d5acec7570ebb44b84683b3e821';
 const fixtureField = '__enhanceClosedSemanticFixture';
 const closedStrings = {
   'enhance.closed.feature': '装备强化尚未开放。',
@@ -70,6 +73,20 @@ async function filesUnder(directory, prefix = '') {
   }
   return names.sort();
 }
+// 只剥获准的四个完整行；旧 Progress 的其余完整字节继续钉写前 SHA。
+const enhanceProgressAddedLines = [
+  "import { isValidEnhanceProgress, type EnhanceProgress } from './EnhanceProgress';",
+  "  if (has('enhance') && !isValidEnhanceProgress(saved.enhance)) return false;",
+  '  /** 仅承载明确授权的强化夹具事实；缺袋旧档不补建，读回不结算。 */',
+  '  enhance: EnhanceProgress | undefined = undefined;',
+];
+function stripEnhanceProgress(source) {
+  for (const line of enhanceProgressAddedLines) {
+    eq(source.split(`${line}\n`).length - 1, 1, `Progress 强化可选夹具袋授权完整行精确一次：${line.trim()}`);
+    source = source.replace(`${line}\n`, '');
+  }
+  return source;
+}
 function keyPath(key) {
   if (key === 'GameScene.ts') return path.join(root, 'src/scenes/GameScene.ts');
   if (key === 'features.wt') return path.join(root, 'data/features.json');
@@ -80,26 +97,27 @@ function keyPath(key) {
 }
 
 async function checkProtection() {
-  const baseline = JSON.parse(await fs.readFile(path.join(out, 'protected-before-key.json'), 'utf8'));
+  const baseline = JSON.parse(await fs.readFile(path.join(baselineOut, 'protected-before-key.json'), 'utf8'));
   eq(baseline['ForgeOpenFlag.ts'], forgeFlagSha, '写前权威 ForgeOpenFlag SHA 固定');
   for (const [key, expected] of Object.entries(baseline)) {
     const file = keyPath(key), actual = await shaOrNull(file);
     eq(actual, expected, `权威写前/写后保护字节：${key}`);
     protectedFiles[key] = actual; readOnlyBefore.set(file, actual);
   }
-  const sourceBefore = JSON.parse(await fs.readFile(path.join(out, 'source-before.json'), 'utf8'));
+  const sourceBefore = JSON.parse(await fs.readFile(path.join(baselineOut, 'source-before.json'), 'utf8'));
   const relativeSource = name => name.startsWith('src/') ? name.slice(4) : name;
   const oldNames = Object.keys(sourceBefore).map(relativeSource);
-  eq(await filesUnder(path.join(root, 'src')), [...oldNames, ...newSources].sort(),
-    'src 仅新增 EnhanceClosed.ts 和 EnhanceOpenFlag.ts；不建 EnhanceGate 或前台强化文件');
+  eq(await filesUnder(path.join(root, 'src')), [...oldNames, ...newSources, ...openFixtureSources].sort(),
+    'src 仅新增强化关态 API/Flag 及精确列明的三个开态夹具源码；不接前台强化');
   for (const [name, expected] of Object.entries(sourceBefore)) {
     const file = path.join(root, 'src', relativeSource(name)), actual = await shaOrNull(file);
-    eq(actual, expected, `既有 src 完整字节不变：${name}`);
+    const compared = relativeSource(name) === 'Progress.ts' ? hash(stripEnhanceProgress(await fs.readFile(file, 'utf8'))) : actual;
+    eq(compared, expected, `既有 src 完整字节不变（Progress 仅剥获准四行）：${name}`);
     readOnlyBefore.set(file, actual);
   }
   ok(oldNames.includes('features.ts') && oldNames.includes('data.ts') && oldNames.includes('scenes/GameScene.ts'),
     '保护 features/data/GAME_PHASE/GameScene 既有完整源码');
-  const dataBefore = JSON.parse(await fs.readFile(path.join(out, 'data-files-before.json'), 'utf8'));
+  const dataBefore = JSON.parse(await fs.readFile(path.join(baselineOut, 'data-files-before.json'), 'utf8'));
   const currentData = {};
   for (const [mode, dataRoot] of roots) {
     for (const directory of ['balance', 'maps']) for (const name of await filesUnder(path.join(dataRoot, directory))) {
@@ -112,7 +130,7 @@ async function checkProtection() {
     if (actual !== null) readOnlyBefore.set(file, actual);
   }
   eq(currentData, dataBefore, '三根 balance/maps/features 文件集合及逐字 SHA 均不变，含 recipes/life_skills/npcs/market_consign');
-  const forgeBefore = JSON.parse(await fs.readFile(path.join(out, 'forge-block-before.json'), 'utf8'));
+  const forgeBefore = JSON.parse(await fs.readFile(path.join(baselineOut, 'forge-block-before.json'), 'utf8'));
   for (const [mode, dataRoot] of roots) {
     const raw = await fs.readFile(path.join(dataRoot, 'balance/strings_zh.json'), 'utf8');
     const block = raw.match(/^.*"forge\.closed\.[^\n]*\n/gmu)?.join('') ?? '';
@@ -122,9 +140,9 @@ async function checkProtection() {
     eq(hash(normalized), 'fa6451ac7be94a0ecfb9b2ce11ef9f8c4c4bc60befda83bbe3169b61b90f2f11', `${mode}: forge 行块权威 SHA`);
   }
   report({ suite: 'protection', passed: true, existingSources: oldNames.length,
-    protectedDataFiles: Object.keys(currentData).length, sourceOnlyAdded: newSources,
-    sharedStringsUnchanged: true, enhanceGateAdded: false, frontendEnhanceWiringAdded: false,
-    EnhanceOpenFlag: false, softOpened: false, released: false });
+    protectedDataFiles: Object.keys(currentData).length, sourceOnlyAdded: [...newSources, ...openFixtureSources],
+    sharedStringsUnchanged: true, enhanceGateFixtureSourceAllowed: true, frontendEnhanceWiringAdded: false,
+    EnhanceOpenFlag: false, formalOpen: false, softOpened: false, released: false });
 }
 
 async function checkStatic(mode, dataRoot) {
@@ -163,10 +181,11 @@ async function checkStatic(mode, dataRoot) {
 
 async function checkSource() {
   const flagFile = path.join(root, 'src/EnhanceOpenFlag.ts'), flag = await fs.readFile(flagFile, 'utf8');
-  eq(flag, '/** 正式路径恒 false；强化关态未开。 */\nexport function isEnhanceOpenForFixture(): boolean { return false; }\n',
-    'EnhanceOpenFlag 正式源码精确恒 false；无内存注入或软开');
+  eq(flag, '/** 正式恒关；仅 Vite SSR 开态夹具图可由 resolve/load 内存模块注入 true。 */\nexport function isEnhanceOpenForFixture(): boolean { return false; }\n',
+    'EnhanceOpenFlag 正式源码精确恒 false；仅独立 SSR 图允许内存注入，无软开');
   eq(await shaOrNull(path.join(root, 'src/ForgeOpenFlag.ts')), forgeFlagSha, 'ForgeOpenFlag 完整 SHA 不变');
   const sourceFile = path.join(root, 'src/EnhanceClosed.ts'), source = await fs.readFile(sourceFile, 'utf8');
+  eq(hash(source), enhanceClosedSha, 'EnhanceClosed 与 tip@64c26a4 完整字节相同');
   for (const file of [flagFile, sourceFile]) readOnlyBefore.set(file, await shaOrNull(file));
   const parsed = ts.createSourceFile('EnhanceClosed.ts', source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
   const imports = parsed.statements.filter(ts.isImportDeclaration).map(node => node.getText(parsed));
@@ -189,7 +208,7 @@ async function checkSource() {
   const search = [];
   for (const name of await filesUnder(path.join(root, 'src'))) {
     const text = await fs.readFile(path.join(root, 'src', name), 'utf8');
-    if (!newSources.includes(name)) ok(!/EnhanceClosed|EnhanceOpenFlag|enhance\.closed\./u.test(text), `${name}: 无强化 API/Flag 消费者或前台接线`);
+    if (!newSources.includes(name) && !openFixtureSources.includes(name)) ok(!/EnhanceClosed|EnhanceOpenFlag|enhance\.closed\./u.test(text), `${name}: 无强化 API/Flag 消费者或前台接线`);
     // ForgeGate 既有 enhance.forge 读表是打造品质规则，保持完整字节，不误判为强化入口。
     if (/^Forge[^/]*\.ts$/u.test(name)) ok(!/EnhanceClosed|EnhanceOpenFlag/u.test(text), `${name}: 打造不走 Enhance API 或 Flag`);
     text.split('\n').forEach((line, index) => {
@@ -204,7 +223,7 @@ async function checkSource() {
   await fs.writeFile(path.join(out, 'source-search.json'), `${JSON.stringify(search, null, 2)}\n`);
   report({ suite: 'source', passed: true, importOnlyStrings: true, zeroArgumentApis: 8,
     EnhanceOpenFlag: false, sourceSearch: 'source-search.json', matches: search.length,
-    enhanceGateAdded: false, frontendEnhanceWiringAdded: false, softOpened: false, released: false });
+    enhanceGateFixtureSourceAllowed: true, frontendEnhanceWiringAdded: false, formalOpen: false, softOpened: false, released: false });
 }
 
 // 以下是测试专用的装备/等级/属性/护器符/请求语义，未定义正式强化 schema 或物品映射。
@@ -348,7 +367,7 @@ async function runGraph(mode, dataRoot, refreshPayloads = null) {
     report({ suite: 'runtime', dataMode: mode, graph: refreshPayloads ? 'fresh-ssr-refresh' : 'real-file-closed', passed: true,
       cases: Object.keys(caseApis), fixtures, invocations, zeroArgumentApis: 8, storageWrites, sentinelCalls,
       semanticFixtureOnly: true, formalEnhanceSchemaAdded: false, flagInjection: false,
-      EnhanceOpenFlag: false, enhanceGateAdded: false, frontendEnhanceWiringAdded: false, softOpened: false, released: false });
+      EnhanceOpenFlag: false, enhanceGateFixtureSourceAllowed: true, frontendEnhanceWiringAdded: false, formalOpen: false, softOpened: false, released: false });
     return payloads;
   } finally {
     if (storageDescriptor) Object.defineProperty(globalThis, 'localStorage', storageDescriptor);
@@ -375,7 +394,7 @@ try {
   await fs.writeFile(path.join(out, 'selftest-protected-after.json'), `${JSON.stringify(protectedFiles, null, 2)}\n`);
   await fs.writeFile(path.join(out, 'v06p1-enhance-closed-evidence.json'), `${JSON.stringify({ passed, assertions, stringsSha, enhanceJsonSha: enhanceSha,
     forgeFlagSha, cases: caseApis, totalFixtures, totalInvocations, protectedFiles, evidence,
-    EnhanceOpenFlag: false, enhanceGateAdded: false, frontendEnhanceWiringAdded: false,
+    EnhanceOpenFlag: false, enhanceGateFixtureSourceAllowed: true, frontendEnhanceWiringAdded: false, formalOpen: false,
     semanticFixtureOnly: true, formalEnhanceSchemaAdded: false, softOpened: false, released: false }, null, 2)}\n`);
 }
-console.log(`v06p1 enhance closed tests ok: ${assertions} assertions; C01–C12; ${totalFixtures} semantic fixtures; ${totalInvocations} API calls; shared/snapshot + fresh SSR; localStorage写入0; strings936; gifts10×false; GAME_PHASE=5; EnhanceOpenFlag=false; 不挂smith_ou.services; 不建EnhanceGate/前台强化; 不开态不软开不发版`);
+console.log(`v06p1 enhance closed tests ok: ${assertions} assertions; C01–C12; ${totalFixtures} semantic fixtures; ${totalInvocations} API calls; shared/snapshot + fresh SSR; localStorage写入0; strings936; gifts10×false; GAME_PHASE=5; EnhanceOpenFlag=false; 不挂smith_ou.services; 仅允许EnhanceGate开态夹具源码、无前台强化; formalOpen:false; softOpened:false; released:false`);

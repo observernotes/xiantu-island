@@ -20,6 +20,7 @@ import { isValidCompanionRelations, type CompanionRelations } from './Companions
 import { isValidTowerProgress, type TowerProgress } from './TowerProgress';
 import { isValidMarketProgress, type MarketProgress } from './MarketProgress';
 import { isValidForgeProgress, type ForgeProgress } from './ForgeProgress';
+import { isValidEnhanceProgress, type EnhanceProgress } from './EnhanceProgress';
 
 /** 自动加点：加点界面做好前的旧档公式，仅用于迁移种子；UI-6 起升级只发未分配点。 */
 export const AUTO_STATS = { rootBone: 2, agility: 2, insight: 1, spirit: 0 } as Record<string, number>;
@@ -89,6 +90,7 @@ function validSaveData(saved: unknown): saved is Record<string, unknown> {
   if (has('tower') && !isValidTowerProgress(saved.tower)) return false;
   if (has('market') && !isValidMarketProgress(saved.market)) return false;
   if (has('forge') && !isValidForgeProgress(saved.forge)) return false;
+  if (has('enhance') && !isValidEnhanceProgress(saved.enhance)) return false;
   for (const key of ['inventory', 'skills', 'skillGifted']) if (has(key) && !numbers(saved[key])) return false;
   for (const key of ['skillMastery', 'gatherRespawnAt']) if (has(key) && !numbers(saved[key], false)) return false;
   for (const key of ['job', 'selectedSect', 'name', 'rootElement', 'sectDailyContributionDay', 'dailyQuestResetDay', 'seclusionDay']) {
@@ -180,6 +182,8 @@ export class Progress {
   market: MarketProgress | undefined = undefined;
   /** 仅保留完整夹具事实；缺袋旧档不补建，读回不结算。 */
   forge: ForgeProgress | undefined = undefined;
+  /** 仅承载明确授权的强化夹具事实；缺袋旧档不补建，读回不结算。 */
+  enhance: EnhanceProgress | undefined = undefined;
   classRewardClaims: string[] = [];
   /** 通用入门技的付费等级在拜宗后退回当前一转点池。 */
   classRefundSp = 0;

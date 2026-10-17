@@ -11,7 +11,7 @@ const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const shared = sharedRoot(root), gameData = path.join(shared, 'game/data');
 const modes = [['shared', shared], ['snapshot', path.join(root, 'data')]];
 const dataRoots = new Map([['shared', shared], ['wt', path.join(root, 'data')], ['game', gameData]]);
-const out = path.join(root, 'qa/out_v06p1_forge_formal/market-closed');
+const out = process.env.MARKET_CLOSED_OUT ?? process.env.OUT_DIR ?? path.join(root, 'qa/out_v06p1_forge_formal/market-closed');
 const baselineFile = path.join(root, 'qa/out_v06p1_market_closed/protected-before.json');
 const stringsSha = '92d5525c86562a870f45bf53c0c2010e961b83ec9c257a0cf8257178f45b4cab';
 const preEnhanceStringsSha = 'fad9b3e604a3af23e99939bf22f77a55de803842daa297ab7fb2c2a6ed0b8967';
@@ -21,7 +21,8 @@ const originalStringsSha = '4a32b19b8e1f318cfcbbf8b9a4e9382f17e7fc3fd951d040f9ec
 const originalSemanticSha = '81d364627ea128a3125c1def299f1d94804cee7b7e511ff417dd4bf9ff24c7a9';
 // 沿用既有寄售接线；炼器窗仅追加四个明确源码、可选袋四行与最小欧冶匠提示，八 tip 契约不变。
 const openFixtureSources = ['MarketOpenFlag.ts', 'MarketProgress.ts', 'MarketGate.ts', 'v06p1-market-open.test.ts',
-  'ForgeOpenFlag.ts', 'ForgeGate.ts', 'ForgeProgress.ts', 'v06p1-forge-open.test.ts'];
+  'ForgeOpenFlag.ts', 'ForgeGate.ts', 'ForgeProgress.ts', 'v06p1-forge-open.test.ts',
+  'EnhanceGate.ts', 'EnhanceProgress.ts', 'v06p1-enhance-open.test.ts'];
 const enhanceClosedSources = ['EnhanceClosed.ts', 'EnhanceOpenFlag.ts'];
 const openFixtureProgressSha = '3e1f4a258b384d5f0d1a2967d0228fcd792cb9a58979efcd5648d9baf9f2e7da';
 const marketTableSha = 'e4725b4724dea9abf67baf2ee467a30e841fee3ee1a9137f5dc25225c09debde';
@@ -161,7 +162,17 @@ const forgeProgressAddedLines = [
   '  /** 仅保留完整夹具事实；缺袋旧档不补建，读回不结算。 */',
   '  forge: ForgeProgress | undefined = undefined;',
 ];
+const enhanceProgressAddedLines = [
+  "import { isValidEnhanceProgress, type EnhanceProgress } from './EnhanceProgress';",
+  "  if (has('enhance') && !isValidEnhanceProgress(saved.enhance)) return false;",
+  '  /** 仅承载明确授权的强化夹具事实；缺袋旧档不补建，读回不结算。 */',
+  '  enhance: EnhanceProgress | undefined = undefined;',
+];
 function stripForgeProgress(source) {
+  for (const line of enhanceProgressAddedLines) {
+    eq(source.split(`${line}\n`).length - 1, 1, `Progress 强化可选夹具袋授权完整行精确一次：${line.trim()}`);
+    source = source.replace(`${line}\n`, '');
+  }
   for (const line of forgeProgressAddedLines) {
     eq(source.split(`${line}\n`).length - 1, 1, `Progress 炼器可选袋授权完整行精确一次：${line.trim()}`);
     source = source.replace(`${line}\n`, '');

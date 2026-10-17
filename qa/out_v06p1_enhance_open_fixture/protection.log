@@ -1,0 +1,1 @@
+{"passed": true, "protectedFiles": 665, "protectedDirectories": 7, "authorizedChanges": ["/workspace/xiantu/wt/dev/src/Progress.ts", "/workspace/xiantu/wt/dev/src/EnhanceOpenFlag.ts"], "unauthorizedDifferences": [], "EnhanceClosedPreserved": true, "oldEnhanceClosedQaPreserved": true, "formalOpen": false, "softOpened": false, "released": false}
