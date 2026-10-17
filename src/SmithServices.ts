@@ -13,6 +13,7 @@ import { isForgeGrade, isForgeId, isValidForgeMaterials, type ForgeCraftResult }
 import { enhanceFields, isEnhanceId, isEnhanceInstanceRef, type EnhanceResult } from './EnhanceProgress';
 import { isEnchantElement, type EnchantResult } from './EnchantProgress';
 import type { SalvageResult } from './SalvageProgress';
+import { isSmithServicesUiAccessible } from './SmithServicesUiAccess';
 
 export type SmithService = 'forge' | 'enhance' | 'enchant' | 'salvage';
 export type SmithRouteLayer = 'entrance' | 'menu' | 'panel';
@@ -60,8 +61,8 @@ const slots: readonly EquipSlot[] = ['weapon', 'robe', 'shoes'];
 const validService = (value: unknown): value is SmithService => SMITH_SERVICES.some(row => row.type === value);
 
 /**
- * Routing and formal Gate adapters only. Production has no complete smith UI consumer and
- * every route remains closed. No constructor option, persistent UI flag, fixture authorization,
+ * Routing and formal Gate adapters only. UI visibility follows SmithServicesUiAccess while
+ * settlement remains with each Gate. No constructor option, persistent UI flag, fixture authorization,
  * resource writer, settlement ledger or recovery queue is exposed here.
  */
 export class SmithServices {
@@ -78,7 +79,19 @@ export class SmithServices {
   }
 
   // SMITH_SERVICES_MEMORY_CLOSED_ROUTE: isolated tests replace this method in memory only.
-  private routeAvailable(_layer: SmithRouteLayer, _service?: SmithService): boolean { return false; }
+  private routeAvailable(_layer: SmithRouteLayer, _service?: SmithService): boolean {
+    return isSmithServicesUiAccessible(_layer === 'panel' ? _service ?? 'entrance' : _layer);
+  }
+
+  /** Read-only availability for view polling; an open route never invalidates a confirmation. */
+  availability(service: SmithService, action: 'entrance' | 'no_submit' | 'load_refresh' = 'entrance'): SmithReply {
+    const stopped = this.guard(service, 'panel');
+    if (stopped) return stopped;
+    const gate = this.#gates[service].entrance();
+    if (gate.allowed) return { allowed: true, status: 'ready', route: 'panel', service, gate };
+    return this.refusal(service, gate.tipKey.startsWith(`${service}.closed.`)
+      ? { ...gate, tipKey: `${service}.closed.${action}` } : gate);
+  }
 
   entrance(): SmithReply {
     const stopped = this.guard();

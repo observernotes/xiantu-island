@@ -1,43 +1,75 @@
 {
+  "integrationBaseline": "f87e1c276ad3116e37f9f50132dd5174ed681713",
+  "mergeCommit": "ed8d83ef70127a71e0fbb5b9504ce6967f84019e",
   "typescriptNoEmit": {
-    "passed": true
+    "passed": true,
+    "command": "npx tsc --noEmit",
+    "log": "../out_v06p1_smith_services_ui_merge1013/tsc.log"
   },
   "smithClosed": {
     "passed": true,
-    "assertions": 1748,
+    "assertions": 2057,
     "cases": "C01–C11",
+    "actualGameScenePanelController": true,
     "managerEnforcementPending": true
   },
+  "smithServicesConnected": true,
+  "smithServicesDelegatedMethods": [
+    "choices",
+    "select",
+    "submit",
+    "result",
+    "loadRefresh",
+    "availability"
+  ],
+  "stringsDiskKeys": 1013,
+  "stringsSha": "d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841",
+  "stringsSsrInjected43": false,
+  "strings970PrefixBytesMatch": true,
+  "sharedDiskStringsMatch": true,
   "frozenFiles": {
-    "count": 569,
+    "count": 39,
     "changed": [],
     "allMatch": true
   },
+  "smithServicesClosed": {
+    "passed": true,
+    "assertions": 17425,
+    "command": "npm run test:v06p1-smith-services-services-closed",
+    "independentGraphs": 6,
+    "evidence": "../out_v06p1_smith_services_services_closed/evidence.json"
+  },
   "equip": {
     "passed": true,
-    "assertions": 100
+    "assertions": 100,
+    "command": "npm run test:equip"
   },
-  "attrClosedIsolated": {
+  "attrClosed": {
     "passed": true,
-    "assertions": 1592
+    "assertions": 1592,
+    "actualProductStrings1013": true,
+    "pinnedTestExpectationsOnly": true,
+    "evidence": "../out_v06p1_smith_services_ui_merge1013/regressions/v06p1-attr-ui-closed/evidence.json"
   },
-  "attrBindingIsolated": {
-    "passed": true,
-    "assertions": 327
+  "enhanceSha": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+  "flagShas": {
+    "Forge": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
+    "Enhance": "d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e",
+    "Enchant": "bd5445b8ddfed56a32811cedd28db72e8676c7a5eff321e2fedb0ec5fe4c505a",
+    "Salvage": "69aace852957c52bf7ca0214345ede7df29d6d36ec1dfd4849462e54552edff3"
   },
-  "gateRuntimes": {
-    "passed": true,
-    "graphs": 16,
-    "assertions": 13684,
-    "enhanceLegacyStringsSsrOnly": true,
-    "evidence": [
-      "regressions/gate-runtime-evidence.json",
-      "regressions/enhance-gate-runtime-isolated-evidence.json"
-    ]
-  },
-  "historicalCommandsBlocked": true,
-  "historicalCommandsReason": "7 wrappers pin historical strings960 SHA; salvage-closed pins old Progress SHA; original attr wrappers pin shared970 SHA/another worktree. Original failures retained; no production data changed.",
+  "GAME_PHASE": 5,
+  "gateSubmitCalls": 0,
+  "localStorageWrites": 0,
+  "indexedDbOpens": 0,
+  "settlementRandomCalls": 0,
+  "fullBusinessStateDelta": 0,
+  "settlementUnchanged": true,
+  "diffCheckPassed": true,
   "softOpenedSmithServicesUi": false,
   "released": false,
-  "design32OTableExecuted": false
+  "design32OTableExecuted": false,
+  "managerEnforcementC01ToC11Pending": true,
+  "historicalEvidence": "Prior UI and smith-owner results remain in git history and the merged reports; smith-owner original evidence is preserved at ../out_v06p1_smith_services_services_closed/origin-dev-evidence.json.",
+  "blockingItems": []
 }

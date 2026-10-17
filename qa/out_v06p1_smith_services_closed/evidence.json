@@ -1,17 +1,67 @@
 {
   "passed": true,
-  "assertions": 1748,
-  "baselineTip": "0dd59efdcd288930f1bd0525d2c9e7ddf06c0814",
+  "assertions": 2057,
+  "baselineTip": "f87e1c276ad3116e37f9f50132dd5174ed681713",
   "smithServicesUiWired": true,
   "newOpenFlag": false,
   "enhanceSha": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
-  "stringsDiskKeys": 970,
-  "stringsSsrInjected43": true,
-  "stringsInjectionSource": "test-only virtual JSON based on unchanged worktree 970",
+  "stringsDiskKeys": 1013,
+  "stringsSha": "d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841",
+  "stringsSsrInjected43": false,
+  "stringsInjectionSource": "none; Vite resolves authoritative disk JSON",
   "stringsSsrKeys": 1013,
   "stringsDesign43Match": true,
+  "strings970PrefixBytesMatch": true,
   "sharedStringsDiskKeys": 1013,
-  "sharedStringsOwnership": "parallel smith-owner table read only; not copied into this worktree",
+  "sharedStringsOwnership": "worktree disk exactly MATCH authoritative shared strings1013",
+  "smithServicesDelegation": [
+    {
+      "mode": "snapshot",
+      "calls": {
+        "choices": 197,
+        "select": 15,
+        "submit": 3,
+        "result": 3,
+        "loadRefresh": 3,
+        "availability": 332
+      },
+      "submitProbe": "async adapter throws/unknown/stale before Gate submit",
+      "noDirectControllerGate": true,
+      "resultAfterUnresolvedRefresh": true,
+      "confirmationSurvivesFiveRealPolls": true,
+      "uncertaintyVariants": [
+        "throws",
+        "unknown",
+        "stale"
+      ],
+      "uncertaintyNeverRetries": true,
+      "actualSettlementExecuted": false,
+      "writes": 0
+    },
+    {
+      "mode": "shared",
+      "calls": {
+        "choices": 197,
+        "select": 15,
+        "submit": 3,
+        "result": 3,
+        "loadRefresh": 3,
+        "availability": 332
+      },
+      "submitProbe": "async adapter throws/unknown/stale before Gate submit",
+      "noDirectControllerGate": true,
+      "resultAfterUnresolvedRefresh": true,
+      "confirmationSurvivesFiveRealPolls": true,
+      "uncertaintyVariants": [
+        "throws",
+        "unknown",
+        "stale"
+      ],
+      "uncertaintyNeverRetries": true,
+      "actualSettlementExecuted": false,
+      "writes": 0
+    }
+  ],
   "softOpenedSmithServicesUi": false,
   "released": false,
   "flagShas": {
@@ -21,6 +71,7 @@
     "Salvage": "69aace852957c52bf7ca0214345ede7df29d6d36ec1dfd4849462e54552edff3"
   },
   "productionIgnoresSsrInjection": true,
+  "productionServicesRoutesAccessible": true,
   "fourFlagMatch": {
     "Forge": "MATCH",
     "Enhance": "MATCH",
@@ -116,7 +167,9 @@
       "passed": true,
       "evidenceKeys": [
         "snapshot/memory-ui-closed/concurrency-stale-session",
-        "shared/memory-ui-closed/concurrency-stale-session"
+        "snapshot/memory-ui-closed/canonical-confirmation-poll-and-uncertainty",
+        "shared/memory-ui-closed/concurrency-stale-session",
+        "shared/memory-ui-closed/canonical-confirmation-poll-and-uncertainty"
       ]
     },
     "C10": {
@@ -124,7 +177,9 @@
       "passed": true,
       "evidenceKeys": [
         "snapshot/memory-ui-closed/closed-restore-refresh",
-        "shared/memory-ui-closed/closed-restore-refresh"
+        "snapshot/memory-ui-closed/canonical-services-delegation",
+        "shared/memory-ui-closed/closed-restore-refresh",
+        "shared/memory-ui-closed/canonical-services-delegation"
       ]
     },
     "C11": {
@@ -174,7 +229,8 @@
     "/workspace/xiantu/balance/npcs.json": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
     "/workspace/xiantu/balance/life_skills.json": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
     "/workspace/xiantu/balance/enhance_protect_charm.json": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
-    "/workspace/xiantu/wt/feat/ui-smith-services/data/balance/strings_zh.json": "ae51319b82a6486cc7f3d9b26c5ae89719e23c32ff9debdcfbb86ef7b5aea08b"
+    "/workspace/xiantu/wt/feat/ui-smith-services/data/balance/strings_zh.json": "d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841",
+    "/workspace/xiantu/balance/strings_zh.json": "d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841"
   },
   "evidence": [
     {
@@ -344,6 +400,34 @@
       "writes": 0
     },
     {
+      "case": "C09",
+      "label": "snapshot/memory-ui-closed/canonical-confirmation-poll-and-uncertainty",
+      "passed": true,
+      "realPollsPerVariant": 5,
+      "uncertaintyVariants": [
+        "throws",
+        "unknown",
+        "stale"
+      ],
+      "noDuplicateOrReplacementDispatch": true,
+      "writes": 0
+    },
+    {
+      "case": "C10",
+      "label": "snapshot/memory-ui-closed/canonical-services-delegation",
+      "passed": true,
+      "methods": [
+        "choices",
+        "select",
+        "submit",
+        "result",
+        "loadRefresh",
+        "availability"
+      ],
+      "zeroWriteAsyncDispatchProbe": true,
+      "writes": 0
+    },
+    {
       "case": "C11",
       "label": "snapshot/memory-ui-closed/full-state-ei-isolation",
       "passed": true,
@@ -357,13 +441,14 @@
       "suite": "real-ssr-graph",
       "mode": "snapshot",
       "passed": true,
-      "stringsDiskKeys": 970,
-      "stringsSsrInjected43": true,
+      "stringsDiskKeys": 1013,
+      "stringsSha": "d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841",
+      "stringsSsrInjected43": false,
       "fourInitialGateFlags": true,
       "flagLoads": {
+        "Forge": 1,
         "Enhance": 1,
         "Enchant": 1,
-        "Forge": 1,
         "Salvage": 1
       },
       "fullStateDelta": 0,
@@ -521,6 +606,34 @@
       "writes": 0
     },
     {
+      "case": "C09",
+      "label": "shared/memory-ui-closed/canonical-confirmation-poll-and-uncertainty",
+      "passed": true,
+      "realPollsPerVariant": 5,
+      "uncertaintyVariants": [
+        "throws",
+        "unknown",
+        "stale"
+      ],
+      "noDuplicateOrReplacementDispatch": true,
+      "writes": 0
+    },
+    {
+      "case": "C10",
+      "label": "shared/memory-ui-closed/canonical-services-delegation",
+      "passed": true,
+      "methods": [
+        "choices",
+        "select",
+        "submit",
+        "result",
+        "loadRefresh",
+        "availability"
+      ],
+      "zeroWriteAsyncDispatchProbe": true,
+      "writes": 0
+    },
+    {
       "case": "C11",
       "label": "shared/memory-ui-closed/full-state-ei-isolation",
       "passed": true,
@@ -534,14 +647,15 @@
       "suite": "real-ssr-graph",
       "mode": "shared",
       "passed": true,
-      "stringsDiskKeys": 970,
-      "stringsSsrInjected43": true,
+      "stringsDiskKeys": 1013,
+      "stringsSha": "d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841",
+      "stringsSsrInjected43": false,
       "fourInitialGateFlags": true,
       "flagLoads": {
-        "Salvage": 1,
         "Enhance": 1,
         "Enchant": 1,
-        "Forge": 1
+        "Forge": 1,
+        "Salvage": 1
       },
       "fullStateDelta": 0,
       "submitCalls": 0

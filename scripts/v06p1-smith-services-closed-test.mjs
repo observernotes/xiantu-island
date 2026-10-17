@@ -10,7 +10,9 @@ import { sharedRoot } from './root.mjs';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const shared = sharedRoot(root), out = path.join(root, 'qa/out_v06p1_smith_services_closed');
-const baseline = '0dd59efdcd288930f1bd0525d2c9e7ddf06c0814';
+const baseline = 'f87e1c276ad3116e37f9f50132dd5174ed681713';
+const strings970Baseline = '0dd59efdcd288930f1bd0525d2c9e7ddf06c0814';
+const stringsSha = 'd99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841';
 const enhanceSha = 'd5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954';
 const flagShas = {
   Forge: '0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e',
@@ -18,8 +20,8 @@ const flagShas = {
   Enchant: 'bd5445b8ddfed56a32811cedd28db72e8676c7a5eff321e2fedb0ec5fe4c505a',
   Salvage: '69aace852957c52bf7ca0214345ede7df29d6d36ec1dfd4849462e54552edff3',
 };
-// This test-only object is injected by a Vite virtual JSON module. It is never written to balance/.
-const injected43 = {
+// Design text used only for exact MATCH checks; every runtime t() reads the actual disk JSON.
+const design43 = {
   'ui.smith.closed': '炼器服务界面暂未开放。',
   'ui.smith.title': '炼器服务',
   'ui.smith.forge': '打造', 'ui.smith.enhance': '强化', 'ui.smith.enchant': '附灵', 'ui.smith.salvage': '分解',
@@ -63,7 +65,8 @@ const json = file => fs.readFile(file, 'utf8').then(JSON.parse);
 const git = (...args) => execFileSync('git', args, { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] });
 let assertions = 0, passed = false, localStorageWrites = 0, indexedDbOpens = 0, sentinelCalls = 0, submitCalls = 0, settlementRandomCalls = 0;
 let diskStrings, sharedStringsDiskKeys;
-let productionIgnoresSsrInjection = false;
+let productionIgnoresSsrInjection = false, productionServicesRoutesAccessible = false;
+const smithServicesDelegation = [];
 const eq = (a, b, text) => { assertions++; assert.deepEqual(a, b, text); };
 const ok = (value, text) => { assertions++; assert.ok(value, text); };
 function record(id, label, fields = {}) {
@@ -96,26 +99,38 @@ async function staticChecks() {
     for (const name of ['recipes', 'materials', 'items', 'npcs', 'life_skills', 'enhance_protect_charm'])
       await guard(path.join(dataRoot, `balance/${name}.json`), hash(git('show', `${baseline}:data/balance/${name}.json`)));
   }
-  await guard(path.join(root, 'data/balance/strings_zh.json'), hash(git('show', `${baseline}:data/balance/strings_zh.json`)));
-  diskStrings = await json(path.join(root, 'data/balance/strings_zh.json'));
-  eq(Object.keys(diskStrings).length, 970, 'worktree disk strings remains 970 including _meta');
-  eq(Object.keys(injected43).length, 43, 'exactly 43 strings in SSR-only object');
+  const stringsFile = path.join(root, 'data/balance/strings_zh.json');
+  await guard(stringsFile, stringsSha);
+  const stringsBytes = await fs.readFile(stringsFile);
+  eq(stringsBytes, git('show', `${baseline}:data/balance/strings_zh.json`), 'disk strings exactly match origin/dev@f87e1c2');
+  const oldBytes = git('show', `${strings970Baseline}:data/balance/strings_zh.json`);
+  const oldPrefix = oldBytes.subarray(0, oldBytes.length - Buffer.byteLength('\n}\n'));
+  eq(stringsBytes.subarray(0, oldPrefix.length), oldPrefix, 'all 970 original strings prefix bytes preserved before append delimiter');
+  diskStrings = JSON.parse(stringsBytes);
+  eq(Object.keys(diskStrings).length, 1013, 'worktree disk strings has 1013 keys including _meta');
+  eq(Object.keys(design43).length, 43, 'exactly 43 strings in design MATCH object; no runtime injection');
   const design = await fs.readFile(path.join(shared, 'design/32_v06_P1③++++++++_关态_完整炼器服务UI.md'), 'utf8');
   const section = design.split('### 6.2')[1];
   const fromDesign = Object.fromEntries([...section.matchAll(/^\| ((?:ui\.smith|forge\.grade)\.[\w]+) \| ([^|]+) \| \d+ \|$/gmu)]
     .map(match => [match[1], match[2].trim()]));
-  eq(injected43, fromDesign, 'all 43 SSR strings exactly match design/32 section 6.2');
-  ok(Object.keys(injected43).every(key => !Object.hasOwn(diskStrings, key)), 'no new smith key written to snapshot disk');
-  const sharedStrings = await json(path.join(shared, 'balance/strings_zh.json'));
+  eq(design43, fromDesign, 'all 43 disk-string expectations exactly match design/32 section 6.2');
+  eq(Object.fromEntries(Object.keys(design43).map(key => [key, diskStrings[key]])), design43, 'all 43 authoritative disk strings exactly MATCH design');
+  const sharedStringsFile = path.join(shared, 'balance/strings_zh.json');
+  await guard(sharedStringsFile, stringsSha);
+  const sharedStrings = await json(sharedStringsFile);
   sharedStringsDiskKeys = Object.keys(sharedStrings).length;
-  ok([970, 1013].includes(sharedStringsDiskKeys), 'parallel smith-owner shared table is either original 970 or completed 1013');
-  if (sharedStringsDiskKeys === 1013)
-    eq(Object.fromEntries(Object.keys(injected43).map(key => [key, sharedStrings[key]])), injected43,
-      'smith-owner shared 43 strings match design; test does not write or snapshot them');
+  eq(sharedStringsDiskKeys, 1013, 'authoritative shared strings disk has 1013 keys including _meta');
+  eq(sharedStrings, diskStrings, 'worktree and authoritative shared strings exactly MATCH');
   ok(/GAME_PHASE\s*=\s*5\b/u.test(await fs.readFile(path.join(root, 'src/data.ts'), 'utf8')), 'GAME_PHASE remains 5');
   const smith = await fs.readFile(path.join(root, 'src/SmithServicesController.ts'), 'utf8');
   ok(!/SalvageFixture|fixtureInstances|fixtureRecipes/u.test(smith), 'UI has no fixture authorization or salvage fallback');
   ok(!/\.laterService\(/u.test(smith), 'UI never invokes historical later_service explanation');
+  ok(/new SmithServices\(/u.test(smith), 'Controller owns the canonical SmithServices adapter');
+  ok(!/new (?:Forge|Enhance|Enchant|Salvage)Gate\(|this\.gates\b/u.test(smith), 'Controller has no parallel Gate instances or dispatch');
+  for (const method of ['choices', 'select', 'submit', 'result', 'loadRefresh'])
+    ok(new RegExp(`\\.${method}\\(`, 'u').test(smith), `Controller delegates ${method} to SmithServices`);
+  const servicesSource = await fs.readFile(path.join(root, 'src/SmithServices.ts'), 'utf8');
+  ok(/isSmithServicesUiAccessible/u.test(servicesSource), 'canonical Services routing consumes UiAccess instead of a production false route');
 }
 function sentinels(prog) {
   for (const method of ['save', 'saveAsync', 'persistSoon', 'runSaveTransaction', 'runSaveTransactionAsync',
@@ -183,9 +198,11 @@ const phaserStub = `class Sprite {} export default { WEBGL: 2, Scene: class {}, 
 async function productionAccessCheck() {
   let transformed = 0;
   // Execute the production conditional in an independent graph; only the compile-time SSR bit changes.
-  const server = await createServer({ root, configFile: false,
-    server: { middlewareMode: true, hmr: false, ws: false }, appType: 'custom', logLevel: 'error',
+  const server = await createServer({ root, configFile: false, resolve: { alias: { '@xt': path.join(root, 'data') } },
+    ssr: { noExternal: ['phaser'] }, server: { middlewareMode: true, hmr: false, ws: false }, appType: 'custom', logLevel: 'error',
     plugins: [{ name: 'smith-services-production-ui-access', enforce: 'pre',
+      resolveId(id) { if (id === 'phaser') return '\0smith-phaser'; },
+      load(id) { if (id === '\0smith-phaser') return phaserStub; },
       transform(source, id) {
         if (!id.endsWith('/src/SmithServicesUiAccess.ts')) return;
         eq(source.match(/import\.meta\.env\.SSR/gu)?.length, 1, 'production graph replaces exactly the compile-time SSR condition');
@@ -201,7 +218,31 @@ async function productionAccessCheck() {
     const before = [localStorageWrites, indexedDbOpens, sentinelCalls, submitCalls, settlementRandomCalls];
     for (const scope of scopes) eq(module.isSmithServicesUiAccessible(scope), true, `production ${scope} UI stays accessible despite injected false`);
     eq([localStorageWrites, indexedDbOpens, sentinelCalls, submitCalls, settlementRandomCalls], before, 'production access read has no business effects');
+    const { Progress } = await server.ssrLoadModule('/src/Progress.ts');
+    const { SmithServices } = await server.ssrLoadModule('/src/SmithServices.ts');
+    const { SmithServicesController } = await server.ssrLoadModule('/src/SmithServicesController.ts');
+    for (const name of names) {
+      const flag = await server.ssrLoadModule(`/src/${name}OpenFlag.ts`);
+      eq(flag[`is${name}OpenForFixture`](), true, `production ${name} Gate flag is its original true value`);
+    }
+    const prog = sentinels(new Progress()), serviceApi = new SmithServices(prog), productionTips = [];
+    await zero(prog, () => {
+      eq(serviceApi.entrance().allowed, true, 'production canonical Services entrance is accessible through UiAccess');
+      const menu = serviceApi.menu();
+      eq(menu.allowed, true, 'production canonical Services menu is accessible through UiAccess');
+      eq(menu.items?.length, 4, 'production menu retains all four service rows');
+      eq(menu.items?.map(row => row.available), [true, true, true, true], 'production four frozen Gate flags remain true independently from UiAccess');
+      const c = new SmithServicesController(prog, { tip: key => productionTips.push(key) });
+      c.openMenu();
+      eq(c.state.stage, 'menu', 'production Controller menu is not killed by old routeAvailable=false');
+      for (const service of services) {
+        c.openService(service);
+        eq(c.state.service, service, `production ${service} Controller panel remains reachable`);
+        ok(!productionTips.includes('ui.smith.closed'), `production ${service} route is not closed by old Services false default`);
+      }
+    }, 'production Services routes accessible while all four frozen Gate flags remain true');
     eq(transformed, 1, 'independent production access module executed once');
+    productionServicesRoutesAccessible = true;
     productionIgnoresSsrInjection = true;
     record('C07', 'production-access-ignores-ssr-injection', { productionIgnoresSsrInjection: true, scopes, modifiedOnDisk: false });
   } finally { await server.close(); }
@@ -214,13 +255,11 @@ async function runGraph(mode, dataRoot) {
     plugins: [{ name: 'smith-services-only-ssr-closed', enforce: 'pre',
       resolveId(id) {
         if (id === 'phaser') return '\0smith-phaser';
-        if (id.endsWith('/strings_zh.json')) return '\0smith-strings';
         const match = id.match(/(?:^|\/)(Forge|Enhance|Enchant|Salvage)OpenFlag(?:\.ts)?$/u);
         if (match) return `\0smith-flag-${match[1]}`;
       },
       load(id) {
         if (id === '\0smith-phaser') return phaserStub;
-        if (id === '\0smith-strings') return `export default ${JSON.stringify({ ...diskStrings, ...injected43 })};`;
         for (const name of names) if (id === `\0smith-flag-${name}`) {
           flagLoads[name] = (flagLoads[name] ?? 0) + 1;
           return `let open = true; export function is${name}OpenForFixture() { return open; } export function __setOpen(value) { open = value; }`;
@@ -231,9 +270,21 @@ async function runGraph(mode, dataRoot) {
   try {
     const { Progress } = await server.ssrLoadModule('/src/Progress.ts');
     const { SmithServicesController } = await server.ssrLoadModule('/src/SmithServicesController.ts');
+    const { SmithServices } = await server.ssrLoadModule('/src/SmithServices.ts');
+    const delegatedCalls = Object.fromEntries(['choices', 'select', 'submit', 'result', 'loadRefresh', 'availability'].map(method => [method, 0]));
+    for (const method of Object.keys(delegatedCalls)) {
+      const original = SmithServices.prototype[method];
+      ok(typeof original === 'function', `${prefix} canonical Services has ${method}`);
+      SmithServices.prototype[method] = function (...args) { delegatedCalls[method]++; return original.apply(this, args); };
+    }
+    let selectionClearCalls = 0;
+    const originalClearSelection = SmithServices.prototype.clearSelection;
+    ok(typeof originalClearSelection === 'function', `${prefix} selection invalidation is observable without changing its behavior`);
+    SmithServices.prototype.clearSelection = function (...args) { selectionClearCalls++; return originalClearSelection.apply(this, args); };
     const { GameScene } = await server.ssrLoadModule('/src/scenes/GameScene.ts');
     const { t } = await server.ssrLoadModule('/src/data.ts');
-    eq(t('ui.smith.closed'), injected43['ui.smith.closed'], `${prefix} actual t() consumes in-memory 43 injection`);
+    for (const [key, expected] of Object.entries(design43))
+      eq(t(key), expected, `${prefix} actual t(${key}) reads authoritative 1013 disk strings without injection`);
     const flags = {};
     for (const name of names) {
       flags[name] = await server.ssrLoadModule(`/src/${name}OpenFlag.ts`);
@@ -437,6 +488,56 @@ async function runGraph(mode, dataRoot) {
     }
     record('C10', `${prefix}/closed-restore-refresh`, { realRestoreWithoutPersistence: true, completeOldResult: true, damagedOldRecord: true, cyclesEach: 3, noAutomaticRetryOrRepair: true, writes: 0 });
 
+    // Controlled adapter replies exercise dispatch and uncertainty without a real Gate submit.
+    // A fixed unresolved intent may be inspected by result(), never retried or replaced.
+    access({}); clear();
+    const uncertaintyVariants = ['throws', 'unknown', 'stale'];
+    for (const uncertainty of uncertaintyVariants) {
+      const delegationProbe = make(p);
+      await zero(p, () => {
+        delegationProbe.openMenu(); delegationProbe.openService('forge');
+        ok(delegationProbe.state.candidates.length > 0, `${prefix}/${uncertainty} probe consumes canonical recipe choices`);
+        delegationProbe.select(delegationProbe.state.candidates[0].id);
+        delegationProbe.refresh();
+        delegationProbe.select(delegationProbe.state.candidates[0].id);
+      }, `${prefix}/${uncertainty} canonical choices/select/loadRefresh delegate read-only`);
+      const delegatedPending = await zero(p, () => delegationProbe.requestConfirm(), `${prefix}/${uncertainty} canonical selection confirmation remains read-only`);
+      ok(delegatedPending, `${prefix}/${uncertainty} canonical select allows a read-only confirmation for dispatch probe`);
+      const invalidationsBeforePoll = selectionClearCalls;
+      await zero(p, () => { for (let n = 0; n < 5; n++) eq(delegationProbe.poll(), true, `${prefix}/${uncertainty} open confirmation poll remains available`); },
+        `${prefix}/${uncertainty} real frame polling preserves canonical confirmation`);
+      eq(selectionClearCalls, invalidationsBeforePoll, `${prefix}/${uncertainty} poll never clears Services confirmed selection or epoch`);
+      eq(delegationProbe.pending, delegatedPending, `${prefix}/${uncertainty} poll retains the exact confirmed intent`);
+      eq(delegationProbe.state.stage, 'confirm', `${prefix}/${uncertainty} poll retains confirmation view`);
+      const originalSubmit = SmithServices.prototype.submit;
+      const dispatchCallsBefore = delegatedCalls.submit;
+      SmithServices.prototype.submit = async function () {
+        delegatedCalls.submit++;
+        if (uncertainty === 'throws') throw new Error('read-only Services dispatch probe');
+        return { allowed: false, status: uncertainty, route: 'panel', service: 'forge', tipKey: 'ui.smith.result_unknown' };
+      };
+      try {
+        await zero(p, () => delegationProbe.submit(delegatedPending), `${prefix}/${uncertainty} Controller delegates submit to controlled adapter reply`);
+        eq(delegatedCalls.submit, dispatchCallsBefore + 1, `${prefix}/${uncertainty} Controller dispatches the confirmed request exactly once`);
+        await zero(p, async () => {
+          eq(delegationProbe.requestConfirm(), null, `${prefix}/${uncertainty} unresolved state blocks a new confirmation`);
+          await delegationProbe.submit(delegatedPending);
+          await delegationProbe.submit();
+        }, `${prefix}/${uncertainty} unresolved state prevents duplicate and replacement dispatch`);
+        eq(delegatedCalls.submit, dispatchCallsBefore + 1, `${prefix}/${uncertainty} no automatic or repeated submission after uncertainty`);
+      } finally { SmithServices.prototype.submit = originalSubmit; }
+      const resultCallsBefore = delegatedCalls.result;
+      await zero(p, () => delegationProbe.refresh(), `${prefix}/${uncertainty} unresolved refresh delegates result without retry`);
+      eq(delegatedCalls.result, resultCallsBefore + 1, `${prefix}/${uncertainty} refresh reads the exact unresolved intent through Services.result`);
+      noResult(delegationProbe, `${prefix}/${uncertainty} controlled adapter uncertainty never displays success`);
+    }
+    for (const [method, count] of Object.entries(delegatedCalls)) ok(count > 0, `${prefix} Controller actually invoked SmithServices.${method}`);
+    smithServicesDelegation.push({ mode, calls: delegatedCalls, submitProbe: 'async adapter throws/unknown/stale before Gate submit',
+      noDirectControllerGate: true, resultAfterUnresolvedRefresh: true, confirmationSurvivesFiveRealPolls: true,
+      uncertaintyVariants, uncertaintyNeverRetries: true, actualSettlementExecuted: false, writes: 0 });
+    record('C09', `${prefix}/canonical-confirmation-poll-and-uncertainty`, { realPollsPerVariant: 5, uncertaintyVariants, noDuplicateOrReplacementDispatch: true, writes: 0 });
+    record('C10', `${prefix}/canonical-services-delegation`, { methods: Object.keys(delegatedCalls), zeroWriteAsyncDispatchProbe: true, writes: 0 });
+
     access({});
     const { EquipPanel } = await server.ssrLoadModule('/src/EquipPanel.ts');
     const { InventoryPanel } = await server.ssrLoadModule('/src/InventoryPanel.ts');
@@ -451,7 +552,7 @@ async function runGraph(mode, dataRoot) {
     ok(tips.every(tip => tip.text && !/\{\w+\}|NaN|undefined|null/u.test(tip.text)), 'C11 localized closed tips have no placeholders or technical nulls');
     eq([localStorageWrites, indexedDbOpens, sentinelCalls, submitCalls, settlementRandomCalls], [0, 0, 0, 0, 0], 'C11 all graphs no business write/submit/random');
     record('C11', `${prefix}/full-state-ei-isolation`, { perActionFullExportSaveAndPublicFieldsCompared: true, equipPanelPreserved: true, inventoryPanelPreserved: true, historicalCOTablesModified: false, writes: 0 });
-    rows.push({ suite: 'real-ssr-graph', mode, passed: true, stringsDiskKeys: 970, stringsSsrInjected43: true,
+    rows.push({ suite: 'real-ssr-graph', mode, passed: true, stringsDiskKeys: 1013, stringsSha, stringsSsrInjected43: false,
       fourInitialGateFlags: true, flagLoads, fullStateDelta: 0, submitCalls: 0 });
   } finally { await server.close(); }
 }
@@ -472,11 +573,11 @@ try {
 } finally {
   for (const [file, expected] of Object.entries(protectedFiles)) eq(hash(await fs.readFile(file)), expected, `after-run frozen SHA MATCH: ${file}`);
   const evidence = { passed, assertions, baselineTip: baseline, smithServicesUiWired: passed, newOpenFlag: false,
-    enhanceSha, stringsDiskKeys: 970, stringsSsrInjected43: true, stringsInjectionSource: 'test-only virtual JSON based on unchanged worktree 970',
-    stringsSsrKeys: 1013, stringsDesign43Match: true, sharedStringsDiskKeys,
-    sharedStringsOwnership: 'parallel smith-owner table read only; not copied into this worktree',
+    enhanceSha, stringsDiskKeys: 1013, stringsSha, stringsSsrInjected43: false, stringsInjectionSource: 'none; Vite resolves authoritative disk JSON',
+    stringsSsrKeys: 1013, stringsDesign43Match: true, strings970PrefixBytesMatch: true, sharedStringsDiskKeys,
+    sharedStringsOwnership: 'worktree disk exactly MATCH authoritative shared strings1013', smithServicesDelegation,
     softOpenedSmithServicesUi: false, released: false, flagShas,
-    productionIgnoresSsrInjection,
+    productionIgnoresSsrInjection, productionServicesRoutesAccessible,
     fourFlagMatch: Object.fromEntries(names.map(name => [name, 'MATCH'])), settlementUnchanged: true,
     localStorageWrites, indexedDbOpens, sentinelCalls, submitCalls, settlementRandomCalls, fullBusinessStateDelta: 0,
     eiReadonlyIsolated: cases.C11.passed, openFixtureTableExecuted: false, historicalCOTablesModified: false,
@@ -486,4 +587,4 @@ try {
     if (descriptor) Object.defineProperty(globalThis, name, descriptor); else delete globalThis[name];
   }
 }
-console.log(`v06p1 smith services closed PASS: C01–C11; ${assertions} assertions; stringsDiskKeys:970; stringsSsrInjected43:true; four Flag MATCH; settlementUnchanged:true; softOpenedSmithServicesUi:false; released:false`);
+console.log(`v06p1 smith services closed PASS: C01–C11; ${assertions} assertions; stringsDiskKeys:1013; stringsSsrInjected43:false; SmithServicesDelegation:true; four Flag MATCH; settlementUnchanged:true; softOpenedSmithServicesUi:false; released:false`);
