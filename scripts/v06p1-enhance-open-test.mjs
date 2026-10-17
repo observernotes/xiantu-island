@@ -1,5 +1,6 @@
 // 护符 soft-open 正式磁盘图；仅独立 Vite SSR 关态图内存注入 false。soft-open≠进包≠发版。
 import assert from 'node:assert/strict';
+import { stripEnchantClosedAddition, enchantSourceNames, checkEnchantCompatibility } from './v06p1-enchant-soft-open-compat-proof.mjs';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import fs from 'node:fs/promises';
@@ -12,13 +13,13 @@ const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const shared = sharedRoot(root);
 const modes = [['shared', shared], ['snapshot', path.join(root, 'data')]];
 const dataRoots = [['shared', shared], ['wt', path.join(root, 'data')], ['game', path.join(shared, 'game/data')]];
-const out = process.env.XT_ENHANCE_QA_OUT ?? process.env.OUT_DIR ?? path.join(root, 'qa/out_v06p1_enhance_protect_charm_soft_open');
+const out = process.env.XT_ENHANCE_QA_OUT ?? process.env.OUT_DIR ?? path.join(root, 'qa/out_v06p1_enchant_soft_open/regressions/enhance-open');
 const before = new Map(), directoryBefore = new Map(), evidence = [];
 const recipesSha = '1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f';
 const forgeFlagSha = '0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e';
 const enhanceSha = 'd5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954';
 const enhanceFlagSha = 'd7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e';
-const stringsSha = 'd7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09';
+const stringsSha = '6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9';
 const previousStringsSha = '92d5525c86562a870f45bf53c0c2010e961b83ec9c257a0cf8257178f45b4cab';
 const formalStrings = {
   'enhance.formal.no_instance': '无正式装备实例，不可强化。',
@@ -38,8 +39,8 @@ const compatibilityMeaning = 'formalOpen/softOpened 表示正式磁盘护符 sof
 const charmEvidence = { protectCharmWired: true, protectCharmN: 1, protectCharmOpenFixtureTableExecuted: true, formalTipsWired: true, formalInstanceSource: true, softOpenedEntrance: true, softOpenedFormalSettle: true, softOpenedProtectCharm: true, released: false };
 const openTableCases = ['O01', 'O02', 'O03', 'O04', 'O05', 'O06'];
 const charmSnapshots = {
-  'materials.json': '79c68429d763054ac1715467d1743575e179ecaecb2529e4b6ed7df137ef4052',
-  'items.json': 'f8b587634e5c9d43a475e85724aa34172e2945abda7654c2ef98fda07d1566f3',
+  'materials.json': '86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d',
+  'items.json': 'dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99',
   'enhance_protect_charm.json': '0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772',
 };
 const report = row => { row = { ...charmEvidence, protectCharmOpenFixtureTableExecuted: false, compatibilityMeaning, ...row }; evidence.push(row); console.log(JSON.stringify(row)); };
@@ -119,27 +120,27 @@ async function checkFormal() {
   ok(/new EnhanceGate\(this\.prog\)\.entrance\(\)/u.test(scene), '正式Scene只读入口不注入fixtureInstances');
   const entrance = scene.match(/  private tryInteractForgeEntrance\(\): boolean \{[\s\S]*?\n  \}/u)?.[0];
   ok(entrance, 'smith_ou入口方法存在');
-  ok(/new ForgeGate\(this\.prog\)\.entrance\(\)[\s\S]*new EnhanceGate\(this\.prog\)\.entrance\(\)[\s\S]*return true;/u.test(entrance),
-    '同一次smith_ou命中先打造再强化，最后返回，强化不被饿死');
-  eq((entrance.match(/return true;/gu) ?? []).length, 1, '同一smith_ou入口仅在两段提示后消费命中');
+  ok(/new ForgeGate\(this\.prog\)\.entrance\(\)[\s\S]*new EnhanceGate\(this\.prog\)\.entrance\(\)[\s\S]*new EnchantGate\(this\.prog\)\.entrance\(\)[\s\S]*return true;/u.test(entrance),
+    '同一次smith_ou命中先打造再强化再附灵，最后返回，强化及附灵不被饿死');
+  eq((entrance.match(/return true;/gu) ?? []).length, 1, '同一smith_ou入口仅在三段提示后消费命中');
   ok(!/EnhancePanel|EnhancementPanel|openEnhance|submitEnhance|EnhanceProgress|fixtureInstances/u.test(scene),
     'GameScene无完整强化UI或提交面板');
   ok(!/EnhanceGate|EnhanceOpenFlag|EnhanceProgress|tryInteractEnhance|openEnhance|submitEnhance/u.test(await fs.readFile(path.join(root, 'src/ShopPanel.ts'), 'utf8')),
     'ShopPanel不接强化');
   const consumers = [];
   for (const file of (await filesUnder(path.join(root, 'src'))).filter(name => name.endsWith('.ts'))) {
-    if (['EnhanceGate.ts', 'v06p1-enhance-open.test.ts'].includes(file)) continue;
+    if (['EnhanceGate.ts', 'v06p1-enhance-open.test.ts', ...enchantSourceNames].includes(file)) continue;
     if (/from\s+['"][^'"]*EnhanceGate(?:\.ts)?['"]/u.test(await fs.readFile(path.join(root, 'src', file), 'utf8'))) consumers.push(file);
   }
   eq(consumers, ['scenes/GameScene.ts'], 'EnhanceGate正式消费者仅为GameScene只读冒烟入口');
   for (const [mode, dataRoot] of dataRoots) {
     const rawStrings = await fs.readFile(path.join(dataRoot, 'balance/strings_zh.json'), 'utf8');
     const entries = Object.entries(JSON.parse(rawStrings));
-    eq(hash(rawStrings), stringsSha, `${mode} strings保持开工前指定944键完整SHA`);
-    eq(entries.length, 944, `${mode} strings键数保持944含_meta`);
+    eq(hash(rawStrings), mode === 'game' ? 'd7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09' : stringsSha, `${mode} strings保持开工前指定944键完整SHA`);
+    eq(entries.length, mode === 'game' ? 944 : 952, `${mode} strings键数保持944含_meta`);
     if (mode !== 'game') {
-      eq(entries.slice(936), Object.entries(formalStrings), `${mode} 正式八键及文案完全取表`);
-      eq(hash(rawStrings.replace(/,\n(?: {2}"enhance\.formal\.[^\n]+\n?){8}/u, '\n')), previousStringsSha,
+      eq(entries.slice(936, 944), Object.entries(formalStrings), `${mode} 正式八键及文案完全取表`);
+      eq(hash(stripEnchantClosedAddition(rawStrings).replace(/,\n(?: {2}"enhance\.formal\.[^\n]+\n?){8}/u, '\n')), previousStringsSha,
         `${mode} 剥正式八键还原原936键完整字节`);
     }
     eq(await shaOrNull(path.join(dataRoot, 'balance/enhance.json')), enhanceSha, `${mode} enhance保持指定SHA`);
@@ -263,6 +264,7 @@ async function runGraph(mode, dataRoot, openFixture, refreshPayloads = null, inv
 await fs.mkdir(out, { recursive: true });
 let passed = false;
 try {
+  report(await checkEnchantCompatibility(root, shared, eq));
   await protectFiles();
   await checkFormal();
   for (const [mode, dataRoot] of modes) {

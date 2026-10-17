@@ -1,5 +1,6 @@
 // 双根隔离：正式旗标恒 true；仅独立 Vite SSR 关态图由 resolve/load 内存注入 false。
 import assert from 'node:assert/strict';
+import { enchantSourceNames, checkEnchantCompatibility } from './v06p1-enchant-soft-open-compat-proof.mjs';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import fs from 'node:fs/promises';
@@ -12,7 +13,7 @@ const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const shared = sharedRoot(root);
 const modes = [['shared', shared], ['snapshot', path.join(root, 'data')]];
 const dataRoots = [['shared', shared], ['wt', path.join(root, 'data')], ['game', path.join(shared, 'game/data')]];
-const out = process.env.OUT_DIR ?? path.join(root, 'qa/out_v06p1_forge_formal');
+const out = process.env.OUT_DIR ?? path.join(root, 'qa/out_v06p1_enchant_soft_open/regressions/forge-open');
 const before = new Map(), directoryBefore = new Map(), evidence = [];
 const enhanceSha = 'd5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954';
 const recipesSha = '1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f';
@@ -77,7 +78,7 @@ async function checkFormal() {
     'ShopPanel不接打造');
   const consumers = [];
   for (const file of (await filesUnder(path.join(root, 'src'))).filter(name => name.endsWith('.ts'))) {
-    if (['ForgeGate.ts', 'v06p1-forge-open.test.ts', 'v06p1-enhance-open.test.ts'].includes(file)) continue;
+    if (['ForgeGate.ts', 'v06p1-forge-open.test.ts', 'v06p1-enhance-open.test.ts', ...enchantSourceNames].includes(file)) continue;
     if (/from\s+['"][^'"]*ForgeGate(?:\.ts)?['"]/u.test(await fs.readFile(path.join(root, 'src', file), 'utf8'))) consumers.push(file);
   }
   eq(consumers, ['scenes/GameScene.ts'], 'ForgeGate正式消费者仅为GameScene只读冒烟入口');
@@ -182,6 +183,7 @@ async function runGraph(mode, dataRoot, openFixture, refreshPayloads = null) {
 await fs.mkdir(out, { recursive: true });
 let passed = false;
 try {
+  report(await checkEnchantCompatibility(root, shared, eq));
   await protectFiles();
   await checkFormal();
   for (const [mode, dataRoot] of modes) {

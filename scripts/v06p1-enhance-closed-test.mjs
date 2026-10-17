@@ -1,5 +1,6 @@
 // 强化与护符正式磁盘 soft-open；只在 Vite SSR 内存图注入 false，保留 C01–C12 八 tip 零写。
 import assert from 'node:assert/strict';
+import { stripEnchantClosedAddition, enchantSourceNames, preexistingReadOnlyShas, stripEnchantOpenProgress, stripEnchantSceneWiring, stripEnchantForgeSmokeCompatibility, checkEnchantCompatibility } from './v06p1-enchant-soft-open-compat-proof.mjs';
 import { createHash } from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -11,15 +12,15 @@ import { stripFormalEnhanceInstanceSource } from './v06p1-enhance-instance-sourc
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const shared = sharedRoot(root), baselineOut = path.join(root, 'qa/out_v06p1_enhance_closed');
-const out = process.env.ENHANCE_CLOSED_OUT ?? (process.env.XT_ENHANCE_QA_OUT ? path.join(process.env.XT_ENHANCE_QA_OUT, 'closed') : process.env.OUT_DIR) ?? path.join(root, 'qa/out_v06p1_enhance_protect_charm_soft_open/regression/enhance-closed');
+const out = process.env.ENHANCE_CLOSED_OUT ?? (process.env.XT_ENHANCE_QA_OUT ? path.join(process.env.XT_ENHANCE_QA_OUT, 'closed') : process.env.OUT_DIR) ?? path.join(root, 'qa/out_v06p1_enchant_soft_open/regressions/enhance-closed');
 const roots = new Map([['shared', shared], ['wt', path.join(root, 'data')], ['game', path.join(shared, 'game/data')]]);
 const modes = [['shared', shared], ['snapshot', roots.get('wt')]];
-const stringsSha = 'd7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09';
+const stringsSha = '6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9';
 const preFormalStringsSha = '92d5525c86562a870f45bf53c0c2010e961b83ec9c257a0cf8257178f45b4cab';
 const enhanceFlagSha = 'd7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e';
 const protectCharmTableShas = {
-  'materials.json': '79c68429d763054ac1715467d1743575e179ecaecb2529e4b6ed7df137ef4052',
-  'items.json': 'f8b587634e5c9d43a475e85724aa34172e2945abda7654c2ef98fda07d1566f3',
+  'materials.json': '86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d',
+  'items.json': 'dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99',
   'enhance_protect_charm.json': '0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772',
 };
 const protectCharmGenerator = { name: 'tools/gen_enhance_protect_charm.py',
@@ -99,6 +100,7 @@ async function filesUnder(directory, prefix = '') {
 }
 // 只剥强化本窗三个 import 与一个完整提示块；打造原方法仍逐字钉旧 SHA。
 function stripEnhanceSceneWiring(source) {
+  source = stripEnchantSceneWiring(source, eq);
   for (const line of ["import { featureClosed as enhanceFeatureClosed } from '../EnhanceClosed';\n",
     "import { isEnhanceOpenForFixture } from '../EnhanceOpenFlag';\n",
     "import { EnhanceGate } from '../EnhanceGate';\n"]) {
@@ -121,6 +123,7 @@ function stripEnhanceSceneWiring(source) {
 
 // Forge 冒烟仍核对原文；只恢复强化追加提示导致的两个日志位置及两个新断言。
 function stripForgeSceneSmokeCompatibility(source) {
+  source = stripEnchantForgeSmokeCompatibility(source, eq);
   const enhanceAssertion = "      eq(logs[logs.length - 1], { text: '装备强化已开放。', color: '#aaaaaa' }, '同次命中在打造提示后显示强化正式开态提示');\n";
   eq(source.split(enhanceAssertion).length - 1, 2, 'Forge 入口冒烟只增加两个同命中强化提示断言');
   source = source.split(enhanceAssertion).join('');
@@ -137,6 +140,7 @@ const enhanceProgressAddedLines = [
   '  enhance: EnhanceProgress | undefined = undefined;',
 ];
 function stripEnhanceProgress(source) {
+  source = stripEnchantOpenProgress(source, eq);
   source = stripFormalEnhanceInstanceSource(source, eq);
   for (const line of enhanceProgressAddedLines) {
     eq(source.split(`${line}\n`).length - 1, 1, `Progress 强化可选夹具袋授权完整行精确一次：${line.trim()}`);
@@ -171,13 +175,13 @@ async function checkProtection() {
     const file = keyPath(key), actual = await shaOrNull(file);
     const compared = key === 'GameScene.ts' ? hash(stripEnhanceSceneWiring(await fs.readFile(file, 'utf8')))
       : key === 'ForgeGate.ts' ? hash(stripFormalForgeRegistration(await fs.readFile(file, 'utf8'))) : actual;
-    eq(compared, ['strings.shared', 'strings.wt', 'strings.game'].includes(key) ? stringsSha : expected, `权威写前/写后保护字节（仅剥获准强化接线）：${key}`);
+    eq(compared, ['strings.shared', 'strings.wt', 'strings.game'].includes(key) ? (key === 'strings.game' ? 'd7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09' : stringsSha) : expected, `权威写前/写后保护字节（仅剥获准强化接线）：${key}`);
     protectedFiles[key] = actual; readOnlyBefore.set(file, actual);
   }
   const sourceBefore = JSON.parse(await fs.readFile(path.join(baselineOut, 'source-before.json'), 'utf8'));
   const relativeSource = name => name.startsWith('src/') ? name.slice(4) : name;
   const oldNames = Object.keys(sourceBefore).map(relativeSource);
-  eq(await filesUnder(path.join(root, 'src')), [...oldNames, ...newSources, ...openFixtureSources].sort(),
+  eq(await filesUnder(path.join(root, 'src')), [...oldNames, ...newSources, ...openFixtureSources, ...enchantSourceNames].sort(),
     'src 仅新增强化关态 API/Flag 及三个开态夹具源码；既有 smith_ou 仅接最小提示');
   for (const [name, expected] of Object.entries(sourceBefore)) {
     const file = path.join(root, 'src', relativeSource(name)), actual = await shaOrNull(file);
@@ -206,7 +210,8 @@ async function checkProtection() {
     dataBefore[`${mode}:balance/strings_zh.json`] = stringsSha;
     for (const [name, sha] of Object.entries(protectCharmTableShas)) dataBefore[`${mode}:balance/${name}`] = sha;
   }
-  dataBefore['game:balance/strings_zh.json'] = stringsSha; // 开工前 game 已有正式944键；本窗逐字保留。
+  dataBefore['game:balance/strings_zh.json'] = 'd7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09';
+  Object.assign(dataBefore, preexistingReadOnlyShas); // 开工前 game 已有正式944键；本窗逐字保留。
   dataBefore[`shared:balance/${protectCharmGenerator.name}`] = protectCharmGenerator.sha;
   const generatorFile = path.join(shared, 'balance', protectCharmGenerator.name), generatorSha = await shaOrNull(generatorFile);
   eq(generatorSha, protectCharmGenerator.sha, 'shared 既有护符落表工具固定 SHA，wt/game 不新增或复制');
@@ -238,12 +243,12 @@ async function checkStatic(mode, dataRoot) {
   const raw = await fs.readFile(path.join(dataRoot, 'balance/strings_zh.json'), 'utf8');
   const strings = JSON.parse(raw), entries = Object.entries(strings);
   const formal = mode !== 'game';
-  eq(hash(raw), stringsSha, `${mode}: strings 既有944键权威 SHA（game 本窗不改）`);
-  eq(entries.length, 944, `${mode}: strings既有944键含_meta`);
-  const preFormal = raw.replace(/,\n(?: {2}"enhance\.formal\.[^\n]+\n?){8}/u, '\n');
+  eq(hash(raw), mode === 'game' ? 'd7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09' : stringsSha, `${mode}: strings 既有944键权威 SHA（game 本窗不改）`);
+  eq(entries.length, mode === 'game' ? 944 : 952, `${mode}: strings既有944键含_meta`);
+  const preFormal = stripEnchantClosedAddition(raw).replace(/,\n(?: {2}"enhance\.formal\.[^\n]+\n?){8}/u, '\n');
   eq(hash(preFormal), preFormalStringsSha, `${mode}: 原936键完整字节保留`);
   if (formal) {
-    eq(entries.slice(936), Object.entries(formalStrings), `${mode}: 正式八键及文案逐字`);
+    eq(entries.slice(936, 944), Object.entries(formalStrings), `${mode}: 正式八键及文案逐字`);
     for (const [key, text] of Object.entries(formalStrings)) {
       eq(strings[key], text, `${mode}: ${key} 文案逐字`);
       ok(Array.from(text).length <= 40, `${mode}: ${key} Unicode ≤40 字`);
@@ -307,6 +312,7 @@ async function checkSource() {
   inspect(parsed);
   const search = [];
   for (const name of await filesUnder(path.join(root, 'src'))) {
+    if (enchantSourceNames.includes(name)) continue; // 精确六文件由附灵专窗验证，生产旧消费者继续全扫。
     const text = await fs.readFile(path.join(root, 'src', name), 'utf8');
     const scanned = name === 'scenes/GameScene.ts' ? stripEnhanceSceneWiring(text) : text;
     if (!newSources.includes(name) && !openFixtureSources.includes(name)) ok(!/EnhanceClosed|EnhanceOpenFlag|EnhanceGate|enhance\.closed\./u.test(scanned), `${name}: 除 smith_ou 最小提示外无强化 API/Flag/Gate 消费者`);
@@ -539,12 +545,13 @@ async function runGraph(mode, dataRoot, closedFixtureOnly, refreshPayloads = nul
 await fs.mkdir(out, { recursive: true });
 let passed = false;
 try {
+  report(await checkEnchantCompatibility(root, shared, eq));
   await checkProtection();
   await checkSource();
   for (const [mode, dataRoot] of roots) await checkStatic(mode, dataRoot);
   const sharedStrings = await fs.readFile(path.join(shared, 'balance/strings_zh.json'));
   eq((await fs.readFile(path.join(roots.get('wt'), 'balance/strings_zh.json'))).equals(sharedStrings), true, 'shared/wt: strings944同字节');
-  eq(await shaOrNull(path.join(roots.get('game'), 'balance/strings_zh.json')), stringsSha, 'game既有strings944指定SHA保持原字节');
+  eq(await shaOrNull(path.join(roots.get('game'), 'balance/strings_zh.json')), 'd7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09', 'game既有strings944指定SHA保持原字节');
   for (const [mode, dataRoot] of modes) {
     await runGraph(mode, dataRoot, false);
     const payloads = await runGraph(mode, dataRoot, true);

@@ -76,6 +76,9 @@ import { ForgeGate } from '../ForgeGate';
 import { featureClosed as enhanceFeatureClosed } from '../EnhanceClosed';
 import { isEnhanceOpenForFixture } from '../EnhanceOpenFlag';
 import { EnhanceGate } from '../EnhanceGate';
+import { featureClosed as enchantFeatureClosed } from '../EnchantClosed';
+import { isEnchantOpenForFixture } from '../EnchantOpenFlag';
+import { EnchantGate } from '../EnchantGate';
 
 const MAP_FALLBACK: Record<string, string> = {};
 type Drop = Phaser.Physics.Arcade.Sprite & { itemId: string; count: number; bornAt: number; label?: Phaser.GameObjects.Text; shadow?: Phaser.GameObjects.Ellipse; floatTw?: Phaser.Tweens.Tween; landed?: boolean };
@@ -2169,6 +2172,11 @@ export class GameScene extends Phaser.Scene {
     else {
       const result = new EnhanceGate(this.prog).entrance();
       this.log(result.allowed ? '装备强化已开放。' : result.text, '#aaaaaa');
+    }
+    if (!isEnchantOpenForFixture()) this.log(enchantFeatureClosed().text, '#aaaaaa');
+    else {
+      const result = new EnchantGate(this.prog).entrance();
+      this.log(result.allowed ? '装备附灵已开放。' : result.text, '#aaaaaa');
     }
     return true;
   }

@@ -1,4 +1,4 @@
-// 仅独立 Vite SSR 开态图注入 true；正式 EnchantOpenFlag 恒 false。本窗不授权 soft-open / release。
+// 附灵 soft-open 正式磁盘图；仅独立 Vite SSR 关态图注入 false。soft-open≠进包≠发版；fixture≠正式。
 import enhance from '@xt/balance/enhance.json';
 import recipes from '@xt/balance/recipes.json';
 import { GAME_PHASE, ITEMS } from './data';
@@ -11,7 +11,10 @@ import { EnhanceGate } from './EnhanceGate';
 import * as Closed from './EnchantClosed';
 import * as EnhanceClosed from './EnhanceClosed';
 import { isEnchantOpenForFixture } from './EnchantOpenFlag';
+import { isEnhanceOpenForFixture } from './EnhanceOpenFlag';
+import { isForgeOpenForFixture } from './ForgeOpenFlag';
 import { isValidEnchantProgress } from './EnchantProgress';
+import { GameScene } from './scenes/GameScene';
 
 type Payload = { state: string; save: Record<string, unknown>; request: { enchantRequestId: string; instanceRef: string; fromElement: Element | null; element: Element } };
 type Element = '金' | '木' | '水' | '火' | '土';
@@ -102,7 +105,7 @@ export async function runEnchantOpenFixtureTests(options: {
   openFixture: boolean; dataMode: string; refreshPayloads?: Payload[] | null; invalidDependency?: string;
 }) {
   const { openFixture, dataMode, refreshPayloads = null, invalidDependency } = options;
-  const graph = openFixture ? 'memory-open' : 'formal-closed', label = dataMode + '/' + graph;
+  const graph = openFixture ? 'formal-open' : 'memory-closed', label = dataMode + '/' + graph;
   let assertions = 0, sequence = 0, randomCalls = 0, localWrites = 0;
   const eq = (actual: unknown, expected: unknown, message: string) => {
     assertions++;
@@ -231,20 +234,117 @@ export async function runEnchantOpenFixtureTests(options: {
     await replay(loaded, payload.request, 'O06 load 重放');
     eq(loaded.enhance, save.enhance, 'O08 强化与护符历史完整保留');
   }
+  function sceneSmoke() {
+    const p = bare(), logs: { text: string; color: string }[] = [];
+    const before = copy(p.exportSave()), writes = idb.writes, commits = idb.commits;
+    const rows = copy([...idb.rows]), samples = randomCalls;
+    const entrance = { name: 'smith_ou', type: 'npc', props: { npc: 'smith_ou' }, x: 100, y: 200 };
+    const forgeTip = { text: '炼器打造已开放。', color: '#fff8d0' };
+    const enhanceTip = { text: '装备强化已开放。', color: '#aaaaaa' };
+    const enchantTip = { text: openFixture ? '装备附灵已开放。' : Closed.featureClosed().text, color: '#aaaaaa' };
+    const scene: any = Object.assign(Object.create(GameScene.prototype), {
+      prog: p, map: { id: 'luoxia_town', objects: [] }, player: { x: 100, y: 200 },
+      log: (text: string, color: string) => logs.push({ text, color }),
+      encounterRuntime: { interact() { throw new Error('欧冶匠三项入口须先于遭遇与 NPC 交互'); } },
+    });
+    eq(typeof scene.tryInteractForgeEntrance, 'function', '真实 GameScene.prototype 既有欧冶匠入口存在');
+    eq(scene.tryInteractForgeEntrance(), false, '没有对象时安静 no-op');
+    scene.map.objects = [{ ...entrance, name: 'npc_shop', props: { npc: 'npc_shop' } }];
+    eq(scene.tryInteractForgeEntrance(), false, '非 smith_ou 对象不消费附灵入口');
+    scene.map.objects = [entrance];
+    for (const offset of [-29, 29]) {
+      scene.player.x = entrance.x + offset;
+      eq(scene.tryInteractForgeEntrance(), false, '横向超距不交互: ' + offset);
+    }
+    scene.player.x = entrance.x;
+    for (const offset of [-41, 41]) {
+      scene.player.y = entrance.y + offset;
+      eq(scene.tryInteractForgeEntrance(), false, '纵向超距不交互: ' + offset);
+    }
+    scene.player.y = entrance.y; scene.senseMap = { objectVisible: () => false };
+    eq(scene.tryInteractForgeEntrance(), false, '隐藏欧冶匠不交互');
+    eq(logs, [], '无对象/非欧冶匠/超距/隐藏时三项提示均安静');
+    scene.senseMap = undefined;
+    for (const object of [{ ...entrance, props: {} }, { ...entrance, name: 'enchant-smoke-alias' }]) {
+      scene.map.objects = [object]; const start = logs.length;
+      eq(scene.tryInteractForgeEntrance(), true, object.name + ' 邻近欧冶匠被消费');
+      eq(logs.slice(start), [forgeTip, enhanceTip, enchantTip], 'name/props.npc 同一次命中 forge→enhance→enchant，附灵不被饿死');
+    }
+    scene.map.objects = [entrance];
+    for (const offset of [-1, 1]) {
+      scene.player.x = entrance.x + 28 * offset; scene.player.y = entrance.y + 40 * offset;
+      const start = logs.length;
+      eq(scene.tryInteractForgeEntrance(), true, '28×40 距离边界内三项入口可冒烟: ' + offset);
+      eq(logs.slice(start), [forgeTip, enhanceTip, enchantTip], '距离边界保持三 tip 顺序和文案');
+    }
+    scene.player.x = entrance.x; scene.player.y = entrance.y;
+    let start = logs.length;
+    eq(scene.tryInteract(), true, '通用交互在遭遇/NPC 前消费欧冶匠三项入口');
+    eq(logs.slice(start), [forgeTip, enhanceTip, enchantTip], '通用交互同命中三项入口且不重复提示');
+    const originalEnchantEntrance = EnchantGate.prototype.entrance;
+    let entranceCalls = 0;
+    try {
+      EnchantGate.prototype.entrance = function () {
+        entranceCalls++;
+        if (!openFixture) throw new Error('内存关态不得查询 EnchantGate');
+        return { allowed: false, tipKey: 'enchant.fixture.smoke', text: '附灵冒烟拒绝。' };
+      };
+      start = logs.length;
+      eq(scene.tryInteractForgeEntrance(), true, '最小入口保留 EnchantGate 拒绝提示分支');
+      eq(entranceCalls, openFixture ? 1 : 0, '只有正式开态查询 EnchantGate.entrance，关态直接绕过');
+      eq(logs.slice(start), [forgeTip, enhanceTip, { text: openFixture ? '附灵冒烟拒绝。' : Closed.featureClosed().text,
+        color: '#aaaaaa' }], 'Gate 拒绝原文或内存关态 tip 展示，打造强化既有提示保持');
+    } finally { EnchantGate.prototype.entrance = originalEnchantEntrance; }
+    const originalForgeEntrance = ForgeGate.prototype.entrance, originalEnhanceEntrance = EnhanceGate.prototype.entrance;
+    const calls: string[] = [];
+    try {
+      ForgeGate.prototype.entrance = function () {
+        calls.push('forge'); return { allowed: false, tipKey: 'forge.fixture.smoke', text: '打造冒烟拒绝。' };
+      };
+      EnhanceGate.prototype.entrance = function () {
+        calls.push('enhance'); return { allowed: false, tipKey: 'enhance.fixture.smoke', text: '强化冒烟拒绝。' };
+      };
+      EnchantGate.prototype.entrance = function () {
+        calls.push('enchant');
+        if (!openFixture) throw new Error('关态须独立绕过 Gate，不借打造/强化旗');
+        return { allowed: true };
+      };
+      start = logs.length;
+      eq(scene.tryInteractForgeEntrance(), true, '打造/强化拒绝时同次命中仍到附灵提示');
+      eq(calls, openFixture ? ['forge', 'enhance', 'enchant'] : ['forge', 'enhance'], '三 Gate 顺序精确，内存关态不借既有两旗');
+      eq(logs.slice(start), [{ text: '打造冒烟拒绝。', color: '#aaaaaa' },
+        { text: '强化冒烟拒绝。', color: '#aaaaaa' }, enchantTip], '前两项拒绝不提前 return 饿死附灵');
+    } finally {
+      ForgeGate.prototype.entrance = originalForgeEntrance; EnhanceGate.prototype.entrance = originalEnhanceEntrance;
+      EnchantGate.prototype.entrance = originalEnchantEntrance;
+    }
+    eq(p.exportSave(), before, 'Scene 冒烟不修改角色、打造、强化、附灵或护符事实');
+    eq([idb.writes, idb.commits], [writes, commits], 'Scene 冒烟存档写入及完整提交均 0');
+    eq([...idb.rows], rows, 'Scene 冒烟磁盘旧档保持');
+    eq(randomCalls, samples, 'Scene 入口不抽样或结算'); eq(localWrites, 0, 'Scene 冒烟无 localStorage 旁路写入');
+    return { noObjectNoop: true, nonSmithIgnored: true, nearbyOnly: true, hiddenIgnored: true,
+      objectName: 'smith_ou', npcProp: 'smith_ou', boundary: { x: 28, y: 40 }, genericInteraction: true,
+      graph, sameHitForgeThenEnhanceThenEnchant: true, forgeSoftOpenPreserved: true, enhanceSoftOpenPreserved: true,
+      enchantNotStarved: true, upstreamRefusalsStillReachEnchant: true, gateDeniedRouting: openFixture,
+      closedBypassesGate: !openFixture, saveWrites: idb.writes - writes };
+  }
   try {
-    eq(isEnchantOpenForFixture(), openFixture, '独立 SSR 图 Flag 正式 false / 内存 true');
+    eq(isEnchantOpenForFixture(), openFixture, '独立 SSR 图 Flag 正式 true / 内存关态 false');
+    eq(isEnhanceOpenForFixture(), true, 'EnhanceOpenFlag 保持正式 true 不回翻');
+    eq(isForgeOpenForFixture(), true, 'ForgeOpenFlag 保持正式 true，附灵独立授权');
     eq(GAME_PHASE, 5, '阶段保持5');
+    const sceneSmokeEvidence = invalidDependency ? null : sceneSmoke();
     const random = Math.random;
     Math.random = () => { randomCalls++; throw new Error('附灵不得调用概率源'); };
     try {
       if (!openFixture) {
-        await closed(bare(), '正式磁盘关态');
+        await closed(bare(), 'SSR 内存关态');
         for (const payload of refreshPayloads ?? []) {
           const p = (Progress as any).restore(copy(payload.save), false) as Progress; progresses.push(p);
           eq(p.enchant, payload.save.enchant, 'O08 关态读档保留合法完整附灵历史');
           await closed(p, 'O08 关态旧结果及回调');
         }
-        mark('O08', ['formal-flag-false-eight-tips', 'hostile-getters-unread', 'closed-old-callback-preserves-assets']);
+        mark('O08', ['memory-flag-false-eight-tips', 'hostile-getters-unread', 'closed-old-callback-preserves-assets']);
       } else if (invalidDependency) {
         const f = await source('invalid-' + invalidDependency);
         await unchanged(f.p, () => f.gate.enchant(request('invalid-preview', f.ref)), 'O03 非法依赖只读预览整拒');
@@ -577,7 +677,7 @@ export async function runEnchantOpenFixtureTests(options: {
           'idb-request-before-complete-invisible-abort-rollback-retry', 'unknown-corrupt-records-blocked-no-repair',
           'serialization-failure-zero-delta-and-both-gate-slot-locks-released',
           'real-load-corrupt-bag-storageError-no-overwrite', 'missing-field-undefined',
-          'enhance-and-protect-result-preserved', 'formal-closed-old-callback-graph']);
+          'enhance-and-protect-result-preserved', 'memory-closed-old-callback-graph']);
       }
     } finally { Math.random = random; }
     eq(randomCalls, 0, '附灵全程确定性不读 Math.random');
@@ -585,11 +685,12 @@ export async function runEnchantOpenFixtureTests(options: {
     eq(JSON.stringify(enhance), tableBefore, '只读 enhance 内存表未改');
     eq(localWrites, 0, '真实 IDB 保存无 localStorage 写旁路');
     return { passed: true, assertions, dataMode, graph, cases, payloads, storageWrites: idb.writes, commits: idb.commits,
-      randomCalls, localWrites, enchantClosedTipsWired: true, beastCoreMapped: true,
+      sceneSmoke: sceneSmokeEvidence, randomCalls, localWrites, enchantClosedTipsWired: true, beastCoreMapped: true,
       enchantOpenFixtureTableExecuted: openFixture && !refreshPayloads && !invalidDependency,
-      formalInstanceSource: true, softOpenedEnchant: false, EnchantOpenFlag: false, released: false,
+      formalInstanceSource: true, softOpenedEnchant: true, EnchantOpenFlag: true, released: false,
       protectCharmSoftOpenPreserved: true, EnhanceOpenFlagPreserved: true, productionFixtureInstances: false,
-      boundary: '本窗=附灵开态夹具全表 ≠ soft-open 进包 ≠ release' };
+      activeEnchantOpenFlag: openFixture, formalOpen: true, closedFixtureOnly: true,
+      boundary: '本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据' };
   } finally {
     for (const p of progresses) await p.flushSaves();
     Progress.setActiveSlot(oldSlot); setSaveBackend(createIndexedDbBackend());

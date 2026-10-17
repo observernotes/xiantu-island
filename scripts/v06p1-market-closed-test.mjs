@@ -1,5 +1,6 @@
 // 正式旗已软开；双数据根关态只替换 Vite SSR 内存模块，关态 API 不消费寄售数值表。
 import assert from 'node:assert/strict';
+import { stripEnchantClosedAddition, enchantSourceNames, preexistingReadOnlyShas, stripEnchantOpenProgress, stripEnchantSceneWiring, checkEnchantCompatibility } from './v06p1-enchant-soft-open-compat-proof.mjs';
 import { createHash } from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -12,9 +13,9 @@ const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const shared = sharedRoot(root), gameData = path.join(shared, 'game/data');
 const modes = [['shared', shared], ['snapshot', path.join(root, 'data')]];
 const dataRoots = new Map([['shared', shared], ['wt', path.join(root, 'data')], ['game', gameData]]);
-const out = process.env.MARKET_CLOSED_OUT ?? process.env.OUT_DIR ?? path.join(root, 'qa/out_v06p1_enhance_open_preamble/market-closed');
+const out = process.env.MARKET_CLOSED_OUT ?? process.env.OUT_DIR ?? path.join(root, 'qa/out_v06p1_enchant_soft_open/regressions/market-closed');
 const baselineFile = path.join(root, 'qa/out_v06p1_market_closed/protected-before.json');
-const stringsSha = 'd7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09';
+const stringsSha = '6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9';
 const preFormalStringsSha = '92d5525c86562a870f45bf53c0c2010e961b83ec9c257a0cf8257178f45b4cab';
 const preEnhanceStringsSha = 'fad9b3e604a3af23e99939bf22f77a55de803842daa297ab7fb2c2a6ed0b8967';
 const marketStringsSha = 'c115b6deadf85d1aa9958de1097321ab65624b456e0fddeca42a5fe39743db27';
@@ -32,8 +33,8 @@ const marketTableSha = 'e4725b4724dea9abf67baf2ee467a30e841fee3ee1a9137f5dc25225
 const formalRecipesSha = '1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f';
 const formalRecipeKeys = new Set(['shared:balance/recipes.json', 'wt:balance/recipes.json', 'game:balance/recipes.json']);
 const protectCharmTableShas = {
-  'materials.json': '79c68429d763054ac1715467d1743575e179ecaecb2529e4b6ed7df137ef4052',
-  'items.json': 'f8b587634e5c9d43a475e85724aa34172e2945abda7654c2ef98fda07d1566f3',
+  'materials.json': '86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d',
+  'items.json': 'dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99',
   'enhance_protect_charm.json': '0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772',
 };
 const protectCharmSha = key => /^(shared|wt):balance\/(?:materials|items|enhance_protect_charm)\.json$/u.test(key)
@@ -113,6 +114,7 @@ function protectedPath(key) {
 
 // 只剥强化本窗三个 import 与一个完整提示块；打造原方法仍逐字钉旧 SHA。
 function stripEnhanceSceneWiring(source) {
+  source = stripEnchantSceneWiring(source, eq);
   for (const line of ["import { featureClosed as enhanceFeatureClosed } from '../EnhanceClosed';\n",
     "import { isEnhanceOpenForFixture } from '../EnhanceOpenFlag';\n",
     "import { EnhanceGate } from '../EnhanceGate';\n"]) {
@@ -201,6 +203,7 @@ const enhanceProgressAddedLines = [
   '  enhance: EnhanceProgress | undefined = undefined;',
 ];
 function stripForgeProgress(source) {
+  source = stripEnchantOpenProgress(source, eq);
   source = stripFormalEnhanceInstanceSource(source, eq);
   for (const line of enhanceProgressAddedLines) {
     eq(source.split(`${line}\n`).length - 1, 1, `Progress 强化可选夹具袋授权完整行精确一次：${line.trim()}`);
@@ -223,8 +226,8 @@ async function checkProtection() {
     if (key.endsWith('/market_consign.json')) continue;
     const actual = await shaOrNull(file);
     const authorizedSha = key === 'wt:src/Progress.ts' ? openFixtureProgressSha
-      : key.endsWith(':balance/strings_zh.json') ? stringsSha
-      : formalRecipeKeys.has(key) ? formalRecipesSha : protectCharmSha(key) ?? expected;
+      : key.endsWith(':balance/strings_zh.json') ? (key.startsWith('game:') ? 'd7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09' : stringsSha)
+      : formalRecipeKeys.has(key) ? formalRecipesSha : preexistingReadOnlyShas[key] ?? protectCharmSha(key) ?? expected;
     if (key === 'wt:src/Progress.ts') {
       eq(hash(stripForgeProgress(await fs.readFile(file, 'utf8'))), authorizedSha,
         'C12 Progress 仅增加炼器可选袋四完整行，剥离后原寄售基线字节保持');
@@ -241,7 +244,7 @@ async function checkProtection() {
       const prefix = `${mode}:${directory}/`;
       const expected = Object.keys(baseline).filter(key => key.startsWith(prefix) && !(directory === 'balance' && key.endsWith('/market_consign.json')))
         .map(key => key.slice(prefix.length));
-      if (mode !== 'game' && directory === 'balance') expected.push('enhance_protect_charm.json');
+      if (directory === 'balance') expected.push('enhance_protect_charm.json');
       expected.sort();
       eq(actual, expected, `C12 ${mode}/${directory} 没有新增/删除表、地图或入口文件`);
     }
@@ -252,7 +255,7 @@ async function checkProtection() {
     readOnlyBefore.set(file, actual); protectedFiles[`${mode}:balance/${name}`] = actual;
   }
   const expectedSource = Object.keys(baseline).filter(key => key.startsWith('wt:src/')).map(key => key.slice('wt:src/'.length));
-  eq(await filesUnder(path.join(root, 'src')), [...expectedSource, 'MarketClosed.ts', 'ForgeClosed.ts', ...openFixtureSources, ...enhanceClosedSources].sort(), 'C12 src 仅新增关态 API 及精确列明的寄售/炼器夹具源码与强化关态 API/Flag，无完整寄售 UI 文件');
+  eq(await filesUnder(path.join(root, 'src')), [...expectedSource, 'MarketClosed.ts', 'ForgeClosed.ts', ...openFixtureSources, ...enhanceClosedSources, ...enchantSourceNames].sort(), 'C12 src 仅新增关态 API 及精确列明的寄售/炼器夹具源码与强化关态 API/Flag，无完整寄售 UI 文件');
   for (const [mode, dataRoot] of dataRoots) {
     const file = path.join(dataRoot, 'balance/market_consign.json');
     const actual = await shaOrNull(file);
@@ -274,8 +277,8 @@ async function checkStatic(mode, dataRoot) {
   const raw = await fs.readFile(path.join(dataRoot, 'balance/strings_zh.json'), 'utf8');
   const strings = JSON.parse(raw), entries = Object.entries(strings);
   eq(hash(raw), stringsSha, `${mode}: strings 为权威目标 SHA`);
-  eq(entries.length, 944, `${mode}: shared/wt原936键加enhance.formal八键，共944键`);
-  const preFormal = raw.replace(/,\n(?: {2}"enhance\.formal\.[^\n]+\n?){8}/u, '\n');
+  eq(entries.length, 952, `${mode}: shared/wt原936键加enhance.formal八键，共944键`);
+  const preFormal = stripEnchantClosedAddition(raw).replace(/,\n(?: {2}"enhance\.formal\.[^\n]+\n?){8}/u, '\n');
   eq(hash(preFormal), preFormalStringsSha, `${mode}: 剥正式八键还原原936键完整字节`);
   eq(entries.slice(912, 920), Object.entries(closedStrings), `${mode}: market 八键区间及文案逐字相等`);
   eq(entries.slice(920, 928), Object.entries(forgeClosedStrings), `${mode}: forge 八键区间及文案逐字相等`);
@@ -324,6 +327,7 @@ async function checkSource() {
   ok(!/\benabled\b|\b(?:setTimeout|setInterval|queueMicrotask|requestIdleCallback|fetch)\s*\(/u.test(code), 'C12 不新增开态字段、结算、后台延后或网络写入口');
   const consumers = [];
   for (const name of await filesUnder(path.join(root, 'src'))) {
+    if (enchantSourceNames.includes(name)) continue; // 精确六文件由附灵专窗验证，生产旧消费者继续全扫。
     if (name === 'MarketClosed.ts' || openFixtureSources.includes(name) || /\.test\.[cm]?[jt]sx?$/u.test(name)) continue;
     let text = await fs.readFile(path.join(root, 'src', name), 'utf8');
     if (name === 'scenes/GameScene.ts') text = stripMarketSceneWiring(stripForgeSceneWiring(text));
@@ -486,12 +490,13 @@ async function runGraph(mode, dataRoot, closedFixtureOnly, refreshPayloads = nul
 await fs.mkdir(out, { recursive: true });
 let passed = false;
 try {
+  report(await checkEnchantCompatibility(root, shared, eq));
   await checkProtection();
   await checkSource();
   for (const [mode, dataRoot] of modes) await checkStatic(mode, dataRoot);
   const sharedStrings = await fs.readFile(path.join(shared, 'balance/strings_zh.json'));
   eq((await fs.readFile(path.join(root, 'data/balance/strings_zh.json'))).equals(sharedStrings), true, 'shared/snapshot: strings944同字节');
-  eq(await shaOrNull(path.join(gameData, 'balance/strings_zh.json')), stringsSha, 'game: 既有strings944指定SHA保持原字节');
+  eq(await shaOrNull(path.join(gameData, 'balance/strings_zh.json')), 'd7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09', 'game: 既有strings944指定SHA保持原字节');
   for (const [mode, dataRoot] of modes) {
     await runGraph(mode, dataRoot, false);
     const payloads = await runGraph(mode, dataRoot, true);

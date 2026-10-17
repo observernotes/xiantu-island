@@ -1,4 +1,4 @@
-// 两根真实 Vite SSR、独立刷新图，仅执行附灵 C01–C10 关态八 tip；不执行 O 表。
+// 附灵正式磁盘 soft-open；两根先核 true，再仅在 Vite SSR 注入 false 执行 C01–C10 八 tip 零写。
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import fs from 'node:fs/promises';
@@ -10,7 +10,7 @@ import { sharedRoot } from './root.mjs';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const shared = sharedRoot(root);
-const out = process.env.ENCHANT_CLOSED_OUT ?? path.join(root, 'qa/out_v06p1_enchant_closed/runtime');
+const out = process.env.ENCHANT_CLOSED_OUT ?? path.join(root, 'qa/out_v06p1_enchant_soft_open/regression/enchant-closed');
 const roots = [['shared', shared], ['snapshot', path.join(root, 'data')]];
 const targets = {
   'materials.json': '86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d',
@@ -27,6 +27,7 @@ const frozen = {
 const frozenSources = {
   'src/ForgeOpenFlag.ts': '0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e',
   'src/EnhanceOpenFlag.ts': 'd7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e',
+  'src/EnchantClosed.ts': '15870998e95f8f41ab4fb3e6c30dc17a82019502276084f4610800be5927e730',
   'src/data.ts': 'aad725652f5c0eb57a5c699726e570b146d5ded52d5c31715444dbbf4117024a',
 };
 const apiTips = {
@@ -48,9 +49,36 @@ async function guard(file, expected) {
   if (expected) eq(actual, expected, `冻结/目标 SHA MATCH: ${path.relative(root, file)}`);
   captured.set(file, actual); protectedFiles[file] = actual;
 }
+// 仅允许欧冶匠同一次命中追加三个 import 与一个完整只读提示块。
+function stripEnchantSceneWiring(text) {
+  for (const line of ["import { featureClosed as enchantFeatureClosed } from '../EnchantClosed';\n",
+    "import { isEnchantOpenForFixture } from '../EnchantOpenFlag';\n",
+    "import { EnchantGate } from '../EnchantGate';\n"]) {
+    eq(text.split(line).length - 1, 1, `GameScene 附灵授权 import 精确一次：${line.trim()}`);
+    text = text.replace(line, '');
+  }
+  const block = [
+    "    if (!isEnchantOpenForFixture()) this.log(enchantFeatureClosed().text, '#aaaaaa');",
+    '    else {',
+    '      const result = new EnchantGate(this.prog).entrance();',
+    "      this.log(result.allowed ? '装备附灵已开放。' : result.text, '#aaaaaa');",
+    '    }',
+    '',
+  ].join('\n');
+  eq(text.split(block).length - 1, 1, 'GameScene 附灵只增加一个完整只读提示块');
+  const entrance = text.match(/  private tryInteractForgeEntrance\(\): boolean \{[\s\S]*?\n  \}/u)?.[0];
+  ok(entrance?.includes(`${block}    return true;`), '同次 smith_ou 命中末尾附灵提示后才 return true');
+  const forgeIndex = entrance?.indexOf('new ForgeGate(this.prog).entrance()') ?? -1;
+  const enhanceIndex = entrance?.indexOf('new EnhanceGate(this.prog).entrance()') ?? -1;
+  const enchantIndex = entrance?.indexOf('new EnchantGate(this.prog).entrance()') ?? -1;
+  ok(forgeIndex >= 0 && enhanceIndex > forgeIndex && enchantIndex > enhanceIndex, '同次命中依次 forge→enhance→enchant，无提前 return 饿死附灵');
+  return text.replace(block, '');
+}
 async function sourceChecks() {
   const closedPath = path.join(root, 'src/EnchantClosed.ts'), flagPath = path.join(root, 'src/EnchantOpenFlag.ts');
   const closedText = await fs.readFile(closedPath, 'utf8'), flagText = await fs.readFile(flagPath, 'utf8');
+  eq(flagText, '/** 正式路径恒 true；仅 Vite SSR 关态图可注入 false。 */\nexport function isEnchantOpenForFixture(): boolean { return true; }\n',
+    'EnchantOpenFlag 正式源码精确恒 true；仅 SSR 关态图允许注入 false');
   const closed = source(closedPath, closedText), flag = source(flagPath, flagText);
   const imports = closed.statements.filter(ts.isImportDeclaration);
   eq(imports.map(node => node.moduleSpecifier.text), ['@xt/balance/strings_zh.json'], '唯一 import 仅读 strings');
@@ -76,8 +104,8 @@ async function sourceChecks() {
   const flagExports = flag.statements.filter(node => ts.isFunctionDeclaration(node) && hasExport(node));
   eq(flagExports.map(node => node.name?.text), ['isEnchantOpenForFixture'], '独立 Flag 仅一个公开 API');
   eq(flagExports[0].parameters.length, 0, 'Flag 零参数');
-  eq(flagExports[0].body.statements.map(node => node.getText(flag).replace(/\s/gu, '')), ['returnfalse;'], '正式 Flag 恒 false');
-  // 开态夹具令准许新增 Gate / 可选完整袋；C 套件继续验证正式关态优先，未执行 O 表。
+  eq(flagExports[0].body.statements.map(node => node.getText(flag).replace(/\s/gu, '')), ['returntrue;'], '正式 Flag 恒 true');
+  // soft-open 仅翻正式旗；C 套件仍在独立 SSR false 图验证关态首旗优先，未执行 O 表。
   const gatePath = path.join(root, 'src/EnchantGate.ts');
   const gateAst = source(gatePath, await fs.readFile(gatePath, 'utf8'));
   const gateClass = gateAst.statements.find(ts.isClassDeclaration);
@@ -92,7 +120,11 @@ async function sourceChecks() {
   ok((await fs.readFile(path.join(root, 'src/EnchantProgress.ts'), 'utf8')).includes('isValidEnchantProgress'),
     '开态夹具令授权最小可选完整袋，缺字段旧档仍由 C 套件验证');
   const scene = await fs.readFile(path.join(root, 'src/scenes/GameScene.ts'), 'utf8');
-  ok(!/EnchantClosed|EnchantOpenFlag|EnchantGate|fixtureInstances/u.test(scene), '生产 GameScene 不强制 UI、不注入 fixtureInstances');
+  ok(!/EnchantClosed|EnchantOpenFlag|EnchantGate|enchant\.closed\.|tryInteractEnchant|submitEnchant/u.test(stripEnchantSceneWiring(scene)),
+    '生产 GameScene 只接 smith_ou 最小附灵提示');
+  ok(!/fixtureInstances/u.test(scene), '生产 GameScene 不注入 fixtureInstances');
+  ok(!/EnchantClosed|EnchantOpenFlag|EnchantGate|enchant\.closed\.|submitEnchant/u.test(await fs.readFile(path.join(root, 'src/ShopPanel.ts'), 'utf8')),
+    'ShopPanel 不接附灵');
   for (const [name, service] of [['EnhanceGate', 'EnhanceClosed'], ['ForgeGate', 'ForgeClosed']]) {
     const text = await fs.readFile(path.join(root, `src/${name}.ts`), 'utf8');
     const ast = source(`${name}.ts`, text), klass = ast.statements.find(ts.isClassDeclaration);
@@ -103,7 +135,8 @@ async function sourceChecks() {
   for (const file of ['src/EnchantClosed.ts', 'src/EnchantOpenFlag.ts', 'src/Progress.ts', 'src/EnhanceGate.ts',
     'src/ForgeGate.ts', 'src/EnhanceClosed.ts', 'src/ForgeClosed.ts', 'src/scenes/GameScene.ts', 'data/features.json']) await guard(path.join(root, file));
   evidence.push({ suite: 'source-static', passed: true, uniqueStringsImport: true, zeroArgumentApis: 8,
-    flagIndependent: true, flagAlwaysFalse: true, gateClosedFirst: true, optionalEnchantSchema: true, noProductionFixtureInjection: true,
+    flagIndependent: true, flagAlwaysTrue: true, gateClosedFirst: true, optionalEnchantSchema: true, noProductionFixtureInjection: true,
+    minimalFrontendWiring: true, sameHitTipOrder: ['forge', 'enhance', 'enchant'], fullEnchantUiAdded: false,
     existingLaterServicePreserved: true, apiTips });
 }
 async function dataChecks() {
@@ -141,9 +174,45 @@ async function dataChecks() {
     await fs.readFile(path.join(roots[1][1], 'balance', name)), `shared/snapshot ${name} 同字节`);
 }
 async function runGraph(dataMode, dataRoot, graph, payloads) {
+  const memoryClosed = graph !== 'formal-open';
+  let flagLoads = 0;
+  const flagId = '\0v06p1-memory-closed-enchant-flag';
   const server = await createServer({ root, configFile: false, resolve: { alias: { '@xt': dataRoot } },
-    server: { middlewareMode: true, hmr: false, ws: false }, appType: 'custom', logLevel: 'error' });
+    server: { middlewareMode: true, hmr: false, ws: false }, appType: 'custom', logLevel: 'error',
+    plugins: [{ name: 'v06p1-enchant-memory-closed', enforce: 'pre',
+      resolveId(id) {
+        if (memoryClosed && /(?:^|\/)EnchantOpenFlag(?:\.ts)?$/u.test(id)) return flagId;
+      },
+      load(id) {
+        if (id === flagId) { flagLoads++; return 'export function isEnchantOpenForFixture() { return false; }'; }
+      },
+    }],
+  });
   try {
+    const flag = await server.ssrLoadModule('/src/EnchantOpenFlag.ts');
+    eq(flag.isEnchantOpenForFixture(), !memoryClosed, `${dataMode}/${graph}: 正式旗 true；关态仅 SSR 内存注入 false`);
+    eq(flagLoads, memoryClosed ? 1 : 0, `${dataMode}/${graph}: 正式 flagLoads=0，内存关态 flagLoads=1`);
+    if (!memoryClosed) {
+      evidence.push({ suite: 'formal-graph', dataMode, graph, passed: true, flagLoads,
+        EnchantOpenFlag: true, softOpenedEnchant: true, released: false, closedFixtureOnly: true });
+      console.log(JSON.stringify({ suite: 'formal-graph', dataMode, graph, flagLoads, EnchantOpenFlag: true, passed: true }));
+      return;
+    }
+    const api = await server.ssrLoadModule('/src/EnchantClosed.ts');
+    const { Progress } = await server.ssrLoadModule('/src/Progress.ts');
+    const { EnchantGate } = await server.ssrLoadModule('/src/EnchantGate.ts');
+    const p = new Progress(), before = JSON.parse(JSON.stringify(p.exportSave()));
+    let gateWrites = 0;
+    for (const method of ['persistSoon', 'save', 'saveAsync', 'runSaveTransaction', 'runSaveTransactionAsync'])
+      Object.defineProperty(p, method, { configurable: true, value() {
+        gateWrites++; throw new Error('附灵内存关态 Gate 不得提交、存储或排队');
+      } });
+    const gate = new EnchantGate(p);
+    for (const [method, apiName] of Object.entries({ feature: 'featureClosed', entrance: 'refuseEntrance', enchant: 'refuseEnchant',
+      submit: 'refuseSubmit', result: 'refuseResult', element: 'refuseElement', loadRefresh: 'refuseLoadRefresh', laterService: 'refuseLaterService' }))
+      eq(await gate[method](), api[apiName](), `${dataMode}/${graph}: Gate.${method} 内存关态首旗返回原八 tip`);
+    eq(p.exportSave(), before, `${dataMode}/${graph}: 内存关态 Gate 八入口完整存档零增量`);
+    eq(gateWrites, 0, `${dataMode}/${graph}: 内存关态 Gate 事务、保存与排队 0`);
     const suite = await server.ssrLoadModule('/src/v06p1-enchant-closed.test.ts');
     const result = await suite.runEnchantClosedTests({ dataMode, graph, payloads });
     eq(result.passed, true, `${dataMode}/${graph}: suite 通过`);
@@ -151,10 +220,12 @@ async function runGraph(dataMode, dataRoot, graph, payloads) {
     eq([result.sentinelCalls, result.storageWrites, result.localStorageWrites, result.indexedDbOpens], [0, 0, 0, 0], `${dataMode}/${graph}: 拒绝动作全部零写`);
     assertions += result.assertions; totalFixtures += result.fixtures; totalInvocations += result.invocations;
     const { payloads: nextPayloads, ...row } = result;
-    evidence.push({ suite: 'v06p1-enchant-closed-graph', ...row });
+    eq(flagLoads, 1, `${dataMode}/${graph}: C 套件与 Gate 共用唯一 SSR false Flag`);
+    evidence.push({ suite: 'v06p1-enchant-closed-graph', ...row, flagLoads, memoryClosed: true,
+      formalEnchantOpenFlag: true, gateClosedTips: 8, gateWrites });
     console.log(JSON.stringify({ suite: 'v06p1-enchant-closed-graph', dataMode, graph, assertions: result.assertions,
       fixtures: result.fixtures, invocations: result.invocations, ordinarySaveSetupWrites: result.ordinarySaveSetupWrites,
-      sentinelCalls: result.sentinelCalls, storageWrites: result.storageWrites, passed: true }));
+      sentinelCalls: result.sentinelCalls, storageWrites: result.storageWrites, flagLoads, memoryClosed: true, passed: true }));
     return JSON.parse(JSON.stringify(nextPayloads));
   } finally { await server.close(); }
 }
@@ -163,6 +234,7 @@ await fs.mkdir(out, { recursive: true });
 try {
   await sourceChecks(); await dataChecks(); staticChecksPassed = true;
   for (const [mode, dataRoot] of roots) {
+    await runGraph(mode, dataRoot, 'formal-open');
     const payloads = await runGraph(mode, dataRoot, 'initial');
     await runGraph(mode, dataRoot, 'fresh-ssr-refresh', payloads);
   }
@@ -176,7 +248,9 @@ try {
       evidenceKeys: graphs.flatMap(row => row.cases[caseId]?.evidenceKeys.map(key => `${row.dataMode}/${row.graph}/${key}`) ?? []) }];
   }));
   const result = { passed, assertions, totalFixtures, totalInvocations, apiTips, cases,
-    enchantClosedTipsWired: passed, EnchantOpenFlag: false, softOpenedEnchant: false, released: false,
+    enchantClosedTipsWired: passed, EnchantOpenFlag: true, softOpenedEnchant: true, released: false,
+    formalOpen: true, closedFixtureOnly: true, closedRuntimeFlag: false,
+    EnhanceOpenFlagPreserved: true,
     beastCoreMapped: true, beastCoreMappedMeaning: '仅登记齐；不宣称附灵消费、事务或生产开放', protectCharmSoftOpenPreserved: true,
     ForgeOpenFlag: true, EnhanceOpenFlag: true, targetShas: targets, frozenShas: frozen, frozenSourceShas: frozenSources,
     sentinelCalls: graphs.reduce((sum, row) => sum + row.sentinelCalls, 0),
@@ -184,10 +258,12 @@ try {
     ordinarySaveSetupWrites: graphs.reduce((sum, row) => sum + row.ordinarySaveSetupWrites, 0),
     storageScope: 'storageWrites=拒绝/读档过程；ordinarySaveSetupWrites=仅 C08 普通 saveAsync 准备阶段',
     semanticFixtureOnly: true, enchantSchemaAdded: true, enchantSchemaScope: '开态夹具令授权可选完整袋；本 C 套件不执行开态', unknownFieldsRetainedByRestore: false,
-    openFixtureTableExecuted: false, testsUseRealSsrModule: true, freshIndependentGraphs: 4,
+    openFixtureTableExecuted: false, testsUseRealSsrModule: true, freshIndependentGraphs: 6,
+    formalGraphs: evidence.filter(row => row.suite === 'formal-graph').length, memoryClosedGraphs: graphs.length,
+    compatibilityMeaning: '附灵 soft-open ≠ 进包 ≠ 发版；fixture≠正式；本 runner 正式磁盘图仅核 true，C01–C10 仅 SSR false 图执行；O 表交 open runner',
     protectedFiles, evidence };
   await fs.writeFile(path.join(out, 'v06p1-enchant-closed-evidence.json'), `${JSON.stringify(result, null, 2)}\n`);
   await fs.writeFile(path.join(out, 'protection-check.json'), `${JSON.stringify({ passed: staticChecksPassed, expectedFrozenAndTargetsMatched: staticChecksPassed,
     protectedBeforeAndAfterMatched: true, files: protectedFiles }, null, 2)}\n`);
 }
-console.log(`v06p1 enchant closed tests ok: ${assertions} assertions; C01–C10; ${totalFixtures} fixtures; ${totalInvocations} API calls; shared/snapshot + fresh SSR; 写哨兵=0; 拒绝过程存储写入=0; EnchantOpenFlag=false; softOpenedEnchant=false; released=false; O表未执行`);
+console.log(`v06p1 enchant closed tests ok: ${assertions} assertions; C01–C10; ${totalFixtures} fixtures; ${totalInvocations} API calls; shared/snapshot 正式 flagLoads=0 + SSR false/fresh flagLoads=1; 写哨兵=0; 拒绝过程存储写入=0; EnchantOpenFlag=true; softOpenedEnchant=true; released=false; O表未执行；附灵 soft-open ≠ 进包 ≠ 发版；fixture≠正式`);
