@@ -1,0 +1,41 @@
+{
+ "atlas": "fx_trial_flute_notes",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  64,
+  72
+ ],
+ "anims": [
+  {
+   "key": "fx_trial_flute_notes_loop",
+   "frames": [
+    "fx_trial_flute_notes_loop_01",
+    "fx_trial_flute_notes_loop_02",
+    "fx_trial_flute_notes_loop_03",
+    "fx_trial_flute_notes_loop_04",
+    "fx_trial_flute_notes_loop_05",
+    "fx_trial_flute_notes_loop_06"
+   ],
+   "frameRate": 8,
+   "repeat": -1
+  },
+  {
+   "key": "fx_trial_flute_notes_break",
+   "frames": [
+    "fx_trial_flute_notes_break_01",
+    "fx_trial_flute_notes_break_02",
+    "fx_trial_flute_notes_break_03",
+    "fx_trial_flute_notes_break_04"
+   ],
+   "frameRate": 12,
+   "repeat": 0
+  }
+ ],
+ "blend": "normal",
+ "note": "吹骨笛读条期间（3 秒）挂在主角脚底，原点 (0.5,1)：3 个绿色音符在头顶左右飘升，循环 loop；被打断播 break（音符变灰散开）再销毁。主角没有吹笛动作，读条期间建议播 player 的 idle（或 gather 第 1 帧定格），骨笛手持件等精修版纸娃娃再加。",
+ "kind": "fx"
+}
