@@ -1,0 +1,12 @@
+{
+  "log": "/workspace/xiantu/logs/codex/abec03625df0c1b3_20261017_152547_1768690.log",
+  "launchLog": "qa/out_v06p1_salvage_open_fixture/codex_launch.log",
+  "workdir": "/workspace/xiantu/wt/dev",
+  "branch": "dev",
+  "baseline": "29ddb7f54deb6c1439397b5d2e7c438639ceff5c",
+  "model": "gpt-6.1-sol",
+  "reasoningEffort": "ultra",
+  "fast": false,
+  "stdin": "/dev/null",
+  "dynamicLogStaged": false
+}

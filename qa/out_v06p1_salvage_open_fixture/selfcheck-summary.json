@@ -1,0 +1,547 @@
+{
+  "passed": true,
+  "baseline": "29ddb7f54deb6c1439397b5d2e7c438639ceff5c",
+  "cwd": "/workspace/xiantu/wt/dev",
+  "stdin": "/dev/null",
+  "salvageClosedTipsWired": true,
+  "refineStoneMapped": true,
+  "salvageOpenFixtureTableExecuted": true,
+  "formalInstanceSource": true,
+  "softOpenedSalvage": false,
+  "SalvageOpenFlag": false,
+  "released": false,
+  "enchantSoftOpenPreserved": true,
+  "EnhanceOpenFlagPreserved": true,
+  "protectCharmSoftOpenPreserved": true,
+  "openAssertions": 4731,
+  "regressionAssertions": 162193,
+  "totalAssertions": 166924,
+  "graphCount": 52,
+  "cases": {
+    "O01": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/memory-open/initial/default-ForgeGate-formal-weapon-all-four-grades",
+        "shared/memory-open/initial/read-only-feature-entrance-preview",
+        "shared/memory-open/initial/one-atomic-destroy-output-result-dedupe",
+        "shared/memory-open/initial/no-extra-stones-no-probability-no-fixtureInstances",
+        "snapshot/memory-open/initial/default-ForgeGate-formal-weapon-all-four-grades",
+        "snapshot/memory-open/initial/read-only-feature-entrance-preview",
+        "snapshot/memory-open/initial/one-atomic-destroy-output-result-dedupe",
+        "snapshot/memory-open/initial/no-extra-stones-no-probability-no-fixtureInstances"
+      ]
+    },
+    "O02": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/memory-open/initial/formal-weapon-robe-shoes-bag-and-equipped",
+        "shared/memory-open/initial/ssr-only-armor-recipes-explicit-not-production",
+        "shared/memory-open/initial/same-prototype-selected-ref-only",
+        "shared/memory-open/initial/location-proof-required-and-links-invalidated",
+        "snapshot/memory-open/initial/formal-weapon-robe-shoes-bag-and-equipped",
+        "snapshot/memory-open/initial/ssr-only-armor-recipes-explicit-not-production",
+        "snapshot/memory-open/initial/same-prototype-selected-ref-only",
+        "snapshot/memory-open/initial/location-proof-required-and-links-invalidated"
+      ]
+    },
+    "O03": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/memory-open/initial/missing-foreign-unowned-source-and-itemId-spoof-denied",
+        "shared/memory-open/initial/bad-type-grade-and-stale-intent-denied",
+        "shared/memory-open/initial/binding-natal-blood-and-unsalvageable-true-or-missing-denied",
+        "shared/memory-open/initial/default-production-without-qualification-denied",
+        "shared/memory-open/initial/ssr-json-invalid-config-registration-and-equipment-graphs",
+        "shared/memory-open/initial/three-existing-service-laterService-preserved",
+        "shared/memory-open/missing-salvage/ssr-json-dependency-missing-salvage",
+        "shared/memory-open/missing-salvage/zero-destruction-output-records",
+        "shared/memory-open/missing-grade/ssr-json-dependency-missing-grade",
+        "shared/memory-open/missing-grade/zero-destruction-output-records",
+        "shared/memory-open/zero-count/ssr-json-dependency-zero-count",
+        "shared/memory-open/zero-count/zero-destruction-output-records",
+        "shared/memory-open/negative-count/ssr-json-dependency-negative-count",
+        "shared/memory-open/negative-count/zero-destruction-output-records",
+        "shared/memory-open/unsafe-count/ssr-json-dependency-unsafe-count",
+        "shared/memory-open/unsafe-count/zero-destruction-output-records",
+        "shared/memory-open/wrong-count/ssr-json-dependency-wrong-count",
+        "shared/memory-open/wrong-count/zero-destruction-output-records",
+        "shared/memory-open/extra-grade/ssr-json-dependency-extra-grade",
+        "shared/memory-open/extra-grade/zero-destruction-output-records",
+        "shared/memory-open/rate-forbidden/ssr-json-dependency-rate-forbidden",
+        "shared/memory-open/rate-forbidden/zero-destruction-output-records",
+        "shared/memory-open/cost-forbidden/ssr-json-dependency-cost-forbidden",
+        "shared/memory-open/cost-forbidden/zero-destruction-output-records",
+        "shared/memory-open/items-registration-missing/ssr-json-dependency-items-registration-missing",
+        "shared/memory-open/items-registration-missing/zero-destruction-output-records",
+        "shared/memory-open/materials-missing/ssr-json-dependency-materials-missing",
+        "shared/memory-open/materials-missing/zero-destruction-output-records",
+        "shared/memory-open/duplicate-registration/ssr-json-dependency-duplicate-registration",
+        "shared/memory-open/duplicate-registration/zero-destruction-output-records",
+        "shared/memory-open/stone-phase/ssr-json-dependency-stone-phase",
+        "shared/memory-open/stone-phase/zero-destruction-output-records",
+        "shared/memory-open/stone-disabled/ssr-json-dependency-stone-disabled",
+        "shared/memory-open/stone-disabled/zero-destruction-output-records",
+        "shared/memory-open/stone-placeholder/ssr-json-dependency-stone-placeholder",
+        "shared/memory-open/stone-placeholder/zero-destruction-output-records",
+        "shared/memory-open/stone-quality/ssr-json-dependency-stone-quality",
+        "shared/memory-open/stone-quality/zero-destruction-output-records",
+        "shared/memory-open/weapon-phase/ssr-json-dependency-weapon-phase",
+        "shared/memory-open/weapon-phase/zero-destruction-output-records",
+        "shared/memory-open/weapon-disabled/ssr-json-dependency-weapon-disabled",
+        "shared/memory-open/weapon-disabled/zero-destruction-output-records",
+        "shared/memory-open/weapon-placeholder/ssr-json-dependency-weapon-placeholder",
+        "shared/memory-open/weapon-placeholder/zero-destruction-output-records",
+        "shared/memory-open/weapon-quality/ssr-json-dependency-weapon-quality",
+        "shared/memory-open/weapon-quality/zero-destruction-output-records",
+        "shared/memory-open/weapon-slot/ssr-json-dependency-weapon-slot",
+        "shared/memory-open/weapon-slot/zero-destruction-output-records",
+        "shared/memory-open/weapon-type/ssr-json-dependency-weapon-type",
+        "shared/memory-open/weapon-type/zero-destruction-output-records",
+        "snapshot/memory-open/initial/missing-foreign-unowned-source-and-itemId-spoof-denied",
+        "snapshot/memory-open/initial/bad-type-grade-and-stale-intent-denied",
+        "snapshot/memory-open/initial/binding-natal-blood-and-unsalvageable-true-or-missing-denied",
+        "snapshot/memory-open/initial/default-production-without-qualification-denied",
+        "snapshot/memory-open/initial/ssr-json-invalid-config-registration-and-equipment-graphs",
+        "snapshot/memory-open/initial/three-existing-service-laterService-preserved",
+        "snapshot/memory-open/missing-salvage/ssr-json-dependency-missing-salvage",
+        "snapshot/memory-open/missing-salvage/zero-destruction-output-records",
+        "snapshot/memory-open/missing-grade/ssr-json-dependency-missing-grade",
+        "snapshot/memory-open/missing-grade/zero-destruction-output-records",
+        "snapshot/memory-open/zero-count/ssr-json-dependency-zero-count",
+        "snapshot/memory-open/zero-count/zero-destruction-output-records",
+        "snapshot/memory-open/negative-count/ssr-json-dependency-negative-count",
+        "snapshot/memory-open/negative-count/zero-destruction-output-records",
+        "snapshot/memory-open/unsafe-count/ssr-json-dependency-unsafe-count",
+        "snapshot/memory-open/unsafe-count/zero-destruction-output-records",
+        "snapshot/memory-open/wrong-count/ssr-json-dependency-wrong-count",
+        "snapshot/memory-open/wrong-count/zero-destruction-output-records",
+        "snapshot/memory-open/extra-grade/ssr-json-dependency-extra-grade",
+        "snapshot/memory-open/extra-grade/zero-destruction-output-records",
+        "snapshot/memory-open/rate-forbidden/ssr-json-dependency-rate-forbidden",
+        "snapshot/memory-open/rate-forbidden/zero-destruction-output-records",
+        "snapshot/memory-open/cost-forbidden/ssr-json-dependency-cost-forbidden",
+        "snapshot/memory-open/cost-forbidden/zero-destruction-output-records",
+        "snapshot/memory-open/items-registration-missing/ssr-json-dependency-items-registration-missing",
+        "snapshot/memory-open/items-registration-missing/zero-destruction-output-records",
+        "snapshot/memory-open/materials-missing/ssr-json-dependency-materials-missing",
+        "snapshot/memory-open/materials-missing/zero-destruction-output-records",
+        "snapshot/memory-open/duplicate-registration/ssr-json-dependency-duplicate-registration",
+        "snapshot/memory-open/duplicate-registration/zero-destruction-output-records",
+        "snapshot/memory-open/stone-phase/ssr-json-dependency-stone-phase",
+        "snapshot/memory-open/stone-phase/zero-destruction-output-records",
+        "snapshot/memory-open/stone-disabled/ssr-json-dependency-stone-disabled",
+        "snapshot/memory-open/stone-disabled/zero-destruction-output-records",
+        "snapshot/memory-open/stone-placeholder/ssr-json-dependency-stone-placeholder",
+        "snapshot/memory-open/stone-placeholder/zero-destruction-output-records",
+        "snapshot/memory-open/stone-quality/ssr-json-dependency-stone-quality",
+        "snapshot/memory-open/stone-quality/zero-destruction-output-records",
+        "snapshot/memory-open/weapon-phase/ssr-json-dependency-weapon-phase",
+        "snapshot/memory-open/weapon-phase/zero-destruction-output-records",
+        "snapshot/memory-open/weapon-disabled/ssr-json-dependency-weapon-disabled",
+        "snapshot/memory-open/weapon-disabled/zero-destruction-output-records",
+        "snapshot/memory-open/weapon-placeholder/ssr-json-dependency-weapon-placeholder",
+        "snapshot/memory-open/weapon-placeholder/zero-destruction-output-records",
+        "snapshot/memory-open/weapon-quality/ssr-json-dependency-weapon-quality",
+        "snapshot/memory-open/weapon-quality/zero-destruction-output-records",
+        "snapshot/memory-open/weapon-slot/ssr-json-dependency-weapon-slot",
+        "snapshot/memory-open/weapon-slot/zero-destruction-output-records",
+        "snapshot/memory-open/weapon-type/ssr-json-dependency-weapon-type",
+        "snapshot/memory-open/weapon-type/zero-destruction-output-records"
+      ]
+    },
+    "O04": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/memory-open/initial/full-equipped-target-complete-existing-stack-accepts",
+        "shared/memory-open/initial/full-no-complete-stack-zero-delta",
+        "shared/memory-open/initial/illegal-slots-stackLimit-and-inventory-denied",
+        "shared/memory-open/initial/no-overflow-partial-mail-pending",
+        "snapshot/memory-open/initial/full-equipped-target-complete-existing-stack-accepts",
+        "snapshot/memory-open/initial/full-no-complete-stack-zero-delta",
+        "snapshot/memory-open/initial/illegal-slots-stackLimit-and-inventory-denied",
+        "snapshot/memory-open/initial/no-overflow-partial-mail-pending"
+      ]
+    },
+    "O05": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/memory-open/initial/matching-old-success-read-only-without-instance-binding-capacity",
+        "shared/memory-open/initial/same-request-grade-or-ref-conflict",
+        "shared/memory-open/initial/new-request-destroyed-instance-no-replacement",
+        "snapshot/memory-open/initial/matching-old-success-read-only-without-instance-binding-capacity",
+        "snapshot/memory-open/initial/same-request-grade-or-ref-conflict",
+        "snapshot/memory-open/initial/new-request-destroyed-instance-no-replacement"
+      ]
+    },
+    "O06": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/memory-open/initial/real-save-load-import-export-restore-stable-destruction-inventory-results-dedupe",
+        "shared/memory-open/initial/fresh-independent-ssr-open-and-formal-closed",
+        "shared/memory-open/initial/cross-slot-source-request-result-isolation",
+        "shared/memory-open/fresh-ssr/fresh-ssr-real-save-load-export-import-restore",
+        "shared/memory-open/fresh-ssr/no-revival-no-refill-no-redo",
+        "snapshot/memory-open/initial/real-save-load-import-export-restore-stable-destruction-inventory-results-dedupe",
+        "snapshot/memory-open/initial/fresh-independent-ssr-open-and-formal-closed",
+        "snapshot/memory-open/initial/cross-slot-source-request-result-isolation",
+        "snapshot/memory-open/fresh-ssr/fresh-ssr-real-save-load-export-import-restore",
+        "snapshot/memory-open/fresh-ssr/no-revival-no-refill-no-redo"
+      ]
+    },
+    "O07": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/memory-open/initial/same-request-concurrent-one-commit",
+        "shared/memory-open/initial/same-instance-different-requests-one-destruction",
+        "shared/memory-open/initial/shared-stack-two-equipped-targets-no-overcapacity",
+        "shared/memory-open/initial/existing-EnhanceGate-race-preserves-complete-facts",
+        "shared/memory-open/initial/two-object-ordinary-first-salvage-CAS-refuses-after-pre-read",
+        "shared/memory-open/initial/two-object-salvage-first-stale-ordinary-writer-refused-after-pre-read",
+        "shared/memory-open/initial/stale-progress-rejected-after-other-save",
+        "snapshot/memory-open/initial/same-request-concurrent-one-commit",
+        "snapshot/memory-open/initial/same-instance-different-requests-one-destruction",
+        "snapshot/memory-open/initial/shared-stack-two-equipped-targets-no-overcapacity",
+        "snapshot/memory-open/initial/existing-EnhanceGate-race-preserves-complete-facts",
+        "snapshot/memory-open/initial/two-object-ordinary-first-salvage-CAS-refuses-after-pre-read",
+        "snapshot/memory-open/initial/two-object-salvage-first-stale-ordinary-writer-refused-after-pre-read",
+        "snapshot/memory-open/initial/stale-progress-rejected-after-other-save"
+      ]
+    },
+    "O08": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/memory-open/initial/missing-or-uninstalled-atomic-carrier-zero-write",
+        "shared/memory-open/initial/carrier-false-throw-draft-tamper-atomic-refusal",
+        "shared/memory-open/initial/actual-destroy-output-failure-zero-delta",
+        "shared/memory-open/initial/idb-before-complete-invisible-abort-and-explicit-retry",
+        "shared/memory-open/initial/serialization-failure-lock-release",
+        "shared/memory-open/initial/unknown-corrupt-record-real-load-storageError-no-repair",
+        "shared/memory-open/initial/old-save-missing-field-undefined",
+        "shared/memory-open/initial/existing-protect-enhance-history-retained",
+        "shared/memory-open/initial/selected-enchant-relation-refused-unrelated-enchant-still-works",
+        "shared/memory-open/initial/formal-closed-fresh-ssr-old-callback-zero-write",
+        "shared/formal-closed/initial/formal-flag-false-eight-tips",
+        "shared/formal-closed/initial/hostile-getters-unread",
+        "shared/formal-closed/initial/closed-fresh-ssr-keeps-open-result",
+        "shared/formal-closed/fresh-ssr/formal-flag-false-eight-tips",
+        "shared/formal-closed/fresh-ssr/hostile-getters-unread",
+        "shared/formal-closed/fresh-ssr/closed-fresh-ssr-keeps-open-result",
+        "snapshot/memory-open/initial/missing-or-uninstalled-atomic-carrier-zero-write",
+        "snapshot/memory-open/initial/carrier-false-throw-draft-tamper-atomic-refusal",
+        "snapshot/memory-open/initial/actual-destroy-output-failure-zero-delta",
+        "snapshot/memory-open/initial/idb-before-complete-invisible-abort-and-explicit-retry",
+        "snapshot/memory-open/initial/serialization-failure-lock-release",
+        "snapshot/memory-open/initial/unknown-corrupt-record-real-load-storageError-no-repair",
+        "snapshot/memory-open/initial/old-save-missing-field-undefined",
+        "snapshot/memory-open/initial/existing-protect-enhance-history-retained",
+        "snapshot/memory-open/initial/selected-enchant-relation-refused-unrelated-enchant-still-works",
+        "snapshot/memory-open/initial/formal-closed-fresh-ssr-old-callback-zero-write",
+        "snapshot/formal-closed/initial/formal-flag-false-eight-tips",
+        "snapshot/formal-closed/initial/hostile-getters-unread",
+        "snapshot/formal-closed/initial/closed-fresh-ssr-keeps-open-result",
+        "snapshot/formal-closed/fresh-ssr/formal-flag-false-eight-tips",
+        "snapshot/formal-closed/fresh-ssr/hostile-getters-unread",
+        "snapshot/formal-closed/fresh-ssr/closed-fresh-ssr-keeps-open-result"
+      ]
+    }
+  },
+  "checks": [
+    {
+      "name": "tsc",
+      "command": [
+        "npx",
+        "tsc",
+        "--noEmit"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:35:10.595Z",
+      "finishedAt": "2026-10-17T07:35:17.099Z",
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "name": "diff-check",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:35:17.099Z",
+      "finishedAt": "2026-10-17T07:35:17.108Z",
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "name": "protection",
+      "command": [
+        "python3",
+        "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/protection.py",
+        "check"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:35:17.108Z",
+      "finishedAt": "2026-10-17T07:35:17.402Z",
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "name": "datalint-shared",
+      "command": [
+        "python3",
+        "/workspace/xiantu/qa/tools/datalint.py"
+      ],
+      "cwd": "/workspace/xiantu",
+      "environment": {
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:28:12.359Z",
+      "finishedAt": "2026-10-17T07:28:12.403Z",
+      "exitCode": 0,
+      "signal": null,
+      "zeroProblems": true
+    },
+    {
+      "name": "datalint-snapshot",
+      "command": [
+        "python3",
+        "/workspace/xiantu/qa/tools/datalint.py"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev/data",
+      "environment": {
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:28:12.364Z",
+      "finishedAt": "2026-10-17T07:28:12.402Z",
+      "exitCode": 0,
+      "signal": null,
+      "zeroProblems": true
+    }
+  ],
+  "regressions": [
+    {
+      "name": "v06p1-salvage-closed",
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-salvage-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "SALVAGE_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/v06p1-salvage-closed",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/regression-register.mjs"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:31:54.897Z",
+      "finishedAt": "2026-10-17T07:32:01.421Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 19314,
+      "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/v06p1-salvage-closed"
+    },
+    {
+      "name": "v06p1-enchant-open",
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-enchant-open"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "ENCHANT_OPEN_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/v06p1-enchant-open",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/regression-register.mjs"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:31:54.902Z",
+      "finishedAt": "2026-10-17T07:32:39.185Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 4622,
+      "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/v06p1-enchant-open"
+    },
+    {
+      "name": "v06p1-enchant-closed",
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-enchant-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "ENCHANT_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/v06p1-enchant-closed",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/regression-register.mjs"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:31:54.904Z",
+      "finishedAt": "2026-10-17T07:32:02.968Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 12600,
+      "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/v06p1-enchant-closed"
+    },
+    {
+      "name": "v06p1-enhance-open",
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-enhance-open"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "XT_ENHANCE_QA_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/v06p1-enhance-open",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/regression-register.mjs"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:32:01.424Z",
+      "finishedAt": "2026-10-17T07:32:40.623Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 17767,
+      "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/v06p1-enhance-open"
+    },
+    {
+      "name": "v06p1-enhance-closed",
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-enhance-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "ENHANCE_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/v06p1-enhance-closed",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/regression-register.mjs"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:32:02.969Z",
+      "finishedAt": "2026-10-17T07:32:09.929Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 30918,
+      "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/v06p1-enhance-closed"
+    },
+    {
+      "name": "v06p1-forge-open",
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-forge-open"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/v06p1-forge-open",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/regression-register.mjs"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:32:09.931Z",
+      "finishedAt": "2026-10-17T07:32:21.926Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 6443,
+      "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/v06p1-forge-open"
+    },
+    {
+      "name": "v06p1-forge-closed",
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-forge-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "FORGE_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/v06p1-forge-closed",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/regression-register.mjs"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:32:21.927Z",
+      "finishedAt": "2026-10-17T07:32:27.541Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 20501,
+      "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/v06p1-forge-closed"
+    },
+    {
+      "name": "v06p1-market-closed",
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-market-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "MARKET_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/v06p1-market-closed",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/regression-register.mjs"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:32:27.541Z",
+      "finishedAt": "2026-10-17T07:32:32.486Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 24255,
+      "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/v06p1-market-closed"
+    },
+    {
+      "name": "v06d-closed",
+      "command": [
+        "npm",
+        "run",
+        "test:v06d-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/v06d-closed",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/regression-register.mjs"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:32:32.486Z",
+      "finishedAt": "2026-10-17T07:32:38.589Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 15059,
+      "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/v06d-closed"
+    },
+    {
+      "name": "v06c-closed",
+      "command": [
+        "npm",
+        "run",
+        "test:v06c-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/v06c-closed",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/regression-register.mjs"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:32:38.589Z",
+      "finishedAt": "2026-10-17T07:32:42.957Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 10714,
+      "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/v06c-closed"
+    }
+  ],
+  "sourceShas": {
+    "src/SalvageGate.ts": "3777c6b72615f21a9c47544cfa8eeece08eb54009032cbf53e713091f8d8ce52",
+    "src/SalvageProgress.ts": "118f49bc4931727e0aafbc39fba6b883a94a948f8d478653bf42335305548787",
+    "src/Progress.ts": "1cf4e9fcfab211710ec16a406204cd0c0b9f16da20056ff9372fb2b16a8ee561",
+    "src/SalvageOpenFlag.ts": "1b8b9f0b2d8e3e1df86ca740a156aa119406fe99ee26246842c967928198453e",
+    "src/v06p1-salvage-open.test.ts": "d17bb9d302f759c6307bf19b7ce182ad716b1542f058e776481b480d592270f3",
+    "scripts/v06p1-salvage-open-test.mjs": "6f58403b2d446d2323c26b9eb85fb3b0bfdeb38b21e47f84ac9d0bd3136c2569",
+    "package.json": "f0fd7a92c286b5eb4c0511bc8a2191f712aa3a2030329781a22b7846f694d380"
+  },
+  "protectionFileCount": 4200,
+  "notRun": [
+    "snapshot",
+    "build",
+    "sync",
+    "release",
+    "Pages"
+  ],
+  "codexLog": "/workspace/xiantu/logs/codex/abec03625df0c1b3_20261017_152547_1768690.log",
+  "boundary": "本窗=分解开态夹具全表≠soft-open≠release≠进包；fixture≠正式；核齐备≠生产放行"
+}

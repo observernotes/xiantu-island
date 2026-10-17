@@ -1,0 +1,53 @@
+{
+  "runner": "v06p1-forge-closed-test",
+  "originalSha": "f650028feca5b5a38f78af8d9120289c04a44d16172f69f0a73ce67dbb7e1756",
+  "pinnedOriginalSha": "f650028feca5b5a38f78af8d9120289c04a44d16172f69f0a73ce67dbb7e1756",
+  "adaptedSha": "ac7c065520553e0e15edf13c52e4d321f49b210ac44f92718098e18a47da9708",
+  "changes": [
+    {
+      "label": "current strings authority SHA",
+      "before": "6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9",
+      "after": "9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda",
+      "occurrences": 1
+    },
+    {
+      "label": "current shared/wt key count preserves game944",
+      "before": "mode === 'game' ? 944 : 952",
+      "after": "mode === 'game' ? 944 : 960",
+      "occurrences": 1
+    },
+    {
+      "label": "new authorized tests excluded from production API consumer scan",
+      "before": "enchantSourceNames.includes(name)",
+      "after": "[...enchantSourceNames, 'v06p1-salvage-closed.test.ts', 'v06p1-salvage-open.test.ts'].includes(name)",
+      "occurrences": 1
+    },
+    {
+      "label": "game committed952 SHA expectations",
+      "before": "d7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09",
+      "after": "6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9",
+      "occurrences": 3
+    },
+    {
+      "label": "game committed952 count, current shared/wt960",
+      "before": "mode === 'game' ? 944 : 960",
+      "after": "mode === 'game' ? 952 : 960",
+      "occurrences": 1
+    },
+    {
+      "label": "exact six authorized salvage src names",
+      "before": "...enchantSourceNames].sort()",
+      "after": "...enchantSourceNames, 'SalvageClosed.ts', 'SalvageOpenFlag.ts', 'v06p1-salvage-closed.test.ts', 'SalvageGate.ts', 'SalvageProgress.ts', 'v06p1-salvage-open.test.ts'].sort()",
+      "occurrences": 1
+    }
+  ],
+  "realDiskRead": true,
+  "productModuleTransformations": [],
+  "diskWritten": false,
+  "assertionWrapperChanged": false,
+  "priorLoader": {
+    "path": "qa/out_v06p1_salvage_closed/regressions/regression-loader.mjs",
+    "sha256": "fa0a12819fe2b085d1956d568486878bd0e85a37572ae191d6de7c661fcf0288"
+  },
+  "policy": "Exact historical strings SHA/count/source inventory plus authorized minimal Progress addition only; business assertions and current Vite SSR are unchanged."
+}

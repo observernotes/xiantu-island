@@ -1,0 +1,41 @@
+{
+  "runner": "v06p1-salvage-closed-test",
+  "originalSha": "2a7b590ef2cd2b78348df0fe1e72dfb177a1d4625cb9b98a0f16a4ac5183b7d3",
+  "pinnedOriginalSha": "2a7b590ef2cd2b78348df0fe1e72dfb177a1d4625cb9b98a0f16a4ac5183b7d3",
+  "adaptedSha": "8e8f97a91df7a76629c6cf431e346d8984af1afed55b90dd8745ed39fe75c781",
+  "changes": [
+    {
+      "label": "minimal salvage Progress proof import",
+      "before": "import assert from 'node:assert/strict';",
+      "after": "import assert from 'node:assert/strict';\nimport { stripSalvageOpenProgress } from '../qa/out_v06p1_salvage_open_fixture/regressions/progress-compat-proof.mjs';",
+      "occurrences": 1
+    },
+    {
+      "label": "historical Progress frozen bytes proven by exact authorized-line subtraction",
+      "before": "if (expected) eq(actual, expected, `冻结/目标 SHA MATCH: ${file}`);",
+      "after": "if (expected) eq(file === path.join(root, 'src/Progress.ts') ? hash(stripSalvageOpenProgress(await fs.readFile(file, 'utf8'), eq)) : actual, expected, `冻结/目标 SHA MATCH: ${file}`);",
+      "occurrences": 1
+    },
+    {
+      "label": "authorized Gate existence replaces closed-only absence inventory",
+      "before": "false, '不创建 SalvageGate 或成功流程');",
+      "after": "true, '本令授权新增 SalvageGate，关态业务仍验证八 tip 零写');",
+      "occurrences": 1
+    },
+    {
+      "label": "minimal schema stripped before historical no consumer assertion",
+      "before": "const text = await fs.readFile(path.join(root, file), 'utf8');",
+      "after": "const raw = await fs.readFile(path.join(root, file), 'utf8');\n    const text = file === 'src/Progress.ts' ? stripSalvageOpenProgress(raw, eq) : raw;",
+      "occurrences": 1
+    }
+  ],
+  "realDiskRead": true,
+  "productModuleTransformations": [],
+  "diskWritten": false,
+  "assertionWrapperChanged": false,
+  "priorLoader": {
+    "path": "qa/out_v06p1_salvage_closed/regressions/regression-loader.mjs",
+    "sha256": "fa0a12819fe2b085d1956d568486878bd0e85a37572ae191d6de7c661fcf0288"
+  },
+  "policy": "Exact historical strings SHA/count/source inventory plus authorized minimal Progress addition only; business assertions and current Vite SSR are unchanged."
+}

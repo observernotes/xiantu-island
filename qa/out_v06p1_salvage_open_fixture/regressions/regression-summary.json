@@ -1,0 +1,216 @@
+{
+  "passed": true,
+  "cwd": "/workspace/xiantu/wt/dev",
+  "stdin": "/dev/null",
+  "totalAssertions": 162193,
+  "results": [
+    {
+      "name": "v06p1-salvage-closed",
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-salvage-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "SALVAGE_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/v06p1-salvage-closed",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/regression-register.mjs"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:31:54.897Z",
+      "finishedAt": "2026-10-17T07:32:01.421Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 19314,
+      "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/v06p1-salvage-closed"
+    },
+    {
+      "name": "v06p1-enchant-open",
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-enchant-open"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "ENCHANT_OPEN_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/v06p1-enchant-open",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/regression-register.mjs"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:31:54.902Z",
+      "finishedAt": "2026-10-17T07:32:39.185Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 4622,
+      "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/v06p1-enchant-open"
+    },
+    {
+      "name": "v06p1-enchant-closed",
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-enchant-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "ENCHANT_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/v06p1-enchant-closed",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/regression-register.mjs"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:31:54.904Z",
+      "finishedAt": "2026-10-17T07:32:02.968Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 12600,
+      "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/v06p1-enchant-closed"
+    },
+    {
+      "name": "v06p1-enhance-open",
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-enhance-open"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "XT_ENHANCE_QA_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/v06p1-enhance-open",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/regression-register.mjs"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:32:01.424Z",
+      "finishedAt": "2026-10-17T07:32:40.623Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 17767,
+      "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/v06p1-enhance-open"
+    },
+    {
+      "name": "v06p1-enhance-closed",
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-enhance-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "ENHANCE_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/v06p1-enhance-closed",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/regression-register.mjs"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:32:02.969Z",
+      "finishedAt": "2026-10-17T07:32:09.929Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 30918,
+      "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/v06p1-enhance-closed"
+    },
+    {
+      "name": "v06p1-forge-open",
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-forge-open"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/v06p1-forge-open",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/regression-register.mjs"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:32:09.931Z",
+      "finishedAt": "2026-10-17T07:32:21.926Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 6443,
+      "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/v06p1-forge-open"
+    },
+    {
+      "name": "v06p1-forge-closed",
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-forge-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "FORGE_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/v06p1-forge-closed",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/regression-register.mjs"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:32:21.927Z",
+      "finishedAt": "2026-10-17T07:32:27.541Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 20501,
+      "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/v06p1-forge-closed"
+    },
+    {
+      "name": "v06p1-market-closed",
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-market-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "MARKET_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/v06p1-market-closed",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/regression-register.mjs"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:32:27.541Z",
+      "finishedAt": "2026-10-17T07:32:32.486Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 24255,
+      "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/v06p1-market-closed"
+    },
+    {
+      "name": "v06d-closed",
+      "command": [
+        "npm",
+        "run",
+        "test:v06d-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/v06d-closed",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/regression-register.mjs"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:32:32.486Z",
+      "finishedAt": "2026-10-17T07:32:38.589Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 15059,
+      "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/v06d-closed"
+    },
+    {
+      "name": "v06c-closed",
+      "command": [
+        "npm",
+        "run",
+        "test:v06c-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/v06c-closed",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/regression-register.mjs"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:32:38.589Z",
+      "finishedAt": "2026-10-17T07:32:42.957Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 10714,
+      "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_open_fixture/regressions/v06c-closed"
+    }
+  ],
+  "productModuleTransformations": [],
+  "legacyFilesWritten": false,
+  "notRun": [
+    "snapshot",
+    "build",
+    "sync",
+    "release"
+  ]
+}

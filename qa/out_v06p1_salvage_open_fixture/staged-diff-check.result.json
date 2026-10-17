@@ -1,0 +1,5 @@
+{
+  "command": "git diff --cached --check",
+  "exitCode": 0,
+  "stdin": "/dev/null"
+}

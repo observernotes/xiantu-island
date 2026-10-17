@@ -1,0 +1,12 @@
+{
+  "path": "src/v06p1-enhance-open.test.ts",
+  "originalSha": "75f74c40875c3029f6b4faf7a6635724ac66ec64a80070ffbde6b1ffd8fc4370",
+  "adaptedSha": "b2b70f5c91ff366e8fba2f83cb9b6e6ae5306efc909c34006b3f42d468ab82bc",
+  "before": "eq(Object.keys(strings).length, 952, '正式strings快照952键含_meta，原944键完整保留');",
+  "after": "eq(Object.keys(strings).length, 960, '正式strings快照960键含_meta，历史952键完整保留');",
+  "occurrences": 1,
+  "diskWritten": false,
+  "productModuleTransformations": [],
+  "businessAssertionsChanged": false,
+  "realCurrentStringsRead": true
+}
