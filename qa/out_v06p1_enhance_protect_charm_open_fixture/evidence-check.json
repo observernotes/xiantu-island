@@ -1,0 +1,68 @@
+{
+  "passed": true,
+  "protectCharmWired": true,
+  "protectCharmN": 1,
+  "protectCharmOpenFixtureTableExecuted": true,
+  "formalTipsWired": true,
+  "formalInstanceSource": true,
+  "softOpenedEntrance": true,
+  "softOpenedFormalSettle": true,
+  "softOpenedProtectCharm": false,
+  "released": false,
+  "acceptanceDesign": "design/28 §4.3 O01–O06",
+  "protectCharmOpenFixtureTable": {
+    "O01": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/formal-open/result.protectCharmOpenFixtureTable.O01",
+        "snapshot/formal-open/result.protectCharmOpenFixtureTable.O01"
+      ]
+    },
+    "O02": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/formal-open/result.protectCharmOpenFixtureTable.O02",
+        "snapshot/formal-open/result.protectCharmOpenFixtureTable.O02"
+      ]
+    },
+    "O03": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/formal-open/result.protectCharmOpenFixtureTable.O03",
+        "snapshot/formal-open/result.protectCharmOpenFixtureTable.O03"
+      ]
+    },
+    "O04": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/formal-open/result.protectCharmOpenFixtureTable.O04",
+        "snapshot/formal-open/result.protectCharmOpenFixtureTable.O04"
+      ]
+    },
+    "O05": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/formal-open/result.protectCharmOpenFixtureTable.O05",
+        "snapshot/formal-open/result.protectCharmOpenFixtureTable.O05"
+      ]
+    },
+    "O06": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/formal-open/result.protectCharmOpenFixtureTable.O06",
+        "snapshot/formal-open/result.protectCharmOpenFixtureTable.O06"
+      ]
+    }
+  },
+  "formalGraphs": [
+    "shared",
+    "snapshot"
+  ],
+  "freshSsrPayloadsPerRoot": 11,
+  "formalSourcePayloadsPerRoot": 6,
+  "productionSourceUnchanged": true,
+  "oldQaUnchanged": true,
+  "requiredChecksExit0": true,
+  "concurrencyScope": "同一 SSR realm 的 Gate/Progress/slot 及内存 IDB；不外推多浏览器",
+  "resourceChangeScope": "预检后事务草稿前复核及同步承载回调草稿篡改；不外推任意外部直接写字段"
+}

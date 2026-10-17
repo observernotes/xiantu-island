@@ -460,7 +460,7 @@ export async function runEnhanceOpenFixtureTests(options: {
     } else await formalUnchanged(loaded, () => gate.submit(request('fresh-without-authorization', result.finalLevel, result.instanceRef)),
       'no_instance', `C02/C08${payload.state}：完整历史夹具袋不授权新submit`);
   }
-  /** design/28 C 表及接线自洽所需最小旁证；不代勾 design/28 O01–O06。 */
+  /** design/28 C 表映射回归；本窗 O01–O06 全表由 protectCharmOpenCases 独立执行。 */
   async function protectCharmMappingCases() {
     const mapping = protectCharmMap as Record<string, unknown>;
     eq(mapping, { itemId: 'protect_charm', countPerSettlement: 1 }, 'design28 C08正式映射只读取得本窗N=1');
@@ -644,6 +644,239 @@ export async function runEnhanceOpenFixtureTests(options: {
       zeroSideEffects: true, duplicatePayloadIncludesUseProtectCharm: true, loadDedupeWithoutSupplement: true,
       explicitFixtureOnly: true, productionFixtureInstances: false, minimalWiringProof: ['success-consumes-N', 'dropOnFail-failure-keeps-level-and-consumes-N', 'missing-charm-resources'],
       openFixtureTableExecuted: false, softOpenedProtectCharm: false, released: false };
+  }
+  /** design/28 §4.3 O01–O06：正式 Forge 来源优先；库存仅在测试显式注入。 */
+  async function protectCharmOpenCases() {
+    const recipe = recipes.recipes.find(row => row.type === 'forge' && row.output === 'bamboo_sword')!;
+    const n = protectCharmMap.countPerSettlement;
+    eq(n, 1, 'design28 O01正式映射N保持1');
+    let sourceSequence = 0;
+    const options = () => ({ random: () => { sampleCount++; return sampled; } });
+    async function source(name: string, level = 0) {
+      const p = new Progress(); progresses.push(p); p.stones = 100000;
+      p.inventory = { [recipe.blueprint!]: 10, spirit_copper: 10, refine_stone: 100, protect_charm: 3, rabbit_fur: 7 };
+      const forge = new ForgeGate(p, { random: () => 0, ledgerId: () => `${dataMode}-protect-source-${++sourceSequence}` });
+      const craft = (id: string) => forge.submit({ craftRequestId: id, blueprintId: recipe.blueprint!,
+        materials: recipe.materials.map(row => ({ itemId: row.item, count: row.count })) });
+      const forged = await craft(`protect-${name}-source`);
+      ok(forged.allowed && forged.result, 'design28 O01默认Forge完整成品提供正式实例来源');
+      const ref = forged.result.resultItem.instanceRef, gate = new EnhanceGate(p, options());
+      eq(p.formalEnhanceInstanceStatus(ref), 'registered', 'design28 O01正式来源属于本档');
+      eq(Object.prototype.hasOwnProperty.call(options(), 'fixtureInstances'), false, 'design28 O表不注入fixtureInstances');
+      for (let from = 0; from < level; from++) {
+        sampled = 0; committed(await gate.submit(request(`protect-${name}-prepare-${from}`, from, ref)));
+      }
+      return { p, gate, ref, craft };
+    }
+    const inputFor = (id: string, ref: string, from = 0) => ({ ...request(id, from, ref), useProtectCharm: true });
+    const proofs: Payload[] = [];
+    for (const [state, level, random, success, dropOnFail] of [
+      ['protect-open-success', 0, 0, true, false],
+      ['protect-open-failure-no-drop', 4, 0.999999, false, false],
+      ['protect-open-failure-drop-kept', 5, 0.999999, false, true],
+    ] as const) {
+      const f = await source(state, level), input = inputFor(state, f.ref, level), row = enhance.levels.find(row => row.to === input.to)!;
+      const before = f.p.exportSave(), writes = idb.writes, commits = idb.commits, samples = sampleCount,
+        history = f.p.enhance!.enhancements.length, receipts = f.p.enhance!.receipts.length, sources = copy(f.p.enhance!.formalSources);
+      sampled = random;
+      const preview = f.gate.enhance(input);
+      ok(preview.allowed, 'design28 O01/O02足符合法正式实例允许只读预览');
+      eq('row' in preview ? preview.row : null, row, 'design28 O01/O02预览保持原rate与目标行');
+      eq(f.p.exportSave(), before, 'design28 O01/O02预览不消费或建结果');
+      const result = committed(await f.gate.submit(input)), finalLevel = success ? input.to : level;
+      eq(result.state, 'committed', 'design28 O01/O02只产生完整committed结果');
+      eq([result.instanceRef, result.itemId, result.type, result.fromLevel, result.to, result.useProtectCharm],
+        [f.ref, 'bamboo_sword', 'weapon', level, level + 1, true], 'design28 O01/O02保留原正式实例身份及护符意图');
+      eq({ to: result.to, rate: result.rate, stones: result.stones, refineStones: result.refineStones, dropOnFail: result.dropOnFail }, row,
+        'design28 O01/O02成功率与原dropOnFail审计值原样记录');
+      eq([result.success, result.finalLevel, result.dropOnFail], [success, finalLevel, dropOnFail],
+        'design28 O01/O02成功到to；两类dropOnFail正常失败均保fromLevel');
+      eq(result.attributes, attributes('weapon', finalLevel), 'design28 O01/O02属性严格对应最终合法等级');
+      eq(f.p.enhance!.instances, [{ instanceRef: f.ref, itemId: 'bamboo_sword', type: 'weapon', enhanceLevel: finalLevel }],
+        'design28 O01/O02等级同次生效且不替换instanceRef');
+      const inventory = before.inventory as Record<string, number>;
+      eq([f.p.stones, f.p.count('refine_stone'), f.p.count('protect_charm')],
+        [Number(before.stones) - row.stones, inventory.refine_stone - row.refineStones, inventory.protect_charm - n],
+        'design28 O01/O02灵石精炼石护符同次各消费一次，成功失败同N');
+      eq([f.p.count('bamboo_sword'), f.p.count('rabbit_fur')], [1, 7], 'design28 O02失败不碎装不变旁路资产');
+      eq([f.p.enhance!.enhancements.length, f.p.enhance!.receipts.length], [history + 1, receipts + 1],
+        'design28 O01/O02结果与去重同时各增加一份');
+      eq(f.p.enhance!.enhancements[f.p.enhance!.enhancements.length - 1], result, 'design28 O01/O02返回结果与持久袋完整一致');
+      eq(f.p.enhance!.receipts[f.p.enhance!.receipts.length - 1], result.enhanceResultRef, 'design28 O01/O02 receipt精确绑定结果');
+      eq(f.p.enhance!.formalSources, sources, 'design28 O01/O02来源证明保持原样');
+      eq(experience(f.p), [before.forgingLevel, before.forgingExp], 'design28 O01/O02不改变品质生活技能经验');
+      eq([idb.writes, idb.commits, sampleCount], [writes + 1, commits + 1, samples + 1],
+        'design28 O01/O02三项费用等级属性结果去重同一提交只抽一次');
+      const disk = (await saveStore.readSlot(1))!.data;
+      eq([disk.inventory, disk.stones, disk.enhance], [f.p.inventory, f.p.stones, f.p.enhance],
+        'design28 O01/O02磁盘三项消费与完整结果一致');
+      await replay(f.p, new EnhanceGate(f.p), input, 'design28 O04成功或两类失败重放只认匹配结果');
+      const conflict = await formalUnchanged(f.p, () => new EnhanceGate(f.p).submit({ ...input, useProtectCharm: false }),
+        'duplicate', 'design28 O04 true结果换false拒绝冲突');
+      eq('result' in conflict && conflict.result !== undefined, false, 'design28 O04冲突不返回冒认旧结果');
+      const payload = { state, enhanceRequestId: input.enhanceRequestId, save: f.p.exportSave(), formalInstanceSource: true };
+      eq(await f.p.save({ async: true }), true, 'design28 O05结算后再次保存完整结果');
+      await roundtrip(payload); proofs.push(payload);
+    }
+    payloads.push(...proofs);
+    for (const kind of ['zero', 'transient-only', 'quality-only'] as const) {
+      const f = await source(`missing-${kind}`); f.p.inventory.protect_charm = kind === 'quality-only' ? 1 : 0;
+      if (kind === 'transient-only') (f.p as any).transientItems = { protect_charm: 1 };
+      if (kind === 'quality-only') f.p.pillQualities.protect_charm = { low: 1 };
+      const input = inputFor(`protect-open-missing-${kind}`, f.ref);
+      await formalUnchanged(f.p, () => f.gate.enhance(input), 'resources', `design28 O03${kind}可消费量小于N预览整笔拒绝`);
+      await formalUnchanged(f.p, () => f.gate.submit(input), 'resources', `design28 O03${kind}提交不降格false不部分扣费`);
+    }
+    for (const kind of ['same-id', 'same-instance', 'shared-charm'] as const) {
+      const f = await source(`race-${kind}`), refs = [f.ref, f.ref];
+      if (kind === 'shared-charm') {
+        const other = await f.craft('protect-open-second-asset'); ok(other.allowed && other.result, 'design28 O04共享护符的第二件装备来自正式打造');
+        refs[1] = other.result.resultItem.instanceRef; f.p.inventory.protect_charm = n;
+      }
+      const before = f.p.exportSave(), writes = idb.writes, samples = sampleCount; sampled = 0;
+      const inputs = refs.map((ref, i) => inputFor(`protect-open-race-${kind}-${kind === 'same-id' ? 0 : i}`, ref));
+      const results = await Promise.all(inputs.map(input => new EnhanceGate(f.p, options()).submit(input)));
+      eq(results.filter(row => row.allowed).length, 1, 'design28 O04同id/同实例旧等级/共享单张符争用至多完成一笔');
+      const row = enhance.levels[0], inventory = before.inventory as Record<string, number>;
+      eq([f.p.stones, f.p.count('refine_stone'), f.p.count('protect_charm')],
+        [Number(before.stones) - row.stones, inventory.refine_stone - row.refineStones, inventory.protect_charm - n],
+        'design28 O04共享库存仅一次完整消费，无负库存');
+      eq([f.p.enhance!.enhancements.length, f.p.enhance!.receipts.length,
+        f.p.enhance!.instances.reduce((sum, row) => sum + row.enhanceLevel, 0)], [1, 1, 1],
+        'design28 O04唯一结果去重且旧等级不重复升档');
+      eq([idb.writes, sampleCount], [writes + 1, samples + 1], 'design28 O04竞态仅一次写入抽样');
+      await replay(f.p, new EnhanceGate(f.p), inputs[results.findIndex(row => row.allowed)], 'design28 O04竞态完成后的只读重放');
+    }
+    const independent = await source('independent-race'); independent.p.inventory.protect_charm = n;
+    eq(await independent.p.save({ async: true }), true, 'design28 O04独立Progress争用前保存单张符基线');
+    const contenders = await Promise.all([Progress.load({ async: true, slot: 1 }), Progress.load({ async: true, slot: 1 })]);
+    progresses.push(...contenders);
+    const independentWrites = idb.writes, independentSamples = sampleCount; sampled = 0;
+    const independentInputs = contenders.map((_, i) => inputFor(`protect-open-independent-${i}`, independent.ref));
+    const independentResults = await Promise.all(contenders.map((p, i) => new EnhanceGate(p, options()).submit(independentInputs[i])));
+    eq(independentResults.filter(row => row.allowed).length, 1, 'design28 O04同槽独立Progress共享正式实例和单张符只一笔完成');
+    eq([idb.writes, sampleCount], [independentWrites + 1, independentSamples + 1], 'design28 O04独立对象同槽只一次消费提交抽样');
+    const loser = independentResults.findIndex(row => !row.allowed), stale = contenders[loser];
+    await unchanged(stale, () => new EnhanceGate(stale, options()).submit(inputFor('protect-open-stale-retry', independent.ref)),
+      'design28 O04旧Progress后续提交不得覆盖已提交结果或重用旧等级库存');
+    const racedLoad = await Progress.load({ async: true, slot: 1 }); progresses.push(racedLoad);
+    eq([racedLoad.count('protect_charm'), racedLoad.enhance!.enhancements.length, racedLoad.enhance!.instances[0].enhanceLevel], [0, 1, 1],
+      'design28 O04重读磁盘仅一份结果和N消费事实');
+
+    const historic = await source('historical-false'); historic.p.inventory.protect_charm = 0; sampled = 0;
+    const historicalInput = request('protect-open-historical-false', 0, historic.ref);
+    const historicalResult = committed(await historic.gate.submit(historicalInput)), historicalBefore = historic.p.exportSave();
+    eq(historicalResult.useProtectCharm, false, 'design28 O05历史无符提交仍不依赖护符');
+    const mapping = protectCharmMap as Record<string, unknown>, originalN = mapping.countPerSettlement;
+    try {
+      mapping.countPerSettlement = 2;
+      await replay(historic.p, new EnhanceGate(historic.p), historicalInput, 'design28 O05当前N变化不追扣历史false');
+      await formalUnchanged(historic.p, () => new EnhanceGate(historic.p).loadRefresh(), 'load_dedupe', 'design28 O05当前N变化后历史false刷新零补扣');
+      eq(committed(new EnhanceGate(historic.p).consume(historicalInput.enhanceRequestId)), historicalResult,
+        'design28 O05历史false消费查询仅读原结果');
+    } finally { mapping.countPerSettlement = originalN; }
+    eq(historic.p.exportSave(), historicalBefore, 'design28 O05历史无符结果库存等级原样保留');
+    const reverseConflict = await formalUnchanged(historic.p,
+      () => historic.gate.submit({ ...historicalInput, useProtectCharm: true }), 'duplicate', 'design28 O04历史false改true拒绝冲突');
+    eq('result' in reverseConflict && reverseConflict.result !== undefined, false, 'design28 O04 false/true冲突不借旧结果');
+    eq(await racedLoad.save({ async: true }), true, 'design28 O05跨档前保存A档对应库存与结果基线');
+    const firstSlot = Progress.getActiveSlot(), firstSave = racedLoad.exportSave();
+    try {
+      Progress.setActiveSlot(2); const other = await source('cross-slot');
+      const reusedId = independentInputs[independentResults.findIndex(row => row.allowed)].enhanceRequestId;
+      let absentResult!: GateResult;
+      await unchanged(other.p, () => { absentResult = other.gate.level(reusedId); return absentResult; },
+        'design28 O05另档不混认同请求旧结果');
+      eq('result' in absentResult && absentResult.result !== undefined, false, 'design28 O05另档查询无A档结果');
+      await formalUnchanged(other.p, () => other.gate.submit(inputFor(reusedId, independent.ref)), 'no_instance', 'design28 O05另档有符也不借A档实例');
+      sampled = 0; const own = committed(await other.gate.submit(inputFor(reusedId, other.ref)));
+      ok(own.enhanceResultRef !== racedLoad.enhance!.enhancements[0].enhanceResultRef, 'design28 O05跨档同请求id独立结果引用');
+      eq(other.p.count('protect_charm'), 3 - n, 'design28 O05跨档只消费B档N');
+      eq(racedLoad.exportSave(), firstSave, 'design28 O05跨档不修改A档库存等级和结果');
+      eq((await saveStore.readSlot(1))!.data.enhance, firstSave.enhance, 'design28 O05B档保存不覆盖A档已提交结果');
+    } finally { Progress.setActiveSlot(firstSlot); }
+
+    for (const [name, sentinel] of [
+      ['reject', () => false], ['throw', () => { throw new Error('design28 O06受控承载失败'); }],
+      ['mutate-charm', (draft: Progress) => { draft.inventory.protect_charm++; return true; }],
+      ['mutate-stones', (draft: Progress) => { draft.stones++; return true; }],
+      ['mutate-instance', (draft: Progress) => { draft.enhance!.instances[0].enhanceLevel++; return true; }],
+    ] as const) {
+      const f = await source(`carrier-${name}`); sampled = 0;
+      const disk = (await saveStore.readSlot(1))!.data, commits = idb.commits;
+      await unchanged(f.p, () => new EnhanceGate(f.p, { ...options(), canCommitResult: sentinel })
+        .submit(inputFor(`protect-open-carrier-${name}`, f.ref)), 'design28 O06承载拒绝异常或草稿资源等级篡改整笔回滚');
+      eq((await saveStore.readSlot(1))!.data, disk, 'design28 O06承载失败保留原磁盘合法资产');
+      eq(idb.commits, commits, 'design28 O06承载失败无持久提交');
+    }
+    for (const resource of ['protect_charm', 'refine_stone', 'stones'] as const) {
+      const f = await source(`transaction-change-${resource}`), original = f.p.runSaveTransactionAsync;
+      const disk = (await saveStore.readSlot(1))!.data, writes = idb.writes, samples = sampleCount;
+      let expected!: Record<string, unknown>;
+      try {
+        f.p.runSaveTransactionAsync = function <T>(apply: (draft: Progress) => T | undefined) {
+          if (resource === 'stones') this.stones = 0; else this.inventory[resource] = 0;
+          expected = this.exportSave(); return original.call(this, apply) as Promise<T | undefined>;
+        };
+        formalDenied(await f.gate.submit(inputFor(`protect-open-transaction-change-${resource}`, f.ref)), 'resources',
+          'design28 O06预检后事务前资源变化须在真实草稿再次拒绝');
+      } finally { f.p.runSaveTransactionAsync = original; }
+      eq(f.p.exportSave(), expected, 'design28 O06保留外部合法资源变化，不补扣或产生半等级');
+      eq((await saveStore.readSlot(1))!.data, disk, 'design28 O06事务再校验拒绝保持原磁盘');
+      eq([idb.writes, sampleCount], [writes, samples], 'design28 O06事务资源不足零写零抽样');
+    }
+    const failedSave = await source('save-failure'), failedDisk = (await saveStore.readSlot(1))!.data;
+    const backend = createIndexedDbBackend(idb.factory); let failedWrites = 0; sampled = 0;
+    try {
+      setSaveBackend({ ...backend, async write() { failedWrites++; throw new Error('design28 O06受控存储写入失败'); } });
+      await unchanged(failedSave.p, () => failedSave.gate.submit(inputFor('protect-open-save-failure', failedSave.ref)),
+        'design28 O06保存后端失败费用等级结果整笔保留原状态');
+    } finally { setSaveBackend(createIndexedDbBackend(idb.factory)); }
+    eq(failedWrites, 1, 'design28 O06真实保存路径实际到达失败后端一次');
+    eq((await saveStore.readSlot(1))!.data, failedDisk, 'design28 O06保存失败磁盘无半消费');
+    const interrupted = await source('interrupted'), before = interrupted.p.exportSave(), disk = (await saveStore.readSlot(1))!.data;
+    const hold = idb.holdNextCommit(), input = inputFor('protect-open-interrupted', interrupted.ref), samples = sampleCount;
+    const pending = interrupted.gate.submit(input); await hold.started;
+    eq(interrupted.p.exportSave(), before, 'design28 O06提交中断前complete未到不发布半费用等级');
+    eq((await saveStore.readSlot(1))!.data, disk, 'design28 O06complete前磁盘仍原合法状态');
+    idb.abortNextCommit(); hold.release(); businessDenied(await pending, 'design28 O06IDB提交中断明确拒绝');
+    eq(interrupted.p.exportSave(), before, 'design28 O06中断内存三项费用等级结果整笔回滚');
+    eq((await saveStore.readSlot(1))!.data, disk, 'design28 O06中断磁盘整笔保留');
+    eq(sampleCount, samples + 1, 'design28 O06中断仅丢弃未提交抽样不自动重抽');
+    sampled = 0; const retried = committed(await interrupted.gate.submit(input));
+    eq([interrupted.p.count('protect_charm'), interrupted.p.enhance!.enhancements.length, interrupted.p.enhance!.receipts.length],
+      [3 - n, 1, 1], 'design28 O06显式重试仅完整提交一次与N消费');
+    await replay(interrupted.p, new EnhanceGate(interrupted.p), input, 'design28 O06重试完成后只读旧结果');
+    const good = interrupted.p.exportSave();
+    for (const [name, damage] of [
+      ['pending', (bag: any) => { bag.enhancements[0].state = 'pending'; }],
+      ['missing-receipt', (bag: any) => { bag.receipts = []; }],
+      ['invalid-boolean', (bag: any) => { bag.enhancements[0].useProtectCharm = 'true'; }],
+      ['half-level', (bag: any) => { bag.instances[0].enhanceLevel++; }],
+    ] as const) {
+      const corrupt = copy(good) as any; damage(corrupt.enhance);
+      eq(isValidEnhanceProgress(corrupt.enhance), false, 'design28 O06损坏护符旧记录结构不合法');
+      const legalBefore = interrupted.p.exportSave(), writes = idb.writes, samples = sampleCount;
+      eq(await interrupted.p.importSave(corrupt, { async: true }), false, 'design28 O06损坏护符结果import拒绝不修档');
+      eq(interrupted.p.exportSave(), legalBefore, 'design28 O06损坏导入保留合法资产与完整旧结果');
+      const p = new Progress(); progresses.push(p); Object.assign(p, copy(corrupt));
+      const gate = new EnhanceGate(p, options());
+      await unchanged(p, () => gate.submit(inputFor(`protect-open-corrupt-${name}`, interrupted.ref, retried.finalLevel)),
+        'design28 O06损坏旧结果不当空袋补做');
+      await unchanged(p, () => gate.loadRefresh(), 'design28 O06损坏记录刷新不修复或自动结算');
+      eq([idb.writes, sampleCount], [writes, samples], 'design28 O06损坏旧记录零写零重抽');
+    }
+    eq(new EnhanceGate(interrupted.p).laterService(), Closed.refuseLaterService(),
+      'design28 O表全程附灵分解仍enhance.closed.later_service');
+    return { acceptanceDesign: 'design/28 §4.3 O01–O06', cases: ['O01', 'O02', 'O03', 'O04', 'O05', 'O06'],
+      source: 'default-ForgeGate-committed-result', productionFixtureInstances: false, explicitInventoryInjection: true,
+      O01: { executed: true, evidenceKeys: ['formal-protected-success', 'original-rate', 'three-costs-one-commit', 'identity-attributes-result-receipt'] },
+      O02: { executed: true, dropOnFailTargets: [5, 6], evidenceKeys: ['failure-no-drop', 'failure-drop-kept', 'same-N', 'complete-result-once'] },
+      O03: { executed: true, missingCharmTip: 'enhance.formal.resources', evidenceKeys: ['zero', 'transient-only', 'quality-only', 'zero-business-delta-no-false-fallback'] },
+      O04: { executed: true, evidenceKeys: ['same-request-replay', 'true-false-payload-conflict', 'same-instance-old-level', 'shared-single-charm', 'independent-Progress-same-slot', 'stale-retry-denied'] },
+      O05: { executed: true, refreshStates: proofs.map(row => row.state), evidenceKeys: ['save-import-restore-IDB-load', 'fresh-SSR-payloads', 'cross-slot-same-request-isolation', 'historical-false-no-retrocharge'] },
+      O06: { executed: true, evidenceKeys: ['carrier-false-throw-draft-tamper', 'transaction-resource-recheck', 'save-backend-failure', 'IDB-interruption-complete-boundary', 'explicit-retry-once', 'corrupt-protected-history-no-repair'] },
+      protectCharmOpenFixtureTableExecuted: true, softOpenedProtectCharm: false, released: false };
   }
   /** 正式 O 表：只从默认 ForgeGate 的完整成品登记取实例，强化从不注入 fixtureInstances。 */
   async function formalInstanceCases() {
@@ -895,9 +1128,11 @@ export async function runEnhanceOpenFixtureTests(options: {
     const formalRefusalEvidence = openFixture && !invalidTable && !refreshPayloads ? await formalRefusalCases() : null;
     let protectCharmEvidence: Awaited<ReturnType<typeof protectCharmMappingCases>> | null = null;
     let formalInstanceEvidence: Awaited<ReturnType<typeof formalInstanceCases>> | null = null;
+    let protectCharmOpenFixtureTable: Awaited<ReturnType<typeof protectCharmOpenCases>> | null = null;
     if (refreshPayloads) {
       eq(refreshPayloads.map(row => row.state), ['success', 'failure-no-drop', 'failure-drop',
-        'formal-success', 'formal-failure-no-drop', 'formal-failure-drop', 'protect-charm-success', 'protect-charm-failure-kept'], '独立fresh SSR覆盖夹具与正式来源成功/两种失败');
+        'formal-success', 'formal-failure-no-drop', 'formal-failure-drop', 'protect-charm-success', 'protect-charm-failure-kept',
+        'protect-open-success', 'protect-open-failure-no-drop', 'protect-open-failure-drop-kept'], '独立fresh SSR覆盖夹具与正式来源成功/两种失败');
       for (const payload of refreshPayloads) await roundtrip(payload);
       payloads.push(...copy(refreshPayloads));
     }
@@ -993,7 +1228,7 @@ export async function runEnhanceOpenFixtureTests(options: {
       await unchanged(chain.p, () => new EnhanceGate(chain.p, fixtureOptions([instance(enhance.maxLevel + 1)]))
         .submit(request('illegal-permission-level', 2)), 'O06有合法历史袋仍拒非法授权等级');
 
-      // 既有无符 design/27 O 表保留；design/28 只执行关态映射 C 表与最小接线旁证。
+      // 既有无符 design/27 O 表保留；本窗另执行 design/28 §4.3 护符 O01–O06 全表。
       const invalidRequests: unknown[] = [null, {}, { ...request(), enhanceRequestId: '' },
         { ...request(), instanceRef: 'foreign-instance' }, { ...request(), instanceRef: 'bamboo_sword' },
         { ...request(), fromLevel: -1 }, { ...request(), fromLevel: 0.5 }, { ...request(), fromLevel: 1 },
@@ -1133,16 +1368,18 @@ export async function runEnhanceOpenFixtureTests(options: {
       eq(Object.prototype.hasOwnProperty.call(absent.p.exportSave(), 'enhance'), false, 'O08旧档export不建待补做记录');
       formalInstanceEvidence = await formalInstanceCases();
       protectCharmEvidence = await protectCharmMappingCases();
+      protectCharmOpenFixtureTable = await protectCharmOpenCases();
     }
     eq(featureFlags(), flags, 'features原值保持不变'); eq(JSON.stringify(enhance), tableBefore, 'enhance内存表未修改');
     eq(localWrites, 0, '真实IDB保存无localStorage写旁路');
     return { assertions, payloads, openFixture, graph: openFixture ? 'formal-open' : 'memory-closed',
       formalOpen: true, closedFixtureOnly: true, softOpened: true, softOpenedEntrance: true, softOpenedFormalSettle: true,
       formalTipsWired: true, formalInstanceSource: true, protectCharmWired: true, protectCharmN: 1, softOpenedProtectCharm: false, released: false,
-      compatibilityMeaning: 'formalOpen/softOpened 沿用既有无符正式实例源 soft-open；本窗=护符映射接线≠护符开态夹具全表≠护符soft-open≠进包≠release',
+      compatibilityMeaning: 'formalOpen/softOpened 沿用既有无符正式实例源 soft-open；本窗=护符开态夹具全表≠soft-open进包≠release',
       sceneSmoke: sceneSmokeEvidence, defaultGateDenied: defaultGateEvidence, formalRefusals: formalRefusalEvidence,
       formalInstances: formalInstanceEvidence, protectCharmMapping: protectCharmEvidence,
-      acceptanceDesign: 'design/28 C01–C08', protectCharmOpenFixtureTableExecuted: false,
+      acceptanceDesign: 'design/28 §4.3 O01–O06 (C01–C08 regression retained)', protectCharmOpenFixtureTable,
+      protectCharmOpenFixtureTableExecuted: protectCharmOpenFixtureTable?.protectCharmOpenFixtureTableExecuted === true,
       legacyRegressionDesign: 'design/27 existing no-charm C/O cases',
       storageWrites: idb.writes, commits: idb.commits, sampleCount,
       forgingExperienceWritten: false, protectorPath: 'mapped-atomic-settlement-or-protect/resources-denied',

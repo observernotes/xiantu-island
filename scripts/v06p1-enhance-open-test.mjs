@@ -12,7 +12,7 @@ const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const shared = sharedRoot(root);
 const modes = [['shared', shared], ['snapshot', path.join(root, 'data')]];
 const dataRoots = [['shared', shared], ['wt', path.join(root, 'data')], ['game', path.join(shared, 'game/data')]];
-const out = process.env.XT_ENHANCE_QA_OUT ?? process.env.OUT_DIR ?? path.join(root, 'qa/out_v06p1_enhance_protect_charm_closed');
+const out = process.env.XT_ENHANCE_QA_OUT ?? process.env.OUT_DIR ?? path.join(root, 'qa/out_v06p1_enhance_protect_charm_open_fixture');
 const before = new Map(), directoryBefore = new Map(), evidence = [];
 const recipesSha = '1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f';
 const forgeFlagSha = '0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e';
@@ -34,14 +34,15 @@ let assertions = 0, runtimeAssertions = 0;
 const eq = (actual, expected, message) => { assertions++; assert.deepEqual(actual, expected, message); };
 const ok = (value, message) => { assertions++; assert.ok(value, message); };
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
-const compatibilityMeaning = 'formalOpen/softOpened 沿用既有无符正式实例源 soft-open；本窗=护符映射接线≠护符开态夹具全表≠护符soft-open≠进包≠release';
-const charmEvidence = { protectCharmWired: true, protectCharmN: 1, formalTipsWired: true, formalInstanceSource: true, softOpenedEntrance: true, softOpenedFormalSettle: true, softOpenedProtectCharm: false, released: false };
+const compatibilityMeaning = 'formalOpen/softOpened 沿用既有无符正式实例源 soft-open；本窗=护符开态夹具全表≠护符soft-open≠进包≠release';
+const charmEvidence = { protectCharmWired: true, protectCharmN: 1, protectCharmOpenFixtureTableExecuted: true, formalTipsWired: true, formalInstanceSource: true, softOpenedEntrance: true, softOpenedFormalSettle: true, softOpenedProtectCharm: false, released: false };
+const openTableCases = ['O01', 'O02', 'O03', 'O04', 'O05', 'O06'];
 const charmSnapshots = {
   'materials.json': '79c68429d763054ac1715467d1743575e179ecaecb2529e4b6ed7df137ef4052',
   'items.json': 'f8b587634e5c9d43a475e85724aa34172e2945abda7654c2ef98fda07d1566f3',
   'enhance_protect_charm.json': '0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772',
 };
-const report = row => { row = { ...charmEvidence, compatibilityMeaning, ...row }; evidence.push(row); console.log(JSON.stringify(row)); };
+const report = row => { row = { ...charmEvidence, protectCharmOpenFixtureTableExecuted: false, compatibilityMeaning, ...row }; evidence.push(row); console.log(JSON.stringify(row)); };
 async function shaOrNull(file) {
   try { return hash(await fs.readFile(file)); }
   catch (error) { if (error.code === 'ENOENT') return null; throw error; }
@@ -211,12 +212,20 @@ async function runGraph(mode, dataRoot, openFixture, refreshPayloads = null, inv
     const suite = await server.ssrLoadModule('/src/v06p1-enhance-open.test.ts');
     const result = await suite.runEnhanceOpenFixtureTests({ openFixture, dataMode: mode, refreshPayloads, invalidTable: invalidTable?.name });
     ok(Number.isSafeInteger(result.assertions) && result.assertions > 0, `${mode} 自动化断言实际执行`);
-    for (const [key, value] of Object.entries(charmEvidence)) eq(result[key], value, `${mode} evidence ${key}保持本窗授权值`);
+    const tableExecuted = openFixture && refreshPayloads === null && invalidTable === null;
+    for (const [key, value] of Object.entries(charmEvidence))
+      eq(result[key], key === 'protectCharmOpenFixtureTableExecuted' ? tableExecuted : value,
+        `${mode} evidence ${key}对应当前运行图及本窗授权值`);
     eq(result.softOpenedFormalSettle, true, `${mode} 明确登记正式实例源soft-open结算口径`);
     eq(result.released, false, `${mode} 正式实例源soft-open不授权进包发版`);
     if (openFixture && refreshPayloads === null && invalidTable === null) {
       eq(result.protectCharmMapping?.cases, ['C01', 'C02', 'C03', 'C04', 'C05', 'C06', 'C07', 'C08'], `${mode} design28护符接线C01–C08实际旁证`);
-      eq(result.protectCharmMapping?.openFixtureTableExecuted, false, `${mode} 未代勾design28 O01–O06开态全表`);
+      eq(result.protectCharmMapping?.openFixtureTableExecuted, false, `${mode} 保留独立C回归段的历史范围标记`);
+      eq(result.protectCharmOpenFixtureTable?.cases, openTableCases, `${mode} design/28 O01–O06全表实际执行`);
+      for (const key of openTableCases) {
+        eq(result.protectCharmOpenFixtureTable?.[key]?.executed, true, `${mode} design/28 ${key}独立执行旁证`);
+        ok(result.protectCharmOpenFixtureTable?.[key]?.evidenceKeys?.length > 0, `${mode} design/28 ${key}旁证键非空`);
+      }
       eq(result.protectCharmMapping?.falseCharmReads, 0, `${mode} false路径护符映射资格库存零读取`);
       eq(result.formalInstances?.source, 'default-ForgeGate-committed-result', `${mode} 正式O表只取默认Forge完整结果来源`);
       eq(result.formalInstances?.productionFixtureInstances, false, `${mode} 正式O表不依赖fixtureInstances`);
@@ -231,6 +240,7 @@ async function runGraph(mode, dataRoot, openFixture, refreshPayloads = null, inv
     const { payloads, ...resultEvidence } = result;
     report({ suite: 'v06p1-enhance-open-graph', dataMode: mode, graph: openFixture ? 'formal-open' : 'memory-closed',
       freshSsrRefresh: refreshPayloads !== null, invalidTable: invalidTable?.name ?? null, formalOpen: true, closedFixtureOnly: true, flagLoads, featureOverrideCalls,
+      protectCharmOpenFixtureTableExecuted: tableExecuted,
       result: resultEvidence, savedStateEvidence: payloads.map(({ state, enhanceRequestId, save }) =>
         ({ state, enhanceRequestId, saveSha: hash(JSON.stringify(save)) })), softOpened: true, released: false });
     return result;
@@ -249,8 +259,8 @@ try {
   for (const [mode, dataRoot] of modes) {
     const opened = await runGraph(mode, dataRoot, true);
     await runGraph(mode, dataRoot, false);
-    eq(opened.payloads.length, 8, `${mode} 既有六条无符载荷及两条护符最小成功/失败保级载荷供fresh SSR读回`);
-    eq(opened.payloads.filter(row => row.formalInstanceSource).length, 3, `${mode} 正式来源保存载荷均无fixtureInstances依赖`);
+    eq(opened.payloads.length, 11, `${mode} 既有八条载荷及design/28成功/两类失败三条载荷供fresh SSR读回`);
+    eq(opened.payloads.filter(row => row.formalInstanceSource).length, 6, `${mode} 正式来源保存载荷均无fixtureInstances依赖`);
     await runGraph(mode, dataRoot, true, opened.payloads);
     // 将已提交历史结果带入全新内存关态图，关态优先并保留合法既有资产。
     await runGraph(mode, dataRoot, false, opened.payloads);
@@ -278,12 +288,15 @@ try {
   for (const [file, sha] of before) eq(await shaOrNull(file), sha, `夹具运行前后保护字节不变：${file}`);
   for (const [folder, names] of directoryBefore)
     eq((await filesUnder(folder)).filter(name => name.endsWith('.json')), names, `夹具不新建删除正式balance/maps JSON：${folder}`);
-  report({ suite: 'v06p1-enhance-open-sha-guard', protectedFiles: before.size, protectedDirectories: directoryBefore.size, passed: true });
+  report({ suite: 'v06p1-enhance-open-sha-guard', protectedFiles: before.size, protectedDirectories: directoryBefore.size, passed: true,
+    protectCharmOpenFixtureTableExecuted: passed });
   await fs.writeFile(path.join(out, 'v06p1-enhance-open-evidence.json'), `${JSON.stringify({ passed,
     assertions: assertions + runtimeAssertions, staticAssertions: assertions, runtimeAssertions,
     formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false,
-    ...charmEvidence, acceptanceDesign: 'design/28 C01–C08', protectCharmOpenFixtureTableExecuted: false,
+    ...charmEvidence, protectCharmOpenFixtureTableExecuted: passed, acceptanceDesign: 'design/28 §4.3 O01–O06',
+    protectCharmOpenFixtureTable: Object.fromEntries(openTableCases.map(key => [key, { executed: passed,
+      evidenceKeys: modes.map(([mode]) => `${mode}/formal-open/result.protectCharmOpenFixtureTable.${key}`) }])),
     legacyRegressionDesign: 'design/27 existing no-charm C/O cases', compatibilityMeaning, stringsSha, enhanceFlagSha, charmSnapshots,
     protectedFiles: Object.fromEntries(before), protectedDirectories: Object.fromEntries(directoryBefore), evidence }, null, 2)}\n`);
 }
-console.log(`v06p1 enhance protect charm closed mapping tests ok: ${assertions + runtimeAssertions} assertions; shared/snapshot双根formal-open+memory-closed及fresh SSR读回；design28 C01–C08护符映射接线+最小成功/失败保级扣N/缺符旁证；既有design27 C/O回归保留；未代勾design28 O01–O06；strings944；Scene只读无fixture；GAME_PHASE=5；${JSON.stringify(charmEvidence)}；${compatibilityMeaning}`);
+console.log(`v06p1 enhance protect charm open fixture tests ok: ${assertions + runtimeAssertions} assertions; shared/snapshot双根formal-open+memory-closed及fresh SSR读回；design/28 O01–O06护符开态夹具全表实际执行；C01–C08及既有design27 C/O回归保留；strings944；Scene只读无fixture；GAME_PHASE=5；${JSON.stringify(charmEvidence)}；${compatibilityMeaning}`);

@@ -1,0 +1,15 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test:v06p1-enhance-closed"
+  ],
+  "cwd": "/workspace/xiantu/wt/dev",
+  "environment": {
+    "ENHANCE_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_enhance_protect_charm_open_fixture/regression/enhance-closed"
+  },
+  "stdin": "/dev/null",
+  "startedAt": "2026-10-17T03:48:16.288966+00:00",
+  "exitCode": 0,
+  "assertions": 30834
+}

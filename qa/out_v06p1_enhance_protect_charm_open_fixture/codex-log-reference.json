@@ -1,0 +1,7 @@
+{
+  "log": "/workspace/xiantu/logs/codex/8d58e7910ae31f5e_20261017_114710_1484247.log",
+  "launcher": "qa/out_v06p1_enhance_protect_charm_open_fixture/codex_launch.log",
+  "prompt": "qa/out_v06p1_enhance_protect_charm_open_fixture/codex_prompt.txt",
+  "liveLogStaged": false,
+  "stdin": "/dev/null"
+}

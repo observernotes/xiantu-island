@@ -1,0 +1,55 @@
+{
+  "passed": true,
+  "audit": "enhance-protect-charm-open-fixture-production-boundary",
+  "scope": "本窗=design/28 O01–O06 护符开态夹具全表 ≠ soft-open 进包 ≠ release；本记录执行回归/保护，O表标志只承接通过且源码匹配的open-summary及open evidence；formalOpen/softOpened仅兼容既有状态",
+  "checks": {
+    "productionConsumerOnlyGameScene": true,
+    "gameSceneReadOnlyEntrance": true,
+    "gameSceneNoFixtureInstances": true,
+    "gateDefaultOptionsEmpty": true,
+    "gateExplicitFixtureOwnProperty": true,
+    "gateFormalInstanceSource": true,
+    "gameSceneUnchanged": true,
+    "GAME_PHASE5": true,
+    "EnhanceOpenFlag.ts_true": true,
+    "ForgeOpenFlag.ts_true": true,
+    "mappingN1": true
+  },
+  "consumers": [
+    "src/scenes/GameScene.ts"
+  ],
+  "sourceSha256": {
+    "src/EnhanceGate.ts": "c2a2a0efb7997270eb48674224ce9bfc08e14201e613d7aa12d35af0a2a09796",
+    "src/EnhanceProgress.ts": "49e2bd0ce8bb952ef8c06a19f2137af3cdcfef828ba1dd2508834d4b54f79724",
+    "src/Progress.ts": "9c6556462768199f2b0c6a2ee3deb420c0a117b9a49945ec5723a90f88b8d0df",
+    "src/SaveStore.ts": "4c99f7410cd87e2e9b46d7b685fdb9ab5f2c9ca3b8a266da61eb062624ec7916",
+    "src/data.ts": "aad725652f5c0eb57a5c699726e570b146d5ded52d5c31715444dbbf4117024a",
+    "src/scenes/GameScene.ts": "9b62f76b8a3e76b2438cfacf42d9fe15525f50a9a0427eab25d5c10d6de119f3",
+    "src/EnhanceOpenFlag.ts": "d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e",
+    "src/ForgeOpenFlag.ts": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e"
+  },
+  "sourceUnchanged": {
+    "src/EnhanceGate.ts": true,
+    "src/EnhanceProgress.ts": true,
+    "src/Progress.ts": true,
+    "src/SaveStore.ts": true,
+    "src/data.ts": true,
+    "src/scenes/GameScene.ts": true,
+    "src/EnhanceOpenFlag.ts": true,
+    "src/ForgeOpenFlag.ts": true
+  },
+  "fixtureInstancesProductionDefaultOrFallback": false,
+  "productionAuthorizationFromFixture": false,
+  "evidence": {
+    "protectCharmWired": true,
+    "protectCharmN": 1,
+    "protectCharmOpenFixtureTableExecuted": true,
+    "formalTipsWired": true,
+    "formalInstanceSource": true,
+    "softOpenedEntrance": true,
+    "softOpenedFormalSettle": true,
+    "softOpenedProtectCharm": false,
+    "released": false
+  },
+  "runtimeEvidenceAuthority": "v06p1-enhance-open-evidence.json；静态边界检查不代替执法 O01–O06 抽检。"
+}

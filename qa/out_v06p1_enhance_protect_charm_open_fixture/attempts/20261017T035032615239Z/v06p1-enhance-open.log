@@ -1,0 +1,22 @@
+
+> xiantu-island@0.0.1 test:v06p1-enhance-open
+> timeout 180s node scripts/v06p1-enhance-open-test.mjs
+
+{"protectCharmWired":true,"protectCharmN":1,"protectCharmOpenFixtureTableExecuted":true,"formalTipsWired":true,"formalInstanceSource":true,"softOpenedEntrance":true,"softOpenedFormalSettle":true,"softOpenedProtectCharm":false,"released":false,"compatibilityMeaning":"formalOpen/softOpened 沿用既有无符正式实例源 soft-open；本窗=护符开态夹具全表≠护符soft-open≠进包≠release","suite":"v06p1-enhance-open-formal","dataMode":"shared","formalOpen":true,"closedFixtureOnly":true,"enhanceSha":"d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954","giftsChecked":10,"smithServices":false,"minimalSceneWiring":true,"fullEnhanceUi":false,"softOpened":true}
+{"protectCharmWired":true,"protectCharmN":1,"protectCharmOpenFixtureTableExecuted":true,"formalTipsWired":true,"formalInstanceSource":true,"softOpenedEntrance":true,"softOpenedFormalSettle":true,"softOpenedProtectCharm":false,"released":false,"compatibilityMeaning":"formalOpen/softOpened 沿用既有无符正式实例源 soft-open；本窗=护符开态夹具全表≠护符soft-open≠进包≠release","suite":"v06p1-enhance-open-formal","dataMode":"wt","formalOpen":true,"closedFixtureOnly":true,"enhanceSha":"d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954","giftsChecked":10,"smithServices":false,"minimalSceneWiring":true,"fullEnhanceUi":false,"softOpened":true}
+{"protectCharmWired":true,"protectCharmN":1,"protectCharmOpenFixtureTableExecuted":true,"formalTipsWired":true,"formalInstanceSource":true,"softOpenedEntrance":true,"softOpenedFormalSettle":true,"softOpenedProtectCharm":false,"released":false,"compatibilityMeaning":"formalOpen/softOpened 沿用既有无符正式实例源 soft-open；本窗=护符开态夹具全表≠护符soft-open≠进包≠release","suite":"v06p1-enhance-open-formal","dataMode":"game","formalOpen":true,"closedFixtureOnly":true,"enhanceSha":"d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954","giftsChecked":10,"smithServices":false,"minimalSceneWiring":true,"fullEnhanceUi":false,"softOpened":true}
+{"protectCharmWired":true,"protectCharmN":1,"protectCharmOpenFixtureTableExecuted":true,"formalTipsWired":true,"formalInstanceSource":true,"softOpenedEntrance":true,"softOpenedFormalSettle":true,"softOpenedProtectCharm":false,"released":false,"compatibilityMeaning":"formalOpen/softOpened 沿用既有无符正式实例源 soft-open；本窗=护符开态夹具全表≠护符soft-open≠进包≠release","suite":"v06p1-enhance-open-sha-guard","protectedFiles":274,"protectedDirectories":6,"passed":true}
+/workspace/xiantu/wt/dev/src/v06p1-enhance-open.test.ts:168
+      throw new Error(`${label}: ${message}: ${JSON.stringify(actual)}，期望 ${JSON.stringify(expected)}`);
+            ^
+
+Error: shared/formal-open/formal-table: design28 O05另档不混认同请求旧结果：正式拒绝分型: "enhance.fixture.result"，期望 "enhance.formal.no_instance"
+    at eq (/workspace/xiantu/wt/dev/src/v06p1-enhance-open.test.ts:168:13)
+    at formalDenied (/workspace/xiantu/wt/dev/src/v06p1-enhance-open.test.ts:238:5)
+    at formalUnchanged (/workspace/xiantu/wt/dev/src/v06p1-enhance-open.test.ts:257:7)
+    at async protectCharmOpenCases (/workspace/xiantu/wt/dev/src/v06p1-enhance-open.test.ts:1125:7)
+    at async Module.runEnhanceOpenFixtureTests (/workspace/xiantu/wt/dev/src/v06p1-enhance-open.test.ts:2009:38)
+    at async runGraph (file:///workspace/xiantu/wt/dev/scripts/v06p1-enhance-open-test.mjs:213:20)
+    at async file:///workspace/xiantu/wt/dev/scripts/v06p1-enhance-open-test.mjs:260:20
+
+Node.js v20.19.2

@@ -1,0 +1,219 @@
+{
+  "passed": true,
+  "protectCharmWired": true,
+  "protectCharmN": 1,
+  "protectCharmOpenFixtureTableExecuted": true,
+  "formalTipsWired": true,
+  "formalInstanceSource": true,
+  "softOpenedEntrance": true,
+  "softOpenedFormalSettle": true,
+  "softOpenedProtectCharm": false,
+  "released": false,
+  "scope": "本窗=design/28 O01–O06 护符开态夹具全表 ≠ soft-open 进包 ≠ release；本记录执行回归/保护，O表标志只承接通过且源码匹配的open-summary及open evidence；formalOpen/softOpened仅兼容既有状态",
+  "checks": {
+    "tsc": {
+      "command": [
+        "npx",
+        "tsc",
+        "--noEmit"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {},
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T03:50:32.615566+00:00",
+      "exitCode": 0,
+      "assertions": null
+    },
+    "v06p1-enhance-closed": {
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-enhance-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "ENHANCE_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_enhance_protect_charm_open_fixture/regression/enhance-closed"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T03:48:16.288966+00:00",
+      "exitCode": 0,
+      "assertions": 30834
+    },
+    "v06p1-forge-open": {
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-forge-open"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_enhance_protect_charm_open_fixture/regression/forge-open"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T03:48:20.649710+00:00",
+      "exitCode": 0,
+      "assertions": 6380
+    },
+    "v06p1-forge-closed": {
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-forge-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "FORGE_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_enhance_protect_charm_open_fixture/regression/forge-closed"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T03:48:29.552121+00:00",
+      "exitCode": 0,
+      "assertions": 20413
+    },
+    "v06p1-market-closed": {
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-market-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "MARKET_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_enhance_protect_charm_open_fixture/regression/market-closed"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T03:48:34.889829+00:00",
+      "exitCode": 0,
+      "assertions": 24194
+    },
+    "v06d-closed": {
+      "command": [
+        "npm",
+        "run",
+        "test:v06d-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_enhance_protect_charm_open_fixture/regression/v06d-closed"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T03:48:40.172578+00:00",
+      "exitCode": 0,
+      "assertions": 15059
+    },
+    "v06c-closed": {
+      "command": [
+        "npm",
+        "run",
+        "test:v06c-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_enhance_protect_charm_open_fixture/regression/v06c-closed"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T03:48:44.770715+00:00",
+      "exitCode": 0,
+      "assertions": 10714
+    },
+    "datalint-shared": {
+      "command": [
+        "python3",
+        "/workspace/xiantu/qa/tools/datalint.py"
+      ],
+      "cwd": "/workspace/xiantu",
+      "environment": {},
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T03:48:48.472544+00:00",
+      "exitCode": 0,
+      "assertions": null
+    },
+    "datalint-snapshot": {
+      "command": [
+        "python3",
+        "/workspace/xiantu/qa/tools/datalint.py"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev/data",
+      "environment": {},
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T03:48:48.505356+00:00",
+      "exitCode": 0,
+      "assertions": null
+    },
+    "json-shared": {
+      "command": [
+        "python3",
+        "-c",
+        "import subprocess; [subprocess.run([\"python3\",\"-m\",\"json.tool\",\"balance/\"+n],stdin=subprocess.DEVNULL,stdout=subprocess.DEVNULL,check=True) for n in ['materials.json', 'items.json', 'enhance_protect_charm.json']]; print(\"3 JSON files PASS\")"
+      ],
+      "cwd": "/workspace/xiantu",
+      "environment": {},
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T03:48:48.541648+00:00",
+      "exitCode": 0,
+      "assertions": null
+    },
+    "json-snapshot": {
+      "command": [
+        "python3",
+        "-c",
+        "import subprocess; [subprocess.run([\"python3\",\"-m\",\"json.tool\",\"balance/\"+n],stdin=subprocess.DEVNULL,stdout=subprocess.DEVNULL,check=True) for n in ['materials.json', 'items.json', 'enhance_protect_charm.json']]; print(\"3 JSON files PASS\")"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev/data",
+      "environment": {},
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T03:48:48.622665+00:00",
+      "exitCode": 0,
+      "assertions": null
+    },
+    "diff-check": {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {},
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T03:48:48.699195+00:00",
+      "exitCode": 0,
+      "assertions": null
+    }
+  },
+  "suiteAssertions": {
+    "v06p1-enhance-closed": 30834,
+    "v06p1-forge-open": 6380,
+    "v06p1-forge-closed": 20413,
+    "v06p1-market-closed": 24194,
+    "v06d-closed": 15059,
+    "v06c-closed": 10714
+  },
+  "totalSuiteAssertions": 107594,
+  "testedSourceSha256": {
+    "scripts/v06c-closed-test.mjs": "637039e4146f6aae45c72d7013114cd489c325da1721898fa9325916c2b55090",
+    "scripts/v06d-closed-test.mjs": "5bfe782f918436fa30a2ca33f33176d57a59f637004708993cfaf6dbfe10e129",
+    "scripts/v06p1-enhance-closed-test.mjs": "ae698cd49cde88df27c134d3e79653fcacef1d15a7738f1cce12ef5468049de4",
+    "scripts/v06p1-forge-closed-test.mjs": "d3b8306774232047f3cf17086c0c529c05f082d20e2c04fecbe3d187661bb4c7",
+    "scripts/v06p1-forge-open-test.mjs": "7f21b292164933acbaf0ca26971c66d4d21e83c0bc24a0b25c7c344cea051fbd",
+    "scripts/v06p1-market-closed-test.mjs": "dc12953781573f6f23f8fba6c177b592c02aeabc2d69cceac16a7499fe19d660",
+    "src/EnhanceGate.ts": "c2a2a0efb7997270eb48674224ce9bfc08e14201e613d7aa12d35af0a2a09796",
+    "src/EnhanceOpenFlag.ts": "d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e",
+    "src/EnhanceProgress.ts": "49e2bd0ce8bb952ef8c06a19f2137af3cdcfef828ba1dd2508834d4b54f79724",
+    "src/ForgeGate.ts": "7aa9b91bf4ad2d389f2b96c41479338bd53cb3fdd63f65ff47a64f8528d75bcb",
+    "src/ForgeOpenFlag.ts": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
+    "src/ForgeProgress.ts": "4d90e916ffb1ff2aa5efa99efe7d552eecf897410d9cb69b0a757d6b8eec4807",
+    "src/Progress.ts": "9c6556462768199f2b0c6a2ee3deb420c0a117b9a49945ec5723a90f88b8d0df",
+    "src/SaveStore.ts": "4c99f7410cd87e2e9b46d7b685fdb9ab5f2c9ca3b8a266da61eb062624ec7916",
+    "src/scenes/GameScene.ts": "9b62f76b8a3e76b2438cfacf42d9fe15525f50a9a0427eab25d5c10d6de119f3"
+  },
+  "inputIntegrity": "所有列出的回归输入均由写前/后保护核为本窗未变字节；本窗改动的 open test/runner 测试 SHA 由 open-summary.json 记录。",
+  "windowChangedSourcesSha256AtSummary": {
+    "scripts/v06p1-enhance-open-test.mjs": "acc812d1151dfff8bfad06437e5873dc23d3f7ab69d86f781d036c1ca2de1ae5",
+    "src/v06p1-enhance-open.test.ts": "7b595b44f128e2eb240a84fd74f589ef0a7ad42c9e9e17d420dc457f71c6373b"
+  },
+  "notRun": [
+    "snapshot",
+    "build",
+    "sync",
+    "release",
+    "Pages"
+  ]
+}

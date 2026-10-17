@@ -1,0 +1,102 @@
+P1③++++ 护器符正式映射【开态夹具 tip · O01–O06】（负责人令经项目经理）。工作目录必须是本 wt/dev（已由 tools/codex_run.sh 切入）。stdin=/dev/null。
+
+## 权威边界（硬禁）
+- 基线：origin/dev HEAD 含文档 tip `720a06cbf2c1804d379f1b93c8f298a89ab462ef`；实现祖先 tip `28d701f24937d7cda89b70cbebc6c9e0cafd18bb`（关态 tip 接线，执法 C01–C08 PASS）。开工先 `git fetch && git pull --ff-only origin dev`，确认在分支 `dev`。
+- **EnhanceOpenFlag / ForgeOpenFlag 保持正式 true（禁回翻）**；写前 SHA：
+  - EnhanceOpenFlag `d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e`
+  - ForgeOpenFlag `0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e`
+- **禁改字节**（写后必须 MATCH）：
+  - enhance.json `d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954`（含 protectCharm 文案）
+  - recipes.json `1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f`
+  - strings_zh.json `d7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09`（944）
+  - npcs.json `2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6`（gifts 10×false）
+  - life_skills.json `204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b`
+  - materials `79c68429d763054ac1715467d1743575e179ecaecb2529e4b6ed7df137ef4052`
+  - items `f8b587634e5c9d43a475e85724aa34172e2945abda7654c2ef98fda07d1566f3`
+  - enhance_protect_charm `0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772`（N=1）
+- **本令 ≠ soft-open ≠ release ≠ 进包 ≠ Pages**；`softOpenedProtectCharm` 必须保持 **false**；禁抬 GAME_PHASE（仍 5）；禁附灵/分解/阵法/gifts/#20/拍卖/坊市混窗；禁 force-push / reset --hard。
+- 生产 GameScene **禁** fixtureInstances 默认注入/回退；夹具仅测试显式注入；禁把 fixture 成功写成生产授权或进包依据。
+- 旁证进 `qa/out_v06p1_enhance_protect_charm_open_fixture/`；勿破坏 `qa/out_v06p1_enhance_protect_charm_closed/` 及其他旧 QA。
+
+## 依据（必读）
+- 令文：`/workspace/xiantu/reports/炼器阁/20261017_负责人令_P1③++++开态夹具.md`
+- design/28 §4.3 O01–O06：`/workspace/xiantu/design/28_v06_P1③++++_关态_护器符正式映射.md`
+- 关态 HANDOFF：`reports/炼器阁/V06P1_ENHANCE_PROTECT_CHARM_CLOSED_HANDOFF.md`（实现 tip@28d701f；已有最小成功/失败保级/缺符旁证，**不代勾本窗 O 全表**）
+- 写法参考：`V06P1_ENHANCE_OPEN_FIXTURE_*`、`V06P1_ENHANCE_FORMAL_INSTANCE_*`、`V06P1_ENHANCE_PROTECT_CHARM_CLOSED_*`
+- 现网：Gate 已接线 protectCharmMap；EnhanceProgress 已放开 boolean + 护符失败保级公式。本窗以 **O01–O06 全表执行与证据** 为主；产品源码仅在发现缺口时做最小补强（优先测侧/runner），勿无谓改 Gate。
+
+## 准许范围（仅开态夹具）
+
+### 1. 正式路径前提（沿用，勿回退）
+- formalInstanceSource 继续有效；映射齐备口径不变（enhance_protect_charm + ITEMS.protect_charm 资格 + N=1）
+- false 无符正式路径沿 v0.6.9 不回退
+- 两 Flag 保持 true；禁改三表/冻结表权威字节（快照已齐则勿再改）
+
+### 2. 必须全执行并留证 design/28 O01–O06
+扩展 `src/v06p1-enhance-open.test.ts`（及必要 closed/forge/market/v06 runner 适配），用**正式来源优先**、必要时显式夹具注入库存/实例，覆盖：
+
+| 编号 | 通过口径 |
+|---|---|
+| **O01** | 合法正式实例 + 映射齐备 + 足量护符，`useProtectCharm=true` **完整成功**：原 rate；灵石/精炼石/护符×N **同次**消费一次；成功到 to；属性/结果/去重完整；instanceRef 不变 |
+| **O02** | 同条件 true **正常概率失败**，覆盖 `dropOnFail=true` **与** `false` 目标行：失败**不掉级、不碎装**；成功率不变；仍消费同一 N；完整结果只成立一次（结果可审计记录原 dropOnFail） |
+| **O03** | 映射齐备，护符为 0 或可消费量 `< N`：`enhance.formal.resources` 整笔拒；全部资源/等级/业务记录零增量；**不**改成无符提交 |
+| **O04** | 同请求重放、true/false 载荷冲突、同实例/共享库存并发：同 enhanceRequestId 仅匹配已提交结果；冲突拒；同份库存不重复消费；无负库存或旧等级重复升档 |
+| **O05** | 成功/失败后保存、读档、刷新及跨档：结果与 N 消费事实一致；不补扣、不重抽、不二次消费；历史无符结果不追扣；跨档不混认 |
+| **O06** | 提交中断、保存/承载失败、事务中资源变化及损坏旧记录：要么完整提交一次，要么保留原合法状态；无半扣费/半等级；不修档或自动补做 |
+
+另：混入附灵/分解仍 `enhance.closed.later_service`；false 路径回归不依赖护符。
+
+关态窗已有「最小接线旁证」可复用/升格，但必须：
+- 显式标为 **design/28 O01–O06**（勿再写「不代勾 O 表」）
+- 补齐 O02 的 **dropOnFail=false** 目标行失败保级
+- 补齐 O04 并发/共享库存、O05 跨档与历史无符不追扣、O06 中断/承载失败等若仍缺口
+- evidence 打印 **`protectCharmOpenFixtureTableExecuted:true`**，并在 evidence JSON 中列出 O01–O06 各项 `executed:true` 旁证键
+
+### 3. 夹具边界
+- 可用测试显式注入（正式实例/库存）证 O 表
+- **禁** fixtureInstances 生产默认路径；GameScene 保持只读 entrance
+- 禁编造新 item id；禁从 itemId 数量发明 instanceRef
+
+### 4. Evidence（HANDOFF/RESULT/QA 必须）
+```json
+{
+  "protectCharmWired": true,
+  "protectCharmN": 1,
+  "protectCharmOpenFixtureTableExecuted": true,
+  "formalTipsWired": true,
+  "formalInstanceSource": true,
+  "softOpenedEntrance": true,
+  "softOpenedFormalSettle": true,
+  "softOpenedProtectCharm": false,
+  "released": false
+}
+```
+兼容 formalOpen/softOpened 时注明：**本窗=护符开态夹具全表 ≠ soft-open 进包 ≠ release**。
+out 目录：`qa/out_v06p1_enhance_protect_charm_open_fixture/`。
+
+### 5. 自检（全部 exit 0 → 本窗 QA）
+1. `npx tsc --noEmit`
+2. `npm run test:v06p1-enhance-open`
+3. `npm run test:v06p1-enhance-closed`
+4. `npm run test:v06p1-forge-open` / `test:v06p1-forge-closed`
+5. `npm run test:v06p1-market-closed`
+6. `npm run test:v06d-closed` / `test:v06c-closed`
+7. 双根 datalint
+8. `git diff --check`
+9. 保护 SHA：冻结五表+三表+两 Flag 未授权差异 0
+未运行 snapshot/build/sync/release/Pages。写 selfcheck-summary / evidence-check / protection-check / protected-before|after 等可重放旁证。
+
+## 报告与状态
+- `reports/炼器阁/V06P1_ENHANCE_PROTECT_CHARM_OPEN_FIXTURE_HANDOFF.md`（列 O01–O06 旁证交棒；本令≠soft-open≠release；下一棒交执法 O 抽检，PASS 后请负责人 soft-open 令）
+- `reports/炼器阁/V06P1_ENHANCE_PROTECT_CHARM_OPEN_FIXTURE_RESULT.md`
+- 覆盖重写 `status/炼器阁.md`（≤30 行四段）
+- 同步 UTF-8 到 `/workspace/xiantu/reports/炼器阁/` 与 `/workspace/xiantu/status/炼器阁.md`
+
+## 提交与推送
+- 实现 tip subject：`feat(v0.6-p1): execute enhance protect charm open fixture O01-O06`
+- 文档 tip subject：`docs(v0.6-p1): hand off enhance protect charm open fixture evidence`
+- 只暂存本窗允许文件（测试/runner 必要改动、最小产品补强若有、QA、HANDOFF/RESULT/status）；待审 dirty（art pending、dist-test、旧 qa/out_*）勿纳入
+- `git push origin dev`（禁 force）；写 `final-tip.json`
+
+## 成功标准与回执
+回执必须含：实现 tip SHA、文档 tip/origin/dev HEAD、evidence 全键（含 protectCharmOpenFixtureTableExecuted:true 与 softOpenedProtectCharm:false）、测试绿断言数/out 目录、HANDOFF/RESULT 路径、冻结 MATCH 摘要、Codex 日志、阻断（无则写无程序自检阻断）、下一棒交执法 O01–O06。

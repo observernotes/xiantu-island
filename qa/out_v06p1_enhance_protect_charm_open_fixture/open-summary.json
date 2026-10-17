@@ -1,0 +1,49 @@
+{
+  "passed": true,
+  "protectCharmWired": true,
+  "protectCharmN": 1,
+  "protectCharmOpenFixtureTableExecuted": true,
+  "formalTipsWired": true,
+  "formalInstanceSource": true,
+  "softOpenedEntrance": true,
+  "softOpenedFormalSettle": true,
+  "softOpenedProtectCharm": false,
+  "released": false,
+  "checks": {
+    "tsc": {
+      "command": [
+        "npx",
+        "tsc",
+        "--noEmit"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {},
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T03:50:32.615566+00:00",
+      "exitCode": 0,
+      "assertions": null
+    },
+    "v06p1-enhance-open": {
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-enhance-open"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "XT_ENHANCE_QA_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_enhance_protect_charm_open_fixture"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T03:50:38.368907+00:00",
+      "exitCode": 0,
+      "assertions": 17676
+    }
+  },
+  "testedSourceSha256": {
+    "src/v06p1-enhance-open.test.ts": "7b595b44f128e2eb240a84fd74f589ef0a7ad42c9e9e17d420dc457f71c6373b",
+    "scripts/v06p1-enhance-open-test.mjs": "acc812d1151dfff8bfad06437e5873dc23d3f7ab69d86f781d036c1ca2de1ae5",
+    "src/EnhanceGate.ts": "c2a2a0efb7997270eb48674224ce9bfc08e14201e613d7aa12d35af0a2a09796",
+    "src/EnhanceProgress.ts": "49e2bd0ce8bb952ef8c06a19f2137af3cdcfef828ba1dd2508834d4b54f79724",
+    "src/scenes/GameScene.ts": "9b62f76b8a3e76b2438cfacf42d9fe15525f50a9a0427eab25d5c10d6de119f3"
+  }
+}
