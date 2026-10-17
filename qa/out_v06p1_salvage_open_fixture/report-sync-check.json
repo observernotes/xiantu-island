@@ -1,0 +1,25 @@
+{
+  "passed": true,
+  "files": [
+    {
+      "path": "reports/炼器阁/V06P1_SALVAGE_OPEN_FIXTURE_HANDOFF.md",
+      "sha256": "a72ba22eea62fc304d80ad7ad1e4d251fe6405873d5efb638d6e9fc80e52a358",
+      "UTF8": true,
+      "MATCH": true
+    },
+    {
+      "path": "reports/炼器阁/V06P1_SALVAGE_OPEN_FIXTURE_RESULT.md",
+      "sha256": "b7441e2cddeca30f6b928ae48181aba910b8ba93731d2ca403cdc07eb8074be7",
+      "UTF8": true,
+      "MATCH": true
+    },
+    {
+      "path": "status/炼器阁.md",
+      "sha256": "b430ceb0e662ac05b9de619e7a2ae473779fa3c0c0de5830b9a795982b3a43a7",
+      "UTF8": true,
+      "MATCH": true
+    }
+  ],
+  "statusLines": 7,
+  "statusParagraphs": 4
+}
