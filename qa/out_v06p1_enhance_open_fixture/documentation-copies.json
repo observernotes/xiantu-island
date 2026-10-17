@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "statusLines": 19,
+  "files": [
+    {
+      "repo": "reports/炼器阁/V06P1_ENHANCE_OPEN_FIXTURE_HANDOFF.md",
+      "copy": "/workspace/xiantu/reports/炼器阁/V06P1_ENHANCE_OPEN_FIXTURE_HANDOFF.md",
+      "sha256": "5431f93ed6503a4aa6a429c6b12dd68e8e67167f5c24d34420334f262a9820b9",
+      "sameBytes": true
+    },
+    {
+      "repo": "reports/炼器阁/V06P1_ENHANCE_OPEN_FIXTURE_RESULT.md",
+      "copy": "/workspace/xiantu/reports/炼器阁/V06P1_ENHANCE_OPEN_FIXTURE_RESULT.md",
+      "sha256": "1fdd968ce2dc1e30b8d2ffb6eba50037a1eecec562f25954ba71b95a74ce5dba",
+      "sameBytes": true
+    },
+    {
+      "repo": "status/炼器阁.md",
+      "copy": "/workspace/xiantu/status/炼器阁.md",
+      "sha256": "a27f8a73db89fbe26350d98da67af6f760b41a5f5fb53c2553a533c655ac49f2",
+      "sameBytes": true
+    }
+  ]
+}
