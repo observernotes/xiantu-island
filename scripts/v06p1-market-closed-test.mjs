@@ -11,7 +11,7 @@ const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const shared = sharedRoot(root), gameData = path.join(shared, 'game/data');
 const modes = [['shared', shared], ['snapshot', path.join(root, 'data')]];
 const dataRoots = new Map([['shared', shared], ['wt', path.join(root, 'data')], ['game', gameData]]);
-const out = process.env.MARKET_CLOSED_OUT ?? process.env.OUT_DIR ?? path.join(root, 'qa/out_v06p1_forge_formal/market-closed');
+const out = process.env.MARKET_CLOSED_OUT ?? process.env.OUT_DIR ?? path.join(root, 'qa/out_v06p1_enhance_open_preamble/market-closed');
 const baselineFile = path.join(root, 'qa/out_v06p1_market_closed/protected-before.json');
 const stringsSha = '92d5525c86562a870f45bf53c0c2010e961b83ec9c257a0cf8257178f45b4cab';
 const preEnhanceStringsSha = 'fad9b3e604a3af23e99939bf22f77a55de803842daa297ab7fb2c2a6ed0b8967';
@@ -102,8 +102,31 @@ function protectedPath(key) {
   return path.join(mode === 'wt' && name.startsWith('src/') ? root : dataRoots.get(mode), name);
 }
 
+// 只剥强化本窗三个 import 与一个完整提示块；打造原方法仍逐字钉旧 SHA。
+function stripEnhanceSceneWiring(source) {
+  for (const line of ["import { featureClosed as enhanceFeatureClosed } from '../EnhanceClosed';\n",
+    "import { isEnhanceOpenForFixture } from '../EnhanceOpenFlag';\n",
+    "import { EnhanceGate } from '../EnhanceGate';\n"]) {
+    eq(source.split(line).length - 1, 1, `C01/C12 GameScene 强化授权 import 精确一次：${line.trim()}`);
+    source = source.replace(line, '');
+  }
+  const block = [
+    "    if (!isEnhanceOpenForFixture()) this.log(enhanceFeatureClosed().text, '#aaaaaa');",
+    '    else {',
+    '      const result = new EnhanceGate(this.prog).entrance();',
+    "      this.log(result.allowed ? '装备强化已开放。' : result.text, '#aaaaaa');",
+    '    }',
+    '',
+  ].join('\n');
+  eq(source.split(block).length - 1, 1, 'C01/C12 GameScene 强化只增加一个完整只读提示块');
+  const entry = source.match(/  private tryInteractForgeEntrance\(\): boolean \{[\s\S]*?\n  \}/u)?.[0];
+  ok(entry?.includes(`${block}    return true;`), 'C01/C12 同次 smith_ou 命中先打造再强化，提示后才 return true');
+  return source.replace(block, '');
+}
+
 // 仅剥本窗明确授权的欧冶匠提示；其余 GameScene 字节仍逐字核对软开前 SHA。
 function stripForgeSceneWiring(source) {
+  source = stripEnhanceSceneWiring(source);
   let original = source;
   for (const line of ["import { featureClosed as forgeFeatureClosed } from '../ForgeClosed';\n",
     "import { isForgeOpenForFixture } from '../ForgeOpenFlag';\n",

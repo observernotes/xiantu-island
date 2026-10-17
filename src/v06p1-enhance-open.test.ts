@@ -1,4 +1,4 @@
-// 正式强化恒关；仅独立 Vite SSR 开态夹具图可内存注入 true。
+// 正式强化恒开；只有独立 Vite SSR 关态图可将 EnhanceOpenFlag 内存注入 false。
 import enhance from '@xt/balance/enhance.json';
 import { GAME_PHASE, ITEMS } from './data';
 import { featureEnabled, featureFlags } from './features';
@@ -8,6 +8,7 @@ import * as Closed from './EnhanceClosed';
 import { EnhanceGate } from './EnhanceGate';
 import { isEnhanceOpenForFixture } from './EnhanceOpenFlag';
 import { isValidEnhanceProgress } from './EnhanceProgress';
+import { GameScene } from './scenes/GameScene';
 
 type Payload = { state: string; save: Record<string, unknown>; enhanceRequestId: string };
 type GateResult = Awaited<ReturnType<EnhanceGate['submit']>>;
@@ -97,7 +98,7 @@ export async function runEnhanceOpenFixtureTests(options: {
   openFixture: boolean; dataMode?: string; refreshPayloads?: Payload[] | null; invalidTable?: string;
 }) {
   const { openFixture, dataMode = 'fixture', refreshPayloads, invalidTable } = options;
-  const label = `${dataMode}/${openFixture ? 'memory-open' : 'formal-closed'}/${invalidTable ?? 'formal-table'}`;
+  const label = `${dataMode}/${openFixture ? 'formal-open' : 'memory-closed'}/${invalidTable ?? 'formal-table'}`;
   let assertions = 0, sampleCount = 0, ledgerSeq = 0, sampled = 0;
   const eq = (actual: unknown, expected: unknown, message: string) => {
     assertions++;
@@ -116,7 +117,7 @@ export async function runEnhanceOpenFixtureTests(options: {
   });
   const fixtureOptions = (instances: Instance[] = [instance()]) => ({ fixtureInstances: copy(instances),
     random: () => { sampleCount++; return sampled; }, ledgerId: () => `${dataMode}-enhance-${++ledgerSeq}` });
-  eq(isEnhanceOpenForFixture(), openFixture, '独立SSR图唯一旗授权');
+  eq(isEnhanceOpenForFixture(), openFixture, '旗标来自当前独立SSR正式开态或内存关态图');
   eq(GAME_PHASE, 5, 'GAME_PHASE保持5');
   eq(featureEnabled('indexedDbSaves'), true, '使用真实异步保存事务');
   ok(!Object.keys(flags).some(key => /enhance/iu.test(key)), '不新增配表强化开关');
@@ -166,8 +167,8 @@ export async function runEnhanceOpenFixtureTests(options: {
     eq(idb.writes, writes, `${message}：重放零写`);
     eq(sampleCount, samples, `${message}：重放不重抽`);
   }
-  async function formalClosed(p: Progress, message: string) {
-    const fail = () => { throw new Error('正式关态不得查询资格、配置、随机或事务'); };
+  async function memoryClosed(p: Progress, message: string) {
+    const fail = () => { throw new Error('内存关态不得查询资格、配置、随机或事务'); };
     const opts = fixtureOptions(); Object.defineProperty(opts, 'fixtureInstances', { configurable: true, get: fail });
     const gate = new EnhanceGate(p, { ...fixtureOptions(), random: fail, ledgerId: fail, canCommitResult: fail });
     const hostile = new Proxy({}, { get: fail }) as ReturnType<typeof request>;
@@ -200,6 +201,83 @@ export async function runEnhanceOpenFixtureTests(options: {
     eq(guarded.feature(), Closed.featureClosed(), `${message}：构造与入口不查询夹具授权Getter`);
     eq(await guarded.submit(hostile), Closed.refuseSubmit(), `${message}：提交不查询夹具授权Getter`);
   }
+  function sceneSmoke() {
+    const { p } = fixture(), logs: { text: string; color: string }[] = [];
+    const before = p.exportSave(), writes = idb.writes, rows = copy([...idb.rows]), samples = sampleCount;
+    const entrance = { name: 'smith_ou', type: 'npc', props: { npc: 'smith_ou' }, x: 100, y: 200 };
+    const forgeTip = { text: '炼器打造已开放。', color: '#fff8d0' };
+    const enhanceTip = openFixture ? { text: '装备强化已开放。', color: '#aaaaaa' }
+      : { text: Closed.featureClosed().text, color: '#aaaaaa' };
+    const scene: any = Object.assign(Object.create(GameScene.prototype), {
+      prog: p, map: { id: 'luoxia_town', objects: [] }, player: { x: 100, y: 200 },
+      log: (text: string, color: string) => logs.push({ text, color }),
+      encounterRuntime: { interact() { throw new Error('欧冶匠两项入口须先于遭遇与NPC交互'); } },
+    });
+    eq(typeof scene.tryInteractForgeEntrance, 'function', 'Scene既有欧冶匠最小入口存在');
+    eq(scene.tryInteractForgeEntrance(), false, '没有对象时安静no-op');
+    scene.map.objects = [{ ...entrance, name: 'npc_shop', props: { npc: 'npc_shop' } }];
+    eq(scene.tryInteractForgeEntrance(), false, '非smith_ou对象不消费强化入口');
+    scene.map.objects = [entrance]; scene.player.x = entrance.x + 29;
+    eq(scene.tryInteractForgeEntrance(), false, '入口横向超距不交互');
+    scene.player.x = entrance.x; scene.player.y = entrance.y + 41;
+    eq(scene.tryInteractForgeEntrance(), false, '入口纵向超距不交互');
+    scene.player.y = entrance.y; scene.senseMap = { objectVisible: () => false };
+    eq(scene.tryInteractForgeEntrance(), false, '隐藏欧冶匠不交互');
+    eq(logs, [], '无对象/非欧冶匠/超距/隐藏时两项提示均安静');
+    scene.senseMap = undefined;
+    for (const object of [{ ...entrance, props: {} }, { ...entrance, name: 'enhance-smoke-alias' }]) {
+      scene.map.objects = [object]; const logStart = logs.length;
+      eq(scene.tryInteractForgeEntrance(), true, `${object.name}邻近欧冶匠被消费`);
+      eq(logs.slice(logStart), [forgeTip, enhanceTip], '同一次smith_ou命中先打造再强化，强化不被return饿死');
+    }
+    scene.map.objects = [entrance]; scene.player.x = entrance.x + 28; scene.player.y = entrance.y + 40;
+    let logStart = logs.length;
+    eq(scene.tryInteractForgeEntrance(), true, '28×40范围边界内两项入口仍可冒烟');
+    eq(logs.slice(logStart), [forgeTip, enhanceTip], '距离边界保持打造顺序与强化提示');
+    scene.player.x = entrance.x; scene.player.y = entrance.y; logStart = logs.length;
+    eq(scene.tryInteract(), true, '通用交互在遭遇/NPC前消费欧冶匠两项入口');
+    eq(logs.slice(logStart), [forgeTip, enhanceTip], '通用交互同命中两项入口且不重复提示');
+    const originalEntrance = EnhanceGate.prototype.entrance;
+    let entranceCalls = 0;
+    try {
+      EnhanceGate.prototype.entrance = function () {
+        entranceCalls++;
+        if (!openFixture) throw new Error('内存关态不得查询EnhanceGate');
+        return { allowed: false, tipKey: 'enhance.fixture.smoke', text: '强化冒烟拒绝。' };
+      };
+      logStart = logs.length;
+      eq(scene.tryInteractForgeEntrance(), true, '最小入口保留EnhanceGate拒绝提示分支');
+      eq(entranceCalls, openFixture ? 1 : 0, '只有正式开态查询EnhanceGate.entrance，关态直接绕过');
+      eq(logs.slice(logStart), [forgeTip, { text: openFixture ? '强化冒烟拒绝。' : Closed.featureClosed().text,
+        color: '#aaaaaa' }], 'Gate拒绝原文或内存关态tip展示，打造既有提示保持');
+    } finally { EnhanceGate.prototype.entrance = originalEntrance; }
+    eq(p.exportSave(), before, 'Scene冒烟不修改角色、打造袋或强化袋');
+    eq(idb.writes, writes, 'Scene冒烟存档写入0'); eq([...idb.rows], rows, 'Scene冒烟磁盘旧档不变');
+    eq(sampleCount, samples, 'Scene入口不抽样或结算'); eq(localWrites, 0, 'Scene冒烟无localStorage旁路写入');
+    return { noObjectNoop: true, nonSmithIgnored: true, nearbyOnly: true, hiddenIgnored: true,
+      objectName: 'smith_ou', npcProp: 'smith_ou', boundary: { x: 28, y: 40 }, genericInteraction: true,
+      graph: openFixture ? 'formal-open' : 'memory-closed', sameHitForgeThenEnhance: true,
+      forgeSoftOpenPreserved: true, enhanceNotStarved: true, gateDeniedRouting: openFixture,
+      closedBypassesGate: !openFixture, saveWrites: idb.writes - writes };
+  }
+  async function defaultGateDenied() {
+    const { p } = fixture(), gate = new EnhanceGate(p);
+    const before = p.exportSave(), writes = idb.writes, samples = sampleCount;
+    ok(gate.feature().allowed, '正式默认无fixtureInstances仍允许只读说明');
+    ok(gate.entrance().allowed, '正式默认无fixtureInstances仍允许入口提示');
+    ok(gate.loadRefresh().allowed, '正式默认无fixtureInstances空历史袋只读允许');
+    businessDenied(gate.enhance(request('formal-default-denied')), '正式默认无fixtureInstances拒绝选择');
+    const result = await gate.submit(request('formal-default-denied'));
+    businessDenied(result, '正式默认无fixtureInstances拒绝新submit');
+    eq(result.allowed ? null : result.tipKey, 'enhance.fixture.selection', '默认拒绝源于未授权装备实例');
+    eq(gate.laterService(), Closed.refuseLaterService(), '正式默认开态仍拒附灵/分解');
+    eq(p.exportSave(), before, '默认Gate拒绝不建实例、不建袋、不扣费');
+    eq(p.enhance, undefined, '默认拒绝不发明正式装备实例系统');
+    eq(idb.writes, writes, '默认无夹具授权submit拒绝零存档写');
+    eq(sampleCount, samples, '默认无夹具授权submit拒绝不抽样');
+    return { fixtureInstancesAbsent: true, submitDenied: true, tipKey: result.allowed ? null : result.tipKey,
+      noProductionInstancesInvented: true, laterServiceClosed: true, saveWrites: idb.writes - writes };
+  }
   async function roundtrip(payload: Payload) {
     const p = fixture().p;
     eq(await p.importSave(copy(payload.save), { async: true }), true, `${payload.state}：import完整结果`);
@@ -214,7 +292,7 @@ export async function runEnhanceOpenFixtureTests(options: {
     eq(loaded.enhance, payload.save.enhance, `${payload.state}：真实IDB读档强化袋一致`);
     eq(loaded.inventory, payload.save.inventory, `${payload.state}：真实IDB读档库存一致`);
     eq(loaded.stones, payload.save.stones, `${payload.state}：真实IDB读档灵石一致`);
-    if (!openFixture) { await formalClosed(loaded, `${payload.state}/正式历史夹具袋`); return; }
+    if (!openFixture) { await memoryClosed(loaded, `${payload.state}/内存关态历史夹具袋`); return; }
     const gate = new EnhanceGate(loaded), before = loaded.exportSave(), writes = idb.writes, samples = sampleCount;
     ok(gate.loadRefresh().allowed, `${payload.state}：无新授权仍可只读历史`);
     const result = committed(gate.level(payload.enhanceRequestId));
@@ -226,6 +304,8 @@ export async function runEnhanceOpenFixtureTests(options: {
     await unchanged(loaded, () => gate.submit(request('fresh-without-authorization', result.finalLevel, result.instanceRef)), `${payload.state}：历史袋不替代新请求夹具授权`);
   }
   try {
+    const sceneSmokeEvidence = invalidTable ? null : sceneSmoke();
+    const defaultGateEvidence = openFixture && !invalidTable ? await defaultGateDenied() : null;
     if (refreshPayloads) {
       eq(refreshPayloads.map(row => row.state), ['success', 'failure-no-drop', 'failure-drop'], '独立fresh SSR覆盖成功与两种正常失败');
       for (const payload of refreshPayloads) await roundtrip(payload);
@@ -235,7 +315,7 @@ export async function runEnhanceOpenFixtureTests(options: {
       for (const enhanceBag of [undefined, { enhanceRequestId: 'old-request', state: 'pending' },
         { state: 'unknown', raw: 'must-keep' }, { instanceRef: 'old-instance', enhanceLevel: 7 }]) {
         const { p } = fixture(); (p as any).enhance = copy(enhanceBag);
-        await formalClosed(p, '正式关态/无袋或歧义旧请求');
+        await memoryClosed(p, '内存关态/无袋或歧义旧请求');
       }
     } else if (invalidTable) {
       const { p, gate } = fixture(), samples = sampleCount;
@@ -457,10 +537,11 @@ export async function runEnhanceOpenFixtureTests(options: {
     }
     eq(featureFlags(), flags, 'features原值保持不变'); eq(JSON.stringify(enhance), tableBefore, 'enhance内存表未修改');
     eq(localWrites, 0, '真实IDB保存无localStorage写旁路');
-    return { assertions, payloads, openFixture, graph: openFixture ? 'memory-open' : 'formal-closed',
-      formalOpen: false, fixtureOnly: true, softOpened: false, released: false, storageWrites: idb.writes, commits: idb.commits, sampleCount,
+    return { assertions, payloads, openFixture, graph: openFixture ? 'formal-open' : 'memory-closed',
+      formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false,
+      sceneSmoke: sceneSmokeEvidence, defaultGateDenied: defaultGateEvidence, storageWrites: idb.writes, commits: idb.commits, sampleCount,
       forgingExperienceWritten: false, protectorPath: 'missing-basis-denied',
-      cases: openFixture ? invalidTable ? ['O06'] : ['O01', 'O02', 'O03', 'O04', 'O05', 'O06', 'O07', 'O08'] : ['formal-eight-tips', 'zero-side-effects', 'historical-baggage'] };
+      cases: openFixture ? invalidTable ? ['O06'] : ['O01', 'O02', 'O03', 'O04', 'O05', 'O06', 'O07', 'O08'] : ['memory-closed-eight-tips', 'zero-side-effects', 'historical-baggage'] };
   } finally {
     for (const p of progresses) await p.flushSaves(); Progress.setActiveSlot(oldSlot); setSaveBackend(createIndexedDbBackend());
     if (storage) Object.defineProperty(globalThis, 'localStorage', storage); else Reflect.deleteProperty(globalThis, 'localStorage');

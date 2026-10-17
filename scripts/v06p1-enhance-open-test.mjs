@@ -1,4 +1,4 @@
-// 双根隔离：正式旗标恒false；仅独立Vite SSR开态夹具图由resolve/load内存注入true。
+// 双根隔离：正式旗标恒 true；仅独立 Vite SSR 关态图由 resolve/load 内存注入 false。
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
@@ -12,7 +12,7 @@ const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const shared = sharedRoot(root);
 const modes = [['shared', shared], ['snapshot', path.join(root, 'data')]];
 const dataRoots = [['shared', shared], ['wt', path.join(root, 'data')], ['game', path.join(shared, 'game/data')]];
-const out = path.join(root, 'qa/out_v06p1_enhance_open_fixture');
+const out = path.join(root, 'qa/out_v06p1_enhance_open_preamble');
 const before = new Map(), directoryBefore = new Map(), evidence = [];
 const recipesSha = '1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f';
 const forgeFlagSha = '0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e';
@@ -54,8 +54,8 @@ async function protectFiles() {
 }
 async function checkFormal() {
   const flag = await fs.readFile(path.join(root, 'src/EnhanceOpenFlag.ts'), 'utf8');
-  ok(/export function isEnhanceOpenForFixture\(\): boolean\s*\{\s*return false;\s*\}/u.test(flag), '正式磁盘EnhanceOpenFlag恒false');
-  ok(!/import\s|process\.|globalThis|localStorage|sessionStorage|featureEnabled|enabled/u.test(flag), '正式旗标不受配表环境或会话翻开');
+  ok(/export function isEnhanceOpenForFixture\(\): boolean\s*\{\s*return true;\s*\}/u.test(flag), '正式磁盘EnhanceOpenFlag恒true');
+  ok(!/import\s|process\.|globalThis|localStorage|sessionStorage|featureEnabled|enabled/u.test(flag), '正式旗标不受配表环境或会话翻转');
   const oldClosed = execFileSync('git', ['show', '64c26a4:src/EnhanceClosed.ts'], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] });
   eq(await fs.readFile(path.join(root, 'src/EnhanceClosed.ts')), oldClosed, 'EnhanceClosed保留关态基线原字节');
   eq(await shaOrNull(path.join(root, 'src/ForgeOpenFlag.ts')), forgeFlagSha, 'ForgeOpenFlag保持写前指定SHA');
@@ -67,15 +67,29 @@ async function checkFormal() {
   for (const [method, closed] of Object.entries(methods))
     ok(new RegExp(`(?:async\\s+)?${method}\\([^)]*\\)\\s*:\\s*[^\\{]+\\{\\s*if\\s*\\(!isEnhanceOpenForFixture\\(\\)\\)\\s*return EnhanceClosed\\.${closed}\\(\\);`, 'u').test(gate),
       `${method}首语句先查旗并返回对应原关态tip`);
-  for (const name of ['src/scenes/GameScene.ts', 'src/ShopPanel.ts'])
-    ok(!/EnhanceGate|EnhanceOpenFlag|EnhanceProgress|tryInteractEnhance|openEnhance|submitEnhance/u.test(await fs.readFile(path.join(root, name), 'utf8')),
-      `${name}不接强化前台`);
+  const scene = await fs.readFile(path.join(root, 'src/scenes/GameScene.ts'), 'utf8');
+  for (const name of ['EnhanceClosed', 'EnhanceOpenFlag', 'EnhanceGate', 'tryInteractForgeEntrance'])
+    ok(scene.includes(name), `GameScene仅接既有smith_ou最小冒烟：${name}`);
+  ok(/this\.tryInteractTowerClosed\(\)\s*\|\|\s*this\.tryInteractMarketConsign\(\)\s*\|\|\s*this\.tryInteractForgeEntrance\(\)[^\n]*this\.talkNearby\(\)/u.test(scene),
+    'Z键链保留既有smith_ou同级入口');
+  ok(/if \(this\.tryInteractMarketConsign\(\)\) return true;\s*if \(this\.tryInteractForgeEntrance\(\)\) return true;/u.test(scene),
+    '通用交互链保留既有smith_ou入口');
+  ok(/new EnhanceGate\(this\.prog\)\.entrance\(\)/u.test(scene), '正式Scene只读入口不注入fixtureInstances');
+  const entrance = scene.match(/  private tryInteractForgeEntrance\(\): boolean \{[\s\S]*?\n  \}/u)?.[0];
+  ok(entrance, 'smith_ou入口方法存在');
+  ok(/new ForgeGate\(this\.prog\)\.entrance\(\)[\s\S]*new EnhanceGate\(this\.prog\)\.entrance\(\)[\s\S]*return true;/u.test(entrance),
+    '同一次smith_ou命中先打造再强化，最后返回，强化不被饿死');
+  eq((entrance.match(/return true;/gu) ?? []).length, 1, '同一smith_ou入口仅在两段提示后消费命中');
+  ok(!/EnhancePanel|EnhancementPanel|openEnhance|submitEnhance|EnhanceProgress|fixtureInstances/u.test(scene),
+    'GameScene无完整强化UI或提交面板');
+  ok(!/EnhanceGate|EnhanceOpenFlag|EnhanceProgress|tryInteractEnhance|openEnhance|submitEnhance/u.test(await fs.readFile(path.join(root, 'src/ShopPanel.ts'), 'utf8')),
+    'ShopPanel不接强化');
   const consumers = [];
   for (const file of (await filesUnder(path.join(root, 'src'))).filter(name => name.endsWith('.ts'))) {
     if (['EnhanceGate.ts', 'v06p1-enhance-open.test.ts'].includes(file)) continue;
     if (/from\s+['"][^'"]*EnhanceGate(?:\.ts)?['"]/u.test(await fs.readFile(path.join(root, 'src', file), 'utf8'))) consumers.push(file);
   }
-  eq(consumers, [], 'EnhanceGate只由夹具测试消费，前台与正式调用图无接线');
+  eq(consumers, ['scenes/GameScene.ts'], 'EnhanceGate正式消费者仅为GameScene只读冒烟入口');
   for (const [mode, dataRoot] of dataRoots) {
     eq(await shaOrNull(path.join(dataRoot, 'balance/enhance.json')), enhanceSha, `${mode} enhance保持指定SHA`);
     const table = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/enhance.json'), 'utf8'));
@@ -99,32 +113,39 @@ async function checkFormal() {
     const shops = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/shops.json'), 'utf8'));
     ok(Object.values(shops).every(Array.isArray), `${mode} shops保持既有NPC货单`);
     ok(!Object.keys(shops).some(key => /enhance|smith_ou|auction|consign/iu.test(key)), `${mode} 不混强化寄售拍卖服务`);
-    report({ suite: 'v06p1-enhance-open-formal', dataMode: mode, formalOpen: false, fixtureOnly: true,
-      enhanceSha, giftsChecked, smithServices: false, frontEndWired: false, softOpened: false, released: false });
+    report({ suite: 'v06p1-enhance-open-formal', dataMode: mode, formalOpen: true, closedFixtureOnly: true,
+      enhanceSha, giftsChecked, smithServices: false, minimalSceneWiring: true, fullEnhanceUi: false, softOpened: true, released: false });
   }
 }
 async function runGraph(mode, dataRoot, openFixture, refreshPayloads = null, invalidTable = null) {
   let flagLoads = 0, featureOverrideCalls = 0;
-  const flagId = '\0v06p1-memory-open-enhance-flag', tableId = '\0v06p1-invalid-enhance-table';
+  const flagId = '\0v06p1-memory-closed-enhance-flag', tableId = '\0v06p1-invalid-enhance-table', phaserId = '\0v06p1-enhance-phaser';
   let tableLoads = 0;
   const server = await createServer({
     root, configFile: false, resolve: { alias: { '@xt': dataRoot } },
     server: { middlewareMode: true, hmr: false, ws: false }, appType: 'custom', logLevel: 'error',
-    plugins: [{ name: 'v06p1-enhance-memory-only-open', enforce: 'pre',
+    plugins: [{ name: 'v06p1-enhance-memory-closed', enforce: 'pre',
       resolveId(id) {
-        if (openFixture && /(?:^|\/)EnhanceOpenFlag(?:\.ts)?$/u.test(id)) return flagId;
+        if (id === 'phaser') return phaserId;
+        if (!openFixture && /(?:^|\/)EnhanceOpenFlag(?:\.ts)?$/u.test(id)) return flagId;
         if (invalidTable && /(?:^|\/)balance\/enhance\.json$/u.test(id)) return tableId;
       },
       load(id) {
-        if (id === flagId) { flagLoads++; return 'export function isEnhanceOpenForFixture() { return true; }'; }
+        if (id === flagId) { flagLoads++; return 'export function isEnhanceOpenForFixture() { return false; }'; }
         if (id === tableId) { tableLoads++; return `export default ${JSON.stringify(invalidTable.table)};`; }
+        if (id !== phaserId) return;
+        return `class Sprite {} export default { WEBGL: 2, Scene: class {}, BlendModes: { NORMAL: 0 },
+          Physics: { Arcade: { Sprite } }, GameObjects: { Sprite, NineSlice: class {} },
+          Scenes: { Events: { SHUTDOWN: 'shutdown' } }, Animations: { Events: { ANIMATION_COMPLETE: 'animationcomplete' } },
+          Input: { Keyboard: { JustDown: key => { const down = !!key?._justDown; if (key) key._justDown = false; return down; } } },
+          Math: { Clamp: (value, min, max) => Math.min(max, Math.max(min, value)), Linear: (from, to, amount) => from + (to - from) * amount } };`;
       },
       transform(source, id) {
         if (!id.endsWith('/src/features.ts')) return;
         return source.replace(/export function setFeatureFlag\(name: FeatureName, value: boolean\): void \{/u,
           'export function setFeatureFlag(name: FeatureName, value: boolean): void { globalThis.__v06p1EnhanceFeatureOverrideAttempt();');
       },
-    }],
+    }], ssr: { noExternal: ['phaser'] },
   });
   const descriptor = Object.getOwnPropertyDescriptor(globalThis, '__v06p1EnhanceFeatureOverrideAttempt');
   Object.defineProperty(globalThis, '__v06p1EnhanceFeatureOverrideAttempt', { configurable: true, value() {
@@ -132,7 +153,7 @@ async function runGraph(mode, dataRoot, openFixture, refreshPayloads = null, inv
   } });
   try {
     const flag = await server.ssrLoadModule('/src/EnhanceOpenFlag.ts');
-    eq(flag.isEnhanceOpenForFixture(), openFixture, `${mode} 正式图false，开态夹具仅内存true`);
+    eq(flag.isEnhanceOpenForFixture(), openFixture, `${mode} 正式图true，关态图仅内存false`);
     const data = await server.ssrLoadModule('/src/data.ts');
     eq(data.GAME_PHASE, 5, `${mode} GAME_PHASE仍为5`);
     const features = await server.ssrLoadModule('/src/features.ts');
@@ -143,12 +164,12 @@ async function runGraph(mode, dataRoot, openFixture, refreshPayloads = null, inv
     runtimeAssertions += result.assertions;
     eq(featureOverrideCalls, 0, `${mode} 正式图与夹具图均不覆盖features`);
     eq(tableLoads, invalidTable ? 1 : 0, `${mode} 坏表仅独立SSR内存模块注入`);
-    eq(flagLoads, openFixture ? 1 : 0, `${mode} 正式图无注入，夹具图虚拟flag仅加载一次`);
+    eq(flagLoads, openFixture ? 0 : 1, `${mode} 正式图无注入，关态图虚拟flag仅加载一次`);
     const { payloads, ...resultEvidence } = result;
-    report({ suite: 'v06p1-enhance-open-graph', dataMode: mode, graph: openFixture ? 'memory-open' : 'formal-closed',
-      freshSsrRefresh: refreshPayloads !== null, invalidTable: invalidTable?.name ?? null, formalOpen: false, fixtureOnly: true, flagLoads, featureOverrideCalls,
+    report({ suite: 'v06p1-enhance-open-graph', dataMode: mode, graph: openFixture ? 'formal-open' : 'memory-closed',
+      freshSsrRefresh: refreshPayloads !== null, invalidTable: invalidTable?.name ?? null, formalOpen: true, closedFixtureOnly: true, flagLoads, featureOverrideCalls,
       result: resultEvidence, savedStateEvidence: payloads.map(({ state, enhanceRequestId, save }) =>
-        ({ state, enhanceRequestId, saveSha: hash(JSON.stringify(save)) })), softOpened: false, released: false });
+        ({ state, enhanceRequestId, saveSha: hash(JSON.stringify(save)) })), softOpened: true, released: false });
     return result;
   } finally {
     if (descriptor) Object.defineProperty(globalThis, '__v06p1EnhanceFeatureOverrideAttempt', descriptor);
@@ -163,11 +184,11 @@ try {
   await protectFiles();
   await checkFormal();
   for (const [mode, dataRoot] of modes) {
-    await runGraph(mode, dataRoot, false);
     const opened = await runGraph(mode, dataRoot, true);
+    await runGraph(mode, dataRoot, false);
     eq(opened.payloads.length, 3, `${mode} 提供成功与两种正常失败完整保存载荷`);
     await runGraph(mode, dataRoot, true, opened.payloads);
-    // 将夹具已提交历史结果带入全新正式关态图，关态优先并保留合法既有资产。
+    // 将已提交历史结果带入全新内存关态图，关态优先并保留合法既有资产。
     await runGraph(mode, dataRoot, false, opened.payloads);
     const original = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/enhance.json'), 'utf8'));
     const mutations = {
@@ -186,7 +207,7 @@ try {
       await runGraph(mode, dataRoot, true, null, { name, table });
     }
     const table = structuredClone(original); table.levels = [];
-    await runGraph(mode, dataRoot, false, null, { name: 'formal-closed-never-settles-table', table });
+    await runGraph(mode, dataRoot, false, null, { name: 'memory-closed-never-settles-table', table });
   }
   passed = true;
 } finally {
@@ -196,7 +217,7 @@ try {
   report({ suite: 'v06p1-enhance-open-sha-guard', protectedFiles: before.size, protectedDirectories: directoryBefore.size, passed: true });
   await fs.writeFile(path.join(out, 'v06p1-enhance-open-evidence.json'), `${JSON.stringify({ passed,
     assertions: assertions + runtimeAssertions, staticAssertions: assertions, runtimeAssertions,
-    formalOpen: false, fixtureOnly: true, softOpened: false, released: false,
+    formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false,
     protectedFiles: Object.fromEntries(before), protectedDirectories: Object.fromEntries(directoryBefore), evidence }, null, 2)}\n`);
 }
-console.log(`v06p1 enhance open fixture tests ok: ${assertions + runtimeAssertions} assertions; shared/snapshot双根正式关态+SSR内存开态及fresh SSR读回；O01–O08；正式flag=false；EnhanceClosed原字节；gifts 10×false；enhance未改；GAME_PHASE=5；PASS≠soft-open≠release`);
+console.log(`v06p1 enhance open preamble tests ok: ${assertions + runtimeAssertions} assertions; shared/snapshot双根formal-open+memory-closed及fresh SSR读回；O01–O08；Scene最小smith_ou同命中冒烟零写；正式flag=true；EnhanceClosed原字节；gifts 10×false；enhance未改；GAME_PHASE=5；formalOpen:true、closedFixtureOnly:true、softOpened:true、released:false；PASS≠进包≠release`);
