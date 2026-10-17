@@ -1,0 +1,31 @@
+{
+  "name": "v06p1-attr-ui-map-api",
+  "command": [
+    "npm",
+    "run",
+    "test:v06p1-attr-ui-map-api"
+  ],
+  "cwd": "/workspace/xiantu/wt/dev",
+  "environment": {
+    "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/regression-register.mjs",
+    "FORGE_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06p1-attr-ui-map-api",
+    "ENHANCE_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06p1-attr-ui-map-api",
+    "ENCHANT_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06p1-attr-ui-map-api",
+    "SALVAGE_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06p1-attr-ui-map-api",
+    "SALVAGE_OPEN_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06p1-attr-ui-map-api",
+    "ENCHANT_OPEN_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06p1-attr-ui-map-api",
+    "XT_ENHANCE_QA_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06p1-attr-ui-map-api",
+    "MARKET_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06p1-attr-ui-map-api",
+    "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06p1-attr-ui-map-api",
+    "OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06p1-attr-ui-map-api"
+  },
+  "stdin": "/dev/null",
+  "startedAt": "2026-10-17T11:34:14.879Z",
+  "finishedAt": "2026-10-17T11:34:23.782Z",
+  "exitCode": 0,
+  "signal": null,
+  "assertions": 1128,
+  "assertionCountAvailable": true,
+  "log": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06p1-attr-ui-map-api.log",
+  "assertionCountMeaning": "Reported suite aggregate; no extra synthetic assertions added."
+}

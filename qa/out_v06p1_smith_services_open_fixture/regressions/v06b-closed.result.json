@@ -1,0 +1,31 @@
+{
+  "name": "v06b-closed",
+  "command": [
+    "npm",
+    "run",
+    "test:v06b-closed"
+  ],
+  "cwd": "/workspace/xiantu/wt/dev",
+  "environment": {
+    "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/regression-register.mjs",
+    "FORGE_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06b-closed",
+    "ENHANCE_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06b-closed",
+    "ENCHANT_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06b-closed",
+    "SALVAGE_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06b-closed",
+    "SALVAGE_OPEN_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06b-closed",
+    "ENCHANT_OPEN_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06b-closed",
+    "XT_ENHANCE_QA_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06b-closed",
+    "MARKET_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06b-closed",
+    "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06b-closed",
+    "OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06b-closed"
+  },
+  "stdin": "/dev/null",
+  "startedAt": "2026-10-17T11:37:28.640Z",
+  "finishedAt": "2026-10-17T11:37:34.075Z",
+  "exitCode": 0,
+  "signal": null,
+  "assertions": 744,
+  "assertionCountAvailable": true,
+  "log": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06b-closed.log",
+  "assertionCountMeaning": "Sum of reported per-component runtime counts for both roots; outer static assert calls are not included."
+}

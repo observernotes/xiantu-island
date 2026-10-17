@@ -1,0 +1,30 @@
+{
+  "name": "v06p1-enhance-open",
+  "command": [
+    "npm",
+    "run",
+    "test:v06p1-enhance-open"
+  ],
+  "cwd": "/workspace/xiantu/wt/dev",
+  "environment": {
+    "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/regression-register.mjs",
+    "FORGE_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06p1-enhance-open",
+    "ENHANCE_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06p1-enhance-open",
+    "ENCHANT_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06p1-enhance-open",
+    "SALVAGE_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06p1-enhance-open",
+    "SALVAGE_OPEN_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06p1-enhance-open",
+    "ENCHANT_OPEN_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06p1-enhance-open",
+    "XT_ENHANCE_QA_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06p1-enhance-open",
+    "MARKET_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06p1-enhance-open",
+    "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06p1-enhance-open",
+    "OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06p1-enhance-open"
+  },
+  "stdin": "/dev/null",
+  "startedAt": "2026-10-17T11:33:55.933Z",
+  "finishedAt": "2026-10-17T11:33:56.851Z",
+  "exitCode": 1,
+  "signal": null,
+  "assertions": null,
+  "assertionCountAvailable": false,
+  "log": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06p1-enhance-open.log"
+}

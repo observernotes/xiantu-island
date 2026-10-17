@@ -1,0 +1,2772 @@
+[
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 3,
+    "text": "export type EnhanceClosedTipKey = 'enhance.closed.feature' | 'enhance.closed.entrance'"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 4,
+    "text": "  | 'enhance.closed.enhance' | 'enhance.closed.no_submit' | 'enhance.closed.no_level'"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 5,
+    "text": "  | 'enhance.closed.no_consume' | 'enhance.closed.load_refresh' | 'enhance.closed.later_service';"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 7,
+    "text": "export interface EnhanceClosedTip {"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 9,
+    "text": "  readonly tipKey: EnhanceClosedTipKey;"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 13,
+    "text": "/** 本窗恒定关态；装备、资源和旧档均不能授权强化。 */"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 14,
+    "text": "function closed(tipKey: EnhanceClosedTipKey): EnhanceClosedTip {"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 19,
+    "text": "export function featureClosed() { return closed('enhance.closed.feature'); }"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 20,
+    "text": "export function refuseEntrance() { return closed('enhance.closed.entrance'); }"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 21,
+    "text": "export function refuseEnhance() { return closed('enhance.closed.enhance'); }"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 22,
+    "text": "export function refuseSubmit() { return closed('enhance.closed.no_submit'); }"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 23,
+    "text": "export function refuseLevel() { return closed('enhance.closed.no_level'); }"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 24,
+    "text": "export function refuseConsume() { return closed('enhance.closed.no_consume'); }"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 25,
+    "text": "export function refuseLoadRefresh() { return closed('enhance.closed.load_refresh'); }"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 26,
+    "text": "export function refuseLaterService() { return closed('enhance.closed.later_service'); }"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 1,
+    "text": "import enhance from '@xt/balance/enhance.json';"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 2,
+    "text": "import protectCharmMap from '@xt/balance/enhance_protect_charm.json';"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 7,
+    "text": "import { isEnhanceOpenForFixture } from './EnhanceOpenFlag';"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 8,
+    "text": "import * as EnhanceClosed from './EnhanceClosed';"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 9,
+    "text": "import { enhanceArray, enhanceFields, isEnhanceId, isEnhanceInstanceRef, isValidEnhanceInstances, isValidEnhanceProgress,"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 10,
+    "text": "  type EnhanceAttributes, type EnhanceEquipmentType, type EnhanceFixtureInstance, type EnhanceProgress, type EnhanceResult } from './EnhanceProgress';"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 12,
+    "text": "export interface EnhanceRequest {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 13,
+    "text": "  enhanceRequestId: string;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 19,
+    "text": "export interface EnhanceFixtureOptions {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 21,
+    "text": "  fixtureInstances?: readonly EnhanceFixtureInstance[];"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 25,
+    "text": "  canCommitResult?: (draft: Progress, result: EnhanceResult) => boolean;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 27,
+    "text": "export interface EnhanceLevelRow { to: number; rate: number; stones: number; refineStones: number; dropOnFail: boolean; }"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 28,
+    "text": "export interface EnhanceAllowed {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 30,
+    "text": "  result?: EnhanceResult;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 31,
+    "text": "  progress?: EnhanceProgress;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 32,
+    "text": "  instance?: EnhanceFixtureInstance;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 33,
+    "text": "  attributes?: EnhanceAttributes;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 34,
+    "text": "  row?: EnhanceLevelRow;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 37,
+    "text": "export type EnhanceFormalTipKey = 'enhance.formal.no_instance' | 'enhance.formal.foreign' | 'enhance.formal.bad_type'"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 38,
+    "text": "  | 'enhance.formal.protect' | 'enhance.formal.resources' | 'enhance.formal.max_level'"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 39,
+    "text": "  | 'enhance.formal.duplicate' | 'enhance.formal.load_dedupe';"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 40,
+    "text": "export interface EnhanceDenied {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 45,
+    "text": "  result?: EnhanceResult;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 46,
+    "text": "  progress?: EnhanceProgress;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 49,
+    "text": "export type EnhanceGateResult = EnhanceAllowed | EnhanceDenied;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 50,
+    "text": "type EnhanceSelection = { allowed: true; instance: EnhanceFixtureInstance; row: EnhanceLevelRow };"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 52,
+    "text": "const denied = (reason: string, text: string): EnhanceDenied => ({ allowed: false, tipKey: `enhance.fixture.${reason}`, text });"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 53,
+    "text": "const formalDenied = (tipKey: EnhanceFormalTipKey): EnhanceDenied => ({ allowed: false, tipKey, text: strings[tipKey] });"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 57,
+    "text": "const sameAttributes = (a: EnhanceAttributes, b: EnhanceAttributes): boolean =>"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 62,
+    "text": "export class EnhanceGate {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 66,
+    "text": "  constructor(private readonly progress: Progress, private readonly fixture: EnhanceFixtureOptions = {}) {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 70,
+    "text": "  feature(): EnhanceGateResult {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 71,
+    "text": "    if (!isEnhanceOpenForFixture()) return EnhanceClosed.featureClosed();"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 72,
+    "text": "    return this.validRules() ? { allowed: true } : denied('rules', '强化配置依赖不完整。');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 74,
+    "text": "  entrance(): EnhanceGateResult {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 75,
+    "text": "    if (!isEnhanceOpenForFixture()) return EnhanceClosed.refuseEntrance();"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 76,
+    "text": "    return this.validRules() ? { allowed: true } : denied('rules', '强化配置依赖不完整。');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 79,
+    "text": "  enhance(request?: EnhanceRequest): EnhanceGateResult {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 80,
+    "text": "    if (!isEnhanceOpenForFixture()) return EnhanceClosed.refuseEnhance();"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 85,
+    "text": "        ? denied('progress', '强化档案存在歧义，已阻止写入。') : formalDenied('enhance.formal.no_instance');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 88,
+    "text": "      if (!this.ownsCosts(this.progress, selected.row)) return formalDenied('enhance.formal.resources');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 91,
+    "text": "      return { allowed: true, instance: copy(selected.instance), attributes: this.attributes(selected.instance.type, selected.instance.enhanceLevel), row: copy(selected.row) };"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 92,
+    "text": "    } catch { return denied('request', '强化选择无效。'); }"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 94,
+    "text": "  async submit(request: EnhanceRequest): Promise<EnhanceGateResult> {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 95,
+    "text": "    if (!isEnhanceOpenForFixture()) return EnhanceClosed.refuseSubmit();"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 97,
+    "text": "      if (this.#busy) return denied('busy', '正在保存强化结果，请稍候。');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 100,
+    "text": "        ? denied('progress', '强化档案存在歧义，已阻止写入。') : formalDenied('enhance.formal.no_instance'));"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 101,
+    "text": "      if (!this.validRequest(request)) return formalDenied('enhance.formal.no_instance');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 102,
+    "text": "      const old = this.progress.enhance?.enhancements.find(row => row.enhanceRequestId === request.enhanceRequestId);"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 108,
+    "text": "      if (!this.ownsCosts(this.progress, selected.row)) return formalDenied('enhance.formal.resources');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 114,
+    "text": "        const committed = draft.enhance?.enhancements.find(row => row.enhanceRequestId === intent.enhanceRequestId);"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 118,
+    "text": "        if (!this.ownsCosts(draft, selection.row)) return reject(formalDenied('enhance.formal.resources'));"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 121,
+    "text": "        const ledgerId = draft.enhance?.ledgerId ?? (this.fixture.ledgerId ? this.fixture.ledgerId() : `enhance_${crypto.randomUUID()}`);"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 122,
+    "text": "        if (!isEnhanceId(ledgerId)) return reject(denied('identity', '强化夹具账本身份无效。'));"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 124,
+    "text": "        if (!ratio(random) || random >= 1) return reject(denied('random', '强化抽样无效，保持原状态。'));"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 127,
+    "text": "        const result: EnhanceResult = {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 128,
+    "text": "          state: 'committed', enhanceRequestId: intent.enhanceRequestId, enhanceResultRef: `${ledgerId}:enhance:${intent.enhanceRequestId}`,"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 133,
+    "text": "        const bag: EnhanceProgress = draft.enhance ?? { version: 1, ledgerId, instances: copy([...authorized!]), enhancements: [], receipts: [] };"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 141,
+    "text": "        instance.enhanceLevel = finalLevel;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 142,
+    "text": "        bag.enhancements.push(result); bag.receipts.push(result.enhanceResultRef); draft.enhance = bag;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 146,
+    "text": "          return reject(denied('commit', '强化结果承载失败，保持原库存与等级。'));"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 149,
+    "text": "          || instance.enhanceLevel !== finalLevel || equipmentCounts.some(([id, before]) => draft.count(id) !== before)"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 150,
+    "text": "          || !this.ownsInstances(draft, this.usesFixtureInstances() ? bag.instances : draft.formalEnhanceInstances()))"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 151,
+    "text": "          return reject(denied('commit', '强化结果承载失败，保持原库存与等级。'));"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 154,
+    "text": "    } catch { return denied('save', '强化未提交，保持原库存与等级。'); }"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 156,
+    "text": "  level(enhanceRequestId?: string): EnhanceGateResult {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 157,
+    "text": "    if (!isEnhanceOpenForFixture()) return EnhanceClosed.refuseLevel();"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 158,
+    "text": "    return this.readResult(enhanceRequestId);"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 160,
+    "text": "  consume(enhanceRequestId?: string): EnhanceGateResult {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 161,
+    "text": "    if (!isEnhanceOpenForFixture()) return EnhanceClosed.refuseConsume();"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 162,
+    "text": "    return this.readResult(enhanceRequestId);"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 164,
+    "text": "  loadRefresh(): EnhanceGateResult {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 165,
+    "text": "    if (!isEnhanceOpenForFixture()) return EnhanceClosed.refuseLoadRefresh();"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 167,
+    "text": "      ? denied('progress', '强化档案存在歧义，已阻止写入。') : formalDenied('enhance.formal.no_instance');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 168,
+    "text": "    if (this.progress.enhance?.enhancements.length) return {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 169,
+    "text": "      ...formalDenied('enhance.formal.load_dedupe'), progress: copy(this.progress.enhance), replayed: true,"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 171,
+    "text": "    return this.progress.enhance === undefined ? { allowed: true } : { allowed: true, progress: copy(this.progress.enhance) };"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 173,
+    "text": "  laterService(): EnhanceGateResult {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 174,
+    "text": "    if (!isEnhanceOpenForFixture()) return EnhanceClosed.refuseLaterService();"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 175,
+    "text": "    return EnhanceClosed.refuseLaterService();"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 178,
+    "text": "  private readResult(requestId: string | undefined): EnhanceGateResult {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 180,
+    "text": "      ? denied('progress', '强化档案存在歧义，已阻止写入。') : formalDenied('enhance.formal.no_instance');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 181,
+    "text": "    const result = this.progress.enhance?.enhancements.find(row => row.enhanceRequestId === requestId);"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 184,
+    "text": "      ? denied('result', '没有完整提交的强化结果。') : formalDenied('enhance.formal.no_instance');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 186,
+    "text": "  private replay(result: EnhanceResult, request: EnhanceRequest): EnhanceDenied {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 189,
+    "text": "      ? { ...formalDenied('enhance.formal.duplicate'), result: copy(result), replayed: true }"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 190,
+    "text": "      : formalDenied('enhance.formal.duplicate');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 192,
+    "text": "  private validRequest(value: unknown): value is EnhanceRequest {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 193,
+    "text": "    return enhanceFields(value, ['enhanceRequestId', 'instanceRef', 'fromLevel', 'to', 'useProtectCharm'])"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 194,
+    "text": "      && isEnhanceId(value.enhanceRequestId) && isEnhanceInstanceRef(value.instanceRef)"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 201,
+    "text": "    const authorized = this.usesFixtureInstances() ? this.fixture.fixtureInstances : this.progress.formalEnhanceInstances();"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 202,
+    "text": "    return enhanceArray(authorized) && authorized.length > 0;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 205,
+    "text": "  private formalSelectionBoundary(progress: Progress, request: EnhanceRequest | undefined): EnhanceDenied | undefined {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 207,
+    "text": "    const status = progress.formalEnhanceInstanceStatus(request.instanceRef);"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 208,
+    "text": "    if (status === 'foreign') return formalDenied('enhance.formal.foreign');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 210,
+    "text": "    const instance = progress.enhance?.instances.find(row => row.instanceRef === request.instanceRef);"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 212,
+    "text": "      return formalDenied('enhance.formal.bad_type');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 213,
+    "text": "    if (instance && (!count(instance.enhanceLevel) || instance.enhanceLevel > enhance.maxLevel))"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 214,
+    "text": "      return formalDenied('enhance.formal.max_level');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 216,
+    "text": "  private selection(progress: Progress, request: EnhanceRequest | undefined,"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 217,
+    "text": "    authorized: readonly EnhanceFixtureInstance[] | undefined = this.usesFixtureInstances()"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 218,
+    "text": "      ? this.fixture.fixtureInstances : progress.formalEnhanceInstances()): EnhanceSelection | EnhanceDenied {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 221,
+    "text": "    if (!this.validRequest(request) || !enhanceArray(authorized) || !authorized.length)"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 222,
+    "text": "      return formalDenied('enhance.formal.no_instance');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 225,
+    "text": "      if (!enhanceFields(row, ['instanceRef', 'itemId', 'type', 'enhanceLevel'])"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 226,
+    "text": "        || !isEnhanceInstanceRef(row.instanceRef) || !isEnhanceId(row.itemId))"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 227,
+    "text": "        return formalDenied('enhance.formal.no_instance');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 228,
+    "text": "      if ((row.type !== 'weapon' && row.type !== 'armor') || !this.supportedInstance(row as unknown as EnhanceFixtureInstance))"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 229,
+    "text": "        return formalDenied('enhance.formal.bad_type');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 230,
+    "text": "      if (!count(row.enhanceLevel) || row.enhanceLevel > enhance.maxLevel) return formalDenied('enhance.formal.max_level');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 232,
+    "text": "    if (!isValidEnhanceInstances(authorized)) return formalDenied('enhance.formal.no_instance');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 234,
+    "text": "    if (!permission || request.instanceRef === permission.itemId) return formalDenied('enhance.formal.no_instance');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 235,
+    "text": "    if (this.usesFixtureInstances() && progress.enhance?.formalSources?.some(source => source.instanceRef === request.instanceRef))"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 236,
+    "text": "      return formalDenied('enhance.formal.no_instance');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 237,
+    "text": "    if (!count(request.fromLevel) || !positive(request.to) || request.to !== request.fromLevel + 1 || request.to > enhance.maxLevel)"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 238,
+    "text": "      return formalDenied('enhance.formal.max_level');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 239,
+    "text": "    const instances = this.usesFixtureInstances() ? progress.enhance?.instances ?? authorized : authorized;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 242,
+    "text": "      return formalDenied('enhance.formal.foreign');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 243,
+    "text": "    if (!instances.every(row => this.supportedInstance(row))) return formalDenied('enhance.formal.bad_type');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 244,
+    "text": "    if (instance.enhanceLevel !== request.fromLevel || instance.enhanceLevel >= enhance.maxLevel"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 245,
+    "text": "      || !instances.every(row => count(row.enhanceLevel) && row.enhanceLevel <= enhance.maxLevel))"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 246,
+    "text": "      return formalDenied('enhance.formal.max_level');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 247,
+    "text": "    if (!this.ownsInstances(progress, instances)) return formalDenied('enhance.formal.foreign');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 248,
+    "text": "    const matches = enhance.levels.filter(row => row.to === request.to);"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 249,
+    "text": "    return matches.length === 1 ? { allowed: true, instance, row: matches[0] } : denied('rules', '强化配置依赖不完整。');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 251,
+    "text": "  private supportedInstance(instance: EnhanceFixtureInstance): boolean {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 256,
+    "text": "  private ownsInstances(progress: Progress, instances: readonly EnhanceFixtureInstance[]): boolean {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 264,
+    "text": "  private ownsCosts(progress: Progress, row: EnhanceLevelRow): boolean {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 273,
+    "text": "  private protectCharmCost(progress: Progress, useProtectCharm: boolean): number | EnhanceDenied {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 278,
+    "text": "      return formalDenied('enhance.formal.protect');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 283,
+    "text": "      ? needed : formalDenied('enhance.formal.resources');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 287,
+    "text": "      if (!positive(enhance.maxLevel) || !enhanceArray(enhance.levels) || enhance.levels.length !== enhance.maxLevel) return false;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 289,
+    "text": "      for (const row of enhance.levels) {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 290,
+    "text": "        if (!enhanceFields(row, ['to', 'rate', 'stones', 'refineStones', 'dropOnFail']) || !positive(row.to)"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 291,
+    "text": "          || row.to > enhance.maxLevel || targets.has(row.to) || !ratio(row.rate) || row.rate > 1"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 295,
+    "text": "      if (!enhanceFields(enhance.statPerLevel, ['weapon', 'armor'])"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 296,
+    "text": "        || !enhanceFields(enhance.statPerLevel.weapon, ['atkRatioOfBase'])"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 297,
+    "text": "        || !enhanceFields(enhance.statPerLevel.armor, ['defRatioOfBase', 'hpRatioOfBase'])"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 298,
+    "text": "        || !ratio(enhance.statPerLevel.weapon.atkRatioOfBase) || !ratio(enhance.statPerLevel.armor.defRatioOfBase)"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 299,
+    "text": "        || !ratio(enhance.statPerLevel.armor.hpRatioOfBase)) return false;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 300,
+    "text": "      const milestones: unknown = enhance.milestoneBonus;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 304,
+    "text": "        if (typeof key !== 'string' || !/^[1-9]\\d*$/.test(key) || !positive(Number(key)) || Number(key) > enhance.maxLevel) return false;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 306,
+    "text": "        return enhanceFields(row, ['allRatio']) && ratio(row.allRatio);"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 310,
+    "text": "  private attributes(type: EnhanceEquipmentType, level: number): EnhanceAttributes {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 312,
+    "text": "      atkRatioOfBase: type === 'weapon' ? enhance.statPerLevel.weapon.atkRatioOfBase * level : 0,"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 313,
+    "text": "      defRatioOfBase: type === 'armor' ? enhance.statPerLevel.armor.defRatioOfBase * level : 0,"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 314,
+    "text": "      hpRatioOfBase: type === 'armor' ? enhance.statPerLevel.armor.hpRatioOfBase * level : 0,"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 315,
+    "text": "      allRatio: Object.entries(enhance.milestoneBonus).filter(([milestone]) => Number(milestone) <= level)"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 321,
+    "text": "    const bag = progress.enhance;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 323,
+    "text": "    if (!isValidEnhanceProgress(bag) || bag.instances.some(row => row.enhanceLevel > enhance.maxLevel)) return false;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 324,
+    "text": "    if (bag.formalSources?.some(source => progress.formalEnhanceInstanceStatus(source.instanceRef) !== 'registered')) return false;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 325,
+    "text": "    return bag.enhancements.every(result => {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 326,
+    "text": "      const row = enhance.levels.find(other => other.to === result.to);"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 328,
+    "text": "        && result.dropOnFail === row.dropOnFail && result.finalLevel <= enhance.maxLevel"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 332,
+    "text": "  private async transact(apply: (draft: Progress, reject: (rejection: EnhanceDenied) => undefined) => EnhanceAllowed | undefined): Promise<EnhanceGateResult> {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 333,
+    "text": "    if (this.#busy) return denied('busy', '正在保存强化结果，请稍候。');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 334,
+    "text": "    const slot = this.usesFixtureInstances() ? undefined : this.progress.enhance?.formalSources?.[0]?.ownerSlot;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 335,
+    "text": "    if (slot !== undefined && EnhanceGate.#formalSlots.has(slot)) return denied('busy', '正在保存强化结果，请稍候。');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 337,
+    "text": "    if (slot !== undefined) EnhanceGate.#formalSlots.add(slot);"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 338,
+    "text": "    const expected = slot === undefined ? undefined : copy(this.progress.enhance);"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 339,
+    "text": "    let rejection: EnhanceDenied | undefined;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 340,
+    "text": "    const reject = (result: EnhanceDenied): undefined => { rejection = result; return undefined; };"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 345,
+    "text": "        if (!saved || JSON.stringify(saved.data.enhance) !== JSON.stringify(expected))"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 346,
+    "text": "          return denied('stale', '强化档案已更新，请重新读档。');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 349,
+    "text": "        if (slot !== undefined && JSON.stringify(draft.enhance) !== JSON.stringify(expected))"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 350,
+    "text": "          return reject(denied('stale', '强化档案已更新，请重新读档。'));"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 351,
+    "text": "        if (!this.valid(draft)) return reject(denied('progress', '强化档案存在歧义，已阻止写入。'));"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 353,
+    "text": "        if (result && !this.valid(draft)) return reject(denied('progress', '强化结果校验失败，保持原档。'));"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 356,
+    "text": "      return saved ?? rejection ?? denied('save', '强化保存失败，保持原库存与等级。');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 357,
+    "text": "    } catch { return denied('save', '强化保存失败，保持原库存与等级。'); }"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 359,
+    "text": "      if (slot !== undefined) EnhanceGate.#formalSlots.delete(slot);"
+  },
+  {
+    "file": "src/EnhanceOpenFlag.ts",
+    "line": 2,
+    "text": "export function isEnhanceOpenForFixture(): boolean { return true; }"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 1,
+    "text": "export type EnhanceEquipmentType = 'weapon' | 'armor';"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 3,
+    "text": "export interface EnhanceFixtureInstance {"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 6,
+    "text": "  type: EnhanceEquipmentType;"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 7,
+    "text": "  enhanceLevel: number;"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 10,
+    "text": "export interface FormalEnhanceSource {"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 18,
+    "text": "export interface EnhanceAttributes {"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 24,
+    "text": "export interface EnhanceResult {"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 26,
+    "text": "  enhanceRequestId: string;"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 27,
+    "text": "  enhanceResultRef: string;"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 30,
+    "text": "  type: EnhanceEquipmentType;"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 40,
+    "text": "  attributes: EnhanceAttributes;"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 43,
+    "text": "export interface EnhanceProgress {"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 46,
+    "text": "  instances: EnhanceFixtureInstance[];"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 47,
+    "text": "  enhancements: EnhanceResult[];"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 50,
+    "text": "  formalSources?: FormalEnhanceSource[];"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 52,
+    "text": "export const isEnhanceId = (value: unknown): value is string => typeof value === 'string'"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 54,
+    "text": "export const isEnhanceInstanceRef = (value: unknown): value is string => typeof value === 'string'"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 56,
+    "text": "export const enhanceFields = (value: unknown, keys: readonly string[]): value is Record<string, unknown> => !!value"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 61,
+    "text": "export const enhanceArray = (value: unknown): value is unknown[] => Array.isArray(value)"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 69,
+    "text": "const equipmentType = (value: unknown): value is EnhanceEquipmentType => value === 'weapon' || value === 'armor';"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 70,
+    "text": "export function isValidEnhanceInstances(value: unknown): value is EnhanceFixtureInstance[] {"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 71,
+    "text": "  if (!enhanceArray(value) || !value.length) return false;"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 74,
+    "text": "    if (!enhanceFields(row, ['instanceRef', 'itemId', 'type', 'enhanceLevel']) || !isEnhanceInstanceRef(row.instanceRef)"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 75,
+    "text": "      || refs.has(row.instanceRef) || !isEnhanceId(row.itemId) || !equipmentType(row.type) || !count(row.enhanceLevel)) return false;"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 79,
+    "text": "export function isValidEnhanceAttributes(value: unknown): value is EnhanceAttributes {"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 80,
+    "text": "  return enhanceFields(value, ['atkRatioOfBase', 'defRatioOfBase', 'hpRatioOfBase', 'allRatio'])"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 84,
+    "text": "export function isValidEnhanceProgress(value: unknown): value is EnhanceProgress {"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 87,
+    "text": "    if (!enhanceFields(value, ['version', 'ledgerId', 'instances', 'enhancements', 'receipts', ...(hasSources ? ['formalSources'] : [])])"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 88,
+    "text": "      || value.version !== 1 || !isEnhanceId(value.ledgerId) || !isValidEnhanceInstances(value.instances)"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 89,
+    "text": "      || !enhanceArray(value.enhancements) || !enhanceArray(value.receipts)"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 90,
+    "text": "      || value.enhancements.length !== value.receipts.length) return false;"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 93,
+    "text": "      if (!enhanceArray(value.formalSources)) return false;"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 95,
+    "text": "        if (!enhanceFields(source, ['instanceRef', 'source', 'forgeLedgerId', 'craftResultRef', 'ownerSlot'])"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 96,
+    "text": "          || source.source !== 'forge' || !isEnhanceInstanceRef(source.instanceRef) || formalRefs.has(source.instanceRef)"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 97,
+    "text": "          || !isEnhanceId(source.forgeLedgerId) || !isEnhanceInstanceRef(source.craftResultRef)"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 99,
+    "text": "          || !isEnhanceId(source.craftResultRef.slice(`${source.forgeLedgerId}:craft:`.length))"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 106,
+    "text": "    for (const row of value.enhancements) {"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 107,
+    "text": "      if (!enhanceFields(row, ['state', 'enhanceRequestId', 'enhanceResultRef', 'instanceRef', 'itemId', 'type',"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 109,
+    "text": "        || row.state !== 'committed' || !isEnhanceId(row.enhanceRequestId) || requests.has(row.enhanceRequestId)"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 110,
+    "text": "        || row.enhanceResultRef !== `${value.ledgerId}:enhance:${row.enhanceRequestId}`"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 111,
+    "text": "        || !isEnhanceInstanceRef(row.instanceRef) || !isEnhanceId(row.itemId) || !equipmentType(row.type)"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 116,
+    "text": "        || !isValidEnhanceAttributes(row.attributes)) return false;"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 122,
+    "text": "      requests.add(row.enhanceRequestId); refs.add(row.enhanceResultRef as string);"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 124,
+    "text": "    return value.instances.every(row => levels.has(row.instanceRef) ? levels.get(row.instanceRef) === row.enhanceLevel"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 125,
+    "text": "      : !formalRefs.has(row.instanceRef) || row.enhanceLevel === 0)"
+  },
+  {
+    "file": "src/EquipInstBinding.ts",
+    "line": 2,
+    "text": "import { isEnhanceInstanceRef, isValidEnhanceProgress, type EnhanceFixtureInstance } from './EnhanceProgress';"
+  },
+  {
+    "file": "src/EquipInstBinding.ts",
+    "line": 23,
+    "text": "    if (!isEnhanceInstanceRef(ref) || refs.has(ref)) return false;"
+  },
+  {
+    "file": "src/EquipInstBinding.ts",
+    "line": 28,
+    "text": "function supported(instance: EnhanceFixtureInstance): boolean {"
+  },
+  {
+    "file": "src/EquipInstBinding.ts",
+    "line": 37,
+    "text": "function ownsItemInstances(prog: Progress, itemId: string, instances: readonly EnhanceFixtureInstance[]): boolean {"
+  },
+  {
+    "file": "src/EquipInstBinding.ts",
+    "line": 46,
+    "text": "  const status = prog.formalEnhanceInstanceStatus(ref);"
+  },
+  {
+    "file": "src/EquipInstBinding.ts",
+    "line": 48,
+    "text": "  if (status !== 'registered' || prog.storageError !== undefined || !isValidEnhanceProgress(prog.enhance))"
+  },
+  {
+    "file": "src/EquipInstBinding.ts",
+    "line": 50,
+    "text": "  const instance = prog.enhance.instances.find(row => row.instanceRef === ref);"
+  },
+  {
+    "file": "src/EquipInstBinding.ts",
+    "line": 51,
+    "text": "  return instance?.itemId === itemId && supported(instance) && ownsItemInstances(prog, itemId, prog.formalEnhanceInstances())"
+  },
+  {
+    "file": "src/EquipInstBinding.ts",
+    "line": 69,
+    "text": "  if (prog.storageError !== undefined || !isValidEnhanceProgress(prog.enhance)"
+  },
+  {
+    "file": "src/EquipInstBinding.ts",
+    "line": 72,
+    "text": "  const instances = prog.formalEnhanceInstances();"
+  },
+  {
+    "file": "src/EquipInstBinding.ts",
+    "line": 85,
+    "text": "  if (!isEnhanceInstanceRef(row.instanceRef)) return { kind: 'no_instance' };"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 1,
+    "text": "import enhance from '@xt/balance/enhance.json';"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 118,
+    "text": "          && !draft.registerFormalEnhanceInstance(result)) return reject('instance', '成品实例登记失败，保持原库存。');"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 153,
+    "text": "    const grades = enhance.forge.grade;"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 164,
+    "text": "      cumulative += enhance.forge.grade[grade];"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 23,
+    "text": "import { isEnhanceId, isEnhanceInstanceRef, isValidEnhanceProgress, type EnhanceFixtureInstance,"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 24,
+    "text": "  type EnhanceProgress, type FormalEnhanceSource } from './EnhanceProgress';"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 97,
+    "text": "  if (has('enhance') && !isValidEnhanceProgress(saved.enhance)) return false;"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 195,
+    "text": "  enhance: EnhanceProgress | undefined = undefined;"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 1091,
+    "text": "  registerFormalEnhanceInstance(result: ForgeCraftResult): boolean {"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 1110,
+    "text": "      if (!isEnhanceInstanceRef(instanceRef) || !item || item.type !== 'equip' || !inPhase(item)"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 1116,
+    "text": "      const current = this.enhance;"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 1117,
+    "text": "      if (current !== undefined && !isValidEnhanceProgress(current)) return false;"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 1118,
+    "text": "      if (current?.formalSources?.some(source => this.formalEnhanceInstanceStatus(source.instanceRef) !== 'registered')) return false;"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 1122,
+    "text": "        && this.formalEnhanceInstanceStatus(instanceRef) === 'registered';"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 1130,
+    "text": "      const ledgerId = current?.ledgerId ?? `enhance_${crypto.randomUUID()}`;"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 1131,
+    "text": "      if (!isEnhanceId(ledgerId)) return false;"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 1132,
+    "text": "      const source: FormalEnhanceSource = {"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 1136,
+    "text": "      const bag: EnhanceProgress = current ? structuredClone(current)"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 1137,
+    "text": "        : { version: 1, ledgerId, instances: [], enhancements: [], receipts: [] };"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 1138,
+    "text": "      bag.instances.push({ instanceRef, itemId, type, enhanceLevel: 0 });"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 1140,
+    "text": "      if (!isValidEnhanceProgress(bag)) return false;"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 1141,
+    "text": "      this.enhance = bag;"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 1146,
+    "text": "  formalEnhanceInstanceStatus(instanceRef: string): 'registered' | 'foreign' | 'missing' {"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 1148,
+    "text": "      const sources = this.enhance?.formalSources;"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 1155,
+    "text": "      const instance = this.enhance?.instances.find(row => row.instanceRef === instanceRef);"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 1162,
+    "text": "  formalEnhanceInstances(): EnhanceFixtureInstance[] {"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 1164,
+    "text": "      return this.enhance?.instances.filter(row => this.formalEnhanceInstanceStatus(row.instanceRef) === 'registered') ?? [];"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1,
+    "text": "// 正式强化与护符 soft-open；只有独立 Vite SSR 关态图注入 false。soft-open≠进包≠发版。"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 2,
+    "text": "import enhance from '@xt/balance/enhance.json';"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 3,
+    "text": "import protectCharmMap from '@xt/balance/enhance_protect_charm.json';"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 10,
+    "text": "import * as Closed from './EnhanceClosed';"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 11,
+    "text": "import { EnhanceGate } from './EnhanceGate';"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 13,
+    "text": "import { isEnhanceOpenForFixture } from './EnhanceOpenFlag';"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 14,
+    "text": "import { isEnhanceInstanceRef, isValidEnhanceProgress } from './EnhanceProgress';"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 17,
+    "text": "type Payload = { state: string; save: Record<string, unknown>; enhanceRequestId: string; formalInstanceSource?: boolean };"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 18,
+    "text": "type GateResult = Awaited<ReturnType<EnhanceGate['submit']>>;"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 101,
+    "text": "export async function runEnhanceOpenFixtureTests(options: {"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 114,
+    "text": "  const flags = copy(featureFlags()), tableBefore = JSON.stringify(enhance);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 115,
+    "text": "  type Instance = { instanceRef: string; itemId: string; type: 'weapon' | 'armor'; enhanceLevel: number };"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 116,
+    "text": "  const instance = (enhanceLevel = 0, type: 'weapon' | 'armor' = 'weapon', instanceRef = 'fixture-owned-one'): Instance => ({"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 117,
+    "text": "    instanceRef, itemId: type === 'weapon' ? 'bamboo_sword' : 'fox_robe', type, enhanceLevel,"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 119,
+    "text": "  const request = (enhanceRequestId = 'enhance-one', fromLevel = 0, instanceRef = 'fixture-owned-one') => ({"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 120,
+    "text": "    enhanceRequestId, instanceRef, fromLevel, to: fromLevel + 1, useProtectCharm: false,"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 123,
+    "text": "    random: () => { sampleCount++; return sampled; }, ledgerId: () => `${dataMode}-enhance-${++ledgerSeq}` });"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 124,
+    "text": "  eq(isEnhanceOpenForFixture(), openFixture, '旗标来自当前独立SSR正式开态或内存关态图');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 127,
+    "text": "  ok(!Object.keys(flags).some(key => /enhance/iu.test(key)), '不新增配表强化开关');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 140,
+    "text": "    return { p, gate: new EnhanceGate(p, fixtureOptions(authorized)), authorized };"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 144,
+    "text": "    atkRatioOfBase: type === 'weapon' ? enhance.statPerLevel.weapon.atkRatioOfBase * level : 0,"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 145,
+    "text": "    defRatioOfBase: type === 'armor' ? enhance.statPerLevel.armor.defRatioOfBase * level : 0,"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 146,
+    "text": "    hpRatioOfBase: type === 'armor' ? enhance.statPerLevel.armor.hpRatioOfBase * level : 0,"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 147,
+    "text": "    allRatio: Object.entries(enhance.milestoneBonus).reduce((sum, [milestone, bonus]) =>"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 152,
+    "text": "    ok('tipKey' in result && /^enhance\\.(fixture|formal)\\./u.test(result.tipKey), `${message}：明确强化业务拒绝`);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 153,
+    "text": "    if ('tipKey' in result && result.tipKey.startsWith('enhance.formal.'))"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 158,
+    "text": "    eq('tipKey' in result ? result.tipKey : null, `enhance.formal.${reason}`, `${message}：正式拒绝分型`);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 189,
+    "text": "    ok(result.allowed && result.result, '返回完整强化结算结果'); return result.result;"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 199,
+    "text": "  async function replay(p: Progress, gate: EnhanceGate, input: ReturnType<typeof request>, message: string) {"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 204,
+    "text": "      p.enhance!.enhancements.find(row => row.enhanceRequestId === input.enhanceRequestId), `${message}：只返回匹配完整旧结果`);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 213,
+    "text": "    const gate = new EnhanceGate(p, { ...fixtureOptions(), random: fail, ledgerId: fail, canCommitResult: fail });"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 222,
+    "text": "      [() => gate.enhance(hostile), Closed.refuseEnhance], [() => gate.submit(hostile), Closed.refuseSubmit],"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 224,
+    "text": "        [() => gate.enhance({ ...request('closed-protect-preview'), useProtectCharm }), Closed.refuseEnhance],"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 244,
+    "text": "    const guarded = new EnhanceGate(p, opts);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 303,
+    "text": "    const { p } = fixture(), gate = new EnhanceGate(p);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 310,
+    "text": "    await formalUnchanged(p, () => gate.enhance(request('formal-default-denied')), 'no_instance', 'C01默认无正式实例拒绝选择');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 316,
+    "text": "    eq(p.enhance, undefined, '默认拒绝不发明正式装备实例系统');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 319,
+    "text": "    const malformed = fixture().p; (malformed as any).enhance = { state: 'unknown', raw: 'must-keep' };"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 320,
+    "text": "    await formalUnchanged(malformed, () => new EnhanceGate(malformed).loadRefresh(), 'no_instance', 'C08默认坏历史袋不修复不冒认完整结果');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 321,
+    "text": "    return { fixtureInstancesAbsent: true, submitDenied: true, tipKey: 'enhance.formal.no_instance',"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 327,
+    "text": "    eq(Object.keys(strings).filter(key => key.startsWith('enhance.formal.')).length, 8, '正式拒绝只读既有八键');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 329,
+    "text": "      ['仅同itemId数量', (p: Progress) => new EnhanceGate(p), request('quantity-only')],"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 330,
+    "text": "      ['itemId冒充实例引用', (p: Progress) => new EnhanceGate(p), request('item-id-only', 0, 'bamboo_sword')],"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 331,
+    "text": "      ['空夹具授权', (p: Progress) => new EnhanceGate(p, fixtureOptions([])), request('empty-authorization')],"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 332,
+    "text": "      ['显式实例中缺itemId冒充授权', (p: Progress) => new EnhanceGate(p, fixtureOptions()), request('fixture-item-id', 0, 'bamboo_sword')],"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 338,
+    "text": "    historical.p.enhance = { version: 1, ledgerId: 'historical-instance-only', instances: [instance()], enhancements: [], receipts: [] };"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 339,
+    "text": "    ok(isValidEnhanceProgress(historical.p.enhance), 'C02构造合法但无完整结果的历史实例袋');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 340,
+    "text": "    await formalUnchanged(historical.p, () => new EnhanceGate(historical.p).submit(request('historical-instance-only')),"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 342,
+    "text": "    await formalUnchanged(historical.p, () => new EnhanceGate(historical.p, fixtureOptions([])).submit(request('historical-empty-authorization')),"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 345,
+    "text": "    await formalUnchanged(missingSelection, () => selectionGate.enhance(), 'no_instance', 'C02缺selection不授权');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 349,
+    "text": "    await formalUnchanged(foreign.p, () => foreign.gate.enhance(request('foreign-preview')), 'foreign', 'C03授权实例非本档持有拒绝预览');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 352,
+    "text": "    mismatch.p.enhance = { version: 1, ledgerId: 'history-mismatch', instances: [instance(0, 'armor')], enhancements: [], receipts: [] };"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 357,
+    "text": "      await formalUnchanged(anotherSlot, () => new EnhanceGate(anotherSlot).submit(request('cross-slot-text-only')),"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 379,
+    "text": "        await formalUnchanged(f.p, () => f.gate.enhance(request('bad-item-preview')), 'bad_type', `C04${name}资格不符拒绝预览`);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 386,
+    "text": "      if (resource === 'stones') f.p.stones = enhance.levels[0].stones - 1;"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 387,
+    "text": "      else f.p.inventory.refine_stone = enhance.levels[0].refineStones - 1;"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 388,
+    "text": "      await formalUnchanged(f.p, () => f.gate.enhance(request('resources-preview')), 'resources', `C06${resource}不足拒绝预览`);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 392,
+    "text": "      ['满级', enhance.maxLevel, request('formal-max', enhance.maxLevel)],"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 393,
+    "text": "      ['目标越界', 0, { ...request('formal-beyond'), to: enhance.maxLevel + 1 }],"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 400,
+    "text": "      await formalUnchanged(f.p, () => f.gate.enhance(input), 'max_level', `C07${name}拒绝预览`);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 404,
+    "text": "    eq(gate.laterService(), Closed.refuseLaterService(), 'C09附灵分解继续使用enhance.closed.later_service');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 405,
+    "text": "    eq(gate.laterService(), { allowed: false, tipKey: 'enhance.closed.later_service', text: strings['enhance.closed.later_service'] },"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 417,
+    "text": "    eq(p.enhance, payload.save.enhance, `${payload.state}：import等级属性去重一致`);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 421,
+    "text": "    eq(restored.enhance, payload.save.enhance, `${payload.state}：真实restore保留完整袋`);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 425,
+    "text": "    eq(loaded.enhance, payload.save.enhance, `${payload.state}：真实IDB读档强化袋一致`);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 429,
+    "text": "    const gate = new EnhanceGate(loaded), before = loaded.exportSave(), writes = idb.writes, samples = sampleCount;"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 431,
+    "text": "    eq('progress' in refreshed ? refreshed.progress : null, loaded.enhance, `C08${payload.state}：返回完整只读历史`);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 433,
+    "text": "    const result = committed(gate.level(payload.enhanceRequestId));"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 434,
+    "text": "    eq(result, loaded.enhance!.enhancements.find(row => row.enhanceRequestId === payload.enhanceRequestId), `${payload.state}：等级结果只读一致`);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 435,
+    "text": "    eq(committed(gate.consume(payload.enhanceRequestId)), result, `${payload.state}：费用结果同次一致`);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 438,
+    "text": "    await replay(loaded, gate, { ...request(payload.enhanceRequestId, result.fromLevel, result.instanceRef), useProtectCharm: result.useProtectCharm }, `${payload.state}/读回同请求`);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 440,
+    "text": "      () => gate.submit({ ...request(payload.enhanceRequestId, result.fromLevel, result.instanceRef), useProtectCharm: result.useProtectCharm }), 'duplicate', `C08${payload.state}：旧结果拒绝再次结算`);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 443,
+    "text": "      () => gate.submit({ ...request(payload.enhanceRequestId, result.fromLevel, 'different-instance'), useProtectCharm: result.useProtectCharm }), 'duplicate', `C08${payload.state}：旧请求载荷冲突拒绝`);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 446,
+    "text": "      () => gate.submit({ ...request(payload.enhanceRequestId, result.fromLevel, result.instanceRef), useProtectCharm: !result.useProtectCharm }),"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 451,
+    "text": "      ok(gate.enhance(request('fresh-formal-preview', result.finalLevel, result.instanceRef)).allowed,"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 489,
+    "text": "      await formalUnchanged(f.p, () => f.gate.enhance(input), 'protect', `design28 C02/C05${name}即使库存有符仍拒绝预览`);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 503,
+    "text": "        const gate = hasInstance ? f.gate : new EnhanceGate(f.p);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 508,
+    "text": "          await formalUnchanged(f.p, () => gate.enhance(request(`false-${kind}-preview`)), hasInstance ? 'resources' : 'no_instance', `design28 C03${kind}无映射无符预览`);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 513,
+    "text": "      ok(f.gate.enhance(request('false-valid-no-map')).allowed, 'design28 C03无符合法实例预览不依赖护符映射');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 526,
+    "text": "      ['max-level', [instance(enhance.maxLevel)], request('charm-max-level', enhance.maxLevel), 'max_level', false],"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 530,
+    "text": "      const gate = instances === undefined ? new EnhanceGate(f.p) : f.gate;"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 532,
+    "text": "      await formalUnchanged(f.p, () => gate.enhance(protectedInput), reason, `design28 C04/C05携符${name}预览仍拒绝`);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 540,
+    "text": "      await formalUnchanged(f.p, () => f.gate.enhance(input), 'resources', `design28 C05${pollution}不可消费护符拒绝预览`);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 553,
+    "text": "      const row = enhance.levels.find(row => row.to === input.to)!, before = f.p.exportSave(), writes = idb.writes,"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 556,
+    "text": "      ok(f.gate.enhance(input).allowed, 'design28 C08齐备足量护符只读预览允许且不消费');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 566,
+    "text": "      eq(f.p.enhance!.instances[0].enhanceLevel, finalLevel, 'design28最小接线旁证最终等级同次入袋');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 572,
+    "text": "      eq([disk.enhance, disk.inventory, disk.stones], [f.p.enhance, f.p.inventory, f.p.stones], 'design28护符消费与完整结果同次落盘');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 573,
+    "text": "      ok(isValidEnhanceProgress(f.p.enhance), 'design28 true结果及失败保级满足最小结构放开');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 575,
+    "text": "        const corrupt = copy(f.p.enhance) as any; corrupt.enhancements[0].useProtectCharm = value;"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 576,
+    "text": "        eq(isValidEnhanceProgress(corrupt), false, 'design28结构仍要求useProtectCharm为boolean');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 578,
+    "text": "      await replay(f.p, new EnhanceGate(f.p), input, 'design28 C06护符请求只读重放不二次消费');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 582,
+    "text": "        await replay(f.p, new EnhanceGate(f.p), input, 'design28 C06/C07已提交true结果不依赖后来失效的映射');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 583,
+    "text": "        const refreshed = await formalUnchanged(f.p, () => new EnhanceGate(f.p).loadRefresh(), 'load_dedupe', 'design28 C07后来缺N和登记仍只读已提交完整结果');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 584,
+    "text": "        eq('progress' in refreshed ? refreshed.progress : null, f.p.enhance, 'design28 C07映射失效后load_dedupe不补扣不改旧结果');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 585,
+    "text": "        eq(committed(new EnhanceGate(f.p).level(input.enhanceRequestId)), result, 'design28 C07映射失效后level仅读旧结果');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 586,
+    "text": "        eq(committed(new EnhanceGate(f.p).consume(input.enhanceRequestId)), result, 'design28 C07映射失效后consume不补做消费');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 590,
+    "text": "      await replay(f.p, new EnhanceGate(f.p), input, 'design28 C06已消费后当前无符仍只读识别旧结果');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 592,
+    "text": "      protectedPayloads.push({ state: `protect-charm-${name}`, enhanceRequestId: input.enhanceRequestId, save: f.p.exportSave() });"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 619,
+    "text": "    const rapidResults = await Promise.all([rapid.gate.submit(input), new EnhanceGate(rapid.p, fixtureOptions()).submit(copy(input)), rapid.gate.submit(copy(input))]);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 621,
+    "text": "    eq([rapid.p.count('protect_charm'), rapid.p.enhance!.enhancements.length, rapid.p.enhance!.receipts.length], [1, 1, 1], 'design28 C06带符连点只消费N并产生一份结果去重');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 627,
+    "text": "      await formalUnchanged(other.p, () => new EnhanceGate(other.p).submit(input), 'no_instance', 'design28 C07另一档同请求有符也不借原档授权');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 628,
+    "text": "      await formalUnchanged(other.p, () => new EnhanceGate(other.p).level(input.enhanceRequestId), 'no_instance', 'design28 C07另一档不读取原档结果或消费事实');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 630,
+    "text": "      ok(result.enhanceResultRef !== rapid.p.enhance!.enhancements[0].enhanceResultRef, 'design28 C07显式夹具另档同id拥有独立账本');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 638,
+    "text": "      falseCharmReads, missingCharmTip: 'enhance.formal.resources', incompleteMappingTip: 'enhance.formal.protect',"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 658,
+    "text": "      const ref = forged.result.resultItem.instanceRef, gate = new EnhanceGate(p, options());"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 659,
+    "text": "      eq(p.formalEnhanceInstanceStatus(ref), 'registered', 'design28 O01正式来源属于本档');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 673,
+    "text": "      const f = await source(state, level), input = inputFor(state, f.ref, level), row = enhance.levels.find(row => row.to === input.to)!;"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 675,
+    "text": "        history = f.p.enhance!.enhancements.length, receipts = f.p.enhance!.receipts.length, sources = copy(f.p.enhance!.formalSources);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 677,
+    "text": "      const preview = f.gate.enhance(input);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 690,
+    "text": "      eq(f.p.enhance!.instances, [{ instanceRef: f.ref, itemId: 'bamboo_sword', type: 'weapon', enhanceLevel: finalLevel }],"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 697,
+    "text": "      eq([f.p.enhance!.enhancements.length, f.p.enhance!.receipts.length], [history + 1, receipts + 1],"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 699,
+    "text": "      eq(f.p.enhance!.enhancements[f.p.enhance!.enhancements.length - 1], result, 'design28 O01/O02返回结果与持久袋完整一致');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 700,
+    "text": "      eq(f.p.enhance!.receipts[f.p.enhance!.receipts.length - 1], result.enhanceResultRef, 'design28 O01/O02 receipt精确绑定结果');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 701,
+    "text": "      eq(f.p.enhance!.formalSources, sources, 'design28 O01/O02来源证明保持原样');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 706,
+    "text": "      eq([disk.inventory, disk.stones, disk.enhance], [f.p.inventory, f.p.stones, f.p.enhance],"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 708,
+    "text": "      await replay(f.p, new EnhanceGate(f.p), input, 'design28 O04成功或两类失败重放只认匹配结果');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 709,
+    "text": "      const conflict = await formalUnchanged(f.p, () => new EnhanceGate(f.p).submit({ ...input, useProtectCharm: false }),"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 712,
+    "text": "      const payload = { state, enhanceRequestId: input.enhanceRequestId, save: f.p.exportSave(), formalInstanceSource: true };"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 722,
+    "text": "      await formalUnchanged(f.p, () => f.gate.enhance(input), 'resources', `design28 O03${kind}可消费量小于N预览整笔拒绝`);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 733,
+    "text": "      const results = await Promise.all(inputs.map(input => new EnhanceGate(f.p, options()).submit(input)));"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 735,
+    "text": "      const row = enhance.levels[0], inventory = before.inventory as Record<string, number>;"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 739,
+    "text": "      eq([f.p.enhance!.enhancements.length, f.p.enhance!.receipts.length,"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 740,
+    "text": "        f.p.enhance!.instances.reduce((sum, row) => sum + row.enhanceLevel, 0)], [1, 1, 1],"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 743,
+    "text": "      await replay(f.p, new EnhanceGate(f.p), inputs[results.findIndex(row => row.allowed)], 'design28 O04竞态完成后的只读重放');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 751,
+    "text": "    const independentResults = await Promise.all(contenders.map((p, i) => new EnhanceGate(p, options()).submit(independentInputs[i])));"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 755,
+    "text": "    await unchanged(stale, () => new EnhanceGate(stale, options()).submit(inputFor('protect-open-stale-retry', independent.ref)),"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 758,
+    "text": "    eq([racedLoad.count('protect_charm'), racedLoad.enhance!.enhancements.length, racedLoad.enhance!.instances[0].enhanceLevel], [0, 1, 1],"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 768,
+    "text": "      await replay(historic.p, new EnhanceGate(historic.p), historicalInput, 'design28 O05当前N变化不追扣历史false');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 769,
+    "text": "      await formalUnchanged(historic.p, () => new EnhanceGate(historic.p).loadRefresh(), 'load_dedupe', 'design28 O05当前N变化后历史false刷新零补扣');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 770,
+    "text": "      eq(committed(new EnhanceGate(historic.p).consume(historicalInput.enhanceRequestId)), historicalResult,"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 781,
+    "text": "      const reusedId = independentInputs[independentResults.findIndex(row => row.allowed)].enhanceRequestId;"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 788,
+    "text": "      ok(own.enhanceResultRef !== racedLoad.enhance!.enhancements[0].enhanceResultRef, 'design28 O05跨档同请求id独立结果引用');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 791,
+    "text": "      eq((await saveStore.readSlot(1))!.data.enhance, firstSave.enhance, 'design28 O05B档保存不覆盖A档已提交结果');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 798,
+    "text": "      ['mutate-instance', (draft: Progress) => { draft.enhance!.instances[0].enhanceLevel++; return true; }],"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 802,
+    "text": "      await unchanged(f.p, () => new EnhanceGate(f.p, { ...options(), canCommitResult: sentinel })"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 842,
+    "text": "    eq([interrupted.p.count('protect_charm'), interrupted.p.enhance!.enhancements.length, interrupted.p.enhance!.receipts.length],"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 844,
+    "text": "    await replay(interrupted.p, new EnhanceGate(interrupted.p), input, 'design28 O06重试完成后只读旧结果');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 847,
+    "text": "      ['pending', (bag: any) => { bag.enhancements[0].state = 'pending'; }],"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 849,
+    "text": "      ['invalid-boolean', (bag: any) => { bag.enhancements[0].useProtectCharm = 'true'; }],"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 850,
+    "text": "      ['half-level', (bag: any) => { bag.instances[0].enhanceLevel++; }],"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 852,
+    "text": "      const corrupt = copy(good) as any; damage(corrupt.enhance);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 853,
+    "text": "      eq(isValidEnhanceProgress(corrupt.enhance), false, 'design28 O06损坏护符旧记录结构不合法');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 858,
+    "text": "      const gate = new EnhanceGate(p, options());"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 864,
+    "text": "    eq(new EnhanceGate(interrupted.p).laterService(), Closed.refuseLaterService(),"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 865,
+    "text": "      'design28 O表全程附灵分解仍enhance.closed.later_service');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 870,
+    "text": "      O03: { executed: true, missingCharmTip: 'enhance.formal.resources', evidenceKeys: ['zero', 'transient-only', 'quality-only', 'zero-business-delta-no-false-fallback'] },"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 876,
+    "text": "  /** 正式 O 表：只从默认 ForgeGate 的完整成品登记取实例，强化从不注入 fixtureInstances。 */"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 882,
+    "text": "    eq(Object.prototype.hasOwnProperty.call(productionOptions(), 'fixtureInstances'), false, 'O01正式O表强化选项不注入fixtureInstances');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 898,
+    "text": "      eq(f.p.enhance!.instances, [{ instanceRef: ref, itemId: result.result.resultItem.itemId, type: 'weapon', enhanceLevel: 0 }],"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 900,
+    "text": "      eq(f.p.formalEnhanceInstances(), f.p.enhance!.instances, 'O01本档来源证明授权登记实例');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 901,
+    "text": "      eq(f.p.formalEnhanceInstanceStatus(ref), 'registered', 'O01完整打造成品取得本档正式来源状态');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 902,
+    "text": "      eq(f.p.enhance!.formalSources!.map(source => source.instanceRef), [ref], 'O01来源证明精确绑定同次打造成品身份');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 906,
+    "text": "      eq(disk.enhance, f.p.enhance, 'O01磁盘正式实例及来源同次可见');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 907,
+    "text": "      return { ...f, ref, gate: new EnhanceGate(f.p, productionOptions()) };"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 915,
+    "text": "      const preview = new EnhanceGate(selected.p).enhance(request(`select-${ref.length}`, 0, ref));"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 923,
+    "text": "    const registered = copy(selected.p.enhance!.instances);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 925,
+    "text": "      ok(new EnhanceGate(selected.p).enhance(request('formal-equipped-preview', 0, ref)).allowed, 'O01背包+合法装备槽可承载已登记两件');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 926,
+    "text": "    eq(selected.p.enhance!.instances, registered, 'O01移入装备槽保持两件原instanceRef');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 928,
+    "text": "    eq(selected.p.enhance!.instances, registered, 'O01移回背包保持原登记不创建身份');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 929,
+    "text": "    await formalUnchanged(selected.p, () => new EnhanceGate(selected.p, fixtureOptions([]))"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 931,
+    "text": "    await formalUnchanged(selected.p, () => new EnhanceGate(selected.p, fixtureOptions())"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 933,
+    "text": "    await formalUnchanged(selected.p, () => new EnhanceGate(selected.p, fixtureOptions(copy(selected.p.enhance!.instances)))"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 937,
+    "text": "    eq(selected.p.enhance!.instances.map(row => [row.instanceRef, row.enhanceLevel]), [[selected.ref, 1], [secondRef, 0]],"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 938,
+    "text": "      'O01/O02强化一件不改同原型第二件');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 946,
+    "text": "    ok(new EnhanceGate(longSource.p).enhance(request('formal-long-ref', 0, longResult.result.resultItem.instanceRef)).allowed,"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 948,
+    "text": "    eq(isEnhanceInstanceRef(`${longResult.result.resultItem.instanceRef}x`), false, 'O06拒269字符非法instanceRef');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 955,
+    "text": "    eq(injected.p.enhance, undefined, 'O08夹具Forge完整结果不自动登记正式来源');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 956,
+    "text": "    eq(injected.p.registerFormalEnhanceInstance(injectedResult.result), false, 'O08非正式配方的历史夹具结果不能调用登记API升格');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 958,
+    "text": "    await formalUnchanged(injected.p, () => new EnhanceGate(injected.p).submit(request('fixture-source-denied', 0, fixtureRef)),"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 959,
+    "text": "      'no_instance', 'O08Forge夹具完整结果形如正式ref仍不授权生产强化');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 962,
+    "text": "    for (const row of enhance.levels) {"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 965,
+    "text": "      const sources = copy(success.p.enhance!.formalSources);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 970,
+    "text": "        'O02只读正式enhance唯一next行');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 976,
+    "text": "      eq(success.p.enhance!.instances[0], { instanceRef: success.ref, itemId: 'bamboo_sword', type: 'weapon', enhanceLevel: row.to },"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 979,
+    "text": "      eq(success.p.enhance!.receipts.length, row.to, 'O02每次结果唯一去重');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 980,
+    "text": "      eq(success.p.enhance!.formalSources, sources, 'O02强化结算保留原正式来源证明，不另造或替换身份');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 982,
+    "text": "      await replay(success.p, new EnhanceGate(success.p), input, 'O07正式成功旧请求只读去重');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 984,
+    "text": "        enhanceRequestId: input.enhanceRequestId, formalInstanceSource: true });"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 986,
+    "text": "    await formalUnchanged(success.p, () => success.gate.submit(request('formal-at-max', enhance.maxLevel, success.ref)),"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 993,
+    "text": "      const before = f.p.exportSave(), writes = idb.writes, samples = sampleCount, row = enhance.levels.find(row => row.to === target)!;"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1002,
+    "text": "      await replay(f.p, new EnhanceGate(f.p), input, 'O07正式失败旧请求只读去重');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1004,
+    "text": "        enhanceRequestId: input.enhanceRequestId, formalInstanceSource: true });"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1036,
+    "text": "    race.p.stones = enhance.levels[0].stones; race.p.inventory.refine_stone = enhance.levels[0].refineStones;"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1039,
+    "text": "      new EnhanceGate(race.p, productionOptions()).submit(request(`formal-race-${index}`, 0, ref))));"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1042,
+    "text": "    eq([race.p.enhance!.enhancements.length, race.p.enhance!.receipts.length], [1, 1], 'O07争用不留半结果');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1046,
+    "text": "    await Promise.all([same.gate.submit(sameInput), new EnhanceGate(same.p, productionOptions()).submit(copy(sameInput)), same.gate.submit(copy(sameInput))]);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1048,
+    "text": "    eq([same.p.enhance!.instances[0].enhanceLevel, same.p.enhance!.enhancements.length], [1, 1], 'O07同请求只升一次');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1053,
+    "text": "    await hold.started; eq(interrupted.p.exportSave(), beforeAbort, 'O07正式强化complete前不发布半等级费用');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1054,
+    "text": "    idb.abortNextCommit(); hold.release(); businessDenied(await pending, 'O07正式强化IDB中断拒绝');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1057,
+    "text": "    eq(interrupted.p.enhance!.enhancements.length, 1, 'O07正式中断同请求重试只完整提交一次');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1066,
+    "text": "      seed.p.stones = enhance.levels[0].stones; seed.p.inventory.refine_stone = enhance.levels[0].refineStones;"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1070,
+    "text": "      const gates = contenders.map(p => new EnhanceGate(p, productionOptions())), inputs = contenders.map((_, index) =>"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1084,
+    "text": "      eq(reloaded.enhance!.enhancements.length, 1, 'O07重新加载磁盘只认一次完整结果');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1085,
+    "text": "      eq(reloaded.enhance!.instances.reduce((sum, row) => sum + row.enhanceLevel, 0), 1, 'O07重新加载磁盘所有实例等级合计只升一次');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1086,
+    "text": "      await replay(reloaded, new EnhanceGate(reloaded), inputs[winner], 'O07独立对象竞争后fresh reload只读duplicate');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1091,
+    "text": "    eq(forgeInterrupted.p.exportSave(), beforeForge, 'O07打造费用成品来源一同回滚'); eq(forgeInterrupted.p.enhance, undefined, 'O07中断不补空正式袋');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1098,
+    "text": "      eq((await saveStore.readSlot(1))!.data.enhance, selected.p.enhance, 'O08已绑定A档切activeSlot2仍写原slot1');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1101,
+    "text": "      await formalUnchanged(other, () => new EnhanceGate(other).submit(request('formal-new-slot-no-source', 0, selected.ref)),"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1104,
+    "text": "      other.enhance = copy(selected.p.enhance); other.forge = copy(selected.p.forge);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1105,
+    "text": "      eq(other.formalEnhanceInstanceStatus(selected.ref), 'foreign', 'O08连来源和打造袋复制到另一槽仍识别foreign');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1106,
+    "text": "      await formalUnchanged(other, () => new EnhanceGate(other).submit(request('formal-cross-slot', 2, selected.ref)), 'foreign', 'O08跨槽不借正式实例和旧去重事实');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1107,
+    "text": "      eq(other.enhance, selected.p.enhance, 'O08跨槽拒绝保留原合法数据不清袋');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1110,
+    "text": "    historical.enhance = copy(selected.p.enhance); delete historical.enhance!.formalSources;"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1111,
+    "text": "    await formalUnchanged(historical, () => new EnhanceGate(historical).submit(request('formal-history-no-source', 1, selected.ref)),"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1113,
+    "text": "    eq(selected.p.enhance!.instances.map(row => row.instanceRef), (sourceSave.enhance as typeof selected.p.enhance)!.instances.map(row => row.instanceRef),"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1135,
+    "text": "      for (const enhanceBag of [undefined, { enhanceRequestId: 'old-request', state: 'pending' },"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1136,
+    "text": "        { state: 'unknown', raw: 'must-keep' }, { instanceRef: 'old-instance', enhanceLevel: 7 }]) {"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1137,
+    "text": "        const { p } = fixture(); (p as any).enhance = copy(enhanceBag);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1150,
+    "text": "      ok(forged.allowed && forged.result, 'O06坏强化表不妨碍正式默认打造成品来源登记');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1152,
+    "text": "      await unchanged(formal, () => new EnhanceGate(formal, { random: () => { sampleCount++; return 0; } })"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1157,
+    "text": "      eq(p.enhance, undefined, '缺字段旧档enhance保持undefined');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1158,
+    "text": "      eq(Object.prototype.hasOwnProperty.call(initial, 'enhance'), false, '旧档export不补袋');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1160,
+    "text": "      ok(gate.enhance(request()).allowed, 'O01真实当前档拥有实例可只读选择');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1165,
+    "text": "      await unchanged(p, () => new EnhanceGate(p).submit(request()), 'O01默认无装备夹具授权拒新提交');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1167,
+    "text": "      for (const type of ['weapon', 'armor'] as const) for (const row of enhance.levels) {"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1179,
+    "text": "        eq(f.p.enhance!.instances[0].enhanceLevel, row.to, 'O02实例最终等级同次入袋');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1180,
+    "text": "        eq(f.p.enhance!.enhancements, [result], 'O02完整结果同次入袋'); eq(f.p.enhance!.receipts, [result.enhanceResultRef], 'O02唯一去重事实同次成立');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1182,
+    "text": "        eq((await saveStore.readSlot(1))!.data.enhance, f.p.enhance, 'O02磁盘完整强化袋一致');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1184,
+    "text": "        ok(isValidEnhanceProgress(f.p.enhance), 'O02完整袋纯结构合法');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1187,
+    "text": "        if (type === 'weapon' && row.to === 7) payloads.push({ state: 'success', enhanceRequestId: id, save: f.p.exportSave() });"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1189,
+    "text": "      for (const row of enhance.levels) {"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1196,
+    "text": "        eq(f.p.enhance!.instances[0].enhanceLevel, finalLevel, 'O03实例最终等级完整一致');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1199,
+    "text": "        eq(f.p.count('bamboo_sword'), 2, 'O03失败不碎装备'); eq(f.p.enhance!.receipts.length, 1, 'O03失败同次去重');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1202,
+    "text": "        if ([5, 6].includes(row.to)) payloads.push({ state: row.dropOnFail ? 'failure-drop' : 'failure-no-drop', enhanceRequestId: id, save: f.p.exportSave() });"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1205,
+    "text": "      for (const row of enhance.levels) {"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1216,
+    "text": "      eq(chain.p.enhance!.instances[0].enhanceLevel, 2, 'O05同实例连续成功失败成功等级合法');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1217,
+    "text": "      eq(chain.p.enhance!.enhancements.map(row => [row.fromLevel, row.finalLevel]), [[0, 1], [1, 1], [1, 2]], 'O05完整结果链不重算旧等级');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1218,
+    "text": "      eq(chain.p.enhance!.receipts.length, 3, 'O05每次完整结果唯一去重');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1219,
+    "text": "      ok(isValidEnhanceProgress(chain.p.enhance), 'O05连续历史袋纯结构合法');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1221,
+    "text": "      progresses.push(chainRestored); eq(chainRestored.enhance, chain.p.enhance, 'O05完整历史链restore保持');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1222,
+    "text": "      await replay(chainRestored, new EnhanceGate(chainRestored), request('chain-one'), 'O05连续历史中最早旧请求重放');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1223,
+    "text": "      await unchanged(chain.p, () => new EnhanceGate(chain.p, fixtureOptions([instance(enhance.maxLevel + 1)]))"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1227,
+    "text": "      const invalidRequests: unknown[] = [null, {}, { ...request(), enhanceRequestId: '' },"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1235,
+    "text": "      const full = fixture(enhance.maxLevel); await unchanged(full.p, () => full.gate.submit(request('max', enhance.maxLevel)), 'O06满级拒绝不外推');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1237,
+    "text": "        const f = fixture(); if (cost === 'stones') f.p.stones = enhance.levels[0].stones - 1; else f.p.inventory.refine_stone = 0;"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1243,
+    "text": "        [{ ...instance(), enhanceLevel: -1 }], [{ ...instance(), enhanceLevel: 13 }],"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1244,
+    "text": "        [{ ...instance(), enhanceLevel: 0.5 }], [{ ...instance(), type: 'armor' }]]) {"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1253,
+    "text": "        const f = fixture(); await unchanged(f.p, () => new EnhanceGate(f.p, { ...fixtureOptions(), random: () => random as number }).submit(request()), 'O06非法随机源拒绝不补默认成功');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1256,
+    "text": "      await unchanged(thrown.p, () => new EnhanceGate(thrown.p, { ...fixtureOptions(), random: () => { throw new Error('受控随机源异常'); } }).submit(request()), 'O06随机源抛错整笔拒绝');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1262,
+    "text": "        const f = fixture(); await unchanged(f.p, () => new EnhanceGate(f.p, { ...fixtureOptions(), canCommitResult: sentinel }).submit(request()), 'O07草稿结算哨兵失败整笔回滚');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1270,
+    "text": "        await unchanged(f.p, () => new EnhanceGate(f.p, { ...fixtureOptions(), canCommitResult: draft => {"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1290,
+    "text": "      eq(committed(await interrupted.gate.submit(request('aborted'))).enhanceRequestId, 'aborted', 'O07 abort后同请求可完整重试');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1291,
+    "text": "      eq(interrupted.p.enhance!.enhancements.length, 1, 'O07重试唯一完整结果');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1295,
+    "text": "      committed(await completing); eq((await saveStore.readSlot(1))!.data.enhance, complete.p.enhance, 'O07 complete后一次发布完整结果');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1298,
+    "text": "        const other = sameGate ? f.gate : new EnhanceGate(f.p, fixtureOptions());"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1300,
+    "text": "        eq(f.p.stones, 100000 - enhance.levels[0].stones, 'O07连点同请求灵石只扣一次');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1301,
+    "text": "        eq(f.p.count('refine_stone'), 100 - enhance.levels[0].refineStones, 'O07连点精炼石只扣一次');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1302,
+    "text": "        eq(f.p.enhance!.enhancements.length, 1, 'O07连点唯一完整结果'); eq(f.p.enhance!.receipts.length, 1, 'O07连点唯一去重');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1303,
+    "text": "        eq(f.p.enhance!.instances[0].enhanceLevel, 1, 'O07连点不重复升档');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1309,
+    "text": "      const sameResults = await Promise.all([sameEquipment.gate, new EnhanceGate(sameEquipment.p, fixtureOptions())]"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1312,
+    "text": "      eq(sameEquipment.p.enhance!.instances[0].enhanceLevel, 1, 'O07同装备竞态最终等级合法');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1315,
+    "text": "      const race = fixture(0, 'weapon', instances); race.p.stones = enhance.levels[0].stones; race.p.inventory.refine_stone = enhance.levels[0].refineStones;"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1317,
+    "text": "      const raceResults = await Promise.all(instances.map((item, i) => new EnhanceGate(race.p, fixtureOptions(instances)).submit(request(`contender-${i}`, 0, item.instanceRef))));"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1320,
+    "text": "      eq(race.p.enhance!.enhancements.length, 1, 'O07争用不留半完成请求'); eq(idb.writes, raceWrites + 1, 'O07争用唯一持久提交');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1325,
+    "text": "      ok(a.enhanceResultRef !== b.enhanceResultRef, 'O05跨槽账本去重引用不同');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1328,
+    "text": "      eq(loadedA.enhance, saveA.enhance, 'O05 B档保存不覆盖A档强化袋'); eq(loadedA.inventory, saveA.inventory, 'O05 B档不覆盖A档费用');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1332,
+    "text": "      view.progress.instances[0].enhanceLevel = 12; eq(slotA.p.enhance, saveA.enhance, 'O05篡改视图不改变真实等级');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1335,
+    "text": "      const good = copy(payloads[0].save), goodBag = copy(good.enhance) as any;"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1337,
+    "text": "        bag => { delete bag.enhancements[0].enhanceRequestId; }, bag => { bag.enhancements[0].state = 'pending'; },"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1338,
+    "text": "        bag => { bag.enhancements[0].enhanceResultRef = 'foreign'; }, bag => { bag.enhancements[0].instanceRef = 'foreign'; },"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1339,
+    "text": "        bag => { bag.instances[0].enhanceLevel = 13; }, bag => { bag.instances[0].enhanceLevel = -1; },"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1340,
+    "text": "        bag => { bag.instances[0].type = 'shoes'; }, bag => { bag.enhancements[0].success = 'unknown'; },"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1341,
+    "text": "        bag => { bag.enhancements[0].stones = -1; }, bag => { bag.enhancements[0].finalLevel = 0; },"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1342,
+    "text": "        bag => { bag.enhancements.push(copy(bag.enhancements[0])); }, bag => { bag.instances.push(copy(bag.instances[0])); },"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1346,
+    "text": "        const enhanceBag = copy(goodBag); damage(enhanceBag);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1347,
+    "text": "        eq(isValidEnhanceProgress(enhanceBag), false, 'O08坏引用等级未知状态或去重拒绝');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1349,
+    "text": "        eq(await f.p.importSave({ ...copy(good), enhance: enhanceBag }, { async: true }), false, 'O08损坏袋import拒绝');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1351,
+    "text": "        (f.p as any).enhance = copy(enhanceBag);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1353,
+    "text": "        await unchanged(f.p, () => f.gate.level(payloads[0].enhanceRequestId), 'O08损坏历史不冒充完整结果');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1355,
+    "text": "      for (const bag of [{ enhanceRequestId: 'old-pending', state: 'pending' }, { state: 'unknown' }]) {"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1356,
+    "text": "        const f = fixture(); (f.p as any).enhance = copy(bag);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1361,
+    "text": "      eq(await absent.p.importSave(copy(oldSave), { async: true }), true, 'O08缺enhance字段旧档可导入');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1362,
+    "text": "      eq(absent.p.enhance, undefined, 'O08缺字段旧档不补袋');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1363,
+    "text": "      eq(Object.prototype.hasOwnProperty.call(absent.p.exportSave(), 'enhance'), false, 'O08旧档export不建待补做记录');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1368,
+    "text": "    eq(featureFlags(), flags, 'features原值保持不变'); eq(JSON.stringify(enhance), tableBefore, 'enhance内存表未修改');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 2,
+    "text": "import enhance from '@xt/balance/enhance.json';"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 112,
+    "text": "  const flags = copy(featureFlags()), tableBefore = JSON.stringify(enhance), recipesBefore = JSON.stringify(recipes);"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 121,
+    "text": "  eq(enhance.forge.grade, { common: 0.6, fine: 0.3, spirit: 0.09, treasure: 0.01 }, '品质只读既有enhance.forge.grade');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 308,
+    "text": "    ok(Object.keys(enhance.forge.grade).includes(result.resultGrade), '默认品质来自enhance.forge.grade枚举');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 318,
+    "text": "      eq(record.resultGrade, grade, '正式路径四品质仅按enhance.forge.grade抽样');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 321,
+    "text": "    eq(gate.laterService(), Closed.refuseLaterService(), '正式默认Gate后续强化附灵分解仍关');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 432,
+    "text": "      eq(gate.laterService(), Closed.refuseLaterService(), 'O01后续强化附灵分解仍拒绝');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 443,
+    "text": "        eq(result.resultGrade, grade, `O03 ${grade}按enhance.forge.grade累积概率抽样`);"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 611,
+    "text": "    eq(JSON.stringify(enhance), tableBefore, 'enhance内存数值未写改');"
+  }
+]

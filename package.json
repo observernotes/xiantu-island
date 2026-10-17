@@ -69,6 +69,7 @@
     "test:v06p1-enhance-closed": "timeout 120s node scripts/v06p1-enhance-closed-test.mjs",
     "test:v06p1-enchant-closed": "timeout 120s node scripts/v06p1-enchant-closed-test.mjs",
     "test:v06p1-attr-ui-closed": "timeout 120s node scripts/v06p1-attr-ui-closed-test.mjs",
+    "test:v06p1-smith-services-open": "timeout 180s node scripts/v06p1-smith-services-open-test.mjs",
     "test:v06p1-smith-services-closed": "timeout 180s node scripts/v06p1-smith-services-closed-test.mjs",
     "test:v06p1-attr-ui-binding-success": "timeout 120s node scripts/v06p1-attr-ui-binding-success-test.mjs",
     "test:v06p1-attr-ui-map-api": "timeout 120s node scripts/v06p1-attr-ui-map-api-test.mjs",

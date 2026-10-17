@@ -1,0 +1,24 @@
+
+> xiantu-island@0.0.1 test:v06d-open
+> timeout 180s node scripts/v06d-open-test.mjs
+
+{"suite":"v06d-open-sha-guard","protectedFiles":88,"passed":true}
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: shared: 原 904 键及 tower、market、forge、enhance 关态各八键不增改
+
+1013 !== 936
+
+    at eq (file:///workspace/xiantu/wt/dev/scripts/v06d-open-test.mjs:32:66)
+    at checkFormal (file:///workspace/xiantu/wt/dev/scripts/v06d-open-test.mjs:78:3)
+    at async file:///workspace/xiantu/wt/dev/scripts/v06d-open-test.mjs:158:41 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 1013,
+  expected: 936,
+  operator: 'deepStrictEqual'
+}
+
+Node.js v20.19.2

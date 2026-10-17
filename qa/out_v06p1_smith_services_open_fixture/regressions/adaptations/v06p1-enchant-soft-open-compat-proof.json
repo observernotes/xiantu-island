@@ -1,0 +1,24 @@
+{
+  "file": "scripts/v06p1-enchant-soft-open-compat-proof.mjs",
+  "originalSha": "cdb4ba1df448dd9326b4ca9efb3ede563965ff0c004a6bace7e6a5a1c3bc1969",
+  "pinnedOriginalSha": "cdb4ba1df448dd9326b4ca9efb3ede563965ff0c004a6bace7e6a5a1c3bc1969",
+  "adaptedSha": "125c136062472c85c83eb9db27ef3c1d26a9c240e8f357dd9bd3c57622d3d6d3",
+  "changes": [
+    {
+      "label": "current strings1013 SHA",
+      "before": "9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda",
+      "after": "d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841",
+      "occurrences": 1
+    },
+    {
+      "label": "game prior attr-ui snapshot970 is frozen independently",
+      "before": "'game:balance/strings_zh.json': '6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9'",
+      "after": "'game:balance/strings_zh.json': 'ae51319b82a6486cc7f3d9b26c5ae89719e23c32ff9debdcfbb86ef7b5aea08b'",
+      "occurrences": 1
+    }
+  ],
+  "productModuleTransformations": [],
+  "diskWritten": false,
+  "businessAssertionsChanged": false,
+  "policy": "Pinned test-only historical strings SHA/count/inventory and prior attr-ui byte proof; actual Vite SSR product modules use current disk."
+}

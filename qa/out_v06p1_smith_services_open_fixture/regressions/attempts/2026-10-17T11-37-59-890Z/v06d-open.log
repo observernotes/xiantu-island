@@ -1,0 +1,25 @@
+
+> xiantu-island@0.0.1 test:v06d-open
+> timeout 180s node scripts/v06d-open-test.mjs
+
+{"suite":"v06d-open-sha-guard","protectedFiles":88,"passed":true}
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: shared: balance/strings_zh.json 正式 SHA 不变
++ actual - expected
+
++ 'd99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841'
+- '92d5525c86562a870f45bf53c0c2010e961b83ec9c257a0cf8257178f45b4cab'
+    at eq (file:///workspace/xiantu/wt/dev/scripts/v06d-open-test.mjs:32:66)
+    at checkFormal (file:///workspace/xiantu/wt/dev/scripts/v06d-open-test.mjs:64:5)
+    at async file:///workspace/xiantu/wt/dev/scripts/v06d-open-test.mjs:158:41 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 'd99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841',
+  expected: '92d5525c86562a870f45bf53c0c2010e961b83ec9c257a0cf8257178f45b4cab',
+  operator: 'deepStrictEqual'
+}
+
+Node.js v20.19.2

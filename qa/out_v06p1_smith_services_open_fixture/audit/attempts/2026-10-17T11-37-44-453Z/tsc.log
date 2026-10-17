@@ -1,0 +1,1 @@
+src/v06p1-smith-services-open.test.ts(358,82): error TS2339: Property 'stack' does not exist on type 'ItemDef'.

@@ -1,0 +1,30 @@
+{
+  "name": "v06p1-salvage-closed",
+  "command": [
+    "npm",
+    "run",
+    "test:v06p1-salvage-closed"
+  ],
+  "cwd": "/workspace/xiantu/wt/dev",
+  "environment": {
+    "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/regression-register.mjs",
+    "FORGE_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06p1-salvage-closed",
+    "ENHANCE_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06p1-salvage-closed",
+    "ENCHANT_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06p1-salvage-closed",
+    "SALVAGE_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06p1-salvage-closed",
+    "SALVAGE_OPEN_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06p1-salvage-closed",
+    "ENCHANT_OPEN_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06p1-salvage-closed",
+    "XT_ENHANCE_QA_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06p1-salvage-closed",
+    "MARKET_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06p1-salvage-closed",
+    "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06p1-salvage-closed",
+    "OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06p1-salvage-closed"
+  },
+  "stdin": "/dev/null",
+  "startedAt": "2026-10-17T11:34:39.112Z",
+  "finishedAt": "2026-10-17T11:34:40.757Z",
+  "exitCode": 1,
+  "signal": null,
+  "assertions": null,
+  "assertionCountAvailable": false,
+  "log": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/regressions/v06p1-salvage-closed.log"
+}

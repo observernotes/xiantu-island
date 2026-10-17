@@ -1,0 +1,16 @@
+
+> xiantu-island@0.0.1 test:v06c-open
+> timeout 120s node scripts/v06c-open-test.mjs
+
+{"suite":"v06c-open-formal","dataMode":"shared","introEnabled":true,"introPhase":5,"formalOpen":true,"closedFixtureOnly":true,"giftsChecked":10,"giftsEnabled":false,"companionsEnabled":true,"flyZonesEnabled":true,"protectedSha":{"balance/quests.json":"c45466827247b9e61260bbd2b681ae7207bf84a017aff5d8b028c0ec3463482b","balance/strings_zh.json":"d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841","maps/wanyao_outer_1.json":"9c05955fb39631e1236f2583f3be65e66823be2da3b30efaafc10ff443074b10","balance/companions.json":"e4eb87c1f9400514a084d630f179903e0926d706c85614481f1e2618a01bb115","balance/fly_zones.json":"2940fe5952246a3669f87d8b9f3fc6226c2adf7080353be7de94da81e031b8e4","balance/npcs.json":"2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6"}}
+{"suite":"v06c-open-formal","dataMode":"snapshot","introEnabled":true,"introPhase":5,"formalOpen":true,"closedFixtureOnly":true,"giftsChecked":10,"giftsEnabled":false,"companionsEnabled":true,"flyZonesEnabled":true,"protectedSha":{"balance/quests.json":"c45466827247b9e61260bbd2b681ae7207bf84a017aff5d8b028c0ec3463482b","balance/strings_zh.json":"d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841","maps/wanyao_outer_1.json":"9c05955fb39631e1236f2583f3be65e66823be2da3b30efaafc10ff443074b10","balance/companions.json":"e4eb87c1f9400514a084d630f179903e0926d706c85614481f1e2618a01bb115","balance/fly_zones.json":"2940fe5952246a3669f87d8b9f3fc6226c2adf7080353be7de94da81e031b8e4","balance/npcs.json":"2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6"}}
+{"suite":"v06c-open-runtime","dataMode":"shared","graph":"formal-open","openFixture":true,"formalOpen":true,"closedFixtureOnly":true,"passed":true,"assertions":242,"giftsChecked":10,"indexedDbSaves":true,"persistentRewards":false}
+{"suite":"v06c-open-graph","dataMode":"shared","openFixture":true,"formalOpen":true,"closedFixtureOnly":true,"result":{"assertions":242}}
+{"suite":"v06c-open-runtime","dataMode":"shared","graph":"memory-closed","openFixture":false,"formalOpen":true,"closedFixtureOnly":true,"passed":true,"assertions":99,"giftsChecked":10,"indexedDbSaves":true,"persistentRewards":false}
+{"suite":"v06c-open-graph","dataMode":"shared","openFixture":false,"formalOpen":true,"closedFixtureOnly":true,"result":{"assertions":99}}
+{"suite":"v06c-open-runtime","dataMode":"snapshot","graph":"formal-open","openFixture":true,"formalOpen":true,"closedFixtureOnly":true,"passed":true,"assertions":242,"giftsChecked":10,"indexedDbSaves":true,"persistentRewards":false}
+{"suite":"v06c-open-graph","dataMode":"snapshot","openFixture":true,"formalOpen":true,"closedFixtureOnly":true,"result":{"assertions":242}}
+{"suite":"v06c-open-runtime","dataMode":"snapshot","graph":"memory-closed","openFixture":false,"formalOpen":true,"closedFixtureOnly":true,"passed":true,"assertions":99,"giftsChecked":10,"indexedDbSaves":true,"persistentRewards":false}
+{"suite":"v06c-open-graph","dataMode":"snapshot","openFixture":false,"formalOpen":true,"closedFixtureOnly":true,"result":{"assertions":99}}
+{"suite":"v06c-open-sha-guard","protectedFiles":77,"passed":true}
+v06c open tests ok: shared/snapshot；formalOpen:true、closedFixtureOnly:true；682 断言；intro 正式 enabled/phase5、gifts 全关、IDB true；全部保护文件 SHA 不变

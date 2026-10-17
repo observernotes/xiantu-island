@@ -1,0 +1,23 @@
+{
+  "scope": "Full smith services O01–O11 SSR acceptance fixture; no production changes",
+  "baseline": "7b06f5ac4e76a2c48e98431e1ccf0011a8ca0a41",
+  "productionDefault": "new SalvageGate(progress)",
+  "productionSalvageQualificationInstalled": false,
+  "productionSalvageCarrierInstalled": false,
+  "fixtureInjection": "Vite pre-transform replaces exactly one constructor occurrence in memory; detachable provider supplies explicit qualification+SalvageFixtureCarrier",
+  "formalIdentity": "All success targets originate in actual default formal ForgeGate submissions; exact EquipInstBinding/Progress formalSources, never inferred by itemId/count/first/highest level",
+  "o05FixtureSuccess": true,
+  "o05ProductionBoundary": "Production default still rejects missing qualification/carrier. Targets with current or historical enchant association retain relation refusal. Fixture success proves only tested eligible targets.",
+  "equipRetirement": "Existing Gate preserves historical equipInstanceRefs bytes; selected equip slot is empty, formalSource retired, resolver empty, no reachable selected identity. Forge/enhance history retained.",
+  "uncertainAcknowledgement": "Write-after-commit loss returns no fabricated result and uses result_unknown. Original memory remains unpublished; explicit Progress.loadAsync then Gate result verifies full persisted one-time commit. No automatic retry or repair.",
+  "uiCollaboration": "Existing GameScene dialogue callback, SmithServicesPanel rendered handlers and SmithServicesController APIs reused read-only; interface status owned by 接引子 remains unchanged.",
+  "runtimeGraphCount": 4,
+  "evidenceGroupCount": 6,
+  "noSecondSettlement": true,
+  "settlementUnchanged": true,
+  "stringsSsrInjected43": false,
+  "softOpenedSmithServicesUi": false,
+  "released": false,
+  "newOpenFlag": false,
+  "notSoftOpenReleasePack": true
+}

@@ -1,0 +1,5 @@
+
+> xiantu-island@0.0.1 test:v06p1-smith-services-closed
+> timeout 180s node scripts/v06p1-smith-services-closed-test.mjs
+
+v06p1 smith services closed PASS: C01–C11; 2057 assertions; stringsDiskKeys:1013; stringsSsrInjected43:false; SmithServicesDelegation:true; four Flag MATCH; settlementUnchanged:true; softOpenedSmithServicesUi:false; released:false

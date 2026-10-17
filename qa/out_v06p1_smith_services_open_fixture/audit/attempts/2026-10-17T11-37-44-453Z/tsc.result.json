@@ -1,0 +1,18 @@
+{
+  "name": "tsc",
+  "command": [
+    "npx",
+    "tsc",
+    "--noEmit"
+  ],
+  "cwd": "/workspace/xiantu/wt/dev",
+  "environment": {},
+  "stdin": "/dev/null",
+  "startedAt": "2026-10-17T11:37:44.453Z",
+  "finishedAt": "2026-10-17T11:37:55.623Z",
+  "exitCode": 2,
+  "signal": null,
+  "assertions": null,
+  "assertionCountAvailable": false,
+  "log": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_open_fixture/audit/tsc.log"
+}

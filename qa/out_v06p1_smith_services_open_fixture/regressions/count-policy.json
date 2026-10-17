@@ -1,0 +1,13 @@
+{
+  "meaning": "Recorded assertion lower bound from each suites actual stdout; no synthetic assertions added.",
+  "ordinarySuites": "Use final reported aggregate (Chinese or English).",
+  "v06b": {
+    "closed": 744,
+    "open": 816,
+    "formulaClosed": "2 * (151 + 60 + 105 + 56)",
+    "formulaOpen": "2 * (352 + 56)",
+    "scope": "Both data roots reported runtime component counts summed; outer runner static assert calls excluded."
+  },
+  "totalRecordedAssertions": 182708,
+  "assertionCountUnavailable": []
+}
