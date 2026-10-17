@@ -938,5 +938,13 @@
   "enhance.closed.no_level": "装备强化尚未开放，不变更强化等级。",
   "enhance.closed.no_consume": "装备强化尚未开放，不扣灵石或精炼石。",
   "enhance.closed.load_refresh": "读档或刷新后强化仍未开放，暂不可强化。",
-  "enhance.closed.later_service": "附灵与分解等后续服务尚未开放。"
+  "enhance.closed.later_service": "附灵与分解等后续服务尚未开放。",
+  "enhance.formal.no_instance": "无正式装备实例，不可强化。",
+  "enhance.formal.bad_type": "该装备类型不可强化。",
+  "enhance.formal.protect": "护器符尚未映射，暂不可使用。",
+  "enhance.formal.resources": "灵石或精炼石不足。",
+  "enhance.formal.max_level": "已达强化上限或目标越界。",
+  "enhance.formal.duplicate": "该强化请求已提交，请读取结果。",
+  "enhance.formal.load_dedupe": "读档后只认已提交结果，不重抽。",
+  "enhance.formal.foreign": "非本档装备实例，不可强化。"
 }

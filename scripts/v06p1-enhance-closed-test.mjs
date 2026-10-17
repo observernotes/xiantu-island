@@ -10,10 +10,22 @@ import { sharedRoot } from './root.mjs';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const shared = sharedRoot(root), baselineOut = path.join(root, 'qa/out_v06p1_enhance_closed');
-const out = process.env.ENHANCE_CLOSED_OUT ?? process.env.OUT_DIR ?? path.join(root, 'qa/out_v06p1_enhance_open_preamble/closed');
+const out = process.env.ENHANCE_CLOSED_OUT ?? (process.env.XT_ENHANCE_QA_OUT ? path.join(process.env.XT_ENHANCE_QA_OUT, 'closed') : process.env.OUT_DIR) ?? path.join(root, 'qa/out_v06p1_enhance_open_preamble/closed');
 const roots = new Map([['shared', shared], ['wt', path.join(root, 'data')], ['game', path.join(shared, 'game/data')]]);
 const modes = [['shared', shared], ['snapshot', roots.get('wt')]];
-const stringsSha = '92d5525c86562a870f45bf53c0c2010e961b83ec9c257a0cf8257178f45b4cab';
+const stringsSha = 'd7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09';
+const preFormalStringsSha = '92d5525c86562a870f45bf53c0c2010e961b83ec9c257a0cf8257178f45b4cab';
+const enhanceFlagSha = 'd7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e';
+const formalStrings = {
+  'enhance.formal.no_instance': '无正式装备实例，不可强化。',
+  'enhance.formal.bad_type': '该装备类型不可强化。',
+  'enhance.formal.protect': '护器符尚未映射，暂不可使用。',
+  'enhance.formal.resources': '灵石或精炼石不足。',
+  'enhance.formal.max_level': '已达强化上限或目标越界。',
+  'enhance.formal.duplicate': '该强化请求已提交，请读取结果。',
+  'enhance.formal.load_dedupe': '读档后只认已提交结果，不重抽。',
+  'enhance.formal.foreign': '非本档装备实例，不可强化。',
+};
 const previousStringsSha = 'fad9b3e604a3af23e99939bf22f77a55de803842daa297ab7fb2c2a6ed0b8967';
 const enhanceSha = 'd5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954';
 const forgeFlagSha = '0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e';
@@ -58,7 +70,7 @@ const eq = (actual, expected, message) => { assertions++; assert.deepEqual(actua
 const ok = (value, message) => { assertions++; assert.ok(value, message); };
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const clone = value => JSON.parse(JSON.stringify(value));
-const report = row => { evidence.push(row); console.log(JSON.stringify(row)); };
+const report = row => { row = { formalTipsWired: true, formalInstanceSource: false, softOpenedEntrance: true, ...row }; evidence.push(row); console.log(JSON.stringify(row)); };
 async function shaOrNull(file) {
   try { return hash(await fs.readFile(file)); }
   catch (error) { if (error.code === 'ENOENT') return null; throw error; }
@@ -133,7 +145,7 @@ async function checkProtection() {
   eq(baseline['ForgeOpenFlag.ts'], forgeFlagSha, '写前权威 ForgeOpenFlag SHA 固定');
   for (const [key, expected] of Object.entries(baseline)) {
     const file = keyPath(key), actual = await shaOrNull(file);
-    eq(key === 'GameScene.ts' ? hash(stripEnhanceSceneWiring(await fs.readFile(file, 'utf8'))) : actual, expected, `权威写前/写后保护字节（仅剥 GameScene 强化最小提示）：${key}`);
+    eq(key === 'GameScene.ts' ? hash(stripEnhanceSceneWiring(await fs.readFile(file, 'utf8'))) : actual, ['strings.shared', 'strings.wt'].includes(key) ? stringsSha : expected, `权威写前/写后保护字节（仅剥 GameScene 强化最小提示）：${key}`);
     protectedFiles[key] = actual; readOnlyBefore.set(file, actual);
   }
   const sourceBefore = JSON.parse(await fs.readFile(path.join(baselineOut, 'source-before.json'), 'utf8'));
@@ -163,7 +175,8 @@ async function checkProtection() {
     currentData[`${mode}:features.json`] = actual;
     if (actual !== null) readOnlyBefore.set(file, actual);
   }
-  eq(currentData, dataBefore, '三根 balance/maps/features 文件集合及逐字 SHA 均不变，含 recipes/life_skills/npcs/market_consign');
+  for (const mode of ['shared', 'wt']) dataBefore[`${mode}:balance/strings_zh.json`] = stringsSha;
+  eq(currentData, dataBefore, '三根 balance/maps/features 仅shared/wt strings正式八键获准变化，其余逐字 SHA 均不变');
   const forgeBefore = JSON.parse(await fs.readFile(path.join(baselineOut, 'forge-block-before.json'), 'utf8'));
   for (const [mode, dataRoot] of roots) {
     const raw = await fs.readFile(path.join(dataRoot, 'balance/strings_zh.json'), 'utf8');
@@ -175,19 +188,29 @@ async function checkProtection() {
   }
   report({ suite: 'protection', passed: true, existingSources: oldNames.length,
     protectedDataFiles: Object.keys(currentData).length, sourceOnlyAdded: [...newSources, ...openFixtureSources],
-    sharedStringsUnchanged: true, enhanceGateFixtureSourceAllowed: true, minimalFrontendWiring: true, fullEnhanceUiAdded: false,
+    sharedStringsOnlyFormalEightAdded: true, gameStringsUnchanged: true, enhanceGateFixtureSourceAllowed: true, minimalFrontendWiring: true, fullEnhanceUiAdded: false,
     EnhanceOpenFlag: true, formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false });
 }
 
 async function checkStatic(mode, dataRoot) {
   const raw = await fs.readFile(path.join(dataRoot, 'balance/strings_zh.json'), 'utf8');
   const strings = JSON.parse(raw), entries = Object.entries(strings);
-  eq(hash(raw), stringsSha, `${mode}: strings 权威 SHA`);
-  eq(entries.length, 936, `${mode}: strings 936 键`);
-  eq(entries.slice(928), Object.entries(closedStrings), `${mode}: slice(928) 恰为 enhance 八键及逐字文案`);
+  const formal = mode !== 'game';
+  eq(hash(raw), formal ? stringsSha : preFormalStringsSha, `${mode}: strings 权威 SHA（game旧快照不动）`);
+  eq(entries.length, formal ? 944 : 936, `${mode}: strings键数含_meta`);
+  const preFormal = formal ? raw.replace(/,\n(?: {2}"enhance\.formal\.[^\n]+\n?){8}/u, '\n') : raw;
+  eq(hash(preFormal), preFormalStringsSha, `${mode}: 原936键完整字节保留`);
+  if (formal) {
+    eq(entries.slice(936), Object.entries(formalStrings), `${mode}: 正式八键及文案逐字`);
+    for (const [key, text] of Object.entries(formalStrings)) {
+      eq(strings[key], text, `${mode}: ${key} 文案逐字`);
+      ok(Array.from(text).length <= 40, `${mode}: ${key} Unicode ≤40 字`);
+    }
+  }
+  eq(entries.slice(928, 936), Object.entries(closedStrings), `${mode}: slice(928,936) 恰为 enhance.closed 八键及逐字文案`);
   eq(entries.slice(920, 928), Object.entries(forgeStrings), `${mode}: forge 八键仍在 slice(920,928)，值逐字不变`);
   eq(entries.filter(([key]) => key.startsWith('enhance.closed.')), Object.entries(closedStrings), `${mode}: 恰有 enhance 八键`);
-  const previous = raw.replace(/,\n(?: {2}"enhance\.closed\.[^\n]+\n?){8}/u, '\n');
+  const previous = preFormal.replace(/,\n(?: {2}"enhance\.closed\.[^\n]+\n?){8}/u, '\n');
   eq(hash(previous), previousStringsSha, `${mode}: 剥 enhance 八行还原 928 键原始完整字节`);
   for (const [key, text] of Object.entries(closedStrings)) {
     eq(strings[key], text, `${mode}: ${key} 文案逐字`);
@@ -208,7 +231,7 @@ async function checkStatic(mode, dataRoot) {
   ok(smith, `${mode}: 既有 smith_ou 存在`);
   ok(!Object.hasOwn(smith, 'services'), `${mode}: smith_ou 无 services`);
   eq(smith.quests, [], `${mode}: smith_ou quests=[]`);
-  report({ suite: 'static', dataMode: mode, passed: true, stringsSha, strings: entries.length,
+  report({ suite: 'static', dataMode: mode, passed: true, stringsSha: formal ? stringsSha : preFormalStringsSha, strings: entries.length,
     enhanceJsonSha: enhanceSha, giftsFalseCount: gifts, smithServices: false, smithQuests: [],
     EnhanceOpenFlag: true, formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false });
 }
@@ -217,6 +240,7 @@ async function checkSource() {
   const flagFile = path.join(root, 'src/EnhanceOpenFlag.ts'), flag = await fs.readFile(flagFile, 'utf8');
   eq(flag, '/** 正式路径恒 true；仅 Vite SSR 关态图可注入 false。 */\nexport function isEnhanceOpenForFixture(): boolean { return true; }\n',
     'EnhanceOpenFlag 正式源码精确恒 true；仅 SSR 关态图允许内存注入 false');
+  eq(hash(flag), enhanceFlagSha, 'EnhanceOpenFlag正式true完整字节SHA不变');
   eq(await shaOrNull(path.join(root, 'src/ForgeOpenFlag.ts')), forgeFlagSha, 'ForgeOpenFlag 完整 SHA 不变');
   const sourceFile = path.join(root, 'src/EnhanceClosed.ts'), source = await fs.readFile(sourceFile, 'utf8');
   eq(hash(source), enhanceClosedSha, 'EnhanceClosed 与 tip@64c26a4 完整字节相同');
@@ -446,7 +470,8 @@ try {
   await checkSource();
   for (const [mode, dataRoot] of roots) await checkStatic(mode, dataRoot);
   const sharedStrings = await fs.readFile(path.join(shared, 'balance/strings_zh.json'));
-  for (const mode of ['wt', 'game']) eq((await fs.readFile(path.join(roots.get(mode), 'balance/strings_zh.json'))).equals(sharedStrings), true, `${mode}: strings 三根同字节`);
+  eq((await fs.readFile(path.join(roots.get('wt'), 'balance/strings_zh.json'))).equals(sharedStrings), true, 'shared/wt: strings944同字节');
+  eq(await shaOrNull(path.join(roots.get('game'), 'balance/strings_zh.json')), preFormalStringsSha, 'game旧strings936快照保持原字节');
   for (const [mode, dataRoot] of modes) {
     await runGraph(mode, dataRoot, false);
     const payloads = await runGraph(mode, dataRoot, true);
@@ -459,6 +484,7 @@ try {
   await fs.writeFile(path.join(out, 'v06p1-enhance-closed-evidence.json'), `${JSON.stringify({ passed, assertions, stringsSha, enhanceJsonSha: enhanceSha,
     forgeFlagSha, cases: caseApis, totalFixtures, totalInvocations, protectedFiles, evidence,
     EnhanceOpenFlag: true, enhanceGateFixtureSourceAllowed: true, minimalFrontendWiring: true, fullEnhanceUiAdded: false, formalOpen: true, closedFixtureOnly: true,
-    semanticFixtureOnly: true, formalEnhanceSchemaAdded: false, softOpened: true, released: false }, null, 2)}\n`);
+    semanticFixtureOnly: true, formalEnhanceSchemaAdded: false, softOpened: true, released: false,
+    formalTipsWired: true, formalInstanceSource: false, softOpenedEntrance: true, enhanceFlagSha }, null, 2)}\n`);
 }
-console.log(`v06p1 enhance closed tests ok: ${assertions} assertions; C01–C12; ${totalFixtures} semantic fixtures; ${totalInvocations} API calls; shared/snapshot + fresh SSR; localStorage写入0; strings936; gifts10×false; GAME_PHASE=5; EnhanceOpenFlag=true; 不挂smith_ou.services; smith_ou同次命中仅提示、无完整强化UI; formalOpen:true; closedFixtureOnly:true; softOpened:true; released:false`);
+console.log(`v06p1 enhance closed tests ok: ${assertions} assertions; C01–C12; ${totalFixtures} semantic fixtures; ${totalInvocations} API calls; shared/snapshot + fresh SSR; localStorage写入0; shared/wt strings944、game旧936; gifts10×false; GAME_PHASE=5; EnhanceOpenFlag=true; 不挂smith_ou.services; smith_ou同次命中仅提示、无完整强化UI; formalOpen:true; closedFixtureOnly:true; softOpened:true; formalTipsWired:true; formalInstanceSource:false; softOpenedEntrance:true; released:false`);

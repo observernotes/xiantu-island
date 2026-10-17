@@ -1,0 +1,11 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test:v06d-closed"
+  ],
+  "cwd": "/workspace/xiantu/wt/dev",
+  "stdin": "/dev/null",
+  "exitCode": 0,
+  "assertions": 15055
+}

@@ -12,16 +12,29 @@ const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const shared = sharedRoot(root);
 const modes = [['shared', shared], ['snapshot', path.join(root, 'data')]];
 const dataRoots = [['shared', shared], ['wt', path.join(root, 'data')], ['game', path.join(shared, 'game/data')]];
-const out = path.join(root, 'qa/out_v06p1_enhance_open_preamble');
+const out = process.env.XT_ENHANCE_QA_OUT ?? process.env.OUT_DIR ?? path.join(root, 'qa/out_v06p1_enhance_open_preamble');
 const before = new Map(), directoryBefore = new Map(), evidence = [];
 const recipesSha = '1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f';
 const forgeFlagSha = '0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e';
 const enhanceSha = 'd5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954';
+const enhanceFlagSha = 'd7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e';
+const stringsSha = 'd7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09';
+const previousStringsSha = '92d5525c86562a870f45bf53c0c2010e961b83ec9c257a0cf8257178f45b4cab';
+const formalStrings = {
+  'enhance.formal.no_instance': '无正式装备实例，不可强化。',
+  'enhance.formal.bad_type': '该装备类型不可强化。',
+  'enhance.formal.protect': '护器符尚未映射，暂不可使用。',
+  'enhance.formal.resources': '灵石或精炼石不足。',
+  'enhance.formal.max_level': '已达强化上限或目标越界。',
+  'enhance.formal.duplicate': '该强化请求已提交，请读取结果。',
+  'enhance.formal.load_dedupe': '读档后只认已提交结果，不重抽。',
+  'enhance.formal.foreign': '非本档装备实例，不可强化。',
+};
 let assertions = 0, runtimeAssertions = 0;
 const eq = (actual, expected, message) => { assertions++; assert.deepEqual(actual, expected, message); };
 const ok = (value, message) => { assertions++; assert.ok(value, message); };
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
-const report = row => { evidence.push(row); console.log(JSON.stringify(row)); };
+const report = row => { row = { formalTipsWired: true, formalInstanceSource: false, softOpenedEntrance: true, ...row }; evidence.push(row); console.log(JSON.stringify(row)); };
 async function shaOrNull(file) {
   try { return hash(await fs.readFile(file)); }
   catch (error) { if (error.code === 'ENOENT') return null; throw error; }
@@ -54,6 +67,7 @@ async function protectFiles() {
 }
 async function checkFormal() {
   const flag = await fs.readFile(path.join(root, 'src/EnhanceOpenFlag.ts'), 'utf8');
+  eq(hash(flag), enhanceFlagSha, 'EnhanceOpenFlag保持正式true指定完整SHA');
   ok(/export function isEnhanceOpenForFixture\(\): boolean\s*\{\s*return true;\s*\}/u.test(flag), '正式磁盘EnhanceOpenFlag恒true');
   ok(!/import\s|process\.|globalThis|localStorage|sessionStorage|featureEnabled|enabled/u.test(flag), '正式旗标不受配表环境或会话翻转');
   const oldClosed = execFileSync('git', ['show', '64c26a4:src/EnhanceClosed.ts'], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] });
@@ -63,6 +77,12 @@ async function checkFormal() {
   const methods = { feature: 'featureClosed', entrance: 'refuseEntrance', enhance: 'refuseEnhance', submit: 'refuseSubmit',
     level: 'refuseLevel', consume: 'refuseConsume', loadRefresh: 'refuseLoadRefresh', laterService: 'refuseLaterService' };
   ok(/import enhance from ['"]@xt\/balance\/enhance\.json['"]/u.test(gate), 'Gate数值仅从正式enhance.json读取');
+  ok(/import strings from ['"]@xt\/balance\/strings_zh\.json['"]/u.test(gate), '正式拒绝文案只读strings_zh');
+  ok(/const formalDenied\s*=\s*\(tipKey/u.test(gate) && /strings[^;\n]*\[tipKey\]/u.test(gate), '正式拒绝帮助函数按tipKey查strings');
+  for (const [tipKey, text] of Object.entries(formalStrings)) {
+    ok(gate.includes(tipKey), `Gate接正式键：${tipKey}`);
+    ok(!gate.includes(text), `Gate不硬编码正式中文：${tipKey}`);
+  }
   ok(!/ForgeOpenFlag|forge\.closed\.|fixtureRates|fixtureCosts/u.test(gate), '强化不借打造旗或夹具费用概率回退');
   for (const [method, closed] of Object.entries(methods))
     ok(new RegExp(`(?:async\\s+)?${method}\\([^)]*\\)\\s*:\\s*[^\\{]+\\{\\s*if\\s*\\(!isEnhanceOpenForFixture\\(\\)\\)\\s*return EnhanceClosed\\.${closed}\\(\\);`, 'u').test(gate),
@@ -91,6 +111,15 @@ async function checkFormal() {
   }
   eq(consumers, ['scenes/GameScene.ts'], 'EnhanceGate正式消费者仅为GameScene只读冒烟入口');
   for (const [mode, dataRoot] of dataRoots) {
+    const rawStrings = await fs.readFile(path.join(dataRoot, 'balance/strings_zh.json'), 'utf8');
+    const entries = Object.entries(JSON.parse(rawStrings));
+    eq(hash(rawStrings), mode === 'game' ? previousStringsSha : stringsSha, `${mode} strings仅shared/wt追加正式八键，game旧快照不动`);
+    eq(entries.length, mode === 'game' ? 936 : 944, `${mode} strings键数含_meta`);
+    if (mode !== 'game') {
+      eq(entries.slice(936), Object.entries(formalStrings), `${mode} 正式八键及文案完全取表`);
+      eq(hash(rawStrings.replace(/,\n(?: {2}"enhance\.formal\.[^\n]+\n?){8}/u, '\n')), previousStringsSha,
+        `${mode} 剥正式八键还原原936键完整字节`);
+    }
     eq(await shaOrNull(path.join(dataRoot, 'balance/enhance.json')), enhanceSha, `${mode} enhance保持指定SHA`);
     const table = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/enhance.json'), 'utf8'));
     eq(table.levels.map(row => row.to), Array.from({ length: table.maxLevel }, (_, index) => index + 1), `${mode} 正式强化档位1到maxLevel完整`);
@@ -218,6 +247,7 @@ try {
   await fs.writeFile(path.join(out, 'v06p1-enhance-open-evidence.json'), `${JSON.stringify({ passed,
     assertions: assertions + runtimeAssertions, staticAssertions: assertions, runtimeAssertions,
     formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false,
+    formalTipsWired: true, formalInstanceSource: false, softOpenedEntrance: true, stringsSha, enhanceFlagSha,
     protectedFiles: Object.fromEntries(before), protectedDirectories: Object.fromEntries(directoryBefore), evidence }, null, 2)}\n`);
 }
-console.log(`v06p1 enhance open preamble tests ok: ${assertions + runtimeAssertions} assertions; shared/snapshot双根formal-open+memory-closed及fresh SSR读回；O01–O08；Scene最小smith_ou同命中冒烟零写；正式flag=true；EnhanceClosed原字节；gifts 10×false；enhance未改；GAME_PHASE=5；formalOpen:true、closedFixtureOnly:true、softOpened:true、released:false；PASS≠进包≠release`);
+console.log(`v06p1 enhance formal tips tests ok: ${assertions + runtimeAssertions} assertions; shared/snapshot双根formal-open+memory-closed及fresh SSR读回；formal C01–C10 + fixture O01–O08；strings944；Scene最小smith_ou同命中冒烟零写；正式flag=true；EnhanceClosed原字节；gifts 10×false；enhance未改；GAME_PHASE=5；formalOpen:true、closedFixtureOnly:true、softOpened:true、formalTipsWired:true、formalInstanceSource:false、softOpenedEntrance:true、released:false；PASS≠进包≠release`);

@@ -10,7 +10,7 @@ import { sharedRoot } from './root.mjs';
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const shared = sharedRoot(root), gameData = path.join(shared, 'game/data');
 const modes = [['shared', shared], ['snapshot', path.join(root, 'data')]];
-const out = path.join(root, 'qa/out_v06d_closed');
+const out = process.env.OUT_DIR ?? path.join(root, 'qa/out_v06d_closed');
 const closedStrings = {
   'tower.closed.feature': '锁妖塔尚未开放。',
   'tower.closed.entrance': '锁妖塔入口暂不可用，可查看说明。',
@@ -64,8 +64,9 @@ const expectedSha = {
   'balance/companions.json': 'e4eb87c1f9400514a084d630f179903e0926d706c85614481f1e2618a01bb115',
   'balance/fly_zones.json': '2940fe5952246a3669f87d8b9f3fc6226c2adf7080353be7de94da81e031b8e4',
   'balance/quests.json': 'c45466827247b9e61260bbd2b681ae7207bf84a017aff5d8b028c0ec3463482b',
-  'balance/strings_zh.json': '92d5525c86562a870f45bf53c0c2010e961b83ec9c257a0cf8257178f45b4cab',
+  'balance/strings_zh.json': 'd7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09',
 };
+const preFormalStringsSha = '92d5525c86562a870f45bf53c0c2010e961b83ec9c257a0cf8257178f45b4cab';
 const preEnhanceStringsSha = 'fad9b3e604a3af23e99939bf22f77a55de803842daa297ab7fb2c2a6ed0b8967';
 const marketStringsSha = 'c115b6deadf85d1aa9958de1097321ab65624b456e0fddeca42a5fe39743db27';
 const towerStringsSha = '6b0861110a6af78f7bbfb78eb32e7579ecd41d5a33c3eff3da9e157794f5951f';
@@ -121,15 +122,17 @@ async function checkFormal(mode, dataRoot) {
   }
   const strings = data['balance/strings_zh.json'];
   const entries = Object.entries(strings);
-  eq(entries.length, 936, `${mode}/C10: 只有原 904 与 tower、market、forge、enhance 各八键`);
+  eq(entries.length, 944, `${mode}/C10: 原936键加enhance.formal八键，共944键`);
   eq(entries.slice(904, 912), Object.entries(closedStrings), `${mode}/C10: tower 八键顺序及文案逐字相等`);
   eq(entries.slice(912, 920), Object.entries(marketClosedStrings), `${mode}/C10: market 八键区间及文案逐字相等`);
   eq(entries.slice(920, 928), Object.entries(forgeClosedStrings), `${mode}/C10: forge 八键区间及文案逐字相等`);
-  eq(entries.slice(928), Object.entries(enhanceClosedStrings), `${mode}/C10: enhance 八键只追加在末尾，文案逐字相等`);
+  eq(entries.slice(928, 936), Object.entries(enhanceClosedStrings), `${mode}/C10: enhance.closed 八键区间及文案逐字相等`);
   eq(hash(JSON.stringify(entries.slice(0, 904))), originalStringsSemanticSha, `${mode}/C10: 原 904 键语义不变`);
-  // 依次还原 enhance、forge、market、tower 末项逗号与新增八行，证明原 904 项每个字节都未改。
+  // 依次剥 formal、enhance.closed、forge、market、tower 新增行，证明原 904 项每个字节都未改。
   const rawStrings = sharedBytes.get('balance/strings_zh.json').toString('utf8');
-  const preEnhance = rawStrings.replace(/,\n(?: {2}"enhance\.closed\.[^\n]+\n?){8}/u, '\n');
+  const preFormal = rawStrings.replace(/,\n(?: {2}"enhance\.formal\.[^\n]+\n?){8}/u, '\n');
+  eq(hash(preFormal), preFormalStringsSha, `${mode}/C10: 剥正式八键还原原936键完整字节`);
+  const preEnhance = preFormal.replace(/,\n(?: {2}"enhance\.closed\.[^\n]+\n?){8}/u, '\n');
   eq(hash(preEnhance), preEnhanceStringsSha, `${mode}/C10: 删除 enhance 八行即还原原 928 项完整文件 SHA`);
   const marketBytes = preEnhance.replace(/,\n(?: {2}"forge\.closed\.[^\n]+\n?){8}/u, '\n');
   eq(hash(marketBytes), marketStringsSha, `${mode}/C10: 删除 forge 八行即还原原 920 项完整文件 SHA`);
@@ -405,7 +408,11 @@ try {
   await protectTables();
   for (const [mode, dataRoot] of modes) await checkFormal(mode, dataRoot);
   for (const name of ['balance/strings_zh.json', 'maps/youying_tower.json']) {
-    eq((await fs.readFile(path.join(gameData, name))).equals(sharedBytes.get(name)), true, `game 根 ${name} 与共享、wt 快照同字节`);
+    if (name === 'balance/strings_zh.json') {
+      const preFormal = sharedBytes.get(name).toString('utf8').replace(/,\n(?: {2}"enhance\.formal\.[^\n]+\n?){8}/u, '\n');
+      eq(hash(preFormal), preFormalStringsSha, 'game文案对照为完整原936键');
+      eq(await fs.readFile(path.join(gameData, name), 'utf8'), preFormal, 'game旧strings936与shared剥正式八键后同字节');
+    } else eq((await fs.readFile(path.join(gameData, name))).equals(sharedBytes.get(name)), true, `game 根 ${name} 与共享、wt 快照同字节`);
   }
   eq(await shaOrNull(path.join(root, 'data/features.json')), featureSha, '正式 features 未改开放状态');
   const source = await fs.readFile(path.join(root, 'src/scenes/GameScene.ts'), 'utf8');
@@ -423,4 +430,4 @@ try {
     formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false,
     protectedFiles: Object.fromEntries(before), evidence }, null, 2)}\n`);
 }
-console.log(`v06d closed tests ok: ${assertions} assertions; C01–C10 自动化部分通过；shared/snapshot/game 字符串与山门地图同字节；tower_floors/titles/gifts/原904文案保持；formalOpen:true、closedFixtureOnly:true；正式已软开；关态仅内存夹具，无收益/通层/首通/称号/存储增量；未发版`);
+console.log(`v06d closed tests ok: ${assertions} assertions; C01–C10 自动化部分通过；shared/snapshot strings944同字节、game旧936不动，三根山门地图同字节；tower_floors/titles/gifts/原904文案保持；formalOpen:true、closedFixtureOnly:true；正式已软开；关态仅内存夹具，无收益/通层/首通/称号/存储增量；未发版`);

@@ -1,0 +1,177 @@
+{
+  "passed": true,
+  "formalTipsWired": true,
+  "formalInstanceSource": false,
+  "released": false,
+  "softOpenedEntrance": true,
+  "formalOpen": true,
+  "softOpened": true,
+  "closedFixtureOnly": true,
+  "checks": {
+    "datalint-shared": {
+      "command": [
+        "python3",
+        "/workspace/xiantu/qa/tools/datalint.py"
+      ],
+      "dataRoot": "/workspace/xiantu",
+      "exitCode": 0,
+      "stdin": "/dev/null"
+    },
+    "datalint-snapshot": {
+      "command": [
+        "python3",
+        "/workspace/xiantu/qa/tools/datalint.py"
+      ],
+      "dataRoot": "/workspace/xiantu/wt/dev/data",
+      "exitCode": 0,
+      "stdin": "/dev/null"
+    },
+    "diff-check": {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "stdin": "/dev/null",
+      "exitCode": 0,
+      "assertions": null
+    },
+    "json-shared": {
+      "command": [
+        "python3",
+        "-m",
+        "json.tool",
+        "/workspace/xiantu/balance/strings_zh.json"
+      ],
+      "exitCode": 0,
+      "stdin": "/dev/null"
+    },
+    "json-snapshot": {
+      "command": [
+        "python3",
+        "-m",
+        "json.tool",
+        "data/balance/strings_zh.json"
+      ],
+      "exitCode": 0,
+      "stdin": "/dev/null"
+    },
+    "tsc": {
+      "command": [
+        "npx",
+        "tsc",
+        "--noEmit"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "stdin": "/dev/null",
+      "exitCode": 0,
+      "assertions": null
+    },
+    "v06c-closed": {
+      "command": [
+        "npm",
+        "run",
+        "test:v06c-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "stdin": "/dev/null",
+      "exitCode": 0,
+      "assertions": 10712
+    },
+    "v06d-closed": {
+      "command": [
+        "npm",
+        "run",
+        "test:v06d-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "stdin": "/dev/null",
+      "exitCode": 0,
+      "assertions": 15055
+    },
+    "v06p1-enhance-closed": {
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-enhance-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "stdin": "/dev/null",
+      "exitCode": 0,
+      "assertions": 30749
+    },
+    "v06p1-enhance-open": {
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-enhance-open"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "stdin": "/dev/null",
+      "exitCode": 0,
+      "assertions": 8568
+    },
+    "v06p1-forge-closed": {
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-forge-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "stdin": "/dev/null",
+      "exitCode": 0,
+      "assertions": 20365
+    },
+    "v06p1-forge-open": {
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-forge-open"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "stdin": "/dev/null",
+      "exitCode": 0,
+      "assertions": 6378
+    },
+    "v06p1-market-closed": {
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-market-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "stdin": "/dev/null",
+      "exitCode": 0,
+      "assertions": 24168
+    }
+  },
+  "suiteAssertions": {
+    "v06c-closed": 10712,
+    "v06d-closed": 15055,
+    "v06p1-enhance-closed": 30749,
+    "v06p1-enhance-open": 8568,
+    "v06p1-forge-closed": 20365,
+    "v06p1-forge-open": 6378,
+    "v06p1-market-closed": 24168
+  },
+  "totalSuiteAssertions": 115995,
+  "testedSourceSha256": {
+    "src/EnhanceGate.ts": "4cc3006460b579fbcf70ecd51df18a20310fe47944542dff856623b2ff54b3e4",
+    "src/v06p1-enhance-open.test.ts": "58b5927e343735e38203f1a7ea468f7c8ab786b5c2e33ec3b8dfe0da7f55c7c6",
+    "scripts/v06c-closed-test.mjs": "637039e4146f6aae45c72d7013114cd489c325da1721898fa9325916c2b55090",
+    "scripts/v06d-closed-test.mjs": "8e8b5c2de3f360ebd30c9f1bb5a8a3b891d1886455a90247d286d68ea076fa32",
+    "scripts/v06p1-enhance-closed-test.mjs": "e382c8928bb312c52e253bf31cda10a437640ea30977ef6790944a0ee57f4c25",
+    "scripts/v06p1-enhance-open-test.mjs": "46fcee961e068f299c972f2160e12bdbc4f3973bbb2ad5767382f68932377ce6",
+    "scripts/v06p1-forge-closed-test.mjs": "a12902e5f0efc36f5639d93d1cabb8209a44b78075b016517931733c4da0ab1d",
+    "scripts/v06p1-forge-open-test.mjs": "3bb23c8241a3f6e25afd0aff8724ed8d0b3f03d3981dc0eed8424a5fb0df42d3",
+    "scripts/v06p1-market-closed-test.mjs": "7421295bfc3846b0cd3901e572198c3a57f2b2511adbe3e7183c5a75351b5423"
+  },
+  "c03Limit": "Explicit test fixture ownership/history identity boundary only; no formal instance registry or cross-slot source schema implemented.",
+  "snapshotMethod": "Exact copy of approved strings only; preserved existing data/art pending work.",
+  "notRun": [
+    "build",
+    "sync",
+    "release"
+  ]
+}

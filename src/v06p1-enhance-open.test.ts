@@ -1,5 +1,6 @@
 // 正式强化恒开；只有独立 Vite SSR 关态图可将 EnhanceOpenFlag 内存注入 false。
 import enhance from '@xt/balance/enhance.json';
+import strings from '@xt/balance/strings_zh.json';
 import { GAME_PHASE, ITEMS } from './data';
 import { featureEnabled, featureFlags } from './features';
 import { Progress } from './Progress';
@@ -145,7 +146,41 @@ export async function runEnhanceOpenFixtureTests(options: {
   });
   function businessDenied(result: GateResult, message: string) {
     eq(result.allowed, false, message);
-    ok('tipKey' in result && result.tipKey.startsWith('enhance.fixture.'), `${message}：明确强化业务拒绝`);
+    ok('tipKey' in result && /^enhance\.(fixture|formal)\./u.test(result.tipKey), `${message}：明确强化业务拒绝`);
+    if ('tipKey' in result && result.tipKey.startsWith('enhance.formal.'))
+      eq(result.text, (strings as Record<string, unknown>)[result.tipKey], `${message}：正式文案仅读strings键`);
+  }
+  function formalDenied(result: GateResult, reason: string, message: string) {
+    businessDenied(result, message);
+    eq('tipKey' in result ? result.tipKey : null, `enhance.formal.${reason}`, `${message}：正式拒绝分型`);
+  }
+  async function formalUnchanged(p: Progress, action: () => GateResult | Promise<GateResult>, reason: string, message: string) {
+    const before = p.exportSave(), rows = copy([...idb.rows]), writes = idb.writes, commits = idb.commits,
+      exp = experience(p), samples = sampleCount, ledgers = ledgerSeq, local = localWrites;
+    const methods = ['persistSoon', 'save', 'saveAsync', 'runSaveTransaction', 'runSaveTransactionAsync'];
+    const descriptors = methods.map(name => [name, Object.getOwnPropertyDescriptor(p, name)] as const);
+    const random = Math.random;
+    let persistenceAttempts = 0, randomAttempts = 0;
+    let result!: GateResult;
+    try {
+      for (const method of methods) Object.defineProperty(p, method, { configurable: true, value: () => {
+        persistenceAttempts++; throw new Error(`${message}：正式拒绝不得事务或延后保存`);
+      } });
+      Math.random = () => { randomAttempts++; throw new Error(`${message}：正式拒绝不得抽样`); };
+      result = await action(); formalDenied(result, reason, message);
+    } finally {
+      Math.random = random;
+      for (const [name, descriptor] of descriptors) {
+        if (descriptor) Object.defineProperty(p, name, descriptor); else Reflect.deleteProperty(p, name);
+      }
+    }
+    eq(p.exportSave(), before, `${message}：资源实例等级属性品质历史记录整档零增量`);
+    eq(experience(p), exp, `${message}：生活技能经验等级不变`);
+    eq([...idb.rows], rows, `${message}：磁盘既有资产及结果不变`);
+    eq([idb.writes, idb.commits, localWrites], [writes, commits, local], `${message}：存储零写零提交`);
+    eq([sampleCount, ledgerSeq, randomAttempts], [samples, ledgers, 0], `${message}：零抽样零新账本`);
+    eq(persistenceAttempts, 0, `${message}：不启事务不建延后保存队列`);
+    return result;
   }
   function committed(result: GateResult) {
     ok(result.allowed && result.result, '返回完整强化结算结果'); return result.result;
@@ -161,8 +196,10 @@ export async function runEnhanceOpenFixtureTests(options: {
   async function replay(p: Progress, gate: EnhanceGate, input: ReturnType<typeof request>, message: string) {
     const before = p.exportSave(), writes = idb.writes, samples = sampleCount;
     const result = await gate.submit(copy(input));
-    if (result.allowed) eq(result.result, p.enhance!.enhancements.find(row => row.enhanceRequestId === input.enhanceRequestId), `${message}：只返回完整旧结果`);
-    else businessDenied(result, `${message}：明确拒绝重复请求`);
+    formalDenied(result, 'duplicate', `${message}：明确拒绝重复请求`);
+    eq('result' in result ? result.result : null,
+      p.enhance!.enhancements.find(row => row.enhanceRequestId === input.enhanceRequestId), `${message}：只返回匹配完整旧结果`);
+    eq('replayed' in result ? result.replayed : false, true, `${message}：只读已提交身份`);
     eq(p.exportSave(), before, `${message}：库存等级属性去重不变`);
     eq(idb.writes, writes, `${message}：重放零写`);
     eq(sampleCount, samples, `${message}：重放不重抽`);
@@ -263,20 +300,122 @@ export async function runEnhanceOpenFixtureTests(options: {
   async function defaultGateDenied() {
     const { p } = fixture(), gate = new EnhanceGate(p);
     const before = p.exportSave(), writes = idb.writes, samples = sampleCount;
-    ok(gate.feature().allowed, '正式默认无fixtureInstances仍允许只读说明');
-    ok(gate.entrance().allowed, '正式默认无fixtureInstances仍允许入口提示');
+    for (let repeat = 0; repeat < 3; repeat++) {
+      ok(gate.feature().allowed, 'C01正式默认无fixtureInstances仍允许只读说明');
+      ok(gate.entrance().allowed, 'C01正式默认无fixtureInstances仍允许入口提示');
+    }
     ok(gate.loadRefresh().allowed, '正式默认无fixtureInstances空历史袋只读允许');
-    businessDenied(gate.enhance(request('formal-default-denied')), '正式默认无fixtureInstances拒绝选择');
-    const result = await gate.submit(request('formal-default-denied'));
-    businessDenied(result, '正式默认无fixtureInstances拒绝新submit');
-    eq(result.allowed ? null : result.tipKey, 'enhance.fixture.selection', '默认拒绝源于未授权装备实例');
+    await formalUnchanged(p, () => gate.enhance(request('formal-default-denied')), 'no_instance', 'C01默认无正式实例拒绝选择');
+    await formalUnchanged(p, () => gate.submit(request('formal-default-denied')), 'no_instance', 'C01只读入口不授权新submit');
+    await formalUnchanged(p, () => gate.level('unknown-default-result'), 'no_instance', 'C01默认无完整结果不补造等级');
+    await formalUnchanged(p, () => gate.consume('unknown-default-result'), 'no_instance', 'C01默认无完整结果不补造费用');
     eq(gate.laterService(), Closed.refuseLaterService(), '正式默认开态仍拒附灵/分解');
     eq(p.exportSave(), before, '默认Gate拒绝不建实例、不建袋、不扣费');
     eq(p.enhance, undefined, '默认拒绝不发明正式装备实例系统');
     eq(idb.writes, writes, '默认无夹具授权submit拒绝零存档写');
     eq(sampleCount, samples, '默认无夹具授权submit拒绝不抽样');
-    return { fixtureInstancesAbsent: true, submitDenied: true, tipKey: result.allowed ? null : result.tipKey,
+    const malformed = fixture().p; (malformed as any).enhance = { state: 'unknown', raw: 'must-keep' };
+    await formalUnchanged(malformed, () => new EnhanceGate(malformed).loadRefresh(), 'no_instance', 'C08默认坏历史袋不修复不冒认完整结果');
+    return { fixtureInstancesAbsent: true, submitDenied: true, tipKey: 'enhance.formal.no_instance',
+      unknownReadResultsDenied: true, malformedHistoryPreserved: true,
       noProductionInstancesInvented: true, laterServiceClosed: true, saveWrites: idb.writes - writes };
+  }
+  async function formalRefusalCases() {
+    eq(Object.keys(strings).length, 944, '正式strings快照944键含_meta');
+    eq(Object.keys(strings).filter(key => key.startsWith('enhance.formal.')).length, 8, '正式拒绝只读既有八键');
+    for (const [name, makeGate, input] of [
+      ['仅同itemId数量', (p: Progress) => new EnhanceGate(p), request('quantity-only')],
+      ['itemId冒充实例引用', (p: Progress) => new EnhanceGate(p), request('item-id-only', 0, 'bamboo_sword')],
+      ['空夹具授权', (p: Progress) => new EnhanceGate(p, fixtureOptions([])), request('empty-authorization')],
+      ['显式实例中缺itemId冒充授权', (p: Progress) => new EnhanceGate(p, fixtureOptions()), request('fixture-item-id', 0, 'bamboo_sword')],
+    ] as const) {
+      const { p } = fixture(); p.inventory.bamboo_sword = 99;
+      await formalUnchanged(p, () => makeGate(p).submit(input), 'no_instance', `C02${name}不授权`);
+    }
+    const historical = fixture();
+    historical.p.enhance = { version: 1, ledgerId: 'historical-instance-only', instances: [instance()], enhancements: [], receipts: [] };
+    ok(isValidEnhanceProgress(historical.p.enhance), 'C02构造合法但无完整结果的历史实例袋');
+    await formalUnchanged(historical.p, () => new EnhanceGate(historical.p).submit(request('historical-instance-only')),
+      'no_instance', 'C02历史instances不授权新submit');
+    await formalUnchanged(historical.p, () => new EnhanceGate(historical.p, fixtureOptions([])).submit(request('historical-empty-authorization')),
+      'no_instance', 'C02历史袋不能补足空夹具授权');
+    const { p: missingSelection, gate: selectionGate } = fixture();
+    await formalUnchanged(missingSelection, () => selectionGate.enhance(), 'no_instance', 'C02缺selection不授权');
+
+    // C03仅抽检现有显式夹具的所有权边界；正式跨档实例源schema尚未实现。
+    const foreign = fixture(); delete foreign.p.inventory.bamboo_sword;
+    await formalUnchanged(foreign.p, () => foreign.gate.enhance(request('foreign-preview')), 'foreign', 'C03授权实例非本档持有拒绝预览');
+    await formalUnchanged(foreign.p, () => foreign.gate.submit(request('foreign-submit')), 'foreign', 'C03授权实例非本档持有拒绝提交');
+    const mismatch = fixture();
+    mismatch.p.enhance = { version: 1, ledgerId: 'history-mismatch', instances: [instance(0, 'armor')], enhancements: [], receipts: [] };
+    await formalUnchanged(mismatch.p, () => mismatch.gate.submit(request('mismatched-history')), 'foreign', 'C03历史实例身份与本档授权不符');
+    const slotBefore = Progress.getActiveSlot();
+    try {
+      Progress.setActiveSlot(2); const { p: anotherSlot } = fixture();
+      await formalUnchanged(anotherSlot, () => new EnhanceGate(anotherSlot).submit(request('cross-slot-text-only')),
+        'no_instance', 'C03另一档同引用文本不获默认正式授权');
+    } finally { Progress.setActiveSlot(slotBefore); }
+
+    for (const [name, authorized] of [
+      ['非法type', [{ ...instance(), type: 'shoes' }]],
+      ['非equip', [{ ...instance(), itemId: 'rabbit_fur' }]],
+      ['slot不符', [{ ...instance(), type: 'armor' }]],
+      ['未知装备原型', [{ ...instance(), itemId: 'missing-item' }]],
+    ] as const) {
+      const f = fixture(0, 'weapon', authorized as unknown as Instance[]);
+      await formalUnchanged(f.p, () => f.gate.submit(request(`bad-type-${name.length}`)), 'bad_type', `C04${name}整笔拒绝`);
+    }
+    for (const [name, patch] of [
+      ['phase', { phase: GAME_PHASE + 1 }], ['phaseMin', { phaseMin: GAME_PHASE + 1 }],
+      ['phaseMax', { phaseMax: GAME_PHASE - 1 }], ['enabled', { enabled: false }],
+      ['placeholder', { placeholder: true }], ['qualityEnabled', { qualityEnabled: true }],
+    ] as const) {
+      const original = ITEMS.bamboo_sword;
+      try {
+        ITEMS.bamboo_sword = { ...original, ...patch };
+        const f = fixture();
+        await formalUnchanged(f.p, () => f.gate.enhance(request('bad-item-preview')), 'bad_type', `C04${name}资格不符拒绝预览`);
+        await formalUnchanged(f.p, () => f.gate.submit(request('bad-item-submit')), 'bad_type', `C04${name}资格不符拒绝提交`);
+      } finally { ITEMS.bamboo_sword = original; }
+    }
+
+    for (const hasFixture of [false, true]) for (const level of [0, 5, 11]) {
+      const f = fixture(level); f.p.inventory.protect_charm = 7;
+      const gate = hasFixture ? f.gate : new EnhanceGate(f.p);
+      const protectedRequest = { ...request(`formal-charm-${hasFixture}-${level}`, level), useProtectCharm: true };
+      await formalUnchanged(f.p, () => gate.enhance(protectedRequest), 'protect', `C05护符true预览整笔拒绝/fixture=${hasFixture}/+${level}`);
+      await formalUnchanged(f.p, () => gate.submit(protectedRequest), 'protect', `C05护符true提交整笔拒绝/fixture=${hasFixture}/+${level}`);
+      eq(f.p.count('protect_charm'), 7, 'C05护符候选库存不消费不授权映射');
+    }
+    for (const resource of ['stones', 'refine_stone']) {
+      const f = fixture();
+      if (resource === 'stones') f.p.stones = enhance.levels[0].stones - 1;
+      else f.p.inventory.refine_stone = enhance.levels[0].refineStones - 1;
+      await formalUnchanged(f.p, () => f.gate.enhance(request('resources-preview')), 'resources', `C06${resource}不足拒绝预览`);
+      await formalUnchanged(f.p, () => f.gate.submit(request('resources-submit')), 'resources', `C06${resource}不足拒绝提交`);
+    }
+    for (const [name, level, input] of [
+      ['满级', enhance.maxLevel, request('formal-max', enhance.maxLevel)],
+      ['目标越界', 0, { ...request('formal-beyond'), to: enhance.maxLevel + 1 }],
+      ['目标非next', 0, { ...request('formal-skip'), to: 2 }],
+      ['过期等级', 1, request('formal-stale')],
+      ['负等级', 0, { ...request('formal-negative'), fromLevel: -1 }],
+      ['非整数等级', 0, { ...request('formal-fraction'), fromLevel: 0.5 }],
+    ] as const) {
+      const f = fixture(level);
+      await formalUnchanged(f.p, () => f.gate.enhance(input), 'max_level', `C07${name}拒绝预览`);
+      await formalUnchanged(f.p, () => f.gate.submit(input), 'max_level', `C07${name}拒绝提交`);
+    }
+    const { p, gate } = fixture(), before = p.exportSave(), writes = idb.writes, samples = sampleCount;
+    eq(gate.laterService(), Closed.refuseLaterService(), 'C09附灵分解继续使用enhance.closed.later_service');
+    eq(gate.laterService(), { allowed: false, tipKey: 'enhance.closed.later_service', text: strings['enhance.closed.later_service'] },
+      'C09later_service文案仅读既有strings');
+    eq(p.exportSave(), before, 'C09附灵分解整档零增量');
+    eq([idb.writes, sampleCount], [writes, samples], 'C09附灵分解零写零抽样');
+    return { cases: ['C01', 'C02', 'C03', 'C04', 'C05', 'C06', 'C07', 'C09'],
+      formalTipTextFromStrings: true, zeroSideEffects: true, noTransactionOrDeferredQueue: true,
+      foreignFixtureBoundaries: ['owned-item-absent', 'history-identity-mismatch'],
+      crossSlotProductionSchemaImplemented: false, historicalBagAuthorizesSubmit: false };
   }
   async function roundtrip(payload: Payload) {
     const p = fixture().p;
@@ -294,18 +433,28 @@ export async function runEnhanceOpenFixtureTests(options: {
     eq(loaded.stones, payload.save.stones, `${payload.state}：真实IDB读档灵石一致`);
     if (!openFixture) { await memoryClosed(loaded, `${payload.state}/内存关态历史夹具袋`); return; }
     const gate = new EnhanceGate(loaded), before = loaded.exportSave(), writes = idb.writes, samples = sampleCount;
-    ok(gate.loadRefresh().allowed, `${payload.state}：无新授权仍可只读历史`);
+    const refreshed = await formalUnchanged(loaded, () => gate.loadRefresh(), 'load_dedupe', `C08${payload.state}：读档后只认已提交结果`);
+    eq('progress' in refreshed ? refreshed.progress : null, loaded.enhance, `C08${payload.state}：返回完整只读历史`);
+    eq('replayed' in refreshed ? refreshed.replayed : false, true, `C08${payload.state}：读档去重只读标识`);
     const result = committed(gate.level(payload.enhanceRequestId));
     eq(result, loaded.enhance!.enhancements[0], `${payload.state}：等级结果只读一致`);
     eq(committed(gate.consume(payload.enhanceRequestId)), result, `${payload.state}：费用结果同次一致`);
     eq(loaded.exportSave(), before, `${payload.state}：读回不重复改级`);
     eq(idb.writes, writes, `${payload.state}：读回零写`); eq(sampleCount, samples, `${payload.state}：读回不重抽`);
     await replay(loaded, gate, request(payload.enhanceRequestId, result.fromLevel, result.instanceRef), `${payload.state}/读回同请求`);
-    await unchanged(loaded, () => gate.submit(request('fresh-without-authorization', result.finalLevel, result.instanceRef)), `${payload.state}：历史袋不替代新请求夹具授权`);
+    const duplicate = await formalUnchanged(loaded,
+      () => gate.submit(request(payload.enhanceRequestId, result.fromLevel, result.instanceRef)), 'duplicate', `C08${payload.state}：旧结果拒绝再次结算`);
+    eq('result' in duplicate ? duplicate.result : null, result, `C08${payload.state}：旧请求只读结果原样保留`);
+    const conflict = await formalUnchanged(loaded,
+      () => gate.submit(request(payload.enhanceRequestId, result.fromLevel, 'different-instance')), 'duplicate', `C08${payload.state}：旧请求载荷冲突拒绝`);
+    eq('result' in conflict && conflict.result !== undefined, false, `C08${payload.state}：载荷冲突不冒认旧结果`);
+    await formalUnchanged(loaded, () => gate.submit(request('fresh-without-authorization', result.finalLevel, result.instanceRef)),
+      'no_instance', `C02/C08${payload.state}：完整历史袋不授权新submit`);
   }
   try {
     const sceneSmokeEvidence = invalidTable ? null : sceneSmoke();
     const defaultGateEvidence = openFixture && !invalidTable ? await defaultGateDenied() : null;
+    const formalRefusalEvidence = openFixture && !invalidTable && !refreshPayloads ? await formalRefusalCases() : null;
     if (refreshPayloads) {
       eq(refreshPayloads.map(row => row.state), ['success', 'failure-no-drop', 'failure-drop'], '独立fresh SSR覆盖成功与两种正常失败');
       for (const payload of refreshPayloads) await roundtrip(payload);
@@ -501,7 +650,9 @@ export async function runEnhanceOpenFixtureTests(options: {
       await unchanged(slotB.p, () => slotB.gate.level('slot-a'), 'O05 B档不可查看A档结果');
       const loadedA = await Progress.load({ async: true, slot: 1 }); progresses.push(loadedA);
       eq(loadedA.enhance, saveA.enhance, 'O05 B档保存不覆盖A档强化袋'); eq(loadedA.inventory, saveA.inventory, 'O05 B档不覆盖A档费用');
-      Progress.setActiveSlot(1); const view = slotA.gate.loadRefresh(); ok(view.allowed && view.progress, 'O05完整只读袋可查看');
+      Progress.setActiveSlot(1); const view = slotA.gate.loadRefresh();
+      formalDenied(view, 'load_dedupe', 'O05完整袋刷新只读去重');
+      ok('progress' in view && view.progress, 'O05完整只读袋可查看');
       view.progress.instances[0].enhanceLevel = 12; eq(slotA.p.enhance, saveA.enhance, 'O05篡改视图不改变真实等级');
 
       // O08：纯结构损坏拒绝导入与相关写入；不按空袋修补歧义请求。
@@ -538,10 +689,13 @@ export async function runEnhanceOpenFixtureTests(options: {
     eq(featureFlags(), flags, 'features原值保持不变'); eq(JSON.stringify(enhance), tableBefore, 'enhance内存表未修改');
     eq(localWrites, 0, '真实IDB保存无localStorage写旁路');
     return { assertions, payloads, openFixture, graph: openFixture ? 'formal-open' : 'memory-closed',
-      formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false,
-      sceneSmoke: sceneSmokeEvidence, defaultGateDenied: defaultGateEvidence, storageWrites: idb.writes, commits: idb.commits, sampleCount,
+      formalOpen: true, closedFixtureOnly: true, softOpened: true, softOpenedEntrance: true,
+      formalTipsWired: true, formalInstanceSource: false, released: false,
+      sceneSmoke: sceneSmokeEvidence, defaultGateDenied: defaultGateEvidence, formalRefusals: formalRefusalEvidence,
+      storageWrites: idb.writes, commits: idb.commits, sampleCount,
       forgingExperienceWritten: false, protectorPath: 'missing-basis-denied',
-      cases: openFixture ? invalidTable ? ['O06'] : ['O01', 'O02', 'O03', 'O04', 'O05', 'O06', 'O07', 'O08'] : ['memory-closed-eight-tips', 'zero-side-effects', 'historical-baggage'] };
+      cases: openFixture ? invalidTable ? ['O06'] : ['C01', 'C02', 'C03', 'C04', 'C05', 'C06', 'C07', 'C08', 'C09', 'C10',
+        'O01', 'O02', 'O03', 'O04', 'O05', 'O06', 'O07', 'O08'] : ['memory-closed-eight-tips', 'zero-side-effects', 'historical-baggage'] };
   } finally {
     for (const p of progresses) await p.flushSaves(); Progress.setActiveSlot(oldSlot); setSaveBackend(createIndexedDbBackend());
     if (storage) Object.defineProperty(globalThis, 'localStorage', storage); else Reflect.deleteProperty(globalThis, 'localStorage');

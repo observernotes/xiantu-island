@@ -1,4 +1,5 @@
 import enhance from '@xt/balance/enhance.json';
+import strings from '@xt/balance/strings_zh.json';
 import { ITEMS, inPhase } from './data';
 import type { Progress } from './Progress';
 import { isEnhanceOpenForFixture } from './EnhanceOpenFlag';
@@ -31,10 +32,23 @@ export interface EnhanceAllowed {
   row?: EnhanceLevelRow;
   replayed?: boolean;
 }
-export interface EnhanceDenied { allowed: false; tipKey: string; text: string; }
+export type EnhanceFormalTipKey = 'enhance.formal.no_instance' | 'enhance.formal.foreign' | 'enhance.formal.bad_type'
+  | 'enhance.formal.protect' | 'enhance.formal.resources' | 'enhance.formal.max_level'
+  | 'enhance.formal.duplicate' | 'enhance.formal.load_dedupe';
+export interface EnhanceDenied {
+  allowed: false;
+  tipKey: string;
+  text: string;
+  /** 仅携带已完整提交结果的只读副本；拒绝本次请求不代表再次结算。 */
+  result?: EnhanceResult;
+  progress?: EnhanceProgress;
+  replayed?: true;
+}
 export type EnhanceGateResult = EnhanceAllowed | EnhanceDenied;
+type EnhanceSelection = { allowed: true; instance: EnhanceFixtureInstance; row: EnhanceLevelRow };
 const copy = <T>(value: T): T => structuredClone(value);
 const denied = (reason: string, text: string): EnhanceDenied => ({ allowed: false, tipKey: `enhance.fixture.${reason}`, text });
+const formalDenied = (tipKey: EnhanceFormalTipKey): EnhanceDenied => ({ allowed: false, tipKey, text: strings[tipKey] });
 const count = (value: unknown): value is number => typeof value === 'number' && Number.isSafeInteger(value) && value >= 0;
 const positive = (value: unknown): value is number => count(value) && value > 0;
 const ratio = (value: unknown): value is number => typeof value === 'number' && Number.isFinite(value) && value >= 0;
@@ -42,7 +56,7 @@ const sameAttributes = (a: EnhanceAttributes, b: EnhanceAttributes): boolean =>
   a.atkRatioOfBase === b.atkRatioOfBase && a.defRatioOfBase === b.defRatioOfBase
   && a.hpRatioOfBase === b.hpRatioOfBase && a.allRatio === b.allRatio;
 
-/** 正式恒关；仅独立 SSR 内存图可结算明确授权的测试装备，没有前台消费者。 */
+/** 入口只读开放；新结算只认测试显式授权，默认路径不发明正式装备实例源。 */
 export class EnhanceGate {
   #busy = false;
   constructor(private readonly progress: Progress, private readonly fixture: EnhanceFixtureOptions = {}) {}
@@ -59,36 +73,41 @@ export class EnhanceGate {
   enhance(request?: EnhanceRequest): EnhanceGateResult {
     if (!isEnhanceOpenForFixture()) return EnhanceClosed.refuseEnhance();
     try {
+      if (this.requestsProtect(request)) return formalDenied('enhance.formal.protect');
+      if (!this.hasFixtureAuthorization()) return formalDenied('enhance.formal.no_instance');
       if (!this.valid(this.progress)) return denied('progress', '强化档案存在歧义，已阻止写入。');
       const selected = this.selection(this.progress, request);
-      if (!selected) return denied('selection', '装备实例、等级或夹具授权无效。');
-      if (!this.ownsCosts(this.progress, selected.row)) return denied('resources', '灵石或精炼石不足。');
+      if (!selected.allowed) return selected;
+      if (!this.ownsCosts(this.progress, selected.row)) return formalDenied('enhance.formal.resources');
       return { allowed: true, instance: copy(selected.instance), attributes: this.attributes(selected.instance.type, selected.instance.enhanceLevel), row: copy(selected.row) };
     } catch { return denied('request', '强化选择无效。'); }
   }
   async submit(request: EnhanceRequest): Promise<EnhanceGateResult> {
     if (!isEnhanceOpenForFixture()) return EnhanceClosed.refuseSubmit();
-    if (this.#busy) return denied('busy', '正在保存强化结果，请稍候。');
     try {
-      if (!this.valid(this.progress)) return denied('progress', '强化档案存在歧义，已阻止写入。');
-      if (!this.validRequest(request)) return denied('request', '强化请求无效或护器符依据缺失。');
+      if (this.requestsProtect(request)) return formalDenied('enhance.formal.protect');
+      if (this.#busy) return denied('busy', '正在保存强化结果，请稍候。');
+      if (!this.valid(this.progress)) return this.hasFixtureAuthorization()
+        ? denied('progress', '强化档案存在歧义，已阻止写入。') : formalDenied('enhance.formal.no_instance');
+      if (!this.validRequest(request)) return formalDenied('enhance.formal.no_instance');
       const old = this.progress.enhance?.enhancements.find(row => row.enhanceRequestId === request.enhanceRequestId);
       // 重放只认已提交身份，不依赖新装备授权，不抽样或开启事务。
       if (old) return this.replay(old, request);
       const selected = this.selection(this.progress, request);
-      if (!selected) return denied('selection', '装备实例、等级或夹具授权无效。');
+      if (!selected.allowed) return selected;
+      if (!this.ownsCosts(this.progress, selected.row)) return formalDenied('enhance.formal.resources');
       // 第一次 await 之前固定请求和授权，外部对象变化不能改变本次含义。
       const intent = copy(request), authorized = copy(this.fixture.fixtureInstances!);
       return await this.transact((draft, reject) => {
+        const committed = draft.enhance?.enhancements.find(row => row.enhanceRequestId === intent.enhanceRequestId);
+        if (committed) return reject(this.replay(committed, intent));
         const selection = this.selection(draft, intent, authorized);
-        if (!selection) return reject('selection', '装备已变动，保持原库存与等级。');
-        if (draft.enhance?.enhancements.some(row => row.enhanceRequestId === intent.enhanceRequestId))
-          return reject('duplicate', '该请求已提交，请读取既有结果。');
-        if (!this.ownsCosts(draft, selection.row)) return reject('resources', '灵石或精炼石不足。');
+        if (!selection.allowed) return reject(selection);
+        if (!this.ownsCosts(draft, selection.row)) return reject(formalDenied('enhance.formal.resources'));
         const ledgerId = draft.enhance?.ledgerId ?? (this.fixture.ledgerId ? this.fixture.ledgerId() : `enhance_${crypto.randomUUID()}`);
-        if (!isEnhanceId(ledgerId)) return reject('identity', '强化夹具账本身份无效。');
+        if (!isEnhanceId(ledgerId)) return reject(denied('identity', '强化夹具账本身份无效。'));
         const random = this.fixture.random ? this.fixture.random() : Math.random();
-        if (!ratio(random) || random >= 1) return reject('random', '强化抽样无效，保持原状态。');
+        if (!ratio(random) || random >= 1) return reject(denied('random', '强化抽样无效，保持原状态。'));
         const success = random < selection.row.rate;
         const finalLevel = success ? intent.to : intent.fromLevel - (selection.row.dropOnFail ? 1 : 0);
         const result: EnhanceResult = {
@@ -108,11 +127,11 @@ export class EnhanceGate {
         const settled = JSON.stringify(Object.fromEntries(Object.entries(draft).filter(([, value]) => typeof value !== 'function')));
         if (this.fixture.canCommitResult?.(draft, copy(result)) === false
           || settled !== JSON.stringify(Object.fromEntries(Object.entries(draft).filter(([, value]) => typeof value !== 'function'))))
-          return reject('commit', '强化结果承载失败，保持原库存与等级。');
+          return reject(denied('commit', '强化结果承载失败，保持原库存与等级。'));
         if (draft.stones !== stones - result.stones || draft.count('refine_stone') !== refineStones - result.refineStones
           || instance.enhanceLevel !== finalLevel || equipmentCounts.some(([id, before]) => draft.count(id) !== before)
           || !this.ownsInstances(draft, bag.instances))
-          return reject('commit', '强化结果承载失败，保持原库存与等级。');
+          return reject(denied('commit', '强化结果承载失败，保持原库存与等级。'));
         return { allowed: true, result: copy(result), progress: copy(bag), replayed: false };
       });
     } catch { return denied('save', '强化未提交，保持原库存与等级。'); }
@@ -127,7 +146,11 @@ export class EnhanceGate {
   }
   loadRefresh(): EnhanceGateResult {
     if (!isEnhanceOpenForFixture()) return EnhanceClosed.refuseLoadRefresh();
-    if (!this.valid(this.progress)) return denied('progress', '强化档案存在歧义，已阻止写入。');
+    if (!this.valid(this.progress)) return this.hasFixtureAuthorization()
+      ? denied('progress', '强化档案存在歧义，已阻止写入。') : formalDenied('enhance.formal.no_instance');
+    if (this.progress.enhance?.enhancements.length) return {
+      ...formalDenied('enhance.formal.load_dedupe'), progress: copy(this.progress.enhance), replayed: true,
+    };
     return this.progress.enhance === undefined ? { allowed: true } : { allowed: true, progress: copy(this.progress.enhance) };
   }
   laterService(): EnhanceGateResult {
@@ -136,32 +159,59 @@ export class EnhanceGate {
   }
 
   private readResult(requestId: string | undefined): EnhanceGateResult {
-    if (!this.valid(this.progress)) return denied('progress', '强化档案存在歧义，已阻止写入。');
+    if (!this.valid(this.progress)) return this.hasFixtureAuthorization()
+      ? denied('progress', '强化档案存在歧义，已阻止写入。') : formalDenied('enhance.formal.no_instance');
     const result = this.progress.enhance?.enhancements.find(row => row.enhanceRequestId === requestId);
-    return result ? { allowed: true, result: copy(result), replayed: true } : denied('result', '没有完整提交的强化结果。');
+    if (result) return { allowed: true, result: copy(result), replayed: true };
+    return this.hasFixtureAuthorization()
+      ? denied('result', '没有完整提交的强化结果。') : formalDenied('enhance.formal.no_instance');
   }
-  private replay(result: EnhanceResult, request: EnhanceRequest): EnhanceGateResult {
+  private replay(result: EnhanceResult, request: EnhanceRequest): EnhanceDenied {
     return result.instanceRef === request.instanceRef && result.fromLevel === request.fromLevel && result.to === request.to
-      ? { allowed: true, result: copy(result), replayed: true } : denied('identity', '请求身份与既有强化结果不符。');
+      ? { ...formalDenied('enhance.formal.duplicate'), result: copy(result), replayed: true }
+      : formalDenied('enhance.formal.duplicate');
   }
   private validRequest(value: unknown): value is EnhanceRequest {
     return enhanceFields(value, ['enhanceRequestId', 'instanceRef', 'fromLevel', 'to', 'useProtectCharm'])
-      && isEnhanceId(value.enhanceRequestId) && isEnhanceInstanceRef(value.instanceRef) && count(value.fromLevel)
-      && positive(value.to) && value.to === value.fromLevel + 1 && value.to <= enhance.maxLevel && value.useProtectCharm === false;
+      && isEnhanceId(value.enhanceRequestId) && isEnhanceInstanceRef(value.instanceRef)
+      && typeof value.fromLevel === 'number' && typeof value.to === 'number' && typeof value.useProtectCharm === 'boolean';
+  }
+  private requestsProtect(value: unknown): boolean {
+    return !!value && typeof value === 'object' && Object.getOwnPropertyDescriptor(value, 'useProtectCharm')?.value === true;
+  }
+  private hasFixtureAuthorization(): boolean {
+    return enhanceArray(this.fixture.fixtureInstances) && this.fixture.fixtureInstances.length > 0;
   }
   private selection(progress: Progress, request: EnhanceRequest | undefined,
-    authorized: readonly EnhanceFixtureInstance[] | undefined = this.fixture.fixtureInstances): { instance: EnhanceFixtureInstance; row: EnhanceLevelRow } | undefined {
-    if (!this.validRequest(request) || !isValidEnhanceInstances(authorized)
-      || !authorized.every(row => row.enhanceLevel <= enhance.maxLevel && this.supportedInstance(row))) return undefined;
+    authorized: readonly EnhanceFixtureInstance[] | undefined = this.fixture.fixtureInstances): EnhanceSelection | EnhanceDenied {
+    if (!this.validRequest(request) || !enhanceArray(authorized) || !authorized.length)
+      return formalDenied('enhance.formal.no_instance');
+    if (request.useProtectCharm) return formalDenied('enhance.formal.protect');
+    // 夹具仍须明确列出合法实例；只为拒绝分型读取字段，不把它提升为正式实例源。
+    for (const row of authorized) {
+      if (!enhanceFields(row, ['instanceRef', 'itemId', 'type', 'enhanceLevel'])
+        || !isEnhanceInstanceRef(row.instanceRef) || !isEnhanceId(row.itemId))
+        return formalDenied('enhance.formal.no_instance');
+      if ((row.type !== 'weapon' && row.type !== 'armor') || !this.supportedInstance(row as unknown as EnhanceFixtureInstance))
+        return formalDenied('enhance.formal.bad_type');
+      if (!count(row.enhanceLevel) || row.enhanceLevel > enhance.maxLevel) return formalDenied('enhance.formal.max_level');
+    }
+    if (!isValidEnhanceInstances(authorized)) return formalDenied('enhance.formal.no_instance');
+    const permission = authorized.find(row => row.instanceRef === request.instanceRef);
+    if (!permission || request.instanceRef === permission.itemId) return formalDenied('enhance.formal.no_instance');
+    if (!count(request.fromLevel) || !positive(request.to) || request.to !== request.fromLevel + 1 || request.to > enhance.maxLevel)
+      return formalDenied('enhance.formal.max_level');
     const instances = progress.enhance?.instances ?? authorized;
     const instance = instances.find(row => row.instanceRef === request.instanceRef);
-    const permission = authorized.find(row => row.instanceRef === request.instanceRef);
-    if (!instance || !permission || instance.itemId !== permission.itemId || instance.type !== permission.type
-      || instance.enhanceLevel !== request.fromLevel || instance.enhanceLevel >= enhance.maxLevel
-      || !instances.every(row => row.enhanceLevel <= enhance.maxLevel && this.supportedInstance(row))
-      || !this.ownsInstances(progress, instances)) return undefined;
+    if (!instance || instance.itemId !== permission.itemId || instance.type !== permission.type)
+      return formalDenied('enhance.formal.foreign');
+    if (!instances.every(row => this.supportedInstance(row))) return formalDenied('enhance.formal.bad_type');
+    if (instance.enhanceLevel !== request.fromLevel || instance.enhanceLevel >= enhance.maxLevel
+      || !instances.every(row => count(row.enhanceLevel) && row.enhanceLevel <= enhance.maxLevel))
+      return formalDenied('enhance.formal.max_level');
+    if (!this.ownsInstances(progress, instances)) return formalDenied('enhance.formal.foreign');
     const matches = enhance.levels.filter(row => row.to === request.to);
-    return matches.length === 1 ? { instance, row: matches[0] } : undefined;
+    return matches.length === 1 ? { allowed: true, instance, row: matches[0] } : denied('rules', '强化配置依赖不完整。');
   }
   private supportedInstance(instance: EnhanceFixtureInstance): boolean {
     const item = Object.prototype.hasOwnProperty.call(ITEMS, instance.itemId) ? ITEMS[instance.itemId] : undefined;
@@ -228,16 +278,16 @@ export class EnhanceGate {
         && sameAttributes(result.attributes, this.attributes(result.type, result.finalLevel));
     });
   }
-  private async transact(apply: (draft: Progress, reject: (reason: string, text: string) => undefined) => EnhanceAllowed | undefined): Promise<EnhanceGateResult> {
+  private async transact(apply: (draft: Progress, reject: (rejection: EnhanceDenied) => undefined) => EnhanceAllowed | undefined): Promise<EnhanceGateResult> {
     if (this.#busy) return denied('busy', '正在保存强化结果，请稍候。');
     this.#busy = true;
     let rejection: EnhanceDenied | undefined;
-    const reject = (reason: string, text: string): undefined => { rejection = denied(reason, text); return undefined; };
+    const reject = (result: EnhanceDenied): undefined => { rejection = result; return undefined; };
     try {
       const saved = await this.progress.runSaveTransactionAsync(draft => {
-        if (!this.valid(draft)) return reject('progress', '强化档案存在歧义，已阻止写入。');
+        if (!this.valid(draft)) return reject(denied('progress', '强化档案存在歧义，已阻止写入。'));
         const result = apply(draft, reject);
-        if (result && !this.valid(draft)) return reject('progress', '强化结果校验失败，保持原档。');
+        if (result && !this.valid(draft)) return reject(denied('progress', '强化结果校验失败，保持原档。'));
         return result;
       });
       return saved ?? rejection ?? denied('save', '强化保存失败，保持原库存与等级。');

@@ -1,0 +1,3 @@
+Exact strings-only snapshot: inspected scripts/snapshot.mjs removes all data recursively, including existing untracked art pending; preserved that pending work. Only strings differs in balance; copied approved shared strings bytes into wt/dev data/balance/strings_zh.json.
+sha256=d7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09
+keys=944

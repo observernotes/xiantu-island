@@ -1,0 +1,1 @@
+{"command": ["python3", "-m", "json.tool", "/workspace/xiantu/balance/strings_zh.json"], "exitCode": 0, "stdin": "/dev/null"}
