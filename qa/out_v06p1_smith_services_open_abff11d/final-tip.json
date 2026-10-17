@@ -7,7 +7,7 @@
   "baseline": "7b06f5ac4e76a2c48e98431e1ccf0011a8ca0a41",
   "branch": "feat/ui-smith-services",
   "pushedRef": "origin/feat/ui-smith-services",
-  "pushExitCode": null,
+  "pushExitCode": 0,
   "recordedAt": "2026-10-17T20:32:03+08:00",
   "zone": "Asia/Shanghai (UTC+8)",
   "outDir": "qa/out_v06p1_smith_services_open_abff11d",
@@ -74,5 +74,8 @@
     "qa/out_v06p1_smith_services_open_fixture",
     "qa/out_v06p1_smith_services_closed_7b06f5a",
     "qa/out_v06p1_smith_services_closed"
-  ]
+  ],
+  "docsTip": "d0d017177dcb95b28a73f7deaf8efe909e1796ab",
+  "docsTipShort": "d0d0171",
+  "pushedAt": "2026-10-17T20:32:38+08:00"
 }
