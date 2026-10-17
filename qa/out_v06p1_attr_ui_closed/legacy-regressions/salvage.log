@@ -1,0 +1,25 @@
+
+> xiantu-island@0.0.1 test:v06p1-salvage-closed
+> timeout 120s node scripts/v06p1-salvage-closed-test.mjs
+
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: 冻结/目标 SHA MATCH（仅精确剥授权分解增量）: /workspace/xiantu/balance/strings_zh.json
++ actual - expected
+
++ 'ae51319b82a6486cc7f3d9b26c5ae89719e23c32ff9debdcfbb86ef7b5aea08b'
+- '9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda'
+    at eq (file:///workspace/xiantu/wt/feat/ui-attr-inst/scripts/v06p1-salvage-closed-test.mjs:54:66)
+    at guard (file:///workspace/xiantu/wt/feat/ui-attr-inst/scripts/v06p1-salvage-closed-test.mjs:68:5)
+    at async dataChecks (file:///workspace/xiantu/wt/feat/ui-attr-inst/scripts/v06p1-salvage-closed-test.mjs:143:79)
+    at async file:///workspace/xiantu/wt/feat/ui-attr-inst/scripts/v06p1-salvage-closed-test.mjs:243:25 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 'ae51319b82a6486cc7f3d9b26c5ae89719e23c32ff9debdcfbb86ef7b5aea08b',
+  expected: '9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda',
+  operator: 'deepStrictEqual'
+}
+
+Node.js v20.19.2

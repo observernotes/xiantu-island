@@ -1,0 +1,27 @@
+{
+  "passed": false,
+  "assertions": 12,
+  "stringsSha": "9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda",
+  "cases": {
+    "C01": "featureClosed",
+    "C02": "refuseEntrance",
+    "C03": "refuseCraft",
+    "C04": "refuseSubmit",
+    "C05": "refuseSubmit",
+    "C06": "refuseResult",
+    "C07": "refuseGrade",
+    "C08": "refuseLoadRefresh",
+    "C09": "refuseLaterService",
+    "C10": "refuseCraft",
+    "C11": "refuseSubmit",
+    "C12": "refuseLoadRefresh"
+  },
+  "totalFixtures": 0,
+  "totalInvocations": 0,
+  "protectedFiles": {},
+  "evidence": [],
+  "formalOpen": true,
+  "closedFixtureOnly": true,
+  "softOpened": true,
+  "released": false
+}

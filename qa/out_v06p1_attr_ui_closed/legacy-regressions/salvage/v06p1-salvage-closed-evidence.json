@@ -1,0 +1,184 @@
+{
+  "passed": false,
+  "assertions": 155,
+  "totalFixtures": 0,
+  "totalInvocations": 0,
+  "apiTips": {
+    "featureClosed": "salvage.closed.feature",
+    "refuseEntrance": "salvage.closed.entrance",
+    "refuseSalvage": "salvage.closed.salvage",
+    "refuseSubmit": "salvage.closed.no_submit",
+    "refuseResult": "salvage.closed.no_result",
+    "refuseOutput": "salvage.closed.no_output",
+    "refuseLoadRefresh": "salvage.closed.load_refresh",
+    "refuseLaterService": "salvage.closed.later_service"
+  },
+  "cases": {
+    "C01": {
+      "executed": false,
+      "evidenceKeys": []
+    },
+    "C02": {
+      "executed": false,
+      "evidenceKeys": []
+    },
+    "C03": {
+      "executed": false,
+      "evidenceKeys": []
+    },
+    "C04": {
+      "executed": false,
+      "evidenceKeys": []
+    },
+    "C05": {
+      "executed": false,
+      "evidenceKeys": []
+    },
+    "C06": {
+      "executed": false,
+      "evidenceKeys": []
+    },
+    "C07": {
+      "executed": false,
+      "evidenceKeys": []
+    },
+    "C08": {
+      "executed": false,
+      "evidenceKeys": []
+    },
+    "C09": {
+      "executed": false,
+      "evidenceKeys": []
+    },
+    "C10": {
+      "executed": false,
+      "evidenceKeys": []
+    }
+  },
+  "salvageClosedTipsWired": false,
+  "SalvageOpenFlag": true,
+  "softOpenedSalvage": true,
+  "released": false,
+  "formalOpen": true,
+  "closedFixtureOnly": true,
+  "closedRuntimeFlag": false,
+  "refineStoneMapped": false,
+  "enchantSoftOpenPreserved": false,
+  "EnhanceOpenFlagPreserved": false,
+  "EnchantOpenFlagPreserved": false,
+  "protectCharmSoftOpenPreserved": false,
+  "refineStoneMappedMeaning": "items/materials 与合并登记齐；核齐备≠生产分解授权，不表示消费者/销毁入库/事务已接通",
+  "ForgeOpenFlag": true,
+  "EnhanceOpenFlag": true,
+  "EnchantOpenFlag": true,
+  "targetShas": {
+    "materials.json": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+    "items.json": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+    "strings_zh.json": "9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda"
+  },
+  "frozenShas": {
+    "enhance.json": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+    "recipes.json": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+    "npcs.json": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+    "life_skills.json": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+    "enhance_protect_charm.json": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772"
+  },
+  "frozenSourceShas": {
+    "src/ForgeOpenFlag.ts": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
+    "src/EnhanceOpenFlag.ts": "d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e",
+    "src/EnchantOpenFlag.ts": "bd5445b8ddfed56a32811cedd28db72e8676c7a5eff321e2fedb0ec5fe4c505a",
+    "src/data.ts": "aad725652f5c0eb57a5c699726e570b146d5ded52d5c31715444dbbf4117024a",
+    "src/ForgeGate.ts": "7aa9b91bf4ad2d389f2b96c41479338bd53cb3fdd63f65ff47a64f8528d75bcb",
+    "src/EnhanceGate.ts": "c2a2a0efb7997270eb48674224ce9bfc08e14201e613d7aa12d35af0a2a09796",
+    "src/EnchantGate.ts": "9dbb43f607fb1c298661bccd8a31f5653583b0b1dae956ca3f317f2fe8fc0ad2",
+    "src/ForgeClosed.ts": "f7e4216be7767f481c96ae7f1dc5796574fe9b231ada91d57a137c1dc8a8c90c",
+    "src/EnhanceClosed.ts": "c52ffbfc269f3a41c309184d9781f23cf2511d5acec7570ebb44b84683b3e821",
+    "src/EnchantClosed.ts": "15870998e95f8f41ab4fb3e6c30dc17a82019502276084f4610800be5927e730",
+    "src/SalvageClosed.ts": "287a55d7025018629235d45ca4386d75134fc39362532a4c47bf121b574ae211",
+    "src/SalvageGate.ts": "3777c6b72615f21a9c47544cfa8eeece08eb54009032cbf53e713091f8d8ce52",
+    "src/SalvageProgress.ts": "118f49bc4931727e0aafbc39fba6b883a94a948f8d478653bf42335305548787",
+    "src/Progress.ts": "a9ab2aa6e73dca631b6ed28f672d490b61525610c609df478e2c112a66358d3c",
+    "src/SaveStore.ts": "4c99f7410cd87e2e9b46d7b685fdb9ab5f2c9ca3b8a266da61eb062624ec7916",
+    "src/scenes/GameScene.ts": "f5d7defb24dda3ef1956e331479e9ee96794f1f45515bbb7951f3c3e19a0726c",
+    "src/ShopPanel.ts": "419a3c5b112301a69258303062f3a82468aff2e6116b440f7c3844a465c1170c"
+  },
+  "sentinelCalls": 0,
+  "storageWrites": 0,
+  "ordinarySaveSetupWrites": 0,
+  "storageScope": "storageWrites=关态 API/读档过程；ordinarySaveSetupWrites=仅 C08 准备阶段普通 saveAsync",
+  "testsUseRealSsrModule": true,
+  "freshIndependentGraphs": 0,
+  "formalGraphs": 0,
+  "memoryClosedGraphs": 0,
+  "flagInjection": "仅四个 SSR memory-closed 图注入 false；两个正式磁盘图 flagLoads=0",
+  "semanticFixtureOnly": true,
+  "salvageSchemaAdded": true,
+  "salvageSchemaScope": "开态夹具令授权既有可选完整袋；本 C 套件不执行开态",
+  "unknownFieldsRetainedByRestore": false,
+  "unknownRawStoredPayloadPreserved": false,
+  "oldFormalForgeEnhanceEnchantAssetsPreserved": false,
+  "openFixtureTableExecuted": false,
+  "successSettlementExecuted": false,
+  "existingSalvageGatePreserved": true,
+  "compatibilityMeaning": "分解 soft-open ≠ 进包 ≠ 发版；fixture≠正式；正式磁盘图仅核 true，C01–C10 仅 SSR false 图执行；O 表交 open runner；C02 armor/四品质及 C03–C07 意图仅语义上下文；未知字段原文保留不等于 restore 登记；release 预期 v0.6.12 另令，本令不授权",
+  "protectedFiles": {
+    "/workspace/xiantu/wt/feat/ui-attr-inst/src/ForgeOpenFlag.ts": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
+    "/workspace/xiantu/wt/feat/ui-attr-inst/src/EnhanceOpenFlag.ts": "d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e",
+    "/workspace/xiantu/wt/feat/ui-attr-inst/src/EnchantOpenFlag.ts": "bd5445b8ddfed56a32811cedd28db72e8676c7a5eff321e2fedb0ec5fe4c505a",
+    "/workspace/xiantu/wt/feat/ui-attr-inst/src/data.ts": "aad725652f5c0eb57a5c699726e570b146d5ded52d5c31715444dbbf4117024a",
+    "/workspace/xiantu/wt/feat/ui-attr-inst/src/ForgeGate.ts": "7aa9b91bf4ad2d389f2b96c41479338bd53cb3fdd63f65ff47a64f8528d75bcb",
+    "/workspace/xiantu/wt/feat/ui-attr-inst/src/EnhanceGate.ts": "c2a2a0efb7997270eb48674224ce9bfc08e14201e613d7aa12d35af0a2a09796",
+    "/workspace/xiantu/wt/feat/ui-attr-inst/src/EnchantGate.ts": "9dbb43f607fb1c298661bccd8a31f5653583b0b1dae956ca3f317f2fe8fc0ad2",
+    "/workspace/xiantu/wt/feat/ui-attr-inst/src/ForgeClosed.ts": "f7e4216be7767f481c96ae7f1dc5796574fe9b231ada91d57a137c1dc8a8c90c",
+    "/workspace/xiantu/wt/feat/ui-attr-inst/src/EnhanceClosed.ts": "c52ffbfc269f3a41c309184d9781f23cf2511d5acec7570ebb44b84683b3e821",
+    "/workspace/xiantu/wt/feat/ui-attr-inst/src/EnchantClosed.ts": "15870998e95f8f41ab4fb3e6c30dc17a82019502276084f4610800be5927e730",
+    "/workspace/xiantu/wt/feat/ui-attr-inst/src/SalvageClosed.ts": "287a55d7025018629235d45ca4386d75134fc39362532a4c47bf121b574ae211",
+    "/workspace/xiantu/wt/feat/ui-attr-inst/src/SalvageGate.ts": "3777c6b72615f21a9c47544cfa8eeece08eb54009032cbf53e713091f8d8ce52",
+    "/workspace/xiantu/wt/feat/ui-attr-inst/src/SalvageProgress.ts": "118f49bc4931727e0aafbc39fba6b883a94a948f8d478653bf42335305548787",
+    "/workspace/xiantu/wt/feat/ui-attr-inst/src/Progress.ts": "1cf4e9fcfab211710ec16a406204cd0c0b9f16da20056ff9372fb2b16a8ee561",
+    "/workspace/xiantu/wt/feat/ui-attr-inst/src/SaveStore.ts": "4c99f7410cd87e2e9b46d7b685fdb9ab5f2c9ca3b8a266da61eb062624ec7916",
+    "/workspace/xiantu/wt/feat/ui-attr-inst/src/scenes/GameScene.ts": "3b06682a41249bad436a8630ed5f357abd07be363e00694043de8606bfce6cc6",
+    "/workspace/xiantu/wt/feat/ui-attr-inst/src/ShopPanel.ts": "419a3c5b112301a69258303062f3a82468aff2e6116b440f7c3844a465c1170c",
+    "/workspace/xiantu/wt/feat/ui-attr-inst/src/SalvageOpenFlag.ts": "69aace852957c52bf7ca0214345ede7df29d6d36ec1dfd4849462e54552edff3",
+    "/workspace/xiantu/balance/enhance.json": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+    "/workspace/xiantu/balance/recipes.json": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+    "/workspace/xiantu/balance/npcs.json": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+    "/workspace/xiantu/balance/life_skills.json": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+    "/workspace/xiantu/balance/enhance_protect_charm.json": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+    "/workspace/xiantu/balance/materials.json": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+    "/workspace/xiantu/balance/items.json": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99"
+  },
+  "evidence": [
+    {
+      "suite": "source-static",
+      "passed": true,
+      "uniqueStringsImport": true,
+      "zeroArgumentApis": 8,
+      "independentFlagAlwaysTrue": true,
+      "flagImports": 0,
+      "existingSalvageGatePreserved": true,
+      "gateClosedFirst": true,
+      "productionFixtureInjection": false,
+      "minimalFrontendWiring": true,
+      "fullSalvageUiAdded": false,
+      "sameHitTipOrder": [
+        "forge",
+        "enhance",
+        "enchant",
+        "salvage"
+      ],
+      "existingGatesAndFrontendPreserved": true,
+      "existingLaterServicePreserved": true,
+      "apiTips": {
+        "featureClosed": "salvage.closed.feature",
+        "refuseEntrance": "salvage.closed.entrance",
+        "refuseSalvage": "salvage.closed.salvage",
+        "refuseSubmit": "salvage.closed.no_submit",
+        "refuseResult": "salvage.closed.no_result",
+        "refuseOutput": "salvage.closed.no_output",
+        "refuseLoadRefresh": "salvage.closed.load_refresh",
+        "refuseLaterService": "salvage.closed.later_service"
+      }
+    }
+  ]
+}

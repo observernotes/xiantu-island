@@ -962,5 +962,15 @@
   "salvage.closed.no_result": "装备分解尚未开放，不写入分解结果。",
   "salvage.closed.no_output": "装备分解尚未开放，不产出精炼石。",
   "salvage.closed.load_refresh": "读档或刷新后分解仍未开放，暂不可分解。",
-  "salvage.closed.later_service": "其他后续服务尚未开放。"
+  "salvage.closed.later_service": "其他后续服务尚未开放。",
+  "ui.equip.inst.enhance_level": "强化 +{n}",
+  "ui.equip.inst.enchant_element": "附灵 · {element}",
+  "ui.equip.inst.element_damage": "五行伤害 +{pct}%",
+  "ui.equip.inst.same_root_bonus": "同灵根加成 +{pct}%",
+  "ui.equip.inst.no_enhance": "未强化",
+  "ui.equip.inst.no_enchant": "未附灵",
+  "ui.equip.inst.no_instance": "暂无可核实的装备实例。",
+  "ui.equip.inst.foreign": "非本档装备实例，暂不展示。",
+  "ui.equip.inst.unknown": "装备属性暂不可核实。",
+  "ui.equip.inst.unavailable": "相关属性展示暂未开放。"
 }

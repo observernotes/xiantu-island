@@ -5,6 +5,7 @@ import type { Progress } from './Progress';
 import { featureEnabled } from './features';
 import { INK, INK_60 } from './hud';
 import { ItemPanelView, equipReason, label } from './ItemPanelView';
+import { buildInstDisplay, resolveInventoryEquipBinding } from './EquipInstReadonly';
 
 const TABS = ['all', 'equip', 'consume', 'material', 'other'] as const;
 type Tab = typeof TABS[number];
@@ -24,9 +25,15 @@ export class InventoryPanel extends ItemPanelView {
   private page = 0;
   private selected = 0;
   private revision = '';
+  private renderedProgress?: Progress;
   private usingTalisman = false;
   constructor(scene: Phaser.Scene, prog: Progress, private hooks: InventoryHooks) { super(scene, prog, 360, 440); }
-  open() { this.tab = 'all'; this.page = 0; this.selected = 0; super.open(); }
+  open() { this.tab = 'all'; this.page = 0; this.selected = 0; this.revision = ''; super.open(); }
+  close() { this.revision = ''; this.renderedProgress = undefined; super.close(); }
+  private instanceDisplay() {
+    return buildInstDisplay(this.prog, resolveInventoryEquipBinding(this.prog,
+      this.shown ? this.rows()[this.selected] : undefined));
+  }
   private rows() {
     const qualityNames = { low: '下品', mid: '中品', high: '上品', supreme: '极品' };
     return Object.entries(this.prog.inventory).filter(([, count]) => count > 0).flatMap(([id, count]): { id: string; count: number; name: string; type: string; quality?: PillQuality }[] => {
@@ -40,8 +47,9 @@ export class InventoryPanel extends ItemPanelView {
   }
   private fingerprint() { return JSON.stringify([this.prog.inventory, this.prog.stones, this.prog.job,
     this.prog.pendingSectTrial, featureEnabled('alchemyPhase1'), featureEnabled('talismanCraft'),
-    featureEnabled('talismanCraft') ? [this.prog.pillQualities, this.prog.talismanUse] : null]); }
-  update() { if (this.shown && this.revision !== this.fingerprint()) this.render(); }
+    featureEnabled('talismanCraft') ? [this.prog.pillQualities, this.prog.talismanUse] : null,
+    this.selected, resolveInventoryEquipBinding(this.prog, this.rows()[this.selected]), this.instanceDisplay()]); }
+  update() { if (this.shown && (this.renderedProgress !== this.prog || this.revision !== this.fingerprint())) this.render(); }
   setTab(tab: string) {
     if (!this.shown || !TABS.some(key => key === tab)) return;
     this.tab = tab as Tab; this.page = 0; this.selected = 0; this.status = ''; this.render();
@@ -90,10 +98,11 @@ export class InventoryPanel extends ItemPanelView {
     this.render();
   }
   snapshot() {
-    const rows = this.rows();
+    const rows = this.rows(), instDisplay = this.instanceDisplay();
     return { open: this.shown, tab: this.tab, page: this.page, pages: Math.max(1, Math.ceil(rows.length / PAGE_SIZE)),
       tabs: [...TABS], rows, selected: this.selected, selectedId: rows[this.selected]?.id ?? null,
       selectedQuality: rows[this.selected]?.quality ?? null, action: this.action(rows[this.selected]?.id ?? ''), status: this.status, statusOk: this.statusOk,
+      instDisplay, instLines: instDisplay.lines, instKind: instDisplay.kind,
       artUsed: { ...this.artUsed }, position: { ...this.position } };
   }
   protected onKey(event: KeyboardEvent) {
@@ -116,6 +125,8 @@ export class InventoryPanel extends ItemPanelView {
     if (!this.shown) return;
     const rows = this.rows(), pages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
     this.selected = Math.max(0, Math.min(rows.length - 1, this.selected)); this.page = Math.min(this.page, pages - 1);
+    const instDisplay = this.instanceDisplay(), detailHeight = instDisplay.lines.length * 20;
+    this.position.height = 440 + detailHeight;
     this.shell('inventory', label('ui.inv.title', '背包'));
     this.box('ui_bestiary_inset', [16, 58, 328, 312]);
     TABS.forEach((tab, i) => {
@@ -144,9 +155,11 @@ export class InventoryPanel extends ItemPanelView {
     const actionName = action === 'talisman' ? '使用符箓' : action === 'equip' ? label('ui.inv.equip', '穿上') : action === 'furnace' ? label('ui.inv.furnace', '使用丹炉')
       : action === 'token' ? label('ui.inv.token', '五宗令') : label('ui.inv.held', '持有物品');
     this.button([262, 390, 76, 24], actionName, !!action, () => this.activate(), 'inventory-activate');
-    this.statusLine(419, featureEnabled('talismanCraft') && action === 'talisman'
+    instDisplay.lines.forEach((line, i) => this.text(22, 419 + i * 20, line.text, 12, INK_60).setWordWrapWidth(316));
+    this.statusLine(419 + detailHeight, featureEnabled('talismanCraft') && action === 'talisman'
       ? '回车使用 · 数字 1–8 绑定所选品质 · Esc / I 关闭'
       : label('ui.inv.keys', '方向键选择 · 回车使用 · Esc / I 关闭'));
     this.revision = this.fingerprint();
+    this.renderedProgress = this.prog;
   }
 }

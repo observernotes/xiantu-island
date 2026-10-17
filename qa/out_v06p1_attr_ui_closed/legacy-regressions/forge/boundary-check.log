@@ -1,0 +1,30 @@
+{
+  "passed": false,
+  "baselineEntries": 318,
+  "protectedFiles": 0,
+  "authorizedChanges": [],
+  "sourceOnlyAdded": [
+    "src/ForgeClosed.ts",
+    "src/ForgeOpenFlag.ts",
+    "src/ForgeGate.ts",
+    "src/ForgeProgress.ts",
+    "src/v06p1-forge-open.test.ts",
+    "src/EnhanceGate.ts",
+    "src/EnhanceProgress.ts",
+    "src/v06p1-enhance-open.test.ts",
+    "src/EnhanceClosed.ts",
+    "src/EnhanceOpenFlag.ts"
+  ],
+  "stringsSha": "9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda",
+  "sharedStringsUnchanged": true,
+  "minimalFrontendWiring": true,
+  "fullForgeUiAdded": false,
+  "gameSceneOnlyAuthorizedWiring": true,
+  "giftsFalseCount": 10,
+  "GAME_PHASE": 5,
+  "smithServices": false,
+  "formalOpen": true,
+  "closedFixtureOnly": true,
+  "softOpened": true,
+  "released": false
+}

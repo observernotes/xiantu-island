@@ -1,0 +1,6 @@
+
+> xiantu-island@0.0.1 test:appearance
+> timeout 60s node scripts/appearance-test.mjs
+
+legacy save fixture: indexedDbSaves=false (SSR memory override only)
+appearance tests ok: 588 assertions

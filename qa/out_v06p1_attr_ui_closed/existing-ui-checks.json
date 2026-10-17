@@ -1,0 +1,12 @@
+{
+  "test:equip": {
+    "exitCode": 0,
+    "log": "test-equip.log",
+    "outputTail": "\n> xiantu-island@0.0.1 test:equip\n> timeout 60s node scripts/equip-test.mjs\n\nlegacy save fixture: indexedDbSaves=false (SSR memory override only)\nequip tests ok: 100 assertions\n"
+  },
+  "test:appearance": {
+    "exitCode": 0,
+    "log": "test-appearance.log",
+    "outputTail": "\n> xiantu-island@0.0.1 test:appearance\n> timeout 60s node scripts/appearance-test.mjs\n\nlegacy save fixture: indexedDbSaves=false (SSR memory override only)\nappearance tests ok: 588 assertions\n"
+  }
+}
