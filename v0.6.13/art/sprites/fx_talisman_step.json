@@ -1,0 +1,158 @@
+{
+ "frames": {
+  "fx_talisman_step_loop_01": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 96
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fx_talisman_step_loop_02": {
+   "frame": {
+    "x": 64,
+    "y": 0,
+    "w": 64,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 96
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fx_talisman_step_loop_03": {
+   "frame": {
+    "x": 128,
+    "y": 0,
+    "w": 64,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 96
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fx_talisman_step_loop_04": {
+   "frame": {
+    "x": 192,
+    "y": 0,
+    "w": 64,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 96
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fx_talisman_step_loop_05": {
+   "frame": {
+    "x": 256,
+    "y": 0,
+    "w": 64,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 96
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fx_talisman_step_loop_06": {
+   "frame": {
+    "x": 320,
+    "y": 0,
+    "w": 64,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 96
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  }
+ },
+ "meta": {
+  "app": "xiantu gen_sect_skills_v05.py",
+  "image": "fx_talisman_step.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 384,
+   "h": 96
+  },
+  "scale": "1"
+ }
+}

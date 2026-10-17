@@ -1,0 +1,28 @@
+{
+ "atlas": "prop_spirit_spring",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  64,
+  64
+ ],
+ "blend": "NORMAL",
+ "kind": "prop",
+ "note": "程序化占位（v0.6 秘境 #13）。休息点灵泉（restPoint healRatio≈30% + rerollBoon）。原点 (0.5,1) 石盆底。循环 idle 水波灵光。中性天青，可 tint。",
+ "anims": [
+  {
+   "key": "prop_spirit_spring_idle",
+   "frames": [
+    "prop_spirit_spring_idle_01",
+    "prop_spirit_spring_idle_02",
+    "prop_spirit_spring_idle_03",
+    "prop_spirit_spring_idle_04"
+   ],
+   "frameRate": 5,
+   "repeat": -1
+  }
+ ]
+}
