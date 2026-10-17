@@ -1,0 +1,31 @@
+{
+  "name": "v06p1-attr-ui-binding-success",
+  "command": [
+    "npm",
+    "run",
+    "test:v06p1-attr-ui-binding-success"
+  ],
+  "cwd": "/workspace/xiantu/wt/feat/ui-smith-services",
+  "environment": {
+    "NODE_OPTIONS": "--import=/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_open_abff11d/regressions/regression-register.mjs",
+    "FORGE_CLOSED_OUT": "/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_open_abff11d/regressions/v06p1-attr-ui-binding-success",
+    "ENHANCE_CLOSED_OUT": "/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_open_abff11d/regressions/v06p1-attr-ui-binding-success",
+    "ENCHANT_CLOSED_OUT": "/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_open_abff11d/regressions/v06p1-attr-ui-binding-success",
+    "SALVAGE_CLOSED_OUT": "/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_open_abff11d/regressions/v06p1-attr-ui-binding-success",
+    "SALVAGE_OPEN_OUT": "/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_open_abff11d/regressions/v06p1-attr-ui-binding-success",
+    "ENCHANT_OPEN_OUT": "/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_open_abff11d/regressions/v06p1-attr-ui-binding-success",
+    "XT_ENHANCE_QA_OUT": "/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_open_abff11d/regressions/v06p1-attr-ui-binding-success",
+    "MARKET_CLOSED_OUT": "/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_open_abff11d/regressions/v06p1-attr-ui-binding-success",
+    "OUT_DIR": "/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_open_abff11d/regressions/v06p1-attr-ui-binding-success",
+    "OUT": "/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_open_abff11d/regressions/v06p1-attr-ui-binding-success"
+  },
+  "stdin": "/dev/null",
+  "startedAt": "2026-10-17T12:22:28.136Z",
+  "finishedAt": "2026-10-17T12:22:28.870Z",
+  "exitCode": 1,
+  "signal": null,
+  "assertions": null,
+  "assertionCountAvailable": false,
+  "assertionCountMeaning": "Reported suite aggregate; no extra synthetic assertions added.",
+  "log": "/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_open_abff11d/regressions/v06p1-attr-ui-binding-success.log"
+}

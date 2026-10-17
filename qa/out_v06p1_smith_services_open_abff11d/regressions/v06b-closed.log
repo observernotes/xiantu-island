@@ -1,0 +1,17 @@
+
+> xiantu-island@0.0.1 test:v06b-closed
+> timeout 120s node scripts/v06b-closed-test.mjs
+
+{"suite":"v06b-closed-formal-open","dataMode":"shared","companionsEnabled":true,"companionEnabled":true,"flyZonesEnabled":true,"giftsChecked":10,"giftsEnabled":false}
+{"suite":"v06b-closed-formal-open","dataMode":"snapshot","companionsEnabled":true,"companionEnabled":true,"flyZonesEnabled":true,"giftsChecked":10,"giftsEnabled":false}
+companions closed tests ok: 151 assertions (formal open, closed fixture gates, no writes/entities/control, preserved relations, readonly validation)
+companions save tests ok: 60 assertions (formal open, closed fixture, async save/load/import, modes retained while closed, legacy shape, invalid import rejected)
+fly zones tests ok: 105 assertions (formal open, closed fixture, realm priority, no MP mutation, immutable parsing)
+sword ride tests ok: 56 assertions (closed fixture, success/failure, free idempotent grants, async save/backfill, combat dash parameters/collision/MP/cooldown)
+{"suite":"v06b-closed","dataMode":"snapshot","passed":true,"formalOpen":true,"closedFixtureOnly":true,"giftsEnabled":false,"indexedDbSaves":true}
+companions closed tests ok: 151 assertions (formal open, closed fixture gates, no writes/entities/control, preserved relations, readonly validation)
+companions save tests ok: 60 assertions (formal open, closed fixture, async save/load/import, modes retained while closed, legacy shape, invalid import rejected)
+fly zones tests ok: 105 assertions (formal open, closed fixture, realm priority, no MP mutation, immutable parsing)
+sword ride tests ok: 56 assertions (closed fixture, success/failure, free idempotent grants, async save/backfill, combat dash parameters/collision/MP/cooldown)
+{"suite":"v06b-closed","dataMode":"shared","passed":true,"formalOpen":true,"closedFixtureOnly":true,"giftsEnabled":false,"indexedDbSaves":true}
+v06b closed tests ok: shared/snapshot 同字节；正式开态 SHA 守护 + 关态夹具行为 + gifts 仍关；IDB true、skills/npcs 不变

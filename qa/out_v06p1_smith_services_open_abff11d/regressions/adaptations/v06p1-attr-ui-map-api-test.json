@@ -1,0 +1,48 @@
+{
+  "file": "scripts/v06p1-attr-ui-map-api-test.mjs",
+  "originalSha": "9e1eb5e7194359b634a47ea7e47ad43d4e7abc14a9936edc970135fb7cad5eb4",
+  "pinnedOriginalSha": "9e1eb5e7194359b634a47ea7e47ad43d4e7abc14a9936edc970135fb7cad5eb4",
+  "adaptedSha": "c474ff8a15da6baf167c1e6b609437c5982a2008d19f4b18fc32a27ccb535461",
+  "changes": [
+    {
+      "label": "user-authorized current worktree",
+      "before": "'/workspace/xiantu/wt/feat/ui-attr-inst'",
+      "after": "\"/workspace/xiantu/wt/feat/ui-smith-services\"",
+      "occurrences": 1
+    },
+    {
+      "label": "user-authorized current dev branch",
+      "before": "'feat/ui-attr-inst'",
+      "after": "'dev'",
+      "occurrences": 1
+    },
+    {
+      "label": "prior authorized attr-ui display integration kept at exact current bytes",
+      "before": "await guard(path.join(root, file), sha(git('show', `${baseline}:${file}`)));",
+      "after": "await guard(path.join(root, file), historicalExpected(file, sha(git('show', `${baseline}:${file}`))));",
+      "occurrences": 1
+    },
+    {
+      "label": "authorized current worktree branch",
+      "before": "'dev'",
+      "after": "'feat/ui-smith-services'",
+      "occurrences": 1
+    },
+    {
+      "label": "authorized exact Gate dependency pins; canonical settlement preserved",
+      "before": "sha(git('show', `${baseline}:${gateFile}`))",
+      "after": "authorizedExpected(gateFile, sha(git('show', `${baseline}:${gateFile}`)))",
+      "occurrences": 1
+    },
+    {
+      "label": "persist explicit formal preparation before first Forge CAS; business assertions unchanged",
+      "before": "    const forge = new ForgeGate(p,",
+      "after": "    if (!await p.saveAsync()) throw new Error(\"formal CAS preparation save failed\");\n    const forge = new ForgeGate(p,",
+      "occurrences": 1
+    }
+  ],
+  "productModuleTransformations": [],
+  "diskWritten": false,
+  "businessAssertionsChanged": false,
+  "policy": "Pinned test-only historical strings SHA/count/inventory and prior attr-ui byte proof; actual Vite SSR product modules use current disk."
+}

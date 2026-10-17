@@ -176,8 +176,8 @@ export function isIgnoredGeneratedInput(key) {
   loader = loader.replace("'[...enchantSourceNames, ...salvageSourceNames].includes(name)',",
     "(source.includes('[...enchantSourceNames, ...salvageSourceNames, ...smithServicesSourceNames].includes(name)') ? '[...enchantSourceNames, ...salvageSourceNames, ...smithServicesSourceNames].includes(name)' : '[...enchantSourceNames, ...salvageSourceNames].includes(name)'),");
   const hook = `
-  replace('authorized current worktree branch', "'feat/ui-smith-services'", "'feat/smith-services-open-fix'");
-  replace('authorized current worktree branch', "'dev'", "'feat/smith-services-open-fix'");
+  replace('authorized current worktree branch', "'feat/smith-services-open-fix'", "'feat/ui-smith-services'");
+  replace('authorized current worktree branch', "'dev'", "'feat/ui-smith-services'");
   if (name === 'v06p1-smith-services-closed-test') {
     replace('authorized dependency/CAS source pins; canonical settlement callbacks separately MATCH',
       ${JSON.stringify("hash(git('show', `${baseline}:src/${name}${suffix}.ts`))")},

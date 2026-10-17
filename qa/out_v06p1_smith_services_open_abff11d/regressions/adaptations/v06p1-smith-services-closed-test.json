@@ -1,0 +1,30 @@
+{
+  "file": "scripts/v06p1-smith-services-closed-test.mjs",
+  "originalSha": "ef5de2f51370ce958be790f5851d9794233bd968dac30c4f581568ce7140a832",
+  "pinnedOriginalSha": "ef5de2f51370ce958be790f5851d9794233bd968dac30c4f581568ce7140a832",
+  "adaptedSha": "7821687d136fd5205eb0754792b3cf86a97a1f13366a2112a4fe179f745d025a",
+  "changes": [
+    {
+      "label": "authorized dependency/CAS source pins; canonical settlement callbacks separately MATCH",
+      "before": "hash(git('show', `${baseline}:src/${name}${suffix}.ts`))",
+      "after": "authorizedExpected(name + suffix + '.ts', hash(git('show', `${baseline}:src/${name}${suffix}.ts`)))",
+      "occurrences": 1
+    },
+    {
+      "label": "authorized Progress and SaveStore boundary pins",
+      "before": "hash(git('show', `${baseline}:${file}`))",
+      "after": "authorizedExpected(file, hash(git('show', `${baseline}:${file}`)))",
+      "occurrences": 1
+    },
+    {
+      "label": "redirect closed C-table evidence without touching old output",
+      "before": "out = path.join(root, 'qa/out_v06p1_smith_services_closed')",
+      "after": "out = \"/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_open_abff11d/regressions/v06p1-smith-services-closed\"",
+      "occurrences": 1
+    }
+  ],
+  "productModuleTransformations": [],
+  "diskWritten": false,
+  "businessAssertionsChanged": false,
+  "policy": "Pinned test-only historical strings SHA/count/inventory and prior attr-ui byte proof; actual Vite SSR product modules use current disk."
+}

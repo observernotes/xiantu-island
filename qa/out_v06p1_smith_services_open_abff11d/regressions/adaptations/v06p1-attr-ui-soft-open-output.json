@@ -1,0 +1,18 @@
+{
+  "file": "scripts/v06p1-attr-ui-soft-open-output.mjs",
+  "originalSha": "a3207b9573dd5755fff0aa4268daaa5de4a76ab02014a77fc537f0876bd7b76a",
+  "pinnedOriginalSha": "a3207b9573dd5755fff0aa4268daaa5de4a76ab02014a77fc537f0876bd7b76a",
+  "adaptedSha": "ab3ab70419ede399b48dd29109c7113e9dfbca6f4f447fd8d39bb8fb682d4be7",
+  "changes": [
+    {
+      "label": "all attr-ui evidence redirected into this window",
+      "before": "return path.join(root, `qa/out_v06p1_attr_ui_soft_${tip}`, suite);",
+      "after": "return path.join(\"/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_open_abff11d/regressions\", 'v06p1-attr-ui-' + suite);",
+      "occurrences": 1
+    }
+  ],
+  "productModuleTransformations": [],
+  "diskWritten": false,
+  "businessAssertionsChanged": false,
+  "policy": "Pinned test-only historical strings SHA/count/inventory and prior attr-ui byte proof; actual Vite SSR product modules use current disk."
+}

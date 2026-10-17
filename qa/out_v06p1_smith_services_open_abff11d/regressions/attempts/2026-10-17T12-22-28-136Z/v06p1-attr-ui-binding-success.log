@@ -1,0 +1,25 @@
+
+> xiantu-island@0.0.1 test:v06p1-attr-ui-binding-success
+> timeout 120s node scripts/v06p1-attr-ui-binding-success-test.mjs
+
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: 仅运行授权分支
++ actual - expected
+
++ 'feat/ui-smith-services'
+- 'feat/smith-services-open-fix'
+        ^
+    at eq (file:///workspace/xiantu/wt/feat/ui-smith-services/scripts/v06p1-attr-ui-binding-success-test.mjs:27:66)
+    at staticChecks (file:///workspace/xiantu/wt/feat/ui-smith-services/scripts/v06p1-attr-ui-binding-success-test.mjs:44:3)
+    at file:///workspace/xiantu/wt/feat/ui-smith-services/scripts/v06p1-attr-ui-binding-success-test.mjs:326:9 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 'feat/ui-smith-services',
+  expected: 'feat/smith-services-open-fix',
+  operator: 'deepStrictEqual'
+}
+
+Node.js v20.19.2

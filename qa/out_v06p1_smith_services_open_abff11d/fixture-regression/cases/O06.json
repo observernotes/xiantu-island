@@ -1,0 +1,38 @@
+{
+  "executed": true,
+  "passed": true,
+  "status": "passed",
+  "assertions": 22,
+  "evidenceKeys": [
+    "snapshot/formal-equip-and-bag-binding-actual-EI-readonly-roundtrip",
+    "shared/formal-equip-and-bag-binding-actual-EI-readonly-roundtrip"
+  ],
+  "case": "O06",
+  "evidence": [
+    {
+      "case": "O06",
+      "label": "snapshot/formal-equip-and-bag-binding-actual-EI-readonly-roundtrip",
+      "passed": true,
+      "assertions": 11,
+      "exactEquippedRef": "forge_337ae967-f28b-4973-8d86-f7af112afd15:craft:ui-seed-0:item",
+      "exactBagRef": "forge_337ae967-f28b-4973-8d86-f7af112afd15:craft:ui-seed-1:item",
+      "equippedLevel": 0,
+      "bagLevel": 2,
+      "actualEquipPanel": true,
+      "actualInventoryPanel": true
+    },
+    {
+      "case": "O06",
+      "label": "shared/formal-equip-and-bag-binding-actual-EI-readonly-roundtrip",
+      "passed": true,
+      "assertions": 11,
+      "exactEquippedRef": "forge_2889b7a7-87f1-4f40-a615-dc44d0fb973c:craft:ui-seed-0:item",
+      "exactBagRef": "forge_2889b7a7-87f1-4f40-a615-dc44d0fb973c:craft:ui-seed-1:item",
+      "equippedLevel": 0,
+      "bagLevel": 2,
+      "actualEquipPanel": true,
+      "actualInventoryPanel": true
+    }
+  ],
+  "scope": "开态夹具全表 ≠ soft-open ≠ release ≠ 进包"
+}

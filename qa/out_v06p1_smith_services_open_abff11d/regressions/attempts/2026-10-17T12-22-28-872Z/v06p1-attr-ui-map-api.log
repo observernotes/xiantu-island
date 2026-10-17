@@ -1,0 +1,25 @@
+
+> xiantu-island@0.0.1 test:v06p1-attr-ui-map-api
+> timeout 120s node scripts/v06p1-attr-ui-map-api-test.mjs
+
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: 授权分支不变
++ actual - expected
+
++ 'feat/ui-smith-services'
+- 'feat/smith-services-open-fix'
+        ^
+    at eq (file:///workspace/xiantu/wt/feat/ui-smith-services/scripts/v06p1-attr-ui-map-api-test.mjs:25:66)
+    at staticChecks (file:///workspace/xiantu/wt/feat/ui-smith-services/scripts/v06p1-attr-ui-map-api-test.mjs:46:3)
+    at file:///workspace/xiantu/wt/feat/ui-smith-services/scripts/v06p1-attr-ui-map-api-test.mjs:405:9 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 'feat/ui-smith-services',
+  expected: 'feat/smith-services-open-fix',
+  operator: 'deepStrictEqual'
+}
+
+Node.js v20.19.2

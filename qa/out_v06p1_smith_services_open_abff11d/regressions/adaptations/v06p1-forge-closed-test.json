@@ -1,0 +1,66 @@
+{
+  "file": "scripts/v06p1-forge-closed-test.mjs",
+  "originalSha": "60a22cb33e35da39b44de14764e18f1e7f4d7bfe09089e2cb6038aae6aa4d5c9",
+  "pinnedOriginalSha": "60a22cb33e35da39b44de14764e18f1e7f4d7bfe09089e2cb6038aae6aa4d5c9",
+  "adaptedSha": "ce54e8c01a99e7dd26bc74b70e53a8654b4039cd0f59b4e8939678fd0dbc0218",
+  "changes": [
+    {
+      "label": "current strings1013 SHA",
+      "before": "9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda",
+      "after": "d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841",
+      "occurrences": 1
+    },
+    {
+      "label": "shared/wt1013; game historical952 preserved",
+      "before": "mode === 'game' ? 952 : 960",
+      "after": "mode === 'game' ? 952 : 1013",
+      "occurrences": 1
+    },
+    {
+      "label": "game prior attr-ui snapshot970 SHA; current shared/snapshot1013",
+      "before": "6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9",
+      "after": "ae51319b82a6486cc7f3d9b26c5ae89719e23c32ff9debdcfbb86ef7b5aea08b",
+      "occurrences": 3
+    },
+    {
+      "label": "game historical snapshot970 key count",
+      "before": "mode === 'game' ? 952 : 1013",
+      "after": "mode === 'game' ? 970 : 1013",
+      "occurrences": 1
+    },
+    {
+      "label": "exact authorized src additions in historical inventory",
+      "before": "...salvageSourceNames].sort()",
+      "after": "...salvageSourceNames, ...[\"EquipInstBinding.ts\",\"EquipInstReadonly.ts\",\"SmithServices.ts\",\"v06p1-smith-services-closed.test.ts\",\"SmithServicesController.ts\",\"SmithServicesPanel.ts\",\"SmithServicesUiAccess.ts\",\"v06p1-smith-services-open.test.ts\",\"v06p1-smith-services-open-fixture.test.ts\",\"v06p1-smith-services-open-gates.test.ts\",\"v06p1-smith-services-open-ui.test.ts\"]].sort()",
+      "occurrences": 1
+    },
+    {
+      "label": "new service adapter and closed-test consumer allowlist",
+      "before": "[...enchantSourceNames, ...salvageSourceNames, ...smithServicesSourceNames].includes(name)",
+      "after": "[...enchantSourceNames, ...salvageSourceNames, 'EquipInstReadonly.ts', 'SmithServices.ts', 'v06p1-smith-services-closed.test.ts', 'SmithServicesController.ts', 'SmithServicesPanel.ts', 'SmithServicesUiAccess.ts', 'v06p1-smith-services-open.test.ts', 'v06p1-smith-services-open-fixture.test.ts', 'v06p1-smith-services-open-gates.test.ts', 'v06p1-smith-services-open-ui.test.ts'].includes(name)",
+      "occurrences": 1
+    },
+    {
+      "label": "earlier attr-ui panel edits retain current exact SHA in old manifest",
+      "before": "for (const [name, expected] of Object.entries(sourceBefore)) {",
+      "after": "for (const [name, originalExpected] of Object.entries(sourceBefore)) {\n    const expected = historicalExpected(name, originalExpected);",
+      "occurrences": 1
+    },
+    {
+      "label": "pin current integrated scene before original forge scene byte proof",
+      "before": "function stripForgeSceneWiring(source) {",
+      "after": "function stripForgeSceneWiring(source) {\n  source = restorePreSmithScene(source);",
+      "occurrences": 1
+    },
+    {
+      "label": "pin current integrated scene before original enhance scene byte proof",
+      "before": "function stripEnhanceSceneWiring(source) {",
+      "after": "function stripEnhanceSceneWiring(source) {\n  source = restorePreSmithScene(source);",
+      "occurrences": 1
+    }
+  ],
+  "productModuleTransformations": [],
+  "diskWritten": false,
+  "businessAssertionsChanged": false,
+  "policy": "Pinned test-only historical strings SHA/count/inventory and prior attr-ui byte proof; actual Vite SSR product modules use current disk."
+}

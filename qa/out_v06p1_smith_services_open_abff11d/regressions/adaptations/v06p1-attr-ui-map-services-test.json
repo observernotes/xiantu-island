@@ -1,0 +1,18 @@
+{
+  "file": "scripts/v06p1-attr-ui-map-services-test.mjs",
+  "originalSha": "0f04e8dcb7e8d56463f08c8f3704804798a382231e1128d7969cd1245879f6bb",
+  "pinnedOriginalSha": "0f04e8dcb7e8d56463f08c8f3704804798a382231e1128d7969cd1245879f6bb",
+  "adaptedSha": "be0355ef3c28b2fa18aa84fa06f992e44013b98c980579ee09034db79365320f",
+  "changes": [
+    {
+      "label": "persist explicit formal preparation before first Forge CAS; business assertions unchanged",
+      "before": "    const forge = new ForgeGate(p,",
+      "after": "    if (!await p.saveAsync()) throw new Error(\"formal CAS preparation save failed\");\n    const forge = new ForgeGate(p,",
+      "occurrences": 1
+    }
+  ],
+  "productModuleTransformations": [],
+  "diskWritten": false,
+  "businessAssertionsChanged": false,
+  "policy": "Pinned test-only historical strings SHA/count/inventory and prior attr-ui byte proof; actual Vite SSR product modules use current disk."
+}

@@ -1,0 +1,13 @@
+
+> xiantu-island@0.0.1 test:v06b-open
+> timeout 120s node scripts/v06b-open-test.mjs
+
+{"suite":"v06b-open-formal-open","dataMode":"snapshot","companionsEnabled":true,"companionEnabled":true,"flyZonesEnabled":true,"giftsChecked":10,"giftsEnabled":false}
+{"suite":"v06b-open-formal-open","dataMode":"shared","companionsEnabled":true,"companionEnabled":true,"flyZonesEnabled":true,"giftsChecked":10,"giftsEnabled":false}
+v06b formal-open tests ok: 352 assertions (正式开态、邀请优先级、无领礼依赖、真实异步存档、持续飞行拒绝门禁、内存关态夹具对照)
+sword ride tests ok: 56 assertions (formal open, success/failure, free idempotent grants, async save/backfill, combat dash parameters/collision/MP/cooldown)
+{"suite":"v06b-open","dataMode":"snapshot","passed":true,"indexedDbSaves":true,"formalOpen":true,"closedFixtureOnly":true,"companionsEnabled":true,"companionEnabled":true,"flyZonesEnabled":true,"giftsEnabled":false}
+v06b formal-open tests ok: 352 assertions (正式开态、邀请优先级、无领礼依赖、真实异步存档、持续飞行拒绝门禁、内存关态夹具对照)
+sword ride tests ok: 56 assertions (formal open, success/failure, free idempotent grants, async save/backfill, combat dash parameters/collision/MP/cooldown)
+{"suite":"v06b-open","dataMode":"shared","passed":true,"indexedDbSaves":true,"formalOpen":true,"closedFixtureOnly":true,"companionsEnabled":true,"companionEnabled":true,"flyZonesEnabled":true,"giftsEnabled":false}
+v06b open tests ok: shared/snapshot；正式开态已翻、关态仅内存夹具；正式开态 SHA 不变、gifts 全关、IDB 为 true

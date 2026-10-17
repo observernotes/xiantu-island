@@ -1,0 +1,5 @@
+
+> xiantu-island@0.0.1 test:save-slots
+> timeout 60s node scripts/save-slots-test.mjs
+
+{"suite":"save-slots","passed":true,"assertions":274,"indexedDbSavesDefault":true,"slotKeys":[1,2,3],"autoSlot":false}
