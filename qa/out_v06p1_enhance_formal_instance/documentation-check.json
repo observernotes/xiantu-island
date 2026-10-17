@@ -1,0 +1,37 @@
+{
+  "passed": true,
+  "implementationTip": "4644e96c530a592c2966798805e92a304f1c907a",
+  "files": [
+    {
+      "file": "reports/炼器阁/V06P1_ENHANCE_FORMAL_INSTANCE_HANDOFF.md",
+      "shared": "/workspace/xiantu/reports/炼器阁/V06P1_ENHANCE_FORMAL_INSTANCE_HANDOFF.md",
+      "utf8": true,
+      "sha256": "861e0476d102118d987190cb32fd35cef3e34babb07e6a4fac5e59ca1d37d230"
+    },
+    {
+      "file": "reports/炼器阁/V06P1_ENHANCE_FORMAL_INSTANCE_RESULT.md",
+      "shared": "/workspace/xiantu/reports/炼器阁/V06P1_ENHANCE_FORMAL_INSTANCE_RESULT.md",
+      "utf8": true,
+      "sha256": "c52cf45e147d27a4c3d7c9c3d54e2c73acaaeac66c0757d1a3bedc81cd80394c"
+    },
+    {
+      "file": "status/炼器阁.md",
+      "shared": "/workspace/xiantu/status/炼器阁.md",
+      "utf8": true,
+      "sha256": "5568947a42699933cb00552cda35a5a23a91321413001045b333cff19f8de8bc"
+    }
+  ],
+  "statusLines": 25,
+  "statusSections": 4,
+  "sharedUtf8Identical": true,
+  "formalTipsWired": true,
+  "formalInstanceSource": true,
+  "softOpenedEntrance": true,
+  "released": false,
+  "assertions": 118760,
+  "notRun": [
+    "build",
+    "sync",
+    "release"
+  ]
+}
