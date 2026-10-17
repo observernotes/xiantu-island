@@ -1,0 +1,7 @@
+{
+  "scripts/v06p1-attr-ui-closed-test.mjs": "2aeebfc3dec47d012b4ae9d52432c98204ed29ef7b7a3a510d9d59529d1affcc",
+  "scripts/v06p1-attr-ui-binding-success-test.mjs": "62577ff2f9f2060ddd1e23c49d35fa3641e265ae367b0e0861362813a85a00a1",
+  "scripts/v06p1-attr-ui-map-api-test.mjs": "9e1eb5e7194359b634a47ea7e47ad43d4e7abc14a9936edc970135fb7cad5eb4",
+  "scripts/v06p1-attr-ui-map-services-test.mjs": "0f04e8dcb7e8d56463f08c8f3704804798a382231e1128d7969cd1245879f6bb",
+  "scripts/v06p1-attr-ui-soft-open-output.mjs": "a3207b9573dd5755fff0aa4268daaa5de4a76ab02014a77fc537f0876bd7b76a"
+}

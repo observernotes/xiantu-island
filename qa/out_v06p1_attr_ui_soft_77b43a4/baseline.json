@@ -1,0 +1,11 @@
+{
+  "cwd": "/workspace/xiantu/wt/feat/ui-attr-inst",
+  "branch": "feat/ui-attr-inst",
+  "baselineTip": "431743577dbcf58c738e7ee5ba6fc6aeccd1c11f",
+  "stdin": "/dev/null",
+  "oldEvidenceRoots": [
+    "/workspace/xiantu/qa/out_v06p1_attr_ui_closed_a3f0c19",
+    "/workspace/xiantu/qa/out_v06p1_attr_ui_open_4317435"
+  ],
+  "protectedFiles": 1897
+}

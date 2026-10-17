@@ -1,0 +1,272 @@
+{
+  "passed": true,
+  "verdict": "PASS",
+  "role": "炼器程序自检；不代执法 soft smoke",
+  "implementationTip": "77b43a47a97e930039c54a3ab160dcfec3f38293",
+  "baselineTip": "431743577dbcf58c738e7ee5ba6fc6aeccd1c11f",
+  "softOpenedAttrUi": true,
+  "attrUiOpenPass": true,
+  "formalApiWired": true,
+  "eSlotToInstanceRefApiExists": true,
+  "iRowToInstanceRefApiExists": true,
+  "mappingStrategy": "explicit_position_binding_only_no_item_id_inference",
+  "newOpenFlag": false,
+  "fixtureInstancesProductionFallback": false,
+  "released": false,
+  "fourFlagsMatch": true,
+  "SalvageOpenFlag": true,
+  "enhanceMatch": true,
+  "strings970Match": true,
+  "gifts0": true,
+  "giftsTrue": 0,
+  "giftsFalse": 10,
+  "GAME_PHASE": 5,
+  "closedAssertions": 1592,
+  "formalGraphs": [
+    {
+      "dataMode": "shared",
+      "graph": "formal-source",
+      "passed": true,
+      "instanceRef": "shared-binding-forge:craft:one:item",
+      "secondRef": "shared-binding-forge:craft:two:item",
+      "defaultForgeFormalSource": true,
+      "equipKnownRefVerified": true,
+      "enhanceLine": "强化 +2",
+      "enchantLineRefreshed": true,
+      "sameItemIdDifferentRefRerendered": true,
+      "aggregateInventoryStillNoInstance": true,
+      "unequipBindingCleared": true,
+      "legacyMissingBindingNoInstance": true,
+      "foreignPassthroughWithoutIdentity": true,
+      "displayZeroWrites": true,
+      "formalFlagModuleReplacements": 0,
+      "flagLoads": {
+        "Enhance": 0,
+        "Enchant": 0
+      },
+      "softOpenedAttrUi": true,
+      "released": false
+    },
+    {
+      "dataMode": "snapshot",
+      "graph": "formal-source",
+      "passed": true,
+      "instanceRef": "snapshot-binding-forge:craft:one:item",
+      "secondRef": "snapshot-binding-forge:craft:two:item",
+      "defaultForgeFormalSource": true,
+      "equipKnownRefVerified": true,
+      "enhanceLine": "强化 +2",
+      "enchantLineRefreshed": true,
+      "sameItemIdDifferentRefRerendered": true,
+      "aggregateInventoryStillNoInstance": true,
+      "unequipBindingCleared": true,
+      "legacyMissingBindingNoInstance": true,
+      "foreignPassthroughWithoutIdentity": true,
+      "displayZeroWrites": true,
+      "formalFlagModuleReplacements": 0,
+      "flagLoads": {
+        "Enhance": 0,
+        "Enchant": 0
+      },
+      "softOpenedAttrUi": true,
+      "released": false
+    }
+  ],
+  "memoryClosedGraphs": [
+    {
+      "dataMode": "shared",
+      "graph": "memory-closed",
+      "passed": true,
+      "knownBindingStillVerified": true,
+      "foreignResolverPreserved": true,
+      "closedOverridesVerifiedAndForeign": true,
+      "identityReads": 0,
+      "refReads": 0,
+      "displayZeroWrites": true,
+      "flagLoads": {
+        "Enhance": 1,
+        "Enchant": 1
+      },
+      "softOpenedAttrUi": true,
+      "released": false
+    },
+    {
+      "dataMode": "snapshot",
+      "graph": "memory-closed",
+      "passed": true,
+      "knownBindingStillVerified": true,
+      "foreignResolverPreserved": true,
+      "closedOverridesVerifiedAndForeign": true,
+      "identityReads": 0,
+      "refReads": 0,
+      "displayZeroWrites": true,
+      "flagLoads": {
+        "Enhance": 1,
+        "Enchant": 1
+      },
+      "softOpenedAttrUi": true,
+      "released": false
+    }
+  ],
+  "closedCases": {
+    "C01": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "shared/memory-closed/equip-closed",
+        "shared/fresh-memory-closed/equip-closed",
+        "snapshot/memory-closed/equip-closed",
+        "snapshot/fresh-memory-closed/equip-closed"
+      ]
+    },
+    "C02": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "shared/memory-closed/inventory-closed",
+        "shared/fresh-memory-closed/inventory-closed",
+        "snapshot/memory-closed/inventory-closed",
+        "snapshot/fresh-memory-closed/inventory-closed"
+      ]
+    },
+    "C03": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "shared/memory-closed/per-group-gates-and-cache",
+        "shared/fresh-memory-closed/per-group-gates-and-cache",
+        "snapshot/memory-closed/per-group-gates-and-cache",
+        "snapshot/fresh-memory-closed/per-group-gates-and-cache"
+      ]
+    },
+    "C04": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "shared/formal-source/mapping-refusal",
+        "shared/memory-closed/mapping-refusal",
+        "shared/fresh-memory-closed/mapping-refusal",
+        "snapshot/formal-source/mapping-refusal",
+        "snapshot/memory-closed/mapping-refusal",
+        "snapshot/fresh-memory-closed/mapping-refusal"
+      ]
+    },
+    "C05": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "shared/formal-source/foreign-and-switch",
+        "shared/memory-closed/foreign-and-switch",
+        "shared/fresh-memory-closed/foreign-and-switch",
+        "snapshot/formal-source/foreign-and-switch",
+        "snapshot/memory-closed/foreign-and-switch",
+        "snapshot/fresh-memory-closed/foreign-and-switch"
+      ]
+    },
+    "C06": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "shared/formal-source/corrupt-and-unknown",
+        "shared/memory-closed/corrupt-and-unknown",
+        "shared/fresh-memory-closed/corrupt-and-unknown",
+        "snapshot/formal-source/corrupt-and-unknown",
+        "snapshot/memory-closed/corrupt-and-unknown",
+        "snapshot/fresh-memory-closed/corrupt-and-unknown"
+      ]
+    },
+    "C07": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "shared/formal-source/repeat-refresh-and-reopen",
+        "shared/memory-closed/repeat-refresh-and-reopen",
+        "shared/fresh-memory-closed/repeat-refresh-and-reopen",
+        "snapshot/formal-source/repeat-refresh-and-reopen",
+        "snapshot/memory-closed/repeat-refresh-and-reopen",
+        "snapshot/fresh-memory-closed/repeat-refresh-and-reopen"
+      ]
+    },
+    "C08": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "shared/formal-source/empty-zero-corrupt-separated",
+        "shared/memory-closed/empty-zero-corrupt-separated",
+        "shared/fresh-memory-closed/empty-zero-corrupt-separated",
+        "snapshot/formal-source/empty-zero-corrupt-separated",
+        "snapshot/memory-closed/empty-zero-corrupt-separated",
+        "snapshot/fresh-memory-closed/empty-zero-corrupt-separated"
+      ]
+    },
+    "C09": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "static-source-and-data"
+      ]
+    },
+    "C10": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "shared/formal-source/zero-delta-and-service-boundary",
+        "shared/memory-closed/zero-delta-and-service-boundary",
+        "shared/fresh-memory-closed/zero-delta-and-service-boundary",
+        "snapshot/formal-source/zero-delta-and-service-boundary",
+        "snapshot/memory-closed/zero-delta-and-service-boundary",
+        "snapshot/fresh-memory-closed/zero-delta-and-service-boundary"
+      ]
+    }
+  },
+  "displayWrites": 0,
+  "displayServiceCalls": 0,
+  "servicePreparationIsIsolatedTestSetup": true,
+  "fixtureIsNotFormalOrReleaseEvidence": true,
+  "priorIndependentOpenEvidence": "qa/out_v06p1_attr_ui_open_4317435/",
+  "priorIndependentClosedEvidence": "qa/out_v06p1_attr_ui_closed_a3f0c19/",
+  "sourceAudit": "formal resolver delegation preserved; all product sources SHA MATCH",
+  "protection": {
+    "passed": true,
+    "protectedFiles": 1897,
+    "unauthorizedDifferences": [],
+    "protectedFileSetMatch": true,
+    "fourFlagsMatch": true,
+    "SalvageOpenFlag": true,
+    "enhanceMatch": true,
+    "strings970Match": true,
+    "frozenBaselineMatches": {
+      "/workspace/xiantu/wt/feat/ui-attr-inst/src/ForgeOpenFlag.ts": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
+      "/workspace/xiantu/wt/feat/ui-attr-inst/src/EnhanceOpenFlag.ts": "d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e",
+      "/workspace/xiantu/wt/feat/ui-attr-inst/src/EnchantOpenFlag.ts": "bd5445b8ddfed56a32811cedd28db72e8676c7a5eff321e2fedb0ec5fe4c505a",
+      "/workspace/xiantu/wt/feat/ui-attr-inst/src/SalvageOpenFlag.ts": "69aace852957c52bf7ca0214345ede7df29d6d36ec1dfd4849462e54552edff3",
+      "/workspace/xiantu/balance/enhance.json": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+      "/workspace/xiantu/balance/strings_zh.json": "ae51319b82a6486cc7f3d9b26c5ae89719e23c32ff9debdcfbb86ef7b5aea08b",
+      "/workspace/xiantu/balance/recipes.json": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+      "/workspace/xiantu/balance/materials.json": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+      "/workspace/xiantu/balance/items.json": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+      "/workspace/xiantu/balance/npcs.json": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+      "/workspace/xiantu/balance/life_skills.json": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+      "/workspace/xiantu/balance/enhance_protect_charm.json": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+      "/workspace/xiantu/wt/feat/ui-attr-inst/data/balance/enhance.json": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+      "/workspace/xiantu/wt/feat/ui-attr-inst/data/balance/strings_zh.json": "ae51319b82a6486cc7f3d9b26c5ae89719e23c32ff9debdcfbb86ef7b5aea08b",
+      "/workspace/xiantu/wt/feat/ui-attr-inst/data/balance/recipes.json": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+      "/workspace/xiantu/wt/feat/ui-attr-inst/data/balance/materials.json": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+      "/workspace/xiantu/wt/feat/ui-attr-inst/data/balance/items.json": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+      "/workspace/xiantu/wt/feat/ui-attr-inst/data/balance/npcs.json": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+      "/workspace/xiantu/wt/feat/ui-attr-inst/data/balance/life_skills.json": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+      "/workspace/xiantu/wt/feat/ui-attr-inst/data/balance/enhance_protect_charm.json": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772"
+    },
+    "priorClosedAndOpenEvidenceUnchanged": true,
+    "allProductSourcesUnchanged": true
+  },
+  "suiteEvidence": [
+    "closed/evidence.json",
+    "binding-success/evidence.json",
+    "map-api/evidence.json",
+    "map-services/services-evidence.json"
+  ],
+  "legacyEnhanceEnchantClosedRerun": false,
+  "legacyRegressionNote": "Historical runners require strings960; no compatibility bypass. Fresh map-services verifies existing Gate behavior with strings970.",
+  "releaseAuthorization": "none; expected v0.6.13 needs a separate order"
+}

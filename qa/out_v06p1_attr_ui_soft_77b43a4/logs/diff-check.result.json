@@ -1,0 +1,15 @@
+{
+  "name": "diff-check",
+  "command": [
+    "git",
+    "diff",
+    "--check"
+  ],
+  "cwd": "/workspace/xiantu/wt/feat/ui-attr-inst",
+  "stdin": "/dev/null",
+  "exitCode": 0,
+  "passed": true,
+  "assertions": null,
+  "durationSeconds": 0.006,
+  "log": "logs/diff-check.log"
+}

@@ -1,0 +1,15 @@
+{
+  "name": "appearance",
+  "command": [
+    "npm",
+    "run",
+    "test:appearance"
+  ],
+  "cwd": "/workspace/xiantu/wt/feat/ui-attr-inst",
+  "stdin": "/dev/null",
+  "exitCode": 0,
+  "passed": true,
+  "assertions": 588,
+  "durationSeconds": 2.642,
+  "log": "logs/appearance.log"
+}

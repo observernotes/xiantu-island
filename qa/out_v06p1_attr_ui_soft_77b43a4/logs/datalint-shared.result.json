@@ -1,0 +1,14 @@
+{
+  "name": "datalint-shared",
+  "command": [
+    "python3",
+    "/workspace/xiantu/qa/tools/datalint.py"
+  ],
+  "cwd": "/workspace/xiantu",
+  "stdin": "/dev/null",
+  "exitCode": 0,
+  "passed": true,
+  "assertions": null,
+  "durationSeconds": 0.035,
+  "log": "logs/datalint-shared.log"
+}

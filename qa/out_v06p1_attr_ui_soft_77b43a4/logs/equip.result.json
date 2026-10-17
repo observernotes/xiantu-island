@@ -1,0 +1,15 @@
+{
+  "name": "equip",
+  "command": [
+    "npm",
+    "run",
+    "test:equip"
+  ],
+  "cwd": "/workspace/xiantu/wt/feat/ui-attr-inst",
+  "stdin": "/dev/null",
+  "exitCode": 0,
+  "passed": true,
+  "assertions": 100,
+  "durationSeconds": 3.159,
+  "log": "logs/equip.log"
+}

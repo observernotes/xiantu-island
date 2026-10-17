@@ -1,0 +1,6 @@
+
+> xiantu-island@0.0.1 test:equip
+> timeout 60s node scripts/equip-test.mjs
+
+legacy save fixture: indexedDbSaves=false (SSR memory override only)
+equip tests ok: 100 assertions

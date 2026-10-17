@@ -1,0 +1,7 @@
+{
+  "implementationTip": "77b43a47a97e930039c54a3ab160dcfec3f38293",
+  "baselineTip": "431743577dbcf58c738e7ee5ba6fc6aeccd1c11f",
+  "testedBeforeImplementationCommit": true,
+  "testedSourceMatchesImplementationCommit": true,
+  "note": "Tests ran on the authorized baseline plus the exact source bytes committed as implementationTip; only the output directory was renamed after commit."
+}

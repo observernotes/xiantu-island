@@ -1,0 +1,179 @@
+{
+  "passed": true,
+  "verdict": "PASS",
+  "implementationTip": "77b43a47a97e930039c54a3ab160dcfec3f38293",
+  "softOpenedAttrUi": true,
+  "attrUiOpenPass": true,
+  "formalApiWired": true,
+  "eSlotToInstanceRefApiExists": true,
+  "iRowToInstanceRefApiExists": true,
+  "mappingStrategy": "explicit_position_binding_only_no_item_id_inference",
+  "newOpenFlag": false,
+  "fixtureInstancesProductionFallback": false,
+  "released": false,
+  "fourFlagsMatch": true,
+  "SalvageOpenFlag": true,
+  "enhanceMatch": true,
+  "strings970Match": true,
+  "gifts0": true,
+  "giftsTrue": 0,
+  "giftsFalse": 10,
+  "GAME_PHASE": 5,
+  "closedAssertions": 1592,
+  "checks": {
+    "typecheck": {
+      "name": "typecheck",
+      "command": [
+        "npx",
+        "tsc",
+        "--noEmit"
+      ],
+      "cwd": "/workspace/xiantu/wt/feat/ui-attr-inst",
+      "stdin": "/dev/null",
+      "exitCode": 0,
+      "passed": true,
+      "assertions": null,
+      "durationSeconds": 8.179,
+      "log": "logs/typecheck.log"
+    },
+    "closed": {
+      "name": "closed",
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-attr-ui-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/feat/ui-attr-inst",
+      "stdin": "/dev/null",
+      "exitCode": 0,
+      "passed": true,
+      "assertions": 1592,
+      "durationSeconds": 8.262,
+      "log": "logs/closed.log"
+    },
+    "binding-success": {
+      "name": "binding-success",
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-attr-ui-binding-success"
+      ],
+      "cwd": "/workspace/xiantu/wt/feat/ui-attr-inst",
+      "stdin": "/dev/null",
+      "exitCode": 0,
+      "passed": true,
+      "assertions": 327,
+      "durationSeconds": 5.943,
+      "log": "logs/binding-success.log"
+    },
+    "map-api": {
+      "name": "map-api",
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-attr-ui-map-api"
+      ],
+      "cwd": "/workspace/xiantu/wt/feat/ui-attr-inst",
+      "stdin": "/dev/null",
+      "exitCode": 0,
+      "passed": true,
+      "assertions": 1128,
+      "durationSeconds": 4.78,
+      "log": "logs/map-api.log"
+    },
+    "map-services": {
+      "name": "map-services",
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-attr-ui-map-services"
+      ],
+      "cwd": "/workspace/xiantu/wt/feat/ui-attr-inst",
+      "stdin": "/dev/null",
+      "exitCode": 0,
+      "passed": true,
+      "assertions": 175,
+      "durationSeconds": 4.176,
+      "log": "logs/map-services.log"
+    },
+    "equip": {
+      "name": "equip",
+      "command": [
+        "npm",
+        "run",
+        "test:equip"
+      ],
+      "cwd": "/workspace/xiantu/wt/feat/ui-attr-inst",
+      "stdin": "/dev/null",
+      "exitCode": 0,
+      "passed": true,
+      "assertions": 100,
+      "durationSeconds": 3.159,
+      "log": "logs/equip.log"
+    },
+    "appearance": {
+      "name": "appearance",
+      "command": [
+        "npm",
+        "run",
+        "test:appearance"
+      ],
+      "cwd": "/workspace/xiantu/wt/feat/ui-attr-inst",
+      "stdin": "/dev/null",
+      "exitCode": 0,
+      "passed": true,
+      "assertions": 588,
+      "durationSeconds": 2.642,
+      "log": "logs/appearance.log"
+    },
+    "datalint-shared": {
+      "name": "datalint-shared",
+      "command": [
+        "python3",
+        "/workspace/xiantu/qa/tools/datalint.py"
+      ],
+      "cwd": "/workspace/xiantu",
+      "stdin": "/dev/null",
+      "exitCode": 0,
+      "passed": true,
+      "assertions": null,
+      "durationSeconds": 0.035,
+      "log": "logs/datalint-shared.log"
+    },
+    "datalint-snapshot": {
+      "name": "datalint-snapshot",
+      "command": [
+        "python3",
+        "/workspace/xiantu/qa/tools/datalint.py"
+      ],
+      "cwd": "/workspace/xiantu/wt/feat/ui-attr-inst/data",
+      "stdin": "/dev/null",
+      "exitCode": 0,
+      "passed": true,
+      "assertions": null,
+      "durationSeconds": 0.037,
+      "log": "logs/datalint-snapshot.log"
+    },
+    "diff-check": {
+      "name": "diff-check",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "cwd": "/workspace/xiantu/wt/feat/ui-attr-inst",
+      "stdin": "/dev/null",
+      "exitCode": 0,
+      "passed": true,
+      "assertions": null,
+      "durationSeconds": 0.006,
+      "log": "logs/diff-check.log"
+    }
+  },
+  "totalAssertions": 3910,
+  "protectedFiles": 1897,
+  "unauthorizedDifferences": 0,
+  "priorEvidenceUnchanged": true,
+  "snapshotBuildSyncReleasePagesExecuted": false,
+  "independentSoftSmokeExecuted": false
+}

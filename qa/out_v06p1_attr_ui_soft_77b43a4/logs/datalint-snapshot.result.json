@@ -1,0 +1,14 @@
+{
+  "name": "datalint-snapshot",
+  "command": [
+    "python3",
+    "/workspace/xiantu/qa/tools/datalint.py"
+  ],
+  "cwd": "/workspace/xiantu/wt/feat/ui-attr-inst/data",
+  "stdin": "/dev/null",
+  "exitCode": 0,
+  "passed": true,
+  "assertions": null,
+  "durationSeconds": 0.037,
+  "log": "logs/datalint-snapshot.log"
+}
