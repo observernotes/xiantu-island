@@ -1,4 +1,4 @@
-// 属性展示 C01–C10：只读语义夹具；不运行服务提交、O 表、soft-open 或 release。
+// 属性展示 C01–C10：soft-open 后的只读语义夹具回归；不运行服务提交、O 表或 release。
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
@@ -8,9 +8,10 @@ import { fileURLToPath } from 'node:url';
 import ts from 'typescript';
 import { createServer } from 'vite';
 import { sharedRoot } from './root.mjs';
+import { attrUiSoftOpenOutput } from './v06p1-attr-ui-soft-open-output.mjs';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-const shared = sharedRoot(root), out = path.join(root, 'qa/out_v06p1_attr_ui_closed');
+const shared = sharedRoot(root), out = attrUiSoftOpenOutput(root, 'closed');
 const baseline = 'b9108d6dcab0fdb8857dac0efd85087176a92f92';
 const strings970 = 'ae51319b82a6486cc7f3d9b26c5ae89719e23c32ff9debdcfbb86ef7b5aea08b';
 const strings960 = '9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda';
@@ -437,8 +438,8 @@ try {
   for (const [file, expected] of Object.entries(protectedFiles)) eq(hash(await fs.readFile(file)), expected, `运行后冻结字节 MATCH: ${file}`);
   const result = { passed, assertions, baselineTip: baseline, attrUiReadonlyWired: passed,
     newOpenFlag: false, enhanceSha, strings970, strings970Previous960Sha: strings960,
-    softOpenedAttrUi: false, released: false, formalInstanceSource: true,
-    mappingStrategy: 'no_instance_for_missing_slot_row_binding',
+    softOpenedAttrUi: true, released: false, formalInstanceSource: true,
+    mappingStrategy: 'explicit_position_binding_only_no_item_id_inference_missing_binding_no_instance',
     mappingEvidence: 'reports/炼器阁/V06P1_ATTR_UI_MAP_API_EVIDENCE.md', mappingGaps: [],
     eSlotToInstanceRefApiExists: true, iRowToInstanceRefApiExists: true, noItemIdImpersonation: true,
     fixtureInstancesProductionFallback: false, ForgeOpenFlag: true, EnhanceOpenFlag: true, EnchantOpenFlag: true, SalvageOpenFlag: true,
@@ -453,4 +454,4 @@ try {
   if (storageDescriptor) Object.defineProperty(globalThis, 'localStorage', storageDescriptor); else delete globalThis.localStorage;
   if (indexedDescriptor) Object.defineProperty(globalThis, 'indexedDB', indexedDescriptor); else delete globalThis.indexedDB;
 }
-console.log(`v06p1 attr-ui closed PASS: ${assertions} assertions; C01–C10; shared+snapshot strings970; SSR 双 Flag=false; localStorageWrites=0; serviceCalls=0; mappingStrategy=no_instance_for_missing_slot_row_binding; softOpenedAttrUi=false; released=false`);
+console.log(`v06p1 attr-ui closed PASS: ${assertions} assertions; C01–C10; shared+snapshot strings970; SSR 双 Flag=false; localStorageWrites=0; serviceCalls=0; mappingStrategy=explicit_position_binding_missing_binding_no_instance; softOpenedAttrUi=true; released=false`);

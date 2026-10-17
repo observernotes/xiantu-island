@@ -6,10 +6,11 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createServer } from 'vite';
 import { sharedRoot } from './root.mjs';
+import { attrUiSoftOpenOutput } from './v06p1-attr-ui-soft-open-output.mjs';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const roots = [['shared', sharedRoot(root)], ['snapshot', path.join(root, 'data')]];
-const out = path.join(root, 'qa/out_v06p1_attr_ui_map_api');
+const out = attrUiSoftOpenOutput(root, 'map-services');
 const enhanceSha = 'd5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954';
 let assertions = 0, passed = false;
 const evidence = [], captured = new Map();
@@ -164,7 +165,7 @@ async function runGraph(mode, dataRoot) {
       enhanceReplayZeroWrites: true, enchantFormalSubmit: true, saveRoundtripPreservedBinding: true,
       failedEquipSaveRolledBack: true, unequipClearedBinding: true, salvageExplicitQualificationOnly: true,
       salvageInstanceRef: salvageRef, destroyedInstanceMapping: 'no_instance', destroyedInstanceExcludedFromBag: true,
-      salvageReplayZeroWrites: true, softOpenedAttrUi: false, released: false });
+      salvageReplayZeroWrites: true, softOpenedAttrUi: true, released: false });
   } finally {
     for (const p of progresses) await p.flushSaves();
     if (Progress && oldSlot !== undefined) Progress.setActiveSlot(oldSlot);
@@ -189,7 +190,8 @@ try {
 } finally {
   for (const [file, sha] of captured) eq(hash(await fs.readFile(file)), sha, '运行前后源码/配置字节 MATCH: ' + file);
   await fs.writeFile(path.join(out, 'services-evidence.json'), JSON.stringify({ passed, assertions, roots: Object.fromEntries(roots),
-    enhanceSha, softOpenedAttrUi: false, released: false, productionFixtureInstanceInjection: false,
+    enhanceSha, softOpenedAttrUi: true, released: false, newOpenFlag: false,
+    fixtureInstancesProductionFallback: false, productionFixtureInstanceInjection: false,
     priorOpenScriptsStringGuard: '旧套件的 960 字符串冻结早于本刀基线；本烟测直接运行真实 Gate，不替换旧 guard 或数据',
     protectedFiles: Object.fromEntries(captured), evidence }, null, 2) + '\n');
 }

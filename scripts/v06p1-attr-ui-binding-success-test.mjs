@@ -7,10 +7,11 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createServer } from 'vite';
 import { sharedRoot } from './root.mjs';
+import { attrUiSoftOpenOutput } from './v06p1-attr-ui-soft-open-output.mjs';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const roots = [['shared', sharedRoot(root)], ['snapshot', path.join(root, 'data')]];
-const out = path.join(root, 'qa/out_v06p1_attr_ui_binding_success');
+const out = attrUiSoftOpenOutput(root, 'binding-success');
 const baseline = 'cc8fc1aad18cc00550b8092e27694d9c5f1c8783';
 const enhanceSha = 'd5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954';
 const flagShas = {
@@ -252,7 +253,7 @@ async function runFormal(mode, dataRoot) {
       defaultForgeFormalSource: true, equipKnownRefVerified: true, enhanceLine: '强化 +2', enchantLineRefreshed: true,
       sameItemIdDifferentRefRerendered: true, aggregateInventoryStillNoInstance: true,
       unequipBindingCleared: true, legacyMissingBindingNoInstance: true, foreignPassthroughWithoutIdentity: true,
-      displayZeroWrites: true, formalFlagModuleReplacements: 0, softOpenedAttrUi: false, released: false });
+      displayZeroWrites: true, formalFlagModuleReplacements: 0, flagLoads, softOpenedAttrUi: true, released: false });
     return { wornSave, ref, secondRef };
   } finally {
     if (features && oldFlags) for (const [name, value] of Object.entries(oldFlags)) features.setFeatureFlag(name, value);
@@ -303,7 +304,7 @@ async function runClosed(mode, dataRoot, fixture) {
     eq(flagLoads, { Enhance: 1, Enchant: 1 }, `${mode}/closed: 只替换隔离图的双 Flag`);
     evidence.push({ dataMode: mode, graph: 'memory-closed', passed: true, knownBindingStillVerified: true,
       foreignResolverPreserved: true, closedOverridesVerifiedAndForeign: true, identityReads, refReads,
-      displayZeroWrites: true, flagLoads, softOpenedAttrUi: false, released: false });
+      displayZeroWrites: true, flagLoads, softOpenedAttrUi: true, released: false });
   } finally {
     if (Progress && oldSlot !== undefined) Progress.setActiveSlot(oldSlot);
     await server.close();
@@ -329,15 +330,18 @@ try {
   try {
     for (const [file, expected] of Object.entries(protectedFiles)) eq(hash(await fs.readFile(file)), expected, `运行后冻结字节 MATCH: ${file}`);
     await fs.writeFile(path.join(out, 'evidence.json'), JSON.stringify({ passed, assertions, baselineTip: baseline,
-      formalApiWired: passed, equipKnownRefVerified: passed, enhanceLineShown: passed, unequipBindingCleared: passed,
+      attrUiOpenPass: passed, formalApiWired: passed, eSlotToInstanceRefApiExists: passed, iRowToInstanceRefApiExists: passed,
+      mappingStrategy: 'explicit_position_binding_only_no_item_id_inference',
+      newOpenFlag: false, fixtureInstancesProductionFallback: false,
+      equipKnownRefVerified: passed, enhanceLineShown: passed, unequipBindingCleared: passed,
       missingBindingAndAggregateRowNoInstance: passed, foreignPassthrough: passed, closedPriorityUnavailable: passed,
       bindingEnhanceEnchantRefreshExecuted: passed, readonlyZeroWrites: sentinelCalls === 0, displayWriteSentinelCalls: sentinelCalls,
       preparationLocalStorageWrites: localStorageWrites, preparationBackendWrites: backendWrites,
       enhanceSha, enhanceShaMatch: true, flagShas, formalFlagsDiskSourcePreserved: true, gatesBaselineMatch: true,
-      GAME_PHASE: 5, gifts0: true, softOpenedAttrUi: false, released: false, protectedFiles, evidence }, null, 2) + '\n');
+      GAME_PHASE: 5, gifts0: true, softOpenedAttrUi: true, released: false, protectedFiles, evidence }, null, 2) + '\n');
   } finally {
     if (storageDescriptor) Object.defineProperty(globalThis, 'localStorage', storageDescriptor);
     else Reflect.deleteProperty(globalThis, 'localStorage');
   }
 }
-console.log(`v06p1 attr-ui binding success PASS: ${assertions} assertions; shared/snapshot formal Forge→known-ref equip→E verified→enhance line; unequip clear; aggregate no_instance; foreign passthrough; closed unavailable; binding/enhance/enchant refresh; display zero writes; enhance/four Flags/Gates MATCH; softOpenedAttrUi=false; released=false`);
+console.log(`v06p1 attr-ui binding success PASS: ${assertions} assertions; shared/snapshot formal Forge→known-ref equip→E verified→enhance line; unequip clear; aggregate no_instance; foreign passthrough; closed unavailable; binding/enhance/enchant refresh; display zero writes; enhance/four Flags/Gates MATCH; softOpenedAttrUi=true; released=false`);

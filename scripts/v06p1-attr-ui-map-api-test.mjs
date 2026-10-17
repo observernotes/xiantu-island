@@ -8,9 +8,10 @@ import { fileURLToPath } from 'node:url';
 import ts from 'typescript';
 import { createServer } from 'vite';
 import { sharedRoot } from './root.mjs';
+import { attrUiSoftOpenOutput } from './v06p1-attr-ui-soft-open-output.mjs';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-const shared = sharedRoot(root), out = path.join(root, 'qa/out_v06p1_attr_ui_map_api');
+const shared = sharedRoot(root), out = attrUiSoftOpenOutput(root, 'map-api');
 const baseline = 'a3f0c197e1d3f31ef1faada5fa053b10e0ac9bfe';
 const enhanceSha = 'd5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954';
 const api = { file: 'src/EquipInstBinding.ts',
@@ -381,7 +382,7 @@ async function runGraph(mode, dataRoot) {
     const callsBefore = [localStorageWrites, backendWrites, writeSentinelCalls];
     withWriteSentinels(asyncP, () => readOnly(asyncP, () => [E(asyncP), bag(asyncP), I(asyncP, { id: 'bamboo_sword', instanceRef: firstRef })], `${mode}: IDB 图纯读`));
     eq([localStorageWrites, backendWrites, writeSentinelCalls], callsBefore, `${mode}: IDB 纯读零写`);
-    record(mode, 'ssr-graph-complete', { formalFlagsUntouched: true, GAME_PHASE: 5, softOpenedAttrUi: false, released: false });
+    record(mode, 'ssr-graph-complete', { formalFlagsUntouched: true, GAME_PHASE: 5, softOpenedAttrUi: true, released: false });
   } finally {
     if (features && oldFlags) for (const [name, value] of Object.entries(oldFlags)) features.setFeatureFlag(name, value);
     if (Progress && oldSlot) Progress.setActiveSlot(oldSlot);
@@ -418,7 +419,7 @@ try {
       enhanceSha, enhanceShaMatch: true, flagShas, formalFlagsDiskSourcePreserved: true,
       ForgeOpenFlag: true, EnhanceOpenFlag: true, EnchantOpenFlag: true, SalvageOpenFlag: true,
       gatesBaselineMatch: true, gateShas: gates, frozenData, gifts0: true, giftsCount: 10, GAME_PHASE: 5,
-      newOpenFlag: false, softOpenedAttrUi: false, released: false,
+      newOpenFlag: false, softOpenedAttrUi: true, released: false,
       testSummary: `node scripts/v06p1-attr-ui-map-api-test.mjs: ${assertions} assertions, shared/snapshot SSR`,
       protectedFiles, evidence };
     await fs.writeFile(path.join(out, 'evidence.json'), `${JSON.stringify(result, null, 2)}\n`);
@@ -427,4 +428,4 @@ try {
     else Reflect.deleteProperty(globalThis, 'localStorage');
   }
 }
-console.log(`v06p1 attr-ui map API PASS: ${assertions} assertions; shared/snapshot SSR; default Forge→formal source→known-ref equip verified; unequip clear; no itemId/count inference; legacy/foreign/rollback/validation; enhance/four Flags/Gates/gifts0/PHASE=5 MATCH; E/I display resolvers match formal API; softOpenedAttrUi=false; released=false`);
+console.log(`v06p1 attr-ui map API PASS: ${assertions} assertions; shared/snapshot SSR; default Forge→formal source→known-ref equip verified; unequip clear; no itemId/count inference; legacy/foreign/rollback/validation; enhance/four Flags/Gates/gifts0/PHASE=5 MATCH; E/I display resolvers match formal API; softOpenedAttrUi=true; released=false`);
