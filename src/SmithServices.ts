@@ -1,4 +1,5 @@
 import recipes from '@xt/balance/recipes.json';
+import enhanceRules from '@xt/balance/enhance.json';
 import protectCharmMap from '@xt/balance/enhance_protect_charm.json';
 import { ITEMS, t } from './data';
 import { Progress, type EquipSlot } from './Progress';
@@ -248,6 +249,20 @@ export class SmithServices {
       return this.tip(gate.tipKey);
     }
     const reason = gate.tipKey.split('.').pop();
+    // Refine only an explicit Gate resource refusal; these reads never grant settlement.
+    if (service === 'forge' && reason === 'ownership' && request && 'blueprintId' in request) {
+      if (this.progress.permanentCount(request.blueprintId) < 1) return this.tip('ui.smith.no_recipe');
+      if (request.materials.some(row => this.progress.permanentCount(row.itemId) < row.count))
+        return this.tip('talisman.material_lack');
+    }
+    if (service === 'enchant' && reason === 'resources') {
+      // The Gate owns the cost rules; use its already checked request preview for classification.
+      // Formal cost rows are shared with the Controller and are never consumed in this adapter.
+      const cost = enhanceRules.enchant.cost;
+      if (this.progress.stones < cost.stones) return this.tip('ui.shop.not_enough');
+      if (cost.materials.some(row => this.progress.permanentCount(row.item) < row.count))
+        return this.tip('talisman.material_lack');
+    }
     if (reason === 'busy') return this.tip('ui.smith.busy');
     if (reason === 'duplicate') {
       // Enchant uses duplicate for a *new* same-element intent as well as business duplicates.
