@@ -1,93 +1,67 @@
-# P1③++++++++ smith 服务 UI 关态 tip 交付
+# P1③++++++++ smith 服务 UI 关态 tip 交付（strings1013 + SmithServices 合入）
 
-2026-10-17｜炼器阁·界面接入｜分支 `feat/ui-smith-services`｜基线 `origin/dev@0dd59efdcd288930f1bd0525d2c9e7ddf06c0814`
+2026-10-17｜炼器阁·界面接入｜分支 `feat/ui-smith-services`
 
-实现验收 TIP_SHORT：`84d4351`
-实现验收 TIP_FULL：`84d4351c8a643145ee15ec4c2d5a90c589227f53`
-普通提交：`feat(v0.6-p1): wire smith services UI closed tip`。随后报告/status 的 docs-only 提交不改变本实现验收 tip；最终推送 HEAD 以共享目录同名报告末尾记录为准。
+实现验收 TIP_SHORT：`7b06f5a`
+实现验收 TIP_FULL：`7b06f5ac4e76a2c48e98431e1ccf0011a8ca0a41`
+合入基线：`origin/dev@f87e1c2`（`f87e1c276ad3116e37f9f50132dd5174ed681713`）。
 
-欧冶匠邻近交互已从四连冒烟 tip 收敛为普通对白 → `t('ui.smith.title')` → 打造/强化/附灵/分解菜单 → 正式候选/详情与资源 → 确认 → 既有 Gate.submit → 同请求 Gate 结果再核验 → 结果/返回。入口仍消费交互并校验可见与 28×40 距离；直接 talk 路由同一入口，不改 npcs。
+已通过 merge 提交 `ed8d83e` 合入炼器 `7ebf164/f87e1c2` 的 strings1013、SmithServices 与 services closed 套件；实现提交为 `feat(v0.6-p1): merge smith services and consume disk strings1013`。随后本报告、HANDOFF 和两份 status 由 docs-only 提交交付；普通推送目标 `origin/feat/ui-smith-services`，最终推送 HEAD 见交付回执。未 rebase、未 force-push。
 
-`SmithServicesUiAccess` 生产六 scope 恒 true；只有独立 Vite SSR 图可内存关闭 entrance/menu/单服务，生产不能被全局注入关闭。UI 关只用 ui.smith.closed；单 Gate 内存关只用对应 closed.*，不调用 laterService。新增面板请求身份深冻结，仅 UI 防连点；跨关窗保留进行中的锁，切档/换 Progress/旧 session 回调无效；未决只读原请求结果，不自动重试或补做。Enter 默认返回，Esc 提交前回上级；分解确认不默认聚焦销毁。
+欧冶匠普通对白 → 四服务菜单 → 选择/详情与资源 → 确认 → SmithServices.submit → 结果/返回已接。`SmithServicesUiAccess` 保留生产六 scope 恒 true，独立 SSR 图可关闭入口/menu/单服务。`SmithServices.routeAvailable` 已委托 UiAccess，原恒 false 不再封死生产 UI；Gate 可用性与结算仍由既有四 Gate 控制。
 
-正式装备沿 EquipInstBinding 按 instanceRef 独立行，视图编号、位置、当前强化/五行供区分；不以 itemId/数量/唯一候选代替身份。护符默认否，缺符整拒且不静默去符，保级说明仅 Gate 只读校验通过后显示。分解正式资格/atomicCarrier 依赖本窗未适配，沿现有 Gate 拒绝；无 SalvageFixture 生产回退。Gate/收费/结算/收据/数值全部未改。
+Controller 持有唯一 `SmithServices` 实例，消费 `choices/select/submit/result/loadRefresh` 与 services tip 键；新增 services 只读 `availability` 供 guard/poll 使用，正常轮询不清除确认选择。Controller 已移除独立 Gate 实例、提交分派及重复结果身份匹配，只负责请求视图、会话安全与结果文案。改选/五行/护符/返回/关闭均失效旧确认；隐藏、切档、换 Progress 防旧回调；throws/unknown/stale 保留固定未决意图，只读原请求结果且不自动重试。
 
-C01–C11 为本窗自检结果，待经理另派执法；未改 design/24–32 历史 C/O 勾选，未执行 design/32 O01–O11 全表。
+`SmithServicesPanel` 选择→确认→结果、键鼠、旧视图清理与 GameScene 对话入口均保留。Enter 默认返回；Esc 提交前回上级；分解确认不默认聚焦销毁。正式实例来自 services 的 EquipInstBinding 选择，E/I 只读显示独立。分解正式资格/atomicCarrier 未齐时继续沿既有 Gate 拒绝，无 fixture 回退。
 
-| 编号 | 操作 | 自检证据 |
+磁盘字符串已经接通：
+
+- `stringsDiskKeys:1013`（含 `_meta`），worktree 与权威 `/workspace/xiantu/balance/strings_zh.json` 字节一致。
+- strings SHA-256：`d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841`。
+- 生产 `t('ui.smith.*')` / `t('forge.grade.*')` 读取磁盘表；43 键逐键对 design/32 §6.2 全文 MATCH，并实际经 `t()` 验证。
+- 原 970 键前缀字节 MATCH；43 键 SSR 虚拟 JSON 注入已删除，`stringsSsrInjected43:false`，`stringsInjectionSource:none`。仅保留测试预期对象作 MATCH 校验。
+- 未运行 `npm run snapshot`；未改既有 970 键字节。
+
+`npm run test:v06p1-smith-services-closed` **PASS：2057 assertions**，覆盖实际 GameScene、Panel 键鼠/旧 pointer、Controller 与 snapshot/shared 两图。各动作比较 exportSave 和全部公开字段，实际 Gate submit、localStorage 写、indexedDB 打开、写接口哨兵、结算抽样、业务增量全部 **0**。
+
+| 编号 | 关态自检内容 | 结果 |
 |---|---|---|
-| C01 | 入口关反复交互/重读 | PASS：真实 GameScene 5 次交互，只有 ui.smith.closed，无菜单 |
-| C02 | 菜单关/旧对话与菜单点击 | PASS：恢复欧冶匠普通对白；旧选项/按钮只 tip |
-| C03 | 打造面板/UI 与 Gate 关 | PASS：合法、缺图纸、缺料、承载拒绝目标，零请求/扣发/品质/经验 |
-| C04 | 强化面板/UI 与 Gate 关 | PASS：正式实例、无符/有符/不足/满级，零抽样/扣费/等级改写 |
-| C05 | 附灵面板/UI 与 Gate 关 | PASS：首附、同元素、覆盖、防具，零消费/附着/属性改写 |
-| C06 | 分解面板/UI 与 Gate 关 | PASS：正式/不合资格/未知品质/承载拒绝，零销毁/产出/关联变动 |
-| C07 | UI 与四 Gate 独立 | PASS：UI 关时四 Gate true；仅单 Flag 内存 false 时其余独立；生产忽略 SSR 注入 |
-| C08 | 身份冒充 | PASS：无实例、聚合 itemId、fixture、跨档、旧位置均关态优先拒绝；不补实例 |
-| C09 | 连点/并发/旧回调 | PASS：24 次旧确认并发、跨服务共享资源、切 slot/同 slot 换 Progress、旧按钮全拒新写 |
-| C10 | 读档/刷新/退出重进 | PASS：真实 restore 完整旧结果和损坏记录，清视图成功文本，不补做/补发/修档 |
-| C11 | 全量增量与 E/I 隔离 | PASS：exportSave+公开字段逐动作比较零增量；E/I 快照保持；不串 attr/later_service |
+| C01 | 入口关闭、真实交互反复触发/重读 | PASS |
+| C02 | 菜单关闭、旧对白/菜单/面板 pointer 回调 | PASS |
+| C03 | 打造 UI/Gate 关闭，合法及缺图纸/料/承载拒绝目标 | PASS |
+| C04 | 强化 UI/Gate 关闭，护符默认否、资源/满级、Enter/Esc | PASS |
+| C05 | 附灵 UI/Gate 关闭，首附/同元素/覆盖/防具 | PASS |
+| C06 | 分解 UI/Gate 关闭，正式/不合资格/未知品质/承载拒绝 | PASS |
+| C07 | UI 与四 Gate 独立；生产六 scope 忽略 SSR 注入且菜单/面板路由可达 | PASS |
+| C08 | 无实例、itemId 冒充、fixture、跨档及旧位置身份 | PASS |
+| C09 | 连点/并发/旧回调；确认后五次 poll；throws/unknown/stale 禁重试 | PASS |
+| C10 | 完整/损坏旧档 restore、刷新与退出重进；固定意图经 services.result | PASS |
+| C11 | 全业务状态零增量、E/I 快照隔离、无 attr/later_service 串用 | PASS |
 
-`npm run test:v06p1-smith-services-closed` **PASS：1748 assertions**，snapshot + shared 两图；实际 GameScene、SmithServicesPanel 键鼠/旧 pointer 回调及 controller 均参与。`submitCalls/localStorageWrites/indexedDbOpens/sentinelCalls/settlementRandomCalls/fullBusinessStateDelta` 全部 **0**。
+补充验证：
 
-验证：`npx tsc --noEmit` PASS；`npm run test:equip` PASS 100 assertions；attr-ui closed / binding 在隔离数据根中分别 PASS 1592 / 327 assertions。四既有 Gate 的 SSR 运行回归 16 图 PASS 13684 assertions（含正式开图、内存关图及全新 SSR 刷新；只属既有 Gate 回归，不充作完整服务 UI 开态 O 全表）。
-
-原命令阻塞保留：8 个旧 forge/enhance/enchant/salvage JS 包装脚本中 7 个仍钉历史 strings960 SHA，salvage-closed 钉历史 Progress SHA；attr-ui closed 钉 shared970 SHA，binding 钉另一 worktree/branch。未改这些历史数据冻结口径来冒认 PASS。Gate 运行断言全部保留，仅 sceneSmoke 改为正式入口/菜单；强化历史960测试仅通过 Vite 内存移除只读实例10键隔离，磁盘仍970；attr 隔离保留全部 Gate/E/I 断言。原失败日志、隔离参数与结果在 regressions/；旧 qa 的已跟踪证据原字节保留。
-
-strings 分工：本 worktree `data/balance/strings_zh.json` **970（含 _meta）**，SHA `ae51319b82a6486cc7f3d9b26c5ae89719e23c32ff9debdcfbb86ef7b5aea08b`。43 键由炼器主责，**未并入本分支**；本窗未写盘、未 snapshot。新关态套件仅将43键作为 Vite 虚拟 JSON 的内存对象注入，逐键全文与 design/32 §6.2 MATCH：`stringsDiskKeys:970`、`stringsSsrInjected43:true`。共享权威表当前已被炼器并行窗口增至1013，43键只读比对 MATCH，不由本窗同步至快照。
-
-| 冻结项 | SHA-256 / 结果 |
+| 命令/范围 | 结果 |
 |---|---|
-| enhance.json | d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954 MATCH |
-| ForgeOpenFlag.ts | 0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e MATCH |
-| EnhanceOpenFlag.ts | d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e MATCH |
-| EnchantOpenFlag.ts | bd5445b8ddfed56a32811cedd28db72e8676c7a5eff321e2fedb0ec5fe4c505a MATCH |
-| SalvageOpenFlag.ts | 69aace852957c52bf7ca0214345ede7df29d6d36ec1dfd4849462e54552edff3 MATCH |
-| 其余数据与原结算 | 写前冻结569文件，变化0；四 Gate/Progress/SaveStore/EquipInstBinding/EquipInstReadonly/data.ts MATCH |
+| `npx tsc --noEmit` | PASS |
+| `npm run test:v06p1-smith-services-closed` | PASS，2057 断言 |
+| `npm run test:v06p1-smith-services-services-closed` | PASS，17425 断言，6 个独立图 |
+| `npm run test:equip` | PASS，100 断言 |
+| attr-ui closed（已钉 SHA 的 test-only loader） | PASS，1592 断言，真实产品模块读磁盘1013 |
+| `git diff --check` | PASS |
 
-`smithServicesUiWired:true`；`newOpenFlag:false`；`productionIgnoresSsrInjection:true`；`settlementUnchanged:true`；`softOpenedSmithServicesUi:false`；`released:false`。GAME_PHASE=5，recipes/materials/items/life_skills/enhance_protect_charm/npcs 均未改，未接阵法/gifts/#20/拍卖/坊市。本窗≠soft-open≠release≠进包≠完整开态 O。
+同名脚本冲突已拆开：默认命令始终指向 UI C01–C11；炼器原套件改为 `test:v06p1-smith-services-services-closed`，TS services 测试保留。其原 production-closed 图现在仅在 SSR 内存关闭 UiAccess 入口，其他隔离图继续独立测试路由和 Gate 关态；未改生产 Flag。炼器原证据保存在 `qa/out_v06p1_smith_services_services_closed/origin-dev-evidence.json`，本次复跑写独立 `evidence.json`。两侧报告目录均保留，本次只改界面接入侧报告/status。
 
-证据根：`qa/out_v06p1_smith_services_closed/`；主证据 `evidence.json`，汇总 `validation-summary.json`。下一棒：经理派执法 C01–C11；炼器43键/正式 Gate 适配独立合入；之后再按另令开态夹具与放行。本窗不声明完整运行销账。
+attr-ui closed 原脚本冻结 strings970，复跑使用已钉 SHA 的 loader，仅适配历史测试 SHA/count 与精确回剥43键证明；继续校验970→960原字节，不拦截产品模块或替换真实数据。命令、适配记录与零写入证据在 `qa/out_v06p1_smith_services_ui_merge1013/regressions/`。旧回归与历史 C/O 记录保留。
 
-实现提交文件列表（报告/status 随 docs-only 提交另附）：
+| 保护项 | SHA-256 / 结果 |
+|---|---|
+| enhance.json | `d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954` MATCH |
+| ForgeOpenFlag.ts | `0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e` MATCH |
+| EnhanceOpenFlag.ts | `d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e` MATCH |
+| EnchantOpenFlag.ts | `bd5445b8ddfed56a32811cedd28db72e8676c7a5eff321e2fedb0ec5fe4c505a` MATCH |
+| SalvageOpenFlag.ts | `69aace852957c52bf7ca0214345ede7df29d6d36ec1dfd4849462e54552edff3` MATCH |
+| Gate/Closed/Progress、SaveStore、data.ts、E/I、指定 balance | 39 个保护文件运行前后 SHA MATCH；GAME_PHASE=5 |
 
-- `package.json`
-- `qa/out_v06p1_smith_services_closed/evidence.json`
-- `qa/out_v06p1_smith_services_closed/regressions/attr-binding-success/evidence.json`
-- `qa/out_v06p1_smith_services_closed/regressions/attr-closed/evidence.json`
-- `qa/out_v06p1_smith_services_closed/regressions/attr-isolation.json`
-- `qa/out_v06p1_smith_services_closed/regressions/enchant-closed.log`
-- `qa/out_v06p1_smith_services_closed/regressions/enchant-open.log`
-- `qa/out_v06p1_smith_services_closed/regressions/enhance-closed.log`
-- `qa/out_v06p1_smith_services_closed/regressions/enhance-gate-runtime-isolated-evidence.json`
-- `qa/out_v06p1_smith_services_closed/regressions/enhance-gate-runtime-isolated.log`
-- `qa/out_v06p1_smith_services_closed/regressions/enhance-isolated-runtime.mjs`
-- `qa/out_v06p1_smith_services_closed/regressions/enhance-open.log`
-- `qa/out_v06p1_smith_services_closed/regressions/forge-closed.log`
-- `qa/out_v06p1_smith_services_closed/regressions/forge-open.log`
-- `qa/out_v06p1_smith_services_closed/regressions/gate-runtime-evidence.json`
-- `qa/out_v06p1_smith_services_closed/regressions/gate-runtime-retry.log`
-- `qa/out_v06p1_smith_services_closed/regressions/gate-runtime.log`
-- `qa/out_v06p1_smith_services_closed/regressions/gate-runtime.mjs`
-- `qa/out_v06p1_smith_services_closed/regressions/salvage-closed.log`
-- `qa/out_v06p1_smith_services_closed/regressions/salvage-open.log`
-- `qa/out_v06p1_smith_services_closed/validation-summary.json`
-- `scripts/v06p1-enchant-closed-test.mjs`
-- `scripts/v06p1-enchant-open-test.mjs`
-- `scripts/v06p1-enchant-soft-open-compat-proof.mjs`
-- `scripts/v06p1-enhance-closed-test.mjs`
-- `scripts/v06p1-enhance-open-test.mjs`
-- `scripts/v06p1-forge-closed-test.mjs`
-- `scripts/v06p1-forge-open-test.mjs`
-- `scripts/v06p1-salvage-open-test.mjs`
-- `scripts/v06p1-salvage-soft-open-compat-proof.mjs`
-- `scripts/v06p1-smith-services-closed-test.mjs`
-- `scripts/v06p1-smith-services-scene-compat.mjs`
-- `src/SmithServicesController.ts`
-- `src/SmithServicesPanel.ts`
-- `src/SmithServicesUiAccess.ts`
-- `src/scenes/GameScene.ts`
-- `src/v06p1-enchant-open.test.ts`
-- `src/v06p1-enhance-open.test.ts`
-- `src/v06p1-forge-open.test.ts`
-- `src/v06p1-salvage-open.test.ts`
+`smithServicesUiWired:true`；`productionIgnoresSsrInjection:true`；`productionServicesRoutesAccessible:true`；`newOpenFlag:false`；`settlementUnchanged:true`；`softOpenedSmithServicesUi:false`；`released:false`。enhance、四 Flag、Gate/结算/收据均未改，未接阵法/gifts/#20。
+
+主证据：`qa/out_v06p1_smith_services_closed/evidence.json`；汇总：同目录 `validation-summary.json`。本次交付阻断项：无。**待经理派执法 C01–C11**；本窗自检不代执法结论，未代勾历史 C/O，未执行 design/32 O01–O11 全表。**≠开态O ≠soft-open ≠release ≠进包**。未通知其他 bot，未 fan-out 执法。
