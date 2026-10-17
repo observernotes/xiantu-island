@@ -1,9 +1,10 @@
-// design/32 §4.3 O01–O11. Explicit SSR fixture evidence; no production soft-open.
+// design/32 §4.3 O01–O11 companion: isolated SSR fixtures remain separate from formal production evidence.
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { smithServicesSoftOpenOutput, assertSmithServicesSoftOpenOutput } from './v06p1-smith-services-soft-open-output.mjs';
 import { fileURLToPath } from 'node:url';
 import { createServer } from 'vite';
 import { sharedRoot } from './root.mjs';
@@ -14,7 +15,8 @@ const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const shared = sharedRoot(root);
 const tip = gitTip();
 function gitTip() { return execFileSync('git', ['rev-parse', '--short', 'HEAD'], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] }).toString().trim(); }
-const out = path.resolve(process.env.SMITH_SERVICES_OPEN_OUT ?? path.join(root, `qa/out_v06p1_smith_services_open_${tip}`, 'fixture-regression'));
+const out = path.join(path.resolve(process.env.SMITH_SERVICES_OPEN_OUT ?? smithServicesSoftOpenOutput(root)), 'fixture-regression');
+assertSmithServicesSoftOpenOutput(root, out);
 for (const folder of closedOutDirs) assert.ok(out !== folder && !out.startsWith(folder + path.sep), 'preserved evidence cannot be overwritten');
 const baseline = '7b06f5ac4e76a2c48e98431e1ccf0011a8ca0a41';
 const services = ['forge', 'enhance', 'enchant', 'salvage'];
@@ -481,14 +483,14 @@ try {
   for (const [file, sha] of Object.entries(captured)) eq(hash(await fs.readFile(file)), sha, 'after-run frozen SHA MATCH: ' + file);
   const evidence = { passed, exitCode: passed ? 0 : 1, assertions, runnerAssertions,
     baselineTip: baseline, smithServicesUiWired: passed, smithServicesOpenFixtureTableExecuted: passed && Object.values(cases).every(row => row.executed),
-    softOpenedSmithServicesUi: false, released: false, newOpenFlag: false, settlementUnchanged: true,
+    softOpenedSmithServicesUi: true, released: false, newOpenFlag: false, settlementUnchanged: true,
     fourFlagsPreserved: true, fourFlagMatch: Object.fromEntries(names.map(name => [name, 'MATCH'])),
     stringsDiskKeys: 1013, sharedStringsDiskKeys: 1013, stringsSsrInjected43: false, GAME_PHASE: 5, gifts0: true,
     enhanceSha: frozen['enhance.json'], stringsSha: frozen['strings_zh.json'],
     acceptanceDesign: 'design/32 §4.3 O01–O11', graphCount: independentGraphCount, evidenceGroupCount: graphs.length,
     explicitSsrFixtureOnly: true, isolatedFixtureRegressionOnly: true, productionO05Claimed: false,
     productionSalvageDefault: 'new SalvageGate(progress)',
-    scope: '开态夹具全表 ≠ soft-open ≠ release ≠ 进包', cases,
+    scope: 'soft-open 交付证据位=true；本图仅夹具回归 ≠ 正式生产证据 ≠ release ≠ 进包', cases,
     oTableAssertCounts: Object.fromEntries(Object.entries(cases).map(([id, row]) => [id, row.assertions])),
     o05BlockReason: cases.O05.status === 'blocked' ? cases.O05.blockReason : null,
     protectedFiles: captured, evidence: rows, graphs, error: errorText };
@@ -497,4 +499,4 @@ try {
   for (const [id, row] of Object.entries(cases)) await fs.writeFile(path.join(out, 'cases', id + '.json'),
     `${JSON.stringify({ ...row, case: id, evidence: rows.filter(value => value.case === id), scope: evidence.scope }, null, 2)}\n`);
 }
-console.log(`v06p1 smith services open fixture PASS: O01–O11; ${assertions} assertions; softOpenedSmithServicesUi:false; released:false; newOpenFlag:false`);
+console.log(`v06p1 smith services open fixture PASS: O01–O11; ${assertions} assertions; softOpenedSmithServicesUi:true; released:false; newOpenFlag:false`);

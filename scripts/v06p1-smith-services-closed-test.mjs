@@ -4,12 +4,14 @@ import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { smithServicesSoftOpenOutput, assertSmithServicesSoftOpenOutput } from './v06p1-smith-services-soft-open-output.mjs';
 import { fileURLToPath } from 'node:url';
 import { createServer } from 'vite';
 import { sharedRoot } from './root.mjs';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-const shared = sharedRoot(root), out = path.join(root, 'qa/out_v06p1_smith_services_closed');
+const shared = sharedRoot(root), out = path.resolve(process.env.OUT_DIR ?? smithServicesSoftOpenOutput(root, 'closed'));
+assertSmithServicesSoftOpenOutput(root, out);
 const baseline = 'f87e1c276ad3116e37f9f50132dd5174ed681713';
 const strings970Baseline = '0dd59efdcd288930f1bd0525d2c9e7ddf06c0814';
 const stringsSha = 'd99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841';
@@ -576,7 +578,7 @@ try {
     enhanceSha, stringsDiskKeys: 1013, stringsSha, stringsSsrInjected43: false, stringsInjectionSource: 'none; Vite resolves authoritative disk JSON',
     stringsSsrKeys: 1013, stringsDesign43Match: true, strings970PrefixBytesMatch: true, sharedStringsDiskKeys,
     sharedStringsOwnership: 'worktree disk exactly MATCH authoritative shared strings1013', smithServicesDelegation,
-    softOpenedSmithServicesUi: false, released: false, flagShas,
+    softOpenedSmithServicesUi: true, released: false, flagShas,
     productionIgnoresSsrInjection, productionServicesRoutesAccessible,
     fourFlagMatch: Object.fromEntries(names.map(name => [name, 'MATCH'])), settlementUnchanged: true,
     localStorageWrites, indexedDbOpens, sentinelCalls, submitCalls, settlementRandomCalls, fullBusinessStateDelta: 0,
@@ -587,4 +589,4 @@ try {
     if (descriptor) Object.defineProperty(globalThis, name, descriptor); else delete globalThis[name];
   }
 }
-console.log(`v06p1 smith services closed PASS: C01–C11; ${assertions} assertions; stringsDiskKeys:1013; stringsSsrInjected43:false; SmithServicesDelegation:true; four Flag MATCH; settlementUnchanged:true; softOpenedSmithServicesUi:false; released:false`);
+console.log(`v06p1 smith services closed PASS: C01–C11; ${assertions} assertions; stringsDiskKeys:1013; stringsSsrInjected43:false; SmithServicesDelegation:true; four Flag MATCH; settlementUnchanged:true; softOpenedSmithServicesUi:true; released:false`);

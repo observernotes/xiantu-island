@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs/promises';
+import { readdirSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { sharedRoot } from './root.mjs';
@@ -22,15 +23,22 @@ export const flagShas = {
   Enchant: 'bd5445b8ddfed56a32811cedd28db72e8676c7a5eff321e2fedb0ec5fe4c505a',
   Salvage: '69aace852957c52bf7ca0214345ede7df29d6d36ec1dfd4849462e54552edff3',
 };
+const currentTip = execFileSync('git', ['rev-parse', '--short=7', 'HEAD'], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] }).toString().trim();
 export const closedOutDirs = [
-  path.join(root, 'qa/out_v06p1_smith_services_closed'),
-  path.join(shared, 'qa/out_v06p1_smith_services_closed_7b06f5a'),
-  path.join(shared, 'qa/out_v06p1_smith_services_closed'),
   ...[root, shared].flatMap(base => [
+    'qa/out_v06p1_smith_services_closed',
+    'qa/out_v06p1_smith_services_open_abff11d',
     'qa/out_v06p1_smith_services_open_9d00852',
+    'qa/out_v06p1_smith_services_open_ef99abb',
     'qa/out_v06p1_smith_services_open_fixture',
+    'qa/out_v06p1_smith_services_open_a1d645d',
     'qa/out_v06p1_smith_services_closed_7b06f5a',
   ].map(folder => path.join(base, folder))),
+  // Freeze pre-existing soft evidence too; the current tip may be rerun in its own out.
+  ...[root, shared].flatMap(base => readdirSync(path.join(base, 'qa'), { withFileTypes: true })
+    .filter(entry => entry.isDirectory() && /^out_v06p1_smith_services_soft(?:_open)?_[a-f0-9]+$/u.test(entry.name)
+      && entry.name !== `out_v06p1_smith_services_soft_${currentTip}`)
+    .map(entry => path.join(base, 'qa', entry.name))),
 ];
 export const authorizedDependencySources = ['src/ForgeGate.ts', 'src/EnhanceGate.ts', 'src/EnchantGate.ts',
   'src/SalvageGate.ts', 'src/Progress.ts', 'src/SaveStore.ts'];

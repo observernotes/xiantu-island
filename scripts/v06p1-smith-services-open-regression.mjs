@@ -4,14 +4,17 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { smithServicesSoftOpenOutput, assertSmithServicesSoftOpenOutput } from './v06p1-smith-services-soft-open-output.mjs';
 import { fileURLToPath } from 'node:url';
 import { spawn, execFileSync } from 'node:child_process';
-import { checkSettlement, authorizedDependencySources } from './v06p1-smith-services-open-protection.mjs';
+import { checkSettlement, authorizedDependencySources, closedOutDirs } from './v06p1-smith-services-open-protection.mjs';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const tip = execFileSync('git', ['rev-parse', '--short', 'HEAD'], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] }).toString().trim();
-const out = path.resolve(process.env.SMITH_SERVICES_OPEN_OUT ?? path.join(root, `qa/out_v06p1_smith_services_open_${tip}`));
-assert.ok(!/out_v06p1_smith_services_(?:open_(?:9d00852|fixture)|closed[^/]*)$/u.test(out), 'never overwrite preserved evidence');
+const out = path.resolve(process.env.SMITH_SERVICES_OPEN_OUT ?? smithServicesSoftOpenOutput(root));
+assertSmithServicesSoftOpenOutput(root, out);
+for (const preserved of closedOutDirs)
+  assert.ok(out !== preserved && !out.startsWith(preserved + path.sep), 'never overwrite preserved evidence');
 const audit = path.join(out, 'audit'), regression = path.join(out, 'regressions');
 const previous = path.join(root, 'qa/out_v06p1_smith_services_closed');
 const baselineTip = '7b06f5ac4e76a2c48e98431e1ccf0011a8ca0a41';
@@ -54,7 +57,7 @@ async function mapFiles(files) {
 }
 async function protectedArtifacts() {
   const folders = [path.join(root, 'qa'), path.join(root, 'data/art/sprites/_pending'),
-    path.join(root, 'dist-test'), '/workspace/xiantu/qa/out_v06p1_smith_services_closed_7b06f5a'];
+    path.join(root, 'dist-test'), ...closedOutDirs];
   const files = (await Promise.all(folders.map(filesUnder))).flat().filter(file => !file.startsWith(out + path.sep));
   for (const name of ['codex_launch.log', 'codex_prompt.txt']) {
     const file = path.join(out, name);
@@ -91,7 +94,8 @@ async function prepare() {
   for (const file of Object.keys(config.pins)) {
     const currentSha = hash(await fs.readFile(path.join(root, file)));
     const baselineSha = hash(execFileSync('git', ['show', baselineTip + ':' + file], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] }));
-    if (!/^src\/v06p1-(?:forge|enhance|enchant|salvage)-open\.test\.ts$/u.test(file))
+    if (file !== 'scripts/v06p1-smith-services-closed-test.mjs'
+      && !/^src\/v06p1-(?:forge|enhance|enchant|salvage)-open\.test\.ts$/u.test(file))
       assert.equal(currentSha, baselineSha, 'existing regression input matches authorized 7b06f5a: ' + file);
     if (currentSha !== config.pins[file]) pinUpdates.push({ file, historicalPin: config.pins[file], currentSha, baselineSha, baselineTip });
     config.pins[file] = currentSha;
@@ -99,6 +103,8 @@ async function prepare() {
   for (const name of names) {
     const file = 'scripts/' + name + '-test.mjs'; config.pins[file] = hash(await fs.readFile(path.join(root, file)));
   }
+  for (const file of ['scripts/v06p1-smith-services-services-closed-test.mjs',
+    'scripts/v06p1-smith-services-soft-open-output.mjs']) config.pins[file] = hash(await fs.readFile(path.join(root, file)));
   const currentScene = await fs.readFile(path.join(root, 'src/scenes/GameScene.ts'), 'utf8');
   assert.equal(hash(currentScene), hash(execFileSync('git', ['show', baselineTip + ':src/scenes/GameScene.ts'], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] })), 'current integrated scene matches authorized baseline exactly');
   const historicalScene = execFileSync('git', ['show', 'f87e1c276ad3116e37f9f50132dd5174ed681713:src/scenes/GameScene.ts'], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] }).toString();
@@ -222,10 +228,14 @@ export function isIgnoredGeneratedInput(key) {
       "filter(key => key.startsWith('wt:src/'))",
       "filter(key => key.startsWith('wt:src/') && !isIgnoredGeneratedInput(key))", 1);
   }
-  if (name === 'v06p1-smith-services-closed-test') {
-    replace('redirect closed C-table evidence without touching old output',
-      "out = path.join(root, 'qa/out_v06p1_smith_services_closed')",
-      'out = ' + JSON.stringify(path.join(out, 'v06p1-smith-services-closed')), 1);
+  // Updated closed runners honor OUT_DIR within this soft window directly.
+  if (name === 'v06p1-smith-services-services-closed-test') {
+    replace('pin authorized formal Gates before unchanged services-closed runtime assertions',
+      ${JSON.stringify("hash(git('show', `${baseline}:src/${name}Gate.ts`))")},
+      ${JSON.stringify("authorizedExpected(name + 'Gate.ts', hash(git('show', `${baseline}:src/${name}Gate.ts`)))")}, 1);
+    replace('pin authorized Progress and SaveStore before unchanged services-closed assertions',
+      ${JSON.stringify("hash(git('show', `${baseline}:src/${name}.ts`))")},
+      ${JSON.stringify("authorizedExpected(name + '.ts', hash(git('show', `${baseline}:src/${name}.ts`)))")}, 1);
   }
   if (name === 'v06p1-market-open-test')
     replace('redirect market-open evidence without touching old output',
@@ -409,8 +419,8 @@ async function protection() {
     ...(runnerLog && runnerLogBytes ? { runnerLog: { ...runnerLog, prefixMatch: runnerLogPrefixMatch, currentLength: runnerLogBytes.length,
       appendBytes: runnerLogBytes.length - runnerLog.prefixLength, excludedFromFullFileMatch: true,
       reason: 'The active codex runner appends this pre-existing launch log; original prefix remains byte-exact and this task never opens it for writing.' } } : {}),
-    artifactChanges, productChanges, tableChanges, softOpenedSmithServicesUi: false, released: false,
-    notSoftOpenReleasePack: true };
+    artifactChanges, productChanges, tableChanges, softOpenedSmithServicesUi: true, released: false,
+    notRelease: true, notReleasePack: true };
   await writeJson(path.join(out, 'delivery-protection-check.json'), row);
   console.log(JSON.stringify({ passed: row.passed, oldArtifactCount: row.oldArtifactCount,
     productionSourceCount: row.productionSourceCount, allTablesCount: row.allTablesCount,

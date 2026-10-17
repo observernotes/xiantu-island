@@ -3,12 +3,14 @@ import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { smithServicesSoftOpenOutput, assertSmithServicesSoftOpenOutput } from './v06p1-smith-services-soft-open-output.mjs';
 import { createServer } from 'vite';
 import { checkProtection, snapshotProtection, root, shared, implementationBaseline, expectedShas, flagShas, closedOutDirs } from './v06p1-smith-services-open-protection.mjs';
 
 const git = (...args) => execFileSync('git', args, { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] }).toString().trim();
 const tipFull = git('rev-parse', 'HEAD'), tip = git('rev-parse', '--short', 'HEAD');
-const out = path.resolve(process.env.SMITH_SERVICES_OPEN_OUT ?? process.env.OUT_DIR ?? path.join(root, `qa/out_v06p1_smith_services_open_${tip}`));
+const out = path.resolve(process.env.SMITH_SERVICES_OPEN_OUT ?? process.env.OUT_DIR ?? smithServicesSoftOpenOutput(root));
+assertSmithServicesSoftOpenOutput(root, out);
 for (const closed of closedOutDirs)
   assert.ok(out !== closed && !out.startsWith(`${closed}${path.sep}`), 'open evidence cannot overwrite a preserved closed out');
 const families = Object.keys(flagShas), services = ['forge', 'enhance', 'enchant', 'salvage'];
@@ -122,7 +124,7 @@ finally {
     allOpenCasesPassed: executionPassed && Object.values(cases).every(record => record.passed && !record.blocked),
     tip, tipFull, implementationBaseline, assertions: graphs.reduce((sum, graph) => sum + graph.assertions, 0),
     smithServicesUiWired: true, smithServicesOpenFixtureTableExecuted: executionPassed && Object.keys(cases).length === 11,
-    softOpenedSmithServicesUi: false, released: false, newOpenFlag: false,
+    softOpenedSmithServicesUi: true, released: false, newOpenFlag: false,
     settlementUnchanged: protection.passed === true, enhanceSha: expectedShas.enhance, flagShas,
     fourFlagsPreserved: protection.passed === true, fourFlagMatch: protection.fourFlagMatch,
     stringsDiskKeys: 1013, stringsSha: expectedShas.strings, stringsSsrInjected43: false, stringsSsrKeys: 1013,
@@ -134,6 +136,8 @@ finally {
     o05FormalProductionSuccess: executionPassed && graphs.filter(row => !row.invalidProtectMapping).every(row => row.cases.O05.evidence.o05FormalProductionSuccess === true),
     o09StaleForgeEnhanceBlocked: executionPassed && graphs.filter(row => !row.invalidProtectMapping).every(row => row.cases.O09.evidence.o09StaleForgeEnhanceBlocked === true),
     fixtureQualificationInjected: false, fixtureCarrierInstalled: false,
+    lostCompletedEnchant: !executionPassed || graphs.filter(row => !row.invalidProtectMapping)
+      .some(row => row.cases.O09.evidence.staleCrossObjectWritersBlocked.some(writer => writer.lostCompletedEnchant !== false)),
     singleGameSceneCurrentProgressBypassClaimed: false,
     ...(failure ? { error: String(failure.stack ?? failure) } : {}) };
   await fs.writeFile(path.join(out, 'protection-check.json'), `${JSON.stringify(protection, null, 2)}\n`);
@@ -141,6 +145,6 @@ finally {
   await fs.writeFile(path.join(out, 'evidence.json'), `${JSON.stringify(evidence, null, 2)}\n`);
   await fs.writeFile(path.join(out, 'O01_O11.json'), `${JSON.stringify({ executed: evidence.smithServicesOpenFixtureTableExecuted, allOpenCasesPassed: evidence.allOpenCasesPassed, cases, blocked }, null, 2)}\n`);
   console.log(JSON.stringify({ passed: executionPassed, tip, tipFull, oTable: Object.fromEntries(Object.entries(cases).map(([id, row]) => [id, row.blocked ? 'BLOCKED' : row.passed ? 'PASS' : 'FAIL'])),
-    softOpenedSmithServicesUi: false, released: false, newOpenFlag: false, outDir: out, blocked }));
+    softOpenedSmithServicesUi: true, released: false, newOpenFlag: false, outDir: out, blocked }));
 }
 if (failure) throw failure;

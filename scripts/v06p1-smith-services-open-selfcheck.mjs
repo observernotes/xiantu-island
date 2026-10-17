@@ -4,26 +4,30 @@ import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { smithServicesSoftOpenOutput, assertSmithServicesSoftOpenOutput } from './v06p1-smith-services-soft-open-output.mjs';
 import { fileURLToPath } from 'node:url';
 import { flagShas, expectedShas, closedOutDirs, checkSettlement } from './v06p1-smith-services-open-protection.mjs';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const git = (...args) => execFileSync('git', args, { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] }).toString().trim();
 const tipFull = git('rev-parse', 'HEAD'), tip = git('rev-parse', '--short', 'HEAD');
-const out = path.resolve(process.env.SMITH_SERVICES_OPEN_OUT ?? path.join(root, `qa/out_v06p1_smith_services_open_${tip}`));
+const out = path.resolve(process.env.SMITH_SERVICES_OPEN_OUT ?? smithServicesSoftOpenOutput(root));
+assertSmithServicesSoftOpenOutput(root, out);
 for (const preserved of closedOutDirs)
   assert.ok(out !== preserved && !out.startsWith(preserved + path.sep), 'selfcheck cannot write preserved evidence');
 const read = name => fs.readFile(path.join(out, name), 'utf8').then(JSON.parse);
-const [evidence, regressions, fixture, protection] = await Promise.all([
+const [evidence, regressions, fixture, protection, closed, servicesClosed, delivery] = await Promise.all([
   read('evidence.json'), read('regressions/regression-summary.json'),
   read('fixture-regression/evidence.json'), read('protection-check.json'),
+  read('regressions/v06p1-smith-services-closed/evidence.json'),
+  read('services-closed/evidence.json'), read('delivery-protection-check.json'),
 ]);
 const required = {
   passed: true, smithServicesUiWired: true, smithServicesOpenFixtureTableExecuted: true,
   allOpenCasesPassed: true, o05FormalProductionSuccess: true, o09StaleForgeEnhanceBlocked: true,
   productionFormalPath: true, fixtureQualificationInjected: false, fixtureCarrierInstalled: false,
-  singleGameSceneCurrentProgressBypassClaimed: false,
-  softOpenedSmithServicesUi: false, released: false, newOpenFlag: false,
+  singleGameSceneCurrentProgressBypassClaimed: false, lostCompletedEnchant: false,
+  softOpenedSmithServicesUi: true, released: false, newOpenFlag: false,
   settlementUnchanged: true, fourFlagsPreserved: true, closedOutUnchanged: true,
   stringsDiskKeys: 1013, stringsSsrKeys: 1013, stringsSsrInjected43: false,
   GAME_PHASE: 5, gifts0: true, giftsFalseCount: 10,
@@ -115,7 +119,23 @@ for (const row of regressions.results) assert.equal(row.exitCode, 0, `${row.name
 assert.equal(fixture.passed, true, 'fixture companion regression passed');
 assert.equal(fixture.isolatedFixtureRegressionOnly, true, 'fixture companion only supplies isolated regression');
 assert.equal(fixture.productionO05Claimed, false, 'fixture companion cannot authorize production O05');
-for (const key of ['softOpenedSmithServicesUi', 'released', 'newOpenFlag']) assert.equal(fixture[key], false, `fixture ${key}`);
+assert.equal(fixture.softOpenedSmithServicesUi, true, 'fixture records the authorized delivery evidence bit, independently of graph flags');
+for (const key of ['released', 'newOpenFlag']) assert.equal(fixture[key], false, `fixture ${key}`);
+
+// Delivery authorization is independent of the injected closed graph values.
+for (const [name, row] of [['closed', closed], ['services-closed', servicesClosed]]) {
+  for (const [key, expected] of Object.entries({ passed: true, softOpenedSmithServicesUi: true,
+    released: false, newOpenFlag: false, localStorageWrites: 0, indexedDbOpens: 0,
+    sentinelCalls: 0 })) assert.equal(row[key], expected, `${name} ${key}`);
+  assert.deepEqual(Object.keys(row.cases).sort(), Array.from({ length: 11 }, (_, i) => `C${String(i + 1).padStart(2, '0')}`), `${name} C01–C11 complete`);
+  for (const [id, value] of Object.entries(row.cases)) checkCase(value, `${name}/${id}`);
+}
+for (const key of ['submitCalls', 'settlementRandomCalls', 'fullBusinessStateDelta'])
+  assert.equal(closed[key], 0, `closed zero-write ${key}`);
+assert.equal(servicesClosed.storageWrites, 0, 'services-closed has zero service writes');
+assert.equal(delivery.passed, true, 'all source, table and historical artifact bytes preserved');
+for (const key of ['productionSourcesMatch', 'allTablesMatch', 'oldArtifactsMatch', 'flagMatch'])
+  assert.equal(delivery[key], true, `delivery ${key}`);
 
 const audits = await Promise.all(['tsc', 'datalint-shared', 'datalint-snapshot', 'diff-check'].map(async name => {
   const row = await read(`audit/${name}.result.json`);
@@ -167,6 +187,9 @@ const summary = {
   passed: true, completeOpenSuccess: true, generatedAt: new Date().toISOString(),
   tip, tipFull, evidenceTip: evidence.tip, evidenceTipFull: evidence.tipFull, outDir: out,
   evidenceFlags: required, allOpenCasesPassed: true, roots,
+  memoryClosed: { passed: true, closedAssertions: closed.assertions, servicesClosedAssertions: servicesClosed.assertions,
+    serviceWrites: 0, evidenceBitIsNotProductionFlag: true },
+  deliveryProtection: { passed: true, productionSourcesMatch: true, allTablesMatch: true, oldArtifactsMatch: true },
   openAssertions, fixtureRegressionAssertions, regressionAssertions,
   totalAssertionsLowerBound: openAssertions + fixtureRegressionAssertions + regressionAssertions,
   assertionCountPolicy: 'Counts come from current evidence and suite reports, never fixed constants. Missing printed counts contribute zero; v06b component totals omit unreported outer checks, so the total is a lower bound.',
@@ -175,10 +198,13 @@ const summary = {
   oTable: Object.fromEntries(caseIds.map(id => [id, { executed: true, passed: true, evidenceKeys: evidence.cases[id].evidenceKeys }])),
   fixtureCompanion: { passed: true, isolatedFixtureRegressionOnly: true, productionO05Claimed: false,
     evidence: 'fixture-regression/evidence.json', assertions: fixtureRegressionAssertions },
-  notSoftOpen: true, notRelease: true, notSoftOpenReleasePack: true,
-  scope: '本窗=正式分解依赖与跨 Progress CAS 补刀 ≠ soft-open ≠ release ≠ 进包；本窗不 fan-out 执法',
+  softOpenedSmithServicesUi: true, released: false, newOpenFlag: false, notRelease: true, notReleasePack: true,
+  scope: '本窗=完整炼器服务 UI soft-open preamble 程序自检；≠ release ≠ 进包 ≠ 发版；交接引子配合及独立执法 soft smoke，本窗不代执法、不 fan-out',
 };
 await fs.writeFile(path.join(out, 'selfcheck-summary.json'), JSON.stringify(summary, null, 2) + '\n');
+await fs.writeFile(path.join(out, 'validation.json'), JSON.stringify({ ...summary, ...required,
+  fourFlagMatch: evidence.fourFlagMatch, enhanceSha: evidence.enhanceSha, stringsSha: evidence.stringsSha }, null, 2) + '\n');
+await fs.writeFile(path.join(out, 'PASS'), 'PASS: authorized soft-open preamble selfcheck; independent enforcement soft smoke pending; not release or pack.\n');
 console.log(JSON.stringify({ passed: true, allOpenCasesPassed: true, openAssertions, fixtureRegressionAssertions,
   regressionAssertions, totalAssertionsLowerBound: summary.totalAssertionsLowerBound,
-  regressionSuites: regressions.results.length, notSoftOpen: true, notRelease: true, outDir: out }));
+  regressionSuites: regressions.results.length, softOpenedSmithServicesUi: true, released: false, newOpenFlag: false, notRelease: true, outDir: out }));
