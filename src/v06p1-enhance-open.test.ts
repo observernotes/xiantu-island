@@ -465,6 +465,7 @@ export async function runEnhanceOpenFixtureTests(options: {
     ok(recipe, 'O01使用正式recipes已有打造行');
     let forgeSequence = 0, forgeSamples = 0;
     const productionOptions = () => ({ random: () => { sampleCount++; return sampled; } });
+    eq(Object.prototype.hasOwnProperty.call(productionOptions(), 'fixtureInstances'), false, 'O01正式O表强化选项不注入fixtureInstances');
     function prepare() {
       const p = new Progress(); progresses.push(p); p.stones = 100000;
       p.inventory = { [recipe.blueprint!]: 10, refine_stone: 100, spirit_copper: 10, rabbit_fur: 7 };
@@ -483,6 +484,8 @@ export async function runEnhanceOpenFixtureTests(options: {
       eq(f.p.enhance!.instances, [{ instanceRef: ref, itemId: result.result.resultItem.itemId, type: 'weapon', enhanceLevel: 0 }],
         'O01成品按ITEMS槽映射登记，初始等级0');
       eq(f.p.formalEnhanceInstances(), f.p.enhance!.instances, 'O01本档来源证明授权登记实例');
+      eq(f.p.formalEnhanceInstanceStatus(ref), 'registered', 'O01完整打造成品取得本档正式来源状态');
+      eq(f.p.enhance!.formalSources!.map(source => source.instanceRef), [ref], 'O01来源证明精确绑定同次打造成品身份');
       eq(idb.writes, writes + 1, 'O01打造入库与正式实例登记同一次IDB写入');
       const disk = (await saveStore.readSlot(Progress.getActiveSlot()))!.data;
       eq(disk.forge, f.p.forge, 'O01磁盘完整打造结果同次可见');
@@ -545,6 +548,7 @@ export async function runEnhanceOpenFixtureTests(options: {
     for (const row of enhance.levels) {
       const input = request(`formal-success-${row.to}`, row.to - 1, success.ref), before = success.p.exportSave(),
         writes = idb.writes, samples = sampleCount;
+      const sources = copy(success.p.enhance!.formalSources);
       sampled = 0; const result = committed(await success.gate.submit(input));
       eq(result.instanceRef, success.ref, 'O02正式成功始终保留原打造身份');
       eq(result.success, true, 'O02无fixture正式路径成功');
@@ -559,6 +563,7 @@ export async function runEnhanceOpenFixtureTests(options: {
         'O02实例身份和最终等级同次更新');
       eq([idb.writes, sampleCount], [writes + 1, samples + 1], 'O02一次完整提交一次抽样');
       eq(success.p.enhance!.receipts.length, row.to, 'O02每次结果唯一去重');
+      eq(success.p.enhance!.formalSources, sources, 'O02强化结算保留原正式来源证明，不另造或替换身份');
       eq(experience(success.p), [before.forgingLevel, before.forgingExp], 'O02不改变品质和生活技能经验');
       await replay(success.p, new EnhanceGate(success.p), input, 'O07正式成功旧请求只读去重');
       if (row.to === 7) formalPayloads.push({ state: 'formal-success', save: success.p.exportSave(),
@@ -949,9 +954,9 @@ export async function runEnhanceOpenFixtureTests(options: {
     eq(featureFlags(), flags, 'features原值保持不变'); eq(JSON.stringify(enhance), tableBefore, 'enhance内存表未修改');
     eq(localWrites, 0, '真实IDB保存无localStorage写旁路');
     return { assertions, payloads, openFixture, graph: openFixture ? 'formal-open' : 'memory-closed',
-      formalOpen: true, closedFixtureOnly: true, softOpened: true, softOpenedEntrance: true,
+      formalOpen: true, closedFixtureOnly: true, softOpened: true, softOpenedEntrance: true, softOpenedFormalSettle: true,
       formalTipsWired: true, formalInstanceSource: true, released: false,
-      compatibilityMeaning: 'formalOpen/softOpened 仅沿用入口状态；实例源已接线 ≠ soft-open 进包',
+      compatibilityMeaning: 'formalOpen/softOpened 表示正式实例源 soft-open；PASS≠进包≠发版',
       sceneSmoke: sceneSmokeEvidence, defaultGateDenied: defaultGateEvidence, formalRefusals: formalRefusalEvidence,
       formalInstances: formalInstanceEvidence,
       storageWrites: idb.writes, commits: idb.commits, sampleCount,
