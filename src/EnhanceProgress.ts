@@ -1,10 +1,18 @@
 export type EnhanceEquipmentType = 'weapon' | 'armor';
-/** 仅测试夹具拥有的装备引用；不定义正式装备实例系统。 */
+/** 装备引用的最小等级记录；此记录本身不证明正式来源，夹具仍须显式授权。 */
 export interface EnhanceFixtureInstance {
   instanceRef: string;
   itemId: string;
   type: EnhanceEquipmentType;
   enhanceLevel: number;
+}
+/** 仅由本档完整正式打造结果登记；历史 instances 记录不能自行获得此来源证明。 */
+export interface FormalEnhanceSource {
+  instanceRef: string;
+  source: 'forge';
+  forgeLedgerId: string;
+  craftResultRef: string;
+  ownerSlot: 1 | 2 | 3;
 }
 /** 相对基础属性的只读增量；allRatio 单列已达到的正式里程碑。 */
 export interface EnhanceAttributes {
@@ -31,18 +39,20 @@ export interface EnhanceResult {
   finalLevel: number;
   attributes: EnhanceAttributes;
 }
-/** 只保存完整结果和当前夹具等级；没有 pending 状态或读档补做。 */
+/** 只保存完整结果、当前等级及可选正式来源；没有 pending 状态或读档补做。 */
 export interface EnhanceProgress {
   version: 1;
   ledgerId: string;
   instances: EnhanceFixtureInstance[];
   enhancements: EnhanceResult[];
   receipts: string[];
+  /** 旧袋缺字段保持原样；仅 instances 不授权生产新 submit。 */
+  formalSources?: FormalEnhanceSource[];
 }
 export const isEnhanceId = (value: unknown): value is string => typeof value === 'string'
   && /^[a-zA-Z][\w.-]{0,127}$/.test(value) && !['__proto__', 'prototype', 'constructor'].includes(value);
 export const isEnhanceInstanceRef = (value: unknown): value is string => typeof value === 'string'
-  && /^[a-zA-Z][\w.:-]{0,255}$/.test(value) && !['__proto__', 'prototype', 'constructor'].includes(value);
+  && /^[a-zA-Z][\w.:-]{0,267}$/.test(value) && !['__proto__', 'prototype', 'constructor'].includes(value);
 export const enhanceFields = (value: unknown, keys: readonly string[]): value is Record<string, unknown> => !!value
   && typeof value === 'object' && !Array.isArray(value) && [Object.prototype, null].includes(Object.getPrototypeOf(value))
   && keys.every(key => Object.prototype.hasOwnProperty.call(value, key))
@@ -73,10 +83,25 @@ export function isValidEnhanceAttributes(value: unknown): value is EnhanceAttrib
 /** 纯结构检查：不读配置、不写盘；未知状态、破链和歧义不猜 empty、不修复。 */
 export function isValidEnhanceProgress(value: unknown): value is EnhanceProgress {
   try {
-    if (!enhanceFields(value, ['version', 'ledgerId', 'instances', 'enhancements', 'receipts'])
+    const hasSources = !!value && typeof value === 'object' && Object.prototype.hasOwnProperty.call(value, 'formalSources');
+    if (!enhanceFields(value, ['version', 'ledgerId', 'instances', 'enhancements', 'receipts', ...(hasSources ? ['formalSources'] : [])])
       || value.version !== 1 || !isEnhanceId(value.ledgerId) || !isValidEnhanceInstances(value.instances)
       || !enhanceArray(value.enhancements) || !enhanceArray(value.receipts)
       || value.enhancements.length !== value.receipts.length) return false;
+    const formalRefs = new Set<string>();
+    if (hasSources) {
+      if (!enhanceArray(value.formalSources)) return false;
+      for (const source of value.formalSources) {
+        if (!enhanceFields(source, ['instanceRef', 'source', 'forgeLedgerId', 'craftResultRef', 'ownerSlot'])
+          || source.source !== 'forge' || !isEnhanceInstanceRef(source.instanceRef) || formalRefs.has(source.instanceRef)
+          || !isEnhanceId(source.forgeLedgerId) || !isEnhanceInstanceRef(source.craftResultRef)
+          || !source.craftResultRef.startsWith(`${source.forgeLedgerId}:craft:`)
+          || !isEnhanceId(source.craftResultRef.slice(`${source.forgeLedgerId}:craft:`.length))
+          || source.instanceRef !== `${source.craftResultRef}:item` || ![1, 2, 3].includes(source.ownerSlot as number)
+          || !value.instances.some(instance => instance.instanceRef === source.instanceRef)) return false;
+        formalRefs.add(source.instanceRef);
+      }
+    }
     const requests = new Set<string>(), refs = new Set<string>(), levels = new Map<string, number>();
     for (const row of value.enhancements) {
       if (!enhanceFields(row, ['state', 'enhanceRequestId', 'enhanceResultRef', 'instanceRef', 'itemId', 'type',
@@ -91,11 +116,13 @@ export function isValidEnhanceProgress(value: unknown): value is EnhanceProgress
         || !isValidEnhanceAttributes(row.attributes)) return false;
       const instance = value.instances.find(other => other.instanceRef === row.instanceRef);
       if (!instance || instance.itemId !== row.itemId || instance.type !== row.type
+        || formalRefs.has(row.instanceRef) && !levels.has(row.instanceRef) && row.fromLevel !== 0
         || levels.has(row.instanceRef) && levels.get(row.instanceRef) !== row.fromLevel) return false;
       levels.set(row.instanceRef, row.finalLevel);
       requests.add(row.enhanceRequestId); refs.add(row.enhanceResultRef as string);
     }
-    return value.instances.every(row => !levels.has(row.instanceRef) || levels.get(row.instanceRef) === row.enhanceLevel)
+    return value.instances.every(row => levels.has(row.instanceRef) ? levels.get(row.instanceRef) === row.enhanceLevel
+      : !formalRefs.has(row.instanceRef) || row.enhanceLevel === 0)
       && value.receipts.every(ref => typeof ref === 'string' && refs.delete(ref)) && refs.size === 0;
   } catch { return false; }
 }

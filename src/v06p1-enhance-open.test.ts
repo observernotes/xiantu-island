@@ -1,5 +1,6 @@
 // 正式强化恒开；只有独立 Vite SSR 关态图可将 EnhanceOpenFlag 内存注入 false。
 import enhance from '@xt/balance/enhance.json';
+import recipes from '@xt/balance/recipes.json';
 import strings from '@xt/balance/strings_zh.json';
 import { GAME_PHASE, ITEMS } from './data';
 import { featureEnabled, featureFlags } from './features';
@@ -7,11 +8,12 @@ import { Progress } from './Progress';
 import { createIndexedDbBackend, saveStore, setSaveBackend } from './SaveStore';
 import * as Closed from './EnhanceClosed';
 import { EnhanceGate } from './EnhanceGate';
+import { ForgeGate } from './ForgeGate';
 import { isEnhanceOpenForFixture } from './EnhanceOpenFlag';
-import { isValidEnhanceProgress } from './EnhanceProgress';
+import { isEnhanceInstanceRef, isValidEnhanceProgress } from './EnhanceProgress';
 import { GameScene } from './scenes/GameScene';
 
-type Payload = { state: string; save: Record<string, unknown>; enhanceRequestId: string };
+type Payload = { state: string; save: Record<string, unknown>; enhanceRequestId: string; formalInstanceSource?: boolean };
 type GateResult = Awaited<ReturnType<EnhanceGate['submit']>>;
 /** 只替换存储介质：真实 IDB 后端仍须等待 transaction.complete 才能发布进度。 */
 function memoryIndexedDb() {
@@ -342,7 +344,7 @@ export async function runEnhanceOpenFixtureTests(options: {
     const { p: missingSelection, gate: selectionGate } = fixture();
     await formalUnchanged(missingSelection, () => selectionGate.enhance(), 'no_instance', 'C02缺selection不授权');
 
-    // C03仅抽检现有显式夹具的所有权边界；正式跨档实例源schema尚未实现。
+    // C03保留显式夹具所有权边界；正式跨档来源另由 O08 实测。
     const foreign = fixture(); delete foreign.p.inventory.bamboo_sword;
     await formalUnchanged(foreign.p, () => foreign.gate.enhance(request('foreign-preview')), 'foreign', 'C03授权实例非本档持有拒绝预览');
     await formalUnchanged(foreign.p, () => foreign.gate.submit(request('foreign-submit')), 'foreign', 'C03授权实例非本档持有拒绝提交');
@@ -415,7 +417,7 @@ export async function runEnhanceOpenFixtureTests(options: {
     return { cases: ['C01', 'C02', 'C03', 'C04', 'C05', 'C06', 'C07', 'C09'],
       formalTipTextFromStrings: true, zeroSideEffects: true, noTransactionOrDeferredQueue: true,
       foreignFixtureBoundaries: ['owned-item-absent', 'history-identity-mismatch'],
-      crossSlotProductionSchemaImplemented: false, historicalBagAuthorizesSubmit: false };
+      crossSlotProductionSchemaImplemented: true, historicalBagAuthorizesSubmit: false };
   }
   async function roundtrip(payload: Payload) {
     const p = fixture().p;
@@ -437,7 +439,7 @@ export async function runEnhanceOpenFixtureTests(options: {
     eq('progress' in refreshed ? refreshed.progress : null, loaded.enhance, `C08${payload.state}：返回完整只读历史`);
     eq('replayed' in refreshed ? refreshed.replayed : false, true, `C08${payload.state}：读档去重只读标识`);
     const result = committed(gate.level(payload.enhanceRequestId));
-    eq(result, loaded.enhance!.enhancements[0], `${payload.state}：等级结果只读一致`);
+    eq(result, loaded.enhance!.enhancements.find(row => row.enhanceRequestId === payload.enhanceRequestId), `${payload.state}：等级结果只读一致`);
     eq(committed(gate.consume(payload.enhanceRequestId)), result, `${payload.state}：费用结果同次一致`);
     eq(loaded.exportSave(), before, `${payload.state}：读回不重复改级`);
     eq(idb.writes, writes, `${payload.state}：读回零写`); eq(sampleCount, samples, `${payload.state}：读回不重抽`);
@@ -448,15 +450,261 @@ export async function runEnhanceOpenFixtureTests(options: {
     const conflict = await formalUnchanged(loaded,
       () => gate.submit(request(payload.enhanceRequestId, result.fromLevel, 'different-instance')), 'duplicate', `C08${payload.state}：旧请求载荷冲突拒绝`);
     eq('result' in conflict && conflict.result !== undefined, false, `C08${payload.state}：载荷冲突不冒认旧结果`);
-    await formalUnchanged(loaded, () => gate.submit(request('fresh-without-authorization', result.finalLevel, result.instanceRef)),
-      'no_instance', `C02/C08${payload.state}：完整历史袋不授权新submit`);
+    if (payload.formalInstanceSource) {
+      const samples = sampleCount, writes = idb.writes, before = loaded.exportSave();
+      ok(gate.enhance(request('fresh-formal-preview', result.finalLevel, result.instanceRef)).allowed,
+        `O05${payload.state}：同档正式来源在全新Gate仍可选择下一档`);
+      eq(loaded.exportSave(), before, 'O05正式重新选择只读保留原身份和完整结果');
+      eq([sampleCount, idb.writes], [samples, writes], 'O05正式重新选择不重抽不扣费');
+    } else await formalUnchanged(loaded, () => gate.submit(request('fresh-without-authorization', result.finalLevel, result.instanceRef)),
+      'no_instance', `C02/C08${payload.state}：完整历史夹具袋不授权新submit`);
+  }
+  /** 正式 O 表：只从默认 ForgeGate 的完整成品登记取实例，强化从不注入 fixtureInstances。 */
+  async function formalInstanceCases() {
+    const recipe = recipes.recipes.find(row => row.type === 'forge' && row.output === 'bamboo_sword')!;
+    ok(recipe, 'O01使用正式recipes已有打造行');
+    let forgeSequence = 0, forgeSamples = 0;
+    const productionOptions = () => ({ random: () => { sampleCount++; return sampled; } });
+    function prepare() {
+      const p = new Progress(); progresses.push(p); p.stones = 100000;
+      p.inventory = { [recipe.blueprint!]: 10, refine_stone: 100, spirit_copper: 10, rabbit_fur: 7 };
+      const forge = new ForgeGate(p, { random: () => { forgeSamples++; return 0; },
+        ledgerId: () => `${dataMode}-formal-forge-${++forgeSequence}` });
+      const craft = (id: string) => forge.submit({ craftRequestId: id, blueprintId: recipe.blueprint!,
+        materials: recipe.materials.map(row => ({ itemId: row.item, count: row.count })) });
+      return { p, forge, craft };
+    }
+    async function crafted(id: string) {
+      const f = prepare(), writes = idb.writes, result = await f.craft(id);
+      ok(result.allowed && result.result, 'O01默认正式ForgeGate返回完整committed成品');
+      eq(result.result.state, 'committed', 'O01未完成打造不作正式源');
+      const ref = result.result.resultItem.instanceRef;
+      eq(ref, `${result.result.craftResultRef}:item`, 'O01身份严格来自打造完整结果');
+      eq(f.p.enhance!.instances, [{ instanceRef: ref, itemId: result.result.resultItem.itemId, type: 'weapon', enhanceLevel: 0 }],
+        'O01成品按ITEMS槽映射登记，初始等级0');
+      eq(f.p.formalEnhanceInstances(), f.p.enhance!.instances, 'O01本档来源证明授权登记实例');
+      eq(idb.writes, writes + 1, 'O01打造入库与正式实例登记同一次IDB写入');
+      const disk = (await saveStore.readSlot(Progress.getActiveSlot()))!.data;
+      eq(disk.forge, f.p.forge, 'O01磁盘完整打造结果同次可见');
+      eq(disk.enhance, f.p.enhance, 'O01磁盘正式实例及来源同次可见');
+      return { ...f, ref, gate: new EnhanceGate(f.p, productionOptions()) };
+    }
+    const selected = await crafted('formal-select-one'), second = await selected.craft('formal-select-two');
+    ok(second.allowed && second.result, 'O01同原型第二件实际打造成品');
+    const secondRef = second.result.resultItem.instanceRef;
+    ok(selected.ref !== secondRef, 'O01同原型两件有不同打造身份');
+    const beforeSelect = selected.p.exportSave(), selectWrites = idb.writes, selectSamples = sampleCount;
+    for (const ref of [selected.ref, secondRef]) {
+      const preview = new EnhanceGate(selected.p).enhance(request(`select-${ref.length}`, 0, ref));
+      ok(preview.allowed && preview.instance, 'O01默认无fixtureInstances可选本档正式实例');
+      eq(preview.instance.instanceRef, ref, 'O01选择同原型特定件不混认');
+    }
+    eq(selected.p.exportSave(), beforeSelect, 'O01正式选择不写实例、费用和结果');
+    eq([idb.writes, sampleCount], [selectWrites, selectSamples], 'O01正式选择零写零抽样');
+    // equip 仍是 slot→itemId；只移动数量及位置，不从槽位生成或改写实例身份。
+    selected.p.inventory.bamboo_sword -= 1; selected.p.equip.weapon = 'bamboo_sword';
+    const registered = copy(selected.p.enhance!.instances);
+    for (const ref of [selected.ref, secondRef])
+      ok(new EnhanceGate(selected.p).enhance(request('formal-equipped-preview', 0, ref)).allowed, 'O01背包+合法装备槽可承载已登记两件');
+    eq(selected.p.enhance!.instances, registered, 'O01移入装备槽保持两件原instanceRef');
+    selected.p.inventory.bamboo_sword += 1; delete selected.p.equip.weapon;
+    eq(selected.p.enhance!.instances, registered, 'O01移回背包保持原登记不创建身份');
+    await formalUnchanged(selected.p, () => new EnhanceGate(selected.p, fixtureOptions([]))
+      .submit(request('formal-no-fixture-fallback', 0, selected.ref)), 'no_instance', 'O01显式空测试授权不回退正式来源');
+    await formalUnchanged(selected.p, () => new EnhanceGate(selected.p, fixtureOptions())
+      .submit(request('formal-fixture-only', 0, selected.ref)), 'no_instance', 'O01显式测试授权集不偷用正式实例');
+    await formalUnchanged(selected.p, () => new EnhanceGate(selected.p, fixtureOptions(copy(selected.p.enhance!.instances)))
+      .submit(request('formal-fixture-cannot-mutate', 0, selected.ref)), 'no_instance', 'O01夹具即使显式复制正式ref也不能改正式实例');
+    sampled = 0;
+    committed(await selected.gate.submit(request('formal-one-of-two', 0, selected.ref)));
+    eq(selected.p.enhance!.instances.map(row => [row.instanceRef, row.enhanceLevel]), [[selected.ref, 1], [secondRef, 0]],
+      'O01/O02强化一件不改同原型第二件');
+    const longSource = prepare(), longId = 'r'.repeat(128), longLedger = 'l'.repeat(128);
+    const longResult = await new ForgeGate(longSource.p, { random: () => 0, ledgerId: () => longLedger }).submit({
+      craftRequestId: longId, blueprintId: recipe.blueprint!,
+      materials: recipe.materials.map(row => ({ itemId: row.item, count: row.count })),
+    });
+    ok(longResult.allowed && longResult.result, 'O01合法Forge最大长度身份同事务登记');
+    eq(longResult.result.resultItem.instanceRef.length, 268, 'O01 ledger128+request128的完整成品ref长度268');
+    ok(new EnhanceGate(longSource.p).enhance(request('formal-long-ref', 0, longResult.result.resultItem.instanceRef)).allowed,
+      'O01合法最长Forge成品无需fixture可选');
+    eq(isEnhanceInstanceRef(`${longResult.result.resultItem.instanceRef}x`), false, 'O06拒269字符非法instanceRef');
+    const injected = prepare(), fixtureRecipe = { blueprintId: recipe.blueprint!, blueprintCount: 1,
+      materials: [{ itemId: 'spirit_copper', count: 2 }, { itemId: 'refine_stone', count: 1 }], resultItemId: recipe.output! };
+    const injectedResult = await new ForgeGate(injected.p, { fixtureRecipes: [fixtureRecipe], random: () => 0,
+      ledgerId: () => `${dataMode}-fixture-forge-source` }).submit({ craftRequestId: 'fixture-cannot-register',
+      blueprintId: fixtureRecipe.blueprintId, materials: copy(fixtureRecipe.materials) });
+    ok(injectedResult.allowed && injectedResult.result, 'O08保留显式Forge夹具成功能力');
+    eq(injected.p.enhance, undefined, 'O08夹具Forge完整结果不自动登记正式来源');
+    eq(injected.p.registerFormalEnhanceInstance(injectedResult.result), false, 'O08非正式配方的历史夹具结果不能调用登记API升格');
+    const fixtureRef = injectedResult.result.resultItem.instanceRef;
+    await formalUnchanged(injected.p, () => new EnhanceGate(injected.p).submit(request('fixture-source-denied', 0, fixtureRef)),
+      'no_instance', 'O08Forge夹具完整结果形如正式ref仍不授权生产强化');
+
+    const formalPayloads: Payload[] = [], success = await crafted('formal-success-source');
+    for (const row of enhance.levels) {
+      const input = request(`formal-success-${row.to}`, row.to - 1, success.ref), before = success.p.exportSave(),
+        writes = idb.writes, samples = sampleCount;
+      sampled = 0; const result = committed(await success.gate.submit(input));
+      eq(result.instanceRef, success.ref, 'O02正式成功始终保留原打造身份');
+      eq(result.success, true, 'O02无fixture正式路径成功');
+      eq({ to: result.to, rate: result.rate, stones: result.stones, refineStones: result.refineStones, dropOnFail: result.dropOnFail }, row,
+        'O02只读正式enhance唯一next行');
+      eq(result.finalLevel, row.to, 'O02成功升至to'); eq(result.attributes, attributes('weapon', row.to), 'O02最终属性一次按正式表求得');
+      eq(success.p.stones, Number(before.stones) - row.stones, 'O02费用同次扣一次');
+      eq(success.p.count('refine_stone'), Number((before.inventory as Record<string, number>).refine_stone) - row.refineStones,
+        'O02精炼石同次扣一次且不依赖护符映射');
+      eq(success.p.count('bamboo_sword'), 1, 'O02不替换原装不碎装');
+      eq(success.p.enhance!.instances[0], { instanceRef: success.ref, itemId: 'bamboo_sword', type: 'weapon', enhanceLevel: row.to },
+        'O02实例身份和最终等级同次更新');
+      eq([idb.writes, sampleCount], [writes + 1, samples + 1], 'O02一次完整提交一次抽样');
+      eq(success.p.enhance!.receipts.length, row.to, 'O02每次结果唯一去重');
+      eq(experience(success.p), [before.forgingLevel, before.forgingExp], 'O02不改变品质和生活技能经验');
+      await replay(success.p, new EnhanceGate(success.p), input, 'O07正式成功旧请求只读去重');
+      if (row.to === 7) formalPayloads.push({ state: 'formal-success', save: success.p.exportSave(),
+        enhanceRequestId: input.enhanceRequestId, formalInstanceSource: true });
+    }
+    await formalUnchanged(success.p, () => success.gate.submit(request('formal-at-max', enhance.maxLevel, success.ref)),
+      'max_level', 'O06正式满级不外推+13');
+    for (const target of [5, 6]) {
+      const f = await crafted(`formal-failure-source-${target}`);
+      for (let from = 0; from < target - 1; from++) {
+        sampled = 0; committed(await f.gate.submit(request(`formal-prepare-${target}-${from}`, from, f.ref)));
+      }
+      const before = f.p.exportSave(), writes = idb.writes, samples = sampleCount, row = enhance.levels.find(row => row.to === target)!;
+      sampled = 0.999999; const input = request(`formal-failure-${target}`, target - 1, f.ref), result = committed(await f.gate.submit(input));
+      const finalLevel = target <= 5 ? target - 1 : target - 2;
+      eq(result.success, false, 'O03正式正常概率失败完整提交'); eq(result.finalLevel, finalLevel, 'O03目标≤5不掉/≥6掉1');
+      eq(result.instanceRef, f.ref, 'O03失败保留原instanceRef'); eq(result.attributes, attributes('weapon', finalLevel), 'O03属性按最终等级一致');
+      eq(f.p.stones, Number(before.stones) - row.stones, 'O03失败照扣本次灵石');
+      eq(f.p.count('refine_stone'), Number((before.inventory as Record<string, number>).refine_stone) - row.refineStones, 'O03失败照扣本次精炼石');
+      eq(f.p.count('bamboo_sword'), 1, 'O03失败不碎装');
+      eq([idb.writes, sampleCount], [writes + 1, samples + 1], 'O03失败结果费用等级去重同次提交');
+      await replay(f.p, new EnhanceGate(f.p), input, 'O07正式失败旧请求只读去重');
+      formalPayloads.push({ state: target === 5 ? 'formal-failure-no-drop' : 'formal-failure-drop', save: f.p.exportSave(),
+        enhanceRequestId: input.enhanceRequestId, formalInstanceSource: true });
+    }
+    for (const payload of formalPayloads) await roundtrip(payload);
+    payloads.push(...formalPayloads);
+
+    const refusals = await crafted('formal-refusal-source'); refusals.p.inventory.protect_charm = 7;
+    await formalUnchanged(refusals.p, () => refusals.gate.submit({ ...request('formal-protect', 0, refusals.ref), useProtectCharm: true }),
+      'protect', 'O04正式来源仍拒护符true'); eq(refusals.p.count('protect_charm'), 7, 'O04护符库存原样保留');
+    for (const ref of ['missing-instance', 'bamboo_sword'])
+      await formalUnchanged(refusals.p, () => refusals.gate.submit(request('formal-missing', 0, ref)), 'no_instance', 'O06数量和itemId不能冒充实例');
+    for (const [name, patch] of [['slot', { slot: 'ring' }], ['phase', { phase: GAME_PHASE + 1 }], ['enabled', { enabled: false }],
+      ['placeholder', { placeholder: true }], ['qualityEnabled', { qualityEnabled: true }]] as const) {
+      const original = ITEMS.bamboo_sword;
+      try {
+        ITEMS.bamboo_sword = { ...original, ...patch };
+        await formalUnchanged(refusals.p, () => refusals.gate.submit(request(`formal-bad-${name}`, 0, refusals.ref)), 'bad_type', 'O06正式已登记装备资格非法拒绝');
+      } finally { ITEMS.bamboo_sword = original; }
+    }
+    for (const cost of ['stones', 'refine_stone']) {
+      const before = refusals.p.exportSave();
+      if (cost === 'stones') refusals.p.stones = 0; else refusals.p.inventory.refine_stone = 0;
+      await formalUnchanged(refusals.p, () => refusals.gate.submit(request(`formal-no-${cost}`, 0, refusals.ref)), 'resources', 'O06正式资源不足整笔拒绝');
+      refusals.p.stones = Number(before.stones); refusals.p.inventory = copy(before.inventory) as Record<string, number>;
+    }
+    for (const input of [{ ...request('formal-skip', 0, refusals.ref), to: 2 }, request('formal-stale', 1, refusals.ref)])
+      await formalUnchanged(refusals.p, () => refusals.gate.submit(input), 'max_level', 'O06正式越级过期请求拒绝');
+    delete refusals.p.inventory.bamboo_sword;
+    await formalUnchanged(refusals.p, () => refusals.gate.submit(request('formal-no-possession', 0, refusals.ref)), 'foreign', 'O06来源登记但资产不在本档拒绝');
+
+    const race = await crafted('formal-race-source'), another = await race.craft('formal-race-source-two');
+    ok(another.allowed && another.result, 'O07第二件正式争用实例来自实际打造');
+    race.p.stones = enhance.levels[0].stones; race.p.inventory.refine_stone = enhance.levels[0].refineStones;
+    const raceWrites = idb.writes, raceSamples = sampleCount; sampled = 0;
+    const competed = await Promise.all([race.ref, another.result.resultItem.instanceRef].map((ref, index) =>
+      new EnhanceGate(race.p, productionOptions()).submit(request(`formal-race-${index}`, 0, ref))));
+    eq(competed.filter(row => row.allowed).length, 1, 'O07正式两件共享库存争用至多完整提交一次');
+    eq([race.p.stones, race.p.count('refine_stone')], [0, 0], 'O07争用无负库存');
+    eq([race.p.enhance!.enhancements.length, race.p.enhance!.receipts.length], [1, 1], 'O07争用不留半结果');
+    eq([idb.writes, sampleCount], [raceWrites + 1, raceSamples + 1], 'O07争用只有一次提交和抽样');
+    const same = await crafted('formal-rapid-source'), sameWrites = idb.writes, sameSamples = sampleCount;
+    const sameInput = request('formal-rapid', 0, same.ref);
+    await Promise.all([same.gate.submit(sameInput), new EnhanceGate(same.p, productionOptions()).submit(copy(sameInput)), same.gate.submit(copy(sameInput))]);
+    eq([idb.writes, sampleCount], [sameWrites + 1, sameSamples + 1], 'O07正式连点跨Gate同请求只提交一次');
+    eq([same.p.enhance!.instances[0].enhanceLevel, same.p.enhance!.enhancements.length], [1, 1], 'O07同请求只升一次');
+    await formalUnchanged(same.p, () => same.gate.submit({ ...sameInput, instanceRef: 'different-formal-instance' }), 'duplicate', 'O07正式旧请求载荷冲突不冒认');
+
+    const interrupted = await crafted('formal-interruption-source'), beforeAbort = interrupted.p.exportSave(), disk = (await saveStore.readSlot(1))!.data;
+    const hold = idb.holdNextCommit(), pending = interrupted.gate.submit(request('formal-aborted', 0, interrupted.ref));
+    await hold.started; eq(interrupted.p.exportSave(), beforeAbort, 'O07正式强化complete前不发布半等级费用');
+    idb.abortNextCommit(); hold.release(); businessDenied(await pending, 'O07正式强化IDB中断拒绝');
+    eq(interrupted.p.exportSave(), beforeAbort, 'O07正式中断内存完整回滚'); eq((await saveStore.readSlot(1))!.data, disk, 'O07正式中断磁盘完整回滚');
+    committed(await interrupted.gate.submit(request('formal-aborted', 0, interrupted.ref)));
+    eq(interrupted.p.enhance!.enhancements.length, 1, 'O07正式中断同请求重试只完整提交一次');
+    for (const sameRequest of [true, false]) {
+      const seed = await crafted(`formal-independent-source-${sameRequest}`);
+      let otherRef = seed.ref;
+      if (!sameRequest) {
+        const second = await seed.craft('formal-independent-second-asset');
+        ok(second.allowed && second.result, 'O07独立Progress共享资源争用使用第二件正式打造资产');
+        otherRef = second.result.resultItem.instanceRef;
+      }
+      seed.p.stones = enhance.levels[0].stones; seed.p.inventory.refine_stone = enhance.levels[0].refineStones;
+      eq(await seed.p.save({ async: true }), true, 'O07独立Progress竞争前保存同槽单次资源基线');
+      const contenders = await Promise.all([Progress.load({ async: true, slot: 1 }), Progress.load({ async: true, slot: 1 })]);
+      progresses.push(...contenders);
+      const gates = contenders.map(p => new EnhanceGate(p, productionOptions())), inputs = contenders.map((_, index) =>
+        request(`formal-independent-${sameRequest}-${sameRequest ? 'shared' : index}`, 0, index === 0 ? seed.ref : otherRef));
+      const writes = idb.writes, samples = sampleCount;
+      const results = await Promise.all(gates.map((gate, index) => gate.submit(inputs[index])));
+      eq(results.filter(row => row.allowed).length, 1, 'O07同slot两个独立Progress同/不同请求至多一次完整提交');
+      eq([idb.writes, sampleCount], [writes + 1, samples + 1], 'O07独立对象同槽只有一次持久写和抽样');
+      const winner = results.findIndex(row => row.allowed), loser = winner === 0 ? 1 : 0;
+      eq([contenders[winner].stones, contenders[winner].count('refine_stone')], [0, 0], 'O07独立对象同槽费用只扣一次无负库存');
+      const stale = contenders[loser], staleBefore = stale.exportSave(), retryWrites = idb.writes, retrySamples = sampleCount;
+      businessDenied(await gates[loser].submit(request(`formal-independent-stale-${sameRequest}`, 0, seed.ref)),
+        'O07独立过时对象后续请求明确拒绝');
+      eq(stale.exportSave(), staleBefore, 'O07独立过时对象拒绝保持旧合法状态');
+      eq([idb.writes, sampleCount], [retryWrites, retrySamples], 'O07独立过时对象拒绝零写零抽样');
+      const reloaded = await Progress.load({ async: true, slot: 1 }); progresses.push(reloaded);
+      eq(reloaded.enhance!.enhancements.length, 1, 'O07重新加载磁盘只认一次完整结果');
+      eq(reloaded.enhance!.instances.reduce((sum, row) => sum + row.enhanceLevel, 0), 1, 'O07重新加载磁盘所有实例等级合计只升一次');
+      await replay(reloaded, new EnhanceGate(reloaded), inputs[winner], 'O07独立对象竞争后fresh reload只读duplicate');
+    }
+    const forgeInterrupted = prepare(), beforeForge = forgeInterrupted.p.exportSave(), forgeHold = idb.holdNextCommit(), pendingForge = forgeInterrupted.craft('formal-forge-aborted');
+    await forgeHold.started; eq(forgeInterrupted.p.exportSave(), beforeForge, 'O01/O07打造complete前不发布成品或正式登记');
+    idb.abortNextCommit(); forgeHold.release(); eq((await pendingForge).allowed, false, 'O07打造中断不留下正式授权');
+    eq(forgeInterrupted.p.exportSave(), beforeForge, 'O07打造费用成品来源一同回滚'); eq(forgeInterrupted.p.enhance, undefined, 'O07中断不补空正式袋');
+
+    eq(await selected.p.save({ async: true }), true, 'O08重新保存独立来源档作为绑定槽位基线');
+    const sourceSave = selected.p.exportSave(), previousSlot = Progress.getActiveSlot();
+    try {
+      Progress.setActiveSlot(2);
+      sampled = 0; committed(await selected.gate.submit(request('formal-bound-slot-one', 1, selected.ref)));
+      eq((await saveStore.readSlot(1))!.data.enhance, selected.p.enhance, 'O08已绑定A档切activeSlot2仍写原slot1');
+      const other = new Progress(); progresses.push(other);
+      other.inventory = { bamboo_sword: 2, refine_stone: 100 }; other.stones = 100000;
+      await formalUnchanged(other, () => new EnhanceGate(other).submit(request('formal-new-slot-no-source', 0, selected.ref)),
+        'no_instance', 'O08新B档不借绑定A档正式授权');
+      other.inventory = copy(sourceSave.inventory) as Record<string, number>; other.stones = Number(sourceSave.stones);
+      other.enhance = copy(selected.p.enhance); other.forge = copy(selected.p.forge);
+      eq(other.formalEnhanceInstanceStatus(selected.ref), 'foreign', 'O08连来源和打造袋复制到另一槽仍识别foreign');
+      await formalUnchanged(other, () => new EnhanceGate(other).submit(request('formal-cross-slot', 2, selected.ref)), 'foreign', 'O08跨槽不借正式实例和旧去重事实');
+      eq(other.enhance, selected.p.enhance, 'O08跨槽拒绝保留原合法数据不清袋');
+    } finally { Progress.setActiveSlot(previousSlot); }
+    const historical = new Progress(); progresses.push(historical); historical.inventory = { bamboo_sword: 2, refine_stone: 100 }; historical.stones = 100000;
+    historical.enhance = copy(selected.p.enhance); delete historical.enhance!.formalSources;
+    await formalUnchanged(historical, () => new EnhanceGate(historical).submit(request('formal-history-no-source', 1, selected.ref)),
+      'no_instance', 'O08即使ref形如打造且有完整历史结果，纯历史袋不授权新提交');
+    eq(selected.p.enhance!.instances.map(row => row.instanceRef), (sourceSave.enhance as typeof selected.p.enhance)!.instances.map(row => row.instanceRef),
+      'O08来源档原实例身份和合法资产保持');
+    return { source: 'default-ForgeGate-committed-result', productionFixtureInstances: false, registeredAtForgeCommit: true,
+      samePrototypeIsolated: true, registeredInventoryAndEquipSelection: true, sourceProofPersists: true,
+      crossSlotForeign: true, historicalFixtureAuthorizesSubmit: false, forgeSamples,
+      cases: ['O01', 'O02', 'O03', 'O04', 'O05', 'O06', 'O07', 'O08'] };
   }
   try {
     const sceneSmokeEvidence = invalidTable ? null : sceneSmoke();
     const defaultGateEvidence = openFixture && !invalidTable ? await defaultGateDenied() : null;
     const formalRefusalEvidence = openFixture && !invalidTable && !refreshPayloads ? await formalRefusalCases() : null;
+    let formalInstanceEvidence: Awaited<ReturnType<typeof formalInstanceCases>> | null = null;
     if (refreshPayloads) {
-      eq(refreshPayloads.map(row => row.state), ['success', 'failure-no-drop', 'failure-drop'], '独立fresh SSR覆盖成功与两种正常失败');
+      eq(refreshPayloads.map(row => row.state), ['success', 'failure-no-drop', 'failure-drop',
+        'formal-success', 'formal-failure-no-drop', 'formal-failure-drop'], '独立fresh SSR覆盖夹具与正式来源成功/两种失败');
       for (const payload of refreshPayloads) await roundtrip(payload);
       payloads.push(...copy(refreshPayloads));
     }
@@ -469,6 +717,17 @@ export async function runEnhanceOpenFixtureTests(options: {
     } else if (invalidTable) {
       const { p, gate } = fixture(), samples = sampleCount;
       await unchanged(p, () => gate.submit(request()), `O06 SSR坏表${invalidTable}拒绝`);
+      const recipe = recipes.recipes.find(row => row.type === 'forge' && row.output === 'bamboo_sword')!;
+      const formal = new Progress(); progresses.push(formal); formal.stones = 100000;
+      formal.inventory = { [recipe.blueprint!]: 1, spirit_copper: 1, refine_stone: 100 };
+      const forged = await new ForgeGate(formal, { random: () => 0, ledgerId: () => `invalid-${invalidTable}` }).submit({
+        craftRequestId: 'invalid-table-source', blueprintId: recipe.blueprint!,
+        materials: recipe.materials.map(row => ({ itemId: row.item, count: row.count })),
+      });
+      ok(forged.allowed && forged.result, 'O06坏强化表不妨碍正式默认打造成品来源登记');
+      const formalRef = forged.result.resultItem.instanceRef;
+      await unchanged(formal, () => new EnhanceGate(formal, { random: () => { sampleCount++; return 0; } })
+        .submit(request('formal-invalid-table', 0, formalRef)), `O06正式来源坏表${invalidTable}整笔拒绝`);
       eq(sampleCount, samples, 'O06坏表拒绝不抽样不使用夹具概率回退');
     } else if (!refreshPayloads) {
       const { p, gate } = fixture(), initial = p.exportSave(), writes = idb.writes, samples = sampleCount;
@@ -685,13 +944,16 @@ export async function runEnhanceOpenFixtureTests(options: {
       eq(await absent.p.importSave(copy(oldSave), { async: true }), true, 'O08缺enhance字段旧档可导入');
       eq(absent.p.enhance, undefined, 'O08缺字段旧档不补袋');
       eq(Object.prototype.hasOwnProperty.call(absent.p.exportSave(), 'enhance'), false, 'O08旧档export不建待补做记录');
+      formalInstanceEvidence = await formalInstanceCases();
     }
     eq(featureFlags(), flags, 'features原值保持不变'); eq(JSON.stringify(enhance), tableBefore, 'enhance内存表未修改');
     eq(localWrites, 0, '真实IDB保存无localStorage写旁路');
     return { assertions, payloads, openFixture, graph: openFixture ? 'formal-open' : 'memory-closed',
       formalOpen: true, closedFixtureOnly: true, softOpened: true, softOpenedEntrance: true,
-      formalTipsWired: true, formalInstanceSource: false, released: false,
+      formalTipsWired: true, formalInstanceSource: true, released: false,
+      compatibilityMeaning: 'formalOpen/softOpened 仅沿用入口状态；实例源已接线 ≠ soft-open 进包',
       sceneSmoke: sceneSmokeEvidence, defaultGateDenied: defaultGateEvidence, formalRefusals: formalRefusalEvidence,
+      formalInstances: formalInstanceEvidence,
       storageWrites: idb.writes, commits: idb.commits, sampleCount,
       forgingExperienceWritten: false, protectorPath: 'missing-basis-denied',
       cases: openFixture ? invalidTable ? ['O06'] : ['C01', 'C02', 'C03', 'C04', 'C05', 'C06', 'C07', 'C08', 'C09', 'C10',

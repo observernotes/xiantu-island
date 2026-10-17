@@ -112,6 +112,10 @@ export class ForgeGate {
           || draft.count(authorized.resultItemId) !== beforeResult + authorized.outputCount) return reject('capacity', '成品入库失败，保持原库存。');
         const forge: ForgeProgress = current ?? { version: 1, ledgerId, crafts: [], receipts: [] };
         forge.crafts.push(result); forge.receipts.push(craftResultRef); draft.forge = forge;
+        // 只有默认正式配方的完整成品可登记；显式测试配方结果仍只是夹具事实。
+        // 与库存、打造结果和收据共用本次 draft 提交，拒绝或保存中断会整笔回滚。
+        if (this.fixture.fixtureRecipes === undefined && this.fixture.formalRecipes === undefined
+          && !draft.registerFormalEnhanceInstance(result)) return reject('instance', '成品实例登记失败，保持原库存。');
         return { allowed: true, result: copy(result), progress: copy(forge), replayed: false };
       });
     } catch { return denied('save', '打造未提交，保持原库存。'); }

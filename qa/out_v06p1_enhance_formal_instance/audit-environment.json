@@ -1,0 +1,29 @@
+{
+  "AGENTS": [],
+  "trackedAGENTS": "",
+  "CodexLaunchLog": "/workspace/xiantu/wt/dev/qa/out_v06p1_enhance_formal_instance/codex_launch.log",
+  "CodexLocks": [
+    "pid=1332777\nstart=28076861\nlog=/workspace/xiantu/logs/codex/fdf021ccbbe110dd_20261017_095713_1332777.log\nstarted=2026-10-17 09:57:13\nprofile=sol\nworkdir=/workspace/xiantu/wt/dev\nkey=fdf021ccbbe110ddef8a491453063522b218fb3d5832c1c68d071173648e343d\n"
+  ],
+  "stdin": "/dev/null",
+  "testOutputEnvironment": {
+    "v06p1-enhance-open": "XT_ENHANCE_QA_OUT",
+    "v06p1-enhance-closed": "ENHANCE_CLOSED_OUT",
+    "v06p1-forge-open": "OUT_DIR",
+    "v06p1-forge-closed": "FORGE_CLOSED_OUT",
+    "v06p1-market-closed": "MARKET_CLOSED_OUT",
+    "v06d-closed": "OUT_DIR",
+    "v06c-closed": "OUT_DIR"
+  },
+  "datalint": {
+    "command": [
+      "python3",
+      "/workspace/xiantu/qa/tools/datalint.py"
+    ],
+    "cwdRoots": [
+      "/workspace/xiantu",
+      "/workspace/xiantu/wt/dev/data"
+    ]
+  },
+  "oldEvidenceFiles": 486
+}

@@ -1,0 +1,34 @@
+{
+  "passed": true,
+  "methodNames": [
+    "registerFormalEnhanceInstance",
+    "formalEnhanceInstanceStatus",
+    "formalEnhanceInstances"
+  ],
+  "proofAssertions": 19,
+  "guards": [
+    "正式实例源授权块精确一次：仅追加 inPhase import",
+    "正式实例源授权块精确一次：仅追加 ForgeCraftResult 类型",
+    "正式实例源授权块精确一次：强化来源校验及类型 imports",
+    "正式实例源授权块精确一次：打造袋注释",
+    "正式实例源授权块精确一次：强化袋注释",
+    "正式实例源授权块精确一次：仅在保存成功后绑定当前档位",
+    "来源方法块只出现在 addCraftedItem 与 bindTalismanSlot 之间一次",
+    "新增来源方法块可独立解析",
+    "只新增三个获准实例来源方法，没有其它字段或方法",
+    "正式来源关键约束存在：JSON.stringify(committed) !== JSON.stringify(result)",
+    "正式来源关键约束存在：!forge.receipts.includes(committed.craftResultRef)",
+    "正式来源关键约束存在：committed.resultItem.count !== 1",
+    "正式来源关键约束存在：const type = item.slot === 'weapon' ? 'weapon' : 'armor';",
+    "正式来源关键约束存在：ownerSlot: this.#slot ?? Progress.#activeSlot",
+    "正式来源关键约束存在：source.ownerSlot !== (this.#slot ?? Progress.#activeSlot)",
+    "正式来源关键约束存在：source.forgeLedgerId !== forge.ledgerId",
+    "正式来源关键约束存在：source.instanceRef === `${craft.craftResultRef}:item`",
+    "正式来源关键约束存在：this.formalEnhanceInstanceStatus(row.instanceRef) === 'registered'"
+  ],
+  "normalizedProgressSha256": "bd4d82d6dada458ed4bafb4585ee2ec54bc426e3a61f3413a9eff665bcb7e4b0",
+  "baseProgressSha256": "bd4d82d6dada458ed4bafb4585ee2ec54bc426e3a61f3413a9eff665bcb7e4b0",
+  "helperSha256": "1e626f127836efb1561fd79e66f2ae6c65b30e85083cd65737fa1ac6f933a44d",
+  "implementationShaNotPinned": true,
+  "base": "2d98d66ed56775795a3204e339817fcc276433b3"
+}

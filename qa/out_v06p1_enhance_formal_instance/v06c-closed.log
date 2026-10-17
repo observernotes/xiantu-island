@@ -1,0 +1,11 @@
+
+> xiantu-island@0.0.1 test:v06c-closed
+> timeout 120s node scripts/v06c-closed-test.mjs
+
+{"suite":"v06c-closed-formal-open","dataMode":"shared","formalOpen":true,"introEnabled":true,"introPhase":5,"giftsEnabled":false,"companionsEnabled":true,"flyZonesEnabled":true,"indexedDbSaves":true,"questsSha":"c45466827247b9e61260bbd2b681ae7207bf84a017aff5d8b028c0ec3463482b","stringsSha":"d7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09","mapSha":"9c05955fb39631e1236f2583f3be65e66823be2da3b30efaafc10ff443074b10"}
+{"suite":"v06c-closed-formal-open","dataMode":"snapshot","formalOpen":true,"introEnabled":true,"introPhase":5,"giftsEnabled":false,"companionsEnabled":true,"flyZonesEnabled":true,"indexedDbSaves":true,"questsSha":"c45466827247b9e61260bbd2b681ae7207bf84a017aff5d8b028c0ec3463482b","stringsSha":"d7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09","mapSha":"9c05955fb39631e1236f2583f3be65e66823be2da3b30efaafc10ff443074b10"}
+{"suite":"v06c-closed-formal-graph","dataMode":"shared","formalOpen":true,"introEnabled":true,"introPhase":5,"assertions":135}
+{"suite":"v06c-closed-runtime","dataMode":"shared","passed":true,"fixtures":33,"formalOpen":true,"closedFixtureOnly":true,"phaseFilteredOut":true,"runtimeEnabledFixtureRejected":true,"saveReloadChecked":true,"assertions":5382}
+{"suite":"v06c-closed-formal-graph","dataMode":"snapshot","formalOpen":true,"introEnabled":true,"introPhase":5,"assertions":5387}
+{"suite":"v06c-closed-runtime","dataMode":"snapshot","passed":true,"fixtures":33,"formalOpen":true,"closedFixtureOnly":true,"phaseFilteredOut":true,"runtimeEnabledFixtureRejected":true,"saveReloadChecked":true,"assertions":10634}
+v06c closed tests ok: 10712 assertions; shared/snapshot 同字节；formalOpen:true、closedFixtureOnly:true；gifts 仍关、companions/fly 保持软开、IDB true；关态交互可重读且任务/场景/资产零变化；全部保护文件 SHA 不变

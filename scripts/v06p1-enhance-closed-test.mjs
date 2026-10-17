@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url';
 import ts from 'typescript';
 import { createServer } from 'vite';
 import { sharedRoot } from './root.mjs';
+import { stripFormalEnhanceInstanceSource } from './v06p1-enhance-instance-source-proof.mjs';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const shared = sharedRoot(root), baselineOut = path.join(root, 'qa/out_v06p1_enhance_closed');
@@ -70,7 +71,7 @@ const eq = (actual, expected, message) => { assertions++; assert.deepEqual(actua
 const ok = (value, message) => { assertions++; assert.ok(value, message); };
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const clone = value => JSON.parse(JSON.stringify(value));
-const report = row => { row = { formalTipsWired: true, formalInstanceSource: false, softOpenedEntrance: true, ...row }; evidence.push(row); console.log(JSON.stringify(row)); };
+const report = row => { row = { compatibilityMeaning: 'formalOpen/softOpened 仅沿用入口状态；实例源已接线 ≠ soft-open 进包', formalTipsWired: true, formalInstanceSource: true, softOpenedEntrance: true, ...row }; evidence.push(row); console.log(JSON.stringify(row)); };
 async function shaOrNull(file) {
   try { return hash(await fs.readFile(file)); }
   catch (error) { if (error.code === 'ENOENT') return null; throw error; }
@@ -125,11 +126,23 @@ const enhanceProgressAddedLines = [
   '  enhance: EnhanceProgress | undefined = undefined;',
 ];
 function stripEnhanceProgress(source) {
+  source = stripFormalEnhanceInstanceSource(source, eq);
   for (const line of enhanceProgressAddedLines) {
     eq(source.split(`${line}\n`).length - 1, 1, `Progress 强化可选夹具袋授权完整行精确一次：${line.trim()}`);
     source = source.replace(`${line}\n`, '');
   }
   return source;
+}
+function stripFormalForgeRegistration(source) {
+  const block = [
+    '        // 只有默认正式配方的完整成品可登记；显式测试配方结果仍只是夹具事实。',
+    '        // 与库存、打造结果和收据共用本次 draft 提交，拒绝或保存中断会整笔回滚。',
+    '        if (this.fixture.fixtureRecipes === undefined && this.fixture.formalRecipes === undefined',
+    "          && !draft.registerFormalEnhanceInstance(result)) return reject('instance', '成品实例登记失败，保持原库存。');",
+    '',
+  ].join('\n');
+  eq(source.split(block).length - 1, 1, 'ForgeGate只增加同事务默认正式成品登记获准块');
+  return source.replace(block, '');
 }
 function keyPath(key) {
   if (key === 'GameScene.ts') return path.join(root, 'src/scenes/GameScene.ts');
@@ -145,7 +158,9 @@ async function checkProtection() {
   eq(baseline['ForgeOpenFlag.ts'], forgeFlagSha, '写前权威 ForgeOpenFlag SHA 固定');
   for (const [key, expected] of Object.entries(baseline)) {
     const file = keyPath(key), actual = await shaOrNull(file);
-    eq(key === 'GameScene.ts' ? hash(stripEnhanceSceneWiring(await fs.readFile(file, 'utf8'))) : actual, ['strings.shared', 'strings.wt'].includes(key) ? stringsSha : expected, `权威写前/写后保护字节（仅剥 GameScene 强化最小提示）：${key}`);
+    const compared = key === 'GameScene.ts' ? hash(stripEnhanceSceneWiring(await fs.readFile(file, 'utf8')))
+      : key === 'ForgeGate.ts' ? hash(stripFormalForgeRegistration(await fs.readFile(file, 'utf8'))) : actual;
+    eq(compared, ['strings.shared', 'strings.wt'].includes(key) ? stringsSha : expected, `权威写前/写后保护字节（仅剥获准强化接线）：${key}`);
     protectedFiles[key] = actual; readOnlyBefore.set(file, actual);
   }
   const sourceBefore = JSON.parse(await fs.readFile(path.join(baselineOut, 'source-before.json'), 'utf8'));
@@ -156,6 +171,7 @@ async function checkProtection() {
   for (const [name, expected] of Object.entries(sourceBefore)) {
     const file = path.join(root, 'src', relativeSource(name)), actual = await shaOrNull(file);
     const compared = relativeSource(name) === 'Progress.ts' ? hash(stripEnhanceProgress(await fs.readFile(file, 'utf8')))
+      : relativeSource(name) === 'ForgeGate.ts' ? hash(stripFormalForgeRegistration(await fs.readFile(file, 'utf8')))
       : relativeSource(name) === 'scenes/GameScene.ts' ? hash(stripEnhanceSceneWiring(await fs.readFile(file, 'utf8')))
       : relativeSource(name) === 'v06p1-forge-open.test.ts' ? hash(stripForgeSceneSmokeCompatibility(await fs.readFile(file, 'utf8'))) : actual;
     eq(compared, expected, `既有 src 完整字节不变（仅剥 Progress 四行、GameScene 强化最小提示及 Forge 冒烟日志位置兼容）：${name}`);
@@ -453,7 +469,7 @@ async function runGraph(mode, dataRoot, closedFixtureOnly, refreshPayloads = nul
     totalFixtures += fixtures; totalInvocations += invocations;
     report({ suite: 'runtime', dataMode: mode, graph: 'memory-closed', freshSsrRefresh: !!refreshPayloads, flagLoads, passed: true,
       cases: Object.keys(caseApis), fixtures, invocations, zeroArgumentApis: 8, storageWrites, sentinelCalls,
-      semanticFixtureOnly: true, formalEnhanceSchemaAdded: false, flagInjection: true, memoryClosedFlag: false,
+      semanticFixtureOnly: true, formalEnhanceSchemaAdded: true, flagInjection: true, memoryClosedFlag: false,
       EnhanceOpenFlag: true, enhanceGateFixtureSourceAllowed: true, minimalFrontendWiring: true, fullEnhanceUiAdded: false, formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false });
     return payloads;
   } finally {
@@ -484,7 +500,7 @@ try {
   await fs.writeFile(path.join(out, 'v06p1-enhance-closed-evidence.json'), `${JSON.stringify({ passed, assertions, stringsSha, enhanceJsonSha: enhanceSha,
     forgeFlagSha, cases: caseApis, totalFixtures, totalInvocations, protectedFiles, evidence,
     EnhanceOpenFlag: true, enhanceGateFixtureSourceAllowed: true, minimalFrontendWiring: true, fullEnhanceUiAdded: false, formalOpen: true, closedFixtureOnly: true,
-    semanticFixtureOnly: true, formalEnhanceSchemaAdded: false, softOpened: true, released: false,
-    formalTipsWired: true, formalInstanceSource: false, softOpenedEntrance: true, enhanceFlagSha }, null, 2)}\n`);
+    semanticFixtureOnly: true, formalEnhanceSchemaAdded: true, softOpened: true, released: false,
+    formalTipsWired: true, formalInstanceSource: true, softOpenedEntrance: true, enhanceFlagSha }, null, 2)}\n`);
 }
-console.log(`v06p1 enhance closed tests ok: ${assertions} assertions; C01–C12; ${totalFixtures} semantic fixtures; ${totalInvocations} API calls; shared/snapshot + fresh SSR; localStorage写入0; shared/wt strings944、game旧936; gifts10×false; GAME_PHASE=5; EnhanceOpenFlag=true; 不挂smith_ou.services; smith_ou同次命中仅提示、无完整强化UI; formalOpen:true; closedFixtureOnly:true; softOpened:true; formalTipsWired:true; formalInstanceSource:false; softOpenedEntrance:true; released:false`);
+console.log(`v06p1 enhance closed tests ok: ${assertions} assertions; C01–C12; ${totalFixtures} semantic fixtures; ${totalInvocations} API calls; shared/snapshot + fresh SSR; localStorage写入0; shared/wt strings944、game旧936; gifts10×false; GAME_PHASE=5; EnhanceOpenFlag=true; 不挂smith_ou.services; smith_ou同次命中仅提示、无完整强化UI; formalOpen:true; closedFixtureOnly:true; softOpened:true; formalTipsWired:true; formalInstanceSource:true; softOpenedEntrance:true; released:false`);

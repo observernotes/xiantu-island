@@ -1,0 +1,25 @@
+{
+  "passed": true,
+  "protectedFiles": 257,
+  "unauthorizedDifferences": [],
+  "protectedAdded": [],
+  "protectedRemoved": [],
+  "oldEvidenceFiles": 486,
+  "oldEvidenceDifferences": [],
+  "oldEvidenceAdded": [],
+  "oldEvidenceRemoved": [],
+  "formalTipsWired": true,
+  "formalInstanceSource": true,
+  "softOpenedEntrance": true,
+  "released": false,
+  "scope": "实例源已接线 ≠ soft-open 进包 ≠ release",
+  "EnhanceOpenFlag": true,
+  "ForgeOpenFlag": true,
+  "GAME_PHASE": 5,
+  "enhanceJsonUnchanged": true,
+  "notRun": [
+    "build",
+    "sync",
+    "release"
+  ]
+}

@@ -77,7 +77,7 @@ async function checkFormal() {
     'ShopPanel不接打造');
   const consumers = [];
   for (const file of (await filesUnder(path.join(root, 'src'))).filter(name => name.endsWith('.ts'))) {
-    if (['ForgeGate.ts', 'v06p1-forge-open.test.ts'].includes(file)) continue;
+    if (['ForgeGate.ts', 'v06p1-forge-open.test.ts', 'v06p1-enhance-open.test.ts'].includes(file)) continue;
     if (/from\s+['"][^'"]*ForgeGate(?:\.ts)?['"]/u.test(await fs.readFile(path.join(root, 'src', file), 'utf8'))) consumers.push(file);
   }
   eq(consumers, ['scenes/GameScene.ts'], 'ForgeGate正式消费者仅为GameScene只读冒烟入口');

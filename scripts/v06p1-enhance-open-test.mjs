@@ -12,7 +12,7 @@ const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const shared = sharedRoot(root);
 const modes = [['shared', shared], ['snapshot', path.join(root, 'data')]];
 const dataRoots = [['shared', shared], ['wt', path.join(root, 'data')], ['game', path.join(shared, 'game/data')]];
-const out = process.env.XT_ENHANCE_QA_OUT ?? process.env.OUT_DIR ?? path.join(root, 'qa/out_v06p1_enhance_open_preamble');
+const out = process.env.XT_ENHANCE_QA_OUT ?? process.env.OUT_DIR ?? path.join(root, 'qa/out_v06p1_enhance_formal_instance');
 const before = new Map(), directoryBefore = new Map(), evidence = [];
 const recipesSha = '1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f';
 const forgeFlagSha = '0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e';
@@ -34,7 +34,8 @@ let assertions = 0, runtimeAssertions = 0;
 const eq = (actual, expected, message) => { assertions++; assert.deepEqual(actual, expected, message); };
 const ok = (value, message) => { assertions++; assert.ok(value, message); };
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
-const report = row => { row = { formalTipsWired: true, formalInstanceSource: false, softOpenedEntrance: true, ...row }; evidence.push(row); console.log(JSON.stringify(row)); };
+const compatibilityMeaning = 'formalOpen/softOpened 仅沿用入口状态；实例源已接线 ≠ soft-open 进包';
+const report = row => { row = { formalTipsWired: true, formalInstanceSource: true, softOpenedEntrance: true, compatibilityMeaning, ...row }; evidence.push(row); console.log(JSON.stringify(row)); };
 async function shaOrNull(file) {
   try { return hash(await fs.readFile(file)); }
   catch (error) { if (error.code === 'ENOENT') return null; throw error; }
@@ -84,6 +85,11 @@ async function checkFormal() {
     ok(!gate.includes(text), `Gate不硬编码正式中文：${tipKey}`);
   }
   ok(!/ForgeOpenFlag|forge\.closed\.|fixtureRates|fixtureCosts/u.test(gate), '强化不借打造旗或夹具费用概率回退');
+  ok(/formalEnhanceInstances/u.test(gate), '正式Gate显式读取本档正式登记而不依赖fixtureInstances');
+  const progress = await fs.readFile(path.join(root, 'src/Progress.ts'), 'utf8');
+  ok(/registerFormalEnhanceInstance/u.test(progress) && /formalEnhanceInstanceStatus/u.test(progress), '正式登记API及本档来源检查已接线');
+  const forge = await fs.readFile(path.join(root, 'src/ForgeGate.ts'), 'utf8');
+  ok(/draft\.registerFormalEnhanceInstance\(result\)/u.test(forge), '默认正式Forge在同草稿事务登记完整结果');
   for (const [method, closed] of Object.entries(methods))
     ok(new RegExp(`(?:async\\s+)?${method}\\([^)]*\\)\\s*:\\s*[^\\{]+\\{\\s*if\\s*\\(!isEnhanceOpenForFixture\\(\\)\\)\\s*return EnhanceClosed\\.${closed}\\(\\);`, 'u').test(gate),
       `${method}首语句先查旗并返回对应原关态tip`);
@@ -215,7 +221,8 @@ try {
   for (const [mode, dataRoot] of modes) {
     const opened = await runGraph(mode, dataRoot, true);
     await runGraph(mode, dataRoot, false);
-    eq(opened.payloads.length, 3, `${mode} 提供成功与两种正常失败完整保存载荷`);
+    eq(opened.payloads.length, 6, `${mode} 提供夹具与正式来源各自成功/两种正常失败完整保存载荷`);
+    eq(opened.payloads.filter(row => row.formalInstanceSource).length, 3, `${mode} 正式来源保存载荷均无fixtureInstances依赖`);
     await runGraph(mode, dataRoot, true, opened.payloads);
     // 将已提交历史结果带入全新内存关态图，关态优先并保留合法既有资产。
     await runGraph(mode, dataRoot, false, opened.payloads);
@@ -247,7 +254,7 @@ try {
   await fs.writeFile(path.join(out, 'v06p1-enhance-open-evidence.json'), `${JSON.stringify({ passed,
     assertions: assertions + runtimeAssertions, staticAssertions: assertions, runtimeAssertions,
     formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false,
-    formalTipsWired: true, formalInstanceSource: false, softOpenedEntrance: true, stringsSha, enhanceFlagSha,
+    formalTipsWired: true, formalInstanceSource: true, softOpenedEntrance: true, compatibilityMeaning, stringsSha, enhanceFlagSha,
     protectedFiles: Object.fromEntries(before), protectedDirectories: Object.fromEntries(directoryBefore), evidence }, null, 2)}\n`);
 }
-console.log(`v06p1 enhance formal tips tests ok: ${assertions + runtimeAssertions} assertions; shared/snapshot双根formal-open+memory-closed及fresh SSR读回；formal C01–C10 + fixture O01–O08；strings944；Scene最小smith_ou同命中冒烟零写；正式flag=true；EnhanceClosed原字节；gifts 10×false；enhance未改；GAME_PHASE=5；formalOpen:true、closedFixtureOnly:true、softOpened:true、formalTipsWired:true、formalInstanceSource:false、softOpenedEntrance:true、released:false；PASS≠进包≠release`);
+console.log(`v06p1 enhance formal instance tests ok: ${assertions + runtimeAssertions} assertions; shared/snapshot双根formal-open+memory-closed及fresh SSR读回；formal C01–C10 + fixture兼容/正式来源 O01–O08；strings944；Scene最小smith_ou同命中冒烟零写；正式flag=true；EnhanceClosed原字节；gifts 10×false；enhance未改；GAME_PHASE=5；formalOpen:true、closedFixtureOnly:true、softOpened:true、formalTipsWired:true、formalInstanceSource:true、softOpenedEntrance:true、released:false；实例源已接线≠soft-open进包；PASS≠soft-open≠release`);

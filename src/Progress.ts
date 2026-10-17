@@ -1,6 +1,6 @@
 import { gameNow } from './GameClock';
 import { invalidateSenseSession, type SenseState } from './Sense';
-import { GROWTH, EXP_TO_NEXT, MAX_LEVEL, ITEMS, BREAKTHROUGH_LEVELS, BREAKTHROUGH, REALMS, QUESTS, LIFESPAN, RECIPES, ALCHEMY_RULES, LIFE_SKILLS, LIFE_SKILL_ERRORS, MORAL_STATE, SECT_RANKS, TILED_MAPS, SECT_GATE_MAPS, PillQuality, QuestDef, syncTalismanMapAvailability } from './data';
+import { GROWTH, EXP_TO_NEXT, MAX_LEVEL, ITEMS, BREAKTHROUGH_LEVELS, BREAKTHROUGH, REALMS, QUESTS, LIFESPAN, RECIPES, ALCHEMY_RULES, LIFE_SKILLS, LIFE_SKILL_ERRORS, MORAL_STATE, SECT_RANKS, TILED_MAPS, SECT_GATE_MAPS, PillQuality, QuestDef, syncTalismanMapAvailability, inPhase } from './data';
 import { advanceLifeSkillProgress, lifeSkillLevel, lifeSkillProgressView, lifeSkillRecipe, normalizeLifeSkillProgress, type LifeSkillId } from './LifeSkills';
 import { validSectGrowthState, type SectGrowthState } from './SectGrowth';
 import { HOTBAR_SLOTS, QUEST_SKILL_BACKFILL, SKILLS, SKILL_RULES, SkillDef, actOf, skillNumber, spEarnedFor, spBand } from './skills';
@@ -19,8 +19,9 @@ import { saveStore, setSaveValidator, SAVE_SLOT_KEYS, type SlotKey } from './Sav
 import { isValidCompanionRelations, type CompanionRelations } from './Companions';
 import { isValidTowerProgress, type TowerProgress } from './TowerProgress';
 import { isValidMarketProgress, type MarketProgress } from './MarketProgress';
-import { isValidForgeProgress, type ForgeProgress } from './ForgeProgress';
-import { isValidEnhanceProgress, type EnhanceProgress } from './EnhanceProgress';
+import { isValidForgeProgress, type ForgeCraftResult, type ForgeProgress } from './ForgeProgress';
+import { isEnhanceId, isEnhanceInstanceRef, isValidEnhanceProgress, type EnhanceFixtureInstance,
+  type EnhanceProgress, type FormalEnhanceSource } from './EnhanceProgress';
 
 /** 自动加点：加点界面做好前的旧档公式，仅用于迁移种子；UI-6 起升级只发未分配点。 */
 export const AUTO_STATS = { rootBone: 2, agility: 2, insight: 1, spirit: 0 } as Record<string, number>;
@@ -180,9 +181,9 @@ export class Progress {
   tower: TowerProgress | undefined = undefined;
   /** 仅 SSR 内存开态夹具提交；缺字段旧档不补袋，正式关态原样保留历史。 */
   market: MarketProgress | undefined = undefined;
-  /** 仅保留完整夹具事实；缺袋旧档不补建，读回不结算。 */
+  /** 保留完整打造事实；缺袋旧档不补建，读回不结算。 */
   forge: ForgeProgress | undefined = undefined;
-  /** 仅承载明确授权的强化夹具事实；缺袋旧档不补建，读回不结算。 */
+  /** 等级和完整结算；正式授权另查本档打造来源，缺袋旧档不补建。 */
   enhance: EnhanceProgress | undefined = undefined;
   classRewardClaims: string[] = [];
   /** 通用入门技的付费等级在拜宗后退回当前一转点池。 */
@@ -395,6 +396,8 @@ export class Progress {
         // 同步回调不得修改原实例，避免把别的进度一起覆盖到槽里。
         if (JSON.stringify(before) !== JSON.stringify(Object.fromEntries(Object.entries(this).filter(([, value]) => typeof value !== 'function')))) return undefined;
         if (!await saveStore.writeSlot(draft.#slot, next)) return undefined;
+        // 首次成功提交即绑定本实例；切换全局 activeSlot 不能把既有实例写到另一档。
+        this.#slot ??= slot;
         // 只发布 draft 改过的字段，保留等待 IDB 时原对象的其它内存变化。
         for (const key of new Set([...Object.keys(before), ...Object.keys(draft)])) {
           if (JSON.stringify(before[key]) === JSON.stringify(Reflect.get(draft, key))) continue;
@@ -1068,6 +1071,86 @@ export class Progress {
       this.addCraftedPill(id, n, quality);
     } else this.addItem(id, n);
     return true;
+  }
+  /**
+   * 仅在正式 ForgeGate 的同一保存事务内调用：完整成品先入库、forge 结果及收据先成立。
+   * 不保存独立半笔登记，不按物品数量或装备槽制造身份，也不升级历史夹具记录。
+   */
+  registerFormalEnhanceInstance(result: ForgeCraftResult): boolean {
+    try {
+      const forge = this.forge;
+      if (!isValidForgeProgress(forge)) return false;
+      const committed = forge.crafts.find(row => row.craftResultRef === result.craftResultRef);
+      if (!committed || JSON.stringify(committed) !== JSON.stringify(result)
+        || !forge.receipts.includes(committed.craftResultRef) || committed.resultItem.count !== 1) return false;
+      // API 本身也核实正式配方；拥有一个测试打造账本不能绕过默认 ForgeGate 的来源边界。
+      const recipes = Object.values(RECIPES).filter(row => row.type === 'forge'
+        && Reflect.get(row, 'blueprint') === committed.blueprintId);
+      if (recipes.length !== 1) return false;
+      const recipe = recipes[0];
+      if (committed.blueprintCount !== 1 || recipe.output !== committed.resultItem.itemId
+        || recipe.outputCount !== committed.resultItem.count || !Array.isArray(recipe.materials)
+        || recipe.materials.length !== committed.materials.length
+        || !recipe.materials.every(material => Number.isSafeInteger(material.count) && material.count > 0
+          && committed.materials.some(other => other.itemId === material.item && other.count === material.count))) return false;
+      const { instanceRef, itemId } = committed.resultItem;
+      const item = Object.prototype.hasOwnProperty.call(ITEMS, itemId) ? ITEMS[itemId] : undefined;
+      if (!isEnhanceInstanceRef(instanceRef) || !item || item.type !== 'equip' || !inPhase(item)
+        || item.enabled === false || item.placeholder === true || item.qualityEnabled === true
+        || !['weapon', 'robe', 'shoes'].includes(item.slot ?? '')
+        || Object.prototype.hasOwnProperty.call(this.pillQualities, itemId)
+        || this.count(itemId) !== this.permanentCount(itemId)) return false;
+      const type = item.slot === 'weapon' ? 'weapon' : 'armor';
+      const current = this.enhance;
+      if (current !== undefined && !isValidEnhanceProgress(current)) return false;
+      if (current?.formalSources?.some(source => this.formalEnhanceInstanceStatus(source.instanceRef) !== 'registered')) return false;
+      const existing = current?.instances.find(row => row.instanceRef === instanceRef);
+      // 重复登记只读保留当前等级；没有正式来源的历史同名记录绝不升格。
+      if (existing) return existing.itemId === itemId && existing.type === type
+        && this.formalEnhanceInstanceStatus(instanceRef) === 'registered';
+      const sources = current?.formalSources ?? [];
+      const registeredCount = sources.filter(source => current?.instances.some(row =>
+        row.instanceRef === source.instanceRef && row.itemId === itemId)).length;
+      const equippedCount = Object.entries(this.equip).filter(([slot, id]) =>
+        id === itemId && slot === item.slot).length;
+      const owned = this.permanentCount(itemId) + equippedCount;
+      if (!Number.isSafeInteger(owned) || owned < registeredCount + 1) return false;
+      const ledgerId = current?.ledgerId ?? `enhance_${crypto.randomUUID()}`;
+      if (!isEnhanceId(ledgerId)) return false;
+      const source: FormalEnhanceSource = {
+        instanceRef, source: 'forge', forgeLedgerId: forge.ledgerId, craftResultRef: committed.craftResultRef,
+        ownerSlot: this.#slot ?? Progress.#activeSlot,
+      };
+      const bag: EnhanceProgress = current ? structuredClone(current)
+        : { version: 1, ledgerId, instances: [], enhancements: [], receipts: [] };
+      bag.instances.push({ instanceRef, itemId, type, enhanceLevel: 0 });
+      bag.formalSources = [...sources, source];
+      if (!isValidEnhanceProgress(bag)) return false;
+      this.enhance = bag;
+      return true;
+    } catch { return false; }
+  }
+  /** 只检查来源证明与本档完整打造绑定；装备 type、配置资格和当前持有关系交给 Gate。 */
+  formalEnhanceInstanceStatus(instanceRef: string): 'registered' | 'foreign' | 'missing' {
+    try {
+      const sources = this.enhance?.formalSources;
+      const source = Array.isArray(sources) ? sources.find(row => row.instanceRef === instanceRef) : undefined;
+      if (!source) return 'missing';
+      const forge = this.forge;
+      if (source.source !== 'forge' || source.ownerSlot !== (this.#slot ?? Progress.#activeSlot)
+        || !isValidForgeProgress(forge) || source.forgeLedgerId !== forge.ledgerId) return 'foreign';
+      const craft = forge.crafts.find(row => row.craftResultRef === source.craftResultRef);
+      const instance = this.enhance?.instances.find(row => row.instanceRef === instanceRef);
+      return craft && forge.receipts.includes(craft.craftResultRef) && craft.resultItem.count === 1
+        && source.instanceRef === `${craft.craftResultRef}:item` && craft.resultItem.instanceRef === source.instanceRef
+        && instance?.itemId === craft.resultItem.itemId ? 'registered' : 'foreign';
+    } catch { return 'foreign'; }
+  }
+  /** 生产新提交只取这组已登记来源；历史纯 instances 与夹具授权均不进入此组。 */
+  formalEnhanceInstances(): EnhanceFixtureInstance[] {
+    try {
+      return this.enhance?.instances.filter(row => this.formalEnhanceInstanceStatus(row.instanceRef) === 'registered') ?? [];
+    } catch { return []; }
   }
   bindTalismanSlot(index: number, item: string | null, quality?: PillQuality): boolean {
     if (!featureEnabled('talismanCraft') || !Number.isSafeInteger(index) || index < 0 || index >= HOTBAR_SLOTS.length) return false;

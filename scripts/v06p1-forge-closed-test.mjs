@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url';
 import ts from 'typescript';
 import { createServer } from 'vite';
 import { sharedRoot } from './root.mjs';
+import { stripFormalEnhanceInstanceSource } from './v06p1-enhance-instance-source-proof.mjs';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const shared = sharedRoot(root), out = process.env.FORGE_CLOSED_OUT ?? process.env.OUT_DIR ?? path.join(root, 'qa/out_v06p1_enhance_open_preamble/forge-closed');
@@ -150,6 +151,7 @@ const enhanceProgressAddedLines = [
   '  enhance: EnhanceProgress | undefined = undefined;',
 ];
 function stripForgeProgress(source) {
+  source = stripFormalEnhanceInstanceSource(source, eq);
   for (const line of enhanceProgressAddedLines) {
     eq(source.split(`${line}\n`).length - 1, 1, `Progress 强化可选夹具袋授权完整行精确一次：${line.trim()}`);
     source = source.replace(`${line}\n`, '');
