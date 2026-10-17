@@ -74,6 +74,7 @@
     "test:v06p1-attr-ui-map-api": "timeout 120s node scripts/v06p1-attr-ui-map-api-test.mjs",
     "test:v06p1-attr-ui-map-services": "timeout 120s node scripts/v06p1-attr-ui-map-services-test.mjs",
     "test:v06p1-salvage-closed": "timeout 120s node scripts/v06p1-salvage-closed-test.mjs",
+    "test:v06p1-smith-services-services-closed": "timeout 120s node scripts/v06p1-smith-services-services-closed-test.mjs",
     "test:v06p1-salvage-open": "timeout 180s node scripts/v06p1-salvage-open-test.mjs",
     "test:v06p1-enchant-open": "timeout 180s node scripts/v06p1-enchant-open-test.mjs",
     "test:v06p1-forge-open": "timeout 180s node scripts/v06p1-forge-open-test.mjs",

@@ -1,0 +1,18 @@
+{
+  "file": "scripts/v06p1-forge-open-test.mjs",
+  "originalSha": "b1767cbedf9e3543cfa82c8e1931d43888212404b47198ae1f977a5e2bd696d1",
+  "pinnedOriginalSha": "b1767cbedf9e3543cfa82c8e1931d43888212404b47198ae1f977a5e2bd696d1",
+  "adaptedSha": "88dd79944f3ccdf6ff8562834064ef2cb930eff654dbb2cff858676ac163cfce",
+  "changes": [
+    {
+      "label": "authorized new smith adapter Gate consumer",
+      "before": "...salvageSourceNames].includes(file)",
+      "after": "...salvageSourceNames, 'SmithServices.ts', 'v06p1-smith-services-closed.test.ts'].includes(file)",
+      "occurrences": 1
+    }
+  ],
+  "productModuleTransformations": [],
+  "diskWritten": false,
+  "businessAssertionsChanged": false,
+  "policy": "Pinned test-only historical strings SHA/count/inventory and prior attr-ui byte proof; actual Vite SSR product modules use current disk."
+}

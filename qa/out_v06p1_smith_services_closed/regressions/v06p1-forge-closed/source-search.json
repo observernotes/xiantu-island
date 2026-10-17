@@ -1,0 +1,1712 @@
+[
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 9,
+    "text": "/** 仅由本档完整正式打造结果登记；历史 instances 记录不能自行获得此来源证明。 */"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 12,
+    "text": "  source: 'forge';"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 13,
+    "text": "  forgeLedgerId: string;"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 95,
+    "text": "        if (!enhanceFields(source, ['instanceRef', 'source', 'forgeLedgerId', 'craftResultRef', 'ownerSlot'])"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 96,
+    "text": "          || source.source !== 'forge' || !isEnhanceInstanceRef(source.instanceRef) || formalRefs.has(source.instanceRef)"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 97,
+    "text": "          || !isEnhanceId(source.forgeLedgerId) || !isEnhanceInstanceRef(source.craftResultRef)"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 98,
+    "text": "          || !source.craftResultRef.startsWith(`${source.forgeLedgerId}:craft:`)"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 99,
+    "text": "          || !isEnhanceId(source.craftResultRef.slice(`${source.forgeLedgerId}:craft:`.length))"
+  },
+  {
+    "file": "src/ForgeClosed.ts",
+    "line": 3,
+    "text": "export type ForgeClosedTipKey = 'forge.closed.feature' | 'forge.closed.entrance'"
+  },
+  {
+    "file": "src/ForgeClosed.ts",
+    "line": 4,
+    "text": "  | 'forge.closed.craft' | 'forge.closed.no_submit' | 'forge.closed.no_result'"
+  },
+  {
+    "file": "src/ForgeClosed.ts",
+    "line": 5,
+    "text": "  | 'forge.closed.no_grade' | 'forge.closed.load_refresh' | 'forge.closed.later_service';"
+  },
+  {
+    "file": "src/ForgeClosed.ts",
+    "line": 7,
+    "text": "export interface ForgeClosedTip {"
+  },
+  {
+    "file": "src/ForgeClosed.ts",
+    "line": 9,
+    "text": "  readonly tipKey: ForgeClosedTipKey;"
+  },
+  {
+    "file": "src/ForgeClosed.ts",
+    "line": 13,
+    "text": "/** 本窗恒定关态；图纸、材料和旧档均不能授权打造，不另造开放开关。 */"
+  },
+  {
+    "file": "src/ForgeClosed.ts",
+    "line": 14,
+    "text": "function closed(tipKey: ForgeClosedTipKey): ForgeClosedTip {"
+  },
+  {
+    "file": "src/ForgeClosed.ts",
+    "line": 19,
+    "text": "export function featureClosed() { return closed('forge.closed.feature'); }"
+  },
+  {
+    "file": "src/ForgeClosed.ts",
+    "line": 20,
+    "text": "export function refuseEntrance() { return closed('forge.closed.entrance'); }"
+  },
+  {
+    "file": "src/ForgeClosed.ts",
+    "line": 21,
+    "text": "export function refuseCraft() { return closed('forge.closed.craft'); }"
+  },
+  {
+    "file": "src/ForgeClosed.ts",
+    "line": 22,
+    "text": "export function refuseSubmit() { return closed('forge.closed.no_submit'); }"
+  },
+  {
+    "file": "src/ForgeClosed.ts",
+    "line": 23,
+    "text": "export function refuseResult() { return closed('forge.closed.no_result'); }"
+  },
+  {
+    "file": "src/ForgeClosed.ts",
+    "line": 24,
+    "text": "export function refuseGrade() { return closed('forge.closed.no_grade'); }"
+  },
+  {
+    "file": "src/ForgeClosed.ts",
+    "line": 25,
+    "text": "export function refuseLoadRefresh() { return closed('forge.closed.load_refresh'); }"
+  },
+  {
+    "file": "src/ForgeClosed.ts",
+    "line": 26,
+    "text": "export function refuseLaterService() { return closed('forge.closed.later_service'); }"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 5,
+    "text": "import { isForgeOpenForFixture } from './ForgeOpenFlag';"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 6,
+    "text": "import * as ForgeClosed from './ForgeClosed';"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 7,
+    "text": "import { isForgeId, isValidForgeMaterials, isValidForgeProgress,"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 8,
+    "text": "  type ForgeCraftResult, type ForgeGrade, type ForgeMaterial, type ForgeProgress } from './ForgeProgress';"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 10,
+    "text": "export interface ForgeFixtureRecipe {"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 14,
+    "text": "  materials: readonly ForgeMaterial[];"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 19,
+    "text": "interface ForgeRecipe extends ForgeFixtureRecipe { outputCount: number; }"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 20,
+    "text": "export interface ForgeFixtureOptions {"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 22,
+    "text": "  fixtureRecipes?: readonly ForgeFixtureRecipe[];"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 23,
+    "text": "  /** 测试替换正式原始行；缺省生产只读 recipes.json 的 forge 条目。 */"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 30,
+    "text": "export interface ForgeCraftRequest { craftRequestId: string; blueprintId: string; materials: ForgeMaterial[]; }"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 31,
+    "text": "export interface ForgeAllowed {"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 33,
+    "text": "  result?: ForgeCraftResult;"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 34,
+    "text": "  progress?: ForgeProgress;"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 37,
+    "text": "export interface ForgeDenied { allowed: false; tipKey: string; text: string; }"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 38,
+    "text": "export type ForgeGateResult = ForgeAllowed | ForgeDenied;"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 40,
+    "text": "const denied = (reason: string, text: string): ForgeDenied => ({ allowed: false, tipKey: `forge.fixture.${reason}`, text });"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 42,
+    "text": "const sameMaterials = (a: readonly ForgeMaterial[], b: readonly ForgeMaterial[]) => a.length === b.length"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 55,
+    "text": "/** 关态先拒绝；开态默认只读正式 forge 配方，夹具必须由测试显式授权。 */"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 56,
+    "text": "export class ForgeGate {"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 58,
+    "text": "  constructor(private readonly progress: Progress, private readonly fixture: ForgeFixtureOptions = {}) {}"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 60,
+    "text": "  feature(): ForgeGateResult {"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 61,
+    "text": "    if (!isForgeOpenForFixture()) return ForgeClosed.featureClosed();"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 62,
+    "text": "    return this.validRules() ? { allowed: true } : denied('rules', '打造品质依赖未就绪。');"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 64,
+    "text": "  entrance(): ForgeGateResult {"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 65,
+    "text": "    if (!isForgeOpenForFixture()) return ForgeClosed.refuseEntrance();"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 66,
+    "text": "    return this.validRules() ? { allowed: true } : denied('rules', '打造品质依赖未就绪。');"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 69,
+    "text": "  craft(request?: ForgeCraftRequest): ForgeGateResult {"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 70,
+    "text": "    if (!isForgeOpenForFixture()) return ForgeClosed.refuseCraft();"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 72,
+    "text": "      if (!this.valid(this.progress)) return denied('progress', '打造档案不完整，已阻止歧义操作。');"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 76,
+    "text": "    } catch { return denied('request', '打造选择无效。'); }"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 78,
+    "text": "  async submit(request: ForgeCraftRequest): Promise<ForgeGateResult> {"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 79,
+    "text": "    if (!isForgeOpenForFixture()) return ForgeClosed.refuseSubmit();"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 80,
+    "text": "    if (this.#busy) return denied('busy', '正在保存打造结果，请稍候。');"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 82,
+    "text": "      if (!this.valid(this.progress)) return denied('progress', '打造档案不完整，已阻止歧义操作。');"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 86,
+    "text": "      const old = this.progress.forge?.crafts.find(row => row.craftRequestId === request.craftRequestId);"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 91,
+    "text": "        const current = draft.forge;"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 97,
+    "text": "        const ledgerId = current?.ledgerId ?? (this.fixture.ledgerId ? this.fixture.ledgerId() : `forge_${crypto.randomUUID()}`);"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 98,
+    "text": "        if (!isForgeId(ledgerId)) return reject('identity', '打造账本身份无效。');"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 102,
+    "text": "        const result: ForgeCraftResult = {"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 113,
+    "text": "        const forge: ForgeProgress = current ?? { version: 1, ledgerId, crafts: [], receipts: [] };"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 114,
+    "text": "        forge.crafts.push(result); forge.receipts.push(craftResultRef); draft.forge = forge;"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 116,
+    "text": "        // 与库存、打造结果和收据共用本次 draft 提交，拒绝或保存中断会整笔回滚。"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 119,
+    "text": "        return { allowed: true, result: copy(result), progress: copy(forge), replayed: false };"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 121,
+    "text": "    } catch { return denied('save', '打造未提交，保持原库存。'); }"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 123,
+    "text": "  result(craftRequestId?: string): ForgeGateResult {"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 124,
+    "text": "    if (!isForgeOpenForFixture()) return ForgeClosed.refuseResult();"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 127,
+    "text": "  grade(craftRequestId?: string): ForgeGateResult {"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 128,
+    "text": "    if (!isForgeOpenForFixture()) return ForgeClosed.refuseGrade();"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 131,
+    "text": "  loadRefresh(): ForgeGateResult {"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 132,
+    "text": "    if (!isForgeOpenForFixture()) return ForgeClosed.refuseLoadRefresh();"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 133,
+    "text": "    if (!this.valid(this.progress)) return denied('progress', '打造档案不完整，已阻止歧义操作。');"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 134,
+    "text": "    return this.progress.forge === undefined ? { allowed: true } : { allowed: true, progress: copy(this.progress.forge) };"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 136,
+    "text": "  laterService(): ForgeGateResult {"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 137,
+    "text": "    if (!isForgeOpenForFixture()) return ForgeClosed.refuseLaterService();"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 138,
+    "text": "    return ForgeClosed.refuseLaterService();"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 141,
+    "text": "  private readResult(requestId: string | undefined): ForgeGateResult {"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 142,
+    "text": "    if (!this.valid(this.progress)) return denied('progress', '打造档案不完整，已阻止歧义操作。');"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 143,
+    "text": "    const result = this.progress.forge?.crafts.find(row => row.craftRequestId === requestId);"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 144,
+    "text": "    return result ? { allowed: true, result: copy(result), replayed: true } : denied('result', '没有完整提交的打造结果。');"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 146,
+    "text": "  private replay(result: ForgeCraftResult, recipe: ForgeRecipe): ForgeGateResult {"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 153,
+    "text": "    const grades = enhance.forge.grade;"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 159,
+    "text": "  private sampleGrade(): ForgeGrade | undefined {"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 164,
+    "text": "      cumulative += enhance.forge.grade[grade];"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 169,
+    "text": "  private recipe(request: ForgeCraftRequest | undefined): ForgeRecipe | undefined {"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 171,
+    "text": "      || !isForgeId(request.craftRequestId) || !isForgeId(request.blueprintId) || !isValidForgeMaterials(request.materials)) return undefined;"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 172,
+    "text": "    let recipe: ForgeRecipe | undefined;"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 181,
+    "text": "      // 生产只读 type===forge；丹方、制符、研墨和缺 type 行都没有打造授权。"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 185,
+    "text": "        && Reflect.get(row, 'type') === 'forge' && Reflect.get(row, 'blueprint') === request.blueprintId);"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 189,
+    "text": "        || !isForgeId(row.id) || Object.prototype.hasOwnProperty.call(ITEMS, row.id)"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 199,
+    "text": "    if (!isForgeId(recipe.blueprintId) || !positiveInteger(recipe.blueprintCount) || !isValidForgeMaterials(recipe.materials)"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 200,
+    "text": "      || !isForgeId(recipe.resultItemId) || recipe.blueprintId === recipe.resultItemId"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 209,
+    "text": "    if (progress.forge === undefined) return true;"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 210,
+    "text": "    if (!isValidForgeProgress(progress.forge)) return false;"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 212,
+    "text": "    return progress.forge.crafts.every(row => {"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 227,
+    "text": "  private ownsInputs(progress: Progress, recipe: ForgeFixtureRecipe): boolean {"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 232,
+    "text": "  private async transact(apply: (draft: Progress, reject: (reason: string, text: string) => undefined) => ForgeAllowed | undefined): Promise<ForgeGateResult> {"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 233,
+    "text": "    if (this.#busy) return denied('busy', '正在保存打造结果，请稍候。');"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 235,
+    "text": "    let rejection: ForgeDenied | undefined;"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 239,
+    "text": "        if (!this.valid(draft)) return reject('progress', '打造档案不完整，已阻止歧义操作。');"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 241,
+    "text": "        if (result && !this.valid(draft)) return reject('progress', '打造结果校验失败，保持原档。');"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 244,
+    "text": "      return saved ?? rejection ?? denied('save', '打造保存失败，请重试。');"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 245,
+    "text": "    } catch { return denied('save', '打造保存失败，请重试。'); }"
+  },
+  {
+    "file": "src/ForgeOpenFlag.ts",
+    "line": 2,
+    "text": "export function isForgeOpenForFixture(): boolean { return true; }"
+  },
+  {
+    "file": "src/ForgeProgress.ts",
+    "line": 1,
+    "text": "export type ForgeGrade = 'common' | 'fine' | 'spirit' | 'treasure';"
+  },
+  {
+    "file": "src/ForgeProgress.ts",
+    "line": 2,
+    "text": "export interface ForgeMaterial { itemId: string; count: number; }"
+  },
+  {
+    "file": "src/ForgeProgress.ts",
+    "line": 3,
+    "text": "export interface ForgeCraftResult {"
+  },
+  {
+    "file": "src/ForgeProgress.ts",
+    "line": 9,
+    "text": "  materials: ForgeMaterial[];"
+  },
+  {
+    "file": "src/ForgeProgress.ts",
+    "line": 12,
+    "text": "  resultGrade: ForgeGrade;"
+  },
+  {
+    "file": "src/ForgeProgress.ts",
+    "line": 15,
+    "text": "export interface ForgeProgress {"
+  },
+  {
+    "file": "src/ForgeProgress.ts",
+    "line": 18,
+    "text": "  crafts: ForgeCraftResult[];"
+  },
+  {
+    "file": "src/ForgeProgress.ts",
+    "line": 21,
+    "text": "export const isForgeId = (value: unknown): value is string => typeof value === 'string'"
+  },
+  {
+    "file": "src/ForgeProgress.ts",
+    "line": 34,
+    "text": "export function isValidForgeMaterials(value: unknown): value is ForgeMaterial[] {"
+  },
+  {
+    "file": "src/ForgeProgress.ts",
+    "line": 38,
+    "text": "    if (!fields(row, ['itemId', 'count']) || !isForgeId(row.itemId) || !integer(row.count) || ids.has(row.itemId)) return false;"
+  },
+  {
+    "file": "src/ForgeProgress.ts",
+    "line": 42,
+    "text": "export function isForgeGrade(value: unknown): value is ForgeGrade {"
+  },
+  {
+    "file": "src/ForgeProgress.ts",
+    "line": 46,
+    "text": "export function isValidForgeProgress(value: unknown): value is ForgeProgress {"
+  },
+  {
+    "file": "src/ForgeProgress.ts",
+    "line": 48,
+    "text": "    if (!fields(value, ['version', 'ledgerId', 'crafts', 'receipts']) || value.version !== 1 || !isForgeId(value.ledgerId)"
+  },
+  {
+    "file": "src/ForgeProgress.ts",
+    "line": 53,
+    "text": "        || row.state !== 'committed' || !isForgeId(row.craftRequestId) || requests.has(row.craftRequestId)"
+  },
+  {
+    "file": "src/ForgeProgress.ts",
+    "line": 55,
+    "text": "        || !isForgeId(row.blueprintId) || !integer(row.blueprintCount) || !isValidForgeMaterials(row.materials)"
+  },
+  {
+    "file": "src/ForgeProgress.ts",
+    "line": 56,
+    "text": "        || !fields(row.resultItem, ['itemId', 'count', 'instanceRef']) || !isForgeId(row.resultItem.itemId)"
+  },
+  {
+    "file": "src/ForgeProgress.ts",
+    "line": 60,
+    "text": "        || !isForgeGrade(row.resultGrade)) return false;"
+  },
+  {
+    "file": "src/LifeSkills.ts",
+    "line": 4,
+    "text": "export type LifeSkillAction = 'alchemy' | 'forge' | 'talisman';"
+  },
+  {
+    "file": "src/LifeSkills.ts",
+    "line": 53,
+    "text": "  return recipe.type === 'forge' || recipe.type === 'forging';"
+  },
+  {
+    "file": "src/LifeSkills.ts",
+    "line": 90,
+    "text": "    const expectedAction = skillId === 'forging' ? 'forge' : skillId;"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 22,
+    "text": "import { isValidForgeProgress, type ForgeCraftResult, type ForgeProgress } from './ForgeProgress';"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 96,
+    "text": "  if (has('forge') && !isValidForgeProgress(saved.forge)) return false;"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 192,
+    "text": "  /** 保留完整打造事实；缺袋旧档不补建，读回不结算。 */"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 193,
+    "text": "  forge: ForgeProgress | undefined = undefined;"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 194,
+    "text": "  /** 等级和完整结算；正式授权另查本档打造来源，缺袋旧档不补建。 */"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 224,
+    "text": "  /** 仅预留存档及只读视图；v0.5 没有打造结算入口。 */"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 1088,
+    "text": "   * 仅在正式 ForgeGate 的同一保存事务内调用：完整成品先入库、forge 结果及收据先成立。"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 1091,
+    "text": "  registerFormalEnhanceInstance(result: ForgeCraftResult): boolean {"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 1093,
+    "text": "      const forge = this.forge;"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 1094,
+    "text": "      if (!isValidForgeProgress(forge)) return false;"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 1095,
+    "text": "      const committed = forge.crafts.find(row => row.craftResultRef === result.craftResultRef);"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 1097,
+    "text": "        || !forge.receipts.includes(committed.craftResultRef) || committed.resultItem.count !== 1) return false;"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 1098,
+    "text": "      // API 本身也核实正式配方；拥有一个测试打造账本不能绕过默认 ForgeGate 的来源边界。"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 1099,
+    "text": "      const recipes = Object.values(RECIPES).filter(row => row.type === 'forge'"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 1133,
+    "text": "        instanceRef, source: 'forge', forgeLedgerId: forge.ledgerId, craftResultRef: committed.craftResultRef,"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 1145,
+    "text": "  /** 只检查来源证明与本档完整打造绑定；装备 type、配置资格和当前持有关系交给 Gate。 */"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 1151,
+    "text": "      const forge = this.forge;"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 1152,
+    "text": "      if (source.source !== 'forge' || source.ownerSlot !== (this.#slot ?? Progress.#activeSlot)"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 1153,
+    "text": "        || !isValidForgeProgress(forge) || source.forgeLedgerId !== forge.ledgerId) return 'foreign';"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 1154,
+    "text": "      const craft = forge.crafts.find(row => row.craftResultRef === source.craftResultRef);"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 1156,
+    "text": "      return craft && forge.receipts.includes(craft.craftResultRef) && craft.resultItem.count === 1"
+  },
+  {
+    "file": "src/daily.test.ts",
+    "line": 158,
+    "text": "    p.quests[kill.id].talked = { smith_ou: true }; p.quests[kill.id].crafted = { hp_pill_small: 2 }; p.quests[kill.id].reached = true;"
+  },
+  {
+    "file": "src/daily.test.ts",
+    "line": 234,
+    "text": "      own[0].objectives = [...original, { type: 'talk', target: 'smith_ou' }, { type: 'craft', target: 'hp_pill_small', count: 1 }];"
+  },
+  {
+    "file": "src/daily.test.ts",
+    "line": 237,
+    "text": "      else if (event === 'talk') qs.onTalk('smith_ou');"
+  },
+  {
+    "file": "src/encounter-runner.test.ts",
+    "line": 184,
+    "text": "  { ...initialOffer, attemptId: 'forged', choiceId: 'medicine' },"
+  },
+  {
+    "file": "src/life-skills.test.ts",
+    "line": 114,
+    "text": "  eq(lifeSkillRecipe(config, 'forging', { ...RECIPES.recipe_hp_pill, id: '__future_forge', type: 'forge' } as never), null, '未知炼器图纸不得按默认rank开造');"
+  },
+  {
+    "file": "src/scenes/GameScene.ts",
+    "line": 73,
+    "text": "import { featureClosed as forgeFeatureClosed } from '../ForgeClosed';"
+  },
+  {
+    "file": "src/scenes/GameScene.ts",
+    "line": 74,
+    "text": "import { isForgeOpenForFixture } from '../ForgeOpenFlag';"
+  },
+  {
+    "file": "src/scenes/GameScene.ts",
+    "line": 75,
+    "text": "import { ForgeGate } from '../ForgeGate';"
+  },
+  {
+    "file": "src/scenes/GameScene.ts",
+    "line": 944,
+    "text": "      && (this.tryInteractTowerClosed() || this.tryInteractMarketConsign() || this.tryInteractForgeEntrance() || this.tryInteractSecretNest() || this.encounterRuntime?.interact() || this.interactTrialObject() || this.openNearbyFurnace() || this.talkNearby())) return;"
+  },
+  {
+    "file": "src/scenes/GameScene.ts",
+    "line": 2107,
+    "text": "    if (this.tryInteractForgeEntrance()) return true;"
+  },
+  {
+    "file": "src/scenes/GameScene.ts",
+    "line": 2164,
+    "text": "  private tryInteractForgeEntrance(): boolean {"
+  },
+  {
+    "file": "src/scenes/GameScene.ts",
+    "line": 2165,
+    "text": "    const entrance = this.map.objects.find(o => (o.name === 'smith_ou' || o.props?.npc === 'smith_ou')"
+  },
+  {
+    "file": "src/scenes/GameScene.ts",
+    "line": 2169,
+    "text": "    if (!isForgeOpenForFixture()) this.log(forgeFeatureClosed().text, '#aaaaaa');"
+  },
+  {
+    "file": "src/scenes/GameScene.ts",
+    "line": 2171,
+    "text": "      const result = new ForgeGate(this.prog).entrance();"
+  },
+  {
+    "file": "src/scenes/GameScene.ts",
+    "line": 2172,
+    "text": "      this.log(result.allowed ? '炼器打造已开放。' : result.text, result.allowed ? '#fff8d0' : '#aaaaaa');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 12,
+    "text": "import { ForgeGate } from './ForgeGate';"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 251,
+    "text": "    const entrance = { name: 'smith_ou', type: 'npc', props: { npc: 'smith_ou' }, x: 100, y: 200 };"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 252,
+    "text": "    const forgeTip = { text: '炼器打造已开放。', color: '#fff8d0' };"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 262,
+    "text": "    eq(typeof scene.tryInteractForgeEntrance, 'function', 'Scene既有欧冶匠最小入口存在');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 263,
+    "text": "    eq(scene.tryInteractForgeEntrance(), false, '没有对象时安静no-op');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 265,
+    "text": "    eq(scene.tryInteractForgeEntrance(), false, '非smith_ou对象不消费强化入口');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 267,
+    "text": "    eq(scene.tryInteractForgeEntrance(), false, '入口横向超距不交互');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 269,
+    "text": "    eq(scene.tryInteractForgeEntrance(), false, '入口纵向超距不交互');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 271,
+    "text": "    eq(scene.tryInteractForgeEntrance(), false, '隐藏欧冶匠不交互');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 276,
+    "text": "      eq(scene.tryInteractForgeEntrance(), true, `${object.name}邻近欧冶匠被消费`);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 277,
+    "text": "      eq(logs.slice(logStart), [forgeTip, enhanceTip, enchantTip, salvageTip], '同一次smith_ou命中forge→enhance→enchant→salvage，既有强化附灵不被return饿死');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 281,
+    "text": "    eq(scene.tryInteractForgeEntrance(), true, '28×40范围边界内四项入口仍可冒烟');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 282,
+    "text": "    eq(logs.slice(logStart), [forgeTip, enhanceTip, enchantTip, salvageTip], '距离边界保持打造顺序与强化提示');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 285,
+    "text": "    eq(logs.slice(logStart), [forgeTip, enhanceTip, enchantTip, salvageTip], '通用交互同命中四项入口且不重复提示');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 295,
+    "text": "      eq(scene.tryInteractForgeEntrance(), true, '最小入口保留EnhanceGate拒绝提示分支');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 297,
+    "text": "      eq(logs.slice(logStart), [forgeTip, { text: openFixture ? '强化冒烟拒绝。' : Closed.featureClosed().text,"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 298,
+    "text": "        color: '#aaaaaa' }, enchantTip, salvageTip], 'Gate拒绝原文或内存关态tip展示，打造及附灵既有提示保持');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 300,
+    "text": "    eq(p.exportSave(), before, 'Scene冒烟不修改角色、打造袋或强化袋');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 304,
+    "text": "      objectName: 'smith_ou', npcProp: 'smith_ou', boundary: { x: 28, y: 40 }, genericInteraction: true,"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 305,
+    "text": "      graph: openFixture ? 'formal-open' : 'memory-closed', sameHitForgeThenEnhance: true, sameHitForgeThenEnhanceThenEnchant: true, sameHitForgeThenEnhanceThenEnchantThenSalvage: true,"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 306,
+    "text": "      forgeSoftOpenPreserved: true, enhanceNotStarved: true, gateDeniedRouting: openFixture,"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 650,
+    "text": "  /** design/28 §4.3 O01–O06：护符 soft-open 正式磁盘图；仅取默认 Forge 正式来源，测试显式准备库存。 */"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 652,
+    "text": "    const recipe = recipes.recipes.find(row => row.type === 'forge' && row.output === 'bamboo_sword')!;"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 660,
+    "text": "      const forge = new ForgeGate(p, { random: () => 0, ledgerId: () => `${dataMode}-protect-source-${++sourceSequence}` });"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 661,
+    "text": "      const craft = (id: string) => forge.submit({ craftRequestId: id, blueprintId: recipe.blueprint!,"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 663,
+    "text": "      const forged = await craft(`protect-${name}-source`);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 664,
+    "text": "      ok(forged.allowed && forged.result, 'design28 O01默认Forge完整成品提供正式实例来源');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 665,
+    "text": "      const ref = forged.result.resultItem.instanceRef, gate = new EnhanceGate(p, options());"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 735,
+    "text": "        const other = await f.craft('protect-open-second-asset'); ok(other.allowed && other.result, 'design28 O04共享护符的第二件装备来自正式打造');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 874,
+    "text": "      source: 'default-ForgeGate-committed-result', productionFixtureInstances: false, explicitInventoryInjection: true,"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 883,
+    "text": "  /** 正式 O 表：只从默认 ForgeGate 的完整成品登记取实例，强化从不注入 fixtureInstances。 */"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 885,
+    "text": "    const recipe = recipes.recipes.find(row => row.type === 'forge' && row.output === 'bamboo_sword')!;"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 886,
+    "text": "    ok(recipe, 'O01使用正式recipes已有打造行');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 887,
+    "text": "    let forgeSequence = 0, forgeSamples = 0;"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 893,
+    "text": "      const forge = new ForgeGate(p, { random: () => { forgeSamples++; return 0; },"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 894,
+    "text": "        ledgerId: () => `${dataMode}-formal-forge-${++forgeSequence}` });"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 895,
+    "text": "      const craft = (id: string) => forge.submit({ craftRequestId: id, blueprintId: recipe.blueprint!,"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 897,
+    "text": "      return { p, forge, craft };"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 901,
+    "text": "      ok(result.allowed && result.result, 'O01默认正式ForgeGate返回完整committed成品');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 902,
+    "text": "      eq(result.result.state, 'committed', 'O01未完成打造不作正式源');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 904,
+    "text": "      eq(ref, `${result.result.craftResultRef}:item`, 'O01身份严格来自打造完整结果');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 908,
+    "text": "      eq(f.p.formalEnhanceInstanceStatus(ref), 'registered', 'O01完整打造成品取得本档正式来源状态');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 909,
+    "text": "      eq(f.p.enhance!.formalSources!.map(source => source.instanceRef), [ref], 'O01来源证明精确绑定同次打造成品身份');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 910,
+    "text": "      eq(idb.writes, writes + 1, 'O01打造入库与正式实例登记同一次IDB写入');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 912,
+    "text": "      eq(disk.forge, f.p.forge, 'O01磁盘完整打造结果同次可见');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 917,
+    "text": "    ok(second.allowed && second.result, 'O01同原型第二件实际打造成品');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 919,
+    "text": "    ok(selected.ref !== secondRef, 'O01同原型两件有不同打造身份');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 947,
+    "text": "    const longResult = await new ForgeGate(longSource.p, { random: () => 0, ledgerId: () => longLedger }).submit({"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 951,
+    "text": "    ok(longResult.allowed && longResult.result, 'O01合法Forge最大长度身份同事务登记');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 954,
+    "text": "      'O01合法最长Forge成品无需fixture可选');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 958,
+    "text": "    const injectedResult = await new ForgeGate(injected.p, { fixtureRecipes: [fixtureRecipe], random: () => 0,"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 959,
+    "text": "      ledgerId: () => `${dataMode}-fixture-forge-source` }).submit({ craftRequestId: 'fixture-cannot-register',"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 961,
+    "text": "    ok(injectedResult.allowed && injectedResult.result, 'O08保留显式Forge夹具成功能力');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 962,
+    "text": "    eq(injected.p.enhance, undefined, 'O08夹具Forge完整结果不自动登记正式来源');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 966,
+    "text": "      'no_instance', 'O08Forge夹具完整结果形如正式ref仍不授权生产强化');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 974,
+    "text": "      eq(result.instanceRef, success.ref, 'O02正式成功始终保留原打造身份');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1042,
+    "text": "    ok(another.allowed && another.result, 'O07第二件正式争用实例来自实际打造');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1070,
+    "text": "        ok(second.allowed && second.result, 'O07独立Progress共享资源争用使用第二件正式打造资产');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1095,
+    "text": "    const forgeInterrupted = prepare(), beforeForge = forgeInterrupted.p.exportSave(), forgeHold = idb.holdNextCommit(), pendingForge = forgeInterrupted.craft('formal-forge-aborted');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1096,
+    "text": "    await forgeHold.started; eq(forgeInterrupted.p.exportSave(), beforeForge, 'O01/O07打造complete前不发布成品或正式登记');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1097,
+    "text": "    idb.abortNextCommit(); forgeHold.release(); eq((await pendingForge).allowed, false, 'O07打造中断不留下正式授权');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1098,
+    "text": "    eq(forgeInterrupted.p.exportSave(), beforeForge, 'O07打造费用成品来源一同回滚'); eq(forgeInterrupted.p.enhance, undefined, 'O07中断不补空正式袋');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1111,
+    "text": "      other.enhance = copy(selected.p.enhance); other.forge = copy(selected.p.forge);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1112,
+    "text": "      eq(other.formalEnhanceInstanceStatus(selected.ref), 'foreign', 'O08连来源和打造袋复制到另一槽仍识别foreign');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1119,
+    "text": "      'no_instance', 'O08即使ref形如打造且有完整历史结果，纯历史袋不授权新提交');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1122,
+    "text": "    return { source: 'default-ForgeGate-committed-result', productionFixtureInstances: false, registeredAtForgeCommit: true,"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1124,
+    "text": "      crossSlotForeign: true, historicalFixtureAuthorizesSubmit: false, forgeSamples,"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1150,
+    "text": "      const recipe = recipes.recipes.find(row => row.type === 'forge' && row.output === 'bamboo_sword')!;"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1153,
+    "text": "      const forged = await new ForgeGate(formal, { random: () => 0, ledgerId: () => `invalid-${invalidTable}` }).submit({"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1157,
+    "text": "      ok(forged.allowed && forged.result, 'O06坏强化表不妨碍正式默认打造成品来源登记');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1158,
+    "text": "      const formalRef = forged.result.resultItem.instanceRef;"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 1,
+    "text": "// 正式炼器恒开；只有独立 Vite SSR 关态图可将 ForgeOpenFlag 内存注入 false。"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 8,
+    "text": "import * as Closed from './ForgeClosed';"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 9,
+    "text": "import { ForgeGate } from './ForgeGate';"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 10,
+    "text": "import { isForgeOpenForFixture } from './ForgeOpenFlag';"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 11,
+    "text": "import { isValidForgeProgress } from './ForgeProgress';"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 15,
+    "text": "type GateResult = Awaited<ReturnType<ForgeGate['submit']>>;"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 98,
+    "text": "export async function runForgeOpenFixtureTests(options: {"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 119,
+    "text": "    random: () => { sampleCount++; return sampled; }, ledgerId: () => `${dataMode}-forge-${++ledgerSeq}` });"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 120,
+    "text": "  eq(isForgeOpenForFixture(), openFixture, '旗标来自当前独立SSR图');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 121,
+    "text": "  eq(enhance.forge.grade, { common: 0.6, fine: 0.3, spirit: 0.09, treasure: 0.01 }, '品质只读既有enhance.forge.grade');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 124,
+    "text": "  ok(!Object.keys(flags).some(key => /forge|forging/iu.test(key)), '不增加配表炼器开放开关');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 139,
+    "text": "    return { p, gate: new ForgeGate(p, fixtureOptions()) };"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 144,
+    "text": "    ok('tipKey' in result && result.tipKey.startsWith('forge.fixture.'), `${message}：明确业务拒绝`);"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 157,
+    "text": "  async function replay(p: Progress, gate: ForgeGate, input: ReturnType<typeof request>, message: string) {"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 162,
+    "text": "      eq(first.result, p.forge!.crafts.find(row => row.craftRequestId === input.craftRequestId), `${message}：返回既有结果`);"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 173,
+    "text": "    const gate = new ForgeGate(p, { ...fixtureOptions(), random: fail, ledgerId: fail, canReceiveResult: fail });"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 202,
+    "text": "    const guarded = new ForgeGate(p, opts);"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 209,
+    "text": "    eq(p.forge, payload.save.forge, `${payload.state}：import保留成品品质去重`);"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 213,
+    "text": "    eq(restored.forge, payload.save.forge, `${payload.state}：真实restore保留完整炼器袋`);"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 216,
+    "text": "    eq(loaded.forge, payload.save.forge, `${payload.state}：真实IDB读档保留完整炼器袋`);"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 220,
+    "text": "    const gate = new ForgeGate(loaded, fixtureOptions());"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 224,
+    "text": "    eq(record, loaded.forge!.crafts[0], `${payload.state}：结果只读且引用品质一致`);"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 234,
+    "text": "    const entrance = { name: 'smith_ou', type: 'npc', props: { npc: 'smith_ou' }, x: 100, y: 200 };"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 240,
+    "text": "    eq(typeof scene.tryInteractForgeEntrance, 'function', 'Scene最小炼器入口存在');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 241,
+    "text": "    eq(scene.tryInteractForgeEntrance(), false, '没有对象时安静no-op');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 243,
+    "text": "    eq(scene.tryInteractForgeEntrance(), false, '普通NPC商店不是炼器入口');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 245,
+    "text": "    eq(scene.tryInteractForgeEntrance(), false, '入口横向超距不交互');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 247,
+    "text": "    eq(scene.tryInteractForgeEntrance(), false, '入口纵向超距不交互');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 249,
+    "text": "    eq(scene.tryInteractForgeEntrance(), false, '隐藏欧冶匠不交互');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 252,
+    "text": "    for (const object of [{ ...entrance, props: {} }, { ...entrance, name: 'forge-smoke-alias' }]) {"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 254,
+    "text": "      eq(scene.tryInteractForgeEntrance(), true, `${object.name}邻近欧冶匠被消费`);"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 256,
+    "text": "        ? { text: '炼器打造已开放。', color: '#fff8d0' }"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 258,
+    "text": "      eq(logs[logs.length - 3], { text: '装备强化已开放。', color: '#aaaaaa' }, '同次命中在打造提示后显示强化正式开态提示');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 259,
+    "text": "      eq(logs[logs.length - 2], { text: '装备附灵已开放。', color: '#aaaaaa' }, '同次命中在打造强化提示后显示附灵正式开态提示');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 260,
+    "text": "      eq(logs[logs.length - 1], { text: '装备分解已开放。', color: '#aaaaaa' }, '同次命中在打造强化附灵提示后显示分解正式开态提示');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 263,
+    "text": "    eq(scene.tryInteractForgeEntrance(), true, '28×40范围边界内仍可冒烟');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 266,
+    "text": "    const originalEntrance = ForgeGate.prototype.entrance;"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 269,
+    "text": "      ForgeGate.prototype.entrance = function () {"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 271,
+    "text": "        if (!openFixture) throw new Error('内存关态不得查询ForgeGate');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 272,
+    "text": "        return { allowed: false, tipKey: 'forge.fixture.smoke', text: '炼器冒烟拒绝。' };"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 274,
+    "text": "      eq(scene.tryInteractForgeEntrance(), true, '最小入口保留Gate拒绝提示分支');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 275,
+    "text": "      eq(entranceCalls, openFixture ? 1 : 0, '只有正式开态查询ForgeGate.entrance');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 278,
+    "text": "      eq(logs[logs.length - 3], { text: '装备强化已开放。', color: '#aaaaaa' }, '同次命中在打造提示后显示强化正式开态提示');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 279,
+    "text": "      eq(logs[logs.length - 2], { text: '装备附灵已开放。', color: '#aaaaaa' }, '同次命中在打造强化提示后显示附灵正式开态提示');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 280,
+    "text": "      eq(logs[logs.length - 1], { text: '装备分解已开放。', color: '#aaaaaa' }, '同次命中在打造强化附灵提示后显示分解正式开态提示');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 281,
+    "text": "    } finally { ForgeGate.prototype.entrance = originalEntrance; }"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 285,
+    "text": "      objectName: 'smith_ou', npcProp: 'smith_ou', genericInteraction: true,"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 290,
+    "text": "    const formalRows = recipes.recipes.filter(row => 'type' in row && row.type === 'forge');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 291,
+    "text": "    eq(formalRows.length, 1, '正式表forge恰一条');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 293,
+    "text": "    eq(formal, { id: 'recipe_forge_bamboo_sword', name: '青竹剑', type: 'forge',"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 296,
+    "text": "    const { p } = fixture(), gate = new ForgeGate(p);"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 312,
+    "text": "    ok(Object.keys(enhance.forge.grade).includes(result.resultGrade), '默认品质来自enhance.forge.grade枚举');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 313,
+    "text": "    eq(p.forge!.receipts, [result.craftResultRef], '正式原子提交唯一收据');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 316,
+    "text": "    eq((await saveStore.readSlot(1))!.data.forge, p.exportSave().forge, '正式结果真实IDB一致');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 320,
+    "text": "      const formalGate = new ForgeGate(f.p, { random: () => random });"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 322,
+    "text": "      eq(record.resultGrade, grade, '正式路径四品质仅按enhance.forge.grade抽样');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 329,
+    "text": "      const rejected = new ForgeGate(f.p, { formalRecipes: rows, random: () => { sampleCount++; return 0.1; } });"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 332,
+    "text": "        eq('tipKey' in rejectedResult ? rejectedResult.tipKey : null, 'forge.fixture.recipe', `${message}：明确拒recipe`);"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 336,
+    "text": "      eq(f.p.forge, undefined, `${message}：无请求或袋`);"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 339,
+    "text": "    await rejectsRows(recipes.recipes.filter(row => !('type' in row) || row.type !== 'forge'), '丹方制符研墨不可消费');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 347,
+    "text": "      await rejectsRows([{ ...formal, type }], `正式类型${type}不得打造`);"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 364,
+    "text": "    await rejectsRows([{ ...formal, type: 'talisman' }, copy(formal)], '正式id与非forge配方重复仍拒绝');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 365,
+    "text": "    await rejectsRows([copy(formal), { ...formal, id: 'recipe_forge_ambiguous' }], '正式同图纸歧义拒绝');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 368,
+    "text": "    const explicit = new ForgeGate(isolated.p, { fixtureRecipes: [copy(recipe)], formalRecipes: [] });"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 372,
+    "text": "    const emptyFixture = new ForgeGate(fixtureOnly.p, { fixtureRecipes: [], formalRecipes: [copy(formal)] });"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 375,
+    "text": "    const foreignFixture = new ForgeGate(fixtureOnly.p, { formalRecipes: [copy(formal)], fixtureRecipes: ["
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 382,
+    "text": "    const multiGate = new ForgeGate(multi.p, { formalRecipes: [multiRow], random: () => 0.75 });"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 397,
+    "text": "      ok(isValidForgeProgress(multi.p.forge), '多数量结果保存结构合法');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 404,
+    "text": "    eq(imported.p.forge, multi.p.forge, '多数量导入不变');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 405,
+    "text": "    ok(new ForgeGate(imported.p, { formalRecipes: [multiRow] }).loadRefresh().allowed, '多数量读回匹配表数量');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 406,
+    "text": "    await unchanged(imported.p, () => new ForgeGate(imported.p).loadRefresh(), '历史数量与当前正式表不符阻写不修复');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 408,
+    "text": "    await unchanged(overflow.p, () => new ForgeGate(overflow.p, { formalRecipes: [multiRow] }).submit(request()),"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 423,
+    "text": "      for (const forge of [undefined, { craftRequestId: 'old-request', state: 'pending' },"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 425,
+    "text": "        const { p } = fixture(); (p as any).forge = copy(forge);"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 430,
+    "text": "      eq(p.forge, undefined, '缺字段旧档forge保持undefined');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 431,
+    "text": "      eq(Object.prototype.hasOwnProperty.call(initial, 'forge'), false, '旧档export不凭空补袋');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 447,
+    "text": "        eq(result.resultGrade, grade, `O03 ${grade}按enhance.forge.grade累积概率抽样`);"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 450,
+    "text": "        eq(result.craftResultRef, `${f.p.forge!.ledgerId}:craft:${id}`, `O03 ${grade}去重引用关联实际提交`);"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 452,
+    "text": "        eq(f.p.forge!.crafts, [result], `O03 ${grade}完整结果同次入袋`);"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 453,
+    "text": "        eq(f.p.forge!.receipts.length, 1, `O03 ${grade}唯一提交收据同次成立`);"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 462,
+    "text": "        eq((await saveStore.readSlot(1))!.data.forge, f.p.exportSave().forge, `O03 ${grade}IDB完整结果一致`);"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 463,
+    "text": "        ok(isValidForgeProgress(f.p.forge), `O03 ${grade}完整袋结构合法`);"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 487,
+    "text": "      await unchanged(noMapping.p, () => new ForgeGate(noMapping.p, { fixtureRecipes: [] }).submit(request()), 'O05显式空夹具授权映射');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 495,
+    "text": "        const f = fixture(), malformed = new ForgeGate(f.p, { ...fixtureOptions(), fixtureRecipes: [bad] });"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 501,
+    "text": "        const f = fixture(), badRandom = new ForgeGate(f.p, { ...fixtureOptions(), random: () => random as number });"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 505,
+    "text": "      await unchanged(thrownRandom.p, () => new ForgeGate(thrownRandom.p, { ...fixtureOptions(),"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 512,
+    "text": "      const full = fixture(), blocked = new ForgeGate(full.p, { ...fixtureOptions(), canReceiveResult: () => false });"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 538,
+    "text": "      eq(interrupted.p.forge!.crafts.length, 1, 'O06重试只有一个结果');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 545,
+    "text": "        const other = sameGate ? f.gate : new ForgeGate(f.p, fixtureOptions());"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 550,
+    "text": "        eq(f.p.forge!.crafts.length, 1, 'O07连点唯一结果');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 551,
+    "text": "        eq(f.p.forge!.receipts.length, 1, 'O07连点唯一去重事实');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 559,
+    "text": "      const raceResults = await Promise.all([race.gate, new ForgeGate(race.p, fixtureOptions()), new ForgeGate(race.p, fixtureOptions())]"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 565,
+    "text": "      eq(race.p.forge!.crafts.length, 1, 'O07争用无半完成请求');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 576,
+    "text": "      eq(loadedA.forge, saveA.forge, 'O04 B档保存不覆盖A档炼器袋');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 581,
+    "text": "      eq(slotA.p.forge, saveA.forge, 'O04篡改视图不改真实品质结果');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 584,
+    "text": "      const good = copy(payloads[0].save), goodForge = copy(good.forge) as any;"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 585,
+    "text": "      const corruptions: ((forge: any) => void)[] = ["
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 593,
+    "text": "        const forge = copy(goodForge); damage(forge);"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 594,
+    "text": "        eq(isValidForgeProgress(forge), false, 'O08未知品质状态/坏引用/收据校验拒绝');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 596,
+    "text": "        eq(await f.p.importSave({ ...copy(good), forge }, { async: true }), false, 'O08损坏袋import拒绝');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 599,
+    "text": "        (f.p as any).forge = copy(forge);"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 604,
+    "text": "      for (const forge of [{ craftRequestId: 'old-pending', state: 'pending' }, { state: 'unknown' }]) {"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 605,
+    "text": "        const f = fixture(); (f.p as any).forge = copy(forge);"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 610,
+    "text": "      eq(await absent.p.importSave(copy(oldSave), { async: true }), true, 'O08缺forge字段旧档仍可导入');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 611,
+    "text": "      eq(absent.p.forge, undefined, 'O08旧档导入不补forge袋');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 612,
+    "text": "      eq(Object.prototype.hasOwnProperty.call(absent.p.exportSave(), 'forge'), false, 'O08旧档重导出不建待补做记录');"
+  },
+  {
+    "file": "src/v06p1-market-open.test.ts",
+    "line": 421,
+    "text": "        m => { m.listings[0].settlementRef = 'foreign'; }, m => { m.listings[0].claimRef = 'forged'; },"
+  },
+  {
+    "file": "src/v06p1-market-open.test.ts",
+    "line": 422,
+    "text": "        m => { m.listings[0].pendingRewardRef = { id: 'forged', amount: -1 }; },"
+  }
+]

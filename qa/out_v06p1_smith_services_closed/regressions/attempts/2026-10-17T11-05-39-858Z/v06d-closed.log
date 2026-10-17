@@ -1,0 +1,562 @@
+
+> xiantu-island@0.0.1 test:v06d-closed
+> timeout 120s node scripts/v06d-closed-test.mjs
+
+{"suite":"v06d-closed-static","dataMode":"shared","formalOpen":true,"closedFixtureOnly":true,"softOpened":true,"released":false,"passed":true,"strings":1013,"giftsEnabled":false,"floorCount":30,"towerSha":"735000b538b06142053fc2aa8e106a1e9e4f500755712b4df095e690b80c37b6","titlesSha":"d765004ff1c75e11c0f64bc05d5eb07b96b00122264692140c01233df96fdb8c","stringsSha":"d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841","npcsSha":"2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6","mapSha":"6c5393853301e449482db4c3dbc140b289189a1d8d627c7e3934f5dbcfdd6f56"}
+{"suite":"v06d-closed-static","dataMode":"snapshot","formalOpen":true,"closedFixtureOnly":true,"softOpened":true,"released":false,"passed":true,"strings":1013,"giftsEnabled":false,"floorCount":30,"towerSha":"735000b538b06142053fc2aa8e106a1e9e4f500755712b4df095e690b80c37b6","titlesSha":"d765004ff1c75e11c0f64bc05d5eb07b96b00122264692140c01233df96fdb8c","stringsSha":"d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841","npcsSha":"2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6","mapSha":"6c5393853301e449482db4c3dbc140b289189a1d8d627c7e3934f5dbcfdd6f56"}
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: game既有strings952与shared仅差八条分解键，完整同字节
++ actual - expected ... Lines skipped
+
+  '{\n' +
+    '  "_meta": {\n' +
+...
+    '  "enc.ui.resolved": "奇遇已记入见闻。",\n' +
+    '  "enc.ui.pending_reward": "请整理背包，再领取本次所得。",\n' +
++   '  "enc.ui.actu'... 32406 more characters
+-   '  "enc.ui.actu'... 31562 more characters
+    at eq (file:///workspace/xiantu/wt/dev/scripts/v06d-closed-test.mjs:84:66)
+    at file:///workspace/xiantu/wt/dev/scripts/v06d-closed-test.mjs:421:7 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: '{\n' +
+    '  "_meta": {\n' +
+    '    "version": "0.3",\n' +
+    '    "owner": "天机阁",\n' +
+    '    "note": "UI 与系统提示文案表。程序按 key 取文本，{x} 为占位符。新增文案请追加 key，不要改已有 key。"\n' +
+    '  },\n' +
+    '  "key.move": "← → 移动",\n' +
+    '  "key.jump": "Alt / 空格 跳跃，空中再按一次二段跳",\n' +
+    '  "key.climb": "↑ ↓ 爬绳 / 爬梯",\n' +
+    '  "key.drop": "↓ + 跳跃 穿下平台",\n' +
+    '  "key.attack": "Ctrl / X 普攻（按住连击）",\n' +
+    '  "key.pickup": "Z 拾取（按住连捡）",\n' +
+    '  "key.talk": "Z / ↑ 与 NPC 对话",\n' +
+    '  "key.inventory": "I 背包",\n' +
+    '  "key.equip": "E 装备",\n' +
+    '  "key.skill": "K 技能",\n' +
+    '  "key.quest": "Q 任务",\n' +
+    '  "key.quickslot": "1–8 快捷栏",\n' +
+    '  "tip.first_move": "用 ← → 走动，Alt 跳跃。",\n' +
+    '  "tip.first_rope": "站在绳子旁按 ↑ 抓住，↑ ↓ 上下爬，按跳跃离开。",\n' +
+    '  "tip.first_ladder": "站在梯子前按 ↑ 爬梯。",\n' +
+    '  "tip.first_double_jump": "跳起后在半空再按一次跳跃，就是二段跳。",\n' +
+    '  "tip.first_oneway": "站在薄平台上按 ↓ + 跳跃，可以穿下去。",\n' +
+    '  "tip.first_portal": "站在传送门上按 ↑ 进入下一张地图。",\n' +
+    '  "tip.first_monster": "按 Ctrl 攻击。被怪物碰到会掉气血并被击退。",\n' +
+    '  "tip.first_drop": "怪物掉落了东西，靠近按 Z 拾取。",\n' +
+    '  "tip.first_equip": "获得了{item}，按 E 打开装备栏装备它。",\n' +
+    '  "tip.first_potion": "气血不足时，按快捷键服用回春丹。",\n' +
+    '  "tip.first_shop": "在商店 NPC 处可以出售材料、购买装备。",\n' +
+    '  "tip.first_aggressive": "这种妖兽会主动攻击，小心！",\n' +
+    '  "tip.first_telegraph": "山魈抬手要拍地了，及时跳开！",\n' +
+    '  "tip.first_sp": "你有未分配的技能点，按 K 打开技能窗口。",\n' +
+    '  "sys.level_up": "修为精进！等级提升到 {level}。",\n' +
+    '  "sys.exp_gain": "修为 +{exp}",\n' +
+    '  "sys.stone_gain": "灵石 +{n}",\n' +
+    '  "sys.item_gain": "获得 {item} ×{n}",\n' +
+    '  "sys.bag_full": "背包已满，无法拾取。",\n' +
+    '  "sys.mp_low": "灵力不足，可以服用回气丹，或者等待灵力自然恢复。",\n' +
+    '  "sys.hp_low": "气血告急！",\n' +
+    '  "sys.dead": "你倒下了……将在最近的村镇醒来。",\n' +
+    '  "sys.respawn_penalty": "损失了 {exp} 修为。",\n' +
+    '  "sys.portal_locked": "前方道路尚未开放。",\n' +
+    '  "sys.saved": "已自动存档。",\n' +
+    '  "sys.save_reset": "存档已重置。",\n' +
+    '  "realm.bottleneck": "修为已满，需突破",\n' +
+    '  "realm.bottleneck_tip": "你已到{realm}圆满，修为不再增长。去找{npc}寻求突破之法。",\n' +
+    '  "realm.overflow_tip": "溢出修为 {n}/{max}，突破后返还",\n' +
+    '  "realm.overflow_full": "溢出池已满，再打怪的修为不会再存了，快去突破吧。",\n' +
+    '  "realm.overflow_gain": "（存入溢出池）",\n' +
+    '  "realm.breakthrough_ok": "突破成功·{realm}",\n' +
+    '  "realm.breakthrough_fail": "突破失败……境界不稳",\n' +
+    '  "realm.unstable": "境界不稳：全属性下降，持续 {min} 分钟。",\n' +
+    '  "realm.stage.0": "初期",\n' +
+    '  "realm.stage.1": "中期",\n' +
+    '  "realm.stage.2": "后期",\n' +
+    '  "realm.stage.3": "圆满",\n' +
+    '  "quest.accept": "接受任务：{name}",\n' +
+    '  "quest.progress": "{target} {cur}/{max}",\n' +
+    '  "quest.complete_ready": "任务「{name}」可以交付了，回去找{npc}。",\n' +
+    '  "quest.complete": "完成任务：{name}",\n' +
+    '  "quest.mark_available": "!",\n' +
+    '  "quest.mark_ready": "?",\n' +
+    '  "skill.learned": "你领悟了「{skill}」！",\n' +
+    '  "skill.learned_first": "你领悟了「剑气斩」！打开技能窗口（K），把它拖进快捷栏。",\n' +
+    '  "skill.job_advance": "拜入天剑宗后，你学会了「回风剑」「轻身术」。打开技能窗口（K）查看本宗功法。",\n' +
+    '  "skill.cooldown": "技能还在冷却中。",\n' +
+    '  "skill.buff_expiring": "{skill}即将结束",\n' +
+    '  "skill.sp_left": "剩余技能点：{n}",\n' +
+    '  "job.none": "凡人",\n' +
+    '  "job.tianjian_disciple": "天剑宗·剑徒",\n' +
+    '  "ui.hp": "气血",\n' +
+    '  "ui.mp": "灵力",\n' +
+    '  "ui.exp": "修为",\n' +
+    '  "ui.stone": "灵石",\n' +
+    '  "ui.level": "等级",\n' +
+    '  "ui.realm": "境界",\n' +
+    '  "ui.atk": "攻击",\n' +
+    '  "ui.def": "防御",\n' +
+    '  "ui.rootBone": "根骨",\n' +
+    '  "ui.attr.title": "加点",\n' +
+    '  "ui.attr.remaining": "剩余点数：{n}",\n' +
+    '  "ui.attr.planned": "待分配：{n}",\n' +
+    '  "ui.attr.attribute": "属性",\n' +
+    '  "ui.attr.current": "当前值",\n' +
+    '  "ui.attr.draft": "待分配",\n' +
+    '  "ui.attr.value_hint": "当前值含功法加成；减号仅撤回待分配点数。",\n' +
+    '  "ui.attr.confirm_hint": "确认分配 {n} 点？再点确认后生效。",\n' +
+    '  "ui.attr.ready": "调整完毕后，点击确认提交。",\n' +
+    '  "ui.attr.empty": "请先选择要分配的属性点。",\n' +
+    '  "ui.attr.cancel": "取消",\n' +
+    '  "ui.attr.confirm": "确认",\n' +
+    '  "ui.attr.keys": "↑↓ 选择  ←→ 加减  回车 确认  Esc / P 关闭",\n' +
+    '  "ui.attr.success": "加点完成。",\n' +
+    '  "ui.attr.overspend": "可分配点不足，请调整后再确认。",\n' +
+    '  "ui.attr.invalid": "分配无效，请重新调整。",\n' +
+    '  "ui.attr.save_failed": "存档未成功，属性点已保留，请重试。",\n' +
+    '  "ui.inv.title": "背包",\n' +
+    '  "ui.inv.tab_all": "全部",\n' +
+    '  "ui.inv.tab_equip": "装备",\n' +
+    '  "ui.inv.tab_consume": "消耗",\n' +
+    '  "ui.inv.tab_material": "材料",\n' +
+    '  "ui.inv.tab_other": "其他",\n' +
+    '  "ui.inv.empty": "此页暂无物品",\n' +
+    '  "ui.inv.stones": "灵石 {n}",\n' +
+    '  "ui.inv.select": "选择物品查看操作",\n' +
+    '  "ui.inv.equip": "穿上",\n' +
+    '  "ui.inv.furnace": "使用丹炉",\n' +
+    '  "ui.inv.token": "五宗令",\n' +
+    '  "ui.inv.held": "持有物品",\n' +
+    '  "ui.inv.equipped": "已穿上{item}。",\n' +
+    '  "ui.inv.unavailable": "当前无法使用，请稍后再试。",\n' +
+    '  "ui.inv.keys": "方向键选择 · 回车使用 · Esc / I 关闭",\n' +
+    '  "ui.equip.title": "装备",\n' +
+    '  "ui.equip.base": "素衣",\n' +
+    '  "ui.equip.weapon": "武器",\n' +
+    '  "ui.equip.robe": "道袍",\n' +
+    '  "ui.equip.shoes": "鞋",\n' +
+    '  "ui.equip.click": "点击装备格卸下 · 方向键选择 / 回车卸下",\n' +
+    '  "ui.equip.atk": "攻击",\n' +
+    '  "ui.equip.def": "防御",\n' +
+    '  "ui.equip.hp": "气血",\n' +
+    '  "ui.equip.mp": "灵力",\n' +
+    '  "ui.equip.speed": "速度",\n' +
+    '  "ui.equip.matk": "法攻",\n' +
+    '  "ui.equip.removed": "已卸下{item}。",\n' +
+    '  "ui.equip.keys": "Esc / E 关闭 · I 切换背包",\n' +
+    '  "ui.equip.reason_invalid": "这件物品不能穿戴。",\n' +
+    '  "ui.equip.reason_missing": "背包中没有这件装备。",\n' +
+    '  "ui.equip.reason_sect": "宗门不符，无法穿戴。",\n' +
+    '  "ui.equip.reason_level": "等级不足，无法穿戴。",\n' +
+    '  "ui.equip.reason_empty": "此栏位没有装备。",\n' +
+    '  "ui.equip.reason_overflow": "背包数量已达上限。",\n' +
+    '  "ui.equip.reason_save": "存档未成功，穿脱已撤回，请重试。",\n' +
+    '  "ui.agility": "身法",\n' +
+    '  "ui.spirit": "神识",\n' +
+    '  "ui.insight": "悟性",\n' +
+    '  "ui.inventory": "行囊",\n' +
+    '  "ui.equipment": "装备",\n' +
+    '  "ui.skills": "功法",\n' +
+    '  "ui.quests": "任务",\n' +
+    '  "ui.slot.weapon": "武器",\n' +
+    '  "ui.slot.robe": "道袍",\n' +
+    '  "ui.slot.shoes": "鞋履",\n' +
+    '  "ui.shop.buy": "购买",\n' +
+    '  "ui.shop.sell": "出售",\n' +
+    '  "ui.shop.not_enough": "灵石不足。",\n' +
+    '  "ui.dialog.next": "▼ 继续",\n' +
+    '  "ui.dialog.close": "告辞",\n' +
+    '  "ui.dialog.accept": "接受",\n' +
+    '  "ui.dialog.decline": "稍后再说",\n' +
+    '  "ui.confirm": "确定",\n' +
+    '  "ui.cancel": "取消",\n' +
+    '  "demo.end": "西边传送门已通落霞镇，可续主线。",\n' +
+    '  "alchemy.title": "炼丹",\n' +
+    '  "alchemy.lack": "缺料",\n' +
+    '  "alchemy.success": "成丹！品质：{quality}",\n' +
+    '  "alchemy.fail": "炸炉了……材料化为灰烬。",\n' +
+    '  "alchemy.quality.low": "下品",\n' +
+    '  "alchemy.quality.mid": "中品",\n' +
+    '  "alchemy.quality.high": "上品",\n' +
+    '  "alchemy.quality.supreme": "极品",\n' +
+    '  "alchemy.level": "炼丹 Lv.{n}",\n' +
+    '  "alchemy.fire_hint": "按空格停下指针，停在文火区有加成。",\n' +
+    '  "alchemy.reason.materials": "材料不足",\n' +
+    '  "alchemy.reason.fuel": "灵石不足",\n' +
+    '  "alchemy.reason.furnace": "丹炉不可用",\n' +
+    '  "alchemy.reason.unlearned": "尚未学会这张丹方",\n' +
+    '  "alchemy.reason.unknown": "丹方不存在",\n' +
+    '  "alchemy.reason.busy": "请先完成这一炉",\n' +
+    '  "alchemy.reason.config": "生活技能配置错误",\n' +
+    '  "alchemy.reason.skill_level": "炼丹等级不足",\n' +
+    '  "alchemy.reason.unavailable": "暂时无法炼制",\n' +
+    '  "alchemy.fire_batch_hint": "单炉按空格控火；批量自动跳过",\n' +
+    '  "alchemy.recipe_level": "丹方等级 {n}",\n' +
+    '  "life.skill.config_error": "生活技能配置错误",\n' +
+    '  "gather.prompt": "Z 采集",\n' +
+    '  "gather.interrupted": "采集被打断了。",\n' +
+    '  "trial.countdown": "守住阵眼：{sec} 秒",\n' +
+    '  "trial.altar_broken": "阵眼被破，试炼失败。",\n' +
+    '  "trial.success": "阵法已成！",\n' +
+    '  "trial.need_pill": "身上没有{item}，上了筑基台也撑不住。备好丹药再来找我。",\n' +
+    '  "trial.enter_hint": "入阵后守住阵眼 {sec} 秒，心魔会从两侧和半空扑来。这番话说完，便服下筑基丹入阵。",\n' +
+    '  "trial.consume": "服下了{item}。",\n' +
+    '  "trial.player_down": "你在阵中倒下，试炼中断。丹药已经用掉，修为没有损失。",\n' +
+    '  "trial.retreat": "心魔退散，阵眼稳住了……",\n' +
+    '  "realm.next_bonus": "下次成功率 +{bonus}%",\n' +
+    '  "realm.rate_detail": "成功率 {rate}%（基础 {base}% + 丹药 {pill}% + 悟性 {insight}% + 清心丹 {clear}% + 保底 {pity}%）",\n' +
+    '  "key.bestiary": "B 图鉴",\n' +
+    '  "bestiary.title": "妖兽图鉴",\n' +
+    '  "bestiary.unknown": "？？？",\n' +
+    '  "bestiary.update": "图鉴更新：{monster}",\n' +
+    '  "bestiary.stage.silhouette": "未识",\n' +
+    '  "bestiary.stage.known": "初识",\n' +
+    '  "bestiary.stage.familiar": "熟知",\n' +
+    '  "bestiary.stage.master": "精通",\n' +
+    '  "sys.portal_level": "需要达到 {lv} 级才能前往。",\n' +
+    '  "tip.skill_points": "升级会得到技能点。按 K 打开技能窗口，把点数加到想练的技能上。",\n' +
+    '  "sys.seclusion_locked": "筑基之后才能进闭关室。",\n' +
+    '  "sys.seclusion_cost": "闭关 {years} 年，需要宗门贡献 {cost}（现有 {have}）。",\n' +
+    '  "enc.stranded_cultivator.name": "灵溪援手",\n' +
+    '  "enc.stranded_cultivator.offer": "道友留步！我扭了脚，山魈就追在后头。",\n' +
+    '  "enc.stranded_cultivator.offer_repeat": "{player}，又遇见你了。这趟采药又惹了麻烦。",\n' +
+    '  "enc.stranded_cultivator.choice_fight": "我来引开它们。",\n' +
+    '  "enc.stranded_cultivator.choice_medicine": "这颗回春丹给你，先走。",\n' +
+    '  "enc.stranded_cultivator.choice_leave": "我还有事，先走一步。",\n' +
+    '  "enc.stranded_cultivator.fight_start": "我躲在石后，你留心它们抬手！",\n' +
+    '  "enc.stranded_cultivator.objective": "击退追来的山魈（{n}/{total}）",\n' +
+    '  "enc.stranded_cultivator.rescued": "多谢解围。这些盘缠，你带上。",\n' +
+    '  "enc.stranded_cultivator.aided": "药来得及时！我借烟先走，你也保重。",\n' +
+    '  "enc.stranded_cultivator.failed": "山路归于寂静，季行舟已躲远。",\n' +
+    '  "enc.stranded_cultivator.missed": "季行舟沿小路离开了。",\n' +
+    '  "enc.fragrant_herb.name": "林隙留香",\n' +
+    '  "enc.fragrant_herb.offer": "一缕异香从藤蔓后飘来。",\n' +
+    '  "enc.fragrant_herb.sign": "灵芝留根，来岁有香。整株拔走，此地难生。",\n' +
+    '  "enc.fragrant_herb.choice_guard": "拨开藤蔓，看个明白。",\n' +
+    '  "enc.fragrant_herb.choice_leaf": "留下根须，只取成熟的芝叶。",\n' +
+    '  "enc.fragrant_herb.choice_root": "整株带走，眼下更要紧。",\n' +
+    '  "enc.fragrant_herb.choice_leave": "让它留在林中吧。",\n' +
+    '  "enc.fragrant_herb.objective": "击退护草藤妖，再查看灵芝。",\n' +
+    '  "enc.fragrant_herb.leaf_done": "根须仍在微微发亮。",\n' +
+    '  "enc.fragrant_herb.root_done": "你收起整株灵芝，泥土中的光熄了。",\n' +
+    '  "enc.fragrant_herb.failed": "藤蔓重新合拢，香气散了。",\n' +
+    '  "enc.fragrant_herb.missed": "你循原路离开，没有惊动灵芝。",\n' +
+    '  "enc.hidden_abode.name": "石隙旧居",\n' +
+    '  "enc.hidden_abode.revealed": "神识掠过石壁，一道旧门显出轮廓。",\n' +
+    '  "enc.hidden_abode.choice_enter": "入内看看。",\n' +
+    '  "enc.hidden_abode.choice_leave": "今日不扰旧居。",\n' +
+    '  "enc.hidden_abode.inscription": "土承水，水养木。循此三步，可见旧藏。",\n' +
+    '  "enc.hidden_abode.objective": "依石刻次序启动机关（{n}/{total}）",\n' +
+    '  "enc.hidden_abode.seal_earth": "土",\n' +
+    '  "enc.hidden_abode.seal_water": "水",\n' +
+    '  "enc.hidden_abode.seal_wood": "木",\n' +
+    '  "enc.hidden_abode.chest": "留些炼器余材，赠后来有缘人。",\n' +
+    '  "enc.hidden_abode.choice_take": "谢过旧主，收下余材。",\n' +
+    '  "enc.hidden_abode.choice_seal": "我已得观旧居，余材留待他人。",\n' +
+    '  "enc.hidden_abode.taken": "旧匣合拢，石壁上的微光渐暗。",\n' +
+    '  "enc.hidden_abode.sealed": "你封好旧匣，记下了此地的宁静。",\n' +
+    '  "enc.hidden_abode.failed": "机关次序有误，石门将你送回林缘。",\n' +
+    '  "enc.hidden_abode.missed": "石隙重新隐入山壁。",\n' +
+    '  "enc.sage_advice.name": "槐下问道",\n' +
+    '  "enc.sage_advice.offer": "{player}，坐得住，也要想得明白。",\n' +
+    '  "enc.sage_advice.teach": "道心看心境是否稳，善恶看你如何行事。",\n' +
+    '  "enc.sage_advice.question": "一个人行善，却总在动摇。该稳住什么？",\n' +
+    '  "enc.sage_advice.choice_steady": "稳住道心，行善仍由自己选择。",\n' +
+    '  "enc.sage_advice.choice_power": "只要修为更高，善恶便都不必管。",\n' +
+    '  "enc.sage_advice.choice_leave": "容我日后再想。",\n' +
+    '  "enc.sage_advice.correct": "善。守得住自己的念，才能走自己的路。",\n' +
+    '  "enc.sage_advice.wrong": "修为是力量，不能替你作选择。",\n' +
+    '  "enc.sage_advice.missed": "槐影轻晃，老者已不见踪影。",\n' +
+    '  "enc.demon_whisper.name": "灯背低语",\n' +
+    '  "enc.demon_whisper.offer": "还要苦练多久？点头，这缕灵力便是你的。",\n' +
+    '  "enc.demon_whisper.cost": "代价只是放松底线。没人会看见。",\n' +
+    '  "enc.demon_whisper.choice_accept": "给我力量，我认这份代价。",\n' +
+    '  "enc.demon_whisper.choice_refuse": "我的路，不拿底线来换。",\n' +
+    '  "enc.demon_whisper.choice_leave": "我现在不作回答。",\n' +
+    '  "enc.demon_whisper.accepted": "灵力涌入经脉，心底的声音却更近了。",\n' +
+    '  "enc.demon_whisper.refused": "你稳住呼吸，影子恢复了原样。",\n' +
+    '  "enc.demon_whisper.missed": "你走到灯下，低语暂时远去。",\n' +
+    '  "enc.ui.found": "附近有异状，按 {key} 查看。",\n' +
+    '  "enc.ui.reward": "可获：{rewards}",\n' +
+    '  "enc.ui.cost": "代价：{costs}",\n' +
+    '  "enc.ui.need_item": "需要 {item} ×{n}。",\n' +
+    '  "enc.ui.failed": "此番机缘未成，日后或可再遇。",\n' +
+    '  "enc.ui.missed": "此番机缘已错过。",\n' +
+    '  "enc.ui.resolved": "奇遇已记入见闻。",\n' +
+    '  "enc.ui.pending_reward": "请整理背包，再领取本次所得。",\n' +
+    '  "enc.ui.actu'... 32406 more characters,
+  expected: '{\n' +
+    '  "_meta": {\n' +
+    '    "version": "0.3",\n' +
+    '    "owner": "天机阁",\n' +
+    '    "note": "UI 与系统提示文案表。程序按 key 取文本，{x} 为占位符。新增文案请追加 key，不要改已有 key。"\n' +
+    '  },\n' +
+    '  "key.move": "← → 移动",\n' +
+    '  "key.jump": "Alt / 空格 跳跃，空中再按一次二段跳",\n' +
+    '  "key.climb": "↑ ↓ 爬绳 / 爬梯",\n' +
+    '  "key.drop": "↓ + 跳跃 穿下平台",\n' +
+    '  "key.attack": "Ctrl / X 普攻（按住连击）",\n' +
+    '  "key.pickup": "Z 拾取（按住连捡）",\n' +
+    '  "key.talk": "Z / ↑ 与 NPC 对话",\n' +
+    '  "key.inventory": "I 背包",\n' +
+    '  "key.equip": "E 装备",\n' +
+    '  "key.skill": "K 技能",\n' +
+    '  "key.quest": "Q 任务",\n' +
+    '  "key.quickslot": "1–8 快捷栏",\n' +
+    '  "tip.first_move": "用 ← → 走动，Alt 跳跃。",\n' +
+    '  "tip.first_rope": "站在绳子旁按 ↑ 抓住，↑ ↓ 上下爬，按跳跃离开。",\n' +
+    '  "tip.first_ladder": "站在梯子前按 ↑ 爬梯。",\n' +
+    '  "tip.first_double_jump": "跳起后在半空再按一次跳跃，就是二段跳。",\n' +
+    '  "tip.first_oneway": "站在薄平台上按 ↓ + 跳跃，可以穿下去。",\n' +
+    '  "tip.first_portal": "站在传送门上按 ↑ 进入下一张地图。",\n' +
+    '  "tip.first_monster": "按 Ctrl 攻击。被怪物碰到会掉气血并被击退。",\n' +
+    '  "tip.first_drop": "怪物掉落了东西，靠近按 Z 拾取。",\n' +
+    '  "tip.first_equip": "获得了{item}，按 E 打开装备栏装备它。",\n' +
+    '  "tip.first_potion": "气血不足时，按快捷键服用回春丹。",\n' +
+    '  "tip.first_shop": "在商店 NPC 处可以出售材料、购买装备。",\n' +
+    '  "tip.first_aggressive": "这种妖兽会主动攻击，小心！",\n' +
+    '  "tip.first_telegraph": "山魈抬手要拍地了，及时跳开！",\n' +
+    '  "tip.first_sp": "你有未分配的技能点，按 K 打开技能窗口。",\n' +
+    '  "sys.level_up": "修为精进！等级提升到 {level}。",\n' +
+    '  "sys.exp_gain": "修为 +{exp}",\n' +
+    '  "sys.stone_gain": "灵石 +{n}",\n' +
+    '  "sys.item_gain": "获得 {item} ×{n}",\n' +
+    '  "sys.bag_full": "背包已满，无法拾取。",\n' +
+    '  "sys.mp_low": "灵力不足，可以服用回气丹，或者等待灵力自然恢复。",\n' +
+    '  "sys.hp_low": "气血告急！",\n' +
+    '  "sys.dead": "你倒下了……将在最近的村镇醒来。",\n' +
+    '  "sys.respawn_penalty": "损失了 {exp} 修为。",\n' +
+    '  "sys.portal_locked": "前方道路尚未开放。",\n' +
+    '  "sys.saved": "已自动存档。",\n' +
+    '  "sys.save_reset": "存档已重置。",\n' +
+    '  "realm.bottleneck": "修为已满，需突破",\n' +
+    '  "realm.bottleneck_tip": "你已到{realm}圆满，修为不再增长。去找{npc}寻求突破之法。",\n' +
+    '  "realm.overflow_tip": "溢出修为 {n}/{max}，突破后返还",\n' +
+    '  "realm.overflow_full": "溢出池已满，再打怪的修为不会再存了，快去突破吧。",\n' +
+    '  "realm.overflow_gain": "（存入溢出池）",\n' +
+    '  "realm.breakthrough_ok": "突破成功·{realm}",\n' +
+    '  "realm.breakthrough_fail": "突破失败……境界不稳",\n' +
+    '  "realm.unstable": "境界不稳：全属性下降，持续 {min} 分钟。",\n' +
+    '  "realm.stage.0": "初期",\n' +
+    '  "realm.stage.1": "中期",\n' +
+    '  "realm.stage.2": "后期",\n' +
+    '  "realm.stage.3": "圆满",\n' +
+    '  "quest.accept": "接受任务：{name}",\n' +
+    '  "quest.progress": "{target} {cur}/{max}",\n' +
+    '  "quest.complete_ready": "任务「{name}」可以交付了，回去找{npc}。",\n' +
+    '  "quest.complete": "完成任务：{name}",\n' +
+    '  "quest.mark_available": "!",\n' +
+    '  "quest.mark_ready": "?",\n' +
+    '  "skill.learned": "你领悟了「{skill}」！",\n' +
+    '  "skill.learned_first": "你领悟了「剑气斩」！打开技能窗口（K），把它拖进快捷栏。",\n' +
+    '  "skill.job_advance": "拜入天剑宗后，你学会了「回风剑」「轻身术」。打开技能窗口（K）查看本宗功法。",\n' +
+    '  "skill.cooldown": "技能还在冷却中。",\n' +
+    '  "skill.buff_expiring": "{skill}即将结束",\n' +
+    '  "skill.sp_left": "剩余技能点：{n}",\n' +
+    '  "job.none": "凡人",\n' +
+    '  "job.tianjian_disciple": "天剑宗·剑徒",\n' +
+    '  "ui.hp": "气血",\n' +
+    '  "ui.mp": "灵力",\n' +
+    '  "ui.exp": "修为",\n' +
+    '  "ui.stone": "灵石",\n' +
+    '  "ui.level": "等级",\n' +
+    '  "ui.realm": "境界",\n' +
+    '  "ui.atk": "攻击",\n' +
+    '  "ui.def": "防御",\n' +
+    '  "ui.rootBone": "根骨",\n' +
+    '  "ui.attr.title": "加点",\n' +
+    '  "ui.attr.remaining": "剩余点数：{n}",\n' +
+    '  "ui.attr.planned": "待分配：{n}",\n' +
+    '  "ui.attr.attribute": "属性",\n' +
+    '  "ui.attr.current": "当前值",\n' +
+    '  "ui.attr.draft": "待分配",\n' +
+    '  "ui.attr.value_hint": "当前值含功法加成；减号仅撤回待分配点数。",\n' +
+    '  "ui.attr.confirm_hint": "确认分配 {n} 点？再点确认后生效。",\n' +
+    '  "ui.attr.ready": "调整完毕后，点击确认提交。",\n' +
+    '  "ui.attr.empty": "请先选择要分配的属性点。",\n' +
+    '  "ui.attr.cancel": "取消",\n' +
+    '  "ui.attr.confirm": "确认",\n' +
+    '  "ui.attr.keys": "↑↓ 选择  ←→ 加减  回车 确认  Esc / P 关闭",\n' +
+    '  "ui.attr.success": "加点完成。",\n' +
+    '  "ui.attr.overspend": "可分配点不足，请调整后再确认。",\n' +
+    '  "ui.attr.invalid": "分配无效，请重新调整。",\n' +
+    '  "ui.attr.save_failed": "存档未成功，属性点已保留，请重试。",\n' +
+    '  "ui.inv.title": "背包",\n' +
+    '  "ui.inv.tab_all": "全部",\n' +
+    '  "ui.inv.tab_equip": "装备",\n' +
+    '  "ui.inv.tab_consume": "消耗",\n' +
+    '  "ui.inv.tab_material": "材料",\n' +
+    '  "ui.inv.tab_other": "其他",\n' +
+    '  "ui.inv.empty": "此页暂无物品",\n' +
+    '  "ui.inv.stones": "灵石 {n}",\n' +
+    '  "ui.inv.select": "选择物品查看操作",\n' +
+    '  "ui.inv.equip": "穿上",\n' +
+    '  "ui.inv.furnace": "使用丹炉",\n' +
+    '  "ui.inv.token": "五宗令",\n' +
+    '  "ui.inv.held": "持有物品",\n' +
+    '  "ui.inv.equipped": "已穿上{item}。",\n' +
+    '  "ui.inv.unavailable": "当前无法使用，请稍后再试。",\n' +
+    '  "ui.inv.keys": "方向键选择 · 回车使用 · Esc / I 关闭",\n' +
+    '  "ui.equip.title": "装备",\n' +
+    '  "ui.equip.base": "素衣",\n' +
+    '  "ui.equip.weapon": "武器",\n' +
+    '  "ui.equip.robe": "道袍",\n' +
+    '  "ui.equip.shoes": "鞋",\n' +
+    '  "ui.equip.click": "点击装备格卸下 · 方向键选择 / 回车卸下",\n' +
+    '  "ui.equip.atk": "攻击",\n' +
+    '  "ui.equip.def": "防御",\n' +
+    '  "ui.equip.hp": "气血",\n' +
+    '  "ui.equip.mp": "灵力",\n' +
+    '  "ui.equip.speed": "速度",\n' +
+    '  "ui.equip.matk": "法攻",\n' +
+    '  "ui.equip.removed": "已卸下{item}。",\n' +
+    '  "ui.equip.keys": "Esc / E 关闭 · I 切换背包",\n' +
+    '  "ui.equip.reason_invalid": "这件物品不能穿戴。",\n' +
+    '  "ui.equip.reason_missing": "背包中没有这件装备。",\n' +
+    '  "ui.equip.reason_sect": "宗门不符，无法穿戴。",\n' +
+    '  "ui.equip.reason_level": "等级不足，无法穿戴。",\n' +
+    '  "ui.equip.reason_empty": "此栏位没有装备。",\n' +
+    '  "ui.equip.reason_overflow": "背包数量已达上限。",\n' +
+    '  "ui.equip.reason_save": "存档未成功，穿脱已撤回，请重试。",\n' +
+    '  "ui.agility": "身法",\n' +
+    '  "ui.spirit": "神识",\n' +
+    '  "ui.insight": "悟性",\n' +
+    '  "ui.inventory": "行囊",\n' +
+    '  "ui.equipment": "装备",\n' +
+    '  "ui.skills": "功法",\n' +
+    '  "ui.quests": "任务",\n' +
+    '  "ui.slot.weapon": "武器",\n' +
+    '  "ui.slot.robe": "道袍",\n' +
+    '  "ui.slot.shoes": "鞋履",\n' +
+    '  "ui.shop.buy": "购买",\n' +
+    '  "ui.shop.sell": "出售",\n' +
+    '  "ui.shop.not_enough": "灵石不足。",\n' +
+    '  "ui.dialog.next": "▼ 继续",\n' +
+    '  "ui.dialog.close": "告辞",\n' +
+    '  "ui.dialog.accept": "接受",\n' +
+    '  "ui.dialog.decline": "稍后再说",\n' +
+    '  "ui.confirm": "确定",\n' +
+    '  "ui.cancel": "取消",\n' +
+    '  "demo.end": "西边传送门已通落霞镇，可续主线。",\n' +
+    '  "alchemy.title": "炼丹",\n' +
+    '  "alchemy.lack": "缺料",\n' +
+    '  "alchemy.success": "成丹！品质：{quality}",\n' +
+    '  "alchemy.fail": "炸炉了……材料化为灰烬。",\n' +
+    '  "alchemy.quality.low": "下品",\n' +
+    '  "alchemy.quality.mid": "中品",\n' +
+    '  "alchemy.quality.high": "上品",\n' +
+    '  "alchemy.quality.supreme": "极品",\n' +
+    '  "alchemy.level": "炼丹 Lv.{n}",\n' +
+    '  "alchemy.fire_hint": "按空格停下指针，停在文火区有加成。",\n' +
+    '  "alchemy.reason.materials": "材料不足",\n' +
+    '  "alchemy.reason.fuel": "灵石不足",\n' +
+    '  "alchemy.reason.furnace": "丹炉不可用",\n' +
+    '  "alchemy.reason.unlearned": "尚未学会这张丹方",\n' +
+    '  "alchemy.reason.unknown": "丹方不存在",\n' +
+    '  "alchemy.reason.busy": "请先完成这一炉",\n' +
+    '  "alchemy.reason.config": "生活技能配置错误",\n' +
+    '  "alchemy.reason.skill_level": "炼丹等级不足",\n' +
+    '  "alchemy.reason.unavailable": "暂时无法炼制",\n' +
+    '  "alchemy.fire_batch_hint": "单炉按空格控火；批量自动跳过",\n' +
+    '  "alchemy.recipe_level": "丹方等级 {n}",\n' +
+    '  "life.skill.config_error": "生活技能配置错误",\n' +
+    '  "gather.prompt": "Z 采集",\n' +
+    '  "gather.interrupted": "采集被打断了。",\n' +
+    '  "trial.countdown": "守住阵眼：{sec} 秒",\n' +
+    '  "trial.altar_broken": "阵眼被破，试炼失败。",\n' +
+    '  "trial.success": "阵法已成！",\n' +
+    '  "trial.need_pill": "身上没有{item}，上了筑基台也撑不住。备好丹药再来找我。",\n' +
+    '  "trial.enter_hint": "入阵后守住阵眼 {sec} 秒，心魔会从两侧和半空扑来。这番话说完，便服下筑基丹入阵。",\n' +
+    '  "trial.consume": "服下了{item}。",\n' +
+    '  "trial.player_down": "你在阵中倒下，试炼中断。丹药已经用掉，修为没有损失。",\n' +
+    '  "trial.retreat": "心魔退散，阵眼稳住了……",\n' +
+    '  "realm.next_bonus": "下次成功率 +{bonus}%",\n' +
+    '  "realm.rate_detail": "成功率 {rate}%（基础 {base}% + 丹药 {pill}% + 悟性 {insight}% + 清心丹 {clear}% + 保底 {pity}%）",\n' +
+    '  "key.bestiary": "B 图鉴",\n' +
+    '  "bestiary.title": "妖兽图鉴",\n' +
+    '  "bestiary.unknown": "？？？",\n' +
+    '  "bestiary.update": "图鉴更新：{monster}",\n' +
+    '  "bestiary.stage.silhouette": "未识",\n' +
+    '  "bestiary.stage.known": "初识",\n' +
+    '  "bestiary.stage.familiar": "熟知",\n' +
+    '  "bestiary.stage.master": "精通",\n' +
+    '  "sys.portal_level": "需要达到 {lv} 级才能前往。",\n' +
+    '  "tip.skill_points": "升级会得到技能点。按 K 打开技能窗口，把点数加到想练的技能上。",\n' +
+    '  "sys.seclusion_locked": "筑基之后才能进闭关室。",\n' +
+    '  "sys.seclusion_cost": "闭关 {years} 年，需要宗门贡献 {cost}（现有 {have}）。",\n' +
+    '  "enc.stranded_cultivator.name": "灵溪援手",\n' +
+    '  "enc.stranded_cultivator.offer": "道友留步！我扭了脚，山魈就追在后头。",\n' +
+    '  "enc.stranded_cultivator.offer_repeat": "{player}，又遇见你了。这趟采药又惹了麻烦。",\n' +
+    '  "enc.stranded_cultivator.choice_fight": "我来引开它们。",\n' +
+    '  "enc.stranded_cultivator.choice_medicine": "这颗回春丹给你，先走。",\n' +
+    '  "enc.stranded_cultivator.choice_leave": "我还有事，先走一步。",\n' +
+    '  "enc.stranded_cultivator.fight_start": "我躲在石后，你留心它们抬手！",\n' +
+    '  "enc.stranded_cultivator.objective": "击退追来的山魈（{n}/{total}）",\n' +
+    '  "enc.stranded_cultivator.rescued": "多谢解围。这些盘缠，你带上。",\n' +
+    '  "enc.stranded_cultivator.aided": "药来得及时！我借烟先走，你也保重。",\n' +
+    '  "enc.stranded_cultivator.failed": "山路归于寂静，季行舟已躲远。",\n' +
+    '  "enc.stranded_cultivator.missed": "季行舟沿小路离开了。",\n' +
+    '  "enc.fragrant_herb.name": "林隙留香",\n' +
+    '  "enc.fragrant_herb.offer": "一缕异香从藤蔓后飘来。",\n' +
+    '  "enc.fragrant_herb.sign": "灵芝留根，来岁有香。整株拔走，此地难生。",\n' +
+    '  "enc.fragrant_herb.choice_guard": "拨开藤蔓，看个明白。",\n' +
+    '  "enc.fragrant_herb.choice_leaf": "留下根须，只取成熟的芝叶。",\n' +
+    '  "enc.fragrant_herb.choice_root": "整株带走，眼下更要紧。",\n' +
+    '  "enc.fragrant_herb.choice_leave": "让它留在林中吧。",\n' +
+    '  "enc.fragrant_herb.objective": "击退护草藤妖，再查看灵芝。",\n' +
+    '  "enc.fragrant_herb.leaf_done": "根须仍在微微发亮。",\n' +
+    '  "enc.fragrant_herb.root_done": "你收起整株灵芝，泥土中的光熄了。",\n' +
+    '  "enc.fragrant_herb.failed": "藤蔓重新合拢，香气散了。",\n' +
+    '  "enc.fragrant_herb.missed": "你循原路离开，没有惊动灵芝。",\n' +
+    '  "enc.hidden_abode.name": "石隙旧居",\n' +
+    '  "enc.hidden_abode.revealed": "神识掠过石壁，一道旧门显出轮廓。",\n' +
+    '  "enc.hidden_abode.choice_enter": "入内看看。",\n' +
+    '  "enc.hidden_abode.choice_leave": "今日不扰旧居。",\n' +
+    '  "enc.hidden_abode.inscription": "土承水，水养木。循此三步，可见旧藏。",\n' +
+    '  "enc.hidden_abode.objective": "依石刻次序启动机关（{n}/{total}）",\n' +
+    '  "enc.hidden_abode.seal_earth": "土",\n' +
+    '  "enc.hidden_abode.seal_water": "水",\n' +
+    '  "enc.hidden_abode.seal_wood": "木",\n' +
+    '  "enc.hidden_abode.chest": "留些炼器余材，赠后来有缘人。",\n' +
+    '  "enc.hidden_abode.choice_take": "谢过旧主，收下余材。",\n' +
+    '  "enc.hidden_abode.choice_seal": "我已得观旧居，余材留待他人。",\n' +
+    '  "enc.hidden_abode.taken": "旧匣合拢，石壁上的微光渐暗。",\n' +
+    '  "enc.hidden_abode.sealed": "你封好旧匣，记下了此地的宁静。",\n' +
+    '  "enc.hidden_abode.failed": "机关次序有误，石门将你送回林缘。",\n' +
+    '  "enc.hidden_abode.missed": "石隙重新隐入山壁。",\n' +
+    '  "enc.sage_advice.name": "槐下问道",\n' +
+    '  "enc.sage_advice.offer": "{player}，坐得住，也要想得明白。",\n' +
+    '  "enc.sage_advice.teach": "道心看心境是否稳，善恶看你如何行事。",\n' +
+    '  "enc.sage_advice.question": "一个人行善，却总在动摇。该稳住什么？",\n' +
+    '  "enc.sage_advice.choice_steady": "稳住道心，行善仍由自己选择。",\n' +
+    '  "enc.sage_advice.choice_power": "只要修为更高，善恶便都不必管。",\n' +
+    '  "enc.sage_advice.choice_leave": "容我日后再想。",\n' +
+    '  "enc.sage_advice.correct": "善。守得住自己的念，才能走自己的路。",\n' +
+    '  "enc.sage_advice.wrong": "修为是力量，不能替你作选择。",\n' +
+    '  "enc.sage_advice.missed": "槐影轻晃，老者已不见踪影。",\n' +
+    '  "enc.demon_whisper.name": "灯背低语",\n' +
+    '  "enc.demon_whisper.offer": "还要苦练多久？点头，这缕灵力便是你的。",\n' +
+    '  "enc.demon_whisper.cost": "代价只是放松底线。没人会看见。",\n' +
+    '  "enc.demon_whisper.choice_accept": "给我力量，我认这份代价。",\n' +
+    '  "enc.demon_whisper.choice_refuse": "我的路，不拿底线来换。",\n' +
+    '  "enc.demon_whisper.choice_leave": "我现在不作回答。",\n' +
+    '  "enc.demon_whisper.accepted": "灵力涌入经脉，心底的声音却更近了。",\n' +
+    '  "enc.demon_whisper.refused": "你稳住呼吸，影子恢复了原样。",\n' +
+    '  "enc.demon_whisper.missed": "你走到灯下，低语暂时远去。",\n' +
+    '  "enc.ui.found": "附近有异状，按 {key} 查看。",\n' +
+    '  "enc.ui.reward": "可获：{rewards}",\n' +
+    '  "enc.ui.cost": "代价：{costs}",\n' +
+    '  "enc.ui.need_item": "需要 {item} ×{n}。",\n' +
+    '  "enc.ui.failed": "此番机缘未成，日后或可再遇。",\n' +
+    '  "enc.ui.missed": "此番机缘已错过。",\n' +
+    '  "enc.ui.resolved": "奇遇已记入见闻。",\n' +
+    '  "enc.ui.pending_reward": "请整理背包，再领取本次所得。",\n' +
+    '  "enc.ui.actu'... 31562 more characters,
+  operator: 'deepStrictEqual'
+}
+
+Node.js v20.19.2

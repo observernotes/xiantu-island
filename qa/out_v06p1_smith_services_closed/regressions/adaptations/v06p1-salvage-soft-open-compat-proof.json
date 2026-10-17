@@ -1,0 +1,30 @@
+{
+  "file": "scripts/v06p1-salvage-soft-open-compat-proof.mjs",
+  "originalSha": "d83dc32e90fecf78a7426c2849de828976cb2524d5881541371a66013c8de3ad",
+  "pinnedOriginalSha": "d83dc32e90fecf78a7426c2849de828976cb2524d5881541371a66013c8de3ad",
+  "adaptedSha": "3fc27cb43fefb4d232795e66ad56dc4ccc0586d7c45db8c0fbd2b872cef3d653",
+  "changes": [
+    {
+      "label": "restore authorized suffixes before existing salvage history proof",
+      "before": "export function stripSalvageClosedAddition(raw, eq = strictEq) {",
+      "after": "export function stripSalvageClosedAddition(raw, eq = strictEq) {\n  raw = stripAllLaterKeys(raw);",
+      "occurrences": 1
+    },
+    {
+      "label": "prove and restore pre-attr-ui bytes before original salvage proof",
+      "before": "export function stripSalvageOpenProgress(source, eq = strictEq) {",
+      "after": "export function stripSalvageOpenProgress(source, eq = strictEq) {\n  source = restorePreAttrUi(source);",
+      "occurrences": 1
+    },
+    {
+      "label": "current disk strings use1013 SHA; historical960 proof remains",
+      "before": ")), current960, `${mode} 分解字符串冻结 SHA`);",
+      "after": ")), 'd99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841', `${mode} 分解字符串冻结 SHA`);",
+      "occurrences": 1
+    }
+  ],
+  "productModuleTransformations": [],
+  "diskWritten": false,
+  "businessAssertionsChanged": false,
+  "policy": "Pinned test-only historical strings SHA/count/inventory and prior attr-ui byte proof; actual Vite SSR product modules use current disk."
+}

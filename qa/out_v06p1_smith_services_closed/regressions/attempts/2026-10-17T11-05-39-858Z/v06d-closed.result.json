@@ -1,0 +1,17 @@
+{
+  "name": "v06d-closed",
+  "command": [
+    "npm",
+    "run",
+    "test:v06d-closed"
+  ],
+  "cwd": "/workspace/xiantu/wt/dev",
+  "stdin": "/dev/null",
+  "startedAt": "2026-10-17T11:05:39.858Z",
+  "finishedAt": "2026-10-17T11:05:40.516Z",
+  "exitCode": 1,
+  "signal": null,
+  "assertions": null,
+  "log": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_closed/regressions/v06d-closed.log",
+  "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_closed/regressions/v06d-closed"
+}

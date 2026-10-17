@@ -1,0 +1,12 @@
+{
+  "command": [
+    "git",
+    "diff",
+    "--cached",
+    "--check"
+  ],
+  "exitCode": 2,
+  "scope": "evidence serialization only",
+  "stdout": "qa/out_v06p1_smith_services_closed/regressions/prior-authorized-attr-ui.diff:270: trailing whitespace.\n+ \nqa/out_v06p1_smith_services_closed/regressions/prior-authorized-attr-ui.diff:348: trailing whitespace.\n+ \nqa/out_v06p1_smith_services_closed/regressions/prior-authorized-attr-ui.diff:424: trailing whitespace.\n+ \nqa/out_v06p1_smith_services_closed/regressions/prior-authorized-attr-ui.diff:457: trailing whitespace.\n+ \nqa/out_v06p1_smith_services_closed/regressions/prior-authorized-attr-ui.diff:479: trailing whitespace.\n+ \nqa/out_v06p1_smith_services_closed/regressions/prior-authorized-attr-ui.diff:490: trailing whitespace.\n+ \nqa/out_v06p1_smith_services_closed/regressions/prior-authorized-attr-ui.diff:508: trailing whitespace.\n+ \n",
+  "correction": "Encoded exact historical diff as JSON diffText, original SHA preserved; no source/test behavior change."
+}

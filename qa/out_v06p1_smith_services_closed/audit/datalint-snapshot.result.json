@@ -1,0 +1,11 @@
+{
+  "command": [
+    "python3",
+    "-B",
+    "-c",
+    "import os,runpy; os.chdir('/workspace/xiantu/wt/dev/data'); result=runpy.run_path('/workspace/xiantu/qa/tools/datalint.py',run_name='__main__'); assert result['P']==[],result['P']"
+  ],
+  "cwd": "/workspace/xiantu/wt/dev",
+  "exitCode": 0,
+  "durationSeconds": 0.042
+}

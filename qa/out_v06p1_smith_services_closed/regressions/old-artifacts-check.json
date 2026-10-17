@@ -1,0 +1,6 @@
+{
+  "passed": true,
+  "files": 2713,
+  "changed": [],
+  "scope": "after all 15 regressions: every preexisting QA artifact preserved byte-for-byte"
+}

@@ -1,0 +1,42 @@
+{
+  "file": "scripts/v06d-closed-test.mjs",
+  "originalSha": "73e3996d0d49d62e6d39691a6dd034f6ceb166d20e7202d0a7bc0fda1f5bd4e3",
+  "pinnedOriginalSha": "73e3996d0d49d62e6d39691a6dd034f6ceb166d20e7202d0a7bc0fda1f5bd4e3",
+  "adaptedSha": "b5a026a7423c024625dacb26776380aee7c2e94f80dc5ef6904458767e2f5a15",
+  "changes": [
+    {
+      "label": "current strings1013 SHA",
+      "before": "9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda",
+      "after": "d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841",
+      "occurrences": 1
+    },
+    {
+      "label": "current strings key count1013",
+      "before": ", 960,",
+      "after": ", 1013,",
+      "occurrences": 1
+    },
+    {
+      "label": "game prior attr-ui snapshot970 SHA; current shared/snapshot1013",
+      "before": "6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9",
+      "after": "ae51319b82a6486cc7f3d9b26c5ae89719e23c32ff9debdcfbb86ef7b5aea08b",
+      "occurrences": 1
+    },
+    {
+      "label": "game historical snapshot970 key count",
+      "before": "eq(Object.keys(JSON.parse(gameStrings)).length, 952,",
+      "after": "eq(Object.keys(JSON.parse(gameStrings)).length, 970,",
+      "occurrences": 1
+    },
+    {
+      "label": "game970 equals current1013 after exact authorized smith43-only subtraction",
+      "before": "eq(gameStrings, stripSalvageClosedAddition(sharedBytes.get(name).toString('utf8'), eq),",
+      "after": "eq(gameStrings, stripSmithKeys(sharedBytes.get(name).toString('utf8')),",
+      "occurrences": 1
+    }
+  ],
+  "productModuleTransformations": [],
+  "diskWritten": false,
+  "businessAssertionsChanged": false,
+  "policy": "Pinned test-only historical strings SHA/count/inventory and prior attr-ui byte proof; actual Vite SSR product modules use current disk."
+}

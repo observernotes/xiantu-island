@@ -1,0 +1,39 @@
+{
+  "passed": true,
+  "frozenFilesChecked": 30,
+  "frozenDifferences": [],
+  "oldArtifactsChecked": 2713,
+  "oldArtifactDifferences": [],
+  "newFilesOutsideOwnQaOut": [],
+  "strings": [
+    {
+      "path": "/workspace/xiantu/balance/strings_zh.json",
+      "sha": "d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841",
+      "keys": 1013,
+      "prefixRestored": true
+    },
+    {
+      "path": "/workspace/xiantu/wt/dev/data/balance/strings_zh.json",
+      "sha": "d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841",
+      "keys": 1013,
+      "prefixRestored": true
+    }
+  ],
+  "gifts": [
+    {
+      "root": "/workspace/xiantu",
+      "giftsCount": 10,
+      "allFalse": true
+    },
+    {
+      "root": "/workspace/xiantu/wt/dev/data",
+      "giftsCount": 10,
+      "allFalse": true
+    }
+  ],
+  "GAME_PHASE": 5,
+  "fourFlagsPreserved": true,
+  "settlementUnchanged": true,
+  "newOpenFlag": false,
+  "unauthorizedDifferences": []
+}
