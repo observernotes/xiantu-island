@@ -1,0 +1,14 @@
+{
+  "name": "open",
+  "command": [
+    "npm",
+    "run",
+    "test:v06p1-smith-services-open"
+  ],
+  "cwd": "/workspace/xiantu/wt/feat/ui-smith-services",
+  "stdin": "/dev/null",
+  "exitCode": 0,
+  "startedAt": "2026-10-17T12:52:12.164575+00:00",
+  "finishedAt": "2026-10-17T12:52:19.532753+00:00",
+  "log": "/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_soft_1e256ea/logs/open.log"
+}

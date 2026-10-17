@@ -1,0 +1,290 @@
+{
+  "passed": true,
+  "checkedAt": "2026-10-17T12:53:02.348Z",
+  "baselineTip": "7b06f5ac4e76a2c48e98431e1ccf0011a8ca0a41",
+  "frozenChecks": [
+    {
+      "file": "/workspace/xiantu/wt/feat/ui-smith-services/data/balance/enhance.json",
+      "expectedSha": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+      "actualSha": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+      "match": true
+    },
+    {
+      "file": "/workspace/xiantu/wt/feat/ui-smith-services/data/balance/recipes.json",
+      "expectedSha": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+      "actualSha": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+      "match": true
+    },
+    {
+      "file": "/workspace/xiantu/wt/feat/ui-smith-services/data/balance/materials.json",
+      "expectedSha": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+      "actualSha": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+      "match": true
+    },
+    {
+      "file": "/workspace/xiantu/wt/feat/ui-smith-services/data/balance/items.json",
+      "expectedSha": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+      "actualSha": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+      "match": true
+    },
+    {
+      "file": "/workspace/xiantu/wt/feat/ui-smith-services/data/balance/life_skills.json",
+      "expectedSha": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+      "actualSha": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+      "match": true
+    },
+    {
+      "file": "/workspace/xiantu/wt/feat/ui-smith-services/data/balance/enhance_protect_charm.json",
+      "expectedSha": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+      "actualSha": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+      "match": true
+    },
+    {
+      "file": "/workspace/xiantu/wt/feat/ui-smith-services/data/balance/strings_zh.json",
+      "expectedSha": "d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841",
+      "actualSha": "d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841",
+      "match": true,
+      "keys": 1013
+    },
+    {
+      "file": "/workspace/xiantu/balance/enhance.json",
+      "expectedSha": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+      "actualSha": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+      "match": true
+    },
+    {
+      "file": "/workspace/xiantu/balance/recipes.json",
+      "expectedSha": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+      "actualSha": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+      "match": true
+    },
+    {
+      "file": "/workspace/xiantu/balance/materials.json",
+      "expectedSha": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+      "actualSha": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+      "match": true
+    },
+    {
+      "file": "/workspace/xiantu/balance/items.json",
+      "expectedSha": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+      "actualSha": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+      "match": true
+    },
+    {
+      "file": "/workspace/xiantu/balance/life_skills.json",
+      "expectedSha": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+      "actualSha": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+      "match": true
+    },
+    {
+      "file": "/workspace/xiantu/balance/enhance_protect_charm.json",
+      "expectedSha": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+      "actualSha": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+      "match": true
+    },
+    {
+      "file": "/workspace/xiantu/balance/strings_zh.json",
+      "expectedSha": "d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841",
+      "actualSha": "d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841",
+      "match": true,
+      "keys": 1013
+    },
+    {
+      "file": "/workspace/xiantu/wt/feat/ui-smith-services/src/ForgeOpenFlag.ts",
+      "expectedSha": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
+      "actualSha": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
+      "match": true
+    },
+    {
+      "file": "/workspace/xiantu/wt/feat/ui-smith-services/src/EnhanceOpenFlag.ts",
+      "expectedSha": "d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e",
+      "actualSha": "d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e",
+      "match": true
+    },
+    {
+      "file": "/workspace/xiantu/wt/feat/ui-smith-services/src/EnchantOpenFlag.ts",
+      "expectedSha": "bd5445b8ddfed56a32811cedd28db72e8676c7a5eff321e2fedb0ec5fe4c505a",
+      "actualSha": "bd5445b8ddfed56a32811cedd28db72e8676c7a5eff321e2fedb0ec5fe4c505a",
+      "match": true
+    },
+    {
+      "file": "/workspace/xiantu/wt/feat/ui-smith-services/src/SalvageOpenFlag.ts",
+      "expectedSha": "69aace852957c52bf7ca0214345ede7df29d6d36ec1dfd4849462e54552edff3",
+      "actualSha": "69aace852957c52bf7ca0214345ede7df29d6d36ec1dfd4849462e54552edff3",
+      "match": true
+    },
+    {
+      "file": "/workspace/xiantu/wt/feat/ui-smith-services/src/data.ts",
+      "expectedSha": "aad725652f5c0eb57a5c699726e570b146d5ded52d5c31715444dbbf4117024a",
+      "actualSha": "aad725652f5c0eb57a5c699726e570b146d5ded52d5c31715444dbbf4117024a",
+      "match": true
+    }
+  ],
+  "flagMatch": true,
+  "stringsDiskKeys": 1013,
+  "stringsSsrInjected43": false,
+  "GAME_PHASE": 5,
+  "gifts": [
+    {
+      "folder": "/workspace/xiantu/wt/feat/ui-smith-services/data/balance",
+      "checked": 10,
+      "enabled": 0
+    },
+    {
+      "folder": "/workspace/xiantu/balance",
+      "checked": 10,
+      "enabled": 0
+    }
+  ],
+  "settlementUnchanged": true,
+  "settlementCallbacks": {
+    "Forge": {
+      "baselineSha": "1136c416c238ee16c1daa552202e67d2d0f1e114d911b4cce059c105d011c57c",
+      "currentSha": "1136c416c238ee16c1daa552202e67d2d0f1e114d911b4cce059c105d011c57c",
+      "match": true,
+      "preservedMethods": {
+        "feature": "395c9aea60e5f30d59da8dd10d31454193894f187d7413e79da1d57199f202c5",
+        "entrance": "8db2643907008416150c030b3041f5fcb9c3bdd234bdbb788212c75a287aa029",
+        "craft": "184dc12b3d4710b35bfbfba4be13a37bb7d9db2d70a3da3fc4496ba8835fd903",
+        "submit": "92c4880b04b141963a021402ef2525e1fdc62cd091ef36d44a8832ac1a35394a",
+        "result": "dd010e7ee73af75b0373484ac5d683d59da38718e02fa0157b80b2359e6eea6b",
+        "grade": "5534e9d6c1cfcbc04e0097824eb18a4a1c4d5b345d5df16b0136ef395bc44fba",
+        "loadRefresh": "9023919da48279fe4a18ee0801481ab0bb1d197bf0738b81caf31d4c171458bc",
+        "laterService": "39a07dc5cd9f63f92a21f68ead39b96adb790c39b554c850f35f37f97834ce04",
+        "readResult": "6a02faebcc45a65b070e5b0bd4ee39365e6f4b9e55843d1ceaae6ddac2a2e8a4",
+        "replay": "e262bcfb1de7fe63aa0b9ed440ca12ecd1b33e45e424fe419655cc88a8a10dc2",
+        "validRules": "cbf306bdb532e45dc0b2ed7e68b5dddbab8110ec47f2f226f679c15f28800b81",
+        "sampleGrade": "2bd5b36d3e2b26f28a41f76d4b4265493db7c4744e2287e64ee6348086e6cd5e",
+        "recipe": "ffa412759b02d43d396ecc20b4dc2195a8a2e630c77f89fc2fce90e807fe2641",
+        "valid": "2c490e8f48be4fa4f91ef033ef0e502c8eb66a05944145564d124c96cece0aed",
+        "configItem": "5d8c03ff08d56928078d9b8fb6551ff558c1e13139cbbb82f0379db8603810ec",
+        "supportedItem": "a541603d0136550d32798aefd6540a974d33cce5a4b98219823993502cb6f8bf",
+        "ownsInputs": "44ae299c771bbcf055add260a525bf0e9ff6945eecfb9b1842bfd50d3f60bffc"
+      },
+      "authorizedBoundaryMethods": [
+        "transact"
+      ]
+    },
+    "Enhance": {
+      "baselineSha": "1fc8a5a5df6a6b5167370828820443e72010ce423bef2b925a48a6faa8ff11bb",
+      "currentSha": "1fc8a5a5df6a6b5167370828820443e72010ce423bef2b925a48a6faa8ff11bb",
+      "match": true,
+      "preservedMethods": {
+        "feature": "9bcd11801e4b945ff89e061e60632d21dc5e85806a905bb60a332f8108ee0d24",
+        "entrance": "ba93fc3e3a8662691d301d582062823b446d959e596be01acb000b7328e48f23",
+        "enhance": "4bf591f8c77473ce0bc98856197bcaf04abffff13dfe482f919620f5b5ca9150",
+        "submit": "3ac3849674cef7827c0ed2a6a9e9f14b03bd0376c50b4a9dd6b342ec536c5029",
+        "level": "11fc3b8b34d48e019c414036d724f89d9de40c9285144ee4f9ae985fb991c02d",
+        "consume": "8a8109ac5ccb4901758ae49b8f2f8805b0407195946f9ec70b6026a13ce32cf1",
+        "loadRefresh": "33941274173a0a8c9b1ef1a5219019514f71204eb8ebf7b9dfb8e19d55eb1ea8",
+        "laterService": "da069c5ad6525fce195990937487838a085b575d4a1bc7176940a9ad08080dfb",
+        "readResult": "3041e9c3a46a2771cc94bd325433994ded439141d1ee00d306502628b11c3176",
+        "replay": "3597e9bd5634f1ca9fa1e8aa7e8991663b58c63a532bd3be8f431db4030aaa29",
+        "validRequest": "538fc6f76b8130aa601ccfaeab7fda68c2fed0db80e1b81a195a6f2dc0450ff8",
+        "usesFixtureInstances": "0dd002a041ad88e65e7737bfc0e75de5a32cfc9eccd7724e880e343b662d99bc",
+        "hasFixtureAuthorization": "c1418f1f8bf21b7c750565b2028ccb63848747d010808ad0f99ea1af0c301199",
+        "formalSelectionBoundary": "2a1d97d5ba45c60f9c2cdcd8f5c8d8c3df76d3b4cbe9afca90820d9c7f3746ba",
+        "selection": "d4dd5c9385f3c0e96cc0e7aa2f45474c223bdd7898a3db20805e68c8d9f0aebb",
+        "supportedInstance": "30caa57476fa56c47573f47a1cab919ee70a7d39286ad8cca4d139745fb6f7c7",
+        "ownsInstances": "efaf93cab3c90aa04498f60e83b33e852ec4f592b6e3165a416e2d4788be1397",
+        "ownsCosts": "7ea1bbb9545ca7d940320e20a284a4caa65233348725986d12178109c5fd39a9",
+        "protectCharmCost": "5e7110372e1518d7b755338a1dbe24abaf8f32953d41934627a05634b26ba488",
+        "validRules": "6855493f7dbedf48596fa710ae7f4d282b74828ecd36876f76a2feb68f677125",
+        "attributes": "ffbd188b59a0fcf6d048e6a893ebd5d952c675bcf2b2d7e7ef0240973022b1ee",
+        "valid": "a59f7bef473f37d5dc7f9232228078dab8ce7ac4a362a92e01030380ed54bc0f"
+      },
+      "authorizedBoundaryMethods": [
+        "transact"
+      ]
+    },
+    "Enchant": {
+      "baselineSha": "9a199a3cc5edb153906bc7ed45f47bacb929759c3c584a525c1d7971646a973c",
+      "currentSha": "9a199a3cc5edb153906bc7ed45f47bacb929759c3c584a525c1d7971646a973c",
+      "match": true,
+      "preservedMethods": {
+        "feature": "3f6867885b1cfb82bb92827734957fccb3936e8323bd7e660ebc99bf66e1ecb2",
+        "entrance": "9f0d47333e08bec37a21b78510df7c8404c1716dfe0291f49f076a9a1d5c913a",
+        "enchant": "6a983620c0216a12cc2a7f875ce0fe7aa0bcc04463e112d40ba114f7bc97a0c9",
+        "submit": "6a049bdcd7baf72bc12571085a2ef679a7d356edd8d7e283bfdd6c64b1d83676",
+        "result": "376a7f6fddcbed05f5dd40e991077db2ae82b32519ff1b96fff333f7df0c8a55",
+        "element": "e3ae80a8cdb6264996e5a4fb48eaa895b8db0d28d8bfd59eb2fa2e84da9087fd",
+        "loadRefresh": "348e63ba824b0450bcec008fbee5f20d5b01ec2adffd449275503a844907d105",
+        "laterService": "7cae1a76aba2594345ae7048c655c54aa83b9522b999f011cbc0c22fd1200ac3",
+        "validRequest": "202ddb6f3341a5ae99716de22802c0310e5c20c817dea5e139e62a9c8c5add7f",
+        "replay": "6e9b9f76139ab24139b842517ddfd2d872a29644655d0393c2a0e65b4db4a00e",
+        "selection": "04162ce910a067d71a9fdc1e8ab9b5c790e1a603b1e991d589d0ac46da2266c9",
+        "supportedWeapon": "de8128fb29eb46a77afefad6f6e4c85eb597ecf536f804c3233a824f40ae859f",
+        "ownsInstances": "43b588fdce01ee729ffe03c3ea16353b118451399399d9800b1609da36a5f4c1",
+        "ownsCosts": "87252311282d636a1fbf381bc9247779346f32de16ecbd3d416dc26961462547",
+        "validRules": "3c9f7298825f793835c2006f8fcb5350ef5037bd2857320903da658b87a588b1",
+        "attributes": "3a11d4ce6df6d8d936a3ab0317c8ce183c34de0a6617cf6a7c99df9112f700f3",
+        "valid": "afd8804a66ec3612933b5569d188c40290bca36e50ac1f28b29f73853200a47b",
+        "snapshot": "3bbed513c8d85158705a2c3a8624db537f5dc8c1094e72928de1cf59f69de017"
+      },
+      "authorizedBoundaryMethods": [
+        "transact"
+      ]
+    },
+    "Salvage": {
+      "baselineSha": "3da72e2ed1f427d76271e732ad3164d66d02abd13e619e8706568da680097e7d",
+      "currentSha": "3da72e2ed1f427d76271e732ad3164d66d02abd13e619e8706568da680097e7d",
+      "match": true,
+      "preservedMethods": {
+        "feature": "8c5c55783bd3fc24504a1c934d8dc027e47fea14d1eb57abce6b25c9e0865287",
+        "entrance": "df05f53a959b8d663c386ce83a2b5fe085d8bcb97aaebaf36e9724d7bf1f3168",
+        "salvage": "775b6ca4b17fc0b7ec2726cf1372d45dc08bfe6d3915d0b446df4d236ff1ec6e",
+        "result": "e2740c1d0faad1c8161bd043e6685020be9cf30d34db6b77c72bb82043cfc7d7",
+        "output": "44c84e5cb7c35ad2023426152898150f031ea9ae7999befb35b55c4a6975b0c4",
+        "loadRefresh": "796e31821ffdb1712678e322868293568498de0489886e3229da1702f9accf67",
+        "laterService": "5e03c104c03a62c2af54f5c46b6a55ede3213b58fbc42dd82c22a200ad91b6a6",
+        "validRequest": "fb8823749bacd6120bd1cf824cbf2abf2c1a83eeae5e4345250d1241f87b7ced",
+        "replay": "2a8c2d475fed91d11586827e31c02bc6f4bc7e1c8f5564bb3f8b1367b8cb780d",
+        "validQualification": "fa2943a557e691b8808f4657fbd10bfa7c7e43c409c68fe3e53fbe963455602a",
+        "selection": "87b1345aa3bc8fc17043e929542e43cf04f8c6ad2d3a3c23db10a2592040b68f",
+        "canReceive": "c59b80812b211ab8c93ecaf538f66fd812b8bbbf26d2a6a128abf20e9f1b0d1d",
+        "validRules": "b6fba98d15c0bbea36e73ac08a4abeecfb30846185d62c5da0c2e44f39ca9215",
+        "valid": "269734f4e075c92f69a4a82deeee91df6192c01288cae4a1f1cf628703d4a51a",
+        "snapshot": "ff9bd095964cad3f36d268e7544376f557e82bd7307c8336e307379d30b5f4e5"
+      },
+      "authorizedBoundaryMethods": [
+        "transact",
+        "qualification",
+        "submit"
+      ]
+    }
+  },
+  "newOpenFlag": false,
+  "ui": [
+    {
+      "file": "src/SmithServicesController.ts",
+      "before": "02230518b379ef33b445717d0f15282a84829a4ade56e09ed0b561e6e19836cb",
+      "after": "02230518b379ef33b445717d0f15282a84829a4ade56e09ed0b561e6e19836cb",
+      "match": true
+    },
+    {
+      "file": "src/SmithServicesPanel.ts",
+      "before": "252dd71dae89d77a56ff258789f25ffef8f5563bc435640ec974dc32bbf91dd3",
+      "after": "252dd71dae89d77a56ff258789f25ffef8f5563bc435640ec974dc32bbf91dd3",
+      "match": true
+    },
+    {
+      "file": "src/scenes/GameScene.ts",
+      "before": "4a53de4590efdabb920e7e1eee04ccd2269530e42c8177a79bd7edf4f5b95a98",
+      "after": "4a53de4590efdabb920e7e1eee04ccd2269530e42c8177a79bd7edf4f5b95a98",
+      "match": true
+    }
+  ],
+  "oldArtifactCount": 3070,
+  "oldArtifactsMatch": true,
+  "productionSourceCount": 117,
+  "productionSourcesMatch": true,
+  "allTablesCount": 72,
+  "allTablesMatch": true,
+  "artifactChanges": [],
+  "productChanges": [],
+  "tableChanges": [],
+  "softOpenedSmithServicesUi": true,
+  "released": false,
+  "notRelease": true,
+  "notReleasePack": true
+}

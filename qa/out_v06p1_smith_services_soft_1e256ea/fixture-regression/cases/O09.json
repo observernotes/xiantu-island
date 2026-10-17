@@ -1,0 +1,2108 @@
+{
+  "executed": true,
+  "passed": true,
+  "status": "passed",
+  "assertions": 52,
+  "evidenceKeys": [
+    "snapshot/adapter-gates/O09/repeated-click-and-existing-equip-operation",
+    "snapshot/adapter-gates/O09/same-instance-and-cross-service-shared-resources",
+    "snapshot/adapter-gates/O09/cross-service-exact-capacity-and-material-concurrent-race",
+    "snapshot/adapter-gates/O09/cross-service-output-carrier-and-stale-writer-cas",
+    "shared/adapter-gates/O09/repeated-click-and-existing-equip-operation",
+    "shared/adapter-gates/O09/same-instance-and-cross-service-shared-resources",
+    "shared/adapter-gates/O09/cross-service-exact-capacity-and-material-concurrent-race",
+    "shared/adapter-gates/O09/cross-service-output-carrier-and-stale-writer-cas"
+  ],
+  "case": "O09",
+  "evidence": [
+    {
+      "case": "O09",
+      "label": "snapshot/adapter-gates/O09/repeated-click-and-existing-equip-operation",
+      "passed": true,
+      "first": {
+        "allowed": true,
+        "status": "committed",
+        "route": "panel",
+        "service": "enhance",
+        "gate": {
+          "allowed": true,
+          "result": {
+            "state": "committed",
+            "enhanceRequestId": "enhance_88",
+            "enhanceResultRef": "enhance_7cf72fa1-cd0f-4ff2-805e-89f925417c20:enhance:enhance_88",
+            "instanceRef": "forge_73fb512f-7df7-45b2-9d22-f2a0b3476816:craft:forge_87:item",
+            "itemId": "bamboo_sword",
+            "type": "weapon",
+            "fromLevel": 0,
+            "to": 1,
+            "rate": 0.95,
+            "stones": 100,
+            "refineStones": 1,
+            "dropOnFail": false,
+            "useProtectCharm": false,
+            "success": true,
+            "finalLevel": 1,
+            "attributes": {
+              "atkRatioOfBase": 0.04,
+              "defRatioOfBase": 0,
+              "hpRatioOfBase": 0,
+              "allRatio": 0
+            }
+          },
+          "progress": {
+            "version": 1,
+            "ledgerId": "enhance_7cf72fa1-cd0f-4ff2-805e-89f925417c20",
+            "instances": [
+              {
+                "instanceRef": "forge_73fb512f-7df7-45b2-9d22-f2a0b3476816:craft:forge_87:item",
+                "itemId": "bamboo_sword",
+                "type": "weapon",
+                "enhanceLevel": 1
+              }
+            ],
+            "enhancements": [
+              {
+                "state": "committed",
+                "enhanceRequestId": "enhance_88",
+                "enhanceResultRef": "enhance_7cf72fa1-cd0f-4ff2-805e-89f925417c20:enhance:enhance_88",
+                "instanceRef": "forge_73fb512f-7df7-45b2-9d22-f2a0b3476816:craft:forge_87:item",
+                "itemId": "bamboo_sword",
+                "type": "weapon",
+                "fromLevel": 0,
+                "to": 1,
+                "rate": 0.95,
+                "stones": 100,
+                "refineStones": 1,
+                "dropOnFail": false,
+                "useProtectCharm": false,
+                "success": true,
+                "finalLevel": 1,
+                "attributes": {
+                  "atkRatioOfBase": 0.04,
+                  "defRatioOfBase": 0,
+                  "hpRatioOfBase": 0,
+                  "allRatio": 0
+                }
+              }
+            ],
+            "receipts": [
+              "enhance_7cf72fa1-cd0f-4ff2-805e-89f925417c20:enhance:enhance_88"
+            ],
+            "formalSources": [
+              {
+                "instanceRef": "forge_73fb512f-7df7-45b2-9d22-f2a0b3476816:craft:forge_87:item",
+                "source": "forge",
+                "forgeLedgerId": "forge_73fb512f-7df7-45b2-9d22-f2a0b3476816",
+                "craftResultRef": "forge_73fb512f-7df7-45b2-9d22-f2a0b3476816:craft:forge_87",
+                "ownerSlot": 1
+              }
+            ]
+          },
+          "replayed": false
+        },
+        "result": {
+          "state": "committed",
+          "enhanceRequestId": "enhance_88",
+          "enhanceResultRef": "enhance_7cf72fa1-cd0f-4ff2-805e-89f925417c20:enhance:enhance_88",
+          "instanceRef": "forge_73fb512f-7df7-45b2-9d22-f2a0b3476816:craft:forge_87:item",
+          "itemId": "bamboo_sword",
+          "type": "weapon",
+          "fromLevel": 0,
+          "to": 1,
+          "rate": 0.95,
+          "stones": 100,
+          "refineStones": 1,
+          "dropOnFail": false,
+          "useProtectCharm": false,
+          "success": true,
+          "finalLevel": 1,
+          "attributes": {
+            "atkRatioOfBase": 0.04,
+            "defRatioOfBase": 0,
+            "hpRatioOfBase": 0,
+            "allRatio": 0
+          }
+        },
+        "replayed": false
+      },
+      "duplicate": {
+        "allowed": false,
+        "status": "busy",
+        "route": "panel",
+        "service": "enhance",
+        "tipKey": "ui.smith.busy",
+        "text": "请求处理中，请勿重复提交。"
+      },
+      "equipCompete": {
+        "ok": false,
+        "reason": "save"
+      },
+      "after": {
+        "inventory": {
+          "refine_stone": 998,
+          "beast_core": 100,
+          "protect_charm": 100,
+          "scroll_ten_thousand_swords": 99,
+          "spirit_copper": 99,
+          "bamboo_sword": 1
+        },
+        "stones": 999900,
+        "equip": {},
+        "forgingExp": 0,
+        "forgingLevel": 1,
+        "formalSources": [
+          {
+            "instanceRef": "forge_73fb512f-7df7-45b2-9d22-f2a0b3476816:craft:forge_87:item",
+            "source": "forge",
+            "forgeLedgerId": "forge_73fb512f-7df7-45b2-9d22-f2a0b3476816",
+            "craftResultRef": "forge_73fb512f-7df7-45b2-9d22-f2a0b3476816:craft:forge_87",
+            "ownerSlot": 1
+          }
+        ],
+        "forge": {
+          "version": 1,
+          "ledgerId": "forge_73fb512f-7df7-45b2-9d22-f2a0b3476816",
+          "crafts": [
+            {
+              "state": "committed",
+              "craftRequestId": "forge_87",
+              "craftResultRef": "forge_73fb512f-7df7-45b2-9d22-f2a0b3476816:craft:forge_87",
+              "blueprintId": "scroll_ten_thousand_swords",
+              "blueprintCount": 1,
+              "materials": [
+                {
+                  "itemId": "spirit_copper",
+                  "count": 1
+                },
+                {
+                  "itemId": "refine_stone",
+                  "count": 1
+                }
+              ],
+              "resultItem": {
+                "itemId": "bamboo_sword",
+                "count": 1,
+                "instanceRef": "forge_73fb512f-7df7-45b2-9d22-f2a0b3476816:craft:forge_87:item"
+              },
+              "resultGrade": "common"
+            }
+          ],
+          "receipts": [
+            "forge_73fb512f-7df7-45b2-9d22-f2a0b3476816:craft:forge_87"
+          ]
+        },
+        "enhance": {
+          "version": 1,
+          "ledgerId": "enhance_7cf72fa1-cd0f-4ff2-805e-89f925417c20",
+          "instances": [
+            {
+              "instanceRef": "forge_73fb512f-7df7-45b2-9d22-f2a0b3476816:craft:forge_87:item",
+              "itemId": "bamboo_sword",
+              "type": "weapon",
+              "enhanceLevel": 1
+            }
+          ],
+          "enhancements": [
+            {
+              "state": "committed",
+              "enhanceRequestId": "enhance_88",
+              "enhanceResultRef": "enhance_7cf72fa1-cd0f-4ff2-805e-89f925417c20:enhance:enhance_88",
+              "instanceRef": "forge_73fb512f-7df7-45b2-9d22-f2a0b3476816:craft:forge_87:item",
+              "itemId": "bamboo_sword",
+              "type": "weapon",
+              "fromLevel": 0,
+              "to": 1,
+              "rate": 0.95,
+              "stones": 100,
+              "refineStones": 1,
+              "dropOnFail": false,
+              "useProtectCharm": false,
+              "success": true,
+              "finalLevel": 1,
+              "attributes": {
+                "atkRatioOfBase": 0.04,
+                "defRatioOfBase": 0,
+                "hpRatioOfBase": 0,
+                "allRatio": 0
+              }
+            }
+          ],
+          "receipts": [
+            "enhance_7cf72fa1-cd0f-4ff2-805e-89f925417c20:enhance:enhance_88"
+          ],
+          "formalSources": [
+            {
+              "instanceRef": "forge_73fb512f-7df7-45b2-9d22-f2a0b3476816:craft:forge_87:item",
+              "source": "forge",
+              "forgeLedgerId": "forge_73fb512f-7df7-45b2-9d22-f2a0b3476816",
+              "craftResultRef": "forge_73fb512f-7df7-45b2-9d22-f2a0b3476816:craft:forge_87",
+              "ownerSlot": 1
+            }
+          ]
+        }
+      },
+      "dataMode": "snapshot",
+      "source": "canonical-Services-Gates-runtime"
+    },
+    {
+      "case": "O09",
+      "label": "snapshot/adapter-gates/O09/same-instance-and-cross-service-shared-resources",
+      "passed": true,
+      "sameInstance": [
+        {
+          "allowed": true,
+          "status": "committed",
+          "route": "panel",
+          "service": "enhance",
+          "gate": {
+            "allowed": true,
+            "result": {
+              "state": "committed",
+              "enhanceRequestId": "enhance_90",
+              "enhanceResultRef": "enhance_e7709b5c-04b9-47ba-a0e7-285bbf00a415:enhance:enhance_90",
+              "instanceRef": "forge_54fd3c6c-285e-4a80-8d99-5909a63a3a38:craft:forge_89:item",
+              "itemId": "bamboo_sword",
+              "type": "weapon",
+              "fromLevel": 0,
+              "to": 1,
+              "rate": 0.95,
+              "stones": 100,
+              "refineStones": 1,
+              "dropOnFail": false,
+              "useProtectCharm": false,
+              "success": true,
+              "finalLevel": 1,
+              "attributes": {
+                "atkRatioOfBase": 0.04,
+                "defRatioOfBase": 0,
+                "hpRatioOfBase": 0,
+                "allRatio": 0
+              }
+            },
+            "progress": {
+              "version": 1,
+              "ledgerId": "enhance_e7709b5c-04b9-47ba-a0e7-285bbf00a415",
+              "instances": [
+                {
+                  "instanceRef": "forge_54fd3c6c-285e-4a80-8d99-5909a63a3a38:craft:forge_89:item",
+                  "itemId": "bamboo_sword",
+                  "type": "weapon",
+                  "enhanceLevel": 1
+                }
+              ],
+              "enhancements": [
+                {
+                  "state": "committed",
+                  "enhanceRequestId": "enhance_90",
+                  "enhanceResultRef": "enhance_e7709b5c-04b9-47ba-a0e7-285bbf00a415:enhance:enhance_90",
+                  "instanceRef": "forge_54fd3c6c-285e-4a80-8d99-5909a63a3a38:craft:forge_89:item",
+                  "itemId": "bamboo_sword",
+                  "type": "weapon",
+                  "fromLevel": 0,
+                  "to": 1,
+                  "rate": 0.95,
+                  "stones": 100,
+                  "refineStones": 1,
+                  "dropOnFail": false,
+                  "useProtectCharm": false,
+                  "success": true,
+                  "finalLevel": 1,
+                  "attributes": {
+                    "atkRatioOfBase": 0.04,
+                    "defRatioOfBase": 0,
+                    "hpRatioOfBase": 0,
+                    "allRatio": 0
+                  }
+                }
+              ],
+              "receipts": [
+                "enhance_e7709b5c-04b9-47ba-a0e7-285bbf00a415:enhance:enhance_90"
+              ],
+              "formalSources": [
+                {
+                  "instanceRef": "forge_54fd3c6c-285e-4a80-8d99-5909a63a3a38:craft:forge_89:item",
+                  "source": "forge",
+                  "forgeLedgerId": "forge_54fd3c6c-285e-4a80-8d99-5909a63a3a38",
+                  "craftResultRef": "forge_54fd3c6c-285e-4a80-8d99-5909a63a3a38:craft:forge_89",
+                  "ownerSlot": 1
+                }
+              ]
+            },
+            "replayed": false
+          },
+          "result": {
+            "state": "committed",
+            "enhanceRequestId": "enhance_90",
+            "enhanceResultRef": "enhance_e7709b5c-04b9-47ba-a0e7-285bbf00a415:enhance:enhance_90",
+            "instanceRef": "forge_54fd3c6c-285e-4a80-8d99-5909a63a3a38:craft:forge_89:item",
+            "itemId": "bamboo_sword",
+            "type": "weapon",
+            "fromLevel": 0,
+            "to": 1,
+            "rate": 0.95,
+            "stones": 100,
+            "refineStones": 1,
+            "dropOnFail": false,
+            "useProtectCharm": false,
+            "success": true,
+            "finalLevel": 1,
+            "attributes": {
+              "atkRatioOfBase": 0.04,
+              "defRatioOfBase": 0,
+              "hpRatioOfBase": 0,
+              "allRatio": 0
+            }
+          },
+          "replayed": false
+        },
+        {
+          "allowed": false,
+          "status": "denied",
+          "route": "panel",
+          "service": "enhance",
+          "gate": {
+            "allowed": false,
+            "tipKey": "enhance.fixture.busy",
+            "text": "正在保存强化结果，请稍候。"
+          },
+          "tipKey": "ui.smith.busy",
+          "text": "请求处理中，请勿重复提交。"
+        }
+      ],
+      "cross": [
+        {
+          "allowed": true,
+          "status": "committed",
+          "route": "panel",
+          "service": "enhance",
+          "gate": {
+            "allowed": true,
+            "result": {
+              "state": "committed",
+              "enhanceRequestId": "enhance_93",
+              "enhanceResultRef": "enhance_59f9a5e0-5557-4171-a898-21b7337a75cb:enhance:enhance_93",
+              "instanceRef": "forge_485d4adc-63f8-4cd3-9055-35f033bc0694:craft:forge_92:item",
+              "itemId": "bamboo_sword",
+              "type": "weapon",
+              "fromLevel": 0,
+              "to": 1,
+              "rate": 0.95,
+              "stones": 100,
+              "refineStones": 1,
+              "dropOnFail": false,
+              "useProtectCharm": false,
+              "success": true,
+              "finalLevel": 1,
+              "attributes": {
+                "atkRatioOfBase": 0.04,
+                "defRatioOfBase": 0,
+                "hpRatioOfBase": 0,
+                "allRatio": 0
+              }
+            },
+            "progress": {
+              "version": 1,
+              "ledgerId": "enhance_59f9a5e0-5557-4171-a898-21b7337a75cb",
+              "instances": [
+                {
+                  "instanceRef": "forge_485d4adc-63f8-4cd3-9055-35f033bc0694:craft:forge_92:item",
+                  "itemId": "bamboo_sword",
+                  "type": "weapon",
+                  "enhanceLevel": 1
+                }
+              ],
+              "enhancements": [
+                {
+                  "state": "committed",
+                  "enhanceRequestId": "enhance_93",
+                  "enhanceResultRef": "enhance_59f9a5e0-5557-4171-a898-21b7337a75cb:enhance:enhance_93",
+                  "instanceRef": "forge_485d4adc-63f8-4cd3-9055-35f033bc0694:craft:forge_92:item",
+                  "itemId": "bamboo_sword",
+                  "type": "weapon",
+                  "fromLevel": 0,
+                  "to": 1,
+                  "rate": 0.95,
+                  "stones": 100,
+                  "refineStones": 1,
+                  "dropOnFail": false,
+                  "useProtectCharm": false,
+                  "success": true,
+                  "finalLevel": 1,
+                  "attributes": {
+                    "atkRatioOfBase": 0.04,
+                    "defRatioOfBase": 0,
+                    "hpRatioOfBase": 0,
+                    "allRatio": 0
+                  }
+                }
+              ],
+              "receipts": [
+                "enhance_59f9a5e0-5557-4171-a898-21b7337a75cb:enhance:enhance_93"
+              ],
+              "formalSources": [
+                {
+                  "instanceRef": "forge_485d4adc-63f8-4cd3-9055-35f033bc0694:craft:forge_92:item",
+                  "source": "forge",
+                  "forgeLedgerId": "forge_485d4adc-63f8-4cd3-9055-35f033bc0694",
+                  "craftResultRef": "forge_485d4adc-63f8-4cd3-9055-35f033bc0694:craft:forge_92",
+                  "ownerSlot": 1
+                }
+              ]
+            },
+            "replayed": false
+          },
+          "result": {
+            "state": "committed",
+            "enhanceRequestId": "enhance_93",
+            "enhanceResultRef": "enhance_59f9a5e0-5557-4171-a898-21b7337a75cb:enhance:enhance_93",
+            "instanceRef": "forge_485d4adc-63f8-4cd3-9055-35f033bc0694:craft:forge_92:item",
+            "itemId": "bamboo_sword",
+            "type": "weapon",
+            "fromLevel": 0,
+            "to": 1,
+            "rate": 0.95,
+            "stones": 100,
+            "refineStones": 1,
+            "dropOnFail": false,
+            "useProtectCharm": false,
+            "success": true,
+            "finalLevel": 1,
+            "attributes": {
+              "atkRatioOfBase": 0.04,
+              "defRatioOfBase": 0,
+              "hpRatioOfBase": 0,
+              "allRatio": 0
+            }
+          },
+          "replayed": false
+        },
+        {
+          "allowed": false,
+          "status": "denied",
+          "route": "panel",
+          "service": "enchant",
+          "gate": {
+            "allowed": false,
+            "tipKey": "enchant.fixture.save",
+            "text": "附灵保存失败，保持原库存与元素。"
+          },
+          "tipKey": "ui.smith.result_unknown",
+          "text": "暂未取得可核实的结果，请稍后查看；请勿重复提交。"
+        }
+      ],
+      "after": {
+        "inventory": {
+          "refine_stone": 998,
+          "beast_core": 100,
+          "protect_charm": 100,
+          "scroll_ten_thousand_swords": 99,
+          "spirit_copper": 99,
+          "bamboo_sword": 1
+        },
+        "stones": 1900,
+        "equip": {},
+        "forgingExp": 0,
+        "forgingLevel": 1,
+        "formalSources": [
+          {
+            "instanceRef": "forge_485d4adc-63f8-4cd3-9055-35f033bc0694:craft:forge_92:item",
+            "source": "forge",
+            "forgeLedgerId": "forge_485d4adc-63f8-4cd3-9055-35f033bc0694",
+            "craftResultRef": "forge_485d4adc-63f8-4cd3-9055-35f033bc0694:craft:forge_92",
+            "ownerSlot": 1
+          }
+        ],
+        "forge": {
+          "version": 1,
+          "ledgerId": "forge_485d4adc-63f8-4cd3-9055-35f033bc0694",
+          "crafts": [
+            {
+              "state": "committed",
+              "craftRequestId": "forge_92",
+              "craftResultRef": "forge_485d4adc-63f8-4cd3-9055-35f033bc0694:craft:forge_92",
+              "blueprintId": "scroll_ten_thousand_swords",
+              "blueprintCount": 1,
+              "materials": [
+                {
+                  "itemId": "spirit_copper",
+                  "count": 1
+                },
+                {
+                  "itemId": "refine_stone",
+                  "count": 1
+                }
+              ],
+              "resultItem": {
+                "itemId": "bamboo_sword",
+                "count": 1,
+                "instanceRef": "forge_485d4adc-63f8-4cd3-9055-35f033bc0694:craft:forge_92:item"
+              },
+              "resultGrade": "common"
+            }
+          ],
+          "receipts": [
+            "forge_485d4adc-63f8-4cd3-9055-35f033bc0694:craft:forge_92"
+          ]
+        },
+        "enhance": {
+          "version": 1,
+          "ledgerId": "enhance_59f9a5e0-5557-4171-a898-21b7337a75cb",
+          "instances": [
+            {
+              "instanceRef": "forge_485d4adc-63f8-4cd3-9055-35f033bc0694:craft:forge_92:item",
+              "itemId": "bamboo_sword",
+              "type": "weapon",
+              "enhanceLevel": 1
+            }
+          ],
+          "enhancements": [
+            {
+              "state": "committed",
+              "enhanceRequestId": "enhance_93",
+              "enhanceResultRef": "enhance_59f9a5e0-5557-4171-a898-21b7337a75cb:enhance:enhance_93",
+              "instanceRef": "forge_485d4adc-63f8-4cd3-9055-35f033bc0694:craft:forge_92:item",
+              "itemId": "bamboo_sword",
+              "type": "weapon",
+              "fromLevel": 0,
+              "to": 1,
+              "rate": 0.95,
+              "stones": 100,
+              "refineStones": 1,
+              "dropOnFail": false,
+              "useProtectCharm": false,
+              "success": true,
+              "finalLevel": 1,
+              "attributes": {
+                "atkRatioOfBase": 0.04,
+                "defRatioOfBase": 0,
+                "hpRatioOfBase": 0,
+                "allRatio": 0
+              }
+            }
+          ],
+          "receipts": [
+            "enhance_59f9a5e0-5557-4171-a898-21b7337a75cb:enhance:enhance_93"
+          ],
+          "formalSources": [
+            {
+              "instanceRef": "forge_485d4adc-63f8-4cd3-9055-35f033bc0694:craft:forge_92:item",
+              "source": "forge",
+              "forgeLedgerId": "forge_485d4adc-63f8-4cd3-9055-35f033bc0694",
+              "craftResultRef": "forge_485d4adc-63f8-4cd3-9055-35f033bc0694:craft:forge_92",
+              "ownerSlot": 1
+            }
+          ]
+        }
+      },
+      "dataMode": "snapshot",
+      "source": "canonical-Services-Gates-runtime"
+    },
+    {
+      "case": "O09",
+      "label": "snapshot/adapter-gates/O09/cross-service-exact-capacity-and-material-concurrent-race",
+      "passed": true,
+      "capacityResults": [
+        {
+          "allowed": false,
+          "status": "denied",
+          "route": "panel",
+          "service": "salvage",
+          "gate": {
+            "allowed": false,
+            "tipKey": "salvage.fixture.save",
+            "text": "分解保存失败，保持原合法状态。"
+          },
+          "tipKey": "ui.smith.result_unknown",
+          "text": "暂未取得可核实的结果，请稍后查看；请勿重复提交。"
+        },
+        {
+          "allowed": true,
+          "status": "committed",
+          "route": "panel",
+          "service": "enhance",
+          "gate": {
+            "allowed": true,
+            "result": {
+              "state": "committed",
+              "enhanceRequestId": "enhance_97",
+              "enhanceResultRef": "enhance_d4ca30d4-2010-4f99-a1ae-c54549741b8c:enhance:enhance_97",
+              "instanceRef": "forge_392c4aa9-7e01-46f2-b510-866b0974d007:craft:forge_95:item",
+              "itemId": "bamboo_sword",
+              "type": "weapon",
+              "fromLevel": 0,
+              "to": 1,
+              "rate": 0.95,
+              "stones": 100,
+              "refineStones": 1,
+              "dropOnFail": false,
+              "useProtectCharm": false,
+              "success": true,
+              "finalLevel": 1,
+              "attributes": {
+                "atkRatioOfBase": 0.04,
+                "defRatioOfBase": 0,
+                "hpRatioOfBase": 0,
+                "allRatio": 0
+              }
+            },
+            "progress": {
+              "version": 1,
+              "ledgerId": "enhance_d4ca30d4-2010-4f99-a1ae-c54549741b8c",
+              "instances": [
+                {
+                  "instanceRef": "forge_392c4aa9-7e01-46f2-b510-866b0974d007:craft:forge_95:item",
+                  "itemId": "bamboo_sword",
+                  "type": "weapon",
+                  "enhanceLevel": 1
+                }
+              ],
+              "enhancements": [
+                {
+                  "state": "committed",
+                  "enhanceRequestId": "enhance_97",
+                  "enhanceResultRef": "enhance_d4ca30d4-2010-4f99-a1ae-c54549741b8c:enhance:enhance_97",
+                  "instanceRef": "forge_392c4aa9-7e01-46f2-b510-866b0974d007:craft:forge_95:item",
+                  "itemId": "bamboo_sword",
+                  "type": "weapon",
+                  "fromLevel": 0,
+                  "to": 1,
+                  "rate": 0.95,
+                  "stones": 100,
+                  "refineStones": 1,
+                  "dropOnFail": false,
+                  "useProtectCharm": false,
+                  "success": true,
+                  "finalLevel": 1,
+                  "attributes": {
+                    "atkRatioOfBase": 0.04,
+                    "defRatioOfBase": 0,
+                    "hpRatioOfBase": 0,
+                    "allRatio": 0
+                  }
+                }
+              ],
+              "receipts": [
+                "enhance_d4ca30d4-2010-4f99-a1ae-c54549741b8c:enhance:enhance_97"
+              ],
+              "formalSources": [
+                {
+                  "instanceRef": "forge_392c4aa9-7e01-46f2-b510-866b0974d007:craft:forge_95:item",
+                  "source": "forge",
+                  "forgeLedgerId": "forge_392c4aa9-7e01-46f2-b510-866b0974d007",
+                  "craftResultRef": "forge_392c4aa9-7e01-46f2-b510-866b0974d007:craft:forge_95",
+                  "ownerSlot": 1
+                }
+              ]
+            },
+            "replayed": false
+          },
+          "result": {
+            "state": "committed",
+            "enhanceRequestId": "enhance_97",
+            "enhanceResultRef": "enhance_d4ca30d4-2010-4f99-a1ae-c54549741b8c:enhance:enhance_97",
+            "instanceRef": "forge_392c4aa9-7e01-46f2-b510-866b0974d007:craft:forge_95:item",
+            "itemId": "bamboo_sword",
+            "type": "weapon",
+            "fromLevel": 0,
+            "to": 1,
+            "rate": 0.95,
+            "stones": 100,
+            "refineStones": 1,
+            "dropOnFail": false,
+            "useProtectCharm": false,
+            "success": true,
+            "finalLevel": 1,
+            "attributes": {
+              "atkRatioOfBase": 0.04,
+              "defRatioOfBase": 0,
+              "hpRatioOfBase": 0,
+              "allRatio": 0
+            }
+          },
+          "replayed": false
+        }
+      ],
+      "exactCapacity": 1102,
+      "usedCapacityAfter": 1101,
+      "after": {
+        "inventory": {
+          "refine_stone": 998,
+          "beast_core": 100,
+          "protect_charm": 100,
+          "scroll_ten_thousand_swords": 99,
+          "spirit_copper": 99,
+          "bamboo_sword": 1
+        },
+        "stones": 999900,
+        "equip": {},
+        "forgingExp": 0,
+        "forgingLevel": 1,
+        "formalSources": [
+          {
+            "instanceRef": "forge_392c4aa9-7e01-46f2-b510-866b0974d007:craft:forge_95:item",
+            "source": "forge",
+            "forgeLedgerId": "forge_392c4aa9-7e01-46f2-b510-866b0974d007",
+            "craftResultRef": "forge_392c4aa9-7e01-46f2-b510-866b0974d007:craft:forge_95",
+            "ownerSlot": 1
+          }
+        ],
+        "forge": {
+          "version": 1,
+          "ledgerId": "forge_392c4aa9-7e01-46f2-b510-866b0974d007",
+          "crafts": [
+            {
+              "state": "committed",
+              "craftRequestId": "forge_95",
+              "craftResultRef": "forge_392c4aa9-7e01-46f2-b510-866b0974d007:craft:forge_95",
+              "blueprintId": "scroll_ten_thousand_swords",
+              "blueprintCount": 1,
+              "materials": [
+                {
+                  "itemId": "spirit_copper",
+                  "count": 1
+                },
+                {
+                  "itemId": "refine_stone",
+                  "count": 1
+                }
+              ],
+              "resultItem": {
+                "itemId": "bamboo_sword",
+                "count": 1,
+                "instanceRef": "forge_392c4aa9-7e01-46f2-b510-866b0974d007:craft:forge_95:item"
+              },
+              "resultGrade": "common"
+            }
+          ],
+          "receipts": [
+            "forge_392c4aa9-7e01-46f2-b510-866b0974d007:craft:forge_95"
+          ]
+        },
+        "enhance": {
+          "version": 1,
+          "ledgerId": "enhance_d4ca30d4-2010-4f99-a1ae-c54549741b8c",
+          "instances": [
+            {
+              "instanceRef": "forge_392c4aa9-7e01-46f2-b510-866b0974d007:craft:forge_95:item",
+              "itemId": "bamboo_sword",
+              "type": "weapon",
+              "enhanceLevel": 1
+            }
+          ],
+          "enhancements": [
+            {
+              "state": "committed",
+              "enhanceRequestId": "enhance_97",
+              "enhanceResultRef": "enhance_d4ca30d4-2010-4f99-a1ae-c54549741b8c:enhance:enhance_97",
+              "instanceRef": "forge_392c4aa9-7e01-46f2-b510-866b0974d007:craft:forge_95:item",
+              "itemId": "bamboo_sword",
+              "type": "weapon",
+              "fromLevel": 0,
+              "to": 1,
+              "rate": 0.95,
+              "stones": 100,
+              "refineStones": 1,
+              "dropOnFail": false,
+              "useProtectCharm": false,
+              "success": true,
+              "finalLevel": 1,
+              "attributes": {
+                "atkRatioOfBase": 0.04,
+                "defRatioOfBase": 0,
+                "hpRatioOfBase": 0,
+                "allRatio": 0
+              }
+            }
+          ],
+          "receipts": [
+            "enhance_d4ca30d4-2010-4f99-a1ae-c54549741b8c:enhance:enhance_97"
+          ],
+          "formalSources": [
+            {
+              "instanceRef": "forge_392c4aa9-7e01-46f2-b510-866b0974d007:craft:forge_95:item",
+              "source": "forge",
+              "forgeLedgerId": "forge_392c4aa9-7e01-46f2-b510-866b0974d007",
+              "craftResultRef": "forge_392c4aa9-7e01-46f2-b510-866b0974d007:craft:forge_95",
+              "ownerSlot": 1
+            }
+          ]
+        }
+      },
+      "finiteCapacitySsrOnly": true,
+      "dataMode": "snapshot",
+      "source": "canonical-Services-Gates-runtime"
+    },
+    {
+      "case": "O09",
+      "label": "snapshot/adapter-gates/O09/cross-service-output-carrier-and-stale-writer-cas",
+      "passed": true,
+      "destroyResult": {
+        "allowed": true,
+        "status": "committed",
+        "route": "panel",
+        "service": "salvage",
+        "gate": {
+          "allowed": true,
+          "result": {
+            "state": "committed",
+            "salvageRequestId": "salvageRequest_99",
+            "salvageResultRef": "salvage_101:salvage:salvageRequest_99",
+            "instanceRef": "forge_faceae1a-8ce6-4d68-9c2e-4433b0c4f249:craft:forge_98:item",
+            "itemId": "bamboo_sword",
+            "type": "weapon",
+            "grade": "common",
+            "enhanceLevel": 0,
+            "formalSource": {
+              "instanceRef": "forge_faceae1a-8ce6-4d68-9c2e-4433b0c4f249:craft:forge_98:item",
+              "source": "forge",
+              "forgeLedgerId": "forge_faceae1a-8ce6-4d68-9c2e-4433b0c4f249",
+              "craftResultRef": "forge_faceae1a-8ce6-4d68-9c2e-4433b0c4f249:craft:forge_98",
+              "ownerSlot": 1
+            },
+            "location": {
+              "kind": "inventory"
+            },
+            "refineStones": 1,
+            "output": {
+              "itemId": "refine_stone",
+              "count": 1
+            },
+            "destroyed": true,
+            "success": true
+          },
+          "output": {
+            "itemId": "refine_stone",
+            "count": 1
+          },
+          "progress": {
+            "version": 1,
+            "ledgerId": "salvage_101",
+            "ownerSlot": 1,
+            "destructions": [
+              {
+                "state": "committed",
+                "salvageRequestId": "salvageRequest_99",
+                "salvageResultRef": "salvage_101:salvage:salvageRequest_99",
+                "instanceRef": "forge_faceae1a-8ce6-4d68-9c2e-4433b0c4f249:craft:forge_98:item",
+                "itemId": "bamboo_sword",
+                "type": "weapon",
+                "grade": "common",
+                "enhanceLevel": 0,
+                "formalSource": {
+                  "instanceRef": "forge_faceae1a-8ce6-4d68-9c2e-4433b0c4f249:craft:forge_98:item",
+                  "source": "forge",
+                  "forgeLedgerId": "forge_faceae1a-8ce6-4d68-9c2e-4433b0c4f249",
+                  "craftResultRef": "forge_faceae1a-8ce6-4d68-9c2e-4433b0c4f249:craft:forge_98",
+                  "ownerSlot": 1
+                },
+                "location": {
+                  "kind": "inventory"
+                },
+                "refineStones": 1,
+                "output": {
+                  "itemId": "refine_stone",
+                  "count": 1
+                },
+                "destroyed": true,
+                "success": true
+              }
+            ],
+            "receipts": [
+              "salvage_101:salvage:salvageRequest_99"
+            ]
+          },
+          "replayed": false
+        },
+        "result": {
+          "state": "committed",
+          "salvageRequestId": "salvageRequest_99",
+          "salvageResultRef": "salvage_101:salvage:salvageRequest_99",
+          "instanceRef": "forge_faceae1a-8ce6-4d68-9c2e-4433b0c4f249:craft:forge_98:item",
+          "itemId": "bamboo_sword",
+          "type": "weapon",
+          "grade": "common",
+          "enhanceLevel": 0,
+          "formalSource": {
+            "instanceRef": "forge_faceae1a-8ce6-4d68-9c2e-4433b0c4f249:craft:forge_98:item",
+            "source": "forge",
+            "forgeLedgerId": "forge_faceae1a-8ce6-4d68-9c2e-4433b0c4f249",
+            "craftResultRef": "forge_faceae1a-8ce6-4d68-9c2e-4433b0c4f249:craft:forge_98",
+            "ownerSlot": 1
+          },
+          "location": {
+            "kind": "inventory"
+          },
+          "refineStones": 1,
+          "output": {
+            "itemId": "refine_stone",
+            "count": 1
+          },
+          "destroyed": true,
+          "success": true
+        },
+        "replayed": false
+      },
+      "oldForgeResult": {
+        "allowed": false,
+        "status": "denied",
+        "route": "panel",
+        "service": "forge",
+        "gate": {
+          "allowed": false,
+          "tipKey": "forge.fixture.stale",
+          "text": "存档事实已更新，请重新读档。"
+        },
+        "tipKey": "ui.smith.changed",
+        "text": "选择内容或资源已变化，请重新确认。"
+      },
+      "finiteCapacitySlots": 10000,
+      "after": {
+        "inventory": {
+          "refine_stone": 1000,
+          "beast_core": 100,
+          "protect_charm": 100,
+          "scroll_ten_thousand_swords": 99,
+          "spirit_copper": 99,
+          "bamboo_sword": 0
+        },
+        "stones": 1000000,
+        "equip": {},
+        "forgingExp": 0,
+        "forgingLevel": 1,
+        "formalSources": [],
+        "forge": {
+          "version": 1,
+          "ledgerId": "forge_faceae1a-8ce6-4d68-9c2e-4433b0c4f249",
+          "crafts": [
+            {
+              "state": "committed",
+              "craftRequestId": "forge_98",
+              "craftResultRef": "forge_faceae1a-8ce6-4d68-9c2e-4433b0c4f249:craft:forge_98",
+              "blueprintId": "scroll_ten_thousand_swords",
+              "blueprintCount": 1,
+              "materials": [
+                {
+                  "itemId": "spirit_copper",
+                  "count": 1
+                },
+                {
+                  "itemId": "refine_stone",
+                  "count": 1
+                }
+              ],
+              "resultItem": {
+                "itemId": "bamboo_sword",
+                "count": 1,
+                "instanceRef": "forge_faceae1a-8ce6-4d68-9c2e-4433b0c4f249:craft:forge_98:item"
+              },
+              "resultGrade": "common"
+            }
+          ],
+          "receipts": [
+            "forge_faceae1a-8ce6-4d68-9c2e-4433b0c4f249:craft:forge_98"
+          ]
+        },
+        "enhance": {
+          "version": 1,
+          "ledgerId": "enhance_63724add-ef29-4862-b49f-152beb2c8cfd",
+          "instances": [
+            {
+              "instanceRef": "forge_faceae1a-8ce6-4d68-9c2e-4433b0c4f249:craft:forge_98:item",
+              "itemId": "bamboo_sword",
+              "type": "weapon",
+              "enhanceLevel": 0
+            }
+          ],
+          "enhancements": [],
+          "receipts": [],
+          "formalSources": []
+        },
+        "salvage": {
+          "version": 1,
+          "ledgerId": "salvage_101",
+          "ownerSlot": 1,
+          "destructions": [
+            {
+              "state": "committed",
+              "salvageRequestId": "salvageRequest_99",
+              "salvageResultRef": "salvage_101:salvage:salvageRequest_99",
+              "instanceRef": "forge_faceae1a-8ce6-4d68-9c2e-4433b0c4f249:craft:forge_98:item",
+              "itemId": "bamboo_sword",
+              "type": "weapon",
+              "grade": "common",
+              "enhanceLevel": 0,
+              "formalSource": {
+                "instanceRef": "forge_faceae1a-8ce6-4d68-9c2e-4433b0c4f249:craft:forge_98:item",
+                "source": "forge",
+                "forgeLedgerId": "forge_faceae1a-8ce6-4d68-9c2e-4433b0c4f249",
+                "craftResultRef": "forge_faceae1a-8ce6-4d68-9c2e-4433b0c4f249:craft:forge_98",
+                "ownerSlot": 1
+              },
+              "location": {
+                "kind": "inventory"
+              },
+              "refineStones": 1,
+              "output": {
+                "itemId": "refine_stone",
+                "count": 1
+              },
+              "destroyed": true,
+              "success": true
+            }
+          ],
+          "receipts": [
+            "salvage_101:salvage:salvageRequest_99"
+          ]
+        }
+      },
+      "staleWriterCannotDropDestructionReceipt": true,
+      "dataMode": "snapshot",
+      "source": "canonical-Services-Gates-runtime"
+    },
+    {
+      "case": "O09",
+      "label": "shared/adapter-gates/O09/repeated-click-and-existing-equip-operation",
+      "passed": true,
+      "first": {
+        "allowed": true,
+        "status": "committed",
+        "route": "panel",
+        "service": "enhance",
+        "gate": {
+          "allowed": true,
+          "result": {
+            "state": "committed",
+            "enhanceRequestId": "enhance_88",
+            "enhanceResultRef": "enhance_8283e893-c2d7-4961-bfaf-a927d12f4988:enhance:enhance_88",
+            "instanceRef": "forge_be7cbbc4-fac4-4de8-a7f0-2332cd59f21c:craft:forge_87:item",
+            "itemId": "bamboo_sword",
+            "type": "weapon",
+            "fromLevel": 0,
+            "to": 1,
+            "rate": 0.95,
+            "stones": 100,
+            "refineStones": 1,
+            "dropOnFail": false,
+            "useProtectCharm": false,
+            "success": true,
+            "finalLevel": 1,
+            "attributes": {
+              "atkRatioOfBase": 0.04,
+              "defRatioOfBase": 0,
+              "hpRatioOfBase": 0,
+              "allRatio": 0
+            }
+          },
+          "progress": {
+            "version": 1,
+            "ledgerId": "enhance_8283e893-c2d7-4961-bfaf-a927d12f4988",
+            "instances": [
+              {
+                "instanceRef": "forge_be7cbbc4-fac4-4de8-a7f0-2332cd59f21c:craft:forge_87:item",
+                "itemId": "bamboo_sword",
+                "type": "weapon",
+                "enhanceLevel": 1
+              }
+            ],
+            "enhancements": [
+              {
+                "state": "committed",
+                "enhanceRequestId": "enhance_88",
+                "enhanceResultRef": "enhance_8283e893-c2d7-4961-bfaf-a927d12f4988:enhance:enhance_88",
+                "instanceRef": "forge_be7cbbc4-fac4-4de8-a7f0-2332cd59f21c:craft:forge_87:item",
+                "itemId": "bamboo_sword",
+                "type": "weapon",
+                "fromLevel": 0,
+                "to": 1,
+                "rate": 0.95,
+                "stones": 100,
+                "refineStones": 1,
+                "dropOnFail": false,
+                "useProtectCharm": false,
+                "success": true,
+                "finalLevel": 1,
+                "attributes": {
+                  "atkRatioOfBase": 0.04,
+                  "defRatioOfBase": 0,
+                  "hpRatioOfBase": 0,
+                  "allRatio": 0
+                }
+              }
+            ],
+            "receipts": [
+              "enhance_8283e893-c2d7-4961-bfaf-a927d12f4988:enhance:enhance_88"
+            ],
+            "formalSources": [
+              {
+                "instanceRef": "forge_be7cbbc4-fac4-4de8-a7f0-2332cd59f21c:craft:forge_87:item",
+                "source": "forge",
+                "forgeLedgerId": "forge_be7cbbc4-fac4-4de8-a7f0-2332cd59f21c",
+                "craftResultRef": "forge_be7cbbc4-fac4-4de8-a7f0-2332cd59f21c:craft:forge_87",
+                "ownerSlot": 1
+              }
+            ]
+          },
+          "replayed": false
+        },
+        "result": {
+          "state": "committed",
+          "enhanceRequestId": "enhance_88",
+          "enhanceResultRef": "enhance_8283e893-c2d7-4961-bfaf-a927d12f4988:enhance:enhance_88",
+          "instanceRef": "forge_be7cbbc4-fac4-4de8-a7f0-2332cd59f21c:craft:forge_87:item",
+          "itemId": "bamboo_sword",
+          "type": "weapon",
+          "fromLevel": 0,
+          "to": 1,
+          "rate": 0.95,
+          "stones": 100,
+          "refineStones": 1,
+          "dropOnFail": false,
+          "useProtectCharm": false,
+          "success": true,
+          "finalLevel": 1,
+          "attributes": {
+            "atkRatioOfBase": 0.04,
+            "defRatioOfBase": 0,
+            "hpRatioOfBase": 0,
+            "allRatio": 0
+          }
+        },
+        "replayed": false
+      },
+      "duplicate": {
+        "allowed": false,
+        "status": "busy",
+        "route": "panel",
+        "service": "enhance",
+        "tipKey": "ui.smith.busy",
+        "text": "请求处理中，请勿重复提交。"
+      },
+      "equipCompete": {
+        "ok": false,
+        "reason": "save"
+      },
+      "after": {
+        "inventory": {
+          "refine_stone": 998,
+          "beast_core": 100,
+          "protect_charm": 100,
+          "scroll_ten_thousand_swords": 99,
+          "spirit_copper": 99,
+          "bamboo_sword": 1
+        },
+        "stones": 999900,
+        "equip": {},
+        "forgingExp": 0,
+        "forgingLevel": 1,
+        "formalSources": [
+          {
+            "instanceRef": "forge_be7cbbc4-fac4-4de8-a7f0-2332cd59f21c:craft:forge_87:item",
+            "source": "forge",
+            "forgeLedgerId": "forge_be7cbbc4-fac4-4de8-a7f0-2332cd59f21c",
+            "craftResultRef": "forge_be7cbbc4-fac4-4de8-a7f0-2332cd59f21c:craft:forge_87",
+            "ownerSlot": 1
+          }
+        ],
+        "forge": {
+          "version": 1,
+          "ledgerId": "forge_be7cbbc4-fac4-4de8-a7f0-2332cd59f21c",
+          "crafts": [
+            {
+              "state": "committed",
+              "craftRequestId": "forge_87",
+              "craftResultRef": "forge_be7cbbc4-fac4-4de8-a7f0-2332cd59f21c:craft:forge_87",
+              "blueprintId": "scroll_ten_thousand_swords",
+              "blueprintCount": 1,
+              "materials": [
+                {
+                  "itemId": "spirit_copper",
+                  "count": 1
+                },
+                {
+                  "itemId": "refine_stone",
+                  "count": 1
+                }
+              ],
+              "resultItem": {
+                "itemId": "bamboo_sword",
+                "count": 1,
+                "instanceRef": "forge_be7cbbc4-fac4-4de8-a7f0-2332cd59f21c:craft:forge_87:item"
+              },
+              "resultGrade": "common"
+            }
+          ],
+          "receipts": [
+            "forge_be7cbbc4-fac4-4de8-a7f0-2332cd59f21c:craft:forge_87"
+          ]
+        },
+        "enhance": {
+          "version": 1,
+          "ledgerId": "enhance_8283e893-c2d7-4961-bfaf-a927d12f4988",
+          "instances": [
+            {
+              "instanceRef": "forge_be7cbbc4-fac4-4de8-a7f0-2332cd59f21c:craft:forge_87:item",
+              "itemId": "bamboo_sword",
+              "type": "weapon",
+              "enhanceLevel": 1
+            }
+          ],
+          "enhancements": [
+            {
+              "state": "committed",
+              "enhanceRequestId": "enhance_88",
+              "enhanceResultRef": "enhance_8283e893-c2d7-4961-bfaf-a927d12f4988:enhance:enhance_88",
+              "instanceRef": "forge_be7cbbc4-fac4-4de8-a7f0-2332cd59f21c:craft:forge_87:item",
+              "itemId": "bamboo_sword",
+              "type": "weapon",
+              "fromLevel": 0,
+              "to": 1,
+              "rate": 0.95,
+              "stones": 100,
+              "refineStones": 1,
+              "dropOnFail": false,
+              "useProtectCharm": false,
+              "success": true,
+              "finalLevel": 1,
+              "attributes": {
+                "atkRatioOfBase": 0.04,
+                "defRatioOfBase": 0,
+                "hpRatioOfBase": 0,
+                "allRatio": 0
+              }
+            }
+          ],
+          "receipts": [
+            "enhance_8283e893-c2d7-4961-bfaf-a927d12f4988:enhance:enhance_88"
+          ],
+          "formalSources": [
+            {
+              "instanceRef": "forge_be7cbbc4-fac4-4de8-a7f0-2332cd59f21c:craft:forge_87:item",
+              "source": "forge",
+              "forgeLedgerId": "forge_be7cbbc4-fac4-4de8-a7f0-2332cd59f21c",
+              "craftResultRef": "forge_be7cbbc4-fac4-4de8-a7f0-2332cd59f21c:craft:forge_87",
+              "ownerSlot": 1
+            }
+          ]
+        }
+      },
+      "dataMode": "shared",
+      "source": "canonical-Services-Gates-runtime"
+    },
+    {
+      "case": "O09",
+      "label": "shared/adapter-gates/O09/same-instance-and-cross-service-shared-resources",
+      "passed": true,
+      "sameInstance": [
+        {
+          "allowed": true,
+          "status": "committed",
+          "route": "panel",
+          "service": "enhance",
+          "gate": {
+            "allowed": true,
+            "result": {
+              "state": "committed",
+              "enhanceRequestId": "enhance_90",
+              "enhanceResultRef": "enhance_4cc53809-5876-4663-a07d-7722d92314b0:enhance:enhance_90",
+              "instanceRef": "forge_060d9940-8dfa-44d9-ac89-af58814a4325:craft:forge_89:item",
+              "itemId": "bamboo_sword",
+              "type": "weapon",
+              "fromLevel": 0,
+              "to": 1,
+              "rate": 0.95,
+              "stones": 100,
+              "refineStones": 1,
+              "dropOnFail": false,
+              "useProtectCharm": false,
+              "success": true,
+              "finalLevel": 1,
+              "attributes": {
+                "atkRatioOfBase": 0.04,
+                "defRatioOfBase": 0,
+                "hpRatioOfBase": 0,
+                "allRatio": 0
+              }
+            },
+            "progress": {
+              "version": 1,
+              "ledgerId": "enhance_4cc53809-5876-4663-a07d-7722d92314b0",
+              "instances": [
+                {
+                  "instanceRef": "forge_060d9940-8dfa-44d9-ac89-af58814a4325:craft:forge_89:item",
+                  "itemId": "bamboo_sword",
+                  "type": "weapon",
+                  "enhanceLevel": 1
+                }
+              ],
+              "enhancements": [
+                {
+                  "state": "committed",
+                  "enhanceRequestId": "enhance_90",
+                  "enhanceResultRef": "enhance_4cc53809-5876-4663-a07d-7722d92314b0:enhance:enhance_90",
+                  "instanceRef": "forge_060d9940-8dfa-44d9-ac89-af58814a4325:craft:forge_89:item",
+                  "itemId": "bamboo_sword",
+                  "type": "weapon",
+                  "fromLevel": 0,
+                  "to": 1,
+                  "rate": 0.95,
+                  "stones": 100,
+                  "refineStones": 1,
+                  "dropOnFail": false,
+                  "useProtectCharm": false,
+                  "success": true,
+                  "finalLevel": 1,
+                  "attributes": {
+                    "atkRatioOfBase": 0.04,
+                    "defRatioOfBase": 0,
+                    "hpRatioOfBase": 0,
+                    "allRatio": 0
+                  }
+                }
+              ],
+              "receipts": [
+                "enhance_4cc53809-5876-4663-a07d-7722d92314b0:enhance:enhance_90"
+              ],
+              "formalSources": [
+                {
+                  "instanceRef": "forge_060d9940-8dfa-44d9-ac89-af58814a4325:craft:forge_89:item",
+                  "source": "forge",
+                  "forgeLedgerId": "forge_060d9940-8dfa-44d9-ac89-af58814a4325",
+                  "craftResultRef": "forge_060d9940-8dfa-44d9-ac89-af58814a4325:craft:forge_89",
+                  "ownerSlot": 1
+                }
+              ]
+            },
+            "replayed": false
+          },
+          "result": {
+            "state": "committed",
+            "enhanceRequestId": "enhance_90",
+            "enhanceResultRef": "enhance_4cc53809-5876-4663-a07d-7722d92314b0:enhance:enhance_90",
+            "instanceRef": "forge_060d9940-8dfa-44d9-ac89-af58814a4325:craft:forge_89:item",
+            "itemId": "bamboo_sword",
+            "type": "weapon",
+            "fromLevel": 0,
+            "to": 1,
+            "rate": 0.95,
+            "stones": 100,
+            "refineStones": 1,
+            "dropOnFail": false,
+            "useProtectCharm": false,
+            "success": true,
+            "finalLevel": 1,
+            "attributes": {
+              "atkRatioOfBase": 0.04,
+              "defRatioOfBase": 0,
+              "hpRatioOfBase": 0,
+              "allRatio": 0
+            }
+          },
+          "replayed": false
+        },
+        {
+          "allowed": false,
+          "status": "denied",
+          "route": "panel",
+          "service": "enhance",
+          "gate": {
+            "allowed": false,
+            "tipKey": "enhance.fixture.busy",
+            "text": "正在保存强化结果，请稍候。"
+          },
+          "tipKey": "ui.smith.busy",
+          "text": "请求处理中，请勿重复提交。"
+        }
+      ],
+      "cross": [
+        {
+          "allowed": true,
+          "status": "committed",
+          "route": "panel",
+          "service": "enhance",
+          "gate": {
+            "allowed": true,
+            "result": {
+              "state": "committed",
+              "enhanceRequestId": "enhance_93",
+              "enhanceResultRef": "enhance_d331528e-3c98-49e5-b76b-6781f87104cb:enhance:enhance_93",
+              "instanceRef": "forge_5afdc56b-2ace-4599-9452-15da89906c36:craft:forge_92:item",
+              "itemId": "bamboo_sword",
+              "type": "weapon",
+              "fromLevel": 0,
+              "to": 1,
+              "rate": 0.95,
+              "stones": 100,
+              "refineStones": 1,
+              "dropOnFail": false,
+              "useProtectCharm": false,
+              "success": true,
+              "finalLevel": 1,
+              "attributes": {
+                "atkRatioOfBase": 0.04,
+                "defRatioOfBase": 0,
+                "hpRatioOfBase": 0,
+                "allRatio": 0
+              }
+            },
+            "progress": {
+              "version": 1,
+              "ledgerId": "enhance_d331528e-3c98-49e5-b76b-6781f87104cb",
+              "instances": [
+                {
+                  "instanceRef": "forge_5afdc56b-2ace-4599-9452-15da89906c36:craft:forge_92:item",
+                  "itemId": "bamboo_sword",
+                  "type": "weapon",
+                  "enhanceLevel": 1
+                }
+              ],
+              "enhancements": [
+                {
+                  "state": "committed",
+                  "enhanceRequestId": "enhance_93",
+                  "enhanceResultRef": "enhance_d331528e-3c98-49e5-b76b-6781f87104cb:enhance:enhance_93",
+                  "instanceRef": "forge_5afdc56b-2ace-4599-9452-15da89906c36:craft:forge_92:item",
+                  "itemId": "bamboo_sword",
+                  "type": "weapon",
+                  "fromLevel": 0,
+                  "to": 1,
+                  "rate": 0.95,
+                  "stones": 100,
+                  "refineStones": 1,
+                  "dropOnFail": false,
+                  "useProtectCharm": false,
+                  "success": true,
+                  "finalLevel": 1,
+                  "attributes": {
+                    "atkRatioOfBase": 0.04,
+                    "defRatioOfBase": 0,
+                    "hpRatioOfBase": 0,
+                    "allRatio": 0
+                  }
+                }
+              ],
+              "receipts": [
+                "enhance_d331528e-3c98-49e5-b76b-6781f87104cb:enhance:enhance_93"
+              ],
+              "formalSources": [
+                {
+                  "instanceRef": "forge_5afdc56b-2ace-4599-9452-15da89906c36:craft:forge_92:item",
+                  "source": "forge",
+                  "forgeLedgerId": "forge_5afdc56b-2ace-4599-9452-15da89906c36",
+                  "craftResultRef": "forge_5afdc56b-2ace-4599-9452-15da89906c36:craft:forge_92",
+                  "ownerSlot": 1
+                }
+              ]
+            },
+            "replayed": false
+          },
+          "result": {
+            "state": "committed",
+            "enhanceRequestId": "enhance_93",
+            "enhanceResultRef": "enhance_d331528e-3c98-49e5-b76b-6781f87104cb:enhance:enhance_93",
+            "instanceRef": "forge_5afdc56b-2ace-4599-9452-15da89906c36:craft:forge_92:item",
+            "itemId": "bamboo_sword",
+            "type": "weapon",
+            "fromLevel": 0,
+            "to": 1,
+            "rate": 0.95,
+            "stones": 100,
+            "refineStones": 1,
+            "dropOnFail": false,
+            "useProtectCharm": false,
+            "success": true,
+            "finalLevel": 1,
+            "attributes": {
+              "atkRatioOfBase": 0.04,
+              "defRatioOfBase": 0,
+              "hpRatioOfBase": 0,
+              "allRatio": 0
+            }
+          },
+          "replayed": false
+        },
+        {
+          "allowed": false,
+          "status": "denied",
+          "route": "panel",
+          "service": "enchant",
+          "gate": {
+            "allowed": false,
+            "tipKey": "enchant.fixture.save",
+            "text": "附灵保存失败，保持原库存与元素。"
+          },
+          "tipKey": "ui.smith.result_unknown",
+          "text": "暂未取得可核实的结果，请稍后查看；请勿重复提交。"
+        }
+      ],
+      "after": {
+        "inventory": {
+          "refine_stone": 998,
+          "beast_core": 100,
+          "protect_charm": 100,
+          "scroll_ten_thousand_swords": 99,
+          "spirit_copper": 99,
+          "bamboo_sword": 1
+        },
+        "stones": 1900,
+        "equip": {},
+        "forgingExp": 0,
+        "forgingLevel": 1,
+        "formalSources": [
+          {
+            "instanceRef": "forge_5afdc56b-2ace-4599-9452-15da89906c36:craft:forge_92:item",
+            "source": "forge",
+            "forgeLedgerId": "forge_5afdc56b-2ace-4599-9452-15da89906c36",
+            "craftResultRef": "forge_5afdc56b-2ace-4599-9452-15da89906c36:craft:forge_92",
+            "ownerSlot": 1
+          }
+        ],
+        "forge": {
+          "version": 1,
+          "ledgerId": "forge_5afdc56b-2ace-4599-9452-15da89906c36",
+          "crafts": [
+            {
+              "state": "committed",
+              "craftRequestId": "forge_92",
+              "craftResultRef": "forge_5afdc56b-2ace-4599-9452-15da89906c36:craft:forge_92",
+              "blueprintId": "scroll_ten_thousand_swords",
+              "blueprintCount": 1,
+              "materials": [
+                {
+                  "itemId": "spirit_copper",
+                  "count": 1
+                },
+                {
+                  "itemId": "refine_stone",
+                  "count": 1
+                }
+              ],
+              "resultItem": {
+                "itemId": "bamboo_sword",
+                "count": 1,
+                "instanceRef": "forge_5afdc56b-2ace-4599-9452-15da89906c36:craft:forge_92:item"
+              },
+              "resultGrade": "common"
+            }
+          ],
+          "receipts": [
+            "forge_5afdc56b-2ace-4599-9452-15da89906c36:craft:forge_92"
+          ]
+        },
+        "enhance": {
+          "version": 1,
+          "ledgerId": "enhance_d331528e-3c98-49e5-b76b-6781f87104cb",
+          "instances": [
+            {
+              "instanceRef": "forge_5afdc56b-2ace-4599-9452-15da89906c36:craft:forge_92:item",
+              "itemId": "bamboo_sword",
+              "type": "weapon",
+              "enhanceLevel": 1
+            }
+          ],
+          "enhancements": [
+            {
+              "state": "committed",
+              "enhanceRequestId": "enhance_93",
+              "enhanceResultRef": "enhance_d331528e-3c98-49e5-b76b-6781f87104cb:enhance:enhance_93",
+              "instanceRef": "forge_5afdc56b-2ace-4599-9452-15da89906c36:craft:forge_92:item",
+              "itemId": "bamboo_sword",
+              "type": "weapon",
+              "fromLevel": 0,
+              "to": 1,
+              "rate": 0.95,
+              "stones": 100,
+              "refineStones": 1,
+              "dropOnFail": false,
+              "useProtectCharm": false,
+              "success": true,
+              "finalLevel": 1,
+              "attributes": {
+                "atkRatioOfBase": 0.04,
+                "defRatioOfBase": 0,
+                "hpRatioOfBase": 0,
+                "allRatio": 0
+              }
+            }
+          ],
+          "receipts": [
+            "enhance_d331528e-3c98-49e5-b76b-6781f87104cb:enhance:enhance_93"
+          ],
+          "formalSources": [
+            {
+              "instanceRef": "forge_5afdc56b-2ace-4599-9452-15da89906c36:craft:forge_92:item",
+              "source": "forge",
+              "forgeLedgerId": "forge_5afdc56b-2ace-4599-9452-15da89906c36",
+              "craftResultRef": "forge_5afdc56b-2ace-4599-9452-15da89906c36:craft:forge_92",
+              "ownerSlot": 1
+            }
+          ]
+        }
+      },
+      "dataMode": "shared",
+      "source": "canonical-Services-Gates-runtime"
+    },
+    {
+      "case": "O09",
+      "label": "shared/adapter-gates/O09/cross-service-exact-capacity-and-material-concurrent-race",
+      "passed": true,
+      "capacityResults": [
+        {
+          "allowed": false,
+          "status": "denied",
+          "route": "panel",
+          "service": "salvage",
+          "gate": {
+            "allowed": false,
+            "tipKey": "salvage.fixture.save",
+            "text": "分解保存失败，保持原合法状态。"
+          },
+          "tipKey": "ui.smith.result_unknown",
+          "text": "暂未取得可核实的结果，请稍后查看；请勿重复提交。"
+        },
+        {
+          "allowed": true,
+          "status": "committed",
+          "route": "panel",
+          "service": "enhance",
+          "gate": {
+            "allowed": true,
+            "result": {
+              "state": "committed",
+              "enhanceRequestId": "enhance_97",
+              "enhanceResultRef": "enhance_8c9c4519-3c38-46b0-8e4a-2908a90270a7:enhance:enhance_97",
+              "instanceRef": "forge_f781aa2a-e24f-492c-a31e-70eccbf5d0d5:craft:forge_95:item",
+              "itemId": "bamboo_sword",
+              "type": "weapon",
+              "fromLevel": 0,
+              "to": 1,
+              "rate": 0.95,
+              "stones": 100,
+              "refineStones": 1,
+              "dropOnFail": false,
+              "useProtectCharm": false,
+              "success": true,
+              "finalLevel": 1,
+              "attributes": {
+                "atkRatioOfBase": 0.04,
+                "defRatioOfBase": 0,
+                "hpRatioOfBase": 0,
+                "allRatio": 0
+              }
+            },
+            "progress": {
+              "version": 1,
+              "ledgerId": "enhance_8c9c4519-3c38-46b0-8e4a-2908a90270a7",
+              "instances": [
+                {
+                  "instanceRef": "forge_f781aa2a-e24f-492c-a31e-70eccbf5d0d5:craft:forge_95:item",
+                  "itemId": "bamboo_sword",
+                  "type": "weapon",
+                  "enhanceLevel": 1
+                }
+              ],
+              "enhancements": [
+                {
+                  "state": "committed",
+                  "enhanceRequestId": "enhance_97",
+                  "enhanceResultRef": "enhance_8c9c4519-3c38-46b0-8e4a-2908a90270a7:enhance:enhance_97",
+                  "instanceRef": "forge_f781aa2a-e24f-492c-a31e-70eccbf5d0d5:craft:forge_95:item",
+                  "itemId": "bamboo_sword",
+                  "type": "weapon",
+                  "fromLevel": 0,
+                  "to": 1,
+                  "rate": 0.95,
+                  "stones": 100,
+                  "refineStones": 1,
+                  "dropOnFail": false,
+                  "useProtectCharm": false,
+                  "success": true,
+                  "finalLevel": 1,
+                  "attributes": {
+                    "atkRatioOfBase": 0.04,
+                    "defRatioOfBase": 0,
+                    "hpRatioOfBase": 0,
+                    "allRatio": 0
+                  }
+                }
+              ],
+              "receipts": [
+                "enhance_8c9c4519-3c38-46b0-8e4a-2908a90270a7:enhance:enhance_97"
+              ],
+              "formalSources": [
+                {
+                  "instanceRef": "forge_f781aa2a-e24f-492c-a31e-70eccbf5d0d5:craft:forge_95:item",
+                  "source": "forge",
+                  "forgeLedgerId": "forge_f781aa2a-e24f-492c-a31e-70eccbf5d0d5",
+                  "craftResultRef": "forge_f781aa2a-e24f-492c-a31e-70eccbf5d0d5:craft:forge_95",
+                  "ownerSlot": 1
+                }
+              ]
+            },
+            "replayed": false
+          },
+          "result": {
+            "state": "committed",
+            "enhanceRequestId": "enhance_97",
+            "enhanceResultRef": "enhance_8c9c4519-3c38-46b0-8e4a-2908a90270a7:enhance:enhance_97",
+            "instanceRef": "forge_f781aa2a-e24f-492c-a31e-70eccbf5d0d5:craft:forge_95:item",
+            "itemId": "bamboo_sword",
+            "type": "weapon",
+            "fromLevel": 0,
+            "to": 1,
+            "rate": 0.95,
+            "stones": 100,
+            "refineStones": 1,
+            "dropOnFail": false,
+            "useProtectCharm": false,
+            "success": true,
+            "finalLevel": 1,
+            "attributes": {
+              "atkRatioOfBase": 0.04,
+              "defRatioOfBase": 0,
+              "hpRatioOfBase": 0,
+              "allRatio": 0
+            }
+          },
+          "replayed": false
+        }
+      ],
+      "exactCapacity": 1102,
+      "usedCapacityAfter": 1101,
+      "after": {
+        "inventory": {
+          "refine_stone": 998,
+          "beast_core": 100,
+          "protect_charm": 100,
+          "scroll_ten_thousand_swords": 99,
+          "spirit_copper": 99,
+          "bamboo_sword": 1
+        },
+        "stones": 999900,
+        "equip": {},
+        "forgingExp": 0,
+        "forgingLevel": 1,
+        "formalSources": [
+          {
+            "instanceRef": "forge_f781aa2a-e24f-492c-a31e-70eccbf5d0d5:craft:forge_95:item",
+            "source": "forge",
+            "forgeLedgerId": "forge_f781aa2a-e24f-492c-a31e-70eccbf5d0d5",
+            "craftResultRef": "forge_f781aa2a-e24f-492c-a31e-70eccbf5d0d5:craft:forge_95",
+            "ownerSlot": 1
+          }
+        ],
+        "forge": {
+          "version": 1,
+          "ledgerId": "forge_f781aa2a-e24f-492c-a31e-70eccbf5d0d5",
+          "crafts": [
+            {
+              "state": "committed",
+              "craftRequestId": "forge_95",
+              "craftResultRef": "forge_f781aa2a-e24f-492c-a31e-70eccbf5d0d5:craft:forge_95",
+              "blueprintId": "scroll_ten_thousand_swords",
+              "blueprintCount": 1,
+              "materials": [
+                {
+                  "itemId": "spirit_copper",
+                  "count": 1
+                },
+                {
+                  "itemId": "refine_stone",
+                  "count": 1
+                }
+              ],
+              "resultItem": {
+                "itemId": "bamboo_sword",
+                "count": 1,
+                "instanceRef": "forge_f781aa2a-e24f-492c-a31e-70eccbf5d0d5:craft:forge_95:item"
+              },
+              "resultGrade": "common"
+            }
+          ],
+          "receipts": [
+            "forge_f781aa2a-e24f-492c-a31e-70eccbf5d0d5:craft:forge_95"
+          ]
+        },
+        "enhance": {
+          "version": 1,
+          "ledgerId": "enhance_8c9c4519-3c38-46b0-8e4a-2908a90270a7",
+          "instances": [
+            {
+              "instanceRef": "forge_f781aa2a-e24f-492c-a31e-70eccbf5d0d5:craft:forge_95:item",
+              "itemId": "bamboo_sword",
+              "type": "weapon",
+              "enhanceLevel": 1
+            }
+          ],
+          "enhancements": [
+            {
+              "state": "committed",
+              "enhanceRequestId": "enhance_97",
+              "enhanceResultRef": "enhance_8c9c4519-3c38-46b0-8e4a-2908a90270a7:enhance:enhance_97",
+              "instanceRef": "forge_f781aa2a-e24f-492c-a31e-70eccbf5d0d5:craft:forge_95:item",
+              "itemId": "bamboo_sword",
+              "type": "weapon",
+              "fromLevel": 0,
+              "to": 1,
+              "rate": 0.95,
+              "stones": 100,
+              "refineStones": 1,
+              "dropOnFail": false,
+              "useProtectCharm": false,
+              "success": true,
+              "finalLevel": 1,
+              "attributes": {
+                "atkRatioOfBase": 0.04,
+                "defRatioOfBase": 0,
+                "hpRatioOfBase": 0,
+                "allRatio": 0
+              }
+            }
+          ],
+          "receipts": [
+            "enhance_8c9c4519-3c38-46b0-8e4a-2908a90270a7:enhance:enhance_97"
+          ],
+          "formalSources": [
+            {
+              "instanceRef": "forge_f781aa2a-e24f-492c-a31e-70eccbf5d0d5:craft:forge_95:item",
+              "source": "forge",
+              "forgeLedgerId": "forge_f781aa2a-e24f-492c-a31e-70eccbf5d0d5",
+              "craftResultRef": "forge_f781aa2a-e24f-492c-a31e-70eccbf5d0d5:craft:forge_95",
+              "ownerSlot": 1
+            }
+          ]
+        }
+      },
+      "finiteCapacitySsrOnly": true,
+      "dataMode": "shared",
+      "source": "canonical-Services-Gates-runtime"
+    },
+    {
+      "case": "O09",
+      "label": "shared/adapter-gates/O09/cross-service-output-carrier-and-stale-writer-cas",
+      "passed": true,
+      "destroyResult": {
+        "allowed": true,
+        "status": "committed",
+        "route": "panel",
+        "service": "salvage",
+        "gate": {
+          "allowed": true,
+          "result": {
+            "state": "committed",
+            "salvageRequestId": "salvageRequest_99",
+            "salvageResultRef": "salvage_101:salvage:salvageRequest_99",
+            "instanceRef": "forge_05581c7e-53a2-48e9-a94a-5330b895ea54:craft:forge_98:item",
+            "itemId": "bamboo_sword",
+            "type": "weapon",
+            "grade": "common",
+            "enhanceLevel": 0,
+            "formalSource": {
+              "instanceRef": "forge_05581c7e-53a2-48e9-a94a-5330b895ea54:craft:forge_98:item",
+              "source": "forge",
+              "forgeLedgerId": "forge_05581c7e-53a2-48e9-a94a-5330b895ea54",
+              "craftResultRef": "forge_05581c7e-53a2-48e9-a94a-5330b895ea54:craft:forge_98",
+              "ownerSlot": 1
+            },
+            "location": {
+              "kind": "inventory"
+            },
+            "refineStones": 1,
+            "output": {
+              "itemId": "refine_stone",
+              "count": 1
+            },
+            "destroyed": true,
+            "success": true
+          },
+          "output": {
+            "itemId": "refine_stone",
+            "count": 1
+          },
+          "progress": {
+            "version": 1,
+            "ledgerId": "salvage_101",
+            "ownerSlot": 1,
+            "destructions": [
+              {
+                "state": "committed",
+                "salvageRequestId": "salvageRequest_99",
+                "salvageResultRef": "salvage_101:salvage:salvageRequest_99",
+                "instanceRef": "forge_05581c7e-53a2-48e9-a94a-5330b895ea54:craft:forge_98:item",
+                "itemId": "bamboo_sword",
+                "type": "weapon",
+                "grade": "common",
+                "enhanceLevel": 0,
+                "formalSource": {
+                  "instanceRef": "forge_05581c7e-53a2-48e9-a94a-5330b895ea54:craft:forge_98:item",
+                  "source": "forge",
+                  "forgeLedgerId": "forge_05581c7e-53a2-48e9-a94a-5330b895ea54",
+                  "craftResultRef": "forge_05581c7e-53a2-48e9-a94a-5330b895ea54:craft:forge_98",
+                  "ownerSlot": 1
+                },
+                "location": {
+                  "kind": "inventory"
+                },
+                "refineStones": 1,
+                "output": {
+                  "itemId": "refine_stone",
+                  "count": 1
+                },
+                "destroyed": true,
+                "success": true
+              }
+            ],
+            "receipts": [
+              "salvage_101:salvage:salvageRequest_99"
+            ]
+          },
+          "replayed": false
+        },
+        "result": {
+          "state": "committed",
+          "salvageRequestId": "salvageRequest_99",
+          "salvageResultRef": "salvage_101:salvage:salvageRequest_99",
+          "instanceRef": "forge_05581c7e-53a2-48e9-a94a-5330b895ea54:craft:forge_98:item",
+          "itemId": "bamboo_sword",
+          "type": "weapon",
+          "grade": "common",
+          "enhanceLevel": 0,
+          "formalSource": {
+            "instanceRef": "forge_05581c7e-53a2-48e9-a94a-5330b895ea54:craft:forge_98:item",
+            "source": "forge",
+            "forgeLedgerId": "forge_05581c7e-53a2-48e9-a94a-5330b895ea54",
+            "craftResultRef": "forge_05581c7e-53a2-48e9-a94a-5330b895ea54:craft:forge_98",
+            "ownerSlot": 1
+          },
+          "location": {
+            "kind": "inventory"
+          },
+          "refineStones": 1,
+          "output": {
+            "itemId": "refine_stone",
+            "count": 1
+          },
+          "destroyed": true,
+          "success": true
+        },
+        "replayed": false
+      },
+      "oldForgeResult": {
+        "allowed": false,
+        "status": "denied",
+        "route": "panel",
+        "service": "forge",
+        "gate": {
+          "allowed": false,
+          "tipKey": "forge.fixture.stale",
+          "text": "存档事实已更新，请重新读档。"
+        },
+        "tipKey": "ui.smith.changed",
+        "text": "选择内容或资源已变化，请重新确认。"
+      },
+      "finiteCapacitySlots": 10000,
+      "after": {
+        "inventory": {
+          "refine_stone": 1000,
+          "beast_core": 100,
+          "protect_charm": 100,
+          "scroll_ten_thousand_swords": 99,
+          "spirit_copper": 99,
+          "bamboo_sword": 0
+        },
+        "stones": 1000000,
+        "equip": {},
+        "forgingExp": 0,
+        "forgingLevel": 1,
+        "formalSources": [],
+        "forge": {
+          "version": 1,
+          "ledgerId": "forge_05581c7e-53a2-48e9-a94a-5330b895ea54",
+          "crafts": [
+            {
+              "state": "committed",
+              "craftRequestId": "forge_98",
+              "craftResultRef": "forge_05581c7e-53a2-48e9-a94a-5330b895ea54:craft:forge_98",
+              "blueprintId": "scroll_ten_thousand_swords",
+              "blueprintCount": 1,
+              "materials": [
+                {
+                  "itemId": "spirit_copper",
+                  "count": 1
+                },
+                {
+                  "itemId": "refine_stone",
+                  "count": 1
+                }
+              ],
+              "resultItem": {
+                "itemId": "bamboo_sword",
+                "count": 1,
+                "instanceRef": "forge_05581c7e-53a2-48e9-a94a-5330b895ea54:craft:forge_98:item"
+              },
+              "resultGrade": "common"
+            }
+          ],
+          "receipts": [
+            "forge_05581c7e-53a2-48e9-a94a-5330b895ea54:craft:forge_98"
+          ]
+        },
+        "enhance": {
+          "version": 1,
+          "ledgerId": "enhance_2b998664-c05b-4686-91f1-410e1118dcb1",
+          "instances": [
+            {
+              "instanceRef": "forge_05581c7e-53a2-48e9-a94a-5330b895ea54:craft:forge_98:item",
+              "itemId": "bamboo_sword",
+              "type": "weapon",
+              "enhanceLevel": 0
+            }
+          ],
+          "enhancements": [],
+          "receipts": [],
+          "formalSources": []
+        },
+        "salvage": {
+          "version": 1,
+          "ledgerId": "salvage_101",
+          "ownerSlot": 1,
+          "destructions": [
+            {
+              "state": "committed",
+              "salvageRequestId": "salvageRequest_99",
+              "salvageResultRef": "salvage_101:salvage:salvageRequest_99",
+              "instanceRef": "forge_05581c7e-53a2-48e9-a94a-5330b895ea54:craft:forge_98:item",
+              "itemId": "bamboo_sword",
+              "type": "weapon",
+              "grade": "common",
+              "enhanceLevel": 0,
+              "formalSource": {
+                "instanceRef": "forge_05581c7e-53a2-48e9-a94a-5330b895ea54:craft:forge_98:item",
+                "source": "forge",
+                "forgeLedgerId": "forge_05581c7e-53a2-48e9-a94a-5330b895ea54",
+                "craftResultRef": "forge_05581c7e-53a2-48e9-a94a-5330b895ea54:craft:forge_98",
+                "ownerSlot": 1
+              },
+              "location": {
+                "kind": "inventory"
+              },
+              "refineStones": 1,
+              "output": {
+                "itemId": "refine_stone",
+                "count": 1
+              },
+              "destroyed": true,
+              "success": true
+            }
+          ],
+          "receipts": [
+            "salvage_101:salvage:salvageRequest_99"
+          ]
+        }
+      },
+      "staleWriterCannotDropDestructionReceipt": true,
+      "dataMode": "shared",
+      "source": "canonical-Services-Gates-runtime"
+    }
+  ],
+  "scope": "soft-open 交付证据位=true；本图仅夹具回归 ≠ 正式生产证据 ≠ release ≠ 进包"
+}

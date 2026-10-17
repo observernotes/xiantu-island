@@ -1,0 +1,16 @@
+
+> xiantu-island@0.0.1 test:v06p1-smith-services-services-closed
+> timeout 120s node scripts/v06p1-smith-services-services-closed-test.mjs
+
+{"dataMode":"shared","graph":"production-closed","passed":true,"assertions":777,"fixtures":75,"invocations":75,"sentinelCalls":0,"storageWrites":0}
+/workspace/xiantu/wt/feat/ui-smith-services/src/v06p1-smith-services-closed.test.ts:128
+    if (!value) throw new Error(label);
+                      ^
+
+Error: C07 原 Gate 保持缺正式资格裁决
+    at ok (/workspace/xiantu/wt/feat/ui-smith-services/src/v06p1-smith-services-closed.test.ts:128:23)
+    at Module.runSmithServicesClosedTests (/workspace/xiantu/wt/feat/ui-smith-services/src/v06p1-smith-services-closed.test.ts:502:7)
+    at async runGraph (file:///workspace/xiantu/wt/feat/ui-smith-services/scripts/v06p1-smith-services-services-closed-test.mjs:159:20)
+    at async file:///workspace/xiantu/wt/feat/ui-smith-services/scripts/v06p1-smith-services-services-closed-test.mjs:185:22
+
+Node.js v20.19.2

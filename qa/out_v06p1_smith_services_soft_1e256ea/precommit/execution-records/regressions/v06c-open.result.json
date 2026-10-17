@@ -1,0 +1,31 @@
+{
+  "name": "v06c-open",
+  "command": [
+    "npm",
+    "run",
+    "test:v06c-open"
+  ],
+  "cwd": "/workspace/xiantu/wt/feat/ui-smith-services",
+  "environment": {
+    "NODE_OPTIONS": "--import=/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_soft_7492dc9/regressions/regression-register.mjs",
+    "FORGE_CLOSED_OUT": "/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_soft_7492dc9/regressions/v06c-open",
+    "ENHANCE_CLOSED_OUT": "/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_soft_7492dc9/regressions/v06c-open",
+    "ENCHANT_CLOSED_OUT": "/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_soft_7492dc9/regressions/v06c-open",
+    "SALVAGE_CLOSED_OUT": "/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_soft_7492dc9/regressions/v06c-open",
+    "SALVAGE_OPEN_OUT": "/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_soft_7492dc9/regressions/v06c-open",
+    "ENCHANT_OPEN_OUT": "/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_soft_7492dc9/regressions/v06c-open",
+    "XT_ENHANCE_QA_OUT": "/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_soft_7492dc9/regressions/v06c-open",
+    "MARKET_CLOSED_OUT": "/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_soft_7492dc9/regressions/v06c-open",
+    "OUT_DIR": "/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_soft_7492dc9/regressions/v06c-open",
+    "OUT": "/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_soft_7492dc9/regressions/v06c-open"
+  },
+  "stdin": "/dev/null",
+  "startedAt": "2026-10-17T12:50:49.955Z",
+  "finishedAt": "2026-10-17T12:50:54.575Z",
+  "exitCode": 0,
+  "signal": null,
+  "assertions": 682,
+  "assertionCountAvailable": true,
+  "assertionCountMeaning": "Reported suite aggregate; no extra synthetic assertions added.",
+  "log": "/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_soft_7492dc9/regressions/v06c-open.log"
+}

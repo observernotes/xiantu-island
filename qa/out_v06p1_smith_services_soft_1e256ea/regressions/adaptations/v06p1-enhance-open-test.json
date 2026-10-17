@@ -1,0 +1,48 @@
+{
+  "file": "scripts/v06p1-enhance-open-test.mjs",
+  "originalSha": "72cf981b880ee1fc270ab65759289bf66d2ebad7017b736c89be382127169ca7",
+  "pinnedOriginalSha": "72cf981b880ee1fc270ab65759289bf66d2ebad7017b736c89be382127169ca7",
+  "adaptedSha": "915e34ab74155cecb0627722876faadf542fa9dd94e9c7b4fe9f8cfee4b07462",
+  "changes": [
+    {
+      "label": "current strings1013 SHA",
+      "before": "9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda",
+      "after": "d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841",
+      "occurrences": 1
+    },
+    {
+      "label": "shared/wt1013; game historical952 preserved",
+      "before": "mode === 'game' ? 952 : 960",
+      "after": "mode === 'game' ? 952 : 1013",
+      "occurrences": 1
+    },
+    {
+      "label": "game prior attr-ui snapshot970 SHA; current shared/snapshot1013",
+      "before": "6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9",
+      "after": "ae51319b82a6486cc7f3d9b26c5ae89719e23c32ff9debdcfbb86ef7b5aea08b",
+      "occurrences": 1
+    },
+    {
+      "label": "game historical snapshot970 key count",
+      "before": "mode === 'game' ? 952 : 1013",
+      "after": "mode === 'game' ? 970 : 1013",
+      "occurrences": 1
+    },
+    {
+      "label": "authorized new smith adapter Gate consumer",
+      "before": "...salvageSourceNames].includes(file)",
+      "after": "...salvageSourceNames, 'SmithServices.ts', 'v06p1-smith-services-closed.test.ts', 'v06p1-smith-services-open.test.ts', 'v06p1-smith-services-open-fixture.test.ts', 'v06p1-smith-services-open-gates.test.ts', 'v06p1-smith-services-open-ui.test.ts'].includes(file)",
+      "occurrences": 1
+    },
+    {
+      "label": "only runtime test key-count assertion adapted; production modules untouched",
+      "before": "transform(source, id) {",
+      "after": "async transform(source, id) {\n        if (id === path.join(root, 'src/v06p1-enhance-open.test.ts')) {\n          const originalSha = hash(source);\n          assert.equal(originalSha, '4ce243f2b4e7ba6620b681f41c04ac1cedcb048838b78047c19375b38d8276b9', 'pinned runtime test bytes');\n          const before = \"eq(Object.keys(strings).length, 960, '正式strings快照960键含_meta，原944键完整保留');\", after = \"eq(Object.keys(strings).length, 1013, '当前strings1013键含_meta，原944键完整保留');\";\n          assert.equal(source.split(before).length - 1, 1);\n          const adapted = source.replace(before, after);\n          await fs.writeFile(path.join(out, 'runtime-test-source-adaptation.json'), JSON.stringify({path:'src/v06p1-enhance-open.test.ts',originalSha,adaptedSha:hash(adapted),before,after,occurrences:1,diskWritten:false,productModuleTransformations:[],businessAssertionsChanged:false}) + '\\n');\n          return adapted;\n        }",
+      "occurrences": 1
+    }
+  ],
+  "productModuleTransformations": [],
+  "diskWritten": false,
+  "businessAssertionsChanged": false,
+  "policy": "Pinned test-only historical strings SHA/count/inventory and prior attr-ui byte proof; actual Vite SSR product modules use current disk."
+}

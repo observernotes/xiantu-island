@@ -1,0 +1,72 @@
+{
+  "executed": true,
+  "passed": true,
+  "status": "passed",
+  "assertions": 374,
+  "evidenceKeys": [
+    "snapshot/four-full-results-return-to-real-rendered-menu-and-flags-preserved",
+    "snapshot/isolated-memory-closed/ui-scopes-and-four-independent-gates",
+    "shared/four-full-results-return-to-real-rendered-menu-and-flags-preserved",
+    "shared/isolated-memory-closed/ui-scopes-and-four-independent-gates"
+  ],
+  "case": "O11",
+  "evidence": [
+    {
+      "case": "O11",
+      "label": "snapshot/four-full-results-return-to-real-rendered-menu-and-flags-preserved",
+      "passed": true,
+      "assertions": 6,
+      "eachServiceFullRoundtrip": true,
+      "fourDiskFlagsTrue": true,
+      "localStorageWrites": 0,
+      "productionUiFilesChanged": false
+    },
+    {
+      "case": "O11",
+      "label": "snapshot/isolated-memory-closed/ui-scopes-and-four-independent-gates",
+      "passed": true,
+      "assertions": 181,
+      "independentSsrGraph": true,
+      "uiScopes": [
+        "entrance",
+        "menu",
+        "forge",
+        "enhance",
+        "enchant",
+        "salvage"
+      ],
+      "singleFalseGates": 4,
+      "gateSubmitCalls": 2,
+      "settlementCallsAfterClosure": 0
+    },
+    {
+      "case": "O11",
+      "label": "shared/four-full-results-return-to-real-rendered-menu-and-flags-preserved",
+      "passed": true,
+      "assertions": 6,
+      "eachServiceFullRoundtrip": true,
+      "fourDiskFlagsTrue": true,
+      "localStorageWrites": 0,
+      "productionUiFilesChanged": false
+    },
+    {
+      "case": "O11",
+      "label": "shared/isolated-memory-closed/ui-scopes-and-four-independent-gates",
+      "passed": true,
+      "assertions": 181,
+      "independentSsrGraph": true,
+      "uiScopes": [
+        "entrance",
+        "menu",
+        "forge",
+        "enhance",
+        "enchant",
+        "salvage"
+      ],
+      "singleFalseGates": 4,
+      "gateSubmitCalls": 2,
+      "settlementCallsAfterClosure": 0
+    }
+  ],
+  "scope": "soft-open 交付证据位=true；本图仅夹具回归 ≠ 正式生产证据 ≠ release ≠ 进包"
+}

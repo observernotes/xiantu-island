@@ -1,0 +1,7 @@
+{
+  "source": "/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_closed/strings-append-proof.json",
+  "sha256": "20b6cd6be6b9c79406cd8f6fa5f3a0eb3dd5da700c78f8f91dcd6121a4b7c16f",
+  "borrowedHistoricalProof": true,
+  "purpose": "Exact historical 1013-to-970-to-960 test expectation proof; current disk strings are independently checked in protection-check.json.",
+  "oldOutputWritten": false
+}

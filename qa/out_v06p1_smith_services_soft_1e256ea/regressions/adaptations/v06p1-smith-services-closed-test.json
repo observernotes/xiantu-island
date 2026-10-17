@@ -1,0 +1,24 @@
+{
+  "file": "scripts/v06p1-smith-services-closed-test.mjs",
+  "originalSha": "443e41896056a7ddd2256a5766acd043fe9550683f13fead478b11b460ace8ef",
+  "pinnedOriginalSha": "443e41896056a7ddd2256a5766acd043fe9550683f13fead478b11b460ace8ef",
+  "adaptedSha": "280ac48650b136624f7be997bc5e4954806aaed4ec4fb10b57f40977a746126b",
+  "changes": [
+    {
+      "label": "authorized dependency/CAS source pins; canonical settlement callbacks separately MATCH",
+      "before": "hash(git('show', `${baseline}:src/${name}${suffix}.ts`))",
+      "after": "authorizedExpected(name + suffix + '.ts', hash(git('show', `${baseline}:src/${name}${suffix}.ts`)))",
+      "occurrences": 1
+    },
+    {
+      "label": "authorized Progress and SaveStore boundary pins",
+      "before": "hash(git('show', `${baseline}:${file}`))",
+      "after": "authorizedExpected(file, hash(git('show', `${baseline}:${file}`)))",
+      "occurrences": 1
+    }
+  ],
+  "productModuleTransformations": [],
+  "diskWritten": false,
+  "businessAssertionsChanged": false,
+  "policy": "Pinned test-only historical strings SHA/count/inventory and prior attr-ui byte proof; actual Vite SSR product modules use current disk."
+}

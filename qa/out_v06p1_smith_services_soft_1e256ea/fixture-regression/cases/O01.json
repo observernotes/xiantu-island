@@ -1,0 +1,36 @@
+{
+  "executed": true,
+  "passed": true,
+  "status": "passed",
+  "assertions": 336,
+  "evidenceKeys": [
+    "snapshot/real-GameScene-dialogue-Panel-pointer-keyboard-four-services",
+    "shared/real-GameScene-dialogue-Panel-pointer-keyboard-four-services"
+  ],
+  "case": "O01",
+  "evidence": [
+    {
+      "case": "O01",
+      "label": "snapshot/real-GameScene-dialogue-Panel-pointer-keyboard-four-services",
+      "passed": true,
+      "assertions": 168,
+      "gameSceneEntryExecuted": true,
+      "realPanelHandlersExecuted": true,
+      "noAutoSubmit": true,
+      "preSubmitStorageDelta": 0,
+      "noMarketRoute": true
+    },
+    {
+      "case": "O01",
+      "label": "shared/real-GameScene-dialogue-Panel-pointer-keyboard-four-services",
+      "passed": true,
+      "assertions": 168,
+      "gameSceneEntryExecuted": true,
+      "realPanelHandlersExecuted": true,
+      "noAutoSubmit": true,
+      "preSubmitStorageDelta": 0,
+      "noMarketRoute": true
+    }
+  ],
+  "scope": "soft-open 交付证据位=true；本图仅夹具回归 ≠ 正式生产证据 ≠ release ≠ 进包"
+}

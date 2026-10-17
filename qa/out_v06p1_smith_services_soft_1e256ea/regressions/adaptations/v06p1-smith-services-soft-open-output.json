@@ -1,0 +1,11 @@
+{
+  "file": "scripts/v06p1-smith-services-soft-open-output.mjs",
+  "originalSha": "c50a1409f07953bf355458dc53ec1f5e1633ca657b324b8a2b463e60209449ef",
+  "pinnedOriginalSha": "c50a1409f07953bf355458dc53ec1f5e1633ca657b324b8a2b463e60209449ef",
+  "adaptedSha": "9c18a87dd094ed9b6bd15eb3508a26d2928ee47d82465f6f5aab99ff2e131fde",
+  "changes": [],
+  "productModuleTransformations": [],
+  "diskWritten": false,
+  "businessAssertionsChanged": false,
+  "policy": "Pinned test-only historical strings SHA/count/inventory and prior attr-ui byte proof; actual Vite SSR product modules use current disk."
+}

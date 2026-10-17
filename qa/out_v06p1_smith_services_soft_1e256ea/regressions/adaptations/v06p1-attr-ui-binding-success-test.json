@@ -1,0 +1,42 @@
+{
+  "file": "scripts/v06p1-attr-ui-binding-success-test.mjs",
+  "originalSha": "62577ff2f9f2060ddd1e23c49d35fa3641e265ae367b0e0861362813a85a00a1",
+  "pinnedOriginalSha": "62577ff2f9f2060ddd1e23c49d35fa3641e265ae367b0e0861362813a85a00a1",
+  "adaptedSha": "5ac2fb1f01eb8cd2847ea82fd48831543a09c9bb75bf9b473464cc9a349beb63",
+  "changes": [
+    {
+      "label": "user-authorized current worktree",
+      "before": "'/workspace/xiantu/wt/feat/ui-attr-inst'",
+      "after": "\"/workspace/xiantu/wt/feat/ui-smith-services\"",
+      "occurrences": 1
+    },
+    {
+      "label": "user-authorized current dev branch",
+      "before": "'feat/ui-attr-inst'",
+      "after": "'dev'",
+      "occurrences": 1
+    },
+    {
+      "label": "authorized current worktree branch",
+      "before": "'dev'",
+      "after": "'feat/ui-smith-services'",
+      "occurrences": 1
+    },
+    {
+      "label": "authorized exact Gate dependency pins; canonical settlement preserved",
+      "before": "hash(git('show', `${baseline}:${file}`))",
+      "after": "authorizedExpected(file, hash(git('show', `${baseline}:${file}`)))",
+      "occurrences": 1
+    },
+    {
+      "label": "persist explicit formal preparation before first Forge CAS; business assertions unchanged",
+      "before": "    const forge = new ForgeGate(p,",
+      "after": "    if (!await p.saveAsync()) throw new Error(\"formal CAS preparation save failed\");\n    const forge = new ForgeGate(p,",
+      "occurrences": 1
+    }
+  ],
+  "productModuleTransformations": [],
+  "diskWritten": false,
+  "businessAssertionsChanged": false,
+  "policy": "Pinned test-only historical strings SHA/count/inventory and prior attr-ui byte proof; actual Vite SSR product modules use current disk."
+}

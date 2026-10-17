@@ -1,0 +1,5 @@
+
+> xiantu-island@0.0.1 test:v06p1-smith-services-open
+> timeout 240s node scripts/v06p1-smith-services-open-test.mjs
+
+{"passed":true,"tip":"7492dc9","tipFull":"7492dc9e96618a4187772db5e9acb4c6ef0a097b","oTable":{"O01":"PASS","O06":"PASS","O10":"PASS","O11":"PASS","O02":"PASS","O03":"PASS","O04":"PASS","O05":"PASS","O07":"PASS","O08":"PASS","O09":"PASS"},"softOpenedSmithServicesUi":true,"released":false,"newOpenFlag":false,"outDir":"/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_soft_7492dc9","blocked":{}}

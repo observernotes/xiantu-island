@@ -1,0 +1,33 @@
+{
+  "passed": true,
+  "implementationTip": "1e256ea77061d6f77b3e447c834bb17ba8682dc3",
+  "baselineContainsAbff11d": true,
+  "hardGates": {
+    "passed": true,
+    "softOpenedSmithServicesUi": true,
+    "released": false,
+    "newOpenFlag": false,
+    "allOpenCasesPassed": true,
+    "o05FormalProductionSuccess": true,
+    "productionFormalPath": true,
+    "fixtureQualificationInjected": false,
+    "fixtureCarrierInstalled": false,
+    "o09StaleForgeEnhanceBlocked": true,
+    "lostCompletedEnchant": false,
+    "singleGameSceneCurrentProgressBypassClaimed": false,
+    "settlementUnchanged": true,
+    "stringsDiskKeys": 1013,
+    "stringsSsrInjected43": false,
+    "GAME_PHASE": 5,
+    "gifts0": true
+  },
+  "allTestedSourceBytesMatchImplementationTree": true,
+  "unauthorizedProductOrTableChanges": 0,
+  "historicalOutputChanges": 0,
+  "regressionSuites": 22,
+  "regressionAssertions": 182314,
+  "servicesClosedAssertions": 17497,
+  "totalAssertionsLowerBound": 205688,
+  "independentEnforcement": false,
+  "enforcementSoftSmokePending": true
+}

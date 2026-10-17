@@ -1,0 +1,22 @@
+{
+  "name": "datalint-shared",
+  "command": [
+    "python3",
+    "/workspace/xiantu/qa/tools/datalint.py"
+  ],
+  "cwd": "/workspace/xiantu",
+  "environment": {
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "stdin": "/dev/null",
+  "startedAt": "2026-10-17T12:47:35.827Z",
+  "finishedAt": "2026-10-17T12:47:35.871Z",
+  "exitCode": 0,
+  "signal": null,
+  "assertions": null,
+  "assertionCountAvailable": false,
+  "assertionCountMeaning": "Reported suite aggregate; no extra synthetic assertions added.",
+  "log": "/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_soft_1e256ea/audit/datalint-shared.log",
+  "zeroProblems": true,
+  "logAtExecution": "/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_soft_7492dc9/audit/datalint-shared.log"
+}

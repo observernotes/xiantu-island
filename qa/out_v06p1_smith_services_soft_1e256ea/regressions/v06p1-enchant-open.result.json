@@ -1,0 +1,32 @@
+{
+  "name": "v06p1-enchant-open",
+  "command": [
+    "npm",
+    "run",
+    "test:v06p1-enchant-open"
+  ],
+  "cwd": "/workspace/xiantu/wt/feat/ui-smith-services",
+  "environment": {
+    "NODE_OPTIONS": "--import=/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_soft_7492dc9/regressions/regression-register.mjs",
+    "FORGE_CLOSED_OUT": "/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_soft_7492dc9/regressions/v06p1-enchant-open",
+    "ENHANCE_CLOSED_OUT": "/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_soft_7492dc9/regressions/v06p1-enchant-open",
+    "ENCHANT_CLOSED_OUT": "/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_soft_7492dc9/regressions/v06p1-enchant-open",
+    "SALVAGE_CLOSED_OUT": "/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_soft_7492dc9/regressions/v06p1-enchant-open",
+    "SALVAGE_OPEN_OUT": "/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_soft_7492dc9/regressions/v06p1-enchant-open",
+    "ENCHANT_OPEN_OUT": "/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_soft_7492dc9/regressions/v06p1-enchant-open",
+    "XT_ENHANCE_QA_OUT": "/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_soft_7492dc9/regressions/v06p1-enchant-open",
+    "MARKET_CLOSED_OUT": "/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_soft_7492dc9/regressions/v06p1-enchant-open",
+    "OUT_DIR": "/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_soft_7492dc9/regressions/v06p1-enchant-open",
+    "OUT": "/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_soft_7492dc9/regressions/v06p1-enchant-open"
+  },
+  "stdin": "/dev/null",
+  "startedAt": "2026-10-17T12:48:54.245Z",
+  "finishedAt": "2026-10-17T12:49:29.334Z",
+  "exitCode": 0,
+  "signal": null,
+  "assertions": 4692,
+  "assertionCountAvailable": true,
+  "assertionCountMeaning": "Reported suite aggregate; no extra synthetic assertions added.",
+  "log": "/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_soft_1e256ea/regressions/v06p1-enchant-open.log",
+  "logAtExecution": "/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_soft_7492dc9/regressions/v06p1-enchant-open.log"
+}

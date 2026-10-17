@@ -1,0 +1,614 @@
+{
+  "executed": true,
+  "passed": true,
+  "status": "passed",
+  "assertions": 104,
+  "evidenceKeys": [
+    "snapshot/adapter-gates/O02/formal-blueprint-materials-full-gate-result",
+    "snapshot/formal-forge-full-UI-roundtrip-and-Gate-result",
+    "shared/adapter-gates/O02/formal-blueprint-materials-full-gate-result",
+    "shared/formal-forge-full-UI-roundtrip-and-Gate-result"
+  ],
+  "case": "O02",
+  "evidence": [
+    {
+      "case": "O02",
+      "label": "snapshot/adapter-gates/O02/formal-blueprint-materials-full-gate-result",
+      "passed": true,
+      "request": {
+        "craftRequestId": "forge_1",
+        "blueprintId": "scroll_ten_thousand_swords",
+        "materials": [
+          {
+            "itemId": "spirit_copper",
+            "count": 1
+          },
+          {
+            "itemId": "refine_stone",
+            "count": 1
+          }
+        ]
+      },
+      "result": {
+        "state": "committed",
+        "craftRequestId": "forge_1",
+        "craftResultRef": "forge_1408b6ad-f46a-4dfd-87b2-92981fae5bcb:craft:forge_1",
+        "blueprintId": "scroll_ten_thousand_swords",
+        "blueprintCount": 1,
+        "materials": [
+          {
+            "itemId": "spirit_copper",
+            "count": 1
+          },
+          {
+            "itemId": "refine_stone",
+            "count": 1
+          }
+        ],
+        "resultItem": {
+          "itemId": "bamboo_sword",
+          "count": 1,
+          "instanceRef": "forge_1408b6ad-f46a-4dfd-87b2-92981fae5bcb:craft:forge_1:item"
+        },
+        "resultGrade": "common"
+      },
+      "before": {
+        "inventory": {
+          "refine_stone": 1000,
+          "beast_core": 100,
+          "protect_charm": 100,
+          "scroll_ten_thousand_swords": 100,
+          "spirit_copper": 100
+        },
+        "stones": 1000000,
+        "equip": {},
+        "forgingExp": 0,
+        "forgingLevel": 1
+      },
+      "after": {
+        "inventory": {
+          "refine_stone": 999,
+          "beast_core": 100,
+          "protect_charm": 100,
+          "scroll_ten_thousand_swords": 99,
+          "spirit_copper": 99,
+          "bamboo_sword": 1
+        },
+        "stones": 1000000,
+        "equip": {},
+        "forgingExp": 0,
+        "forgingLevel": 1,
+        "formalSources": [
+          {
+            "instanceRef": "forge_1408b6ad-f46a-4dfd-87b2-92981fae5bcb:craft:forge_1:item",
+            "source": "forge",
+            "forgeLedgerId": "forge_1408b6ad-f46a-4dfd-87b2-92981fae5bcb",
+            "craftResultRef": "forge_1408b6ad-f46a-4dfd-87b2-92981fae5bcb:craft:forge_1",
+            "ownerSlot": 1
+          }
+        ],
+        "forge": {
+          "version": 1,
+          "ledgerId": "forge_1408b6ad-f46a-4dfd-87b2-92981fae5bcb",
+          "crafts": [
+            {
+              "state": "committed",
+              "craftRequestId": "forge_1",
+              "craftResultRef": "forge_1408b6ad-f46a-4dfd-87b2-92981fae5bcb:craft:forge_1",
+              "blueprintId": "scroll_ten_thousand_swords",
+              "blueprintCount": 1,
+              "materials": [
+                {
+                  "itemId": "spirit_copper",
+                  "count": 1
+                },
+                {
+                  "itemId": "refine_stone",
+                  "count": 1
+                }
+              ],
+              "resultItem": {
+                "itemId": "bamboo_sword",
+                "count": 1,
+                "instanceRef": "forge_1408b6ad-f46a-4dfd-87b2-92981fae5bcb:craft:forge_1:item"
+              },
+              "resultGrade": "common"
+            }
+          ],
+          "receipts": [
+            "forge_1408b6ad-f46a-4dfd-87b2-92981fae5bcb:craft:forge_1"
+          ]
+        },
+        "enhance": {
+          "version": 1,
+          "ledgerId": "enhance_e2029fd8-fdf6-4905-87a5-6f192f4364c6",
+          "instances": [
+            {
+              "instanceRef": "forge_1408b6ad-f46a-4dfd-87b2-92981fae5bcb:craft:forge_1:item",
+              "itemId": "bamboo_sword",
+              "type": "weapon",
+              "enhanceLevel": 0
+            }
+          ],
+          "enhancements": [],
+          "receipts": [],
+          "formalSources": [
+            {
+              "instanceRef": "forge_1408b6ad-f46a-4dfd-87b2-92981fae5bcb:craft:forge_1:item",
+              "source": "forge",
+              "forgeLedgerId": "forge_1408b6ad-f46a-4dfd-87b2-92981fae5bcb",
+              "craftResultRef": "forge_1408b6ad-f46a-4dfd-87b2-92981fae5bcb:craft:forge_1",
+              "ownerSlot": 1
+            }
+          ]
+        }
+      },
+      "samples": 1,
+      "dataMode": "snapshot",
+      "source": "canonical-Services-Gates-runtime"
+    },
+    {
+      "case": "O02",
+      "label": "snapshot/formal-forge-full-UI-roundtrip-and-Gate-result",
+      "passed": true,
+      "assertions": 31,
+      "result": {
+        "state": "committed",
+        "craftRequestId": "smith_ui_91870091-2a78-4ba6-ba74-3b5e651e3290",
+        "craftResultRef": "forge_f20dc458-76d6-4828-9bc7-21a57e86c9ba:craft:smith_ui_91870091-2a78-4ba6-ba74-3b5e651e3290",
+        "blueprintId": "scroll_ten_thousand_swords",
+        "blueprintCount": 1,
+        "materials": [
+          {
+            "itemId": "spirit_copper",
+            "count": 1
+          },
+          {
+            "itemId": "refine_stone",
+            "count": 1
+          }
+        ],
+        "resultItem": {
+          "itemId": "bamboo_sword",
+          "count": 1,
+          "instanceRef": "forge_f20dc458-76d6-4828-9bc7-21a57e86c9ba:craft:smith_ui_91870091-2a78-4ba6-ba74-3b5e651e3290:item"
+        },
+        "resultGrade": "common"
+      },
+      "renderedLines": [
+        "打造完成：青竹剑 ×1；品质：凡。",
+        "消耗：万剑归宗·残页 ×1",
+        "消耗：灵铜 ×1",
+        "消耗：精炼石 ×1"
+      ],
+      "completeGateReturn": {
+        "allowed": true,
+        "result": {
+          "state": "committed",
+          "craftRequestId": "smith_ui_91870091-2a78-4ba6-ba74-3b5e651e3290",
+          "craftResultRef": "forge_f20dc458-76d6-4828-9bc7-21a57e86c9ba:craft:smith_ui_91870091-2a78-4ba6-ba74-3b5e651e3290",
+          "blueprintId": "scroll_ten_thousand_swords",
+          "blueprintCount": 1,
+          "materials": [
+            {
+              "itemId": "spirit_copper",
+              "count": 1
+            },
+            {
+              "itemId": "refine_stone",
+              "count": 1
+            }
+          ],
+          "resultItem": {
+            "itemId": "bamboo_sword",
+            "count": 1,
+            "instanceRef": "forge_f20dc458-76d6-4828-9bc7-21a57e86c9ba:craft:smith_ui_91870091-2a78-4ba6-ba74-3b5e651e3290:item"
+          },
+          "resultGrade": "common"
+        },
+        "progress": {
+          "version": 1,
+          "ledgerId": "forge_f20dc458-76d6-4828-9bc7-21a57e86c9ba",
+          "crafts": [
+            {
+              "state": "committed",
+              "craftRequestId": "ui-seed-0",
+              "craftResultRef": "forge_f20dc458-76d6-4828-9bc7-21a57e86c9ba:craft:ui-seed-0",
+              "blueprintId": "scroll_ten_thousand_swords",
+              "blueprintCount": 1,
+              "materials": [
+                {
+                  "itemId": "spirit_copper",
+                  "count": 1
+                },
+                {
+                  "itemId": "refine_stone",
+                  "count": 1
+                }
+              ],
+              "resultItem": {
+                "itemId": "bamboo_sword",
+                "count": 1,
+                "instanceRef": "forge_f20dc458-76d6-4828-9bc7-21a57e86c9ba:craft:ui-seed-0:item"
+              },
+              "resultGrade": "common"
+            },
+            {
+              "state": "committed",
+              "craftRequestId": "ui-seed-1",
+              "craftResultRef": "forge_f20dc458-76d6-4828-9bc7-21a57e86c9ba:craft:ui-seed-1",
+              "blueprintId": "scroll_ten_thousand_swords",
+              "blueprintCount": 1,
+              "materials": [
+                {
+                  "itemId": "spirit_copper",
+                  "count": 1
+                },
+                {
+                  "itemId": "refine_stone",
+                  "count": 1
+                }
+              ],
+              "resultItem": {
+                "itemId": "bamboo_sword",
+                "count": 1,
+                "instanceRef": "forge_f20dc458-76d6-4828-9bc7-21a57e86c9ba:craft:ui-seed-1:item"
+              },
+              "resultGrade": "common"
+            },
+            {
+              "state": "committed",
+              "craftRequestId": "smith_ui_91870091-2a78-4ba6-ba74-3b5e651e3290",
+              "craftResultRef": "forge_f20dc458-76d6-4828-9bc7-21a57e86c9ba:craft:smith_ui_91870091-2a78-4ba6-ba74-3b5e651e3290",
+              "blueprintId": "scroll_ten_thousand_swords",
+              "blueprintCount": 1,
+              "materials": [
+                {
+                  "itemId": "spirit_copper",
+                  "count": 1
+                },
+                {
+                  "itemId": "refine_stone",
+                  "count": 1
+                }
+              ],
+              "resultItem": {
+                "itemId": "bamboo_sword",
+                "count": 1,
+                "instanceRef": "forge_f20dc458-76d6-4828-9bc7-21a57e86c9ba:craft:smith_ui_91870091-2a78-4ba6-ba74-3b5e651e3290:item"
+              },
+              "resultGrade": "common"
+            }
+          ],
+          "receipts": [
+            "forge_f20dc458-76d6-4828-9bc7-21a57e86c9ba:craft:ui-seed-0",
+            "forge_f20dc458-76d6-4828-9bc7-21a57e86c9ba:craft:ui-seed-1",
+            "forge_f20dc458-76d6-4828-9bc7-21a57e86c9ba:craft:smith_ui_91870091-2a78-4ba6-ba74-3b5e651e3290"
+          ]
+        },
+        "replayed": false
+      },
+      "assetDelta": {
+        "stones": 0,
+        "inventory": {
+          "scroll_ten_thousand_swords": -1,
+          "refine_stone": -1,
+          "spirit_copper": -1,
+          "bamboo_sword": 1
+        },
+        "receiptCountsBefore": {
+          "forge": 2,
+          "enhance": 0,
+          "enchant": 0,
+          "salvage": 0
+        },
+        "receiptCountsAfter": {
+          "forge": 3,
+          "enhance": 0,
+          "enchant": 0,
+          "salvage": 0
+        }
+      }
+    },
+    {
+      "case": "O02",
+      "label": "shared/adapter-gates/O02/formal-blueprint-materials-full-gate-result",
+      "passed": true,
+      "request": {
+        "craftRequestId": "forge_1",
+        "blueprintId": "scroll_ten_thousand_swords",
+        "materials": [
+          {
+            "itemId": "spirit_copper",
+            "count": 1
+          },
+          {
+            "itemId": "refine_stone",
+            "count": 1
+          }
+        ]
+      },
+      "result": {
+        "state": "committed",
+        "craftRequestId": "forge_1",
+        "craftResultRef": "forge_ea1908d4-d61c-42a1-9a08-2a924016a85a:craft:forge_1",
+        "blueprintId": "scroll_ten_thousand_swords",
+        "blueprintCount": 1,
+        "materials": [
+          {
+            "itemId": "spirit_copper",
+            "count": 1
+          },
+          {
+            "itemId": "refine_stone",
+            "count": 1
+          }
+        ],
+        "resultItem": {
+          "itemId": "bamboo_sword",
+          "count": 1,
+          "instanceRef": "forge_ea1908d4-d61c-42a1-9a08-2a924016a85a:craft:forge_1:item"
+        },
+        "resultGrade": "common"
+      },
+      "before": {
+        "inventory": {
+          "refine_stone": 1000,
+          "beast_core": 100,
+          "protect_charm": 100,
+          "scroll_ten_thousand_swords": 100,
+          "spirit_copper": 100
+        },
+        "stones": 1000000,
+        "equip": {},
+        "forgingExp": 0,
+        "forgingLevel": 1
+      },
+      "after": {
+        "inventory": {
+          "refine_stone": 999,
+          "beast_core": 100,
+          "protect_charm": 100,
+          "scroll_ten_thousand_swords": 99,
+          "spirit_copper": 99,
+          "bamboo_sword": 1
+        },
+        "stones": 1000000,
+        "equip": {},
+        "forgingExp": 0,
+        "forgingLevel": 1,
+        "formalSources": [
+          {
+            "instanceRef": "forge_ea1908d4-d61c-42a1-9a08-2a924016a85a:craft:forge_1:item",
+            "source": "forge",
+            "forgeLedgerId": "forge_ea1908d4-d61c-42a1-9a08-2a924016a85a",
+            "craftResultRef": "forge_ea1908d4-d61c-42a1-9a08-2a924016a85a:craft:forge_1",
+            "ownerSlot": 1
+          }
+        ],
+        "forge": {
+          "version": 1,
+          "ledgerId": "forge_ea1908d4-d61c-42a1-9a08-2a924016a85a",
+          "crafts": [
+            {
+              "state": "committed",
+              "craftRequestId": "forge_1",
+              "craftResultRef": "forge_ea1908d4-d61c-42a1-9a08-2a924016a85a:craft:forge_1",
+              "blueprintId": "scroll_ten_thousand_swords",
+              "blueprintCount": 1,
+              "materials": [
+                {
+                  "itemId": "spirit_copper",
+                  "count": 1
+                },
+                {
+                  "itemId": "refine_stone",
+                  "count": 1
+                }
+              ],
+              "resultItem": {
+                "itemId": "bamboo_sword",
+                "count": 1,
+                "instanceRef": "forge_ea1908d4-d61c-42a1-9a08-2a924016a85a:craft:forge_1:item"
+              },
+              "resultGrade": "common"
+            }
+          ],
+          "receipts": [
+            "forge_ea1908d4-d61c-42a1-9a08-2a924016a85a:craft:forge_1"
+          ]
+        },
+        "enhance": {
+          "version": 1,
+          "ledgerId": "enhance_e7b2ec63-7fb8-42bd-b8f6-96b0ada7bd34",
+          "instances": [
+            {
+              "instanceRef": "forge_ea1908d4-d61c-42a1-9a08-2a924016a85a:craft:forge_1:item",
+              "itemId": "bamboo_sword",
+              "type": "weapon",
+              "enhanceLevel": 0
+            }
+          ],
+          "enhancements": [],
+          "receipts": [],
+          "formalSources": [
+            {
+              "instanceRef": "forge_ea1908d4-d61c-42a1-9a08-2a924016a85a:craft:forge_1:item",
+              "source": "forge",
+              "forgeLedgerId": "forge_ea1908d4-d61c-42a1-9a08-2a924016a85a",
+              "craftResultRef": "forge_ea1908d4-d61c-42a1-9a08-2a924016a85a:craft:forge_1",
+              "ownerSlot": 1
+            }
+          ]
+        }
+      },
+      "samples": 1,
+      "dataMode": "shared",
+      "source": "canonical-Services-Gates-runtime"
+    },
+    {
+      "case": "O02",
+      "label": "shared/formal-forge-full-UI-roundtrip-and-Gate-result",
+      "passed": true,
+      "assertions": 31,
+      "result": {
+        "state": "committed",
+        "craftRequestId": "smith_ui_41acf4d0-e61f-43ec-828c-d75c4800550c",
+        "craftResultRef": "forge_7e29e45e-69c3-4501-9e67-f19a2ff80887:craft:smith_ui_41acf4d0-e61f-43ec-828c-d75c4800550c",
+        "blueprintId": "scroll_ten_thousand_swords",
+        "blueprintCount": 1,
+        "materials": [
+          {
+            "itemId": "spirit_copper",
+            "count": 1
+          },
+          {
+            "itemId": "refine_stone",
+            "count": 1
+          }
+        ],
+        "resultItem": {
+          "itemId": "bamboo_sword",
+          "count": 1,
+          "instanceRef": "forge_7e29e45e-69c3-4501-9e67-f19a2ff80887:craft:smith_ui_41acf4d0-e61f-43ec-828c-d75c4800550c:item"
+        },
+        "resultGrade": "common"
+      },
+      "renderedLines": [
+        "打造完成：青竹剑 ×1；品质：凡。",
+        "消耗：万剑归宗·残页 ×1",
+        "消耗：灵铜 ×1",
+        "消耗：精炼石 ×1"
+      ],
+      "completeGateReturn": {
+        "allowed": true,
+        "result": {
+          "state": "committed",
+          "craftRequestId": "smith_ui_41acf4d0-e61f-43ec-828c-d75c4800550c",
+          "craftResultRef": "forge_7e29e45e-69c3-4501-9e67-f19a2ff80887:craft:smith_ui_41acf4d0-e61f-43ec-828c-d75c4800550c",
+          "blueprintId": "scroll_ten_thousand_swords",
+          "blueprintCount": 1,
+          "materials": [
+            {
+              "itemId": "spirit_copper",
+              "count": 1
+            },
+            {
+              "itemId": "refine_stone",
+              "count": 1
+            }
+          ],
+          "resultItem": {
+            "itemId": "bamboo_sword",
+            "count": 1,
+            "instanceRef": "forge_7e29e45e-69c3-4501-9e67-f19a2ff80887:craft:smith_ui_41acf4d0-e61f-43ec-828c-d75c4800550c:item"
+          },
+          "resultGrade": "common"
+        },
+        "progress": {
+          "version": 1,
+          "ledgerId": "forge_7e29e45e-69c3-4501-9e67-f19a2ff80887",
+          "crafts": [
+            {
+              "state": "committed",
+              "craftRequestId": "ui-seed-0",
+              "craftResultRef": "forge_7e29e45e-69c3-4501-9e67-f19a2ff80887:craft:ui-seed-0",
+              "blueprintId": "scroll_ten_thousand_swords",
+              "blueprintCount": 1,
+              "materials": [
+                {
+                  "itemId": "spirit_copper",
+                  "count": 1
+                },
+                {
+                  "itemId": "refine_stone",
+                  "count": 1
+                }
+              ],
+              "resultItem": {
+                "itemId": "bamboo_sword",
+                "count": 1,
+                "instanceRef": "forge_7e29e45e-69c3-4501-9e67-f19a2ff80887:craft:ui-seed-0:item"
+              },
+              "resultGrade": "common"
+            },
+            {
+              "state": "committed",
+              "craftRequestId": "ui-seed-1",
+              "craftResultRef": "forge_7e29e45e-69c3-4501-9e67-f19a2ff80887:craft:ui-seed-1",
+              "blueprintId": "scroll_ten_thousand_swords",
+              "blueprintCount": 1,
+              "materials": [
+                {
+                  "itemId": "spirit_copper",
+                  "count": 1
+                },
+                {
+                  "itemId": "refine_stone",
+                  "count": 1
+                }
+              ],
+              "resultItem": {
+                "itemId": "bamboo_sword",
+                "count": 1,
+                "instanceRef": "forge_7e29e45e-69c3-4501-9e67-f19a2ff80887:craft:ui-seed-1:item"
+              },
+              "resultGrade": "common"
+            },
+            {
+              "state": "committed",
+              "craftRequestId": "smith_ui_41acf4d0-e61f-43ec-828c-d75c4800550c",
+              "craftResultRef": "forge_7e29e45e-69c3-4501-9e67-f19a2ff80887:craft:smith_ui_41acf4d0-e61f-43ec-828c-d75c4800550c",
+              "blueprintId": "scroll_ten_thousand_swords",
+              "blueprintCount": 1,
+              "materials": [
+                {
+                  "itemId": "spirit_copper",
+                  "count": 1
+                },
+                {
+                  "itemId": "refine_stone",
+                  "count": 1
+                }
+              ],
+              "resultItem": {
+                "itemId": "bamboo_sword",
+                "count": 1,
+                "instanceRef": "forge_7e29e45e-69c3-4501-9e67-f19a2ff80887:craft:smith_ui_41acf4d0-e61f-43ec-828c-d75c4800550c:item"
+              },
+              "resultGrade": "common"
+            }
+          ],
+          "receipts": [
+            "forge_7e29e45e-69c3-4501-9e67-f19a2ff80887:craft:ui-seed-0",
+            "forge_7e29e45e-69c3-4501-9e67-f19a2ff80887:craft:ui-seed-1",
+            "forge_7e29e45e-69c3-4501-9e67-f19a2ff80887:craft:smith_ui_41acf4d0-e61f-43ec-828c-d75c4800550c"
+          ]
+        },
+        "replayed": false
+      },
+      "assetDelta": {
+        "stones": 0,
+        "inventory": {
+          "scroll_ten_thousand_swords": -1,
+          "refine_stone": -1,
+          "spirit_copper": -1,
+          "bamboo_sword": 1
+        },
+        "receiptCountsBefore": {
+          "forge": 2,
+          "enhance": 0,
+          "enchant": 0,
+          "salvage": 0
+        },
+        "receiptCountsAfter": {
+          "forge": 3,
+          "enhance": 0,
+          "enchant": 0,
+          "salvage": 0
+        }
+      }
+    }
+  ],
+  "scope": "soft-open 交付证据位=true；本图仅夹具回归 ≠ 正式生产证据 ≠ release ≠ 进包"
+}

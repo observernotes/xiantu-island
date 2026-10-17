@@ -1,0 +1,11 @@
+{
+  "initialExitCode": 1,
+  "initialFailure": "Error: C07 原 Gate 保持缺正式资格裁决",
+  "originalLog": "logs/attempts/services-closed-before-c07-adapter/services-closed.log",
+  "originalLogSha256": "44bcd83ff85a3ecf13d463018a323113e1bd2928996a0e9a26d95eac87dcb3e4",
+  "cause": "Historical C07 expected qualification refusal before abff11d/ef99abb. Existing enchanted sample now has formal qualification and must still be refused by the original relation boundary.",
+  "resolution": "Exact Vite test-module expectation adaptation in the runner; product src and disk test source remain byte-identical. Every zero-write assertion and exact Gate/UI refusal comparison retained.",
+  "finalExitCode": 0,
+  "finalAssertions": 17497,
+  "originalFailureConcealed": false
+}

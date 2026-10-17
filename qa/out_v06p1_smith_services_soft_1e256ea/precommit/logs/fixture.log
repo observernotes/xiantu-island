@@ -1,0 +1,5 @@
+{"suite":"v06p1-smith-services-open-graph","dataMode":"snapshot","graph":"open-fixture","passed":true}
+{"suite":"v06p1-smith-services-open-graph","dataMode":"snapshot","graph":"isolated-memory-closed","passed":true}
+{"suite":"v06p1-smith-services-open-graph","dataMode":"shared","graph":"open-fixture","passed":true}
+{"suite":"v06p1-smith-services-open-graph","dataMode":"shared","graph":"isolated-memory-closed","passed":true}
+v06p1 smith services open fixture PASS: O01–O11; 2897 assertions; softOpenedSmithServicesUi:true; released:false; newOpenFlag:false

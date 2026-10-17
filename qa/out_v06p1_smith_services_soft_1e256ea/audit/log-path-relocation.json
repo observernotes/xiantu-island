@@ -1,0 +1,194 @@
+[
+  {
+    "file": "audit/datalint-snapshot.result.json",
+    "originalSha256": "b8ee89d4014844c4ef9d6905cd7e2432110271d40018cfd28891fb7a64873661",
+    "relocatedSha256": "13e07e258c169dadeef68bc446a8cf9f4567a0c4e9da76d309b9a0669c551516",
+    "onlyChange": "log path relocated; actual logAtExecution retained; execution environments unchanged"
+  },
+  {
+    "file": "audit/datalint-shared.result.json",
+    "originalSha256": "fa56fa39e314f6fa2878b305e7d9430d264799cb05a91b9fa92d4b6280cb8040",
+    "relocatedSha256": "d1d7bdb0c7e95ecd2b460564c87e7ac3f5482a2e7a42975d30b4b77acb0bcf5f",
+    "onlyChange": "log path relocated; actual logAtExecution retained; execution environments unchanged"
+  },
+  {
+    "file": "audit/diff-check.result.json",
+    "originalSha256": "5cc7dc87fd624f5d8411c255db665820c7745960003ea63fd30511892f49b229",
+    "relocatedSha256": "c682ede2049a3687ec581ef95a79aba9da1636bc70b3688a21fa3f9642e1e01c",
+    "onlyChange": "log path relocated; actual logAtExecution retained; execution environments unchanged"
+  },
+  {
+    "file": "audit/tsc.result.json",
+    "originalSha256": "ace74115900e2f82372ea523cab0ba361a51ac179f89bee15caefb614b64be9b",
+    "relocatedSha256": "fdf1eeff6b29dab4c1cf00e3d64e148ef8ec70cf176a351fe36e16c22c1e97a3",
+    "onlyChange": "log path relocated; actual logAtExecution retained; execution environments unchanged"
+  },
+  {
+    "file": "logs/protection.result.json",
+    "originalSha256": "6764f6b69a94fc76bf4b1eaa737cf545096574119d32b5cb32bb74042b4bfaec",
+    "relocatedSha256": "44928915ff453db26274e02ecd69a59427d2a78a1fc24facf36e68eba3e8e064",
+    "onlyChange": "log path relocated; actual logAtExecution retained; execution environments unchanged"
+  },
+  {
+    "file": "logs/regressions.result.json",
+    "originalSha256": "91c0c6b037701fa9a5f7ca1d8086644cd17ae05b5978fddcde260f943cb3cdb5",
+    "relocatedSha256": "64ceb77aa35a9d255367a793a9e23f2f14e040f177cc4a4a69f8940c9701afbc",
+    "onlyChange": "log path relocated; actual logAtExecution retained; execution environments unchanged"
+  },
+  {
+    "file": "logs/selfcheck.result.json",
+    "originalSha256": "4c162cf429e3580215ee7d0852070173aa3dc9cc536da5d1d0ce3ed0ca1e5f54",
+    "relocatedSha256": "a68d77140199476e8e654b9dfd309d6ef55f295e0a7a9358512c7c8c4b9943c5",
+    "onlyChange": "log path relocated; actual logAtExecution retained; execution environments unchanged"
+  },
+  {
+    "file": "logs/audit.result.json",
+    "originalSha256": "f19bb7890d9cc0db4cd3379061ffd7dafaf89c139f28f677561d60df722d4da0",
+    "relocatedSha256": "350b7ea796280516843496cd2ec760d6e18d4bff46d1123ba1febce9ebf8864c",
+    "onlyChange": "log path relocated; actual logAtExecution retained; execution environments unchanged"
+  },
+  {
+    "file": "logs/services-closed.result.json",
+    "originalSha256": "1ca315a2102220bb99bf1f2173d8b0fe4185f4ab23333de76dbe3f54d48ce217",
+    "relocatedSha256": "bf1dddca27f6312e76b0fb59628df0cfa52c89322ffb3a45a48f577872ab14db",
+    "onlyChange": "log path relocated; actual logAtExecution retained; execution environments unchanged"
+  },
+  {
+    "file": "regressions/v06d-open.result.json",
+    "originalSha256": "0a811aa84493b73973e41a146cc45c6bd15219ef8e261b59bb867a1256718c16",
+    "relocatedSha256": "ebf4612668f027141212fd6b2231d031b31b5f7f8d693be570b9e95ee28ea6aa",
+    "onlyChange": "log path relocated; actual logAtExecution retained; execution environments unchanged"
+  },
+  {
+    "file": "regressions/v06b-closed.result.json",
+    "originalSha256": "c94e8dd81c509278404a3bcecb97f6af44b1a19d207a93423956c11abecd45df",
+    "relocatedSha256": "bf5f46b2b2c8f4551bfb223f00ab56fa0a5743c66ce852d14c77e43c67715bd3",
+    "onlyChange": "log path relocated; actual logAtExecution retained; execution environments unchanged"
+  },
+  {
+    "file": "regressions/v06b-open.result.json",
+    "originalSha256": "110694246f287c0120f89db4ca503dddd5f16015e3d0332b06f3c52d3a94ec59",
+    "relocatedSha256": "ad54a7352cc26eb4a7dc668c33c2daea36765118c47de2474de822a8e7a873c9",
+    "onlyChange": "log path relocated; actual logAtExecution retained; execution environments unchanged"
+  },
+  {
+    "file": "regressions/v06p1-forge-closed.result.json",
+    "originalSha256": "6f998c15c3b1eb4b7dde9682c287d6503b23c03c59590781a390d7d297f6419e",
+    "relocatedSha256": "238f46117362433b0775a3fc0a5ce011c07f6b394ea2d97a7282d16b9db1093f",
+    "onlyChange": "log path relocated; actual logAtExecution retained; execution environments unchanged"
+  },
+  {
+    "file": "regressions/v06p1-attr-ui-map-services.result.json",
+    "originalSha256": "6bcc8395efb0b18fb064bf497580b64aff3e98cef4cf8a9389030b5d41154451",
+    "relocatedSha256": "6ccc065f24668c156368c4b2109202a22fa05007fe725d1b666cb5fc58bfd088",
+    "onlyChange": "log path relocated; actual logAtExecution retained; execution environments unchanged"
+  },
+  {
+    "file": "regressions/v06p1-market-open.result.json",
+    "originalSha256": "53688edce21d91aa2311bf93d9b398c1eb338ac124a0ad8b03d9e2aad47c680f",
+    "relocatedSha256": "6a09e8941919f8a12f6c4beb8be5cd8878ac1ba100f70bd2bb9805e2ace97b05",
+    "onlyChange": "log path relocated; actual logAtExecution retained; execution environments unchanged"
+  },
+  {
+    "file": "regressions/v06p1-enchant-open.result.json",
+    "originalSha256": "419161e61a9cac752eacce542fa828ed188b034b9a7813558982e574ee85484a",
+    "relocatedSha256": "5c69ad639a3534ce2d83f44dc1e8f9bd44d549d9d05b3555c345e21427f77b5e",
+    "onlyChange": "log path relocated; actual logAtExecution retained; execution environments unchanged"
+  },
+  {
+    "file": "regressions/v06c-closed.result.json",
+    "originalSha256": "5dc28b8a7b412bb064b27d65322b270ec2db3327d1d02f0daee3faf3f19b5c48",
+    "relocatedSha256": "2980593fab372e72e6323a61ba0d9a2511a380f10ba5cb54fbf3127a2dab9350",
+    "onlyChange": "log path relocated; actual logAtExecution retained; execution environments unchanged"
+  },
+  {
+    "file": "regressions/v06p1-enhance-closed.result.json",
+    "originalSha256": "b07794c2cd4dd43397c0d710b4a0191b5e2de232f2095614526c5b7bf983e0e9",
+    "relocatedSha256": "f9813521b4417919bd36fb4abadd9ebb0ffb4e3794f0904ed88fa5907472154d",
+    "onlyChange": "log path relocated; actual logAtExecution retained; execution environments unchanged"
+  },
+  {
+    "file": "regressions/save-slots.result.json",
+    "originalSha256": "511639d7ddea9bffdc0ece0cec027d5452605eb35cb4002c8c30d39b40031017",
+    "relocatedSha256": "346d88286de05de5e2f75a6c3a2f7210078c1d29b05bf1c72dc111d987a47831",
+    "onlyChange": "log path relocated; actual logAtExecution retained; execution environments unchanged"
+  },
+  {
+    "file": "regressions/v06p1-attr-ui-binding-success.result.json",
+    "originalSha256": "2a8935dfd39eac40c0ce239bb79a338f8eeb85b9b357e470a6a6860b2531422d",
+    "relocatedSha256": "5d681c9199f3e7a36ae45316557c9497522a9abd6ee9666849ab48782dd7c5c4",
+    "onlyChange": "log path relocated; actual logAtExecution retained; execution environments unchanged"
+  },
+  {
+    "file": "regressions/v06p1-market-closed.result.json",
+    "originalSha256": "80fe5622c482b352bfdea3b2c9f3a34c8d580b6c78e2351b525425c94ad02d78",
+    "relocatedSha256": "547b760b81df00f261a7fe89c66ca50dd48ddfe0171a727dda37b9731b101477",
+    "onlyChange": "log path relocated; actual logAtExecution retained; execution environments unchanged"
+  },
+  {
+    "file": "regressions/regression-summary.json",
+    "originalSha256": "3f912371ac372477ae379c0433937c72f65c1a729d82fb43e6cb7bb56ea3d754",
+    "relocatedSha256": "f39e07a47a7a98d878353ea23b7f8a1c22730a8d2b1b354abd5dc7f182b24edf",
+    "onlyChange": "log path relocated; actual logAtExecution retained; execution environments unchanged"
+  },
+  {
+    "file": "regressions/v06p1-attr-ui-map-api.result.json",
+    "originalSha256": "31a1eada54bafd9baf33bc1a90531b96fcb21d403943ee05430048dafd59359b",
+    "relocatedSha256": "3846f1a3545f56c03f8f57be50a5c3db43296db05e3007a6dc0bb204194279c4",
+    "onlyChange": "log path relocated; actual logAtExecution retained; execution environments unchanged"
+  },
+  {
+    "file": "regressions/v06p1-enchant-closed.result.json",
+    "originalSha256": "c5fe6e8c084e069751f63515bfb6039f09558f53c48ae9dee1cf5f59e2ea1f88",
+    "relocatedSha256": "3f74e75f259bcb6eab644a111560d4a8429e6473037632684e2e3dba10471299",
+    "onlyChange": "log path relocated; actual logAtExecution retained; execution environments unchanged"
+  },
+  {
+    "file": "regressions/v06c-open.result.json",
+    "originalSha256": "23d202d6af3ce6d613de873474f711ed546db67dde1be16f8399a5c2ce3a04ac",
+    "relocatedSha256": "d08e9799d012ba8985aa058b021d30ef32b50c54aab86beb2f5bb5c01bc2344d",
+    "onlyChange": "log path relocated; actual logAtExecution retained; execution environments unchanged"
+  },
+  {
+    "file": "regressions/v06p1-salvage-open.result.json",
+    "originalSha256": "2eeb223da8982793b2baeda1121aad8409234aad26335cafbeff56692b4987a4",
+    "relocatedSha256": "8cbc8f615862811b5696bac586b176e218ad3b8b68f85126144c2d72d95089f8",
+    "onlyChange": "log path relocated; actual logAtExecution retained; execution environments unchanged"
+  },
+  {
+    "file": "regressions/v06d-closed.result.json",
+    "originalSha256": "f7af3b360d608ce6f6b172dcf4b8ebaaa0885c0b7fc9c8c1bba7b8f064a9a4c8",
+    "relocatedSha256": "c430bdcaed9c614933006e04d2b2675069a805790628921be26d2954c9169eaf",
+    "onlyChange": "log path relocated; actual logAtExecution retained; execution environments unchanged"
+  },
+  {
+    "file": "regressions/v06p1-forge-open.result.json",
+    "originalSha256": "7d84d240947747c0bd6a1bf1b0e0b0615cd1532f1231b00983fffb60da1dcdcc",
+    "relocatedSha256": "18c7f0b1cc90db93acaac62a66c01aaf2e4e4c62b2dae722c6388ea8ad454d61",
+    "onlyChange": "log path relocated; actual logAtExecution retained; execution environments unchanged"
+  },
+  {
+    "file": "regressions/v06p1-smith-services-closed.result.json",
+    "originalSha256": "0fe8b11d6f3cda310ba106663b064f6a34fe8361d61ec2391cb351b08d04555f",
+    "relocatedSha256": "3fd9dd0db3866f9188d36e734563bf76fbe6e65abb50f3d98a02844a17b94477",
+    "onlyChange": "log path relocated; actual logAtExecution retained; execution environments unchanged"
+  },
+  {
+    "file": "regressions/v06p1-attr-ui-closed.result.json",
+    "originalSha256": "860b0adca78c555032afed5bd0247c86c1c2e59f8b21b28ac43ed61dfdbb097f",
+    "relocatedSha256": "2c813a9fed3111909204cf800dbe2d1580c2ddd528d238d874396d2bed33352b",
+    "onlyChange": "log path relocated; actual logAtExecution retained; execution environments unchanged"
+  },
+  {
+    "file": "regressions/v06p1-salvage-closed.result.json",
+    "originalSha256": "1a54030dbf50167b3a8158906f79c65516b7666a60478ca23332586aa2ff6699",
+    "relocatedSha256": "bc66bdef4f0740730d72b2b772e49dcab8fbbefa3c8c18e246d3a134e6af2bc3",
+    "onlyChange": "log path relocated; actual logAtExecution retained; execution environments unchanged"
+  },
+  {
+    "file": "regressions/v06p1-enhance-open.result.json",
+    "originalSha256": "e5dc0c7fe735af10a117f92671e7b6ce161bdf0a05615d8ae605770ffc06c7ab",
+    "relocatedSha256": "a56fa8040db31f30f4bfd93fe16e500fa617dc1b796792ced43498e63278c2a7",
+    "onlyChange": "log path relocated; actual logAtExecution retained; execution environments unchanged"
+  }
+]

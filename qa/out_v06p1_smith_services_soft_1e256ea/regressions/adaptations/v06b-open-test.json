@@ -1,0 +1,11 @@
+{
+  "file": "scripts/v06b-open-test.mjs",
+  "originalSha": "5a82ec785d96214ccfe34dd14ddb3c56e07964311bc7fc925807bf42be5bb7e6",
+  "pinnedOriginalSha": "5a82ec785d96214ccfe34dd14ddb3c56e07964311bc7fc925807bf42be5bb7e6",
+  "adaptedSha": "94382854be0e86698b5a479c56fe505c2f5b812859ea459501fdf906cb729560",
+  "changes": [],
+  "productModuleTransformations": [],
+  "diskWritten": false,
+  "businessAssertionsChanged": false,
+  "policy": "Pinned test-only historical strings SHA/count/inventory and prior attr-ui byte proof; actual Vite SSR product modules use current disk."
+}

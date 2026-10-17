@@ -1,0 +1,11 @@
+
+> xiantu-island@0.0.1 test:v06p1-smith-services-services-closed
+> timeout 120s node scripts/v06p1-smith-services-services-closed-test.mjs
+
+{"dataMode":"shared","graph":"production-closed","passed":true,"assertions":777,"fixtures":75,"invocations":75,"sentinelCalls":0,"storageWrites":0}
+{"dataMode":"shared","graph":"memory-closed","passed":true,"assertions":3903,"fixtures":364,"invocations":335,"sentinelCalls":0,"storageWrites":0}
+{"dataMode":"shared","graph":"fresh-memory-closed","passed":true,"assertions":3882,"fixtures":364,"invocations":335,"sentinelCalls":0,"storageWrites":0}
+{"dataMode":"snapshot","graph":"production-closed","passed":true,"assertions":777,"fixtures":75,"invocations":75,"sentinelCalls":0,"storageWrites":0}
+{"dataMode":"snapshot","graph":"memory-closed","passed":true,"assertions":3903,"fixtures":364,"invocations":335,"sentinelCalls":0,"storageWrites":0}
+{"dataMode":"snapshot","graph":"fresh-memory-closed","passed":true,"assertions":3882,"fixtures":364,"invocations":335,"sentinelCalls":0,"storageWrites":0}
+v06p1 smith-services closed PASS: 17497 assertions; C01–C11; shared+snapshot; softOpenedSmithServicesUi=true; released=false

@@ -1,0 +1,24 @@
+{
+  "file": "scripts/v06p1-smith-services-services-closed-test.mjs",
+  "originalSha": "ea648a6997f7379f643c86a775579e1224d49713c06b85832b83613dfbd86553",
+  "pinnedOriginalSha": "ea648a6997f7379f643c86a775579e1224d49713c06b85832b83613dfbd86553",
+  "adaptedSha": "132717465eb1e50cf2a4a7158e8d0054734675a9cbf203397d3794f3e4304139",
+  "changes": [
+    {
+      "label": "pin authorized formal Gates before unchanged services-closed runtime assertions",
+      "before": "hash(git('show', `${baseline}:src/${name}Gate.ts`))",
+      "after": "authorizedExpected(name + 'Gate.ts', hash(git('show', `${baseline}:src/${name}Gate.ts`)))",
+      "occurrences": 1
+    },
+    {
+      "label": "pin authorized Progress and SaveStore before unchanged services-closed assertions",
+      "before": "hash(git('show', `${baseline}:src/${name}.ts`))",
+      "after": "authorizedExpected(name + '.ts', hash(git('show', `${baseline}:src/${name}.ts`)))",
+      "occurrences": 1
+    }
+  ],
+  "productModuleTransformations": [],
+  "diskWritten": false,
+  "businessAssertionsChanged": false,
+  "policy": "Pinned test-only historical strings SHA/count/inventory and prior attr-ui byte proof; actual Vite SSR product modules use current disk."
+}
