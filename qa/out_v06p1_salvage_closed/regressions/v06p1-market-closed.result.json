@@ -1,0 +1,20 @@
+{
+  "name": "v06p1-market-closed",
+  "command": [
+    "npm",
+    "run",
+    "test:v06p1-market-closed"
+  ],
+  "cwd": "/workspace/xiantu/wt/dev",
+  "environment": {
+    "MARKET_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/v06p1-market-closed",
+    "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/regression-register.mjs"
+  },
+  "stdin": "/dev/null",
+  "startedAt": "2026-10-17T07:03:45.409Z",
+  "finishedAt": "2026-10-17T07:03:50.917Z",
+  "exitCode": 0,
+  "signal": null,
+  "assertions": 24251,
+  "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/v06p1-market-closed"
+}

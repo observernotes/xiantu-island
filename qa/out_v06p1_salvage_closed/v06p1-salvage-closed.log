@@ -1,0 +1,9 @@
+
+> xiantu-island@0.0.1 test:v06p1-salvage-closed
+> timeout 120s node scripts/v06p1-salvage-closed-test.mjs
+
+{"suite":"v06p1-salvage-closed-graph","dataMode":"shared","graph":"initial","passed":true,"assertions":4779,"fixtures":58,"invocations":845,"ordinarySaveSetupWrites":2,"storageWrites":0,"sentinelCalls":0,"SalvageOpenFlag":false,"flagInjection":false}
+{"suite":"v06p1-salvage-closed-graph","dataMode":"shared","graph":"fresh-ssr-refresh","passed":true,"assertions":4770,"fixtures":58,"invocations":845,"ordinarySaveSetupWrites":0,"storageWrites":0,"sentinelCalls":0,"SalvageOpenFlag":false,"flagInjection":false}
+{"suite":"v06p1-salvage-closed-graph","dataMode":"snapshot","graph":"initial","passed":true,"assertions":4779,"fixtures":58,"invocations":845,"ordinarySaveSetupWrites":2,"storageWrites":0,"sentinelCalls":0,"SalvageOpenFlag":false,"flagInjection":false}
+{"suite":"v06p1-salvage-closed-graph","dataMode":"snapshot","graph":"fresh-ssr-refresh","passed":true,"assertions":4770,"fixtures":58,"invocations":845,"ordinarySaveSetupWrites":0,"storageWrites":0,"sentinelCalls":0,"SalvageOpenFlag":false,"flagInjection":false}
+v06p1 salvage closed tests ok: 19306 assertions; C01–C10; 232 semantic/state fixtures; 3380 zero-argument API calls; shared/snapshot + fresh SSR; Flag=false; injection=false; writes=0; three prior Flags=true; O表未执行；仅关态 tip，不授权生产分解

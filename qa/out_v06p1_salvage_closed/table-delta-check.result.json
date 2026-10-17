@@ -1,0 +1,14 @@
+{
+  "name": "table-delta-check",
+  "command": [
+    "node",
+    "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/table-delta-check.mjs"
+  ],
+  "cwd": "/workspace/xiantu/wt/dev",
+  "stdin": "/dev/null",
+  "startedAt": "2026-10-17T07:01:48.468Z",
+  "finishedAt": "2026-10-17T07:01:48.589Z",
+  "exitCode": 0,
+  "signal": null,
+  "assertions": null
+}

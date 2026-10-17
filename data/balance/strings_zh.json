@@ -954,5 +954,13 @@
   "enchant.closed.no_result": "武器附灵尚未开放，不写入五行附着。",
   "enchant.closed.no_element": "武器附灵尚未开放，不变更五行属性。",
   "enchant.closed.load_refresh": "读档或刷新后附灵仍未开放，暂不可附灵。",
-  "enchant.closed.later_service": "分解等后续服务尚未开放。"
+  "enchant.closed.later_service": "分解等后续服务尚未开放。",
+  "salvage.closed.feature": "装备分解尚未开放。",
+  "salvage.closed.entrance": "欧冶匠暂不提供分解，可查看说明。",
+  "salvage.closed.salvage": "装备分解尚未开放，暂不可分解。",
+  "salvage.closed.no_submit": "装备分解尚未开放，暂不可提交分解。",
+  "salvage.closed.no_result": "装备分解尚未开放，不写入分解结果。",
+  "salvage.closed.no_output": "装备分解尚未开放，不产出精炼石。",
+  "salvage.closed.load_refresh": "读档或刷新后分解仍未开放，暂不可分解。",
+  "salvage.closed.later_service": "其他后续服务尚未开放。"
 }

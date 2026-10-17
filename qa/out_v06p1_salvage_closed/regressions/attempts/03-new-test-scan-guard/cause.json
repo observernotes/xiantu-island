@@ -1,0 +1,1 @@
+{"cause":"New authorized closed-suite test imports existing Gates to prove mixed-service refusals; old source consumer scans enumerate historical tests only.","correction":"Add only v06p1-salvage-closed.test.ts to exact test-name exclusions; retain scans over all production modules."}

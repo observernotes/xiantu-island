@@ -1,0 +1,56 @@
+{
+  "passed": true,
+  "scope": "Independent production/tip test source and historical regression compatibility review.",
+  "reviewedAt": "2026-10-17T07:04:21.158225+00:00",
+  "sourceSha256": {
+    "src/SalvageClosed.ts": "287a55d7025018629235d45ca4386d75134fc39362532a4c47bf121b574ae211",
+    "src/SalvageOpenFlag.ts": "9cfa606a5fed71451cab6675bde0ce3ffad2dd780cb502e4d842d54beeeff1d8",
+    "src/v06p1-salvage-closed.test.ts": "26c81691d8425fb2761df1c2d36c1645329db5aa3aa4f79e1774a39cb34c4a59",
+    "scripts/v06p1-salvage-closed-test.mjs": "2a7b590ef2cd2b78348df0fe1e72dfb177a1d4625cb9b98a0f16a4ac5183b7d3"
+  },
+  "checks": {
+    "eightExactZeroArgumentApiMappings": true,
+    "uniqueStringsImport": true,
+    "flagNoImportsAndAlwaysFalse": true,
+    "returnsOnlyReadOnlyTip": true,
+    "runnerNoSalvageFlagInjection": true,
+    "semanticScopeExplicit": true,
+    "c08RealSaveRestoreAndLoad": true,
+    "c08UnknownSchemaNotClaimedRetained": true,
+    "c08BackendRawPayloadPreservationAsserted": true,
+    "noNewSalvageGateOrSchema": true
+  },
+  "apiTips": {
+    "featureClosed": "salvage.closed.feature",
+    "refuseEntrance": "salvage.closed.entrance",
+    "refuseSalvage": "salvage.closed.salvage",
+    "refuseSubmit": "salvage.closed.no_submit",
+    "refuseResult": "salvage.closed.no_result",
+    "refuseOutput": "salvage.closed.no_output",
+    "refuseLoadRefresh": "salvage.closed.load_refresh",
+    "refuseLaterService": "salvage.closed.later_service"
+  },
+  "caseReview": {
+    "C01": "Feature/entrance close-and-reread contexts exercise tip APIs; source/NPC freeze proves no service mounting. No claim of physical UI interaction.",
+    "C02": "Weapon/armor and four grades are explicitly semantic contexts around zero-argument refusal; one existing formal weapon schema is seeded. Does not validate future armor source or success settlement.",
+    "C03": "Missing/historical/foreign source state mutations and fixture-like contexts cannot affect zero-argument closed API; no production fixture fallback is installed.",
+    "C04": "Invalid type/slot/binding contexts are semantic refusal coverage. No new binding schema or future authorization proof is claimed.",
+    "C05": "Unknown grade/mapping/capacity contexts plus invalid inventory examples establish unchanged refusal state only; no future capacity or dependency validator is claimed.",
+    "C06": "Result/output/reference rewrite contexts call only refusal APIs; full in-memory/exported state and stored rows are compared, with write sentinels.",
+    "C07": "Repeated callbacks and Promise.all calls are same-realm tip-call tests, explicitly separate from future transactional concurrency.",
+    "C08": "Runs actual Progress.saveAsync setup, restore, and loadAsync through an explicit in-memory SaveBackend; valid forge/enhance/protected/enchant schemas are checked. Unknown test fields remain raw backend input and are not registered in restored schema. Physical IndexedDB is deliberately not exercised.",
+    "C09": "Three existing Flags stay true; actual existing Gate entrances and laterService methods are checked without modifying their implementation.",
+    "C10": "All eight API calls and later-service context compare full state, exported save bytes, asset/experience arrays, features, backend rows and zero-write sentinels."
+  },
+  "findings": [],
+  "salvageOpenTrueInjected": false,
+  "salvageGateAdded": false,
+  "productionSalvageAuthorization": false,
+  "physicalUiOrIndexedDbTestClaimed": false,
+  "regressionLoaderFinalReview": {
+    "passed": true,
+    "evidence": "audit/independent-compatibility-check.json",
+    "loaderSha256": "fa0a12819fe2b085d1956d568486878bd0e85a37572ae191d6de7c661fcf0288",
+    "runnerSourceCount": 10
+  }
+}

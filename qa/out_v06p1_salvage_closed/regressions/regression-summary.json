@@ -1,0 +1,229 @@
+{
+  "passed": true,
+  "cwd": "/workspace/xiantu/wt/dev",
+  "stdin": "/dev/null",
+  "totalAssertions": 142859,
+  "results": [
+    {
+      "name": "v06p1-enchant-open",
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-enchant-open"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "ENCHANT_OPEN_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/v06p1-enchant-open",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/regression-register.mjs"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:02:08.177Z",
+      "finishedAt": "2026-10-17T07:02:41.656Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 4622,
+      "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/v06p1-enchant-open"
+    },
+    {
+      "name": "v06p1-enchant-closed",
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-enchant-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "ENCHANT_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/v06p1-enchant-closed",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/regression-register.mjs"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:02:08.181Z",
+      "finishedAt": "2026-10-17T07:02:13.312Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 12600,
+      "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/v06p1-enchant-closed"
+    },
+    {
+      "name": "v06p1-enhance-open",
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-enhance-open"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "XT_ENHANCE_QA_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/v06p1-enhance-open",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/regression-register.mjs"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:04:33.896Z",
+      "finishedAt": "2026-10-17T07:05:03.983Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 17767,
+      "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/v06p1-enhance-open"
+    },
+    {
+      "name": "v06p1-enhance-closed",
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-enhance-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "ENHANCE_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/v06p1-enhance-closed",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/regression-register.mjs"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:03:40.210Z",
+      "finishedAt": "2026-10-17T07:03:45.408Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 30912,
+      "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/v06p1-enhance-closed"
+    },
+    {
+      "name": "v06p1-forge-open",
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-forge-open"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/v06p1-forge-open",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/regression-register.mjs"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:03:40.206Z",
+      "finishedAt": "2026-10-17T07:03:50.848Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 6443,
+      "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/v06p1-forge-open"
+    },
+    {
+      "name": "v06p1-forge-closed",
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-forge-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "FORGE_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/v06p1-forge-closed",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/regression-register.mjs"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:03:42.486Z",
+      "finishedAt": "2026-10-17T07:03:47.437Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 20491,
+      "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/v06p1-forge-closed"
+    },
+    {
+      "name": "v06p1-market-closed",
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-market-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "MARKET_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/v06p1-market-closed",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/regression-register.mjs"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:03:45.409Z",
+      "finishedAt": "2026-10-17T07:03:50.917Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 24251,
+      "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/v06p1-market-closed"
+    },
+    {
+      "name": "v06d-closed",
+      "command": [
+        "npm",
+        "run",
+        "test:v06d-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/v06d-closed",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/regression-register.mjs"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:03:47.437Z",
+      "finishedAt": "2026-10-17T07:03:52.813Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 15059,
+      "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/v06d-closed"
+    },
+    {
+      "name": "v06c-closed",
+      "command": [
+        "npm",
+        "run",
+        "test:v06c-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/v06c-closed",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/regression-register.mjs"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:03:50.848Z",
+      "finishedAt": "2026-10-17T07:03:54.808Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 10714,
+      "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/v06c-closed"
+    }
+  ],
+  "productModuleTransformations": [],
+  "legacyFilesWritten": false,
+  "notRun": [
+    "snapshot",
+    "build",
+    "sync",
+    "release"
+  ],
+  "compatibilityScope": {
+    "strings": "Shared/wt current960; exact salvage removal restores952; exact enchant removal restores944. Game is unchanged committed952 at14d6de7.",
+    "sourceNames": "Only SalvageClosed.ts, SalvageOpenFlag.ts, v06p1-salvage-closed.test.ts added to historical source inventories; only new test excluded from production consumer scans.",
+    "runtimeTestOnly": "Vite memory adapts one SHA-pinned historical952 key-count assertion in v06p1-enhance-open.test.ts to960.",
+    "realCurrentTables": true,
+    "realCurrentBusinessModules": true,
+    "businessAssertionsChanged": false,
+    "assertionWrappersChanged": false,
+    "productModuleTransformations": [],
+    "oldConsoleMessages": "Some legacy runner labels still say944/952; actual assertions use exact audited current root-specific expectations."
+  },
+  "adaptationAudits": [
+    "adaptations/v06c-closed-test.json",
+    "adaptations/v06d-closed-test.json",
+    "adaptations/v06p1-enchant-closed-test.json",
+    "adaptations/v06p1-enchant-open-test.json",
+    "adaptations/v06p1-enchant-soft-open-compat-proof.json",
+    "adaptations/v06p1-enhance-closed-test.json",
+    "adaptations/v06p1-enhance-open-test.json",
+    "adaptations/v06p1-forge-closed-test.json",
+    "adaptations/v06p1-forge-open-test.json",
+    "adaptations/v06p1-market-closed-test.json"
+  ],
+  "runtimeTestAdaptation": "v06p1-enhance-open/runtime-test-source-adaptation.json",
+  "baselineProof": "game-readonly-baseline.json",
+  "loaderSha256": "fa0a12819fe2b085d1956d568486878bd0e85a37572ae191d6de7c661fcf0288",
+  "failedAttemptsPreserved": [
+    "attempts/01-loader-occurrence-guard/cause.json",
+    "attempts/02-game-history-guard/cause.json",
+    "attempts/03-new-test-scan-guard/cause.json",
+    "attempts/04-runtime-key-count-guard/cause.json",
+    "attempts/05-generated-audit-newline/cause.json"
+  ]
+}

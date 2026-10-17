@@ -1,0 +1,23 @@
+{
+  "passed": true,
+  "base": "14d6de7b39b1aab0b31a12289172e6735986f263",
+  "beforeKeys": 952,
+  "afterKeys": 960,
+  "addedKeys": [
+    "salvage.closed.feature",
+    "salvage.closed.entrance",
+    "salvage.closed.salvage",
+    "salvage.closed.no_submit",
+    "salvage.closed.no_result",
+    "salvage.closed.no_output",
+    "salvage.closed.load_refresh",
+    "salvage.closed.later_service"
+  ],
+  "beforeSha": "6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9",
+  "sharedSha": "9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda",
+  "snapshotSha": "9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda",
+  "restoredOriginalBytes": true,
+  "prior952ValuesPreserved": true,
+  "authoritativeStringsWritten": false,
+  "method": "One exact cp of authoritative strings; materials/items already MATCH and read only"
+}

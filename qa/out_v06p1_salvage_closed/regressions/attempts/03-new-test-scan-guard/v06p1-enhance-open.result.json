@@ -1,0 +1,20 @@
+{
+  "name": "v06p1-enhance-open",
+  "command": [
+    "npm",
+    "run",
+    "test:v06p1-enhance-open"
+  ],
+  "cwd": "/workspace/xiantu/wt/dev",
+  "environment": {
+    "XT_ENHANCE_QA_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/v06p1-enhance-open",
+    "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/regression-register.mjs"
+  },
+  "stdin": "/dev/null",
+  "startedAt": "2026-10-17T07:03:14.044Z",
+  "finishedAt": "2026-10-17T07:03:14.845Z",
+  "exitCode": 1,
+  "signal": null,
+  "assertions": null,
+  "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/v06p1-enhance-open"
+}

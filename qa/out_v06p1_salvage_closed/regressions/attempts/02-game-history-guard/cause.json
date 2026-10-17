@@ -1,0 +1,1 @@
+{"cause":"Current game worktree is committed at 14d6de7; preexisting materials/items/strings are newer than runners historical game baseline.","correction":"Pin game current committed three-table SHAs with exact 952 count, preserve shared/wt current960 and all business assertions.","proof":"../../game-readonly-baseline.json"}

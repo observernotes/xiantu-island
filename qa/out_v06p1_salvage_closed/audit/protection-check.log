@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "frozenChecks": 18,
+  "stringsChecks": 2,
+  "unauthorizedDifferenceCount": 0,
+  "baselineUnauthorizedChanges": 0,
+  "flagsAndPhase": {
+    "ForgeOpenFlag": true,
+    "EnhanceOpenFlag": true,
+    "EnchantOpenFlag": true,
+    "SalvageOpenFlag": false,
+    "GAME_PHASE": 5
+  }
+}

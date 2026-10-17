@@ -1,0 +1,25 @@
+
+> xiantu-island@0.0.1 test:v06p1-forge-open
+> timeout 180s node scripts/v06p1-forge-open-test.mjs
+
+{"suite":"v06p1-forge-open-sha-guard","protectedFiles":0,"protectedDirectories":0,"passed":true}
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: game:balance/materials.json 开窗前只读历史快照固定 SHA
++ actual - expected
+
++ '86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d'
+- '79c68429d763054ac1715467d1743575e179ecaecb2529e4b6ed7df137ef4052'
+    at eq (file:///workspace/xiantu/wt/dev/scripts/v06p1-forge-open-test.mjs:21:66)
+    at checkEnchantCompatibility (file:///workspace/xiantu/wt/dev/scripts/v06p1-enchant-soft-open-compat-proof.mjs:118:5)
+    at async file:///workspace/xiantu/wt/dev/scripts/v06p1-forge-open-test.mjs:186:10 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: '86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d',
+  expected: '79c68429d763054ac1715467d1743575e179ecaecb2529e4b6ed7df137ef4052',
+  operator: 'deepStrictEqual'
+}
+
+Node.js v20.19.2

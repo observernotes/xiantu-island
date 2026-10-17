@@ -1,0 +1,196 @@
+{
+  "name": "json-tool-snapshot",
+  "command": [
+    "python3",
+    "-m",
+    "json.tool",
+    "<each balance/*.json>"
+  ],
+  "stdin": "/dev/null",
+  "startedAt": "2026-10-17T07:01:41.478508+00:00",
+  "finishedAt": "2026-10-17T07:01:42.289348+00:00",
+  "files": [
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/breakthrough.json",
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/companions.json",
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/drops.json",
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/encounters.json",
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/enhance.json",
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/enhance_protect_charm.json",
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/exp_curve.json",
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/fly_zones.json",
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/gongfa_grades.json",
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/items.json",
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/karma_flags.json",
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/life_skills.json",
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/market_consign.json",
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/materials.json",
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/monsters.json",
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/npcs.json",
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/player_growth.json",
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/qi_density.json",
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/quests.json",
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/realms.json",
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/recipes.json",
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/secret_boons.json",
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/secret_events.json",
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/secret_loot.json",
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/secret_rooms.json",
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/sect_donations.json",
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/sect_ranks.json",
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/sense.json",
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/shops.json",
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/skills.json",
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/solo_pacing.json",
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/strings_zh.json",
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/test_fixtures.json",
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/titles.json",
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/tower_floors.json",
+      "exitCode": 0,
+      "stderr": ""
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/data/balance/trials.json",
+      "exitCode": 0,
+      "stderr": ""
+    }
+  ],
+  "fileCount": 36,
+  "exitCode": 0
+}

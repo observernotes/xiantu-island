@@ -1,0 +1,341 @@
+{
+  "passed": true,
+  "interim": false,
+  "capturedAt": "2026-10-17T07:05:22.054929+00:00",
+  "stdin": "/dev/null",
+  "frozen": [
+    {
+      "root": "shared",
+      "file": "/workspace/xiantu/balance/enhance.json",
+      "expected": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+      "actual": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+      "match": true
+    },
+    {
+      "root": "shared",
+      "file": "/workspace/xiantu/balance/recipes.json",
+      "expected": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+      "actual": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+      "match": true
+    },
+    {
+      "root": "shared",
+      "file": "/workspace/xiantu/balance/materials.json",
+      "expected": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+      "actual": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+      "match": true
+    },
+    {
+      "root": "shared",
+      "file": "/workspace/xiantu/balance/items.json",
+      "expected": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+      "actual": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+      "match": true
+    },
+    {
+      "root": "shared",
+      "file": "/workspace/xiantu/balance/npcs.json",
+      "expected": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+      "actual": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+      "match": true
+    },
+    {
+      "root": "shared",
+      "file": "/workspace/xiantu/balance/life_skills.json",
+      "expected": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+      "actual": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+      "match": true
+    },
+    {
+      "root": "shared",
+      "file": "/workspace/xiantu/balance/enhance_protect_charm.json",
+      "expected": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+      "actual": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+      "match": true
+    },
+    {
+      "root": "snapshot",
+      "file": "/workspace/xiantu/wt/dev/data/balance/enhance.json",
+      "expected": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+      "actual": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+      "match": true
+    },
+    {
+      "root": "snapshot",
+      "file": "/workspace/xiantu/wt/dev/data/balance/recipes.json",
+      "expected": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+      "actual": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+      "match": true
+    },
+    {
+      "root": "snapshot",
+      "file": "/workspace/xiantu/wt/dev/data/balance/materials.json",
+      "expected": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+      "actual": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+      "match": true
+    },
+    {
+      "root": "snapshot",
+      "file": "/workspace/xiantu/wt/dev/data/balance/items.json",
+      "expected": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+      "actual": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+      "match": true
+    },
+    {
+      "root": "snapshot",
+      "file": "/workspace/xiantu/wt/dev/data/balance/npcs.json",
+      "expected": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+      "actual": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+      "match": true
+    },
+    {
+      "root": "snapshot",
+      "file": "/workspace/xiantu/wt/dev/data/balance/life_skills.json",
+      "expected": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+      "actual": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+      "match": true
+    },
+    {
+      "root": "snapshot",
+      "file": "/workspace/xiantu/wt/dev/data/balance/enhance_protect_charm.json",
+      "expected": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+      "actual": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+      "match": true
+    },
+    {
+      "root": "wt/dev/src",
+      "file": "src/ForgeOpenFlag.ts",
+      "expected": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
+      "actual": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
+      "match": true
+    },
+    {
+      "root": "wt/dev/src",
+      "file": "src/EnhanceOpenFlag.ts",
+      "expected": "d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e",
+      "actual": "d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e",
+      "match": true
+    },
+    {
+      "root": "wt/dev/src",
+      "file": "src/EnchantOpenFlag.ts",
+      "expected": "bd5445b8ddfed56a32811cedd28db72e8676c7a5eff321e2fedb0ec5fe4c505a",
+      "actual": "bd5445b8ddfed56a32811cedd28db72e8676c7a5eff321e2fedb0ec5fe4c505a",
+      "match": true
+    },
+    {
+      "root": "wt/dev/src",
+      "file": "src/data.ts",
+      "expected": "aad725652f5c0eb57a5c699726e570b146d5ded52d5c31715444dbbf4117024a",
+      "actual": "aad725652f5c0eb57a5c699726e570b146d5ded52d5c31715444dbbf4117024a",
+      "match": true
+    }
+  ],
+  "strings": [
+    {
+      "root": "shared",
+      "file": "/workspace/xiantu/balance/strings_zh.json",
+      "sha256": "9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda",
+      "keyCount": 960,
+      "salvageClosedKeys": [
+        "salvage.closed.entrance",
+        "salvage.closed.feature",
+        "salvage.closed.later_service",
+        "salvage.closed.load_refresh",
+        "salvage.closed.no_output",
+        "salvage.closed.no_result",
+        "salvage.closed.no_submit",
+        "salvage.closed.salvage"
+      ],
+      "match": true
+    },
+    {
+      "root": "snapshot",
+      "file": "/workspace/xiantu/wt/dev/data/balance/strings_zh.json",
+      "sha256": "9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda",
+      "keyCount": 960,
+      "salvageClosedKeys": [
+        "salvage.closed.entrance",
+        "salvage.closed.feature",
+        "salvage.closed.later_service",
+        "salvage.closed.load_refresh",
+        "salvage.closed.no_output",
+        "salvage.closed.no_result",
+        "salvage.closed.no_submit",
+        "salvage.closed.salvage"
+      ],
+      "match": true
+    }
+  ],
+  "flagsAndPhase": {
+    "ForgeOpenFlag": true,
+    "EnhanceOpenFlag": true,
+    "EnchantOpenFlag": true,
+    "SalvageOpenFlag": false,
+    "GAME_PHASE": 5
+  },
+  "flagsAndPhasePass": true,
+  "gifts": [
+    {
+      "root": "shared",
+      "count": 10,
+      "enabledValues": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "pass": true
+    },
+    {
+      "root": "snapshot",
+      "count": 10,
+      "enabledValues": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "pass": true
+    }
+  ],
+  "registration": [
+    {
+      "root": "shared",
+      "itemsRows": [
+        {
+          "id": "refine_stone",
+          "name": "精炼石",
+          "phase": 5,
+          "icon": "icon_refine_stone"
+        }
+      ],
+      "materialsRows": [
+        {
+          "id": "refine_stone",
+          "name": "精炼石",
+          "type": "material",
+          "kind": "enhance",
+          "price": 50,
+          "stack": 200,
+          "icon": "icon_refine_stone",
+          "note": "分解装备、秘境产出"
+        }
+      ],
+      "effectiveRecord": {
+        "id": "refine_stone",
+        "name": "精炼石",
+        "type": "material",
+        "kind": "enhance",
+        "price": 50,
+        "stack": 200,
+        "icon": "icon_refine_stone",
+        "note": "分解装备、秘境产出"
+      },
+      "salvageReadOnlyConfig": {
+        "refineStonesByGrade": {
+          "common": 1,
+          "fine": 2,
+          "spirit": 4,
+          "treasure": 8
+        }
+      },
+      "refineStoneMapped": true,
+      "meaning": "Existing registration and effective ITEMS only; no production salvage authorization or transaction evidence."
+    },
+    {
+      "root": "snapshot",
+      "itemsRows": [
+        {
+          "id": "refine_stone",
+          "name": "精炼石",
+          "phase": 5,
+          "icon": "icon_refine_stone"
+        }
+      ],
+      "materialsRows": [
+        {
+          "id": "refine_stone",
+          "name": "精炼石",
+          "type": "material",
+          "kind": "enhance",
+          "price": 50,
+          "stack": 200,
+          "icon": "icon_refine_stone",
+          "note": "分解装备、秘境产出"
+        }
+      ],
+      "effectiveRecord": {
+        "id": "refine_stone",
+        "name": "精炼石",
+        "type": "material",
+        "kind": "enhance",
+        "price": 50,
+        "stack": 200,
+        "icon": "icon_refine_stone",
+        "note": "分解装备、秘境产出"
+      },
+      "salvageReadOnlyConfig": {
+        "refineStonesByGrade": {
+          "common": 1,
+          "fine": 2,
+          "spirit": 4,
+          "treasure": 8
+        }
+      },
+      "refineStoneMapped": true,
+      "meaning": "Existing registration and effective ITEMS only; no production salvage authorization or transaction evidence."
+    }
+  ],
+  "changesOutsideAllowlist": {
+    "sourceOutsideThreeAllowedAdditions": [],
+    "dataOutsideExactStringsSnapshot": [],
+    "previousQaOutputs": [],
+    "sharedBalanceJson": [],
+    "preexistingUntrackedFiles": [],
+    "externalGameData": [],
+    "sharedTools": []
+  },
+  "unauthorizedDifferenceCount": 0,
+  "baseline": {
+    "head": "14d6de7b39b1aab0b31a12289172e6735986f263",
+    "trackedSourceDataFileCount": 1557,
+    "trackedChanges": [
+      {
+        "path": "data/balance/strings_zh.json",
+        "before": "6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9",
+        "after": "9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda"
+      }
+    ],
+    "unauthorizedTrackedChanges": [],
+    "beforeCaptureUnauthorizedTrackedChanges": []
+  },
+  "externalBaseline": {
+    "gameHead": "14d6de7b39b1aab0b31a12289172e6735986f263",
+    "gameDataFileCount": 1401,
+    "sharedToolFileCount": 260,
+    "gameDataVsOwnCommittedHeadMismatches": [],
+    "gameStringsSha256": "6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9",
+    "meaning": "game data remains its own committed 14d6de7 baseline (952 strings); no write or synchronization authorized."
+  },
+  "preservedCounts": {
+    "sourceFilesBefore": 748,
+    "dataFilesBefore": 1404,
+    "previousQaFilesBefore": 1183,
+    "sharedBalanceJsonBefore": 36,
+    "preexistingUntrackedFilesBefore": 1195
+  },
+  "scope": "Only independently checks read-only evidence and frozen boundaries; no snapshot/build/sync/release."
+}

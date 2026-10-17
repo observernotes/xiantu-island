@@ -1,0 +1,25 @@
+
+> xiantu-island@0.0.1 test:v06p1-forge-open
+> timeout 180s node scripts/v06p1-forge-open-test.mjs
+
+
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+AssertionError [ERR_ASSERTION]: v06p1-enchant-soft-open-compat-proof: current strings authority SHA exact occurrences
+
+3 !== 1
+
+    at replace (file:///workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/regression-loader.mjs:59:10)
+    at load (file:///workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/regression-loader.mjs:64:3)
+    at async nextLoad (node:internal/modules/esm/hooks:864:22)
+    at async Hooks.load (node:internal/modules/esm/hooks:451:20)
+    at async handleMessage (node:internal/modules/esm/worker:196:18) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 3,
+  expected: 1,
+  operator: 'strictEqual'
+}
+
+Node.js v20.19.2

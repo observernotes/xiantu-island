@@ -1,0 +1,22 @@
+{
+  "materials.json": {
+    "sha": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+    "committedHeadSha": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+    "match": true
+  },
+  "items.json": {
+    "sha": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+    "committedHeadSha": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+    "match": true
+  },
+  "strings_zh.json": {
+    "sha": "6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9",
+    "committedHeadSha": "6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9",
+    "match": true
+  },
+  "enhance_protect_charm.json": {
+    "sha": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+    "committedHeadSha": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+    "match": true
+  }
+}

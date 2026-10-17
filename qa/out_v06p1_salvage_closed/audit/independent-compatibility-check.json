@@ -1,0 +1,426 @@
+{
+  "passed": true,
+  "reviewedAt": "2026-10-17T07:05:21.446530+00:00",
+  "loaderSha256": "fa0a12819fe2b085d1956d568486878bd0e85a37572ae191d6de7c661fcf0288",
+  "runnerSourceCount": 10,
+  "runnerAdaptations": [
+    {
+      "runner": "v06c-closed-test",
+      "originalSha256": "637039e4146f6aae45c72d7013114cd489c325da1721898fa9325916c2b55090",
+      "originalMatchesPin": true,
+      "adaptedMatchesRecordedSha256": true,
+      "allReplacementOccurrencesMatched": true,
+      "changes": [
+        {
+          "label": "exact salvage and enchant restoration helpers",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        },
+        {
+          "label": "current shared/snapshot strings authority SHA",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        },
+        {
+          "label": "current shared/snapshot key count",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        },
+        {
+          "label": "preserve historical formal chain",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        }
+      ],
+      "productModuleTransformations": [],
+      "assertionWrapperChanged": false,
+      "diskWritten": false
+    },
+    {
+      "runner": "v06d-closed-test",
+      "originalSha256": "5bfe782f918436fa30a2ca33f33176d57a59f637004708993cfaf6dbfe10e129",
+      "originalMatchesPin": true,
+      "adaptedMatchesRecordedSha256": true,
+      "allReplacementOccurrencesMatched": true,
+      "changes": [
+        {
+          "label": "exact salvage and enchant restoration helpers",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        },
+        {
+          "label": "current shared/snapshot strings authority SHA",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        },
+        {
+          "label": "current shared/snapshot key count",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        },
+        {
+          "label": "preserve historical formal chain",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        },
+        {
+          "label": "game formal-chain comparison restores historical bytes",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        },
+        {
+          "label": "game unchanged historical SHA",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        },
+        {
+          "label": "game committed historical count952",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        },
+        {
+          "label": "game unchanged historical full bytes",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        }
+      ],
+      "productModuleTransformations": [],
+      "assertionWrapperChanged": false,
+      "diskWritten": false
+    },
+    {
+      "runner": "v06p1-enchant-closed-test",
+      "originalSha256": "db6b0a365acc3aa60d528c4ae66f8289a0415be434f06b39b75c5037751eb413",
+      "originalMatchesPin": true,
+      "adaptedMatchesRecordedSha256": true,
+      "allReplacementOccurrencesMatched": true,
+      "changes": [
+        {
+          "label": "current strings authority SHA",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        },
+        {
+          "label": "current strings key count",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        }
+      ],
+      "productModuleTransformations": [],
+      "assertionWrapperChanged": false,
+      "diskWritten": false
+    },
+    {
+      "runner": "v06p1-enchant-open-test",
+      "originalSha256": "6a15863ef2b88fbabfac2d0aa1b7c46b4fb27ef280bd90189c9f0727781a9595",
+      "originalMatchesPin": true,
+      "adaptedMatchesRecordedSha256": true,
+      "allReplacementOccurrencesMatched": true,
+      "changes": [
+        {
+          "label": "current strings authority SHA",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        },
+        {
+          "label": "current strings key count",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        }
+      ],
+      "productModuleTransformations": [],
+      "assertionWrapperChanged": false,
+      "diskWritten": false
+    },
+    {
+      "runner": "v06p1-enchant-soft-open-compat-proof",
+      "originalSha256": "a4616e0de8aa450c6cba871471a079cbcf7003be2952ed7e9a6027d2b298c56b",
+      "originalMatchesPin": true,
+      "adaptedMatchesRecordedSha256": true,
+      "allReplacementOccurrencesMatched": true,
+      "changes": [
+        {
+          "label": "exact salvage byte restoration helper",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        },
+        {
+          "label": "current strings authority SHA",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        },
+        {
+          "label": "restore salvage before unchanged enchant delta proof",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        },
+        {
+          "label": "historical 952 SHA in exact enchant proof",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        },
+        {
+          "label": "committed game materials baseline",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        },
+        {
+          "label": "committed game items baseline",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        },
+        {
+          "label": "committed game strings baseline stays952",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        }
+      ],
+      "productModuleTransformations": [],
+      "assertionWrapperChanged": false,
+      "diskWritten": false
+    },
+    {
+      "runner": "v06p1-enhance-closed-test",
+      "originalSha256": "05af45578fe981814c5ac44814d10f723c869b7a84e7479a55b624c795532642",
+      "originalMatchesPin": true,
+      "adaptedMatchesRecordedSha256": true,
+      "allReplacementOccurrencesMatched": true,
+      "changes": [
+        {
+          "label": "current strings authority SHA",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        },
+        {
+          "label": "current shared/wt key count preserves game944",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        },
+        {
+          "label": "new authorized test excluded from production API consumer scan",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        },
+        {
+          "label": "game committed952 SHA expectations",
+          "expectedOccurrences": 4,
+          "observedOccurrences": 4,
+          "match": true
+        },
+        {
+          "label": "game committed952 count, current shared/wt960",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        },
+        {
+          "label": "exact three authorized new src names",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        }
+      ],
+      "productModuleTransformations": [],
+      "assertionWrapperChanged": false,
+      "diskWritten": false
+    },
+    {
+      "runner": "v06p1-enhance-open-test",
+      "originalSha256": "5d4c2299843075fcb10c3d61c0847dc3d4a084d9b5b830f68c6913283d6fed86",
+      "originalMatchesPin": true,
+      "adaptedMatchesRecordedSha256": true,
+      "allReplacementOccurrencesMatched": true,
+      "changes": [
+        {
+          "label": "current strings authority SHA",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        },
+        {
+          "label": "current shared/wt key count preserves game944",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        },
+        {
+          "label": "new authorized test excluded from production Gate consumer scan",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        },
+        {
+          "label": "runtime test-only historical key-count adaptation with exact source SHA",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        },
+        {
+          "label": "game committed952 SHA expectations",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        },
+        {
+          "label": "game committed952 count, current shared/wt960",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        }
+      ],
+      "productModuleTransformations": [],
+      "assertionWrapperChanged": false,
+      "diskWritten": false
+    },
+    {
+      "runner": "v06p1-forge-closed-test",
+      "originalSha256": "f650028feca5b5a38f78af8d9120289c04a44d16172f69f0a73ce67dbb7e1756",
+      "originalMatchesPin": true,
+      "adaptedMatchesRecordedSha256": true,
+      "allReplacementOccurrencesMatched": true,
+      "changes": [
+        {
+          "label": "current strings authority SHA",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        },
+        {
+          "label": "current shared/wt key count preserves game944",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        },
+        {
+          "label": "new authorized test excluded from production API consumer scan",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        },
+        {
+          "label": "game committed952 SHA expectations",
+          "expectedOccurrences": 3,
+          "observedOccurrences": 3,
+          "match": true
+        },
+        {
+          "label": "game committed952 count, current shared/wt960",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        },
+        {
+          "label": "exact three authorized new src names",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        }
+      ],
+      "productModuleTransformations": [],
+      "assertionWrapperChanged": false,
+      "diskWritten": false
+    },
+    {
+      "runner": "v06p1-forge-open-test",
+      "originalSha256": "36749e81ce1cc7e16cee10be52efeec16710db60a7c6ebf084e735a007a97953",
+      "originalMatchesPin": true,
+      "adaptedMatchesRecordedSha256": true,
+      "allReplacementOccurrencesMatched": true,
+      "changes": [
+        {
+          "label": "new authorized test excluded from production Gate consumer scan",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        }
+      ],
+      "productModuleTransformations": [],
+      "assertionWrapperChanged": false,
+      "diskWritten": false
+    },
+    {
+      "runner": "v06p1-market-closed-test",
+      "originalSha256": "16cfe0453e2d3953c7b6af84f966f2fffc547019c567aa268c9358925bf31d68",
+      "originalMatchesPin": true,
+      "adaptedMatchesRecordedSha256": true,
+      "allReplacementOccurrencesMatched": true,
+      "changes": [
+        {
+          "label": "current strings authority SHA",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        },
+        {
+          "label": "current strings key count",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        },
+        {
+          "label": "game committed952 SHA expectations",
+          "expectedOccurrences": 2,
+          "observedOccurrences": 2,
+          "match": true
+        },
+        {
+          "label": "exact three authorized new src names",
+          "expectedOccurrences": 1,
+          "observedOccurrences": 1,
+          "match": true
+        }
+      ],
+      "productModuleTransformations": [],
+      "assertionWrapperChanged": false,
+      "diskWritten": false
+    }
+  ],
+  "runtimeTestSourceAdaptation": {
+    "path": "src/v06p1-enhance-open.test.ts",
+    "originalSha256": "75f74c40875c3029f6b4faf7a6635724ac66ec64a80070ffbde6b1ffd8fc4370",
+    "originalMatchesPin": true,
+    "uniqueOccurrence": true,
+    "adaptedSha256Matches": true,
+    "onlyCountExpectation952To960": true,
+    "diskWritten": false,
+    "productModuleTransformations": []
+  },
+  "manualScopeReview": {
+    "historicalStringsShaAndCountOnly": true,
+    "onlyAuthorizedNewSourceWhitelistAdditions": true,
+    "gameHistoricalBaselineIndependentlyChecked": true,
+    "exactCurrent960To952To944BytesProvedBySha256": true,
+    "actualTableReadsRetained": true,
+    "businessAssertionsRetained": true,
+    "assertionWrapperBypass": false,
+    "productSourceTransformation": false,
+    "salvageFlagTrueInjection": false
+  },
+  "scope": "Compatibility changes only historical immutable expectations/source scan whitelists; old runtime test changes one count expectation. No table, product, or assertion-wrapper substitution."
+}

@@ -1,0 +1,1 @@
+{"cause":"Strict occurrence guard rejected plain SHA replacement after helper injection because helper deliberately repeats historical SHA.","correction":"Match the unique strings_zh.json object property. No business assertion changed."}

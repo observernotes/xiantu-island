@@ -1,0 +1,1 @@
+{"cause":"Generated audit writer newline needed one extra string-template escape.","correction":"Escape newline in generated runner audit-writing code. Tests and production unaffected."}

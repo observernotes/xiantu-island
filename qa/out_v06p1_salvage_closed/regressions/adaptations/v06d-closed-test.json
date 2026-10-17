@@ -1,0 +1,61 @@
+{
+  "runner": "v06d-closed-test",
+  "originalSha": "5bfe782f918436fa30a2ca33f33176d57a59f637004708993cfaf6dbfe10e129",
+  "pinnedOriginalSha": "5bfe782f918436fa30a2ca33f33176d57a59f637004708993cfaf6dbfe10e129",
+  "adaptedSha": "812fbd56ff82b4692c711758c46e63e8bb7dcf11ec4bec55d7dd7f2f526bc330",
+  "changes": [
+    {
+      "label": "exact salvage and enchant restoration helpers",
+      "before": "import assert from 'node:assert/strict';",
+      "after": "import assert from 'node:assert/strict';\n\nfunction stripSalvageClosedAddition(raw) {\n const digest = text => createHash('sha256').update(text).digest('hex');\n if (digest(raw) === 'd7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09' || digest(raw) === '6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9') return raw;\n assert.equal(digest(raw), '9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda', 'real current 960-key strings authority');\n assert.equal(Object.keys(JSON.parse(raw)).length, 960, 'exact current key count');\n const blocks = raw.match(/,\\n(?: {2}\"salvage\\.closed\\.[^\\n]+\\n?){8}/gu);\n assert.equal(blocks?.length, 1, 'only exact appended eight salvage lines');\n const previous = raw.replace(blocks[0], '\\n');\n assert.equal(digest(previous), '6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9', 'stripping only salvage restores exact historical 952 bytes');\n return previous;\n}\n\nfunction stripEnchantClosedAdditionForHistory(raw) {\n raw = stripSalvageClosedAddition(raw);\n const digest = text => createHash('sha256').update(text).digest('hex');\n if (digest(raw) === 'd7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09') return raw;\n assert.equal(digest(raw), '6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9', 'historical 952 strings after exact salvage proof');\n assert.equal(Object.keys(JSON.parse(raw)).length, 952);\n const blocks = raw.match(/,\\n(?: {2}\"enchant\\.closed\\.[^\\n]+\\n?){8}/gu);\n assert.equal(blocks?.length, 1, 'only exact eight enchant lines');\n const previous = raw.replace(blocks[0], '\\n');\n assert.equal(digest(previous), 'd7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09', 'restores exact historical 944 bytes');\n return previous;\n}\n",
+      "occurrences": 1
+    },
+    {
+      "label": "current shared/snapshot strings authority SHA",
+      "before": "'balance/strings_zh.json': 'd7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09'",
+      "after": "'balance/strings_zh.json': '9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda'",
+      "occurrences": 1
+    },
+    {
+      "label": "current shared/snapshot key count",
+      "before": "eq(entries.length, 944,",
+      "after": "eq(entries.length, 960,",
+      "occurrences": 1
+    },
+    {
+      "label": "preserve historical formal chain",
+      "before": "const preFormal = rawStrings.replace(",
+      "after": "const preFormal = stripEnchantClosedAdditionForHistory(rawStrings).replace(",
+      "occurrences": 1
+    },
+    {
+      "label": "game formal-chain comparison restores historical bytes",
+      "before": "const preFormal = sharedBytes.get(name).toString('utf8').replace(",
+      "after": "const preFormal = stripEnchantClosedAdditionForHistory(sharedBytes.get(name).toString('utf8')).replace(",
+      "occurrences": 1
+    },
+    {
+      "label": "game unchanged historical SHA",
+      "before": "eq(hash(gameStrings), expectedSha[name],",
+      "after": "eq(hash(gameStrings), '6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9',",
+      "occurrences": 1
+    },
+    {
+      "label": "game committed historical count952",
+      "before": "eq(Object.keys(JSON.parse(gameStrings)).length, 944,",
+      "after": "eq(Object.keys(JSON.parse(gameStrings)).length, 952,",
+      "occurrences": 1
+    },
+    {
+      "label": "game unchanged historical full bytes",
+      "before": "eq(gameStrings, sharedBytes.get(name).toString('utf8'),",
+      "after": "eq(gameStrings, stripSalvageClosedAddition(sharedBytes.get(name).toString('utf8')),",
+      "occurrences": 1
+    }
+  ],
+  "realDiskRead": true,
+  "productModuleTransformations": [],
+  "diskWritten": false,
+  "assertionWrapperChanged": false,
+  "policy": "Exact historical strings SHA/count/source whitelist only; business assertions and current Vite SSR are unchanged."
+}

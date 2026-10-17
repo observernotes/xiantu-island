@@ -1,0 +1,11 @@
+{
+  "log": "/workspace/xiantu/logs/codex/f406ace5944d4bcb_20261017_150020_1731896.log",
+  "launchLog": "qa/out_v06p1_salvage_closed/codex_launch.log",
+  "sessionId": "01a148a9-5911-7862-8df8-84ba7eea801e",
+  "model": "gpt-6.1-sol",
+  "reasoningEffort": "ultra",
+  "fast": false,
+  "stdin": "/dev/null",
+  "workdir": "/workspace/xiantu/wt/dev",
+  "liveLogsStaged": false
+}

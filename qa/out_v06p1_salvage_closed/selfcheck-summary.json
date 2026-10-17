@@ -1,0 +1,710 @@
+{
+  "passed": true,
+  "base": "14d6de7b39b1aab0b31a12289172e6735986f263",
+  "cwd": "/workspace/xiantu/wt/dev",
+  "stdin": "/dev/null",
+  "totalAssertions": 162165,
+  "salvageAssertions": 19306,
+  "fixtures": 232,
+  "invocations": 3380,
+  "results": [
+    {
+      "name": "tsc",
+      "command": [
+        "npx",
+        "tsc",
+        "--noEmit"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:03:26.769Z",
+      "finishedAt": "2026-10-17T07:03:32.118Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": null,
+      "evidenceFile": "tsc.result.json"
+    },
+    {
+      "name": "v06p1-salvage-closed",
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-salvage-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:03:32.119Z",
+      "finishedAt": "2026-10-17T07:03:36.368Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 19306,
+      "evidenceFile": "v06p1-salvage-closed.result.json"
+    },
+    {
+      "name": "v06p1-enchant-open",
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-enchant-open"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "ENCHANT_OPEN_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/v06p1-enchant-open",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/regression-register.mjs"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:02:08.177Z",
+      "finishedAt": "2026-10-17T07:02:41.656Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 4622,
+      "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/v06p1-enchant-open",
+      "evidenceFile": "regressions/v06p1-enchant-open.result.json"
+    },
+    {
+      "name": "v06p1-enchant-closed",
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-enchant-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "ENCHANT_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/v06p1-enchant-closed",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/regression-register.mjs"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:02:08.181Z",
+      "finishedAt": "2026-10-17T07:02:13.312Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 12600,
+      "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/v06p1-enchant-closed",
+      "evidenceFile": "regressions/v06p1-enchant-closed.result.json"
+    },
+    {
+      "name": "v06p1-enhance-open",
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-enhance-open"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "XT_ENHANCE_QA_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/v06p1-enhance-open",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/regression-register.mjs"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:04:33.896Z",
+      "finishedAt": "2026-10-17T07:05:03.983Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 17767,
+      "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/v06p1-enhance-open",
+      "evidenceFile": "regressions/v06p1-enhance-open.result.json"
+    },
+    {
+      "name": "v06p1-enhance-closed",
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-enhance-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "ENHANCE_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/v06p1-enhance-closed",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/regression-register.mjs"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:03:40.210Z",
+      "finishedAt": "2026-10-17T07:03:45.408Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 30912,
+      "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/v06p1-enhance-closed",
+      "evidenceFile": "regressions/v06p1-enhance-closed.result.json"
+    },
+    {
+      "name": "v06p1-forge-open",
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-forge-open"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/v06p1-forge-open",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/regression-register.mjs"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:03:40.206Z",
+      "finishedAt": "2026-10-17T07:03:50.848Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 6443,
+      "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/v06p1-forge-open",
+      "evidenceFile": "regressions/v06p1-forge-open.result.json"
+    },
+    {
+      "name": "v06p1-forge-closed",
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-forge-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "FORGE_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/v06p1-forge-closed",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/regression-register.mjs"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:03:42.486Z",
+      "finishedAt": "2026-10-17T07:03:47.437Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 20491,
+      "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/v06p1-forge-closed",
+      "evidenceFile": "regressions/v06p1-forge-closed.result.json"
+    },
+    {
+      "name": "v06p1-market-closed",
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-market-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "MARKET_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/v06p1-market-closed",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/regression-register.mjs"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:03:45.409Z",
+      "finishedAt": "2026-10-17T07:03:50.917Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 24251,
+      "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/v06p1-market-closed",
+      "evidenceFile": "regressions/v06p1-market-closed.result.json"
+    },
+    {
+      "name": "v06d-closed",
+      "command": [
+        "npm",
+        "run",
+        "test:v06d-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/v06d-closed",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/regression-register.mjs"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:03:47.437Z",
+      "finishedAt": "2026-10-17T07:03:52.813Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 15059,
+      "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/v06d-closed",
+      "evidenceFile": "regressions/v06d-closed.result.json"
+    },
+    {
+      "name": "v06c-closed",
+      "command": [
+        "npm",
+        "run",
+        "test:v06c-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/v06c-closed",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/regression-register.mjs"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:03:50.848Z",
+      "finishedAt": "2026-10-17T07:03:54.808Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 10714,
+      "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/regressions/v06c-closed",
+      "evidenceFile": "regressions/v06c-closed.result.json"
+    },
+    {
+      "name": "datalint-shared",
+      "command": [
+        "python3",
+        "/workspace/xiantu/qa/tools/datalint.py"
+      ],
+      "cwd": "/workspace/xiantu",
+      "environment": {
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:01:40.605033+00:00",
+      "finishedAt": "2026-10-17T07:01:40.646999+00:00",
+      "exitCode": 0,
+      "evidenceFile": "audit/datalint-shared.result.json"
+    },
+    {
+      "name": "datalint-snapshot",
+      "command": [
+        "python3",
+        "/workspace/xiantu/qa/tools/datalint.py"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev/data",
+      "environment": {
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:01:40.647156+00:00",
+      "finishedAt": "2026-10-17T07:01:40.689522+00:00",
+      "exitCode": 0,
+      "evidenceFile": "audit/datalint-snapshot.result.json"
+    },
+    {
+      "name": "json-tool-shared",
+      "command": [
+        "python3",
+        "-m",
+        "json.tool",
+        "<each balance/*.json>"
+      ],
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:01:40.689648+00:00",
+      "finishedAt": "2026-10-17T07:01:41.478099+00:00",
+      "files": [
+        {
+          "file": "/workspace/xiantu/balance/breakthrough.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/balance/companions.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/balance/drops.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/balance/encounters.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/balance/enhance.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/balance/enhance_protect_charm.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/balance/exp_curve.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/balance/fly_zones.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/balance/gongfa_grades.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/balance/items.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/balance/karma_flags.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/balance/life_skills.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/balance/market_consign.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/balance/materials.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/balance/monsters.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/balance/npcs.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/balance/player_growth.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/balance/qi_density.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/balance/quests.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/balance/realms.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/balance/recipes.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/balance/secret_boons.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/balance/secret_events.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/balance/secret_loot.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/balance/secret_rooms.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/balance/sect_donations.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/balance/sect_ranks.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/balance/sense.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/balance/shops.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/balance/skills.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/balance/solo_pacing.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/balance/strings_zh.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/balance/test_fixtures.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/balance/titles.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/balance/tower_floors.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/balance/trials.json",
+          "exitCode": 0,
+          "stderr": ""
+        }
+      ],
+      "fileCount": 36,
+      "exitCode": 0,
+      "evidenceFile": "audit/json-tool-shared.result.json"
+    },
+    {
+      "name": "json-tool-snapshot",
+      "command": [
+        "python3",
+        "-m",
+        "json.tool",
+        "<each balance/*.json>"
+      ],
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:01:41.478508+00:00",
+      "finishedAt": "2026-10-17T07:01:42.289348+00:00",
+      "files": [
+        {
+          "file": "/workspace/xiantu/wt/dev/data/balance/breakthrough.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/wt/dev/data/balance/companions.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/wt/dev/data/balance/drops.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/wt/dev/data/balance/encounters.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/wt/dev/data/balance/enhance.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/wt/dev/data/balance/enhance_protect_charm.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/wt/dev/data/balance/exp_curve.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/wt/dev/data/balance/fly_zones.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/wt/dev/data/balance/gongfa_grades.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/wt/dev/data/balance/items.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/wt/dev/data/balance/karma_flags.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/wt/dev/data/balance/life_skills.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/wt/dev/data/balance/market_consign.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/wt/dev/data/balance/materials.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/wt/dev/data/balance/monsters.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/wt/dev/data/balance/npcs.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/wt/dev/data/balance/player_growth.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/wt/dev/data/balance/qi_density.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/wt/dev/data/balance/quests.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/wt/dev/data/balance/realms.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/wt/dev/data/balance/recipes.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/wt/dev/data/balance/secret_boons.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/wt/dev/data/balance/secret_events.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/wt/dev/data/balance/secret_loot.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/wt/dev/data/balance/secret_rooms.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/wt/dev/data/balance/sect_donations.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/wt/dev/data/balance/sect_ranks.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/wt/dev/data/balance/sense.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/wt/dev/data/balance/shops.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/wt/dev/data/balance/skills.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/wt/dev/data/balance/solo_pacing.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/wt/dev/data/balance/strings_zh.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/wt/dev/data/balance/test_fixtures.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/wt/dev/data/balance/titles.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/wt/dev/data/balance/tower_floors.json",
+          "exitCode": 0,
+          "stderr": ""
+        },
+        {
+          "file": "/workspace/xiantu/wt/dev/data/balance/trials.json",
+          "exitCode": 0,
+          "stderr": ""
+        }
+      ],
+      "fileCount": 36,
+      "exitCode": 0,
+      "evidenceFile": "audit/json-tool-snapshot.result.json"
+    },
+    {
+      "name": "diff-check",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:05:33.589Z",
+      "finishedAt": "2026-10-17T07:05:33.600Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": null,
+      "evidenceFile": "diff-check.result.json"
+    },
+    {
+      "name": "table-delta-check",
+      "command": [
+        "node",
+        "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_closed/table-delta-check.mjs"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T07:01:48.468Z",
+      "finishedAt": "2026-10-17T07:01:48.589Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": null,
+      "evidenceFile": "table-delta-check.result.json"
+    }
+  ],
+  "evidence": {
+    "salvageClosedTipsWired": true,
+    "SalvageOpenFlag": false,
+    "softOpenedSalvage": false,
+    "released": false,
+    "refineStoneMapped": true,
+    "enchantSoftOpenPreserved": true,
+    "EnhanceOpenFlagPreserved": true,
+    "protectCharmSoftOpenPreserved": true
+  },
+  "programSelfcheckBlockers": [],
+  "notRun": [
+    "snapshot",
+    "build",
+    "sync",
+    "release",
+    "salvage-open-fixture"
+  ],
+  "unauthorizedDifferences": 0,
+  "boundary": "关态 tip 接线≠开态夹具≠soft-open≠release≠进包≠分解成功结算；核齐备≠生产授权"
+}
