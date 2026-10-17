@@ -1,0 +1,54 @@
+{
+ "atlas": "npc_enc_sage",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": 96,
+ "blend": "NORMAL",
+ "kind": "npc",
+ "note": "程序化占位；key 名待天机阁确认。槐下老者。原点 (0.5,1) 为拄杖/鞋底地面锚点。appear 淡入一次后循环 idle，对话循环 talk；结束播 vanish，化淡金光点后销毁，最后一帧透明。淡金光边描边 #A86E1E，NORMAL，每帧离散光点最多6颗。建议 enc_sage.sprite 引用此 atlas。",
+ "anims": [
+  {
+   "key": "npc_enc_sage_idle",
+   "frames": [
+    "npc_enc_sage_idle_01",
+    "npc_enc_sage_idle_02"
+   ],
+   "frameRate": 3,
+   "repeat": -1
+  },
+  {
+   "key": "npc_enc_sage_talk",
+   "frames": [
+    "npc_enc_sage_talk_01",
+    "npc_enc_sage_talk_02"
+   ],
+   "frameRate": 4,
+   "repeat": -1
+  },
+  {
+   "key": "npc_enc_sage_appear",
+   "frames": [
+    "npc_enc_sage_appear_01",
+    "npc_enc_sage_appear_02",
+    "npc_enc_sage_appear_03",
+    "npc_enc_sage_appear_04"
+   ],
+   "frameRate": 8,
+   "repeat": 0
+  },
+  {
+   "key": "npc_enc_sage_vanish",
+   "frames": [
+    "npc_enc_sage_vanish_01",
+    "npc_enc_sage_vanish_02",
+    "npc_enc_sage_vanish_03",
+    "npc_enc_sage_vanish_04"
+   ],
+   "frameRate": 8,
+   "repeat": 0
+  }
+ ]
+}
