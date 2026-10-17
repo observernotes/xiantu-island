@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "statusLines": 22,
+  "utf8SharedCopies": {
+    "reports/炼器阁/V06P1_ENCHANT_CLOSED_HANDOFF.md": {
+      "sharedMatch": true,
+      "sha256": "7b93a27f5251fcfc313662e57f829ff3e4aae2c352315a25b8427f623a6b2624"
+    },
+    "reports/炼器阁/V06P1_ENCHANT_CLOSED_RESULT.md": {
+      "sharedMatch": true,
+      "sha256": "cfb93f10a8ae58b6fd69db2a146f3d03505084233fa8b4293464c01e9c8a3ede"
+    },
+    "status/炼器阁.md": {
+      "sharedMatch": true,
+      "sha256": "de9caeea0420dd853e9b38ca0831b654749631184d5aa2996d07ce9108a2ee78"
+    }
+  },
+  "includesAllTenCases": true,
+  "includesEightApiMappings": true
+}

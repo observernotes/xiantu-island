@@ -1,0 +1,14 @@
+{
+  "files": [
+    "qa/out_v06p1_enchant_closed/diff-check.result.json",
+    "qa/out_v06p1_enchant_closed/documentation-check.json",
+    "qa/out_v06p1_enchant_closed/implementation-tip.json",
+    "qa/out_v06p1_enchant_closed/selfcheck-summary.json",
+    "qa/out_v06p1_enchant_closed/staged-docs-files.json",
+    "reports/炼器阁/V06P1_ENCHANT_CLOSED_HANDOFF.md",
+    "reports/炼器阁/V06P1_ENCHANT_CLOSED_RESULT.md",
+    "status/炼器阁.md"
+  ],
+  "unrelatedDirtyStaged": false,
+  "sharedUtf8MirrorsMatched": true
+}
