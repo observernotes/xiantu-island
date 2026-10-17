@@ -1,0 +1,462 @@
+{
+  "passed": true,
+  "assertions": 1128,
+  "baselineTip": "a3f0c197e1d3f31ef1faada5fa053b10e0ac9bfe",
+  "eSlotToInstanceRefApiExists": true,
+  "iRowToInstanceRefApiExists": true,
+  "api": {
+    "file": "src/EquipInstBinding.ts",
+    "e": "resolveFormalEquipSlotBinding",
+    "i": "resolveFormalInventoryEquipBinding",
+    "bag": "listBagFormalEquipBindings",
+    "validator": "isValidEquipInstanceRefs",
+    "write": "Progress.equipItem(id, instanceRef?)",
+    "unequip": "Progress.unequipSlot(slot)"
+  },
+  "apiFiles": [
+    "src/EquipInstBinding.ts",
+    "src/Progress.ts"
+  ],
+  "mappingStrategy": "explicit_position_binding_only_no_item_id_inference",
+  "equipKnownRefVerified": true,
+  "unequipBindingCleared": true,
+  "unequipNoInstanceAfterLegacyEquip": true,
+  "multipleSameItemIdNotImpersonated": true,
+  "countOneNotImpersonated": true,
+  "oldSaveNoBackfill": true,
+  "noItemIdImpersonation": true,
+  "fixtureInstancesProductionFallback": false,
+  "formalForgeDefaultPathExecuted": true,
+  "readonlyZeroWrites": true,
+  "displayResolversMatchFormalApi": true,
+  "bindingRollbackExecuted": true,
+  "enhanceSha": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+  "enhanceShaMatch": true,
+  "flagShas": {
+    "Forge": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
+    "Enhance": "d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e",
+    "Enchant": "bd5445b8ddfed56a32811cedd28db72e8676c7a5eff321e2fedb0ec5fe4c505a",
+    "Salvage": "69aace852957c52bf7ca0214345ede7df29d6d36ec1dfd4849462e54552edff3"
+  },
+  "formalFlagsDiskSourcePreserved": true,
+  "ForgeOpenFlag": true,
+  "EnhanceOpenFlag": true,
+  "EnchantOpenFlag": true,
+  "SalvageOpenFlag": true,
+  "gatesBaselineMatch": true,
+  "gateShas": {
+    "Forge": "7aa9b91bf4ad2d389f2b96c41479338bd53cb3fdd63f65ff47a64f8528d75bcb",
+    "Enhance": "c2a2a0efb7997270eb48674224ce9bfc08e14201e613d7aa12d35af0a2a09796",
+    "Enchant": "9dbb43f607fb1c298661bccd8a31f5653583b0b1dae956ca3f317f2fe8fc0ad2",
+    "Salvage": "3777c6b72615f21a9c47544cfa8eeece08eb54009032cbf53e713091f8d8ce52"
+  },
+  "frozenData": {
+    "shared": {
+      "enhance": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+      "materials": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+      "items": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+      "recipes": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+      "npcs": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+      "life_skills": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+      "enhance_protect_charm": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772"
+    },
+    "snapshot": {
+      "enhance": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+      "materials": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+      "items": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+      "recipes": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+      "npcs": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+      "life_skills": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+      "enhance_protect_charm": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772"
+    },
+    "game": {
+      "enhance": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+      "materials": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+      "items": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+      "recipes": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+      "npcs": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+      "life_skills": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+      "enhance_protect_charm": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772"
+    }
+  },
+  "gifts0": true,
+  "giftsCount": 10,
+  "GAME_PHASE": 5,
+  "newOpenFlag": false,
+  "softOpenedAttrUi": true,
+  "released": false,
+  "testSummary": "node scripts/v06p1-attr-ui-map-api-test.mjs: 1128 assertions, shared/snapshot SSR",
+  "protectedFiles": {
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/ForgeOpenFlag.ts": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/ForgeGate.ts": "7aa9b91bf4ad2d389f2b96c41479338bd53cb3fdd63f65ff47a64f8528d75bcb",
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/EnhanceOpenFlag.ts": "d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e",
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/EnhanceGate.ts": "c2a2a0efb7997270eb48674224ce9bfc08e14201e613d7aa12d35af0a2a09796",
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/EnchantOpenFlag.ts": "bd5445b8ddfed56a32811cedd28db72e8676c7a5eff321e2fedb0ec5fe4c505a",
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/EnchantGate.ts": "9dbb43f607fb1c298661bccd8a31f5653583b0b1dae956ca3f317f2fe8fc0ad2",
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/SalvageOpenFlag.ts": "69aace852957c52bf7ca0214345ede7df29d6d36ec1dfd4849462e54552edff3",
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/SalvageGate.ts": "3777c6b72615f21a9c47544cfa8eeece08eb54009032cbf53e713091f8d8ce52",
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/data.ts": "aad725652f5c0eb57a5c699726e570b146d5ded52d5c31715444dbbf4117024a",
+    "/workspace/xiantu/balance/enhance.json": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+    "/workspace/xiantu/balance/materials.json": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+    "/workspace/xiantu/balance/items.json": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+    "/workspace/xiantu/balance/recipes.json": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+    "/workspace/xiantu/balance/npcs.json": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+    "/workspace/xiantu/balance/life_skills.json": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+    "/workspace/xiantu/balance/enhance_protect_charm.json": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+    "/workspace/xiantu/wt/feat/ui-smith-services/data/balance/enhance.json": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+    "/workspace/xiantu/wt/feat/ui-smith-services/data/balance/materials.json": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+    "/workspace/xiantu/wt/feat/ui-smith-services/data/balance/items.json": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+    "/workspace/xiantu/wt/feat/ui-smith-services/data/balance/recipes.json": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+    "/workspace/xiantu/wt/feat/ui-smith-services/data/balance/npcs.json": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+    "/workspace/xiantu/wt/feat/ui-smith-services/data/balance/life_skills.json": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+    "/workspace/xiantu/wt/feat/ui-smith-services/data/balance/enhance_protect_charm.json": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+    "/workspace/xiantu/game/data/balance/enhance.json": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+    "/workspace/xiantu/game/data/balance/materials.json": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+    "/workspace/xiantu/game/data/balance/items.json": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+    "/workspace/xiantu/game/data/balance/recipes.json": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+    "/workspace/xiantu/game/data/balance/npcs.json": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+    "/workspace/xiantu/game/data/balance/life_skills.json": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+    "/workspace/xiantu/game/data/balance/enhance_protect_charm.json": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/EquipPanel.ts": "6c74f3529400178be4900ecb5aedbd5dd3aaec5c57f28ca1382a56128ac507ae",
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/InventoryPanel.ts": "9bc8a2f34ad1b4830bd604033be8668bfea78b023ce047f89c59507d8b0c9b90"
+  },
+  "evidence": [
+    {
+      "mode": "shared",
+      "test": "frozen-boundaries",
+      "passed": true,
+      "enhanceSha": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+      "giftsCount": 10,
+      "gifts0": true,
+      "GAME_PHASE": 5,
+      "fourFlagBytesMatch": true,
+      "fourGateBytesMatch": true
+    },
+    {
+      "mode": "snapshot",
+      "test": "frozen-boundaries",
+      "passed": true,
+      "enhanceSha": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+      "giftsCount": 10,
+      "gifts0": true,
+      "GAME_PHASE": 5,
+      "fourFlagBytesMatch": true,
+      "fourGateBytesMatch": true
+    },
+    {
+      "mode": "game",
+      "test": "frozen-boundaries",
+      "passed": true,
+      "enhanceSha": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+      "giftsCount": 10,
+      "gifts0": true,
+      "GAME_PHASE": 5,
+      "fourFlagBytesMatch": true,
+      "fourGateBytesMatch": true
+    },
+    {
+      "mode": "shared",
+      "test": "formal-forge-production-path",
+      "passed": true,
+      "firstRef": "shared-map-formal-forge:craft:map-one:item",
+      "secondRef": "shared-map-formal-forge:craft:map-two:item",
+      "itemId": "bamboo_sword",
+      "defaultFormalRecipes": true,
+      "fixtureInstances": false,
+      "autoEquipped": false,
+      "savedFormalSource": true,
+      "persisted": true
+    },
+    {
+      "mode": "shared",
+      "test": "ambiguous-bag-position-whole-group-rejected",
+      "passed": true,
+      "formalSameItemIdInstances": 2,
+      "inventoryCount": 1,
+      "equippedItemId": "bamboo_sword",
+      "explicitEquipBinding": false,
+      "bagRows": [],
+      "neitherReferenceSelectedByCount": true
+    },
+    {
+      "mode": "shared",
+      "test": "equip-known-instance-verified",
+      "passed": true,
+      "instanceRef": "shared-map-formal-forge:craft:map-one:item",
+      "equipSlot": "weapon",
+      "eBinding": {
+        "kind": "verified",
+        "instanceRef": "shared-map-formal-forge:craft:map-one:item"
+      },
+      "persistedBinding": "shared-map-formal-forge:craft:map-one:item",
+      "bagInstanceRefs": [
+        "shared-map-formal-forge:craft:map-two:item"
+      ],
+      "sameItemIdSecondRow": {
+        "kind": "verified",
+        "instanceRef": "shared-map-formal-forge:craft:map-two:item"
+      }
+    },
+    {
+      "mode": "shared",
+      "test": "unequip-clears-binding",
+      "passed": true,
+      "removedInstanceRef": "shared-map-formal-forge:craft:map-two:item",
+      "bindingCleared": true,
+      "emptyImmediatelyAfterUnequip": true,
+      "subsequentLegacyEquip": {
+        "kind": "no_instance"
+      },
+      "unequippedInstanceReturnedToBag": true
+    },
+    {
+      "mode": "shared",
+      "test": "never-infer-from-item-id",
+      "passed": true,
+      "multipleSameItemId": 2,
+      "aggregateRow": {
+        "kind": "no_instance"
+      },
+      "singleCandidateWithCountOne": {
+        "kind": "no_instance"
+      },
+      "legacySaveMissingBindings": {
+        "kind": "no_instance"
+      },
+      "inferredBinding": false,
+      "fixtureInstancesProductionFallback": false
+    },
+    {
+      "mode": "shared",
+      "test": "readonly-and-B-formal-api-wiring",
+      "passed": true,
+      "fullSaveDelta": 0,
+      "publicFieldDelta": 0,
+      "storageWriteDelta": 0,
+      "serviceCalls": 0,
+      "displayResolversMatchFormalApi": true
+    },
+    {
+      "mode": "shared",
+      "test": "foreign-and-invalid-bindings-rejected",
+      "passed": true,
+      "crossSaveE": {
+        "kind": "foreign"
+      },
+      "crossSaveI": {
+        "kind": "foreign"
+      },
+      "brokenSource": {
+        "kind": "foreign"
+      },
+      "itemIdMismatchVerified": false,
+      "slotMismatchVerified": false,
+      "alreadyBoundOtherSlotRejected": true,
+      "ownerSlotIsSaveSlotOnly": true
+    },
+    {
+      "mode": "shared",
+      "test": "changeEquip-save-false-rollback",
+      "passed": true,
+      "equipInventoryAndBindingAtomic": true
+    },
+    {
+      "mode": "shared",
+      "test": "changeEquip-save-throw-rollback",
+      "passed": true,
+      "equipInventoryAndBindingAtomic": true
+    },
+    {
+      "mode": "shared",
+      "test": "sync-transaction-binding-rollback",
+      "passed": true,
+      "cases": [
+        "undefined",
+        "throw",
+        "save-false",
+        "save-throw"
+      ]
+    },
+    {
+      "mode": "shared",
+      "test": "save-validation-and-roundtrip",
+      "passed": true,
+      "badFieldCases": 16,
+      "invalidImportRejected": true,
+      "invalidSyncLoadIgnored": true,
+      "validBindingRoundtrip": {
+        "kind": "verified",
+        "instanceRef": "shared-map-formal-forge:craft:map-one:item"
+      }
+    },
+    {
+      "mode": "shared",
+      "test": "async-transaction-binding-atomicity",
+      "passed": true,
+      "persistedKnownReference": "shared-map-formal-forge:craft:map-two:item",
+      "roundtripVerified": true,
+      "backendFailureLeavesEquipInventoryBindingUnchanged": true
+    },
+    {
+      "mode": "shared",
+      "test": "ssr-graph-complete",
+      "passed": true,
+      "formalFlagsUntouched": true,
+      "GAME_PHASE": 5,
+      "softOpenedAttrUi": true,
+      "released": false
+    },
+    {
+      "mode": "snapshot",
+      "test": "formal-forge-production-path",
+      "passed": true,
+      "firstRef": "snapshot-map-formal-forge:craft:map-one:item",
+      "secondRef": "snapshot-map-formal-forge:craft:map-two:item",
+      "itemId": "bamboo_sword",
+      "defaultFormalRecipes": true,
+      "fixtureInstances": false,
+      "autoEquipped": false,
+      "savedFormalSource": true,
+      "persisted": true
+    },
+    {
+      "mode": "snapshot",
+      "test": "ambiguous-bag-position-whole-group-rejected",
+      "passed": true,
+      "formalSameItemIdInstances": 2,
+      "inventoryCount": 1,
+      "equippedItemId": "bamboo_sword",
+      "explicitEquipBinding": false,
+      "bagRows": [],
+      "neitherReferenceSelectedByCount": true
+    },
+    {
+      "mode": "snapshot",
+      "test": "equip-known-instance-verified",
+      "passed": true,
+      "instanceRef": "snapshot-map-formal-forge:craft:map-one:item",
+      "equipSlot": "weapon",
+      "eBinding": {
+        "kind": "verified",
+        "instanceRef": "snapshot-map-formal-forge:craft:map-one:item"
+      },
+      "persistedBinding": "snapshot-map-formal-forge:craft:map-one:item",
+      "bagInstanceRefs": [
+        "snapshot-map-formal-forge:craft:map-two:item"
+      ],
+      "sameItemIdSecondRow": {
+        "kind": "verified",
+        "instanceRef": "snapshot-map-formal-forge:craft:map-two:item"
+      }
+    },
+    {
+      "mode": "snapshot",
+      "test": "unequip-clears-binding",
+      "passed": true,
+      "removedInstanceRef": "snapshot-map-formal-forge:craft:map-two:item",
+      "bindingCleared": true,
+      "emptyImmediatelyAfterUnequip": true,
+      "subsequentLegacyEquip": {
+        "kind": "no_instance"
+      },
+      "unequippedInstanceReturnedToBag": true
+    },
+    {
+      "mode": "snapshot",
+      "test": "never-infer-from-item-id",
+      "passed": true,
+      "multipleSameItemId": 2,
+      "aggregateRow": {
+        "kind": "no_instance"
+      },
+      "singleCandidateWithCountOne": {
+        "kind": "no_instance"
+      },
+      "legacySaveMissingBindings": {
+        "kind": "no_instance"
+      },
+      "inferredBinding": false,
+      "fixtureInstancesProductionFallback": false
+    },
+    {
+      "mode": "snapshot",
+      "test": "readonly-and-B-formal-api-wiring",
+      "passed": true,
+      "fullSaveDelta": 0,
+      "publicFieldDelta": 0,
+      "storageWriteDelta": 0,
+      "serviceCalls": 0,
+      "displayResolversMatchFormalApi": true
+    },
+    {
+      "mode": "snapshot",
+      "test": "foreign-and-invalid-bindings-rejected",
+      "passed": true,
+      "crossSaveE": {
+        "kind": "foreign"
+      },
+      "crossSaveI": {
+        "kind": "foreign"
+      },
+      "brokenSource": {
+        "kind": "foreign"
+      },
+      "itemIdMismatchVerified": false,
+      "slotMismatchVerified": false,
+      "alreadyBoundOtherSlotRejected": true,
+      "ownerSlotIsSaveSlotOnly": true
+    },
+    {
+      "mode": "snapshot",
+      "test": "changeEquip-save-false-rollback",
+      "passed": true,
+      "equipInventoryAndBindingAtomic": true
+    },
+    {
+      "mode": "snapshot",
+      "test": "changeEquip-save-throw-rollback",
+      "passed": true,
+      "equipInventoryAndBindingAtomic": true
+    },
+    {
+      "mode": "snapshot",
+      "test": "sync-transaction-binding-rollback",
+      "passed": true,
+      "cases": [
+        "undefined",
+        "throw",
+        "save-false",
+        "save-throw"
+      ]
+    },
+    {
+      "mode": "snapshot",
+      "test": "save-validation-and-roundtrip",
+      "passed": true,
+      "badFieldCases": 16,
+      "invalidImportRejected": true,
+      "invalidSyncLoadIgnored": true,
+      "validBindingRoundtrip": {
+        "kind": "verified",
+        "instanceRef": "snapshot-map-formal-forge:craft:map-one:item"
+      }
+    },
+    {
+      "mode": "snapshot",
+      "test": "async-transaction-binding-atomicity",
+      "passed": true,
+      "persistedKnownReference": "snapshot-map-formal-forge:craft:map-two:item",
+      "roundtripVerified": true,
+      "backendFailureLeavesEquipInventoryBindingUnchanged": true
+    },
+    {
+      "mode": "snapshot",
+      "test": "ssr-graph-complete",
+      "passed": true,
+      "formalFlagsUntouched": true,
+      "GAME_PHASE": 5,
+      "softOpenedAttrUi": true,
+      "released": false
+    }
+  ]
+}

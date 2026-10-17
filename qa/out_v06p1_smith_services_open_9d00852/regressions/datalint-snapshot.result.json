@@ -1,0 +1,18 @@
+{
+  "name": "datalint-snapshot",
+  "command": [
+    "python3",
+    "-c",
+    "import runpy; result = runpy.run_path('/workspace/xiantu/qa/tools/datalint.py', run_name='__main__'); assert result['P'] == [], result['P']"
+  ],
+  "cwd": "/workspace/xiantu/wt/feat/ui-smith-services/data",
+  "stdin": "/dev/null",
+  "startedAt": "2026-10-17T11:46:02.558Z",
+  "finishedAt": "2026-10-17T11:46:02.594Z",
+  "exitCode": 0,
+  "signal": null,
+  "assertions": null,
+  "log": "qa/out_v06p1_smith_services_open_9d00852/regressions/datalint-snapshot.log",
+  "productModuleTransformations": [],
+  "productionSourceManifestSha256": "26d7de1e9c33f0ac246b03f56ca1a3a4d3436c66b43feba84bf6289d7dda469d"
+}

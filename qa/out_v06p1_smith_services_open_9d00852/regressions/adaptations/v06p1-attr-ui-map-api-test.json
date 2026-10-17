@@ -1,0 +1,30 @@
+{
+  "file": "scripts/v06p1-attr-ui-map-api-test.mjs",
+  "originalSha": "9e1eb5e7194359b634a47ea7e47ad43d4e7abc14a9936edc970135fb7cad5eb4",
+  "pinnedOriginalSha": "9e1eb5e7194359b634a47ea7e47ad43d4e7abc14a9936edc970135fb7cad5eb4",
+  "adaptedSha": "1e998b7ce7c5397fe5b149419b70c5cc1d81f6387e70d5dfc0d83db4618b822f",
+  "changes": [
+    {
+      "label": "user-authorized current worktree",
+      "before": "'/workspace/xiantu/wt/feat/ui-attr-inst'",
+      "after": "\"/workspace/xiantu/wt/feat/ui-smith-services\"",
+      "occurrences": 1
+    },
+    {
+      "label": "user-authorized current dev branch",
+      "before": "'feat/ui-attr-inst'",
+      "after": "'feat/ui-smith-services'",
+      "occurrences": 1
+    },
+    {
+      "label": "prior authorized attr-ui display integration kept at exact current bytes",
+      "before": "await guard(path.join(root, file), sha(git('show', `${baseline}:${file}`)));",
+      "after": "await guard(path.join(root, file), historicalExpected(file, sha(git('show', `${baseline}:${file}`))));",
+      "occurrences": 1
+    }
+  ],
+  "productModuleTransformations": [],
+  "diskWritten": false,
+  "businessAssertionsChanged": false,
+  "policy": "Pinned test-only historical strings SHA/count/inventory and prior attr-ui byte proof; actual Vite SSR product modules use current disk."
+}

@@ -1,0 +1,24 @@
+{
+  "readOnlyReference": true,
+  "peerImplementationTip": "a1d645d836761d2a57ce12833af95524f8e1205a",
+  "localImplementationTip": "9d008527cf618f14a4717876b679095e3d728248",
+  "peerSalvageGraph": "isolated SSR qualification and SalvageFixtureCarrier injected; production default unchanged",
+  "localSalvageGraph": "canonical default new SalvageGate(progress); qualification refused",
+  "localO05CompleteSuccessClaimed": false,
+  "gateSettlementCopied": false,
+  "mergedOrPushedDev": false,
+  "references": [
+    {
+      "path": "/workspace/xiantu/reports/炼器阁/V06P1_SMITH_SERVICES_OPEN_FIXTURE_HANDOFF.md",
+      "sha256": "a1fa5c94a00bf6059d590cafb6adb506b6db40fa2516cca66d5b3e7049c0b5c5"
+    },
+    {
+      "path": "/workspace/xiantu/reports/炼器阁/V06P1_SMITH_SERVICES_OPEN_FIXTURE_RESULT.md",
+      "sha256": "c1ac76e577766df38f90dad4f2f7ebb62c1d21b6e2200ec3bd6da447ac44f7a4"
+    },
+    {
+      "path": "/workspace/xiantu/status/炼器阁.md",
+      "sha256": "f415af8f5157a180507c3fcaf6b63802576c7947e6c03a9dca228ad8f29ca94f"
+    }
+  ]
+}

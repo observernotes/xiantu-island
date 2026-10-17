@@ -1,0 +1,581 @@
+{
+  "allEvidenceKeysResolvable": true,
+  "keys": {
+    "snapshot/O01/actual-smith-dialogue-menu-four-panels": {
+      "case": "O01",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O01/evidence/snapshot",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "snapshot/O01/actual-pointer-and-arrow-enter-escape": {
+      "case": "O01",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O01/evidence/snapshot",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "snapshot/O01/confirm-cancel-readonly-no-default-submit": {
+      "case": "O01",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O01/evidence/snapshot",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "shared/O01/actual-smith-dialogue-menu-four-panels": {
+      "case": "O01",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O01/evidence/shared",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "shared/O01/actual-pointer-and-arrow-enter-escape": {
+      "case": "O01",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O01/evidence/shared",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "shared/O01/confirm-cancel-readonly-no-default-submit": {
+      "case": "O01",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O01/evidence/shared",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "snapshot/O02.controllerGateRoundtrip": {
+      "case": "O02",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O02/evidence/snapshot",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "shared/O02.controllerGateRoundtrip": {
+      "case": "O02",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O02/evidence/shared",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "snapshot/O03.completeRoundtrips": {
+      "case": "O03",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O03/evidence/snapshot",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "snapshot/O03.maxLevelRefusal": {
+      "case": "O03",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O03/evidence/snapshot",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "snapshot/O03.gateSettlementOnly": {
+      "case": "O03",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O03/evidence/snapshot",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "shared/O03.completeRoundtrips": {
+      "case": "O03",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O03/evidence/shared",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "shared/O03.maxLevelRefusal": {
+      "case": "O03",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O03/evidence/shared",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "shared/O03.gateSettlementOnly": {
+      "case": "O03",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O03/evidence/shared",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "snapshot/O04.fiveElementsAndOverwrite": {
+      "case": "O04",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O04/evidence/snapshot",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "snapshot/O04.sameElementRefused": {
+      "case": "O04",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O04/evidence/snapshot",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "snapshot/O04.staleTargetRefused": {
+      "case": "O04",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O04/evidence/snapshot",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "snapshot/O04.noLayerStacking": {
+      "case": "O04",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O04/evidence/snapshot",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "shared/O04.fiveElementsAndOverwrite": {
+      "case": "O04",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O04/evidence/shared",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "shared/O04.sameElementRefused": {
+      "case": "O04",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O04/evidence/shared",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "shared/O04.staleTargetRefused": {
+      "case": "O04",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O04/evidence/shared",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "shared/O04.noLayerStacking": {
+      "case": "O04",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O04/evidence/shared",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "snapshot/O05.O05_blocked_formal_qualification": {
+      "case": "O05",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O05/evidence/snapshot",
+      "executed": true,
+      "passed": false,
+      "blocked": "O05_blocked_formal_qualification"
+    },
+    "shared/O05.O05_blocked_formal_qualification": {
+      "case": "O05",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O05/evidence/shared",
+      "executed": true,
+      "passed": false,
+      "blocked": "O05_blocked_formal_qualification"
+    },
+    "snapshot/O06/two-real-forged-copies-exact-equip-bag-bindings": {
+      "case": "O06",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O06/evidence/snapshot",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "snapshot/O06/E-I-before-submit-and-after-reopen-readonly": {
+      "case": "O06",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O06/evidence/snapshot",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "snapshot/O06/only-explicit-instance-ref-settled": {
+      "case": "O06",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O06/evidence/snapshot",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "shared/O06/two-real-forged-copies-exact-equip-bag-bindings": {
+      "case": "O06",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O06/evidence/shared",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "shared/O06/E-I-before-submit-and-after-reopen-readonly": {
+      "case": "O06",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O06/evidence/shared",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "shared/O06/only-explicit-instance-ref-settled": {
+      "case": "O06",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O06/evidence/shared",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "snapshot/O07.refusals": {
+      "case": "O07",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O07/evidence/snapshot",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "snapshot/O07.qualificationRefusal": {
+      "case": "O07",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O07/evidence/snapshot",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "snapshot/O07.formalCharmMappingRead": {
+      "case": "O07",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O07/evidence/snapshot",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "snapshot/O07.mappingAnomalyGraph": {
+      "case": "O07",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O07/evidence/snapshot",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "snapshot/O07.capacityScope": {
+      "case": "O07",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O07/evidence/snapshot",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "snapshot-invalid-protect-mapping/O07.invalidProtectMappingIsolatedGraph": {
+      "case": "O07",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O07/evidence/snapshot-invalid-protect-mapping",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "shared/O07.refusals": {
+      "case": "O07",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O07/evidence/shared",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "shared/O07.qualificationRefusal": {
+      "case": "O07",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O07/evidence/shared",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "shared/O07.formalCharmMappingRead": {
+      "case": "O07",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O07/evidence/shared",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "shared/O07.mappingAnomalyGraph": {
+      "case": "O07",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O07/evidence/shared",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "shared/O07.capacityScope": {
+      "case": "O07",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O07/evidence/shared",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "shared-invalid-protect-mapping/O07.invalidProtectMappingIsolatedGraph": {
+      "case": "O07",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O07/evidence/shared-invalid-protect-mapping",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "snapshot/O08.replayedServices": {
+      "case": "O08",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O08/evidence/snapshot",
+      "executed": true,
+      "passed": false,
+      "blocked": "O08_salvage_submit_reload_replay_blocked_by_O05"
+    },
+    "snapshot/O08.salvageReplayBlocked": {
+      "case": "O08",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O08/evidence/snapshot",
+      "executed": true,
+      "passed": false,
+      "blocked": "O08_salvage_submit_reload_replay_blocked_by_O05"
+    },
+    "snapshot/O08.noSecondDeductionOrDraw": {
+      "case": "O08",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O08/evidence/snapshot",
+      "executed": true,
+      "passed": false,
+      "blocked": "O08_salvage_submit_reload_replay_blocked_by_O05"
+    },
+    "shared/O08.replayedServices": {
+      "case": "O08",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O08/evidence/shared",
+      "executed": true,
+      "passed": false,
+      "blocked": "O08_salvage_submit_reload_replay_blocked_by_O05"
+    },
+    "shared/O08.salvageReplayBlocked": {
+      "case": "O08",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O08/evidence/shared",
+      "executed": true,
+      "passed": false,
+      "blocked": "O08_salvage_submit_reload_replay_blocked_by_O05"
+    },
+    "shared/O08.noSecondDeductionOrDraw": {
+      "case": "O08",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O08/evidence/shared",
+      "executed": true,
+      "passed": false,
+      "blocked": "O08_salvage_submit_reload_replay_blocked_by_O05"
+    },
+    "snapshot/O09.concurrency": {
+      "case": "O09",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O09/evidence/snapshot",
+      "executed": true,
+      "passed": false,
+      "blocked": "O09_blocked_stale_forge_and_enhance_overwrite_other_service; O09_salvage_competition_blocked_by_O05"
+    },
+    "snapshot/O09.staleCrossObjectWritersBlocked": {
+      "case": "O09",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O09/evidence/snapshot",
+      "executed": true,
+      "passed": false,
+      "blocked": "O09_blocked_stale_forge_and_enhance_overwrite_other_service; O09_salvage_competition_blocked_by_O05"
+    },
+    "snapshot/O09.salvageConcurrencyBlocked": {
+      "case": "O09",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O09/evidence/snapshot",
+      "executed": true,
+      "passed": false,
+      "blocked": "O09_blocked_stale_forge_and_enhance_overwrite_other_service; O09_salvage_competition_blocked_by_O05"
+    },
+    "snapshot/O09.uiSecondLedger": {
+      "case": "O09",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O09/evidence/snapshot",
+      "executed": true,
+      "passed": false,
+      "blocked": "O09_blocked_stale_forge_and_enhance_overwrite_other_service; O09_salvage_competition_blocked_by_O05"
+    },
+    "shared/O09.concurrency": {
+      "case": "O09",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O09/evidence/shared",
+      "executed": true,
+      "passed": false,
+      "blocked": "O09_blocked_stale_forge_and_enhance_overwrite_other_service; O09_salvage_competition_blocked_by_O05"
+    },
+    "shared/O09.staleCrossObjectWritersBlocked": {
+      "case": "O09",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O09/evidence/shared",
+      "executed": true,
+      "passed": false,
+      "blocked": "O09_blocked_stale_forge_and_enhance_overwrite_other_service; O09_salvage_competition_blocked_by_O05"
+    },
+    "shared/O09.salvageConcurrencyBlocked": {
+      "case": "O09",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O09/evidence/shared",
+      "executed": true,
+      "passed": false,
+      "blocked": "O09_blocked_stale_forge_and_enhance_overwrite_other_service; O09_salvage_competition_blocked_by_O05"
+    },
+    "shared/O09.uiSecondLedger": {
+      "case": "O09",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O09/evidence/shared",
+      "executed": true,
+      "passed": false,
+      "blocked": "O09_blocked_stale_forge_and_enhance_overwrite_other_service; O09_salvage_competition_blocked_by_O05"
+    },
+    "snapshot/O10/real-Gate-pending-close-switch-replace-and-ui-close": {
+      "case": "O10",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O10/evidence/snapshot",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "snapshot/O10/save-failure-atomic-original-state": {
+      "case": "O10",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O10/evidence/snapshot",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "snapshot/O10/unknown-half-records-rejected-without-repair": {
+      "case": "O10",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O10/evidence/snapshot",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "snapshot/O10/lost-reply-fixed-intent-readonly-recovery": {
+      "case": "O10",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O10/evidence/snapshot",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "shared/O10/real-Gate-pending-close-switch-replace-and-ui-close": {
+      "case": "O10",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O10/evidence/shared",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "shared/O10/save-failure-atomic-original-state": {
+      "case": "O10",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O10/evidence/shared",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "shared/O10/unknown-half-records-rejected-without-repair": {
+      "case": "O10",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O10/evidence/shared",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "shared/O10/lost-reply-fixed-intent-readonly-recovery": {
+      "case": "O10",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O10/evidence/shared",
+      "executed": true,
+      "passed": true,
+      "blocked": null
+    },
+    "snapshot/O11/forge-enhance-enchant-real-results-return-menu": {
+      "case": "O11",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O11/evidence/snapshot",
+      "executed": true,
+      "passed": false,
+      "blocked": "O11_partial_salvage_result_return_requires_O05_formal_qualification"
+    },
+    "snapshot/O11/six-scope-deliberate-closed-zero-write": {
+      "case": "O11",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O11/evidence/snapshot",
+      "executed": true,
+      "passed": false,
+      "blocked": "O11_partial_salvage_result_return_requires_O05_formal_qualification"
+    },
+    "snapshot/O11/E-I-independent-of-all-UI-scopes": {
+      "case": "O11",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O11/evidence/snapshot",
+      "executed": true,
+      "passed": false,
+      "blocked": "O11_partial_salvage_result_return_requires_O05_formal_qualification"
+    },
+    "snapshot/O11/salvage-result-return-blocked-by-formal-dependency": {
+      "case": "O11",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O11/evidence/snapshot",
+      "executed": true,
+      "passed": false,
+      "blocked": "O11_partial_salvage_result_return_requires_O05_formal_qualification"
+    },
+    "shared/O11/forge-enhance-enchant-real-results-return-menu": {
+      "case": "O11",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O11/evidence/shared",
+      "executed": true,
+      "passed": false,
+      "blocked": "O11_partial_salvage_result_return_requires_O05_formal_qualification"
+    },
+    "shared/O11/six-scope-deliberate-closed-zero-write": {
+      "case": "O11",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O11/evidence/shared",
+      "executed": true,
+      "passed": false,
+      "blocked": "O11_partial_salvage_result_return_requires_O05_formal_qualification"
+    },
+    "shared/O11/E-I-independent-of-all-UI-scopes": {
+      "case": "O11",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O11/evidence/shared",
+      "executed": true,
+      "passed": false,
+      "blocked": "O11_partial_salvage_result_return_requires_O05_formal_qualification"
+    },
+    "shared/O11/salvage-result-return-blocked-by-formal-dependency": {
+      "case": "O11",
+      "source": "v06p1-smith-services-open-evidence.json",
+      "jsonPointer": "/cases/O11/evidence/shared",
+      "executed": true,
+      "passed": false,
+      "blocked": "O11_partial_salvage_result_return_requires_O05_formal_qualification"
+    }
+  }
+}
