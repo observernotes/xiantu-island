@@ -1,0 +1,25 @@
+{
+  "implementationTip": "d5b385da7134e8ac14887b0efed125910b6d4802",
+  "testedSourceSha256StillMatches": true,
+  "protectedFiles": 992,
+  "authorizedDifferences": [
+    "snapshot/balance/strings_zh.json",
+    "src/EnhanceGate.ts",
+    "src/v06p1-enhance-open.test.ts"
+  ],
+  "unauthorizedDifferences": 0,
+  "priorEvidenceUnchanged": 167,
+  "priorEvidenceSetIdentical": true,
+  "documentsUtf8SharedCopies": {
+    "reports/炼器阁/V06P1_ENHANCE_FORMAL_TIPS_HANDOFF.md": "81e784df9d419f01f634d8afb6c9fae0c3970591c31af13a7953160312fcff52",
+    "reports/炼器阁/V06P1_ENHANCE_FORMAL_TIPS_RESULT.md": "095a005ad4222753fbab940ee2b04a4242b3c0899a41b1a9bb23521563ebe48b",
+    "status/炼器阁.md": "f20802761a4fdfc058f24b2f540a5f0cccbb74dad2442f02ba9b7b2448f54371"
+  },
+  "statusLines": 23,
+  "statusSections": 4,
+  "diffCheckExitCode": 0,
+  "formalTipsWired": true,
+  "formalInstanceSource": false,
+  "released": false,
+  "softOpenedEntrance": true
+}
