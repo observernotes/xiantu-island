@@ -1,0 +1,8 @@
+{
+  "head": "d01cae16b74a9d40d4e7ddce3d10c3dabb13328e",
+  "originDev": "d01cae16b74a9d40d4e7ddce3d10c3dabb13328e",
+  "branch": "dev",
+  "fetchPullExit": 0,
+  "fetchPull": "git fetch && git pull --ff-only origin dev",
+  "stdin": "/dev/null"
+}

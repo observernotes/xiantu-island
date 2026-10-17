@@ -1,0 +1,64 @@
+{
+  "passed": true,
+  "runner": "v06d-closed",
+  "file": "/workspace/xiantu/wt/dev/scripts/v06d-closed-test.mjs",
+  "stdin": "/dev/null",
+  "originalSha256": "5bfe782f918436fa30a2ca33f33176d57a59f637004708993cfaf6dbfe10e129",
+  "transformedSha256": "c65d11b611750c035b688be773d05d7c9d3d423d326ae384de23e68567294b72",
+  "diskWritten": false,
+  "realDiskRead": true,
+  "fakeReadFile": false,
+  "assertionWrapperChanged": false,
+  "productModuleTransformations": [],
+  "changes": [
+    {
+      "label": "import strict compatibility proof helpers",
+      "before": "import assert from 'node:assert/strict';",
+      "after": "import assert from 'node:assert/strict';\nimport { stripEnchantClosedAddition, enchantSourceNames, createCurrentStringsTestServer } from \"file:///workspace/xiantu/wt/dev/qa/out_v06p1_enchant_closed/regression-compat-support.mjs\";",
+      "expectedOccurrences": 1,
+      "actualOccurrences": 1
+    },
+    {
+      "label": "current strings authority SHA",
+      "before": "d7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09",
+      "after": "6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9",
+      "expectedOccurrences": 1,
+      "actualOccurrences": 1
+    },
+    {
+      "label": "current roots have 952 keys",
+      "before": "eq(entries.length, 944,",
+      "after": "eq(entries.length, 952,",
+      "expectedOccurrences": 1,
+      "actualOccurrences": 1
+    },
+    {
+      "label": "restore historical bytes before original strip proof",
+      "before": "const preFormal = rawStrings.replace(",
+      "after": "const preFormal = stripEnchantClosedAddition(rawStrings).replace(",
+      "expectedOccurrences": 1,
+      "actualOccurrences": 1
+    },
+    {
+      "label": "restore game comparison historical bytes",
+      "before": "const preFormal = sharedBytes.get(name).toString('utf8').replace(",
+      "after": "const preFormal = stripEnchantClosedAddition(sharedBytes.get(name).toString('utf8')).replace(",
+      "expectedOccurrences": 1,
+      "actualOccurrences": 1
+    },
+    {
+      "label": "game keeps original authority SHA",
+      "before": "eq(hash(gameStrings), expectedSha[name],",
+      "after": "eq(hash(gameStrings), 'd7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09',",
+      "expectedOccurrences": 1,
+      "actualOccurrences": 1
+    },
+    {
+      "label": "game equals exact historical portion of current shared bytes",
+      "before": "eq(gameStrings, sharedBytes.get(name).toString('utf8'),",
+      "after": "eq(gameStrings, stripEnchantClosedAddition(sharedBytes.get(name).toString('utf8')),",
+      "expectedOccurrences": 1,
+      "actualOccurrences": 1
+    }
+  ]
+}

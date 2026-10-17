@@ -1,0 +1,24 @@
+
+> xiantu-island@0.0.1 test:v06p1-forge-closed
+> timeout 120s node scripts/v06p1-forge-closed-test.mjs
+
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: C12 禁改表/地图/源码写前 SHA（正式 recipes 仅 shared/wt 精确授权；Progress 四行及 GameScene 最小提示接线精确剥离）：game:balance/materials.json
++ actual - expected
+
++ '79c68429d763054ac1715467d1743575e179ecaecb2529e4b6ed7df137ef4052'
+- '0cc03119172aaf4576eb29f9cbb0b6bf8965715b9e84a512ef25ce7b34eb640e'
+    at eq (file:///workspace/xiantu/wt/dev/scripts/v06p1-forge-closed-test.mjs:72:66)
+    at checkProtection (file:///workspace/xiantu/wt/dev/scripts/v06p1-forge-closed-test.mjs:185:5)
+    at async file:///workspace/xiantu/wt/dev/scripts/v06p1-forge-closed-test.mjs:456:3 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: '79c68429d763054ac1715467d1743575e179ecaecb2529e4b6ed7df137ef4052',
+  expected: '0cc03119172aaf4576eb29f9cbb0b6bf8965715b9e84a512ef25ce7b34eb640e',
+  operator: 'deepStrictEqual'
+}
+
+Node.js v20.19.2

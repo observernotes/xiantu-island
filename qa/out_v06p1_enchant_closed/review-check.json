@@ -1,0 +1,22 @@
+{
+  "passed": true,
+  "checks": {
+    "productionApiReview": true,
+    "independentFrozenAndSnapshotShaReview": true,
+    "exactThreeTableDeltaReviewed": true,
+    "c01ThroughC10StaticCoverageReviewed": true,
+    "realRestoreAndLoadAsyncReviewed": true,
+    "unknownFieldsNotClaimedAsSchema": true,
+    "ordinarySaveSetupSeparatedFromRefusalWrites": true,
+    "existingGateEntrancesAndLaterServiceReviewed": true,
+    "noEnchantGateSettlementOrProductionInjection": true
+  },
+  "reviewer": "independent boundary_review agent (read-only)",
+  "limits": "静态独立审查；执行结果由 selfcheck-summary.json 另证。异常载荷仅证明恒拒及零副作用，不声明业务门禁/事务已实现。",
+  "sourceSha256": {
+    "src/EnchantClosed.ts": "15870998e95f8f41ab4fb3e6c30dc17a82019502276084f4610800be5927e730",
+    "src/EnchantOpenFlag.ts": "313de2f84b0ee66cba2ac796680c7832056b42d7049a451e6fd61ca614f7003a",
+    "src/v06p1-enchant-closed.test.ts": "722a5b8e5125124a8e5e13cb40768683c23ad72e915c032d412fcdf14a6ed3d7",
+    "scripts/v06p1-enchant-closed-test.mjs": "08f1f6a4feacd73ec0a2f9cd5dac1f2fdff821f288732a3053ee53689408118b"
+  }
+}

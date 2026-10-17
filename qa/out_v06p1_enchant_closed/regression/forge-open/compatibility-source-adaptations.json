@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "runner": "v06p1-forge-open",
+  "file": "/workspace/xiantu/wt/dev/scripts/v06p1-forge-open-test.mjs",
+  "stdin": "/dev/null",
+  "originalSha256": "7f21b292164933acbaf0ca26971c66d4d21e83c0bc24a0b25c7c344cea051fbd",
+  "transformedSha256": "3e2734e80edd57511f9ae22f3021fff1e8828575aee74d86a2137835ac11f33d",
+  "diskWritten": false,
+  "realDiskRead": true,
+  "fakeReadFile": false,
+  "assertionWrapperChanged": false,
+  "productModuleTransformations": [],
+  "changes": [
+    {
+      "label": "import strict compatibility proof helpers",
+      "before": "import assert from 'node:assert/strict';",
+      "after": "import assert from 'node:assert/strict';\nimport { stripEnchantClosedAddition, enchantSourceNames, createCurrentStringsTestServer } from \"file:///workspace/xiantu/wt/dev/qa/out_v06p1_enchant_closed/regression-compat-support.mjs\";",
+      "expectedOccurrences": 1,
+      "actualOccurrences": 1
+    },
+    {
+      "label": "test consumer explicit allowlist",
+      "before": "['ForgeGate.ts', 'v06p1-forge-open.test.ts', 'v06p1-enhance-open.test.ts'].includes(file)",
+      "after": "['ForgeGate.ts', 'v06p1-forge-open.test.ts', 'v06p1-enhance-open.test.ts', 'v06p1-enchant-closed.test.ts'].includes(file)",
+      "expectedOccurrences": 1,
+      "actualOccurrences": 1
+    }
+  ]
+}

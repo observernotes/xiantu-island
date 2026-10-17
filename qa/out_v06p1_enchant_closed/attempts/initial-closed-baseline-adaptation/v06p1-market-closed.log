@@ -1,0 +1,24 @@
+
+> xiantu-island@0.0.1 test:v06p1-market-closed
+> timeout 120s node scripts/v06p1-market-closed-test.mjs
+
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: C12 写前 SHA 保护：game:balance/items.json
++ actual - expected
+
++ 'f8b587634e5c9d43a475e85724aa34172e2945abda7654c2ef98fda07d1566f3'
+- '6eb2434a31613ea3f60eaaf15906b565d2254364b1dc4f9bea96b244a8fc3b6c'
+    at eq (file:///workspace/xiantu/wt/dev/scripts/v06p1-market-closed-test.mjs:87:66)
+    at checkProtection (file:///workspace/xiantu/wt/dev/scripts/v06p1-market-closed-test.mjs:235:12)
+    at async file:///workspace/xiantu/wt/dev/scripts/v06p1-market-closed-test.mjs:491:3 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 'f8b587634e5c9d43a475e85724aa34172e2945abda7654c2ef98fda07d1566f3',
+  expected: '6eb2434a31613ea3f60eaaf15906b565d2254364b1dc4f9bea96b244a8fc3b6c',
+  operator: 'deepStrictEqual'
+}
+
+Node.js v20.19.2

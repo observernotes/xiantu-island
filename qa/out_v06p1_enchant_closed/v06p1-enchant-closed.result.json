@@ -1,0 +1,13 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test:v06p1-enchant-closed"
+  ],
+  "cwd": "/workspace/xiantu/wt/dev",
+  "environment": {},
+  "stdin": "/dev/null",
+  "startedAt": "2026-10-17T05:23:14.344945+00:00",
+  "exitCode": 0,
+  "assertions": 12519
+}

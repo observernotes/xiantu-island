@@ -1,0 +1,15 @@
+{
+  "log": "/workspace/xiantu/logs/codex/149e470df7669a9b_20261017_131906_1588895.log",
+  "launchLog": "qa/out_v06p1_enchant_closed/codex_launch.log",
+  "liveLogsStaged": false,
+  "stdin": "/dev/null",
+  "model": "gpt-6.1-sol",
+  "reasoningEffort": "ultra",
+  "fastEnabled": false,
+  "verifiedHeader": {
+    "workdir": true,
+    "model": true,
+    "reasoning": true
+  },
+  "codexStdin": "/dev/null"
+}

@@ -1,0 +1,5 @@
+{
+  "encoding": "utf-8",
+  "sha256": "e49c8ae4134fc11de5abc97ba6fd9e2b37b69e7565b4ccb1d7b6a4b6b37fbdb4",
+  "text": "# 炼器阁·主程序 状态（2026-10-17）\n\n## 当前\n现网 **v0.6.10**；试玩 https://observernotes.github.io/xiantu-island/v0.6.10/（Pages HTTP 200）。\n护器符正式映射 soft-open 已进包；softOpenedProtectCharm:true；released 随本发进包。\nmaster/tag^{}@d01cae1；--from tip@9c7278c；gh-pages ba41eb8。\n\n## 实现与验证\n映射齐备 N=1；true 成功/失败同扣、失败保级；缺符 resources；false 无符不回退。\nEnhanceOpenFlag 正式 true（d7a3f688…）；Forge/正式结算/实例源保持；附灵分解仍关。\ndry-run 0 阻断；实发 EXIT 0；938 文件包 SHA 清单 9eb746e5…。\n\n## 交付与旁证\nV0610_RELEASE：reports/炼器阁/V0610_RELEASE.md；日志 qa/out/release_v0.6.10_20261017_124239_*.log。\nenhance/recipes/三表/两 Flag MATCH；strings944、gifts10×false、GAME_PHASE=5。\n执法销账可后置 qa/out_v0610_close/。\n\n## 边界与下一棒\n禁附灵/分解/阵法/gifts/#20/拍卖/坊市混窗；禁再改本发冻结字节。\nattr-ui 另跟不挡本发。下一棒：执法销账冒烟；负责人转用户试玩链。\n\n"
+}

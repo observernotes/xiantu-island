@@ -602,5 +602,11 @@
   "name": "护器符",
   "phase": 5,
   "icon": "icon_protect_charm"
+ },
+ {
+  "id": "beast_core",
+  "name": "妖兽内丹",
+  "phase": 5,
+  "icon": "icon_beast_core"
  }
 ]

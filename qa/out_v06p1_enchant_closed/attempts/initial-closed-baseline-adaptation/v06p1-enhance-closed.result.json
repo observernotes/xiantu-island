@@ -1,0 +1,18 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test:v06p1-enhance-closed"
+  ],
+  "cwd": "/workspace/xiantu/wt/dev",
+  "environment": {
+    "ENHANCE_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_closed/regression/enhance-closed",
+    "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_closed/regression-register.mjs",
+    "ENCHANT_REGRESSION_CASE": "v06p1-enhance-closed",
+    "ENCHANT_REGRESSION_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_closed/regression/enhance-closed"
+  },
+  "stdin": "/dev/null",
+  "startedAt": "2026-10-17T05:23:12.048887+00:00",
+  "exitCode": 1,
+  "assertions": null
+}

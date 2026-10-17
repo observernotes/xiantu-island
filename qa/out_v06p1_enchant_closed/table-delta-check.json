@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "materialsRollbackSha256": "79c68429d763054ac1715467d1743575e179ecaecb2529e4b6ed7df137ef4052",
+  "itemsRollbackSha256": "f8b587634e5c9d43a475e85724aa34172e2945abda7654c2ef98fda07d1566f3",
+  "strings944RollbackSha256": "d7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09",
+  "onlyMaterialDelta": "beast_core.phase=5",
+  "onlyItemDelta": "末尾 beast_core 同 id 四字段镜像",
+  "onlyStringsDelta": "追加 enchant.closed.* 八键；既有944键原字节保持",
+  "productionAuthorization": false
+}

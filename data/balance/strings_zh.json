@@ -946,5 +946,13 @@
   "enhance.formal.max_level": "已达强化上限或目标越界。",
   "enhance.formal.duplicate": "该强化请求已提交，请读取结果。",
   "enhance.formal.load_dedupe": "读档后只认已提交结果，不重抽。",
-  "enhance.formal.foreign": "非本档装备实例，不可强化。"
+  "enhance.formal.foreign": "非本档装备实例，不可强化。",
+  "enchant.closed.feature": "武器附灵尚未开放。",
+  "enchant.closed.entrance": "欧冶匠暂不提供附灵，可查看说明。",
+  "enchant.closed.enchant": "武器附灵尚未开放，暂不可附灵。",
+  "enchant.closed.no_submit": "武器附灵尚未开放，暂不可提交附灵。",
+  "enchant.closed.no_result": "武器附灵尚未开放，不写入五行附着。",
+  "enchant.closed.no_element": "武器附灵尚未开放，不变更五行属性。",
+  "enchant.closed.load_refresh": "读档或刷新后附灵仍未开放，暂不可附灵。",
+  "enchant.closed.later_service": "分解等后续服务尚未开放。"
 }

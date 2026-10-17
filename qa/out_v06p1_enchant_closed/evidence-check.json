@@ -1,0 +1,32 @@
+{
+  "passed": true,
+  "enchantClosedTipsWired": true,
+  "EnchantOpenFlag": false,
+  "softOpenedEnchant": false,
+  "released": false,
+  "beastCoreMapped": true,
+  "protectCharmSoftOpenPreserved": true,
+  "allCommandsExit0": true,
+  "sourceSha256": {
+    "src/EnchantClosed.ts": "15870998e95f8f41ab4fb3e6c30dc17a82019502276084f4610800be5927e730",
+    "src/EnchantOpenFlag.ts": "313de2f84b0ee66cba2ac796680c7832056b42d7049a451e6fd61ca614f7003a",
+    "src/v06p1-enchant-closed.test.ts": "722a5b8e5125124a8e5e13cb40768683c23ad72e915c032d412fcdf14a6ed3d7",
+    "scripts/v06p1-enchant-closed-test.mjs": "08f1f6a4feacd73ec0a2f9cd5dac1f2fdff821f288732a3053ee53689408118b",
+    "package.json": "cec38c2c6623d4ca6a15c8ab28224b77a45b43e9477fdcc77c8f1230c9ecf1dd",
+    "src/EnhanceGate.ts": "c2a2a0efb7997270eb48674224ce9bfc08e14201e613d7aa12d35af0a2a09796",
+    "src/ForgeGate.ts": "7aa9b91bf4ad2d389f2b96c41479338bd53cb3fdd63f65ff47a64f8528d75bcb",
+    "src/EnhanceClosed.ts": "c52ffbfc269f3a41c309184d9781f23cf2511d5acec7570ebb44b84683b3e821",
+    "src/ForgeClosed.ts": "f7e4216be7767f481c96ae7f1dc5796574fe9b231ada91d57a137c1dc8a8c90c",
+    "src/EnhanceOpenFlag.ts": "d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e",
+    "src/ForgeOpenFlag.ts": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
+    "src/Progress.ts": "9c6556462768199f2b0c6a2ee3deb420c0a117b9a49945ec5723a90f88b8d0df",
+    "src/data.ts": "aad725652f5c0eb57a5c699726e570b146d5ded52d5c31715444dbbf4117024a"
+  },
+  "priorEvidenceFiles": 897,
+  "priorEvidenceDifferences": 0,
+  "frozenMatch": true,
+  "snapshotTargetMatch": true,
+  "GAME_PHASE": 5,
+  "giftsFalseCount": 10,
+  "scope": "本窗仅关态 tip 接线；beastCoreMapped 表示登记齐，不表示消费者/同事务消费保存齐备或生产放行；未执行附灵 O01–O08"
+}

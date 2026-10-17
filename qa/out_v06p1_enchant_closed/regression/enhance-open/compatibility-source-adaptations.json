@@ -1,0 +1,85 @@
+{
+  "passed": true,
+  "runner": "v06p1-enhance-open",
+  "file": "/workspace/xiantu/wt/dev/scripts/v06p1-enhance-open-test.mjs",
+  "stdin": "/dev/null",
+  "originalSha256": "75788f4286ba833b925a44e06dc1db2993f947f26767e7c508f3ab82f609d2c6",
+  "transformedSha256": "18b024ed25c685bfb6f6c7304a0f5a5a633f0ec9b62be77647f127c3cf8f7c39",
+  "diskWritten": false,
+  "realDiskRead": true,
+  "fakeReadFile": false,
+  "assertionWrapperChanged": false,
+  "productModuleTransformations": [],
+  "changes": [
+    {
+      "label": "import strict compatibility proof helpers",
+      "before": "import assert from 'node:assert/strict';",
+      "after": "import assert from 'node:assert/strict';\nimport { stripEnchantClosedAddition, enchantSourceNames, createCurrentStringsTestServer } from \"file:///workspace/xiantu/wt/dev/qa/out_v06p1_enchant_closed/regression-compat-support.mjs\";",
+      "expectedOccurrences": 1,
+      "actualOccurrences": 1
+    },
+    {
+      "label": "current strings authority SHA",
+      "before": "d7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09",
+      "after": "6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9",
+      "expectedOccurrences": 1,
+      "actualOccurrences": 1
+    },
+    {
+      "label": "current material authority SHA",
+      "before": "79c68429d763054ac1715467d1743575e179ecaecb2529e4b6ed7df137ef4052",
+      "after": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+      "expectedOccurrences": 1,
+      "actualOccurrences": 1
+    },
+    {
+      "label": "current item authority SHA",
+      "before": "f8b587634e5c9d43a475e85724aa34172e2945abda7654c2ef98fda07d1566f3",
+      "after": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+      "expectedOccurrences": 1,
+      "actualOccurrences": 1
+    },
+    {
+      "label": "SSR test-only key count adapter",
+      "before": "import { createServer } from 'vite';",
+      "after": "import { createServer as originalCreateServer } from 'vite';\nconst createServer = options => createCurrentStringsTestServer(originalCreateServer, options);",
+      "expectedOccurrences": 1,
+      "actualOccurrences": 1
+    },
+    {
+      "label": "test consumer explicit allowlist",
+      "before": "['EnhanceGate.ts', 'v06p1-enhance-open.test.ts'].includes(file)",
+      "after": "['EnhanceGate.ts', 'v06p1-enhance-open.test.ts', 'v06p1-enchant-closed.test.ts'].includes(file)",
+      "expectedOccurrences": 1,
+      "actualOccurrences": 1
+    },
+    {
+      "label": "game keeps historical strings SHA",
+      "before": "eq(hash(rawStrings), stringsSha,",
+      "after": "eq(hash(rawStrings), mode === 'game' ? 'd7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09' : stringsSha,",
+      "expectedOccurrences": 1,
+      "actualOccurrences": 1
+    },
+    {
+      "label": "two current roots have 952 strings keys",
+      "before": "eq(entries.length, 944,",
+      "after": "eq(entries.length, mode === 'game' ? 944 : 952,",
+      "expectedOccurrences": 1,
+      "actualOccurrences": 1
+    },
+    {
+      "label": "formal eight-key slice remains exact",
+      "before": "entries.slice(936)",
+      "after": "entries.slice(936, 944)",
+      "expectedOccurrences": 1,
+      "actualOccurrences": 1
+    },
+    {
+      "label": "prove old formal-byte chain after removing new eight keys",
+      "before": "hash(rawStrings.replace(",
+      "after": "hash(stripEnchantClosedAddition(rawStrings).replace(",
+      "expectedOccurrences": 1,
+      "actualOccurrences": 1
+    }
+  ]
+}

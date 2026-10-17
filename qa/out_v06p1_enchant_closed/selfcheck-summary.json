@@ -1,0 +1,263 @@
+{
+  "passed": true,
+  "enchantClosedTipsWired": true,
+  "EnchantOpenFlag": false,
+  "softOpenedEnchant": false,
+  "released": false,
+  "beastCoreMapped": true,
+  "protectCharmSoftOpenPreserved": true,
+  "checks": {
+    "tsc": {
+      "command": [
+        "npx",
+        "tsc",
+        "--noEmit"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {},
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T05:23:08.831782+00:00",
+      "exitCode": 0,
+      "assertions": null
+    },
+    "v06p1-enchant-closed": {
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-enchant-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {},
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T05:23:14.344945+00:00",
+      "exitCode": 0,
+      "assertions": 12519
+    },
+    "v06p1-enhance-open": {
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-enhance-open"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "XT_ENHANCE_QA_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_closed/regression/enhance-open",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_closed/regression-register.mjs",
+        "ENCHANT_REGRESSION_CASE": "v06p1-enhance-open",
+        "ENCHANT_REGRESSION_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_closed/regression/enhance-open"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T05:23:17.277460+00:00",
+      "exitCode": 0,
+      "assertions": 17729
+    },
+    "v06p1-enhance-closed": {
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-enhance-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "ENHANCE_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_closed/regression/enhance-closed",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_closed/regression-register.mjs",
+        "ENCHANT_REGRESSION_CASE": "v06p1-enhance-closed",
+        "ENCHANT_REGRESSION_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_closed/regression/enhance-closed"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T05:24:58.251537+00:00",
+      "exitCode": 0,
+      "assertions": 30836
+    },
+    "v06p1-forge-open": {
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-forge-open"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_closed/regression/forge-open",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_closed/regression-register.mjs",
+        "ENCHANT_REGRESSION_CASE": "v06p1-forge-open",
+        "ENCHANT_REGRESSION_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_closed/regression/forge-open"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T05:23:32.197857+00:00",
+      "exitCode": 0,
+      "assertions": 6381
+    },
+    "v06p1-forge-closed": {
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-forge-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "FORGE_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_closed/regression/forge-closed",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_closed/regression-register.mjs",
+        "ENCHANT_REGRESSION_CASE": "v06p1-forge-closed",
+        "ENCHANT_REGRESSION_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_closed/regression/forge-closed"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T05:24:58.251493+00:00",
+      "exitCode": 0,
+      "assertions": 20413
+    },
+    "v06p1-market-closed": {
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-market-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "MARKET_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_closed/regression/market-closed",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_closed/regression-register.mjs",
+        "ENCHANT_REGRESSION_CASE": "v06p1-market-closed",
+        "ENCHANT_REGRESSION_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_closed/regression/market-closed"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T05:24:58.251513+00:00",
+      "exitCode": 0,
+      "assertions": 24194
+    },
+    "v06d-closed": {
+      "command": [
+        "npm",
+        "run",
+        "test:v06d-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_closed/regression/v06d-closed",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_closed/regression-register.mjs",
+        "ENCHANT_REGRESSION_CASE": "v06d-closed",
+        "ENCHANT_REGRESSION_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_closed/regression/v06d-closed"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T05:23:15.489401+00:00",
+      "exitCode": 0,
+      "assertions": 15059
+    },
+    "v06c-closed": {
+      "command": [
+        "npm",
+        "run",
+        "test:v06c-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_closed/regression/v06c-closed",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_closed/regression-register.mjs",
+        "ENCHANT_REGRESSION_CASE": "v06c-closed",
+        "ENCHANT_REGRESSION_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_closed/regression/v06c-closed"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T05:23:22.216630+00:00",
+      "exitCode": 0,
+      "assertions": 10714
+    },
+    "datalint-shared": {
+      "command": [
+        "python3",
+        "/workspace/xiantu/qa/tools/datalint.py"
+      ],
+      "cwd": "/workspace/xiantu",
+      "environment": {},
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T05:21:04.868620+00:00",
+      "exitCode": 0,
+      "assertions": null
+    },
+    "datalint-snapshot": {
+      "command": [
+        "python3",
+        "/workspace/xiantu/qa/tools/datalint.py"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev/data",
+      "environment": {},
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T05:21:04.904640+00:00",
+      "exitCode": 0,
+      "assertions": null
+    },
+    "json-shared": {
+      "command": [
+        "python3",
+        "-c",
+        "import subprocess; [subprocess.run([\"python3\",\"-m\",\"json.tool\",\"balance/\"+n],stdin=subprocess.DEVNULL,stdout=subprocess.DEVNULL,check=True) for n in [\"materials.json\",\"items.json\",\"strings_zh.json\"]]; print(\"3 JSON PASS\")"
+      ],
+      "cwd": "/workspace/xiantu",
+      "environment": {},
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T05:21:04.941719+00:00",
+      "exitCode": 0,
+      "assertions": null
+    },
+    "json-snapshot": {
+      "command": [
+        "python3",
+        "-c",
+        "import subprocess; [subprocess.run([\"python3\",\"-m\",\"json.tool\",\"balance/\"+n],stdin=subprocess.DEVNULL,stdout=subprocess.DEVNULL,check=True) for n in [\"materials.json\",\"items.json\",\"strings_zh.json\"]]; print(\"3 JSON PASS\")"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev/data",
+      "environment": {},
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T05:21:05.025534+00:00",
+      "exitCode": 0,
+      "assertions": null
+    },
+    "diff-check": {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {},
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T05:24:32.777055+00:00",
+      "exitCode": 0,
+      "assertions": null
+    }
+  },
+  "suiteAssertions": {
+    "v06p1-enchant-closed": 12519,
+    "v06p1-enhance-open": 17729,
+    "v06p1-enhance-closed": 30836,
+    "v06p1-forge-open": 6381,
+    "v06p1-forge-closed": 20413,
+    "v06p1-market-closed": 24194,
+    "v06d-closed": 15059,
+    "v06c-closed": 10714
+  },
+  "totalSuiteAssertions": 137845,
+  "testedSourceSha256": {
+    "src/EnchantClosed.ts": "15870998e95f8f41ab4fb3e6c30dc17a82019502276084f4610800be5927e730",
+    "src/EnchantOpenFlag.ts": "313de2f84b0ee66cba2ac796680c7832056b42d7049a451e6fd61ca614f7003a",
+    "src/v06p1-enchant-closed.test.ts": "722a5b8e5125124a8e5e13cb40768683c23ad72e915c032d412fcdf14a6ed3d7",
+    "scripts/v06p1-enchant-closed-test.mjs": "08f1f6a4feacd73ec0a2f9cd5dac1f2fdff821f288732a3053ee53689408118b",
+    "package.json": "cec38c2c6623d4ca6a15c8ab28224b77a45b43e9477fdcc77c8f1230c9ecf1dd",
+    "src/EnhanceGate.ts": "c2a2a0efb7997270eb48674224ce9bfc08e14201e613d7aa12d35af0a2a09796",
+    "src/ForgeGate.ts": "7aa9b91bf4ad2d389f2b96c41479338bd53cb3fdd63f65ff47a64f8528d75bcb",
+    "src/EnhanceClosed.ts": "c52ffbfc269f3a41c309184d9781f23cf2511d5acec7570ebb44b84683b3e821",
+    "src/ForgeClosed.ts": "f7e4216be7767f481c96ae7f1dc5796574fe9b231ada91d57a137c1dc8a8c90c",
+    "src/EnhanceOpenFlag.ts": "d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e",
+    "src/ForgeOpenFlag.ts": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
+    "src/Progress.ts": "9c6556462768199f2b0c6a2ee3deb420c0a117b9a49945ec5723a90f88b8d0df",
+    "src/data.ts": "aad725652f5c0eb57a5c699726e570b146d5ded52d5c31715444dbbf4117024a"
+  },
+  "protectSpecificPackageScripts": {},
+  "protectRegression": "既有护符由 enhance-open / enhance-closed 覆盖；未新增或改写旧 QA",
+  "regressionCompatibility": "本窗 QA 内存精确更新历史静态基线，保留旧测试磁盘字节；当前真实数据与生产 SSR 业务断言仍执行，详 regression/*/compatibility-* 审计",
+  "scope": "本窗仅关态 tip 接线；beastCoreMapped 表示登记齐，不表示消费者/同事务消费保存齐备或生产放行；未执行附灵 O01–O08",
+  "notRun": [
+    "snapshot",
+    "build",
+    "sync",
+    "release",
+    "Pages"
+  ]
+}

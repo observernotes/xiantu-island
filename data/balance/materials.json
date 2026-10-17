@@ -130,7 +130,8 @@
   "price": 120,
   "stack": 200,
   "icon": "icon_beast_core",
-  "note": "炼气后期以上精英怪 3%，首领必掉"
+  "note": "炼气后期以上精英怪 3%，首领必掉",
+  "phase": 5
  },
  {
   "id": "golden_boss_essence",

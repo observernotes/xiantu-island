@@ -1,0 +1,43 @@
+{
+  "passed": true,
+  "runner": "v06c-closed",
+  "file": "/workspace/xiantu/wt/dev/scripts/v06c-closed-test.mjs",
+  "stdin": "/dev/null",
+  "originalSha256": "637039e4146f6aae45c72d7013114cd489c325da1721898fa9325916c2b55090",
+  "transformedSha256": "543a78897a942d83daaccff21c1deb12b8d307e633e846b8698c72e8073157e9",
+  "diskWritten": false,
+  "realDiskRead": true,
+  "fakeReadFile": false,
+  "assertionWrapperChanged": false,
+  "productModuleTransformations": [],
+  "changes": [
+    {
+      "label": "import strict compatibility proof helpers",
+      "before": "import assert from 'node:assert/strict';",
+      "after": "import assert from 'node:assert/strict';\nimport { stripEnchantClosedAddition, enchantSourceNames, createCurrentStringsTestServer } from \"file:///workspace/xiantu/wt/dev/qa/out_v06p1_enchant_closed/regression-compat-support.mjs\";",
+      "expectedOccurrences": 1,
+      "actualOccurrences": 1
+    },
+    {
+      "label": "current strings authority SHA",
+      "before": "d7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09",
+      "after": "6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9",
+      "expectedOccurrences": 1,
+      "actualOccurrences": 1
+    },
+    {
+      "label": "current roots have 952 keys",
+      "before": "eq(Object.keys(strings).length, 944,",
+      "after": "eq(Object.keys(strings).length, 952,",
+      "expectedOccurrences": 1,
+      "actualOccurrences": 1
+    },
+    {
+      "label": "restore historical bytes before original strip proof",
+      "before": "const preFormal = sharedBytes.get('balance/strings_zh.json').toString('utf8').replace(",
+      "after": "const preFormal = stripEnchantClosedAddition(sharedBytes.get('balance/strings_zh.json').toString('utf8')).replace(",
+      "expectedOccurrences": 1,
+      "actualOccurrences": 1
+    }
+  ]
+}
