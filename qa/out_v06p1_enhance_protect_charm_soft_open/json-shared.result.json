@@ -1,0 +1,13 @@
+{
+  "command": [
+    "python3",
+    "-c",
+    "import subprocess; [subprocess.run([\"python3\",\"-m\",\"json.tool\",\"balance/\"+n],stdin=subprocess.DEVNULL,stdout=subprocess.DEVNULL,check=True) for n in ['materials.json', 'items.json', 'enhance_protect_charm.json']]; print(\"3 JSON files PASS\")"
+  ],
+  "cwd": "/workspace/xiantu",
+  "environment": {},
+  "stdin": "/dev/null",
+  "startedAt": "2026-10-17T04:24:47.521373+00:00",
+  "exitCode": 0,
+  "assertions": null
+}

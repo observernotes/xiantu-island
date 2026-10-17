@@ -1,0 +1,39 @@
+{
+  "passed": true,
+  "implementationTip": "9c7278c4ac49163085cc35d7174a735c4ca653c7",
+  "documents": {
+    "reports/炼器阁/V06P1_ENHANCE_PROTECT_CHARM_SOFT_OPEN_HANDOFF.md": {
+      "sha256": "96f0fd0da4850840c1d585e01df8a1c6c5cb54584c40e5855fbce87f704dd9a3",
+      "utf8": true,
+      "sharedCopyMatch": true,
+      "lines": 86
+    },
+    "reports/炼器阁/V06P1_ENHANCE_PROTECT_CHARM_SOFT_OPEN_RESULT.md": {
+      "sha256": "59103cee2d86bee018e30ac4c54aced13ed915e5e4f19ce017050dd5c5ed3178",
+      "utf8": true,
+      "sharedCopyMatch": true,
+      "lines": 68
+    },
+    "status/炼器阁.md": {
+      "sha256": "456302ac72fe328082a296c5ef8417de9871c10450ca8f75b7a43b2e424051f8",
+      "utf8": true,
+      "sharedCopyMatch": true,
+      "lines": 29
+    }
+  },
+  "sharedUtf8Sync": true,
+  "statusAtMost30Lines": true,
+  "statusFourSections": true,
+  "evidence": {
+    "protectCharmWired": true,
+    "protectCharmN": 1,
+    "protectCharmOpenFixtureTableExecuted": true,
+    "formalTipsWired": true,
+    "formalInstanceSource": true,
+    "softOpenedEntrance": true,
+    "softOpenedFormalSettle": true,
+    "softOpenedProtectCharm": true,
+    "released": false
+  },
+  "diffCheckExitCode": 0
+}

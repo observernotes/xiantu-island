@@ -1,0 +1,82 @@
+{
+  "passed": true,
+  "protectCharmWired": true,
+  "protectCharmN": 1,
+  "protectCharmOpenFixtureTableExecuted": true,
+  "formalTipsWired": true,
+  "formalInstanceSource": true,
+  "softOpenedEntrance": true,
+  "softOpenedFormalSettle": true,
+  "softOpenedProtectCharm": true,
+  "released": false,
+  "acceptanceDesign": "design/28 §4.3 O01–O06",
+  "protectCharmOpenFixtureTable": {
+    "O01": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/formal-open/result.protectCharmOpenFixtureTable.O01",
+        "snapshot/formal-open/result.protectCharmOpenFixtureTable.O01"
+      ]
+    },
+    "O02": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/formal-open/result.protectCharmOpenFixtureTable.O02",
+        "snapshot/formal-open/result.protectCharmOpenFixtureTable.O02"
+      ]
+    },
+    "O03": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/formal-open/result.protectCharmOpenFixtureTable.O03",
+        "snapshot/formal-open/result.protectCharmOpenFixtureTable.O03"
+      ]
+    },
+    "O04": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/formal-open/result.protectCharmOpenFixtureTable.O04",
+        "snapshot/formal-open/result.protectCharmOpenFixtureTable.O04"
+      ]
+    },
+    "O05": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/formal-open/result.protectCharmOpenFixtureTable.O05",
+        "snapshot/formal-open/result.protectCharmOpenFixtureTable.O05"
+      ]
+    },
+    "O06": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/formal-open/result.protectCharmOpenFixtureTable.O06",
+        "snapshot/formal-open/result.protectCharmOpenFixtureTable.O06"
+      ]
+    }
+  },
+  "formalGraphs": [
+    "shared",
+    "snapshot"
+  ],
+  "freshSsrPayloadsPerRoot": 11,
+  "formalSourcePayloadsPerRoot": 6,
+  "formalOpenGraphsFlagLoads0": 22,
+  "memoryClosedGraphsFlagLoads1": 6,
+  "closedRunnerGraphs": 6,
+  "closedRunnerMemoryGraphsFlagLoads1": 4,
+  "featureOverrideCalls": 0,
+  "assertionFloors": {
+    "v06p1-enhance-open": 17676,
+    "v06p1-enhance-closed": 30834,
+    "v06p1-forge-open": 6380,
+    "v06p1-forge-closed": 20413,
+    "v06p1-market-closed": 24194,
+    "v06d-closed": 15059,
+    "v06c-closed": 10714
+  },
+  "productionSourceUnchanged": true,
+  "oldQaUnchanged": true,
+  "requiredChecksExit0": true,
+  "concurrencyScope": "同一 SSR realm 的 Gate/Progress/slot 及内存 IDB；不外推多浏览器",
+  "resourceChangeScope": "预检后事务草稿前复核及同步承载回调草稿篡改；不外推任意外部直接写字段"
+}

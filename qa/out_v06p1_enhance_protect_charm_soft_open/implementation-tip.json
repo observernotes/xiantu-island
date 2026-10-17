@@ -1,0 +1,10 @@
+{
+  "implementationTip": "9c7278c4ac49163085cc35d7174a735c4ca653c7",
+  "subject": "feat(v0.6-p1): soft-open enhance protect charm preamble",
+  "productSourceChanged": false,
+  "stagedFiles": [
+    "scripts/v06p1-enhance-closed-test.mjs",
+    "scripts/v06p1-enhance-open-test.mjs",
+    "src/v06p1-enhance-open.test.ts"
+  ]
+}

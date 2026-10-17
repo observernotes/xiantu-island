@@ -1,0 +1,12 @@
+{
+  "command": [
+    "git",
+    "diff",
+    "--check"
+  ],
+  "cwd": "/workspace/xiantu/wt/dev",
+  "environment": {},
+  "stdin": "/dev/null",
+  "exitCode": 0,
+  "assertions": null
+}

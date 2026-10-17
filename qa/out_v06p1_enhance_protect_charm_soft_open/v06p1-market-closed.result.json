@@ -1,0 +1,15 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test:v06p1-market-closed"
+  ],
+  "cwd": "/workspace/xiantu/wt/dev",
+  "environment": {
+    "MARKET_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_enhance_protect_charm_soft_open/regression/market-closed"
+  },
+  "stdin": "/dev/null",
+  "startedAt": "2026-10-17T04:24:32.217829+00:00",
+  "exitCode": 0,
+  "assertions": 24194
+}

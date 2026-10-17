@@ -1,0 +1,15 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test:v06p1-forge-open"
+  ],
+  "cwd": "/workspace/xiantu/wt/dev",
+  "environment": {
+    "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_enhance_protect_charm_soft_open/regression/forge-open"
+  },
+  "stdin": "/dev/null",
+  "startedAt": "2026-10-17T04:24:16.776883+00:00",
+  "exitCode": 0,
+  "assertions": 6380
+}
