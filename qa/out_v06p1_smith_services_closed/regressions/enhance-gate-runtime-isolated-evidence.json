@@ -1,0 +1,515 @@
+[
+  {
+    "service": "enhance",
+    "graph": "formal-open",
+    "refresh": false,
+    "passed": true,
+    "isolation": {
+      "stringsDiskKeys": 970,
+      "stringsSsrLegacyKeys": 960,
+      "stringsSsrRemovedKeys": [
+        "ui.equip.inst.enhance_level",
+        "ui.equip.inst.enchant_element",
+        "ui.equip.inst.element_damage",
+        "ui.equip.inst.same_root_bonus",
+        "ui.equip.inst.no_enhance",
+        "ui.equip.inst.no_enchant",
+        "ui.equip.inst.no_instance",
+        "ui.equip.inst.foreign",
+        "ui.equip.inst.unknown",
+        "ui.equip.inst.unavailable"
+      ],
+      "diskWrites": 0,
+      "historicalRegressionOnly": true,
+      "softOpenedSmithServicesUi": false,
+      "released": false
+    },
+    "result": {
+      "assertions": 5051,
+      "openFixture": true,
+      "graph": "formal-open",
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "softOpened": true,
+      "softOpenedEntrance": true,
+      "softOpenedFormalSettle": true,
+      "formalTipsWired": true,
+      "formalInstanceSource": true,
+      "protectCharmWired": true,
+      "protectCharmN": 1,
+      "softOpenedProtectCharm": true,
+      "released": false,
+      "compatibilityMeaning": "formalOpen/softOpened 表示正式磁盘护符 soft-open；护符 soft-open ≠ 进包 ≠ 发版；memory-closed 仍先拒绝，fixture≠正式≠进包依据",
+      "sceneSmoke": {
+        "noObjectNoop": true,
+        "nonSmithIgnored": true,
+        "nearbyOnly": true,
+        "hiddenIgnored": true,
+        "genericInteraction": true,
+        "smithServicesUiWired": true,
+        "menuRouted": true,
+        "consumedInteraction": true,
+        "graph": "formal-open",
+        "saveWrites": 0
+      },
+      "defaultGateDenied": {
+        "fixtureInstancesAbsent": true,
+        "submitDenied": true,
+        "tipKey": "enhance.formal.no_instance",
+        "unknownReadResultsDenied": true,
+        "malformedHistoryPreserved": true,
+        "noProductionInstancesInvented": true,
+        "laterServiceClosed": true,
+        "saveWrites": 0
+      },
+      "formalRefusals": {
+        "cases": [
+          "C01",
+          "C02",
+          "C03",
+          "C04",
+          "C05",
+          "C06",
+          "C07",
+          "C09"
+        ],
+        "formalTipTextFromStrings": true,
+        "zeroSideEffects": true,
+        "noTransactionOrDeferredQueue": true,
+        "foreignFixtureBoundaries": [
+          "owned-item-absent",
+          "history-identity-mismatch"
+        ],
+        "crossSlotProductionSchemaImplemented": true,
+        "historicalBagAuthorizesSubmit": false
+      },
+      "formalInstances": {
+        "source": "default-ForgeGate-committed-result",
+        "productionFixtureInstances": false,
+        "registeredAtForgeCommit": true,
+        "samePrototypeIsolated": true,
+        "registeredInventoryAndEquipSelection": true,
+        "sourceProofPersists": true,
+        "crossSlotForeign": true,
+        "historicalFixtureAuthorizesSubmit": false,
+        "forgeSamples": 14,
+        "cases": [
+          "O01",
+          "O02",
+          "O03",
+          "O04",
+          "O05",
+          "O06",
+          "O07",
+          "O08"
+        ]
+      },
+      "protectCharmMapping": {
+        "cases": [
+          "C01",
+          "C02",
+          "C03",
+          "C04",
+          "C05",
+          "C06",
+          "C07",
+          "C08"
+        ],
+        "acceptanceDesign": "design/28",
+        "mappingMutations": [
+          "missing-map-fields",
+          "missing-itemId",
+          "wrong-itemId",
+          "missing-N",
+          "invalid-N-0",
+          "invalid-N--1",
+          "invalid-N-0.5",
+          "invalid-N-NaN",
+          "invalid-N-Infinity",
+          "invalid-N-9007199254740992",
+          "invalid-N-1",
+          "invalid-N-null",
+          "missing-ITEMS-registration",
+          "phase",
+          "phaseMin",
+          "phaseMax",
+          "enabled",
+          "placeholder",
+          "qualityEnabled"
+        ],
+        "falseCharmReads": 0,
+        "missingCharmTip": "enhance.formal.resources",
+        "incompleteMappingTip": "enhance.formal.protect",
+        "zeroSideEffects": true,
+        "duplicatePayloadIncludesUseProtectCharm": true,
+        "loadDedupeWithoutSupplement": true,
+        "explicitFixtureOnly": true,
+        "productionFixtureInstances": false,
+        "minimalWiringProof": [
+          "success-consumes-N",
+          "dropOnFail-failure-keeps-level-and-consumes-N",
+          "missing-charm-resources"
+        ],
+        "openFixtureTableExecuted": false,
+        "softOpenedProtectCharm": true,
+        "released": false
+      },
+      "acceptanceDesign": "design/28 §4.3 O01–O06 (C01–C08 regression retained)",
+      "protectCharmOpenFixtureTable": {
+        "acceptanceDesign": "design/28 §4.3 O01–O06",
+        "cases": [
+          "O01",
+          "O02",
+          "O03",
+          "O04",
+          "O05",
+          "O06"
+        ],
+        "source": "default-ForgeGate-committed-result",
+        "productionFixtureInstances": false,
+        "explicitInventoryInjection": true,
+        "O01": {
+          "executed": true,
+          "evidenceKeys": [
+            "formal-protected-success",
+            "original-rate",
+            "three-costs-one-commit",
+            "identity-attributes-result-receipt"
+          ]
+        },
+        "O02": {
+          "executed": true,
+          "dropOnFailTargets": [
+            5,
+            6
+          ],
+          "evidenceKeys": [
+            "failure-no-drop",
+            "failure-drop-kept",
+            "same-N",
+            "complete-result-once"
+          ]
+        },
+        "O03": {
+          "executed": true,
+          "missingCharmTip": "enhance.formal.resources",
+          "evidenceKeys": [
+            "zero",
+            "transient-only",
+            "quality-only",
+            "zero-business-delta-no-false-fallback"
+          ]
+        },
+        "O04": {
+          "executed": true,
+          "evidenceKeys": [
+            "same-request-replay",
+            "true-false-payload-conflict",
+            "same-instance-old-level",
+            "shared-single-charm",
+            "independent-Progress-same-slot",
+            "stale-retry-denied"
+          ]
+        },
+        "O05": {
+          "executed": true,
+          "refreshStates": [
+            "protect-open-success",
+            "protect-open-failure-no-drop",
+            "protect-open-failure-drop-kept"
+          ],
+          "evidenceKeys": [
+            "save-import-restore-IDB-load",
+            "fresh-SSR-payloads",
+            "cross-slot-same-request-isolation",
+            "historical-false-no-retrocharge"
+          ]
+        },
+        "O06": {
+          "executed": true,
+          "evidenceKeys": [
+            "carrier-false-throw-draft-tamper",
+            "transaction-resource-recheck",
+            "save-backend-failure",
+            "IDB-interruption-complete-boundary",
+            "explicit-retry-once",
+            "corrupt-protected-history-no-repair"
+          ]
+        },
+        "protectCharmOpenFixtureTableExecuted": true,
+        "softOpenedProtectCharm": true,
+        "released": false
+      },
+      "protectCharmOpenFixtureTableExecuted": true,
+      "legacyRegressionDesign": "design/27 existing no-charm C/O cases",
+      "storageWrites": 190,
+      "commits": 185,
+      "sampleCount": 144,
+      "forgingExperienceWritten": false,
+      "protectorPath": "mapped-atomic-settlement-or-protect/resources-denied",
+      "cases": [
+        "C01",
+        "C02",
+        "C03",
+        "C04",
+        "C05",
+        "C06",
+        "C07",
+        "C08",
+        "C09",
+        "C10",
+        "O01",
+        "O02",
+        "O03",
+        "O04",
+        "O05",
+        "O06",
+        "O07",
+        "O08"
+      ]
+    }
+  },
+  {
+    "service": "enhance",
+    "graph": "memory-closed",
+    "refresh": false,
+    "passed": true,
+    "isolation": {
+      "stringsDiskKeys": 970,
+      "stringsSsrLegacyKeys": 960,
+      "stringsSsrRemovedKeys": [
+        "ui.equip.inst.enhance_level",
+        "ui.equip.inst.enchant_element",
+        "ui.equip.inst.element_damage",
+        "ui.equip.inst.same_root_bonus",
+        "ui.equip.inst.no_enhance",
+        "ui.equip.inst.no_enchant",
+        "ui.equip.inst.no_instance",
+        "ui.equip.inst.foreign",
+        "ui.equip.inst.unknown",
+        "ui.equip.inst.unavailable"
+      ],
+      "diskWrites": 0,
+      "historicalRegressionOnly": true,
+      "softOpenedSmithServicesUi": false,
+      "released": false
+    },
+    "result": {
+      "assertions": 377,
+      "openFixture": false,
+      "graph": "memory-closed",
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "softOpened": true,
+      "softOpenedEntrance": true,
+      "softOpenedFormalSettle": true,
+      "formalTipsWired": true,
+      "formalInstanceSource": true,
+      "protectCharmWired": true,
+      "protectCharmN": 1,
+      "softOpenedProtectCharm": true,
+      "released": false,
+      "compatibilityMeaning": "formalOpen/softOpened 表示正式磁盘护符 soft-open；护符 soft-open ≠ 进包 ≠ 发版；memory-closed 仍先拒绝，fixture≠正式≠进包依据",
+      "sceneSmoke": {
+        "noObjectNoop": true,
+        "nonSmithIgnored": true,
+        "nearbyOnly": true,
+        "hiddenIgnored": true,
+        "genericInteraction": true,
+        "smithServicesUiWired": true,
+        "menuRouted": true,
+        "consumedInteraction": true,
+        "graph": "memory-closed",
+        "saveWrites": 0
+      },
+      "defaultGateDenied": null,
+      "formalRefusals": null,
+      "formalInstances": null,
+      "protectCharmMapping": null,
+      "acceptanceDesign": "design/28 §4.3 O01–O06 (C01–C08 regression retained)",
+      "protectCharmOpenFixtureTable": null,
+      "protectCharmOpenFixtureTableExecuted": false,
+      "legacyRegressionDesign": "design/27 existing no-charm C/O cases",
+      "storageWrites": 0,
+      "commits": 0,
+      "sampleCount": 0,
+      "forgingExperienceWritten": false,
+      "protectorPath": "mapped-atomic-settlement-or-protect/resources-denied",
+      "cases": [
+        "memory-closed-eight-tips",
+        "zero-side-effects",
+        "historical-baggage"
+      ]
+    }
+  },
+  {
+    "service": "enhance",
+    "graph": "formal-open",
+    "refresh": true,
+    "passed": true,
+    "isolation": {
+      "stringsDiskKeys": 970,
+      "stringsSsrLegacyKeys": 960,
+      "stringsSsrRemovedKeys": [
+        "ui.equip.inst.enhance_level",
+        "ui.equip.inst.enchant_element",
+        "ui.equip.inst.element_damage",
+        "ui.equip.inst.same_root_bonus",
+        "ui.equip.inst.no_enhance",
+        "ui.equip.inst.no_enchant",
+        "ui.equip.inst.no_instance",
+        "ui.equip.inst.foreign",
+        "ui.equip.inst.unknown",
+        "ui.equip.inst.unavailable"
+      ],
+      "diskWrites": 0,
+      "historicalRegressionOnly": true,
+      "softOpenedSmithServicesUi": false,
+      "released": false
+    },
+    "result": {
+      "assertions": 945,
+      "openFixture": true,
+      "graph": "formal-open",
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "softOpened": true,
+      "softOpenedEntrance": true,
+      "softOpenedFormalSettle": true,
+      "formalTipsWired": true,
+      "formalInstanceSource": true,
+      "protectCharmWired": true,
+      "protectCharmN": 1,
+      "softOpenedProtectCharm": true,
+      "released": false,
+      "compatibilityMeaning": "formalOpen/softOpened 表示正式磁盘护符 soft-open；护符 soft-open ≠ 进包 ≠ 发版；memory-closed 仍先拒绝，fixture≠正式≠进包依据",
+      "sceneSmoke": {
+        "noObjectNoop": true,
+        "nonSmithIgnored": true,
+        "nearbyOnly": true,
+        "hiddenIgnored": true,
+        "genericInteraction": true,
+        "smithServicesUiWired": true,
+        "menuRouted": true,
+        "consumedInteraction": true,
+        "graph": "formal-open",
+        "saveWrites": 0
+      },
+      "defaultGateDenied": {
+        "fixtureInstancesAbsent": true,
+        "submitDenied": true,
+        "tipKey": "enhance.formal.no_instance",
+        "unknownReadResultsDenied": true,
+        "malformedHistoryPreserved": true,
+        "noProductionInstancesInvented": true,
+        "laterServiceClosed": true,
+        "saveWrites": 0
+      },
+      "formalRefusals": null,
+      "formalInstances": null,
+      "protectCharmMapping": null,
+      "acceptanceDesign": "design/28 §4.3 O01–O06 (C01–C08 regression retained)",
+      "protectCharmOpenFixtureTable": null,
+      "protectCharmOpenFixtureTableExecuted": false,
+      "legacyRegressionDesign": "design/27 existing no-charm C/O cases",
+      "storageWrites": 11,
+      "commits": 11,
+      "sampleCount": 0,
+      "forgingExperienceWritten": false,
+      "protectorPath": "mapped-atomic-settlement-or-protect/resources-denied",
+      "cases": [
+        "C01",
+        "C02",
+        "C03",
+        "C04",
+        "C05",
+        "C06",
+        "C07",
+        "C08",
+        "C09",
+        "C10",
+        "O01",
+        "O02",
+        "O03",
+        "O04",
+        "O05",
+        "O06",
+        "O07",
+        "O08"
+      ]
+    }
+  },
+  {
+    "service": "enhance",
+    "graph": "memory-closed",
+    "refresh": true,
+    "passed": true,
+    "isolation": {
+      "stringsDiskKeys": 970,
+      "stringsSsrLegacyKeys": 960,
+      "stringsSsrRemovedKeys": [
+        "ui.equip.inst.enhance_level",
+        "ui.equip.inst.enchant_element",
+        "ui.equip.inst.element_damage",
+        "ui.equip.inst.same_root_bonus",
+        "ui.equip.inst.no_enhance",
+        "ui.equip.inst.no_enchant",
+        "ui.equip.inst.no_instance",
+        "ui.equip.inst.foreign",
+        "ui.equip.inst.unknown",
+        "ui.equip.inst.unavailable"
+      ],
+      "diskWrites": 0,
+      "historicalRegressionOnly": true,
+      "softOpenedSmithServicesUi": false,
+      "released": false
+    },
+    "result": {
+      "assertions": 1434,
+      "openFixture": false,
+      "graph": "memory-closed",
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "softOpened": true,
+      "softOpenedEntrance": true,
+      "softOpenedFormalSettle": true,
+      "formalTipsWired": true,
+      "formalInstanceSource": true,
+      "protectCharmWired": true,
+      "protectCharmN": 1,
+      "softOpenedProtectCharm": true,
+      "released": false,
+      "compatibilityMeaning": "formalOpen/softOpened 表示正式磁盘护符 soft-open；护符 soft-open ≠ 进包 ≠ 发版；memory-closed 仍先拒绝，fixture≠正式≠进包依据",
+      "sceneSmoke": {
+        "noObjectNoop": true,
+        "nonSmithIgnored": true,
+        "nearbyOnly": true,
+        "hiddenIgnored": true,
+        "genericInteraction": true,
+        "smithServicesUiWired": true,
+        "menuRouted": true,
+        "consumedInteraction": true,
+        "graph": "memory-closed",
+        "saveWrites": 0
+      },
+      "defaultGateDenied": null,
+      "formalRefusals": null,
+      "formalInstances": null,
+      "protectCharmMapping": null,
+      "acceptanceDesign": "design/28 §4.3 O01–O06 (C01–C08 regression retained)",
+      "protectCharmOpenFixtureTable": null,
+      "protectCharmOpenFixtureTableExecuted": false,
+      "legacyRegressionDesign": "design/27 existing no-charm C/O cases",
+      "storageWrites": 11,
+      "commits": 11,
+      "sampleCount": 0,
+      "forgingExperienceWritten": false,
+      "protectorPath": "mapped-atomic-settlement-or-protect/resources-denied",
+      "cases": [
+        "memory-closed-eight-tips",
+        "zero-side-effects",
+        "historical-baggage"
+      ]
+    }
+  }
+]

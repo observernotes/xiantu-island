@@ -1,3 +1,4 @@
+import { hasSmithServicesScene, stripSmithServicesScene, smithServicesSourceNames } from './v06p1-smith-services-scene-compat.mjs';
 // 强化与护符正式磁盘 soft-open；只在 Vite SSR 内存图注入 false，保留 C01–C12 八 tip 零写。
 import assert from 'node:assert/strict';
 import { salvageSourceNames, stripSalvageForgeSmokeCompatibility } from './v06p1-salvage-soft-open-compat-proof.mjs';
@@ -101,6 +102,7 @@ async function filesUnder(directory, prefix = '') {
 }
 // 只剥强化本窗三个 import 与一个完整提示块；打造原方法仍逐字钉旧 SHA。
 function stripEnhanceSceneWiring(source) {
+  if (hasSmithServicesScene(source)) return stripSmithServicesScene(source, eq);
   source = stripEnchantSceneWiring(source, eq);
   for (const line of ["import { featureClosed as enhanceFeatureClosed } from '../EnhanceClosed';\n",
     "import { isEnhanceOpenForFixture } from '../EnhanceOpenFlag';\n",
@@ -231,7 +233,7 @@ async function checkProtection() {
   }
   report({ suite: 'protection', passed: true, existingSources: oldNames.length,
     protectedDataFiles: Object.keys(currentData).length, sourceOnlyAdded: [...newSources, ...openFixtureSources],
-    sharedStringsOnlyFormalEightAdded: true, gameStringsUnchanged: true, enhanceGateFixtureSourceAllowed: true, minimalFrontendWiring: true, fullEnhanceUiAdded: false,
+    sharedStringsOnlyFormalEightAdded: true, gameStringsUnchanged: true, enhanceGateFixtureSourceAllowed: true, minimalFrontendWiring: true, smithServicesUiWired: true,
     EnhanceOpenFlag: true, formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false });
 }
 
@@ -314,7 +316,7 @@ async function checkSource() {
   inspect(parsed);
   const search = [];
   for (const name of await filesUnder(path.join(root, 'src'))) {
-    if ([...enchantSourceNames, ...salvageSourceNames].includes(name)) continue; // 附灵/分解各精确六文件由专窗验证，生产旧消费者继续全扫。
+    if ([...enchantSourceNames, ...salvageSourceNames, ...smithServicesSourceNames].includes(name)) continue; // 附灵/分解各精确六文件由专窗验证，生产旧消费者继续全扫。
     const text = await fs.readFile(path.join(root, 'src', name), 'utf8');
     const scanned = name === 'scenes/GameScene.ts' ? stripEnhanceSceneWiring(text) : text;
     if (!newSources.includes(name) && !openFixtureSources.includes(name)) ok(!/EnhanceClosed|EnhanceOpenFlag|EnhanceGate|enhance\.closed\./u.test(scanned), `${name}: 除 smith_ou 最小提示外无强化 API/Flag/Gate 消费者`);
@@ -334,7 +336,7 @@ async function checkSource() {
   await fs.writeFile(path.join(out, 'source-search.json'), `${JSON.stringify(search, null, 2)}\n`);
   report({ suite: 'source', passed: true, importOnlyStrings: true, zeroArgumentApis: 8,
     EnhanceOpenFlag: true, sourceSearch: 'source-search.json', matches: search.length,
-    enhanceGateFixtureSourceAllowed: true, minimalFrontendWiring: true, fullEnhanceUiAdded: false, formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false });
+    enhanceGateFixtureSourceAllowed: true, minimalFrontendWiring: true, smithServicesUiWired: true, formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false });
 }
 
 // 以下是测试专用的装备/等级/属性/护器符/请求语义，未定义正式强化 schema 或物品映射。
@@ -535,7 +537,7 @@ async function runGraph(mode, dataRoot, closedFixtureOnly, refreshPayloads = nul
     report({ suite: 'runtime', dataMode: mode, graph: 'memory-closed', freshSsrRefresh: !!refreshPayloads, flagLoads, passed: true,
       cases: Object.keys(caseApis), fixtures, invocations, zeroArgumentApis: 8, storageWrites, sentinelCalls,
       semanticFixtureOnly: true, formalEnhanceSchemaAdded: true, flagInjection: true, memoryClosedFlag: false,
-      EnhanceOpenFlag: true, enhanceGateFixtureSourceAllowed: true, minimalFrontendWiring: true, fullEnhanceUiAdded: false, formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false });
+      EnhanceOpenFlag: true, enhanceGateFixtureSourceAllowed: true, minimalFrontendWiring: true, smithServicesUiWired: true, formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false });
     return payloads;
   } finally {
     if (storageDescriptor) Object.defineProperty(globalThis, 'localStorage', storageDescriptor);
@@ -565,7 +567,7 @@ try {
   await fs.writeFile(path.join(out, 'selftest-protected-after.json'), `${JSON.stringify(protectedFiles, null, 2)}\n`);
   await fs.writeFile(path.join(out, 'v06p1-enhance-closed-evidence.json'), `${JSON.stringify({ passed, assertions, stringsSha, enhanceJsonSha: enhanceSha,
     forgeFlagSha, cases: caseApis, totalFixtures, totalInvocations, protectedFiles, evidence,
-    EnhanceOpenFlag: true, enhanceGateFixtureSourceAllowed: true, minimalFrontendWiring: true, fullEnhanceUiAdded: false, formalOpen: true, closedFixtureOnly: true,
+    EnhanceOpenFlag: true, enhanceGateFixtureSourceAllowed: true, minimalFrontendWiring: true, smithServicesUiWired: true, formalOpen: true, closedFixtureOnly: true,
     semanticFixtureOnly: true, formalEnhanceSchemaAdded: true, softOpened: true, released: false,
     ...protectCharmEvidence, compatibilityMeaning, protectCharmTableShas, acceptanceDesign: 'design/28', openFixtureTableExecuted: false, enhanceFlagSha }, null, 2)}\n`);
 }

@@ -1,3 +1,4 @@
+import { hasSmithServicesScene, stripSmithServicesScene } from './v06p1-smith-services-scene-compat.mjs';
 // 附灵正式磁盘 soft-open；两根先核 true，再仅在 Vite SSR 注入 false 执行 C01–C10 八 tip 零写。
 import assert from 'node:assert/strict';
 import { stripSalvageSceneWiring, checkSalvageCompatibility } from './v06p1-salvage-soft-open-compat-proof.mjs';
@@ -52,6 +53,7 @@ async function guard(file, expected) {
 }
 // 仅允许欧冶匠同一次命中追加三个 import 与一个完整只读提示块。
 function stripEnchantSceneWiring(text) {
+  if (hasSmithServicesScene(text)) return stripSmithServicesScene(text, eq);
   text = stripSalvageSceneWiring(text, eq);
   for (const line of ["import { featureClosed as enchantFeatureClosed } from '../EnchantClosed';\n",
     "import { isEnchantOpenForFixture } from '../EnchantOpenFlag';\n",

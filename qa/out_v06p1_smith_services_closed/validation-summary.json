@@ -1,0 +1,43 @@
+{
+  "typescriptNoEmit": {
+    "passed": true
+  },
+  "smithClosed": {
+    "passed": true,
+    "assertions": 1748,
+    "cases": "C01–C11",
+    "managerEnforcementPending": true
+  },
+  "frozenFiles": {
+    "count": 569,
+    "changed": [],
+    "allMatch": true
+  },
+  "equip": {
+    "passed": true,
+    "assertions": 100
+  },
+  "attrClosedIsolated": {
+    "passed": true,
+    "assertions": 1592
+  },
+  "attrBindingIsolated": {
+    "passed": true,
+    "assertions": 327
+  },
+  "gateRuntimes": {
+    "passed": true,
+    "graphs": 16,
+    "assertions": 13684,
+    "enhanceLegacyStringsSsrOnly": true,
+    "evidence": [
+      "regressions/gate-runtime-evidence.json",
+      "regressions/enhance-gate-runtime-isolated-evidence.json"
+    ]
+  },
+  "historicalCommandsBlocked": true,
+  "historicalCommandsReason": "7 wrappers pin historical strings960 SHA; salvage-closed pins old Progress SHA; original attr wrappers pin shared970 SHA/another worktree. Original failures retained; no production data changed.",
+  "softOpenedSmithServicesUi": false,
+  "released": false,
+  "design32OTableExecuted": false
+}

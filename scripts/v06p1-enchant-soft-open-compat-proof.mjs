@@ -1,3 +1,4 @@
+import { hasSmithServicesScene, stripSmithServicesScene } from './v06p1-smith-services-scene-compat.mjs';
 // 历史回归只扩展精确附灵增量；真实表与生产 SSR 模块始终直接读取磁盘。
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
@@ -56,6 +57,7 @@ export function stripEnchantOpenProgress(source, eq = strictEq) {
 }
 
 export function stripEnchantSceneWiring(source, eq = strictEq) {
+  if (hasSmithServicesScene(source)) return stripSmithServicesScene(source, eq);
   source = stripSalvageSceneWiring(source, eq);
   for (const line of ["import { featureClosed as enchantFeatureClosed } from '../EnchantClosed';",
     "import { isEnchantOpenForFixture } from '../EnchantOpenFlag';",

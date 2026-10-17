@@ -1,0 +1,13 @@
+{"service":"forge","graph":"formal-open","refresh":false,"passed":true,"assertions":1379}
+{"service":"forge","graph":"memory-closed","refresh":false,"passed":true,"assertions":272}
+{"service":"forge","graph":"formal-open","refresh":true,"passed":true,"assertions":790}
+{"service":"forge","graph":"memory-closed","refresh":true,"passed":true,"assertions":545}
+{"service":"enhance","graph":"formal-open","refresh":false,"passed":false,"error":"Error: snapshot/formal-open/formal-table: 正式strings快照960键含_meta，原944键完整保留: 970，期望 960"}
+{"service":"enchant","graph":"formal-open","refresh":false,"passed":true,"assertions":1115}
+{"service":"enchant","graph":"memory-closed","refresh":false,"passed":true,"assertions":82}
+{"service":"enchant","graph":"formal-open","refresh":true,"passed":true,"assertions":121}
+{"service":"enchant","graph":"memory-closed","refresh":true,"passed":true,"assertions":238}
+{"service":"salvage","graph":"formal-open","refresh":false,"passed":true,"assertions":1114}
+{"service":"salvage","graph":"memory-closed","refresh":false,"passed":true,"assertions":48}
+{"service":"salvage","graph":"formal-open","refresh":true,"passed":true,"assertions":89}
+{"service":"salvage","graph":"memory-closed","refresh":true,"passed":true,"assertions":88}

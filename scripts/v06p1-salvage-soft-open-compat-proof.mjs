@@ -1,3 +1,4 @@
+import { hasSmithServicesScene, stripSmithServicesScene } from './v06p1-smith-services-scene-compat.mjs';
 // 仅精确证明已授权分解增量；历史断言保留，生产 SSR 模块始终直接读取磁盘。
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
@@ -42,6 +43,7 @@ export function stripSalvageOpenProgress(source, eq = strictEq) {
 }
 
 export function stripSalvageSceneWiring(source, eq = strictEq) {
+  if (hasSmithServicesScene(source)) return stripSmithServicesScene(source, eq);
   for (const line of ["import { featureClosed as salvageFeatureClosed } from '../SalvageClosed';",
     "import { isSalvageOpenForFixture } from '../SalvageOpenFlag';",
     "import { SalvageGate } from '../SalvageGate';"])

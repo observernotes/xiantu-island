@@ -1,3 +1,4 @@
+import { assertSmithServicesScene } from './v06p1-smith-services-scene-compat.mjs';
 // 护符 soft-open 正式磁盘图；仅独立 Vite SSR 关态图内存注入 false。soft-open≠进包≠发版。
 import assert from 'node:assert/strict';
 import { salvageSourceNames } from './v06p1-salvage-soft-open-compat-proof.mjs';
@@ -112,20 +113,13 @@ async function checkFormal() {
     ok(new RegExp(`(?:async\\s+)?${method}\\([^)]*\\)\\s*:\\s*[^\\{]+\\{\\s*if\\s*\\(!isEnhanceOpenForFixture\\(\\)\\)\\s*return EnhanceClosed\\.${closed}\\(\\);`, 'u').test(gate),
       `${method}首语句先查旗并返回对应原关态tip`);
   const scene = await fs.readFile(path.join(root, 'src/scenes/GameScene.ts'), 'utf8');
-  for (const name of ['EnhanceClosed', 'EnhanceOpenFlag', 'EnhanceGate', 'tryInteractForgeEntrance'])
-    ok(scene.includes(name), `GameScene仅接既有smith_ou最小冒烟：${name}`);
+  assertSmithServicesScene(scene, eq);
   ok(/this\.tryInteractTowerClosed\(\)\s*\|\|\s*this\.tryInteractMarketConsign\(\)\s*\|\|\s*this\.tryInteractForgeEntrance\(\)[^\n]*this\.talkNearby\(\)/u.test(scene),
     'Z键链保留既有smith_ou同级入口');
   ok(/if \(this\.tryInteractMarketConsign\(\)\) return true;\s*if \(this\.tryInteractForgeEntrance\(\)\) return true;/u.test(scene),
     '通用交互链保留既有smith_ou入口');
-  ok(/new EnhanceGate\(this\.prog\)\.entrance\(\)/u.test(scene), '正式Scene只读入口不注入fixtureInstances');
-  const entrance = scene.match(/  private tryInteractForgeEntrance\(\): boolean \{[\s\S]*?\n  \}/u)?.[0];
-  ok(entrance, 'smith_ou入口方法存在');
-  ok(/new ForgeGate\(this\.prog\)\.entrance\(\)[\s\S]*new EnhanceGate\(this\.prog\)\.entrance\(\)[\s\S]*new EnchantGate\(this\.prog\)\.entrance\(\)[\s\S]*return true;/u.test(entrance),
-    '同一次smith_ou命中先打造再强化再附灵，最后返回，强化及附灵不被饿死');
-  eq((entrance.match(/return true;/gu) ?? []).length, 1, '同一smith_ou入口仅在三段提示后消费命中');
   ok(!/EnhancePanel|EnhancementPanel|openEnhance|submitEnhance|EnhanceProgress|fixtureInstances/u.test(scene),
-    'GameScene无完整强化UI或提交面板');
+    'GameScene 委托统一 UI，无直接服务结算或夹具注入');
   ok(!/EnhanceGate|EnhanceOpenFlag|EnhanceProgress|tryInteractEnhance|openEnhance|submitEnhance/u.test(await fs.readFile(path.join(root, 'src/ShopPanel.ts'), 'utf8')),
     'ShopPanel不接强化');
   const consumers = [];
@@ -133,7 +127,7 @@ async function checkFormal() {
     if (['EnhanceGate.ts', 'v06p1-enhance-open.test.ts', ...enchantSourceNames, ...salvageSourceNames].includes(file)) continue;
     if (/from\s+['"][^'"]*EnhanceGate(?:\.ts)?['"]/u.test(await fs.readFile(path.join(root, 'src', file), 'utf8'))) consumers.push(file);
   }
-  eq(consumers, ['scenes/GameScene.ts'], 'EnhanceGate正式消费者仅为GameScene只读冒烟入口');
+  eq(consumers, ['SmithServicesController.ts'], 'EnhanceGate正式 UI 消费者为统一服务控制器');
   for (const [mode, dataRoot] of dataRoots) {
     const rawStrings = await fs.readFile(path.join(dataRoot, 'balance/strings_zh.json'), 'utf8');
     const entries = Object.entries(JSON.parse(rawStrings));
@@ -167,7 +161,7 @@ async function checkFormal() {
     ok(Object.values(shops).every(Array.isArray), `${mode} shops保持既有NPC货单`);
     ok(!Object.keys(shops).some(key => /enhance|smith_ou|auction|consign/iu.test(key)), `${mode} 不混强化寄售拍卖服务`);
     report({ suite: 'v06p1-enhance-open-formal', dataMode: mode, formalOpen: true, closedFixtureOnly: true,
-      enhanceSha, giftsChecked, smithServices: false, minimalSceneWiring: true, fullEnhanceUi: false, softOpened: true, released: false });
+      enhanceSha, giftsChecked, smithServices: false, minimalSceneWiring: true, smithServicesUiWired: true, softOpened: true, released: false });
   }
 }
 async function runGraph(mode, dataRoot, openFixture, refreshPayloads = null, invalidTable = null) {
@@ -222,8 +216,8 @@ async function runGraph(mode, dataRoot, openFixture, refreshPayloads = null, inv
     eq(result.softOpenedFormalSettle, true, `${mode} 明确登记正式实例源soft-open结算口径`);
     eq(result.released, false, `${mode} 正式实例源soft-open不授权进包发版`);
     if (!invalidTable) {
-      eq(result.sceneSmoke?.sameHitForgeThenEnhance, true, `${mode} smith_ou同一次命中先打造再强化`);
-      eq(result.sceneSmoke?.sameHitForgeThenEnhanceThenEnchantThenSalvage, true, `${mode} 同次命中四 tip 且既有顺序保持`);
+      eq(result.sceneSmoke?.smithServicesUiWired, true, '真实欧冶匠交互进入正式服务对话');
+      eq(result.sceneSmoke?.menuRouted, true, '对话选择服务后进入菜单');
       eq(result.sceneSmoke?.saveWrites, 0, `${mode} 正式或内存关态入口均只读零写`);
     }
     if (openFixture && refreshPayloads === null && invalidTable === null) {

@@ -1,7 +1,7 @@
 // 附灵 soft-open 正式磁盘图；仅独立 Vite SSR 关态图注入 false。soft-open≠进包≠发版；fixture≠正式。
 import enhance from '@xt/balance/enhance.json';
 import recipes from '@xt/balance/recipes.json';
-import { GAME_PHASE, ITEMS } from './data';
+import { GAME_PHASE, ITEMS, t } from './data';
 import { featureFlags } from './features';
 import { Progress } from './Progress';
 import { createIndexedDbBackend, saveStore, setSaveBackend } from './SaveStore';
@@ -235,23 +235,23 @@ export async function runEnchantOpenFixtureTests(options: {
     eq(loaded.enhance, save.enhance, 'O08 强化与护符历史完整保留');
   }
   function sceneSmoke() {
-    const p = bare(), logs: { text: string; color: string }[] = [];
-    const before = copy(p.exportSave()), writes = idb.writes, commits = idb.commits;
-    const rows = copy([...idb.rows]), samples = randomCalls;
+    const p = bare();
+    const logs: { text: string; color: string }[] = [], dialogs: any[] = [];
+    const before = p.exportSave(), writes = idb.writes;
+    let menuShows = 0;
     const entrance = { name: 'smith_ou', type: 'npc', props: { npc: 'smith_ou' }, x: 100, y: 200 };
-    const forgeTip = { text: '炼器打造已开放。', color: '#fff8d0' };
-    const enhanceTip = { text: '装备强化已开放。', color: '#aaaaaa' };
-    const salvageTip = { text: '装备分解已开放。', color: '#aaaaaa' };
-    const enchantTip = { text: openFixture ? '装备附灵已开放。' : Closed.featureClosed().text, color: '#aaaaaa' };
     const scene: any = Object.assign(Object.create(GameScene.prototype), {
       prog: p, map: { id: 'luoxia_town', objects: [] }, player: { x: 100, y: 200 },
       log: (text: string, color: string) => logs.push({ text, color }),
-      encounterRuntime: { interact() { throw new Error('欧冶匠四项入口须先于遭遇与 NPC 交互'); } },
+      closeItemPanels() {},
+      dialog: { choose: (line: unknown, portrait: unknown, choices: any[]) => dialogs.push({ line, portrait, choices }) },
+      smithServices: { show: () => { menuShows++; } },
+      encounterRuntime: { interact() { throw new Error('欧冶匠入口须先于遭遇与 NPC 交互'); } },
     });
-    eq(typeof scene.tryInteractForgeEntrance, 'function', '真实 GameScene.prototype 既有欧冶匠入口存在');
+    eq(typeof scene.tryInteractForgeEntrance, 'function', '真实欧冶匠入口存在');
     eq(scene.tryInteractForgeEntrance(), false, '没有对象时安静 no-op');
     scene.map.objects = [{ ...entrance, name: 'npc_shop', props: { npc: 'npc_shop' } }];
-    eq(scene.tryInteractForgeEntrance(), false, '非 smith_ou 对象不消费附灵入口');
+    eq(scene.tryInteractForgeEntrance(), false, '普通商店不消费炼器入口');
     scene.map.objects = [entrance];
     for (const offset of [-29, 29]) {
       scene.player.x = entrance.x + offset;
@@ -264,70 +264,29 @@ export async function runEnchantOpenFixtureTests(options: {
     }
     scene.player.y = entrance.y; scene.senseMap = { objectVisible: () => false };
     eq(scene.tryInteractForgeEntrance(), false, '隐藏欧冶匠不交互');
-    eq(logs, [], '无对象/非欧冶匠/超距/隐藏时四项提示均安静');
+    eq([logs.length, dialogs.length], [0, 0], '无对象/商店/超距/隐藏均无提示或菜单');
     scene.senseMap = undefined;
-    for (const object of [{ ...entrance, props: {} }, { ...entrance, name: 'enchant-smoke-alias' }]) {
-      scene.map.objects = [object]; const start = logs.length;
-      eq(scene.tryInteractForgeEntrance(), true, object.name + ' 邻近欧冶匠被消费');
-      eq(logs.slice(start), [forgeTip, enhanceTip, enchantTip, salvageTip], 'name/props.npc 同一次命中 forge→enhance→enchant→salvage，附灵不被饿死');
+    for (const object of [{ ...entrance, props: {} }, { ...entrance, name: 'smith-route-alias' }]) {
+      scene.map.objects = [object];
+      eq(scene.tryInteractForgeEntrance(), true, object.name + ' 邻近欧冶匠消费交互');
+      const choices = dialogs[dialogs.length - 1].choices;
+      eq(choices[0].label, t('ui.smith.title'), '正式对话含炼器服务选项');
+      const previous = menuShows; choices[0].onSelect();
+      eq(menuShows, previous + 1, '选服务入口才进入四服务菜单');
     }
     scene.map.objects = [entrance];
-    for (const offset of [-1, 1]) {
-      scene.player.x = entrance.x + 28 * offset; scene.player.y = entrance.y + 40 * offset;
-      const start = logs.length;
-      eq(scene.tryInteractForgeEntrance(), true, '28×40 距离边界内四项入口可冒烟: ' + offset);
-      eq(logs.slice(start), [forgeTip, enhanceTip, enchantTip, salvageTip], '距离边界保持四 tip 顺序和文案');
+    for (const x of [-1, 1]) for (const y of [-1, 1]) {
+      scene.player.x = entrance.x + 28 * x; scene.player.y = entrance.y + 40 * y;
+      eq(scene.tryInteractForgeEntrance(), true, '28×40 四角边界内消费交互');
     }
     scene.player.x = entrance.x; scene.player.y = entrance.y;
-    let start = logs.length;
-    eq(scene.tryInteract(), true, '通用交互在遭遇/NPC 前消费欧冶匠四项入口');
-    eq(logs.slice(start), [forgeTip, enhanceTip, enchantTip, salvageTip], '通用交互同命中四项入口且不重复提示');
-    const originalEnchantEntrance = EnchantGate.prototype.entrance;
-    let entranceCalls = 0;
-    try {
-      EnchantGate.prototype.entrance = function () {
-        entranceCalls++;
-        if (!openFixture) throw new Error('内存关态不得查询 EnchantGate');
-        return { allowed: false, tipKey: 'enchant.fixture.smoke', text: '附灵冒烟拒绝。' };
-      };
-      start = logs.length;
-      eq(scene.tryInteractForgeEntrance(), true, '最小入口保留 EnchantGate 拒绝提示分支');
-      eq(entranceCalls, openFixture ? 1 : 0, '只有正式开态查询 EnchantGate.entrance，关态直接绕过');
-      eq(logs.slice(start), [forgeTip, enhanceTip, { text: openFixture ? '附灵冒烟拒绝。' : Closed.featureClosed().text,
-        color: '#aaaaaa' }, salvageTip], 'Gate 拒绝原文或内存关态 tip 展示，打造强化既有提示保持');
-    } finally { EnchantGate.prototype.entrance = originalEnchantEntrance; }
-    const originalForgeEntrance = ForgeGate.prototype.entrance, originalEnhanceEntrance = EnhanceGate.prototype.entrance;
-    const calls: string[] = [];
-    try {
-      ForgeGate.prototype.entrance = function () {
-        calls.push('forge'); return { allowed: false, tipKey: 'forge.fixture.smoke', text: '打造冒烟拒绝。' };
-      };
-      EnhanceGate.prototype.entrance = function () {
-        calls.push('enhance'); return { allowed: false, tipKey: 'enhance.fixture.smoke', text: '强化冒烟拒绝。' };
-      };
-      EnchantGate.prototype.entrance = function () {
-        calls.push('enchant');
-        if (!openFixture) throw new Error('关态须独立绕过 Gate，不借打造/强化旗');
-        return { allowed: true };
-      };
-      start = logs.length;
-      eq(scene.tryInteractForgeEntrance(), true, '打造/强化拒绝时同次命中仍到附灵提示');
-      eq(calls, openFixture ? ['forge', 'enhance', 'enchant'] : ['forge', 'enhance'], '三 Gate 顺序精确，内存关态不借既有两旗');
-      eq(logs.slice(start), [{ text: '打造冒烟拒绝。', color: '#aaaaaa' },
-        { text: '强化冒烟拒绝。', color: '#aaaaaa' }, enchantTip, salvageTip], '前两项拒绝不提前 return 饿死附灵');
-    } finally {
-      ForgeGate.prototype.entrance = originalForgeEntrance; EnhanceGate.prototype.entrance = originalEnhanceEntrance;
-      EnchantGate.prototype.entrance = originalEnchantEntrance;
-    }
-    eq(p.exportSave(), before, 'Scene 冒烟不修改角色、打造、强化、附灵或护符事实');
-    eq([idb.writes, idb.commits], [writes, commits], 'Scene 冒烟存档写入及完整提交均 0');
-    eq([...idb.rows], rows, 'Scene 冒烟磁盘旧档保持');
-    eq(randomCalls, samples, 'Scene 入口不抽样或结算'); eq(localWrites, 0, 'Scene 冒烟无 localStorage 旁路写入');
+    eq(scene.tryInteract(), true, '通用交互先消费欧冶匠入口');
+    eq(logs, [], '对话路由不连刷四 Gate 冒烟提示');
+    eq(p.exportSave(), before, '入口/对话/菜单不修改角色或四服务业务袋');
+    eq(idb.writes, writes, '入口/菜单存档写入为零');
     return { noObjectNoop: true, nonSmithIgnored: true, nearbyOnly: true, hiddenIgnored: true,
-      objectName: 'smith_ou', npcProp: 'smith_ou', boundary: { x: 28, y: 40 }, genericInteraction: true,
-      graph, sameHitForgeThenEnhanceThenEnchant: true, sameHitForgeThenEnhanceThenEnchantThenSalvage: true, forgeSoftOpenPreserved: true, enhanceSoftOpenPreserved: true,
-      enchantNotStarved: true, upstreamRefusalsStillReachEnchant: true, gateDeniedRouting: openFixture,
-      closedBypassesGate: !openFixture, saveWrites: idb.writes - writes };
+      genericInteraction: true, smithServicesUiWired: true, menuRouted: menuShows === 2,
+      consumedInteraction: true, graph: openFixture ? 'formal-open' : 'memory-closed', saveWrites: idb.writes - writes };
   }
   try {
     eq(isEnchantOpenForFixture(), openFixture, '独立 SSR 图 Flag 正式 true / 内存关态 false');

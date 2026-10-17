@@ -1,0 +1,40 @@
+{
+  "originalCommandsPassed": false,
+  "originalBlockers": [
+    "attr-ui-closed pins shared strings970 SHA; concurrently owned shared strings now1013",
+    "attr-ui-binding-success pins another worktree/branch"
+  ],
+  "isolatedRuns": [
+    {
+      "suite": "attr-ui-closed",
+      "assertions": 1592,
+      "passed": true,
+      "source": "scripts/v06p1-attr-ui-closed-test.mjs",
+      "sourceSha": "2aeebfc3dec47d012b4ae9d52432c98204ed29ef7b7a3a510d9d59529d1affcc",
+      "isolatedScriptSha": "6b933c8c53ba5450b92412688b8d79e8b1da335c10e05af91f9d320cd4fb80a9",
+      "adaptations": [
+        "shared dataRoot replaced by /tmp clone of this worktree data/balance (970 keys); design/maps/qa are readonly aliases"
+      ],
+      "gateAndReadonlyAssertionsUnchanged": true
+    },
+    {
+      "suite": "attr-ui-binding-success",
+      "assertions": 327,
+      "passed": true,
+      "source": "scripts/v06p1-attr-ui-binding-success-test.mjs",
+      "sourceSha": "62577ff2f9f2060ddd1e23c49d35fa3641e265ae367b0e0861362813a85a00a1",
+      "isolatedScriptSha": "48576e39b6ba6fdd505a17f6f031c46af66ff32fe9e7dc5249841b03270ece26",
+      "adaptations": [
+        "shared dataRoot replaced by /tmp clone of this worktree data/balance (970 keys); design/maps/qa are readonly aliases",
+        "worktree/branch guard changed from feat/ui-attr-inst to current authorized feat/ui-smith-services"
+      ],
+      "gateAndReadonlyAssertionsUnchanged": true
+    }
+  ],
+  "equip": {
+    "command": "npm run test:equip",
+    "assertions": 100,
+    "passed": true
+  },
+  "productionDataModified": false
+}

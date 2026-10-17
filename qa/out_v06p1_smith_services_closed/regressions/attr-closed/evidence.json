@@ -1,0 +1,731 @@
+{
+  "passed": true,
+  "assertions": 1592,
+  "baselineTip": "b9108d6dcab0fdb8857dac0efd85087176a92f92",
+  "attrUiReadonlyWired": true,
+  "newOpenFlag": false,
+  "enhanceSha": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+  "strings970": "ae51319b82a6486cc7f3d9b26c5ae89719e23c32ff9debdcfbb86ef7b5aea08b",
+  "strings970Previous960Sha": "9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda",
+  "softOpenedAttrUi": true,
+  "released": false,
+  "formalInstanceSource": true,
+  "mappingStrategy": "explicit_position_binding_only_no_item_id_inference_missing_binding_no_instance",
+  "mappingEvidence": "reports/炼器阁/V06P1_ATTR_UI_MAP_API_EVIDENCE.md",
+  "mappingGaps": [],
+  "eSlotToInstanceRefApiExists": true,
+  "iRowToInstanceRefApiExists": true,
+  "noItemIdImpersonation": true,
+  "fixtureInstancesProductionFallback": false,
+  "ForgeOpenFlag": true,
+  "EnhanceOpenFlag": true,
+  "EnchantOpenFlag": true,
+  "SalvageOpenFlag": true,
+  "formalFlagsDiskSourcePreserved": true,
+  "flagShas": {
+    "Forge": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
+    "Enhance": "d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e",
+    "Enchant": "bd5445b8ddfed56a32811cedd28db72e8676c7a5eff321e2fedb0ec5fe4c505a",
+    "Salvage": "69aace852957c52bf7ca0214345ede7df29d6d36ec1dfd4849462e54552edff3"
+  },
+  "gatesBaselineMatch": true,
+  "localStorageWrites": 0,
+  "indexedDbOpens": 0,
+  "sentinelCalls": 0,
+  "serviceCalls": 0,
+  "storageWrites": 0,
+  "readOnlyFullSaveDelta": 0,
+  "publicProgressFieldDelta": 0,
+  "actualRestoreWithoutPersistence": true,
+  "synchronousCurrentTargetRevalidation": true,
+  "fourServiceSettlementRegressionExecuted": false,
+  "fourServiceBoundaryMeaning": "四 Gate 与基线源码 SHA 完全相同，四正式 Flag 恒 true；展示不调用提交/收费预览；本测试不结算服务",
+  "openFixtureTableExecuted": false,
+  "semanticFixtureOnly": true,
+  "testsUseRealSsrModule": true,
+  "freshIndependentGraphs": 6,
+  "cases": {
+    "C01": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "shared/memory-closed/equip-closed",
+        "shared/fresh-memory-closed/equip-closed",
+        "snapshot/memory-closed/equip-closed",
+        "snapshot/fresh-memory-closed/equip-closed"
+      ]
+    },
+    "C02": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "shared/memory-closed/inventory-closed",
+        "shared/fresh-memory-closed/inventory-closed",
+        "snapshot/memory-closed/inventory-closed",
+        "snapshot/fresh-memory-closed/inventory-closed"
+      ]
+    },
+    "C03": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "shared/memory-closed/per-group-gates-and-cache",
+        "shared/fresh-memory-closed/per-group-gates-and-cache",
+        "snapshot/memory-closed/per-group-gates-and-cache",
+        "snapshot/fresh-memory-closed/per-group-gates-and-cache"
+      ]
+    },
+    "C04": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "shared/formal-source/mapping-refusal",
+        "shared/memory-closed/mapping-refusal",
+        "shared/fresh-memory-closed/mapping-refusal",
+        "snapshot/formal-source/mapping-refusal",
+        "snapshot/memory-closed/mapping-refusal",
+        "snapshot/fresh-memory-closed/mapping-refusal"
+      ]
+    },
+    "C05": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "shared/formal-source/foreign-and-switch",
+        "shared/memory-closed/foreign-and-switch",
+        "shared/fresh-memory-closed/foreign-and-switch",
+        "snapshot/formal-source/foreign-and-switch",
+        "snapshot/memory-closed/foreign-and-switch",
+        "snapshot/fresh-memory-closed/foreign-and-switch"
+      ]
+    },
+    "C06": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "shared/formal-source/corrupt-and-unknown",
+        "shared/memory-closed/corrupt-and-unknown",
+        "shared/fresh-memory-closed/corrupt-and-unknown",
+        "snapshot/formal-source/corrupt-and-unknown",
+        "snapshot/memory-closed/corrupt-and-unknown",
+        "snapshot/fresh-memory-closed/corrupt-and-unknown"
+      ]
+    },
+    "C07": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "shared/formal-source/repeat-refresh-and-reopen",
+        "shared/memory-closed/repeat-refresh-and-reopen",
+        "shared/fresh-memory-closed/repeat-refresh-and-reopen",
+        "snapshot/formal-source/repeat-refresh-and-reopen",
+        "snapshot/memory-closed/repeat-refresh-and-reopen",
+        "snapshot/fresh-memory-closed/repeat-refresh-and-reopen"
+      ]
+    },
+    "C08": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "shared/formal-source/empty-zero-corrupt-separated",
+        "shared/memory-closed/empty-zero-corrupt-separated",
+        "shared/fresh-memory-closed/empty-zero-corrupt-separated",
+        "snapshot/formal-source/empty-zero-corrupt-separated",
+        "snapshot/memory-closed/empty-zero-corrupt-separated",
+        "snapshot/fresh-memory-closed/empty-zero-corrupt-separated"
+      ]
+    },
+    "C09": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "static-source-and-data"
+      ]
+    },
+    "C10": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "shared/formal-source/zero-delta-and-service-boundary",
+        "shared/memory-closed/zero-delta-and-service-boundary",
+        "shared/fresh-memory-closed/zero-delta-and-service-boundary",
+        "snapshot/formal-source/zero-delta-and-service-boundary",
+        "snapshot/memory-closed/zero-delta-and-service-boundary",
+        "snapshot/fresh-memory-closed/zero-delta-and-service-boundary"
+      ]
+    }
+  },
+  "protectedFiles": {
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/ForgeOpenFlag.ts": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/ForgeGate.ts": "7aa9b91bf4ad2d389f2b96c41479338bd53cb3fdd63f65ff47a64f8528d75bcb",
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/EnhanceOpenFlag.ts": "d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e",
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/EnhanceGate.ts": "c2a2a0efb7997270eb48674224ce9bfc08e14201e613d7aa12d35af0a2a09796",
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/EnchantOpenFlag.ts": "bd5445b8ddfed56a32811cedd28db72e8676c7a5eff321e2fedb0ec5fe4c505a",
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/EnchantGate.ts": "9dbb43f607fb1c298661bccd8a31f5653583b0b1dae956ca3f317f2fe8fc0ad2",
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/SalvageOpenFlag.ts": "69aace852957c52bf7ca0214345ede7df29d6d36ec1dfd4849462e54552edff3",
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/SalvageGate.ts": "3777c6b72615f21a9c47544cfa8eeece08eb54009032cbf53e713091f8d8ce52",
+    "/workspace/xiantu/wt/feat/ui-smith-services/data/balance/materials.json": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+    "/workspace/xiantu/wt/feat/ui-smith-services/data/balance/items.json": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+    "/workspace/xiantu/wt/feat/ui-smith-services/data/balance/recipes.json": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+    "/workspace/xiantu/wt/feat/ui-smith-services/data/balance/npcs.json": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+    "/workspace/xiantu/wt/feat/ui-smith-services/data/balance/life_skills.json": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+    "/workspace/xiantu/wt/feat/ui-smith-services/data/balance/enhance_protect_charm.json": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/data.ts": "aad725652f5c0eb57a5c699726e570b146d5ded52d5c31715444dbbf4117024a",
+    "/tmp/xiantu-smith-regress-data/balance/enhance.json": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+    "/tmp/xiantu-smith-regress-data/balance/strings_zh.json": "ae51319b82a6486cc7f3d9b26c5ae89719e23c32ff9debdcfbb86ef7b5aea08b",
+    "/workspace/xiantu/wt/feat/ui-smith-services/data/balance/enhance.json": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+    "/workspace/xiantu/wt/feat/ui-smith-services/data/balance/strings_zh.json": "ae51319b82a6486cc7f3d9b26c5ae89719e23c32ff9debdcfbb86ef7b5aea08b"
+  },
+  "evidence": [
+    {
+      "case": "C09",
+      "label": "static-source-and-data",
+      "passed": true,
+      "noNewOpenFlag": true,
+      "gatesBaselineMatch": true,
+      "fourFormalFlags": true,
+      "noSubmitOrPaidPreview": true,
+      "strings970OnlyTenKeyAppend": true
+    },
+    {
+      "case": "C04",
+      "label": "shared/formal-source/mapping-refusal",
+      "passed": true,
+      "uniqueCandidateRefused": true,
+      "multipleCandidatesRefused": true,
+      "historyRefused": true,
+      "fixtureInstancesProductionFallback": false
+    },
+    {
+      "case": "C05",
+      "label": "shared/formal-source/foreign-and-switch",
+      "passed": true,
+      "explicitSameReferenceForeign": true,
+      "enchantOwnerConflictForeign": true,
+      "productionNoInstance": true
+    },
+    {
+      "case": "C06",
+      "label": "shared/formal-source/corrupt-and-unknown",
+      "passed": true,
+      "illegalLevelsRefused": true,
+      "malformedEnchantRefused": true,
+      "rootConflictRefused": true,
+      "repairs": 0
+    },
+    {
+      "case": "C08",
+      "label": "shared/formal-source/empty-zero-corrupt-separated",
+      "passed": true,
+      "emptyHasNoInstLines": true,
+      "nonEquipHasNoInstLines": true,
+      "explicitZeroSeparated": true,
+      "closedOverridesZero": false
+    },
+    {
+      "case": "C07",
+      "label": "shared/formal-source/repeat-refresh-and-reopen",
+      "passed": true,
+      "repeatedCycles": 3,
+      "freshTargetCheck": true,
+      "closeClearsLines": true,
+      "actualRestoreWithoutPersistence": true,
+      "sameContentDifferentProgressRerendered": true,
+      "synchronousCurrentTargetRevalidation": true,
+      "writes": 0
+    },
+    {
+      "case": "C10",
+      "label": "shared/formal-source/zero-delta-and-service-boundary",
+      "passed": true,
+      "localStorageWrites": 0,
+      "indexedDbOpens": 0,
+      "sentinelCalls": 0,
+      "serviceCalls": 0,
+      "fullSaveComparedPerRead": true,
+      "serviceSettlementRegressionExecuted": false,
+      "gatesBaselineMatch": true
+    },
+    {
+      "suite": "ssr-graph",
+      "dataMode": "shared",
+      "graph": "formal-source",
+      "memoryClosed": false,
+      "flagLoads": {
+        "Enhance": 0,
+        "Enchant": 0
+      },
+      "passed": true,
+      "initialEnhanceOpen": true,
+      "initialEnchantOpen": true,
+      "ForgeOpenFlag": true,
+      "SalvageOpenFlag": true
+    },
+    {
+      "case": "C01",
+      "label": "shared/memory-closed/equip-closed",
+      "passed": true,
+      "unavailableLines": 1,
+      "attributeLeak": false,
+      "writes": 0
+    },
+    {
+      "case": "C02",
+      "label": "shared/memory-closed/inventory-closed",
+      "passed": true,
+      "aggregateBinding": "no_instance",
+      "unavailableLines": 1,
+      "writes": 0
+    },
+    {
+      "case": "C04",
+      "label": "shared/memory-closed/mapping-refusal",
+      "passed": true,
+      "uniqueCandidateRefused": true,
+      "multipleCandidatesRefused": true,
+      "historyRefused": true,
+      "fixtureInstancesProductionFallback": false
+    },
+    {
+      "case": "C03",
+      "label": "shared/memory-closed/per-group-gates-and-cache",
+      "passed": true,
+      "independentFlags": true,
+      "previousContainersDestroyed": true,
+      "neutralTipDeduplicated": true
+    },
+    {
+      "case": "C05",
+      "label": "shared/memory-closed/foreign-and-switch",
+      "passed": true,
+      "explicitSameReferenceForeign": true,
+      "enchantOwnerConflictForeign": true,
+      "productionNoInstance": true
+    },
+    {
+      "case": "C06",
+      "label": "shared/memory-closed/corrupt-and-unknown",
+      "passed": true,
+      "illegalLevelsRefused": true,
+      "malformedEnchantRefused": true,
+      "rootConflictRefused": true,
+      "repairs": 0
+    },
+    {
+      "case": "C08",
+      "label": "shared/memory-closed/empty-zero-corrupt-separated",
+      "passed": true,
+      "emptyHasNoInstLines": true,
+      "nonEquipHasNoInstLines": true,
+      "explicitZeroSeparated": true,
+      "closedOverridesZero": true
+    },
+    {
+      "case": "C07",
+      "label": "shared/memory-closed/repeat-refresh-and-reopen",
+      "passed": true,
+      "repeatedCycles": 3,
+      "freshTargetCheck": true,
+      "closeClearsLines": true,
+      "actualRestoreWithoutPersistence": true,
+      "sameContentDifferentProgressRerendered": true,
+      "synchronousCurrentTargetRevalidation": true,
+      "writes": 0
+    },
+    {
+      "case": "C10",
+      "label": "shared/memory-closed/zero-delta-and-service-boundary",
+      "passed": true,
+      "localStorageWrites": 0,
+      "indexedDbOpens": 0,
+      "sentinelCalls": 0,
+      "serviceCalls": 0,
+      "fullSaveComparedPerRead": true,
+      "serviceSettlementRegressionExecuted": false,
+      "gatesBaselineMatch": true
+    },
+    {
+      "suite": "ssr-graph",
+      "dataMode": "shared",
+      "graph": "memory-closed",
+      "memoryClosed": true,
+      "flagLoads": {
+        "Enhance": 1,
+        "Enchant": 1
+      },
+      "passed": true,
+      "initialEnhanceOpen": false,
+      "initialEnchantOpen": false,
+      "ForgeOpenFlag": true,
+      "SalvageOpenFlag": true
+    },
+    {
+      "case": "C01",
+      "label": "shared/fresh-memory-closed/equip-closed",
+      "passed": true,
+      "unavailableLines": 1,
+      "attributeLeak": false,
+      "writes": 0
+    },
+    {
+      "case": "C02",
+      "label": "shared/fresh-memory-closed/inventory-closed",
+      "passed": true,
+      "aggregateBinding": "no_instance",
+      "unavailableLines": 1,
+      "writes": 0
+    },
+    {
+      "case": "C04",
+      "label": "shared/fresh-memory-closed/mapping-refusal",
+      "passed": true,
+      "uniqueCandidateRefused": true,
+      "multipleCandidatesRefused": true,
+      "historyRefused": true,
+      "fixtureInstancesProductionFallback": false
+    },
+    {
+      "case": "C03",
+      "label": "shared/fresh-memory-closed/per-group-gates-and-cache",
+      "passed": true,
+      "independentFlags": true,
+      "previousContainersDestroyed": true,
+      "neutralTipDeduplicated": true
+    },
+    {
+      "case": "C05",
+      "label": "shared/fresh-memory-closed/foreign-and-switch",
+      "passed": true,
+      "explicitSameReferenceForeign": true,
+      "enchantOwnerConflictForeign": true,
+      "productionNoInstance": true
+    },
+    {
+      "case": "C06",
+      "label": "shared/fresh-memory-closed/corrupt-and-unknown",
+      "passed": true,
+      "illegalLevelsRefused": true,
+      "malformedEnchantRefused": true,
+      "rootConflictRefused": true,
+      "repairs": 0
+    },
+    {
+      "case": "C08",
+      "label": "shared/fresh-memory-closed/empty-zero-corrupt-separated",
+      "passed": true,
+      "emptyHasNoInstLines": true,
+      "nonEquipHasNoInstLines": true,
+      "explicitZeroSeparated": true,
+      "closedOverridesZero": true
+    },
+    {
+      "case": "C07",
+      "label": "shared/fresh-memory-closed/repeat-refresh-and-reopen",
+      "passed": true,
+      "repeatedCycles": 3,
+      "freshTargetCheck": true,
+      "closeClearsLines": true,
+      "actualRestoreWithoutPersistence": true,
+      "sameContentDifferentProgressRerendered": true,
+      "synchronousCurrentTargetRevalidation": true,
+      "writes": 0
+    },
+    {
+      "case": "C10",
+      "label": "shared/fresh-memory-closed/zero-delta-and-service-boundary",
+      "passed": true,
+      "localStorageWrites": 0,
+      "indexedDbOpens": 0,
+      "sentinelCalls": 0,
+      "serviceCalls": 0,
+      "fullSaveComparedPerRead": true,
+      "serviceSettlementRegressionExecuted": false,
+      "gatesBaselineMatch": true
+    },
+    {
+      "suite": "ssr-graph",
+      "dataMode": "shared",
+      "graph": "fresh-memory-closed",
+      "memoryClosed": true,
+      "flagLoads": {
+        "Enhance": 1,
+        "Enchant": 1
+      },
+      "passed": true,
+      "initialEnhanceOpen": false,
+      "initialEnchantOpen": false,
+      "ForgeOpenFlag": true,
+      "SalvageOpenFlag": true
+    },
+    {
+      "case": "C04",
+      "label": "snapshot/formal-source/mapping-refusal",
+      "passed": true,
+      "uniqueCandidateRefused": true,
+      "multipleCandidatesRefused": true,
+      "historyRefused": true,
+      "fixtureInstancesProductionFallback": false
+    },
+    {
+      "case": "C05",
+      "label": "snapshot/formal-source/foreign-and-switch",
+      "passed": true,
+      "explicitSameReferenceForeign": true,
+      "enchantOwnerConflictForeign": true,
+      "productionNoInstance": true
+    },
+    {
+      "case": "C06",
+      "label": "snapshot/formal-source/corrupt-and-unknown",
+      "passed": true,
+      "illegalLevelsRefused": true,
+      "malformedEnchantRefused": true,
+      "rootConflictRefused": true,
+      "repairs": 0
+    },
+    {
+      "case": "C08",
+      "label": "snapshot/formal-source/empty-zero-corrupt-separated",
+      "passed": true,
+      "emptyHasNoInstLines": true,
+      "nonEquipHasNoInstLines": true,
+      "explicitZeroSeparated": true,
+      "closedOverridesZero": false
+    },
+    {
+      "case": "C07",
+      "label": "snapshot/formal-source/repeat-refresh-and-reopen",
+      "passed": true,
+      "repeatedCycles": 3,
+      "freshTargetCheck": true,
+      "closeClearsLines": true,
+      "actualRestoreWithoutPersistence": true,
+      "sameContentDifferentProgressRerendered": true,
+      "synchronousCurrentTargetRevalidation": true,
+      "writes": 0
+    },
+    {
+      "case": "C10",
+      "label": "snapshot/formal-source/zero-delta-and-service-boundary",
+      "passed": true,
+      "localStorageWrites": 0,
+      "indexedDbOpens": 0,
+      "sentinelCalls": 0,
+      "serviceCalls": 0,
+      "fullSaveComparedPerRead": true,
+      "serviceSettlementRegressionExecuted": false,
+      "gatesBaselineMatch": true
+    },
+    {
+      "suite": "ssr-graph",
+      "dataMode": "snapshot",
+      "graph": "formal-source",
+      "memoryClosed": false,
+      "flagLoads": {
+        "Enhance": 0,
+        "Enchant": 0
+      },
+      "passed": true,
+      "initialEnhanceOpen": true,
+      "initialEnchantOpen": true,
+      "ForgeOpenFlag": true,
+      "SalvageOpenFlag": true
+    },
+    {
+      "case": "C01",
+      "label": "snapshot/memory-closed/equip-closed",
+      "passed": true,
+      "unavailableLines": 1,
+      "attributeLeak": false,
+      "writes": 0
+    },
+    {
+      "case": "C02",
+      "label": "snapshot/memory-closed/inventory-closed",
+      "passed": true,
+      "aggregateBinding": "no_instance",
+      "unavailableLines": 1,
+      "writes": 0
+    },
+    {
+      "case": "C04",
+      "label": "snapshot/memory-closed/mapping-refusal",
+      "passed": true,
+      "uniqueCandidateRefused": true,
+      "multipleCandidatesRefused": true,
+      "historyRefused": true,
+      "fixtureInstancesProductionFallback": false
+    },
+    {
+      "case": "C03",
+      "label": "snapshot/memory-closed/per-group-gates-and-cache",
+      "passed": true,
+      "independentFlags": true,
+      "previousContainersDestroyed": true,
+      "neutralTipDeduplicated": true
+    },
+    {
+      "case": "C05",
+      "label": "snapshot/memory-closed/foreign-and-switch",
+      "passed": true,
+      "explicitSameReferenceForeign": true,
+      "enchantOwnerConflictForeign": true,
+      "productionNoInstance": true
+    },
+    {
+      "case": "C06",
+      "label": "snapshot/memory-closed/corrupt-and-unknown",
+      "passed": true,
+      "illegalLevelsRefused": true,
+      "malformedEnchantRefused": true,
+      "rootConflictRefused": true,
+      "repairs": 0
+    },
+    {
+      "case": "C08",
+      "label": "snapshot/memory-closed/empty-zero-corrupt-separated",
+      "passed": true,
+      "emptyHasNoInstLines": true,
+      "nonEquipHasNoInstLines": true,
+      "explicitZeroSeparated": true,
+      "closedOverridesZero": true
+    },
+    {
+      "case": "C07",
+      "label": "snapshot/memory-closed/repeat-refresh-and-reopen",
+      "passed": true,
+      "repeatedCycles": 3,
+      "freshTargetCheck": true,
+      "closeClearsLines": true,
+      "actualRestoreWithoutPersistence": true,
+      "sameContentDifferentProgressRerendered": true,
+      "synchronousCurrentTargetRevalidation": true,
+      "writes": 0
+    },
+    {
+      "case": "C10",
+      "label": "snapshot/memory-closed/zero-delta-and-service-boundary",
+      "passed": true,
+      "localStorageWrites": 0,
+      "indexedDbOpens": 0,
+      "sentinelCalls": 0,
+      "serviceCalls": 0,
+      "fullSaveComparedPerRead": true,
+      "serviceSettlementRegressionExecuted": false,
+      "gatesBaselineMatch": true
+    },
+    {
+      "suite": "ssr-graph",
+      "dataMode": "snapshot",
+      "graph": "memory-closed",
+      "memoryClosed": true,
+      "flagLoads": {
+        "Enhance": 1,
+        "Enchant": 1
+      },
+      "passed": true,
+      "initialEnhanceOpen": false,
+      "initialEnchantOpen": false,
+      "ForgeOpenFlag": true,
+      "SalvageOpenFlag": true
+    },
+    {
+      "case": "C01",
+      "label": "snapshot/fresh-memory-closed/equip-closed",
+      "passed": true,
+      "unavailableLines": 1,
+      "attributeLeak": false,
+      "writes": 0
+    },
+    {
+      "case": "C02",
+      "label": "snapshot/fresh-memory-closed/inventory-closed",
+      "passed": true,
+      "aggregateBinding": "no_instance",
+      "unavailableLines": 1,
+      "writes": 0
+    },
+    {
+      "case": "C04",
+      "label": "snapshot/fresh-memory-closed/mapping-refusal",
+      "passed": true,
+      "uniqueCandidateRefused": true,
+      "multipleCandidatesRefused": true,
+      "historyRefused": true,
+      "fixtureInstancesProductionFallback": false
+    },
+    {
+      "case": "C03",
+      "label": "snapshot/fresh-memory-closed/per-group-gates-and-cache",
+      "passed": true,
+      "independentFlags": true,
+      "previousContainersDestroyed": true,
+      "neutralTipDeduplicated": true
+    },
+    {
+      "case": "C05",
+      "label": "snapshot/fresh-memory-closed/foreign-and-switch",
+      "passed": true,
+      "explicitSameReferenceForeign": true,
+      "enchantOwnerConflictForeign": true,
+      "productionNoInstance": true
+    },
+    {
+      "case": "C06",
+      "label": "snapshot/fresh-memory-closed/corrupt-and-unknown",
+      "passed": true,
+      "illegalLevelsRefused": true,
+      "malformedEnchantRefused": true,
+      "rootConflictRefused": true,
+      "repairs": 0
+    },
+    {
+      "case": "C08",
+      "label": "snapshot/fresh-memory-closed/empty-zero-corrupt-separated",
+      "passed": true,
+      "emptyHasNoInstLines": true,
+      "nonEquipHasNoInstLines": true,
+      "explicitZeroSeparated": true,
+      "closedOverridesZero": true
+    },
+    {
+      "case": "C07",
+      "label": "snapshot/fresh-memory-closed/repeat-refresh-and-reopen",
+      "passed": true,
+      "repeatedCycles": 3,
+      "freshTargetCheck": true,
+      "closeClearsLines": true,
+      "actualRestoreWithoutPersistence": true,
+      "sameContentDifferentProgressRerendered": true,
+      "synchronousCurrentTargetRevalidation": true,
+      "writes": 0
+    },
+    {
+      "case": "C10",
+      "label": "snapshot/fresh-memory-closed/zero-delta-and-service-boundary",
+      "passed": true,
+      "localStorageWrites": 0,
+      "indexedDbOpens": 0,
+      "sentinelCalls": 0,
+      "serviceCalls": 0,
+      "fullSaveComparedPerRead": true,
+      "serviceSettlementRegressionExecuted": false,
+      "gatesBaselineMatch": true
+    },
+    {
+      "suite": "ssr-graph",
+      "dataMode": "snapshot",
+      "graph": "fresh-memory-closed",
+      "memoryClosed": true,
+      "flagLoads": {
+        "Enhance": 1,
+        "Enchant": 1
+      },
+      "passed": true,
+      "initialEnhanceOpen": false,
+      "initialEnchantOpen": false,
+      "ForgeOpenFlag": true,
+      "SalvageOpenFlag": true
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+import { assertSmithServicesScene } from './v06p1-smith-services-scene-compat.mjs';
 // 附灵 soft-open 正式磁盘图；仅 Vite SSR 关态图注入 false。soft-open≠进包≠发版；fixture≠正式。
 import assert from 'node:assert/strict';
 import { checkSalvageCompatibility } from './v06p1-salvage-soft-open-compat-proof.mjs';
@@ -79,16 +80,8 @@ async function sourceChecks() {
   ok(/@xt\/balance\/enhance\.json/u.test(gateSource), 'Gate 只读正式 enhance.enchant 数值来源');
   ok(!/ForgeOpenFlag|EnhanceOpenFlag|Math\.random|enhance_enchant\.json/u.test(gateSource), '附灵独立许可确定性无新表或其他旗');
   const scene = await fs.readFile(path.join(root, 'src/scenes/GameScene.ts'), 'utf8');
-  for (const name of ['EnchantGate', 'EnchantOpenFlag', 'EnchantClosed', 'tryInteractForgeEntrance'])
-    ok(scene.includes(name), '仅接既有 smith_ou 最小附灵入口: ' + name);
-  ok(/import \{ featureClosed as enchantFeatureClosed \} from ['"]\.\.\/EnchantClosed['"]/u.test(scene), 'Scene 关态只读 tip 独立 import');
-  const entrance = scene.match(/  private tryInteractForgeEntrance\(\): boolean \{[\s\S]*?\n  \}/u)?.[0];
-  ok(entrance, '既有欧冶匠同命中入口存在');
-  ok(/new ForgeGate\(this\.prog\)\.entrance\(\)[\s\S]*new EnhanceGate\(this\.prog\)\.entrance\(\)[\s\S]*new EnchantGate\(this\.prog\)\.entrance\(\)[\s\S]*new SalvageGate\(this\.prog\)\.entrance\(\)[\s\S]*return true;/u.test(entrance),
-    '同一次命中依次 forge→enhance→enchant→salvage，最后才 return，附灵不被饿死');
-  eq((entrance.match(/return true;/gu) ?? []).length, 1, '同命中四 tip 完成才消费交互');
-  ok(/if \(!isEnchantOpenForFixture\(\)\) this\.log\(enchantFeatureClosed\(\)\.text, '#aaaaaa'\);/u.test(entrance), '内存关态绕过 Gate 资格结算');
-  ok(!/EnchantPanel|EnchantmentPanel|openEnchant|submitEnchant|fixtureInstances/u.test(scene), 'Scene 无完整附灵 UI、提交或生产夹具注入');
+  assertSmithServicesScene(scene, eq);
+  ok(!/EnchantPanel|EnchantmentPanel|openEnchant|submitEnchant|fixtureInstances/u.test(scene), 'GameScene 委托统一 UI，无直接服务结算或夹具注入');
   ok(!/EnchantGate|EnchantOpenFlag|EnchantClosed/u.test(await fs.readFile(path.join(root, 'src/ShopPanel.ts'), 'utf8')), '不接商店附灵 UI');
   for (const [mode, dataRoot] of roots) {
     for (const [name, sha] of Object.entries(frozen)) await capture(path.join(dataRoot, 'balance', name), sha);
@@ -182,12 +175,11 @@ async function runGraph(dataMode, dataRoot, openFixture, refreshPayloads = null,
     eq(result.localWrites, 0, '无 localStorage 写旁路');
     eq(result.productionFixtureInstances, false, '正式图无 fixtureInstances 生产默认依赖');
     if (!invalidDependency) {
-      eq(result.sceneSmoke?.sameHitForgeThenEnhanceThenEnchant, true, dataMode + '/' + graph + ' 同次命中前三 tip 顺序保持');
-      eq(result.sceneSmoke?.sameHitForgeThenEnhanceThenEnchantThenSalvage, true, dataMode + '/' + graph + ' 同次命中四 tip 顺序');
-      eq(result.sceneSmoke?.enchantNotStarved, true, dataMode + '/' + graph + ' 打造强化不饿死附灵');
+      eq(result.sceneSmoke?.smithServicesUiWired, true, '真实欧冶匠交互进入正式服务对话');
+      eq(result.sceneSmoke?.menuRouted, true, '对话选择服务后进入菜单');
       eq(result.sceneSmoke?.saveWrites, 0, dataMode + '/' + graph + ' Scene 最小入口零存档写');
-      eq(result.sceneSmoke?.gateDeniedRouting, openFixture, dataMode + '/' + graph + ' 正式开态原样路由 Gate 拒绝');
-      eq(result.sceneSmoke?.closedBypassesGate, !openFixture, dataMode + '/' + graph + ' 关态入口绕过 Gate');
+      eq(result.sceneSmoke?.smithServicesUiWired, true, '真实欧冶匠交互进入正式服务对话');
+      eq(result.sceneSmoke?.menuRouted, true, '对话选择服务后进入菜单');
     }
     const { payloads, ...rest } = result;
     const row = { ...rest, flagLoads, invalidDependency, freshSsr: refreshPayloads !== null };

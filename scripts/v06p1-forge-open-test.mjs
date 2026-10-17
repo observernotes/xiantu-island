@@ -1,3 +1,4 @@
+import { assertSmithServicesScene } from './v06p1-smith-services-scene-compat.mjs';
 // 双根隔离：正式旗标恒 true；仅独立 Vite SSR 关态图由 resolve/load 内存注入 false。
 import assert from 'node:assert/strict';
 import { salvageSourceNames } from './v06p1-salvage-soft-open-compat-proof.mjs';
@@ -67,14 +68,12 @@ async function checkFormal() {
     ok(new RegExp(`(?:async\\s+)?${method}\\([^)]*\\)\\s*:\\s*[^\\{]+\\{\\s*if\\s*\\(!isForgeOpenForFixture\\(\\)\\)\\s*return ForgeClosed\\.${closed}\\(\\);`, 'u').test(gate),
       `${method}首语句先查旗并返回对应原关态tip`);
   const scene = await fs.readFile(path.join(root, 'src/scenes/GameScene.ts'), 'utf8');
-  for (const name of ['ForgeClosed', 'ForgeOpenFlag', 'ForgeGate', 'tryInteractForgeEntrance'])
-    ok(scene.includes(name), `GameScene仅接既有smith_ou最小冒烟：${name}`);
+  assertSmithServicesScene(scene, eq);
   ok(/this\.tryInteractTowerClosed\(\)\s*\|\|\s*this\.tryInteractMarketConsign\(\)\s*\|\|\s*this\.tryInteractForgeEntrance\(\)[^\n]*this\.talkNearby\(\)/u.test(scene),
     'Z键链在talkNearby前同级接入炼器');
   ok(/if \(this\.tryInteractMarketConsign\(\)\) return true;\s*if \(this\.tryInteractForgeEntrance\(\)\) return true;/u.test(scene),
     '通用交互链在既有market旁接入炼器');
-  ok(/new ForgeGate\(this\.prog\)\.entrance\(\)/u.test(scene), '正式Scene只读入口不注入fixtureRecipes');
-  ok(!/ForgePanel|CraftPanel|openForge|submitForge|ForgeProgress|fixtureRecipes/u.test(scene), 'GameScene无完整打造UI或提交面板');
+  ok(!/ForgePanel|CraftPanel|openForge|submitForge|ForgeProgress|fixtureRecipes/u.test(scene), 'GameScene 委托统一 UI，无直接服务结算或夹具注入');
   ok(!/ForgeGate|ForgeOpenFlag|ForgeProgress|tryInteractForge|openForge|submitForge/u.test(await fs.readFile(path.join(root, 'src/ShopPanel.ts'), 'utf8')),
     'ShopPanel不接打造');
   const consumers = [];
@@ -82,7 +81,7 @@ async function checkFormal() {
     if (['ForgeGate.ts', 'v06p1-forge-open.test.ts', 'v06p1-enhance-open.test.ts', ...enchantSourceNames, ...salvageSourceNames].includes(file)) continue;
     if (/from\s+['"][^'"]*ForgeGate(?:\.ts)?['"]/u.test(await fs.readFile(path.join(root, 'src', file), 'utf8'))) consumers.push(file);
   }
-  eq(consumers, ['scenes/GameScene.ts'], 'ForgeGate正式消费者仅为GameScene只读冒烟入口');
+  eq(consumers, ['SmithServicesController.ts'], 'ForgeGate正式 UI 消费者为统一服务控制器');
   for (const [mode, dataRoot] of dataRoots) {
     const dataFiles = [...await filesUnder(path.join(dataRoot, 'balance')), ...await filesUnder(path.join(dataRoot, 'maps'))];
     eq(dataFiles.filter(name => /^forge_.*\.json$/u.test(path.basename(name))), [], `${mode} 无forge_*.json正式配方表`);
@@ -120,7 +119,7 @@ async function checkFormal() {
     ok(!Object.keys(shops).some(key => /forge|smith_ou|auction|consign/iu.test(key)), `${mode} 不混打造寄售拍卖服务`);
     report({ suite: 'v06p1-forge-open-formal', dataMode: mode, formalOpen: true, closedFixtureOnly: true,
       enhanceSha, ...(mode !== 'game' ? { recipesSha, formalForgeRows: 1 } : {}),
-      giftsChecked, smithServices: false, minimalSceneWiring: true, fullForgeUi: false,
+      giftsChecked, smithServices: false, minimalSceneWiring: true, smithServicesUiWired: true,
       softOpened: true, released: false });
   }
 }

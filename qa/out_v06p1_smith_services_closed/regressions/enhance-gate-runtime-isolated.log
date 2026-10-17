@@ -1,0 +1,4 @@
+{"service":"enhance","graph":"formal-open","refresh":false,"passed":true,"assertions":5051}
+{"service":"enhance","graph":"memory-closed","refresh":false,"passed":true,"assertions":377}
+{"service":"enhance","graph":"formal-open","refresh":true,"passed":true,"assertions":945}
+{"service":"enhance","graph":"memory-closed","refresh":true,"passed":true,"assertions":1434}

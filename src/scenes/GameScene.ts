@@ -35,6 +35,8 @@ import { interactionPrompt } from '../InteractionPrompt';
 import { AlchemySystem, ALCHEMY_RULES, alchemyFurnace } from '../Alchemy';
 import { AlchemyPanel, preloadAlchemy, registerAlchemy } from '../AlchemyPanel';
 import { ShopPanel } from '../ShopPanel';
+import { SmithServicesPanel } from '../SmithServicesPanel';
+import { isSmithServicesUiAccessible } from '../SmithServicesUiAccess';
 import { AttrPanel } from '../AttrPanel';
 import { InventoryPanel } from '../InventoryPanel';
 import { TalismanSystem } from '../Talisman';
@@ -70,18 +72,6 @@ import { TowerGate } from '../TowerGate';
 import { featureClosed as marketFeatureClosed } from '../MarketClosed';
 import { isMarketOpenForFixture } from '../MarketOpenFlag';
 import { MarketGate } from '../MarketGate';
-import { featureClosed as forgeFeatureClosed } from '../ForgeClosed';
-import { isForgeOpenForFixture } from '../ForgeOpenFlag';
-import { ForgeGate } from '../ForgeGate';
-import { featureClosed as enhanceFeatureClosed } from '../EnhanceClosed';
-import { isEnhanceOpenForFixture } from '../EnhanceOpenFlag';
-import { EnhanceGate } from '../EnhanceGate';
-import { featureClosed as enchantFeatureClosed } from '../EnchantClosed';
-import { isEnchantOpenForFixture } from '../EnchantOpenFlag';
-import { EnchantGate } from '../EnchantGate';
-import { featureClosed as salvageFeatureClosed } from '../SalvageClosed';
-import { isSalvageOpenForFixture } from '../SalvageOpenFlag';
-import { SalvageGate } from '../SalvageGate';
 
 const MAP_FALLBACK: Record<string, string> = {};
 type Drop = Phaser.Physics.Arcade.Sprite & { itemId: string; count: number; bornAt: number; label?: Phaser.GameObjects.Text; shadow?: Phaser.GameObjects.Ellipse; floatTw?: Phaser.Tweens.Tween; landed?: boolean };
@@ -172,6 +162,9 @@ export class GameScene extends Phaser.Scene {
   private talismanBuffIcons = new Map<string, Phaser.GameObjects.Image>();
   private talismanReturnFx?: Phaser.GameObjects.Sprite;
   shop!: ShopPanel;
+  smithServices?: SmithServicesPanel;
+  private smithDialogVersion = 0;
+  private smithDialogueReturnEnabled = false;
   attrPanel!: AttrPanel;
   inventoryPanel!: InventoryPanel;
   equipPanel!: EquipPanel;
@@ -185,6 +178,8 @@ export class GameScene extends Phaser.Scene {
 
   /** Scene 实例会被 restart 复用；这里只重置本张图的状态，不能复用旧物理世界的引用。 */
   private resetRunState() {
+    this.smithDialogueReturnEnabled = false;
+    this.smithServices?.hide(); this.smithServices = undefined; this.smithDialogVersion++;
     this.towerRoomView?.destroy(); this.towerRoomView = undefined;
     this.towerGate = undefined; this.towerBusy = false;
     this.towerOwnsPause = false; this.towerOwnsTimerPause = false;
@@ -459,6 +454,11 @@ export class GameScene extends Phaser.Scene {
     if (featureEnabled('talismanCraft')) this.setupTalisman();
     this.shop = new ShopPanel(this, this.prog, () => this.sectGrowth, { log: (text, color) => this.log(text, color),
       require: (name, npcId) => this.requireFeature(name, npcId), rankIcon: rankId => this.sectRankBadgeKey(rankId) });
+    const smithProgress = this.prog;
+    this.smithServices = new SmithServicesPanel(this, this.prog, {
+      tip: (key, vars) => this.log(t(key, vars), '#aaaaaa'), currentProgress: () => this.prog,
+      onClose: () => { if (this.prog === smithProgress) this.returnToSmithDialogue(); },
+    });
     this.skillBar = new SkillBar(this);
     this.skillWindow = new SkillWindow(this, () => this.prog, id => this.tryAddPoint(id));
     this.attrPanel = new AttrPanel(this, this.prog, () => {
@@ -879,14 +879,15 @@ export class GameScene extends Phaser.Scene {
     if (this.sectTrial && !this.sectTrial.ended && this.sectTrial.def.quest && this.quests.sectEntryBlock(this.sectTrial.def.quest)) {
       this.sectTrial.exit(); return;
     }
-    if (this.sectTrial && !this.dialog.open && !this.skillWindow.open && !this.alchemy.isOpen() && !this.shop.isOpen() && !this.attrPanel?.isOpen() && !this.itemPanelOpen()) this.sectTrial.update(delta);
+    this.smithServices?.update();
+    if (this.sectTrial && !this.dialog.open && !this.skillWindow.open && !this.alchemy.isOpen() && !this.shop.isOpen() && !this.smithServices?.visible() && !this.attrPanel?.isOpen() && !this.itemPanelOpen()) this.sectTrial.update(delta);
     if (this.sectTrial?.ended) { this.drawHud(); return; }
     if (time >= this.nextAgeUpdateAt) { this.prog.advanceAge(); this.nextAgeUpdateAt = time + 60000; this.prog.persistSoon(); }
     if (J(k.i)) { if (this.inventoryPanel?.isOpen()) this.inventoryPanel?.close(); else this.openInventoryPanel(); }
     if (J(k.e)) { if (this.equipPanel?.isOpen()) this.equipPanel?.close(); else this.openEquipPanel(); }
-    if (J(k.k) && !this.dialog.open && !this.alchemy.isOpen() && !this.shop.isOpen() && !this.attrPanel?.isOpen() && !this.itemPanelOpen() && !this.sectTrial?.blocksInput) this.skillWindow.toggle();
-    if (J(k.l) && !this.dialog.open && !this.skillWindow.open && !this.shop.isOpen() && !this.attrPanel?.isOpen() && !this.itemPanelOpen() && !this.sectTrial?.blocksInput) this.openAlchemy();
-    if (J(k.p) && !this.itemPanelOpen()) {
+    if (J(k.k) && !this.dialog.open && !this.alchemy.isOpen() && !this.shop.isOpen() && !this.smithServices?.visible() && !this.attrPanel?.isOpen() && !this.itemPanelOpen() && !this.sectTrial?.blocksInput) this.skillWindow.toggle();
+    if (J(k.l) && !this.dialog.open && !this.skillWindow.open && !this.shop.isOpen() && !this.smithServices?.visible() && !this.attrPanel?.isOpen() && !this.itemPanelOpen() && !this.sectTrial?.blocksInput) this.openAlchemy();
+    if (J(k.p) && !this.smithServices?.visible() && !this.itemPanelOpen()) {
       if (this.attrPanel?.isOpen()) this.attrPanel.close();
       else this.openAttrPanel();
     }
@@ -894,7 +895,7 @@ export class GameScene extends Phaser.Scene {
     if (escDown && this.skillWindow.open) this.skillWindow.close();
     if (escDown && this.attrPanel?.isOpen()) this.attrPanel.close();
     if (escDown) this.closeItemPanels();
-    const modal = this.dialog.open || this.skillWindow.open || this.alchemy.isOpen() || this.shop.isOpen() || this.attrPanel?.isOpen() || this.itemPanelOpen() || !!this.sectTrial?.blocksInput;
+    const modal = this.dialog.open || this.skillWindow.open || this.alchemy.isOpen() || this.shop.isOpen() || this.smithServices?.visible() || this.attrPanel?.isOpen() || this.itemPanelOpen() || !!this.sectTrial?.blocksInput;
     this.updateInteractionPrompts(modal);
     this.gathering.update(delta, k.z.isDown, modal || this.hasNearbyDrop(),
       k.left.isDown || k.right.isDown || k.up.isDown || k.down.isDown || k.space.isDown || k.alt.isDown || k.c.isDown || k.ctrl.isDown || k.x.isDown);
@@ -1697,7 +1698,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   openAlchemy(publicFurnace?: string) {
-    if (this.attrPanel?.isOpen()) return false;
+    if (this.attrPanel?.isOpen() || this.smithServices?.visible()) return false;
     if (!this.requireFeature('alchemyPhase1')) return false;
     if (this.player.dead || this.trial || this.map.trial || this.dialog.open || this.skillWindow.open || this.shop.isOpen() || this.sectTrial?.blocksInput) return false;
     const furnace = alchemyFurnace(this.prog, this.player, this.map.objects, publicFurnace);
@@ -1710,7 +1711,7 @@ export class GameScene extends Phaser.Scene {
   /** UI-6：P 与测试入口共用互斥检查；加点结算由 Progress 负责。 */
   openAttrPanel(): boolean {
     if (this.player.dead || this.dialog.open || this.skillWindow.open || this.alchemy.isOpen()
-      || this.shop.isOpen() || this.sectTrial?.blocksInput) return false;
+      || this.shop.isOpen() || this.smithServices?.visible() || this.sectTrial?.blocksInput) return false;
     this.gathering.cancel(); this.player.body.setVelocityX(0); this.invText.setVisible(false);
     this.closeItemPanels();
     this.attrPanel.open(); return true;
@@ -1721,7 +1722,7 @@ export class GameScene extends Phaser.Scene {
   /** UI-7：I/E 与测试桥共用检查；背包/装备互相切换，其他 modal 内禁止打开。 */
   private openItemPanel(panel: InventoryPanel | EquipPanel | undefined): boolean {
     if (!panel || this.player.dead || this.dialog.open || this.skillWindow.open || this.alchemy.isOpen()
-      || this.shop.isOpen() || this.attrPanel?.isOpen() || this.sectTrial?.blocksInput) return false;
+      || this.shop.isOpen() || this.smithServices?.visible() || this.attrPanel?.isOpen() || this.sectTrial?.blocksInput) return false;
     this.gathering.cancel(); this.player.body.setVelocityX(0); this.invText.setVisible(false);
     this.closeItemPanels(); panel.open(); return true;
   }
@@ -1813,6 +1814,7 @@ export class GameScene extends Phaser.Scene {
 
   /** 测试覆盖即时撤下旧回调；存档身份、材料、贡献与待炼炉次均保留。 */
   async applyFeatureFlags() {
+    this.smithServices?.update(); this.smithDialogVersion++;
     this.senseMap?.syncRevealed();
     this.senseUi?.refresh(); this.attrPanel?.update();
     syncTalismanMapAvailability();
@@ -2160,32 +2162,42 @@ export class GameScene extends Phaser.Scene {
     return true;
   }
 
-  /** 仅接既有欧冶匠冒烟提示；未布置对象的地图保持安静。 */
+  /** 只恢复当前地图的普通对白，不重新挂服务选项或任务回调。 */
+  private returnToSmithDialogue() {
+    if (!this.smithDialogueReturnEnabled || this.scene?.isActive() === false) return;
+    const nearby = this.map.objects.some(o => (o.name === 'smith_ou' || o.props?.npc === 'smith_ou')
+      && this.senseMap?.objectVisible(o) !== false
+      && Math.abs(o.x - this.player.x) <= 28 && Math.abs(o.y - this.player.y) <= 40);
+    if (!nearby) return;
+    const npc = NPCS.smith_ou;
+    this.dialog?.show?.([{ speaker: npc.name, text: npc.dialog[0] ?? '' }], npc.sprite);
+  }
+
+  /** 欧冶匠对话进入炼器菜单；UI 关闭只提示，结算仍由各服务 Gate 管理。 */
   private tryInteractForgeEntrance(): boolean {
     const entrance = this.map.objects.find(o => (o.name === 'smith_ou' || o.props?.npc === 'smith_ou')
       && this.senseMap?.objectVisible(o) !== false
       && Math.abs(o.x - this.player.x) <= 28 && Math.abs(o.y - this.player.y) <= 40);
     if (!entrance) return false;
-    if (!isForgeOpenForFixture()) this.log(forgeFeatureClosed().text, '#aaaaaa');
-    else {
-      const result = new ForgeGate(this.prog).entrance();
-      this.log(result.allowed ? '炼器打造已开放。' : result.text, result.allowed ? '#fff8d0' : '#aaaaaa');
+    if (!isSmithServicesUiAccessible('entrance')) {
+      this.log(t('ui.smith.closed'), '#aaaaaa');
+      return true;
     }
-    if (!isEnhanceOpenForFixture()) this.log(enhanceFeatureClosed().text, '#aaaaaa');
-    else {
-      const result = new EnhanceGate(this.prog).entrance();
-      this.log(result.allowed ? '装备强化已开放。' : result.text, '#aaaaaa');
-    }
-    if (!isEnchantOpenForFixture()) this.log(enchantFeatureClosed().text, '#aaaaaa');
-    else {
-      const result = new EnchantGate(this.prog).entrance();
-      this.log(result.allowed ? '装备附灵已开放。' : result.text, '#aaaaaa');
-    }
-    if (!isSalvageOpenForFixture()) this.log(salvageFeatureClosed().text, '#aaaaaa');
-    else {
-      const result = new SalvageGate(this.prog).entrance();
-      this.log(result.allowed ? '装备分解已开放。' : result.text, '#aaaaaa');
-    }
+    const npc = NPCS.smith_ou, progress = this.prog, slot = Progress.getActiveSlot(), map = this.map;
+    const version = this.smithDialogVersion = (this.smithDialogVersion ?? 0) + 1;
+    this.smithDialogueReturnEnabled = true;
+    this.gathering?.cancel(); this.closeItemPanels(); this.player.body?.setVelocityX(0);
+    this.dialog.choose({ speaker: npc.name, text: npc.dialog[0] ?? '' }, npc.sprite, [
+      { label: t('ui.smith.title'), onSelect: () => {
+        if (this.prog !== progress || Progress.getActiveSlot() !== slot || this.map !== map || this.smithDialogVersion !== version) return;
+        if (!isSmithServicesUiAccessible('entrance') || !isSmithServicesUiAccessible('menu')) {
+          this.returnToSmithDialogue();
+          this.log(t('ui.smith.closed'), '#aaaaaa'); return;
+        }
+        this.smithServices?.show();
+      } },
+      { label: t('ui.smith.back'), onSelect: () => {} },
+    ]);
     return true;
   }
 

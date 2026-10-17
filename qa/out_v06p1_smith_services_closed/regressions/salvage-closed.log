@@ -1,0 +1,22 @@
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: 仅剥分解四行恢复 5d9fa29 Progress 完整字节；既有业务保持
++ actual - expected
+
++ '561bf6c497dfc16db4365b06ac01abd254af00795405eb84afc4c60e128d8526'
+- 'a9ab2aa6e73dca631b6ed28f672d490b61525610c609df478e2c112a66358d3c'
+    at eq (file:///workspace/xiantu/wt/feat/ui-smith-services/scripts/v06p1-salvage-closed-test.mjs:55:66)
+    at stripSalvageOpenProgress (file:///workspace/xiantu/wt/feat/ui-smith-services/scripts/v06p1-salvage-soft-open-compat-proof.mjs:41:3)
+    at guard (file:///workspace/xiantu/wt/feat/ui-smith-services/scripts/v06p1-salvage-closed-test.mjs:66:14)
+    at async sourceChecks (file:///workspace/xiantu/wt/feat/ui-smith-services/scripts/v06p1-salvage-closed-test.mjs:74:60)
+    at async file:///workspace/xiantu/wt/feat/ui-smith-services/scripts/v06p1-salvage-closed-test.mjs:244:3 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: '561bf6c497dfc16db4365b06ac01abd254af00795405eb84afc4c60e128d8526',
+  expected: 'a9ab2aa6e73dca631b6ed28f672d490b61525610c609df478e2c112a66358d3c',
+  operator: 'deepStrictEqual'
+}
+
+Node.js v20.19.2

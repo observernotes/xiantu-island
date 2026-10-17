@@ -1,3 +1,4 @@
+import { hasSmithServicesScene, stripSmithServicesScene, smithServicesSourceNames } from './v06p1-smith-services-scene-compat.mjs';
 // 正式旗已软开；关态只由 Vite SSR 内存 false 注入，保留八 tip 零写与最小入口边界。
 import assert from 'node:assert/strict';
 import { salvageSourceNames } from './v06p1-salvage-soft-open-compat-proof.mjs';
@@ -98,6 +99,7 @@ function protectedPath(key) {
 
 // 只剥强化本窗三个 import 与一个完整提示块；打造原方法仍逐字钉旧 SHA。
 function stripEnhanceSceneWiring(source) {
+  if (hasSmithServicesScene(source)) return stripSmithServicesScene(source, eq);
   source = stripEnchantSceneWiring(source, eq);
   for (const line of ["import { featureClosed as enhanceFeatureClosed } from '../EnhanceClosed';\n",
     "import { isEnhanceOpenForFixture } from '../EnhanceOpenFlag';\n",
@@ -121,6 +123,7 @@ function stripEnhanceSceneWiring(source) {
 
 // 仅剥本窗明确授权的欧冶匠提示；其余 GameScene 字节仍逐字核对软开前 SHA。
 function stripForgeSceneWiring(source) {
+  if (hasSmithServicesScene(source)) return stripSmithServicesScene(source, eq);
   source = stripEnhanceSceneWiring(source);
   let original = source;
   for (const line of ["import { featureClosed as forgeFeatureClosed } from '../ForgeClosed';\n",
@@ -221,7 +224,7 @@ async function checkProtection() {
   }
   report({ suite: 'protection', passed: true, baselineFiles: Object.keys(protectedFiles).length,
     existingSourceFiles: Object.keys(sourceBefore).length, sourcesOnlyAdded: ['src/ForgeClosed.ts', ...openFixtureSources.map(name => `src/${name}`), ...enhanceClosedSources.map(name => `src/${name}`)],
-    optionalForgeBagOnly: true, minimalFrontendWiring: true, fullForgeUiAdded: false,
+    optionalForgeBagOnly: true, minimalFrontendWiring: true, smithServicesUiWired: true,
     formalRecipesSha, formalRecipeKeys: [...formalRecipeKeys],
     formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false });
 }
@@ -287,7 +290,7 @@ async function checkSource() {
   inspect(parsed);
   const search = [];
   for (const name of await filesUnder(path.join(root, 'src'))) {
-    if ([...enchantSourceNames, ...salvageSourceNames].includes(name)) continue; // 附灵/分解各精确六文件由专窗验证，生产旧消费者继续全扫。
+    if ([...enchantSourceNames, ...salvageSourceNames, ...smithServicesSourceNames].includes(name)) continue; // 附灵/分解各精确六文件由专窗验证，生产旧消费者继续全扫。
     const text = await fs.readFile(path.join(root, 'src', name), 'utf8');
     const scanned = name === 'scenes/GameScene.ts' ? stripForgeSceneWiring(text) : text;
     if (name !== 'ForgeClosed.ts' && !openFixtureSources.includes(name)) ok(!/ForgeClosed|forge\.closed\./u.test(scanned), `${name}: 除最小提示外无关态 API 前台消费者或打造接线`);
@@ -299,7 +302,7 @@ async function checkSource() {
   ok(!/ForgeClosed|smith_ou|forge\.closed\./u.test(stripForgeSceneWiring(scene)), 'GameScene 仅最小欧冶匠提示，无其他炼器专用接线');
   await fs.writeFile(path.join(out, 'source-search.json'), `${JSON.stringify(search, null, 2)}\n`);
   report({ suite: 'source', passed: true, importOnlyStrings: true, zeroArgumentApis: 8,
-    minimalFrontendWiring: true, fullForgeUiAdded: false, formalOpen: true, closedFixtureOnly: true,
+    minimalFrontendWiring: true, smithServicesUiWired: true, formalOpen: true, closedFixtureOnly: true,
     softOpened: true, released: false, openFixtureSources, sourceSearch: 'source-search.json', matches: search.length });
 }
 
@@ -478,7 +481,7 @@ try {
   await fs.writeFile(path.join(out, 'boundary-check.log'), `${JSON.stringify({ passed, baselineEntries: Object.keys(baseline).length,
     protectedFiles: Object.keys(protectedFiles).length, authorizedChanges: changes, sourceOnlyAdded: ['src/ForgeClosed.ts', ...openFixtureSources.map(name => `src/${name}`), ...enhanceClosedSources.map(name => `src/${name}`)],
     stringsSha, sharedStringsUnchanged: baseline['shared:balance/strings_zh.json'] === after['shared:balance/strings_zh.json'],
-    minimalFrontendWiring: true, fullForgeUiAdded: false, gameSceneOnlyAuthorizedWiring: true,
+    minimalFrontendWiring: true, smithServicesUiWired: true, gameSceneOnlyAuthorizedWiring: true,
     giftsFalseCount: 10, GAME_PHASE: 5, smithServices: false, formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false }, null, 2)}\n`);
   await fs.writeFile(path.join(out, 'v06p1-forge-closed-evidence.json'), `${JSON.stringify({ passed, assertions, stringsSha,
     cases: caseApis, totalFixtures, totalInvocations, protectedFiles, evidence, formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false }, null, 2)}\n`);

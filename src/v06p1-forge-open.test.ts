@@ -1,7 +1,7 @@
 // 正式炼器恒开；只有独立 Vite SSR 关态图可将 ForgeOpenFlag 内存注入 false。
 import enhance from '@xt/balance/enhance.json';
 import recipes from '@xt/balance/recipes.json';
-import { GAME_PHASE, ITEMS } from './data';
+import { GAME_PHASE, ITEMS, t } from './data';
 import { featureEnabled, featureFlags } from './features';
 import { Progress } from './Progress';
 import { createIndexedDbBackend, saveStore, setSaveBackend } from './SaveStore';
@@ -229,62 +229,58 @@ export async function runForgeOpenFixtureTests(options: {
     await replay(loaded, gate, request(payload.craftRequestId), `${payload.state}/读回同请求`);
   }
   function sceneSmoke() {
-    const { p } = fixture(), logs: { text: string; color: string }[] = [];
+    const { p } = fixture();
+    const logs: { text: string; color: string }[] = [], dialogs: any[] = [];
     const before = p.exportSave(), writes = idb.writes;
+    let menuShows = 0;
     const entrance = { name: 'smith_ou', type: 'npc', props: { npc: 'smith_ou' }, x: 100, y: 200 };
     const scene: any = Object.assign(Object.create(GameScene.prototype), {
       prog: p, map: { id: 'luoxia_town', objects: [] }, player: { x: 100, y: 200 },
       log: (text: string, color: string) => logs.push({ text, color }),
-      encounterRuntime: { interact() { throw new Error('欧冶匠入口须先于遭遇与NPC交互'); } },
+      closeItemPanels() {},
+      dialog: { choose: (line: unknown, portrait: unknown, choices: any[]) => dialogs.push({ line, portrait, choices }) },
+      smithServices: { show: () => { menuShows++; } },
+      encounterRuntime: { interact() { throw new Error('欧冶匠入口须先于遭遇与 NPC 交互'); } },
     });
-    eq(typeof scene.tryInteractForgeEntrance, 'function', 'Scene最小炼器入口存在');
-    eq(scene.tryInteractForgeEntrance(), false, '没有对象时安静no-op');
+    eq(typeof scene.tryInteractForgeEntrance, 'function', '真实欧冶匠入口存在');
+    eq(scene.tryInteractForgeEntrance(), false, '没有对象时安静 no-op');
     scene.map.objects = [{ ...entrance, name: 'npc_shop', props: { npc: 'npc_shop' } }];
-    eq(scene.tryInteractForgeEntrance(), false, '普通NPC商店不是炼器入口');
-    scene.map.objects = [entrance]; scene.player.x = entrance.x + 29;
-    eq(scene.tryInteractForgeEntrance(), false, '入口横向超距不交互');
-    scene.player.x = entrance.x; scene.player.y = entrance.y + 41;
-    eq(scene.tryInteractForgeEntrance(), false, '入口纵向超距不交互');
+    eq(scene.tryInteractForgeEntrance(), false, '普通商店不消费炼器入口');
+    scene.map.objects = [entrance];
+    for (const offset of [-29, 29]) {
+      scene.player.x = entrance.x + offset;
+      eq(scene.tryInteractForgeEntrance(), false, '横向超距不交互: ' + offset);
+    }
+    scene.player.x = entrance.x;
+    for (const offset of [-41, 41]) {
+      scene.player.y = entrance.y + offset;
+      eq(scene.tryInteractForgeEntrance(), false, '纵向超距不交互: ' + offset);
+    }
     scene.player.y = entrance.y; scene.senseMap = { objectVisible: () => false };
     eq(scene.tryInteractForgeEntrance(), false, '隐藏欧冶匠不交互');
-    eq(logs, [], '无对象/商店/超距/隐藏时均无提示');
+    eq([logs.length, dialogs.length], [0, 0], '无对象/商店/超距/隐藏均无提示或菜单');
     scene.senseMap = undefined;
-    for (const object of [{ ...entrance, props: {} }, { ...entrance, name: 'forge-smoke-alias' }]) {
+    for (const object of [{ ...entrance, props: {} }, { ...entrance, name: 'smith-route-alias' }]) {
       scene.map.objects = [object];
-      eq(scene.tryInteractForgeEntrance(), true, `${object.name}邻近欧冶匠被消费`);
-      eq(logs[logs.length - 4], openFixture
-        ? { text: '炼器打造已开放。', color: '#fff8d0' }
-        : { text: Closed.featureClosed().text, color: '#aaaaaa' }, 'Scene按正式开态/内存关态显示提示');
-      eq(logs[logs.length - 3], { text: '装备强化已开放。', color: '#aaaaaa' }, '同次命中在打造提示后显示强化正式开态提示');
-      eq(logs[logs.length - 2], { text: '装备附灵已开放。', color: '#aaaaaa' }, '同次命中在打造强化提示后显示附灵正式开态提示');
-      eq(logs[logs.length - 1], { text: '装备分解已开放。', color: '#aaaaaa' }, '同次命中在打造强化附灵提示后显示分解正式开态提示');
+      eq(scene.tryInteractForgeEntrance(), true, object.name + ' 邻近欧冶匠消费交互');
+      const choices = dialogs[dialogs.length - 1].choices;
+      eq(choices[0].label, t('ui.smith.title'), '正式对话含炼器服务选项');
+      const previous = menuShows; choices[0].onSelect();
+      eq(menuShows, previous + 1, '选服务入口才进入四服务菜单');
     }
-    scene.map.objects = [entrance]; scene.player.x = entrance.x + 28; scene.player.y = entrance.y + 40;
-    eq(scene.tryInteractForgeEntrance(), true, '28×40范围边界内仍可冒烟');
+    scene.map.objects = [entrance];
+    for (const x of [-1, 1]) for (const y of [-1, 1]) {
+      scene.player.x = entrance.x + 28 * x; scene.player.y = entrance.y + 40 * y;
+      eq(scene.tryInteractForgeEntrance(), true, '28×40 四角边界内消费交互');
+    }
     scene.player.x = entrance.x; scene.player.y = entrance.y;
-    eq(scene.tryInteract(), true, '通用交互在遭遇/NPC前消费欧冶匠入口');
-    const originalEntrance = ForgeGate.prototype.entrance;
-    let entranceCalls = 0;
-    try {
-      ForgeGate.prototype.entrance = function () {
-        entranceCalls++;
-        if (!openFixture) throw new Error('内存关态不得查询ForgeGate');
-        return { allowed: false, tipKey: 'forge.fixture.smoke', text: '炼器冒烟拒绝。' };
-      };
-      eq(scene.tryInteractForgeEntrance(), true, '最小入口保留Gate拒绝提示分支');
-      eq(entranceCalls, openFixture ? 1 : 0, '只有正式开态查询ForgeGate.entrance');
-      eq(logs[logs.length - 4], { text: openFixture ? '炼器冒烟拒绝。' : Closed.featureClosed().text,
-        color: '#aaaaaa' }, 'Gate拒绝原文或内存关态文案被展示');
-      eq(logs[logs.length - 3], { text: '装备强化已开放。', color: '#aaaaaa' }, '同次命中在打造提示后显示强化正式开态提示');
-      eq(logs[logs.length - 2], { text: '装备附灵已开放。', color: '#aaaaaa' }, '同次命中在打造强化提示后显示附灵正式开态提示');
-      eq(logs[logs.length - 1], { text: '装备分解已开放。', color: '#aaaaaa' }, '同次命中在打造强化附灵提示后显示分解正式开态提示');
-    } finally { ForgeGate.prototype.entrance = originalEntrance; }
-    eq(p.exportSave(), before, 'Scene冒烟不修改角色或炼器袋');
-    eq(idb.writes, writes, 'Scene冒烟存档写入0');
-    return { noObjectNoop: true, npcShopIgnored: true, nearbyOnly: true, hiddenIgnored: true,
-      objectName: 'smith_ou', npcProp: 'smith_ou', genericInteraction: true,
-      graph: openFixture ? 'formal-open' : 'memory-closed', gateDeniedRouting: openFixture,
-      closedBypassesGate: !openFixture, saveWrites: idb.writes - writes };
+    eq(scene.tryInteract(), true, '通用交互先消费欧冶匠入口');
+    eq(logs, [], '对话路由不连刷四 Gate 冒烟提示');
+    eq(p.exportSave(), before, '入口/对话/菜单不修改角色或四服务业务袋');
+    eq(idb.writes, writes, '入口/菜单存档写入为零');
+    return { noObjectNoop: true, nonSmithIgnored: true, nearbyOnly: true, hiddenIgnored: true,
+      genericInteraction: true, smithServicesUiWired: true, menuRouted: menuShows === 2,
+      consumedInteraction: true, graph: openFixture ? 'formal-open' : 'memory-closed', saveWrites: idb.writes - writes };
   }
   async function formalGateTests() {
     const formalRows = recipes.recipes.filter(row => 'type' in row && row.type === 'forge');

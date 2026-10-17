@@ -1,0 +1,8 @@
+{"service":"enchant","graph":"formal-open","refresh":false,"passed":true,"assertions":1115}
+{"service":"enchant","graph":"memory-closed","refresh":false,"passed":true,"assertions":82}
+{"service":"enchant","graph":"formal-open","refresh":true,"passed":true,"assertions":121}
+{"service":"enchant","graph":"memory-closed","refresh":true,"passed":true,"assertions":238}
+{"service":"salvage","graph":"formal-open","refresh":false,"passed":true,"assertions":1114}
+{"service":"salvage","graph":"memory-closed","refresh":false,"passed":true,"assertions":48}
+{"service":"salvage","graph":"formal-open","refresh":true,"passed":true,"assertions":89}
+{"service":"salvage","graph":"memory-closed","refresh":true,"passed":true,"assertions":88}

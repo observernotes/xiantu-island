@@ -1,0 +1,967 @@
+[
+  {
+    "service": "forge",
+    "graph": "formal-open",
+    "refresh": false,
+    "passed": true,
+    "result": {
+      "assertions": 1379,
+      "openFixture": true,
+      "graph": "formal-open",
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "softOpened": true,
+      "released": false,
+      "sceneSmoke": {
+        "noObjectNoop": true,
+        "nonSmithIgnored": true,
+        "nearbyOnly": true,
+        "hiddenIgnored": true,
+        "genericInteraction": true,
+        "smithServicesUiWired": true,
+        "menuRouted": true,
+        "consumedInteraction": true,
+        "graph": "formal-open",
+        "saveWrites": 0
+      },
+      "defaultGate": {
+        "fixtureRecipesAbsent": true,
+        "recipeId": "recipe_forge_bamboo_sword",
+        "craftAllowed": true,
+        "submitCommitted": true,
+        "outputCount": 1,
+        "injectedOutputCount": 3,
+        "fixtureIsolation": true,
+        "noProductionFallback": true,
+        "invalidFormalRowsDenied": true,
+        "forgingExperienceWritten": false,
+        "laterServiceClosed": true
+      },
+      "forgingExperienceWritten": false,
+      "storageWrites": 25,
+      "commits": 24,
+      "sampleCount": 14,
+      "cases": [
+        "O01",
+        "O02",
+        "O03",
+        "O04",
+        "O05",
+        "O06",
+        "O07",
+        "O08"
+      ]
+    }
+  },
+  {
+    "service": "forge",
+    "graph": "memory-closed",
+    "refresh": false,
+    "passed": true,
+    "result": {
+      "assertions": 272,
+      "openFixture": false,
+      "graph": "memory-closed",
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "softOpened": true,
+      "released": false,
+      "sceneSmoke": {
+        "noObjectNoop": true,
+        "nonSmithIgnored": true,
+        "nearbyOnly": true,
+        "hiddenIgnored": true,
+        "genericInteraction": true,
+        "smithServicesUiWired": true,
+        "menuRouted": true,
+        "consumedInteraction": true,
+        "graph": "memory-closed",
+        "saveWrites": 0
+      },
+      "defaultGate": null,
+      "forgingExperienceWritten": false,
+      "storageWrites": 0,
+      "commits": 0,
+      "sampleCount": 0,
+      "cases": [
+        "memory-closed-eight-tips",
+        "zero-side-effects",
+        "historical-baggage"
+      ]
+    }
+  },
+  {
+    "service": "forge",
+    "graph": "formal-open",
+    "refresh": true,
+    "passed": true,
+    "result": {
+      "assertions": 790,
+      "openFixture": true,
+      "graph": "formal-open",
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "softOpened": true,
+      "released": false,
+      "sceneSmoke": {
+        "noObjectNoop": true,
+        "nonSmithIgnored": true,
+        "nearbyOnly": true,
+        "hiddenIgnored": true,
+        "genericInteraction": true,
+        "smithServicesUiWired": true,
+        "menuRouted": true,
+        "consumedInteraction": true,
+        "graph": "formal-open",
+        "saveWrites": 0
+      },
+      "defaultGate": {
+        "fixtureRecipesAbsent": true,
+        "recipeId": "recipe_forge_bamboo_sword",
+        "craftAllowed": true,
+        "submitCommitted": true,
+        "outputCount": 1,
+        "injectedOutputCount": 3,
+        "fixtureIsolation": true,
+        "noProductionFallback": true,
+        "invalidFormalRowsDenied": true,
+        "forgingExperienceWritten": false,
+        "laterServiceClosed": true
+      },
+      "forgingExperienceWritten": false,
+      "storageWrites": 12,
+      "commits": 12,
+      "sampleCount": 0,
+      "cases": [
+        "O01",
+        "O02",
+        "O03",
+        "O04",
+        "O05",
+        "O06",
+        "O07",
+        "O08"
+      ]
+    }
+  },
+  {
+    "service": "forge",
+    "graph": "memory-closed",
+    "refresh": true,
+    "passed": true,
+    "result": {
+      "assertions": 545,
+      "openFixture": false,
+      "graph": "memory-closed",
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "softOpened": true,
+      "released": false,
+      "sceneSmoke": {
+        "noObjectNoop": true,
+        "nonSmithIgnored": true,
+        "nearbyOnly": true,
+        "hiddenIgnored": true,
+        "genericInteraction": true,
+        "smithServicesUiWired": true,
+        "menuRouted": true,
+        "consumedInteraction": true,
+        "graph": "memory-closed",
+        "saveWrites": 0
+      },
+      "defaultGate": null,
+      "forgingExperienceWritten": false,
+      "storageWrites": 4,
+      "commits": 4,
+      "sampleCount": 0,
+      "cases": [
+        "memory-closed-eight-tips",
+        "zero-side-effects",
+        "historical-baggage"
+      ]
+    }
+  },
+  {
+    "service": "enhance",
+    "graph": "formal-open",
+    "refresh": false,
+    "passed": false,
+    "error": "Error: snapshot/formal-open/formal-table: 正式strings快照960键含_meta，原944键完整保留: 970，期望 960\n    at eq (/workspace/xiantu/wt/feat/ui-smith-services/src/v06p1-enhance-open.test.ts:168:13)\n    at formalRefusalCases (/workspace/xiantu/wt/feat/ui-smith-services/src/v06p1-enhance-open.test.ts:462:5)\n    at Module.runEnhanceOpenFixtureTests (/workspace/xiantu/wt/feat/ui-smith-services/src/v06p1-enhance-open.test.ts:1632:92)\n    at async file:///workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_closed/regressions/gate-runtime.mjs:26:22"
+  },
+  {
+    "service": "enchant",
+    "graph": "formal-open",
+    "refresh": false,
+    "passed": true,
+    "result": {
+      "passed": true,
+      "assertions": 1115,
+      "dataMode": "snapshot",
+      "graph": "formal-open",
+      "cases": {
+        "O01": {
+          "executed": true,
+          "evidenceKeys": [
+            "five-elements-default-ForgeGate-formal-source",
+            "read-only-feature-entrance-preview",
+            "deterministic-2000-stones-one-core-one-commit",
+            "production-fixtureInstances-absent"
+          ]
+        },
+        "O02": {
+          "executed": true,
+          "evidenceKeys": [
+            "five-same-roots-exact-config-bonus",
+            "different-root-zero-sameRootBonus",
+            "no-stacking-on-replay"
+          ]
+        },
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "missing-stones-core-transient-core",
+            "invalid-request-root-element-instance-armor-foreign",
+            "itemId-quantity-slot-and-fixture-history-not-authorization",
+            "weapon-phase-enabled-placeholder-quality-slot-type",
+            "explicit-fixture-never-falls-back-to-formal-source",
+            "independent-flag-no-other-service-bypass",
+            "ssr-invalid-mapping-and-config-separate-graphs"
+          ]
+        },
+        "O04": {
+          "executed": true,
+          "evidenceKeys": [
+            "same-element-new-request-zero-delta",
+            "original-result-replay-without-resources",
+            "old-result-after-replacement-read-only"
+          ]
+        },
+        "O05": {
+          "executed": true,
+          "evidenceKeys": [
+            "full-cost-atomic-replacement-stable-instanceRef",
+            "missing-resource-and-stale-fromElement-preserve-old",
+            "only-new-element-and-config-attributes-active"
+          ]
+        },
+        "O06": {
+          "executed": true,
+          "evidenceKeys": [
+            "first-and-replacement-real-save-load-export-import-restore",
+            "cross-slot-no-instance-or-result-borrowing",
+            "fresh-independent-ssr-roundtrip"
+          ]
+        },
+        "O07": {
+          "executed": true,
+          "evidenceKeys": [
+            "same-request-concurrent-one-commit",
+            "payload-conflict-no-old-result",
+            "same-instance-targets-recheck",
+            "two-formal-instances-shared-inventory-no-negative",
+            "stale-progress-does-not-overwrite-new-level-exp-quest-talisman"
+          ]
+        },
+        "O08": {
+          "executed": true,
+          "evidenceKeys": [
+            "carrier-false-throw-and-draft-tamper-rollback",
+            "deduct-failure-rollback",
+            "idb-request-before-complete-invisible-abort-rollback-retry",
+            "unknown-corrupt-records-blocked-no-repair",
+            "serialization-failure-zero-delta-and-both-gate-slot-locks-released",
+            "real-load-corrupt-bag-storageError-no-overwrite",
+            "missing-field-undefined",
+            "enhance-and-protect-result-preserved",
+            "memory-closed-old-callback-graph"
+          ]
+        }
+      },
+      "storageWrites": 84,
+      "commits": 83,
+      "sceneSmoke": {
+        "noObjectNoop": true,
+        "nonSmithIgnored": true,
+        "nearbyOnly": true,
+        "hiddenIgnored": true,
+        "genericInteraction": true,
+        "smithServicesUiWired": true,
+        "menuRouted": true,
+        "consumedInteraction": true,
+        "graph": "formal-open",
+        "saveWrites": 0
+      },
+      "randomCalls": 0,
+      "localWrites": 0,
+      "enchantClosedTipsWired": true,
+      "beastCoreMapped": true,
+      "enchantOpenFixtureTableExecuted": true,
+      "formalInstanceSource": true,
+      "softOpenedEnchant": true,
+      "EnchantOpenFlag": true,
+      "released": false,
+      "protectCharmSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "productionFixtureInstances": false,
+      "activeEnchantOpenFlag": true,
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据"
+    }
+  },
+  {
+    "service": "enchant",
+    "graph": "memory-closed",
+    "refresh": false,
+    "passed": true,
+    "result": {
+      "passed": true,
+      "assertions": 82,
+      "dataMode": "snapshot",
+      "graph": "memory-closed",
+      "cases": {
+        "O08": {
+          "executed": true,
+          "evidenceKeys": [
+            "memory-flag-false-eight-tips",
+            "hostile-getters-unread",
+            "closed-old-callback-preserves-assets"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": {
+        "noObjectNoop": true,
+        "nonSmithIgnored": true,
+        "nearbyOnly": true,
+        "hiddenIgnored": true,
+        "genericInteraction": true,
+        "smithServicesUiWired": true,
+        "menuRouted": true,
+        "consumedInteraction": true,
+        "graph": "memory-closed",
+        "saveWrites": 0
+      },
+      "randomCalls": 0,
+      "localWrites": 0,
+      "enchantClosedTipsWired": true,
+      "beastCoreMapped": true,
+      "enchantOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedEnchant": true,
+      "EnchantOpenFlag": true,
+      "released": false,
+      "protectCharmSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "productionFixtureInstances": false,
+      "activeEnchantOpenFlag": false,
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据"
+    }
+  },
+  {
+    "service": "enchant",
+    "graph": "formal-open",
+    "refresh": true,
+    "passed": true,
+    "result": {
+      "passed": true,
+      "assertions": 121,
+      "dataMode": "snapshot",
+      "graph": "formal-open",
+      "cases": {
+        "O06": {
+          "executed": true,
+          "evidenceKeys": [
+            "fresh-independent-ssr-save-load-import-restore",
+            "result-dedupe-cost-final-element-identical"
+          ]
+        }
+      },
+      "storageWrites": 6,
+      "commits": 6,
+      "sceneSmoke": {
+        "noObjectNoop": true,
+        "nonSmithIgnored": true,
+        "nearbyOnly": true,
+        "hiddenIgnored": true,
+        "genericInteraction": true,
+        "smithServicesUiWired": true,
+        "menuRouted": true,
+        "consumedInteraction": true,
+        "graph": "formal-open",
+        "saveWrites": 0
+      },
+      "randomCalls": 0,
+      "localWrites": 0,
+      "enchantClosedTipsWired": true,
+      "beastCoreMapped": true,
+      "enchantOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedEnchant": true,
+      "EnchantOpenFlag": true,
+      "released": false,
+      "protectCharmSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "productionFixtureInstances": false,
+      "activeEnchantOpenFlag": true,
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据"
+    }
+  },
+  {
+    "service": "enchant",
+    "graph": "memory-closed",
+    "refresh": true,
+    "passed": true,
+    "result": {
+      "passed": true,
+      "assertions": 238,
+      "dataMode": "snapshot",
+      "graph": "memory-closed",
+      "cases": {
+        "O08": {
+          "executed": true,
+          "evidenceKeys": [
+            "memory-flag-false-eight-tips",
+            "hostile-getters-unread",
+            "closed-old-callback-preserves-assets"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": {
+        "noObjectNoop": true,
+        "nonSmithIgnored": true,
+        "nearbyOnly": true,
+        "hiddenIgnored": true,
+        "genericInteraction": true,
+        "smithServicesUiWired": true,
+        "menuRouted": true,
+        "consumedInteraction": true,
+        "graph": "memory-closed",
+        "saveWrites": 0
+      },
+      "randomCalls": 0,
+      "localWrites": 0,
+      "enchantClosedTipsWired": true,
+      "beastCoreMapped": true,
+      "enchantOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedEnchant": true,
+      "EnchantOpenFlag": true,
+      "released": false,
+      "protectCharmSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "productionFixtureInstances": false,
+      "activeEnchantOpenFlag": false,
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据"
+    }
+  },
+  {
+    "service": "salvage",
+    "graph": "formal-open",
+    "refresh": false,
+    "passed": true,
+    "result": {
+      "passed": true,
+      "assertions": 1114,
+      "dataMode": "snapshot",
+      "graph": "formal-open",
+      "cases": {
+        "O01": {
+          "executed": true,
+          "evidenceKeys": [
+            "default-ForgeGate-formal-weapon-all-four-grades",
+            "read-only-feature-entrance-preview",
+            "one-atomic-destroy-output-result-dedupe",
+            "no-extra-stones-no-probability-no-fixtureInstances"
+          ]
+        },
+        "O02": {
+          "executed": true,
+          "evidenceKeys": [
+            "formal-weapon-bag-and-equipped-armor-unregistered-source-refused",
+            "disk-recipes-unmodified-armor-cannot-invent-instanceRef-from-count-or-slot",
+            "same-prototype-selected-ref-only",
+            "location-proof-required-and-links-invalidated"
+          ]
+        },
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "missing-foreign-unowned-source-and-itemId-spoof-denied",
+            "bad-type-grade-and-stale-intent-denied",
+            "binding-natal-blood-and-unsalvageable-true-or-missing-denied",
+            "default-production-without-qualification-denied",
+            "ssr-json-invalid-config-registration-and-equipment-graphs",
+            "three-existing-service-laterService-preserved"
+          ]
+        },
+        "O04": {
+          "executed": true,
+          "evidenceKeys": [
+            "full-equipped-target-complete-existing-stack-accepts",
+            "full-no-complete-stack-zero-delta",
+            "illegal-slots-stackLimit-and-inventory-denied",
+            "no-overflow-partial-mail-pending"
+          ]
+        },
+        "O05": {
+          "executed": true,
+          "evidenceKeys": [
+            "matching-old-success-read-only-without-instance-binding-capacity",
+            "same-request-grade-or-ref-conflict",
+            "new-request-destroyed-instance-no-replacement"
+          ]
+        },
+        "O06": {
+          "executed": true,
+          "evidenceKeys": [
+            "real-save-load-import-export-restore-stable-destruction-inventory-results-dedupe",
+            "fresh-independent-ssr-open-and-formal-closed",
+            "cross-slot-source-request-result-isolation"
+          ]
+        },
+        "O07": {
+          "executed": true,
+          "evidenceKeys": [
+            "same-request-concurrent-one-commit",
+            "same-instance-different-requests-one-destruction",
+            "formal-two-inventory-weapon-targets-shared-capacity-no-overcapacity",
+            "existing-EnhanceGate-race-preserves-complete-facts",
+            "two-object-ordinary-first-salvage-CAS-refuses-after-pre-read",
+            "two-object-salvage-first-stale-ordinary-writer-refused-after-pre-read",
+            "stale-progress-rejected-after-other-save"
+          ]
+        },
+        "O08": {
+          "executed": true,
+          "evidenceKeys": [
+            "missing-or-uninstalled-atomic-carrier-zero-write",
+            "carrier-false-throw-draft-tamper-atomic-refusal",
+            "actual-destroy-output-failure-zero-delta",
+            "idb-before-complete-invisible-abort-and-explicit-retry",
+            "serialization-failure-lock-release",
+            "unknown-corrupt-record-real-load-storageError-no-repair",
+            "old-save-missing-field-undefined",
+            "existing-protect-enhance-history-retained",
+            "selected-enchant-relation-refused-unrelated-enchant-still-works",
+            "memory-closed-fresh-ssr-old-callback-zero-write"
+          ]
+        }
+      },
+      "dependencyPayload": {
+        "save": {
+          "level": 1,
+          "exp": 0,
+          "hp": 50,
+          "mp": 10,
+          "stones": 100000,
+          "allocatedStats": {
+            "rootBone": 0,
+            "agility": 0,
+            "spirit": 0,
+            "insight": 0
+          },
+          "unspentStatPoints": 0,
+          "inventory": {
+            "rabbit_fur": 20,
+            "protect_charm": 3,
+            "refine_stone": 99,
+            "beast_core": 20,
+            "scroll_ten_thousand_swords": 19,
+            "spirit_copper": 19,
+            "bamboo_sword": 1
+          },
+          "equip": {},
+          "job": "",
+          "selectedSect": "",
+          "classVersion": 0,
+          "questRewardVersion": 1,
+          "daoHeart": 30,
+          "morality": 0,
+          "moralVersion": 1,
+          "affinity": {},
+          "relationshipState": {
+            "version": 1,
+            "questChoices": {},
+            "appliedQuestHooks": [],
+            "appliedAffinitySources": [],
+            "claimedAffinityRewards": [],
+            "pendingAffinitySources": [],
+            "quarantinedFlags": {}
+          },
+          "forge": {
+            "version": 1,
+            "ledgerId": "snapshot-salvage-source-27",
+            "crafts": [
+              {
+                "state": "committed",
+                "craftRequestId": "source-26",
+                "craftResultRef": "snapshot-salvage-source-27:craft:source-26",
+                "blueprintId": "scroll_ten_thousand_swords",
+                "blueprintCount": 1,
+                "materials": [
+                  {
+                    "itemId": "spirit_copper",
+                    "count": 1
+                  },
+                  {
+                    "itemId": "refine_stone",
+                    "count": 1
+                  }
+                ],
+                "resultItem": {
+                  "itemId": "bamboo_sword",
+                  "count": 1,
+                  "instanceRef": "snapshot-salvage-source-27:craft:source-26:item"
+                },
+                "resultGrade": "common"
+              }
+            ],
+            "receipts": [
+              "snapshot-salvage-source-27:craft:source-26"
+            ]
+          },
+          "enhance": {
+            "version": 1,
+            "ledgerId": "enhance_2448c61c-58e1-4bcb-8b4f-04a7ed8fa0c5",
+            "instances": [
+              {
+                "instanceRef": "snapshot-salvage-source-27:craft:source-26:item",
+                "itemId": "bamboo_sword",
+                "type": "weapon",
+                "enhanceLevel": 0
+              }
+            ],
+            "enhancements": [],
+            "receipts": [],
+            "formalSources": [
+              {
+                "instanceRef": "snapshot-salvage-source-27:craft:source-26:item",
+                "source": "forge",
+                "forgeLedgerId": "snapshot-salvage-source-27",
+                "craftResultRef": "snapshot-salvage-source-27:craft:source-26",
+                "ownerSlot": 1
+              }
+            ]
+          },
+          "classRewardClaims": [],
+          "classRefundSp": 0,
+          "rootElement": "金",
+          "completedTrials": [],
+          "pendingSectTrial": null,
+          "skillCooldowns": {},
+          "quests": {},
+          "learnedRecipes": [],
+          "alchemyLevel": 1,
+          "alchemyExp": 0,
+          "pillQualities": {},
+          "gatherRespawnAt": {},
+          "openedChests": [],
+          "pendingAlchemy": null,
+          "name": "少年",
+          "skills": {},
+          "skillGifted": {},
+          "skillMastery": {},
+          "hotbar": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "buffs": [],
+          "spTipShown": false,
+          "tutorialsSeen": [],
+          "sectContribution": 0,
+          "sectRank": null,
+          "position": null,
+          "flags": {},
+          "sectGrowthState": {
+            "donationBatches": {},
+            "settledTransactions": {}
+          },
+          "sectDailyContributionDay": "",
+          "sectDailyContributionClaims": [],
+          "dailyQuestResetDay": "",
+          "dailyQuestCompletions": {},
+          "age": 16,
+          "ageUpdatedAt": 1792235173538,
+          "seclusionDay": "",
+          "seclusionYearsToday": 0,
+          "seclusionHistory": [],
+          "overflowExp": 0,
+          "breakthroughFails": 0,
+          "unstableUntil": 0,
+          "realmRewards": [],
+          "unstableRatio": 0,
+          "unstableStats": [],
+          "lastOverflowReturned": 0,
+          "breakthroughBonusLevels": 0,
+          "talisman": {
+            "version": 1,
+            "nextAttempt": 1,
+            "attempt": null,
+            "pendingOutput": null
+          },
+          "talismanUse": {
+            "version": 1,
+            "buffs": [],
+            "cooldowns": {}
+          },
+          "visitedMaps": [],
+          "talismanQuickSlots": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "talismanLevel": 1,
+          "talismanExp": 0,
+          "forgingLevel": 1,
+          "forgingExp": 0
+        },
+        "ref": "snapshot-salvage-source-27:craft:source-26:item"
+      },
+      "storageWrites": 101,
+      "commits": 100,
+      "sceneSmoke": {
+        "noObjectNoop": true,
+        "nonSmithIgnored": true,
+        "nearbyOnly": true,
+        "hiddenIgnored": true,
+        "genericInteraction": true,
+        "smithServicesUiWired": true,
+        "menuRouted": true,
+        "consumedInteraction": true,
+        "graph": "formal-open",
+        "saveWrites": 0
+      },
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": true,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权"
+    }
+  },
+  {
+    "service": "salvage",
+    "graph": "memory-closed",
+    "refresh": false,
+    "passed": true,
+    "result": {
+      "passed": true,
+      "assertions": 48,
+      "dataMode": "snapshot",
+      "graph": "memory-closed",
+      "cases": {
+        "O08": {
+          "executed": true,
+          "evidenceKeys": [
+            "memory-closed-flag-false-eight-tips",
+            "hostile-getters-unread",
+            "closed-fresh-ssr-keeps-open-result"
+          ]
+        }
+      },
+      "dependencyPayload": null,
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": {
+        "noObjectNoop": true,
+        "nonSmithIgnored": true,
+        "nearbyOnly": true,
+        "hiddenIgnored": true,
+        "genericInteraction": true,
+        "smithServicesUiWired": true,
+        "menuRouted": true,
+        "consumedInteraction": true,
+        "graph": "memory-closed",
+        "saveWrites": 0
+      },
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": false,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权"
+    }
+  },
+  {
+    "service": "salvage",
+    "graph": "formal-open",
+    "refresh": true,
+    "passed": true,
+    "result": {
+      "passed": true,
+      "assertions": 89,
+      "dataMode": "snapshot",
+      "graph": "formal-open",
+      "cases": {
+        "O06": {
+          "executed": true,
+          "evidenceKeys": [
+            "fresh-ssr-real-save-load-export-import-restore",
+            "no-revival-no-refill-no-redo"
+          ]
+        }
+      },
+      "dependencyPayload": null,
+      "storageWrites": 4,
+      "commits": 4,
+      "sceneSmoke": {
+        "noObjectNoop": true,
+        "nonSmithIgnored": true,
+        "nearbyOnly": true,
+        "hiddenIgnored": true,
+        "genericInteraction": true,
+        "smithServicesUiWired": true,
+        "menuRouted": true,
+        "consumedInteraction": true,
+        "graph": "formal-open",
+        "saveWrites": 0
+      },
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": true,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权"
+    }
+  },
+  {
+    "service": "salvage",
+    "graph": "memory-closed",
+    "refresh": true,
+    "passed": true,
+    "result": {
+      "passed": true,
+      "assertions": 88,
+      "dataMode": "snapshot",
+      "graph": "memory-closed",
+      "cases": {
+        "O08": {
+          "executed": true,
+          "evidenceKeys": [
+            "memory-closed-flag-false-eight-tips",
+            "hostile-getters-unread",
+            "closed-fresh-ssr-keeps-open-result"
+          ]
+        }
+      },
+      "dependencyPayload": null,
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": {
+        "noObjectNoop": true,
+        "nonSmithIgnored": true,
+        "nearbyOnly": true,
+        "hiddenIgnored": true,
+        "genericInteraction": true,
+        "smithServicesUiWired": true,
+        "menuRouted": true,
+        "consumedInteraction": true,
+        "graph": "memory-closed",
+        "saveWrites": 0
+      },
+      "randomCalls": 0,
+      "localWrites": 0,
+      "salvageClosedTipsWired": true,
+      "refineStoneMapped": true,
+      "salvageOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedSalvage": true,
+      "SalvageOpenFlag": true,
+      "released": false,
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "EnchantOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "productionFixtureInstances": false,
+      "activeSalvageOpenFlag": false,
+      "explicitTestAdapters": {
+        "qualification": true,
+        "finiteCapacity": true,
+        "atomicCarrier": true,
+        "productionDefaultInjection": false,
+        "armorRecipes": [],
+        "armorRecipesDiskChanged": false,
+        "armorForgeProductionAuthorized": false
+      },
+      "boundary": "本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权"
+    }
+  }
+]
