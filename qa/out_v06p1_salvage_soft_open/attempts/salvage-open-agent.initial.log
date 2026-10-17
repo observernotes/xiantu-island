@@ -1,0 +1,17 @@
+
+> xiantu-island@0.0.1 test:v06p1-salvage-open
+> timeout 180s node scripts/v06p1-salvage-open-test.mjs
+
+/workspace/xiantu/wt/dev/src/v06p1-salvage-open.test.ts:182
+      throw new Error(label + ": " + message + ": " + JSON.stringify(actual) + "，期望 " + JSON.stringify(expected));
+            ^
+
+Error: shared/formal-open: 正式 Forge 默认入口读取磁盘配方；防具配方只在独立显式夹具图: false，期望 true
+    at eq (/workspace/xiantu/wt/dev/src/v06p1-salvage-open.test.ts:182:13)
+    at ok (/workspace/xiantu/wt/dev/src/v06p1-salvage-open.test.ts:185:5)
+    at forge (/workspace/xiantu/wt/dev/src/v06p1-salvage-open.test.ts:249:5)
+    at Module.runSalvageOpenFixtureTests (/workspace/xiantu/wt/dev/src/v06p1-salvage-open.test.ts:743:86)
+    at async runGraph (file:///workspace/xiantu/wt/dev/scripts/v06p1-salvage-open-test.mjs:194:20)
+    at async file:///workspace/xiantu/wt/dev/scripts/v06p1-salvage-open-test.mjs:227:45
+
+Node.js v20.19.2

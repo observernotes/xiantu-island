@@ -251,12 +251,13 @@ export async function runEnhanceOpenFixtureTests(options: {
     const entrance = { name: 'smith_ou', type: 'npc', props: { npc: 'smith_ou' }, x: 100, y: 200 };
     const forgeTip = { text: '炼器打造已开放。', color: '#fff8d0' };
     const enchantTip = { text: '装备附灵已开放。', color: '#aaaaaa' };
+    const salvageTip = { text: '装备分解已开放。', color: '#aaaaaa' };
     const enhanceTip = openFixture ? { text: '装备强化已开放。', color: '#aaaaaa' }
       : { text: Closed.featureClosed().text, color: '#aaaaaa' };
     const scene: any = Object.assign(Object.create(GameScene.prototype), {
       prog: p, map: { id: 'luoxia_town', objects: [] }, player: { x: 100, y: 200 },
       log: (text: string, color: string) => logs.push({ text, color }),
-      encounterRuntime: { interact() { throw new Error('欧冶匠三项入口须先于遭遇与NPC交互'); } },
+      encounterRuntime: { interact() { throw new Error('欧冶匠四项入口须先于遭遇与NPC交互'); } },
     });
     eq(typeof scene.tryInteractForgeEntrance, 'function', 'Scene既有欧冶匠最小入口存在');
     eq(scene.tryInteractForgeEntrance(), false, '没有对象时安静no-op');
@@ -268,20 +269,20 @@ export async function runEnhanceOpenFixtureTests(options: {
     eq(scene.tryInteractForgeEntrance(), false, '入口纵向超距不交互');
     scene.player.y = entrance.y; scene.senseMap = { objectVisible: () => false };
     eq(scene.tryInteractForgeEntrance(), false, '隐藏欧冶匠不交互');
-    eq(logs, [], '无对象/非欧冶匠/超距/隐藏时三项提示均安静');
+    eq(logs, [], '无对象/非欧冶匠/超距/隐藏时四项提示均安静');
     scene.senseMap = undefined;
     for (const object of [{ ...entrance, props: {} }, { ...entrance, name: 'enhance-smoke-alias' }]) {
       scene.map.objects = [object]; const logStart = logs.length;
       eq(scene.tryInteractForgeEntrance(), true, `${object.name}邻近欧冶匠被消费`);
-      eq(logs.slice(logStart), [forgeTip, enhanceTip, enchantTip], '同一次smith_ou命中先打造再强化再附灵，强化和附灵不被return饿死');
+      eq(logs.slice(logStart), [forgeTip, enhanceTip, enchantTip, salvageTip], '同一次smith_ou命中forge→enhance→enchant→salvage，既有强化附灵不被return饿死');
     }
     scene.map.objects = [entrance]; scene.player.x = entrance.x + 28; scene.player.y = entrance.y + 40;
     let logStart = logs.length;
-    eq(scene.tryInteractForgeEntrance(), true, '28×40范围边界内三项入口仍可冒烟');
-    eq(logs.slice(logStart), [forgeTip, enhanceTip, enchantTip], '距离边界保持打造顺序与强化提示');
+    eq(scene.tryInteractForgeEntrance(), true, '28×40范围边界内四项入口仍可冒烟');
+    eq(logs.slice(logStart), [forgeTip, enhanceTip, enchantTip, salvageTip], '距离边界保持打造顺序与强化提示');
     scene.player.x = entrance.x; scene.player.y = entrance.y; logStart = logs.length;
-    eq(scene.tryInteract(), true, '通用交互在遭遇/NPC前消费欧冶匠三项入口');
-    eq(logs.slice(logStart), [forgeTip, enhanceTip, enchantTip], '通用交互同命中三项入口且不重复提示');
+    eq(scene.tryInteract(), true, '通用交互在遭遇/NPC前消费欧冶匠四项入口');
+    eq(logs.slice(logStart), [forgeTip, enhanceTip, enchantTip, salvageTip], '通用交互同命中四项入口且不重复提示');
     const originalEntrance = EnhanceGate.prototype.entrance;
     let entranceCalls = 0;
     try {
@@ -294,14 +295,14 @@ export async function runEnhanceOpenFixtureTests(options: {
       eq(scene.tryInteractForgeEntrance(), true, '最小入口保留EnhanceGate拒绝提示分支');
       eq(entranceCalls, openFixture ? 1 : 0, '只有正式开态查询EnhanceGate.entrance，关态直接绕过');
       eq(logs.slice(logStart), [forgeTip, { text: openFixture ? '强化冒烟拒绝。' : Closed.featureClosed().text,
-        color: '#aaaaaa' }, enchantTip], 'Gate拒绝原文或内存关态tip展示，打造及附灵既有提示保持');
+        color: '#aaaaaa' }, enchantTip, salvageTip], 'Gate拒绝原文或内存关态tip展示，打造及附灵既有提示保持');
     } finally { EnhanceGate.prototype.entrance = originalEntrance; }
     eq(p.exportSave(), before, 'Scene冒烟不修改角色、打造袋或强化袋');
     eq(idb.writes, writes, 'Scene冒烟存档写入0'); eq([...idb.rows], rows, 'Scene冒烟磁盘旧档不变');
     eq(sampleCount, samples, 'Scene入口不抽样或结算'); eq(localWrites, 0, 'Scene冒烟无localStorage旁路写入');
     return { noObjectNoop: true, nonSmithIgnored: true, nearbyOnly: true, hiddenIgnored: true,
       objectName: 'smith_ou', npcProp: 'smith_ou', boundary: { x: 28, y: 40 }, genericInteraction: true,
-      graph: openFixture ? 'formal-open' : 'memory-closed', sameHitForgeThenEnhance: true, sameHitForgeThenEnhanceThenEnchant: true,
+      graph: openFixture ? 'formal-open' : 'memory-closed', sameHitForgeThenEnhance: true, sameHitForgeThenEnhanceThenEnchant: true, sameHitForgeThenEnhanceThenEnchantThenSalvage: true,
       forgeSoftOpenPreserved: true, enhanceNotStarved: true, gateDeniedRouting: openFixture,
       closedBypassesGate: !openFixture, saveWrites: idb.writes - writes };
   }
@@ -329,7 +330,7 @@ export async function runEnhanceOpenFixtureTests(options: {
       noProductionInstancesInvented: true, laterServiceClosed: true, saveWrites: idb.writes - writes };
   }
   async function formalRefusalCases() {
-    eq(Object.keys(strings).length, 952, '正式strings快照952键含_meta，原944键完整保留');
+    eq(Object.keys(strings).length, 960, '正式strings快照960键含_meta，原944键完整保留');
     eq(Object.keys(strings).filter(key => key.startsWith('enhance.formal.')).length, 8, '正式拒绝只读既有八键');
     for (const [name, makeGate, input] of [
       ['仅同itemId数量', (p: Progress) => new EnhanceGate(p), request('quantity-only')],

@@ -1,0 +1,274 @@
+[
+  {
+    "path": "src/SalvageOpenFlag.ts",
+    "sha256": "1b8b9f0b2d8e3e1df86ca740a156aa119406fe99ee26246842c967928198453e",
+    "expected": "1b8b9f0b2d8e3e1df86ca740a156aa119406fe99ee26246842c967928198453e",
+    "MATCH": true,
+    "afterSha256": "69aace852957c52bf7ca0214345ede7df29d6d36ec1dfd4849462e54552edff3",
+    "afterExpected": "69aace852957c52bf7ca0214345ede7df29d6d36ec1dfd4849462e54552edff3",
+    "authorizedFlip": true
+  },
+  {
+    "path": "src/EnhanceOpenFlag.ts",
+    "sha256": "d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e",
+    "expected": "d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e",
+    "MATCH": true,
+    "afterSha256": "d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e",
+    "afterExpected": "d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e",
+    "authorizedFlip": false
+  },
+  {
+    "path": "src/EnchantOpenFlag.ts",
+    "sha256": "bd5445b8ddfed56a32811cedd28db72e8676c7a5eff321e2fedb0ec5fe4c505a",
+    "expected": "bd5445b8ddfed56a32811cedd28db72e8676c7a5eff321e2fedb0ec5fe4c505a",
+    "MATCH": true,
+    "afterSha256": "bd5445b8ddfed56a32811cedd28db72e8676c7a5eff321e2fedb0ec5fe4c505a",
+    "afterExpected": "bd5445b8ddfed56a32811cedd28db72e8676c7a5eff321e2fedb0ec5fe4c505a",
+    "authorizedFlip": false
+  },
+  {
+    "path": "src/ForgeOpenFlag.ts",
+    "sha256": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
+    "expected": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
+    "MATCH": true,
+    "afterSha256": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
+    "afterExpected": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
+    "authorizedFlip": false
+  },
+  {
+    "path": "data/balance/enhance.json",
+    "sha256": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+    "expected": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+    "MATCH": true,
+    "afterSha256": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+    "afterExpected": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+    "authorizedFlip": false
+  },
+  {
+    "path": "data/balance/recipes.json",
+    "sha256": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+    "expected": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+    "MATCH": true,
+    "afterSha256": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+    "afterExpected": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+    "authorizedFlip": false
+  },
+  {
+    "path": "data/balance/materials.json",
+    "sha256": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+    "expected": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+    "MATCH": true,
+    "afterSha256": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+    "afterExpected": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+    "authorizedFlip": false
+  },
+  {
+    "path": "data/balance/items.json",
+    "sha256": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+    "expected": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+    "MATCH": true,
+    "afterSha256": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+    "afterExpected": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+    "authorizedFlip": false
+  },
+  {
+    "path": "data/balance/strings_zh.json",
+    "sha256": "9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda",
+    "expected": "9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda",
+    "MATCH": true,
+    "afterSha256": "9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda",
+    "afterExpected": "9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda",
+    "authorizedFlip": false
+  },
+  {
+    "path": "data/balance/npcs.json",
+    "sha256": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+    "expected": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+    "MATCH": true,
+    "afterSha256": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+    "afterExpected": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+    "authorizedFlip": false
+  },
+  {
+    "path": "data/balance/life_skills.json",
+    "sha256": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+    "expected": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+    "MATCH": true,
+    "afterSha256": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+    "afterExpected": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+    "authorizedFlip": false
+  },
+  {
+    "path": "data/balance/enhance_protect_charm.json",
+    "sha256": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+    "expected": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+    "MATCH": true,
+    "afterSha256": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+    "afterExpected": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+    "authorizedFlip": false
+  },
+  {
+    "path": "src/SalvageClosed.ts",
+    "sha256": "287a55d7025018629235d45ca4386d75134fc39362532a4c47bf121b574ae211",
+    "expected": "287a55d7025018629235d45ca4386d75134fc39362532a4c47bf121b574ae211",
+    "MATCH": true,
+    "afterSha256": "287a55d7025018629235d45ca4386d75134fc39362532a4c47bf121b574ae211",
+    "afterExpected": "287a55d7025018629235d45ca4386d75134fc39362532a4c47bf121b574ae211",
+    "authorizedFlip": false
+  },
+  {
+    "path": "src/data.ts",
+    "sha256": "aad725652f5c0eb57a5c699726e570b146d5ded52d5c31715444dbbf4117024a",
+    "expected": "aad725652f5c0eb57a5c699726e570b146d5ded52d5c31715444dbbf4117024a",
+    "MATCH": true,
+    "afterSha256": "aad725652f5c0eb57a5c699726e570b146d5ded52d5c31715444dbbf4117024a",
+    "afterExpected": "aad725652f5c0eb57a5c699726e570b146d5ded52d5c31715444dbbf4117024a",
+    "authorizedFlip": false
+  },
+  {
+    "path": "/workspace/xiantu/balance/enhance.json",
+    "sha256": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+    "expected": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+    "MATCH": true,
+    "afterSha256": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+    "afterExpected": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+    "authorizedFlip": false
+  },
+  {
+    "path": "/workspace/xiantu/balance/recipes.json",
+    "sha256": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+    "expected": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+    "MATCH": true,
+    "afterSha256": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+    "afterExpected": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+    "authorizedFlip": false
+  },
+  {
+    "path": "/workspace/xiantu/balance/materials.json",
+    "sha256": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+    "expected": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+    "MATCH": true,
+    "afterSha256": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+    "afterExpected": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+    "authorizedFlip": false
+  },
+  {
+    "path": "/workspace/xiantu/balance/items.json",
+    "sha256": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+    "expected": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+    "MATCH": true,
+    "afterSha256": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+    "afterExpected": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+    "authorizedFlip": false
+  },
+  {
+    "path": "/workspace/xiantu/balance/strings_zh.json",
+    "sha256": "9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda",
+    "expected": "9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda",
+    "MATCH": true,
+    "afterSha256": "9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda",
+    "afterExpected": "9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda",
+    "authorizedFlip": false
+  },
+  {
+    "path": "/workspace/xiantu/balance/npcs.json",
+    "sha256": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+    "expected": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+    "MATCH": true,
+    "afterSha256": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+    "afterExpected": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+    "authorizedFlip": false
+  },
+  {
+    "path": "/workspace/xiantu/balance/life_skills.json",
+    "sha256": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+    "expected": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+    "MATCH": true,
+    "afterSha256": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+    "afterExpected": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+    "authorizedFlip": false
+  },
+  {
+    "path": "/workspace/xiantu/balance/enhance_protect_charm.json",
+    "sha256": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+    "expected": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+    "MATCH": true,
+    "afterSha256": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+    "afterExpected": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+    "authorizedFlip": false
+  },
+  {
+    "path": "/workspace/xiantu/game/data/balance/enhance.json",
+    "sha256": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+    "expected": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+    "MATCH": true,
+    "afterSha256": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+    "afterExpected": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+    "authorizedFlip": false
+  },
+  {
+    "path": "/workspace/xiantu/game/data/balance/recipes.json",
+    "sha256": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+    "expected": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+    "MATCH": true,
+    "afterSha256": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+    "afterExpected": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+    "authorizedFlip": false
+  },
+  {
+    "path": "/workspace/xiantu/game/data/balance/materials.json",
+    "sha256": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+    "expected": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+    "MATCH": true,
+    "afterSha256": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+    "afterExpected": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+    "authorizedFlip": false
+  },
+  {
+    "path": "/workspace/xiantu/game/data/balance/items.json",
+    "sha256": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+    "expected": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+    "MATCH": true,
+    "afterSha256": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+    "afterExpected": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+    "authorizedFlip": false
+  },
+  {
+    "path": "/workspace/xiantu/game/data/balance/strings_zh.json",
+    "sha256": "6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9",
+    "MATCH": true,
+    "authoritativeCurrentExpected": "9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda",
+    "expected": "6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9",
+    "historicalReadOnlySnapshot": true,
+    "afterSha256": "6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9",
+    "afterExpected": "6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9",
+    "authorizedFlip": false
+  },
+  {
+    "path": "/workspace/xiantu/game/data/balance/npcs.json",
+    "sha256": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+    "expected": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+    "MATCH": true,
+    "afterSha256": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+    "afterExpected": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+    "authorizedFlip": false
+  },
+  {
+    "path": "/workspace/xiantu/game/data/balance/life_skills.json",
+    "sha256": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+    "expected": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+    "MATCH": true,
+    "afterSha256": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+    "afterExpected": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+    "authorizedFlip": false
+  },
+  {
+    "path": "/workspace/xiantu/game/data/balance/enhance_protect_charm.json",
+    "sha256": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+    "expected": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+    "MATCH": true,
+    "afterSha256": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+    "afterExpected": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+    "authorizedFlip": false
+  }
+]

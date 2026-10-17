@@ -1,0 +1,11 @@
+{
+  "cwd": "/workspace/xiantu/wt/dev",
+  "profile": "sol",
+  "model": "gpt-6.1-sol",
+  "reasoningEffort": "ultra",
+  "fast": false,
+  "stdin": "/dev/null",
+  "log": "/workspace/xiantu/logs/codex/0b875a44baa0e747_20261017_155607_1813566.log",
+  "prompt": "/workspace/xiantu/logs/codex/prompt_p1_salvage_soft_open_20261017.txt",
+  "launcherEvidence": "qa/out_v06p1_salvage_soft_open/codex_launch.log"
+}

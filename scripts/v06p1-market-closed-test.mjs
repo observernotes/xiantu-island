@@ -1,5 +1,6 @@
 // 正式旗已软开；双数据根关态只替换 Vite SSR 内存模块，关态 API 不消费寄售数值表。
 import assert from 'node:assert/strict';
+import { salvageSourceNames } from './v06p1-salvage-soft-open-compat-proof.mjs';
 import { stripEnchantClosedAddition, enchantSourceNames, preexistingReadOnlyShas, stripEnchantOpenProgress, stripEnchantSceneWiring, checkEnchantCompatibility } from './v06p1-enchant-soft-open-compat-proof.mjs';
 import { createHash } from 'node:crypto';
 import fs from 'node:fs/promises';
@@ -13,9 +14,9 @@ const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const shared = sharedRoot(root), gameData = path.join(shared, 'game/data');
 const modes = [['shared', shared], ['snapshot', path.join(root, 'data')]];
 const dataRoots = new Map([['shared', shared], ['wt', path.join(root, 'data')], ['game', gameData]]);
-const out = process.env.MARKET_CLOSED_OUT ?? process.env.OUT_DIR ?? path.join(root, 'qa/out_v06p1_enchant_soft_open/regressions/market-closed');
+const out = process.env.MARKET_CLOSED_OUT ?? process.env.OUT_DIR ?? path.join(root, 'qa/out_v06p1_salvage_soft_open/regressions/market-closed');
 const baselineFile = path.join(root, 'qa/out_v06p1_market_closed/protected-before.json');
-const stringsSha = '6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9';
+const stringsSha = '9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda';
 const preFormalStringsSha = '92d5525c86562a870f45bf53c0c2010e961b83ec9c257a0cf8257178f45b4cab';
 const preEnhanceStringsSha = 'fad9b3e604a3af23e99939bf22f77a55de803842daa297ab7fb2c2a6ed0b8967';
 const marketStringsSha = 'c115b6deadf85d1aa9958de1097321ab65624b456e0fddeca42a5fe39743db27';
@@ -226,7 +227,7 @@ async function checkProtection() {
     if (key.endsWith('/market_consign.json')) continue;
     const actual = await shaOrNull(file);
     const authorizedSha = key === 'wt:src/Progress.ts' ? openFixtureProgressSha
-      : key.endsWith(':balance/strings_zh.json') ? (key.startsWith('game:') ? 'd7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09' : stringsSha)
+      : key.endsWith(':balance/strings_zh.json') ? (key.startsWith('game:') ? '6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9' : stringsSha)
       : formalRecipeKeys.has(key) ? formalRecipesSha : preexistingReadOnlyShas[key] ?? protectCharmSha(key) ?? expected;
     if (key === 'wt:src/Progress.ts') {
       eq(hash(stripForgeProgress(await fs.readFile(file, 'utf8'))), authorizedSha,
@@ -255,7 +256,7 @@ async function checkProtection() {
     readOnlyBefore.set(file, actual); protectedFiles[`${mode}:balance/${name}`] = actual;
   }
   const expectedSource = Object.keys(baseline).filter(key => key.startsWith('wt:src/')).map(key => key.slice('wt:src/'.length));
-  eq(await filesUnder(path.join(root, 'src')), [...expectedSource, 'MarketClosed.ts', 'ForgeClosed.ts', ...openFixtureSources, ...enhanceClosedSources, ...enchantSourceNames].sort(), 'C12 src 仅新增关态 API 及精确列明的寄售/炼器夹具源码与强化关态 API/Flag，无完整寄售 UI 文件');
+  eq(await filesUnder(path.join(root, 'src')), [...expectedSource, 'MarketClosed.ts', 'ForgeClosed.ts', ...openFixtureSources, ...enhanceClosedSources, ...enchantSourceNames, ...salvageSourceNames].sort(), 'C12 src 仅新增关态 API 及精确列明的寄售/炼器夹具源码与强化关态 API/Flag，无完整寄售 UI 文件');
   for (const [mode, dataRoot] of dataRoots) {
     const file = path.join(dataRoot, 'balance/market_consign.json');
     const actual = await shaOrNull(file);
@@ -277,7 +278,7 @@ async function checkStatic(mode, dataRoot) {
   const raw = await fs.readFile(path.join(dataRoot, 'balance/strings_zh.json'), 'utf8');
   const strings = JSON.parse(raw), entries = Object.entries(strings);
   eq(hash(raw), stringsSha, `${mode}: strings 为权威目标 SHA`);
-  eq(entries.length, 952, `${mode}: shared/wt原936键加enhance.formal八键，共944键`);
+  eq(entries.length, 960, `${mode}: shared/wt现960键；原944键由精确增量剥离逐字证明`);
   const preFormal = stripEnchantClosedAddition(raw).replace(/,\n(?: {2}"enhance\.formal\.[^\n]+\n?){8}/u, '\n');
   eq(hash(preFormal), preFormalStringsSha, `${mode}: 剥正式八键还原原936键完整字节`);
   eq(entries.slice(912, 920), Object.entries(closedStrings), `${mode}: market 八键区间及文案逐字相等`);
@@ -327,7 +328,7 @@ async function checkSource() {
   ok(!/\benabled\b|\b(?:setTimeout|setInterval|queueMicrotask|requestIdleCallback|fetch)\s*\(/u.test(code), 'C12 不新增开态字段、结算、后台延后或网络写入口');
   const consumers = [];
   for (const name of await filesUnder(path.join(root, 'src'))) {
-    if (enchantSourceNames.includes(name)) continue; // 精确六文件由附灵专窗验证，生产旧消费者继续全扫。
+    if ([...enchantSourceNames, ...salvageSourceNames].includes(name)) continue; // 附灵/分解各精确六文件由专窗验证，生产旧消费者继续全扫。
     if (name === 'MarketClosed.ts' || openFixtureSources.includes(name) || /\.test\.[cm]?[jt]sx?$/u.test(name)) continue;
     let text = await fs.readFile(path.join(root, 'src', name), 'utf8');
     if (name === 'scenes/GameScene.ts') text = stripMarketSceneWiring(stripForgeSceneWiring(text));
@@ -495,8 +496,8 @@ try {
   await checkSource();
   for (const [mode, dataRoot] of modes) await checkStatic(mode, dataRoot);
   const sharedStrings = await fs.readFile(path.join(shared, 'balance/strings_zh.json'));
-  eq((await fs.readFile(path.join(root, 'data/balance/strings_zh.json'))).equals(sharedStrings), true, 'shared/snapshot: strings944同字节');
-  eq(await shaOrNull(path.join(gameData, 'balance/strings_zh.json')), 'd7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09', 'game: 既有strings944指定SHA保持原字节');
+  eq((await fs.readFile(path.join(root, 'data/balance/strings_zh.json'))).equals(sharedStrings), true, 'shared/snapshot: strings960同字节');
+  eq(await shaOrNull(path.join(gameData, 'balance/strings_zh.json')), '6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9', 'game: 既有strings952指定SHA保持原字节');
   for (const [mode, dataRoot] of modes) {
     await runGraph(mode, dataRoot, false);
     const payloads = await runGraph(mode, dataRoot, true);
@@ -512,4 +513,4 @@ try {
     minimalFrontendWiring: true, fullMarketUiAdded: false, noMarketTableConsumedByClosedApi: true, optionalMarketBagAdded: true,
     protectedFiles: Object.fromEntries(readOnlyBefore), evidence }, null, 2)}\n`);
 }
-console.log(`v06p1 market closed tests ok: ${assertions} assertions; C01–C12 自动化部分通过；三根既有strings944同字节且game本窗不改；八 API 零参数、零副作用、零存储写入；shops/禁改表/地图不变，Progress仅授权可选market袋，gifts 10×false，GAME_PHASE=5；仅前台入口最小提示、无完整寄售 UI；formalOpen:true、closedFixtureOnly:true、softOpened:true、released:false；正式旗及三根 enabled=true，关态仅 SSR 内存 false、未发版`);
+console.log(`v06p1 market closed tests ok: ${assertions} assertions; C01–C12 自动化部分通过；shared/wt strings960同字节，game既有952本窗不改；八 API 零参数、零副作用、零存储写入；shops/禁改表/地图不变，Progress仅授权可选market袋，gifts 10×false，GAME_PHASE=5；仅前台入口最小提示、无完整寄售 UI；formalOpen:true、closedFixtureOnly:true、softOpened:true、released:false；正式旗及三根 enabled=true，关态仅 SSR 内存 false、未发版`);

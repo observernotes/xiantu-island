@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "existingFilesChecked": 622,
+  "mismatches": [],
+  "legacyOutputsOverwritten": false,
+  "beforeManifest": "old-qa-before.json"
+}

@@ -1,0 +1,62 @@
+{
+  "passed": true,
+  "baseline": "15b66e34a9fc24bc38b8e701172694756a6cc62a",
+  "frozenRecordsMatched": 30,
+  "existingFlagsTrueAndShaMatched": true,
+  "SalvageOpenFlag": true,
+  "SalvageOpenFlagSha256": "69aace852957c52bf7ca0214345ede7df29d6d36ec1dfd4849462e54552edff3",
+  "enhanceJsonUnchanged": true,
+  "coreImplementationsPreserved": [
+    {
+      "path": "src/SalvageGate.ts",
+      "sha256": "3777c6b72615f21a9c47544cfa8eeece08eb54009032cbf53e713091f8d8ce52",
+      "MATCH": true
+    },
+    {
+      "path": "src/SalvageProgress.ts",
+      "sha256": "118f49bc4931727e0aafbc39fba6b883a94a948f8d478653bf42335305548787",
+      "MATCH": true
+    },
+    {
+      "path": "src/Progress.ts",
+      "sha256": "1cf4e9fcfab211710ec16a406204cd0c0b9f16da20056ff9372fb2b16a8ee561",
+      "MATCH": true
+    },
+    {
+      "path": "src/SaveStore.ts",
+      "sha256": "4c99f7410cd87e2e9b46d7b685fdb9ab5f2c9ca3b8a266da61eb062624ec7916",
+      "MATCH": true
+    },
+    {
+      "path": "src/ForgeGate.ts",
+      "sha256": "7aa9b91bf4ad2d389f2b96c41479338bd53cb3fdd63f65ff47a64f8528d75bcb",
+      "MATCH": true
+    },
+    {
+      "path": "src/EnhanceGate.ts",
+      "sha256": "c2a2a0efb7997270eb48674224ce9bfc08e14201e613d7aa12d35af0a2a09796",
+      "MATCH": true
+    },
+    {
+      "path": "src/EnchantGate.ts",
+      "sha256": "9dbb43f607fb1c298661bccd8a31f5653583b0b1dae956ca3f317f2fe8fc0ad2",
+      "MATCH": true
+    },
+    {
+      "path": "src/ShopPanel.ts",
+      "sha256": "419a3c5b112301a69258303062f3a82468aff2e6116b440f7c3844a465c1170c",
+      "MATCH": true
+    },
+    {
+      "path": "src/features.ts",
+      "sha256": "ff1cce0e298eeb57e5052048220b56f9490d3e172fbeab5ba9dc9f755c45e130",
+      "MATCH": true
+    }
+  ],
+  "oldQaFilesPreserved": 622,
+  "unauthorizedDifferences": 0,
+  "strings": 960,
+  "giftsFalse": 10,
+  "GAME_PHASE": 5,
+  "pendingInitialDirtyPreserved": true
+}

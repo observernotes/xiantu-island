@@ -6,6 +6,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createServer } from 'vite';
 import { sharedRoot } from './root.mjs';
+import { stripSalvageClosedAddition } from './v06p1-salvage-soft-open-compat-proof.mjs';
+import { stripEnchantClosedAddition } from './v06p1-enchant-soft-open-compat-proof.mjs';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const shared = sharedRoot(root), gameData = path.join(shared, 'game/data');
@@ -64,7 +66,7 @@ const expectedSha = {
   'balance/companions.json': 'e4eb87c1f9400514a084d630f179903e0926d706c85614481f1e2618a01bb115',
   'balance/fly_zones.json': '2940fe5952246a3669f87d8b9f3fc6226c2adf7080353be7de94da81e031b8e4',
   'balance/quests.json': 'c45466827247b9e61260bbd2b681ae7207bf84a017aff5d8b028c0ec3463482b',
-  'balance/strings_zh.json': 'd7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09',
+  'balance/strings_zh.json': '9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda',
 };
 const preFormalStringsSha = '92d5525c86562a870f45bf53c0c2010e961b83ec9c257a0cf8257178f45b4cab';
 const preEnhanceStringsSha = 'fad9b3e604a3af23e99939bf22f77a55de803842daa297ab7fb2c2a6ed0b8967';
@@ -122,7 +124,7 @@ async function checkFormal(mode, dataRoot) {
   }
   const strings = data['balance/strings_zh.json'];
   const entries = Object.entries(strings);
-  eq(entries.length, 944, `${mode}/C10: 原936键加enhance.formal八键，共944键`);
+  eq(entries.length, 960, `${mode}/C10: 原944键加附灵/分解各八键，共960键`);
   eq(entries.slice(904, 912), Object.entries(closedStrings), `${mode}/C10: tower 八键顺序及文案逐字相等`);
   eq(entries.slice(912, 920), Object.entries(marketClosedStrings), `${mode}/C10: market 八键区间及文案逐字相等`);
   eq(entries.slice(920, 928), Object.entries(forgeClosedStrings), `${mode}/C10: forge 八键区间及文案逐字相等`);
@@ -130,7 +132,7 @@ async function checkFormal(mode, dataRoot) {
   eq(hash(JSON.stringify(entries.slice(0, 904))), originalStringsSemanticSha, `${mode}/C10: 原 904 键语义不变`);
   // 依次剥 formal、enhance.closed、forge、market、tower 新增行，证明原 904 项每个字节都未改。
   const rawStrings = sharedBytes.get('balance/strings_zh.json').toString('utf8');
-  const preFormal = rawStrings.replace(/,\n(?: {2}"enhance\.formal\.[^\n]+\n?){8}/u, '\n');
+  const preFormal = stripEnchantClosedAddition(stripSalvageClosedAddition(rawStrings, eq), eq).replace(/,\n(?: {2}"enhance\.formal\.[^\n]+\n?){8}/u, '\n');
   eq(hash(preFormal), preFormalStringsSha, `${mode}/C10: 剥正式八键还原原936键完整字节`);
   const preEnhance = preFormal.replace(/,\n(?: {2}"enhance\.closed\.[^\n]+\n?){8}/u, '\n');
   eq(hash(preEnhance), preEnhanceStringsSha, `${mode}/C10: 删除 enhance 八行即还原原 928 项完整文件 SHA`);
@@ -409,12 +411,12 @@ try {
   for (const [mode, dataRoot] of modes) await checkFormal(mode, dataRoot);
   for (const name of ['balance/strings_zh.json', 'maps/youying_tower.json']) {
     if (name === 'balance/strings_zh.json') {
-      const preFormal = sharedBytes.get(name).toString('utf8').replace(/,\n(?: {2}"enhance\.formal\.[^\n]+\n?){8}/u, '\n');
+      const preFormal = stripEnchantClosedAddition(stripSalvageClosedAddition(sharedBytes.get(name).toString('utf8'), eq), eq).replace(/,\n(?: {2}"enhance\.formal\.[^\n]+\n?){8}/u, '\n');
       eq(hash(preFormal), preFormalStringsSha, 'game文案对照为完整原936键');
       const gameStrings = await fs.readFile(path.join(gameData, name), 'utf8');
-      eq(hash(gameStrings), expectedSha[name], 'game既有strings944指定SHA保持原字节');
-      eq(Object.keys(JSON.parse(gameStrings)).length, 944, 'game既有strings944键数');
-      eq(gameStrings, sharedBytes.get(name).toString('utf8'), 'game既有strings944与shared完整同字节');
+      eq(hash(gameStrings), '6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9', 'game既有strings952指定SHA保持原字节');
+      eq(Object.keys(JSON.parse(gameStrings)).length, 952, 'game既有strings952键数');
+      eq(gameStrings, stripSalvageClosedAddition(sharedBytes.get(name).toString('utf8'), eq), 'game既有strings952与shared仅差八条分解键，完整同字节');
     } else eq((await fs.readFile(path.join(gameData, name))).equals(sharedBytes.get(name)), true, `game 根 ${name} 与共享、wt 快照同字节`);
   }
   eq(await shaOrNull(path.join(root, 'data/features.json')), featureSha, '正式 features 未改开放状态');
@@ -433,4 +435,4 @@ try {
     formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false,
     protectedFiles: Object.fromEntries(before), evidence }, null, 2)}\n`);
 }
-console.log(`v06d closed tests ok: ${assertions} assertions; C01–C10 自动化部分通过；三根既有strings944同字节且game本窗不改，三根山门地图同字节；tower_floors/titles/gifts/原904文案保持；formalOpen:true、closedFixtureOnly:true；正式已软开；关态仅内存夹具，无收益/通层/首通/称号/存储增量；未发版`);
+console.log(`v06d closed tests ok: ${assertions} assertions; C01–C10 自动化部分通过；shared/snapshot strings960剥分解八键后与game既有strings952同字节且game本窗不改，三根山门地图同字节；tower_floors/titles/gifts/原904文案保持；formalOpen:true、closedFixtureOnly:true；正式已软开；关态仅内存夹具，无收益/通层/首通/称号/存储增量；未发版`);

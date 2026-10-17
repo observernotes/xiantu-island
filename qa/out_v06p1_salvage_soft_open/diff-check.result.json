@@ -1,0 +1,14 @@
+{
+  "name": "diff-check",
+  "command": [
+    "git",
+    "diff",
+    "--check"
+  ],
+  "cwd": "/workspace/xiantu/wt/dev",
+  "stdin": "/dev/null",
+  "exitCode": 0,
+  "assertions": null,
+  "elapsedSeconds": 0.014,
+  "log": "qa/out_v06p1_salvage_soft_open/diff-check.log"
+}

@@ -1,0 +1,12 @@
+{
+  "command": "npm run test:v06p1-salvage-closed",
+  "cwd": "/workspace/xiantu/wt/dev",
+  "stdin": "/dev/null",
+  "exitCode": 0,
+  "assertions": 19413,
+  "log": "qa/out_v06p1_salvage_soft_open/salvage-closed.log",
+  "environment": {
+    "SALVAGE_CLOSED_OUT": "qa/out_v06p1_salvage_soft_open/regressions/salvage-closed"
+  },
+  "elapsedSeconds": 5.691
+}

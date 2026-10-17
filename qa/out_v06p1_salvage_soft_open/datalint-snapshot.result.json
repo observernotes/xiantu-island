@@ -1,0 +1,16 @@
+{
+  "name": "datalint-snapshot",
+  "command": [
+    "python3",
+    "/workspace/xiantu/qa/tools/datalint.py"
+  ],
+  "cwd": "/workspace/xiantu/wt/dev/data",
+  "environment": {
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "stdin": "/dev/null",
+  "exitCode": 0,
+  "durationSeconds": 0.052,
+  "assertions": null,
+  "log": "qa/out_v06p1_salvage_soft_open/datalint-snapshot.log"
+}

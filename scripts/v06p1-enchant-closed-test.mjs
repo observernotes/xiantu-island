@@ -1,5 +1,6 @@
 // 附灵正式磁盘 soft-open；两根先核 true，再仅在 Vite SSR 注入 false 执行 C01–C10 八 tip 零写。
 import assert from 'node:assert/strict';
+import { stripSalvageSceneWiring, checkSalvageCompatibility } from './v06p1-salvage-soft-open-compat-proof.mjs';
 import { createHash } from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -10,12 +11,12 @@ import { sharedRoot } from './root.mjs';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const shared = sharedRoot(root);
-const out = process.env.ENCHANT_CLOSED_OUT ?? path.join(root, 'qa/out_v06p1_enchant_soft_open/regression/enchant-closed');
+const out = process.env.ENCHANT_CLOSED_OUT ?? path.join(root, 'qa/out_v06p1_salvage_soft_open/regressions/enchant-closed');
 const roots = [['shared', shared], ['snapshot', path.join(root, 'data')]];
 const targets = {
   'materials.json': '86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d',
   'items.json': 'dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99',
-  'strings_zh.json': '6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9',
+  'strings_zh.json': '9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda',
 };
 const frozen = {
   'enhance.json': 'd5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954',
@@ -51,6 +52,7 @@ async function guard(file, expected) {
 }
 // 仅允许欧冶匠同一次命中追加三个 import 与一个完整只读提示块。
 function stripEnchantSceneWiring(text) {
+  text = stripSalvageSceneWiring(text, eq);
   for (const line of ["import { featureClosed as enchantFeatureClosed } from '../EnchantClosed';\n",
     "import { isEnchantOpenForFixture } from '../EnchantOpenFlag';\n",
     "import { EnchantGate } from '../EnchantGate';\n"]) {
@@ -75,6 +77,7 @@ function stripEnchantSceneWiring(text) {
   return text.replace(block, '');
 }
 async function sourceChecks() {
+  evidence.push(await checkSalvageCompatibility(root, shared, eq));
   const closedPath = path.join(root, 'src/EnchantClosed.ts'), flagPath = path.join(root, 'src/EnchantOpenFlag.ts');
   const closedText = await fs.readFile(closedPath, 'utf8'), flagText = await fs.readFile(flagPath, 'utf8');
   eq(flagText, '/** 正式路径恒 true；仅 Vite SSR 关态图可注入 false。 */\nexport function isEnchantOpenForFixture(): boolean { return true; }\n',
@@ -136,7 +139,7 @@ async function sourceChecks() {
     'src/ForgeGate.ts', 'src/EnhanceClosed.ts', 'src/ForgeClosed.ts', 'src/scenes/GameScene.ts', 'data/features.json']) await guard(path.join(root, file));
   evidence.push({ suite: 'source-static', passed: true, uniqueStringsImport: true, zeroArgumentApis: 8,
     flagIndependent: true, flagAlwaysTrue: true, gateClosedFirst: true, optionalEnchantSchema: true, noProductionFixtureInjection: true,
-    minimalFrontendWiring: true, sameHitTipOrder: ['forge', 'enhance', 'enchant'], fullEnchantUiAdded: false,
+    minimalFrontendWiring: true, sameHitTipOrder: ['forge', 'enhance', 'enchant', 'salvage'], fullEnchantUiAdded: false,
     existingLaterServicePreserved: true, apiTips });
 }
 async function dataChecks() {
@@ -144,7 +147,7 @@ async function dataChecks() {
   for (const [mode, dataRoot] of roots) {
     for (const [name, expected] of Object.entries({ ...frozen, ...targets })) await guard(path.join(dataRoot, 'balance', name), expected);
     const strings = await json(path.join(dataRoot, 'balance/strings_zh.json'));
-    eq(Object.keys(strings).length, 952, `${mode}: strings 952 键含 _meta`);
+    eq(Object.keys(strings).length, 960, `${mode}: strings 960 键含 _meta`);
     eq(Object.keys(strings).filter(key => key.startsWith('enchant.closed.')).sort(), Object.values(apiTips).sort(), `${mode}: 恰有八附灵关态键`);
     for (const key of Object.values(apiTips)) {
       ok(typeof strings[key] === 'string' && strings[key].length > 0, `${mode}: ${key} 有文案`);

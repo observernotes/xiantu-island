@@ -1,0 +1,17 @@
+{
+  "ForgeOpenFlag.ts": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
+  "ForgeClosed.ts": "f7e4216be7767f481c96ae7f1dc5796574fe9b231ada91d57a137c1dc8a8c90c",
+  "ForgeGate.ts": "7aa9b91bf4ad2d389f2b96c41479338bd53cb3fdd63f65ff47a64f8528d75bcb",
+  "enhance.shared": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+  "enhance.wt": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+  "enhance.game": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+  "recipes.shared": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+  "life_skills.shared": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+  "npcs.shared": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+  "strings.shared": "9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda",
+  "strings.wt": "9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda",
+  "strings.game": "6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9",
+  "GameScene.ts": "3b06682a41249bad436a8630ed5f357abd07be363e00694043de8606bfce6cc6",
+  "features.wt": "69302e3a0dec48fb963548ab5dc1e0b950b2a050864ee7a746335a8386be9fd8",
+  "shared:balance/tools/gen_enhance_protect_charm.py": "59b821c259724feaa47368034f6e9f297c246d01a0aa845aa1c7faf6b7c64828"
+}

@@ -1,0 +1,17 @@
+{
+  "name": "v06d-closed",
+  "command": [
+    "npm",
+    "run",
+    "test:v06d-closed"
+  ],
+  "cwd": "/workspace/xiantu/wt/dev",
+  "environment": {
+    "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_soft_open/regressions/v06d-closed"
+  },
+  "stdin": "/dev/null",
+  "exitCode": 0,
+  "durationSeconds": 7.155,
+  "assertions": 15087,
+  "log": "qa/out_v06p1_salvage_soft_open/v06d-closed.log"
+}

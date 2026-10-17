@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { stripSalvageClosedAddition, stripSalvageOpenProgress, stripSalvageSceneWiring, checkSalvageCompatibility } from './v06p1-salvage-soft-open-compat-proof.mjs';
 
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 export const enchantSourceNames = ['EnchantClosed.ts', 'EnchantOpenFlag.ts', 'v06p1-enchant-closed.test.ts',
@@ -15,12 +16,12 @@ const previousShas = {
 const currentShas = {
   'materials.json': '86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d',
   'items.json': 'dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99',
-  'strings_zh.json': '6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9',
+  'strings_zh.json': '9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda',
 };
 export const preexistingReadOnlyShas = {
-  'game:balance/materials.json': previousShas['materials.json'],
-  'game:balance/items.json': previousShas['items.json'],
-  'game:balance/strings_zh.json': previousShas['strings_zh.json'],
+  'game:balance/materials.json': currentShas['materials.json'],
+  'game:balance/items.json': currentShas['items.json'],
+  'game:balance/strings_zh.json': '6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9',
   'game:balance/enhance_protect_charm.json': '0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772',
   'shared:balance/tools/gen_enchant_beast_core.py': '2f048b7b04903788b847624f3390aa81bb1fe84bff81f60c0f4c88f6f55d6220',
 };
@@ -31,8 +32,9 @@ function replaceOnce(source, before, after, eq, label) {
 }
 
 export function stripEnchantClosedAddition(raw, eq = strictEq) {
+  raw = stripSalvageClosedAddition(raw, eq);
   if (hash(raw) === previousShas['strings_zh.json']) return raw;
-  eq(hash(raw), currentShas['strings_zh.json'], '当前真实 strings952 固定权威 SHA');
+  eq(hash(raw), '6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9', '当前真实 strings952 固定权威 SHA');
   eq(Object.keys(JSON.parse(raw)).length, 952, '当前真实 strings 恰为 952 键');
   const blocks = raw.match(/,\n(?: {2}"enchant\.closed\.[^\n]+\n?){8}/gu);
   eq(blocks?.length, 1, '只剥八条完整 enchant.closed 键');
@@ -42,6 +44,7 @@ export function stripEnchantClosedAddition(raw, eq = strictEq) {
 }
 
 export function stripEnchantOpenProgress(source, eq = strictEq) {
+  source = stripSalvageOpenProgress(source, eq);
   for (const line of ["import { isValidEnchantProgress, type EnchantProgress } from './EnchantProgress';",
     "  if (has('enchant') && !isValidEnchantProgress(saved.enchant)) return false;",
     '  /** 仅 SSR 开态夹具完整提交产生；缺字段旧档保持 undefined，读档不补做。 */',
@@ -53,6 +56,7 @@ export function stripEnchantOpenProgress(source, eq = strictEq) {
 }
 
 export function stripEnchantSceneWiring(source, eq = strictEq) {
+  source = stripSalvageSceneWiring(source, eq);
   for (const line of ["import { featureClosed as enchantFeatureClosed } from '../EnchantClosed';",
     "import { isEnchantOpenForFixture } from '../EnchantOpenFlag';",
     "import { EnchantGate } from '../EnchantGate';"])
@@ -83,6 +87,7 @@ export function stripEnchantForgeSmokeCompatibility(source, eq = strictEq) {
 }
 
 export async function checkEnchantCompatibility(root, shared, eq = strictEq) {
+  const salvageCompatibility = await checkSalvageCompatibility(root, shared, eq);
   const tableChecks = [];
   for (const [mode, base] of [['shared', shared], ['snapshot', path.join(root, 'data')]]) {
     for (const [name, expected] of Object.entries(currentShas)) {
@@ -111,6 +116,6 @@ export async function checkEnchantCompatibility(root, shared, eq = strictEq) {
     '15870998e95f8f41ab4fb3e6c30dc17a82019502276084f4610800be5927e730', '附灵关态 API 原字节保留');
   stripEnchantSceneWiring(await fs.readFile(path.join(root, 'src/scenes/GameScene.ts'), 'utf8'), eq);
   return { suite: 'enchant-soft-open-compatibility-proof', passed: true, realDiskRead: true,
-    productModuleTransformations: [], tableChecks, sameHitForgeThenEnhanceThenEnchant: true,
+    productModuleTransformations: [], tableChecks, salvageCompatibility, sameHitForgeThenEnhanceThenEnchant: true,
     EnchantOpenFlag: true, softOpenedEnchant: true, released: false };
 }

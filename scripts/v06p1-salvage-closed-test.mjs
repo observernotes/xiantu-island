@@ -1,4 +1,4 @@
-// 分解仅关态 tip；两根正式 false 图及刷新图，不注入 true、不执行 O 表或成功结算。
+// 分解正式磁盘 soft-open；两根先核 true，再仅在 Vite SSR 注入 false 执行 C01–C10 八 tip 零写。
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import fs from 'node:fs/promises';
@@ -7,9 +7,10 @@ import { fileURLToPath } from 'node:url';
 import ts from 'typescript';
 import { createServer } from 'vite';
 import { sharedRoot } from './root.mjs';
+import { stripSalvageOpenProgress, stripSalvageSceneWiring } from './v06p1-salvage-soft-open-compat-proof.mjs';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-const out = path.resolve(process.env.SALVAGE_CLOSED_OUT ?? path.join(root, 'qa/out_v06p1_salvage_closed'));
+const out = path.resolve(process.env.SALVAGE_CLOSED_OUT ?? path.join(root, 'qa/out_v06p1_salvage_soft_open/regressions/salvage-closed'));
 const roots = [['shared', sharedRoot(root)], ['snapshot', path.join(root, 'data')]];
 const targets = {
   'materials.json': '86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d',
@@ -34,6 +35,9 @@ const frozenSources = {
   'src/ForgeClosed.ts': 'f7e4216be7767f481c96ae7f1dc5796574fe9b231ada91d57a137c1dc8a8c90c',
   'src/EnhanceClosed.ts': 'c52ffbfc269f3a41c309184d9781f23cf2511d5acec7570ebb44b84683b3e821',
   'src/EnchantClosed.ts': '15870998e95f8f41ab4fb3e6c30dc17a82019502276084f4610800be5927e730',
+  'src/SalvageClosed.ts': '287a55d7025018629235d45ca4386d75134fc39362532a4c47bf121b574ae211',
+  'src/SalvageGate.ts': '3777c6b72615f21a9c47544cfa8eeece08eb54009032cbf53e713091f8d8ce52',
+  'src/SalvageProgress.ts': '118f49bc4931727e0aafbc39fba6b883a94a948f8d478653bf42335305548787',
   'src/Progress.ts': 'a9ab2aa6e73dca631b6ed28f672d490b61525610c609df478e2c112a66358d3c',
   'src/SaveStore.ts': '4c99f7410cd87e2e9b46d7b685fdb9ab5f2c9ca3b8a266da61eb062624ec7916',
   'src/scenes/GameScene.ts': 'f5d7defb24dda3ef1956e331479e9ee96794f1f45515bbb7951f3c3e19a0726c',
@@ -56,14 +60,22 @@ const hasExport = node => node.modifiers?.some(modifier => modifier.kind === ts.
 const compact = (node, ast) => node.getText(ast).replace(/\s/gu, '');
 async function guard(file, expected) {
   const actual = hash(await fs.readFile(file));
-  if (expected) eq(actual, expected, `冻结/目标 SHA MATCH: ${file}`);
+  if (expected) {
+    const historical = file === path.join(root, 'src/Progress.ts')
+      ? hash(stripSalvageOpenProgress(await fs.readFile(file, 'utf8'), eq))
+      : file === path.join(root, 'src/scenes/GameScene.ts')
+        ? hash(stripSalvageSceneWiring(await fs.readFile(file, 'utf8'), eq)) : actual;
+    eq(historical, expected, `冻结/目标 SHA MATCH（仅精确剥授权分解增量）: ${file}`);
+  }
   captured.set(file, actual); protectedFiles[file] = actual;
 }
 async function sourceChecks() {
   for (const [file, sha] of Object.entries(frozenSources)) await guard(path.join(root, file), sha);
   const closedPath = path.join(root, 'src/SalvageClosed.ts'), flagPath = path.join(root, 'src/SalvageOpenFlag.ts');
   const closed = source(closedPath, await fs.readFile(closedPath, 'utf8'));
-  const flag = source(flagPath, await fs.readFile(flagPath, 'utf8'));
+  const flagText = await fs.readFile(flagPath, 'utf8'), flag = source(flagPath, flagText);
+  eq(flagText, '/** 正式路径恒 true；仅 Vite SSR 关态图可注入 false。 */\nexport function isSalvageOpenForFixture(): boolean { return true; }\n',
+    'SalvageOpenFlag 正式源码精确恒 true；仅 SSR 关态图允许注入 false');
   const imports = closed.statements.filter(ts.isImportDeclaration);
   eq(imports.map(node => node.moduleSpecifier.text), ['@xt/balance/strings_zh.json'], 'SalvageClosed 唯一 import 仅读 strings');
   eq(imports[0].importClause?.name?.text, 'strings', '唯一默认字符串绑定');
@@ -93,13 +105,24 @@ async function sourceChecks() {
   ok(ts.isFunctionDeclaration(flagExport) && hasExport(flagExport), 'Flag 唯一导出函数');
   eq(flagExport.name.text, 'isSalvageOpenForFixture', '独立 Flag API');
   eq(flagExport.parameters.length, 0, 'Flag 零参数');
-  eq(flagExport.body.statements.map(node => compact(node, flag)), ['returnfalse;'], '正式源码恒 false');
-  eq(await fs.stat(path.join(root, 'src/SalvageGate.ts')).then(() => true, error => error.code === 'ENOENT' ? false : Promise.reject(error)),
-    false, '不创建 SalvageGate 或成功流程');
+  eq(flagExport.body.statements.map(node => compact(node, flag)), ['returntrue;'], '正式源码恒 true');
+  const gatePath = path.join(root, 'src/SalvageGate.ts'), gateAst = source(gatePath, await fs.readFile(gatePath, 'utf8'));
+  const gateClass = gateAst.statements.find(node => ts.isClassDeclaration(node) && node.name?.text === 'SalvageGate');
+  const gateTips = { feature: 'featureClosed', entrance: 'refuseEntrance', salvage: 'refuseSalvage', submit: 'refuseSubmit',
+    result: 'refuseResult', output: 'refuseOutput', loadRefresh: 'refuseLoadRefresh', laterService: 'refuseLaterService' };
+  for (const [name, tip] of Object.entries(gateTips)) {
+    const method = gateClass.members.find(node => ts.isMethodDeclaration(node) && node.name.getText(gateAst) === name);
+    ok(method, `开态夹具既有 Gate 保留独立入口: ${name}`);
+    eq(compact(method.body.statements[0], gateAst), `if(!isSalvageOpenForFixture())returnSalvageClosed.${tip}();`,
+      `${name} 关态首句仍原样返回八 tip`);
+  }
   for (const file of ['src/scenes/GameScene.ts', 'src/ShopPanel.ts', 'src/Progress.ts', 'src/SaveStore.ts']) {
-    const text = await fs.readFile(path.join(root, file), 'utf8');
+    const raw = await fs.readFile(path.join(root, file), 'utf8');
+    const text = file === 'src/Progress.ts' ? stripSalvageOpenProgress(raw, eq)
+      : file === 'src/scenes/GameScene.ts' ? stripSalvageSceneWiring(raw, eq) : raw;
     ok(!/SalvageClosed|SalvageOpenFlag|SalvageGate|salvage\.closed\.|submitSalvage|fixtureInstances/u.test(text),
-      `${file} 不挂分解 UI/schema/默认生产夹具`);
+      `${file} 仅已授权最小接线/可选袋，无分解 UI 或默认生产夹具`);
+    ok(!/fixtureInstances/u.test(raw), `${file} 原生产磁盘无 fixtureInstances 默认注入`);
   }
   for (const family of ['Forge', 'Enhance', 'Enchant']) {
     const gatePath = path.join(root, `src/${family}Gate.ts`), ast = source(gatePath, await fs.readFile(gatePath, 'utf8'));
@@ -110,8 +133,10 @@ async function sourceChecks() {
   }
   await guard(closedPath); await guard(flagPath);
   evidence.push({ suite: 'source-static', passed: true, uniqueStringsImport: true, zeroArgumentApis: 8,
-    independentFlagAlwaysFalse: true, flagImports: 0, salvageGateAdded: false, productionFixtureInjection: false,
-    existingGatesAndFrontendUnchanged: true, existingLaterServicePreserved: true, apiTips });
+    independentFlagAlwaysTrue: true, flagImports: 0, existingSalvageGatePreserved: true, gateClosedFirst: true,
+    productionFixtureInjection: false, minimalFrontendWiring: true, fullSalvageUiAdded: false,
+    sameHitTipOrder: ['forge', 'enhance', 'enchant', 'salvage'], existingGatesAndFrontendPreserved: true,
+    existingLaterServicePreserved: true, apiTips });
 }
 async function dataChecks() {
   for (const [mode, dataRoot] of roots) {
@@ -149,16 +174,51 @@ async function dataChecks() {
     await fs.readFile(path.join(roots[1][1], 'balance', name)), `shared/snapshot ${name} 同字节`);
 }
 async function runGraph(dataMode, dataRoot, graph, payloads) {
-  // 无 resolve/load 插件、无 Flag 替换。每次 createServer 创建独立正式 SSR 模块图。
+  const memoryClosed = graph !== 'formal-open';
+  let flagLoads = 0;
+  const flagId = '\0v06p1-memory-closed-salvage-flag';
   const server = await createServer({ root, configFile: false, resolve: { alias: { '@xt': dataRoot } },
-    server: { middlewareMode: true, hmr: false, ws: false }, appType: 'custom', logLevel: 'error' });
+    optimizeDeps: { noDiscovery: true, include: [] },
+    server: { middlewareMode: true, hmr: false, ws: false }, appType: 'custom', logLevel: 'error',
+    plugins: [{ name: 'v06p1-salvage-memory-closed', enforce: 'pre',
+      resolveId(id) {
+        if (memoryClosed && /(?:^|\/)SalvageOpenFlag(?:\.ts)?$/u.test(id)) return flagId;
+      },
+      load(id) {
+        if (id === flagId) { flagLoads++; return 'export function isSalvageOpenForFixture() { return false; }'; }
+      },
+    }],
+  });
   try {
     const flag = await server.ssrLoadModule('/src/SalvageOpenFlag.ts');
-    eq(flag.isSalvageOpenForFixture(), false, `${dataMode}/${graph}: 正式 SSR 图分解恒 false`);
+    eq(flag.isSalvageOpenForFixture(), !memoryClosed, `${dataMode}/${graph}: 正式旗 true；关态仅 SSR 内存注入 false`);
+    eq(flagLoads, memoryClosed ? 1 : 0, `${dataMode}/${graph}: 正式 flagLoads=0，内存关态 flagLoads=1`);
     for (const family of ['Forge', 'Enhance', 'Enchant']) {
       const prior = await server.ssrLoadModule(`/src/${family}OpenFlag.ts`);
       eq(prior[`is${family}OpenForFixture`](), true, `${dataMode}/${graph}: ${family} 原正式 true 保留`);
     }
+    if (!memoryClosed) {
+      evidence.push({ suite: 'formal-graph', dataMode, graph, passed: true, flagLoads,
+        SalvageOpenFlag: true, softOpenedSalvage: true, released: false, closedFixtureOnly: true });
+      console.log(JSON.stringify({ suite: 'formal-graph', dataMode, graph, flagLoads, SalvageOpenFlag: true, passed: true }));
+      return;
+    }
+    const api = await server.ssrLoadModule('/src/SalvageClosed.ts');
+    const { Progress } = await server.ssrLoadModule('/src/Progress.ts');
+    const { SalvageGate } = await server.ssrLoadModule('/src/SalvageGate.ts');
+    const p = new Progress(), before = JSON.parse(JSON.stringify(p.exportSave()));
+    let gateWrites = 0;
+    for (const method of ['persistSoon', 'save', 'saveAsync', 'runSaveTransaction', 'runSaveTransactionAsync',
+      'addItem', 'removeItem', 'registerFormalEnhanceInstance'])
+      Object.defineProperty(p, method, { configurable: true, value() {
+        gateWrites++; throw new Error('分解内存关态 Gate 不得销毁、发放、提交、存储或排队');
+      } });
+    const gate = new SalvageGate(p);
+    for (const [method, apiName] of Object.entries({ feature: 'featureClosed', entrance: 'refuseEntrance', salvage: 'refuseSalvage',
+      submit: 'refuseSubmit', result: 'refuseResult', output: 'refuseOutput', loadRefresh: 'refuseLoadRefresh', laterService: 'refuseLaterService' }))
+      eq(await gate[method](), api[apiName](), `${dataMode}/${graph}: Gate.${method} 内存关态首旗返回原八 tip`);
+    eq(p.exportSave(), before, `${dataMode}/${graph}: 内存关态 Gate 八入口完整存档零增量`);
+    eq(gateWrites, 0, `${dataMode}/${graph}: 内存关态 Gate 销毁、发放、事务、保存与排队 0`);
     const suite = await server.ssrLoadModule('/src/v06p1-salvage-closed.test.ts');
     eq(suite.apiTips, apiTips, `${dataMode}/${graph}: 静态/运行 API 映射一致`);
     const result = await suite.runSalvageClosedTests({ dataMode, graph, payloads });
@@ -167,11 +227,13 @@ async function runGraph(dataMode, dataRoot, graph, payloads) {
       `${dataMode}/${graph}: 拒绝及读档过程零写`);
     assertions += result.assertions; totalFixtures += result.fixtures; totalInvocations += result.invocations;
     const { payloads: nextPayloads, ...row } = result;
-    evidence.push({ suite: 'v06p1-salvage-closed-graph', ...row, flagInjection: false });
+    eq(flagLoads, 1, `${dataMode}/${graph}: C 套件与 Gate 共用唯一 SSR false Flag`);
+    evidence.push({ suite: 'v06p1-salvage-closed-graph', ...row, flagInjection: true, flagLoads, memoryClosed: true,
+      formalSalvageOpenFlag: true, gateClosedTips: 8, gateWrites });
     console.log(JSON.stringify({ suite: 'v06p1-salvage-closed-graph', dataMode, graph, passed: true,
       assertions: result.assertions, fixtures: result.fixtures, invocations: result.invocations,
       ordinarySaveSetupWrites: result.ordinarySaveSetupWrites, storageWrites: result.storageWrites,
-      sentinelCalls: result.sentinelCalls, SalvageOpenFlag: false, flagInjection: false }));
+      sentinelCalls: result.sentinelCalls, SalvageOpenFlag: false, flagInjection: true, flagLoads, memoryClosed: true }));
     return JSON.parse(JSON.stringify(nextPayloads));
   } finally { await server.close(); }
 }
@@ -180,6 +242,7 @@ await fs.mkdir(out, { recursive: true });
 try {
   await sourceChecks(); await dataChecks(); staticChecksPassed = true;
   for (const [mode, dataRoot] of roots) {
+    await runGraph(mode, dataRoot, 'formal-open');
     const payloads = await runGraph(mode, dataRoot, 'initial');
     await runGraph(mode, dataRoot, 'fresh-ssr-refresh', payloads);
   }
@@ -193,9 +256,10 @@ try {
       evidenceKeys: graphs.flatMap(row => row.cases[id]?.evidenceKeys.map(key => `${row.dataMode}/${row.graph}/${key}`) ?? []) }];
   }));
   const result = { passed, assertions, totalFixtures, totalInvocations, apiTips, cases,
-    salvageClosedTipsWired: passed, SalvageOpenFlag: false, softOpenedSalvage: false, released: false,
+    salvageClosedTipsWired: passed, SalvageOpenFlag: true, softOpenedSalvage: true, released: false,
+    formalOpen: true, closedFixtureOnly: true, closedRuntimeFlag: false,
     refineStoneMapped: staticChecksPassed, enchantSoftOpenPreserved: passed,
-    EnhanceOpenFlagPreserved: passed, protectCharmSoftOpenPreserved: passed,
+    EnhanceOpenFlagPreserved: passed, EnchantOpenFlagPreserved: passed, protectCharmSoftOpenPreserved: passed,
     refineStoneMappedMeaning: 'items/materials 与合并登记齐；核齐备≠生产分解授权，不表示消费者/销毁入库/事务已接通',
     ForgeOpenFlag: true, EnhanceOpenFlag: true, EnchantOpenFlag: true,
     targetShas: targets, frozenShas: frozen, frozenSourceShas: frozenSources,
@@ -203,14 +267,17 @@ try {
     storageWrites: graphs.reduce((sum, row) => sum + row.storageWrites, 0),
     ordinarySaveSetupWrites: graphs.reduce((sum, row) => sum + row.ordinarySaveSetupWrites, 0),
     storageScope: 'storageWrites=关态 API/读档过程；ordinarySaveSetupWrites=仅 C08 准备阶段普通 saveAsync',
-    testsUseRealSsrModule: true, freshIndependentGraphs: graphs.length, flagInjection: false,
-    semanticFixtureOnly: true, salvageSchemaAdded: false, unknownFieldsRetainedByRestore: false,
+    testsUseRealSsrModule: true, freshIndependentGraphs: graphs.length + evidence.filter(row => row.suite === 'formal-graph').length,
+    formalGraphs: evidence.filter(row => row.suite === 'formal-graph').length, memoryClosedGraphs: graphs.length,
+    flagInjection: '仅四个 SSR memory-closed 图注入 false；两个正式磁盘图 flagLoads=0',
+    semanticFixtureOnly: true, salvageSchemaAdded: true,
+    salvageSchemaScope: '开态夹具令授权既有可选完整袋；本 C 套件不执行开态', unknownFieldsRetainedByRestore: false,
     unknownRawStoredPayloadPreserved: passed, oldFormalForgeEnhanceEnchantAssetsPreserved: passed,
-    openFixtureTableExecuted: false, successSettlementImplemented: false, salvageGateAdded: false,
-    compatibilityMeaning: '本窗仅八 tip 零写；C02 armor/四品质及 C03–C07 非正式分解意图仅语义上下文，不验证未来资格链/承载/事务；未知字段原文保留不等于 restore 登记该字段；本令≠开态夹具≠soft-open≠release≠进包',
+    openFixtureTableExecuted: false, successSettlementExecuted: false, existingSalvageGatePreserved: true,
+    compatibilityMeaning: '分解 soft-open ≠ 进包 ≠ 发版；fixture≠正式；正式磁盘图仅核 true，C01–C10 仅 SSR false 图执行；O 表交 open runner；C02 armor/四品质及 C03–C07 意图仅语义上下文；未知字段原文保留不等于 restore 登记；release 预期 v0.6.12 另令，本令不授权',
     protectedFiles, evidence };
   await fs.writeFile(path.join(out, 'v06p1-salvage-closed-evidence.json'), `${JSON.stringify(result, null, 2)}\n`);
   await fs.writeFile(path.join(out, 'protection-check.json'), `${JSON.stringify({ passed: staticChecksPassed,
     expectedFrozenAndTargetsMatched: staticChecksPassed, protectedBeforeAndAfterMatched: true, files: protectedFiles }, null, 2)}\n`);
 }
-console.log(`v06p1 salvage closed tests ok: ${assertions} assertions; C01–C10; ${totalFixtures} semantic/state fixtures; ${totalInvocations} zero-argument API calls; shared/snapshot + fresh SSR; Flag=false; injection=false; writes=0; three prior Flags=true; O表未执行；仅关态 tip，不授权生产分解`);
+console.log(`v06p1 salvage closed tests ok: ${assertions} assertions; C01–C10; ${totalFixtures} semantic/state fixtures; ${totalInvocations} zero-argument API calls; shared/snapshot 正式 flagLoads=0 + SSR false/fresh flagLoads=1; writes=0; three prior Flags=true; SalvageOpenFlag=true; softOpenedSalvage=true; released=false; O表未执行；分解 soft-open ≠ 进包 ≠ 发版；fixture≠正式；release 预期 v0.6.12 另令`);

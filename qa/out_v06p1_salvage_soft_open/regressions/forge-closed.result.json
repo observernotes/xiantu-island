@@ -1,0 +1,11 @@
+{
+  "command": "npm run test:v06p1-forge-closed",
+  "cwd": "/workspace/xiantu/wt/dev",
+  "stdin": "/dev/null",
+  "exitCode": 0,
+  "passed": true,
+  "durationSeconds": 7.066,
+  "assertions": 20558,
+  "log": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_soft_open/regressions/forge-closed.log",
+  "evidence": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_soft_open/regressions/forge-closed/v06p1-forge-closed-evidence.json"
+}

@@ -1,0 +1,341 @@
+{
+  "passed": true,
+  "reviewKind": "independent-read-only-code-and-boundary-review",
+  "reviewerTask": "/root/salvage_closed",
+  "baseline": "15b66e34a9fc24bc38b8e701172694756a6cc62a",
+  "reviewedFiles": [
+    "scripts/v06c-closed-test.mjs",
+    "scripts/v06d-closed-test.mjs",
+    "scripts/v06p1-enchant-closed-test.mjs",
+    "scripts/v06p1-enchant-open-test.mjs",
+    "scripts/v06p1-enchant-soft-open-compat-proof.mjs",
+    "scripts/v06p1-enhance-closed-test.mjs",
+    "scripts/v06p1-enhance-open-test.mjs",
+    "scripts/v06p1-forge-closed-test.mjs",
+    "scripts/v06p1-forge-open-test.mjs",
+    "scripts/v06p1-market-closed-test.mjs",
+    "scripts/v06p1-salvage-closed-test.mjs",
+    "scripts/v06p1-salvage-open-test.mjs",
+    "src/SalvageOpenFlag.ts",
+    "src/scenes/GameScene.ts",
+    "src/v06p1-enchant-open.test.ts",
+    "src/v06p1-enhance-open.test.ts",
+    "src/v06p1-forge-open.test.ts",
+    "src/v06p1-salvage-open.test.ts",
+    "scripts/v06p1-salvage-soft-open-compat-proof.mjs"
+  ],
+  "findings": [],
+  "blockingFindings": 0,
+  "checks": {
+    "formalFlagExactTrue": true,
+    "productSourceChangesLimitedToFlagAndMinimalScene": true,
+    "sameHitTipOrder": [
+      "forge",
+      "enhance",
+      "enchant",
+      "salvage"
+    ],
+    "exactlyOneFinalReturnTrue": true,
+    "sceneRevertsToBaselineByExactAuthorizedSubtraction": true,
+    "noProductionFixtureInstances": true,
+    "priorServiceTipsDistancesVisibilityAndQuietNoObjectPreserved": true,
+    "formalOpenGraphsEnforceFlagLoadsZeroAndNoProductModuleOrBalanceTransformations": true,
+    "formalOpenO01ThroughO08TableRequired": true,
+    "explicitArmorRecipeFixtureSeparatedFromFormalGraphs": true,
+    "formalArmorMissingSourceRefusedWithoutInventingInstanceRefs": true,
+    "invalidDependencyMutationsLimitedToSeparateSsrGraphs": true,
+    "oldSevenRunnersPreserveBusinessAssertionsAndAddExactSixSourceAllowlist": true,
+    "historicalStringsAndProgressAssertionsRetainedByExactShaProvenSubtraction": true,
+    "memoryClosedFalseInjectionRetainsC01ThroughC10AndZeroWrites": true,
+    "closedAssertions": 19413,
+    "oldQaFilesChecked": 622,
+    "oldQaBeforeHashesPreserved": true,
+    "frozenProtectedRowsMatched": 29
+  },
+  "unchangedProductionFiles": [
+    {
+      "path": "src/SalvageGate.ts",
+      "baselineSha256": "3777c6b72615f21a9c47544cfa8eeece08eb54009032cbf53e713091f8d8ce52",
+      "currentSha256": "3777c6b72615f21a9c47544cfa8eeece08eb54009032cbf53e713091f8d8ce52",
+      "matched": true
+    },
+    {
+      "path": "src/SalvageProgress.ts",
+      "baselineSha256": "118f49bc4931727e0aafbc39fba6b883a94a948f8d478653bf42335305548787",
+      "currentSha256": "118f49bc4931727e0aafbc39fba6b883a94a948f8d478653bf42335305548787",
+      "matched": true
+    },
+    {
+      "path": "src/Progress.ts",
+      "baselineSha256": "1cf4e9fcfab211710ec16a406204cd0c0b9f16da20056ff9372fb2b16a8ee561",
+      "currentSha256": "1cf4e9fcfab211710ec16a406204cd0c0b9f16da20056ff9372fb2b16a8ee561",
+      "matched": true
+    },
+    {
+      "path": "src/SaveStore.ts",
+      "baselineSha256": "4c99f7410cd87e2e9b46d7b685fdb9ab5f2c9ca3b8a266da61eb062624ec7916",
+      "currentSha256": "4c99f7410cd87e2e9b46d7b685fdb9ab5f2c9ca3b8a266da61eb062624ec7916",
+      "matched": true
+    },
+    {
+      "path": "src/ShopPanel.ts",
+      "baselineSha256": "419a3c5b112301a69258303062f3a82468aff2e6116b440f7c3844a465c1170c",
+      "currentSha256": "419a3c5b112301a69258303062f3a82468aff2e6116b440f7c3844a465c1170c",
+      "matched": true
+    },
+    {
+      "path": "src/ForgeGate.ts",
+      "baselineSha256": "7aa9b91bf4ad2d389f2b96c41479338bd53cb3fdd63f65ff47a64f8528d75bcb",
+      "currentSha256": "7aa9b91bf4ad2d389f2b96c41479338bd53cb3fdd63f65ff47a64f8528d75bcb",
+      "matched": true
+    },
+    {
+      "path": "src/EnhanceGate.ts",
+      "baselineSha256": "c2a2a0efb7997270eb48674224ce9bfc08e14201e613d7aa12d35af0a2a09796",
+      "currentSha256": "c2a2a0efb7997270eb48674224ce9bfc08e14201e613d7aa12d35af0a2a09796",
+      "matched": true
+    },
+    {
+      "path": "src/EnchantGate.ts",
+      "baselineSha256": "9dbb43f607fb1c298661bccd8a31f5653583b0b1dae956ca3f317f2fe8fc0ad2",
+      "currentSha256": "9dbb43f607fb1c298661bccd8a31f5653583b0b1dae956ca3f317f2fe8fc0ad2",
+      "matched": true
+    }
+  ],
+  "protectedRows": [
+    {
+      "path": "src/EnhanceOpenFlag.ts",
+      "expected": "d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e",
+      "actual": "d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e",
+      "matched": true
+    },
+    {
+      "path": "src/EnchantOpenFlag.ts",
+      "expected": "bd5445b8ddfed56a32811cedd28db72e8676c7a5eff321e2fedb0ec5fe4c505a",
+      "actual": "bd5445b8ddfed56a32811cedd28db72e8676c7a5eff321e2fedb0ec5fe4c505a",
+      "matched": true
+    },
+    {
+      "path": "src/ForgeOpenFlag.ts",
+      "expected": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
+      "actual": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
+      "matched": true
+    },
+    {
+      "path": "data/balance/enhance.json",
+      "expected": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+      "actual": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+      "matched": true
+    },
+    {
+      "path": "data/balance/recipes.json",
+      "expected": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+      "actual": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+      "matched": true
+    },
+    {
+      "path": "data/balance/materials.json",
+      "expected": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+      "actual": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+      "matched": true
+    },
+    {
+      "path": "data/balance/items.json",
+      "expected": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+      "actual": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+      "matched": true
+    },
+    {
+      "path": "data/balance/strings_zh.json",
+      "expected": "9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda",
+      "actual": "9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda",
+      "matched": true
+    },
+    {
+      "path": "data/balance/npcs.json",
+      "expected": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+      "actual": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+      "matched": true
+    },
+    {
+      "path": "data/balance/life_skills.json",
+      "expected": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+      "actual": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+      "matched": true
+    },
+    {
+      "path": "data/balance/enhance_protect_charm.json",
+      "expected": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+      "actual": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+      "matched": true
+    },
+    {
+      "path": "src/SalvageClosed.ts",
+      "expected": "287a55d7025018629235d45ca4386d75134fc39362532a4c47bf121b574ae211",
+      "actual": "287a55d7025018629235d45ca4386d75134fc39362532a4c47bf121b574ae211",
+      "matched": true
+    },
+    {
+      "path": "src/data.ts",
+      "expected": "aad725652f5c0eb57a5c699726e570b146d5ded52d5c31715444dbbf4117024a",
+      "actual": "aad725652f5c0eb57a5c699726e570b146d5ded52d5c31715444dbbf4117024a",
+      "matched": true
+    },
+    {
+      "path": "/workspace/xiantu/balance/enhance.json",
+      "expected": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+      "actual": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+      "matched": true
+    },
+    {
+      "path": "/workspace/xiantu/balance/recipes.json",
+      "expected": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+      "actual": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+      "matched": true
+    },
+    {
+      "path": "/workspace/xiantu/balance/materials.json",
+      "expected": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+      "actual": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+      "matched": true
+    },
+    {
+      "path": "/workspace/xiantu/balance/items.json",
+      "expected": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+      "actual": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+      "matched": true
+    },
+    {
+      "path": "/workspace/xiantu/balance/strings_zh.json",
+      "expected": "9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda",
+      "actual": "9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda",
+      "matched": true
+    },
+    {
+      "path": "/workspace/xiantu/balance/npcs.json",
+      "expected": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+      "actual": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+      "matched": true
+    },
+    {
+      "path": "/workspace/xiantu/balance/life_skills.json",
+      "expected": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+      "actual": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+      "matched": true
+    },
+    {
+      "path": "/workspace/xiantu/balance/enhance_protect_charm.json",
+      "expected": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+      "actual": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+      "matched": true
+    },
+    {
+      "path": "/workspace/xiantu/game/data/balance/enhance.json",
+      "expected": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+      "actual": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+      "matched": true
+    },
+    {
+      "path": "/workspace/xiantu/game/data/balance/recipes.json",
+      "expected": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+      "actual": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+      "matched": true
+    },
+    {
+      "path": "/workspace/xiantu/game/data/balance/materials.json",
+      "expected": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+      "actual": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+      "matched": true
+    },
+    {
+      "path": "/workspace/xiantu/game/data/balance/items.json",
+      "expected": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+      "actual": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+      "matched": true
+    },
+    {
+      "path": "/workspace/xiantu/game/data/balance/strings_zh.json",
+      "expected": "6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9",
+      "actual": "6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9",
+      "matched": true
+    },
+    {
+      "path": "/workspace/xiantu/game/data/balance/npcs.json",
+      "expected": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+      "actual": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+      "matched": true
+    },
+    {
+      "path": "/workspace/xiantu/game/data/balance/life_skills.json",
+      "expected": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+      "actual": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+      "matched": true
+    },
+    {
+      "path": "/workspace/xiantu/game/data/balance/enhance_protect_charm.json",
+      "expected": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+      "actual": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+      "matched": true
+    }
+  ],
+  "boundaries": [
+    "正式磁盘图指磁盘 Flag 与产品源码/数值表无注入；成功提交用既有显式 qualification/capacity/atomicCarrier 测试承载，不宣称默认生产绑定 schema 或完整提交 UI 已齐备。",
+    "默认 SalvageGate 缺少资格字段时仍整拒；正式实例仅从本档 formalEnhanceInstances/formalSources 读取。",
+    "磁盘缺 robe/shoes 正式打造配方，正式图整拒无源防具；防具成功消费者覆盖保留在独立显式配方夹具图，fixture≠正式。",
+    "本审阅为代码及权限边界审阅，全部最终运行结果以根代理 selfcheck-summary 为准；soft-open≠进包≠发版，release 预期 v0.6.12 另令。"
+  ],
+  "finalOpenEvidenceVerification": {
+    "passed": true,
+    "evidence": "qa/out_v06p1_salvage_soft_open/v06p1-salvage-open-evidence.json",
+    "evidenceSha256": "35200e6ef6ed8f85d878597851b77a4f67013b96a6d860ecfa49062da400258a",
+    "commandReceipt": "qa/out_v06p1_salvage_soft_open/salvage-open.result.json",
+    "exitCode": 0,
+    "assertions": 7145,
+    "graphCount": 54,
+    "formalOpenGraphs": 4,
+    "formalOFullTableGraphs": 2,
+    "formalOFullTableRoots": [
+      "shared",
+      "snapshot"
+    ],
+    "formalFlagLoads": 0,
+    "formalProductModuleTransformations": [],
+    "memoryClosedGraphs": 4,
+    "memoryClosedFlagLoads": 1,
+    "memoryClosedStorageWrites": 0,
+    "memoryClosedCommits": 0,
+    "explicitArmorFixtureGraphs": 2,
+    "explicitArmorCountsAsFormalFullTable": false,
+    "explicitArmorOnlyProductModuleTransformation": "balance/recipes.json",
+    "sceneSmokeGraphs": 8,
+    "sceneSmokeFormalOpenGraphs": 4,
+    "sceneSmokeMemoryClosedGraphs": 4,
+    "sceneBoundaryFourCornersVerifiedInSource": true,
+    "sceneSaveWrites": 0,
+    "sceneDeniedRoutingAndClosedGateBypassVerified": true,
+    "fixtureAdaptersExplicitAndNoProductionDefaultInjection": true,
+    "externalRuntimeStub": "Phaser rendering runtime only; real GameScene.prototype method loaded from disk",
+    "released": false
+  },
+  "reviewedSourceSha256": {
+    "scripts/v06c-closed-test.mjs": "5e3c0e1eb4f963548ea8bae979471ec20d4f53a5e47b815bb3169c181dd744d9",
+    "scripts/v06d-closed-test.mjs": "73e3996d0d49d62e6d39691a6dd034f6ceb166d20e7202d0a7bc0fda1f5bd4e3",
+    "scripts/v06p1-enchant-closed-test.mjs": "6de4c417a12d6ee9adbaf2f1c9e57b2cf84ebe89ba48c643c0893ab3c06e56a1",
+    "scripts/v06p1-enchant-open-test.mjs": "aea3490522b8dfabdc7215abea2668eab34ed4af74f7a55a19fd1d88db7610f8",
+    "scripts/v06p1-enchant-soft-open-compat-proof.mjs": "b714599019fd901ed6381288848f96d1fbed052be573a463da95f9ce120435e9",
+    "scripts/v06p1-enhance-closed-test.mjs": "135aa78d1685775e5f915fa27a88680828d1c6b0eb90605003e8c661420a8aa4",
+    "scripts/v06p1-enhance-open-test.mjs": "c198f40ff899e7e0095837211cd6b5bd1808e3f33af1f58cdc794a3e3e07b8f4",
+    "scripts/v06p1-forge-closed-test.mjs": "b0ec2e88856af1af715be3194cd903315c4a11364c56e4e48377fbe4ce46206d",
+    "scripts/v06p1-forge-open-test.mjs": "b1767cbedf9e3543cfa82c8e1931d43888212404b47198ae1f977a5e2bd696d1",
+    "scripts/v06p1-market-closed-test.mjs": "319f845a4d46dba7fd0678bb6ed5cb9747c860a89e78e93c7bd45cc32cb1b57e",
+    "scripts/v06p1-salvage-closed-test.mjs": "6c4aee8d9d3311f4092bc39fd420efbb969a54b8cd984faa1db61d5f22bd3d72",
+    "scripts/v06p1-salvage-open-test.mjs": "252e389b996b48ab76a5e6918a1cc58b5490e0b3fcf3c7443069a48fa2566cdf",
+    "src/SalvageOpenFlag.ts": "69aace852957c52bf7ca0214345ede7df29d6d36ec1dfd4849462e54552edff3",
+    "src/scenes/GameScene.ts": "3b06682a41249bad436a8630ed5f357abd07be363e00694043de8606bfce6cc6",
+    "src/v06p1-enchant-open.test.ts": "d67ed832c9cc2419ad894b2db0deb55e22b972cfd55e55abb8c4ef45338d2af8",
+    "src/v06p1-enhance-open.test.ts": "16c88fd0000505d63e4fbcf484689d0e69274f6b56cb6dda0dcbb28c1cee33d7",
+    "src/v06p1-forge-open.test.ts": "e471d5ebc43981931d5ea476821559dad2e564fb1bc7a4a20e47b122f3d6b157",
+    "src/v06p1-salvage-open.test.ts": "a40d333ab7e3f005f21c18b39fbb2c9881df79969db38d807889890825176550",
+    "scripts/v06p1-salvage-soft-open-compat-proof.mjs": "d83dc32e90fecf78a7426c2849de828976cb2524d5881541371a66013c8de3ad"
+  }
+}

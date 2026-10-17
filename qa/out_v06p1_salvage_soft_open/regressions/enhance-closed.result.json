@@ -1,0 +1,11 @@
+{
+  "command": "npm run test:v06p1-enhance-closed",
+  "cwd": "/workspace/xiantu/wt/dev",
+  "stdin": "/dev/null",
+  "exitCode": 0,
+  "passed": true,
+  "durationSeconds": 6.383,
+  "assertions": 30980,
+  "log": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_soft_open/regressions/enhance-closed.log",
+  "evidence": "/workspace/xiantu/wt/dev/qa/out_v06p1_salvage_soft_open/regressions/enhance-closed/v06p1-enhance-closed-evidence.json"
+}

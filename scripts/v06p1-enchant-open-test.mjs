@@ -1,5 +1,6 @@
 // 附灵 soft-open 正式磁盘图；仅 Vite SSR 关态图注入 false。soft-open≠进包≠发版；fixture≠正式。
 import assert from 'node:assert/strict';
+import { checkSalvageCompatibility } from './v06p1-salvage-soft-open-compat-proof.mjs';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs/promises';
@@ -11,13 +12,13 @@ import { sharedRoot } from './root.mjs';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const shared = sharedRoot(root), roots = [['shared', shared], ['snapshot', path.join(root, 'data')]];
-const out = process.env.ENCHANT_OPEN_OUT ?? process.env.OUT ?? path.join(root, 'qa/out_v06p1_enchant_soft_open');
+const out = process.env.ENCHANT_OPEN_OUT ?? process.env.OUT ?? path.join(root, 'qa/out_v06p1_salvage_soft_open/regressions/enchant-open');
 const frozen = {
   'enhance.json': 'd5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954',
   'recipes.json': '1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f',
   'materials.json': '86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d',
   'items.json': 'dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99',
-  'strings_zh.json': '6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9',
+  'strings_zh.json': '9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda',
   'npcs.json': '2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6',
   'life_skills.json': '204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b',
   'enhance_protect_charm.json': '0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772',
@@ -39,6 +40,7 @@ const apiTips = {
 };
 const captured = new Map(), evidence = [];
 let assertions = 0, runtimeAssertions = 0, passed = false, protectionPassed = false;
+let salvageCompatibility = null;
 const eq = (actual, expected, message) => { assertions++; assert.deepEqual(actual, expected, message); };
 const ok = (actual, message) => { assertions++; assert.ok(actual, message); };
 const hash = data => createHash('sha256').update(data).digest('hex');
@@ -49,6 +51,7 @@ async function capture(file, expected) {
   if (expected) eq(actual, expected, '冻结 SHA MATCH: ' + file);
 }
 async function sourceChecks() {
+  salvageCompatibility = await checkSalvageCompatibility(root, shared, eq);
   for (const [file, sha] of Object.entries(frozenSources)) await capture(path.join(root, file), sha);
   for (const file of ['src/EnhanceGate.ts', 'src/ForgeGate.ts', 'src/EnhanceClosed.ts', 'src/ForgeClosed.ts',
     'src/EnchantClosed.ts', 'src/EnchantOpenFlag.ts', 'src/scenes/GameScene.ts', 'src/ShopPanel.ts', 'data/features.json'])
@@ -81,9 +84,9 @@ async function sourceChecks() {
   ok(/import \{ featureClosed as enchantFeatureClosed \} from ['"]\.\.\/EnchantClosed['"]/u.test(scene), 'Scene 关态只读 tip 独立 import');
   const entrance = scene.match(/  private tryInteractForgeEntrance\(\): boolean \{[\s\S]*?\n  \}/u)?.[0];
   ok(entrance, '既有欧冶匠同命中入口存在');
-  ok(/new ForgeGate\(this\.prog\)\.entrance\(\)[\s\S]*new EnhanceGate\(this\.prog\)\.entrance\(\)[\s\S]*new EnchantGate\(this\.prog\)\.entrance\(\)[\s\S]*return true;/u.test(entrance),
-    '同一次命中依次 forge→enhance→enchant，最后才 return，附灵不被饿死');
-  eq((entrance.match(/return true;/gu) ?? []).length, 1, '同命中三 tip 完成才消费交互');
+  ok(/new ForgeGate\(this\.prog\)\.entrance\(\)[\s\S]*new EnhanceGate\(this\.prog\)\.entrance\(\)[\s\S]*new EnchantGate\(this\.prog\)\.entrance\(\)[\s\S]*new SalvageGate\(this\.prog\)\.entrance\(\)[\s\S]*return true;/u.test(entrance),
+    '同一次命中依次 forge→enhance→enchant→salvage，最后才 return，附灵不被饿死');
+  eq((entrance.match(/return true;/gu) ?? []).length, 1, '同命中四 tip 完成才消费交互');
   ok(/if \(!isEnchantOpenForFixture\(\)\) this\.log\(enchantFeatureClosed\(\)\.text, '#aaaaaa'\);/u.test(entrance), '内存关态绕过 Gate 资格结算');
   ok(!/EnchantPanel|EnchantmentPanel|openEnchant|submitEnchant|fixtureInstances/u.test(scene), 'Scene 无完整附灵 UI、提交或生产夹具注入');
   ok(!/EnchantGate|EnchantOpenFlag|EnchantClosed/u.test(await fs.readFile(path.join(root, 'src/ShopPanel.ts'), 'utf8')), '不接商店附灵 UI');
@@ -95,7 +98,7 @@ async function sourceChecks() {
     const gifts = npcs.filter(row => row.affinity?.gifts);
     eq(gifts.length, 10, mode + ' gifts 共10处');
     ok(gifts.every(row => row.affinity.gifts.enabled === false), mode + ' gifts 10×false');
-    eq(Object.keys(await readJson(path.join(dataRoot, 'balance/strings_zh.json'))).length, 952, mode + ' strings 952');
+    eq(Object.keys(await readJson(path.join(dataRoot, 'balance/strings_zh.json'))).length, 960, mode + ' strings 960');
     const items = await readJson(path.join(dataRoot, 'balance/items.json'));
     const materials = await readJson(path.join(dataRoot, 'balance/materials.json'));
     eq(items.filter(row => row.id === 'beast_core'), [{ id: 'beast_core', name: '妖兽内丹', phase: 5, icon: 'icon_beast_core' }],
@@ -179,7 +182,8 @@ async function runGraph(dataMode, dataRoot, openFixture, refreshPayloads = null,
     eq(result.localWrites, 0, '无 localStorage 写旁路');
     eq(result.productionFixtureInstances, false, '正式图无 fixtureInstances 生产默认依赖');
     if (!invalidDependency) {
-      eq(result.sceneSmoke?.sameHitForgeThenEnhanceThenEnchant, true, dataMode + '/' + graph + ' 同次命中三 tip 顺序');
+      eq(result.sceneSmoke?.sameHitForgeThenEnhanceThenEnchant, true, dataMode + '/' + graph + ' 同次命中前三 tip 顺序保持');
+      eq(result.sceneSmoke?.sameHitForgeThenEnhanceThenEnchantThenSalvage, true, dataMode + '/' + graph + ' 同次命中四 tip 顺序');
       eq(result.sceneSmoke?.enchantNotStarved, true, dataMode + '/' + graph + ' 打造强化不饿死附灵');
       eq(result.sceneSmoke?.saveWrites, 0, dataMode + '/' + graph + ' Scene 最小入口零存档写');
       eq(result.sceneSmoke?.gateDeniedRouting, openFixture, dataMode + '/' + graph + ' 正式开态原样路由 Gate 拒绝');
@@ -231,6 +235,7 @@ try {
         row.dataMode + '/' + row.graph + '/' + (row.invalidDependency ?? (row.freshSsr ? 'fresh-ssr' : 'initial')) + '/' + value) ?? []) }];
   }));
   const result = { passed, assertions: assertions + runtimeAssertions, runnerAssertions: assertions, runtimeAssertions,
+    salvageCompatibility,
     ...requiredEvidence, enchantOpenFixtureTableExecuted: passed && Object.values(cases).every(row => row.executed),
     cases, acceptanceDesign: 'design/29 §4.3 O01–O08', graphCount: evidence.length,
     formalOpenGraphCount: evidence.filter(row => row.graph === 'formal-open').length,

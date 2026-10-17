@@ -1,0 +1,15 @@
+{
+  "name": "v06c-closed",
+  "command": [
+    "npm",
+    "run",
+    "test:v06c-closed"
+  ],
+  "cwd": "/workspace/xiantu/wt/dev",
+  "environment": {},
+  "stdin": "/dev/null",
+  "exitCode": 0,
+  "durationSeconds": 5.16,
+  "assertions": 10730,
+  "log": "qa/out_v06p1_salvage_soft_open/v06c-closed.log"
+}

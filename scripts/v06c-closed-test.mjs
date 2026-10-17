@@ -6,13 +6,15 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createServer } from 'vite';
 import { sharedRoot } from './root.mjs';
+import { stripSalvageClosedAddition } from './v06p1-salvage-soft-open-compat-proof.mjs';
+import { stripEnchantClosedAddition } from './v06p1-enchant-soft-open-compat-proof.mjs';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const modes = [['shared', sharedRoot(root)], ['snapshot', path.join(root, 'data')]];
 const introId = 'q_secret_nest_intro';
 const expectedSha = {
   'balance/quests.json': 'c45466827247b9e61260bbd2b681ae7207bf84a017aff5d8b028c0ec3463482b',
-  'balance/strings_zh.json': 'd7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09',
+  'balance/strings_zh.json': '9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda',
   'maps/wanyao_outer_1.json': '9c05955fb39631e1236f2583f3be65e66823be2da3b30efaafc10ff443074b10',
   'balance/companions.json': 'e4eb87c1f9400514a084d630f179903e0926d706c85614481f1e2618a01bb115',
   'balance/fly_zones.json': '2940fe5952246a3669f87d8b9f3fc6226c2adf7080353be7de94da81e031b8e4',
@@ -97,8 +99,8 @@ async function checkFormal(mode, dataRoot) {
     data[name] = JSON.parse(bytes.toString('utf8'));
   }
   const quests = data['balance/quests.json'], strings = data['balance/strings_zh.json'];
-  eq(Object.keys(strings).length, 944, `${mode}: strings944键含_meta`);
-  const preFormal = sharedBytes.get('balance/strings_zh.json').toString('utf8').replace(/,\n(?: {2}"enhance\.formal\.[^\n]+\n?){8}/u, '\n');
+  eq(Object.keys(strings).length, 960, `${mode}: strings960键含_meta，原944键保持`);
+  const preFormal = stripEnchantClosedAddition(stripSalvageClosedAddition(sharedBytes.get('balance/strings_zh.json').toString('utf8'), eq), eq).replace(/,\n(?: {2}"enhance\.formal\.[^\n]+\n?){8}/u, '\n');
   eq(hash(preFormal), preFormalStringsSha, `${mode}: 剥正式八键还原原936键完整字节`);
   const intros = quests.filter(q => q.id === introId);
   eq(intros.length, 1, `${mode}: 只有一条既有秘境引导`);

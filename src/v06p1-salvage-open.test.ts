@@ -1,4 +1,4 @@
-// 正式分解 Flag=false；开态仅 SSR 内存注入。绑定/位置/容量与防具配方均为显式、可剥离测试夹具。
+// 分解 soft-open 正式磁盘 Flag=true；仅关态 SSR 注入 false。绑定/位置/容量为显式可剥离测试承载，防具配方另隔离夹具图。
 import enhance from '@xt/balance/enhance.json';
 import recipes from '@xt/balance/recipes.json';
 import itemDefinitions from '@xt/balance/items.json';
@@ -11,6 +11,7 @@ import { isValidSalvageProgress } from './SalvageProgress';
 import { ForgeGate } from './ForgeGate';
 import { EnhanceGate } from './EnhanceGate';
 import { EnchantGate } from './EnchantGate';
+import { GameScene } from './scenes/GameScene';
 import * as Closed from './SalvageClosed';
 import * as ForgeClosed from './ForgeClosed';
 import * as EnhanceClosed from './EnhanceClosed';
@@ -108,11 +109,11 @@ function memoryIndexedDb() {
 }
 
 export async function runSalvageOpenFixtureTests(options: {
-  openFixture: boolean; dataMode: string; refreshPayloads?: Payload[] | null;
+  openFixture: boolean; dataMode: string; refreshPayloads?: Payload[] | null; armorFixture?: boolean;
   invalidDependency?: string; dependencyPayload?: Seed | null;
 }) {
-  const { openFixture, dataMode, refreshPayloads = null, invalidDependency } = options;
-  const graph = openFixture ? 'memory-open' : 'formal-closed', label = dataMode + '/' + graph;
+  const { openFixture, dataMode, refreshPayloads = null, invalidDependency, armorFixture = false } = options;
+  const graph = armorFixture ? 'explicit-armor-fixture' : openFixture ? 'formal-open' : 'memory-closed', label = dataMode + '/' + graph;
   let assertions = 0, sequence = 0, randomCalls = 0, localWrites = 0;
   const eq = (actual: unknown, expected: unknown, message: string) => {
     assertions++;
@@ -157,7 +158,7 @@ export async function runSalvageOpenFixtureTests(options: {
   }
   async function forge(p: Progress, itemId = 'bamboo_sword', grade: Grade = 'common') {
     const recipe = recipes.recipes.find(row => row.type === 'forge' && row.output === itemId)!;
-    ok(recipe, '正式 Forge 默认入口读取 SSR 图配方；防具配方仅为显式内存夹具');
+    ok(recipe, '正式 Forge 默认入口读取磁盘配方；防具配方只在独立显式夹具图');
     p.inventory[recipe.blueprint!] = Math.max(p.count(recipe.blueprint!), 20);
     for (const material of recipe.materials) p.inventory[material.item] = Math.max(p.count(material.item), material.count * 20);
     const samples = { common: 0, fine: 0.65, spirit: 0.95, treasure: 0.995 };
@@ -255,22 +256,122 @@ export async function runSalvageOpenFixtureTests(options: {
       'O06 真实保存读档完整事实一致');
     await replay(loaded, payload.request, 'O06 load 重放');
   }
+  function sceneSmoke() {
+    const p = bare(), logs: { text: string; color: string }[] = [];
+    const before = copy(p.exportSave()), writes = idb.writes, commits = idb.commits;
+    const rows = copy([...idb.rows]), samples = randomCalls;
+    const entrance = { name: 'smith_ou', type: 'npc', props: { npc: 'smith_ou' }, x: 100, y: 200 };
+    const forgeTip = { text: '炼器打造已开放。', color: '#fff8d0' };
+    const enhanceTip = { text: '装备强化已开放。', color: '#aaaaaa' };
+    const enchantTip = { text: '装备附灵已开放。', color: '#aaaaaa' };
+    const salvageTip = { text: openFixture ? '装备分解已开放。' : Closed.featureClosed().text, color: '#aaaaaa' };
+    const scene: any = Object.assign(Object.create(GameScene.prototype), {
+      prog: p, map: { id: 'luoxia_town', objects: [] }, player: { x: 100, y: 200 },
+      log: (text: string, color: string) => logs.push({ text, color }),
+      encounterRuntime: { interact() { throw new Error('欧冶匠四项入口须先于遭遇与 NPC 交互'); } },
+    });
+    eq(typeof scene.tryInteractForgeEntrance, 'function', '真实 GameScene.prototype 既有欧冶匠入口存在');
+    eq(scene.tryInteractForgeEntrance(), false, '没有对象时安静 no-op');
+    scene.map.objects = [{ ...entrance, name: 'npc_shop', props: { npc: 'npc_shop' } }];
+    eq(scene.tryInteractForgeEntrance(), false, '非 smith_ou 对象不消费分解入口');
+    scene.map.objects = [entrance];
+    for (const offset of [-29, 29]) {
+      scene.player.x = entrance.x + offset;
+      eq(scene.tryInteractForgeEntrance(), false, '横向超距不交互: ' + offset);
+    }
+    scene.player.x = entrance.x;
+    for (const offset of [-41, 41]) {
+      scene.player.y = entrance.y + offset;
+      eq(scene.tryInteractForgeEntrance(), false, '纵向超距不交互: ' + offset);
+    }
+    scene.player.y = entrance.y; scene.senseMap = { objectVisible: () => false };
+    eq(scene.tryInteractForgeEntrance(), false, '隐藏欧冶匠不交互');
+    eq(logs, [], '无对象/非欧冶匠/超距/隐藏时四项提示均安静');
+    scene.senseMap = undefined;
+    for (const object of [{ ...entrance, props: {} }, { ...entrance, name: 'salvage-smoke-alias' }]) {
+      scene.map.objects = [object]; const start = logs.length;
+      eq(scene.tryInteractForgeEntrance(), true, object.name + ' 邻近欧冶匠被消费');
+      eq(logs.slice(start), [forgeTip, enhanceTip, enchantTip, salvageTip], 'name/props.npc 同一次命中 forge→enhance→enchant→salvage，分解不被饿死');
+    }
+    scene.map.objects = [entrance];
+    for (const xOffset of [-1, 1]) for (const yOffset of [-1, 1]) {
+      scene.player.x = entrance.x + 28 * xOffset; scene.player.y = entrance.y + 40 * yOffset;
+      const start = logs.length;
+      eq(scene.tryInteractForgeEntrance(), true, '28×40 四角距离边界内四项入口可冒烟: ' + xOffset + '/' + yOffset);
+      eq(logs.slice(start), [forgeTip, enhanceTip, enchantTip, salvageTip], '距离边界保持四 tip 顺序和文案');
+    }
+    scene.player.x = entrance.x; scene.player.y = entrance.y;
+    let start = logs.length;
+    eq(scene.tryInteract(), true, '通用交互在遭遇/NPC 前消费欧冶匠四项入口');
+    eq(logs.slice(start), [forgeTip, enhanceTip, enchantTip, salvageTip], '通用交互同命中四项入口且不重复提示');
+    const originalSalvageEntrance = SalvageGate.prototype.entrance;
+    let entranceCalls = 0;
+    try {
+      SalvageGate.prototype.entrance = function () {
+        entranceCalls++;
+        if (!openFixture) throw new Error('内存关态不得查询 SalvageGate');
+        return { allowed: false, tipKey: 'salvage.fixture.smoke', text: '分解冒烟拒绝。' };
+      };
+      start = logs.length;
+      eq(scene.tryInteractForgeEntrance(), true, '最小入口保留 SalvageGate 拒绝提示分支');
+      eq(entranceCalls, openFixture ? 1 : 0, '只有正式开态查询 SalvageGate.entrance，关态直接绕过');
+      eq(logs.slice(start), [forgeTip, enhanceTip, enchantTip, { text: openFixture ? '分解冒烟拒绝。' : Closed.featureClosed().text,
+        color: '#aaaaaa' }], 'Gate 拒绝原文或内存关态 tip 展示，打造强化附灵既有提示保持');
+    } finally { SalvageGate.prototype.entrance = originalSalvageEntrance; }
+    const originalForgeEntrance = ForgeGate.prototype.entrance, originalEnhanceEntrance = EnhanceGate.prototype.entrance,
+      originalEnchantEntrance = EnchantGate.prototype.entrance;
+    const calls: string[] = [];
+    try {
+      ForgeGate.prototype.entrance = function () {
+        calls.push('forge'); return { allowed: false, tipKey: 'forge.fixture.smoke', text: '打造冒烟拒绝。' };
+      };
+      EnhanceGate.prototype.entrance = function () {
+        calls.push('enhance'); return { allowed: false, tipKey: 'enhance.fixture.smoke', text: '强化冒烟拒绝。' };
+      };
+      EnchantGate.prototype.entrance = function () {
+        calls.push('enchant'); return { allowed: false, tipKey: 'enchant.fixture.smoke', text: '附灵冒烟拒绝。' };
+      };
+      SalvageGate.prototype.entrance = function () {
+        calls.push('salvage');
+        if (!openFixture) throw new Error('关态须独立绕过 Gate，不借打造/强化/附灵旗');
+        return { allowed: true };
+      };
+      start = logs.length;
+      eq(scene.tryInteractForgeEntrance(), true, '打造/强化/附灵拒绝时同次命中仍到分解提示');
+      eq(calls, openFixture ? ['forge', 'enhance', 'enchant', 'salvage'] : ['forge', 'enhance', 'enchant'], '四 Gate 顺序精确，内存关态不借既有三旗');
+      eq(logs.slice(start), [{ text: '打造冒烟拒绝。', color: '#aaaaaa' },
+        { text: '强化冒烟拒绝。', color: '#aaaaaa' }, { text: '附灵冒烟拒绝。', color: '#aaaaaa' }, salvageTip], '前三项拒绝不提前 return 饿死分解');
+    } finally {
+      ForgeGate.prototype.entrance = originalForgeEntrance; EnhanceGate.prototype.entrance = originalEnhanceEntrance;
+      EnchantGate.prototype.entrance = originalEnchantEntrance; SalvageGate.prototype.entrance = originalSalvageEntrance;
+    }
+    eq(p.exportSave(), before, 'Scene 冒烟不修改角色、打造、强化、附灵、分解或护符事实');
+    eq([idb.writes, idb.commits], [writes, commits], 'Scene 冒烟存档写入及完整提交均 0');
+    eq([...idb.rows], rows, 'Scene 冒烟磁盘旧档保持');
+    eq(randomCalls, samples, 'Scene 入口不抽样或结算'); eq(localWrites, 0, 'Scene 冒烟无 localStorage 旁路写入');
+    return { noObjectNoop: true, nonSmithIgnored: true, nearbyOnly: true, hiddenIgnored: true,
+      objectName: 'smith_ou', npcProp: 'smith_ou', boundary: { x: 28, y: 40 }, genericInteraction: true,
+      graph, sameHitForgeThenEnhanceThenEnchantThenSalvage: true, forgeSoftOpenPreserved: true, enhanceSoftOpenPreserved: true,
+      enchantSoftOpenPreserved: true, salvageNotStarved: true, upstreamRefusalsStillReachSalvage: true, gateDeniedRouting: openFixture,
+      closedBypassesGate: !openFixture, saveWrites: idb.writes - writes };
+  }
   const occupancy = (p: Progress, stoneStack = 200) => Object.entries(p.inventory).reduce((sum, [id, n]) =>
     sum + Math.ceil(n / (id === 'refine_stone' ? stoneStack : Reflect.get(ITEMS[id] ?? {}, 'stack') ?? 1)), 0);
   try {
     eq([isForgeOpenForFixture(), isEnhanceOpenForFixture(), isEnchantOpenForFixture(), isSalvageOpenForFixture()],
-      [true, true, true, openFixture], '三既有正式旗 true；独立分解仅 SSR 图注入');
+      [true, true, true, openFixture], '三既有正式旗 true；分解正式 true / SSR 内存关态 false');
     eq(GAME_PHASE, 5, '阶段保持5');
+    const sceneSmokeEvidence = invalidDependency || armorFixture ? null : sceneSmoke();
     const random = Math.random; Math.random = () => { randomCalls++; throw new Error('分解不得抽概率'); };
     try {
       if (!openFixture) {
-        await closed(bare(), '正式磁盘关态图');
+        await closed(bare(), 'SSR 内存关态图');
         for (const payload of refreshPayloads ?? []) {
           const p = restore(payload.save);
-          eq(p.salvage, payload.save.salvage, 'O08 正式关态真实 restore 保留完整成功历史');
-          await closed(p, 'O08 正式关态旧结果与回调');
+          eq(p.salvage, payload.save.salvage, 'O08 内存关态真实 restore 保留完整成功历史');
+          await closed(p, 'O08 内存关态旧结果与回调');
         }
-        mark('O08', ['formal-flag-false-eight-tips', 'hostile-getters-unread', 'closed-fresh-ssr-keeps-open-result']);
+        mark('O08', ['memory-closed-flag-false-eight-tips', 'hostile-getters-unread', 'closed-fresh-ssr-keeps-open-result']);
       } else if (invalidDependency) {
         ok(options.dependencyPayload, 'O03 独立 SSR 异常图使用先前合法未销毁正式源载荷');
         const p = restore(options.dependencyPayload.save), ref = options.dependencyPayload.ref;
@@ -310,7 +411,7 @@ export async function runSalvageOpenFixtureTests(options: {
         }
         mark('O01', ['default-ForgeGate-formal-weapon-all-four-grades', 'read-only-feature-entrance-preview', 'one-atomic-destroy-output-result-dedupe', 'no-extra-stones-no-probability-no-fixtureInstances']);
 
-        for (const itemId of ['bamboo_sword', 'fox_robe', 'cloth_shoes']) for (const equipped of [false, true]) {
+        for (const itemId of armorFixture ? ['bamboo_sword', 'fox_robe', 'cloth_shoes'] : ['bamboo_sword']) for (const equipped of [false, true]) {
           const f = await source(itemId, 'fine'), other = await forge(f.p, itemId, 'fine');
           const slot = ITEMS[itemId].slot!, positions = new Map<string, string>();
           if (equipped) { f.p.inventory[itemId] -= 1; f.p.equip[slot] = itemId; positions.set(f.ref, slot); }
@@ -324,11 +425,22 @@ export async function runSalvageOpenFixtureTests(options: {
           else eq(f.p.equip, before.equip, 'O02 背包目标不改装备槽');
           if (itemId !== 'bamboo_sword' && equipped) payloads.push({ state: itemId + '-success', save: copy(f.p.exportSave()), request: input });
         }
+        if (!armorFixture) for (const itemId of ['fox_robe', 'cloth_shoes']) {
+          eq(recipes.recipes.some(row => row.type === 'forge' && row.output === itemId), false, 'O02 磁盘无防具正式配方，不造来源: ' + itemId);
+          const p = bare(); p.inventory[itemId] = 2; p.equip[ITEMS[itemId].slot!] = itemId;
+          const input: Request = { salvageRequestId: 'armor-no-source-' + itemId, instanceRef: itemId,
+            fromGrade: 'fine', fromEnhanceLevel: 0 };
+          eq(p.formalEnhanceInstances(), [], 'O02 防具只有数量/槽位时没有正式 instanceRef');
+          await unchanged(p, () => new SalvageGate(p).submit(input), 'O02 正式无防具来源默认整拒: ' + itemId);
+          await unchanged(p, () => gate(p).submit(input), 'O02 显式资格承载也不能授权数量/槽位防具: ' + itemId);
+        }
         const ambiguity = await source(); await forge(ambiguity.p);
         ambiguity.p.inventory.bamboo_sword -= 1; ambiguity.p.equip.weapon = 'bamboo_sword';
         eq(await ambiguity.p.save({ async: true }), true, 'O02 模糊同原型引用准备保存');
         await unchanged(ambiguity.p, () => gate(ambiguity.p).submit(request(ambiguity.p, ambiguity.ref, 'ambiguous-location')), 'O02 同原型槽包缺精确关联整拒');
-        mark('O02', ['formal-weapon-robe-shoes-bag-and-equipped', 'ssr-only-armor-recipes-explicit-not-production', 'same-prototype-selected-ref-only', 'location-proof-required-and-links-invalidated']);
+        mark('O02', [armorFixture ? 'explicit-armor-fixture-weapon-robe-shoes-bag-and-equipped' : 'formal-weapon-bag-and-equipped-armor-unregistered-source-refused',
+          armorFixture ? 'ssr-only-armor-recipes-explicit-not-production' : 'disk-recipes-unmodified-armor-cannot-invent-instanceRef-from-count-or-slot',
+          'same-prototype-selected-ref-only', 'location-proof-required-and-links-invalidated']);
 
         const dependency = await source(); dependencyPayload = { save: copy(dependency.p.exportSave()), ref: dependency.ref };
         for (const mode of ['missing', 'itemId', 'foreign', 'source-absent', 'owner-missing', 'unknown-grade', 'missing-grade', 'bad-type', 'stale-grade', 'stale-level', 'transient', 'quality-count'] as const) {
@@ -419,15 +531,24 @@ export async function runSalvageOpenFixtureTests(options: {
         const targetResults = await Promise.all(['a', 'b'].map(id => gate(target.p).submit(request(target.p, target.ref, 'target-' + id))));
         eq(targetResults.filter(row => row.allowed).length, 1, 'O07 同实例不同请求至多一成功');
         eq(idb.writes, targetWrites + 1, 'O07 事务内复核仅一写');
-        const shared = await source('bamboo_sword', 'treasure'), sharedOther = await forge(shared.p, 'fox_robe', 'treasure');
-        shared.p.inventory.bamboo_sword = 0; shared.p.equip.weapon = 'bamboo_sword';
-        shared.p.inventory.fox_robe = 0; shared.p.equip.robe = 'fox_robe'; shared.p.inventory.refine_stone = 192;
-        const positions = new Map([[shared.ref, 'weapon'], [sharedOther, 'robe']]);
-        eq(await shared.p.save({ async: true }), true, 'O07 两个正式装备争共享堆叠准备保存');
-        const sharedWrites = idb.writes, slots = occupancy(shared.p);
+        const shared = await source('bamboo_sword', 'treasure'), sharedOther = await forge(shared.p, armorFixture ? 'fox_robe' : 'bamboo_sword', 'treasure');
+        shared.p.inventory.refine_stone = 192;
+        const positions = new Map<string, string>();
+        if (armorFixture) {
+          shared.p.inventory.bamboo_sword = 0; shared.p.equip.weapon = 'bamboo_sword';
+          shared.p.inventory.fox_robe = 0; shared.p.equip.robe = 'fox_robe';
+          positions.set(shared.ref, 'weapon'); positions.set(sharedOther, 'robe');
+        }
+        // 磁盘图两件武器每笔销毁1格并产8格，净需7格；共享余量只容一次完整事务。
+        const capacity = armorFixture ? { slots: occupancy(shared.p) } : { slots: occupancy(shared.p, 1) + 7, stackLimit: 1 };
+        eq(await shared.p.save({ async: true }), true, 'O07 两个正式装备争共享容量准备保存');
+        for (const ref of [shared.ref, sharedOther])
+          eq(gate(shared.p, { capacity }, positions).salvage(request(shared.p, ref, 'capacity-preview')).allowed, true,
+            'O07 争用前两目标分别均可完整承载');
+        const sharedWrites = idb.writes;
         const sharedResults = await Promise.all([shared.ref, sharedOther].map((ref, index) =>
-          gate(shared.p, { capacity: { slots } }, positions).submit(request(shared.p, ref, 'shared-' + index))));
-        eq(sharedResults.filter(row => row.allowed).length, 1, 'O07 两正式目标争8个共享堆叠空间只有一笔成功');
+          gate(shared.p, { capacity }, positions).submit(request(shared.p, ref, 'shared-' + index))));
+        eq(sharedResults.filter(row => row.allowed).length, 1, 'O07 两正式目标争共享收纳余量只有一笔完整成功');
         eq([shared.p.count('refine_stone'), shared.p.salvage!.destructions.length, idb.writes], [200, 1, sharedWrites + 1], 'O07 共享库存不超容量');
         const race = await source(), raceRef = race.ref;
         const raceResults = await Promise.all([race.gate.submit(request(race.p, raceRef, 'race-salvage')),
@@ -469,7 +590,7 @@ export async function runSalvageOpenFixtureTests(options: {
             eq((await saveStore.readSlot(1))!.data, f.p.exportSave(), 'O07 新分解销毁产物收据完整保留在磁盘');
           }
         }
-        mark('O07', ['same-request-concurrent-one-commit', 'same-instance-different-requests-one-destruction', 'shared-stack-two-equipped-targets-no-overcapacity', 'existing-EnhanceGate-race-preserves-complete-facts', 'two-object-ordinary-first-salvage-CAS-refuses-after-pre-read', 'two-object-salvage-first-stale-ordinary-writer-refused-after-pre-read', 'stale-progress-rejected-after-other-save']);
+        mark('O07', ['same-request-concurrent-one-commit', 'same-instance-different-requests-one-destruction', armorFixture ? 'explicit-fixture-two-equipped-targets-shared-stack-no-overcapacity' : 'formal-two-inventory-weapon-targets-shared-capacity-no-overcapacity', 'existing-EnhanceGate-race-preserves-complete-facts', 'two-object-ordinary-first-salvage-CAS-refuses-after-pre-read', 'two-object-salvage-first-stale-ordinary-writer-refused-after-pre-read', 'stale-progress-rejected-after-other-save']);
 
         for (const sentinel of [() => false, () => { throw new Error('受控承载失败'); },
           (draft: Progress) => { draft.stones += 1; return true; },
@@ -566,20 +687,20 @@ export async function runSalvageOpenFixtureTests(options: {
         const absent = bare(), oldSave = copy(absent.exportSave());
         eq(await absent.importSave(oldSave, { async: true }), true, 'O08 缺字段旧档合法');
         eq(absent.salvage, undefined, 'O08 缺字段保持undefined'); eq(Object.prototype.hasOwnProperty.call(absent.exportSave(), 'salvage'), false, 'O08 export不补业务袋');
-        mark('O08', ['missing-or-uninstalled-atomic-carrier-zero-write', 'carrier-false-throw-draft-tamper-atomic-refusal', 'actual-destroy-output-failure-zero-delta', 'idb-before-complete-invisible-abort-and-explicit-retry', 'serialization-failure-lock-release', 'unknown-corrupt-record-real-load-storageError-no-repair', 'old-save-missing-field-undefined', 'existing-protect-enhance-history-retained', 'selected-enchant-relation-refused-unrelated-enchant-still-works', 'formal-closed-fresh-ssr-old-callback-zero-write']);
+        mark('O08', ['missing-or-uninstalled-atomic-carrier-zero-write', 'carrier-false-throw-draft-tamper-atomic-refusal', 'actual-destroy-output-failure-zero-delta', 'idb-before-complete-invisible-abort-and-explicit-retry', 'serialization-failure-lock-release', 'unknown-corrupt-record-real-load-storageError-no-repair', 'old-save-missing-field-undefined', 'existing-protect-enhance-history-retained', 'selected-enchant-relation-refused-unrelated-enchant-still-works', 'memory-closed-fresh-ssr-old-callback-zero-write']);
       }
     } finally { Math.random = random; }
     eq(randomCalls, 0, '全程分解确定性零概率调用'); eq(featureFlags(), flags, 'features保持');
     eq(JSON.stringify(enhance), tableBefore, 'enhance内存数值表只读保持'); eq(localWrites, 0, '真实IDB零localStorage写旁路');
     return { passed: true, assertions, dataMode, graph, cases, payloads, dependencyPayload,
-      storageWrites: idb.writes, commits: idb.commits, randomCalls, localWrites,
-      salvageClosedTipsWired: true, refineStoneMapped: true, salvageOpenFixtureTableExecuted: openFixture && !refreshPayloads && !invalidDependency,
-      formalInstanceSource: true, softOpenedSalvage: false, SalvageOpenFlag: false, released: false,
-      enchantSoftOpenPreserved: true, EnhanceOpenFlagPreserved: true, protectCharmSoftOpenPreserved: true,
+      storageWrites: idb.writes, commits: idb.commits, sceneSmoke: sceneSmokeEvidence, randomCalls, localWrites,
+      salvageClosedTipsWired: true, refineStoneMapped: true, salvageOpenFixtureTableExecuted: openFixture && !armorFixture && !refreshPayloads && !invalidDependency,
+      formalInstanceSource: true, softOpenedSalvage: true, SalvageOpenFlag: true, released: false,
+      enchantSoftOpenPreserved: true, EnhanceOpenFlagPreserved: true, EnchantOpenFlagPreserved: true, protectCharmSoftOpenPreserved: true,
       productionFixtureInstances: false, activeSalvageOpenFlag: openFixture,
-      explicitTestAdapters: { qualification: true, finiteCapacity: true, armorRecipes: openFixture ? ['fox_robe', 'cloth_shoes'] : [],
+      explicitTestAdapters: { qualification: true, finiteCapacity: true, atomicCarrier: true, productionDefaultInjection: false, armorRecipes: armorFixture ? ['fox_robe', 'cloth_shoes'] : [],
         armorRecipesDiskChanged: false, armorForgeProductionAuthorized: false },
-      boundary: '本窗=分解开态夹具全表≠soft-open≠release≠进包；fixture≠正式；核齐备≠生产放行' };
+      boundary: '本窗=分解 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据；下一刀 release 预期 v0.6.12，本令不授权' };
   } finally {
     for (const p of progresses) await p.flushSaves();
     Progress.setActiveSlot(oldSlot); setSaveBackend(createIndexedDbBackend());

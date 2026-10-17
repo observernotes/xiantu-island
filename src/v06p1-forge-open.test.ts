@@ -252,11 +252,12 @@ export async function runForgeOpenFixtureTests(options: {
     for (const object of [{ ...entrance, props: {} }, { ...entrance, name: 'forge-smoke-alias' }]) {
       scene.map.objects = [object];
       eq(scene.tryInteractForgeEntrance(), true, `${object.name}邻近欧冶匠被消费`);
-      eq(logs[logs.length - 3], openFixture
+      eq(logs[logs.length - 4], openFixture
         ? { text: '炼器打造已开放。', color: '#fff8d0' }
         : { text: Closed.featureClosed().text, color: '#aaaaaa' }, 'Scene按正式开态/内存关态显示提示');
-      eq(logs[logs.length - 2], { text: '装备强化已开放。', color: '#aaaaaa' }, '同次命中在打造提示后显示强化正式开态提示');
-      eq(logs[logs.length - 1], { text: '装备附灵已开放。', color: '#aaaaaa' }, '同次命中在打造强化提示后显示附灵正式开态提示');
+      eq(logs[logs.length - 3], { text: '装备强化已开放。', color: '#aaaaaa' }, '同次命中在打造提示后显示强化正式开态提示');
+      eq(logs[logs.length - 2], { text: '装备附灵已开放。', color: '#aaaaaa' }, '同次命中在打造强化提示后显示附灵正式开态提示');
+      eq(logs[logs.length - 1], { text: '装备分解已开放。', color: '#aaaaaa' }, '同次命中在打造强化附灵提示后显示分解正式开态提示');
     }
     scene.map.objects = [entrance]; scene.player.x = entrance.x + 28; scene.player.y = entrance.y + 40;
     eq(scene.tryInteractForgeEntrance(), true, '28×40范围边界内仍可冒烟');
@@ -272,10 +273,11 @@ export async function runForgeOpenFixtureTests(options: {
       };
       eq(scene.tryInteractForgeEntrance(), true, '最小入口保留Gate拒绝提示分支');
       eq(entranceCalls, openFixture ? 1 : 0, '只有正式开态查询ForgeGate.entrance');
-      eq(logs[logs.length - 3], { text: openFixture ? '炼器冒烟拒绝。' : Closed.featureClosed().text,
+      eq(logs[logs.length - 4], { text: openFixture ? '炼器冒烟拒绝。' : Closed.featureClosed().text,
         color: '#aaaaaa' }, 'Gate拒绝原文或内存关态文案被展示');
-      eq(logs[logs.length - 2], { text: '装备强化已开放。', color: '#aaaaaa' }, '同次命中在打造提示后显示强化正式开态提示');
-      eq(logs[logs.length - 1], { text: '装备附灵已开放。', color: '#aaaaaa' }, '同次命中在打造强化提示后显示附灵正式开态提示');
+      eq(logs[logs.length - 3], { text: '装备强化已开放。', color: '#aaaaaa' }, '同次命中在打造提示后显示强化正式开态提示');
+      eq(logs[logs.length - 2], { text: '装备附灵已开放。', color: '#aaaaaa' }, '同次命中在打造强化提示后显示附灵正式开态提示');
+      eq(logs[logs.length - 1], { text: '装备分解已开放。', color: '#aaaaaa' }, '同次命中在打造强化附灵提示后显示分解正式开态提示');
     } finally { ForgeGate.prototype.entrance = originalEntrance; }
     eq(p.exportSave(), before, 'Scene冒烟不修改角色或炼器袋');
     eq(idb.writes, writes, 'Scene冒烟存档写入0');

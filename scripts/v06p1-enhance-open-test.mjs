@@ -1,5 +1,6 @@
 // 护符 soft-open 正式磁盘图；仅独立 Vite SSR 关态图内存注入 false。soft-open≠进包≠发版。
 import assert from 'node:assert/strict';
+import { salvageSourceNames } from './v06p1-salvage-soft-open-compat-proof.mjs';
 import { stripEnchantClosedAddition, enchantSourceNames, checkEnchantCompatibility } from './v06p1-enchant-soft-open-compat-proof.mjs';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
@@ -13,13 +14,13 @@ const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const shared = sharedRoot(root);
 const modes = [['shared', shared], ['snapshot', path.join(root, 'data')]];
 const dataRoots = [['shared', shared], ['wt', path.join(root, 'data')], ['game', path.join(shared, 'game/data')]];
-const out = process.env.XT_ENHANCE_QA_OUT ?? process.env.OUT_DIR ?? path.join(root, 'qa/out_v06p1_enchant_soft_open/regressions/enhance-open');
+const out = process.env.XT_ENHANCE_QA_OUT ?? process.env.OUT_DIR ?? path.join(root, 'qa/out_v06p1_salvage_soft_open/regressions/enhance-open');
 const before = new Map(), directoryBefore = new Map(), evidence = [];
 const recipesSha = '1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f';
 const forgeFlagSha = '0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e';
 const enhanceSha = 'd5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954';
 const enhanceFlagSha = 'd7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e';
-const stringsSha = '6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9';
+const stringsSha = '9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda';
 const previousStringsSha = '92d5525c86562a870f45bf53c0c2010e961b83ec9c257a0cf8257178f45b4cab';
 const formalStrings = {
   'enhance.formal.no_instance': '无正式装备实例，不可强化。',
@@ -129,15 +130,15 @@ async function checkFormal() {
     'ShopPanel不接强化');
   const consumers = [];
   for (const file of (await filesUnder(path.join(root, 'src'))).filter(name => name.endsWith('.ts'))) {
-    if (['EnhanceGate.ts', 'v06p1-enhance-open.test.ts', ...enchantSourceNames].includes(file)) continue;
+    if (['EnhanceGate.ts', 'v06p1-enhance-open.test.ts', ...enchantSourceNames, ...salvageSourceNames].includes(file)) continue;
     if (/from\s+['"][^'"]*EnhanceGate(?:\.ts)?['"]/u.test(await fs.readFile(path.join(root, 'src', file), 'utf8'))) consumers.push(file);
   }
   eq(consumers, ['scenes/GameScene.ts'], 'EnhanceGate正式消费者仅为GameScene只读冒烟入口');
   for (const [mode, dataRoot] of dataRoots) {
     const rawStrings = await fs.readFile(path.join(dataRoot, 'balance/strings_zh.json'), 'utf8');
     const entries = Object.entries(JSON.parse(rawStrings));
-    eq(hash(rawStrings), mode === 'game' ? 'd7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09' : stringsSha, `${mode} strings保持开工前指定944键完整SHA`);
-    eq(entries.length, mode === 'game' ? 944 : 952, `${mode} strings键数保持944含_meta`);
+    eq(hash(rawStrings), mode === 'game' ? '6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9' : stringsSha, `${mode} strings保持开工前固定完整SHA`);
+    eq(entries.length, mode === 'game' ? 952 : 960, `${mode} strings shared/wt 960键、game952键含_meta`);
     if (mode !== 'game') {
       eq(entries.slice(936, 944), Object.entries(formalStrings), `${mode} 正式八键及文案完全取表`);
       eq(hash(stripEnchantClosedAddition(rawStrings).replace(/,\n(?: {2}"enhance\.formal\.[^\n]+\n?){8}/u, '\n')), previousStringsSha,
@@ -222,6 +223,7 @@ async function runGraph(mode, dataRoot, openFixture, refreshPayloads = null, inv
     eq(result.released, false, `${mode} 正式实例源soft-open不授权进包发版`);
     if (!invalidTable) {
       eq(result.sceneSmoke?.sameHitForgeThenEnhance, true, `${mode} smith_ou同一次命中先打造再强化`);
+      eq(result.sceneSmoke?.sameHitForgeThenEnhanceThenEnchantThenSalvage, true, `${mode} 同次命中四 tip 且既有顺序保持`);
       eq(result.sceneSmoke?.saveWrites, 0, `${mode} 正式或内存关态入口均只读零写`);
     }
     if (openFixture && refreshPayloads === null && invalidTable === null) {

@@ -1,0 +1,14 @@
+{
+  "command": "npm run test:v06p1-salvage-open",
+  "cwd": "/workspace/xiantu/wt/dev",
+  "stdin": "/dev/null",
+  "exitCode": 0,
+  "passed": true,
+  "assertions": 7145,
+  "log": "qa/out_v06p1_salvage_soft_open/salvage-open.log",
+  "evidence": "qa/out_v06p1_salvage_soft_open/v06p1-salvage-open-evidence.json",
+  "graphCount": 54,
+  "formalOpenGraphCount": 4,
+  "memoryClosedGraphCount": 4,
+  "armorFixtureGraphCount": 2
+}
