@@ -1,0 +1,39 @@
+{
+ "atlas": "fx_heart_wisp_projectile",
+ "facing": "left",
+ "origin": [
+  0.375,
+  0.5
+ ],
+ "frameSize": [
+  48,
+  36
+ ],
+ "anims": [
+  {
+   "key": "fx_heart_wisp_projectile_fly",
+   "frames": [
+    "fx_heart_wisp_projectile_fly_01",
+    "fx_heart_wisp_projectile_fly_02",
+    "fx_heart_wisp_projectile_fly_03",
+    "fx_heart_wisp_projectile_fly_04"
+   ],
+   "frameRate": 12,
+   "repeat": -1
+  },
+  {
+   "key": "fx_heart_wisp_projectile_hit",
+   "frames": [
+    "fx_heart_wisp_projectile_hit_01",
+    "fx_heart_wisp_projectile_hit_02",
+    "fx_heart_wisp_projectile_hit_03",
+    "fx_heart_wisp_projectile_hit_04"
+   ],
+   "frameRate": 16,
+   "repeat": 0
+  }
+ ],
+ "blend": "NORMAL",
+ "note": "心魔·飞的墨珠弹（attack.type projectile，speed 220）。原点 (0.375,0.5) = 弹头中心（不是帧中心），弹头朝左、墨尾向右；朝右飞 setFlipX(true) 并把原点改成 (0.625,0.5)； setFlipX(true)。命中或飞满 range.w 256 后播 hit 再销毁。",
+ "kind": "fx"
+}
