@@ -1,0 +1,24 @@
+{
+  "file": "scripts/v06p1-attr-ui-binding-success-test.mjs",
+  "originalSha": "62577ff2f9f2060ddd1e23c49d35fa3641e265ae367b0e0861362813a85a00a1",
+  "pinnedOriginalSha": "62577ff2f9f2060ddd1e23c49d35fa3641e265ae367b0e0861362813a85a00a1",
+  "adaptedSha": "7ab3226bc7c27f52d0112d7857af52a27bed5cecae435811570dd6741fa296d9",
+  "changes": [
+    {
+      "label": "user-authorized current worktree",
+      "before": "'/workspace/xiantu/wt/feat/ui-attr-inst'",
+      "after": "\"/workspace/xiantu/wt/feat/ui-smith-services\"",
+      "occurrences": 1
+    },
+    {
+      "label": "user-authorized current dev branch",
+      "before": "'feat/ui-attr-inst'",
+      "after": "'feat/ui-smith-services'",
+      "occurrences": 1
+    }
+  ],
+  "productModuleTransformations": [],
+  "diskWritten": false,
+  "businessAssertionsChanged": false,
+  "policy": "Pinned test-only historical strings SHA/count/inventory and prior attr-ui byte proof; actual Vite SSR product modules use current disk."
+}

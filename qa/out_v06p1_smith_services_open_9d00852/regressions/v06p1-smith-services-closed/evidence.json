@@ -1,0 +1,664 @@
+{
+  "passed": true,
+  "assertions": 2057,
+  "baselineTip": "f87e1c276ad3116e37f9f50132dd5174ed681713",
+  "smithServicesUiWired": true,
+  "newOpenFlag": false,
+  "enhanceSha": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+  "stringsDiskKeys": 1013,
+  "stringsSha": "d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841",
+  "stringsSsrInjected43": false,
+  "stringsInjectionSource": "none; Vite resolves authoritative disk JSON",
+  "stringsSsrKeys": 1013,
+  "stringsDesign43Match": true,
+  "strings970PrefixBytesMatch": true,
+  "sharedStringsDiskKeys": 1013,
+  "sharedStringsOwnership": "worktree disk exactly MATCH authoritative shared strings1013",
+  "smithServicesDelegation": [
+    {
+      "mode": "snapshot",
+      "calls": {
+        "choices": 197,
+        "select": 15,
+        "submit": 3,
+        "result": 3,
+        "loadRefresh": 3,
+        "availability": 332
+      },
+      "submitProbe": "async adapter throws/unknown/stale before Gate submit",
+      "noDirectControllerGate": true,
+      "resultAfterUnresolvedRefresh": true,
+      "confirmationSurvivesFiveRealPolls": true,
+      "uncertaintyVariants": [
+        "throws",
+        "unknown",
+        "stale"
+      ],
+      "uncertaintyNeverRetries": true,
+      "actualSettlementExecuted": false,
+      "writes": 0
+    },
+    {
+      "mode": "shared",
+      "calls": {
+        "choices": 197,
+        "select": 15,
+        "submit": 3,
+        "result": 3,
+        "loadRefresh": 3,
+        "availability": 332
+      },
+      "submitProbe": "async adapter throws/unknown/stale before Gate submit",
+      "noDirectControllerGate": true,
+      "resultAfterUnresolvedRefresh": true,
+      "confirmationSurvivesFiveRealPolls": true,
+      "uncertaintyVariants": [
+        "throws",
+        "unknown",
+        "stale"
+      ],
+      "uncertaintyNeverRetries": true,
+      "actualSettlementExecuted": false,
+      "writes": 0
+    }
+  ],
+  "softOpenedSmithServicesUi": false,
+  "released": false,
+  "flagShas": {
+    "Forge": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
+    "Enhance": "d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e",
+    "Enchant": "bd5445b8ddfed56a32811cedd28db72e8676c7a5eff321e2fedb0ec5fe4c505a",
+    "Salvage": "69aace852957c52bf7ca0214345ede7df29d6d36ec1dfd4849462e54552edff3"
+  },
+  "productionIgnoresSsrInjection": true,
+  "productionServicesRoutesAccessible": true,
+  "fourFlagMatch": {
+    "Forge": "MATCH",
+    "Enhance": "MATCH",
+    "Enchant": "MATCH",
+    "Salvage": "MATCH"
+  },
+  "settlementUnchanged": true,
+  "localStorageWrites": 0,
+  "indexedDbOpens": 0,
+  "sentinelCalls": 0,
+  "submitCalls": 0,
+  "settlementRandomCalls": 0,
+  "fullBusinessStateDelta": 0,
+  "eiReadonlyIsolated": true,
+  "openFixtureTableExecuted": false,
+  "historicalCOTablesModified": false,
+  "semanticSsrSelfTest": true,
+  "managerEnforcementC01ToC11Pending": true,
+  "cases": {
+    "C01": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "snapshot/memory-ui-closed/entrance-repeat",
+        "shared/memory-ui-closed/entrance-repeat"
+      ]
+    },
+    "C02": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "snapshot/memory-ui-closed/old-menu-callbacks",
+        "snapshot/memory-ui-closed/actual-renderer-menu-old-pointer",
+        "shared/memory-ui-closed/old-menu-callbacks",
+        "shared/memory-ui-closed/actual-renderer-menu-old-pointer"
+      ]
+    },
+    "C03": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "snapshot/memory-ui-closed/forge-ui-and-gate-closed",
+        "shared/memory-ui-closed/forge-ui-and-gate-closed"
+      ]
+    },
+    "C04": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "snapshot/memory-ui-closed/enhance-ui-and-gate-closed",
+        "snapshot/memory-ui-closed/actual-renderer-keyboard-safety",
+        "shared/memory-ui-closed/enhance-ui-and-gate-closed",
+        "shared/memory-ui-closed/actual-renderer-keyboard-safety"
+      ]
+    },
+    "C05": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "snapshot/memory-ui-closed/enchant-ui-and-gate-closed",
+        "shared/memory-ui-closed/enchant-ui-and-gate-closed"
+      ]
+    },
+    "C06": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "snapshot/memory-ui-closed/salvage-ui-and-gate-closed",
+        "snapshot/memory-ui-closed/formal-salvage-dependency-refusal",
+        "shared/memory-ui-closed/salvage-ui-and-gate-closed",
+        "shared/memory-ui-closed/formal-salvage-dependency-refusal"
+      ]
+    },
+    "C07": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "production-access-ignores-ssr-injection",
+        "snapshot/memory-ui-closed/ui-gate-independence",
+        "shared/memory-ui-closed/ui-gate-independence"
+      ]
+    },
+    "C08": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "snapshot/memory-ui-closed/identity-impersonation",
+        "shared/memory-ui-closed/identity-impersonation"
+      ]
+    },
+    "C09": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "snapshot/memory-ui-closed/concurrency-stale-session",
+        "snapshot/memory-ui-closed/canonical-confirmation-poll-and-uncertainty",
+        "shared/memory-ui-closed/concurrency-stale-session",
+        "shared/memory-ui-closed/canonical-confirmation-poll-and-uncertainty"
+      ]
+    },
+    "C10": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "snapshot/memory-ui-closed/closed-restore-refresh",
+        "snapshot/memory-ui-closed/canonical-services-delegation",
+        "shared/memory-ui-closed/closed-restore-refresh",
+        "shared/memory-ui-closed/canonical-services-delegation"
+      ]
+    },
+    "C11": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "snapshot/memory-ui-closed/full-state-ei-isolation",
+        "shared/memory-ui-closed/full-state-ei-isolation"
+      ]
+    }
+  },
+  "protectedFiles": {
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/ForgeOpenFlag.ts": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/ForgeGate.ts": "7aa9b91bf4ad2d389f2b96c41479338bd53cb3fdd63f65ff47a64f8528d75bcb",
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/ForgeClosed.ts": "f7e4216be7767f481c96ae7f1dc5796574fe9b231ada91d57a137c1dc8a8c90c",
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/ForgeProgress.ts": "4d90e916ffb1ff2aa5efa99efe7d552eecf897410d9cb69b0a757d6b8eec4807",
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/EnhanceOpenFlag.ts": "d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e",
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/EnhanceGate.ts": "c2a2a0efb7997270eb48674224ce9bfc08e14201e613d7aa12d35af0a2a09796",
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/EnhanceClosed.ts": "c52ffbfc269f3a41c309184d9781f23cf2511d5acec7570ebb44b84683b3e821",
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/EnhanceProgress.ts": "49e2bd0ce8bb952ef8c06a19f2137af3cdcfef828ba1dd2508834d4b54f79724",
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/EnchantOpenFlag.ts": "bd5445b8ddfed56a32811cedd28db72e8676c7a5eff321e2fedb0ec5fe4c505a",
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/EnchantGate.ts": "9dbb43f607fb1c298661bccd8a31f5653583b0b1dae956ca3f317f2fe8fc0ad2",
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/EnchantClosed.ts": "15870998e95f8f41ab4fb3e6c30dc17a82019502276084f4610800be5927e730",
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/EnchantProgress.ts": "2bf473ecdb160e4809e38a20750e5e1518e836ebbdfaea73eb56c5b9a3615c95",
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/SalvageOpenFlag.ts": "69aace852957c52bf7ca0214345ede7df29d6d36ec1dfd4849462e54552edff3",
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/SalvageGate.ts": "3777c6b72615f21a9c47544cfa8eeece08eb54009032cbf53e713091f8d8ce52",
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/SalvageClosed.ts": "287a55d7025018629235d45ca4386d75134fc39362532a4c47bf121b574ae211",
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/SalvageProgress.ts": "118f49bc4931727e0aafbc39fba6b883a94a948f8d478653bf42335305548787",
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/Progress.ts": "7d615e8a675faff8cae6e2ac086055cb4aa6259114578967b02c42a702216719",
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/SaveStore.ts": "4c99f7410cd87e2e9b46d7b685fdb9ab5f2c9ca3b8a266da61eb062624ec7916",
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/data.ts": "aad725652f5c0eb57a5c699726e570b146d5ded52d5c31715444dbbf4117024a",
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/EquipInstBinding.ts": "081bd2ba5ddc365fa98a61b80f5175601fa69763a4fdbd9de79b080335b8ad7c",
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/EquipInstReadonly.ts": "1d1f1c1194e53a41c806c87e0facf766e59ee6d971f631eb22aa794c50d458a6",
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/EquipPanel.ts": "6c74f3529400178be4900ecb5aedbd5dd3aaec5c57f28ca1382a56128ac507ae",
+    "/workspace/xiantu/wt/feat/ui-smith-services/src/InventoryPanel.ts": "9bc8a2f34ad1b4830bd604033be8668bfea78b023ce047f89c59507d8b0c9b90",
+    "/workspace/xiantu/wt/feat/ui-smith-services/data/balance/enhance.json": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+    "/workspace/xiantu/wt/feat/ui-smith-services/data/balance/recipes.json": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+    "/workspace/xiantu/wt/feat/ui-smith-services/data/balance/materials.json": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+    "/workspace/xiantu/wt/feat/ui-smith-services/data/balance/items.json": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+    "/workspace/xiantu/wt/feat/ui-smith-services/data/balance/npcs.json": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+    "/workspace/xiantu/wt/feat/ui-smith-services/data/balance/life_skills.json": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+    "/workspace/xiantu/wt/feat/ui-smith-services/data/balance/enhance_protect_charm.json": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+    "/workspace/xiantu/balance/enhance.json": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+    "/workspace/xiantu/balance/recipes.json": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+    "/workspace/xiantu/balance/materials.json": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+    "/workspace/xiantu/balance/items.json": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+    "/workspace/xiantu/balance/npcs.json": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+    "/workspace/xiantu/balance/life_skills.json": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+    "/workspace/xiantu/balance/enhance_protect_charm.json": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+    "/workspace/xiantu/wt/feat/ui-smith-services/data/balance/strings_zh.json": "d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841",
+    "/workspace/xiantu/balance/strings_zh.json": "d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841"
+  },
+  "evidence": [
+    {
+      "case": "C07",
+      "label": "production-access-ignores-ssr-injection",
+      "passed": true,
+      "productionIgnoresSsrInjection": true,
+      "scopes": [
+        "entrance",
+        "menu",
+        "forge",
+        "enhance",
+        "enchant",
+        "salvage"
+      ],
+      "modifiedOnDisk": false
+    },
+    {
+      "case": "C01",
+      "label": "snapshot/memory-ui-closed/entrance-repeat",
+      "passed": true,
+      "repetitions": 5,
+      "menuCreated": false,
+      "writes": 0
+    },
+    {
+      "case": "C02",
+      "label": "snapshot/memory-ui-closed/old-menu-callbacks",
+      "passed": true,
+      "localizedDialogueOption": true,
+      "oldCallbacksExecuted": 5,
+      "writes": 0
+    },
+    {
+      "case": "C03",
+      "label": "snapshot/memory-ui-closed/forge-ui-and-gate-closed",
+      "passed": true,
+      "variants": [
+        "legal",
+        "missing-blueprint",
+        "missing-materials",
+        "capacity-refused"
+      ],
+      "closedGraphs": [
+        "ui-only",
+        "single-gate-only"
+      ],
+      "writes": 0
+    },
+    {
+      "case": "C04",
+      "label": "snapshot/memory-ui-closed/enhance-ui-and-gate-closed",
+      "passed": true,
+      "variants": [
+        "formal-no-charm",
+        "formal-with-charm",
+        "charm-short",
+        "max-level"
+      ],
+      "closedGraphs": [
+        "ui-only",
+        "single-gate-only"
+      ],
+      "writes": 0
+    },
+    {
+      "case": "C05",
+      "label": "snapshot/memory-ui-closed/enchant-ui-and-gate-closed",
+      "passed": true,
+      "variants": [
+        "first-enchant",
+        "same-element",
+        "overwrite",
+        "armor"
+      ],
+      "closedGraphs": [
+        "ui-only",
+        "single-gate-only"
+      ],
+      "writes": 0
+    },
+    {
+      "case": "C06",
+      "label": "snapshot/memory-ui-closed/salvage-ui-and-gate-closed",
+      "passed": true,
+      "variants": [
+        "formal",
+        "unqualified",
+        "unknown-grade",
+        "capacity-refused"
+      ],
+      "closedGraphs": [
+        "ui-only",
+        "single-gate-only"
+      ],
+      "writes": 0
+    },
+    {
+      "case": "C07",
+      "label": "snapshot/memory-ui-closed/ui-gate-independence",
+      "passed": true,
+      "fourGatesRemainTrueWhenUiClosed": true,
+      "singleFalseCases": 4,
+      "noLaterService": true,
+      "writes": 0
+    },
+    {
+      "case": "C08",
+      "label": "snapshot/memory-ui-closed/identity-impersonation",
+      "passed": true,
+      "variants": [
+        "no-instance",
+        "aggregate-item-id",
+        "fixture-instance",
+        "foreign-slot",
+        "stale-location"
+      ],
+      "closedBeforeIdentity": true,
+      "writes": 0
+    },
+    {
+      "case": "C09",
+      "label": "snapshot/memory-ui-closed/concurrency-stale-session",
+      "passed": true,
+      "simultaneousOldConfirms": 24,
+      "sameRequestReused": true,
+      "crossServiceResourceCompetition": true,
+      "actualSlotSwitch": true,
+      "writes": 0
+    },
+    {
+      "case": "C02",
+      "label": "snapshot/memory-ui-closed/actual-renderer-menu-old-pointer",
+      "passed": true,
+      "actualRenderer": true,
+      "oldPointerCallbackExecuted": true,
+      "localizedFourServiceOrder": true,
+      "writes": 0
+    },
+    {
+      "case": "C04",
+      "label": "snapshot/memory-ui-closed/actual-renderer-keyboard-safety",
+      "passed": true,
+      "actualRenderer": true,
+      "enterNeverDefaultSubmit": true,
+      "escapeReturnsWithoutCost": true,
+      "protectCharmDefault": false,
+      "writes": 0
+    },
+    {
+      "case": "C06",
+      "label": "snapshot/memory-ui-closed/formal-salvage-dependency-refusal",
+      "passed": true,
+      "noFixtureFallback": true,
+      "pendingCreated": false,
+      "writes": 0
+    },
+    {
+      "case": "C10",
+      "label": "snapshot/memory-ui-closed/closed-restore-refresh",
+      "passed": true,
+      "realRestoreWithoutPersistence": true,
+      "completeOldResult": true,
+      "damagedOldRecord": true,
+      "cyclesEach": 3,
+      "noAutomaticRetryOrRepair": true,
+      "writes": 0
+    },
+    {
+      "case": "C09",
+      "label": "snapshot/memory-ui-closed/canonical-confirmation-poll-and-uncertainty",
+      "passed": true,
+      "realPollsPerVariant": 5,
+      "uncertaintyVariants": [
+        "throws",
+        "unknown",
+        "stale"
+      ],
+      "noDuplicateOrReplacementDispatch": true,
+      "writes": 0
+    },
+    {
+      "case": "C10",
+      "label": "snapshot/memory-ui-closed/canonical-services-delegation",
+      "passed": true,
+      "methods": [
+        "choices",
+        "select",
+        "submit",
+        "result",
+        "loadRefresh",
+        "availability"
+      ],
+      "zeroWriteAsyncDispatchProbe": true,
+      "writes": 0
+    },
+    {
+      "case": "C11",
+      "label": "snapshot/memory-ui-closed/full-state-ei-isolation",
+      "passed": true,
+      "perActionFullExportSaveAndPublicFieldsCompared": true,
+      "equipPanelPreserved": true,
+      "inventoryPanelPreserved": true,
+      "historicalCOTablesModified": false,
+      "writes": 0
+    },
+    {
+      "suite": "real-ssr-graph",
+      "mode": "snapshot",
+      "passed": true,
+      "stringsDiskKeys": 1013,
+      "stringsSha": "d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841",
+      "stringsSsrInjected43": false,
+      "fourInitialGateFlags": true,
+      "flagLoads": {
+        "Enhance": 1,
+        "Enchant": 1,
+        "Forge": 1,
+        "Salvage": 1
+      },
+      "fullStateDelta": 0,
+      "submitCalls": 0
+    },
+    {
+      "case": "C01",
+      "label": "shared/memory-ui-closed/entrance-repeat",
+      "passed": true,
+      "repetitions": 5,
+      "menuCreated": false,
+      "writes": 0
+    },
+    {
+      "case": "C02",
+      "label": "shared/memory-ui-closed/old-menu-callbacks",
+      "passed": true,
+      "localizedDialogueOption": true,
+      "oldCallbacksExecuted": 5,
+      "writes": 0
+    },
+    {
+      "case": "C03",
+      "label": "shared/memory-ui-closed/forge-ui-and-gate-closed",
+      "passed": true,
+      "variants": [
+        "legal",
+        "missing-blueprint",
+        "missing-materials",
+        "capacity-refused"
+      ],
+      "closedGraphs": [
+        "ui-only",
+        "single-gate-only"
+      ],
+      "writes": 0
+    },
+    {
+      "case": "C04",
+      "label": "shared/memory-ui-closed/enhance-ui-and-gate-closed",
+      "passed": true,
+      "variants": [
+        "formal-no-charm",
+        "formal-with-charm",
+        "charm-short",
+        "max-level"
+      ],
+      "closedGraphs": [
+        "ui-only",
+        "single-gate-only"
+      ],
+      "writes": 0
+    },
+    {
+      "case": "C05",
+      "label": "shared/memory-ui-closed/enchant-ui-and-gate-closed",
+      "passed": true,
+      "variants": [
+        "first-enchant",
+        "same-element",
+        "overwrite",
+        "armor"
+      ],
+      "closedGraphs": [
+        "ui-only",
+        "single-gate-only"
+      ],
+      "writes": 0
+    },
+    {
+      "case": "C06",
+      "label": "shared/memory-ui-closed/salvage-ui-and-gate-closed",
+      "passed": true,
+      "variants": [
+        "formal",
+        "unqualified",
+        "unknown-grade",
+        "capacity-refused"
+      ],
+      "closedGraphs": [
+        "ui-only",
+        "single-gate-only"
+      ],
+      "writes": 0
+    },
+    {
+      "case": "C07",
+      "label": "shared/memory-ui-closed/ui-gate-independence",
+      "passed": true,
+      "fourGatesRemainTrueWhenUiClosed": true,
+      "singleFalseCases": 4,
+      "noLaterService": true,
+      "writes": 0
+    },
+    {
+      "case": "C08",
+      "label": "shared/memory-ui-closed/identity-impersonation",
+      "passed": true,
+      "variants": [
+        "no-instance",
+        "aggregate-item-id",
+        "fixture-instance",
+        "foreign-slot",
+        "stale-location"
+      ],
+      "closedBeforeIdentity": true,
+      "writes": 0
+    },
+    {
+      "case": "C09",
+      "label": "shared/memory-ui-closed/concurrency-stale-session",
+      "passed": true,
+      "simultaneousOldConfirms": 24,
+      "sameRequestReused": true,
+      "crossServiceResourceCompetition": true,
+      "actualSlotSwitch": true,
+      "writes": 0
+    },
+    {
+      "case": "C02",
+      "label": "shared/memory-ui-closed/actual-renderer-menu-old-pointer",
+      "passed": true,
+      "actualRenderer": true,
+      "oldPointerCallbackExecuted": true,
+      "localizedFourServiceOrder": true,
+      "writes": 0
+    },
+    {
+      "case": "C04",
+      "label": "shared/memory-ui-closed/actual-renderer-keyboard-safety",
+      "passed": true,
+      "actualRenderer": true,
+      "enterNeverDefaultSubmit": true,
+      "escapeReturnsWithoutCost": true,
+      "protectCharmDefault": false,
+      "writes": 0
+    },
+    {
+      "case": "C06",
+      "label": "shared/memory-ui-closed/formal-salvage-dependency-refusal",
+      "passed": true,
+      "noFixtureFallback": true,
+      "pendingCreated": false,
+      "writes": 0
+    },
+    {
+      "case": "C10",
+      "label": "shared/memory-ui-closed/closed-restore-refresh",
+      "passed": true,
+      "realRestoreWithoutPersistence": true,
+      "completeOldResult": true,
+      "damagedOldRecord": true,
+      "cyclesEach": 3,
+      "noAutomaticRetryOrRepair": true,
+      "writes": 0
+    },
+    {
+      "case": "C09",
+      "label": "shared/memory-ui-closed/canonical-confirmation-poll-and-uncertainty",
+      "passed": true,
+      "realPollsPerVariant": 5,
+      "uncertaintyVariants": [
+        "throws",
+        "unknown",
+        "stale"
+      ],
+      "noDuplicateOrReplacementDispatch": true,
+      "writes": 0
+    },
+    {
+      "case": "C10",
+      "label": "shared/memory-ui-closed/canonical-services-delegation",
+      "passed": true,
+      "methods": [
+        "choices",
+        "select",
+        "submit",
+        "result",
+        "loadRefresh",
+        "availability"
+      ],
+      "zeroWriteAsyncDispatchProbe": true,
+      "writes": 0
+    },
+    {
+      "case": "C11",
+      "label": "shared/memory-ui-closed/full-state-ei-isolation",
+      "passed": true,
+      "perActionFullExportSaveAndPublicFieldsCompared": true,
+      "equipPanelPreserved": true,
+      "inventoryPanelPreserved": true,
+      "historicalCOTablesModified": false,
+      "writes": 0
+    },
+    {
+      "suite": "real-ssr-graph",
+      "mode": "shared",
+      "passed": true,
+      "stringsDiskKeys": 1013,
+      "stringsSha": "d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841",
+      "stringsSsrInjected43": false,
+      "fourInitialGateFlags": true,
+      "flagLoads": {
+        "Enhance": 1,
+        "Enchant": 1,
+        "Forge": 1,
+        "Salvage": 1
+      },
+      "fullStateDelta": 0,
+      "submitCalls": 0
+    }
+  ]
+}

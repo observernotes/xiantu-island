@@ -1,0 +1,18 @@
+{
+  "name": "v06p1-forge-closed",
+  "command": [
+    "npm",
+    "run",
+    "test:v06p1-forge-closed"
+  ],
+  "cwd": "/workspace/xiantu/wt/feat/ui-smith-services",
+  "stdin": "/dev/null",
+  "startedAt": "2026-10-17T11:42:20.136Z",
+  "finishedAt": "2026-10-17T11:42:26.729Z",
+  "exitCode": 0,
+  "signal": null,
+  "assertions": 20471,
+  "log": "qa/out_v06p1_smith_services_open_9d00852/regressions/v06p1-forge-closed.log",
+  "productModuleTransformations": [],
+  "productionSourceManifestSha256": "26d7de1e9c33f0ac246b03f56ca1a3a4d3436c66b43feba84bf6289d7dda469d"
+}

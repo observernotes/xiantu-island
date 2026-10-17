@@ -1,0 +1,40 @@
+{
+  "passed": true,
+  "scope": "fixture execution and checks; four O cases remain blocked",
+  "implementationTip": "9d00852",
+  "implementationTipFull": "9d008527cf618f14a4717876b679095e3d728248",
+  "openAssertions": 2382,
+  "regressionAssertions": 176103,
+  "totalAssertions": 178485,
+  "checks": 20,
+  "regressionsPassed": true,
+  "tscPassed": true,
+  "datalintBothRootsPassed": true,
+  "frozenFiles": 171,
+  "closedOutUnchanged": true,
+  "allEvidenceKeysResolvable": true,
+  "oTable": {
+    "O01": "PASS",
+    "O02": "PASS",
+    "O03": "PASS",
+    "O04": "PASS",
+    "O05": "BLOCKED",
+    "O06": "PASS",
+    "O07": "PASS",
+    "O08": "BLOCKED",
+    "O09": "BLOCKED",
+    "O10": "PASS",
+    "O11": "BLOCKED"
+  },
+  "blocked": {
+    "O11": "O11_partial_salvage_result_return_requires_O05_formal_qualification",
+    "O05": "O05_blocked_formal_qualification",
+    "O08": "O08_salvage_submit_reload_replay_blocked_by_O05",
+    "O09": "O09_blocked_stale_forge_and_enhance_overwrite_other_service; O09_salvage_competition_blocked_by_O05"
+  },
+  "softOpenedSmithServicesUi": false,
+  "released": false,
+  "newOpenFlag": false,
+  "statusBothUpdated": true,
+  "managerEnforcementO01ToO11Pending": true
+}

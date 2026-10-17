@@ -1,0 +1,18 @@
+{
+  "name": "tsc",
+  "command": [
+    "npx",
+    "tsc",
+    "--noEmit"
+  ],
+  "cwd": "/workspace/xiantu/wt/feat/ui-smith-services",
+  "stdin": "/dev/null",
+  "startedAt": "2026-10-17T11:45:56.500Z",
+  "finishedAt": "2026-10-17T11:46:02.512Z",
+  "exitCode": 0,
+  "signal": null,
+  "assertions": null,
+  "log": "qa/out_v06p1_smith_services_open_9d00852/regressions/tsc.log",
+  "productModuleTransformations": [],
+  "productionSourceManifestSha256": "26d7de1e9c33f0ac246b03f56ca1a3a4d3436c66b43feba84bf6289d7dda469d"
+}

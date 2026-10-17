@@ -1,0 +1,24 @@
+{
+  "file": "scripts/v06p1-forge-open-test.mjs",
+  "originalSha": "0aadb0b6fd4647103599d2c25a47e85ddaa38d535b565bd56de060bb64d21069",
+  "pinnedOriginalSha": "0aadb0b6fd4647103599d2c25a47e85ddaa38d535b565bd56de060bb64d21069",
+  "adaptedSha": "1b1c488ee8d887e6f5ba9c418b397bc0b6143d5edb6942ba82a4ad3f31617a05",
+  "changes": [
+    {
+      "label": "open fixture and type-only Controller imports excluded from historical consumer list",
+      "before": "...salvageSourceNames].includes(file)",
+      "after": "...salvageSourceNames, 'SmithServicesController.ts', 'v06p1-smith-services-closed.test.ts', ...[\"v06p1-smith-services-open.test.ts\",\"v06p1-smith-services-open-ui.test.ts\",\"v06p1-smith-services-open-gates.test.ts\"]].includes(file)",
+      "occurrences": 1
+    },
+    {
+      "label": "canonical merged adapter owns Gates",
+      "before": "eq(consumers, ['SmithServicesController.ts'],",
+      "after": "eq(consumers, ['SmithServices.ts'],",
+      "occurrences": 1
+    }
+  ],
+  "productModuleTransformations": [],
+  "diskWritten": false,
+  "businessAssertionsChanged": false,
+  "policy": "Pinned test-only historical strings SHA/count/inventory and prior attr-ui byte proof; actual Vite SSR product modules use current disk."
+}

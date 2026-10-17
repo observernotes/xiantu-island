@@ -1,0 +1,5 @@
+
+> xiantu-island@0.0.1 test:v06p1-smith-services-open
+> timeout 240s node scripts/v06p1-smith-services-open-test.mjs
+
+{"passed":true,"tip":"9d00852","tipFull":"9d008527cf618f14a4717876b679095e3d728248","oTable":{"O01":"PASS","O06":"PASS","O10":"PASS","O11":"BLOCKED","O02":"PASS","O03":"PASS","O04":"PASS","O05":"BLOCKED","O07":"PASS","O08":"BLOCKED","O09":"BLOCKED"},"softOpenedSmithServicesUi":false,"released":false,"newOpenFlag":false,"outDir":"/workspace/xiantu/wt/feat/ui-smith-services/qa/out_v06p1_smith_services_open_9d00852","blocked":{"O11":"O11_partial_salvage_result_return_requires_O05_formal_qualification","O05":"O05_blocked_formal_qualification","O08":"O08_salvage_submit_reload_replay_blocked_by_O05","O09":"O09_blocked_stale_forge_and_enhance_overwrite_other_service; O09_salvage_competition_blocked_by_O05"}}
