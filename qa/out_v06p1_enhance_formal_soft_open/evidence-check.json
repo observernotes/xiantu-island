@@ -1,0 +1,88 @@
+{
+  "passed": true,
+  "formalTipsWired": true,
+  "formalInstanceSource": true,
+  "softOpenedEntrance": true,
+  "softOpenedFormalSettle": true,
+  "released": false,
+  "compatibilityMeaning": "formalOpen/softOpened 表示正式实例源 soft-open；PASS≠进包≠发版",
+  "graphCount": 28,
+  "diskFormalGraphCount": 22,
+  "diskFormalFlagLoads": 0,
+  "memoryClosedGraphCount": 6,
+  "memoryClosedFlagLoads": 1,
+  "formalO01O08Roots": [
+    "shared",
+    "snapshot"
+  ],
+  "fixtureSuccessIsProductionEvidence": false,
+  "sceneSmokeGraphs": 8,
+  "sameHitForgeThenEnhance": true,
+  "sceneSaveWrites": 0,
+  "memoryClosed": [
+    {
+      "dataMode": "shared",
+      "freshSsrRefresh": false,
+      "invalidTable": null,
+      "flagLoads": 1,
+      "setupImportWrites": 0,
+      "businessWrites": 0,
+      "sampleCount": 0
+    },
+    {
+      "dataMode": "shared",
+      "freshSsrRefresh": true,
+      "invalidTable": null,
+      "flagLoads": 1,
+      "setupImportWrites": 6,
+      "businessWrites": 0,
+      "sampleCount": 0
+    },
+    {
+      "dataMode": "shared",
+      "freshSsrRefresh": false,
+      "invalidTable": "memory-closed-never-settles-table",
+      "flagLoads": 1,
+      "setupImportWrites": 0,
+      "businessWrites": 0,
+      "sampleCount": 0
+    },
+    {
+      "dataMode": "snapshot",
+      "freshSsrRefresh": false,
+      "invalidTable": null,
+      "flagLoads": 1,
+      "setupImportWrites": 0,
+      "businessWrites": 0,
+      "sampleCount": 0
+    },
+    {
+      "dataMode": "snapshot",
+      "freshSsrRefresh": true,
+      "invalidTable": null,
+      "flagLoads": 1,
+      "setupImportWrites": 6,
+      "businessWrites": 0,
+      "sampleCount": 0
+    },
+    {
+      "dataMode": "snapshot",
+      "freshSsrRefresh": false,
+      "invalidTable": "memory-closed-never-settles-table",
+      "flagLoads": 1,
+      "setupImportWrites": 0,
+      "businessWrites": 0,
+      "sampleCount": 0
+    }
+  ],
+  "assertions": {
+    "v06p1-enhance-open": 11389,
+    "v06p1-enhance-closed": 30769,
+    "v06p1-forge-open": 6378,
+    "v06p1-forge-closed": 20401,
+    "v06p1-market-closed": 24186,
+    "v06d-closed": 15055,
+    "v06c-closed": 10712
+  },
+  "totalSuiteAssertions": 118890
+}

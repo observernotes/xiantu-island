@@ -1,0 +1,99 @@
+diff --git a/scripts/v06p1-enhance-open-test.mjs b/scripts/v06p1-enhance-open-test.mjs
+index 03ac0a7..1cfc525 100644
+--- a/scripts/v06p1-enhance-open-test.mjs
++++ b/scripts/v06p1-enhance-open-test.mjs
+@@ -12,7 +12,7 @@ const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
+ const shared = sharedRoot(root);
+ const modes = [['shared', shared], ['snapshot', path.join(root, 'data')]];
+ const dataRoots = [['shared', shared], ['wt', path.join(root, 'data')], ['game', path.join(shared, 'game/data')]];
+-const out = process.env.XT_ENHANCE_QA_OUT ?? process.env.OUT_DIR ?? path.join(root, 'qa/out_v06p1_enhance_formal_instance');
++const out = process.env.XT_ENHANCE_QA_OUT ?? process.env.OUT_DIR ?? path.join(root, 'qa/out_v06p1_enhance_formal_soft_open');
+ const before = new Map(), directoryBefore = new Map(), evidence = [];
+ const recipesSha = '1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f';
+ const forgeFlagSha = '0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e';
+@@ -34,8 +34,8 @@ let assertions = 0, runtimeAssertions = 0;
+ const eq = (actual, expected, message) => { assertions++; assert.deepEqual(actual, expected, message); };
+ const ok = (value, message) => { assertions++; assert.ok(value, message); };
+ const hash = bytes => createHash('sha256').update(bytes).digest('hex');
+-const compatibilityMeaning = 'formalOpen/softOpened 仅沿用入口状态；实例源已接线 ≠ soft-open 进包';
+-const report = row => { row = { formalTipsWired: true, formalInstanceSource: true, softOpenedEntrance: true, compatibilityMeaning, ...row }; evidence.push(row); console.log(JSON.stringify(row)); };
++const compatibilityMeaning = 'formalOpen/softOpened 表示正式实例源 soft-open；PASS≠进包≠发版';
++const report = row => { row = { formalTipsWired: true, formalInstanceSource: true, softOpenedEntrance: true, softOpenedFormalSettle: true, compatibilityMeaning, ...row }; evidence.push(row); console.log(JSON.stringify(row)); };
+ async function shaOrNull(file) {
+   try { return hash(await fs.readFile(file)); }
+   catch (error) { if (error.code === 'ENOENT') return null; throw error; }
+@@ -196,6 +196,15 @@ async function runGraph(mode, dataRoot, openFixture, refreshPayloads = null, inv
+     const suite = await server.ssrLoadModule('/src/v06p1-enhance-open.test.ts');
+     const result = await suite.runEnhanceOpenFixtureTests({ openFixture, dataMode: mode, refreshPayloads, invalidTable: invalidTable?.name });
+     ok(Number.isSafeInteger(result.assertions) && result.assertions > 0, `${mode} 自动化断言实际执行`);
++    eq(result.softOpenedFormalSettle, true, `${mode} 明确登记正式实例源soft-open结算口径`);
++    eq(result.released, false, `${mode} 正式实例源soft-open不授权进包发版`);
++    if (openFixture && refreshPayloads === null && invalidTable === null) {
++      eq(result.formalInstances?.source, 'default-ForgeGate-committed-result', `${mode} 正式O表只取默认Forge完整结果来源`);
++      eq(result.formalInstances?.productionFixtureInstances, false, `${mode} 正式O表不依赖fixtureInstances`);
++      eq(result.formalInstances?.registeredAtForgeCommit, true, `${mode} 打造完整提交同事务登记正式实例`);
++      eq(result.formalInstances?.cases, ['O01', 'O02', 'O03', 'O04', 'O05', 'O06', 'O07', 'O08'],
++        `${mode} 正式磁盘图必须实际执行正式实例源O01–O08`);
++    }
+     runtimeAssertions += result.assertions;
+     eq(featureOverrideCalls, 0, `${mode} 正式图与夹具图均不覆盖features`);
+     eq(tableLoads, invalidTable ? 1 : 0, `${mode} 坏表仅独立SSR内存模块注入`);
+@@ -254,7 +263,7 @@ try {
+   await fs.writeFile(path.join(out, 'v06p1-enhance-open-evidence.json'), `${JSON.stringify({ passed,
+     assertions: assertions + runtimeAssertions, staticAssertions: assertions, runtimeAssertions,
+     formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false,
+-    formalTipsWired: true, formalInstanceSource: true, softOpenedEntrance: true, compatibilityMeaning, stringsSha, enhanceFlagSha,
++    formalTipsWired: true, formalInstanceSource: true, softOpenedEntrance: true, softOpenedFormalSettle: true, compatibilityMeaning, stringsSha, enhanceFlagSha,
+     protectedFiles: Object.fromEntries(before), protectedDirectories: Object.fromEntries(directoryBefore), evidence }, null, 2)}\n`);
+ }
+-console.log(`v06p1 enhance formal instance tests ok: ${assertions + runtimeAssertions} assertions; shared/snapshot双根formal-open+memory-closed及fresh SSR读回；formal C01–C10 + fixture兼容/正式来源 O01–O08；strings944；Scene最小smith_ou同命中冒烟零写；正式flag=true；EnhanceClosed原字节；gifts 10×false；enhance未改；GAME_PHASE=5；formalOpen:true、closedFixtureOnly:true、softOpened:true、formalTipsWired:true、formalInstanceSource:true、softOpenedEntrance:true、released:false；实例源已接线≠soft-open进包；PASS≠soft-open≠release`);
++console.log(`v06p1 enhance formal soft-open tests ok: ${assertions + runtimeAssertions} assertions; shared/snapshot双根formal-open+memory-closed及fresh SSR读回；formal C01–C10 + fixture兼容/正式来源 O01–O08；strings944；Scene最小smith_ou同命中冒烟零写；正式flag=true；EnhanceClosed原字节；gifts 10×false；enhance未改；GAME_PHASE=5；formalOpen:true、closedFixtureOnly:true、softOpened:true、formalTipsWired:true、formalInstanceSource:true、softOpenedEntrance:true、softOpenedFormalSettle:true、released:false；正式实例源soft-open；PASS≠进包≠release≠发版`);
+diff --git a/src/v06p1-enhance-open.test.ts b/src/v06p1-enhance-open.test.ts
+index ee606d2..da7aa1d 100644
+--- a/src/v06p1-enhance-open.test.ts
++++ b/src/v06p1-enhance-open.test.ts
+@@ -465,6 +465,7 @@ export async function runEnhanceOpenFixtureTests(options: {
+     ok(recipe, 'O01使用正式recipes已有打造行');
+     let forgeSequence = 0, forgeSamples = 0;
+     const productionOptions = () => ({ random: () => { sampleCount++; return sampled; } });
++    eq(Object.prototype.hasOwnProperty.call(productionOptions(), 'fixtureInstances'), false, 'O01正式O表强化选项不注入fixtureInstances');
+     function prepare() {
+       const p = new Progress(); progresses.push(p); p.stones = 100000;
+       p.inventory = { [recipe.blueprint!]: 10, refine_stone: 100, spirit_copper: 10, rabbit_fur: 7 };
+@@ -483,6 +484,8 @@ export async function runEnhanceOpenFixtureTests(options: {
+       eq(f.p.enhance!.instances, [{ instanceRef: ref, itemId: result.result.resultItem.itemId, type: 'weapon', enhanceLevel: 0 }],
+         'O01成品按ITEMS槽映射登记，初始等级0');
+       eq(f.p.formalEnhanceInstances(), f.p.enhance!.instances, 'O01本档来源证明授权登记实例');
++      eq(f.p.formalEnhanceInstanceStatus(ref), 'registered', 'O01完整打造成品取得本档正式来源状态');
++      eq(f.p.enhance!.formalSources!.map(source => source.instanceRef), [ref], 'O01来源证明精确绑定同次打造成品身份');
+       eq(idb.writes, writes + 1, 'O01打造入库与正式实例登记同一次IDB写入');
+       const disk = (await saveStore.readSlot(Progress.getActiveSlot()))!.data;
+       eq(disk.forge, f.p.forge, 'O01磁盘完整打造结果同次可见');
+@@ -545,6 +548,7 @@ export async function runEnhanceOpenFixtureTests(options: {
+     for (const row of enhance.levels) {
+       const input = request(`formal-success-${row.to}`, row.to - 1, success.ref), before = success.p.exportSave(),
+         writes = idb.writes, samples = sampleCount;
++      const sources = copy(success.p.enhance!.formalSources);
+       sampled = 0; const result = committed(await success.gate.submit(input));
+       eq(result.instanceRef, success.ref, 'O02正式成功始终保留原打造身份');
+       eq(result.success, true, 'O02无fixture正式路径成功');
+@@ -559,6 +563,7 @@ export async function runEnhanceOpenFixtureTests(options: {
+         'O02实例身份和最终等级同次更新');
+       eq([idb.writes, sampleCount], [writes + 1, samples + 1], 'O02一次完整提交一次抽样');
+       eq(success.p.enhance!.receipts.length, row.to, 'O02每次结果唯一去重');
++      eq(success.p.enhance!.formalSources, sources, 'O02强化结算保留原正式来源证明，不另造或替换身份');
+       eq(experience(success.p), [before.forgingLevel, before.forgingExp], 'O02不改变品质和生活技能经验');
+       await replay(success.p, new EnhanceGate(success.p), input, 'O07正式成功旧请求只读去重');
+       if (row.to === 7) formalPayloads.push({ state: 'formal-success', save: success.p.exportSave(),
+@@ -949,9 +954,9 @@ export async function runEnhanceOpenFixtureTests(options: {
+     eq(featureFlags(), flags, 'features原值保持不变'); eq(JSON.stringify(enhance), tableBefore, 'enhance内存表未修改');
+     eq(localWrites, 0, '真实IDB保存无localStorage写旁路');
+     return { assertions, payloads, openFixture, graph: openFixture ? 'formal-open' : 'memory-closed',
+-      formalOpen: true, closedFixtureOnly: true, softOpened: true, softOpenedEntrance: true,
++      formalOpen: true, closedFixtureOnly: true, softOpened: true, softOpenedEntrance: true, softOpenedFormalSettle: true,
+       formalTipsWired: true, formalInstanceSource: true, released: false,
+-      compatibilityMeaning: 'formalOpen/softOpened 仅沿用入口状态；实例源已接线 ≠ soft-open 进包',
++      compatibilityMeaning: 'formalOpen/softOpened 表示正式实例源 soft-open；PASS≠进包≠发版',
+       sceneSmoke: sceneSmokeEvidence, defaultGateDenied: defaultGateEvidence, formalRefusals: formalRefusalEvidence,
+       formalInstances: formalInstanceEvidence,
+       storageWrites: idb.writes, commits: idb.commits, sampleCount,

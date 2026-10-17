@@ -1,0 +1,13 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test:v06p1-enhance-open"
+  ],
+  "cwd": "/workspace/xiantu/wt/dev",
+  "environment": {},
+  "stdin": "/dev/null",
+  "startedAt": "2026-10-17T02:33:00.876170+00:00",
+  "exitCode": 0,
+  "assertions": 11389
+}

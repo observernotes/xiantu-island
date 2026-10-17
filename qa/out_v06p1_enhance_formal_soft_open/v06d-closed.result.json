@@ -1,0 +1,15 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test:v06d-closed"
+  ],
+  "cwd": "/workspace/xiantu/wt/dev",
+  "environment": {
+    "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_enhance_formal_soft_open/regression/v06d-closed"
+  },
+  "stdin": "/dev/null",
+  "startedAt": "2026-10-17T02:32:54.241925+00:00",
+  "exitCode": 0,
+  "assertions": 15055
+}

@@ -1,0 +1,149 @@
+{
+  "audit": "formal-enhance-soft-open-source-path",
+  "capturedAt": "2026-10-17T02:33:19.491577+00:00",
+  "cwd": "/workspace/xiantu/wt/dev",
+  "HEAD": "7f75f7b80ee4ad5203a89d2628f604551eafa73b",
+  "readOnlySourceAudit": true,
+  "runtimeTestsRunByThisAuditor": false,
+  "formalTipsWired": true,
+  "formalInstanceSource": true,
+  "softOpenedEntrance": true,
+  "softOpenedFormalSettle": true,
+  "released": false,
+  "meaning": "正式实例源 soft-open；PASS≠进包≠发版。此文件是源码审计旁证，运行 PASS 与断言数以本窗 runner/selfcheck evidence 为准。",
+  "authority": [
+    "/workspace/xiantu/reports/炼器阁/20261017_负责人令_P1③+++soft-open.md",
+    "/workspace/xiantu/design/27_v06_P1③+++_关态_强化正式结算.md:125"
+  ],
+  "sourceChecks": [
+    {
+      "file": "src/Progress.ts",
+      "line": 1079,
+      "result": "complete-formal-Forge-only-registration",
+      "detail": "核实 committed Forge 结果、receipt、正式唯一 recipe、单件 equip 资格；先有实际成品承载，再加入 instance 与 formalSources，不从 itemId 数量或槽位生成身份。"
+    },
+    {
+      "file": "src/Progress.ts",
+      "line": 1134,
+      "result": "slot-bound-source-proof",
+      "detail": "formalSources 回查 ownerSlot、forgeLedgerId、完整成品与 receipt；formalEnhanceInstances() 仅返回 registered，本档无源历史 instances 不授权新提交。"
+    },
+    {
+      "file": "src/ForgeGate.ts",
+      "line": 113,
+      "result": "atomic-Forge-registration",
+      "detail": "同一 draft 内库存入库、Forge 完整结果与 receipt 后，默认正式 recipe 调 registerFormalEnhanceInstance；显式 fixtureRecipes/formalRecipes 不登记正式授权，外层事务失败一同回滚。"
+    },
+    {
+      "file": "src/EnhanceGate.ts",
+      "line": 199,
+      "result": "formal-default-no-fixture-fallback",
+      "detail": "默认 selection 从 progress.formalEnhanceInstances() 取授权；缺登记/用 itemId 冒充返回 enhance.formal.no_instance；显式 fixtureInstances 集合与正式来源封闭隔离。"
+    },
+    {
+      "file": "src/EnhanceGate.ts",
+      "line": 95,
+      "result": "protector-still-denied",
+      "detail": "useProtectCharm=true 提交前整笔返回 enhance.formal.protect，不静默改 false，不补护符映射。"
+    },
+    {
+      "file": "src/EnhanceGate.ts",
+      "line": 165,
+      "result": "later-services-still-closed",
+      "detail": "附灵/分解继续 EnhanceClosed.refuseLaterService()，即 enhance.closed.later_service。"
+    },
+    {
+      "file": "src/EnhanceGate.ts",
+      "line": 243,
+      "result": "single-next-table-row",
+      "detail": "只认 enhance.levels 目标 to 唯一行；validRules 检查 maxLevel/重复目标/rate/费用/dropOnFail/属性依赖，不用夹具数值回退。"
+    },
+    {
+      "file": "src/scenes/GameScene.ts",
+      "line": 2158,
+      "result": "smith-same-hit-two-entrances",
+      "detail": "同一次 smith_ou 命中顺序显示打造入口及‘装备强化已开放。’，仅两段后 return true；new EnhanceGate(this.prog).entrance() 无夹具注入，入口只读。"
+    }
+  ],
+  "formalOCaseMap": {
+    "O01": {
+      "file": "src/v06p1-enhance-open.test.ts",
+      "line": 463,
+      "coverage": "默认 Forge 完整提交→同事务正式实例/来源证明→无 fixtureInstances 选择；同原型两件、背包/装备槽承载、最大合法 ref、显式测试授权不回退。"
+    },
+    "O02": {
+      "file": "src/v06p1-enhance-open.test.ts",
+      "line": 548,
+      "coverage": "正式来源逐档 1–12 成功；唯一 next 行、费用、最终属性、实例身份、来源证明、receipt 及一次抽样/一次提交保持一致。"
+    },
+    "O03": {
+      "file": "src/v06p1-enhance-open.test.ts",
+      "line": 574,
+      "coverage": "正式来源目标 5 不掉级、目标 6 掉一级；正常失败均扣该次费用、保留原实例及完整属性结果，不碎装。"
+    },
+    "O04": {
+      "file": "src/v06p1-enhance-open.test.ts",
+      "line": 595,
+      "coverage": "正式来源 useProtectCharm=true 整笔拒绝 protect，候选护符库存不消费；false 成功/失败不依赖映射。"
+    },
+    "O05": {
+      "file": "src/v06p1-enhance-open.test.ts",
+      "line": 432,
+      "coverage": "成功/两种失败保存与真实 IDB 同档 load roundtrip；fresh SSR 读回由 runner 再载入；完整结果/来源/库存/等级一致，零重抽零扣费，正式下一档可只读选择。"
+    },
+    "O06": {
+      "file": "src/v06p1-enhance-open.test.ts",
+      "line": 598,
+      "coverage": "missing/itemId/数量不能冒充，装备资格/配置异常、资源不足、越级/过期、无持有资产拒绝零副作用；runner 独立坏表图补配置依赖拒绝。"
+    },
+    "O07": {
+      "file": "src/v06p1-enhance-open.test.ts",
+      "line": 619,
+      "coverage": "共享库存两件竞争、连点/跨 Gate 同请求、载荷冲突、两个同槽独立 Progress 竞争与过时对象重试、强化 IDB abort、Forge abort，最多一次完整提交且失败回滚。"
+    },
+    "O08": {
+      "file": "src/v06p1-enhance-open.test.ts",
+      "line": 678,
+      "coverage": "已绑定原 slot 不受 activeSlot 切换借权；新槽无源、跨槽复制正式来源/Forge 袋仍 foreign；删除 formalSources 的纯历史袋不能授权新提交；显式 Forge 夹具不登记。"
+    }
+  },
+  "concurrencyBoundary": {
+    "file": "src/EnhanceGate.ts",
+    "line": 314,
+    "scope": "同一 JS/Vite SSR 模块图内的同槽 Gate/Progress 并发",
+    "detail": "#busy 与静态 #formalSlots 在首个 await 前设锁；提交前回查磁盘 enhance 与 expected，事务中再次校验 expected；Progress.runSaveTransactionAsync 只有保存 complete 后发布 draft，失败不发布；finally 释放本图槽锁。",
+    "tests": "src/v06p1-enhance-open.test.ts:619（同 Progress 跨 Gate）及 :643（同槽独立 Progress、过时对象）",
+    "notClaimed": "本窗不扩称跨浏览器标签页/独立运行进程共享锁，亦不据 SSR 证据宣称已经进包或发版。"
+  },
+  "runnerReview": {
+    "files": [
+      "scripts/v06p1-enhance-open-test.mjs",
+      "src/v06p1-enhance-open.test.ts"
+    ],
+    "result": "reviewed-within-authorized-scope",
+    "details": [
+      "默认 OUT 改本窗，仍可通过 XT_ENHANCE_QA_OUT/OUT_DIR 重定向，避免覆盖旧 QA。",
+      "正式图直接读磁盘 true，flagLoads=0；SSR memory-closed 仅内存注入 false，flagLoads=1；双根及 fresh SSR/坏表图既有覆盖保留。",
+      "新增 softOpenedFormalSettle:true，compatibilityMeaning 明确正式实例源 soft-open 且 PASS≠进包≠发版。",
+      "runner 要求正式 O 表 source、productionFixtureInstances:false、registeredAtForgeCommit:true、完整 O01–O08 返回证据；TS 增加 formalSources 对应 ref 和结算中来源证明保留断言。",
+      "保留夹具兼容断言与正式无夹具链；新增内容不改变 Flag、结算、GameScene 或冻结表。"
+    ]
+  },
+  "productSourceChangeRequired": false,
+  "sourceBoundaryIssues": [],
+  "protectionRecommendations": {
+    "roots": [
+      "/workspace/xiantu",
+      "/workspace/xiantu/wt/dev/data",
+      "/workspace/xiantu/game/data"
+    ],
+    "paths": [
+      "balance/**/*.json",
+      "maps/**/*.json",
+      "features.json（含缺失状态）",
+      "本 wt/dev 全部生产 src/**/*.ts，尤其两 Flag、Progress/ForgeGate/EnhanceGate/EnhanceProgress/GameScene/data/features"
+    ],
+    "priorQa": "所有既有 qa/out_* 内容及目录成员集合，排除本窗 qa/out_v06p1_enhance_formal_soft_open；重点保留 formal_instance/formal_tips/enhance_closed/enhance_open_fixture/enhance_open_preamble 及 forge/market/v06c/v06d 旧窗。",
+    "snapshotCaution": "shared/wt strings 固定 d7361af3…；game/data 保留原旧 936 键快照 SHA，不运行 sync/build/release。"
+  }
+}

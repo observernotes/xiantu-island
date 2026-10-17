@@ -1,0 +1,39 @@
+{
+  "passed": true,
+  "baselineEntries": 318,
+  "protectedFiles": 311,
+  "authorizedChanges": [
+    "shared:balance/strings_zh.json",
+    "shared:balance/recipes.json",
+    "wt:balance/strings_zh.json",
+    "wt:balance/recipes.json",
+    "game:balance/strings_zh.json",
+    "game:balance/recipes.json",
+    "wt:src/scenes/GameScene.ts",
+    "wt:src/Progress.ts"
+  ],
+  "sourceOnlyAdded": [
+    "src/ForgeClosed.ts",
+    "src/ForgeOpenFlag.ts",
+    "src/ForgeGate.ts",
+    "src/ForgeProgress.ts",
+    "src/v06p1-forge-open.test.ts",
+    "src/EnhanceGate.ts",
+    "src/EnhanceProgress.ts",
+    "src/v06p1-enhance-open.test.ts",
+    "src/EnhanceClosed.ts",
+    "src/EnhanceOpenFlag.ts"
+  ],
+  "stringsSha": "d7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09",
+  "sharedStringsUnchanged": false,
+  "minimalFrontendWiring": true,
+  "fullForgeUiAdded": false,
+  "gameSceneOnlyAuthorizedWiring": true,
+  "giftsFalseCount": 10,
+  "GAME_PHASE": 5,
+  "smithServices": false,
+  "formalOpen": true,
+  "closedFixtureOnly": true,
+  "softOpened": true,
+  "released": false
+}

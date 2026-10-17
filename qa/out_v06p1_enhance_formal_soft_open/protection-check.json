@@ -1,0 +1,26 @@
+{
+  "passed": true,
+  "protectedFiles": 946,
+  "unauthorizedDifferences": [],
+  "protectedAdded": [],
+  "protectedRemoved": [],
+  "oldEvidenceFiles": 534,
+  "oldEvidenceDifferences": [],
+  "oldEvidenceAdded": [],
+  "oldEvidenceRemoved": [],
+  "formalTipsWired": true,
+  "formalInstanceSource": true,
+  "softOpenedEntrance": true,
+  "softOpenedFormalSettle": true,
+  "released": false,
+  "scope": "正式实例源 soft-open；PASS ≠ 进包 ≠ 发版；formalOpen/softOpened ≠ 进包",
+  "EnhanceOpenFlag": true,
+  "ForgeOpenFlag": true,
+  "GAME_PHASE": 5,
+  "enhanceJsonUnchanged": true,
+  "notRun": [
+    "build",
+    "sync",
+    "release"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "cwd": "/workspace/xiantu/wt/dev",
+  "branch": "dev",
+  "baseline": "7f75f7b80ee4ad5203a89d2628f604551eafa73b",
+  "originDev": "7f75f7b80ee4ad5203a89d2628f604551eafa73b",
+  "requiredBaseline": "7f75f7b80ee4ad5203a89d2628f604551eafa73b",
+  "formalInstanceAncestor": "4644e96c530a592c2966798805e92a304f1c907a",
+  "fetchPull": {
+    "command": "git fetch && git pull --ff-only origin dev",
+    "exitCode": 0,
+    "result": "Already up to date."
+  },
+  "stdin": "/dev/null",
+  "capturedAt": "2026-10-17T02:32:15.160373+00:00",
+  "codexLog": "/workspace/xiantu/logs/codex/a695c0e74a0e311b_20261017_103112_1374565.log",
+  "notRun": [
+    "build",
+    "sync",
+    "release"
+  ]
+}

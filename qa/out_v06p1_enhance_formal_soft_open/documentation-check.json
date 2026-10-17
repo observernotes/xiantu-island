@@ -1,0 +1,36 @@
+{
+  "passed": true,
+  "files": {
+    "reports/炼器阁/V06P1_ENHANCE_FORMAL_SOFT_OPEN_HANDOFF.md": {
+      "sha256": "4632d32ad2a70972fc1c527b421315704295718c60680237e0865e27f8eba406",
+      "sharedSha256": "4632d32ad2a70972fc1c527b421315704295718c60680237e0865e27f8eba406",
+      "utf8": true,
+      "synced": true,
+      "lines": 58
+    },
+    "reports/炼器阁/V06P1_ENHANCE_FORMAL_SOFT_OPEN_RESULT.md": {
+      "sha256": "24ee76b7c63ba32cc330708c22275421ad0017c785eba4b22522099ff59bda7d",
+      "sharedSha256": "24ee76b7c63ba32cc330708c22275421ad0017c785eba4b22522099ff59bda7d",
+      "utf8": true,
+      "synced": true,
+      "lines": 61
+    },
+    "status/炼器阁.md": {
+      "sha256": "0eff515f1bab2e06eb69e1434104929df5686aadb84c78d0137a93238921efdc",
+      "sharedSha256": "0eff515f1bab2e06eb69e1434104929df5686aadb84c78d0137a93238921efdc",
+      "utf8": true,
+      "synced": true,
+      "lines": 26
+    }
+  },
+  "statusSections": 4,
+  "statusLines": 26,
+  "testedSourceBytesMatch": true,
+  "flagsAndFrozenDataUnchanged": true,
+  "formalTipsWired": true,
+  "formalInstanceSource": true,
+  "softOpenedEntrance": true,
+  "softOpenedFormalSettle": true,
+  "released": false,
+  "scope": "正式实例源 soft-open；PASS≠进包≠发版"
+}
