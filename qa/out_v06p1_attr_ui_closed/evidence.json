@@ -11,14 +11,10 @@
   "released": false,
   "formalInstanceSource": true,
   "mappingStrategy": "no_instance_for_missing_slot_row_binding",
-  "mappingEvidence": "reports/炼器阁/V06P1_ATTR_UI_READONLY_MAP_EVIDENCE.md",
-  "mappingGaps": [
-    "G1",
-    "G2",
-    "G3"
-  ],
-  "eSlotToInstanceRefApiExists": false,
-  "iRowToInstanceRefApiExists": false,
+  "mappingEvidence": "reports/炼器阁/V06P1_ATTR_UI_MAP_API_EVIDENCE.md",
+  "mappingGaps": [],
+  "eSlotToInstanceRefApiExists": true,
+  "iRowToInstanceRefApiExists": true,
   "noItemIdImpersonation": true,
   "fixtureInstancesProductionFallback": false,
   "ForgeOpenFlag": true,

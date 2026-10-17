@@ -1,6 +1,8 @@
 import enhance from '@xt/balance/enhance.json';
 import { ITEMS, inPhase, t } from './data';
 import type { EquipSlot, Progress } from './Progress';
+import { resolveFormalEquipSlotBinding, resolveFormalInventoryEquipBinding,
+  type FormalInventoryEquipRow } from './EquipInstBinding';
 import { isEnhanceOpenForFixture } from './EnhanceOpenFlag';
 import { isEnchantOpenForFixture } from './EnchantOpenFlag';
 import { EnchantGate } from './EnchantGate';
@@ -8,8 +10,9 @@ import { isEnhanceInstanceRef, isValidEnhanceProgress, type EnhanceFixtureInstan
   type EnhanceProgress } from './EnhanceProgress';
 import { isEnchantElement, isValidEnchantProgress, sameEnchantAttributes } from './EnchantProgress';
 
-/** verified 仅接收调用方已证明的位置绑定；当前 E/I 均没有此证明。 */
+/** verified 仅接收生产 API 已证明的位置绑定；foreign 不携带实例引用。 */
 export type InstBinding = { kind: 'empty' } | { kind: 'not_equip' } | { kind: 'no_instance' }
+  | { kind: 'foreign' }
   | { kind: 'verified'; instanceRef: string };
 export interface InstDisplay {
   lines: { key: string; text: string }[];
@@ -23,14 +26,13 @@ const count = (value: unknown): value is number => typeof value === 'number' && 
 const own = (value: object, key: string) => Object.prototype.hasOwnProperty.call(value, key);
 const openFact = (read: () => boolean): boolean => { try { return read() === true; } catch { return false; } };
 
-/** G1：equip 只有 itemId，不以数量或同原型唯一候选制造槽位身份。 */
+/** 只读正式槽位绑定；缺失时不以数量或同原型候选制造身份。 */
 export function resolveEquipSlotBinding(prog: Progress, slot: EquipSlot): InstBinding {
-  return prog.equip[slot] ? { kind: 'no_instance' } : { kind: 'empty' };
+  return resolveFormalEquipSlotBinding(prog, slot);
 }
-/** G2：背包装备行按 itemId 聚合，没有行到具体正式实例的只读 API。 */
-export function resolveInventoryEquipBinding(_prog: Progress, row: { id: string; type?: string } | undefined): InstBinding {
-  return row && (row.type === 'equip' || ITEMS[row.id]?.type === 'equip')
-    ? { kind: 'no_instance' } : { kind: 'not_equip' };
+/** 明确行交给正式 API 核实；纯 itemId 聚合行仍无实例绑定。 */
+export function resolveInventoryEquipBinding(prog: Progress, row: FormalInventoryEquipRow | undefined): InstBinding {
+  return resolveFormalInventoryEquipBinding(prog, row);
 }
 
 function supported(instance: EnhanceFixtureInstance): boolean {
@@ -136,6 +138,7 @@ export function buildInstDisplay(prog: Progress, binding: InstBinding): InstDisp
   if (!enhanceOpen || !enchantOpen) add('unavailable');
   if (!enhanceOpen && !enchantOpen) { display.kind = 'unavailable'; return display; }
   if (binding.kind === 'no_instance') { display.kind = 'no_instance'; add('no_instance'); return display; }
+  if (binding.kind === 'foreign') { display.kind = 'foreign'; add('foreign'); return display; }
   try {
     const checked = identity(prog, binding.instanceRef);
     if (typeof checked === 'string') { display.kind = checked; add(checked); return display; }

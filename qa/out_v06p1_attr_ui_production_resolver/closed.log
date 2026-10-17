@@ -1,0 +1,5 @@
+
+> xiantu-island@0.0.1 test:v06p1-attr-ui-closed
+> timeout 120s node scripts/v06p1-attr-ui-closed-test.mjs
+
+v06p1 attr-ui closed PASS: 1592 assertions; C01–C10; shared+snapshot strings970; SSR 双 Flag=false; localStorageWrites=0; serviceCalls=0; mappingStrategy=no_instance_for_missing_slot_row_binding; softOpenedAttrUi=false; released=false

@@ -1,6 +1,6 @@
 {
   "passed": true,
-  "assertions": 974,
+  "assertions": 1128,
   "baselineTip": "a3f0c197e1d3f31ef1faada5fa053b10e0ac9bfe",
   "eSlotToInstanceRefApiExists": true,
   "iRowToInstanceRefApiExists": true,
@@ -28,7 +28,7 @@
   "fixtureInstancesProductionFallback": false,
   "formalForgeDefaultPathExecuted": true,
   "readonlyZeroWrites": true,
-  "originalEquipInstReadonlyResolversPreserved": true,
+  "displayResolversMatchFormalApi": true,
   "bindingRollbackExecuted": true,
   "enhanceSha": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
   "enhanceShaMatch": true,
@@ -85,7 +85,7 @@
   "newOpenFlag": false,
   "softOpenedAttrUi": false,
   "released": false,
-  "testSummary": "node scripts/v06p1-attr-ui-map-api-test.mjs: 974 assertions, shared/snapshot SSR",
+  "testSummary": "node scripts/v06p1-attr-ui-map-api-test.mjs: 1128 assertions, shared/snapshot SSR",
   "protectedFiles": {
     "/workspace/xiantu/wt/feat/ui-attr-inst/src/ForgeOpenFlag.ts": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
     "/workspace/xiantu/wt/feat/ui-attr-inst/src/ForgeGate.ts": "7aa9b91bf4ad2d389f2b96c41479338bd53cb3fdd63f65ff47a64f8528d75bcb",
@@ -228,13 +228,13 @@
     },
     {
       "mode": "shared",
-      "test": "readonly-and-B-placeholder-preserved",
+      "test": "readonly-and-B-formal-api-wiring",
       "passed": true,
       "fullSaveDelta": 0,
       "publicFieldDelta": 0,
       "storageWriteDelta": 0,
       "serviceCalls": 0,
-      "originalResolversRemainNoInstance": true
+      "displayResolversMatchFormalApi": true
     },
     {
       "mode": "shared",
@@ -380,13 +380,13 @@
     },
     {
       "mode": "snapshot",
-      "test": "readonly-and-B-placeholder-preserved",
+      "test": "readonly-and-B-formal-api-wiring",
       "passed": true,
       "fullSaveDelta": 0,
       "publicFieldDelta": 0,
       "storageWriteDelta": 0,
       "serviceCalls": 0,
-      "originalResolversRemainNoInstance": true
+      "displayResolversMatchFormalApi": true
     },
     {
       "mode": "snapshot",

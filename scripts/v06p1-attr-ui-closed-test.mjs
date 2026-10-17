@@ -77,9 +77,9 @@ async function staticChecks() {
     ok(gifts.every(row => row.affinity.gifts.enabled === false), `${mode} gifts 10×false`);
     ok(!Object.hasOwn(rows.find(row => row.id === 'smith_ou'), 'services'), `${mode} 无 smith_ou.services 完整服务 UI`);
   }
-  const map = await json(path.join(shared, 'qa/out_v06p1_attr_ui_readonly_map/evidence.json'));
-  eq([map.formalInstanceSource, map.eSlotToInstanceRefApiExists, map.iRowToInstanceRefApiExists,
-    map.fixtureInstancesProductionFallback], [true, false, false, false], '炼器硬证据 G1/G2/G3 仍禁止猜实例');
+  const map = await json(path.join(shared, 'qa/out_v06p1_attr_ui_map_api/evidence.json'));
+  eq([map.eSlotToInstanceRefApiExists, map.iRowToInstanceRefApiExists,
+    map.fixtureInstancesProductionFallback], [true, true, false], '炼器正式映射 API 已交付且无 fixture 回退');
   const moduleFile = path.join(root, 'src/EquipInstReadonly.ts'), moduleText = await fs.readFile(moduleFile, 'utf8');
   const ast = ts.createSourceFile(moduleFile, moduleText, ts.ScriptTarget.Latest, true);
   const forbidden = new Set(['submit', 'craft', 'enhance', 'enchant', 'salvage', 'save', 'saveAsync', 'persistSoon',
@@ -244,13 +244,13 @@ async function runGraph(dataMode, dataRoot, graph) {
     const attrs = e.snapshot().attributes;
     eq(attrs, { atk: p.atk, def: p.def, hp: p.maxHp, mp: p.maxMp, speed: p.currentMovePoints().speed, matk: p.matk }, `${prefix} 原角色聚合六维语义保留`);
 
-    // G1/G2/G3：即使正式候选唯一、数量一或多件也不建立位置身份。
+    // 缺显式绑定：即使正式候选唯一、数量一或多件也不建立位置身份。
     for (const count of [1, 2]) {
       p.inventory.wood_sword = count;
       readOnly(p, () => { e.update(); i.update(); }, `${prefix} 数量 ${count} 刷新`);
       eq(api.resolveEquipSlotBinding(p, 'weapon'), { kind: 'no_instance' }, `${prefix} E 数量 ${count} 不冒充`);
-      eq(api.resolveInventoryEquipBinding(p, { id: 'wood_sword', count, type: 'equip', instanceRef: binding.instanceRef }),
-        { kind: 'no_instance' }, `${prefix} I 数量 ${count} 连伪 row.instanceRef 都不授权`);
+      eq(api.resolveInventoryEquipBinding(p, { id: 'wood_sword', count, type: 'equip', instanceRef: 'attr_unregistered:craft:seed:item' }),
+        { kind: 'no_instance' }, `${prefix} I 数量 ${count} 不授权未登记 row.instanceRef`);
     }
     const extra = structuredClone(p.enhance.instances[0]); extra.instanceRef = 'attr_forge:craft:second:item'; extra.enhanceLevel = 0;
     const extraCraft = structuredClone(p.forge.crafts[0]);
@@ -439,8 +439,8 @@ try {
     newOpenFlag: false, enhanceSha, strings970, strings970Previous960Sha: strings960,
     softOpenedAttrUi: false, released: false, formalInstanceSource: true,
     mappingStrategy: 'no_instance_for_missing_slot_row_binding',
-    mappingEvidence: 'reports/炼器阁/V06P1_ATTR_UI_READONLY_MAP_EVIDENCE.md', mappingGaps: ['G1', 'G2', 'G3'],
-    eSlotToInstanceRefApiExists: false, iRowToInstanceRefApiExists: false, noItemIdImpersonation: true,
+    mappingEvidence: 'reports/炼器阁/V06P1_ATTR_UI_MAP_API_EVIDENCE.md', mappingGaps: [],
+    eSlotToInstanceRefApiExists: true, iRowToInstanceRefApiExists: true, noItemIdImpersonation: true,
     fixtureInstancesProductionFallback: false, ForgeOpenFlag: true, EnhanceOpenFlag: true, EnchantOpenFlag: true, SalvageOpenFlag: true,
     formalFlagsDiskSourcePreserved: true, flagShas, gatesBaselineMatch: true,
     localStorageWrites, indexedDbOpens, sentinelCalls, serviceCalls, storageWrites: localStorageWrites,

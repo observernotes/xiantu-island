@@ -1,0 +1,5 @@
+
+> xiantu-island@0.0.1 test:v06p1-attr-ui-binding-success
+> timeout 120s node scripts/v06p1-attr-ui-binding-success-test.mjs
+
+v06p1 attr-ui binding success PASS: 327 assertions; shared/snapshot formal Forge→known-ref equip→E verified→enhance line; unequip clear; aggregate no_instance; foreign passthrough; closed unavailable; binding/enhance/enchant refresh; display zero writes; enhance/four Flags/Gates MATCH; softOpenedAttrUi=false; released=false

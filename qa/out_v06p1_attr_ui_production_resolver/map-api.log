@@ -1,0 +1,5 @@
+
+> xiantu-island@0.0.1 test:v06p1-attr-ui-map-api
+> timeout 120s node scripts/v06p1-attr-ui-map-api-test.mjs
+
+v06p1 attr-ui map API PASS: 1128 assertions; shared/snapshot SSR; default Forge→formal source→known-ref equip verified; unequip clear; no itemId/count inference; legacy/foreign/rollback/validation; enhance/four Flags/Gates/gifts0/PHASE=5 MATCH; E/I display resolvers match formal API; softOpenedAttrUi=false; released=false

@@ -1,4 +1,4 @@
-// P1③+++++++ A：正式实例位置映射 API；既有 E/I 展示入口仍保持关态占位。
+// P1③+++++++ A/B：正式实例位置映射 API 与 E/I 展示 resolver 接线一致性。
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
@@ -37,10 +37,6 @@ async function guard(file, expected) {
   protectedFiles[file] = hash;
   return hash;
 }
-function functionBody(source, name) {
-  const tree = ts.createSourceFile('check.ts', source, ts.ScriptTarget.Latest, true);
-  return tree.statements.find(node => ts.isFunctionDeclaration(node) && node.name?.text === name)?.body?.getText(tree);
-}
 async function staticChecks() {
   eq(git('rev-parse', '--show-toplevel').toString().trim(), root, '测试只在指定 wt 执行');
   eq(root, '/workspace/xiantu/wt/feat/ui-attr-inst', '工作目录为授权 wt');
@@ -70,11 +66,6 @@ async function staticChecks() {
     ok(gifts.every(row => row.affinity.gifts.enabled === false), `${mode}: gifts 10×false`);
     record(mode, 'frozen-boundaries', { enhanceSha, giftsCount: 10, gifts0: true, GAME_PHASE: 5,
       fourFlagBytesMatch: true, fourGateBytesMatch: true });
-  }
-  const oldReadonly = git('show', `${baseline}:src/EquipInstReadonly.ts`).toString();
-  const readonly = await fs.readFile(path.join(root, 'src/EquipInstReadonly.ts'), 'utf8');
-  for (const name of ['resolveEquipSlotBinding', 'resolveInventoryEquipBinding']) {
-    eq(functionBody(readonly, name), functionBody(oldReadonly, name), `${name} 仍为原关态占位函数`);
   }
   for (const file of ['src/EquipPanel.ts', 'src/InventoryPanel.ts'])
     await guard(path.join(root, file), sha(git('show', `${baseline}:${file}`)));
@@ -141,8 +132,16 @@ async function runGraph(mode, dataRoot) {
       eq(module[`is${name}OpenForFixture`](), true, `${mode}: ${name} 正式开态源码原样加载`);
     }
     for (const name of [api.e, api.i, api.bag, api.validator]) eq(typeof binding[name], 'function', `${mode}: ${name} 为可测试 API`);
-    const E = (p, slot = 'weapon') => binding[api.e](p, slot);
-    const I = (p, row) => binding[api.i](p, row);
+    const E = (p, slot = 'weapon') => {
+      const formal = binding[api.e](p, slot);
+      eq(readonly.resolveEquipSlotBinding(p, slot), formal, `${mode}: E 展示 resolver 与正式 API 一致 (${formal.kind})`);
+      return formal;
+    };
+    const I = (p, row) => {
+      const formal = binding[api.i](p, row);
+      eq(readonly.resolveInventoryEquipBinding(p, row), formal, `${mode}: I 展示 resolver 与正式 API 一致 (${formal.kind})`);
+      return formal;
+    };
     const bag = p => binding[api.bag](p);
     const refs = p => bag(p).map(row => row.instanceRef).sort();
     const clone = p => Progress.restore(copy(p.exportSave()), false);
@@ -243,13 +242,15 @@ async function runGraph(mode, dataRoot) {
         eq(readOnly(checked, () => I(checked, { id: 'bamboo_sword', instanceRef: secondRef }), `${mode}: I 纯读`),
           { kind: 'verified', instanceRef: secondRef }, `${mode}: I 重复纯读结果`);
         eq(readOnly(checked, () => refs(checked), `${mode}: 列袋纯读`), [secondRef], `${mode}: 列袋重复结果`);
-        eq(readonly.resolveEquipSlotBinding(checked, 'weapon'), { kind: 'no_instance' }, `${mode}: B 的 E 占位保持 no_instance`);
-        eq(readonly.resolveInventoryEquipBinding(checked, { id: 'bamboo_sword', instanceRef: secondRef }),
-          { kind: 'no_instance' }, `${mode}: B 的 I 占位保持 no_instance`);
+        eq(readOnly(checked, () => readonly.resolveEquipSlotBinding(checked, 'weapon'), `${mode}: B 的 E 接线纯读`),
+          { kind: 'verified', instanceRef: firstRef }, `${mode}: B 的 E 透传正式 verified`);
+        eq(readOnly(checked, () => readonly.resolveInventoryEquipBinding(checked,
+          { id: 'bamboo_sword', instanceRef: secondRef }), `${mode}: B 的 I 接线纯读`),
+          { kind: 'verified', instanceRef: secondRef }, `${mode}: B 的 I 透传正式 verified`);
       }
     });
-    record(mode, 'readonly-and-B-placeholder-preserved', { fullSaveDelta: 0, publicFieldDelta: 0,
-      storageWriteDelta: 0, serviceCalls: 0, originalResolversRemainNoInstance: true });
+    record(mode, 'readonly-and-B-formal-api-wiring', { fullSaveDelta: 0, publicFieldDelta: 0,
+      storageWriteDelta: 0, serviceCalls: 0, displayResolversMatchFormalApi: true });
 
     Progress.setActiveSlot(2);
     const foreign = Progress.restore(copy(worn), false);
@@ -413,7 +414,7 @@ try {
       multipleSameItemIdNotImpersonated: passed, countOneNotImpersonated: passed, oldSaveNoBackfill: passed,
       noItemIdImpersonation: true, fixtureInstancesProductionFallback: false,
       formalForgeDefaultPathExecuted: passed, readonlyZeroWrites: writeSentinelCalls === 0,
-      originalEquipInstReadonlyResolversPreserved: true, bindingRollbackExecuted: passed,
+      displayResolversMatchFormalApi: passed, bindingRollbackExecuted: passed,
       enhanceSha, enhanceShaMatch: true, flagShas, formalFlagsDiskSourcePreserved: true,
       ForgeOpenFlag: true, EnhanceOpenFlag: true, EnchantOpenFlag: true, SalvageOpenFlag: true,
       gatesBaselineMatch: true, gateShas: gates, frozenData, gifts0: true, giftsCount: 10, GAME_PHASE: 5,
@@ -426,4 +427,4 @@ try {
     else Reflect.deleteProperty(globalThis, 'localStorage');
   }
 }
-console.log(`v06p1 attr-ui map API PASS: ${assertions} assertions; shared/snapshot SSR; default Forge→formal source→known-ref equip verified; unequip clear; no itemId/count inference; legacy/foreign/rollback/validation; enhance/four Flags/Gates/gifts0/PHASE=5 MATCH; B placeholders preserved; softOpenedAttrUi=false; released=false`);
+console.log(`v06p1 attr-ui map API PASS: ${assertions} assertions; shared/snapshot SSR; default Forge→formal source→known-ref equip verified; unequip clear; no itemId/count inference; legacy/foreign/rollback/validation; enhance/four Flags/Gates/gifts0/PHASE=5 MATCH; E/I display resolvers match formal API; softOpenedAttrUi=false; released=false`);

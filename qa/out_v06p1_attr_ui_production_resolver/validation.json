@@ -1,0 +1,51 @@
+{
+  "passed": true,
+  "baselineTip": "cc8fc1aad18cc00550b8092e27694d9c5f1c8783",
+  "worktree": "/workspace/xiantu/wt/feat/ui-attr-inst",
+  "branch": "feat/ui-attr-inst",
+  "stdin": "/dev/null",
+  "checksInRequestedOrder": [
+    {
+      "command": "npx tsc --noEmit",
+      "passed": true,
+      "timeoutSeconds": 120
+    },
+    {
+      "command": "npm run test:v06p1-attr-ui-closed",
+      "passed": true,
+      "assertions": 1592,
+      "evidence": "closed-evidence.json",
+      "cases": "C01–C10"
+    },
+    {
+      "command": "npm run test:v06p1-attr-ui-binding-success",
+      "passed": true,
+      "assertions": 327,
+      "evidence": "binding-success-evidence.json"
+    },
+    {
+      "command": "npm run test:v06p1-attr-ui-map-api",
+      "passed": true,
+      "assertions": 1128,
+      "evidence": "map-api-evidence.json"
+    },
+    {
+      "command": "git diff --check",
+      "passed": true
+    },
+    {
+      "command": "post-write enhance/four Flag/frozen boundary SHA check",
+      "passed": true,
+      "evidence": "boundary-check.json"
+    }
+  ],
+  "displayResolversMatchFormalApi": true,
+  "readonlyDisplayZeroWrites": true,
+  "inventoryRowsRemainAggregate": true,
+  "panelsUnchanged": true,
+  "softOpenedAttrUi": false,
+  "released": false,
+  "newOpenFlag": false,
+  "blockers": [],
+  "next": "待经理派执法 O01–O08；本自测不代勾 O"
+}
