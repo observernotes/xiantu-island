@@ -1,0 +1,31 @@
+{
+  "name": "v06p1-attr-ui-map-services",
+  "command": [
+    "npm",
+    "run",
+    "test:v06p1-attr-ui-map-services"
+  ],
+  "cwd": "/workspace/xiantu/wt/v06p1-smith-services-open-fix",
+  "environment": {
+    "NODE_OPTIONS": "--import=/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/regressions/regression-register.mjs",
+    "FORGE_CLOSED_OUT": "/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/regressions/v06p1-attr-ui-map-services",
+    "ENHANCE_CLOSED_OUT": "/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/regressions/v06p1-attr-ui-map-services",
+    "ENCHANT_CLOSED_OUT": "/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/regressions/v06p1-attr-ui-map-services",
+    "SALVAGE_CLOSED_OUT": "/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/regressions/v06p1-attr-ui-map-services",
+    "SALVAGE_OPEN_OUT": "/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/regressions/v06p1-attr-ui-map-services",
+    "ENCHANT_OPEN_OUT": "/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/regressions/v06p1-attr-ui-map-services",
+    "XT_ENHANCE_QA_OUT": "/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/regressions/v06p1-attr-ui-map-services",
+    "MARKET_CLOSED_OUT": "/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/regressions/v06p1-attr-ui-map-services",
+    "OUT_DIR": "/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/regressions/v06p1-attr-ui-map-services",
+    "OUT": "/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/regressions/v06p1-attr-ui-map-services"
+  },
+  "stdin": "/dev/null",
+  "startedAt": "2026-10-17T12:12:19.670Z",
+  "finishedAt": "2026-10-17T12:12:22.055Z",
+  "exitCode": 0,
+  "signal": null,
+  "assertions": 175,
+  "assertionCountAvailable": true,
+  "assertionCountMeaning": "Reported suite aggregate; no extra synthetic assertions added.",
+  "log": "/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/regressions/v06p1-attr-ui-map-services.log"
+}

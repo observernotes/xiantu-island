@@ -1,0 +1,1827 @@
+{
+  "passed": true,
+  "assertions": 4692,
+  "runnerAssertions": 770,
+  "runtimeAssertions": 3922,
+  "salvageCompatibility": {
+    "suite": "salvage-soft-open-compatibility-proof",
+    "passed": true,
+    "realDiskRead": true,
+    "productModuleTransformations": [],
+    "sameHitForgeThenEnhanceThenEnchantThenSalvage": true,
+    "SalvageOpenFlag": true,
+    "softOpenedSalvage": true,
+    "released": false
+  },
+  "enchantClosedTipsWired": true,
+  "beastCoreMapped": true,
+  "enchantOpenFixtureTableExecuted": true,
+  "formalInstanceSource": true,
+  "softOpenedEnchant": true,
+  "EnchantOpenFlag": true,
+  "released": false,
+  "protectCharmSoftOpenPreserved": true,
+  "EnhanceOpenFlagPreserved": true,
+  "cases": {
+    "O01": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/formal-open/initial/five-elements-default-ForgeGate-formal-source",
+        "shared/formal-open/initial/read-only-feature-entrance-preview",
+        "shared/formal-open/initial/deterministic-2000-stones-one-core-one-commit",
+        "shared/formal-open/initial/production-fixtureInstances-absent",
+        "snapshot/formal-open/initial/five-elements-default-ForgeGate-formal-source",
+        "snapshot/formal-open/initial/read-only-feature-entrance-preview",
+        "snapshot/formal-open/initial/deterministic-2000-stones-one-core-one-commit",
+        "snapshot/formal-open/initial/production-fixtureInstances-absent"
+      ]
+    },
+    "O02": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/formal-open/initial/five-same-roots-exact-config-bonus",
+        "shared/formal-open/initial/different-root-zero-sameRootBonus",
+        "shared/formal-open/initial/no-stacking-on-replay",
+        "snapshot/formal-open/initial/five-same-roots-exact-config-bonus",
+        "snapshot/formal-open/initial/different-root-zero-sameRootBonus",
+        "snapshot/formal-open/initial/no-stacking-on-replay"
+      ]
+    },
+    "O03": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/formal-open/initial/missing-stones-core-transient-core",
+        "shared/formal-open/initial/invalid-request-root-element-instance-armor-foreign",
+        "shared/formal-open/initial/itemId-quantity-slot-and-fixture-history-not-authorization",
+        "shared/formal-open/initial/weapon-phase-enabled-placeholder-quality-slot-type",
+        "shared/formal-open/initial/explicit-fixture-never-falls-back-to-formal-source",
+        "shared/formal-open/initial/independent-flag-no-other-service-bypass",
+        "shared/formal-open/initial/ssr-invalid-mapping-and-config-separate-graphs",
+        "shared/formal-open/missing-enchant/invalid-dependency-missing-enchant",
+        "shared/formal-open/missing-enchant/zero-resource-element-record-delta",
+        "shared/formal-open/bad-damage/invalid-dependency-bad-damage",
+        "shared/formal-open/bad-damage/zero-resource-element-record-delta",
+        "shared/formal-open/bad-root-bonus/invalid-dependency-bad-root-bonus",
+        "shared/formal-open/bad-root-bonus/zero-resource-element-record-delta",
+        "shared/formal-open/bad-cost/invalid-dependency-bad-cost",
+        "shared/formal-open/bad-cost/zero-resource-element-record-delta",
+        "shared/formal-open/bad-count/invalid-dependency-bad-count",
+        "shared/formal-open/bad-count/zero-resource-element-record-delta",
+        "shared/formal-open/bad-item/invalid-dependency-bad-item",
+        "shared/formal-open/bad-item/zero-resource-element-record-delta",
+        "shared/formal-open/rate-forbidden/invalid-dependency-rate-forbidden",
+        "shared/formal-open/rate-forbidden/zero-resource-element-record-delta",
+        "shared/formal-open/items-registration-missing/invalid-dependency-items-registration-missing",
+        "shared/formal-open/items-registration-missing/zero-resource-element-record-delta",
+        "shared/formal-open/materials-only-visible/invalid-dependency-materials-only-visible",
+        "shared/formal-open/materials-only-visible/zero-resource-element-record-delta",
+        "shared/formal-open/items-only-registered/invalid-dependency-items-only-registered",
+        "shared/formal-open/items-only-registered/zero-resource-element-record-delta",
+        "shared/formal-open/core-phase/invalid-dependency-core-phase",
+        "shared/formal-open/core-phase/zero-resource-element-record-delta",
+        "shared/formal-open/core-disabled/invalid-dependency-core-disabled",
+        "shared/formal-open/core-disabled/zero-resource-element-record-delta",
+        "shared/formal-open/core-placeholder/invalid-dependency-core-placeholder",
+        "shared/formal-open/core-placeholder/zero-resource-element-record-delta",
+        "shared/formal-open/core-quality/invalid-dependency-core-quality",
+        "shared/formal-open/core-quality/zero-resource-element-record-delta",
+        "snapshot/formal-open/initial/missing-stones-core-transient-core",
+        "snapshot/formal-open/initial/invalid-request-root-element-instance-armor-foreign",
+        "snapshot/formal-open/initial/itemId-quantity-slot-and-fixture-history-not-authorization",
+        "snapshot/formal-open/initial/weapon-phase-enabled-placeholder-quality-slot-type",
+        "snapshot/formal-open/initial/explicit-fixture-never-falls-back-to-formal-source",
+        "snapshot/formal-open/initial/independent-flag-no-other-service-bypass",
+        "snapshot/formal-open/initial/ssr-invalid-mapping-and-config-separate-graphs",
+        "snapshot/formal-open/missing-enchant/invalid-dependency-missing-enchant",
+        "snapshot/formal-open/missing-enchant/zero-resource-element-record-delta",
+        "snapshot/formal-open/bad-damage/invalid-dependency-bad-damage",
+        "snapshot/formal-open/bad-damage/zero-resource-element-record-delta",
+        "snapshot/formal-open/bad-root-bonus/invalid-dependency-bad-root-bonus",
+        "snapshot/formal-open/bad-root-bonus/zero-resource-element-record-delta",
+        "snapshot/formal-open/bad-cost/invalid-dependency-bad-cost",
+        "snapshot/formal-open/bad-cost/zero-resource-element-record-delta",
+        "snapshot/formal-open/bad-count/invalid-dependency-bad-count",
+        "snapshot/formal-open/bad-count/zero-resource-element-record-delta",
+        "snapshot/formal-open/bad-item/invalid-dependency-bad-item",
+        "snapshot/formal-open/bad-item/zero-resource-element-record-delta",
+        "snapshot/formal-open/rate-forbidden/invalid-dependency-rate-forbidden",
+        "snapshot/formal-open/rate-forbidden/zero-resource-element-record-delta",
+        "snapshot/formal-open/items-registration-missing/invalid-dependency-items-registration-missing",
+        "snapshot/formal-open/items-registration-missing/zero-resource-element-record-delta",
+        "snapshot/formal-open/materials-only-visible/invalid-dependency-materials-only-visible",
+        "snapshot/formal-open/materials-only-visible/zero-resource-element-record-delta",
+        "snapshot/formal-open/items-only-registered/invalid-dependency-items-only-registered",
+        "snapshot/formal-open/items-only-registered/zero-resource-element-record-delta",
+        "snapshot/formal-open/core-phase/invalid-dependency-core-phase",
+        "snapshot/formal-open/core-phase/zero-resource-element-record-delta",
+        "snapshot/formal-open/core-disabled/invalid-dependency-core-disabled",
+        "snapshot/formal-open/core-disabled/zero-resource-element-record-delta",
+        "snapshot/formal-open/core-placeholder/invalid-dependency-core-placeholder",
+        "snapshot/formal-open/core-placeholder/zero-resource-element-record-delta",
+        "snapshot/formal-open/core-quality/invalid-dependency-core-quality",
+        "snapshot/formal-open/core-quality/zero-resource-element-record-delta"
+      ]
+    },
+    "O04": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/formal-open/initial/same-element-new-request-zero-delta",
+        "shared/formal-open/initial/original-result-replay-without-resources",
+        "shared/formal-open/initial/old-result-after-replacement-read-only",
+        "snapshot/formal-open/initial/same-element-new-request-zero-delta",
+        "snapshot/formal-open/initial/original-result-replay-without-resources",
+        "snapshot/formal-open/initial/old-result-after-replacement-read-only"
+      ]
+    },
+    "O05": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/formal-open/initial/full-cost-atomic-replacement-stable-instanceRef",
+        "shared/formal-open/initial/missing-resource-and-stale-fromElement-preserve-old",
+        "shared/formal-open/initial/only-new-element-and-config-attributes-active",
+        "snapshot/formal-open/initial/full-cost-atomic-replacement-stable-instanceRef",
+        "snapshot/formal-open/initial/missing-resource-and-stale-fromElement-preserve-old",
+        "snapshot/formal-open/initial/only-new-element-and-config-attributes-active"
+      ]
+    },
+    "O06": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/formal-open/initial/first-and-replacement-real-save-load-export-import-restore",
+        "shared/formal-open/initial/cross-slot-no-instance-or-result-borrowing",
+        "shared/formal-open/initial/fresh-independent-ssr-roundtrip",
+        "shared/formal-open/fresh-ssr/fresh-independent-ssr-save-load-import-restore",
+        "shared/formal-open/fresh-ssr/result-dedupe-cost-final-element-identical",
+        "snapshot/formal-open/initial/first-and-replacement-real-save-load-export-import-restore",
+        "snapshot/formal-open/initial/cross-slot-no-instance-or-result-borrowing",
+        "snapshot/formal-open/initial/fresh-independent-ssr-roundtrip",
+        "snapshot/formal-open/fresh-ssr/fresh-independent-ssr-save-load-import-restore",
+        "snapshot/formal-open/fresh-ssr/result-dedupe-cost-final-element-identical"
+      ]
+    },
+    "O07": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/formal-open/initial/same-request-concurrent-one-commit",
+        "shared/formal-open/initial/payload-conflict-no-old-result",
+        "shared/formal-open/initial/same-instance-targets-recheck",
+        "shared/formal-open/initial/two-formal-instances-shared-inventory-no-negative",
+        "shared/formal-open/initial/stale-progress-does-not-overwrite-new-level-exp-quest-talisman",
+        "snapshot/formal-open/initial/same-request-concurrent-one-commit",
+        "snapshot/formal-open/initial/payload-conflict-no-old-result",
+        "snapshot/formal-open/initial/same-instance-targets-recheck",
+        "snapshot/formal-open/initial/two-formal-instances-shared-inventory-no-negative",
+        "snapshot/formal-open/initial/stale-progress-does-not-overwrite-new-level-exp-quest-talisman"
+      ]
+    },
+    "O08": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/formal-open/initial/carrier-false-throw-and-draft-tamper-rollback",
+        "shared/formal-open/initial/deduct-failure-rollback",
+        "shared/formal-open/initial/idb-request-before-complete-invisible-abort-rollback-retry",
+        "shared/formal-open/initial/unknown-corrupt-records-blocked-no-repair",
+        "shared/formal-open/initial/serialization-failure-zero-delta-and-both-gate-slot-locks-released",
+        "shared/formal-open/initial/real-load-corrupt-bag-storageError-no-overwrite",
+        "shared/formal-open/initial/missing-field-undefined",
+        "shared/formal-open/initial/enhance-and-protect-result-preserved",
+        "shared/formal-open/initial/memory-closed-old-callback-graph",
+        "shared/memory-closed/initial/memory-flag-false-eight-tips",
+        "shared/memory-closed/initial/hostile-getters-unread",
+        "shared/memory-closed/initial/closed-old-callback-preserves-assets",
+        "shared/memory-closed/fresh-ssr/memory-flag-false-eight-tips",
+        "shared/memory-closed/fresh-ssr/hostile-getters-unread",
+        "shared/memory-closed/fresh-ssr/closed-old-callback-preserves-assets",
+        "snapshot/formal-open/initial/carrier-false-throw-and-draft-tamper-rollback",
+        "snapshot/formal-open/initial/deduct-failure-rollback",
+        "snapshot/formal-open/initial/idb-request-before-complete-invisible-abort-rollback-retry",
+        "snapshot/formal-open/initial/unknown-corrupt-records-blocked-no-repair",
+        "snapshot/formal-open/initial/serialization-failure-zero-delta-and-both-gate-slot-locks-released",
+        "snapshot/formal-open/initial/real-load-corrupt-bag-storageError-no-overwrite",
+        "snapshot/formal-open/initial/missing-field-undefined",
+        "snapshot/formal-open/initial/enhance-and-protect-result-preserved",
+        "snapshot/formal-open/initial/memory-closed-old-callback-graph",
+        "snapshot/memory-closed/initial/memory-flag-false-eight-tips",
+        "snapshot/memory-closed/initial/hostile-getters-unread",
+        "snapshot/memory-closed/initial/closed-old-callback-preserves-assets",
+        "snapshot/memory-closed/fresh-ssr/memory-flag-false-eight-tips",
+        "snapshot/memory-closed/fresh-ssr/hostile-getters-unread",
+        "snapshot/memory-closed/fresh-ssr/closed-old-callback-preserves-assets"
+      ]
+    }
+  },
+  "acceptanceDesign": "design/29 §4.3 O01–O08",
+  "graphCount": 36,
+  "formalOpenGraphCount": 32,
+  "memoryClosedGraphCount": 4,
+  "invalidDependencies": [
+    "missing-enchant",
+    "bad-damage",
+    "bad-root-bonus",
+    "bad-cost",
+    "bad-count",
+    "bad-item",
+    "rate-forbidden",
+    "items-registration-missing",
+    "materials-only-visible",
+    "items-only-registered",
+    "core-phase",
+    "core-disabled",
+    "core-placeholder",
+    "core-quality"
+  ],
+  "formalGraph": {
+    "EnchantOpenFlag": true,
+    "flagLoads": 0
+  },
+  "memoryClosedGraph": {
+    "injectedFlag": false,
+    "flagLoads": 1
+  },
+  "freshSsrRoundtrip": true,
+  "productionFixtureInstances": false,
+  "deterministic": true,
+  "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据",
+  "frozenShas": {
+    "enhance.json": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+    "recipes.json": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+    "materials.json": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+    "items.json": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+    "strings_zh.json": "d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841",
+    "npcs.json": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+    "life_skills.json": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+    "enhance_protect_charm.json": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772"
+  },
+  "frozenSourceShas": {
+    "src/ForgeOpenFlag.ts": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
+    "src/EnhanceOpenFlag.ts": "d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e",
+    "src/EnchantClosed.ts": "15870998e95f8f41ab4fb3e6c30dc17a82019502276084f4610800be5927e730",
+    "src/data.ts": "aad725652f5c0eb57a5c699726e570b146d5ded52d5c31715444dbbf4117024a"
+  },
+  "evidence": [
+    {
+      "passed": true,
+      "assertions": 1156,
+      "dataMode": "shared",
+      "graph": "formal-open",
+      "cases": {
+        "O01": {
+          "executed": true,
+          "evidenceKeys": [
+            "five-elements-default-ForgeGate-formal-source",
+            "read-only-feature-entrance-preview",
+            "deterministic-2000-stones-one-core-one-commit",
+            "production-fixtureInstances-absent"
+          ]
+        },
+        "O02": {
+          "executed": true,
+          "evidenceKeys": [
+            "five-same-roots-exact-config-bonus",
+            "different-root-zero-sameRootBonus",
+            "no-stacking-on-replay"
+          ]
+        },
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "missing-stones-core-transient-core",
+            "invalid-request-root-element-instance-armor-foreign",
+            "itemId-quantity-slot-and-fixture-history-not-authorization",
+            "weapon-phase-enabled-placeholder-quality-slot-type",
+            "explicit-fixture-never-falls-back-to-formal-source",
+            "independent-flag-no-other-service-bypass",
+            "ssr-invalid-mapping-and-config-separate-graphs"
+          ]
+        },
+        "O04": {
+          "executed": true,
+          "evidenceKeys": [
+            "same-element-new-request-zero-delta",
+            "original-result-replay-without-resources",
+            "old-result-after-replacement-read-only"
+          ]
+        },
+        "O05": {
+          "executed": true,
+          "evidenceKeys": [
+            "full-cost-atomic-replacement-stable-instanceRef",
+            "missing-resource-and-stale-fromElement-preserve-old",
+            "only-new-element-and-config-attributes-active"
+          ]
+        },
+        "O06": {
+          "executed": true,
+          "evidenceKeys": [
+            "first-and-replacement-real-save-load-export-import-restore",
+            "cross-slot-no-instance-or-result-borrowing",
+            "fresh-independent-ssr-roundtrip"
+          ]
+        },
+        "O07": {
+          "executed": true,
+          "evidenceKeys": [
+            "same-request-concurrent-one-commit",
+            "payload-conflict-no-old-result",
+            "same-instance-targets-recheck",
+            "two-formal-instances-shared-inventory-no-negative",
+            "stale-progress-does-not-overwrite-new-level-exp-quest-talisman"
+          ]
+        },
+        "O08": {
+          "executed": true,
+          "evidenceKeys": [
+            "carrier-false-throw-and-draft-tamper-rollback",
+            "deduct-failure-rollback",
+            "idb-request-before-complete-invisible-abort-rollback-retry",
+            "unknown-corrupt-records-blocked-no-repair",
+            "serialization-failure-zero-delta-and-both-gate-slot-locks-released",
+            "real-load-corrupt-bag-storageError-no-overwrite",
+            "missing-field-undefined",
+            "enhance-and-protect-result-preserved",
+            "memory-closed-old-callback-graph"
+          ]
+        }
+      },
+      "storageWrites": 125,
+      "commits": 124,
+      "sceneSmoke": {
+        "noObjectNoop": true,
+        "nonSmithIgnored": true,
+        "nearbyOnly": true,
+        "hiddenIgnored": true,
+        "genericInteraction": true,
+        "smithServicesUiWired": true,
+        "menuRouted": true,
+        "consumedInteraction": true,
+        "graph": "formal-open",
+        "saveWrites": 0
+      },
+      "randomCalls": 0,
+      "localWrites": 0,
+      "enchantClosedTipsWired": true,
+      "beastCoreMapped": true,
+      "enchantOpenFixtureTableExecuted": true,
+      "formalInstanceSource": true,
+      "softOpenedEnchant": true,
+      "EnchantOpenFlag": true,
+      "released": false,
+      "protectCharmSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "productionFixtureInstances": false,
+      "activeEnchantOpenFlag": true,
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据",
+      "flagLoads": 0,
+      "invalidDependency": null,
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 82,
+      "dataMode": "shared",
+      "graph": "memory-closed",
+      "cases": {
+        "O08": {
+          "executed": true,
+          "evidenceKeys": [
+            "memory-flag-false-eight-tips",
+            "hostile-getters-unread",
+            "closed-old-callback-preserves-assets"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": {
+        "noObjectNoop": true,
+        "nonSmithIgnored": true,
+        "nearbyOnly": true,
+        "hiddenIgnored": true,
+        "genericInteraction": true,
+        "smithServicesUiWired": true,
+        "menuRouted": true,
+        "consumedInteraction": true,
+        "graph": "memory-closed",
+        "saveWrites": 0
+      },
+      "randomCalls": 0,
+      "localWrites": 0,
+      "enchantClosedTipsWired": true,
+      "beastCoreMapped": true,
+      "enchantOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedEnchant": true,
+      "EnchantOpenFlag": true,
+      "released": false,
+      "protectCharmSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "productionFixtureInstances": false,
+      "activeEnchantOpenFlag": false,
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据",
+      "flagLoads": 1,
+      "invalidDependency": null,
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 121,
+      "dataMode": "shared",
+      "graph": "formal-open",
+      "cases": {
+        "O06": {
+          "executed": true,
+          "evidenceKeys": [
+            "fresh-independent-ssr-save-load-import-restore",
+            "result-dedupe-cost-final-element-identical"
+          ]
+        }
+      },
+      "storageWrites": 6,
+      "commits": 6,
+      "sceneSmoke": {
+        "noObjectNoop": true,
+        "nonSmithIgnored": true,
+        "nearbyOnly": true,
+        "hiddenIgnored": true,
+        "genericInteraction": true,
+        "smithServicesUiWired": true,
+        "menuRouted": true,
+        "consumedInteraction": true,
+        "graph": "formal-open",
+        "saveWrites": 0
+      },
+      "randomCalls": 0,
+      "localWrites": 0,
+      "enchantClosedTipsWired": true,
+      "beastCoreMapped": true,
+      "enchantOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedEnchant": true,
+      "EnchantOpenFlag": true,
+      "released": false,
+      "protectCharmSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "productionFixtureInstances": false,
+      "activeEnchantOpenFlag": true,
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据",
+      "flagLoads": 0,
+      "invalidDependency": null,
+      "freshSsr": true
+    },
+    {
+      "passed": true,
+      "assertions": 238,
+      "dataMode": "shared",
+      "graph": "memory-closed",
+      "cases": {
+        "O08": {
+          "executed": true,
+          "evidenceKeys": [
+            "memory-flag-false-eight-tips",
+            "hostile-getters-unread",
+            "closed-old-callback-preserves-assets"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": {
+        "noObjectNoop": true,
+        "nonSmithIgnored": true,
+        "nearbyOnly": true,
+        "hiddenIgnored": true,
+        "genericInteraction": true,
+        "smithServicesUiWired": true,
+        "menuRouted": true,
+        "consumedInteraction": true,
+        "graph": "memory-closed",
+        "saveWrites": 0
+      },
+      "randomCalls": 0,
+      "localWrites": 0,
+      "enchantClosedTipsWired": true,
+      "beastCoreMapped": true,
+      "enchantOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedEnchant": true,
+      "EnchantOpenFlag": true,
+      "released": false,
+      "protectCharmSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "productionFixtureInstances": false,
+      "activeEnchantOpenFlag": false,
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据",
+      "flagLoads": 1,
+      "invalidDependency": null,
+      "freshSsr": true
+    },
+    {
+      "passed": true,
+      "assertions": 26,
+      "dataMode": "shared",
+      "graph": "formal-open",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "invalid-dependency-missing-enchant",
+            "zero-resource-element-record-delta"
+          ]
+        }
+      },
+      "storageWrites": 2,
+      "commits": 2,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "enchantClosedTipsWired": true,
+      "beastCoreMapped": true,
+      "enchantOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedEnchant": true,
+      "EnchantOpenFlag": true,
+      "released": false,
+      "protectCharmSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "productionFixtureInstances": false,
+      "activeEnchantOpenFlag": true,
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据",
+      "flagLoads": 0,
+      "invalidDependency": "missing-enchant",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 26,
+      "dataMode": "shared",
+      "graph": "formal-open",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "invalid-dependency-bad-damage",
+            "zero-resource-element-record-delta"
+          ]
+        }
+      },
+      "storageWrites": 2,
+      "commits": 2,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "enchantClosedTipsWired": true,
+      "beastCoreMapped": true,
+      "enchantOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedEnchant": true,
+      "EnchantOpenFlag": true,
+      "released": false,
+      "protectCharmSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "productionFixtureInstances": false,
+      "activeEnchantOpenFlag": true,
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据",
+      "flagLoads": 0,
+      "invalidDependency": "bad-damage",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 26,
+      "dataMode": "shared",
+      "graph": "formal-open",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "invalid-dependency-bad-root-bonus",
+            "zero-resource-element-record-delta"
+          ]
+        }
+      },
+      "storageWrites": 2,
+      "commits": 2,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "enchantClosedTipsWired": true,
+      "beastCoreMapped": true,
+      "enchantOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedEnchant": true,
+      "EnchantOpenFlag": true,
+      "released": false,
+      "protectCharmSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "productionFixtureInstances": false,
+      "activeEnchantOpenFlag": true,
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据",
+      "flagLoads": 0,
+      "invalidDependency": "bad-root-bonus",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 26,
+      "dataMode": "shared",
+      "graph": "formal-open",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "invalid-dependency-bad-cost",
+            "zero-resource-element-record-delta"
+          ]
+        }
+      },
+      "storageWrites": 2,
+      "commits": 2,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "enchantClosedTipsWired": true,
+      "beastCoreMapped": true,
+      "enchantOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedEnchant": true,
+      "EnchantOpenFlag": true,
+      "released": false,
+      "protectCharmSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "productionFixtureInstances": false,
+      "activeEnchantOpenFlag": true,
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据",
+      "flagLoads": 0,
+      "invalidDependency": "bad-cost",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 26,
+      "dataMode": "shared",
+      "graph": "formal-open",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "invalid-dependency-bad-count",
+            "zero-resource-element-record-delta"
+          ]
+        }
+      },
+      "storageWrites": 2,
+      "commits": 2,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "enchantClosedTipsWired": true,
+      "beastCoreMapped": true,
+      "enchantOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedEnchant": true,
+      "EnchantOpenFlag": true,
+      "released": false,
+      "protectCharmSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "productionFixtureInstances": false,
+      "activeEnchantOpenFlag": true,
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据",
+      "flagLoads": 0,
+      "invalidDependency": "bad-count",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 26,
+      "dataMode": "shared",
+      "graph": "formal-open",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "invalid-dependency-bad-item",
+            "zero-resource-element-record-delta"
+          ]
+        }
+      },
+      "storageWrites": 2,
+      "commits": 2,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "enchantClosedTipsWired": true,
+      "beastCoreMapped": true,
+      "enchantOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedEnchant": true,
+      "EnchantOpenFlag": true,
+      "released": false,
+      "protectCharmSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "productionFixtureInstances": false,
+      "activeEnchantOpenFlag": true,
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据",
+      "flagLoads": 0,
+      "invalidDependency": "bad-item",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 26,
+      "dataMode": "shared",
+      "graph": "formal-open",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "invalid-dependency-rate-forbidden",
+            "zero-resource-element-record-delta"
+          ]
+        }
+      },
+      "storageWrites": 2,
+      "commits": 2,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "enchantClosedTipsWired": true,
+      "beastCoreMapped": true,
+      "enchantOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedEnchant": true,
+      "EnchantOpenFlag": true,
+      "released": false,
+      "protectCharmSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "productionFixtureInstances": false,
+      "activeEnchantOpenFlag": true,
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据",
+      "flagLoads": 0,
+      "invalidDependency": "rate-forbidden",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 26,
+      "dataMode": "shared",
+      "graph": "formal-open",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "invalid-dependency-items-registration-missing",
+            "zero-resource-element-record-delta"
+          ]
+        }
+      },
+      "storageWrites": 2,
+      "commits": 2,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "enchantClosedTipsWired": true,
+      "beastCoreMapped": true,
+      "enchantOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedEnchant": true,
+      "EnchantOpenFlag": true,
+      "released": false,
+      "protectCharmSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "productionFixtureInstances": false,
+      "activeEnchantOpenFlag": true,
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据",
+      "flagLoads": 0,
+      "invalidDependency": "items-registration-missing",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 26,
+      "dataMode": "shared",
+      "graph": "formal-open",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "invalid-dependency-materials-only-visible",
+            "zero-resource-element-record-delta"
+          ]
+        }
+      },
+      "storageWrites": 2,
+      "commits": 2,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "enchantClosedTipsWired": true,
+      "beastCoreMapped": true,
+      "enchantOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedEnchant": true,
+      "EnchantOpenFlag": true,
+      "released": false,
+      "protectCharmSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "productionFixtureInstances": false,
+      "activeEnchantOpenFlag": true,
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据",
+      "flagLoads": 0,
+      "invalidDependency": "materials-only-visible",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 26,
+      "dataMode": "shared",
+      "graph": "formal-open",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "invalid-dependency-items-only-registered",
+            "zero-resource-element-record-delta"
+          ]
+        }
+      },
+      "storageWrites": 2,
+      "commits": 2,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "enchantClosedTipsWired": true,
+      "beastCoreMapped": true,
+      "enchantOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedEnchant": true,
+      "EnchantOpenFlag": true,
+      "released": false,
+      "protectCharmSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "productionFixtureInstances": false,
+      "activeEnchantOpenFlag": true,
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据",
+      "flagLoads": 0,
+      "invalidDependency": "items-only-registered",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 26,
+      "dataMode": "shared",
+      "graph": "formal-open",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "invalid-dependency-core-phase",
+            "zero-resource-element-record-delta"
+          ]
+        }
+      },
+      "storageWrites": 2,
+      "commits": 2,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "enchantClosedTipsWired": true,
+      "beastCoreMapped": true,
+      "enchantOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedEnchant": true,
+      "EnchantOpenFlag": true,
+      "released": false,
+      "protectCharmSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "productionFixtureInstances": false,
+      "activeEnchantOpenFlag": true,
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据",
+      "flagLoads": 0,
+      "invalidDependency": "core-phase",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 26,
+      "dataMode": "shared",
+      "graph": "formal-open",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "invalid-dependency-core-disabled",
+            "zero-resource-element-record-delta"
+          ]
+        }
+      },
+      "storageWrites": 2,
+      "commits": 2,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "enchantClosedTipsWired": true,
+      "beastCoreMapped": true,
+      "enchantOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedEnchant": true,
+      "EnchantOpenFlag": true,
+      "released": false,
+      "protectCharmSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "productionFixtureInstances": false,
+      "activeEnchantOpenFlag": true,
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据",
+      "flagLoads": 0,
+      "invalidDependency": "core-disabled",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 26,
+      "dataMode": "shared",
+      "graph": "formal-open",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "invalid-dependency-core-placeholder",
+            "zero-resource-element-record-delta"
+          ]
+        }
+      },
+      "storageWrites": 2,
+      "commits": 2,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "enchantClosedTipsWired": true,
+      "beastCoreMapped": true,
+      "enchantOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedEnchant": true,
+      "EnchantOpenFlag": true,
+      "released": false,
+      "protectCharmSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "productionFixtureInstances": false,
+      "activeEnchantOpenFlag": true,
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据",
+      "flagLoads": 0,
+      "invalidDependency": "core-placeholder",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 26,
+      "dataMode": "shared",
+      "graph": "formal-open",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "invalid-dependency-core-quality",
+            "zero-resource-element-record-delta"
+          ]
+        }
+      },
+      "storageWrites": 2,
+      "commits": 2,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "enchantClosedTipsWired": true,
+      "beastCoreMapped": true,
+      "enchantOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedEnchant": true,
+      "EnchantOpenFlag": true,
+      "released": false,
+      "protectCharmSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "productionFixtureInstances": false,
+      "activeEnchantOpenFlag": true,
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据",
+      "flagLoads": 0,
+      "invalidDependency": "core-quality",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 1156,
+      "dataMode": "snapshot",
+      "graph": "formal-open",
+      "cases": {
+        "O01": {
+          "executed": true,
+          "evidenceKeys": [
+            "five-elements-default-ForgeGate-formal-source",
+            "read-only-feature-entrance-preview",
+            "deterministic-2000-stones-one-core-one-commit",
+            "production-fixtureInstances-absent"
+          ]
+        },
+        "O02": {
+          "executed": true,
+          "evidenceKeys": [
+            "five-same-roots-exact-config-bonus",
+            "different-root-zero-sameRootBonus",
+            "no-stacking-on-replay"
+          ]
+        },
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "missing-stones-core-transient-core",
+            "invalid-request-root-element-instance-armor-foreign",
+            "itemId-quantity-slot-and-fixture-history-not-authorization",
+            "weapon-phase-enabled-placeholder-quality-slot-type",
+            "explicit-fixture-never-falls-back-to-formal-source",
+            "independent-flag-no-other-service-bypass",
+            "ssr-invalid-mapping-and-config-separate-graphs"
+          ]
+        },
+        "O04": {
+          "executed": true,
+          "evidenceKeys": [
+            "same-element-new-request-zero-delta",
+            "original-result-replay-without-resources",
+            "old-result-after-replacement-read-only"
+          ]
+        },
+        "O05": {
+          "executed": true,
+          "evidenceKeys": [
+            "full-cost-atomic-replacement-stable-instanceRef",
+            "missing-resource-and-stale-fromElement-preserve-old",
+            "only-new-element-and-config-attributes-active"
+          ]
+        },
+        "O06": {
+          "executed": true,
+          "evidenceKeys": [
+            "first-and-replacement-real-save-load-export-import-restore",
+            "cross-slot-no-instance-or-result-borrowing",
+            "fresh-independent-ssr-roundtrip"
+          ]
+        },
+        "O07": {
+          "executed": true,
+          "evidenceKeys": [
+            "same-request-concurrent-one-commit",
+            "payload-conflict-no-old-result",
+            "same-instance-targets-recheck",
+            "two-formal-instances-shared-inventory-no-negative",
+            "stale-progress-does-not-overwrite-new-level-exp-quest-talisman"
+          ]
+        },
+        "O08": {
+          "executed": true,
+          "evidenceKeys": [
+            "carrier-false-throw-and-draft-tamper-rollback",
+            "deduct-failure-rollback",
+            "idb-request-before-complete-invisible-abort-rollback-retry",
+            "unknown-corrupt-records-blocked-no-repair",
+            "serialization-failure-zero-delta-and-both-gate-slot-locks-released",
+            "real-load-corrupt-bag-storageError-no-overwrite",
+            "missing-field-undefined",
+            "enhance-and-protect-result-preserved",
+            "memory-closed-old-callback-graph"
+          ]
+        }
+      },
+      "storageWrites": 125,
+      "commits": 124,
+      "sceneSmoke": {
+        "noObjectNoop": true,
+        "nonSmithIgnored": true,
+        "nearbyOnly": true,
+        "hiddenIgnored": true,
+        "genericInteraction": true,
+        "smithServicesUiWired": true,
+        "menuRouted": true,
+        "consumedInteraction": true,
+        "graph": "formal-open",
+        "saveWrites": 0
+      },
+      "randomCalls": 0,
+      "localWrites": 0,
+      "enchantClosedTipsWired": true,
+      "beastCoreMapped": true,
+      "enchantOpenFixtureTableExecuted": true,
+      "formalInstanceSource": true,
+      "softOpenedEnchant": true,
+      "EnchantOpenFlag": true,
+      "released": false,
+      "protectCharmSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "productionFixtureInstances": false,
+      "activeEnchantOpenFlag": true,
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据",
+      "flagLoads": 0,
+      "invalidDependency": null,
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 82,
+      "dataMode": "snapshot",
+      "graph": "memory-closed",
+      "cases": {
+        "O08": {
+          "executed": true,
+          "evidenceKeys": [
+            "memory-flag-false-eight-tips",
+            "hostile-getters-unread",
+            "closed-old-callback-preserves-assets"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": {
+        "noObjectNoop": true,
+        "nonSmithIgnored": true,
+        "nearbyOnly": true,
+        "hiddenIgnored": true,
+        "genericInteraction": true,
+        "smithServicesUiWired": true,
+        "menuRouted": true,
+        "consumedInteraction": true,
+        "graph": "memory-closed",
+        "saveWrites": 0
+      },
+      "randomCalls": 0,
+      "localWrites": 0,
+      "enchantClosedTipsWired": true,
+      "beastCoreMapped": true,
+      "enchantOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedEnchant": true,
+      "EnchantOpenFlag": true,
+      "released": false,
+      "protectCharmSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "productionFixtureInstances": false,
+      "activeEnchantOpenFlag": false,
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据",
+      "flagLoads": 1,
+      "invalidDependency": null,
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 121,
+      "dataMode": "snapshot",
+      "graph": "formal-open",
+      "cases": {
+        "O06": {
+          "executed": true,
+          "evidenceKeys": [
+            "fresh-independent-ssr-save-load-import-restore",
+            "result-dedupe-cost-final-element-identical"
+          ]
+        }
+      },
+      "storageWrites": 6,
+      "commits": 6,
+      "sceneSmoke": {
+        "noObjectNoop": true,
+        "nonSmithIgnored": true,
+        "nearbyOnly": true,
+        "hiddenIgnored": true,
+        "genericInteraction": true,
+        "smithServicesUiWired": true,
+        "menuRouted": true,
+        "consumedInteraction": true,
+        "graph": "formal-open",
+        "saveWrites": 0
+      },
+      "randomCalls": 0,
+      "localWrites": 0,
+      "enchantClosedTipsWired": true,
+      "beastCoreMapped": true,
+      "enchantOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedEnchant": true,
+      "EnchantOpenFlag": true,
+      "released": false,
+      "protectCharmSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "productionFixtureInstances": false,
+      "activeEnchantOpenFlag": true,
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据",
+      "flagLoads": 0,
+      "invalidDependency": null,
+      "freshSsr": true
+    },
+    {
+      "passed": true,
+      "assertions": 238,
+      "dataMode": "snapshot",
+      "graph": "memory-closed",
+      "cases": {
+        "O08": {
+          "executed": true,
+          "evidenceKeys": [
+            "memory-flag-false-eight-tips",
+            "hostile-getters-unread",
+            "closed-old-callback-preserves-assets"
+          ]
+        }
+      },
+      "storageWrites": 0,
+      "commits": 0,
+      "sceneSmoke": {
+        "noObjectNoop": true,
+        "nonSmithIgnored": true,
+        "nearbyOnly": true,
+        "hiddenIgnored": true,
+        "genericInteraction": true,
+        "smithServicesUiWired": true,
+        "menuRouted": true,
+        "consumedInteraction": true,
+        "graph": "memory-closed",
+        "saveWrites": 0
+      },
+      "randomCalls": 0,
+      "localWrites": 0,
+      "enchantClosedTipsWired": true,
+      "beastCoreMapped": true,
+      "enchantOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedEnchant": true,
+      "EnchantOpenFlag": true,
+      "released": false,
+      "protectCharmSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "productionFixtureInstances": false,
+      "activeEnchantOpenFlag": false,
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据",
+      "flagLoads": 1,
+      "invalidDependency": null,
+      "freshSsr": true
+    },
+    {
+      "passed": true,
+      "assertions": 26,
+      "dataMode": "snapshot",
+      "graph": "formal-open",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "invalid-dependency-missing-enchant",
+            "zero-resource-element-record-delta"
+          ]
+        }
+      },
+      "storageWrites": 2,
+      "commits": 2,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "enchantClosedTipsWired": true,
+      "beastCoreMapped": true,
+      "enchantOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedEnchant": true,
+      "EnchantOpenFlag": true,
+      "released": false,
+      "protectCharmSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "productionFixtureInstances": false,
+      "activeEnchantOpenFlag": true,
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据",
+      "flagLoads": 0,
+      "invalidDependency": "missing-enchant",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 26,
+      "dataMode": "snapshot",
+      "graph": "formal-open",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "invalid-dependency-bad-damage",
+            "zero-resource-element-record-delta"
+          ]
+        }
+      },
+      "storageWrites": 2,
+      "commits": 2,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "enchantClosedTipsWired": true,
+      "beastCoreMapped": true,
+      "enchantOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedEnchant": true,
+      "EnchantOpenFlag": true,
+      "released": false,
+      "protectCharmSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "productionFixtureInstances": false,
+      "activeEnchantOpenFlag": true,
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据",
+      "flagLoads": 0,
+      "invalidDependency": "bad-damage",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 26,
+      "dataMode": "snapshot",
+      "graph": "formal-open",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "invalid-dependency-bad-root-bonus",
+            "zero-resource-element-record-delta"
+          ]
+        }
+      },
+      "storageWrites": 2,
+      "commits": 2,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "enchantClosedTipsWired": true,
+      "beastCoreMapped": true,
+      "enchantOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedEnchant": true,
+      "EnchantOpenFlag": true,
+      "released": false,
+      "protectCharmSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "productionFixtureInstances": false,
+      "activeEnchantOpenFlag": true,
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据",
+      "flagLoads": 0,
+      "invalidDependency": "bad-root-bonus",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 26,
+      "dataMode": "snapshot",
+      "graph": "formal-open",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "invalid-dependency-bad-cost",
+            "zero-resource-element-record-delta"
+          ]
+        }
+      },
+      "storageWrites": 2,
+      "commits": 2,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "enchantClosedTipsWired": true,
+      "beastCoreMapped": true,
+      "enchantOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedEnchant": true,
+      "EnchantOpenFlag": true,
+      "released": false,
+      "protectCharmSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "productionFixtureInstances": false,
+      "activeEnchantOpenFlag": true,
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据",
+      "flagLoads": 0,
+      "invalidDependency": "bad-cost",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 26,
+      "dataMode": "snapshot",
+      "graph": "formal-open",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "invalid-dependency-bad-count",
+            "zero-resource-element-record-delta"
+          ]
+        }
+      },
+      "storageWrites": 2,
+      "commits": 2,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "enchantClosedTipsWired": true,
+      "beastCoreMapped": true,
+      "enchantOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedEnchant": true,
+      "EnchantOpenFlag": true,
+      "released": false,
+      "protectCharmSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "productionFixtureInstances": false,
+      "activeEnchantOpenFlag": true,
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据",
+      "flagLoads": 0,
+      "invalidDependency": "bad-count",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 26,
+      "dataMode": "snapshot",
+      "graph": "formal-open",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "invalid-dependency-bad-item",
+            "zero-resource-element-record-delta"
+          ]
+        }
+      },
+      "storageWrites": 2,
+      "commits": 2,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "enchantClosedTipsWired": true,
+      "beastCoreMapped": true,
+      "enchantOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedEnchant": true,
+      "EnchantOpenFlag": true,
+      "released": false,
+      "protectCharmSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "productionFixtureInstances": false,
+      "activeEnchantOpenFlag": true,
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据",
+      "flagLoads": 0,
+      "invalidDependency": "bad-item",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 26,
+      "dataMode": "snapshot",
+      "graph": "formal-open",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "invalid-dependency-rate-forbidden",
+            "zero-resource-element-record-delta"
+          ]
+        }
+      },
+      "storageWrites": 2,
+      "commits": 2,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "enchantClosedTipsWired": true,
+      "beastCoreMapped": true,
+      "enchantOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedEnchant": true,
+      "EnchantOpenFlag": true,
+      "released": false,
+      "protectCharmSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "productionFixtureInstances": false,
+      "activeEnchantOpenFlag": true,
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据",
+      "flagLoads": 0,
+      "invalidDependency": "rate-forbidden",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 26,
+      "dataMode": "snapshot",
+      "graph": "formal-open",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "invalid-dependency-items-registration-missing",
+            "zero-resource-element-record-delta"
+          ]
+        }
+      },
+      "storageWrites": 2,
+      "commits": 2,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "enchantClosedTipsWired": true,
+      "beastCoreMapped": true,
+      "enchantOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedEnchant": true,
+      "EnchantOpenFlag": true,
+      "released": false,
+      "protectCharmSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "productionFixtureInstances": false,
+      "activeEnchantOpenFlag": true,
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据",
+      "flagLoads": 0,
+      "invalidDependency": "items-registration-missing",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 26,
+      "dataMode": "snapshot",
+      "graph": "formal-open",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "invalid-dependency-materials-only-visible",
+            "zero-resource-element-record-delta"
+          ]
+        }
+      },
+      "storageWrites": 2,
+      "commits": 2,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "enchantClosedTipsWired": true,
+      "beastCoreMapped": true,
+      "enchantOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedEnchant": true,
+      "EnchantOpenFlag": true,
+      "released": false,
+      "protectCharmSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "productionFixtureInstances": false,
+      "activeEnchantOpenFlag": true,
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据",
+      "flagLoads": 0,
+      "invalidDependency": "materials-only-visible",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 26,
+      "dataMode": "snapshot",
+      "graph": "formal-open",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "invalid-dependency-items-only-registered",
+            "zero-resource-element-record-delta"
+          ]
+        }
+      },
+      "storageWrites": 2,
+      "commits": 2,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "enchantClosedTipsWired": true,
+      "beastCoreMapped": true,
+      "enchantOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedEnchant": true,
+      "EnchantOpenFlag": true,
+      "released": false,
+      "protectCharmSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "productionFixtureInstances": false,
+      "activeEnchantOpenFlag": true,
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据",
+      "flagLoads": 0,
+      "invalidDependency": "items-only-registered",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 26,
+      "dataMode": "snapshot",
+      "graph": "formal-open",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "invalid-dependency-core-phase",
+            "zero-resource-element-record-delta"
+          ]
+        }
+      },
+      "storageWrites": 2,
+      "commits": 2,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "enchantClosedTipsWired": true,
+      "beastCoreMapped": true,
+      "enchantOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedEnchant": true,
+      "EnchantOpenFlag": true,
+      "released": false,
+      "protectCharmSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "productionFixtureInstances": false,
+      "activeEnchantOpenFlag": true,
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据",
+      "flagLoads": 0,
+      "invalidDependency": "core-phase",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 26,
+      "dataMode": "snapshot",
+      "graph": "formal-open",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "invalid-dependency-core-disabled",
+            "zero-resource-element-record-delta"
+          ]
+        }
+      },
+      "storageWrites": 2,
+      "commits": 2,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "enchantClosedTipsWired": true,
+      "beastCoreMapped": true,
+      "enchantOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedEnchant": true,
+      "EnchantOpenFlag": true,
+      "released": false,
+      "protectCharmSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "productionFixtureInstances": false,
+      "activeEnchantOpenFlag": true,
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据",
+      "flagLoads": 0,
+      "invalidDependency": "core-disabled",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 26,
+      "dataMode": "snapshot",
+      "graph": "formal-open",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "invalid-dependency-core-placeholder",
+            "zero-resource-element-record-delta"
+          ]
+        }
+      },
+      "storageWrites": 2,
+      "commits": 2,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "enchantClosedTipsWired": true,
+      "beastCoreMapped": true,
+      "enchantOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedEnchant": true,
+      "EnchantOpenFlag": true,
+      "released": false,
+      "protectCharmSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "productionFixtureInstances": false,
+      "activeEnchantOpenFlag": true,
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据",
+      "flagLoads": 0,
+      "invalidDependency": "core-placeholder",
+      "freshSsr": false
+    },
+    {
+      "passed": true,
+      "assertions": 26,
+      "dataMode": "snapshot",
+      "graph": "formal-open",
+      "cases": {
+        "O03": {
+          "executed": true,
+          "evidenceKeys": [
+            "invalid-dependency-core-quality",
+            "zero-resource-element-record-delta"
+          ]
+        }
+      },
+      "storageWrites": 2,
+      "commits": 2,
+      "sceneSmoke": null,
+      "randomCalls": 0,
+      "localWrites": 0,
+      "enchantClosedTipsWired": true,
+      "beastCoreMapped": true,
+      "enchantOpenFixtureTableExecuted": false,
+      "formalInstanceSource": true,
+      "softOpenedEnchant": true,
+      "EnchantOpenFlag": true,
+      "released": false,
+      "protectCharmSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "productionFixtureInstances": false,
+      "activeEnchantOpenFlag": true,
+      "formalOpen": true,
+      "closedFixtureOnly": true,
+      "boundary": "本窗=附灵 soft-open；soft-open≠进包≠发版；fixture≠正式≠进包依据",
+      "flagLoads": 0,
+      "invalidDependency": "core-quality",
+      "freshSsr": false
+    }
+  ]
+}

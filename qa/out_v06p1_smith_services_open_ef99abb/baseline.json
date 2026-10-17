@@ -1,0 +1,19 @@
+{
+  "implementationTip": "ef99abb76056a71ebfed6c02d8c9a5c1f175e284",
+  "joinedStartTip": "39d006dadd0b9937a81d9a6bf41caaa7e4ad01d7",
+  "ancestors": {
+    "9d00852": true,
+    "a1d645d": true,
+    "b81af61": true,
+    "7b06f5a": true
+  },
+  "userUiFilesReadonly": {
+    "src/SmithServicesController.ts": "02230518b379ef33b445717d0f15282a84829a4ade56e09ed0b561e6e19836cb",
+    "src/SmithServicesPanel.ts": "252dd71dae89d77a56ff258789f25ffef8f5563bc435640ec974dc32bbf91dd3",
+    "src/scenes/GameScene.ts": "4a53de4590efdabb920e7e1eee04ccd2269530e42c8177a79bd7edf4f5b95a98"
+  },
+  "allOpenCasesPassed": true,
+  "notSoftOpen": true,
+  "notRelease": true,
+  "fanOutEnforcement": false
+}

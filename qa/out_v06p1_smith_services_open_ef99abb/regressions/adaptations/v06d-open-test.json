@@ -1,0 +1,30 @@
+{
+  "file": "scripts/v06d-open-test.mjs",
+  "originalSha": "ee4fb1e1d5107855ca82a9727500a9125fb91becb2c0485b54bc9198da48eeab",
+  "pinnedOriginalSha": "ee4fb1e1d5107855ca82a9727500a9125fb91becb2c0485b54bc9198da48eeab",
+  "adaptedSha": "e3b67ab2af976a8acd82b16a84d6ecd9816a2689392d2e5a67a070c06083b52b",
+  "changes": [
+    {
+      "label": "redirect v06d-open evidence without touching old output",
+      "before": "path.join(root, 'qa/out_v06d_open_fixture')",
+      "after": "\"/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/regressions/v06d-open\"",
+      "occurrences": 1
+    },
+    {
+      "label": "authorized later append-only strings current SHA; exact suffix proof retained separately",
+      "before": "92d5525c86562a870f45bf53c0c2010e961b83ec9c257a0cf8257178f45b4cab",
+      "after": "d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841",
+      "occurrences": 1
+    },
+    {
+      "label": "current append-only strings count1013; exact historical suffix proofs remain",
+      "before": "eq(Object.keys(strings).length, 936,",
+      "after": "eq(Object.keys(strings).length, 1013,",
+      "occurrences": 1
+    }
+  ],
+  "productModuleTransformations": [],
+  "diskWritten": false,
+  "businessAssertionsChanged": false,
+  "policy": "Pinned test-only historical strings SHA/count/inventory and prior attr-ui byte proof; actual Vite SSR product modules use current disk."
+}

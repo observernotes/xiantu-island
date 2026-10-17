@@ -1,0 +1,5 @@
+
+> xiantu-island@0.0.1 test:v06p1-attr-ui-map-services
+> timeout 120s node scripts/v06p1-attr-ui-map-services-test.mjs
+
+v06p1 attr-ui map services tests ok: 175 assertions; shared/snapshot; Forge/Enhance/protect-charm/Enchant/Salvage passed

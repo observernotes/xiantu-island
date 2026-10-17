@@ -1,0 +1,575 @@
+{
+  "passed": true,
+  "completeOpenSuccess": true,
+  "generatedAt": "2026-10-17T12:15:47.009Z",
+  "tip": "ef99abb",
+  "tipFull": "ef99abb76056a71ebfed6c02d8c9a5c1f175e284",
+  "evidenceTip": "ef99abb",
+  "evidenceTipFull": "ef99abb76056a71ebfed6c02d8c9a5c1f175e284",
+  "outDir": "/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb",
+  "evidenceFlags": {
+    "passed": true,
+    "smithServicesUiWired": true,
+    "smithServicesOpenFixtureTableExecuted": true,
+    "allOpenCasesPassed": true,
+    "o05FormalProductionSuccess": true,
+    "o09StaleForgeEnhanceBlocked": true,
+    "productionFormalPath": true,
+    "fixtureQualificationInjected": false,
+    "fixtureCarrierInstalled": false,
+    "singleGameSceneCurrentProgressBypassClaimed": false,
+    "softOpenedSmithServicesUi": false,
+    "released": false,
+    "newOpenFlag": false,
+    "settlementUnchanged": true,
+    "fourFlagsPreserved": true,
+    "closedOutUnchanged": true,
+    "stringsDiskKeys": 1013,
+    "stringsSsrKeys": 1013,
+    "stringsSsrInjected43": false,
+    "GAME_PHASE": 5,
+    "gifts0": true,
+    "giftsFalseCount": 10
+  },
+  "allOpenCasesPassed": true,
+  "roots": {
+    "snapshot": {
+      "productionGraph": "snapshot-real-ssr",
+      "invalidProtectGraph": "snapshot-invalid-protect-mapping-real-ssr",
+      "assertions": 1490,
+      "allElevenCasesPassed": true,
+      "o05FormalProductionSuccess": true,
+      "o09StaleForgeEnhanceBlocked": true
+    },
+    "shared": {
+      "productionGraph": "shared-real-ssr",
+      "invalidProtectGraph": "shared-invalid-protect-mapping-real-ssr",
+      "assertions": 1490,
+      "allElevenCasesPassed": true,
+      "o05FormalProductionSuccess": true,
+      "o09StaleForgeEnhanceBlocked": true
+    }
+  },
+  "openAssertions": 2980,
+  "fixtureRegressionAssertions": 2897,
+  "regressionAssertions": 182314,
+  "totalAssertionsLowerBound": 188191,
+  "assertionCountPolicy": "Counts come from current evidence and suite reports, never fixed constants. Missing printed counts contribute zero; v06b component totals omit unreported outer checks, so the total is a lower bound.",
+  "regressions": [
+    {
+      "name": "v06p1-smith-services-closed",
+      "exitCode": 0,
+      "assertions": 2057
+    },
+    {
+      "name": "v06p1-attr-ui-closed",
+      "exitCode": 0,
+      "assertions": 1592
+    },
+    {
+      "name": "v06p1-attr-ui-binding-success",
+      "exitCode": 0,
+      "assertions": 327
+    },
+    {
+      "name": "v06p1-attr-ui-map-api",
+      "exitCode": 0,
+      "assertions": 1128
+    },
+    {
+      "name": "v06p1-attr-ui-map-services",
+      "exitCode": 0,
+      "assertions": 175
+    },
+    {
+      "name": "v06p1-forge-closed",
+      "exitCode": 0,
+      "assertions": 20556
+    },
+    {
+      "name": "v06p1-enhance-closed",
+      "exitCode": 0,
+      "assertions": 30978
+    },
+    {
+      "name": "v06p1-enchant-closed",
+      "exitCode": 0,
+      "assertions": 12619
+    },
+    {
+      "name": "v06p1-salvage-closed",
+      "exitCode": 0,
+      "assertions": 19413
+    },
+    {
+      "name": "v06p1-forge-open",
+      "exitCode": 0,
+      "assertions": 6488
+    },
+    {
+      "name": "v06p1-enhance-open",
+      "exitCode": 0,
+      "assertions": 17901
+    },
+    {
+      "name": "v06p1-enchant-open",
+      "exitCode": 0,
+      "assertions": 4692
+    },
+    {
+      "name": "v06p1-salvage-open",
+      "exitCode": 0,
+      "assertions": 7344
+    },
+    {
+      "name": "v06p1-market-closed",
+      "exitCode": 0,
+      "assertions": 23119
+    },
+    {
+      "name": "v06p1-market-open",
+      "exitCode": 0,
+      "assertions": 2580
+    },
+    {
+      "name": "v06b-closed",
+      "exitCode": 0,
+      "assertions": 744
+    },
+    {
+      "name": "v06b-open",
+      "exitCode": 0,
+      "assertions": 816
+    },
+    {
+      "name": "v06c-closed",
+      "exitCode": 0,
+      "assertions": 10730
+    },
+    {
+      "name": "v06c-open",
+      "exitCode": 0,
+      "assertions": 682
+    },
+    {
+      "name": "v06d-closed",
+      "exitCode": 0,
+      "assertions": 15083
+    },
+    {
+      "name": "v06d-open",
+      "exitCode": 0,
+      "assertions": 3016
+    },
+    {
+      "name": "save-slots",
+      "exitCode": 0,
+      "assertions": 274
+    }
+  ],
+  "audits": [
+    {
+      "name": "tsc",
+      "command": [
+        "npx",
+        "tsc",
+        "--noEmit"
+      ],
+      "cwd": "/workspace/xiantu/wt/v06p1-smith-services-open-fix",
+      "environment": {},
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T12:11:34.723Z",
+      "finishedAt": "2026-10-17T12:11:46.374Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": null,
+      "assertionCountAvailable": false,
+      "assertionCountMeaning": "Reported suite aggregate; no extra synthetic assertions added.",
+      "log": "/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/audit/tsc.log"
+    },
+    {
+      "name": "datalint-shared",
+      "command": [
+        "python3",
+        "/workspace/xiantu/qa/tools/datalint.py"
+      ],
+      "cwd": "/workspace/xiantu",
+      "environment": {
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T12:11:34.728Z",
+      "finishedAt": "2026-10-17T12:11:34.785Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": null,
+      "assertionCountAvailable": false,
+      "assertionCountMeaning": "Reported suite aggregate; no extra synthetic assertions added.",
+      "log": "/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/audit/datalint-shared.log",
+      "zeroProblems": true
+    },
+    {
+      "name": "datalint-snapshot",
+      "command": [
+        "python3",
+        "/workspace/xiantu/qa/tools/datalint.py"
+      ],
+      "cwd": "/workspace/xiantu/wt/v06p1-smith-services-open-fix/data",
+      "environment": {
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T12:11:34.730Z",
+      "finishedAt": "2026-10-17T12:11:34.775Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": null,
+      "assertionCountAvailable": false,
+      "assertionCountMeaning": "Reported suite aggregate; no extra synthetic assertions added.",
+      "log": "/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/audit/datalint-snapshot.log",
+      "zeroProblems": true
+    },
+    {
+      "name": "diff-check",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "cwd": "/workspace/xiantu/wt/v06p1-smith-services-open-fix",
+      "environment": {},
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T12:11:34.733Z",
+      "finishedAt": "2026-10-17T12:11:34.750Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": null,
+      "assertionCountAvailable": false,
+      "assertionCountMeaning": "Reported suite aggregate; no extra synthetic assertions added.",
+      "log": "/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/audit/diff-check.log"
+    }
+  ],
+  "protectionCheck": "protection-check.json",
+  "settlementCallbacks": {
+    "Forge": {
+      "baselineSha": "1136c416c238ee16c1daa552202e67d2d0f1e114d911b4cce059c105d011c57c",
+      "currentSha": "1136c416c238ee16c1daa552202e67d2d0f1e114d911b4cce059c105d011c57c",
+      "match": true,
+      "preservedMethods": {
+        "feature": "395c9aea60e5f30d59da8dd10d31454193894f187d7413e79da1d57199f202c5",
+        "entrance": "8db2643907008416150c030b3041f5fcb9c3bdd234bdbb788212c75a287aa029",
+        "craft": "184dc12b3d4710b35bfbfba4be13a37bb7d9db2d70a3da3fc4496ba8835fd903",
+        "submit": "92c4880b04b141963a021402ef2525e1fdc62cd091ef36d44a8832ac1a35394a",
+        "result": "dd010e7ee73af75b0373484ac5d683d59da38718e02fa0157b80b2359e6eea6b",
+        "grade": "5534e9d6c1cfcbc04e0097824eb18a4a1c4d5b345d5df16b0136ef395bc44fba",
+        "loadRefresh": "9023919da48279fe4a18ee0801481ab0bb1d197bf0738b81caf31d4c171458bc",
+        "laterService": "39a07dc5cd9f63f92a21f68ead39b96adb790c39b554c850f35f37f97834ce04",
+        "readResult": "6a02faebcc45a65b070e5b0bd4ee39365e6f4b9e55843d1ceaae6ddac2a2e8a4",
+        "replay": "e262bcfb1de7fe63aa0b9ed440ca12ecd1b33e45e424fe419655cc88a8a10dc2",
+        "validRules": "cbf306bdb532e45dc0b2ed7e68b5dddbab8110ec47f2f226f679c15f28800b81",
+        "sampleGrade": "2bd5b36d3e2b26f28a41f76d4b4265493db7c4744e2287e64ee6348086e6cd5e",
+        "recipe": "ffa412759b02d43d396ecc20b4dc2195a8a2e630c77f89fc2fce90e807fe2641",
+        "valid": "2c490e8f48be4fa4f91ef033ef0e502c8eb66a05944145564d124c96cece0aed",
+        "configItem": "5d8c03ff08d56928078d9b8fb6551ff558c1e13139cbbb82f0379db8603810ec",
+        "supportedItem": "a541603d0136550d32798aefd6540a974d33cce5a4b98219823993502cb6f8bf",
+        "ownsInputs": "44ae299c771bbcf055add260a525bf0e9ff6945eecfb9b1842bfd50d3f60bffc"
+      },
+      "authorizedBoundaryMethods": [
+        "transact"
+      ]
+    },
+    "Enhance": {
+      "baselineSha": "1fc8a5a5df6a6b5167370828820443e72010ce423bef2b925a48a6faa8ff11bb",
+      "currentSha": "1fc8a5a5df6a6b5167370828820443e72010ce423bef2b925a48a6faa8ff11bb",
+      "match": true,
+      "preservedMethods": {
+        "feature": "9bcd11801e4b945ff89e061e60632d21dc5e85806a905bb60a332f8108ee0d24",
+        "entrance": "ba93fc3e3a8662691d301d582062823b446d959e596be01acb000b7328e48f23",
+        "enhance": "4bf591f8c77473ce0bc98856197bcaf04abffff13dfe482f919620f5b5ca9150",
+        "submit": "3ac3849674cef7827c0ed2a6a9e9f14b03bd0376c50b4a9dd6b342ec536c5029",
+        "level": "11fc3b8b34d48e019c414036d724f89d9de40c9285144ee4f9ae985fb991c02d",
+        "consume": "8a8109ac5ccb4901758ae49b8f2f8805b0407195946f9ec70b6026a13ce32cf1",
+        "loadRefresh": "33941274173a0a8c9b1ef1a5219019514f71204eb8ebf7b9dfb8e19d55eb1ea8",
+        "laterService": "da069c5ad6525fce195990937487838a085b575d4a1bc7176940a9ad08080dfb",
+        "readResult": "3041e9c3a46a2771cc94bd325433994ded439141d1ee00d306502628b11c3176",
+        "replay": "3597e9bd5634f1ca9fa1e8aa7e8991663b58c63a532bd3be8f431db4030aaa29",
+        "validRequest": "538fc6f76b8130aa601ccfaeab7fda68c2fed0db80e1b81a195a6f2dc0450ff8",
+        "usesFixtureInstances": "0dd002a041ad88e65e7737bfc0e75de5a32cfc9eccd7724e880e343b662d99bc",
+        "hasFixtureAuthorization": "c1418f1f8bf21b7c750565b2028ccb63848747d010808ad0f99ea1af0c301199",
+        "formalSelectionBoundary": "2a1d97d5ba45c60f9c2cdcd8f5c8d8c3df76d3b4cbe9afca90820d9c7f3746ba",
+        "selection": "d4dd5c9385f3c0e96cc0e7aa2f45474c223bdd7898a3db20805e68c8d9f0aebb",
+        "supportedInstance": "30caa57476fa56c47573f47a1cab919ee70a7d39286ad8cca4d139745fb6f7c7",
+        "ownsInstances": "efaf93cab3c90aa04498f60e83b33e852ec4f592b6e3165a416e2d4788be1397",
+        "ownsCosts": "7ea1bbb9545ca7d940320e20a284a4caa65233348725986d12178109c5fd39a9",
+        "protectCharmCost": "5e7110372e1518d7b755338a1dbe24abaf8f32953d41934627a05634b26ba488",
+        "validRules": "6855493f7dbedf48596fa710ae7f4d282b74828ecd36876f76a2feb68f677125",
+        "attributes": "ffbd188b59a0fcf6d048e6a893ebd5d952c675bcf2b2d7e7ef0240973022b1ee",
+        "valid": "a59f7bef473f37d5dc7f9232228078dab8ce7ac4a362a92e01030380ed54bc0f"
+      },
+      "authorizedBoundaryMethods": [
+        "transact"
+      ]
+    },
+    "Enchant": {
+      "baselineSha": "9a199a3cc5edb153906bc7ed45f47bacb929759c3c584a525c1d7971646a973c",
+      "currentSha": "9a199a3cc5edb153906bc7ed45f47bacb929759c3c584a525c1d7971646a973c",
+      "match": true,
+      "preservedMethods": {
+        "feature": "3f6867885b1cfb82bb92827734957fccb3936e8323bd7e660ebc99bf66e1ecb2",
+        "entrance": "9f0d47333e08bec37a21b78510df7c8404c1716dfe0291f49f076a9a1d5c913a",
+        "enchant": "6a983620c0216a12cc2a7f875ce0fe7aa0bcc04463e112d40ba114f7bc97a0c9",
+        "submit": "6a049bdcd7baf72bc12571085a2ef679a7d356edd8d7e283bfdd6c64b1d83676",
+        "result": "376a7f6fddcbed05f5dd40e991077db2ae82b32519ff1b96fff333f7df0c8a55",
+        "element": "e3ae80a8cdb6264996e5a4fb48eaa895b8db0d28d8bfd59eb2fa2e84da9087fd",
+        "loadRefresh": "348e63ba824b0450bcec008fbee5f20d5b01ec2adffd449275503a844907d105",
+        "laterService": "7cae1a76aba2594345ae7048c655c54aa83b9522b999f011cbc0c22fd1200ac3",
+        "validRequest": "202ddb6f3341a5ae99716de22802c0310e5c20c817dea5e139e62a9c8c5add7f",
+        "replay": "6e9b9f76139ab24139b842517ddfd2d872a29644655d0393c2a0e65b4db4a00e",
+        "selection": "04162ce910a067d71a9fdc1e8ab9b5c790e1a603b1e991d589d0ac46da2266c9",
+        "supportedWeapon": "de8128fb29eb46a77afefad6f6e4c85eb597ecf536f804c3233a824f40ae859f",
+        "ownsInstances": "43b588fdce01ee729ffe03c3ea16353b118451399399d9800b1609da36a5f4c1",
+        "ownsCosts": "87252311282d636a1fbf381bc9247779346f32de16ecbd3d416dc26961462547",
+        "validRules": "3c9f7298825f793835c2006f8fcb5350ef5037bd2857320903da658b87a588b1",
+        "attributes": "3a11d4ce6df6d8d936a3ab0317c8ce183c34de0a6617cf6a7c99df9112f700f3",
+        "valid": "afd8804a66ec3612933b5569d188c40290bca36e50ac1f28b29f73853200a47b",
+        "snapshot": "3bbed513c8d85158705a2c3a8624db537f5dc8c1094e72928de1cf59f69de017"
+      },
+      "authorizedBoundaryMethods": [
+        "transact"
+      ]
+    },
+    "Salvage": {
+      "baselineSha": "3da72e2ed1f427d76271e732ad3164d66d02abd13e619e8706568da680097e7d",
+      "currentSha": "3da72e2ed1f427d76271e732ad3164d66d02abd13e619e8706568da680097e7d",
+      "match": true,
+      "preservedMethods": {
+        "feature": "8c5c55783bd3fc24504a1c934d8dc027e47fea14d1eb57abce6b25c9e0865287",
+        "entrance": "df05f53a959b8d663c386ce83a2b5fe085d8bcb97aaebaf36e9724d7bf1f3168",
+        "salvage": "775b6ca4b17fc0b7ec2726cf1372d45dc08bfe6d3915d0b446df4d236ff1ec6e",
+        "result": "e2740c1d0faad1c8161bd043e6685020be9cf30d34db6b77c72bb82043cfc7d7",
+        "output": "44c84e5cb7c35ad2023426152898150f031ea9ae7999befb35b55c4a6975b0c4",
+        "loadRefresh": "796e31821ffdb1712678e322868293568498de0489886e3229da1702f9accf67",
+        "laterService": "5e03c104c03a62c2af54f5c46b6a55ede3213b58fbc42dd82c22a200ad91b6a6",
+        "validRequest": "fb8823749bacd6120bd1cf824cbf2abf2c1a83eeae5e4345250d1241f87b7ced",
+        "replay": "2a8c2d475fed91d11586827e31c02bc6f4bc7e1c8f5564bb3f8b1367b8cb780d",
+        "validQualification": "fa2943a557e691b8808f4657fbd10bfa7c7e43c409c68fe3e53fbe963455602a",
+        "selection": "87b1345aa3bc8fc17043e929542e43cf04f8c6ad2d3a3c23db10a2592040b68f",
+        "canReceive": "c59b80812b211ab8c93ecaf538f66fd812b8bbbf26d2a6a128abf20e9f1b0d1d",
+        "validRules": "b6fba98d15c0bbea36e73ac08a4abeecfb30846185d62c5da0c2e44f39ca9215",
+        "valid": "269734f4e075c92f69a4a82deeee91df6192c01288cae4a1f1cf628703d4a51a",
+        "snapshot": "ff9bd095964cad3f36d268e7544376f557e82bd7307c8336e307379d30b5f4e5"
+      },
+      "authorizedBoundaryMethods": [
+        "transact",
+        "qualification",
+        "submit"
+      ]
+    }
+  },
+  "readonlyUi": [
+    {
+      "file": "src/SmithServicesController.ts",
+      "baseline": "39d006d",
+      "expectedSha": "02230518b379ef33b445717d0f15282a84829a4ade56e09ed0b561e6e19836cb",
+      "actualSha": "02230518b379ef33b445717d0f15282a84829a4ade56e09ed0b561e6e19836cb",
+      "match": true
+    },
+    {
+      "file": "src/SmithServicesPanel.ts",
+      "baseline": "39d006d",
+      "expectedSha": "252dd71dae89d77a56ff258789f25ffef8f5563bc435640ec974dc32bbf91dd3",
+      "actualSha": "252dd71dae89d77a56ff258789f25ffef8f5563bc435640ec974dc32bbf91dd3",
+      "match": true
+    },
+    {
+      "file": "src/scenes/GameScene.ts",
+      "baseline": "39d006d",
+      "expectedSha": "4a53de4590efdabb920e7e1eee04ccd2269530e42c8177a79bd7edf4f5b95a98",
+      "actualSha": "4a53de4590efdabb920e7e1eee04ccd2269530e42c8177a79bd7edf4f5b95a98",
+      "match": true
+    }
+  ],
+  "oTable": {
+    "O01": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "snapshot/O01/actual-smith-dialogue-menu-four-panels",
+        "snapshot/O01/actual-pointer-and-arrow-enter-escape",
+        "snapshot/O01/confirm-cancel-readonly-no-default-submit",
+        "shared/O01/actual-smith-dialogue-menu-four-panels",
+        "shared/O01/actual-pointer-and-arrow-enter-escape",
+        "shared/O01/confirm-cancel-readonly-no-default-submit"
+      ]
+    },
+    "O02": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "snapshot/O02.controllerGateRoundtrip",
+        "shared/O02.controllerGateRoundtrip"
+      ]
+    },
+    "O03": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "snapshot/O03.completeRoundtrips",
+        "snapshot/O03.maxLevelRefusal",
+        "snapshot/O03.gateSettlementOnly",
+        "shared/O03.completeRoundtrips",
+        "shared/O03.maxLevelRefusal",
+        "shared/O03.gateSettlementOnly"
+      ]
+    },
+    "O04": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "snapshot/O04.fiveElementsAndOverwrite",
+        "snapshot/O04.sameElementRefused",
+        "snapshot/O04.staleTargetRefused",
+        "snapshot/O04.noLayerStacking",
+        "shared/O04.fiveElementsAndOverwrite",
+        "shared/O04.sameElementRefused",
+        "shared/O04.staleTargetRefused",
+        "shared/O04.noLayerStacking"
+      ]
+    },
+    "O05": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "snapshot/O05.o05FormalProductionSuccess",
+        "snapshot/O05.productionFormalPath",
+        "snapshot/O05.fixtureQualificationInjected",
+        "snapshot/O05.fixtureCarrierInstalled",
+        "snapshot/O05.formalProductionSuccess",
+        "snapshot/O05.controllerGateRoundtrip",
+        "snapshot/O05.enchantedAssociationRefused",
+        "shared/O05.o05FormalProductionSuccess",
+        "shared/O05.productionFormalPath",
+        "shared/O05.fixtureQualificationInjected",
+        "shared/O05.fixtureCarrierInstalled",
+        "shared/O05.formalProductionSuccess",
+        "shared/O05.controllerGateRoundtrip",
+        "shared/O05.enchantedAssociationRefused"
+      ]
+    },
+    "O06": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "snapshot/O06/two-real-forged-copies-exact-equip-bag-bindings",
+        "snapshot/O06/E-I-before-submit-and-after-reopen-readonly",
+        "snapshot/O06/only-explicit-instance-ref-settled",
+        "shared/O06/two-real-forged-copies-exact-equip-bag-bindings",
+        "shared/O06/E-I-before-submit-and-after-reopen-readonly",
+        "shared/O06/only-explicit-instance-ref-settled"
+      ]
+    },
+    "O07": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "snapshot/O07.refusals",
+        "snapshot/O07.qualificationRefusal",
+        "snapshot/O07.formalCharmMappingRead",
+        "snapshot/O07.mappingAnomalyGraph",
+        "snapshot/O07.capacityScope",
+        "snapshot-invalid-protect-mapping/O07.invalidProtectMappingIsolatedGraph",
+        "shared/O07.refusals",
+        "shared/O07.qualificationRefusal",
+        "shared/O07.formalCharmMappingRead",
+        "shared/O07.mappingAnomalyGraph",
+        "shared/O07.capacityScope",
+        "shared-invalid-protect-mapping/O07.invalidProtectMappingIsolatedGraph"
+      ]
+    },
+    "O08": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "snapshot/O08.replayedServices",
+        "snapshot/O08.salvageFormalSubmitReloadReplayPassed",
+        "snapshot/O08.productionFormalPath",
+        "snapshot/O08.fixtureQualificationInjected",
+        "snapshot/O08.fixtureCarrierInstalled",
+        "snapshot/O08.noSecondDeductionOrDraw",
+        "snapshot/O08.noDestroyedInstanceRevival",
+        "shared/O08.replayedServices",
+        "shared/O08.salvageFormalSubmitReloadReplayPassed",
+        "shared/O08.productionFormalPath",
+        "shared/O08.fixtureQualificationInjected",
+        "shared/O08.fixtureCarrierInstalled",
+        "shared/O08.noSecondDeductionOrDraw",
+        "shared/O08.noDestroyedInstanceRevival"
+      ]
+    },
+    "O09": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "snapshot/O09.concurrency",
+        "snapshot/O09.staleCrossObjectWritersBlocked",
+        "snapshot/O09.o09StaleForgeEnhanceBlocked",
+        "snapshot/O09.salvageCompetition",
+        "snapshot/O09.salvageFormalCompetitionPassed",
+        "snapshot/O09.productionFormalPath",
+        "snapshot/O09.fixtureQualificationInjected",
+        "snapshot/O09.fixtureCarrierInstalled",
+        "snapshot/O09.singleGameSceneCurrentProgressBypassClaimed",
+        "snapshot/O09.uiSecondLedger",
+        "shared/O09.concurrency",
+        "shared/O09.staleCrossObjectWritersBlocked",
+        "shared/O09.o09StaleForgeEnhanceBlocked",
+        "shared/O09.salvageCompetition",
+        "shared/O09.salvageFormalCompetitionPassed",
+        "shared/O09.productionFormalPath",
+        "shared/O09.fixtureQualificationInjected",
+        "shared/O09.fixtureCarrierInstalled",
+        "shared/O09.singleGameSceneCurrentProgressBypassClaimed",
+        "shared/O09.uiSecondLedger"
+      ]
+    },
+    "O10": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "snapshot/O10/real-Gate-pending-close-switch-replace-and-ui-close",
+        "snapshot/O10/save-failure-atomic-original-state",
+        "snapshot/O10/unknown-half-records-rejected-without-repair",
+        "snapshot/O10/lost-reply-fixed-intent-readonly-recovery",
+        "shared/O10/real-Gate-pending-close-switch-replace-and-ui-close",
+        "shared/O10/save-failure-atomic-original-state",
+        "shared/O10/unknown-half-records-rejected-without-repair",
+        "shared/O10/lost-reply-fixed-intent-readonly-recovery"
+      ]
+    },
+    "O11": {
+      "executed": true,
+      "passed": true,
+      "evidenceKeys": [
+        "snapshot/O11/four-production-Gate-real-results-return-menu",
+        "snapshot/O11/six-scope-deliberate-closed-zero-write",
+        "snapshot/O11/E-I-independent-of-all-UI-scopes",
+        "snapshot/O11/salvage-production-formal-result-return-menu",
+        "shared/O11/four-production-Gate-real-results-return-menu",
+        "shared/O11/six-scope-deliberate-closed-zero-write",
+        "shared/O11/E-I-independent-of-all-UI-scopes",
+        "shared/O11/salvage-production-formal-result-return-menu"
+      ]
+    }
+  },
+  "fixtureCompanion": {
+    "passed": true,
+    "isolatedFixtureRegressionOnly": true,
+    "productionO05Claimed": false,
+    "evidence": "fixture-regression/evidence.json",
+    "assertions": 2897
+  },
+  "notSoftOpen": true,
+  "notRelease": true,
+  "notSoftOpenReleasePack": true,
+  "scope": "本窗=正式分解依赖与跨 Progress CAS 补刀 ≠ soft-open ≠ release ≠ 进包；本窗不 fan-out 执法"
+}

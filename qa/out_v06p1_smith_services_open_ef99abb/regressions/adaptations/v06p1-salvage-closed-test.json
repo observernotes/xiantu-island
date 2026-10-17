@@ -1,0 +1,30 @@
+{
+  "file": "scripts/v06p1-salvage-closed-test.mjs",
+  "originalSha": "6c4aee8d9d3311f4092bc39fd420efbb969a54b8cd984faa1db61d5f22bd3d72",
+  "pinnedOriginalSha": "6c4aee8d9d3311f4092bc39fd420efbb969a54b8cd984faa1db61d5f22bd3d72",
+  "adaptedSha": "fa846ca85b576a10f3ad63c0e80f0b05d09db9b6246e52f51a65f32bbc524201",
+  "changes": [
+    {
+      "label": "current strings1013 SHA",
+      "before": "9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda",
+      "after": "d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841",
+      "occurrences": 1
+    },
+    {
+      "label": "current strings key count1013",
+      "before": ", 960,",
+      "after": ", 1013,",
+      "occurrences": 1
+    },
+    {
+      "label": "authorized exact raw dependency pins; Progress keeps original stripping proof",
+      "before": "  if (expected) {",
+      "after": "  if (expected) {\n    if (file !== path.join(root, \"src/Progress.ts\")) expected = authorizedExpected(file, expected);",
+      "occurrences": 1
+    }
+  ],
+  "productModuleTransformations": [],
+  "diskWritten": false,
+  "businessAssertionsChanged": false,
+  "policy": "Pinned test-only historical strings SHA/count/inventory and prior attr-ui byte proof; actual Vite SSR product modules use current disk."
+}

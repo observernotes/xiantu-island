@@ -1,0 +1,31 @@
+{
+  "name": "v06c-closed",
+  "command": [
+    "npm",
+    "run",
+    "test:v06c-closed"
+  ],
+  "cwd": "/workspace/xiantu/wt/v06p1-smith-services-open-fix",
+  "environment": {
+    "NODE_OPTIONS": "--import=/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/regressions/regression-register.mjs",
+    "FORGE_CLOSED_OUT": "/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/regressions/v06c-closed",
+    "ENHANCE_CLOSED_OUT": "/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/regressions/v06c-closed",
+    "ENCHANT_CLOSED_OUT": "/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/regressions/v06c-closed",
+    "SALVAGE_CLOSED_OUT": "/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/regressions/v06c-closed",
+    "SALVAGE_OPEN_OUT": "/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/regressions/v06c-closed",
+    "ENCHANT_OPEN_OUT": "/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/regressions/v06c-closed",
+    "XT_ENHANCE_QA_OUT": "/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/regressions/v06c-closed",
+    "MARKET_CLOSED_OUT": "/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/regressions/v06c-closed",
+    "OUT_DIR": "/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/regressions/v06c-closed",
+    "OUT": "/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/regressions/v06c-closed"
+  },
+  "stdin": "/dev/null",
+  "startedAt": "2026-10-17T12:11:48.713Z",
+  "finishedAt": "2026-10-17T12:11:52.695Z",
+  "exitCode": 0,
+  "signal": null,
+  "assertions": 10730,
+  "assertionCountAvailable": true,
+  "assertionCountMeaning": "Reported suite aggregate; no extra synthetic assertions added.",
+  "log": "/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/regressions/v06c-closed.log"
+}

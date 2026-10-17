@@ -1,0 +1,24 @@
+{
+  "file": "scripts/v06p1-enchant-closed-test.mjs",
+  "originalSha": "8d49103effb7dd07d90b657578d33470d3eff2efbdd4191e1e90343c885270ee",
+  "pinnedOriginalSha": "8d49103effb7dd07d90b657578d33470d3eff2efbdd4191e1e90343c885270ee",
+  "adaptedSha": "0f61217d5fa98426d816db90f51c46796836d9b5d697a4b665f89dcffbaa5d19",
+  "changes": [
+    {
+      "label": "current strings1013 SHA",
+      "before": "9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda",
+      "after": "d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841",
+      "occurrences": 1
+    },
+    {
+      "label": "current strings key count1013",
+      "before": ", 960,",
+      "after": ", 1013,",
+      "occurrences": 1
+    }
+  ],
+  "productModuleTransformations": [],
+  "diskWritten": false,
+  "businessAssertionsChanged": false,
+  "policy": "Pinned test-only historical strings SHA/count/inventory and prior attr-ui byte proof; actual Vite SSR product modules use current disk."
+}

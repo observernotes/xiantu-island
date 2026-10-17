@@ -1,0 +1,31 @@
+{
+  "name": "v06b-open",
+  "command": [
+    "npm",
+    "run",
+    "test:v06b-open"
+  ],
+  "cwd": "/workspace/xiantu/wt/v06p1-smith-services-open-fix",
+  "environment": {
+    "NODE_OPTIONS": "--import=/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/regressions/regression-register.mjs",
+    "FORGE_CLOSED_OUT": "/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/regressions/v06b-open",
+    "ENHANCE_CLOSED_OUT": "/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/regressions/v06b-open",
+    "ENCHANT_CLOSED_OUT": "/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/regressions/v06b-open",
+    "SALVAGE_CLOSED_OUT": "/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/regressions/v06b-open",
+    "SALVAGE_OPEN_OUT": "/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/regressions/v06b-open",
+    "ENCHANT_OPEN_OUT": "/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/regressions/v06b-open",
+    "XT_ENHANCE_QA_OUT": "/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/regressions/v06b-open",
+    "MARKET_CLOSED_OUT": "/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/regressions/v06b-open",
+    "OUT_DIR": "/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/regressions/v06b-open",
+    "OUT": "/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/regressions/v06b-open"
+  },
+  "stdin": "/dev/null",
+  "startedAt": "2026-10-17T12:11:42.378Z",
+  "finishedAt": "2026-10-17T12:11:48.712Z",
+  "exitCode": 0,
+  "signal": null,
+  "assertions": 816,
+  "assertionCountAvailable": true,
+  "assertionCountMeaning": "Sum of reported per-component runtime counts for both roots; outer static assert calls are not included.",
+  "log": "/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_open_ef99abb/regressions/v06b-open.log"
+}

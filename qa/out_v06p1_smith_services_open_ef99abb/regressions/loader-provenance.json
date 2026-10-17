@@ -1,0 +1,93 @@
+{
+  "borrowedHistoricalLoader": "/workspace/xiantu/wt/v06p1-smith-services-open-fix/qa/out_v06p1_smith_services_closed/regressions/regression-loader.mjs",
+  "borrowedHistoricalLoaderSha": "15afbbdd5a77797600f2145b8312c97dd0541899b00029a671f7abab3c265715",
+  "currentLoaderSha": "ec7cdac1bf50a52f0edd1b91a2d01cffd4e7a1a99934f8f6fede8b6248b63ec0",
+  "newSources": [
+    "v06p1-smith-services-open.test.ts",
+    "v06p1-smith-services-open-fixture.test.ts",
+    "v06p1-smith-services-open-gates.test.ts",
+    "v06p1-smith-services-open-ui.test.ts"
+  ],
+  "pinUpdates": [
+    {
+      "file": "scripts/v06p1-forge-closed-test.mjs",
+      "historicalPin": "b0ec2e88856af1af715be3194cd903315c4a11364c56e4e48377fbe4ce46206d",
+      "currentSha": "60a22cb33e35da39b44de14764e18f1e7f4d7bfe09089e2cb6038aae6aa4d5c9",
+      "baselineSha": "60a22cb33e35da39b44de14764e18f1e7f4d7bfe09089e2cb6038aae6aa4d5c9",
+      "baselineTip": "7b06f5ac4e76a2c48e98431e1ccf0011a8ca0a41"
+    },
+    {
+      "file": "scripts/v06p1-enhance-closed-test.mjs",
+      "historicalPin": "135aa78d1685775e5f915fa27a88680828d1c6b0eb90605003e8c661420a8aa4",
+      "currentSha": "a2331d6fc2a998a0f86aa853a2de0416fb2e941e68c0475b3471342481ec0a1c",
+      "baselineSha": "a2331d6fc2a998a0f86aa853a2de0416fb2e941e68c0475b3471342481ec0a1c",
+      "baselineTip": "7b06f5ac4e76a2c48e98431e1ccf0011a8ca0a41"
+    },
+    {
+      "file": "scripts/v06p1-enchant-closed-test.mjs",
+      "historicalPin": "6de4c417a12d6ee9adbaf2f1c9e57b2cf84ebe89ba48c643c0893ab3c06e56a1",
+      "currentSha": "8d49103effb7dd07d90b657578d33470d3eff2efbdd4191e1e90343c885270ee",
+      "baselineSha": "8d49103effb7dd07d90b657578d33470d3eff2efbdd4191e1e90343c885270ee",
+      "baselineTip": "7b06f5ac4e76a2c48e98431e1ccf0011a8ca0a41"
+    },
+    {
+      "file": "scripts/v06p1-forge-open-test.mjs",
+      "historicalPin": "b1767cbedf9e3543cfa82c8e1931d43888212404b47198ae1f977a5e2bd696d1",
+      "currentSha": "0aadb0b6fd4647103599d2c25a47e85ddaa38d535b565bd56de060bb64d21069",
+      "baselineSha": "0aadb0b6fd4647103599d2c25a47e85ddaa38d535b565bd56de060bb64d21069",
+      "baselineTip": "7b06f5ac4e76a2c48e98431e1ccf0011a8ca0a41"
+    },
+    {
+      "file": "scripts/v06p1-enhance-open-test.mjs",
+      "historicalPin": "c198f40ff899e7e0095837211cd6b5bd1808e3f33af1f58cdc794a3e3e07b8f4",
+      "currentSha": "72cf981b880ee1fc270ab65759289bf66d2ebad7017b736c89be382127169ca7",
+      "baselineSha": "72cf981b880ee1fc270ab65759289bf66d2ebad7017b736c89be382127169ca7",
+      "baselineTip": "7b06f5ac4e76a2c48e98431e1ccf0011a8ca0a41"
+    },
+    {
+      "file": "scripts/v06p1-enchant-open-test.mjs",
+      "historicalPin": "aea3490522b8dfabdc7215abea2668eab34ed4af74f7a55a19fd1d88db7610f8",
+      "currentSha": "055c0247ebbc24be8bb057add0f20e9d9dcce11d1b1168af96da168f25f09944",
+      "baselineSha": "055c0247ebbc24be8bb057add0f20e9d9dcce11d1b1168af96da168f25f09944",
+      "baselineTip": "7b06f5ac4e76a2c48e98431e1ccf0011a8ca0a41"
+    },
+    {
+      "file": "scripts/v06p1-salvage-open-test.mjs",
+      "historicalPin": "252e389b996b48ab76a5e6918a1cc58b5490e0b3fcf3c7443069a48fa2566cdf",
+      "currentSha": "3a7802650d40b58862a0b4d660d10ec930a532473483d895c1fad1a36f6455f2",
+      "baselineSha": "3a7802650d40b58862a0b4d660d10ec930a532473483d895c1fad1a36f6455f2",
+      "baselineTip": "7b06f5ac4e76a2c48e98431e1ccf0011a8ca0a41"
+    },
+    {
+      "file": "scripts/v06p1-salvage-soft-open-compat-proof.mjs",
+      "historicalPin": "d83dc32e90fecf78a7426c2849de828976cb2524d5881541371a66013c8de3ad",
+      "currentSha": "d2e90206529bba4647b3badceaacbba426da822428933e7beeefbd04bb199fde",
+      "baselineSha": "d2e90206529bba4647b3badceaacbba426da822428933e7beeefbd04bb199fde",
+      "baselineTip": "7b06f5ac4e76a2c48e98431e1ccf0011a8ca0a41"
+    },
+    {
+      "file": "scripts/v06p1-enchant-soft-open-compat-proof.mjs",
+      "historicalPin": "b714599019fd901ed6381288848f96d1fbed052be573a463da95f9ce120435e9",
+      "currentSha": "cdb4ba1df448dd9326b4ca9efb3ede563965ff0c004a6bace7e6a5a1c3bc1969",
+      "baselineSha": "cdb4ba1df448dd9326b4ca9efb3ede563965ff0c004a6bace7e6a5a1c3bc1969",
+      "baselineTip": "7b06f5ac4e76a2c48e98431e1ccf0011a8ca0a41"
+    },
+    {
+      "file": "src/v06p1-enhance-open.test.ts",
+      "historicalPin": "16c88fd0000505d63e4fbcf484689d0e69274f6b56cb6dda0dcbb28c1cee33d7",
+      "currentSha": "4ce243f2b4e7ba6620b681f41c04ac1cedcb048838b78047c19375b38d8276b9",
+      "baselineSha": "69b5aa1a7975c685911fe006ab8363fb048384f5a172fc95e0feb1b2524691cf",
+      "baselineTip": "7b06f5ac4e76a2c48e98431e1ccf0011a8ca0a41"
+    }
+  ],
+  "productModuleTransformations": [],
+  "oldOutputWritten": false,
+  "authorizedTestSourceUpdates": {
+    "forge": "Persist formal preparation before strict disk CAS.",
+    "enhance": "Persist canonical preparation, freeze isolated test clock, cover full-snapshot stale and both save transport methods.",
+    "enchant": "Persist formal Forge preparation before strict disk CAS.",
+    "salvage": "Persist canonical preparation, freeze isolated test clock; absent fixture qualification/carrier now exercises complete production success.",
+    "saveSlots": "Add independent IndexedDB connection and Progress CAS/abort/retry coverage."
+  },
+  "scope": "Exact test-only historical SHA/count/source inventory compatibility, explicit output redirection; no settlement/business assertion changes."
+}

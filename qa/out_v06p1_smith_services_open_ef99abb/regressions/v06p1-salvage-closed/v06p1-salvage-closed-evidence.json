@@ -1,0 +1,1185 @@
+{
+  "passed": true,
+  "assertions": 19413,
+  "totalFixtures": 232,
+  "totalInvocations": 3380,
+  "apiTips": {
+    "featureClosed": "salvage.closed.feature",
+    "refuseEntrance": "salvage.closed.entrance",
+    "refuseSalvage": "salvage.closed.salvage",
+    "refuseSubmit": "salvage.closed.no_submit",
+    "refuseResult": "salvage.closed.no_result",
+    "refuseOutput": "salvage.closed.no_output",
+    "refuseLoadRefresh": "salvage.closed.load_refresh",
+    "refuseLaterService": "salvage.closed.later_service"
+  },
+  "cases": {
+    "C01": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/initial/C01/feature-close-reopen-smith-entrance",
+        "shared/fresh-ssr-refresh/C01/feature-close-reopen-smith-entrance",
+        "snapshot/initial/C01/feature-close-reopen-smith-entrance",
+        "snapshot/fresh-ssr-refresh/C01/feature-close-reopen-smith-entrance"
+      ]
+    },
+    "C02": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/initial/C02/weapon/common/first-and-repeat",
+        "shared/initial/C02/weapon/fine/first-and-repeat",
+        "shared/initial/C02/weapon/spirit/first-and-repeat",
+        "shared/initial/C02/weapon/treasure/first-and-repeat",
+        "shared/initial/C02/armor/common/first-and-repeat",
+        "shared/initial/C02/armor/fine/first-and-repeat",
+        "shared/initial/C02/armor/spirit/first-and-repeat",
+        "shared/initial/C02/armor/treasure/first-and-repeat",
+        "shared/fresh-ssr-refresh/C02/weapon/common/first-and-repeat",
+        "shared/fresh-ssr-refresh/C02/weapon/fine/first-and-repeat",
+        "shared/fresh-ssr-refresh/C02/weapon/spirit/first-and-repeat",
+        "shared/fresh-ssr-refresh/C02/weapon/treasure/first-and-repeat",
+        "shared/fresh-ssr-refresh/C02/armor/common/first-and-repeat",
+        "shared/fresh-ssr-refresh/C02/armor/fine/first-and-repeat",
+        "shared/fresh-ssr-refresh/C02/armor/spirit/first-and-repeat",
+        "shared/fresh-ssr-refresh/C02/armor/treasure/first-and-repeat",
+        "snapshot/initial/C02/weapon/common/first-and-repeat",
+        "snapshot/initial/C02/weapon/fine/first-and-repeat",
+        "snapshot/initial/C02/weapon/spirit/first-and-repeat",
+        "snapshot/initial/C02/weapon/treasure/first-and-repeat",
+        "snapshot/initial/C02/armor/common/first-and-repeat",
+        "snapshot/initial/C02/armor/fine/first-and-repeat",
+        "snapshot/initial/C02/armor/spirit/first-and-repeat",
+        "snapshot/initial/C02/armor/treasure/first-and-repeat",
+        "snapshot/fresh-ssr-refresh/C02/weapon/common/first-and-repeat",
+        "snapshot/fresh-ssr-refresh/C02/weapon/fine/first-and-repeat",
+        "snapshot/fresh-ssr-refresh/C02/weapon/spirit/first-and-repeat",
+        "snapshot/fresh-ssr-refresh/C02/weapon/treasure/first-and-repeat",
+        "snapshot/fresh-ssr-refresh/C02/armor/common/first-and-repeat",
+        "snapshot/fresh-ssr-refresh/C02/armor/fine/first-and-repeat",
+        "snapshot/fresh-ssr-refresh/C02/armor/spirit/first-and-repeat",
+        "snapshot/fresh-ssr-refresh/C02/armor/treasure/first-and-repeat"
+      ]
+    },
+    "C03": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/initial/C03/no-instance",
+        "shared/initial/C03/itemId-count-only",
+        "shared/initial/C03/equipment-slot-only",
+        "shared/initial/C03/historical-bag-only",
+        "shared/initial/C03/fixtureInstances-fallback",
+        "shared/initial/C03/foreign-same-reference",
+        "shared/fresh-ssr-refresh/C03/no-instance",
+        "shared/fresh-ssr-refresh/C03/itemId-count-only",
+        "shared/fresh-ssr-refresh/C03/equipment-slot-only",
+        "shared/fresh-ssr-refresh/C03/historical-bag-only",
+        "shared/fresh-ssr-refresh/C03/fixtureInstances-fallback",
+        "shared/fresh-ssr-refresh/C03/foreign-same-reference",
+        "snapshot/initial/C03/no-instance",
+        "snapshot/initial/C03/itemId-count-only",
+        "snapshot/initial/C03/equipment-slot-only",
+        "snapshot/initial/C03/historical-bag-only",
+        "snapshot/initial/C03/fixtureInstances-fallback",
+        "snapshot/initial/C03/foreign-same-reference",
+        "snapshot/fresh-ssr-refresh/C03/no-instance",
+        "snapshot/fresh-ssr-refresh/C03/itemId-count-only",
+        "snapshot/fresh-ssr-refresh/C03/equipment-slot-only",
+        "snapshot/fresh-ssr-refresh/C03/historical-bag-only",
+        "snapshot/fresh-ssr-refresh/C03/fixtureInstances-fallback",
+        "snapshot/fresh-ssr-refresh/C03/foreign-same-reference"
+      ]
+    },
+    "C04": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/initial/C04/non-equipment",
+        "shared/initial/C04/illegal-type",
+        "shared/initial/C04/illegal-slot",
+        "shared/initial/C04/disabled",
+        "shared/initial/C04/placeholder",
+        "shared/initial/C04/quality-enabled",
+        "shared/initial/C04/blood-bound",
+        "shared/initial/C04/natal-marked",
+        "shared/initial/C04/non-salvageable",
+        "shared/initial/C04/binding-fields-missing",
+        "shared/fresh-ssr-refresh/C04/non-equipment",
+        "shared/fresh-ssr-refresh/C04/illegal-type",
+        "shared/fresh-ssr-refresh/C04/illegal-slot",
+        "shared/fresh-ssr-refresh/C04/disabled",
+        "shared/fresh-ssr-refresh/C04/placeholder",
+        "shared/fresh-ssr-refresh/C04/quality-enabled",
+        "shared/fresh-ssr-refresh/C04/blood-bound",
+        "shared/fresh-ssr-refresh/C04/natal-marked",
+        "shared/fresh-ssr-refresh/C04/non-salvageable",
+        "shared/fresh-ssr-refresh/C04/binding-fields-missing",
+        "snapshot/initial/C04/non-equipment",
+        "snapshot/initial/C04/illegal-type",
+        "snapshot/initial/C04/illegal-slot",
+        "snapshot/initial/C04/disabled",
+        "snapshot/initial/C04/placeholder",
+        "snapshot/initial/C04/quality-enabled",
+        "snapshot/initial/C04/blood-bound",
+        "snapshot/initial/C04/natal-marked",
+        "snapshot/initial/C04/non-salvageable",
+        "snapshot/initial/C04/binding-fields-missing",
+        "snapshot/fresh-ssr-refresh/C04/non-equipment",
+        "snapshot/fresh-ssr-refresh/C04/illegal-type",
+        "snapshot/fresh-ssr-refresh/C04/illegal-slot",
+        "snapshot/fresh-ssr-refresh/C04/disabled",
+        "snapshot/fresh-ssr-refresh/C04/placeholder",
+        "snapshot/fresh-ssr-refresh/C04/quality-enabled",
+        "snapshot/fresh-ssr-refresh/C04/blood-bound",
+        "snapshot/fresh-ssr-refresh/C04/natal-marked",
+        "snapshot/fresh-ssr-refresh/C04/non-salvageable",
+        "snapshot/fresh-ssr-refresh/C04/binding-fields-missing"
+      ]
+    },
+    "C05": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/initial/C05/unknown-grade",
+        "shared/initial/C05/missing-grade",
+        "shared/initial/C05/conflicting-grade",
+        "shared/initial/C05/invalid-output-config",
+        "shared/initial/C05/items-registration-only",
+        "shared/initial/C05/materials-visible-only",
+        "shared/initial/C05/partial-mapping",
+        "shared/initial/C05/no-complete-capacity",
+        "shared/initial/C05/invalid-owned-count",
+        "shared/initial/C05/unsafe-inventory-count",
+        "shared/fresh-ssr-refresh/C05/unknown-grade",
+        "shared/fresh-ssr-refresh/C05/missing-grade",
+        "shared/fresh-ssr-refresh/C05/conflicting-grade",
+        "shared/fresh-ssr-refresh/C05/invalid-output-config",
+        "shared/fresh-ssr-refresh/C05/items-registration-only",
+        "shared/fresh-ssr-refresh/C05/materials-visible-only",
+        "shared/fresh-ssr-refresh/C05/partial-mapping",
+        "shared/fresh-ssr-refresh/C05/no-complete-capacity",
+        "shared/fresh-ssr-refresh/C05/invalid-owned-count",
+        "shared/fresh-ssr-refresh/C05/unsafe-inventory-count",
+        "snapshot/initial/C05/unknown-grade",
+        "snapshot/initial/C05/missing-grade",
+        "snapshot/initial/C05/conflicting-grade",
+        "snapshot/initial/C05/invalid-output-config",
+        "snapshot/initial/C05/items-registration-only",
+        "snapshot/initial/C05/materials-visible-only",
+        "snapshot/initial/C05/partial-mapping",
+        "snapshot/initial/C05/no-complete-capacity",
+        "snapshot/initial/C05/invalid-owned-count",
+        "snapshot/initial/C05/unsafe-inventory-count",
+        "snapshot/fresh-ssr-refresh/C05/unknown-grade",
+        "snapshot/fresh-ssr-refresh/C05/missing-grade",
+        "snapshot/fresh-ssr-refresh/C05/conflicting-grade",
+        "snapshot/fresh-ssr-refresh/C05/invalid-output-config",
+        "snapshot/fresh-ssr-refresh/C05/items-registration-only",
+        "snapshot/fresh-ssr-refresh/C05/materials-visible-only",
+        "snapshot/fresh-ssr-refresh/C05/partial-mapping",
+        "snapshot/fresh-ssr-refresh/C05/no-complete-capacity",
+        "snapshot/fresh-ssr-refresh/C05/invalid-owned-count",
+        "snapshot/fresh-ssr-refresh/C05/unsafe-inventory-count"
+      ]
+    },
+    "C06": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/initial/C06/result-request",
+        "shared/initial/C06/output-request",
+        "shared/initial/C06/held-reference-rewrite",
+        "shared/initial/C06/equip-slot-rewrite",
+        "shared/initial/C06/destroy-before-output",
+        "shared/initial/C06/partial-output",
+        "shared/fresh-ssr-refresh/C06/result-request",
+        "shared/fresh-ssr-refresh/C06/output-request",
+        "shared/fresh-ssr-refresh/C06/held-reference-rewrite",
+        "shared/fresh-ssr-refresh/C06/equip-slot-rewrite",
+        "shared/fresh-ssr-refresh/C06/destroy-before-output",
+        "shared/fresh-ssr-refresh/C06/partial-output",
+        "snapshot/initial/C06/result-request",
+        "snapshot/initial/C06/output-request",
+        "snapshot/initial/C06/held-reference-rewrite",
+        "snapshot/initial/C06/equip-slot-rewrite",
+        "snapshot/initial/C06/destroy-before-output",
+        "snapshot/initial/C06/partial-output",
+        "snapshot/fresh-ssr-refresh/C06/result-request",
+        "snapshot/fresh-ssr-refresh/C06/output-request",
+        "snapshot/fresh-ssr-refresh/C06/held-reference-rewrite",
+        "snapshot/fresh-ssr-refresh/C06/equip-slot-rewrite",
+        "snapshot/fresh-ssr-refresh/C06/destroy-before-output",
+        "snapshot/fresh-ssr-refresh/C06/partial-output"
+      ]
+    },
+    "C07": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/initial/C07/old-ui",
+        "shared/initial/C07/duplicate-callback",
+        "shared/initial/C07/same-request-replay",
+        "shared/initial/C07/payload-conflict",
+        "shared/initial/C07/same-instance-target-conflict",
+        "shared/initial/C07/shared-refine-stack-capacity",
+        "shared/fresh-ssr-refresh/C07/old-ui",
+        "shared/fresh-ssr-refresh/C07/duplicate-callback",
+        "shared/fresh-ssr-refresh/C07/same-request-replay",
+        "shared/fresh-ssr-refresh/C07/payload-conflict",
+        "shared/fresh-ssr-refresh/C07/same-instance-target-conflict",
+        "shared/fresh-ssr-refresh/C07/shared-refine-stack-capacity",
+        "snapshot/initial/C07/old-ui",
+        "snapshot/initial/C07/duplicate-callback",
+        "snapshot/initial/C07/same-request-replay",
+        "snapshot/initial/C07/payload-conflict",
+        "snapshot/initial/C07/same-instance-target-conflict",
+        "snapshot/initial/C07/shared-refine-stack-capacity",
+        "snapshot/fresh-ssr-refresh/C07/old-ui",
+        "snapshot/fresh-ssr-refresh/C07/duplicate-callback",
+        "snapshot/fresh-ssr-refresh/C07/same-request-replay",
+        "snapshot/fresh-ssr-refresh/C07/payload-conflict",
+        "snapshot/fresh-ssr-refresh/C07/same-instance-target-conflict",
+        "snapshot/fresh-ssr-refresh/C07/shared-refine-stack-capacity"
+      ]
+    },
+    "C08": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/initial/C08/initial/restore/existing-protected-slot-1",
+        "shared/initial/C08/initial/loadAsync/existing-protected-slot-1",
+        "shared/initial/C08/initial/restore/same-reference-slot-2",
+        "shared/initial/C08/initial/loadAsync/same-reference-slot-2",
+        "shared/initial/C08/missing-semantic-fixture-only",
+        "shared/initial/C08/unknown-semantic-fixture-only",
+        "shared/initial/C08/unfinished-semantic-fixture-only",
+        "shared/initial/C08/corrupt-semantic-fixture-only",
+        "shared/initial/C08/cross-slot-same-reference",
+        "shared/fresh-ssr-refresh/C08/fresh-ssr-refresh/restore/existing-protected-slot-1",
+        "shared/fresh-ssr-refresh/C08/fresh-ssr-refresh/loadAsync/existing-protected-slot-1",
+        "shared/fresh-ssr-refresh/C08/fresh-ssr-refresh/restore/same-reference-slot-2",
+        "shared/fresh-ssr-refresh/C08/fresh-ssr-refresh/loadAsync/same-reference-slot-2",
+        "shared/fresh-ssr-refresh/C08/missing-semantic-fixture-only",
+        "shared/fresh-ssr-refresh/C08/unknown-semantic-fixture-only",
+        "shared/fresh-ssr-refresh/C08/unfinished-semantic-fixture-only",
+        "shared/fresh-ssr-refresh/C08/corrupt-semantic-fixture-only",
+        "shared/fresh-ssr-refresh/C08/cross-slot-same-reference",
+        "snapshot/initial/C08/initial/restore/existing-protected-slot-1",
+        "snapshot/initial/C08/initial/loadAsync/existing-protected-slot-1",
+        "snapshot/initial/C08/initial/restore/same-reference-slot-2",
+        "snapshot/initial/C08/initial/loadAsync/same-reference-slot-2",
+        "snapshot/initial/C08/missing-semantic-fixture-only",
+        "snapshot/initial/C08/unknown-semantic-fixture-only",
+        "snapshot/initial/C08/unfinished-semantic-fixture-only",
+        "snapshot/initial/C08/corrupt-semantic-fixture-only",
+        "snapshot/initial/C08/cross-slot-same-reference",
+        "snapshot/fresh-ssr-refresh/C08/fresh-ssr-refresh/restore/existing-protected-slot-1",
+        "snapshot/fresh-ssr-refresh/C08/fresh-ssr-refresh/loadAsync/existing-protected-slot-1",
+        "snapshot/fresh-ssr-refresh/C08/fresh-ssr-refresh/restore/same-reference-slot-2",
+        "snapshot/fresh-ssr-refresh/C08/fresh-ssr-refresh/loadAsync/same-reference-slot-2",
+        "snapshot/fresh-ssr-refresh/C08/missing-semantic-fixture-only",
+        "snapshot/fresh-ssr-refresh/C08/unknown-semantic-fixture-only",
+        "snapshot/fresh-ssr-refresh/C08/unfinished-semantic-fixture-only",
+        "snapshot/fresh-ssr-refresh/C08/corrupt-semantic-fixture-only",
+        "snapshot/fresh-ssr-refresh/C08/cross-slot-same-reference"
+      ]
+    },
+    "C09": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/initial/C09/three-formal-flags-open-and-layered-tips",
+        "shared/fresh-ssr-refresh/C09/three-formal-flags-open-and-layered-tips",
+        "snapshot/initial/C09/three-formal-flags-open-and-layered-tips",
+        "snapshot/fresh-ssr-refresh/C09/three-formal-flags-open-and-layered-tips"
+      ]
+    },
+    "C10": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/initial/C10/later-service-and-all-eight-refusals",
+        "shared/fresh-ssr-refresh/C10/later-service-and-all-eight-refusals",
+        "snapshot/initial/C10/later-service-and-all-eight-refusals",
+        "snapshot/fresh-ssr-refresh/C10/later-service-and-all-eight-refusals"
+      ]
+    }
+  },
+  "salvageClosedTipsWired": true,
+  "SalvageOpenFlag": true,
+  "softOpenedSalvage": true,
+  "released": false,
+  "formalOpen": true,
+  "closedFixtureOnly": true,
+  "closedRuntimeFlag": false,
+  "refineStoneMapped": true,
+  "enchantSoftOpenPreserved": true,
+  "EnhanceOpenFlagPreserved": true,
+  "EnchantOpenFlagPreserved": true,
+  "protectCharmSoftOpenPreserved": true,
+  "refineStoneMappedMeaning": "items/materials 与合并登记齐；核齐备≠生产分解授权，不表示消费者/销毁入库/事务已接通",
+  "ForgeOpenFlag": true,
+  "EnhanceOpenFlag": true,
+  "EnchantOpenFlag": true,
+  "targetShas": {
+    "materials.json": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+    "items.json": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+    "strings_zh.json": "d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841"
+  },
+  "frozenShas": {
+    "enhance.json": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+    "recipes.json": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+    "npcs.json": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+    "life_skills.json": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+    "enhance_protect_charm.json": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772"
+  },
+  "frozenSourceShas": {
+    "src/ForgeOpenFlag.ts": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
+    "src/EnhanceOpenFlag.ts": "d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e",
+    "src/EnchantOpenFlag.ts": "bd5445b8ddfed56a32811cedd28db72e8676c7a5eff321e2fedb0ec5fe4c505a",
+    "src/data.ts": "aad725652f5c0eb57a5c699726e570b146d5ded52d5c31715444dbbf4117024a",
+    "src/ForgeGate.ts": "7aa9b91bf4ad2d389f2b96c41479338bd53cb3fdd63f65ff47a64f8528d75bcb",
+    "src/EnhanceGate.ts": "c2a2a0efb7997270eb48674224ce9bfc08e14201e613d7aa12d35af0a2a09796",
+    "src/EnchantGate.ts": "9dbb43f607fb1c298661bccd8a31f5653583b0b1dae956ca3f317f2fe8fc0ad2",
+    "src/ForgeClosed.ts": "f7e4216be7767f481c96ae7f1dc5796574fe9b231ada91d57a137c1dc8a8c90c",
+    "src/EnhanceClosed.ts": "c52ffbfc269f3a41c309184d9781f23cf2511d5acec7570ebb44b84683b3e821",
+    "src/EnchantClosed.ts": "15870998e95f8f41ab4fb3e6c30dc17a82019502276084f4610800be5927e730",
+    "src/SalvageClosed.ts": "287a55d7025018629235d45ca4386d75134fc39362532a4c47bf121b574ae211",
+    "src/SalvageGate.ts": "3777c6b72615f21a9c47544cfa8eeece08eb54009032cbf53e713091f8d8ce52",
+    "src/SalvageProgress.ts": "118f49bc4931727e0aafbc39fba6b883a94a948f8d478653bf42335305548787",
+    "src/Progress.ts": "a9ab2aa6e73dca631b6ed28f672d490b61525610c609df478e2c112a66358d3c",
+    "src/SaveStore.ts": "4c99f7410cd87e2e9b46d7b685fdb9ab5f2c9ca3b8a266da61eb062624ec7916",
+    "src/scenes/GameScene.ts": "f5d7defb24dda3ef1956e331479e9ee96794f1f45515bbb7951f3c3e19a0726c",
+    "src/ShopPanel.ts": "419a3c5b112301a69258303062f3a82468aff2e6116b440f7c3844a465c1170c"
+  },
+  "sentinelCalls": 0,
+  "storageWrites": 0,
+  "ordinarySaveSetupWrites": 4,
+  "storageScope": "storageWrites=关态 API/读档过程；ordinarySaveSetupWrites=仅 C08 准备阶段普通 saveAsync",
+  "testsUseRealSsrModule": true,
+  "freshIndependentGraphs": 6,
+  "formalGraphs": 2,
+  "memoryClosedGraphs": 4,
+  "flagInjection": "仅四个 SSR memory-closed 图注入 false；两个正式磁盘图 flagLoads=0",
+  "semanticFixtureOnly": true,
+  "salvageSchemaAdded": true,
+  "salvageSchemaScope": "开态夹具令授权既有可选完整袋；本 C 套件不执行开态",
+  "unknownFieldsRetainedByRestore": false,
+  "unknownRawStoredPayloadPreserved": true,
+  "oldFormalForgeEnhanceEnchantAssetsPreserved": true,
+  "openFixtureTableExecuted": false,
+  "successSettlementExecuted": false,
+  "existingSalvageGatePreserved": true,
+  "compatibilityMeaning": "分解 soft-open ≠ 进包 ≠ 发版；fixture≠正式；正式磁盘图仅核 true，C01–C10 仅 SSR false 图执行；O 表交 open runner；C02 armor/四品质及 C03–C07 意图仅语义上下文；未知字段原文保留不等于 restore 登记；release 预期 v0.6.12 另令，本令不授权",
+  "protectedFiles": {
+    "/workspace/xiantu/wt/v06p1-smith-services-open-fix/src/ForgeOpenFlag.ts": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
+    "/workspace/xiantu/wt/v06p1-smith-services-open-fix/src/EnhanceOpenFlag.ts": "d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e",
+    "/workspace/xiantu/wt/v06p1-smith-services-open-fix/src/EnchantOpenFlag.ts": "bd5445b8ddfed56a32811cedd28db72e8676c7a5eff321e2fedb0ec5fe4c505a",
+    "/workspace/xiantu/wt/v06p1-smith-services-open-fix/src/data.ts": "aad725652f5c0eb57a5c699726e570b146d5ded52d5c31715444dbbf4117024a",
+    "/workspace/xiantu/wt/v06p1-smith-services-open-fix/src/ForgeGate.ts": "7a6d76501442849503f6f33e0aab63aa4c5faeead2722b61c363801ef07f5fc8",
+    "/workspace/xiantu/wt/v06p1-smith-services-open-fix/src/EnhanceGate.ts": "22dd53d8afd016d548a6b964690012ccc5d20d72761ae8c6f52113ba9254e229",
+    "/workspace/xiantu/wt/v06p1-smith-services-open-fix/src/EnchantGate.ts": "5f4e92ddfa77f9ad9e8f134cf10eaa24f25d007debee0fca3cda339d408df312",
+    "/workspace/xiantu/wt/v06p1-smith-services-open-fix/src/ForgeClosed.ts": "f7e4216be7767f481c96ae7f1dc5796574fe9b231ada91d57a137c1dc8a8c90c",
+    "/workspace/xiantu/wt/v06p1-smith-services-open-fix/src/EnhanceClosed.ts": "c52ffbfc269f3a41c309184d9781f23cf2511d5acec7570ebb44b84683b3e821",
+    "/workspace/xiantu/wt/v06p1-smith-services-open-fix/src/EnchantClosed.ts": "15870998e95f8f41ab4fb3e6c30dc17a82019502276084f4610800be5927e730",
+    "/workspace/xiantu/wt/v06p1-smith-services-open-fix/src/SalvageClosed.ts": "287a55d7025018629235d45ca4386d75134fc39362532a4c47bf121b574ae211",
+    "/workspace/xiantu/wt/v06p1-smith-services-open-fix/src/SalvageGate.ts": "b81de98152354a51912310636fc49d129ac534edbbf5583257976cd873659383",
+    "/workspace/xiantu/wt/v06p1-smith-services-open-fix/src/SalvageProgress.ts": "118f49bc4931727e0aafbc39fba6b883a94a948f8d478653bf42335305548787",
+    "/workspace/xiantu/wt/v06p1-smith-services-open-fix/src/Progress.ts": "53ad3f8f78e5e4d5fe5ffbfeef841f98b5df1ec6f1d8e622c3873bfe1afa9e8a",
+    "/workspace/xiantu/wt/v06p1-smith-services-open-fix/src/SaveStore.ts": "a264a863a68eeccc48ace82863c91a1db0bf017eb975286af27381f74605b7dc",
+    "/workspace/xiantu/wt/v06p1-smith-services-open-fix/src/scenes/GameScene.ts": "4a53de4590efdabb920e7e1eee04ccd2269530e42c8177a79bd7edf4f5b95a98",
+    "/workspace/xiantu/wt/v06p1-smith-services-open-fix/src/ShopPanel.ts": "419a3c5b112301a69258303062f3a82468aff2e6116b440f7c3844a465c1170c",
+    "/workspace/xiantu/wt/v06p1-smith-services-open-fix/src/SalvageOpenFlag.ts": "69aace852957c52bf7ca0214345ede7df29d6d36ec1dfd4849462e54552edff3",
+    "/workspace/xiantu/balance/enhance.json": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+    "/workspace/xiantu/balance/recipes.json": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+    "/workspace/xiantu/balance/npcs.json": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+    "/workspace/xiantu/balance/life_skills.json": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+    "/workspace/xiantu/balance/enhance_protect_charm.json": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+    "/workspace/xiantu/balance/materials.json": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+    "/workspace/xiantu/balance/items.json": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+    "/workspace/xiantu/balance/strings_zh.json": "d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841",
+    "/workspace/xiantu/wt/v06p1-smith-services-open-fix/data/balance/enhance.json": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+    "/workspace/xiantu/wt/v06p1-smith-services-open-fix/data/balance/recipes.json": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+    "/workspace/xiantu/wt/v06p1-smith-services-open-fix/data/balance/npcs.json": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+    "/workspace/xiantu/wt/v06p1-smith-services-open-fix/data/balance/life_skills.json": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+    "/workspace/xiantu/wt/v06p1-smith-services-open-fix/data/balance/enhance_protect_charm.json": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+    "/workspace/xiantu/wt/v06p1-smith-services-open-fix/data/balance/materials.json": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+    "/workspace/xiantu/wt/v06p1-smith-services-open-fix/data/balance/items.json": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+    "/workspace/xiantu/wt/v06p1-smith-services-open-fix/data/balance/strings_zh.json": "d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841"
+  },
+  "evidence": [
+    {
+      "suite": "source-static",
+      "passed": true,
+      "uniqueStringsImport": true,
+      "zeroArgumentApis": 8,
+      "independentFlagAlwaysTrue": true,
+      "flagImports": 0,
+      "existingSalvageGatePreserved": true,
+      "gateClosedFirst": true,
+      "productionFixtureInjection": false,
+      "minimalFrontendWiring": true,
+      "fullSalvageUiAdded": false,
+      "sameHitTipOrder": [
+        "forge",
+        "enhance",
+        "enchant",
+        "salvage"
+      ],
+      "existingGatesAndFrontendPreserved": true,
+      "existingLaterServicePreserved": true,
+      "apiTips": {
+        "featureClosed": "salvage.closed.feature",
+        "refuseEntrance": "salvage.closed.entrance",
+        "refuseSalvage": "salvage.closed.salvage",
+        "refuseSubmit": "salvage.closed.no_submit",
+        "refuseResult": "salvage.closed.no_result",
+        "refuseOutput": "salvage.closed.no_output",
+        "refuseLoadRefresh": "salvage.closed.load_refresh",
+        "refuseLaterService": "salvage.closed.later_service"
+      }
+    },
+    {
+      "suite": "data-static",
+      "dataMode": "shared",
+      "passed": true,
+      "refineStoneMapped": true,
+      "refineStoneMappedMeaning": "正式登记及合并记录齐；不表示分解消费者/存档/事务接通或生产放行",
+      "stringsKeys": 1013,
+      "targetShas": {
+        "materials.json": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+        "items.json": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+        "strings_zh.json": "d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841"
+      },
+      "frozenShas": {
+        "enhance.json": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+        "recipes.json": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+        "npcs.json": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+        "life_skills.json": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+        "enhance_protect_charm.json": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772"
+      },
+      "giftsDisabled": 10,
+      "smithServicesAdded": false
+    },
+    {
+      "suite": "data-static",
+      "dataMode": "snapshot",
+      "passed": true,
+      "refineStoneMapped": true,
+      "refineStoneMappedMeaning": "正式登记及合并记录齐；不表示分解消费者/存档/事务接通或生产放行",
+      "stringsKeys": 1013,
+      "targetShas": {
+        "materials.json": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+        "items.json": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+        "strings_zh.json": "d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841"
+      },
+      "frozenShas": {
+        "enhance.json": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+        "recipes.json": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+        "npcs.json": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+        "life_skills.json": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+        "enhance_protect_charm.json": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772"
+      },
+      "giftsDisabled": 10,
+      "smithServicesAdded": false
+    },
+    {
+      "suite": "formal-graph",
+      "dataMode": "shared",
+      "graph": "formal-open",
+      "passed": true,
+      "flagLoads": 0,
+      "SalvageOpenFlag": true,
+      "softOpenedSalvage": true,
+      "released": false,
+      "closedFixtureOnly": true
+    },
+    {
+      "suite": "v06p1-salvage-closed-graph",
+      "passed": true,
+      "assertions": 4779,
+      "fixtures": 58,
+      "invocations": 845,
+      "cases": {
+        "C01": {
+          "executed": true,
+          "evidenceKeys": [
+            "C01/feature-close-reopen-smith-entrance"
+          ],
+          "fixtures": 1,
+          "invocations": 6
+        },
+        "C02": {
+          "executed": true,
+          "evidenceKeys": [
+            "C02/weapon/common/first-and-repeat",
+            "C02/weapon/fine/first-and-repeat",
+            "C02/weapon/spirit/first-and-repeat",
+            "C02/weapon/treasure/first-and-repeat",
+            "C02/armor/common/first-and-repeat",
+            "C02/armor/fine/first-and-repeat",
+            "C02/armor/spirit/first-and-repeat",
+            "C02/armor/treasure/first-and-repeat"
+          ],
+          "fixtures": 8,
+          "invocations": 304
+        },
+        "C03": {
+          "executed": true,
+          "evidenceKeys": [
+            "C03/no-instance",
+            "C03/itemId-count-only",
+            "C03/equipment-slot-only",
+            "C03/historical-bag-only",
+            "C03/fixtureInstances-fallback",
+            "C03/foreign-same-reference"
+          ],
+          "fixtures": 6,
+          "invocations": 18
+        },
+        "C04": {
+          "executed": true,
+          "evidenceKeys": [
+            "C04/non-equipment",
+            "C04/illegal-type",
+            "C04/illegal-slot",
+            "C04/disabled",
+            "C04/placeholder",
+            "C04/quality-enabled",
+            "C04/blood-bound",
+            "C04/natal-marked",
+            "C04/non-salvageable",
+            "C04/binding-fields-missing"
+          ],
+          "fixtures": 10,
+          "invocations": 30
+        },
+        "C05": {
+          "executed": true,
+          "evidenceKeys": [
+            "C05/unknown-grade",
+            "C05/missing-grade",
+            "C05/conflicting-grade",
+            "C05/invalid-output-config",
+            "C05/items-registration-only",
+            "C05/materials-visible-only",
+            "C05/partial-mapping",
+            "C05/no-complete-capacity",
+            "C05/invalid-owned-count",
+            "C05/unsafe-inventory-count"
+          ],
+          "fixtures": 10,
+          "invocations": 60
+        },
+        "C06": {
+          "executed": true,
+          "evidenceKeys": [
+            "C06/result-request",
+            "C06/output-request",
+            "C06/held-reference-rewrite",
+            "C06/equip-slot-rewrite",
+            "C06/destroy-before-output",
+            "C06/partial-output"
+          ],
+          "fixtures": 6,
+          "invocations": 36
+        },
+        "C07": {
+          "executed": true,
+          "evidenceKeys": [
+            "C07/old-ui",
+            "C07/duplicate-callback",
+            "C07/same-request-replay",
+            "C07/payload-conflict",
+            "C07/same-instance-target-conflict",
+            "C07/shared-refine-stack-capacity"
+          ],
+          "fixtures": 6,
+          "invocations": 228
+        },
+        "C08": {
+          "executed": true,
+          "evidenceKeys": [
+            "C08/initial/restore/existing-protected-slot-1",
+            "C08/initial/loadAsync/existing-protected-slot-1",
+            "C08/initial/restore/same-reference-slot-2",
+            "C08/initial/loadAsync/same-reference-slot-2",
+            "C08/missing-semantic-fixture-only",
+            "C08/unknown-semantic-fixture-only",
+            "C08/unfinished-semantic-fixture-only",
+            "C08/corrupt-semantic-fixture-only",
+            "C08/cross-slot-same-reference"
+          ],
+          "fixtures": 9,
+          "invocations": 98
+        },
+        "C09": {
+          "executed": true,
+          "evidenceKeys": [
+            "C09/three-formal-flags-open-and-layered-tips"
+          ],
+          "fixtures": 1,
+          "invocations": 9
+        },
+        "C10": {
+          "executed": true,
+          "evidenceKeys": [
+            "C10/later-service-and-all-eight-refusals"
+          ],
+          "fixtures": 1,
+          "invocations": 56
+        }
+      },
+      "dataMode": "shared",
+      "graph": "initial",
+      "freshSsrRefresh": false,
+      "salvageClosedTipsWired": true,
+      "SalvageOpenFlag": false,
+      "softOpenedSalvage": false,
+      "released": false,
+      "refineStoneMapped": true,
+      "refineStoneMappedMeaning": "items/materials 与有效 ITEMS 仅登记齐；不表示分解消费者、存档/事务或生产放行",
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "ForgeOpenFlag": true,
+      "EnhanceOpenFlag": true,
+      "EnchantOpenFlag": true,
+      "sentinelCalls": 0,
+      "storageWrites": 0,
+      "localStorageWrites": 0,
+      "indexedDbOpens": 0,
+      "ordinarySaveSetupWrites": 2,
+      "storageReads": 8,
+      "storageScope": "storageWrites=关态 API/读档动作；ordinarySaveSetupWrites=仅 C08 准备阶段的普通 saveAsync",
+      "semanticFixtureOnly": true,
+      "salvageSchemaAdded": false,
+      "unknownFieldsRetainedByRestore": false,
+      "formalSourceSeed": "已有正式 forge/enhance/enchant 完整事实 schema 的显式测试 seed，不执行新结算",
+      "openFixtureTableExecuted": false,
+      "concurrencyScope": "同一 SSR realm 的零参数 tip 调用 Promise.all 拒绝；不宣称分解 Gate/资格校验/事务并发实现",
+      "flagInjection": true,
+      "flagLoads": 1,
+      "memoryClosed": true,
+      "formalSalvageOpenFlag": true,
+      "gateClosedTips": 8,
+      "gateWrites": 0
+    },
+    {
+      "suite": "v06p1-salvage-closed-graph",
+      "passed": true,
+      "assertions": 4770,
+      "fixtures": 58,
+      "invocations": 845,
+      "cases": {
+        "C01": {
+          "executed": true,
+          "evidenceKeys": [
+            "C01/feature-close-reopen-smith-entrance"
+          ],
+          "fixtures": 1,
+          "invocations": 6
+        },
+        "C02": {
+          "executed": true,
+          "evidenceKeys": [
+            "C02/weapon/common/first-and-repeat",
+            "C02/weapon/fine/first-and-repeat",
+            "C02/weapon/spirit/first-and-repeat",
+            "C02/weapon/treasure/first-and-repeat",
+            "C02/armor/common/first-and-repeat",
+            "C02/armor/fine/first-and-repeat",
+            "C02/armor/spirit/first-and-repeat",
+            "C02/armor/treasure/first-and-repeat"
+          ],
+          "fixtures": 8,
+          "invocations": 304
+        },
+        "C03": {
+          "executed": true,
+          "evidenceKeys": [
+            "C03/no-instance",
+            "C03/itemId-count-only",
+            "C03/equipment-slot-only",
+            "C03/historical-bag-only",
+            "C03/fixtureInstances-fallback",
+            "C03/foreign-same-reference"
+          ],
+          "fixtures": 6,
+          "invocations": 18
+        },
+        "C04": {
+          "executed": true,
+          "evidenceKeys": [
+            "C04/non-equipment",
+            "C04/illegal-type",
+            "C04/illegal-slot",
+            "C04/disabled",
+            "C04/placeholder",
+            "C04/quality-enabled",
+            "C04/blood-bound",
+            "C04/natal-marked",
+            "C04/non-salvageable",
+            "C04/binding-fields-missing"
+          ],
+          "fixtures": 10,
+          "invocations": 30
+        },
+        "C05": {
+          "executed": true,
+          "evidenceKeys": [
+            "C05/unknown-grade",
+            "C05/missing-grade",
+            "C05/conflicting-grade",
+            "C05/invalid-output-config",
+            "C05/items-registration-only",
+            "C05/materials-visible-only",
+            "C05/partial-mapping",
+            "C05/no-complete-capacity",
+            "C05/invalid-owned-count",
+            "C05/unsafe-inventory-count"
+          ],
+          "fixtures": 10,
+          "invocations": 60
+        },
+        "C06": {
+          "executed": true,
+          "evidenceKeys": [
+            "C06/result-request",
+            "C06/output-request",
+            "C06/held-reference-rewrite",
+            "C06/equip-slot-rewrite",
+            "C06/destroy-before-output",
+            "C06/partial-output"
+          ],
+          "fixtures": 6,
+          "invocations": 36
+        },
+        "C07": {
+          "executed": true,
+          "evidenceKeys": [
+            "C07/old-ui",
+            "C07/duplicate-callback",
+            "C07/same-request-replay",
+            "C07/payload-conflict",
+            "C07/same-instance-target-conflict",
+            "C07/shared-refine-stack-capacity"
+          ],
+          "fixtures": 6,
+          "invocations": 228
+        },
+        "C08": {
+          "executed": true,
+          "evidenceKeys": [
+            "C08/fresh-ssr-refresh/restore/existing-protected-slot-1",
+            "C08/fresh-ssr-refresh/loadAsync/existing-protected-slot-1",
+            "C08/fresh-ssr-refresh/restore/same-reference-slot-2",
+            "C08/fresh-ssr-refresh/loadAsync/same-reference-slot-2",
+            "C08/missing-semantic-fixture-only",
+            "C08/unknown-semantic-fixture-only",
+            "C08/unfinished-semantic-fixture-only",
+            "C08/corrupt-semantic-fixture-only",
+            "C08/cross-slot-same-reference"
+          ],
+          "fixtures": 9,
+          "invocations": 98
+        },
+        "C09": {
+          "executed": true,
+          "evidenceKeys": [
+            "C09/three-formal-flags-open-and-layered-tips"
+          ],
+          "fixtures": 1,
+          "invocations": 9
+        },
+        "C10": {
+          "executed": true,
+          "evidenceKeys": [
+            "C10/later-service-and-all-eight-refusals"
+          ],
+          "fixtures": 1,
+          "invocations": 56
+        }
+      },
+      "dataMode": "shared",
+      "graph": "fresh-ssr-refresh",
+      "freshSsrRefresh": true,
+      "salvageClosedTipsWired": true,
+      "SalvageOpenFlag": false,
+      "softOpenedSalvage": false,
+      "released": false,
+      "refineStoneMapped": true,
+      "refineStoneMappedMeaning": "items/materials 与有效 ITEMS 仅登记齐；不表示分解消费者、存档/事务或生产放行",
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "ForgeOpenFlag": true,
+      "EnhanceOpenFlag": true,
+      "EnchantOpenFlag": true,
+      "sentinelCalls": 0,
+      "storageWrites": 0,
+      "localStorageWrites": 0,
+      "indexedDbOpens": 0,
+      "ordinarySaveSetupWrites": 0,
+      "storageReads": 8,
+      "storageScope": "storageWrites=关态 API/读档动作；ordinarySaveSetupWrites=仅 C08 准备阶段的普通 saveAsync",
+      "semanticFixtureOnly": true,
+      "salvageSchemaAdded": false,
+      "unknownFieldsRetainedByRestore": false,
+      "formalSourceSeed": "已有正式 forge/enhance/enchant 完整事实 schema 的显式测试 seed，不执行新结算",
+      "openFixtureTableExecuted": false,
+      "concurrencyScope": "同一 SSR realm 的零参数 tip 调用 Promise.all 拒绝；不宣称分解 Gate/资格校验/事务并发实现",
+      "flagInjection": true,
+      "flagLoads": 1,
+      "memoryClosed": true,
+      "formalSalvageOpenFlag": true,
+      "gateClosedTips": 8,
+      "gateWrites": 0
+    },
+    {
+      "suite": "formal-graph",
+      "dataMode": "snapshot",
+      "graph": "formal-open",
+      "passed": true,
+      "flagLoads": 0,
+      "SalvageOpenFlag": true,
+      "softOpenedSalvage": true,
+      "released": false,
+      "closedFixtureOnly": true
+    },
+    {
+      "suite": "v06p1-salvage-closed-graph",
+      "passed": true,
+      "assertions": 4779,
+      "fixtures": 58,
+      "invocations": 845,
+      "cases": {
+        "C01": {
+          "executed": true,
+          "evidenceKeys": [
+            "C01/feature-close-reopen-smith-entrance"
+          ],
+          "fixtures": 1,
+          "invocations": 6
+        },
+        "C02": {
+          "executed": true,
+          "evidenceKeys": [
+            "C02/weapon/common/first-and-repeat",
+            "C02/weapon/fine/first-and-repeat",
+            "C02/weapon/spirit/first-and-repeat",
+            "C02/weapon/treasure/first-and-repeat",
+            "C02/armor/common/first-and-repeat",
+            "C02/armor/fine/first-and-repeat",
+            "C02/armor/spirit/first-and-repeat",
+            "C02/armor/treasure/first-and-repeat"
+          ],
+          "fixtures": 8,
+          "invocations": 304
+        },
+        "C03": {
+          "executed": true,
+          "evidenceKeys": [
+            "C03/no-instance",
+            "C03/itemId-count-only",
+            "C03/equipment-slot-only",
+            "C03/historical-bag-only",
+            "C03/fixtureInstances-fallback",
+            "C03/foreign-same-reference"
+          ],
+          "fixtures": 6,
+          "invocations": 18
+        },
+        "C04": {
+          "executed": true,
+          "evidenceKeys": [
+            "C04/non-equipment",
+            "C04/illegal-type",
+            "C04/illegal-slot",
+            "C04/disabled",
+            "C04/placeholder",
+            "C04/quality-enabled",
+            "C04/blood-bound",
+            "C04/natal-marked",
+            "C04/non-salvageable",
+            "C04/binding-fields-missing"
+          ],
+          "fixtures": 10,
+          "invocations": 30
+        },
+        "C05": {
+          "executed": true,
+          "evidenceKeys": [
+            "C05/unknown-grade",
+            "C05/missing-grade",
+            "C05/conflicting-grade",
+            "C05/invalid-output-config",
+            "C05/items-registration-only",
+            "C05/materials-visible-only",
+            "C05/partial-mapping",
+            "C05/no-complete-capacity",
+            "C05/invalid-owned-count",
+            "C05/unsafe-inventory-count"
+          ],
+          "fixtures": 10,
+          "invocations": 60
+        },
+        "C06": {
+          "executed": true,
+          "evidenceKeys": [
+            "C06/result-request",
+            "C06/output-request",
+            "C06/held-reference-rewrite",
+            "C06/equip-slot-rewrite",
+            "C06/destroy-before-output",
+            "C06/partial-output"
+          ],
+          "fixtures": 6,
+          "invocations": 36
+        },
+        "C07": {
+          "executed": true,
+          "evidenceKeys": [
+            "C07/old-ui",
+            "C07/duplicate-callback",
+            "C07/same-request-replay",
+            "C07/payload-conflict",
+            "C07/same-instance-target-conflict",
+            "C07/shared-refine-stack-capacity"
+          ],
+          "fixtures": 6,
+          "invocations": 228
+        },
+        "C08": {
+          "executed": true,
+          "evidenceKeys": [
+            "C08/initial/restore/existing-protected-slot-1",
+            "C08/initial/loadAsync/existing-protected-slot-1",
+            "C08/initial/restore/same-reference-slot-2",
+            "C08/initial/loadAsync/same-reference-slot-2",
+            "C08/missing-semantic-fixture-only",
+            "C08/unknown-semantic-fixture-only",
+            "C08/unfinished-semantic-fixture-only",
+            "C08/corrupt-semantic-fixture-only",
+            "C08/cross-slot-same-reference"
+          ],
+          "fixtures": 9,
+          "invocations": 98
+        },
+        "C09": {
+          "executed": true,
+          "evidenceKeys": [
+            "C09/three-formal-flags-open-and-layered-tips"
+          ],
+          "fixtures": 1,
+          "invocations": 9
+        },
+        "C10": {
+          "executed": true,
+          "evidenceKeys": [
+            "C10/later-service-and-all-eight-refusals"
+          ],
+          "fixtures": 1,
+          "invocations": 56
+        }
+      },
+      "dataMode": "snapshot",
+      "graph": "initial",
+      "freshSsrRefresh": false,
+      "salvageClosedTipsWired": true,
+      "SalvageOpenFlag": false,
+      "softOpenedSalvage": false,
+      "released": false,
+      "refineStoneMapped": true,
+      "refineStoneMappedMeaning": "items/materials 与有效 ITEMS 仅登记齐；不表示分解消费者、存档/事务或生产放行",
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "ForgeOpenFlag": true,
+      "EnhanceOpenFlag": true,
+      "EnchantOpenFlag": true,
+      "sentinelCalls": 0,
+      "storageWrites": 0,
+      "localStorageWrites": 0,
+      "indexedDbOpens": 0,
+      "ordinarySaveSetupWrites": 2,
+      "storageReads": 8,
+      "storageScope": "storageWrites=关态 API/读档动作；ordinarySaveSetupWrites=仅 C08 准备阶段的普通 saveAsync",
+      "semanticFixtureOnly": true,
+      "salvageSchemaAdded": false,
+      "unknownFieldsRetainedByRestore": false,
+      "formalSourceSeed": "已有正式 forge/enhance/enchant 完整事实 schema 的显式测试 seed，不执行新结算",
+      "openFixtureTableExecuted": false,
+      "concurrencyScope": "同一 SSR realm 的零参数 tip 调用 Promise.all 拒绝；不宣称分解 Gate/资格校验/事务并发实现",
+      "flagInjection": true,
+      "flagLoads": 1,
+      "memoryClosed": true,
+      "formalSalvageOpenFlag": true,
+      "gateClosedTips": 8,
+      "gateWrites": 0
+    },
+    {
+      "suite": "v06p1-salvage-closed-graph",
+      "passed": true,
+      "assertions": 4770,
+      "fixtures": 58,
+      "invocations": 845,
+      "cases": {
+        "C01": {
+          "executed": true,
+          "evidenceKeys": [
+            "C01/feature-close-reopen-smith-entrance"
+          ],
+          "fixtures": 1,
+          "invocations": 6
+        },
+        "C02": {
+          "executed": true,
+          "evidenceKeys": [
+            "C02/weapon/common/first-and-repeat",
+            "C02/weapon/fine/first-and-repeat",
+            "C02/weapon/spirit/first-and-repeat",
+            "C02/weapon/treasure/first-and-repeat",
+            "C02/armor/common/first-and-repeat",
+            "C02/armor/fine/first-and-repeat",
+            "C02/armor/spirit/first-and-repeat",
+            "C02/armor/treasure/first-and-repeat"
+          ],
+          "fixtures": 8,
+          "invocations": 304
+        },
+        "C03": {
+          "executed": true,
+          "evidenceKeys": [
+            "C03/no-instance",
+            "C03/itemId-count-only",
+            "C03/equipment-slot-only",
+            "C03/historical-bag-only",
+            "C03/fixtureInstances-fallback",
+            "C03/foreign-same-reference"
+          ],
+          "fixtures": 6,
+          "invocations": 18
+        },
+        "C04": {
+          "executed": true,
+          "evidenceKeys": [
+            "C04/non-equipment",
+            "C04/illegal-type",
+            "C04/illegal-slot",
+            "C04/disabled",
+            "C04/placeholder",
+            "C04/quality-enabled",
+            "C04/blood-bound",
+            "C04/natal-marked",
+            "C04/non-salvageable",
+            "C04/binding-fields-missing"
+          ],
+          "fixtures": 10,
+          "invocations": 30
+        },
+        "C05": {
+          "executed": true,
+          "evidenceKeys": [
+            "C05/unknown-grade",
+            "C05/missing-grade",
+            "C05/conflicting-grade",
+            "C05/invalid-output-config",
+            "C05/items-registration-only",
+            "C05/materials-visible-only",
+            "C05/partial-mapping",
+            "C05/no-complete-capacity",
+            "C05/invalid-owned-count",
+            "C05/unsafe-inventory-count"
+          ],
+          "fixtures": 10,
+          "invocations": 60
+        },
+        "C06": {
+          "executed": true,
+          "evidenceKeys": [
+            "C06/result-request",
+            "C06/output-request",
+            "C06/held-reference-rewrite",
+            "C06/equip-slot-rewrite",
+            "C06/destroy-before-output",
+            "C06/partial-output"
+          ],
+          "fixtures": 6,
+          "invocations": 36
+        },
+        "C07": {
+          "executed": true,
+          "evidenceKeys": [
+            "C07/old-ui",
+            "C07/duplicate-callback",
+            "C07/same-request-replay",
+            "C07/payload-conflict",
+            "C07/same-instance-target-conflict",
+            "C07/shared-refine-stack-capacity"
+          ],
+          "fixtures": 6,
+          "invocations": 228
+        },
+        "C08": {
+          "executed": true,
+          "evidenceKeys": [
+            "C08/fresh-ssr-refresh/restore/existing-protected-slot-1",
+            "C08/fresh-ssr-refresh/loadAsync/existing-protected-slot-1",
+            "C08/fresh-ssr-refresh/restore/same-reference-slot-2",
+            "C08/fresh-ssr-refresh/loadAsync/same-reference-slot-2",
+            "C08/missing-semantic-fixture-only",
+            "C08/unknown-semantic-fixture-only",
+            "C08/unfinished-semantic-fixture-only",
+            "C08/corrupt-semantic-fixture-only",
+            "C08/cross-slot-same-reference"
+          ],
+          "fixtures": 9,
+          "invocations": 98
+        },
+        "C09": {
+          "executed": true,
+          "evidenceKeys": [
+            "C09/three-formal-flags-open-and-layered-tips"
+          ],
+          "fixtures": 1,
+          "invocations": 9
+        },
+        "C10": {
+          "executed": true,
+          "evidenceKeys": [
+            "C10/later-service-and-all-eight-refusals"
+          ],
+          "fixtures": 1,
+          "invocations": 56
+        }
+      },
+      "dataMode": "snapshot",
+      "graph": "fresh-ssr-refresh",
+      "freshSsrRefresh": true,
+      "salvageClosedTipsWired": true,
+      "SalvageOpenFlag": false,
+      "softOpenedSalvage": false,
+      "released": false,
+      "refineStoneMapped": true,
+      "refineStoneMappedMeaning": "items/materials 与有效 ITEMS 仅登记齐；不表示分解消费者、存档/事务或生产放行",
+      "enchantSoftOpenPreserved": true,
+      "EnhanceOpenFlagPreserved": true,
+      "protectCharmSoftOpenPreserved": true,
+      "ForgeOpenFlag": true,
+      "EnhanceOpenFlag": true,
+      "EnchantOpenFlag": true,
+      "sentinelCalls": 0,
+      "storageWrites": 0,
+      "localStorageWrites": 0,
+      "indexedDbOpens": 0,
+      "ordinarySaveSetupWrites": 0,
+      "storageReads": 8,
+      "storageScope": "storageWrites=关态 API/读档动作；ordinarySaveSetupWrites=仅 C08 准备阶段的普通 saveAsync",
+      "semanticFixtureOnly": true,
+      "salvageSchemaAdded": false,
+      "unknownFieldsRetainedByRestore": false,
+      "formalSourceSeed": "已有正式 forge/enhance/enchant 完整事实 schema 的显式测试 seed，不执行新结算",
+      "openFixtureTableExecuted": false,
+      "concurrencyScope": "同一 SSR realm 的零参数 tip 调用 Promise.all 拒绝；不宣称分解 Gate/资格校验/事务并发实现",
+      "flagInjection": true,
+      "flagLoads": 1,
+      "memoryClosed": true,
+      "formalSalvageOpenFlag": true,
+      "gateClosedTips": 8,
+      "gateWrites": 0
+    }
+  ]
+}
