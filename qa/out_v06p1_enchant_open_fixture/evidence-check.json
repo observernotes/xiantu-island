@@ -1,0 +1,434 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "name": "tsc:exit",
+      "passed": true,
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "tsc:stdin",
+      "passed": true,
+      "actual": "/dev/null",
+      "expected": "/dev/null"
+    },
+    {
+      "name": "v06p1-enchant-open:exit",
+      "passed": true,
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "v06p1-enchant-open:stdin",
+      "passed": true,
+      "actual": "/dev/null",
+      "expected": "/dev/null"
+    },
+    {
+      "name": "v06p1-enchant-open:assertions",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "v06p1-enchant-closed:exit",
+      "passed": true,
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "v06p1-enchant-closed:stdin",
+      "passed": true,
+      "actual": "/dev/null",
+      "expected": "/dev/null"
+    },
+    {
+      "name": "v06p1-enchant-closed:assertions",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "v06p1-enhance-open:exit",
+      "passed": true,
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "v06p1-enhance-open:stdin",
+      "passed": true,
+      "actual": "/dev/null",
+      "expected": "/dev/null"
+    },
+    {
+      "name": "v06p1-enhance-open:assertions",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "v06p1-enhance-closed:exit",
+      "passed": true,
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "v06p1-enhance-closed:stdin",
+      "passed": true,
+      "actual": "/dev/null",
+      "expected": "/dev/null"
+    },
+    {
+      "name": "v06p1-enhance-closed:assertions",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "v06p1-forge-open:exit",
+      "passed": true,
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "v06p1-forge-open:stdin",
+      "passed": true,
+      "actual": "/dev/null",
+      "expected": "/dev/null"
+    },
+    {
+      "name": "v06p1-forge-open:assertions",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "v06p1-forge-closed:exit",
+      "passed": true,
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "v06p1-forge-closed:stdin",
+      "passed": true,
+      "actual": "/dev/null",
+      "expected": "/dev/null"
+    },
+    {
+      "name": "v06p1-forge-closed:assertions",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "v06p1-market-closed:exit",
+      "passed": true,
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "v06p1-market-closed:stdin",
+      "passed": true,
+      "actual": "/dev/null",
+      "expected": "/dev/null"
+    },
+    {
+      "name": "v06p1-market-closed:assertions",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "v06d-closed:exit",
+      "passed": true,
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "v06d-closed:stdin",
+      "passed": true,
+      "actual": "/dev/null",
+      "expected": "/dev/null"
+    },
+    {
+      "name": "v06d-closed:assertions",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "v06c-closed:exit",
+      "passed": true,
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "v06c-closed:stdin",
+      "passed": true,
+      "actual": "/dev/null",
+      "expected": "/dev/null"
+    },
+    {
+      "name": "v06c-closed:assertions",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "datalint-shared:exit",
+      "passed": true,
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "datalint-shared:stdin",
+      "passed": true,
+      "actual": "/dev/null",
+      "expected": "/dev/null"
+    },
+    {
+      "name": "datalint-snapshot:exit",
+      "passed": true,
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "datalint-snapshot:stdin",
+      "passed": true,
+      "actual": "/dev/null",
+      "expected": "/dev/null"
+    },
+    {
+      "name": "diff-check:exit",
+      "passed": true,
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "diff-check:stdin",
+      "passed": true,
+      "actual": "/dev/null",
+      "expected": "/dev/null"
+    },
+    {
+      "name": "open:passed",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "closed:passed",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "protection:passed",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "frozen:MATCH",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "independent-review:passed",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "prior-evidence:passed",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "open:enchantClosedTipsWired",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "open:beastCoreMapped",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "open:enchantOpenFixtureTableExecuted",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "open:formalInstanceSource",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "open:softOpenedEnchant",
+      "passed": true,
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "open:EnchantOpenFlag",
+      "passed": true,
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "open:released",
+      "passed": true,
+      "actual": false,
+      "expected": false
+    },
+    {
+      "name": "open:protectCharmSoftOpenPreserved",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "open:EnhanceOpenFlagPreserved",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "O01:executed",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "O02:executed",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "O03:executed",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "O04:executed",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "O05:executed",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "O06:executed",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "O07:executed",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "O08:executed",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "C01:executed",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "C02:executed",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "C03:executed",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "C04:executed",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "C05:executed",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "C06:executed",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "C07:executed",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "C08:executed",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "C09:executed",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "C10:executed",
+      "passed": true,
+      "actual": true,
+      "expected": true
+    },
+    {
+      "name": "closed:zero-writes",
+      "passed": true,
+      "actual": 0,
+      "expected": 0
+    },
+    {
+      "name": "closed:zero-sentinels",
+      "passed": true,
+      "actual": 0,
+      "expected": 0
+    }
+  ],
+  "enchantClosedTipsWired": true,
+  "beastCoreMapped": true,
+  "enchantOpenFixtureTableExecuted": true,
+  "formalInstanceSource": true,
+  "softOpenedEnchant": false,
+  "EnchantOpenFlag": false,
+  "released": false,
+  "protectCharmSoftOpenPreserved": true,
+  "EnhanceOpenFlagPreserved": true
+}

@@ -1,0 +1,49 @@
+{
+  "passed": true,
+  "assertions": 26,
+  "independent": true,
+  "commandStdin": "/dev/null",
+  "dataMode": "shared",
+  "graph": "memory-open",
+  "realViteSsr": true,
+  "explicitMemorySaveBackend": true,
+  "actualIndexedDbBrowser": false,
+  "flagLoads": 1,
+  "staticReviewed": [
+    "eight-public-entry-first-flag-check",
+    "independent-flag-and-no-frontend-hook",
+    "strict-items-phase5-and-effective-material-mapping",
+    "no-rate-or-random-settlement",
+    "exact-request-payload-replay",
+    "atomic-cost-result-element-receipt",
+    "unknown-records-blocked-without-repair",
+    "Progress-minimum-structure-only",
+    "existing-enhance-protect-preserved"
+  ],
+  "cases": [
+    {
+      "id": "cross-slot-complete-enchant-bag-without-source",
+      "passed": true,
+      "repairedFinding": true
+    },
+    {
+      "id": "stale-object-preserves-unrelated-saved-exp",
+      "passed": true,
+      "repairedFinding": true
+    },
+    {
+      "id": "same-slot-distinct-progress-objects-one-complete-commit",
+      "passed": true
+    }
+  ],
+  "sourceShas": {
+    "src/EnchantGate.ts": "9dbb43f607fb1c298661bccd8a31f5653583b0b1dae956ca3f317f2fe8fc0ad2",
+    "src/EnchantProgress.ts": "2bf473ecdb160e4809e38a20750e5e1518e836ebbdfaea73eb56c5b9a3615c95",
+    "src/Progress.ts": "a9ab2aa6e73dca631b6ed28f672d490b61525610c609df478e2c112a66358d3c",
+    "src/v06p1-enchant-open.test.ts": "49a68a8806d9d04a10dbde33bc8ea8bcc13b2423abbeea6b96d4cccf82dc1d91"
+  },
+  "EnchantOpenFlag": false,
+  "softOpenedEnchant": false,
+  "released": false,
+  "scopeLimit": "独立探针只补核缺源跨档、非附灵事实 stale 与不同 Progress 对象并发；O01–O08 全表及真实 IDB complete/abort 由主 runner 证据覆盖。"
+}

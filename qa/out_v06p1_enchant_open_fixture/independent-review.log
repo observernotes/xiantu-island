@@ -1,0 +1,1 @@
+{"passed":true,"assertions":26,"cases":[{"id":"cross-slot-complete-enchant-bag-without-source","passed":true,"repairedFinding":true},{"id":"stale-object-preserves-unrelated-saved-exp","passed":true,"repairedFinding":true},{"id":"same-slot-distinct-progress-objects-one-complete-commit","passed":true}],"flagLoads":1}

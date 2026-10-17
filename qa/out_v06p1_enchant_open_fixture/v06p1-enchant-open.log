@@ -1,0 +1,41 @@
+
+> xiantu-island@0.0.1 test:v06p1-enchant-open
+> timeout 180s node scripts/v06p1-enchant-open-test.mjs
+
+{"suite":"v06p1-enchant-open-graph","dataMode":"shared","graph":"formal-closed","invalidDependency":null,"freshSsr":false,"assertions":57,"flagLoads":0,"storageWrites":0,"passed":true}
+{"suite":"v06p1-enchant-open-graph","dataMode":"shared","graph":"memory-open","invalidDependency":null,"freshSsr":false,"assertions":1090,"flagLoads":1,"storageWrites":84,"passed":true}
+{"suite":"v06p1-enchant-open-graph","dataMode":"shared","graph":"memory-open","invalidDependency":null,"freshSsr":true,"assertions":96,"flagLoads":1,"storageWrites":6,"passed":true}
+{"suite":"v06p1-enchant-open-graph","dataMode":"shared","graph":"formal-closed","invalidDependency":null,"freshSsr":true,"assertions":213,"flagLoads":0,"storageWrites":0,"passed":true}
+{"suite":"v06p1-enchant-open-graph","dataMode":"shared","graph":"memory-open","invalidDependency":"missing-enchant","freshSsr":false,"assertions":23,"flagLoads":1,"storageWrites":1,"passed":true}
+{"suite":"v06p1-enchant-open-graph","dataMode":"shared","graph":"memory-open","invalidDependency":"bad-damage","freshSsr":false,"assertions":23,"flagLoads":1,"storageWrites":1,"passed":true}
+{"suite":"v06p1-enchant-open-graph","dataMode":"shared","graph":"memory-open","invalidDependency":"bad-root-bonus","freshSsr":false,"assertions":23,"flagLoads":1,"storageWrites":1,"passed":true}
+{"suite":"v06p1-enchant-open-graph","dataMode":"shared","graph":"memory-open","invalidDependency":"bad-cost","freshSsr":false,"assertions":23,"flagLoads":1,"storageWrites":1,"passed":true}
+{"suite":"v06p1-enchant-open-graph","dataMode":"shared","graph":"memory-open","invalidDependency":"bad-count","freshSsr":false,"assertions":23,"flagLoads":1,"storageWrites":1,"passed":true}
+{"suite":"v06p1-enchant-open-graph","dataMode":"shared","graph":"memory-open","invalidDependency":"bad-item","freshSsr":false,"assertions":23,"flagLoads":1,"storageWrites":1,"passed":true}
+{"suite":"v06p1-enchant-open-graph","dataMode":"shared","graph":"memory-open","invalidDependency":"rate-forbidden","freshSsr":false,"assertions":23,"flagLoads":1,"storageWrites":1,"passed":true}
+{"suite":"v06p1-enchant-open-graph","dataMode":"shared","graph":"memory-open","invalidDependency":"items-registration-missing","freshSsr":false,"assertions":23,"flagLoads":1,"storageWrites":1,"passed":true}
+{"suite":"v06p1-enchant-open-graph","dataMode":"shared","graph":"memory-open","invalidDependency":"materials-only-visible","freshSsr":false,"assertions":23,"flagLoads":1,"storageWrites":1,"passed":true}
+{"suite":"v06p1-enchant-open-graph","dataMode":"shared","graph":"memory-open","invalidDependency":"items-only-registered","freshSsr":false,"assertions":23,"flagLoads":1,"storageWrites":1,"passed":true}
+{"suite":"v06p1-enchant-open-graph","dataMode":"shared","graph":"memory-open","invalidDependency":"core-phase","freshSsr":false,"assertions":23,"flagLoads":1,"storageWrites":1,"passed":true}
+{"suite":"v06p1-enchant-open-graph","dataMode":"shared","graph":"memory-open","invalidDependency":"core-disabled","freshSsr":false,"assertions":23,"flagLoads":1,"storageWrites":1,"passed":true}
+{"suite":"v06p1-enchant-open-graph","dataMode":"shared","graph":"memory-open","invalidDependency":"core-placeholder","freshSsr":false,"assertions":23,"flagLoads":1,"storageWrites":1,"passed":true}
+{"suite":"v06p1-enchant-open-graph","dataMode":"shared","graph":"memory-open","invalidDependency":"core-quality","freshSsr":false,"assertions":23,"flagLoads":1,"storageWrites":1,"passed":true}
+{"suite":"v06p1-enchant-open-graph","dataMode":"snapshot","graph":"formal-closed","invalidDependency":null,"freshSsr":false,"assertions":57,"flagLoads":0,"storageWrites":0,"passed":true}
+{"suite":"v06p1-enchant-open-graph","dataMode":"snapshot","graph":"memory-open","invalidDependency":null,"freshSsr":false,"assertions":1090,"flagLoads":1,"storageWrites":84,"passed":true}
+{"suite":"v06p1-enchant-open-graph","dataMode":"snapshot","graph":"memory-open","invalidDependency":null,"freshSsr":true,"assertions":96,"flagLoads":1,"storageWrites":6,"passed":true}
+{"suite":"v06p1-enchant-open-graph","dataMode":"snapshot","graph":"formal-closed","invalidDependency":null,"freshSsr":true,"assertions":213,"flagLoads":0,"storageWrites":0,"passed":true}
+{"suite":"v06p1-enchant-open-graph","dataMode":"snapshot","graph":"memory-open","invalidDependency":"missing-enchant","freshSsr":false,"assertions":23,"flagLoads":1,"storageWrites":1,"passed":true}
+{"suite":"v06p1-enchant-open-graph","dataMode":"snapshot","graph":"memory-open","invalidDependency":"bad-damage","freshSsr":false,"assertions":23,"flagLoads":1,"storageWrites":1,"passed":true}
+{"suite":"v06p1-enchant-open-graph","dataMode":"snapshot","graph":"memory-open","invalidDependency":"bad-root-bonus","freshSsr":false,"assertions":23,"flagLoads":1,"storageWrites":1,"passed":true}
+{"suite":"v06p1-enchant-open-graph","dataMode":"snapshot","graph":"memory-open","invalidDependency":"bad-cost","freshSsr":false,"assertions":23,"flagLoads":1,"storageWrites":1,"passed":true}
+{"suite":"v06p1-enchant-open-graph","dataMode":"snapshot","graph":"memory-open","invalidDependency":"bad-count","freshSsr":false,"assertions":23,"flagLoads":1,"storageWrites":1,"passed":true}
+{"suite":"v06p1-enchant-open-graph","dataMode":"snapshot","graph":"memory-open","invalidDependency":"bad-item","freshSsr":false,"assertions":23,"flagLoads":1,"storageWrites":1,"passed":true}
+{"suite":"v06p1-enchant-open-graph","dataMode":"snapshot","graph":"memory-open","invalidDependency":"rate-forbidden","freshSsr":false,"assertions":23,"flagLoads":1,"storageWrites":1,"passed":true}
+{"suite":"v06p1-enchant-open-graph","dataMode":"snapshot","graph":"memory-open","invalidDependency":"items-registration-missing","freshSsr":false,"assertions":23,"flagLoads":1,"storageWrites":1,"passed":true}
+{"suite":"v06p1-enchant-open-graph","dataMode":"snapshot","graph":"memory-open","invalidDependency":"materials-only-visible","freshSsr":false,"assertions":23,"flagLoads":1,"storageWrites":1,"passed":true}
+{"suite":"v06p1-enchant-open-graph","dataMode":"snapshot","graph":"memory-open","invalidDependency":"items-only-registered","freshSsr":false,"assertions":23,"flagLoads":1,"storageWrites":1,"passed":true}
+{"suite":"v06p1-enchant-open-graph","dataMode":"snapshot","graph":"memory-open","invalidDependency":"core-phase","freshSsr":false,"assertions":23,"flagLoads":1,"storageWrites":1,"passed":true}
+{"suite":"v06p1-enchant-open-graph","dataMode":"snapshot","graph":"memory-open","invalidDependency":"core-disabled","freshSsr":false,"assertions":23,"flagLoads":1,"storageWrites":1,"passed":true}
+{"suite":"v06p1-enchant-open-graph","dataMode":"snapshot","graph":"memory-open","invalidDependency":"core-placeholder","freshSsr":false,"assertions":23,"flagLoads":1,"storageWrites":1,"passed":true}
+{"suite":"v06p1-enchant-open-graph","dataMode":"snapshot","graph":"memory-open","invalidDependency":"core-quality","freshSsr":false,"assertions":23,"flagLoads":1,"storageWrites":1,"passed":true}
+v06p1 enchant open fixture tests ok: 4219 assertions; O01–O08; shared/snapshot + formal-closed/memory-open/fresh SSR; EnchantOpenFlag=false; softOpenedEnchant=false; released=false

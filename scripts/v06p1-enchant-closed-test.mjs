@@ -77,8 +77,20 @@ async function sourceChecks() {
   eq(flagExports.map(node => node.name?.text), ['isEnchantOpenForFixture'], '独立 Flag 仅一个公开 API');
   eq(flagExports[0].parameters.length, 0, 'Flag 零参数');
   eq(flagExports[0].body.statements.map(node => node.getText(flag).replace(/\s/gu, '')), ['returnfalse;'], '正式 Flag 恒 false');
-  for (const name of ['src/EnchantGate.ts', 'src/EnchantProgress.ts'])
-    eq(await fs.stat(path.join(root, name)).then(() => true, error => error.code === 'ENOENT' ? false : Promise.reject(error)), false, `不新增 ${name}`);
+  // 开态夹具令准许新增 Gate / 可选完整袋；C 套件继续验证正式关态优先，未执行 O 表。
+  const gatePath = path.join(root, 'src/EnchantGate.ts');
+  const gateAst = source(gatePath, await fs.readFile(gatePath, 'utf8'));
+  const gateClass = gateAst.statements.find(ts.isClassDeclaration);
+  const gateTips = { feature: 'featureClosed', entrance: 'refuseEntrance', enchant: 'refuseEnchant', submit: 'refuseSubmit',
+    result: 'refuseResult', element: 'refuseElement', loadRefresh: 'refuseLoadRefresh', laterService: 'refuseLaterService' };
+  for (const [name, tip] of Object.entries(gateTips)) {
+    const method = gateClass.members.find(node => ts.isMethodDeclaration(node) && node.name.getText(gateAst) === name);
+    ok(method, '开态夹具 Gate 存在独立入口: ' + name);
+    eq(method.body.statements[0].getText(gateAst).replace(/\s/gu, ''),
+      'if(!isEnchantOpenForFixture())returnEnchantClosed.' + tip + '();', name + ' 正式关态首句仍原样返回八 tip');
+  }
+  ok((await fs.readFile(path.join(root, 'src/EnchantProgress.ts'), 'utf8')).includes('isValidEnchantProgress'),
+    '开态夹具令授权最小可选完整袋，缺字段旧档仍由 C 套件验证');
   const scene = await fs.readFile(path.join(root, 'src/scenes/GameScene.ts'), 'utf8');
   ok(!/EnchantClosed|EnchantOpenFlag|EnchantGate|fixtureInstances/u.test(scene), '生产 GameScene 不强制 UI、不注入 fixtureInstances');
   for (const [name, service] of [['EnhanceGate', 'EnhanceClosed'], ['ForgeGate', 'ForgeClosed']]) {
@@ -91,7 +103,7 @@ async function sourceChecks() {
   for (const file of ['src/EnchantClosed.ts', 'src/EnchantOpenFlag.ts', 'src/Progress.ts', 'src/EnhanceGate.ts',
     'src/ForgeGate.ts', 'src/EnhanceClosed.ts', 'src/ForgeClosed.ts', 'src/scenes/GameScene.ts', 'data/features.json']) await guard(path.join(root, file));
   evidence.push({ suite: 'source-static', passed: true, uniqueStringsImport: true, zeroArgumentApis: 8,
-    flagIndependent: true, flagAlwaysFalse: true, noEnchantGateOrSchema: true, noProductionFixtureInjection: true,
+    flagIndependent: true, flagAlwaysFalse: true, gateClosedFirst: true, optionalEnchantSchema: true, noProductionFixtureInjection: true,
     existingLaterServicePreserved: true, apiTips });
 }
 async function dataChecks() {
@@ -171,7 +183,7 @@ try {
     storageWrites: graphs.reduce((sum, row) => sum + row.storageWrites, 0),
     ordinarySaveSetupWrites: graphs.reduce((sum, row) => sum + row.ordinarySaveSetupWrites, 0),
     storageScope: 'storageWrites=拒绝/读档过程；ordinarySaveSetupWrites=仅 C08 普通 saveAsync 准备阶段',
-    semanticFixtureOnly: true, enchantSchemaAdded: false, unknownFieldsRetainedByRestore: false,
+    semanticFixtureOnly: true, enchantSchemaAdded: true, enchantSchemaScope: '开态夹具令授权可选完整袋；本 C 套件不执行开态', unknownFieldsRetainedByRestore: false,
     openFixtureTableExecuted: false, testsUseRealSsrModule: true, freshIndependentGraphs: 4,
     protectedFiles, evidence };
   await fs.writeFile(path.join(out, 'v06p1-enchant-closed-evidence.json'), `${JSON.stringify(result, null, 2)}\n`);

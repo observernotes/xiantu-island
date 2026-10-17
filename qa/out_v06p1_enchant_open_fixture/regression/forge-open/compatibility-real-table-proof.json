@@ -1,0 +1,107 @@
+{
+  "passed": true,
+  "stdin": "/dev/null",
+  "case": "v06p1-forge-open",
+  "realDiskRead": true,
+  "fakeReadFile": false,
+  "productModuleTransformations": [],
+  "scope": "Only historical test expectations are adapted; current real tables and product SSR modules are always used.",
+  "tableChecks": [
+    {
+      "mode": "shared",
+      "file": "/workspace/xiantu/balance/materials.json",
+      "actualSha256": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+      "expectedSha256": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+      "reconstructedHistoricalSha256": "79c68429d763054ac1715467d1743575e179ecaecb2529e4b6ed7df137ef4052",
+      "expectedHistoricalSha256": "79c68429d763054ac1715467d1743575e179ecaecb2529e4b6ed7df137ef4052",
+      "match": true
+    },
+    {
+      "mode": "shared",
+      "file": "/workspace/xiantu/balance/items.json",
+      "actualSha256": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+      "expectedSha256": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+      "reconstructedHistoricalSha256": "f8b587634e5c9d43a475e85724aa34172e2945abda7654c2ef98fda07d1566f3",
+      "expectedHistoricalSha256": "f8b587634e5c9d43a475e85724aa34172e2945abda7654c2ef98fda07d1566f3",
+      "match": true
+    },
+    {
+      "mode": "shared",
+      "file": "/workspace/xiantu/balance/strings_zh.json",
+      "actualSha256": "6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9",
+      "expectedSha256": "6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9",
+      "reconstructedHistoricalSha256": "d7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09",
+      "expectedHistoricalSha256": "d7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09",
+      "match": true
+    },
+    {
+      "mode": "snapshot",
+      "file": "/workspace/xiantu/wt/dev/data/balance/materials.json",
+      "actualSha256": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+      "expectedSha256": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+      "reconstructedHistoricalSha256": "79c68429d763054ac1715467d1743575e179ecaecb2529e4b6ed7df137ef4052",
+      "expectedHistoricalSha256": "79c68429d763054ac1715467d1743575e179ecaecb2529e4b6ed7df137ef4052",
+      "match": true
+    },
+    {
+      "mode": "snapshot",
+      "file": "/workspace/xiantu/wt/dev/data/balance/items.json",
+      "actualSha256": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+      "expectedSha256": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+      "reconstructedHistoricalSha256": "f8b587634e5c9d43a475e85724aa34172e2945abda7654c2ef98fda07d1566f3",
+      "expectedHistoricalSha256": "f8b587634e5c9d43a475e85724aa34172e2945abda7654c2ef98fda07d1566f3",
+      "match": true
+    },
+    {
+      "mode": "snapshot",
+      "file": "/workspace/xiantu/wt/dev/data/balance/strings_zh.json",
+      "actualSha256": "6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9",
+      "expectedSha256": "6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9",
+      "reconstructedHistoricalSha256": "d7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09",
+      "expectedHistoricalSha256": "d7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09",
+      "match": true
+    }
+  ],
+  "preexistingReadOnlyChecks": [
+    {
+      "key": "game:balance/materials.json",
+      "file": "/workspace/xiantu/game/data/balance/materials.json",
+      "capturedBaselineSha256": "79c68429d763054ac1715467d1743575e179ecaecb2529e4b6ed7df137ef4052",
+      "currentSha256": "79c68429d763054ac1715467d1743575e179ecaecb2529e4b6ed7df137ef4052",
+      "expectedSha256": "79c68429d763054ac1715467d1743575e179ecaecb2529e4b6ed7df137ef4052",
+      "match": true
+    },
+    {
+      "key": "game:balance/items.json",
+      "file": "/workspace/xiantu/game/data/balance/items.json",
+      "capturedBaselineSha256": "f8b587634e5c9d43a475e85724aa34172e2945abda7654c2ef98fda07d1566f3",
+      "currentSha256": "f8b587634e5c9d43a475e85724aa34172e2945abda7654c2ef98fda07d1566f3",
+      "expectedSha256": "f8b587634e5c9d43a475e85724aa34172e2945abda7654c2ef98fda07d1566f3",
+      "match": true
+    },
+    {
+      "key": "game:balance/strings_zh.json",
+      "file": "/workspace/xiantu/game/data/balance/strings_zh.json",
+      "capturedBaselineSha256": "d7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09",
+      "currentSha256": "d7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09",
+      "expectedSha256": "d7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09",
+      "match": true
+    },
+    {
+      "key": "game:balance/enhance_protect_charm.json",
+      "file": "/workspace/xiantu/game/data/balance/enhance_protect_charm.json",
+      "capturedBaselineSha256": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+      "currentSha256": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+      "expectedSha256": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+      "match": true
+    },
+    {
+      "key": "shared:balance/tools/gen_enchant_beast_core.py",
+      "file": "/workspace/xiantu/balance/tools/gen_enchant_beast_core.py",
+      "capturedBaselineSha256": "2f048b7b04903788b847624f3390aa81bb1fe84bff81f60c0f4c88f6f55d6220",
+      "currentSha256": "2f048b7b04903788b847624f3390aa81bb1fe84bff81f60c0f4c88f6f55d6220",
+      "expectedSha256": "2f048b7b04903788b847624f3390aa81bb1fe84bff81f60c0f4c88f6f55d6220",
+      "match": true
+    }
+  ]
+}

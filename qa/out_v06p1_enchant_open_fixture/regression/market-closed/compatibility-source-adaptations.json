@@ -1,0 +1,106 @@
+{
+  "passed": true,
+  "runner": "v06p1-market-closed",
+  "file": "/workspace/xiantu/wt/dev/scripts/v06p1-market-closed-test.mjs",
+  "stdin": "/dev/null",
+  "originalSha256": "dc12953781573f6f23f8fba6c177b592c02aeabc2d69cceac16a7499fe19d660",
+  "transformedSha256": "ea8375a18665499983b945e860544388c182e5458403aa6d72246ae9213ec5c3",
+  "diskWritten": false,
+  "realDiskRead": true,
+  "fakeReadFile": false,
+  "assertionWrapperChanged": false,
+  "productModuleTransformations": [],
+  "changes": [
+    {
+      "label": "import strict compatibility proof helpers",
+      "before": "import assert from 'node:assert/strict';",
+      "after": "import assert from 'node:assert/strict';\nimport { stripEnchantClosedAddition, enchantSourceNames, createCurrentStringsTestServer, preexistingReadOnlyShas, stripEnchantOpenProgress } from \"file:///workspace/xiantu/wt/dev/qa/out_v06p1_enchant_open_fixture/regression-compat-support.mjs\";",
+      "expectedOccurrences": 1,
+      "actualOccurrences": 1
+    },
+    {
+      "label": "current strings authority SHA",
+      "before": "d7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09",
+      "after": "6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9",
+      "expectedOccurrences": 1,
+      "actualOccurrences": 1
+    },
+    {
+      "label": "current material authority SHA",
+      "before": "79c68429d763054ac1715467d1743575e179ecaecb2529e4b6ed7df137ef4052",
+      "after": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+      "expectedOccurrences": 1,
+      "actualOccurrences": 1
+    },
+    {
+      "label": "current item authority SHA",
+      "before": "f8b587634e5c9d43a475e85724aa34172e2945abda7654c2ef98fda07d1566f3",
+      "after": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+      "expectedOccurrences": 1,
+      "actualOccurrences": 1
+    },
+    {
+      "label": "per-root baseline strings authority",
+      "before": "key.endsWith(':balance/strings_zh.json') ? stringsSha",
+      "after": "key.endsWith(':balance/strings_zh.json') ? (key.startsWith('game:') ? 'd7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09' : stringsSha)",
+      "expectedOccurrences": 1,
+      "actualOccurrences": 1
+    },
+    {
+      "label": "fixed already-captured game table expectations",
+      "before": "protectCharmSha(key) ?? expected",
+      "after": "preexistingReadOnlyShas[key] ?? protectCharmSha(key) ?? expected",
+      "expectedOccurrences": 1,
+      "actualOccurrences": 1
+    },
+    {
+      "label": "exact source set adds only three enchant files",
+      "before": "...openFixtureSources, ...enhanceClosedSources].sort()",
+      "after": "...openFixtureSources, ...enhanceClosedSources, ...enchantSourceNames].sort()",
+      "expectedOccurrences": 1,
+      "actualOccurrences": 1
+    },
+    {
+      "label": "restore historical bytes before original strip proof",
+      "before": "const preFormal = raw.replace(",
+      "after": "const preFormal = stripEnchantClosedAddition(raw).replace(",
+      "expectedOccurrences": 1,
+      "actualOccurrences": 1
+    },
+    {
+      "label": "explicit new source scanner allowance",
+      "before": "for (const name of await filesUnder(path.join(root, 'src'))) {",
+      "after": "for (const name of await filesUnder(path.join(root, 'src'))) {\n    if (enchantSourceNames.includes(name)) continue; // New files are verified by the enchant C01–C10 suite.",
+      "expectedOccurrences": 1,
+      "actualOccurrences": 1
+    },
+    {
+      "label": "already-captured game mapping included in exact file set",
+      "before": "if (mode !== 'game' && directory === 'balance') expected.push('enhance_protect_charm.json');",
+      "after": "if (directory === 'balance') expected.push('enhance_protect_charm.json');",
+      "expectedOccurrences": 1,
+      "actualOccurrences": 1
+    },
+    {
+      "label": "current roots have 952 keys",
+      "before": "eq(entries.length, 944,",
+      "after": "eq(entries.length, 952,",
+      "expectedOccurrences": 1,
+      "actualOccurrences": 1
+    },
+    {
+      "label": "post-run game SHA remains historical",
+      "before": "eq(await shaOrNull(path.join(gameData, 'balance/strings_zh.json')), stringsSha,",
+      "after": "eq(await shaOrNull(path.join(gameData, 'balance/strings_zh.json')), 'd7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09',",
+      "expectedOccurrences": 1,
+      "actualOccurrences": 1
+    },
+    {
+      "label": "exact four-line Enchant carrier stripped before historical Progress proof",
+      "before": "function stripForgeProgress(source) {",
+      "after": "function stripForgeProgress(source) {\n  source = stripEnchantOpenProgress(source);",
+      "expectedOccurrences": 1,
+      "actualOccurrences": 1
+    }
+  ]
+}

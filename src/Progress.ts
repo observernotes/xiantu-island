@@ -22,6 +22,7 @@ import { isValidMarketProgress, type MarketProgress } from './MarketProgress';
 import { isValidForgeProgress, type ForgeCraftResult, type ForgeProgress } from './ForgeProgress';
 import { isEnhanceId, isEnhanceInstanceRef, isValidEnhanceProgress, type EnhanceFixtureInstance,
   type EnhanceProgress, type FormalEnhanceSource } from './EnhanceProgress';
+import { isValidEnchantProgress, type EnchantProgress } from './EnchantProgress';
 
 /** 自动加点：加点界面做好前的旧档公式，仅用于迁移种子；UI-6 起升级只发未分配点。 */
 export const AUTO_STATS = { rootBone: 2, agility: 2, insight: 1, spirit: 0 } as Record<string, number>;
@@ -92,6 +93,7 @@ function validSaveData(saved: unknown): saved is Record<string, unknown> {
   if (has('market') && !isValidMarketProgress(saved.market)) return false;
   if (has('forge') && !isValidForgeProgress(saved.forge)) return false;
   if (has('enhance') && !isValidEnhanceProgress(saved.enhance)) return false;
+  if (has('enchant') && !isValidEnchantProgress(saved.enchant)) return false;
   for (const key of ['inventory', 'skills', 'skillGifted']) if (has(key) && !numbers(saved[key])) return false;
   for (const key of ['skillMastery', 'gatherRespawnAt']) if (has(key) && !numbers(saved[key], false)) return false;
   for (const key of ['job', 'selectedSect', 'name', 'rootElement', 'sectDailyContributionDay', 'dailyQuestResetDay', 'seclusionDay']) {
@@ -185,6 +187,8 @@ export class Progress {
   forge: ForgeProgress | undefined = undefined;
   /** 等级和完整结算；正式授权另查本档打造来源，缺袋旧档不补建。 */
   enhance: EnhanceProgress | undefined = undefined;
+  /** 仅 SSR 开态夹具完整提交产生；缺字段旧档保持 undefined，读档不补做。 */
+  enchant: EnchantProgress | undefined = undefined;
   classRewardClaims: string[] = [];
   /** 通用入门技的付费等级在拜宗后退回当前一转点池。 */
   classRefundSp = 0;

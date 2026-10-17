@@ -1,0 +1,416 @@
+{
+  "passed": true,
+  "enchantClosedTipsWired": true,
+  "beastCoreMapped": true,
+  "enchantOpenFixtureTableExecuted": true,
+  "formalInstanceSource": true,
+  "softOpenedEnchant": false,
+  "EnchantOpenFlag": false,
+  "released": false,
+  "protectCharmSoftOpenPreserved": true,
+  "EnhanceOpenFlagPreserved": true,
+  "scope": "本窗=附灵开态夹具全表 ≠ soft-open ≠ release ≠ 进包",
+  "commands": {
+    "tsc": {
+      "command": [
+        "npx",
+        "tsc",
+        "--noEmit"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {},
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T05:48:36.721385+00:00",
+      "exitCode": 0,
+      "assertions": null
+    },
+    "v06p1-enchant-open": {
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-enchant-open"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {},
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T05:48:42.513427+00:00",
+      "exitCode": 0,
+      "assertions": 4219
+    },
+    "v06p1-enchant-closed": {
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-enchant-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "ENCHANT_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_open_fixture/regression/enchant-closed"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T05:47:28.958699+00:00",
+      "exitCode": 0,
+      "assertions": 12534
+    },
+    "v06p1-enhance-open": {
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-enhance-open"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "XT_ENHANCE_QA_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_open_fixture/regression/enhance-open",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_open_fixture/regression-register.mjs",
+        "ENCHANT_REGRESSION_CASE": "v06p1-enhance-open",
+        "ENCHANT_REGRESSION_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_open_fixture/regression/enhance-open"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T05:45:51.202615+00:00",
+      "exitCode": 0,
+      "assertions": 17729
+    },
+    "v06p1-enhance-closed": {
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-enhance-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "ENHANCE_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_open_fixture/regression/enhance-closed",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_open_fixture/regression-register.mjs",
+        "ENCHANT_REGRESSION_CASE": "v06p1-enhance-closed",
+        "ENCHANT_REGRESSION_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_open_fixture/regression/enhance-closed"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T05:45:35.231692+00:00",
+      "exitCode": 0,
+      "assertions": 30836
+    },
+    "v06p1-forge-open": {
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-forge-open"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_open_fixture/regression/forge-open",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_open_fixture/regression-register.mjs",
+        "ENCHANT_REGRESSION_CASE": "v06p1-forge-open",
+        "ENCHANT_REGRESSION_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_open_fixture/regression/forge-open"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T05:43:21.383804+00:00",
+      "exitCode": 0,
+      "assertions": 6381
+    },
+    "v06p1-forge-closed": {
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-forge-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "FORGE_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_open_fixture/regression/forge-closed",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_open_fixture/regression-register.mjs",
+        "ENCHANT_REGRESSION_CASE": "v06p1-forge-closed",
+        "ENCHANT_REGRESSION_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_open_fixture/regression/forge-closed"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T05:45:40.330735+00:00",
+      "exitCode": 0,
+      "assertions": 20413
+    },
+    "v06p1-market-closed": {
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-market-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "MARKET_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_open_fixture/regression/market-closed",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_open_fixture/regression-register.mjs",
+        "ENCHANT_REGRESSION_CASE": "v06p1-market-closed",
+        "ENCHANT_REGRESSION_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_open_fixture/regression/market-closed"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T05:45:46.102277+00:00",
+      "exitCode": 0,
+      "assertions": 24194
+    },
+    "v06d-closed": {
+      "command": [
+        "npm",
+        "run",
+        "test:v06d-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_open_fixture/regression/v06d-closed",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_open_fixture/regression-register.mjs",
+        "ENCHANT_REGRESSION_CASE": "v06d-closed",
+        "ENCHANT_REGRESSION_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_open_fixture/regression/v06d-closed"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T05:43:02.030961+00:00",
+      "exitCode": 0,
+      "assertions": 15059
+    },
+    "v06c-closed": {
+      "command": [
+        "npm",
+        "run",
+        "test:v06c-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_open_fixture/regression/v06c-closed",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_open_fixture/regression-register.mjs",
+        "ENCHANT_REGRESSION_CASE": "v06c-closed",
+        "ENCHANT_REGRESSION_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_open_fixture/regression/v06c-closed"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T05:42:58.145390+00:00",
+      "exitCode": 0,
+      "assertions": 10714
+    },
+    "datalint-shared": {
+      "command": [
+        "python3",
+        "/workspace/xiantu/qa/tools/datalint.py"
+      ],
+      "cwd": "/workspace/xiantu",
+      "environment": {},
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T05:43:21.910Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": null
+    },
+    "datalint-snapshot": {
+      "command": [
+        "python3",
+        "/workspace/xiantu/qa/tools/datalint.py"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev/data",
+      "environment": {},
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T05:43:21.914Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": null
+    },
+    "diff-check": {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {},
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T05:49:56.002053+00:00",
+      "exitCode": 0,
+      "assertions": null
+    }
+  },
+  "testAssertions": 142079,
+  "openAssertions": 4219,
+  "protectionAssertions": 1603,
+  "cases": {
+    "O01": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/memory-open/initial/five-elements-default-ForgeGate-formal-source",
+        "shared/memory-open/initial/read-only-feature-entrance-preview",
+        "shared/memory-open/initial/deterministic-2000-stones-one-core-one-commit",
+        "shared/memory-open/initial/production-fixtureInstances-absent",
+        "snapshot/memory-open/initial/five-elements-default-ForgeGate-formal-source",
+        "snapshot/memory-open/initial/read-only-feature-entrance-preview",
+        "snapshot/memory-open/initial/deterministic-2000-stones-one-core-one-commit",
+        "snapshot/memory-open/initial/production-fixtureInstances-absent"
+      ]
+    },
+    "O02": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/memory-open/initial/five-same-roots-exact-config-bonus",
+        "shared/memory-open/initial/different-root-zero-sameRootBonus",
+        "shared/memory-open/initial/no-stacking-on-replay",
+        "snapshot/memory-open/initial/five-same-roots-exact-config-bonus",
+        "snapshot/memory-open/initial/different-root-zero-sameRootBonus",
+        "snapshot/memory-open/initial/no-stacking-on-replay"
+      ]
+    },
+    "O03": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/memory-open/initial/missing-stones-core-transient-core",
+        "shared/memory-open/initial/invalid-request-root-element-instance-armor-foreign",
+        "shared/memory-open/initial/itemId-quantity-slot-and-fixture-history-not-authorization",
+        "shared/memory-open/initial/weapon-phase-enabled-placeholder-quality-slot-type",
+        "shared/memory-open/initial/explicit-fixture-never-falls-back-to-formal-source",
+        "shared/memory-open/initial/independent-flag-no-other-service-bypass",
+        "shared/memory-open/initial/ssr-invalid-mapping-and-config-separate-graphs",
+        "shared/memory-open/missing-enchant/invalid-dependency-missing-enchant",
+        "shared/memory-open/missing-enchant/zero-resource-element-record-delta",
+        "shared/memory-open/bad-damage/invalid-dependency-bad-damage",
+        "shared/memory-open/bad-damage/zero-resource-element-record-delta",
+        "shared/memory-open/bad-root-bonus/invalid-dependency-bad-root-bonus",
+        "shared/memory-open/bad-root-bonus/zero-resource-element-record-delta",
+        "shared/memory-open/bad-cost/invalid-dependency-bad-cost",
+        "shared/memory-open/bad-cost/zero-resource-element-record-delta",
+        "shared/memory-open/bad-count/invalid-dependency-bad-count",
+        "shared/memory-open/bad-count/zero-resource-element-record-delta",
+        "shared/memory-open/bad-item/invalid-dependency-bad-item",
+        "shared/memory-open/bad-item/zero-resource-element-record-delta",
+        "shared/memory-open/rate-forbidden/invalid-dependency-rate-forbidden",
+        "shared/memory-open/rate-forbidden/zero-resource-element-record-delta",
+        "shared/memory-open/items-registration-missing/invalid-dependency-items-registration-missing",
+        "shared/memory-open/items-registration-missing/zero-resource-element-record-delta",
+        "shared/memory-open/materials-only-visible/invalid-dependency-materials-only-visible",
+        "shared/memory-open/materials-only-visible/zero-resource-element-record-delta",
+        "shared/memory-open/items-only-registered/invalid-dependency-items-only-registered",
+        "shared/memory-open/items-only-registered/zero-resource-element-record-delta",
+        "shared/memory-open/core-phase/invalid-dependency-core-phase",
+        "shared/memory-open/core-phase/zero-resource-element-record-delta",
+        "shared/memory-open/core-disabled/invalid-dependency-core-disabled",
+        "shared/memory-open/core-disabled/zero-resource-element-record-delta",
+        "shared/memory-open/core-placeholder/invalid-dependency-core-placeholder",
+        "shared/memory-open/core-placeholder/zero-resource-element-record-delta",
+        "shared/memory-open/core-quality/invalid-dependency-core-quality",
+        "shared/memory-open/core-quality/zero-resource-element-record-delta",
+        "snapshot/memory-open/initial/missing-stones-core-transient-core",
+        "snapshot/memory-open/initial/invalid-request-root-element-instance-armor-foreign",
+        "snapshot/memory-open/initial/itemId-quantity-slot-and-fixture-history-not-authorization",
+        "snapshot/memory-open/initial/weapon-phase-enabled-placeholder-quality-slot-type",
+        "snapshot/memory-open/initial/explicit-fixture-never-falls-back-to-formal-source",
+        "snapshot/memory-open/initial/independent-flag-no-other-service-bypass",
+        "snapshot/memory-open/initial/ssr-invalid-mapping-and-config-separate-graphs",
+        "snapshot/memory-open/missing-enchant/invalid-dependency-missing-enchant",
+        "snapshot/memory-open/missing-enchant/zero-resource-element-record-delta",
+        "snapshot/memory-open/bad-damage/invalid-dependency-bad-damage",
+        "snapshot/memory-open/bad-damage/zero-resource-element-record-delta",
+        "snapshot/memory-open/bad-root-bonus/invalid-dependency-bad-root-bonus",
+        "snapshot/memory-open/bad-root-bonus/zero-resource-element-record-delta",
+        "snapshot/memory-open/bad-cost/invalid-dependency-bad-cost",
+        "snapshot/memory-open/bad-cost/zero-resource-element-record-delta",
+        "snapshot/memory-open/bad-count/invalid-dependency-bad-count",
+        "snapshot/memory-open/bad-count/zero-resource-element-record-delta",
+        "snapshot/memory-open/bad-item/invalid-dependency-bad-item",
+        "snapshot/memory-open/bad-item/zero-resource-element-record-delta",
+        "snapshot/memory-open/rate-forbidden/invalid-dependency-rate-forbidden",
+        "snapshot/memory-open/rate-forbidden/zero-resource-element-record-delta",
+        "snapshot/memory-open/items-registration-missing/invalid-dependency-items-registration-missing",
+        "snapshot/memory-open/items-registration-missing/zero-resource-element-record-delta",
+        "snapshot/memory-open/materials-only-visible/invalid-dependency-materials-only-visible",
+        "snapshot/memory-open/materials-only-visible/zero-resource-element-record-delta",
+        "snapshot/memory-open/items-only-registered/invalid-dependency-items-only-registered",
+        "snapshot/memory-open/items-only-registered/zero-resource-element-record-delta",
+        "snapshot/memory-open/core-phase/invalid-dependency-core-phase",
+        "snapshot/memory-open/core-phase/zero-resource-element-record-delta",
+        "snapshot/memory-open/core-disabled/invalid-dependency-core-disabled",
+        "snapshot/memory-open/core-disabled/zero-resource-element-record-delta",
+        "snapshot/memory-open/core-placeholder/invalid-dependency-core-placeholder",
+        "snapshot/memory-open/core-placeholder/zero-resource-element-record-delta",
+        "snapshot/memory-open/core-quality/invalid-dependency-core-quality",
+        "snapshot/memory-open/core-quality/zero-resource-element-record-delta"
+      ]
+    },
+    "O04": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/memory-open/initial/same-element-new-request-zero-delta",
+        "shared/memory-open/initial/original-result-replay-without-resources",
+        "shared/memory-open/initial/old-result-after-replacement-read-only",
+        "snapshot/memory-open/initial/same-element-new-request-zero-delta",
+        "snapshot/memory-open/initial/original-result-replay-without-resources",
+        "snapshot/memory-open/initial/old-result-after-replacement-read-only"
+      ]
+    },
+    "O05": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/memory-open/initial/full-cost-atomic-replacement-stable-instanceRef",
+        "shared/memory-open/initial/missing-resource-and-stale-fromElement-preserve-old",
+        "shared/memory-open/initial/only-new-element-and-config-attributes-active",
+        "snapshot/memory-open/initial/full-cost-atomic-replacement-stable-instanceRef",
+        "snapshot/memory-open/initial/missing-resource-and-stale-fromElement-preserve-old",
+        "snapshot/memory-open/initial/only-new-element-and-config-attributes-active"
+      ]
+    },
+    "O06": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/memory-open/initial/first-and-replacement-real-save-load-export-import-restore",
+        "shared/memory-open/initial/cross-slot-no-instance-or-result-borrowing",
+        "shared/memory-open/initial/fresh-independent-ssr-roundtrip",
+        "shared/memory-open/fresh-ssr/fresh-independent-ssr-save-load-import-restore",
+        "shared/memory-open/fresh-ssr/result-dedupe-cost-final-element-identical",
+        "snapshot/memory-open/initial/first-and-replacement-real-save-load-export-import-restore",
+        "snapshot/memory-open/initial/cross-slot-no-instance-or-result-borrowing",
+        "snapshot/memory-open/initial/fresh-independent-ssr-roundtrip",
+        "snapshot/memory-open/fresh-ssr/fresh-independent-ssr-save-load-import-restore",
+        "snapshot/memory-open/fresh-ssr/result-dedupe-cost-final-element-identical"
+      ]
+    },
+    "O07": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/memory-open/initial/same-request-concurrent-one-commit",
+        "shared/memory-open/initial/payload-conflict-no-old-result",
+        "shared/memory-open/initial/same-instance-targets-recheck",
+        "shared/memory-open/initial/two-formal-instances-shared-inventory-no-negative",
+        "shared/memory-open/initial/stale-progress-does-not-overwrite-new-level-exp-quest-talisman",
+        "snapshot/memory-open/initial/same-request-concurrent-one-commit",
+        "snapshot/memory-open/initial/payload-conflict-no-old-result",
+        "snapshot/memory-open/initial/same-instance-targets-recheck",
+        "snapshot/memory-open/initial/two-formal-instances-shared-inventory-no-negative",
+        "snapshot/memory-open/initial/stale-progress-does-not-overwrite-new-level-exp-quest-talisman"
+      ]
+    },
+    "O08": {
+      "executed": true,
+      "evidenceKeys": [
+        "shared/formal-closed/initial/formal-flag-false-eight-tips",
+        "shared/formal-closed/initial/hostile-getters-unread",
+        "shared/formal-closed/initial/closed-old-callback-preserves-assets",
+        "shared/memory-open/initial/carrier-false-throw-and-draft-tamper-rollback",
+        "shared/memory-open/initial/deduct-failure-rollback",
+        "shared/memory-open/initial/idb-request-before-complete-invisible-abort-rollback-retry",
+        "shared/memory-open/initial/unknown-corrupt-records-blocked-no-repair",
+        "shared/memory-open/initial/serialization-failure-zero-delta-and-both-gate-slot-locks-released",
+        "shared/memory-open/initial/real-load-corrupt-bag-storageError-no-overwrite",
+        "shared/memory-open/initial/missing-field-undefined",
+        "shared/memory-open/initial/enhance-and-protect-result-preserved",
+        "shared/memory-open/initial/formal-closed-old-callback-graph",
+        "shared/formal-closed/fresh-ssr/formal-flag-false-eight-tips",
+        "shared/formal-closed/fresh-ssr/hostile-getters-unread",
+        "shared/formal-closed/fresh-ssr/closed-old-callback-preserves-assets",
+        "snapshot/formal-closed/initial/formal-flag-false-eight-tips",
+        "snapshot/formal-closed/initial/hostile-getters-unread",
+        "snapshot/formal-closed/initial/closed-old-callback-preserves-assets",
+        "snapshot/memory-open/initial/carrier-false-throw-and-draft-tamper-rollback",
+        "snapshot/memory-open/initial/deduct-failure-rollback",
+        "snapshot/memory-open/initial/idb-request-before-complete-invisible-abort-rollback-retry",
+        "snapshot/memory-open/initial/unknown-corrupt-records-blocked-no-repair",
+        "snapshot/memory-open/initial/serialization-failure-zero-delta-and-both-gate-slot-locks-released",
+        "snapshot/memory-open/initial/real-load-corrupt-bag-storageError-no-overwrite",
+        "snapshot/memory-open/initial/missing-field-undefined",
+        "snapshot/memory-open/initial/enhance-and-protect-result-preserved",
+        "snapshot/memory-open/initial/formal-closed-old-callback-graph",
+        "snapshot/formal-closed/fresh-ssr/formal-flag-false-eight-tips",
+        "snapshot/formal-closed/fresh-ssr/hostile-getters-unread",
+        "snapshot/formal-closed/fresh-ssr/closed-old-callback-preserves-assets"
+      ]
+    }
+  },
+  "forbiddenCommandsRun": [],
+  "stdin": "/dev/null",
+  "out": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_open_fixture",
+  "blockers": []
+}

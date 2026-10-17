@@ -68,6 +68,7 @@
     "test:v06p1-enhance-open": "timeout 180s node scripts/v06p1-enhance-open-test.mjs",
     "test:v06p1-enhance-closed": "timeout 120s node scripts/v06p1-enhance-closed-test.mjs",
     "test:v06p1-enchant-closed": "timeout 120s node scripts/v06p1-enchant-closed-test.mjs",
+    "test:v06p1-enchant-open": "timeout 180s node scripts/v06p1-enchant-open-test.mjs",
     "test:v06p1-forge-open": "timeout 180s node scripts/v06p1-forge-open-test.mjs",
     "test:v06p1-market-open": "timeout 180s node scripts/v06p1-market-open-test.mjs",
     "test:v06c-open": "timeout 120s node scripts/v06c-open-test.mjs",
