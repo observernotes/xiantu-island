@@ -1,0 +1,11 @@
+{
+  "files": [
+    "reports/炼器阁/V06P1_SALVAGE_CLOSED_HANDOFF.md",
+    "reports/炼器阁/V06P1_SALVAGE_CLOSED_RESULT.md",
+    "status/炼器阁.md",
+    "qa/out_v06p1_salvage_closed/delivery-check.json",
+    "qa/out_v06p1_salvage_closed/staged-docs-files.json"
+  ],
+  "count": 5,
+  "onlyAuthorized": true
+}
