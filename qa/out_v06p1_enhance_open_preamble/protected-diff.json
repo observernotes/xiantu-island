@@ -1,0 +1,58 @@
+{
+  "protectedFiles": 1565,
+  "protectedDirectories": 11,
+  "unchangedFiles": 1557,
+  "authorizedChanges": [
+    {
+      "file": "/workspace/xiantu/wt/dev/src/EnhanceOpenFlag.ts",
+      "before": "b17ca77c15bd27d45fe71e34affd2dfa3677190e5559718b3bb037eff9ba6a1c",
+      "after": "d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e",
+      "authorized": true
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/src/scenes/GameScene.ts",
+      "before": "294b934b52a8b6537214360fffb93497643ce8261bea03aba8caf405cf5fcedf",
+      "after": "9b62f76b8a3e76b2438cfacf42d9fe15525f50a9a0427eab25d5c10d6de119f3",
+      "authorized": true
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/src/v06p1-enhance-open.test.ts",
+      "before": "a7eb33a91943613b9ba8991aee550edf99a3014969fe4789a54bd4644957ec12",
+      "after": "72c9e77759615d741cfcb5ce5d401dfa46e314a390df293972913354cb6414a9",
+      "authorized": true
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/src/v06p1-forge-open.test.ts",
+      "before": "c1d8bb9971a572a5a99ec50095d5eeaf297e1aa5f53767828eb80e835a55891d",
+      "after": "5df4f24c2a32b3ce7f26564a3b0fb7e66e46315f5e6cdc3752517f8b2ebdfd69",
+      "authorized": true
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/scripts/v06p1-enhance-closed-test.mjs",
+      "before": "b4b6219a88557dce2465a8c767b028b350b51f184f7096bd19a90e39c3f0d009",
+      "after": "034fec7c07d9b5d1cc678fee45a78dc8efb862918f85487f95b91072de626b6d",
+      "authorized": true
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/scripts/v06p1-enhance-open-test.mjs",
+      "before": "9f766326c78c9e1c0653f8a5616be7adc95573226fca58378248798d7e0d1968",
+      "after": "628387fad4a4d487854d81e94343590bbc4bcb68a9cb638ff0500de1f8e424c8",
+      "authorized": true
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/scripts/v06p1-forge-closed-test.mjs",
+      "before": "464f56132b2582156956ed9735c2c46068decb13bdc4da328fbec30c3fcbac55",
+      "after": "a5c79a3e181ab1e29f4a05b7a0d2f887089a21e90394a095324e018df8cf972b",
+      "authorized": true
+    },
+    {
+      "file": "/workspace/xiantu/wt/dev/scripts/v06p1-market-closed-test.mjs",
+      "before": "1c2105fefd06f0f61b4836af8857eed6def07dae9f9ca605fcfa4eb5cf4993af",
+      "after": "a318824435173c8dec7de50455f0dbf71ea1c2c3ab568ae34099c4af07edf075",
+      "authorized": true
+    }
+  ],
+  "unauthorizedChanges": [],
+  "directoryChanges": [],
+  "passed": true
+}

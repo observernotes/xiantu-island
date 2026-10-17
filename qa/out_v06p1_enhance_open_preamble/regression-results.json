@@ -1,0 +1,12 @@
+[
+  {
+    "suite": "v06d-closed",
+    "exitCode": 0,
+    "originalQaPreserved": true
+  },
+  {
+    "suite": "v06c-closed",
+    "exitCode": 0,
+    "originalQaPreserved": true
+  }
+]

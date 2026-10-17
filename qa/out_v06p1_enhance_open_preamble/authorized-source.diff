@@ -1,0 +1,463 @@
+diff --git a/scripts/v06p1-enhance-closed-test.mjs b/scripts/v06p1-enhance-closed-test.mjs
+index 7ab5214..016bb85 100644
+--- a/scripts/v06p1-enhance-closed-test.mjs
++++ b/scripts/v06p1-enhance-closed-test.mjs
+@@ -1 +1 @@
+-// 强化正式路径恒关；真实 Closed + Flag 继续零写，精确允许独立 SSR 开态夹具源码。
++// 强化正式旗已软开；只在 Vite SSR 内存图注入 false，保留 C01–C12 八 tip 零写。
+@@ -13 +13 @@ const shared = sharedRoot(root), baselineOut = path.join(root, 'qa/out_v06p1_enh
+-const out = process.env.ENHANCE_CLOSED_OUT ?? process.env.OUT_DIR ?? baselineOut;
++const out = process.env.ENHANCE_CLOSED_OUT ?? process.env.OUT_DIR ?? path.join(root, 'qa/out_v06p1_enhance_open_preamble/closed');
+@@ -75,0 +76,32 @@ async function filesUnder(directory, prefix = '') {
++// 只剥强化本窗三个 import 与一个完整提示块；打造原方法仍逐字钉旧 SHA。
++function stripEnhanceSceneWiring(source) {
++  for (const line of ["import { featureClosed as enhanceFeatureClosed } from '../EnhanceClosed';\n",
++    "import { isEnhanceOpenForFixture } from '../EnhanceOpenFlag';\n",
++    "import { EnhanceGate } from '../EnhanceGate';\n"]) {
++    eq(source.split(line).length - 1, 1, `C01/C12 GameScene 强化授权 import 精确一次：${line.trim()}`);
++    source = source.replace(line, '');
++  }
++  const block = [
++    "    if (!isEnhanceOpenForFixture()) this.log(enhanceFeatureClosed().text, '#aaaaaa');",
++    '    else {',
++    '      const result = new EnhanceGate(this.prog).entrance();',
++    "      this.log(result.allowed ? '装备强化已开放。' : result.text, '#aaaaaa');",
++    '    }',
++    '',
++  ].join('\n');
++  eq(source.split(block).length - 1, 1, 'C01/C12 GameScene 强化只增加一个完整只读提示块');
++  const entry = source.match(/  private tryInteractForgeEntrance\(\): boolean \{[\s\S]*?\n  \}/u)?.[0];
++  ok(entry?.includes(`${block}    return true;`), 'C01/C12 同次 smith_ou 命中先打造再强化，提示后才 return true');
++  return source.replace(block, '');
++}
++
++// Forge 冒烟仍核对原文；只恢复强化追加提示导致的两个日志位置及两个新断言。
++function stripForgeSceneSmokeCompatibility(source) {
++  const enhanceAssertion = "      eq(logs[logs.length - 1], { text: '装备强化已开放。', color: '#aaaaaa' }, '同次命中在打造提示后显示强化正式开态提示');\n";
++  eq(source.split(enhanceAssertion).length - 1, 2, 'Forge 入口冒烟只增加两个同命中强化提示断言');
++  source = source.split(enhanceAssertion).join('');
++  const shiftedIndex = 'logs[logs.length - 2]';
++  eq(source.split(shiftedIndex).length - 1, 2, 'Forge 原提示断言恰有两个前移日志索引，期望文本/颜色均不变');
++  return source.split(shiftedIndex).join('logs[logs.length - 1]');
++}
++
+@@ -104 +136 @@ async function checkProtection() {
+-    eq(actual, expected, `权威写前/写后保护字节：${key}`);
++    eq(key === 'GameScene.ts' ? hash(stripEnhanceSceneWiring(await fs.readFile(file, 'utf8'))) : actual, expected, `权威写前/写后保护字节（仅剥 GameScene 强化最小提示）：${key}`);
+@@ -111 +143 @@ async function checkProtection() {
+-    'src 仅新增强化关态 API/Flag 及精确列明的三个开态夹具源码；不接前台强化');
++    'src 仅新增强化关态 API/Flag 及三个开态夹具源码；既有 smith_ou 仅接最小提示');
+@@ -114,2 +146,4 @@ async function checkProtection() {
+-    const compared = relativeSource(name) === 'Progress.ts' ? hash(stripEnhanceProgress(await fs.readFile(file, 'utf8'))) : actual;
+-    eq(compared, expected, `既有 src 完整字节不变（Progress 仅剥获准四行）：${name}`);
++    const compared = relativeSource(name) === 'Progress.ts' ? hash(stripEnhanceProgress(await fs.readFile(file, 'utf8')))
++      : relativeSource(name) === 'scenes/GameScene.ts' ? hash(stripEnhanceSceneWiring(await fs.readFile(file, 'utf8')))
++      : relativeSource(name) === 'v06p1-forge-open.test.ts' ? hash(stripForgeSceneSmokeCompatibility(await fs.readFile(file, 'utf8'))) : actual;
++    eq(compared, expected, `既有 src 完整字节不变（仅剥 Progress 四行、GameScene 强化最小提示及 Forge 冒烟日志位置兼容）：${name}`);
+@@ -144,2 +178,2 @@ async function checkProtection() {
+-    sharedStringsUnchanged: true, enhanceGateFixtureSourceAllowed: true, frontendEnhanceWiringAdded: false,
+-    EnhanceOpenFlag: false, formalOpen: false, softOpened: false, released: false });
++    sharedStringsUnchanged: true, enhanceGateFixtureSourceAllowed: true, minimalFrontendWiring: true, fullEnhanceUiAdded: false,
++    EnhanceOpenFlag: true, formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false });
+@@ -179 +213 @@ async function checkStatic(mode, dataRoot) {
+-    EnhanceOpenFlag: false, softOpened: false, released: false });
++    EnhanceOpenFlag: true, formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false });
+@@ -184,2 +218,2 @@ async function checkSource() {
+-  eq(flag, '/** 正式恒关；仅 Vite SSR 开态夹具图可由 resolve/load 内存模块注入 true。 */\nexport function isEnhanceOpenForFixture(): boolean { return false; }\n',
+-    'EnhanceOpenFlag 正式源码精确恒 false；仅独立 SSR 图允许内存注入，无软开');
++  eq(flag, '/** 正式路径恒 true；仅 Vite SSR 关态图可注入 false。 */\nexport function isEnhanceOpenForFixture(): boolean { return true; }\n',
++    'EnhanceOpenFlag 正式源码精确恒 true；仅 SSR 关态图允许内存注入 false');
+@@ -211 +245,2 @@ async function checkSource() {
+-    if (!newSources.includes(name) && !openFixtureSources.includes(name)) ok(!/EnhanceClosed|EnhanceOpenFlag|enhance\.closed\./u.test(text), `${name}: 无强化 API/Flag 消费者或前台接线`);
++    const scanned = name === 'scenes/GameScene.ts' ? stripEnhanceSceneWiring(text) : text;
++    if (!newSources.includes(name) && !openFixtureSources.includes(name)) ok(!/EnhanceClosed|EnhanceOpenFlag|EnhanceGate|enhance\.closed\./u.test(scanned), `${name}: 除 smith_ou 最小提示外无强化 API/Flag/Gate 消费者`);
+@@ -219 +254,2 @@ async function checkSource() {
+-  ok(!/EnhanceClosed|EnhanceOpenFlag|enhance\.closed\.|tryInteractEnhance|submitEnhance/u.test(scene), 'GameScene 无新增可执行强化入口');
++  ok(!/EnhanceClosed|EnhanceOpenFlag|EnhanceGate|enhance\.closed\.|tryInteractEnhance|submitEnhance/u.test(stripEnhanceSceneWiring(scene)), 'GameScene 只接既有 smith_ou 最小强化提示');
++  ok(!/EnhanceClosed|EnhanceOpenFlag|EnhanceGate|enhance\.closed\.|submitEnhance/u.test(await fs.readFile(path.join(root, 'src/ShopPanel.ts'), 'utf8')), 'ShopPanel 不接强化');
+@@ -225,2 +261,2 @@ async function checkSource() {
+-    EnhanceOpenFlag: false, sourceSearch: 'source-search.json', matches: search.length,
+-    enhanceGateFixtureSourceAllowed: true, frontendEnhanceWiringAdded: false, formalOpen: false, softOpened: false, released: false });
++    EnhanceOpenFlag: true, sourceSearch: 'source-search.json', matches: search.length,
++    enhanceGateFixtureSourceAllowed: true, minimalFrontendWiring: true, fullEnhanceUiAdded: false, formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false });
+@@ -249,2 +285,3 @@ function semanticFixtures() {
+-async function runGraph(mode, dataRoot, refreshPayloads = null) {
+-  // 没有插件、替换源码或 Flag 注入：每个图均读取正式恒 false 的文件。
++async function runGraph(mode, dataRoot, closedFixtureOnly, refreshPayloads = null) {
++  let flagLoads = 0;
++  const flagId = '\0v06p1-memory-closed-enhance-flag';
+@@ -252 +289,10 @@ async function runGraph(mode, dataRoot, refreshPayloads = null) {
+-    server: { middlewareMode: true, hmr: false, ws: false }, appType: 'custom', logLevel: 'error' });
++    server: { middlewareMode: true, hmr: false, ws: false }, appType: 'custom', logLevel: 'error',
++    plugins: [{ name: 'v06p1-enhance-memory-closed', enforce: 'pre',
++      resolveId(id) {
++        if (closedFixtureOnly && /(?:^|\/)EnhanceOpenFlag(?:\.ts)?$/u.test(id)) return flagId;
++      },
++      load(id) {
++        if (id === flagId) { flagLoads++; return 'export function isEnhanceOpenForFixture() { return false; }'; }
++      },
++    }],
++  });
+@@ -263,0 +310,8 @@ async function runGraph(mode, dataRoot, refreshPayloads = null) {
++    eq(flag.isEnhanceOpenForFixture(), !closedFixtureOnly, `${mode}: 正式旗 true；关态仅 SSR 内存注入 false`);
++    eq(flagLoads, closedFixtureOnly ? 1 : 0, `${mode}: 正式图 flagLoads=0，内存关态图 flagLoads=1`);
++    if (!closedFixtureOnly) {
++      eq(storageWrites, 0, `${mode}: 正式旗验证无存储写入`);
++      report({ suite: 'formal-graph', dataMode: mode, graph: 'formal-open', passed: true, flagLoads, storageWrites,
++        EnhanceOpenFlag: true, formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false });
++      return;
++    }
+@@ -265,0 +320,9 @@ async function runGraph(mode, dataRoot, refreshPayloads = null) {
++    const { EnhanceGate } = await server.ssrLoadModule('/src/EnhanceGate.ts');
++    const gateProgress = new Progress(), beforeGate = clone(gateProgress.exportSave()), gate = new EnhanceGate(gateProgress);
++    for (const [method, apiName] of Object.entries({ feature: 'featureClosed', entrance: 'refuseEntrance', enhance: 'refuseEnhance',
++      submit: 'refuseSubmit', level: 'refuseLevel', consume: 'refuseConsume', loadRefresh: 'refuseLoadRefresh', laterService: 'refuseLaterService' })) {
++      eq(await gate[method](), api[apiName](), `${mode}: 内存关态 Gate.${method} 首旗路由原八 tip`);
++    }
++    eq(gateProgress.exportSave(), beforeGate, `${mode}: 内存关态 Gate 八入口完整存档零增量`);
++    eq(storageWrites, 0, `${mode}: 内存关态 Gate 八入口存储写入0`);
++    eq(flagLoads, 1, `${mode}: Gate 与 Closed 共用唯一 memory-closed Flag 模块`);
+@@ -271,2 +334,2 @@ async function runGraph(mode, dataRoot, refreshPayloads = null) {
+-    eq(flag.isEnhanceOpenForFixture(), false, `${mode}: 真实 EnhanceOpenFlag 恒 false`);
+-    eq(flag.isEnhanceOpenForFixture.length, 0, `${mode}: 真实 Flag 零参数`);
++    eq(flag.isEnhanceOpenForFixture(), false, `${mode}: 内存关态 EnhanceOpenFlag false`);
++    eq(flag.isEnhanceOpenForFixture.length, 0, `${mode}: 内存关态 Flag 零参数`);
+@@ -363 +426 @@ async function runGraph(mode, dataRoot, refreshPayloads = null) {
+-    eq(flag.isEnhanceOpenForFixture(), false, `${mode}: 全部调用后仍恒 false`);
++    eq(flag.isEnhanceOpenForFixture(), false, `${mode}: 全部调用后内存图仍 false`);
+@@ -367 +430 @@ async function runGraph(mode, dataRoot, refreshPayloads = null) {
+-    report({ suite: 'runtime', dataMode: mode, graph: refreshPayloads ? 'fresh-ssr-refresh' : 'real-file-closed', passed: true,
++    report({ suite: 'runtime', dataMode: mode, graph: 'memory-closed', freshSsrRefresh: !!refreshPayloads, flagLoads, passed: true,
+@@ -369,2 +432,2 @@ async function runGraph(mode, dataRoot, refreshPayloads = null) {
+-      semanticFixtureOnly: true, formalEnhanceSchemaAdded: false, flagInjection: false,
+-      EnhanceOpenFlag: false, enhanceGateFixtureSourceAllowed: true, frontendEnhanceWiringAdded: false, formalOpen: false, softOpened: false, released: false });
++      semanticFixtureOnly: true, formalEnhanceSchemaAdded: false, flagInjection: true, memoryClosedFlag: false,
++      EnhanceOpenFlag: true, enhanceGateFixtureSourceAllowed: true, minimalFrontendWiring: true, fullEnhanceUiAdded: false, formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false });
+@@ -388,2 +451,3 @@ try {
+-    const payloads = await runGraph(mode, dataRoot);
+-    await runGraph(mode, dataRoot, payloads);
++    await runGraph(mode, dataRoot, false);
++    const payloads = await runGraph(mode, dataRoot, true);
++    await runGraph(mode, dataRoot, true, payloads);
+@@ -397,2 +461,2 @@ try {
+-    EnhanceOpenFlag: false, enhanceGateFixtureSourceAllowed: true, frontendEnhanceWiringAdded: false, formalOpen: false,
+-    semanticFixtureOnly: true, formalEnhanceSchemaAdded: false, softOpened: false, released: false }, null, 2)}\n`);
++    EnhanceOpenFlag: true, enhanceGateFixtureSourceAllowed: true, minimalFrontendWiring: true, fullEnhanceUiAdded: false, formalOpen: true, closedFixtureOnly: true,
++    semanticFixtureOnly: true, formalEnhanceSchemaAdded: false, softOpened: true, released: false }, null, 2)}\n`);
+@@ -400 +464 @@ try {
+-console.log(`v06p1 enhance closed tests ok: ${assertions} assertions; C01–C12; ${totalFixtures} semantic fixtures; ${totalInvocations} API calls; shared/snapshot + fresh SSR; localStorage写入0; strings936; gifts10×false; GAME_PHASE=5; EnhanceOpenFlag=false; 不挂smith_ou.services; 仅允许EnhanceGate开态夹具源码、无前台强化; formalOpen:false; softOpened:false; released:false`);
++console.log(`v06p1 enhance closed tests ok: ${assertions} assertions; C01–C12; ${totalFixtures} semantic fixtures; ${totalInvocations} API calls; shared/snapshot + fresh SSR; localStorage写入0; strings936; gifts10×false; GAME_PHASE=5; EnhanceOpenFlag=true; 不挂smith_ou.services; smith_ou同次命中仅提示、无完整强化UI; formalOpen:true; closedFixtureOnly:true; softOpened:true; released:false`);
+diff --git a/scripts/v06p1-enhance-open-test.mjs b/scripts/v06p1-enhance-open-test.mjs
+index 8eacc89..fa42a0a 100644
+--- a/scripts/v06p1-enhance-open-test.mjs
++++ b/scripts/v06p1-enhance-open-test.mjs
+@@ -1 +1 @@
+-// 双根隔离：正式旗标恒false；仅独立Vite SSR开态夹具图由resolve/load内存注入true。
++// 双根隔离：正式旗标恒 true；仅独立 Vite SSR 关态图由 resolve/load 内存注入 false。
+@@ -15 +15 @@ const dataRoots = [['shared', shared], ['wt', path.join(root, 'data')], ['game',
+-const out = path.join(root, 'qa/out_v06p1_enhance_open_fixture');
++const out = path.join(root, 'qa/out_v06p1_enhance_open_preamble');
+@@ -57,2 +57,2 @@ async function checkFormal() {
+-  ok(/export function isEnhanceOpenForFixture\(\): boolean\s*\{\s*return false;\s*\}/u.test(flag), '正式磁盘EnhanceOpenFlag恒false');
+-  ok(!/import\s|process\.|globalThis|localStorage|sessionStorage|featureEnabled|enabled/u.test(flag), '正式旗标不受配表环境或会话翻开');
++  ok(/export function isEnhanceOpenForFixture\(\): boolean\s*\{\s*return true;\s*\}/u.test(flag), '正式磁盘EnhanceOpenFlag恒true');
++  ok(!/import\s|process\.|globalThis|localStorage|sessionStorage|featureEnabled|enabled/u.test(flag), '正式旗标不受配表环境或会话翻转');
+@@ -70,3 +70,17 @@ async function checkFormal() {
+-  for (const name of ['src/scenes/GameScene.ts', 'src/ShopPanel.ts'])
+-    ok(!/EnhanceGate|EnhanceOpenFlag|EnhanceProgress|tryInteractEnhance|openEnhance|submitEnhance/u.test(await fs.readFile(path.join(root, name), 'utf8')),
+-      `${name}不接强化前台`);
++  const scene = await fs.readFile(path.join(root, 'src/scenes/GameScene.ts'), 'utf8');
++  for (const name of ['EnhanceClosed', 'EnhanceOpenFlag', 'EnhanceGate', 'tryInteractForgeEntrance'])
++    ok(scene.includes(name), `GameScene仅接既有smith_ou最小冒烟：${name}`);
++  ok(/this\.tryInteractTowerClosed\(\)\s*\|\|\s*this\.tryInteractMarketConsign\(\)\s*\|\|\s*this\.tryInteractForgeEntrance\(\)[^\n]*this\.talkNearby\(\)/u.test(scene),
++    'Z键链保留既有smith_ou同级入口');
++  ok(/if \(this\.tryInteractMarketConsign\(\)\) return true;\s*if \(this\.tryInteractForgeEntrance\(\)\) return true;/u.test(scene),
++    '通用交互链保留既有smith_ou入口');
++  ok(/new EnhanceGate\(this\.prog\)\.entrance\(\)/u.test(scene), '正式Scene只读入口不注入fixtureInstances');
++  const entrance = scene.match(/  private tryInteractForgeEntrance\(\): boolean \{[\s\S]*?\n  \}/u)?.[0];
++  ok(entrance, 'smith_ou入口方法存在');
++  ok(/new ForgeGate\(this\.prog\)\.entrance\(\)[\s\S]*new EnhanceGate\(this\.prog\)\.entrance\(\)[\s\S]*return true;/u.test(entrance),
++    '同一次smith_ou命中先打造再强化，最后返回，强化不被饿死');
++  eq((entrance.match(/return true;/gu) ?? []).length, 1, '同一smith_ou入口仅在两段提示后消费命中');
++  ok(!/EnhancePanel|EnhancementPanel|openEnhance|submitEnhance|EnhanceProgress|fixtureInstances/u.test(scene),
++    'GameScene无完整强化UI或提交面板');
++  ok(!/EnhanceGate|EnhanceOpenFlag|EnhanceProgress|tryInteractEnhance|openEnhance|submitEnhance/u.test(await fs.readFile(path.join(root, 'src/ShopPanel.ts'), 'utf8')),
++    'ShopPanel不接强化');
+@@ -78 +92 @@ async function checkFormal() {
+-  eq(consumers, [], 'EnhanceGate只由夹具测试消费，前台与正式调用图无接线');
++  eq(consumers, ['scenes/GameScene.ts'], 'EnhanceGate正式消费者仅为GameScene只读冒烟入口');
+@@ -102,2 +116,2 @@ async function checkFormal() {
+-    report({ suite: 'v06p1-enhance-open-formal', dataMode: mode, formalOpen: false, fixtureOnly: true,
+-      enhanceSha, giftsChecked, smithServices: false, frontEndWired: false, softOpened: false, released: false });
++    report({ suite: 'v06p1-enhance-open-formal', dataMode: mode, formalOpen: true, closedFixtureOnly: true,
++      enhanceSha, giftsChecked, smithServices: false, minimalSceneWiring: true, fullEnhanceUi: false, softOpened: true, released: false });
+@@ -108 +122 @@ async function runGraph(mode, dataRoot, openFixture, refreshPayloads = null, inv
+-  const flagId = '\0v06p1-memory-open-enhance-flag', tableId = '\0v06p1-invalid-enhance-table';
++  const flagId = '\0v06p1-memory-closed-enhance-flag', tableId = '\0v06p1-invalid-enhance-table', phaserId = '\0v06p1-enhance-phaser';
+@@ -113 +127 @@ async function runGraph(mode, dataRoot, openFixture, refreshPayloads = null, inv
+-    plugins: [{ name: 'v06p1-enhance-memory-only-open', enforce: 'pre',
++    plugins: [{ name: 'v06p1-enhance-memory-closed', enforce: 'pre',
+@@ -115 +129,2 @@ async function runGraph(mode, dataRoot, openFixture, refreshPayloads = null, inv
+-        if (openFixture && /(?:^|\/)EnhanceOpenFlag(?:\.ts)?$/u.test(id)) return flagId;
++        if (id === 'phaser') return phaserId;
++        if (!openFixture && /(?:^|\/)EnhanceOpenFlag(?:\.ts)?$/u.test(id)) return flagId;
+@@ -119 +134 @@ async function runGraph(mode, dataRoot, openFixture, refreshPayloads = null, inv
+-        if (id === flagId) { flagLoads++; return 'export function isEnhanceOpenForFixture() { return true; }'; }
++        if (id === flagId) { flagLoads++; return 'export function isEnhanceOpenForFixture() { return false; }'; }
+@@ -120,0 +136,6 @@ async function runGraph(mode, dataRoot, openFixture, refreshPayloads = null, inv
++        if (id !== phaserId) return;
++        return `class Sprite {} export default { WEBGL: 2, Scene: class {}, BlendModes: { NORMAL: 0 },
++          Physics: { Arcade: { Sprite } }, GameObjects: { Sprite, NineSlice: class {} },
++          Scenes: { Events: { SHUTDOWN: 'shutdown' } }, Animations: { Events: { ANIMATION_COMPLETE: 'animationcomplete' } },
++          Input: { Keyboard: { JustDown: key => { const down = !!key?._justDown; if (key) key._justDown = false; return down; } } },
++          Math: { Clamp: (value, min, max) => Math.min(max, Math.max(min, value)), Linear: (from, to, amount) => from + (to - from) * amount } };`;
+@@ -127 +148 @@ async function runGraph(mode, dataRoot, openFixture, refreshPayloads = null, inv
+-    }],
++    }], ssr: { noExternal: ['phaser'] },
+@@ -135 +156 @@ async function runGraph(mode, dataRoot, openFixture, refreshPayloads = null, inv
+-    eq(flag.isEnhanceOpenForFixture(), openFixture, `${mode} 正式图false，开态夹具仅内存true`);
++    eq(flag.isEnhanceOpenForFixture(), openFixture, `${mode} 正式图true，关态图仅内存false`);
+@@ -146 +167 @@ async function runGraph(mode, dataRoot, openFixture, refreshPayloads = null, inv
+-    eq(flagLoads, openFixture ? 1 : 0, `${mode} 正式图无注入，夹具图虚拟flag仅加载一次`);
++    eq(flagLoads, openFixture ? 0 : 1, `${mode} 正式图无注入，关态图虚拟flag仅加载一次`);
+@@ -148,2 +169,2 @@ async function runGraph(mode, dataRoot, openFixture, refreshPayloads = null, inv
+-    report({ suite: 'v06p1-enhance-open-graph', dataMode: mode, graph: openFixture ? 'memory-open' : 'formal-closed',
+-      freshSsrRefresh: refreshPayloads !== null, invalidTable: invalidTable?.name ?? null, formalOpen: false, fixtureOnly: true, flagLoads, featureOverrideCalls,
++    report({ suite: 'v06p1-enhance-open-graph', dataMode: mode, graph: openFixture ? 'formal-open' : 'memory-closed',
++      freshSsrRefresh: refreshPayloads !== null, invalidTable: invalidTable?.name ?? null, formalOpen: true, closedFixtureOnly: true, flagLoads, featureOverrideCalls,
+@@ -151 +172 @@ async function runGraph(mode, dataRoot, openFixture, refreshPayloads = null, inv
+-        ({ state, enhanceRequestId, saveSha: hash(JSON.stringify(save)) })), softOpened: false, released: false });
++        ({ state, enhanceRequestId, saveSha: hash(JSON.stringify(save)) })), softOpened: true, released: false });
+@@ -166 +186,0 @@ try {
+-    await runGraph(mode, dataRoot, false);
+@@ -167,0 +188 @@ try {
++    await runGraph(mode, dataRoot, false);
+@@ -170 +191 @@ try {
+-    // 将夹具已提交历史结果带入全新正式关态图，关态优先并保留合法既有资产。
++    // 将已提交历史结果带入全新内存关态图，关态优先并保留合法既有资产。
+@@ -189 +210 @@ try {
+-    await runGraph(mode, dataRoot, false, null, { name: 'formal-closed-never-settles-table', table });
++    await runGraph(mode, dataRoot, false, null, { name: 'memory-closed-never-settles-table', table });
+@@ -199 +220 @@ try {
+-    formalOpen: false, fixtureOnly: true, softOpened: false, released: false,
++    formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false,
+@@ -202 +223 @@ try {
+-console.log(`v06p1 enhance open fixture tests ok: ${assertions + runtimeAssertions} assertions; shared/snapshot双根正式关态+SSR内存开态及fresh SSR读回；O01–O08；正式flag=false；EnhanceClosed原字节；gifts 10×false；enhance未改；GAME_PHASE=5；PASS≠soft-open≠release`);
++console.log(`v06p1 enhance open preamble tests ok: ${assertions + runtimeAssertions} assertions; shared/snapshot双根formal-open+memory-closed及fresh SSR读回；O01–O08；Scene最小smith_ou同命中冒烟零写；正式flag=true；EnhanceClosed原字节；gifts 10×false；enhance未改；GAME_PHASE=5；formalOpen:true、closedFixtureOnly:true、softOpened:true、released:false；PASS≠进包≠release`);
+diff --git a/scripts/v06p1-forge-closed-test.mjs b/scripts/v06p1-forge-closed-test.mjs
+index e06a18f..6e69b66 100644
+--- a/scripts/v06p1-forge-closed-test.mjs
++++ b/scripts/v06p1-forge-closed-test.mjs
+@@ -12 +12 @@ const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
+-const shared = sharedRoot(root), out = process.env.FORGE_CLOSED_OUT ?? process.env.OUT_DIR ?? path.join(root, 'qa/out_v06p1_forge_formal/closed');
++const shared = sharedRoot(root), out = process.env.FORGE_CLOSED_OUT ?? process.env.OUT_DIR ?? path.join(root, 'qa/out_v06p1_enhance_open_preamble/forge-closed');
+@@ -85,0 +86,22 @@ function protectedPath(key) {
++// 只剥强化本窗三个 import 与一个完整提示块；打造原方法仍逐字钉旧 SHA。
++function stripEnhanceSceneWiring(source) {
++  for (const line of ["import { featureClosed as enhanceFeatureClosed } from '../EnhanceClosed';\n",
++    "import { isEnhanceOpenForFixture } from '../EnhanceOpenFlag';\n",
++    "import { EnhanceGate } from '../EnhanceGate';\n"]) {
++    eq(source.split(line).length - 1, 1, `C01/C12 GameScene 强化授权 import 精确一次：${line.trim()}`);
++    source = source.replace(line, '');
++  }
++  const block = [
++    "    if (!isEnhanceOpenForFixture()) this.log(enhanceFeatureClosed().text, '#aaaaaa');",
++    '    else {',
++    '      const result = new EnhanceGate(this.prog).entrance();',
++    "      this.log(result.allowed ? '装备强化已开放。' : result.text, '#aaaaaa');",
++    '    }',
++    '',
++  ].join('\n');
++  eq(source.split(block).length - 1, 1, 'C01/C12 GameScene 强化只增加一个完整只读提示块');
++  const entry = source.match(/  private tryInteractForgeEntrance\(\): boolean \{[\s\S]*?\n  \}/u)?.[0];
++  ok(entry?.includes(`${block}    return true;`), 'C01/C12 同次 smith_ou 命中先打造再强化，提示后才 return true');
++  return source.replace(block, '');
++}
++
+@@ -87,0 +110 @@ function stripForgeSceneWiring(source) {
++  source = stripEnhanceSceneWiring(source);
+diff --git a/scripts/v06p1-market-closed-test.mjs b/scripts/v06p1-market-closed-test.mjs
+index 03b6d27..251249c 100644
+--- a/scripts/v06p1-market-closed-test.mjs
++++ b/scripts/v06p1-market-closed-test.mjs
+@@ -14 +14 @@ const dataRoots = new Map([['shared', shared], ['wt', path.join(root, 'data')],
+-const out = process.env.MARKET_CLOSED_OUT ?? process.env.OUT_DIR ?? path.join(root, 'qa/out_v06p1_forge_formal/market-closed');
++const out = process.env.MARKET_CLOSED_OUT ?? process.env.OUT_DIR ?? path.join(root, 'qa/out_v06p1_enhance_open_preamble/market-closed');
+@@ -104,0 +105,22 @@ function protectedPath(key) {
++// 只剥强化本窗三个 import 与一个完整提示块；打造原方法仍逐字钉旧 SHA。
++function stripEnhanceSceneWiring(source) {
++  for (const line of ["import { featureClosed as enhanceFeatureClosed } from '../EnhanceClosed';\n",
++    "import { isEnhanceOpenForFixture } from '../EnhanceOpenFlag';\n",
++    "import { EnhanceGate } from '../EnhanceGate';\n"]) {
++    eq(source.split(line).length - 1, 1, `C01/C12 GameScene 强化授权 import 精确一次：${line.trim()}`);
++    source = source.replace(line, '');
++  }
++  const block = [
++    "    if (!isEnhanceOpenForFixture()) this.log(enhanceFeatureClosed().text, '#aaaaaa');",
++    '    else {',
++    '      const result = new EnhanceGate(this.prog).entrance();',
++    "      this.log(result.allowed ? '装备强化已开放。' : result.text, '#aaaaaa');",
++    '    }',
++    '',
++  ].join('\n');
++  eq(source.split(block).length - 1, 1, 'C01/C12 GameScene 强化只增加一个完整只读提示块');
++  const entry = source.match(/  private tryInteractForgeEntrance\(\): boolean \{[\s\S]*?\n  \}/u)?.[0];
++  ok(entry?.includes(`${block}    return true;`), 'C01/C12 同次 smith_ou 命中先打造再强化，提示后才 return true');
++  return source.replace(block, '');
++}
++
+@@ -106,0 +129 @@ function stripForgeSceneWiring(source) {
++  source = stripEnhanceSceneWiring(source);
+diff --git a/src/EnhanceOpenFlag.ts b/src/EnhanceOpenFlag.ts
+index 258395c..fe19800 100644
+--- a/src/EnhanceOpenFlag.ts
++++ b/src/EnhanceOpenFlag.ts
+@@ -1,2 +1,2 @@
+-/** 正式恒关；仅 Vite SSR 开态夹具图可由 resolve/load 内存模块注入 true。 */
+-export function isEnhanceOpenForFixture(): boolean { return false; }
++/** 正式路径恒 true；仅 Vite SSR 关态图可注入 false。 */
++export function isEnhanceOpenForFixture(): boolean { return true; }
+diff --git a/src/scenes/GameScene.ts b/src/scenes/GameScene.ts
+index f2b9fdb..b0f1fc1 100644
+--- a/src/scenes/GameScene.ts
++++ b/src/scenes/GameScene.ts
+@@ -75,0 +76,3 @@ import { ForgeGate } from '../ForgeGate';
++import { featureClosed as enhanceFeatureClosed } from '../EnhanceClosed';
++import { isEnhanceOpenForFixture } from '../EnhanceOpenFlag';
++import { EnhanceGate } from '../EnhanceGate';
+@@ -2164,0 +2168,5 @@ export class GameScene extends Phaser.Scene {
++    if (!isEnhanceOpenForFixture()) this.log(enhanceFeatureClosed().text, '#aaaaaa');
++    else {
++      const result = new EnhanceGate(this.prog).entrance();
++      this.log(result.allowed ? '装备强化已开放。' : result.text, '#aaaaaa');
++    }
+diff --git a/src/v06p1-enhance-open.test.ts b/src/v06p1-enhance-open.test.ts
+index 8ad12aa..9cb454c 100644
+--- a/src/v06p1-enhance-open.test.ts
++++ b/src/v06p1-enhance-open.test.ts
+@@ -1 +1 @@
+-// 正式强化恒关；仅独立 Vite SSR 开态夹具图可内存注入 true。
++// 正式强化恒开；只有独立 Vite SSR 关态图可将 EnhanceOpenFlag 内存注入 false。
+@@ -10,0 +11 @@ import { isValidEnhanceProgress } from './EnhanceProgress';
++import { GameScene } from './scenes/GameScene';
+@@ -100 +101 @@ export async function runEnhanceOpenFixtureTests(options: {
+-  const label = `${dataMode}/${openFixture ? 'memory-open' : 'formal-closed'}/${invalidTable ?? 'formal-table'}`;
++  const label = `${dataMode}/${openFixture ? 'formal-open' : 'memory-closed'}/${invalidTable ?? 'formal-table'}`;
+@@ -119 +120 @@ export async function runEnhanceOpenFixtureTests(options: {
+-  eq(isEnhanceOpenForFixture(), openFixture, '独立SSR图唯一旗授权');
++  eq(isEnhanceOpenForFixture(), openFixture, '旗标来自当前独立SSR正式开态或内存关态图');
+@@ -169,2 +170,2 @@ export async function runEnhanceOpenFixtureTests(options: {
+-  async function formalClosed(p: Progress, message: string) {
+-    const fail = () => { throw new Error('正式关态不得查询资格、配置、随机或事务'); };
++  async function memoryClosed(p: Progress, message: string) {
++    const fail = () => { throw new Error('内存关态不得查询资格、配置、随机或事务'); };
+@@ -202,0 +204,77 @@ export async function runEnhanceOpenFixtureTests(options: {
++  function sceneSmoke() {
++    const { p } = fixture(), logs: { text: string; color: string }[] = [];
++    const before = p.exportSave(), writes = idb.writes, rows = copy([...idb.rows]), samples = sampleCount;
++    const entrance = { name: 'smith_ou', type: 'npc', props: { npc: 'smith_ou' }, x: 100, y: 200 };
++    const forgeTip = { text: '炼器打造已开放。', color: '#fff8d0' };
++    const enhanceTip = openFixture ? { text: '装备强化已开放。', color: '#aaaaaa' }
++      : { text: Closed.featureClosed().text, color: '#aaaaaa' };
++    const scene: any = Object.assign(Object.create(GameScene.prototype), {
++      prog: p, map: { id: 'luoxia_town', objects: [] }, player: { x: 100, y: 200 },
++      log: (text: string, color: string) => logs.push({ text, color }),
++      encounterRuntime: { interact() { throw new Error('欧冶匠两项入口须先于遭遇与NPC交互'); } },
++    });
++    eq(typeof scene.tryInteractForgeEntrance, 'function', 'Scene既有欧冶匠最小入口存在');
++    eq(scene.tryInteractForgeEntrance(), false, '没有对象时安静no-op');
++    scene.map.objects = [{ ...entrance, name: 'npc_shop', props: { npc: 'npc_shop' } }];
++    eq(scene.tryInteractForgeEntrance(), false, '非smith_ou对象不消费强化入口');
++    scene.map.objects = [entrance]; scene.player.x = entrance.x + 29;
++    eq(scene.tryInteractForgeEntrance(), false, '入口横向超距不交互');
++    scene.player.x = entrance.x; scene.player.y = entrance.y + 41;
++    eq(scene.tryInteractForgeEntrance(), false, '入口纵向超距不交互');
++    scene.player.y = entrance.y; scene.senseMap = { objectVisible: () => false };
++    eq(scene.tryInteractForgeEntrance(), false, '隐藏欧冶匠不交互');
++    eq(logs, [], '无对象/非欧冶匠/超距/隐藏时两项提示均安静');
++    scene.senseMap = undefined;
++    for (const object of [{ ...entrance, props: {} }, { ...entrance, name: 'enhance-smoke-alias' }]) {
++      scene.map.objects = [object]; const logStart = logs.length;
++      eq(scene.tryInteractForgeEntrance(), true, `${object.name}邻近欧冶匠被消费`);
++      eq(logs.slice(logStart), [forgeTip, enhanceTip], '同一次smith_ou命中先打造再强化，强化不被return饿死');
++    }
++    scene.map.objects = [entrance]; scene.player.x = entrance.x + 28; scene.player.y = entrance.y + 40;
++    let logStart = logs.length;
++    eq(scene.tryInteractForgeEntrance(), true, '28×40范围边界内两项入口仍可冒烟');
++    eq(logs.slice(logStart), [forgeTip, enhanceTip], '距离边界保持打造顺序与强化提示');
++    scene.player.x = entrance.x; scene.player.y = entrance.y; logStart = logs.length;
++    eq(scene.tryInteract(), true, '通用交互在遭遇/NPC前消费欧冶匠两项入口');
++    eq(logs.slice(logStart), [forgeTip, enhanceTip], '通用交互同命中两项入口且不重复提示');
++    const originalEntrance = EnhanceGate.prototype.entrance;
++    let entranceCalls = 0;
++    try {
++      EnhanceGate.prototype.entrance = function () {
++        entranceCalls++;
++        if (!openFixture) throw new Error('内存关态不得查询EnhanceGate');
++        return { allowed: false, tipKey: 'enhance.fixture.smoke', text: '强化冒烟拒绝。' };
++      };
++      logStart = logs.length;
++      eq(scene.tryInteractForgeEntrance(), true, '最小入口保留EnhanceGate拒绝提示分支');
++      eq(entranceCalls, openFixture ? 1 : 0, '只有正式开态查询EnhanceGate.entrance，关态直接绕过');
++      eq(logs.slice(logStart), [forgeTip, { text: openFixture ? '强化冒烟拒绝。' : Closed.featureClosed().text,
++        color: '#aaaaaa' }], 'Gate拒绝原文或内存关态tip展示，打造既有提示保持');
++    } finally { EnhanceGate.prototype.entrance = originalEntrance; }
++    eq(p.exportSave(), before, 'Scene冒烟不修改角色、打造袋或强化袋');
++    eq(idb.writes, writes, 'Scene冒烟存档写入0'); eq([...idb.rows], rows, 'Scene冒烟磁盘旧档不变');
++    eq(sampleCount, samples, 'Scene入口不抽样或结算'); eq(localWrites, 0, 'Scene冒烟无localStorage旁路写入');
++    return { noObjectNoop: true, nonSmithIgnored: true, nearbyOnly: true, hiddenIgnored: true,
++      objectName: 'smith_ou', npcProp: 'smith_ou', boundary: { x: 28, y: 40 }, genericInteraction: true,
++      graph: openFixture ? 'formal-open' : 'memory-closed', sameHitForgeThenEnhance: true,
++      forgeSoftOpenPreserved: true, enhanceNotStarved: true, gateDeniedRouting: openFixture,
++      closedBypassesGate: !openFixture, saveWrites: idb.writes - writes };
++  }
++  async function defaultGateDenied() {
++    const { p } = fixture(), gate = new EnhanceGate(p);
++    const before = p.exportSave(), writes = idb.writes, samples = sampleCount;
++    ok(gate.feature().allowed, '正式默认无fixtureInstances仍允许只读说明');
++    ok(gate.entrance().allowed, '正式默认无fixtureInstances仍允许入口提示');
++    ok(gate.loadRefresh().allowed, '正式默认无fixtureInstances空历史袋只读允许');
++    businessDenied(gate.enhance(request('formal-default-denied')), '正式默认无fixtureInstances拒绝选择');
++    const result = await gate.submit(request('formal-default-denied'));
++    businessDenied(result, '正式默认无fixtureInstances拒绝新submit');
++    eq(result.allowed ? null : result.tipKey, 'enhance.fixture.selection', '默认拒绝源于未授权装备实例');
++    eq(gate.laterService(), Closed.refuseLaterService(), '正式默认开态仍拒附灵/分解');
++    eq(p.exportSave(), before, '默认Gate拒绝不建实例、不建袋、不扣费');
++    eq(p.enhance, undefined, '默认拒绝不发明正式装备实例系统');
++    eq(idb.writes, writes, '默认无夹具授权submit拒绝零存档写');
++    eq(sampleCount, samples, '默认无夹具授权submit拒绝不抽样');
++    return { fixtureInstancesAbsent: true, submitDenied: true, tipKey: result.allowed ? null : result.tipKey,
++      noProductionInstancesInvented: true, laterServiceClosed: true, saveWrites: idb.writes - writes };
++  }
+@@ -217 +295 @@ export async function runEnhanceOpenFixtureTests(options: {
+-    if (!openFixture) { await formalClosed(loaded, `${payload.state}/正式历史夹具袋`); return; }
++    if (!openFixture) { await memoryClosed(loaded, `${payload.state}/内存关态历史夹具袋`); return; }
+@@ -228,0 +307,2 @@ export async function runEnhanceOpenFixtureTests(options: {
++    const sceneSmokeEvidence = invalidTable ? null : sceneSmoke();
++    const defaultGateEvidence = openFixture && !invalidTable ? await defaultGateDenied() : null;
+@@ -238 +318 @@ export async function runEnhanceOpenFixtureTests(options: {
+-        await formalClosed(p, '正式关态/无袋或歧义旧请求');
++        await memoryClosed(p, '内存关态/无袋或歧义旧请求');
+@@ -460,2 +540,3 @@ export async function runEnhanceOpenFixtureTests(options: {
+-    return { assertions, payloads, openFixture, graph: openFixture ? 'memory-open' : 'formal-closed',
+-      formalOpen: false, fixtureOnly: true, softOpened: false, released: false, storageWrites: idb.writes, commits: idb.commits, sampleCount,
++    return { assertions, payloads, openFixture, graph: openFixture ? 'formal-open' : 'memory-closed',
++      formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false,
++      sceneSmoke: sceneSmokeEvidence, defaultGateDenied: defaultGateEvidence, storageWrites: idb.writes, commits: idb.commits, sampleCount,
+@@ -463 +544 @@ export async function runEnhanceOpenFixtureTests(options: {
+-      cases: openFixture ? invalidTable ? ['O06'] : ['O01', 'O02', 'O03', 'O04', 'O05', 'O06', 'O07', 'O08'] : ['formal-eight-tips', 'zero-side-effects', 'historical-baggage'] };
++      cases: openFixture ? invalidTable ? ['O06'] : ['O01', 'O02', 'O03', 'O04', 'O05', 'O06', 'O07', 'O08'] : ['memory-closed-eight-tips', 'zero-side-effects', 'historical-baggage'] };
+diff --git a/src/v06p1-forge-open.test.ts b/src/v06p1-forge-open.test.ts
+index da7cf5b..edf224f 100644
+--- a/src/v06p1-forge-open.test.ts
++++ b/src/v06p1-forge-open.test.ts
+@@ -255 +255 @@ export async function runForgeOpenFixtureTests(options: {
+-      eq(logs[logs.length - 1], openFixture
++      eq(logs[logs.length - 2], openFixture
+@@ -257,0 +258 @@ export async function runForgeOpenFixtureTests(options: {
++      eq(logs[logs.length - 1], { text: '装备强化已开放。', color: '#aaaaaa' }, '同次命中在打造提示后显示强化正式开态提示');
+@@ -273 +274 @@ export async function runForgeOpenFixtureTests(options: {
+-      eq(logs[logs.length - 1], { text: openFixture ? '炼器冒烟拒绝。' : Closed.featureClosed().text,
++      eq(logs[logs.length - 2], { text: openFixture ? '炼器冒烟拒绝。' : Closed.featureClosed().text,
+@@ -274,0 +276 @@ export async function runForgeOpenFixtureTests(options: {
++      eq(logs[logs.length - 1], { text: '装备强化已开放。', color: '#aaaaaa' }, '同次命中在打造提示后显示强化正式开态提示');

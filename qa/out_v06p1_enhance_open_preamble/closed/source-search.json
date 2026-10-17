@@ -1,0 +1,1602 @@
+[
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 3,
+    "text": "export type EnhanceClosedTipKey = 'enhance.closed.feature' | 'enhance.closed.entrance'"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 4,
+    "text": "  | 'enhance.closed.enhance' | 'enhance.closed.no_submit' | 'enhance.closed.no_level'"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 5,
+    "text": "  | 'enhance.closed.no_consume' | 'enhance.closed.load_refresh' | 'enhance.closed.later_service';"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 7,
+    "text": "export interface EnhanceClosedTip {"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 9,
+    "text": "  readonly tipKey: EnhanceClosedTipKey;"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 13,
+    "text": "/** 本窗恒定关态；装备、资源和旧档均不能授权强化。 */"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 14,
+    "text": "function closed(tipKey: EnhanceClosedTipKey): EnhanceClosedTip {"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 19,
+    "text": "export function featureClosed() { return closed('enhance.closed.feature'); }"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 20,
+    "text": "export function refuseEntrance() { return closed('enhance.closed.entrance'); }"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 21,
+    "text": "export function refuseEnhance() { return closed('enhance.closed.enhance'); }"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 22,
+    "text": "export function refuseSubmit() { return closed('enhance.closed.no_submit'); }"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 23,
+    "text": "export function refuseLevel() { return closed('enhance.closed.no_level'); }"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 24,
+    "text": "export function refuseConsume() { return closed('enhance.closed.no_consume'); }"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 25,
+    "text": "export function refuseLoadRefresh() { return closed('enhance.closed.load_refresh'); }"
+  },
+  {
+    "file": "src/EnhanceClosed.ts",
+    "line": 26,
+    "text": "export function refuseLaterService() { return closed('enhance.closed.later_service'); }"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 1,
+    "text": "import enhance from '@xt/balance/enhance.json';"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 4,
+    "text": "import { isEnhanceOpenForFixture } from './EnhanceOpenFlag';"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 5,
+    "text": "import * as EnhanceClosed from './EnhanceClosed';"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 6,
+    "text": "import { enhanceArray, enhanceFields, isEnhanceId, isEnhanceInstanceRef, isValidEnhanceInstances, isValidEnhanceProgress,"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 7,
+    "text": "  type EnhanceAttributes, type EnhanceEquipmentType, type EnhanceFixtureInstance, type EnhanceProgress, type EnhanceResult } from './EnhanceProgress';"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 9,
+    "text": "export interface EnhanceRequest {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 10,
+    "text": "  enhanceRequestId: string;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 16,
+    "text": "export interface EnhanceFixtureOptions {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 18,
+    "text": "  fixtureInstances?: readonly EnhanceFixtureInstance[];"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 22,
+    "text": "  canCommitResult?: (draft: Progress, result: EnhanceResult) => boolean;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 24,
+    "text": "export interface EnhanceLevelRow { to: number; rate: number; stones: number; refineStones: number; dropOnFail: boolean; }"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 25,
+    "text": "export interface EnhanceAllowed {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 27,
+    "text": "  result?: EnhanceResult;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 28,
+    "text": "  progress?: EnhanceProgress;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 29,
+    "text": "  instance?: EnhanceFixtureInstance;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 30,
+    "text": "  attributes?: EnhanceAttributes;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 31,
+    "text": "  row?: EnhanceLevelRow;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 34,
+    "text": "export interface EnhanceDenied { allowed: false; tipKey: string; text: string; }"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 35,
+    "text": "export type EnhanceGateResult = EnhanceAllowed | EnhanceDenied;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 37,
+    "text": "const denied = (reason: string, text: string): EnhanceDenied => ({ allowed: false, tipKey: `enhance.fixture.${reason}`, text });"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 41,
+    "text": "const sameAttributes = (a: EnhanceAttributes, b: EnhanceAttributes): boolean =>"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 46,
+    "text": "export class EnhanceGate {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 48,
+    "text": "  constructor(private readonly progress: Progress, private readonly fixture: EnhanceFixtureOptions = {}) {}"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 50,
+    "text": "  feature(): EnhanceGateResult {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 51,
+    "text": "    if (!isEnhanceOpenForFixture()) return EnhanceClosed.featureClosed();"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 52,
+    "text": "    return this.validRules() ? { allowed: true } : denied('rules', '强化配置依赖不完整。');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 54,
+    "text": "  entrance(): EnhanceGateResult {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 55,
+    "text": "    if (!isEnhanceOpenForFixture()) return EnhanceClosed.refuseEntrance();"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 56,
+    "text": "    return this.validRules() ? { allowed: true } : denied('rules', '强化配置依赖不完整。');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 59,
+    "text": "  enhance(request?: EnhanceRequest): EnhanceGateResult {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 60,
+    "text": "    if (!isEnhanceOpenForFixture()) return EnhanceClosed.refuseEnhance();"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 62,
+    "text": "      if (!this.valid(this.progress)) return denied('progress', '强化档案存在歧义，已阻止写入。');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 66,
+    "text": "      return { allowed: true, instance: copy(selected.instance), attributes: this.attributes(selected.instance.type, selected.instance.enhanceLevel), row: copy(selected.row) };"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 67,
+    "text": "    } catch { return denied('request', '强化选择无效。'); }"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 69,
+    "text": "  async submit(request: EnhanceRequest): Promise<EnhanceGateResult> {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 70,
+    "text": "    if (!isEnhanceOpenForFixture()) return EnhanceClosed.refuseSubmit();"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 71,
+    "text": "    if (this.#busy) return denied('busy', '正在保存强化结果，请稍候。');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 73,
+    "text": "      if (!this.valid(this.progress)) return denied('progress', '强化档案存在歧义，已阻止写入。');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 74,
+    "text": "      if (!this.validRequest(request)) return denied('request', '强化请求无效或护器符依据缺失。');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 75,
+    "text": "      const old = this.progress.enhance?.enhancements.find(row => row.enhanceRequestId === request.enhanceRequestId);"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 85,
+    "text": "        if (draft.enhance?.enhancements.some(row => row.enhanceRequestId === intent.enhanceRequestId))"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 88,
+    "text": "        const ledgerId = draft.enhance?.ledgerId ?? (this.fixture.ledgerId ? this.fixture.ledgerId() : `enhance_${crypto.randomUUID()}`);"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 89,
+    "text": "        if (!isEnhanceId(ledgerId)) return reject('identity', '强化夹具账本身份无效。');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 91,
+    "text": "        if (!ratio(random) || random >= 1) return reject('random', '强化抽样无效，保持原状态。');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 94,
+    "text": "        const result: EnhanceResult = {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 95,
+    "text": "          state: 'committed', enhanceRequestId: intent.enhanceRequestId, enhanceResultRef: `${ledgerId}:enhance:${intent.enhanceRequestId}`,"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 100,
+    "text": "        const bag: EnhanceProgress = draft.enhance ?? { version: 1, ledgerId, instances: copy([...authorized]), enhancements: [], receipts: [] };"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 106,
+    "text": "        instance.enhanceLevel = finalLevel;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 107,
+    "text": "        bag.enhancements.push(result); bag.receipts.push(result.enhanceResultRef); draft.enhance = bag;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 111,
+    "text": "          return reject('commit', '强化结果承载失败，保持原库存与等级。');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 113,
+    "text": "          || instance.enhanceLevel !== finalLevel || equipmentCounts.some(([id, before]) => draft.count(id) !== before)"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 115,
+    "text": "          return reject('commit', '强化结果承载失败，保持原库存与等级。');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 118,
+    "text": "    } catch { return denied('save', '强化未提交，保持原库存与等级。'); }"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 120,
+    "text": "  level(enhanceRequestId?: string): EnhanceGateResult {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 121,
+    "text": "    if (!isEnhanceOpenForFixture()) return EnhanceClosed.refuseLevel();"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 122,
+    "text": "    return this.readResult(enhanceRequestId);"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 124,
+    "text": "  consume(enhanceRequestId?: string): EnhanceGateResult {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 125,
+    "text": "    if (!isEnhanceOpenForFixture()) return EnhanceClosed.refuseConsume();"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 126,
+    "text": "    return this.readResult(enhanceRequestId);"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 128,
+    "text": "  loadRefresh(): EnhanceGateResult {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 129,
+    "text": "    if (!isEnhanceOpenForFixture()) return EnhanceClosed.refuseLoadRefresh();"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 130,
+    "text": "    if (!this.valid(this.progress)) return denied('progress', '强化档案存在歧义，已阻止写入。');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 131,
+    "text": "    return this.progress.enhance === undefined ? { allowed: true } : { allowed: true, progress: copy(this.progress.enhance) };"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 133,
+    "text": "  laterService(): EnhanceGateResult {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 134,
+    "text": "    if (!isEnhanceOpenForFixture()) return EnhanceClosed.refuseLaterService();"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 135,
+    "text": "    return EnhanceClosed.refuseLaterService();"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 138,
+    "text": "  private readResult(requestId: string | undefined): EnhanceGateResult {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 139,
+    "text": "    if (!this.valid(this.progress)) return denied('progress', '强化档案存在歧义，已阻止写入。');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 140,
+    "text": "    const result = this.progress.enhance?.enhancements.find(row => row.enhanceRequestId === requestId);"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 141,
+    "text": "    return result ? { allowed: true, result: copy(result), replayed: true } : denied('result', '没有完整提交的强化结果。');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 143,
+    "text": "  private replay(result: EnhanceResult, request: EnhanceRequest): EnhanceGateResult {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 145,
+    "text": "      ? { allowed: true, result: copy(result), replayed: true } : denied('identity', '请求身份与既有强化结果不符。');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 147,
+    "text": "  private validRequest(value: unknown): value is EnhanceRequest {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 148,
+    "text": "    return enhanceFields(value, ['enhanceRequestId', 'instanceRef', 'fromLevel', 'to', 'useProtectCharm'])"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 149,
+    "text": "      && isEnhanceId(value.enhanceRequestId) && isEnhanceInstanceRef(value.instanceRef) && count(value.fromLevel)"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 150,
+    "text": "      && positive(value.to) && value.to === value.fromLevel + 1 && value.to <= enhance.maxLevel && value.useProtectCharm === false;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 152,
+    "text": "  private selection(progress: Progress, request: EnhanceRequest | undefined,"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 153,
+    "text": "    authorized: readonly EnhanceFixtureInstance[] | undefined = this.fixture.fixtureInstances): { instance: EnhanceFixtureInstance; row: EnhanceLevelRow } | undefined {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 154,
+    "text": "    if (!this.validRequest(request) || !isValidEnhanceInstances(authorized)"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 155,
+    "text": "      || !authorized.every(row => row.enhanceLevel <= enhance.maxLevel && this.supportedInstance(row))) return undefined;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 156,
+    "text": "    const instances = progress.enhance?.instances ?? authorized;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 160,
+    "text": "      || instance.enhanceLevel !== request.fromLevel || instance.enhanceLevel >= enhance.maxLevel"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 161,
+    "text": "      || !instances.every(row => row.enhanceLevel <= enhance.maxLevel && this.supportedInstance(row))"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 163,
+    "text": "    const matches = enhance.levels.filter(row => row.to === request.to);"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 166,
+    "text": "  private supportedInstance(instance: EnhanceFixtureInstance): boolean {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 171,
+    "text": "  private ownsInstances(progress: Progress, instances: readonly EnhanceFixtureInstance[]): boolean {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 177,
+    "text": "  private ownsCosts(progress: Progress, row: EnhanceLevelRow): boolean {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 187,
+    "text": "      if (!positive(enhance.maxLevel) || !enhanceArray(enhance.levels) || enhance.levels.length !== enhance.maxLevel) return false;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 189,
+    "text": "      for (const row of enhance.levels) {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 190,
+    "text": "        if (!enhanceFields(row, ['to', 'rate', 'stones', 'refineStones', 'dropOnFail']) || !positive(row.to)"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 191,
+    "text": "          || row.to > enhance.maxLevel || targets.has(row.to) || !ratio(row.rate) || row.rate > 1"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 195,
+    "text": "      if (!enhanceFields(enhance.statPerLevel, ['weapon', 'armor'])"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 196,
+    "text": "        || !enhanceFields(enhance.statPerLevel.weapon, ['atkRatioOfBase'])"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 197,
+    "text": "        || !enhanceFields(enhance.statPerLevel.armor, ['defRatioOfBase', 'hpRatioOfBase'])"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 198,
+    "text": "        || !ratio(enhance.statPerLevel.weapon.atkRatioOfBase) || !ratio(enhance.statPerLevel.armor.defRatioOfBase)"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 199,
+    "text": "        || !ratio(enhance.statPerLevel.armor.hpRatioOfBase)) return false;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 200,
+    "text": "      const milestones: unknown = enhance.milestoneBonus;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 204,
+    "text": "        if (typeof key !== 'string' || !/^[1-9]\\d*$/.test(key) || !positive(Number(key)) || Number(key) > enhance.maxLevel) return false;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 206,
+    "text": "        return enhanceFields(row, ['allRatio']) && ratio(row.allRatio);"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 210,
+    "text": "  private attributes(type: EnhanceEquipmentType, level: number): EnhanceAttributes {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 212,
+    "text": "      atkRatioOfBase: type === 'weapon' ? enhance.statPerLevel.weapon.atkRatioOfBase * level : 0,"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 213,
+    "text": "      defRatioOfBase: type === 'armor' ? enhance.statPerLevel.armor.defRatioOfBase * level : 0,"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 214,
+    "text": "      hpRatioOfBase: type === 'armor' ? enhance.statPerLevel.armor.hpRatioOfBase * level : 0,"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 215,
+    "text": "      allRatio: Object.entries(enhance.milestoneBonus).filter(([milestone]) => Number(milestone) <= level)"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 221,
+    "text": "    const bag = progress.enhance;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 223,
+    "text": "    if (!isValidEnhanceProgress(bag) || bag.instances.some(row => row.enhanceLevel > enhance.maxLevel)) return false;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 224,
+    "text": "    return bag.enhancements.every(result => {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 225,
+    "text": "      const row = enhance.levels.find(other => other.to === result.to);"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 227,
+    "text": "        && result.dropOnFail === row.dropOnFail && result.finalLevel <= enhance.maxLevel"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 231,
+    "text": "  private async transact(apply: (draft: Progress, reject: (reason: string, text: string) => undefined) => EnhanceAllowed | undefined): Promise<EnhanceGateResult> {"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 232,
+    "text": "    if (this.#busy) return denied('busy', '正在保存强化结果，请稍候。');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 234,
+    "text": "    let rejection: EnhanceDenied | undefined;"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 238,
+    "text": "        if (!this.valid(draft)) return reject('progress', '强化档案存在歧义，已阻止写入。');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 240,
+    "text": "        if (result && !this.valid(draft)) return reject('progress', '强化结果校验失败，保持原档。');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 243,
+    "text": "      return saved ?? rejection ?? denied('save', '强化保存失败，保持原库存与等级。');"
+  },
+  {
+    "file": "src/EnhanceGate.ts",
+    "line": 244,
+    "text": "    } catch { return denied('save', '强化保存失败，保持原库存与等级。'); }"
+  },
+  {
+    "file": "src/EnhanceOpenFlag.ts",
+    "line": 2,
+    "text": "export function isEnhanceOpenForFixture(): boolean { return true; }"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 1,
+    "text": "export type EnhanceEquipmentType = 'weapon' | 'armor';"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 3,
+    "text": "export interface EnhanceFixtureInstance {"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 6,
+    "text": "  type: EnhanceEquipmentType;"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 7,
+    "text": "  enhanceLevel: number;"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 10,
+    "text": "export interface EnhanceAttributes {"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 16,
+    "text": "export interface EnhanceResult {"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 18,
+    "text": "  enhanceRequestId: string;"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 19,
+    "text": "  enhanceResultRef: string;"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 22,
+    "text": "  type: EnhanceEquipmentType;"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 32,
+    "text": "  attributes: EnhanceAttributes;"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 35,
+    "text": "export interface EnhanceProgress {"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 38,
+    "text": "  instances: EnhanceFixtureInstance[];"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 39,
+    "text": "  enhancements: EnhanceResult[];"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 42,
+    "text": "export const isEnhanceId = (value: unknown): value is string => typeof value === 'string'"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 44,
+    "text": "export const isEnhanceInstanceRef = (value: unknown): value is string => typeof value === 'string'"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 46,
+    "text": "export const enhanceFields = (value: unknown, keys: readonly string[]): value is Record<string, unknown> => !!value"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 51,
+    "text": "export const enhanceArray = (value: unknown): value is unknown[] => Array.isArray(value)"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 59,
+    "text": "const equipmentType = (value: unknown): value is EnhanceEquipmentType => value === 'weapon' || value === 'armor';"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 60,
+    "text": "export function isValidEnhanceInstances(value: unknown): value is EnhanceFixtureInstance[] {"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 61,
+    "text": "  if (!enhanceArray(value) || !value.length) return false;"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 64,
+    "text": "    if (!enhanceFields(row, ['instanceRef', 'itemId', 'type', 'enhanceLevel']) || !isEnhanceInstanceRef(row.instanceRef)"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 65,
+    "text": "      || refs.has(row.instanceRef) || !isEnhanceId(row.itemId) || !equipmentType(row.type) || !count(row.enhanceLevel)) return false;"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 69,
+    "text": "export function isValidEnhanceAttributes(value: unknown): value is EnhanceAttributes {"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 70,
+    "text": "  return enhanceFields(value, ['atkRatioOfBase', 'defRatioOfBase', 'hpRatioOfBase', 'allRatio'])"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 74,
+    "text": "export function isValidEnhanceProgress(value: unknown): value is EnhanceProgress {"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 76,
+    "text": "    if (!enhanceFields(value, ['version', 'ledgerId', 'instances', 'enhancements', 'receipts'])"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 77,
+    "text": "      || value.version !== 1 || !isEnhanceId(value.ledgerId) || !isValidEnhanceInstances(value.instances)"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 78,
+    "text": "      || !enhanceArray(value.enhancements) || !enhanceArray(value.receipts)"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 79,
+    "text": "      || value.enhancements.length !== value.receipts.length) return false;"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 81,
+    "text": "    for (const row of value.enhancements) {"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 82,
+    "text": "      if (!enhanceFields(row, ['state', 'enhanceRequestId', 'enhanceResultRef', 'instanceRef', 'itemId', 'type',"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 84,
+    "text": "        || row.state !== 'committed' || !isEnhanceId(row.enhanceRequestId) || requests.has(row.enhanceRequestId)"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 85,
+    "text": "        || row.enhanceResultRef !== `${value.ledgerId}:enhance:${row.enhanceRequestId}`"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 86,
+    "text": "        || !isEnhanceInstanceRef(row.instanceRef) || !isEnhanceId(row.itemId) || !equipmentType(row.type)"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 91,
+    "text": "        || !isValidEnhanceAttributes(row.attributes)) return false;"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 96,
+    "text": "      requests.add(row.enhanceRequestId); refs.add(row.enhanceResultRef as string);"
+  },
+  {
+    "file": "src/EnhanceProgress.ts",
+    "line": 98,
+    "text": "    return value.instances.every(row => !levels.has(row.instanceRef) || levels.get(row.instanceRef) === row.enhanceLevel)"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 1,
+    "text": "import enhance from '@xt/balance/enhance.json';"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 149,
+    "text": "    const grades = enhance.forge.grade;"
+  },
+  {
+    "file": "src/ForgeGate.ts",
+    "line": 160,
+    "text": "      cumulative += enhance.forge.grade[grade];"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 23,
+    "text": "import { isValidEnhanceProgress, type EnhanceProgress } from './EnhanceProgress';"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 93,
+    "text": "  if (has('enhance') && !isValidEnhanceProgress(saved.enhance)) return false;"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 185,
+    "text": "  /** 仅承载明确授权的强化夹具事实；缺袋旧档不补建，读回不结算。 */"
+  },
+  {
+    "file": "src/Progress.ts",
+    "line": 186,
+    "text": "  enhance: EnhanceProgress | undefined = undefined;"
+  },
+  {
+    "file": "src/scenes/GameScene.ts",
+    "line": 76,
+    "text": "import { featureClosed as enhanceFeatureClosed } from '../EnhanceClosed';"
+  },
+  {
+    "file": "src/scenes/GameScene.ts",
+    "line": 77,
+    "text": "import { isEnhanceOpenForFixture } from '../EnhanceOpenFlag';"
+  },
+  {
+    "file": "src/scenes/GameScene.ts",
+    "line": 78,
+    "text": "import { EnhanceGate } from '../EnhanceGate';"
+  },
+  {
+    "file": "src/scenes/GameScene.ts",
+    "line": 2168,
+    "text": "    if (!isEnhanceOpenForFixture()) this.log(enhanceFeatureClosed().text, '#aaaaaa');"
+  },
+  {
+    "file": "src/scenes/GameScene.ts",
+    "line": 2170,
+    "text": "      const result = new EnhanceGate(this.prog).entrance();"
+  },
+  {
+    "file": "src/scenes/GameScene.ts",
+    "line": 2171,
+    "text": "      this.log(result.allowed ? '装备强化已开放。' : result.text, '#aaaaaa');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 1,
+    "text": "// 正式强化恒开；只有独立 Vite SSR 关态图可将 EnhanceOpenFlag 内存注入 false。"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 2,
+    "text": "import enhance from '@xt/balance/enhance.json';"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 7,
+    "text": "import * as Closed from './EnhanceClosed';"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 8,
+    "text": "import { EnhanceGate } from './EnhanceGate';"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 9,
+    "text": "import { isEnhanceOpenForFixture } from './EnhanceOpenFlag';"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 10,
+    "text": "import { isValidEnhanceProgress } from './EnhanceProgress';"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 13,
+    "text": "type Payload = { state: string; save: Record<string, unknown>; enhanceRequestId: string };"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 14,
+    "text": "type GateResult = Awaited<ReturnType<EnhanceGate['submit']>>;"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 97,
+    "text": "export async function runEnhanceOpenFixtureTests(options: {"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 110,
+    "text": "  const flags = copy(featureFlags()), tableBefore = JSON.stringify(enhance);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 111,
+    "text": "  type Instance = { instanceRef: string; itemId: string; type: 'weapon' | 'armor'; enhanceLevel: number };"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 112,
+    "text": "  const instance = (enhanceLevel = 0, type: 'weapon' | 'armor' = 'weapon', instanceRef = 'fixture-owned-one'): Instance => ({"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 113,
+    "text": "    instanceRef, itemId: type === 'weapon' ? 'bamboo_sword' : 'fox_robe', type, enhanceLevel,"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 115,
+    "text": "  const request = (enhanceRequestId = 'enhance-one', fromLevel = 0, instanceRef = 'fixture-owned-one') => ({"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 116,
+    "text": "    enhanceRequestId, instanceRef, fromLevel, to: fromLevel + 1, useProtectCharm: false,"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 119,
+    "text": "    random: () => { sampleCount++; return sampled; }, ledgerId: () => `${dataMode}-enhance-${++ledgerSeq}` });"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 120,
+    "text": "  eq(isEnhanceOpenForFixture(), openFixture, '旗标来自当前独立SSR正式开态或内存关态图');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 123,
+    "text": "  ok(!Object.keys(flags).some(key => /enhance/iu.test(key)), '不新增配表强化开关');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 136,
+    "text": "    return { p, gate: new EnhanceGate(p, fixtureOptions(authorized)), authorized };"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 140,
+    "text": "    atkRatioOfBase: type === 'weapon' ? enhance.statPerLevel.weapon.atkRatioOfBase * level : 0,"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 141,
+    "text": "    defRatioOfBase: type === 'armor' ? enhance.statPerLevel.armor.defRatioOfBase * level : 0,"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 142,
+    "text": "    hpRatioOfBase: type === 'armor' ? enhance.statPerLevel.armor.hpRatioOfBase * level : 0,"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 143,
+    "text": "    allRatio: Object.entries(enhance.milestoneBonus).reduce((sum, [milestone, bonus]) =>"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 148,
+    "text": "    ok('tipKey' in result && result.tipKey.startsWith('enhance.fixture.'), `${message}：明确强化业务拒绝`);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 151,
+    "text": "    ok(result.allowed && result.result, '返回完整强化结算结果'); return result.result;"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 161,
+    "text": "  async function replay(p: Progress, gate: EnhanceGate, input: ReturnType<typeof request>, message: string) {"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 164,
+    "text": "    if (result.allowed) eq(result.result, p.enhance!.enhancements.find(row => row.enhanceRequestId === input.enhanceRequestId), `${message}：只返回完整旧结果`);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 173,
+    "text": "    const gate = new EnhanceGate(p, { ...fixtureOptions(), random: fail, ledgerId: fail, canCommitResult: fail });"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 182,
+    "text": "      [() => gate.enhance(hostile), Closed.refuseEnhance], [() => gate.submit(hostile), Closed.refuseSubmit],"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 200,
+    "text": "    const guarded = new EnhanceGate(p, opts);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 209,
+    "text": "    const enhanceTip = openFixture ? { text: '装备强化已开放。', color: '#aaaaaa' }"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 219,
+    "text": "    eq(scene.tryInteractForgeEntrance(), false, '非smith_ou对象不消费强化入口');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 228,
+    "text": "    for (const object of [{ ...entrance, props: {} }, { ...entrance, name: 'enhance-smoke-alias' }]) {"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 231,
+    "text": "      eq(logs.slice(logStart), [forgeTip, enhanceTip], '同一次smith_ou命中先打造再强化，强化不被return饿死');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 236,
+    "text": "    eq(logs.slice(logStart), [forgeTip, enhanceTip], '距离边界保持打造顺序与强化提示');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 239,
+    "text": "    eq(logs.slice(logStart), [forgeTip, enhanceTip], '通用交互同命中两项入口且不重复提示');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 240,
+    "text": "    const originalEntrance = EnhanceGate.prototype.entrance;"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 243,
+    "text": "      EnhanceGate.prototype.entrance = function () {"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 245,
+    "text": "        if (!openFixture) throw new Error('内存关态不得查询EnhanceGate');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 246,
+    "text": "        return { allowed: false, tipKey: 'enhance.fixture.smoke', text: '强化冒烟拒绝。' };"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 249,
+    "text": "      eq(scene.tryInteractForgeEntrance(), true, '最小入口保留EnhanceGate拒绝提示分支');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 250,
+    "text": "      eq(entranceCalls, openFixture ? 1 : 0, '只有正式开态查询EnhanceGate.entrance，关态直接绕过');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 251,
+    "text": "      eq(logs.slice(logStart), [forgeTip, { text: openFixture ? '强化冒烟拒绝。' : Closed.featureClosed().text,"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 253,
+    "text": "    } finally { EnhanceGate.prototype.entrance = originalEntrance; }"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 254,
+    "text": "    eq(p.exportSave(), before, 'Scene冒烟不修改角色、打造袋或强化袋');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 259,
+    "text": "      graph: openFixture ? 'formal-open' : 'memory-closed', sameHitForgeThenEnhance: true,"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 260,
+    "text": "      forgeSoftOpenPreserved: true, enhanceNotStarved: true, gateDeniedRouting: openFixture,"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 264,
+    "text": "    const { p } = fixture(), gate = new EnhanceGate(p);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 269,
+    "text": "    businessDenied(gate.enhance(request('formal-default-denied')), '正式默认无fixtureInstances拒绝选择');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 272,
+    "text": "    eq(result.allowed ? null : result.tipKey, 'enhance.fixture.selection', '默认拒绝源于未授权装备实例');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 275,
+    "text": "    eq(p.enhance, undefined, '默认拒绝不发明正式装备实例系统');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 284,
+    "text": "    eq(p.enhance, payload.save.enhance, `${payload.state}：import等级属性去重一致`);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 288,
+    "text": "    eq(restored.enhance, payload.save.enhance, `${payload.state}：真实restore保留完整袋`);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 292,
+    "text": "    eq(loaded.enhance, payload.save.enhance, `${payload.state}：真实IDB读档强化袋一致`);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 296,
+    "text": "    const gate = new EnhanceGate(loaded), before = loaded.exportSave(), writes = idb.writes, samples = sampleCount;"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 298,
+    "text": "    const result = committed(gate.level(payload.enhanceRequestId));"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 299,
+    "text": "    eq(result, loaded.enhance!.enhancements[0], `${payload.state}：等级结果只读一致`);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 300,
+    "text": "    eq(committed(gate.consume(payload.enhanceRequestId)), result, `${payload.state}：费用结果同次一致`);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 303,
+    "text": "    await replay(loaded, gate, request(payload.enhanceRequestId, result.fromLevel, result.instanceRef), `${payload.state}/读回同请求`);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 315,
+    "text": "      for (const enhanceBag of [undefined, { enhanceRequestId: 'old-request', state: 'pending' },"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 316,
+    "text": "        { state: 'unknown', raw: 'must-keep' }, { instanceRef: 'old-instance', enhanceLevel: 7 }]) {"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 317,
+    "text": "        const { p } = fixture(); (p as any).enhance = copy(enhanceBag);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 326,
+    "text": "      eq(p.enhance, undefined, '缺字段旧档enhance保持undefined');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 327,
+    "text": "      eq(Object.prototype.hasOwnProperty.call(initial, 'enhance'), false, '旧档export不补袋');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 329,
+    "text": "      ok(gate.enhance(request()).allowed, 'O01真实当前档拥有实例可只读选择');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 334,
+    "text": "      await unchanged(p, () => new EnhanceGate(p).submit(request()), 'O01默认无装备夹具授权拒新提交');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 336,
+    "text": "      for (const type of ['weapon', 'armor'] as const) for (const row of enhance.levels) {"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 348,
+    "text": "        eq(f.p.enhance!.instances[0].enhanceLevel, row.to, 'O02实例最终等级同次入袋');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 349,
+    "text": "        eq(f.p.enhance!.enhancements, [result], 'O02完整结果同次入袋'); eq(f.p.enhance!.receipts, [result.enhanceResultRef], 'O02唯一去重事实同次成立');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 351,
+    "text": "        eq((await saveStore.readSlot(1))!.data.enhance, f.p.enhance, 'O02磁盘完整强化袋一致');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 353,
+    "text": "        ok(isValidEnhanceProgress(f.p.enhance), 'O02完整袋纯结构合法');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 356,
+    "text": "        if (type === 'weapon' && row.to === 7) payloads.push({ state: 'success', enhanceRequestId: id, save: f.p.exportSave() });"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 358,
+    "text": "      for (const row of enhance.levels) {"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 365,
+    "text": "        eq(f.p.enhance!.instances[0].enhanceLevel, finalLevel, 'O03实例最终等级完整一致');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 368,
+    "text": "        eq(f.p.count('bamboo_sword'), 2, 'O03失败不碎装备'); eq(f.p.enhance!.receipts.length, 1, 'O03失败同次去重');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 371,
+    "text": "        if ([5, 6].includes(row.to)) payloads.push({ state: row.dropOnFail ? 'failure-drop' : 'failure-no-drop', enhanceRequestId: id, save: f.p.exportSave() });"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 374,
+    "text": "      for (const row of enhance.levels) {"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 385,
+    "text": "      eq(chain.p.enhance!.instances[0].enhanceLevel, 2, 'O05同实例连续成功失败成功等级合法');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 386,
+    "text": "      eq(chain.p.enhance!.enhancements.map(row => [row.fromLevel, row.finalLevel]), [[0, 1], [1, 1], [1, 2]], 'O05完整结果链不重算旧等级');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 387,
+    "text": "      eq(chain.p.enhance!.receipts.length, 3, 'O05每次完整结果唯一去重');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 388,
+    "text": "      ok(isValidEnhanceProgress(chain.p.enhance), 'O05连续历史袋纯结构合法');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 390,
+    "text": "      progresses.push(chainRestored); eq(chainRestored.enhance, chain.p.enhance, 'O05完整历史链restore保持');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 391,
+    "text": "      await replay(chainRestored, new EnhanceGate(chainRestored), request('chain-one'), 'O05连续历史中最早旧请求重放');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 392,
+    "text": "      await unchanged(chain.p, () => new EnhanceGate(chain.p, fixtureOptions([instance(enhance.maxLevel + 1)]))"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 402,
+    "text": "      const invalidRequests: unknown[] = [null, {}, { ...request(), enhanceRequestId: '' },"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 410,
+    "text": "      const full = fixture(enhance.maxLevel); await unchanged(full.p, () => full.gate.submit(request('max', enhance.maxLevel)), 'O06满级拒绝不外推');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 412,
+    "text": "        const f = fixture(); if (cost === 'stones') f.p.stones = enhance.levels[0].stones - 1; else f.p.inventory.refine_stone = 0;"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 418,
+    "text": "        [{ ...instance(), enhanceLevel: -1 }], [{ ...instance(), enhanceLevel: 13 }],"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 419,
+    "text": "        [{ ...instance(), enhanceLevel: 0.5 }], [{ ...instance(), type: 'armor' }]]) {"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 428,
+    "text": "        const f = fixture(); await unchanged(f.p, () => new EnhanceGate(f.p, { ...fixtureOptions(), random: () => random as number }).submit(request()), 'O06非法随机源拒绝不补默认成功');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 431,
+    "text": "      await unchanged(thrown.p, () => new EnhanceGate(thrown.p, { ...fixtureOptions(), random: () => { throw new Error('受控随机源异常'); } }).submit(request()), 'O06随机源抛错整笔拒绝');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 437,
+    "text": "        const f = fixture(); await unchanged(f.p, () => new EnhanceGate(f.p, { ...fixtureOptions(), canCommitResult: sentinel }).submit(request()), 'O07草稿结算哨兵失败整笔回滚');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 445,
+    "text": "        await unchanged(f.p, () => new EnhanceGate(f.p, { ...fixtureOptions(), canCommitResult: draft => {"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 465,
+    "text": "      eq(committed(await interrupted.gate.submit(request('aborted'))).enhanceRequestId, 'aborted', 'O07 abort后同请求可完整重试');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 466,
+    "text": "      eq(interrupted.p.enhance!.enhancements.length, 1, 'O07重试唯一完整结果');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 470,
+    "text": "      committed(await completing); eq((await saveStore.readSlot(1))!.data.enhance, complete.p.enhance, 'O07 complete后一次发布完整结果');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 473,
+    "text": "        const other = sameGate ? f.gate : new EnhanceGate(f.p, fixtureOptions());"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 475,
+    "text": "        eq(f.p.stones, 100000 - enhance.levels[0].stones, 'O07连点同请求灵石只扣一次');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 476,
+    "text": "        eq(f.p.count('refine_stone'), 100 - enhance.levels[0].refineStones, 'O07连点精炼石只扣一次');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 477,
+    "text": "        eq(f.p.enhance!.enhancements.length, 1, 'O07连点唯一完整结果'); eq(f.p.enhance!.receipts.length, 1, 'O07连点唯一去重');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 478,
+    "text": "        eq(f.p.enhance!.instances[0].enhanceLevel, 1, 'O07连点不重复升档');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 484,
+    "text": "      const sameResults = await Promise.all([sameEquipment.gate, new EnhanceGate(sameEquipment.p, fixtureOptions())]"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 487,
+    "text": "      eq(sameEquipment.p.enhance!.instances[0].enhanceLevel, 1, 'O07同装备竞态最终等级合法');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 490,
+    "text": "      const race = fixture(0, 'weapon', instances); race.p.stones = enhance.levels[0].stones; race.p.inventory.refine_stone = enhance.levels[0].refineStones;"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 492,
+    "text": "      const raceResults = await Promise.all(instances.map((item, i) => new EnhanceGate(race.p, fixtureOptions(instances)).submit(request(`contender-${i}`, 0, item.instanceRef))));"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 495,
+    "text": "      eq(race.p.enhance!.enhancements.length, 1, 'O07争用不留半完成请求'); eq(idb.writes, raceWrites + 1, 'O07争用唯一持久提交');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 500,
+    "text": "      ok(a.enhanceResultRef !== b.enhanceResultRef, 'O05跨槽账本去重引用不同');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 503,
+    "text": "      eq(loadedA.enhance, saveA.enhance, 'O05 B档保存不覆盖A档强化袋'); eq(loadedA.inventory, saveA.inventory, 'O05 B档不覆盖A档费用');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 505,
+    "text": "      view.progress.instances[0].enhanceLevel = 12; eq(slotA.p.enhance, saveA.enhance, 'O05篡改视图不改变真实等级');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 508,
+    "text": "      const good = copy(payloads[0].save), goodBag = copy(good.enhance) as any;"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 510,
+    "text": "        bag => { delete bag.enhancements[0].enhanceRequestId; }, bag => { bag.enhancements[0].state = 'pending'; },"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 511,
+    "text": "        bag => { bag.enhancements[0].enhanceResultRef = 'foreign'; }, bag => { bag.enhancements[0].instanceRef = 'foreign'; },"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 512,
+    "text": "        bag => { bag.instances[0].enhanceLevel = 13; }, bag => { bag.instances[0].enhanceLevel = -1; },"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 513,
+    "text": "        bag => { bag.instances[0].type = 'shoes'; }, bag => { bag.enhancements[0].success = 'unknown'; },"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 514,
+    "text": "        bag => { bag.enhancements[0].stones = -1; }, bag => { bag.enhancements[0].finalLevel = 0; },"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 515,
+    "text": "        bag => { bag.enhancements.push(copy(bag.enhancements[0])); }, bag => { bag.instances.push(copy(bag.instances[0])); },"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 519,
+    "text": "        const enhanceBag = copy(goodBag); damage(enhanceBag);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 520,
+    "text": "        eq(isValidEnhanceProgress(enhanceBag), false, 'O08坏引用等级未知状态或去重拒绝');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 522,
+    "text": "        eq(await f.p.importSave({ ...copy(good), enhance: enhanceBag }, { async: true }), false, 'O08损坏袋import拒绝');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 524,
+    "text": "        (f.p as any).enhance = copy(enhanceBag);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 526,
+    "text": "        await unchanged(f.p, () => f.gate.level(payloads[0].enhanceRequestId), 'O08损坏历史不冒充完整结果');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 528,
+    "text": "      for (const bag of [{ enhanceRequestId: 'old-pending', state: 'pending' }, { state: 'unknown' }]) {"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 529,
+    "text": "        const f = fixture(); (f.p as any).enhance = copy(bag);"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 534,
+    "text": "      eq(await absent.p.importSave(copy(oldSave), { async: true }), true, 'O08缺enhance字段旧档可导入');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 535,
+    "text": "      eq(absent.p.enhance, undefined, 'O08缺字段旧档不补袋');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 536,
+    "text": "      eq(Object.prototype.hasOwnProperty.call(absent.p.exportSave(), 'enhance'), false, 'O08旧档export不建待补做记录');"
+  },
+  {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "line": 538,
+    "text": "    eq(featureFlags(), flags, 'features原值保持不变'); eq(JSON.stringify(enhance), tableBefore, 'enhance内存表未修改');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 2,
+    "text": "import enhance from '@xt/balance/enhance.json';"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 112,
+    "text": "  const flags = copy(featureFlags()), tableBefore = JSON.stringify(enhance), recipesBefore = JSON.stringify(recipes);"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 121,
+    "text": "  eq(enhance.forge.grade, { common: 0.6, fine: 0.3, spirit: 0.09, treasure: 0.01 }, '品质只读既有enhance.forge.grade');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 258,
+    "text": "      eq(logs[logs.length - 1], { text: '装备强化已开放。', color: '#aaaaaa' }, '同次命中在打造提示后显示强化正式开态提示');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 276,
+    "text": "      eq(logs[logs.length - 1], { text: '装备强化已开放。', color: '#aaaaaa' }, '同次命中在打造提示后显示强化正式开态提示');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 308,
+    "text": "    ok(Object.keys(enhance.forge.grade).includes(result.resultGrade), '默认品质来自enhance.forge.grade枚举');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 318,
+    "text": "      eq(record.resultGrade, grade, '正式路径四品质仅按enhance.forge.grade抽样');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 321,
+    "text": "    eq(gate.laterService(), Closed.refuseLaterService(), '正式默认Gate后续强化附灵分解仍关');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 432,
+    "text": "      eq(gate.laterService(), Closed.refuseLaterService(), 'O01后续强化附灵分解仍拒绝');"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 443,
+    "text": "        eq(result.resultGrade, grade, `O03 ${grade}按enhance.forge.grade累积概率抽样`);"
+  },
+  {
+    "file": "src/v06p1-forge-open.test.ts",
+    "line": 611,
+    "text": "    eq(JSON.stringify(enhance), tableBefore, 'enhance内存数值未写改');"
+  }
+]

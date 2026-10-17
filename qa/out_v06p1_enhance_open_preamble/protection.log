@@ -1,0 +1,2 @@
+{"protectedFiles": 1565, "protectedDirectories": 11, "unchangedFiles": 1557, "unauthorizedChanges": [], "directoryChanges": [], "passed": true}
+GameScene original bytes recovered exactly after removing 3 imports + appended enhance block; Forge preserved.

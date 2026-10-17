@@ -1,0 +1,101 @@
+{
+  "passed": true,
+  "baseline": "cc3f1d570f95a6907a7177a02b969d7716ffc438",
+  "stdin": "/dev/null",
+  "formalOpen": true,
+  "closedFixtureOnly": true,
+  "softOpened": true,
+  "released": false,
+  "checks": [
+    {
+      "command": "npm run test:v06p1-enhance-open",
+      "exitCode": 0,
+      "assertions": 6225,
+      "log": "v06p1-enhance-open.log"
+    },
+    {
+      "command": "npm run test:v06p1-enhance-closed",
+      "exitCode": 0,
+      "assertions": 30711,
+      "log": "enhance-closed.log"
+    },
+    {
+      "command": "npm run test:v06p1-forge-closed",
+      "exitCode": 0,
+      "assertions": 20362,
+      "log": "forge-closed.log"
+    },
+    {
+      "command": "npm run test:v06p1-market-closed",
+      "exitCode": 0,
+      "assertions": 24166,
+      "log": "market-closed.log"
+    },
+    {
+      "command": "npm run test:v06d-closed",
+      "exitCode": 0,
+      "assertions": 15052,
+      "log": "v06d-closed.log"
+    },
+    {
+      "command": "npm run test:v06c-closed",
+      "exitCode": 0,
+      "assertions": 10708,
+      "log": "v06c-closed.log"
+    },
+    {
+      "command": "npm run test:v06p1-forge-open",
+      "exitCode": 0,
+      "assertions": 6378,
+      "log": "forge-open.log"
+    },
+    {
+      "command": "npx tsc --noEmit",
+      "exitCode": 0,
+      "log": "tsc.log"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 /workspace/xiantu/qa/tools/datalint.py",
+      "dataMode": "shared",
+      "exitCode": 0,
+      "issues": 0,
+      "log": "datalint-shared.log"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 /workspace/xiantu/qa/tools/datalint.py",
+      "dataMode": "snapshot",
+      "exitCode": 0,
+      "issues": 0,
+      "log": "datalint-snapshot.log"
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0,
+      "log": "diff-check.log"
+    },
+    {
+      "command": "protection SHA before/after and path-set comparison",
+      "exitCode": 0,
+      "protectedFiles": 1565,
+      "protectedDirectories": 11,
+      "authorizedChanges": 8,
+      "unauthorizedChanges": 0,
+      "log": "protection.log"
+    },
+    {
+      "command": "git diff --cached --check",
+      "exitCode": 0,
+      "log": "staged-diff-check.log"
+    }
+  ],
+  "totalAssertions": 113602,
+  "notRun": [
+    "build",
+    "snapshot",
+    "sync",
+    "release"
+  ],
+  "codexLog": "/workspace/xiantu/logs/codex/0773028038367e79_20261017_084947_1228831.log",
+  "implementationTip": "ff90d189fa4688506986ff4aa3180343e1aacbd2",
+  "implementationPushed": true
+}
