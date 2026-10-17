@@ -1,0 +1,231 @@
+{
+  "stringsKeysBefore": 970,
+  "stringsKeysAfter": 1013,
+  "stringsShaBefore": "ae51319b82a6486cc7f3d9b26c5ae89719e23c32ff9debdcfbb86ef7b5aea08b",
+  "stringsShaAfter": "d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841",
+  "originalLastKey": "ui.equip.inst.unavailable",
+  "originalLastKeyPositionAfter": 970,
+  "originalLastKeyReversePositionAfter": 44,
+  "unchangedPrefixBytes": 62534,
+  "unchangedPrefixSha256": "615f66c4cb935013d097ab413c1453e646fe8567714bcd40401a36620a0f0d77",
+  "prefixByteMatch": true,
+  "stripExact43SuffixRestoresOriginalSha": "ae51319b82a6486cc7f3d9b26c5ae89719e23c32ff9debdcfbb86ef7b5aea08b",
+  "existing970KeysValuesOrderIndentationUnchanged": true,
+  "appendedKeys": [
+    {
+      "key": "ui.smith.closed",
+      "text": "炼器服务界面暂未开放。",
+      "unicodeLength": 11
+    },
+    {
+      "key": "ui.smith.title",
+      "text": "炼器服务",
+      "unicodeLength": 4
+    },
+    {
+      "key": "ui.smith.forge",
+      "text": "打造",
+      "unicodeLength": 2
+    },
+    {
+      "key": "ui.smith.enhance",
+      "text": "强化",
+      "unicodeLength": 2
+    },
+    {
+      "key": "ui.smith.enchant",
+      "text": "附灵",
+      "unicodeLength": 2
+    },
+    {
+      "key": "ui.smith.salvage",
+      "text": "分解",
+      "unicodeLength": 2
+    },
+    {
+      "key": "ui.smith.back",
+      "text": "返回",
+      "unicodeLength": 2
+    },
+    {
+      "key": "ui.smith.select_recipe",
+      "text": "选择打造图纸",
+      "unicodeLength": 6
+    },
+    {
+      "key": "ui.smith.select_instance",
+      "text": "选择本档正式装备",
+      "unicodeLength": 8
+    },
+    {
+      "key": "ui.smith.select_weapon",
+      "text": "选择本档正式武器",
+      "unicodeLength": 8
+    },
+    {
+      "key": "ui.smith.select_element",
+      "text": "选择五行目标",
+      "unicodeLength": 6
+    },
+    {
+      "key": "ui.smith.protect_charm",
+      "text": "护器符（可选）",
+      "unicodeLength": 7
+    },
+    {
+      "key": "ui.smith.no_charm",
+      "text": "不使用护器符",
+      "unicodeLength": 6
+    },
+    {
+      "key": "ui.smith.selection_required",
+      "text": "请先完成{service}所需选择。",
+      "unicodeLength": 18
+    },
+    {
+      "key": "ui.smith.confirm",
+      "text": "确认{service}？请核对目标、材料与消耗。",
+      "unicodeLength": 24
+    },
+    {
+      "key": "ui.smith.confirm_salvage",
+      "text": "确认分解{item}？装备将被销毁且不可恢复。",
+      "unicodeLength": 23
+    },
+    {
+      "key": "ui.smith.output_preview",
+      "text": "分解产出：{output}。",
+      "unicodeLength": 14
+    },
+    {
+      "key": "ui.smith.result_forge",
+      "text": "打造完成：{item}；品质：{quality}。",
+      "unicodeLength": 25
+    },
+    {
+      "key": "ui.smith.result_enhance_ok",
+      "text": "{item}强化成功：{before}级→{after}级。",
+      "unicodeLength": 30
+    },
+    {
+      "key": "ui.smith.result_enhance_fail",
+      "text": "{item}强化失败：{before}级→{after}级。",
+      "unicodeLength": 30
+    },
+    {
+      "key": "ui.smith.result_protected",
+      "text": "本次强化失败，护器符已保护装备等级。",
+      "unicodeLength": 18
+    },
+    {
+      "key": "ui.smith.result_enchant",
+      "text": "{item}附灵完成：{element}。",
+      "unicodeLength": 21
+    },
+    {
+      "key": "ui.smith.result_salvage",
+      "text": "{item}已分解，获得：{output}。",
+      "unicodeLength": 22
+    },
+    {
+      "key": "ui.smith.no_recipe",
+      "text": "暂无可用的打造图纸。",
+      "unicodeLength": 10
+    },
+    {
+      "key": "ui.smith.no_instance",
+      "text": "无本档正式装备实例，无法提交。",
+      "unicodeLength": 15
+    },
+    {
+      "key": "ui.smith.foreign",
+      "text": "非本档装备实例，无法提交。",
+      "unicodeLength": 13
+    },
+    {
+      "key": "ui.smith.invalid",
+      "text": "当前目标或材料不可用于{service}，请重新选择。",
+      "unicodeLength": 27
+    },
+    {
+      "key": "ui.smith.charm_short",
+      "text": "护器符数量不足。",
+      "unicodeLength": 8
+    },
+    {
+      "key": "ui.smith.changed",
+      "text": "选择内容或资源已变化，请重新确认。",
+      "unicodeLength": 17
+    },
+    {
+      "key": "ui.smith.busy",
+      "text": "请求处理中，请勿重复提交。",
+      "unicodeLength": 13
+    },
+    {
+      "key": "ui.smith.duplicate",
+      "text": "该请求已提交，请读取既有结果。",
+      "unicodeLength": 15
+    },
+    {
+      "key": "ui.smith.load_dedupe",
+      "text": "读档后只显示已提交结果，不重复结算。",
+      "unicodeLength": 18
+    },
+    {
+      "key": "ui.smith.result_unknown",
+      "text": "暂未取得可核实的结果，请稍后查看；请勿重复提交。",
+      "unicodeLength": 24
+    },
+    {
+      "key": "ui.smith.confirm_enchant",
+      "text": "确认将{item}从{from}附灵为{to}？",
+      "unicodeLength": 24
+    },
+    {
+      "key": "ui.smith.enhance_preview",
+      "text": "强化至{level}级；成功率{rate}%。",
+      "unicodeLength": 23
+    },
+    {
+      "key": "ui.smith.drop_on_fail",
+      "text": "失败降低{n}级，不碎装。",
+      "unicodeLength": 13
+    },
+    {
+      "key": "ui.smith.no_drop_on_fail",
+      "text": "失败不掉级，不碎装。",
+      "unicodeLength": 10
+    },
+    {
+      "key": "ui.smith.same_element",
+      "text": "已附着该五行，无需重复附灵。",
+      "unicodeLength": 14
+    },
+    {
+      "key": "ui.smith.keys",
+      "text": "方向键选择 · 回车确认 · Esc 返回",
+      "unicodeLength": 21
+    },
+    {
+      "key": "forge.grade.common",
+      "text": "凡",
+      "unicodeLength": 1
+    },
+    {
+      "key": "forge.grade.fine",
+      "text": "良",
+      "unicodeLength": 1
+    },
+    {
+      "key": "forge.grade.spirit",
+      "text": "灵",
+      "unicodeLength": 1
+    },
+    {
+      "key": "forge.grade.treasure",
+      "text": "宝",
+      "unicodeLength": 1
+    }
+  ]
+}

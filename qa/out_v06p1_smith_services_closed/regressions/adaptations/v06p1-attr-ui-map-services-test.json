@@ -1,0 +1,11 @@
+{
+  "file": "scripts/v06p1-attr-ui-map-services-test.mjs",
+  "originalSha": "0f04e8dcb7e8d56463f08c8f3704804798a382231e1128d7969cd1245879f6bb",
+  "pinnedOriginalSha": "0f04e8dcb7e8d56463f08c8f3704804798a382231e1128d7969cd1245879f6bb",
+  "adaptedSha": "23e6da66ad2540bc11aa0026842d752abd912b4a4f1606c8e35ae30f82d095fb",
+  "changes": [],
+  "productModuleTransformations": [],
+  "diskWritten": false,
+  "businessAssertionsChanged": false,
+  "policy": "Pinned test-only historical strings SHA/count/inventory and prior attr-ui byte proof; actual Vite SSR product modules use current disk."
+}

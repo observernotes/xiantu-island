@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "files": [
+    {
+      "file": "reports/炼器阁/V06P1_SMITH_SERVICES_CLOSED_HANDOFF.md",
+      "sha256": "3d746b93ba6b62c97559df4b120d1ebebe7f61f79e6b20922499ef2a43cea1e3",
+      "utf8SharedMatch": true,
+      "lines": 141
+    },
+    {
+      "file": "reports/炼器阁/V06P1_SMITH_SERVICES_CLOSED_RESULT.md",
+      "sha256": "46b907c94c663b254bb958b4f4163721c3165b2eec0694b7edf7ce271da8369b",
+      "utf8SharedMatch": true,
+      "lines": 13
+    },
+    {
+      "file": "status/炼器阁.md",
+      "sha256": "c096979cd769e224a1b65dea5b891c96c1036aca642f30c34dfb465dff2b6a9d",
+      "utf8SharedMatch": true,
+      "lines": 24
+    },
+    {
+      "file": "status/炼器阁·界面接入.md",
+      "sha256": "7f64c4221003f821a9a66b348805b0849f4be8d6c8ac090b97d7fbab64770cbb",
+      "utf8SharedMatch": true,
+      "lines": 18
+    }
+  ]
+}

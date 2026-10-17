@@ -1,0 +1,17 @@
+{
+  "name": "v06p1-market-closed",
+  "command": [
+    "npm",
+    "run",
+    "test:v06p1-market-closed"
+  ],
+  "cwd": "/workspace/xiantu/wt/dev",
+  "stdin": "/dev/null",
+  "startedAt": "2026-10-17T11:05:29.962Z",
+  "finishedAt": "2026-10-17T11:05:35.876Z",
+  "exitCode": 0,
+  "signal": null,
+  "assertions": 24300,
+  "log": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_closed/regressions/v06p1-market-closed.log",
+  "outputDirectory": "/workspace/xiantu/wt/dev/qa/out_v06p1_smith_services_closed/regressions/v06p1-market-closed"
+}

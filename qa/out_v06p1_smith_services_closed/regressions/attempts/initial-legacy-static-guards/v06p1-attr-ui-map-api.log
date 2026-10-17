@@ -1,0 +1,25 @@
+
+> xiantu-island@0.0.1 test:v06p1-attr-ui-map-api
+> timeout 120s node scripts/v06p1-attr-ui-map-api-test.mjs
+
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: 工作目录为授权 wt
++ actual - expected
+
++ '/workspace/xiantu/wt/dev'
+- '/workspace/xiantu/wt/feat/ui-attr-inst'
+                        ^
+    at eq (file:///workspace/xiantu/wt/dev/scripts/v06p1-attr-ui-map-api-test.mjs:25:66)
+    at staticChecks (file:///workspace/xiantu/wt/dev/scripts/v06p1-attr-ui-map-api-test.mjs:45:3)
+    at file:///workspace/xiantu/wt/dev/scripts/v06p1-attr-ui-map-api-test.mjs:404:9 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: '/workspace/xiantu/wt/dev',
+  expected: '/workspace/xiantu/wt/feat/ui-attr-inst',
+  operator: 'deepStrictEqual'
+}
+
+Node.js v20.19.2

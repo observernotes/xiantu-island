@@ -1,0 +1,39 @@
+{
+  "source": "design/32 §2–3 §4.2 C01–C11; existing Gate and EquipInstBinding APIs",
+  "reviewedModuleSha256": "675139ed18432858ddb0d2c104372c703eaa3e6f630458fd39be6feef936fb14",
+  "reviewedFiles": [
+    "src/SmithServices.ts",
+    "src/v06p1-smith-services-closed.test.ts",
+    "src/ForgeGate.ts",
+    "src/EnhanceGate.ts",
+    "src/EnchantGate.ts",
+    "src/SalvageGate.ts",
+    "src/EquipInstBinding.ts"
+  ],
+  "productionRoutesClosed": true,
+  "defaultFormalGatesOnly": true,
+  "salvageFixtureProductionFallback": false,
+  "salvageProductionDependenciesComplete": false,
+  "salvageRemainingDependencies": [
+    "qualification: bound/natal/bloodBound/unsalvageable proof absent; default Gate rejects",
+    "precise position follows EquipInstBinding; position alone does not grant qualification",
+    "existing enchant association retirement unsupported; Gate rejects relation",
+    "atomicCarrier formally unavailable: submit still requires explicit fixture carrier and indexedDbSaves; no production injection added"
+  ],
+  "salvageMissingEvidenceBehavior": "Preserve original Gate refusal; zero destroy/output/repair/fallback",
+  "uiIntegrationPending": "接引子仍须完成对话→菜单→四面板 tip",
+  "softOpenedSmithServicesUi": false,
+  "released": false,
+  "regressions": {
+    "suites": 15,
+    "passed": true,
+    "assertions": 172998
+  },
+  "oldArtifacts": {
+    "files": 2713,
+    "changed": 0
+  },
+  "remainingReviewRisks": [
+    "C03–C06 semantic-only capacity/qualification/mapping labels cannot prove open formal carrier capability; O01–O11 not executed here"
+  ]
+}

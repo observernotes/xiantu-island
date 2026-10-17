@@ -1,0 +1,28 @@
+{
+  "passed": true,
+  "currentBaseline": "0dd59efdcd288930f1bd0525d2c9e7ddf06c0814",
+  "historicalBeforeAttrUi": "b9108d6dcab0fdb8857dac0efd85087176a92f92",
+  "priorAuthorizedAttrUiDiffSha256": "47e3e80bc514beb9dbf1d872cded88995c3a47b38ba6801fe7a1067ed9deac28",
+  "priorAuthorizedAttrUiDiff": "prior-authorized-attr-ui-diff.json",
+  "currentProductSourcePins": {
+    "Progress.ts": "7d615e8a675faff8cae6e2ac086055cb4aa6259114578967b02c42a702216719",
+    "EquipPanel.ts": "6c74f3529400178be4900ecb5aedbd5dd3aaec5c57f28ca1382a56128ac507ae",
+    "InventoryPanel.ts": "9bc8a2f34ad1b4830bd604033be8668bfea78b023ce047f89c59507d8b0c9b90",
+    "src/EquipInstReadonly.ts": "1d1f1c1194e53a41c806c87e0facf766e59ee6d971f631eb22aa794c50d458a6",
+    "src/EquipInstBinding.ts": "081bd2ba5ddc365fa98a61b80f5175601fa69763a4fdbd9de79b080335b8ad7c"
+  },
+  "strings": {
+    "sharedAndSnapshotKeys": 1013,
+    "sharedAndSnapshotSha256": "d99a88fd722e23afd7294d62dcb637222656e7187ff52cfad4d4ea0945fa1841",
+    "stripOnlyExactSmith43Restores970Sha": "ae51319b82a6486cc7f3d9b26c5ae89719e23c32ff9debdcfbb86ef7b5aea08b",
+    "thenStripOnlyExactAttrUi10Restores960Sha": "9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda",
+    "gameDataReadOnlyKeys": 970,
+    "gameDataReadOnlySha256": "ae51319b82a6486cc7f3d9b26c5ae89719e23c32ff9debdcfbb86ef7b5aea08b"
+  },
+  "productionModuleTransformations": [],
+  "testOnlyRuntimeAssertion": "src/v06p1-enhance-open.test.ts key count960→1013; all gameplay assertions retained",
+  "legacyDiskFilesWritten": false,
+  "businessAssertionsChanged": false,
+  "legacyStaticByteProofExplanation": "Exact current 0dd59ef product source bytes independently pinned; compatibility helper returns exact pinned pre-attr-ui source only for old static subtraction proofs. Vite product module load reads current disk directly.",
+  "diffStorage": "JSON diffText preserves exact raw diff bytes and original SHA; avoids whitespace-only patch context lines in evidence storage"
+}

@@ -1,0 +1,56 @@
+{
+  "passed": true,
+  "scope": "关态 services 路由/Gate 适配源码审查；不代替执法 C01–C11 或 O01–O11",
+  "source": "src/SmithServices.ts",
+  "sourceSha256": "675139ed18432858ddb0d2c104372c703eaa3e6f630458fd39be6feef936fb14",
+  "baseline": "0dd59efdcd288930f1bd0525d2c9e7ddf06c0814",
+  "noFixture": true,
+  "noSettlement": true,
+  "noNewFlag": true,
+  "productionUiRoutesClosed": true,
+  "formalGateConstructionOnly": true,
+  "resolvedFindings": [
+    {
+      "issue": "result 同请求ID但额外字段/重复材料可冒认旧成功",
+      "resolution": "按现有协议/schema校验完整载荷；各服务逐字段匹配完整Gate已提交result，冲突无成功反馈"
+    },
+    {
+      "issue": "E/I两属性Flag关闭可能误剥独立分解候选",
+      "resolution": "候选身份只取正式位置binding；display unavailable仅隐藏属性，保留独立服务正式候选"
+    },
+    {
+      "issue": "护符不足提示未沿正式映射",
+      "resolution": "只在Gate整体拒绝后按protectCharmMap.itemId/countPerSettlement核只读库存；映射缺失仍按Gate formal.protect拒绝"
+    },
+    {
+      "issue": "capacity拒绝可能并非真实背包容量不足",
+      "resolution": "未能确定原因时result_unknown，不把承载/一致性失败误报bag_full"
+    },
+    {
+      "issue": "附灵同元素新请求与真正重放均可能reason duplicate",
+      "resolution": "核实新请求ID与Gate.element当前完整元素后same_element；完整匹配重放另走submittedReply，未知duplicate不谎称已提交"
+    },
+    {
+      "issue": "切档或导航后旧异步返回可能污染新视图",
+      "resolution": "ownerSlot+epoch复核；导航/invalidate清视图内存，旧回调不回传新成功，不取消/重做Gate事务"
+    }
+  ],
+  "remainingDependencies": {
+    "fullDialogueMenuFourPanels": "接引子仍须完成对话→菜单→四面板 tip",
+    "salvageFormalQualificationAndAtomicCarrier": "未齐；默认Gate继续qualification/relation/carrier拒绝，不安装SalvageFixture生产回退",
+    "softOpenedSmithServicesUi": false,
+    "released": false
+  },
+  "regressions": {
+    "passed": true,
+    "suiteCount": 15,
+    "assertions": 172998,
+    "path": "regressions/regression-summary.json"
+  },
+  "oldQaArtifacts": {
+    "files": 2713,
+    "changed": 0,
+    "path": "regressions/old-artifacts-check.json"
+  },
+  "reviewConclusion": "本窗授权范围内未见剩余阻断：正式服务Flag与结算保持原状，路由只提供关态适配/只读选择/Gate委托；分解正式依赖缺口如实保留拒绝。"
+}

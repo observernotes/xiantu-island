@@ -1,0 +1,8 @@
+{
+  "command": "npm run test:v06p1-smith-services-closed",
+  "exitCode": 0,
+  "passed": true,
+  "stdin": "/dev/null",
+  "durationSeconds": 6.625,
+  "log": "qa/out_v06p1_smith_services_closed/smith-services-closed.log"
+}
