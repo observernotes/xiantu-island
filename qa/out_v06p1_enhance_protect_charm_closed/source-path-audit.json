@@ -1,0 +1,114 @@
+{
+  "audit": "enhance-protect-charm-closed-source-path",
+  "date": "2026-10-17",
+  "result": "PASS_STATIC_REVIEW",
+  "findings": [],
+  "scope": "静态复核 Gate / Progress / SaveStore / 生产入口及本窗 SSR 测试源码；审查过程未运行 runner。",
+  "sourceSha256": {
+    "src/EnhanceGate.ts": "c2a2a0efb7997270eb48674224ce9bfc08e14201e613d7aa12d35af0a2a09796",
+    "src/EnhanceProgress.ts": "49e2bd0ce8bb952ef8c06a19f2137af3cdcfef828ba1dd2508834d4b54f79724",
+    "src/Progress.ts": "9c6556462768199f2b0c6a2ee3deb420c0a117b9a49945ec5723a90f88b8d0df",
+    "src/SaveStore.ts": "4c99f7410cd87e2e9b46d7b685fdb9ab5f2c9ca3b8a266da61eb062624ec7916",
+    "src/data.ts": "aad725652f5c0eb57a5c699726e570b146d5ded52d5c31715444dbbf4117024a",
+    "src/scenes/GameScene.ts": "9b62f76b8a3e76b2438cfacf42d9fe15525f50a9a0427eab25d5c10d6de119f3"
+  },
+  "productionConsumer": {
+    "file": "src/scenes/GameScene.ts:2170",
+    "expression": "new EnhanceGate(this.prog).entrance()",
+    "onlyNonTestConsumer": true,
+    "readOnlyEntrance": true,
+    "fixtureInstancesInjected": false,
+    "fixtureInstancesDefaultOrFallback": false,
+    "instanceRefInventedFromItemCount": false,
+    "authorizationSource": "Progress.formalEnhanceInstances()，仅当前档正式 Forge 已提交结果登记；显式夹具分支与正式来源互不补足。"
+  },
+  "independentFlags": {
+    "enhanceImportsOnlyOwnFlag": true,
+    "forgeImportsOnlyOwnFlag": true,
+    "EnhanceOpenFlag": {
+      "value": true,
+      "sha256": "d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e",
+      "expectedMatch": true
+    },
+    "ForgeOpenFlag": {
+      "value": true,
+      "sha256": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
+      "expectedMatch": true
+    },
+    "GAME_PHASE": 5
+  },
+  "protectCharmGate": {
+    "mappingReadAtRuntime": true,
+    "readOnlyImport": "@xt/balance/enhance_protect_charm.json",
+    "mappingRequires": [
+      "itemId === protect_charm",
+      "Number.isSafeInteger(N) && N > 0",
+      "own ITEMS.protect_charm exists",
+      "inPhase(item)",
+      "enabled !== false",
+      "placeholder !== true",
+      "qualityEnabled !== true"
+    ],
+    "falseSkipsMappingAndCharmInventory": true,
+    "newSettlementOrder": "独立 Flag → 正式实例与资格 → 等级/to → 灵石/精炼石 → true 的护符映射 → true 的可消费 N → 事务结算",
+    "incompleteMappingTip": "enhance.formal.protect",
+    "insufficientConsumableCharmTip": "enhance.formal.resources",
+    "consumableInventoryContract": "permanentCount 为非负安全整数且 >= N；count === permanentCount；pillQualities 无该 own key，与 refine_stone 一致。",
+    "preflightAndDraftRevalidation": true,
+    "falseNeverSilentlySubstitutedForTrue": true,
+    "tipTextSource": "既有 strings_zh 正式键；未增补字符串"
+  },
+  "transaction": {
+    "singleDraftIncludes": ["stones", "refine_stone", "protect_charm x N", "final level", "attributes", "committed result", "receipt"],
+    "charmConsumer": "draft.removeItem('protect_charm', protectCharmN)",
+    "sameCharmNOnSuccessAndNormalFailure": true,
+    "rateUnchangedFromTargetRow": true,
+    "protectedFailureKeepsFromLevelAndEquipment": true,
+    "dropOnFailRetainedForAudit": true,
+    "actualCharmDeductionCheckedBeforeCommit": true,
+    "draftCallbackSynchronous": true,
+    "indexedDbConfirmation": "SaveStore backend 在 tx.oncomplete 确认；Progress.runSaveTransactionAsync 仅 writeSlot 成功后发布 draft 改动。",
+    "rejectOrWriteFailureDiscardsDraft": true,
+    "formalSameSlotLockAndSavedEnhanceStalenessCheckPreserved": true,
+    "schemaChange": "仅 useProtectCharm boolean 与相应 finalLevel 公式；version/formalSources/其他字段保留。"
+  },
+  "dedupeAndRead": {
+    "committedResultCheckedBeforeNewMappingOrInventory": true,
+    "payloadEquality": ["instanceRef", "fromLevel", "to", "useProtectCharm"],
+    "conflictTip": "enhance.formal.duplicate",
+    "conflictOmitsOldResult": true,
+    "loadRefreshTip": "enhance.formal.load_dedupe",
+    "readResultAndLoadRefreshDoNotReadCurrentCharmMapping": true,
+    "noSupplementNoRedrawNoSecondConsumption": true,
+    "historicalFalseResultsRemainValid": true,
+    "laterServiceTip": "enhance.closed.later_service"
+  },
+  "ssrTestSourceReview": {
+    "file": "src/v06p1-enhance-open.test.ts",
+    "function": "protectCharmMappingCases",
+    "coverageInspected": [
+      "C01 memory-closed 对 true/false 均优先 closed.* 且无写/抽样",
+      "C02 临时破坏映射 itemId/N 或 ITEMS 资格，足量库存也拒 protect",
+      "C03 false 对映射抛错 getter、缺 ITEMS 和无护符库存零依赖",
+      "C04 携符不授予实例/foreign/type/等级权限",
+      "C05 永久库存污染/N 不足拒绝零副作用；护符扣除端无效/异常与 IDB abort 完整回滚",
+      "C06 重复/连点只提交一次；useProtectCharm 冲突不返回旧结果",
+      "C07 true 结果 roundtrip/fresh SSR；后来缺 N/ITEMS 或无符仍只读去重；跨档隔离",
+      "C08 成功扣 N、dropOnFail 失败保级扣 N、缺符 resources 三条最小接线旁证"
+    ],
+    "runtimeExecutedByThisAudit": false,
+    "runtimeEvidenceAuthority": "本窗 v06p1-enhance-open-evidence.json、closed evidence 与 selfcheck-summary.json 的根代理串行运行结果。",
+    "boundary": "SSR/受控 IDB 与内存 Flag 夹具验证由 runner 记录；本静态审查不替代执法实机抽检，也不代勾 design/28 O01–O06。"
+  },
+  "evidence": {
+    "protectCharmWired": true,
+    "protectCharmN": 1,
+    "formalTipsWired": true,
+    "formalInstanceSource": true,
+    "softOpenedEntrance": true,
+    "softOpenedFormalSettle": true,
+    "softOpenedProtectCharm": false,
+    "released": false
+  },
+  "authorizationBoundary": "本窗=护符正式映射接线 ≠ 开态夹具全表 ≠ 护符 soft-open ≠ release ≠ 进包；下一棒执法 C01–C08。"
+}

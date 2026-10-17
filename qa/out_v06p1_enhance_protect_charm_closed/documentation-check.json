@@ -1,0 +1,32 @@
+{
+  "passed": true,
+  "files": {
+    "reports/炼器阁/V06P1_ENHANCE_PROTECT_CHARM_CLOSED_HANDOFF.md": {
+      "sha256": "869c4979166e27b83090c862c77be50262bf30a04f3e1492be685f041e81bc1d",
+      "utf8": true,
+      "synced": true,
+      "lines": 65
+    },
+    "reports/炼器阁/V06P1_ENHANCE_PROTECT_CHARM_CLOSED_RESULT.md": {
+      "sha256": "f170fb30710378e126a54f7545436e797da49658a711715d5ddef736a6223690",
+      "utf8": true,
+      "synced": true,
+      "lines": 73
+    },
+    "status/炼器阁.md": {
+      "sha256": "e0ee71a454563b143a5860fdcdf15b1da9869bc3702790e3655cd6e87c73b902",
+      "utf8": true,
+      "synced": true,
+      "lines": 23
+    }
+  },
+  "testedSourcesMatch": true,
+  "statusFourSections": true,
+  "notRun": [
+    "snapshot",
+    "build",
+    "sync",
+    "release"
+  ],
+  "scope": "本令≠开态全表≠soft-open≠release≠进包"
+}

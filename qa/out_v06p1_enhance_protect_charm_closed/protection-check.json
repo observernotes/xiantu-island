@@ -1,0 +1,153 @@
+{
+  "passed": true,
+  "protectedFiles": 4057,
+  "unauthorizedDifferences": [],
+  "authorizedRegressionDifferences": [
+    {
+      "path": "/workspace/xiantu/wt/dev/scripts/v06d-closed-test.mjs",
+      "before": "8e8b5c2de3f360ebd30c9f1bb5a8a3b891d1886455a90247d286d68ea076fa32",
+      "after": "5bfe782f918436fa30a2ca33f33176d57a59f637004708993cfaf6dbfe10e129"
+    }
+  ],
+  "oldEvidenceFiles": 683,
+  "oldEvidenceDifferences": [],
+  "boundary": {
+    "frozen": {
+      "/workspace/xiantu/balance/enhance.json": {
+        "expected": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+        "actual": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+        "match": true
+      },
+      "/workspace/xiantu/balance/recipes.json": {
+        "expected": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+        "actual": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+        "match": true
+      },
+      "/workspace/xiantu/balance/strings_zh.json": {
+        "expected": "d7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09",
+        "actual": "d7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09",
+        "match": true
+      },
+      "/workspace/xiantu/balance/npcs.json": {
+        "expected": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+        "actual": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+        "match": true
+      },
+      "/workspace/xiantu/balance/life_skills.json": {
+        "expected": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+        "actual": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+        "match": true
+      },
+      "/workspace/xiantu/wt/dev/data/balance/enhance.json": {
+        "expected": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+        "actual": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+        "match": true
+      },
+      "/workspace/xiantu/wt/dev/data/balance/recipes.json": {
+        "expected": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+        "actual": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+        "match": true
+      },
+      "/workspace/xiantu/wt/dev/data/balance/strings_zh.json": {
+        "expected": "d7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09",
+        "actual": "d7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09",
+        "match": true
+      },
+      "/workspace/xiantu/wt/dev/data/balance/npcs.json": {
+        "expected": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+        "actual": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+        "match": true
+      },
+      "/workspace/xiantu/wt/dev/data/balance/life_skills.json": {
+        "expected": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+        "actual": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+        "match": true
+      },
+      "/workspace/xiantu/wt/dev/src/EnhanceOpenFlag.ts": {
+        "expected": "d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e",
+        "actual": "d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e",
+        "match": true
+      },
+      "/workspace/xiantu/wt/dev/src/ForgeOpenFlag.ts": {
+        "expected": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
+        "actual": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
+        "match": true
+      },
+      "/workspace/xiantu/game/src/EnhanceOpenFlag.ts": {
+        "expected": "d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e",
+        "actual": "d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e",
+        "match": true
+      },
+      "/workspace/xiantu/game/src/ForgeOpenFlag.ts": {
+        "expected": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
+        "actual": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
+        "match": true
+      }
+    },
+    "targets": {
+      "/workspace/xiantu/balance/materials.json": {
+        "expected": "79c68429d763054ac1715467d1743575e179ecaecb2529e4b6ed7df137ef4052",
+        "actual": "79c68429d763054ac1715467d1743575e179ecaecb2529e4b6ed7df137ef4052",
+        "match": true
+      },
+      "/workspace/xiantu/balance/items.json": {
+        "expected": "f8b587634e5c9d43a475e85724aa34172e2945abda7654c2ef98fda07d1566f3",
+        "actual": "f8b587634e5c9d43a475e85724aa34172e2945abda7654c2ef98fda07d1566f3",
+        "match": true
+      },
+      "/workspace/xiantu/balance/enhance_protect_charm.json": {
+        "expected": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+        "actual": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+        "match": true
+      },
+      "/workspace/xiantu/wt/dev/data/balance/materials.json": {
+        "expected": "79c68429d763054ac1715467d1743575e179ecaecb2529e4b6ed7df137ef4052",
+        "actual": "79c68429d763054ac1715467d1743575e179ecaecb2529e4b6ed7df137ef4052",
+        "match": true
+      },
+      "/workspace/xiantu/wt/dev/data/balance/items.json": {
+        "expected": "f8b587634e5c9d43a475e85724aa34172e2945abda7654c2ef98fda07d1566f3",
+        "actual": "f8b587634e5c9d43a475e85724aa34172e2945abda7654c2ef98fda07d1566f3",
+        "match": true
+      },
+      "/workspace/xiantu/wt/dev/data/balance/enhance_protect_charm.json": {
+        "expected": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+        "actual": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+        "match": true
+      }
+    },
+    "GAME_PHASE": 5,
+    "stringsKeys": {
+      "/workspace/xiantu": 944,
+      "/workspace/xiantu/wt/dev/data": 944
+    },
+    "gifts": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "passed": true
+  },
+  "protectCharmWired": true,
+  "protectCharmN": 1,
+  "formalTipsWired": true,
+  "formalInstanceSource": true,
+  "softOpenedEntrance": true,
+  "softOpenedFormalSettle": true,
+  "softOpenedProtectCharm": false,
+  "released": false,
+  "scope": "本窗=护符映射接线 ≠ design/28 O01–O06 开态全表 ≠ soft-open ≠ release ≠ 进包；formalOpen/softOpened仅兼容既有状态",
+  "notRun": [
+    "snapshot",
+    "build",
+    "sync",
+    "release"
+  ]
+}

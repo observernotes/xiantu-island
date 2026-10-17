@@ -1,0 +1,27 @@
+
+> xiantu-island@0.0.1 test:v06p1-enhance-open
+> timeout 180s node scripts/v06p1-enhance-open-test.mjs
+
+{"protectCharmWired":true,"protectCharmN":1,"formalTipsWired":true,"formalInstanceSource":true,"softOpenedEntrance":true,"softOpenedFormalSettle":true,"softOpenedProtectCharm":false,"released":false,"compatibilityMeaning":"formalOpen/softOpened 沿用既有无符正式实例源 soft-open；本窗=护符映射接线≠护符开态夹具全表≠护符soft-open≠进包≠release","suite":"v06p1-enhance-open-formal","dataMode":"shared","formalOpen":true,"closedFixtureOnly":true,"enhanceSha":"d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954","giftsChecked":10,"smithServices":false,"minimalSceneWiring":true,"fullEnhanceUi":false,"softOpened":true}
+{"protectCharmWired":true,"protectCharmN":1,"formalTipsWired":true,"formalInstanceSource":true,"softOpenedEntrance":true,"softOpenedFormalSettle":true,"softOpenedProtectCharm":false,"released":false,"compatibilityMeaning":"formalOpen/softOpened 沿用既有无符正式实例源 soft-open；本窗=护符映射接线≠护符开态夹具全表≠护符soft-open≠进包≠release","suite":"v06p1-enhance-open-formal","dataMode":"wt","formalOpen":true,"closedFixtureOnly":true,"enhanceSha":"d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954","giftsChecked":10,"smithServices":false,"minimalSceneWiring":true,"fullEnhanceUi":false,"softOpened":true}
+{"protectCharmWired":true,"protectCharmN":1,"formalTipsWired":true,"formalInstanceSource":true,"softOpenedEntrance":true,"softOpenedFormalSettle":true,"softOpenedProtectCharm":false,"released":false,"compatibilityMeaning":"formalOpen/softOpened 沿用既有无符正式实例源 soft-open；本窗=护符映射接线≠护符开态夹具全表≠护符soft-open≠进包≠release","suite":"v06p1-enhance-open-sha-guard","protectedFiles":274,"protectedDirectories":6,"passed":true}
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: game strings仅shared/wt追加正式八键，game旧快照不动
++ actual - expected
+
++ 'd7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09'
+- '92d5525c86562a870f45bf53c0c2010e961b83ec9c257a0cf8257178f45b4cab'
+    at eq (file:///workspace/xiantu/wt/dev/scripts/v06p1-enhance-open-test.mjs:34:66)
+    at checkFormal (file:///workspace/xiantu/wt/dev/scripts/v06p1-enhance-open-test.mjs:137:5)
+    at async file:///workspace/xiantu/wt/dev/scripts/v06p1-enhance-open-test.mjs:248:3 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 'd7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09',
+  expected: '92d5525c86562a870f45bf53c0c2010e961b83ec9c257a0cf8257178f45b4cab',
+  operator: 'deepStrictEqual'
+}
+
+Node.js v20.19.2

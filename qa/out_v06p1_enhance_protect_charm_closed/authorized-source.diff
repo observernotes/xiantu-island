@@ -1,0 +1,589 @@
+diff --git a/data/balance/enhance_protect_charm.json b/data/balance/enhance_protect_charm.json
+new file mode 100644
+index 0000000..a9e148b
+--- /dev/null
++++ b/data/balance/enhance_protect_charm.json
+@@ -0,0 +1,4 @@
++{
++ "itemId": "protect_charm",
++ "countPerSettlement": 1
++}
+\ No newline at end of file
+diff --git a/data/balance/items.json b/data/balance/items.json
+index abe3b36..3c6952b 100644
+--- a/data/balance/items.json
++++ b/data/balance/items.json
+@@ -598,0 +599,6 @@
++ },
++ {
++  "id": "protect_charm",
++  "name": "护器符",
++  "phase": 5,
++  "icon": "icon_protect_charm"
+diff --git a/data/balance/materials.json b/data/balance/materials.json
+index 4a2a7ed..f4f8572 100644
+--- a/data/balance/materials.json
++++ b/data/balance/materials.json
+@@ -163 +163,2 @@
+-  "note": "强化失败不掉级，商城/活动产出"
++  "note": "强化失败不掉级，商城/活动产出",
++  "phase": 5
+diff --git a/scripts/v06d-closed-test.mjs b/scripts/v06d-closed-test.mjs
+index 3a9aa0f..cf4974a 100644
+--- a/scripts/v06d-closed-test.mjs
++++ b/scripts/v06d-closed-test.mjs
+@@ -414 +414,4 @@ try {
+-      eq(await fs.readFile(path.join(gameData, name), 'utf8'), preFormal, 'game旧strings936与shared剥正式八键后同字节');
++      const gameStrings = await fs.readFile(path.join(gameData, name), 'utf8');
++      eq(hash(gameStrings), expectedSha[name], 'game既有strings944指定SHA保持原字节');
++      eq(Object.keys(JSON.parse(gameStrings)).length, 944, 'game既有strings944键数');
++      eq(gameStrings, sharedBytes.get(name).toString('utf8'), 'game既有strings944与shared完整同字节');
+@@ -433 +436 @@ try {
+-console.log(`v06d closed tests ok: ${assertions} assertions; C01–C10 自动化部分通过；shared/snapshot strings944同字节、game旧936不动，三根山门地图同字节；tower_floors/titles/gifts/原904文案保持；formalOpen:true、closedFixtureOnly:true；正式已软开；关态仅内存夹具，无收益/通层/首通/称号/存储增量；未发版`);
++console.log(`v06d closed tests ok: ${assertions} assertions; C01–C10 自动化部分通过；三根既有strings944同字节且game本窗不改，三根山门地图同字节；tower_floors/titles/gifts/原904文案保持；formalOpen:true、closedFixtureOnly:true；正式已软开；关态仅内存夹具，无收益/通层/首通/称号/存储增量；未发版`);
+diff --git a/scripts/v06p1-enhance-closed-test.mjs b/scripts/v06p1-enhance-closed-test.mjs
+index 7c670bb..4cdf669 100644
+--- a/scripts/v06p1-enhance-closed-test.mjs
++++ b/scripts/v06p1-enhance-closed-test.mjs
+@@ -14 +14 @@ const shared = sharedRoot(root), baselineOut = path.join(root, 'qa/out_v06p1_enh
+-const out = process.env.ENHANCE_CLOSED_OUT ?? (process.env.XT_ENHANCE_QA_OUT ? path.join(process.env.XT_ENHANCE_QA_OUT, 'closed') : process.env.OUT_DIR) ?? path.join(root, 'qa/out_v06p1_enhance_open_preamble/closed');
++const out = process.env.ENHANCE_CLOSED_OUT ?? (process.env.XT_ENHANCE_QA_OUT ? path.join(process.env.XT_ENHANCE_QA_OUT, 'closed') : process.env.OUT_DIR) ?? path.join(root, 'qa/out_v06p1_enhance_protect_charm_closed/closed');
+@@ -19,0 +20,10 @@ const enhanceFlagSha = 'd7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0
++const protectCharmTableShas = {
++  'materials.json': '79c68429d763054ac1715467d1743575e179ecaecb2529e4b6ed7df137ef4052',
++  'items.json': 'f8b587634e5c9d43a475e85724aa34172e2945abda7654c2ef98fda07d1566f3',
++  'enhance_protect_charm.json': '0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772',
++};
++const protectCharmGenerator = { name: 'tools/gen_enhance_protect_charm.py',
++  sha: '59b821c259724feaa47368034f6e9f297c246d01a0aa845aa1c7faf6b7c64828' };
++const protectCharmEvidence = { protectCharmWired: true, protectCharmN: 1, formalTipsWired: true,
++  formalInstanceSource: true, softOpenedEntrance: true, softOpenedFormalSettle: true,
++  softOpenedProtectCharm: false, released: false };
+@@ -74 +84 @@ const clone = value => JSON.parse(JSON.stringify(value));
+-const report = row => { row = { compatibilityMeaning: 'formalOpen/softOpened 仅沿用入口状态；实例源已接线 ≠ soft-open 进包', formalTipsWired: true, formalInstanceSource: true, softOpenedEntrance: true, ...row }; evidence.push(row); console.log(JSON.stringify(row)); };
++const report = row => { row = { ...protectCharmEvidence, compatibilityMeaning: '本窗=护符映射接线 ≠ 开态全表 ≠ soft-open 进包 ≠ release；formalOpen/softOpened 沿用既有无符正式状态', ...row }; evidence.push(row); console.log(JSON.stringify(row)); };
+@@ -163 +173 @@ async function checkProtection() {
+-    eq(compared, ['strings.shared', 'strings.wt'].includes(key) ? stringsSha : expected, `权威写前/写后保护字节（仅剥获准强化接线）：${key}`);
++    eq(compared, ['strings.shared', 'strings.wt', 'strings.game'].includes(key) ? stringsSha : expected, `权威写前/写后保护字节（仅剥获准强化接线）：${key}`);
+@@ -194,2 +204,11 @@ async function checkProtection() {
+-  for (const mode of ['shared', 'wt']) dataBefore[`${mode}:balance/strings_zh.json`] = stringsSha;
+-  eq(currentData, dataBefore, '三根 balance/maps/features 仅shared/wt strings正式八键获准变化，其余逐字 SHA 均不变');
++  for (const mode of ['shared', 'wt']) {
++    dataBefore[`${mode}:balance/strings_zh.json`] = stringsSha;
++    for (const [name, sha] of Object.entries(protectCharmTableShas)) dataBefore[`${mode}:balance/${name}`] = sha;
++  }
++  dataBefore['game:balance/strings_zh.json'] = stringsSha; // 开工前 game 已有正式944键；本窗逐字保留。
++  dataBefore[`shared:balance/${protectCharmGenerator.name}`] = protectCharmGenerator.sha;
++  const generatorFile = path.join(shared, 'balance', protectCharmGenerator.name), generatorSha = await shaOrNull(generatorFile);
++  eq(generatorSha, protectCharmGenerator.sha, 'shared 既有护符落表工具固定 SHA，wt/game 不新增或复制');
++  readOnlyBefore.set(generatorFile, generatorSha);
++  protectedFiles[`shared:balance/${protectCharmGenerator.name}`] = generatorSha;
++  eq(currentData, dataBefore, '三根 balance/maps/features 仅 shared/wt 护符三表固定 SHA；三根既有 strings944 保留，其余 game 历史快照不变');
+@@ -211,0 +231,6 @@ async function checkStatic(mode, dataRoot) {
++  if (mode !== 'game') {
++    for (const [name, expected] of Object.entries(protectCharmTableShas))
++      eq(await shaOrNull(path.join(dataRoot, 'balance', name)), expected, `${mode}: 护符三表固定权威 SHA ${name}`);
++    eq(JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/enhance_protect_charm.json'), 'utf8')),
++      { itemId: 'protect_charm', countPerSettlement: 1 }, `${mode}: 护符映射仅登记既有 id 与 N=1`);
++  }
+@@ -215,3 +240,3 @@ async function checkStatic(mode, dataRoot) {
+-  eq(hash(raw), formal ? stringsSha : preFormalStringsSha, `${mode}: strings 权威 SHA（game旧快照不动）`);
+-  eq(entries.length, formal ? 944 : 936, `${mode}: strings键数含_meta`);
+-  const preFormal = formal ? raw.replace(/,\n(?: {2}"enhance\.formal\.[^\n]+\n?){8}/u, '\n') : raw;
++  eq(hash(raw), stringsSha, `${mode}: strings 既有944键权威 SHA（game 本窗不改）`);
++  eq(entries.length, 944, `${mode}: strings既有944键含_meta`);
++  const preFormal = raw.replace(/,\n(?: {2}"enhance\.formal\.[^\n]+\n?){8}/u, '\n');
+@@ -250 +275 @@ async function checkStatic(mode, dataRoot) {
+-  report({ suite: 'static', dataMode: mode, passed: true, stringsSha: formal ? stringsSha : preFormalStringsSha, strings: entries.length,
++  report({ suite: 'static', dataMode: mode, passed: true, stringsSha, strings: entries.length,
+@@ -294,0 +320 @@ async function checkSource() {
++  ok(!/fixtureInstances/u.test(scene), 'design/28 C08：GameScene 生产入口无 fixtureInstances 注入或回退');
+@@ -388,0 +415,30 @@ async function runGraph(mode, dataRoot, closedFixtureOnly, refreshPayloads = nul
++    eq(forgeFlagBefore, true, `${mode}/design28-C01: Forge 正式开态不授权独立强化 memory-closed`);
++    const protectedProgress = new Progress();
++    protectedProgress.stones = 100000;
++    protectedProgress.inventory = { bamboo_sword: 1, refine_stone: 100, protect_charm: 3 };
++    const protectedInstance = { instanceRef: 'closed-protect-owned', itemId: 'bamboo_sword', type: 'weapon', enhanceLevel: 5 };
++    let protectedRandomCalls = 0, protectedTransactionCalls = 0;
++    const protectedGate = new EnhanceGate(protectedProgress, { fixtureInstances: [protectedInstance],
++      random: () => { protectedRandomCalls++; throw new Error('关态不得抽样'); } });
++    for (const name of ['persistSoon', 'save', 'saveAsync', 'runSaveTransaction', 'runSaveTransactionAsync'])
++      Object.defineProperty(protectedProgress, name, { configurable: true, value() {
++        protectedTransactionCalls++; throw new Error('关态不得事务、保存或排队');
++      } });
++    const protectedBefore = clone(protectedProgress.exportSave());
++    for (const useProtectCharm of [false, true]) {
++      const request = { enhanceRequestId: `closed-protect-${useProtectCharm}`, instanceRef: protectedInstance.instanceRef,
++        fromLevel: 5, to: 6, useProtectCharm };
++      eq(protectedGate.enhance(request), api.refuseEnhance(), `${mode}/design28-C01: 携足量护符和合法实例 enhance(${useProtectCharm}) 仍 closed.enhance`);
++      eq(await protectedGate.submit(request), api.refuseSubmit(), `${mode}/design28-C01: 携足量护符和合法实例 submit(${useProtectCharm}) 仍 closed.no_submit`);
++      eq(await protectedGate.submit(request), api.refuseSubmit(), `${mode}/design28-C06: 关态重复请求不生成去重事实`);
++      eq(protectedProgress.exportSave(), protectedBefore, `${mode}/design28-C05: 关态拒绝整档零增量`);
++    }
++    eq(protectedGate.laterService(), api.refuseLaterService(), `${mode}/design28-C05: 附灵/分解仍 later_service`);
++    eq(protectedRandomCalls, 0, `${mode}/design28-C01/C05: 关态抽样0`);
++    eq(protectedTransactionCalls, 0, `${mode}/design28-C01/C05: 关态事务及保存0`);
++    eq(protectedProgress.count('protect_charm'), 3, `${mode}/design28-C01/C05: 护符原数保留`);
++    report({ suite: 'protect-charm-memory-closed', acceptanceDesign: 'design/28', cases: ['C01', 'C05', 'C06', 'C08'],
++      dataMode: mode, passed: true, memoryClosedFlag: false, ForgeOpenFlag: forgeFlagBefore,
++      requestsProtect: [false, true], explicitTestFixtureOnly: true, protectCharmCount: 3,
++      randomCalls: protectedRandomCalls, transactionCalls: protectedTransactionCalls, zeroSideEffects: true,
++      openFixtureTableExecuted: false });
+@@ -490 +546 @@ try {
+-  eq(await shaOrNull(path.join(roots.get('game'), 'balance/strings_zh.json')), preFormalStringsSha, 'game旧strings936快照保持原字节');
++  eq(await shaOrNull(path.join(roots.get('game'), 'balance/strings_zh.json')), stringsSha, 'game既有strings944指定SHA保持原字节');
+@@ -504 +560 @@ try {
+-    formalTipsWired: true, formalInstanceSource: true, softOpenedEntrance: true, enhanceFlagSha }, null, 2)}\n`);
++    ...protectCharmEvidence, protectCharmTableShas, acceptanceDesign: 'design/28', openFixtureTableExecuted: false, enhanceFlagSha }, null, 2)}\n`);
+@@ -506 +562 @@ try {
+-console.log(`v06p1 enhance closed tests ok: ${assertions} assertions; C01–C12; ${totalFixtures} semantic fixtures; ${totalInvocations} API calls; shared/snapshot + fresh SSR; localStorage写入0; shared/wt strings944、game旧936; gifts10×false; GAME_PHASE=5; EnhanceOpenFlag=true; 不挂smith_ou.services; smith_ou同次命中仅提示、无完整强化UI; formalOpen:true; closedFixtureOnly:true; softOpened:true; formalTipsWired:true; formalInstanceSource:true; softOpenedEntrance:true; released:false`);
++console.log(`v06p1 enhance closed tests ok: ${assertions} assertions; C01–C12; ${totalFixtures} semantic fixtures; ${totalInvocations} API calls; shared/snapshot + fresh SSR; localStorage写入0; 三根既有strings944; gifts10×false; GAME_PHASE=5; EnhanceOpenFlag=true; 不挂smith_ou.services; smith_ou同次命中仅提示、无完整强化UI; formalOpen:true; closedFixtureOnly:true; softOpened:true; formalTipsWired:true; formalInstanceSource:true; softOpenedEntrance:true; softOpenedFormalSettle:true; protectCharmWired:true; protectCharmN:1; softOpenedProtectCharm:false; released:false; 本窗=护符映射接线≠开态全表≠soft-open进包`);
+diff --git a/scripts/v06p1-enhance-open-test.mjs b/scripts/v06p1-enhance-open-test.mjs
+index 1cfc525..8803291 100644
+--- a/scripts/v06p1-enhance-open-test.mjs
++++ b/scripts/v06p1-enhance-open-test.mjs
+@@ -15 +15 @@ const dataRoots = [['shared', shared], ['wt', path.join(root, 'data')], ['game',
+-const out = process.env.XT_ENHANCE_QA_OUT ?? process.env.OUT_DIR ?? path.join(root, 'qa/out_v06p1_enhance_formal_soft_open');
++const out = process.env.XT_ENHANCE_QA_OUT ?? process.env.OUT_DIR ?? path.join(root, 'qa/out_v06p1_enhance_protect_charm_closed');
+@@ -37,2 +37,8 @@ const hash = bytes => createHash('sha256').update(bytes).digest('hex');
+-const compatibilityMeaning = 'formalOpen/softOpened 表示正式实例源 soft-open；PASS≠进包≠发版';
+-const report = row => { row = { formalTipsWired: true, formalInstanceSource: true, softOpenedEntrance: true, softOpenedFormalSettle: true, compatibilityMeaning, ...row }; evidence.push(row); console.log(JSON.stringify(row)); };
++const compatibilityMeaning = 'formalOpen/softOpened 沿用既有无符正式实例源 soft-open；本窗=护符映射接线≠护符开态夹具全表≠护符soft-open≠进包≠release';
++const charmEvidence = { protectCharmWired: true, protectCharmN: 1, formalTipsWired: true, formalInstanceSource: true, softOpenedEntrance: true, softOpenedFormalSettle: true, softOpenedProtectCharm: false, released: false };
++const charmSnapshots = {
++  'materials.json': '79c68429d763054ac1715467d1743575e179ecaecb2529e4b6ed7df137ef4052',
++  'items.json': 'f8b587634e5c9d43a475e85724aa34172e2945abda7654c2ef98fda07d1566f3',
++  'enhance_protect_charm.json': '0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772',
++};
++const report = row => { row = { ...charmEvidence, compatibilityMeaning, ...row }; evidence.push(row); console.log(JSON.stringify(row)); };
+@@ -87,0 +94,9 @@ async function checkFormal() {
++  ok(/@xt\/balance\/enhance_protect_charm\.json/u.test(gate), 'Gate只读正式护符映射表');
++  ok(/removeItem\('protect_charm',/u.test(gate), 'Gate同草稿实际消费正式protect_charm而非虚拟item id');
++  ok(!/requestsProtect\(request\)/u.test(gate), '已替换true一律protect的提前拦截');
++  for (const [mode, dataRoot] of modes) {
++    for (const [name, sha] of Object.entries(charmSnapshots))
++      eq(await shaOrNull(path.join(dataRoot, 'balance', name)), sha, `${mode} ${name} 精确快照权威SHA MATCH`);
++    eq(JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/enhance_protect_charm.json'), 'utf8')),
++      { itemId: 'protect_charm', countPerSettlement: 1 }, `${mode} 护符正式唯一id与N=1`);
++  }
+@@ -122,2 +137,2 @@ async function checkFormal() {
+-    eq(hash(rawStrings), mode === 'game' ? previousStringsSha : stringsSha, `${mode} strings仅shared/wt追加正式八键，game旧快照不动`);
+-    eq(entries.length, mode === 'game' ? 936 : 944, `${mode} strings键数含_meta`);
++    eq(hash(rawStrings), stringsSha, `${mode} strings保持开工前指定944键完整SHA`);
++    eq(entries.length, 944, `${mode} strings键数保持944含_meta`);
+@@ -198,0 +214 @@ async function runGraph(mode, dataRoot, openFixture, refreshPayloads = null, inv
++    for (const [key, value] of Object.entries(charmEvidence)) eq(result[key], value, `${mode} evidence ${key}保持本窗授权值`);
+@@ -201,0 +218,3 @@ async function runGraph(mode, dataRoot, openFixture, refreshPayloads = null, inv
++      eq(result.protectCharmMapping?.cases, ['C01', 'C02', 'C03', 'C04', 'C05', 'C06', 'C07', 'C08'], `${mode} design28护符接线C01–C08实际旁证`);
++      eq(result.protectCharmMapping?.openFixtureTableExecuted, false, `${mode} 未代勾design28 O01–O06开态全表`);
++      eq(result.protectCharmMapping?.falseCharmReads, 0, `${mode} false路径护符映射资格库存零读取`);
+@@ -233 +252 @@ try {
+-    eq(opened.payloads.length, 6, `${mode} 提供夹具与正式来源各自成功/两种正常失败完整保存载荷`);
++    eq(opened.payloads.length, 8, `${mode} 既有六条无符载荷及两条护符最小成功/失败保级载荷供fresh SSR读回`);
+@@ -266 +285,2 @@ try {
+-    formalTipsWired: true, formalInstanceSource: true, softOpenedEntrance: true, softOpenedFormalSettle: true, compatibilityMeaning, stringsSha, enhanceFlagSha,
++    ...charmEvidence, acceptanceDesign: 'design/28 C01–C08', protectCharmOpenFixtureTableExecuted: false,
++    legacyRegressionDesign: 'design/27 existing no-charm C/O cases', compatibilityMeaning, stringsSha, enhanceFlagSha, charmSnapshots,
+@@ -269 +289 @@ try {
+-console.log(`v06p1 enhance formal soft-open tests ok: ${assertions + runtimeAssertions} assertions; shared/snapshot双根formal-open+memory-closed及fresh SSR读回；formal C01–C10 + fixture兼容/正式来源 O01–O08；strings944；Scene最小smith_ou同命中冒烟零写；正式flag=true；EnhanceClosed原字节；gifts 10×false；enhance未改；GAME_PHASE=5；formalOpen:true、closedFixtureOnly:true、softOpened:true、formalTipsWired:true、formalInstanceSource:true、softOpenedEntrance:true、softOpenedFormalSettle:true、released:false；正式实例源soft-open；PASS≠进包≠release≠发版`);
++console.log(`v06p1 enhance protect charm closed mapping tests ok: ${assertions + runtimeAssertions} assertions; shared/snapshot双根formal-open+memory-closed及fresh SSR读回；design28 C01–C08护符映射接线+最小成功/失败保级扣N/缺符旁证；既有design27 C/O回归保留；未代勾design28 O01–O06；strings944；Scene只读无fixture；GAME_PHASE=5；${JSON.stringify(charmEvidence)}；${compatibilityMeaning}`);
+diff --git a/scripts/v06p1-forge-closed-test.mjs b/scripts/v06p1-forge-closed-test.mjs
+index 7f1b93a..1acefff 100644
+--- a/scripts/v06p1-forge-closed-test.mjs
++++ b/scripts/v06p1-forge-closed-test.mjs
+@@ -23,0 +24,9 @@ const formalRecipeKeys = new Set(['shared:balance/recipes.json', 'wt:balance/rec
++const protectCharmTableShas = {
++  'materials.json': '79c68429d763054ac1715467d1743575e179ecaecb2529e4b6ed7df137ef4052',
++  'items.json': 'f8b587634e5c9d43a475e85724aa34172e2945abda7654c2ef98fda07d1566f3',
++  'enhance_protect_charm.json': '0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772',
++};
++const protectCharmGenerator = { name: 'tools/gen_enhance_protect_charm.py',
++  sha: '59b821c259724feaa47368034f6e9f297c246d01a0aa845aa1c7faf6b7c64828' };
++const protectCharmSha = key => /^(shared|wt):balance\/(?:materials|items|enhance_protect_charm)\.json$/u.test(key)
++  ? protectCharmTableShas[key.slice(key.lastIndexOf('/') + 1)] : undefined;
+@@ -175 +184 @@ async function checkProtection() {
+-    eq(compared, key.endsWith(':balance/strings_zh.json') ? (key.startsWith('game:') ? preFormalStringsSha : stringsSha) : formalRecipeKeys.has(key) ? formalRecipesSha : expected,
++    eq(compared, key.endsWith(':balance/strings_zh.json') ? stringsSha : formalRecipeKeys.has(key) ? formalRecipesSha : protectCharmSha(key) ?? expected,
+@@ -196 +205,12 @@ async function checkProtection() {
+-    eq(await filesUnder(path.join(dataRoot, directory)), dataFiles[mode][directory], `${mode}/${directory} 无新增/删除表、地图或入口`);
++    const expectedFiles = [...dataFiles[mode][directory], ...(mode !== 'game' && directory === 'balance' ? ['enhance_protect_charm.json'] : []),
++      ...(mode === 'shared' && directory === 'balance' ? [protectCharmGenerator.name] : [])].sort();
++    eq(await filesUnder(path.join(dataRoot, directory)), expectedFiles, `${mode}/${directory} 仅 shared/wt 新增护符映射表；其他表/地图/入口不增删`);
++  }
++  const generatorFile = path.join(shared, 'balance', protectCharmGenerator.name), generatorSha = await shaOrNull(generatorFile);
++  eq(generatorSha, protectCharmGenerator.sha, 'shared 既有护符落表工具固定 SHA，wt/game 不新增或复制');
++  readOnlyBefore.set(generatorFile, generatorSha);
++  protectedFiles[`shared:balance/${protectCharmGenerator.name}`] = generatorSha;
++  for (const mode of ['shared', 'wt']) for (const [name, expected] of Object.entries(protectCharmTableShas)) {
++    const file = path.join(roots.get(mode), 'balance', name), actual = await shaOrNull(file);
++    eq(actual, expected, `${mode}: 护符三表仅接受权威固定 SHA ${name}`);
++    readOnlyBefore.set(file, actual); protectedFiles[`${mode}:balance/${name}`] = actual;
+@@ -208,4 +228,3 @@ async function checkStatic(mode, dataRoot) {
+-  const formal = mode !== 'game';
+-  eq(hash(raw), formal ? stringsSha : preFormalStringsSha, `${mode}: strings指定SHA（game旧快照不动）`);
+-  eq(entries.length, formal ? 944 : 936, `${mode}: strings键数含_meta`);
+-  const preFormal = formal ? raw.replace(/,\n(?: {2}"enhance\.formal\.[^\n]+\n?){8}/u, '\n') : raw;
++  eq(hash(raw), stringsSha, `${mode}: strings既有944键指定SHA（game本窗不改）`);
++  eq(entries.length, 944, `${mode}: strings既有944键含_meta`);
++  const preFormal = raw.replace(/,\n(?: {2}"enhance\.formal\.[^\n]+\n?){8}/u, '\n');
+@@ -242 +261 @@ async function checkStatic(mode, dataRoot) {
+-  report({ suite: 'static', dataMode: mode, passed: true, strings: entries.length, stringsSha: formal ? stringsSha : preFormalStringsSha,
++  report({ suite: 'static', dataMode: mode, passed: true, strings: entries.length, stringsSha,
+@@ -440 +459 @@ try {
+-  eq(await shaOrNull(path.join(roots.get('game'), 'balance/strings_zh.json')), preFormalStringsSha, 'game: strings936旧快照保持原字节');
++  eq(await shaOrNull(path.join(roots.get('game'), 'balance/strings_zh.json')), stringsSha, 'game: 既有strings944指定SHA保持原字节');
+diff --git a/scripts/v06p1-market-closed-test.mjs b/scripts/v06p1-market-closed-test.mjs
+index 821ac1f..26bc20b 100644
+--- a/scripts/v06p1-market-closed-test.mjs
++++ b/scripts/v06p1-market-closed-test.mjs
+@@ -33,0 +34,7 @@ const formalRecipeKeys = new Set(['shared:balance/recipes.json', 'wt:balance/rec
++const protectCharmTableShas = {
++  'materials.json': '79c68429d763054ac1715467d1743575e179ecaecb2529e4b6ed7df137ef4052',
++  'items.json': 'f8b587634e5c9d43a475e85724aa34172e2945abda7654c2ef98fda07d1566f3',
++  'enhance_protect_charm.json': '0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772',
++};
++const protectCharmSha = key => /^(shared|wt):balance\/(?:materials|items|enhance_protect_charm)\.json$/u.test(key)
++  ? protectCharmTableShas[key.slice(key.lastIndexOf('/') + 1)] : undefined;
+@@ -219,2 +226,2 @@ async function checkProtection() {
+-      : key.endsWith(':balance/strings_zh.json') ? (key.startsWith('game:') ? preFormalStringsSha : stringsSha)
+-      : formalRecipeKeys.has(key) ? formalRecipesSha : expected;
++      : key.endsWith(':balance/strings_zh.json') ? stringsSha
++      : formalRecipeKeys.has(key) ? formalRecipesSha : protectCharmSha(key) ?? expected;
+@@ -236 +243,3 @@ async function checkProtection() {
+-        .map(key => key.slice(prefix.length)).sort();
++        .map(key => key.slice(prefix.length));
++      if (mode !== 'game' && directory === 'balance') expected.push('enhance_protect_charm.json');
++      expected.sort();
+@@ -239,0 +249,5 @@ async function checkProtection() {
++  for (const mode of ['shared', 'wt']) for (const [name, expected] of Object.entries(protectCharmTableShas)) {
++    const file = path.join(dataRoots.get(mode), 'balance', name), actual = await shaOrNull(file);
++    eq(actual, expected, `${mode}: 护符三表仅接受权威固定 SHA ${name}`);
++    readOnlyBefore.set(file, actual); protectedFiles[`${mode}:balance/${name}`] = actual;
++  }
+@@ -480 +494 @@ try {
+-  eq(await shaOrNull(path.join(gameData, 'balance/strings_zh.json')), preFormalStringsSha, 'game: strings936旧快照保持原字节');
++  eq(await shaOrNull(path.join(gameData, 'balance/strings_zh.json')), stringsSha, 'game: 既有strings944指定SHA保持原字节');
+@@ -496 +510 @@ try {
+-console.log(`v06p1 market closed tests ok: ${assertions} assertions; C01–C12 自动化部分通过；shared/snapshot strings944同字节、game旧strings936不动；八 API 零参数、零副作用、零存储写入；shops/禁改表/地图不变，Progress仅授权可选market袋，gifts 10×false，GAME_PHASE=5；仅前台入口最小提示、无完整寄售 UI；formalOpen:true、closedFixtureOnly:true、softOpened:true、released:false；正式旗及三根 enabled=true，关态仅 SSR 内存 false、未发版`);
++console.log(`v06p1 market closed tests ok: ${assertions} assertions; C01–C12 自动化部分通过；三根既有strings944同字节且game本窗不改；八 API 零参数、零副作用、零存储写入；shops/禁改表/地图不变，Progress仅授权可选market袋，gifts 10×false，GAME_PHASE=5；仅前台入口最小提示、无完整寄售 UI；formalOpen:true、closedFixtureOnly:true、softOpened:true、released:false；正式旗及三根 enabled=true，关态仅 SSR 内存 false、未发版`);
+diff --git a/src/EnhanceGate.ts b/src/EnhanceGate.ts
+index cb86a1a..f95dea5 100644
+--- a/src/EnhanceGate.ts
++++ b/src/EnhanceGate.ts
+@@ -1,0 +2 @@ import enhance from '@xt/balance/enhance.json';
++import protectCharmMap from '@xt/balance/enhance_protect_charm.json';
+@@ -81 +81,0 @@ export class EnhanceGate {
+-      if (this.requestsProtect(request)) return formalDenied('enhance.formal.protect');
+@@ -88,0 +89,2 @@ export class EnhanceGate {
++      const protectCharmN = this.protectCharmCost(this.progress, request?.useProtectCharm === true);
++      if (typeof protectCharmN !== 'number') return protectCharmN;
+@@ -95 +96,0 @@ export class EnhanceGate {
+-      if (this.requestsProtect(request)) return formalDenied('enhance.formal.protect');
+@@ -107,0 +109,2 @@ export class EnhanceGate {
++      const protectCharmN = this.protectCharmCost(this.progress, request.useProtectCharm);
++      if (typeof protectCharmN !== 'number') return protectCharmN;
+@@ -115,0 +119,2 @@ export class EnhanceGate {
++        const protectCharmN = this.protectCharmCost(draft, intent.useProtectCharm);
++        if (typeof protectCharmN !== 'number') return reject(protectCharmN);
+@@ -121 +126 @@ export class EnhanceGate {
+-        const finalLevel = success ? intent.to : intent.fromLevel - (selection.row.dropOnFail ? 1 : 0);
++        const finalLevel = success ? intent.to : (intent.useProtectCharm ? intent.fromLevel : intent.fromLevel - (selection.row.dropOnFail ? 1 : 0));
+@@ -125 +130 @@ export class EnhanceGate {
+-          fromLevel: intent.fromLevel, ...copy(selection.row), useProtectCharm: false, success, finalLevel,
++          fromLevel: intent.fromLevel, ...copy(selection.row), useProtectCharm: intent.useProtectCharm, success, finalLevel,
+@@ -130,0 +136 @@ export class EnhanceGate {
++        const protectCharms = intent.useProtectCharm ? draft.count('protect_charm') : undefined;
+@@ -133,0 +140 @@ export class EnhanceGate {
++        if (intent.useProtectCharm) draft.removeItem('protect_charm', protectCharmN);
+@@ -140,0 +148 @@ export class EnhanceGate {
++          || intent.useProtectCharm && draft.count('protect_charm') !== protectCharms! - protectCharmN
+@@ -179,0 +188 @@ export class EnhanceGate {
++      && result.useProtectCharm === request.useProtectCharm
+@@ -188,3 +196,0 @@ export class EnhanceGate {
+-  private requestsProtect(value: unknown): boolean {
+-    return !!value && typeof value === 'object' && Object.getOwnPropertyDescriptor(value, 'useProtectCharm')?.value === true;
+-  }
+@@ -217 +222,0 @@ export class EnhanceGate {
+-    if (request.useProtectCharm) return formalDenied('enhance.formal.protect');
+@@ -266,0 +272,13 @@ export class EnhanceGate {
++  /** false 路径不读取护符映射或库存；true 的映射与可消费量在预检、事务内各核一次。 */
++  private protectCharmCost(progress: Progress, useProtectCharm: boolean): number | EnhanceDenied {
++    if (!useProtectCharm) return 0;
++    const item = Object.prototype.hasOwnProperty.call(ITEMS, 'protect_charm') ? ITEMS.protect_charm : undefined;
++    if (protectCharmMap.itemId !== 'protect_charm' || !positive(protectCharmMap.countPerSettlement)
++      || !item || !inPhase(item) || item.enabled === false || item.placeholder === true || item.qualityEnabled === true)
++      return formalDenied('enhance.formal.protect');
++    const needed = protectCharmMap.countPerSettlement;
++    return count(progress.permanentCount('protect_charm')) && progress.permanentCount('protect_charm') >= needed
++      && progress.count('protect_charm') === progress.permanentCount('protect_charm')
++      && !Object.prototype.hasOwnProperty.call(progress.pillQualities, 'protect_charm')
++      ? needed : formalDenied('enhance.formal.resources');
++  }
+diff --git a/src/EnhanceProgress.ts b/src/EnhanceProgress.ts
+index ddfaf36..e0f99be 100644
+--- a/src/EnhanceProgress.ts
++++ b/src/EnhanceProgress.ts
+@@ -37 +37 @@ export interface EnhanceResult {
+-  useProtectCharm: false;
++  useProtectCharm: boolean;
+@@ -114,2 +114,2 @@ export function isValidEnhanceProgress(value: unknown): value is EnhanceProgress
+-        || typeof row.dropOnFail !== 'boolean' || row.useProtectCharm !== false || typeof row.success !== 'boolean'
+-        || !count(row.finalLevel) || row.finalLevel !== (row.success ? row.to : row.fromLevel - (row.dropOnFail ? 1 : 0))
++        || typeof row.dropOnFail !== 'boolean' || typeof row.useProtectCharm !== 'boolean' || typeof row.success !== 'boolean'
++        || !count(row.finalLevel) || row.finalLevel !== (row.success ? row.to : (row.useProtectCharm ? row.fromLevel : row.fromLevel - (row.dropOnFail ? 1 : 0)))
+diff --git a/src/v06p1-enhance-open.test.ts b/src/v06p1-enhance-open.test.ts
+index da7aa1d..3719c14 100644
+--- a/src/v06p1-enhance-open.test.ts
++++ b/src/v06p1-enhance-open.test.ts
+@@ -2,0 +3 @@ import enhance from '@xt/balance/enhance.json';
++import protectCharmMap from '@xt/balance/enhance_protect_charm.json';
+@@ -221,0 +223,4 @@ export async function runEnhanceOpenFixtureTests(options: {
++      ...[false, true].flatMap(useProtectCharm => [
++        [() => gate.enhance({ ...request('closed-protect-preview'), useProtectCharm }), Closed.refuseEnhance],
++        [() => gate.submit({ ...request('closed-protect-submit'), useProtectCharm }), Closed.refuseSubmit],
++      ] as [() => unknown | Promise<unknown>, () => unknown][]),
+@@ -384,8 +388,0 @@ export async function runEnhanceOpenFixtureTests(options: {
+-    for (const hasFixture of [false, true]) for (const level of [0, 5, 11]) {
+-      const f = fixture(level); f.p.inventory.protect_charm = 7;
+-      const gate = hasFixture ? f.gate : new EnhanceGate(f.p);
+-      const protectedRequest = { ...request(`formal-charm-${hasFixture}-${level}`, level), useProtectCharm: true };
+-      await formalUnchanged(f.p, () => gate.enhance(protectedRequest), 'protect', `C05护符true预览整笔拒绝/fixture=${hasFixture}/+${level}`);
+-      await formalUnchanged(f.p, () => gate.submit(protectedRequest), 'protect', `C05护符true提交整笔拒绝/fixture=${hasFixture}/+${level}`);
+-      eq(f.p.count('protect_charm'), 7, 'C05护符候选库存不消费不授权映射');
+-    }
+@@ -446 +443 @@ export async function runEnhanceOpenFixtureTests(options: {
+-    await replay(loaded, gate, request(payload.enhanceRequestId, result.fromLevel, result.instanceRef), `${payload.state}/读回同请求`);
++    await replay(loaded, gate, { ...request(payload.enhanceRequestId, result.fromLevel, result.instanceRef), useProtectCharm: result.useProtectCharm }, `${payload.state}/读回同请求`);
+@@ -448 +445 @@ export async function runEnhanceOpenFixtureTests(options: {
+-      () => gate.submit(request(payload.enhanceRequestId, result.fromLevel, result.instanceRef)), 'duplicate', `C08${payload.state}：旧结果拒绝再次结算`);
++      () => gate.submit({ ...request(payload.enhanceRequestId, result.fromLevel, result.instanceRef), useProtectCharm: result.useProtectCharm }), 'duplicate', `C08${payload.state}：旧结果拒绝再次结算`);
+@@ -451 +448 @@ export async function runEnhanceOpenFixtureTests(options: {
+-      () => gate.submit(request(payload.enhanceRequestId, result.fromLevel, 'different-instance')), 'duplicate', `C08${payload.state}：旧请求载荷冲突拒绝`);
++      () => gate.submit({ ...request(payload.enhanceRequestId, result.fromLevel, 'different-instance'), useProtectCharm: result.useProtectCharm }), 'duplicate', `C08${payload.state}：旧请求载荷冲突拒绝`);
+@@ -452,0 +450,4 @@ export async function runEnhanceOpenFixtureTests(options: {
++    const charmConflict = await formalUnchanged(loaded,
++      () => gate.submit({ ...request(payload.enhanceRequestId, result.fromLevel, result.instanceRef), useProtectCharm: !result.useProtectCharm }),
++      'duplicate', `design28 C06/C07${payload.state}：护符意图冲突仍拒绝重复`);
++    eq('result' in charmConflict && charmConflict.result !== undefined, false, `design28 C06/C07${payload.state}：护符意图冲突不附旧结果`);
+@@ -461,0 +463,185 @@ export async function runEnhanceOpenFixtureTests(options: {
++  /** design/28 C 表及接线自洽所需最小旁证；不代勾 design/28 O01–O06。 */
++  async function protectCharmMappingCases() {
++    const mapping = protectCharmMap as Record<string, unknown>;
++    eq(mapping, { itemId: 'protect_charm', countPerSettlement: 1 }, 'design28 C08正式映射只读取得本窗N=1');
++    ok(ITEMS.protect_charm, 'design28 C08合并后的ITEMS存在正式护符资格记录');
++    const mappingBefore = Object.getOwnPropertyDescriptors(mapping), itemBefore = ITEMS.protect_charm;
++    async function withMappingMutation(mutate: () => void, action: () => Promise<void>) {
++      try { mutate(); await action(); }
++      finally {
++        for (const key of Reflect.ownKeys(mapping)) Reflect.deleteProperty(mapping, key);
++        Object.defineProperties(mapping, mappingBefore);
++        ITEMS.protect_charm = itemBefore;
++      }
++    }
++    const brokenMappings: [string, () => void][] = [
++      ['missing-map-fields', () => { delete mapping.itemId; delete mapping.countPerSettlement; }],
++      ['missing-itemId', () => { delete mapping.itemId; }],
++      ['wrong-itemId', () => { mapping.itemId = 'refine_stone'; }],
++      ['missing-N', () => { delete mapping.countPerSettlement; }],
++      ...[0, -1, 0.5, NaN, Infinity, Number.MAX_SAFE_INTEGER + 1, '1', null].map(value =>
++        [`invalid-N-${String(value)}`, () => { mapping.countPerSettlement = value; }] as [string, () => void]),
++      ['missing-ITEMS-registration', () => { delete ITEMS.protect_charm; }],
++      ...[
++        ['phase', { phase: GAME_PHASE + 1 }], ['phaseMin', { phaseMin: GAME_PHASE + 1 }],
++        ['phaseMax', { phaseMax: GAME_PHASE - 1 }], ['enabled', { enabled: false }],
++        ['placeholder', { placeholder: true }], ['qualityEnabled', { qualityEnabled: true }],
++      ].map(([name, patch]) => [String(name), () => { ITEMS.protect_charm = { ...itemBefore, ...patch as object }; }] as [string, () => void]),
++    ];
++    for (const [name, mutate] of brokenMappings) await withMappingMutation(mutate, async () => {
++      const f = fixture(); f.p.inventory.protect_charm = 7;
++      const input = { ...request(`mapping-${name}`), useProtectCharm: true };
++      await formalUnchanged(f.p, () => f.gate.enhance(input), 'protect', `design28 C02/C05${name}即使库存有符仍拒绝预览`);
++      await formalUnchanged(f.p, () => f.gate.submit(input), 'protect', `design28 C02/C05${name}即使库存有符仍拒绝提交`);
++      eq(f.p.count('protect_charm'), 7, 'design28 C02映射未齐不消费也不静默改false');
++    });
++    // false 路径不得读取护符映射、登记或库存。Getter 若被触碰会立即抛错并使分类断言失败。
++    let falseCharmReads = 0;
++    await withMappingMutation(() => {
++      const fail = () => { falseCharmReads++; throw new Error('false路径不得读护符映射或资格'); };
++      Object.defineProperties(mapping, { itemId: { configurable: true, get: fail }, countPerSettlement: { configurable: true, get: fail } });
++      delete ITEMS.protect_charm;
++    }, async () => {
++      for (const [kind, hasInstance, resources] of [['missing-instance', false, true], ['missing-base-resources', true, false]] as const) {
++        const f = fixture(); delete f.p.inventory.protect_charm;
++        if (!resources) f.p.stones = 0;
++        const gate = hasInstance ? f.gate : new EnhanceGate(f.p);
++        const originalCount = f.p.count, originalPermanent = f.p.permanentCount;
++        try {
++          f.p.count = function (id: string) { if (id === 'protect_charm') falseCharmReads++; return originalCount.call(this, id); };
++          f.p.permanentCount = function (id: string) { if (id === 'protect_charm') falseCharmReads++; return originalPermanent.call(this, id); };
++          await formalUnchanged(f.p, () => gate.enhance(request(`false-${kind}-preview`)), hasInstance ? 'resources' : 'no_instance', `design28 C03${kind}无映射无符预览`);
++          await formalUnchanged(f.p, () => gate.submit(request(`false-${kind}-submit`)), hasInstance ? 'resources' : 'no_instance', `design28 C03${kind}无映射无符提交`);
++        } finally { f.p.count = originalCount; f.p.permanentCount = originalPermanent; }
++      }
++      const f = fixture(); delete f.p.inventory.protect_charm;
++      ok(f.gate.enhance(request('false-valid-no-map')).allowed, 'design28 C03无符合法实例预览不依赖护符映射');
++      sampled = 0;
++      eq(committed(await f.gate.submit(request('false-committed-no-map'))).useProtectCharm, false, 'design28 C03既有false路径无护符登记/N/库存仍可结算');
++    });
++    eq(falseCharmReads, 0, 'design28 C03 false对护符映射资格库存零读取');
++
++    // 携符不授予装备身份、类型、等级或跨档权限。
++    for (const [name, instances, input, reason, missingOwned] of [
++      ['no-source', undefined, request('charm-no-source'), 'no_instance', false],
++      ['itemId-is-not-instanceRef', [instance()], request('charm-item-id', 0, 'bamboo_sword'), 'no_instance', false],
++      ['foreign', [instance()], request('charm-foreign'), 'foreign', true],
++      ['bad-type', [{ ...instance(), type: 'shoes' }], request('charm-bad-type'), 'bad_type', false],
++      ['stale-level', [instance(1)], request('charm-stale-level'), 'max_level', false],
++      ['max-level', [instance(enhance.maxLevel)], request('charm-max-level', enhance.maxLevel), 'max_level', false],
++    ] as const) {
++      const f = fixture(0, 'weapon', instances as Instance[] | undefined); f.p.inventory.protect_charm = 7;
++      if (missingOwned) delete f.p.inventory.bamboo_sword;
++      const gate = instances === undefined ? new EnhanceGate(f.p) : f.gate;
++      const protectedInput = { ...input, useProtectCharm: true };
++      await formalUnchanged(f.p, () => gate.enhance(protectedInput), reason, `design28 C04/C05携符${name}预览仍拒绝`);
++      await formalUnchanged(f.p, () => gate.submit(protectedInput), reason, `design28 C04/C05携符${name}提交仍拒绝`);
++    }
++    for (const pollution of ['zero', 'transient', 'pillQualities']) {
++      const f = fixture(); f.p.inventory.protect_charm = pollution === 'zero' ? 0 : 7;
++      if (pollution === 'transient') (f.p as any).transientItems = { protect_charm: 1 };
++      if (pollution === 'pillQualities') f.p.pillQualities.protect_charm = { low: 7 };
++      const input = { ...request(`charm-inventory-${pollution}`), useProtectCharm: true };
++      await formalUnchanged(f.p, () => f.gate.enhance(input), 'resources', `design28 C05${pollution}不可消费护符拒绝预览`);
++      await formalUnchanged(f.p, () => f.gate.submit(input), 'resources', `design28 C05${pollution}不可消费护符拒绝提交`);
++    }
++    await withMappingMutation(() => { mapping.countPerSettlement = 2; }, async () => {
++      const f = fixture(); f.p.inventory.protect_charm = 1;
++      await formalUnchanged(f.p, () => f.gate.submit({ ...request('charm-less-than-N'), useProtectCharm: true }),
++        'resources', 'design28 C05库存小于映射N整笔拒绝，不猜N或部分扣除');
++    });
++
++    const protectedPayloads: Payload[] = [];
++    for (const [name, level, random, success] of [['success', 0, 0, true], ['failure-kept', 5, 0.999999, false]] as const) {
++      const f = fixture(level); f.p.inventory.protect_charm = 3;
++      const input = { ...request(`protect-charm-${name}`, level), useProtectCharm: true };
++      const row = enhance.levels.find(row => row.to === input.to)!, before = f.p.exportSave(), writes = idb.writes,
++        samples = sampleCount, commits = idb.commits;
++      sampled = random;
++      ok(f.gate.enhance(input).allowed, 'design28 C08齐备足量护符只读预览允许且不消费');
++      eq(f.p.exportSave(), before, 'design28 C08带符预览保持整档原样');
++      const result = committed(await f.gate.submit(input)), finalLevel = success ? input.to : level;
++      eq(result.useProtectCharm, true, 'design28最小接线旁证结果持久记录护符true');
++      eq(result.success, success, 'design28最小接线旁证按目标原rate正常抽样');
++      eq({ to: result.to, rate: result.rate, stones: result.stones, refineStones: result.refineStones, dropOnFail: result.dropOnFail }, row,
++        'design28最小接线旁证不改目标rate且dropOnFail保留原审计值');
++      if (!success) eq(row.dropOnFail, true, 'design28最小失败旁证明确覆盖原配置会掉级的目标行');
++      eq(result.finalLevel, finalLevel, 'design28最小接线旁证成功升to、护符失败保fromLevel');
++      eq(result.attributes, attributes('weapon', finalLevel), 'design28最小接线旁证属性严格对应最终等级');
++      eq(f.p.enhance!.instances[0].enhanceLevel, finalLevel, 'design28最小接线旁证最终等级同次入袋');
++      eq([f.p.stones, f.p.count('refine_stone'), f.p.count('protect_charm')],
++        [Number(before.stones) - row.stones, 100 - row.refineStones, 2], 'design28成功与正常失败同扣灵石精炼石及护符N=1');
++      eq([f.p.count('bamboo_sword'), f.p.count('rabbit_fur')], [2, 7], 'design28失败不碎装、不变更旁路资产');
++      eq([idb.writes, idb.commits, sampleCount], [writes + 1, commits + 1, samples + 1], 'design28费用等级属性结果去重同一提交且只抽一次');
++      const disk = (await saveStore.readSlot(1))!.data;
++      eq([disk.enhance, disk.inventory, disk.stones], [f.p.enhance, f.p.inventory, f.p.stones], 'design28护符消费与完整结果同次落盘');
++      ok(isValidEnhanceProgress(f.p.enhance), 'design28 true结果及失败保级满足最小结构放开');
++      for (const value of [undefined, 'true', null]) {
++        const corrupt = copy(f.p.enhance) as any; corrupt.enhancements[0].useProtectCharm = value;
++        eq(isValidEnhanceProgress(corrupt), false, 'design28结构仍要求useProtectCharm为boolean');
++      }
++      await replay(f.p, new EnhanceGate(f.p), input, 'design28 C06护符请求只读重放不二次消费');
++      const conflict = await formalUnchanged(f.p, () => f.gate.submit({ ...input, useProtectCharm: false }), 'duplicate', 'design28 C06护符true旧请求改false仍拒绝');
++      eq('result' in conflict && conflict.result !== undefined, false, 'design28 C06护符载荷冲突不附旧结果');
++      await withMappingMutation(() => { delete mapping.countPerSettlement; delete ITEMS.protect_charm; }, async () => {
++        await replay(f.p, new EnhanceGate(f.p), input, 'design28 C06/C07已提交true结果不依赖后来失效的映射');
++        const refreshed = await formalUnchanged(f.p, () => new EnhanceGate(f.p).loadRefresh(), 'load_dedupe', 'design28 C07后来缺N和登记仍只读已提交完整结果');
++        eq('progress' in refreshed ? refreshed.progress : null, f.p.enhance, 'design28 C07映射失效后load_dedupe不补扣不改旧结果');
++        eq(committed(new EnhanceGate(f.p).level(input.enhanceRequestId)), result, 'design28 C07映射失效后level仅读旧结果');
++        eq(committed(new EnhanceGate(f.p).consume(input.enhanceRequestId)), result, 'design28 C07映射失效后consume不补做消费');
++      });
++      // 已提交去重不再要求补齐当下护符；这里只读改变测试库存，随后恢复原已提交快照。
++      f.p.inventory.protect_charm = 0;
++      await replay(f.p, new EnhanceGate(f.p), input, 'design28 C06已消费后当前无符仍只读识别旧结果');
++      f.p.inventory.protect_charm = 2;
++      protectedPayloads.push({ state: `protect-charm-${name}`, enhanceRequestId: input.enhanceRequestId, save: f.p.exportSave() });
++    }
++    for (const payload of protectedPayloads) await roundtrip(payload);
++    payloads.push(...protectedPayloads);
++    const originalRemove = Progress.prototype.removeItem;
++    try {
++      for (const throws of [false, true]) {
++        Progress.prototype.removeItem = function (id: string, amount: number) {
++          if (id === 'protect_charm') { if (throws) throw new Error('护符消费端受控失败'); return; }
++          return originalRemove.call(this, id, amount);
++        };
++        const f = fixture(); f.p.inventory.protect_charm = 2; sampled = 0;
++        await unchanged(f.p, () => f.gate.submit({ ...request(`charm-remove-failed-${throws}`), useProtectCharm: true }),
++          'design28 C05护符真实扣除端无效或抛错时基础费用结果等级同笔回滚');
++      }
++    } finally { Progress.prototype.removeItem = originalRemove; }
++    const aborted = fixture(); aborted.p.inventory.protect_charm = 2; sampled = 0;
++    eq(await aborted.p.save({ async: true }), true, 'design28 C05新增护符消费中断前保存完整旧档');
++    const beforeAbort = aborted.p.exportSave(), abortDisk = (await saveStore.readSlot(1))!.data;
++    const hold = idb.holdNextCommit(), pending = aborted.gate.submit({ ...request('charm-aborted'), useProtectCharm: true });
++    await hold.started;
++    eq(aborted.p.exportSave(), beforeAbort, 'design28 C05IDB complete前不发布护符费用等级结果');
++    idb.abortNextCommit(); hold.release(); businessDenied(await pending, 'design28 C05护符同事务中断明确拒绝');
++    eq(aborted.p.exportSave(), beforeAbort, 'design28 C05护符消费中断内存整笔回滚');
++    eq((await saveStore.readSlot(1))!.data, abortDisk, 'design28 C05护符消费中断磁盘整笔回滚');
++    const rapid = fixture(); rapid.p.inventory.protect_charm = 2; sampled = 0;
++    const input = { ...request('protect-charm-rapid'), useProtectCharm: true }, writes = idb.writes, samples = sampleCount;
++    const rapidResults = await Promise.all([rapid.gate.submit(input), new EnhanceGate(rapid.p, fixtureOptions()).submit(copy(input)), rapid.gate.submit(copy(input))]);
++    eq(rapidResults.filter(result => result.allowed).length, 1, 'design28 C06带符连点与跨Gate同请求只完整提交一次');
++    eq([rapid.p.count('protect_charm'), rapid.p.enhance!.enhancements.length, rapid.p.enhance!.receipts.length], [1, 1, 1], 'design28 C06带符连点只消费N并产生一份结果去重');
++    eq([idb.writes, sampleCount], [writes + 1, samples + 1], 'design28 C06带符连点只写一次抽一次');
++    await replay(rapid.p, rapid.gate, input, 'design28 C06带符连点完成后duplicate只读');
++    const oldSlot = Progress.getActiveSlot();
++    try {
++      Progress.setActiveSlot(2); const other = fixture(); other.p.inventory.protect_charm = 2;
++      await formalUnchanged(other.p, () => new EnhanceGate(other.p).submit(input), 'no_instance', 'design28 C07另一档同请求有符也不借原档授权');
++      await formalUnchanged(other.p, () => new EnhanceGate(other.p).level(input.enhanceRequestId), 'no_instance', 'design28 C07另一档不读取原档结果或消费事实');
++      const result = committed(await other.gate.submit(input));
++      ok(result.enhanceResultRef !== rapid.p.enhance!.enhancements[0].enhanceResultRef, 'design28 C07显式夹具另档同id拥有独立账本');
++      eq(other.p.count('protect_charm'), 1, 'design28 C07另一档只扣本档护符N');
++      eq(rapid.p.count('protect_charm'), 1, 'design28 C07跨档不修改原档库存');
++    } finally { Progress.setActiveSlot(oldSlot); }
++    eq(mapping, { itemId: 'protect_charm', countPerSettlement: 1 }, 'design28测试后恢复正式映射原值');
++    eq(ITEMS.protect_charm, itemBefore, 'design28测试后恢复正式ITEMS资格对象');
++    return { cases: ['C01', 'C02', 'C03', 'C04', 'C05', 'C06', 'C07', 'C08'],
++      acceptanceDesign: 'design/28', mappingMutations: brokenMappings.map(([name]) => name),
++      falseCharmReads, missingCharmTip: 'enhance.formal.resources', incompleteMappingTip: 'enhance.formal.protect',
++      zeroSideEffects: true, duplicatePayloadIncludesUseProtectCharm: true, loadDedupeWithoutSupplement: true,
++      explicitFixtureOnly: true, productionFixtureInstances: false, minimalWiringProof: ['success-consumes-N', 'dropOnFail-failure-keeps-level-and-consumes-N', 'missing-charm-resources'],
++      openFixtureTableExecuted: false, softOpenedProtectCharm: false, released: false };
++  }
+@@ -595 +781 @@ export async function runEnhanceOpenFixtureTests(options: {
+-    const refusals = await crafted('formal-refusal-source'); refusals.p.inventory.protect_charm = 7;
++    const refusals = await crafted('formal-refusal-source'); refusals.p.inventory.protect_charm = 0;
+@@ -597 +783,2 @@ export async function runEnhanceOpenFixtureTests(options: {
+-      'protect', 'O04正式来源仍拒护符true'); eq(refusals.p.count('protect_charm'), 7, 'O04护符库存原样保留');
++      'resources', 'design28 C05正式来源映射齐备但缺符整笔拒绝'); eq(refusals.p.count('protect_charm'), 0, 'design28 C05缺符不补造库存');
++    refusals.p.inventory.protect_charm = 7;
+@@ -708,0 +896 @@ export async function runEnhanceOpenFixtureTests(options: {
++    let protectCharmEvidence: Awaited<ReturnType<typeof protectCharmMappingCases>> | null = null;
+@@ -712 +900 @@ export async function runEnhanceOpenFixtureTests(options: {
+-        'formal-success', 'formal-failure-no-drop', 'formal-failure-drop'], '独立fresh SSR覆盖夹具与正式来源成功/两种失败');
++        'formal-success', 'formal-failure-no-drop', 'formal-failure-drop', 'protect-charm-success', 'protect-charm-failure-kept'], '独立fresh SSR覆盖夹具与正式来源成功/两种失败');
+@@ -808,7 +996 @@ export async function runEnhanceOpenFixtureTests(options: {
+-      // O04：没有正式护器符映射，绝不猜数量、item id 或消费时点。
+-      for (const level of [0, 5, 11]) {
+-        const f = fixture(level), beforeSamples = sampleCount;
+-        await unchanged(f.p, () => f.gate.submit({ ...request(`charm-${level}`, level), useProtectCharm: true }), 'O04请求使用护器符依据缺失整笔拒绝');
+-        eq(sampleCount, beforeSamples, 'O04无依据护符不进入概率结算');
+-      }
+-
++      // 既有无符 design/27 O 表保留；design/28 只执行关态映射 C 表与最小接线旁证。
+@@ -952,0 +1135 @@ export async function runEnhanceOpenFixtureTests(options: {
++      protectCharmEvidence = await protectCharmMappingCases();
+@@ -958,2 +1141,2 @@ export async function runEnhanceOpenFixtureTests(options: {
+-      formalTipsWired: true, formalInstanceSource: true, released: false,
+-      compatibilityMeaning: 'formalOpen/softOpened 表示正式实例源 soft-open；PASS≠进包≠发版',
++      formalTipsWired: true, formalInstanceSource: true, protectCharmWired: true, protectCharmN: 1, softOpenedProtectCharm: false, released: false,
++      compatibilityMeaning: 'formalOpen/softOpened 沿用既有无符正式实例源 soft-open；本窗=护符映射接线≠护符开态夹具全表≠护符soft-open≠进包≠release',
+@@ -961 +1144,3 @@ export async function runEnhanceOpenFixtureTests(options: {
+-      formalInstances: formalInstanceEvidence,
++      formalInstances: formalInstanceEvidence, protectCharmMapping: protectCharmEvidence,
++      acceptanceDesign: 'design/28 C01–C08', protectCharmOpenFixtureTableExecuted: false,
++      legacyRegressionDesign: 'design/27 existing no-charm C/O cases',
+@@ -963 +1148 @@ export async function runEnhanceOpenFixtureTests(options: {
+-      forgingExperienceWritten: false, protectorPath: 'missing-basis-denied',
++      forgingExperienceWritten: false, protectorPath: 'mapped-atomic-settlement-or-protect/resources-denied',

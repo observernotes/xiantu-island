@@ -1,0 +1,15 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test:v06c-closed"
+  ],
+  "cwd": "/workspace/xiantu/wt/dev",
+  "environment": {
+    "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_enhance_protect_charm_closed/regression/v06c-closed"
+  },
+  "stdin": "/dev/null",
+  "startedAt": "2026-10-17T03:27:50.100851+00:00",
+  "exitCode": 0,
+  "assertions": 10714
+}

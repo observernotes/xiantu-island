@@ -1,0 +1,24 @@
+
+> xiantu-island@0.0.1 test:v06p1-enhance-closed
+> timeout 120s node scripts/v06p1-enhance-closed-test.mjs
+
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: 权威写前/写后保护字节（仅剥获准强化接线）：strings.game
++ actual - expected
+
++ 'd7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09'
+- '92d5525c86562a870f45bf53c0c2010e961b83ec9c257a0cf8257178f45b4cab'
+    at eq (file:///workspace/xiantu/wt/dev/scripts/v06p1-enhance-closed-test.mjs:78:66)
+    at checkProtection (file:///workspace/xiantu/wt/dev/scripts/v06p1-enhance-closed-test.mjs:171:5)
+    at async file:///workspace/xiantu/wt/dev/scripts/v06p1-enhance-closed-test.mjs:533:3 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 'd7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09',
+  expected: '92d5525c86562a870f45bf53c0c2010e961b83ec9c257a0cf8257178f45b4cab',
+  operator: 'deepStrictEqual'
+}
+
+Node.js v20.19.2

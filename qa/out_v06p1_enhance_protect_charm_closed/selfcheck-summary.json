@@ -1,0 +1,225 @@
+{
+  "passed": true,
+  "protectCharmWired": true,
+  "protectCharmN": 1,
+  "formalTipsWired": true,
+  "formalInstanceSource": true,
+  "softOpenedEntrance": true,
+  "softOpenedFormalSettle": true,
+  "softOpenedProtectCharm": false,
+  "released": false,
+  "scope": "本窗=护符映射接线 ≠ design/28 O01–O06 开态全表 ≠ soft-open ≠ release ≠ 进包；formalOpen/softOpened仅兼容既有状态",
+  "checks": {
+    "tsc": {
+      "command": [
+        "npx",
+        "tsc",
+        "--noEmit"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {},
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T03:27:30.402950+00:00",
+      "exitCode": 0,
+      "assertions": null
+    },
+    "v06p1-enhance-open": {
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-enhance-open"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "XT_ENHANCE_QA_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_enhance_protect_charm_closed"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T03:28:29.048814+00:00",
+      "exitCode": 0,
+      "assertions": 15158
+    },
+    "v06p1-enhance-closed": {
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-enhance-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "ENHANCE_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_enhance_protect_charm_closed/regression/enhance-closed"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T03:30:03.842647+00:00",
+      "exitCode": 0,
+      "assertions": 30834
+    },
+    "v06p1-forge-open": {
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-forge-open"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_enhance_protect_charm_closed/regression/forge-open"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T03:27:37.865118+00:00",
+      "exitCode": 0,
+      "assertions": 6380
+    },
+    "v06p1-forge-closed": {
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-forge-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "FORGE_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_enhance_protect_charm_closed/regression/forge-closed"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T03:30:08.531604+00:00",
+      "exitCode": 0,
+      "assertions": 20413
+    },
+    "v06p1-market-closed": {
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-market-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "MARKET_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_enhance_protect_charm_closed/regression/market-closed"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T03:29:11.023489+00:00",
+      "exitCode": 0,
+      "assertions": 24194
+    },
+    "v06d-closed": {
+      "command": [
+        "npm",
+        "run",
+        "test:v06d-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_enhance_protect_charm_closed/regression/v06d-closed"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T03:29:15.762207+00:00",
+      "exitCode": 0,
+      "assertions": 15059
+    },
+    "v06c-closed": {
+      "command": [
+        "npm",
+        "run",
+        "test:v06c-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_enhance_protect_charm_closed/regression/v06c-closed"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T03:27:50.100851+00:00",
+      "exitCode": 0,
+      "assertions": 10714
+    },
+    "datalint-shared": {
+      "command": [
+        "python3",
+        "/workspace/xiantu/qa/tools/datalint.py"
+      ],
+      "cwd": "/workspace/xiantu",
+      "environment": {},
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T03:25:17.948699+00:00",
+      "exitCode": 0,
+      "assertions": null
+    },
+    "datalint-snapshot": {
+      "command": [
+        "python3",
+        "/workspace/xiantu/qa/tools/datalint.py"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev/data",
+      "environment": {},
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T03:25:17.981032+00:00",
+      "exitCode": 0,
+      "assertions": null
+    },
+    "json-shared": {
+      "command": [
+        "python3",
+        "-c",
+        "import subprocess; [subprocess.run([\"python3\",\"-m\",\"json.tool\",\"balance/\"+n],stdin=subprocess.DEVNULL,stdout=subprocess.DEVNULL,check=True) for n in ['materials.json', 'items.json', 'enhance_protect_charm.json']]; print(\"3 JSON files PASS\")"
+      ],
+      "cwd": "/workspace/xiantu",
+      "environment": {},
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T03:25:18.012738+00:00",
+      "exitCode": 0,
+      "assertions": null
+    },
+    "json-snapshot": {
+      "command": [
+        "python3",
+        "-c",
+        "import subprocess; [subprocess.run([\"python3\",\"-m\",\"json.tool\",\"balance/\"+n],stdin=subprocess.DEVNULL,stdout=subprocess.DEVNULL,check=True) for n in ['materials.json', 'items.json', 'enhance_protect_charm.json']]; print(\"3 JSON files PASS\")"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev/data",
+      "environment": {},
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T03:25:18.122876+00:00",
+      "exitCode": 0,
+      "assertions": null
+    },
+    "diff-check": {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {},
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T03:30:49.515110+00:00",
+      "exitCode": 0,
+      "assertions": null
+    }
+  },
+  "suiteAssertions": {
+    "v06p1-enhance-open": 15158,
+    "v06p1-enhance-closed": 30834,
+    "v06p1-forge-open": 6380,
+    "v06p1-forge-closed": 20413,
+    "v06p1-market-closed": 24194,
+    "v06d-closed": 15059,
+    "v06c-closed": 10714
+  },
+  "totalSuiteAssertions": 122752,
+  "testedSourceSha256": {
+    "data/balance/enhance_protect_charm.json": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+    "data/balance/items.json": "f8b587634e5c9d43a475e85724aa34172e2945abda7654c2ef98fda07d1566f3",
+    "data/balance/materials.json": "79c68429d763054ac1715467d1743575e179ecaecb2529e4b6ed7df137ef4052",
+    "scripts/v06d-closed-test.mjs": "5bfe782f918436fa30a2ca33f33176d57a59f637004708993cfaf6dbfe10e129",
+    "scripts/v06p1-enhance-closed-test.mjs": "ae698cd49cde88df27c134d3e79653fcacef1d15a7738f1cce12ef5468049de4",
+    "scripts/v06p1-enhance-open-test.mjs": "136e7b770a1f599749eac1990095b53eee85014045be01a677ef805c979329ac",
+    "scripts/v06p1-forge-closed-test.mjs": "d3b8306774232047f3cf17086c0c529c05f082d20e2c04fecbe3d187661bb4c7",
+    "scripts/v06p1-forge-open-test.mjs": "7f21b292164933acbaf0ca26971c66d4d21e83c0bc24a0b25c7c344cea051fbd",
+    "scripts/v06p1-market-closed-test.mjs": "dc12953781573f6f23f8fba6c177b592c02aeabc2d69cceac16a7499fe19d660",
+    "src/EnhanceGate.ts": "c2a2a0efb7997270eb48674224ce9bfc08e14201e613d7aa12d35af0a2a09796",
+    "src/EnhanceProgress.ts": "49e2bd0ce8bb952ef8c06a19f2137af3cdcfef828ba1dd2508834d4b54f79724",
+    "src/v06p1-enhance-open.test.ts": "f757fe15cd4e46d16757ca49ecd747ee677c692fcba604d0ffbf0af72e496286"
+  },
+  "notRun": [
+    "snapshot",
+    "build",
+    "sync",
+    "release"
+  ]
+}
