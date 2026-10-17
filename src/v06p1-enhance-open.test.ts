@@ -1,4 +1,4 @@
-// 正式强化恒开；只有独立 Vite SSR 关态图可将 EnhanceOpenFlag 内存注入 false。
+// 正式强化与护符 soft-open；只有独立 Vite SSR 关态图注入 false。soft-open≠进包≠发版。
 import enhance from '@xt/balance/enhance.json';
 import protectCharmMap from '@xt/balance/enhance_protect_charm.json';
 import recipes from '@xt/balance/recipes.json';
@@ -643,9 +643,9 @@ export async function runEnhanceOpenFixtureTests(options: {
       falseCharmReads, missingCharmTip: 'enhance.formal.resources', incompleteMappingTip: 'enhance.formal.protect',
       zeroSideEffects: true, duplicatePayloadIncludesUseProtectCharm: true, loadDedupeWithoutSupplement: true,
       explicitFixtureOnly: true, productionFixtureInstances: false, minimalWiringProof: ['success-consumes-N', 'dropOnFail-failure-keeps-level-and-consumes-N', 'missing-charm-resources'],
-      openFixtureTableExecuted: false, softOpenedProtectCharm: false, released: false };
+      openFixtureTableExecuted: false, softOpenedProtectCharm: true, released: false };
   }
-  /** design/28 §4.3 O01–O06：正式 Forge 来源优先；库存仅在测试显式注入。 */
+  /** design/28 §4.3 O01–O06：护符 soft-open 正式磁盘图；仅取默认 Forge 正式来源，测试显式准备库存。 */
   async function protectCharmOpenCases() {
     const recipe = recipes.recipes.find(row => row.type === 'forge' && row.output === 'bamboo_sword')!;
     const n = protectCharmMap.countPerSettlement;
@@ -876,7 +876,7 @@ export async function runEnhanceOpenFixtureTests(options: {
       O04: { executed: true, evidenceKeys: ['same-request-replay', 'true-false-payload-conflict', 'same-instance-old-level', 'shared-single-charm', 'independent-Progress-same-slot', 'stale-retry-denied'] },
       O05: { executed: true, refreshStates: proofs.map(row => row.state), evidenceKeys: ['save-import-restore-IDB-load', 'fresh-SSR-payloads', 'cross-slot-same-request-isolation', 'historical-false-no-retrocharge'] },
       O06: { executed: true, evidenceKeys: ['carrier-false-throw-draft-tamper', 'transaction-resource-recheck', 'save-backend-failure', 'IDB-interruption-complete-boundary', 'explicit-retry-once', 'corrupt-protected-history-no-repair'] },
-      protectCharmOpenFixtureTableExecuted: true, softOpenedProtectCharm: false, released: false };
+      protectCharmOpenFixtureTableExecuted: true, softOpenedProtectCharm: true, released: false };
   }
   /** 正式 O 表：只从默认 ForgeGate 的完整成品登记取实例，强化从不注入 fixtureInstances。 */
   async function formalInstanceCases() {
@@ -1374,8 +1374,8 @@ export async function runEnhanceOpenFixtureTests(options: {
     eq(localWrites, 0, '真实IDB保存无localStorage写旁路');
     return { assertions, payloads, openFixture, graph: openFixture ? 'formal-open' : 'memory-closed',
       formalOpen: true, closedFixtureOnly: true, softOpened: true, softOpenedEntrance: true, softOpenedFormalSettle: true,
-      formalTipsWired: true, formalInstanceSource: true, protectCharmWired: true, protectCharmN: 1, softOpenedProtectCharm: false, released: false,
-      compatibilityMeaning: 'formalOpen/softOpened 沿用既有无符正式实例源 soft-open；本窗=护符开态夹具全表≠soft-open进包≠release',
+      formalTipsWired: true, formalInstanceSource: true, protectCharmWired: true, protectCharmN: 1, softOpenedProtectCharm: true, released: false,
+      compatibilityMeaning: 'formalOpen/softOpened 表示正式磁盘护符 soft-open；护符 soft-open ≠ 进包 ≠ 发版；memory-closed 仍先拒绝，fixture≠正式≠进包依据',
       sceneSmoke: sceneSmokeEvidence, defaultGateDenied: defaultGateEvidence, formalRefusals: formalRefusalEvidence,
       formalInstances: formalInstanceEvidence, protectCharmMapping: protectCharmEvidence,
       acceptanceDesign: 'design/28 §4.3 O01–O06 (C01–C08 regression retained)', protectCharmOpenFixtureTable,

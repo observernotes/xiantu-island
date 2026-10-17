@@ -1,4 +1,4 @@
-// 双根隔离：正式旗标恒 true；仅独立 Vite SSR 关态图由 resolve/load 内存注入 false。
+// 护符 soft-open 正式磁盘图；仅独立 Vite SSR 关态图内存注入 false。soft-open≠进包≠发版。
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
@@ -12,7 +12,7 @@ const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const shared = sharedRoot(root);
 const modes = [['shared', shared], ['snapshot', path.join(root, 'data')]];
 const dataRoots = [['shared', shared], ['wt', path.join(root, 'data')], ['game', path.join(shared, 'game/data')]];
-const out = process.env.XT_ENHANCE_QA_OUT ?? process.env.OUT_DIR ?? path.join(root, 'qa/out_v06p1_enhance_protect_charm_open_fixture');
+const out = process.env.XT_ENHANCE_QA_OUT ?? process.env.OUT_DIR ?? path.join(root, 'qa/out_v06p1_enhance_protect_charm_soft_open');
 const before = new Map(), directoryBefore = new Map(), evidence = [];
 const recipesSha = '1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f';
 const forgeFlagSha = '0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e';
@@ -34,8 +34,8 @@ let assertions = 0, runtimeAssertions = 0;
 const eq = (actual, expected, message) => { assertions++; assert.deepEqual(actual, expected, message); };
 const ok = (value, message) => { assertions++; assert.ok(value, message); };
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
-const compatibilityMeaning = 'formalOpen/softOpened 沿用既有无符正式实例源 soft-open；本窗=护符开态夹具全表≠护符soft-open≠进包≠release';
-const charmEvidence = { protectCharmWired: true, protectCharmN: 1, protectCharmOpenFixtureTableExecuted: true, formalTipsWired: true, formalInstanceSource: true, softOpenedEntrance: true, softOpenedFormalSettle: true, softOpenedProtectCharm: false, released: false };
+const compatibilityMeaning = 'formalOpen/softOpened 表示正式磁盘护符 soft-open；护符 soft-open ≠ 进包 ≠ 发版；memory-closed 仍先拒绝，fixture≠正式≠进包依据';
+const charmEvidence = { protectCharmWired: true, protectCharmN: 1, protectCharmOpenFixtureTableExecuted: true, formalTipsWired: true, formalInstanceSource: true, softOpenedEntrance: true, softOpenedFormalSettle: true, softOpenedProtectCharm: true, released: false };
 const openTableCases = ['O01', 'O02', 'O03', 'O04', 'O05', 'O06'];
 const charmSnapshots = {
   'materials.json': '79c68429d763054ac1715467d1743575e179ecaecb2529e4b6ed7df137ef4052',
@@ -216,12 +216,21 @@ async function runGraph(mode, dataRoot, openFixture, refreshPayloads = null, inv
     for (const [key, value] of Object.entries(charmEvidence))
       eq(result[key], key === 'protectCharmOpenFixtureTableExecuted' ? tableExecuted : value,
         `${mode} evidence ${key}对应当前运行图及本窗授权值`);
+    eq(result.compatibilityMeaning, compatibilityMeaning, `${mode} 兼容字段明确护符soft-open不授权进包发版`);
     eq(result.softOpenedFormalSettle, true, `${mode} 明确登记正式实例源soft-open结算口径`);
     eq(result.released, false, `${mode} 正式实例源soft-open不授权进包发版`);
+    if (!invalidTable) {
+      eq(result.sceneSmoke?.sameHitForgeThenEnhance, true, `${mode} smith_ou同一次命中先打造再强化`);
+      eq(result.sceneSmoke?.saveWrites, 0, `${mode} 正式或内存关态入口均只读零写`);
+    }
     if (openFixture && refreshPayloads === null && invalidTable === null) {
       eq(result.protectCharmMapping?.cases, ['C01', 'C02', 'C03', 'C04', 'C05', 'C06', 'C07', 'C08'], `${mode} design28护符接线C01–C08实际旁证`);
       eq(result.protectCharmMapping?.openFixtureTableExecuted, false, `${mode} 保留独立C回归段的历史范围标记`);
       eq(result.protectCharmOpenFixtureTable?.cases, openTableCases, `${mode} design/28 O01–O06全表实际执行`);
+      eq(result.protectCharmOpenFixtureTable?.source, 'default-ForgeGate-committed-result', `${mode} 护符O表只取默认Forge完整提交正式来源`);
+      eq(result.protectCharmOpenFixtureTable?.productionFixtureInstances, false, `${mode} 护符O表无fixtureInstances生产依赖`);
+      eq(result.protectCharmOpenFixtureTable?.softOpenedProtectCharm, true, `${mode} 护符O表固化生产soft-open口径`);
+      eq(result.protectCharmOpenFixtureTable?.released, false, `${mode} 护符O表通过不授权进包发版`);
       for (const key of openTableCases) {
         eq(result.protectCharmOpenFixtureTable?.[key]?.executed, true, `${mode} design/28 ${key}独立执行旁证`);
         ok(result.protectCharmOpenFixtureTable?.[key]?.evidenceKeys?.length > 0, `${mode} design/28 ${key}旁证键非空`);
@@ -299,4 +308,4 @@ try {
     legacyRegressionDesign: 'design/27 existing no-charm C/O cases', compatibilityMeaning, stringsSha, enhanceFlagSha, charmSnapshots,
     protectedFiles: Object.fromEntries(before), protectedDirectories: Object.fromEntries(directoryBefore), evidence }, null, 2)}\n`);
 }
-console.log(`v06p1 enhance protect charm open fixture tests ok: ${assertions + runtimeAssertions} assertions; shared/snapshot双根formal-open+memory-closed及fresh SSR读回；design/28 O01–O06护符开态夹具全表实际执行；C01–C08及既有design27 C/O回归保留；strings944；Scene只读无fixture；GAME_PHASE=5；${JSON.stringify(charmEvidence)}；${compatibilityMeaning}`);
+console.log(`v06p1 enhance protect charm soft-open tests ok: ${assertions + runtimeAssertions} assertions; shared/snapshot双根正式磁盘formal-open(flagLoads=0)+memory-closed(flagLoads=1)及fresh SSR读回；design/28 O01–O06护符soft-open生产口径全表实际执行；C01–C08及既有design27 C/O回归保留；strings944；Scene只读无fixture；GAME_PHASE=5；${JSON.stringify(charmEvidence)}；${compatibilityMeaning}`);

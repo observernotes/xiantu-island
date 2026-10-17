@@ -1,4 +1,4 @@
-// 强化正式旗已软开；只在 Vite SSR 内存图注入 false，保留 C01–C12 八 tip 零写。
+// 强化与护符正式磁盘 soft-open；只在 Vite SSR 内存图注入 false，保留 C01–C12 八 tip 零写。
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import fs from 'node:fs/promises';
@@ -11,7 +11,7 @@ import { stripFormalEnhanceInstanceSource } from './v06p1-enhance-instance-sourc
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const shared = sharedRoot(root), baselineOut = path.join(root, 'qa/out_v06p1_enhance_closed');
-const out = process.env.ENHANCE_CLOSED_OUT ?? (process.env.XT_ENHANCE_QA_OUT ? path.join(process.env.XT_ENHANCE_QA_OUT, 'closed') : process.env.OUT_DIR) ?? path.join(root, 'qa/out_v06p1_enhance_protect_charm_closed/closed');
+const out = process.env.ENHANCE_CLOSED_OUT ?? (process.env.XT_ENHANCE_QA_OUT ? path.join(process.env.XT_ENHANCE_QA_OUT, 'closed') : process.env.OUT_DIR) ?? path.join(root, 'qa/out_v06p1_enhance_protect_charm_soft_open/regression/enhance-closed');
 const roots = new Map([['shared', shared], ['wt', path.join(root, 'data')], ['game', path.join(shared, 'game/data')]]);
 const modes = [['shared', shared], ['snapshot', roots.get('wt')]];
 const stringsSha = 'd7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09';
@@ -26,7 +26,8 @@ const protectCharmGenerator = { name: 'tools/gen_enhance_protect_charm.py',
   sha: '59b821c259724feaa47368034f6e9f297c246d01a0aa845aa1c7faf6b7c64828' };
 const protectCharmEvidence = { protectCharmWired: true, protectCharmN: 1, formalTipsWired: true,
   formalInstanceSource: true, softOpenedEntrance: true, softOpenedFormalSettle: true,
-  softOpenedProtectCharm: false, released: false };
+  softOpenedProtectCharm: true, released: false };
+const compatibilityMeaning = 'formalOpen/softOpened 表示正式磁盘护符 soft-open；护符 soft-open ≠ 进包 ≠ 发版；本 runner 仅 SSR false 执行 C 表，关态仍零写';
 const formalStrings = {
   'enhance.formal.no_instance': '无正式装备实例，不可强化。',
   'enhance.formal.bad_type': '该装备类型不可强化。',
@@ -81,7 +82,7 @@ const eq = (actual, expected, message) => { assertions++; assert.deepEqual(actua
 const ok = (value, message) => { assertions++; assert.ok(value, message); };
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const clone = value => JSON.parse(JSON.stringify(value));
-const report = row => { row = { ...protectCharmEvidence, compatibilityMeaning: '本窗=护符映射接线 ≠ 开态全表 ≠ soft-open 进包 ≠ release；formalOpen/softOpened 沿用既有无符正式状态', ...row }; evidence.push(row); console.log(JSON.stringify(row)); };
+const report = row => { row = { ...protectCharmEvidence, compatibilityMeaning, ...row }; evidence.push(row); console.log(JSON.stringify(row)); };
 async function shaOrNull(file) {
   try { return hash(await fs.readFile(file)); }
   catch (error) { if (error.code === 'ENOENT') return null; throw error; }
@@ -557,6 +558,6 @@ try {
     forgeFlagSha, cases: caseApis, totalFixtures, totalInvocations, protectedFiles, evidence,
     EnhanceOpenFlag: true, enhanceGateFixtureSourceAllowed: true, minimalFrontendWiring: true, fullEnhanceUiAdded: false, formalOpen: true, closedFixtureOnly: true,
     semanticFixtureOnly: true, formalEnhanceSchemaAdded: true, softOpened: true, released: false,
-    ...protectCharmEvidence, protectCharmTableShas, acceptanceDesign: 'design/28', openFixtureTableExecuted: false, enhanceFlagSha }, null, 2)}\n`);
+    ...protectCharmEvidence, compatibilityMeaning, protectCharmTableShas, acceptanceDesign: 'design/28', openFixtureTableExecuted: false, enhanceFlagSha }, null, 2)}\n`);
 }
-console.log(`v06p1 enhance closed tests ok: ${assertions} assertions; C01–C12; ${totalFixtures} semantic fixtures; ${totalInvocations} API calls; shared/snapshot + fresh SSR; localStorage写入0; 三根既有strings944; gifts10×false; GAME_PHASE=5; EnhanceOpenFlag=true; 不挂smith_ou.services; smith_ou同次命中仅提示、无完整强化UI; formalOpen:true; closedFixtureOnly:true; softOpened:true; formalTipsWired:true; formalInstanceSource:true; softOpenedEntrance:true; softOpenedFormalSettle:true; protectCharmWired:true; protectCharmN:1; softOpenedProtectCharm:false; released:false; 本窗=护符映射接线≠开态全表≠soft-open进包`);
+console.log(`v06p1 enhance closed tests ok: ${assertions} assertions; C01–C12; ${totalFixtures} semantic fixtures; ${totalInvocations} API calls; shared/snapshot + fresh SSR; localStorage写入0; 三根既有strings944; gifts10×false; GAME_PHASE=5; EnhanceOpenFlag=true; 不挂smith_ou.services; smith_ou同次命中仅提示、无完整强化UI; formalOpen:true; closedFixtureOnly:true; softOpened:true; formalTipsWired:true; formalInstanceSource:true; softOpenedEntrance:true; softOpenedFormalSettle:true; protectCharmWired:true; protectCharmN:1; softOpenedProtectCharm:true; released:false; ${compatibilityMeaning}`);
