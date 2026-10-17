@@ -24,6 +24,7 @@ import { isEnhanceId, isEnhanceInstanceRef, isValidEnhanceProgress, type Enhance
   type EnhanceProgress, type FormalEnhanceSource } from './EnhanceProgress';
 import { isValidEnchantProgress, type EnchantProgress } from './EnchantProgress';
 import { isValidSalvageProgress, type SalvageProgress } from './SalvageProgress';
+import { isValidEquipInstanceRefs, resolveFormalInventoryEquipBinding, type EquipInstanceRefs } from './EquipInstBinding';
 
 /** 自动加点：加点界面做好前的旧档公式，仅用于迁移种子；UI-6 起升级只发未分配点。 */
 export const AUTO_STATS = { rootBone: 2, agility: 2, insight: 1, spirit: 0 } as Record<string, number>;
@@ -104,6 +105,7 @@ function validSaveData(saved: unknown): saved is Record<string, unknown> {
   if (has('sectRank') && saved.sectRank !== null && typeof saved.sectRank !== 'string') return false;
   if (has('unstableRatio') && (typeof saved.unstableRatio !== 'number' || !Number.isFinite(saved.unstableRatio))) return false;
   if (has('equip') && (!dataRecord(saved.equip) || !Object.entries(saved.equip).every(([key, value]) => safeKey(key) && typeof value === 'string'))) return false;
+  if (has('equipInstanceRefs') && !isValidEquipInstanceRefs(saved.equipInstanceRefs)) return false;
   for (const key of ['classRewardClaims', 'completedTrials', 'learnedRecipes', 'tutorialsSeen', 'sectDailyContributionClaims', 'realmRewards', 'unstableStats']) {
     if (has(key) && !strings(saved[key])) return false;
   }
@@ -166,6 +168,8 @@ export class Progress {
   /** 实例内物品可供交互读取，但不能写入永久背包。 */
   private transientItems: Record<string, number> = {};
   equip: Record<string, string> = {};     // 桃木剑由任务「灵根初现」发放
+  /** 仅显式正式实例穿戴写入；旧档缺字段不猜测、不迁移。 */
+  equipInstanceRefs: EquipInstanceRefs | undefined = undefined;
   job = '';                                 // 转职后的职业 id
   /** 五宗帖的去向只记录选择，不视为已拜入；旧档缺省未选择。 */
   selectedSect = '';
@@ -1246,23 +1250,33 @@ export class Progress {
     if ((it.reqLevel ?? 1) > this.level) { this.addItem(id, 1); return false; }
     const cur = this.equip[it.slot];
     const score = (x?: string) => x ? Object.values(ITEMS[x]?.stats ?? {}).reduce((a, b) => a + b, 0) : -1;
-    if (score(id) > score(cur)) { if (cur) this.addItem(cur, 1); this.equip[it.slot] = id; return true; }
+    if (score(id) > score(cur)) {
+      if (cur) this.addItem(cur, 1);
+      this.equip[it.slot] = id;
+      delete this.equipInstanceRefs?.[it.slot as EquipSlot];
+      return true;
+    }
     this.addItem(id, 1); return false;
   }
 
   /** UI-7 手动穿戴：只搬运永久背包库存，宗门/等级限制与 gainEquip 一致，不比较强弱。 */
-  equipItem(id: string): EquipResult {
+  equipItem(id: string, instanceRef?: string): EquipResult {
     const it = Object.prototype.hasOwnProperty.call(ITEMS, id) ? ITEMS[id] : undefined;
     if (!it || it.type !== 'equip' || !EQUIP_SLOTS.some(slot => slot === it.slot)) return { ok: false, reason: 'invalid' };
     if (!(this.permanentCount(id) > 0)) return { ok: false, reason: 'missing' };
     if (it.sect && it.sect !== this.sect) return { ok: false, reason: 'sect' };
     if ((it.reqLevel ?? 1) > this.level) return { ok: false, reason: 'level' };
     const slot = it.slot as EquipSlot, old = this.equip[slot];
+    // 只允许已知且当前在袋的正式实例；无 ref 的旧调用绝不从候选补绑。
+    if (instanceRef !== undefined
+      && resolveFormalInventoryEquipBinding(this, { id, instanceRef }).kind !== 'verified') return { ok: false, reason: 'invalid' };
     if (old && old !== id && !this.canReceiveItem(old)) return { ok: false, reason: 'overflow' };
     return this.changeEquip(() => {
       this.inventory[id] = this.count(id) - 1;
       if (old) this.addItem(old, 1);
       this.equip[slot] = id;
+      delete this.equipInstanceRefs?.[slot];
+      if (instanceRef !== undefined) (this.equipInstanceRefs ??= {})[slot] = instanceRef;
     });
   }
 
@@ -1272,16 +1286,22 @@ export class Progress {
     const old = this.equip[slot];
     if (!old) return { ok: false, reason: 'empty' };
     if (!this.canReceiveItem(old)) return { ok: false, reason: 'overflow' };
-    return this.changeEquip(() => { this.addItem(old, 1); delete this.equip[slot]; });
+    return this.changeEquip(() => {
+      this.addItem(old, 1); delete this.equip[slot];
+      delete this.equipInstanceRefs?.[slot as EquipSlot];
+    });
   }
 
   private changeEquip(change: () => void): EquipResult {
-    const inventory = this.inventory, equip = this.equip, hp = this.hp, mp = this.mp;
+    const inventory = this.inventory, equip = this.equip, equipInstanceRefs = this.equipInstanceRefs, hp = this.hp, mp = this.mp;
     this.inventory = { ...inventory }; this.equip = { ...equip };
-    change();
-    this.hp = Math.min(this.hp, this.maxHp); this.mp = Math.min(this.mp, this.maxMp);
-    try { if (this.save()) return { ok: true }; } catch { /* 与 applyAllocate 相同：保存异常原子回滚。 */ }
-    this.inventory = inventory; this.equip = equip; this.hp = hp; this.mp = mp;
+    this.equipInstanceRefs = equipInstanceRefs === undefined ? undefined : { ...equipInstanceRefs };
+    try {
+      change();
+      this.hp = Math.min(this.hp, this.maxHp); this.mp = Math.min(this.mp, this.maxMp);
+      if (this.save()) return { ok: true };
+    } catch { /* 与 applyAllocate 相同：保存异常原子回滚。 */ }
+    this.inventory = inventory; this.equip = equip; this.equipInstanceRefs = equipInstanceRefs; this.hp = hp; this.mp = mp;
     return { ok: false, reason: 'save' };
   }
 
@@ -1344,6 +1364,8 @@ export class Progress {
     if (!this.skillMastery || typeof this.skillMastery !== 'object') this.skillMastery = {};
     if (!this.inventory || typeof this.inventory !== 'object') this.inventory = {};
     if (!this.equip || typeof this.equip !== 'object') this.equip = {};
+    // 同步旧读档不经过导入校验；坏旁路字段仅忽略，不修复或回填身份。
+    if (this.equipInstanceRefs !== undefined && !isValidEquipInstanceRefs(this.equipInstanceRefs)) this.equipInstanceRefs = undefined;
     if (!this.quests || typeof this.quests !== 'object') this.quests = {};
     if (!Array.isArray(this.learnedRecipes)) this.learnedRecipes = [];
     this.learnedRecipes = [...new Set(this.learnedRecipes.filter(id => typeof id === 'string' && !!RECIPES[id]))];
@@ -1590,6 +1612,7 @@ export class Progress {
           if (this.count(robe) > 0) this.removeItem(robe, 1);
           if (this.equip.robe) this.addItem(this.equip.robe, 1);
           this.equip.robe = robe;
+          delete this.equipInstanceRefs?.robe;
         }
       }
       this.classRewardClaims.push(c.id); changed = true;

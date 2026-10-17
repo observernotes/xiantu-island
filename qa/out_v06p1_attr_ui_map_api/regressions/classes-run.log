@@ -1,0 +1,10 @@
+
+> xiantu-island@0.0.1 test:classes
+> timeout 120s node scripts/classes-test.mjs
+
+legacy save fixture: indexedDbSaves=false (SSR memory override only)
+{"classes":5,"assertions":9204,"dpsScenarios":630,"dpsModel":"balance/08 持续单体设计模型；非客户端实测","dpsRanges":{"taixu":{"min":-0.001761006289308531,"max":0.012345679012345734},"lingfu":{"min":-0.05868117668734285,"max":0.07730075313807538},"youying":{"min":-0.0874401460072407,"max":0.0690196078431371},"wanshou":{"min":-0.08756317558166915,"max":0.07223852463856861},"taixu_unmatched":{"min":-0.04929619646600791,"max":0.012345679012345734}}}
+{"passed":true,"suite":"classes-release-gates","classes":5,"assertions":3994,"features":{"fiveSectClasses":true,"sectDaily":true,"sectRanks":true,"sectShopLibrary":true,"shops":true,"sectDonations":true,"seclusion":true,"alchemyPhase1":true,"v05Maps":true,"foxBoss":true,"talismanCraft":true,"lifeSkillCurve":true,"spiritScan":true,"indexedDbSaves":true},"openEntrances":["tianjian_disciple","taixu_acolyte","lingfu_novice","youying_shadow","wanshou_tamer"],"skippedClosedEntrances":[],"fullSuite":true}
+{"suite":"quest-rewards-atomic-save","passed":true,"assertions":128,"formalClass":"tianjian_disciple","scenarios":["first-save-only","all-saves-fail-retry","class-refusal","class-throw","collect-rollback","breakthrough-rollback"],"features":{"fiveSectClasses":true,"sectDaily":true,"sectRanks":true,"sectShopLibrary":true,"shops":true,"sectDonations":true,"seclusion":true,"alchemyPhase1":true,"v05Maps":true,"foxBoss":true,"talismanCraft":true,"lifeSkillCurve":true,"spiritScan":true,"indexedDbSaves":false}}
+{"suite":"class-entry-replacement","passed":true,"assertions":1751,"classes":5,"openEntrances":["tianjian_disciple","taixu_acolyte","lingfu_novice","youying_shadow","wanshou_tamer"]}
+{"test":"sect-entry","assertions":1490,"fourSects":["taixu","lingfu","youying","wanshou"],"flagsBefore":{"fiveSectClasses":true,"sectDaily":true,"sectRanks":true,"sectShopLibrary":true,"shops":true,"sectDonations":true,"seclusion":true,"alchemyPhase1":true,"v05Maps":true,"foxBoss":true,"talismanCraft":true,"lifeSkillCurve":true,"spiritScan":true,"indexedDbSaves":false}}

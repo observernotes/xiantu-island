@@ -1,0 +1,70 @@
+{
+  "passed": true,
+  "aPass": true,
+  "baselineTip": "a3f0c197e1d3f31ef1faada5fa053b10e0ac9bfe",
+  "worktree": "/workspace/xiantu/wt/feat/ui-attr-inst",
+  "branch": "feat/ui-attr-inst",
+  "stdin": "/dev/null",
+  "checks": [
+    {
+      "command": "npx tsc --noEmit",
+      "passed": true
+    },
+    {
+      "command": "npm run test:v06p1-attr-ui-map-api",
+      "passed": true,
+      "assertions": 974
+    },
+    {
+      "command": "npm run test:v06p1-attr-ui-map-services",
+      "passed": true,
+      "assertions": 175
+    },
+    {
+      "command": "npm run test:v06p1-attr-ui-closed",
+      "passed": true,
+      "assertions": 1592,
+      "cases": "C01–C10"
+    },
+    {
+      "command": "npm run test:equip",
+      "passed": true,
+      "assertions": 100
+    },
+    {
+      "command": "npm run test:classes",
+      "passed": true
+    },
+    {
+      "command": "git diff --check",
+      "passed": true
+    }
+  ],
+  "legacyOpenRegressionChecks": {
+    "passed": false,
+    "blockingForA": false,
+    "runtimeCasesExecuted": false,
+    "commands": [
+      "test:v06p1-forge-open",
+      "test:v06p1-enhance-open",
+      "test:v06p1-enchant-open",
+      "test:v06p1-salvage-open"
+    ],
+    "reason": "All four stopped at pre-existing strings960 SHA guards before runtime cases. The authorized baseline already contains strings970; old tests and frozen data were not changed.",
+    "expectedStrings960Sha": "9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda",
+    "actualAndBaselineStrings970Sha": "ae51319b82a6486cc7f3d9b26c5ae89719e23c32ff9debdcfbb86ef7b5aea08b",
+    "replacementRuntimeSmoke": "services-evidence.json",
+    "replacementRuntimeSmokePassed": true,
+    "scope": "Smoke regression only; does not claim all old open cases passed or any O-table acceptance."
+  },
+  "gatesUnchanged": true,
+  "flagsUnchanged": true,
+  "BResolversUnchanged": true,
+  "softOpenedAttrUi": false,
+  "released": false,
+  "noNewOpenFlag": true,
+  "GAME_PHASE": 5,
+  "evidence": "evidence.json",
+  "serviceEvidence": "services-evidence.json",
+  "blockers": []
+}

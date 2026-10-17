@@ -1,0 +1,92 @@
+{
+  "passed": false,
+  "assertions": 12,
+  "staticAssertions": 12,
+  "runtimeAssertions": 0,
+  "formalOpen": true,
+  "closedFixtureOnly": true,
+  "softOpened": true,
+  "released": false,
+  "protectCharmWired": true,
+  "protectCharmN": 1,
+  "protectCharmOpenFixtureTableExecuted": false,
+  "formalTipsWired": true,
+  "formalInstanceSource": true,
+  "softOpenedEntrance": true,
+  "softOpenedFormalSettle": true,
+  "softOpenedProtectCharm": true,
+  "acceptanceDesign": "design/28 §4.3 O01–O06",
+  "protectCharmOpenFixtureTable": {
+    "O01": {
+      "executed": false,
+      "evidenceKeys": [
+        "shared/formal-open/result.protectCharmOpenFixtureTable.O01",
+        "snapshot/formal-open/result.protectCharmOpenFixtureTable.O01"
+      ]
+    },
+    "O02": {
+      "executed": false,
+      "evidenceKeys": [
+        "shared/formal-open/result.protectCharmOpenFixtureTable.O02",
+        "snapshot/formal-open/result.protectCharmOpenFixtureTable.O02"
+      ]
+    },
+    "O03": {
+      "executed": false,
+      "evidenceKeys": [
+        "shared/formal-open/result.protectCharmOpenFixtureTable.O03",
+        "snapshot/formal-open/result.protectCharmOpenFixtureTable.O03"
+      ]
+    },
+    "O04": {
+      "executed": false,
+      "evidenceKeys": [
+        "shared/formal-open/result.protectCharmOpenFixtureTable.O04",
+        "snapshot/formal-open/result.protectCharmOpenFixtureTable.O04"
+      ]
+    },
+    "O05": {
+      "executed": false,
+      "evidenceKeys": [
+        "shared/formal-open/result.protectCharmOpenFixtureTable.O05",
+        "snapshot/formal-open/result.protectCharmOpenFixtureTable.O05"
+      ]
+    },
+    "O06": {
+      "executed": false,
+      "evidenceKeys": [
+        "shared/formal-open/result.protectCharmOpenFixtureTable.O06",
+        "snapshot/formal-open/result.protectCharmOpenFixtureTable.O06"
+      ]
+    }
+  },
+  "legacyRegressionDesign": "design/27 existing no-charm C/O cases",
+  "compatibilityMeaning": "formalOpen/softOpened 表示正式磁盘护符 soft-open；护符 soft-open ≠ 进包 ≠ 发版；memory-closed 仍先拒绝，fixture≠正式≠进包依据",
+  "stringsSha": "9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda",
+  "enhanceFlagSha": "d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e",
+  "charmSnapshots": {
+    "materials.json": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+    "items.json": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+    "enhance_protect_charm.json": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772"
+  },
+  "protectedFiles": {},
+  "protectedDirectories": {},
+  "evidence": [
+    {
+      "protectCharmWired": true,
+      "protectCharmN": 1,
+      "protectCharmOpenFixtureTableExecuted": false,
+      "formalTipsWired": true,
+      "formalInstanceSource": true,
+      "softOpenedEntrance": true,
+      "softOpenedFormalSettle": true,
+      "softOpenedProtectCharm": true,
+      "released": false,
+      "compatibilityMeaning": "formalOpen/softOpened 表示正式磁盘护符 soft-open；护符 soft-open ≠ 进包 ≠ 发版；memory-closed 仍先拒绝，fixture≠正式≠进包依据",
+      "suite": "v06p1-enhance-open-sha-guard",
+      "protectedFiles": 0,
+      "protectedDirectories": 0,
+      "passed": true
+    }
+  ]
+}

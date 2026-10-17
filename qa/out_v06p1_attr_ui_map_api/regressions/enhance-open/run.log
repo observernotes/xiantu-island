@@ -1,0 +1,26 @@
+
+> xiantu-island@0.0.1 test:v06p1-enhance-open
+> timeout 180s node scripts/v06p1-enhance-open-test.mjs
+
+{"protectCharmWired":true,"protectCharmN":1,"protectCharmOpenFixtureTableExecuted":false,"formalTipsWired":true,"formalInstanceSource":true,"softOpenedEntrance":true,"softOpenedFormalSettle":true,"softOpenedProtectCharm":true,"released":false,"compatibilityMeaning":"formalOpen/softOpened 表示正式磁盘护符 soft-open；护符 soft-open ≠ 进包 ≠ 发版；memory-closed 仍先拒绝，fixture≠正式≠进包依据","suite":"v06p1-enhance-open-sha-guard","protectedFiles":0,"protectedDirectories":0,"passed":true}
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: shared 分解字符串冻结 SHA
++ actual - expected
+
++ 'ae51319b82a6486cc7f3d9b26c5ae89719e23c32ff9debdcfbb86ef7b5aea08b'
+- '9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda'
+    at eq (file:///workspace/xiantu/wt/feat/ui-attr-inst/scripts/v06p1-enhance-open-test.mjs:36:66)
+    at checkSalvageCompatibility (file:///workspace/xiantu/wt/feat/ui-attr-inst/scripts/v06p1-salvage-soft-open-compat-proof.mjs:77:5)
+    at async checkEnchantCompatibility (file:///workspace/xiantu/wt/feat/ui-attr-inst/scripts/v06p1-enchant-soft-open-compat-proof.mjs:90:32)
+    at async file:///workspace/xiantu/wt/feat/ui-attr-inst/scripts/v06p1-enhance-open-test.mjs:269:10 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 'ae51319b82a6486cc7f3d9b26c5ae89719e23c32ff9debdcfbb86ef7b5aea08b',
+  expected: '9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda',
+  operator: 'deepStrictEqual'
+}
+
+Node.js v20.19.2

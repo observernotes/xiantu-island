@@ -1,0 +1,20 @@
+{
+  "passed": false,
+  "assertions": 12,
+  "staticAssertions": 12,
+  "runtimeAssertions": 0,
+  "formalOpen": true,
+  "closedFixtureOnly": true,
+  "softOpened": true,
+  "released": false,
+  "protectedFiles": {},
+  "protectedDirectories": {},
+  "evidence": [
+    {
+      "suite": "v06p1-forge-open-sha-guard",
+      "protectedFiles": 0,
+      "protectedDirectories": 0,
+      "passed": true
+    }
+  ]
+}
