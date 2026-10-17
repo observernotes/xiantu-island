@@ -1,0 +1,18 @@
+{
+  "name": "v06p1-enchant-open",
+  "command": [
+    "npm",
+    "run",
+    "test:v06p1-enchant-open"
+  ],
+  "cwd": "/workspace/xiantu/wt/dev",
+  "environment": {},
+  "stdin": "/dev/null",
+  "startedAt": "2026-10-17T06:09:11.038Z",
+  "finishedAt": "2026-10-17T06:09:43.386Z",
+  "timeSource": "最终 agent 新日志 birthtime/mtime，表示该次输出文件的生存时间",
+  "exitCode": 0,
+  "signal": null,
+  "assertions": 4622,
+  "agentLog": "enchant-open-agent.log"
+}

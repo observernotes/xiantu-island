@@ -1,0 +1,11 @@
+
+> xiantu-island@0.0.1 test:v06p1-enchant-closed
+> timeout 120s node scripts/v06p1-enchant-closed-test.mjs
+
+{"suite":"formal-graph","dataMode":"shared","graph":"formal-open","flagLoads":0,"EnchantOpenFlag":true,"passed":true}
+{"suite":"v06p1-enchant-closed-graph","dataMode":"shared","graph":"initial","assertions":3090,"fixtures":44,"invocations":534,"ordinarySaveSetupWrites":2,"sentinelCalls":0,"storageWrites":0,"flagLoads":1,"memoryClosed":true,"passed":true}
+{"suite":"v06p1-enchant-closed-graph","dataMode":"shared","graph":"fresh-ssr-refresh","assertions":3083,"fixtures":44,"invocations":534,"ordinarySaveSetupWrites":0,"sentinelCalls":0,"storageWrites":0,"flagLoads":1,"memoryClosed":true,"passed":true}
+{"suite":"formal-graph","dataMode":"snapshot","graph":"formal-open","flagLoads":0,"EnchantOpenFlag":true,"passed":true}
+{"suite":"v06p1-enchant-closed-graph","dataMode":"snapshot","graph":"initial","assertions":3090,"fixtures":44,"invocations":534,"ordinarySaveSetupWrites":2,"sentinelCalls":0,"storageWrites":0,"flagLoads":1,"memoryClosed":true,"passed":true}
+{"suite":"v06p1-enchant-closed-graph","dataMode":"snapshot","graph":"fresh-ssr-refresh","assertions":3083,"fixtures":44,"invocations":534,"ordinarySaveSetupWrites":0,"sentinelCalls":0,"storageWrites":0,"flagLoads":1,"memoryClosed":true,"passed":true}
+v06p1 enchant closed tests ok: 12600 assertions; C01–C10; 176 fixtures; 2136 API calls; shared/snapshot 正式 flagLoads=0 + SSR false/fresh flagLoads=1; 写哨兵=0; 拒绝过程存储写入=0; EnchantOpenFlag=true; softOpenedEnchant=true; released=false; O表未执行；附灵 soft-open ≠ 进包 ≠ 发版；fixture≠正式

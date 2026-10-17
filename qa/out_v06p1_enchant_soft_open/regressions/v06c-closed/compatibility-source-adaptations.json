@@ -1,0 +1,35 @@
+{
+  "runner": "v06c-closed",
+  "originalSha": "637039e4146f6aae45c72d7013114cd489c325da1721898fa9325916c2b55090",
+  "adaptedSha": "b8ed8bd6d7d1dcf741a0c3a4f9c5f1765f9e69b94c318c7bf9db04459535f2d2",
+  "changes": [
+    {
+      "label": "historical strings delta proof",
+      "before": "import assert from 'node:assert/strict';",
+      "after": "import assert from 'node:assert/strict';\nimport { createHash as enchantProofHash } from 'node:crypto';\nfunction stripEnchantClosedAddition(raw) {\n const digest = x => enchantProofHash('sha256').update(x).digest('hex');\n if(digest(raw)==='d7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09')return raw;\n assert.equal(digest(raw),'6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9','real current 952-key strings authority');\n assert.equal(Object.keys(JSON.parse(raw)).length,952);\n const block=raw.match(/,\\n(?: {2}\"enchant\\.closed\\.[^\\n]+\\n?){8}/gu);\n assert.equal(block?.length,1,'only exact appended eight enchant lines');\n const previous=raw.replace(block[0],'\\n');\n assert.equal(digest(previous),'d7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09','exact bytes restore historical 944 keys');\n return previous;\n}",
+      "occurrences": 1
+    },
+    {
+      "label": "current strings authority SHA",
+      "before": "'balance/strings_zh.json': 'd7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09'",
+      "after": "'balance/strings_zh.json': '6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9'",
+      "occurrences": 1
+    },
+    {
+      "label": "current roots 952 keys",
+      "before": "eq(Object.keys(strings).length, 944,",
+      "after": "eq(Object.keys(strings).length, 952,",
+      "occurrences": 1
+    },
+    {
+      "label": "historical formal chain",
+      "before": "const preFormal = sharedBytes.get('balance/strings_zh.json').toString('utf8').replace(",
+      "after": "const preFormal = stripEnchantClosedAddition(sharedBytes.get('balance/strings_zh.json').toString('utf8')).replace(",
+      "occurrences": 1
+    }
+  ],
+  "realDiskRead": true,
+  "productModuleTransformations": [],
+  "diskWritten": false,
+  "assertionWrapperChanged": false
+}

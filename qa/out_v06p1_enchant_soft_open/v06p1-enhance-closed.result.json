@@ -1,0 +1,19 @@
+{
+  "command": "npm run test:v06p1-enhance-closed",
+  "cwd": "/workspace/xiantu/wt/dev",
+  "env": {
+    "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_soft_open/regressions/enhance-closed"
+  },
+  "stdin": "/dev/null",
+  "exitCode": 0,
+  "startedAt": "2026-10-17T06:08:40.274Z",
+  "finishedAt": "2026-10-17T06:08:47.562Z",
+  "timestampSource": "selfcheck.log filesystem birthtime and last modification, captured after successful process completion",
+  "passed": true,
+  "assertions": 30910,
+  "log": "qa/out_v06p1_enchant_soft_open/v06p1-enhance-closed.log",
+  "evidence": "qa/out_v06p1_enchant_soft_open/regressions/enhance-closed/v06p1-enhance-closed-evidence.json",
+  "logSha256": "ff14b5c5ebe8a5096045a6e3576464e6a3330df3a2ba05ca656d7ddc9a0ec63d",
+  "postRunEdit": "Only unused helper imports removed; syntax verified separately; assertions and executed test logic unchanged",
+  "name": "v06p1-enhance-closed"
+}

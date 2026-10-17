@@ -1,0 +1,202 @@
+{
+  "passed": true,
+  "checks": 1676,
+  "frozen": [
+    {
+      "path": "/workspace/xiantu/balance/enhance.json",
+      "sha": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+      "MATCH": true
+    },
+    {
+      "path": "/workspace/xiantu/balance/recipes.json",
+      "sha": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+      "MATCH": true
+    },
+    {
+      "path": "/workspace/xiantu/balance/materials.json",
+      "sha": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+      "MATCH": true
+    },
+    {
+      "path": "/workspace/xiantu/balance/items.json",
+      "sha": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+      "MATCH": true
+    },
+    {
+      "path": "/workspace/xiantu/balance/strings_zh.json",
+      "sha": "6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9",
+      "MATCH": true
+    },
+    {
+      "path": "/workspace/xiantu/balance/npcs.json",
+      "sha": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+      "MATCH": true
+    },
+    {
+      "path": "/workspace/xiantu/balance/life_skills.json",
+      "sha": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+      "MATCH": true
+    },
+    {
+      "path": "/workspace/xiantu/balance/enhance_protect_charm.json",
+      "sha": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+      "MATCH": true
+    },
+    {
+      "path": "/workspace/xiantu/wt/dev/data/balance/enhance.json",
+      "sha": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+      "MATCH": true
+    },
+    {
+      "path": "/workspace/xiantu/wt/dev/data/balance/recipes.json",
+      "sha": "1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f",
+      "MATCH": true
+    },
+    {
+      "path": "/workspace/xiantu/wt/dev/data/balance/materials.json",
+      "sha": "86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d",
+      "MATCH": true
+    },
+    {
+      "path": "/workspace/xiantu/wt/dev/data/balance/items.json",
+      "sha": "dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99",
+      "MATCH": true
+    },
+    {
+      "path": "/workspace/xiantu/wt/dev/data/balance/strings_zh.json",
+      "sha": "6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9",
+      "MATCH": true
+    },
+    {
+      "path": "/workspace/xiantu/wt/dev/data/balance/npcs.json",
+      "sha": "2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6",
+      "MATCH": true
+    },
+    {
+      "path": "/workspace/xiantu/wt/dev/data/balance/life_skills.json",
+      "sha": "204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b",
+      "MATCH": true
+    },
+    {
+      "path": "/workspace/xiantu/wt/dev/data/balance/enhance_protect_charm.json",
+      "sha": "0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772",
+      "MATCH": true
+    },
+    {
+      "path": "/workspace/xiantu/wt/dev/src/EnhanceOpenFlag.ts",
+      "sha": "d7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e",
+      "MATCH": true
+    },
+    {
+      "path": "/workspace/xiantu/wt/dev/src/ForgeOpenFlag.ts",
+      "sha": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
+      "MATCH": true
+    },
+    {
+      "path": "/workspace/xiantu/wt/dev/src/EnchantClosed.ts",
+      "sha": "15870998e95f8f41ab4fb3e6c30dc17a82019502276084f4610800be5927e730",
+      "MATCH": true
+    },
+    {
+      "path": "/workspace/xiantu/wt/dev/src/data.ts",
+      "sha": "aad725652f5c0eb57a5c699726e570b146d5ded52d5c31715444dbbf4117024a",
+      "MATCH": true
+    }
+  ],
+  "priorFiles": 1653,
+  "unchanged": 1653,
+  "differences": [],
+  "missingMatch": true,
+  "changed": [
+    "qa/out_v06p1_enchant_soft_open/attempts/v06c-closed-initial.log",
+    "qa/out_v06p1_enchant_soft_open/attempts/v06d-closed-initial.log",
+    "qa/out_v06p1_enchant_soft_open/codex-log-reference.json",
+    "qa/out_v06p1_enchant_soft_open/datalint-shared.log",
+    "qa/out_v06p1_enchant_soft_open/datalint-shared.result.json",
+    "qa/out_v06p1_enchant_soft_open/datalint-snapshot.log",
+    "qa/out_v06p1_enchant_soft_open/datalint-snapshot.result.json",
+    "qa/out_v06p1_enchant_soft_open/diff-check.log",
+    "qa/out_v06p1_enchant_soft_open/diff-check.result.json",
+    "qa/out_v06p1_enchant_soft_open/enchant-closed.agent.log",
+    "qa/out_v06p1_enchant_soft_open/enchant-open-agent.initial.log",
+    "qa/out_v06p1_enchant_soft_open/enchant-open-agent.log",
+    "qa/out_v06p1_enchant_soft_open/evidence-check.json",
+    "qa/out_v06p1_enchant_soft_open/independent-review.json",
+    "qa/out_v06p1_enchant_soft_open/legacy-regression-loader.mjs",
+    "qa/out_v06p1_enchant_soft_open/legacy-regression-register.mjs",
+    "qa/out_v06p1_enchant_soft_open/open-runtime-protection-check.json",
+    "qa/out_v06p1_enchant_soft_open/protected-after.json",
+    "qa/out_v06p1_enchant_soft_open/protected-before.json",
+    "qa/out_v06p1_enchant_soft_open/protection-check.json",
+    "qa/out_v06p1_enchant_soft_open/protection.mjs",
+    "qa/out_v06p1_enchant_soft_open/regressions/enchant-closed/protection-check.json",
+    "qa/out_v06p1_enchant_soft_open/regressions/enchant-closed/v06p1-enchant-closed-evidence.json",
+    "qa/out_v06p1_enchant_soft_open/regressions/enhance-closed/selfcheck.log",
+    "qa/out_v06p1_enchant_soft_open/regressions/enhance-closed/selftest-protected-after.json",
+    "qa/out_v06p1_enchant_soft_open/regressions/enhance-closed/source-search.json",
+    "qa/out_v06p1_enchant_soft_open/regressions/enhance-closed/v06p1-enhance-closed-evidence.json",
+    "qa/out_v06p1_enchant_soft_open/regressions/enhance-open/selfcheck.log",
+    "qa/out_v06p1_enchant_soft_open/regressions/enhance-open/v06p1-enhance-open-evidence.json",
+    "qa/out_v06p1_enchant_soft_open/regressions/forge-closed/boundary-check.log",
+    "qa/out_v06p1_enchant_soft_open/regressions/forge-closed/protected-after.json",
+    "qa/out_v06p1_enchant_soft_open/regressions/forge-closed/selfcheck.log",
+    "qa/out_v06p1_enchant_soft_open/regressions/forge-closed/source-search.json",
+    "qa/out_v06p1_enchant_soft_open/regressions/forge-closed/v06p1-forge-closed-evidence.json",
+    "qa/out_v06p1_enchant_soft_open/regressions/forge-open/selfcheck.log",
+    "qa/out_v06p1_enchant_soft_open/regressions/forge-open/v06p1-forge-open-evidence.json",
+    "qa/out_v06p1_enchant_soft_open/regressions/market-closed/selfcheck.log",
+    "qa/out_v06p1_enchant_soft_open/regressions/market-closed/v06p1-market-closed-evidence.json",
+    "qa/out_v06p1_enchant_soft_open/regressions/v06c-closed/compatibility-source-adaptations.json",
+    "qa/out_v06p1_enchant_soft_open/regressions/v06d-closed/compatibility-source-adaptations.json",
+    "qa/out_v06p1_enchant_soft_open/regressions/v06d-closed/v06d-closed-evidence.json",
+    "qa/out_v06p1_enchant_soft_open/run-selfcheck.mjs",
+    "qa/out_v06p1_enchant_soft_open/selfcheck-summary.json",
+    "qa/out_v06p1_enchant_soft_open/staged-docs-files.json",
+    "qa/out_v06p1_enchant_soft_open/summarize.mjs",
+    "qa/out_v06p1_enchant_soft_open/tsc.log",
+    "qa/out_v06p1_enchant_soft_open/tsc.result.json",
+    "qa/out_v06p1_enchant_soft_open/v06c-closed.log",
+    "qa/out_v06p1_enchant_soft_open/v06c-closed.result.json",
+    "qa/out_v06p1_enchant_soft_open/v06d-closed.log",
+    "qa/out_v06p1_enchant_soft_open/v06d-closed.result.json",
+    "qa/out_v06p1_enchant_soft_open/v06p1-enchant-closed.log",
+    "qa/out_v06p1_enchant_soft_open/v06p1-enchant-closed.result.json",
+    "qa/out_v06p1_enchant_soft_open/v06p1-enchant-open-evidence.json",
+    "qa/out_v06p1_enchant_soft_open/v06p1-enchant-open.log",
+    "qa/out_v06p1_enchant_soft_open/v06p1-enchant-open.result.json",
+    "qa/out_v06p1_enchant_soft_open/v06p1-enhance-closed.log",
+    "qa/out_v06p1_enchant_soft_open/v06p1-enhance-closed.result.json",
+    "qa/out_v06p1_enchant_soft_open/v06p1-enhance-open.log",
+    "qa/out_v06p1_enchant_soft_open/v06p1-enhance-open.result.json",
+    "qa/out_v06p1_enchant_soft_open/v06p1-forge-closed.log",
+    "qa/out_v06p1_enchant_soft_open/v06p1-forge-closed.result.json",
+    "qa/out_v06p1_enchant_soft_open/v06p1-forge-open.log",
+    "qa/out_v06p1_enchant_soft_open/v06p1-forge-open.result.json",
+    "qa/out_v06p1_enchant_soft_open/v06p1-market-closed.log",
+    "qa/out_v06p1_enchant_soft_open/v06p1-market-closed.result.json",
+    "reports/炼器阁/V06P1_ENCHANT_SOFT_OPEN_HANDOFF.md",
+    "reports/炼器阁/V06P1_ENCHANT_SOFT_OPEN_RESULT.md",
+    "scripts/v06p1-enchant-closed-test.mjs",
+    "scripts/v06p1-enchant-open-test.mjs",
+    "scripts/v06p1-enchant-soft-open-compat-proof.mjs",
+    "scripts/v06p1-enhance-closed-test.mjs",
+    "scripts/v06p1-enhance-open-test.mjs",
+    "scripts/v06p1-forge-closed-test.mjs",
+    "scripts/v06p1-forge-open-test.mjs",
+    "scripts/v06p1-market-closed-test.mjs",
+    "src/EnchantOpenFlag.ts",
+    "src/scenes/GameScene.ts",
+    "src/v06p1-enchant-open.test.ts",
+    "src/v06p1-enhance-open.test.ts",
+    "src/v06p1-forge-open.test.ts",
+    "status/炼器阁.md"
+  ],
+  "unauthorized": [],
+  "EnhanceOpenFlagPreserved": true,
+  "ForgeOpenFlagPreserved": true,
+  "enhanceJsonPreserved": true,
+  "EnchantOpenFlag": {
+    "sha": "bd5445b8ddfed56a32811cedd28db72e8676c7a5eff321e2fedb0ec5fe4c505a",
+    "value": true
+  }
+}

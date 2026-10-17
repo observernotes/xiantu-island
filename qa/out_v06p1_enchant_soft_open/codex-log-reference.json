@@ -1,0 +1,9 @@
+{
+  "log": "/workspace/xiantu/logs/codex/44bf3e1b3f39c7ab_20261017_140615_1666238.log",
+  "model": "gpt-6.1-sol",
+  "reasoningEffort": "ultra",
+  "fast": false,
+  "stdin": "/dev/null",
+  "cwd": "/workspace/xiantu/wt/dev",
+  "dynamicLogReferencedOnly": true
+}

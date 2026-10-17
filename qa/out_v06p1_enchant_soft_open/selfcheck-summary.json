@@ -1,0 +1,268 @@
+{
+  "passed": true,
+  "base": "feece9916733dbc705d4d57882ff924449e2efd7",
+  "cwd": "/workspace/xiantu/wt/dev",
+  "stdin": "/dev/null",
+  "totalAssertions": 142855,
+  "results": [
+    {
+      "name": "tsc",
+      "command": [
+        "npx",
+        "tsc",
+        "--noEmit"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {},
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T06:10:00.732Z",
+      "finishedAt": "2026-10-17T06:10:06.514Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": null
+    },
+    {
+      "name": "v06p1-enchant-open",
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-enchant-open"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {},
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T06:09:11.038Z",
+      "finishedAt": "2026-10-17T06:09:43.386Z",
+      "timeSource": "最终 agent 新日志 birthtime/mtime，表示该次输出文件的生存时间",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 4622,
+      "agentLog": "enchant-open-agent.log"
+    },
+    {
+      "name": "v06p1-enchant-closed",
+      "command": [
+        "npm",
+        "run",
+        "test:v06p1-enchant-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "ENCHANT_CLOSED_OUT": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_soft_open/regressions/enchant-closed"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T06:08:26.326Z",
+      "finishedAt": "2026-10-17T06:08:32.860Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 12600
+    },
+    {
+      "command": "npm run test:v06p1-enhance-open",
+      "cwd": "/workspace/xiantu/wt/dev",
+      "env": {
+        "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_soft_open/regressions/enhance-open"
+      },
+      "stdin": "/dev/null",
+      "exitCode": 0,
+      "startedAt": "2026-10-17T06:08:40.274Z",
+      "finishedAt": "2026-10-17T06:09:15.178Z",
+      "timestampSource": "selfcheck.log filesystem birthtime and last modification, captured after successful process completion",
+      "passed": true,
+      "assertions": 17767,
+      "log": "qa/out_v06p1_enchant_soft_open/v06p1-enhance-open.log",
+      "evidence": "qa/out_v06p1_enchant_soft_open/regressions/enhance-open/v06p1-enhance-open-evidence.json",
+      "logSha256": "3bf0cc7ae47b9cb1afa65de8bc0827ca587c6b2d879e8671a4210fdb5de5af92",
+      "postRunEdit": "Only unused helper imports removed; syntax verified separately; assertions and executed test logic unchanged",
+      "name": "v06p1-enhance-open"
+    },
+    {
+      "command": "npm run test:v06p1-enhance-closed",
+      "cwd": "/workspace/xiantu/wt/dev",
+      "env": {
+        "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_soft_open/regressions/enhance-closed"
+      },
+      "stdin": "/dev/null",
+      "exitCode": 0,
+      "startedAt": "2026-10-17T06:08:40.274Z",
+      "finishedAt": "2026-10-17T06:08:47.562Z",
+      "timestampSource": "selfcheck.log filesystem birthtime and last modification, captured after successful process completion",
+      "passed": true,
+      "assertions": 30910,
+      "log": "qa/out_v06p1_enchant_soft_open/v06p1-enhance-closed.log",
+      "evidence": "qa/out_v06p1_enchant_soft_open/regressions/enhance-closed/v06p1-enhance-closed-evidence.json",
+      "logSha256": "ff14b5c5ebe8a5096045a6e3576464e6a3330df3a2ba05ca656d7ddc9a0ec63d",
+      "postRunEdit": "Only unused helper imports removed; syntax verified separately; assertions and executed test logic unchanged",
+      "name": "v06p1-enhance-closed"
+    },
+    {
+      "command": "npm run test:v06p1-forge-open",
+      "cwd": "/workspace/xiantu/wt/dev",
+      "env": {
+        "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_soft_open/regressions/forge-open"
+      },
+      "stdin": "/dev/null",
+      "exitCode": 0,
+      "startedAt": "2026-10-17T06:08:40.274Z",
+      "finishedAt": "2026-10-17T06:08:52.326Z",
+      "timestampSource": "selfcheck.log filesystem birthtime and last modification, captured after successful process completion",
+      "passed": true,
+      "assertions": 6443,
+      "log": "qa/out_v06p1_enchant_soft_open/v06p1-forge-open.log",
+      "evidence": "qa/out_v06p1_enchant_soft_open/regressions/forge-open/v06p1-forge-open-evidence.json",
+      "logSha256": "8163d48bd1de2a8b5b4bf912991a4f6294ecccb14244b3be7c72a02475c7c625",
+      "postRunEdit": "Only unused helper imports removed; syntax verified separately; assertions and executed test logic unchanged",
+      "name": "v06p1-forge-open"
+    },
+    {
+      "command": "npm run test:v06p1-forge-closed",
+      "cwd": "/workspace/xiantu/wt/dev",
+      "env": {
+        "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_soft_open/regressions/forge-closed"
+      },
+      "stdin": "/dev/null",
+      "exitCode": 0,
+      "startedAt": "2026-10-17T06:08:40.274Z",
+      "finishedAt": "2026-10-17T06:08:47.094Z",
+      "timestampSource": "selfcheck.log filesystem birthtime and last modification, captured after successful process completion",
+      "passed": true,
+      "assertions": 20489,
+      "log": "qa/out_v06p1_enchant_soft_open/v06p1-forge-closed.log",
+      "evidence": "qa/out_v06p1_enchant_soft_open/regressions/forge-closed/v06p1-forge-closed-evidence.json",
+      "logSha256": "b94d544c7ee911f949692298a74678262817c78a7c3876f1d3c374a9c3dc07d6",
+      "postRunEdit": "Only unused helper imports removed; syntax verified separately; assertions and executed test logic unchanged",
+      "name": "v06p1-forge-closed"
+    },
+    {
+      "command": "npm run test:v06p1-market-closed",
+      "cwd": "/workspace/xiantu/wt/dev",
+      "env": {
+        "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_soft_open/regressions/market-closed"
+      },
+      "stdin": "/dev/null",
+      "exitCode": 0,
+      "startedAt": "2026-10-17T06:08:40.278Z",
+      "finishedAt": "2026-10-17T06:08:47.522Z",
+      "timestampSource": "selfcheck.log filesystem birthtime and last modification, captured after successful process completion",
+      "passed": true,
+      "assertions": 24251,
+      "log": "qa/out_v06p1_enchant_soft_open/v06p1-market-closed.log",
+      "evidence": "qa/out_v06p1_enchant_soft_open/regressions/market-closed/v06p1-market-closed-evidence.json",
+      "logSha256": "0a8ddcf74cb8f18e1f11706b2834ca9a29368c9f030e74df03e5043fbbb1ed06",
+      "postRunEdit": "Only unused helper imports removed; syntax verified separately; assertions and executed test logic unchanged",
+      "name": "v06p1-market-closed"
+    },
+    {
+      "name": "v06d-closed",
+      "command": [
+        "npm",
+        "run",
+        "test:v06d-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_soft_open/regressions/v06d-closed",
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_soft_open/legacy-regression-register.mjs"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T06:08:19.987Z",
+      "finishedAt": "2026-10-17T06:08:26.848Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 15059
+    },
+    {
+      "name": "v06c-closed",
+      "command": [
+        "npm",
+        "run",
+        "test:v06c-closed"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {
+        "NODE_OPTIONS": "--import=/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_soft_open/legacy-regression-register.mjs"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T06:08:19.991Z",
+      "finishedAt": "2026-10-17T06:08:25.777Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": 10714
+    },
+    {
+      "name": "datalint-shared",
+      "command": [
+        "python3",
+        "/workspace/xiantu/qa/tools/datalint.py"
+      ],
+      "cwd": "/workspace/xiantu",
+      "environment": {
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T06:08:14.602Z",
+      "finishedAt": "2026-10-17T06:08:14.641Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": null
+    },
+    {
+      "name": "datalint-snapshot",
+      "command": [
+        "python3",
+        "/workspace/xiantu/qa/tools/datalint.py"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev/data",
+      "environment": {
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T06:08:14.604Z",
+      "finishedAt": "2026-10-17T06:08:14.641Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": null
+    },
+    {
+      "name": "diff-check",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "cwd": "/workspace/xiantu/wt/dev",
+      "environment": {},
+      "stdin": "/dev/null",
+      "startedAt": "2026-10-17T06:10:00.736Z",
+      "finishedAt": "2026-10-17T06:10:00.752Z",
+      "exitCode": 0,
+      "signal": null,
+      "assertions": null
+    }
+  ],
+  "evidence": {
+    "enchantClosedTipsWired": true,
+    "beastCoreMapped": true,
+    "enchantOpenFixtureTableExecuted": true,
+    "formalInstanceSource": true,
+    "softOpenedEnchant": true,
+    "EnchantOpenFlag": true,
+    "released": false,
+    "EnhanceOpenFlagPreserved": true,
+    "protectCharmSoftOpenPreserved": true
+  },
+  "formalOpenGraphs": 32,
+  "memoryClosedGraphs": 4,
+  "sceneSmokeGraphs": 8,
+  "protectionChecks": 1676,
+  "unauthorizedDifferences": 0,
+  "programSelfcheckBlockers": [],
+  "notRun": [
+    "snapshot",
+    "build",
+    "sync",
+    "release",
+    "Pages"
+  ],
+  "boundary": "附灵 soft-open ≠ 进包 ≠ 发版；fixture≠正式≠进包依据"
+}

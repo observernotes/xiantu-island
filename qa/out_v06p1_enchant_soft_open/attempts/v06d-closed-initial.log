@@ -1,0 +1,25 @@
+
+> xiantu-island@0.0.1 test:v06d-closed
+> timeout 120s node scripts/v06d-closed-test.mjs
+
+
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+AssertionError [ERR_ASSERTION]: current strings authority SHA exact occurrence
+
+3 !== 1
+
+    at replace (file:///workspace/xiantu/wt/dev/qa/out_v06p1_enchant_soft_open/legacy-regression-loader.mjs:15:46)
+    at load (file:///workspace/xiantu/wt/dev/qa/out_v06p1_enchant_soft_open/legacy-regression-loader.mjs:29:2)
+    at async nextLoad (node:internal/modules/esm/hooks:864:22)
+    at async Hooks.load (node:internal/modules/esm/hooks:451:20)
+    at async MessagePort.handleMessage (node:internal/modules/esm/worker:196:18) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 3,
+  expected: 1,
+  operator: 'strictEqual'
+}
+
+Node.js v20.19.2

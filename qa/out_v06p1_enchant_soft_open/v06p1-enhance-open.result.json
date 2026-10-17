@@ -1,0 +1,19 @@
+{
+  "command": "npm run test:v06p1-enhance-open",
+  "cwd": "/workspace/xiantu/wt/dev",
+  "env": {
+    "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_soft_open/regressions/enhance-open"
+  },
+  "stdin": "/dev/null",
+  "exitCode": 0,
+  "startedAt": "2026-10-17T06:08:40.274Z",
+  "finishedAt": "2026-10-17T06:09:15.178Z",
+  "timestampSource": "selfcheck.log filesystem birthtime and last modification, captured after successful process completion",
+  "passed": true,
+  "assertions": 17767,
+  "log": "qa/out_v06p1_enchant_soft_open/v06p1-enhance-open.log",
+  "evidence": "qa/out_v06p1_enchant_soft_open/regressions/enhance-open/v06p1-enhance-open-evidence.json",
+  "logSha256": "3bf0cc7ae47b9cb1afa65de8bc0827ca587c6b2d879e8671a4210fdb5de5af92",
+  "postRunEdit": "Only unused helper imports removed; syntax verified separately; assertions and executed test logic unchanged",
+  "name": "v06p1-enhance-open"
+}

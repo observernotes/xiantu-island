@@ -1,0 +1,143 @@
+{
+  "passed": true,
+  "base": "feece9916733dbc705d4d57882ff924449e2efd7",
+  "reviewedAt": "2026-10-17T06:11:03.261Z",
+  "reviewer": "independent enchant_closed agent",
+  "mode": "read-only code review plus small source/SHA probes; no full suite rerun",
+  "checks": [
+    {
+      "name": "GameScene exact authorized delta and forge/enhance bytes preserved",
+      "passed": true,
+      "baseSha256": "9b62f76b8a3e76b2438cfacf42d9fe15525f50a9a0427eab25d5c10d6de119f3",
+      "strippedSha256": "9b62f76b8a3e76b2438cfacf42d9fe15525f50a9a0427eab25d5c10d6de119f3",
+      "fullSceneSha256": "f5d7defb24dda3ef1956e331479e9ee96794f1f45515bbb7951f3c3e19a0726c",
+      "importsAdded": 3,
+      "fullBlocksAdded": 1,
+      "sameHitOrder": [
+        "forge",
+        "enhance",
+        "enchant"
+      ],
+      "productionFixtureInjection": false
+    },
+    {
+      "name": "EnchantOpenFlag exact authorized formal true",
+      "passed": true,
+      "sha256": "bd5445b8ddfed56a32811cedd28db72e8676c7a5eff321e2fedb0ec5fe4c505a",
+      "value": true,
+      "imports": 0,
+      "environmentBackdoor": false
+    },
+    {
+      "name": "20 authority frozen SHA match",
+      "passed": true,
+      "matched": 20,
+      "EnhanceOpenFlag": true,
+      "ForgeOpenFlag": true,
+      "enhanceJsonUnchanged": true,
+      "GAME_PHASE": 5
+    },
+    {
+      "name": "settlement and instance source code unchanged",
+      "passed": true,
+      "files": [
+        "src/EnchantGate.ts",
+        "src/EnchantProgress.ts",
+        "src/Progress.ts",
+        "src/EnhanceGate.ts",
+        "src/ForgeGate.ts",
+        "src/ShopPanel.ts"
+      ],
+      "baselineBytesMatch": true
+    },
+    {
+      "name": "five legacy runner runGraph functions byte-preserved",
+      "passed": true,
+      "details": [
+        {
+          "file": "scripts/v06p1-enhance-open-test.mjs",
+          "runGraphSha256": "f54cd93941fff48bc212b6631aff993dcebde0ab4b9050ce9f9d9411e70c301b",
+          "matched": true
+        },
+        {
+          "file": "scripts/v06p1-enhance-closed-test.mjs",
+          "runGraphSha256": "bd4170944684e9a189787dbdef7c30fb3a4910990fc8870e8e57f915365338d3",
+          "matched": true
+        },
+        {
+          "file": "scripts/v06p1-forge-open-test.mjs",
+          "runGraphSha256": "a96952f62f2e2b1b81ce8833b73d262fa05cb3db944adde1aca3efeb17fff9af",
+          "matched": true
+        },
+        {
+          "file": "scripts/v06p1-forge-closed-test.mjs",
+          "runGraphSha256": "34081bbe1d758ef4e39d0d227de68c1e5d68cb5bcf0b1f3f6f8d5867d22ba085",
+          "matched": true
+        },
+        {
+          "file": "scripts/v06p1-market-closed-test.mjs",
+          "runGraphSha256": "afb2633c54b1b10ad6d222ae1a30ab4caf8355fc2912e49e028c706c28f69c53",
+          "matched": true
+        }
+      ],
+      "runtimeSuitesAndStorageSentinelsUnchanged": true
+    },
+    {
+      "name": "Forge smoke existing assertions restored byte-for-byte",
+      "passed": true,
+      "addedEnchantAssertions": 2,
+      "oldTextColorsAndGateRoutingPreserved": true
+    },
+    {
+      "name": "Enhance smoke only extends three-tip expectations and strings count",
+      "passed": true,
+      "oldRuntimeTestsBytePreservedAfterExactExtensions": true,
+      "settlementAndSentinelsUnchanged": true
+    },
+    {
+      "name": "compatibility helper exact allowlist and real disk proof",
+      "passed": true,
+      "exactSourcesAllowlisted": 6,
+      "currentTableShaAndHistoricalProjectionChecks": 6,
+      "duplicateBlockRejected": true,
+      "alteredTipRejected": true,
+      "alteredProgressRejected": true,
+      "productModuleTransformations": []
+    },
+    {
+      "name": "prior QA and captured files preserved",
+      "passed": true,
+      "capturedFilesMatched": 1653,
+      "previouslyMissingStillMissing": 3
+    },
+    {
+      "name": "tracked code changes stay within explicit window",
+      "passed": true,
+      "changedCodeFiles": [
+        "scripts/v06p1-enchant-closed-test.mjs",
+        "scripts/v06p1-enchant-open-test.mjs",
+        "scripts/v06p1-enchant-soft-open-compat-proof.mjs",
+        "scripts/v06p1-enhance-closed-test.mjs",
+        "scripts/v06p1-enhance-open-test.mjs",
+        "scripts/v06p1-forge-closed-test.mjs",
+        "scripts/v06p1-forge-open-test.mjs",
+        "scripts/v06p1-market-closed-test.mjs",
+        "src/EnchantOpenFlag.ts",
+        "src/scenes/GameScene.ts",
+        "src/v06p1-enchant-open.test.ts",
+        "src/v06p1-enhance-open.test.ts",
+        "src/v06p1-forge-open.test.ts"
+      ],
+      "changedCodeFileCount": 13,
+      "onlyProductionChanges": [
+        "src/EnchantOpenFlag.ts",
+        "src/scenes/GameScene.ts"
+      ],
+      "newHelper": "scripts/v06p1-enchant-soft-open-compat-proof.mjs",
+      "preexistingUntrackedFilesOutsideScope": "excluded; not staged by this review"
+    }
+  ],
+  "blockers": [],
+  "boundary": "附灵 soft-open ≠ 进包 ≠ 发版；fixture≠正式",
+  "released": false
+}

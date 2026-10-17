@@ -1,0 +1,19 @@
+{
+  "command": "npm run test:v06p1-forge-closed",
+  "cwd": "/workspace/xiantu/wt/dev",
+  "env": {
+    "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_soft_open/regressions/forge-closed"
+  },
+  "stdin": "/dev/null",
+  "exitCode": 0,
+  "startedAt": "2026-10-17T06:08:40.274Z",
+  "finishedAt": "2026-10-17T06:08:47.094Z",
+  "timestampSource": "selfcheck.log filesystem birthtime and last modification, captured after successful process completion",
+  "passed": true,
+  "assertions": 20489,
+  "log": "qa/out_v06p1_enchant_soft_open/v06p1-forge-closed.log",
+  "evidence": "qa/out_v06p1_enchant_soft_open/regressions/forge-closed/v06p1-forge-closed-evidence.json",
+  "logSha256": "b94d544c7ee911f949692298a74678262817c78a7c3876f1d3c374a9c3dc07d6",
+  "postRunEdit": "Only unused helper imports removed; syntax verified separately; assertions and executed test logic unchanged",
+  "name": "v06p1-forge-closed"
+}

@@ -1,0 +1,19 @@
+{
+  "command": "npm run test:v06p1-market-closed",
+  "cwd": "/workspace/xiantu/wt/dev",
+  "env": {
+    "OUT_DIR": "/workspace/xiantu/wt/dev/qa/out_v06p1_enchant_soft_open/regressions/market-closed"
+  },
+  "stdin": "/dev/null",
+  "exitCode": 0,
+  "startedAt": "2026-10-17T06:08:40.278Z",
+  "finishedAt": "2026-10-17T06:08:47.522Z",
+  "timestampSource": "selfcheck.log filesystem birthtime and last modification, captured after successful process completion",
+  "passed": true,
+  "assertions": 24251,
+  "log": "qa/out_v06p1_enchant_soft_open/v06p1-market-closed.log",
+  "evidence": "qa/out_v06p1_enchant_soft_open/regressions/market-closed/v06p1-market-closed-evidence.json",
+  "logSha256": "0a8ddcf74cb8f18e1f11706b2834ca9a29368c9f030e74df03e5043fbbb1ed06",
+  "postRunEdit": "Only unused helper imports removed; syntax verified separately; assertions and executed test logic unchanged",
+  "name": "v06p1-market-closed"
+}
