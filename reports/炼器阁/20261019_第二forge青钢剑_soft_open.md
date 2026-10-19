@@ -14,7 +14,7 @@
 | 分支 | `feat/forge-azure-steel-wire` |
 | 业务基线 tip | `a5e5d48cba584d953c6af1c43a653ad152b6ff6f`（短 `a5e5d48`；2B 接线） |
 | 基线 HEAD docs | `27a6267a11db6ff7447ec13e069a7241e225dc48`（3A open_ready 零补刀） |
-| soft-open tip | （本 commit；见 `git rev-parse HEAD`／status） |
+| soft-open tip | `4415c06c8d7e1792c9ae089617a00bc468267a6b`（短 `4415c06`） |
 | worktree | `/workspace/xiantu/wt/feat/forge-azure-steel-wire` |
 
 > 注：本文件若经后续 docs 补 SHA，以 `git rev-parse origin/feat/forge-azure-steel-wire` 与 status 为准。
