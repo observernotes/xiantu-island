@@ -6212,6 +6212,16 @@
        "value": "platform"
       }
      ]
+    },
+    {
+     "id": 26,
+     "name": "flyZone_1",
+     "type": "flyZone",
+     "x": 480,
+     "y": 384,
+     "width": 2000,
+     "height": 256,
+     "properties": []
     }
    ],
    "visible": true,
@@ -6233,5 +6243,5 @@
   }
  ],
  "nextlayerid": 7,
- "nextobjectid": 26
+ "nextobjectid": 27
 }

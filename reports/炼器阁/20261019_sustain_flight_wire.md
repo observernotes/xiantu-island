@@ -37,15 +37,30 @@
 | 冲刺隔离 | `trySwordRide` 不读 `fly_zones.enabled`；飞区外 ↑+跳仍冲刺 |
 | ≠soft-open≠release | 本刀未授权 |
 
-## 4. 对象约定（供 2A／inFlyZone）
+## 4. 对象约定／2A 合入
 
 | 约定 | 说明 |
 |---|---|
 | 主路径 | objects 层 `type`／`class` = `flyZone`，矩形 w/h>0 |
-| 名 | `name=flyZone` 或 `flyZone_*` 亦可 |
-| props | `flyZone: true`（objects 或 zones） |
-| zones | `type=zone` 且 name／props 同上 |
-| 现网 | 2A 报告尚未齐；白名单五图暂无对象 → `inFlyZone=false` 仍拒；查询路径真实可测（非恒 false 硬编码） |
+| 名 | `name=flyZone_1`（2A 实落）；亦认 `flyZone`／`flyZone_*`／`props.flyZone=true` |
+| 2A | **VERIFY_PASS** 已合入 tip（见 `reports/演武堂/20261019_flyzone_maps.md`） |
+| 落点 | worktree `data/maps/<id>.json`（feat 快照；与共享 `maps/`／`game/data/maps/` 同字节） |
+
+| mapId | 写后 SHA-256 | 对象 |
+|---|---|---|
+| wanyao_deep_1 | `15e5e33dc84828bce0c29ce1bc8b30f7c7be0f43e7376106a156730b543d47f5` | flyZone_1 @ 640,448,2240,288 |
+| wanyao_deep_2 | `2264cac0937eeeb370bf56560cff12714f040c7b8255d3589265bcd9d6c7cc0e` | flyZone_1 @ 640,448,2400,288 |
+| chiyan_core | `34e4feee077b9cc0fa99425b9620ed04fcd443355ca9f75eb018fb8b698e5f52` | flyZone_1 @ 480,448,1400,288 |
+| chiyan_slope_1 | `e8a10fdb4f4d8d1153a7b21c493f241313fc2598f237deb9bca2cb96db9e25cc` | flyZone_1 @ 480,384,2000,256 |
+| chiyan_slope_2 | `ef1e5d31987abde9c7bb3d1002738791e9bf95fb13d78c378bae74c38632f754` | flyZone_1 @ 480,400,2200,272 |
+
+每图 ≥1× `type==flyZone`／`name=flyZone_1`；MapBuilder 已认 `flyZone` → 可测。
+
+## 4.1 地图合入（本补刀）
+
+- 提交：`chore(maps): sync 2A flyZone objects into sustain-flight-wire`（SHA 见 git／status）
+- 2B 产品逻辑未改；仅五图快照与 2A 同字节
+- 可测：2B tip@9d563f3 ⊂ HEAD；含地图合入后的 HEAD 可开 2C
 
 ## 5. 自测
 
@@ -57,4 +72,4 @@
 
 ## 6. 交回
 
-【持续飞行接线】地图=等2A `reports/演武堂/20261019_flyzone_maps.md`｜tip@9d563f3｜fly_zones SHA仍 2940fe59…｜softOpenedSustainFlight=false｜≠soft-open≠release｜等执法 C
+【持续飞行接线】地图=2A VERIFY_PASS 已合入 `data/maps`（旁证 `reports/演武堂/20261019_flyzone_maps.md`）｜tip@9d563f3｜fly_zones SHA仍 2940fe59…｜softOpenedSustainFlight=false｜≠soft-open≠release｜等执法 C
