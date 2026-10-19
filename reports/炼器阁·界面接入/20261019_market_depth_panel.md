@@ -25,9 +25,9 @@
 | 项 | 路径 |
 |---|---|
 | 地图对象名 | `market_consign_entrance`／`fangshi_consign` |
-| GameScene 方法 | `tryInteractMarketConsign`（Z 链：`tryInteractTowerClosed \|\| tryInteractMarketConsign \|\| tryInteractForgeEntrance \|\| …`） |
+| GameScene 方法 | `tryInteractMarketConsign`（Z 链：`tryInteractTowerClosed || tryInteractMarketConsign || tryInteractForgeEntrance || …`） |
 | 面板类 | `MarketConsignPanel` → `MarketConsignController` → 只读／写经 `MarketGate` |
-| UI 可见性 | `isMarketConsignUiAccessible('entrance'\|'panel')`（生产恒 true；SSR 可注入关） |
+| UI 可见性 | `isMarketConsignUiAccessible('entrance'|'panel')`（生产恒 true；SSR 可注入关） |
 | 开态打开 | Flag／UI 允许 → `marketConsign.show()` → Controller `feature()`／`loadProgress`／`slotOrItem` 只读 |
 | 关态 | `!isMarketOpenForFixture()` 或 UI 关 → tip `market.closed.feature`（`MarketClosed.featureClosed()`），**不打开面板** |
 | 无对象 | 安静 `return false` |
@@ -41,7 +41,7 @@
 | 欧冶匠入口 | `tryInteractForgeEntrance` → `smithServices?.show()`；与寄售方法分离 |
 | 寄售打开 | `tryInteractMarketConsign` → `marketConsign?.show()`；不调用 `SmithServicesPanel`／`ShopPanel` |
 | ShopPanel | 静态校验：源码不含 market／consign |
-| 混窗禁令 | 无合并菜单；modal 门闩并列 `smithServices\|\|marketConsign`，互斥输入 |
+| 混窗禁令 | 无合并菜单；modal 门闩并列 `smithServices||marketConsign`，互斥输入 |
 
 ## 打开／浏览／取消零写旁证（单列）
 | 行为 | 旁证 |
