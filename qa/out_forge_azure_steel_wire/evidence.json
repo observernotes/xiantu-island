@@ -1,0 +1,58 @@
+{
+  "passed": true,
+  "recipesSha": "3182fff563b5f5f5341af79f64b93026c43ae45aaa1c6248e7f6276af6c38bfd",
+  "forgeOpenFlagSha": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
+  "freeze": {
+    "items.json": "0ea68e4b289b07fadb5d81516efc4796a102c3dbe14f793158a83aa41dd4e8e0",
+    "materials.json": "1055536f181ae0a1f94d1a25e20473ea6f4be0b8289655dc4007c9c0295f6d4a",
+    "enhance.json": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+    "fly_zones.json": "2940fe5952246a3669f87d8b9f3fc6226c2adf7080353be7de94da81e031b8e4",
+    "spirit_rune.json": "cfdc93aede5345c1d9b8664f31b3283306ef3f54df3c7df2bf47a94b82555c88"
+  },
+  "evidence": [
+    {
+      "static": true,
+      "recipesSha": "3182fff563b5f5f5341af79f64b93026c43ae45aaa1c6248e7f6276af6c38bfd",
+      "forgeOpenFlagSha": "0ce035549fc88e9ca4aa55fb10e762657a684bb4ff57ca700557553d6f16cc3e",
+      "freeze": {
+        "items.json": "0ea68e4b289b07fadb5d81516efc4796a102c3dbe14f793158a83aa41dd4e8e0",
+        "materials.json": "1055536f181ae0a1f94d1a25e20473ea6f4be0b8289655dc4007c9c0295f6d4a",
+        "enhance.json": "d5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954",
+        "fly_zones.json": "2940fe5952246a3669f87d8b9f3fc6226c2adf7080353be7de94da81e031b8e4",
+        "spirit_rune.json": "cfdc93aede5345c1d9b8664f31b3283306ef3f54df3c7df2bf47a94b82555c88"
+      },
+      "newOpenFlag": false
+    },
+    {
+      "graph": "formal-open",
+      "assertions": 29,
+      "openFixture": true,
+      "recipesForgeCount": 2,
+      "bambooUnpolluted": true,
+      "azureWired": true,
+      "materialsDisambiguation": true,
+      "fixtureDisambiguation": true,
+      "missingScrollDenied": true,
+      "shortMaterialsDenied": true,
+      "newOpenFlag": false,
+      "softOpen": false,
+      "release": false,
+      "gamePhase": 5
+    },
+    {
+      "graph": "memory-closed",
+      "assertions": 14,
+      "openFixture": false,
+      "recipesForgeCount": 2,
+      "closedZeroSideEffect": true,
+      "newOpenFlag": false,
+      "softOpen": false,
+      "release": false,
+      "gamePhase": 5
+    }
+  ],
+  "softOpen": false,
+  "release": false,
+  "newOpenFlag": false,
+  "gamePhase": 5
+}

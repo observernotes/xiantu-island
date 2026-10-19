@@ -9,7 +9,7 @@ const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const strictEq = (actual, expected, message) => assert.deepEqual(actual, expected, message);
 const historical944 = 'd7361af3f4a61e4a6e751e8f4474ec1fbbf2409ddc0fc964e93bd351a75a1e09';
 const historical952 = '6f2443f87db77dcaf88f565f87c38849c5dde482dc77592102acb64695258dd9';
-const current960 = '9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda';
+const current960 = '160308538d372404b808123d51c2cb08b037c5f439f6e3441380ccacbd9639ee';
 export const salvageSourceNames = ['SalvageClosed.ts', 'SalvageOpenFlag.ts', 'v06p1-salvage-closed.test.ts',
   'SalvageGate.ts', 'SalvageProgress.ts', 'v06p1-salvage-open.test.ts'];
 export const salvageProgressBase = 'a9ab2aa6e73dca631b6ed28f672d490b61525610c609df478e2c112a66358d3c';

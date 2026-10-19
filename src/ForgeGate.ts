@@ -174,17 +174,30 @@ export class ForgeGate {
     let recipe: ForgeRecipe | undefined;
     if (this.fixture.fixtureRecipes !== undefined) {
       // 显式测试授权优先；即使此集为空或无匹配，也不读取正式表补充。
-      const matches = this.fixture.fixtureRecipes.filter(row => row?.blueprintId === request.blueprintId);
+      // 同 blueprint 多行时按 request.materials 一字匹配消歧（0 或 >1 → 拒）。
+      const byBlueprint = this.fixture.fixtureRecipes.filter(row => row?.blueprintId === request.blueprintId);
+      const matches = byBlueprint.length <= 1 ? byBlueprint
+        : byBlueprint.filter(row => !!row && sameMaterials(request.materials, row.materials));
       if (matches.length !== 1) return undefined;
       const row = matches[0], hasCount = Object.prototype.hasOwnProperty.call(row, 'outputCount');
       if (!ownFields(row, ['blueprintId', 'blueprintCount', 'materials', 'resultItemId', ...(hasCount ? ['outputCount'] : [])])) return undefined;
       recipe = { ...row, outputCount: hasCount ? row.outputCount! : 1 };
     } else {
       // 生产只读 type===forge；丹方、制符、研墨和缺 type 行都没有打造授权。
+      // 青钢与青竹共用万剑残页时，按 request.materials 与表行 materials 一字匹配消歧。
       const rows = this.fixture.formalRecipes !== undefined ? this.fixture.formalRecipes : recipes.recipes;
       if (!Array.isArray(rows)) return undefined;
-      const matches = rows.filter(row => row && typeof row === 'object'
+      const byBlueprint = rows.filter(row => row && typeof row === 'object'
         && Reflect.get(row, 'type') === 'forge' && Reflect.get(row, 'blueprint') === request.blueprintId);
+      const matches = byBlueprint.length <= 1 ? byBlueprint : byBlueprint.filter(row => {
+        const materials = Reflect.get(row as object, 'materials');
+        if (!dataArray(materials) || !materials.every((material: unknown) => ownFields(material, ['item', 'count']))) return false;
+        const mapped = materials.map((material: unknown) => {
+          const entry = material as { item: string; count: number };
+          return { itemId: entry.item, count: entry.count };
+        });
+        return isValidForgeMaterials(mapped) && sameMaterials(request.materials, mapped);
+      });
       if (matches.length !== 1) return undefined;
       const row = matches[0];
       if (!ownFields(row, ['id', 'name', 'type', 'blueprint', 'materials', 'output', 'outputCount'])

@@ -284,11 +284,69 @@ export async function runForgeOpenFixtureTests(options: {
   }
   async function formalGateTests() {
     const formalRows = recipes.recipes.filter(row => 'type' in row && row.type === 'forge');
-    eq(formalRows.length, 1, '正式表forge恰一条');
-    const formal = copy(formalRows[0]) as Record<string, any>;
+    eq(formalRows.length, 2, '正式表forge青竹+青钢两条');
+    eq(formalRows.map(row => row.id), ['recipe_forge_bamboo_sword', 'recipe_forge_azure_steel_sword'], 'forge行序青竹后青钢');
+    const formal = copy(formalRows.find(row => row.id === 'recipe_forge_bamboo_sword')!) as Record<string, any>;
     eq(formal, { id: 'recipe_forge_bamboo_sword', name: '青竹剑', type: 'forge',
       blueprint: recipe.blueprintId, materials: recipe.materials.map(({ itemId, count }) => ({ item: itemId, count })),
-      output: recipe.resultItemId, outputCount: 1 }, '正式行严格对应design25');
+      output: recipe.resultItemId, outputCount: 1 }, '正式青竹行严格对应design25');
+    const azureFormal = copy(formalRows.find(row => row.id === 'recipe_forge_azure_steel_sword')!) as Record<string, any>;
+    eq(azureFormal, { id: 'recipe_forge_azure_steel_sword', name: '青钢剑', type: 'forge',
+      blueprint: recipe.blueprintId, materials: [
+        { item: 'iron_essence', count: 5 }, { item: 'spirit_copper', count: 3 }, { item: 'refine_stone', count: 3 },
+      ], output: 'azure_steel_sword', outputCount: 1 }, '正式青钢行严格对应design36／落表核');
+    // 双行同 blueprint：材料集消歧；竹剑材料不可锻出青钢。
+    {
+      const azureMats = [
+        { itemId: 'iron_essence', count: 5 }, { itemId: 'spirit_copper', count: 3 }, { itemId: 'refine_stone', count: 3 },
+      ];
+      const dual = fixture();
+      dual.p.inventory = {
+        scroll_ten_thousand_swords: 4, spirit_copper: 10, refine_stone: 10, iron_essence: 10,
+        bamboo_sword: 0, azure_steel_sword: 0, rabbit_fur: 7,
+      };
+      ok(await dual.p.saveAsync(), '双行消歧准备档先落盘');
+      const dualGate = new ForgeGate(dual.p, { random: () => 0.1, ledgerId: () => `azure-wire-${++ledgerSeq}` });
+      const bambooReq = { craftRequestId: 'wire-bamboo', blueprintId: recipe.blueprintId, materials: copy(recipe.materials) };
+      const azureReq = { craftRequestId: 'wire-azure', blueprintId: recipe.blueprintId, materials: copy(azureMats) };
+      ok(dualGate.craft(bambooReq).allowed, '竹剑材料集命中青竹行');
+      ok(dualGate.craft(azureReq).allowed, '青钢材料集命中青钢行');
+      const bambooResult = committed(await dualGate.submit(bambooReq));
+      eq(bambooResult.resultItem.itemId, 'bamboo_sword', '竹剑材料集产出青竹剑');
+      eq(dual.p.count('bamboo_sword'), 1, '竹剑入库');
+      eq(dual.p.count('azure_steel_sword'), 0, '竹剑提交不产青钢');
+      const azureResult = committed(await dualGate.submit(azureReq));
+      eq(azureResult.resultItem.itemId, 'azure_steel_sword', '青钢材料集产出青钢剑');
+      eq(dual.p.count('azure_steel_sword'), 1, '青钢入库');
+      // 竹剑材料集不得命中青钢：用仅竹剑材料请求，在双行共存 formalRecipes 下校验 output 非青钢（默认表已覆盖）。
+      const cross = fixture();
+      cross.p.inventory = {
+        scroll_ten_thousand_swords: 2, spirit_copper: 4, refine_stone: 4, iron_essence: 0,
+        bamboo_sword: 0, azure_steel_sword: 0,
+      };
+      const crossGate = new ForgeGate(cross.p, { formalRecipes: formalRows, random: () => 0.1 });
+      await unchanged(cross.p, () => crossGate.craft({
+        craftRequestId: 'wire-cross', blueprintId: recipe.blueprintId, materials: copy(recipe.materials),
+      }), '仅竹剑材料时 craft 仍只读');
+      ok(crossGate.craft({
+        craftRequestId: 'wire-cross-ok', blueprintId: recipe.blueprintId, materials: copy(recipe.materials),
+      }).allowed, '仅竹剑材料仍可解析青竹');
+      await unchanged(cross.p, async () => {
+        const deniedAzure = crossGate.craft({
+          craftRequestId: 'wire-cross-azure', blueprintId: recipe.blueprintId, materials: copy(azureMats),
+        });
+        eq(deniedAzure.allowed, false, '缺铁精时青钢材料集 craft 拒绝');
+        return deniedAzure;
+      }, '缺青钢材料零写');
+      await unchanged(cross.p, async () => {
+        const deniedShort = await crossGate.submit({
+          craftRequestId: 'wire-azure-short', blueprintId: recipe.blueprintId,
+          materials: [{ itemId: 'iron_essence', count: 4 }, { itemId: 'spirit_copper', count: 3 }, { itemId: 'refine_stone', count: 3 }],
+        });
+        eq('tipKey' in deniedShort ? deniedShort.tipKey : null, 'forge.fixture.recipe', '铁精4不匹配青钢行材料数');
+        return deniedShort;
+      }, '材料数不匹配零写');
+    }
     const { p } = fixture(), gate = new ForgeGate(p);
     ok(gate.feature().allowed, '正式默认Gate说明只读允许');
     ok(gate.entrance().allowed, '正式默认Gate入口只读允许');
@@ -360,7 +418,7 @@ export async function runForgeOpenFixtureTests(options: {
     for (const bad of badRows) await rejectsRows([bad], '正式非法引用或材料');
     await rejectsRows([copy(formal), copy(formal)], '正式重复id拒绝');
     await rejectsRows([{ ...formal, type: 'talisman' }, copy(formal)], '正式id与非forge配方重复仍拒绝');
-    await rejectsRows([copy(formal), { ...formal, id: 'recipe_forge_ambiguous' }], '正式同图纸歧义拒绝');
+    await rejectsRows([copy(formal), { ...formal, id: 'recipe_forge_ambiguous' }], '正式同图纸且同材料仍歧义拒绝');
 
     const isolated = fixture();
     const explicit = new ForgeGate(isolated.p, { fixtureRecipes: [copy(recipe)], formalRecipes: [] });

@@ -18,7 +18,7 @@ const dataRoots = [['shared', shared], ['wt', path.join(root, 'data')], ['game',
 const out = process.env.OUT_DIR ?? path.join(root, 'qa/out_v06p1_salvage_soft_open/regressions/forge-open');
 const before = new Map(), directoryBefore = new Map(), evidence = [];
 const enhanceSha = 'd5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954';
-const recipesSha = '1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f';
+const recipesSha = '3182fff563b5f5f5341af79f64b93026c43ae45aaa1c6248e7f6276af6c38bfd';
 let assertions = 0, runtimeAssertions = 0;
 const eq = (actual, expected, message) => { assertions++; assert.deepEqual(actual, expected, message); };
 const ok = (value, message) => { assertions++; assert.ok(value, message); };
@@ -89,10 +89,13 @@ async function checkFormal() {
     if (mode !== 'game') {
       eq(await shaOrNull(path.join(dataRoot, 'balance/recipes.json')), recipesSha, `${mode} recipes精确权威SHA`);
       const recipeTable = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/recipes.json'), 'utf8'));
-      eq(recipeTable.recipes.length, 12, `${mode} 保留11条并追加forge一条`);
-      eq(recipeTable.recipes.filter(row => row.type === 'forge').map(row => row.id), ['recipe_forge_bamboo_sword'], `${mode} 仅授权正式forge行`);
+      eq(recipeTable.recipes.length, 13, `${mode} 保留既有并追加青竹+青钢两条forge`);
+      eq(recipeTable.recipes.filter(row => row.type === 'forge').map(row => row.id),
+        ['recipe_forge_bamboo_sword', 'recipe_forge_azure_steel_sword'], `${mode} 正式forge青竹+青钢`);
       const previous = JSON.parse(execFileSync('git', ['show', '801c3ab:data/balance/recipes.json'], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] }));
-      eq({ ...recipeTable, recipes: recipeTable.recipes.slice(0, -1) }, previous, `${mode} 既有11条/rules/newItems保留`);
+      eq({ ...recipeTable, recipes: recipeTable.recipes.slice(0, -2) }, previous, `${mode} 既有11条/rules/newItems保留`);
+      eq(recipeTable.recipes[11]?.id, 'recipe_forge_bamboo_sword', `${mode} 索引11青竹`);
+      eq(recipeTable.recipes[12]?.id, 'recipe_forge_azure_steel_sword', `${mode} 索引12青钢`);
     }
     const table = JSON.parse(await fs.readFile(path.join(dataRoot, 'balance/enhance.json'), 'utf8'));
     eq(table.forge.grade, { common: 0.6, fine: 0.3, spirit: 0.09, treasure: 0.01 }, `${mode} 品质只读既有四项概率`);
@@ -118,7 +121,7 @@ async function checkFormal() {
     ok(Object.values(shops).every(Array.isArray), `${mode} shops保持既有NPC货单`);
     ok(!Object.keys(shops).some(key => /forge|smith_ou|auction|consign/iu.test(key)), `${mode} 不混打造寄售拍卖服务`);
     report({ suite: 'v06p1-forge-open-formal', dataMode: mode, formalOpen: true, closedFixtureOnly: true,
-      enhanceSha, ...(mode !== 'game' ? { recipesSha, formalForgeRows: 1 } : {}),
+      enhanceSha, ...(mode !== 'game' ? { recipesSha, formalForgeRows: 2 } : {}),
       giftsChecked, smithServices: false, minimalSceneWiring: true, smithServicesUiWired: true,
       softOpened: true, released: false });
   }

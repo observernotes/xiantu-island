@@ -22,7 +22,7 @@ const openFixtureSources = ['ForgeOpenFlag.ts', 'ForgeGate.ts', 'ForgeProgress.t
 const enhanceClosedSources = ['EnhanceClosed.ts', 'EnhanceOpenFlag.ts'];
 const forgeClosedSha = 'f7e4216be7767f481c96ae7f1dc5796574fe9b231ada91d57a137c1dc8a8c90c';
 // 正式配方窗只同步权威与 wt 快照；game/data 保持历史基线，其他表仍逐字保护。
-const formalRecipesSha = '1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f';
+const formalRecipesSha = '3182fff563b5f5f5341af79f64b93026c43ae45aaa1c6248e7f6276af6c38bfd';
 const formalRecipeKeys = new Set(['shared:balance/recipes.json', 'wt:balance/recipes.json', 'game:balance/recipes.json']);
 const protectCharmTableShas = {
   'materials.json': '86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d',
@@ -33,7 +33,7 @@ const protectCharmGenerator = { name: 'tools/gen_enhance_protect_charm.py',
   sha: '59b821c259724feaa47368034f6e9f297c246d01a0aa845aa1c7faf6b7c64828' };
 const protectCharmSha = key => /^(shared|wt):balance\/(?:materials|items|enhance_protect_charm)\.json$/u.test(key)
   ? protectCharmTableShas[key.slice(key.lastIndexOf('/') + 1)] : undefined;
-const stringsSha = '9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda';
+const stringsSha = '160308538d372404b808123d51c2cb08b037c5f439f6e3441380ccacbd9639ee';
 const preFormalStringsSha = '92d5525c86562a870f45bf53c0c2010e961b83ec9c257a0cf8257178f45b4cab';
 const preEnhanceStringsSha = 'fad9b3e604a3af23e99939bf22f77a55de803842daa297ab7fb2c2a6ed0b8967';
 const previousStringsSha = 'c115b6deadf85d1aa9958de1097321ab65624b456e0fddeca42a5fe39743db27';

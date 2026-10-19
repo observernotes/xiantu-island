@@ -16,10 +16,10 @@ const shared = sharedRoot(root), roots = [['shared', shared], ['snapshot', path.
 const out = process.env.ENCHANT_OPEN_OUT ?? process.env.OUT ?? path.join(root, 'qa/out_v06p1_salvage_soft_open/regressions/enchant-open');
 const frozen = {
   'enhance.json': 'd5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954',
-  'recipes.json': '1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f',
+  'recipes.json': '3182fff563b5f5f5341af79f64b93026c43ae45aaa1c6248e7f6276af6c38bfd',
   'materials.json': '86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d',
   'items.json': 'dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99',
-  'strings_zh.json': '9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda',
+  'strings_zh.json': '160308538d372404b808123d51c2cb08b037c5f439f6e3441380ccacbd9639ee',
   'npcs.json': '2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6',
   'life_skills.json': '204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b',
   'enhance_protect_charm.json': '0e3a73aa1034a4c628b9d19d5c7aa90a9591df072177759d21fcd927326a4772',

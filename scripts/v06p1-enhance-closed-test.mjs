@@ -17,7 +17,7 @@ const shared = sharedRoot(root), baselineOut = path.join(root, 'qa/out_v06p1_enh
 const out = process.env.ENHANCE_CLOSED_OUT ?? (process.env.XT_ENHANCE_QA_OUT ? path.join(process.env.XT_ENHANCE_QA_OUT, 'closed') : process.env.OUT_DIR) ?? path.join(root, 'qa/out_v06p1_salvage_soft_open/regressions/enhance-closed');
 const roots = new Map([['shared', shared], ['wt', path.join(root, 'data')], ['game', path.join(shared, 'game/data')]]);
 const modes = [['shared', shared], ['snapshot', roots.get('wt')]];
-const stringsSha = '9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda';
+const stringsSha = '160308538d372404b808123d51c2cb08b037c5f439f6e3441380ccacbd9639ee';
 const preFormalStringsSha = '92d5525c86562a870f45bf53c0c2010e961b83ec9c257a0cf8257178f45b4cab';
 const enhanceFlagSha = 'd7a3f688e5bf8eb30cfbfd7700de035be2554be825d89208adc898b0f9ee099e';
 const protectCharmTableShas = {

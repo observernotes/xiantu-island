@@ -364,6 +364,28 @@
    ],
    "output": "bamboo_sword",
    "outputCount": 1
+  },
+  {
+   "id": "recipe_forge_azure_steel_sword",
+   "name": "青钢剑",
+   "type": "forge",
+   "blueprint": "scroll_ten_thousand_swords",
+   "materials": [
+    {
+     "item": "iron_essence",
+     "count": 5
+    },
+    {
+     "item": "spirit_copper",
+     "count": 3
+    },
+    {
+     "item": "refine_stone",
+     "count": 3
+    }
+   ],
+   "output": "azure_steel_sword",
+   "outputCount": 1
   }
  ],
  "newItems": {

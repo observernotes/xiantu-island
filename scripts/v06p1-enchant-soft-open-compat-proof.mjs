@@ -17,7 +17,7 @@ const previousShas = {
 const currentShas = {
   'materials.json': '86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d',
   'items.json': 'dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99',
-  'strings_zh.json': '9d8babe8c5715e55f050ea9b2ff1239600a72f32d2d753a2b2d7d9ffaf1f5dda',
+  'strings_zh.json': '160308538d372404b808123d51c2cb08b037c5f439f6e3441380ccacbd9639ee',
 };
 export const preexistingReadOnlyShas = {
   'game:balance/materials.json': currentShas['materials.json'],

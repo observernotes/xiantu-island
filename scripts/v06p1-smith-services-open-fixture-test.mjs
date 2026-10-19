@@ -23,7 +23,7 @@ const services = ['forge', 'enhance', 'enchant', 'salvage'];
 const names = ['Forge', 'Enhance', 'Enchant', 'Salvage'];
 const frozen = {
   'enhance.json': 'd5b91a06b748aed2c9f0c4894422f33b69471c7f0967d6da325dd640c6b71954',
-  'recipes.json': '1be644e365d95c5fa5e48bb8318a5b7bbe83ae1cab6657f5968a204ae0638f9f',
+  'recipes.json': '3182fff563b5f5f5341af79f64b93026c43ae45aaa1c6248e7f6276af6c38bfd',
   'materials.json': '86ae4e29bacee6b3847081caf415001f584bd4d037aa46d72f1accd14e00b98d',
   'items.json': 'dc0ba49591183b2cc7fd8af551c6b91f91e2a596be217bc6e9a608832482de99',
   'life_skills.json': '204261fec8ba6f9c95ce6b63e0caf92465e04a6572fcd255e561af7b7a34f57b',

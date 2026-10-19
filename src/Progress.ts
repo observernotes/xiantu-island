@@ -1102,8 +1102,13 @@ export class Progress {
       if (!committed || JSON.stringify(committed) !== JSON.stringify(result)
         || !forge.receipts.includes(committed.craftResultRef) || committed.resultItem.count !== 1) return false;
       // API 本身也核实正式配方；拥有一个测试打造账本不能绕过默认 ForgeGate 的来源边界。
-      const recipes = Object.values(RECIPES).filter(row => row.type === 'forge'
+      // 同 blueprint 多 forge 行时按材料一字匹配消歧（与 ForgeGate#recipe 对齐）。
+      const byBlueprint = Object.values(RECIPES).filter(row => row.type === 'forge'
         && Reflect.get(row, 'blueprint') === committed.blueprintId);
+      const recipes = byBlueprint.length <= 1 ? byBlueprint : byBlueprint.filter(row => Array.isArray(row.materials)
+        && row.materials.length === committed.materials.length
+        && row.materials.every(material => Number.isSafeInteger(material.count) && material.count > 0
+          && committed.materials.some(other => other.itemId === material.item && other.count === material.count)));
       if (recipes.length !== 1) return false;
       const recipe = recipes[0];
       if (committed.blueprintCount !== 1 || recipe.output !== committed.resultItem.itemId
