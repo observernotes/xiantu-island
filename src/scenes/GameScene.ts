@@ -451,7 +451,7 @@ export class GameScene extends Phaser.Scene {
     this.keys = this.input.keyboard!.addKeys({
       left: K.LEFT, right: K.RIGHT, up: K.UP, down: K.DOWN, alt: K.ALT, space: K.SPACE, c: K.C,
       ctrl: K.CTRL, x: K.X, z: K.Z, f1: K.F1, r: K.R, one: K.ONE, two: K.TWO, three: K.THREE, four: K.FOUR, five: K.FIVE, i: K.I,
-      a: K.A, s: K.S, d: K.D, f: K.F, g: K.G, h: K.H, q: K.Q, w: K.W, k: K.K, l: K.L, p: K.P, e: K.E, esc: K.ESC,
+      a: K.A, s: K.S, d: K.D, f: K.F, g: K.G, h: K.H, q: K.Q, w: K.W, k: K.K, l: K.L, p: K.P, e: K.E, v: K.V, esc: K.ESC,
     }, true) as any;
 
     const cam = this.cameras.main;
@@ -926,6 +926,13 @@ export class GameScene extends Phaser.Scene {
     if (J(k.p) && !this.smithServices?.visible() && !this.marketConsign?.visible() && !this.spiritRune?.visible() && !this.itemPanelOpen()) {
       if (this.attrPanel?.isOpen()) this.attrPanel.close();
       else this.openAttrPanel();
+    }
+    // design/42：KeyV → companion_mode_cycle（须关系＋实体；禁面板 UI）
+    if (J(k.v) && !this.dialog.open && !this.skillWindow.open && !this.alchemy.isOpen() && !this.shop.isOpen()
+      && !this.smithServices?.visible() && !this.marketConsign?.visible() && !this.spiritRune?.visible()
+      && !this.attrPanel?.isOpen() && !this.itemPanelOpen() && !this.sectTrial?.blocksInput) {
+      const next = this.companionFollow?.cycleMode();
+      if (next) this.log(t(`companion.mode.${next}`), '#c8e6ff');
     }
     const escDown = J(k.esc);
     if (escDown && this.skillWindow.open) this.skillWindow.close();
@@ -1966,7 +1973,7 @@ export class GameScene extends Phaser.Scene {
 
   private refreshHelpText() {
     const alchemy = featureEnabled('alchemyPhase1');
-    this.helpText?.setText(`方向键 移动 / ↑↓ 爬绳梯  ↑ 传送 / 上船 / 闭关\nAlt / 空格 / C 跳跃（空中再按 = 二段跳）\n↓ + 跳 穿下单向平台\nCtrl / X 普攻   Z 对话 / 拾取${alchemy ? ' / 采集' : ''} / 开宝箱\nA S D F G H Q W 技能   K 功法  P 加点${alchemy ? '  L 丹炉' : ''}\n1 回春丹  2 回气丹  I 背包  E 装备  F1 调试/渲染`);
+    this.helpText?.setText(`方向键 移动 / ↑↓ 爬绳梯  ↑ 传送 / 上船 / 闭关\nAlt / 空格 / C 跳跃（空中再按 = 二段跳）\n↓ + 跳 穿下单向平台\nCtrl / X 普攻   Z 对话 / 拾取${alchemy ? ' / 采集' : ''} / 开宝箱\nA S D F G H Q W 技能   K 功法  P 加点${alchemy ? '  L 丹炉' : ''}\n1 回春丹  2 回气丹  I 背包  E 装备  V 同行三态  F1 调试/渲染`);
   }
 
   private requireFeature(name: FeatureName, npcId?: string) {

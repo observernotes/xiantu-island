@@ -169,3 +169,21 @@ export function canControlCompanion(config: CompanionsConfig | null,
   save?: Pick<CompanionSave, 'companionRelations'>): boolean {
   return activeCompanion(config, save) !== null;
 }
+
+/** design/42：键位循环 follow→free→stay→follow；须已激活关系；切态只写 mode，不重置实体。 */
+export function cycleCompanionMode(config: CompanionsConfig | null,
+  progress?: CompanionProgress, companionId: string = SU_COMPANION_ID): CompanionMode | null {
+  if (!canControlCompanion(config, progress)) return null;
+  if (companionId !== SU_COMPANION_ID) return null;
+  if (!progress || typeof progress.runSaveTransaction !== 'function') return null;
+  try {
+    return progress.runSaveTransaction(() => {
+      const active = activeCompanion(config, progress);
+      if (!active || active.id !== companionId) return undefined;
+      const idx = COMPANION_MODES.indexOf(active.mode);
+      const next = COMPANION_MODES[(idx + 1) % COMPANION_MODES.length];
+      progress.companionRelations = { ...progress.companionRelations, [SU_COMPANION_ID]: { mode: next } };
+      return next;
+    }) ?? null;
+  } catch { return null; }
+}
