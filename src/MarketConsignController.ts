@@ -96,7 +96,7 @@ export class MarketConsignController {
     if (typeof result.tipKey === 'string' && result.tipKey.startsWith('market.closed.')) this.tip(result.tipKey);
     else this.log(result.text);
   }
-  private gate() { return new MarketGate(this.progress); }
+  private gate() { return new MarketGate(this.progress, { consignPanelReady: true }); }
   private reset(stage: MarketConsignStage = 'closed') {
     this.session++; this.model = emptyState(); this.model.stage = stage; this.emit();
   }
