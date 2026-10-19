@@ -12,7 +12,7 @@
 |---|---|
 | 分支 | `feat/sustain-flight-wire` |
 | 基线 | `25ecaad`（v0.6.15／master） |
-| tip SHA | （push 后填） |
+| tip SHA | `9d563f3980ab5e8e9db0d23687b1d911469c93b7`（短 `9d563f3`） |
 | worktree | `/workspace/xiantu/wt/feat/sustain-flight-wire` |
 
 ## 2. 改动面
@@ -57,4 +57,4 @@
 
 ## 6. 交回
 
-【持续飞行接线】地图=等2A `reports/演武堂/20261019_flyzone_maps.md`｜tip@〈SHA〉｜fly_zones SHA仍 2940fe59…｜softOpenedSustainFlight=false｜≠soft-open≠release｜等执法 C
+【持续飞行接线】地图=等2A `reports/演武堂/20261019_flyzone_maps.md`｜tip@9d563f3｜fly_zones SHA仍 2940fe59…｜softOpenedSustainFlight=false｜≠soft-open≠release｜等执法 C
