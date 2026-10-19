@@ -1,0 +1,28 @@
+{
+ "atlas": "fx_fox_fox_summon",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  96,
+  112
+ ],
+ "anims": [
+  {
+   "key": "fx_fox_fox_summon_play",
+   "frames": [
+    "fx_fox_fox_summon_play_01",
+    "fx_fox_fox_summon_play_02",
+    "fx_fox_fox_summon_play_03",
+    "fx_fox_fox_summon_play_04",
+    "fx_fox_fox_summon_play_05",
+    "fx_fox_fox_summon_play_06"
+   ],
+   "frameRate": 12,
+   "repeat": 0
+  }
+ ],
+ "kind": "fx"
+}
