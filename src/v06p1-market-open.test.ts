@@ -135,7 +135,18 @@ export async function runMarketOpenFixtureTests(options: {
   }
   function businessDenied(result: MarketGateResult, message: string) {
     eq(result.allowed, false, message);
-    ok('tipKey' in result && result.tipKey.startsWith('market.fixture.'), `${message}：使用开态业务拒绝`);
+    ok('tipKey' in result && (result.tipKey.startsWith('market.fixture.') || result.tipKey.startsWith('market.closed.')),
+      `${message}：使用开态业务拒绝或纵深 closed tip`);
+  }
+  function depthDenied(result: MarketGateResult, tipKey: string, message: string) {
+    eq(result.allowed, false, message);
+    eq('tipKey' in result && result.tipKey, tipKey, `${message}：纵深 tipKey`);
+  }
+  async function depthUnchanged(p: Progress, request: () => Promise<MarketGateResult>, tipKey: string, message: string) {
+    const before = p.exportSave(), writes = idb.writes;
+    depthDenied(await request(), tipKey, message);
+    eq(p.exportSave(), before, `${message}：整档保留`);
+    eq(idb.writes, writes, `${message}：无持久写入`);
   }
   async function unchanged(p: Progress, request: () => Promise<MarketGateResult>, message: string) {
     const before = p.exportSave(), writes = idb.writes;
@@ -314,7 +325,37 @@ export async function runMarketOpenFixtureTests(options: {
         { itemId: 'rabbit_fur', itemInstanceId: 'rabbit_fur#5', listingPrice: NaN },
       ]) await unchanged(p, () => gate.listItem(request), 'O06非法或未获夹具品类授权');
       const noAuthorization = new MarketGate(p);
-      await unchanged(p, () => noAuthorization.listItem({ itemId: 'rabbit_fur', itemInstanceId: 'rabbit_fur#7', listingPrice: 6 }), '无夹具品类授权默认拒绝');
+      await depthUnchanged(p, () => noAuthorization.listItem({ itemId: 'rabbit_fur', itemInstanceId: 'rabbit_fur#7', listingPrice: 6 }),
+        'market.closed.list', '正式无面板(L1)默认拒绝且不回退夹具名单');
+      // 2B 正式路径纵深：面板齐但品类消费白名单；禁 fixtureAllowedItemIds 冒充。
+      const formalOpts = () => ({ consignPanelReady: true as const, now: () => now,
+        random: () => { sampleCount++; return 0.25; }, ledgerId: () => `${dataMode}-formal-${++ledgerSeq}` });
+      const formalEmptyPanel = new MarketGate(p, { now: () => now }); // 无 consignPanelReady
+      await depthUnchanged(p, () => formalEmptyPanel.listItem({ itemId: 'spirit_herb', itemInstanceId: 'spirit_herb#1', listingPrice: 8 }),
+        'market.closed.list', 'L1 无面板：正式品类亦拒上架零写');
+      const formalGate = new MarketGate(p, formalOpts());
+      // rabbit_fur 仅在夹具名单；正式白名单无此 id → 拒且零写
+      await unchanged(p, () => formalGate.listItem({ itemId: 'rabbit_fur', itemInstanceId: 'rabbit_fur#7', listingPrice: 6 }),
+        '正式路径不回退 fixtureAllowedItemIds 放行');
+      const formalPlayer = fixture();
+      formalPlayer.p.inventory = { spirit_herb: 5, rabbit_fur: 3 };
+      const formalReady = new MarketGate(formalPlayer.p, formalOpts());
+      const formalList = listing(await formalReady.listItem({ itemId: 'spirit_herb', itemInstanceId: 'spirit_herb#1', listingPrice: 8 }));
+      eq(formalList.state, 'listed', '正式白名单 spirit_herb 可上架');
+      eq(formalPlayer.p.count('spirit_herb'), 4, '正式上架扣押一份');
+      await unchanged(formalPlayer.p, () => formalReady.settle(formalList.listingId), '正式未满 saleDelaySec 不成交');
+      now += rules.saleDelaySec * 1000;
+      const formalSold = listing(await formalReady.settle(formalList.listingId));
+      eq(formalSold.state, 'sold_pending_claim', '正式满等待后成交待领且不自动领取');
+      const samplesBeforeClaim = sampleCount;
+      listing(await formalReady.claim(formalList.listingId));
+      eq(sampleCount, samplesBeforeClaim, '正式领取不重抽 marketFactor');
+      // 仅夹具名单、无正式白名单字段注入时仍可走夹具；正式 Gate 不得读夹具名单
+      const fixtureOnly = new MarketGate(formalPlayer.p, { fixtureAllowedItemIds: ['rabbit_fur'], consignPanelReady: true, now: () => now,
+        random: () => 0.25, ledgerId: () => `${dataMode}-fix-only-${++ledgerSeq}` });
+      eq((await fixtureOnly.listItem({ itemId: 'spirit_herb', itemInstanceId: 'spirit_herb#2', listingPrice: 8 })).allowed, false,
+        '夹具路径不消费正式白名单冒充');
+      listing(await fixtureOnly.listItem({ itemId: 'rabbit_fur', itemInstanceId: 'rabbit_fur#1', listingPrice: 6 }));
       const empty = fixture(); empty.p.inventory = {};
       await unchanged(empty.p, () => empty.gate.listItem({ itemId: 'rabbit_fur', itemInstanceId: 'rabbit_fur#1', listingPrice: 6 }), 'O06无物');
       await unchanged(p, () => gate.claim('foreign'), 'O06外来单据不可领');

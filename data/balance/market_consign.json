@@ -7,7 +7,9 @@
     "basis": [
       "2026-10-17 负责人令·数值另窗 via 项目经理：七字段正式定值",
       "design/23_v06_P1②关态_坊市寄售.md §2.2、§2.4、§3",
-      "design/GDD_总体设计.md §14.6、§15.8 与 balance/solo_pacing.json stones/offline 仅作只读差异对照，不作取值源"
+      "design/GDD_总体设计.md §14.6、§15.8 与 balance/solo_pacing.json stones/offline 仅作只读差异对照，不作取值源",
+      "reports/天机阁/20261019_负责人令_明示例外_Codex403旁路.md：2A 准许不经 Codex 扩展 gen 落 consignableItemIds",
+      "reports/天机阁/20261019_负责人令_体验债坊市纵深_接线.md §2A；design/33_v06_体验债_坊市正式路径纵深.md §2.3"
     ],
     "rationale": {
       "listingPrice": "玩家自定挂牌价，参考 items.price 的 NPC 标价；钳制在 NPC 售价 0.5×–2.0×，以半价购回为下界约束、防购回套利，并限制离谱抬价；本字段是定价规则对象，不是单笔固定灵石数。",
@@ -68,5 +70,15 @@
     "sampleAt": "sale",
     "samplesPerSale": 1
   },
-  "slotCapacity": 5
+  "slotCapacity": 5,
+  "consignableItemIds": [
+    "spirit_herb",
+    "fire_herb",
+    "iron_essence",
+    "spirit_copper",
+    "refine_stone",
+    "talisman_paper",
+    "spirit_ink",
+    "beast_core"
+  ]
 }

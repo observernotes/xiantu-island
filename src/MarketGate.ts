@@ -6,8 +6,13 @@ import { isMarketOpenForFixture } from './MarketOpenFlag';
 import * as MarketClosed from './MarketClosed';
 
 export interface MarketFixtureOptions {
-  /** 夹具显式允许集；不存在正式品类授权，缺省不允许任何配置上架。 */
+  /** 夹具显式允许集；仅测试／fixture 路径。正式路径不得依赖本字段放行。 */
   fixtureAllowedItemIds?: readonly string[];
+  /**
+   * 正式路径：完整寄售面板已接。未置 true 时写操作走 L1（只 tip、零写）。
+   * 夹具路径忽略本字段。入口冒烟／无面板不得据此放行上架。
+   */
+  consignPanelReady?: boolean;
   /** 毫秒时钟与 [0,1] 随机源，仅在开态事务中使用。 */
   now?: () => number;
   random?: () => number;
@@ -36,22 +41,46 @@ const safeId = (value: unknown): value is string => typeof value === 'string' &&
   && !['__proto__', 'prototype', 'constructor'].includes(value);
 const active = (entry: MarketListing) => entry.state === 'listed' || entry.state === 'sold_pending_claim';
 
+type MarketRules = typeof rules & { consignableItemIds?: readonly string[] };
+const marketRules = rules as MarketRules;
+
+/** 只读正式品类白名单；空／缺＝正式全拒（L2）。不回退 fixtureAllowedItemIds。 */
+export function formalConsignableItemIds(): readonly string[] {
+  const ids = marketRules.consignableItemIds;
+  if (!Array.isArray(ids)) return [];
+  return ids.filter((id): id is string => typeof id === 'string' && safeId(id));
+}
+
 /** 正式 soft-open；每入口保留关态拦截，仅 Vite SSR 内存关态图注入 false。 */
 export class MarketGate {
   #busy = false;
   constructor(private readonly progress: Progress, private readonly fixture: MarketFixtureOptions = {}) {}
 
+  /** 夹具路径：显式注入 fixtureAllowedItemIds（含空数组）。正式路径：未注入该字段。 */
+  private isFixtureMode(): boolean {
+    return Object.prototype.hasOwnProperty.call(this.fixture, 'fixtureAllowedItemIds');
+  }
+
   feature(): MarketGateResult {
     if (!isMarketOpenForFixture()) return MarketClosed.featureClosed();
     if (!this.validRules()) return denied('rules', '寄售依赖未就绪。');
+    // 只读说明可在 Flag/enabled 下查看；L1–L3 拦写不拦说明（入口冒烟保持「已开放」文案）。
     return { allowed: true, slotCapacity: rules.slotCapacity };
   }
 
   async listItem(request: MarketListRequest): Promise<MarketGateResult> {
     if (!isMarketOpenForFixture()) return MarketClosed.refuseList();
+    const depth = this.refuseFormalDepth('list');
+    if (depth) return depth;
     return this.transact((draft, reject) => {
       if (!request || !safeId(request.itemId) || !this.supportedItem(draft, request.itemId)
-        || !positive(request.listingPrice) || typeof request.itemInstanceId !== 'string') return reject('item', '物品或挂牌价不可用于本夹具。');
+        || !positive(request.listingPrice) || typeof request.itemInstanceId !== 'string') {
+        if (!this.isFixtureMode() && formalConsignableItemIds().length === 0)
+          return reject('item', '可寄售品类未齐，暂不可上架。');
+        if (!this.isFixtureMode() && !formalConsignableItemIds().includes(request.itemId))
+          return reject('item', '物品不在正式可寄售品类中。');
+        return reject('item', '物品或挂牌价不可用于本夹具。');
+      }
       const now = this.now();
       if (!nonnegative(now)) return reject('time', '寄售时钟不可用。');
       const current = this.current(draft);
@@ -89,6 +118,8 @@ export class MarketGate {
 
   async withdraw(listingId: string): Promise<MarketGateResult> {
     if (!isMarketOpenForFixture()) return MarketClosed.refuseWithdraw();
+    const depth = this.refuseFormalDepth('withdraw');
+    if (depth) return depth;
     return this.transact((draft, reject) => {
       const market = this.current(draft), listing = market?.listings.find(row => row.listingId === listingId);
       if (!market || !listing || listing.state !== 'listed') return reject('withdraw_state', '当前单据不可撤回。');
@@ -104,19 +135,24 @@ export class MarketGate {
     });
   }
 
-  /** 仅显式夹具回调。没有生产定时器；成交不自动领取，随机数只在这次有效转移中抽一次。 */
+  /**
+   * 成交回调：消费 saleDelaySec／offlineSettlementWindowSec。
+   * 未满最短等待不成交；离线累计不超窗；关态／纵深未齐不补算；成交→sold_pending_claim 不自动领取。
+   */
   async settle(listingId: string, request: MarketSettlementRequest = {}): Promise<MarketGateResult> {
     if (!isMarketOpenForFixture()) return MarketClosed.refuseDeal();
+    const depth = this.refuseFormalDepth('deal');
+    if (depth) return depth;
     return this.transact((draft, reject) => {
       const market = this.current(draft), listing = market?.listings.find(row => row.listingId === listingId);
       if (!market || !listing || listing.state !== 'listed') return reject('settle_state', '当前单据不可成交。');
-      if (!this.supportedItem(draft, listing.itemId)) return reject('item', '扣押物品类未获夹具授权。');
+      if (!this.supportedItem(draft, listing.itemId)) return reject('item', '扣押物品类未获授权。');
       const now = this.now();
       if (!request || !nonnegative(now) || now < listing.listedAt) return reject('time', '寄售时钟不可用。');
       let elapsedSec = (now - listing.listedAt) / 1000;
       if (Object.prototype.hasOwnProperty.call(request, 'offlineElapsedSec')) {
         if (!nonnegative(request.offlineElapsedSec)) return reject('time', '离线结算时间无效。');
-        // 离线夹具必须同时受实际时间差与寄售专属窗口约束，不借其它玩法上限。
+        // 离线必须同时受实际时间差与寄售专属窗口约束，不借其它玩法上限。
         elapsedSec = Math.min(elapsedSec, request.offlineElapsedSec, rules.offlineSettlementWindowSec);
       }
       if (elapsedSec < rules.saleDelaySec) return reject('too_early', '尚未达到寄售最短等待时间。');
@@ -139,6 +175,8 @@ export class MarketGate {
 
   async claim(listingId: string): Promise<MarketGateResult> {
     if (!isMarketOpenForFixture()) return MarketClosed.refuseClaim();
+    const depth = this.refuseFormalDepth('claim');
+    if (depth) return depth;
     return this.transact((draft, reject) => {
       const market = this.current(draft), listing = market?.listings.find(row => row.listingId === listingId);
       if (!market || !listing || listing.state !== 'sold_pending_claim') return reject('no_reward', '当前单据没有可领取收益。');
@@ -152,6 +190,7 @@ export class MarketGate {
       listing.claimRef = `${listing.listingId}:claim`;
       market.claims.push({ ref: listing.claimRef, listingId, rewardRef: reward.ref, amount: reward.amount });
       draft.market = market;
+      // 领取／重试用已存 amount；不重抽 marketFactor。
       return { allowed: true, listing: copy(listing), progress: copy(market), rewardAmount: reward.amount };
     });
   }
@@ -176,13 +215,33 @@ export class MarketGate {
       activeSlots: this.progress.market?.listings.filter(active).length ?? 0 };
   }
 
+  /**
+   * 正式路径 L1–L3：只 tip、零写。夹具路径跳过。
+   * L1 无面板；L2 品类未齐；L3 本刀已接 saleDelay／offline 消费者，品类+面板齐后不再以 L3 拒成交。
+   */
+  private refuseFormalDepth(op: 'list' | 'withdraw' | 'claim' | 'deal'): MarketDenied | undefined {
+    if (this.isFixtureMode()) return undefined;
+    if (this.fixture.consignPanelReady !== true) {
+      if (op === 'list') return MarketClosed.refuseList();
+      if (op === 'withdraw') return MarketClosed.refuseWithdraw();
+      if (op === 'claim') return MarketClosed.refuseClaim();
+      return MarketClosed.refuseDeal();
+    }
+    if (formalConsignableItemIds().length === 0) {
+      if (op === 'list') return MarketClosed.refuseList();
+      if (op === 'withdraw') return MarketClosed.refuseWithdraw();
+      if (op === 'claim') return MarketClosed.refuseClaim();
+      return MarketClosed.refuseDeal();
+    }
+    return undefined;
+  }
+
   private now(): number { return this.fixture.now?.() ?? Date.now(); }
   private current(progress: Progress): MarketProgress | undefined { return progress.market === undefined ? undefined : copy(progress.market); }
   private valid(progress: Progress): boolean {
     if (!this.validRules()) return false;
     if (progress.market === undefined) return true;
     if (!isValidMarketProgress(progress.market)) return false;
-    // Progress 的袋校验不依赖寄售表，避免给旧图新增数值表依赖；开态写在这里读表校验完整业务语义。
     return progress.market.listings.every(listing => {
       const item = Object.prototype.hasOwnProperty.call(ITEMS, listing.itemId) ? ITEMS[listing.itemId] : undefined;
       if (!item || !positive(item.price) || listing.slotIndex >= rules.slotCapacity
@@ -197,13 +256,24 @@ export class MarketGate {
         && Math.abs(reward.amount - expected) <= Number.EPSILON * Math.max(1, reward.amount, expected) * 8;
     });
   }
-  private supportedItem(progress: Progress, itemId: string): boolean {
+
+  private itemBaseOk(progress: Progress, itemId: string): boolean {
     const item = Object.prototype.hasOwnProperty.call(ITEMS, itemId) ? ITEMS[itemId] : undefined;
-    return this.fixture.fixtureAllowedItemIds?.includes(itemId) === true && !!item && inPhase(item)
+    return !!item && inPhase(item)
       && item.enabled !== false && item.placeholder !== true && positive(item.price)
       && item.qualityEnabled !== true && !Object.prototype.hasOwnProperty.call(progress.pillQualities, itemId)
       && !Object.values(progress.equip).includes(itemId);
   }
+
+  private supportedItem(progress: Progress, itemId: string): boolean {
+    if (!this.itemBaseOk(progress, itemId)) return false;
+    if (this.isFixtureMode()) {
+      // 夹具名单仅测试路径；正式路径永不回退到此。
+      return this.fixture.fixtureAllowedItemIds?.includes(itemId) === true;
+    }
+    return formalConsignableItemIds().includes(itemId);
+  }
+
   private validRules(): boolean {
     return rules.enabled === true && rules.listingPrice.mode === 'player_set' && rules.listingPrice.reference === 'items.price'
       && positive(rules.listingPrice.minRatioOfNpcSell) && positive(rules.listingPrice.maxRatioOfNpcSell)
@@ -223,7 +293,6 @@ export class MarketGate {
     const reject = (reason: string, text: string): undefined => { rejection = denied(reason, text); return undefined; };
     try {
       const saved = await this.progress.runSaveTransactionAsync(draft => {
-        // 必须重读 draft；多个 Gate、重复回调与导档后不能信任先前会话缓存。
         if (!this.valid(draft)) return reject('progress', '寄售档案不完整，已阻止歧义操作。');
         const result = apply(draft, reject);
         if (result && !this.valid(draft)) return reject('progress', '寄售结果校验失败，保持原档。');
