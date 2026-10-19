@@ -70,6 +70,7 @@ import { SenseMapAdapter, sceneMonsterTargets } from './SenseScene';
 import { openPropChest, playPropAnimation, resolveSecretProp } from '../SecretProps';
 import { AFFINITY, COMPANIONS, FLY_ZONES } from '../data';
 import { invite, SU_COMPANION_ID } from '../Companions';
+import { CompanionFollowAi } from '../CompanionFollowAi';
 import { isPointInFlyZone, requestSustainFlight as gateRequestSustainFlight } from '../FlyZones';
 import { SECRET_NEST_INTRO_ID, isSecretNestIntroEnabled, featureClosed, readSignClosed, interactEntranceClosed,
   refuseQuestOffer, refuseQuestProgress } from '../SecretNestClosed';
@@ -223,6 +224,7 @@ export class GameScene extends Phaser.Scene {
     this.npcMarks = []; this.hudTexts = undefined; this.hudKit = undefined; this.bossIntroShown = false;
     this.interactionPrompts = []; this.portalVisuals = []; this.seclusionLabels = [];
     this.rogueSpawner = undefined;
+    this.companionFollow = undefined;
     this.backgroundArt?.destroy(); this.propLayout?.destroy(); this.environmentArt?.destroy();
     this.backgroundArt = undefined; this.propLayout = undefined; this.environmentArt = undefined;
     for (const object of this.backgroundObjects) object.destroy();
@@ -399,6 +401,8 @@ export class GameScene extends Phaser.Scene {
     this.player.syncAppearance();
     this.gathering = new Gathering(this);
     this.combat = new SkillCombat(this);
+    this.companionFollow = new CompanionFollowAi(this);
+    this.companionFollow.projectFromRelation();
     this.events.on('skill:cast', () => this.interruptTalisman('attack'));
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.events.removeAllListeners('skill:cast'));
 
@@ -906,6 +910,7 @@ export class GameScene extends Phaser.Scene {
     }
     this.regenMp(delta);
     this.combat.update(time, delta);
+    this.companionFollow?.update(time);
     this.trialObjects?.update(delta);
     if (this.sectTrial && !this.sectTrial.ended && this.sectTrial.def.quest && this.quests.sectEntryBlock(this.sectTrial.def.quest)) {
       this.sectTrial.exit(); return;
@@ -1056,11 +1061,17 @@ export class GameScene extends Phaser.Scene {
   skillBar!: SkillBar;
   skillWindow!: SkillWindow;
   combat!: SkillCombat;
+  companionFollow?: CompanionFollowAi;
 
   /** 失效交互的拒绝钩子；关态不创建邀请按钮、关系或同行实体。 */
   requestCompanionInvite(companionId: string = SU_COMPANION_ID) {
     const result = invite(COMPANIONS, AFFINITY, this.prog, companionId);
     this.log(t(result.hintKey), '#d0d0d0');
+    // design/41：ok → 关系已由 invite 写入；须 spawn 恰 1 同行实体（禁双实例）。
+    if (result.status === 'ok') {
+      this.companionFollow ??= new CompanionFollowAi(this);
+      this.companionFollow.spawnAfterInvite();
+    }
     return result;
   }
 
