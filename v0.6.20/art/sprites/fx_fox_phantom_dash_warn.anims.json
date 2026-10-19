@@ -1,0 +1,26 @@
+{
+ "atlas": "fx_fox_phantom_dash_warn",
+ "facing": "left",
+ "origin": [
+  0.9286,
+  1
+ ],
+ "frameSize": [
+  448,
+  48
+ ],
+ "anims": [
+  {
+   "key": "fx_fox_phantom_dash_warn_loop",
+   "frames": [
+    "fx_fox_phantom_dash_warn_loop_01",
+    "fx_fox_phantom_dash_warn_loop_02",
+    "fx_fox_phantom_dash_warn_loop_03",
+    "fx_fox_phantom_dash_warn_loop_04"
+   ],
+   "frameRate": 12,
+   "repeat": -1
+  }
+ ],
+ "kind": "fx"
+}
