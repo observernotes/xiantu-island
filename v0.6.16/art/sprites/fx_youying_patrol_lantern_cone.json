@@ -1,0 +1,158 @@
+{
+ "frames": {
+  "fx_youying_patrol_lantern_cone_loop_01": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 96
+   },
+   "pivot": {
+    "x": 1,
+    "y": 0.5
+   }
+  },
+  "fx_youying_patrol_lantern_cone_loop_02": {
+   "frame": {
+    "x": 192,
+    "y": 0,
+    "w": 192,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 96
+   },
+   "pivot": {
+    "x": 1,
+    "y": 0.5
+   }
+  },
+  "fx_youying_patrol_lantern_cone_loop_03": {
+   "frame": {
+    "x": 384,
+    "y": 0,
+    "w": 192,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 96
+   },
+   "pivot": {
+    "x": 1,
+    "y": 0.5
+   }
+  },
+  "fx_youying_patrol_lantern_cone_loop_04": {
+   "frame": {
+    "x": 576,
+    "y": 0,
+    "w": 192,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 96
+   },
+   "pivot": {
+    "x": 1,
+    "y": 0.5
+   }
+  },
+  "fx_youying_patrol_lantern_cone_alert_01": {
+   "frame": {
+    "x": 768,
+    "y": 0,
+    "w": 192,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 96
+   },
+   "pivot": {
+    "x": 1,
+    "y": 0.5
+   }
+  },
+  "fx_youying_patrol_lantern_cone_alert_02": {
+   "frame": {
+    "x": 960,
+    "y": 0,
+    "w": 192,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 192,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 192,
+    "h": 96
+   },
+   "pivot": {
+    "x": 1,
+    "y": 0.5
+   }
+  }
+ },
+ "meta": {
+  "app": "xiantu gen_trial_v05.py",
+  "image": "fx_youying_patrol_lantern_cone.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1152,
+   "h": 96
+  },
+  "scale": "1"
+ }
+}
