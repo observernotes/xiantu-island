@@ -1,0 +1,116 @@
+{
+ "atlas": "player_sword_m__outfit_wanshou_1",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": 96,
+ "anims": [
+  {
+   "key": "player_sword_m__outfit_wanshou_1_idle",
+   "frames": [
+    "player_sword_m__outfit_wanshou_1_idle_01",
+    "player_sword_m__outfit_wanshou_1_idle_02",
+    "player_sword_m__outfit_wanshou_1_idle_03"
+   ],
+   "frameRate": 3,
+   "repeat": -1
+  },
+  {
+   "key": "player_sword_m__outfit_wanshou_1_walk",
+   "frames": [
+    "player_sword_m__outfit_wanshou_1_walk_01",
+    "player_sword_m__outfit_wanshou_1_walk_02",
+    "player_sword_m__outfit_wanshou_1_walk_03",
+    "player_sword_m__outfit_wanshou_1_walk_04"
+   ],
+   "frameRate": 8,
+   "repeat": -1
+  },
+  {
+   "key": "player_sword_m__outfit_wanshou_1_jump",
+   "frames": [
+    "player_sword_m__outfit_wanshou_1_jump_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  },
+  {
+   "key": "player_sword_m__outfit_wanshou_1_djump",
+   "frames": [
+    "player_sword_m__outfit_wanshou_1_djump_01",
+    "player_sword_m__outfit_wanshou_1_djump_02"
+   ],
+   "frameRate": 10,
+   "repeat": 0
+  },
+  {
+   "key": "player_sword_m__outfit_wanshou_1_rope",
+   "frames": [
+    "player_sword_m__outfit_wanshou_1_rope_01",
+    "player_sword_m__outfit_wanshou_1_rope_02"
+   ],
+   "frameRate": 6,
+   "repeat": -1
+  },
+  {
+   "key": "player_sword_m__outfit_wanshou_1_ladder",
+   "frames": [
+    "player_sword_m__outfit_wanshou_1_ladder_01",
+    "player_sword_m__outfit_wanshou_1_ladder_02"
+   ],
+   "frameRate": 6,
+   "repeat": -1
+  },
+  {
+   "key": "player_sword_m__outfit_wanshou_1_attack",
+   "frames": [
+    "player_sword_m__outfit_wanshou_1_attack_01",
+    "player_sword_m__outfit_wanshou_1_attack_02",
+    "player_sword_m__outfit_wanshou_1_attack_03"
+   ],
+   "frameRate": 12,
+   "repeat": 0
+  },
+  {
+   "key": "player_sword_m__outfit_wanshou_1_hit",
+   "frames": [
+    "player_sword_m__outfit_wanshou_1_hit_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  },
+  {
+   "key": "player_sword_m__outfit_wanshou_1_die",
+   "frames": [
+    "player_sword_m__outfit_wanshou_1_die_01",
+    "player_sword_m__outfit_wanshou_1_die_02"
+   ],
+   "frameRate": 6,
+   "repeat": 0
+  },
+  {
+   "key": "player_sword_m__outfit_wanshou_1_sit",
+   "frames": [
+    "player_sword_m__outfit_wanshou_1_sit_01",
+    "player_sword_m__outfit_wanshou_1_sit_02"
+   ],
+   "frameRate": 2,
+   "repeat": -1
+  },
+  {
+   "key": "player_sword_m__outfit_wanshou_1_gather",
+   "frames": [
+    "player_sword_m__outfit_wanshou_1_gather_01",
+    "player_sword_m__outfit_wanshou_1_gather_02",
+    "player_sword_m__outfit_wanshou_1_gather_03"
+   ],
+   "frameRate": 8,
+   "repeat": -1
+  }
+ ],
+ "kind": "player",
+ "blend": "NORMAL",
+ "note": "万兽山一转衣装程序化占位；appearance=\"outfit_wanshou_1\" 选择 atlas \"player_sword_m__outfit_wanshou_1\"。原点 (0.5,1) = 96×96 帧底边中央的脚底落点，groundY=96；空中动作保持相同世界原点，不按非透明包围盒重新裁切。idle 待机、walk 行走、jump 一段跳、djump 二段跳、rope 绳攀、ladder 梯攀、attack 攻击（01 前摇/02 判定/03 收势）、hit 受击、die 倒地、sit 打坐、gather 蹲下采集；帧数、帧率、repeat、帧矩形与精修 fox_robe 完全一致，gather/sit 按原姿势收剑。使用原精修素体/头发/脸/鞋/剑，朝左；朝右 setFlipX(true)，NORMAL 混合。换 appearance 时保持坐标、当前动作和帧索引，只切换纹理和本套装动画键。文件目前带 pend_ 存于 _pending；文件内正式 atlas/帧名/动画键没有 pend_，转正后使用。"
+}
