@@ -16,7 +16,7 @@
 | 分支 | `feat/fly-sustain-feedback-wire` |
 | 业务基线 tip | `31bd9bd61351676e2dc82b57a44f744ebb6c923f`（短 `31bd9bd`；接线） |
 | 基线 HEAD docs | `c3b6b575609d6ec2cc66b2f8416a8d971e8f5bfe`（接线 RESULT） |
-| soft-open tip | （commit 后填；可＝本 docs tip） |
+| soft-open tip | （短 ） |
 | worktree | `/workspace/xiantu/wt/feat/fly-sustain-feedback-wire` |
 | origin | 推 `origin/feat/fly-sustain-feedback-wire`（不合 master） |
 
@@ -56,4 +56,4 @@
 
 ## 5. 交回
 
-【fly反馈soft已交】炼器＝`reports/炼器阁/20261019_fly_sustain_feedback_soft_open.md`／soft tip＝（本 tip；commit 后补 SHA）｜自测＝tsc＋v06b-closed/open PASS｜newOpenFlag=false｜released=false｜无 softOpenedFlyFeedback＊｜fly_zones MATCH｜≠release≠Pages｜现网v0.6.18｜等执法 soft smoke（3B）
+【fly反馈soft已交】炼器＝`reports/炼器阁/20261019_fly_sustain_feedback_soft_open.md`／soft tip＝｜自测＝tsc＋v06b-closed/open PASS｜newOpenFlag=false｜released=false｜无 softOpenedFlyFeedback＊｜fly_zones MATCH｜≠release≠Pages｜现网v0.6.18｜等执法 soft smoke（3B）
