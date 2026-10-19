@@ -1,8 +1,8 @@
 {
   "passed": true,
-  "assertions": 2630,
-  "staticAssertions": 376,
-  "runtimeAssertions": 2254,
+  "assertions": 2649,
+  "staticAssertions": 379,
+  "runtimeAssertions": 2270,
   "formalOpen": true,
   "closedFixtureOnly": true,
   "softOpened": true,
@@ -269,7 +269,7 @@
     "/workspace/xiantu/wt/feat/market-depth-wire/src/features.ts": "ff1cce0e298eeb57e5052048220b56f9490d3e172fbeab5ba9dc9f755c45e130",
     "/workspace/xiantu/wt/feat/market-depth-wire/src/data.ts": "aad725652f5c0eb57a5c699726e570b146d5ded52d5c31715444dbbf4117024a",
     "/workspace/xiantu/wt/feat/market-depth-wire/src/Progress.ts": "53ad3f8f78e5e4d5fe5ffbfeef841f98b5df1ec6f1d8e622c3873bfe1afa9e8a",
-    "/workspace/xiantu/wt/feat/market-depth-wire/src/scenes/GameScene.ts": "4a53de4590efdabb920e7e1eee04ccd2269530e42c8177a79bd7edf4f5b95a98",
+    "/workspace/xiantu/wt/feat/market-depth-wire/src/scenes/GameScene.ts": "b52b9e176fb7908b2d91ad74fc92c628a360e60b28e30a8b7e9d47f70257d2e7",
     "/workspace/xiantu/wt/feat/market-depth-wire/src/ShopPanel.ts": "419a3c5b112301a69258303062f3a82468aff2e6116b440f7c3844a465c1170c",
     "/workspace/xiantu/wt/feat/market-depth-wire/src/TowerOpenFlag.ts": "555f2d8994df8dce93481a27326897a4ceac03c36f9164a393a77b779c3f1850",
     "/workspace/xiantu/wt/feat/market-depth-wire/src/MarketClosed.ts": "625f2c607786b02c79ac0473333b07f2c6477b3e63c8514ee0da75452b0657fc",
@@ -329,7 +329,7 @@
       "flagLoads": 0,
       "featureOverrideCalls": 0,
       "result": {
-        "assertions": 530,
+        "assertions": 531,
         "openFixture": true,
         "graph": "formal-open",
         "sceneSmoke": {
@@ -342,10 +342,11 @@
             "fangshi_consign"
           ],
           "genericInteraction": true,
-          "graph": "formal-open",
+          "graph": "formal-open-panel",
           "gateDeniedRouting": true,
           "closedBypassesGate": false,
-          "saveWrites": 0
+          "saveWrites": 0,
+          "panelOpenPath": true
         },
         "formalOpen": true,
         "closedFixtureOnly": true,
@@ -370,19 +371,19 @@
       "savedStateEvidence": [
         {
           "state": "listed",
-          "saveSha": "3c39d4d1f7a750dbf8c09245b072a8924d7006d5369d8ddc955d86e6a51e6196"
+          "saveSha": "248f5b6096c1152ce24b3eae144919c3642e6df79f535fe76026ab8d6829a97c"
         },
         {
           "state": "withdrawn",
-          "saveSha": "8bc011af6ac12ad44042ae015333dae556449011ac8877cfa67bca3ab4c1951b"
+          "saveSha": "9455b91ee3a6cfebab2f561287c2dc40417e6db83dd2f89ec2ebc6e2808dabec"
         },
         {
           "state": "sold_pending_claim",
-          "saveSha": "79cfcc6c956205a7451a4be9b713851da23c093294e1ce0dd16b7373c38a7548"
+          "saveSha": "17e55b08613a05db5bc2b6369134661f6194a90737625e3aa2db23ca17e14086"
         },
         {
           "state": "claimed",
-          "saveSha": "94c48da5e14b046655258b5af39d0d675c0e81d9be86510daeff73d01c072312"
+          "saveSha": "88211de88b88b128270c534bf46f647ef928106bafbd1806ab3723f2ec6127d2"
         }
       ],
       "softOpened": true,
@@ -400,7 +401,7 @@
       "flagLoads": 1,
       "featureOverrideCalls": 0,
       "result": {
-        "assertions": 169,
+        "assertions": 172,
         "openFixture": false,
         "graph": "memory-closed",
         "sceneSmoke": {
@@ -416,7 +417,8 @@
           "graph": "memory-closed",
           "gateDeniedRouting": false,
           "closedBypassesGate": true,
-          "saveWrites": 0
+          "saveWrites": 0,
+          "panelOpenPath": false
         },
         "formalOpen": true,
         "closedFixtureOnly": true,
@@ -446,7 +448,7 @@
       "flagLoads": 0,
       "featureOverrideCalls": 0,
       "result": {
-        "assertions": 82,
+        "assertions": 83,
         "openFixture": true,
         "graph": "formal-open",
         "sceneSmoke": {
@@ -459,10 +461,11 @@
             "fangshi_consign"
           ],
           "genericInteraction": true,
-          "graph": "formal-open",
+          "graph": "formal-open-panel",
           "gateDeniedRouting": true,
           "closedBypassesGate": false,
-          "saveWrites": 0
+          "saveWrites": 0,
+          "panelOpenPath": true
         },
         "formalOpen": true,
         "closedFixtureOnly": true,
@@ -487,19 +490,19 @@
       "savedStateEvidence": [
         {
           "state": "listed",
-          "saveSha": "3c39d4d1f7a750dbf8c09245b072a8924d7006d5369d8ddc955d86e6a51e6196"
+          "saveSha": "248f5b6096c1152ce24b3eae144919c3642e6df79f535fe76026ab8d6829a97c"
         },
         {
           "state": "withdrawn",
-          "saveSha": "8bc011af6ac12ad44042ae015333dae556449011ac8877cfa67bca3ab4c1951b"
+          "saveSha": "9455b91ee3a6cfebab2f561287c2dc40417e6db83dd2f89ec2ebc6e2808dabec"
         },
         {
           "state": "sold_pending_claim",
-          "saveSha": "79cfcc6c956205a7451a4be9b713851da23c093294e1ce0dd16b7373c38a7548"
+          "saveSha": "17e55b08613a05db5bc2b6369134661f6194a90737625e3aa2db23ca17e14086"
         },
         {
           "state": "claimed",
-          "saveSha": "94c48da5e14b046655258b5af39d0d675c0e81d9be86510daeff73d01c072312"
+          "saveSha": "88211de88b88b128270c534bf46f647ef928106bafbd1806ab3723f2ec6127d2"
         }
       ],
       "softOpened": true,
@@ -517,7 +520,7 @@
       "flagLoads": 1,
       "featureOverrideCalls": 0,
       "result": {
-        "assertions": 346,
+        "assertions": 349,
         "openFixture": false,
         "graph": "memory-closed",
         "sceneSmoke": {
@@ -533,7 +536,8 @@
           "graph": "memory-closed",
           "gateDeniedRouting": false,
           "closedBypassesGate": true,
-          "saveWrites": 0
+          "saveWrites": 0,
+          "panelOpenPath": false
         },
         "formalOpen": true,
         "closedFixtureOnly": true,
@@ -550,19 +554,19 @@
       "savedStateEvidence": [
         {
           "state": "listed",
-          "saveSha": "3c39d4d1f7a750dbf8c09245b072a8924d7006d5369d8ddc955d86e6a51e6196"
+          "saveSha": "248f5b6096c1152ce24b3eae144919c3642e6df79f535fe76026ab8d6829a97c"
         },
         {
           "state": "withdrawn",
-          "saveSha": "8bc011af6ac12ad44042ae015333dae556449011ac8877cfa67bca3ab4c1951b"
+          "saveSha": "9455b91ee3a6cfebab2f561287c2dc40417e6db83dd2f89ec2ebc6e2808dabec"
         },
         {
           "state": "sold_pending_claim",
-          "saveSha": "79cfcc6c956205a7451a4be9b713851da23c093294e1ce0dd16b7373c38a7548"
+          "saveSha": "17e55b08613a05db5bc2b6369134661f6194a90737625e3aa2db23ca17e14086"
         },
         {
           "state": "claimed",
-          "saveSha": "94c48da5e14b046655258b5af39d0d675c0e81d9be86510daeff73d01c072312"
+          "saveSha": "88211de88b88b128270c534bf46f647ef928106bafbd1806ab3723f2ec6127d2"
         }
       ],
       "softOpened": true,
@@ -580,7 +584,7 @@
       "flagLoads": 0,
       "featureOverrideCalls": 0,
       "result": {
-        "assertions": 530,
+        "assertions": 531,
         "openFixture": true,
         "graph": "formal-open",
         "sceneSmoke": {
@@ -593,10 +597,11 @@
             "fangshi_consign"
           ],
           "genericInteraction": true,
-          "graph": "formal-open",
+          "graph": "formal-open-panel",
           "gateDeniedRouting": true,
           "closedBypassesGate": false,
-          "saveWrites": 0
+          "saveWrites": 0,
+          "panelOpenPath": true
         },
         "formalOpen": true,
         "closedFixtureOnly": true,
@@ -621,19 +626,19 @@
       "savedStateEvidence": [
         {
           "state": "listed",
-          "saveSha": "389b65ba60cea04f8c7ea049fc23686ceba86ca7547d9d0a42355e242643297f"
+          "saveSha": "8855372ec78177dd53c543a3b6f23db907ef39690addafa8b65d71d9d48ea5a5"
         },
         {
           "state": "withdrawn",
-          "saveSha": "971b801b14b48ff1fa24faea66329d4a61c1885f2e5e409486b90345bd1ca949"
+          "saveSha": "8f11b24710daf990d3d3babe1271f6cb7859796af74e3a3f5f312367937b4011"
         },
         {
           "state": "sold_pending_claim",
-          "saveSha": "a57f86dc7d4b9d9466bb286704ab4cf46f2f5c1aed1da128d6812c922c67485a"
+          "saveSha": "fa3f3a5b7699effd130f57d619efb0bcad202f04c93e238713a6f60260330a7c"
         },
         {
           "state": "claimed",
-          "saveSha": "215e15670425fb7a00d5cf1edabd9160a20c6f0f862c373a095a746d0f4eaa1d"
+          "saveSha": "ec80f20d9e545b11dc0bf9c161ba37b0ec6de4deab9a9e3d007e12f63d4b0da1"
         }
       ],
       "softOpened": true,
@@ -651,7 +656,7 @@
       "flagLoads": 1,
       "featureOverrideCalls": 0,
       "result": {
-        "assertions": 169,
+        "assertions": 172,
         "openFixture": false,
         "graph": "memory-closed",
         "sceneSmoke": {
@@ -667,7 +672,8 @@
           "graph": "memory-closed",
           "gateDeniedRouting": false,
           "closedBypassesGate": true,
-          "saveWrites": 0
+          "saveWrites": 0,
+          "panelOpenPath": false
         },
         "formalOpen": true,
         "closedFixtureOnly": true,
@@ -697,7 +703,7 @@
       "flagLoads": 0,
       "featureOverrideCalls": 0,
       "result": {
-        "assertions": 82,
+        "assertions": 83,
         "openFixture": true,
         "graph": "formal-open",
         "sceneSmoke": {
@@ -710,10 +716,11 @@
             "fangshi_consign"
           ],
           "genericInteraction": true,
-          "graph": "formal-open",
+          "graph": "formal-open-panel",
           "gateDeniedRouting": true,
           "closedBypassesGate": false,
-          "saveWrites": 0
+          "saveWrites": 0,
+          "panelOpenPath": true
         },
         "formalOpen": true,
         "closedFixtureOnly": true,
@@ -738,19 +745,19 @@
       "savedStateEvidence": [
         {
           "state": "listed",
-          "saveSha": "389b65ba60cea04f8c7ea049fc23686ceba86ca7547d9d0a42355e242643297f"
+          "saveSha": "8855372ec78177dd53c543a3b6f23db907ef39690addafa8b65d71d9d48ea5a5"
         },
         {
           "state": "withdrawn",
-          "saveSha": "971b801b14b48ff1fa24faea66329d4a61c1885f2e5e409486b90345bd1ca949"
+          "saveSha": "8f11b24710daf990d3d3babe1271f6cb7859796af74e3a3f5f312367937b4011"
         },
         {
           "state": "sold_pending_claim",
-          "saveSha": "a57f86dc7d4b9d9466bb286704ab4cf46f2f5c1aed1da128d6812c922c67485a"
+          "saveSha": "fa3f3a5b7699effd130f57d619efb0bcad202f04c93e238713a6f60260330a7c"
         },
         {
           "state": "claimed",
-          "saveSha": "215e15670425fb7a00d5cf1edabd9160a20c6f0f862c373a095a746d0f4eaa1d"
+          "saveSha": "ec80f20d9e545b11dc0bf9c161ba37b0ec6de4deab9a9e3d007e12f63d4b0da1"
         }
       ],
       "softOpened": true,
@@ -768,7 +775,7 @@
       "flagLoads": 1,
       "featureOverrideCalls": 0,
       "result": {
-        "assertions": 346,
+        "assertions": 349,
         "openFixture": false,
         "graph": "memory-closed",
         "sceneSmoke": {
@@ -784,7 +791,8 @@
           "graph": "memory-closed",
           "gateDeniedRouting": false,
           "closedBypassesGate": true,
-          "saveWrites": 0
+          "saveWrites": 0,
+          "panelOpenPath": false
         },
         "formalOpen": true,
         "closedFixtureOnly": true,
@@ -801,19 +809,19 @@
       "savedStateEvidence": [
         {
           "state": "listed",
-          "saveSha": "389b65ba60cea04f8c7ea049fc23686ceba86ca7547d9d0a42355e242643297f"
+          "saveSha": "8855372ec78177dd53c543a3b6f23db907ef39690addafa8b65d71d9d48ea5a5"
         },
         {
           "state": "withdrawn",
-          "saveSha": "971b801b14b48ff1fa24faea66329d4a61c1885f2e5e409486b90345bd1ca949"
+          "saveSha": "8f11b24710daf990d3d3babe1271f6cb7859796af74e3a3f5f312367937b4011"
         },
         {
           "state": "sold_pending_claim",
-          "saveSha": "a57f86dc7d4b9d9466bb286704ab4cf46f2f5c1aed1da128d6812c922c67485a"
+          "saveSha": "fa3f3a5b7699effd130f57d619efb0bcad202f04c93e238713a6f60260330a7c"
         },
         {
           "state": "claimed",
-          "saveSha": "215e15670425fb7a00d5cf1edabd9160a20c6f0f862c373a095a746d0f4eaa1d"
+          "saveSha": "ec80f20d9e545b11dc0bf9c161ba37b0ec6de4deab9a9e3d007e12f63d4b0da1"
         }
       ],
       "softOpened": true,

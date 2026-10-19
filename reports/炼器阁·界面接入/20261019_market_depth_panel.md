@@ -1,16 +1,22 @@
 # 2C · 完整寄售面板 tip 交付
 
+> **已合入 feat/market-depth-wire@df1a4dafe694cee977f267a139c0fb09a4bcdd41**
+> 可测路径：`wt/feat/market-depth-wire`｜自测：`npx tsc --noEmit` PASS；`npm run test:v06p1-market-open` PASS（2649 assertions）
+> 子 tip：`origin/feat/ui-market-depth@f10425be04ad987ca8a82740cfd1120a314790f2`（实现 `6696d02ae5f0dd06f5897053130e6acf35052b59`）
+> 2B 父 tip 基：`845816b6ad7811dde1132816e5c2f2d6127626a7`｜请执法开 2D｜≠soft-open≠release
+
 > 炼器阁·界面接入｜2026-10-19 Asia/Shanghai（UTC+8）  
 > 令文：`reports/天机阁/20261019_负责人令_体验债坊市纵深_接线.md` §2C；design/33 §2.1／§2.2／§3／§6  
 > **Codex=仍403旁路直写**（负责人令 `20261019_负责人令_明示例外_Codex403旁路.md` §2B/2C）  
 > **≠ soft-open ≠ release ≠ 推 origin/dev ≠ 新 OpenFlag**
 
 ## tip
-- 分支：`feat/ui-market-depth`（界面子 tip；合入族 `feat/market-depth-wire`）
+- **合入族 tip**：`feat/market-depth-wire@df1a4dafe694cee977f267a139c0fb09a4bcdd41`（merge 2C→2B；可测）
+- 界面子 tip：`feat/ui-market-depth@f10425be04ad987ca8a82740cfd1120a314790f2`
 - 基线：`origin/dev@c84cbae`
 - 实现 TIP_SHA：`6696d02ae5f0dd06f5897053130e6acf35052b59`
-- tip HEAD：以 `origin/feat/ui-market-depth` 为准（含本报告 docs 提交）
-- 已推：`origin/feat/ui-market-depth`
+- 2B 侧：`845816b`（Gate／品类／计时消费者；未改面板）
+- 工作树：`/workspace/xiantu/wt/feat/market-depth-wire`
 
 ## 改动文件
 - 新建 `src/MarketConsignUiAccess.ts`
