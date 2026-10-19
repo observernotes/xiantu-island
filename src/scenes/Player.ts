@@ -172,7 +172,12 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         const bonus = this.getAirJumpBonus();
         this.airJumpsUsed++;
         this.canDouble = this.airJumpsUsed < 1 + Math.max(0, Math.floor(bonus.extra)); this.didDouble = true;
-        b.setVelocity(this.facing * FEEL.doubleJumpVx * (1 + bonus.distanceRatio), -FEEL.doubleJumpVy);
+        if (dir !== 0) {
+          b.setVelocity(dir * FEEL.doubleJumpVx * (1 + bonus.distanceRatio), -FEEL.doubleJumpVy);
+        } else {
+          // 无向纯竖直：只改 vy，保留既有 vx（禁 facing*doubleJumpVx）
+          b.setVelocityY(-FEEL.doubleJumpVy);
+        }
         this.jumpBufferedAt = -9999;
         this.emit('doublejump');
         this.releaseSkillRecovery();

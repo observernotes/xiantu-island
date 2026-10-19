@@ -8,7 +8,7 @@ export const FEEL = {
   walkSpeed: 130,
   groundAccel: 2400,     // 越大起步越干脆
   groundDecel: 3000,     // 松手后的刹车，越大越不滑
-  airAccel: 300,         // 空中转向能力，冒险岛很弱
+  airAccel: 600,         // 空中转向能力（design/39：有向微操，禁接近 groundAccel）
   airMaxSpeed: 130,
 
   jumpSpeed: 560,        // 起跳初速，约 78px 高（执法堂 v0.1 报告建议）
@@ -16,7 +16,7 @@ export const FEEL = {
   jumpBufferMs: 80,      // 落地前提前按跳的缓冲
 
   doubleJumpVy: 480,     // 二段跳纵向速度
-  doubleJumpVx: 330,     // 二段跳向前冲刺（类似冒险岛的“二段跳/轻功”）
+  doubleJumpVx: 330,     // 有方向时的水平冲量幅值（类似冒险岛的“二段跳/轻功”）
 
   climbSpeed: 110,
   ropeGrabRangeX: 18,    // 离绳子中线多近按↑可以抓住（执法堂建议 18～20）
