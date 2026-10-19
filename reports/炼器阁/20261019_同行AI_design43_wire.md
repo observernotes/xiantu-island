@@ -14,7 +14,7 @@
 |---|---|
 | 分支 | `feat/companion-dismiss` |
 | 基线 | `047820c`（origin/master／v0.6.24 docs tip） |
-| tip SHA | `cc23bc816cd30c4cdc620320f1e995f1b294a955` |
+| tip SHA | `542dddb47bdaef5723e5119716d3e79085baab51` |
 | worktree | `/workspace/xiantu/wt/feat/companion-dismiss` |
 | 旁路 | **是**（Codex 403） |
 
@@ -88,4 +88,4 @@
 
 ## 8. 交回
 
-【同行AI43接线已交】tip＝cc23bc816cd30c4cdc620320f1e995f1b294a955｜短＝cc23bc8｜枝＝feat/companion-dismiss｜报告＝reports/炼器阁/20261019_同行AI_design43_wire.md｜门闩＝OPEN｜无新OpenFlag｜tsc＋测＝PASS｜旁路＝是｜41／42硬读未漂｜等负责人核｜≠开态≠soft≠release
+【同行AI43接线已交】tip＝542dddb47bdaef5723e5119716d3e79085baab51｜短＝542dddb｜枝＝feat/companion-dismiss｜报告＝reports/炼器阁/20261019_同行AI_design43_wire.md｜门闩＝OPEN｜无新OpenFlag｜tsc＋测＝PASS｜旁路＝是｜41／42硬读未漂｜等负责人核｜≠开态≠soft≠release
