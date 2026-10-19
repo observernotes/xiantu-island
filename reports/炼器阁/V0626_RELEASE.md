@@ -1,7 +1,8 @@
 # V0626_RELEASE
 
 - **试玩**：https://observernotes.github.io/xiantu-island/v0.6.26/
-- **master / tag^{}**：`b66a0041278aa35d08ca282c166299e9faceb293`（annotated tag `v0.6.26` → object `d8d86b7a5ee9461df2782319bd6283f88b49fcba`）
+- **tag^{}**：`b66a0041278aa35d08ca282c166299e9faceb293`（annotated tag `v0.6.26` → object `d8d86b7a5ee9461df2782319bd6283f88b49fcba`）
+- **master（含 V0626_RELEASE docs tip）**：`4c9dee207d96c23ab9996522d73ba36f39bfb28d`
 - **内容 tip（--from）**：`e6edf8d56c6337df42b0a12431df362216cad5cb`（soft-open 交件；含于 master=`b66a004`）
 - **业务 tip**：`b3595651c62c16b6db48ffcd9cf7ce90a95c0bae`（primary＋area＝whirl_sword；CD4000；w160·h80·behind32；prefer≥2；starve N＝2；budget同乘0.35；stay不放area；support锁）⊂ soft tip ⊂ master
 - **分支 tip / origin**：`b66a004`（docs + design/44 同行 AI area whirl_sword soft-open；hotfix/qa/master 同 tip）
