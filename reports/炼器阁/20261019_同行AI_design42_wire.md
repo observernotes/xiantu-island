@@ -15,7 +15,7 @@
 |---|---|
 | 分支 | `feat/companion-modes-free-stay` |
 | 基线 | `d012f27`（origin/master／v0.6.23） |
-| tip SHA |  |
+| tip SHA | `da77e4a2c60671d4981363eb4b9c5cc7e7b7eaa7` |
 | worktree | `/workspace/xiantu/wt/feat/companion-modes-free-stay` |
 | 旁路 | **是**（Codex 403） |
 
