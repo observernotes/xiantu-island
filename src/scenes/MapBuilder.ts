@@ -279,6 +279,7 @@ export function buildTiledMap(scene: Phaser.Scene, tj: any, tileset?: string): B
           break;
         }
         case 'zone': map.zones.push({ name: o.name, x: o.x, y: o.y, w: o.width, h: o.height, props: p }); break;
+        case 'flyZone': map.objects.push({ type: 'flyZone', name: o.name || 'flyZone', x: o.x, y: o.y, w: o.width ?? 0, h: o.height ?? 0, props: p }); break;
         default: map.objects.push({ type, name: o.name, x: o.x, y: o.y, w: o.width ?? 0, h: o.height ?? 0, props: p,
           ...(type === 'hidden' ? { hiddenGeometryValid: !o.ellipse && !o.polygon && !o.polyline && !(o.rotation ?? 0) } : {}),
           points: o.polyline?.map((point: { x: number; y: number }) => ({ x: o.x + point.x, y: o.y + point.y })) });

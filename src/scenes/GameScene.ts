@@ -64,7 +64,7 @@ import { SenseMapAdapter, sceneMonsterTargets } from './SenseScene';
 import { openPropChest, playPropAnimation, resolveSecretProp } from '../SecretProps';
 import { AFFINITY, COMPANIONS, FLY_ZONES } from '../data';
 import { invite, SU_COMPANION_ID } from '../Companions';
-import { requestSustainFlight } from '../FlyZones';
+import { isPointInFlyZone, requestSustainFlight as gateRequestSustainFlight } from '../FlyZones';
 import { SECRET_NEST_INTRO_ID, isSecretNestIntroEnabled, featureClosed, readSignClosed, interactEntranceClosed,
   refuseQuestOffer, refuseQuestProgress } from '../SecretNestClosed';
 import { readSecretNestSign, enterSecretNest, exitSecretNest, type SecretNestRoom } from '../SecretNestGate';
@@ -355,6 +355,7 @@ export class GameScene extends Phaser.Scene {
     const area = MAP_AREA[mapId] ?? 'qingyun';
     this.drawBackground(area, TILED_MAPS[mapId]?.width * FEEL.tile || Math.max(...FIELD_TEST.rows.map(row => row.length)) * FEEL.tile,
       TILED_MAPS[mapId]?.height * FEEL.tile || FIELD_TEST.rows.length * FEEL.tile);
+    this.endSustainFlight('map');
     this.map = TILED_MAPS[mapId] ? buildTiledMap(this, TILED_MAPS[mapId], `tiles_${area}`)
       : buildCharMap(this, FIELD_TEST.id, FIELD_TEST.name, FIELD_TEST.rows, FIELD_TEST.portals, `tiles_${area}`);
     this.atSectTrialEntrance = !DEBUG_CLASS && !this.prog.pendingSectTrial
@@ -953,11 +954,25 @@ export class GameScene extends Phaser.Scene {
       && (this.tryInteractTowerClosed() || this.tryInteractMarketConsign() || this.tryInteractForgeEntrance() || this.tryInteractSecretNest() || this.encounterRuntime?.interact() || this.interactTrialObject() || this.openNearbyFurnace() || this.talkNearby())) return;
     if (k.z.isDown && !this.gathering.active && time >= this.nextPickAt) { this.nextPickAt = time + 150; this.tryPickup(); }
     if (J(k.up) && this.player.state2 === 'ground' && this.tryInteract()) return;
-    // ↑ + 既有跳跃键触发御剑冲刺；交互和绳上跳跃仍由原入口处理。
-    if (inp.up && inp.jumpDown && this.player.state2 !== 'rope' && !this.gathering.active) {
-      const direction = (inp.right ? 1 : 0) - (inp.left ? 1 : 0);
-      if (direction) this.player.facing = direction;
-      if (this.combat.trySwordRide()) inp.jumpDown = false;
+    // 持续飞行：同键再按落地；飞区内 ↑+跳 尝试进入。冲刺仍走 trySwordRide，不受 fly_zones 二次拦截。
+    if (inp.jumpDown && this.player.state2 !== 'rope' && !this.gathering.active) {
+      if (this.isSustainFlying()) {
+        this.requestSustainFlight();
+        inp.jumpDown = false;
+      } else if (inp.up && this.playerInFlyZone()) {
+        const entered = this.requestSustainFlight();
+        if (entered && 'entered' in entered && entered.entered) inp.jumpDown = false;
+      } else if (inp.up) {
+        const direction = (inp.right ? 1 : 0) - (inp.left ? 1 : 0);
+        if (direction) this.player.facing = direction;
+        if (this.combat.trySwordRide()) inp.jumpDown = false;
+      }
+    }
+    // 飞行中禁普攻（cannotAttackWhileFlying）；只 tip，不误扣冷却。
+    if (this.isSustainFlying() && FLY_ZONES?.cannotAttackWhileFlying && (inp.attackDown || inp.attackHeld)) {
+      if (inp.attackDown) this.log(t('fly.cannot_attack'), '#d0d0d0');
+      inp.attackDown = false;
+      inp.attackHeld = false;
     }
     const slotKey: Record<string, Phaser.Input.Keyboard.Key> = { A: k.a, S: k.s, D: k.d, F: k.f, G: k.g, H: k.h, Q: k.q, W: k.w };
     HOTBAR_SLOTS.forEach((s, i) => { if (J(slotKey[s.label]) && !this.gathering.active) {
@@ -966,6 +981,7 @@ export class GameScene extends Phaser.Scene {
         if (featureEnabled('indexedDbSaves')) void this.useTalismanAsync(talisman.item, talisman.quality);
         else this.useTalisman(talisman.item, talisman.quality);
       }
+      else if (this.isSustainFlying() && FLY_ZONES?.cannotAttackWhileFlying) this.log(t('fly.cannot_attack'), '#d0d0d0');
       else this.combat.tryCast(i);
     } });
     this.checkReach();
@@ -977,6 +993,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     this.advancePlayerPhysics(time, delta, inp);
+    this.updateSustainFlight(time);
     for (const m of this.mobs) m.step(time, this.player, this.prog.hasBuffEffect('invisible'));
     if (this.sectTrial?.ended) { this.drawHud(); return; }
     for (let i = this.mobs.length - 1; i >= 0; i--) if (!this.mobs[i].active) this.mobs.splice(i, 1);
@@ -1025,16 +1042,76 @@ export class GameScene extends Phaser.Scene {
     return result;
   }
 
-  /** 本 tip 仅接拒绝钩子，无持续飞行输入或地图区域，尝试不会扣蓝。 */
+  /** 持续飞行瞬态；不进存档。读档／切图后强制落地。 */
+  private sustainFlight: { startedAt: number; nextDrainAt: number } | null = null;
+
+  isSustainFlying() { return !!this.sustainFlight; }
+
+  /** 消费 2A flyZone 对象／zone；无对象 → false（非硬编码短路）。 */
+  playerInFlyZone() {
+    if (!this.map || !this.player) return false;
+    return isPointInFlyZone(this.player.x, this.player.y, this.map.objects ?? [], this.map.zones ?? []);
+  }
+
+  /**
+   * 进入／取消持续飞行。成功扣首秒蓝；失败只 tip、零扣蓝。
+   * 已在飞行中再调 → 主动落地（同一能力键）。
+   */
   requestSustainFlight() {
-    const result = requestSustainFlight(FLY_ZONES, {
+    if (this.sustainFlight) {
+      this.endSustainFlight('cancel');
+      return { ok: true as const, entered: false as const, mpSpent: 0 as const };
+    }
+    const result = gateRequestSustainFlight(FLY_ZONES, {
       realmId: this.prog.realm.id, realmOrder: REALMS.map(realm => realm.id),
       ownsSkill: this.prog.skillLevel(FLY_ZONES?.skillId ?? 'sword_ride') > 0,
-      mapId: this.map.id, inFlyZone: false, mp: this.prog.mp,
+      mapId: this.map.id, inFlyZone: this.playerInFlyZone(), mp: this.prog.mp,
     });
-    this.log(t(result.messageKey), '#d0d0d0');
+    if (!result.ok) {
+      this.log(t(result.messageKey), '#d0d0d0');
+      return result;
+    }
+    this.prog.mp = Math.max(0, this.prog.mp - result.mpSpent);
+    const now = this.time?.now ?? Date.now();
+    this.sustainFlight = { startedAt: now, nextDrainAt: now + 1000 };
+    this.player.body.setAllowGravity(false);
+    this.player.body.setVelocityY(0);
     return result;
   }
+
+  private endSustainFlight(_reason: 'cancel' | 'timeout' | 'mp' | 'leave' | 'knockdown' | 'map' | 'die') {
+    if (!this.sustainFlight) return;
+    this.sustainFlight = null;
+    if (this.player?.body) {
+      this.player.body.setAllowGravity(true);
+      if (this.player.state2 !== 'rope' && this.player.state2 !== 'hurt') this.player.state2 = 'air';
+    }
+  }
+
+  /** 维持：耗灵／时限／离区；禁追加伤害惩罚。 */
+  private updateSustainFlight(time: number) {
+    const flight = this.sustainFlight, cfg = FLY_ZONES;
+    if (!flight || !cfg) return;
+    if (time - flight.startedAt >= cfg.maxFlightMs) { this.endSustainFlight('timeout'); return; }
+    if (!this.playerInFlyZone()) {
+      this.log(t('fly.zone_unavailable'), '#d0d0d0');
+      this.endSustainFlight('leave');
+      return;
+    }
+    while (time >= flight.nextDrainAt) {
+      if (this.prog.mp < cfg.mpPerSecond) {
+        this.log(t('fly.mp_low'), '#8ec8ff');
+        this.endSustainFlight('mp');
+        return;
+      }
+      this.prog.mp = Math.max(0, this.prog.mp - cfg.mpPerSecond);
+      flight.nextDrainAt += 1000;
+    }
+    // 维持空中：锁竖直速度，水平仍走 Player 空中控制。
+    this.player.body.setAllowGravity(false);
+    this.player.body.setVelocityY(0);
+  }
+
   private mpPool = 0;
   tracker!: Phaser.GameObjects.Text;
   bossIntroShown = false;
@@ -1187,6 +1264,11 @@ export class GameScene extends Phaser.Scene {
     this.gathering.cancel();
     this.encounterRuntime?.interrupt();
     this.interruptTalisman('damage');
+    // 击落只结束飞行＋tip；禁追加伤害惩罚数值。
+    if (this.sustainFlight && FLY_ZONES?.knockdownOnHit) {
+      this.log(t('fly.knockdown'), '#d0d0d0');
+      this.endSustainFlight('knockdown');
+    }
     this.prog.hp = Math.max(0, this.prog.hp - dmg);
     this.player.hp = this.prog.hp;
     this.damageNumber(this.player.x, this.player.y - 70, dmg, '#c45cff', '#2a0040');
@@ -1194,6 +1276,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   playerDie() {
+    this.endSustainFlight('die');
     this.encounterRuntime?.terminate('failed');
     this.talismanUse?.onDeath();
     const p = this.player;

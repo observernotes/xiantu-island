@@ -218,15 +218,21 @@ export async function runV06bOpenTests(): Promise<void> {
   for (const key of ['ownsSkill', 'mapId', 'inFlyZone', 'mp']) {
     Object.defineProperty(realmOnly, key, { get() { throw new Error(`境界拒绝不得读取 ${key}`); } });
   }
-  eq(canSustainFlight(fly, realmOnly).reason, 'locked_realm', '开态境界失败立即短路');
+  const realmGate = canSustainFlight(fly, realmOnly);
+  eq(realmGate.ok, false, '开态境界失败');
+  if (!realmGate.ok) eq(realmGate.reason, 'locked_realm', '开态境界失败立即短路');
   const noMpRead = { ...request, inFlyZone: false };
   Object.defineProperty(noMpRead, 'mp', { get() { throw new Error('区域拒绝不得读取灵力'); } });
-  eq(canSustainFlight(fly, noMpRead).reason, 'unavailable', '区域门禁先于灵力读取');
+  const areaGate = canSustainFlight(fly, noMpRead);
+  eq(areaGate.ok, false, '区域拒绝');
+  if (!areaGate.ok) eq(areaGate.reason, 'unavailable', '区域门禁先于灵力读取');
   const closedOnly = { realmId: request.realmId, realmOrder: request.realmOrder } as SustainFlightRequest;
   for (const key of ['ownsSkill', 'mapId', 'inFlyZone', 'mp']) {
     Object.defineProperty(closedOnly, key, { get() { throw new Error(`关态不得读取 ${key}`); } });
   }
-  eq(canSustainFlight(closedFly, closedOnly).reason, 'disabled', '关态夹具短路，不读取开态依赖');
+  const closedGate = canSustainFlight(closedFly, closedOnly);
+  eq(closedGate.ok, false, '关态短路');
+  if (!closedGate.ok) eq(closedGate.reason, 'disabled', '关态夹具短路，不读取开态依赖');
   // 本轮只验门禁拒绝优先级，不承诺全条件满足后的真实持续飞行。
   eq(JSON.stringify([companionsRaw, flyZonesRaw, npcsRaw]), formalBefore, '测试结束正式导入表原样保留');
   eq(featureFlags(), flagsBefore, '测试不翻任何正式或会话 feature flag');

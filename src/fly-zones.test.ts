@@ -1,6 +1,6 @@
 import flyZonesRaw from '@xt/balance/fly_zones.json';
 import { FLY_ZONES, FLY_ZONES_ERRORS, REALMS } from './data';
-import { canSustainFlight, parseFlyZonesConfig, requestSustainFlight, type SustainFlightRequest } from './FlyZones';
+import { canSustainFlight, isPointInFlyZone, parseFlyZonesConfig, requestSustainFlight, type SustainFlightRequest } from './FlyZones';
 
 /** 正式开态旁证；显式关态夹具验证门禁与坏表降级。 */
 export function runFlyZonesTests() {
@@ -50,9 +50,13 @@ export function runFlyZonesTests() {
   for (const key of ['ownsSkill', 'mapId', 'inFlyZone', 'mp']) {
     Object.defineProperty(noOtherReads, key, { get() { throw new Error(`关态不得读取 ${key}`); } });
   }
-  eq(canSustainFlight(closed, noOtherReads).messageKey, 'fly.zone_disabled', '关态短路不查询后续依赖与耗蓝');
+  const closedGate = canSustainFlight(closed, noOtherReads);
+  eq(closedGate.ok, false, '关态短路');
+  if (!closedGate.ok) eq(closedGate.messageKey, 'fly.zone_disabled', '关态短路不查询后续依赖与耗蓝');
   eq(requestSustainFlight(null, request).mpSpent, 0, '坏表拒绝也不扣蓝');
-  eq(canSustainFlight(null, request).messageKey, 'fly.zone_unavailable', '坏表不可持续飞行');
+  const nullGate = canSustainFlight(null, request);
+  eq(nullGate.ok, false, '坏表拒绝');
+  if (!nullGate.ok) eq(nullGate.messageKey, 'fly.zone_unavailable', '坏表不可持续飞行');
 
   const mutations: [string, (raw: Record<string, any>) => void][] = [
     ['$.version', raw => { delete raw.version; }],
@@ -76,5 +80,16 @@ export function runFlyZonesTests() {
     eq(requestSustainFlight(invalid.config, request).mpSpent, 0, '坏表请求无扣费');
   }
   for (const invalid of [null, undefined, [], 0, 'invalid']) eq(parseFlyZonesConfig(invalid).config, null, '根必须为对象');
+
+  // 成功通路：全条件满足 → ok／entered／首秒扣蓝预算；请求对象仍只读。
+  same(canSustainFlight(FLY_ZONES, request), { ok: true }, '全条件满足允许进入持续飞行');
+  const entered = requestSustainFlight(FLY_ZONES, request);
+  same(entered, { ok: true, entered: true, mpSpent: FLY_ZONES.mpPerSecond }, '成功进入声明首秒蓝预算');
+  same(request, JSON.parse(before), '成功路径也不改写请求对象');
+  eq(isPointInFlyZone(10, 10, [], []), false, '无 flyZone 对象则区外');
+  eq(isPointInFlyZone(15, 15, [{ type: 'flyZone', name: 'flyZone_a', x: 0, y: 0, w: 40, h: 40 }], []), true, 'type=flyZone 命中');
+  eq(isPointInFlyZone(15, 15, [{ type: 'npc', name: 'flyZone_a', x: 0, y: 0, w: 40, h: 40 }], []), true, 'name 前缀 flyZone_ 命中');
+  eq(isPointInFlyZone(15, 15, [], [{ name: 'air', x: 0, y: 0, w: 40, h: 40, props: { flyZone: true } }]), true, 'zone props.flyZone 命中');
+  eq(isPointInFlyZone(100, 100, [{ type: 'flyZone', name: 'flyZone_a', x: 0, y: 0, w: 40, h: 40 }], []), false, '矩形外不命中');
   console.log(`fly zones tests ok: ${assertions} assertions (formal open, closed fixture, realm priority, no MP mutation, immutable parsing)`);
 }

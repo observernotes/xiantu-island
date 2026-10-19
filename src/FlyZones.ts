@@ -8,7 +8,7 @@ export interface FlyZonesConfig {
 }
 export interface FlyZonesValidation { readonly config: FlyZonesConfig | null; readonly errors: readonly string[] }
 export interface SustainFlightRequest {
-  /** 顺序取自 realms.json，不按境界英文名排序，也不复制境界等级阈值。 */
+  /** 顺序取自 realms.json，不按境界英文名排序，也不复制境界等级数值。 */
   readonly realmId: string; readonly realmOrder: readonly string[];
   readonly ownsSkill: boolean; readonly mapId: string; readonly inFlyZone: boolean; readonly mp: number;
 }
@@ -17,7 +17,18 @@ export interface FlightRejection {
   readonly ok: false; readonly reason: FlightRejectionReason;
   readonly messageKey: 'fly.locked_realm' | 'fly.zone_disabled' | 'fly.zone_unavailable' | 'fly.mp_low';
 }
+export interface FlightAllowed { readonly ok: true }
+export type FlightGateResult = FlightAllowed | FlightRejection;
 export interface SustainFlightRejection extends FlightRejection { readonly entered: false; readonly mpSpent: 0 }
+export interface SustainFlightSuccess { readonly ok: true; readonly entered: true; readonly mpSpent: number }
+export type SustainFlightResult = SustainFlightSuccess | SustainFlightRejection;
+
+/** 地图 flyZone 几何查询用的最小矩形（2A 对象／zone 约定）。 */
+export interface FlyZoneRect {
+  readonly type?: string; readonly name: string;
+  readonly x: number; readonly y: number; readonly w: number; readonly h: number;
+  readonly props?: Readonly<Record<string, unknown>>;
+}
 
 const record = (value: unknown): value is Record<string, unknown> => !!value && typeof value === 'object' && !Array.isArray(value);
 const text = (value: unknown): value is string => typeof value === 'string' && value.trim().length > 0;
@@ -62,20 +73,49 @@ function rejected(reason: FlightRejectionReason): FlightRejection {
 }
 
 /**
- * 关态拒绝钩子。优先级按 design/20 §3.2：境界 → 总开关 → 技能/区域 → 灵力。
- * 即使另令改表，本 tip 也不会启动尚未实现的持续飞行；这里不执行耗蓝、位移或存档。
+ * 是否名为／标为 flyZone 的区域几何。
+ * 2A 约定：objects 层 type/class=`flyZone`，或 name=`flyZone`／`flyZone_*`，或 props.flyZone=true；
+ * 亦可 type=`zone` 且 name／props 同上（落入 BuiltMap.zones）。
  */
-export function canSustainFlight(config: FlyZonesConfig | null, request: SustainFlightRequest): FlightRejection {
+export function isFlyZoneRect(rect: FlyZoneRect): boolean {
+  if (rect.type === 'flyZone') return true;
+  if (rect.name === 'flyZone' || rect.name.startsWith('flyZone_')) return true;
+  return rect.props?.flyZone === true;
+}
+
+/** 真实 inFlyZone：点落在任一有效 flyZone 矩形内；无对象 → false（非恒短路硬编码）。 */
+export function isPointInFlyZone(
+  x: number, y: number,
+  objects: readonly FlyZoneRect[] = [],
+  zones: readonly FlyZoneRect[] = [],
+): boolean {
+  const hit = (r: FlyZoneRect) => Number.isFinite(r.w) && Number.isFinite(r.h) && r.w > 0 && r.h > 0
+    && x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h;
+  for (const o of objects) if (isFlyZoneRect(o) && hit(o)) return true;
+  for (const z of zones) if (isFlyZoneRect(z) && hit(z)) return true;
+  return false;
+}
+
+/**
+ * 门禁优先级按 design/34 §2.1：境界 → 总开关 → 技能/区域 → 灵力。
+ * 全条件满足时返回 ok（成功通路）；失败不扣蓝、不进入。
+ */
+export function canSustainFlight(config: FlyZonesConfig | null, request: SustainFlightRequest): FlightGateResult {
   if (!config) return rejected('unavailable');
   const current = request.realmOrder.indexOf(request.realmId), required = request.realmOrder.indexOf(config.unlockRealm);
   if (current < 0 || required < 0 || current < required) return rejected('locked_realm');
   if (!config.enabled) return rejected('disabled');
   if (!request.ownsSkill || !config.maps.includes(request.mapId) || !request.inFlyZone) return rejected('unavailable');
   if (!Number.isFinite(request.mp) || request.mp < config.mpPerSecond) return rejected('mp_low');
-  return rejected('unavailable');
+  return freeze({ ok: true });
 }
 
-/** 可供失效交互触达的拒绝入口；传入状态只读，失败绝不扣场景飞行蓝。 */
-export function requestSustainFlight(config: FlyZonesConfig | null, request: SustainFlightRequest): SustainFlightRejection {
-  return freeze({ ...canSustainFlight(config, request), entered: false, mpSpent: 0 });
+/**
+ * 成功：entered=true，mpSpent=首秒预算（mpPerSecond）；调用方负责扣蓝。
+ * 失败：entered=false，mpSpent=0；不修改请求对象。
+ */
+export function requestSustainFlight(config: FlyZonesConfig | null, request: SustainFlightRequest): SustainFlightResult {
+  const gate = canSustainFlight(config, request);
+  if (!gate.ok) return freeze({ ...gate, entered: false, mpSpent: 0 });
+  return freeze({ ok: true, entered: true, mpSpent: config!.mpPerSecond });
 }
