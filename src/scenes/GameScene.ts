@@ -1085,11 +1085,14 @@ export class GameScene extends Phaser.Scene {
     this.sustainFlight = { startedAt: now, nextDrainAt: now + 1000 };
     this.player.body.setAllowGravity(false);
     this.player.body.setVelocityY(0);
+    this.log(t('fly.sustain_enter'), '#d0d0d0');
     return result;
   }
 
-  private endSustainFlight(_reason: 'cancel' | 'timeout' | 'mp' | 'leave' | 'knockdown' | 'map' | 'die') {
+  private endSustainFlight(reason: 'cancel' | 'timeout' | 'mp' | 'leave' | 'knockdown' | 'map' | 'die') {
     if (!this.sustainFlight) return;
+    if (reason === 'cancel') this.log(t('fly.sustain_land'), '#d0d0d0');
+    else if (reason === 'timeout') this.log(t('fly.sustain_timeout'), '#d0d0d0');
     this.sustainFlight = null;
     if (this.player?.body) {
       this.player.body.setAllowGravity(true);
