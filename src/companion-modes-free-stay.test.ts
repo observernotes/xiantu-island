@@ -56,7 +56,7 @@ export async function runCompanionModesFreeStayTests(options: { dataMode?: strin
   eq(COMPANION_MODES_HARD.switch.noBudgetStack, true, '切态不叠 budget');
   eq(COMPANION_MODES_HARD.switch.noCooldownStackOrReset, true, '切态不重置 CD');
   eq(COMPANION_MODES_HARD.switch.clearAiFlagsOnEnter, true, '切入清旗');
-  eq(COMPANION_MODES_HARD.schedule, 'primary_only', '仅 primary');
+  eq(COMPANION_MODES_HARD.schedule, 'primary_and_area', 'primary＋area（design/44）');
 
   eq(nextCompanionMode('follow'), 'free', 'follow→free');
   eq(nextCompanionMode('free'), 'stay', 'free→stay');

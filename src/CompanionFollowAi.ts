@@ -8,9 +8,9 @@ import type { Monster } from './scenes/Monster';
 import { SKILLS, skillNumber } from './skills';
 
 /**
- * design/41 · 同行 AI follow 硬读（演武定稿；design/42 不漂此表）。
- * design/42 扩展 mode 状态机（free／stay／切换）；与 FriendlySummons 隔离；禁新 OpenFlag。
- * ≠ 开态 ≠ soft ≠ release ≠ Pages。
+ * design/41 · 同行 AI follow 硬读（演武定稿；design/42／43／44 不漂此表）。
+ * design/42 扩展 mode 状态机（free／stay／切换）；design/43 解散；design/44 area＝whirl_sword。
+ * 与 FriendlySummons 隔离；禁新 OpenFlag。≠ 开态 ≠ soft ≠ release ≠ Pages。
  */
 export const COMPANION_FOLLOW_HARD = Object.freeze({
   companionId: SU_COMPANION_ID,
@@ -43,6 +43,29 @@ export const COMPANION_FOLLOW_HARD = Object.freeze({
   spriteKey: 'npc_senior_sister_su' as const,
 });
 
+/** design/44 · area＝whirl_sword 硬读（只读对齐 skills.range；禁改 skills 字节）。 */
+export const COMPANION_AREA_HARD = Object.freeze({
+  skillId: 'whirl_sword' as const,
+  effectiveAiCooldownMs: 4000,
+  telegraphMs: 250,
+  recoverMs: 250,
+  /** 只读对齐表；禁另造半径／扇形 */
+  rangeAlign: Object.freeze({ w: 160, h: 80, behind: 32 }),
+  preferThreshold: 2,
+  starveGuardN: 2,
+  maxPendingPerTick: 1,
+  cdIndependent: true as const,
+  /** 结算上限旁证（读表 maxTargets）；≠计数阈值 */
+  maxTargetsTable: 3,
+  supportLocked: true as const,
+  supportSkillId: 'sword_shield' as const,
+  modes: Object.freeze({
+    follow: true as const,
+    free: true as const,
+    stay: false as const,
+  }),
+});
+
 /** design/42 · free／stay／切换硬读（≠落 companions／skills 字节）。 */
 export const COMPANION_MODES_HARD = Object.freeze({
   cycle: Object.freeze(['follow', 'free', 'stay'] as const),
@@ -63,14 +86,21 @@ export const COMPANION_MODES_HARD = Object.freeze({
     stopChase: true as const,
     invulnerable: false as const,
     keepRelation: true as const,
+    /** design/44：stay 零伤含不放 area */
+    stopArea: true as const,
   }),
   switch: Object.freeze({
     noBudgetStack: true as const,
     noCooldownStackOrReset: true as const,
     clearAiFlagsOnEnter: true as const,
   }),
-  schedule: 'primary_only' as const,
+  /** design/44：primary＋area；support 仍锁 */
+  schedule: 'primary_and_area' as const,
 });
+
+export type CompanionSkillId =
+  | typeof COMPANION_FOLLOW_HARD.primary.skillId
+  | typeof COMPANION_AREA_HARD.skillId;
 
 export type CompanionFollowEntityId = `${typeof COMPANION_FOLLOW_HARD.entityNamespace}:${typeof SU_COMPANION_ID}`;
 
@@ -82,6 +112,13 @@ export function companionFollowEntityId(): CompanionFollowEntityId {
 export function companionPrimarySkillRatio(skillLevel = 1): number {
   const def = SKILLS[COMPANION_FOLLOW_HARD.primary.skillId];
   if (!def) return 1.6;
+  return skillNumber(def, 'damageRatio', Math.max(1, skillLevel));
+}
+
+/** area skillRatio；表旁证基值 0.9（skillLv=1）。 */
+export function companionAreaSkillRatio(skillLevel = 1): number {
+  const def = SKILLS[COMPANION_AREA_HARD.skillId];
+  if (!def) return 0.9;
   return skillNumber(def, 'damageRatio', Math.max(1, skillLevel));
 }
 
@@ -138,6 +175,89 @@ export function inFreeAggroRange(companionX: number, companionY: number, targetX
     && Math.abs(targetY - companionY) <= 96;
 }
 
+/**
+ * design/44 · area 朝向盒（对齐 SkillCombat.fireAoe）：
+ * facing>0：x∈[cx-behind, cx+w]；facing≤0：x∈[cx-w, cx+behind]；
+ * y∈[cy-h, cy]（脚底原点，等同 body.bottom-h … body.bottom）。
+ */
+export function inAreaFacingBox(
+  companionX: number, companionY: number, facing: number,
+  targetX: number, targetY: number,
+  range: { readonly w: number; readonly h: number; readonly behind: number } = COMPANION_AREA_HARD.rangeAlign,
+): boolean {
+  const front = range.w;
+  const behind = range.behind;
+  const left = facing > 0 ? companionX - behind : companionX - front;
+  const right = left + front + behind;
+  const top = companionY - range.h;
+  const bottom = companionY;
+  return targetX >= left && targetX <= right && targetY >= top && targetY <= bottom;
+}
+
+/** 朝向盒内合法敌对数（active∧!dead）；计数阈值≠maxTargets 结算上限。 */
+export function countLegalInAreaFacingBox<T extends { x: number; y: number; active: boolean; dead: boolean }>(
+  mobs: readonly T[],
+  companionX: number, companionY: number, facing: number,
+  range: { readonly w: number; readonly h: number; readonly behind: number } = COMPANION_AREA_HARD.rangeAlign,
+): number {
+  let n = 0;
+  for (const m of mobs) {
+    if (!m.active || m.dead) continue;
+    if (inAreaFacingBox(companionX, companionY, facing, m.x, m.y, range)) n++;
+  }
+  return n;
+}
+
+/** area 条件：CD 就绪且盒内合法敌 ≥ preferThreshold。 */
+export function areaPreferCondition(opts: {
+  areaReady: boolean;
+  legalInBox: number;
+  preferThreshold?: number;
+}): boolean {
+  const th = opts.preferThreshold ?? COMPANION_AREA_HARD.preferThreshold;
+  return opts.areaReady && opts.legalInBox >= th;
+}
+
+/** 饿死防护：连续 N 拍 area 条件假 → 必须允许 primary（若自身就绪）。 */
+export function starveAllowsPrimary(
+  areaMissStreak: number,
+  N: number = COMPANION_AREA_HARD.starveGuardN,
+): boolean {
+  return areaMissStreak >= N;
+}
+
+/**
+ * 决策：area 优先／否则 primary；饿死 N；同拍至多 1；support 永不。
+ * stay 调用方不得进此函数（零伤含不放 area）。
+ */
+export function chooseCompanionCombatSkill(opts: {
+  areaReady: boolean;
+  primaryReady: boolean;
+  legalInBox: number;
+  primaryInReach: boolean;
+  areaMissStreak: number;
+  preferThreshold?: number;
+  starveGuardN?: number;
+}): { skill: CompanionSkillId | null; nextMissStreak: number } {
+  const th = opts.preferThreshold ?? COMPANION_AREA_HARD.preferThreshold;
+  const N = opts.starveGuardN ?? COMPANION_AREA_HARD.starveGuardN;
+  const preferArea = areaPreferCondition({
+    areaReady: opts.areaReady,
+    legalInBox: opts.legalInBox,
+    preferThreshold: th,
+  });
+  if (preferArea) {
+    return { skill: COMPANION_AREA_HARD.skillId, nextMissStreak: 0 };
+  }
+  const nextMiss = opts.areaMissStreak + 1;
+  // area 条件假 → 走 primary；饿死 N＝streak≥N 时契约上必须允许 primary（不得另门挡）
+  void N;
+  if (opts.primaryReady && opts.primaryInReach) {
+    return { skill: COMPANION_FOLLOW_HARD.primary.skillId, nextMissStreak: nextMiss };
+  }
+  return { skill: null, nextMissStreak: nextMiss };
+}
+
 /** 纯函数索敌：优先距玩家最近的合法敌对（≈玩家正在交战目标），否则距同伴最近。 */
 export function pickCompanionTarget<T extends { x: number; y: number; active: boolean; dead: boolean }>(
   mobs: readonly T[],
@@ -188,16 +308,26 @@ export interface CompanionFollowEntity {
   hp: number;
   maxHp: number;
   defense: number;
-  /** 三态共享同一 CD 时钟；切态不重置。 */
-  attackReadyAt: number;
+  /** primary 独立 CD 时钟；切态不重置。 */
+  primaryReadyAt: number;
+  /** area 独立 CD 时钟；与 primary 互不推进。 */
+  areaReadyAt: number;
+  /** 连续 area 条件假拍数（饿死 N）。 */
+  areaMissStreak: number;
   colliders: Phaser.Physics.Arcade.Collider[];
-  pendingStrike?: { target: Monster; strikeAt: number };
+  pendingStrike?: {
+    skillId: CompanionSkillId;
+    target?: Monster;
+    facing: number;
+    strikeAt: number;
+  };
   recoverUntil?: number;
 }
 
 /**
  * 同行 follow／free／stay 控制器：至多 1 实体；不进入 FriendlySummons.pets。
  * 切图 SHUTDOWN 销毁实例；关系＋mode 存档保留，新场景 project 重生。
+ * design/44：schedule=primary_and_area；stay 不放 area；support 仍锁。
  */
 export class CompanionFollowAi {
   private entity: CompanionFollowEntity | null = null;
@@ -258,12 +388,13 @@ export class CompanionFollowAi {
     return had;
   }
 
-  /** 切入新 mode：清追敌／出手瞬态；禁重置 attackReadyAt（noCooldownStackOrReset）。 */
+  /** 切入新 mode：清追敌／出手瞬态；禁重置 primary／area CD（noCooldownStackOrReset）。 */
   clearAiFlags() {
     const entity = this.entity;
     if (!entity) return;
     entity.pendingStrike = undefined;
     entity.recoverUntil = undefined;
+    entity.areaMissStreak = 0;
   }
 
   update(time: number) {
@@ -301,13 +432,16 @@ export class CompanionFollowAi {
   private updateStay(entity: CompanionFollowEntity) {
     const body = entity.sprite.body as Phaser.Physics.Arcade.Body;
     body.setVelocityX(0);
+    // stay.zeroDamage／stopArea：立即取消 pending（含 area）；不放任何技能
     entity.pendingStrike = undefined;
+    entity.areaMissStreak = 0;
     this.animate(entity.sprite, 'idle');
     // stay.invulnerable=false：本层不加免伤；仍可受击（外层伤害系统另钩）。
   }
 
   private updateCombat(entity: CompanionFollowEntity, time: number, mode: 'follow' | 'free') {
     const hard = COMPANION_FOLLOW_HARD;
+    const area = COMPANION_AREA_HARD;
     const modes = COMPANION_MODES_HARD;
     const { player } = this.scene;
     const sprite = entity.sprite;
@@ -341,12 +475,15 @@ export class CompanionFollowAi {
     if (entity.pendingStrike) {
       body.setVelocityX(0);
       if (time >= entity.pendingStrike.strikeAt) {
-        const victim = entity.pendingStrike.target;
+        const pending = entity.pendingStrike;
         entity.pendingStrike = undefined;
-        entity.recoverUntil = time + hard.primary.recoverMs;
-        if (victim.active && !victim.dead
-          && inEngageRange(sprite.x, sprite.y, victim.x, victim.y, engage)) {
-          this.strike(entity, victim, time);
+        const recover = pending.skillId === area.skillId ? area.recoverMs : hard.primary.recoverMs;
+        entity.recoverUntil = time + recover;
+        if (pending.skillId === area.skillId) {
+          this.strikeArea(entity, pending.facing, time);
+        } else if (pending.target && pending.target.active && !pending.target.dead
+          && inEngageRange(sprite.x, sprite.y, pending.target.x, pending.target.y, engage)) {
+          this.strikePrimary(entity, pending.target, time);
         }
       }
       return;
@@ -363,15 +500,54 @@ export class CompanionFollowAi {
       body.setVelocityY(-360);
     }
 
-    if (inReach && target && time >= entity.attackReadyAt) {
-      sprite.setFlipX(target.x > sprite.x);
-      entity.pendingStrike = { target, strikeAt: time + hard.primary.telegraphMs };
-      // 共享 CD：三态同一 attackReadyAt；切态不重置、不叠第二份。
-      entity.attackReadyAt = time + hard.primary.telegraphMs + hard.primary.effectiveAiCooldownMs;
-      this.animate(sprite, 'attack');
-    } else {
-      this.animate(sprite, moving ? 'walk' : 'idle');
+    // facing：flipX true＝朝右（与 setFlipX(target.x > sprite.x) 一致）
+    const facing = sprite.flipX ? 1 : -1;
+    const areaReady = time >= entity.areaReadyAt;
+    const primaryReady = time >= entity.primaryReadyAt;
+    const primaryInReach = !!(inReach && target);
+    // 仅在至少一侧可出手时计一拍，避免行走帧虚增饿死计数
+    const canDecide = areaReady || (primaryReady && primaryInReach);
+    if (canDecide) {
+      const legalInBox = countLegalInAreaFacingBox(
+        this.scene.mobs, sprite.x, sprite.y, facing, area.rangeAlign);
+      const choice = chooseCompanionCombatSkill({
+        areaReady,
+        primaryReady,
+        legalInBox,
+        primaryInReach,
+        areaMissStreak: entity.areaMissStreak,
+      });
+      entity.areaMissStreak = choice.nextMissStreak;
+
+      // maxPendingPerTick=1：本拍至多一个 pending；support 永不候选
+      if (choice.skill === area.skillId && area.modes[mode]) {
+        if (target) sprite.setFlipX(target.x > sprite.x);
+        const face = sprite.flipX ? 1 : -1;
+        entity.pendingStrike = {
+          skillId: area.skillId,
+          facing: face,
+          strikeAt: time + area.telegraphMs,
+        };
+        // CD 独立：只推进 area
+        entity.areaReadyAt = time + area.telegraphMs + area.effectiveAiCooldownMs;
+        this.animate(sprite, 'attack');
+        return;
+      }
+      if (choice.skill === hard.primary.skillId && target && inReach) {
+        sprite.setFlipX(target.x > sprite.x);
+        entity.pendingStrike = {
+          skillId: hard.primary.skillId,
+          target,
+          facing: sprite.flipX ? 1 : -1,
+          strikeAt: time + hard.primary.telegraphMs,
+        };
+        // CD 独立：只推进 primary
+        entity.primaryReadyAt = time + hard.primary.telegraphMs + hard.primary.effectiveAiCooldownMs;
+        this.animate(sprite, 'attack');
+        return;
+      }
     }
+    this.animate(sprite, moving ? 'walk' : 'idle');
   }
 
   private spawnEntity(): boolean {
@@ -406,14 +582,16 @@ export class CompanionFollowAi {
       hp: maxHp,
       maxHp,
       defense: Math.round(prog.def * hard.attrs.defRatioOfOwner),
-      attackReadyAt: now,
+      primaryReadyAt: now,
+      areaReadyAt: now,
+      areaMissStreak: 0,
       colliders,
     };
     this.animate(sprite, 'idle');
     return true;
   }
 
-  private strike(entity: CompanionFollowEntity, mob: Monster, time: number) {
+  private strikePrimary(entity: CompanionFollowEntity, mob: Monster, time: number) {
     const hard = COMPANION_FOLLOW_HARD;
     const ratio = companionPrimarySkillRatio(1);
     const damage = companionDealtDamage({
@@ -431,6 +609,42 @@ export class CompanionFollowAi {
       companionFollow: true,
       entityId: entity.entityId,
     });
+  }
+
+  /** area＝whirl_sword：朝向盒内至多 maxTargets 合法敌；每一笔仍只乘一次 budgetScale。 */
+  private strikeArea(entity: CompanionFollowEntity, facing: number, time: number) {
+    const hard = COMPANION_FOLLOW_HARD;
+    const area = COMPANION_AREA_HARD;
+    const sprite = entity.sprite;
+    const ratio = companionAreaSkillRatio(1);
+    const maxT = (() => {
+      const def = SKILLS[area.skillId];
+      if (!def) return area.maxTargetsTable;
+      return Math.max(0, Math.floor(skillNumber(def, 'maxTargets', 1)));
+    })();
+    const hits = this.scene.mobs
+      .filter(m => m.active && !m.dead
+        && inAreaFacingBox(sprite.x, sprite.y, facing, m.x, m.y, area.rangeAlign))
+      .sort((a, b) => Math.abs(a.x - sprite.x) - Math.abs(b.x - sprite.x))
+      .slice(0, maxT);
+    for (const mob of hits) {
+      const damage = companionDealtDamage({
+        playerAtk: this.scene.prog.atk,
+        skillRatio: ratio,
+        targetDef: mob.def.def,
+        budgetScale: hard.damage.budgetScale,
+      });
+      mob.takeHit(time, damage, facing || Math.sign(mob.x - sprite.x) || 1);
+      this.scene.damageNumber(mob.x, mob.y - mob.body.height - 10, damage, '#c8e6ff', '#1a3a5c');
+      this.scene.events.emit('skill:hit', {
+        id: area.skillId,
+        target: mob.def.id,
+        damage,
+        companionFollow: true,
+        entityId: entity.entityId,
+        area: true,
+      });
+    }
   }
 
   private animate(sprite: Phaser.Physics.Arcade.Sprite, action: string) {
