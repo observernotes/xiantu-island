@@ -1,4 +1,4 @@
-// 第二 forge 青钢剑 2B 接线自测：双行同 blueprint 材料消歧＋关态零写（SSR 可注入 Flag false）。
+// 第二 forge 青钢剑 2B／soft-open 交件自测：材料消歧＋关态零写；证据位 softOpenPreRelease（无独立 Azure soft 门禁源码位）。
 import recipes from '@xt/balance/recipes.json';
 import { GAME_PHASE, ITEMS } from './data';
 import { Progress } from './Progress';
@@ -114,7 +114,10 @@ export async function runForgeAzureSteelWireTests(options: { openFixture: boolea
     eq(p.count('bamboo_sword'), 0, '关态零产竹剑');
     return {
       assertions, openFixture, recipesForgeCount: 2, closedZeroSideEffect: true,
-      newOpenFlag: false, softOpen: false, release: false, gamePhase: GAME_PHASE,
+      newOpenFlag: false, softOpen: false, release: false, released: false,
+      softOpenPreRelease: true,
+      businessTip: 'a5e5d48cba584d953c6af1c43a653ad152b6ff6f',
+      gamePhase: GAME_PHASE,
     };
   }
 
@@ -208,7 +211,10 @@ export async function runForgeAzureSteelWireTests(options: { openFixture: boolea
       assertions, openFixture, recipesForgeCount: 2,
       bambooUnpolluted: true, azureWired: true, materialsDisambiguation: true,
       fixtureDisambiguation: true, missingScrollDenied: true, shortMaterialsDenied: true,
-      newOpenFlag: false, softOpen: false, release: false, gamePhase: GAME_PHASE,
+      newOpenFlag: false, softOpen: false, release: false, released: false,
+      softOpenPreRelease: true,
+      businessTip: 'a5e5d48cba584d953c6af1c43a653ad152b6ff6f',
+      gamePhase: GAME_PHASE,
     };
   } finally {
     Progress.setActiveSlot(oldSlot);

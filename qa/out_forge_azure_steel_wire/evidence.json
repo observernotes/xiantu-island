@@ -21,7 +21,10 @@
         "fly_zones.json": "2940fe5952246a3669f87d8b9f3fc6226c2adf7080353be7de94da81e031b8e4",
         "spirit_rune.json": "cfdc93aede5345c1d9b8664f31b3283306ef3f54df3c7df2bf47a94b82555c88"
       },
-      "newOpenFlag": false
+      "newOpenFlag": false,
+      "released": false,
+      "softOpenPreRelease": true,
+      "businessTip": "a5e5d48cba584d953c6af1c43a653ad152b6ff6f"
     },
     {
       "graph": "formal-open",
@@ -37,6 +40,9 @@
       "newOpenFlag": false,
       "softOpen": false,
       "release": false,
+      "released": false,
+      "softOpenPreRelease": true,
+      "businessTip": "a5e5d48cba584d953c6af1c43a653ad152b6ff6f",
       "gamePhase": 5
     },
     {
@@ -48,11 +54,18 @@
       "newOpenFlag": false,
       "softOpen": false,
       "release": false,
+      "released": false,
+      "softOpenPreRelease": true,
+      "businessTip": "a5e5d48cba584d953c6af1c43a653ad152b6ff6f",
       "gamePhase": 5
     }
   ],
   "softOpen": false,
+  "softOpenPreRelease": true,
   "release": false,
+  "released": false,
   "newOpenFlag": false,
-  "gamePhase": 5
+  "gamePhase": 5,
+  "businessTip": "a5e5d48cba584d953c6af1c43a653ad152b6ff6f",
+  "note": "soft-open 可发版前态；复用 ForgeOpenFlag 正式恒 true；无独立 Azure soft 门禁源码位"
 }

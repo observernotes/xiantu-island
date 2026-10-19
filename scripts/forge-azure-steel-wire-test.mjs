@@ -1,4 +1,4 @@
-// 第二 forge 青钢 2B：正式开图消歧＋SSR 关态图零写；不经 enchant/salvage 陈旧 compat 链。
+// 第二 forge 青钢 2B／soft-open 交件：正式开图消歧＋SSR 关态零写；证据标 soft-open 可发版前态（复用 ForgeOpenFlag；无独立 Azure soft 门禁位）。
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import fs from 'node:fs/promises';
@@ -36,7 +36,7 @@ for (const [name, expected] of Object.entries(freeze)) {
   eq(hash(await fs.readFile(path.join(root, 'data/balance', name))), expected, `wt 冻结 ${name}`);
   eq(hash(await fs.readFile(path.join(shared, 'balance', name))), expected, `shared 冻结 ${name}`);
 }
-evidence.push({ static: true, recipesSha, forgeOpenFlagSha, freeze, newOpenFlag: false });
+evidence.push({ static: true, recipesSha, forgeOpenFlagSha, freeze, newOpenFlag: false, released: false, softOpenPreRelease: true, businessTip: 'a5e5d48cba584d953c6af1c43a653ad152b6ff6f' });
 
 async function runGraph(openFixture) {
   const flagId = '\0forge-azure-wire-flag';
@@ -69,11 +69,18 @@ const closed = await runGraph(false);
 eq(opened.recipesForgeCount, 2, '开图 forge=2');
 eq(closed.closedZeroSideEffect, true, '关态零副作用');
 eq(opened.newOpenFlag, false, '无新 OpenFlag');
-eq(closed.softOpen, false, '≠soft');
+eq(closed.softOpen, false, '无独立 Azure soft 门禁位（softOpen=false）');
 eq(closed.release, false, '≠release');
+eq(closed.released, false, 'released=false');
+eq(opened.softOpenPreRelease, true, 'soft-open 可发版前态');
+eq(closed.softOpenPreRelease, true, 'soft-open 可发版前态（关图口径）');
+eq(opened.businessTip, 'a5e5d48cba584d953c6af1c43a653ad152b6ff6f', '青钢成功通路旁证 tip');
 
 await fs.writeFile(path.join(out, 'evidence.json'), `${JSON.stringify({
   passed: true, recipesSha, forgeOpenFlagSha, freeze, evidence,
-  softOpen: false, release: false, newOpenFlag: false, gamePhase: 5,
+  softOpen: false, softOpenPreRelease: true, release: false, released: false,
+  newOpenFlag: false, gamePhase: 5,
+  businessTip: 'a5e5d48cba584d953c6af1c43a653ad152b6ff6f',
+  note: 'soft-open 可发版前态；复用 ForgeOpenFlag 正式恒 true；无独立 Azure soft 门禁源码位',
 }, null, 2)}\n`);
-console.log(`forge-azure-steel-wire ok: openAssertions=${opened.assertions} closedAssertions=${closed.assertions}; recipesSHA=${recipesSha.slice(0, 8)}…; newOpenFlag=false; ≠soft≠release; GAME_PHASE=5`);
+console.log(`forge-azure-steel-wire ok: openAssertions=${opened.assertions} closedAssertions=${closed.assertions}; recipesSHA=${recipesSha.slice(0, 8)}…; ForgeOpenFlag=${forgeOpenFlagSha.slice(0, 8)}…; softOpenPreRelease=true; released=false; newOpenFlag=false; ≠release; GAME_PHASE=5`);
