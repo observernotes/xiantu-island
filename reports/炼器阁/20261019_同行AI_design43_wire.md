@@ -10,11 +10,14 @@
 
 ## 1. tip
 
+业务 tip＝`dcf78c8099244bd718b0496e45ae25925a469597`（短 `dcf78c8`）；枝头另有 docs 提交，验收以业务 tip 为准。
+
+
 | 项 | 值 |
 |---|---|
 | 分支 | `feat/companion-dismiss` |
 | 基线 | `047820c`（origin/master／v0.6.24 docs tip） |
-| tip SHA | `31609e9179ba94670f9a6a0f0595181d1430da7e` |
+| tip SHA | `dcf78c8099244bd718b0496e45ae25925a469597` |
 | worktree | `/workspace/xiantu/wt/feat/companion-dismiss` |
 | 旁路 | **是**（Codex 403） |
 
@@ -88,4 +91,4 @@
 
 ## 8. 交回
 
-【同行AI43接线已交】tip＝31609e9179ba94670f9a6a0f0595181d1430da7e｜短＝31609e9｜枝＝feat/companion-dismiss｜报告＝reports/炼器阁/20261019_同行AI_design43_wire.md｜门闩＝OPEN｜无新OpenFlag｜tsc＋测＝PASS｜旁路＝是｜41／42硬读未漂｜等负责人核｜≠开态≠soft≠release
+【同行AI43接线已交】tip＝dcf78c8099244bd718b0496e45ae25925a469597｜短＝dcf78c8｜枝＝feat/companion-dismiss｜报告＝reports/炼器阁/20261019_同行AI_design43_wire.md｜门闩＝OPEN｜无新OpenFlag｜tsc＋测＝PASS｜旁路＝是｜41／42硬读未漂｜等负责人核｜≠开态≠soft≠release
