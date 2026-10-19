@@ -16,7 +16,7 @@
 | 项 | 值 |
 |---|---|
 | 分支 | `feat/spirit-rune-wire` |
-| tip SHA | 1ed64eec8af24861f6a3ec72d4c50eac81e9f036 |
+| tip SHA | `1ed64eec8af24861f6a3ec72d4c50eac81e9f036`（产品）｜HEAD docs `@7a85eef9c31af2060a82aabc31a62d28f9575265` |
 | 基线 | `origin/master` @ fad2be9（V0616_RELEASE 文档后） |
 | worktree | `/workspace/xiantu/wt/feat/spirit-rune-wire` |
 
