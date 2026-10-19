@@ -12,7 +12,7 @@ import { QuestSystem } from './QuestSystem';
 import { SectGrowth } from './SectGrowth';
 import { createIndexedDbBackend, createMemorySaveBackend, saveStore, setSaveBackend } from './SaveStore';
 import { SECRET_NEST_INTRO_ID, isSecretNestIntroEnabled, refuseEnter, refuseReward, refuseStart } from './SecretNestClosed';
-import { enterSecretNest, exitSecretNest, readSecretNestSign, rewardSecretNest, startSecretNest } from './SecretNestGate';
+import { enterSecretNest, exitSecretNest, readSecretNestSign, rewardSecretNest, startSecretNest, resetSecretNestRunForTests, fixtureClearSecretNestMobs, getSecretNestRun } from './SecretNestGate';
 import { GameScene } from './scenes/GameScene';
 import type { MapObj } from './scenes/MapBuilder';
 
@@ -144,6 +144,7 @@ export async function runV06cOpenTests(options: { openFixture: boolean; dataMode
   }
 
   try {
+    resetSecretNestRunForTests();
     if (openFixture) {
       eq(readSecretNestSign(), { allowed: true, lines: signLines }, '路牌 API 返回既有三句说明');
       for (const main06Done of [false, true]) {
@@ -214,12 +215,12 @@ export async function runV06cOpenTests(options: { openFixture: boolean; dataMode
         // 正式地图点击与键盘路径均执行产品门禁；占位房间只驻留 Scene 内存。
         view.scene.player.x = entrance!.x;
         eq(view.scene.tryInteract(), true, 'done 后真实入口交互成功');
-        eq(view.scene.secretNestRoom?.id, 'secret_nest_gate_stub', '实际创建唯一最小占位房间');
+        eq(view.scene.secretNestRoom?.id, 'combat_01', '实际创建最小可玩战斗房 combat_01');
         eq(view.scene.secretNestRoom?.returnPosition, returnPosition, '最小房间记录正式 secret_nest_return');
         eq(view.scene.physics.world.isPaused, true, '占位房间暂停营地物理');
         eq(view.scene.time.paused, true, '占位房间暂停营地延时计时器');
-        const exit = view.visuals.find(visual => visual.name === 'secret_nest_stub_exit');
-        ok(exit?.interactive && exit.events.has('pointerdown'), '占位房间有真实可点击退出入口');
+        const exit = view.visuals.find(visual => visual.name === 'secret_nest_run_exit');
+        ok(exit?.interactive && exit.events.has('pointerdown'), '可玩房间有真实可点击退出入口');
         eq(p.exportSave(), doneBefore, '进入不创建持久 runId 或改存档位置/收益');
         eq(writes, doneWrites, '最小进巢不写盘');
         exit.events.get('pointerdown')();
@@ -244,7 +245,7 @@ export async function runV06cOpenTests(options: { openFixture: boolean; dataMode
           view.scene.player.x = entrance!.x;
           eq(view.scene.tryInteract(), true, `done 后可重复进巢供 ${exitKey} 退出`);
           view.scene.update(123456, 60000);
-          eq(view.scene.secretNestRoom?.id, 'secret_nest_gate_stub', '无退出键时 update 只保留占位房，不运行外界模拟');
+          eq(view.scene.secretNestRoom?.id, 'combat_01', '无退出键时 update 只保留可玩房，不运行外界模拟');
           eq(p.exportSave(), doneBefore, '房内经过长帧仍无寿元、任务、资产或存档变化');
           view.scene.keys[exitKey]._justDown = true;
           view.scene.update(123457, 16);
@@ -266,7 +267,7 @@ export async function runV06cOpenTests(options: { openFixture: boolean; dataMode
           const loadedView = sceneFixture(loaded, loadedQuests), loadedBefore = loaded.exportSave(), loadedWrites = writes;
           eq(loadedView.scene.secretNestRoom, undefined, 'done 读档后不自动创建或恢复内存房间');
           loadedView.scene.tryInteract();
-          eq(loadedView.scene.secretNestRoom?.id, 'secret_nest_gate_stub', 'done 读档后仍须通过入口门禁重新进巢');
+          eq(loadedView.scene.secretNestRoom?.id, 'combat_01', 'done 读档后仍须通过入口门禁重新进巢');
           loadedView.scene.keys.esc._justDown = true;
           loadedView.scene.update(123458, 16);
           eq(loadedView.scene.secretNestRoom, undefined, 'done 读档后的房间可由真实 update 退出');
@@ -313,7 +314,7 @@ export async function runV06cOpenTests(options: { openFixture: boolean; dataMode
           visual.events.get('pointerdown')();
           if (object === sign) eq(last(view.dialogs), signLines.map(text => ({ speaker: null, text })), '点击路牌也显示三句开态说明');
           else {
-            eq(view.scene.secretNestRoom?.id, 'secret_nest_gate_stub', '点击石门实际进入最小房间');
+            eq(view.scene.secretNestRoom?.id, 'combat_01', '点击石门实际进入最小可玩战斗房');
             view.scene.exitSecretNestRoom();
           }
         }
@@ -324,12 +325,31 @@ export async function runV06cOpenTests(options: { openFixture: boolean; dataMode
       paused.p.quests[id] = { state: 'done', kills: {}, reached: true };
       pausedView.scene.physics.world.isPaused = true; pausedView.scene.time.paused = true;
       pausedView.scene.tryInteract();
-      eq(pausedView.scene.secretNestRoom?.id, 'secret_nest_gate_stub', '原有物理/计时器已暂停时仍可进入占位');
+      eq(pausedView.scene.secretNestRoom?.id, 'combat_01', '原有物理/计时器已暂停时仍可进入可玩房');
       pausedView.scene.exitSecretNestRoom();
       eq([pausedView.scene.physics.world.isPaused, pausedView.scene.time.paused], [true, true], '退出保留营地原有暂停状态');
       eq(pausedView.physicsEvents, [], '不会恢复其它系统持有的物理暂停');
-      eq(startSecretNest().allowed, false, '开态也不开放完整开局或房间池');
-      eq(rewardSecretNest().allowed, false, '开态也不开放收益领取');
+      // 接线后：无参仍拒；资格满足可 start；未清房 reward 仍拒；清房后可发 12/20。
+      resetSecretNestRunForTests();
+      eq(startSecretNest().allowed, false, '无 Progress 参数时 start 仍拒');
+      eq(rewardSecretNest().allowed, false, '无局／未清房时 reward 仍拒');
+      const wireProg = await fixture(true);
+      wireProg.p.quests[id] = { state: 'done', kills: {}, reached: true };
+      const wireStart = startSecretNest(wireProg.p, returnPosition);
+      eq(wireStart.allowed, true, '资格满足后 startSecretNest 允许最小可玩局');
+      eq(rewardSecretNest(wireProg.p).allowed, false, '未清房不可领通关行');
+      const cleared = fixtureClearSecretNestMobs();
+      eq(cleared.allowed && cleared.cleared, true, '夹具清房成功');
+      const stonesBeforeReward = wireProg.p.stones;
+      const rewarded = rewardSecretNest(wireProg.p);
+      eq(rewarded.allowed, true, '清房后 rewardSecretNest 发放通关行');
+      if (rewarded.allowed) {
+        eq(rewarded.exp, 12, '通关 exp=12');
+        eq(rewarded.stones, 20, '通关 stones=20');
+        eq(wireProg.p.stones, stonesBeforeReward + 20, '灵石入账 +20');
+      }
+      eq(getSecretNestRun()?.rewarded, true, 'run.rewarded');
+      resetSecretNestRunForTests();
     } else {
       // 同一测试文件保留 JSON 内存关态对照，包括遗留 active/reached/done。
       for (const state of ['none', 'active', 'done'] as const) {

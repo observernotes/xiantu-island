@@ -73,7 +73,9 @@ import { invite, SU_COMPANION_ID } from '../Companions';
 import { isPointInFlyZone, requestSustainFlight as gateRequestSustainFlight } from '../FlyZones';
 import { SECRET_NEST_INTRO_ID, isSecretNestIntroEnabled, featureClosed, readSignClosed, interactEntranceClosed,
   refuseQuestOffer, refuseQuestProgress } from '../SecretNestClosed';
-import { readSecretNestSign, enterSecretNest, exitSecretNest, type SecretNestRoom } from '../SecretNestGate';
+import { readSecretNestSign, enterSecretNest, exitSecretNest, startSecretNest, rewardSecretNest,
+  clearSecretNestMob, fixtureClearSecretNestMobs, exitSecretNestSession, abandonSecretNestSession, getSecretNestRun,
+  type SecretNestRoom } from '../SecretNestGate';
 import { featureClosed as towerFeatureClosed, interactEntranceClosed as towerEntranceClosed } from '../TowerClosed';
 import { isTowerOpenForFixture } from '../TowerOpenFlag';
 import { TowerGate } from '../TowerGate';
@@ -125,6 +127,7 @@ export class GameScene extends Phaser.Scene {
   private secretNestRoomView?: Phaser.GameObjects.Container;
   private secretNestOwnsPause = false;
   private secretNestOwnsTimerPause = false;
+  private secretNestBusy = false;
   private towerGate?: TowerGate;
   private towerRoomView?: Phaser.GameObjects.Container;
   private towerOwnsPause = false;
@@ -197,7 +200,8 @@ export class GameScene extends Phaser.Scene {
     this.towerGate = undefined; this.towerBusy = false;
     this.towerOwnsPause = false; this.towerOwnsTimerPause = false;
     this.secretNestRoomView?.destroy(); this.secretNestRoomView = undefined;
-    this.secretNestRoom = undefined; this.secretNestOwnsPause = false; this.secretNestOwnsTimerPause = false;
+    this.secretNestRoom = undefined; this.secretNestOwnsPause = false; this.secretNestOwnsTimerPause = false; this.secretNestBusy = false;
+    abandonSecretNestSession();
     this.senseUi?.destroy(); this.senseUi = undefined;
     this.encounterUi?.destroy(); this.encounterUi = undefined;
     this.encounterRuntime?.destroy();
@@ -541,7 +545,8 @@ export class GameScene extends Phaser.Scene {
       this.encounterRuntime = undefined;
       if (this.encounterOwnsPause) { this.physics.resume(); this.encounterOwnsPause = false; }
       this.secretNestRoomView?.destroy(); this.secretNestRoomView = undefined;
-      this.secretNestRoom = undefined;
+      this.secretNestRoom = undefined; this.secretNestBusy = false;
+      abandonSecretNestSession();
       if (this.secretNestOwnsPause) { this.physics.resume(); this.secretNestOwnsPause = false; }
       if (this.secretNestOwnsTimerPause) { this.time.paused = false; this.secretNestOwnsTimerPause = false; }
       this.towerRoomView?.destroy(); this.towerRoomView = undefined;
@@ -2487,7 +2492,7 @@ export class GameScene extends Phaser.Scene {
 
   private interactSecretNest(name: string) {
     if (!isSecretNestIntroEnabled()) { this.showSecretNestClosed(name); return; }
-    if (this.secretNestRoom) return;
+    if (this.secretNestRoom || this.secretNestBusy) return;
     if (name === 'secret_nest_sign') {
       const sign = readSecretNestSign();
       if (!sign.allowed) { this.showSecretNestClosed(name); return; }
@@ -2499,17 +2504,32 @@ export class GameScene extends Phaser.Scene {
     }
     if (name !== 'secret_nest_entrance') return;
     const camp = this.map.objects.find(object => object.name === 'secret_nest_return') ?? this.map.spawn;
-    const result = enterSecretNest(this.prog, { mapId: this.map.id, x: camp.x, y: camp.y });
+    // design/40：资格满足后走 startSecretNest 最小可玩局；禁仅 stub 冒充已开局。
+    const result = startSecretNest(this.prog, { mapId: this.map.id, x: camp.x, y: camp.y });
     if (!result.allowed) {
       this.player.body.setVelocityX(0);
       this.log(result.text, '#aaaaaa');
       this.dialog.show([{ speaker: null, text: result.text }], null);
       return;
     }
-    this.enterSecretNestRoom(result.room);
+    this.enterSecretNestPlayable(result.room);
   }
 
-  /** 可进入和退出的独立单房占位，仅存在于当前场景内存。 */
+  /** 可玩最小局：战斗房视图＋局内清怪；Pause 所有权同 stub。 */
+  private enterSecretNestPlayable(room: SecretNestRoom) {
+    if (this.secretNestRoom) return;
+    this.closeItemPanels(); this.gathering?.cancel();
+    this.player.body.setVelocityX(0); this.playerInput?.clear();
+    this.playerPhysicsAccumulator = 0;
+    this.secretNestOwnsPause = !this.physics.world.isPaused;
+    if (this.secretNestOwnsPause) this.physics.pause();
+    this.secretNestOwnsTimerPause = !this.time.paused;
+    if (this.secretNestOwnsTimerPause) this.time.paused = true;
+    this.secretNestRoom = room;
+    this.renderSecretNestRoom();
+  }
+
+  /** 保留 enterSecretNest stub API 供旧夹具；产品入口已改走 start。 */
   private enterSecretNestRoom(room: SecretNestRoom) {
     if (this.secretNestRoom) return;
     const checked = enterSecretNest(this.prog, room.returnPosition);
@@ -2543,20 +2563,123 @@ export class GameScene extends Phaser.Scene {
     view.add([backdrop, chamber, title, description, visitor, exit]);
   }
 
+  private renderSecretNestRoom() {
+    const run = getSecretNestRun();
+    const room = this.secretNestRoom;
+    if (!room) return;
+    this.secretNestRoomView?.destroy();
+    const width = this.scale.width, height = this.scale.height, cx = width / 2, cy = height / 2;
+    const view = this.add.container(0, 0).setScrollFactor(0).setDepth(4000).setName(room.id);
+    this.secretNestRoomView = view;
+    const backdrop = this.add.rectangle(cx, cy, width, height, 0x121717).setInteractive();
+    const chamber = this.add.rectangle(cx, cy, Math.min(640, width - 48), Math.min(400, height - 64), 0x333a35)
+      .setStrokeStyle(3, 0x8d9472);
+    const playable = !!room.playable && !!run;
+    const alive = playable ? run!.rooms[run!.roomIndex]?.mobs.filter(mob => mob.alive).length ?? 0 : 0;
+    const cleared = playable && !!run!.cleared;
+    const title = this.add.text(cx, cy - 140, playable ? '万妖巢穴·平地' : '万妖巢穴·入口石室',
+      { fontSize: '22px', color: '#fff1c7' }).setOrigin(0.5);
+    const description = this.add.text(cx, cy - 96,
+      !playable ? '前方通道暂未开放，本次进出不发放收益。'
+        : cleared ? '妖物已清，可领取通关结算并返回营地。'
+          : `尚余妖物 ${alive} 只。清房后方可通关结算。`,
+      { fontSize: '16px', color: '#d0d4c1' }).setOrigin(0.5);
+    const children: Phaser.GameObjects.GameObject[] = [backdrop, chamber, title, description];
+    if (playable && run) {
+      const mobs = run.rooms[run.roomIndex]?.mobs ?? [];
+      mobs.forEach((mob, index) => {
+        const label = mob.alive
+          ? `击退 ${mob.name}（${mob.role}）`
+          : `已清除 ${mob.name}`;
+        const btn = this.add.text(cx, cy - 48 + index * 36, label,
+          { fontSize: '15px', color: mob.alive ? '#fff1c7' : '#8a907a',
+            backgroundColor: mob.alive ? '#535d48' : '#2a2f28', padding: { x: 12, y: 6 } })
+          .setOrigin(0.5).setName(`secret_nest_mob_${mob.id}`);
+        if (mob.alive) {
+          btn.setInteractive({ useHandCursor: true })
+            .on('pointerdown', () => this.clearSecretNestRoomMob(mob.id));
+        }
+        children.push(btn);
+      });
+      if (!cleared && alive > 0) {
+        const clearAll = this.add.text(cx, cy + 72, '肃清本房',
+          { fontSize: '16px', color: '#fff1c7', backgroundColor: '#535d48', padding: { x: 14, y: 8 } })
+          .setOrigin(0.5).setName('secret_nest_clear_all').setInteractive({ useHandCursor: true })
+          .on('pointerdown', () => this.clearSecretNestRoomAll());
+        children.push(clearAll);
+      }
+    }
+    const exitLabel = cleared ? '通关返回营地  [Z / ↑ / Esc]' : '返回营地  [Z / ↑ / Esc]';
+    const exit = this.add.text(cx, cy + 120, exitLabel,
+      { fontSize: '18px', color: '#fff1c7', backgroundColor: '#535d48', padding: { x: 16, y: 10 } })
+      .setOrigin(0.5).setName(playable ? 'secret_nest_run_exit' : 'secret_nest_stub_exit')
+      .setInteractive({ useHandCursor: true })
+      .on('pointerdown', () => this.exitSecretNestRoom());
+    children.push(exit);
+    view.add(children);
+  }
+
+  private clearSecretNestRoomMob(mobId: string) {
+    if (this.secretNestBusy || !this.secretNestRoom?.playable) return;
+    const result = clearSecretNestMob(mobId);
+    if (!result.allowed) { this.log(result.text, '#aaaaaa'); return; }
+    // 隔离：清怪不走 quests.onKill／不串 q_main_06。
+    this.renderSecretNestRoom();
+  }
+
+  private clearSecretNestRoomAll() {
+    if (this.secretNestBusy || !this.secretNestRoom?.playable) return;
+    const result = fixtureClearSecretNestMobs();
+    if (!result.allowed) { this.log(result.text, '#aaaaaa'); return; }
+    this.renderSecretNestRoom();
+  }
+
   private exitSecretNestRoom(): boolean {
-    if (!this.secretNestRoom) return false;
-    const result = exitSecretNest(this.secretNestRoom);
-    if (!result.allowed) { this.log(result.text, '#aaaaaa'); return false; }
-    this.secretNestRoomView?.destroy(); this.secretNestRoomView = undefined;
-    this.secretNestRoom = undefined;
-    this.player.body.reset(result.returnPosition.x, result.returnPosition.y);
-    this.player.body.setVelocityX(0); this.playerInput?.clear(); this.playerPhysicsAccumulator = 0;
-    if (this.secretNestOwnsPause) this.physics.resume();
-    this.secretNestOwnsPause = false;
-    if (this.secretNestOwnsTimerPause) this.time.paused = false;
-    this.secretNestOwnsTimerPause = false;
-    this.log('已退出万妖巢穴，返回营地。', '#ffe680');
-    return true;
+    if (!this.secretNestRoom || this.secretNestBusy) return false;
+    const playable = !!this.secretNestRoom.playable;
+    if (!playable) {
+      const result = exitSecretNest(this.secretNestRoom);
+      if (!result.allowed) { this.log(result.text, '#aaaaaa'); return false; }
+      this.secretNestRoomView?.destroy(); this.secretNestRoomView = undefined;
+      this.secretNestRoom = undefined;
+      this.player.body.reset(result.returnPosition.x, result.returnPosition.y);
+      this.player.body.setVelocityX(0); this.playerInput?.clear(); this.playerPhysicsAccumulator = 0;
+      if (this.secretNestOwnsPause) this.physics.resume();
+      this.secretNestOwnsPause = false;
+      if (this.secretNestOwnsTimerPause) this.time.paused = false;
+      this.secretNestOwnsTimerPause = false;
+      this.log('已退出万妖巢穴，返回营地。', '#ffe680');
+      return true;
+    }
+    this.secretNestBusy = true;
+    try {
+      const run = getSecretNestRun();
+      if (run?.cleared && !run.rewarded) {
+        const reward = rewardSecretNest(this.prog);
+        if (reward.allowed) {
+          this.applyExp(reward.expResult);
+          this.log(`巢穴通关：修为+${reward.receipt.expGained}，灵石+${reward.receipt.stonesGranted}。`, '#ffe680');
+          this.prog.persistSoon();
+        } else {
+          this.log(reward.text, '#aaaaaa');
+        }
+      }
+      const result = exitSecretNestSession();
+      if (!result.allowed) { this.log(result.text, '#aaaaaa'); return false; }
+      this.secretNestRoomView?.destroy(); this.secretNestRoomView = undefined;
+      this.secretNestRoom = undefined;
+      this.player.body.reset(result.returnPosition.x, result.returnPosition.y);
+      this.player.body.setVelocityX(0); this.playerInput?.clear(); this.playerPhysicsAccumulator = 0;
+      for (const key of [this.keys.z, this.keys.up, this.keys.esc]) Phaser.Input.Keyboard.JustDown(key);
+      if (this.secretNestOwnsPause) this.physics.resume();
+      this.secretNestOwnsPause = false;
+      if (this.secretNestOwnsTimerPause) this.time.paused = false;
+      this.secretNestOwnsTimerPause = false;
+      this.log(result.cleared ? '已通关万妖巢穴，返回营地。' : '已退出万妖巢穴，返回营地。', '#ffe680');
+      return true;
+    } finally {
+      this.secretNestBusy = false;
+    }
   }
 
   private showSecretNestClosed(name: string) {
