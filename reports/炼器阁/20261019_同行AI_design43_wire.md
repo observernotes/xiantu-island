@@ -14,7 +14,7 @@
 |---|---|
 | 分支 | `feat/companion-dismiss` |
 | 基线 | `047820c`（origin/master／v0.6.24 docs tip） |
-| tip SHA | `fdb016d9494071cbdeb95d52a0de5dc0b8c26caf` |
+| tip SHA | `dcf78c8099244bd718b0496e45ae25925a469597` |
 | worktree | `/workspace/xiantu/wt/feat/companion-dismiss` |
 | 旁路 | **是**（Codex 403） |
 
@@ -37,11 +37,11 @@
 
 | 键 | 定稿 | 落地证据 |
 |---|---|---|
-| dismiss.entry | 对话／面板单入口（与 invite 同族） | `talkTo(senior_sister_su)`：`companion.dismiss.label`／`companion.invite.label` |
+| dismiss.entry | 对话／面板单入口（与 invite 同族） | `talkTo(senior_sister_su)` 挂 `companion.dismiss.label`／`companion.invite.label` |
 | dismiss.bind | ≠ KeyV；禁塞进 cycle | KeyV 仍 `companion_mode_cycle`；注释明示永不解散 |
 | dismiss.api | `requestCompanionDismiss`／`dismissCompanionRelation` | GameScene＋Companions；禁 UI.dismiss* 混名 |
 | dismiss.effect | 毁实体＋删整键 | dismiss → delete key；`dismissEntity` clearEntity |
-| dismiss.after | 无 mode；cycle 无效；无残留 | `activeCompanion=null`；`cycleCompanionMode→null` |
+| dismiss.after | 无 mode；cycle 无效；无残留 | `activeCompanion=null`；`cycleCompanionMode`→null |
 | dismiss.idempotent | 已无关系 → noop | `status:'noop'`；不写脏档 |
 | reinvite | 既有 invite→spawn；初始 follow；恰 1 | 测例再邀 mode=follow；关系键恰 1 |
 | stay≠dismiss | stay 保关系；解散清关系 | stay 后仍有关系；仅 dismiss 清 |
@@ -69,7 +69,7 @@
 | 命令 | 结果 |
 |---|---|
 | `npx tsc --noEmit` | 本刀文件 **PASS**（零本刀 TS error；仓内既有 `src/gen/assets.json` 缺文件与本刀无关） |
-| `npm run test:companion-dismiss` | **PASS**（53×2＝106） |
+| `npm run test:companion-dismiss` | **PASS**（53 assertions × shared＋snapshot＝106） |
 | `npm run test:companion-modes-free-stay` | **PASS**（79×2＝158；41／42 硬读未漂） |
 | `npm run test:companion-follow-ai` | **PASS**（43×2＝86） |
 
@@ -88,4 +88,4 @@
 
 ## 8. 交回
 
-【同行AI43接线已交】tip＝3eaba90499ac95bb283f35206e95e48592196fc7｜短＝3eaba90｜枝＝feat/companion-dismiss｜报告＝reports/炼器阁/20261019_同行AI_design43_wire.md｜门闩＝OPEN｜无新OpenFlag｜tsc＋测＝PASS｜旁路＝是｜41／42硬读未漂｜等负责人核｜≠开态≠soft≠release
+【同行AI43接线已交】tip＝dcf78c8099244bd718b0496e45ae25925a469597｜短＝dcf78c8｜枝＝feat/companion-dismiss｜报告＝reports/炼器阁/20261019_同行AI_design43_wire.md｜门闩＝OPEN｜无新OpenFlag｜tsc＋测＝PASS｜旁路＝是｜41／42硬读未漂｜等负责人核｜≠开态≠soft≠release
