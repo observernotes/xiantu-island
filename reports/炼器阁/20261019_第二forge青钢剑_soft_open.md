@@ -56,4 +56,4 @@
 
 ## 5. 交回
 
-【第二forge青钢剑 soft-open】tip@〈本 tip〉｜softOpenPreRelease=true｜released=false｜newOpenFlag=false｜无softOpenedAzure＊｜ForgeOpenFlag=0ce03554…MATCH｜recipesSHA仍3182fff5…｜≠release≠Pages｜现网v0.6.17｜等执法 soft smoke（3B）
+【第二forge青钢剑 soft-open】tip@4415c06｜softOpenPreRelease=true｜released=false｜newOpenFlag=false｜无softOpenedAzure＊｜ForgeOpenFlag=0ce03554…MATCH｜recipesSHA仍3182fff5…｜≠release≠Pages｜现网v0.6.17｜等执法 soft smoke（3B）
