@@ -16,7 +16,7 @@
 | 分支 | `feat/companion-modes-free-stay` |
 | 业务基线 tip | `da77e4a2c60671d4981363eb4b9c5cc7e7b7eaa7`（短 `da77e4a`；接线） |
 | 基线 HEAD docs | `cff5cb452965190b25341ac9fc4a7f87ca1e581e`（接线 tip 钉业务 tip da77e4a） |
-| soft-open tip | `SOFT_TIP_PLACEHOLDER`（短 `SOFT_SHORT`） |
+| soft-open tip | `84e6b4253a50b4e27537158c7e64cb68a5142833`（短 `84e6b42`） |
 | worktree | `/workspace/xiantu/wt/feat/companion-modes-free-stay` |
 | origin | 推 `origin/feat/companion-modes-free-stay`（**未**合 master） |
 | 旁路 | **是**（docs／status；Codex403旁路） |
@@ -79,4 +79,4 @@
 
 ## 6. 交回
 
-【同行AI42soft已交】炼器＝`reports/炼器阁/20261019_同行AI_design42_soft_open.md` tip＝`SOFT_SHORT`｜业务 tip@da77e4a｜硬门＝无softOpenedCompanion＊／newOpenFlag=false／released=false／冻结MATCH／硬读KeyV＋free320/240＋stay零伤＋切回96/320/320＋CD1200＋240＋0.35｜tsc＋modes 158＋follow-ai 86 PASS｜相对da77e4a零业务diff｜Codex旁路｜≠release≠Pages｜现网v0.6.23｜请开 soft smoke（3B）｜建议v0.6.24本令不授权发版
+【同行AI42soft已交】炼器＝`reports/炼器阁/20261019_同行AI_design42_soft_open.md` tip＝`84e6b42`｜业务 tip@da77e4a｜硬门＝无softOpenedCompanion＊／newOpenFlag=false／released=false／冻结MATCH／硬读KeyV＋free320/240＋stay零伤＋切回96/320/320＋CD1200＋240＋0.35｜tsc＋modes 158＋follow-ai 86 PASS｜相对da77e4a零业务diff｜Codex旁路｜≠release≠Pages｜现网v0.6.23｜请开 soft smoke（3B）｜建议v0.6.24本令不授权发版
