@@ -88,7 +88,7 @@ async function checkFormal() {
     report({ suite: 'v06p1-market-open-formal', dataMode: mode, formalOpen: true,
       closedFixtureOnly: true, marketTablePresent: tableSha !== null, marketTableSha: tableSha,
       marketEnabled: true, giftsChecked, shopsUnchanged: true,
-      softOpened: true, released: false });
+      softOpened: true, softOpenedMarketDepth: true, newOpenFlag: false, released: false });
   }
   for (const [mode, dataRoot] of modes) {
     const ownFile = path.join(dataRoot, 'balance/market_consign.json');
@@ -152,7 +152,7 @@ async function runGraph(mode, dataRoot, openFixture, refreshPayloads = null) {
       freshSsrRefresh: refreshPayloads !== null, formalOpen: true, closedFixtureOnly: true,
       marketTableSource: tableSource.sourceFile, marketTableSha: tableSource.sha,
       flagLoads, featureOverrideCalls,
-      result: resultEvidence, savedStateEvidence, softOpened: true, released: false });
+      result: resultEvidence, savedStateEvidence, softOpened: true, softOpenedMarketDepth: true, newOpenFlag: false, released: false });
     return result;
   } finally {
     if (descriptor) Object.defineProperty(globalThis, '__v06p1MarketFeatureOverrideAttempt', descriptor);
@@ -180,7 +180,7 @@ try {
   report({ suite: 'v06p1-market-open-sha-guard', protectedFiles: before.size, passed: true });
   await fs.writeFile(path.join(out, 'v06p1-market-open-evidence.json'), `${JSON.stringify({ passed,
     assertions: assertions + runtimeAssertions, staticAssertions: assertions, runtimeAssertions,
-    formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false,
+    formalOpen: true, closedFixtureOnly: true, softOpened: true, softOpenedMarketDepth: true, newOpenFlag: false, released: false,
     protectedFiles: Object.fromEntries(before), evidence }, null, 2)}\n`);
 }
-console.log(`v06p1 market open fixture tests ok: ${assertions + runtimeAssertions} assertions; shared/snapshot 双根正式开态+内存关态四图及独立 SSR 刷新；O01–O10 自动化；正式 flag=true、三根 market_consign.enabled=true；SHA不变；gifts 10×false、GAME_PHASE=5；formalOpen:true、closedFixtureOnly:true、softOpened:true、released:false；未进包、未发版`);
+console.log(`v06p1 market open fixture tests ok: ${assertions + runtimeAssertions} assertions; shared/snapshot 双根正式开态+内存关态四图及独立 SSR 刷新；O01–O10 自动化；正式 flag=true、三根 market_consign.enabled=true；SHA不变；gifts 10×false、GAME_PHASE=5；formalOpen:true、closedFixtureOnly:true、softOpened:true、softOpenedMarketDepth:true、newOpenFlag:false、released:false；未进包、未发版`);

@@ -6,6 +6,8 @@
   "formalOpen": true,
   "closedFixtureOnly": true,
   "softOpened": true,
+  "softOpenedMarketDepth": true,
+  "newOpenFlag": false,
   "released": false,
   "protectedFiles": {
     "/workspace/xiantu/balance/breakthrough.json": "2310920533e8a07da3ab97a14da4b27bdc609f9a6a015c63d452565b5e8b125f",
@@ -289,6 +291,8 @@
       "giftsChecked": 10,
       "shopsUnchanged": true,
       "softOpened": true,
+      "softOpenedMarketDepth": true,
+      "newOpenFlag": false,
       "released": false
     },
     {
@@ -302,6 +306,8 @@
       "giftsChecked": 10,
       "shopsUnchanged": true,
       "softOpened": true,
+      "softOpenedMarketDepth": true,
+      "newOpenFlag": false,
       "released": false
     },
     {
@@ -315,6 +321,8 @@
       "giftsChecked": 10,
       "shopsUnchanged": true,
       "softOpened": true,
+      "softOpenedMarketDepth": true,
+      "newOpenFlag": false,
       "released": false
     },
     {
@@ -351,6 +359,8 @@
         "formalOpen": true,
         "closedFixtureOnly": true,
         "softOpened": true,
+        "softOpenedMarketDepth": true,
+        "newOpenFlag": false,
         "released": false,
         "storageWrites": 48,
         "commits": 44,
@@ -371,22 +381,24 @@
       "savedStateEvidence": [
         {
           "state": "listed",
-          "saveSha": "248f5b6096c1152ce24b3eae144919c3642e6df79f535fe76026ab8d6829a97c"
+          "saveSha": "77e3d818081a0a723c243fc032c0a0daa9c16e4cf43b9c7159b4e8095f8beca4"
         },
         {
           "state": "withdrawn",
-          "saveSha": "9455b91ee3a6cfebab2f561287c2dc40417e6db83dd2f89ec2ebc6e2808dabec"
+          "saveSha": "074f91aebadccf451cc7d2a990e4ca6796bd8c1516fb82aadee79b66e3100dfc"
         },
         {
           "state": "sold_pending_claim",
-          "saveSha": "17e55b08613a05db5bc2b6369134661f6194a90737625e3aa2db23ca17e14086"
+          "saveSha": "9403e4e5880275588894a3fc6c8bfc03f7d89d31af973059b9385ec168365dd8"
         },
         {
           "state": "claimed",
-          "saveSha": "88211de88b88b128270c534bf46f647ef928106bafbd1806ab3723f2ec6127d2"
+          "saveSha": "c62bdc6af7ae6f4508b2a12b653ab2ded4ff50b2f6fbf46f4facd1ecd2c0eeba"
         }
       ],
       "softOpened": true,
+      "softOpenedMarketDepth": true,
+      "newOpenFlag": false,
       "released": false
     },
     {
@@ -423,6 +435,8 @@
         "formalOpen": true,
         "closedFixtureOnly": true,
         "softOpened": true,
+        "softOpenedMarketDepth": true,
+        "newOpenFlag": false,
         "released": false,
         "storageWrites": 0,
         "commits": 0,
@@ -434,6 +448,8 @@
       },
       "savedStateEvidence": [],
       "softOpened": true,
+      "softOpenedMarketDepth": true,
+      "newOpenFlag": false,
       "released": false
     },
     {
@@ -470,6 +486,8 @@
         "formalOpen": true,
         "closedFixtureOnly": true,
         "softOpened": true,
+        "softOpenedMarketDepth": true,
+        "newOpenFlag": false,
         "released": false,
         "storageWrites": 4,
         "commits": 4,
@@ -490,22 +508,24 @@
       "savedStateEvidence": [
         {
           "state": "listed",
-          "saveSha": "248f5b6096c1152ce24b3eae144919c3642e6df79f535fe76026ab8d6829a97c"
+          "saveSha": "77e3d818081a0a723c243fc032c0a0daa9c16e4cf43b9c7159b4e8095f8beca4"
         },
         {
           "state": "withdrawn",
-          "saveSha": "9455b91ee3a6cfebab2f561287c2dc40417e6db83dd2f89ec2ebc6e2808dabec"
+          "saveSha": "074f91aebadccf451cc7d2a990e4ca6796bd8c1516fb82aadee79b66e3100dfc"
         },
         {
           "state": "sold_pending_claim",
-          "saveSha": "17e55b08613a05db5bc2b6369134661f6194a90737625e3aa2db23ca17e14086"
+          "saveSha": "9403e4e5880275588894a3fc6c8bfc03f7d89d31af973059b9385ec168365dd8"
         },
         {
           "state": "claimed",
-          "saveSha": "88211de88b88b128270c534bf46f647ef928106bafbd1806ab3723f2ec6127d2"
+          "saveSha": "c62bdc6af7ae6f4508b2a12b653ab2ded4ff50b2f6fbf46f4facd1ecd2c0eeba"
         }
       ],
       "softOpened": true,
+      "softOpenedMarketDepth": true,
+      "newOpenFlag": false,
       "released": false
     },
     {
@@ -542,6 +562,8 @@
         "formalOpen": true,
         "closedFixtureOnly": true,
         "softOpened": true,
+        "softOpenedMarketDepth": true,
+        "newOpenFlag": false,
         "released": false,
         "storageWrites": 4,
         "commits": 4,
@@ -554,22 +576,24 @@
       "savedStateEvidence": [
         {
           "state": "listed",
-          "saveSha": "248f5b6096c1152ce24b3eae144919c3642e6df79f535fe76026ab8d6829a97c"
+          "saveSha": "77e3d818081a0a723c243fc032c0a0daa9c16e4cf43b9c7159b4e8095f8beca4"
         },
         {
           "state": "withdrawn",
-          "saveSha": "9455b91ee3a6cfebab2f561287c2dc40417e6db83dd2f89ec2ebc6e2808dabec"
+          "saveSha": "074f91aebadccf451cc7d2a990e4ca6796bd8c1516fb82aadee79b66e3100dfc"
         },
         {
           "state": "sold_pending_claim",
-          "saveSha": "17e55b08613a05db5bc2b6369134661f6194a90737625e3aa2db23ca17e14086"
+          "saveSha": "9403e4e5880275588894a3fc6c8bfc03f7d89d31af973059b9385ec168365dd8"
         },
         {
           "state": "claimed",
-          "saveSha": "88211de88b88b128270c534bf46f647ef928106bafbd1806ab3723f2ec6127d2"
+          "saveSha": "c62bdc6af7ae6f4508b2a12b653ab2ded4ff50b2f6fbf46f4facd1ecd2c0eeba"
         }
       ],
       "softOpened": true,
+      "softOpenedMarketDepth": true,
+      "newOpenFlag": false,
       "released": false
     },
     {
@@ -606,6 +630,8 @@
         "formalOpen": true,
         "closedFixtureOnly": true,
         "softOpened": true,
+        "softOpenedMarketDepth": true,
+        "newOpenFlag": false,
         "released": false,
         "storageWrites": 48,
         "commits": 44,
@@ -626,22 +652,24 @@
       "savedStateEvidence": [
         {
           "state": "listed",
-          "saveSha": "8855372ec78177dd53c543a3b6f23db907ef39690addafa8b65d71d9d48ea5a5"
+          "saveSha": "ae08688d39fb96ec44f97557512758fe5ada3194c242d0ab52716d4dd98520fc"
         },
         {
           "state": "withdrawn",
-          "saveSha": "8f11b24710daf990d3d3babe1271f6cb7859796af74e3a3f5f312367937b4011"
+          "saveSha": "5e96c6fb4d7702101cb6f136e65e82cb0bc6dcf6f01dcbb0af6744e926fb7515"
         },
         {
           "state": "sold_pending_claim",
-          "saveSha": "fa3f3a5b7699effd130f57d619efb0bcad202f04c93e238713a6f60260330a7c"
+          "saveSha": "0142bd4f303f812471e5f543fdd54cb0bda173728ad2c15b776b8391ffd0ebf3"
         },
         {
           "state": "claimed",
-          "saveSha": "ec80f20d9e545b11dc0bf9c161ba37b0ec6de4deab9a9e3d007e12f63d4b0da1"
+          "saveSha": "29cdee26b4ddd26d0f9cfdc47f42d2f468f8f68264693102cf68493bfefb1ea7"
         }
       ],
       "softOpened": true,
+      "softOpenedMarketDepth": true,
+      "newOpenFlag": false,
       "released": false
     },
     {
@@ -678,6 +706,8 @@
         "formalOpen": true,
         "closedFixtureOnly": true,
         "softOpened": true,
+        "softOpenedMarketDepth": true,
+        "newOpenFlag": false,
         "released": false,
         "storageWrites": 0,
         "commits": 0,
@@ -689,6 +719,8 @@
       },
       "savedStateEvidence": [],
       "softOpened": true,
+      "softOpenedMarketDepth": true,
+      "newOpenFlag": false,
       "released": false
     },
     {
@@ -725,6 +757,8 @@
         "formalOpen": true,
         "closedFixtureOnly": true,
         "softOpened": true,
+        "softOpenedMarketDepth": true,
+        "newOpenFlag": false,
         "released": false,
         "storageWrites": 4,
         "commits": 4,
@@ -745,22 +779,24 @@
       "savedStateEvidence": [
         {
           "state": "listed",
-          "saveSha": "8855372ec78177dd53c543a3b6f23db907ef39690addafa8b65d71d9d48ea5a5"
+          "saveSha": "ae08688d39fb96ec44f97557512758fe5ada3194c242d0ab52716d4dd98520fc"
         },
         {
           "state": "withdrawn",
-          "saveSha": "8f11b24710daf990d3d3babe1271f6cb7859796af74e3a3f5f312367937b4011"
+          "saveSha": "5e96c6fb4d7702101cb6f136e65e82cb0bc6dcf6f01dcbb0af6744e926fb7515"
         },
         {
           "state": "sold_pending_claim",
-          "saveSha": "fa3f3a5b7699effd130f57d619efb0bcad202f04c93e238713a6f60260330a7c"
+          "saveSha": "0142bd4f303f812471e5f543fdd54cb0bda173728ad2c15b776b8391ffd0ebf3"
         },
         {
           "state": "claimed",
-          "saveSha": "ec80f20d9e545b11dc0bf9c161ba37b0ec6de4deab9a9e3d007e12f63d4b0da1"
+          "saveSha": "29cdee26b4ddd26d0f9cfdc47f42d2f468f8f68264693102cf68493bfefb1ea7"
         }
       ],
       "softOpened": true,
+      "softOpenedMarketDepth": true,
+      "newOpenFlag": false,
       "released": false
     },
     {
@@ -797,6 +833,8 @@
         "formalOpen": true,
         "closedFixtureOnly": true,
         "softOpened": true,
+        "softOpenedMarketDepth": true,
+        "newOpenFlag": false,
         "released": false,
         "storageWrites": 4,
         "commits": 4,
@@ -809,22 +847,24 @@
       "savedStateEvidence": [
         {
           "state": "listed",
-          "saveSha": "8855372ec78177dd53c543a3b6f23db907ef39690addafa8b65d71d9d48ea5a5"
+          "saveSha": "ae08688d39fb96ec44f97557512758fe5ada3194c242d0ab52716d4dd98520fc"
         },
         {
           "state": "withdrawn",
-          "saveSha": "8f11b24710daf990d3d3babe1271f6cb7859796af74e3a3f5f312367937b4011"
+          "saveSha": "5e96c6fb4d7702101cb6f136e65e82cb0bc6dcf6f01dcbb0af6744e926fb7515"
         },
         {
           "state": "sold_pending_claim",
-          "saveSha": "fa3f3a5b7699effd130f57d619efb0bcad202f04c93e238713a6f60260330a7c"
+          "saveSha": "0142bd4f303f812471e5f543fdd54cb0bda173728ad2c15b776b8391ffd0ebf3"
         },
         {
           "state": "claimed",
-          "saveSha": "ec80f20d9e545b11dc0bf9c161ba37b0ec6de4deab9a9e3d007e12f63d4b0da1"
+          "saveSha": "29cdee26b4ddd26d0f9cfdc47f42d2f468f8f68264693102cf68493bfefb1ea7"
         }
       ],
       "softOpened": true,
+      "softOpenedMarketDepth": true,
+      "newOpenFlag": false,
       "released": false
     },
     {

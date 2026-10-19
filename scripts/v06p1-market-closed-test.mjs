@@ -271,7 +271,7 @@ async function checkProtection() {
     sourcesOnlyAdded: ['src/MarketClosed.ts', ...openFixtureSources.map(name => `src/${name}`), ...enhanceClosedSources.map(name => `src/${name}`)],
     optionalMarketBagAdded: true, marketTableConsumedByClosedApi: false, minimalFrontendWiring: true,
     fullMarketUiAdded: false, formalRecipesSha, formalRecipeKeys: [...formalRecipeKeys],
-    formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false });
+    formalOpen: true, closedFixtureOnly: true, softOpened: true, softOpenedMarketDepth: true, newOpenFlag: false, released: false });
 }
 
 async function checkStatic(mode, dataRoot) {
@@ -317,7 +317,7 @@ async function checkStatic(mode, dataRoot) {
   ok(!/"[^"\n]*(?:market|consign)[^"\n]*"/iu.test(JSON.stringify(features)), `${mode}/C12: 无新增寄售开态开关`);
   report({ suite: 'v06p1-market-closed-static', dataMode: mode, passed: true, strings: entries.length,
     stringsSha, marketTableSha, marketEnabled: true, giftsFalseCount: gifts, shopsUnchanged: true,
-    mapsUnchanged: true, formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false });
+    mapsUnchanged: true, formalOpen: true, closedFixtureOnly: true, softOpened: true, softOpenedMarketDepth: true, newOpenFlag: false, released: false });
 }
 
 async function checkSource() {
@@ -401,7 +401,7 @@ async function runGraph(mode, dataRoot, closedFixtureOnly, refreshPayloads = nul
     eq(flagLoads, closedFixtureOnly ? 1 : 0, `${mode}: 正式图 flagLoads=0，内存关态图 flagLoads=1`);
     if (!closedFixtureOnly) {
       report({ suite: 'v06p1-market-closed-formal-graph', dataMode: mode, graph: 'formal-open',
-        flagLoads, formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false, passed: true });
+        flagLoads, formalOpen: true, closedFixtureOnly: true, softOpened: true, softOpenedMarketDepth: true, newOpenFlag: false, released: false, passed: true });
       return;
     }
     const api = await server.ssrLoadModule('/src/MarketClosed.ts');
@@ -479,7 +479,7 @@ async function runGraph(mode, dataRoot, closedFixtureOnly, refreshPayloads = nul
     report({ suite: 'v06p1-market-closed-runtime', dataMode: mode, graph: 'memory-closed', flagLoads,
       formalOpen: true, closedFixtureOnly: true, passed: true, fixtures, invocations,
       freshSsrRefresh: !!refreshPayloads, legacyFixtureOnly: true, optionalMarketBagAdded: true,
-      cases: Object.keys(caseApis), zeroArgumentApis: 8, storageWrites, closed: true, softOpened: true, released: false });
+      cases: Object.keys(caseApis), zeroArgumentApis: 8, storageWrites, closed: true, softOpened: true, softOpenedMarketDepth: true, newOpenFlag: false, released: false });
     return payloads;
   } finally {
     if (storageDescriptor) Object.defineProperty(globalThis, 'localStorage', storageDescriptor);
@@ -509,8 +509,8 @@ try {
   for (const [file, sha] of readOnlyBefore) eq(await shaOrNull(file), sha, `只读测试前后 SHA 不变：${file}`);
   await fs.writeFile(path.join(out, 'v06p1-market-closed-evidence.json'), `${JSON.stringify({ passed, assertions,
     stringsSha, marketTableSha, marketEnabled: true, cases: [...Object.keys(caseApis), 'C12'],
-    formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false,
+    formalOpen: true, closedFixtureOnly: true, softOpened: true, softOpenedMarketDepth: true, newOpenFlag: false, released: false,
     minimalFrontendWiring: true, fullMarketUiAdded: false, noMarketTableConsumedByClosedApi: true, optionalMarketBagAdded: true,
     protectedFiles: Object.fromEntries(readOnlyBefore), evidence }, null, 2)}\n`);
 }
-console.log(`v06p1 market closed tests ok: ${assertions} assertions; C01–C12 自动化部分通过；shared/wt strings960同字节，game既有952本窗不改；八 API 零参数、零副作用、零存储写入；shops/禁改表/地图不变，Progress仅授权可选market袋，gifts 10×false，GAME_PHASE=5；仅前台入口最小提示、无完整寄售 UI；formalOpen:true、closedFixtureOnly:true、softOpened:true、released:false；正式旗及三根 enabled=true，关态仅 SSR 内存 false、未发版`);
+console.log(`v06p1 market closed tests ok: ${assertions} assertions; C01–C12 自动化部分通过；shared/wt strings960同字节，game既有952本窗不改；八 API 零参数、零副作用、零存储写入；shops/禁改表/地图不变，Progress仅授权可选market袋，gifts 10×false，GAME_PHASE=5；仅前台入口最小提示、无完整寄售 UI；formalOpen:true、closedFixtureOnly:true、softOpened:true、softOpenedMarketDepth:true、newOpenFlag:false、released:false；正式旗及三根 enabled=true，关态仅 SSR 内存 false、未发版`);

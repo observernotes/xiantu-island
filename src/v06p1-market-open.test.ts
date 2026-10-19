@@ -503,7 +503,7 @@ export async function runMarketOpenFixtureTests(options: {
     eq(featureFlags(), flags, 'feature原值保持'); eq(JSON.stringify(rules), tableBefore, '数值表内存对象未修改');
     eq(localWrites, 0, '全部事务不用localStorage');
     return { assertions, payloads, openFixture, graph: openFixture ? 'formal-open' : 'memory-closed', sceneSmoke: sceneSmokeEvidence,
-      formalOpen: true, closedFixtureOnly: true, softOpened: true, released: false, storageWrites: idb.writes, commits: idb.commits,
+      formalOpen: true, closedFixtureOnly: true, softOpened: true, softOpenedMarketDepth: true, newOpenFlag: false, released: false, storageWrites: idb.writes, commits: idb.commits,
       sampleCount, cases: openFixture ? ['O01','O02','O03','O04','O05','O06','O07','O08','O09','O10'] : ['memory-closed-eight-tips','zero-side-effects'] };
   } finally {
     for (const p of progresses) await p.flushSaves();
