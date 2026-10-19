@@ -16,7 +16,7 @@
 | 分支 | `feat/companion-dismiss` |
 | 业务基线 tip | `dcf78c8099244bd718b0496e45ae25925a469597`（短 `dcf78c8`；接线） |
 | 基线 HEAD docs | `f063e2b8eb1b902eb24c6437160649011734849c`（接线 tip 钉业务 tip dcf78c8） |
-| soft-open tip | `SOFT_TIP_PLACEHOLDER`（短 `SOFT7`；交 tip 后钉） |
+| soft-open tip | `95e555c841e28731ceb2bbab505ef1e16027e099`（短 `95e555c`；交 tip 后钉） |
 | worktree | `/workspace/xiantu/wt/feat/companion-dismiss` |
 | origin | 推 `origin/feat/companion-dismiss`（**未**合 master） |
 | 旁路 | **是**（docs／status；Codex403旁路） |
@@ -81,4 +81,4 @@
 
 ## 6. 交回
 
-【同行AI43soft已交】炼器＝`reports/炼器阁/20261019_同行AI_design43_soft_open.md` tip＝`SOFT7`｜业务 tip@dcf78c8｜硬门＝无softOpenedCompanion＊／newOpenFlag=false／released=false／冻结MATCH／硬读对话面板≠KeyV＋dismiss整键清＋stay≠解散＋切图保关系＋再邀follow＋KeyV三态未漂｜tsc＋dismiss 106＋modes 158＋follow-ai 86 PASS｜相对dcf78c8零业务diff｜Codex旁路｜≠release≠Pages｜现网v0.6.24｜请开 soft smoke（3B）｜建议v0.6.25本令不授权发版
+【同行AI43soft已交】炼器＝`reports/炼器阁/20261019_同行AI_design43_soft_open.md` tip＝`95e555c`｜业务 tip@dcf78c8｜硬门＝无softOpenedCompanion＊／newOpenFlag=false／released=false／冻结MATCH／硬读对话面板≠KeyV＋dismiss整键清＋stay≠解散＋切图保关系＋再邀follow＋KeyV三态未漂｜tsc＋dismiss 106＋modes 158＋follow-ai 86 PASS｜相对dcf78c8零业务diff｜Codex旁路｜≠release≠Pages｜现网v0.6.24｜请开 soft smoke（3B）｜建议v0.6.25本令不授权发版
