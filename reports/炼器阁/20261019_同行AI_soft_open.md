@@ -16,7 +16,7 @@
 | 分支 | `feat/companion-follow-ai` |
 | 业务基线 tip | `1508298ee236b5a7bbc995f11070ed0b232b8c1a`（短 `1508298`；接线） |
 | 基线 HEAD docs | `49908821b8f8398bf3eb425913635a8e022a5386`（接线 tip SHA 正文） |
-| soft-open tip | `f7a351c32d588b8ecb87623783003f1cf4a8feb6`（短 `f7a351c`） |
+| soft-open tip | `6aa00aab73a7a3b708a4863be091d293459e206f`（短 `6aa00aa`） |
 | worktree | `/workspace/xiantu/wt/feat/companion-follow-ai` |
 | origin | 推 `origin/feat/companion-follow-ai`（**未**合 master） |
 | 旁路 | **是**（docs／status／RESULT；Codex403旁路） |
@@ -75,4 +75,4 @@
 
 ## 6. 交回
 
-【同行AIsoft已交】炼器＝`reports/炼器阁/20261019_同行AI_soft_open.md` tip＝`f7a351c`｜业务 tip@1508298｜硬门＝无softOpenedCompanion＊／newOpenFlag=false／released=false／冻结MATCH／硬读96/320/320＋CD1200＋240＋0.35｜tsc＋companion-follow-ai 86 PASS｜相对1508298零业务diff｜Codex旁路｜≠release≠Pages｜现网v0.6.22｜请开 soft smoke
+【同行AIsoft已交】炼器＝`reports/炼器阁/20261019_同行AI_soft_open.md` tip＝`6aa00aa`｜业务 tip@1508298｜硬门＝无softOpenedCompanion＊／newOpenFlag=false／released=false／冻结MATCH／硬读96/320/320＋CD1200＋240＋0.35｜tsc＋companion-follow-ai 86 PASS｜相对1508298零业务diff｜Codex旁路｜≠release≠Pages｜现网v0.6.22｜请开 soft smoke
