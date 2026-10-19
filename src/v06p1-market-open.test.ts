@@ -205,10 +205,23 @@ export async function runMarketOpenFixtureTests(options: {
     const { p } = fixture(), logs: { text: string; color: string }[] = [];
     const before = p.exportSave(), writes = idb.writes;
     const entrance = { name: 'market_consign_entrance', x: 100, y: 200 };
+    let panelOpen = false;
     const scene: any = Object.assign(Object.create(GameScene.prototype), {
-      prog: p, map: { id: 'market-smoke', objects: [] }, player: { x: 100, y: 200 },
+      prog: p, map: { id: 'market-smoke', objects: [] }, player: { x: 100, y: 200, body: { setVelocityX() {} } },
+      gathering: { cancel() {} },
       log: (text: string, color: string) => logs.push({ text, color }),
+      closeItemPanels() {},
       encounterRuntime: { interact() { throw new Error('寄售入口须先于其他交互'); } },
+      marketConsign: {
+        show() {
+          const result = new MarketGate(p).feature();
+          if (!result.allowed) { logs.push({ text: result.text, color: '#aaaaaa' }); panelOpen = false; return false; }
+          panelOpen = true; return true;
+        },
+        visible() { return panelOpen; },
+        hide() { panelOpen = false; },
+        update() {},
+      },
     });
     eq(typeof scene.tryInteractMarketConsign, 'function', 'Scene 最小寄售入口存在');
     eq(scene.tryInteractMarketConsign(), false, '没有地图对象时安静 no-op');
@@ -221,13 +234,16 @@ export async function runMarketOpenFixtureTests(options: {
     scene.player.y = entrance.y; scene.senseMap = { objectVisible: () => false };
     eq(scene.tryInteractMarketConsign(), false, '不可见入口不交互');
     eq(logs, [], '无对象/商店/超距/隐藏入口均无提示');
-    scene.senseMap = undefined;
+    scene.senseMap = undefined; panelOpen = false;
     for (const name of ['market_consign_entrance', 'fangshi_consign']) {
-      scene.map.objects = [{ ...entrance, name }];
+      scene.map.objects = [{ ...entrance, name }]; panelOpen = false;
       eq(scene.tryInteractMarketConsign(), true, `${name} 邻近入口被消费`);
-      eq(logs[logs.length - 1], openFixture
-        ? { text: '坊市寄售已开放。', color: '#fff8d0' }
-        : { text: Closed.featureClosed().text, color: '#aaaaaa' }, 'Scene 按正式开态/内存关态显示提示');
+      if (openFixture) {
+        eq(panelOpen, true, `${name} 开态打开寄售面板`);
+      } else {
+        eq(panelOpen, false, `${name} 关态不打开面板`);
+        eq(logs[logs.length - 1], { text: Closed.featureClosed().text, color: '#aaaaaa' }, '关态 tip');
+      }
     }
     eq(scene.tryInteract(), true, '通用交互在遭遇/NPC 前消费寄售入口');
     const originalFeature = MarketGate.prototype.feature;
@@ -238,8 +254,10 @@ export async function runMarketOpenFixtureTests(options: {
         if (!openFixture) throw new Error('内存关态不得查询 MarketGate');
         return { allowed: false, tipKey: 'market.fixture.smoke', text: '寄售冒烟拒绝。' };
       };
+      panelOpen = false;
       eq(scene.tryInteractMarketConsign(), true, '最小入口保留拒绝提示分支');
       eq(featureCalls, openFixture ? 1 : 0, '只有正式开态查询 MarketGate.feature');
+      eq(panelOpen, false, 'Gate 拒绝时不打开面板');
       eq(logs[logs.length - 1], { text: openFixture ? '寄售冒烟拒绝。' : Closed.featureClosed().text,
         color: '#aaaaaa' }, 'Gate 拒绝原文或内存关态文案被展示');
     } finally { MarketGate.prototype.feature = originalFeature; }
@@ -247,8 +265,8 @@ export async function runMarketOpenFixtureTests(options: {
     eq(idb.writes, writes, 'Scene 冒烟不写存档');
     return { noObjectNoop: true, npcShopIgnored: true, nearbyOnly: true, hiddenIgnored: true,
       aliases: ['market_consign_entrance', 'fangshi_consign'], genericInteraction: true,
-      graph: openFixture ? 'formal-open' : 'memory-closed', gateDeniedRouting: openFixture,
-      closedBypassesGate: !openFixture, saveWrites: idb.writes - writes };
+      graph: openFixture ? 'formal-open-panel' : 'memory-closed', gateDeniedRouting: openFixture,
+      closedBypassesGate: !openFixture, saveWrites: idb.writes - writes, panelOpenPath: openFixture };
   }
   try {
     const sceneSmokeEvidence = sceneSmoke();

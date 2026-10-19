@@ -57,10 +57,12 @@ async function checkFormal() {
   const flag = await fs.readFile(path.join(root, 'src/MarketOpenFlag.ts'), 'utf8');
   ok(/export function isMarketOpenForFixture\(\): boolean\s*\{\s*return true;\s*\}/u.test(flag), '正式磁盘 MarketOpenFlag 恒返回 true');
   const scene = await fs.readFile(path.join(root, 'src/scenes/GameScene.ts'), 'utf8');
-  for (const name of ['isMarketOpenForFixture', 'MarketGate', 'MarketClosed', 'tryInteractMarketConsign'])
-    ok(scene.includes(name), `GameScene 已接寄售最小冒烟入口：${name}`);
+  for (const name of ['isMarketOpenForFixture', 'MarketClosed', 'tryInteractMarketConsign', 'MarketConsignPanel', 'isMarketConsignUiAccessible'])
+    ok(scene.includes(name), `GameScene 已接寄售面板入口：${name}`);
   ok(/this\.tryInteractTowerClosed\(\)\s*\|\|\s*this\.tryInteractMarketConsign\(\)/u.test(scene), 'Z 键交互链在 talkNearby 前接入寄售');
-  ok(!/MarketPanel|ConsignPanel|AuctionPanel|openMarketPanel|openConsignPanel/u.test(scene), 'GameScene 未铺完整寄售或拍卖面板');
+  ok(scene.includes('this.marketConsign'), 'GameScene 已挂 marketConsign 面板实例');
+  ok(!/AuctionPanel|openMarketPanel|openConsignPanel|(?<![A-Za-z])MarketPanel(?![A-Za-z])/u.test(scene), 'GameScene 未铺拍卖或旧 MarketPanel 入口');
+  ok(!/smithServices\?\.show\(\)/.test(scene) || !/tryInteractMarketConsign[\s\S]*smithServices/.test(scene.split('tryInteractMarketConsign')[1]?.slice(0,400) ?? ''), '寄售入口不串欧冶匠 show');
   ok(!/market|consign/iu.test(await fs.readFile(path.join(root, 'src/ShopPanel.ts'), 'utf8')), 'ShopPanel 不接入寄售');
   const formalBytes = await fs.readFile(path.join(shared, 'balance/market_consign.json'));
   for (const [mode, dataRoot] of dataRoots) {
