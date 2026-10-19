@@ -1,0 +1,30 @@
+{
+ "atlas": "fx_tree_demon_vine_burst_warn",
+ "facing": "left",
+ "origin": [
+  0.5,
+  0.5
+ ],
+ "frameSize": [
+  144,
+  48
+ ],
+ "anims": [
+  {
+   "key": "fx_tree_demon_vine_burst_warn_warn",
+   "frames": [
+    "fx_tree_demon_vine_burst_warn_warn_01",
+    "fx_tree_demon_vine_burst_warn_warn_02",
+    "fx_tree_demon_vine_burst_warn_warn_03",
+    "fx_tree_demon_vine_burst_warn_warn_04",
+    "fx_tree_demon_vine_burst_warn_warn_05",
+    "fx_tree_demon_vine_burst_warn_warn_06"
+   ],
+   "frameRate": 7,
+   "repeat": 0
+  }
+ ],
+ "note": "藤蔓破土预警：中心 = 地面落点（原点 0.5,0.5），椭圆半径 64 = radius。朱红 1px 边 + 明暗闪烁 + 由内向外填满（走满 = 破土）。telegraphMs 900：play({ key, duration: 900 })。",
+ "blend": "normal",
+ "kind": "fx"
+}
