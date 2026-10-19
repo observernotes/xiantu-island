@@ -48,6 +48,7 @@ function assertFormal(data, mode) {
     'companion.invite.disabled', 'companion.mode.follow', 'companion.mode.free', 'companion.mode.stay', 'companion.status.joined',
     'fly.locked_realm', 'fly.skill_granted', 'fly.zone_disabled', 'fly.zone_unavailable', 'fly.mp_low', 'fly.knockdown', 'fly.cannot_attack',
     'fly.sustain_enter', 'fly.sustain_land', 'fly.sustain_timeout',
+    'loot.seize',
   ]) assert.equal(typeof strings[key], 'string', `${mode}: ${key} 已有正式文案`);
   console.log(JSON.stringify({ suite: 'v06b-closed-formal-open', dataMode: mode,
     companionsEnabled: companions.enabled, companionEnabled: companions.companions[0].enabled,
@@ -125,6 +126,7 @@ try {
         ['companions-save.test.ts', 'runCompanionsSaveTests'],
         ['fly-zones.test.ts', 'runFlyZonesTests'],
         ['fly-sustain-feedback.test.ts', 'runFlySustainFeedbackTests'],
+        ['rogue-seize.test.ts', 'runRogueSeizeTests'],
       ]) {
         const suite = await server.ssrLoadModule(`/src/${file}`);
         assert.equal(typeof suite[run], 'function', `${file} 必须导出 ${run}`);

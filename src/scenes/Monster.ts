@@ -107,6 +107,10 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
   onSummon?: (owner: Monster, summonId: string, x: number, y: number, grantRewards: boolean, despawnWithOwner: boolean) => void;
   /** 普通怪给奖励；召唤物按技能 grantRewards（默认 false）关掉 */
   grantRewards = true;
+  /** design/38 杀人夺宝：本实例为随机散修目标（击杀打 loot.seize） */
+  seizeLoot = false;
+  /** 头顶名号（夺宝散修）；随 bar 同步，销毁时清掉 */
+  nameTag?: Phaser.GameObjects.Text;
   despawnWithOwner = false;
   noRespawn = false;
   owner?: Monster;
@@ -488,7 +492,7 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
     this.abortCast();
     this.charge = null;
     this.clearSummons();
-    this.st = 'dead'; this.body.enable = false; this.bar.clear();
+    this.st = 'dead'; this.body.enable = false; this.bar.clear(); this.destroyNameTag();
     this.anim('die');
     this.scene.tweens.add({ targets: this, alpha: 0, delay: 350, duration: 400 });
     this.onDead?.(this);
@@ -514,7 +518,7 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
     this.setVisible(false);
     for (const fx of this.fxTimers) fx.sprite.destroy();
     this.fxTimers = [];
-    this.bar.destroy();
+    this.bar.destroy(); this.destroyNameTag();
     if (this.active && this.scene) this.scene.time.delayedCall(0, () => { if (this.active) this.destroy(); });
   }
 
@@ -560,9 +564,28 @@ export class Monster extends Phaser.Physics.Arcade.Sprite {
 
   private drawBar() {
     this.bar.clear();
+    if (this.nameTag) {
+      const tagY = this.y - this.body.height - (this.dead || this.hp >= this.def.hp || this.def.isBoss ? 8 : 22);
+      this.nameTag.setPosition(this.x, tagY).setVisible(!this.dead && this.visible && this.alpha > 0.05);
+    }
     if (this.dead || this.hp >= this.def.hp || this.def.isBoss) return;
     const w = 44, y = this.y - this.body.height - 14;
     this.bar.fillStyle(0x222222).fillRect(this.x - w / 2, y, w, 5).fillStyle(0xe8443a).fillRect(this.x - w / 2, y, w * Math.max(0, this.hp) / this.def.hp, 5);
+  }
+
+  /** 夺宝散修头顶名号；外观＝表内 mon_black_robe_minion＋本标签 */
+  attachSeizeNameTag(displayName: string) {
+    this.nameTag?.destroy();
+    this.nameTag = this.scene.add.text(this.x, this.y - this.body.height - 22, displayName, {
+      fontFamily: 'sans-serif', fontSize: '12px', color: '#ffe8c8',
+      backgroundColor: '#2a1810cc', padding: { x: 4, y: 1 },
+      stroke: '#1a0a00', strokeThickness: 2,
+    }).setOrigin(0.5, 1).setDepth(12);
+  }
+
+  private destroyNameTag() {
+    this.nameTag?.destroy();
+    this.nameTag = undefined;
   }
 
   // ---------------- 首领技能 ----------------

@@ -520,5 +520,85 @@
     ]
    }
   ]
+ },
+ "drop_seize_rogue_t1": {
+  "spiritStone": [
+   22,
+   44
+  ],
+  "items": [
+   {
+    "item": "hp_pill_small",
+    "chance": 0.1,
+    "count": [
+     1,
+     2
+    ]
+   },
+   {
+    "item": "beast_core",
+    "chance": 0.03,
+    "count": [
+     1,
+     1
+    ]
+   },
+   {
+    "item": "bamboo_sword",
+    "chance": 0.02,
+    "count": [
+     1,
+     1
+    ]
+   },
+   {
+    "item": "cloth_shoes",
+    "chance": 0.015,
+    "count": [
+     1,
+     1
+    ]
+   }
+  ]
+ },
+ "drop_seize_rogue_t2": {
+  "spiritStone": [
+   40,
+   72
+  ],
+  "items": [
+   {
+    "item": "hp_pill_small",
+    "chance": 0.12,
+    "count": [
+     1,
+     2
+    ]
+   },
+   {
+    "item": "beast_core",
+    "chance": 0.05,
+    "count": [
+     1,
+     1
+    ]
+   },
+   {
+    "item": "bamboo_sword",
+    "chance": 0.03,
+    "count": [
+     1,
+     1
+    ]
+   },
+   {
+    "item": "cloth_shoes",
+    "chance": 0.02,
+    "count": [
+     1,
+     1
+    ]
+   }
+  ]
  }
 }

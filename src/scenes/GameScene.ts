@@ -4,7 +4,7 @@ import { notifyCheatSceneReady } from '../cheatFlags';
 import { getRendererInfo } from '../rendererChoice';
 import { FEEL, SPEC } from '../config/feel';
 import { FIELD_TEST } from '../config/maps';
-import { MONSTERS, DROPS, ITEMS, TILED_MAPS, ATLASES, MAP_AREA, AREAS, TILE_METADATA, BACKGROUNDS, BACKGROUND_CONFIGS, PROP_LAYOUTS, SKILL_ICONS, NPCS, SCRIPTS, SENSE, ENCOUNTERS, syncTalismanMapAvailability, t, questName, questDescription, MP_REGEN_FRACTION_PER_5S, BREAKTHROUGH_LEVELS } from '../data';
+import { MONSTERS, DROPS, ITEMS, TILED_MAPS, ATLASES, MAP_AREA, AREAS, TILE_METADATA, BACKGROUNDS, BACKGROUND_CONFIGS, PROP_LAYOUTS, SKILL_ICONS, NPCS, SCRIPTS, SENSE, ENCOUNTERS, syncTalismanMapAvailability, t, questName, questDescription, MP_REGEN_FRACTION_PER_5S, BREAKTHROUGH_LEVELS, type MonsterDef } from '../data';
 import pacing from '@xt/balance/solo_pacing.json';
 import { QuestSystem } from '../QuestSystem';
 import type { DailyQuestReward } from '../DailyQuests';
@@ -22,6 +22,10 @@ import { HUD_RESERVE, addFloorStrip } from './cameraFloor';
 import { Player, Input } from './Player';
 import { InputBindings, PlayerInputLatch } from '../PlayerInput';
 import { Monster, type SkillVolley } from './Monster';
+import {
+  RogueCultivatorSpawner, ROGUE_MAP_ID, ROGUE_TEMPLATE_ID, shouldEmitSeizeTip,
+  type RogueTier,
+} from '../RogueCultivatorSpawn';
 import { Progress, type QuestRewardSettlement } from '../Progress';
 import { Seclusion, realDay } from '../Seclusion';
 import { LIFESPAN } from '../data';
@@ -178,6 +182,8 @@ export class GameScene extends Phaser.Scene {
   private sectBadge!: Phaser.GameObjects.Image;
   private portalVisuals: { object: MapObj; art: Phaser.GameObjects.Ellipse | Phaser.GameObjects.Sprite; label?: Phaser.GameObjects.Text }[] = [];
   private seclusionLabels: Phaser.GameObjects.Text[] = [];
+  /** design/38 杀人夺宝生成器（仅 luoxia_outskirts_2；无 OpenFlag） */
+  private rogueSpawner?: RogueCultivatorSpawner;
 
   constructor() { super('game'); (window as any).__scene = this; }
 
@@ -212,6 +218,7 @@ export class GameScene extends Phaser.Scene {
     this.trialObjects = undefined; this.stealth = undefined; this.atSectTrialEntrance = false;
     this.npcMarks = []; this.hudTexts = undefined; this.hudKit = undefined; this.bossIntroShown = false;
     this.interactionPrompts = []; this.portalVisuals = []; this.seclusionLabels = [];
+    this.rogueSpawner = undefined;
     this.backgroundArt?.destroy(); this.propLayout?.destroy(); this.environmentArt?.destroy();
     this.backgroundArt = undefined; this.propLayout = undefined; this.environmentArt = undefined;
     for (const object of this.backgroundObjects) object.destroy();
@@ -416,6 +423,7 @@ export class GameScene extends Phaser.Scene {
         this.mobs.push(m);
       }
     }
+    this.initRogueCultivatorSpawner();
     this.physics.add.collider(this.mobs, this.map.solids);
     this.physics.add.collider(this.mobs, this.map.oneWays, undefined, oneWayCheck);
     this.physics.add.overlap(this.player, this.mobs, (_p, mo) => {
@@ -1138,6 +1146,39 @@ export class GameScene extends Phaser.Scene {
   private shotOf = new Map<Phaser.GameObjects.GameObject, Shot>();
   private shotGroup?: Phaser.Physics.Arcade.Group;
 
+  // ---------------- design/38 杀人夺宝生成器 ----------------
+  private initRogueCultivatorSpawner() {
+    this.rogueSpawner = undefined;
+    if (this.map.id !== ROGUE_MAP_ID) return;
+    this.rogueSpawner = new RogueCultivatorSpawner({
+      mapId: this.map.id,
+      now: () => this.time.now,
+      aliveRogueCount: () => this.mobs.filter(m => m.active && !m.dead && m.seizeLoot).length,
+      scheduleRespawn: (delayMs) => {
+        this.time.delayedCall(delayMs, () => this.rogueSpawner?.tryFill());
+      },
+      spawnOne: (def, x, y, meta) => this.spawnRogueCultivator(def, x, y, meta),
+    });
+    this.rogueSpawner.onEnterMap();
+  }
+
+  private spawnRogueCultivator(
+    def: MonsterDef,
+    x: number,
+    y: number,
+    meta: { displayName: string; tier: RogueTier },
+  ): Monster | null {
+    if (!def || def.id !== ROGUE_TEMPLATE_ID) return null;
+    const m = new Monster(this, x, y, def);
+    m.noRespawn = true;
+    m.seizeLoot = true;
+    m.hp = def.hp;
+    m.attachSeizeNameTag(meta.displayName);
+    this.wireMob(m);
+    this.mobs.push(m);
+    return m;
+  }
+
   // ---------------- 战斗 ----------------
   private wireMob(m: Monster) {
     m.onDead = mm => this.onMobDead(mm);
@@ -1328,13 +1369,19 @@ export class GameScene extends Phaser.Scene {
       }
     });
     if (d.exp > 0) this.applyExp(this.prog.gainExp(d.exp, d.level));
-    const t = d.dropTable ? DROPS[d.dropTable] : null;
-    if (!t) return;
+    const drop = d.dropTable ? DROPS[d.dropTable] : null;
+    if (!drop) {
+      if (m.seizeLoot) this.rogueSpawner?.onRogueDead(m);
+      return;
+    }
     const out: [string, number][] = [];
-    const [lo, hi] = t.spiritStone ?? [0, 0];
+    const [lo, hi] = drop.spiritStone ?? [0, 0];
     if (hi > 0) out.push(['spirit_stone', Phaser.Math.Between(lo, hi)]);
-    for (const it of t.items) if (Math.random() < it.chance) out.push([it.item, Phaser.Math.Between(it.count[0], it.count[1])]);
+    for (const it of drop.items) if (Math.random() < it.chance) out.push([it.item, Phaser.Math.Between(it.count[0], it.count[1])]);
     out.forEach(([id, n], i) => this.spawnDrop(m.x + (i - (out.length - 1) / 2) * 22, m.y - 20, id, n));
+    // design/38：仅夺宝散修目标、spawnDrop 路径后一次 tip；非目标零 tip
+    if (shouldEmitSeizeTip(m, true)) this.log(t('loot.seize'), '#ffe8c8');
+    if (m.seizeLoot) this.rogueSpawner?.onRogueDead(m);
   }
 
   // ---------------- 掉落与拾取 ----------------

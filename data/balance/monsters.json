@@ -1056,5 +1056,48 @@
    "recoverMs": 0,
    "knockback": 0
   }
+ },
+ {
+  "id": "rogue_cultivator",
+  "name": "散修",
+  "level": 18,
+  "hp": 510,
+  "atk": 56,
+  "def": 10,
+  "exp": 33,
+  "aggressive": true,
+  "aggroRange": 256,
+  "moveSpeed": 70,
+  "patrolRange": 200,
+  "touchDamage": true,
+  "knockback": 150,
+  "respawnMs": 9000,
+  "sprite": "mon_black_robe_minion",
+  "dropTable": "drop_seize_rogue_t1",
+  "isBoss": false,
+  "attack": {
+   "type": "projectile",
+   "damageRatio": 1.0,
+   "speed": 240,
+   "range": {
+    "w": 320,
+    "h": 32
+   },
+   "recoverMs": 350,
+   "telegraphMs": 400,
+   "cooldownMs": 3500,
+   "knockback": 120
+  },
+  "sense": {
+   "enabled": false,
+   "profile": "sense_monster_basic",
+   "visibleInfo": [
+    "name",
+    "level",
+    "hp",
+    "abilities"
+   ],
+   "abilityKeys": []
+  }
  }
 ]
