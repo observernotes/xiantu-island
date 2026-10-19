@@ -1,11 +1,10 @@
 # V0626_RELEASE
 
 - **试玩**：https://observernotes.github.io/xiantu-island/v0.6.26/
-- **tag^{}**：`b66a0041278aa35d08ca282c166299e9faceb293`（annotated tag `v0.6.26` → object `d8d86b7a5ee9461df2782319bd6283f88b49fcba`）
-- **master（含 V0626_RELEASE docs tip）**：`4c9dee207d96c23ab9996522d73ba36f39bfb28d`
+- **master / tag^{}**：`b66a0041278aa35d08ca282c166299e9faceb293`（annotated tag `v0.6.26` → object `d8d86b7a5ee9461df2782319bd6283f88b49fcba`；其后 docs tip 另记）
 - **内容 tip（--from）**：`e6edf8d56c6337df42b0a12431df362216cad5cb`（soft-open 交件；含于 master=`b66a004`）
 - **业务 tip**：`b3595651c62c16b6db48ffcd9cf7ce90a95c0bae`（primary＋area＝whirl_sword；CD4000；w160·h80·behind32；prefer≥2；starve N＝2；budget同乘0.35；stay不放area；support锁）⊂ soft tip ⊂ master
-- **分支 tip / origin**：`b66a004`（docs + design/44 同行 AI area whirl_sword soft-open；hotfix/qa/master 同 tip）
+- **分支 tip / origin**：发版 tip `b66a004`（hotfix/qa 同）；master 另有 V0626_RELEASE docs tip
 - **gh-pages**：`ebce2c6a27092538f70eb4cf0fe86e8f91854bf8`（`6e5b5e3..ebce2c6`）
 - **本地包**：`releases/v0.6.26/` + `releases/v0.6.26_SHA256.json`（938 文件与 dist/ghp 一致；清单文件 SHA256 `2fd8ccd080f34766b811ce9ac4688685d8c5187b3a7865926a8b2f3ae6a68b21`）
 - **日志**：dry-run `qa/out/release_v0.6.26_20261019_234410_591430146.log`（**EXIT 0，0 阻断**；发前已将 master 普通快进 `d299c59` → `b66a004`）；实发主日志 `qa/out/release_v0.6.26_20261019_234413_968112453.log`（precheck/build/tag/hotfix+qa ff／push／gh-pages／本地包 **成功**；脚本内 Pages 轮询 300s 超时 EXIT1；续轮询至 **HTTP 200** 后补 URL.txt）。未 `--skip-precheck`。
