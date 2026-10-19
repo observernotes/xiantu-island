@@ -8,7 +8,7 @@
 ## tip
 - 分支：`feat/ui-market-depth`（界面子 tip；合入族 `feat/market-depth-wire`）
 - 基线：`origin/dev@c84cbae`
-- TIP_SHA：`3d8af72adcf75ef79f9c367792f5af0926dd4544`
+- TIP_SHA：`5592ad748c0152d0d31f335d6b10e52be86a6d73`
 - 已推：`origin/feat/ui-market-depth`
 
 ## 改动文件
