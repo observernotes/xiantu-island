@@ -10,9 +10,11 @@
 | 项 | 值 |
 |---|---|
 | 分支 | `feat/market-depth-wire` |
-| 基线 | `9437362`（含 3A tip@1347652） |
-| soft-open tip | （短 ） |
+| 基线 | `9437362`（含 3A tip@50cfdb7） |
+| soft-open tip | `60755d68a261a4604f6dc93efc55332238c7840c`（短 `60755d6`） |
 | worktree | `/workspace/xiantu/wt/feat/market-depth-wire` |
+
+> 注：本文件若经后续 docs 补 SHA，以 `git rev-parse origin/feat/market-depth-wire` 与 status 为准。
 
 ## 2. 改动面（仅证据位）
 
@@ -47,4 +49,4 @@
 
 ## 5. 交回
 
-【坊市纵深 soft-open】tip@1347652｜softOpenedMarketDepth=true｜released=false｜newOpenFlag=false｜七字段SHA仍 12daf2e3…｜≠release≠Pages｜等执法 soft smoke（3B）
+【坊市纵深 soft-open】tip@60755d6｜softOpenedMarketDepth=true｜released=false｜newOpenFlag=false｜七字段SHA仍 12daf2e3…｜≠release≠Pages｜等执法 soft smoke（3B）
