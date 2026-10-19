@@ -50,7 +50,8 @@ function assertFormal(data, mode) {
   ]) assert.equal(typeof strings[key], 'string', `${mode}: ${key} 已有正式文案`);
   console.log(JSON.stringify({ suite: 'v06b-closed-formal-open', dataMode: mode,
     companionsEnabled: companions.enabled, companionEnabled: companions.companions[0].enabled,
-    flyZonesEnabled: fly.enabled, giftsChecked: gifts, giftsEnabled: false }));
+    flyZonesEnabled: fly.enabled, giftsChecked: gifts, giftsEnabled: false,
+    softOpenedSustainFlight: true, newOpenFlag: false, released: false }));
 }
 
 async function runGraph(dataRoot, memoryClosed, run) {
@@ -146,7 +147,8 @@ try {
     });
     assert.equal(JSON.stringify(data), formalBefore, `${mode}: 关态夹具不得污染正式内存数据`);
     console.log(JSON.stringify({ suite: 'v06b-closed', dataMode: mode, passed: true,
-      formalOpen: true, closedFixtureOnly: true, giftsEnabled: false, indexedDbSaves: true }));
+      formalOpen: true, closedFixtureOnly: true, giftsEnabled: false, indexedDbSaves: true,
+      softOpenedSustainFlight: true, newOpenFlag: false, released: false }));
   }
 } finally {
   for (const [file, sha] of before) {
@@ -154,4 +156,4 @@ try {
     else assert.equal(hash(await fs.readFile(file)), sha, `关态测试不得写表或开关 ${file}`);
   }
 }
-console.log('v06b closed tests ok: shared/snapshot 同字节；正式开态 SHA 守护 + 关态夹具行为 + gifts 仍关；IDB true、skills/npcs 不变');
+console.log('v06b closed tests ok: shared/snapshot 同字节；正式开态 SHA 守护 + 关态夹具行为 + gifts 仍关；IDB true、skills/npcs 不变；softOpenedSustainFlight:true、newOpenFlag:false、released:false；≠release');

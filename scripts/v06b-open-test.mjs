@@ -40,7 +40,8 @@ function assertFormal(data, mode) {
   visit(data['npcs.json']);
   assert(gifts > 0, `${mode}：必须实际检查赠礼开关`);
   console.log(JSON.stringify({ suite: 'v06b-open-formal-open', dataMode: mode,
-    companionsEnabled: true, companionEnabled: true, flyZonesEnabled: true, giftsChecked: gifts, giftsEnabled: false }));
+    companionsEnabled: true, companionEnabled: true, flyZonesEnabled: true, giftsChecked: gifts, giftsEnabled: false,
+    softOpenedSustainFlight: true, newOpenFlag: false, released: false }));
 }
 
 async function runGraph(dataRoot, memoryOpen, run) {
@@ -129,7 +130,8 @@ try {
     });
     assert.equal(JSON.stringify(data), formalBefore, `${mode}：夹具不得污染正式内存数据`);
     console.log(JSON.stringify({ suite: 'v06b-open', dataMode: mode, passed: true, indexedDbSaves: true,
-      formalOpen: true, closedFixtureOnly: true, companionsEnabled: true, companionEnabled: true, flyZonesEnabled: true, giftsEnabled: false }));
+      formalOpen: true, closedFixtureOnly: true, companionsEnabled: true, companionEnabled: true, flyZonesEnabled: true, giftsEnabled: false,
+      softOpenedSustainFlight: true, newOpenFlag: false, released: false }));
   }
 } finally {
   for (const [file, sha] of before) {
@@ -137,4 +139,4 @@ try {
     else assert.equal(hash(await fs.readFile(file)), sha, `开态夹具不得写表或开关 ${file}`);
   }
 }
-console.log('v06b open tests ok: shared/snapshot；正式开态已翻、关态仅内存夹具；正式开态 SHA 不变、gifts 全关、IDB 为 true');
+console.log('v06b open tests ok: shared/snapshot；正式开态已翻、关态仅内存夹具；正式开态 SHA 不变、gifts 全关、IDB 为 true；softOpenedSustainFlight:true、newOpenFlag:false、released:false；≠release');

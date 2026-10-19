@@ -91,5 +91,5 @@ export function runFlyZonesTests() {
   eq(isPointInFlyZone(15, 15, [{ type: 'npc', name: 'flyZone_a', x: 0, y: 0, w: 40, h: 40 }], []), true, 'name 前缀 flyZone_ 命中');
   eq(isPointInFlyZone(15, 15, [], [{ name: 'air', x: 0, y: 0, w: 40, h: 40, props: { flyZone: true } }]), true, 'zone props.flyZone 命中');
   eq(isPointInFlyZone(100, 100, [{ type: 'flyZone', name: 'flyZone_a', x: 0, y: 0, w: 40, h: 40 }], []), false, '矩形外不命中');
-  console.log(`fly zones tests ok: ${assertions} assertions (formal open, closed fixture, realm priority, no MP mutation, immutable parsing)`);
+  console.log(`fly zones tests ok: ${assertions} assertions (formal open, closed fixture, realm priority, no MP mutation, immutable parsing; softOpenedSustainFlight=true delivery evidence only, not a runtime gate)`);
 }
