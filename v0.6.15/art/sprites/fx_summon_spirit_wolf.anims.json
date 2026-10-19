@@ -1,0 +1,30 @@
+{
+ "atlas": "fx_summon_spirit_wolf",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  96,
+  96
+ ],
+ "blend": "NORMAL",
+ "kind": "fx",
+ "note": "原点(0.5,1)为召唤落点地面(48,96)。summon播一次，苔绿阵与灵光上升后淡出；程序在召唤落点建立友方灵狼，召唤本身不额外打一段伤害。本atlas无狼本体；暂建议复用mon_wild_wolf加青绿tint，key待天机阁/演武堂确认。NORMAL混合。",
+ "anims": [
+  {
+   "key": "fx_summon_spirit_wolf_summon",
+   "frames": [
+    "fx_summon_spirit_wolf_summon_01",
+    "fx_summon_spirit_wolf_summon_02",
+    "fx_summon_spirit_wolf_summon_03",
+    "fx_summon_spirit_wolf_summon_04",
+    "fx_summon_spirit_wolf_summon_05",
+    "fx_summon_spirit_wolf_summon_06"
+   ],
+   "frameRate": 12,
+   "repeat": 0
+  }
+ ]
+}
