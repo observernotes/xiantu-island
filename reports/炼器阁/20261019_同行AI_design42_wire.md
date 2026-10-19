@@ -15,7 +15,7 @@
 |---|---|
 | 分支 | `feat/companion-modes-free-stay` |
 | 基线 | `d012f27`（origin/master／v0.6.23） |
-| tip SHA | `da77e4a2c60671d4981363eb4b9c5cc7e7b7eaa7` |
+| tip SHA | `9a280a857e15625a4285581006fbf5fb9cf08e84` |
 | worktree | `/workspace/xiantu/wt/feat/companion-modes-free-stay` |
 | 旁路 | **是**（Codex 403） |
 
@@ -86,4 +86,4 @@
 
 ## 8. 交回
 
-【同行AI42接线已交】tip＝da77e4a2c60671d4981363eb4b9c5cc7e7b7eaa7｜枝＝feat/companion-modes-free-stay｜报告＝reports/炼器阁/20261019_同行AI_design42_wire.md｜演武定稿＝reports/演武堂/20261019_同行AI_design42_演武定稿.md｜硬读＝KeyV循环＋free320/240＋stay零伤≠无敌＋切回96/320/320＋CD1200＋240＋0.35｜无新OpenFlag｜表SHA MATCH｜tsc＋测 PASS｜Codex403旁路｜≠开态≠soft≠release｜现网v0.6.23｜请开核
+【同行AI42接线已交】tip＝9a280a857e15625a4285581006fbf5fb9cf08e84｜枝＝feat/companion-modes-free-stay｜报告＝reports/炼器阁/20261019_同行AI_design42_wire.md｜演武定稿＝reports/演武堂/20261019_同行AI_design42_演武定稿.md｜硬读＝KeyV循环＋free320/240＋stay零伤≠无敌＋切回96/320/320＋CD1200＋240＋0.35｜无新OpenFlag｜表SHA MATCH｜tsc＋测 PASS｜Codex403旁路｜≠开态≠soft≠release｜现网v0.6.23｜请开核
