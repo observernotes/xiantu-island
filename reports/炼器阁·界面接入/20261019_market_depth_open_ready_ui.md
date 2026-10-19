@@ -1,6 +1,6 @@
 # 3A · consignPanelReady 界面一行接线
 
-> tip：`feat/market-depth-wire@6ab95e153cf836c5373261e179e343052ef65823`  
+> tip：`feat/market-depth-wire@50cfdb7b2be390042e6038ae311caf0d9b1d23f5`  
 > 工作树：`/workspace/xiantu/wt/feat/market-depth-wire`  
 > 炼器阁·界面接入｜2026-10-19 Asia/Shanghai（UTC+8）  
 > 令文：`reports/天机阁/20261019_负责人令_体验债坊市纵深_开态O.md` §3A  
@@ -8,7 +8,7 @@
 > **Codex=仍403旁路直写**｜**≠ soft-open ≠ release ≠ 推 origin/dev ≠ 新 OpenFlag**
 
 ## tip
-- 族 tip：`feat/market-depth-wire@6ab95e153cf836c5373261e179e343052ef65823`
+- 族 tip：`feat/market-depth-wire@50cfdb7b2be390042e6038ae311caf0d9b1d23f5`
 - 基线：`3a4e03bd58722a1388bcb341f50288afc8d1956d`
 - 工作树：`wt/feat/market-depth-wire`
 
