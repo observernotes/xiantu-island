@@ -236,6 +236,7 @@ export class CompanionFollowAi {
 
   /**
    * KeyV／companion_mode_cycle：须关系＋实体在场；成功写 mode 并清 AI 旗（不重置 CD／budget）。
+   * design/43：永不触发解散；≠ dismissEntity。
    */
   cycleMode(): CompanionMode | null {
     if (this.destroyed || !this.liveEntity) return null;
@@ -244,6 +245,17 @@ export class CompanionFollowAi {
     if (!next) return null;
     if (COMPANION_MODES_HARD.switch.clearAiFlagsOnEnter) this.clearAiFlags();
     return next;
+  }
+
+  /**
+   * design/43：主动解散毁实体；仅 clearEntity，不设 destroyed（再邀可 spawnAfterInvite）。
+   * 切图 SHUTDOWN 仍走 destroy()（保关系）。
+   */
+  dismissEntity(): boolean {
+    if (this.destroyed) return false;
+    const had = !!this.entity;
+    this.clearEntity();
+    return had;
   }
 
   /** 切入新 mode：清追敌／出手瞬态；禁重置 attackReadyAt（noCooldownStackOrReset）。 */

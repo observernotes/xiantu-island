@@ -69,7 +69,7 @@ import { createEncounterProp, playEncounterProp, resolveEncounterProp, revealEnc
 import { SenseMapAdapter, sceneMonsterTargets } from './SenseScene';
 import { openPropChest, playPropAnimation, resolveSecretProp } from '../SecretProps';
 import { AFFINITY, COMPANIONS, FLY_ZONES } from '../data';
-import { invite, SU_COMPANION_ID } from '../Companions';
+import { canDismiss, canInvite, dismissCompanionRelation, invite, SU_COMPANION_ID, SU_COMPANION_NPC_ID } from '../Companions';
 import { CompanionFollowAi } from '../CompanionFollowAi';
 import { isPointInFlyZone, requestSustainFlight as gateRequestSustainFlight } from '../FlyZones';
 import { SECRET_NEST_INTRO_ID, isSecretNestIntroEnabled, featureClosed, readSignClosed, interactEntranceClosed,
@@ -928,6 +928,7 @@ export class GameScene extends Phaser.Scene {
       else this.openAttrPanel();
     }
     // design/42：KeyV → companion_mode_cycle（须关系＋实体；禁面板 UI）
+    // design/43：KeyV 永不触发解散；解散仅 requestCompanionDismiss／对话入口
     if (J(k.v) && !this.dialog.open && !this.skillWindow.open && !this.alchemy.isOpen() && !this.shop.isOpen()
       && !this.smithServices?.visible() && !this.marketConsign?.visible() && !this.spiritRune?.visible()
       && !this.attrPanel?.isOpen() && !this.itemPanelOpen() && !this.sectTrial?.blocksInput) {
@@ -1078,6 +1079,19 @@ export class GameScene extends Phaser.Scene {
     if (result.status === 'ok') {
       this.companionFollow ??= new CompanionFollowAi(this);
       this.companionFollow.spawnAfterInvite();
+    }
+    return result;
+  }
+
+  /**
+   * design/43：对话／面板解散入口钩子；≠ KeyV／cycle；禁与 UI.dismiss* 混名。
+   * 清关系写档后立刻毁实体；幂等 noop 亦清幽灵实体。
+   */
+  requestCompanionDismiss(companionId: string = SU_COMPANION_ID) {
+    const result = dismissCompanionRelation(COMPANIONS, this.prog, companionId);
+    this.log(t(result.hintKey), '#d0d0d0');
+    if (result.dismissed || result.status === 'noop') {
+      this.companionFollow?.dismissEntity();
     }
     return result;
   }
@@ -2820,6 +2834,21 @@ export class GameScene extends Phaser.Scene {
     const npc = NPCS[npcId]; if (!npc) return;
     if (this.trial || this.sectTrial || TRIAL_BY_MAP[this.map.id]) return;
     this.closeItemPanels();
+    // design/43：苏师姐对话／面板单入口（与 invite 同族；≠ KeyV／cycle）
+    if (npcId === SU_COMPANION_NPC_ID && !questId && !skipMenu) {
+      const inviteGate = canInvite(COMPANIONS, AFFINITY, this.prog);
+      const dismissGate = canDismiss(COMPANIONS, this.prog);
+      if (inviteGate.showInvite || dismissGate.showDismiss) {
+        this.player.body.setVelocityX(0);
+        this.dialog.choose({ speaker: npc.name, text: npc.dialog[0] ?? '' }, npc.sprite, [
+          ...(inviteGate.showInvite ? [{ label: t('companion.invite.label'), onSelect: () => { this.requestCompanionInvite(); } }] : []),
+          ...(dismissGate.showDismiss ? [{ label: t('companion.dismiss.label'), onSelect: () => { this.requestCompanionDismiss(); } }] : []),
+          { label: t('ui.dialog.next'), onSelect: () => this.talkTo(npcId, undefined, true) },
+          { label: t('ui.dialog.close'), onSelect: () => {} },
+        ]);
+        return;
+      }
+    }
     if (questId === SECRET_NEST_INTRO_ID && !isSecretNestIntroEnabled()) {
       const tip = this.prog.quests[questId] ? refuseQuestProgress() : refuseQuestOffer();
       this.player.body.setVelocityX(0);

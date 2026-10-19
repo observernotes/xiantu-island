@@ -34,6 +34,14 @@ export interface CompanionInviteResult {
   readonly status: CompanionInviteStatus; readonly canInvite: boolean; readonly showInvite: boolean;
   readonly hintKey: `companion.invite.${CompanionInviteStatus}`;
 }
+/** design/43：主动解散；≠ KeyV／cycle；禁与 UI.dismiss* 混名。 */
+export type CompanionDismissStatus = 'disabled' | 'unavailable' | 'noop' | 'ok';
+export interface CompanionDismissResult {
+  readonly status: CompanionDismissStatus;
+  readonly dismissed: boolean;
+  readonly showDismiss: boolean;
+  readonly hintKey: `companion.dismiss.${CompanionDismissStatus}`;
+}
 
 const record = (value: unknown): value is Record<string, unknown> => !!value && typeof value === 'object' && !Array.isArray(value);
 const positive = (value: unknown): value is number => typeof value === 'number' && Number.isFinite(value) && value > 0;
@@ -186,4 +194,50 @@ export function cycleCompanionMode(config: CompanionsConfig | null,
       return next;
     }) ?? null;
   } catch { return null; }
+}
+
+function dismissResult(status: CompanionDismissStatus): CompanionDismissResult {
+  return freeze({
+    status,
+    dismissed: status === 'ok',
+    showDismiss: status === 'ok',
+    hintKey: `companion.dismiss.${status}`,
+  });
+}
+
+/**
+ * design/43：解散资格。关态／表关 → disabled；无关系 → noop（幂等）；有关系 → ok（可清）。
+ * 不读好感／gifts；不碰 KeyV／cycle。
+ */
+export function canDismiss(config: CompanionsConfig | null,
+  save?: Pick<CompanionSave, 'companionRelations'>, companionId: string = SU_COMPANION_ID): CompanionDismissResult {
+  const entry = gate(config);
+  if (typeof entry === 'string') return dismissResult(entry === 'disabled' ? 'disabled' : 'unavailable');
+  if (companionId !== SU_COMPANION_ID) return dismissResult('unavailable');
+  try {
+    if (!save || !isValidCompanionRelations(save.companionRelations)) return dismissResult('unavailable');
+    if (!save.companionRelations?.[entry.id]) return dismissResult('noop');
+    return dismissResult('ok');
+  } catch { return dismissResult('unavailable'); }
+}
+
+/**
+ * design/43：删 companionRelations[苏] 整键；已无关系 → noop；关态不写档。
+ * 清后无 mode；≠ stay；≠ 切图保关系。
+ */
+export function dismissCompanionRelation(config: CompanionsConfig | null,
+  progress?: CompanionProgress, companionId: string = SU_COMPANION_ID): CompanionDismissResult {
+  const eligibility = canDismiss(config, progress, companionId);
+  if (eligibility.status !== 'ok') return eligibility;
+  if (!progress || typeof progress.runSaveTransaction !== 'function') return dismissResult('unavailable');
+  try {
+    return progress.runSaveTransaction(() => {
+      const current = canDismiss(config, progress, companionId);
+      if (current.status !== 'ok') return current;
+      const next: CompanionRelations = { ...progress.companionRelations };
+      delete next[SU_COMPANION_ID];
+      progress.companionRelations = Object.keys(next).length ? next : undefined;
+      return dismissResult('ok');
+    }) ?? dismissResult('unavailable');
+  } catch { return dismissResult('unavailable'); }
 }

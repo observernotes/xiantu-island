@@ -18,6 +18,7 @@
     "test:secret-nest-min-loop": "timeout 60s node scripts/secret-nest-min-loop-test.mjs",
     "test:companion-follow-ai": "timeout 60s node scripts/companion-follow-ai-test.mjs",
     "test:companion-modes-free-stay": "timeout 60s node scripts/companion-modes-free-stay-test.mjs",
+    "test:companion-dismiss": "timeout 60s node scripts/companion-dismiss-test.mjs",
     "test:ui-cam": "node scripts/ui-cam-test.mjs",
     "test:smoke:missing-assets": "node scripts/missing-asset-smoke.mjs",
     "test:altar-fill": "node scripts/altar-fill-test.mjs",
