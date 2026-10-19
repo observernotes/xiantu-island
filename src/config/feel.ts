@@ -8,7 +8,7 @@ export const FEEL = {
   walkSpeed: 130,
   groundAccel: 2400,     // 越大起步越干脆
   groundDecel: 3000,     // 松手后的刹车，越大越不滑
-  airAccel: 600,         // 空中转向能力（design/39：有向微操，禁接近 groundAccel）
+  airAccel: 680,         // 空中转向能力（design/39 O05 补：过 M01；有向微操，禁接近 groundAccel）
   airMaxSpeed: 130,
 
   jumpSpeed: 560,        // 起跳初速，约 78px 高（执法堂 v0.1 报告建议）
