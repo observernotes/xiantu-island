@@ -1,0 +1,57 @@
+{
+ "atlas": "mon_tree_demon_sapling",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  72,
+  88
+ ],
+ "anims": [
+  {
+   "key": "mon_tree_demon_sapling_idle",
+   "frames": [
+    "mon_tree_demon_sapling_idle_01",
+    "mon_tree_demon_sapling_idle_02"
+   ],
+   "frameRate": 3,
+   "repeat": -1
+  },
+  {
+   "key": "mon_tree_demon_sapling_walk",
+   "frames": [
+    "mon_tree_demon_sapling_walk_01",
+    "mon_tree_demon_sapling_walk_02",
+    "mon_tree_demon_sapling_walk_03"
+   ],
+   "frameRate": 8,
+   "repeat": -1
+  },
+  {
+   "key": "mon_tree_demon_sapling_hit",
+   "frames": [
+    "mon_tree_demon_sapling_hit_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  },
+  {
+   "key": "mon_tree_demon_sapling_die",
+   "frames": [
+    "mon_tree_demon_sapling_die_01",
+    "mon_tree_demon_sapling_die_02",
+    "mon_tree_demon_sapling_die_03"
+   ],
+   "frameRate": 6,
+   "repeat": 0
+  }
+ ],
+ "bodySize": [
+  32,
+  62
+ ],
+ "note": "树妖分身：慢速近身，配置无 attack；胸口紫纹 = 魔种",
+ "kind": "monster"
+}
