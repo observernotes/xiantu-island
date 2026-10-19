@@ -16,7 +16,7 @@
 | 分支 | `feat/companion-area-whirl` |
 | 业务基线 tip | `b3595651c62c16b6db48ffcd9cf7ce90a95c0bae`（短 `b359565`；接线） |
 | 基线 HEAD docs | `507368738171436f631d9f28157c7b7136d79416`（接线 tip 钉业务 tip b359565） |
-| soft-open tip | `SOFT_TIP_PLACEHOLDER`（短 `SOFT7`；交 tip 后钉） |
+| soft-open tip | `e6edf8d56c6337df42b0a12431df362216cad5cb`（短 `e6edf8d`；交 tip 后钉） |
 | worktree | `/workspace/xiantu/wt/feat/companion-area-whirl` |
 | origin | 推 `origin/feat/companion-area-whirl`（**未**合 master） |
 | 旁路 | **是**（docs／status；Codex403旁路） |
@@ -85,4 +85,4 @@
 
 ## 6. 交回
 
-【同行AI44soft 3A已交】炼器＝`reports/炼器阁/20261019_同行AI_design44_soft_open.md` tip＝`SOFT7`｜业务 tip@b359565｜硬门＝无softOpenedCompanion＊／newOpenFlag=false／released=false／冻结MATCH／硬读area＝whirl_sword＋CD4000＋w160·h80·behind32＋N＝2＋budget同乘0.35＋stay不放area＋support锁＋41·42·43未漂｜tsc＋area 190＋follow 86＋modes 158＋dismiss 106 PASS｜相对b359565零业务diff｜Codex旁路｜≠release≠Pages｜现网v0.6.25｜请经理开执法3B soft smoke｜建议v0.6.26本令不授权发版
+【同行AI44soft 3A已交】炼器＝`reports/炼器阁/20261019_同行AI_design44_soft_open.md` tip＝`e6edf8d`｜业务 tip@b359565｜硬门＝无softOpenedCompanion＊／newOpenFlag=false／released=false／冻结MATCH／硬读area＝whirl_sword＋CD4000＋w160·h80·behind32＋N＝2＋budget同乘0.35＋stay不放area＋support锁＋41·42·43未漂｜tsc＋area 190＋follow 86＋modes 158＋dismiss 106 PASS｜相对b359565零业务diff｜Codex旁路｜≠release≠Pages｜现网v0.6.25｜请经理开执法3B soft smoke｜建议v0.6.26本令不授权发版
