@@ -58,9 +58,9 @@
 
 ## 4.1 地图合入（本补刀）
 
-- 提交：`chore(maps): sync 2A flyZone objects into sustain-flight-wire`（SHA 见 git／status）
+- 提交：`chore(maps): sync 2A flyZone objects into sustain-flight-wire``0d4d04b7b3ba55d446dec01328c065349276c931`（短 `0d4d04b`）
 - 2B 产品逻辑未改；仅五图快照与 2A 同字节
-- 可测：2B tip@9d563f3 ⊂ HEAD；含地图合入后的 HEAD 可开 2C
+- 可测：2B tip@9d563f3 ⊂ HEAD；含地图合入 HEAD@`0d4d04b` 可开 2C
 
 ## 5. 自测
 
