@@ -187,5 +187,16 @@
   "stack": 200,
   "qualityEnabled": false,
   "phase": 5
+ },
+ {
+  "id": "spirit_rune_scrap",
+  "name": "灵纹残页",
+  "type": "material",
+  "kind": "drop",
+  "price": 45,
+  "stack": 200,
+  "icon": "icon_spirit_rune_scrap",
+  "note": "试炼灵纹材料；秘境／精英掉落候选（关态未接线）",
+  "phase": 5
  }
 ]

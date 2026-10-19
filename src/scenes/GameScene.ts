@@ -39,6 +39,8 @@ import { SmithServicesPanel } from '../SmithServicesPanel';
 import { isSmithServicesUiAccessible } from '../SmithServicesUiAccess';
 import { MarketConsignPanel } from '../MarketConsignPanel';
 import { isMarketConsignUiAccessible } from '../MarketConsignUiAccess';
+import { SpiritRunePanel } from '../SpiritRunePanel';
+import { isSpiritRuneUiAccessible } from '../SpiritRuneUiAccess';
 import { AttrPanel } from '../AttrPanel';
 import { InventoryPanel } from '../InventoryPanel';
 import { TalismanSystem } from '../Talisman';
@@ -165,6 +167,7 @@ export class GameScene extends Phaser.Scene {
   shop!: ShopPanel;
   smithServices?: SmithServicesPanel;
   marketConsign?: MarketConsignPanel;
+  spiritRune?: SpiritRunePanel;
   private smithDialogVersion = 0;
   private smithDialogueReturnEnabled = false;
   attrPanel!: AttrPanel;
@@ -183,6 +186,7 @@ export class GameScene extends Phaser.Scene {
     this.smithDialogueReturnEnabled = false;
     this.smithServices?.hide(); this.smithServices = undefined; this.smithDialogVersion++;
     this.marketConsign?.hide(); this.marketConsign = undefined;
+    this.spiritRune?.hide(); this.spiritRune = undefined;
     this.towerRoomView?.destroy(); this.towerRoomView = undefined;
     this.towerGate = undefined; this.towerBusy = false;
     this.towerOwnsPause = false; this.towerOwnsTimerPause = false;
@@ -464,6 +468,11 @@ export class GameScene extends Phaser.Scene {
       onClose: () => { if (this.prog === smithProgress) this.returnToSmithDialogue(); },
     });
     this.marketConsign = new MarketConsignPanel(this, this.prog, {
+      tip: (key, vars) => this.log(t(key, vars), '#aaaaaa'),
+      log: (text, color) => this.log(text, color),
+      currentProgress: () => this.prog,
+    });
+    this.spiritRune = new SpiritRunePanel(this, this.prog, {
       tip: (key, vars) => this.log(t(key, vars), '#aaaaaa'),
       log: (text, color) => this.log(text, color),
       currentProgress: () => this.prog,
@@ -888,15 +897,15 @@ export class GameScene extends Phaser.Scene {
     if (this.sectTrial && !this.sectTrial.ended && this.sectTrial.def.quest && this.quests.sectEntryBlock(this.sectTrial.def.quest)) {
       this.sectTrial.exit(); return;
     }
-    this.smithServices?.update(); this.marketConsign?.update();
-    if (this.sectTrial && !this.dialog.open && !this.skillWindow.open && !this.alchemy.isOpen() && !this.shop.isOpen() && !this.smithServices?.visible() && !this.marketConsign?.visible() && !this.attrPanel?.isOpen() && !this.itemPanelOpen()) this.sectTrial.update(delta);
+    this.smithServices?.update(); this.marketConsign?.update(); this.spiritRune?.update();
+    if (this.sectTrial && !this.dialog.open && !this.skillWindow.open && !this.alchemy.isOpen() && !this.shop.isOpen() && !this.smithServices?.visible() && !this.marketConsign?.visible() && !this.spiritRune?.visible() && !this.attrPanel?.isOpen() && !this.itemPanelOpen()) this.sectTrial.update(delta);
     if (this.sectTrial?.ended) { this.drawHud(); return; }
     if (time >= this.nextAgeUpdateAt) { this.prog.advanceAge(); this.nextAgeUpdateAt = time + 60000; this.prog.persistSoon(); }
     if (J(k.i)) { if (this.inventoryPanel?.isOpen()) this.inventoryPanel?.close(); else this.openInventoryPanel(); }
     if (J(k.e)) { if (this.equipPanel?.isOpen()) this.equipPanel?.close(); else this.openEquipPanel(); }
-    if (J(k.k) && !this.dialog.open && !this.alchemy.isOpen() && !this.shop.isOpen() && !this.smithServices?.visible() && !this.marketConsign?.visible() && !this.attrPanel?.isOpen() && !this.itemPanelOpen() && !this.sectTrial?.blocksInput) this.skillWindow.toggle();
-    if (J(k.l) && !this.dialog.open && !this.skillWindow.open && !this.shop.isOpen() && !this.smithServices?.visible() && !this.marketConsign?.visible() && !this.attrPanel?.isOpen() && !this.itemPanelOpen() && !this.sectTrial?.blocksInput) this.openAlchemy();
-    if (J(k.p) && !this.smithServices?.visible() && !this.marketConsign?.visible() && !this.itemPanelOpen()) {
+    if (J(k.k) && !this.dialog.open && !this.alchemy.isOpen() && !this.shop.isOpen() && !this.smithServices?.visible() && !this.marketConsign?.visible() && !this.spiritRune?.visible() && !this.attrPanel?.isOpen() && !this.itemPanelOpen() && !this.sectTrial?.blocksInput) this.skillWindow.toggle();
+    if (J(k.l) && !this.dialog.open && !this.skillWindow.open && !this.shop.isOpen() && !this.smithServices?.visible() && !this.marketConsign?.visible() && !this.spiritRune?.visible() && !this.attrPanel?.isOpen() && !this.itemPanelOpen() && !this.sectTrial?.blocksInput) this.openAlchemy();
+    if (J(k.p) && !this.smithServices?.visible() && !this.marketConsign?.visible() && !this.spiritRune?.visible() && !this.itemPanelOpen()) {
       if (this.attrPanel?.isOpen()) this.attrPanel.close();
       else this.openAttrPanel();
     }
@@ -904,7 +913,7 @@ export class GameScene extends Phaser.Scene {
     if (escDown && this.skillWindow.open) this.skillWindow.close();
     if (escDown && this.attrPanel?.isOpen()) this.attrPanel.close();
     if (escDown) this.closeItemPanels();
-    const modal = this.dialog.open || this.skillWindow.open || this.alchemy.isOpen() || this.shop.isOpen() || this.smithServices?.visible() || this.marketConsign?.visible() || this.attrPanel?.isOpen() || this.itemPanelOpen() || !!this.sectTrial?.blocksInput;
+    const modal = this.dialog.open || this.skillWindow.open || this.alchemy.isOpen() || this.shop.isOpen() || this.smithServices?.visible() || this.marketConsign?.visible() || this.spiritRune?.visible() || this.attrPanel?.isOpen() || this.itemPanelOpen() || !!this.sectTrial?.blocksInput;
     this.updateInteractionPrompts(modal);
     this.gathering.update(delta, k.z.isDown, modal || this.hasNearbyDrop(),
       k.left.isDown || k.right.isDown || k.up.isDown || k.down.isDown || k.space.isDown || k.alt.isDown || k.c.isDown || k.ctrl.isDown || k.x.isDown);
@@ -951,7 +960,7 @@ export class GameScene extends Phaser.Scene {
     if (J(k.one)) this.usePill('hp_pill_small');
     if (J(k.two)) this.usePill('qi_pill');
     if (J(k.z) && this.player.state2 === 'ground' && !this.gathering.active && !this.hasNearbyDrop()
-      && (this.tryInteractTowerClosed() || this.tryInteractMarketConsign() || this.tryInteractForgeEntrance() || this.tryInteractSecretNest() || this.encounterRuntime?.interact() || this.interactTrialObject() || this.openNearbyFurnace() || this.talkNearby())) return;
+      && (this.tryInteractTowerClosed() || this.tryInteractSpiritRune() || this.tryInteractMarketConsign() || this.tryInteractForgeEntrance() || this.tryInteractSecretNest() || this.encounterRuntime?.interact() || this.interactTrialObject() || this.openNearbyFurnace() || this.talkNearby())) return;
     if (k.z.isDown && !this.gathering.active && time >= this.nextPickAt) { this.nextPickAt = time + 150; this.tryPickup(); }
     if (J(k.up) && this.player.state2 === 'ground' && this.tryInteract()) return;
     // 持续飞行：同键再按落地；飞区内 ↑+跳 尝试进入。冲刺仍走 trySwordRide，不受 fly_zones 二次拦截。
@@ -1789,7 +1798,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   openAlchemy(publicFurnace?: string) {
-    if (this.attrPanel?.isOpen() || this.smithServices?.visible() || this.marketConsign?.visible()) return false;
+    if (this.attrPanel?.isOpen() || this.smithServices?.visible() || this.marketConsign?.visible() || this.spiritRune?.visible()) return false;
     if (!this.requireFeature('alchemyPhase1')) return false;
     if (this.player.dead || this.trial || this.map.trial || this.dialog.open || this.skillWindow.open || this.shop.isOpen() || this.sectTrial?.blocksInput) return false;
     const furnace = alchemyFurnace(this.prog, this.player, this.map.objects, publicFurnace);
@@ -1802,7 +1811,7 @@ export class GameScene extends Phaser.Scene {
   /** UI-6：P 与测试入口共用互斥检查；加点结算由 Progress 负责。 */
   openAttrPanel(): boolean {
     if (this.player.dead || this.dialog.open || this.skillWindow.open || this.alchemy.isOpen()
-      || this.shop.isOpen() || this.smithServices?.visible() || this.marketConsign?.visible() || this.sectTrial?.blocksInput) return false;
+      || this.shop.isOpen() || this.smithServices?.visible() || this.marketConsign?.visible() || this.spiritRune?.visible() || this.sectTrial?.blocksInput) return false;
     this.gathering.cancel(); this.player.body.setVelocityX(0); this.invText.setVisible(false);
     this.closeItemPanels();
     this.attrPanel.open(); return true;
@@ -1813,7 +1822,7 @@ export class GameScene extends Phaser.Scene {
   /** UI-7：I/E 与测试桥共用检查；背包/装备互相切换，其他 modal 内禁止打开。 */
   private openItemPanel(panel: InventoryPanel | EquipPanel | undefined): boolean {
     if (!panel || this.player.dead || this.dialog.open || this.skillWindow.open || this.alchemy.isOpen()
-      || this.shop.isOpen() || this.smithServices?.visible() || this.marketConsign?.visible() || this.attrPanel?.isOpen() || this.sectTrial?.blocksInput) return false;
+      || this.shop.isOpen() || this.smithServices?.visible() || this.marketConsign?.visible() || this.spiritRune?.visible() || this.attrPanel?.isOpen() || this.sectTrial?.blocksInput) return false;
     this.gathering.cancel(); this.player.body.setVelocityX(0); this.invText.setVisible(false);
     this.closeItemPanels(); panel.open(); return true;
   }
@@ -1905,7 +1914,7 @@ export class GameScene extends Phaser.Scene {
 
   /** 测试覆盖即时撤下旧回调；存档身份、材料、贡献与待炼炉次均保留。 */
   async applyFeatureFlags() {
-    this.smithServices?.update(); this.marketConsign?.update(); this.smithDialogVersion++;
+    this.smithServices?.update(); this.marketConsign?.update(); this.spiritRune?.update(); this.smithDialogVersion++;
     this.senseMap?.syncRevealed();
     this.senseUi?.refresh(); this.attrPanel?.update();
     syncTalismanMapAvailability();
@@ -2236,6 +2245,28 @@ export class GameScene extends Phaser.Scene {
     if (!entrance) return false;
     if (isTowerOpenForFixture()) void this.interactTowerEntrance();
     else this.showTowerClosed();
+    return true;
+  }
+
+
+  /**
+   * 灵纹祭炼独立入口（禁坊市同窗、禁塞欧冶匠四服务）。
+   * 地图对象名 spirit_rune_altar／lingwen_jilian；缺对象安静 no-op。
+   * Flag 关：只 tip，零改槽；FX1–3 不出现。
+   */
+  private tryInteractSpiritRune(): boolean {
+    const entrance = this.map.objects.find(o => (['spirit_rune_altar', 'lingwen_jilian'].includes(o.name)
+      || o.props?.type === 'spiritRuneAltar' || o.props?.spiritRune === true)
+      && this.senseMap?.objectVisible(o) !== false
+      && Math.abs(o.x - this.player.x) <= 28 && Math.abs(o.y - this.player.y) <= 40);
+    if (!entrance) return false;
+    if (!isSpiritRuneUiAccessible('entrance')) {
+      this.log(t('spirit_rune.closed.feature'), '#aaaaaa');
+      return true;
+    }
+    this.gathering?.cancel(); this.closeItemPanels(); this.player.body?.setVelocityX(0);
+    // Gate／Controller 关态只 tip；show() 返回 false 时仍算已交互。
+    this.spiritRune?.show();
     return true;
   }
 

@@ -96,7 +96,8 @@
     "snapshot": "node scripts/snapshot.mjs",
     "test:cheat": "node scripts/cheat-test.mjs",
     "test:smoke:cheat": "timeout 180s node scripts/cheat-smoke.mjs",
-    "test:smoke:cheat-gate": "timeout 180s node scripts/cheat-gate-smoke.mjs"
+    "test:smoke:cheat-gate": "timeout 180s node scripts/cheat-gate-smoke.mjs",
+    "test:spirit-rune-closed": "timeout 120s node scripts/spirit-rune-closed-test.mjs"
   },
   "dependencies": {
     "phaser": "^3.80.1"

@@ -608,5 +608,11 @@
   "name": "妖兽内丹",
   "phase": 5,
   "icon": "icon_beast_core"
+ },
+ {
+  "id": "spirit_rune_scrap",
+  "name": "灵纹残页",
+  "phase": 5,
+  "icon": "icon_spirit_rune_scrap"
  }
 ]

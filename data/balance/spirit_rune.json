@@ -1,0 +1,258 @@
+{
+ "version": "v0.6-draft",
+ "enabled": false,
+ "meta": {
+  "generator": "balance/tools/gen_spirit_rune.py",
+  "status": "演武 2A 关态落表完成；词条／残页／掉落候选／炼化淬炼锁定定稿；未接线、未 soft-open、未 release。",
+  "basis": [
+   "reports/天机阁/20261019_负责人令_刷装快感_灵纹_接线.md §2A",
+   "design/35_v06_刷装快感_灵纹本命炼化淬炼.md（宿主 B；文案降级）",
+   "reports/天机阁/20261019_负责人令_明示例外_Codex403旁路.md（接线令写明 Codex403 仍可旁路）"
+  ],
+  "rationale": {
+   "slotCount": "试炼切片 2 槽，留 v0.7 正式本命扩展空间。",
+   "affixAmplitude": "单条 valuePct 0.015–0.03，低于强化单档 atk 4% 与附灵元素伤 5%；双槽满配仍不碾压强化底板。",
+   "weights": "atk/def/hp 常见高权；crit／lifesteal 稀有低权。",
+   "refineCost": "残页×1＋少量灵石，便于刷装闭环。",
+   "quenchCost": "残页×2＋更高灵石，淬炼略贵于炼化。",
+   "lockCost": "灵石为主（500），残页 0，突出锁定沉没成本。",
+   "drops": "独立 dropCandidates，sourceTag∈{mob,dungeon}；不改 drops.json 现网，避免破坏已上线掉落。",
+   "failPolicy": "禁碎装／禁掉强化档／禁清附灵；保底 guaranteeEveryN=8。"
+  }
+ },
+ "scrapItemId": "spirit_rune_scrap",
+ "slotCount": 2,
+ "refineCost": {
+  "scrap": 1,
+  "spiritStones": 50
+ },
+ "quenchCost": {
+  "scrap": 2,
+  "spiritStones": 200
+ },
+ "lockCost": {
+  "spiritStones": 500,
+  "scrap": 0
+ },
+ "unlockCost": {
+  "spiritStones": 100,
+  "scrap": 0
+ },
+ "pityCounter": {
+  "enabled": true,
+  "field": "quenchCount"
+ },
+ "guaranteeEveryN": 8,
+ "failPolicy": {
+  "shatterGear": false,
+  "dropEnhanceLevel": false,
+  "clearEnchant": false,
+  "onFail": "no_change_or_preview_rollback"
+ },
+ "spirit_rune_affixes": [
+  {
+   "id": "liujin_jianyi",
+   "name": "流金剑意",
+   "nameKey": "spirit_rune.affix.liujin_jianyi",
+   "type": "atk",
+   "value": 0,
+   "valuePct": 0.025,
+   "weight": 12
+  },
+  {
+   "id": "xuanbing_huti",
+   "name": "玄冰护体",
+   "nameKey": "spirit_rune.affix.xuanbing_huti",
+   "type": "def",
+   "value": 0,
+   "valuePct": 0.025,
+   "weight": 12
+  },
+  {
+   "id": "cangsheng_qi",
+   "name": "苍生气脉",
+   "nameKey": "spirit_rune.affix.cangsheng_qi",
+   "type": "hp",
+   "value": 0,
+   "valuePct": 0.03,
+   "weight": 12
+  },
+  {
+   "id": "qingyuan_xifa",
+   "name": "清源息法",
+   "nameKey": "spirit_rune.affix.qingyuan_xifa",
+   "type": "mp",
+   "value": 0,
+   "valuePct": 0.03,
+   "weight": 10
+  },
+  {
+   "id": "tianji_pozhao",
+   "name": "天机破招",
+   "nameKey": "spirit_rune.affix.tianji_pozhao",
+   "type": "crit",
+   "value": 0,
+   "valuePct": 0.02,
+   "weight": 6
+  },
+  {
+   "id": "wuxing_xiangsheng",
+   "name": "五行相生",
+   "nameKey": "spirit_rune.affix.wuxing_xiangsheng",
+   "type": "elem_bonus",
+   "value": 0,
+   "valuePct": 0.025,
+   "weight": 8
+  },
+  {
+   "id": "jianqi_cuihong",
+   "name": "剑气催虹",
+   "nameKey": "spirit_rune.affix.jianqi_cuihong",
+   "type": "skill_haste",
+   "value": 0,
+   "valuePct": 0.02,
+   "weight": 8
+  },
+  {
+   "id": "xueji_tunnian",
+   "name": "血祭吞念",
+   "nameKey": "spirit_rune.affix.xueji_tunnian",
+   "type": "lifesteal",
+   "value": 0,
+   "valuePct": 0.015,
+   "weight": 4
+  },
+  {
+   "id": "dinghai_zhu",
+   "name": "定海珠影",
+   "nameKey": "spirit_rune.affix.dinghai_zhu",
+   "type": "def",
+   "value": 0,
+   "valuePct": 0.02,
+   "weight": 6
+  },
+  {
+   "id": "yufeng_jue",
+   "name": "御风诀痕",
+   "nameKey": "spirit_rune.affix.yufeng_jue",
+   "type": "skill_haste",
+   "value": 0,
+   "valuePct": 0.015,
+   "weight": 5
+  }
+ ],
+ "affixes": [
+  {
+   "id": "liujin_jianyi",
+   "name": "流金剑意",
+   "nameKey": "spirit_rune.affix.liujin_jianyi",
+   "type": "atk",
+   "value": 0,
+   "valuePct": 0.025,
+   "weight": 12
+  },
+  {
+   "id": "xuanbing_huti",
+   "name": "玄冰护体",
+   "nameKey": "spirit_rune.affix.xuanbing_huti",
+   "type": "def",
+   "value": 0,
+   "valuePct": 0.025,
+   "weight": 12
+  },
+  {
+   "id": "cangsheng_qi",
+   "name": "苍生气脉",
+   "nameKey": "spirit_rune.affix.cangsheng_qi",
+   "type": "hp",
+   "value": 0,
+   "valuePct": 0.03,
+   "weight": 12
+  },
+  {
+   "id": "qingyuan_xifa",
+   "name": "清源息法",
+   "nameKey": "spirit_rune.affix.qingyuan_xifa",
+   "type": "mp",
+   "value": 0,
+   "valuePct": 0.03,
+   "weight": 10
+  },
+  {
+   "id": "tianji_pozhao",
+   "name": "天机破招",
+   "nameKey": "spirit_rune.affix.tianji_pozhao",
+   "type": "crit",
+   "value": 0,
+   "valuePct": 0.02,
+   "weight": 6
+  },
+  {
+   "id": "wuxing_xiangsheng",
+   "name": "五行相生",
+   "nameKey": "spirit_rune.affix.wuxing_xiangsheng",
+   "type": "elem_bonus",
+   "value": 0,
+   "valuePct": 0.025,
+   "weight": 8
+  },
+  {
+   "id": "jianqi_cuihong",
+   "name": "剑气催虹",
+   "nameKey": "spirit_rune.affix.jianqi_cuihong",
+   "type": "skill_haste",
+   "value": 0,
+   "valuePct": 0.02,
+   "weight": 8
+  },
+  {
+   "id": "xueji_tunnian",
+   "name": "血祭吞念",
+   "nameKey": "spirit_rune.affix.xueji_tunnian",
+   "type": "lifesteal",
+   "value": 0,
+   "valuePct": 0.015,
+   "weight": 4
+  },
+  {
+   "id": "dinghai_zhu",
+   "name": "定海珠影",
+   "nameKey": "spirit_rune.affix.dinghai_zhu",
+   "type": "def",
+   "value": 0,
+   "valuePct": 0.02,
+   "weight": 6
+  },
+  {
+   "id": "yufeng_jue",
+   "name": "御风诀痕",
+   "nameKey": "spirit_rune.affix.yufeng_jue",
+   "type": "skill_haste",
+   "value": 0,
+   "valuePct": 0.015,
+   "weight": 5
+  }
+ ],
+ "dropCandidates": [
+  {
+   "itemId": "spirit_rune_scrap",
+   "sourceTag": "mob",
+   "chance": 0.008,
+   "count": [
+    1,
+    1
+   ],
+   "note": "常规怪保守率；炼器接线另令消费，未写入 drops.json 现网怪表"
+  },
+  {
+   "itemId": "spirit_rune_scrap",
+   "sourceTag": "dungeon",
+   "chance": 0.025,
+   "count": [
+    1,
+    1
+   ],
+   "note": "秘境／精英语义候选，高于杂兵；禁 forge 图纸池／禁默认坊市上架"
+  }
+ ]
+}

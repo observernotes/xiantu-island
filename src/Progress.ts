@@ -23,6 +23,7 @@ import { isValidForgeProgress, type ForgeCraftResult, type ForgeProgress } from 
 import { isEnhanceId, isEnhanceInstanceRef, isValidEnhanceProgress, type EnhanceFixtureInstance,
   type EnhanceProgress, type FormalEnhanceSource } from './EnhanceProgress';
 import { isValidEnchantProgress, type EnchantProgress } from './EnchantProgress';
+import { isValidSpiritRuneProgress, type SpiritRuneProgress } from './SpiritRuneProgress';
 import { isValidSalvageProgress, type SalvageProgress } from './SalvageProgress';
 import { isValidEquipInstanceRefs, resolveFormalInventoryEquipBinding, type EquipInstanceRefs } from './EquipInstBinding';
 
@@ -97,6 +98,7 @@ function validSaveData(saved: unknown): saved is Record<string, unknown> {
   if (has('enhance') && !isValidEnhanceProgress(saved.enhance)) return false;
   if (has('enchant') && !isValidEnchantProgress(saved.enchant)) return false;
   if (has('salvage') && !isValidSalvageProgress(saved.salvage)) return false;
+  if (has('spiritRune') && !isValidSpiritRuneProgress(saved.spiritRune)) return false;
   for (const key of ['inventory', 'skills', 'skillGifted']) if (has(key) && !numbers(saved[key])) return false;
   for (const key of ['skillMastery', 'gatherRespawnAt']) if (has(key) && !numbers(saved[key], false)) return false;
   for (const key of ['job', 'selectedSect', 'name', 'rootElement', 'sectDailyContributionDay', 'dailyQuestResetDay', 'seclusionDay']) {
@@ -199,6 +201,8 @@ export class Progress {
   enchant: EnchantProgress | undefined = undefined;
   /** 仅 SSR 开态夹具完整提交产生；缺字段旧档保持 undefined，读档不补做。 */
   salvage: SalvageProgress | undefined = undefined;
+  /** 仅 SSR／开态另令完整提交；缺字段旧档保持 undefined，读档不补做。关态 Flag 未开不写袋。 */
+  spiritRune: SpiritRuneProgress | undefined = undefined;
   classRewardClaims: string[] = [];
   /** 通用入门技的付费等级在拜宗后退回当前一转点池。 */
   classRefundSp = 0;
