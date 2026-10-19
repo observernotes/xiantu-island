@@ -1,6 +1,6 @@
 import strings from '@xt/balance/strings_zh.json';
 import * as Closed from './SpiritRuneClosed';
-import { isSpiritRuneOpen, softOpenedSpiritRune, SPIRIT_RUNE_OPEN_FLAG_NAME } from './SpiritRuneAccess';
+import { isSpiritRuneOpen, softOpenedSpiritRune, SPIRIT_RUNE_OPEN_FLAG_NAME, SPIRIT_RUNE_OPEN_INJECT_KEY } from './SpiritRuneAccess';
 import { SpiritRuneGate } from './SpiritRuneGate';
 import { spiritRuneFxActive, spiritRuneFxState } from './SpiritRuneFx';
 import { loadSpiritRuneRules } from './SpiritRuneRules';
@@ -20,10 +20,13 @@ export async function runSpiritRuneClosedTests() {
   };
   const ok = (actual: unknown, message: string) => { assertions++; if (!actual) throw new Error(message); };
 
-  // Flag：仅登记名，无 OpenFlag 文件，消费者恒关
+  // soft-open：正式默认开；关态图须先注入严格 false（对齐 memory-closed）
+  Object.defineProperty(globalThis, SPIRIT_RUNE_OPEN_INJECT_KEY, {
+    configurable: true, writable: true, value: false,
+  });
   eq(SPIRIT_RUNE_OPEN_FLAG_NAME, 'SpiritRuneOpenFlag', 'Flag 名登记');
-  eq(isSpiritRuneOpen(), false, 'SpiritRuneOpenFlag 消费者恒关');
-  eq(softOpenedSpiritRune(), false, 'softOpenedSpiritRune 证据位仍 false');
+  eq(isSpiritRuneOpen(), false, '注入严格 false→关（closed／memory-closed）');
+  eq(softOpenedSpiritRune(), true, 'softOpenedSpiritRune 证据位 true（soft-open）');
 
   // 文案降级
   const keys = Object.keys(strings).filter(k => k.startsWith('spirit_rune.'));
@@ -102,8 +105,8 @@ export async function runSpiritRuneClosedTests() {
   eq(p.exportSave(), beforeSave, 'exportSave 不变');
   eq(p.spiritRune, undefined, 'spiritRune 袋未创建');
   eq(storageWrites, 0, '存储写=0');
-  eq(isSpiritRuneOpen(), false, '调用后 Flag 仍关');
-  eq(softOpenedSpiritRune(), false, '调用后 soft 仍 false');
+  eq(isSpiritRuneOpen(), false, '调用后 Flag 仍关（注入 false 仍在）');
+  eq(softOpenedSpiritRune(), true, '调用后 soft 仍 true');
 
   // listHosts 只读不写
   const hosts = gate.listHosts();
@@ -113,8 +116,9 @@ export async function runSpiritRuneClosedTests() {
   return {
     assertions,
     SpiritRuneOpenFlag: false,
-    softOpenedSpiritRune: false,
+    softOpenedSpiritRune: true,
     released: false,
+    newOpenFlag: false,
     newOpenFlagFile: false,
     smithServicesUnchanged: true,
     fxClosed: true,
