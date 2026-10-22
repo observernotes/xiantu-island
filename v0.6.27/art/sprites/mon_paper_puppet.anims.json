@@ -1,0 +1,71 @@
+{
+ "atlas": "mon_paper_puppet",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  64,
+  80
+ ],
+ "anims": [
+  {
+   "key": "mon_paper_puppet_idle",
+   "frames": [
+    "mon_paper_puppet_idle_01",
+    "mon_paper_puppet_idle_02"
+   ],
+   "frameRate": 3,
+   "repeat": -1
+  },
+  {
+   "key": "mon_paper_puppet_walk",
+   "frames": [
+    "mon_paper_puppet_walk_01",
+    "mon_paper_puppet_walk_02",
+    "mon_paper_puppet_walk_03"
+   ],
+   "frameRate": 8,
+   "repeat": -1
+  },
+  {
+   "key": "mon_paper_puppet_attack",
+   "frames": [
+    "mon_paper_puppet_attack_01",
+    "mon_paper_puppet_attack_02",
+    "mon_paper_puppet_attack_03"
+   ],
+   "frameRate": 8,
+   "repeat": 0
+  },
+  {
+   "key": "mon_paper_puppet_hit",
+   "frames": [
+    "mon_paper_puppet_hit_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  },
+  {
+   "key": "mon_paper_puppet_die",
+   "frames": [
+    "mon_paper_puppet_die_01",
+    "mon_paper_puppet_die_02",
+    "mon_paper_puppet_die_03"
+   ],
+   "frameRate": 6,
+   "repeat": 0
+  }
+ ],
+ "bodySize": [
+  30,
+  52
+ ],
+ "attackFrames": {
+  "telegraph": 1,
+  "hit": 2
+ },
+ "note": "太虚观试炼·纸傀儡（paper_puppet）：白纸剪人 + 额前黄符。walk 是纸人蹦跳（第 2 帧离地 3.5px，物理体不用跳）。有 attack：attack_01 举臂、符纹发红（前摇定格），attack_02 纸刃横削（判定，纸刃画在帧内，约 32×16），attack_03 收势；数值若定为纯碰撞怪（无 attack 字段），只播 idle/walk/hit/die 即可。die = 后仰 → 揉皱压扁 → 纸屑散开淡出。",
+ "kind": "monster"
+}

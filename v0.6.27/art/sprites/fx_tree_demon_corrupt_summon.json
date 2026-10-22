@@ -1,0 +1,158 @@
+{
+ "frames": {
+  "fx_tree_demon_corrupt_summon_play_01": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 96,
+    "h": 112
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 96,
+    "h": 112
+   },
+   "sourceSize": {
+    "w": 96,
+    "h": 112
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fx_tree_demon_corrupt_summon_play_02": {
+   "frame": {
+    "x": 96,
+    "y": 0,
+    "w": 96,
+    "h": 112
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 96,
+    "h": 112
+   },
+   "sourceSize": {
+    "w": 96,
+    "h": 112
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fx_tree_demon_corrupt_summon_play_03": {
+   "frame": {
+    "x": 192,
+    "y": 0,
+    "w": 96,
+    "h": 112
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 96,
+    "h": 112
+   },
+   "sourceSize": {
+    "w": 96,
+    "h": 112
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fx_tree_demon_corrupt_summon_play_04": {
+   "frame": {
+    "x": 288,
+    "y": 0,
+    "w": 96,
+    "h": 112
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 96,
+    "h": 112
+   },
+   "sourceSize": {
+    "w": 96,
+    "h": 112
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fx_tree_demon_corrupt_summon_play_05": {
+   "frame": {
+    "x": 384,
+    "y": 0,
+    "w": 96,
+    "h": 112
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 96,
+    "h": 112
+   },
+   "sourceSize": {
+    "w": 96,
+    "h": 112
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  },
+  "fx_tree_demon_corrupt_summon_play_06": {
+   "frame": {
+    "x": 480,
+    "y": 0,
+    "w": 96,
+    "h": 112
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 96,
+    "h": 112
+   },
+   "sourceSize": {
+    "w": 96,
+    "h": 112
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 1
+   }
+  }
+ },
+ "meta": {
+  "app": "xiantu gen_mon_v05.py",
+  "image": "fx_tree_demon_corrupt_summon.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 576,
+   "h": 112
+  },
+  "scale": "1"
+ }
+}
