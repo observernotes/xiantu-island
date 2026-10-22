@@ -1,7 +1,7 @@
 # V0627_RELEASE
 
 - **试玩**：https://observernotes.github.io/xiantu-island/v0.6.27/
-- **master / tag^{}**：`020002d11cd4487f17a24c75f012b37faa12a439`（annotated tag `v0.6.27` → object `944aed4142978f0022a859c0f48fa2adb6c0c3d7`）
+- **master / tag^{}**：`020002d11cd4487f17a24c75f012b37faa12a439`（annotated tag `v0.6.27` → object `944aed4142978f0022a859c0f48fa2adb6c0c3d7`；其后 docs tip `4c04a7f188b4ae749b70d97e3cfbfc4e7e011bc3`）
 - **内容 tip（--from）**：`c166d3ea41dd052ef2515b162085490f0ca7e4c6`（soft-open 交件；含于 master=`020002d`）
 - **业务 tip**：`ffc63aa5617a779a264da915a877cb9267bf3797`（hurt→companionReflectDamage；ratio0.5 读表 effects；forbidEmit；budget×0.35；stay 不放反伤；schedule 不改；41–44 未漂）⊂ soft tip ⊂ master
 - **分支 tip / origin**：发版 tip `020002d`（hotfix/qa 同＝master）；feat/companion-reflect-hook 普通快进合入
