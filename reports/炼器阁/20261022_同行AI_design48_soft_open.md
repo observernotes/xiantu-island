@@ -17,7 +17,7 @@
 | 业务基线 tip | `2e0ca04d365d8e7b208aa2aa3976e45cfde62b41`（短 `2e0ca04d`；交件基线／开态 tip） |
 | 实现 tip | `8738405bbc7a43579e9f6256105716e63be41088`（短 `8738405b`；业务唯一改码） |
 | 基线 HEAD docs | `2e0ca04d365d8e7b208aa2aa3976e45cfde62b41`（docs tip；源码同 8738405b） |
-| soft-open tip | `SOFT_TIP_PLACEHOLDER`（短 `SOFT_TIP_SHORT`；交 tip 后钉） |
+| soft-open tip | `e951b229ab1eaa44b5f7dbc79dec50c846c6dc96`（短 `e951b229`；交 tip 后钉） |
 | worktree | `/workspace/xiantu/wt/feat/companion-support-sword-shield` |
 | origin | 推 `origin/feat/companion-support-sword-shield`（**未**合 master） |
 | 旁路 | **是**（docs／status；Codex403旁路） |
@@ -103,4 +103,4 @@
 
 ## 6. 交回
 
-【同行AI48soft 3A已交】soft tip＝`SOFT_TIP_PLACEHOLDER`｜业务 tip＝2e0ca04d／实现＝8738405b｜报告＝reports/炼器阁/20261022_同行AI_design48_soft_open.md｜无 softOpenedCompanion＊｜newOpenFlag=false｜released=false｜冻结 MATCH｜tsc＋测 PASS｜已 push｜≠release≠Pages｜现网 v0.6.29｜建议 v0.6.30 未授权｜开 soft smoke｜等执法 3B
+【同行AI48soft 3A已交】soft tip＝`e951b229ab1eaa44b5f7dbc79dec50c846c6dc96`｜业务 tip＝2e0ca04d／实现＝8738405b｜报告＝reports/炼器阁/20261022_同行AI_design48_soft_open.md｜无 softOpenedCompanion＊｜newOpenFlag=false｜released=false｜冻结 MATCH｜tsc＋测 PASS｜已 push｜≠release≠Pages｜现网 v0.6.29｜建议 v0.6.30 未授权｜开 soft smoke｜等执法 3B
