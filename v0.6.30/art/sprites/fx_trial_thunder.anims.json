@@ -1,0 +1,31 @@
+{
+ "atlas": "fx_trial_thunder",
+ "facing": "left",
+ "origin": [
+  0.5,
+  0.8
+ ],
+ "frameSize": [
+  160,
+  400
+ ],
+ "anims": [
+  {
+   "key": "fx_trial_thunder_strike",
+   "frames": [
+    "fx_trial_thunder_strike_01",
+    "fx_trial_thunder_strike_02",
+    "fx_trial_thunder_strike_03",
+    "fx_trial_thunder_strike_04",
+    "fx_trial_thunder_strike_05",
+    "fx_trial_thunder_strike_06"
+   ],
+   "frameRate": 16,
+   "repeat": 0
+  }
+ ],
+ "blend": "NORMAL",
+ "damageFrame": 2,
+ "note": "天雷：原点 (0.5,0.8) = 落点 = 雷圈圆心（和预警圈放同一个坐标）。雷从帧顶（落点上方 320px）劈下。判定帧 = strike_02（≈62ms）；strike_04 冲击环正好半径 64。建议同时轻微震屏 80ms。",
+ "kind": "fx"
+}
