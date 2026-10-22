@@ -17,7 +17,7 @@
 | 业务基线 tip | `3a703e7204cbb076b1efef41e2a2c195c2fd6d1b`（短 `3a703e72`；交件基线） |
 | 实现 tip | `0cdb77084b9878927818435eb5c729a0196b43e6`（短 `0cdb7708`；业务唯一改码） |
 | 基线 HEAD docs | `f28dc69759a7e8cf9445d663176067aa87ecb423`（docs tip；源码同 0cdb7708） |
-| soft-open tip | `SOFT_TIP_PLACEHOLDER`（短 `SOFT_TIP_SHORT`；交 tip 后钉） |
+| soft-open tip | `1d953e2987aa050923bba7e9046a564b2546e0bd`（短 `1d953e29`；交 tip 后钉） |
 | worktree | `/workspace/xiantu/wt/feat/companion-down-revive` |
 | origin | 推 `origin/feat/companion-down-revive`（**未**合 master） |
 | 旁路 | **是**（docs／status；Codex403旁路） |
@@ -95,4 +95,4 @@
 
 ## 6. 交回
 
-【同行AI46soft 3A已交】soft tip＝`SOFT_TIP_PLACEHOLDER`｜业务 tip＝3a703e72／实现＝0cdb7708｜报告＝reports/炼器阁/20261022_同行AI_design46_soft_open.md｜无 softOpenedCompanion＊｜newOpenFlag=false｜released=false｜冻结 MATCH｜tsc＋测 PASS｜已 push｜≠release≠Pages｜现网 v0.6.27｜开 soft smoke｜等执法 3B
+【同行AI46soft 3A已交】soft tip＝`1d953e2987aa050923bba7e9046a564b2546e0bd`｜业务 tip＝3a703e72／实现＝0cdb7708｜报告＝reports/炼器阁/20261022_同行AI_design46_soft_open.md｜无 softOpenedCompanion＊｜newOpenFlag=false｜released=false｜冻结 MATCH｜tsc＋测 PASS｜已 push｜≠release≠Pages｜现网 v0.6.27｜开 soft smoke｜等执法 3B
