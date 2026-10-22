@@ -10,7 +10,7 @@ import { SKILLS, skillNumber } from './skills';
 /**
  * design/41 · 同行 AI follow 硬读（演武定稿；design/42／43／44／45 不漂此表）。
  * design/42 扩展 mode 状态机（free／stay／切换）；design/43 解散；design/44 area＝whirl_sword；
- * design/45 受击被动反伤（≠ support／≠ emit sword_shield）。
+ * design/45 受击被动反伤；design/46 零血倒地／场景本地复起（≠ support／≠ emit sword_shield）。
  * 与 FriendlySummons 隔离；禁新 OpenFlag。≠ 开态 ≠ soft ≠ release ≠ Pages。
  */
 export const COMPANION_FOLLOW_HARD = Object.freeze({
@@ -136,6 +136,36 @@ export const COMPANION_REFLECT_HARD = Object.freeze({
     zeroDamage: true as const,
     cancelPendingReflectOnEnter: true as const,
     invulnerable: false as const,
+  }),
+});
+
+/** design/46 · 零血复起硬读；运行时只读表根 reviveMs，不改 41–45／表字节。 */
+export const COMPANION_DOWN_REVIVE_HARD = Object.freeze({
+  companionId: SU_COMPANION_ID,
+  down: Object.freeze({
+    enabled: true as const,
+    trigger: 'hostileHitOnCompanion && hp→0' as const,
+    stopPrimaryAreaReflect: true as const,
+    cancelPendingStrikeAndReflect: true as const,
+    fatalHitReflect: false as const,
+    whileDowned: Object.freeze({ noPrimaryAreaReflect: true as const }),
+  }),
+  revive: Object.freeze({
+    readPath: 'companions.reviveMs' as const,
+    timerScope: 'sceneLocal' as const,
+    keepRelationAndMode: true as const,
+    /** 现表旁证；实际 deadline 读 COMPANIONS.reviveMs。 */
+    reviveMs: 30000,
+    hpOnRevive: 'maxHp' as const,
+    iFramesMs: 1000,
+    spawn: '原地' as const,
+    visibleDown: '苏师姐力竭' as const,
+    visibleRevive: '复起' as const,
+  }),
+  modes: Object.freeze({
+    follow: Object.freeze({ canDownAndRevive: true as const }),
+    free: Object.freeze({ canDownAndRevive: true as const }),
+    stay: Object.freeze({ canDownAndRevive: true as const }),
   }),
 });
 
@@ -413,6 +443,10 @@ export interface CompanionFollowEntity {
   /** 接触受击 i-frame 时钟 */
   hurtReadyAt: number;
   recoverUntil?: number;
+  /** design/46：仅本场景实体持有；不写入关系／存档，切态不清除。 */
+  downed: boolean;
+  reviveAt?: number;
+  downedPosition?: { x: number; y: number };
 }
 
 /**
@@ -494,17 +528,21 @@ export class CompanionFollowAi {
     const entity = this.liveEntity;
     if (!entity || this.destroyed) return;
     const { player, prog } = this.scene;
-    if (!player || player.dead) {
-      const body = entity.sprite.body as Phaser.Physics.Arcade.Body | undefined;
-      body?.setVelocityX(0);
-      return;
-    }
     const active = activeCompanion(COMPANIONS, prog);
     if (!active) {
       this.clearEntity();
       return;
     }
-
+    // sceneLocal 复起先于 mode／玩家停战门闩；stay 或切 mode 不得取消倒地计时。
+    if (entity.downed) {
+      this.updateDowned(entity, time);
+      return;
+    }
+    if (!player || player.dead) {
+      const body = entity.sprite.body as Phaser.Physics.Arcade.Body | undefined;
+      body?.setVelocityX(0);
+      return;
+    }
     if (active.mode === 'stay') {
       this.updateStay(entity);
       return;
@@ -520,6 +558,39 @@ export class CompanionFollowAi {
     if (this.destroyed) return;
     this.destroyed = true;
     this.clearEntity();
+  }
+
+  private enterDowned(entity: CompanionFollowEntity, time: number) {
+    if (entity.downed) return;
+    entity.downed = true;
+    entity.downedPosition = { x: entity.sprite.x, y: entity.sprite.y };
+    // activeCompanion 已通过表门禁；不以 HARD 旁证数字代替读表根。
+    entity.reviveAt = time + COMPANIONS!.reviveMs;
+    this.clearAiFlags();
+    const body = entity.sprite.body as Phaser.Physics.Arcade.Body;
+    body.setVelocityX(0);
+    body.setVelocityY(0);
+    body.moves = false;
+    this.animate(entity.sprite, 'idle');
+    entity.sprite.setAngle(90);
+    this.scene.log(COMPANION_DOWN_REVIVE_HARD.revive.visibleDown, '#c8e6ff');
+  }
+
+  private updateDowned(entity: CompanionFollowEntity, time: number) {
+    if (entity.reviveAt === undefined || time < entity.reviveAt) return;
+    const body = entity.sprite.body as Phaser.Physics.Arcade.Body;
+    const position = entity.downedPosition!;
+    body.reset(position.x, position.y);
+    body.moves = true;
+    entity.hp = entity.maxHp;
+    entity.downed = false;
+    entity.reviveAt = undefined;
+    entity.downedPosition = undefined;
+    entity.hurtReadyAt = time + COMPANION_DOWN_REVIVE_HARD.revive.iFramesMs;
+    entity.sprite.setAngle(0);
+    this.animate(entity.sprite, 'idle');
+    this.scene.log(COMPANION_DOWN_REVIVE_HARD.revive.visibleRevive, '#c8e6ff');
+    // 本帧保持倒地落点；下一帧才按既有 mode 调度（含 follow leash）。
   }
 
   private updateStay(entity: CompanionFollowEntity) {
@@ -543,9 +614,15 @@ export class CompanionFollowAi {
     const body = sprite.body as Phaser.Physics.Arcade.Body;
     const engage = mode === 'free' ? modes.free.engageRange : hard.primary.engageRange;
 
-    // design/45：先结算／扫描受击反伤（follow／free 允许）
-    this.processPendingReflect(entity, time);
+    // design/46：先受击门闩；致命同拍清 pending，禁止继续反伤／出招／leash。
+    const previousReflect = entity.pendingReflect;
     this.scanHostileTouchHits(entity, time, true);
+    if (entity.downed) return;
+    // 帧间隔超过受击 i-frame 时，两笔非致命命中仍各按 45 结算，不覆盖旧笔。
+    if (previousReflect && previousReflect !== entity.pendingReflect && time >= previousReflect.applyAt) {
+      this.applyReflect(entity, previousReflect.attacker, previousReflect.incomingHitDamage, time);
+    }
+    this.processPendingReflect(entity, time);
 
     if (mode === 'follow' && shouldLeashTeleport(sprite.x, player.x, hard.leashDist)) {
       body.reset(followAnchorX(player.x, player.facing, 40), player.feet);
@@ -685,6 +762,7 @@ export class CompanionFollowAi {
       areaReadyAt: now,
       areaMissStreak: 0,
       hurtReadyAt: now,
+      downed: false,
       colliders,
     };
     this.animate(sprite, 'idle');
@@ -752,7 +830,7 @@ export class CompanionFollowAi {
    * 不混玩家 hurt／FriendlySummons；不反伤玩家／友方／环境。
    */
   private scanHostileTouchHits(entity: CompanionFollowEntity, time: number, allowReflect: boolean) {
-    if (!entity.sprite.active || time < entity.hurtReadyAt) return;
+    if (entity.downed || entity.hp <= 0 || !entity.sprite.active || time < entity.hurtReadyAt) return;
     const sprite = entity.sprite;
     for (const mob of this.scene.mobs) {
       if (mob.dead || mob.def.noDamage || mob.suppressTouch || !mob.def.touchDamage || !mob.body?.enable) continue;
@@ -774,12 +852,18 @@ export class CompanionFollowAi {
     time: number,
     allowReflect: boolean,
   ): number {
-    if (!entity.sprite.active || time < entity.hurtReadyAt) return 0;
+    if (this.destroyed || entity !== this.liveEntity || entity.downed || entity.hp <= 0
+      || time < entity.hurtReadyAt) return 0;
     entity.hurtReadyAt = time + COMPANION_REFLECT_HARD.hurtIframeMs;
     const incoming = Math.max(1, Math.round(rawDamage - entity.defense));
     entity.hp = Math.max(0, entity.hp - incoming);
     this.scene.damageNumber(
       entity.sprite.x, entity.sprite.y - 40, incoming, '#c8e6ff', '#1a3a5c');
+    // fatalHitReflect=false：先倒地、清 pending；致命击绝不进入反伤排队。
+    if (entity.hp === 0) {
+      this.enterDowned(entity, time);
+      return incoming;
+    }
     const body = entity.sprite.body as Phaser.Physics.Arcade.Body | undefined;
     if (body) body.setVelocityX(Math.sign(entity.sprite.x - attacker.x) * 60);
 
@@ -801,6 +885,10 @@ export class CompanionFollowAi {
   }
 
   private processPendingReflect(entity: CompanionFollowEntity, time: number) {
+    if (entity.downed || entity.hp <= 0) {
+      entity.pendingReflect = undefined;
+      return;
+    }
     const pending = entity.pendingReflect;
     if (!pending) return;
     if (time < pending.applyAt) return;
@@ -815,6 +903,7 @@ export class CompanionFollowAi {
     incomingHitDamage: number,
     time: number,
   ) {
+    if (entity.downed || entity.hp <= 0) return;
     if (COMPANION_REFLECT_HARD.forbidEmitSwordShield) {
       // 契约：本路径不调度／不 pending／不 strike sword_shield
     }
@@ -854,8 +943,11 @@ export class CompanionFollowAi {
 
   private clearEntity() {
     const entity = this.entity;
+    this.clearAiFlags();
     this.entity = null;
     if (!entity) return;
+    entity.reviveAt = undefined;
+    entity.downedPosition = undefined;
     for (const collider of entity.colliders) collider.destroy();
     if (entity.sprite.active) entity.sprite.destroy();
   }
