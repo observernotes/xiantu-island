@@ -10,7 +10,7 @@
 >
 > 实现 tip：`a09fc8fc9b0b340ccb8caebc783a57d7a3027376`
 >
-> 交件 tip（枝 HEAD／ls-remote）：`4deea47f3a5fea8eddfa049597a6f79d551a3130`
+> 交件 tip（枝 HEAD／ls-remote）：`d2d74f2e498a8b7d3e4d7c92556592c4502ad6ec`
 >
 > **已 `git push -u origin feat/companion-affinity-sources`**（禁 force）。
 >
@@ -78,9 +78,9 @@
 ## Push 保全
 
 - `git push -u origin feat/companion-affinity-sources` **OK**
-- `git ls-remote origin feat/companion-affinity-sources`＝`4deea47f3a5fea8eddfa049597a6f79d551a3130`
+- `git ls-remote origin feat/companion-affinity-sources`＝`d2d74f2e498a8b7d3e4d7c92556592c4502ad6ec`
 - 禁 force-push
 
 ## 交回
 
-【同行AI47接线已交】tip＝4deea47f3a5fea8eddfa049597a6f79d551a3130｜实现＝a09fc8fc9b0b340ccb8caebc783a57d7a3027376｜报告＝reports/炼器阁/20261022_同行AI_design47_wire.md｜门闩＝OPEN｜无新OpenFlag｜delta＝100/100/100｜已 push｜≠开态≠soft≠release｜现网 v0.6.28｜等负责人核
+【同行AI47接线已交】tip＝d2d74f2e498a8b7d3e4d7c92556592c4502ad6ec｜实现＝a09fc8fc9b0b340ccb8caebc783a57d7a3027376｜报告＝reports/炼器阁/20261022_同行AI_design47_wire.md｜门闩＝OPEN｜无新OpenFlag｜delta＝100/100/100｜已 push｜≠开态≠soft≠release｜现网 v0.6.28｜等负责人核
