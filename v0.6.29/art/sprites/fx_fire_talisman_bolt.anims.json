@@ -1,0 +1,41 @@
+{
+ "atlas": "fx_fire_talisman_bolt",
+ "facing": "left",
+ "origin": [
+  0.5,
+  0.5
+ ],
+ "frameSize": [
+  64,
+  64
+ ],
+ "blend": "NORMAL",
+ "kind": "fx",
+ "note": "原点(0.5,0.5)是弹体/爆点中心(32,32)。为同atlas容纳hit，fly与hit统一64×64；fly有效图形约48×32，向左飞且右侧拖尾。飞行循环fly，接触时在碰撞点播hit一次并销毁。hit小火圈视觉半径约25px；真实splashRadius=48由程序读技能表判伤，可只对hit按48/25放大，勿从纹理边界判伤。NORMAL混合。",
+ "anims": [
+  {
+   "key": "fx_fire_talisman_bolt_fly",
+   "frames": [
+    "fx_fire_talisman_bolt_fly_01",
+    "fx_fire_talisman_bolt_fly_02",
+    "fx_fire_talisman_bolt_fly_03",
+    "fx_fire_talisman_bolt_fly_04"
+   ],
+   "frameRate": 12,
+   "repeat": -1
+  },
+  {
+   "key": "fx_fire_talisman_bolt_hit",
+   "frames": [
+    "fx_fire_talisman_bolt_hit_01",
+    "fx_fire_talisman_bolt_hit_02",
+    "fx_fire_talisman_bolt_hit_03",
+    "fx_fire_talisman_bolt_hit_04",
+    "fx_fire_talisman_bolt_hit_05",
+    "fx_fire_talisman_bolt_hit_06"
+   ],
+   "frameRate": 16,
+   "repeat": 0
+  }
+ ]
+}
