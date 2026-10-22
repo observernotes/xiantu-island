@@ -16,7 +16,7 @@
 | 分支 | `feat/companion-reflect-hook` |
 | 业务基线 tip | `ffc63aa5617a779a264da915a877cb9267bf3797`（短 `ffc63aa`；接线） |
 | 基线 HEAD docs | `8c38142005fb09f42aefde146191ddefc8590d79`（接线 tip 钉业务 tip ffc63aa） |
-| soft-open tip | `SOFT_TIP_PLACEHOLDER`（短 `SOFT_TIP_SHORT`；交 tip 后钉） |
+| soft-open tip | `c166d3ea41dd052ef2515b162085490f0ca7e4c6`（短 `c166d3e`；交 tip 后钉） |
 | worktree | `/workspace/xiantu/wt/feat/companion-reflect-hook` |
 | origin | 推 `origin/feat/companion-reflect-hook`（**未**合 master） |
 | 旁路 | **是**（docs／status；Codex403旁路） |
@@ -92,4 +92,4 @@
 
 ## 6. 交回
 
-【同行AI45soft 3A已交】soft tip＝`SOFT_TIP_PLACEHOLDER`｜业务 tip@ffc63aa｜报告＝reports/炼器阁/20261022_同行AI_design45_soft_open.md｜无 softOpenedCompanion＊／无新OpenFlag｜released=false｜冻结MATCH｜相对ffc63aa零业务diff｜tsc＋测 PASS｜≠release≠Pages｜现网 v0.6.26｜请经理开 soft smoke
+【同行AI45soft 3A已交】soft tip＝`c166d3ea41dd052ef2515b162085490f0ca7e4c6`｜业务 tip@ffc63aa｜报告＝reports/炼器阁/20261022_同行AI_design45_soft_open.md｜无 softOpenedCompanion＊／无新OpenFlag｜released=false｜冻结MATCH｜相对ffc63aa零业务diff｜tsc＋测 PASS｜≠release≠Pages｜现网 v0.6.26｜请经理开 soft smoke
