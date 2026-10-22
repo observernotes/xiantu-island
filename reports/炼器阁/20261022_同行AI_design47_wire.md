@@ -10,7 +10,7 @@
 >
 > 实现 tip：`a09fc8fc9b0b340ccb8caebc783a57d7a3027376`
 >
-> 交件 tip（枝 HEAD／ls-remote）：`HEAD_TIP`
+> 交件 tip（枝 HEAD／ls-remote）：`4deea47f3a5fea8eddfa049597a6f79d551a3130`
 >
 > **已 `git push -u origin feat/companion-affinity-sources`**（禁 force）。
 >
@@ -30,7 +30,7 @@
 | `src/v05.test.ts`／`src/v06c-open.test.ts` | 各一行收窄 reqLevel 类型推断（nullable JSON）；不改玩法 |
 | 本报告 | 接线证据与交回 |
 
-玩法源码（Affinity／Companions／QuestSystem）**未改**；复用既有 `consumeQuestAffinitySources`／`canInvite`。
+玩法源码（Affinity／Companions／QuestSystem）**未改**；复用既有 `consumeQuestAffinitySources`／`canInvite`。Codex Sol Ultra 落盘（log `logs/codex/1565a223e701ee12_20261022_204625_78149.log`）。
 
 ## 硬读与行为
 
@@ -75,14 +75,12 @@
 | `quests.json` | `c4546682…463482b` | `ec9289b5f9ecabceadf39b3bf921c11389b34d7ac18a7398d26fbd3dc3f089c4` |
 | `strings_zh.json` | （基线） | `ed38339083e3c7e2aac15d95ef9143465510d1e06f6da2f5dcd5983cf20bce79` |
 
-Codex：`tools/codex_run.sh sol` Ultra 落盘（log `logs/codex/1565a223e701ee12_20261022_204625_78149.log`）；本执行器复跑 tsc＋指定测全绿后补全交件／push。
-
 ## Push 保全
 
 - `git push -u origin feat/companion-affinity-sources` **OK**
-- `git ls-remote origin feat/companion-affinity-sources`＝`a09fc8fc9b0b340ccb8caebc783a57d7a3027376`
+- `git ls-remote origin feat/companion-affinity-sources`＝`4deea47f3a5fea8eddfa049597a6f79d551a3130`
 - 禁 force-push
 
 ## 交回
 
-【同行AI47接线已交】tip＝a09fc8fc9b0b340ccb8caebc783a57d7a3027376｜报告＝reports/炼器阁/20261022_同行AI_design47_wire.md｜门闩＝OPEN｜无新OpenFlag｜delta＝100/100/100｜已 push｜≠开态≠soft≠release｜现网 v0.6.28｜等负责人核
+【同行AI47接线已交】tip＝4deea47f3a5fea8eddfa049597a6f79d551a3130｜实现＝a09fc8fc9b0b340ccb8caebc783a57d7a3027376｜报告＝reports/炼器阁/20261022_同行AI_design47_wire.md｜门闩＝OPEN｜无新OpenFlag｜delta＝100/100/100｜已 push｜≠开态≠soft≠release｜现网 v0.6.28｜等负责人核
