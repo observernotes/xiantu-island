@@ -8,7 +8,7 @@ import type { Monster } from './scenes/Monster';
 import { SKILLS, skillNumber } from './skills';
 
 /**
- * design/41 · 同行 AI follow 硬读（演武定稿；design/42／43／44／45 不漂此表）。
+ * design/41 · 同行 AI follow 硬读（演武定稿；design/42–48 不漂此表）。
  * design/42 扩展 mode 状态机（free／stay／切换）；design/43 解散；design/44 area＝whirl_sword；
  * design/45 受击被动反伤；design/46 零血倒地／场景本地复起（≠ support／≠ emit sword_shield）。
  * 与 FriendlySummons 隔离；禁新 OpenFlag。≠ 开态 ≠ soft ≠ release ≠ Pages。
@@ -58,13 +58,30 @@ export const COMPANION_AREA_HARD = Object.freeze({
   cdIndependent: true as const,
   /** 结算上限旁证（读表 maxTargets）；≠计数阈值 */
   maxTargetsTable: 3,
-  supportLocked: true as const,
+  supportLocked: false as const,
   supportSkillId: 'sword_shield' as const,
   modes: Object.freeze({
     follow: true as const,
     free: true as const,
     stay: false as const,
   }),
+});
+
+/** design/48 · 唯一主动 support；表基值旁证，实际施法只读 skills，不进伤害通道。 */
+export const COMPANION_SUPPORT_HARD = Object.freeze({
+  skillId: 'sword_shield' as const,
+  effectiveAiCooldownMs: 30000,
+  telegraphMs: 200,
+  recoverMs: 200,
+  preferRemainingMs: 3000,
+  starveGuardN: 2,
+  mpCost: 30,
+  durationMs: 60000,
+  damageReduce: 0.05,
+  modes: Object.freeze({ follow: true as const, free: true as const, stay: false as const }),
+  supportEntersDamageBudget: false as const,
+  cancelPendingOnStay: true as const,
+  clearBuffOnDown: true as const,
 });
 
 /** design/42 · free／stay／切换硬读（≠落 companions／skills 字节）。 */
@@ -92,20 +109,23 @@ export const COMPANION_MODES_HARD = Object.freeze({
     /** design/45：stay 零伤含不放反伤；切入取消 pendingReflect */
     stopReflect: true as const,
     cancelPendingReflectOnEnter: true as const,
+    /** design/48：stay 停主动 buff，切入立即取消施法。 */
+    stopSupport: true as const,
+    cancelPendingSupportOnEnter: true as const,
   }),
   switch: Object.freeze({
     noBudgetStack: true as const,
     noCooldownStackOrReset: true as const,
     clearAiFlagsOnEnter: true as const,
   }),
-  /** design/44：primary＋area；support 仍锁 */
-  schedule: 'primary_and_area' as const,
+  /** design/48：primary＋area＋唯一主动 support＝sword_shield。 */
+  schedule: 'primary_area_and_support' as const,
 });
 
 /**
  * design/45 · 受击被动反伤硬读（≠落 companions／skills 字节；≠ emit sword_shield）。
  * ratio 只读 skills.sword_shield.effects.reflectRatio 基值；不用 perLevel。
- * schedule／supportLocked／41–44 硬读不改。
+ * 被动路径独立于 design/48 主动 buff；无需先施放 shield。
  */
 export const COMPANION_REFLECT_HARD = Object.freeze({
   companionId: SU_COMPANION_ID,
@@ -169,9 +189,11 @@ export const COMPANION_DOWN_REVIVE_HARD = Object.freeze({
   }),
 });
 
-export type CompanionSkillId =
+export type CompanionStrikeSkillId =
   | typeof COMPANION_FOLLOW_HARD.primary.skillId
   | typeof COMPANION_AREA_HARD.skillId;
+
+export type CompanionSkillId = CompanionStrikeSkillId | typeof COMPANION_SUPPORT_HARD.skillId;
 
 export type CompanionFollowEntityId = `${typeof COMPANION_FOLLOW_HARD.entityNamespace}:${typeof SU_COMPANION_ID}`;
 
@@ -339,9 +361,21 @@ export function starveAllowsPrimary(
   return areaMissStreak >= N;
 }
 
+/** 主动 buff 的优先门槛；3000ms 边界不抢占，过期 buff 等同无 buff。 */
+export function supportPreferCondition(opts: {
+  supportReady: boolean;
+  mpReady: boolean;
+  hasActiveShield: boolean;
+  shieldRemainingMs: number;
+  mode?: CompanionMode;
+}): boolean {
+  return opts.mode !== 'stay' && opts.supportReady && opts.mpReady
+    && (!opts.hasActiveShield || opts.shieldRemainingMs < COMPANION_SUPPORT_HARD.preferRemainingMs);
+}
+
 /**
- * 决策：area 优先／否则 primary；饿死 N；同拍至多 1；support 永不。
- * stay 调用方不得进此函数（零伤含不放 area）。
+ * 决策：support 优先门槛满足时先施法，否则沿 design/44 area→primary。
+ * 失败一次后的第 2 可决策拍跳过 support，避免假阳性饿死主招；成功施法清失败计数。
  */
 export function chooseCompanionCombatSkill(opts: {
   areaReady: boolean;
@@ -351,7 +385,28 @@ export function chooseCompanionCombatSkill(opts: {
   areaMissStreak: number;
   preferThreshold?: number;
   starveGuardN?: number;
-}): { skill: CompanionSkillId | null; nextMissStreak: number } {
+  supportReady?: boolean;
+  mpReady?: boolean;
+  hasActiveShield?: boolean;
+  shieldRemainingMs?: number;
+  supportMissStreak?: number;
+  mode?: CompanionMode;
+}): { skill: CompanionSkillId | null; nextMissStreak: number; nextSupportMissStreak: number } {
+  const supportMiss = opts.supportMissStreak ?? 0;
+  if (opts.mode === 'stay') {
+    return { skill: null, nextMissStreak: opts.areaMissStreak, nextSupportMissStreak: 0 };
+  }
+  const preferSupport = supportPreferCondition({
+    supportReady: opts.supportReady ?? false,
+    mpReady: opts.mpReady ?? false,
+    hasActiveShield: opts.hasActiveShield ?? false,
+    shieldRemainingMs: opts.shieldRemainingMs ?? 0,
+    mode: opts.mode,
+  });
+  if (preferSupport && supportMiss + 1 < COMPANION_SUPPORT_HARD.starveGuardN) {
+    return { skill: COMPANION_SUPPORT_HARD.skillId, nextMissStreak: opts.areaMissStreak,
+      nextSupportMissStreak: supportMiss };
+  }
   const th = opts.preferThreshold ?? COMPANION_AREA_HARD.preferThreshold;
   const N = opts.starveGuardN ?? COMPANION_AREA_HARD.starveGuardN;
   const preferArea = areaPreferCondition({
@@ -360,15 +415,15 @@ export function chooseCompanionCombatSkill(opts: {
     preferThreshold: th,
   });
   if (preferArea) {
-    return { skill: COMPANION_AREA_HARD.skillId, nextMissStreak: 0 };
+    return { skill: COMPANION_AREA_HARD.skillId, nextMissStreak: 0, nextSupportMissStreak: 0 };
   }
   const nextMiss = opts.areaMissStreak + 1;
   // area 条件假 → 走 primary；饿死 N＝streak≥N 时契约上必须允许 primary（不得另门挡）
   void N;
   if (opts.primaryReady && opts.primaryInReach) {
-    return { skill: COMPANION_FOLLOW_HARD.primary.skillId, nextMissStreak: nextMiss };
+    return { skill: COMPANION_FOLLOW_HARD.primary.skillId, nextMissStreak: nextMiss, nextSupportMissStreak: 0 };
   }
-  return { skill: null, nextMissStreak: nextMiss };
+  return { skill: null, nextMissStreak: nextMiss, nextSupportMissStreak: supportMiss };
 }
 
 /** 纯函数索敌：优先距玩家最近的合法敌对（≈玩家正在交战目标），否则距同伴最近。 */
@@ -427,9 +482,16 @@ export interface CompanionFollowEntity {
   areaReadyAt: number;
   /** 连续 area 条件假拍数（饿死 N）。 */
   areaMissStreak: number;
+  /** design/48：独立施法 CD／失败计数；切态不重置 CD。 */
+  supportReadyAt: number;
+  supportMissStreak: number;
+  /** 最小场景本地 MP 池：以表 mpCost 初始化一次施法量，不借用玩家 MP／不新增回复数值。 */
+  companionMp: number;
+  pendingSupport?: { skillId: typeof COMPANION_SUPPORT_HARD.skillId; castAt: number };
+  activeSupportBuff?: { expireAt: number; damageReduce: number };
   colliders: Phaser.Physics.Arcade.Collider[];
   pendingStrike?: {
-    skillId: CompanionSkillId;
+    skillId: CompanionStrikeSkillId;
     target?: Monster;
     facing: number;
     strikeAt: number;
@@ -452,7 +514,7 @@ export interface CompanionFollowEntity {
 /**
  * 同行 follow／free／stay 控制器：至多 1 实体；不进入 FriendlySummons.pets。
  * 切图 SHUTDOWN 销毁实例；关系＋mode 存档保留，新场景 project 重生。
- * design/44：schedule=primary_and_area；stay 不放 area；support 仍锁。
+ * design/48：schedule=primary_area_and_support；support 仅走主动 buff 施法通道。
  * design/45：外层受击钩→reflect；stay 不放反伤；forbidEmitSwordShield。
  */
 export class CompanionFollowAi {
@@ -514,19 +576,22 @@ export class CompanionFollowAi {
     return had;
   }
 
-  /** 切入新 mode：清追敌／出手瞬态；禁重置 primary／area CD（noCooldownStackOrReset）。 */
+  /** 切入新 mode：清追敌／出手瞬态；禁重置各独立 CD（noCooldownStackOrReset）。 */
   clearAiFlags() {
     const entity = this.entity;
     if (!entity) return;
     entity.pendingStrike = undefined;
+    entity.pendingSupport = undefined;
     entity.pendingReflect = undefined; // design/45：切态取消未结算反伤
     entity.recoverUntil = undefined;
     entity.areaMissStreak = 0;
+    entity.supportMissStreak = 0;
   }
 
   update(time: number) {
     const entity = this.liveEntity;
     if (!entity || this.destroyed) return;
+    this.expireSupportBuff(entity, time);
     const { player, prog } = this.scene;
     const active = activeCompanion(COMPANIONS, prog);
     if (!active) {
@@ -566,6 +631,7 @@ export class CompanionFollowAi {
     entity.downedPosition = { x: entity.sprite.x, y: entity.sprite.y };
     // activeCompanion 已通过表门禁；不以 HARD 旁证数字代替读表根。
     entity.reviveAt = time + COMPANIONS!.reviveMs;
+    entity.activeSupportBuff = undefined;
     this.clearAiFlags();
     const body = entity.sprite.body as Phaser.Physics.Arcade.Body;
     body.setVelocityX(0);
@@ -587,6 +653,9 @@ export class CompanionFollowAi {
     entity.reviveAt = undefined;
     entity.downedPosition = undefined;
     entity.hurtReadyAt = time + COMPANION_DOWN_REVIVE_HARD.revive.iFramesMs;
+    // 主动护体倒地即消失，复起后须完整重新等待表 CD；不影响 primary／area。
+    entity.supportReadyAt = Math.max(entity.supportReadyAt,
+      time + this.supportTableValues().cooldownMs);
     entity.sprite.setAngle(0);
     this.animate(entity.sprite, 'idle');
     this.scene.log(COMPANION_DOWN_REVIVE_HARD.revive.visibleRevive, '#c8e6ff');
@@ -596,10 +665,12 @@ export class CompanionFollowAi {
   private updateStay(entity: CompanionFollowEntity) {
     const body = entity.sprite.body as Phaser.Physics.Arcade.Body;
     body.setVelocityX(0);
-    // stay.zeroDamage／stopArea／stopReflect：立即取消 pending（含 area／reflect）；不放任何技能／反伤
+    // stay：立即取消主动出手／support／reflect，不残放 buff。
     entity.pendingStrike = undefined;
+    entity.pendingSupport = undefined;
     entity.pendingReflect = undefined;
     entity.areaMissStreak = 0;
+    entity.supportMissStreak = 0;
     this.animate(entity.sprite, 'idle');
     // stay.invulnerable=false：仍可受击扣血；allowReflect=false
     this.scanHostileTouchHits(entity, this.scene.time.now, false);
@@ -608,6 +679,7 @@ export class CompanionFollowAi {
   private updateCombat(entity: CompanionFollowEntity, time: number, mode: 'follow' | 'free') {
     const hard = COMPANION_FOLLOW_HARD;
     const area = COMPANION_AREA_HARD;
+    const support = COMPANION_SUPPORT_HARD;
     const modes = COMPANION_MODES_HARD;
     const { player } = this.scene;
     const sprite = entity.sprite;
@@ -648,6 +720,38 @@ export class CompanionFollowAi {
     const dx = anchor - sprite.x;
     const moving = !inReach && Math.abs(dx) > (target ? 12 : 24);
 
+    // 独立施法通道：同拍处理后即返回，绝不走 strikePrimary／strikeArea／pendingReflect。
+    if (entity.pendingSupport) {
+      body.setVelocityX(0);
+      if (time >= entity.pendingSupport.castAt) {
+        entity.pendingSupport = undefined;
+        const table = this.supportTableValues();
+        if (supportPreferCondition({
+          supportReady: time >= entity.supportReadyAt,
+          mpReady: entity.companionMp >= table.mpCost,
+          hasActiveShield: !!entity.activeSupportBuff,
+          shieldRemainingMs: (entity.activeSupportBuff?.expireAt ?? time) - time,
+          mode,
+        })) {
+          entity.activeSupportBuff = { expireAt: time + table.durationMs, damageReduce: table.damageReduce };
+          entity.supportReadyAt = time + table.cooldownMs;
+          entity.companionMp -= table.mpCost;
+          entity.supportMissStreak = 0;
+          entity.recoverUntil = time + support.recoverMs;
+          this.scene.log('苏师姐施展剑罡护体', '#c8e6ff');
+          // 独立事件避免 skill:cast 的玩家符箓中断监听；无伤敌／反伤载体。
+          this.scene.events.emit('companion:support-cast', {
+            id: support.skillId, companionSupport: true, entityId: entity.entityId,
+            expireAt: entity.activeSupportBuff.expireAt, damageReduce: table.damageReduce,
+          });
+        } else {
+          // 前摇期间 MP／CD／buff 改变造成假阳性：第 2 可决策拍必须让位主招。
+          entity.supportMissStreak++;
+        }
+      }
+      return;
+    }
+
     if (entity.pendingStrike) {
       body.setVelocityX(0);
       if (time >= entity.pendingStrike.strikeAt) {
@@ -680,9 +784,10 @@ export class CompanionFollowAi {
     const facing = sprite.flipX ? 1 : -1;
     const areaReady = time >= entity.areaReadyAt;
     const primaryReady = time >= entity.primaryReadyAt;
+    const supportReady = time >= entity.supportReadyAt;
     const primaryInReach = !!(inReach && target);
     // 仅在至少一侧可出手时计一拍，避免行走帧虚增饿死计数
-    const canDecide = areaReady || (primaryReady && primaryInReach);
+    const canDecide = supportReady || areaReady || (primaryReady && primaryInReach);
     if (canDecide) {
       const legalInBox = countLegalInAreaFacingBox(
         this.scene.mobs, sprite.x, sprite.y, facing, area.rangeAlign);
@@ -692,10 +797,22 @@ export class CompanionFollowAi {
         legalInBox,
         primaryInReach,
         areaMissStreak: entity.areaMissStreak,
+        supportReady,
+        mpReady: entity.companionMp >= this.supportTableValues().mpCost,
+        hasActiveShield: !!entity.activeSupportBuff,
+        shieldRemainingMs: (entity.activeSupportBuff?.expireAt ?? time) - time,
+        supportMissStreak: entity.supportMissStreak,
+        mode,
       });
       entity.areaMissStreak = choice.nextMissStreak;
+      entity.supportMissStreak = choice.nextSupportMissStreak;
 
-      // maxPendingPerTick=1：本拍至多一个 pending；support 永不候选
+      // maxPendingPerTick=1：主动施法与 primary／area 互斥。
+      if (choice.skill === support.skillId && support.modes[mode]) {
+        entity.pendingSupport = { skillId: support.skillId, castAt: time + support.telegraphMs };
+        this.animate(sprite, 'attack');
+        return;
+      }
       if (choice.skill === area.skillId && area.modes[mode]) {
         if (target) sprite.setFlipX(target.x > sprite.x);
         const face = sprite.flipX ? 1 : -1;
@@ -761,12 +878,32 @@ export class CompanionFollowAi {
       primaryReadyAt: now,
       areaReadyAt: now,
       areaMissStreak: 0,
+      supportReadyAt: now,
+      supportMissStreak: 0,
+      companionMp: this.supportTableValues().mpCost,
       hurtReadyAt: now,
       downed: false,
       colliders,
     };
     this.animate(sprite, 'idle');
     return true;
+  }
+
+  /** 仅读取现表基值；不用 perLevel 成长，不修改 skills 字节。 */
+  private supportTableValues() {
+    const def = SKILLS[COMPANION_SUPPORT_HARD.skillId];
+    return {
+      mpCost: def.mpCost,
+      cooldownMs: def.cooldownMs,
+      durationMs: def.durationMs,
+      damageReduce: def.effects.damageReduce as number,
+    };
+  }
+
+  private expireSupportBuff(entity: CompanionFollowEntity, time: number) {
+    if (entity.activeSupportBuff && time >= entity.activeSupportBuff.expireAt) {
+      entity.activeSupportBuff = undefined;
+    }
   }
 
   private strikePrimary(entity: CompanionFollowEntity, mob: Monster, time: number) {
@@ -854,8 +991,10 @@ export class CompanionFollowAi {
   ): number {
     if (this.destroyed || entity !== this.liveEntity || entity.downed || entity.hp <= 0
       || time < entity.hurtReadyAt) return 0;
+    this.expireSupportBuff(entity, time);
     entity.hurtReadyAt = time + COMPANION_REFLECT_HARD.hurtIframeMs;
-    const incoming = Math.max(1, Math.round(rawDamage - entity.defense));
+    const damageReduce = entity.activeSupportBuff?.damageReduce ?? 0;
+    const incoming = Math.max(1, Math.round((rawDamage - entity.defense) * (1 - damageReduce)));
     entity.hp = Math.max(0, entity.hp - incoming);
     this.scene.damageNumber(
       entity.sprite.x, entity.sprite.y - 40, incoming, '#c8e6ff', '#1a3a5c');
@@ -946,6 +1085,7 @@ export class CompanionFollowAi {
     this.clearAiFlags();
     this.entity = null;
     if (!entity) return;
+    entity.activeSupportBuff = undefined;
     entity.reviveAt = undefined;
     entity.downedPosition = undefined;
     for (const collider of entity.colliders) collider.destroy();

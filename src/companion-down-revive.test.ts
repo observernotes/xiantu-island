@@ -188,7 +188,7 @@ export async function runCompanionDownReviveTests(options: { dataMode?: string }
     modes: { follow: { canDownAndRevive: true }, free: { canDownAndRevive: true }, stay: { canDownAndRevive: true } },
   }, 'design/46 完整硬读');
 
-  // 41–45 数字／调度／锁保持；行为回归在下方通过真实控制器执行。
+  // 41–45 数字保持；design/48 解锁主动 support，行为回归在下方通过真实控制器执行。
   eq([COMPANION_FOLLOW_HARD.followDist, COMPANION_FOLLOW_HARD.leashDist, COMPANION_FOLLOW_HARD.aggroRange], [96, 320, 320], '41 几何');
   eq([COMPANION_FOLLOW_HARD.primary.skillId, COMPANION_FOLLOW_HARD.primary.effectiveAiCooldownMs,
     COMPANION_FOLLOW_HARD.primary.engageRange], ['sword_qi_slash', 1200, { w: 240, h: 48 }], '41 primary');
@@ -199,7 +199,7 @@ export async function runCompanionDownReviveTests(options: { dataMode?: string }
   eq([COMPANION_MODES_HARD.stay.zeroDamage, COMPANION_MODES_HARD.stay.invulnerable], [true, false], 'stay 零伤≠无敌');
   eq([COMPANION_AREA_HARD.skillId, COMPANION_AREA_HARD.effectiveAiCooldownMs, COMPANION_AREA_HARD.rangeAlign,
     COMPANION_AREA_HARD.starveGuardN], ['whirl_sword', 4000, { w: 160, h: 80, behind: 32 }, 2], '44 area');
-  eq([COMPANION_MODES_HARD.schedule, COMPANION_AREA_HARD.supportLocked], ['primary_and_area', true], 'schedule＋support 锁');
+  eq([COMPANION_MODES_HARD.schedule, COMPANION_AREA_HARD.supportLocked], ['primary_area_and_support', false], 'schedule＋support 解锁');
   eq([COMPANION_REFLECT_HARD.ratio, COMPANION_REFLECT_HARD.budgetScale, COMPANION_REFLECT_HARD.forbidEmitSwordShield],
     [0.5, 0.35, true], '45 ratio／budget／forbidEmit');
 
@@ -257,7 +257,7 @@ export async function runCompanionDownReviveTests(options: { dataMode?: string }
       eq(h.ai.currentMode(), mode, `${mode} 复起保 mode`);
       h.tick(downAt + ms + 1000);
       eq(attacker.hits.map(hit => hit.damage), mode === 'stay' ? [] : [18], `${mode} 复起后 45 反伤规则`);
-      eq(h.events.emitted.some(e => e.payload?.id === 'sword_shield'), false, `${mode} 从未 emit support`);
+      eq(h.events.emitted.some(e => e.name === 'skill:hit' && e.payload?.id === 'sword_shield'), false, `${mode} 主动 support 不走伤敌命中通道`);
       h.ai.destroy();
     }
   }
@@ -266,6 +266,8 @@ export async function runCompanionDownReviveTests(options: { dataMode?: string }
   for (const skill of ['sword_qi_slash', 'whirl_sword'] as const) {
     const h = makeHarness();
     const entity = h.entity(), sprite = h.sprite();
+    // 本段隔离 support CD，专测既有 primary／area 的排队、取消和复起恢复。
+    entity.supportReadyAt = Infinity;
     sprite.setFlipX(true);
     const attacker = h.addMob(skill === 'whirl_sword' ? 40 : 100);
     if (skill === 'whirl_sword') h.addMob(80);
@@ -304,6 +306,8 @@ export async function runCompanionDownReviveTests(options: { dataMode?: string }
   for (const skill of ['sword_qi_slash', 'whirl_sword'] as const) {
     const h = makeHarness();
     const entity = h.entity(), sprite = h.sprite();
+    // 本段隔离 support CD，确保到期 pending 是待验证的 primary／area。
+    entity.supportReadyAt = Infinity;
     sprite.setFlipX(true);
     const attacker = h.addMob(skill === 'whirl_sword' ? 40 : 100);
     if (skill === 'whirl_sword') h.addMob(80);
@@ -420,7 +424,7 @@ export async function runCompanionDownReviveTests(options: { dataMode?: string }
     const serialized = JSON.stringify(oldMap.prog);
     const saved = JSON.parse(serialized) as Omit<TestProgress, 'runSaveTransaction'>;
     eq(saved.companionRelations, { [SU_COMPANION_ID]: { mode } }, `${mode} 保存仅 mode`);
-    eq(/downed|reviveAt|downedPosition|pendingStrike|pendingReflect/.test(serialized), false, `${mode} 不持久化倒地／时钟／pending`);
+    eq(/downed|reviveAt|downedPosition|pendingStrike|pendingReflect|pendingSupport|activeSupportBuff/.test(serialized), false, `${mode} 不持久化倒地／时钟／pending／buff`);
     oldMap.events.emit('shutdown');
     eq(oldMap.ai.entityCount, 0, `${mode} shutdown 毁旧实例`);
     eq(sprite.active, false, `${mode} shutdown 毁 sprite`);

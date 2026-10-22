@@ -9,7 +9,7 @@ import {
   type CompanionProgress,
 } from './Companions';
 import {
-  COMPANION_AREA_HARD, COMPANION_FOLLOW_HARD, COMPANION_MODES_HARD, areaPreferCondition,
+  COMPANION_AREA_HARD, COMPANION_FOLLOW_HARD, COMPANION_MODES_HARD, COMPANION_REFLECT_HARD, areaPreferCondition,
   chooseCompanionCombatSkill, companionAreaSkillRatio, companionDealtDamage, companionFollowEntityId,
   companionPrimarySkillRatio, companionReflectDamage, countLegalInAreaFacingBox, inAreaFacingBox,
   inEngageRange, nextCompanionMode, starveAllowsPrimary,
@@ -46,7 +46,7 @@ export async function runCompanionAreaWhirlTests(options: { dataMode?: string } 
   eq(COMPANION_MODES_HARD.stay.zeroDamage, true, 'stay 零伤');
   eq(COMPANION_MODES_HARD.stay.invulnerable, false, 'stay≠无敌');
   eq(COMPANION_MODES_HARD.stay.stopArea, true, 'stay 不放 area');
-  eq(COMPANION_MODES_HARD.schedule, 'primary_and_area', 'schedule primary＋area');
+  eq(COMPANION_MODES_HARD.schedule, 'primary_area_and_support', 'schedule primary＋area＋support');
   eq(nextCompanionMode('follow'), 'free', 'cycle follow→free');
   eq(nextCompanionMode('stay'), 'follow', 'cycle stay→follow');
 
@@ -60,8 +60,8 @@ export async function runCompanionAreaWhirlTests(options: { dataMode?: string } 
   eq(COMPANION_AREA_HARD.starveGuardN, 2, 'N=2');
   eq(COMPANION_AREA_HARD.maxPendingPerTick, 1, 'maxPending=1');
   eq(COMPANION_AREA_HARD.cdIndependent, true, 'CD 独立');
-  eq(COMPANION_AREA_HARD.supportLocked, true, 'support 锁');
-  eq(COMPANION_AREA_HARD.supportSkillId, 'sword_shield', 'support=sword_shield 永不');
+  eq(COMPANION_AREA_HARD.supportLocked, false, 'support 解锁');
+  eq(COMPANION_AREA_HARD.supportSkillId, 'sword_shield', '唯一 support=sword_shield 主动 buff');
   eq(COMPANION_AREA_HARD.modes.follow, true, 'follow 可 area');
   eq(COMPANION_AREA_HARD.modes.free, true, 'free 可 area');
   eq(COMPANION_AREA_HARD.modes.stay, false, 'stay 不放 area');
@@ -87,7 +87,7 @@ export async function runCompanionAreaWhirlTests(options: { dataMode?: string } 
     (su.skills as { skillId: string; role: string }[]).map(s => [s.role, s.skillId]));
   eq(roles.primary, 'sword_qi_slash', '表 primary');
   eq(roles.area, 'whirl_sword', '表 area');
-  eq(roles.support, 'sword_shield', '表 support 仍登记但不调度');
+  eq(roles.support, 'sword_shield', '表登记唯一主动 buff support');
 
   // —— 朝向盒几何（对齐 SkillCombat） ——
   // facing>0：x∈[cx-32, cx+160]；y∈[cy-80, cy]
@@ -144,11 +144,16 @@ export async function runCompanionAreaWhirlTests(options: { dataMode?: string } 
   eq(starveAllowsPrimary(starve2.nextMissStreak), true, 'N=2 饿死放行');
   eq(starve2.skill, 'sword_qi_slash', '饿死后仍 primary');
 
-  // support 永不：候选集类型仅 primary／area（sword_shield 不在 CompanionSkillId）
-  const supportId = COMPANION_AREA_HARD.supportSkillId;
-  ok(areaPick.skill !== null && areaPick.skill !== (supportId as typeof areaPick.skill), 'area 候选≠support');
-  ok(primaryPick.skill === 'sword_qi_slash', 'primary 候选≠support');
-  eq(COMPANION_AREA_HARD.supportLocked, true, 'supportLocked');
+  // design/48：唯一 support 可主动调度，原 area／primary 顺序仍在未就绪时沿用。
+  const supportPick = chooseCompanionCombatSkill({
+    areaReady: true, primaryReady: true, legalInBox: 2, primaryInReach: true, areaMissStreak: 0,
+    supportReady: true, mpReady: true, hasActiveShield: false, shieldRemainingMs: 0,
+    supportMissStreak: 0, mode: 'follow',
+  });
+  eq(supportPick.skill, 'sword_shield', '唯一可调度 support=sword_shield 主动 buff');
+  eq(areaPick.skill, 'whirl_sword', 'support 未就绪仍按 area 优先');
+  eq(primaryPick.skill, 'sword_qi_slash', 'support 未就绪仍可 primary');
+  eq(COMPANION_REFLECT_HARD.forbidEmitSwordShield, true, '主动 buff 不解除 reflect forbidEmit');
 
   // —— budget 同乘一次（primary／area／reflect） ——
   const primaryDmg = companionDealtDamage({

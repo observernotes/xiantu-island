@@ -10,7 +10,7 @@ import {
 } from './Companions';
 import {
   COMPANION_AREA_HARD, COMPANION_FOLLOW_HARD, COMPANION_MODES_HARD, COMPANION_REFLECT_HARD,
-  companionDealtDamage, companionFollowEntityId, companionPrimarySkillRatio, companionReflectDamage,
+  chooseCompanionCombatSkill, companionDealtDamage, companionFollowEntityId, companionPrimarySkillRatio, companionReflectDamage,
   companionReflectRatioFromTable, companionReflectResolve, companionReflectShouldApply,
   nextCompanionMode,
 } from './CompanionFollowAi';
@@ -47,7 +47,7 @@ export async function runCompanionReflectHookTests(options: { dataMode?: string 
   eq(COMPANION_MODES_HARD.stay.stopArea, true, 'stay 不放 area');
   eq(COMPANION_MODES_HARD.stay.stopReflect, true, 'stay 不放反伤');
   eq(COMPANION_MODES_HARD.stay.cancelPendingReflectOnEnter, true, '切 stay 取消 pendingReflect');
-  eq(COMPANION_MODES_HARD.schedule, 'primary_and_area', 'schedule 不改');
+  eq(COMPANION_MODES_HARD.schedule, 'primary_area_and_support', 'schedule 含主动 support');
   eq(nextCompanionMode('follow'), 'free', 'cycle follow→free');
   eq(nextCompanionMode('stay'), 'follow', 'cycle stay→follow');
 
@@ -55,8 +55,13 @@ export async function runCompanionReflectHookTests(options: { dataMode?: string 
   eq(COMPANION_AREA_HARD.effectiveAiCooldownMs, 4000, 'areaCD=4000');
   eq(COMPANION_AREA_HARD.rangeAlign, { w: 160, h: 80, behind: 32 }, 'range 160×80×behind32');
   eq(COMPANION_AREA_HARD.starveGuardN, 2, 'N=2');
-  eq(COMPANION_AREA_HARD.supportLocked, true, 'support 锁');
-  eq(COMPANION_AREA_HARD.supportSkillId, 'sword_shield', 'support=sword_shield 永不调度');
+  eq(COMPANION_AREA_HARD.supportLocked, false, 'support 解锁');
+  eq(COMPANION_AREA_HARD.supportSkillId, 'sword_shield', '唯一 support=sword_shield 主动 buff');
+  eq(chooseCompanionCombatSkill({
+    areaReady: false, primaryReady: false, legalInBox: 0, primaryInReach: false, areaMissStreak: 0,
+    supportReady: true, mpReady: true, hasActiveShield: false, shieldRemainingMs: 0,
+    supportMissStreak: 0, mode: 'follow',
+  }).skill, 'sword_shield', '主动 support 可选；reflect 保持被动通道');
   eq(COMPANION_AREA_HARD.modes.stay, false, 'stay 不放 area');
 
   // —— design/45 reflect 硬读 ——
@@ -95,7 +100,7 @@ export async function runCompanionReflectHookTests(options: { dataMode?: string 
   eq(companionReflectRatioFromTable(), 0.5, '读表函数=0.5');
   eq(companionReflectRatioFromTable() === shield.effects.reflectRatio, true, '读表＝effects 基值');
   eq(companionReflectRatioFromTable() === shield.perLevel.reflectRatio, false, '≠perLevel');
-  ok(SKILLS.sword_shield, 'SKILLS 含 sword_shield（只读比值）');
+  ok(SKILLS.sword_shield, 'SKILLS 含 sword_shield（reflect 只读比值）');
   eq(typeof SKILLS.sword_shield.effects.reflectRatio, 'number', 'runtime effects 可读');
 
   // —— helper／budget 同乘一次 ——

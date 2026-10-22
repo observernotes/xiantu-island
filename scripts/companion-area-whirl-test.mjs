@@ -59,7 +59,7 @@ for (const [mode, dataRoot] of modes) {
     total += result.assertions;
     console.log(JSON.stringify({ suite: 'companion-area-whirl', dataMode: mode, assertions: result.assertions, passed: true,
       newOpenFlag: false, soft: false, release: false,
-      hard: 'areaCD4000+N2+range160x80xbehind32+budget0.35+schedule_primary_and_area' }));
+      hard: 'areaCD4000+N2+range160x80xbehind32+budget0.35+schedule_primary_area_and_support' }));
   } finally {
     await server.close();
   }

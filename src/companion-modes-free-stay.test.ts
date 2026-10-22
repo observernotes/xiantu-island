@@ -51,12 +51,14 @@ export async function runCompanionModesFreeStayTests(options: { dataMode?: strin
   eq(COMPANION_MODES_HARD.stay.zeroDamage, true, 'stay 零主动伤');
   eq(COMPANION_MODES_HARD.stay.stopFollow, true, 'stay 停跟随');
   eq(COMPANION_MODES_HARD.stay.stopChase, true, 'stay 停追敌');
+  eq(COMPANION_MODES_HARD.stay.stopSupport, true, 'stay 停主动 support');
+  eq(COMPANION_MODES_HARD.stay.cancelPendingSupportOnEnter, true, '切 stay 取消 pending support');
   eq(COMPANION_MODES_HARD.stay.invulnerable, false, 'stay ≠无敌');
   eq(COMPANION_MODES_HARD.stay.keepRelation, true, 'stay 关系保留');
   eq(COMPANION_MODES_HARD.switch.noBudgetStack, true, '切态不叠 budget');
   eq(COMPANION_MODES_HARD.switch.noCooldownStackOrReset, true, '切态不重置 CD');
   eq(COMPANION_MODES_HARD.switch.clearAiFlagsOnEnter, true, '切入清旗');
-  eq(COMPANION_MODES_HARD.schedule, 'primary_and_area', 'primary＋area（design/44）');
+  eq(COMPANION_MODES_HARD.schedule, 'primary_area_and_support', 'primary＋area＋support（design/48）');
 
   eq(nextCompanionMode('follow'), 'free', 'follow→free');
   eq(nextCompanionMode('free'), 'stay', 'free→stay');

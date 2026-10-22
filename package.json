@@ -107,6 +107,7 @@
     "test:forge-azure-steel-wire": "timeout 120s node scripts/forge-azure-steel-wire-test.mjs",
     "test:companion-reflect-hook": "timeout 60s node scripts/companion-reflect-hook-test.mjs",
     "test:companion-down-revive": "timeout 60s node scripts/companion-down-revive-test.mjs",
+    "test:companion-support-sword-shield": "timeout 60s node scripts/companion-support-sword-shield-test.mjs",
     "test:companion-affinity-sources": "timeout 60s node scripts/companion-affinity-sources-test.mjs"
   },
   "dependencies": {
