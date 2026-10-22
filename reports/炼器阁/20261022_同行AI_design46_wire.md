@@ -10,11 +10,11 @@
 >
 > 实现 tip：`0cdb77084b9878927818435eb5c729a0196b43e6`
 >
-> 报告 tip：`2016f8d46d0532394f8970e0d53dffb7eb16be4d`（push 保全 docs tip）
+> 报告 tip／枝 tip：`a1fe9cefd90c0a7115ffd95d99102b8eb95687e6`（含 status 钉；ls-remote MATCH）
 >
 > 接线报告原 tip：`b78d5efe7529c0674e3b118dbe6225cf760bcd2a`
 >
-> **已 `git push -u origin feat/companion-down-revive`**；`git ls-remote`＝`b78d5efe…`。
+> **已 `git push -u origin feat/companion-down-revive`**；`git ls-remote`＝`a1fe9cef…`。
 >
 > **接线 only；未合 master；≠开态≠soft≠release≠Pages；无新 OpenFlag。**
 
@@ -75,11 +75,11 @@ followDist **96**；leash／aggro **320／320**；primary CD **1200**、engage *
 
 ## 交回
 
-【同行AI46接线已交】tip＝2016f8d46d0532394f8970e0d53dffb7eb16be4d｜实现＝0cdb77084b9878927818435eb5c729a0196b43e6｜报告＝reports/炼器阁/20261022_同行AI_design46_wire.md｜门闩＝OPEN｜无新OpenFlag｜表SHA MATCH（reviveMs=30000未改表）｜tsc＋测 PASS｜已 push origin/feat/companion-down-revive｜≠开态≠soft≠release｜现网 v0.6.27｜等负责人核
+【同行AI46接线已交】tip＝a1fe9cefd90c0a7115ffd95d99102b8eb95687e6｜实现＝0cdb77084b9878927818435eb5c729a0196b43e6｜报告＝reports/炼器阁/20261022_同行AI_design46_wire.md｜门闩＝OPEN｜无新OpenFlag｜表SHA MATCH（reviveMs=30000未改表）｜tsc＋测 PASS｜已 push origin/feat/companion-down-revive｜≠开态≠soft≠release｜现网 v0.6.27｜等负责人核
 
 ## Push 保全
 
 - `git push -u origin feat/companion-down-revive` **OK**（禁 force）
-- `git ls-remote origin feat/companion-down-revive`＝`2016f8d46d0532394f8970e0d53dffb7eb16be4d`
+- `git ls-remote origin feat/companion-down-revive`＝`a1fe9cefd90c0a7115ffd95d99102b8eb95687e6`
 - 前次 tip 未 push 致本地对象丢失；本刀交 tip 后已立刻 push 保全
 
