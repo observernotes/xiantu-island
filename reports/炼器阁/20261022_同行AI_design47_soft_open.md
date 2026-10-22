@@ -17,7 +17,7 @@
 | 业务基线 tip | `22881f72f766d4b96f9016dc4e1a521fb71e3d21`（短 `22881f72`；交件基线／开态 tip） |
 | 实现 tip | `a09fc8fc9b0b340ccb8caebc783a57d7a3027376`（短 `a09fc8fc`；业务唯一改码） |
 | 基线 HEAD docs | `22881f72f766d4b96f9016dc4e1a521fb71e3d21`（docs tip；源码同 a09fc8fc） |
-| soft-open tip | `SOFT_TIP_PLACEHOLDER`（短 `SOFT_TIP_SHORT`；交 tip 后钉） |
+| soft-open tip | `1bdbc822f49d926c701c4e9c00eaac3e5918e368`（短 `1bdbc822`；交 tip 后钉） |
 | worktree | `/workspace/xiantu/wt/feat/companion-affinity-sources` |
 | origin | 推 `origin/feat/companion-affinity-sources`（**未**合 master） |
 | 旁路 | **是**（docs／status；Codex403旁路） |
@@ -96,4 +96,4 @@
 
 ## 6. 交回
 
-【同行AI47soft 3A已交】soft tip＝`SOFT_TIP_PLACEHOLDER`｜业务 tip＝22881f72／实现＝a09fc8fc｜报告＝reports/炼器阁/20261022_同行AI_design47_soft_open.md｜无 softOpenedCompanion＊｜newOpenFlag=false｜released=false｜冻结 MATCH｜tsc＋测 PASS｜已 push｜≠release≠Pages｜现网 v0.6.28｜开 soft smoke｜等执法 3B
+【同行AI47soft 3A已交】soft tip＝`1bdbc822f49d926c701c4e9c00eaac3e5918e368`｜业务 tip＝22881f72／实现＝a09fc8fc｜报告＝reports/炼器阁/20261022_同行AI_design47_soft_open.md｜无 softOpenedCompanion＊｜newOpenFlag=false｜released=false｜冻结 MATCH｜tsc＋测 PASS｜已 push｜≠release≠Pages｜现网 v0.6.28｜开 soft smoke｜等执法 3B
