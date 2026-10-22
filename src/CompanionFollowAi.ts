@@ -8,8 +8,9 @@ import type { Monster } from './scenes/Monster';
 import { SKILLS, skillNumber } from './skills';
 
 /**
- * design/41 · 同行 AI follow 硬读（演武定稿；design/42／43／44 不漂此表）。
- * design/42 扩展 mode 状态机（free／stay／切换）；design/43 解散；design/44 area＝whirl_sword。
+ * design/41 · 同行 AI follow 硬读（演武定稿；design/42／43／44／45 不漂此表）。
+ * design/42 扩展 mode 状态机（free／stay／切换）；design/43 解散；design/44 area＝whirl_sword；
+ * design/45 受击被动反伤（≠ support／≠ emit sword_shield）。
  * 与 FriendlySummons 隔离；禁新 OpenFlag。≠ 开态 ≠ soft ≠ release ≠ Pages。
  */
 export const COMPANION_FOLLOW_HARD = Object.freeze({
@@ -88,6 +89,9 @@ export const COMPANION_MODES_HARD = Object.freeze({
     keepRelation: true as const,
     /** design/44：stay 零伤含不放 area */
     stopArea: true as const,
+    /** design/45：stay 零伤含不放反伤；切入取消 pendingReflect */
+    stopReflect: true as const,
+    cancelPendingReflectOnEnter: true as const,
   }),
   switch: Object.freeze({
     noBudgetStack: true as const,
@@ -96,6 +100,43 @@ export const COMPANION_MODES_HARD = Object.freeze({
   }),
   /** design/44：primary＋area；support 仍锁 */
   schedule: 'primary_and_area' as const,
+});
+
+/**
+ * design/45 · 受击被动反伤硬读（≠落 companions／skills 字节；≠ emit sword_shield）。
+ * ratio 只读 skills.sword_shield.effects.reflectRatio 基值；不用 perLevel。
+ * schedule／supportLocked／41–44 硬读不改。
+ */
+export const COMPANION_REFLECT_HARD = Object.freeze({
+  companionId: SU_COMPANION_ID,
+  enabled: true as const,
+  semantic: 'passive_on_hit' as const,
+  /** 硬读数字；运行时以 companionReflectRatioFromTable 为准 */
+  ratio: 0.5,
+  ratioReadPath: 'skills.sword_shield.effects.reflectRatio' as const,
+  ratioSource: 'effects' as const,
+  forbidEmitSwordShield: true as const,
+  supportSkillIdNeverEmit: 'sword_shield' as const,
+  helper: 'companionReflectDamage' as const,
+  budgetScale: 0.35,
+  reflectAlsoScaled: true as const,
+  noSecondBudgetStackWithPrimaryOrArea: true as const,
+  trigger: 'hostileHitOnCompanion' as const,
+  target: 'thatAttackerOnly' as const,
+  skipIfAttackerDeadOrGoneOrUnhittable: true as const,
+  visibleFeedback: 'attackerHpDropAndDamageNumber' as const,
+  /** 接触受击 i-frame（对齐 FriendlySummons 量级；本刀不改表） */
+  hurtIframeMs: 700,
+  modes: Object.freeze({
+    follow: true as const,
+    free: true as const,
+    stay: false as const,
+  }),
+  stay: Object.freeze({
+    zeroDamage: true as const,
+    cancelPendingReflectOnEnter: true as const,
+    invulnerable: false as const,
+  }),
 });
 
 export type CompanionSkillId =
@@ -142,8 +183,50 @@ export function companionDealtDamage(opts: {
 
 /** 反伤同乘 budgetScale；禁二次叠乘。 */
 export function companionReflectDamage(incomingHitDamage: number, reflectRatio: number,
-  budgetScale = COMPANION_FOLLOW_HARD.damage.budgetScale): number {
+  budgetScale: number = COMPANION_FOLLOW_HARD.damage.budgetScale): number {
   return Math.max(1, Math.round(incomingHitDamage * reflectRatio * budgetScale));
+}
+
+/**
+ * design/45：只读 effects.reflectRatio 基值（不用 perLevel／不用 skillNumber 成长链）。
+ * 禁要求 emit／pending／strike sword_shield。
+ */
+export function companionReflectRatioFromTable(): number {
+  const def = SKILLS[COMPANION_REFLECT_HARD.supportSkillIdNeverEmit];
+  const effects = def?.effects;
+  if (effects && typeof effects.reflectRatio === 'number') {
+    return effects.reflectRatio as number;
+  }
+  return COMPANION_REFLECT_HARD.ratio;
+}
+
+/** 合法命中＋mode 门禁：仅敌对＋incoming＞0＋follow／free；stay／玩家／友方／环境否。 */
+export function companionReflectShouldApply(opts: {
+  mode: CompanionMode | null | undefined;
+  incomingHitDamage: number;
+  attackerHostile: boolean;
+  attackerHittable: boolean;
+}): boolean {
+  if (!COMPANION_REFLECT_HARD.enabled) return false;
+  if (!opts.attackerHostile) return false;
+  if (!(opts.incomingHitDamage > 0)) return false;
+  if (COMPANION_REFLECT_HARD.skipIfAttackerDeadOrGoneOrUnhittable && !opts.attackerHittable) return false;
+  const mode = opts.mode;
+  if (mode !== 'follow' && mode !== 'free') return false;
+  return COMPANION_REFLECT_HARD.modes[mode] === true;
+}
+
+/** 纯函数结算：ratio＋budget 同乘一次；forbidEmit 仅契约旁证。 */
+export function companionReflectResolve(opts: {
+  incomingHitDamage: number;
+  reflectRatio?: number;
+  budgetScale?: number;
+}): { damage: number; ratio: number; budgetScale: number; emitSkillId: null } {
+  const ratio = opts.reflectRatio ?? companionReflectRatioFromTable();
+  const budgetScale = opts.budgetScale ?? COMPANION_REFLECT_HARD.budgetScale;
+  const damage = companionReflectDamage(opts.incomingHitDamage, ratio, budgetScale);
+  // forbidEmitSwordShield：永不返回 sword_shield 作为出招 id
+  return { damage, ratio, budgetScale, emitSkillId: null };
 }
 
 export function shouldLeashTeleport(companionX: number, playerX: number,
@@ -321,6 +404,14 @@ export interface CompanionFollowEntity {
     facing: number;
     strikeAt: number;
   };
+  /** design/45：未结算反伤；切 stay／clearAiFlags 立即取消 */
+  pendingReflect?: {
+    attacker: Monster;
+    incomingHitDamage: number;
+    applyAt: number;
+  };
+  /** 接触受击 i-frame 时钟 */
+  hurtReadyAt: number;
   recoverUntil?: number;
 }
 
@@ -328,6 +419,7 @@ export interface CompanionFollowEntity {
  * 同行 follow／free／stay 控制器：至多 1 实体；不进入 FriendlySummons.pets。
  * 切图 SHUTDOWN 销毁实例；关系＋mode 存档保留，新场景 project 重生。
  * design/44：schedule=primary_and_area；stay 不放 area；support 仍锁。
+ * design/45：外层受击钩→reflect；stay 不放反伤；forbidEmitSwordShield。
  */
 export class CompanionFollowAi {
   private entity: CompanionFollowEntity | null = null;
@@ -393,6 +485,7 @@ export class CompanionFollowAi {
     const entity = this.entity;
     if (!entity) return;
     entity.pendingStrike = undefined;
+    entity.pendingReflect = undefined; // design/45：切态取消未结算反伤
     entity.recoverUntil = undefined;
     entity.areaMissStreak = 0;
   }
@@ -432,11 +525,13 @@ export class CompanionFollowAi {
   private updateStay(entity: CompanionFollowEntity) {
     const body = entity.sprite.body as Phaser.Physics.Arcade.Body;
     body.setVelocityX(0);
-    // stay.zeroDamage／stopArea：立即取消 pending（含 area）；不放任何技能
+    // stay.zeroDamage／stopArea／stopReflect：立即取消 pending（含 area／reflect）；不放任何技能／反伤
     entity.pendingStrike = undefined;
+    entity.pendingReflect = undefined;
     entity.areaMissStreak = 0;
     this.animate(entity.sprite, 'idle');
-    // stay.invulnerable=false：本层不加免伤；仍可受击（外层伤害系统另钩）。
+    // stay.invulnerable=false：仍可受击扣血；allowReflect=false
+    this.scanHostileTouchHits(entity, this.scene.time.now, false);
   }
 
   private updateCombat(entity: CompanionFollowEntity, time: number, mode: 'follow' | 'free') {
@@ -447,6 +542,10 @@ export class CompanionFollowAi {
     const sprite = entity.sprite;
     const body = sprite.body as Phaser.Physics.Arcade.Body;
     const engage = mode === 'free' ? modes.free.engageRange : hard.primary.engageRange;
+
+    // design/45：先结算／扫描受击反伤（follow／free 允许）
+    this.processPendingReflect(entity, time);
+    this.scanHostileTouchHits(entity, time, true);
 
     if (mode === 'follow' && shouldLeashTeleport(sprite.x, player.x, hard.leashDist)) {
       body.reset(followAnchorX(player.x, player.facing, 40), player.feet);
@@ -585,6 +684,7 @@ export class CompanionFollowAi {
       primaryReadyAt: now,
       areaReadyAt: now,
       areaMissStreak: 0,
+      hurtReadyAt: now,
       colliders,
     };
     this.animate(sprite, 'idle');
@@ -645,6 +745,106 @@ export class CompanionFollowAi {
         area: true,
       });
     }
+  }
+
+  /**
+   * design/45：接触合法敌对命中 → 扣同伴血；follow／free 排队反伤；stay 只扣血不反伤。
+   * 不混玩家 hurt／FriendlySummons；不反伤玩家／友方／环境。
+   */
+  private scanHostileTouchHits(entity: CompanionFollowEntity, time: number, allowReflect: boolean) {
+    if (!entity.sprite.active || time < entity.hurtReadyAt) return;
+    const sprite = entity.sprite;
+    for (const mob of this.scene.mobs) {
+      if (mob.dead || mob.def.noDamage || mob.suppressTouch || !mob.def.touchDamage || !mob.body?.enable) continue;
+      if (!this.bodiesOverlap(sprite, mob)) continue;
+      const raw = mob.def.atk * (mob.def.touchDamageMul ?? 1);
+      this.takeHostileHit(entity, raw, mob, time, allowReflect);
+      break;
+    }
+  }
+
+  /**
+   * 外层受击钩：合法敌对命中 →（可选）排队 companionReflectDamage。
+   * incoming＝扣防后实际伤害；>0 才可反伤。
+   */
+  takeHostileHit(
+    entity: CompanionFollowEntity,
+    rawDamage: number,
+    attacker: Monster,
+    time: number,
+    allowReflect: boolean,
+  ): number {
+    if (!entity.sprite.active || time < entity.hurtReadyAt) return 0;
+    entity.hurtReadyAt = time + COMPANION_REFLECT_HARD.hurtIframeMs;
+    const incoming = Math.max(1, Math.round(rawDamage - entity.defense));
+    entity.hp = Math.max(0, entity.hp - incoming);
+    this.scene.damageNumber(
+      entity.sprite.x, entity.sprite.y - 40, incoming, '#c8e6ff', '#1a3a5c');
+    const body = entity.sprite.body as Phaser.Physics.Arcade.Body | undefined;
+    if (body) body.setVelocityX(Math.sign(entity.sprite.x - attacker.x) * 60);
+
+    const mode = this.currentMode();
+    const canReflect = allowReflect && companionReflectShouldApply({
+      mode,
+      incomingHitDamage: incoming,
+      attackerHostile: true,
+      attackerHittable: !!(attacker.active && !attacker.dead),
+    });
+    if (!canReflect) return incoming;
+    // 排队一笔；同拍 processPendingReflect 可立即结算；切 stay 取消
+    entity.pendingReflect = {
+      attacker,
+      incomingHitDamage: incoming,
+      applyAt: time,
+    };
+    return incoming;
+  }
+
+  private processPendingReflect(entity: CompanionFollowEntity, time: number) {
+    const pending = entity.pendingReflect;
+    if (!pending) return;
+    if (time < pending.applyAt) return;
+    entity.pendingReflect = undefined;
+    this.applyReflect(entity, pending.attacker, pending.incomingHitDamage, time);
+  }
+
+  /** 对攻击者结算反伤；可见＝掉血＋跳字；永不 emit sword_shield。 */
+  private applyReflect(
+    entity: CompanionFollowEntity,
+    attacker: Monster,
+    incomingHitDamage: number,
+    time: number,
+  ) {
+    if (COMPANION_REFLECT_HARD.forbidEmitSwordShield) {
+      // 契约：本路径不调度／不 pending／不 strike sword_shield
+    }
+    if (!attacker?.active || attacker.dead) return; // skipIfAttackerDeadOrGoneOrUnhittable
+    const resolved = companionReflectResolve({ incomingHitDamage });
+    if (!(resolved.damage > 0)) return;
+    const dir = Math.sign(attacker.x - entity.sprite.x) || 1;
+    attacker.takeHit(time, resolved.damage, dir);
+    this.scene.damageNumber(
+      attacker.x, attacker.y - attacker.body.height - 10, resolved.damage, '#c8e6ff', '#1a3a5c');
+    this.scene.events.emit('skill:hit', {
+      id: 'companion_reflect',
+      target: attacker.def.id,
+      damage: resolved.damage,
+      companionFollow: true,
+      companionReflect: true,
+      entityId: entity.entityId,
+      // 明示 ≠ sword_shield
+      emitSwordShield: false,
+    });
+  }
+
+  private bodiesOverlap(a: Phaser.Physics.Arcade.Sprite, b: Monster): boolean {
+    const ab = a.body;
+    const bb = b.body;
+    if (!ab || !bb) return false;
+    return Phaser.Geom.Intersects.RectangleToRectangle(
+      new Phaser.Geom.Rectangle(ab.x, ab.y, ab.width, ab.height),
+      new Phaser.Geom.Rectangle(bb.x, bb.y, bb.width, bb.height),
+    );
   }
 
   private animate(sprite: Phaser.Physics.Arcade.Sprite, action: string) {

@@ -104,7 +104,8 @@
     "test:smoke:cheat-gate": "timeout 180s node scripts/cheat-gate-smoke.mjs",
     "test:spirit-rune-closed": "timeout 120s node scripts/spirit-rune-closed-test.mjs",
     "test:spirit-rune-open": "timeout 120s node scripts/spirit-rune-open-test.mjs",
-    "test:forge-azure-steel-wire": "timeout 120s node scripts/forge-azure-steel-wire-test.mjs"
+    "test:forge-azure-steel-wire": "timeout 120s node scripts/forge-azure-steel-wire-test.mjs",
+    "test:companion-reflect-hook": "timeout 60s node scripts/companion-reflect-hook-test.mjs"
   },
   "dependencies": {
     "phaser": "^3.80.1"
