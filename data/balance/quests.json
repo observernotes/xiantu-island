@@ -1147,6 +1147,78 @@
   "note": "next:null 表示无后续链，不是待填数值；地图对象和入口消费者接好后再落表。"
  },
  {
+  "id": "q_su_fellow_meet",
+  "name": "同门初识",
+  "nameKey": "quest.su_fellow_meet.name",
+  "descriptionKey": "quest.su_fellow_meet.description",
+  "dialogueKeys": {
+   "offer": "quest.su_fellow_meet.offer",
+   "progress": "quest.su_fellow_meet.progress",
+   "complete": "quest.su_fellow_meet.complete"
+  },
+  "giver": "senior_sister_su",
+  "turnIn": "senior_sister_su",
+  "reqLevel": null,
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "senior_sister_su"
+   }
+  ],
+  "rewards": {},
+  "prereq": null,
+  "next": "q_su_fellow_tour",
+  "phase": 5
+ },
+ {
+  "id": "q_su_fellow_tour",
+  "name": "宗门引路",
+  "nameKey": "quest.su_fellow_tour.name",
+  "descriptionKey": "quest.su_fellow_tour.description",
+  "dialogueKeys": {
+   "offer": "quest.su_fellow_tour.offer",
+   "progress": "quest.su_fellow_tour.progress",
+   "complete": "quest.su_fellow_tour.complete"
+  },
+  "giver": "senior_sister_su",
+  "turnIn": "senior_sister_su",
+  "reqLevel": null,
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "senior_sister_su"
+   }
+  ],
+  "rewards": {},
+  "prereq": "q_su_fellow_meet",
+  "next": "q_su_fellow_confide",
+  "phase": 5
+ },
+ {
+  "id": "q_su_fellow_confide",
+  "name": "知交心迹",
+  "nameKey": "quest.su_fellow_confide.name",
+  "descriptionKey": "quest.su_fellow_confide.description",
+  "dialogueKeys": {
+   "offer": "quest.su_fellow_confide.offer",
+   "progress": "quest.su_fellow_confide.progress",
+   "complete": "quest.su_fellow_confide.complete"
+  },
+  "giver": "senior_sister_su",
+  "turnIn": "senior_sister_su",
+  "reqLevel": null,
+  "objectives": [
+   {
+    "type": "talk",
+    "target": "senior_sister_su"
+   }
+  ],
+  "rewards": {},
+  "prereq": "q_su_fellow_tour",
+  "next": null,
+  "phase": 5
+ },
+ {
   "id": "q_c21_trial_kill_sample",
   "name": "试炼影形核验",
   "note": "C21/#27⑤ QA 样例，仅供执法堂正向矩阵；正式玩法不依赖。排除 wood_target（noDamage）与 youying_patrol（invulnerable/noDamage），不作为 kill 目标。",

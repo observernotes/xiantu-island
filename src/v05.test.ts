@@ -211,7 +211,7 @@ globalThis.localStorage = {
 // G2：独立前置与 next 链都要已完成；等级锁不应泄漏未满足前置的任务。
 {
   const p = new Progress(), qs = new QuestSystem(p);
-  const sect = rawQuests.find(q => q.id === 'q_sect_tianjian');
+  const sect = rawQuests.find((q): q is typeof q & { reqLevel: number } => q.id === 'q_sect_tianjian' && typeof q.reqLevel === 'number');
   const chain = rawQuests.find(q => q.next === 'q_bamboo');
   ok(sect?.prereq && chain, '共享任务表包含可支持的 prereq 与 next 示例');
   p.level = sect.reqLevel;

@@ -525,7 +525,11 @@
     "dialog": [
       "师弟（师妹），宗门里的路我带你走一遍。"
     ],
-    "quests": [],
+    "quests": [
+      "q_su_fellow_meet",
+      "q_su_fellow_tour",
+      "q_su_fellow_confide"
+    ],
     "phase": 5,
     "affinity": {
       "enabled": true,
@@ -564,7 +568,29 @@
           "dialogKey": "affinity.senior_sister_su.sworn_friend"
         }
       ],
-      "sources": [],
+      "sources": [
+        {
+          "type": "quest",
+          "quest": "q_su_fellow_meet",
+          "on": "done",
+          "once": true,
+          "delta": 100
+        },
+        {
+          "type": "quest",
+          "quest": "q_su_fellow_tour",
+          "on": "done",
+          "once": true,
+          "delta": 100
+        },
+        {
+          "type": "quest",
+          "quest": "q_su_fellow_confide",
+          "on": "done",
+          "once": true,
+          "delta": 100
+        }
+      ],
       "gifts": {
         "enabled": false,
         "likedItems": [],

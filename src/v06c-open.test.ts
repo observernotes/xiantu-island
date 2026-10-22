@@ -38,7 +38,7 @@ export async function runV06cOpenTests(options: { openFixture: boolean; dataMode
   const signLines = ['a', 'b', 'c'].map(part => strings[`secret.quest.intro.sign_${part}`]);
   const importedBefore = JSON.stringify([questsRaw, stringsRaw, campRaw, companionsRaw, flyZonesRaw, npcsRaw]);
   const runtimeBefore = JSON.stringify(QUESTS), flagsBefore = featureFlags();
-  const intro = questsRaw.find(quest => quest.id === id);
+  const intro = questsRaw.find((quest): quest is typeof quest & { reqLevel: number } => quest.id === id && typeof quest.reqLevel === 'number');
   ok(intro, '导入任务表有唯一引导条目');
   eq(GAME_PHASE, 5, '全局阶段仍为 5');
   eq([intro.enabled, intro.phase], openFixture ? [true, 5] : [false, 6], '正式开态为 true/5，SSR 关态克隆仅改为 false/6');

@@ -33,16 +33,12 @@ function bad(label: string, mutate: (raw: MutableNpc[]) => void) {
 
 eq(AFFINITY_ERRORS.length, 0, 'data.ts 真表无错误'); ok(AFFINITY, 'data.ts 导出只读好感索引');
 const config = AFFINITY, entries = Object.values(config);
-eq(entries.length, 9, '正式表 9 名 NPC 好感块全部加载');
+const expectedNpcIds = ['village_elder', 'grocer_wang', 'doctor_sun', 'tianjian_elder', 'senior_sister_su',
+  'taixu_elder', 'lingfu_elder', 'youying_elder', 'wanshou_elder', 'enc_wanderer'].sort();
+same(entries.map(entry => entry.npcId).sort(), expectedNpcIds, '正式表 10 名 NPC 好感块完整且无额外对象');
 const formalEnabledCount = entries.filter(entry => entry.enabled).length;
 eq(entries.filter(entry => entry.gifts.enabled).length, 0, '送礼门禁全部 false');
-if (formalEnabledCount === 9) {
-  eq(formalEnabledCount, 9, 'tip 开态：正式表 affinity.enabled===true 共 9');
-} else if (formalEnabledCount === 0) {
-  eq(formalEnabledCount, 0, '未翻表时根门禁仍全 false');
-} else {
-  eq(formalEnabledCount, 9, '正式表根门禁只允许全关或全开，不允许半开');
-}
+for (const npcId of expectedNpcIds) eq(config[npcId].enabled, true, `${npcId} 正式好感门禁保持 true`);
 const parsed = parseAffinityIndex(npcsRaw); ok(parsed.config, '独立解析真表成功'); eq(parsed.errors.length, 0, '无忽略错误');
 ok(Object.isFrozen(config) && Object.isFrozen(config.village_elder) && Object.isFrozen(config.village_elder.tiers[0])
   && Object.isFrozen(config.enc_wanderer.sources[0]) && Object.isFrozen(config.village_elder.unlocks[0].items), '索引深冻结');
@@ -59,7 +55,7 @@ eq(disabledParsed.errors.length, 0, '关态夹具通过真实表校验');
 ok(disabledParsed.config, '关态夹具有可用配置');
 const closed = disabledParsed.config;
 const closedEntries = Object.values(closed);
-eq(closedEntries.filter(entry => entry.enabled).length, 0, '关态夹具 9 块全 false');
+eq(closedEntries.filter(entry => entry.enabled).length, 0, '关态夹具 10 块全 false');
 eq(closedEntries.filter(entry => entry.gifts.enabled).length, 0, '关态夹具送礼仍全 false');
 
 // 好感主路径隔离任务选择；开态共存另用显式 choice 冒烟覆盖。
@@ -438,8 +434,7 @@ for (const value of [null, undefined, {}, 'npcs', true]) eq(parseAffinityIndex(v
 const endEntries = Object.values(parseAffinityIndex(npcsRaw).config!);
 eq(endEntries.filter(entry => entry.gifts.enabled).length, 0, '测试未开启正式送礼门禁');
 const endEnabled = endEntries.filter(entry => entry.enabled).length;
-ok(endEnabled === 0 || endEnabled === 9, '正式表根门禁旁证只允许 0 或 9');
+same(endEntries.map(entry => entry.npcId).sort(), expectedNpcIds, '测试未改变正式好感 NPC 名单');
 eq(endEnabled, formalEnabledCount, '测试未改变正式表根门禁');
-if (endEnabled === 9) eq(endEnabled, 9, 'tip 开态 9 true');
-else eq(endEnabled, 0, '未翻表旁证仍 0');
+for (const entry of endEntries) eq(entry.enabled, true, `${entry.npcId} 测试后正式好感门禁仍 true`);
 console.log(`affinity tests ok: ${assertions} assertions (dual-state preamble; questHooks closed fixture + open explicit choices; fixture initialization/delta/tiers, quest and encounter once, unlock rollback)`);
