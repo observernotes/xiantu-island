@@ -1,7 +1,7 @@
 # V0628_RELEASE
 
 - **试玩**：https://observernotes.github.io/xiantu-island/v0.6.28/
-- **master / tag^{}**：`ba78c6af54387528a91803d68e592644f6839740`（annotated tag `v0.6.28` → object `4d49a9eeec54842eb82109084f7b357c2b629101`）
+- **master / tag^{}**：`ba78c6af54387528a91803d68e592644f6839740`（annotated tag `v0.6.28` → object `4d49a9eeec54842eb82109084f7b357c2b629101`；其后 docs tip `0c4029bb8eb7fbbd14b0be562eae03ca10630460`）
 - **内容 tip（--from）**：`1d953e2987aa050923bba7e9046a564b2546e0bd`（soft-open 交件；含于 master=`ba78c6af`）
 - **业务 tip**：`3a703e7204cbb076b1efef41e2a2c195c2fd6d1b`（wire tip 钉；含实现）⊂ soft tip ⊂ master
 - **实现**：`0cdb77084b9878927818435eb5c729a0196b43e6`（hp→0→down→reviveMs30000→maxHp／iFrames1000／原地／力竭＋复起；fatalHitReflect=false；sceneLocal；stay 可复起；停 primary·area·反伤＋cancel pending；41–45 未漂）⊂ soft tip ⊂ master
