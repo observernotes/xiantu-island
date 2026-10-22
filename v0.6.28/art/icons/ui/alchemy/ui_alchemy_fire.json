@@ -1,0 +1,100 @@
+{
+ "frames": {
+  "ui_alchemy_fire_01": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 32
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 32
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 32
+   }
+  },
+  "ui_alchemy_fire_02": {
+   "frame": {
+    "x": 64,
+    "y": 0,
+    "w": 64,
+    "h": 32
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 32
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 32
+   }
+  },
+  "ui_alchemy_fire_03": {
+   "frame": {
+    "x": 128,
+    "y": 0,
+    "w": 64,
+    "h": 32
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 32
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 32
+   }
+  },
+  "ui_alchemy_fire_04": {
+   "frame": {
+    "x": 192,
+    "y": 0,
+    "w": 64,
+    "h": 32
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 32
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 32
+   }
+  }
+ },
+ "meta": {
+  "app": "xiantu gen_alchemy_ui.py",
+  "image": "ui_alchemy_fire.png",
+  "format": "RGBA8888",
+  "scale": "1",
+  "size": {
+   "w": 256,
+   "h": 32
+  },
+  "anim": {
+   "key": "ui_alchemy_fire",
+   "frameRate": 10,
+   "repeat": -1,
+   "note": "炉火循环（放在丹炉立绘 (32,82)，即火口正上方；批量炼制时 fps 可调到 14）"
+  }
+ }
+}

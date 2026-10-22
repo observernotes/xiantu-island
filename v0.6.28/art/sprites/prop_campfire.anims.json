@@ -1,0 +1,28 @@
+{
+ "atlas": "prop_campfire",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  64,
+  64
+ ],
+ "blend": "NORMAL",
+ "kind": "prop",
+ "note": "程序化占位（v0.6 秘境 #13）。休息点篝火（restPoint healRatio≈50%）。原点 (0.5,1) 石圈底。循环 idle 火焰。中性，可 tint。",
+ "anims": [
+  {
+   "key": "prop_campfire_idle",
+   "frames": [
+    "prop_campfire_idle_01",
+    "prop_campfire_idle_02",
+    "prop_campfire_idle_03",
+    "prop_campfire_idle_04"
+   ],
+   "frameRate": 6,
+   "repeat": -1
+  }
+ ]
+}
