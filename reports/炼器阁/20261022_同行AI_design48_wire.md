@@ -12,7 +12,7 @@
 >
 > 实现 tip：`8738405bbc7a43579e9f6256105716e63be41088`
 >
-> 交件 tip（枝 HEAD／ls-remote）：`f9914f637e45fec5b6acc67528b634564f0ec59b`
+> 交件 tip（枝 HEAD／ls-remote）：`9224bb7841ef9f7c2e4005f084449102fe55b0b8`
 >
 > **已 `git push -u origin feat/companion-support-sword-shield`**（禁 force）。
 >
@@ -78,10 +78,10 @@
 ## Push 保全
 
 - `git push -u origin feat/companion-support-sword-shield` **OK**
-- `git ls-remote`＝`f9914f637e45fec5b6acc67528b634564f0ec59b`
+- `git ls-remote`＝`9224bb7841ef9f7c2e4005f084449102fe55b0b8`
 - 禁 force-push
 - 未合 master
 
 ## 交回
 
-【同行AI48接线已交】tip＝f9914f637e45fec5b6acc67528b634564f0ec59b｜实现＝8738405bbc7a43579e9f6256105716e63be41088｜报告＝reports/炼器阁/20261022_同行AI_design48_wire.md｜门闩＝OPEN｜演武核＝reports/炼器阁/20261022_负责人核_同行AI_design48_演武定稿.md｜无新OpenFlag｜stay不放＝是｜forbidEmit仍＝是｜schedule＝primary_area_and_support｜supportLocked＝false｜tsc＝PASS｜已push＝是｜等负责人核｜禁开态／soft／release｜现网 v0.6.29
+【同行AI48接线已交】tip＝9224bb7841ef9f7c2e4005f084449102fe55b0b8｜实现＝8738405bbc7a43579e9f6256105716e63be41088｜报告＝reports/炼器阁/20261022_同行AI_design48_wire.md｜门闩＝OPEN｜演武核＝reports/炼器阁/20261022_负责人核_同行AI_design48_演武定稿.md｜无新OpenFlag｜stay不放＝是｜forbidEmit仍＝是｜schedule＝primary_area_and_support｜supportLocked＝false｜tsc＝PASS｜已push＝是｜等负责人核｜禁开态／soft／release｜现网 v0.6.29
