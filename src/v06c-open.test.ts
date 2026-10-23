@@ -13,7 +13,7 @@ import { SectGrowth } from './SectGrowth';
 import { createIndexedDbBackend, createMemorySaveBackend, saveStore, setSaveBackend } from './SaveStore';
 import { SECRET_NEST_INTRO_ID, isSecretNestIntroEnabled, refuseEnter, refuseReward, refuseStart } from './SecretNestClosed';
 import { enterSecretNest, exitSecretNest, readSecretNestSign, rewardSecretNest, startSecretNest, resetSecretNestRunForTests, fixtureClearSecretNestMobs, getSecretNestRun } from './SecretNestGate';
-import { getSecretBoonState } from './SecretBoonRuntime';
+import { getSecretBoonState, chooseSecretBoon } from './SecretBoonRuntime';
 import { GameScene } from './scenes/GameScene';
 import type { MapObj } from './scenes/MapBuilder';
 
@@ -50,6 +50,7 @@ export async function runV06cOpenTests(options: { openFixture: boolean; dataMode
   eq(isSecretNestIntroEnabled(), openFixture, '门禁读导入 JSON 的开关');
   eq(!!QUESTS[id], openFixture, '正式开态 JSON 进入阶段表，关态克隆被 phase 筛除');
   eq(featureEnabled('indexedDbSaves'), true, 'IDB 正式开关保持 true');
+  eq(featureEnabled('secret_boon_runtime'), true, 'design/49 Soft OpenPreRelease 正式软闸 true');
   eq([companionsRaw.enabled, companionsRaw.companions[0].enabled, flyZonesRaw.enabled], [true, true, true], '同门与御剑沿用已软开正式值');
   let giftsChecked = 0;
   const checkGifts = (value: unknown): void => {
@@ -330,7 +331,7 @@ export async function runV06cOpenTests(options: { openFixture: boolean; dataMode
       pausedView.scene.exitSecretNestRoom();
       eq([pausedView.scene.physics.world.isPaused, pausedView.scene.time.paused], [true, true], '退出保留营地原有暂停状态');
       eq(pausedView.physicsEvents, [], '不会恢复其它系统持有的物理暂停');
-      // 接线后：无参仍拒；资格满足可 start；未清房 reward 仍拒；清房后可发 12/20。
+      // soft 开闸：无参／未清房仍拒；清房三选一后才可发 12/20。
       resetSecretNestRunForTests();
       eq(startSecretNest().allowed, false, '无 Progress 参数时 start 仍拒');
       eq(rewardSecretNest().allowed, false, '无局／未清房时 reward 仍拒');
@@ -340,8 +341,11 @@ export async function runV06cOpenTests(options: { openFixture: boolean; dataMode
       eq(wireStart.allowed, true, '资格满足后 startSecretNest 允许最小可玩局');
       eq(rewardSecretNest(wireProg.p).allowed, false, '未清房不可领通关行');
       const cleared = fixtureClearSecretNestMobs();
-      eq(getSecretBoonState().pendingHand, undefined, 'design/49 软闸关：旧 v06c 清房不出 boon；开闸验收由 runtime suite 覆盖');
       eq(cleared.allowed && cleared.cleared, true, '夹具清房成功');
+      const hand = getSecretBoonState().pendingHand ?? [];
+      eq(hand.length, 3, 'design/49 soft 开闸清房三选一');
+      eq(rewardSecretNest(wireProg.p).allowed, false, 'design/49 pending 卡组阻止通关结算');
+      ok(chooseSecretBoon(hand[0]!.id), 'design/49 选择真实候选后放行原通关行');
       const stonesBeforeReward = wireProg.p.stones;
       const rewarded = rewardSecretNest(wireProg.p);
       eq(rewarded.allowed, true, '清房后 rewardSecretNest 发放通关行');

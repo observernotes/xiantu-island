@@ -1,4 +1,4 @@
-// design/49 默认关闸接线；shared / snapshot 分别使用真实数据根，不写配置或存档。
+// design/49 Soft OpenPreRelease；shared / snapshot 分别使用真实数据根，不写配置或存档。
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import fs from 'node:fs/promises';
@@ -28,7 +28,7 @@ for (const dataRoot of [shared, path.join(shared, 'game/data'), path.join(root, 
 }
 const featureFile = path.join(root, 'data/features.json');
 protectedFiles.set(featureFile, hash(await fs.readFile(featureFile)));
-assert.equal(JSON.parse(await fs.readFile(featureFile, 'utf8')).secret_boon_runtime, false, '正式 features 键必须存在且默认 false');
+assert.equal(JSON.parse(await fs.readFile(featureFile, 'utf8')).secret_boon_runtime, true, '正式 soft 开闸：features 键必须落盘 true');
 for (const rel of ['src/SecretBoonRuntime.ts', 'src/SecretNestGate.ts', 'src/Progress.ts', 'src/scenes/GameScene.ts', 'src/features.ts']) {
   const source = await fs.readFile(path.join(root, rel), 'utf8');
   assert.doesNotMatch(source, /\bNestOpenFlag\b|\bsoftOpenedNest\w*\b/u, `${rel} 不新增 NestOpenFlag / softOpenedNest`);
@@ -78,8 +78,9 @@ for (const [mode, dataRoot] of modes) {
     const result = await suite.runSecretBoonRuntimeTests({ dataMode: mode });
     total += result.assertions;
     console.log(JSON.stringify({ suite: 'secret-boon-runtime', dataMode: mode, resolvedDataRoot: dataRoot,
-      assertions: result.assertions, passed: true, runtimeDefault: false, newOpenFlag: false, soft: false, release: false }));
+      assertions: result.assertions, passed: true, runtimeDefault: true, newOpenFlag: false, soft: true,
+      stage: 'Soft OpenPreRelease', released: false, release: false }));
   } finally { await server.close(); }
 }
 for (const [file, sha] of protectedFiles) assert.equal(hash(await fs.readFile(file)), sha, `自测不得改动 ${file}`);
-console.log(`secret-boon-runtime tests ok: ${total} assertions; shared/snapshot 独立 SSR；软闸默认 false；三根 secret_boons/companions/skills SHA 冻结；≠开态≠soft≠release`);
+console.log(`secret-boon-runtime tests ok: ${total} assertions; shared/snapshot 独立 SSR；Soft OpenPreRelease 落盘 true；缺键／false 关闸；三根 secret_boons/companions/skills SHA 冻结；≠release≠Pages`);

@@ -14,6 +14,7 @@ try { configured = JSON.parse(await fs.readFile(path.join(root, 'data/features.j
 catch (error) { if (error.code !== 'ENOENT') throw error; }
 const expected = Object.fromEntries(names.map(name => [name,
   typeof configured?.[name] === 'boolean' ? configured[name] : !defaultOff.has(name)]));
+assert.equal(configured.secret_boon_runtime, true, 'design/49 Soft OpenPreRelease 工程快照必须落盘 true');
 if (process.env.QA_TIER_EXPECT_FEATURES) {
   // tier1 的清单可早于新开关；完整运行时开关仍在下方与工程快照核对。
   for (const [name, value] of Object.entries(JSON.parse(process.env.QA_TIER_EXPECT_FEATURES))) {

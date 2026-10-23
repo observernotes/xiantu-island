@@ -13,5 +13,5 @@
   "lifeSkillCurve": true,
   "spiritScan": true,
   "indexedDbSaves": true,
-  "secret_boon_runtime": false
+  "secret_boon_runtime": true
 }

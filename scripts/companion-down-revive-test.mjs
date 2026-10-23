@@ -16,10 +16,10 @@ const expected = {
   'balance/companions.json': 'e4eb87c1f9400514a084d630f179903e0926d706c85614481f1e2618a01bb115',
   'balance/skills.json': 'd80abaf18204a7472a67bf74b6d08eda5e213fc170b5e1c905e8e971e9462979',
   'balance/fly_zones.json': '2940fe5952246a3669f87d8b9f3fc6226c2adf7080353be7de94da81e031b8e4',
-  // design/49 只在工程快照新增默认 false 的机缘软闸；旧共享配置仍冻结。
+  // design/49 Soft OpenPreRelease：工程快照机缘软闸 true；旧共享配置仍冻结。
   'features.json': {
     shared: '69302e3a0dec48fb963548ab5dc1e0b950b2a050864ee7a746335a8386be9fd8',
-    snapshot: '6a502d279616129f362b6fc01031da0044ea464d91883d013f35622ae9cf7885',
+    snapshot: '67e07b6cc4f9b10dc766fdf6438d6d564085fb730ea9dd4a9888801c35d5d83f',
   },
 };
 const legacyFeatures = Object.fromEntries([
@@ -40,9 +40,9 @@ for (const [mode, dataRoot] of modes) {
     // features 发版配置仅存在工程快照；共享根的缺失也在 finally 守护。
     if (rel === 'features.json') {
       const configured = sha === null ? {} : JSON.parse(await fs.readFile(file, 'utf8'));
-      assert.equal(configured.secret_boon_runtime ?? false, false, `${mode} 机缘软闸 false／缺键关`);
+      assert.equal(configured.secret_boon_runtime ?? false, mode === 'snapshot', `${mode} 工程快照 soft 开闸／共享缺键关`);
       if (sha !== null) assert.deepEqual(configured, mode === 'snapshot'
-        ? { ...legacyFeatures, secret_boon_runtime: false } : legacyFeatures, `${mode} 旧14项 feature 语义冻结`);
+        ? { ...legacyFeatures, secret_boon_runtime: true } : legacyFeatures, `${mode} 旧14项 feature 语义冻结`);
     }
     if (mode === 'shared' && rel === 'features.json' && sha === null) continue;
     assert.equal(sha, typeof expected[rel] === 'string' ? expected[rel] : expected[rel][mode], `${mode} ${rel} SHA MATCH`);
@@ -78,12 +78,12 @@ try {
       const resolved = await server.pluginContainer.resolveId('@xt/balance/companions.json');
       assert.equal(path.normalize(resolved?.id ?? ''), path.join(dataRoot, 'balance/companions.json'), `${mode} 实际解析根`);
       const features = await server.ssrLoadModule('/src/features.ts');
-      assert.deepEqual(features.featureFlags(), { ...legacyFeatures, secret_boon_runtime: false }, `${mode} 运行时旧14项与新关闸语义`);
+      assert.deepEqual(features.featureFlags(), { ...legacyFeatures, secret_boon_runtime: true }, `${mode} 运行时沿工程快照 soft 开闸，旧14项不漂`);
       const suite = await server.ssrLoadModule('/src/companion-down-revive.test.ts');
       const result = await suite.runCompanionDownReviveTests({ dataMode: mode });
       total += result.assertions;
       console.log(JSON.stringify({ suite: 'companion-down-revive', dataMode: mode, dataRoot, assertions: result.assertions,
-        passed: true, newOpenFlag: false, soft: false, release: false,
+        passed: true, newOpenFlag: false, soft: true, release: false,
         hard: 'reviveMs30000+sceneLocal+fatalHitReflectFalse+maxHp+iFrames1000+原地+41-45unchanged' }));
     } finally {
       await server.close();
@@ -92,4 +92,4 @@ try {
 } finally {
   for (const [file, sha] of before) assert.equal(await fileHash(file), sha, `自测不得改动 ${file}`);
 }
-console.log(`companion-down-revive tests ok: ${total} assertions; shared/snapshot 两根；companions/skills/fly_zones/features SHA 不变；无新 OpenFlag；≠soft≠release`);
+console.log(`companion-down-revive tests ok: ${total} assertions; shared/snapshot 两根；companions/skills/fly_zones/features SHA 不变；无新 OpenFlag；Soft OpenPreRelease；≠release≠Pages`);

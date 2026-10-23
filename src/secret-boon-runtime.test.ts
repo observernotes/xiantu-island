@@ -15,7 +15,7 @@ import {
   getSecretNestRun, resetSecretNestRunForTests, SECRET_NEST_MIN_LOOP,
 } from './SecretNestGate';
 
-/** design/49：正式配置关态；开闸夹具只在本次 SSR 内存，不写盘／存档。 */
+/** design/49：Soft OpenPreRelease 落盘 true；关回夹具只在本次 SSR 内存，不写盘／存档。 */
 export async function runSecretBoonRuntimeTests(options: { dataMode?: string } = {}): Promise<{ assertions: number }> {
   const label = options.dataMode ?? 'fixture';
   let assertions = 0;
@@ -59,7 +59,7 @@ export async function runSecretBoonRuntimeTests(options: { dataMode?: string } =
     throw new Error(`${label}: 未抽到 ${id}`);
   };
   try {
-    eq(featureEnabled('secret_boon_runtime'), false, 'C01 正式快照软闸默认 false');
+    eq(featureEnabled('secret_boon_runtime'), true, '正式快照 Soft OpenPreRelease 软闸落盘 true');
     eq(GAME_PHASE, 5, 'C03 GAME_PHASE 仍为 5');
     ok(!Object.keys(originalFlags).some(key => /OpenFlag|softOpenedNest/.test(key)), 'C03 无新 OpenFlag／softOpenedNest');
     eq([...SECRET_BOON_RUNTIME_IDS].sort(), [...common, ...fallback].sort(), '仅六 common＋三 fallback allowlist');
@@ -101,6 +101,7 @@ export async function runSecretBoonRuntimeTests(options: { dataMode?: string } =
     eq(drawSecretBoonHand(weighted.slice(0, 2), {}, () => 0.8, [{ id: 'common', weight: 70 }, { id: 'rare', weight: 25 }])[0]?.id,
       'common-heavy', '排除空档，再按原条目 weight 抽卡');
 
+    setFeatureFlag('secret_boon_runtime', false);
     const closedPlayer = player();
     beginSecretBoonRun(closedPlayer);
     onSecretBoonRoomClear('combat_01');

@@ -67,7 +67,7 @@ for (const [mode, dataRoot] of modes) {
     const result = await suite.runSecretNestMinLoopTests({ dataMode: mode });
     total += result.assertions;
     console.log(JSON.stringify({ suite: 'secret-nest-min-loop', dataMode: mode, assertions: result.assertions, passed: true,
-      newOpenFlag: false, soft: false, release: false }));
+      newOpenFlag: false, soft: true, stage: 'Soft OpenPreRelease', released: false, release: false }));
   } finally {
     await server.close();
   }
