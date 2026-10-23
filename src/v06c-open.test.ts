@@ -5,7 +5,7 @@ import flyZonesRaw from '@xt/balance/fly_zones.json';
 import npcsRaw from '@xt/balance/npcs.json';
 import campRaw from '@xt/maps/wanyao_outer_1.json';
 import { GAME_PHASE, NPCS, QUESTS, REALMS, type Line } from './data';
-import { featureEnabled, featureFlags } from './features';
+import { featureEnabled, featureFlags, setFeatureFlag } from './features';
 import { gameNow } from './GameClock';
 import { Progress } from './Progress';
 import { QuestSystem } from './QuestSystem';
@@ -51,6 +51,7 @@ export async function runV06cOpenTests(options: { openFixture: boolean; dataMode
   eq(!!QUESTS[id], openFixture, '正式开态 JSON 进入阶段表，关态克隆被 phase 筛除');
   eq(featureEnabled('indexedDbSaves'), true, 'IDB 正式开关保持 true');
   eq(featureEnabled('secret_boon_runtime'), true, 'design/49 Soft OpenPreRelease 正式软闸 true');
+  eq(featureEnabled('secret_daily_bonus'), true, 'design/50 Soft OpenPreRelease 日倍键落盘 true');
   eq([companionsRaw.enabled, companionsRaw.companions[0].enabled, flyZonesRaw.enabled], [true, true, true], '同门与御剑沿用已软开正式值');
   let giftsChecked = 0;
   const checkGifts = (value: unknown): void => {
@@ -331,31 +332,37 @@ export async function runV06cOpenTests(options: { openFixture: boolean; dataMode
       pausedView.scene.exitSecretNestRoom();
       eq([pausedView.scene.physics.world.isPaused, pausedView.scene.time.paused], [true, true], '退出保留营地原有暂停状态');
       eq(pausedView.physicsEvents, [], '不会恢复其它系统持有的物理暂停');
-      // soft 开闸：无参／未清房仍拒；清房三选一后才可发 12/20。
-      resetSecretNestRunForTests();
-      eq(startSecretNest().allowed, false, '无 Progress 参数时 start 仍拒');
-      eq(rewardSecretNest().allowed, false, '无局／未清房时 reward 仍拒');
-      const wireProg = await fixture(true);
-      wireProg.p.quests[id] = { state: 'done', kills: {}, reached: true };
-      const wireStart = startSecretNest(wireProg.p, returnPosition);
-      eq(wireStart.allowed, true, '资格满足后 startSecretNest 允许最小可玩局');
-      eq(rewardSecretNest(wireProg.p).allowed, false, '未清房不可领通关行');
-      const cleared = fixtureClearSecretNestMobs();
-      eq(cleared.allowed && cleared.cleared, true, '夹具清房成功');
-      const hand = getSecretBoonState().pendingHand ?? [];
-      eq(hand.length, 3, 'design/49 soft 开闸清房三选一');
-      eq(rewardSecretNest(wireProg.p).allowed, false, 'design/49 pending 卡组阻止通关结算');
-      ok(chooseSecretBoon(hand[0]!.id), 'design/49 选择真实候选后放行原通关行');
-      const stonesBeforeReward = wireProg.p.stones;
-      const rewarded = rewardSecretNest(wireProg.p);
-      eq(rewarded.allowed, true, '清房后 rewardSecretNest 发放通关行');
-      if (rewarded.allowed) {
-        eq(rewarded.exp, 12, '通关 exp=12');
-        eq(rewarded.stones, 20, '通关 stones=20');
-        eq(wireProg.p.stones, stonesBeforeReward + 20, '灵石入账 +20');
+      // 会话关回日倍，保留 soft 机缘清房三选一后的基线 12/20 验收。
+      const dailyBonusBefore = featureEnabled('secret_daily_bonus');
+      setFeatureFlag('secret_daily_bonus', false);
+      try {
+        resetSecretNestRunForTests();
+        eq(startSecretNest().allowed, false, '无 Progress 参数时 start 仍拒');
+        eq(rewardSecretNest().allowed, false, '无局／未清房时 reward 仍拒');
+        const wireProg = await fixture(true);
+        wireProg.p.quests[id] = { state: 'done', kills: {}, reached: true };
+        const wireStart = startSecretNest(wireProg.p, returnPosition);
+        eq(wireStart.allowed, true, '资格满足后 startSecretNest 允许最小可玩局');
+        eq(rewardSecretNest(wireProg.p).allowed, false, '未清房不可领通关行');
+        const cleared = fixtureClearSecretNestMobs();
+        eq(cleared.allowed && cleared.cleared, true, '夹具清房成功');
+        const hand = getSecretBoonState().pendingHand ?? [];
+        eq(hand.length, 3, 'design/49 soft 开闸清房三选一');
+        eq(rewardSecretNest(wireProg.p).allowed, false, 'design/49 pending 卡组阻止通关结算');
+        ok(chooseSecretBoon(hand[0]!.id), 'design/49 选择真实候选后放行原通关行');
+        const stonesBeforeReward = wireProg.p.stones;
+        const rewarded = rewardSecretNest(wireProg.p);
+        eq(rewarded.allowed, true, '清房后 rewardSecretNest 发放通关行');
+        if (rewarded.allowed) {
+          eq(rewarded.exp, 12, '通关 exp=12');
+          eq(rewarded.stones, 20, '通关 stones=20');
+          eq(wireProg.p.stones, stonesBeforeReward + 20, '灵石入账 +20');
+        }
+        eq(getSecretNestRun()?.rewarded, true, 'run.rewarded');
+      } finally {
+        setFeatureFlag('secret_daily_bonus', dailyBonusBefore);
+        resetSecretNestRunForTests();
       }
-      eq(getSecretNestRun()?.rewarded, true, 'run.rewarded');
-      resetSecretNestRunForTests();
     } else {
       // 同一测试文件保留 JSON 内存关态对照，包括遗留 active/reached/done。
       for (const state of ['none', 'active', 'done'] as const) {
@@ -393,7 +400,7 @@ export async function runV06cOpenTests(options: { openFixture: boolean; dataMode
     }
     eq(JSON.stringify([questsRaw, stringsRaw, campRaw, companionsRaw, flyZonesRaw, npcsRaw]), importedBefore, '测试不修改任何导入表或内存克隆');
     eq(JSON.stringify(QUESTS), runtimeBefore, '测试不伪开或修改运行时 QUESTS');
-    eq(featureFlags(), flagsBefore, '测试全程不翻任何 feature');
+    eq(featureFlags(), flagsBefore, '测试后恢复全部 feature 会话状态');
     eq(featureEnabled('indexedDbSaves'), true, '测试后 IDB 正式开关仍 true');
     eq(localWrites, 0, '真实异步路径无需 localStorage 写入');
     console.log(JSON.stringify({ suite: 'v06c-open-runtime', dataMode, graph: openFixture ? 'formal-open' : 'memory-closed',

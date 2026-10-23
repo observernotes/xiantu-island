@@ -11,7 +11,7 @@ import {
 } from './SecretNestGate';
 import { chooseSecretBoon, getSecretBoonState, secretBoonRatio } from './SecretBoonRuntime';
 
-/** design/50 仅接线：真实表读值；true 仅会话夹具，正式日倍软闸仍 false。 */
+/** design/50 Soft OpenPreRelease 落盘 true；关回／缺键只用会话或 missing-key 夹具。 */
 export async function runSecretDailyBonusTests(options: { dataMode?: string; closedOnly?: boolean } = {}): Promise<{ assertions: number }> {
   const label = options.dataMode ?? 'fixture';
   let assertions = 0;
@@ -79,7 +79,8 @@ export async function runSecretDailyBonusTests(options: { dataMode?: string; clo
   setGameTimeSource(() => now);
   Math.random = () => 0;
   try {
-    eq(featureEnabled('secret_daily_bonus'), false, '默认／缺键必须关日倍软闸');
+    eq(featureEnabled('secret_daily_bonus'), options.closedOnly ? false : true,
+      options.closedOnly ? '缺键必须关日倍软闸' : '正式快照 Soft OpenPreRelease 日倍软闸落盘 true');
     eq(featureEnabled('secret_boon_runtime'), true, '既有 boon 正式快照 true 不变');
     eq(GAME_PHASE, 5, 'GAME_PHASE 仍为 5');
     eq(SECRET_NEST_MIN_LOOP.reward, { exp: 12, stones: 20, item: null }, '基线常量公式保持 12／20／null');
@@ -87,11 +88,12 @@ export async function runSecretDailyBonusTests(options: { dataMode?: string; clo
     eq(secretRooms.rewards.dailyBonus, { runs: 3, mul: 2 }, '两根实读表 runs／mul 沿用 3／2.0');
 
     setFeatureFlag('secret_boon_runtime', false);
+    if (!options.closedOnly) setFeatureFlag('secret_daily_bonus', false);
     const closed = player();
     closed.secretNestDailyBonusDay = '2020-01-01'; closed.secretNestDailyBonusCount = 2;
     start(closed); clear();
     withoutDailyAccess(closed, () => settle(closed, 12, 20));
-    eq(daily(closed), ['2020-01-01', 2], '默认关闸成功结算不借跨日迁移历史字段');
+    eq(daily(closed), ['2020-01-01', 2], '缺键／会话关闸成功结算不借跨日迁移历史字段');
     ok(exitSecretNestSession().allowed, '关态成功后仍可退出');
     setFeatureFlag('secret_daily_bonus', false);
     start(closed); clear();

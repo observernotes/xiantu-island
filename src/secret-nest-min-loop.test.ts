@@ -10,7 +10,7 @@ import {
 import { isSecretNestIntroEnabled, refuseStart, refuseReward } from './SecretNestClosed';
 import { getSecretBoonState, chooseSecretBoon } from './SecretBoonRuntime';
 
-/** design/40 最小闭环兼容回归＋design/49 Soft OpenPreRelease（≠release≠Pages）。 */
+/** design/40 最小闭环兼容回归＋design/49、50 Soft OpenPreRelease（≠release≠Pages）。 */
 export async function runSecretNestMinLoopTests(options: { dataMode?: string } = {}): Promise<{ assertions: number }> {
   const label = options.dataMode ?? 'fixture';
   let assertions = 0;
@@ -24,7 +24,7 @@ export async function runSecretNestMinLoopTests(options: { dataMode?: string } =
 
   const flagsBefore = featureFlags();
   eq(featureEnabled('secret_boon_runtime'), true, 'design/49 正式软闸 soft 落盘 true');
-  eq(featureEnabled('secret_daily_bonus'), false, 'design/50 日倍默认关闸，最小闭环保留 12／20 基线');
+  eq(featureEnabled('secret_daily_bonus'), true, 'design/50 Soft OpenPreRelease 日倍键落盘 true');
   eq(GAME_PHASE, 5, 'GAME_PHASE 仍为 5');
   ok(isSecretNestIntroEnabled(), '正式 intro.enabled 为 true（无新 OpenFlag）');
   eq(SECRET_NEST_MIN_LOOP.slotsOverride, { melee: 2, ranged: 1 }, 'slotsOverride 硬读 2/1');
@@ -49,8 +49,9 @@ export async function runSecretNestMinLoopTests(options: { dataMode?: string } =
     return p;
   }
 
-  // 会话关回兼容段：沿 design/40 不出 boon，结束后恢复落盘开态。
+  // 会话关回兼容段：沿 design/40 不出 boon，日倍关回保留 12/20，结束后恢复落盘开态。
   setFeatureFlag('secret_boon_runtime', false);
+  setFeatureFlag('secret_daily_bonus', false);
   try {
     resetSecretNestRunForTests();
 
@@ -127,7 +128,7 @@ export async function runSecretNestMinLoopTests(options: { dataMode?: string } =
     }
     eq(getSecretNestRun()?.cleared, true, '逐清后 cleared');
 
-    // O06：design/50 日倍闸默认关，reward 仍沿基线 12/20；开闸乘子由独立日倍套件覆盖。
+    // O06：日倍会话关回，reward 仍沿基线 12/20；开态乘子由独立日倍套件覆盖。
     const stones2 = p2.stones, exp2 = p2.exp;
     const reward = rewardSecretNest(p2);
     ok(reward.allowed, 'O06 reward 成功');
@@ -159,6 +160,7 @@ export async function runSecretNestMinLoopTests(options: { dataMode?: string } =
     eq([p3.stones, p3.exp], [stones3, exp3], '中途退出无结算增量');
   } finally {
     setFeatureFlag('secret_boon_runtime', flagsBefore.secret_boon_runtime);
+    setFeatureFlag('secret_daily_bonus', flagsBefore.secret_daily_bonus);
     resetSecretNestRunForTests();
   }
 

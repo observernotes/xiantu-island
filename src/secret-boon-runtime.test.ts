@@ -60,7 +60,9 @@ export async function runSecretBoonRuntimeTests(options: { dataMode?: string } =
   };
   try {
     eq(featureEnabled('secret_boon_runtime'), true, '正式快照 Soft OpenPreRelease 软闸落盘 true');
-    eq(featureEnabled('secret_daily_bonus'), false, 'design/50 接线仅落默认 false，boon 兼容测仍发基线');
+    eq(featureEnabled('secret_daily_bonus'), true, 'design/50 Soft OpenPreRelease 日倍键落盘 true');
+    // boon 正交兼容测显式会话关回日倍，结算保持 12/20 基线。
+    setFeatureFlag('secret_daily_bonus', false);
     eq(GAME_PHASE, 5, 'C03 GAME_PHASE 仍为 5');
     ok(!Object.keys(originalFlags).some(key => /OpenFlag|softOpenedNest/.test(key)), 'C03 无新 OpenFlag／softOpenedNest');
     eq([...SECRET_BOON_RUNTIME_IDS].sort(), [...common, ...fallback].sort(), '仅六 common＋三 fallback allowlist');
@@ -254,6 +256,7 @@ export async function runSecretBoonRuntimeTests(options: { dataMode?: string } =
     Math.random = originalRandom;
     resetSecretNestRunForTests(); clearRunBoons();
     setFeatureFlag('secret_boon_runtime', originalFlags.secret_boon_runtime);
+    setFeatureFlag('secret_daily_bonus', originalFlags.secret_daily_bonus);
     eq(featureFlags(), originalFlags, '夹具结束恢复全部软闸');
   }
 }

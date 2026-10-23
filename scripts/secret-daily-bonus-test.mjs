@@ -1,4 +1,4 @@
-// design/50 接线 only；会话夹具 true 不落盘，不触发 sync 或构建。
+// design/50 Soft OpenPreRelease；日倍落盘 true，会话关回／缺键夹具不改配置或存档。
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import fs from 'node:fs/promises';
@@ -34,7 +34,7 @@ for (const dataRoot of [shared, path.join(shared, 'game/data'), snapshot]) {
 const featureFile = path.join(snapshot, 'features.json');
 const featureBytes = await fs.readFile(featureFile);
 const flags = JSON.parse(featureBytes);
-assert.equal(flags.secret_daily_bonus, false, '工程快照日倍闸必须落盘 false');
+assert.equal(flags.secret_daily_bonus, true, '正式 soft 开闸：features 键必须落盘 true');
 assert.equal(flags.secret_boon_runtime, true, '工程快照既有 boon 闸保持 true');
 protectedFiles.set(featureFile, hash(featureBytes));
 for (const rel of ['src/SecretNestGate.ts', 'src/Progress.ts', 'src/features.ts']) {
@@ -74,8 +74,9 @@ for (const [mode, dataRoot, missingKey] of [['shared', shared, false], ['snapsho
     assert.equal(missingFeatureLoaded, missingKey, `${mode} 缺键 SSR 配置夹具必须真实命中`);
     total += result.assertions;
     console.log(JSON.stringify({ suite: 'secret-daily-bonus', dataMode: mode, assertions: result.assertions,
-      passed: true, dailyBonusDefault: false, boonRuntimeDefault: true, wiringOnly: true, newOpenFlag: false }));
+      passed: true, dailyBonusDefault: true, boonRuntimeDefault: true, soft: true,
+      stage: 'Soft OpenPreRelease', released: false, wiringOnly: false, newOpenFlag: false }));
   } finally { await server.close(); }
 }
 for (const [file, sha] of protectedFiles) assert.equal(hash(await fs.readFile(file)), sha, `写后＝写前 ${file}`);
-console.log(`secret-daily-bonus tests ok: ${total} assertions; 默认／缺键关闸零读写；3×24/40 后 12/20；05:00；boon 正交；三根表 SHA 冻结；接线 only`);
+console.log(`secret-daily-bonus tests ok: ${total} assertions; Soft OpenPreRelease 落盘 true；会话关回／缺键关闸零读写；3×24/40 后 12/20；05:00；boon 正交；三根表 SHA 冻结；≠release≠Pages`);
