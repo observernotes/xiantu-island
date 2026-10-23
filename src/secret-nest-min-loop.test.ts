@@ -24,6 +24,7 @@ export async function runSecretNestMinLoopTests(options: { dataMode?: string } =
 
   const flagsBefore = featureFlags();
   eq(featureEnabled('secret_boon_runtime'), true, 'design/49 正式软闸 soft 落盘 true');
+  eq(featureEnabled('secret_daily_bonus'), false, 'design/50 日倍默认关闸，最小闭环保留 12／20 基线');
   eq(GAME_PHASE, 5, 'GAME_PHASE 仍为 5');
   ok(isSecretNestIntroEnabled(), '正式 intro.enabled 为 true（无新 OpenFlag）');
   eq(SECRET_NEST_MIN_LOOP.slotsOverride, { melee: 2, ranged: 1 }, 'slotsOverride 硬读 2/1');
@@ -126,7 +127,7 @@ export async function runSecretNestMinLoopTests(options: { dataMode?: string } =
     }
     eq(getSecretNestRun()?.cleared, true, '逐清后 cleared');
 
-    // O06：reward 12/20
+    // O06：design/50 日倍闸默认关，reward 仍沿基线 12/20；开闸乘子由独立日倍套件覆盖。
     const stones2 = p2.stones, exp2 = p2.exp;
     const reward = rewardSecretNest(p2);
     ok(reward.allowed, 'O06 reward 成功');

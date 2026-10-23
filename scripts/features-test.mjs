@@ -1,4 +1,4 @@
-// 先 XT_DATA=snapshot npm run build:test；验证发版快照、各入口关/开及旧档兼容。
+// 先 XT_DATA=snapshot VITE_XT_TEST=1 npx vite build；验证工程快照，构建不执行 sync。
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import os from 'node:os';
@@ -7,14 +7,15 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { createServer, preview } from 'vite';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-const names = ['fiveSectClasses', 'sectDaily', 'sectRanks', 'sectShopLibrary', 'shops', 'sectDonations', 'seclusion', 'alchemyPhase1', 'v05Maps', 'foxBoss', 'talismanCraft', 'lifeSkillCurve', 'spiritScan', 'indexedDbSaves', 'secret_boon_runtime'];
-const defaultOff = new Set(['shops', 'talismanCraft', 'lifeSkillCurve', 'spiritScan', 'indexedDbSaves', 'secret_boon_runtime']);
+const names = ['fiveSectClasses', 'sectDaily', 'sectRanks', 'sectShopLibrary', 'shops', 'sectDonations', 'seclusion', 'alchemyPhase1', 'v05Maps', 'foxBoss', 'talismanCraft', 'lifeSkillCurve', 'spiritScan', 'indexedDbSaves', 'secret_boon_runtime', 'secret_daily_bonus'];
+const defaultOff = new Set(['shops', 'talismanCraft', 'lifeSkillCurve', 'spiritScan', 'indexedDbSaves', 'secret_boon_runtime', 'secret_daily_bonus']);
 let configured = {};
 try { configured = JSON.parse(await fs.readFile(path.join(root, 'data/features.json'), 'utf8')); }
 catch (error) { if (error.code !== 'ENOENT') throw error; }
 const expected = Object.fromEntries(names.map(name => [name,
   typeof configured?.[name] === 'boolean' ? configured[name] : !defaultOff.has(name)]));
 assert.equal(configured.secret_boon_runtime, true, 'design/49 Soft OpenPreRelease 工程快照必须落盘 true');
+assert.equal(configured.secret_daily_bonus, false, 'design/50 接线工程快照必须落盘 false');
 if (process.env.QA_TIER_EXPECT_FEATURES) {
   // tier1 的清单可早于新开关；完整运行时开关仍在下方与工程快照核对。
   for (const [name, value] of Object.entries(JSON.parse(process.env.QA_TIER_EXPECT_FEATURES))) {
@@ -38,17 +39,22 @@ assert.ok(!(port >= 4186 && port <= 4190) && !(port >= 42863 && port <= 42865), 
 
 // 用独立临时工程检查可选文件，绝不改工作区发版配置。
 const fixtureRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'xt-features-'));
+const snapshotFixtures = [null, { sectDaily: false, alchemyPhase1: false },
+  Object.fromEntries(names.map(name => [name, false])),
+  { secret_boon_runtime: 'true', secret_daily_bonus: 'true' }];
 try {
   await fs.mkdir(path.join(fixtureRoot, 'src'));
   await fs.mkdir(path.join(fixtureRoot, 'data'));
   await fs.copyFile(path.join(root, 'src/features.ts'), path.join(fixtureRoot, 'src/features.ts'));
-  for (const configured of [null, { sectDaily: false, alchemyPhase1: false }, Object.fromEntries(names.map(name => [name, false]))]) {
+  for (const configured of snapshotFixtures) {
     if (configured) await fs.writeFile(path.join(fixtureRoot, 'data/features.json'), JSON.stringify(configured));
     const loader = await createServer({ root: fixtureRoot, configFile: false, server: { middlewareMode: true, hmr: false, ws: false }, logLevel: 'error' });
     try {
       const features = await loader.ssrLoadModule('/src/features.ts');
-      assert.deepEqual(features.featureFlags(), Object.fromEntries(names.map(name => [name, configured?.[name] ?? !defaultOff.has(name)])));
-      assert.equal(features.featureEnabled('secret_boon_runtime'), false, 'design/49 缺键／false 必须关');
+      assert.deepEqual(features.featureFlags(), Object.fromEntries(names.map(name => [name,
+        typeof configured?.[name] === 'boolean' ? configured[name] : !defaultOff.has(name)])));
+      assert.equal(features.featureEnabled('secret_boon_runtime'), false, 'design/49 缺键／false／非 boolean 必须关');
+      assert.equal(features.featureEnabled('secret_daily_bonus'), false, 'design/50 缺键／false／非 boolean 必须关');
     } finally { await loader.close(); }
   }
 } finally { await fs.rm(fixtureRoot, { recursive: true, force: true }); }
@@ -343,6 +349,12 @@ try {
     check(xt.getState().features.secret_boon_runtime === true, 'design/49 会话软闸可覆盖开态');
     checked.push('secret_boon_runtime');
 
+    await flip('secret_daily_bonus', false);
+    check(xt.getState().features.secret_daily_bonus === false, 'design/50 软闸关态');
+    await flip('secret_daily_bonus', true);
+    check(xt.getState().features.secret_daily_bonus === true, 'design/50 会话软闸可覆盖开态');
+    checked.push('secret_daily_bonus');
+
     // 所有开关关闭后读旧档：保存字段完整，存档的 true 不能越过发版门禁。
     const preserved = { ...joined, ageUpdatedAt: xt.getState().time, flags: Object.fromEntries(names.map(name => [name, true])),
       quests: { ...foxCompleted.quests, q_daily_tianjian_2: { state: 'active', kills: {}, crafted: {} } }, dailyQuestResetDay: '2026-01-01',
@@ -370,7 +382,7 @@ try {
   assert.deepEqual(await page.evaluate(() => window.__xt.getState().features), expected,
     '刷新未恢复发版快照或测试覆盖泄漏');
   assert.deepEqual(errors, [], '浏览器存在错误');
-  console.log(JSON.stringify({ passed: true, flags: names.length, assertions: result.assertions, snapshotCases: 3,
+  console.log(JSON.stringify({ passed: true, flags: names.length, assertions: result.assertions, snapshotCases: snapshotFixtures.length,
     snapshot: expected, taixuEntryPresent, reloadRestored: true, offOn: result.checked, consoleErrors: 0, pageErrors: 0, port }));
 } finally {
   await browser?.close();

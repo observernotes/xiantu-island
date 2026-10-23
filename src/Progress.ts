@@ -79,7 +79,7 @@ function validSaveData(saved: unknown): saved is Record<string, unknown> {
   for (const key of ['exp', 'hp', 'mp', 'stones', 'age', 'ageUpdatedAt', 'overflowExp', 'unstableUntil', 'lastOverflowReturned', 'alchemyExp']) {
     if (has(key) && !nonnegative(saved[key])) return false;
   }
-  for (const key of ['sectContribution', 'classVersion', 'questRewardVersion', 'moralVersion', 'classRefundSp', 'seclusionYearsToday', 'breakthroughFails', 'breakthroughBonusLevels', 'alchemyLevel', 'unspentStatPoints']) {
+  for (const key of ['sectContribution', 'classVersion', 'questRewardVersion', 'moralVersion', 'classRefundSp', 'seclusionYearsToday', 'breakthroughFails', 'breakthroughBonusLevels', 'alchemyLevel', 'unspentStatPoints', 'secretNestDailyBonusCount']) {
     if (has(key) && !count(saved[key])) return false;
   }
   for (const key of ['daoHeart', 'morality'] as const) {
@@ -102,7 +102,7 @@ function validSaveData(saved: unknown): saved is Record<string, unknown> {
   if (has('spiritRune') && !isValidSpiritRuneProgress(saved.spiritRune)) return false;
   for (const key of ['inventory', 'skills', 'skillGifted']) if (has(key) && !numbers(saved[key])) return false;
   for (const key of ['skillMastery', 'gatherRespawnAt']) if (has(key) && !numbers(saved[key], false)) return false;
-  for (const key of ['job', 'selectedSect', 'name', 'rootElement', 'sectDailyContributionDay', 'dailyQuestResetDay', 'seclusionDay']) {
+  for (const key of ['job', 'selectedSect', 'name', 'rootElement', 'sectDailyContributionDay', 'dailyQuestResetDay', 'seclusionDay', 'secretNestDailyBonusDay']) {
     if (has(key) && typeof saved[key] !== 'string') return false;
   }
   if (has('sectRank') && saved.sectRank !== null && typeof saved.sectRank !== 'string') return false;
@@ -269,6 +269,10 @@ export class Progress {
   /** 上次日常重置的本地日历日期（05:00 日界）；离线只补算到当前日。 */
   dailyQuestResetDay = '';
   dailyQuestCompletions: Record<string, string[]> = {};
+  /** 巢穴日倍额度的本地 05:00 日键；仅开闸且实际结算时换日，离境不清。 */
+  secretNestDailyBonusDay = '';
+  /** 当日已成功领取日倍的次数；与局内机缘独立，旧档缺省 0。 */
+  secretNestDailyBonusCount = 0;
   age = LIFESPAN.startAge;
   ageUpdatedAt = gameNow();
   seclusionDay = '';
@@ -361,6 +365,8 @@ export class Progress {
         hp: Math.min(this.hp, this.baseMaxHp), mp: Math.min(this.mp, this.baseMaxMp),
       } : {}),
       allocatedStats: normalizedStats(this.allocatedStats), unspentStatPoints: count(this.unspentStatPoints) ? this.unspentStatPoints : 0,
+      secretNestDailyBonusDay: typeof this.secretNestDailyBonusDay === 'string' ? this.secretNestDailyBonusDay : '',
+      secretNestDailyBonusCount: count(this.secretNestDailyBonusCount) ? this.secretNestDailyBonusCount : 0,
       buffs: this.buffs.filter(b => !temporaryIds.includes(b.id)),
       skillCooldowns: Object.fromEntries(Object.entries(this.skillCooldowns).filter(([id]) => !temporaryIds.includes(id))) }));
   }
@@ -1473,6 +1479,8 @@ export class Progress {
     if (!Array.isArray(this.sectDailyContributionClaims)) this.sectDailyContributionClaims = [];
     this.sectDailyContributionClaims = [...new Set(this.sectDailyContributionClaims.filter(id => typeof id === 'string' && id.length > 0))];
     if (typeof this.dailyQuestResetDay !== 'string') this.dailyQuestResetDay = '';
+    if (typeof this.secretNestDailyBonusDay !== 'string') this.secretNestDailyBonusDay = '';
+    if (!count(this.secretNestDailyBonusCount)) this.secretNestDailyBonusCount = 0;
     if (!this.dailyQuestCompletions || typeof this.dailyQuestCompletions !== 'object' || Array.isArray(this.dailyQuestCompletions)) this.dailyQuestCompletions = {};
     for (const [sect, ids] of Object.entries(this.dailyQuestCompletions)) {
       this.dailyQuestCompletions[sect] = Array.isArray(ids) ? [...new Set(ids.filter(id => typeof id === 'string' && QUESTS[id]?.daily && QUESTS[id].sect === sect))] : [];

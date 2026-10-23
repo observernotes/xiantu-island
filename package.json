@@ -16,6 +16,7 @@
     "test:optional-assets": "node scripts/optional-assets-test.mjs",
     "test:secret-props": "node scripts/secret-props-test.mjs",
     "test:secret-nest-min-loop": "timeout 60s node scripts/secret-nest-min-loop-test.mjs",
+    "test:secret-daily-bonus": "timeout 60s node scripts/secret-daily-bonus-test.mjs",
     "test:secret-boon-runtime": "timeout 120s node scripts/secret-boon-runtime-test.mjs",
     "test:companion-follow-ai": "timeout 60s node scripts/companion-follow-ai-test.mjs",
     "test:companion-modes-free-stay": "timeout 60s node scripts/companion-modes-free-stay-test.mjs",

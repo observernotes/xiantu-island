@@ -1,18 +1,18 @@
 /** 发版配置只读取当前工程的快照，不随 @xt 的 shared/snapshot 数据模式切换。 */
 export const FEATURE_NAMES = [
   'fiveSectClasses', 'sectDaily', 'sectRanks', 'sectShopLibrary',
-  'shops', 'sectDonations', 'seclusion', 'alchemyPhase1', 'v05Maps', 'foxBoss', 'talismanCraft', 'lifeSkillCurve', 'spiritScan', 'indexedDbSaves', 'secret_boon_runtime',
+  'shops', 'sectDonations', 'seclusion', 'alchemyPhase1', 'v05Maps', 'foxBoss', 'talismanCraft', 'lifeSkillCurve', 'spiritScan', 'indexedDbSaves', 'secret_boon_runtime', 'secret_daily_bonus',
 ] as const;
 export type FeatureName = typeof FEATURE_NAMES[number];
 export const FEATURE_UNAVAILABLE = '暂未开放';
 
-// 旧开关缺配置时沿用开发默认；机缘软闸等新增入口需显式开放。
+// 旧开关缺配置时沿用开发默认；机缘、日倍软闸缺键／非 boolean 均关，需显式开放。
 const snapshots = import.meta.glob('../data/features.json', { eager: true, import: 'default' });
 const snapshot: unknown = snapshots['../data/features.json'];
 const configured = snapshot && typeof snapshot === 'object' && !Array.isArray(snapshot)
   ? snapshot as Record<string, unknown> : {};
 const defaults = Object.fromEntries(FEATURE_NAMES.map(name =>
-  [name, typeof configured[name] === 'boolean' ? configured[name] : name !== 'shops' && name !== 'talismanCraft' && name !== 'lifeSkillCurve' && name !== 'spiritScan' && name !== 'indexedDbSaves' && name !== 'secret_boon_runtime'])) as Record<FeatureName, boolean>;
+  [name, typeof configured[name] === 'boolean' ? configured[name] : name !== 'shops' && name !== 'talismanCraft' && name !== 'lifeSkillCurve' && name !== 'spiritScan' && name !== 'indexedDbSaves' && name !== 'secret_boon_runtime' && name !== 'secret_daily_bonus'])) as Record<FeatureName, boolean>;
 // 测试覆盖只存在于本次页面会话；不会被存档覆盖，也不会写入存档。
 const overrides = new Map<FeatureName, boolean>();
 

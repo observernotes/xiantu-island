@@ -6,6 +6,8 @@ import strings from '@xt/balance/strings_zh.json';
 import { SECRET_NEST_INTRO_ID, isSecretNestIntroEnabled, readSignClosed, refuseEnter,
   refuseStart, refuseReward } from './SecretNestClosed';
 import type { Progress } from './Progress';
+import { dailyQuestDay } from './DailyQuests';
+import { featureEnabled } from './features';
 import { beginSecretBoonRun, onSecretBoonRoomClear, getSecretBoonState, clearRunBoons } from './SecretBoonRuntime';
 
 export interface SecretNestGateProgress {
@@ -290,7 +292,8 @@ export function fixtureClearSecretNestMobs():
 
 /**
  * 通关结算一行（演武定稿 exp=12／stones=20）。
- * 须已清房且未发过；不计日倍／不开 loot。
+ * 须已清房且未发过；日倍软闸关＝基线且不读写额度，开则按表乘本行 exp／stones 并日计数。
+ * 仍不开 loot；日倍与机缘正交，离境清机缘不重置日倍额度。
  * 机缘软闸关则不开；开则选后再结算，局内机缘离境即散、不进永久结算。
  */
 export function rewardSecretNest(prog?: Progress):
@@ -308,10 +311,33 @@ export function rewardSecretNest(prog?: Progress):
   if (getSecretBoonState().pendingHand) {
     return denied('secret.boon.pending', '请先选择本房机缘，再领取通关结算。');
   }
-  const { exp, stones } = SECRET_NEST_MIN_LOOP.reward;
+  let exp: number = SECRET_NEST_MIN_LOOP.reward.exp;
+  let stones: number = SECRET_NEST_MIN_LOOP.reward.stones;
   if (!Number.isSafeInteger(prog.stones) || prog.stones < 0
     || !Number.isSafeInteger(prog.stones + stones)) {
     return denied('secret.gate.no_reward', '通关结算无法入账，请检查存档。');
+  }
+  if (featureEnabled('secret_daily_bonus')) {
+    const runs = Number(secretRooms.rewards?.dailyBonus?.runs) || 0;
+    const mul = Number(secretRooms.rewards?.dailyBonus?.mul) || 1;
+    const bonusExp = Math.floor(exp * mul);
+    const bonusStones = Math.floor(stones * mul);
+    // 先确保基线及可能的日倍均可入账；拒绝路径也不读取或换写日倍字段。
+    if (!Number.isSafeInteger(bonusExp) || bonusExp < 0
+      || !Number.isSafeInteger(bonusStones) || bonusStones < 0
+      || !Number.isSafeInteger(prog.stones + bonusStones)) {
+      return denied('secret.gate.no_reward', '通关结算无法入账，请检查存档。');
+    }
+    const day = dailyQuestDay();
+    const count = prog.secretNestDailyBonusDay === day ? prog.secretNestDailyBonusCount : 0;
+    const remaining = count < runs;
+    if (remaining) {
+      exp = bonusExp;
+      stones = bonusStones;
+    }
+    // 仅即将发放时落日键及已占额度；已满保持原计数，不让 boon 清层干预。
+    prog.secretNestDailyBonusDay = day;
+    prog.secretNestDailyBonusCount = remaining ? count + 1 : count;
   }
   clearRunBoons();
   const settled = prog.gainExp(exp, prog.level, 'quest');

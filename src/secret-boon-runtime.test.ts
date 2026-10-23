@@ -60,6 +60,7 @@ export async function runSecretBoonRuntimeTests(options: { dataMode?: string } =
   };
   try {
     eq(featureEnabled('secret_boon_runtime'), true, '正式快照 Soft OpenPreRelease 软闸落盘 true');
+    eq(featureEnabled('secret_daily_bonus'), false, 'design/50 接线仅落默认 false，boon 兼容测仍发基线');
     eq(GAME_PHASE, 5, 'C03 GAME_PHASE 仍为 5');
     ok(!Object.keys(originalFlags).some(key => /OpenFlag|softOpenedNest/.test(key)), 'C03 无新 OpenFlag／softOpenedNest');
     eq([...SECRET_BOON_RUNTIME_IDS].sort(), [...common, ...fallback].sort(), '仅六 common＋三 fallback allowlist');
@@ -203,7 +204,7 @@ export async function runSecretBoonRuntimeTests(options: { dataMode?: string } =
       eq(getSecretBoonState().layers[id], undefined, 'instant fallback 不留永久或局内被动层');
     }
 
-    // Gate 真正的通关／退出／倒地／放弃路径：选中层与未决卡一并清，结算仍 12／20，无日倍／loot。
+    // Gate 通关／退出／倒地／放弃仍清层；design/50 日倍闸默认关，结算基线 12／20，仍不开 loot。
     for (const path of ['complete', 'exit', 'down', 'abandon'] as const) {
       resetSecretNestRunForTests();
       const runPlayer = player();
@@ -223,8 +224,8 @@ export async function runSecretBoonRuntimeTests(options: { dataMode?: string } =
       if (path === 'complete') {
         const reward = rewardSecretNest(runPlayer);
         ok(reward.allowed, '选完才可领取原通关行');
-        if (reward.allowed) eq([reward.exp, reward.stones, reward.item], [12, 20, null], 'O05 原结算值，无日倍／loot');
-        eq(runPlayer.stones, stonesBefore + 20, '固定灵石20，无日倍');
+        if (reward.allowed) eq([reward.exp, reward.stones, reward.item], [12, 20, null], 'O05 日倍闸关发基线 12／20，仍无 loot');
+        eq(runPlayer.stones, stonesBefore + 20, '日倍闸关时灵石基线20');
       } else if (path === 'exit') ok(exitSecretNestSession().allowed, '退出 API 成功');
       else if (path === 'down') onSecretNestPlayerDown();
       else abandonSecretNestSession();
