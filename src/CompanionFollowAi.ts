@@ -865,7 +865,7 @@ export class CompanionFollowAi {
       const top = (platform as Phaser.Physics.Arcade.Sprite).body!.top;
       return moving.velocity.y >= 0 && moving.prev.y + moving.height <= top + 2;
     }));
-    const maxHp = Math.max(1, Math.round(prog.maxHp * hard.attrs.hpRatioOfOwner));
+    const maxHp = Math.max(1, Math.round(prog.baseMaxHp * hard.attrs.hpRatioOfOwner));
     const now = this.scene.time.now;
     this.entity = {
       entityId: companionFollowEntityId(),

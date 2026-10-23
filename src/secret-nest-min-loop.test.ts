@@ -1,5 +1,5 @@
 import questsRaw from '@xt/balance/quests.json';
-import { featureEnabled, featureFlags } from './features';
+import { featureEnabled, featureFlags, setFeatureFlag } from './features';
 import { GAME_PHASE } from './data';
 import { Progress } from './Progress';
 import {
@@ -8,6 +8,7 @@ import {
   enterSecretNest,
 } from './SecretNestGate';
 import { isSecretNestIntroEnabled, refuseStart, refuseReward } from './SecretNestClosed';
+import { getSecretBoonState, chooseSecretBoon } from './SecretBoonRuntime';
 
 /** design/40 万妖巢穴最小可玩闭环接线静证（≠开态≠soft≠release）。 */
 export async function runSecretNestMinLoopTests(options: { dataMode?: string } = {}): Promise<{ assertions: number }> {
@@ -22,6 +23,7 @@ export async function runSecretNestMinLoopTests(options: { dataMode?: string } =
   function ok(value: unknown, message: string): asserts value { eq(!!value, true, message); }
 
   const flagsBefore = featureFlags();
+  eq(featureEnabled('secret_boon_runtime'), false, 'design/49 兼容口径：正式软闸关，沿 design/40 不出 boon');
   eq(GAME_PHASE, 5, 'GAME_PHASE 仍为 5');
   ok(isSecretNestIntroEnabled(), '正式 intro.enabled 为 true（无新 OpenFlag）');
   eq(SECRET_NEST_MIN_LOOP.slotsOverride, { melee: 2, ranged: 1 }, 'slotsOverride 硬读 2/1');
@@ -105,6 +107,8 @@ export async function runSecretNestMinLoopTests(options: { dataMode?: string } =
   const clear = fixtureClearSecretNestMobs();
   ok(clear.allowed && clear.cleared, 'O02 清房成功');
   eq(getSecretNestRun()?.cleared, true, 'O02 run.cleared');
+  eq(getSecretBoonState().pendingHand, undefined, 'design/49 软闸关：清房不出三选一');
+  eq(getSecretBoonState().layers, {}, 'design/49 软闸关：不 apply boon');
   eq(p.quests.q_main_06, main06Before, 'O04 清怪不计 q_main_06');
 
   // 逐只 clear 路径（重建一局）
@@ -149,6 +153,25 @@ export async function runSecretNestMinLoopTests(options: { dataMode?: string } =
   const mid = exitSecretNestSession();
   ok(mid.allowed && !mid.cleared && !mid.rewarded, '中途退出无通关');
   eq([p3.stones, p3.exp], [stones3, exp3], '中途退出无结算增量');
+
+  // design/49 明示改写旧「不开 boon」口径：仅关闸保持旧行为；开闸允许三选一，离境全清。
+  setFeatureFlag('secret_boon_runtime', true);
+  try {
+    const boonPlayer = makeProg({ introState: 'done' });
+    ok(startSecretNest(boonPlayer, returnPosition).allowed, 'design/49 内存开闸仍沿原门禁入局');
+    ok(fixtureClearSecretNestMobs().allowed, 'design/49 内存开闸清原 combat_01');
+    const hand = getSecretBoonState().pendingHand ?? [];
+    eq(hand.length, 3, 'design/49 软闸开：清房可三选一');
+    eq(new Set(hand.map(card => card.id)).size, 3, 'design/49 三卡不同 id');
+    eq(rewardSecretNest(boonPlayer).allowed, false, 'design/49 未选择前不可跳过卡组结算');
+    ok(chooseSecretBoon(hand[0]!.id), 'design/49 选择一张真实候选');
+    ok(exitSecretNestSession().allowed, 'design/49 选后退出');
+    eq(getSecretBoonState().layers, {}, 'design/49 离境清全部机缘层');
+    eq(getSecretBoonState().pendingHand, undefined, 'design/49 离境清未决卡组');
+  } finally {
+    setFeatureFlag('secret_boon_runtime', flagsBefore.secret_boon_runtime);
+    resetSecretNestRunForTests();
+  }
 
   // 关态对照：intro 关闭时由 Closed 拒（本测在正式开态图；无参拒已覆盖；closed 图由 v06c 管）
   eq(typeof refuseStart().tipKey, 'string', 'refuseStart 可用');

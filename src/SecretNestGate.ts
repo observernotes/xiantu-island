@@ -6,6 +6,7 @@ import strings from '@xt/balance/strings_zh.json';
 import { SECRET_NEST_INTRO_ID, isSecretNestIntroEnabled, readSignClosed, refuseEnter,
   refuseStart, refuseReward } from './SecretNestClosed';
 import type { Progress } from './Progress';
+import { beginSecretBoonRun, onSecretBoonRoomClear, getSecretBoonState, clearRunBoons } from './SecretBoonRuntime';
 
 export interface SecretNestGateProgress {
   readonly level: number;
@@ -180,6 +181,7 @@ export function enterSecretNest(prog: SecretNestGateProgress, returnPosition: Se
 
 export function exitSecretNest(room: SecretNestRoom) {
   if (!isSecretNestIntroEnabled()) return refuseEnter();
+  clearRunBoons();
   return { allowed: true as const, returnPosition: { ...room.returnPosition } };
 }
 
@@ -189,12 +191,19 @@ export function getSecretNestRun(): SecretNestRun | undefined {
 
 /** 测试／场景销毁：无条件清空局内 run（不发奖、不检门禁）。 */
 export function resetSecretNestRunForTests() {
+  clearRunBoons();
   activeRun = undefined;
 }
 
 /** 场景销毁等同 reset；命名给 GameScene 调用。 */
 export function abandonSecretNestSession() {
+  clearRunBoons();
   activeRun = undefined;
+}
+
+/** 倒地即清机缘与未决卡组；复起不恢复旧层。 */
+export function onSecretNestPlayerDown() {
+  clearRunBoons();
 }
 
 /**
@@ -229,6 +238,7 @@ export function startSecretNest(
     cleared: false,
     rewarded: false,
   };
+  beginSecretBoonRun(prog);
   return {
     allowed: true,
     run: copy(activeRun),
@@ -257,6 +267,7 @@ export function clearSecretNestMob(mobId: string):
   if (!room.mobs.some(entry => entry.alive)) {
     room.cleared = true;
     run.cleared = run.rooms.every(entry => entry.cleared);
+    onSecretBoonRoomClear(room.id);
   }
   activeRun = run;
   return { allowed: true, run: copy(activeRun), mob: copy(mob), cleared: room.cleared };
@@ -279,7 +290,8 @@ export function fixtureClearSecretNestMobs():
 
 /**
  * 通关结算一行（演武定稿 exp=12／stones=20）。
- * 须已清房且未发过；不计日倍／不开 loot／boon。
+ * 须已清房且未发过；不计日倍／不开 loot。
+ * 机缘软闸关则不开；开则选后再结算，局内机缘离境即散、不进永久结算。
  */
 export function rewardSecretNest(prog?: Progress):
   SecretNestRewardOk | SecretNestDenied | ReturnType<typeof refuseReward> {
@@ -293,11 +305,15 @@ export function rewardSecretNest(prog?: Progress):
   if (activeRun.rewarded) {
     return denied('secret.gate.rewarded', '本次通关结算已发放。');
   }
+  if (getSecretBoonState().pendingHand) {
+    return denied('secret.boon.pending', '请先选择本房机缘，再领取通关结算。');
+  }
   const { exp, stones } = SECRET_NEST_MIN_LOOP.reward;
   if (!Number.isSafeInteger(prog.stones) || prog.stones < 0
     || !Number.isSafeInteger(prog.stones + stones)) {
     return denied('secret.gate.no_reward', '通关结算无法入账，请检查存档。');
   }
+  clearRunBoons();
   const settled = prog.gainExp(exp, prog.level, 'quest');
   prog.stones += stones;
   activeRun = { ...activeRun, rewarded: true };
@@ -321,6 +337,7 @@ export function exitSecretNestSession():
   const returnPosition = { ...activeRun.returnPosition };
   const cleared = activeRun.cleared;
   const rewarded = activeRun.rewarded;
+  clearRunBoons();
   activeRun = undefined;
   return { allowed: true, returnPosition, cleared, rewarded };
 }

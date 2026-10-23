@@ -8,6 +8,7 @@ import { CLASS_LIST, CLASS_RULES, classDef, classEntryEnabled, classEntrySkill, 
 import { DAILY_QUEST_LIMIT, dailyQuestDay, dailyContribution, dailyRewardsReady, type DailyQuestReward } from './DailyQuests';
 import { isBrewSession, type BrewSession } from './Alchemy';
 import { featureEnabled } from './features';
+import { secretBoonRatio } from './SecretBoonRuntime';
 import { sectTrialReturnPosition } from './Ferry';
 import { isCheatEnabled, isCheatSkillsUnlocked } from './cheatFlags';
 import { emptyTalismanSave, normalizeTalismanSave, type TalismanSave } from './Talisman';
@@ -355,6 +356,10 @@ export class Progress {
     for (const [id, count] of Object.entries(transientItems)) inventory[id] = Math.max(0, this.count(id) - count);
     const temporaryIds = Object.keys(trialSkills);
     return JSON.parse(JSON.stringify({ ...persistent, ...talismanFields, ...lifeSkillFields, ...senseFields, inventory, hotbar: trialHotbarBefore ?? this.hotbar,
+      // 局内上限不落存档；读档仅恢复基础属性，不携带机缘层或未决卡组。
+      ...(featureEnabled('secret_boon_runtime') ? {
+        hp: Math.min(this.hp, this.baseMaxHp), mp: Math.min(this.mp, this.baseMaxMp),
+      } : {}),
       allocatedStats: normalizedStats(this.allocatedStats), unspentStatPoints: count(this.unspentStatPoints) ? this.unspentStatPoints : 0,
       buffs: this.buffs.filter(b => !temporaryIds.includes(b.id)),
       skillCooldowns: Object.fromEntries(Object.entries(this.skillCooldowns).filter(([id]) => !temporaryIds.includes(id))) }));
@@ -835,8 +840,11 @@ export class Progress {
     }
     return undefined;
   }
-  get maxHp() { return Math.round((GROWTH.base.hp + GROWTH.perLevel.hp * (this.level - 1) + this.statBonus('hp') + this.equipSum('hp')) * this.realmMul('hpMul') * this.debuffMul('hp')); }
-  get maxMp() { return Math.round((GROWTH.base.mp + GROWTH.perLevel.mp * (this.level - 1) + this.statBonus('mp')) * (1 + this.passiveBonus('mpMaxRatio')) * this.realmMul('mpMul') * this.debuffMul('mp')); }
+  /** 同伴／召唤物只继承基础上限，不能继承玩家局内机缘。 */
+  get baseMaxHp() { return Math.round((GROWTH.base.hp + GROWTH.perLevel.hp * (this.level - 1) + this.statBonus('hp') + this.equipSum('hp')) * this.realmMul('hpMul') * this.debuffMul('hp')); }
+  get baseMaxMp() { return Math.round((GROWTH.base.mp + GROWTH.perLevel.mp * (this.level - 1) + this.statBonus('mp')) * (1 + this.passiveBonus('mpMaxRatio')) * this.realmMul('mpMul') * this.debuffMul('mp')); }
+  get maxHp() { return Math.round(this.baseMaxHp * (1 + secretBoonRatio(this, 'hp_max'))); }
+  get maxMp() { return Math.round(this.baseMaxMp * (1 + secretBoonRatio(this, 'mp_max'))); }
   /** 突破奖励倍率：已领奖励的境界各乘一次（同一境界重复记录也只算一次） */
   realmMul(key: 'hpMul' | 'mpMul') {
     let m = 1;
@@ -903,18 +911,25 @@ export class Progress {
 
   /** 玩家打怪伤害：max(1, round(atk·ratio·rand(0.9,1.1) − def))，怪高 n 级 ×max(0.6, 1−0.05n) */
   damageTo(monLevel: number, monDef: number, ratio = 1, damageStat: 'atk' | 'matk' = 'atk', crit = false, critMultiplier = 1.5) {
+    return this.attackDamageTo(monLevel, monDef, ratio, damageStat, crit, critMultiplier, secretBoonRatio(this, 'direct_damage'));
+  }
+  /** 召唤物沿用原伤害公式，不继承玩家 direct_damage 机缘。 */
+  summonDamageTo(monLevel: number, monDef: number, ratio = 1) {
+    return this.attackDamageTo(monLevel, monDef, ratio, 'atk', false, 1.5, 0);
+  }
+  private attackDamageTo(monLevel: number, monDef: number, ratio: number, damageStat: 'atk' | 'matk', crit: boolean, critMultiplier: number, boonRatio: number) {
     const n = monLevel - this.level;
     const gap = n > 0 ? Math.max(0.6, 1 - 0.05 * n) : 1;
     const minRoll = Math.min(1.1, 0.9 + Math.max(0, this.passiveBonus('minDamageRatio')));
     const roll = minRoll + Math.random() * (1.1 - minRoll);
     const attack = damageStat === 'matk' ? this.matk : this.atk;
-    return Math.max(1, Math.round((attack * ratio * roll * (crit ? critMultiplier : 1) - monDef) * gap));
+    return Math.max(1, Math.round((attack * ratio * roll * (crit ? critMultiplier : 1) - monDef) * gap * (1 + boonRatio)));
   }
   /** 符箓绝对基础伤害，只复用等级差和扣防，不乘角色攻击/职业技能增幅。 */
   fixedDamageTo(baseDamage: number, monLevel: number, monDef: number) {
     const n = monLevel - this.level;
     const gap = n > 0 ? Math.max(0.6, 1 - 0.05 * n) : 1;
-    return Math.max(1, Math.round((baseDamage * (0.9 + Math.random() * 0.2) - monDef) * gap));
+    return Math.max(1, Math.round((baseDamage * (0.9 + Math.random() * 0.2) - monDef) * gap * (1 + secretBoonRatio(this, 'direct_damage'))));
   }
   /** 单次技能伤害：元素和暴击先乘攻击，之后每段分别扣防。剑修旧公式保持原样。 */
   skillDamageTo(id: string, level: number, monLevel: number, monDef: number, ratio: number, forceCrit = false) {
@@ -930,7 +945,7 @@ export class Progress {
   damageFrom(monAtk: number, ratio = 1, otherReductions: number[] = []) {
     const raw = Math.max(1, monAtk * ratio * (0.9 + Math.random() * 0.2) - this.def);
     const multiplier = featureEnabled('talismanCraft') ? talismanDamageMultiplier(this.talismanUse, gameNow(), otherReductions) : 1;
-    return Math.max(1, Math.round(raw * multiplier));
+    return Math.max(1, Math.round(raw * multiplier * (1 + secretBoonRatio(this, 'monster_damage_taken'))));
   }
 
   /** 加修为，返回升了几级。怪比玩家低 5 级以上按 max(0.2, 1−0.1(n−4)) 衰减；突破关口停住 */

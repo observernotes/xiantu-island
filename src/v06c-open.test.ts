@@ -13,6 +13,7 @@ import { SectGrowth } from './SectGrowth';
 import { createIndexedDbBackend, createMemorySaveBackend, saveStore, setSaveBackend } from './SaveStore';
 import { SECRET_NEST_INTRO_ID, isSecretNestIntroEnabled, refuseEnter, refuseReward, refuseStart } from './SecretNestClosed';
 import { enterSecretNest, exitSecretNest, readSecretNestSign, rewardSecretNest, startSecretNest, resetSecretNestRunForTests, fixtureClearSecretNestMobs, getSecretNestRun } from './SecretNestGate';
+import { getSecretBoonState } from './SecretBoonRuntime';
 import { GameScene } from './scenes/GameScene';
 import type { MapObj } from './scenes/MapBuilder';
 
@@ -230,7 +231,7 @@ export async function runV06cOpenTests(options: { openFixture: boolean; dataMode
         eq(view.scene.time.paused, false, '退出恢复营地延时计时器');
         eq(view.physicsEvents, ['pause', 'resume'], '一次进入退出只暂停恢复一次');
         eq(view.transitions, [], '占位进出不重启场景或扩展地图');
-        eq(p.exportSave(), doneBefore, '进巢与退出无资产、boon、日奖或主线变化');
+        eq(p.exportSave(), doneBefore, 'design/49 软闸关：进巢与退出无资产、boon、日奖或主线变化');
         eq(writes, doneWrites, '最小退出不写盘');
 
         // 用真实 update 验证单房隔离与三个退出按键；任何外界模拟调用立即失败。
@@ -339,6 +340,7 @@ export async function runV06cOpenTests(options: { openFixture: boolean; dataMode
       eq(wireStart.allowed, true, '资格满足后 startSecretNest 允许最小可玩局');
       eq(rewardSecretNest(wireProg.p).allowed, false, '未清房不可领通关行');
       const cleared = fixtureClearSecretNestMobs();
+      eq(getSecretBoonState().pendingHand, undefined, 'design/49 软闸关：旧 v06c 清房不出 boon；开闸验收由 runtime suite 覆盖');
       eq(cleared.allowed && cleared.cleared, true, '夹具清房成功');
       const stonesBeforeReward = wireProg.p.stones;
       const rewarded = rewardSecretNest(wireProg.p);

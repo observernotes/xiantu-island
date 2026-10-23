@@ -44,7 +44,7 @@ for (const [mode, dataRoot] of modes) {
     else if (want[mode]) assert.equal(got, want[mode], `${mode} ${rel}`);
   }
   const server = await createServer({
-    root,
+    root, configFile: false, resolve: { alias: { '@xt': dataRoot } },
     server: { middlewareMode: true, hmr: false, ws: false },
     appType: 'custom', logLevel: 'error',
     plugins: [{ name: 'secret-nest-min-loop-phaser', enforce: 'pre',
@@ -61,6 +61,8 @@ for (const [mode, dataRoot] of modes) {
     ssr: { noExternal: ['phaser'] },
   });
   try {
+    const resolved = await server.pluginContainer.resolveId('@xt/balance/secret_rooms.json');
+    assert.equal(resolved.id, path.join(dataRoot, 'balance/secret_rooms.json'), `${mode} 必须真实加载指定根`);
     const suite = await server.ssrLoadModule('/src/secret-nest-min-loop.test.ts');
     const result = await suite.runSecretNestMinLoopTests({ dataMode: mode });
     total += result.assertions;

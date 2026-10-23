@@ -7,12 +7,13 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { createServer, preview } from 'vite';
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-const names = ['fiveSectClasses', 'sectDaily', 'sectRanks', 'sectShopLibrary', 'shops', 'sectDonations', 'seclusion', 'alchemyPhase1', 'v05Maps', 'foxBoss', 'talismanCraft', 'lifeSkillCurve', 'spiritScan', 'indexedDbSaves'];
+const names = ['fiveSectClasses', 'sectDaily', 'sectRanks', 'sectShopLibrary', 'shops', 'sectDonations', 'seclusion', 'alchemyPhase1', 'v05Maps', 'foxBoss', 'talismanCraft', 'lifeSkillCurve', 'spiritScan', 'indexedDbSaves', 'secret_boon_runtime'];
+const defaultOff = new Set(['shops', 'talismanCraft', 'lifeSkillCurve', 'spiritScan', 'indexedDbSaves', 'secret_boon_runtime']);
 let configured = {};
 try { configured = JSON.parse(await fs.readFile(path.join(root, 'data/features.json'), 'utf8')); }
 catch (error) { if (error.code !== 'ENOENT') throw error; }
 const expected = Object.fromEntries(names.map(name => [name,
-  typeof configured?.[name] === 'boolean' ? configured[name] : name !== 'shops' && name !== 'talismanCraft' && name !== 'lifeSkillCurve' && name !== 'spiritScan' && name !== 'indexedDbSaves']));
+  typeof configured?.[name] === 'boolean' ? configured[name] : !defaultOff.has(name)]));
 if (process.env.QA_TIER_EXPECT_FEATURES) {
   // tier1 的清单可早于新开关；完整运行时开关仍在下方与工程快照核对。
   for (const [name, value] of Object.entries(JSON.parse(process.env.QA_TIER_EXPECT_FEATURES))) {
@@ -45,7 +46,8 @@ try {
     const loader = await createServer({ root: fixtureRoot, configFile: false, server: { middlewareMode: true, hmr: false, ws: false }, logLevel: 'error' });
     try {
       const features = await loader.ssrLoadModule('/src/features.ts');
-      assert.deepEqual(features.featureFlags(), Object.fromEntries(names.map(name => [name, configured?.[name] ?? (name !== 'shops' && name !== 'talismanCraft' && name !== 'lifeSkillCurve' && name !== 'spiritScan' && name !== 'indexedDbSaves')])));
+      assert.deepEqual(features.featureFlags(), Object.fromEntries(names.map(name => [name, configured?.[name] ?? !defaultOff.has(name)])));
+      assert.equal(features.featureEnabled('secret_boon_runtime'), false, 'design/49 缺键／false 必须关');
     } finally { await loader.close(); }
   }
 } finally { await fs.rm(fixtureRoot, { recursive: true, force: true }); }
@@ -333,6 +335,12 @@ try {
     await flip('indexedDbSaves', false);
     await flip('indexedDbSaves', true);
     checked.push('indexedDbSaves');
+
+    await flip('secret_boon_runtime', false);
+    check(xt.getState().features.secret_boon_runtime === false, 'design/49 软闸关态');
+    await flip('secret_boon_runtime', true);
+    check(xt.getState().features.secret_boon_runtime === true, 'design/49 会话软闸可覆盖开态');
+    checked.push('secret_boon_runtime');
 
     // 所有开关关闭后读旧档：保存字段完整，存档的 true 不能越过发版门禁。
     const preserved = { ...joined, ageUpdatedAt: xt.getState().time, flags: Object.fromEntries(names.map(name => [name, true])),

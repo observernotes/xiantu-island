@@ -16,8 +16,17 @@ const expected = {
   'balance/companions.json': 'e4eb87c1f9400514a084d630f179903e0926d706c85614481f1e2618a01bb115',
   'balance/skills.json': 'd80abaf18204a7472a67bf74b6d08eda5e213fc170b5e1c905e8e971e9462979',
   'balance/fly_zones.json': '2940fe5952246a3669f87d8b9f3fc6226c2adf7080353be7de94da81e031b8e4',
-  'features.json': '69302e3a0dec48fb963548ab5dc1e0b950b2a050864ee7a746335a8386be9fd8',
+  // design/49 只在工程快照新增默认 false 的机缘软闸；旧共享配置仍冻结。
+  'features.json': {
+    shared: '69302e3a0dec48fb963548ab5dc1e0b950b2a050864ee7a746335a8386be9fd8',
+    snapshot: '6a502d279616129f362b6fc01031da0044ea464d91883d013f35622ae9cf7885',
+  },
 };
+const legacyFeatures = Object.fromEntries([
+  'fiveSectClasses', 'sectDaily', 'sectRanks', 'sectShopLibrary', 'shops', 'sectDonations',
+  'seclusion', 'alchemyPhase1', 'v05Maps', 'foxBoss', 'talismanCraft', 'lifeSkillCurve',
+  'spiritScan', 'indexedDbSaves',
+].map(name => [name, true]));
 async function fileHash(file) {
   try { return hash(await fs.readFile(file)); }
   catch (error) { if (error.code === 'ENOENT') return null; throw error; }
@@ -29,8 +38,14 @@ for (const [mode, dataRoot] of modes) {
     const sha = await fileHash(file);
     before.set(file, sha);
     // features 发版配置仅存在工程快照；共享根的缺失也在 finally 守护。
+    if (rel === 'features.json') {
+      const configured = sha === null ? {} : JSON.parse(await fs.readFile(file, 'utf8'));
+      assert.equal(configured.secret_boon_runtime ?? false, false, `${mode} 机缘软闸 false／缺键关`);
+      if (sha !== null) assert.deepEqual(configured, mode === 'snapshot'
+        ? { ...legacyFeatures, secret_boon_runtime: false } : legacyFeatures, `${mode} 旧14项 feature 语义冻结`);
+    }
     if (mode === 'shared' && rel === 'features.json' && sha === null) continue;
-    assert.equal(sha, expected[rel], `${mode} ${rel} SHA MATCH`);
+    assert.equal(sha, typeof expected[rel] === 'string' ? expected[rel] : expected[rel][mode], `${mode} ${rel} SHA MATCH`);
   }
 }
 
@@ -62,6 +77,8 @@ try {
     try {
       const resolved = await server.pluginContainer.resolveId('@xt/balance/companions.json');
       assert.equal(path.normalize(resolved?.id ?? ''), path.join(dataRoot, 'balance/companions.json'), `${mode} 实际解析根`);
+      const features = await server.ssrLoadModule('/src/features.ts');
+      assert.deepEqual(features.featureFlags(), { ...legacyFeatures, secret_boon_runtime: false }, `${mode} 运行时旧14项与新关闸语义`);
       const suite = await server.ssrLoadModule('/src/companion-down-revive.test.ts');
       const result = await suite.runCompanionDownReviveTests({ dataMode: mode });
       total += result.assertions;

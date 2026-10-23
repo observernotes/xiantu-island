@@ -1,6 +1,7 @@
 // 正式开态双根验收；关态仅在 Vite SSR 图内替换 quests JSON 克隆，正式表和 features 均只读。
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -11,16 +12,35 @@ const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const modes = [['shared', sharedRoot(root)], ['snapshot', path.join(root, 'data')]];
 const introId = 'q_secret_nest_intro';
 const expectedSha = {
-  'balance/quests.json': 'c45466827247b9e61260bbd2b681ae7207bf84a017aff5d8b028c0ec3463482b',
-  'balance/strings_zh.json': '50750db24d605cdb38becad018efea92dfbcf7655c0ed71f627e52cc95afbfa3',
+  // design/49 明示兼容：master@75f0916c 快照与共享策划表已有差异，各根独立冻结；本刀不改表。
+  'balance/quests.json': {
+    shared: 'c45466827247b9e61260bbd2b681ae7207bf84a017aff5d8b028c0ec3463482b',
+    snapshot: 'ec9289b5f9ecabceadf39b3bf921c11389b34d7ac18a7398d26fbd3dc3f089c4',
+  },
+  'balance/strings_zh.json': {
+    shared: '026be3b42bba3615de6944602835af2269cc2a73ef244fb687c087e6b6829f4b',
+    snapshot: 'ed38339083e3c7e2aac15d95ef9143465510d1e06f6da2f5dcd5983cf20bce79',
+  },
   'maps/wanyao_outer_1.json': '9c05955fb39631e1236f2583f3be65e66823be2da3b30efaafc10ff443074b10',
   'balance/companions.json': 'e4eb87c1f9400514a084d630f179903e0926d706c85614481f1e2618a01bb115',
   'balance/fly_zones.json': '2940fe5952246a3669f87d8b9f3fc6226c2adf7080353be7de94da81e031b8e4',
-  'balance/npcs.json': '2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6',
+  'balance/npcs.json': {
+    shared: '2533a87d057146e024a90ab07749d1a667b550b9f3caa74c42f2a8ed5f9c23c6',
+    snapshot: '243109d7b2f80877e83f737f951646d1170c1c39f9929a664c4359d9cfe1d134',
+  },
 };
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const clone = value => JSON.parse(JSON.stringify(value));
-const before = new Map(), tables = new Map(), sharedBytes = new Map();
+const before = new Map(), tables = new Map();
+const baseline = new Map();
+for (const [rel, want] of Object.entries(expectedSha)) {
+  const bytes = execFileSync('git', ['show', `75f0916c:data/${rel}`], { cwd: root });
+  assert.equal(hash(bytes), typeof want === 'string' ? want : want.snapshot, `${rel}: snapshot 冻结值须等于 master@75f0916c`);
+  baseline.set(rel, JSON.parse(bytes.toString('utf8')));
+}
+const baselineSecretStrings = Object.fromEntries(Object.entries(baseline.get('balance/strings_zh.json'))
+  .filter(([key]) => key.startsWith('secret.')));
+assert.equal(Object.keys(baselineSecretStrings).length, 16, '基线秘境文案实际登记 16 项');
 let totalAssertions = 0;
 const shaOrNull = async file => {
   try { return hash(await fs.readFile(file)); }
@@ -43,14 +63,15 @@ async function checkFormal(mode, dataRoot) {
   const data = {};
   for (const [rel, sha] of Object.entries(expectedSha)) {
     const bytes = await fs.readFile(path.join(dataRoot, rel));
-    assert.equal(hash(bytes), sha, `${mode}: ${rel} 正式 SHA`);
-    if (mode === 'shared') sharedBytes.set(rel, bytes);
-    else assert(bytes.equals(sharedBytes.get(rel)), `${rel}: 共享/快照同字节`);
+    assert.equal(hash(bytes), typeof sha === 'string' ? sha : sha[mode], `${mode}: ${rel} 正式 SHA`);
     data[rel] = JSON.parse(bytes.toString('utf8'));
   }
   const intros = data['balance/quests.json'].filter(q => q.id === introId);
   assert.equal(intros.length, 1, `${mode}: intro 唯一`);
   const intro = intros[0];
+  assert.deepEqual(intro, baseline.get('balance/quests.json').find(quest => quest.id === introId), `${mode}: 关键 intro 全字段与基线一致`);
+  assert.deepEqual(Object.fromEntries(Object.keys(baselineSecretStrings).map(key => [key, data['balance/strings_zh.json'][key]])),
+    baselineSecretStrings, `${mode}: 秘境原文案与基线逐键一致`);
   assert.equal(intro.enabled, true, `${mode}: 正式 intro 已软开`);
   assert.equal(intro.phase, 5, `${mode}: 正式 intro 为 phase 5`);
   assert.deepEqual(intro.rewards, {}, `${mode}: intro 无收益`);

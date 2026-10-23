@@ -76,7 +76,9 @@ import { SECRET_NEST_INTRO_ID, isSecretNestIntroEnabled, featureClosed, readSign
   refuseQuestOffer, refuseQuestProgress } from '../SecretNestClosed';
 import { readSecretNestSign, enterSecretNest, exitSecretNest, startSecretNest, rewardSecretNest,
   clearSecretNestMob, fixtureClearSecretNestMobs, exitSecretNestSession, abandonSecretNestSession, getSecretNestRun,
+  onSecretNestPlayerDown,
   type SecretNestRoom } from '../SecretNestGate';
+import { getSecretBoonState, chooseSecretBoon, closeSecretBoonPanel, reopenSecretBoonPanel } from '../SecretBoonRuntime';
 import { featureClosed as towerFeatureClosed, interactEntranceClosed as towerEntranceClosed } from '../TowerClosed';
 import { isTowerOpenForFixture } from '../TowerOpenFlag';
 import { TowerGate } from '../TowerGate';
@@ -1366,6 +1368,17 @@ export class GameScene extends Phaser.Scene {
   }
 
   playerDie() {
+    // design/49：倒地与离境同清；释放本房自持暂停，保证复起时钟可继续。
+    onSecretNestPlayerDown();
+    this.player.maxHp = this.prog.maxHp; this.player.hp = this.prog.hp;
+    if (this.secretNestRoom) {
+      abandonSecretNestSession();
+      this.secretNestRoomView?.destroy(); this.secretNestRoomView = undefined;
+      this.secretNestRoom = undefined; this.secretNestBusy = false;
+      if (this.secretNestOwnsPause) this.physics.resume();
+      if (this.secretNestOwnsTimerPause) this.time.paused = false;
+      this.secretNestOwnsPause = false; this.secretNestOwnsTimerPause = false;
+    }
     this.endSustainFlight('die');
     this.encounterRuntime?.terminate('failed');
     this.talismanUse?.onDeath();
@@ -2609,11 +2622,14 @@ export class GameScene extends Phaser.Scene {
     const playable = !!room.playable && !!run;
     const alive = playable ? run!.rooms[run!.roomIndex]?.mobs.filter(mob => mob.alive).length ?? 0 : 0;
     const cleared = playable && !!run!.cleared;
+    const boonState = getSecretBoonState();
+    const pendingBoon = playable && !!boonState.pendingHand?.length;
     const title = this.add.text(cx, cy - 140, playable ? '万妖巢穴·平地' : '万妖巢穴·入口石室',
       { fontSize: '22px', color: '#fff1c7' }).setOrigin(0.5);
     const description = this.add.text(cx, cy - 96,
       !playable ? '前方通道暂未开放，本次进出不发放收益。'
-        : cleared ? '妖物已清，可领取通关结算并返回营地。'
+        : pendingBoon ? '妖物已清，请选定一份机缘后通关。关闭面板时巢穴仍暂停。'
+          : cleared ? '妖物已清，可领取通关结算并返回营地。'
           : `尚余妖物 ${alive} 只。清房后方可通关结算。`,
       { fontSize: '16px', color: '#d0d4c1' }).setOrigin(0.5);
     const children: Phaser.GameObjects.GameObject[] = [backdrop, chamber, title, description];
@@ -2641,14 +2657,78 @@ export class GameScene extends Phaser.Scene {
         children.push(clearAll);
       }
     }
-    const exitLabel = cleared ? '通关返回营地  [Z / ↑ / Esc]' : '返回营地  [Z / ↑ / Esc]';
-    const exit = this.add.text(cx, cy + 120, exitLabel,
-      { fontSize: '18px', color: '#fff1c7', backgroundColor: '#535d48', padding: { x: 16, y: 10 } })
-      .setOrigin(0.5).setName(playable ? 'secret_nest_run_exit' : 'secret_nest_stub_exit')
-      .setInteractive({ useHandCursor: true })
-      .on('pointerdown', () => this.exitSecretNestRoom());
-    children.push(exit);
+    if (pendingBoon) {
+      const reopen = this.add.text(cx, cy + 120, '再开机缘三选一',
+        { fontSize: '18px', color: '#fff1c7', backgroundColor: '#535d48', padding: { x: 16, y: 10 } })
+        .setOrigin(0.5).setName('secret_boon_reopen').setInteractive({ useHandCursor: true })
+        .on('pointerdown', () => { reopenSecretBoonPanel(); this.renderSecretNestRoom(); });
+      children.push(reopen);
+    } else {
+      const exitLabel = cleared ? '通关返回营地  [Z / ↑ / Esc]' : '返回营地  [Z / ↑ / Esc]';
+      const exit = this.add.text(cx, cy + 120, exitLabel,
+        { fontSize: '18px', color: '#fff1c7', backgroundColor: '#535d48', padding: { x: 16, y: 10 } })
+        .setOrigin(0.5).setName(playable ? 'secret_nest_run_exit' : 'secret_nest_stub_exit')
+        .setInteractive({ useHandCursor: true })
+        .on('pointerdown', () => this.exitSecretNestRoom());
+      children.push(exit);
+    }
     view.add(children);
+    // Phaser 命中测试读取子控件自身 scrollFactor；与固定屏幕房间视图保持一致。
+    for (const child of children) Object.assign(child, { scrollFactorX: 0, scrollFactorY: 0 });
+    if (pendingBoon && boonState.panelOpen) this.renderSecretBoonPanel(view);
+  }
+
+  private renderSecretBoonPanel(view: Phaser.GameObjects.Container) {
+    const hand = getSecretBoonState().pendingHand;
+    if (!hand?.length) return;
+    const width = this.scale.width, height = this.scale.height, cx = width / 2, cy = height / 2;
+    const panelWidth = Math.min(720, width - 40), panelHeight = Math.min(380, height - 40);
+    const panel = this.add.container(0, 0).setName('secret_boon_panel');
+    const backdrop = this.add.rectangle(cx, cy, width, height, 0x101611, 0.94).setInteractive();
+    const frame = this.add.rectangle(cx, cy, panelWidth, panelHeight, 0x333a35).setStrokeStyle(3, 0xaaa475);
+    const title = this.add.text(cx, cy - panelHeight / 2 + 32, '巢穴机缘 · 三选一',
+      { fontSize: '22px', color: '#fff1c7' }).setOrigin(0.5);
+    const note = this.add.text(cx, cy - panelHeight / 2 + 64, '仅本局对你生效；通关、退出或倒地后清除。',
+      { fontSize: '14px', color: '#d0d4c1' }).setOrigin(0.5);
+    panel.add([backdrop, frame, title, note]);
+    const cardWidth = (panelWidth - 64) / 3, cardHeight = Math.min(190, panelHeight - 150);
+    const statNames: Record<string, string> = {
+      hp_max: '气血上限', mp_max: '灵力上限', direct_damage: '直接伤害',
+      monster_damage_taken: '受到妖物伤害', hp: '气血', mp: '灵力',
+    };
+    hand.forEach((boon, index) => {
+      const x = cx + (index - 1) * (cardWidth + 16), y = cy + 4;
+      const card = this.add.rectangle(x, y, cardWidth, cardHeight, 0x434d3b).setStrokeStyle(1, 0x8d9472);
+      const name = this.add.text(x, y - cardHeight / 2 + 25, boon.name,
+        { fontSize: '18px', color: '#fff1c7' }).setOrigin(0.5);
+      const effects = boon.effects.map(effect => {
+        const stat = statNames[effect.stat] ?? effect.stat;
+        const ratio = `${Math.round(Math.abs(effect.value) * 100)}%`;
+        if (effect.op === 'restore_max_ratio') {
+          return `${effect.trigger === 'choose' ? '选定即恢复' : '此后每次清房恢复'}\n${stat}上限的 ${ratio}`;
+        }
+        return `本局${stat} ${effect.value < 0 ? '−' : '+'}${ratio}`;
+      }).join('\n');
+      const description = this.add.text(x, y - 4, effects,
+        { fontSize: '14px', color: '#e0e4d1', align: 'center', wordWrap: { width: cardWidth - 20 } }).setOrigin(0.5);
+      const choose = this.add.text(x, y + cardHeight / 2 - 25, '选定',
+        { fontSize: '16px', color: '#fff1c7', backgroundColor: '#66714f', padding: { x: 20, y: 7 } })
+        .setOrigin(0.5).setName(`secret_boon_choose_${boon.id}`).setInteractive({ useHandCursor: true })
+        .on('pointerdown', () => {
+          if (!chooseSecretBoon(boon.id)) return;
+          this.player.maxHp = this.prog.maxHp; this.player.hp = this.prog.hp;
+          this.log(`已选机缘：${boon.name}（仅本局生效）。`, '#ffe680');
+          this.renderSecretNestRoom();
+        });
+      panel.add([card, name, description, choose]);
+    });
+    const close = this.add.text(cx, cy + panelHeight / 2 - 28, '关闭面板（保持暂停）',
+      { fontSize: '16px', color: '#fff1c7', backgroundColor: '#535d48', padding: { x: 16, y: 7 } })
+      .setOrigin(0.5).setName('secret_boon_close').setInteractive({ useHandCursor: true })
+      .on('pointerdown', () => { closeSecretBoonPanel(); this.renderSecretNestRoom(); });
+    panel.add(close);
+    for (const child of panel.list) Object.assign(child, { scrollFactorX: 0, scrollFactorY: 0 });
+    view.add(panel);
   }
 
   private clearSecretNestRoomMob(mobId: string) {
@@ -2669,6 +2749,12 @@ export class GameScene extends Phaser.Scene {
   private exitSecretNestRoom(): boolean {
     if (!this.secretNestRoom || this.secretNestBusy) return false;
     const playable = !!this.secretNestRoom.playable;
+    if (playable && getSecretBoonState().pendingHand?.length) {
+      closeSecretBoonPanel();
+      this.renderSecretNestRoom();
+      this.log('机缘尚未选定；巢穴已暂停，可再开原卡组。', '#ffe680');
+      return false;
+    }
     if (!playable) {
       const result = exitSecretNest(this.secretNestRoom);
       if (!result.allowed) { this.log(result.text, '#aaaaaa'); return false; }
@@ -2698,6 +2784,7 @@ export class GameScene extends Phaser.Scene {
       }
       const result = exitSecretNestSession();
       if (!result.allowed) { this.log(result.text, '#aaaaaa'); return false; }
+      this.player.maxHp = this.prog.maxHp; this.player.hp = this.prog.hp;
       this.secretNestRoomView?.destroy(); this.secretNestRoomView = undefined;
       this.secretNestRoom = undefined;
       this.player.body.reset(result.returnPosition.x, result.returnPosition.y);

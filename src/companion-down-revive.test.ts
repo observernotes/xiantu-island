@@ -105,6 +105,8 @@ function makeHarness(options: { mode?: CompanionMode; invited?: boolean; now?: n
     affinity: { [SU_COMPANION_NPC_ID]: threshold }, maxHp: 1000, def: 20, atk: 100,
     runSaveTransaction<T>(apply: () => T | undefined) { return apply(); },
   };
+  // 对齐 Progress 的基础上限 getter；不增加夹具存档字段或改动原生命值。
+  Object.defineProperty(prog, 'baseMaxHp', { configurable: true, get: () => prog.maxHp });
   if (!options.progress && options.invited !== false) {
     const invited = invite(COMPANIONS, AFFINITY, prog);
     if (invited.status !== 'ok') throw new Error(`fixture 邀请失败: ${invited.status}`);

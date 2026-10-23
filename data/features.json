@@ -12,5 +12,6 @@
   "talismanCraft": true,
   "lifeSkillCurve": true,
   "spiritScan": true,
-  "indexedDbSaves": true
+  "indexedDbSaves": true,
+  "secret_boon_runtime": false
 }

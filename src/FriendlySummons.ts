@@ -56,7 +56,7 @@ export class FriendlySummons {
       const top = (platform as Phaser.Physics.Arcade.Sprite).body!.top;
       return moving.velocity.y >= 0 && moving.prev.y + moving.height <= top + 2;
     }));
-    const maxHp = Math.max(1, Math.round(prog.maxHp * skillNumber(def, 'hpRatioOfOwner', level)
+    const maxHp = Math.max(1, Math.round(prog.baseMaxHp * skillNumber(def, 'hpRatioOfOwner', level)
       * (1 + prog.passiveBonus('petHpRatio'))));
     const now = this.scene.time.now;
     this.pets.push({ sprite, defId: def.id, level, secondary, maxHp, hp: maxHp,
@@ -183,7 +183,7 @@ export class FriendlySummons {
     const count = Math.max(1, skillNumber(def, 'hitCount', pet.level));
     for (let i = 0; i < count && !mob.dead; i++) {
       const damage = pet.trial ? Math.max(1, Math.round(pet.trial.atk * pet.trial.attack.damageRatio - mob.def.def))
-        : prog.damageTo(mob.def.level, mob.def.def, ratio);
+        : prog.summonDamageTo(mob.def.level, mob.def.def, ratio);
       mob.takeHit(this.scene.time.now, damage, Math.sign(mob.x - pet.sprite.x) || 1);
       if (pet.trial && !mob.dead && !mob.manualMotion)
         mob.body.setVelocityX((Math.sign(mob.x - pet.sprite.x) || 1) * pet.trial.attack.knockback);
