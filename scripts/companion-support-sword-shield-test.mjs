@@ -24,10 +24,10 @@ const expected = {
     shared: 'c45466827247b9e61260bbd2b681ae7207bf84a017aff5d8b028c0ec3463482b',
     snapshot: 'ec9289b5f9ecabceadf39b3bf921c11389b34d7ac18a7398d26fbd3dc3f089c4',
   },
-  // design/49 Soft OpenPreRelease：工程快照机缘软闸 true；旧共享配置仍冻结。
+  // design/49 工程快照机缘软闸 true；design/50 日倍键默认 false；旧共享配置仍冻结。
   'features.json': {
     shared: '69302e3a0dec48fb963548ab5dc1e0b950b2a050864ee7a746335a8386be9fd8',
-    snapshot: '67e07b6cc4f9b10dc766fdf6438d6d564085fb730ea9dd4a9888801c35d5d83f',
+    snapshot: '2053b1de5d28b1747704cba656b01561bd072dc499751d3b7fa04816da61dfac',
   },
 };
 const legacyFeatures = Object.fromEntries([
@@ -49,8 +49,9 @@ for (const [mode, dataRoot] of modes) {
     if (rel === 'features.json') {
       const configured = sha === null ? {} : JSON.parse(await fs.readFile(file, 'utf8'));
       assert.equal(configured.secret_boon_runtime ?? false, mode === 'snapshot', `${mode} 工程快照 soft 开闸／共享缺键关`);
+      if (mode === 'snapshot') assert.equal(configured.secret_daily_bonus, false, 'design/50 工程快照日倍键默认 false');
       if (sha !== null) assert.deepEqual(configured, mode === 'snapshot'
-        ? { ...legacyFeatures, secret_boon_runtime: true } : legacyFeatures, `${mode} 旧14项 feature 语义冻结`);
+        ? { ...legacyFeatures, secret_boon_runtime: true, secret_daily_bonus: false } : legacyFeatures, `${mode} 旧14项 feature 语义冻结`);
     }
     if (mode === 'shared' && rel === 'features.json' && sha === null) continue;
     assert.equal(sha, typeof expected[rel] === 'string' ? expected[rel] : expected[rel][mode], `${mode} ${rel} SHA MATCH`);
@@ -86,7 +87,7 @@ try {
       const resolved = await server.pluginContainer.resolveId('@xt/balance/companions.json');
       assert.equal(path.normalize(resolved?.id ?? ''), path.join(dataRoot, 'balance/companions.json'), `${mode} 实际解析根`);
       const features = await server.ssrLoadModule('/src/features.ts');
-      assert.deepEqual(features.featureFlags(), { ...legacyFeatures, secret_boon_runtime: true }, `${mode} 运行时沿工程快照 soft 开闸，旧14项不漂`);
+      assert.deepEqual(features.featureFlags(), { ...legacyFeatures, secret_boon_runtime: true, secret_daily_bonus: false }, `${mode} 运行时沿工程快照 soft 开闸，旧14项不漂`);
       const suite = await server.ssrLoadModule('/src/companion-support-sword-shield.test.ts');
       const result = await suite.runCompanionSupportSwordShieldTests({ dataMode: mode });
       total += result.assertions;

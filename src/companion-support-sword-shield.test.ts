@@ -226,8 +226,9 @@ export async function runCompanionSupportSwordShieldTests(options: { dataMode?: 
   eq(GAME_PHASE, 5, '不抬 GAME_PHASE');
   eq(Object.keys(featureFlags()), ['fiveSectClasses', 'sectDaily', 'sectRanks', 'sectShopLibrary', 'shops',
     'sectDonations', 'seclusion', 'alchemyPhase1', 'v05Maps', 'foxBoss', 'talismanCraft', 'lifeSkillCurve',
-    'spiritScan', 'indexedDbSaves', 'secret_boon_runtime'], '仅新增 design/49 机缘软闸，无新 OpenFlag 或 softOpenedCompanion 开关');
+    'spiritScan', 'indexedDbSaves', 'secret_boon_runtime', 'secret_daily_bonus'], '仅新增 design/49 机缘软闸，无新 OpenFlag 或 softOpenedCompanion 开关');
   eq(featureFlags().secret_boon_runtime, true, 'design/49 机缘软闸 soft 落盘 true，不改变同行硬读');
+  eq(featureFlags().secret_daily_bonus, false, 'design/50 日倍键默认 false');
 
   const ready = {
     areaReady: true, primaryReady: true, legalInBox: 2, primaryInReach: true, areaMissStreak: 0,
