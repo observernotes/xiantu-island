@@ -16,7 +16,7 @@
 
 ## 改动与硬读
 
-业务 soft tip 仅含 features 与 9 个必要测试文件；生产 TS、balance 表、其它既有 Flag 无改动。报告为提交后补齐 SHA 的共享交接草稿，未计入业务 tip；本 wt 开工已有的 status 改动保留，未纳入 commit。
+业务 soft tip@0173a102 仅含 features 与必要测试改动；生产 TS、balance 表、其它既有 Flag 无改动。docs tip@9b8098ee 另交本报告＋status（四段≤30行）；普通 push 至 origin/feat/secret-boon-runtime。
 
 - runtime／features：工程快照预期 true；C01 缺文件／缺键／false 及全 false 临时夹具保留，均关闸。
 - min-loop：开头断言落盘 true；design/40 关闸兼容段会话 `setFeatureFlag(false)`，finally 恢复；随后 true 清房三选一、pending 阻结算、选卡及退出清层。
