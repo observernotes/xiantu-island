@@ -1,0 +1,36 @@
+{
+ "atlas": "prop_seclusion_door",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  96,
+  112
+ ],
+ "blend": "NORMAL",
+ "kind": "prop",
+ "note": "程序化占位；key 名待天机阁确认。闭关室门。原点 (0.5,1) 为门槛底边；未闭关固定 idle，实际闭关状态循环 active（金色门缝呼吸，NORMAL，描边 #A86E1E）。建议地图 seclusion 对象 sprite 引用；门额刻痕为占位，名称/闭关提示仍由程序文字呈现。",
+ "anims": [
+  {
+   "key": "prop_seclusion_door_idle",
+   "frames": [
+    "prop_seclusion_door_idle_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  },
+  {
+   "key": "prop_seclusion_door_active",
+   "frames": [
+    "prop_seclusion_door_active_01",
+    "prop_seclusion_door_active_02",
+    "prop_seclusion_door_active_03",
+    "prop_seclusion_door_active_04"
+   ],
+   "frameRate": 4,
+   "repeat": -1
+  }
+ ]
+}

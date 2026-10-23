@@ -1,0 +1,51 @@
+{
+ "atlas": "fx_spirit_bolt",
+ "facing": "left",
+ "origin": [
+  0.3125,
+  0.5
+ ],
+ "frameSize": [
+  64,
+  32
+ ],
+ "anims": [
+  {
+   "key": "fx_spirit_bolt_fly",
+   "frames": [
+    "fx_spirit_bolt_fly_01",
+    "fx_spirit_bolt_fly_02",
+    "fx_spirit_bolt_fly_03",
+    "fx_spirit_bolt_fly_04"
+   ],
+   "frameRate": 12,
+   "repeat": -1
+  },
+  {
+   "key": "fx_spirit_bolt_hit",
+   "frames": [
+    "fx_spirit_bolt_hit_01",
+    "fx_spirit_bolt_hit_02",
+    "fx_spirit_bolt_hit_03",
+    "fx_spirit_bolt_hit_04",
+    "fx_spirit_bolt_hit_05"
+   ],
+   "frameRate": 16,
+   "repeat": 0
+  }
+ ],
+ "blend": "NORMAL",
+ "skill": "spirit_bolt",
+ "rangePx": 320,
+ "hitbox": [
+  32,
+  32
+ ],
+ "projectileSpawn": [
+  -24,
+  -34
+ ],
+ "speedHint": 480,
+ "note": "通用技能 spirit_bolt「灵气弹」弹道（10 级突破送的通用技，射程 320、命中框 w32 h32）。原点 (0.3125,0.5) = 弹头中心（不是帧中心），弹头朝左、尾迹向右；朝右飞 setFlipX(true) 并把原点改成 (0.6875,0.5)。生成点 = 施法者脚底 + projectileSpawn (-24,-34)（朝右 x 取反，约在主角胸前剑尖处）。飞行循环 fly，建议速度 480px/s（320px 约 0.67s）；命中目标（含演法台灯、木靶）或飞满 320px 后在当前位置播 hit 一次再销毁。淡青白芯 + 天青辉光，描边 #2678C8（剑气/风类），NORMAL 混合，每帧粒子 ≤6、每颗 ≤5px。",
+ "kind": "fx"
+}
