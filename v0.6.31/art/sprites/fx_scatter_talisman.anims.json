@@ -1,0 +1,39 @@
+{
+ "atlas": "fx_scatter_talisman",
+ "facing": "left",
+ "origin": [
+  0.5,
+  0.5
+ ],
+ "frameSize": [
+  32,
+  24
+ ],
+ "blend": "NORMAL",
+ "kind": "fx",
+ "note": "原点(0.5,0.5)是单枚符纸中心(16,12)。本atlas只含一枚；程序同时生成3枚fly，相对向左基准180°偏转-22.5°/0°/+22.5°，速度按该方向计算，纹理rotation用偏转量。碰撞时各自原位播hit一次，hit不旋转。穿透、整次施法目标上限及每目标只吃一段由程序读取技能表处理。NORMAL混合。",
+ "anims": [
+  {
+   "key": "fx_scatter_talisman_fly",
+   "frames": [
+    "fx_scatter_talisman_fly_01",
+    "fx_scatter_talisman_fly_02",
+    "fx_scatter_talisman_fly_03",
+    "fx_scatter_talisman_fly_04"
+   ],
+   "frameRate": 16,
+   "repeat": -1
+  },
+  {
+   "key": "fx_scatter_talisman_hit",
+   "frames": [
+    "fx_scatter_talisman_hit_01",
+    "fx_scatter_talisman_hit_02",
+    "fx_scatter_talisman_hit_03",
+    "fx_scatter_talisman_hit_04"
+   ],
+   "frameRate": 16,
+   "repeat": 0
+  }
+ ]
+}
