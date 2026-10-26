@@ -41,7 +41,8 @@ if (!logicalW || !logicalH) {
 const RUNTIME_FILES = ['background.png', 'playable.png', 'foreground.png', 'scene-data.json', 'manifest.json'];
 const POINT_TO_OBJECT = {
   start_spawn: 'playerStart',
-  goal_east: 'portal_to_bamboo',
+  goal_east: ['portal_to_bamboo', 'portal_to_lingxi', 'portal_to_village'],
+  portal_west: ['portal_west_locked', 'portal_to_village'],
   point_west: 'portal_west_locked',
   npc_elder: 'village_elder',
   npc_wang: 'grocer_wang',
@@ -82,14 +83,24 @@ function patchMap(mapPath) {
   map.properties = setProp(map.properties, 'gsbScene', 'string', gsbSceneId);
   map.properties = setProp(map.properties, 'gsbGeometryRevision', 'string', scene.geometryRevision ?? '');
 
+  const objectNames = new Set((map.layers ?? [])
+    .filter(layer => layer.type === 'objectgroup')
+    .flatMap(layer => (layer.objects ?? []).map(o => o.name)));
+  const resolveAlias = (aliases, id) => [aliases[id]].flat().find(name => objectNames.has(name));
   const pointByObj = new Map();
+  // 直名点优先，避免 goal_east 等旧别名覆盖本图明确标注的 portal（不依赖 points 顺序）。
   for (const p of scene.points ?? []) {
-    const name = POINT_TO_OBJECT[p.id];
-    if (name && Array.isArray(p.position)) pointByObj.set(name, p.position);
+    if (objectNames.has(p.id) && Array.isArray(p.position)) pointByObj.set(p.id, p.position);
+  }
+  for (const p of scene.points ?? []) {
+    if (objectNames.has(p.id)) continue;
+    const name = resolveAlias(POINT_TO_OBJECT, p.id);
+    if (name && !pointByObj.has(name) && Array.isArray(p.position)) pointByObj.set(name, p.position);
   }
   const climbByObj = new Map();
   for (const c of scene.climbs ?? []) {
-    const name = CLIMB_TO_OBJECT[c.id];
+    const stripped = c.id?.replace(/^c_/, '');
+    const name = resolveAlias(CLIMB_TO_OBJECT, c.id) ?? (objectNames.has(stripped) ? stripped : undefined);
     if (!name || !c.corridor?.length) continue;
     const xs = c.corridor.map(pt => pt[0]);
     const ys = c.corridor.map(pt => pt[1]);

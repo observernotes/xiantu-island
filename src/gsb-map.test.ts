@@ -1,5 +1,9 @@
 import qingyunSceneData from '../data/art/scenes/qingyun_village_gsb_v2/scene-data.json';
 import qingyunTiledMap from '../data/maps/qingyun_village.json';
+import bambooSceneData from '../data/art/scenes/bamboo_forest_gsb_v1/scene-data.json';
+import bambooTiledMap from '../data/maps/bamboo_forest.json';
+import lingxiSceneData from '../data/art/scenes/lingxi_path_gsb_v1/scene-data.json';
+import lingxiTiledMap from '../data/maps/lingxi_path.json';
 import { FEEL, SPEC } from './config/feel';
 import { buildTiledMap } from './scenes/MapBuilder';
 
@@ -214,6 +218,110 @@ for (const [label, data, binding] of fallbacks) {
   eq(map.objects.filter(object => object.type === 'chest').length, 1, 'the checked-in village keeps the lookout chest');
   eq(map.objects.filter(object => object.type === 'encounter_anchor').length, 1, 'the checked-in village keeps its encounter anchor');
   eq(JSON.stringify(qingyunSceneData), dataBefore, 'building leaves the scene-data fixture unchanged');
+}
+
+// The production bamboo/stream maps share the village pipeline and retain their gameplay contracts.
+const productionMaps = [
+  {
+    id: 'bamboo_forest', sceneId: 'bamboo_forest_gsb_v1', revision: 'bamboo-final-001',
+    data: bambooSceneData, tiledMap: bambooTiledMap, dimensions: [3200, 896], bodyCounts: [2, 7],
+    spawn: { x: 128, y: 832 }, ropeCount: 7,
+    portals: [
+      ['portal_to_village', 80, 832, 'qingyun_village', 'portal_to_bamboo'],
+      ['portal_to_lingxi', 3120, 768, 'lingxi_path', 'portal_to_bamboo'],
+    ],
+    spawns: [
+      ['spirit_rabbit', 160, 832, 640, 3], ['spirit_rabbit', 896, 832, 1056, 3],
+      ['spirit_rabbit', 448, 704, 416, 2], ['spirit_rabbit', 1088, 704, 544, 2],
+      ['bamboo_snake', 2048, 768, 1024, 2], ['bamboo_snake', 2048, 640, 544, 1],
+      ['bamboo_snake', 2304, 512, 608, 2], ['bamboo_snake', 1920, 384, 416, 1],
+    ],
+    gathers: [
+      ['gather_spirit_herb_19', 976, 832, 'spirit_herb', 60000],
+      ['gather_spirit_herb_20', 1456, 704, 'spirit_herb', 60000],
+      ['gather_spirit_herb_21', 2736, 768, 'spirit_herb', 60000],
+    ],
+    chest: ['sense_chest_01', 2864, 512, 'hp_pill_small', 1],
+  },
+  {
+    id: 'lingxi_path', sceneId: 'lingxi_path_gsb_v1', revision: 'lingxi-final-001',
+    data: lingxiSceneData, tiledMap: lingxiTiledMap, dimensions: [3840, 1024], bodyCounts: [4, 8],
+    spawn: { x: 128, y: 960 }, ropeCount: 8,
+    portals: [
+      ['portal_to_bamboo', 80, 960, 'bamboo_forest', 'portal_to_lingxi'],
+      ['portal_to_village', 3760, 768, 'qingyun_village', 'portal_to_bamboo'],
+    ],
+    spawns: [
+      ['bamboo_snake', 128, 960, 800, 3], ['bamboo_snake', 256, 832, 416, 1],
+      ['bamboo_snake', 960, 896, 480, 2], ['mountain_mandrill', 1440, 832, 480, 2],
+      ['mountain_mandrill', 1920, 768, 864, 3], ['mountain_mandrill', 1600, 640, 480, 1],
+      ['mountain_mandrill', 2176, 640, 480, 2], ['mountain_mandrill', 1856, 512, 480, 1],
+      ['mountain_mandrill', 2432, 480, 352, 1], ['demon_fox', 3200, 768, 352, 1],
+    ],
+    gathers: [
+      ['gather_cold_heart_lotus_23', 656, 960, 'cold_heart_lotus', 300000],
+      ['gather_spirit_herb_24', 1296, 896, 'spirit_herb', 60000],
+      ['gather_iron_essence_25', 2256, 768, 'iron_essence', 90000],
+    ],
+    chest: ['sense_chest_01', 400, 832, 'qi_pill', 1],
+  },
+];
+for (const contract of productionMaps) {
+  const { id, sceneId, data, tiledMap } = contract;
+  const f = fixture(null, false), dataBefore = JSON.stringify(data), mapBefore = JSON.stringify(tiledMap);
+  f.cache.clear(); f.cache.set(`gsb_${sceneId}_data`, clone(data));
+  f.textures.add(`gsb_${sceneId}_background`); f.textures.add(`gsb_${sceneId}_playable`);
+  const map = buildTiledMap(f.scene, clone(tiledMap), 'tiles');
+  eq(map.gsbScene, sceneId, `${id}: checked-in map enables its GSB scene`);
+  eq(tiledMap.properties.find(property => property.name === 'gsbGeometryRevision')?.value,
+    contract.revision, `${id}: map binds the approved geometry revision`);
+  eq(data.geometryRevision, contract.revision, `${id}: scene-data has the approved geometry revision`);
+  same([map.width, map.height], contract.dimensions, `${id}: logical world dimensions match the approved scene`);
+  same([tiledMap.width * tiledMap.tilewidth, tiledMap.height * tiledMap.tileheight], contract.dimensions,
+    `${id}: checked-in tile grid matches logical world dimensions`);
+  same(f.groups.map(group => group.children.length), contract.bodyCounts, `${id}: surfaces and solids build the expected collision bodies`);
+  for (const surface of data.surfaces) {
+    const left = Math.min(...surface.polyline.map(point => point[0]));
+    const right = Math.max(...surface.polyline.map(point => point[0]));
+    const bodies = f.groups[surface.support === 'one-way' ? 1 : 0].children.map(rectangle);
+    ok(bodies.some(body => body.y === surface.polyline[0][1] && body.x <= left && body.x + body.width >= right),
+      `${id}: ${surface.id} retains its full landing span and exact top edge`);
+  }
+  ok(f.groups[1].children.every(object => object.body?.checkCollision.up &&
+    !object.body.checkCollision.down && !object.body.checkCollision.left && !object.body.checkCollision.right),
+    `${id}: all one-way bodies only collide on top`);
+  same(map.spawn, contract.spawn, `${id}: player start is preserved`);
+  eq(map.ropes.length, contract.ropeCount, `${id}: all named ropes are preserved`);
+  same(map.ropes.map(rope => [rope.kind, rope.x, rope.top, rope.bottom, rope.halfW]),
+    data.climbs.map(climb => ['rope', climb.ends.end.position[0], climb.ends.end.position[1],
+      climb.ends.start.position[1], FEEL.ropeGrabRangeX]), `${id}: rope endpoints follow the approved climb geometry`);
+  same(map.spawns.map(spawn => [spawn.monster, spawn.x, spawn.y, spawn.w, spawn.count]), contract.spawns,
+    `${id}: monster positions, patrol widths and counts survive integration`);
+  same(map.objects.filter(object => object.type === 'portal').map(object =>
+    [object.name, object.x, object.y, object.props.target, object.props.targetPortal]), contract.portals,
+    `${id}: both portal positions and destinations survive point aliases`);
+  same(map.objects.filter(object => object.type === 'gather').map(object =>
+    [object.name, object.x, object.y, object.props.item, object.props.respawnMs]), contract.gathers,
+    `${id}: all gathers keep their positions, items and respawn times`);
+  same(map.objects.filter(object => object.type === 'chest').map(object =>
+    [object.name, object.x, object.y, object.props.loot, object.props.count]), [contract.chest],
+    `${id}: the native chest retains its position and loot`);
+  eq(map.hidden.length, 2, `${id}: both existing hidden controllers are retained`);
+  ok(map.hidden.every(hidden => hidden.object.props.enabled === false), `${id}: hidden controllers stay disabled`);
+  eq(f.tilemaps, 0, `${id}: GSB skips the legacy tilemap path`);
+  same(f.displays.filter(object => object.kind !== 'zone').map(object => object.key),
+    [`gsb_${sceneId}_background`, `gsb_${sceneId}_playable`], `${id}: GSB draws its art without legacy terrain or ropes`);
+  ok(tiledMap.layers.filter(layer => layer.type === 'tilelayer' && ['ground', 'oneway'].includes(layer.name))
+    .every(layer => layer.data?.every(gid => gid === 0)), `${id}: checked-in legacy collision layers are cleared`);
+  eq(JSON.stringify(data), dataBefore, `${id}: building leaves scene-data unchanged`);
+  eq(JSON.stringify(tiledMap), mapBefore, `${id}: building leaves the checked-in map unchanged`);
+  if (id === 'lingxi_path') {
+    same(map.zones, [{ name: 'boss_arena', x: 2880, y: 384, w: 960, h: 384,
+      props: { label: '妖狐巢穴', unlockQuest: 'q_fox', bossOnly: true } }], 'lingxi_path: boss arena and quest gate are retained');
+    same(map.objects.filter(object => object.type === 'encounter_anchor').map(object =>
+      [object.name, object.x, object.y, object.props.encounter]),
+    [['enc_stranded_cultivator_anchor', 1712, 640, 'enc_stranded_cultivator']], 'lingxi_path: encounter anchor is retained');
+  }
 }
 
 console.log(JSON.stringify({ suite: 'gsb-map', passed: true, assertions }));

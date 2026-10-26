@@ -1,0 +1,4305 @@
+{
+  "schemaVersion": "1.0",
+  "geometryRevision": "bamboo-final-001",
+  "status": "verified",
+  "sceneId": "bamboo_forest_gsb_v1",
+  "name": "村外竹林",
+  "space": {
+    "origin": "top-left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "units": "logical-pixel",
+    "logicalWidth": 3200,
+    "logicalHeight": 896
+  },
+  "sourceMap": {
+    "path": "maps/bamboo_forest.json",
+    "sha256": "1260a99fe62baa7b0db9d35f6ee4e2457dff34fe7814d83ff2ff3480cf05f627",
+    "tileSize": 32,
+    "columns": 100,
+    "rows": 28,
+    "allObjects": [
+      {
+        "id": 1,
+        "name": "rope_20",
+        "type": "rope",
+        "x": 656,
+        "y": 704,
+        "width": 0,
+        "height": 96,
+        "properties": []
+      },
+      {
+        "id": 2,
+        "name": "rope_40",
+        "type": "rope",
+        "x": 1296,
+        "y": 704,
+        "width": 0,
+        "height": 96,
+        "properties": []
+      },
+      {
+        "id": 3,
+        "name": "rope_30",
+        "type": "rope",
+        "x": 976,
+        "y": 576,
+        "width": 0,
+        "height": 224,
+        "properties": []
+      },
+      {
+        "id": 4,
+        "name": "rope_48",
+        "type": "rope",
+        "x": 1552,
+        "y": 576,
+        "width": 0,
+        "height": 96,
+        "properties": []
+      },
+      {
+        "id": 5,
+        "name": "rope_70",
+        "type": "rope",
+        "x": 2256,
+        "y": 640,
+        "width": 0,
+        "height": 96,
+        "properties": []
+      },
+      {
+        "id": 6,
+        "name": "rope_84",
+        "type": "rope",
+        "x": 2704,
+        "y": 512,
+        "width": 0,
+        "height": 224,
+        "properties": []
+      },
+      {
+        "id": 7,
+        "name": "rope_66",
+        "type": "rope",
+        "x": 2128,
+        "y": 384,
+        "width": 0,
+        "height": 224,
+        "properties": []
+      },
+      {
+        "id": 8,
+        "name": "playerStart",
+        "type": "playerStart",
+        "x": 128,
+        "y": 832,
+        "width": 0,
+        "height": 0,
+        "properties": []
+      },
+      {
+        "id": 9,
+        "name": "portal_to_village",
+        "type": "portal",
+        "x": 80,
+        "y": 832,
+        "width": 0,
+        "height": 0,
+        "properties": [
+          {
+            "name": "target",
+            "type": "string",
+            "value": "qingyun_village"
+          },
+          {
+            "name": "targetPortal",
+            "type": "string",
+            "value": "portal_to_bamboo"
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "name": "portal_to_lingxi",
+        "type": "portal",
+        "x": 3120,
+        "y": 768,
+        "width": 0,
+        "height": 0,
+        "properties": [
+          {
+            "name": "target",
+            "type": "string",
+            "value": "lingxi_path"
+          },
+          {
+            "name": "targetPortal",
+            "type": "string",
+            "value": "portal_to_bamboo"
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "name": "spawn_spirit_rabbit_11",
+        "type": "spawn",
+        "x": 160,
+        "y": 832,
+        "width": 640,
+        "height": 0,
+        "properties": [
+          {
+            "name": "monster",
+            "type": "string",
+            "value": "spirit_rabbit"
+          },
+          {
+            "name": "count",
+            "type": "int",
+            "value": 3
+          }
+        ]
+      },
+      {
+        "id": 12,
+        "name": "spawn_spirit_rabbit_12",
+        "type": "spawn",
+        "x": 896,
+        "y": 832,
+        "width": 1056,
+        "height": 0,
+        "properties": [
+          {
+            "name": "monster",
+            "type": "string",
+            "value": "spirit_rabbit"
+          },
+          {
+            "name": "count",
+            "type": "int",
+            "value": 3
+          }
+        ]
+      },
+      {
+        "id": 13,
+        "name": "spawn_spirit_rabbit_13",
+        "type": "spawn",
+        "x": 448,
+        "y": 704,
+        "width": 416,
+        "height": 0,
+        "properties": [
+          {
+            "name": "monster",
+            "type": "string",
+            "value": "spirit_rabbit"
+          },
+          {
+            "name": "count",
+            "type": "int",
+            "value": 2
+          }
+        ]
+      },
+      {
+        "id": 14,
+        "name": "spawn_spirit_rabbit_14",
+        "type": "spawn",
+        "x": 1088,
+        "y": 704,
+        "width": 544,
+        "height": 0,
+        "properties": [
+          {
+            "name": "monster",
+            "type": "string",
+            "value": "spirit_rabbit"
+          },
+          {
+            "name": "count",
+            "type": "int",
+            "value": 2
+          }
+        ]
+      },
+      {
+        "id": 15,
+        "name": "spawn_bamboo_snake_15",
+        "type": "spawn",
+        "x": 2048,
+        "y": 768,
+        "width": 1024,
+        "height": 0,
+        "properties": [
+          {
+            "name": "monster",
+            "type": "string",
+            "value": "bamboo_snake"
+          },
+          {
+            "name": "count",
+            "type": "int",
+            "value": 2
+          }
+        ]
+      },
+      {
+        "id": 16,
+        "name": "spawn_bamboo_snake_16",
+        "type": "spawn",
+        "x": 2048,
+        "y": 640,
+        "width": 544,
+        "height": 0,
+        "properties": [
+          {
+            "name": "monster",
+            "type": "string",
+            "value": "bamboo_snake"
+          },
+          {
+            "name": "count",
+            "type": "int",
+            "value": 1
+          }
+        ]
+      },
+      {
+        "id": 17,
+        "name": "spawn_bamboo_snake_17",
+        "type": "spawn",
+        "x": 2304,
+        "y": 512,
+        "width": 608,
+        "height": 0,
+        "properties": [
+          {
+            "name": "monster",
+            "type": "string",
+            "value": "bamboo_snake"
+          },
+          {
+            "name": "count",
+            "type": "int",
+            "value": 2
+          }
+        ]
+      },
+      {
+        "id": 18,
+        "name": "spawn_bamboo_snake_18",
+        "type": "spawn",
+        "x": 1920,
+        "y": 384,
+        "width": 416,
+        "height": 0,
+        "properties": [
+          {
+            "name": "monster",
+            "type": "string",
+            "value": "bamboo_snake"
+          },
+          {
+            "name": "count",
+            "type": "int",
+            "value": 1
+          }
+        ]
+      },
+      {
+        "id": 19,
+        "name": "gather_spirit_herb_19",
+        "type": "gather",
+        "x": 976,
+        "y": 832,
+        "width": 0,
+        "height": 0,
+        "properties": [
+          {
+            "name": "item",
+            "type": "string",
+            "value": "spirit_herb"
+          },
+          {
+            "name": "respawnMs",
+            "type": "int",
+            "value": 60000
+          }
+        ]
+      },
+      {
+        "id": 20,
+        "name": "gather_spirit_herb_20",
+        "type": "gather",
+        "x": 1456,
+        "y": 704,
+        "width": 0,
+        "height": 0,
+        "properties": [
+          {
+            "name": "item",
+            "type": "string",
+            "value": "spirit_herb"
+          },
+          {
+            "name": "respawnMs",
+            "type": "int",
+            "value": 60000
+          }
+        ]
+      },
+      {
+        "id": 21,
+        "name": "gather_spirit_herb_21",
+        "type": "gather",
+        "x": 2736,
+        "y": 768,
+        "width": 0,
+        "height": 0,
+        "properties": [
+          {
+            "name": "item",
+            "type": "string",
+            "value": "spirit_herb"
+          },
+          {
+            "name": "respawnMs",
+            "type": "int",
+            "value": 60000
+          }
+        ]
+      },
+      {
+        "id": 22,
+        "name": "sense_chest_01",
+        "type": "chest",
+        "x": 2864,
+        "y": 512,
+        "width": 0,
+        "height": 0,
+        "properties": [
+          {
+            "name": "loot",
+            "type": "string",
+            "value": "hp_pill_small"
+          },
+          {
+            "name": "count",
+            "type": "int",
+            "value": 1
+          }
+        ]
+      },
+      {
+        "id": 23,
+        "name": "sense_hidden_chest_01",
+        "type": "hidden",
+        "x": 2864,
+        "y": 512,
+        "width": 0,
+        "height": 0,
+        "properties": [
+          {
+            "name": "enabled",
+            "type": "bool",
+            "value": false
+          },
+          {
+            "name": "reqSpirit",
+            "type": "int",
+            "value": 0
+          },
+          {
+            "name": "reveal",
+            "type": "string",
+            "value": "chest"
+          },
+          {
+            "name": "targetObject",
+            "type": "string",
+            "value": "sense_chest_01"
+          }
+        ]
+      },
+      {
+        "id": 24,
+        "name": "sense_hidden_platform_01",
+        "type": "hidden",
+        "x": 800,
+        "y": 512,
+        "width": 96,
+        "height": 32,
+        "properties": [
+          {
+            "name": "enabled",
+            "type": "bool",
+            "value": false
+          },
+          {
+            "name": "reqSpirit",
+            "type": "int",
+            "value": 10
+          },
+          {
+            "name": "reveal",
+            "type": "string",
+            "value": "platform"
+          }
+        ]
+      }
+    ]
+  },
+  "actor": {
+    "parameterRevision": "bamboo-base-feel-20261027-001",
+    "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+    "sourceRevision": {
+      "game/src/config/feel.ts": "9375297a15b04012633197a935f4d9ffd403c3ff8d1e055cb585dd5f81acdeec",
+      "game/src/scenes/Player.ts": "ec9426ed625784532c6e632a1755bd16076cc3f559d177f465b741341193f513",
+      "game/src/scenes/MapBuilder.ts": "df5d1328f31de944550b693b8c6e2c27a1d6df08f2bdb8264385a832150e987c",
+      "game/src/move.ts": "585c9987623cbe532d7f65508773addd52ccd2f312e5c2ee592e9e6f2f686a74",
+      "game/src/PlayerInput.ts": "5621449dc667aedb17034e10f42d2f34425c9ef1d45f21112de6be1a1139a04e",
+      "game/src/SpriteArt.ts": "6c1fcb4fe67857c7fc3d569a2151f4b1a7cdd914e69be6d12d53b54b288b6f18",
+      "game/data/balance/player_growth.json": "04cf448040bff27b2c578d4ec9e1c0babde07afdf14d4b91d5f56ba6f403604e",
+      "maps/bamboo_forest.json": "1260a99fe62baa7b0db9d35f6ee4e2457dff34fe7814d83ff2ff3480cf05f627"
+    },
+    "provisional": false,
+    "visualBounds": {
+      "width": 96,
+      "height": 96,
+      "anchor": "feet-center",
+      "idleAlphaBounds": [
+        15,
+        9,
+        76,
+        96
+      ]
+    },
+    "collider": {
+      "shape": "aabb",
+      "width": 26,
+      "height": 58,
+      "anchor": "feet-center"
+    },
+    "abilities": [
+      "walk",
+      "jump",
+      "double-jump",
+      "rope",
+      "drop-through"
+    ],
+    "movement": {
+      "gravity": 2000,
+      "maxFallSpeed": 670,
+      "walkSpeed": 130,
+      "groundAccel": 2400,
+      "groundDecel": 3000,
+      "airAccel": 700,
+      "airMaxSpeed": 130,
+      "jumpSpeed": 560,
+      "coyoteMs": 60,
+      "jumpBufferMs": 80,
+      "doubleJumpVy": 480,
+      "doubleJumpVx": 330,
+      "climbSpeed": 110,
+      "ropeGrabRangeX": 18,
+      "ropeJumpVx": 160,
+      "ropeJumpVy": 360,
+      "dropThroughMs": 220,
+      "oneWayEdge": 8,
+      "ropeRegrabMs": 250,
+      "fixedHz": 60,
+      "speedPoints": 100,
+      "jumpPoints": 100
+    },
+    "failureRules": {
+      "hazards": "no environmental hazards in source map; monsters displayed without combat simulation",
+      "fall": "land on continuous ground",
+      "reset": "R clears velocity and input buffer and returns to source playerStart"
+    },
+    "visualAsset": {
+      "path": "work/preview/player_sword_m-idle.png",
+      "width": 96,
+      "height": 96,
+      "anchor": "feet-center"
+    }
+  },
+  "assets": [
+    {
+      "id": "asset_background",
+      "role": "background",
+      "path": "background.png",
+      "pixelWidth": 3200,
+      "pixelHeight": 896,
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "asset_playable",
+      "role": "playable",
+      "path": "playable.png",
+      "pixelWidth": 3200,
+      "pixelHeight": 896,
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "s_entry",
+      "name": "竹林入口地面",
+      "polyline": [
+        [
+          0,
+          832
+        ],
+        [
+          768,
+          832
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        13,
+        755
+      ],
+      "walkRegion": [
+        [
+          13,
+          774
+        ],
+        [
+          755,
+          774
+        ],
+        [
+          755,
+          832
+        ],
+        [
+          13,
+          832
+        ]
+      ],
+      "clearanceRequired": 58,
+      "sourceTiles": {
+        "layer": "ground",
+        "row": 26,
+        "columns": [
+          0,
+          23
+        ]
+      },
+      "visualContact": {
+        "targetY": 832,
+        "tolerance": 2,
+        "exclude": "grass tips, rope knots, rails and fittings",
+        "measuredMaxAbsError": 0,
+        "evidence": "work/final-geometry-measurements.json"
+      },
+      "status": "verified",
+      "verificationScope": "continuous-route standing/support, native browser foot contact and measured final visual alignment",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified",
+          "objectId": "s_entry",
+          "routeId": "route_main_return",
+          "frame": 2814,
+          "path": "work/final-browser-check.json",
+          "screenshot": "work/browser-contact-details-final/s_entry.png",
+          "method": "actual stationary contact frame from continuous source-spawn replay, native1280x720 viewport; independent final art measurement"
+        },
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified",
+          "objectId": "s_entry",
+          "path": "work/final-geometry-measurements.json",
+          "method": "five interior native-art visual contact samples",
+          "maxAbsVisualError": 0
+        }
+      ]
+    },
+    {
+      "id": "s_sea",
+      "name": "竹海地面",
+      "polyline": [
+        [
+          768,
+          832
+        ],
+        [
+          1984,
+          832
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        781,
+        1971
+      ],
+      "walkRegion": [
+        [
+          781,
+          774
+        ],
+        [
+          1971,
+          774
+        ],
+        [
+          1971,
+          832
+        ],
+        [
+          781,
+          832
+        ]
+      ],
+      "clearanceRequired": 58,
+      "sourceTiles": {
+        "layer": "ground",
+        "row": 26,
+        "columns": [
+          24,
+          61
+        ]
+      },
+      "visualContact": {
+        "targetY": 832,
+        "tolerance": 2,
+        "exclude": "grass tips, rope knots, rails and fittings",
+        "measuredMaxAbsError": 0,
+        "evidence": "work/final-geometry-measurements.json"
+      },
+      "status": "verified",
+      "verificationScope": "continuous-route standing/support, native browser foot contact and measured final visual alignment",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified",
+          "objectId": "s_sea",
+          "routeId": "route_main",
+          "frame": 665,
+          "path": "work/final-browser-check.json",
+          "screenshot": "work/browser-contact-details-final/s_sea.png",
+          "method": "actual stationary contact frame from continuous source-spawn replay, native1280x720 viewport; independent final art measurement"
+        },
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified",
+          "objectId": "s_sea",
+          "path": "work/final-geometry-measurements.json",
+          "method": "five interior native-art visual contact samples",
+          "maxAbsVisualError": 0
+        }
+      ]
+    },
+    {
+      "id": "s_deep",
+      "name": "深处高两格实心地面",
+      "polyline": [
+        [
+          1984,
+          768
+        ],
+        [
+          3200,
+          768
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        1997,
+        3187
+      ],
+      "walkRegion": [
+        [
+          1997,
+          710
+        ],
+        [
+          3187,
+          710
+        ],
+        [
+          3187,
+          768
+        ],
+        [
+          1997,
+          768
+        ]
+      ],
+      "clearanceRequired": 58,
+      "sourceTiles": {
+        "layer": "ground",
+        "row": 24,
+        "columns": [
+          62,
+          99
+        ]
+      },
+      "visualContact": {
+        "targetY": 768,
+        "tolerance": 2,
+        "exclude": "grass tips, rope knots, rails and fittings",
+        "measuredMaxAbsError": 0,
+        "evidence": "work/final-geometry-measurements.json"
+      },
+      "status": "verified",
+      "verificationScope": "continuous-route standing/support, native browser foot contact and measured final visual alignment",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified",
+          "objectId": "s_deep",
+          "routeId": "route_main",
+          "frame": 872,
+          "path": "work/final-browser-check.json",
+          "screenshot": "work/browser-contact-details-final/s_deep.png",
+          "method": "actual stationary contact frame from continuous source-spawn replay, native1280x720 viewport; independent final art measurement"
+        },
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified",
+          "objectId": "s_deep",
+          "path": "work/final-geometry-measurements.json",
+          "method": "five interior native-art visual contact samples",
+          "maxAbsVisualError": 0
+        }
+      ]
+    },
+    {
+      "id": "s_deep_high",
+      "name": "深处最高竹台",
+      "polyline": [
+        [
+          1920,
+          384
+        ],
+        [
+          2336,
+          384
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        1933,
+        2323
+      ],
+      "walkRegion": [
+        [
+          1933,
+          326
+        ],
+        [
+          2323,
+          326
+        ],
+        [
+          2323,
+          384
+        ],
+        [
+          1933,
+          384
+        ]
+      ],
+      "clearanceRequired": 58,
+      "sourceTiles": {
+        "layer": "oneway",
+        "row": 12,
+        "columns": [
+          60,
+          72
+        ]
+      },
+      "visualContact": {
+        "targetY": 384,
+        "tolerance": 2,
+        "exclude": "grass tips, rope knots, rails and fittings",
+        "measuredMaxAbsError": 0,
+        "evidence": "work/final-geometry-measurements.json"
+      },
+      "status": "verified",
+      "verificationScope": "continuous-route standing/support, native browser foot contact and measured final visual alignment",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified",
+          "objectId": "s_deep_high",
+          "routeId": "route_rope_66",
+          "frame": 1343,
+          "path": "work/final-browser-check.json",
+          "screenshot": "work/browser-contact-details-final/s_deep_high.png",
+          "method": "actual stationary contact frame from continuous source-spawn replay, native1280x720 viewport; independent final art measurement"
+        },
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified",
+          "objectId": "s_deep_high",
+          "path": "work/final-geometry-measurements.json",
+          "method": "five interior native-art visual contact samples",
+          "maxAbsVisualError": 0
+        }
+      ]
+    },
+    {
+      "id": "s_deep_middle",
+      "name": "深处第二层竹台",
+      "polyline": [
+        [
+          2304,
+          512
+        ],
+        [
+          2912,
+          512
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        2317,
+        2899
+      ],
+      "walkRegion": [
+        [
+          2317,
+          454
+        ],
+        [
+          2899,
+          454
+        ],
+        [
+          2899,
+          512
+        ],
+        [
+          2317,
+          512
+        ]
+      ],
+      "clearanceRequired": 58,
+      "sourceTiles": {
+        "layer": "oneway",
+        "row": 16,
+        "columns": [
+          72,
+          90
+        ]
+      },
+      "visualContact": {
+        "targetY": 512,
+        "tolerance": 2,
+        "exclude": "grass tips, rope knots, rails and fittings",
+        "measuredMaxAbsError": 0,
+        "evidence": "work/final-geometry-measurements.json"
+      },
+      "status": "verified",
+      "verificationScope": "continuous-route standing/support, native browser foot contact and measured final visual alignment",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified",
+          "objectId": "s_deep_middle",
+          "routeId": "route_rope_84",
+          "frame": 1376,
+          "path": "work/final-browser-check.json",
+          "screenshot": "work/browser-contact-details-final/s_deep_middle.png",
+          "method": "actual stationary contact frame from continuous source-spawn replay, native1280x720 viewport; independent final art measurement"
+        },
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified",
+          "objectId": "s_deep_middle",
+          "path": "work/final-geometry-measurements.json",
+          "method": "five interior native-art visual contact samples",
+          "maxAbsVisualError": 0
+        }
+      ]
+    },
+    {
+      "id": "s_sea_upper_west",
+      "name": "竹海二层西竹台（无怪）",
+      "polyline": [
+        [
+          768,
+          576
+        ],
+        [
+          1248,
+          576
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        781,
+        1235
+      ],
+      "walkRegion": [
+        [
+          781,
+          518
+        ],
+        [
+          1235,
+          518
+        ],
+        [
+          1235,
+          576
+        ],
+        [
+          781,
+          576
+        ]
+      ],
+      "clearanceRequired": 58,
+      "sourceTiles": {
+        "layer": "oneway",
+        "row": 18,
+        "columns": [
+          24,
+          38
+        ]
+      },
+      "visualContact": {
+        "targetY": 576,
+        "tolerance": 2,
+        "exclude": "grass tips, rope knots, rails and fittings",
+        "measuredMaxAbsError": 0,
+        "evidence": "work/final-geometry-measurements.json"
+      },
+      "status": "verified",
+      "verificationScope": "continuous-route standing/support, native browser foot contact and measured final visual alignment",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified",
+          "objectId": "s_sea_upper_west",
+          "routeId": "route_rope_30",
+          "frame": 556,
+          "path": "work/final-browser-check.json",
+          "screenshot": "work/browser-contact-details-final/s_sea_upper_west.png",
+          "method": "actual stationary contact frame from continuous source-spawn replay, native1280x720 viewport; independent final art measurement"
+        },
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified",
+          "objectId": "s_sea_upper_west",
+          "path": "work/final-geometry-measurements.json",
+          "method": "five interior native-art visual contact samples",
+          "maxAbsVisualError": 0
+        }
+      ]
+    },
+    {
+      "id": "s_sea_upper_east",
+      "name": "竹海二层东竹台（无怪）",
+      "polyline": [
+        [
+          1408,
+          576
+        ],
+        [
+          1888,
+          576
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        1421,
+        1875
+      ],
+      "walkRegion": [
+        [
+          1421,
+          518
+        ],
+        [
+          1875,
+          518
+        ],
+        [
+          1875,
+          576
+        ],
+        [
+          1421,
+          576
+        ]
+      ],
+      "clearanceRequired": 58,
+      "sourceTiles": {
+        "layer": "oneway",
+        "row": 18,
+        "columns": [
+          44,
+          58
+        ]
+      },
+      "visualContact": {
+        "targetY": 576,
+        "tolerance": 2,
+        "exclude": "grass tips, rope knots, rails and fittings",
+        "measuredMaxAbsError": 0,
+        "evidence": "work/final-geometry-measurements.json"
+      },
+      "status": "verified",
+      "verificationScope": "continuous-route standing/support, native browser foot contact and measured final visual alignment",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified",
+          "objectId": "s_sea_upper_east",
+          "routeId": "route_rope_48",
+          "frame": 867,
+          "path": "work/final-browser-check.json",
+          "screenshot": "work/browser-contact-details-final/s_sea_upper_east.png",
+          "method": "actual stationary contact frame from continuous source-spawn replay, native1280x720 viewport; independent final art measurement"
+        },
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified",
+          "objectId": "s_sea_upper_east",
+          "path": "work/final-geometry-measurements.json",
+          "method": "five interior native-art visual contact samples",
+          "maxAbsVisualError": 0
+        }
+      ]
+    },
+    {
+      "id": "s_deep_lower",
+      "name": "深处第一层竹台",
+      "polyline": [
+        [
+          2048,
+          640
+        ],
+        [
+          2592,
+          640
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        2061,
+        2579
+      ],
+      "walkRegion": [
+        [
+          2061,
+          582
+        ],
+        [
+          2579,
+          582
+        ],
+        [
+          2579,
+          640
+        ],
+        [
+          2061,
+          640
+        ]
+      ],
+      "clearanceRequired": 58,
+      "sourceTiles": {
+        "layer": "oneway",
+        "row": 20,
+        "columns": [
+          64,
+          80
+        ]
+      },
+      "visualContact": {
+        "targetY": 640,
+        "tolerance": 2,
+        "exclude": "grass tips, rope knots, rails and fittings",
+        "measuredMaxAbsError": 0,
+        "evidence": "work/final-geometry-measurements.json"
+      },
+      "status": "verified",
+      "verificationScope": "continuous-route standing/support, native browser foot contact and measured final visual alignment",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified",
+          "objectId": "s_deep_lower",
+          "routeId": "route_rope_70",
+          "frame": 1099,
+          "path": "work/final-browser-check.json",
+          "screenshot": "work/browser-contact-details-final/s_deep_lower.png",
+          "method": "actual stationary contact frame from continuous source-spawn replay, native1280x720 viewport; independent final art measurement"
+        },
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified",
+          "objectId": "s_deep_lower",
+          "path": "work/final-geometry-measurements.json",
+          "method": "five interior native-art visual contact samples",
+          "maxAbsVisualError": 0
+        }
+      ]
+    },
+    {
+      "id": "s_entry_bamboo",
+      "name": "入口一层竹台",
+      "polyline": [
+        [
+          448,
+          704
+        ],
+        [
+          864,
+          704
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        461,
+        851
+      ],
+      "walkRegion": [
+        [
+          461,
+          646
+        ],
+        [
+          851,
+          646
+        ],
+        [
+          851,
+          704
+        ],
+        [
+          461,
+          704
+        ]
+      ],
+      "clearanceRequired": 58,
+      "sourceTiles": {
+        "layer": "oneway",
+        "row": 22,
+        "columns": [
+          14,
+          26
+        ]
+      },
+      "visualContact": {
+        "targetY": 704,
+        "tolerance": 2,
+        "exclude": "grass tips, rope knots, rails and fittings",
+        "measuredMaxAbsError": 0,
+        "evidence": "work/final-geometry-measurements.json"
+      },
+      "status": "verified",
+      "verificationScope": "continuous-route standing/support, native browser foot contact and measured final visual alignment",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified",
+          "objectId": "s_entry_bamboo",
+          "routeId": "route_rope_20",
+          "frame": 338,
+          "path": "work/final-browser-check.json",
+          "screenshot": "work/browser-contact-details-final/s_entry_bamboo.png",
+          "method": "actual stationary contact frame from continuous source-spawn replay, native1280x720 viewport; independent final art measurement"
+        },
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified",
+          "objectId": "s_entry_bamboo",
+          "path": "work/final-geometry-measurements.json",
+          "method": "five interior native-art visual contact samples",
+          "maxAbsVisualError": 0
+        }
+      ]
+    },
+    {
+      "id": "s_sea_lower",
+      "name": "竹海一层竹台",
+      "polyline": [
+        [
+          1088,
+          704
+        ],
+        [
+          1632,
+          704
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        1101,
+        1619
+      ],
+      "walkRegion": [
+        [
+          1101,
+          646
+        ],
+        [
+          1619,
+          646
+        ],
+        [
+          1619,
+          704
+        ],
+        [
+          1101,
+          704
+        ]
+      ],
+      "clearanceRequired": 58,
+      "sourceTiles": {
+        "layer": "oneway",
+        "row": 22,
+        "columns": [
+          34,
+          50
+        ]
+      },
+      "visualContact": {
+        "targetY": 704,
+        "tolerance": 2,
+        "exclude": "grass tips, rope knots, rails and fittings",
+        "measuredMaxAbsError": 0,
+        "evidence": "work/final-geometry-measurements.json"
+      },
+      "status": "verified",
+      "verificationScope": "continuous-route standing/support, native browser foot contact and measured final visual alignment",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified",
+          "objectId": "s_sea_lower",
+          "routeId": "route_rope_40",
+          "frame": 634,
+          "path": "work/final-browser-check.json",
+          "screenshot": "work/browser-contact-details-final/s_sea_lower.png",
+          "method": "actual stationary contact frame from continuous source-spawn replay, native1280x720 viewport; independent final art measurement"
+        },
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified",
+          "objectId": "s_sea_lower",
+          "path": "work/final-geometry-measurements.json",
+          "method": "five interior native-art visual contact samples",
+          "maxAbsVisualError": 0
+        }
+      ]
+    }
+  ],
+  "climbs": [
+    {
+      "id": "c_rope_20",
+      "kind": "rope",
+      "corridor": [
+        [
+          638,
+          704
+        ],
+        [
+          674,
+          704
+        ],
+        [
+          674,
+          832
+        ],
+        [
+          638,
+          832
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            656,
+            832
+          ],
+          "surface": "s_entry"
+        },
+        "end": {
+          "position": [
+            656,
+            704
+          ],
+          "surface": "s_entry_bamboo"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": [
+        [
+          638,
+          826
+        ],
+        [
+          674,
+          826
+        ],
+        [
+          674,
+          838
+        ],
+        [
+          638,
+          838
+        ]
+      ],
+      "exitRange": [
+        [
+          638,
+          698
+        ],
+        [
+          674,
+          698
+        ],
+        [
+          674,
+          710
+        ],
+        [
+          638,
+          710
+        ]
+      ],
+      "collisionException": "one-way-support-only-while-attached; never-ignore-solids",
+      "sourceObject": {
+        "id": 1,
+        "name": "rope_20",
+        "type": "rope",
+        "x": 656,
+        "y": 704,
+        "width": 0,
+        "height": 96,
+        "properties": []
+      },
+      "anchorCalibration": {
+        "bottomDeltaY": 32,
+        "reason": "Source rope object ends one 32px tile above its true supporting footline. Extend visual rope and corridor to the actual standing surface."
+      },
+      "status": "verified",
+      "verificationScope": "continuous approach, full up/down traversal and platform exit in minimum adapter",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "t_rope_20_up",
+          "routeId": "route_rope_20",
+          "path": "work/replays-final/route_rope_20.json",
+          "frame": 338,
+          "method": "executed action event in continuous spawn input replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        },
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "t_rope_20_down",
+          "routeId": "route_rope_20",
+          "path": "work/replays-final/route_rope_20.json",
+          "frame": 508,
+          "method": "executed action event in continuous spawn input replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        },
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified",
+          "objectId": "c_rope_20",
+          "path": "work/final-geometry-measurements.json",
+          "method": "final visual rope center and both anchors checked against aligned platform contact surfaces"
+        }
+      ]
+    },
+    {
+      "id": "c_rope_40",
+      "kind": "rope",
+      "corridor": [
+        [
+          1278,
+          704
+        ],
+        [
+          1314,
+          704
+        ],
+        [
+          1314,
+          832
+        ],
+        [
+          1278,
+          832
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1296,
+            832
+          ],
+          "surface": "s_sea"
+        },
+        "end": {
+          "position": [
+            1296,
+            704
+          ],
+          "surface": "s_sea_lower"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": [
+        [
+          1278,
+          826
+        ],
+        [
+          1314,
+          826
+        ],
+        [
+          1314,
+          838
+        ],
+        [
+          1278,
+          838
+        ]
+      ],
+      "exitRange": [
+        [
+          1278,
+          698
+        ],
+        [
+          1314,
+          698
+        ],
+        [
+          1314,
+          710
+        ],
+        [
+          1278,
+          710
+        ]
+      ],
+      "collisionException": "one-way-support-only-while-attached; never-ignore-solids",
+      "sourceObject": {
+        "id": 2,
+        "name": "rope_40",
+        "type": "rope",
+        "x": 1296,
+        "y": 704,
+        "width": 0,
+        "height": 96,
+        "properties": []
+      },
+      "anchorCalibration": {
+        "bottomDeltaY": 32,
+        "reason": "Source rope object ends one 32px tile above its true supporting footline. Extend visual rope and corridor to the actual standing surface."
+      },
+      "status": "verified",
+      "verificationScope": "continuous approach, full up/down traversal and platform exit in minimum adapter",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "t_rope_40_up",
+          "routeId": "route_rope_40",
+          "path": "work/replays-final/route_rope_40.json",
+          "frame": 634,
+          "method": "executed action event in continuous spawn input replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        },
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "t_rope_40_down",
+          "routeId": "route_rope_40",
+          "path": "work/replays-final/route_rope_40.json",
+          "frame": 804,
+          "method": "executed action event in continuous spawn input replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        },
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified",
+          "objectId": "c_rope_40",
+          "path": "work/final-geometry-measurements.json",
+          "method": "final visual rope center and both anchors checked against aligned platform contact surfaces"
+        }
+      ]
+    },
+    {
+      "id": "c_rope_30",
+      "kind": "rope",
+      "corridor": [
+        [
+          958,
+          576
+        ],
+        [
+          994,
+          576
+        ],
+        [
+          994,
+          832
+        ],
+        [
+          958,
+          832
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            976,
+            832
+          ],
+          "surface": "s_sea"
+        },
+        "end": {
+          "position": [
+            976,
+            576
+          ],
+          "surface": "s_sea_upper_west"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": [
+        [
+          958,
+          826
+        ],
+        [
+          994,
+          826
+        ],
+        [
+          994,
+          838
+        ],
+        [
+          958,
+          838
+        ]
+      ],
+      "exitRange": [
+        [
+          958,
+          570
+        ],
+        [
+          994,
+          570
+        ],
+        [
+          994,
+          582
+        ],
+        [
+          958,
+          582
+        ]
+      ],
+      "collisionException": "one-way-support-only-while-attached; never-ignore-solids",
+      "sourceObject": {
+        "id": 3,
+        "name": "rope_30",
+        "type": "rope",
+        "x": 976,
+        "y": 576,
+        "width": 0,
+        "height": 224,
+        "properties": []
+      },
+      "anchorCalibration": {
+        "bottomDeltaY": 32,
+        "reason": "Source rope object ends one 32px tile above its true supporting footline. Extend visual rope and corridor to the actual standing surface."
+      },
+      "status": "verified",
+      "verificationScope": "continuous approach, full up/down traversal and platform exit in minimum adapter",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "t_rope_30_up",
+          "routeId": "route_rope_30",
+          "path": "work/replays-final/route_rope_30.json",
+          "frame": 556,
+          "method": "executed action event in continuous spawn input replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        },
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "t_rope_30_down",
+          "routeId": "route_rope_30",
+          "path": "work/replays-final/route_rope_30.json",
+          "frame": 795,
+          "method": "executed action event in continuous spawn input replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        },
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified",
+          "objectId": "c_rope_30",
+          "path": "work/final-geometry-measurements.json",
+          "method": "final visual rope center and both anchors checked against aligned platform contact surfaces"
+        }
+      ]
+    },
+    {
+      "id": "c_rope_48",
+      "kind": "rope",
+      "corridor": [
+        [
+          1534,
+          576
+        ],
+        [
+          1570,
+          576
+        ],
+        [
+          1570,
+          704
+        ],
+        [
+          1534,
+          704
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1552,
+            704
+          ],
+          "surface": "s_sea_lower"
+        },
+        "end": {
+          "position": [
+            1552,
+            576
+          ],
+          "surface": "s_sea_upper_east"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": [
+        [
+          1534,
+          698
+        ],
+        [
+          1570,
+          698
+        ],
+        [
+          1570,
+          710
+        ],
+        [
+          1534,
+          710
+        ]
+      ],
+      "exitRange": [
+        [
+          1534,
+          570
+        ],
+        [
+          1570,
+          570
+        ],
+        [
+          1570,
+          582
+        ],
+        [
+          1534,
+          582
+        ]
+      ],
+      "collisionException": "one-way-support-only-while-attached; never-ignore-solids",
+      "sourceObject": {
+        "id": 4,
+        "name": "rope_48",
+        "type": "rope",
+        "x": 1552,
+        "y": 576,
+        "width": 0,
+        "height": 96,
+        "properties": []
+      },
+      "anchorCalibration": {
+        "bottomDeltaY": 32,
+        "reason": "Source rope object ends one 32px tile above its true supporting footline. Extend visual rope and corridor to the actual standing surface."
+      },
+      "status": "verified",
+      "verificationScope": "continuous approach, full up/down traversal and platform exit in minimum adapter",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "t_rope_48_up",
+          "routeId": "route_rope_48",
+          "path": "work/replays-final/route_rope_48.json",
+          "frame": 867,
+          "method": "executed action event in continuous spawn input replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        },
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "t_rope_48_down",
+          "routeId": "route_rope_48",
+          "path": "work/replays-final/route_rope_48.json",
+          "frame": 1037,
+          "method": "executed action event in continuous spawn input replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        },
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified",
+          "objectId": "c_rope_48",
+          "path": "work/final-geometry-measurements.json",
+          "method": "final visual rope center and both anchors checked against aligned platform contact surfaces"
+        }
+      ]
+    },
+    {
+      "id": "c_rope_70",
+      "kind": "rope",
+      "corridor": [
+        [
+          2238,
+          640
+        ],
+        [
+          2274,
+          640
+        ],
+        [
+          2274,
+          768
+        ],
+        [
+          2238,
+          768
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            2256,
+            768
+          ],
+          "surface": "s_deep"
+        },
+        "end": {
+          "position": [
+            2256,
+            640
+          ],
+          "surface": "s_deep_lower"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": [
+        [
+          2238,
+          762
+        ],
+        [
+          2274,
+          762
+        ],
+        [
+          2274,
+          774
+        ],
+        [
+          2238,
+          774
+        ]
+      ],
+      "exitRange": [
+        [
+          2238,
+          634
+        ],
+        [
+          2274,
+          634
+        ],
+        [
+          2274,
+          646
+        ],
+        [
+          2238,
+          646
+        ]
+      ],
+      "collisionException": "one-way-support-only-while-attached; never-ignore-solids",
+      "sourceObject": {
+        "id": 5,
+        "name": "rope_70",
+        "type": "rope",
+        "x": 2256,
+        "y": 640,
+        "width": 0,
+        "height": 96,
+        "properties": []
+      },
+      "anchorCalibration": {
+        "bottomDeltaY": 32,
+        "reason": "Source rope object ends one 32px tile above its true supporting footline. Extend visual rope and corridor to the actual standing surface."
+      },
+      "status": "verified",
+      "verificationScope": "continuous approach, full up/down traversal and platform exit in minimum adapter",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "t_rope_70_up",
+          "routeId": "route_rope_70",
+          "path": "work/replays-final/route_rope_70.json",
+          "frame": 1099,
+          "method": "executed action event in continuous spawn input replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        },
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "t_rope_70_down",
+          "routeId": "route_rope_70",
+          "path": "work/replays-final/route_rope_70.json",
+          "frame": 1269,
+          "method": "executed action event in continuous spawn input replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        },
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified",
+          "objectId": "c_rope_70",
+          "path": "work/final-geometry-measurements.json",
+          "method": "final visual rope center and both anchors checked against aligned platform contact surfaces"
+        }
+      ]
+    },
+    {
+      "id": "c_rope_84",
+      "kind": "rope",
+      "corridor": [
+        [
+          2686,
+          512
+        ],
+        [
+          2722,
+          512
+        ],
+        [
+          2722,
+          768
+        ],
+        [
+          2686,
+          768
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            2704,
+            768
+          ],
+          "surface": "s_deep"
+        },
+        "end": {
+          "position": [
+            2704,
+            512
+          ],
+          "surface": "s_deep_middle"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": [
+        [
+          2686,
+          762
+        ],
+        [
+          2722,
+          762
+        ],
+        [
+          2722,
+          774
+        ],
+        [
+          2686,
+          774
+        ]
+      ],
+      "exitRange": [
+        [
+          2686,
+          506
+        ],
+        [
+          2722,
+          506
+        ],
+        [
+          2722,
+          518
+        ],
+        [
+          2686,
+          518
+        ]
+      ],
+      "collisionException": "one-way-support-only-while-attached; never-ignore-solids",
+      "sourceObject": {
+        "id": 6,
+        "name": "rope_84",
+        "type": "rope",
+        "x": 2704,
+        "y": 512,
+        "width": 0,
+        "height": 224,
+        "properties": []
+      },
+      "anchorCalibration": {
+        "bottomDeltaY": 32,
+        "reason": "Source rope object ends one 32px tile above its true supporting footline. Extend visual rope and corridor to the actual standing surface."
+      },
+      "status": "verified",
+      "verificationScope": "continuous approach, full up/down traversal and platform exit in minimum adapter",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "t_rope_84_up",
+          "routeId": "route_rope_84",
+          "path": "work/replays-final/route_rope_84.json",
+          "frame": 1376,
+          "method": "executed action event in continuous spawn input replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        },
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "t_rope_84_down",
+          "routeId": "route_rope_84",
+          "path": "work/replays-final/route_rope_84.json",
+          "frame": 1705,
+          "method": "executed action event in continuous spawn input replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        },
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified",
+          "objectId": "c_rope_84",
+          "path": "work/final-geometry-measurements.json",
+          "method": "final visual rope center and both anchors checked against aligned platform contact surfaces"
+        }
+      ]
+    },
+    {
+      "id": "c_rope_66",
+      "kind": "rope",
+      "corridor": [
+        [
+          2110,
+          384
+        ],
+        [
+          2146,
+          384
+        ],
+        [
+          2146,
+          640
+        ],
+        [
+          2110,
+          640
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            2128,
+            640
+          ],
+          "surface": "s_deep_lower"
+        },
+        "end": {
+          "position": [
+            2128,
+            384
+          ],
+          "surface": "s_deep_high"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": [
+        [
+          2110,
+          634
+        ],
+        [
+          2146,
+          634
+        ],
+        [
+          2146,
+          646
+        ],
+        [
+          2110,
+          646
+        ]
+      ],
+      "exitRange": [
+        [
+          2110,
+          378
+        ],
+        [
+          2146,
+          378
+        ],
+        [
+          2146,
+          390
+        ],
+        [
+          2110,
+          390
+        ]
+      ],
+      "collisionException": "one-way-support-only-while-attached; never-ignore-solids",
+      "sourceObject": {
+        "id": 7,
+        "name": "rope_66",
+        "type": "rope",
+        "x": 2128,
+        "y": 384,
+        "width": 0,
+        "height": 224,
+        "properties": []
+      },
+      "anchorCalibration": {
+        "bottomDeltaY": 32,
+        "reason": "Source rope object ends one 32px tile above its true supporting footline. Extend visual rope and corridor to the actual standing surface."
+      },
+      "status": "verified",
+      "verificationScope": "continuous approach, full up/down traversal and platform exit in minimum adapter",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "t_rope_66_up",
+          "routeId": "route_rope_66",
+          "path": "work/replays-final/route_rope_66.json",
+          "frame": 1343,
+          "method": "executed action event in continuous spawn input replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        },
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "t_rope_66_down",
+          "routeId": "route_rope_66",
+          "path": "work/replays-final/route_rope_66.json",
+          "frame": 1582,
+          "method": "executed action event in continuous spawn input replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        },
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified",
+          "objectId": "c_rope_66",
+          "path": "work/final-geometry-measurements.json",
+          "method": "final visual rope center and both anchors checked against aligned platform contact surfaces"
+        }
+      ]
+    }
+  ],
+  "stairs": [],
+  "solids": [
+    {
+      "id": "solid_base",
+      "polygon": [
+        [
+          0,
+          832
+        ],
+        [
+          3200,
+          832
+        ],
+        [
+          3200,
+          896
+        ],
+        [
+          0,
+          896
+        ]
+      ],
+      "type": "ground",
+      "surfaces": [
+        "s_entry",
+        "s_sea"
+      ],
+      "openings": [],
+      "status": "verified",
+      "verificationScope": "actual continuous-trace full-body audit against this solid volume",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "solid_base",
+          "path": "work/final-body-clearance-audit.json",
+          "method": "independent full-body AABB audit of every continuous replay frame",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "solid_deep_rise",
+      "polygon": [
+        [
+          1984,
+          768
+        ],
+        [
+          3200,
+          768
+        ],
+        [
+          3200,
+          832
+        ],
+        [
+          1984,
+          832
+        ]
+      ],
+      "type": "raised-ground",
+      "surfaces": [
+        "s_deep"
+      ],
+      "openings": [],
+      "status": "verified",
+      "verificationScope": "actual continuous-trace full-body audit against this solid volume",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "solid_deep_rise",
+          "path": "work/final-body-clearance-audit.json",
+          "method": "independent full-body AABB audit of every continuous replay frame",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ]
+    }
+  ],
+  "hazards": [],
+  "points": [
+    {
+      "id": "start_spawn",
+      "type": "spawn",
+      "position": [
+        128,
+        832
+      ],
+      "surface": "s_entry",
+      "safeRadius": 13,
+      "status": "verified",
+      "sourceObjectId": 8,
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "start_spawn",
+          "routeId": "route_main",
+          "path": "work/replays-final/route_main.json",
+          "frame": 0,
+          "method": "actual point-reached event in continuous source-spawn replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "goal_east",
+      "type": "goal",
+      "position": [
+        3120,
+        768
+      ],
+      "surface": "s_deep",
+      "safeRadius": 13,
+      "status": "verified",
+      "sourceObjectId": 10,
+      "target": "lingxi_path",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "goal_east",
+          "routeId": "route_main",
+          "path": "work/replays-final/route_main.json",
+          "frame": 1401,
+          "method": "actual point-reached event in continuous source-spawn replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "portal_west",
+      "type": "portal",
+      "position": [
+        80,
+        832
+      ],
+      "surface": "s_entry",
+      "safeRadius": 13,
+      "status": "verified",
+      "sourceObjectId": 9,
+      "target": "qingyun_village",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "portal_west",
+          "routeId": "route_main_return",
+          "path": "work/replays-final/route_main_return.json",
+          "frame": 2801,
+          "method": "actual point-reached event in continuous source-spawn replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "point_sea",
+      "type": "checkpoint",
+      "position": [
+        1560,
+        832
+      ],
+      "surface": "s_sea",
+      "safeRadius": 13,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "point_sea",
+          "routeId": "route_main",
+          "path": "work/replays-final/route_main.json",
+          "frame": 651,
+          "method": "actual point-reached event in continuous source-spawn replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "point_deep",
+      "type": "checkpoint",
+      "position": [
+        2100,
+        768
+      ],
+      "surface": "s_deep",
+      "safeRadius": 13,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "point_deep",
+          "routeId": "route_main",
+          "path": "work/replays-final/route_main.json",
+          "frame": 927,
+          "method": "actual point-reached event in continuous source-spawn replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "point_rope_20_start",
+      "type": "climb-bottom",
+      "position": [
+        656,
+        832
+      ],
+      "surface": "s_entry",
+      "safeRadius": 13,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "point_rope_20_start",
+          "routeId": "route_main",
+          "path": "work/replays-final/route_main.json",
+          "frame": 234,
+          "method": "actual point-reached event in continuous source-spawn replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "point_rope_20_end",
+      "type": "climb-top",
+      "position": [
+        656,
+        704
+      ],
+      "surface": "s_entry_bamboo",
+      "safeRadius": 13,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "point_rope_20_end",
+          "routeId": "route_rope_20",
+          "path": "work/replays-final/route_rope_20.json",
+          "frame": 331,
+          "method": "actual point-reached event in continuous source-spawn replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "point_rope_40_start",
+      "type": "climb-bottom",
+      "position": [
+        1296,
+        832
+      ],
+      "surface": "s_sea",
+      "safeRadius": 13,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "point_rope_40_start",
+          "routeId": "route_main",
+          "path": "work/replays-final/route_main.json",
+          "frame": 530,
+          "method": "actual point-reached event in continuous source-spawn replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "point_rope_40_end",
+      "type": "climb-top",
+      "position": [
+        1296,
+        704
+      ],
+      "surface": "s_sea_lower",
+      "safeRadius": 13,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "point_rope_40_end",
+          "routeId": "route_rope_40",
+          "path": "work/replays-final/route_rope_40.json",
+          "frame": 627,
+          "method": "actual point-reached event in continuous source-spawn replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "point_rope_30_start",
+      "type": "climb-bottom",
+      "position": [
+        976,
+        832
+      ],
+      "surface": "s_sea",
+      "safeRadius": 13,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "point_rope_30_start",
+          "routeId": "route_main",
+          "path": "work/replays-final/route_main.json",
+          "frame": 382,
+          "method": "actual point-reached event in continuous source-spawn replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "point_rope_30_end",
+      "type": "climb-top",
+      "position": [
+        976,
+        576
+      ],
+      "surface": "s_sea_upper_west",
+      "safeRadius": 13,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "point_rope_30_end",
+          "routeId": "route_rope_30",
+          "path": "work/replays-final/route_rope_30.json",
+          "frame": 548,
+          "method": "actual point-reached event in continuous source-spawn replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "point_rope_48_start",
+      "type": "climb-bottom",
+      "position": [
+        1552,
+        704
+      ],
+      "surface": "s_sea_lower",
+      "safeRadius": 13,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "point_rope_48_start",
+          "routeId": "route_rope_48",
+          "path": "work/replays-final/route_rope_48.json",
+          "frame": 763,
+          "method": "actual point-reached event in continuous source-spawn replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "point_rope_48_end",
+      "type": "climb-top",
+      "position": [
+        1552,
+        576
+      ],
+      "surface": "s_sea_upper_east",
+      "safeRadius": 13,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "point_rope_48_end",
+          "routeId": "route_rope_48",
+          "path": "work/replays-final/route_rope_48.json",
+          "frame": 860,
+          "method": "actual point-reached event in continuous source-spawn replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "point_rope_70_start",
+      "type": "climb-bottom",
+      "position": [
+        2256,
+        768
+      ],
+      "surface": "s_deep",
+      "safeRadius": 13,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "point_rope_70_start",
+          "routeId": "route_main",
+          "path": "work/replays-final/route_main.json",
+          "frame": 1002,
+          "method": "actual point-reached event in continuous source-spawn replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "point_rope_70_end",
+      "type": "climb-top",
+      "position": [
+        2256,
+        640
+      ],
+      "surface": "s_deep_lower",
+      "safeRadius": 13,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "point_rope_70_end",
+          "routeId": "route_rope_70",
+          "path": "work/replays-final/route_rope_70.json",
+          "frame": 1092,
+          "method": "actual point-reached event in continuous source-spawn replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "point_rope_84_start",
+      "type": "climb-bottom",
+      "position": [
+        2704,
+        768
+      ],
+      "surface": "s_deep",
+      "safeRadius": 13,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "point_rope_84_start",
+          "routeId": "route_main",
+          "path": "work/replays-final/route_main.json",
+          "frame": 1209,
+          "method": "actual point-reached event in continuous source-spawn replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "point_rope_84_end",
+      "type": "climb-top",
+      "position": [
+        2704,
+        512
+      ],
+      "surface": "s_deep_middle",
+      "safeRadius": 13,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "point_rope_84_end",
+          "routeId": "route_rope_84",
+          "path": "work/replays-final/route_rope_84.json",
+          "frame": 1368,
+          "method": "actual point-reached event in continuous source-spawn replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "point_rope_66_start",
+      "type": "climb-bottom",
+      "position": [
+        2128,
+        640
+      ],
+      "surface": "s_deep_lower",
+      "safeRadius": 13,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "point_rope_66_start",
+          "routeId": "route_rope_66",
+          "path": "work/replays-final/route_rope_66.json",
+          "frame": 1169,
+          "method": "actual point-reached event in continuous source-spawn replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "point_rope_66_end",
+      "type": "climb-top",
+      "position": [
+        2128,
+        384
+      ],
+      "surface": "s_deep_high",
+      "safeRadius": 13,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "point_rope_66_end",
+          "routeId": "route_rope_66",
+          "path": "work/replays-final/route_rope_66.json",
+          "frame": 1335,
+          "method": "actual point-reached event in continuous source-spawn replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "gather_spirit_herb_19",
+      "type": "gather",
+      "position": [
+        976,
+        832
+      ],
+      "surface": "s_sea",
+      "safeRadius": 13,
+      "status": "verified",
+      "sourceObject": {
+        "id": 19,
+        "name": "gather_spirit_herb_19",
+        "type": "gather",
+        "x": 976,
+        "y": 832,
+        "width": 0,
+        "height": 0,
+        "properties": [
+          {
+            "name": "item",
+            "type": "string",
+            "value": "spirit_herb"
+          },
+          {
+            "name": "respawnMs",
+            "type": "int",
+            "value": 60000
+          }
+        ]
+      },
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "gather_spirit_herb_19",
+          "routeId": "route_main",
+          "path": "work/replays-final/route_main.json",
+          "frame": 382,
+          "method": "actual point-reached event in continuous source-spawn replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "gather_spirit_herb_20",
+      "type": "gather",
+      "position": [
+        1456,
+        704
+      ],
+      "surface": "s_sea_lower",
+      "safeRadius": 13,
+      "status": "verified",
+      "sourceObject": {
+        "id": 20,
+        "name": "gather_spirit_herb_20",
+        "type": "gather",
+        "x": 1456,
+        "y": 704,
+        "width": 0,
+        "height": 0,
+        "properties": [
+          {
+            "name": "item",
+            "type": "string",
+            "value": "spirit_herb"
+          },
+          {
+            "name": "respawnMs",
+            "type": "int",
+            "value": 60000
+          }
+        ]
+      },
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "gather_spirit_herb_20",
+          "routeId": "route_rope_48",
+          "path": "work/replays-final/route_rope_48.json",
+          "frame": 718,
+          "method": "actual point-reached event in continuous source-spawn replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "gather_spirit_herb_21",
+      "type": "gather",
+      "position": [
+        2736,
+        768
+      ],
+      "surface": "s_deep",
+      "safeRadius": 13,
+      "status": "verified",
+      "sourceObject": {
+        "id": 21,
+        "name": "gather_spirit_herb_21",
+        "type": "gather",
+        "x": 2736,
+        "y": 768,
+        "width": 0,
+        "height": 0,
+        "properties": [
+          {
+            "name": "item",
+            "type": "string",
+            "value": "spirit_herb"
+          },
+          {
+            "name": "respawnMs",
+            "type": "int",
+            "value": 60000
+          }
+        ]
+      },
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "gather_spirit_herb_21",
+          "routeId": "route_main",
+          "path": "work/replays-final/route_main.json",
+          "frame": 1223,
+          "method": "actual point-reached event in continuous source-spawn replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "sense_chest_01",
+      "type": "chest",
+      "position": [
+        2864,
+        512
+      ],
+      "surface": "s_deep_middle",
+      "safeRadius": 13,
+      "status": "verified",
+      "sourceObject": {
+        "id": 22,
+        "name": "sense_chest_01",
+        "type": "chest",
+        "x": 2864,
+        "y": 512,
+        "width": 0,
+        "height": 0,
+        "properties": [
+          {
+            "name": "loot",
+            "type": "string",
+            "value": "hp_pill_small"
+          },
+          {
+            "name": "count",
+            "type": "int",
+            "value": 1
+          }
+        ]
+      },
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "sense_chest_01",
+          "routeId": "route_rope_84",
+          "path": "work/replays-final/route_rope_84.json",
+          "frame": 1460,
+          "method": "actual point-reached event in continuous source-spawn replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ]
+    }
+  ],
+  "transitions": [
+    {
+      "id": "t_deep_up",
+      "to": "s_deep",
+      "action": "jump",
+      "direction": "east",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "t_deep_up",
+          "routeId": "route_main",
+          "path": "work/replays-final/route_main.json",
+          "frame": 869,
+          "method": "executed action event in continuous spawn input replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ],
+      "from": "s_sea"
+    },
+    {
+      "id": "t_deep_down",
+      "to": "s_sea",
+      "action": "drop",
+      "direction": "west",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "t_deep_down",
+          "routeId": "route_main_return",
+          "path": "work/replays-final/route_main_return.json",
+          "frame": 1953,
+          "method": "executed action event in continuous spawn input replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ],
+      "from": "s_deep"
+    },
+    {
+      "id": "t_rope_20_up",
+      "to": "s_entry_bamboo",
+      "action": "climb",
+      "climb": "c_rope_20",
+      "direction": "up",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "t_rope_20_up",
+          "routeId": "route_rope_20",
+          "path": "work/replays-final/route_rope_20.json",
+          "frame": 338,
+          "method": "executed action event in continuous spawn input replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ],
+      "from": "s_entry"
+    },
+    {
+      "id": "t_rope_20_down",
+      "to": "s_entry",
+      "action": "climb",
+      "climb": "c_rope_20",
+      "direction": "down",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "t_rope_20_down",
+          "routeId": "route_rope_20",
+          "path": "work/replays-final/route_rope_20.json",
+          "frame": 508,
+          "method": "executed action event in continuous spawn input replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ],
+      "from": "s_entry_bamboo"
+    },
+    {
+      "id": "t_rope_40_up",
+      "to": "s_sea_lower",
+      "action": "climb",
+      "climb": "c_rope_40",
+      "direction": "up",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "t_rope_40_up",
+          "routeId": "route_rope_40",
+          "path": "work/replays-final/route_rope_40.json",
+          "frame": 634,
+          "method": "executed action event in continuous spawn input replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ],
+      "from": "s_sea"
+    },
+    {
+      "id": "t_rope_40_down",
+      "to": "s_sea",
+      "action": "climb",
+      "climb": "c_rope_40",
+      "direction": "down",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "t_rope_40_down",
+          "routeId": "route_rope_40",
+          "path": "work/replays-final/route_rope_40.json",
+          "frame": 804,
+          "method": "executed action event in continuous spawn input replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ],
+      "from": "s_sea_lower"
+    },
+    {
+      "id": "t_rope_30_up",
+      "to": "s_sea_upper_west",
+      "action": "climb",
+      "climb": "c_rope_30",
+      "direction": "up",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "t_rope_30_up",
+          "routeId": "route_rope_30",
+          "path": "work/replays-final/route_rope_30.json",
+          "frame": 556,
+          "method": "executed action event in continuous spawn input replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ],
+      "from": "s_sea"
+    },
+    {
+      "id": "t_rope_30_down",
+      "to": "s_sea",
+      "action": "climb",
+      "climb": "c_rope_30",
+      "direction": "down",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "t_rope_30_down",
+          "routeId": "route_rope_30",
+          "path": "work/replays-final/route_rope_30.json",
+          "frame": 795,
+          "method": "executed action event in continuous spawn input replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ],
+      "from": "s_sea_upper_west"
+    },
+    {
+      "id": "t_rope_48_up",
+      "to": "s_sea_upper_east",
+      "action": "climb",
+      "climb": "c_rope_48",
+      "direction": "up",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "t_rope_48_up",
+          "routeId": "route_rope_48",
+          "path": "work/replays-final/route_rope_48.json",
+          "frame": 867,
+          "method": "executed action event in continuous spawn input replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ],
+      "from": "s_sea_lower"
+    },
+    {
+      "id": "t_rope_48_down",
+      "to": "s_sea_lower",
+      "action": "climb",
+      "climb": "c_rope_48",
+      "direction": "down",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "t_rope_48_down",
+          "routeId": "route_rope_48",
+          "path": "work/replays-final/route_rope_48.json",
+          "frame": 1037,
+          "method": "executed action event in continuous spawn input replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ],
+      "from": "s_sea_upper_east"
+    },
+    {
+      "id": "t_rope_70_up",
+      "to": "s_deep_lower",
+      "action": "climb",
+      "climb": "c_rope_70",
+      "direction": "up",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "t_rope_70_up",
+          "routeId": "route_rope_70",
+          "path": "work/replays-final/route_rope_70.json",
+          "frame": 1099,
+          "method": "executed action event in continuous spawn input replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ],
+      "from": "s_deep"
+    },
+    {
+      "id": "t_rope_70_down",
+      "to": "s_deep",
+      "action": "climb",
+      "climb": "c_rope_70",
+      "direction": "down",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "t_rope_70_down",
+          "routeId": "route_rope_70",
+          "path": "work/replays-final/route_rope_70.json",
+          "frame": 1269,
+          "method": "executed action event in continuous spawn input replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ],
+      "from": "s_deep_lower"
+    },
+    {
+      "id": "t_rope_84_up",
+      "to": "s_deep_middle",
+      "action": "climb",
+      "climb": "c_rope_84",
+      "direction": "up",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "t_rope_84_up",
+          "routeId": "route_rope_84",
+          "path": "work/replays-final/route_rope_84.json",
+          "frame": 1376,
+          "method": "executed action event in continuous spawn input replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ],
+      "from": "s_deep"
+    },
+    {
+      "id": "t_rope_84_down",
+      "to": "s_deep",
+      "action": "climb",
+      "climb": "c_rope_84",
+      "direction": "down",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "t_rope_84_down",
+          "routeId": "route_rope_84",
+          "path": "work/replays-final/route_rope_84.json",
+          "frame": 1705,
+          "method": "executed action event in continuous spawn input replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ],
+      "from": "s_deep_middle"
+    },
+    {
+      "id": "t_rope_66_up",
+      "to": "s_deep_high",
+      "action": "climb",
+      "climb": "c_rope_66",
+      "direction": "up",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "t_rope_66_up",
+          "routeId": "route_rope_66",
+          "path": "work/replays-final/route_rope_66.json",
+          "frame": 1343,
+          "method": "executed action event in continuous spawn input replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ],
+      "from": "s_deep_lower"
+    },
+    {
+      "id": "t_rope_66_down",
+      "to": "s_deep_lower",
+      "action": "climb",
+      "climb": "c_rope_66",
+      "direction": "down",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "t_rope_66_down",
+          "routeId": "route_rope_66",
+          "path": "work/replays-final/route_rope_66.json",
+          "frame": 1582,
+          "method": "executed action event in continuous spawn input replay",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "result": "verified"
+        }
+      ],
+      "from": "s_deep_high"
+    }
+  ],
+  "requiredRoutes": [
+    {
+      "id": "route_main",
+      "to": "goal_east",
+      "via": [
+        "s_entry",
+        "s_sea",
+        "point_sea",
+        "s_deep",
+        "point_deep"
+      ],
+      "sequence": "walk across entrance and bamboo sea; ordinary jump onto 64px rise; walk to east gate",
+      "from": "start_spawn",
+      "direction": "eastward",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "route_main",
+          "routeId": "route_main",
+          "path": "work/replays-final/route_main.json",
+          "method": "fixed-60Hz continuous input replay from normal source spawn; no teleports or state mutation",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "frames": 1414,
+          "resetCount": 0,
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "route_main_return",
+      "to": "start_spawn",
+      "via": [
+        "goal_east",
+        "s_deep",
+        "s_sea",
+        "s_entry",
+        "portal_west"
+      ],
+      "sequence": "continuous spawn → east gate → spawn; drop the 64px rise westward; walk west portal marker before returning to spawn",
+      "from": "start_spawn",
+      "direction": "both, actual return required",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "route_main_return",
+          "routeId": "route_main_return",
+          "path": "work/replays-final/route_main_return.json",
+          "method": "fixed-60Hz continuous input replay from normal source spawn; no teleports or state mutation",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "frames": 2860,
+          "resetCount": 0,
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "route_rope_20",
+      "to": "start_spawn",
+      "via": [
+        "c_rope_20",
+        "s_entry_bamboo",
+        "point_rope_20_end",
+        "c_rope_20",
+        "s_entry"
+      ],
+      "sequence": "from normal spawn approach lower endpoint; climb full rope; leave top sideways; return to rope; climb down; return continuously to spawn",
+      "from": "start_spawn",
+      "direction": "both, actual return required",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "route_rope_20",
+          "routeId": "route_rope_20",
+          "path": "work/replays-final/route_rope_20.json",
+          "method": "fixed-60Hz continuous input replay from normal source spawn; no teleports or state mutation",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "frames": 795,
+          "resetCount": 0,
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "route_rope_40",
+      "to": "start_spawn",
+      "via": [
+        "c_rope_40",
+        "s_sea_lower",
+        "point_rope_40_end",
+        "c_rope_40",
+        "s_sea"
+      ],
+      "sequence": "from normal spawn approach lower endpoint; climb full rope; leave top sideways; return to rope; climb down; return continuously to spawn",
+      "from": "start_spawn",
+      "direction": "both, actual return required",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "route_rope_40",
+          "routeId": "route_rope_40",
+          "path": "work/replays-final/route_rope_40.json",
+          "method": "fixed-60Hz continuous input replay from normal source spawn; no teleports or state mutation",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "frames": 1387,
+          "resetCount": 0,
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "route_rope_30",
+      "to": "start_spawn",
+      "via": [
+        "gather_spirit_herb_19",
+        "c_rope_30",
+        "s_sea_upper_west",
+        "point_rope_30_end",
+        "c_rope_30",
+        "s_sea"
+      ],
+      "sequence": "from normal spawn approach lower endpoint; climb full rope; leave top sideways; return to rope; climb down; return continuously to spawn",
+      "from": "start_spawn",
+      "direction": "both, actual return required",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "route_rope_30",
+          "routeId": "route_rope_30",
+          "path": "work/replays-final/route_rope_30.json",
+          "method": "fixed-60Hz continuous input replay from normal source spawn; no teleports or state mutation",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "frames": 1230,
+          "resetCount": 0,
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "route_rope_48",
+      "to": "start_spawn",
+      "via": [
+        "c_rope_40",
+        "s_sea_lower",
+        "gather_spirit_herb_20",
+        "c_rope_48",
+        "s_sea_upper_east",
+        "point_rope_48_end",
+        "c_rope_48",
+        "s_sea_lower",
+        "c_rope_40"
+      ],
+      "sequence": "from normal spawn approach lower endpoint; climb full rope; leave top sideways; return to rope; climb down; return continuously to spawn",
+      "from": "start_spawn",
+      "direction": "both, actual return required",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "route_rope_48",
+          "routeId": "route_rope_48",
+          "path": "work/replays-final/route_rope_48.json",
+          "method": "fixed-60Hz continuous input replay from normal source spawn; no teleports or state mutation",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "frames": 1846,
+          "resetCount": 0,
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "route_rope_70",
+      "to": "start_spawn",
+      "via": [
+        "c_rope_70",
+        "s_deep_lower",
+        "point_rope_70_end",
+        "c_rope_70",
+        "s_deep"
+      ],
+      "sequence": "from normal spawn approach lower endpoint; climb full rope; leave top sideways; return to rope; climb down; return continuously to spawn",
+      "from": "start_spawn",
+      "direction": "both, actual return required",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "route_rope_70",
+          "routeId": "route_rope_70",
+          "path": "work/replays-final/route_rope_70.json",
+          "method": "fixed-60Hz continuous input replay from normal source spawn; no teleports or state mutation",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "frames": 2295,
+          "resetCount": 0,
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "route_rope_84",
+      "to": "start_spawn",
+      "via": [
+        "c_rope_84",
+        "s_deep_middle",
+        "point_rope_84_end",
+        "sense_chest_01",
+        "c_rope_84",
+        "s_deep",
+        "gather_spirit_herb_21"
+      ],
+      "sequence": "from normal spawn approach lower endpoint; climb full rope; leave top sideways; return to rope; climb down; return continuously to spawn; top platform chest and ground herb visited at true source foot heights",
+      "from": "start_spawn",
+      "direction": "both, actual return required",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "route_rope_84",
+          "routeId": "route_rope_84",
+          "path": "work/replays-final/route_rope_84.json",
+          "method": "fixed-60Hz continuous input replay from normal source spawn; no teleports or state mutation",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "frames": 2972,
+          "resetCount": 0,
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "route_rope_66",
+      "to": "start_spawn",
+      "via": [
+        "c_rope_70",
+        "s_deep_lower",
+        "c_rope_66",
+        "s_deep_high",
+        "point_rope_66_end",
+        "c_rope_66",
+        "s_deep_lower",
+        "c_rope_70"
+      ],
+      "sequence": "from normal spawn approach lower endpoint; climb full rope; leave top sideways; return to rope; climb down; return continuously to spawn",
+      "from": "start_spawn",
+      "direction": "both, actual return required",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "bamboo-final-001",
+          "actorParameterRevision": "bamboo-base-feel-20261027-001",
+          "engineRevision": "bamboo-aabb-feel-60hz-001",
+          "objectId": "route_rope_66",
+          "routeId": "route_rope_66",
+          "path": "work/replays-final/route_rope_66.json",
+          "method": "fixed-60Hz continuous input replay from normal source spawn; no teleports or state mutation",
+          "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+          "frames": 2775,
+          "resetCount": 0,
+          "result": "verified"
+        }
+      ]
+    }
+  ],
+  "entities": {
+    "mode": "read-only original sprite patrol showcase; no combat AI or damage; no monsters baked into scene art",
+    "spawns": [
+      {
+        "id": "spawn_spirit_rabbit_11",
+        "monster": "spirit_rabbit",
+        "count": 3,
+        "x": 160,
+        "y": 832,
+        "width": 640,
+        "surface": "s_entry",
+        "sourceObjectId": 11,
+        "aggressive": false,
+        "aggroRange": null,
+        "sourceMoveSpeed": 40,
+        "combatImplemented": false
+      },
+      {
+        "id": "spawn_spirit_rabbit_12",
+        "monster": "spirit_rabbit",
+        "count": 3,
+        "x": 896,
+        "y": 832,
+        "width": 1056,
+        "surface": "s_sea",
+        "sourceObjectId": 12,
+        "aggressive": false,
+        "aggroRange": null,
+        "sourceMoveSpeed": 40,
+        "combatImplemented": false
+      },
+      {
+        "id": "spawn_spirit_rabbit_13",
+        "monster": "spirit_rabbit",
+        "count": 2,
+        "x": 448,
+        "y": 704,
+        "width": 416,
+        "surface": "s_entry_bamboo",
+        "sourceObjectId": 13,
+        "aggressive": false,
+        "aggroRange": null,
+        "sourceMoveSpeed": 40,
+        "combatImplemented": false
+      },
+      {
+        "id": "spawn_spirit_rabbit_14",
+        "monster": "spirit_rabbit",
+        "count": 2,
+        "x": 1088,
+        "y": 704,
+        "width": 544,
+        "surface": "s_sea_lower",
+        "sourceObjectId": 14,
+        "aggressive": false,
+        "aggroRange": null,
+        "sourceMoveSpeed": 40,
+        "combatImplemented": false
+      },
+      {
+        "id": "spawn_bamboo_snake_15",
+        "monster": "bamboo_snake",
+        "count": 2,
+        "x": 2048,
+        "y": 768,
+        "width": 1024,
+        "surface": "s_deep",
+        "sourceObjectId": 15,
+        "aggressive": true,
+        "aggroRange": 192,
+        "sourceMoveSpeed": 55,
+        "combatImplemented": false
+      },
+      {
+        "id": "spawn_bamboo_snake_16",
+        "monster": "bamboo_snake",
+        "count": 1,
+        "x": 2048,
+        "y": 640,
+        "width": 544,
+        "surface": "s_deep_lower",
+        "sourceObjectId": 16,
+        "aggressive": true,
+        "aggroRange": 192,
+        "sourceMoveSpeed": 55,
+        "combatImplemented": false
+      },
+      {
+        "id": "spawn_bamboo_snake_17",
+        "monster": "bamboo_snake",
+        "count": 2,
+        "x": 2304,
+        "y": 512,
+        "width": 608,
+        "surface": "s_deep_middle",
+        "sourceObjectId": 17,
+        "aggressive": true,
+        "aggroRange": 192,
+        "sourceMoveSpeed": 55,
+        "combatImplemented": false
+      },
+      {
+        "id": "spawn_bamboo_snake_18",
+        "monster": "bamboo_snake",
+        "count": 1,
+        "x": 1920,
+        "y": 384,
+        "width": 416,
+        "surface": "s_deep_high",
+        "sourceObjectId": 18,
+        "aggressive": true,
+        "aggroRange": 192,
+        "sourceMoveSpeed": 55,
+        "combatImplemented": false
+      }
+    ],
+    "monsterVisuals": {
+      "spirit_rabbit": {
+        "path": "work/preview/mon_spirit_rabbit-idle.png",
+        "atlas": "work/preview/mon_spirit_rabbit.png",
+        "atlasData": "work/preview/mon_spirit_rabbit.json",
+        "animations": "work/preview/mon_spirit_rabbit.anims.json",
+        "width": 64,
+        "height": 64,
+        "anchor": "feet-center"
+      },
+      "bamboo_snake": {
+        "path": "work/preview/mon_bamboo_snake-idle.png",
+        "atlas": "work/preview/mon_bamboo_snake.png",
+        "atlasData": "work/preview/mon_bamboo_snake.json",
+        "animations": "work/preview/mon_bamboo_snake.anims.json",
+        "width": 64,
+        "height": 64,
+        "anchor": "feet-center"
+      }
+    },
+    "definitionSource": {
+      "path": "game/data/balance/monsters.json",
+      "sha256": "4a6f9b4ec8d95b10f86ed46598775be4a294b9b2689d72f587ef323d07971521"
+    },
+    "monsterDefinitions": {
+      "spirit_rabbit": {
+        "id": "spirit_rabbit",
+        "name": "灵兔",
+        "level": 2,
+        "hp": 36,
+        "atk": 6,
+        "def": 0,
+        "exp": 4,
+        "aggressive": false,
+        "moveSpeed": 40,
+        "patrolRange": 160,
+        "touchDamage": true,
+        "knockback": 120,
+        "respawnMs": 7000,
+        "sprite": "mon_spirit_rabbit",
+        "dropTable": "drop_rabbit",
+        "isBoss": false,
+        "sense": {
+          "enabled": false,
+          "profile": "sense_monster_basic",
+          "visibleInfo": [
+            "name",
+            "level",
+            "hp",
+            "abilities"
+          ],
+          "abilityKeys": []
+        }
+      },
+      "bamboo_snake": {
+        "id": "bamboo_snake",
+        "name": "竹叶青蛇",
+        "level": 5,
+        "hp": 90,
+        "atk": 14,
+        "def": 2,
+        "exp": 10,
+        "aggressive": true,
+        "aggroRange": 192,
+        "moveSpeed": 55,
+        "patrolRange": 200,
+        "touchDamage": true,
+        "knockback": 150,
+        "respawnMs": 8000,
+        "sprite": "mon_bamboo_snake",
+        "dropTable": "drop_snake",
+        "isBoss": false,
+        "sense": {
+          "enabled": false,
+          "profile": "sense_monster_basic",
+          "visibleInfo": [
+            "name",
+            "level",
+            "hp",
+            "abilities"
+          ],
+          "abilityKeys": []
+        }
+      }
+    }
+  },
+  "diagnostics": {
+    "maskPalette": {
+      "standing": [
+        71,
+        230,
+        103,
+        255
+      ],
+      "walkable": [
+        62,
+        198,
+        157,
+        255
+      ],
+      "climb": [
+        69,
+        166,
+        255,
+        255
+      ],
+      "point": [
+        255,
+        211,
+        74,
+        255
+      ]
+    },
+    "rasterizationOrder": [
+      "walkable",
+      "standing",
+      "climb",
+      "point"
+    ],
+    "regionIdIndex": null,
+    "geometryRevision": "bamboo-final-001"
+  },
+  "validation": {
+    "status": "verified",
+    "geometryRevision": "bamboo-final-001",
+    "actorParameterRevision": "bamboo-base-feel-20261027-001",
+    "engineRevision": "bamboo-aabb-feel-60hz-001",
+    "evidence": [
+      {
+        "geometryRevision": "bamboo-final-001",
+        "actorParameterRevision": "bamboo-base-feel-20261027-001",
+        "engineRevision": "bamboo-aabb-feel-60hz-001",
+        "objectId": "route_main",
+        "routeId": "route_main",
+        "path": "work/replays-final/route_main.json",
+        "method": "fixed-60Hz continuous input replay from normal source spawn; no teleports or state mutation",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+        "frames": 1414,
+        "resetCount": 0,
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "bamboo-final-001",
+        "actorParameterRevision": "bamboo-base-feel-20261027-001",
+        "engineRevision": "bamboo-aabb-feel-60hz-001",
+        "objectId": "route_main_return",
+        "routeId": "route_main_return",
+        "path": "work/replays-final/route_main_return.json",
+        "method": "fixed-60Hz continuous input replay from normal source spawn; no teleports or state mutation",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+        "frames": 2860,
+        "resetCount": 0,
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "bamboo-final-001",
+        "actorParameterRevision": "bamboo-base-feel-20261027-001",
+        "engineRevision": "bamboo-aabb-feel-60hz-001",
+        "objectId": "route_rope_20",
+        "routeId": "route_rope_20",
+        "path": "work/replays-final/route_rope_20.json",
+        "method": "fixed-60Hz continuous input replay from normal source spawn; no teleports or state mutation",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+        "frames": 795,
+        "resetCount": 0,
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "bamboo-final-001",
+        "actorParameterRevision": "bamboo-base-feel-20261027-001",
+        "engineRevision": "bamboo-aabb-feel-60hz-001",
+        "objectId": "route_rope_40",
+        "routeId": "route_rope_40",
+        "path": "work/replays-final/route_rope_40.json",
+        "method": "fixed-60Hz continuous input replay from normal source spawn; no teleports or state mutation",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+        "frames": 1387,
+        "resetCount": 0,
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "bamboo-final-001",
+        "actorParameterRevision": "bamboo-base-feel-20261027-001",
+        "engineRevision": "bamboo-aabb-feel-60hz-001",
+        "objectId": "route_rope_30",
+        "routeId": "route_rope_30",
+        "path": "work/replays-final/route_rope_30.json",
+        "method": "fixed-60Hz continuous input replay from normal source spawn; no teleports or state mutation",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+        "frames": 1230,
+        "resetCount": 0,
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "bamboo-final-001",
+        "actorParameterRevision": "bamboo-base-feel-20261027-001",
+        "engineRevision": "bamboo-aabb-feel-60hz-001",
+        "objectId": "route_rope_48",
+        "routeId": "route_rope_48",
+        "path": "work/replays-final/route_rope_48.json",
+        "method": "fixed-60Hz continuous input replay from normal source spawn; no teleports or state mutation",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+        "frames": 1846,
+        "resetCount": 0,
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "bamboo-final-001",
+        "actorParameterRevision": "bamboo-base-feel-20261027-001",
+        "engineRevision": "bamboo-aabb-feel-60hz-001",
+        "objectId": "route_rope_70",
+        "routeId": "route_rope_70",
+        "path": "work/replays-final/route_rope_70.json",
+        "method": "fixed-60Hz continuous input replay from normal source spawn; no teleports or state mutation",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+        "frames": 2295,
+        "resetCount": 0,
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "bamboo-final-001",
+        "actorParameterRevision": "bamboo-base-feel-20261027-001",
+        "engineRevision": "bamboo-aabb-feel-60hz-001",
+        "objectId": "route_rope_84",
+        "routeId": "route_rope_84",
+        "path": "work/replays-final/route_rope_84.json",
+        "method": "fixed-60Hz continuous input replay from normal source spawn; no teleports or state mutation",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+        "frames": 2972,
+        "resetCount": 0,
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "bamboo-final-001",
+        "actorParameterRevision": "bamboo-base-feel-20261027-001",
+        "engineRevision": "bamboo-aabb-feel-60hz-001",
+        "objectId": "route_rope_66",
+        "routeId": "route_rope_66",
+        "path": "work/replays-final/route_rope_66.json",
+        "method": "fixed-60Hz continuous input replay from normal source spawn; no teleports or state mutation",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+        "frames": 2775,
+        "resetCount": 0,
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "bamboo-final-001",
+        "actorParameterRevision": "bamboo-base-feel-20261027-001",
+        "engineRevision": "bamboo-aabb-feel-60hz-001",
+        "objectId": "t_deep_up",
+        "routeId": "route_main",
+        "path": "work/replays-final/route_main.json",
+        "frame": 869,
+        "method": "executed action event in continuous spawn input replay",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "bamboo-final-001",
+        "actorParameterRevision": "bamboo-base-feel-20261027-001",
+        "engineRevision": "bamboo-aabb-feel-60hz-001",
+        "objectId": "t_deep_down",
+        "routeId": "route_main_return",
+        "path": "work/replays-final/route_main_return.json",
+        "frame": 1953,
+        "method": "executed action event in continuous spawn input replay",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "bamboo-final-001",
+        "actorParameterRevision": "bamboo-base-feel-20261027-001",
+        "engineRevision": "bamboo-aabb-feel-60hz-001",
+        "objectId": "t_rope_20_up",
+        "routeId": "route_rope_20",
+        "path": "work/replays-final/route_rope_20.json",
+        "frame": 338,
+        "method": "executed action event in continuous spawn input replay",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "bamboo-final-001",
+        "actorParameterRevision": "bamboo-base-feel-20261027-001",
+        "engineRevision": "bamboo-aabb-feel-60hz-001",
+        "objectId": "t_rope_20_down",
+        "routeId": "route_rope_20",
+        "path": "work/replays-final/route_rope_20.json",
+        "frame": 508,
+        "method": "executed action event in continuous spawn input replay",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "bamboo-final-001",
+        "actorParameterRevision": "bamboo-base-feel-20261027-001",
+        "engineRevision": "bamboo-aabb-feel-60hz-001",
+        "objectId": "t_rope_40_up",
+        "routeId": "route_rope_40",
+        "path": "work/replays-final/route_rope_40.json",
+        "frame": 634,
+        "method": "executed action event in continuous spawn input replay",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "bamboo-final-001",
+        "actorParameterRevision": "bamboo-base-feel-20261027-001",
+        "engineRevision": "bamboo-aabb-feel-60hz-001",
+        "objectId": "t_rope_40_down",
+        "routeId": "route_rope_40",
+        "path": "work/replays-final/route_rope_40.json",
+        "frame": 804,
+        "method": "executed action event in continuous spawn input replay",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "bamboo-final-001",
+        "actorParameterRevision": "bamboo-base-feel-20261027-001",
+        "engineRevision": "bamboo-aabb-feel-60hz-001",
+        "objectId": "t_rope_30_up",
+        "routeId": "route_rope_30",
+        "path": "work/replays-final/route_rope_30.json",
+        "frame": 556,
+        "method": "executed action event in continuous spawn input replay",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "bamboo-final-001",
+        "actorParameterRevision": "bamboo-base-feel-20261027-001",
+        "engineRevision": "bamboo-aabb-feel-60hz-001",
+        "objectId": "t_rope_30_down",
+        "routeId": "route_rope_30",
+        "path": "work/replays-final/route_rope_30.json",
+        "frame": 795,
+        "method": "executed action event in continuous spawn input replay",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "bamboo-final-001",
+        "actorParameterRevision": "bamboo-base-feel-20261027-001",
+        "engineRevision": "bamboo-aabb-feel-60hz-001",
+        "objectId": "t_rope_48_up",
+        "routeId": "route_rope_48",
+        "path": "work/replays-final/route_rope_48.json",
+        "frame": 867,
+        "method": "executed action event in continuous spawn input replay",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "bamboo-final-001",
+        "actorParameterRevision": "bamboo-base-feel-20261027-001",
+        "engineRevision": "bamboo-aabb-feel-60hz-001",
+        "objectId": "t_rope_48_down",
+        "routeId": "route_rope_48",
+        "path": "work/replays-final/route_rope_48.json",
+        "frame": 1037,
+        "method": "executed action event in continuous spawn input replay",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "bamboo-final-001",
+        "actorParameterRevision": "bamboo-base-feel-20261027-001",
+        "engineRevision": "bamboo-aabb-feel-60hz-001",
+        "objectId": "t_rope_70_up",
+        "routeId": "route_rope_70",
+        "path": "work/replays-final/route_rope_70.json",
+        "frame": 1099,
+        "method": "executed action event in continuous spawn input replay",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "bamboo-final-001",
+        "actorParameterRevision": "bamboo-base-feel-20261027-001",
+        "engineRevision": "bamboo-aabb-feel-60hz-001",
+        "objectId": "t_rope_70_down",
+        "routeId": "route_rope_70",
+        "path": "work/replays-final/route_rope_70.json",
+        "frame": 1269,
+        "method": "executed action event in continuous spawn input replay",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "bamboo-final-001",
+        "actorParameterRevision": "bamboo-base-feel-20261027-001",
+        "engineRevision": "bamboo-aabb-feel-60hz-001",
+        "objectId": "t_rope_84_up",
+        "routeId": "route_rope_84",
+        "path": "work/replays-final/route_rope_84.json",
+        "frame": 1376,
+        "method": "executed action event in continuous spawn input replay",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "bamboo-final-001",
+        "actorParameterRevision": "bamboo-base-feel-20261027-001",
+        "engineRevision": "bamboo-aabb-feel-60hz-001",
+        "objectId": "t_rope_84_down",
+        "routeId": "route_rope_84",
+        "path": "work/replays-final/route_rope_84.json",
+        "frame": 1705,
+        "method": "executed action event in continuous spawn input replay",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "bamboo-final-001",
+        "actorParameterRevision": "bamboo-base-feel-20261027-001",
+        "engineRevision": "bamboo-aabb-feel-60hz-001",
+        "objectId": "t_rope_66_up",
+        "routeId": "route_rope_66",
+        "path": "work/replays-final/route_rope_66.json",
+        "frame": 1343,
+        "method": "executed action event in continuous spawn input replay",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "bamboo-final-001",
+        "actorParameterRevision": "bamboo-base-feel-20261027-001",
+        "engineRevision": "bamboo-aabb-feel-60hz-001",
+        "objectId": "t_rope_66_down",
+        "routeId": "route_rope_66",
+        "path": "work/replays-final/route_rope_66.json",
+        "frame": 1582,
+        "method": "executed action event in continuous spawn input replay",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "bamboo-final-001",
+        "actorParameterRevision": "bamboo-base-feel-20261027-001",
+        "engineRevision": "bamboo-aabb-feel-60hz-001",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+        "result": "verified",
+        "objectId": "stage7-final-routes",
+        "path": "work/final-routes.json",
+        "method": "actual final runtime/browser execution or calibrated final-art inspection; scope described in referenced report"
+      },
+      {
+        "geometryRevision": "bamboo-final-001",
+        "actorParameterRevision": "bamboo-base-feel-20261027-001",
+        "engineRevision": "bamboo-aabb-feel-60hz-001",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+        "result": "verified",
+        "objectId": "stage7-final-physics-smoke",
+        "path": "work/final-physics-smoke.json",
+        "method": "actual final runtime/browser execution or calibrated final-art inspection; scope described in referenced report"
+      },
+      {
+        "geometryRevision": "bamboo-final-001",
+        "actorParameterRevision": "bamboo-base-feel-20261027-001",
+        "engineRevision": "bamboo-aabb-feel-60hz-001",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+        "result": "verified",
+        "objectId": "stage7-final-body-clearance-audit",
+        "path": "work/final-body-clearance-audit.json",
+        "method": "actual final runtime/browser execution or calibrated final-art inspection; scope described in referenced report"
+      },
+      {
+        "geometryRevision": "bamboo-final-001",
+        "actorParameterRevision": "bamboo-base-feel-20261027-001",
+        "engineRevision": "bamboo-aabb-feel-60hz-001",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+        "result": "verified",
+        "objectId": "stage7-final-browser-check",
+        "path": "work/final-browser-check.json",
+        "method": "actual final runtime/browser execution or calibrated final-art inspection; scope described in referenced report"
+      },
+      {
+        "geometryRevision": "bamboo-final-001",
+        "actorParameterRevision": "bamboo-base-feel-20261027-001",
+        "engineRevision": "bamboo-aabb-feel-60hz-001",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/scenes/MapBuilder.ts; game/src/move.ts; game/src/PlayerInput.ts; game/src/SpriteArt.ts; game/data/balance/player_growth.json",
+        "result": "verified",
+        "objectId": "stage7-final-geometry-measurements",
+        "path": "work/final-geometry-measurements.json",
+        "method": "actual final runtime/browser execution or calibrated final-art inspection; scope described in referenced report"
+      }
+    ],
+    "issues": [],
+    "artAlignmentStatus": "verified",
+    "runtimeScope": "minimum adapter with source FEEL/Player motion; collision is independent rectangular AABB, not Phaser; combat is not implemented",
+    "runtimeRouteSummary": "work/final-routes.json",
+    "runtimeStatus": "verified",
+    "browserSummary": "work/final-browser-check.json",
+    "limitations": [
+      "Independent fixed60Hz AABB collision adapter, not Phaser. Re-run actual engine integration before release.",
+      "Monster count/distribution and original aggressive metadata are retained; local patrol display implements no combat, chase or drops.",
+      "Environmental hazards and overhang ceiling are absent in the source map; synthetic ceiling fixture tests the adapter only."
+    ]
+  },
+  "art": {
+    "revision": "bamboo-art-final-002",
+    "master": "work/generated/stage5-master-final.png",
+    "provenance": "work/layer-composition.json",
+    "sourceMapGeometryUnchanged": true,
+    "standingTolerancePixels": 2,
+    "generationTool": "built-in imagegen"
+  }
+}
