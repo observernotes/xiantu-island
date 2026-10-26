@@ -41,7 +41,7 @@ if (!logicalW || !logicalH) {
 const RUNTIME_FILES = ['background.png', 'playable.png', 'foreground.png', 'scene-data.json', 'manifest.json'];
 const POINT_TO_OBJECT = {
   start_spawn: 'playerStart',
-  goal_east: ['portal_to_bamboo', 'portal_to_lingxi', 'portal_to_village'],
+  goal_east: ['portal_to_bamboo', 'portal_to_lingxi', 'portal_to_village', 'portal_to_outer_2'],
   portal_west: ['portal_west_locked', 'portal_to_village'],
   point_west: 'portal_west_locked',
   npc_elder: 'village_elder',
@@ -54,6 +54,10 @@ const POINT_TO_OBJECT = {
   dummy_3: 'dummy_3',
   point_chest: 'chest_lookout',
   point_stage_return: 'enc_sage_advice_anchor',
+  // 万妖林林缘 gsb_v1：scene-data 点名与正式图对象名对齐
+  herb_w: 'gather_spirit_herb_20',
+  herb_c: 'gather_spirit_herb_21',
+  copper_e: 'gather_spirit_copper_22',
 };
 const CLIMB_TO_OBJECT = {
   c_ladder: 'ladder_elder',

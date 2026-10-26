@@ -12,6 +12,10 @@ import townSceneData from '../data/art/scenes/luoxia_town_gsb_v1/scene-data.json
 import townTiledMap from '../data/maps/luoxia_town.json';
 import altarSceneData from '../data/art/scenes/trial_foundation_altar_gsb_v1/scene-data.json';
 import altarTiledMap from '../data/maps/trial_foundation_altar.json';
+import wanyaoSceneData from '../data/art/scenes/wanyao_outer_1_gsb_v1/scene-data.json';
+import wanyaoTiledMap from '../data/maps/wanyao_outer_1.json';
+import wanyao2SceneData from '../data/art/scenes/wanyao_outer_2_gsb_v1/scene-data.json';
+import wanyao2TiledMap from '../data/maps/wanyao_outer_2.json';
 import { FEEL, SPEC } from './config/feel';
 import { buildTiledMap } from './scenes/MapBuilder';
 
@@ -373,6 +377,186 @@ for (const contract of productionMaps) {
       [object.name, object.x, object.y, object.props.encounter]),
     [['enc_stranded_cultivator_anchor', 1712, 640, 'enc_stranded_cultivator']], 'lingxi_path: encounter anchor is retained');
   }
+}
+
+// Wanyao's forest edge retains its ferry, hunter, secret nest and three disabled hidden controllers.
+{
+  const sceneId = 'wanyao_outer_1_gsb_v1', revision = 'wanyao-outer1-final-001';
+  const data = clone(wanyaoSceneData), tiledMap = clone(wanyaoTiledMap);
+  const f = fixture(null, false), dataBefore = JSON.stringify(data), mapBefore = JSON.stringify(tiledMap);
+  f.cache.clear(); f.cache.set(`gsb_${sceneId}_data`, data);
+  f.textures.add(`gsb_${sceneId}_background`); f.textures.add(`gsb_${sceneId}_playable`);
+  const map = buildTiledMap(f.scene, tiledMap, 'tiles');
+  eq(map.gsbScene, sceneId, 'wanyao_outer_1: checked-in map enables its GSB scene');
+  eq(tiledMap.properties.find(property => property.name === 'gsbScene')?.value,
+    sceneId, 'wanyao_outer_1: map binds the approved GSB scene');
+  eq(tiledMap.properties.find(property => property.name === 'gsbGeometryRevision')?.value,
+    revision, 'wanyao_outer_1: map binds the approved geometry revision');
+  eq(data.geometryRevision, revision, 'wanyao_outer_1: scene-data has the approved geometry revision');
+  same([map.width, map.height], [3200, 896], 'wanyao_outer_1: logical world dimensions match the approved scene');
+  same([tiledMap.width, tiledMap.height], [100, 28], 'wanyao_outer_1: checked-in tile grid is 100 x 28');
+  same([tiledMap.width * tiledMap.tilewidth, tiledMap.height * tiledMap.tileheight], [map.width, map.height],
+    'wanyao_outer_1: checked-in tile grid matches logical world dimensions');
+  same(f.groups.map(group => group.children.length), [5, 7], 'wanyao_outer_1: five solids and seven one-way bodies are built');
+  for (const surface of data.surfaces) {
+    const left = Math.min(...surface.polyline.map(point => point[0]));
+    const right = Math.max(...surface.polyline.map(point => point[0]));
+    const bodies = f.groups[surface.support === 'one-way' ? 1 : 0].children.map(rectangle);
+    ok(bodies.some(body => body.y === surface.polyline[0][1] && body.x <= left && body.x + body.width >= right),
+      `wanyao_outer_1: ${surface.id} retains its full landing span and exact top edge`);
+  }
+  ok(f.groups[1].children.every(object => object.body?.checkCollision.up &&
+    !object.body.checkCollision.down && !object.body.checkCollision.left && !object.body.checkCollision.right),
+    'wanyao_outer_1: all one-way bodies only collide on top');
+  ok(f.groups[0].children.every(object => object.body?.checkCollision.up &&
+    object.body.checkCollision.down && object.body.checkCollision.left && object.body.checkCollision.right),
+    'wanyao_outer_1: solid bodies keep all collision directions');
+  same(map.spawn, { x: 128, y: 768 }, 'wanyao_outer_1: player start is preserved');
+  eq(map.ropes.length, 7, 'wanyao_outer_1: all seven ropes are preserved');
+  same(map.ropes.map(rope => [rope.kind, rope.x, rope.top, rope.bottom, rope.halfW]),
+    data.climbs.map(climb => ['rope', climb.ends.end.position[0], climb.ends.end.position[1],
+      climb.ends.start.position[1], FEEL.ropeGrabRangeX]),
+    'wanyao_outer_1: rope tops follow climb ends and bottoms follow climb starts');
+  same(map.objects.filter(object => object.type === 'portal').map(object =>
+    [object.name, object.x, object.y, object.props.target, object.props.targetPortal]),
+  [['portal_to_outer_2', 3120, 832, 'wanyao_outer_2', 'portal_to_outer_1']],
+  'wanyao_outer_1: east portal retains its position and destination');
+  same(map.spawns.map(spawn => [spawn.monster, spawn.x, spawn.y, spawn.w, spawn.count]), [
+    ['vine_imp', 704, 832, 608, 3], ['vine_imp', 768, 704, 416, 2],
+    ['vine_imp', 960, 576, 480, 2], ['vine_imp', 1344, 704, 352, 1],
+    ['vine_imp', 1856, 640, 352, 2], ['shadow_wolf', 1792, 768, 480, 3],
+    ['shadow_wolf', 2304, 832, 768, 3], ['shadow_wolf', 2432, 704, 480, 2],
+  ], 'wanyao_outer_1: all eight monster positions, patrol widths and counts survive integration');
+  same(map.objects.filter(object => object.type === 'gather').map(object =>
+    [object.name, object.x, object.y, object.props.item, object.props.respawnMs]), [
+    ['gather_spirit_herb_20', 1232, 576, 'spirit_herb', 60000],
+    ['gather_spirit_herb_21', 2256, 512, 'spirit_herb', 60000],
+    ['gather_spirit_copper_22', 2960, 576, 'spirit_copper', 120000],
+  ], 'wanyao_outer_1: all gathers keep their positions, items and respawn times');
+  same(map.objects.filter(object => object.type === 'chest').map(object =>
+    [object.name, object.x, object.y, object.props.loot, object.props.count]),
+  [['sense_chest_01', 1040, 576, 'hp_pill_small', 1]],
+  'wanyao_outer_1: the native chest retains its position and loot');
+  eq(map.hidden.length, 3, 'wanyao_outer_1: all three existing hidden controllers are retained');
+  same(map.hidden.map(hidden => hidden.object.name),
+    ['sense_hidden_chest_01', 'sense_hidden_platform_01', 'enc_hidden_abode_anchor'],
+    'wanyao_outer_1: chest, platform and hidden abode controllers keep their identities');
+  ok(map.hidden.every(hidden => hidden.object.props.enabled === false), 'wanyao_outer_1: hidden controllers stay disabled');
+  same(map.objects.filter(object => object.type === 'ferry').map(object =>
+    [object.name, object.x, object.y, object.w, object.props.returnTo]),
+  [['ferry_landing', 192, 768, 160, 'luoxia_town']],
+  'wanyao_outer_1: ferry landing retains its position, width and return town');
+  same(map.objects.filter(object => object.type === 'npc').map(object =>
+    [object.name, object.x, object.y, object.props.npc]),
+  [['hunter_lei', 528, 832, 'hunter_lei']],
+  'wanyao_outer_1: the hunter retains his NPC type, position and identity');
+  same(map.objects.filter(object => object.name.startsWith('secret_nest_')).map(object =>
+    [object.type, object.name, object.x, object.y]), [
+    ['sign', 'secret_nest_sign', 392, 832],
+    ['secretEntrance', 'secret_nest_entrance', 456, 832],
+    ['point', 'secret_nest_return', 464, 832],
+  ], 'wanyao_outer_1: secret nest sign, entrance and return point are retained');
+  eq(f.tilemaps, 0, 'wanyao_outer_1: GSB skips the legacy tilemap path');
+  same(f.displays.filter(object => object.kind !== 'zone').map(object => [object.kind, object.key]),
+    [['image', `gsb_${sceneId}_background`], ['image', `gsb_${sceneId}_playable`]],
+    'wanyao_outer_1: GSB draws background and playable art without legacy terrain or ropes');
+  const legacyLayers = tiledMap.layers.filter(layer => layer.type === 'tilelayer' && ['ground', 'oneway'].includes(layer.name));
+  same(legacyLayers.map(layer => layer.name), ['ground', 'oneway'], 'wanyao_outer_1: both legacy collision layers are present');
+  ok(legacyLayers.every(layer => layer.data?.length === tiledMap.width * tiledMap.height && layer.data.every(gid => gid === 0)),
+    'wanyao_outer_1: checked-in legacy collision layers are fully cleared');
+  eq(JSON.stringify(data), dataBefore, 'wanyao_outer_1: building leaves the cached scene-data input unchanged');
+  eq(JSON.stringify(tiledMap), mapBefore, 'wanyao_outer_1: building leaves the Tiled map input unchanged');
+}
+
+// Wanyao's spider valley retains its wolves, spiders, tree spirit and two disabled hidden controllers.
+{
+  const sceneId = 'wanyao_outer_2_gsb_v1', revision = 'wanyao2-final-002';
+  const data = clone(wanyao2SceneData), tiledMap = clone(wanyao2TiledMap);
+  const f = fixture(null, false), dataBefore = JSON.stringify(data), mapBefore = JSON.stringify(tiledMap);
+  f.cache.clear(); f.cache.set(`gsb_${sceneId}_data`, data);
+  f.textures.add(`gsb_${sceneId}_background`); f.textures.add(`gsb_${sceneId}_playable`);
+  const map = buildTiledMap(f.scene, tiledMap, 'tiles');
+  eq(map.gsbScene, sceneId, 'wanyao_outer_2: checked-in map enables its GSB scene');
+  eq(tiledMap.properties.find(property => property.name === 'gsbScene')?.value,
+    sceneId, 'wanyao_outer_2: map binds the approved GSB scene');
+  eq(tiledMap.properties.find(property => property.name === 'gsbGeometryRevision')?.value,
+    revision, 'wanyao_outer_2: map binds the approved geometry revision');
+  eq(data.geometryRevision, revision, 'wanyao_outer_2: scene-data has the approved geometry revision');
+  same([map.width, map.height], [3520, 1216], 'wanyao_outer_2: logical world dimensions match the approved scene');
+  same([tiledMap.width, tiledMap.height], [110, 38], 'wanyao_outer_2: checked-in tile grid is 110 x 38');
+  same([tiledMap.width * tiledMap.tilewidth, tiledMap.height * tiledMap.tileheight], [map.width, map.height],
+    'wanyao_outer_2: checked-in tile grid matches logical world dimensions');
+  same(f.groups.map(group => group.children.length), [4, 8], 'wanyao_outer_2: four solids and eight one-way bodies are built');
+  for (const surface of data.surfaces) {
+    const left = Math.min(...surface.polyline.map(point => point[0]));
+    const right = Math.max(...surface.polyline.map(point => point[0]));
+    const bodies = f.groups[surface.support === 'one-way' ? 1 : 0].children.map(rectangle);
+    ok(bodies.some(body => body.y === surface.polyline[0][1] && body.x <= left && body.x + body.width >= right),
+      `wanyao_outer_2: ${surface.id} retains its full landing span and exact top edge`);
+  }
+  ok(f.groups[1].children.every(object => object.body?.checkCollision.up &&
+    !object.body.checkCollision.down && !object.body.checkCollision.left && !object.body.checkCollision.right),
+    'wanyao_outer_2: all one-way bodies only collide on top');
+  ok(f.groups[0].children.every(object => object.body?.checkCollision.up &&
+    object.body.checkCollision.down && object.body.checkCollision.left && object.body.checkCollision.right),
+    'wanyao_outer_2: solid bodies keep all collision directions');
+  same(map.spawn, { x: 128, y: 1088 }, 'wanyao_outer_2: player start is preserved');
+  eq(map.ropes.length, 7, 'wanyao_outer_2: all seven ropes are preserved');
+  same(data.climbs.map(climb => [climb.kind, climb.ends.start.position, climb.ends.end.position]), [
+    ['rope', [656, 1152], [656, 1024]], ['rope', [848, 1024], [848, 896]],
+    ['rope', [1104, 896], [1104, 768]], ['rope', [1552, 1152], [1552, 1024]],
+    ['rope', [1808, 1024], [1808, 896]], ['rope', [2448, 1088], [2448, 960]],
+    ['rope', [2640, 960], [2640, 832]],
+  ], 'wanyao_outer_2: approved climbs retain their bottom/start and top/end endpoints');
+  same(map.ropes.map(rope => [rope.kind, rope.x, rope.top, rope.bottom, rope.halfW]),
+    data.climbs.map(climb => [climb.kind, climb.ends.end.position[0], climb.ends.end.position[1],
+      climb.ends.start.position[1], FEEL.ropeGrabRangeX]),
+    'wanyao_outer_2: rope tops follow climb ends and bottoms follow climb starts');
+  same(map.objects.filter(object => object.type === 'portal').map(object =>
+    [object.name, object.x, object.y, object.props.target, object.props.targetPortal]), [
+    ['portal_to_outer_1', 80, 1088, 'wanyao_outer_1', 'portal_to_outer_2'],
+    ['portal_to_deep_1', 3440, 1024, 'wanyao_deep_1', 'portal_to_outer_2'],
+  ], 'wanyao_outer_2: both portals retain their positions and destinations');
+  eq(map.objects.find(object => object.name === 'portal_to_deep_1')?.props.reqLevel,
+    30, 'wanyao_outer_2: the deep forest portal retains its level requirement');
+  same(map.spawns.map(spawn => [spawn.monster, spawn.x, spawn.y, spawn.w, spawn.count]), [
+    ['shadow_wolf', 512, 1152, 1568, 4], ['shadow_wolf', 576, 1024, 416, 2],
+    ['poison_spider', 704, 896, 480, 2], ['poison_spider', 1408, 1024, 480, 2],
+    ['poison_spider', 1600, 896, 480, 2], ['poison_spider', 2112, 1088, 800, 3],
+    ['poison_spider', 2240, 960, 480, 2], ['poison_spider', 2368, 832, 480, 2],
+  ], 'wanyao_outer_2: all eight monster positions, patrol widths and counts survive integration');
+  same(map.objects.filter(object => object.type === 'gather').map(object =>
+    [object.name, object.x, object.y, object.props.item, object.props.respawnMs]), [
+    ['gather_nine_leaf_ganoderma_20', 1232, 672, 'nine_leaf_ganoderma', 600000],
+    ['gather_spirit_herb_21', 1936, 896, 'spirit_herb', 60000],
+    ['gather_spirit_copper_22', 2768, 832, 'spirit_copper', 120000],
+  ], 'wanyao_outer_2: all gathers keep their positions, items and respawn times');
+  same(map.objects.filter(object => object.type === 'chest').map(object =>
+    [object.name, object.x, object.y, object.props.loot, object.props.count]),
+  [['sense_chest_01', 1008, 768, 'hp_pill_small', 1]],
+  'wanyao_outer_2: the native chest retains its position and loot');
+  eq(map.hidden.length, 2, 'wanyao_outer_2: both existing hidden controllers are retained');
+  same(map.hidden.map(hidden => hidden.object.name), ['sense_hidden_chest_01', 'sense_hidden_platform_01'],
+    'wanyao_outer_2: chest and platform hidden controllers keep their identities');
+  ok(map.hidden.every(hidden => hidden.object.props.enabled === false), 'wanyao_outer_2: hidden controllers stay disabled');
+  same(map.objects.filter(object => object.type === 'npc').map(object =>
+    [object.name, object.x, object.y, object.props.npc]),
+  [['tree_spirit', 3216, 1024, 'tree_spirit']],
+  'wanyao_outer_2: the tree spirit retains its NPC type, position and identity');
+  same(map.objects.filter(object => object.type === 'encounter_anchor').map(object =>
+    [object.name, object.x, object.y, object.props.encounter]),
+  [['enc_fragrant_herb_anchor', 1712, 896, 'enc_fragrant_herb']],
+  'wanyao_outer_2: the fragrant herb encounter anchor is retained');
+  eq(f.tilemaps, 0, 'wanyao_outer_2: GSB skips the legacy tilemap path');
+  same(f.displays.filter(object => object.kind !== 'zone').map(object => [object.kind, object.key]),
+    [['image', `gsb_${sceneId}_background`], ['image', `gsb_${sceneId}_playable`]],
+    'wanyao_outer_2: GSB draws background and playable art without legacy terrain or ropes');
+  const legacyLayers = tiledMap.layers.filter(layer => layer.type === 'tilelayer' && ['ground', 'oneway'].includes(layer.name));
+  same(legacyLayers.map(layer => layer.name), ['ground', 'oneway'], 'wanyao_outer_2: both legacy collision layers are present');
+  ok(legacyLayers.every(layer => layer.data?.length === tiledMap.width * tiledMap.height && layer.data.every(gid => gid === 0)),
+    'wanyao_outer_2: checked-in legacy collision layers are fully cleared');
+  eq(JSON.stringify(data), dataBefore, 'wanyao_outer_2: building leaves the cached scene-data input unchanged');
+  eq(JSON.stringify(tiledMap), mapBefore, 'wanyao_outer_2: building leaves the Tiled map input unchanged');
 }
 
 // Luoxia town has NPCs, a ferry and a ladder, with no monster, gather or treasure objects.
