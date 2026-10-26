@@ -1,0 +1,135 @@
+{
+ "note": "妖兽图鉴 UI 切片与排版（1x 数值；@2x 图全部乘 2）。文字一律由程序绘制。｜2026-10-09 收框：窗体外框 2px，标签/格子/按钮 1px，切片随之收小（丹青阁·画风精修）",
+ "ui_bestiary_window": {
+  "size": [
+   96,
+   96
+  ],
+  "nineSlice": [
+   10,
+   10,
+   10,
+   10
+  ],
+  "contentInset": 12
+ },
+ "ui_bestiary_title": {
+  "size": [
+   160,
+   28
+  ],
+  "threeSlice": [
+   12,
+   12
+  ],
+  "textCenterY": 14,
+  "placement": "窗体顶边居中，y = 窗体 y − 12"
+ },
+ "ui_bestiary_inset": {
+  "size": [
+   32,
+   32
+  ],
+  "nineSlice": [
+   6,
+   6,
+   6,
+   6
+  ]
+ },
+ "ui_bestiary_tab": {
+  "size": [
+   128,
+   30
+  ],
+  "nineSlice": [
+   8,
+   8,
+   8,
+   8
+  ],
+  "iconAt": [
+   14,
+   5,
+   20,
+   20
+  ],
+  "textX": 40,
+  "note": "右边缘与内容区贴齐；_active 版纸色、向右延伸盖住分隔线"
+ },
+ "ui_bestiary_toast": {
+  "size": [
+   48,
+   28
+  ],
+  "nineSlice": [
+   8,
+   8,
+   8,
+   8
+  ]
+ },
+ "ui_bestiary_btn_close": {
+  "size": [
+   20,
+   20
+  ],
+  "placement": "窗体右上角，距右/上 6px"
+ },
+ "card": {
+  "size": [
+   96,
+   128
+  ],
+  "gap": 8,
+  "portrait": [
+   8,
+   10,
+   80,
+   72
+  ],
+  "namePlate": [
+   8,
+   87,
+   80,
+   12
+  ],
+  "nameTextCenter": [
+   48,
+   93
+  ],
+  "infoStrip": [
+   8,
+   102,
+   80,
+   18
+  ],
+  "infoTextCenter": [
+   48,
+   116
+  ],
+  "badge": {
+   "image": "icon_bestiary_stage_<stage>",
+   "size": 20,
+   "center": [
+    84,
+    14
+   ]
+  },
+  "stages": {
+   "silhouette": "ui_bestiary_card_silhouette",
+   "known": "ui_bestiary_card_known",
+   "familiar": "ui_bestiary_card_familiar",
+   "master": "ui_bestiary_card_master"
+  },
+  "unknown": "ui_bestiary_card_unknown",
+  "selectOverlay": "ui_bestiary_card_select",
+  "stageRule": "未见=unknown 格子；见过未杀=silhouette + 剪影头像 + 名字「？？？」；击杀 1=known；50（首领 1）=familiar；300（首领 5）=master"
+ },
+ "regionIcons": [
+  "icon_bestiary_region_all",
+  "icon_bestiary_region_qingyun",
+  "icon_bestiary_region_luoxia",
+  "icon_bestiary_region_unknown"
+ ]
+}

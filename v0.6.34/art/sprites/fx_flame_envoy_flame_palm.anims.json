@@ -1,0 +1,29 @@
+{
+ "atlas": "fx_flame_envoy_flame_palm",
+ "facing": "left",
+ "origin": [
+  1,
+  1
+ ],
+ "frameSize": [
+  160,
+  96
+ ],
+ "anims": [
+  {
+   "key": "fx_flame_envoy_flame_palm_play",
+   "frames": [
+    "fx_flame_envoy_flame_palm_play_01",
+    "fx_flame_envoy_flame_palm_play_02",
+    "fx_flame_envoy_flame_palm_play_03",
+    "fx_flame_envoy_flame_palm_play_04",
+    "fx_flame_envoy_flame_palm_play_05"
+   ],
+   "frameRate": 14,
+   "repeat": 0
+  }
+ ],
+ "note": "火焰掌：原点 (1,1) 放炎魔使脚底，火焰向左喷；判定帧 = play_02。火属性描边深朱 #B8322A。",
+ "blend": "normal",
+ "kind": "fx"
+}
