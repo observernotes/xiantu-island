@@ -1,6 +1,9 @@
-import Phaser from 'phaser';
+import type Phaser from 'phaser';
 import { FEEL, SPEC } from '../config/feel';
 import { pickTileVariant, tileVariantGroups, type TileVariantFrame, type TileVariantGroups } from '../TileVariants';
+import { isGsbSceneData, surfacesToBodies, type GsbSceneData } from './GsbGeometry';
+
+export { surfacesToBodies } from './GsbGeometry';
 
 export interface Rope { kind: 'rope' | 'ladder'; x: number; top: number; bottom: number; halfW: number; }
 export interface Spawn { x: number; y: number; w: number; monster: string; count: number; }
@@ -15,6 +18,8 @@ export interface BuiltMap {
   id: string; name: string; safeZone: boolean;
   trial?: string; night: boolean;
   width: number; height: number;
+  /** 已加载 scene-data 的 GSB 地图；图层与碰撞共用逻辑像素坐标。 */
+  gsbScene?: string;
   /** 记录实际构图模式；显形平台复用同一地砖与缺图回退。 */
   tileset?: string; useTiles: boolean;
   solids: Phaser.Physics.Arcade.StaticGroup;
@@ -244,6 +249,40 @@ function drawClimbable(scene: Phaser.Scene, r: Rope, tileset?: string) {
   }
 }
 
+/** GSB 美术已经包含地形和绳梯；这里只建立不可见碰撞与世界锁定图层。 */
+function buildGsbScene(scene: Phaser.Scene, map: BuiltMap, id: string, data: GsbSceneData) {
+  map.gsbScene = id;
+  map.width = data.space.logicalWidth;
+  map.height = data.space.logicalHeight;
+  const bodies = surfacesToBodies(data);
+  for (const rect of bodies.solids) {
+    map.solids.add(scene.add.zone(rect.x + rect.width / 2, rect.y + rect.height / 2, rect.width, rect.height));
+  }
+  for (const rect of bodies.oneWays) {
+    const zone = scene.add.zone(rect.x + rect.width / 2, rect.y + rect.height / 2, rect.width, rect.height);
+    map.oneWays.add(zone);
+    const body = zone.body as Phaser.Physics.Arcade.StaticBody;
+    body.checkCollision.down = body.checkCollision.left = body.checkCollision.right = false;
+  }
+  // Player renders at depth 10; foreground stays above it and below combat FX.
+  const layers = [['background', -6], ['playable', -5], ['foreground', 11]] as const;
+  for (const [layer, depth] of layers) {
+    const key = `gsb_${id}_${layer}`;
+    if (scene.textures.exists(key)) {
+      scene.add.image(0, 0, key).setOrigin(0, 0).setScrollFactor(1, 1).setDepth(depth);
+    }
+  }
+}
+
+/** 共用缓存判定，让旧背景在建图前即可选择正确模式；没有几何时保持原地图路径。 */
+export function getTiledGsbScene(scene: Pick<Phaser.Scene, 'cache'>, tj: any): { id: string; data: GsbSceneData } | undefined {
+  const properties = Object.fromEntries((tj?.properties ?? []).map((p: any) => [p.name, p.value]));
+  const id = typeof properties.gsbScene === 'string' ? properties.gsbScene.trim() : '';
+  if (!id) return;
+  const data: unknown = scene.cache.json.get(`gsb_${id}_data`);
+  if (isGsbSceneData(data)) return { id, data };
+}
+
 /** Tiled JSON（图层约定见 design/01_配置表规范.md） */
 export function buildTiledMap(scene: Phaser.Scene, tj: any, tileset?: string): BuiltMap {
   const prop = (arr: any[] | undefined) => Object.fromEntries((arr ?? []).map((p: any) => [p.name, p.value]));
@@ -251,14 +290,19 @@ export function buildTiledMap(scene: Phaser.Scene, tj: any, tileset?: string): B
   const map = emptyMap(scene, mp.id ?? 'map', mp.name ?? '', !!mp.safeZone, tj.width, tj.height);
   map.trial = typeof mp.trial === 'string' ? mp.trial : undefined;
   map.night = !!mp.night;
-  const grid: string[][] = Array.from({ length: tj.height }, () => Array(tj.width).fill('.'));
-  for (const l of tj.layers) {
-    if (l.type !== 'tilelayer') continue;
-    const ch = l.name === 'oneway' ? '=' : l.name === 'ground' ? '#' : null;
-    if (!ch) continue;
-    l.data.forEach((gid: number, i: number) => { if (gid) grid[Math.floor(i / tj.width)][i % tj.width] = ch; });
+  const gsb = getTiledGsbScene(scene, tj);
+  if (gsb) {
+    buildGsbScene(scene, map, gsb.id, gsb.data);
+  } else {
+    const grid: string[][] = Array.from({ length: tj.height }, () => Array(tj.width).fill('.'));
+    for (const l of tj.layers) {
+      if (l.type !== 'tilelayer') continue;
+      const ch = l.name === 'oneway' ? '=' : l.name === 'ground' ? '#' : null;
+      if (!ch) continue;
+      l.data.forEach((gid: number, i: number) => { if (gid) grid[Math.floor(i / tj.width)][i % tj.width] = ch; });
+    }
+    buildTerrain(scene, map, grid.map(r => r.join('')), tileset);
   }
-  buildTerrain(scene, map, grid.map(r => r.join('')), tileset);
   for (const l of tj.layers) {
     if (l.type !== 'objectgroup') continue;
     for (const o of l.objects) {
@@ -269,7 +313,9 @@ export function buildTiledMap(scene: Phaser.Scene, tj: any, tileset?: string): B
         case 'rope': case 'ladder': {
           const r: Rope = { kind: type, x: type === 'ladder' ? o.x + o.width / 2 : o.x, top: o.y, bottom: o.y + o.height,
             halfW: type === 'ladder' ? Math.max(12, o.width / 2) : FEEL.ropeGrabRangeX };
-          map.ropes.push(r); drawClimbable(scene, r, tileset); break;
+          map.ropes.push(r);
+          if (!map.gsbScene) drawClimbable(scene, r, tileset);
+          break;
         }
         case 'spawn': map.spawns.push({ x: o.x, y: o.y, w: o.width ?? 0, monster: p.monster, count: p.count ?? 1 }); break;
         case 'spawnGate': {

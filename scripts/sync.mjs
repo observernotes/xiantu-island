@@ -19,6 +19,23 @@ function copyDir(src, dst) {
 if (!manifestOnly) {
   fs.rmSync(out, { recursive: true, force: true });
   for (const sub of ['sprites', 'tiles', 'icons']) copyDir(path.join(root, 'art', sub), path.join(out, sub));
+  // GSB 场景 runtime：只拷交付根下的 background/playable/foreground + scene-data/manifest（不进 work/）
+  const scenesSrc = path.join(root, 'art', 'scenes');
+  const scenesOut = path.join(out, 'scenes');
+  const GSB_RUNTIME = new Set(['background.png', 'playable.png', 'foreground.png', 'scene-data.json', 'manifest.json']);
+  if (fs.existsSync(scenesSrc)) {
+    for (const entry of fs.readdirSync(scenesSrc, { withFileTypes: true })) {
+      if (!entry.isDirectory() || entry.name.startsWith('_')) continue;
+      const dir = path.join(scenesSrc, entry.name);
+      if (!fs.existsSync(path.join(dir, 'scene-data.json'))) continue;
+      const dest = path.join(scenesOut, entry.name);
+      fs.mkdirSync(dest, { recursive: true });
+      for (const name of GSB_RUNTIME) {
+        const src = path.join(dir, name);
+        if (fs.existsSync(src)) fs.copyFileSync(src, path.join(dest, name));
+      }
+    }
+  }
   // 试样覆盖（art.overrides.json）：未转正的工作稿以正式 key 接入，用于在 dev/feat 上看实景；
   // 正式目录 art/sprites 与 polished.lock 不动。转正后删掉对应条目即回到正式图，代码无需改。
   // 三件套缺任一个则不覆盖（沿用正式图），XT_ART_OVERRIDES=0 可整体关闭（对比旧图用）。
@@ -136,7 +153,21 @@ function findUiImages(dir) {
   }
 }
 findUiImages(path.join(out, 'icons/ui'));
+// GSB 场景：登记已拷到 public/art/scenes/<id>/ 的 runtime 件，供可选加载。
+const gsbScenes = [];
+const scenesPublic = path.join(out, 'scenes');
+if (fs.existsSync(scenesPublic)) {
+  for (const name of fs.readdirSync(scenesPublic).sort()) {
+    const dir = path.join(scenesPublic, name);
+    if (!fs.statSync(dir).isDirectory()) continue;
+    if (!fs.existsSync(path.join(dir, 'scene-data.json'))) continue;
+    const files = ['background.png', 'playable.png', 'foreground.png', 'scene-data.json', 'manifest.json']
+      .filter(f => fs.existsSync(path.join(dir, f)))
+      .map(f => `art/scenes/${name}/${f}`);
+    gsbScenes.push({ id: name, path: `art/scenes/${name}`, files });
+  }
+}
 fs.mkdirSync(path.join(here, 'src/gen'), { recursive: true });
-fs.writeFileSync(path.join(here, 'src/gen/assets.json'), JSON.stringify({ atlases, areas, tileMetadata, backgrounds, backgroundConfigs, propLayouts, skillIcons, sectRankIcons, itemIcons, uiImages, uiConfigs }, null, 1));
-console.log(`manifest: ${atlases.length} 个图集，${skillIcons.length} 个技能 @64 图标，区域 ${areas.join('/')}`);
+fs.writeFileSync(path.join(here, 'src/gen/assets.json'), JSON.stringify({ atlases, areas, tileMetadata, backgrounds, backgroundConfigs, propLayouts, skillIcons, sectRankIcons, itemIcons, uiImages, uiConfigs, gsbScenes }, null, 1));
+console.log(`manifest: ${atlases.length} 个图集，${skillIcons.length} 个技能 @64 图标，区域 ${areas.join('/')}，GSB ${gsbScenes.length}`);
 console.log(manifestOnly ? 'rebuilt manifest from public/art' : 'synced art from', root, '(' + dataMode(here) + ')');

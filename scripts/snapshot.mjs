@@ -33,5 +33,22 @@ fs.mkdirSync(path.join(out, 'design'), { recursive: true });
 fs.copyFileSync(path.join(src, 'design/02_新手任务.md'), path.join(out, 'design/02_新手任务.md'));
 fs.mkdirSync(path.join(out, 'art'), { recursive: true });
 for (const sub of ['sprites', 'tiles', 'icons']) copy(path.join(src, 'art', sub), path.join(out, 'art', sub), f => /\.(png|json)$/.test(f));
+// GSB 场景 runtime（不含 work/）：background/playable/foreground + scene-data/manifest
+const GSB_RUNTIME = new Set(['background.png', 'playable.png', 'foreground.png', 'scene-data.json', 'manifest.json']);
+const scenesSrc = path.join(src, 'art', 'scenes');
+const scenesOut = path.join(out, 'art', 'scenes');
+if (fs.existsSync(scenesSrc)) {
+  for (const entry of fs.readdirSync(scenesSrc, { withFileTypes: true })) {
+    if (!entry.isDirectory() || entry.name.startsWith('_')) continue;
+    const dir = path.join(scenesSrc, entry.name);
+    if (!fs.existsSync(path.join(dir, 'scene-data.json'))) continue;
+    const dest = path.join(scenesOut, entry.name);
+    fs.mkdirSync(dest, { recursive: true });
+    for (const name of GSB_RUNTIME) {
+      const f = path.join(dir, name);
+      if (fs.existsSync(f)) fs.copyFileSync(f, path.join(dest, name));
+    }
+  }
+}
 fs.writeFileSync(path.join(out, 'SNAPSHOT.txt'), `快照来源 ${src}\n时间 ${new Date().toISOString()}\n`);
 console.log('snapshot written to', out);

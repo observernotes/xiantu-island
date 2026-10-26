@@ -1,0 +1,2444 @@
+{
+  "schemaVersion": "1.0",
+  "geometryRevision": "v2-final-001",
+  "status": "verified",
+  "space": {
+    "origin": "top-left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "units": "logical-pixel",
+    "logicalWidth": 2560,
+    "logicalHeight": 864
+  },
+  "actor": {
+    "parameterRevision": "base-feel-20261026-v2-001",
+    "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; SpriteArt.ts; public/art/sprites/player_sword_m.anims.json; data/balance/player_growth.json",
+    "sourceRevision": {
+      "game/src/config/feel.ts": "9375297a15b04012633197a935f4d9ffd403c3ff8d1e055cb585dd5f81acdeec",
+      "game/src/scenes/Player.ts": "ec9426ed625784532c6e632a1755bd16076cc3f559d177f465b741341193f513",
+      "game/src/scenes/MapBuilder.ts": "df5d1328f31de944550b693b8c6e2c27a1d6df08f2bdb8264385a832150e987c",
+      "game/src/scenes/GameScene.ts": "c976cebca518c33aea3b5d6a6f86d3d678845cfffad236db485104db482d3bfd",
+      "game/src/main.ts": "c882932569a2040c23c6f131ea741f34e3820e9ea721410a5ff6e859d00b6f9d",
+      "game/src/move.ts": "585c9987623cbe532d7f65508773addd52ccd2f312e5c2ee592e9e6f2f686a74",
+      "game/src/SpriteArt.ts": "6c1fcb4fe67857c7fc3d569a2151f4b1a7cdd914e69be6d12d53b54b288b6f18",
+      "game/src/PlayerInput.ts": "5621449dc667aedb17034e10f42d2f34425c9ef1d45f21112de6be1a1139a04e",
+      "game/public/art/sprites/player_sword_m.anims.json": "50ee41e30ca903b95db22b9290a49ac2220d243ca37dba3876fdec784271df92",
+      "balance/player_growth.json": "04cf448040bff27b2c578d4ec9e1c0babde07afdf14d4b91d5f56ba6f403604e",
+      "maps/qingyun_village.json": "5268165bfb4e8f076cc15cb5d893526414613817f59ffb636225d6a1218c8fd4",
+      "balance/tools/gen_village.py": "ecd1179a46e2978d0349d539b186208a7228c8f909ad837d401738b53bbf576c"
+    },
+    "provisional": false,
+    "visualBounds": {
+      "width": 96,
+      "height": 96,
+      "idleAlphaBounds": [
+        15,
+        9,
+        76,
+        96
+      ],
+      "idleVisibleWidth": 61,
+      "idleVisibleHeight": 87,
+      "anchor": "feet-center"
+    },
+    "collider": {
+      "shape": "aabb",
+      "width": 26,
+      "height": 58,
+      "anchor": "feet-center"
+    },
+    "abilities": [
+      "walk",
+      "jump",
+      "double-jump",
+      "ladder",
+      "rope",
+      "drop-through"
+    ],
+    "movement": {
+      "gravity": 2000,
+      "maxFallSpeed": 670,
+      "walkSpeed": 130,
+      "groundAccel": 2400,
+      "groundDecel": 3000,
+      "airAccel": 700,
+      "airMaxSpeed": 130,
+      "jumpSpeed": 560,
+      "coyoteMs": 60,
+      "jumpBufferMs": 80,
+      "doubleJumpVy": 480,
+      "doubleJumpVx": 330,
+      "climbSpeed": 110,
+      "ropeGrabRangeX": 18,
+      "ropeJumpVx": 160,
+      "ropeJumpVy": 360,
+      "ropeRegrabMs": 250,
+      "dropThroughMs": 220,
+      "oneWayEdge": 8,
+      "fixedHz": 60,
+      "speedPoints": 100,
+      "jumpPoints": 100
+    },
+    "failureRules": {
+      "hazards": "none-safe-zone",
+      "fall": "land-on-ground",
+      "reset": "R returns to start_spawn, clears velocity and input buffer"
+    },
+    "visualAsset": {
+      "path": "work/preview/player-reference-idle.png",
+      "width": 96,
+      "height": 96,
+      "anchor": "feet-center"
+    }
+  },
+  "assets": [
+    {
+      "id": "asset_background",
+      "role": "background",
+      "path": "background.png",
+      "pixelWidth": 2560,
+      "pixelHeight": 864,
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "geometryRevision": "v2-final-001",
+      "sha256": "3230365fe7dae8d33d6316ed2abaaed6729a9e2dc0c37e3b8f9203ee13ee5a9b"
+    },
+    {
+      "id": "asset_playable",
+      "role": "playable",
+      "path": "playable.png",
+      "pixelWidth": 2560,
+      "pixelHeight": 864,
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "geometryRevision": "v2-final-001",
+      "sha256": "72e89b5aad75d01b9bf82603a3f0dc2f2f62b8f4cd9617e8b5b5c1ce32f7a9c0"
+    },
+    {
+      "id": "asset_scene",
+      "role": "inspection-composite",
+      "path": "scene.png",
+      "pixelWidth": 2560,
+      "pixelHeight": 864,
+      "drawOrder": null,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "geometryRevision": "v2-final-001",
+      "sha256": "e9d3be6c275ec3a7ca6c9edf48f91c71d2b85e75aded5541896330255bf0855a"
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "s_village",
+      "name": "村口地面",
+      "polyline": [
+        [
+          0,
+          700
+        ],
+        [
+          674,
+          700
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        13,
+        661
+      ],
+      "walkRegion": [
+        [
+          13,
+          642
+        ],
+        [
+          661,
+          642
+        ],
+        [
+          661,
+          700
+        ],
+        [
+          13,
+          700
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 700,
+        "tolerance": 2,
+        "surfaceKind": "measured flat board/stone top, excluding knot/rail/grass tips"
+      },
+      "status": "verified",
+      "calibrationEvidence": {
+        "path": "work/final-geometry-measurements.json",
+        "geometryRevision": "v2-final-001",
+        "scope": "placement/contact geometry; NPC/dummy gameplay interactions are not implemented by this art test adapter"
+      }
+    },
+    {
+      "id": "s_market",
+      "name": "集市实心高台",
+      "polyline": [
+        [
+          674,
+          635
+        ],
+        [
+          1165,
+          635
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        687,
+        1152
+      ],
+      "walkRegion": [
+        [
+          687,
+          577
+        ],
+        [
+          1152,
+          577
+        ],
+        [
+          1152,
+          635
+        ],
+        [
+          687,
+          635
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 635,
+        "tolerance": 2,
+        "surfaceKind": "measured flat stone board top"
+      },
+      "status": "verified",
+      "calibrationEvidence": {
+        "path": "work/final-geometry-measurements.json",
+        "geometryRevision": "v2-final-001",
+        "scope": "placement/contact geometry; NPC/dummy gameplay interactions are not implemented by this art test adapter"
+      }
+    },
+    {
+      "id": "s_square",
+      "name": "广场地面",
+      "polyline": [
+        [
+          1165,
+          700
+        ],
+        [
+          1632,
+          700
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        1178,
+        1619
+      ],
+      "walkRegion": [
+        [
+          1178,
+          642
+        ],
+        [
+          1619,
+          642
+        ],
+        [
+          1619,
+          700
+        ],
+        [
+          1178,
+          700
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 700,
+        "tolerance": 2,
+        "surfaceKind": "measured flat board/stone top, excluding knot/rail/grass tips"
+      },
+      "status": "verified",
+      "calibrationEvidence": {
+        "path": "work/final-geometry-measurements.json",
+        "geometryRevision": "v2-final-001",
+        "scope": "placement/contact geometry; NPC/dummy gameplay interactions are not implemented by this art test adapter"
+      }
+    },
+    {
+      "id": "s_training",
+      "name": "练功场地面",
+      "polyline": [
+        [
+          1632,
+          700
+        ],
+        [
+          2208,
+          700
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        1645,
+        2195
+      ],
+      "walkRegion": [
+        [
+          1645,
+          642
+        ],
+        [
+          2195,
+          642
+        ],
+        [
+          2195,
+          700
+        ],
+        [
+          1645,
+          700
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 700,
+        "tolerance": 2,
+        "surfaceKind": "measured flat board/stone top, excluding knot/rail/grass tips"
+      },
+      "status": "verified",
+      "calibrationEvidence": {
+        "path": "work/final-geometry-measurements.json",
+        "geometryRevision": "v2-final-001",
+        "scope": "placement/contact geometry; NPC/dummy gameplay interactions are not implemented by this art test adapter"
+      }
+    },
+    {
+      "id": "s_east",
+      "name": "东口地面",
+      "polyline": [
+        [
+          2208,
+          700
+        ],
+        [
+          2560,
+          700
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        2221,
+        2547
+      ],
+      "walkRegion": [
+        [
+          2221,
+          642
+        ],
+        [
+          2547,
+          642
+        ],
+        [
+          2547,
+          700
+        ],
+        [
+          2221,
+          700
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 700,
+        "tolerance": 2,
+        "surfaceKind": "measured flat board/stone top, excluding knot/rail/grass tips"
+      },
+      "status": "verified",
+      "calibrationEvidence": {
+        "path": "work/final-geometry-measurements.json",
+        "geometryRevision": "v2-final-001",
+        "scope": "placement/contact geometry; NPC/dummy gameplay interactions are not implemented by this art test adapter"
+      }
+    },
+    {
+      "id": "s_roof",
+      "name": "村长家屋顶",
+      "polyline": [
+        [
+          300,
+          520
+        ],
+        [
+          540,
+          520
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        313,
+        527
+      ],
+      "walkRegion": [
+        [
+          313,
+          462
+        ],
+        [
+          527,
+          462
+        ],
+        [
+          527,
+          520
+        ],
+        [
+          313,
+          520
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 520,
+        "tolerance": 2,
+        "surfaceKind": "measured flat board/stone top, excluding knot/rail/grass tips"
+      },
+      "status": "verified",
+      "calibrationEvidence": {
+        "path": "work/final-geometry-measurements.json",
+        "geometryRevision": "v2-final-001",
+        "scope": "placement/contact geometry; NPC/dummy gameplay interactions are not implemented by this art test adapter"
+      }
+    },
+    {
+      "id": "s_stage",
+      "name": "戏台木板顶面",
+      "polyline": [
+        [
+          1244,
+          506
+        ],
+        [
+          1594,
+          506
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        1257,
+        1581
+      ],
+      "walkRegion": [
+        [
+          1257,
+          448
+        ],
+        [
+          1581,
+          448
+        ],
+        [
+          1581,
+          506
+        ],
+        [
+          1257,
+          506
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 506,
+        "tolerance": 2,
+        "surfaceKind": "measured flat board/stone top, excluding knot/rail/grass tips"
+      },
+      "status": "verified",
+      "calibrationEvidence": {
+        "path": "work/final-geometry-measurements.json",
+        "geometryRevision": "v2-final-001",
+        "scope": "placement/contact geometry; NPC/dummy gameplay interactions are not implemented by this art test adapter"
+      }
+    },
+    {
+      "id": "s_tower",
+      "name": "望仙台板顶面",
+      "polyline": [
+        [
+          1250,
+          337
+        ],
+        [
+          1642,
+          337
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        1263,
+        1629
+      ],
+      "walkRegion": [
+        [
+          1263,
+          279
+        ],
+        [
+          1629,
+          279
+        ],
+        [
+          1629,
+          337
+        ],
+        [
+          1263,
+          337
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 337,
+        "tolerance": 2,
+        "surfaceKind": "measured flat board/stone top, excluding knot/rail/grass tips"
+      },
+      "status": "verified",
+      "calibrationEvidence": {
+        "path": "work/final-geometry-measurements.json",
+        "geometryRevision": "v2-final-001",
+        "scope": "placement/contact geometry; NPC/dummy gameplay interactions are not implemented by this art test adapter"
+      }
+    },
+    {
+      "id": "s_step1",
+      "name": "练功阶一",
+      "polyline": [
+        [
+          1648,
+          628
+        ],
+        [
+          1758,
+          628
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        1661,
+        1745
+      ],
+      "walkRegion": [
+        [
+          1661,
+          570
+        ],
+        [
+          1745,
+          570
+        ],
+        [
+          1745,
+          628
+        ],
+        [
+          1661,
+          628
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 628,
+        "tolerance": 2,
+        "surfaceKind": "measured flat board/stone top, excluding knot/rail/grass tips"
+      },
+      "status": "verified",
+      "calibrationEvidence": {
+        "path": "work/final-geometry-measurements.json",
+        "geometryRevision": "v2-final-001",
+        "scope": "placement/contact geometry; NPC/dummy gameplay interactions are not implemented by this art test adapter"
+      }
+    },
+    {
+      "id": "s_step2",
+      "name": "练功阶二",
+      "polyline": [
+        [
+          1803,
+          568
+        ],
+        [
+          1951,
+          568
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        1816,
+        1938
+      ],
+      "walkRegion": [
+        [
+          1816,
+          510
+        ],
+        [
+          1938,
+          510
+        ],
+        [
+          1938,
+          568
+        ],
+        [
+          1816,
+          568
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 568,
+        "tolerance": 2,
+        "surfaceKind": "measured flat board/stone top, excluding knot/rail/grass tips"
+      },
+      "status": "verified",
+      "calibrationEvidence": {
+        "path": "work/final-geometry-measurements.json",
+        "geometryRevision": "v2-final-001",
+        "scope": "placement/contact geometry; NPC/dummy gameplay interactions are not implemented by this art test adapter"
+      }
+    },
+    {
+      "id": "s_step3",
+      "name": "练功阶三",
+      "polyline": [
+        [
+          1996,
+          510
+        ],
+        [
+          2150,
+          510
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        2009,
+        2137
+      ],
+      "walkRegion": [
+        [
+          2009,
+          452
+        ],
+        [
+          2137,
+          452
+        ],
+        [
+          2137,
+          510
+        ],
+        [
+          2009,
+          510
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 510,
+        "tolerance": 2,
+        "surfaceKind": "measured flat board/stone top, excluding knot/rail/grass tips"
+      },
+      "status": "verified",
+      "calibrationEvidence": {
+        "path": "work/final-geometry-measurements.json",
+        "geometryRevision": "v2-final-001",
+        "scope": "placement/contact geometry; NPC/dummy gameplay interactions are not implemented by this art test adapter"
+      }
+    },
+    {
+      "id": "s_chest",
+      "name": "宝箱高台",
+      "polyline": [
+        [
+          1853,
+          420
+        ],
+        [
+          2021,
+          420
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        1866,
+        2008
+      ],
+      "walkRegion": [
+        [
+          1866,
+          362
+        ],
+        [
+          2008,
+          362
+        ],
+        [
+          2008,
+          420
+        ],
+        [
+          1866,
+          420
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 420,
+        "tolerance": 2,
+        "surfaceKind": "measured flat board/stone top, excluding knot/rail/grass tips"
+      },
+      "status": "verified",
+      "calibrationEvidence": {
+        "path": "work/final-geometry-measurements.json",
+        "geometryRevision": "v2-final-001",
+        "scope": "placement/contact geometry; NPC/dummy gameplay interactions are not implemented by this art test adapter"
+      }
+    },
+    {
+      "id": "s_lookout",
+      "name": "东口瞭望台木板顶面",
+      "polyline": [
+        [
+          2226,
+          520
+        ],
+        [
+          2469,
+          520
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        2239,
+        2456
+      ],
+      "walkRegion": [
+        [
+          2239,
+          462
+        ],
+        [
+          2456,
+          462
+        ],
+        [
+          2456,
+          520
+        ],
+        [
+          2239,
+          520
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 520,
+        "tolerance": 2,
+        "surfaceKind": "measured flat board/stone top, excluding knot/rail/grass tips"
+      },
+      "status": "verified",
+      "calibrationEvidence": {
+        "path": "work/final-geometry-measurements.json",
+        "geometryRevision": "v2-final-001",
+        "scope": "placement/contact geometry; NPC/dummy gameplay interactions are not implemented by this art test adapter"
+      }
+    }
+  ],
+  "climbs": [
+    {
+      "id": "c_ladder",
+      "kind": "ladder",
+      "corridor": [
+        [
+          412,
+          520
+        ],
+        [
+          444,
+          520
+        ],
+        [
+          444,
+          700
+        ],
+        [
+          412,
+          700
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            428,
+            700
+          ],
+          "surface": "s_village"
+        },
+        "end": {
+          "position": [
+            428,
+            520
+          ],
+          "surface": "s_roof"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "ladder",
+      "entryRange": [
+        [
+          412,
+          694
+        ],
+        [
+          444,
+          694
+        ],
+        [
+          444,
+          706
+        ],
+        [
+          412,
+          706
+        ]
+      ],
+      "exitRange": [
+        [
+          412,
+          514
+        ],
+        [
+          444,
+          514
+        ],
+        [
+          444,
+          526
+        ],
+        [
+          412,
+          526
+        ]
+      ],
+      "collisionException": "one-way-support-only-while-attached; never-ignore-solids",
+      "status": "verified",
+      "calibrationEvidence": {
+        "path": "work/final-geometry-measurements.json",
+        "geometryRevision": "v2-final-001",
+        "scope": "placement/contact geometry; NPC/dummy gameplay interactions are not implemented by this art test adapter"
+      }
+    },
+    {
+      "id": "c_stage",
+      "kind": "rope",
+      "corridor": [
+        [
+          1373,
+          506
+        ],
+        [
+          1409,
+          506
+        ],
+        [
+          1409,
+          700
+        ],
+        [
+          1373,
+          700
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1391,
+            700
+          ],
+          "surface": "s_square"
+        },
+        "end": {
+          "position": [
+            1391,
+            506
+          ],
+          "surface": "s_stage"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": [
+        [
+          1373,
+          694
+        ],
+        [
+          1409,
+          694
+        ],
+        [
+          1409,
+          706
+        ],
+        [
+          1373,
+          706
+        ]
+      ],
+      "exitRange": [
+        [
+          1373,
+          500
+        ],
+        [
+          1409,
+          500
+        ],
+        [
+          1409,
+          512
+        ],
+        [
+          1373,
+          512
+        ]
+      ],
+      "collisionException": "one-way-support-only-while-attached; never-ignore-solids",
+      "status": "verified",
+      "calibrationEvidence": {
+        "path": "work/final-geometry-measurements.json",
+        "geometryRevision": "v2-final-001",
+        "scope": "placement/contact geometry; NPC/dummy gameplay interactions are not implemented by this art test adapter"
+      }
+    },
+    {
+      "id": "c_tower",
+      "kind": "rope",
+      "corridor": [
+        [
+          1478,
+          337
+        ],
+        [
+          1514,
+          337
+        ],
+        [
+          1514,
+          506
+        ],
+        [
+          1478,
+          506
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1496,
+            506
+          ],
+          "surface": "s_stage"
+        },
+        "end": {
+          "position": [
+            1496,
+            337
+          ],
+          "surface": "s_tower"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": [
+        [
+          1478,
+          500
+        ],
+        [
+          1514,
+          500
+        ],
+        [
+          1514,
+          512
+        ],
+        [
+          1478,
+          512
+        ]
+      ],
+      "exitRange": [
+        [
+          1478,
+          331
+        ],
+        [
+          1514,
+          331
+        ],
+        [
+          1514,
+          343
+        ],
+        [
+          1478,
+          343
+        ]
+      ],
+      "collisionException": "one-way-support-only-while-attached; never-ignore-solids",
+      "status": "verified",
+      "calibrationEvidence": {
+        "path": "work/final-geometry-measurements.json",
+        "geometryRevision": "v2-final-001",
+        "scope": "placement/contact geometry; NPC/dummy gameplay interactions are not implemented by this art test adapter"
+      }
+    },
+    {
+      "id": "c_east",
+      "kind": "rope",
+      "corridor": [
+        [
+          2329,
+          520
+        ],
+        [
+          2365,
+          520
+        ],
+        [
+          2365,
+          700
+        ],
+        [
+          2329,
+          700
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            2347,
+            700
+          ],
+          "surface": "s_east"
+        },
+        "end": {
+          "position": [
+            2347,
+            520
+          ],
+          "surface": "s_lookout"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": [
+        [
+          2329,
+          694
+        ],
+        [
+          2365,
+          694
+        ],
+        [
+          2365,
+          706
+        ],
+        [
+          2329,
+          706
+        ]
+      ],
+      "exitRange": [
+        [
+          2329,
+          514
+        ],
+        [
+          2365,
+          514
+        ],
+        [
+          2365,
+          526
+        ],
+        [
+          2329,
+          526
+        ]
+      ],
+      "collisionException": "one-way-support-only-while-attached; never-ignore-solids",
+      "status": "verified",
+      "calibrationEvidence": {
+        "path": "work/final-geometry-measurements.json",
+        "geometryRevision": "v2-final-001",
+        "scope": "placement/contact geometry; NPC/dummy gameplay interactions are not implemented by this art test adapter"
+      }
+    }
+  ],
+  "stairs": [],
+  "solids": [
+    {
+      "id": "solid_base",
+      "polygon": [
+        [
+          0,
+          700
+        ],
+        [
+          2560,
+          700
+        ],
+        [
+          2560,
+          864
+        ],
+        [
+          0,
+          864
+        ]
+      ],
+      "type": "ground",
+      "surfaces": [
+        "s_village",
+        "s_square",
+        "s_training",
+        "s_east"
+      ],
+      "openings": [],
+      "status": "verified",
+      "calibrationEvidence": {
+        "path": "work/final-geometry-measurements.json",
+        "geometryRevision": "v2-final-001",
+        "scope": "placement/contact geometry; NPC/dummy gameplay interactions are not implemented by this art test adapter"
+      }
+    },
+    {
+      "id": "solid_market",
+      "polygon": [
+        [
+          674,
+          635
+        ],
+        [
+          1165,
+          635
+        ],
+        [
+          1165,
+          700
+        ],
+        [
+          674,
+          700
+        ]
+      ],
+      "type": "raised-dais",
+      "surfaces": [
+        "s_market"
+      ],
+      "openings": [],
+      "status": "verified",
+      "calibrationEvidence": {
+        "path": "work/final-geometry-measurements.json",
+        "geometryRevision": "v2-final-001",
+        "scope": "placement/contact geometry; NPC/dummy gameplay interactions are not implemented by this art test adapter"
+      }
+    }
+  ],
+  "hazards": [],
+  "points": [
+    {
+      "id": "start_spawn",
+      "type": "spawn",
+      "position": [
+        176,
+        700
+      ],
+      "surface": "s_village",
+      "safeRadius": 13,
+      "blocking": false,
+      "status": "verified",
+      "calibrationEvidence": {
+        "path": "work/final-geometry-measurements.json",
+        "geometryRevision": "v2-final-001",
+        "scope": "placement/contact geometry; NPC/dummy gameplay interactions are not implemented by this art test adapter"
+      }
+    },
+    {
+      "id": "goal_east",
+      "type": "goal",
+      "position": [
+        2480,
+        700
+      ],
+      "surface": "s_east",
+      "safeRadius": 13,
+      "blocking": false,
+      "status": "verified",
+      "calibrationEvidence": {
+        "path": "work/final-geometry-measurements.json",
+        "geometryRevision": "v2-final-001",
+        "scope": "placement/contact geometry; NPC/dummy gameplay interactions are not implemented by this art test adapter"
+      }
+    },
+    {
+      "id": "point_roof",
+      "type": "tutorial",
+      "position": [
+        475,
+        520
+      ],
+      "surface": "s_roof",
+      "safeRadius": 13,
+      "blocking": false,
+      "status": "verified",
+      "calibrationEvidence": {
+        "path": "work/final-geometry-measurements.json",
+        "geometryRevision": "v2-final-001",
+        "scope": "placement/contact geometry; NPC/dummy gameplay interactions are not implemented by this art test adapter"
+      }
+    },
+    {
+      "id": "point_house_return",
+      "type": "checkpoint",
+      "position": [
+        610,
+        700
+      ],
+      "surface": "s_village",
+      "safeRadius": 13,
+      "blocking": false,
+      "status": "verified",
+      "calibrationEvidence": {
+        "path": "work/final-geometry-measurements.json",
+        "geometryRevision": "v2-final-001",
+        "scope": "placement/contact geometry; NPC/dummy gameplay interactions are not implemented by this art test adapter"
+      }
+    },
+    {
+      "id": "point_market",
+      "type": "tutorial",
+      "position": [
+        832,
+        635
+      ],
+      "surface": "s_market",
+      "safeRadius": 13,
+      "blocking": false,
+      "status": "verified",
+      "calibrationEvidence": {
+        "path": "work/final-geometry-measurements.json",
+        "geometryRevision": "v2-final-001",
+        "scope": "placement/contact geometry; NPC/dummy gameplay interactions are not implemented by this art test adapter"
+      }
+    },
+    {
+      "id": "point_tower",
+      "type": "tutorial",
+      "position": [
+        1530,
+        337
+      ],
+      "surface": "s_tower",
+      "safeRadius": 13,
+      "blocking": false,
+      "status": "verified",
+      "calibrationEvidence": {
+        "path": "work/final-geometry-measurements.json",
+        "geometryRevision": "v2-final-001",
+        "scope": "placement/contact geometry; NPC/dummy gameplay interactions are not implemented by this art test adapter"
+      }
+    },
+    {
+      "id": "point_stage_return",
+      "type": "checkpoint",
+      "position": [
+        1590,
+        700
+      ],
+      "surface": "s_square",
+      "safeRadius": 13,
+      "blocking": false,
+      "status": "verified",
+      "calibrationEvidence": {
+        "path": "work/final-geometry-measurements.json",
+        "geometryRevision": "v2-final-001",
+        "scope": "placement/contact geometry; NPC/dummy gameplay interactions are not implemented by this art test adapter"
+      }
+    },
+    {
+      "id": "point_chest",
+      "type": "chest",
+      "position": [
+        1935,
+        420
+      ],
+      "surface": "s_chest",
+      "safeRadius": 13,
+      "blocking": false,
+      "status": "verified",
+      "reward": {
+        "item": "hp_pill_small",
+        "count": 3,
+        "localDemoOnly": true
+      },
+      "calibrationEvidence": {
+        "path": "work/final-geometry-measurements.json",
+        "geometryRevision": "v2-final-001",
+        "scope": "placement/contact geometry; NPC/dummy gameplay interactions are not implemented by this art test adapter"
+      }
+    },
+    {
+      "id": "point_lookout",
+      "type": "tutorial",
+      "position": [
+        2410,
+        520
+      ],
+      "surface": "s_lookout",
+      "safeRadius": 13,
+      "blocking": false,
+      "status": "verified",
+      "calibrationEvidence": {
+        "path": "work/final-geometry-measurements.json",
+        "geometryRevision": "v2-final-001",
+        "scope": "placement/contact geometry; NPC/dummy gameplay interactions are not implemented by this art test adapter"
+      }
+    },
+    {
+      "id": "point_west",
+      "type": "locked-portal",
+      "position": [
+        48,
+        700
+      ],
+      "surface": "s_village",
+      "safeRadius": 13,
+      "blocking": false,
+      "status": "verified",
+      "calibrationEvidence": {
+        "path": "work/final-geometry-measurements.json",
+        "geometryRevision": "v2-final-001",
+        "scope": "placement/contact geometry; NPC/dummy gameplay interactions are not implemented by this art test adapter"
+      }
+    },
+    {
+      "id": "npc_elder",
+      "type": "npc",
+      "position": [
+        610,
+        700
+      ],
+      "surface": "s_village",
+      "safeRadius": 13,
+      "blocking": false,
+      "status": "verified",
+      "calibrationEvidence": {
+        "path": "work/final-geometry-measurements.json",
+        "geometryRevision": "v2-final-001",
+        "scope": "placement/contact geometry; NPC/dummy gameplay interactions are not implemented by this art test adapter"
+      }
+    },
+    {
+      "id": "npc_wang",
+      "type": "npc",
+      "position": [
+        832,
+        635
+      ],
+      "surface": "s_market",
+      "safeRadius": 13,
+      "blocking": false,
+      "status": "verified",
+      "calibrationEvidence": {
+        "path": "work/final-geometry-measurements.json",
+        "geometryRevision": "v2-final-001",
+        "scope": "placement/contact geometry; NPC/dummy gameplay interactions are not implemented by this art test adapter"
+      }
+    },
+    {
+      "id": "npc_sun",
+      "type": "npc",
+      "position": [
+        1024,
+        635
+      ],
+      "surface": "s_market",
+      "safeRadius": 13,
+      "blocking": false,
+      "status": "verified",
+      "calibrationEvidence": {
+        "path": "work/final-geometry-measurements.json",
+        "geometryRevision": "v2-final-001",
+        "scope": "placement/contact geometry; NPC/dummy gameplay interactions are not implemented by this art test adapter"
+      }
+    },
+    {
+      "id": "npc_envoy",
+      "type": "npc",
+      "position": [
+        1440,
+        337
+      ],
+      "surface": "s_tower",
+      "safeRadius": 13,
+      "blocking": false,
+      "status": "verified",
+      "calibrationEvidence": {
+        "path": "work/final-geometry-measurements.json",
+        "geometryRevision": "v2-final-001",
+        "scope": "placement/contact geometry; NPC/dummy gameplay interactions are not implemented by this art test adapter"
+      }
+    },
+    {
+      "id": "npc_teacher",
+      "type": "npc",
+      "position": [
+        1216,
+        700
+      ],
+      "surface": "s_square",
+      "safeRadius": 13,
+      "blocking": false,
+      "status": "verified",
+      "calibrationEvidence": {
+        "path": "work/final-geometry-measurements.json",
+        "geometryRevision": "v2-final-001",
+        "scope": "placement/contact geometry; NPC/dummy gameplay interactions are not implemented by this art test adapter"
+      }
+    },
+    {
+      "id": "dummy_1",
+      "type": "nonblocking-dummy",
+      "position": [
+        1805,
+        700
+      ],
+      "surface": "s_training",
+      "safeRadius": 13,
+      "blocking": false,
+      "status": "verified",
+      "calibrationEvidence": {
+        "path": "work/final-geometry-measurements.json",
+        "geometryRevision": "v2-final-001",
+        "scope": "placement/contact geometry; NPC/dummy gameplay interactions are not implemented by this art test adapter"
+      }
+    },
+    {
+      "id": "dummy_2",
+      "type": "nonblocking-dummy",
+      "position": [
+        1945,
+        700
+      ],
+      "surface": "s_training",
+      "safeRadius": 13,
+      "blocking": false,
+      "status": "verified",
+      "calibrationEvidence": {
+        "path": "work/final-geometry-measurements.json",
+        "geometryRevision": "v2-final-001",
+        "scope": "placement/contact geometry; NPC/dummy gameplay interactions are not implemented by this art test adapter"
+      }
+    },
+    {
+      "id": "dummy_3",
+      "type": "nonblocking-dummy",
+      "position": [
+        2075,
+        700
+      ],
+      "surface": "s_training",
+      "safeRadius": 13,
+      "blocking": false,
+      "status": "verified",
+      "calibrationEvidence": {
+        "path": "work/final-geometry-measurements.json",
+        "geometryRevision": "v2-final-001",
+        "scope": "placement/contact geometry; NPC/dummy gameplay interactions are not implemented by this art test adapter"
+      }
+    }
+  ],
+  "transitions": [
+    {
+      "id": "t_walk_start",
+      "from": "start_spawn",
+      "to": "s_village",
+      "action": "walk",
+      "direction": "from-to",
+      "conditions": [
+        "base actor parameters",
+        "natural approach; no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "v2-final-001",
+          "actorParameterRevision": "base-feel-20261026-v2-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "t_walk_start",
+          "routeId": "route_main",
+          "path": "work/replays-final/route_main.json",
+          "method": "observed input replay segment from a continuous normal-spawn route",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; SpriteArt.ts; public/art/sprites/player_sword_m.anims.json; data/balance/player_growth.json",
+          "frames": [
+            0,
+            1
+          ],
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_market_up",
+      "from": "s_village",
+      "to": "s_market",
+      "action": "jump",
+      "direction": "from-to",
+      "conditions": [
+        "base actor parameters",
+        "natural approach; no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "v2-final-001",
+          "actorParameterRevision": "base-feel-20261026-v2-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "t_market_up",
+          "routeId": "route_main",
+          "path": "work/replays-final/route_main.json",
+          "method": "observed input replay segment from a continuous normal-spawn route",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; SpriteArt.ts; public/art/sprites/player_sword_m.anims.json; data/balance/player_growth.json",
+          "frames": [
+            224,
+            245
+          ],
+          "result": "verified"
+        }
+      ],
+      "takeoff": [
+        651.9999999999995,
+        700
+      ],
+      "landing": [
+        673.8333333333334,
+        635
+      ],
+      "annotationMeaning": "observed action event positions; straight diagnostic arrow is topology, not a physics trajectory"
+    },
+    {
+      "id": "t_market_down",
+      "from": "s_market",
+      "to": "s_square",
+      "action": "drop",
+      "direction": "from-to",
+      "conditions": [
+        "base actor parameters",
+        "natural approach; no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "v2-final-001",
+          "actorParameterRevision": "base-feel-20261026-v2-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "t_market_down",
+          "routeId": "route_main",
+          "path": "work/replays-final/route_main.json",
+          "method": "observed input replay segment from a continuous normal-spawn route",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; SpriteArt.ts; public/art/sprites/player_sword_m.anims.json; data/balance/player_growth.json",
+          "frames": [
+            497,
+            511
+          ],
+          "result": "verified"
+        }
+      ],
+      "takeoff": [
+        1179.4999999999993,
+        635.5555555555555
+      ],
+      "landing": [
+        1209.8333333333337,
+        700
+      ],
+      "annotationMeaning": "observed action event positions; straight diagnostic arrow is topology, not a physics trajectory"
+    },
+    {
+      "id": "t_square_training",
+      "from": "s_square",
+      "to": "s_training",
+      "action": "walk",
+      "direction": "from-to",
+      "conditions": [
+        "base actor parameters",
+        "natural approach; no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "v2-final-001",
+          "actorParameterRevision": "base-feel-20261026-v2-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "t_square_training",
+          "routeId": "route_main",
+          "path": "work/replays-final/route_main.json",
+          "method": "observed input replay segment from a continuous normal-spawn route",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; SpriteArt.ts; public/art/sprites/player_sword_m.anims.json; data/balance/player_growth.json",
+          "frames": [
+            511,
+            713
+          ],
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_training_east",
+      "from": "s_training",
+      "to": "s_east",
+      "action": "walk",
+      "direction": "from-to",
+      "conditions": [
+        "base actor parameters",
+        "natural approach; no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "v2-final-001",
+          "actorParameterRevision": "base-feel-20261026-v2-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "t_training_east",
+          "routeId": "route_main",
+          "path": "work/replays-final/route_main.json",
+          "method": "observed input replay segment from a continuous normal-spawn route",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; SpriteArt.ts; public/art/sprites/player_sword_m.anims.json; data/balance/player_growth.json",
+          "frames": [
+            713,
+            979
+          ],
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_finish",
+      "from": "s_east",
+      "to": "goal_east",
+      "action": "walk",
+      "direction": "from-to",
+      "conditions": [
+        "base actor parameters",
+        "natural approach; no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "v2-final-001",
+          "actorParameterRevision": "base-feel-20261026-v2-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "t_finish",
+          "routeId": "route_main",
+          "path": "work/replays-final/route_main.json",
+          "method": "observed input replay segment from a continuous normal-spawn route",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; SpriteArt.ts; public/art/sprites/player_sword_m.anims.json; data/balance/player_growth.json",
+          "frames": [
+            979,
+            1099
+          ],
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_c_ladder_up",
+      "from": "s_village",
+      "to": "s_roof",
+      "action": "ladder",
+      "direction": "from-to",
+      "conditions": [
+        "base actor parameters",
+        "natural approach; no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "v2-final-001",
+          "actorParameterRevision": "base-feel-20261026-v2-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "t_c_ladder_up",
+          "routeId": "route_ladder",
+          "path": "work/replays-final/route_ladder.json",
+          "method": "observed input replay segment from a continuous normal-spawn route",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; SpriteArt.ts; public/art/sprites/player_sword_m.anims.json; data/balance/player_growth.json",
+          "frames": [
+            141,
+            239
+          ],
+          "result": "verified"
+        }
+      ],
+      "climb": "c_ladder",
+      "climbDirection": "up"
+    },
+    {
+      "id": "t_c_ladder_down",
+      "from": "s_roof",
+      "to": "s_village",
+      "action": "ladder",
+      "direction": "from-to",
+      "conditions": [
+        "base actor parameters",
+        "natural approach; no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "v2-final-001",
+          "actorParameterRevision": "base-feel-20261026-v2-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "t_c_ladder_down",
+          "routeId": "route_ladder",
+          "path": "work/replays-final/route_ladder.json",
+          "method": "observed input replay segment from a continuous normal-spawn route",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; SpriteArt.ts; public/art/sprites/player_sword_m.anims.json; data/balance/player_growth.json",
+          "frames": [
+            330,
+            421
+          ],
+          "result": "verified"
+        }
+      ],
+      "climb": "c_ladder",
+      "climbDirection": "down"
+    },
+    {
+      "id": "t_c_stage_up",
+      "from": "s_square",
+      "to": "s_stage",
+      "action": "rope",
+      "direction": "from-to",
+      "conditions": [
+        "base actor parameters",
+        "natural approach; no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "v2-final-001",
+          "actorParameterRevision": "base-feel-20261026-v2-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "t_c_stage_up",
+          "routeId": "route_tower",
+          "path": "work/replays-final/route_tower.json",
+          "method": "observed input replay segment from a continuous normal-spawn route",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; SpriteArt.ts; public/art/sprites/player_sword_m.anims.json; data/balance/player_growth.json",
+          "frames": [
+            630,
+            736
+          ],
+          "result": "verified"
+        }
+      ],
+      "climb": "c_stage",
+      "climbDirection": "up"
+    },
+    {
+      "id": "t_c_stage_down",
+      "from": "s_stage",
+      "to": "s_square",
+      "action": "rope",
+      "direction": "from-to",
+      "conditions": [
+        "base actor parameters",
+        "natural approach; no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "v2-final-001",
+          "actorParameterRevision": "base-feel-20261026-v2-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "t_c_stage_down",
+          "routeId": "route_tower",
+          "path": "work/replays-final/route_tower.json",
+          "method": "observed input replay segment from a continuous normal-spawn route",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; SpriteArt.ts; public/art/sprites/player_sword_m.anims.json; data/balance/player_growth.json",
+          "frames": [
+            1178,
+            1277
+          ],
+          "result": "verified"
+        }
+      ],
+      "climb": "c_stage",
+      "climbDirection": "down"
+    },
+    {
+      "id": "t_c_tower_up",
+      "from": "s_stage",
+      "to": "s_tower",
+      "action": "rope",
+      "direction": "from-to",
+      "conditions": [
+        "base actor parameters",
+        "natural approach; no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "v2-final-001",
+          "actorParameterRevision": "base-feel-20261026-v2-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "t_c_tower_up",
+          "routeId": "route_tower",
+          "path": "work/replays-final/route_tower.json",
+          "method": "observed input replay segment from a continuous normal-spawn route",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; SpriteArt.ts; public/art/sprites/player_sword_m.anims.json; data/balance/player_growth.json",
+          "frames": [
+            829,
+            921
+          ],
+          "result": "verified"
+        }
+      ],
+      "climb": "c_tower",
+      "climbDirection": "up"
+    },
+    {
+      "id": "t_c_tower_down",
+      "from": "s_tower",
+      "to": "s_stage",
+      "action": "rope",
+      "direction": "from-to",
+      "conditions": [
+        "base actor parameters",
+        "natural approach; no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "v2-final-001",
+          "actorParameterRevision": "base-feel-20261026-v2-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "t_c_tower_down",
+          "routeId": "route_tower",
+          "path": "work/replays-final/route_tower.json",
+          "method": "observed input replay segment from a continuous normal-spawn route",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; SpriteArt.ts; public/art/sprites/player_sword_m.anims.json; data/balance/player_growth.json",
+          "frames": [
+            1000,
+            1085
+          ],
+          "result": "verified"
+        }
+      ],
+      "climb": "c_tower",
+      "climbDirection": "down"
+    },
+    {
+      "id": "t_c_east_up",
+      "from": "s_east",
+      "to": "s_lookout",
+      "action": "rope",
+      "direction": "from-to",
+      "conditions": [
+        "base actor parameters",
+        "natural approach; no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "v2-final-001",
+          "actorParameterRevision": "base-feel-20261026-v2-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "t_c_east_up",
+          "routeId": "route_lookout",
+          "path": "work/replays-final/route_lookout.json",
+          "method": "observed input replay segment from a continuous normal-spawn route",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; SpriteArt.ts; public/art/sprites/player_sword_m.anims.json; data/balance/player_growth.json",
+          "frames": [
+            1072,
+            1170
+          ],
+          "result": "verified"
+        }
+      ],
+      "climb": "c_east",
+      "climbDirection": "up"
+    },
+    {
+      "id": "t_c_east_down",
+      "from": "s_lookout",
+      "to": "s_east",
+      "action": "rope",
+      "direction": "from-to",
+      "conditions": [
+        "base actor parameters",
+        "natural approach; no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "v2-final-001",
+          "actorParameterRevision": "base-feel-20261026-v2-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "t_c_east_down",
+          "routeId": "route_lookout",
+          "path": "work/replays-final/route_lookout.json",
+          "method": "observed input replay segment from a continuous normal-spawn route",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; SpriteArt.ts; public/art/sprites/player_sword_m.anims.json; data/balance/player_growth.json",
+          "frames": [
+            1277,
+            1368
+          ],
+          "result": "verified"
+        }
+      ],
+      "climb": "c_east",
+      "climbDirection": "down"
+    },
+    {
+      "id": "t_step1",
+      "from": "s_training",
+      "to": "s_step1",
+      "action": "jump",
+      "direction": "from-to",
+      "conditions": [
+        "base actor parameters",
+        "natural approach; no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "v2-final-001",
+          "actorParameterRevision": "base-feel-20261026-v2-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "t_step1",
+          "routeId": "route_chest",
+          "path": "work/replays-final/route_chest.json",
+          "method": "observed input replay segment from a continuous normal-spawn route",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; SpriteArt.ts; public/art/sprites/player_sword_m.anims.json; data/balance/player_growth.json",
+          "frames": [
+            720,
+            738
+          ],
+          "result": "verified"
+        }
+      ],
+      "takeoff": [
+        1629.1666666666813,
+        700
+      ],
+      "landing": [
+        1659.3333333333485,
+        628
+      ],
+      "annotationMeaning": "observed action event positions; straight diagnostic arrow is topology, not a physics trajectory"
+    },
+    {
+      "id": "t_step2",
+      "from": "s_step1",
+      "to": "s_step2",
+      "action": "jump",
+      "direction": "from-to",
+      "conditions": [
+        "base actor parameters",
+        "natural approach; no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "v2-final-001",
+          "actorParameterRevision": "base-feel-20261026-v2-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "t_step2",
+          "routeId": "route_chest",
+          "path": "work/replays-final/route_chest.json",
+          "method": "observed input replay segment from a continuous normal-spawn route",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; SpriteArt.ts; public/art/sprites/player_sword_m.anims.json; data/balance/player_growth.json",
+          "frames": [
+            794,
+            817
+          ],
+          "result": "verified"
+        }
+      ],
+      "takeoff": [
+        1745.3333333333512,
+        628
+      ],
+      "landing": [
+        1797.333333333353,
+        568
+      ],
+      "annotationMeaning": "observed action event positions; straight diagnostic arrow is topology, not a physics trajectory"
+    },
+    {
+      "id": "t_step3",
+      "from": "s_step2",
+      "to": "s_step3",
+      "action": "jump",
+      "direction": "from-to",
+      "conditions": [
+        "base actor parameters",
+        "natural approach; no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "v2-final-001",
+          "actorParameterRevision": "base-feel-20261026-v2-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "t_step3",
+          "routeId": "route_chest",
+          "path": "work/replays-final/route_chest.json",
+          "method": "observed input replay segment from a continuous normal-spawn route",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; SpriteArt.ts; public/art/sprites/player_sword_m.anims.json; data/balance/player_growth.json",
+          "frames": [
+            899,
+            922
+          ],
+          "result": "verified"
+        }
+      ],
+      "takeoff": [
+        1939.666666666691,
+        568
+      ],
+      "landing": [
+        1991.666666666693,
+        510
+      ],
+      "annotationMeaning": "observed action event positions; straight diagnostic arrow is topology, not a physics trajectory"
+    },
+    {
+      "id": "t_chest",
+      "from": "s_step3",
+      "to": "s_chest",
+      "action": "double-jump",
+      "direction": "from-to",
+      "conditions": [
+        "base actor parameters",
+        "natural approach; no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "v2-final-001",
+          "actorParameterRevision": "base-feel-20261026-v2-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "t_chest",
+          "routeId": "route_chest",
+          "path": "work/replays-final/route_chest.json",
+          "method": "observed input replay segment from a continuous normal-spawn route",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; SpriteArt.ts; public/art/sprites/player_sword_m.anims.json; data/balance/player_growth.json",
+          "frames": [
+            955,
+            991
+          ],
+          "result": "verified"
+        }
+      ],
+      "takeoff": [
+        2023.1666666666936,
+        510
+      ],
+      "landing": [
+        1870.6666666666936,
+        420
+      ],
+      "annotationMeaning": "observed action event positions; straight diagnostic arrow is topology, not a physics trajectory"
+    },
+    {
+      "id": "t_chest_return",
+      "from": "s_chest",
+      "to": "s_training",
+      "action": "drop",
+      "direction": "from-to",
+      "conditions": [
+        "base actor parameters",
+        "natural approach; no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "v2-final-001",
+          "actorParameterRevision": "base-feel-20261026-v2-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "t_chest_return",
+          "routeId": "route_chest",
+          "path": "work/replays-final/route_chest.json",
+          "method": "observed input replay segment from a continuous normal-spawn route",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; SpriteArt.ts; public/art/sprites/player_sword_m.anims.json; data/balance/player_growth.json",
+          "frames": [
+            1048,
+            1089
+          ],
+          "result": "verified"
+        }
+      ],
+      "takeoff": [
+        1936.8333333333628,
+        420
+      ],
+      "landing": [
+        1936.8333333333628,
+        700
+      ],
+      "annotationMeaning": "observed action event positions; straight diagnostic arrow is topology, not a physics trajectory"
+    }
+  ],
+  "requiredRoutes": [
+    {
+      "id": "route_main",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "s_market",
+        "s_square",
+        "s_training",
+        "s_east"
+      ],
+      "direction": "from-to with returns as described",
+      "sequence": "walk, ordinary jump up market, walk, drop, walk",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "v2-final-001",
+          "actorParameterRevision": "base-feel-20261026-v2-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "route_main",
+          "routeId": "route_main",
+          "path": "work/replays-final/route_main.json",
+          "method": "fixed-60Hz continuous input replay from normal spawn; no teleport or state mutation",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; SpriteArt.ts; public/art/sprites/player_sword_m.anims.json; data/balance/player_growth.json",
+          "frames": 1112,
+          "resetCount": 0,
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "route_ladder",
+      "from": "start_spawn",
+      "to": "point_house_return",
+      "via": [
+        "c_ladder",
+        "s_roof",
+        "c_ladder"
+      ],
+      "direction": "from-to with returns as described",
+      "sequence": "approach ladder, climb up, exit, return to top, climb down, walk",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "v2-final-001",
+          "actorParameterRevision": "base-feel-20261026-v2-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "route_ladder",
+          "routeId": "route_ladder",
+          "path": "work/replays-final/route_ladder.json",
+          "method": "fixed-60Hz continuous input replay from normal spawn; no teleport or state mutation",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; SpriteArt.ts; public/art/sprites/player_sword_m.anims.json; data/balance/player_growth.json",
+          "frames": 529,
+          "resetCount": 0,
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "route_tower",
+      "from": "start_spawn",
+      "to": "point_stage_return",
+      "via": [
+        "s_market",
+        "c_stage",
+        "s_stage",
+        "c_tower",
+        "s_tower",
+        "c_tower",
+        "c_stage"
+      ],
+      "direction": "from-to with returns as described",
+      "sequence": "walk/jump market, rope up stage, walk, rope up tower, reverse both ropes, exit to ground",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "v2-final-001",
+          "actorParameterRevision": "base-feel-20261026-v2-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "route_tower",
+          "routeId": "route_tower",
+          "path": "work/replays-final/route_tower.json",
+          "method": "fixed-60Hz continuous input replay from normal spawn; no teleport or state mutation",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; SpriteArt.ts; public/art/sprites/player_sword_m.anims.json; data/balance/player_growth.json",
+          "frames": 1393,
+          "resetCount": 0,
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "route_chest",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "s_market",
+        "s_step1",
+        "s_step2",
+        "s_step3",
+        "s_chest",
+        "point_chest"
+      ],
+      "direction": "from-to with returns as described",
+      "sequence": "normal market jump; ordinary run-up jumps over three one-way steps; double-jump left onto chest; down+jump through chest and step2; walk east",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "v2-final-001",
+          "actorParameterRevision": "base-feel-20261026-v2-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "route_chest",
+          "routeId": "route_chest",
+          "path": "work/replays-final/route_chest.json",
+          "method": "fixed-60Hz continuous input replay from normal spawn; no teleport or state mutation",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; SpriteArt.ts; public/art/sprites/player_sword_m.anims.json; data/balance/player_growth.json",
+          "frames": 1363,
+          "resetCount": 0,
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "route_lookout",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "s_market",
+        "c_east",
+        "s_lookout",
+        "c_east"
+      ],
+      "direction": "from-to with returns as described",
+      "sequence": "approach east rope, up, exit, down, walk goal",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "v2-final-001",
+          "actorParameterRevision": "base-feel-20261026-v2-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "route_lookout",
+          "routeId": "route_lookout",
+          "path": "work/replays-final/route_lookout.json",
+          "method": "fixed-60Hz continuous input replay from normal spawn; no teleport or state mutation",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; SpriteArt.ts; public/art/sprites/player_sword_m.anims.json; data/balance/player_growth.json",
+          "frames": 1453,
+          "resetCount": 0,
+          "result": "verified"
+        }
+      ]
+    }
+  ],
+  "diagnostics": {
+    "maskPalette": {
+      "stand": [
+        0,
+        200,
+        80,
+        255
+      ],
+      "walk": [
+        150,
+        245,
+        160,
+        255
+      ],
+      "ladder": [
+        0,
+        110,
+        255,
+        255
+      ],
+      "rope": [
+        0,
+        190,
+        230,
+        255
+      ],
+      "jump": [
+        255,
+        180,
+        0,
+        255
+      ],
+      "drop": [
+        170,
+        80,
+        225,
+        255
+      ],
+      "point": [
+        255,
+        70,
+        160,
+        255
+      ]
+    },
+    "rasterizationOrder": [
+      "walk",
+      "stand",
+      "ladder",
+      "rope",
+      "jump",
+      "drop",
+      "point"
+    ],
+    "regionIdIndex": null,
+    "geometryRevision": "v2-final-001"
+  },
+  "validation": {
+    "status": "verified",
+    "geometryRevision": "v2-final-001",
+    "actorParameterRevision": "base-feel-20261026-v2-001",
+    "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+    "evidence": [
+      {
+        "geometryRevision": "v2-final-001",
+        "actorParameterRevision": "base-feel-20261026-v2-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "objectId": "required-routes-runtime",
+        "path": "work/final-routes.json",
+        "method": "all requiredRoutes executed from normal spawn with continuous input; independent fixed-60Hz AABB runtime",
+        "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; SpriteArt.ts; public/art/sprites/player_sword_m.anims.json; data/balance/player_growth.json",
+        "result": "verified"
+      }
+    ],
+    "issues": []
+  },
+  "alignmentContract": {
+    "toleranceLogicalPixels": 2,
+    "bottomClean": true,
+    "climbEndsAnchorTo": "visual-contact-surface-not-decoration"
+  },
+  "scope": {
+    "artStatus": "final-master-005-layer-calibration",
+    "runtime": "independent-local-adapter",
+    "productionIntegration": "forbidden-until-lead-PASS",
+    "foreground": "not-applicable; no independent occluders required"
+  },
+  "zones": [
+    {
+      "id": "z_village",
+      "name": "村口",
+      "bounds": [
+        0,
+        0,
+        672,
+        864
+      ]
+    },
+    {
+      "id": "z_market",
+      "name": "集市高台",
+      "bounds": [
+        672,
+        0,
+        480,
+        864
+      ]
+    },
+    {
+      "id": "z_square",
+      "name": "广场·望仙台",
+      "bounds": [
+        1152,
+        0,
+        480,
+        864
+      ]
+    },
+    {
+      "id": "z_training",
+      "name": "练功场",
+      "bounds": [
+        1632,
+        0,
+        576,
+        864
+      ]
+    },
+    {
+      "id": "z_east",
+      "name": "东口",
+      "bounds": [
+        2208,
+        0,
+        352,
+        864
+      ]
+    }
+  ],
+  "calibrationNote": {
+    "source": "work/generated/master-005.png",
+    "derivedFromGeometryRevision": "v2-art-candidate-002",
+    "sourceMethod": "host imagegen background repair/extraction; source-pixel matte and raster compositing only",
+    "geometryPolicy": "All surface/climb/solid/point coordinates and actor movement are unchanged from candidate002. Final version binds the calibrated layers and fresh route evidence.",
+    "surfaceMeasureSource": "work/final-geometry-measurements.json",
+    "marketSpan": [
+      674,
+      1165
+    ],
+    "standingToleranceLogicalPixels": 2,
+    "contactReference": "flat visible stone/board contact plane; railings, rope knots, grass tips excluded",
+    "stage5Evidence": "work/layer-composition.json",
+    "stage3Source": "work/generated/master-004.png"
+  }
+}

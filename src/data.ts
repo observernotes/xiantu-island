@@ -198,6 +198,7 @@ export const TRIAL_BY_MAP: Record<string, TrialDef> = Object.fromEntries(Object.
 
 /** 已有精灵图集的 sprite 键（art/sprites/），其余用色块占位 */
 import assets from './gen/assets.json';
+import type { GsbSceneAsset } from './optionalAssets';
 /** 素材清单由 sync 扫 art/sprites/*.anims.json 自动生成（src/gen/assets.json），不再手写 */
 export interface AtlasInfo { key: string; kind: string; origin: [number, number]; bodySize: [number, number] | null; frameSize?: number | [number, number] | null; displayScale?: number; pixelArt?: boolean; }
 export const ATLAS_INFO: Record<string, AtlasInfo> = Object.fromEntries((assets.atlases as AtlasInfo[]).map(a => [a.key, a]));
@@ -238,6 +239,8 @@ export const TILE_METADATA: { key: string; path: string }[] = assets.tileMetadat
 export const BACKGROUND_CONFIGS: { area: string; key: string; path: string }[] = assets.backgroundConfigs;
 export const BACKGROUNDS: { key: string; path: string }[] = assets.backgrounds;
 export const PROP_LAYOUTS: { area: string; key: string; path: string }[] = assets.propLayouts;
+/** sync 按场景登记的世界锁定图层与像素几何；兼容未包含 GSB 的旧清单。 */
+export const GSB_SCENES: GsbSceneAsset[] = (assets as { gsbScenes?: GsbSceneAsset[] }).gsbScenes ?? [];
 /** sync 只登记已转正且存在的技能 @64 图标，避免加载 _pending 或缺失文件。 */
 export const SKILL_ICONS: { key: string; path: string }[] = assets.skillIcons;
 

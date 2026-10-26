@@ -4,7 +4,7 @@ import { notifyCheatSceneReady } from '../cheatFlags';
 import { getRendererInfo } from '../rendererChoice';
 import { FEEL, SPEC } from '../config/feel';
 import { FIELD_TEST } from '../config/maps';
-import { MONSTERS, DROPS, ITEMS, TILED_MAPS, ATLASES, MAP_AREA, AREAS, TILE_METADATA, BACKGROUNDS, BACKGROUND_CONFIGS, PROP_LAYOUTS, SKILL_ICONS, NPCS, SCRIPTS, SENSE, ENCOUNTERS, syncTalismanMapAvailability, t, questName, questDescription, MP_REGEN_FRACTION_PER_5S, BREAKTHROUGH_LEVELS, type MonsterDef } from '../data';
+import { MONSTERS, DROPS, ITEMS, TILED_MAPS, ATLASES, MAP_AREA, AREAS, TILE_METADATA, BACKGROUNDS, BACKGROUND_CONFIGS, PROP_LAYOUTS, GSB_SCENES, SKILL_ICONS, NPCS, SCRIPTS, SENSE, ENCOUNTERS, syncTalismanMapAvailability, t, questName, questDescription, MP_REGEN_FRACTION_PER_5S, BREAKTHROUGH_LEVELS, type MonsterDef } from '../data';
 import pacing from '@xt/balance/solo_pacing.json';
 import { QuestSystem } from '../QuestSystem';
 import type { DailyQuestReward } from '../DailyQuests';
@@ -17,7 +17,7 @@ import { SkillCombat } from '../SkillCombat';
 import { HOTBAR_SLOTS, SKILLS } from '../skills';
 import { CLASS_LIST, classDef, classEntryEnabled, classForQuest } from '../classes';
 import { installKeyGuard } from '../keyguard';
-import { buildTiledMap, buildCharMap, BuiltMap, MapObj } from './MapBuilder';
+import { buildTiledMap, buildCharMap, getTiledGsbScene, BuiltMap, MapObj } from './MapBuilder';
 import { HUD_RESERVE, addFloorStrip } from './cameraFloor';
 import { Player, Input } from './Player';
 import { InputBindings, PlayerInputLatch } from '../PlayerInput';
@@ -57,7 +57,7 @@ import { PropLayout } from './PropLayout';
 import { applySpriteArt } from '../SpriteArt';
 import { SectGrowth, newSectTransactionId } from '../SectGrowth';
 import { featureEnabled, FEATURE_UNAVAILABLE, type FeatureName } from '../features';
-import { loadOptionalImage, loadOptionalAtlas, loadOptionalJson, loadOptionalSpritesheet } from '../optionalAssets';
+import { loadOptionalImage, loadOptionalAtlas, loadOptionalJson, loadOptionalSpritesheet, loadOptionalGsbScene } from '../optionalAssets';
 import { Sense, type SenseTarget } from '../Sense';
 import { SenseUi } from '../SenseUi';
 import { EncounterUi } from '../EncounterUi';
@@ -286,6 +286,7 @@ export class GameScene extends Phaser.Scene {
     for (const config of BACKGROUND_CONFIGS) loadOptionalJson(this, config.key, config.path);
     for (const layout of PROP_LAYOUTS) loadOptionalJson(this, layout.key, layout.path);
     for (const background of BACKGROUNDS) loadOptionalImage(this, background.key, background.path);
+    for (const scene of GSB_SCENES) loadOptionalGsbScene(this, scene);
     for (const k of ATLASES) {
       if (loadOptionalAtlas(this, k, `art/sprites/${k}.png`, `art/sprites/${k}.json`))
         loadOptionalJson(this, `${k}_anims`, `art/sprites/${k}.anims.json`);
@@ -372,15 +373,19 @@ export class GameScene extends Phaser.Scene {
     }
 
     const area = MAP_AREA[mapId] ?? 'qingyun';
-    this.drawBackground(area, TILED_MAPS[mapId]?.width * FEEL.tile || Math.max(...FIELD_TEST.rows.map(row => row.length)) * FEEL.tile,
-      TILED_MAPS[mapId]?.height * FEEL.tile || FIELD_TEST.rows.length * FEEL.tile);
+    const tiledMap = TILED_MAPS[mapId];
+    const gsb = getTiledGsbScene(this, tiledMap);
+    this.drawBackground(area,
+      gsb?.data.space.logicalWidth ?? (tiledMap?.width * FEEL.tile || Math.max(...FIELD_TEST.rows.map(row => row.length)) * FEEL.tile),
+      gsb?.data.space.logicalHeight ?? (tiledMap?.height * FEEL.tile || FIELD_TEST.rows.length * FEEL.tile), !!gsb);
     this.endSustainFlight('map');
-    this.map = TILED_MAPS[mapId] ? buildTiledMap(this, TILED_MAPS[mapId], `tiles_${area}`)
+    this.map = tiledMap ? buildTiledMap(this, tiledMap, `tiles_${area}`)
       : buildCharMap(this, FIELD_TEST.id, FIELD_TEST.name, FIELD_TEST.rows, FIELD_TEST.portals, `tiles_${area}`);
     this.atSectTrialEntrance = !DEBUG_CLASS && !this.prog.pendingSectTrial
       && Object.values(TRIALS).some(def => def.quest && def.map === this.map.id);
     this.propLayout?.destroy();
-    this.propLayout = new PropLayout(this, mapId, this.cache.json.get(`props_${area}_layout`));
+    this.propLayout = this.map.gsbScene ? undefined
+      : new PropLayout(this, mapId, this.cache.json.get(`props_${area}_layout`));
     this.physics.world.setBounds(0, 0, this.map.width, this.map.height + 200);
     // 地图 npc 对象的 phaseMin / phaseMax：不在当前版本阶段的不创建（没填不限制）
     this.map.objects = this.map.objects.filter(o => o.type !== 'npc' || inPhase(o.props));
@@ -458,7 +463,7 @@ export class GameScene extends Phaser.Scene {
 
     const cam = this.cameras.main;
     cam.setBounds(0, 0, this.map.width, this.map.height + HUD_RESERVE);
-    addFloorStrip(this, this.map.width, this.map.height, area);
+    if (!this.map.gsbScene) addFloorStrip(this, this.map.width, this.map.height, area);
     cam.startFollow(this.player, true, 0.12, 0.1, 0, 40);
     cam.fadeIn(250);
 
@@ -3638,10 +3643,11 @@ export class GameScene extends Phaser.Scene {
     this.environmentArt?.setAreaEnabled(area, enabled);
   }
   private backgroundObjects: Phaser.GameObjects.GameObject[] = [];
-  drawBackground(area: string, width = this.map.width, height = this.map.height) {
+  drawBackground(area: string, width = this.map.width, height = this.map.height, gsb = !!this.map?.gsbScene) {
     this.backgroundArt?.destroy(); this.backgroundArt = undefined;
     for (const object of this.backgroundObjects) object.destroy();
     this.backgroundObjects = []; this.parallax = [];
+    if (gsb) return;
     const config: BackgroundConfig | undefined = this.cache.json.get(`bg_${area}_config`);
     if (config?.layers) {
       this.backgroundArt = new BackgroundArt(this, area, width, height, config);

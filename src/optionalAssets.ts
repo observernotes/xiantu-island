@@ -1,6 +1,8 @@
 import type Phaser from 'phaser';
 import assets from './gen/assets.json';
 
+export interface GsbSceneAsset { id: string; path: string; files: string[]; }
+
 interface OptionalAssetManifest {
   atlases: { key: string }[];
   areas: string[];
@@ -13,6 +15,7 @@ interface OptionalAssetManifest {
   itemIcons?: { path: string }[];
   uiImages?: { path: string }[];
   uiConfigs?: { path: string }[];
+  gsbScenes?: GsbSceneAsset[];
 }
 
 /** sync 只登记实际存在的文件；图集登记要求 PNG、JSON、anims.json 齐全。 */
@@ -31,6 +34,7 @@ export function optionalAssetUrls(manifest: OptionalAssetManifest): string[] {
     ...(manifest.itemIcons ?? []).map(icon => icon.path),
     ...(manifest.uiImages ?? []).map(image => image.path),
     ...(manifest.uiConfigs ?? []).map(config => config.path),
+    ...(manifest.gsbScenes ?? []).flatMap(scene => scene.files),
   ])];
 }
 
@@ -102,6 +106,17 @@ export function loadOptionalJson(scene: LoadingScene, key: string, url: string):
   registerOptionalKey(scene, key);
   scene.load.json(key, url);
   return true;
+}
+
+/** GSB 图层与几何共用稳定 key；只请求 sync 清单中实际存在的文件。 */
+export function loadOptionalGsbScene(scene: LoadingScene, asset: GsbSceneAsset): void {
+  const path = asset.path.replace(/\/+$/, '');
+  for (const layer of ['background', 'playable', 'foreground']) {
+    const url = `${path}/${layer}.png`;
+    if (asset.files.includes(url)) loadOptionalImage(scene, `gsb_${asset.id}_${layer}`, url);
+  }
+  const dataUrl = `${path}/scene-data.json`;
+  if (asset.files.includes(dataUrl)) loadOptionalJson(scene, `gsb_${asset.id}_data`, dataUrl);
 }
 
 export function loadOptionalSpritesheet(scene: LoadingScene, key: string, url: string,
