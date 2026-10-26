@@ -30,6 +30,8 @@ import lingfuSceneData from '../data/art/scenes/lingfu_pavilion_gsb_v1/scene-dat
 import lingfuTiledMap from '../data/maps/lingfu_pavilion.json';
 import youyingSceneData from '../data/art/scenes/youying_tower_gsb_v1/scene-data.json';
 import youyingTiledMap from '../data/maps/youying_tower.json';
+import wanshouSceneData from '../data/art/scenes/wanshou_mountain_gsb_v1/scene-data.json';
+import wanshouTiledMap from '../data/maps/wanshou_mountain.json';
 import { FEEL, SPEC } from './config/feel';
 import { buildTiledMap } from './scenes/MapBuilder';
 
@@ -1364,5 +1366,114 @@ function testYouyingTowerGsb() {
   eq(JSON.stringify(tiledMap), mapBefore, 'youying_tower: building leaves the Tiled map input unchanged');
 }
 testYouyingTowerGsb();
+
+// Wanshou's mountain retains its ferry, two NPCs, one ladder and two approved ropes.
+function testWanshouMountainGsb() {
+  const sceneId = 'wanshou_mountain_gsb_v1', revision = 'wanshou-final-003';
+  const data = clone(wanshouSceneData), tiledMap = clone(wanshouTiledMap);
+  const f = fixture(null, false), dataBefore = JSON.stringify(data), mapBefore = JSON.stringify(tiledMap);
+  f.cache.clear(); f.cache.set(`gsb_${sceneId}_data`, data);
+  f.textures.add(`gsb_${sceneId}_background`); f.textures.add(`gsb_${sceneId}_playable`);
+  const map = buildTiledMap(f.scene, tiledMap, 'tiles');
+  eq(map.gsbScene, sceneId, 'wanshou_mountain: checked-in map enables its GSB scene');
+  eq(tiledMap.properties.find(property => property.name === 'gsbScene')?.value,
+    sceneId, 'wanshou_mountain: map binds the approved GSB scene');
+  eq(tiledMap.properties.find(property => property.name === 'gsbGeometryRevision')?.value,
+    revision, 'wanshou_mountain: map binds the approved geometry revision');
+  eq(data.geometryRevision, revision, 'wanshou_mountain: scene-data has the approved geometry revision');
+  same([map.width, map.height], [1280, 640], 'wanshou_mountain: logical world dimensions match the approved scene');
+  same([data.space.logicalWidth, data.space.logicalHeight], [1280, 640],
+    'wanshou_mountain: scene-data declares the approved logical dimensions');
+  same([tiledMap.width, tiledMap.height], [40, 20], 'wanshou_mountain: checked-in tile grid is 40 x 20');
+  same([tiledMap.tilewidth, tiledMap.tileheight], [32, 32], 'wanshou_mountain: checked-in tiles are 32 x 32');
+  same([tiledMap.width * tiledMap.tilewidth, tiledMap.height * tiledMap.tileheight], [map.width, map.height],
+    'wanshou_mountain: checked-in tile grid matches logical world dimensions');
+  same(f.groups.map(group => group.children.length), [3, 3], 'wanshou_mountain: three solids and three one-way bodies are built');
+  same(data.surfaces.map(surface => [surface.id, surface.support, surface.polyline]), [
+    ['s_dock', 'solid', [[0, 512], [320, 512]]],
+    ['s_envoy', 'solid', [[320, 576], [800, 576]]],
+    ['s_elder', 'solid', [[800, 512], [1280, 512]]],
+    ['s_west', 'one-way', [[64, 384], [288, 384]]],
+    ['s_middle', 'one-way', [[864, 352], [1248, 352]]],
+    ['s_high', 'one-way', [[960, 224], [1184, 224]]],
+  ], 'wanshou_mountain: all six approved surfaces retain their identities, kinds and exact landing spans');
+  for (const surface of data.surfaces) {
+    const left = Math.min(...surface.polyline.map(point => point[0]));
+    const right = Math.max(...surface.polyline.map(point => point[0]));
+    const bodies = f.groups[surface.support === 'one-way' ? 1 : 0].children.map(rectangle);
+    ok(bodies.some(body => body.y === surface.polyline[0][1] && body.x <= left && body.x + body.width >= right),
+      `wanshou_mountain: ${surface.id} retains its full landing span and exact top edge`);
+  }
+  ok(f.groups[1].children.every(object => object.body?.checkCollision.up &&
+    !object.body.checkCollision.down && !object.body.checkCollision.left && !object.body.checkCollision.right),
+    'wanshou_mountain: all one-way bodies only collide on top');
+  ok(f.groups[0].children.every(object => object.body?.checkCollision.up &&
+    object.body.checkCollision.down && object.body.checkCollision.left && object.body.checkCollision.right),
+    'wanshou_mountain: solid bodies keep all collision directions');
+  same(map.spawn, { x: 224, y: 512 }, 'wanshou_mountain: player start is preserved');
+  same(data.points.filter(point => point.id === 'start_spawn').map(point => point.position),
+    [[map.spawn.x, map.spawn.y]], 'wanshou_mountain: player start matches the approved scene spawn point');
+  eq(map.ropes.length, 3, 'wanshou_mountain: both ropes and the ladder are preserved');
+  same(data.climbs.map(climb => [climb.id, climb.kind]), [
+    ['c_ladder_5', 'ladder'], ['c_rope_28', 'rope'], ['c_rope_35', 'rope'],
+  ], 'wanshou_mountain: all three approved climbs keep their identities and kinds');
+  const climbObjects = tiledMap.layers.flatMap(layer => layer.type === 'objectgroup' ? layer.objects ?? [] : [])
+    .filter(object => ['rope', 'ladder'].includes(object.type));
+  same(climbObjects.map(object => [object.name, object.type, object.x, object.y, object.width, object.height]), [
+    ['ladder_5', 'ladder', 158, 384, 36, 128],
+    ['rope_28', 'rope', 912, 352, 0, 160],
+    ['rope_35', 'rope', 1136, 224, 0, 128],
+  ], 'wanshou_mountain: the named Tiled climbables retain the approved endpoints and ladder corridor');
+  same(map.ropes.map(rope => [rope.kind, rope.x, rope.top, rope.bottom, rope.halfW]),
+    data.climbs.map(climb => {
+      const width = Math.max(...climb.corridor.map(point => point[0])) - Math.min(...climb.corridor.map(point => point[0]));
+      return [climb.kind, climb.ends.end.position[0], climb.ends.end.position[1], climb.ends.start.position[1],
+        climb.kind === 'ladder' ? Math.max(12, width / 2) : FEEL.ropeGrabRangeX];
+    }), 'wanshou_mountain: rope and ladder geometry follows the approved climb ends and corridor widths');
+  same(map.ropes, [
+    { kind: 'ladder', x: 176, top: 384, bottom: 512, halfW: 18 },
+    { kind: 'rope', x: 912, top: 352, bottom: 512, halfW: FEEL.ropeGrabRangeX },
+    { kind: 'rope', x: 1136, top: 224, bottom: 352, halfW: FEEL.ropeGrabRangeX },
+  ], 'wanshou_mountain: all climbables keep their exact geometry, approved ladder center and half-width');
+  same(map.objects.filter(object => object.type === 'npc').map(object =>
+    [object.name, object.x, object.y, object.props.npc]), [
+    ['wanshou_envoy', 496, 576, 'wanshou_envoy'],
+    ['wanshou_elder', 1072, 512, 'wanshou_elder'],
+  ], 'wanshou_mountain: both named NPCs keep their positions and identities');
+  same(map.objects.filter(object => object.type === 'npc').map(object =>
+    [object.name, object.x, object.y, object.props.npc]),
+  data.points.filter(point => point.type === 'npc').map(point =>
+    [point.id, ...point.position, point.properties?.npc]),
+  'wanshou_mountain: NPC positions and identities match scene-data points');
+  same(map.objects.filter(object => object.name === 'wanshou_elder').map(object =>
+    [object.props.trial, object.props.target]), [['trial_sect_wanshou', 'trial_wanshou_pen']],
+  'wanshou_mountain: the elder retains the existing trial and target');
+  same(map.objects.filter(object => object.type === 'ferry').map(object =>
+    [object.name, object.x, object.y, object.w, object.props.returnTo]),
+  [['ferry_landing', 176, 512, 160, 'luoxia_town']],
+  'wanshou_mountain: ferry landing retains its position, width and return town');
+  same(map.objects.filter(object => object.name === 'goal_east'), [],
+    'wanshou_mountain: the scene-only east goal does not introduce a gameplay object');
+  same(map.spawns, [], 'wanshou_mountain: no monster spawns are introduced');
+  same(map.hidden, [], 'wanshou_mountain: no hidden controllers are introduced');
+  same(map.spawnGates, [], 'wanshou_mountain: no spawn gates are introduced');
+  same(map.objects.filter(object => ['gather', 'chest', 'hidden', 'spawn', 'flyZone', 'spawnGate', 'portal'].includes(object.type)), [],
+    'wanshou_mountain: no gather, chest, hidden, spawn, flying zone, spawn gate or portal objects are introduced');
+  same(map.objects.filter(object => object.name === 'tower_climb_entrance'), [],
+    'wanshou_mountain: no decorative tower entrance is introduced');
+  same(map.objects.filter(object => !['npc', 'ferry'].includes(object.type)), [],
+    'wanshou_mountain: no additional gameplay objects are introduced');
+  eq(f.tilemaps, 0, 'wanshou_mountain: GSB skips the legacy tilemap path');
+  same(f.displays.filter(object => object.kind !== 'zone').map(object => [object.kind, object.key]),
+    [['image', `gsb_${sceneId}_background`], ['image', `gsb_${sceneId}_playable`]],
+    'wanshou_mountain: GSB draws background and playable art without legacy terrain or climbs');
+  const legacyLayers = tiledMap.layers.filter(layer => layer.type === 'tilelayer' && ['ground', 'oneway'].includes(layer.name));
+  same(legacyLayers.map(layer => layer.name), ['ground', 'oneway'], 'wanshou_mountain: both legacy collision layers are present');
+  ok(legacyLayers.every(layer => layer.data?.length === tiledMap.width * tiledMap.height && layer.data.every(gid => gid === 0)),
+    'wanshou_mountain: checked-in legacy collision layers are fully cleared');
+  eq(JSON.stringify(data), dataBefore, 'wanshou_mountain: building leaves the cached scene-data input unchanged');
+  eq(JSON.stringify(tiledMap), mapBefore, 'wanshou_mountain: building leaves the Tiled map input unchanged');
+}
+testWanshouMountainGsb();
 
 console.log(JSON.stringify({ suite: 'gsb-map', passed: true, assertions }));
