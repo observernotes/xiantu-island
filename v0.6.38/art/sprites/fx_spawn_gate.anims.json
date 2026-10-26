@@ -1,0 +1,56 @@
+{
+ "atlas": "fx_spawn_gate",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  96,
+  128
+ ],
+ "anims": [
+  {
+   "key": "fx_spawn_gate_open",
+   "frames": [
+    "fx_spawn_gate_open_01",
+    "fx_spawn_gate_open_02",
+    "fx_spawn_gate_open_03",
+    "fx_spawn_gate_open_04"
+   ],
+   "frameRate": 12,
+   "repeat": 0
+  },
+  {
+   "key": "fx_spawn_gate_loop",
+   "frames": [
+    "fx_spawn_gate_loop_01",
+    "fx_spawn_gate_loop_02",
+    "fx_spawn_gate_loop_03",
+    "fx_spawn_gate_loop_04",
+    "fx_spawn_gate_loop_05",
+    "fx_spawn_gate_loop_06"
+   ],
+   "frameRate": 10,
+   "repeat": -1
+  },
+  {
+   "key": "fx_spawn_gate_close",
+   "frames": [
+    "fx_spawn_gate_close_01",
+    "fx_spawn_gate_close_02",
+    "fx_spawn_gate_close_03",
+    "fx_spawn_gate_close_04"
+   ],
+   "frameRate": 12,
+   "repeat": 0
+  }
+ ],
+ "blend": "NORMAL",
+ "originAir": [
+  0.5,
+  0.5
+ ],
+ "note": "刷怪口（maps spawnGate）。漩涡中心在帧中心：地面口（gate_left/right，y=地面）用原点 (0.5,1)；空中口（flying: true）改 setOrigin(0.5,0.5)。开场播 open 再循环 loop；刷怪那一刻可以在漩涡中心淡入怪物；最后 5 秒 despawnAll 时播 close。",
+ "kind": "fx"
+}
