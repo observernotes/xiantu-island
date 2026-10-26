@@ -1,0 +1,1604 @@
+{
+  "schemaVersion": "1.0",
+  "geometryRevision": "taixu-final-001",
+  "status": "verified",
+  "space": {
+    "origin": "top-left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "units": "logical-pixel",
+    "logicalWidth": 1280,
+    "logicalHeight": 640,
+    "sourceMap": "maps/taixu_temple.json",
+    "sourceToWorld": [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0
+    ]
+  },
+  "safeZone": true,
+  "qiDensity": 4,
+  "actor": {
+    "parameterRevision": "taixu-base-feel-20261027-001",
+    "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/move.ts; independent AABB adapter",
+    "sourceRevision": {
+      "game/src/config/feel.ts": "9375297a15b04012633197a935f4d9ffd403c3ff8d1e055cb585dd5f81acdeec",
+      "game/src/scenes/Player.ts": "ec9426ed625784532c6e632a1755bd16076cc3f559d177f465b741341193f513",
+      "game/src/move.ts": "585c9987623cbe532d7f65508773addd52ccd2f312e5c2ee592e9e6f2f686a74",
+      "game/src/SpriteArt.ts": "6c1fcb4fe67857c7fc3d569a2151f4b1a7cdd914e69be6d12d53b54b288b6f18",
+      "maps/taixu_temple.json": "0d227e315db78455db2da67e8249b84c417293b5b61dd6b2a511cea28fc3c405"
+    },
+    "provisional": false,
+    "visualBounds": {
+      "width": 96,
+      "height": 96,
+      "idleAlphaBounds": [
+        15,
+        9,
+        76,
+        96
+      ],
+      "idleVisibleWidth": 61,
+      "idleVisibleHeight": 87,
+      "anchor": "feet-center"
+    },
+    "collider": {
+      "shape": "aabb",
+      "width": 26,
+      "height": 58,
+      "anchor": "feet-center"
+    },
+    "abilities": [
+      "walk",
+      "jump",
+      "double-jump",
+      "ladder",
+      "rope",
+      "drop-through"
+    ],
+    "movement": {
+      "gravity": 2000,
+      "maxFallSpeed": 670,
+      "walkSpeed": 130,
+      "groundAccel": 2400,
+      "groundDecel": 3000,
+      "airAccel": 700,
+      "airMaxSpeed": 130,
+      "jumpSpeed": 560,
+      "coyoteMs": 60,
+      "jumpBufferMs": 80,
+      "doubleJumpVy": 480,
+      "doubleJumpVx": 330,
+      "climbSpeed": 110,
+      "ropeGrabRangeX": 18,
+      "ropeJumpVx": 160,
+      "ropeJumpVy": 360,
+      "ropeRegrabMs": 250,
+      "dropThroughMs": 220,
+      "oneWayEdge": 8,
+      "fixedHz": 60,
+      "speedPoints": 100,
+      "jumpPoints": 100
+    },
+    "failureRules": {
+      "hazards": "none-safe-zone",
+      "fall": "continuous foundation",
+      "reset": "R returns start_spawn and clears movement"
+    },
+    "visualAsset": {
+      "path": "work/preview/player-reference-idle.png",
+      "width": 96,
+      "height": 96,
+      "anchor": "feet-center"
+    }
+  },
+  "assets": [
+    {
+      "id": "asset_background",
+      "role": "background",
+      "path": "background.png",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "asset_playable",
+      "role": "playable",
+      "path": "playable.png",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "s_dock",
+      "name": "飞舟台",
+      "polyline": [
+        [
+          0,
+          512
+        ],
+        [
+          320,
+          512
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        13,
+        307
+      ],
+      "walkRegion": [
+        [
+          13,
+          454
+        ],
+        [
+          307,
+          454
+        ],
+        [
+          307,
+          512
+        ],
+        [
+          13,
+          512
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 512,
+        "tolerance": 2,
+        "rule": "visible bearing top, not rail or knot"
+      },
+      "status": "verified"
+    },
+    {
+      "id": "s_envoy",
+      "name": "接引台",
+      "polyline": [
+        [
+          320,
+          576
+        ],
+        [
+          704,
+          576
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        333,
+        691
+      ],
+      "walkRegion": [
+        [
+          333,
+          518
+        ],
+        [
+          691,
+          518
+        ],
+        [
+          691,
+          576
+        ],
+        [
+          333,
+          576
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 576,
+        "tolerance": 2,
+        "rule": "visible bearing top, not rail or knot"
+      },
+      "status": "verified"
+    },
+    {
+      "id": "s_elder",
+      "name": "长老台",
+      "polyline": [
+        [
+          704,
+          512
+        ],
+        [
+          1280,
+          512
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        717,
+        1267
+      ],
+      "walkRegion": [
+        [
+          717,
+          454
+        ],
+        [
+          1267,
+          454
+        ],
+        [
+          1267,
+          512
+        ],
+        [
+          717,
+          512
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 512,
+        "tolerance": 2,
+        "rule": "visible bearing top, not rail or knot"
+      },
+      "status": "verified"
+    },
+    {
+      "id": "s_west",
+      "name": "西灯台",
+      "polyline": [
+        [
+          64,
+          384
+        ],
+        [
+          288,
+          384
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        77,
+        275
+      ],
+      "walkRegion": [
+        [
+          77,
+          326
+        ],
+        [
+          275,
+          326
+        ],
+        [
+          275,
+          384
+        ],
+        [
+          77,
+          384
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 384,
+        "tolerance": 2,
+        "rule": "visible bearing top, not rail or knot"
+      },
+      "status": "verified"
+    },
+    {
+      "id": "s_middle",
+      "name": "演法廊台",
+      "polyline": [
+        [
+          768,
+          352
+        ],
+        [
+          1184,
+          352
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        781,
+        1171
+      ],
+      "walkRegion": [
+        [
+          781,
+          294
+        ],
+        [
+          1171,
+          294
+        ],
+        [
+          1171,
+          352
+        ],
+        [
+          781,
+          352
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 352,
+        "tolerance": 2,
+        "rule": "visible bearing top, not rail or knot"
+      },
+      "status": "verified"
+    },
+    {
+      "id": "s_high",
+      "name": "上灯台",
+      "polyline": [
+        [
+          896,
+          224
+        ],
+        [
+          1088,
+          224
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        909,
+        1075
+      ],
+      "walkRegion": [
+        [
+          909,
+          166
+        ],
+        [
+          1075,
+          166
+        ],
+        [
+          1075,
+          224
+        ],
+        [
+          909,
+          224
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 224,
+        "tolerance": 2,
+        "rule": "visible bearing top, not rail or knot"
+      },
+      "status": "verified"
+    }
+  ],
+  "climbs": [
+    {
+      "id": "c_ladder_5",
+      "kind": "ladder",
+      "corridor": [
+        [
+          158,
+          384
+        ],
+        [
+          194,
+          384
+        ],
+        [
+          194,
+          512
+        ],
+        [
+          158,
+          512
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            176,
+            512
+          ],
+          "surface": "s_dock"
+        },
+        "end": {
+          "position": [
+            176,
+            384
+          ],
+          "surface": "s_west"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "ladder",
+      "sourceCorrection": "extend lower endpoint 32px to real bearing top; source map unchanged",
+      "status": "verified"
+    },
+    {
+      "id": "c_rope_25",
+      "kind": "rope",
+      "corridor": [
+        [
+          798,
+          352
+        ],
+        [
+          834,
+          352
+        ],
+        [
+          834,
+          512
+        ],
+        [
+          798,
+          512
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            816,
+            512
+          ],
+          "surface": "s_elder"
+        },
+        "end": {
+          "position": [
+            816,
+            352
+          ],
+          "surface": "s_middle"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "sourceCorrection": "extend lower endpoint 32px to real bearing top; source map unchanged",
+      "status": "verified"
+    },
+    {
+      "id": "c_ladder_31",
+      "kind": "ladder",
+      "corridor": [
+        [
+          990,
+          224
+        ],
+        [
+          1026,
+          224
+        ],
+        [
+          1026,
+          352
+        ],
+        [
+          990,
+          352
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1008,
+            352
+          ],
+          "surface": "s_middle"
+        },
+        "end": {
+          "position": [
+            1008,
+            224
+          ],
+          "surface": "s_high"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "ladder",
+      "sourceCorrection": "extend lower endpoint 32px to real bearing top; source map unchanged",
+      "status": "verified"
+    }
+  ],
+  "stairs": [],
+  "solids": [
+    {
+      "id": "solid_dock",
+      "polygon": [
+        [
+          0,
+          512
+        ],
+        [
+          320,
+          512
+        ],
+        [
+          320,
+          640
+        ],
+        [
+          0,
+          640
+        ]
+      ],
+      "surface": "s_dock",
+      "type": "white-stone-foundation",
+      "openings": [],
+      "status": "verified"
+    },
+    {
+      "id": "solid_envoy",
+      "polygon": [
+        [
+          320,
+          576
+        ],
+        [
+          704,
+          576
+        ],
+        [
+          704,
+          640
+        ],
+        [
+          320,
+          640
+        ]
+      ],
+      "surface": "s_envoy",
+      "type": "white-stone-foundation",
+      "openings": [],
+      "status": "verified"
+    },
+    {
+      "id": "solid_elder",
+      "polygon": [
+        [
+          704,
+          512
+        ],
+        [
+          1280,
+          512
+        ],
+        [
+          1280,
+          640
+        ],
+        [
+          704,
+          640
+        ]
+      ],
+      "surface": "s_elder",
+      "type": "white-stone-foundation",
+      "openings": [],
+      "status": "verified"
+    }
+  ],
+  "hazards": [],
+  "points": [
+    {
+      "id": "start_spawn",
+      "type": "spawn",
+      "position": [
+        224,
+        512
+      ],
+      "surface": "s_dock",
+      "width": 0,
+      "sourceId": 4,
+      "properties": {},
+      "status": "verified"
+    },
+    {
+      "id": "ferry_landing",
+      "type": "ferry",
+      "position": [
+        176.0,
+        512
+      ],
+      "surface": "s_dock",
+      "width": 160,
+      "sourceId": 5,
+      "properties": {
+        "returnTo": "luoxia_town"
+      },
+      "status": "verified"
+    },
+    {
+      "id": "taixu_envoy",
+      "type": "npc",
+      "position": [
+        464,
+        576
+      ],
+      "surface": "s_envoy",
+      "width": 0,
+      "sourceId": 6,
+      "properties": {
+        "npc": "taixu_envoy",
+        "sprite": "npc_taixu_envoy"
+      },
+      "status": "verified"
+    },
+    {
+      "id": "taixu_elder",
+      "type": "npc",
+      "position": [
+        976,
+        512
+      ],
+      "surface": "s_elder",
+      "width": 0,
+      "sourceId": 7,
+      "properties": {
+        "npc": "taixu_elder",
+        "sprite": "npc_taixu_elder",
+        "trial": "trial_sect_taixu",
+        "target": "trial_taixu_stage"
+      },
+      "status": "verified"
+    },
+    {
+      "id": "goal_east",
+      "type": "goal",
+      "position": [
+        1232,
+        512
+      ],
+      "surface": "s_elder",
+      "status": "verified"
+    }
+  ],
+  "transitions": [
+    {
+      "id": "t_ladder_5_up",
+      "from": "s_dock",
+      "to": "s_west",
+      "action": "climb-up",
+      "climb": "c_ladder_5",
+      "conditions": [
+        "natural approach",
+        "full-body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "t_ladder_5_up"
+      ]
+    },
+    {
+      "id": "t_ladder_5_down",
+      "from": "s_west",
+      "to": "s_dock",
+      "action": "climb-down",
+      "climb": "c_ladder_5",
+      "conditions": [
+        "natural approach",
+        "full-body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "t_ladder_5_down"
+      ]
+    },
+    {
+      "id": "t_rope_25_up",
+      "from": "s_elder",
+      "to": "s_middle",
+      "action": "climb-up",
+      "climb": "c_rope_25",
+      "conditions": [
+        "natural approach",
+        "full-body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "t_rope_25_up"
+      ]
+    },
+    {
+      "id": "t_rope_25_down",
+      "from": "s_middle",
+      "to": "s_elder",
+      "action": "climb-down",
+      "climb": "c_rope_25",
+      "conditions": [
+        "natural approach",
+        "full-body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "t_rope_25_down"
+      ]
+    },
+    {
+      "id": "t_ladder_31_up",
+      "from": "s_middle",
+      "to": "s_high",
+      "action": "climb-up",
+      "climb": "c_ladder_31",
+      "conditions": [
+        "natural approach",
+        "full-body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "t_ladder_31_up"
+      ]
+    },
+    {
+      "id": "t_ladder_31_down",
+      "from": "s_high",
+      "to": "s_middle",
+      "action": "climb-down",
+      "climb": "c_ladder_31",
+      "conditions": [
+        "natural approach",
+        "full-body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "t_ladder_31_down"
+      ]
+    },
+    {
+      "id": "t_dock_to_envoy",
+      "from": "s_dock",
+      "to": "s_envoy",
+      "action": "drop",
+      "conditions": [
+        "ordinary jump for 64px rise",
+        "normal input only"
+      ],
+      "status": "verified",
+      "evidence": [
+        "t_dock_to_envoy"
+      ],
+      "inspectionPath": [
+        [
+          332.00000000000057,
+          512
+        ],
+        [
+          334.16666666666725,
+          512.5555555555555
+        ],
+        [
+          336.33333333333394,
+          513.6666666666666
+        ],
+        [
+          338.5000000000006,
+          515.3333333333333
+        ],
+        [
+          340.6666666666673,
+          517.5555555555554
+        ],
+        [
+          342.833333333334,
+          520.3333333333333
+        ],
+        [
+          345.0000000000007,
+          523.6666666666666
+        ],
+        [
+          347.16666666666737,
+          527.5555555555555
+        ],
+        [
+          349.33333333333405,
+          532
+        ],
+        [
+          351.50000000000074,
+          537
+        ],
+        [
+          353.6666666666674,
+          542.5555555555555
+        ],
+        [
+          355.8333333333341,
+          548.6666666666666
+        ],
+        [
+          358.0000000000008,
+          555.3333333333333
+        ],
+        [
+          360.1666666666675,
+          562.5555555555554
+        ],
+        [
+          362.33333333333417,
+          570.3333333333333
+        ],
+        [
+          364.50000000000085,
+          576
+        ]
+      ],
+      "inspectionPathSource": {
+        "path": "work/replays-final/route_main.json",
+        "fromFrame": 51,
+        "toFrame": 66,
+        "meaning": "verified feet trajectory for diagnosis; never collision geometry"
+      }
+    },
+    {
+      "id": "t_envoy_to_dock",
+      "from": "s_envoy",
+      "to": "s_dock",
+      "action": "jump",
+      "conditions": [
+        "ordinary jump for 64px rise",
+        "normal input only"
+      ],
+      "status": "verified",
+      "evidence": [
+        "t_envoy_to_dock"
+      ],
+      "inspectionPath": [
+        [
+          363.66666666666794,
+          576
+        ],
+        [
+          363.4722222222235,
+          567.2222222222222
+        ],
+        [
+          363.08333333333456,
+          559
+        ],
+        [
+          362.50000000000125,
+          551.3333333333334
+        ],
+        [
+          361.7222222222235,
+          544.2222222222223
+        ],
+        [
+          360.75000000000125,
+          537.6666666666667
+        ],
+        [
+          359.58333333333456,
+          531.6666666666667
+        ],
+        [
+          358.2222222222235,
+          526.2222222222223
+        ],
+        [
+          356.66666666666794,
+          521.3333333333334
+        ],
+        [
+          354.91666666666794,
+          517
+        ],
+        [
+          352.9722222222235,
+          513.2222222222222
+        ],
+        [
+          350.83333333333456,
+          509.99999999999994
+        ],
+        [
+          348.6666666666679,
+          507.33333333333326
+        ],
+        [
+          346.5000000000012,
+          505.2222222222222
+        ],
+        [
+          344.3333333333345,
+          503.66666666666663
+        ],
+        [
+          342.1666666666678,
+          502.66666666666663
+        ],
+        [
+          340.00000000000114,
+          502.2222222222222
+        ],
+        [
+          337.83333333333445,
+          502.33333333333326
+        ],
+        [
+          335.66666666666777,
+          502.99999999999994
+        ],
+        [
+          333.5000000000011,
+          504.2222222222222
+        ],
+        [
+          331.3333333333344,
+          505.99999999999994
+        ],
+        [
+          329.1666666666677,
+          508.33333333333326
+        ],
+        [
+          327.000000000001,
+          511.2222222222222
+        ],
+        [
+          324.83333333333434,
+          512
+        ]
+      ],
+      "inspectionPathSource": {
+        "path": "work/replays-final/route_return.json",
+        "fromFrame": 904,
+        "toFrame": 927,
+        "meaning": "verified feet trajectory for diagnosis; never collision geometry"
+      }
+    },
+    {
+      "id": "t_envoy_to_elder",
+      "from": "s_envoy",
+      "to": "s_elder",
+      "action": "jump",
+      "conditions": [
+        "ordinary jump for 64px rise",
+        "normal input only"
+      ],
+      "status": "verified",
+      "evidence": [
+        "t_envoy_to_elder"
+      ],
+      "inspectionPath": [
+        [
+          660.3333333333329,
+          576
+        ],
+        [
+          660.5277777777774,
+          567.2222222222222
+        ],
+        [
+          660.9166666666663,
+          559
+        ],
+        [
+          661.4999999999997,
+          551.3333333333334
+        ],
+        [
+          662.2777777777775,
+          544.2222222222223
+        ],
+        [
+          663.2499999999997,
+          537.6666666666667
+        ],
+        [
+          664.4166666666663,
+          531.6666666666667
+        ],
+        [
+          665.7777777777774,
+          526.2222222222223
+        ],
+        [
+          667.3333333333329,
+          521.3333333333334
+        ],
+        [
+          669.0833333333329,
+          517
+        ],
+        [
+          671.0277777777774,
+          513.2222222222222
+        ],
+        [
+          673.1666666666663,
+          509.99999999999994
+        ],
+        [
+          675.3333333333329,
+          507.33333333333326
+        ],
+        [
+          677.4999999999995,
+          505.2222222222222
+        ],
+        [
+          679.6666666666662,
+          503.66666666666663
+        ],
+        [
+          681.8333333333328,
+          502.66666666666663
+        ],
+        [
+          683.9999999999994,
+          502.2222222222222
+        ],
+        [
+          686.1666666666661,
+          502.33333333333326
+        ],
+        [
+          688.3333333333327,
+          502.99999999999994
+        ],
+        [
+          690.4999999999993,
+          504.2222222222222
+        ],
+        [
+          692.666666666666,
+          505.99999999999994
+        ],
+        [
+          694.8333333333326,
+          508.33333333333326
+        ],
+        [
+          696.9999999999992,
+          511.2222222222222
+        ],
+        [
+          699.1666666666658,
+          512
+        ]
+      ],
+      "inspectionPathSource": {
+        "path": "work/replays-final/route_main.json",
+        "fromFrame": 208,
+        "toFrame": 231,
+        "meaning": "verified feet trajectory for diagnosis; never collision geometry"
+      }
+    },
+    {
+      "id": "t_elder_to_envoy",
+      "from": "s_elder",
+      "to": "s_envoy",
+      "action": "drop",
+      "conditions": [
+        "ordinary jump for 64px rise",
+        "normal input only"
+      ],
+      "status": "verified",
+      "evidence": [
+        "t_elder_to_envoy"
+      ],
+      "inspectionPath": [
+        [
+          691.9999999999995,
+          512
+        ],
+        [
+          689.8333333333329,
+          512.5555555555555
+        ],
+        [
+          687.6666666666663,
+          513.6666666666666
+        ],
+        [
+          685.4999999999997,
+          515.3333333333333
+        ],
+        [
+          683.333333333333,
+          517.5555555555554
+        ],
+        [
+          681.1666666666664,
+          520.3333333333333
+        ],
+        [
+          678.9999999999998,
+          523.6666666666666
+        ],
+        [
+          676.8333333333331,
+          527.5555555555555
+        ],
+        [
+          674.6666666666665,
+          532
+        ],
+        [
+          672.4999999999999,
+          537
+        ],
+        [
+          670.3333333333333,
+          542.5555555555555
+        ],
+        [
+          668.1666666666666,
+          548.6666666666666
+        ],
+        [
+          666,
+          555.3333333333333
+        ],
+        [
+          663.8333333333334,
+          562.5555555555554
+        ],
+        [
+          661.6666666666667,
+          570.3333333333333
+        ],
+        [
+          659.5000000000001,
+          576
+        ]
+      ],
+      "inspectionPathSource": {
+        "path": "work/replays-final/route_return.json",
+        "fromFrame": 747,
+        "toFrame": 762,
+        "meaning": "verified feet trajectory for diagnosis; never collision geometry"
+      }
+    }
+  ],
+  "requiredRoutes": [
+    {
+      "id": "route_main",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "taixu_envoy",
+        "taixu_elder"
+      ],
+      "direction": "east",
+      "status": "verified",
+      "evidence": [
+        "route_main"
+      ]
+    },
+    {
+      "id": "route_return",
+      "from": "start_spawn",
+      "to": "start_spawn",
+      "via": [
+        "taixu_envoy",
+        "taixu_elder",
+        "goal_east",
+        "s_envoy"
+      ],
+      "direction": "out-and-back",
+      "status": "verified",
+      "evidence": [
+        "route_return"
+      ]
+    },
+    {
+      "id": "route_west",
+      "from": "start_spawn",
+      "to": "start_spawn",
+      "via": [
+        "c_ladder_5",
+        "s_west",
+        "s_dock"
+      ],
+      "direction": "out-and-back",
+      "status": "verified",
+      "evidence": [
+        "route_west"
+      ]
+    },
+    {
+      "id": "route_middle",
+      "from": "start_spawn",
+      "to": "start_spawn",
+      "via": [
+        "taixu_envoy",
+        "c_rope_25",
+        "s_middle",
+        "s_elder",
+        "s_envoy"
+      ],
+      "direction": "out-and-back",
+      "status": "verified",
+      "evidence": [
+        "route_middle"
+      ]
+    },
+    {
+      "id": "route_high",
+      "from": "start_spawn",
+      "to": "start_spawn",
+      "via": [
+        "taixu_envoy",
+        "c_rope_25",
+        "c_ladder_31",
+        "s_high",
+        "s_middle",
+        "s_elder",
+        "s_envoy"
+      ],
+      "direction": "out-and-back",
+      "status": "verified",
+      "evidence": [
+        "route_high"
+      ]
+    },
+    {
+      "id": "route_full_tour",
+      "from": "start_spawn",
+      "to": "start_spawn",
+      "via": [
+        "s_west",
+        "taixu_envoy",
+        "s_high",
+        "taixu_elder",
+        "goal_east",
+        "s_envoy"
+      ],
+      "direction": "out-and-back",
+      "status": "verified",
+      "evidence": [
+        "route_full_tour"
+      ]
+    }
+  ],
+  "diagnostics": {
+    "maskPalette": {
+      "walk": [
+        150,
+        245,
+        160,
+        255
+      ],
+      "stand": [
+        0,
+        200,
+        80,
+        255
+      ],
+      "rope": [
+        0,
+        190,
+        230,
+        255
+      ],
+      "ladder": [
+        80,
+        140,
+        255,
+        255
+      ],
+      "stairs": [
+        255,
+        160,
+        40,
+        255
+      ],
+      "point": [
+        255,
+        70,
+        160,
+        255
+      ],
+      "jump": [
+        255,
+        180,
+        0,
+        255
+      ],
+      "drop": [
+        170,
+        80,
+        225,
+        255
+      ]
+    },
+    "rasterizationOrder": [
+      "walk",
+      "stand",
+      "rope",
+      "ladder",
+      "stairs",
+      "jump",
+      "drop",
+      "point"
+    ],
+    "regionIdIndex": null,
+    "geometryRevision": "taixu-final-001"
+  },
+  "validation": {
+    "status": "verified",
+    "geometryRevision": "taixu-final-001",
+    "actorParameterRevision": "taixu-base-feel-20261027-001",
+    "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+    "evidence": [
+      {
+        "id": "route_main",
+        "geometryRevision": "taixu-final-001",
+        "actorParameterRevision": "taixu-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/move.ts; independent AABB adapter",
+        "method": "continuous normal-spawn fixed60Hz inputs; browser replay matches; no teleport or mid-route reset",
+        "path": "work/replays-final/route_main.json",
+        "result": "verified",
+        "frames": 496,
+        "resetCount": 0
+      },
+      {
+        "id": "route_return",
+        "geometryRevision": "taixu-final-001",
+        "actorParameterRevision": "taixu-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/move.ts; independent AABB adapter",
+        "method": "continuous normal-spawn fixed60Hz inputs; browser replay matches; no teleport or mid-route reset",
+        "path": "work/replays-final/route_return.json",
+        "result": "verified",
+        "frames": 992,
+        "resetCount": 0
+      },
+      {
+        "id": "route_west",
+        "geometryRevision": "taixu-final-001",
+        "actorParameterRevision": "taixu-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/move.ts; independent AABB adapter",
+        "method": "continuous normal-spawn fixed60Hz inputs; browser replay matches; no teleport or mid-route reset",
+        "path": "work/replays-final/route_west.json",
+        "result": "verified",
+        "frames": 349,
+        "resetCount": 0
+      },
+      {
+        "id": "route_middle",
+        "geometryRevision": "taixu-final-001",
+        "actorParameterRevision": "taixu-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/move.ts; independent AABB adapter",
+        "method": "continuous normal-spawn fixed60Hz inputs; browser replay matches; no teleport or mid-route reset",
+        "path": "work/replays-final/route_middle.json",
+        "result": "verified",
+        "frames": 1163,
+        "resetCount": 0
+      },
+      {
+        "id": "route_high",
+        "geometryRevision": "taixu-final-001",
+        "actorParameterRevision": "taixu-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/move.ts; independent AABB adapter",
+        "method": "continuous normal-spawn fixed60Hz inputs; browser replay matches; no teleport or mid-route reset",
+        "path": "work/replays-final/route_high.json",
+        "result": "verified",
+        "frames": 1432,
+        "resetCount": 0
+      },
+      {
+        "id": "route_full_tour",
+        "geometryRevision": "taixu-final-001",
+        "actorParameterRevision": "taixu-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/move.ts; independent AABB adapter",
+        "method": "continuous normal-spawn fixed60Hz inputs; browser replay matches; no teleport or mid-route reset",
+        "path": "work/replays-final/route_full_tour.json",
+        "result": "verified",
+        "frames": 2166,
+        "resetCount": 0
+      },
+      {
+        "id": "t_ladder_5_up",
+        "geometryRevision": "taixu-final-001",
+        "actorParameterRevision": "taixu-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/move.ts; independent AABB adapter",
+        "method": "natural continuous route transition with normal jump/drop/climb inputs",
+        "path": "work/replays-final/route_west.json",
+        "result": "verified",
+        "frame": 117
+      },
+      {
+        "id": "t_ladder_5_down",
+        "geometryRevision": "taixu-final-001",
+        "actorParameterRevision": "taixu-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/move.ts; independent AABB adapter",
+        "method": "natural continuous route transition with normal jump/drop/climb inputs",
+        "path": "work/replays-final/route_west.json",
+        "result": "verified",
+        "frame": 303
+      },
+      {
+        "id": "t_rope_25_up",
+        "geometryRevision": "taixu-final-001",
+        "actorParameterRevision": "taixu-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/move.ts; independent AABB adapter",
+        "method": "natural continuous route transition with normal jump/drop/climb inputs",
+        "path": "work/replays-final/route_middle.json",
+        "result": "verified",
+        "frame": 412
+      },
+      {
+        "id": "t_rope_25_down",
+        "geometryRevision": "taixu-final-001",
+        "actorParameterRevision": "taixu-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/move.ts; independent AABB adapter",
+        "method": "natural continuous route transition with normal jump/drop/climb inputs",
+        "path": "work/replays-final/route_middle.json",
+        "result": "verified",
+        "frame": 839
+      },
+      {
+        "id": "t_ladder_31_up",
+        "geometryRevision": "taixu-final-001",
+        "actorParameterRevision": "taixu-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/move.ts; independent AABB adapter",
+        "method": "natural continuous route transition with normal jump/drop/climb inputs",
+        "path": "work/replays-final/route_high.json",
+        "result": "verified",
+        "frame": 741
+      },
+      {
+        "id": "t_ladder_31_down",
+        "geometryRevision": "taixu-final-001",
+        "actorParameterRevision": "taixu-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/move.ts; independent AABB adapter",
+        "method": "natural continuous route transition with normal jump/drop/climb inputs",
+        "path": "work/replays-final/route_high.json",
+        "result": "verified",
+        "frame": 895
+      },
+      {
+        "id": "t_dock_to_envoy",
+        "geometryRevision": "taixu-final-001",
+        "actorParameterRevision": "taixu-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/move.ts; independent AABB adapter",
+        "method": "natural continuous route transition with normal jump/drop/climb inputs",
+        "path": "work/replays-final/route_main.json",
+        "result": "verified",
+        "frame": 66
+      },
+      {
+        "id": "t_envoy_to_dock",
+        "geometryRevision": "taixu-final-001",
+        "actorParameterRevision": "taixu-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/move.ts; independent AABB adapter",
+        "method": "natural continuous route transition with normal jump/drop/climb inputs",
+        "path": "work/replays-final/route_return.json",
+        "result": "verified",
+        "frame": 927
+      },
+      {
+        "id": "t_envoy_to_elder",
+        "geometryRevision": "taixu-final-001",
+        "actorParameterRevision": "taixu-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/move.ts; independent AABB adapter",
+        "method": "natural continuous route transition with normal jump/drop/climb inputs",
+        "path": "work/replays-final/route_main.json",
+        "result": "verified",
+        "frame": 231
+      },
+      {
+        "id": "t_elder_to_envoy",
+        "geometryRevision": "taixu-final-001",
+        "actorParameterRevision": "taixu-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/move.ts; independent AABB adapter",
+        "method": "natural continuous route transition with normal jump/drop/climb inputs",
+        "path": "work/replays-final/route_return.json",
+        "result": "verified",
+        "frame": 762
+      },
+      {
+        "id": "browser-contacts",
+        "geometryRevision": "taixu-final-001",
+        "actorParameterRevision": "taixu-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/move.ts; independent AABB adapter",
+        "method": "Chrome same-runtime normal-spawn input replay; six stable contact captures; keyboard/reset/UI and minimap; asset hashes",
+        "path": "work/final-browser-check.json",
+        "result": "verified"
+      },
+      {
+        "id": "physics",
+        "geometryRevision": "taixu-final-001",
+        "actorParameterRevision": "taixu-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/move.ts; independent AABB adapter",
+        "method": "nine action checks; ceiling fixture explicitly synthetic, not a map route",
+        "path": "work/final-physics-check.json",
+        "result": "verified"
+      },
+      {
+        "id": "visual-alignment",
+        "geometryRevision": "taixu-final-001",
+        "actorParameterRevision": "taixu-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/move.ts; independent AABB adapter",
+        "method": "manual visible bearing-outline audit plus browser contact snapshots; 1x and magnified strips",
+        "path": "work/final-geometry-measurements.json",
+        "result": "verified"
+      }
+    ],
+    "issues": [],
+    "leadApproval": "pending",
+    "integrationAllowed": false
+  },
+  "alignmentContract": {
+    "tolerancePx": 2,
+    "bottom": "continuous stone foundation to edge; no fragments",
+    "climbAnchor": "exact bearing top"
+  },
+  "previewEntities": [
+    {
+      "id": "npc_taixu_envoy",
+      "name": "太虚接引",
+      "path": "work/preview/npc_taixu_envoy-idle.png",
+      "position": [
+        464,
+        576
+      ],
+      "width": 96,
+      "height": 96,
+      "sourcePath": "art/sprites/npc_taixu_envoy.png",
+      "sourceFrame": "npc_taixu_envoy_idle_01",
+      "sourceSHA256": "aaaaab182472755a7691da47189ad862eadef3a309d1a1bbbae85331426ead6f",
+      "referenceOnly": true
+    },
+    {
+      "id": "npc_taixu_elder",
+      "name": "太虚长老",
+      "path": "work/preview/npc_taixu_elder-idle.png",
+      "position": [
+        976,
+        512
+      ],
+      "width": 96,
+      "height": 96,
+      "sourcePath": "art/sprites/npc_taixu_elder.png",
+      "sourceFrame": "npc_taixu_elder_idle_01",
+      "sourceSHA256": "717cb9131b65e0a8312ae12de6752b7d3b8b49fc1eda4e29131e0f7da8074806",
+      "referenceOnly": true
+    }
+  ]
+}
