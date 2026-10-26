@@ -16,6 +16,10 @@ import wanyaoSceneData from '../data/art/scenes/wanyao_outer_1_gsb_v1/scene-data
 import wanyaoTiledMap from '../data/maps/wanyao_outer_1.json';
 import wanyao2SceneData from '../data/art/scenes/wanyao_outer_2_gsb_v1/scene-data.json';
 import wanyao2TiledMap from '../data/maps/wanyao_outer_2.json';
+import wanyaoDeep1SceneData from '../data/art/scenes/wanyao_deep_1_gsb_v1/scene-data.json';
+import wanyaoDeep1TiledMap from '../data/maps/wanyao_deep_1.json';
+import wanyaoDeep2SceneData from '../data/art/scenes/wanyao_deep_2_gsb_v1/scene-data.json';
+import wanyaoDeep2TiledMap from '../data/maps/wanyao_deep_2.json';
 import { FEEL, SPEC } from './config/feel';
 import { buildTiledMap } from './scenes/MapBuilder';
 
@@ -713,6 +717,178 @@ for (const contract of productionMaps) {
     'trial_foundation_altar: checked-in legacy collision layers are fully cleared');
   eq(JSON.stringify(data), dataBefore, 'trial_foundation_altar: building leaves the cached scene-data input unchanged');
   eq(JSON.stringify(tiledMap), mapBefore, 'trial_foundation_altar: building leaves the Tiled map input unchanged');
+}
+
+// Wanyao's deep forest retains its apes, saplings, resources and two disabled hidden controllers.
+{
+  const sceneId = 'wanyao_deep_1_gsb_v1', revision = 'deep1-final-001';
+  const data = clone(wanyaoDeep1SceneData), tiledMap = clone(wanyaoDeep1TiledMap);
+  const f = fixture(null, false), dataBefore = JSON.stringify(data), mapBefore = JSON.stringify(tiledMap);
+  f.cache.clear(); f.cache.set(`gsb_${sceneId}_data`, data);
+  f.textures.add(`gsb_${sceneId}_background`); f.textures.add(`gsb_${sceneId}_playable`);
+  const map = buildTiledMap(f.scene, tiledMap, 'tiles');
+  eq(map.gsbScene, sceneId, 'wanyao_deep_1: checked-in map enables its GSB scene');
+  eq(tiledMap.properties.find(property => property.name === 'gsbScene')?.value,
+    sceneId, 'wanyao_deep_1: map binds the approved GSB scene');
+  eq(tiledMap.properties.find(property => property.name === 'gsbGeometryRevision')?.value,
+    revision, 'wanyao_deep_1: map binds the approved geometry revision');
+  eq(data.geometryRevision, revision, 'wanyao_deep_1: scene-data has the approved geometry revision');
+  same([map.width, map.height], [3520, 1024], 'wanyao_deep_1: logical world dimensions match the approved scene');
+  same([tiledMap.width, tiledMap.height], [110, 32], 'wanyao_deep_1: checked-in tile grid is 110 x 32');
+  same([tiledMap.width * tiledMap.tilewidth, tiledMap.height * tiledMap.tileheight], [map.width, map.height],
+    'wanyao_deep_1: checked-in tile grid matches logical world dimensions');
+  same(f.groups.map(group => group.children.length), [4, 11], 'wanyao_deep_1: four solids and eleven one-way bodies are built');
+  for (const surface of data.surfaces) {
+    const left = Math.min(...surface.polyline.map(point => point[0]));
+    const right = Math.max(...surface.polyline.map(point => point[0]));
+    const bodies = f.groups[surface.support === 'one-way' ? 1 : 0].children.map(rectangle);
+    ok(bodies.some(body => body.y === surface.polyline[0][1] && body.x <= left && body.x + body.width >= right),
+      `wanyao_deep_1: ${surface.id} retains its full landing span and exact top edge`);
+  }
+  ok(f.groups[1].children.every(object => object.body?.checkCollision.up &&
+    !object.body.checkCollision.down && !object.body.checkCollision.left && !object.body.checkCollision.right),
+    'wanyao_deep_1: all one-way bodies only collide on top');
+  ok(f.groups[0].children.every(object => object.body?.checkCollision.up &&
+    object.body.checkCollision.down && object.body.checkCollision.left && object.body.checkCollision.right),
+    'wanyao_deep_1: solid bodies keep all collision directions');
+  same(map.spawn, { x: 128, y: 960 }, 'wanyao_deep_1: player start is preserved');
+  eq(map.ropes.length, 8, 'wanyao_deep_1: all eight ropes are preserved');
+  // The three ladder climbs in scene-data have no corresponding objects in the checked-in map.
+  const ropeClimbs = data.climbs.filter(climb => climb.kind === 'rope');
+  same(map.ropes.map(rope => [rope.kind, rope.x, rope.top, rope.bottom, rope.halfW]),
+    ropeClimbs.map(climb => ['rope', climb.ends.end.position[0], climb.ends.end.position[1],
+      climb.ends.start.position[1], FEEL.ropeGrabRangeX]),
+    'wanyao_deep_1: rope tops follow rope climb ends and bottoms follow rope climb starts');
+  same(map.objects.filter(object => object.type === 'portal').map(object =>
+    [object.name, object.x, object.y, object.props.target, object.props.targetPortal]), [
+    ['portal_to_outer_2', 80, 960, 'wanyao_outer_2', 'portal_to_deep_1'],
+    ['portal_to_deep_2', 3440, 768, 'wanyao_deep_2', 'portal_to_deep_1'],
+  ], 'wanyao_deep_1: both portals retain their positions and destinations');
+  same(map.spawns.map(spawn => [spawn.monster, spawn.x, spawn.y, spawn.w, spawn.count]), [
+    ['demonized_ape', 192, 960, 736, 3], ['demonized_ape', 960, 896, 928, 3],
+    ['demonized_ape', 1920, 832, 800, 3], ['tree_demon_sapling', 256, 832, 480, 2],
+    ['tree_demon_sapling', 1152, 768, 480, 2], ['tree_demon_sapling', 1280, 640, 544, 2],
+    ['tree_demon_sapling', 2048, 704, 480, 2], ['tree_demon_sapling', 2752, 768, 608, 2],
+  ], 'wanyao_deep_1: all eight monster positions, patrol widths and counts survive integration');
+  same(map.objects.filter(object => object.type === 'gather').map(object =>
+    [object.name, object.x, object.y, object.props.item, object.props.respawnMs]), [
+    ['gather_spirit_copper_20', 784, 704, 'spirit_copper', 120000],
+    ['gather_spirit_copper_21', 2576, 576, 'spirit_copper', 120000],
+    ['gather_nine_leaf_ganoderma_22', 3152, 512, 'nine_leaf_ganoderma', 600000],
+  ], 'wanyao_deep_1: all gathers keep their positions, items and respawn times');
+  same(map.objects.filter(object => object.type === 'chest').map(object =>
+    [object.name, object.x, object.y, object.props.loot, object.props.count]),
+  [['sense_chest_01', 528, 704, 'qi_pill', 1]],
+  'wanyao_deep_1: the native chest retains its position and loot');
+  eq(map.hidden.length, 2, 'wanyao_deep_1: both existing hidden controllers are retained');
+  same(map.hidden.map(hidden => hidden.object.name), ['sense_hidden_chest_01', 'sense_hidden_platform_01'],
+    'wanyao_deep_1: chest and platform hidden controllers keep their identities');
+  ok(map.hidden.every(hidden => hidden.object.props.enabled === false), 'wanyao_deep_1: hidden controllers stay disabled');
+  same(map.objects.filter(object => object.type === 'flyZone').map(object =>
+    [object.name, object.x, object.y, object.w, object.h]),
+  [['flyZone_1', 640, 448, 2240, 288]],
+  'wanyao_deep_1: the flying zone retains its bounds');
+  eq(f.tilemaps, 0, 'wanyao_deep_1: GSB skips the legacy tilemap path');
+  same(f.displays.filter(object => object.kind !== 'zone').map(object => [object.kind, object.key]),
+    [['image', `gsb_${sceneId}_background`], ['image', `gsb_${sceneId}_playable`]],
+    'wanyao_deep_1: GSB draws background and playable art without legacy terrain or ropes');
+  const legacyLayers = tiledMap.layers.filter(layer => layer.type === 'tilelayer' && ['ground', 'oneway'].includes(layer.name));
+  same(legacyLayers.map(layer => layer.name), ['ground', 'oneway'], 'wanyao_deep_1: both legacy collision layers are present');
+  ok(legacyLayers.every(layer => layer.data?.length === tiledMap.width * tiledMap.height && layer.data.every(gid => gid === 0)),
+    'wanyao_deep_1: checked-in legacy collision layers are fully cleared');
+  eq(JSON.stringify(data), dataBefore, 'wanyao_deep_1: building leaves the cached scene-data input unchanged');
+  eq(JSON.stringify(tiledMap), mapBefore, 'wanyao_deep_1: building leaves the Tiled map input unchanged');
+}
+
+// Wanyao's ancient tree heart retains its boss arena, summon gates and return ferry.
+{
+  const sceneId = 'wanyao_deep_2_gsb_v1', revision = 'wanyao-deep2-final-001';
+  const data = clone(wanyaoDeep2SceneData), tiledMap = clone(wanyaoDeep2TiledMap);
+  const f = fixture(null, false), dataBefore = JSON.stringify(data), mapBefore = JSON.stringify(tiledMap);
+  f.cache.clear(); f.cache.set(`gsb_${sceneId}_data`, data);
+  f.textures.add(`gsb_${sceneId}_background`); f.textures.add(`gsb_${sceneId}_playable`);
+  const map = buildTiledMap(f.scene, tiledMap, 'tiles');
+  eq(map.gsbScene, sceneId, 'wanyao_deep_2: checked-in map enables its GSB scene');
+  eq(tiledMap.properties.find(property => property.name === 'gsbScene')?.value,
+    sceneId, 'wanyao_deep_2: map binds the approved GSB scene');
+  eq(tiledMap.properties.find(property => property.name === 'gsbGeometryRevision')?.value,
+    revision, 'wanyao_deep_2: map binds the approved geometry revision');
+  eq(data.geometryRevision, revision, 'wanyao_deep_2: scene-data has the approved geometry revision');
+  same([map.width, map.height], [3840, 1024], 'wanyao_deep_2: logical world dimensions match the approved scene');
+  same([tiledMap.width, tiledMap.height], [120, 32], 'wanyao_deep_2: checked-in tile grid is 120 x 32');
+  same([tiledMap.width * tiledMap.tilewidth, tiledMap.height * tiledMap.tileheight], [map.width, map.height],
+    'wanyao_deep_2: checked-in tile grid matches logical world dimensions');
+  same(f.groups.map(group => group.children.length), [3, 7], 'wanyao_deep_2: three solids and seven one-way bodies are built');
+  for (const surface of data.surfaces) {
+    const left = Math.min(...surface.polyline.map(point => point[0]));
+    const right = Math.max(...surface.polyline.map(point => point[0]));
+    const bodies = f.groups[surface.support === 'one-way' ? 1 : 0].children.map(rectangle);
+    ok(bodies.some(body => body.y === surface.polyline[0][1] && body.x <= left && body.x + body.width >= right),
+      `wanyao_deep_2: ${surface.id} retains its full landing span and exact top edge`);
+  }
+  ok(f.groups[1].children.every(object => object.body?.checkCollision.up &&
+    !object.body.checkCollision.down && !object.body.checkCollision.left && !object.body.checkCollision.right),
+    'wanyao_deep_2: all one-way bodies only collide on top');
+  ok(f.groups[0].children.every(object => object.body?.checkCollision.up &&
+    object.body.checkCollision.down && object.body.checkCollision.left && object.body.checkCollision.right),
+    'wanyao_deep_2: solid bodies keep all collision directions');
+  same(map.spawn, { x: 128, y: 960 }, 'wanyao_deep_2: player start is preserved');
+  eq(map.ropes.length, 7, 'wanyao_deep_2: all seven ropes are preserved');
+  // Tiled places rope_107 before rope_96; compare copies sorted by x to preserve both inputs.
+  same([...map.ropes].sort((a, b) => a.x - b.x).map(rope =>
+    [rope.kind, rope.x, rope.top, rope.bottom, rope.halfW]),
+  [...data.climbs].sort((a, b) => a.ends.end.position[0] - b.ends.end.position[0]).map(climb =>
+    [climb.kind, climb.ends.end.position[0], climb.ends.end.position[1], climb.ends.start.position[1], FEEL.ropeGrabRangeX]),
+  'wanyao_deep_2: rope endpoints follow the approved climbs regardless of object order');
+  same(map.objects.filter(object => object.type === 'portal').map(object =>
+    [object.name, object.x, object.y, object.props.target, object.props.targetPortal]),
+  [['portal_to_deep_1', 80, 960, 'wanyao_deep_1', 'portal_to_deep_2']],
+  'wanyao_deep_2: the portal retains its position and destination');
+  same(map.objects.filter(object => object.type === 'ferry').map(object =>
+    [object.name, object.x, object.y, object.w, object.props.returnTo]),
+  [['ferry_pickup', 3760, 960, 96, 'luoxia_town']],
+  'wanyao_deep_2: ferry pickup retains its position, width and return town');
+  same(map.spawns.map(spawn => [spawn.monster, spawn.x, spawn.y, spawn.w, spawn.count]), [
+    ['tree_demon_sapling', 192, 960, 928, 3], ['tree_demon_sapling', 320, 832, 480, 2],
+    ['tree_demon_sapling', 576, 704, 480, 2], ['tree_demon_sapling', 1152, 896, 800, 3],
+    ['tree_demon_sapling', 1280, 768, 480, 2], ['demonized_ape', 1952, 960, 448, 2],
+    ['millennium_tree_demon', 3072, 960, 288, 1],
+  ], 'wanyao_deep_2: all seven monster positions, patrol widths and counts survive integration');
+  same(map.spawnGates, [
+    { type: 'spawnGate', name: 'summon_left', x: 2496, y: 960, w: 0, h: 0, props: { side: 'left' } },
+    { type: 'spawnGate', name: 'summon_right', x: 3712, y: 960, w: 0, h: 0, props: { side: 'right' } },
+  ], 'wanyao_deep_2: both spawn gates retain their positions and sides');
+  same(map.objects.filter(object => object.type === 'spawnGate'), map.spawnGates,
+    'wanyao_deep_2: spawn gates remain available through gameplay objects');
+  same(map.zones, [{ name: 'boss_arena', x: 2432, y: 384, w: 1344, h: 576,
+    props: { label: '古树心（千年树妖）', unlockQuest: 'q_main_06', bossOnly: true } }],
+  'wanyao_deep_2: the boss arena retains its bounds and quest gate');
+  same(map.objects.filter(object => object.type === 'gather').map(object =>
+    [object.name, object.x, object.y, object.props.item, object.props.respawnMs]),
+  [['gather_spirit_copper_21', 1616, 768, 'spirit_copper', 120000]],
+  'wanyao_deep_2: the gather keeps its position, item and respawn time');
+  same(map.objects.filter(object => object.type === 'chest').map(object =>
+    [object.name, object.x, object.y, object.props.loot, object.props.count]),
+  [['sense_chest_01', 2208, 768, 'hp_pill_small', 1]],
+  'wanyao_deep_2: the native chest retains its position and loot');
+  eq(map.hidden.length, 2, 'wanyao_deep_2: both existing hidden controllers are retained');
+  same(map.hidden.map(hidden => hidden.object.name), ['sense_hidden_chest_01', 'sense_hidden_platform_01'],
+    'wanyao_deep_2: chest and platform hidden controllers keep their identities');
+  ok(map.hidden.every(hidden => hidden.object.props.enabled === false), 'wanyao_deep_2: hidden controllers stay disabled');
+  same(map.objects.filter(object => object.type === 'flyZone').map(object =>
+    [object.name, object.x, object.y, object.w, object.h]),
+  [['flyZone_1', 640, 448, 2400, 288]],
+  'wanyao_deep_2: the flying zone retains its bounds');
+  eq(f.tilemaps, 0, 'wanyao_deep_2: GSB skips the legacy tilemap path');
+  same(f.displays.filter(object => object.kind !== 'zone').map(object => [object.kind, object.key]),
+    [['image', `gsb_${sceneId}_background`], ['image', `gsb_${sceneId}_playable`]],
+    'wanyao_deep_2: GSB draws background and playable art without legacy terrain or ropes');
+  const legacyLayers = tiledMap.layers.filter(layer => layer.type === 'tilelayer' && ['ground', 'oneway'].includes(layer.name));
+  same(legacyLayers.map(layer => layer.name), ['ground', 'oneway'], 'wanyao_deep_2: both legacy collision layers are present');
+  ok(legacyLayers.every(layer => layer.data?.length === tiledMap.width * tiledMap.height && layer.data.every(gid => gid === 0)),
+    'wanyao_deep_2: checked-in legacy collision layers are fully cleared');
+  eq(JSON.stringify(data), dataBefore, 'wanyao_deep_2: building leaves the cached scene-data input unchanged');
+  eq(JSON.stringify(tiledMap), mapBefore, 'wanyao_deep_2: building leaves the Tiled map input unchanged');
 }
 
 console.log(JSON.stringify({ suite: 'gsb-map', passed: true, assertions }));

@@ -41,7 +41,7 @@ if (!logicalW || !logicalH) {
 const RUNTIME_FILES = ['background.png', 'playable.png', 'foreground.png', 'scene-data.json', 'manifest.json'];
 const POINT_TO_OBJECT = {
   start_spawn: 'playerStart',
-  goal_east: ['portal_to_bamboo', 'portal_to_lingxi', 'portal_to_village', 'portal_to_outer_2'],
+  goal_east: ['portal_to_bamboo', 'portal_to_lingxi', 'portal_to_village', 'portal_to_outer_2', 'portal_to_deep_2'],
   portal_west: ['portal_west_locked', 'portal_to_village'],
   point_west: 'portal_west_locked',
   npc_elder: 'village_elder',

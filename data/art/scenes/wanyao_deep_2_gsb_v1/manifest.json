@@ -1,0 +1,415 @@
+{
+  "schemaVersion": "1.0",
+  "sceneId": "wanyao_deep_2_gsb_v1",
+  "assetVersion": "gsb_v1",
+  "geometryRevision": "wanyao-deep2-final-001",
+  "status": "verified",
+  "reviewStatus": "awaiting-owner",
+  "integrationStatus": "not-integrated",
+  "deliveredAt": "2026-10-27 04:29 Asia/Shanghai",
+  "space": {
+    "origin": "top-left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "units": "logical-pixel",
+    "logicalWidth": 3840,
+    "logicalHeight": 1024,
+    "tileSize": 32,
+    "columns": 120,
+    "rows": 32
+  },
+  "actorParameterRevision": "wanyao-deep2-base-feel-20261027-001",
+  "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+  "sourceDataSHA256": "e9d52c0fc2d24b0e327e1e9e65189c2f663d3051b43b52472d404667f31ae496",
+  "assets": [
+    {
+      "id": "asset_background",
+      "role": "background",
+      "path": "background.png",
+      "pixelWidth": 3840,
+      "pixelHeight": 1024,
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "asset_playable",
+      "role": "playable",
+      "path": "playable.png",
+      "pixelWidth": 3840,
+      "pixelHeight": 1024,
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    }
+  ],
+  "drawOrder": [
+    "background",
+    "playable",
+    "actor"
+  ],
+  "foreground": {
+    "applicable": false,
+    "reason": "No foreground occlusion needed; boss runway and ropes remain readable"
+  },
+  "diagnostics": {
+    "sourceDataSHA256": "e9d52c0fc2d24b0e327e1e9e65189c2f663d3051b43b52472d404667f31ae496",
+    "geometryRevision": "wanyao-deep2-final-001",
+    "maskPalette": {
+      "stand": [
+        64,
+        220,
+        120,
+        255
+      ],
+      "walk": [
+        44,
+        132,
+        80,
+        255
+      ],
+      "climb": [
+        80,
+        180,
+        255,
+        255
+      ],
+      "jump": [
+        255,
+        190,
+        64,
+        255
+      ],
+      "drop": [
+        180,
+        100,
+        240,
+        255
+      ],
+      "point": [
+        255,
+        220,
+        80,
+        255
+      ]
+    },
+    "rasterizationOrder": [
+      "stand",
+      "walk",
+      "climb",
+      "jump",
+      "drop",
+      "point"
+    ],
+    "metadata": "diagnostics-metadata.json"
+  },
+  "sourceMap": {
+    "path": "maps/wanyao_deep_2.json",
+    "sha256": "2264cac0937eeeb370bf56560cff12714f040c7b8255d3589265bcd9d6c7cc0e",
+    "modifiedByThisTask": false,
+    "snapshot": "work/source-map.json"
+  },
+  "localEntry": "index.html",
+  "localRuntime": "work/preview/index.html",
+  "generationProvenance": "work/imagegen-provenance.json",
+  "validation": {
+    "status": "verified",
+    "requiredRoutes": 7,
+    "directedTransitions": 18,
+    "standingSurfaces": 10,
+    "climbs": 7,
+    "bodySweepFrames": 21551,
+    "bodyPenetrations": 0,
+    "report": "validation-report.md",
+    "scope": "base-feel independent AABB local tester; combat and formal Phaser integration excluded by brief"
+  },
+  "files": [
+    {
+      "path": "scene.png",
+      "role": "composite",
+      "bytes": 7515013,
+      "sha256": "39ccc3b010aa18f593a7d3b7035993136cc93dab04c2159381fc7eb125c1e934",
+      "geometryRevision": "wanyao-deep2-final-001",
+      "pixelWidth": 3840,
+      "pixelHeight": 1024,
+      "mode": "RGBA",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "drawOrder": null
+    },
+    {
+      "path": "background.png",
+      "role": "background",
+      "bytes": 7474365,
+      "sha256": "6960d51475bc69e9abd537e3a417192055b78fdce2f47d36c08f56d13dec9264",
+      "geometryRevision": "wanyao-deep2-final-001",
+      "pixelWidth": 3840,
+      "pixelHeight": 1024,
+      "mode": "RGBA",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "drawOrder": 0
+    },
+    {
+      "path": "playable.png",
+      "role": "playable",
+      "bytes": 917288,
+      "sha256": "bc010ba33b354ab7bdd39075c6a7178431dcabe7ddff95dcb2eec2e4f90880ed",
+      "geometryRevision": "wanyao-deep2-final-001",
+      "pixelWidth": 3840,
+      "pixelHeight": 1024,
+      "mode": "RGBA",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "drawOrder": 10
+    },
+    {
+      "path": "scene-data.json",
+      "role": "authority",
+      "bytes": 78866,
+      "sha256": "e9d52c0fc2d24b0e327e1e9e65189c2f663d3051b43b52472d404667f31ae496",
+      "geometryRevision": "wanyao-deep2-final-001"
+    },
+    {
+      "path": "action-mask.png",
+      "role": "action-semantics",
+      "bytes": 17766,
+      "sha256": "98b8babdb178bf33ad5f29d793491c5244435d9c642de5df954b6ac79f3fbb2a",
+      "geometryRevision": "wanyao-deep2-final-001",
+      "pixelWidth": 3840,
+      "pixelHeight": 1024,
+      "mode": "RGBA",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "drawOrder": null
+    },
+    {
+      "path": "action-overlay.png",
+      "role": "action-diagnostic",
+      "bytes": 7493231,
+      "sha256": "5bd138048413657cc523135f765c2fe9ce0fc380d0664812b0fe338abfd54655",
+      "geometryRevision": "wanyao-deep2-final-001",
+      "pixelWidth": 3840,
+      "pixelHeight": 1024,
+      "mode": "RGBA",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "drawOrder": null
+    },
+    {
+      "path": "collision-overlay.png",
+      "role": "collision-diagnostic",
+      "bytes": 7447979,
+      "sha256": "6218c2c61584340a5278d058c260d55a607dbba18c92cba02a8c64368d43f98e",
+      "geometryRevision": "wanyao-deep2-final-001",
+      "pixelWidth": 3840,
+      "pixelHeight": 1024,
+      "mode": "RGBA",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "drawOrder": null
+    },
+    {
+      "path": "diagnostics-metadata.json",
+      "role": "diagnostic-provenance",
+      "bytes": 1222,
+      "sha256": "ee3f5e03a63249a307c1520d3a3537dbb1329ce9a3f86d29497617b8615e8928",
+      "geometryRevision": "wanyao-deep2-final-001"
+    },
+    {
+      "path": "validation-report.md",
+      "role": "validation-report",
+      "bytes": 11335,
+      "sha256": "cfc3dff248f2e507b51ae220938abeed3134cc745140d4a8baee66a03bf389d0",
+      "geometryRevision": "wanyao-deep2-final-001"
+    },
+    {
+      "path": "DELIVERED.md",
+      "role": "handoff",
+      "bytes": 951,
+      "sha256": "0523e2d4ecc79a5263c7134b7c7acd68c97e8bbd981acc16cd2eca34d7e13093",
+      "geometryRevision": "wanyao-deep2-final-001"
+    },
+    {
+      "path": "README.md",
+      "role": "local-instructions",
+      "bytes": 1368,
+      "sha256": "f1c0e2e44cfa56db7d16fc9dbea64e2a342bc39d5e97e860931464225874133b",
+      "geometryRevision": "wanyao-deep2-final-001"
+    },
+    {
+      "path": "index.html",
+      "role": "local-entry",
+      "bytes": 174,
+      "sha256": "ce86454ff53a5e2f36edd667aae30c4bcb9af91f7198592e6c8740383961801a",
+      "geometryRevision": "wanyao-deep2-final-001"
+    },
+    {
+      "path": "work/preview/engine.mjs",
+      "role": "local-runtime",
+      "bytes": 13521,
+      "sha256": "bbea03054581ac2d17aace9fb3c3ba30f5ca970082f8ea085202b784d661d755",
+      "geometryRevision": "wanyao-deep2-final-001"
+    },
+    {
+      "path": "work/preview/preview.mjs",
+      "role": "local-runtime",
+      "bytes": 13852,
+      "sha256": "e1e38732efe2af71c493af014337010d0898d9f7b26a97b21d22f1b6af39e288",
+      "geometryRevision": "wanyao-deep2-final-001"
+    },
+    {
+      "path": "work/preview/index.html",
+      "role": "local-runtime",
+      "bytes": 3806,
+      "sha256": "20298b45cd9f8b6eab7a6d5e08d3ed79ac26cffbaede88d6ed9c6e24f94596d0",
+      "geometryRevision": "wanyao-deep2-final-001"
+    },
+    {
+      "path": "work/preview/player-reference-idle.png",
+      "role": "local-runtime",
+      "bytes": 10012,
+      "sha256": "520235d2f9c4c9e83b140ba439c2d18becfaa8e962fa15a98e35a14003ce0181",
+      "geometryRevision": "wanyao-deep2-final-001"
+    },
+    {
+      "path": "work/preview/mon_millennium_tree_demon-idle.png",
+      "role": "local-runtime",
+      "bytes": 35604,
+      "sha256": "672d055ac710b916ca9bd25daddec6e82bcb98916e2875eec2d69891bff140ad",
+      "geometryRevision": "wanyao-deep2-final-001"
+    },
+    {
+      "path": "work/preview/mon_tree_demon_sapling-idle.png",
+      "role": "local-runtime",
+      "bytes": 8865,
+      "sha256": "8149423ed82794d6aab8c1592a8e2a32423908168b80c84e21e0604913caa509",
+      "geometryRevision": "wanyao-deep2-final-001"
+    },
+    {
+      "path": "work/preview/mon_demonized_ape-idle.png",
+      "role": "local-runtime",
+      "bytes": 8580,
+      "sha256": "0ff360f02ed7086be22b88f40305115acebe0b12d5e9d31b3bb28ff708d9da8c",
+      "geometryRevision": "wanyao-deep2-final-001"
+    },
+    {
+      "path": "work/final-data-check.json",
+      "role": "validation-evidence",
+      "bytes": 462,
+      "sha256": "cf928107ef0be4f2b4aa7eaa1d784b83261d997cbf551f264e4b55b47edf5be7",
+      "geometryRevision": "wanyao-deep2-final-001"
+    },
+    {
+      "path": "work/final-routes.json",
+      "role": "validation-evidence",
+      "bytes": 1555,
+      "sha256": "182296cab1108bdbb324a69fd77dacdda3eaa3eafd0e6fe68a78321cc59113e2",
+      "geometryRevision": "wanyao-deep2-final-001"
+    },
+    {
+      "path": "work/final-transition-evidence.json",
+      "role": "validation-evidence",
+      "bytes": 25262,
+      "sha256": "26e772ec326df5920b90009097d98b75fb7af9f568d56a9d18fa690466971f61",
+      "geometryRevision": "wanyao-deep2-final-001"
+    },
+    {
+      "path": "work/final-physics-check.json",
+      "role": "validation-evidence",
+      "bytes": 1193068,
+      "sha256": "a04d8215fc936d32016f7ee79b4a38b4778ada9cbb9c058302e78f479359aa4d",
+      "geometryRevision": "wanyao-deep2-final-001"
+    },
+    {
+      "path": "work/final-browser-check.json",
+      "role": "validation-evidence",
+      "bytes": 4346,
+      "sha256": "c0317e3628d9f7c4c54f319534e7d868480f7bdaa3b97f285cfc561a32497172",
+      "geometryRevision": "wanyao-deep2-final-001"
+    },
+    {
+      "path": "work/final-browser-resource-binding.json",
+      "role": "validation-evidence",
+      "bytes": 1937,
+      "sha256": "a8a270eed5a2f46a1eda75bddb7591ea1ccf26860a942635fe7b52e9a4a0d48b",
+      "geometryRevision": "wanyao-deep2-final-001"
+    },
+    {
+      "path": "work/final-geometry-measurements.json",
+      "role": "validation-evidence",
+      "bytes": 11249,
+      "sha256": "e9c8961e799ab5c7cf7d0c25698df5c5ec4f0db436359e42d1df5e35291dceb8",
+      "geometryRevision": "wanyao-deep2-final-001"
+    },
+    {
+      "path": "work/protected-boundary-final.json",
+      "role": "validation-evidence",
+      "bytes": 959,
+      "sha256": "b23894b5ab114964f416825aad92c838f79bcc26df2cf943ac1d665cd21ec1c1",
+      "geometryRevision": "wanyao-deep2-final-001"
+    },
+    {
+      "path": "work/imagegen-provenance.json",
+      "role": "validation-evidence",
+      "bytes": 3545,
+      "sha256": "a3d9da75620e744d31671901d0d23277250f9ae2035e16ec52ccf41ad0d7e2fa",
+      "geometryRevision": "wanyao-deep2-final-001"
+    },
+    {
+      "path": "work/stage5-placement-records.json",
+      "role": "validation-evidence",
+      "bytes": 14002,
+      "sha256": "716b99fbacc814b2a480b5109b5ce48f4482e190f2b85dbb296c7beb303a1731",
+      "geometryRevision": "wanyao-deep2-final-001"
+    }
+  ]
+}
