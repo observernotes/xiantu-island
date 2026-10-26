@@ -1,0 +1,625 @@
+{
+ "note": "制符一期排版，1x 坐标相对 640×400 窗口左上角。复用炼丹窗的真实 bestiary/ui_bestiary_window/title/inset/btn_close 与 alchemy/ui_alchemy_btn_*；不重绘窗体、按钮。箭头、键帽与除品质单字外的文字由程序绘制。",
+ "window": {
+  "size": [
+   640,
+   400
+  ],
+  "image": "bestiary/ui_bestiary_window",
+  "nineSlice": [
+   10,
+   10,
+   10,
+   10
+  ],
+  "title": "bestiary/ui_bestiary_title（居中；文字 talisman.title）",
+  "titleThreeSlice": [
+   12,
+   12
+  ],
+  "close": [
+   614,
+   6
+  ],
+  "closeImage": "bestiary/ui_bestiary_btn_close"
+ },
+ "sectInfo": {
+  "text": [
+   24,
+   30
+  ],
+  "note": "本宗品质上限与成功率加成读规则；只显示策划值，不由颜色/美术判定。"
+ },
+ "recipeList": {
+  "panel": [
+   20,
+   52,
+   176,
+   326
+  ],
+  "panelImage": "bestiary/ui_bestiary_inset",
+  "row": [
+   26,
+   60,
+   164,
+   48
+  ],
+  "rowGap": 8,
+  "rowImages": {
+   "normal": "ui_talisman_card_normal",
+   "selected": "ui_talisman_card_selected",
+   "locked": "ui_talisman_card_locked"
+  },
+  "rowSlices": [
+   14,
+   6,
+   6,
+   6
+  ],
+  "rowIcon": "32px 产物图标放 row +18,+8；名字 +58,+10；用途/未学提示 +58,+28。",
+  "inkTab": {
+   "image": "alchemy/ui_alchemy_btn_{normal,hover,pressed,disabled}",
+   "rect": [
+    26,
+    294,
+    164,
+    28
+   ],
+   "nineSlice": [
+    6,
+    6,
+    6,
+    6
+   ],
+   "text": "talisman.ink_tab"
+  }
+ },
+ "detail": {
+  "panel": [
+   206,
+   52,
+   414,
+   326
+  ],
+  "panelImage": "bestiary/ui_bestiary_inset",
+  "output": {
+   "icon": [
+    222,
+    64
+   ],
+   "name": [
+    262,
+    70
+   ],
+   "qualityTag": [
+    314,
+    68
+   ],
+   "note": "结果阶段显示最终品质标；制作前不预告随机或最高品质。"
+  },
+  "materials": {
+   "slot": "ui_talisman_slot_ok/lack",
+   "first": [
+    222,
+    122
+   ],
+   "gap": 54,
+   "icon": "32×32 物品图标放格内 +4,+4；缺料时加独立 icon_talisman_lack 到中心 +33.5,+33.5，缩放 0.6，保持右下叉在图标上方。",
+   "count": "格子下居中 y+44 写 owned/need；来源与缺料原因用文字。",
+   "lackMark": "icon_talisman_lack 16px 可在来源提示旁使用。"
+  },
+  "preview": {
+   "text": [
+    222,
+    190
+   ],
+   "width": 116,
+   "note": "产出、达标后成功率、开始即扣料、各品质阈值用程序文本显示。"
+  },
+  "paper": {
+   "image": "ui_talisman_paper",
+   "rect": [
+    350,
+    82,
+    128,
+    224
+   ],
+   "origin": [
+    0,
+    0
+   ],
+   "fxCenter": [
+    414,
+    194
+   ],
+   "fxScale": 2,
+   "strokeAtlas": "fx_trial_talisman",
+   "failureAtlas": "fx_talisman_draw",
+   "note": "两套 64×112 特效在 paper 区域中心、原点 (0.5,0.5)，放大 2 倍。独立 ui 符纸用于选符预览；进入绘制后隐藏本图，使用 fx_trial_talisman 自带纸面的 blank/stroke/done，避免双纸叠放。c=0 用 blank；仅正确后按累计正确笔数 c 设置 stroke_0c，错误/超时不改底层帧，总笔进度独立推进。craft_fail 前隐藏独立 UI 纸和 trial 累计 sprite，再同中心播放替换动画。"
+  },
+  "sequence": {
+   "text": [
+    488,
+    88
+   ],
+   "width": 116,
+   "note": "完整方向序列一直可见，只亮当前笔；程序绘箭头/键帽，按 recipes[].draw.strokes 顺序。"
+  },
+  "stepBar": {
+   "frame": "ui_talisman_step_bar_frame",
+   "rect": [
+    350,
+    312,
+    128,
+    10
+   ],
+   "fill": "ui_talisman_step_bar_fill",
+   "innerOffset": [
+    3,
+    3
+   ],
+   "note": "本笔剩余 / stepTimeMs；正式模式显示，试炼隐藏。暂停冻结玩法计时。"
+  },
+  "strokeFeedback": {
+   "center": [
+    488,
+    324
+   ],
+   "icons": [
+    "icon_talisman_stroke_ok",
+    "icon_talisman_stroke_miss",
+    "icon_talisman_stroke_timeout"
+   ],
+   "text": [
+    508,
+    324
+   ],
+   "note": "正确/错误/超时均配文字反馈，正式模式只推进当前笔一次。"
+  },
+  "buttons": {
+   "image": "alchemy/ui_alchemy_btn_{normal,hover,pressed,disabled}",
+   "nineSlice": [
+    6,
+    6,
+    6,
+    6
+   ],
+   "startOrAgain": [
+    222,
+    346,
+    112,
+    28
+   ],
+   "abandonOrContinue": [
+    342,
+    346,
+    112,
+    28
+   ],
+   "abandonOrContinueImage": {
+    "style": "secondary",
+    "normal": "hud/ui_hud_dialog_option_normal",
+    "hover": "hud/ui_hud_dialog_option_selected",
+    "pressed": "hud/ui_hud_dialog_option_selected",
+    "disabled": "hud/ui_hud_dialog_option_disabled",
+    "nineSlice": [
+     6,
+     6,
+     6,
+     6
+    ],
+    "textColor": {
+     "normal": "#3B2A20",
+     "disabled": "#8E867C"
+    },
+    "note": "2026-10-10 总监定：「放弃 / 继续」改次级按钮（宣纸底 + 1px 墨褐框），借已精修对话选项三态（64×28、9-slice 6，与 ui_alchemy_btn_* 同尺寸同切片，可直接换图）；hover / pressed 用对话选项 selected（1px 朱红框）。主按钮「开始制符 / 再来」仍用 image（朱红 ui_alchemy_btn_*）。需程序：abandonOrContinue 改读本字段。"
+   },
+   "close": [
+    470,
+    346,
+    112,
+    28
+   ],
+   "note": "缺料/未学/不可用时 disabled；开始前程序预检，结果入包与按钮事件分开。"
+  }
+ },
+ "quality": {
+  "low": "ui_talisman_quality_low",
+  "mid": "ui_talisman_quality_mid",
+  "high": "ui_talisman_quality_high",
+  "supreme": "ui_talisman_quality_supreme"
+ },
+ "hud": {
+  "icons": {
+   "buff_talisman_gather": "icon_buff_talisman_gather",
+   "buff_talisman_guard": "icon_buff_talisman_guard"
+  },
+  "size": [
+   16,
+   16
+  ],
+  "note": "HUD 原点 (0.5,0.5)，持续时间按 expireAt；品质/倍率/倒计时文字由程序读实际状态。"
+ },
+ "returnCastbarReuse": {
+  "frame": "alchemy/ui_gather_castbar_frame",
+  "fill": "alchemy/ui_gather_castbar_fill",
+  "note": "遁地读条复用已锁采集条，此目录不另画、不覆盖。"
+ },
+ "assets": [
+  "ui_talisman_card_normal",
+  "ui_talisman_card_selected",
+  "ui_talisman_card_locked",
+  "ui_talisman_slot_ok",
+  "ui_talisman_slot_lack",
+  "icon_talisman_lack",
+  "ui_talisman_quality_low",
+  "ui_talisman_quality_mid",
+  "ui_talisman_quality_high",
+  "ui_talisman_quality_supreme",
+  "icon_talisman_stroke_ok",
+  "icon_talisman_stroke_miss",
+  "icon_talisman_stroke_timeout",
+  "ui_talisman_paper",
+  "ui_talisman_step_bar_frame",
+  "ui_talisman_step_bar_fill",
+  "icon_buff_talisman_gather",
+  "icon_buff_talisman_guard"
+ ],
+ "structuredNote": "下列每个 key 的 size 都是 1x PNG 实际尺寸；@2x PNG 的尺寸与所有切片边距乘 2。UI 静图没有 anims；成符/累计笔画复用 fx_trial_talisman。",
+ "ui_talisman_card_normal": {
+  "size": [
+   64,
+   48
+  ],
+  "origin": [
+   0,
+   0
+  ],
+  "purpose": "已学可选符卡：宣纸底、1px 墨褐框；图标和名称由程序叠放。",
+  "nineSlice": [
+   14,
+   6,
+   6,
+   6
+  ],
+  "contentInset": [
+   16,
+   6,
+   6,
+   6
+  ]
+ },
+ "ui_talisman_card_selected": {
+  "size": [
+   64,
+   48
+  ],
+  "origin": [
+   0,
+   0
+  ],
+  "purpose": "当前符卡：1px 朱红框、左侧小金色 ▶；不得横向整图缩放箭头。",
+  "nineSlice": [
+   14,
+   6,
+   6,
+   6
+  ],
+  "contentInset": [
+   16,
+   6,
+   6,
+   6
+  ]
+ },
+ "ui_talisman_card_locked": {
+  "size": [
+   64,
+   48
+  ],
+  "origin": [
+   0,
+   0
+  ],
+  "purpose": "未学/等级不足符卡：灰底与锁标；叠加锁定原因文字。",
+  "nineSlice": [
+   14,
+   6,
+   6,
+   6
+  ],
+  "contentInset": [
+   16,
+   6,
+   6,
+   6
+  ]
+ },
+ "ui_talisman_slot_ok": {
+  "size": [
+   40,
+   40
+  ],
+  "origin": [
+   0,
+   0
+  ],
+  "purpose": "材料足够：宣纸底墨褐细框，32×32 物品图标置于 +4,+4。",
+  "contentInset": [
+   4,
+   4,
+   4,
+   4
+  ]
+ },
+ "ui_talisman_slot_lack": {
+  "size": [
+   40,
+   40
+  ],
+  "origin": [
+   0,
+   0
+  ],
+  "purpose": "材料不足：朱红细框和右下小叉，文字显示 owned/need。",
+  "contentInset": [
+   4,
+   4,
+   4,
+   4
+  ]
+ },
+ "icon_talisman_lack": {
+  "size": [
+   16,
+   16
+  ],
+  "origin": [
+   0.5,
+   0.5
+  ],
+  "purpose": "材料不足独立叉标；配合材料数量/来源文字使用。"
+ },
+ "ui_talisman_quality_low": {
+  "size": [
+   28,
+   22
+  ],
+  "origin": [
+   0,
+   0
+  ],
+  "purpose": "下品：灰色矩形签，带手绘「下」。",
+  "quality": "low",
+  "glyph": "下"
+ },
+ "ui_talisman_quality_mid": {
+  "size": [
+   28,
+   22
+  ],
+  "origin": [
+   0,
+   0
+  ],
+  "purpose": "中品：铜色切角签，带手绘「中」。",
+  "quality": "mid",
+  "glyph": "中"
+ },
+ "ui_talisman_quality_high": {
+  "size": [
+   28,
+   22
+  ],
+  "origin": [
+   0,
+   0
+  ],
+  "purpose": "上品：银色双缺口签，带手绘「上」。",
+  "quality": "high",
+  "glyph": "上"
+ },
+ "ui_talisman_quality_supreme": {
+  "size": [
+   28,
+   22
+  ],
+  "origin": [
+   0,
+   0
+  ],
+  "purpose": "极品：金色尖尾签，带手绘「极」。",
+  "quality": "supreme",
+  "glyph": "极"
+ },
+ "icon_talisman_stroke_ok": {
+  "size": [
+   16,
+   16
+  ],
+  "origin": [
+   0.5,
+   0.5
+  ],
+  "purpose": "本笔正确：天青勾。"
+ },
+ "icon_talisman_stroke_miss": {
+  "size": [
+   16,
+   16
+  ],
+  "origin": [
+   0.5,
+   0.5
+  ],
+  "purpose": "本笔错误：朱红叉；正式模式继续下一笔。"
+ },
+ "icon_talisman_stroke_timeout": {
+  "size": [
+   16,
+   16
+  ],
+  "origin": [
+   0.5,
+   0.5
+  ],
+  "purpose": "本笔超时：灰色沙漏；正式模式继续下一笔。"
+ },
+ "ui_talisman_paper": {
+  "size": [
+   128,
+   224
+  ],
+  "origin": [
+   0,
+   0
+  ],
+  "purpose": "中央画符区黄符纸底，固定 128×224；选符预览时显示，绘制中使用自带纸面的 fx_trial_talisman 时隐藏本图，不把按键提示画入纸面。"
+ },
+ "ui_talisman_step_bar_frame": {
+  "size": [
+   40,
+   10
+  ],
+  "origin": [
+   0,
+   0
+  ],
+  "purpose": "本笔剩余时间外框；9-slice 到目标宽，内区 x+3,y+3,w-6,h-6。",
+  "nineSlice": [
+   4,
+   4,
+   3,
+   3
+  ],
+  "innerRect": [
+   3,
+   3,
+   34,
+   4
+  ]
+ },
+ "ui_talisman_step_bar_fill": {
+  "size": [
+   8,
+   4
+  ],
+  "origin": [
+   0,
+   0
+  ],
+  "purpose": "天青本笔剩余时间填充；3-slice 到内区整宽，以裁剪显示剩余比例，避免缩窄两端。",
+  "threeSlice": [
+   2,
+   2
+  ]
+ },
+ "icon_buff_talisman_gather": {
+  "size": [
+   16,
+   16
+  ],
+  "origin": [
+   0.5,
+   0.5
+  ],
+  "purpose": "HUD 聚灵增益：天青聚气漩涡；显示真实到期时间，30 分钟。"
+ },
+ "icon_buff_talisman_guard": {
+  "size": [
+   16,
+   16
+  ],
+  "origin": [
+   0.5,
+   0.5
+  ],
+  "purpose": "HUD 护身增益：金色护身环与符纸；显示真实剩余时间。"
+ },
+ "sprites": {
+  "fx_talisman_draw": {
+   "path": "art/sprites/fx_talisman_draw",
+   "frameSize": [
+    64,
+    112
+   ],
+   "origin": [
+    0.5,
+    0.5
+   ],
+   "blend": "NORMAL"
+  },
+  "fx_talisman_fire_projectile": {
+   "path": "art/sprites/fx_talisman_fire_projectile",
+   "frameSize": [
+    48,
+    32
+   ],
+   "origin": [
+    0.5,
+    0.5
+   ],
+   "blend": "NORMAL"
+  },
+  "fx_talisman_fire_hit": {
+   "path": "art/sprites/fx_talisman_fire_hit",
+   "frameSize": [
+    64,
+    64
+   ],
+   "origin": [
+    0.5,
+    0.5
+   ],
+   "blend": "NORMAL"
+  },
+  "fx_talisman_guard_orbit": {
+   "path": "art/sprites/fx_talisman_guard_orbit",
+   "frameSize": [
+    96,
+    96
+   ],
+   "origin": [
+    0.5,
+    0.75
+   ],
+   "blend": "NORMAL"
+  },
+  "fx_talisman_return_cast": {
+   "path": "art/sprites/fx_talisman_return_cast",
+   "frameSize": [
+    64,
+    96
+   ],
+   "origin": [
+    0.5,
+    1
+   ],
+   "blend": "NORMAL"
+  },
+  "fx_talisman_return_land": {
+   "path": "art/sprites/fx_talisman_return_land",
+   "frameSize": [
+    96,
+    64
+   ],
+   "origin": [
+    0.5,
+    1
+   ],
+   "blend": "NORMAL"
+  },
+  "fx_talisman_gather_buff": {
+   "path": "art/sprites/fx_talisman_gather_buff",
+   "frameSize": [
+    64,
+    96
+   ],
+   "origin": [
+    0.5,
+    1
+   ],
+   "blend": "NORMAL"
+  }
+ }
+}

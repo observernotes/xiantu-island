@@ -1,0 +1,38 @@
+{
+  "frames": {
+    "prop_enc_sign_idle_01": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 48
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 32,
+        "h": 48
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 48
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    }
+  },
+  "meta": {
+    "app": "xiantu gen_encounter_v05.py",
+    "image": "prop_enc_sign.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 32,
+      "h": 48
+    },
+    "scale": "1"
+  }
+}

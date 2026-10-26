@@ -1,0 +1,28 @@
+{
+ "atlas": "fx_enc_help_mark",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  24,
+  32
+ ],
+ "blend": "NORMAL",
+ "kind": "fx",
+ "note": "程序化占位；key 名待天机阁确认。求助/奇遇提示，朱红底宣纸 ! 气泡。原点 (0.5,1) 是气泡底边锚点，放 NPC/物件头顶加4px间距；循环 idle 轻浮，不把它放到地面。可用 hurt_sit 时实际头部位置调整提示高度；对话/隐藏期间由程序收起。",
+ "anims": [
+  {
+   "key": "fx_enc_help_mark_idle",
+   "frames": [
+    "fx_enc_help_mark_idle_01",
+    "fx_enc_help_mark_idle_02",
+    "fx_enc_help_mark_idle_03",
+    "fx_enc_help_mark_idle_04"
+   ],
+   "frameRate": 4,
+   "repeat": -1
+  }
+ ]
+}

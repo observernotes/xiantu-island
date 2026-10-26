@@ -1,0 +1,3580 @@
+{
+  "schemaVersion": "1.0",
+  "geometryRevision": "outskirts1-final-001",
+  "status": "verified",
+  "space": {
+    "origin": "top-left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "units": "logical-pixel",
+    "logicalWidth": 3200,
+    "logicalHeight": 1088
+  },
+  "sourceMap": {
+    "path": "maps/luoxia_outskirts_1.json",
+    "sha256": "b21f1b38d14046c8acbd6034d256322520ce2a2d47d3eec8d4059a09f4afa6d6",
+    "pixelToWorld": [
+      1,
+      0,
+      0,
+      1,
+      0,
+      192
+    ],
+    "explanation": "192px sky extension keeps original map geometry and 64px continuous ground depth; no gameplay scaling"
+  },
+  "actor": {
+    "parameterRevision": "outskirts1-base-feel-20261027-001",
+    "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; SpriteArt.ts; public/art/sprites/player_sword_m.anims.json; data/balance/player_growth.json",
+    "sourceRevision": {
+      "game/src/config/feel.ts": "9375297a15b04012633197a935f4d9ffd403c3ff8d1e055cb585dd5f81acdeec",
+      "game/src/scenes/Player.ts": "ec9426ed625784532c6e632a1755bd16076cc3f559d177f465b741341193f513",
+      "game/src/scenes/MapBuilder.ts": "b57cf44af7f3aed6cfc7318cd2615f95e42a4f3e99a837b82c795eac257ca86b",
+      "game/src/scenes/GameScene.ts": "be729e283208874e69b7b9d7d69ded54d5225f4276e77cdc7efa05f474d5da87",
+      "game/src/main.ts": "c882932569a2040c23c6f131ea741f34e3820e9ea721410a5ff6e859d00b6f9d",
+      "game/src/move.ts": "585c9987623cbe532d7f65508773addd52ccd2f312e5c2ee592e9e6f2f686a74",
+      "game/src/SpriteArt.ts": "6c1fcb4fe67857c7fc3d569a2151f4b1a7cdd914e69be6d12d53b54b288b6f18",
+      "game/src/PlayerInput.ts": "5621449dc667aedb17034e10f42d2f34425c9ef1d45f21112de6be1a1139a04e",
+      "game/public/art/sprites/player_sword_m.anims.json": "50ee41e30ca903b95db22b9290a49ac2220d243ca37dba3876fdec784271df92",
+      "balance/player_growth.json": "04cf448040bff27b2c578d4ec9e1c0babde07afdf14d4b91d5f56ba6f403604e",
+      "balance/tools/gen_village.py": "ecd1179a46e2978d0349d539b186208a7228c8f909ad837d401738b53bbf576c"
+    },
+    "provisional": false,
+    "visualBounds": {
+      "width": 96,
+      "height": 96,
+      "idleAlphaBounds": [
+        15,
+        9,
+        76,
+        96
+      ],
+      "idleVisibleWidth": 61,
+      "idleVisibleHeight": 87,
+      "anchor": "feet-center"
+    },
+    "collider": {
+      "shape": "aabb",
+      "width": 26,
+      "height": 58,
+      "anchor": "feet-center"
+    },
+    "abilities": [
+      "walk",
+      "jump",
+      "double-jump",
+      "ladder",
+      "rope",
+      "drop-through"
+    ],
+    "movement": {
+      "gravity": 2000,
+      "maxFallSpeed": 670,
+      "walkSpeed": 130,
+      "groundAccel": 2400,
+      "groundDecel": 3000,
+      "airAccel": 700,
+      "airMaxSpeed": 130,
+      "jumpSpeed": 560,
+      "coyoteMs": 60,
+      "jumpBufferMs": 80,
+      "doubleJumpVy": 480,
+      "doubleJumpVx": 330,
+      "climbSpeed": 110,
+      "ropeGrabRangeX": 18,
+      "ropeJumpVx": 160,
+      "ropeJumpVy": 360,
+      "ropeRegrabMs": 250,
+      "dropThroughMs": 220,
+      "oneWayEdge": 8,
+      "fixedHz": 60,
+      "speedPoints": 100,
+      "jumpPoints": 100
+    },
+    "failureRules": {
+      "hazards": "combat excluded from local geometry tester; no static damage volumes",
+      "fall": "continuous ground catches falls",
+      "reset": "R clears motion and returns to start_spawn"
+    },
+    "visualAsset": {
+      "path": "work/preview/player-reference-idle.png",
+      "width": 96,
+      "height": 96,
+      "anchor": "feet-center"
+    }
+  },
+  "assets": [
+    {
+      "id": "a_background",
+      "role": "background",
+      "path": "background.png",
+      "pixelWidth": 3200,
+      "pixelHeight": 1088,
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "sourceMaster": "work/generated/master-refined-005.png"
+    },
+    {
+      "id": "a_playable",
+      "role": "playable",
+      "path": "playable.png",
+      "pixelWidth": 3200,
+      "pixelHeight": 1088,
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "sourceMaster": "work/generated/master-refined-005.png"
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "s_g_left",
+      "polyline": [
+        [
+          0,
+          1024
+        ],
+        [
+          1216,
+          1024
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        13,
+        1203
+      ],
+      "walkRegion": [
+        [
+          13,
+          966
+        ],
+        [
+          1203,
+          966
+        ],
+        [
+          1203,
+          1024
+        ],
+        [
+          13,
+          1024
+        ]
+      ],
+      "visualContact": {
+        "targetY": 1024,
+        "tolerance": 2,
+        "definition": "bearing soil / board top; excludes rice tips, knots and railings"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "natural stable full-body contact from continuous all-climbs replay",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified",
+          "objectId": "s_g_left",
+          "contact": {
+            "surfaceId": "s_g_left",
+            "frame": 1266,
+            "x": 398.99999999997925,
+            "feet": 1024,
+            "dataY": 1024,
+            "error": 0
+          }
+        },
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "three bearing material samples within 2px; excludes decorative peaks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified",
+          "objectId": "s_g_left"
+        }
+      ]
+    },
+    {
+      "id": "s_g_ridge",
+      "polyline": [
+        [
+          1216,
+          960
+        ],
+        [
+          1856,
+          960
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        1229,
+        1843
+      ],
+      "walkRegion": [
+        [
+          1229,
+          902
+        ],
+        [
+          1843,
+          902
+        ],
+        [
+          1843,
+          960
+        ],
+        [
+          1229,
+          960
+        ]
+      ],
+      "visualContact": {
+        "targetY": 960,
+        "tolerance": 2,
+        "definition": "bearing soil / board top; excludes rice tips, knots and railings"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "natural stable full-body contact from continuous all-climbs replay",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified",
+          "objectId": "s_g_ridge",
+          "contact": {
+            "surfaceId": "s_g_ridge",
+            "frame": 586,
+            "x": 1839.1666666666663,
+            "feet": 960,
+            "dataY": 960,
+            "error": 0
+          }
+        },
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "three bearing material samples within 2px; excludes decorative peaks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified",
+          "objectId": "s_g_ridge"
+        }
+      ]
+    },
+    {
+      "id": "s_g_right",
+      "polyline": [
+        [
+          1856,
+          1024
+        ],
+        [
+          3200,
+          1024
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        1869,
+        3187
+      ],
+      "walkRegion": [
+        [
+          1869,
+          966
+        ],
+        [
+          3187,
+          966
+        ],
+        [
+          3187,
+          1024
+        ],
+        [
+          1869,
+          1024
+        ]
+      ],
+      "visualContact": {
+        "targetY": 1024,
+        "tolerance": 2,
+        "definition": "bearing soil / board top; excludes rice tips, knots and railings"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "natural stable full-body contact from continuous all-climbs replay",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified",
+          "objectId": "s_g_right",
+          "contact": {
+            "surfaceId": "s_g_right",
+            "frame": 554,
+            "x": 1878.8333333333987,
+            "feet": 1024,
+            "dataY": 1024,
+            "error": 0
+          }
+        },
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "three bearing material samples within 2px; excludes decorative peaks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified",
+          "objectId": "s_g_right"
+        }
+      ]
+    },
+    {
+      "id": "s_p5",
+      "polyline": [
+        [
+          192,
+          896
+        ],
+        [
+          608,
+          896
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        205,
+        595
+      ],
+      "walkRegion": [
+        [
+          205,
+          838
+        ],
+        [
+          595,
+          838
+        ],
+        [
+          595,
+          896
+        ],
+        [
+          205,
+          896
+        ]
+      ],
+      "visualContact": {
+        "targetY": 896,
+        "tolerance": 2,
+        "definition": "bearing soil / board top; excludes rice tips, knots and railings"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "natural stable full-body contact from continuous all-climbs replay",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified",
+          "objectId": "s_p5",
+          "contact": {
+            "surfaceId": "s_p5",
+            "frame": 1357,
+            "x": 400,
+            "feet": 896,
+            "dataY": 896,
+            "error": 0
+          }
+        },
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "three bearing material samples within 2px; excludes decorative peaks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified",
+          "objectId": "s_p5"
+        }
+      ]
+    },
+    {
+      "id": "s_p2",
+      "polyline": [
+        [
+          448,
+          768
+        ],
+        [
+          928,
+          768
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        461,
+        915
+      ],
+      "walkRegion": [
+        [
+          461,
+          710
+        ],
+        [
+          915,
+          710
+        ],
+        [
+          915,
+          768
+        ],
+        [
+          461,
+          768
+        ]
+      ],
+      "visualContact": {
+        "targetY": 768,
+        "tolerance": 2,
+        "definition": "bearing soil / board top; excludes rice tips, knots and railings"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "natural stable full-body contact from continuous all-climbs replay",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified",
+          "objectId": "s_p2",
+          "contact": {
+            "surfaceId": "s_p2",
+            "frame": 1793,
+            "x": 720,
+            "feet": 768,
+            "dataY": 768,
+            "error": 0
+          }
+        },
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "three bearing material samples within 2px; excludes decorative peaks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified",
+          "objectId": "s_p2"
+        }
+      ]
+    },
+    {
+      "id": "s_p4",
+      "polyline": [
+        [
+          1344,
+          832
+        ],
+        [
+          1856,
+          832
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        1357,
+        1843
+      ],
+      "walkRegion": [
+        [
+          1357,
+          774
+        ],
+        [
+          1843,
+          774
+        ],
+        [
+          1843,
+          832
+        ],
+        [
+          1357,
+          832
+        ]
+      ],
+      "visualContact": {
+        "targetY": 832,
+        "tolerance": 2,
+        "definition": "bearing soil / board top; excludes rice tips, knots and railings"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "natural stable full-body contact from continuous all-climbs replay",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified",
+          "objectId": "s_p4",
+          "contact": {
+            "surfaceId": "s_p4",
+            "frame": 2494,
+            "x": 1552,
+            "feet": 832,
+            "dataY": 832,
+            "error": 0
+          }
+        },
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "three bearing material samples within 2px; excludes decorative peaks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified",
+          "objectId": "s_p4"
+        }
+      ]
+    },
+    {
+      "id": "s_p1",
+      "polyline": [
+        [
+          1472,
+          704
+        ],
+        [
+          1760,
+          704
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        1485,
+        1747
+      ],
+      "walkRegion": [
+        [
+          1485,
+          646
+        ],
+        [
+          1747,
+          646
+        ],
+        [
+          1747,
+          704
+        ],
+        [
+          1485,
+          704
+        ]
+      ],
+      "visualContact": {
+        "targetY": 704,
+        "tolerance": 2,
+        "definition": "bearing soil / board top; excludes rice tips, knots and railings"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "natural stable full-body contact from continuous all-climbs replay",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified",
+          "objectId": "s_p1",
+          "contact": {
+            "surfaceId": "s_p1",
+            "frame": 2638,
+            "x": 1616,
+            "feet": 704,
+            "dataY": 704,
+            "error": 0
+          }
+        },
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "three bearing material samples within 2px; excludes decorative peaks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified",
+          "objectId": "s_p1"
+        }
+      ]
+    },
+    {
+      "id": "s_p6",
+      "polyline": [
+        [
+          2048,
+          896
+        ],
+        [
+          2592,
+          896
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        2061,
+        2579
+      ],
+      "walkRegion": [
+        [
+          2061,
+          838
+        ],
+        [
+          2579,
+          838
+        ],
+        [
+          2579,
+          896
+        ],
+        [
+          2061,
+          896
+        ]
+      ],
+      "visualContact": {
+        "targetY": 896,
+        "tolerance": 2,
+        "definition": "bearing soil / board top; excludes rice tips, knots and railings"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "natural stable full-body contact from continuous all-climbs replay",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified",
+          "objectId": "s_p6",
+          "contact": {
+            "surfaceId": "s_p6",
+            "frame": 3348,
+            "x": 2320,
+            "feet": 896,
+            "dataY": 896,
+            "error": 0
+          }
+        },
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "three bearing material samples within 2px; excludes decorative peaks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified",
+          "objectId": "s_p6"
+        }
+      ]
+    },
+    {
+      "id": "s_p3",
+      "polyline": [
+        [
+          2240,
+          768
+        ],
+        [
+          2848,
+          768
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        2253,
+        2835
+      ],
+      "walkRegion": [
+        [
+          2253,
+          710
+        ],
+        [
+          2835,
+          710
+        ],
+        [
+          2835,
+          768
+        ],
+        [
+          2253,
+          768
+        ]
+      ],
+      "visualContact": {
+        "targetY": 768,
+        "tolerance": 2,
+        "definition": "bearing soil / board top; excludes rice tips, knots and railings"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "natural stable full-body contact from continuous all-climbs replay",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified",
+          "objectId": "s_p3",
+          "contact": {
+            "surfaceId": "s_p3",
+            "frame": 3814,
+            "x": 2704,
+            "feet": 768,
+            "dataY": 768,
+            "error": 0
+          }
+        },
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "three bearing material samples within 2px; excludes decorative peaks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified",
+          "objectId": "s_p3"
+        }
+      ]
+    },
+    {
+      "id": "s_p0",
+      "polyline": [
+        [
+          2432,
+          640
+        ],
+        [
+          2720,
+          640
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        2445,
+        2707
+      ],
+      "walkRegion": [
+        [
+          2445,
+          582
+        ],
+        [
+          2707,
+          582
+        ],
+        [
+          2707,
+          640
+        ],
+        [
+          2445,
+          640
+        ]
+      ],
+      "visualContact": {
+        "targetY": 640,
+        "tolerance": 2,
+        "definition": "bearing soil / board top; excludes rice tips, knots and railings"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "natural stable full-body contact from continuous all-climbs replay",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified",
+          "objectId": "s_p0",
+          "contact": {
+            "surfaceId": "s_p0",
+            "frame": 3988,
+            "x": 2576,
+            "feet": 640,
+            "dataY": 640,
+            "error": 0
+          }
+        },
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "three bearing material samples within 2px; excludes decorative peaks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified",
+          "objectId": "s_p0"
+        }
+      ]
+    }
+  ],
+  "climbs": [
+    {
+      "id": "c_rope_12",
+      "kind": "rope",
+      "sourceObject": "rope_12",
+      "corridor": [
+        [
+          384,
+          896
+        ],
+        [
+          416,
+          896
+        ],
+        [
+          416,
+          1024
+        ],
+        [
+          384,
+          1024
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            400,
+            1024
+          ],
+          "surface": "s_g_left"
+        },
+        "end": {
+          "position": [
+            400,
+            896
+          ],
+          "surface": "s_p5"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "sourceCorrection": {
+        "originalBottom": 992,
+        "finalBottom": 1024,
+        "delta": 32,
+        "reason": "anchor on lower bearing surface, never dangling 32px above it"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "natural approach, enter, top exit, descend, lower exit",
+          "path": "work/replays-final/route_rope_12.json",
+          "result": "verified",
+          "objectId": "c_rope_12"
+        },
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "both ends on associated bearing plane; no knot heights",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified",
+          "objectId": "c_rope_12",
+          "endpointErrorPx": 0
+        }
+      ]
+    },
+    {
+      "id": "c_rope_22",
+      "kind": "rope",
+      "sourceObject": "rope_22",
+      "corridor": [
+        [
+          704,
+          768
+        ],
+        [
+          736,
+          768
+        ],
+        [
+          736,
+          1024
+        ],
+        [
+          704,
+          1024
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            720,
+            1024
+          ],
+          "surface": "s_g_left"
+        },
+        "end": {
+          "position": [
+            720,
+            768
+          ],
+          "surface": "s_p2"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "sourceCorrection": {
+        "originalBottom": 992,
+        "finalBottom": 1024,
+        "delta": 32,
+        "reason": "anchor on lower bearing surface, never dangling 32px above it"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "natural approach, enter, top exit, descend, lower exit",
+          "path": "work/replays-final/route_rope_22.json",
+          "result": "verified",
+          "objectId": "c_rope_22"
+        },
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "both ends on associated bearing plane; no knot heights",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified",
+          "objectId": "c_rope_22",
+          "endpointErrorPx": 0
+        }
+      ]
+    },
+    {
+      "id": "c_rope_50",
+      "kind": "rope",
+      "sourceObject": "rope_50",
+      "corridor": [
+        [
+          1600,
+          704
+        ],
+        [
+          1632,
+          704
+        ],
+        [
+          1632,
+          832
+        ],
+        [
+          1600,
+          832
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1616,
+            832
+          ],
+          "surface": "s_p4"
+        },
+        "end": {
+          "position": [
+            1616,
+            704
+          ],
+          "surface": "s_p1"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "sourceCorrection": {
+        "originalBottom": 800,
+        "finalBottom": 832,
+        "delta": 32,
+        "reason": "anchor on lower bearing surface, never dangling 32px above it"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "natural approach, enter, top exit, descend, lower exit",
+          "path": "work/replays-final/route_rope_50.json",
+          "result": "verified",
+          "objectId": "c_rope_50"
+        },
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "both ends on associated bearing plane; no knot heights",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified",
+          "objectId": "c_rope_50",
+          "endpointErrorPx": 0
+        }
+      ]
+    },
+    {
+      "id": "c_rope_48",
+      "kind": "rope",
+      "sourceObject": "rope_48",
+      "corridor": [
+        [
+          1536,
+          832
+        ],
+        [
+          1568,
+          832
+        ],
+        [
+          1568,
+          960
+        ],
+        [
+          1536,
+          960
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1552,
+            960
+          ],
+          "surface": "s_g_ridge"
+        },
+        "end": {
+          "position": [
+            1552,
+            832
+          ],
+          "surface": "s_p4"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "sourceCorrection": {
+        "originalBottom": 928,
+        "finalBottom": 960,
+        "delta": 32,
+        "reason": "anchor on lower bearing surface, never dangling 32px above it"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "natural approach, enter, top exit, descend, lower exit",
+          "path": "work/replays-final/route_rope_48.json",
+          "result": "verified",
+          "objectId": "c_rope_48"
+        },
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "both ends on associated bearing plane; no knot heights",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified",
+          "objectId": "c_rope_48",
+          "endpointErrorPx": 0
+        }
+      ]
+    },
+    {
+      "id": "c_rope_72",
+      "kind": "rope",
+      "sourceObject": "rope_72",
+      "corridor": [
+        [
+          2304,
+          896
+        ],
+        [
+          2336,
+          896
+        ],
+        [
+          2336,
+          1024
+        ],
+        [
+          2304,
+          1024
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            2320,
+            1024
+          ],
+          "surface": "s_g_right"
+        },
+        "end": {
+          "position": [
+            2320,
+            896
+          ],
+          "surface": "s_p6"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "sourceCorrection": {
+        "originalBottom": 992,
+        "finalBottom": 1024,
+        "delta": 32,
+        "reason": "anchor on lower bearing surface, never dangling 32px above it"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "natural approach, enter, top exit, descend, lower exit",
+          "path": "work/replays-final/route_rope_72.json",
+          "result": "verified",
+          "objectId": "c_rope_72"
+        },
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "both ends on associated bearing plane; no knot heights",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified",
+          "objectId": "c_rope_72",
+          "endpointErrorPx": 0
+        }
+      ]
+    },
+    {
+      "id": "c_rope_84",
+      "kind": "rope",
+      "sourceObject": "rope_84",
+      "corridor": [
+        [
+          2688,
+          768
+        ],
+        [
+          2720,
+          768
+        ],
+        [
+          2720,
+          1024
+        ],
+        [
+          2688,
+          1024
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            2704,
+            1024
+          ],
+          "surface": "s_g_right"
+        },
+        "end": {
+          "position": [
+            2704,
+            768
+          ],
+          "surface": "s_p3"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "sourceCorrection": {
+        "originalBottom": 992,
+        "finalBottom": 1024,
+        "delta": 32,
+        "reason": "anchor on lower bearing surface, never dangling 32px above it"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "natural approach, enter, top exit, descend, lower exit",
+          "path": "work/replays-final/route_rope_84.json",
+          "result": "verified",
+          "objectId": "c_rope_84"
+        },
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "both ends on associated bearing plane; no knot heights",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified",
+          "objectId": "c_rope_84",
+          "endpointErrorPx": 0
+        }
+      ]
+    },
+    {
+      "id": "c_rope_80",
+      "kind": "rope",
+      "sourceObject": "rope_80",
+      "corridor": [
+        [
+          2560,
+          640
+        ],
+        [
+          2592,
+          640
+        ],
+        [
+          2592,
+          768
+        ],
+        [
+          2560,
+          768
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            2576,
+            768
+          ],
+          "surface": "s_p3"
+        },
+        "end": {
+          "position": [
+            2576,
+            640
+          ],
+          "surface": "s_p0"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "sourceCorrection": {
+        "originalBottom": 736,
+        "finalBottom": 768,
+        "delta": 32,
+        "reason": "anchor on lower bearing surface, never dangling 32px above it"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "natural approach, enter, top exit, descend, lower exit",
+          "path": "work/replays-final/route_rope_80.json",
+          "result": "verified",
+          "objectId": "c_rope_80"
+        },
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "both ends on associated bearing plane; no knot heights",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified",
+          "objectId": "c_rope_80",
+          "endpointErrorPx": 0
+        }
+      ]
+    }
+  ],
+  "stairs": [],
+  "solids": [
+    {
+      "id": "solid_g_left",
+      "polygon": [
+        [
+          0,
+          1024
+        ],
+        [
+          1216,
+          1024
+        ],
+        [
+          1216,
+          1088
+        ],
+        [
+          0,
+          1088
+        ]
+      ],
+      "surface": "s_g_left",
+      "type": "ground",
+      "openings": [],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "same-data AABB collision and real ground boundary check",
+          "path": "work/final-physics-smoke-results.json",
+          "result": "verified",
+          "objectId": "solid_g_left"
+        }
+      ]
+    },
+    {
+      "id": "solid_g_ridge",
+      "polygon": [
+        [
+          1216,
+          960
+        ],
+        [
+          1856,
+          960
+        ],
+        [
+          1856,
+          1088
+        ],
+        [
+          1216,
+          1088
+        ]
+      ],
+      "surface": "s_g_ridge",
+      "type": "ground",
+      "openings": [],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "same-data AABB collision and real ground boundary check",
+          "path": "work/final-physics-smoke-results.json",
+          "result": "verified",
+          "objectId": "solid_g_ridge"
+        }
+      ]
+    },
+    {
+      "id": "solid_g_right",
+      "polygon": [
+        [
+          1856,
+          1024
+        ],
+        [
+          3200,
+          1024
+        ],
+        [
+          3200,
+          1088
+        ],
+        [
+          1856,
+          1088
+        ]
+      ],
+      "surface": "s_g_right",
+      "type": "ground",
+      "openings": [],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "same-data AABB collision and real ground boundary check",
+          "path": "work/final-physics-smoke-results.json",
+          "result": "verified",
+          "objectId": "solid_g_right"
+        }
+      ]
+    }
+  ],
+  "hazards": [],
+  "points": [
+    {
+      "id": "start_spawn",
+      "type": "spawn",
+      "position": [
+        3072,
+        1024
+      ],
+      "surface": "s_g_right",
+      "width": 0,
+      "properties": {},
+      "sourceId": 8,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "supported source layout anchor, source properties and 192px sky offset; no interaction behavior claim",
+          "path": "work/source-semantics-audit.json",
+          "result": "verified",
+          "objectId": "start_spawn"
+        }
+      ]
+    },
+    {
+      "id": "portal_to_village",
+      "type": "portal",
+      "position": [
+        3120,
+        1024
+      ],
+      "surface": "s_g_right",
+      "width": 0,
+      "properties": {
+        "target": "qingyun_village",
+        "targetPortal": "portal_west_locked"
+      },
+      "sourceId": 9,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "supported source layout anchor, source properties and 192px sky offset; no interaction behavior claim",
+          "path": "work/source-semantics-audit.json",
+          "result": "verified",
+          "objectId": "portal_to_village"
+        }
+      ]
+    },
+    {
+      "id": "portal_to_outskirts_2",
+      "type": "portal",
+      "position": [
+        80,
+        1024
+      ],
+      "surface": "s_g_left",
+      "width": 0,
+      "properties": {
+        "target": "luoxia_outskirts_2",
+        "targetPortal": "portal_to_outskirts_1"
+      },
+      "sourceId": 10,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "supported source layout anchor, source properties and 192px sky offset; no interaction behavior claim",
+          "path": "work/source-semantics-audit.json",
+          "result": "verified",
+          "objectId": "portal_to_outskirts_2"
+        }
+      ]
+    },
+    {
+      "id": "spawn_wild_boar_spirit_11",
+      "type": "monster-spawn",
+      "position": [
+        128,
+        1024
+      ],
+      "surface": "s_g_left",
+      "width": 1120,
+      "properties": {
+        "monster": "wild_boar_spirit",
+        "count": 4
+      },
+      "sourceId": 11,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "supported source layout anchor, source properties and 192px sky offset; no interaction behavior claim",
+          "path": "work/source-semantics-audit.json",
+          "result": "verified",
+          "objectId": "spawn_wild_boar_spirit_11"
+        }
+      ]
+    },
+    {
+      "id": "spawn_wild_boar_spirit_12",
+      "type": "monster-spawn",
+      "position": [
+        1280,
+        960
+      ],
+      "surface": "s_g_ridge",
+      "width": 640,
+      "properties": {
+        "monster": "wild_boar_spirit",
+        "count": 3
+      },
+      "sourceId": 12,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "supported source layout anchor, source properties and 192px sky offset; no interaction behavior claim",
+          "path": "work/source-semantics-audit.json",
+          "result": "verified",
+          "objectId": "spawn_wild_boar_spirit_12"
+        }
+      ]
+    },
+    {
+      "id": "spawn_wild_boar_spirit_13",
+      "type": "monster-spawn",
+      "position": [
+        1952,
+        1024
+      ],
+      "surface": "s_g_right",
+      "width": 1120,
+      "properties": {
+        "monster": "wild_boar_spirit",
+        "count": 4
+      },
+      "sourceId": 13,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "supported source layout anchor, source properties and 192px sky offset; no interaction behavior claim",
+          "path": "work/source-semantics-audit.json",
+          "result": "verified",
+          "objectId": "spawn_wild_boar_spirit_13"
+        }
+      ]
+    },
+    {
+      "id": "spawn_straw_puppet_14",
+      "type": "monster-spawn",
+      "position": [
+        192,
+        896
+      ],
+      "surface": "s_p5",
+      "width": 416,
+      "properties": {
+        "monster": "straw_puppet",
+        "count": 1
+      },
+      "sourceId": 14,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "supported source layout anchor, source properties and 192px sky offset; no interaction behavior claim",
+          "path": "work/source-semantics-audit.json",
+          "result": "verified",
+          "objectId": "spawn_straw_puppet_14"
+        }
+      ]
+    },
+    {
+      "id": "spawn_straw_puppet_15",
+      "type": "monster-spawn",
+      "position": [
+        448,
+        768
+      ],
+      "surface": "s_p2",
+      "width": 480,
+      "properties": {
+        "monster": "straw_puppet",
+        "count": 2
+      },
+      "sourceId": 15,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "supported source layout anchor, source properties and 192px sky offset; no interaction behavior claim",
+          "path": "work/source-semantics-audit.json",
+          "result": "verified",
+          "objectId": "spawn_straw_puppet_15"
+        }
+      ]
+    },
+    {
+      "id": "spawn_straw_puppet_16",
+      "type": "monster-spawn",
+      "position": [
+        1344,
+        832
+      ],
+      "surface": "s_p4",
+      "width": 512,
+      "properties": {
+        "monster": "straw_puppet",
+        "count": 1
+      },
+      "sourceId": 16,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "supported source layout anchor, source properties and 192px sky offset; no interaction behavior claim",
+          "path": "work/source-semantics-audit.json",
+          "result": "verified",
+          "objectId": "spawn_straw_puppet_16"
+        }
+      ]
+    },
+    {
+      "id": "spawn_straw_puppet_17",
+      "type": "monster-spawn",
+      "position": [
+        2240,
+        768
+      ],
+      "surface": "s_p3",
+      "width": 608,
+      "properties": {
+        "monster": "straw_puppet",
+        "count": 2
+      },
+      "sourceId": 17,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "supported source layout anchor, source properties and 192px sky offset; no interaction behavior claim",
+          "path": "work/source-semantics-audit.json",
+          "result": "verified",
+          "objectId": "spawn_straw_puppet_17"
+        }
+      ]
+    },
+    {
+      "id": "spawn_straw_puppet_18",
+      "type": "monster-spawn",
+      "position": [
+        2432,
+        640
+      ],
+      "surface": "s_p0",
+      "width": 288,
+      "properties": {
+        "monster": "straw_puppet",
+        "count": 1
+      },
+      "sourceId": 18,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "supported source layout anchor, source properties and 192px sky offset; no interaction behavior claim",
+          "path": "work/source-semantics-audit.json",
+          "result": "verified",
+          "objectId": "spawn_straw_puppet_18"
+        }
+      ]
+    },
+    {
+      "id": "gather_spirit_herb_19",
+      "type": "gather",
+      "position": [
+        816,
+        1024
+      ],
+      "surface": "s_g_left",
+      "width": 0,
+      "properties": {
+        "item": "spirit_herb",
+        "respawnMs": 60000
+      },
+      "sourceId": 19,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "supported source layout anchor, source properties and 192px sky offset; no interaction behavior claim",
+          "path": "work/source-semantics-audit.json",
+          "result": "verified",
+          "objectId": "gather_spirit_herb_19"
+        }
+      ]
+    },
+    {
+      "id": "gather_spirit_herb_20",
+      "type": "gather",
+      "position": [
+        1680,
+        704
+      ],
+      "surface": "s_p1",
+      "width": 0,
+      "properties": {
+        "item": "spirit_herb",
+        "respawnMs": 60000
+      },
+      "sourceId": 20,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "supported source layout anchor, source properties and 192px sky offset; no interaction behavior claim",
+          "path": "work/source-semantics-audit.json",
+          "result": "verified",
+          "objectId": "gather_spirit_herb_20"
+        }
+      ]
+    },
+    {
+      "id": "gather_spirit_herb_21",
+      "type": "gather",
+      "position": [
+        2128,
+        1024
+      ],
+      "surface": "s_g_right",
+      "width": 0,
+      "properties": {
+        "item": "spirit_herb",
+        "respawnMs": 60000
+      },
+      "sourceId": 21,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "supported source layout anchor, source properties and 192px sky offset; no interaction behavior claim",
+          "path": "work/source-semantics-audit.json",
+          "result": "verified",
+          "objectId": "gather_spirit_herb_21"
+        }
+      ]
+    },
+    {
+      "id": "sense_chest_01",
+      "type": "chest",
+      "position": [
+        496,
+        768
+      ],
+      "surface": "s_p2",
+      "width": 0,
+      "properties": {
+        "loot": "hp_pill_small",
+        "count": 1
+      },
+      "sourceId": 22,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "supported source layout anchor, source properties and 192px sky offset; no interaction behavior claim",
+          "path": "work/source-semantics-audit.json",
+          "result": "verified",
+          "objectId": "sense_chest_01"
+        }
+      ]
+    },
+    {
+      "id": "goal_west",
+      "type": "goal",
+      "position": [
+        80,
+        1024
+      ],
+      "surface": "s_g_left",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "supported source layout anchor, source properties and 192px sky offset; no interaction behavior claim",
+          "path": "work/source-semantics-audit.json",
+          "result": "verified",
+          "objectId": "goal_west"
+        }
+      ]
+    }
+  ],
+  "transitions": [
+    {
+      "id": "t_rope_12_up",
+      "from": "s_g_left",
+      "to": "s_p5",
+      "action": "climb-up",
+      "climb": "c_rope_12",
+      "conditions": [
+        "natural grounded approach",
+        "full-body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "event and full-body support states from a continuous normal-spawn input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified",
+          "objectId": "t_rope_12_up",
+          "segments": [
+            {
+              "replay": "work/replays-final/route_rope_12.json",
+              "startFrame": 1286,
+              "entryFrame": 1287,
+              "endFrame": 1357,
+              "from": "s_g_left",
+              "to": "s_p5",
+              "entryEvent": {
+                "type": "climb-enter",
+                "frame": 1287,
+                "timeMs": 21450,
+                "x": 400,
+                "y": 1024,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": null,
+                "climbId": "c_rope_12",
+                "objectId": "c_rope_12",
+                "direction": "up"
+              },
+              "arrivalEvent": {
+                "type": "climb-arrive",
+                "frame": 1357,
+                "timeMs": 22616.666666666668,
+                "x": 400,
+                "y": 896,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_p5",
+                "climbId": null,
+                "objectId": "c_rope_12",
+                "end": "top"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_rope_12_down",
+      "from": "s_p5",
+      "to": "s_g_left",
+      "action": "climb-down",
+      "climb": "c_rope_12",
+      "conditions": [
+        "natural grounded approach",
+        "full-body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "event and full-body support states from a continuous normal-spawn input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified",
+          "objectId": "t_rope_12_down",
+          "segments": [
+            {
+              "replay": "work/replays-final/route_rope_12.json",
+              "startFrame": 1397,
+              "entryFrame": 1398,
+              "endFrame": 1461,
+              "from": "s_p5",
+              "to": "s_g_left",
+              "entryEvent": {
+                "type": "climb-enter",
+                "frame": 1398,
+                "timeMs": 23300,
+                "x": 400,
+                "y": 910,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": null,
+                "climbId": "c_rope_12",
+                "objectId": "c_rope_12",
+                "direction": "down"
+              },
+              "arrivalEvent": {
+                "type": "climb-arrive",
+                "frame": 1461,
+                "timeMs": 24350,
+                "x": 400,
+                "y": 1024,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_g_left",
+                "climbId": null,
+                "objectId": "c_rope_12",
+                "end": "bottom"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_rope_22_up",
+      "from": "s_g_left",
+      "to": "s_p2",
+      "action": "climb-up",
+      "climb": "c_rope_22",
+      "conditions": [
+        "natural grounded approach",
+        "full-body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "event and full-body support states from a continuous normal-spawn input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified",
+          "objectId": "t_rope_22_up",
+          "segments": [
+            {
+              "replay": "work/replays-final/route_rope_22.json",
+              "startFrame": 1138,
+              "entryFrame": 1139,
+              "endFrame": 1279,
+              "from": "s_g_left",
+              "to": "s_p2",
+              "entryEvent": {
+                "type": "climb-enter",
+                "frame": 1139,
+                "timeMs": 18983.333333333332,
+                "x": 720,
+                "y": 1024,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": null,
+                "climbId": "c_rope_22",
+                "objectId": "c_rope_22",
+                "direction": "up"
+              },
+              "arrivalEvent": {
+                "type": "climb-arrive",
+                "frame": 1279,
+                "timeMs": 21316.666666666668,
+                "x": 720,
+                "y": 768,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_p2",
+                "climbId": null,
+                "objectId": "c_rope_22",
+                "end": "top"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_rope_22_down",
+      "from": "s_p2",
+      "to": "s_g_left",
+      "action": "climb-down",
+      "climb": "c_rope_22",
+      "conditions": [
+        "natural grounded approach",
+        "full-body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "event and full-body support states from a continuous normal-spawn input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified",
+          "objectId": "t_rope_22_down",
+          "segments": [
+            {
+              "replay": "work/replays-final/route_rope_22.json",
+              "startFrame": 1319,
+              "entryFrame": 1320,
+              "endFrame": 1452,
+              "from": "s_p2",
+              "to": "s_g_left",
+              "entryEvent": {
+                "type": "climb-enter",
+                "frame": 1320,
+                "timeMs": 22000,
+                "x": 720,
+                "y": 782,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": null,
+                "climbId": "c_rope_22",
+                "objectId": "c_rope_22",
+                "direction": "down"
+              },
+              "arrivalEvent": {
+                "type": "climb-arrive",
+                "frame": 1452,
+                "timeMs": 24200,
+                "x": 720,
+                "y": 1024,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_g_left",
+                "climbId": null,
+                "objectId": "c_rope_22",
+                "end": "bottom"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_rope_50_up",
+      "from": "s_p4",
+      "to": "s_p1",
+      "action": "climb-up",
+      "climb": "c_rope_50",
+      "conditions": [
+        "natural grounded approach",
+        "full-body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "event and full-body support states from a continuous normal-spawn input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified",
+          "objectId": "t_rope_50_up",
+          "segments": [
+            {
+              "replay": "work/replays-final/route_rope_50.json",
+              "startFrame": 898,
+              "entryFrame": 899,
+              "endFrame": 969,
+              "from": "s_p4",
+              "to": "s_p1",
+              "entryEvent": {
+                "type": "climb-enter",
+                "frame": 899,
+                "timeMs": 14983.333333333334,
+                "x": 1616,
+                "y": 832,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": null,
+                "climbId": "c_rope_50",
+                "objectId": "c_rope_50",
+                "direction": "up"
+              },
+              "arrivalEvent": {
+                "type": "climb-arrive",
+                "frame": 969,
+                "timeMs": 16150,
+                "x": 1616,
+                "y": 704,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_p1",
+                "climbId": null,
+                "objectId": "c_rope_50",
+                "end": "top"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_rope_50_down",
+      "from": "s_p1",
+      "to": "s_p4",
+      "action": "climb-down",
+      "climb": "c_rope_50",
+      "conditions": [
+        "natural grounded approach",
+        "full-body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "event and full-body support states from a continuous normal-spawn input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified",
+          "objectId": "t_rope_50_down",
+          "segments": [
+            {
+              "replay": "work/replays-final/route_rope_50.json",
+              "startFrame": 1009,
+              "entryFrame": 1010,
+              "endFrame": 1073,
+              "from": "s_p1",
+              "to": "s_p4",
+              "entryEvent": {
+                "type": "climb-enter",
+                "frame": 1010,
+                "timeMs": 16833.333333333332,
+                "x": 1616,
+                "y": 718,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": null,
+                "climbId": "c_rope_50",
+                "objectId": "c_rope_50",
+                "direction": "down"
+              },
+              "arrivalEvent": {
+                "type": "climb-arrive",
+                "frame": 1073,
+                "timeMs": 17883.333333333332,
+                "x": 1616,
+                "y": 832,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_p4",
+                "climbId": null,
+                "objectId": "c_rope_50",
+                "end": "bottom"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_rope_48_up",
+      "from": "s_g_ridge",
+      "to": "s_p4",
+      "action": "climb-up",
+      "climb": "c_rope_48",
+      "conditions": [
+        "natural grounded approach",
+        "full-body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "event and full-body support states from a continuous normal-spawn input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified",
+          "objectId": "t_rope_48_up",
+          "segments": [
+            {
+              "replay": "work/replays-final/route_rope_50.json",
+              "startFrame": 754,
+              "entryFrame": 755,
+              "endFrame": 825,
+              "from": "s_g_ridge",
+              "to": "s_p4",
+              "entryEvent": {
+                "type": "climb-enter",
+                "frame": 755,
+                "timeMs": 12583.333333333334,
+                "x": 1552,
+                "y": 960,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": null,
+                "climbId": "c_rope_48",
+                "objectId": "c_rope_48",
+                "direction": "up"
+              },
+              "arrivalEvent": {
+                "type": "climb-arrive",
+                "frame": 825,
+                "timeMs": 13750,
+                "x": 1552,
+                "y": 832,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_p4",
+                "climbId": null,
+                "objectId": "c_rope_48",
+                "end": "top"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_rope_48_down",
+      "from": "s_p4",
+      "to": "s_g_ridge",
+      "action": "climb-down",
+      "climb": "c_rope_48",
+      "conditions": [
+        "natural grounded approach",
+        "full-body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "event and full-body support states from a continuous normal-spawn input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified",
+          "objectId": "t_rope_48_down",
+          "segments": [
+            {
+              "replay": "work/replays-final/route_rope_50.json",
+              "startFrame": 1146,
+              "entryFrame": 1147,
+              "endFrame": 1210,
+              "from": "s_p4",
+              "to": "s_g_ridge",
+              "entryEvent": {
+                "type": "climb-enter",
+                "frame": 1147,
+                "timeMs": 19116.666666666668,
+                "x": 1552,
+                "y": 846,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": null,
+                "climbId": "c_rope_48",
+                "objectId": "c_rope_48",
+                "direction": "down"
+              },
+              "arrivalEvent": {
+                "type": "climb-arrive",
+                "frame": 1210,
+                "timeMs": 20166.666666666668,
+                "x": 1552,
+                "y": 960,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_g_ridge",
+                "climbId": null,
+                "objectId": "c_rope_48",
+                "end": "bottom"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_rope_72_up",
+      "from": "s_g_right",
+      "to": "s_p6",
+      "action": "climb-up",
+      "climb": "c_rope_72",
+      "conditions": [
+        "natural grounded approach",
+        "full-body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "event and full-body support states from a continuous normal-spawn input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified",
+          "objectId": "t_rope_72_up",
+          "segments": [
+            {
+              "replay": "work/replays-final/route_rope_72.json",
+              "startFrame": 371,
+              "entryFrame": 372,
+              "endFrame": 442,
+              "from": "s_g_right",
+              "to": "s_p6",
+              "entryEvent": {
+                "type": "climb-enter",
+                "frame": 372,
+                "timeMs": 6200,
+                "x": 2320,
+                "y": 1024,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": null,
+                "climbId": "c_rope_72",
+                "objectId": "c_rope_72",
+                "direction": "up"
+              },
+              "arrivalEvent": {
+                "type": "climb-arrive",
+                "frame": 442,
+                "timeMs": 7366.666666666667,
+                "x": 2320,
+                "y": 896,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_p6",
+                "climbId": null,
+                "objectId": "c_rope_72",
+                "end": "top"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_rope_72_down",
+      "from": "s_p6",
+      "to": "s_g_right",
+      "action": "climb-down",
+      "climb": "c_rope_72",
+      "conditions": [
+        "natural grounded approach",
+        "full-body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "event and full-body support states from a continuous normal-spawn input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified",
+          "objectId": "t_rope_72_down",
+          "segments": [
+            {
+              "replay": "work/replays-final/route_rope_72.json",
+              "startFrame": 482,
+              "entryFrame": 483,
+              "endFrame": 546,
+              "from": "s_p6",
+              "to": "s_g_right",
+              "entryEvent": {
+                "type": "climb-enter",
+                "frame": 483,
+                "timeMs": 8050,
+                "x": 2320,
+                "y": 910,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": null,
+                "climbId": "c_rope_72",
+                "objectId": "c_rope_72",
+                "direction": "down"
+              },
+              "arrivalEvent": {
+                "type": "climb-arrive",
+                "frame": 546,
+                "timeMs": 9100,
+                "x": 2320,
+                "y": 1024,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_g_right",
+                "climbId": null,
+                "objectId": "c_rope_72",
+                "end": "bottom"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_rope_84_up",
+      "from": "s_g_right",
+      "to": "s_p3",
+      "action": "climb-up",
+      "climb": "c_rope_84",
+      "conditions": [
+        "natural grounded approach",
+        "full-body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "event and full-body support states from a continuous normal-spawn input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified",
+          "objectId": "t_rope_84_up",
+          "segments": [
+            {
+              "replay": "work/replays-final/route_rope_84.json",
+              "startFrame": 194,
+              "entryFrame": 195,
+              "endFrame": 335,
+              "from": "s_g_right",
+              "to": "s_p3",
+              "entryEvent": {
+                "type": "climb-enter",
+                "frame": 195,
+                "timeMs": 3250,
+                "x": 2704,
+                "y": 1024,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": null,
+                "climbId": "c_rope_84",
+                "objectId": "c_rope_84",
+                "direction": "up"
+              },
+              "arrivalEvent": {
+                "type": "climb-arrive",
+                "frame": 335,
+                "timeMs": 5583.333333333333,
+                "x": 2704,
+                "y": 768,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_p3",
+                "climbId": null,
+                "objectId": "c_rope_84",
+                "end": "top"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_rope_84_down",
+      "from": "s_p3",
+      "to": "s_g_right",
+      "action": "climb-down",
+      "climb": "c_rope_84",
+      "conditions": [
+        "natural grounded approach",
+        "full-body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "event and full-body support states from a continuous normal-spawn input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified",
+          "objectId": "t_rope_84_down",
+          "segments": [
+            {
+              "replay": "work/replays-final/route_rope_84.json",
+              "startFrame": 375,
+              "entryFrame": 376,
+              "endFrame": 508,
+              "from": "s_p3",
+              "to": "s_g_right",
+              "entryEvent": {
+                "type": "climb-enter",
+                "frame": 376,
+                "timeMs": 6266.666666666667,
+                "x": 2704,
+                "y": 782,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": null,
+                "climbId": "c_rope_84",
+                "objectId": "c_rope_84",
+                "direction": "down"
+              },
+              "arrivalEvent": {
+                "type": "climb-arrive",
+                "frame": 508,
+                "timeMs": 8466.666666666666,
+                "x": 2704,
+                "y": 1024,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_g_right",
+                "climbId": null,
+                "objectId": "c_rope_84",
+                "end": "bottom"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_rope_80_up",
+      "from": "s_p3",
+      "to": "s_p0",
+      "action": "climb-up",
+      "climb": "c_rope_80",
+      "conditions": [
+        "natural grounded approach",
+        "full-body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "event and full-body support states from a continuous normal-spawn input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified",
+          "objectId": "t_rope_80_up",
+          "segments": [
+            {
+              "replay": "work/replays-final/route_rope_80.json",
+              "startFrame": 438,
+              "entryFrame": 439,
+              "endFrame": 509,
+              "from": "s_p3",
+              "to": "s_p0",
+              "entryEvent": {
+                "type": "climb-enter",
+                "frame": 439,
+                "timeMs": 7316.666666666667,
+                "x": 2576,
+                "y": 768,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": null,
+                "climbId": "c_rope_80",
+                "objectId": "c_rope_80",
+                "direction": "up"
+              },
+              "arrivalEvent": {
+                "type": "climb-arrive",
+                "frame": 509,
+                "timeMs": 8483.333333333334,
+                "x": 2576,
+                "y": 640,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_p0",
+                "climbId": null,
+                "objectId": "c_rope_80",
+                "end": "top"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_rope_80_down",
+      "from": "s_p0",
+      "to": "s_p3",
+      "action": "climb-down",
+      "climb": "c_rope_80",
+      "conditions": [
+        "natural grounded approach",
+        "full-body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "event and full-body support states from a continuous normal-spawn input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified",
+          "objectId": "t_rope_80_down",
+          "segments": [
+            {
+              "replay": "work/replays-final/route_rope_80.json",
+              "startFrame": 549,
+              "entryFrame": 550,
+              "endFrame": 613,
+              "from": "s_p0",
+              "to": "s_p3",
+              "entryEvent": {
+                "type": "climb-enter",
+                "frame": 550,
+                "timeMs": 9166.666666666666,
+                "x": 2576,
+                "y": 654,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": null,
+                "climbId": "c_rope_80",
+                "objectId": "c_rope_80",
+                "direction": "down"
+              },
+              "arrivalEvent": {
+                "type": "climb-arrive",
+                "frame": 613,
+                "timeMs": 10216.666666666666,
+                "x": 2576,
+                "y": 768,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_p3",
+                "climbId": null,
+                "objectId": "c_rope_80",
+                "end": "bottom"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_west_up",
+      "from": "s_g_right",
+      "to": "s_g_ridge",
+      "action": "jump",
+      "conditions": [
+        "ordinary jump; no double jump"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "event and full-body support states from a continuous normal-spawn input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified",
+          "objectId": "t_west_up",
+          "segments": [
+            {
+              "replay": "work/replays-final/route_main.json",
+              "startFrame": 603,
+              "endFrame": 626,
+              "from": "s_g_right",
+              "to": "s_g_ridge",
+              "actionEvent": {
+                "type": "jump",
+                "frame": 604,
+                "timeMs": 10066.666666666666,
+                "x": 1878.1666666667327,
+                "y": 1024,
+                "vx": 0,
+                "vy": -560,
+                "surfaceId": "s_g_right",
+                "climbId": null,
+                "objectId": "s_g_right"
+              },
+              "landEvent": {
+                "type": "land",
+                "frame": 626,
+                "timeMs": 10433.333333333334,
+                "x": 1854,
+                "y": 960,
+                "vx": -130,
+                "vy": 0,
+                "surfaceId": "s_g_ridge",
+                "climbId": null,
+                "objectId": "s_g_ridge"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_west_down",
+      "from": "s_g_ridge",
+      "to": "s_g_left",
+      "action": "drop",
+      "conditions": [
+        "walk off lip"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "event and full-body support states from a continuous normal-spawn input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified",
+          "objectId": "t_west_down",
+          "segments": [
+            {
+              "replay": "work/replays-final/route_main.json",
+              "startFrame": 941,
+              "endFrame": 956,
+              "from": "s_g_ridge",
+              "to": "s_g_left",
+              "actionEvent": {
+                "type": "leave-surface",
+                "frame": 942,
+                "timeMs": 15700,
+                "x": 1202.4999999999775,
+                "y": 960.5555555555555,
+                "vx": -130,
+                "vy": 33.333333333333336,
+                "surfaceId": null,
+                "climbId": null,
+                "objectId": "s_g_ridge"
+              },
+              "landEvent": {
+                "type": "land",
+                "frame": 956,
+                "timeMs": 15933.333333333334,
+                "x": 1172.166666666643,
+                "y": 1024,
+                "vx": -130,
+                "vy": 0,
+                "surfaceId": "s_g_left",
+                "climbId": null,
+                "objectId": "s_g_left"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_east_up",
+      "from": "s_g_left",
+      "to": "s_g_ridge",
+      "action": "jump",
+      "conditions": [
+        "ordinary jump; no double jump"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "event and full-body support states from a continuous normal-spawn input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified",
+          "objectId": "t_east_up",
+          "segments": [
+            {
+              "replay": "work/replays-final/route_return.json",
+              "startFrame": 1932,
+              "endFrame": 1955,
+              "from": "s_g_left",
+              "to": "s_g_ridge",
+              "actionEvent": {
+                "type": "jump",
+                "frame": 1933,
+                "timeMs": 32216.666666666668,
+                "x": 1193.499999999977,
+                "y": 1024,
+                "vx": 0,
+                "vy": -560,
+                "surfaceId": "s_g_left",
+                "climbId": null,
+                "objectId": "s_g_left"
+              },
+              "landEvent": {
+                "type": "land",
+                "frame": 1955,
+                "timeMs": 32583.333333333332,
+                "x": 1218,
+                "y": 960,
+                "vx": 130,
+                "vy": 0,
+                "surfaceId": "s_g_ridge",
+                "climbId": null,
+                "objectId": "s_g_ridge"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_east_down",
+      "from": "s_g_ridge",
+      "to": "s_g_right",
+      "action": "drop",
+      "conditions": [
+        "walk off lip"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "event and full-body support states from a continuous normal-spawn input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified",
+          "objectId": "t_east_down",
+          "segments": [
+            {
+              "replay": "work/replays-final/route_return.json",
+              "startFrame": 2270,
+              "endFrame": 2285,
+              "from": "s_g_ridge",
+              "to": "s_g_right",
+              "actionEvent": {
+                "type": "leave-surface",
+                "frame": 2271,
+                "timeMs": 37850,
+                "x": 1869.5000000000225,
+                "y": 960.5555555555555,
+                "vx": 130,
+                "vy": 33.333333333333336,
+                "surfaceId": null,
+                "climbId": null,
+                "objectId": "s_g_ridge"
+              },
+              "landEvent": {
+                "type": "land",
+                "frame": 2285,
+                "timeMs": 38083.333333333336,
+                "x": 1899.833333333357,
+                "y": 1024,
+                "vx": 130,
+                "vy": 0,
+                "surfaceId": "s_g_right",
+                "climbId": null,
+                "objectId": "s_g_right"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "requiredRoutes": [
+    {
+      "id": "route_main",
+      "from": "start_spawn",
+      "to": "goal_west",
+      "via": [
+        "portal_to_village",
+        "s_g_right",
+        "s_g_ridge",
+        "s_g_left"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "normal-spawn continuous input replay, no state writes or midrun resets",
+          "path": "work/replays-final/route_main.json",
+          "result": "verified",
+          "routeId": "route_main",
+          "frames": 1463
+        }
+      ]
+    },
+    {
+      "id": "route_return",
+      "from": "start_spawn",
+      "to": "portal_to_village",
+      "via": [
+        "goal_west",
+        "s_g_ridge"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "normal-spawn continuous input replay, no state writes or midrun resets",
+          "path": "work/replays-final/route_return.json",
+          "result": "verified",
+          "routeId": "route_return",
+          "frames": 2851
+        }
+      ]
+    },
+    {
+      "id": "route_rope_12",
+      "from": "start_spawn",
+      "to": "goal_west",
+      "via": [
+        "c_rope_12",
+        "s_p5",
+        "s_g_left"
+      ],
+      "direction": "up-and-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "normal-spawn continuous input replay, no state writes or midrun resets",
+          "path": "work/replays-final/route_rope_12.json",
+          "result": "verified",
+          "routeId": "route_rope_12",
+          "frames": 1632
+        }
+      ]
+    },
+    {
+      "id": "route_rope_22",
+      "from": "start_spawn",
+      "to": "goal_west",
+      "via": [
+        "c_rope_22",
+        "s_p2",
+        "s_g_left"
+      ],
+      "direction": "up-and-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "normal-spawn continuous input replay, no state writes or midrun resets",
+          "path": "work/replays-final/route_rope_22.json",
+          "result": "verified",
+          "routeId": "route_rope_22",
+          "frames": 1771
+        }
+      ]
+    },
+    {
+      "id": "route_rope_50",
+      "from": "start_spawn",
+      "to": "goal_west",
+      "via": [
+        "c_rope_50",
+        "s_p1",
+        "s_p4"
+      ],
+      "direction": "up-and-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "normal-spawn continuous input replay, no state writes or midrun resets",
+          "path": "work/replays-final/route_rope_50.json",
+          "result": "verified",
+          "routeId": "route_rope_50",
+          "frames": 1913
+        }
+      ]
+    },
+    {
+      "id": "route_rope_48",
+      "from": "start_spawn",
+      "to": "goal_west",
+      "via": [
+        "c_rope_48",
+        "s_p4",
+        "s_g_ridge"
+      ],
+      "direction": "up-and-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "normal-spawn continuous input replay, no state writes or midrun resets",
+          "path": "work/replays-final/route_rope_48.json",
+          "result": "verified",
+          "routeId": "route_rope_48",
+          "frames": 1632
+        }
+      ]
+    },
+    {
+      "id": "route_rope_72",
+      "from": "start_spawn",
+      "to": "goal_west",
+      "via": [
+        "c_rope_72",
+        "s_p6",
+        "s_g_right"
+      ],
+      "direction": "up-and-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "normal-spawn continuous input replay, no state writes or midrun resets",
+          "path": "work/replays-final/route_rope_72.json",
+          "result": "verified",
+          "routeId": "route_rope_72",
+          "frames": 1633
+        }
+      ]
+    },
+    {
+      "id": "route_rope_84",
+      "from": "start_spawn",
+      "to": "goal_west",
+      "via": [
+        "c_rope_84",
+        "s_p3",
+        "s_g_right"
+      ],
+      "direction": "up-and-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "normal-spawn continuous input replay, no state writes or midrun resets",
+          "path": "work/replays-final/route_rope_84.json",
+          "result": "verified",
+          "routeId": "route_rope_84",
+          "frames": 1772
+        }
+      ]
+    },
+    {
+      "id": "route_rope_80",
+      "from": "start_spawn",
+      "to": "goal_west",
+      "via": [
+        "c_rope_80",
+        "s_p0",
+        "s_p3"
+      ],
+      "direction": "up-and-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "normal-spawn continuous input replay, no state writes or midrun resets",
+          "path": "work/replays-final/route_rope_80.json",
+          "result": "verified",
+          "routeId": "route_rope_80",
+          "frames": 2113
+        }
+      ]
+    },
+    {
+      "id": "route_all_climbs",
+      "from": "start_spawn",
+      "to": "goal_west",
+      "via": [],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "normal-spawn continuous input replay, no state writes or midrun resets",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified",
+          "routeId": "route_all_climbs",
+          "frames": 5592
+        }
+      ]
+    },
+    {
+      "id": "route_gather",
+      "from": "start_spawn",
+      "to": "goal_west",
+      "via": [
+        "gather_spirit_herb_21",
+        "gather_spirit_herb_20",
+        "gather_spirit_herb_19"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "outskirts1-final-001",
+          "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "normal-spawn continuous input replay, no state writes or midrun resets",
+          "path": "work/replays-final/route_gather.json",
+          "result": "verified",
+          "routeId": "route_gather",
+          "frames": 1985
+        }
+      ]
+    }
+  ],
+  "inactiveSourceObjects": [
+    {
+      "id": 23,
+      "name": "sense_hidden_chest_01",
+      "type": "hidden",
+      "x": 496,
+      "y": 576,
+      "width": 0,
+      "height": 0,
+      "properties": [
+        {
+          "name": "enabled",
+          "type": "bool",
+          "value": false
+        },
+        {
+          "name": "reqSpirit",
+          "type": "int",
+          "value": 0
+        },
+        {
+          "name": "reveal",
+          "type": "string",
+          "value": "chest"
+        },
+        {
+          "name": "targetObject",
+          "type": "string",
+          "value": "sense_chest_01"
+        }
+      ]
+    },
+    {
+      "id": 24,
+      "name": "sense_hidden_platform_01",
+      "type": "hidden",
+      "x": 2736,
+      "y": 384,
+      "width": 64,
+      "height": 32,
+      "properties": [
+        {
+          "name": "enabled",
+          "type": "bool",
+          "value": false
+        },
+        {
+          "name": "reqSpirit",
+          "type": "int",
+          "value": 10
+        },
+        {
+          "name": "reveal",
+          "type": "string",
+          "value": "platform"
+        }
+      ]
+    }
+  ],
+  "diagnostics": {
+    "maskPalette": {
+      "walk": [
+        150,
+        245,
+        160,
+        255
+      ],
+      "stand": [
+        0,
+        200,
+        80,
+        255
+      ],
+      "rope": [
+        0,
+        190,
+        230,
+        255
+      ],
+      "jump": [
+        255,
+        180,
+        0,
+        255
+      ],
+      "drop": [
+        170,
+        80,
+        225,
+        255
+      ],
+      "point": [
+        255,
+        70,
+        160,
+        255
+      ]
+    },
+    "rasterizationOrder": [
+      "walk",
+      "stand",
+      "rope",
+      "jump",
+      "drop",
+      "point"
+    ],
+    "regionIdIndex": null,
+    "geometryRevision": "outskirts1-final-001"
+  },
+  "validation": {
+    "status": "verified",
+    "geometryRevision": "outskirts1-final-001",
+    "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+    "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+    "evidence": [
+      {
+        "geometryRevision": "outskirts1-final-001",
+        "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "method": "eleven continuous route summaries",
+        "path": "work/final-routes.json",
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "outskirts1-final-001",
+        "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "method": "ten actual-map movement checks and one separately labeled synthetic ceiling",
+        "path": "work/final-physics-smoke-results.json",
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "outskirts1-final-001",
+        "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "method": "18 directed connection event/support segments",
+        "path": "work/final-transition-evidence.json",
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "outskirts1-final-001",
+        "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "method": "Chrome same-data route replay, ten natural contacts, keyboard and R",
+        "path": "work/final-browser-check.json",
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "outskirts1-final-001",
+        "actorParameterRevision": "outskirts1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "method": "author visual self-review of scene, seams, alpha and all bearing surfaces",
+        "path": "work/visual-review.json",
+        "result": "verified"
+      }
+    ],
+    "issues": [],
+    "scope": "Local scene art/geometry and standalone fixed-step AABB movement. Does not certify production Phaser, combat/AI, portal transfer, quest activation or gathering rewards. Owner review pending."
+  },
+  "layerOrder": [
+    "background",
+    "playable",
+    "semantic reference monsters (preview only)",
+    "actor"
+  ],
+  "foreground": {
+    "status": "not-applicable",
+    "reason": "No player-front occluders; attached tags/gates/herbs remain playable layer behind actor."
+  },
+  "previewEntities": [
+    {
+      "id": "spawn_wild_boar_spirit_11_1",
+      "region": "spawn_wild_boar_spirit_11",
+      "monster": "wild_boar_spirit",
+      "position": [
+        259,
+        1024
+      ],
+      "path": "work/preview/mon_wild_boar_spirit-reference.png",
+      "width": 96,
+      "height": 80,
+      "scope": "static source sprite and placement only; no AI/combat simulation"
+    },
+    {
+      "id": "spawn_wild_boar_spirit_11_2",
+      "region": "spawn_wild_boar_spirit_11",
+      "monster": "wild_boar_spirit",
+      "position": [
+        521,
+        1024
+      ],
+      "path": "work/preview/mon_wild_boar_spirit-reference.png",
+      "width": 96,
+      "height": 80,
+      "scope": "static source sprite and placement only; no AI/combat simulation"
+    },
+    {
+      "id": "spawn_wild_boar_spirit_11_3",
+      "region": "spawn_wild_boar_spirit_11",
+      "monster": "wild_boar_spirit",
+      "position": [
+        783,
+        1024
+      ],
+      "path": "work/preview/mon_wild_boar_spirit-reference.png",
+      "width": 96,
+      "height": 80,
+      "scope": "static source sprite and placement only; no AI/combat simulation"
+    },
+    {
+      "id": "spawn_wild_boar_spirit_11_4",
+      "region": "spawn_wild_boar_spirit_11",
+      "monster": "wild_boar_spirit",
+      "position": [
+        1045,
+        1024
+      ],
+      "path": "work/preview/mon_wild_boar_spirit-reference.png",
+      "width": 96,
+      "height": 80,
+      "scope": "static source sprite and placement only; no AI/combat simulation"
+    },
+    {
+      "id": "spawn_wild_boar_spirit_12_1",
+      "region": "spawn_wild_boar_spirit_12",
+      "monster": "wild_boar_spirit",
+      "position": [
+        1369,
+        960
+      ],
+      "path": "work/preview/mon_wild_boar_spirit-reference.png",
+      "width": 96,
+      "height": 80,
+      "scope": "static source sprite and placement only; no AI/combat simulation"
+    },
+    {
+      "id": "spawn_wild_boar_spirit_12_2",
+      "region": "spawn_wild_boar_spirit_12",
+      "monster": "wild_boar_spirit",
+      "position": [
+        1548,
+        960
+      ],
+      "path": "work/preview/mon_wild_boar_spirit-reference.png",
+      "width": 96,
+      "height": 80,
+      "scope": "static source sprite and placement only; no AI/combat simulation"
+    },
+    {
+      "id": "spawn_wild_boar_spirit_12_3",
+      "region": "spawn_wild_boar_spirit_12",
+      "monster": "wild_boar_spirit",
+      "position": [
+        1727,
+        960
+      ],
+      "path": "work/preview/mon_wild_boar_spirit-reference.png",
+      "width": 96,
+      "height": 80,
+      "scope": "static source sprite and placement only; no AI/combat simulation"
+    },
+    {
+      "id": "spawn_wild_boar_spirit_13_1",
+      "region": "spawn_wild_boar_spirit_13",
+      "monster": "wild_boar_spirit",
+      "position": [
+        2092,
+        1024
+      ],
+      "path": "work/preview/mon_wild_boar_spirit-reference.png",
+      "width": 96,
+      "height": 80,
+      "scope": "static source sprite and placement only; no AI/combat simulation"
+    },
+    {
+      "id": "spawn_wild_boar_spirit_13_2",
+      "region": "spawn_wild_boar_spirit_13",
+      "monster": "wild_boar_spirit",
+      "position": [
+        2372,
+        1024
+      ],
+      "path": "work/preview/mon_wild_boar_spirit-reference.png",
+      "width": 96,
+      "height": 80,
+      "scope": "static source sprite and placement only; no AI/combat simulation"
+    },
+    {
+      "id": "spawn_wild_boar_spirit_13_3",
+      "region": "spawn_wild_boar_spirit_13",
+      "monster": "wild_boar_spirit",
+      "position": [
+        2652,
+        1024
+      ],
+      "path": "work/preview/mon_wild_boar_spirit-reference.png",
+      "width": 96,
+      "height": 80,
+      "scope": "static source sprite and placement only; no AI/combat simulation"
+    },
+    {
+      "id": "spawn_wild_boar_spirit_13_4",
+      "region": "spawn_wild_boar_spirit_13",
+      "monster": "wild_boar_spirit",
+      "position": [
+        2932,
+        1024
+      ],
+      "path": "work/preview/mon_wild_boar_spirit-reference.png",
+      "width": 96,
+      "height": 80,
+      "scope": "static source sprite and placement only; no AI/combat simulation"
+    },
+    {
+      "id": "spawn_straw_puppet_14_1",
+      "region": "spawn_straw_puppet_14",
+      "monster": "straw_puppet",
+      "position": [
+        400,
+        896
+      ],
+      "path": "work/preview/mon_straw_puppet-reference.png",
+      "width": 64,
+      "height": 80,
+      "scope": "static source sprite and placement only; no AI/combat simulation"
+    },
+    {
+      "id": "spawn_straw_puppet_15_1",
+      "region": "spawn_straw_puppet_15",
+      "monster": "straw_puppet",
+      "position": [
+        588,
+        768
+      ],
+      "path": "work/preview/mon_straw_puppet-reference.png",
+      "width": 64,
+      "height": 80,
+      "scope": "static source sprite and placement only; no AI/combat simulation"
+    },
+    {
+      "id": "spawn_straw_puppet_15_2",
+      "region": "spawn_straw_puppet_15",
+      "monster": "straw_puppet",
+      "position": [
+        788,
+        768
+      ],
+      "path": "work/preview/mon_straw_puppet-reference.png",
+      "width": 64,
+      "height": 80,
+      "scope": "static source sprite and placement only; no AI/combat simulation"
+    },
+    {
+      "id": "spawn_straw_puppet_16_1",
+      "region": "spawn_straw_puppet_16",
+      "monster": "straw_puppet",
+      "position": [
+        1600,
+        832
+      ],
+      "path": "work/preview/mon_straw_puppet-reference.png",
+      "width": 64,
+      "height": 80,
+      "scope": "static source sprite and placement only; no AI/combat simulation"
+    },
+    {
+      "id": "spawn_straw_puppet_17_1",
+      "region": "spawn_straw_puppet_17",
+      "monster": "straw_puppet",
+      "position": [
+        2412,
+        768
+      ],
+      "path": "work/preview/mon_straw_puppet-reference.png",
+      "width": 64,
+      "height": 80,
+      "scope": "static source sprite and placement only; no AI/combat simulation"
+    },
+    {
+      "id": "spawn_straw_puppet_17_2",
+      "region": "spawn_straw_puppet_17",
+      "monster": "straw_puppet",
+      "position": [
+        2676,
+        768
+      ],
+      "path": "work/preview/mon_straw_puppet-reference.png",
+      "width": 64,
+      "height": 80,
+      "scope": "static source sprite and placement only; no AI/combat simulation"
+    },
+    {
+      "id": "spawn_straw_puppet_18_1",
+      "region": "spawn_straw_puppet_18",
+      "monster": "straw_puppet",
+      "position": [
+        2576,
+        640
+      ],
+      "path": "work/preview/mon_straw_puppet-reference.png",
+      "width": 64,
+      "height": 80,
+      "scope": "static source sprite and placement only; no AI/combat simulation"
+    }
+  ]
+}

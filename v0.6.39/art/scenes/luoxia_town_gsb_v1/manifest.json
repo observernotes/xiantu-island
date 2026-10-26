@@ -1,0 +1,2167 @@
+{
+  "name": "luoxia_town_gsb_v1",
+  "assetVersion": "gsb-v1-final-001",
+  "status": "verified",
+  "handoff": "落霞镇 gsb_v1 已交核待负责人",
+  "schemaVersion": "1.0",
+  "geometryRevision": "luoxia-final-001",
+  "actorParameterRevision": "luoxia-base-feel-20261027-001",
+  "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+  "logicalWidth": 3072,
+  "logicalHeight": 1024,
+  "space": {
+    "origin": "top-left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "units": "logical-pixel",
+    "logicalWidth": 3072,
+    "logicalHeight": 1024,
+    "sourceMap": "maps/luoxia_town.json",
+    "sourceToWorld": [
+      1,
+      0,
+      0,
+      1,
+      0,
+      192
+    ]
+  },
+  "sourceMapTransform": {
+    "path": "maps/luoxia_town.json",
+    "sourcePixels": [
+      3072,
+      768
+    ],
+    "sourceToWorld": [
+      1,
+      0,
+      0,
+      1,
+      0,
+      192
+    ],
+    "extraBottomFoundationMargin": 64,
+    "actorUnitsUnscaled": true
+  },
+  "assets": [
+    {
+      "id": "asset_background",
+      "role": "background",
+      "path": "background.png",
+      "pixelWidth": 3072,
+      "pixelHeight": 1024,
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "asset_playable",
+      "role": "playable",
+      "path": "playable.png",
+      "pixelWidth": 3072,
+      "pixelHeight": 1024,
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    }
+  ],
+  "files": {
+    "DELIVERED.md": {
+      "path": "DELIVERED.md",
+      "role": "delivery-handoff",
+      "bytes": 1053,
+      "sha256": "a2f6758a5e1e8c2a1beec4cb650f31bbdac171cbfc7460473cb72375305fa8c6",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "README.md": {
+      "path": "README.md",
+      "role": "local-instructions",
+      "bytes": 1849,
+      "sha256": "77ae91ba8a33c83d9585f61b97526f11c466cbdbfa08e8dbd90b81ec4084679d",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "action-mask.png": {
+      "path": "action-mask.png",
+      "role": "pure-semantic-mask",
+      "bytes": 17899,
+      "sha256": "89253b5f53de166dec7f919eac0c212df4ed114923a273e4ab667dba0fa4197f",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 3072,
+      "pixelHeight": 1024,
+      "mode": "RGBA",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    "action-overlay.png": {
+      "path": "action-overlay.png",
+      "role": "action-inspection",
+      "bytes": 4784732,
+      "sha256": "af21c15568b3d89c4d633624ef820aeaed75eaca7118a746b23223d228539f5f",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 3072,
+      "pixelHeight": 1024,
+      "mode": "RGBA",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    "background.png": {
+      "path": "background.png",
+      "role": "background",
+      "bytes": 4577390,
+      "sha256": "04c44003ded8577b59ea87d8d36389c6c967586b6eab9c3fb8b1b86a8b9f292b",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 3072,
+      "pixelHeight": 1024,
+      "mode": "RGBA",
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    "collision-overlay.png": {
+      "path": "collision-overlay.png",
+      "role": "collision-inspection",
+      "bytes": 4141827,
+      "sha256": "cc9acf2d4d4930955af65640f2713ea16b909e6f912c871d18a221917b7234ac",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 3072,
+      "pixelHeight": 1024,
+      "mode": "RGBA",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    "diagnostics-metadata.json": {
+      "path": "diagnostics-metadata.json",
+      "role": "diagnostic-source-binding",
+      "bytes": 1437,
+      "sha256": "9f26a2ac73a568772abba555b5be41278df6ba317916c4729237fe458d9e7555",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "index.html": {
+      "path": "index.html",
+      "role": "local-entry",
+      "bytes": 535,
+      "sha256": "e8b6c92fc5595d253aefe5e3c3bc2a9d9dc4fde211355c83ddf61be9bb7b55c9",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "playable.png": {
+      "path": "playable.png",
+      "role": "transparent-playable",
+      "bytes": 1605291,
+      "sha256": "b8deb28e169aa33a1a954cd8fac07f92712bd35badcc983ae59327aa48782db7",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 3072,
+      "pixelHeight": 1024,
+      "mode": "RGBA",
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    "scene-data.json": {
+      "path": "scene-data.json",
+      "role": "authoritative-actions-and-collision",
+      "bytes": 112346,
+      "sha256": "0564ffcf7f1bd00fb922fab463d41cd049dd9403ebcab2969f01aed698d3308f",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "scene.png": {
+      "path": "scene.png",
+      "role": "final-composite",
+      "bytes": 4953667,
+      "sha256": "b980ca8266f416e218d5ac122f7dd165ccffc156c55e3914dad490c0c6ef0665",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 3072,
+      "pixelHeight": 1024,
+      "mode": "RGBA",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    "validation-report.md": {
+      "path": "validation-report.md",
+      "role": "validation-report",
+      "bytes": 13176,
+      "sha256": "34f8f998e63b2dd31da3993b2c36bb34e2057c32bc2a3cdecddbc33c87a5307b",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/artcheck-final.log": {
+      "path": "work/artcheck-final.log",
+      "role": "versioned-process-or-validation-evidence",
+      "bytes": 948,
+      "sha256": "971ec2b5f561e9fc298167f5443cb1bb9bf08387c5e488c43dfd938ff1f09e5c",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/detail-blocks.json": {
+      "path": "work/detail-blocks.json",
+      "role": "versioned-process-or-validation-evidence",
+      "bytes": 2051,
+      "sha256": "6d58814bf950ad70516ca1a94024aa841a6085743d706dccc2b81e6d16478da8",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/final-binding-check.json": {
+      "path": "work/final-binding-check.json",
+      "role": "versioned-process-or-validation-evidence",
+      "bytes": 3358,
+      "sha256": "52ca119b1862ef9bab7125debf5f586082404b85f9d1fd34c233f51e064f5783",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/final-browser-check.json": {
+      "path": "work/final-browser-check.json",
+      "role": "versioned-process-or-validation-evidence",
+      "bytes": 36849,
+      "sha256": "bf55f99ec93c7545d13843512a4d9f98e1862dbda146f9453d737ad9e3b643b6",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/final-data-check.json": {
+      "path": "work/final-data-check.json",
+      "role": "versioned-process-or-validation-evidence",
+      "bytes": 3128,
+      "sha256": "aa828a9c6279ada816a5a8d687672fa116d0f566f8d7ec24a30d2afda71a2f2b",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/final-geometry-measurements.json": {
+      "path": "work/final-geometry-measurements.json",
+      "role": "versioned-process-or-validation-evidence",
+      "bytes": 17621,
+      "sha256": "36062dd52903a8c2867212f4201cd72a73a8aabe250d2f9f0de3dcb5d7e30f17",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/final-layer-composition.json": {
+      "path": "work/final-layer-composition.json",
+      "role": "versioned-process-or-validation-evidence",
+      "bytes": 27791,
+      "sha256": "fe12a905d51bed59c16f31d7a4107b786ce9ce3a622a4629c829c996f0336eed",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/final-physics-smoke-results.json": {
+      "path": "work/final-physics-smoke-results.json",
+      "role": "versioned-process-or-validation-evidence",
+      "bytes": 128256,
+      "sha256": "00fec60f84003ec2876ea8921d1df2db661b7379d992b76bd4865aae2b39a653",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/final-routes.json": {
+      "path": "work/final-routes.json",
+      "role": "versioned-process-or-validation-evidence",
+      "bytes": 18661,
+      "sha256": "368a2dfaad1353b70e7054cf16c82fac869e9010da1f64b7fe665d57208b4ff2",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/final-runtime-summary.md": {
+      "path": "work/final-runtime-summary.md",
+      "role": "versioned-process-or-validation-evidence",
+      "bytes": 4983,
+      "sha256": "362583b8bcb9737f851f464133718c4caefe358d98a0125b8255455053354905",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/final-screenshots/contact-s_awning_e.png": {
+      "path": "work/final-screenshots/contact-s_awning_e.png",
+      "role": "visual-evidence",
+      "bytes": 2239673,
+      "sha256": "4ac624c55f895f39e86a16b311e26cacd44ff8bc4c7b12dadbf9762219e717f5",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/contact-s_awning_w.png": {
+      "path": "work/final-screenshots/contact-s_awning_w.png",
+      "role": "visual-evidence",
+      "bytes": 2229594,
+      "sha256": "6d77449656555fb389f42848a21106fb41565f541248d53625b1c04918da895b",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/contact-s_chimney.png": {
+      "path": "work/final-screenshots/contact-s_chimney.png",
+      "role": "visual-evidence",
+      "bytes": 2382036,
+      "sha256": "009cd9ec5a64d795ac449b99cdc0ece62f1eedbf229bc3a25f071b0adf4fade7",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/contact-s_county.png": {
+      "path": "work/final-screenshots/contact-s_county.png",
+      "role": "visual-evidence",
+      "bytes": 2276120,
+      "sha256": "be48d22e10fbae60276c1bd32d1984a5ae798a04290c2a0fc2bda22dca4aece3",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/contact-s_deck.png": {
+      "path": "work/final-screenshots/contact-s_deck.png",
+      "role": "visual-evidence",
+      "bytes": 2292021,
+      "sha256": "6b99fdf68abc214704492000c827fc76267ba5d10d7a60b8fa99d5e8dd6fc954",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/contact-s_dock.png": {
+      "path": "work/final-screenshots/contact-s_dock.png",
+      "role": "visual-evidence",
+      "bytes": 2290296,
+      "sha256": "d8308f0ceb3ed65f4518365a976a70725b22132980e73d20819beafb3b216e44",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/contact-s_drum.png": {
+      "path": "work/final-screenshots/contact-s_drum.png",
+      "role": "visual-evidence",
+      "bytes": 2272641,
+      "sha256": "52300e74059deefc4667c6016f21742bc2bd2b2f74c7b04f75570fef33b9230d",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/contact-s_east.png": {
+      "path": "work/final-screenshots/contact-s_east.png",
+      "role": "visual-evidence",
+      "bytes": 2380596,
+      "sha256": "88ef09be4fba48870a8cb41eb6f35f868822c6dec306c69e5e81b8046d7dc041",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/contact-s_gate_high.png": {
+      "path": "work/final-screenshots/contact-s_gate_high.png",
+      "role": "visual-evidence",
+      "bytes": 2380838,
+      "sha256": "0cc6731093f4ab68bec55b43e51e5e2ddc286197ed08d6a865943aa63d58007a",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/contact-s_gate_low.png": {
+      "path": "work/final-screenshots/contact-s_gate_low.png",
+      "role": "visual-evidence",
+      "bytes": 2381827,
+      "sha256": "738602f123ffb2610b98f472b8bc1e7e291094a84fd886fce0c102c3f7795dcb",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/contact-s_hall.png": {
+      "path": "work/final-screenshots/contact-s_hall.png",
+      "role": "visual-evidence",
+      "bytes": 2298325,
+      "sha256": "f0b9f369dbabe698d5d8eae212c3e78dc6ca80f6ab03d61cfe7a7e9e9dc1a33d",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/contact-s_market.png": {
+      "path": "work/final-screenshots/contact-s_market.png",
+      "role": "visual-evidence",
+      "bytes": 2293351,
+      "sha256": "fb1020c3429cc2e8ac3c793b3696bbbb0c19bc424112b049a4288b96dae743de",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/contact-s_market_e.png": {
+      "path": "work/final-screenshots/contact-s_market_e.png",
+      "role": "visual-evidence",
+      "bytes": 2260114,
+      "sha256": "0915c4bd3a30da78bcfd0fd459fa9bc2562aa82c2e9c55b3bd28f4932b56df3f",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/contact-s_market_w.png": {
+      "path": "work/final-screenshots/contact-s_market_w.png",
+      "role": "visual-evidence",
+      "bytes": 2209118,
+      "sha256": "d079786fa9b31598daa0cf3671e4046c0191f7689e9097c68cf08d12206fdfb8",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/contact-s_smith.png": {
+      "path": "work/final-screenshots/contact-s_smith.png",
+      "role": "visual-evidence",
+      "bytes": 2321346,
+      "sha256": "33d18b8482d1de3842da2bbe80c44103433ee47d671bd84a79b54cfb85470a2d",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/contact-s_smith_roof.png": {
+      "path": "work/final-screenshots/contact-s_smith_roof.png",
+      "role": "visual-evidence",
+      "bytes": 2380611,
+      "sha256": "28de2510ace9c1d9cae3cb8363c12b0fe91f539666f97eec158c98655805b1b8",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/gate-seam-detail.png": {
+      "path": "work/final-screenshots/gate-seam-detail.png",
+      "role": "visual-evidence",
+      "bytes": 297460,
+      "sha256": "9e59a2cd601cd0aa279e295e7466f815436c6ba88e8bf782cd9401e0c5fea2cd",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 480,
+      "pixelHeight": 370,
+      "mode": "RGBA"
+    },
+    "work/final-screenshots/npc-headroom-alchemist_ge.png": {
+      "path": "work/final-screenshots/npc-headroom-alchemist_ge.png",
+      "role": "visual-evidence",
+      "bytes": 2748893,
+      "sha256": "57e9ae50635f26a6e0247c369d95877480513590a99df88a8355defa063e0c47",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1024,
+      "mode": "RGBA"
+    },
+    "work/final-screenshots/npc-headroom-ferry_master.png": {
+      "path": "work/final-screenshots/npc-headroom-ferry_master.png",
+      "role": "visual-evidence",
+      "bytes": 2766260,
+      "sha256": "eee9cb0a76bfaf29d73bf5472d939ec01f50d97d119b22f4f0c7b2f2a3ef4b7a",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1024,
+      "mode": "RGBA"
+    },
+    "work/final-screenshots/npc-headroom-luoxia_mayor.png": {
+      "path": "work/final-screenshots/npc-headroom-luoxia_mayor.png",
+      "role": "visual-evidence",
+      "bytes": 2787708,
+      "sha256": "d3cf4b1c7486caf1a0eeebff8a64195d23799734de818817f4bc080dd723f2f5",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1024,
+      "mode": "RGBA"
+    },
+    "work/final-screenshots/npc-headroom-merchant_qian.png": {
+      "path": "work/final-screenshots/npc-headroom-merchant_qian.png",
+      "role": "visual-evidence",
+      "bytes": 2743235,
+      "sha256": "c08d981c54b541f535fe2aeabc41acf29b70afc33e3805de502f398d3813bde5",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1024,
+      "mode": "RGBA"
+    },
+    "work/final-screenshots/npc-headroom-sheet.png": {
+      "path": "work/final-screenshots/npc-headroom-sheet.png",
+      "role": "visual-evidence",
+      "bytes": 239800,
+      "sha256": "c4124b3f20cca296a3dfc0036f1c66a3b038e30c9f1a6d7055aec8b9571dc258",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 960,
+      "pixelHeight": 220,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/npc-headroom-smith_ou.png": {
+      "path": "work/final-screenshots/npc-headroom-smith_ou.png",
+      "role": "visual-evidence",
+      "bytes": 2804520,
+      "sha256": "058a6500d6fec50e19894498ca4e0e0467a6e0218509886ad74af0d55191d62d",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1024,
+      "mode": "RGBA"
+    },
+    "work/final-screenshots/npc-headroom-storage_keeper.png": {
+      "path": "work/final-screenshots/npc-headroom-storage_keeper.png",
+      "role": "visual-evidence",
+      "bytes": 2721051,
+      "sha256": "ffac62676bf7ab3a1fbedd25353178bd6595402543cd7b17c4388add5c441113",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1024,
+      "mode": "RGBA"
+    },
+    "work/final-screenshots/route_all_climbs.png": {
+      "path": "work/final-screenshots/route_all_climbs.png",
+      "role": "visual-evidence",
+      "bytes": 2379241,
+      "sha256": "1cbc36489dc3d2414b46bde9688387b8167daba2bbf684e9deb3ade1b89920f7",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/route_main.png": {
+      "path": "work/final-screenshots/route_main.png",
+      "role": "visual-evidence",
+      "bytes": 2379690,
+      "sha256": "aeafeb414132a76b5f963b62c04544cd0f782ec87372e8cc78dd3cd5a32207a6",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/route_return.png": {
+      "path": "work/final-screenshots/route_return.png",
+      "role": "visual-evidence",
+      "bytes": 2290396,
+      "sha256": "e43fb8313aa0a6ac63dfe507d5c35a6ca0d4e1d7023911b73c90cc414481f46b",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/spawn.png": {
+      "path": "work/final-screenshots/spawn.png",
+      "role": "visual-evidence",
+      "bytes": 2286630,
+      "sha256": "7b3bd1b34eb219704b2c5c229783598c8e2f53f99e6211a0b0835d516ad19a3a",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/standing-clean-s_awning_e.png": {
+      "path": "work/final-screenshots/standing-clean-s_awning_e.png",
+      "role": "visual-evidence",
+      "bytes": 2736348,
+      "sha256": "b76bca64df6d2500f7d7ccc643802073de11d866c32255e233bb59ed4bdf59f4",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1024,
+      "mode": "RGBA"
+    },
+    "work/final-screenshots/standing-clean-s_awning_w.png": {
+      "path": "work/final-screenshots/standing-clean-s_awning_w.png",
+      "role": "visual-evidence",
+      "bytes": 2729851,
+      "sha256": "6644808db78ba4694a177ffafcb8100fd1ca28bed656f5d661d6a3c0f5975cab",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1024,
+      "mode": "RGBA"
+    },
+    "work/final-screenshots/standing-clean-s_chimney.png": {
+      "path": "work/final-screenshots/standing-clean-s_chimney.png",
+      "role": "visual-evidence",
+      "bytes": 2835459,
+      "sha256": "a9e1e4423e8d209268e587cd9da66836016b6b85146e0be4a0d785ee47740029",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1024,
+      "mode": "RGBA"
+    },
+    "work/final-screenshots/standing-clean-s_county.png": {
+      "path": "work/final-screenshots/standing-clean-s_county.png",
+      "role": "visual-evidence",
+      "bytes": 2772574,
+      "sha256": "626893b99818a5a6fd6b8d14a2ddb9bed9d4512b3cace068c58c94dd7cc075c3",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1024,
+      "mode": "RGBA"
+    },
+    "work/final-screenshots/standing-clean-s_deck.png": {
+      "path": "work/final-screenshots/standing-clean-s_deck.png",
+      "role": "visual-evidence",
+      "bytes": 2766647,
+      "sha256": "1b3e6c3aa6f7038e72e92e625542ad273938326cdd1fa699f448309f67a87caf",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1024,
+      "mode": "RGBA"
+    },
+    "work/final-screenshots/standing-clean-s_dock.png": {
+      "path": "work/final-screenshots/standing-clean-s_dock.png",
+      "role": "visual-evidence",
+      "bytes": 2767502,
+      "sha256": "dd1a9f86514bcdb5122db5887fa0bbc19a7a463cb7894450dfb1b12651b0fbbf",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1024,
+      "mode": "RGBA"
+    },
+    "work/final-screenshots/standing-clean-s_drum.png": {
+      "path": "work/final-screenshots/standing-clean-s_drum.png",
+      "role": "visual-evidence",
+      "bytes": 2770675,
+      "sha256": "41a823e811ded4285c27608f2fb41a1c2b97776594071f7097f837ef075efd75",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1024,
+      "mode": "RGBA"
+    },
+    "work/final-screenshots/standing-clean-s_east.png": {
+      "path": "work/final-screenshots/standing-clean-s_east.png",
+      "role": "visual-evidence",
+      "bytes": 2834405,
+      "sha256": "b54f38572f62b74cac0811cd49ff6e34dcabca37fb3e230f526f8c7fb38817ab",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1024,
+      "mode": "RGBA"
+    },
+    "work/final-screenshots/standing-clean-s_gate_high.png": {
+      "path": "work/final-screenshots/standing-clean-s_gate_high.png",
+      "role": "visual-evidence",
+      "bytes": 2834978,
+      "sha256": "258b2a1d46ad293c3fc9fd5f54a6acf15b86ee70436c069a3d665cf98ad8bde0",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1024,
+      "mode": "RGBA"
+    },
+    "work/final-screenshots/standing-clean-s_gate_low.png": {
+      "path": "work/final-screenshots/standing-clean-s_gate_low.png",
+      "role": "visual-evidence",
+      "bytes": 2835607,
+      "sha256": "00e8fbaaedc2b76117ff5e432eae5194d5c65670092873b6ed019a4f922b45ec",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1024,
+      "mode": "RGBA"
+    },
+    "work/final-screenshots/standing-clean-s_hall.png": {
+      "path": "work/final-screenshots/standing-clean-s_hall.png",
+      "role": "visual-evidence",
+      "bytes": 2789860,
+      "sha256": "6b7dfe82cc7f14fe0a043a9237829b4872eb37a42d9804aa2d62096eff7df99f",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1024,
+      "mode": "RGBA"
+    },
+    "work/final-screenshots/standing-clean-s_market.png": {
+      "path": "work/final-screenshots/standing-clean-s_market.png",
+      "role": "visual-evidence",
+      "bytes": 2767561,
+      "sha256": "c1b2f3b352e82abdf54f26bd97ce687e089f75f24e329af93003055f2585027d",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1024,
+      "mode": "RGBA"
+    },
+    "work/final-screenshots/standing-clean-s_market_e.png": {
+      "path": "work/final-screenshots/standing-clean-s_market_e.png",
+      "role": "visual-evidence",
+      "bytes": 2760346,
+      "sha256": "a80b446c8516608da478e83f69f5f68a4fcebaa963877c6c51e5de787ec955ac",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1024,
+      "mode": "RGBA"
+    },
+    "work/final-screenshots/standing-clean-s_market_w.png": {
+      "path": "work/final-screenshots/standing-clean-s_market_w.png",
+      "role": "visual-evidence",
+      "bytes": 2719340,
+      "sha256": "227e17f79b6f86700259e208b0a18c4bf33c5b646f1e2acedb6e2ae1b8795a25",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1024,
+      "mode": "RGBA"
+    },
+    "work/final-screenshots/standing-clean-s_smith.png": {
+      "path": "work/final-screenshots/standing-clean-s_smith.png",
+      "role": "visual-evidence",
+      "bytes": 2813979,
+      "sha256": "de8d477544d6725f1d0178f1f0c31a6b379b563e48cd6558da96a03f31276be8",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1024,
+      "mode": "RGBA"
+    },
+    "work/final-screenshots/standing-clean-s_smith_roof.png": {
+      "path": "work/final-screenshots/standing-clean-s_smith_roof.png",
+      "role": "visual-evidence",
+      "bytes": 2833301,
+      "sha256": "989a4a6e24122c0909858de89d17c7562b78028bb13d4aad1ccab45daa3908cf",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1024,
+      "mode": "RGBA"
+    },
+    "work/final-screenshots/standing-contact-sheet.png": {
+      "path": "work/final-screenshots/standing-contact-sheet.png",
+      "role": "visual-evidence",
+      "bytes": 657910,
+      "sha256": "036d471ba7514655ef45b31e1523e78f9d95dbf9183040c8ca991ebf437a96ba",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 960,
+      "pixelHeight": 720,
+      "mode": "RGB"
+    },
+    "work/final-transition-evidence.json": {
+      "path": "work/final-transition-evidence.json",
+      "role": "versioned-process-or-validation-evidence",
+      "bytes": 56837,
+      "sha256": "453e0286fd37aea0d572f5a7e3159901080beb2874f2aae49bc128dfe6dd076f",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/geometry-audit/alpha-checker.png": {
+      "path": "work/geometry-audit/alpha-checker.png",
+      "role": "visual-evidence",
+      "bytes": 480840,
+      "sha256": "5ce5fbd96da3ce20adce52305fa7ff2f1811bdf2db5c66a40ee0ae798a35572b",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1536,
+      "pixelHeight": 512,
+      "mode": "RGBA"
+    },
+    "work/geometry-audit/alpha-dark.png": {
+      "path": "work/geometry-audit/alpha-dark.png",
+      "role": "visual-evidence",
+      "bytes": 466729,
+      "sha256": "634ae6881eb0181bb486bb2b2f0aca28295d160f6e8632950ce824a36ebac78c",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1536,
+      "pixelHeight": 512,
+      "mode": "RGBA"
+    },
+    "work/geometry-audit/alpha-light.png": {
+      "path": "work/geometry-audit/alpha-light.png",
+      "role": "visual-evidence",
+      "bytes": 476144,
+      "sha256": "4d0ff8d1fbcb9a88629f9e63d0e417eec69636376020dba5269c1f0092fcee3d",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1536,
+      "pixelHeight": 512,
+      "mode": "RGBA"
+    },
+    "work/geometry-audit/bottom-center.png": {
+      "path": "work/geometry-audit/bottom-center.png",
+      "role": "visual-evidence",
+      "bytes": 250567,
+      "sha256": "7448916b87e161e98476c83877679b45179bb91ee4f19bedb75472491e746124",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1024,
+      "pixelHeight": 144,
+      "mode": "RGBA"
+    },
+    "work/geometry-audit/bottom-east.png": {
+      "path": "work/geometry-audit/bottom-east.png",
+      "role": "visual-evidence",
+      "bytes": 246169,
+      "sha256": "c6d3a57f7cac4ba6e1857adbf83bbdd09440f54b63672b4653e47354e634794d",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1024,
+      "pixelHeight": 144,
+      "mode": "RGBA"
+    },
+    "work/geometry-audit/bottom-entire.png": {
+      "path": "work/geometry-audit/bottom-entire.png",
+      "role": "visual-evidence",
+      "bytes": 744204,
+      "sha256": "f022f5288916916ba8f6b1c79450c8c6181e8d108e4ad74e787c93d8b61d91d6",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 3072,
+      "pixelHeight": 144,
+      "mode": "RGBA"
+    },
+    "work/geometry-audit/bottom-west.png": {
+      "path": "work/geometry-audit/bottom-west.png",
+      "role": "visual-evidence",
+      "bytes": 248277,
+      "sha256": "635d2096d7c694e29544425700bb7a106aca172f0af960a21c60502601233f3b",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1024,
+      "pixelHeight": 144,
+      "mode": "RGBA"
+    },
+    "work/geometry-audit/s_awning_e-bearing.png": {
+      "path": "work/geometry-audit/s_awning_e-bearing.png",
+      "role": "visual-evidence",
+      "bytes": 61130,
+      "sha256": "ae2e9249eff3749b3f5f6730168df2d2fecc0ae6888e650cc8edc52f7b6a3ad8",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 200,
+      "pixelHeight": 175,
+      "mode": "RGBA"
+    },
+    "work/geometry-audit/s_awning_w-bearing.png": {
+      "path": "work/geometry-audit/s_awning_w-bearing.png",
+      "role": "visual-evidence",
+      "bytes": 52311,
+      "sha256": "33f83f63b21c50bab484eefcba6b74beec89e9c91c2d4e2c53aaae930b57ec1f",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 168,
+      "pixelHeight": 175,
+      "mode": "RGBA"
+    },
+    "work/geometry-audit/s_chimney-bearing.png": {
+      "path": "work/geometry-audit/s_chimney-bearing.png",
+      "role": "visual-evidence",
+      "bytes": 54741,
+      "sha256": "90e95f86edeb751de93c04d41e0b3e66de31156b1621901913d0c3cab1b0b770",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 168,
+      "pixelHeight": 175,
+      "mode": "RGBA"
+    },
+    "work/geometry-audit/s_county-bearing.png": {
+      "path": "work/geometry-audit/s_county-bearing.png",
+      "role": "visual-evidence",
+      "bytes": 123669,
+      "sha256": "f726f486353bb64dfbcd73661b8b8a010278e2249eea1ed81eefa631488876a6",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 392,
+      "pixelHeight": 175,
+      "mode": "RGBA"
+    },
+    "work/geometry-audit/s_deck-bearing.png": {
+      "path": "work/geometry-audit/s_deck-bearing.png",
+      "role": "visual-evidence",
+      "bytes": 106930,
+      "sha256": "f8d4d21d369f96c0e4214d8f838858a83709d4f805ed95d78caf92a25537a1d8",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 328,
+      "pixelHeight": 175,
+      "mode": "RGBA"
+    },
+    "work/geometry-audit/s_dock-bearing.png": {
+      "path": "work/geometry-audit/s_dock-bearing.png",
+      "role": "visual-evidence",
+      "bytes": 162428,
+      "sha256": "ebf2e0471231cd32c2dfcde2823d512951582a756044d05165e7f5bbe630f02e",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 532,
+      "pixelHeight": 175,
+      "mode": "RGBA"
+    },
+    "work/geometry-audit/s_drum-bearing.png": {
+      "path": "work/geometry-audit/s_drum-bearing.png",
+      "role": "visual-evidence",
+      "bytes": 66175,
+      "sha256": "7c3d60c0d84024af53128f7770b921891f10e9413ac32eef8d5880866926581a",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 200,
+      "pixelHeight": 175,
+      "mode": "RGBA"
+    },
+    "work/geometry-audit/s_east-bearing.png": {
+      "path": "work/geometry-audit/s_east-bearing.png",
+      "role": "visual-evidence",
+      "bytes": 154356,
+      "sha256": "741f9b6ce2ead23e79a5a43635a013b203d51e22520575e3a149336493be73db",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 532,
+      "pixelHeight": 175,
+      "mode": "RGBA"
+    },
+    "work/geometry-audit/s_gate_high-bearing.png": {
+      "path": "work/geometry-audit/s_gate_high-bearing.png",
+      "role": "visual-evidence",
+      "bytes": 63565,
+      "sha256": "0ab4fa3cff3447a9bd5e0cd9251a8f291fb3b55394cd0505b740b1638862db35",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 200,
+      "pixelHeight": 175,
+      "mode": "RGBA"
+    },
+    "work/geometry-audit/s_gate_low-bearing.png": {
+      "path": "work/geometry-audit/s_gate_low-bearing.png",
+      "role": "visual-evidence",
+      "bytes": 85341,
+      "sha256": "0f31234865d8f5abc1cbe375d0ba8776c1278040d74a474158358ad0db426ec6",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 296,
+      "pixelHeight": 175,
+      "mode": "RGBA"
+    },
+    "work/geometry-audit/s_hall-bearing.png": {
+      "path": "work/geometry-audit/s_hall-bearing.png",
+      "role": "visual-evidence",
+      "bytes": 84256,
+      "sha256": "1fe674c4ee6646df78ec7f0ce01782d0f4b1f65c646e76f08e0f74c822db4848",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 264,
+      "pixelHeight": 175,
+      "mode": "RGBA"
+    },
+    "work/geometry-audit/s_market-bearing.png": {
+      "path": "work/geometry-audit/s_market-bearing.png",
+      "role": "visual-evidence",
+      "bytes": 341505,
+      "sha256": "b40b4eb72299e4e1e33569a6ba73ed80c44ca22ea174296506b81907546e1340",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1128,
+      "pixelHeight": 175,
+      "mode": "RGBA"
+    },
+    "work/geometry-audit/s_market_e-bearing.png": {
+      "path": "work/geometry-audit/s_market_e-bearing.png",
+      "role": "visual-evidence",
+      "bytes": 74569,
+      "sha256": "13a56ed97758c7e238dad51f6ecc116ef6b1a5a6ba97dd63c8b6d6b4a0bd4d07",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 232,
+      "pixelHeight": 175,
+      "mode": "RGBA"
+    },
+    "work/geometry-audit/s_market_w-bearing.png": {
+      "path": "work/geometry-audit/s_market_w-bearing.png",
+      "role": "visual-evidence",
+      "bytes": 140928,
+      "sha256": "27d6baf548ff5d2dcefdd218bc51bfee19aad7fce02e39bebaf9d10faa5711a1",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 456,
+      "pixelHeight": 175,
+      "mode": "RGBA"
+    },
+    "work/geometry-audit/s_smith-bearing.png": {
+      "path": "work/geometry-audit/s_smith-bearing.png",
+      "role": "visual-evidence",
+      "bytes": 197220,
+      "sha256": "f223d8321147f0df84afa66254fa615f1f3370998862844fca0de35a2c97562b",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 648,
+      "pixelHeight": 175,
+      "mode": "RGBA"
+    },
+    "work/geometry-audit/s_smith_roof-bearing.png": {
+      "path": "work/geometry-audit/s_smith_roof-bearing.png",
+      "role": "visual-evidence",
+      "bytes": 91863,
+      "sha256": "a7fecd5047430134c911c2b54b067f05098bc582d1a8927f3181a4345eb6aac3",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 264,
+      "pixelHeight": 175,
+      "mode": "RGBA"
+    },
+    "work/imagegen-provenance.json": {
+      "path": "work/imagegen-provenance.json",
+      "role": "versioned-process-or-validation-evidence",
+      "bytes": 4754,
+      "sha256": "b39d4d272fea88fd1440bdc50e3f6a32082a1a8587083a1006942df993449c4f",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/layer-audit.json": {
+      "path": "work/layer-audit.json",
+      "role": "versioned-process-or-validation-evidence",
+      "bytes": 280,
+      "sha256": "107e1ff43b46f0f55f9f4bd0cdf364a551dfe05d1b400b047429b929e892f2ef",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/parameter-audit.json": {
+      "path": "work/parameter-audit.json",
+      "role": "versioned-process-or-validation-evidence",
+      "bytes": 6018,
+      "sha256": "a4b6e6fdafd9362ad26ac1d1b4867a9d76831c5eded7532f0c0fc8d8c24f7cae",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/parameter-audit.md": {
+      "path": "work/parameter-audit.md",
+      "role": "versioned-process-or-validation-evidence",
+      "bytes": 1506,
+      "sha256": "9c25eb809dc8edd6afbe7e79e1077ca317706341d449ad41c5a757505eb3475a",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/parameter-source-final-check.json": {
+      "path": "work/parameter-source-final-check.json",
+      "role": "versioned-process-or-validation-evidence",
+      "bytes": 3041,
+      "sha256": "623388079015e25ef612298d95590585748fab6eea653f39f2e860f82f3a94c0",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/preview/engine.mjs": {
+      "path": "work/preview/engine.mjs",
+      "role": "local-runtime-or-existing-actor-reference",
+      "bytes": 13557,
+      "sha256": "c66926be40b33db25c75eb901444b7a3e056f6a6ddaa7430be30c5ca3df94f32",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/preview/index.html": {
+      "path": "work/preview/index.html",
+      "role": "local-runtime-or-existing-actor-reference",
+      "bytes": 3892,
+      "sha256": "7b650cb59e15a044c0b880ad6d487c64aeb30c99381a8c3db7f549d1c231ac16",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/preview/npc-alchemist_ge-idle.png": {
+      "path": "work/preview/npc-alchemist_ge-idle.png",
+      "role": "local-runtime-or-existing-actor-reference",
+      "bytes": 9334,
+      "sha256": "0effff18a1c59d71cd8a943d5c4176995901bf2c42b650cd6f54f61daef3191f",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 96,
+      "pixelHeight": 96,
+      "mode": "RGBA"
+    },
+    "work/preview/npc-ferry_master-idle.png": {
+      "path": "work/preview/npc-ferry_master-idle.png",
+      "role": "local-runtime-or-existing-actor-reference",
+      "bytes": 9784,
+      "sha256": "3567d624370dbb75ae4dc639e1fc12c11f2970718cb0c641672e9a3e55039b7c",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 96,
+      "pixelHeight": 96,
+      "mode": "RGBA"
+    },
+    "work/preview/npc-luoxia_mayor-idle.png": {
+      "path": "work/preview/npc-luoxia_mayor-idle.png",
+      "role": "local-runtime-or-existing-actor-reference",
+      "bytes": 9275,
+      "sha256": "e81a2056ed7bb31fb607e607c558e36a03510c7baac61ff2f6f4642366869704",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 96,
+      "pixelHeight": 96,
+      "mode": "RGBA"
+    },
+    "work/preview/npc-merchant_qian-idle.png": {
+      "path": "work/preview/npc-merchant_qian-idle.png",
+      "role": "local-runtime-or-existing-actor-reference",
+      "bytes": 9050,
+      "sha256": "cde1137f8b93775432d97077e1473314a511b059789279975cc00484a5b7cacf",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 96,
+      "pixelHeight": 96,
+      "mode": "RGBA"
+    },
+    "work/preview/npc-reference-data.json": {
+      "path": "work/preview/npc-reference-data.json",
+      "role": "local-runtime-or-existing-actor-reference",
+      "bytes": 4503,
+      "sha256": "9e438c194aa246b57e75954f724e6374eb59cd825d33f46cef64d6955ce8f010",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/preview/npc-smith_ou-idle.png": {
+      "path": "work/preview/npc-smith_ou-idle.png",
+      "role": "local-runtime-or-existing-actor-reference",
+      "bytes": 8206,
+      "sha256": "dde168fa5583ff5fe3ea4b0c02e1c73b0355757cdad6e2843a2bf27da0f5e36d",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 96,
+      "pixelHeight": 96,
+      "mode": "RGBA"
+    },
+    "work/preview/npc-storage_keeper-idle.png": {
+      "path": "work/preview/npc-storage_keeper-idle.png",
+      "role": "local-runtime-or-existing-actor-reference",
+      "bytes": 8446,
+      "sha256": "6e4617d797f70c567ca452e31d387700da40fc66c38a506b6d20676f98f99ba0",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 96,
+      "pixelHeight": 96,
+      "mode": "RGBA"
+    },
+    "work/preview/player-reference-idle.png": {
+      "path": "work/preview/player-reference-idle.png",
+      "role": "local-runtime-or-existing-actor-reference",
+      "bytes": 10012,
+      "sha256": "520235d2f9c4c9e83b140ba439c2d18becfaa8e962fa15a98e35a14003ce0181",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 96,
+      "pixelHeight": 96,
+      "mode": "RGBA"
+    },
+    "work/preview/preview.mjs": {
+      "path": "work/preview/preview.mjs",
+      "role": "local-runtime-or-existing-actor-reference",
+      "bytes": 14759,
+      "sha256": "6634f3441ba1a9d797e238464bbeafcd608a52bb7a8bfd2c7dce56e515336fcb",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/prompt-stage3-background.txt": {
+      "path": "work/prompt-stage3-background.txt",
+      "role": "prompt",
+      "bytes": 1053,
+      "sha256": "08e1bed0bd5d8e18d0d04d56b8559fe62f3ab7306fee5c967284496ef65ac21d",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/prompt-stage3-extract-repaired.txt": {
+      "path": "work/prompt-stage3-extract-repaired.txt",
+      "role": "prompt",
+      "bytes": 752,
+      "sha256": "4706158eec1a758da1737be27cf2487fc39dac4fac77d966b838457c03f3d49e",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/prompt-stage3-extract.txt": {
+      "path": "work/prompt-stage3-extract.txt",
+      "role": "prompt",
+      "bytes": 1055,
+      "sha256": "702a0c5f7d36f0d6508a1f5097da5a32b70a49abdc3c1c394fd32c7086523fb6",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/prompt-stage3-structure-repair.txt": {
+      "path": "work/prompt-stage3-structure-repair.txt",
+      "role": "prompt",
+      "bytes": 2161,
+      "sha256": "51342b5528f33125a38f2cb73691cc0c59b9910fccf841912da2470a9217f764",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/prompt-stage3.txt": {
+      "path": "work/prompt-stage3.txt",
+      "role": "prompt",
+      "bytes": 4923,
+      "sha256": "a55651bb8ddcb0ba618e2be8ae1cd78379790b27849ad50de9f22c413cb9cc46",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/prompt-stage4-bottom-seam.txt": {
+      "path": "work/prompt-stage4-bottom-seam.txt",
+      "role": "prompt",
+      "bytes": 1096,
+      "sha256": "c02d262809600a0462410fac9cc9ae7ab28411be3f02bb56cd65b7a80bbb93f0",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/prompt-stage4-center.txt": {
+      "path": "work/prompt-stage4-center.txt",
+      "role": "prompt",
+      "bytes": 1617,
+      "sha256": "b3fa00f953547d9dcd5d0ca66b5ea255ea0cf8e095f097ddcd786b3e64f997bf",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/prompt-stage4-east.txt": {
+      "path": "work/prompt-stage4-east.txt",
+      "role": "prompt",
+      "bytes": 1806,
+      "sha256": "5fbc76c8c7c6c320f6820322489086a83328acccb39dab683fd199dc0de98cf0",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/prompt-stage4-west.txt": {
+      "path": "work/prompt-stage4-west.txt",
+      "role": "prompt",
+      "bytes": 1713,
+      "sha256": "8c0d8144ad90a055a10706ac3875bb5694d2283174b53473b45b6d7c3ef45e8e",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/prompt-stage5-background.txt": {
+      "path": "work/prompt-stage5-background.txt",
+      "role": "prompt",
+      "bytes": 855,
+      "sha256": "beee989b0f24782d1cc1bff75adf4e83e2f7590d99d5589dba06b4db6195e56d",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/prompt-stage5-playable.txt": {
+      "path": "work/prompt-stage5-playable.txt",
+      "role": "prompt",
+      "bytes": 1157,
+      "sha256": "8eae357eccb2b3825cce7589e2fbe1c54a83fd0ba631aea0d824a750eff49c4e",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/protected-boundary-final.json": {
+      "path": "work/protected-boundary-final.json",
+      "role": "versioned-process-or-validation-evidence",
+      "bytes": 2065,
+      "sha256": "892f194b3310b265cc75e8463ce7b2c812df1adfe6f6d9b2c489c457d1583de3",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/replays-final/route_all_climbs.json": {
+      "path": "work/replays-final/route_all_climbs.json",
+      "role": "replay",
+      "bytes": 1208198,
+      "sha256": "f86feabccef1ac5032f063e9e27e4e507da4c9dab3d6cf91d332743e0e3fe666",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/replays-final/route_awnings.json": {
+      "path": "work/replays-final/route_awnings.json",
+      "role": "replay",
+      "bytes": 601548,
+      "sha256": "5b803459c22c94b69d600eaaa5b93d379347e464c75872d5c14135101ddb7256",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/replays-final/route_chimney.json": {
+      "path": "work/replays-final/route_chimney.json",
+      "role": "replay",
+      "bytes": 673062,
+      "sha256": "d7baec101c07113b51a46aca6983be808fb1207e6c3387a4e906e7ffe9784112",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/replays-final/route_ladder_76.json": {
+      "path": "work/replays-final/route_ladder_76.json",
+      "role": "replay",
+      "bytes": 596601,
+      "sha256": "47004a77eb74c2930605384e36b18cdfbdc52b430256ef55f592c006a0b921c8",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/replays-final/route_main.json": {
+      "path": "work/replays-final/route_main.json",
+      "role": "replay",
+      "bytes": 531813,
+      "sha256": "03f02cdbe909c05075a4e9679172f27b0db6080802b5dc6862c982a6d1bdfc10",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/replays-final/route_return.json": {
+      "path": "work/replays-final/route_return.json",
+      "role": "replay",
+      "bytes": 1058959,
+      "sha256": "42935b3c0d02c24040cf974b073ada8894e693c814d3146739b642a41798419f",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/replays-final/route_rope_23.json": {
+      "path": "work/replays-final/route_rope_23.json",
+      "role": "replay",
+      "bytes": 620744,
+      "sha256": "d362fa8514585fe9c17687e002b802ccacb205168dedb16dca7a8e36f464b3eb",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/replays-final/route_rope_41.json": {
+      "path": "work/replays-final/route_rope_41.json",
+      "role": "replay",
+      "bytes": 620994,
+      "sha256": "351d59ff36851ce7fe7f0a5f0b1da8829d857273b20cf446fc336f88b0cac198",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/replays-final/route_rope_46.json": {
+      "path": "work/replays-final/route_rope_46.json",
+      "role": "replay",
+      "bytes": 633246,
+      "sha256": "a5c872bc5abd89e539e7862845a302a2c21e0b0b50c16c87fa9ce9e6e41fdd33",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/replays-final/route_rope_53.json": {
+      "path": "work/replays-final/route_rope_53.json",
+      "role": "replay",
+      "bytes": 621136,
+      "sha256": "2663d4a12d47a2c6fb34ea90ad7468344219beee0aeda7ca2ec0ee993a9f72b4",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/replays-final/route_rope_6.json": {
+      "path": "work/replays-final/route_rope_6.json",
+      "role": "replay",
+      "bytes": 596503,
+      "sha256": "942709d9e5eebde883496df035671da426dfef05d27dd0685a4dd8ee2d7c8ed5",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/replays-final/route_rope_85.json": {
+      "path": "work/replays-final/route_rope_85.json",
+      "role": "replay",
+      "bytes": 608946,
+      "sha256": "765a243b55294593de0cb92024e276e79bd52331d067ee72fea2d43730e6175b",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/replays-final/route_rope_87.json": {
+      "path": "work/replays-final/route_rope_87.json",
+      "role": "replay",
+      "bytes": 708824,
+      "sha256": "de814d65b10ece37364c18dd91c5a6ef5b64e35ca2db35ae466711270e2c2fd6",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/route-plan.md": {
+      "path": "work/route-plan.md",
+      "role": "versioned-process-or-validation-evidence",
+      "bytes": 358,
+      "sha256": "66a0c4a5f4d2036bc02fdf20d9fdb892a79a2867ef8e4b6a1c8565a4e742c0aa",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/scene-brief.md": {
+      "path": "work/scene-brief.md",
+      "role": "versioned-process-or-validation-evidence",
+      "bytes": 3100,
+      "sha256": "10377f7e0dcdee317d2accd1d118f729984c8245d583aedfaf67e769211e04c0",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/stage2-graybox-report.md": {
+      "path": "work/stage2-graybox-report.md",
+      "role": "versioned-process-or-validation-evidence",
+      "bytes": 4354,
+      "sha256": "8fb5eb390add4a305a9e4a0ef707d7ad6b2f6680b955e8fbb03dc7d12cb6318f",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/stage3-geometry-report.md": {
+      "path": "work/stage3-geometry-report.md",
+      "role": "versioned-process-or-validation-evidence",
+      "bytes": 1141,
+      "sha256": "07c7fbc17ceb1a2ff49bec6a3a8f2d9ec1894c992809421a37752703495da3d9",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/stage4-bottom-composition.json": {
+      "path": "work/stage4-bottom-composition.json",
+      "role": "versioned-process-or-validation-evidence",
+      "bytes": 314,
+      "sha256": "c112379166b137c5e7ee2e7b16fc1c463ea0b82a7305984d8c6ec7d9b62391b5",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/stage4-detail-comparison.png": {
+      "path": "work/stage4-detail-comparison.png",
+      "role": "versioned-process-or-validation-evidence",
+      "bytes": 921001,
+      "sha256": "f5fabea18e98cc8de3960a1991cf081df9e77be6fbf0e21658711d213ef52f15",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+      "pixelWidth": 1200,
+      "pixelHeight": 900,
+      "mode": "RGB"
+    },
+    "work/stage4-report.md": {
+      "path": "work/stage4-report.md",
+      "role": "versioned-process-or-validation-evidence",
+      "bytes": 848,
+      "sha256": "af98275631f3a718c1375d2852de690b970b7b182e9470fd045e488fb40d2534",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "work/stage5-report.md": {
+      "path": "work/stage5-report.md",
+      "role": "versioned-process-or-validation-evidence",
+      "bytes": 1652,
+      "sha256": "5d36bb11c32e25f356a1e67be707641aac73673ec5ce5c257102faf2185071d3",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    },
+    "manifest.json": {
+      "path": "manifest.json",
+      "role": "manifest",
+      "sha256": null,
+      "hashPolicy": "self hash omitted to avoid recursive digest",
+      "schemaVersion": "1.0",
+      "geometryRevision": "luoxia-final-001",
+      "actorParameterRevision": "luoxia-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+    }
+  },
+  "foreground": {
+    "applicable": false,
+    "reason": "No independent occluder in front of player; attached lanterns/flags/roof ornaments render with playable behind actors"
+  },
+  "composition": {
+    "sourceRefinedMaster": "work/generated/master-006.png",
+    "registeredFinalMaster": "work/generated/master-007-final.png",
+    "sourcePlacementRecord": "work/final-layer-composition.json",
+    "layerOrder": [
+      "asset_background",
+      "asset_playable",
+      "npc-static-references",
+      "actor"
+    ],
+    "exactRGBARecomposition": true
+  },
+  "sceneData": {
+    "path": "scene-data.json",
+    "sha256": "0564ffcf7f1bd00fb922fab463d41cd049dd9403ebcab2969f01aed698d3308f",
+    "schemaVersion": "1.0",
+    "geometryRevision": "luoxia-final-001",
+    "actorParameterRevision": "luoxia-base-feel-20261027-001",
+    "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+  },
+  "sourceBindings": {
+    "actorSHA256": "eef7af12855072a4bf4006aa62c521e4cc2d57e70a38f1e663e153ac08f19ade",
+    "sceneDataSHA256": "0564ffcf7f1bd00fb922fab463d41cd049dd9403ebcab2969f01aed698d3308f",
+    "diagnosticsSourceSHA256": "0564ffcf7f1bd00fb922fab463d41cd049dd9403ebcab2969f01aed698d3308f"
+  },
+  "diagnostics": {
+    "geometryRevision": "luoxia-final-001",
+    "actorParameterRevision": "luoxia-base-feel-20261027-001",
+    "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+    "sceneDataSHA256": "0564ffcf7f1bd00fb922fab463d41cd049dd9403ebcab2969f01aed698d3308f",
+    "rendererRevision": "luoxia-diagnostics-002",
+    "maskPalette": {
+      "walk": [
+        150,
+        245,
+        160,
+        255
+      ],
+      "stand": [
+        0,
+        200,
+        80,
+        255
+      ],
+      "rope": [
+        0,
+        190,
+        230,
+        255
+      ],
+      "ladder": [
+        80,
+        140,
+        255,
+        255
+      ],
+      "jump": [
+        255,
+        180,
+        0,
+        255
+      ],
+      "drop": [
+        170,
+        80,
+        225,
+        255
+      ],
+      "point": [
+        255,
+        70,
+        160,
+        255
+      ]
+    },
+    "rasterizationOrder": [
+      "walk",
+      "stand",
+      "rope",
+      "ladder",
+      "jump",
+      "drop",
+      "point"
+    ],
+    "maskAntialiasing": false,
+    "files": {
+      "action-mask.png": {
+        "pixelWidth": 3072,
+        "pixelHeight": 1024,
+        "sha256": "89253b5f53de166dec7f919eac0c212df4ed114923a273e4ab667dba0fa4197f"
+      },
+      "action-overlay.png": {
+        "pixelWidth": 3072,
+        "pixelHeight": 1024,
+        "sha256": "af21c15568b3d89c4d633624ef820aeaed75eaca7118a746b23223d228539f5f"
+      },
+      "collision-overlay.png": {
+        "pixelWidth": 3072,
+        "pixelHeight": 1024,
+        "sha256": "cc9acf2d4d4930955af65640f2713ea16b909e6f912c871d18a221917b7234ac"
+      }
+    }
+  },
+  "mask": {
+    "antialiasing": false,
+    "palette": {
+      "walk": [
+        150,
+        245,
+        160,
+        255
+      ],
+      "stand": [
+        0,
+        200,
+        80,
+        255
+      ],
+      "rope": [
+        0,
+        190,
+        230,
+        255
+      ],
+      "ladder": [
+        80,
+        140,
+        255,
+        255
+      ],
+      "jump": [
+        255,
+        180,
+        0,
+        255
+      ],
+      "drop": [
+        170,
+        80,
+        225,
+        255
+      ],
+      "point": [
+        255,
+        70,
+        160,
+        255
+      ]
+    },
+    "rasterizationOrder": [
+      "walk",
+      "stand",
+      "rope",
+      "ladder",
+      "jump",
+      "drop",
+      "point"
+    ],
+    "authority": "scene-data.json; mask is derived inspection only"
+  },
+  "runtime": {
+    "entry": "index.html",
+    "relativeTester": "work/preview/index.html",
+    "engine": "work/preview/engine.mjs",
+    "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+    "collisionModel": "rectangular solids, horizontal one-way supports and explicit rope/ladder corridors",
+    "productionPhaserIntegrated": false,
+    "staticNPCReferences": true,
+    "movingActorReferenceIsStaticFrame": true
+  },
+  "validation": {
+    "status": "verified",
+    "report": "validation-report.md",
+    "requiredRoutes": {
+      "route_main": "verified",
+      "route_return": "verified",
+      "route_rope_6": "verified",
+      "route_rope_23": "verified",
+      "route_rope_41": "verified",
+      "route_rope_46": "verified",
+      "route_rope_53": "verified",
+      "route_ladder_76": "verified",
+      "route_rope_85": "verified",
+      "route_rope_87": "verified",
+      "route_awnings": "verified",
+      "route_chimney": "verified",
+      "route_all_climbs": "verified"
+    },
+    "bearingTolerancePx": 2,
+    "leadApproval": "pending",
+    "integrationAllowed": false
+  },
+  "artGeneration": {
+    "mode": "built-in image_gen",
+    "callCount": 11,
+    "provenance": "work/imagegen-provenance.json",
+    "sourceImages": [
+      {
+        "tool": "built-in image_gen",
+        "output": "work/generated/master-001.png",
+        "prompt": "work/prompt-stage3.txt",
+        "inputs": [
+          "work/action-layout.png",
+          "art/scenes/qingyun_village_gsb_v2/scene.png"
+        ],
+        "actualPixels": [
+          2172,
+          724
+        ],
+        "mode": "RGB",
+        "sha256": "e25a5f8b91df76ad9e06794de606f0c29cfd2131ed4fb115428d4ab8c66b6b91"
+      },
+      {
+        "tool": "built-in image_gen",
+        "output": "work/generated/extract-001.png",
+        "prompt": "work/prompt-stage3-extract.txt",
+        "inputs": [
+          "work/generated/master-001.png"
+        ],
+        "actualPixels": [
+          2172,
+          724
+        ],
+        "mode": "RGBA",
+        "sha256": "532af565e7a6d99fcefd8d72f7a115d12bcfd6eeab8397ac4299b5f6ae500e6c"
+      },
+      {
+        "tool": "built-in image_gen",
+        "output": "work/generated/background-001.png",
+        "prompt": "work/prompt-stage3-background.txt",
+        "inputs": [
+          "work/generated/master-001.png"
+        ],
+        "actualPixels": [
+          2173,
+          724
+        ],
+        "mode": "RGB",
+        "sha256": "9ba1f050011c22aa08d923025f322472c48ed00bd45e4bd497b77ec58c729031"
+      },
+      {
+        "tool": "built-in image_gen",
+        "output": "work/generated/master-003.png",
+        "prompt": "work/prompt-stage3-structure-repair.txt",
+        "inputs": [
+          "work/generated/master-002.png",
+          "work/generated/master-001.png"
+        ],
+        "actualPixels": [
+          2172,
+          724
+        ],
+        "mode": "RGB",
+        "sha256": "14b1607bad158ad9c9c7ff2e71d636a1e8f3447f3700fd2d4faacbf5b3646f80"
+      },
+      {
+        "tool": "built-in image_gen",
+        "output": "work/generated/extract-003.png",
+        "prompt": "work/prompt-stage3-extract-repaired.txt",
+        "inputs": [
+          "work/generated/master-003.png"
+        ],
+        "actualPixels": [
+          2172,
+          724
+        ],
+        "mode": "RGBA",
+        "sha256": "7a7f444fa26670579dd6534bdddafcc018a89179633d45dce99e5176b4845075"
+      },
+      {
+        "tool": "built-in image_gen",
+        "output": "work/generated/detail-west-005.png",
+        "prompt": "work/prompt-stage4-west.txt",
+        "inputs": [
+          "work/generated/stage4-target-west.png",
+          "work/generated/master-004.png"
+        ],
+        "actualPixels": [
+          1964,
+          801
+        ],
+        "mode": "RGB",
+        "sha256": "e2871b035912751029a1277c47fe4eff64f0f1b52a121dfe35d3cb269520dac7"
+      },
+      {
+        "tool": "built-in image_gen",
+        "output": "work/generated/detail-center-005.png",
+        "prompt": "work/prompt-stage4-center.txt",
+        "inputs": [
+          "work/generated/stage4-target-center.png",
+          "work/generated/master-004.png"
+        ],
+        "actualPixels": [
+          1449,
+          1086
+        ],
+        "mode": "RGB",
+        "sha256": "3d8d9d67fba572ec8e93c317e03fdb9adc51bda92f25ab34f69c7ee0fd59f7fb"
+      },
+      {
+        "tool": "built-in image_gen",
+        "output": "work/generated/detail-east-005.png",
+        "prompt": "work/prompt-stage4-east.txt",
+        "inputs": [
+          "work/generated/stage4-target-east.png",
+          "work/generated/master-004.png"
+        ],
+        "actualPixels": [
+          1756,
+          895
+        ],
+        "mode": "RGB",
+        "sha256": "d037a39d39c9a83fa311876ac851a7067662ea78b1de07c24ca76a2843628bfa"
+      },
+      {
+        "tool": "built-in image_gen",
+        "output": "work/generated/bottom-seam-006.png",
+        "prompt": "work/prompt-stage4-bottom-seam.txt",
+        "inputs": [
+          "work/generated/master-005.png"
+        ],
+        "actualPixels": [
+          2172,
+          724
+        ],
+        "mode": "RGB",
+        "sha256": "8f740f1d22f2273dcfedac419c2690403b0ac1c630f78e934cf26ea899888149"
+      },
+      {
+        "tool": "built-in image_gen",
+        "output": "work/generated/extract-006.png",
+        "prompt": "work/prompt-stage5-playable.txt",
+        "inputs": [
+          "work/generated/master-006.png"
+        ],
+        "actualPixels": [
+          2172,
+          724
+        ],
+        "mode": "RGBA",
+        "sha256": "a5fefdecdac03db1b170ca863c59865cb6b114ecb7973ee4768e58962d6f6504"
+      },
+      {
+        "tool": "built-in image_gen",
+        "output": "work/generated/background-006.png",
+        "prompt": "work/prompt-stage5-background.txt",
+        "inputs": [
+          "work/generated/master-006.png"
+        ],
+        "actualPixels": [
+          2172,
+          724
+        ],
+        "mode": "RGB",
+        "sha256": "6e16093c6adb33b09a6c50aff5abe75ef73cdeb03fff90133b577515dd01dcc9"
+      }
+    ],
+    "allFinalLayersSameRefinedMasterLineage": true,
+    "registrationIsDetailGeneration": false,
+    "finalMaterialProvenance": "AI complete scene, AI local refinements and same-master layer derivation; code crops/scales/places/composites source pixels, handles alpha interior, and draws only blueprints/diagnostics"
+  },
+  "authority": {
+    "qingyunV2DeliveryRoot": "read-only; all original hashes checked",
+    "gamePublic": "no task writes; existing baseline unchanged, external bamboo/lingxi additions explicitly recorded",
+    "protectedAudit": "work/protected-boundary-final.json",
+    "taskDeployed": false,
+    "taskPushed": false,
+    "taskForwardedExternalTrial": false
+  },
+  "limitations": [
+    "Independent fixed60Hz AABB adapter; production Phaser integration must rerun movement checks after lead PASS.",
+    "NPC/static actors are placement/readability references; no dialogue, combat, gather, quest reward or portal activation implemented.",
+    "220ms drop-through skips the close roof below chimney; tested return walks off left edge and lands naturally.",
+    "Foreground layer not applicable: attached ornaments render behind actor."
+  ]
+}

@@ -1,0 +1,42 @@
+{
+ "atlas": "fx_youying_patrol_lantern_cone",
+ "facing": "left",
+ "origin": [
+  1,
+  0.5
+ ],
+ "frameSize": [
+  192,
+  96
+ ],
+ "anims": [
+  {
+   "key": "fx_youying_patrol_lantern_cone_loop",
+   "frames": [
+    "fx_youying_patrol_lantern_cone_loop_01",
+    "fx_youying_patrol_lantern_cone_loop_02",
+    "fx_youying_patrol_lantern_cone_loop_03",
+    "fx_youying_patrol_lantern_cone_loop_04"
+   ],
+   "frameRate": 8,
+   "repeat": -1
+  },
+  {
+   "key": "fx_youying_patrol_lantern_cone_alert",
+   "frames": [
+    "fx_youying_patrol_lantern_cone_alert_01",
+    "fx_youying_patrol_lantern_cone_alert_02"
+   ],
+   "frameRate": 10,
+   "repeat": -1
+  }
+ ],
+ "blend": "normal",
+ "range": {
+  "length": 172,
+  "halfWidthAtEnd": 46.1,
+  "halfAngleDeg": 15
+ },
+ "note": "巡逻弟子灯笼扇形视线：原点 (1,0.5) = 扇形顶点 = 灯笼中心（脚底 + mon_youying_patrol 的 lanternOffset），向左展开，朝右 setFlipX(true) 并把原点改 (0,0.5)。图上长 172px、末端半宽 40（约 ±13°）；判定用程序里的扇形，数值【演武堂】定了以后 setScale(长度/172) 对齐即可。平时 loop（暖黄，近浓远淡，金褐细边），照到玩家后切 alert（朱红边，提示正在被发现）。光不是实体，透明度已烘好，NORMAL 混合，depth 放在角色之下。 帧内锥长 172px、±15°；按 balance vision.length 192 运行时 setScale(192/172)。",
+ "kind": "fx"
+}

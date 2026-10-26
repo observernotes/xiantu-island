@@ -1,0 +1,786 @@
+{
+  "name": "lingxi_path_gsb_v1",
+  "status": "verified",
+  "handoff": "灵溪 gsb_v1 已交核待负责人",
+  "schemaVersion": "1.0",
+  "geometryRevision": "lingxi-final-001",
+  "actorParameterRevision": "lingxi-base-feel-20261027-001",
+  "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+  "space": {
+    "origin": "top-left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "units": "logical-pixel",
+    "logicalWidth": 3840,
+    "logicalHeight": 1024
+  },
+  "assets": [
+    {
+      "id": "asset_background",
+      "role": "background",
+      "path": "background.png",
+      "pixelWidth": 3840,
+      "pixelHeight": 1024,
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "asset_playable",
+      "role": "playable",
+      "path": "playable.png",
+      "pixelWidth": 3840,
+      "pixelHeight": 1024,
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    }
+  ],
+  "files": {
+    "scene.png": {
+      "path": "scene.png",
+      "role": "final-composite",
+      "bytes": 7250077,
+      "sha256": "18a83d4168f70bdc86a6af51ceb93f341a5035baa0c9d3abe0a88214ddd8cf78",
+      "schemaVersion": "1.0",
+      "geometryRevision": "lingxi-final-001",
+      "actorParameterRevision": "lingxi-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+      "pixelWidth": 3840,
+      "pixelHeight": 1024,
+      "mode": "RGBA",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    "background.png": {
+      "path": "background.png",
+      "role": "background",
+      "bytes": 6944104,
+      "sha256": "10449f3a1f147afe724a785c60078ca2ccec66245d13745c055f0c82b2ed45a6",
+      "schemaVersion": "1.0",
+      "geometryRevision": "lingxi-final-001",
+      "actorParameterRevision": "lingxi-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+      "pixelWidth": 3840,
+      "pixelHeight": 1024,
+      "mode": "RGBA",
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    "playable.png": {
+      "path": "playable.png",
+      "role": "transparent-playable",
+      "bytes": 1903447,
+      "sha256": "9a965963a61f52d5a9164274547c19cc7adcf06b692a03109d515c55fc2b79e0",
+      "schemaVersion": "1.0",
+      "geometryRevision": "lingxi-final-001",
+      "actorParameterRevision": "lingxi-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+      "pixelWidth": 3840,
+      "pixelHeight": 1024,
+      "mode": "RGBA",
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    "scene-data.json": {
+      "path": "scene-data.json",
+      "role": "authoritative-actions-and-collision",
+      "bytes": 97171,
+      "sha256": "8c2802a3a3656b467c4feda672c2b67a9b9d1733d859bfa3c0e4c797df2b1942",
+      "schemaVersion": "1.0",
+      "geometryRevision": "lingxi-final-001",
+      "actorParameterRevision": "lingxi-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-lingxi-001"
+    },
+    "action-mask.png": {
+      "path": "action-mask.png",
+      "role": "pure-semantic-mask",
+      "bytes": 19496,
+      "sha256": "db9684c2234be160deaa2885f182a38091bd62949db10a84b1b0402ddf8859e0",
+      "schemaVersion": "1.0",
+      "geometryRevision": "lingxi-final-001",
+      "actorParameterRevision": "lingxi-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+      "pixelWidth": 3840,
+      "pixelHeight": 1024,
+      "mode": "RGBA",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    "action-overlay.png": {
+      "path": "action-overlay.png",
+      "role": "action-inspection",
+      "bytes": 7075256,
+      "sha256": "9dd920041da28e77b9e23a152924e79319deee4a9d4694e8bc7a1089c9e82781",
+      "schemaVersion": "1.0",
+      "geometryRevision": "lingxi-final-001",
+      "actorParameterRevision": "lingxi-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+      "pixelWidth": 3840,
+      "pixelHeight": 1024,
+      "mode": "RGBA",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    "collision-overlay.png": {
+      "path": "collision-overlay.png",
+      "role": "collision-inspection",
+      "bytes": 5797382,
+      "sha256": "9653f106e49552d20c9b605017279a17ae2a580f6aca45ae719f7e3698ff302f",
+      "schemaVersion": "1.0",
+      "geometryRevision": "lingxi-final-001",
+      "actorParameterRevision": "lingxi-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+      "pixelWidth": 3840,
+      "pixelHeight": 1024,
+      "mode": "RGBA",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    "diagnostics-metadata.json": {
+      "path": "diagnostics-metadata.json",
+      "role": "diagnostic-source-binding",
+      "bytes": 1358,
+      "sha256": "913d6a3ef2492d57a148f386efb27b71a9be40c1ca903eb26a30a127908266a0",
+      "schemaVersion": "1.0",
+      "geometryRevision": "lingxi-final-001",
+      "actorParameterRevision": "lingxi-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-lingxi-001"
+    },
+    "validation-report.md": {
+      "path": "validation-report.md",
+      "role": "validation-report",
+      "bytes": 13496,
+      "sha256": "8a9845976bb72313832405c6a09045fbd39230d30927bc61e79e794922ec743d",
+      "schemaVersion": "1.0",
+      "geometryRevision": "lingxi-final-001",
+      "actorParameterRevision": "lingxi-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-lingxi-001"
+    },
+    "DELIVERED.md": {
+      "path": "DELIVERED.md",
+      "role": "delivery-handoff",
+      "bytes": 997,
+      "sha256": "2fbc9f718e9ad2b575203b12ce5c01ed80d3d4e696d78bedf8045ceb55051927",
+      "schemaVersion": "1.0",
+      "geometryRevision": "lingxi-final-001",
+      "actorParameterRevision": "lingxi-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-lingxi-001"
+    },
+    "index.html": {
+      "path": "index.html",
+      "role": "local-entry",
+      "bytes": 549,
+      "sha256": "f7fefe58b62304164a7616578de19ed345f1cb7a49754a3501b71505a9054282",
+      "schemaVersion": "1.0",
+      "geometryRevision": "lingxi-final-001",
+      "actorParameterRevision": "lingxi-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-lingxi-001"
+    },
+    "README.md": {
+      "path": "README.md",
+      "role": "local-instructions",
+      "bytes": 1540,
+      "sha256": "1ffd33bca0ed8b25be0420f665cce94fa08aa2cdc2b7f91e9a89f2fbc7f13cec",
+      "schemaVersion": "1.0",
+      "geometryRevision": "lingxi-final-001",
+      "actorParameterRevision": "lingxi-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-lingxi-001"
+    },
+    "work/preview/index.html": {
+      "path": "work/preview/index.html",
+      "role": "local-tester",
+      "bytes": 3782,
+      "sha256": "7aeacd2c9760f8ffb5eaf753b605bdb64832fe700b0e4d7f0bc5ea913c0c3932",
+      "schemaVersion": "1.0",
+      "geometryRevision": "lingxi-final-001",
+      "actorParameterRevision": "lingxi-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-lingxi-001"
+    },
+    "work/preview/preview.mjs": {
+      "path": "work/preview/preview.mjs",
+      "role": "tester-renderer",
+      "bytes": 13228,
+      "sha256": "d234f8f65a7723fc196aaa081dbaeac03a498a3ac23c9d2caf34bfd8517d0b31",
+      "schemaVersion": "1.0",
+      "geometryRevision": "lingxi-final-001",
+      "actorParameterRevision": "lingxi-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-lingxi-001"
+    },
+    "work/preview/engine.mjs": {
+      "path": "work/preview/engine.mjs",
+      "role": "fixed-step-aabb-runtime",
+      "bytes": 13557,
+      "sha256": "ac8b3e749bc6ce67da7731ad3c45eec7a12cb0659472cf50a695d7832a328fbc",
+      "schemaVersion": "1.0",
+      "geometryRevision": "lingxi-final-001",
+      "actorParameterRevision": "lingxi-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-lingxi-001"
+    },
+    "work/preview/player-reference-idle.png": {
+      "path": "work/preview/player-reference-idle.png",
+      "role": "existing-player-static-reference",
+      "bytes": 10012,
+      "sha256": "520235d2f9c4c9e83b140ba439c2d18becfaa8e962fa15a98e35a14003ce0181",
+      "schemaVersion": "1.0",
+      "geometryRevision": "lingxi-final-001",
+      "actorParameterRevision": "lingxi-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+      "pixelWidth": 96,
+      "pixelHeight": 96,
+      "mode": "RGBA"
+    },
+    "work/final-routes.json": {
+      "path": "work/final-routes.json",
+      "role": "continuous-route-summary",
+      "bytes": 13602,
+      "sha256": "e1140bd9ad7cd1fa4e5fa800b8dd5dffe689a0ee87c200b980d686e7c2339885",
+      "schemaVersion": "1.0",
+      "geometryRevision": "lingxi-final-001",
+      "actorParameterRevision": "lingxi-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-lingxi-001"
+    },
+    "work/final-browser-check.json": {
+      "path": "work/final-browser-check.json",
+      "role": "chrome-replay-keyboard-contact-results",
+      "bytes": 19255,
+      "sha256": "3fb5fcea6a8a0d57edb12b395b9c598df68ca6a54f900543b9e7c2ae9ef9c509",
+      "schemaVersion": "1.0",
+      "geometryRevision": "lingxi-final-001",
+      "actorParameterRevision": "lingxi-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-lingxi-001"
+    },
+    "work/final-physics-smoke-results.json": {
+      "path": "work/final-physics-smoke-results.json",
+      "role": "movement-regression-results",
+      "bytes": 138061,
+      "sha256": "75c9ec58dab9a8e32da1e15fc9feacedbb9531352d0072aadba4863bf04c4668",
+      "schemaVersion": "1.0",
+      "geometryRevision": "lingxi-final-001",
+      "actorParameterRevision": "lingxi-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-lingxi-001"
+    },
+    "work/final-transition-evidence.json": {
+      "path": "work/final-transition-evidence.json",
+      "role": "directed-transition-evidence",
+      "bytes": 14798,
+      "sha256": "a8372bafa59d73657cf20b7f2c221fcbec87e6b0f51547d4b8c789fb9db76145",
+      "schemaVersion": "1.0",
+      "geometryRevision": "lingxi-final-001",
+      "actorParameterRevision": "lingxi-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-lingxi-001"
+    },
+    "work/final-geometry-measurements.json": {
+      "path": "work/final-geometry-measurements.json",
+      "role": "bearing-and-rope-quantification",
+      "bytes": 11097,
+      "sha256": "1f08d5086e0d1b59eb9ddceb9edac093fcdc1f6d3e901ed411ff57d3862ada59",
+      "schemaVersion": "1.0",
+      "geometryRevision": "lingxi-final-001",
+      "actorParameterRevision": "lingxi-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-lingxi-001"
+    },
+    "work/layer-audit.json": {
+      "path": "work/layer-audit.json",
+      "role": "alpha-composition-audit",
+      "bytes": 211,
+      "sha256": "a4aa8fe830ecf70b6cd86193cdf5ea36c892736fc561279b1a1f635b59d79467",
+      "schemaVersion": "1.0",
+      "geometryRevision": "lingxi-final-001",
+      "actorParameterRevision": "lingxi-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-lingxi-001"
+    },
+    "work/artcheck-final.log": {
+      "path": "work/artcheck-final.log",
+      "role": "repository-artcheck",
+      "bytes": 948,
+      "sha256": "971ec2b5f561e9fc298167f5443cb1bb9bf08387c5e488c43dfd938ff1f09e5c",
+      "schemaVersion": "1.0",
+      "geometryRevision": "lingxi-final-001",
+      "actorParameterRevision": "lingxi-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-lingxi-001"
+    },
+    "work/protected-boundary-final.json": {
+      "path": "work/protected-boundary-final.json",
+      "role": "protected-root-hash-audit",
+      "bytes": 517,
+      "sha256": "76355427f3b7b4f404aedb603b0ec715db2fe0f01236ac619814def7fa25e03e",
+      "schemaVersion": "1.0",
+      "geometryRevision": "lingxi-final-001",
+      "actorParameterRevision": "lingxi-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-lingxi-001"
+    },
+    "work/replays-final/route_all_climbs.json": {
+      "path": "work/replays-final/route_all_climbs.json",
+      "role": "continuous-input-state-replay",
+      "bytes": 1372591,
+      "sha256": "89b94afff032103c9455da4892f8b71f4a2cca24ad0f8f283274bf17a1f7b71e",
+      "schemaVersion": "1.0",
+      "geometryRevision": "lingxi-final-001",
+      "actorParameterRevision": "lingxi-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-lingxi-001"
+    },
+    "work/replays-final/route_rope_14.json": {
+      "path": "work/replays-final/route_rope_14.json",
+      "role": "continuous-input-state-replay",
+      "bytes": 695978,
+      "sha256": "eac39bd4a709f0506bb52397a7d5d85562eeb763e4367f40cf1ca6b72900843b",
+      "schemaVersion": "1.0",
+      "geometryRevision": "lingxi-final-001",
+      "actorParameterRevision": "lingxi-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-lingxi-001"
+    },
+    "work/replays-final/route_rope_36.json": {
+      "path": "work/replays-final/route_rope_36.json",
+      "role": "continuous-input-state-replay",
+      "bytes": 696401,
+      "sha256": "621d6ea07938f5ecc9dc12e7f446162946648dddef114a29a8aa03513b17d662",
+      "schemaVersion": "1.0",
+      "geometryRevision": "lingxi-final-001",
+      "actorParameterRevision": "lingxi-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-lingxi-001"
+    },
+    "work/replays-final/route_rope_56.json": {
+      "path": "work/replays-final/route_rope_56.json",
+      "role": "continuous-input-state-replay",
+      "bytes": 720817,
+      "sha256": "b788bd945d93a64a3ab611b2243af641dc6ac116d51b0c7462a0d2eb07178f2e",
+      "schemaVersion": "1.0",
+      "geometryRevision": "lingxi-final-001",
+      "actorParameterRevision": "lingxi-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-lingxi-001"
+    },
+    "work/replays-final/route_rope_74.json": {
+      "path": "work/replays-final/route_rope_74.json",
+      "role": "continuous-input-state-replay",
+      "bytes": 696171,
+      "sha256": "2babccdb73fd2c69bc5779f68a55451846c5b4f11c73f5a1318012e6d871b330",
+      "schemaVersion": "1.0",
+      "geometryRevision": "lingxi-final-001",
+      "actorParameterRevision": "lingxi-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-lingxi-001"
+    },
+    "work/replays-final/route_rope_62.json": {
+      "path": "work/replays-final/route_rope_62.json",
+      "role": "continuous-input-state-replay",
+      "bytes": 860698,
+      "sha256": "bc1ea196cae6713e40d341af890f5eaf9347cb9310c826217234027ab9e6f395",
+      "schemaVersion": "1.0",
+      "geometryRevision": "lingxi-final-001",
+      "actorParameterRevision": "lingxi-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-lingxi-001"
+    },
+    "work/replays-final/route_rope_80.json": {
+      "path": "work/replays-final/route_rope_80.json",
+      "role": "continuous-input-state-replay",
+      "bytes": 847974,
+      "sha256": "27c6f10321e3b13ce26fae1d0a99f1aeb49caeaa90acadebeec6cf4b54220e1d",
+      "schemaVersion": "1.0",
+      "geometryRevision": "lingxi-final-001",
+      "actorParameterRevision": "lingxi-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-lingxi-001"
+    },
+    "work/replays-final/route_rope_98.json": {
+      "path": "work/replays-final/route_rope_98.json",
+      "role": "continuous-input-state-replay",
+      "bytes": 683597,
+      "sha256": "69bb138522bccda1a94d8f7cbdad8e8e9dea79be8cfc73f4139a00e929df6275",
+      "schemaVersion": "1.0",
+      "geometryRevision": "lingxi-final-001",
+      "actorParameterRevision": "lingxi-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-lingxi-001"
+    },
+    "work/replays-final/route_rope_111.json": {
+      "path": "work/replays-final/route_rope_111.json",
+      "role": "continuous-input-state-replay",
+      "bytes": 683675,
+      "sha256": "1799a569fbcdd974651188c839f1e9792acdf8efb9ff6832a0cdc3eec99f6fba",
+      "schemaVersion": "1.0",
+      "geometryRevision": "lingxi-final-001",
+      "actorParameterRevision": "lingxi-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-lingxi-001"
+    },
+    "work/source-semantics-audit.json": {
+      "path": "work/source-semantics-audit.json",
+      "role": "versioned-validation-evidence",
+      "bytes": 6746,
+      "sha256": "870178c0b6de203827c916dec332adf2da7f8f09efd6fcf47f0d0e125b1f7953",
+      "schemaVersion": "1.0",
+      "geometryRevision": "lingxi-final-001",
+      "actorParameterRevision": "lingxi-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-lingxi-001"
+    },
+    "work/replays-final/route_main.json": {
+      "path": "work/replays-final/route_main.json",
+      "role": "continuous-input-state-replay",
+      "bytes": 619058,
+      "sha256": "bd61e8cc71a5f220d899896c76a6642b47277f3a28b01485bd5cd4262a038427",
+      "schemaVersion": "1.0",
+      "geometryRevision": "lingxi-final-001",
+      "actorParameterRevision": "lingxi-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-lingxi-001"
+    },
+    "work/replays-final/route_return.json": {
+      "path": "work/replays-final/route_return.json",
+      "role": "continuous-input-state-replay",
+      "bytes": 1213178,
+      "sha256": "b712717f9a95e7c441b591898245d7a9a9160bd7bfe5385bfbd0e1d4ddbfac2f",
+      "schemaVersion": "1.0",
+      "geometryRevision": "lingxi-final-001",
+      "actorParameterRevision": "lingxi-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-lingxi-001"
+    },
+    "manifest.json": {
+      "path": "manifest.json",
+      "role": "asset-manifest",
+      "sha256": null,
+      "hashPolicy": "self-hash omitted to avoid recursive digest",
+      "schemaVersion": "1.0",
+      "geometryRevision": "lingxi-final-001",
+      "actorParameterRevision": "lingxi-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-lingxi-001"
+    }
+  },
+  "foreground": {
+    "applicable": false,
+    "reason": "No independent occluder in front of actor; attached decor belongs to playable"
+  },
+  "composition": {
+    "sourceRefinedMaster": "work/generated/master-004.png",
+    "layerOrder": [
+      "asset_background",
+      "asset_playable",
+      "actor"
+    ],
+    "exactRGBARecomposition": true,
+    "sourcePlacementRecord": "work/refined-composition.json"
+  },
+  "sceneData": {
+    "path": "scene-data.json",
+    "sha256": "8c2802a3a3656b467c4feda672c2b67a9b9d1733d859bfa3c0e4c797df2b1942",
+    "schemaVersion": "1.0",
+    "geometryRevision": "lingxi-final-001",
+    "actorParameterRevision": "lingxi-base-feel-20261027-001",
+    "engineRevision": "gsb-aabb-feel-60hz-lingxi-001"
+  },
+  "sourceBindings": {
+    "geometrySHA256": "6fa432434237f0e5dd02672ca28f89601fe174725d7d5e5331145aaed554d438",
+    "actorSHA256": "a2c130045e1e7c29f3de74c115a82b66b46232cea3e68e4842b614b0bade0ec8",
+    "validationStateSHA256": "19a52bf340094a04a524df015d30817e468dc3fb727c0617ba987c870d2efc90"
+  },
+  "diagnostics": {
+    "geometryRevision": "lingxi-final-001",
+    "actorParameterRevision": "lingxi-base-feel-20261027-001",
+    "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+    "sceneDataSHA256": "8c2802a3a3656b467c4feda672c2b67a9b9d1733d859bfa3c0e4c797df2b1942",
+    "rendererRevision": "lingxi-diagnostics-002",
+    "maskPalette": {
+      "walk": [
+        150,
+        245,
+        160,
+        255
+      ],
+      "stand": [
+        0,
+        200,
+        80,
+        255
+      ],
+      "rope": [
+        0,
+        190,
+        230,
+        255
+      ],
+      "jump": [
+        255,
+        180,
+        0,
+        255
+      ],
+      "drop": [
+        170,
+        80,
+        225,
+        255
+      ],
+      "point": [
+        255,
+        70,
+        160,
+        255
+      ]
+    },
+    "rasterizationOrder": [
+      "walk",
+      "stand",
+      "rope",
+      "jump",
+      "drop",
+      "point"
+    ],
+    "maskAntialiasing": false,
+    "files": {
+      "action-mask.png": {
+        "sha256": "db9684c2234be160deaa2885f182a38091bd62949db10a84b1b0402ddf8859e0",
+        "pixelWidth": 3840,
+        "pixelHeight": 1024
+      },
+      "action-overlay.png": {
+        "sha256": "9dd920041da28e77b9e23a152924e79319deee4a9d4694e8bc7a1089c9e82781",
+        "pixelWidth": 3840,
+        "pixelHeight": 1024
+      },
+      "collision-overlay.png": {
+        "sha256": "9653f106e49552d20c9b605017279a17ae2a580f6aca45ae719f7e3698ff302f",
+        "pixelWidth": 3840,
+        "pixelHeight": 1024
+      }
+    }
+  },
+  "runtime": {
+    "path": "work/preview/engine.mjs",
+    "sha256": "ac8b3e749bc6ce67da7731ad3c45eec7a12cb0659472cf50a695d7832a328fbc",
+    "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+    "collisionModel": "rectangular AABB solids plus horizontal one-way supports and 8 rope corridors",
+    "productionPhaserIntegrated": false
+  },
+  "validation": {
+    "status": "verified",
+    "report": "validation-report.md",
+    "localEntry": "index.html",
+    "requiredRouteStatuses": {
+      "route_main": "verified",
+      "route_return": "verified",
+      "route_rope_14": "verified",
+      "route_rope_36": "verified",
+      "route_rope_56": "verified",
+      "route_rope_74": "verified",
+      "route_rope_62": "verified",
+      "route_rope_80": "verified",
+      "route_rope_98": "verified",
+      "route_rope_111": "verified",
+      "route_all_climbs": "verified"
+    },
+    "standingTolerancePx": 2,
+    "productionIntegration": "forbidden-before-lead-PASS"
+  },
+  "artGeneration": {
+    "mode": "built-in image_gen",
+    "prompts": [
+      "work/prompts/stage3-background.txt",
+      "work/prompts/stage3-extract.txt",
+      "work/prompts/stage3-submitted.txt",
+      "work/prompts/stage3.txt",
+      "work/prompts/stage4-boss.txt",
+      "work/prompts/stage4-ridge.txt",
+      "work/prompts/stage5-gate-extract.txt"
+    ],
+    "sourceImages": [
+      {
+        "path": "work/generated/background-001.png",
+        "sha256": "3b827338b2a6b195caab2b13a185004b9dfb67dd01f83f36debe3638737827dc",
+        "pixelWidth": 2172,
+        "pixelHeight": 724,
+        "mode": "RGB",
+        "acceptedFinalMaster": false
+      },
+      {
+        "path": "work/generated/boss-detail-001.png",
+        "sha256": "a5b4193188a3da789e771629285a347494799db257efe6c9015d6c39eca99c16",
+        "pixelWidth": 2172,
+        "pixelHeight": 724,
+        "mode": "RGBA",
+        "acceptedFinalMaster": false
+      },
+      {
+        "path": "work/generated/extract-001.png",
+        "sha256": "e716dd3fe33df3006172051fb57500b5655d9ffbed44ab854b83de70da67ce70",
+        "pixelWidth": 2172,
+        "pixelHeight": 724,
+        "mode": "RGBA",
+        "acceptedFinalMaster": false
+      },
+      {
+        "path": "work/generated/gate-crop-001.png",
+        "sha256": "39cdb14699d43a969dbb803e6e333e60c1f88aece291ddb790db683d42a73074",
+        "pixelWidth": 260,
+        "pixelHeight": 260,
+        "mode": "RGB",
+        "acceptedFinalMaster": false
+      },
+      {
+        "path": "work/generated/gate-extract-002.png",
+        "sha256": "f292c6358a1e25ab5fdcbc17770ca37a377bdc189a290b645edba6cc70a1503f",
+        "pixelWidth": 1254,
+        "pixelHeight": 1254,
+        "mode": "RGBA",
+        "acceptedFinalMaster": false
+      },
+      {
+        "path": "work/generated/ground-crop-001.png",
+        "sha256": "193052f9c050eea30672b2974a7f9cb9262d97039f147a989eb329abe08c63bd",
+        "pixelWidth": 530,
+        "pixelHeight": 234,
+        "mode": "RGB",
+        "acceptedFinalMaster": false
+      },
+      {
+        "path": "work/generated/master-001.png",
+        "sha256": "55ecea003f87ff518aa21f1c671c83610115ab7455d78e67c8fdce2e9190a803",
+        "pixelWidth": 2172,
+        "pixelHeight": 724,
+        "mode": "RGB",
+        "acceptedFinalMaster": false
+      },
+      {
+        "path": "work/generated/master-002.png",
+        "sha256": "2953bfca9bea677642f56314f28252a75227deafea7c5e67e5217973b4d16125",
+        "pixelWidth": 3840,
+        "pixelHeight": 1024,
+        "mode": "RGBA",
+        "acceptedFinalMaster": false
+      },
+      {
+        "path": "work/generated/master-003.png",
+        "sha256": "6e4bf498c426fbcd238f4c90a63d2e8207bca323eee3b613b976d1507dcf50a9",
+        "pixelWidth": 3840,
+        "pixelHeight": 1024,
+        "mode": "RGBA",
+        "acceptedFinalMaster": false
+      },
+      {
+        "path": "work/generated/master-004.png",
+        "sha256": "18a83d4168f70bdc86a6af51ceb93f341a5035baa0c9d3abe0a88214ddd8cf78",
+        "pixelWidth": 3840,
+        "pixelHeight": 1024,
+        "mode": "RGBA",
+        "acceptedFinalMaster": true
+      },
+      {
+        "path": "work/generated/refined-background-003.png",
+        "sha256": "10449f3a1f147afe724a785c60078ca2ccec66245d13745c055f0c82b2ed45a6",
+        "pixelWidth": 3840,
+        "pixelHeight": 1024,
+        "mode": "RGBA",
+        "acceptedFinalMaster": false
+      },
+      {
+        "path": "work/generated/refined-background-004.png",
+        "sha256": "10449f3a1f147afe724a785c60078ca2ccec66245d13745c055f0c82b2ed45a6",
+        "pixelWidth": 3840,
+        "pixelHeight": 1024,
+        "mode": "RGBA",
+        "acceptedFinalMaster": false
+      },
+      {
+        "path": "work/generated/refined-playable-003.png",
+        "sha256": "7e239bfbb7ae06ca933841ca92661b3309ed0602aab2dc01a4b80d4b27a5c50a",
+        "pixelWidth": 3840,
+        "pixelHeight": 1024,
+        "mode": "RGBA",
+        "acceptedFinalMaster": false
+      },
+      {
+        "path": "work/generated/refined-playable-004.png",
+        "sha256": "9a965963a61f52d5a9164274547c19cc7adcf06b692a03109d515c55fc2b79e0",
+        "pixelWidth": 3840,
+        "pixelHeight": 1024,
+        "mode": "RGBA",
+        "acceptedFinalMaster": false
+      },
+      {
+        "path": "work/generated/ridge-crop-001.png",
+        "sha256": "de264f633510b106129a7a01e7813a42ce12fb133f5580ff0e5371c9d48b58e4",
+        "pixelWidth": 455,
+        "pixelHeight": 147,
+        "mode": "RGB",
+        "acceptedFinalMaster": false
+      },
+      {
+        "path": "work/generated/ridge-detail-001.png",
+        "sha256": "c2f3dcae45e9e8f713d4dd0f4e136c36ce7b5dec5b5a091a52c11ba021112738",
+        "pixelWidth": 2172,
+        "pixelHeight": 724,
+        "mode": "RGBA",
+        "acceptedFinalMaster": false
+      },
+      {
+        "path": "work/generated/structure-background-002.png",
+        "sha256": "10449f3a1f147afe724a785c60078ca2ccec66245d13745c055f0c82b2ed45a6",
+        "pixelWidth": 3840,
+        "pixelHeight": 1024,
+        "mode": "RGBA",
+        "acceptedFinalMaster": false
+      },
+      {
+        "path": "work/generated/structure-playable-002.png",
+        "sha256": "dc5e6d48c97a2c038e223340b40172ad8cc091762b9d4c4a255ae2fffe067ab7",
+        "pixelWidth": 3840,
+        "pixelHeight": 1024,
+        "mode": "RGBA",
+        "acceptedFinalMaster": false
+      }
+    ],
+    "processDirectory": "work/",
+    "finalMaterialProvenance": "AI-generated complete draft, same-source layer extraction, AI local stone refinements and clean portal extraction; code only crops/resizes/places/composites and generates diagnostics"
+  },
+  "authority": {
+    "qingyunDeliveryRoot": "read-only including work/",
+    "gamePublic": "read-only",
+    "deployment": false,
+    "push": false,
+    "externalTrialLinkForwarding": false
+  }
+}
