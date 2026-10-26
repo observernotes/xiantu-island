@@ -60,6 +60,10 @@ const CLIMB_TO_OBJECT = {
   c_stage: 'rope_stage',
   c_tower: 'rope_tower',
   c_east: 'rope_east',
+  // 筑基台 gsb_v1：scene-data climbs 用 c_rope_*，正式图对象仍为 rope_10/24/39
+  c_rope_left: 'rope_10',
+  c_rope_center: 'rope_24',
+  c_rope_right: 'rope_39',
 };
 
 function setProp(props, name, type, value) {
@@ -117,9 +121,11 @@ function patchMap(mapPath) {
       layer.data = Array(cols * rows).fill(0);
     }
     if (layer.type === 'objectgroup') {
+      const dy = Array.isArray(space.sourceTranslation) ? (space.sourceTranslation[1] ?? 0) : 0;
       for (const o of layer.objects ?? []) {
+        let relocated = false;
         const pos = pointByObj.get(o.name);
-        if (pos) { o.x = pos[0]; o.y = pos[1]; }
+        if (pos) { o.x = pos[0]; o.y = pos[1]; relocated = true; }
         const climb = climbByObj.get(o.name);
         if (climb) {
           if (climb.kind === 'ladder' || o.type === 'ladder') {
@@ -134,7 +140,10 @@ function patchMap(mapPath) {
             o.width = 0;
             o.height = Math.max(8, climb.h);
           }
+          relocated = true;
         }
+        // 郊野荒驿等：scene-data 有 sourceTranslation 时，未点位/绳梯对齐的玩法对象随画布平移（禁丢对象）
+        if (!relocated && dy) o.y = (o.y ?? 0) + dy;
       }
     }
   }

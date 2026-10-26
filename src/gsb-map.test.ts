@@ -6,8 +6,12 @@ import lingxiSceneData from '../data/art/scenes/lingxi_path_gsb_v1/scene-data.js
 import lingxiTiledMap from '../data/maps/lingxi_path.json';
 import outskirtsSceneData from '../data/art/scenes/luoxia_outskirts_1_gsb_v1/scene-data.json';
 import outskirtsTiledMap from '../data/maps/luoxia_outskirts_1.json';
+import outskirts2SceneData from '../data/art/scenes/luoxia_outskirts_2_gsb_v1/scene-data.json';
+import outskirts2TiledMap from '../data/maps/luoxia_outskirts_2.json';
 import townSceneData from '../data/art/scenes/luoxia_town_gsb_v1/scene-data.json';
 import townTiledMap from '../data/maps/luoxia_town.json';
+import altarSceneData from '../data/art/scenes/trial_foundation_altar_gsb_v1/scene-data.json';
+import altarTiledMap from '../data/maps/trial_foundation_altar.json';
 import { FEEL, SPEC } from './config/feel';
 import { buildTiledMap } from './scenes/MapBuilder';
 
@@ -290,6 +294,28 @@ const productionMaps = [
     ],
     chest: ['sense_chest_01', 496, 768, 'hp_pill_small', 1],
   },
+  {
+    id: 'luoxia_outskirts_2', sceneId: 'luoxia_outskirts_2_gsb_v1', revision: 'luoxia2-final-001',
+    data: outskirts2SceneData, tiledMap: outskirts2TiledMap, dimensions: [3520, 1152], bodyCounts: [3, 8],
+    spawn: { x: 160, y: 1088 }, ropeCount: 8,
+    portals: [
+      ['portal_to_outskirts_1', 80, 1088, 'luoxia_outskirts_1', 'portal_to_outskirts_2'],
+      ['portal_to_town', 3440, 960, 'luoxia_town', 'portal_to_outskirts'],
+    ],
+    spawns: [
+      ['straw_puppet', 128, 1088, 928, 3], ['straw_puppet', 128, 960, 544, 1],
+      ['straw_puppet', 384, 832, 608, 2], ['black_robe_minion', 1088, 960, 608, 2],
+      ['black_robe_minion', 1216, 800, 608, 2], ['black_robe_minion', 1408, 672, 352, 1],
+      ['black_robe_minion', 1088, 1088, 1120, 2], ['black_robe_minion', 2240, 1024, 512, 2],
+      ['black_robe_minion', 2304, 896, 416, 1], ['black_robe_minion', 2880, 832, 480, 2],
+    ],
+    gathers: [
+      ['gather_spirit_herb_22', 528, 1088, 'spirit_herb', 60000],
+      ['gather_spirit_herb_23', 1488, 672, 'spirit_herb', 60000],
+      ['gather_iron_essence_24', 3056, 960, 'iron_essence', 90000],
+    ],
+    chest: ['sense_chest_01', 592, 832, 'qi_pill', 1],
+  },
 ];
 for (const contract of productionMaps) {
   const { id, sceneId, data, tiledMap } = contract;
@@ -428,6 +454,81 @@ for (const contract of productionMaps) {
     'luoxia_town: checked-in legacy collision layers are fully cleared');
   eq(JSON.stringify(data), dataBefore, 'luoxia_town: building leaves the cached scene-data input unchanged');
   eq(JSON.stringify(tiledMap), mapBefore, 'luoxia_town: building leaves the Tiled map input unchanged');
+}
+
+// The foundation altar retains trial objectives, gates and hazards without ordinary field-map objects.
+{
+  const sceneId = 'trial_foundation_altar_gsb_v1', revision = 'trial-foundation-final-001';
+  const data = clone(altarSceneData), tiledMap = clone(altarTiledMap);
+  const f = fixture(null, false), dataBefore = JSON.stringify(data), mapBefore = JSON.stringify(tiledMap);
+  f.cache.clear(); f.cache.set(`gsb_${sceneId}_data`, data);
+  f.textures.add(`gsb_${sceneId}_background`); f.textures.add(`gsb_${sceneId}_playable`);
+  const map = buildTiledMap(f.scene, tiledMap, 'tiles');
+  eq(map.gsbScene, sceneId, 'trial_foundation_altar: checked-in map enables its GSB scene');
+  eq(tiledMap.properties.find(property => property.name === 'gsbScene')?.value,
+    sceneId, 'trial_foundation_altar: map binds the approved GSB scene');
+  eq(tiledMap.properties.find(property => property.name === 'gsbGeometryRevision')?.value,
+    revision, 'trial_foundation_altar: map binds the approved geometry revision');
+  eq(data.geometryRevision, revision, 'trial_foundation_altar: scene-data has the approved geometry revision');
+  same([map.width, map.height], [1600, 704], 'trial_foundation_altar: logical world dimensions match the approved scene');
+  same([tiledMap.width, tiledMap.height], [50, 22], 'trial_foundation_altar: checked-in tile grid is 50 x 22');
+  same([tiledMap.width * tiledMap.tilewidth, tiledMap.height * tiledMap.tileheight], [map.width, map.height],
+    'trial_foundation_altar: checked-in tile grid matches logical world dimensions');
+  same(f.groups.map(group => group.children.length), [4, 3], 'trial_foundation_altar: four solids and three one-way bodies are built');
+  for (const surface of data.surfaces) {
+    const left = Math.min(...surface.polyline.map(point => point[0]));
+    const right = Math.max(...surface.polyline.map(point => point[0]));
+    const bodies = f.groups[surface.support === 'one-way' ? 1 : 0].children.map(rectangle);
+    ok(bodies.some(body => body.y === surface.polyline[0][1] && body.x <= left && body.x + body.width >= right),
+      `trial_foundation_altar: ${surface.id} retains its full landing span and exact top edge`);
+  }
+  ok(f.groups[1].children.every(object => object.body?.checkCollision.up &&
+    !object.body.checkCollision.down && !object.body.checkCollision.left && !object.body.checkCollision.right),
+    'trial_foundation_altar: all one-way bodies only collide on top');
+  ok(f.groups[0].children.every(object => object.body?.checkCollision.up &&
+    object.body.checkCollision.down && object.body.checkCollision.left && object.body.checkCollision.right),
+    'trial_foundation_altar: solid bodies keep all collision directions');
+  same(map.spawn, { x: 704, y: 576 }, 'trial_foundation_altar: player start is preserved');
+  eq(map.ropes.length, 3, 'trial_foundation_altar: all three ropes are preserved');
+  // Tiled orders the ropes left/right/center; scene-data orders the climbs left/center/right.
+  same([...map.ropes].sort((a, b) => a.x - b.x).map(rope =>
+    [rope.kind, rope.x, rope.top, rope.bottom, rope.halfW]),
+  [...data.climbs].sort((a, b) => a.ends.end.position[0] - b.ends.end.position[0]).map(climb =>
+    [climb.kind, climb.ends.end.position[0], climb.ends.end.position[1], climb.ends.start.position[1], FEEL.ropeGrabRangeX]),
+  'trial_foundation_altar: rope endpoints follow the approved climbs regardless of object order');
+  same(map.objects.filter(object => object.type === 'objective').map(object =>
+    [object.name, object.x, object.y, object.props]),
+  [['spirit_array_eye', 800, 576, { objective: 'spirit_array_eye' }]],
+  'trial_foundation_altar: the array eye retains its objective type, position and identity');
+  same(map.objects.filter(object => object.type === 'npc').map(object =>
+    [object.name, object.x, object.y, object.props]),
+  [['elder_phantom', 960, 576, { npc: 'tianjian_elder', phantom: true }]],
+  'trial_foundation_altar: the elder retains its NPC type, position, identity and phantom flag');
+  same(map.spawnGates, [
+    { type: 'spawnGate', name: 'gate_left', x: 64, y: 640, w: 0, h: 0, props: { side: 'left' } },
+    { type: 'spawnGate', name: 'gate_right', x: 1504, y: 640, w: 0, h: 0, props: { side: 'right' } },
+    { type: 'spawnGate', name: 'gate_air_left', x: 96, y: 320, w: 0, h: 0, props: { side: 'left', flying: true } },
+    { type: 'spawnGate', name: 'gate_air_right', x: 1472, y: 320, w: 0, h: 0, props: { side: 'right', flying: true } },
+  ], 'trial_foundation_altar: all four spawn gates retain their positions, sides and flying flags');
+  same(map.objects.filter(object => object.type === 'spawnGate'), map.spawnGates,
+    'trial_foundation_altar: spawn gates remain available through gameplay objects');
+  same(map.zones, [{ name: 'thunder_area', x: 416, y: 256, w: 768, h: 320,
+    props: { label: '天雷落区', hazard: 'thunder_circle' } }],
+  'trial_foundation_altar: the thunder zone retains its bounds and hazard properties');
+  same(map.spawns, [], 'trial_foundation_altar: no monster spawns are introduced');
+  same(map.hidden, [], 'trial_foundation_altar: no hidden controllers are introduced');
+  same(map.objects.filter(object => ['portal', 'gather', 'chest', 'hidden'].includes(object.type)), [],
+    'trial_foundation_altar: no portal, gather or treasure objects are introduced');
+  eq(f.tilemaps, 0, 'trial_foundation_altar: GSB skips the legacy tilemap path');
+  same(f.displays.filter(object => object.kind !== 'zone').map(object => [object.kind, object.key]),
+    [['image', `gsb_${sceneId}_background`], ['image', `gsb_${sceneId}_playable`]],
+    'trial_foundation_altar: GSB draws background and playable art without legacy terrain or ropes');
+  const legacyLayers = tiledMap.layers.filter(layer => layer.type === 'tilelayer' && ['ground', 'oneway'].includes(layer.name));
+  same(legacyLayers.map(layer => layer.name), ['ground', 'oneway'], 'trial_foundation_altar: both legacy collision layers are present');
+  ok(legacyLayers.every(layer => layer.data?.length === tiledMap.width * tiledMap.height && layer.data.every(gid => gid === 0)),
+    'trial_foundation_altar: checked-in legacy collision layers are fully cleared');
+  eq(JSON.stringify(data), dataBefore, 'trial_foundation_altar: building leaves the cached scene-data input unchanged');
+  eq(JSON.stringify(tiledMap), mapBefore, 'trial_foundation_altar: building leaves the Tiled map input unchanged');
 }
 
 console.log(JSON.stringify({ suite: 'gsb-map', passed: true, assertions }));
