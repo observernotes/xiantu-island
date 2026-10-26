@@ -1,0 +1,2409 @@
+{
+  "schemaVersion": "1.0",
+  "geometryRevision": "wanyao2-final-002",
+  "status": "verified",
+  "space": {
+    "origin": "top-left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "units": "logical-pixel",
+    "logicalWidth": 3520,
+    "logicalHeight": 1216,
+    "sourceMap": "maps/wanyao_outer_2.json",
+    "sourceToWorld": [
+      1,
+      0,
+      0,
+      1,
+      0,
+      256
+    ]
+  },
+  "actor": {
+    "parameterRevision": "wanyao2-base-feel-20261027-001",
+    "parameterSource": "game/src/config/feel.ts FEEL+SPEC; game/src/scenes/Player.ts; movement base points 100",
+    "sourceRevision": {
+      "game/src/config/feel.ts": "9375297a15b04012633197a935f4d9ffd403c3ff8d1e055cb585dd5f81acdeec",
+      "game/src/scenes/Player.ts": "ec9426ed625784532c6e632a1755bd16076cc3f559d177f465b741341193f513",
+      "game/src/move.ts": "585c9987623cbe532d7f65508773addd52ccd2f312e5c2ee592e9e6f2f686a74",
+      "maps/wanyao_outer_2.json": "13e9940c053e7fe4ff0d8ad717b04fcf2af7754b324894d53579000e2c06839b",
+      "maps/README.md": "10d7b6cd4cc8cce3ff80b1dbcba6e4007c47596e12702d5ff396e8cdb5d8c671"
+    },
+    "provisional": false,
+    "visualBounds": {
+      "width": 96,
+      "height": 96,
+      "idleAlphaBounds": [
+        15,
+        9,
+        76,
+        96
+      ],
+      "idleVisibleWidth": 61,
+      "idleVisibleHeight": 87,
+      "anchor": "feet-center"
+    },
+    "collider": {
+      "shape": "aabb",
+      "width": 26,
+      "height": 58,
+      "anchor": "feet-center"
+    },
+    "abilities": [
+      "walk",
+      "jump",
+      "double-jump",
+      "ladder",
+      "rope",
+      "drop-through"
+    ],
+    "movement": {
+      "gravity": 2000,
+      "maxFallSpeed": 670,
+      "walkSpeed": 130,
+      "groundAccel": 2400,
+      "groundDecel": 3000,
+      "airAccel": 700,
+      "airMaxSpeed": 130,
+      "jumpSpeed": 560,
+      "coyoteMs": 60,
+      "jumpBufferMs": 80,
+      "doubleJumpVy": 480,
+      "doubleJumpVx": 330,
+      "climbSpeed": 110,
+      "ropeGrabRangeX": 18,
+      "ropeJumpVx": 160,
+      "ropeJumpVy": 360,
+      "ropeRegrabMs": 250,
+      "dropThroughMs": 220,
+      "oneWayEdge": 8,
+      "fixedHz": 60,
+      "speedPoints": 100,
+      "jumpPoints": 100
+    },
+    "failureRules": {
+      "fall": "continuous valley floor catches normal falls; out-of-world resets spawn",
+      "reset": "R clears input and motion",
+      "combat": "not simulated; source spawn metadata retained"
+    },
+    "visualAsset": {
+      "path": "work/preview/player-reference-idle.png",
+      "width": 96,
+      "height": 96,
+      "anchor": "feet-center"
+    }
+  },
+  "assets": [
+    {
+      "id": "background",
+      "role": "background",
+      "path": "background.png",
+      "pixelWidth": 3520,
+      "pixelHeight": 1216,
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "geometryRevision": "wanyao2-final-002",
+      "derivedFrom": "work/stage4-master.png"
+    },
+    {
+      "id": "playable",
+      "role": "playable",
+      "path": "playable.png",
+      "pixelWidth": 3520,
+      "pixelHeight": 1216,
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "geometryRevision": "wanyao2-final-002",
+      "derivedFrom": "work/stage4-master.png"
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "s_west",
+      "name": "西门安全落脚",
+      "polyline": [
+        [
+          0,
+          1088
+        ],
+        [
+          480,
+          1088
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        13,
+        467
+      ],
+      "walkRegion": [
+        [
+          13,
+          1030
+        ],
+        [
+          467,
+          1030
+        ],
+        [
+          467,
+          1088
+        ],
+        [
+          13,
+          1088
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 1088,
+        "tolerance": 2,
+        "note": "bearing top, excluding leaves, rope knot and rim ornament"
+      },
+      "status": "verified",
+      "evidence": [
+        "ev_assets",
+        "ev_route_main",
+        "ev_browser"
+      ]
+    },
+    {
+      "id": "s_valley",
+      "name": "谷底影狼路线",
+      "polyline": [
+        [
+          480,
+          1152
+        ],
+        [
+          2112,
+          1152
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        493,
+        2099
+      ],
+      "walkRegion": [
+        [
+          493,
+          1094
+        ],
+        [
+          2099,
+          1094
+        ],
+        [
+          2099,
+          1152
+        ],
+        [
+          493,
+          1152
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 1152,
+        "tolerance": 2,
+        "note": "bearing top, excluding leaves, rope knot and rim ornament"
+      },
+      "status": "verified",
+      "evidence": [
+        "ev_assets",
+        "ev_route_main",
+        "ev_browser"
+      ]
+    },
+    {
+      "id": "s_east_cliff",
+      "name": "东崖地面",
+      "polyline": [
+        [
+          2112,
+          1088
+        ],
+        [
+          2944,
+          1088
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        2125,
+        2931
+      ],
+      "walkRegion": [
+        [
+          2125,
+          1030
+        ],
+        [
+          2931,
+          1030
+        ],
+        [
+          2931,
+          1088
+        ],
+        [
+          2125,
+          1088
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 1088,
+        "tolerance": 2,
+        "note": "bearing top, excluding leaves, rope knot and rim ornament"
+      },
+      "status": "verified",
+      "evidence": [
+        "ev_assets",
+        "ev_route_main",
+        "ev_browser"
+      ]
+    },
+    {
+      "id": "s_clearing",
+      "name": "古树空地",
+      "polyline": [
+        [
+          2944,
+          1024
+        ],
+        [
+          3520,
+          1024
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        2957,
+        3507
+      ],
+      "walkRegion": [
+        [
+          2957,
+          966
+        ],
+        [
+          3507,
+          966
+        ],
+        [
+          3507,
+          1024
+        ],
+        [
+          2957,
+          1024
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 1024,
+        "tolerance": 2,
+        "note": "bearing top, excluding leaves, rope knot and rim ornament"
+      },
+      "status": "verified",
+      "evidence": [
+        "ev_assets",
+        "ev_route_main",
+        "ev_browser"
+      ]
+    },
+    {
+      "id": "s_west_low",
+      "name": "西低崖",
+      "polyline": [
+        [
+          576,
+          1024
+        ],
+        [
+          992,
+          1024
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        589,
+        979
+      ],
+      "walkRegion": [
+        [
+          589,
+          966
+        ],
+        [
+          979,
+          966
+        ],
+        [
+          979,
+          1024
+        ],
+        [
+          589,
+          1024
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 1024,
+        "tolerance": 2,
+        "note": "bearing top, excluding leaves, rope knot and rim ornament"
+      },
+      "status": "verified",
+      "evidence": [
+        "ev_assets",
+        "ev_route_main",
+        "ev_browser"
+      ]
+    },
+    {
+      "id": "s_west_mid",
+      "name": "蛛网西中台",
+      "polyline": [
+        [
+          704,
+          896
+        ],
+        [
+          1184,
+          896
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        717,
+        1171
+      ],
+      "walkRegion": [
+        [
+          717,
+          838
+        ],
+        [
+          1171,
+          838
+        ],
+        [
+          1171,
+          896
+        ],
+        [
+          717,
+          896
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 896,
+        "tolerance": 2,
+        "note": "bearing top, excluding leaves, rope knot and rim ornament"
+      },
+      "status": "verified",
+      "evidence": [
+        "ev_assets",
+        "ev_route_main",
+        "ev_browser"
+      ]
+    },
+    {
+      "id": "s_west_high",
+      "name": "蛛网西高台",
+      "polyline": [
+        [
+          960,
+          768
+        ],
+        [
+          1312,
+          768
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        973,
+        1299
+      ],
+      "walkRegion": [
+        [
+          973,
+          710
+        ],
+        [
+          1299,
+          710
+        ],
+        [
+          1299,
+          768
+        ],
+        [
+          973,
+          768
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 768,
+        "tolerance": 2,
+        "note": "bearing top, excluding leaves, rope knot and rim ornament"
+      },
+      "status": "verified",
+      "evidence": [
+        "ev_assets",
+        "ev_route_main",
+        "ev_browser"
+      ]
+    },
+    {
+      "id": "s_ganoderma",
+      "name": "九叶二段崖",
+      "polyline": [
+        [
+          1152,
+          672
+        ],
+        [
+          1312,
+          672
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        1165,
+        1299
+      ],
+      "walkRegion": [
+        [
+          1165,
+          614
+        ],
+        [
+          1299,
+          614
+        ],
+        [
+          1299,
+          672
+        ],
+        [
+          1165,
+          672
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 672,
+        "tolerance": 2,
+        "note": "bearing top, excluding leaves, rope knot and rim ornament"
+      },
+      "status": "verified",
+      "evidence": [
+        "ev_assets",
+        "ev_route_main",
+        "ev_browser"
+      ]
+    },
+    {
+      "id": "s_middle_low",
+      "name": "谷中低台",
+      "polyline": [
+        [
+          1408,
+          1024
+        ],
+        [
+          1888,
+          1024
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        1421,
+        1875
+      ],
+      "walkRegion": [
+        [
+          1421,
+          966
+        ],
+        [
+          1875,
+          966
+        ],
+        [
+          1875,
+          1024
+        ],
+        [
+          1421,
+          1024
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 1024,
+        "tolerance": 2,
+        "note": "bearing top, excluding leaves, rope knot and rim ornament"
+      },
+      "status": "verified",
+      "evidence": [
+        "ev_assets",
+        "ev_route_main",
+        "ev_browser"
+      ]
+    },
+    {
+      "id": "s_middle_high",
+      "name": "谷中蛛台",
+      "polyline": [
+        [
+          1600,
+          896
+        ],
+        [
+          2080,
+          896
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        1613,
+        2067
+      ],
+      "walkRegion": [
+        [
+          1613,
+          838
+        ],
+        [
+          2067,
+          838
+        ],
+        [
+          2067,
+          896
+        ],
+        [
+          1613,
+          896
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 896,
+        "tolerance": 2,
+        "note": "bearing top, excluding leaves, rope knot and rim ornament"
+      },
+      "status": "verified",
+      "evidence": [
+        "ev_assets",
+        "ev_route_main",
+        "ev_browser"
+      ]
+    },
+    {
+      "id": "s_east_low",
+      "name": "东低崖",
+      "polyline": [
+        [
+          2240,
+          960
+        ],
+        [
+          2720,
+          960
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        2253,
+        2707
+      ],
+      "walkRegion": [
+        [
+          2253,
+          902
+        ],
+        [
+          2707,
+          902
+        ],
+        [
+          2707,
+          960
+        ],
+        [
+          2253,
+          960
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 960,
+        "tolerance": 2,
+        "note": "bearing top, excluding leaves, rope knot and rim ornament"
+      },
+      "status": "verified",
+      "evidence": [
+        "ev_assets",
+        "ev_route_main",
+        "ev_browser"
+      ]
+    },
+    {
+      "id": "s_east_high",
+      "name": "东蛛网高台",
+      "polyline": [
+        [
+          2368,
+          832
+        ],
+        [
+          2848,
+          832
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        2381,
+        2835
+      ],
+      "walkRegion": [
+        [
+          2381,
+          774
+        ],
+        [
+          2835,
+          774
+        ],
+        [
+          2835,
+          832
+        ],
+        [
+          2381,
+          832
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 832,
+        "tolerance": 2,
+        "note": "bearing top, excluding leaves, rope knot and rim ornament"
+      },
+      "status": "verified",
+      "evidence": [
+        "ev_assets",
+        "ev_route_main",
+        "ev_browser"
+      ]
+    }
+  ],
+  "climbs": [
+    {
+      "id": "c_rope_20",
+      "kind": "rope",
+      "sourceObject": "rope_20",
+      "corridor": [
+        [
+          638,
+          1024
+        ],
+        [
+          674,
+          1024
+        ],
+        [
+          674,
+          1152
+        ],
+        [
+          638,
+          1152
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            656,
+            1152
+          ],
+          "surface": "s_valley"
+        },
+        "end": {
+          "position": [
+            656,
+            1024
+          ],
+          "surface": "s_west_low"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "extend lower end 32px to actual supporting surface",
+      "evidence": [
+        "ev_assets",
+        "ev_route_main"
+      ]
+    },
+    {
+      "id": "c_rope_26",
+      "kind": "rope",
+      "sourceObject": "rope_26",
+      "corridor": [
+        [
+          830,
+          896
+        ],
+        [
+          866,
+          896
+        ],
+        [
+          866,
+          1024
+        ],
+        [
+          830,
+          1024
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            848,
+            1024
+          ],
+          "surface": "s_west_low"
+        },
+        "end": {
+          "position": [
+            848,
+            896
+          ],
+          "surface": "s_west_mid"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "extend lower end 32px to actual supporting surface",
+      "evidence": [
+        "ev_assets",
+        "ev_route_main"
+      ]
+    },
+    {
+      "id": "c_rope_34",
+      "kind": "rope",
+      "sourceObject": "rope_34",
+      "corridor": [
+        [
+          1086,
+          768
+        ],
+        [
+          1122,
+          768
+        ],
+        [
+          1122,
+          896
+        ],
+        [
+          1086,
+          896
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1104,
+            896
+          ],
+          "surface": "s_west_mid"
+        },
+        "end": {
+          "position": [
+            1104,
+            768
+          ],
+          "surface": "s_west_high"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "extend lower end 32px to actual supporting surface",
+      "evidence": [
+        "ev_assets",
+        "ev_route_main"
+      ]
+    },
+    {
+      "id": "c_rope_48",
+      "kind": "rope",
+      "sourceObject": "rope_48",
+      "corridor": [
+        [
+          1534,
+          1024
+        ],
+        [
+          1570,
+          1024
+        ],
+        [
+          1570,
+          1152
+        ],
+        [
+          1534,
+          1152
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1552,
+            1152
+          ],
+          "surface": "s_valley"
+        },
+        "end": {
+          "position": [
+            1552,
+            1024
+          ],
+          "surface": "s_middle_low"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "extend lower end 32px to actual supporting surface",
+      "evidence": [
+        "ev_assets",
+        "ev_route_main"
+      ]
+    },
+    {
+      "id": "c_rope_56",
+      "kind": "rope",
+      "sourceObject": "rope_56",
+      "corridor": [
+        [
+          1790,
+          896
+        ],
+        [
+          1826,
+          896
+        ],
+        [
+          1826,
+          1024
+        ],
+        [
+          1790,
+          1024
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1808,
+            1024
+          ],
+          "surface": "s_middle_low"
+        },
+        "end": {
+          "position": [
+            1808,
+            896
+          ],
+          "surface": "s_middle_high"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "extend lower end 32px to actual supporting surface",
+      "evidence": [
+        "ev_assets",
+        "ev_route_main"
+      ]
+    },
+    {
+      "id": "c_rope_76",
+      "kind": "rope",
+      "sourceObject": "rope_76",
+      "corridor": [
+        [
+          2430,
+          960
+        ],
+        [
+          2466,
+          960
+        ],
+        [
+          2466,
+          1088
+        ],
+        [
+          2430,
+          1088
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            2448,
+            1088
+          ],
+          "surface": "s_east_cliff"
+        },
+        "end": {
+          "position": [
+            2448,
+            960
+          ],
+          "surface": "s_east_low"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "extend lower end 32px to actual supporting surface",
+      "evidence": [
+        "ev_assets",
+        "ev_route_main"
+      ]
+    },
+    {
+      "id": "c_rope_82",
+      "kind": "rope",
+      "sourceObject": "rope_82",
+      "corridor": [
+        [
+          2622,
+          832
+        ],
+        [
+          2658,
+          832
+        ],
+        [
+          2658,
+          960
+        ],
+        [
+          2622,
+          960
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            2640,
+            960
+          ],
+          "surface": "s_east_low"
+        },
+        "end": {
+          "position": [
+            2640,
+            832
+          ],
+          "surface": "s_east_high"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "extend lower end 32px to actual supporting surface",
+      "evidence": [
+        "ev_assets",
+        "ev_route_main"
+      ]
+    }
+  ],
+  "stairs": [],
+  "solids": [
+    {
+      "id": "solid_west",
+      "polygon": [
+        [
+          0,
+          1088
+        ],
+        [
+          480,
+          1088
+        ],
+        [
+          480,
+          1216
+        ],
+        [
+          0,
+          1216
+        ]
+      ],
+      "surface": "s_west",
+      "type": "continuous-cliff",
+      "openings": [],
+      "status": "verified",
+      "evidence": [
+        "ev_assets",
+        "ev_physics"
+      ]
+    },
+    {
+      "id": "solid_valley",
+      "polygon": [
+        [
+          480,
+          1152
+        ],
+        [
+          2112,
+          1152
+        ],
+        [
+          2112,
+          1216
+        ],
+        [
+          480,
+          1216
+        ]
+      ],
+      "surface": "s_valley",
+      "type": "continuous-cliff",
+      "openings": [],
+      "status": "verified",
+      "evidence": [
+        "ev_assets",
+        "ev_physics"
+      ]
+    },
+    {
+      "id": "solid_east_cliff",
+      "polygon": [
+        [
+          2112,
+          1088
+        ],
+        [
+          2944,
+          1088
+        ],
+        [
+          2944,
+          1216
+        ],
+        [
+          2112,
+          1216
+        ]
+      ],
+      "surface": "s_east_cliff",
+      "type": "continuous-cliff",
+      "openings": [],
+      "status": "verified",
+      "evidence": [
+        "ev_assets",
+        "ev_physics"
+      ]
+    },
+    {
+      "id": "solid_clearing",
+      "polygon": [
+        [
+          2944,
+          1024
+        ],
+        [
+          3520,
+          1024
+        ],
+        [
+          3520,
+          1216
+        ],
+        [
+          2944,
+          1216
+        ]
+      ],
+      "surface": "s_clearing",
+      "type": "continuous-cliff",
+      "openings": [],
+      "status": "verified",
+      "evidence": [
+        "ev_assets",
+        "ev_physics"
+      ]
+    }
+  ],
+  "hazards": [],
+  "points": [
+    {
+      "id": "start_spawn",
+      "type": "spawn",
+      "sourceId": 8,
+      "position": [
+        128,
+        1088
+      ],
+      "surface": "s_west",
+      "width": 0,
+      "height": 0,
+      "properties": {},
+      "status": "verified",
+      "note": "source semantics retained",
+      "evidence": [
+        "ev_assets",
+        "ev_route_main"
+      ],
+      "verificationScope": "source metadata, support and bounds; disabled hidden objects remain inactive; monster spawn means placement, not combat simulation"
+    },
+    {
+      "id": "portal_to_outer_1",
+      "type": "portal",
+      "sourceId": 9,
+      "position": [
+        80,
+        1088
+      ],
+      "surface": "s_west",
+      "width": 0,
+      "height": 0,
+      "properties": {
+        "target": "wanyao_outer_1",
+        "targetPortal": "portal_to_outer_2"
+      },
+      "status": "verified",
+      "note": "source semantics retained",
+      "evidence": [
+        "ev_assets",
+        "ev_route_main"
+      ],
+      "verificationScope": "source metadata, support and bounds; disabled hidden objects remain inactive; monster spawn means placement, not combat simulation"
+    },
+    {
+      "id": "tree_spirit",
+      "type": "npc",
+      "sourceId": 10,
+      "position": [
+        3216,
+        1024
+      ],
+      "surface": "s_clearing",
+      "width": 0,
+      "height": 0,
+      "properties": {
+        "npc": "tree_spirit"
+      },
+      "status": "verified",
+      "note": "source semantics retained",
+      "visualAsset": {
+        "path": "work/preview/npc_tree_spirit-idle.png",
+        "width": 96,
+        "height": 96,
+        "sourceAtlas": "art/sprites/npc_tree_spirit.png",
+        "sourceJson": "art/sprites/npc_tree_spirit.json",
+        "sourceFrame": "npc_tree_spirit_idle_01",
+        "sourceSha256": "ef25d66cb9e0e80f1f11bb9c739352998712ef1a021671b765b0d32c6b3b385e",
+        "purpose": "read-only existing art static placement reference, no animation/combat claim",
+        "name": "古树灵",
+        "questMarkerOffsetY": 110
+      },
+      "evidence": [
+        "ev_assets",
+        "ev_route_main"
+      ],
+      "verificationScope": "source metadata, support and bounds; disabled hidden objects remain inactive; monster spawn means placement, not combat simulation"
+    },
+    {
+      "id": "portal_to_deep_1",
+      "type": "portal",
+      "sourceId": 11,
+      "position": [
+        3440,
+        1024
+      ],
+      "surface": "s_clearing",
+      "width": 0,
+      "height": 0,
+      "properties": {
+        "target": "wanyao_deep_1",
+        "targetPortal": "portal_to_outer_2",
+        "reqLevel": 30
+      },
+      "status": "verified",
+      "note": "source semantics retained",
+      "evidence": [
+        "ev_assets",
+        "ev_route_main"
+      ],
+      "verificationScope": "source metadata, support and bounds; disabled hidden objects remain inactive; monster spawn means placement, not combat simulation"
+    },
+    {
+      "id": "spawn_shadow_wolf_12",
+      "type": "spawn",
+      "sourceId": 12,
+      "position": [
+        512,
+        1152
+      ],
+      "surface": "s_valley",
+      "width": 1568,
+      "height": 0,
+      "properties": {
+        "monster": "shadow_wolf",
+        "count": 4
+      },
+      "status": "verified",
+      "note": "source semantics retained",
+      "visualAsset": {
+        "path": "work/preview/mon_shadow_wolf-idle.png",
+        "width": 96,
+        "height": 64,
+        "sourceAtlas": "art/sprites/mon_shadow_wolf.png",
+        "sourceJson": "art/sprites/mon_shadow_wolf.json",
+        "sourceFrame": "mon_shadow_wolf_idle_01",
+        "sourceSha256": "83cd1d0b68baf8751593268118f6f250b34f72b53111c481efe1a3c4d6638d55",
+        "purpose": "read-only existing art static placement reference, no animation/combat claim"
+      },
+      "evidence": [
+        "ev_assets"
+      ],
+      "verificationScope": "source metadata, support and bounds; disabled hidden objects remain inactive; monster spawn means placement, not combat simulation"
+    },
+    {
+      "id": "spawn_shadow_wolf_13",
+      "type": "spawn",
+      "sourceId": 13,
+      "position": [
+        576,
+        1024
+      ],
+      "surface": "s_west_low",
+      "width": 416,
+      "height": 0,
+      "properties": {
+        "monster": "shadow_wolf",
+        "count": 2
+      },
+      "status": "verified",
+      "note": "source semantics retained",
+      "visualAsset": {
+        "path": "work/preview/mon_shadow_wolf-idle.png",
+        "width": 96,
+        "height": 64,
+        "sourceAtlas": "art/sprites/mon_shadow_wolf.png",
+        "sourceJson": "art/sprites/mon_shadow_wolf.json",
+        "sourceFrame": "mon_shadow_wolf_idle_01",
+        "sourceSha256": "83cd1d0b68baf8751593268118f6f250b34f72b53111c481efe1a3c4d6638d55",
+        "purpose": "read-only existing art static placement reference, no animation/combat claim"
+      },
+      "evidence": [
+        "ev_assets"
+      ],
+      "verificationScope": "source metadata, support and bounds; disabled hidden objects remain inactive; monster spawn means placement, not combat simulation"
+    },
+    {
+      "id": "spawn_poison_spider_14",
+      "type": "spawn",
+      "sourceId": 14,
+      "position": [
+        704,
+        896
+      ],
+      "surface": "s_west_mid",
+      "width": 480,
+      "height": 0,
+      "properties": {
+        "monster": "poison_spider",
+        "count": 2
+      },
+      "status": "verified",
+      "note": "source semantics retained",
+      "visualAsset": {
+        "path": "work/preview/mon_poison_spider-idle.png",
+        "width": 80,
+        "height": 56,
+        "sourceAtlas": "art/sprites/mon_poison_spider.png",
+        "sourceJson": "art/sprites/mon_poison_spider.json",
+        "sourceFrame": "mon_poison_spider_idle_01",
+        "sourceSha256": "ad44c711529b00c24b336f3458d8786a36574dda913dac802a12571b5aef6b79",
+        "purpose": "read-only existing art static placement reference, no animation/combat claim"
+      },
+      "evidence": [
+        "ev_assets"
+      ],
+      "verificationScope": "source metadata, support and bounds; disabled hidden objects remain inactive; monster spawn means placement, not combat simulation"
+    },
+    {
+      "id": "spawn_poison_spider_15",
+      "type": "spawn",
+      "sourceId": 15,
+      "position": [
+        1408,
+        1024
+      ],
+      "surface": "s_middle_low",
+      "width": 480,
+      "height": 0,
+      "properties": {
+        "monster": "poison_spider",
+        "count": 2
+      },
+      "status": "verified",
+      "note": "source semantics retained",
+      "visualAsset": {
+        "path": "work/preview/mon_poison_spider-idle.png",
+        "width": 80,
+        "height": 56,
+        "sourceAtlas": "art/sprites/mon_poison_spider.png",
+        "sourceJson": "art/sprites/mon_poison_spider.json",
+        "sourceFrame": "mon_poison_spider_idle_01",
+        "sourceSha256": "ad44c711529b00c24b336f3458d8786a36574dda913dac802a12571b5aef6b79",
+        "purpose": "read-only existing art static placement reference, no animation/combat claim"
+      },
+      "evidence": [
+        "ev_assets"
+      ],
+      "verificationScope": "source metadata, support and bounds; disabled hidden objects remain inactive; monster spawn means placement, not combat simulation"
+    },
+    {
+      "id": "spawn_poison_spider_16",
+      "type": "spawn",
+      "sourceId": 16,
+      "position": [
+        1600,
+        896
+      ],
+      "surface": "s_middle_high",
+      "width": 480,
+      "height": 0,
+      "properties": {
+        "monster": "poison_spider",
+        "count": 2
+      },
+      "status": "verified",
+      "note": "source semantics retained",
+      "visualAsset": {
+        "path": "work/preview/mon_poison_spider-idle.png",
+        "width": 80,
+        "height": 56,
+        "sourceAtlas": "art/sprites/mon_poison_spider.png",
+        "sourceJson": "art/sprites/mon_poison_spider.json",
+        "sourceFrame": "mon_poison_spider_idle_01",
+        "sourceSha256": "ad44c711529b00c24b336f3458d8786a36574dda913dac802a12571b5aef6b79",
+        "purpose": "read-only existing art static placement reference, no animation/combat claim"
+      },
+      "evidence": [
+        "ev_assets"
+      ],
+      "verificationScope": "source metadata, support and bounds; disabled hidden objects remain inactive; monster spawn means placement, not combat simulation"
+    },
+    {
+      "id": "spawn_poison_spider_17",
+      "type": "spawn",
+      "sourceId": 17,
+      "position": [
+        2112,
+        1088
+      ],
+      "surface": "s_east_cliff",
+      "width": 800,
+      "height": 0,
+      "properties": {
+        "monster": "poison_spider",
+        "count": 3
+      },
+      "status": "verified",
+      "note": "source semantics retained",
+      "visualAsset": {
+        "path": "work/preview/mon_poison_spider-idle.png",
+        "width": 80,
+        "height": 56,
+        "sourceAtlas": "art/sprites/mon_poison_spider.png",
+        "sourceJson": "art/sprites/mon_poison_spider.json",
+        "sourceFrame": "mon_poison_spider_idle_01",
+        "sourceSha256": "ad44c711529b00c24b336f3458d8786a36574dda913dac802a12571b5aef6b79",
+        "purpose": "read-only existing art static placement reference, no animation/combat claim"
+      },
+      "evidence": [
+        "ev_assets"
+      ],
+      "verificationScope": "source metadata, support and bounds; disabled hidden objects remain inactive; monster spawn means placement, not combat simulation"
+    },
+    {
+      "id": "spawn_poison_spider_18",
+      "type": "spawn",
+      "sourceId": 18,
+      "position": [
+        2240,
+        960
+      ],
+      "surface": "s_east_low",
+      "width": 480,
+      "height": 0,
+      "properties": {
+        "monster": "poison_spider",
+        "count": 2
+      },
+      "status": "verified",
+      "note": "source semantics retained",
+      "visualAsset": {
+        "path": "work/preview/mon_poison_spider-idle.png",
+        "width": 80,
+        "height": 56,
+        "sourceAtlas": "art/sprites/mon_poison_spider.png",
+        "sourceJson": "art/sprites/mon_poison_spider.json",
+        "sourceFrame": "mon_poison_spider_idle_01",
+        "sourceSha256": "ad44c711529b00c24b336f3458d8786a36574dda913dac802a12571b5aef6b79",
+        "purpose": "read-only existing art static placement reference, no animation/combat claim"
+      },
+      "evidence": [
+        "ev_assets"
+      ],
+      "verificationScope": "source metadata, support and bounds; disabled hidden objects remain inactive; monster spawn means placement, not combat simulation"
+    },
+    {
+      "id": "spawn_poison_spider_19",
+      "type": "spawn",
+      "sourceId": 19,
+      "position": [
+        2368,
+        832
+      ],
+      "surface": "s_east_high",
+      "width": 480,
+      "height": 0,
+      "properties": {
+        "monster": "poison_spider",
+        "count": 2
+      },
+      "status": "verified",
+      "note": "source semantics retained",
+      "visualAsset": {
+        "path": "work/preview/mon_poison_spider-idle.png",
+        "width": 80,
+        "height": 56,
+        "sourceAtlas": "art/sprites/mon_poison_spider.png",
+        "sourceJson": "art/sprites/mon_poison_spider.json",
+        "sourceFrame": "mon_poison_spider_idle_01",
+        "sourceSha256": "ad44c711529b00c24b336f3458d8786a36574dda913dac802a12571b5aef6b79",
+        "purpose": "read-only existing art static placement reference, no animation/combat claim"
+      },
+      "evidence": [
+        "ev_assets"
+      ],
+      "verificationScope": "source metadata, support and bounds; disabled hidden objects remain inactive; monster spawn means placement, not combat simulation"
+    },
+    {
+      "id": "gather_nine_leaf_ganoderma_20",
+      "type": "gather",
+      "sourceId": 20,
+      "position": [
+        1232,
+        672
+      ],
+      "surface": "s_ganoderma",
+      "width": 0,
+      "height": 0,
+      "properties": {
+        "item": "nine_leaf_ganoderma",
+        "respawnMs": 600000
+      },
+      "status": "verified",
+      "note": "source semantics retained",
+      "visualAsset": {
+        "path": "work/preview/prop_gather_nine_leaf_ganoderma-idle.png",
+        "width": 48,
+        "height": 48,
+        "sourceAtlas": "art/sprites/prop_gather_nine_leaf_ganoderma.png",
+        "sourceJson": "art/sprites/prop_gather_nine_leaf_ganoderma.json",
+        "sourceFrame": "prop_gather_nine_leaf_ganoderma_idle_01",
+        "sourceSha256": "818c04a8cebefbe56bacbd50ca462f3544e12320b0fb8a9d25df26076294c7cc",
+        "purpose": "read-only existing art static placement reference, no animation/combat claim"
+      },
+      "evidence": [
+        "ev_assets",
+        "ev_route_main"
+      ],
+      "verificationScope": "source metadata, support and bounds; disabled hidden objects remain inactive; monster spawn means placement, not combat simulation"
+    },
+    {
+      "id": "gather_spirit_herb_21",
+      "type": "gather",
+      "sourceId": 21,
+      "position": [
+        1936,
+        896
+      ],
+      "surface": "s_middle_high",
+      "width": 0,
+      "height": 0,
+      "properties": {
+        "item": "spirit_herb",
+        "respawnMs": 60000
+      },
+      "status": "verified",
+      "note": "source semantics retained",
+      "visualAsset": {
+        "path": "work/preview/prop_gather_spirit_herb-idle.png",
+        "width": 48,
+        "height": 48,
+        "sourceAtlas": "art/sprites/prop_gather_spirit_herb.png",
+        "sourceJson": "art/sprites/prop_gather_spirit_herb.json",
+        "sourceFrame": "prop_gather_spirit_herb_idle_01",
+        "sourceSha256": "4ce2f9b7e2bdcb1b3af40407a7a9a769a26a2f3db3c40f4f67982f603f6a7481",
+        "purpose": "read-only existing art static placement reference, no animation/combat claim"
+      },
+      "evidence": [
+        "ev_assets",
+        "ev_route_main"
+      ],
+      "verificationScope": "source metadata, support and bounds; disabled hidden objects remain inactive; monster spawn means placement, not combat simulation"
+    },
+    {
+      "id": "gather_spirit_copper_22",
+      "type": "gather",
+      "sourceId": 22,
+      "position": [
+        2768,
+        832
+      ],
+      "surface": "s_east_high",
+      "width": 0,
+      "height": 0,
+      "properties": {
+        "item": "spirit_copper",
+        "respawnMs": 120000
+      },
+      "status": "verified",
+      "note": "source semantics retained",
+      "visualAsset": {
+        "path": "work/preview/prop_gather_spirit_copper-idle.png",
+        "width": 48,
+        "height": 48,
+        "sourceAtlas": "art/sprites/prop_gather_spirit_copper.png",
+        "sourceJson": "art/sprites/prop_gather_spirit_copper.json",
+        "sourceFrame": "prop_gather_spirit_copper_idle_01",
+        "sourceSha256": "82142fc40d18c3063fc33aaa45b0699a3dc1811a92b058ecd4992b2e7e3fba3d",
+        "purpose": "read-only existing art static placement reference, no animation/combat claim"
+      },
+      "evidence": [
+        "ev_assets",
+        "ev_route_main"
+      ],
+      "verificationScope": "source metadata, support and bounds; disabled hidden objects remain inactive; monster spawn means placement, not combat simulation"
+    },
+    {
+      "id": "sense_chest_01",
+      "type": "chest",
+      "sourceId": 23,
+      "position": [
+        1008,
+        768
+      ],
+      "surface": "s_west_high",
+      "width": 0,
+      "height": 0,
+      "properties": {
+        "loot": "hp_pill_small",
+        "count": 1
+      },
+      "status": "verified",
+      "note": "source semantics retained",
+      "evidence": [
+        "ev_assets",
+        "ev_route_main"
+      ],
+      "verificationScope": "source metadata, support and bounds; disabled hidden objects remain inactive; monster spawn means placement, not combat simulation"
+    },
+    {
+      "id": "sense_hidden_chest_01",
+      "type": "hidden",
+      "sourceId": 24,
+      "position": [
+        1008,
+        768
+      ],
+      "surface": "s_west_high",
+      "width": 0,
+      "height": 0,
+      "properties": {
+        "enabled": false,
+        "reqSpirit": 0,
+        "reveal": "chest",
+        "targetObject": "sense_chest_01"
+      },
+      "status": "verified",
+      "note": "disabled source hidden objects retain metadata only",
+      "evidence": [
+        "ev_assets"
+      ],
+      "verificationScope": "source metadata, support and bounds; disabled hidden objects remain inactive; monster spawn means placement, not combat simulation"
+    },
+    {
+      "id": "sense_hidden_platform_01",
+      "type": "hidden",
+      "sourceId": 25,
+      "position": [
+        2864,
+        768
+      ],
+      "surface": null,
+      "width": 64,
+      "height": 32,
+      "properties": {
+        "enabled": false,
+        "reqSpirit": 10,
+        "reveal": "platform"
+      },
+      "status": "verified",
+      "note": "disabled source hidden objects retain metadata only",
+      "evidence": [
+        "ev_assets"
+      ],
+      "verificationScope": "source metadata, support and bounds; disabled hidden objects remain inactive; monster spawn means placement, not combat simulation"
+    },
+    {
+      "id": "enc_fragrant_herb_anchor",
+      "type": "encounter_anchor",
+      "sourceId": 26,
+      "position": [
+        1712,
+        896
+      ],
+      "surface": "s_middle_high",
+      "width": 0,
+      "height": 0,
+      "properties": {
+        "encounter": "enc_fragrant_herb"
+      },
+      "status": "verified",
+      "note": "source semantics retained",
+      "evidence": [
+        "ev_assets"
+      ],
+      "verificationScope": "source metadata, support and bounds; disabled hidden objects remain inactive; monster spawn means placement, not combat simulation"
+    },
+    {
+      "id": "goal_east",
+      "type": "goal",
+      "position": [
+        3440,
+        1024
+      ],
+      "surface": "s_clearing",
+      "status": "verified",
+      "evidence": [
+        "ev_assets",
+        "ev_route_main"
+      ],
+      "verificationScope": "source metadata, support and bounds; disabled hidden objects remain inactive; monster spawn means placement, not combat simulation"
+    }
+  ],
+  "transitions": [
+    {
+      "id": "t_rope_20_up",
+      "from": "s_valley",
+      "to": "s_west_low",
+      "action": "climb-up",
+      "climb": "c_rope_20",
+      "conditions": [
+        "natural approach",
+        "full-body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "ev_route_main"
+      ]
+    },
+    {
+      "id": "t_rope_20_down",
+      "from": "s_west_low",
+      "to": "s_valley",
+      "action": "climb-down",
+      "climb": "c_rope_20",
+      "conditions": [
+        "natural approach",
+        "full-body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "ev_route_main"
+      ]
+    },
+    {
+      "id": "t_rope_26_up",
+      "from": "s_west_low",
+      "to": "s_west_mid",
+      "action": "climb-up",
+      "climb": "c_rope_26",
+      "conditions": [
+        "natural approach",
+        "full-body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "ev_route_main"
+      ]
+    },
+    {
+      "id": "t_rope_26_down",
+      "from": "s_west_mid",
+      "to": "s_west_low",
+      "action": "climb-down",
+      "climb": "c_rope_26",
+      "conditions": [
+        "natural approach",
+        "full-body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "ev_route_main"
+      ]
+    },
+    {
+      "id": "t_rope_34_up",
+      "from": "s_west_mid",
+      "to": "s_west_high",
+      "action": "climb-up",
+      "climb": "c_rope_34",
+      "conditions": [
+        "natural approach",
+        "full-body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "ev_route_main"
+      ]
+    },
+    {
+      "id": "t_rope_34_down",
+      "from": "s_west_high",
+      "to": "s_west_mid",
+      "action": "climb-down",
+      "climb": "c_rope_34",
+      "conditions": [
+        "natural approach",
+        "full-body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "ev_route_main"
+      ]
+    },
+    {
+      "id": "t_rope_48_up",
+      "from": "s_valley",
+      "to": "s_middle_low",
+      "action": "climb-up",
+      "climb": "c_rope_48",
+      "conditions": [
+        "natural approach",
+        "full-body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "ev_route_main"
+      ]
+    },
+    {
+      "id": "t_rope_48_down",
+      "from": "s_middle_low",
+      "to": "s_valley",
+      "action": "climb-down",
+      "climb": "c_rope_48",
+      "conditions": [
+        "natural approach",
+        "full-body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "ev_route_main"
+      ]
+    },
+    {
+      "id": "t_rope_56_up",
+      "from": "s_middle_low",
+      "to": "s_middle_high",
+      "action": "climb-up",
+      "climb": "c_rope_56",
+      "conditions": [
+        "natural approach",
+        "full-body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "ev_route_main"
+      ]
+    },
+    {
+      "id": "t_rope_56_down",
+      "from": "s_middle_high",
+      "to": "s_middle_low",
+      "action": "climb-down",
+      "climb": "c_rope_56",
+      "conditions": [
+        "natural approach",
+        "full-body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "ev_route_main"
+      ]
+    },
+    {
+      "id": "t_rope_76_up",
+      "from": "s_east_cliff",
+      "to": "s_east_low",
+      "action": "climb-up",
+      "climb": "c_rope_76",
+      "conditions": [
+        "natural approach",
+        "full-body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "ev_route_main"
+      ]
+    },
+    {
+      "id": "t_rope_76_down",
+      "from": "s_east_low",
+      "to": "s_east_cliff",
+      "action": "climb-down",
+      "climb": "c_rope_76",
+      "conditions": [
+        "natural approach",
+        "full-body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "ev_route_main"
+      ]
+    },
+    {
+      "id": "t_rope_82_up",
+      "from": "s_east_low",
+      "to": "s_east_high",
+      "action": "climb-up",
+      "climb": "c_rope_82",
+      "conditions": [
+        "natural approach",
+        "full-body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "ev_route_main"
+      ]
+    },
+    {
+      "id": "t_rope_82_down",
+      "from": "s_east_high",
+      "to": "s_east_low",
+      "action": "climb-down",
+      "climb": "c_rope_82",
+      "conditions": [
+        "natural approach",
+        "full-body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "ev_route_main"
+      ]
+    },
+    {
+      "id": "t_west_down",
+      "from": "s_west",
+      "to": "s_valley",
+      "action": "drop",
+      "conditions": [
+        "base FEEL parameters",
+        "no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        "ev_route_main"
+      ]
+    },
+    {
+      "id": "t_west_up",
+      "from": "s_valley",
+      "to": "s_west",
+      "action": "jump",
+      "conditions": [
+        "base FEEL parameters",
+        "no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        "ev_route_return"
+      ]
+    },
+    {
+      "id": "t_east_up",
+      "from": "s_valley",
+      "to": "s_east_cliff",
+      "action": "jump",
+      "conditions": [
+        "base FEEL parameters",
+        "no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        "ev_route_main"
+      ]
+    },
+    {
+      "id": "t_east_down",
+      "from": "s_east_cliff",
+      "to": "s_valley",
+      "action": "drop",
+      "conditions": [
+        "base FEEL parameters",
+        "no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        "ev_route_return"
+      ]
+    },
+    {
+      "id": "t_clear_up",
+      "from": "s_east_cliff",
+      "to": "s_clearing",
+      "action": "jump",
+      "conditions": [
+        "base FEEL parameters",
+        "no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        "ev_route_main"
+      ]
+    },
+    {
+      "id": "t_clear_down",
+      "from": "s_clearing",
+      "to": "s_east_cliff",
+      "action": "drop",
+      "conditions": [
+        "base FEEL parameters",
+        "no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        "ev_route_return"
+      ]
+    },
+    {
+      "id": "t_ganoderma_up",
+      "from": "s_west_high",
+      "to": "s_ganoderma",
+      "action": "double-jump",
+      "conditions": [
+        "base FEEL parameters",
+        "no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        "ev_route_main"
+      ]
+    },
+    {
+      "id": "t_ganoderma_down",
+      "from": "s_ganoderma",
+      "to": "s_west_high",
+      "action": "drop-through",
+      "conditions": [
+        "base FEEL parameters",
+        "no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        "ev_route_main"
+      ]
+    },
+    {
+      "id": "t_west_recover",
+      "from": "s_west_high",
+      "to": "s_valley",
+      "action": "drop",
+      "conditions": [
+        "base FEEL parameters",
+        "no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        "ev_t_west_recover"
+      ]
+    },
+    {
+      "id": "t_middle_recover",
+      "from": "s_middle_high",
+      "to": "s_valley",
+      "action": "drop",
+      "conditions": [
+        "base FEEL parameters",
+        "no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        "ev_t_middle_recover"
+      ]
+    },
+    {
+      "id": "t_east_recover",
+      "from": "s_east_high",
+      "to": "s_east_cliff",
+      "action": "drop",
+      "conditions": [
+        "base FEEL parameters",
+        "no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        "ev_t_east_recover"
+      ]
+    }
+  ],
+  "requiredRoutes": [
+    {
+      "id": "route_main",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "portal_to_outer_1",
+        "c_rope_20",
+        "c_rope_26",
+        "c_rope_34",
+        "s_ganoderma",
+        "gather_nine_leaf_ganoderma_20",
+        "s_valley",
+        "c_rope_48",
+        "c_rope_56",
+        "s_east_cliff",
+        "c_rope_76",
+        "c_rope_82",
+        "gather_spirit_copper_22",
+        "s_clearing",
+        "tree_spirit"
+      ],
+      "direction": "forward",
+      "status": "verified",
+      "evidence": [
+        "ev_route_main"
+      ]
+    },
+    {
+      "id": "route_return",
+      "from": "start_spawn",
+      "to": "portal_to_outer_1",
+      "via": [
+        "goal_east",
+        "s_east_cliff",
+        "s_valley",
+        "s_west"
+      ],
+      "direction": "out-and-back",
+      "status": "verified",
+      "evidence": [
+        "ev_route_return"
+      ]
+    },
+    {
+      "id": "route_all_climbs",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "c_rope_20",
+        "c_rope_26",
+        "c_rope_34",
+        "c_rope_48",
+        "c_rope_56",
+        "c_rope_76",
+        "c_rope_82"
+      ],
+      "direction": "all-climbs-both-directions",
+      "status": "verified",
+      "evidence": [
+        "ev_route_all_climbs"
+      ]
+    },
+    {
+      "id": "route_all_gathers",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "gather_nine_leaf_ganoderma_20",
+        "gather_spirit_herb_21",
+        "gather_spirit_copper_22"
+      ],
+      "direction": "forward",
+      "status": "verified",
+      "evidence": [
+        "ev_route_all_gathers"
+      ]
+    },
+    {
+      "id": "route_chest",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "sense_chest_01"
+      ],
+      "direction": "forward",
+      "status": "verified",
+      "evidence": [
+        "ev_route_chest"
+      ]
+    }
+  ],
+  "zones": [
+    {
+      "id": "safe_east",
+      "polygon": [
+        [
+          2912,
+          0
+        ],
+        [
+          3520,
+          0
+        ],
+        [
+          3520,
+          1216
+        ],
+        [
+          2912,
+          1216
+        ]
+      ],
+      "noSpawn": true,
+      "note": "columns 91 and east; preserve original ground rise at col92"
+    }
+  ],
+  "diagnostics": {
+    "maskPalette": {
+      "walk": [
+        150,
+        245,
+        160,
+        255
+      ],
+      "stand": [
+        0,
+        200,
+        80,
+        255
+      ],
+      "rope": [
+        0,
+        190,
+        230,
+        255
+      ],
+      "jump": [
+        255,
+        180,
+        0,
+        255
+      ],
+      "drop": [
+        170,
+        80,
+        225,
+        255
+      ],
+      "point": [
+        255,
+        70,
+        160,
+        255
+      ]
+    },
+    "rasterizationOrder": [
+      "walk",
+      "stand",
+      "rope",
+      "jump",
+      "drop",
+      "point"
+    ],
+    "regionIdIndex": null,
+    "geometryRevision": "wanyao2-final-002"
+  },
+  "validation": {
+    "status": "verified",
+    "geometryRevision": "wanyao2-final-002",
+    "actorParameterRevision": "wanyao2-base-feel-20261027-001",
+    "engineRevision": "gsb-aabb-feel-60hz-wanyao2-001",
+    "evidence": [
+      {
+        "id": "ev_route_main",
+        "path": "work/final-route_main.json",
+        "geometryRevision": "wanyao2-final-002",
+        "actorParameterRevision": "wanyao2-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-wanyao2-001",
+        "method": "fixed-step continuous input-only from normal zero-speed spawn; full input/trace/events; no teleport or reset",
+        "result": "verified",
+        "routeId": "route_main"
+      },
+      {
+        "id": "ev_route_return",
+        "path": "work/final-route_return.json",
+        "geometryRevision": "wanyao2-final-002",
+        "actorParameterRevision": "wanyao2-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-wanyao2-001",
+        "method": "fixed-step continuous input-only from normal zero-speed spawn; full input/trace/events; no teleport or reset",
+        "result": "verified",
+        "routeId": "route_return"
+      },
+      {
+        "id": "ev_route_all_climbs",
+        "path": "work/final-route_all_climbs.json",
+        "geometryRevision": "wanyao2-final-002",
+        "actorParameterRevision": "wanyao2-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-wanyao2-001",
+        "method": "fixed-step continuous input-only from normal zero-speed spawn; full input/trace/events; no teleport or reset",
+        "result": "verified",
+        "routeId": "route_all_climbs"
+      },
+      {
+        "id": "ev_route_all_gathers",
+        "path": "work/final-route_all_gathers.json",
+        "geometryRevision": "wanyao2-final-002",
+        "actorParameterRevision": "wanyao2-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-wanyao2-001",
+        "method": "fixed-step continuous input-only from normal zero-speed spawn; full input/trace/events; no teleport or reset",
+        "result": "verified",
+        "routeId": "route_all_gathers"
+      },
+      {
+        "id": "ev_route_chest",
+        "path": "work/final-route_chest.json",
+        "geometryRevision": "wanyao2-final-002",
+        "actorParameterRevision": "wanyao2-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-wanyao2-001",
+        "method": "fixed-step continuous input-only from normal zero-speed spawn; full input/trace/events; no teleport or reset",
+        "result": "verified",
+        "routeId": "route_chest"
+      },
+      {
+        "id": "ev_t_west_recover",
+        "path": "work/final-optional-drops.json",
+        "geometryRevision": "wanyao2-final-002",
+        "actorParameterRevision": "wanyao2-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-wanyao2-001",
+        "method": "continuous spawn approach and actual walk-off landing; check selected by transitionId",
+        "result": "verified",
+        "transitionId": "t_west_recover"
+      },
+      {
+        "id": "ev_t_middle_recover",
+        "path": "work/final-optional-drops.json",
+        "geometryRevision": "wanyao2-final-002",
+        "actorParameterRevision": "wanyao2-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-wanyao2-001",
+        "method": "continuous spawn approach and actual walk-off landing; check selected by transitionId",
+        "result": "verified",
+        "transitionId": "t_middle_recover"
+      },
+      {
+        "id": "ev_t_east_recover",
+        "path": "work/final-optional-drops.json",
+        "geometryRevision": "wanyao2-final-002",
+        "actorParameterRevision": "wanyao2-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-wanyao2-001",
+        "method": "continuous spawn approach and actual walk-off landing; check selected by transitionId",
+        "result": "verified",
+        "transitionId": "t_east_recover"
+      },
+      {
+        "id": "ev_assets",
+        "path": "work/final-asset-audit.json",
+        "geometryRevision": "wanyao2-final-002",
+        "actorParameterRevision": "wanyao2-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-wanyao2-001",
+        "method": "unique IDs/references/parameters, 12 visible soil bearing rows, 14 rope anchors, true alpha, exact recompose, masks and bottom continuity; native-scale screenshot review",
+        "result": "verified"
+      },
+      {
+        "id": "ev_browser",
+        "path": "work/final-browser-check.json",
+        "geometryRevision": "wanyao2-final-002",
+        "actorParameterRevision": "wanyao2-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-wanyao2-001",
+        "method": "1280x720 browser continuous replay equals Node trace; actual DOM keyboard held/released on unpaused RAF; assets and console checks",
+        "result": "verified"
+      },
+      {
+        "id": "ev_physics",
+        "path": "work/final-physics-smoke.json",
+        "geometryRevision": "wanyao2-final-002",
+        "actorParameterRevision": "wanyao2-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-wanyao2-001",
+        "method": "11 natural-scene/explicitly-scoped synthetic collision and control checks",
+        "result": "verified"
+      },
+      {
+        "id": "ev_cadence",
+        "path": "work/final-cadence-check.json",
+        "geometryRevision": "wanyao2-final-002",
+        "actorParameterRevision": "wanyao2-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-wanyao2-001",
+        "method": "same 4798-frame input under 30/60/144Hz simulated render cadence and fixed60Hz physics",
+        "result": "verified"
+      }
+    ],
+    "issues": [],
+    "scope": "Independent local movement adapter at base100 movement points, existing static reference sprites; production Phaser/combat/quest/portal transfer excluded by PM prohibition"
+  },
+  "foreground": {
+    "applicable": false,
+    "reason": "ancient tree, attached canopy and webs are behind actors; no foreground occlusion needed"
+  }
+}

@@ -1,0 +1,302 @@
+{
+ "frames": {
+  "fx_shadow_zone_left_01": {
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 32,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 32,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 32,
+    "h": 96
+   },
+   "pivot": {
+    "x": 0,
+    "y": 1
+   }
+  },
+  "fx_shadow_zone_left_02": {
+   "frame": {
+    "x": 32,
+    "y": 0,
+    "w": 32,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 32,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 32,
+    "h": 96
+   },
+   "pivot": {
+    "x": 0,
+    "y": 1
+   }
+  },
+  "fx_shadow_zone_left_03": {
+   "frame": {
+    "x": 64,
+    "y": 0,
+    "w": 32,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 32,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 32,
+    "h": 96
+   },
+   "pivot": {
+    "x": 0,
+    "y": 1
+   }
+  },
+  "fx_shadow_zone_left_04": {
+   "frame": {
+    "x": 96,
+    "y": 0,
+    "w": 32,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 32,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 32,
+    "h": 96
+   },
+   "pivot": {
+    "x": 0,
+    "y": 1
+   }
+  },
+  "fx_shadow_zone_mid_01": {
+   "frame": {
+    "x": 128,
+    "y": 0,
+    "w": 32,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 32,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 32,
+    "h": 96
+   },
+   "pivot": {
+    "x": 0,
+    "y": 1
+   }
+  },
+  "fx_shadow_zone_mid_02": {
+   "frame": {
+    "x": 160,
+    "y": 0,
+    "w": 32,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 32,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 32,
+    "h": 96
+   },
+   "pivot": {
+    "x": 0,
+    "y": 1
+   }
+  },
+  "fx_shadow_zone_mid_03": {
+   "frame": {
+    "x": 192,
+    "y": 0,
+    "w": 32,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 32,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 32,
+    "h": 96
+   },
+   "pivot": {
+    "x": 0,
+    "y": 1
+   }
+  },
+  "fx_shadow_zone_mid_04": {
+   "frame": {
+    "x": 224,
+    "y": 0,
+    "w": 32,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 32,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 32,
+    "h": 96
+   },
+   "pivot": {
+    "x": 0,
+    "y": 1
+   }
+  },
+  "fx_shadow_zone_right_01": {
+   "frame": {
+    "x": 0,
+    "y": 96,
+    "w": 32,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 32,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 32,
+    "h": 96
+   },
+   "pivot": {
+    "x": 0,
+    "y": 1
+   }
+  },
+  "fx_shadow_zone_right_02": {
+   "frame": {
+    "x": 32,
+    "y": 96,
+    "w": 32,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 32,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 32,
+    "h": 96
+   },
+   "pivot": {
+    "x": 0,
+    "y": 1
+   }
+  },
+  "fx_shadow_zone_right_03": {
+   "frame": {
+    "x": 64,
+    "y": 96,
+    "w": 32,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 32,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 32,
+    "h": 96
+   },
+   "pivot": {
+    "x": 0,
+    "y": 1
+   }
+  },
+  "fx_shadow_zone_right_04": {
+   "frame": {
+    "x": 96,
+    "y": 96,
+    "w": 32,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 32,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 32,
+    "h": 96
+   },
+   "pivot": {
+    "x": 0,
+    "y": 1
+   }
+  }
+ },
+ "meta": {
+  "app": "xiantu gen_trial_areas_v05.py",
+  "image": "fx_shadow_zone.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 256,
+   "h": 192
+  },
+  "scale": "1"
+ }
+}

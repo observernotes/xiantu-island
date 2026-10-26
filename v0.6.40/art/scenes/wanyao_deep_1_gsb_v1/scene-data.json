@@ -1,0 +1,2751 @@
+{
+  "schemaVersion": "1.0",
+  "geometryRevision": "deep1-final-001",
+  "status": "verified",
+  "space": {
+    "origin": "top-left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "units": "logical-pixel",
+    "logicalWidth": 3520,
+    "logicalHeight": 1024,
+    "sourceMap": "maps/wanyao_deep_1.json",
+    "sourceToWorld": [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0
+    ]
+  },
+  "safeZone": false,
+  "actor": {
+    "parameterRevision": "deep1-base-feel-20261027-001",
+    "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; MapBuilder.ts; game/src/move.ts; SpriteArt.ts; game/public/art/sprites/player_sword_m.anims.json; balance/player_growth.json",
+    "sourceRevision": {
+      "game/src/config/feel.ts": "9375297a15b04012633197a935f4d9ffd403c3ff8d1e055cb585dd5f81acdeec",
+      "game/src/scenes/Player.ts": "ec9426ed625784532c6e632a1755bd16076cc3f559d177f465b741341193f513",
+      "game/src/scenes/MapBuilder.ts": "b57cf44af7f3aed6cfc7318cd2615f95e42a4f3e99a837b82c795eac257ca86b",
+      "game/src/scenes/GameScene.ts": "be729e283208874e69b7b9d7d69ded54d5225f4276e77cdc7efa05f474d5da87",
+      "game/src/main.ts": "c882932569a2040c23c6f131ea741f34e3820e9ea721410a5ff6e859d00b6f9d",
+      "game/src/move.ts": "585c9987623cbe532d7f65508773addd52ccd2f312e5c2ee592e9e6f2f686a74",
+      "game/src/SpriteArt.ts": "6c1fcb4fe67857c7fc3d569a2151f4b1a7cdd914e69be6d12d53b54b288b6f18",
+      "game/src/PlayerInput.ts": "5621449dc667aedb17034e10f42d2f34425c9ef1d45f21112de6be1a1139a04e",
+      "game/public/art/sprites/player_sword_m.anims.json": "50ee41e30ca903b95db22b9290a49ac2220d243ca37dba3876fdec784271df92",
+      "balance/player_growth.json": "04cf448040bff27b2c578d4ec9e1c0babde07afdf14d4b91d5f56ba6f403604e",
+      "maps/wanyao_deep_1.json": "15e5e33dc84828bce0c29ce1bc8b30f7c7be0f43e7376106a156730b543d47f5"
+    },
+    "provisional": false,
+    "visualBounds": {
+      "width": 96,
+      "height": 96,
+      "idleAlphaBounds": [
+        15,
+        9,
+        76,
+        96
+      ],
+      "idleVisibleWidth": 61,
+      "idleVisibleHeight": 87,
+      "anchor": "feet-center"
+    },
+    "collider": {
+      "shape": "aabb",
+      "width": 26,
+      "height": 58,
+      "anchor": "feet-center"
+    },
+    "abilities": [
+      "walk",
+      "jump",
+      "double-jump",
+      "ladder",
+      "rope",
+      "drop-through"
+    ],
+    "movement": {
+      "gravity": 2000,
+      "maxFallSpeed": 670,
+      "walkSpeed": 130,
+      "groundAccel": 2400,
+      "groundDecel": 3000,
+      "airAccel": 700,
+      "airMaxSpeed": 130,
+      "jumpSpeed": 560,
+      "coyoteMs": 60,
+      "jumpBufferMs": 80,
+      "doubleJumpVy": 480,
+      "doubleJumpVx": 330,
+      "climbSpeed": 110,
+      "ropeGrabRangeX": 18,
+      "ropeJumpVx": 160,
+      "ropeJumpVy": 360,
+      "ropeRegrabMs": 250,
+      "dropThroughMs": 220,
+      "oneWayEdge": 8,
+      "fixedHz": 60,
+      "speedPoints": 100,
+      "jumpPoints": 100
+    },
+    "failureRules": {
+      "hazards": "no environmental damage; combat not simulated",
+      "fall": "land on continuous terraces",
+      "reset": "R to real spawn; velocities cleared"
+    },
+    "visualAsset": {
+      "path": "work/preview/player-reference-idle.png",
+      "width": 96,
+      "height": 96,
+      "anchor": "feet-center"
+    }
+  },
+  "assets": [
+    {
+      "id": "background",
+      "role": "background",
+      "path": "background.png",
+      "pixelWidth": 3520,
+      "pixelHeight": 1024,
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "playable",
+      "role": "playable",
+      "path": "playable.png",
+      "pixelWidth": 3520,
+      "pixelHeight": 1024,
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "s_terrace1",
+      "polyline": [
+        [
+          0,
+          960
+        ],
+        [
+          960,
+          960
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        13,
+        947
+      ],
+      "walkRegion": [
+        [
+          13,
+          902
+        ],
+        [
+          947,
+          902
+        ],
+        [
+          947,
+          960
+        ],
+        [
+          13,
+          960
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 960,
+        "tolerance": 2,
+        "surfaceKind": "actual mossy rock or wood bearing top, excluding knots and foliage"
+      },
+      "status": "verified",
+      "evidence": [
+        "visual-bearing-audit",
+        "browser-input-replay"
+      ]
+    },
+    {
+      "id": "s_terrace2",
+      "polyline": [
+        [
+          960,
+          896
+        ],
+        [
+          1920,
+          896
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        973,
+        1907
+      ],
+      "walkRegion": [
+        [
+          973,
+          838
+        ],
+        [
+          1907,
+          838
+        ],
+        [
+          1907,
+          896
+        ],
+        [
+          973,
+          896
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 896,
+        "tolerance": 2,
+        "surfaceKind": "actual mossy rock or wood bearing top, excluding knots and foliage"
+      },
+      "status": "verified",
+      "evidence": [
+        "visual-bearing-audit",
+        "browser-input-replay"
+      ]
+    },
+    {
+      "id": "s_terrace3",
+      "polyline": [
+        [
+          1920,
+          832
+        ],
+        [
+          2752,
+          832
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        1933,
+        2739
+      ],
+      "walkRegion": [
+        [
+          1933,
+          774
+        ],
+        [
+          2739,
+          774
+        ],
+        [
+          2739,
+          832
+        ],
+        [
+          1933,
+          832
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 832,
+        "tolerance": 2,
+        "surfaceKind": "actual mossy rock or wood bearing top, excluding knots and foliage"
+      },
+      "status": "verified",
+      "evidence": [
+        "visual-bearing-audit",
+        "browser-input-replay"
+      ]
+    },
+    {
+      "id": "s_terrace4",
+      "polyline": [
+        [
+          2752,
+          768
+        ],
+        [
+          3520,
+          768
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        2765,
+        3507
+      ],
+      "walkRegion": [
+        [
+          2765,
+          710
+        ],
+        [
+          3507,
+          710
+        ],
+        [
+          3507,
+          768
+        ],
+        [
+          2765,
+          768
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 768,
+        "tolerance": 2,
+        "surfaceKind": "actual mossy rock or wood bearing top, excluding knots and foliage"
+      },
+      "status": "verified",
+      "evidence": [
+        "visual-bearing-audit",
+        "browser-input-replay"
+      ]
+    },
+    {
+      "id": "s_p8",
+      "polyline": [
+        [
+          256,
+          832
+        ],
+        [
+          736,
+          832
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        269,
+        723
+      ],
+      "walkRegion": [
+        [
+          269,
+          774
+        ],
+        [
+          723,
+          774
+        ],
+        [
+          723,
+          832
+        ],
+        [
+          269,
+          832
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 832,
+        "tolerance": 2,
+        "surfaceKind": "actual mossy rock or wood bearing top, excluding knots and foliage"
+      },
+      "status": "verified",
+      "evidence": [
+        "visual-bearing-audit",
+        "browser-input-replay"
+      ]
+    },
+    {
+      "id": "s_p14",
+      "polyline": [
+        [
+          448,
+          704
+        ],
+        [
+          928,
+          704
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        461,
+        915
+      ],
+      "walkRegion": [
+        [
+          461,
+          646
+        ],
+        [
+          915,
+          646
+        ],
+        [
+          915,
+          704
+        ],
+        [
+          461,
+          704
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 704,
+        "tolerance": 2,
+        "surfaceKind": "actual mossy rock or wood bearing top, excluding knots and foliage"
+      },
+      "status": "verified",
+      "evidence": [
+        "visual-bearing-audit",
+        "browser-input-replay"
+      ]
+    },
+    {
+      "id": "s_p36",
+      "polyline": [
+        [
+          1152,
+          768
+        ],
+        [
+          1632,
+          768
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        1165,
+        1619
+      ],
+      "walkRegion": [
+        [
+          1165,
+          710
+        ],
+        [
+          1619,
+          710
+        ],
+        [
+          1619,
+          768
+        ],
+        [
+          1165,
+          768
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 768,
+        "tolerance": 2,
+        "surfaceKind": "actual mossy rock or wood bearing top, excluding knots and foliage"
+      },
+      "status": "verified",
+      "evidence": [
+        "visual-bearing-audit",
+        "browser-input-replay"
+      ]
+    },
+    {
+      "id": "s_p40",
+      "polyline": [
+        [
+          1280,
+          640
+        ],
+        [
+          1824,
+          640
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        1293,
+        1811
+      ],
+      "walkRegion": [
+        [
+          1293,
+          582
+        ],
+        [
+          1811,
+          582
+        ],
+        [
+          1811,
+          640
+        ],
+        [
+          1293,
+          640
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 640,
+        "tolerance": 2,
+        "surfaceKind": "actual mossy rock or wood bearing top, excluding knots and foliage"
+      },
+      "status": "verified",
+      "evidence": [
+        "visual-bearing-audit",
+        "browser-input-replay"
+      ]
+    },
+    {
+      "id": "s_p64",
+      "polyline": [
+        [
+          2048,
+          704
+        ],
+        [
+          2528,
+          704
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        2061,
+        2515
+      ],
+      "walkRegion": [
+        [
+          2061,
+          646
+        ],
+        [
+          2515,
+          646
+        ],
+        [
+          2515,
+          704
+        ],
+        [
+          2061,
+          704
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 704,
+        "tolerance": 2,
+        "surfaceKind": "actual mossy rock or wood bearing top, excluding knots and foliage"
+      },
+      "status": "verified",
+      "evidence": [
+        "visual-bearing-audit",
+        "browser-input-replay"
+      ]
+    },
+    {
+      "id": "s_p68",
+      "polyline": [
+        [
+          2176,
+          576
+        ],
+        [
+          2656,
+          576
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        2189,
+        2643
+      ],
+      "walkRegion": [
+        [
+          2189,
+          518
+        ],
+        [
+          2643,
+          518
+        ],
+        [
+          2643,
+          576
+        ],
+        [
+          2189,
+          576
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 576,
+        "tolerance": 2,
+        "surfaceKind": "actual mossy rock or wood bearing top, excluding knots and foliage"
+      },
+      "status": "verified",
+      "evidence": [
+        "visual-bearing-audit",
+        "browser-input-replay"
+      ]
+    },
+    {
+      "id": "s_p90",
+      "polyline": [
+        [
+          2880,
+          640
+        ],
+        [
+          3360,
+          640
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        2893,
+        3347
+      ],
+      "walkRegion": [
+        [
+          2893,
+          582
+        ],
+        [
+          3347,
+          582
+        ],
+        [
+          3347,
+          640
+        ],
+        [
+          2893,
+          640
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 640,
+        "tolerance": 2,
+        "surfaceKind": "actual mossy rock or wood bearing top, excluding knots and foliage"
+      },
+      "status": "verified",
+      "evidence": [
+        "visual-bearing-audit",
+        "browser-input-replay"
+      ]
+    },
+    {
+      "id": "s_p94",
+      "polyline": [
+        [
+          3008,
+          512
+        ],
+        [
+          3296,
+          512
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        3021,
+        3283
+      ],
+      "walkRegion": [
+        [
+          3021,
+          454
+        ],
+        [
+          3283,
+          454
+        ],
+        [
+          3283,
+          512
+        ],
+        [
+          3021,
+          512
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 512,
+        "tolerance": 2,
+        "surfaceKind": "actual mossy rock or wood bearing top, excluding knots and foliage"
+      },
+      "status": "verified",
+      "evidence": [
+        "visual-bearing-audit",
+        "browser-input-replay"
+      ]
+    },
+    {
+      "id": "s_lip2",
+      "polyline": [
+        [
+          928,
+          896
+        ],
+        [
+          976,
+          896
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        941,
+        963
+      ],
+      "walkRegion": [
+        [
+          941,
+          838
+        ],
+        [
+          963,
+          838
+        ],
+        [
+          963,
+          896
+        ],
+        [
+          941,
+          896
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 896,
+        "tolerance": 2,
+        "surfaceKind": "actual mossy rock or wood bearing top, excluding knots and foliage"
+      },
+      "status": "verified",
+      "evidence": [
+        "visual-bearing-audit",
+        "browser-input-replay"
+      ]
+    },
+    {
+      "id": "s_lip3",
+      "polyline": [
+        [
+          1888,
+          832
+        ],
+        [
+          1936,
+          832
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        1901,
+        1923
+      ],
+      "walkRegion": [
+        [
+          1901,
+          774
+        ],
+        [
+          1923,
+          774
+        ],
+        [
+          1923,
+          832
+        ],
+        [
+          1901,
+          832
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 832,
+        "tolerance": 2,
+        "surfaceKind": "actual mossy rock or wood bearing top, excluding knots and foliage"
+      },
+      "status": "verified",
+      "evidence": [
+        "visual-bearing-audit",
+        "browser-input-replay"
+      ]
+    },
+    {
+      "id": "s_lip4",
+      "polyline": [
+        [
+          2720,
+          768
+        ],
+        [
+          2768,
+          768
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        2733,
+        2755
+      ],
+      "walkRegion": [
+        [
+          2733,
+          710
+        ],
+        [
+          2755,
+          710
+        ],
+        [
+          2755,
+          768
+        ],
+        [
+          2733,
+          768
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 768,
+        "tolerance": 2,
+        "surfaceKind": "actual mossy rock or wood bearing top, excluding knots and foliage"
+      },
+      "status": "verified",
+      "evidence": [
+        "visual-bearing-audit",
+        "browser-input-replay"
+      ]
+    }
+  ],
+  "climbs": [
+    {
+      "id": "c_rope_14",
+      "kind": "rope",
+      "sourceObject": "rope_14",
+      "corridor": [
+        [
+          446,
+          832
+        ],
+        [
+          482,
+          832
+        ],
+        [
+          482,
+          960
+        ],
+        [
+          446,
+          960
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            464,
+            960
+          ],
+          "surface": "s_terrace1"
+        },
+        "end": {
+          "position": [
+            464,
+            832
+          ],
+          "surface": "s_p8"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "extend source rope 32px to real lower surface",
+      "evidence": [
+        "all-runtime-climbs",
+        "tier-return"
+      ]
+    },
+    {
+      "id": "c_rope_20",
+      "kind": "rope",
+      "sourceObject": "rope_20",
+      "corridor": [
+        [
+          638,
+          704
+        ],
+        [
+          674,
+          704
+        ],
+        [
+          674,
+          832
+        ],
+        [
+          638,
+          832
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            656,
+            832
+          ],
+          "surface": "s_p8"
+        },
+        "end": {
+          "position": [
+            656,
+            704
+          ],
+          "surface": "s_p14"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "extend source rope 32px to real lower surface",
+      "evidence": [
+        "all-runtime-climbs",
+        "tier-return"
+      ]
+    },
+    {
+      "id": "c_rope_42",
+      "kind": "rope",
+      "sourceObject": "rope_42",
+      "corridor": [
+        [
+          1342,
+          768
+        ],
+        [
+          1378,
+          768
+        ],
+        [
+          1378,
+          896
+        ],
+        [
+          1342,
+          896
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1360,
+            896
+          ],
+          "surface": "s_terrace2"
+        },
+        "end": {
+          "position": [
+            1360,
+            768
+          ],
+          "surface": "s_p36"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "extend source rope 32px to real lower surface",
+      "evidence": [
+        "all-runtime-climbs",
+        "tier-return"
+      ]
+    },
+    {
+      "id": "c_rope_48",
+      "kind": "rope",
+      "sourceObject": "rope_48",
+      "corridor": [
+        [
+          1534,
+          640
+        ],
+        [
+          1570,
+          640
+        ],
+        [
+          1570,
+          768
+        ],
+        [
+          1534,
+          768
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1552,
+            768
+          ],
+          "surface": "s_p36"
+        },
+        "end": {
+          "position": [
+            1552,
+            640
+          ],
+          "surface": "s_p40"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "extend source rope 32px to real lower surface",
+      "evidence": [
+        "all-runtime-climbs",
+        "tier-return"
+      ]
+    },
+    {
+      "id": "c_rope_70",
+      "kind": "rope",
+      "sourceObject": "rope_70",
+      "corridor": [
+        [
+          2238,
+          704
+        ],
+        [
+          2274,
+          704
+        ],
+        [
+          2274,
+          832
+        ],
+        [
+          2238,
+          832
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            2256,
+            832
+          ],
+          "surface": "s_terrace3"
+        },
+        "end": {
+          "position": [
+            2256,
+            704
+          ],
+          "surface": "s_p64"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "extend source rope 32px to real lower surface",
+      "evidence": [
+        "all-runtime-climbs",
+        "tier-return"
+      ]
+    },
+    {
+      "id": "c_rope_76",
+      "kind": "rope",
+      "sourceObject": "rope_76",
+      "corridor": [
+        [
+          2430,
+          576
+        ],
+        [
+          2466,
+          576
+        ],
+        [
+          2466,
+          704
+        ],
+        [
+          2430,
+          704
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            2448,
+            704
+          ],
+          "surface": "s_p64"
+        },
+        "end": {
+          "position": [
+            2448,
+            576
+          ],
+          "surface": "s_p68"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "extend source rope 32px to real lower surface",
+      "evidence": [
+        "all-runtime-climbs",
+        "tier-return"
+      ]
+    },
+    {
+      "id": "c_rope_96",
+      "kind": "rope",
+      "sourceObject": "rope_96",
+      "corridor": [
+        [
+          3070,
+          640
+        ],
+        [
+          3106,
+          640
+        ],
+        [
+          3106,
+          768
+        ],
+        [
+          3070,
+          768
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            3088,
+            768
+          ],
+          "surface": "s_terrace4"
+        },
+        "end": {
+          "position": [
+            3088,
+            640
+          ],
+          "surface": "s_p90"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "extend source rope 32px to real lower surface",
+      "evidence": [
+        "all-runtime-climbs",
+        "tier-return"
+      ]
+    },
+    {
+      "id": "c_rope_98",
+      "kind": "rope",
+      "sourceObject": "rope_98",
+      "corridor": [
+        [
+          3134,
+          512
+        ],
+        [
+          3170,
+          512
+        ],
+        [
+          3170,
+          640
+        ],
+        [
+          3134,
+          640
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            3152,
+            640
+          ],
+          "surface": "s_p90"
+        },
+        "end": {
+          "position": [
+            3152,
+            512
+          ],
+          "surface": "s_p94"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "extend source rope 32px to real lower surface",
+      "evidence": [
+        "all-runtime-climbs",
+        "tier-return"
+      ]
+    },
+    {
+      "id": "c_step2",
+      "kind": "ladder",
+      "sourceObject": null,
+      "corridor": [
+        [
+          926,
+          896
+        ],
+        [
+          962,
+          896
+        ],
+        [
+          962,
+          960
+        ],
+        [
+          926,
+          960
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            944,
+            960
+          ],
+          "surface": "s_terrace1"
+        },
+        "end": {
+          "position": [
+            944,
+            896
+          ],
+          "surface": "s_lip2"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "ladder",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "visible short ladder and 48px wood landing lip; no hidden support",
+      "evidence": [
+        "all-runtime-climbs",
+        "tier-return"
+      ]
+    },
+    {
+      "id": "c_step3",
+      "kind": "ladder",
+      "sourceObject": null,
+      "corridor": [
+        [
+          1886,
+          832
+        ],
+        [
+          1922,
+          832
+        ],
+        [
+          1922,
+          896
+        ],
+        [
+          1886,
+          896
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1904,
+            896
+          ],
+          "surface": "s_terrace2"
+        },
+        "end": {
+          "position": [
+            1904,
+            832
+          ],
+          "surface": "s_lip3"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "ladder",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "visible short ladder and 48px wood landing lip; no hidden support",
+      "evidence": [
+        "all-runtime-climbs",
+        "tier-return"
+      ]
+    },
+    {
+      "id": "c_step4",
+      "kind": "ladder",
+      "sourceObject": null,
+      "corridor": [
+        [
+          2718,
+          768
+        ],
+        [
+          2754,
+          768
+        ],
+        [
+          2754,
+          832
+        ],
+        [
+          2718,
+          832
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            2736,
+            832
+          ],
+          "surface": "s_terrace3"
+        },
+        "end": {
+          "position": [
+            2736,
+            768
+          ],
+          "surface": "s_lip4"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "ladder",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "visible short ladder and 48px wood landing lip; no hidden support",
+      "evidence": [
+        "all-runtime-climbs",
+        "tier-return"
+      ]
+    }
+  ],
+  "stairs": [],
+  "solids": [
+    {
+      "id": "solid_terrace1",
+      "polygon": [
+        [
+          0,
+          960
+        ],
+        [
+          960,
+          960
+        ],
+        [
+          960,
+          1024
+        ],
+        [
+          0,
+          1024
+        ]
+      ],
+      "surface": "s_terrace1",
+      "type": "continuous-rock-foundation",
+      "openings": [],
+      "status": "verified",
+      "evidence": [
+        "browser-input-replay"
+      ]
+    },
+    {
+      "id": "solid_terrace2",
+      "polygon": [
+        [
+          960,
+          896
+        ],
+        [
+          1920,
+          896
+        ],
+        [
+          1920,
+          1024
+        ],
+        [
+          960,
+          1024
+        ]
+      ],
+      "surface": "s_terrace2",
+      "type": "continuous-rock-foundation",
+      "openings": [],
+      "status": "verified",
+      "evidence": [
+        "browser-input-replay"
+      ]
+    },
+    {
+      "id": "solid_terrace3",
+      "polygon": [
+        [
+          1920,
+          832
+        ],
+        [
+          2752,
+          832
+        ],
+        [
+          2752,
+          1024
+        ],
+        [
+          1920,
+          1024
+        ]
+      ],
+      "surface": "s_terrace3",
+      "type": "continuous-rock-foundation",
+      "openings": [],
+      "status": "verified",
+      "evidence": [
+        "browser-input-replay"
+      ]
+    },
+    {
+      "id": "solid_terrace4",
+      "polygon": [
+        [
+          2752,
+          768
+        ],
+        [
+          3520,
+          768
+        ],
+        [
+          3520,
+          1024
+        ],
+        [
+          2752,
+          1024
+        ]
+      ],
+      "surface": "s_terrace4",
+      "type": "continuous-rock-foundation",
+      "openings": [],
+      "status": "verified",
+      "evidence": [
+        "browser-input-replay"
+      ]
+    }
+  ],
+  "hazards": [],
+  "points": [
+    {
+      "id": "start_spawn",
+      "type": "spawn",
+      "position": [
+        128,
+        960
+      ],
+      "surface": "s_terrace1",
+      "width": 0,
+      "height": 0,
+      "properties": {},
+      "status": "verified",
+      "active": true,
+      "notes": "",
+      "evidence": [
+        "browser-input-replay"
+      ]
+    },
+    {
+      "id": "portal_to_outer_2",
+      "type": "portal",
+      "position": [
+        80,
+        960
+      ],
+      "surface": "s_terrace1",
+      "width": 0,
+      "height": 0,
+      "properties": {
+        "target": "wanyao_outer_2",
+        "targetPortal": "portal_to_deep_1"
+      },
+      "status": "verified",
+      "active": true,
+      "notes": "",
+      "evidence": [
+        "browser-input-replay"
+      ]
+    },
+    {
+      "id": "portal_to_deep_2",
+      "type": "portal",
+      "position": [
+        3440,
+        768
+      ],
+      "surface": "s_terrace4",
+      "width": 0,
+      "height": 0,
+      "properties": {
+        "target": "wanyao_deep_2",
+        "targetPortal": "portal_to_deep_1"
+      },
+      "status": "verified",
+      "active": true,
+      "notes": "",
+      "evidence": [
+        "browser-input-replay"
+      ]
+    },
+    {
+      "id": "spawn_demonized_ape_12",
+      "type": "monsterSpawn",
+      "position": [
+        192,
+        960
+      ],
+      "surface": "s_terrace1",
+      "width": 736,
+      "height": 0,
+      "properties": {
+        "monster": "demonized_ape",
+        "count": 3
+      },
+      "status": "verified",
+      "active": true,
+      "notes": "",
+      "visualAsset": {
+        "path": "work/preview/mon_demonized_ape-idle.png",
+        "width": 96,
+        "height": 96,
+        "name": "魔化猿",
+        "kind": "monster",
+        "instances": 3,
+        "instancePlacement": "evenly spaced within original source spawn width; feet fixed at authoritative surface"
+      },
+      "evidence": [
+        "browser-input-replay"
+      ]
+    },
+    {
+      "id": "spawn_demonized_ape_13",
+      "type": "monsterSpawn",
+      "position": [
+        960,
+        896
+      ],
+      "surface": "s_terrace2",
+      "width": 928,
+      "height": 0,
+      "properties": {
+        "monster": "demonized_ape",
+        "count": 3
+      },
+      "status": "verified",
+      "active": true,
+      "notes": "",
+      "visualAsset": {
+        "path": "work/preview/mon_demonized_ape-idle.png",
+        "width": 96,
+        "height": 96,
+        "name": "魔化猿",
+        "kind": "monster",
+        "instances": 3,
+        "instancePlacement": "evenly spaced within original source spawn width; feet fixed at authoritative surface"
+      },
+      "evidence": [
+        "browser-input-replay"
+      ]
+    },
+    {
+      "id": "spawn_demonized_ape_14",
+      "type": "monsterSpawn",
+      "position": [
+        1920,
+        832
+      ],
+      "surface": "s_terrace3",
+      "width": 800,
+      "height": 0,
+      "properties": {
+        "monster": "demonized_ape",
+        "count": 3
+      },
+      "status": "verified",
+      "active": true,
+      "notes": "",
+      "visualAsset": {
+        "path": "work/preview/mon_demonized_ape-idle.png",
+        "width": 96,
+        "height": 96,
+        "name": "魔化猿",
+        "kind": "monster",
+        "instances": 3,
+        "instancePlacement": "evenly spaced within original source spawn width; feet fixed at authoritative surface"
+      },
+      "evidence": [
+        "browser-input-replay"
+      ]
+    },
+    {
+      "id": "spawn_tree_demon_sapling_15",
+      "type": "monsterSpawn",
+      "position": [
+        256,
+        832
+      ],
+      "surface": "s_p8",
+      "width": 480,
+      "height": 0,
+      "properties": {
+        "monster": "tree_demon_sapling",
+        "count": 2
+      },
+      "status": "verified",
+      "active": true,
+      "notes": "",
+      "visualAsset": {
+        "path": "work/preview/mon_tree_demon_sapling-idle.png",
+        "width": 72,
+        "height": 88,
+        "name": "树妖分身",
+        "kind": "monster",
+        "instances": 2,
+        "instancePlacement": "evenly spaced within original source spawn width; feet fixed at authoritative surface"
+      },
+      "evidence": [
+        "browser-input-replay"
+      ]
+    },
+    {
+      "id": "spawn_tree_demon_sapling_16",
+      "type": "monsterSpawn",
+      "position": [
+        1152,
+        768
+      ],
+      "surface": "s_p36",
+      "width": 480,
+      "height": 0,
+      "properties": {
+        "monster": "tree_demon_sapling",
+        "count": 2
+      },
+      "status": "verified",
+      "active": true,
+      "notes": "",
+      "visualAsset": {
+        "path": "work/preview/mon_tree_demon_sapling-idle.png",
+        "width": 72,
+        "height": 88,
+        "name": "树妖分身",
+        "kind": "monster",
+        "instances": 2,
+        "instancePlacement": "evenly spaced within original source spawn width; feet fixed at authoritative surface"
+      },
+      "evidence": [
+        "browser-input-replay"
+      ]
+    },
+    {
+      "id": "spawn_tree_demon_sapling_17",
+      "type": "monsterSpawn",
+      "position": [
+        1280,
+        640
+      ],
+      "surface": "s_p40",
+      "width": 544,
+      "height": 0,
+      "properties": {
+        "monster": "tree_demon_sapling",
+        "count": 2
+      },
+      "status": "verified",
+      "active": true,
+      "notes": "",
+      "visualAsset": {
+        "path": "work/preview/mon_tree_demon_sapling-idle.png",
+        "width": 72,
+        "height": 88,
+        "name": "树妖分身",
+        "kind": "monster",
+        "instances": 2,
+        "instancePlacement": "evenly spaced within original source spawn width; feet fixed at authoritative surface"
+      },
+      "evidence": [
+        "browser-input-replay"
+      ]
+    },
+    {
+      "id": "spawn_tree_demon_sapling_18",
+      "type": "monsterSpawn",
+      "position": [
+        2048,
+        704
+      ],
+      "surface": "s_p64",
+      "width": 480,
+      "height": 0,
+      "properties": {
+        "monster": "tree_demon_sapling",
+        "count": 2
+      },
+      "status": "verified",
+      "active": true,
+      "notes": "",
+      "visualAsset": {
+        "path": "work/preview/mon_tree_demon_sapling-idle.png",
+        "width": 72,
+        "height": 88,
+        "name": "树妖分身",
+        "kind": "monster",
+        "instances": 2,
+        "instancePlacement": "evenly spaced within original source spawn width; feet fixed at authoritative surface"
+      },
+      "evidence": [
+        "browser-input-replay"
+      ]
+    },
+    {
+      "id": "spawn_tree_demon_sapling_19",
+      "type": "monsterSpawn",
+      "position": [
+        2752,
+        768
+      ],
+      "surface": "s_terrace4",
+      "width": 608,
+      "height": 0,
+      "properties": {
+        "monster": "tree_demon_sapling",
+        "count": 2
+      },
+      "status": "verified",
+      "active": true,
+      "notes": "",
+      "visualAsset": {
+        "path": "work/preview/mon_tree_demon_sapling-idle.png",
+        "width": 72,
+        "height": 88,
+        "name": "树妖分身",
+        "kind": "monster",
+        "instances": 2,
+        "instancePlacement": "evenly spaced within original source spawn width; feet fixed at authoritative surface"
+      },
+      "evidence": [
+        "browser-input-replay"
+      ]
+    },
+    {
+      "id": "gather_spirit_copper_20",
+      "type": "gather",
+      "position": [
+        784,
+        704
+      ],
+      "surface": "s_p14",
+      "width": 0,
+      "height": 0,
+      "properties": {
+        "item": "spirit_copper",
+        "respawnMs": 120000
+      },
+      "status": "verified",
+      "active": true,
+      "notes": "",
+      "visualAsset": {
+        "path": "work/preview/prop_gather_spirit_copper-idle.png",
+        "width": 48,
+        "height": 48,
+        "name": "灵铜",
+        "kind": "gather",
+        "instances": 1,
+        "instancePlacement": "evenly spaced within original source spawn width; feet fixed at authoritative surface"
+      },
+      "evidence": [
+        "browser-input-replay"
+      ]
+    },
+    {
+      "id": "gather_spirit_copper_21",
+      "type": "gather",
+      "position": [
+        2576,
+        576
+      ],
+      "surface": "s_p68",
+      "width": 0,
+      "height": 0,
+      "properties": {
+        "item": "spirit_copper",
+        "respawnMs": 120000
+      },
+      "status": "verified",
+      "active": true,
+      "notes": "",
+      "visualAsset": {
+        "path": "work/preview/prop_gather_spirit_copper-idle.png",
+        "width": 48,
+        "height": 48,
+        "name": "灵铜",
+        "kind": "gather",
+        "instances": 1,
+        "instancePlacement": "evenly spaced within original source spawn width; feet fixed at authoritative surface"
+      },
+      "evidence": [
+        "browser-input-replay"
+      ]
+    },
+    {
+      "id": "gather_nine_leaf_ganoderma_22",
+      "type": "gather",
+      "position": [
+        3152,
+        512
+      ],
+      "surface": "s_p94",
+      "width": 0,
+      "height": 0,
+      "properties": {
+        "item": "nine_leaf_ganoderma",
+        "respawnMs": 600000
+      },
+      "status": "verified",
+      "active": true,
+      "notes": "",
+      "visualAsset": {
+        "path": "work/preview/prop_gather_nine_leaf_ganoderma-idle.png",
+        "width": 48,
+        "height": 48,
+        "name": "九叶灵芝",
+        "kind": "gather",
+        "instances": 1,
+        "instancePlacement": "evenly spaced within original source spawn width; feet fixed at authoritative surface"
+      },
+      "evidence": [
+        "browser-input-replay"
+      ]
+    },
+    {
+      "id": "sense_chest_01",
+      "type": "chest",
+      "position": [
+        528,
+        704
+      ],
+      "surface": "s_p14",
+      "width": 0,
+      "height": 0,
+      "properties": {
+        "loot": "qi_pill",
+        "count": 1
+      },
+      "status": "verified",
+      "active": true,
+      "notes": "",
+      "evidence": [
+        "browser-input-replay"
+      ]
+    },
+    {
+      "id": "sense_hidden_chest_01",
+      "type": "hidden",
+      "position": [
+        528,
+        704
+      ],
+      "surface": "s_p14",
+      "width": 0,
+      "height": 0,
+      "properties": {
+        "enabled": false,
+        "reqSpirit": 0,
+        "reveal": "chest",
+        "targetObject": "sense_chest_01"
+      },
+      "status": "planned",
+      "active": false,
+      "notes": "disabled source hidden/fly metadata; no collision or navigation added"
+    },
+    {
+      "id": "sense_hidden_platform_01",
+      "type": "hidden",
+      "position": [
+        3008,
+        448
+      ],
+      "surface": null,
+      "width": 96,
+      "height": 32,
+      "properties": {
+        "enabled": false,
+        "reqSpirit": 10,
+        "reveal": "platform"
+      },
+      "status": "unverified",
+      "active": false,
+      "notes": "disabled source hidden/fly metadata; no collision or navigation added"
+    },
+    {
+      "id": "flyZone_1",
+      "type": "flyZone",
+      "position": [
+        640,
+        448
+      ],
+      "surface": null,
+      "width": 2240,
+      "height": 288,
+      "properties": {},
+      "status": "unverified",
+      "active": false,
+      "notes": "disabled source hidden/fly metadata; no collision or navigation added"
+    },
+    {
+      "id": "goal_east",
+      "type": "goal",
+      "position": [
+        3440,
+        768
+      ],
+      "surface": "s_terrace4",
+      "status": "verified",
+      "evidence": [
+        "browser-input-replay"
+      ]
+    }
+  ],
+  "transitions": [
+    {
+      "id": "t_rope_14_up",
+      "from": "s_terrace1",
+      "to": "s_p8",
+      "action": "climb-up",
+      "climb": "c_rope_14",
+      "conditions": [
+        "natural approach",
+        "full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "directed-transition-events"
+      ]
+    },
+    {
+      "id": "t_rope_14_down",
+      "from": "s_p8",
+      "to": "s_terrace1",
+      "action": "climb-down",
+      "climb": "c_rope_14",
+      "conditions": [
+        "natural approach",
+        "full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "directed-transition-events"
+      ]
+    },
+    {
+      "id": "t_rope_20_up",
+      "from": "s_p8",
+      "to": "s_p14",
+      "action": "climb-up",
+      "climb": "c_rope_20",
+      "conditions": [
+        "natural approach",
+        "full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "directed-transition-events"
+      ]
+    },
+    {
+      "id": "t_rope_20_down",
+      "from": "s_p14",
+      "to": "s_p8",
+      "action": "climb-down",
+      "climb": "c_rope_20",
+      "conditions": [
+        "natural approach",
+        "full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "directed-transition-events"
+      ]
+    },
+    {
+      "id": "t_rope_42_up",
+      "from": "s_terrace2",
+      "to": "s_p36",
+      "action": "climb-up",
+      "climb": "c_rope_42",
+      "conditions": [
+        "natural approach",
+        "full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "directed-transition-events"
+      ]
+    },
+    {
+      "id": "t_rope_42_down",
+      "from": "s_p36",
+      "to": "s_terrace2",
+      "action": "climb-down",
+      "climb": "c_rope_42",
+      "conditions": [
+        "natural approach",
+        "full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "directed-transition-events"
+      ]
+    },
+    {
+      "id": "t_rope_48_up",
+      "from": "s_p36",
+      "to": "s_p40",
+      "action": "climb-up",
+      "climb": "c_rope_48",
+      "conditions": [
+        "natural approach",
+        "full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "directed-transition-events"
+      ]
+    },
+    {
+      "id": "t_rope_48_down",
+      "from": "s_p40",
+      "to": "s_p36",
+      "action": "climb-down",
+      "climb": "c_rope_48",
+      "conditions": [
+        "natural approach",
+        "full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "directed-transition-events"
+      ]
+    },
+    {
+      "id": "t_rope_70_up",
+      "from": "s_terrace3",
+      "to": "s_p64",
+      "action": "climb-up",
+      "climb": "c_rope_70",
+      "conditions": [
+        "natural approach",
+        "full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "directed-transition-events"
+      ]
+    },
+    {
+      "id": "t_rope_70_down",
+      "from": "s_p64",
+      "to": "s_terrace3",
+      "action": "climb-down",
+      "climb": "c_rope_70",
+      "conditions": [
+        "natural approach",
+        "full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "directed-transition-events"
+      ]
+    },
+    {
+      "id": "t_rope_76_up",
+      "from": "s_p64",
+      "to": "s_p68",
+      "action": "climb-up",
+      "climb": "c_rope_76",
+      "conditions": [
+        "natural approach",
+        "full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "directed-transition-events"
+      ]
+    },
+    {
+      "id": "t_rope_76_down",
+      "from": "s_p68",
+      "to": "s_p64",
+      "action": "climb-down",
+      "climb": "c_rope_76",
+      "conditions": [
+        "natural approach",
+        "full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "directed-transition-events"
+      ]
+    },
+    {
+      "id": "t_rope_96_up",
+      "from": "s_terrace4",
+      "to": "s_p90",
+      "action": "climb-up",
+      "climb": "c_rope_96",
+      "conditions": [
+        "natural approach",
+        "full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "directed-transition-events"
+      ]
+    },
+    {
+      "id": "t_rope_96_down",
+      "from": "s_p90",
+      "to": "s_terrace4",
+      "action": "climb-down",
+      "climb": "c_rope_96",
+      "conditions": [
+        "natural approach",
+        "full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "directed-transition-events"
+      ]
+    },
+    {
+      "id": "t_rope_98_up",
+      "from": "s_p90",
+      "to": "s_p94",
+      "action": "climb-up",
+      "climb": "c_rope_98",
+      "conditions": [
+        "natural approach",
+        "full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "directed-transition-events"
+      ]
+    },
+    {
+      "id": "t_rope_98_down",
+      "from": "s_p94",
+      "to": "s_p90",
+      "action": "climb-down",
+      "climb": "c_rope_98",
+      "conditions": [
+        "natural approach",
+        "full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "directed-transition-events"
+      ]
+    },
+    {
+      "id": "t_step2_up",
+      "from": "s_terrace1",
+      "to": "s_lip2",
+      "action": "climb-up",
+      "climb": "c_step2",
+      "conditions": [
+        "natural approach",
+        "full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "directed-transition-events"
+      ]
+    },
+    {
+      "id": "t_step2_down",
+      "from": "s_lip2",
+      "to": "s_terrace1",
+      "action": "climb-down",
+      "climb": "c_step2",
+      "conditions": [
+        "natural approach",
+        "full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "directed-transition-events"
+      ]
+    },
+    {
+      "id": "t_step3_up",
+      "from": "s_terrace2",
+      "to": "s_lip3",
+      "action": "climb-up",
+      "climb": "c_step3",
+      "conditions": [
+        "natural approach",
+        "full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "directed-transition-events"
+      ]
+    },
+    {
+      "id": "t_step3_down",
+      "from": "s_lip3",
+      "to": "s_terrace2",
+      "action": "climb-down",
+      "climb": "c_step3",
+      "conditions": [
+        "natural approach",
+        "full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "directed-transition-events"
+      ]
+    },
+    {
+      "id": "t_step4_up",
+      "from": "s_terrace3",
+      "to": "s_lip4",
+      "action": "climb-up",
+      "climb": "c_step4",
+      "conditions": [
+        "natural approach",
+        "full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "directed-transition-events"
+      ]
+    },
+    {
+      "id": "t_step4_down",
+      "from": "s_lip4",
+      "to": "s_terrace3",
+      "action": "climb-down",
+      "climb": "c_step4",
+      "conditions": [
+        "natural approach",
+        "full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        "directed-transition-events"
+      ]
+    },
+    {
+      "id": "t_step2_east",
+      "from": "s_lip2",
+      "to": "s_terrace2",
+      "action": "walk",
+      "conditions": [
+        "same visible top height"
+      ],
+      "status": "verified",
+      "evidence": [
+        "directed-transition-events"
+      ]
+    },
+    {
+      "id": "t_step2_west",
+      "from": "s_terrace2",
+      "to": "s_lip2",
+      "action": "walk",
+      "conditions": [
+        "same visible top height"
+      ],
+      "status": "verified",
+      "evidence": [
+        "directed-transition-events"
+      ]
+    },
+    {
+      "id": "t_step3_east",
+      "from": "s_lip3",
+      "to": "s_terrace3",
+      "action": "walk",
+      "conditions": [
+        "same visible top height"
+      ],
+      "status": "verified",
+      "evidence": [
+        "directed-transition-events"
+      ]
+    },
+    {
+      "id": "t_step3_west",
+      "from": "s_terrace3",
+      "to": "s_lip3",
+      "action": "walk",
+      "conditions": [
+        "same visible top height"
+      ],
+      "status": "verified",
+      "evidence": [
+        "directed-transition-events"
+      ]
+    },
+    {
+      "id": "t_step4_east",
+      "from": "s_lip4",
+      "to": "s_terrace4",
+      "action": "walk",
+      "conditions": [
+        "same visible top height"
+      ],
+      "status": "verified",
+      "evidence": [
+        "directed-transition-events"
+      ]
+    },
+    {
+      "id": "t_step4_west",
+      "from": "s_terrace4",
+      "to": "s_lip4",
+      "action": "walk",
+      "conditions": [
+        "same visible top height"
+      ],
+      "status": "verified",
+      "evidence": [
+        "directed-transition-events"
+      ]
+    }
+  ],
+  "requiredRoutes": [
+    {
+      "id": "route_main",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "c_step2",
+        "s_terrace2",
+        "c_step3",
+        "s_terrace3",
+        "c_step4",
+        "s_terrace4"
+      ],
+      "status": "verified",
+      "evidence": [
+        "route_main-run"
+      ]
+    },
+    {
+      "id": "route_return",
+      "from": "start_spawn",
+      "to": "portal_to_outer_2",
+      "via": [
+        "goal_east",
+        "c_step4",
+        "c_step3",
+        "c_step2"
+      ],
+      "status": "verified",
+      "evidence": [
+        "route_return-run"
+      ]
+    },
+    {
+      "id": "route_all_climbs",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [],
+      "status": "verified",
+      "evidence": [
+        "route_all_climbs-run"
+      ]
+    },
+    {
+      "id": "route_branch_14",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "c_rope_14"
+      ],
+      "status": "verified",
+      "evidence": [
+        "route_branch_14-run"
+      ]
+    },
+    {
+      "id": "route_branch_42",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "c_rope_42"
+      ],
+      "status": "verified",
+      "evidence": [
+        "route_branch_42-run"
+      ]
+    },
+    {
+      "id": "route_branch_70",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "c_rope_70"
+      ],
+      "status": "verified",
+      "evidence": [
+        "route_branch_70-run"
+      ]
+    },
+    {
+      "id": "route_branch_96",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "c_rope_96"
+      ],
+      "status": "verified",
+      "evidence": [
+        "route_branch_96-run"
+      ]
+    }
+  ],
+  "diagnostics": {
+    "maskPalette": {
+      "walk": [
+        150,
+        245,
+        160,
+        255
+      ],
+      "stand": [
+        0,
+        200,
+        80,
+        255
+      ],
+      "rope": [
+        0,
+        190,
+        230,
+        255
+      ],
+      "ladder": [
+        80,
+        140,
+        255,
+        255
+      ],
+      "point": [
+        255,
+        70,
+        160,
+        255
+      ]
+    },
+    "rasterizationOrder": [
+      "walk",
+      "stand",
+      "rope",
+      "ladder",
+      "point"
+    ],
+    "regionIdIndex": null,
+    "geometryRevision": "deep1-final-001"
+  },
+  "validation": {
+    "status": "verified",
+    "geometryRevision": "deep1-final-001",
+    "actorParameterRevision": "deep1-base-feel-20261027-001",
+    "engineRevision": "gsb-aabb-feel-60hz-deep1-001",
+    "evidence": [
+      {
+        "id": "route_main-run",
+        "path": "work/replays-final/route_main.json",
+        "geometryRevision": "deep1-final-001",
+        "actorParameterRevision": "deep1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-deep1-001",
+        "objectIds": [
+          "route_main"
+        ],
+        "method": "continuous 60Hz input replay from genuine zero-speed spawn, no teleport/reset",
+        "result": "verified"
+      },
+      {
+        "id": "route_return-run",
+        "path": "work/replays-final/route_return.json",
+        "geometryRevision": "deep1-final-001",
+        "actorParameterRevision": "deep1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-deep1-001",
+        "objectIds": [
+          "route_return"
+        ],
+        "method": "continuous 60Hz input replay from genuine zero-speed spawn, no teleport/reset",
+        "result": "verified"
+      },
+      {
+        "id": "route_all_climbs-run",
+        "path": "work/replays-final/route_all_climbs.json",
+        "geometryRevision": "deep1-final-001",
+        "actorParameterRevision": "deep1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-deep1-001",
+        "objectIds": [
+          "route_all_climbs"
+        ],
+        "method": "continuous 60Hz input replay from genuine zero-speed spawn, no teleport/reset",
+        "result": "verified"
+      },
+      {
+        "id": "route_branch_14-run",
+        "path": "work/replays-final/route_branch_14.json",
+        "geometryRevision": "deep1-final-001",
+        "actorParameterRevision": "deep1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-deep1-001",
+        "objectIds": [
+          "route_branch_14"
+        ],
+        "method": "continuous 60Hz input replay from genuine zero-speed spawn, no teleport/reset",
+        "result": "verified"
+      },
+      {
+        "id": "route_branch_42-run",
+        "path": "work/replays-final/route_branch_42.json",
+        "geometryRevision": "deep1-final-001",
+        "actorParameterRevision": "deep1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-deep1-001",
+        "objectIds": [
+          "route_branch_42"
+        ],
+        "method": "continuous 60Hz input replay from genuine zero-speed spawn, no teleport/reset",
+        "result": "verified"
+      },
+      {
+        "id": "route_branch_70-run",
+        "path": "work/replays-final/route_branch_70.json",
+        "geometryRevision": "deep1-final-001",
+        "actorParameterRevision": "deep1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-deep1-001",
+        "objectIds": [
+          "route_branch_70"
+        ],
+        "method": "continuous 60Hz input replay from genuine zero-speed spawn, no teleport/reset",
+        "result": "verified"
+      },
+      {
+        "id": "route_branch_96-run",
+        "path": "work/replays-final/route_branch_96.json",
+        "geometryRevision": "deep1-final-001",
+        "actorParameterRevision": "deep1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-deep1-001",
+        "objectIds": [
+          "route_branch_96"
+        ],
+        "method": "continuous 60Hz input replay from genuine zero-speed spawn, no teleport/reset",
+        "result": "verified"
+      },
+      {
+        "id": "all-runtime-climbs",
+        "path": "work/replays-final/route_all_climbs.json",
+        "geometryRevision": "deep1-final-001",
+        "actorParameterRevision": "deep1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-deep1-001",
+        "objectIds": [
+          "c_rope_14",
+          "c_rope_20",
+          "c_rope_42",
+          "c_rope_48",
+          "c_rope_70",
+          "c_rope_76",
+          "c_rope_96",
+          "c_rope_98",
+          "c_step2",
+          "c_step3",
+          "c_step4"
+        ],
+        "method": "all ropes both directions and all tier ladders ascending; route_return descending",
+        "result": "verified"
+      },
+      {
+        "id": "tier-return",
+        "path": "work/replays-final/route_return.json",
+        "geometryRevision": "deep1-final-001",
+        "actorParameterRevision": "deep1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-deep1-001",
+        "objectIds": [
+          "c_step2",
+          "c_step3",
+          "c_step4"
+        ],
+        "method": "continuous east-then-west traversal, three natural ladder descents",
+        "result": "verified"
+      },
+      {
+        "id": "visual-bearing-audit",
+        "path": "work/final-geometry-measurements.json",
+        "geometryRevision": "deep1-final-001",
+        "actorParameterRevision": "deep1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-deep1-001",
+        "objectIds": [
+          "s_terrace1",
+          "s_terrace2",
+          "s_terrace3",
+          "s_terrace4",
+          "s_p8",
+          "s_p14",
+          "s_p36",
+          "s_p40",
+          "s_p64",
+          "s_p68",
+          "s_p90",
+          "s_p94",
+          "s_lip2",
+          "s_lip3",
+          "s_lip4"
+        ],
+        "method": "15 visible tops and 22 climb foot endpoints; same-data browser resting screenshots",
+        "result": "verified"
+      },
+      {
+        "id": "browser-input-replay",
+        "path": "work/final-browser-check.json",
+        "geometryRevision": "deep1-final-001",
+        "actorParameterRevision": "deep1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-deep1-001",
+        "objectIds": [
+          "s_terrace1",
+          "s_terrace2",
+          "s_terrace3",
+          "s_terrace4",
+          "s_p8",
+          "s_p14",
+          "s_p36",
+          "s_p40",
+          "s_p64",
+          "s_p68",
+          "s_p90",
+          "s_p94",
+          "s_lip2",
+          "s_lip3",
+          "s_lip4"
+        ],
+        "method": "browser trace exactly matches independent node replay; actual DOM keyboard movement and reset",
+        "result": "verified"
+      },
+      {
+        "id": "directed-transition-events",
+        "path": "work/final-transition-evidence.json",
+        "geometryRevision": "deep1-final-001",
+        "actorParameterRevision": "deep1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-deep1-001",
+        "objectIds": [
+          "t_rope_14_up",
+          "t_rope_14_down",
+          "t_rope_20_up",
+          "t_rope_20_down",
+          "t_rope_42_up",
+          "t_rope_42_down",
+          "t_rope_48_up",
+          "t_rope_48_down",
+          "t_rope_70_up",
+          "t_rope_70_down",
+          "t_rope_76_up",
+          "t_rope_76_down",
+          "t_rope_96_up",
+          "t_rope_96_down",
+          "t_rope_98_up",
+          "t_rope_98_down",
+          "t_step2_up",
+          "t_step2_down",
+          "t_step3_up",
+          "t_step3_down",
+          "t_step4_up",
+          "t_step4_down",
+          "t_step2_east",
+          "t_step2_west",
+          "t_step3_east",
+          "t_step3_west",
+          "t_step4_east",
+          "t_step4_west"
+        ],
+        "method": "runtime events for climb arrival and same-y supporting-surface handoff",
+        "result": "verified"
+      }
+    ],
+    "issues": [],
+    "scope": "movement and artwork verified in independent AABB adapter; no combat, harvest transactions, server portals or production binding",
+    "notApplicable": [
+      "environmental damage (none designed)",
+      "stairs/slope (short ladders used)",
+      "disabled source hidden platforms/fly-zone",
+      "foreground (no front occluder)"
+    ]
+  },
+  "layerPolicy": {
+    "drawOrder": [
+      "background",
+      "playable",
+      "actor-and-runtime-sprites"
+    ],
+    "foreground": "not-applicable: all attached vegetation stays with terrain; no occluding foreground",
+    "derivation": "exact layered assembly of master-003; source alpha retained from imagegen"
+  }
+}

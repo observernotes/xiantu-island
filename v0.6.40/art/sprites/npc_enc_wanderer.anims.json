@@ -1,0 +1,41 @@
+{
+ "atlas": "npc_enc_wanderer",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": 96,
+ "blend": "NORMAL",
+ "kind": "npc",
+ "note": "程序化占位；key 名待天机阁确认。季行舟，行脚散修。原点 (0.5,1) 是脚底/坐姿最低接地点，对齐事件地面。初遇求助循环 hurt_sit；恢复或答谢用 idle，对话用 talk；躲到石后由程序隐藏，不新增血条/寻路。建议 npcs.json 的 enc_wanderer.sprite 引用此 atlas。",
+ "anims": [
+  {
+   "key": "npc_enc_wanderer_idle",
+   "frames": [
+    "npc_enc_wanderer_idle_01",
+    "npc_enc_wanderer_idle_02"
+   ],
+   "frameRate": 3,
+   "repeat": -1
+  },
+  {
+   "key": "npc_enc_wanderer_talk",
+   "frames": [
+    "npc_enc_wanderer_talk_01",
+    "npc_enc_wanderer_talk_02"
+   ],
+   "frameRate": 4,
+   "repeat": -1
+  },
+  {
+   "key": "npc_enc_wanderer_hurt_sit",
+   "frames": [
+    "npc_enc_wanderer_hurt_sit_01",
+    "npc_enc_wanderer_hurt_sit_02"
+   ],
+   "frameRate": 2,
+   "repeat": -1
+  }
+ ]
+}

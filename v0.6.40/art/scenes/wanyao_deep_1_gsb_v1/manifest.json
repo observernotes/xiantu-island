@@ -1,0 +1,1480 @@
+{
+  "schemaVersion": "1.0",
+  "assetVersion": "wanyao_deep_1_gsb_v1",
+  "geometryRevision": "deep1-final-001",
+  "status": "verified-local-awaiting-manager",
+  "approvalState": "已交核待负责人；负责人PASS前禁止接入",
+  "space": {
+    "origin": "top-left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "units": "logical-pixel",
+    "logicalWidth": 3520,
+    "logicalHeight": 1024,
+    "sourceMap": "maps/wanyao_deep_1.json",
+    "sourceToWorld": [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0
+    ]
+  },
+  "actorParameterRevision": "deep1-base-feel-20261027-001",
+  "engineRevision": "gsb-aabb-feel-60hz-deep1-001",
+  "sceneData": {
+    "path": "scene-data.json",
+    "sha256": "aecfecdde16b941f6d0fbef2834ddec6f53ad195a3601e723ed018ec9c363bb4"
+  },
+  "layers": [
+    {
+      "id": "background",
+      "role": "background",
+      "path": "background.png",
+      "pixelWidth": 3520,
+      "pixelHeight": 1024,
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "playable",
+      "role": "playable",
+      "path": "playable.png",
+      "pixelWidth": 3520,
+      "pixelHeight": 1024,
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    }
+  ],
+  "drawOrder": [
+    "background",
+    "playable",
+    "runtime monsters/gather and actor"
+  ],
+  "foreground": {
+    "applicable": false,
+    "reason": "all attached vines remain with terrain; no foreground occlusion used"
+  },
+  "diagnostics": {
+    "maskPalette": {
+      "walk": [
+        150,
+        245,
+        160,
+        255
+      ],
+      "stand": [
+        0,
+        200,
+        80,
+        255
+      ],
+      "rope": [
+        0,
+        190,
+        230,
+        255
+      ],
+      "ladder": [
+        80,
+        140,
+        255,
+        255
+      ],
+      "point": [
+        255,
+        70,
+        160,
+        255
+      ]
+    },
+    "rasterizationOrder": [
+      "walk",
+      "stand",
+      "rope",
+      "ladder",
+      "point"
+    ],
+    "regionIdIndex": null,
+    "geometryRevision": "deep1-final-001"
+  },
+  "generation": [
+    {
+      "stage": 3,
+      "tool": "built-in image_gen",
+      "output": "work/generated/master-001.png",
+      "nativePixels": [
+        2161,
+        728
+      ],
+      "prompt": "work/prompts/stage3-master.txt",
+      "inputRoles": [
+        "verified action-layout.png",
+        "references/qingyun-v2-style.png overall style",
+        "references/luoxia-v1-style.png overall style"
+      ],
+      "detailGeneration": false
+    },
+    {
+      "stage": 3,
+      "tool": "built-in image_gen",
+      "output": "work/generated/extract-001.png",
+      "nativePixels": [
+        2161,
+        728
+      ],
+      "prompt": "work/prompts/stage3-extract.txt",
+      "inputRoles": [
+        "master-001.png terrain extraction"
+      ],
+      "detailGeneration": false
+    },
+    {
+      "stage": 3,
+      "tool": "built-in image_gen",
+      "output": "work/generated/background-001.png",
+      "nativePixels": [
+        2160,
+        728
+      ],
+      "prompt": "work/prompts/stage3-background.txt",
+      "inputRoles": [
+        "master-001.png background-only repair"
+      ],
+      "detailGeneration": false
+    },
+    {
+      "stage": 4,
+      "tool": "built-in image_gen",
+      "output": "work/generated/detail-rock-after.png",
+      "nativePixels": [
+        2103,
+        748
+      ],
+      "prompt": "work/prompts/stage4-rock.txt",
+      "inputRoles": [
+        "detail-rock-before.png edit target",
+        "master-002.png context"
+      ],
+      "detailGeneration": true
+    },
+    {
+      "stage": 4,
+      "tool": "built-in image_gen",
+      "output": "work/generated/detail-ledge-after.png",
+      "nativePixels": [
+        2048,
+        768
+      ],
+      "prompt": "work/prompts/stage4-ledge.txt",
+      "inputRoles": [
+        "detail-ledge-before.png edit target",
+        "master-002.png context"
+      ],
+      "detailGeneration": true
+    },
+    {
+      "stage": 5,
+      "tool": "built-in image_gen",
+      "output": "work/generated/portal-east-fixed.png",
+      "nativePixels": [
+        1614,
+        975
+      ],
+      "prompt": "work/prompts/stage5-portal-cleanup.txt",
+      "inputRoles": [
+        "portal-east-before.png localized cleanup"
+      ],
+      "detailGeneration": false
+    }
+  ],
+  "alignment": {
+    "origin": "top-left",
+    "finalPixelToWorld": [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "actualFinalPixels": [
+      3520,
+      1024
+    ],
+    "structureTransforms": "work/structure-composition.json",
+    "materialBlocks": "work/detail-blocks.json",
+    "sameVersionLayeredMaster": "work/generated/master-003.png",
+    "exactRecomposition": true
+  },
+  "routeEvidence": "work/final-routes.json",
+  "independentEvidence": "work/checks/independent-final-physics.json",
+  "visualEvidence": "work/final-geometry-measurements.json",
+  "localEntry": "index.html",
+  "binding": "no production or game/public changes; no deployment or push",
+  "scopeLimits": [
+    "independent AABB collision adapter, not Phaser",
+    "combat, harvest business and cross-map server behavior not simulated",
+    "disabled source hidden platform/fly metadata creates no collision"
+  ],
+  "files": {
+    "DELIVERED.md": {
+      "purpose": "submission state; manager PASS pending",
+      "bytes": 1043,
+      "sha256": "e7b52b97d96d5187f83d2589a7216b77798a8486f795a0d25e82dd291adda068",
+      "geometryRevision": "deep1-final-001"
+    },
+    "README.md": {
+      "purpose": "local launch, controls and limits",
+      "bytes": 1663,
+      "sha256": "935333465057f1066f4fb0e2f436176cfa7ca3e8cc6a2943eea5703924447e45",
+      "geometryRevision": "deep1-final-001"
+    },
+    "action-mask.png": {
+      "purpose": "pure no-AA action semantics, transparent background",
+      "bytes": 17270,
+      "sha256": "55a3bad823a5d7afd2aee0415e4329316fb9db13c10d8ce22a1d6f440a095f94",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 3520,
+      "pixelHeight": 1024,
+      "mode": "RGBA"
+    },
+    "action-overlay.png": {
+      "purpose": "ID and directed verified connections on final art",
+      "bytes": 6048531,
+      "sha256": "134dcb07274772a2f74a80816e243f2be31034ccf50db5c88f1ca1b78603b879",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 3520,
+      "pixelHeight": 1024,
+      "mode": "RGBA"
+    },
+    "background.png": {
+      "purpose": "opaque non-colliding distant forest",
+      "bytes": 5063931,
+      "sha256": "77c8cba36dd85fe4de2e0247aa0d0ca0b3890b30164d56e45d4f4fdb01758af3",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 3520,
+      "pixelHeight": 1024,
+      "mode": "RGB"
+    },
+    "collision-overlay.png": {
+      "purpose": "actual runtime solids and one-way top boundaries",
+      "bytes": 5185969,
+      "sha256": "c8ab9666cfb44e71a8e96bcb99c3e047062513640c2484db3e1b5f5309ca134b",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 3520,
+      "pixelHeight": 1024,
+      "mode": "RGBA"
+    },
+    "diagnostics-metadata.json": {
+      "purpose": "diagnostic revision, palette, source-data hash",
+      "bytes": 1284,
+      "sha256": "3bff9b8532b6821bdc4b05bd5c9feb63b026b55034ef107415a6bce19cfdaf2d",
+      "geometryRevision": "deep1-final-001"
+    },
+    "index.html": {
+      "purpose": "relative local test entry",
+      "bytes": 535,
+      "sha256": "7d30adf168a773beaef5a2ffa04957fac3bd7299a4e90bcd2480fdf182b30079",
+      "geometryRevision": "deep1-final-001"
+    },
+    "playable.png": {
+      "purpose": "true-alpha generated terrain and rope/ladder art",
+      "bytes": 1571247,
+      "sha256": "1bac043e5cdffc08f6c434f428730ef49e7a8f6448327853edd9762d4a254a95",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 3520,
+      "pixelHeight": 1024,
+      "mode": "RGBA"
+    },
+    "scene-data.json": {
+      "purpose": "sole geometry, point, motion and validation authority",
+      "bytes": 58470,
+      "sha256": "aecfecdde16b941f6d0fbef2834ddec6f53ad195a3601e723ed018ec9c363bb4",
+      "geometryRevision": "deep1-final-001"
+    },
+    "scene.png": {
+      "purpose": "final exact recomposed environment",
+      "bytes": 5457955,
+      "sha256": "443edd0bedda91267192ffa04b38a1731723f291a7822797d310d4ac4b0dfb5a",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 3520,
+      "pixelHeight": 1024,
+      "mode": "RGB"
+    },
+    "validation-report.md": {
+      "purpose": "truthful validation and image evidence",
+      "bytes": 11082,
+      "sha256": "b49d2fc8aa3c3990f758dac904103343089418a2238ed45719d19bbcf84b1c33",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/_backup/polished.lock": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 57121,
+      "sha256": "f7e23e4a44b55b292d09a3514c662d8d0f7ac78034dc2f7871a73435ba59d587",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/_backup/丹青阁.md": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 606,
+      "sha256": "3fc2fea3cb07ad308d1baf197c0b5ffd6761c82112daa7777868f6d3af219aaf",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/action-layout.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 14139,
+      "sha256": "a11e266a9c5755ecf7118b74560c9e0982b85389cde980037392164e949dd42e",
+      "geometryRevision": "historical; see embedded revision",
+      "pixelWidth": 3520,
+      "pixelHeight": 1024,
+      "mode": "RGB"
+    },
+    "work/action-layout.svg": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 2756,
+      "sha256": "ae63726548adf8ae72586cb33360ea48eab66bbe6185b277defc92b88b37ff8f",
+      "geometryRevision": "historical; see embedded revision"
+    },
+    "work/add_runtime_sprites.py": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 2792,
+      "sha256": "50e43fbca81bb95cb54439cd6104944e4e2778ee6ad5f14334b43fec1a0ec5e5",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/alpha-dark.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 403102,
+      "sha256": "73db64981bc986e0fb61ceecf48cb8c758ed1ce71bbee9f50cbcc9e76d8296c6",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1760,
+      "pixelHeight": 512,
+      "mode": "RGB"
+    },
+    "work/alpha-light.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 411953,
+      "sha256": "c6d58febf328105ba6825bff75abd5bc7075aded18990e671e0f5e99aa0b55bc",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1760,
+      "pixelHeight": 512,
+      "mode": "RGB"
+    },
+    "work/bind_validation.py": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 3850,
+      "sha256": "e3a868bafc91834e7e9515fbcdf9e7d562b851a38c7cfecf82f42955219428d5",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/bottom-strip.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 360542,
+      "sha256": "735a9aaf8bf213936d217c7a3ff0a0a52206e541f0fbc3a679f4373be6d88891",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 3520,
+      "pixelHeight": 64,
+      "mode": "RGB"
+    },
+    "work/browser_check.mjs": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 3684,
+      "sha256": "c975c56058c02a159afe8fe98a58b837575ab0e9a30aecdc4a0bca9bda2adaa2",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/build_layout.py": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 8861,
+      "sha256": "76da417e60e77d1849fca092e521087a90cdce27d4b7e1515785690a60b0a520",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/build_manifest.py": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 4258,
+      "sha256": "3f3e7996737559004c1ff08fd98b0e7de6e2e97f7b347f1225006f7df68af281",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/checks/all-bearing-contacts.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 604272,
+      "sha256": "5479e4446d39c7c021ea873eb86e36d769e07aa4449bb1739e1df29ff07079b3",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 900,
+      "pixelHeight": 960,
+      "mode": "RGB"
+    },
+    "work/checks/artcheck-final.log": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 948,
+      "sha256": "971ec2b5f561e9fc298167f5443cb1bb9bf08387c5e488c43dfd938ff1f09e5c",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/checks/bottom-and-collision.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 327230,
+      "sha256": "1b0c7ab26c99a8f3b4e2848927dd98625b128ba6aa3dea4e834185d5212bddda",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1760,
+      "pixelHeight": 192,
+      "mode": "RGB"
+    },
+    "work/checks/gate-to-gate-replay.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 397726,
+      "sha256": "9e2c7700c90dd16edb81072ea41832d3b633f0666a42d76073a84a703801f993",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/checks/gate-to-gate.mjs": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1414,
+      "sha256": "3322a19e4c55316373367bb23af1861daa7b88987bedd62c689e0991361f6824",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/checks/independent-final-physics.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 9814,
+      "sha256": "5b813740f2c377fabad54dacf4e99b09b30c1935ade08151a0575797d75774f4",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/checks/independent-final-physics.md": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 3317,
+      "sha256": "a0de09f99c16de3ea81f66de5851a242eda7be40d06e5b86d3b1a2c37bf24025",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/checks/independent-final-replays/LOCAL-ceiling.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 19662,
+      "sha256": "44bcf5da7977d1b197fa33a9d107cbbfd46df73fca5df6763d07499efafe04e6",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/checks/independent-final-replays/actual-max-speed.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 115108,
+      "sha256": "3906f4f3b11b1885d4554d4c585f38a68c8d4301c3c3d85703d12837c952f8b5",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/checks/independent-final-replays/all-ropes.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 973159,
+      "sha256": "822c1b40014898c55d5221c462ab93b3a6c9dcda9823a2896398f1ca71255eba",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/checks/independent-final-replays/explicit-reset.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 409205,
+      "sha256": "56c4aaef1e09377aef1446064aa92d339e522d9c70c55c6afac73b35c7337bca",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/checks/independent-final-replays/main-roundtrip.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 767733,
+      "sha256": "c508f0b9c5dad7ed6ce192897dbc2f054d0efc5d2c65409ede472edd940b7329",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/checks/independent-final-replays/one-way-pass-drop.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 190739,
+      "sha256": "f3290c6e2b429d650bd6f57b35bf465f2e4e95c6ee21ec3fb30c100b9cb679f7",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/checks/independent-final-replays/rope-jump-regrab.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 51075,
+      "sha256": "cca7f0863d31466cc5d8b4b5e10b94914a970ba8e12b11ce5af85b974d276484",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/checks/independent-final-replays/spawn-stability.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 118099,
+      "sha256": "13845319dfc8841c81ba7288a1b66955d0fa95fbf51f7016a6c889d2dd9b1c66",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/checks/independent-final-replays/wall-solid-down.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 130901,
+      "sha256": "00720c0294f01b922bebf6dbfd8428597e3ea6ce5464dfaa9bc1760bbc0147d6",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/checks/independent-final-replays/world-edges.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 474110,
+      "sha256": "96be4338bff1eee8a2dfd332d4604a5aecb6b5f59136867d0632c171ec37f0c8",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/checks/independent-graybox-physics.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 9840,
+      "sha256": "3ffb14eefcbb741264635051b838b2ffd812dd1e963f1932b45712a99be8f818",
+      "geometryRevision": "historical; see embedded revision"
+    },
+    "work/checks/independent-graybox-physics.md": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 3341,
+      "sha256": "2e1d43681b900c34b1ef1201876ca402aa14d59e952a5db72c8d6a5b6ca124c6",
+      "geometryRevision": "historical; see embedded revision"
+    },
+    "work/checks/independent-graybox-replays/LOCAL-ceiling.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 19668,
+      "sha256": "e1792ec6433cb357118e96ffc156b1dcffcb7de3b4cacf4cc6b34d52e91a4e88",
+      "geometryRevision": "historical; see embedded revision"
+    },
+    "work/checks/independent-graybox-replays/actual-max-speed.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 115112,
+      "sha256": "a3a3d2bb94ca54c36c537794478cc93e13ebd49e61ae94e007bc2f08f41f74ee",
+      "geometryRevision": "historical; see embedded revision"
+    },
+    "work/checks/independent-graybox-replays/all-ropes.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 973163,
+      "sha256": "f3d68b2d0ecb666720838fd8a1e35bf38c244b8eb514b4dadf4758f94daddb2f",
+      "geometryRevision": "historical; see embedded revision"
+    },
+    "work/checks/independent-graybox-replays/explicit-reset.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 409209,
+      "sha256": "b685d43600dd681551e5e906598692d4a1a084b7f68da8d5a63a0c870af898c0",
+      "geometryRevision": "historical; see embedded revision"
+    },
+    "work/checks/independent-graybox-replays/main-roundtrip.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 767737,
+      "sha256": "a57ecddc2cf266902d299b1261cddc46e7ba6df8856020a738b34012ce46486e",
+      "geometryRevision": "historical; see embedded revision"
+    },
+    "work/checks/independent-graybox-replays/one-way-pass-drop.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 190743,
+      "sha256": "495596cc44b54276dc6716151dde7494f60488fd3e9cacaf7f256b8165bdc9dc",
+      "geometryRevision": "historical; see embedded revision"
+    },
+    "work/checks/independent-graybox-replays/rope-jump-regrab.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 51079,
+      "sha256": "5d21b15beceb79abf00a1bbf9f2c4f190802a662c1d78791a24d6b7322a12e72",
+      "geometryRevision": "historical; see embedded revision"
+    },
+    "work/checks/independent-graybox-replays/spawn-stability.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 118103,
+      "sha256": "269745a242006dd39e329a4a79c0de6189a78fc57bda88dfe30e59f10c6a740d",
+      "geometryRevision": "historical; see embedded revision"
+    },
+    "work/checks/independent-graybox-replays/wall-solid-down.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 130905,
+      "sha256": "cd44970e484314aadf2542c123ea11e8fb1fb84c930b87af749e603a03338b27",
+      "geometryRevision": "historical; see embedded revision"
+    },
+    "work/checks/independent-graybox-replays/world-edges.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 474114,
+      "sha256": "975bb37d6a2406108c85da2596156cac6dfe45351dfdde3eb3d6864e97ba39fb",
+      "geometryRevision": "historical; see embedded revision"
+    },
+    "work/checks/independent-physics.mjs": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 18267,
+      "sha256": "710abb98ec3316863a34ce2f65d14ad7067c949828bd202df17720cedfd442fe",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/checks/protected-before.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 426202,
+      "sha256": "7b37edf304ccaf078e6af3552710796a84c8cbba9d2e9bbde929edd966bc510e",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/compose_structure.py": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 3176,
+      "sha256": "1ec7efb98040ef6a599d7ec61c890adaa4c93c21fc7046cbfd9b42bd4810132f",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/detail-blocks.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1024,
+      "sha256": "0bdbf6ffbe74b3b31beabb47840483e6a88743ecbd46cb8e023bda33b47971b9",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/final-browser-check.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 3703,
+      "sha256": "11d60a61cab9b9cbe49c3b7d49836b04b4591ff179ca51e21f2e790c54bc3bae",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/final-geometry-measurements.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 12575,
+      "sha256": "ba75be9569306034d147b8562fd65fb5fdd941403783533a720a191d630ef648",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/final-preview.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1675239,
+      "sha256": "77595a408aa56d06974ebd2dc36d691b9a4abdb25772c2851ff74e06fe29c731",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1760,
+      "pixelHeight": 512,
+      "mode": "RGB"
+    },
+    "work/final-routes.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1499,
+      "sha256": "7860256d3a4964d87157a468d68533369655eedd438f89623744380c5a7e9fe8",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/final-screenshots/contact-goal.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1512582,
+      "sha256": "dc674d0c9971909ea726e723c36e48a1211629bf94eb5aa1fe8209f3d6a41ae8",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/contact-s_lip2.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1424631,
+      "sha256": "8c1eba5e5c81ebd9a913369256a7a3766bb05b2af51e8d5033530ce980c4c4ee",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/contact-s_lip3.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1384876,
+      "sha256": "ea7f8c69908b8edc0f62a85a09e45bad163f3359dfbbe5dda2d1f8569ee3f192",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/contact-s_lip4.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1447354,
+      "sha256": "81db5aa0d0b2b3cd3af93c7e31fbf7331571aae0f114644cdecb2fae4f0f6871",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/contact-s_p14.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1394501,
+      "sha256": "2b69b0c3a04caa9e0904014330cce387e84bb24552f142a502409685646f4924",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/contact-s_p36.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1395433,
+      "sha256": "4589f7301f6d93efe7fa901ae25d414c66d5a507c878835ca895e08a1308f2d3",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/contact-s_p40.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1377522,
+      "sha256": "3ad67dabf9064d2eeba7c94575ddc33fac98990a6265e627eca5e7683871f7a7",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/contact-s_p64.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1385484,
+      "sha256": "d03aa34446f2b60d25fba400b480ff206012de3bf4e3053dba3b0b5ef7f434b9",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/contact-s_p68.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1352299,
+      "sha256": "7c80022ed5701b2ebac7c93bc8a71435ccc0a7e0dda23f57c5c4cdafc55c2951",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/contact-s_p8.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1505405,
+      "sha256": "1aef780962251051969cd38fede410cd1bcaf7490c43e7a4e59dfb63960b0bde",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/contact-s_p90.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1469217,
+      "sha256": "9054cf21b9e675bbb2a9057301568059f4f508bec1803e0a4b658305ee711c84",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/contact-s_p94.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1423973,
+      "sha256": "58026873026f23737061ae826b0ca71fe831559adbc1fbf1250695f9d48fdf6c",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/contact-s_terrace1.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1508852,
+      "sha256": "62968557a645504aded0433cda7047bfa81888bb7c12125b893cee8e426aa324",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/contact-s_terrace2.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1424263,
+      "sha256": "fb48949dc1ea1ebc7c435213e5efc2f0c080eda2e4fd5fd3264c444f037a383b",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/contact-s_terrace3.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1390804,
+      "sha256": "198bc892991c8aaadf40db46c28bbed3b51476cc26d452d1eb8e8f3776f2d75d",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/contact-s_terrace4.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1517003,
+      "sha256": "ceb90822ddf4903b7cc52fb2a35b1324ccb2bb790e5fb5e39f09dfe438a397a7",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/overlay-goal.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1484620,
+      "sha256": "3eaaf71bd93d638a61cf59acf92dc88ff96f52c95d5a5f2354bdd084ae632684",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/overlay-s_lip2.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1405987,
+      "sha256": "74cb0dc18203dcc33e589455aaccc94523e1872117e5e01ba504fdd89e8bd248",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/overlay-s_lip3.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1363903,
+      "sha256": "6efe177b96014acce5f86ffdae915be4704c603246b8fba3d686e7a3f56f7ec0",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/overlay-s_lip4.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1421545,
+      "sha256": "53d5025c7a0a74c935a03b5c94f2feb97643e186a78c43f5598974f853adb8a8",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/overlay-s_p14.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1392092,
+      "sha256": "395deb14ad7f76ca17439cbeee1992fa106ca33a987c3bbba49afc35b96fcab2",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/overlay-s_p36.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1385257,
+      "sha256": "d41d385c4bc765b059c50a2fab0c30b157312431175bc54025b34a39e623973e",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/overlay-s_p40.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1375654,
+      "sha256": "4974a6a4bd2445254e9d2a277637fb135e9ac2ee1f70b4482bee79226df7d75b",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/overlay-s_p64.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1373584,
+      "sha256": "0cc720b00ef84608413dbd52c09eaaf55a6f35f5d11fb35743e4fbfe2c883fb2",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/overlay-s_p68.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1350148,
+      "sha256": "355c4c0359917486bec6da2b3bb76a129513a77c659f013773463e19b74ab9c1",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/overlay-s_p8.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1490186,
+      "sha256": "86cf4791d629c2e76ea5960ff1905b33a78c815983306545f47d1273e1ba1204",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/overlay-s_p90.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1456655,
+      "sha256": "090e8068edf1825f463119b2bd5a0b1b17628a30d49c1281905651b7cc758e7d",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/overlay-s_p94.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1419009,
+      "sha256": "dec02bebf6ccf33dbdbe184a14e71215450887ffd64a0a467451b02c8fe166a9",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/overlay-s_terrace1.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1491259,
+      "sha256": "0daef14934f4cc92494098232b94e27cc889b44e826b32ed6a3bba02b879b15f",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/overlay-s_terrace2.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1406140,
+      "sha256": "5cef662d8a203e65a44b48ee6d05200d8b85cfe1f5c51162029ddb515f46b2fe",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/overlay-s_terrace3.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1369727,
+      "sha256": "c3f0e1846248917bc62f7f66c49fee004ef20747a718ce3a100c7fc9f82405a5",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/overlay-s_terrace4.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1489029,
+      "sha256": "0ffa933f5c19b0cd1a1190337ef1be9d4b51e69aec813b24aa6dcc156289a875",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/spawn.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 2045255,
+      "sha256": "6653e8cefce81fee392067f626895e29040f36f4f308a2c1db31220e37112cb1",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1440,
+      "pixelHeight": 1282,
+      "mode": "RGB"
+    },
+    "work/final-transition-evidence.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 12987,
+      "sha256": "88c316178c1d9c5815942d3d1179ec1c8f05d93da4c56c2b01ffc84a0623f3fd",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/final_audit.py": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 7337,
+      "sha256": "449fb583b251c071090c32a61b69910e2053246abf26d281dd35da4690198ceb",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/finalize_layers.py": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 4489,
+      "sha256": "c908d8478f7c7b37aeff365ebd15f85234f23f404c910e8e2b3065351c6a4ada",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/generated/background-001.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 2715175,
+      "sha256": "badfc67389f92dbc68b35e6f76cf639fb1391b20bac4ee75e695c87e8c99fc27",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 2160,
+      "pixelHeight": 728,
+      "mode": "RGB"
+    },
+    "work/generated/detail-ledge-after.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 2058574,
+      "sha256": "fc6d53987c6997f793964acac917bafb01b0f39632ea6e23736a684e8b45276e",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 2048,
+      "pixelHeight": 768,
+      "mode": "RGB"
+    },
+    "work/generated/detail-ledge-before.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 81547,
+      "sha256": "ab2ba1b5f8b2952bf2436aaf1154e1eae51594402b1ac32aaa17ce1ef1cab465",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 576,
+      "pixelHeight": 72,
+      "mode": "RGBA"
+    },
+    "work/generated/detail-rock-after.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 2120803,
+      "sha256": "8657159bfcefb1e2e5eb920dca002d28135f4cda038cc9456584de09454c3f24",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 2103,
+      "pixelHeight": 748,
+      "mode": "RGB"
+    },
+    "work/generated/detail-rock-before.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 211993,
+      "sha256": "4144d90cd2d2bd071908e3b98d2cb2a0dd2db564e0c3c02f226c8e5e6d3dbd66",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 832,
+      "pixelHeight": 142,
+      "mode": "RGBA"
+    },
+    "work/generated/extract-001.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1594659,
+      "sha256": "77a06f8580ef2592bae8d0e393dac74b82eb17ade8f5ad04c2981acd1ed1b21a",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 2161,
+      "pixelHeight": 728,
+      "mode": "RGBA"
+    },
+    "work/generated/master-001.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 3052984,
+      "sha256": "7fdc7d79e44ec357627908dc4c8cf9e3ad30f8362630e816e8033169b4ac40ec",
+      "geometryRevision": "historical; see embedded revision",
+      "pixelWidth": 2161,
+      "pixelHeight": 728,
+      "mode": "RGB"
+    },
+    "work/generated/master-002.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 5405128,
+      "sha256": "6db30c6aba71a1fa8f45c97dae390d7c2ecfd8958b292b2ae87ae94381936db6",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 3520,
+      "pixelHeight": 1024,
+      "mode": "RGB"
+    },
+    "work/generated/master-003-background-source.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 5826523,
+      "sha256": "4282d655ba1b7798f32063dc48d80410bbb641909f5004fc9b0849d2bae64fb2",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 3520,
+      "pixelHeight": 1024,
+      "mode": "RGBA"
+    },
+    "work/generated/master-003-playable-source.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1571247,
+      "sha256": "1bac043e5cdffc08f6c434f428730ef49e7a8f6448327853edd9762d4a254a95",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 3520,
+      "pixelHeight": 1024,
+      "mode": "RGBA"
+    },
+    "work/generated/master-003.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 5457955,
+      "sha256": "443edd0bedda91267192ffa04b38a1731723f291a7822797d310d4ac4b0dfb5a",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 3520,
+      "pixelHeight": 1024,
+      "mode": "RGB"
+    },
+    "work/generated/portal-east-before.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 51935,
+      "sha256": "4047b9aa0d2e7ce308db4a5dc92a2752f44de168bf64d8a2b2fbe476a89b4b46",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 197,
+      "pixelHeight": 119,
+      "mode": "RGBA"
+    },
+    "work/generated/portal-east-fixed.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1703244,
+      "sha256": "7dbc4433278d3418364d97492dfa8e9d06d6383b7fc62053b9a57d2ac45d61c0",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1614,
+      "pixelHeight": 975,
+      "mode": "RGBA"
+    },
+    "work/generated/structure-background-002.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 5826523,
+      "sha256": "4282d655ba1b7798f32063dc48d80410bbb641909f5004fc9b0849d2bae64fb2",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 3520,
+      "pixelHeight": 1024,
+      "mode": "RGBA"
+    },
+    "work/generated/structure-playable-002.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1519905,
+      "sha256": "d25f6cdb57d624d889a476321e84576f178e3f04c86329010701912fa9882cec",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 3520,
+      "pixelHeight": 1024,
+      "mode": "RGBA"
+    },
+    "work/geometry_audit.py": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 3392,
+      "sha256": "54b7e984ec47c7033fbda6d3a0df8be01a9132101ee4a25caef8692dc08c5b78",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/graybox-browser-check.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 3065,
+      "sha256": "fb79e4197517ce4021f6a51f8cd4a68b5292e483fe737456d032294f2b694320",
+      "geometryRevision": "historical; see embedded revision"
+    },
+    "work/graybox-routes.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1515,
+      "sha256": "47678df41816d9e99963eff8ec72a6c56a4e4029428a1c2ed921af99f76e1ab4",
+      "geometryRevision": "historical; see embedded revision"
+    },
+    "work/graybox-screenshots/contact-goal.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 66214,
+      "sha256": "a553b5314ddeeeee57535368ac20cdf790cc503f193f7f7471f2f0c85ffa89c7",
+      "geometryRevision": "historical; see embedded revision",
+      "pixelWidth": 1280,
+      "pixelHeight": 1025,
+      "mode": "RGB"
+    },
+    "work/graybox-screenshots/contact-s_lip2.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 67799,
+      "sha256": "5e95ab8bce07562dbce4d2dcf5099816def290d2097dab1941ff3ddc9e6df612",
+      "geometryRevision": "historical; see embedded revision",
+      "pixelWidth": 1280,
+      "pixelHeight": 1025,
+      "mode": "RGB"
+    },
+    "work/graybox-screenshots/contact-s_lip3.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 55510,
+      "sha256": "3a736cc703c307cae083e902e2b80b531b1fc11db797addc940a5314dd38e579",
+      "geometryRevision": "historical; see embedded revision",
+      "pixelWidth": 1280,
+      "pixelHeight": 1025,
+      "mode": "RGB"
+    },
+    "work/graybox-screenshots/contact-s_lip4.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 64837,
+      "sha256": "bc3af304787234bff67eb24ae4ffa3a07731c5d5659af2c1c0710c814b8cd377",
+      "geometryRevision": "historical; see embedded revision",
+      "pixelWidth": 1280,
+      "pixelHeight": 1025,
+      "mode": "RGB"
+    },
+    "work/graybox-screenshots/contact-s_terrace1.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 67811,
+      "sha256": "538cc54b1d3093779529f3ec03f4b597af28aa9d8296fdd941959bce32495685",
+      "geometryRevision": "historical; see embedded revision",
+      "pixelWidth": 1280,
+      "pixelHeight": 1025,
+      "mode": "RGB"
+    },
+    "work/graybox-screenshots/contact-s_terrace2.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 68364,
+      "sha256": "e2a986866facb2f07c9ba7e9205c52e2c79f9f31d54c70ded3751c89245b9e36",
+      "geometryRevision": "historical; see embedded revision",
+      "pixelWidth": 1280,
+      "pixelHeight": 1025,
+      "mode": "RGB"
+    },
+    "work/graybox-screenshots/contact-s_terrace3.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 55093,
+      "sha256": "b8ca55d2af4c88c70a3e5b54bb529142652e84bf3a6f871c1deb85e8788d285d",
+      "geometryRevision": "historical; see embedded revision",
+      "pixelWidth": 1280,
+      "pixelHeight": 1025,
+      "mode": "RGB"
+    },
+    "work/graybox-screenshots/contact-s_terrace4.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 64990,
+      "sha256": "6f11ab1d1d477cc7d7a194361fc5447d880fd5d5ac8820d84f4d5370e8c0c509",
+      "geometryRevision": "historical; see embedded revision",
+      "pixelWidth": 1280,
+      "pixelHeight": 1025,
+      "mode": "RGB"
+    },
+    "work/graybox-screenshots/spawn.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 176093,
+      "sha256": "9e33db8619ca66f8d6adb08faca12d0304e48c658270efc06f956e7bc471ddc9",
+      "geometryRevision": "historical; see embedded revision",
+      "pixelWidth": 1440,
+      "pixelHeight": 1586,
+      "mode": "RGB"
+    },
+    "work/preview/engine.mjs": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 13556,
+      "sha256": "c211bf69699775e05de8860b4e94e1c3b3a33d1003e68b83689c1cc6af2f08d6",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/preview/index.html": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 3882,
+      "sha256": "224de0257be7c6a88bf30a83768d935944077b72570bcc37b7fe1ef8d50cef57",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/preview/mon_demonized_ape-idle.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 8580,
+      "sha256": "0ff360f02ed7086be22b88f40305115acebe0b12d5e9d31b3bb28ff708d9da8c",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 96,
+      "pixelHeight": 96,
+      "mode": "RGBA"
+    },
+    "work/preview/mon_tree_demon_sapling-idle.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 8865,
+      "sha256": "8149423ed82794d6aab8c1592a8e2a32423908168b80c84e21e0604913caa509",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 72,
+      "pixelHeight": 88,
+      "mode": "RGBA"
+    },
+    "work/preview/npc-reference-data.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 2,
+      "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/preview/player-reference-idle.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 10012,
+      "sha256": "520235d2f9c4c9e83b140ba439c2d18becfaa8e962fa15a98e35a14003ce0181",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 96,
+      "pixelHeight": 96,
+      "mode": "RGBA"
+    },
+    "work/preview/preview.mjs": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 14954,
+      "sha256": "5f6116850b7ac138261d46c7f63a0475419aa936d6ee70d43c268d50f62f8b4b",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/preview/prop_gather_nine_leaf_ganoderma-idle.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 2794,
+      "sha256": "b1a83d6d2311a755fb6678b2ee4edb77d54144996767952d19e9a6e6b3fed045",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 48,
+      "pixelHeight": 48,
+      "mode": "RGBA"
+    },
+    "work/preview/prop_gather_spirit_copper-idle.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 2359,
+      "sha256": "d195b4287d9c16fff7384f5a5835acb22233249ec2fababa354268b92491b41f",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 48,
+      "pixelHeight": 48,
+      "mode": "RGBA"
+    },
+    "work/prompts/stage3-background.txt": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 860,
+      "sha256": "0eda28c896c2929cfb7f416953be68f4206451840e0ecbdbf9fc520b11013303",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/prompts/stage3-extract.txt": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1052,
+      "sha256": "49147d776ed122bb47cf1cddf54e546d2c82685bb5570037c04753dccc870e80",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/prompts/stage3-master.txt": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 3372,
+      "sha256": "0be2f7016ed5ad36bc5a4f094a7557df40920ff62a6449dcbdaa8eb535b80e38",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/prompts/stage4-ledge.txt": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 939,
+      "sha256": "08ac8e460183744572887fbe54881d0194f0f9db67338834f76454c261ecb7f4",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/prompts/stage4-rock.txt": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1000,
+      "sha256": "05751a9f40edcc663a067f83d35456d5e489f25bea38fdc65f452e32214b08fd",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/prompts/stage5-portal-cleanup.txt": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 736,
+      "sha256": "a43c9597988060b7e886a4e20f42fbbdb4891a078944f8cfa2812739afd42e7c",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/reference-sprite-provenance.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 2940,
+      "sha256": "3bdcee0fc2725e34efec0ca936a0c57e705901eeca2710c8ac858dc21f9f0e8b",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/references/luoxia-v1-style.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1293066,
+      "sha256": "bd4dc0c8101aae27221478d59b3b088a2e95fe5ca4dd6e7cd105624ba6aeac11",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 467,
+      "mode": "RGBA"
+    },
+    "work/references/qingyun-v2-style.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1469044,
+      "sha256": "1c419568ee7f352e06de300704d1a88c39422fbeed13b52a1c047369e619e93f",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 473,
+      "mode": "RGBA"
+    },
+    "work/render_diagnostics.py": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 4762,
+      "sha256": "557dc3965051d48bdfe76d5f2cdec0abfc6fec9209c1328dc129229ada96b9af",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/replays-final/route_all_climbs.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 973140,
+      "sha256": "f8eb0f9ac6a2e085606bb5716d13a1e5d6a2852178a32ed366b80cff066fa36a",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/replays-final/route_branch_14.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 568899,
+      "sha256": "4c315c5930b3c028672d3e99a79ce1f0a316222ea389f58f6e46d7b71f6c38cd",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/replays-final/route_branch_42.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 516938,
+      "sha256": "b6c7b73655409958e23b0f9e2111cee7b4b7eb1694ca435be02e0b39b620d09c",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/replays-final/route_branch_70.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 543204,
+      "sha256": "3d18ab93138c73567a7d4fed768f1ac114b88fb750ec4909156dc07898892847",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/replays-final/route_branch_96.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 492710,
+      "sha256": "9b70e540cb0ed5d498818a207d8583467d35d99bbdea54ef064ccdb53d775d52",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/replays-final/route_main.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 382902,
+      "sha256": "d308c406bd8c6a3829c09410f9b663566e2e7222236960110aa7fc625b917815",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/replays-final/route_return.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 767705,
+      "sha256": "26cd05b9e9726b56e3a6828629cff3fe09c35a4312648c311985f92214e895fb",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/replays-graybox/route_all_climbs.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 973144,
+      "sha256": "ea7228f40fa99f73d088fc241c3014c0f789476c4daca08e46e8d248cb1d10f6",
+      "geometryRevision": "historical; see embedded revision"
+    },
+    "work/replays-graybox/route_branch_14.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 568903,
+      "sha256": "9d61767036c18bb77c91bd979a5fd7671de396dab23bf6aeeb36a35c1980f639",
+      "geometryRevision": "historical; see embedded revision"
+    },
+    "work/replays-graybox/route_branch_42.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 516942,
+      "sha256": "37bf86eb924af88533a97bf83fa1184e1a9c50b6b861622201ffe9d3c6fe2157",
+      "geometryRevision": "historical; see embedded revision"
+    },
+    "work/replays-graybox/route_branch_70.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 543208,
+      "sha256": "cb54bf300b6edf45b0f3892df959f94687fd8f6afacf41252d90cabf7fb3b496",
+      "geometryRevision": "historical; see embedded revision"
+    },
+    "work/replays-graybox/route_branch_96.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 492714,
+      "sha256": "803b2d6f3303ddd09307379c2f13b3c8d70c0d8a324c0d700c128c6a233baa97",
+      "geometryRevision": "historical; see embedded revision"
+    },
+    "work/replays-graybox/route_main.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 382906,
+      "sha256": "2cef061c10bf349838ef772e0c5d65bd265d086456dc6012dcf09d509f88ad47",
+      "geometryRevision": "historical; see embedded revision"
+    },
+    "work/replays-graybox/route_return.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 767709,
+      "sha256": "8721acbb8cb64648a7d0971f0ab6914f40fdd9069e8f893466350eaa395481f7",
+      "geometryRevision": "historical; see embedded revision"
+    },
+    "work/route-plan.md": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 704,
+      "sha256": "845a8f677cfbd873b7f83e4d04e3f15b8ace5930727040460ad7a5002d5cba8b",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/run_routes.mjs": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 3120,
+      "sha256": "70a09efd367bfd406efcc1724a76441dcfd3ab4cb7689d1b5f8951c7bcd4cc59",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/runtime-controller.mjs": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 2277,
+      "sha256": "aa30471a8431e569f52ec18c86bccaad32c6b3d19da5ff83a6727dc708fec11e",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/scene-brief.md": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 2407,
+      "sha256": "78f20e15ffa6038da031fcec161880238165c55bfe92c5e3392e9309e2d830aa",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/scene-data.draft.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 41345,
+      "sha256": "d956ad93af8ff1e9636c590f9209918da59fa5533db4aed1aab7309aecf875f4",
+      "geometryRevision": "historical; see embedded revision"
+    },
+    "work/stage-log.md": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 2680,
+      "sha256": "b3512ece2d68ff530edc269fbbf3b502b5db296e9d6ff18bc4ffe0acb64191f4",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/stage2-graybox-report.md": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 613,
+      "sha256": "6913c72c53722955d19e480e2373ae34b4f16abac5e362363c36b5b685b927bd",
+      "geometryRevision": "historical; see embedded revision"
+    },
+    "work/stage4-detail-comparison.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 888829,
+      "sha256": "d5c77a9a47f4c61ae82052a5f7ceb7d887752423deecad50c654ca009f1e1ebf",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1440,
+      "pixelHeight": 640,
+      "mode": "RGB"
+    },
+    "work/structure-composition.json": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 14559,
+      "sha256": "e10827ba160124dd9796ee2c1943180b51d7197b20035c6ed8b53ae998432296",
+      "geometryRevision": "deep1-final-001"
+    },
+    "work/structure-preview.png": {
+      "purpose": "process, source, reproducible script or validation evidence",
+      "bytes": 1667241,
+      "sha256": "72dad446615495520c46ed998d3ee9e56020d6ce6e040b6199065db7424e7024",
+      "geometryRevision": "deep1-final-001",
+      "pixelWidth": 1760,
+      "pixelHeight": 512,
+      "mode": "RGB"
+    },
+    "manifest.json": {
+      "purpose": "this manifest; self hash intentionally omitted",
+      "sha256": null
+    }
+  }
+}

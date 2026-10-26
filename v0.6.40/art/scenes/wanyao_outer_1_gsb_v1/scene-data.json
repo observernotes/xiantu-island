@@ -1,0 +1,3039 @@
+{
+  "schemaVersion": "1.0",
+  "sceneId": "wanyao_outer_1_gsb_v1",
+  "geometryRevision": "wanyao-outer1-final-001",
+  "status": "verified",
+  "space": {
+    "origin": "top-left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "units": "logical-pixel",
+    "logicalWidth": 3200,
+    "logicalHeight": 896,
+    "tileSize": 32,
+    "columns": 100,
+    "rows": 28
+  },
+  "actor": {
+    "parameterRevision": "wanyao-base-feel-20261027-001",
+    "parameterSource": [
+      "game/src/config/feel.ts",
+      "game/src/move.ts",
+      "game/src/scenes/Player.ts"
+    ],
+    "sourceRevision": {
+      "game/src/config/feel.ts": "9375297a15b04012633197a935f4d9ffd403c3ff8d1e055cb585dd5f81acdeec",
+      "game/src/move.ts": "585c9987623cbe532d7f65508773addd52ccd2f312e5c2ee592e9e6f2f686a74",
+      "game/src/scenes/Player.ts": "ec9426ed625784532c6e632a1755bd16076cc3f559d177f465b741341193f513"
+    },
+    "provisional": false,
+    "visualBounds": {
+      "width": 96,
+      "height": 96,
+      "anchor": "feet-center",
+      "bodyVisibleHeightApprox": 64
+    },
+    "visualAsset": {
+      "path": "work/preview/player-reference-idle.png",
+      "width": 96,
+      "height": 96,
+      "source": "read-only approved qingyun reference static player frame"
+    },
+    "collider": {
+      "shape": "aabb",
+      "width": 26,
+      "height": 58,
+      "anchor": "feet-center"
+    },
+    "abilities": [
+      "walk",
+      "jump",
+      "double-jump",
+      "climb",
+      "drop-through"
+    ],
+    "movement": {
+      "gravity": 2000,
+      "maxFallSpeed": 670,
+      "walkSpeed": 130,
+      "groundAccel": 2400,
+      "groundDecel": 3000,
+      "airAccel": 700,
+      "airMaxSpeed": 130,
+      "jumpSpeed": 560,
+      "coyoteMs": 60,
+      "jumpBufferMs": 80,
+      "doubleJumpVy": 480,
+      "doubleJumpVx": 330,
+      "climbSpeed": 110,
+      "ropeGrabRangeX": 18,
+      "ropeJumpVx": 160,
+      "ropeJumpVy": 360,
+      "dropThroughMs": 220,
+      "ropeRegrabMs": 250
+    },
+    "failureRules": {
+      "manualReset": "R to normal spawn; clears motion",
+      "fall": "world bottom +160 resets; map continuous floor prevents void fall"
+    },
+    "applicability": "Base speed/jump 100. Independent AABB adapter, not Phaser integration; combat excluded."
+  },
+  "assets": [
+    {
+      "id": "asset_background",
+      "role": "background",
+      "path": "background.png",
+      "pixelWidth": 3200,
+      "pixelHeight": 896,
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "asset_playable",
+      "role": "playable",
+      "path": "playable.png",
+      "pixelWidth": 3200,
+      "pixelHeight": 896,
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "s_dock",
+      "polyline": [
+        [
+          0,
+          768
+        ],
+        [
+          384,
+          768
+        ]
+      ],
+      "support": "solid",
+      "status": "verified",
+      "landingRange": [
+        13,
+        371
+      ],
+      "walkRegion": [
+        [
+          13,
+          710
+        ],
+        [
+          371,
+          710
+        ],
+        [
+          371,
+          768
+        ],
+        [
+          13,
+          768
+        ]
+      ],
+      "clearance": 58,
+      "evidence": [
+        {
+          "id": "s_dock",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "Chrome normal-spawn continuous replay prefix; full body at visible front contact lip",
+          "path": "work/evidence/standing-s_dock.png",
+          "result": "verified"
+        },
+        {
+          "id": "s_dock",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "source rectification + 3 contact samples + ruler; 1px AA tolerance",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_camp",
+      "polyline": [
+        [
+          384,
+          832
+        ],
+        [
+          704,
+          832
+        ]
+      ],
+      "support": "solid",
+      "status": "verified",
+      "landingRange": [
+        397,
+        691
+      ],
+      "walkRegion": [
+        [
+          397,
+          774
+        ],
+        [
+          691,
+          774
+        ],
+        [
+          691,
+          832
+        ],
+        [
+          397,
+          832
+        ]
+      ],
+      "clearance": 58,
+      "evidence": [
+        {
+          "id": "s_camp",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "Chrome normal-spawn continuous replay prefix; full body at visible front contact lip",
+          "path": "work/evidence/standing-s_camp.png",
+          "result": "verified"
+        },
+        {
+          "id": "s_camp",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "source rectification + 3 contact samples + ruler; 1px AA tolerance",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_forest_w",
+      "polyline": [
+        [
+          704,
+          832
+        ],
+        [
+          1792,
+          832
+        ]
+      ],
+      "support": "solid",
+      "status": "verified",
+      "landingRange": [
+        717,
+        1779
+      ],
+      "walkRegion": [
+        [
+          717,
+          774
+        ],
+        [
+          1779,
+          774
+        ],
+        [
+          1779,
+          832
+        ],
+        [
+          717,
+          832
+        ]
+      ],
+      "clearance": 58,
+      "evidence": [
+        {
+          "id": "s_forest_w",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "Chrome normal-spawn continuous replay prefix; full body at visible front contact lip",
+          "path": "work/evidence/standing-s_forest_w.png",
+          "result": "verified"
+        },
+        {
+          "id": "s_forest_w",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "source rectification + 3 contact samples + ruler; 1px AA tolerance",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_ridge",
+      "polyline": [
+        [
+          1792,
+          768
+        ],
+        [
+          2272,
+          768
+        ]
+      ],
+      "support": "solid",
+      "status": "verified",
+      "landingRange": [
+        1805,
+        2259
+      ],
+      "walkRegion": [
+        [
+          1805,
+          710
+        ],
+        [
+          2259,
+          710
+        ],
+        [
+          2259,
+          768
+        ],
+        [
+          1805,
+          768
+        ]
+      ],
+      "clearance": 58,
+      "evidence": [
+        {
+          "id": "s_ridge",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "Chrome normal-spawn continuous replay prefix; full body at visible front contact lip",
+          "path": "work/evidence/standing-s_ridge.png",
+          "result": "verified"
+        },
+        {
+          "id": "s_ridge",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "source rectification + 3 contact samples + ruler; 1px AA tolerance",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_forest_e",
+      "polyline": [
+        [
+          2272,
+          832
+        ],
+        [
+          3200,
+          832
+        ]
+      ],
+      "support": "solid",
+      "status": "verified",
+      "landingRange": [
+        2285,
+        3187
+      ],
+      "walkRegion": [
+        [
+          2285,
+          774
+        ],
+        [
+          3187,
+          774
+        ],
+        [
+          3187,
+          832
+        ],
+        [
+          2285,
+          832
+        ]
+      ],
+      "clearance": 58,
+      "evidence": [
+        {
+          "id": "s_forest_e",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "Chrome normal-spawn continuous replay prefix; full body at visible front contact lip",
+          "path": "work/evidence/standing-s_forest_e.png",
+          "result": "verified"
+        },
+        {
+          "id": "s_forest_e",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "source rectification + 3 contact samples + ruler; 1px AA tolerance",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_w_low",
+      "polyline": [
+        [
+          768,
+          704
+        ],
+        [
+          1184,
+          704
+        ]
+      ],
+      "support": "one-way",
+      "status": "verified",
+      "landingRange": [
+        781,
+        1171
+      ],
+      "walkRegion": [
+        [
+          781,
+          646
+        ],
+        [
+          1171,
+          646
+        ],
+        [
+          1171,
+          704
+        ],
+        [
+          781,
+          704
+        ]
+      ],
+      "clearance": 58,
+      "evidence": [
+        {
+          "id": "s_w_low",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "Chrome normal-spawn continuous replay prefix; full body at visible front contact lip",
+          "path": "work/evidence/standing-s_w_low.png",
+          "result": "verified"
+        },
+        {
+          "id": "s_w_low",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "source rectification + 3 contact samples + ruler; 1px AA tolerance",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_w_high",
+      "polyline": [
+        [
+          960,
+          576
+        ],
+        [
+          1440,
+          576
+        ]
+      ],
+      "support": "one-way",
+      "status": "verified",
+      "landingRange": [
+        973,
+        1427
+      ],
+      "walkRegion": [
+        [
+          973,
+          518
+        ],
+        [
+          1427,
+          518
+        ],
+        [
+          1427,
+          576
+        ],
+        [
+          973,
+          576
+        ]
+      ],
+      "clearance": 58,
+      "evidence": [
+        {
+          "id": "s_w_high",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "Chrome normal-spawn continuous replay prefix; full body at visible front contact lip",
+          "path": "work/evidence/standing-s_w_high.png",
+          "result": "verified"
+        },
+        {
+          "id": "s_w_high",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "source rectification + 3 contact samples + ruler; 1px AA tolerance",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_mid",
+      "polyline": [
+        [
+          1344,
+          704
+        ],
+        [
+          1696,
+          704
+        ]
+      ],
+      "support": "one-way",
+      "status": "verified",
+      "landingRange": [
+        1357,
+        1683
+      ],
+      "walkRegion": [
+        [
+          1357,
+          646
+        ],
+        [
+          1683,
+          646
+        ],
+        [
+          1683,
+          704
+        ],
+        [
+          1357,
+          704
+        ]
+      ],
+      "clearance": 58,
+      "evidence": [
+        {
+          "id": "s_mid",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "Chrome normal-spawn continuous replay prefix; full body at visible front contact lip",
+          "path": "work/evidence/standing-s_mid.png",
+          "result": "verified"
+        },
+        {
+          "id": "s_mid",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "source rectification + 3 contact samples + ruler; 1px AA tolerance",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_c_low",
+      "polyline": [
+        [
+          1856,
+          640
+        ],
+        [
+          2208,
+          640
+        ]
+      ],
+      "support": "one-way",
+      "status": "verified",
+      "landingRange": [
+        1869,
+        2195
+      ],
+      "walkRegion": [
+        [
+          1869,
+          582
+        ],
+        [
+          2195,
+          582
+        ],
+        [
+          2195,
+          640
+        ],
+        [
+          1869,
+          640
+        ]
+      ],
+      "clearance": 58,
+      "evidence": [
+        {
+          "id": "s_c_low",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "Chrome normal-spawn continuous replay prefix; full body at visible front contact lip",
+          "path": "work/evidence/standing-s_c_low.png",
+          "result": "verified"
+        },
+        {
+          "id": "s_c_low",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "source rectification + 3 contact samples + ruler; 1px AA tolerance",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_c_high",
+      "polyline": [
+        [
+          1920,
+          512
+        ],
+        [
+          2400,
+          512
+        ]
+      ],
+      "support": "one-way",
+      "status": "verified",
+      "landingRange": [
+        1933,
+        2387
+      ],
+      "walkRegion": [
+        [
+          1933,
+          454
+        ],
+        [
+          2387,
+          454
+        ],
+        [
+          2387,
+          512
+        ],
+        [
+          1933,
+          512
+        ]
+      ],
+      "clearance": 58,
+      "evidence": [
+        {
+          "id": "s_c_high",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "Chrome normal-spawn continuous replay prefix; full body at visible front contact lip",
+          "path": "work/evidence/standing-s_c_high.png",
+          "result": "verified"
+        },
+        {
+          "id": "s_c_high",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "source rectification + 3 contact samples + ruler; 1px AA tolerance",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_e_low",
+      "polyline": [
+        [
+          2432,
+          704
+        ],
+        [
+          2912,
+          704
+        ]
+      ],
+      "support": "one-way",
+      "status": "verified",
+      "landingRange": [
+        2445,
+        2899
+      ],
+      "walkRegion": [
+        [
+          2445,
+          646
+        ],
+        [
+          2899,
+          646
+        ],
+        [
+          2899,
+          704
+        ],
+        [
+          2445,
+          704
+        ]
+      ],
+      "clearance": 58,
+      "evidence": [
+        {
+          "id": "s_e_low",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "Chrome normal-spawn continuous replay prefix; full body at visible front contact lip",
+          "path": "work/evidence/standing-s_e_low.png",
+          "result": "verified"
+        },
+        {
+          "id": "s_e_low",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "source rectification + 3 contact samples + ruler; 1px AA tolerance",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_e_high",
+      "polyline": [
+        [
+          2624,
+          576
+        ],
+        [
+          3104,
+          576
+        ]
+      ],
+      "support": "one-way",
+      "status": "verified",
+      "landingRange": [
+        2637,
+        3091
+      ],
+      "walkRegion": [
+        [
+          2637,
+          518
+        ],
+        [
+          3091,
+          518
+        ],
+        [
+          3091,
+          576
+        ],
+        [
+          2637,
+          576
+        ]
+      ],
+      "clearance": 58,
+      "evidence": [
+        {
+          "id": "s_e_high",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "Chrome normal-spawn continuous replay prefix; full body at visible front contact lip",
+          "path": "work/evidence/standing-s_e_high.png",
+          "result": "verified"
+        },
+        {
+          "id": "s_e_high",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "source rectification + 3 contact samples + ruler; 1px AA tolerance",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    }
+  ],
+  "climbs": [
+    {
+      "id": "c_rope_28",
+      "kind": "rope",
+      "corridor": [
+        [
+          894,
+          704
+        ],
+        [
+          930,
+          704
+        ],
+        [
+          930,
+          832
+        ],
+        [
+          894,
+          832
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            912,
+            832
+          ],
+          "surface": "s_forest_w"
+        },
+        "end": {
+          "position": [
+            912,
+            704
+          ],
+          "surface": "s_w_low"
+        }
+      },
+      "entryExitRange": 18,
+      "direction": "both",
+      "status": "verified",
+      "sourceNote": "Original 96px hanging rope extended to both actual standable endpoints; source map remains read-only.",
+      "evidence": [
+        {
+          "id": "c_rope_28",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "continuous normal-spawn full tour and both-direction climbs; no mid-route reset or teleport",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        },
+        {
+          "id": "c_rope_28",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "data references, body geometry, contact support and safe region check",
+          "path": "work/final-data-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "c_rope_34",
+      "kind": "rope",
+      "corridor": [
+        [
+          1086,
+          576
+        ],
+        [
+          1122,
+          576
+        ],
+        [
+          1122,
+          704
+        ],
+        [
+          1086,
+          704
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1104,
+            704
+          ],
+          "surface": "s_w_low"
+        },
+        "end": {
+          "position": [
+            1104,
+            576
+          ],
+          "surface": "s_w_high"
+        }
+      },
+      "entryExitRange": 18,
+      "direction": "both",
+      "status": "verified",
+      "sourceNote": "Original 96px hanging rope extended to both actual standable endpoints; source map remains read-only.",
+      "evidence": [
+        {
+          "id": "c_rope_34",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "continuous normal-spawn full tour and both-direction climbs; no mid-route reset or teleport",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        },
+        {
+          "id": "c_rope_34",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "data references, body geometry, contact support and safe region check",
+          "path": "work/final-data-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "c_rope_47",
+      "kind": "rope",
+      "corridor": [
+        [
+          1502,
+          704
+        ],
+        [
+          1538,
+          704
+        ],
+        [
+          1538,
+          832
+        ],
+        [
+          1502,
+          832
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1520,
+            832
+          ],
+          "surface": "s_forest_w"
+        },
+        "end": {
+          "position": [
+            1520,
+            704
+          ],
+          "surface": "s_mid"
+        }
+      },
+      "entryExitRange": 18,
+      "direction": "both",
+      "status": "verified",
+      "sourceNote": "Original 96px hanging rope extended to both actual standable endpoints; source map remains read-only.",
+      "evidence": [
+        {
+          "id": "c_rope_47",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "continuous normal-spawn full tour and both-direction climbs; no mid-route reset or teleport",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        },
+        {
+          "id": "c_rope_47",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "data references, body geometry, contact support and safe region check",
+          "path": "work/final-data-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "c_rope_62",
+      "kind": "rope",
+      "corridor": [
+        [
+          1982,
+          640
+        ],
+        [
+          2018,
+          640
+        ],
+        [
+          2018,
+          768
+        ],
+        [
+          1982,
+          768
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            2000,
+            768
+          ],
+          "surface": "s_ridge"
+        },
+        "end": {
+          "position": [
+            2000,
+            640
+          ],
+          "surface": "s_c_low"
+        }
+      },
+      "entryExitRange": 18,
+      "direction": "both",
+      "status": "verified",
+      "sourceNote": "Original 96px hanging rope extended to both actual standable endpoints; source map remains read-only.",
+      "evidence": [
+        {
+          "id": "c_rope_62",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "continuous normal-spawn full tour and both-direction climbs; no mid-route reset or teleport",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        },
+        {
+          "id": "c_rope_62",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "data references, body geometry, contact support and safe region check",
+          "path": "work/final-data-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "c_rope_66",
+      "kind": "rope",
+      "corridor": [
+        [
+          2110,
+          512
+        ],
+        [
+          2146,
+          512
+        ],
+        [
+          2146,
+          640
+        ],
+        [
+          2110,
+          640
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            2128,
+            640
+          ],
+          "surface": "s_c_low"
+        },
+        "end": {
+          "position": [
+            2128,
+            512
+          ],
+          "surface": "s_c_high"
+        }
+      },
+      "entryExitRange": 18,
+      "direction": "both",
+      "status": "verified",
+      "sourceNote": "Original 96px hanging rope extended to both actual standable endpoints; source map remains read-only.",
+      "evidence": [
+        {
+          "id": "c_rope_66",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "continuous normal-spawn full tour and both-direction climbs; no mid-route reset or teleport",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        },
+        {
+          "id": "c_rope_66",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "data references, body geometry, contact support and safe region check",
+          "path": "work/final-data-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "c_rope_80",
+      "kind": "rope",
+      "corridor": [
+        [
+          2558,
+          704
+        ],
+        [
+          2594,
+          704
+        ],
+        [
+          2594,
+          832
+        ],
+        [
+          2558,
+          832
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            2576,
+            832
+          ],
+          "surface": "s_forest_e"
+        },
+        "end": {
+          "position": [
+            2576,
+            704
+          ],
+          "surface": "s_e_low"
+        }
+      },
+      "entryExitRange": 18,
+      "direction": "both",
+      "status": "verified",
+      "sourceNote": "Original 96px hanging rope extended to both actual standable endpoints; source map remains read-only.",
+      "evidence": [
+        {
+          "id": "c_rope_80",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "continuous normal-spawn full tour and both-direction climbs; no mid-route reset or teleport",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        },
+        {
+          "id": "c_rope_80",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "data references, body geometry, contact support and safe region check",
+          "path": "work/final-data-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "c_rope_88",
+      "kind": "rope",
+      "corridor": [
+        [
+          2814,
+          576
+        ],
+        [
+          2850,
+          576
+        ],
+        [
+          2850,
+          704
+        ],
+        [
+          2814,
+          704
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            2832,
+            704
+          ],
+          "surface": "s_e_low"
+        },
+        "end": {
+          "position": [
+            2832,
+            576
+          ],
+          "surface": "s_e_high"
+        }
+      },
+      "entryExitRange": 18,
+      "direction": "both",
+      "status": "verified",
+      "sourceNote": "Original 96px hanging rope extended to both actual standable endpoints; source map remains read-only.",
+      "evidence": [
+        {
+          "id": "c_rope_88",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "continuous normal-spawn full tour and both-direction climbs; no mid-route reset or teleport",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        },
+        {
+          "id": "c_rope_88",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "data references, body geometry, contact support and safe region check",
+          "path": "work/final-data-check.json",
+          "result": "verified"
+        }
+      ]
+    }
+  ],
+  "stairs": [],
+  "solids": [
+    {
+      "id": "body_s_dock",
+      "surface": "s_dock",
+      "polygon": [
+        [
+          0,
+          768
+        ],
+        [
+          384,
+          768
+        ],
+        [
+          384,
+          896
+        ],
+        [
+          0,
+          896
+        ]
+      ],
+      "status": "verified",
+      "openings": [],
+      "evidence": [
+        {
+          "id": "body_s_dock",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "continuous normal-spawn full tour and both-direction climbs; no mid-route reset or teleport",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        },
+        {
+          "id": "body_s_dock",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "data references, body geometry, contact support and safe region check",
+          "path": "work/final-data-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "body_s_camp",
+      "surface": "s_camp",
+      "polygon": [
+        [
+          384,
+          832
+        ],
+        [
+          704,
+          832
+        ],
+        [
+          704,
+          896
+        ],
+        [
+          384,
+          896
+        ]
+      ],
+      "status": "verified",
+      "openings": [],
+      "evidence": [
+        {
+          "id": "body_s_camp",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "continuous normal-spawn full tour and both-direction climbs; no mid-route reset or teleport",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        },
+        {
+          "id": "body_s_camp",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "data references, body geometry, contact support and safe region check",
+          "path": "work/final-data-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "body_s_forest_w",
+      "surface": "s_forest_w",
+      "polygon": [
+        [
+          704,
+          832
+        ],
+        [
+          1792,
+          832
+        ],
+        [
+          1792,
+          896
+        ],
+        [
+          704,
+          896
+        ]
+      ],
+      "status": "verified",
+      "openings": [],
+      "evidence": [
+        {
+          "id": "body_s_forest_w",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "continuous normal-spawn full tour and both-direction climbs; no mid-route reset or teleport",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        },
+        {
+          "id": "body_s_forest_w",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "data references, body geometry, contact support and safe region check",
+          "path": "work/final-data-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "body_s_ridge",
+      "surface": "s_ridge",
+      "polygon": [
+        [
+          1792,
+          768
+        ],
+        [
+          2272,
+          768
+        ],
+        [
+          2272,
+          896
+        ],
+        [
+          1792,
+          896
+        ]
+      ],
+      "status": "verified",
+      "openings": [],
+      "evidence": [
+        {
+          "id": "body_s_ridge",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "continuous normal-spawn full tour and both-direction climbs; no mid-route reset or teleport",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        },
+        {
+          "id": "body_s_ridge",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "data references, body geometry, contact support and safe region check",
+          "path": "work/final-data-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "body_s_forest_e",
+      "surface": "s_forest_e",
+      "polygon": [
+        [
+          2272,
+          832
+        ],
+        [
+          3200,
+          832
+        ],
+        [
+          3200,
+          896
+        ],
+        [
+          2272,
+          896
+        ]
+      ],
+      "status": "verified",
+      "openings": [],
+      "evidence": [
+        {
+          "id": "body_s_forest_e",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "continuous normal-spawn full tour and both-direction climbs; no mid-route reset or teleport",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        },
+        {
+          "id": "body_s_forest_e",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "data references, body geometry, contact support and safe region check",
+          "path": "work/final-data-check.json",
+          "result": "verified"
+        }
+      ]
+    }
+  ],
+  "hazards": [],
+  "points": [
+    {
+      "id": "start_spawn",
+      "type": "spawn",
+      "position": [
+        128,
+        768
+      ],
+      "surface": "s_dock",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "start_spawn",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "continuous normal-spawn full tour and both-direction climbs; no mid-route reset or teleport",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        },
+        {
+          "id": "start_spawn",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "data references, body geometry, contact support and safe region check",
+          "path": "work/final-data-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "ferry",
+      "type": "ferry",
+      "position": [
+        272,
+        768
+      ],
+      "surface": "s_dock",
+      "status": "verified",
+      "returnTo": "luoxia_town",
+      "interactionRange": [
+        192,
+        352
+      ],
+      "evidence": [
+        {
+          "id": "ferry",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "continuous normal-spawn full tour and both-direction climbs; no mid-route reset or teleport",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        },
+        {
+          "id": "ferry",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "data references, body geometry, contact support and safe region check",
+          "path": "work/final-data-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "hunter_lei",
+      "type": "npc",
+      "position": [
+        528,
+        832
+      ],
+      "surface": "s_camp",
+      "status": "verified",
+      "npc": "hunter_lei",
+      "evidence": [
+        {
+          "id": "hunter_lei",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "continuous normal-spawn full tour and both-direction climbs; no mid-route reset or teleport",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        },
+        {
+          "id": "hunter_lei",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "data references, body geometry, contact support and safe region check",
+          "path": "work/final-data-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "goal_east",
+      "type": "goal",
+      "position": [
+        3120,
+        832
+      ],
+      "surface": "s_forest_e",
+      "status": "verified",
+      "target": "wanyao_outer_2",
+      "targetPortal": "portal_to_outer_1",
+      "sourceId": "portal_to_outer_2",
+      "evidence": [
+        {
+          "id": "goal_east",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "continuous normal-spawn full tour and both-direction climbs; no mid-route reset or teleport",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        },
+        {
+          "id": "goal_east",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "data references, body geometry, contact support and safe region check",
+          "path": "work/final-data-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "herb_w",
+      "type": "gather",
+      "position": [
+        1232,
+        576
+      ],
+      "surface": "s_w_high",
+      "status": "verified",
+      "item": "spirit_herb",
+      "evidence": [
+        {
+          "id": "herb_w",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "continuous normal-spawn full tour and both-direction climbs; no mid-route reset or teleport",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        },
+        {
+          "id": "herb_w",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "data references, body geometry, contact support and safe region check",
+          "path": "work/final-data-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "herb_c",
+      "type": "gather",
+      "position": [
+        2256,
+        512
+      ],
+      "surface": "s_c_high",
+      "status": "verified",
+      "item": "spirit_herb",
+      "evidence": [
+        {
+          "id": "herb_c",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "continuous normal-spawn full tour and both-direction climbs; no mid-route reset or teleport",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        },
+        {
+          "id": "herb_c",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "data references, body geometry, contact support and safe region check",
+          "path": "work/final-data-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "copper_e",
+      "type": "gather",
+      "position": [
+        2960,
+        576
+      ],
+      "surface": "s_e_high",
+      "status": "verified",
+      "item": "spirit_copper",
+      "evidence": [
+        {
+          "id": "copper_e",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "continuous normal-spawn full tour and both-direction climbs; no mid-route reset or teleport",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        },
+        {
+          "id": "copper_e",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "data references, body geometry, contact support and safe region check",
+          "path": "work/final-data-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "sense_chest_01",
+      "type": "chest",
+      "position": [
+        1040,
+        576
+      ],
+      "surface": "s_w_high",
+      "status": "verified",
+      "item": "hp_pill_small",
+      "evidence": [
+        {
+          "id": "sense_chest_01",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "continuous normal-spawn full tour and both-direction climbs; no mid-route reset or teleport",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        },
+        {
+          "id": "sense_chest_01",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "data references, body geometry, contact support and safe region check",
+          "path": "work/final-data-check.json",
+          "result": "verified"
+        }
+      ]
+    }
+  ],
+  "transitions": [
+    {
+      "id": "c_rope_28_up",
+      "from": "s_forest_w",
+      "to": "s_w_low",
+      "action": "climb-up",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "c_rope_28_up",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "actual directed enter/arrive or surface/action span in a continuous normal-spawn replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": {
+        "baseMovePoints": 100
+      },
+      "climb": "c_rope_28"
+    },
+    {
+      "id": "c_rope_28_down",
+      "from": "s_w_low",
+      "to": "s_forest_w",
+      "action": "climb-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "c_rope_28_down",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "actual directed enter/arrive or surface/action span in a continuous normal-spawn replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": {
+        "baseMovePoints": 100
+      },
+      "climb": "c_rope_28"
+    },
+    {
+      "id": "c_rope_34_up",
+      "from": "s_w_low",
+      "to": "s_w_high",
+      "action": "climb-up",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "c_rope_34_up",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "actual directed enter/arrive or surface/action span in a continuous normal-spawn replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": {
+        "baseMovePoints": 100
+      },
+      "climb": "c_rope_34"
+    },
+    {
+      "id": "c_rope_34_down",
+      "from": "s_w_high",
+      "to": "s_w_low",
+      "action": "climb-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "c_rope_34_down",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "actual directed enter/arrive or surface/action span in a continuous normal-spawn replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": {
+        "baseMovePoints": 100
+      },
+      "climb": "c_rope_34"
+    },
+    {
+      "id": "c_rope_47_up",
+      "from": "s_forest_w",
+      "to": "s_mid",
+      "action": "climb-up",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "c_rope_47_up",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "actual directed enter/arrive or surface/action span in a continuous normal-spawn replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": {
+        "baseMovePoints": 100
+      },
+      "climb": "c_rope_47"
+    },
+    {
+      "id": "c_rope_47_down",
+      "from": "s_mid",
+      "to": "s_forest_w",
+      "action": "climb-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "c_rope_47_down",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "actual directed enter/arrive or surface/action span in a continuous normal-spawn replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": {
+        "baseMovePoints": 100
+      },
+      "climb": "c_rope_47"
+    },
+    {
+      "id": "c_rope_62_up",
+      "from": "s_ridge",
+      "to": "s_c_low",
+      "action": "climb-up",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "c_rope_62_up",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "actual directed enter/arrive or surface/action span in a continuous normal-spawn replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": {
+        "baseMovePoints": 100
+      },
+      "climb": "c_rope_62"
+    },
+    {
+      "id": "c_rope_62_down",
+      "from": "s_c_low",
+      "to": "s_ridge",
+      "action": "climb-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "c_rope_62_down",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "actual directed enter/arrive or surface/action span in a continuous normal-spawn replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": {
+        "baseMovePoints": 100
+      },
+      "climb": "c_rope_62"
+    },
+    {
+      "id": "c_rope_66_up",
+      "from": "s_c_low",
+      "to": "s_c_high",
+      "action": "climb-up",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "c_rope_66_up",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "actual directed enter/arrive or surface/action span in a continuous normal-spawn replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": {
+        "baseMovePoints": 100
+      },
+      "climb": "c_rope_66"
+    },
+    {
+      "id": "c_rope_66_down",
+      "from": "s_c_high",
+      "to": "s_c_low",
+      "action": "climb-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "c_rope_66_down",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "actual directed enter/arrive or surface/action span in a continuous normal-spawn replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": {
+        "baseMovePoints": 100
+      },
+      "climb": "c_rope_66"
+    },
+    {
+      "id": "c_rope_80_up",
+      "from": "s_forest_e",
+      "to": "s_e_low",
+      "action": "climb-up",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "c_rope_80_up",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "actual directed enter/arrive or surface/action span in a continuous normal-spawn replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": {
+        "baseMovePoints": 100
+      },
+      "climb": "c_rope_80"
+    },
+    {
+      "id": "c_rope_80_down",
+      "from": "s_e_low",
+      "to": "s_forest_e",
+      "action": "climb-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "c_rope_80_down",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "actual directed enter/arrive or surface/action span in a continuous normal-spawn replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": {
+        "baseMovePoints": 100
+      },
+      "climb": "c_rope_80"
+    },
+    {
+      "id": "c_rope_88_up",
+      "from": "s_e_low",
+      "to": "s_e_high",
+      "action": "climb-up",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "c_rope_88_up",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "actual directed enter/arrive or surface/action span in a continuous normal-spawn replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": {
+        "baseMovePoints": 100
+      },
+      "climb": "c_rope_88"
+    },
+    {
+      "id": "c_rope_88_down",
+      "from": "s_e_high",
+      "to": "s_e_low",
+      "action": "climb-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "c_rope_88_down",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "actual directed enter/arrive or surface/action span in a continuous normal-spawn replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": {
+        "baseMovePoints": 100
+      },
+      "climb": "c_rope_88"
+    },
+    {
+      "id": "s_dock_to_s_camp",
+      "from": "s_dock",
+      "to": "s_camp",
+      "action": "drop",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "s_dock_to_s_camp",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "actual directed enter/arrive or surface/action span in a continuous normal-spawn replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": {
+        "baseMovePoints": 100
+      }
+    },
+    {
+      "id": "s_camp_to_s_forest_w",
+      "from": "s_camp",
+      "to": "s_forest_w",
+      "action": "walk",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "s_camp_to_s_forest_w",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "actual directed enter/arrive or surface/action span in a continuous normal-spawn replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": {
+        "baseMovePoints": 100
+      }
+    },
+    {
+      "id": "s_forest_w_to_s_ridge",
+      "from": "s_forest_w",
+      "to": "s_ridge",
+      "action": "jump",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "s_forest_w_to_s_ridge",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "actual directed enter/arrive or surface/action span in a continuous normal-spawn replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": {
+        "baseMovePoints": 100
+      }
+    },
+    {
+      "id": "s_ridge_to_s_forest_e",
+      "from": "s_ridge",
+      "to": "s_forest_e",
+      "action": "drop",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "s_ridge_to_s_forest_e",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "actual directed enter/arrive or surface/action span in a continuous normal-spawn replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": {
+        "baseMovePoints": 100
+      }
+    },
+    {
+      "id": "s_forest_e_to_s_ridge",
+      "from": "s_forest_e",
+      "to": "s_ridge",
+      "action": "jump",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "s_forest_e_to_s_ridge",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "actual directed enter/arrive or surface/action span in a continuous normal-spawn replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": {
+        "baseMovePoints": 100
+      }
+    },
+    {
+      "id": "s_ridge_to_s_forest_w",
+      "from": "s_ridge",
+      "to": "s_forest_w",
+      "action": "drop",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "s_ridge_to_s_forest_w",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "actual directed enter/arrive or surface/action span in a continuous normal-spawn replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": {
+        "baseMovePoints": 100
+      }
+    },
+    {
+      "id": "s_forest_w_to_s_camp",
+      "from": "s_forest_w",
+      "to": "s_camp",
+      "action": "walk",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "s_forest_w_to_s_camp",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "actual directed enter/arrive or surface/action span in a continuous normal-spawn replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": {
+        "baseMovePoints": 100
+      }
+    },
+    {
+      "id": "s_camp_to_s_dock",
+      "from": "s_camp",
+      "to": "s_dock",
+      "action": "jump",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "s_camp_to_s_dock",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "actual directed enter/arrive or surface/action span in a continuous normal-spawn replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": {
+        "baseMovePoints": 100
+      }
+    }
+  ],
+  "requiredRoutes": [
+    {
+      "id": "route_main",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "s_camp",
+        "s_forest_w",
+        "s_ridge",
+        "s_forest_e"
+      ],
+      "direction": "east",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "route_main",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "fixed60Hz input-only continuous normal spawn; browser same-input replay matched final state; 0 resets/teleports",
+          "path": "work/replays-final/route_main.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "route_return",
+      "from": "start_spawn",
+      "to": "ferry",
+      "via": [
+        "goal_east",
+        "s_ridge",
+        "s_camp"
+      ],
+      "direction": "east then west",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "route_return",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "fixed60Hz input-only continuous normal spawn; browser same-input replay matched final state; 0 resets/teleports",
+          "path": "work/replays-final/route_return.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "route_herb_w",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "c_rope_28",
+        "c_rope_34",
+        "herb_w"
+      ],
+      "direction": "east",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "route_herb_w",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "fixed60Hz input-only continuous normal spawn; browser same-input replay matched final state; 0 resets/teleports",
+          "path": "work/replays-final/route_herb_w.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "route_mid",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "c_rope_47",
+        "s_mid"
+      ],
+      "direction": "east",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "route_mid",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "fixed60Hz input-only continuous normal spawn; browser same-input replay matched final state; 0 resets/teleports",
+          "path": "work/replays-final/route_mid.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "route_herb_c",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "c_rope_62",
+        "c_rope_66",
+        "herb_c"
+      ],
+      "direction": "east",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "route_herb_c",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "fixed60Hz input-only continuous normal spawn; browser same-input replay matched final state; 0 resets/teleports",
+          "path": "work/replays-final/route_herb_c.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "route_copper_e",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "c_rope_80",
+        "c_rope_88",
+        "copper_e"
+      ],
+      "direction": "east",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "route_copper_e",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "fixed60Hz input-only continuous normal spawn; browser same-input replay matched final state; 0 resets/teleports",
+          "path": "work/replays-final/route_copper_e.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "route_full_tour",
+      "from": "start_spawn",
+      "to": "ferry",
+      "via": [
+        "herb_w",
+        "s_mid",
+        "herb_c",
+        "copper_e",
+        "goal_east",
+        "s_camp"
+      ],
+      "direction": "east then west",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "route_full_tour",
+          "geometryRevision": "wanyao-outer1-final-001",
+          "actorParameterRevision": "wanyao-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "method": "fixed60Hz input-only continuous normal spawn; browser same-input replay matched final state; 0 resets/teleports",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    }
+  ],
+  "spawnRegions": [
+    {
+      "id": 12,
+      "name": "spawn_vine_imp_12",
+      "type": "spawn",
+      "x": 704,
+      "y": 832,
+      "width": 608,
+      "height": 0,
+      "properties": [
+        {
+          "name": "monster",
+          "type": "string",
+          "value": "vine_imp"
+        },
+        {
+          "name": "count",
+          "type": "int",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "name": "spawn_vine_imp_13",
+      "type": "spawn",
+      "x": 768,
+      "y": 704,
+      "width": 416,
+      "height": 0,
+      "properties": [
+        {
+          "name": "monster",
+          "type": "string",
+          "value": "vine_imp"
+        },
+        {
+          "name": "count",
+          "type": "int",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "name": "spawn_vine_imp_14",
+      "type": "spawn",
+      "x": 960,
+      "y": 576,
+      "width": 480,
+      "height": 0,
+      "properties": [
+        {
+          "name": "monster",
+          "type": "string",
+          "value": "vine_imp"
+        },
+        {
+          "name": "count",
+          "type": "int",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "name": "spawn_vine_imp_15",
+      "type": "spawn",
+      "x": 1344,
+      "y": 704,
+      "width": 352,
+      "height": 0,
+      "properties": [
+        {
+          "name": "monster",
+          "type": "string",
+          "value": "vine_imp"
+        },
+        {
+          "name": "count",
+          "type": "int",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "name": "spawn_vine_imp_16",
+      "type": "spawn",
+      "x": 1856,
+      "y": 640,
+      "width": 352,
+      "height": 0,
+      "properties": [
+        {
+          "name": "monster",
+          "type": "string",
+          "value": "vine_imp"
+        },
+        {
+          "name": "count",
+          "type": "int",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "name": "spawn_shadow_wolf_17",
+      "type": "spawn",
+      "x": 1792,
+      "y": 768,
+      "width": 480,
+      "height": 0,
+      "properties": [
+        {
+          "name": "monster",
+          "type": "string",
+          "value": "shadow_wolf"
+        },
+        {
+          "name": "count",
+          "type": "int",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "name": "spawn_shadow_wolf_18",
+      "type": "spawn",
+      "x": 2304,
+      "y": 832,
+      "width": 768,
+      "height": 0,
+      "properties": [
+        {
+          "name": "monster",
+          "type": "string",
+          "value": "shadow_wolf"
+        },
+        {
+          "name": "count",
+          "type": "int",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "name": "spawn_shadow_wolf_19",
+      "type": "spawn",
+      "x": 2432,
+      "y": 704,
+      "width": 480,
+      "height": 0,
+      "properties": [
+        {
+          "name": "monster",
+          "type": "string",
+          "value": "shadow_wolf"
+        },
+        {
+          "name": "count",
+          "type": "int",
+          "value": 2
+        }
+      ]
+    }
+  ],
+  "safeRegions": [
+    {
+      "id": "safe_camp",
+      "columnRange": [
+        0,
+        21
+      ],
+      "bounds": [
+        0,
+        0,
+        704,
+        896
+      ],
+      "spawnsAllowed": false
+    }
+  ],
+  "excludedSourceObjects": [
+    {
+      "id": 24,
+      "name": "sense_hidden_chest_01",
+      "type": "hidden",
+      "x": 1040,
+      "y": 576,
+      "width": 0,
+      "height": 0,
+      "properties": [
+        {
+          "name": "enabled",
+          "type": "bool",
+          "value": false
+        },
+        {
+          "name": "reqSpirit",
+          "type": "int",
+          "value": 0
+        },
+        {
+          "name": "reveal",
+          "type": "string",
+          "value": "chest"
+        },
+        {
+          "name": "targetObject",
+          "type": "string",
+          "value": "sense_chest_01"
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "name": "sense_hidden_platform_01",
+      "type": "hidden",
+      "x": 2720,
+      "y": 512,
+      "width": 96,
+      "height": 32,
+      "properties": [
+        {
+          "name": "enabled",
+          "type": "bool",
+          "value": false
+        },
+        {
+          "name": "reqSpirit",
+          "type": "int",
+          "value": 10
+        },
+        {
+          "name": "reveal",
+          "type": "string",
+          "value": "platform"
+        }
+      ]
+    },
+    {
+      "id": 26,
+      "name": "enc_hidden_abode_anchor",
+      "type": "hidden",
+      "x": 656,
+      "y": 832,
+      "width": 0,
+      "height": 0,
+      "properties": [
+        {
+          "name": "enabled",
+          "type": "bool",
+          "value": false
+        },
+        {
+          "name": "reqSpirit",
+          "type": "int",
+          "value": 0
+        },
+        {
+          "name": "reveal",
+          "type": "string",
+          "value": "entrance"
+        },
+        {
+          "name": "encounter",
+          "type": "string",
+          "value": "enc_hidden_abode"
+        }
+      ]
+    }
+  ],
+  "diagnostics": {
+    "maskPalette": {
+      "stand": [
+        64,
+        220,
+        120,
+        255
+      ],
+      "walk": [
+        44,
+        132,
+        80,
+        255
+      ],
+      "climb": [
+        80,
+        180,
+        255,
+        255
+      ],
+      "jump": [
+        255,
+        190,
+        64,
+        255
+      ],
+      "drop": [
+        180,
+        100,
+        240,
+        255
+      ],
+      "point": [
+        255,
+        220,
+        80,
+        255
+      ]
+    },
+    "rasterizationOrder": [
+      "walk",
+      "stand",
+      "climb",
+      "jump",
+      "drop",
+      "point"
+    ],
+    "regionIdIndex": null,
+    "geometryRevision": "wanyao-outer1-final-001"
+  },
+  "validation": {
+    "status": "verified",
+    "geometryRevision": "wanyao-outer1-final-001",
+    "actorParameterRevision": "wanyao-base-feel-20261027-001",
+    "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+    "evidence": [
+      {
+        "id": "all-routes",
+        "geometryRevision": "wanyao-outer1-final-001",
+        "actorParameterRevision": "wanyao-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "method": "7 continuous normal-spawn routes",
+        "path": "work/final-routes.json",
+        "result": "verified"
+      },
+      {
+        "id": "body-sweep",
+        "geometryRevision": "wanyao-outer1-final-001",
+        "actorParameterRevision": "wanyao-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "method": "18059 full AABB frame sweeps against every solid; 0 penetration",
+        "path": "work/final-data-check.json",
+        "result": "verified"
+      },
+      {
+        "id": "physics",
+        "geometryRevision": "wanyao-outer1-final-001",
+        "actorParameterRevision": "wanyao-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "method": "9 action checks including explicitly synthetic ceiling fixture",
+        "path": "work/final-physics-check.json",
+        "result": "verified"
+      },
+      {
+        "id": "browser",
+        "geometryRevision": "wanyao-outer1-final-001",
+        "actorParameterRevision": "wanyao-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "method": "Chrome 8 checks + 12 natural standing contacts, errors0",
+        "path": "work/final-browser-check.json",
+        "result": "verified"
+      },
+      {
+        "id": "bottom-and-contact",
+        "geometryRevision": "wanyao-outer1-final-001",
+        "actorParameterRevision": "wanyao-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "method": "whole bottom inspection, 12 front-face lips, 7 ropes and14 standable ends",
+        "path": "work/final-geometry-measurements.json",
+        "result": "verified"
+      }
+    ],
+    "issues": []
+  },
+  "previewEntities": [
+    {
+      "id": "hunter_lei",
+      "sprite": "npc_hunter_lei",
+      "path": "work/preview/npc_hunter_lei-idle.png",
+      "position": [
+        528,
+        832
+      ],
+      "width": 96,
+      "height": 96,
+      "label": "雷猎户",
+      "role": "static reference only; no combat AI",
+      "source": "art/sprites/npc_hunter_lei.png",
+      "sourceSHA256": "a093788f8e77a2b49512e065839ed74992302fb8b211bac179e20b3bf4005d98"
+    },
+    {
+      "id": "spawn_vine_imp_12_0",
+      "sprite": "mon_vine_imp",
+      "path": "work/preview/mon_vine_imp-idle.png",
+      "position": [
+        805.3333333333334,
+        832
+      ],
+      "width": 64,
+      "height": 72,
+      "label": "藤妖",
+      "role": "static reference only; no combat AI",
+      "source": "art/sprites/mon_vine_imp.png",
+      "sourceSHA256": "62599818441527f1d89a81ff7e21d91b2b6e5dca5b461a0a6fdde082aa8fb204"
+    },
+    {
+      "id": "spawn_vine_imp_12_1",
+      "sprite": "mon_vine_imp",
+      "path": "work/preview/mon_vine_imp-idle.png",
+      "position": [
+        1008.0,
+        832
+      ],
+      "width": 64,
+      "height": 72,
+      "label": "藤妖",
+      "role": "static reference only; no combat AI",
+      "source": "art/sprites/mon_vine_imp.png",
+      "sourceSHA256": "62599818441527f1d89a81ff7e21d91b2b6e5dca5b461a0a6fdde082aa8fb204"
+    },
+    {
+      "id": "spawn_vine_imp_12_2",
+      "sprite": "mon_vine_imp",
+      "path": "work/preview/mon_vine_imp-idle.png",
+      "position": [
+        1210.6666666666667,
+        832
+      ],
+      "width": 64,
+      "height": 72,
+      "label": "藤妖",
+      "role": "static reference only; no combat AI",
+      "source": "art/sprites/mon_vine_imp.png",
+      "sourceSHA256": "62599818441527f1d89a81ff7e21d91b2b6e5dca5b461a0a6fdde082aa8fb204"
+    },
+    {
+      "id": "spawn_vine_imp_13_0",
+      "sprite": "mon_vine_imp",
+      "path": "work/preview/mon_vine_imp-idle.png",
+      "position": [
+        872.0,
+        704
+      ],
+      "width": 64,
+      "height": 72,
+      "label": "藤妖",
+      "role": "static reference only; no combat AI",
+      "source": "art/sprites/mon_vine_imp.png",
+      "sourceSHA256": "62599818441527f1d89a81ff7e21d91b2b6e5dca5b461a0a6fdde082aa8fb204"
+    },
+    {
+      "id": "spawn_vine_imp_13_1",
+      "sprite": "mon_vine_imp",
+      "path": "work/preview/mon_vine_imp-idle.png",
+      "position": [
+        1080.0,
+        704
+      ],
+      "width": 64,
+      "height": 72,
+      "label": "藤妖",
+      "role": "static reference only; no combat AI",
+      "source": "art/sprites/mon_vine_imp.png",
+      "sourceSHA256": "62599818441527f1d89a81ff7e21d91b2b6e5dca5b461a0a6fdde082aa8fb204"
+    },
+    {
+      "id": "spawn_vine_imp_14_0",
+      "sprite": "mon_vine_imp",
+      "path": "work/preview/mon_vine_imp-idle.png",
+      "position": [
+        1080.0,
+        576
+      ],
+      "width": 64,
+      "height": 72,
+      "label": "藤妖",
+      "role": "static reference only; no combat AI",
+      "source": "art/sprites/mon_vine_imp.png",
+      "sourceSHA256": "62599818441527f1d89a81ff7e21d91b2b6e5dca5b461a0a6fdde082aa8fb204"
+    },
+    {
+      "id": "spawn_vine_imp_14_1",
+      "sprite": "mon_vine_imp",
+      "path": "work/preview/mon_vine_imp-idle.png",
+      "position": [
+        1320.0,
+        576
+      ],
+      "width": 64,
+      "height": 72,
+      "label": "藤妖",
+      "role": "static reference only; no combat AI",
+      "source": "art/sprites/mon_vine_imp.png",
+      "sourceSHA256": "62599818441527f1d89a81ff7e21d91b2b6e5dca5b461a0a6fdde082aa8fb204"
+    },
+    {
+      "id": "spawn_vine_imp_15_0",
+      "sprite": "mon_vine_imp",
+      "path": "work/preview/mon_vine_imp-idle.png",
+      "position": [
+        1520.0,
+        704
+      ],
+      "width": 64,
+      "height": 72,
+      "label": "藤妖",
+      "role": "static reference only; no combat AI",
+      "source": "art/sprites/mon_vine_imp.png",
+      "sourceSHA256": "62599818441527f1d89a81ff7e21d91b2b6e5dca5b461a0a6fdde082aa8fb204"
+    },
+    {
+      "id": "spawn_vine_imp_16_0",
+      "sprite": "mon_vine_imp",
+      "path": "work/preview/mon_vine_imp-idle.png",
+      "position": [
+        1944.0,
+        640
+      ],
+      "width": 64,
+      "height": 72,
+      "label": "藤妖",
+      "role": "static reference only; no combat AI",
+      "source": "art/sprites/mon_vine_imp.png",
+      "sourceSHA256": "62599818441527f1d89a81ff7e21d91b2b6e5dca5b461a0a6fdde082aa8fb204"
+    },
+    {
+      "id": "spawn_vine_imp_16_1",
+      "sprite": "mon_vine_imp",
+      "path": "work/preview/mon_vine_imp-idle.png",
+      "position": [
+        2120.0,
+        640
+      ],
+      "width": 64,
+      "height": 72,
+      "label": "藤妖",
+      "role": "static reference only; no combat AI",
+      "source": "art/sprites/mon_vine_imp.png",
+      "sourceSHA256": "62599818441527f1d89a81ff7e21d91b2b6e5dca5b461a0a6fdde082aa8fb204"
+    },
+    {
+      "id": "spawn_shadow_wolf_17_0",
+      "sprite": "mon_shadow_wolf",
+      "path": "work/preview/mon_shadow_wolf-idle.png",
+      "position": [
+        1872.0,
+        768
+      ],
+      "width": 96,
+      "height": 64,
+      "label": "影狼",
+      "role": "static reference only; no combat AI",
+      "source": "art/sprites/mon_shadow_wolf.png",
+      "sourceSHA256": "83cd1d0b68baf8751593268118f6f250b34f72b53111c481efe1a3c4d6638d55"
+    },
+    {
+      "id": "spawn_shadow_wolf_17_1",
+      "sprite": "mon_shadow_wolf",
+      "path": "work/preview/mon_shadow_wolf-idle.png",
+      "position": [
+        2032.0,
+        768
+      ],
+      "width": 96,
+      "height": 64,
+      "label": "影狼",
+      "role": "static reference only; no combat AI",
+      "source": "art/sprites/mon_shadow_wolf.png",
+      "sourceSHA256": "83cd1d0b68baf8751593268118f6f250b34f72b53111c481efe1a3c4d6638d55"
+    },
+    {
+      "id": "spawn_shadow_wolf_17_2",
+      "sprite": "mon_shadow_wolf",
+      "path": "work/preview/mon_shadow_wolf-idle.png",
+      "position": [
+        2192.0,
+        768
+      ],
+      "width": 96,
+      "height": 64,
+      "label": "影狼",
+      "role": "static reference only; no combat AI",
+      "source": "art/sprites/mon_shadow_wolf.png",
+      "sourceSHA256": "83cd1d0b68baf8751593268118f6f250b34f72b53111c481efe1a3c4d6638d55"
+    },
+    {
+      "id": "spawn_shadow_wolf_18_0",
+      "sprite": "mon_shadow_wolf",
+      "path": "work/preview/mon_shadow_wolf-idle.png",
+      "position": [
+        2432.0,
+        832
+      ],
+      "width": 96,
+      "height": 64,
+      "label": "影狼",
+      "role": "static reference only; no combat AI",
+      "source": "art/sprites/mon_shadow_wolf.png",
+      "sourceSHA256": "83cd1d0b68baf8751593268118f6f250b34f72b53111c481efe1a3c4d6638d55"
+    },
+    {
+      "id": "spawn_shadow_wolf_18_1",
+      "sprite": "mon_shadow_wolf",
+      "path": "work/preview/mon_shadow_wolf-idle.png",
+      "position": [
+        2688.0,
+        832
+      ],
+      "width": 96,
+      "height": 64,
+      "label": "影狼",
+      "role": "static reference only; no combat AI",
+      "source": "art/sprites/mon_shadow_wolf.png",
+      "sourceSHA256": "83cd1d0b68baf8751593268118f6f250b34f72b53111c481efe1a3c4d6638d55"
+    },
+    {
+      "id": "spawn_shadow_wolf_18_2",
+      "sprite": "mon_shadow_wolf",
+      "path": "work/preview/mon_shadow_wolf-idle.png",
+      "position": [
+        2944.0,
+        832
+      ],
+      "width": 96,
+      "height": 64,
+      "label": "影狼",
+      "role": "static reference only; no combat AI",
+      "source": "art/sprites/mon_shadow_wolf.png",
+      "sourceSHA256": "83cd1d0b68baf8751593268118f6f250b34f72b53111c481efe1a3c4d6638d55"
+    },
+    {
+      "id": "spawn_shadow_wolf_19_0",
+      "sprite": "mon_shadow_wolf",
+      "path": "work/preview/mon_shadow_wolf-idle.png",
+      "position": [
+        2552.0,
+        704
+      ],
+      "width": 96,
+      "height": 64,
+      "label": "影狼",
+      "role": "static reference only; no combat AI",
+      "source": "art/sprites/mon_shadow_wolf.png",
+      "sourceSHA256": "83cd1d0b68baf8751593268118f6f250b34f72b53111c481efe1a3c4d6638d55"
+    },
+    {
+      "id": "spawn_shadow_wolf_19_1",
+      "sprite": "mon_shadow_wolf",
+      "path": "work/preview/mon_shadow_wolf-idle.png",
+      "position": [
+        2792.0,
+        704
+      ],
+      "width": 96,
+      "height": 64,
+      "label": "影狼",
+      "role": "static reference only; no combat AI",
+      "source": "art/sprites/mon_shadow_wolf.png",
+      "sourceSHA256": "83cd1d0b68baf8751593268118f6f250b34f72b53111c481efe1a3c4d6638d55"
+    }
+  ]
+}
