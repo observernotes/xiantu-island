@@ -4,6 +4,10 @@ import bambooSceneData from '../data/art/scenes/bamboo_forest_gsb_v1/scene-data.
 import bambooTiledMap from '../data/maps/bamboo_forest.json';
 import lingxiSceneData from '../data/art/scenes/lingxi_path_gsb_v1/scene-data.json';
 import lingxiTiledMap from '../data/maps/lingxi_path.json';
+import outskirtsSceneData from '../data/art/scenes/luoxia_outskirts_1_gsb_v1/scene-data.json';
+import outskirtsTiledMap from '../data/maps/luoxia_outskirts_1.json';
+import townSceneData from '../data/art/scenes/luoxia_town_gsb_v1/scene-data.json';
+import townTiledMap from '../data/maps/luoxia_town.json';
 import { FEEL, SPEC } from './config/feel';
 import { buildTiledMap } from './scenes/MapBuilder';
 
@@ -220,7 +224,7 @@ for (const [label, data, binding] of fallbacks) {
   eq(JSON.stringify(qingyunSceneData), dataBefore, 'building leaves the scene-data fixture unchanged');
 }
 
-// The production bamboo/stream maps share the village pipeline and retain their gameplay contracts.
+// The production bamboo/stream/outskirts maps share the village pipeline and retain their gameplay contracts.
 const productionMaps = [
   {
     id: 'bamboo_forest', sceneId: 'bamboo_forest_gsb_v1', revision: 'bamboo-final-001',
@@ -264,6 +268,27 @@ const productionMaps = [
       ['gather_iron_essence_25', 2256, 768, 'iron_essence', 90000],
     ],
     chest: ['sense_chest_01', 400, 832, 'qi_pill', 1],
+  },
+  {
+    id: 'luoxia_outskirts_1', sceneId: 'luoxia_outskirts_1_gsb_v1', revision: 'outskirts1-final-001',
+    data: outskirtsSceneData, tiledMap: outskirtsTiledMap, dimensions: [3200, 1088], bodyCounts: [3, 7],
+    spawn: { x: 3072, y: 1024 }, ropeCount: 7,
+    portals: [
+      ['portal_to_village', 3120, 1024, 'qingyun_village', 'portal_west_locked'],
+      ['portal_to_outskirts_2', 80, 1024, 'luoxia_outskirts_2', 'portal_to_outskirts_1'],
+    ],
+    spawns: [
+      ['wild_boar_spirit', 128, 1024, 1120, 4], ['wild_boar_spirit', 1280, 960, 640, 3],
+      ['wild_boar_spirit', 1952, 1024, 1120, 4], ['straw_puppet', 192, 896, 416, 1],
+      ['straw_puppet', 448, 768, 480, 2], ['straw_puppet', 1344, 832, 512, 1],
+      ['straw_puppet', 2240, 768, 608, 2], ['straw_puppet', 2432, 640, 288, 1],
+    ],
+    gathers: [
+      ['gather_spirit_herb_19', 816, 1024, 'spirit_herb', 60000],
+      ['gather_spirit_herb_20', 1680, 704, 'spirit_herb', 60000],
+      ['gather_spirit_herb_21', 2128, 1024, 'spirit_herb', 60000],
+    ],
+    chest: ['sense_chest_01', 496, 768, 'hp_pill_small', 1],
   },
 ];
 for (const contract of productionMaps) {
@@ -322,6 +347,87 @@ for (const contract of productionMaps) {
       [object.name, object.x, object.y, object.props.encounter]),
     [['enc_stranded_cultivator_anchor', 1712, 640, 'enc_stranded_cultivator']], 'lingxi_path: encounter anchor is retained');
   }
+}
+
+// Luoxia town has NPCs, a ferry and a ladder, with no monster, gather or treasure objects.
+{
+  const sceneId = 'luoxia_town_gsb_v1', revision = 'luoxia-final-001';
+  const data = clone(townSceneData), tiledMap = clone(townTiledMap);
+  const f = fixture(null, false), dataBefore = JSON.stringify(data), mapBefore = JSON.stringify(tiledMap);
+  f.cache.clear(); f.cache.set(`gsb_${sceneId}_data`, data);
+  f.textures.add(`gsb_${sceneId}_background`); f.textures.add(`gsb_${sceneId}_playable`);
+  const map = buildTiledMap(f.scene, tiledMap, 'tiles');
+  eq(map.gsbScene, sceneId, 'luoxia_town: checked-in map enables its GSB scene');
+  eq(tiledMap.properties.find(property => property.name === 'gsbScene')?.value,
+    sceneId, 'luoxia_town: map binds the approved GSB scene');
+  eq(tiledMap.properties.find(property => property.name === 'gsbGeometryRevision')?.value,
+    revision, 'luoxia_town: map binds the approved geometry revision');
+  eq(data.geometryRevision, revision, 'luoxia_town: scene-data has the approved geometry revision');
+  same([map.width, map.height], [3072, 1024], 'luoxia_town: logical world dimensions match the approved scene');
+  same([tiledMap.width, tiledMap.height], [96, 32], 'luoxia_town: checked-in tile grid is 96 x 32');
+  same([tiledMap.width * tiledMap.tilewidth, tiledMap.height * tiledMap.tileheight], [map.width, map.height],
+    'luoxia_town: checked-in tile grid matches logical world dimensions');
+  same(f.groups.map(group => group.children.length), [5, 11], 'luoxia_town: five solids and eleven one-way bodies are built');
+  for (const surface of data.surfaces) {
+    const left = Math.min(...surface.polyline.map(point => point[0]));
+    const right = Math.max(...surface.polyline.map(point => point[0]));
+    const bodies = f.groups[surface.support === 'one-way' ? 1 : 0].children.map(rectangle);
+    ok(bodies.some(body => body.y === surface.polyline[0][1] && body.x <= left && body.x + body.width >= right),
+      `luoxia_town: ${surface.id} retains its full landing span and exact top edge`);
+  }
+  ok(f.groups[1].children.every(object => object.body?.checkCollision.up &&
+    !object.body.checkCollision.down && !object.body.checkCollision.left && !object.body.checkCollision.right),
+    'luoxia_town: all one-way bodies only collide on top');
+  ok(f.groups[0].children.every(object => object.body?.checkCollision.up &&
+    object.body.checkCollision.down && object.body.checkCollision.left && object.body.checkCollision.right),
+    'luoxia_town: solid bodies keep all collision directions');
+  same(map.spawn, { x: 128, y: 832 }, 'luoxia_town: player start is preserved');
+  eq(map.ropes.length, 8, 'luoxia_town: all seven ropes and the ladder are preserved');
+  same(map.ropes.map(rope => [rope.kind, rope.x, rope.top, rope.bottom, rope.halfW]),
+    data.climbs.map(climb => {
+      const width = Math.max(...climb.corridor.map(point => point[0])) - Math.min(...climb.corridor.map(point => point[0]));
+      return [climb.kind, climb.ends.end.position[0], climb.ends.end.position[1], climb.ends.start.position[1],
+        climb.kind === 'ladder' ? Math.max(12, width / 2) : FEEL.ropeGrabRangeX];
+    }), 'luoxia_town: rope and ladder geometry follows the approved climbs');
+  same(map.ropes.filter(rope => rope.kind === 'ladder'),
+    [{ kind: 'ladder', x: 2448, top: 800, bottom: 896, halfW: 18 }],
+    'luoxia_town: ladder uses the patched object center and half-width');
+  same(map.objects.filter(object => object.type === 'portal').map(object =>
+    [object.name, object.x, object.y, object.props.target, object.props.targetPortal]),
+  [['portal_to_outskirts', 2992, 896, 'luoxia_outskirts_2', 'portal_to_town']],
+  'luoxia_town: east portal retains its position and destination');
+  same(map.objects.filter(object => object.type === 'npc').map(object => object.name),
+    ['ferry_master', 'merchant_qian', 'storage_keeper', 'alchemist_ge', 'luoxia_mayor', 'smith_ou'],
+    'luoxia_town: all six named NPCs are preserved');
+  same(map.objects.filter(object => object.type === 'npc').map(object =>
+    [object.name, object.x, object.y, object.props.npc]),
+  data.points.filter(point => point.type === 'npc').map(point =>
+    [point.sourceName, ...point.position, point.properties?.npc]),
+  'luoxia_town: NPC positions and identities match scene-data points');
+  const ferry = data.points.find(point => point.id === 'ferry_dock')!;
+  same(map.objects.filter(object => object.type === 'ferry').map(object =>
+    [object.name, object.x, object.y, object.w, object.props.npc]),
+  [['ferry_dock', ...ferry.position, ferry.width, ferry.properties?.npc]],
+  'luoxia_town: ferry dock retains its type, point position, width and NPC binding');
+  const encounter = data.points.find(point => point.id === 'enc_demon_whisper_anchor')!;
+  same(map.objects.filter(object => object.type === 'encounter_anchor').map(object =>
+    [object.name, object.x, object.y, object.props.encounter]),
+  [['enc_demon_whisper_anchor', ...encounter.position, encounter.properties?.encounter]],
+  'luoxia_town: demon whisper encounter anchor is retained');
+  same(map.spawns, [], 'luoxia_town: no monster spawns are introduced');
+  same(map.hidden, [], 'luoxia_town: no hidden controllers are introduced');
+  same(map.objects.filter(object => ['gather', 'chest', 'hidden'].includes(object.type)), [],
+    'luoxia_town: no gather or treasure objects are introduced');
+  eq(f.tilemaps, 0, 'luoxia_town: GSB skips the legacy tilemap path');
+  same(f.displays.filter(object => object.kind !== 'zone').map(object => [object.kind, object.key]),
+    [['image', `gsb_${sceneId}_background`], ['image', `gsb_${sceneId}_playable`]],
+    'luoxia_town: GSB draws background and playable art without legacy terrain or climbs');
+  const legacyLayers = tiledMap.layers.filter(layer => layer.type === 'tilelayer' && ['ground', 'oneway'].includes(layer.name));
+  same(legacyLayers.map(layer => layer.name), ['ground', 'oneway'], 'luoxia_town: both legacy collision layers are present');
+  ok(legacyLayers.every(layer => layer.data?.length === tiledMap.width * tiledMap.height && layer.data.every(gid => gid === 0)),
+    'luoxia_town: checked-in legacy collision layers are fully cleared');
+  eq(JSON.stringify(data), dataBefore, 'luoxia_town: building leaves the cached scene-data input unchanged');
+  eq(JSON.stringify(tiledMap), mapBefore, 'luoxia_town: building leaves the Tiled map input unchanged');
 }
 
 console.log(JSON.stringify({ suite: 'gsb-map', passed: true, assertions }));
