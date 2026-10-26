@@ -1,0 +1,368 @@
+{
+ "ui_hud_bar_frame": {
+  "size": [
+   48,
+   20
+  ],
+  "nineSlice": {
+   "left": 8,
+   "right": 8,
+   "top": 6,
+   "bottom": 6
+  },
+  "innerRect": [
+   4,
+   4,
+   40,
+   12
+  ],
+  "note": "气血/灵力条底框：1px 墨褐框 + 暗槽 #524034；填充放 innerRect（拉伸后 x+4, y+4, w-8, 12）"
+ },
+ "ui_hud_bar_hp": {
+  "size": [
+   16,
+   12
+  ],
+  "threeSlice": {
+   "left": 4,
+   "right": 4
+  },
+  "note": "气血填充 朱红 #E5483A，宽 = 槽宽 × hp/maxHp"
+ },
+ "ui_hud_bar_mp": {
+  "size": [
+   16,
+   12
+  ],
+  "threeSlice": {
+   "left": 4,
+   "right": 4
+  },
+  "note": "灵力填充 天青 #6EC6FF，宽 = 槽宽 × mp/maxMp"
+ },
+ "ui_hud_panel": {
+  "size": [
+   32,
+   32
+  ],
+  "nineSlice": {
+   "left": 8,
+   "right": 8,
+   "top": 8,
+   "bottom": 8
+  },
+  "contentInset": 12,
+  "note": "HUD 底板（状态区、快捷栏）：宣纸 92% + 2px 外框（1px 墨褐 + 1px 木褐），圆角 6；内容从边内 12px（快捷栏 8px）开始"
+ },
+ "ui_hud_dialog": {
+  "size": [
+   48,
+   48
+  ],
+  "nineSlice": {
+   "left": 14,
+   "right": 14,
+   "top": 14,
+   "bottom": 14
+  },
+  "contentInset": 16,
+  "note": "对话框：宣纸 96% + 2px 外框（1px 墨褐 + 1px 木褐），圆角 10，无花纹"
+ },
+ "ui_hud_slot": {
+  "size": [
+   44,
+   44
+  ],
+  "nineSlice": {
+   "left": 8,
+   "right": 8,
+   "top": 8,
+   "bottom": 8
+  },
+  "iconOffset": [
+   6,
+   6
+  ],
+  "note": "快捷栏/背包格：浅宣纸 #ECE0C4 + 1px 半透墨褐线；32 图标放 (+6,+6)"
+ },
+ "ui_hud_slot_locked": {
+  "size": [
+   44,
+   44
+  ],
+  "nineSlice": {
+   "left": 8,
+   "right": 8,
+   "top": 8,
+   "bottom": 8
+  },
+  "note": "未解锁格（灰宣纸、线更淡）"
+ },
+ "ui_hud_slot_active": {
+  "size": [
+   44,
+   44
+  ],
+  "nineSlice": {
+   "left": 8,
+   "right": 8,
+   "top": 8,
+   "bottom": 8
+  },
+  "note": "按下/选中/悬停：天青 1px 框 + 内圈淡天青"
+ },
+ "@2x": "同名加 @2x 的是 2 倍图，切片数值也乘 2",
+ "palette": {
+  "ink": "#3B2A20",
+  "paper": "#FAF2DC",
+  "red": "#E5483A",
+  "sky": "#6EC6FF",
+  "gold": "#D9A441"
+ },
+ "ui_hud_quest_available": {
+  "size": [
+   24,
+   32
+  ],
+  "origin": [
+   0.5,
+   1
+  ],
+  "npcMark": "!",
+  "color": "#D9A441",
+  "position": "NPC 头顶：x=npc.x, y=npc.y-npc.displayHeight-8（与现 QuestSystem 文字标记同位），上下浮动 6px / 500ms yoyo",
+  "note": "「!」可接任务"
+ },
+ "ui_hud_quest_turnin": {
+  "size": [
+   24,
+   32
+  ],
+  "origin": [
+   0.5,
+   1
+  ],
+  "npcMark": "?",
+  "color": "#D9A441",
+  "position": "NPC 头顶：x=npc.x, y=npc.y-npc.displayHeight-8（与现 QuestSystem 文字标记同位），上下浮动 6px / 500ms yoyo",
+  "note": "「?」可交付"
+ },
+ "ui_hud_quest_progress": {
+  "size": [
+   24,
+   32
+  ],
+  "origin": [
+   0.5,
+   1
+  ],
+  "npcMark": "…",
+  "color": "#C9BFAE",
+  "position": "NPC 头顶：x=npc.x, y=npc.y-npc.displayHeight-8（与现 QuestSystem 文字标记同位），上下浮动 6px / 500ms yoyo",
+  "note": "「?」灰版：已接未完成（代码里 NpcMark '…'，原为灰 #cccccc 文字）"
+ },
+ "ui_hud_boss_bar_frame": {
+  "size": [
+   64,
+   24
+  ],
+  "nineSlice": {
+   "left": 10,
+   "right": 10,
+   "top": 8,
+   "bottom": 8
+  },
+  "innerRect": [
+   4,
+   4,
+   56,
+   16
+  ],
+  "position": "屏幕上中：建议宽 600，x 居中，y=44（名字底板之下）",
+  "note": "首领血条框：1px 墨褐框 + 暗槽 #524034；填充放 innerRect（拉伸后 x+4, y+4, w-8, 16）"
+ },
+ "ui_hud_boss_bar_fill": {
+  "size": [
+   16,
+   16
+  ],
+  "threeSlice": {
+   "left": 4,
+   "right": 4
+  },
+  "note": "首领血条填充（朱红）：横向三段拉伸，高固定 16；按血量比例改宽度（≥8 时用三段，<8 时 setCrop）"
+ },
+ "ui_hud_boss_nameplate": {
+  "size": [
+   48,
+   24
+  ],
+  "nineSlice": {
+   "left": 8,
+   "right": 8,
+   "top": 8,
+   "bottom": 8
+  },
+  "text": {
+   "size": 14,
+   "bold": true,
+   "color": "#3B2A20",
+   "align": "center"
+  },
+  "position": "屏幕上中：宽=名字宽+24，中心 y=20，压在血条框上沿之上",
+  "note": "首领名字底板（宣纸）"
+ },
+ "ui_hud_keycap": {
+  "size": [
+   20,
+   20
+  ],
+  "nineSlice": {
+   "left": 6,
+   "right": 6,
+   "top": 5,
+   "bottom": 7
+  },
+  "text": {
+   "size": 12,
+   "bold": true,
+   "color": "#3B2A20",
+   "centerY": 9
+  },
+  "position": "交互物/NPC 头顶 promptOffsetY -52；键帽右侧接 14px 提示字（采集/对话，宣纸字 + 2px 墨描边）",
+  "note": "交互键帽底；键位字可用 11–12px，字的视觉中心比几何中心高 1px（底部有 2px 侧壁）"
+ },
+ "ui_hud_cursor": {
+  "size": [
+   12,
+   14
+  ],
+  "origin": [
+   0,
+   0.5
+  ],
+  "position": "选中按钮左侧：x=btn.x-14，y=btn 中心，可左右 2px 呼吸",
+  "note": "对话选项选中光标（金 ▶）"
+ },
+ "ui_hud_dialog_option": {
+  "borrowed": true,
+  "files": {
+   "normal": "../alchemy/ui_alchemy_btn_normal.png",
+   "hover": "../alchemy/ui_alchemy_btn_hover.png",
+   "pressed": "../alchemy/ui_alchemy_btn_pressed.png",
+   "disabled": "../alchemy/ui_alchemy_btn_disabled.png"
+  },
+  "size": [
+   64,
+   28
+  ],
+  "nineSlice": {
+   "left": 6,
+   "right": 6,
+   "top": 6,
+   "bottom": 6
+  },
+  "text": {
+   "size": 14,
+   "color": "#FAF2DC",
+   "stroke": "2px #3B2A20"
+  },
+  "cursor": "ui_hud_cursor",
+  "note": "对话选项直接借用炼丹窗按钮，不新画；选中=hover + 左侧光标"
+ },
+ "ui_hud_font_white": {
+  "png": "fonts/ui_hud_font_white.png",
+  "xml": "fonts/ui_hud_font_white.xml",
+  "json": "fonts/ui_hud_font_white.json",
+  "color": "伤害白 #FFFFFF",
+  "stroke": "1.6px #3B2A20",
+  "size": 21,
+  "lineHeight": 27,
+  "base": 25,
+  "chars": "0123456789+升级（另含空格）",
+  "note": "BMFont；数字连描边总高 22px，对齐 GameScene.damageNumber 的 24px Arial Black + 描边 4"
+ },
+ "ui_hud_font_crit": {
+  "png": "fonts/ui_hud_font_crit.png",
+  "xml": "fonts/ui_hud_font_crit.xml",
+  "json": "fonts/ui_hud_font_crit.json",
+  "color": "暴击金 #D9A441",
+  "stroke": "1.6px #3B2A20",
+  "size": 21,
+  "lineHeight": 27,
+  "base": 25,
+  "chars": "0123456789+升级（另含空格）",
+  "note": "BMFont；数字连描边总高 22px，对齐 GameScene.damageNumber 的 24px Arial Black + 描边 4"
+ },
+ "ui_hud_font_hurt": {
+  "png": "fonts/ui_hud_font_hurt.png",
+  "xml": "fonts/ui_hud_font_hurt.xml",
+  "json": "fonts/ui_hud_font_hurt.json",
+  "color": "受伤朱红 #E5483A",
+  "stroke": "1.6px #3B2A20",
+  "size": 21,
+  "lineHeight": 27,
+  "base": 25,
+  "chars": "0123456789+升级（另含空格）",
+  "note": "BMFont；数字连描边总高 22px，对齐 GameScene.damageNumber 的 24px Arial Black + 描边 4"
+ },
+ "ui_hud_dialog_option_selected": {
+  "size": [
+   64,
+   28
+  ],
+  "nineSlice": {
+   "left": 6,
+   "right": 6,
+   "top": 6,
+   "bottom": 6
+  },
+  "text": {
+   "size": 14,
+   "color": "#3B2A20",
+   "x": 12,
+   "centerY": 14
+  },
+  "cursor": "ui_hud_cursor",
+  "position": "金 ▶ 光标放按钮左侧：x=btn.x-14，y=btn 中心（同 ui_hud_cursor 记录）",
+  "note": "对话选项·选中：宣纸底 + 1px 朱红框（内衬淡朱红），配金 ▶ 光标｜2026-10-10 独立图，替代借用的炼丹按钮（ui_hud_dialog_option 原记录保留不动）"
+ },
+ "ui_hud_dialog_option_normal": {
+  "size": [
+   64,
+   28
+  ],
+  "nineSlice": {
+   "left": 6,
+   "right": 6,
+   "top": 6,
+   "bottom": 6
+  },
+  "text": {
+   "size": 14,
+   "color": "#3B2A20",
+   "x": 12,
+   "centerY": 14
+  },
+  "note": "对话选项·未选：宣纸底 + 1px 墨褐框｜2026-10-10 独立图，替代借用的炼丹按钮（ui_hud_dialog_option 原记录保留不动）"
+ },
+ "ui_hud_dialog_option_disabled": {
+  "size": [
+   64,
+   28
+  ],
+  "nineSlice": {
+   "left": 6,
+   "right": 6,
+   "top": 6,
+   "bottom": 6
+  },
+  "text": {
+   "size": 14,
+   "color": "#8E867C",
+   "x": 12,
+   "centerY": 14
+  },
+  "note": "对话选项·不可用：灰底 + 1px 灰框，灰字，不响应｜2026-10-10 独立图，替代借用的炼丹按钮（ui_hud_dialog_option 原记录保留不动）"
+ }
+}

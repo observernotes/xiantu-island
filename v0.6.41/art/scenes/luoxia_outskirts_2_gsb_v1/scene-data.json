@@ -1,0 +1,2740 @@
+{
+  "schemaVersion": "1.0",
+  "geometryRevision": "luoxia2-final-001",
+  "status": "verified",
+  "sceneId": "luoxia_outskirts_2",
+  "space": {
+    "origin": "top-left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "units": "world-pixel",
+    "logicalWidth": 3520,
+    "logicalHeight": 1152,
+    "sourceTranslation": [
+      0,
+      192
+    ]
+  },
+  "actor": {
+    "parameterRevision": "xiantu-feel-base100-20261027",
+    "parameterSource": [
+      "game/src/config/feel.ts",
+      "game/src/move.ts",
+      "game/src/scenes/Player.ts",
+      "game/src/scenes/GameScene.ts",
+      "game/src/main.ts"
+    ],
+    "sourceRevision": {
+      "maps/luoxia_outskirts_2.json": "f873d952015eb0d6faf448ca4811901596aa41a4dc2bc68fe55be69571e66f3a",
+      "game/src/config/feel.ts": "9375297a15b04012633197a935f4d9ffd403c3ff8d1e055cb585dd5f81acdeec",
+      "game/src/move.ts": "585c9987623cbe532d7f65508773addd52ccd2f312e5c2ee592e9e6f2f686a74",
+      "game/src/scenes/Player.ts": "ec9426ed625784532c6e632a1755bd16076cc3f559d177f465b741341193f513",
+      "game/src/scenes/GameScene.ts": "be729e283208874e69b7b9d7d69ded54d5225f4276e77cdc7efa05f474d5da87",
+      "game/src/main.ts": "c882932569a2040c23c6f131ea741f34e3820e9ea721410a5ff6e859d00b6f9d"
+    },
+    "provisional": false,
+    "adapterScope": "项目基础运动算法移植；矩形AABB适配器非Phaser，战斗/怪物AI不在本地路线验收内。",
+    "visualBounds": {
+      "width": 96,
+      "height": 96,
+      "anchor": "feet-center"
+    },
+    "visualAsset": {
+      "path": "work/preview/player-reference-idle.png",
+      "width": 96,
+      "height": 96,
+      "source": "青云v2只读现网角色静态参考帧，独立拷贝；非动画交付"
+    },
+    "collider": {
+      "shape": "aabb",
+      "width": 26,
+      "height": 58,
+      "anchor": "feet-center"
+    },
+    "abilities": [
+      "walk",
+      "jump",
+      "double-jump",
+      "climb",
+      "climb-jump",
+      "drop-through"
+    ],
+    "movement": {
+      "gravity": 2000,
+      "maxFallSpeed": 670,
+      "walkSpeed": 130,
+      "groundAccel": 2400,
+      "groundDecel": 3000,
+      "airAccel": 700,
+      "airMaxSpeed": 130,
+      "jumpSpeed": 560,
+      "coyoteMs": 60,
+      "jumpBufferMs": 80,
+      "doubleJumpVy": 480,
+      "doubleJumpVx": 330,
+      "climbSpeed": 110,
+      "ropeGrabRangeX": 18,
+      "ropeJumpVx": 160,
+      "ropeJumpVy": 360,
+      "dropThroughMs": 220,
+      "ropeRegrabMs": 250
+    },
+    "movePoints": {
+      "speed": 100,
+      "jump": 100
+    },
+    "failureRules": {
+      "reset": "R restores normal spawn and clears motion",
+      "fallThreshold": 1312,
+      "hazards": "none in source map"
+    }
+  },
+  "assets": [
+    {
+      "id": "asset_background",
+      "role": "background",
+      "path": "background.png",
+      "pixelWidth": 3520,
+      "pixelHeight": 1152,
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "sourceMaster": "work/generated/master-refined-006.png"
+    },
+    {
+      "id": "asset_playable",
+      "role": "playable",
+      "path": "playable.png",
+      "pixelWidth": 3520,
+      "pixelHeight": 1152,
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "sourceMaster": "work/generated/master-refined-006.png"
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "s_west_ground",
+      "name": "荒田地面",
+      "polyline": [
+        [
+          0,
+          1088
+        ],
+        [
+          2240,
+          1088
+        ]
+      ],
+      "support": "solid",
+      "status": "verified",
+      "effectiveLandingRange": [
+        13,
+        2227
+      ],
+      "clearance": 58,
+      "sourceGeometry": {
+        "x1": 0,
+        "x2": 2240,
+        "y": 896,
+        "source": "maps/luoxia_outskirts_2.json"
+      },
+      "evidence": [
+        "work/runtime-final/route_main.json",
+        "work/runtime-final/route_return.json",
+        "work/runtime-final/route_gather.json",
+        "work/runtime-final/route_all_ropes.json"
+      ],
+      "walkRegion": [
+        [
+          13,
+          1030
+        ],
+        [
+          2227,
+          1030
+        ],
+        [
+          2227,
+          1088
+        ],
+        [
+          13,
+          1088
+        ]
+      ],
+      "visualContact": {
+        "targetY": 1088,
+        "tolerancePx": 2,
+        "definition": "visible opaque bearing soil/wood/stone edge, excludes rope fiber, cloth and roof decoration"
+      }
+    },
+    {
+      "id": "s_mid_ground",
+      "name": "中段田埂",
+      "polyline": [
+        [
+          2240,
+          1024
+        ],
+        [
+          2752,
+          1024
+        ]
+      ],
+      "support": "solid",
+      "status": "verified",
+      "effectiveLandingRange": [
+        2253,
+        2739
+      ],
+      "clearance": 58,
+      "sourceGeometry": {
+        "x1": 2240,
+        "x2": 2752,
+        "y": 832,
+        "source": "maps/luoxia_outskirts_2.json"
+      },
+      "evidence": [
+        "work/runtime-final/route_main.json",
+        "work/runtime-final/route_return.json",
+        "work/runtime-final/route_gather.json",
+        "work/runtime-final/route_all_ropes.json"
+      ],
+      "walkRegion": [
+        [
+          2253,
+          966
+        ],
+        [
+          2739,
+          966
+        ],
+        [
+          2739,
+          1024
+        ],
+        [
+          2253,
+          1024
+        ]
+      ],
+      "visualContact": {
+        "targetY": 1024,
+        "tolerancePx": 2,
+        "definition": "visible opaque bearing soil/wood/stone edge, excludes rope fiber, cloth and roof decoration"
+      }
+    },
+    {
+      "id": "s_east_ground",
+      "name": "荒驿高地",
+      "polyline": [
+        [
+          2752,
+          960
+        ],
+        [
+          3520,
+          960
+        ]
+      ],
+      "support": "solid",
+      "status": "verified",
+      "effectiveLandingRange": [
+        2765,
+        3507
+      ],
+      "clearance": 58,
+      "sourceGeometry": {
+        "x1": 2752,
+        "x2": 3520,
+        "y": 768,
+        "source": "maps/luoxia_outskirts_2.json"
+      },
+      "evidence": [
+        "work/runtime-final/route_main.json",
+        "work/runtime-final/route_return.json",
+        "work/runtime-final/route_gather.json",
+        "work/runtime-final/route_all_ropes.json"
+      ],
+      "walkRegion": [
+        [
+          2765,
+          902
+        ],
+        [
+          3507,
+          902
+        ],
+        [
+          3507,
+          960
+        ],
+        [
+          2765,
+          960
+        ]
+      ],
+      "visualContact": {
+        "targetY": 960,
+        "tolerancePx": 2,
+        "definition": "visible opaque bearing soil/wood/stone edge, excludes rope fiber, cloth and roof decoration"
+      }
+    },
+    {
+      "id": "s_field_low",
+      "name": "西田低木台",
+      "polyline": [
+        [
+          128,
+          960
+        ],
+        [
+          672,
+          960
+        ]
+      ],
+      "support": "one-way",
+      "status": "verified",
+      "effectiveLandingRange": [
+        141,
+        659
+      ],
+      "clearance": 58,
+      "sourceGeometry": {
+        "x1": 128,
+        "x2": 672,
+        "y": 768,
+        "source": "maps/luoxia_outskirts_2.json"
+      },
+      "evidence": [
+        "work/runtime-final/route_all_ropes.json"
+      ],
+      "walkRegion": [
+        [
+          141,
+          902
+        ],
+        [
+          659,
+          902
+        ],
+        [
+          659,
+          960
+        ],
+        [
+          141,
+          960
+        ]
+      ],
+      "visualContact": {
+        "targetY": 960,
+        "tolerancePx": 2,
+        "definition": "visible opaque bearing soil/wood/stone edge, excludes rope fiber, cloth and roof decoration"
+      }
+    },
+    {
+      "id": "s_field_high",
+      "name": "西田高木台",
+      "polyline": [
+        [
+          384,
+          832
+        ],
+        [
+          992,
+          832
+        ]
+      ],
+      "support": "one-way",
+      "status": "verified",
+      "effectiveLandingRange": [
+        397,
+        979
+      ],
+      "clearance": 58,
+      "sourceGeometry": {
+        "x1": 384,
+        "x2": 992,
+        "y": 640,
+        "source": "maps/luoxia_outskirts_2.json"
+      },
+      "evidence": [
+        "work/runtime-final/route_all_ropes.json"
+      ],
+      "walkRegion": [
+        [
+          397,
+          774
+        ],
+        [
+          979,
+          774
+        ],
+        [
+          979,
+          832
+        ],
+        [
+          397,
+          832
+        ]
+      ],
+      "visualContact": {
+        "targetY": 832,
+        "tolerancePx": 2,
+        "definition": "visible opaque bearing soil/wood/stone edge, excludes rope fiber, cloth and roof decoration"
+      }
+    },
+    {
+      "id": "s_bridge_low",
+      "name": "断桥下台",
+      "polyline": [
+        [
+          1088,
+          960
+        ],
+        [
+          1696,
+          960
+        ]
+      ],
+      "support": "one-way",
+      "status": "verified",
+      "effectiveLandingRange": [
+        1101,
+        1683
+      ],
+      "clearance": 58,
+      "sourceGeometry": {
+        "x1": 1088,
+        "x2": 1696,
+        "y": 768,
+        "source": "maps/luoxia_outskirts_2.json"
+      },
+      "evidence": [
+        "work/runtime-final/route_main.json",
+        "work/runtime-final/route_return.json",
+        "work/runtime-final/route_gather.json",
+        "work/runtime-final/route_all_ropes.json"
+      ],
+      "walkRegion": [
+        [
+          1101,
+          902
+        ],
+        [
+          1683,
+          902
+        ],
+        [
+          1683,
+          960
+        ],
+        [
+          1101,
+          960
+        ]
+      ],
+      "visualContact": {
+        "targetY": 960,
+        "tolerancePx": 2,
+        "definition": "visible opaque bearing soil/wood/stone edge, excludes rope fiber, cloth and roof decoration"
+      }
+    },
+    {
+      "id": "s_bridge_mid",
+      "name": "断桥中台",
+      "polyline": [
+        [
+          1216,
+          800
+        ],
+        [
+          1824,
+          800
+        ]
+      ],
+      "support": "one-way",
+      "status": "verified",
+      "effectiveLandingRange": [
+        1229,
+        1811
+      ],
+      "clearance": 58,
+      "sourceGeometry": {
+        "x1": 1216,
+        "x2": 1824,
+        "y": 608,
+        "source": "maps/luoxia_outskirts_2.json"
+      },
+      "evidence": [
+        "work/runtime-final/route_main.json",
+        "work/runtime-final/route_return.json",
+        "work/runtime-final/route_gather.json",
+        "work/runtime-final/route_all_ropes.json"
+      ],
+      "walkRegion": [
+        [
+          1229,
+          742
+        ],
+        [
+          1811,
+          742
+        ],
+        [
+          1811,
+          800
+        ],
+        [
+          1229,
+          800
+        ]
+      ],
+      "visualContact": {
+        "targetY": 800,
+        "tolerancePx": 2,
+        "definition": "visible opaque bearing soil/wood/stone edge, excludes rope fiber, cloth and roof decoration"
+      }
+    },
+    {
+      "id": "s_bridge_high",
+      "name": "断桥上台",
+      "polyline": [
+        [
+          1408,
+          672
+        ],
+        [
+          1760,
+          672
+        ]
+      ],
+      "support": "one-way",
+      "status": "verified",
+      "effectiveLandingRange": [
+        1421,
+        1747
+      ],
+      "clearance": 58,
+      "sourceGeometry": {
+        "x1": 1408,
+        "x2": 1760,
+        "y": 480,
+        "source": "maps/luoxia_outskirts_2.json"
+      },
+      "evidence": [
+        "work/runtime-final/route_main.json",
+        "work/runtime-final/route_return.json",
+        "work/runtime-final/route_gather.json",
+        "work/runtime-final/route_all_ropes.json"
+      ],
+      "walkRegion": [
+        [
+          1421,
+          614
+        ],
+        [
+          1747,
+          614
+        ],
+        [
+          1747,
+          672
+        ],
+        [
+          1421,
+          672
+        ]
+      ],
+      "visualContact": {
+        "targetY": 672,
+        "tolerancePx": 2,
+        "definition": "visible opaque bearing soil/wood/stone edge, excludes rope fiber, cloth and roof decoration"
+      }
+    },
+    {
+      "id": "s_mid_outpost",
+      "name": "废驿前哨",
+      "polyline": [
+        [
+          2304,
+          896
+        ],
+        [
+          2720,
+          896
+        ]
+      ],
+      "support": "one-way",
+      "status": "verified",
+      "effectiveLandingRange": [
+        2317,
+        2707
+      ],
+      "clearance": 58,
+      "sourceGeometry": {
+        "x1": 2304,
+        "x2": 2720,
+        "y": 704,
+        "source": "maps/luoxia_outskirts_2.json"
+      },
+      "evidence": [
+        "work/runtime-final/route_all_ropes.json"
+      ],
+      "walkRegion": [
+        [
+          2317,
+          838
+        ],
+        [
+          2707,
+          838
+        ],
+        [
+          2707,
+          896
+        ],
+        [
+          2317,
+          896
+        ]
+      ],
+      "visualContact": {
+        "targetY": 896,
+        "tolerancePx": 2,
+        "definition": "visible opaque bearing soil/wood/stone edge, excludes rope fiber, cloth and roof decoration"
+      }
+    },
+    {
+      "id": "s_east_low",
+      "name": "废驿下层",
+      "polyline": [
+        [
+          2880,
+          832
+        ],
+        [
+          3360,
+          832
+        ]
+      ],
+      "support": "one-way",
+      "status": "verified",
+      "effectiveLandingRange": [
+        2893,
+        3347
+      ],
+      "clearance": 58,
+      "sourceGeometry": {
+        "x1": 2880,
+        "x2": 3360,
+        "y": 640,
+        "source": "maps/luoxia_outskirts_2.json"
+      },
+      "evidence": [
+        "work/runtime-final/route_main.json",
+        "work/runtime-final/route_return.json",
+        "work/runtime-final/route_all_ropes.json"
+      ],
+      "walkRegion": [
+        [
+          2893,
+          774
+        ],
+        [
+          3347,
+          774
+        ],
+        [
+          3347,
+          832
+        ],
+        [
+          2893,
+          832
+        ]
+      ],
+      "visualContact": {
+        "targetY": 832,
+        "tolerancePx": 2,
+        "definition": "visible opaque bearing soil/wood/stone edge, excludes rope fiber, cloth and roof decoration"
+      }
+    },
+    {
+      "id": "s_east_high",
+      "name": "废驿上层",
+      "polyline": [
+        [
+          2944,
+          704
+        ],
+        [
+          3296,
+          704
+        ]
+      ],
+      "support": "one-way",
+      "status": "verified",
+      "effectiveLandingRange": [
+        2957,
+        3283
+      ],
+      "clearance": 58,
+      "sourceGeometry": {
+        "x1": 2944,
+        "x2": 3296,
+        "y": 512,
+        "source": "maps/luoxia_outskirts_2.json"
+      },
+      "evidence": [
+        "work/runtime-final/route_main.json",
+        "work/runtime-final/route_return.json",
+        "work/runtime-final/route_all_ropes.json"
+      ],
+      "walkRegion": [
+        [
+          2957,
+          646
+        ],
+        [
+          3283,
+          646
+        ],
+        [
+          3283,
+          704
+        ],
+        [
+          2957,
+          704
+        ]
+      ],
+      "visualContact": {
+        "targetY": 704,
+        "tolerancePx": 2,
+        "definition": "visible opaque bearing soil/wood/stone edge, excludes rope fiber, cloth and roof decoration"
+      }
+    }
+  ],
+  "climbs": [
+    {
+      "id": "rope_10",
+      "kind": "rope",
+      "corridor": [
+        [
+          318,
+          960
+        ],
+        [
+          354,
+          960
+        ],
+        [
+          354,
+          1088
+        ],
+        [
+          318,
+          1088
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            336,
+            1088
+          ],
+          "surface": "s_west_ground",
+          "entryRange": [
+            318,
+            354
+          ]
+        },
+        "end": {
+          "position": [
+            336,
+            960
+          ],
+          "surface": "s_field_low",
+          "entryRange": [
+            318,
+            354
+          ]
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "climb",
+      "status": "verified",
+      "sourceGeometry": {
+        "x": 336,
+        "top": 768,
+        "bottom": 864,
+        "correctedBottom": 896,
+        "reason": "下端锚定最近下方真实站立面；原绳下端悬空32px。"
+      },
+      "evidence": [
+        "work/runtime-final/route_all_ropes.json"
+      ]
+    },
+    {
+      "id": "rope_24",
+      "kind": "rope",
+      "corridor": [
+        [
+          766,
+          832
+        ],
+        [
+          802,
+          832
+        ],
+        [
+          802,
+          1088
+        ],
+        [
+          766,
+          1088
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            784,
+            1088
+          ],
+          "surface": "s_west_ground",
+          "entryRange": [
+            766,
+            802
+          ]
+        },
+        "end": {
+          "position": [
+            784,
+            832
+          ],
+          "surface": "s_field_high",
+          "entryRange": [
+            766,
+            802
+          ]
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "climb",
+      "status": "verified",
+      "sourceGeometry": {
+        "x": 784,
+        "top": 640,
+        "bottom": 864,
+        "correctedBottom": 896,
+        "reason": "下端锚定最近下方真实站立面；原绳下端悬空32px。"
+      },
+      "evidence": [
+        "work/runtime-final/route_all_ropes.json"
+      ]
+    },
+    {
+      "id": "rope_40",
+      "kind": "rope",
+      "corridor": [
+        [
+          1278,
+          960
+        ],
+        [
+          1314,
+          960
+        ],
+        [
+          1314,
+          1088
+        ],
+        [
+          1278,
+          1088
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1296,
+            1088
+          ],
+          "surface": "s_west_ground",
+          "entryRange": [
+            1278,
+            1314
+          ]
+        },
+        "end": {
+          "position": [
+            1296,
+            960
+          ],
+          "surface": "s_bridge_low",
+          "entryRange": [
+            1278,
+            1314
+          ]
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "climb",
+      "status": "verified",
+      "sourceGeometry": {
+        "x": 1296,
+        "top": 768,
+        "bottom": 864,
+        "correctedBottom": 896,
+        "reason": "下端锚定最近下方真实站立面；原绳下端悬空32px。"
+      },
+      "evidence": [
+        "work/runtime-final/route_main.json",
+        "work/runtime-final/route_return.json",
+        "work/runtime-final/route_gather.json",
+        "work/runtime-final/route_all_ropes.json"
+      ]
+    },
+    {
+      "id": "rope_50",
+      "kind": "rope",
+      "corridor": [
+        [
+          1598,
+          800
+        ],
+        [
+          1634,
+          800
+        ],
+        [
+          1634,
+          960
+        ],
+        [
+          1598,
+          960
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1616,
+            960
+          ],
+          "surface": "s_bridge_low",
+          "entryRange": [
+            1598,
+            1634
+          ]
+        },
+        "end": {
+          "position": [
+            1616,
+            800
+          ],
+          "surface": "s_bridge_mid",
+          "entryRange": [
+            1598,
+            1634
+          ]
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "climb",
+      "status": "verified",
+      "sourceGeometry": {
+        "x": 1616,
+        "top": 608,
+        "bottom": 736,
+        "correctedBottom": 768,
+        "reason": "下端锚定最近下方真实站立面；原绳下端悬空32px。"
+      },
+      "evidence": [
+        "work/runtime-final/route_main.json",
+        "work/runtime-final/route_return.json",
+        "work/runtime-final/route_gather.json",
+        "work/runtime-final/route_all_ropes.json"
+      ]
+    },
+    {
+      "id": "rope_48",
+      "kind": "rope",
+      "corridor": [
+        [
+          1534,
+          672
+        ],
+        [
+          1570,
+          672
+        ],
+        [
+          1570,
+          800
+        ],
+        [
+          1534,
+          800
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1552,
+            800
+          ],
+          "surface": "s_bridge_mid",
+          "entryRange": [
+            1534,
+            1570
+          ]
+        },
+        "end": {
+          "position": [
+            1552,
+            672
+          ],
+          "surface": "s_bridge_high",
+          "entryRange": [
+            1534,
+            1570
+          ]
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "climb",
+      "status": "verified",
+      "sourceGeometry": {
+        "x": 1552,
+        "top": 480,
+        "bottom": 576,
+        "correctedBottom": 608,
+        "reason": "下端锚定最近下方真实站立面；原绳下端悬空32px。"
+      },
+      "evidence": [
+        "work/runtime-final/route_main.json",
+        "work/runtime-final/route_return.json",
+        "work/runtime-final/route_gather.json",
+        "work/runtime-final/route_all_ropes.json"
+      ]
+    },
+    {
+      "id": "rope_78",
+      "kind": "rope",
+      "corridor": [
+        [
+          2494,
+          896
+        ],
+        [
+          2530,
+          896
+        ],
+        [
+          2530,
+          1024
+        ],
+        [
+          2494,
+          1024
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            2512,
+            1024
+          ],
+          "surface": "s_mid_ground",
+          "entryRange": [
+            2494,
+            2530
+          ]
+        },
+        "end": {
+          "position": [
+            2512,
+            896
+          ],
+          "surface": "s_mid_outpost",
+          "entryRange": [
+            2494,
+            2530
+          ]
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "climb",
+      "status": "verified",
+      "sourceGeometry": {
+        "x": 2512,
+        "top": 704,
+        "bottom": 800,
+        "correctedBottom": 832,
+        "reason": "下端锚定最近下方真实站立面；原绳下端悬空32px。"
+      },
+      "evidence": [
+        "work/runtime-final/route_all_ropes.json"
+      ]
+    },
+    {
+      "id": "rope_98",
+      "kind": "rope",
+      "corridor": [
+        [
+          3134,
+          832
+        ],
+        [
+          3170,
+          832
+        ],
+        [
+          3170,
+          960
+        ],
+        [
+          3134,
+          960
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            3152,
+            960
+          ],
+          "surface": "s_east_ground",
+          "entryRange": [
+            3134,
+            3170
+          ]
+        },
+        "end": {
+          "position": [
+            3152,
+            832
+          ],
+          "surface": "s_east_low",
+          "entryRange": [
+            3134,
+            3170
+          ]
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "climb",
+      "status": "verified",
+      "sourceGeometry": {
+        "x": 3152,
+        "top": 640,
+        "bottom": 736,
+        "correctedBottom": 768,
+        "reason": "下端锚定最近下方真实站立面；原绳下端悬空32px。"
+      },
+      "evidence": [
+        "work/runtime-final/route_main.json",
+        "work/runtime-final/route_return.json",
+        "work/runtime-final/route_all_ropes.json"
+      ]
+    },
+    {
+      "id": "rope_96",
+      "kind": "rope",
+      "corridor": [
+        [
+          3070,
+          704
+        ],
+        [
+          3106,
+          704
+        ],
+        [
+          3106,
+          832
+        ],
+        [
+          3070,
+          832
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            3088,
+            832
+          ],
+          "surface": "s_east_low",
+          "entryRange": [
+            3070,
+            3106
+          ]
+        },
+        "end": {
+          "position": [
+            3088,
+            704
+          ],
+          "surface": "s_east_high",
+          "entryRange": [
+            3070,
+            3106
+          ]
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "climb",
+      "status": "verified",
+      "sourceGeometry": {
+        "x": 3088,
+        "top": 512,
+        "bottom": 608,
+        "correctedBottom": 640,
+        "reason": "下端锚定最近下方真实站立面；原绳下端悬空32px。"
+      },
+      "evidence": [
+        "work/runtime-final/route_main.json",
+        "work/runtime-final/route_return.json",
+        "work/runtime-final/route_all_ropes.json"
+      ]
+    }
+  ],
+  "stairs": [],
+  "solids": [
+    {
+      "id": "solid_west_ground",
+      "surface": "s_west_ground",
+      "polygon": [
+        [
+          0,
+          1088
+        ],
+        [
+          2240,
+          1088
+        ],
+        [
+          2240,
+          1152
+        ],
+        [
+          0,
+          1152
+        ]
+      ],
+      "type": "terrain",
+      "openings": [],
+      "status": "verified",
+      "evidence": [
+        "work/runtime-final/physics-smoke-results.json",
+        "work/runtime-final/route_main.json",
+        "work/runtime-final/route_return.json",
+        "work/runtime-final/route_gather.json",
+        "work/runtime-final/route_all_ropes.json"
+      ]
+    },
+    {
+      "id": "solid_mid_ground",
+      "surface": "s_mid_ground",
+      "polygon": [
+        [
+          2240,
+          1024
+        ],
+        [
+          2752,
+          1024
+        ],
+        [
+          2752,
+          1152
+        ],
+        [
+          2240,
+          1152
+        ]
+      ],
+      "type": "terrain",
+      "openings": [],
+      "status": "verified",
+      "evidence": [
+        "work/runtime-final/physics-smoke-results.json",
+        "work/runtime-final/route_main.json",
+        "work/runtime-final/route_return.json",
+        "work/runtime-final/route_gather.json",
+        "work/runtime-final/route_all_ropes.json"
+      ]
+    },
+    {
+      "id": "solid_east_ground",
+      "surface": "s_east_ground",
+      "polygon": [
+        [
+          2752,
+          960
+        ],
+        [
+          3520,
+          960
+        ],
+        [
+          3520,
+          1152
+        ],
+        [
+          2752,
+          1152
+        ]
+      ],
+      "type": "terrain",
+      "openings": [],
+      "status": "verified",
+      "evidence": [
+        "work/runtime-final/physics-smoke-results.json",
+        "work/runtime-final/route_main.json",
+        "work/runtime-final/route_return.json",
+        "work/runtime-final/route_gather.json",
+        "work/runtime-final/route_all_ropes.json"
+      ]
+    }
+  ],
+  "hazards": [],
+  "points": [
+    {
+      "id": "start_spawn",
+      "type": "spawn",
+      "position": [
+        160,
+        1088
+      ],
+      "surface": "s_west_ground",
+      "safeRadius": 13,
+      "status": "verified",
+      "evidence": [
+        "work/runtime-final/route_main.json",
+        "work/runtime-final/route_return.json",
+        "work/runtime-final/route_gather.json",
+        "work/runtime-final/route_all_ropes.json"
+      ],
+      "name": "西侧正常出生"
+    },
+    {
+      "id": "portal_to_outskirts_1",
+      "type": "portal",
+      "position": [
+        80,
+        1088
+      ],
+      "surface": "s_west_ground",
+      "safeRadius": 13,
+      "status": "verified",
+      "evidence": [
+        "work/runtime-final/route_main.json",
+        "work/runtime-final/route_return.json",
+        "work/runtime-final/route_all_ropes.json"
+      ],
+      "target": "luoxia_outskirts_1",
+      "targetPortal": "portal_to_outskirts_2",
+      "name": "西口往稻田"
+    },
+    {
+      "id": "portal_to_town",
+      "type": "goal",
+      "position": [
+        3440,
+        960
+      ],
+      "surface": "s_east_ground",
+      "safeRadius": 13,
+      "status": "verified",
+      "evidence": [
+        "work/runtime-final/route_main.json",
+        "work/runtime-final/route_return.json",
+        "work/runtime-final/route_gather.json",
+        "work/runtime-final/route_all_ropes.json"
+      ],
+      "target": "luoxia_town",
+      "targetPortal": "portal_to_outskirts",
+      "name": "东口往落霞镇"
+    },
+    {
+      "id": "gather_spirit_herb_22",
+      "type": "gather",
+      "position": [
+        528,
+        1088
+      ],
+      "surface": "s_west_ground",
+      "safeRadius": 13,
+      "status": "verified",
+      "evidence": [
+        "work/runtime-final/route_main.json",
+        "work/runtime-final/route_return.json",
+        "work/runtime-final/route_gather.json",
+        "work/runtime-final/route_all_ropes.json"
+      ],
+      "item": "spirit_herb",
+      "respawnMs": 60000
+    },
+    {
+      "id": "gather_spirit_herb_23",
+      "type": "gather",
+      "position": [
+        1488,
+        672
+      ],
+      "surface": "s_bridge_high",
+      "safeRadius": 13,
+      "status": "verified",
+      "evidence": [
+        "work/runtime-final/route_gather.json"
+      ],
+      "item": "spirit_herb",
+      "respawnMs": 60000
+    },
+    {
+      "id": "gather_iron_essence_24",
+      "type": "gather",
+      "position": [
+        3056,
+        960
+      ],
+      "surface": "s_east_ground",
+      "safeRadius": 13,
+      "status": "verified",
+      "evidence": [
+        "work/runtime-final/route_main.json",
+        "work/runtime-final/route_return.json",
+        "work/runtime-final/route_gather.json",
+        "work/runtime-final/route_all_ropes.json"
+      ],
+      "item": "iron_essence",
+      "respawnMs": 90000
+    },
+    {
+      "id": "sense_chest_01",
+      "type": "chest",
+      "position": [
+        592,
+        832
+      ],
+      "surface": "s_field_high",
+      "safeRadius": 13,
+      "status": "verified",
+      "evidence": [
+        "work/runtime-final/route_all_ropes.json"
+      ],
+      "loot": "qi_pill",
+      "count": 1
+    }
+  ],
+  "transitions": [
+    {
+      "id": "rope_10_up",
+      "from": "s_west_ground",
+      "to": "s_field_low",
+      "action": "climb",
+      "status": "verified",
+      "conditions": {
+        "actorParameterRevision": "xiantu-feel-base100-20261027"
+      },
+      "evidence": [
+        "work/runtime-final/route_all_ropes.json"
+      ],
+      "climb": "rope_10",
+      "direction": "up"
+    },
+    {
+      "id": "rope_10_down",
+      "from": "s_field_low",
+      "to": "s_west_ground",
+      "action": "climb",
+      "status": "verified",
+      "conditions": {
+        "actorParameterRevision": "xiantu-feel-base100-20261027"
+      },
+      "evidence": [
+        "work/runtime-final/route_all_ropes.json"
+      ],
+      "climb": "rope_10",
+      "direction": "down"
+    },
+    {
+      "id": "rope_24_up",
+      "from": "s_west_ground",
+      "to": "s_field_high",
+      "action": "climb",
+      "status": "verified",
+      "conditions": {
+        "actorParameterRevision": "xiantu-feel-base100-20261027"
+      },
+      "evidence": [
+        "work/runtime-final/route_all_ropes.json"
+      ],
+      "climb": "rope_24",
+      "direction": "up"
+    },
+    {
+      "id": "rope_24_down",
+      "from": "s_field_high",
+      "to": "s_west_ground",
+      "action": "climb",
+      "status": "verified",
+      "conditions": {
+        "actorParameterRevision": "xiantu-feel-base100-20261027"
+      },
+      "evidence": [
+        "work/runtime-final/route_all_ropes.json"
+      ],
+      "climb": "rope_24",
+      "direction": "down"
+    },
+    {
+      "id": "rope_40_up",
+      "from": "s_west_ground",
+      "to": "s_bridge_low",
+      "action": "climb",
+      "status": "verified",
+      "conditions": {
+        "actorParameterRevision": "xiantu-feel-base100-20261027"
+      },
+      "evidence": [
+        "work/runtime-final/route_main.json",
+        "work/runtime-final/route_return.json",
+        "work/runtime-final/route_gather.json",
+        "work/runtime-final/route_all_ropes.json"
+      ],
+      "climb": "rope_40",
+      "direction": "up"
+    },
+    {
+      "id": "rope_40_down",
+      "from": "s_bridge_low",
+      "to": "s_west_ground",
+      "action": "climb",
+      "status": "verified",
+      "conditions": {
+        "actorParameterRevision": "xiantu-feel-base100-20261027"
+      },
+      "evidence": [
+        "work/runtime-final/route_main.json",
+        "work/runtime-final/route_return.json",
+        "work/runtime-final/route_gather.json",
+        "work/runtime-final/route_all_ropes.json"
+      ],
+      "climb": "rope_40",
+      "direction": "down"
+    },
+    {
+      "id": "rope_50_up",
+      "from": "s_bridge_low",
+      "to": "s_bridge_mid",
+      "action": "climb",
+      "status": "verified",
+      "conditions": {
+        "actorParameterRevision": "xiantu-feel-base100-20261027"
+      },
+      "evidence": [
+        "work/runtime-final/route_main.json",
+        "work/runtime-final/route_return.json",
+        "work/runtime-final/route_gather.json",
+        "work/runtime-final/route_all_ropes.json"
+      ],
+      "climb": "rope_50",
+      "direction": "up"
+    },
+    {
+      "id": "rope_50_down",
+      "from": "s_bridge_mid",
+      "to": "s_bridge_low",
+      "action": "climb",
+      "status": "verified",
+      "conditions": {
+        "actorParameterRevision": "xiantu-feel-base100-20261027"
+      },
+      "evidence": [
+        "work/runtime-final/route_main.json",
+        "work/runtime-final/route_return.json",
+        "work/runtime-final/route_gather.json",
+        "work/runtime-final/route_all_ropes.json"
+      ],
+      "climb": "rope_50",
+      "direction": "down"
+    },
+    {
+      "id": "rope_48_up",
+      "from": "s_bridge_mid",
+      "to": "s_bridge_high",
+      "action": "climb",
+      "status": "verified",
+      "conditions": {
+        "actorParameterRevision": "xiantu-feel-base100-20261027"
+      },
+      "evidence": [
+        "work/runtime-final/route_main.json",
+        "work/runtime-final/route_return.json",
+        "work/runtime-final/route_gather.json",
+        "work/runtime-final/route_all_ropes.json"
+      ],
+      "climb": "rope_48",
+      "direction": "up"
+    },
+    {
+      "id": "rope_48_down",
+      "from": "s_bridge_high",
+      "to": "s_bridge_mid",
+      "action": "climb",
+      "status": "verified",
+      "conditions": {
+        "actorParameterRevision": "xiantu-feel-base100-20261027"
+      },
+      "evidence": [
+        "work/runtime-final/route_main.json",
+        "work/runtime-final/route_return.json",
+        "work/runtime-final/route_gather.json",
+        "work/runtime-final/route_all_ropes.json"
+      ],
+      "climb": "rope_48",
+      "direction": "down"
+    },
+    {
+      "id": "rope_78_up",
+      "from": "s_mid_ground",
+      "to": "s_mid_outpost",
+      "action": "climb",
+      "status": "verified",
+      "conditions": {
+        "actorParameterRevision": "xiantu-feel-base100-20261027"
+      },
+      "evidence": [
+        "work/runtime-final/route_all_ropes.json"
+      ],
+      "climb": "rope_78",
+      "direction": "up"
+    },
+    {
+      "id": "rope_78_down",
+      "from": "s_mid_outpost",
+      "to": "s_mid_ground",
+      "action": "climb",
+      "status": "verified",
+      "conditions": {
+        "actorParameterRevision": "xiantu-feel-base100-20261027"
+      },
+      "evidence": [
+        "work/runtime-final/route_all_ropes.json"
+      ],
+      "climb": "rope_78",
+      "direction": "down"
+    },
+    {
+      "id": "rope_98_up",
+      "from": "s_east_ground",
+      "to": "s_east_low",
+      "action": "climb",
+      "status": "verified",
+      "conditions": {
+        "actorParameterRevision": "xiantu-feel-base100-20261027"
+      },
+      "evidence": [
+        "work/runtime-final/route_main.json",
+        "work/runtime-final/route_return.json",
+        "work/runtime-final/route_all_ropes.json"
+      ],
+      "climb": "rope_98",
+      "direction": "up"
+    },
+    {
+      "id": "rope_98_down",
+      "from": "s_east_low",
+      "to": "s_east_ground",
+      "action": "climb",
+      "status": "verified",
+      "conditions": {
+        "actorParameterRevision": "xiantu-feel-base100-20261027"
+      },
+      "evidence": [
+        "work/runtime-final/route_main.json",
+        "work/runtime-final/route_return.json",
+        "work/runtime-final/route_all_ropes.json"
+      ],
+      "climb": "rope_98",
+      "direction": "down"
+    },
+    {
+      "id": "rope_96_up",
+      "from": "s_east_low",
+      "to": "s_east_high",
+      "action": "climb",
+      "status": "verified",
+      "conditions": {
+        "actorParameterRevision": "xiantu-feel-base100-20261027"
+      },
+      "evidence": [
+        "work/runtime-final/route_main.json",
+        "work/runtime-final/route_return.json",
+        "work/runtime-final/route_all_ropes.json"
+      ],
+      "climb": "rope_96",
+      "direction": "up"
+    },
+    {
+      "id": "rope_96_down",
+      "from": "s_east_high",
+      "to": "s_east_low",
+      "action": "climb",
+      "status": "verified",
+      "conditions": {
+        "actorParameterRevision": "xiantu-feel-base100-20261027"
+      },
+      "evidence": [
+        "work/runtime-final/route_main.json",
+        "work/runtime-final/route_return.json",
+        "work/runtime-final/route_all_ropes.json"
+      ],
+      "climb": "rope_96",
+      "direction": "down"
+    },
+    {
+      "id": "step_mid_up",
+      "from": "s_west_ground",
+      "to": "s_mid_ground",
+      "action": "jump",
+      "status": "verified",
+      "conditions": {
+        "actorParameterRevision": "xiantu-feel-base100-20261027"
+      },
+      "evidence": [
+        "work/runtime-final/route_main.json",
+        "work/runtime-final/route_return.json",
+        "work/runtime-final/route_gather.json",
+        "work/runtime-final/route_all_ropes.json"
+      ],
+      "direction": "east",
+      "rise": 64
+    },
+    {
+      "id": "step_east_up",
+      "from": "s_mid_ground",
+      "to": "s_east_ground",
+      "action": "jump",
+      "status": "verified",
+      "conditions": {
+        "actorParameterRevision": "xiantu-feel-base100-20261027"
+      },
+      "evidence": [
+        "work/runtime-final/route_main.json",
+        "work/runtime-final/route_return.json",
+        "work/runtime-final/route_gather.json",
+        "work/runtime-final/route_all_ropes.json"
+      ],
+      "direction": "east",
+      "rise": 64
+    },
+    {
+      "id": "step_east_down",
+      "from": "s_east_ground",
+      "to": "s_mid_ground",
+      "action": "drop",
+      "status": "verified",
+      "conditions": {
+        "actorParameterRevision": "xiantu-feel-base100-20261027"
+      },
+      "evidence": [
+        "work/runtime-final/route_return.json"
+      ],
+      "direction": "west",
+      "drop": 64
+    },
+    {
+      "id": "step_mid_down",
+      "from": "s_mid_ground",
+      "to": "s_west_ground",
+      "action": "drop",
+      "status": "verified",
+      "conditions": {
+        "actorParameterRevision": "xiantu-feel-base100-20261027"
+      },
+      "evidence": [
+        "work/runtime-final/route_return.json"
+      ],
+      "direction": "west",
+      "drop": 64
+    }
+  ],
+  "requiredRoutes": [
+    {
+      "id": "route_main",
+      "name": "出生→西门→断桥必爬上下→两64高台阶→荒驿必爬上下→东门",
+      "from": "start_spawn",
+      "to": "portal_to_town",
+      "via": [
+        "portal_to_outskirts_1",
+        "rope_40",
+        "rope_50",
+        "rope_48",
+        "s_bridge_high",
+        "rope_48",
+        "rope_50",
+        "rope_40",
+        "s_west_ground",
+        "s_mid_ground",
+        "s_east_ground",
+        "rope_98",
+        "rope_96",
+        "s_east_high",
+        "rope_96",
+        "rope_98"
+      ],
+      "status": "verified",
+      "evidence": [
+        "work/runtime-final/route_main.json"
+      ],
+      "direction": "continuous-from-normal-spawn",
+      "requirements": {
+        "noTeleport": true,
+        "noReset": true,
+        "baseMovePoints": 100
+      }
+    },
+    {
+      "id": "route_return",
+      "name": "主路线连续接东门→西门回程",
+      "from": "start_spawn",
+      "to": "portal_to_outskirts_1",
+      "via": [
+        "portal_to_outskirts_1",
+        "rope_40",
+        "rope_50",
+        "rope_48",
+        "s_bridge_high",
+        "rope_48",
+        "rope_50",
+        "rope_40",
+        "s_west_ground",
+        "s_mid_ground",
+        "s_east_ground",
+        "rope_98",
+        "rope_96",
+        "s_east_high",
+        "rope_96",
+        "rope_98",
+        "portal_to_town",
+        "s_mid_ground",
+        "s_west_ground"
+      ],
+      "status": "verified",
+      "evidence": [
+        "work/runtime-final/route_return.json"
+      ],
+      "direction": "continuous-from-normal-spawn",
+      "requirements": {
+        "noTeleport": true,
+        "noReset": true,
+        "baseMovePoints": 100
+      }
+    },
+    {
+      "id": "route_gather",
+      "name": "从正常出生连续到两灵草和一铁精",
+      "from": "start_spawn",
+      "to": "portal_to_town",
+      "via": [
+        "gather_spirit_herb_22",
+        "rope_40",
+        "rope_50",
+        "rope_48",
+        "gather_spirit_herb_23",
+        "rope_48",
+        "rope_50",
+        "rope_40",
+        "s_mid_ground",
+        "s_east_ground",
+        "gather_iron_essence_24"
+      ],
+      "status": "verified",
+      "evidence": [
+        "work/runtime-final/route_gather.json"
+      ],
+      "direction": "continuous-from-normal-spawn",
+      "requirements": {
+        "noTeleport": true,
+        "noReset": true,
+        "baseMovePoints": 100
+      }
+    },
+    {
+      "id": "route_all_ropes",
+      "name": "全部8绳双向连续巡回＋宝箱＋东门",
+      "from": "start_spawn",
+      "to": "portal_to_town",
+      "via": [
+        "rope_10",
+        "s_field_low",
+        "rope_10",
+        "rope_24",
+        "s_field_high",
+        "sense_chest_01",
+        "rope_24",
+        "rope_40",
+        "rope_50",
+        "rope_48",
+        "s_bridge_high",
+        "rope_48",
+        "rope_50",
+        "rope_40",
+        "s_mid_ground",
+        "rope_78",
+        "s_mid_outpost",
+        "rope_78",
+        "s_east_ground",
+        "rope_98",
+        "rope_96",
+        "s_east_high",
+        "rope_96",
+        "rope_98"
+      ],
+      "status": "verified",
+      "evidence": [
+        "work/runtime-final/route_all_ropes.json"
+      ],
+      "direction": "continuous-from-normal-spawn",
+      "requirements": {
+        "noTeleport": true,
+        "noReset": true,
+        "baseMovePoints": 100
+      }
+    }
+  ],
+  "encounters": [
+    {
+      "id": "spawn_straw_puppet_12",
+      "position": [
+        128,
+        1088
+      ],
+      "width": 928,
+      "properties": {
+        "monster": "straw_puppet",
+        "count": 3
+      }
+    },
+    {
+      "id": "spawn_straw_puppet_13",
+      "position": [
+        128,
+        960
+      ],
+      "width": 544,
+      "properties": {
+        "monster": "straw_puppet",
+        "count": 1
+      }
+    },
+    {
+      "id": "spawn_straw_puppet_14",
+      "position": [
+        384,
+        832
+      ],
+      "width": 608,
+      "properties": {
+        "monster": "straw_puppet",
+        "count": 2
+      }
+    },
+    {
+      "id": "spawn_black_robe_minion_15",
+      "position": [
+        1088,
+        960
+      ],
+      "width": 608,
+      "properties": {
+        "monster": "black_robe_minion",
+        "count": 2
+      }
+    },
+    {
+      "id": "spawn_black_robe_minion_16",
+      "position": [
+        1216,
+        800
+      ],
+      "width": 608,
+      "properties": {
+        "monster": "black_robe_minion",
+        "count": 2
+      }
+    },
+    {
+      "id": "spawn_black_robe_minion_17",
+      "position": [
+        1408,
+        672
+      ],
+      "width": 352,
+      "properties": {
+        "monster": "black_robe_minion",
+        "count": 1
+      }
+    },
+    {
+      "id": "spawn_black_robe_minion_18",
+      "position": [
+        1088,
+        1088
+      ],
+      "width": 1120,
+      "properties": {
+        "monster": "black_robe_minion",
+        "count": 2
+      }
+    },
+    {
+      "id": "spawn_black_robe_minion_19",
+      "position": [
+        2240,
+        1024
+      ],
+      "width": 512,
+      "properties": {
+        "monster": "black_robe_minion",
+        "count": 2
+      }
+    },
+    {
+      "id": "spawn_black_robe_minion_20",
+      "position": [
+        2304,
+        896
+      ],
+      "width": 416,
+      "properties": {
+        "monster": "black_robe_minion",
+        "count": 1
+      }
+    },
+    {
+      "id": "spawn_black_robe_minion_21",
+      "position": [
+        2880,
+        832
+      ],
+      "width": 480,
+      "properties": {
+        "monster": "black_robe_minion",
+        "count": 2
+      }
+    }
+  ],
+  "sourceOverrides": [
+    {
+      "field": "portal_to_outskirts_1",
+      "sourcePosition": [
+        3440,
+        768
+      ],
+      "sourceTranslatedPosition": [
+        3440,
+        960
+      ],
+      "deliveryPosition": [
+        80,
+        1088
+      ],
+      "reason": "2026-10-27 PM brief西门连接稻田优先于旧JSON"
+    },
+    {
+      "field": "portal_to_town",
+      "sourcePosition": [
+        80,
+        896
+      ],
+      "sourceTranslatedPosition": [
+        80,
+        1088
+      ],
+      "deliveryPosition": [
+        3440,
+        960
+      ],
+      "reason": "2026-10-27 PM brief东门连接落霞镇优先于旧JSON"
+    },
+    {
+      "field": "playerStart",
+      "sourcePosition": [
+        3392,
+        768
+      ],
+      "sourceTranslatedPosition": [
+        3392,
+        960
+      ],
+      "deliveryPosition": [
+        160,
+        1088
+      ],
+      "reason": "本刀主路线从西侧出生连续向东验收"
+    },
+    {
+      "field": "climbs.bottom",
+      "reason": "8绳下端各延伸32px锚定下方真实平台面；详见每绳sourceGeometry"
+    }
+  ],
+  "disabledSourceObjects": [
+    {
+      "id": "sense_hidden_chest_01",
+      "reason": "原地图enabled:false保持关闭",
+      "source": {
+        "id": 26,
+        "name": "sense_hidden_chest_01",
+        "type": "hidden",
+        "x": 592,
+        "y": 640,
+        "width": 0,
+        "height": 0,
+        "properties": [
+          {
+            "name": "enabled",
+            "type": "bool",
+            "value": false
+          },
+          {
+            "name": "reqSpirit",
+            "type": "int",
+            "value": 0
+          },
+          {
+            "name": "reveal",
+            "type": "string",
+            "value": "chest"
+          },
+          {
+            "name": "targetObject",
+            "type": "string",
+            "value": "sense_chest_01"
+          }
+        ]
+      }
+    },
+    {
+      "id": "sense_hidden_platform_01",
+      "reason": "原地图enabled:false保持关闭",
+      "source": {
+        "id": 27,
+        "name": "sense_hidden_platform_01",
+        "type": "hidden",
+        "x": 3072,
+        "y": 448,
+        "width": 96,
+        "height": 32,
+        "properties": [
+          {
+            "name": "enabled",
+            "type": "bool",
+            "value": false
+          },
+          {
+            "name": "reqSpirit",
+            "type": "int",
+            "value": 10
+          },
+          {
+            "name": "reveal",
+            "type": "string",
+            "value": "platform"
+          }
+        ]
+      }
+    }
+  ],
+  "diagnostics": {
+    "maskPalette": {
+      "walk": [
+        150,
+        245,
+        160,
+        255
+      ],
+      "stand": [
+        0,
+        200,
+        80,
+        255
+      ],
+      "rope": [
+        0,
+        190,
+        230,
+        255
+      ],
+      "jump": [
+        255,
+        180,
+        0,
+        255
+      ],
+      "drop": [
+        170,
+        80,
+        225,
+        255
+      ],
+      "point": [
+        255,
+        70,
+        160,
+        255
+      ]
+    },
+    "rasterizationOrder": [
+      "walk",
+      "stand",
+      "rope",
+      "jump",
+      "drop",
+      "point"
+    ],
+    "regionIdIndex": null,
+    "geometryRevision": "luoxia2-final-001"
+  },
+  "validation": {
+    "status": "verified",
+    "geometryRevision": "luoxia2-final-001",
+    "actorParameterRevision": "xiantu-feel-base100-20261027",
+    "engineRevision": "gsb-aabb-feel-60hz-luoxia2-001",
+    "evidence": [
+      {
+        "id": "visual-alignment-and-layers",
+        "objects": [
+          "s_west_ground",
+          "s_mid_ground",
+          "s_east_ground",
+          "s_field_low",
+          "s_field_high",
+          "s_bridge_low",
+          "s_bridge_mid",
+          "s_bridge_high",
+          "s_mid_outpost",
+          "s_east_low",
+          "s_east_high",
+          "rope_10",
+          "rope_24",
+          "rope_40",
+          "rope_50",
+          "rope_48",
+          "rope_78",
+          "rope_98",
+          "rope_96"
+        ],
+        "geometryRevision": "luoxia2-final-001",
+        "actorParameterRevision": "xiantu-feel-base100-20261027",
+        "engineRevision": "gsb-aabb-feel-60hz-luoxia2-001",
+        "method": "33 independent bearing-material samples, all11 clean natural stand screenshots and16 rope endpoints; exact same-source layer recomposition; full-width bottom seam review",
+        "path": "work/visual-alignment-audit.json",
+        "result": "verified",
+        "parameterSource": [
+          "game/src/config/feel.ts",
+          "game/src/move.ts",
+          "game/src/scenes/Player.ts",
+          "game/src/scenes/GameScene.ts",
+          "game/src/main.ts"
+        ]
+      },
+      {
+        "id": "route_main",
+        "objects": [
+          "route_main",
+          "portal_to_outskirts_1",
+          "rope_40",
+          "rope_50",
+          "rope_48",
+          "s_bridge_high",
+          "rope_48",
+          "rope_50",
+          "rope_40",
+          "s_west_ground",
+          "s_mid_ground",
+          "s_east_ground",
+          "rope_98",
+          "rope_96",
+          "s_east_high",
+          "rope_96",
+          "rope_98"
+        ],
+        "geometryRevision": "luoxia2-final-001",
+        "actorParameterRevision": "xiantu-feel-base100-20261027",
+        "engineRevision": "gsb-aabb-feel-60hz-luoxia2-001",
+        "method": "normal-spawn continuous input replay in independent fixed60Hz AABB adapter and Chrome; no teleport or state mutation",
+        "path": "work/runtime-final/route_main.json",
+        "result": "verified",
+        "parameterSource": [
+          "game/src/config/feel.ts",
+          "game/src/move.ts",
+          "game/src/scenes/Player.ts",
+          "game/src/scenes/GameScene.ts",
+          "game/src/main.ts"
+        ]
+      },
+      {
+        "id": "route_return",
+        "objects": [
+          "route_return",
+          "portal_to_outskirts_1",
+          "rope_40",
+          "rope_50",
+          "rope_48",
+          "s_bridge_high",
+          "rope_48",
+          "rope_50",
+          "rope_40",
+          "s_west_ground",
+          "s_mid_ground",
+          "s_east_ground",
+          "rope_98",
+          "rope_96",
+          "s_east_high",
+          "rope_96",
+          "rope_98",
+          "portal_to_town",
+          "s_mid_ground",
+          "s_west_ground"
+        ],
+        "geometryRevision": "luoxia2-final-001",
+        "actorParameterRevision": "xiantu-feel-base100-20261027",
+        "engineRevision": "gsb-aabb-feel-60hz-luoxia2-001",
+        "method": "normal-spawn continuous input replay in independent fixed60Hz AABB adapter and Chrome; no teleport or state mutation",
+        "path": "work/runtime-final/route_return.json",
+        "result": "verified",
+        "parameterSource": [
+          "game/src/config/feel.ts",
+          "game/src/move.ts",
+          "game/src/scenes/Player.ts",
+          "game/src/scenes/GameScene.ts",
+          "game/src/main.ts"
+        ]
+      },
+      {
+        "id": "route_gather",
+        "objects": [
+          "route_gather",
+          "gather_spirit_herb_22",
+          "rope_40",
+          "rope_50",
+          "rope_48",
+          "gather_spirit_herb_23",
+          "rope_48",
+          "rope_50",
+          "rope_40",
+          "s_mid_ground",
+          "s_east_ground",
+          "gather_iron_essence_24"
+        ],
+        "geometryRevision": "luoxia2-final-001",
+        "actorParameterRevision": "xiantu-feel-base100-20261027",
+        "engineRevision": "gsb-aabb-feel-60hz-luoxia2-001",
+        "method": "normal-spawn continuous input replay in independent fixed60Hz AABB adapter and Chrome; no teleport or state mutation",
+        "path": "work/runtime-final/route_gather.json",
+        "result": "verified",
+        "parameterSource": [
+          "game/src/config/feel.ts",
+          "game/src/move.ts",
+          "game/src/scenes/Player.ts",
+          "game/src/scenes/GameScene.ts",
+          "game/src/main.ts"
+        ]
+      },
+      {
+        "id": "route_all_ropes",
+        "objects": [
+          "route_all_ropes",
+          "rope_10",
+          "s_field_low",
+          "rope_10",
+          "rope_24",
+          "s_field_high",
+          "sense_chest_01",
+          "rope_24",
+          "rope_40",
+          "rope_50",
+          "rope_48",
+          "s_bridge_high",
+          "rope_48",
+          "rope_50",
+          "rope_40",
+          "s_mid_ground",
+          "rope_78",
+          "s_mid_outpost",
+          "rope_78",
+          "s_east_ground",
+          "rope_98",
+          "rope_96",
+          "s_east_high",
+          "rope_96",
+          "rope_98"
+        ],
+        "geometryRevision": "luoxia2-final-001",
+        "actorParameterRevision": "xiantu-feel-base100-20261027",
+        "engineRevision": "gsb-aabb-feel-60hz-luoxia2-001",
+        "method": "normal-spawn continuous input replay in independent fixed60Hz AABB adapter and Chrome; no teleport or state mutation",
+        "path": "work/runtime-final/route_all_ropes.json",
+        "result": "verified",
+        "parameterSource": [
+          "game/src/config/feel.ts",
+          "game/src/move.ts",
+          "game/src/scenes/Player.ts",
+          "game/src/scenes/GameScene.ts",
+          "game/src/main.ts"
+        ]
+      },
+      {
+        "id": "physics-regression",
+        "geometryRevision": "luoxia2-final-001",
+        "actorParameterRevision": "xiantu-feel-base100-20261027",
+        "engineRevision": "gsb-aabb-feel-60hz-luoxia2-001",
+        "method": "12 action regression scenarios; synthetic ceiling/fall clearly separated",
+        "path": "work/runtime-final/physics-smoke-results.json",
+        "result": "verified"
+      },
+      {
+        "id": "browser-runtime",
+        "geometryRevision": "luoxia2-final-001",
+        "actorParameterRevision": "xiantu-feel-base100-20261027",
+        "engineRevision": "gsb-aabb-feel-60hz-luoxia2-001",
+        "method": "root entry, keyboard, overlays, IDs, minimap, all routes, all11 natural surface contact screenshots",
+        "path": "work/runtime-final/browser-results.json",
+        "result": "verified"
+      }
+    ],
+    "issues": [],
+    "scope": "Independent project-FEEL AABB adapter; final art alignment checked separately by owner, Phaser/combat/AI not certified",
+    "runtimeEvidencePhase": "final bound-state replay; fixed relative evidence paths"
+  },
+  "alignment": {
+    "footlineTolerancePx": 2,
+    "ropeEndsUseSurfaceTop": true,
+    "bottomBand": [
+      1088,
+      1152
+    ],
+    "requireAllSurfaceIdsChecked": true
+  },
+  "sourceMapSha256": "f873d952015eb0d6faf448ca4811901596aa41a4dc2bc68fe55be69571e66f3a",
+  "previewEntities": [
+    {
+      "id": "spawn_straw_puppet_12_1",
+      "kind": "monster-static-reference",
+      "monster": "straw_puppet",
+      "position": [
+        282.66666666666663,
+        1088
+      ],
+      "width": 64,
+      "height": 80,
+      "path": "work/preview/mon_straw_puppet-reference.png",
+      "source": "art/sprites/mon_straw_puppet.png + .json idle_01; source spawn spawn_straw_puppet_12",
+      "interactive": false,
+      "note": "只读静态点位参考，无战斗、AI或伤害模拟"
+    },
+    {
+      "id": "spawn_straw_puppet_12_2",
+      "kind": "monster-static-reference",
+      "monster": "straw_puppet",
+      "position": [
+        592,
+        1088
+      ],
+      "width": 64,
+      "height": 80,
+      "path": "work/preview/mon_straw_puppet-reference.png",
+      "source": "art/sprites/mon_straw_puppet.png + .json idle_01; source spawn spawn_straw_puppet_12",
+      "interactive": false,
+      "note": "只读静态点位参考，无战斗、AI或伤害模拟"
+    },
+    {
+      "id": "spawn_straw_puppet_12_3",
+      "kind": "monster-static-reference",
+      "monster": "straw_puppet",
+      "position": [
+        901.3333333333334,
+        1088
+      ],
+      "width": 64,
+      "height": 80,
+      "path": "work/preview/mon_straw_puppet-reference.png",
+      "source": "art/sprites/mon_straw_puppet.png + .json idle_01; source spawn spawn_straw_puppet_12",
+      "interactive": false,
+      "note": "只读静态点位参考，无战斗、AI或伤害模拟"
+    },
+    {
+      "id": "spawn_straw_puppet_13_1",
+      "kind": "monster-static-reference",
+      "monster": "straw_puppet",
+      "position": [
+        400,
+        960
+      ],
+      "width": 64,
+      "height": 80,
+      "path": "work/preview/mon_straw_puppet-reference.png",
+      "source": "art/sprites/mon_straw_puppet.png + .json idle_01; source spawn spawn_straw_puppet_13",
+      "interactive": false,
+      "note": "只读静态点位参考，无战斗、AI或伤害模拟"
+    },
+    {
+      "id": "spawn_straw_puppet_14_1",
+      "kind": "monster-static-reference",
+      "monster": "straw_puppet",
+      "position": [
+        536,
+        832
+      ],
+      "width": 64,
+      "height": 80,
+      "path": "work/preview/mon_straw_puppet-reference.png",
+      "source": "art/sprites/mon_straw_puppet.png + .json idle_01; source spawn spawn_straw_puppet_14",
+      "interactive": false,
+      "note": "只读静态点位参考，无战斗、AI或伤害模拟"
+    },
+    {
+      "id": "spawn_straw_puppet_14_2",
+      "kind": "monster-static-reference",
+      "monster": "straw_puppet",
+      "position": [
+        840,
+        832
+      ],
+      "width": 64,
+      "height": 80,
+      "path": "work/preview/mon_straw_puppet-reference.png",
+      "source": "art/sprites/mon_straw_puppet.png + .json idle_01; source spawn spawn_straw_puppet_14",
+      "interactive": false,
+      "note": "只读静态点位参考，无战斗、AI或伤害模拟"
+    },
+    {
+      "id": "spawn_black_robe_minion_15_1",
+      "kind": "monster-static-reference",
+      "monster": "black_robe_minion",
+      "position": [
+        1240,
+        960
+      ],
+      "width": 80,
+      "height": 88,
+      "path": "work/preview/mon_black_robe_minion-reference.png",
+      "source": "art/sprites/mon_black_robe_minion.png + .json idle_01; source spawn spawn_black_robe_minion_15",
+      "interactive": false,
+      "note": "只读静态点位参考，无战斗、AI或伤害模拟"
+    },
+    {
+      "id": "spawn_black_robe_minion_15_2",
+      "kind": "monster-static-reference",
+      "monster": "black_robe_minion",
+      "position": [
+        1544,
+        960
+      ],
+      "width": 80,
+      "height": 88,
+      "path": "work/preview/mon_black_robe_minion-reference.png",
+      "source": "art/sprites/mon_black_robe_minion.png + .json idle_01; source spawn spawn_black_robe_minion_15",
+      "interactive": false,
+      "note": "只读静态点位参考，无战斗、AI或伤害模拟"
+    },
+    {
+      "id": "spawn_black_robe_minion_16_1",
+      "kind": "monster-static-reference",
+      "monster": "black_robe_minion",
+      "position": [
+        1368,
+        800
+      ],
+      "width": 80,
+      "height": 88,
+      "path": "work/preview/mon_black_robe_minion-reference.png",
+      "source": "art/sprites/mon_black_robe_minion.png + .json idle_01; source spawn spawn_black_robe_minion_16",
+      "interactive": false,
+      "note": "只读静态点位参考，无战斗、AI或伤害模拟"
+    },
+    {
+      "id": "spawn_black_robe_minion_16_2",
+      "kind": "monster-static-reference",
+      "monster": "black_robe_minion",
+      "position": [
+        1672,
+        800
+      ],
+      "width": 80,
+      "height": 88,
+      "path": "work/preview/mon_black_robe_minion-reference.png",
+      "source": "art/sprites/mon_black_robe_minion.png + .json idle_01; source spawn spawn_black_robe_minion_16",
+      "interactive": false,
+      "note": "只读静态点位参考，无战斗、AI或伤害模拟"
+    },
+    {
+      "id": "spawn_black_robe_minion_17_1",
+      "kind": "monster-static-reference",
+      "monster": "black_robe_minion",
+      "position": [
+        1584,
+        672
+      ],
+      "width": 80,
+      "height": 88,
+      "path": "work/preview/mon_black_robe_minion-reference.png",
+      "source": "art/sprites/mon_black_robe_minion.png + .json idle_01; source spawn spawn_black_robe_minion_17",
+      "interactive": false,
+      "note": "只读静态点位参考，无战斗、AI或伤害模拟"
+    },
+    {
+      "id": "spawn_black_robe_minion_18_1",
+      "kind": "monster-static-reference",
+      "monster": "black_robe_minion",
+      "position": [
+        1368,
+        1088
+      ],
+      "width": 80,
+      "height": 88,
+      "path": "work/preview/mon_black_robe_minion-reference.png",
+      "source": "art/sprites/mon_black_robe_minion.png + .json idle_01; source spawn spawn_black_robe_minion_18",
+      "interactive": false,
+      "note": "只读静态点位参考，无战斗、AI或伤害模拟"
+    },
+    {
+      "id": "spawn_black_robe_minion_18_2",
+      "kind": "monster-static-reference",
+      "monster": "black_robe_minion",
+      "position": [
+        1928,
+        1088
+      ],
+      "width": 80,
+      "height": 88,
+      "path": "work/preview/mon_black_robe_minion-reference.png",
+      "source": "art/sprites/mon_black_robe_minion.png + .json idle_01; source spawn spawn_black_robe_minion_18",
+      "interactive": false,
+      "note": "只读静态点位参考，无战斗、AI或伤害模拟"
+    },
+    {
+      "id": "spawn_black_robe_minion_19_1",
+      "kind": "monster-static-reference",
+      "monster": "black_robe_minion",
+      "position": [
+        2368,
+        1024
+      ],
+      "width": 80,
+      "height": 88,
+      "path": "work/preview/mon_black_robe_minion-reference.png",
+      "source": "art/sprites/mon_black_robe_minion.png + .json idle_01; source spawn spawn_black_robe_minion_19",
+      "interactive": false,
+      "note": "只读静态点位参考，无战斗、AI或伤害模拟"
+    },
+    {
+      "id": "spawn_black_robe_minion_19_2",
+      "kind": "monster-static-reference",
+      "monster": "black_robe_minion",
+      "position": [
+        2624,
+        1024
+      ],
+      "width": 80,
+      "height": 88,
+      "path": "work/preview/mon_black_robe_minion-reference.png",
+      "source": "art/sprites/mon_black_robe_minion.png + .json idle_01; source spawn spawn_black_robe_minion_19",
+      "interactive": false,
+      "note": "只读静态点位参考，无战斗、AI或伤害模拟"
+    },
+    {
+      "id": "spawn_black_robe_minion_20_1",
+      "kind": "monster-static-reference",
+      "monster": "black_robe_minion",
+      "position": [
+        2512,
+        896
+      ],
+      "width": 80,
+      "height": 88,
+      "path": "work/preview/mon_black_robe_minion-reference.png",
+      "source": "art/sprites/mon_black_robe_minion.png + .json idle_01; source spawn spawn_black_robe_minion_20",
+      "interactive": false,
+      "note": "只读静态点位参考，无战斗、AI或伤害模拟"
+    },
+    {
+      "id": "spawn_black_robe_minion_21_1",
+      "kind": "monster-static-reference",
+      "monster": "black_robe_minion",
+      "position": [
+        3000,
+        832
+      ],
+      "width": 80,
+      "height": 88,
+      "path": "work/preview/mon_black_robe_minion-reference.png",
+      "source": "art/sprites/mon_black_robe_minion.png + .json idle_01; source spawn spawn_black_robe_minion_21",
+      "interactive": false,
+      "note": "只读静态点位参考，无战斗、AI或伤害模拟"
+    },
+    {
+      "id": "spawn_black_robe_minion_21_2",
+      "kind": "monster-static-reference",
+      "monster": "black_robe_minion",
+      "position": [
+        3240,
+        832
+      ],
+      "width": 80,
+      "height": 88,
+      "path": "work/preview/mon_black_robe_minion-reference.png",
+      "source": "art/sprites/mon_black_robe_minion.png + .json idle_01; source spawn spawn_black_robe_minion_21",
+      "interactive": false,
+      "note": "只读静态点位参考，无战斗、AI或伤害模拟"
+    }
+  ],
+  "foreground": {
+    "status": "not-applicable",
+    "reason": "No character-front occluders. Attached cloth, gate, rope and gather sprites stay in playable behind actor."
+  },
+  "layerOrder": [
+    "background",
+    "playable",
+    "static reference monsters",
+    "actor"
+  ],
+  "decorations": [
+    {
+      "id": "courier_rear_roof",
+      "layer": "background",
+      "collision": false,
+      "reason": "Broken Chinese roof and rear wall are backdrop, do not add standing surfaces."
+    },
+    {
+      "id": "courier_east_post",
+      "layer": "background",
+      "collision": false,
+      "reason": "Eastern courier portal landmark behind route."
+    }
+  ]
+}

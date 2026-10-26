@@ -1,0 +1,76 @@
+{
+ "atlas": "mon_black_robe_guard",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  80,
+  88
+ ],
+ "anims": [
+  {
+   "key": "mon_black_robe_guard_idle",
+   "frames": [
+    "mon_black_robe_guard_idle_01",
+    "mon_black_robe_guard_idle_02"
+   ],
+   "frameRate": 3,
+   "repeat": -1
+  },
+  {
+   "key": "mon_black_robe_guard_walk",
+   "frames": [
+    "mon_black_robe_guard_walk_01",
+    "mon_black_robe_guard_walk_02",
+    "mon_black_robe_guard_walk_03"
+   ],
+   "frameRate": 8,
+   "repeat": -1
+  },
+  {
+   "key": "mon_black_robe_guard_attack",
+   "frames": [
+    "mon_black_robe_guard_attack_01",
+    "mon_black_robe_guard_attack_02",
+    "mon_black_robe_guard_attack_03"
+   ],
+   "frameRate": 8,
+   "repeat": 0
+  },
+  {
+   "key": "mon_black_robe_guard_hit",
+   "frames": [
+    "mon_black_robe_guard_hit_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  },
+  {
+   "key": "mon_black_robe_guard_die",
+   "frames": [
+    "mon_black_robe_guard_die_01",
+    "mon_black_robe_guard_die_02",
+    "mon_black_robe_guard_die_03"
+   ],
+   "frameRate": 6,
+   "repeat": 0
+  }
+ ],
+ "bodySize": [
+  34,
+  62
+ ],
+ "attackFrames": {
+  "telegraph": 1,
+  "hit": 2
+ },
+ "projectileSpawn": [
+  -26,
+  -36
+ ],
+ "attackFx": "fx_robe_guard_projectile",
+ "note": "attack.type projectile、telegraphMs 400：attack_01 举火符聚火光，attack_02 掷出（这一帧在 脚底 + projectileSpawn 生成 fx_robe_guard_projectile，朝右 x 取反），attack_03 收势",
+ "kind": "monster"
+}
