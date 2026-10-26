@@ -1,0 +1,71 @@
+{
+ "atlas": "mon_wild_wolf",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  96,
+  64
+ ],
+ "anims": [
+  {
+   "key": "mon_wild_wolf_idle",
+   "frames": [
+    "mon_wild_wolf_idle_01",
+    "mon_wild_wolf_idle_02"
+   ],
+   "frameRate": 3,
+   "repeat": -1
+  },
+  {
+   "key": "mon_wild_wolf_walk",
+   "frames": [
+    "mon_wild_wolf_walk_01",
+    "mon_wild_wolf_walk_02",
+    "mon_wild_wolf_walk_03"
+   ],
+   "frameRate": 8,
+   "repeat": -1
+  },
+  {
+   "key": "mon_wild_wolf_attack",
+   "frames": [
+    "mon_wild_wolf_attack_01",
+    "mon_wild_wolf_attack_02",
+    "mon_wild_wolf_attack_03"
+   ],
+   "frameRate": 8,
+   "repeat": 0
+  },
+  {
+   "key": "mon_wild_wolf_hit",
+   "frames": [
+    "mon_wild_wolf_hit_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  },
+  {
+   "key": "mon_wild_wolf_die",
+   "frames": [
+    "mon_wild_wolf_die_01",
+    "mon_wild_wolf_die_02",
+    "mon_wild_wolf_die_03"
+   ],
+   "frameRate": 6,
+   "repeat": 0
+  }
+ ],
+ "bodySize": [
+  56,
+  34
+ ],
+ "attackFrames": {
+  "telegraph": 1,
+  "hit": 2
+ },
+ "note": "万兽山试炼·野狼（wild_wolf）：灰褐普通狼，和万妖林的影狼（墨紫）同体型、颜色区分开。attack_01 伏低龇牙（前摇定格），attack_02 前扑咬（判定，前冲 8px 画在帧内，约 40×24），attack_03 收势。",
+ "kind": "monster"
+}

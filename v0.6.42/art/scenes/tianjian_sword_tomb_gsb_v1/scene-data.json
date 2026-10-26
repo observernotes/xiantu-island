@@ -1,0 +1,1449 @@
+{
+  "schemaVersion": "1.0",
+  "sceneId": "tianjian_sword_tomb_gsb_v1",
+  "title": "天剑宗·剑冢",
+  "geometryRevision": "tomb-final-001",
+  "status": "verified",
+  "space": {
+    "origin": "top-left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "units": "logical-pixel",
+    "logicalWidth": 2240,
+    "logicalHeight": 768,
+    "tileSize": 32,
+    "columns": 70,
+    "rows": 24
+  },
+  "actor": {
+    "parameterRevision": "tomb-base-feel-20261027-001",
+    "parameterSource": [
+      "game/src/config/feel.ts",
+      "game/src/move.ts",
+      "game/src/scenes/Player.ts"
+    ],
+    "sourceRevision": {
+      "game/src/config/feel.ts": "9375297a15b04012633197a935f4d9ffd403c3ff8d1e055cb585dd5f81acdeec",
+      "game/src/move.ts": "585c9987623cbe532d7f65508773addd52ccd2f312e5c2ee592e9e6f2f686a74",
+      "game/src/scenes/Player.ts": "ec9426ed625784532c6e632a1755bd16076cc3f559d177f465b741341193f513"
+    },
+    "provisional": false,
+    "visualBounds": {
+      "width": 96,
+      "height": 96,
+      "anchor": "feet-center",
+      "bodyVisibleHeightApprox": 64
+    },
+    "visualAsset": {
+      "path": "work/preview/player-reference-idle.png",
+      "width": 96,
+      "height": 96,
+      "source": "read-only current approved main character static frame; reused scale reference only"
+    },
+    "collider": {
+      "shape": "aabb",
+      "width": 26,
+      "height": 58,
+      "anchor": "feet-center"
+    },
+    "abilities": [
+      "walk",
+      "jump",
+      "double-jump",
+      "climb",
+      "drop-through"
+    ],
+    "movement": {
+      "gravity": 2000,
+      "maxFallSpeed": 670,
+      "walkSpeed": 130,
+      "groundAccel": 2400,
+      "groundDecel": 3000,
+      "airAccel": 700,
+      "airMaxSpeed": 130,
+      "jumpSpeed": 560,
+      "coyoteMs": 60,
+      "jumpBufferMs": 80,
+      "doubleJumpVy": 480,
+      "doubleJumpVx": 330,
+      "climbSpeed": 110,
+      "ropeGrabRangeX": 18,
+      "ropeJumpVx": 160,
+      "ropeJumpVy": 360,
+      "dropThroughMs": 220,
+      "ropeRegrabMs": 250
+    },
+    "failureRules": {
+      "manualReset": "R to normal spawn; clears motion",
+      "fall": "world bottom +160 resets; map continuous floor prevents void fall"
+    },
+    "applicability": "Base speed/jump 100. Independent AABB adapter, not Phaser integration; combat excluded."
+  },
+  "assets": [
+    {
+      "id": "background",
+      "role": "background",
+      "path": "background.png",
+      "pixelWidth": 2240,
+      "pixelHeight": 768,
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "playable",
+      "role": "playable",
+      "path": "playable.png",
+      "pixelWidth": 2240,
+      "pixelHeight": 768,
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "s_ground_w",
+      "polyline": [
+        [
+          0,
+          704
+        ],
+        [
+          1472,
+          704
+        ]
+      ],
+      "support": "solid",
+      "status": "verified",
+      "landingRange": [
+        13,
+        1459
+      ],
+      "walkRegion": [
+        [
+          13,
+          646
+        ],
+        [
+          1459,
+          646
+        ],
+        [
+          1459,
+          704
+        ],
+        [
+          13,
+          704
+        ]
+      ],
+      "clearance": 58,
+      "evidence": [
+        {
+          "id": "s_ground_w",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "Chrome normal-spawn continuous replay prefix; feet on visible front stone lip",
+          "path": "work/evidence/standing-s_ground_w.png",
+          "result": "verified"
+        },
+        {
+          "id": "s_ground_w",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "AI material contact row registered to exact top; 3 samples,1px AA tolerance",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_sword_hill",
+      "polyline": [
+        [
+          1472,
+          640
+        ],
+        [
+          2016,
+          640
+        ]
+      ],
+      "support": "solid",
+      "status": "verified",
+      "landingRange": [
+        1485,
+        2003
+      ],
+      "walkRegion": [
+        [
+          1485,
+          582
+        ],
+        [
+          2003,
+          582
+        ],
+        [
+          2003,
+          640
+        ],
+        [
+          1485,
+          640
+        ]
+      ],
+      "clearance": 58,
+      "evidence": [
+        {
+          "id": "s_sword_hill",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "Chrome normal-spawn continuous replay prefix; feet on visible front stone lip",
+          "path": "work/evidence/standing-s_sword_hill.png",
+          "result": "verified"
+        },
+        {
+          "id": "s_sword_hill",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "AI material contact row registered to exact top; 3 samples,1px AA tolerance",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_ground_e",
+      "polyline": [
+        [
+          2016,
+          704
+        ],
+        [
+          2240,
+          704
+        ]
+      ],
+      "support": "solid",
+      "status": "verified",
+      "landingRange": [
+        2029,
+        2227
+      ],
+      "walkRegion": [
+        [
+          2029,
+          646
+        ],
+        [
+          2227,
+          646
+        ],
+        [
+          2227,
+          704
+        ],
+        [
+          2029,
+          704
+        ]
+      ],
+      "clearance": 58,
+      "evidence": [
+        {
+          "id": "s_ground_e",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "Chrome normal-spawn continuous replay prefix; feet on visible front stone lip",
+          "path": "work/evidence/standing-s_ground_e.png",
+          "result": "verified"
+        },
+        {
+          "id": "s_ground_e",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "AI material contact row registered to exact top; 3 samples,1px AA tolerance",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_hanging_sword",
+      "polyline": [
+        [
+          896,
+          576
+        ],
+        [
+          1312,
+          576
+        ]
+      ],
+      "support": "one-way",
+      "status": "verified",
+      "landingRange": [
+        909,
+        1299
+      ],
+      "walkRegion": [
+        [
+          909,
+          518
+        ],
+        [
+          1299,
+          518
+        ],
+        [
+          1299,
+          576
+        ],
+        [
+          909,
+          576
+        ]
+      ],
+      "clearance": 58,
+      "evidence": [
+        {
+          "id": "s_hanging_sword",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "Chrome normal-spawn continuous replay prefix; feet on visible front stone lip",
+          "path": "work/evidence/standing-s_hanging_sword.png",
+          "result": "verified"
+        },
+        {
+          "id": "s_hanging_sword",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "AI material contact row registered to exact top; 3 samples,1px AA tolerance",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_high_sword",
+      "polyline": [
+        [
+          1600,
+          512
+        ],
+        [
+          1888,
+          512
+        ]
+      ],
+      "support": "one-way",
+      "status": "verified",
+      "landingRange": [
+        1613,
+        1875
+      ],
+      "walkRegion": [
+        [
+          1613,
+          454
+        ],
+        [
+          1875,
+          454
+        ],
+        [
+          1875,
+          512
+        ],
+        [
+          1613,
+          512
+        ]
+      ],
+      "clearance": 58,
+      "evidence": [
+        {
+          "id": "s_high_sword",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "Chrome normal-spawn continuous replay prefix; feet on visible front stone lip",
+          "path": "work/evidence/standing-s_high_sword.png",
+          "result": "verified"
+        },
+        {
+          "id": "s_high_sword",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "AI material contact row registered to exact top; 3 samples,1px AA tolerance",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    }
+  ],
+  "climbs": [
+    {
+      "id": "c_rope_34",
+      "kind": "rope",
+      "corridor": [
+        [
+          1086,
+          576
+        ],
+        [
+          1122,
+          576
+        ],
+        [
+          1122,
+          704
+        ],
+        [
+          1086,
+          704
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1104,
+            704
+          ],
+          "surface": "s_ground_w"
+        },
+        "end": {
+          "position": [
+            1104,
+            576
+          ],
+          "surface": "s_hanging_sword"
+        }
+      },
+      "direction": "both",
+      "status": "verified",
+      "sourceNote": "Source hanging rope extended down to actual lower standable top; maps source unchanged.",
+      "evidence": [
+        {
+          "id": "c_rope_34",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "continuous natural-spawn full tour incl six dummy points,2 ropes both directions,western return; zero resets/teleports",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        },
+        {
+          "id": "c_rope_34",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "support and geometry checks plus8421 full-body frame sweep",
+          "path": "work/final-data-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "c_rope_54",
+      "kind": "rope",
+      "corridor": [
+        [
+          1726,
+          512
+        ],
+        [
+          1762,
+          512
+        ],
+        [
+          1762,
+          640
+        ],
+        [
+          1726,
+          640
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1744,
+            640
+          ],
+          "surface": "s_sword_hill"
+        },
+        "end": {
+          "position": [
+            1744,
+            512
+          ],
+          "surface": "s_high_sword"
+        }
+      },
+      "direction": "both",
+      "status": "verified",
+      "sourceNote": "Source hanging rope extended down to actual lower standable top; maps source unchanged.",
+      "evidence": [
+        {
+          "id": "c_rope_54",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "continuous natural-spawn full tour incl six dummy points,2 ropes both directions,western return; zero resets/teleports",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        },
+        {
+          "id": "c_rope_54",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "support and geometry checks plus8421 full-body frame sweep",
+          "path": "work/final-data-check.json",
+          "result": "verified"
+        }
+      ]
+    }
+  ],
+  "stairs": [],
+  "solids": [
+    {
+      "id": "body_s_ground_w",
+      "surface": "s_ground_w",
+      "polygon": [
+        [
+          0,
+          704
+        ],
+        [
+          1472,
+          704
+        ],
+        [
+          1472,
+          768
+        ],
+        [
+          0,
+          768
+        ]
+      ],
+      "status": "verified",
+      "openings": [],
+      "evidence": [
+        {
+          "id": "body_s_ground_w",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "continuous natural-spawn full tour incl six dummy points,2 ropes both directions,western return; zero resets/teleports",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        },
+        {
+          "id": "body_s_ground_w",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "support and geometry checks plus8421 full-body frame sweep",
+          "path": "work/final-data-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "body_s_sword_hill",
+      "surface": "s_sword_hill",
+      "polygon": [
+        [
+          1472,
+          640
+        ],
+        [
+          2016,
+          640
+        ],
+        [
+          2016,
+          768
+        ],
+        [
+          1472,
+          768
+        ]
+      ],
+      "status": "verified",
+      "openings": [],
+      "evidence": [
+        {
+          "id": "body_s_sword_hill",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "continuous natural-spawn full tour incl six dummy points,2 ropes both directions,western return; zero resets/teleports",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        },
+        {
+          "id": "body_s_sword_hill",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "support and geometry checks plus8421 full-body frame sweep",
+          "path": "work/final-data-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "body_s_ground_e",
+      "surface": "s_ground_e",
+      "polygon": [
+        [
+          2016,
+          704
+        ],
+        [
+          2240,
+          704
+        ],
+        [
+          2240,
+          768
+        ],
+        [
+          2016,
+          768
+        ]
+      ],
+      "status": "verified",
+      "openings": [],
+      "evidence": [
+        {
+          "id": "body_s_ground_e",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "continuous natural-spawn full tour incl six dummy points,2 ropes both directions,western return; zero resets/teleports",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        },
+        {
+          "id": "body_s_ground_e",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "support and geometry checks plus8421 full-body frame sweep",
+          "path": "work/final-data-check.json",
+          "result": "verified"
+        }
+      ]
+    }
+  ],
+  "hazards": [],
+  "points": [
+    {
+      "id": "start_spawn",
+      "type": "spawn",
+      "position": [
+        128,
+        704
+      ],
+      "surface": "s_ground_w",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "start_spawn",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "continuous natural-spawn full tour incl six dummy points,2 ropes both directions,western return; zero resets/teleports",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        },
+        {
+          "id": "start_spawn",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "support and geometry checks plus8421 full-body frame sweep",
+          "path": "work/final-data-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "portal_to_sect",
+      "type": "portal",
+      "position": [
+        80,
+        704
+      ],
+      "surface": "s_ground_w",
+      "status": "verified",
+      "target": "tianjian_sect",
+      "targetPortal": "portal_to_sword_tomb",
+      "evidence": [
+        {
+          "id": "portal_to_sect",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "continuous natural-spawn full tour incl six dummy points,2 ropes both directions,western return; zero resets/teleports",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        },
+        {
+          "id": "portal_to_sect",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "support and geometry checks plus8421 full-body frame sweep",
+          "path": "work/final-data-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "goal_east",
+      "type": "goal",
+      "position": [
+        2160,
+        704
+      ],
+      "surface": "s_ground_e",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "goal_east",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "continuous natural-spawn full tour incl six dummy points,2 ropes both directions,western return; zero resets/teleports",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        },
+        {
+          "id": "goal_east",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "support and geometry checks plus8421 full-body frame sweep",
+          "path": "work/final-data-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "dummy_1",
+      "type": "training-dummy",
+      "position": [
+        512,
+        704
+      ],
+      "surface": "s_ground_w",
+      "status": "verified",
+      "monster": "training_dummy",
+      "count": 1,
+      "noDamage": true,
+      "cultivationReward": 0,
+      "lesson": "basic-attack/sword-qi",
+      "artBakedInPlayable": true,
+      "evidence": [
+        {
+          "id": "dummy_1",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "continuous natural-spawn full tour incl six dummy points,2 ropes both directions,western return; zero resets/teleports",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        },
+        {
+          "id": "dummy_1",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "support and geometry checks plus8421 full-body frame sweep",
+          "path": "work/final-data-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "dummy_2",
+      "type": "training-dummy",
+      "position": [
+        704,
+        704
+      ],
+      "surface": "s_ground_w",
+      "status": "verified",
+      "monster": "training_dummy",
+      "count": 1,
+      "noDamage": true,
+      "cultivationReward": 0,
+      "lesson": "basic-attack/sword-qi",
+      "artBakedInPlayable": true,
+      "evidence": [
+        {
+          "id": "dummy_2",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "continuous natural-spawn full tour incl six dummy points,2 ropes both directions,western return; zero resets/teleports",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        },
+        {
+          "id": "dummy_2",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "support and geometry checks plus8421 full-body frame sweep",
+          "path": "work/final-data-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "dummy_3",
+      "type": "training-dummy",
+      "position": [
+        896,
+        704
+      ],
+      "surface": "s_ground_w",
+      "status": "verified",
+      "monster": "training_dummy",
+      "count": 1,
+      "noDamage": true,
+      "cultivationReward": 0,
+      "lesson": "basic-attack/sword-qi",
+      "artBakedInPlayable": true,
+      "evidence": [
+        {
+          "id": "dummy_3",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "continuous natural-spawn full tour incl six dummy points,2 ropes both directions,western return; zero resets/teleports",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        },
+        {
+          "id": "dummy_3",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "support and geometry checks plus8421 full-body frame sweep",
+          "path": "work/final-data-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "dummy_4",
+      "type": "training-dummy",
+      "position": [
+        1600,
+        640
+      ],
+      "surface": "s_sword_hill",
+      "status": "verified",
+      "monster": "training_dummy",
+      "count": 1,
+      "noDamage": true,
+      "cultivationReward": 0,
+      "lesson": "jump-attack/returning-sword",
+      "artBakedInPlayable": true,
+      "evidence": [
+        {
+          "id": "dummy_4",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "continuous natural-spawn full tour incl six dummy points,2 ropes both directions,western return; zero resets/teleports",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        },
+        {
+          "id": "dummy_4",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "support and geometry checks plus8421 full-body frame sweep",
+          "path": "work/final-data-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "dummy_5",
+      "type": "training-dummy",
+      "position": [
+        1824,
+        640
+      ],
+      "surface": "s_sword_hill",
+      "status": "verified",
+      "monster": "training_dummy",
+      "count": 1,
+      "noDamage": true,
+      "cultivationReward": 0,
+      "lesson": "jump-attack/returning-sword",
+      "artBakedInPlayable": true,
+      "evidence": [
+        {
+          "id": "dummy_5",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "continuous natural-spawn full tour incl six dummy points,2 ropes both directions,western return; zero resets/teleports",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        },
+        {
+          "id": "dummy_5",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "support and geometry checks plus8421 full-body frame sweep",
+          "path": "work/final-data-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "dummy_6",
+      "type": "training-dummy",
+      "position": [
+        1184,
+        576
+      ],
+      "surface": "s_hanging_sword",
+      "status": "verified",
+      "monster": "training_dummy",
+      "count": 1,
+      "noDamage": true,
+      "cultivationReward": 0,
+      "lesson": "climb-and-attack",
+      "artBakedInPlayable": true,
+      "evidence": [
+        {
+          "id": "dummy_6",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "continuous natural-spawn full tour incl six dummy points,2 ropes both directions,western return; zero resets/teleports",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        },
+        {
+          "id": "dummy_6",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "support and geometry checks plus8421 full-body frame sweep",
+          "path": "work/final-data-check.json",
+          "result": "verified"
+        }
+      ]
+    }
+  ],
+  "transitions": [
+    {
+      "id": "c_rope_34_up",
+      "from": "s_ground_w",
+      "to": "s_hanging_sword",
+      "action": "climb-up",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "c_rope_34_up",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "actual directed enter/arrive events or surface/action span in normal-spawn continuous input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "climb": "c_rope_34"
+    },
+    {
+      "id": "c_rope_34_down",
+      "from": "s_hanging_sword",
+      "to": "s_ground_w",
+      "action": "climb-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "c_rope_34_down",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "actual directed enter/arrive events or surface/action span in normal-spawn continuous input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "climb": "c_rope_34"
+    },
+    {
+      "id": "c_rope_54_up",
+      "from": "s_sword_hill",
+      "to": "s_high_sword",
+      "action": "climb-up",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "c_rope_54_up",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "actual directed enter/arrive events or surface/action span in normal-spawn continuous input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "climb": "c_rope_54"
+    },
+    {
+      "id": "c_rope_54_down",
+      "from": "s_high_sword",
+      "to": "s_sword_hill",
+      "action": "climb-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "c_rope_54_down",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "actual directed enter/arrive events or surface/action span in normal-spawn continuous input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "climb": "c_rope_54"
+    },
+    {
+      "id": "s_ground_w_to_s_sword_hill",
+      "from": "s_ground_w",
+      "to": "s_sword_hill",
+      "action": "jump",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "s_ground_w_to_s_sword_hill",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "actual directed enter/arrive events or surface/action span in normal-spawn continuous input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_sword_hill_to_s_ground_e",
+      "from": "s_sword_hill",
+      "to": "s_ground_e",
+      "action": "drop",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "s_sword_hill_to_s_ground_e",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "actual directed enter/arrive events or surface/action span in normal-spawn continuous input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_ground_e_to_s_sword_hill",
+      "from": "s_ground_e",
+      "to": "s_sword_hill",
+      "action": "jump",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "s_ground_e_to_s_sword_hill",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "actual directed enter/arrive events or surface/action span in normal-spawn continuous input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_sword_hill_to_s_ground_w",
+      "from": "s_sword_hill",
+      "to": "s_ground_w",
+      "action": "drop",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "s_sword_hill_to_s_ground_w",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "actual directed enter/arrive events or surface/action span in normal-spawn continuous input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ]
+    }
+  ],
+  "requiredRoutes": [
+    {
+      "id": "route_main",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "dummy_1",
+        "dummy_2",
+        "dummy_3",
+        "dummy_4",
+        "dummy_5"
+      ],
+      "direction": "outward",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "route_main",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "fixed60Hz continuous input only; browser same-input replay matches; zero resets/teleports",
+          "path": "work/replays-final/route_main.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "route_return",
+      "from": "start_spawn",
+      "to": "portal_to_sect",
+      "via": [
+        "goal_east",
+        "s_sword_hill"
+      ],
+      "direction": "continuous outward and return",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "route_return",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "fixed60Hz continuous input only; browser same-input replay matches; zero resets/teleports",
+          "path": "work/replays-final/route_return.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "route_ground",
+      "from": "start_spawn",
+      "to": "dummy_3",
+      "via": [
+        "dummy_1",
+        "dummy_2"
+      ],
+      "direction": "outward",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "route_ground",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "fixed60Hz continuous input only; browser same-input replay matches; zero resets/teleports",
+          "path": "work/replays-final/route_ground.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "route_hill",
+      "from": "start_spawn",
+      "to": "dummy_5",
+      "via": [
+        "dummy_4"
+      ],
+      "direction": "outward",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "route_hill",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "fixed60Hz continuous input only; browser same-input replay matches; zero resets/teleports",
+          "path": "work/replays-final/route_hill.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "route_hanging",
+      "from": "start_spawn",
+      "to": "dummy_6",
+      "via": [
+        "c_rope_34"
+      ],
+      "direction": "outward",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "route_hanging",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "fixed60Hz continuous input only; browser same-input replay matches; zero resets/teleports",
+          "path": "work/replays-final/route_hanging.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "route_high",
+      "from": "start_spawn",
+      "to": "s_high_sword",
+      "via": [
+        "s_sword_hill",
+        "c_rope_54"
+      ],
+      "direction": "outward",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "route_high",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "fixed60Hz continuous input only; browser same-input replay matches; zero resets/teleports",
+          "path": "work/replays-final/route_high.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "route_full_tour",
+      "from": "start_spawn",
+      "to": "portal_to_sect",
+      "via": [
+        "dummy_1",
+        "dummy_2",
+        "dummy_3",
+        "dummy_6",
+        "dummy_4",
+        "dummy_5",
+        "s_high_sword",
+        "goal_east"
+      ],
+      "direction": "continuous outward and return",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "route_full_tour",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "fixed60Hz continuous input only; browser same-input replay matches; zero resets/teleports",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    }
+  ],
+  "mapProperties": {
+    "id": "tianjian_sword_tomb",
+    "name": "天剑宗·剑冢",
+    "safeZone": true,
+    "qiDensity": 4,
+    "area": "tianjian",
+    "returnTown": false,
+    "allowTalismanReturn": true
+  },
+  "zones": [
+    {
+      "id": "skill_tutorial",
+      "type": "tutorial",
+      "tutorial": "skill_points",
+      "polygon": [
+        [
+          384,
+          384
+        ],
+        [
+          1088,
+          384
+        ],
+        [
+          1088,
+          704
+        ],
+        [
+          384,
+          704
+        ]
+      ],
+      "label": "技能点教学",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "skill_tutorial",
+          "geometryRevision": "tomb-final-001",
+          "actorParameterRevision": "tomb-base-feel-20261027-001",
+          "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+          "method": "actual body-rectangle trigger at skill_tutorial; enter/exit,spawn-negative,R-state reset; exact tutorial skill_points metadata",
+          "path": "work/final-physics-check.json",
+          "result": "verified"
+        }
+      ]
+    }
+  ],
+  "diagnostics": {
+    "maskPalette": {
+      "walk": [
+        44,
+        132,
+        80,
+        255
+      ],
+      "stand": [
+        64,
+        220,
+        120,
+        255
+      ],
+      "climb": [
+        80,
+        180,
+        255,
+        255
+      ],
+      "jump": [
+        255,
+        190,
+        64,
+        255
+      ],
+      "drop": [
+        180,
+        100,
+        240,
+        255
+      ],
+      "point": [
+        255,
+        220,
+        80,
+        255
+      ],
+      "tutorial": [
+        70,
+        210,
+        210,
+        255
+      ]
+    },
+    "rasterizationOrder": [
+      "tutorial",
+      "walk",
+      "stand",
+      "climb",
+      "jump",
+      "drop",
+      "point"
+    ],
+    "regionIdIndex": null,
+    "geometryRevision": "tomb-final-001"
+  },
+  "validation": {
+    "status": "verified",
+    "geometryRevision": "tomb-final-001",
+    "actorParameterRevision": "tomb-base-feel-20261027-001",
+    "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+    "evidence": [
+      {
+        "id": "all-routes",
+        "geometryRevision": "tomb-final-001",
+        "actorParameterRevision": "tomb-base-feel-20261027-001",
+        "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+        "method": "7 continuous routes",
+        "path": "work/final-routes.json",
+        "result": "verified"
+      },
+      {
+        "id": "full-body",
+        "geometryRevision": "tomb-final-001",
+        "actorParameterRevision": "tomb-base-feel-20261027-001",
+        "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+        "method": "8421 frames,zero solid penetrations",
+        "path": "work/final-data-check.json",
+        "result": "verified"
+      },
+      {
+        "id": "physics",
+        "geometryRevision": "tomb-final-001",
+        "actorParameterRevision": "tomb-base-feel-20261027-001",
+        "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+        "method": "10 actual action checks incl explicitly synthetic ceiling fixture",
+        "path": "work/final-physics-check.json",
+        "result": "verified"
+      },
+      {
+        "id": "browser",
+        "geometryRevision": "tomb-final-001",
+        "actorParameterRevision": "tomb-base-feel-20261027-001",
+        "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+        "method": "8 checks plus5 natural contacts; network/script errors0",
+        "path": "work/final-browser-check.json",
+        "result": "verified"
+      },
+      {
+        "id": "bottom-and-contact",
+        "geometryRevision": "tomb-final-001",
+        "actorParameterRevision": "tomb-base-feel-20261027-001",
+        "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+        "method": "5 contact rims,2 ropes4 ends; bottom continuous64px plus screenshot review",
+        "path": "work/final-geometry-measurements.json",
+        "result": "verified"
+      }
+    ],
+    "issues": []
+  }
+}
