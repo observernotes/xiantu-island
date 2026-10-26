@@ -1,0 +1,71 @@
+{
+ "atlas": "mon_poison_spider",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  80,
+  56
+ ],
+ "anims": [
+  {
+   "key": "mon_poison_spider_idle",
+   "frames": [
+    "mon_poison_spider_idle_01",
+    "mon_poison_spider_idle_02"
+   ],
+   "frameRate": 3,
+   "repeat": -1
+  },
+  {
+   "key": "mon_poison_spider_walk",
+   "frames": [
+    "mon_poison_spider_walk_01",
+    "mon_poison_spider_walk_02",
+    "mon_poison_spider_walk_03"
+   ],
+   "frameRate": 8,
+   "repeat": -1
+  },
+  {
+   "key": "mon_poison_spider_attack",
+   "frames": [
+    "mon_poison_spider_attack_01",
+    "mon_poison_spider_attack_02",
+    "mon_poison_spider_attack_03"
+   ],
+   "frameRate": 8,
+   "repeat": 0
+  },
+  {
+   "key": "mon_poison_spider_hit",
+   "frames": [
+    "mon_poison_spider_hit_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  },
+  {
+   "key": "mon_poison_spider_die",
+   "frames": [
+    "mon_poison_spider_die_01",
+    "mon_poison_spider_die_02",
+    "mon_poison_spider_die_03"
+   ],
+   "frameRate": 6,
+   "repeat": 0
+  }
+ ],
+ "bodySize": [
+  48,
+  28
+ ],
+ "attackFrames": {
+  "telegraph": 1,
+  "hit": 2
+ },
+ "note": "attack.type poison、telegraphMs 400：attack_01 抬身滴毒（前摇定格），attack_02 前扑喷毒（判定，毒雾画在帧内，range 96×48），attack_03 收势",
+ "kind": "monster"
+}

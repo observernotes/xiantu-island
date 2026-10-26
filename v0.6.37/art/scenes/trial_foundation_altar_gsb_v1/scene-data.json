@@ -1,0 +1,2830 @@
+{
+  "schemaVersion": "1.0",
+  "geometryRevision": "trial-foundation-final-001",
+  "status": "verified",
+  "sceneId": "trial_foundation_altar",
+  "space": {
+    "origin": "top-left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "units": "logical-pixel",
+    "logicalWidth": 1600,
+    "logicalHeight": 704
+  },
+  "source": {
+    "path": "maps/trial_foundation_altar.json",
+    "sha256": "2f1c7bc716cd71d8a6ab92aaefe2ce777f037ef60d5a7e2ae5668c19b566b91e",
+    "tileSize": 32,
+    "unchanged": true
+  },
+  "actor": {
+    "parameterRevision": "feel-base100-20261027",
+    "parameterSource": [
+      "game/src/config/feel.ts",
+      "game/src/scenes/Player.ts",
+      "game/src/move.ts"
+    ],
+    "sourceRevision": "repository files read 2026-10-27; base move points 100/100",
+    "provisional": false,
+    "visualBounds": {
+      "width": 96,
+      "height": 96,
+      "anchor": "feet-center"
+    },
+    "visualAsset": {
+      "path": "work/preview/player-reference-idle.png",
+      "width": 96,
+      "height": 96,
+      "source": "只读复制青云v2测试器现网静态参考帧；无动画声明"
+    },
+    "collider": {
+      "shape": "aabb",
+      "width": 26,
+      "height": 58,
+      "anchor": "feet-center"
+    },
+    "abilities": [
+      "walk",
+      "jump",
+      "double-jump",
+      "climb",
+      "rope-jump",
+      "drop-through"
+    ],
+    "movement": {
+      "gravity": 2000,
+      "maxFallSpeed": 670,
+      "walkSpeed": 130,
+      "groundAccel": 2400,
+      "groundDecel": 3000,
+      "airAccel": 700,
+      "airMaxSpeed": 130,
+      "jumpSpeed": 560,
+      "coyoteMs": 60,
+      "jumpBufferMs": 80,
+      "doubleJumpVy": 480,
+      "doubleJumpVx": 330,
+      "climbSpeed": 110,
+      "ropeGrabRangeX": 18,
+      "ropeJumpVx": 160,
+      "ropeJumpVy": 360,
+      "dropThroughMs": 220,
+      "ropeRegrabMs": 250
+    },
+    "failureRules": {
+      "manualReset": "R返回原出生点；路线中禁止",
+      "outOfBounds": "reset to start_spawn",
+      "thunder": "本刀只有手动无伤害圈示例，不运行正式波次或伤害。"
+    }
+  },
+  "assets": [
+    {
+      "id": "asset_background",
+      "role": "background",
+      "path": "background.png",
+      "pixelWidth": 1600,
+      "pixelHeight": 704,
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "asset_playable",
+      "role": "playable",
+      "path": "playable.png",
+      "pixelWidth": 1600,
+      "pixelHeight": 704,
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "s_ground_left",
+      "polyline": [
+        [
+          32,
+          640
+        ],
+        [
+          480,
+          640
+        ]
+      ],
+      "support": "solid",
+      "status": "verified",
+      "effectiveLandingRange": [
+        45,
+        467
+      ],
+      "walkableRegion": [
+        [
+          45,
+          582
+        ],
+        [
+          467,
+          582
+        ],
+        [
+          467,
+          640
+        ],
+        [
+          45,
+          640
+        ]
+      ],
+      "clearance": 58,
+      "evidence": [
+        {
+          "objectId": "s_ground_left",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "static geometry / visual semantics and version-matched runtime evidence",
+          "path": "work/art-data-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "s_ground_left",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "continuous input playback + full body sweep",
+          "path": "work/final-body-sweep.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "s_ground_left",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "natural standing from full-tour route, no teleport",
+          "path": "work/final-screenshots/contact-s_ground_left.png",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_altar",
+      "polyline": [
+        [
+          480,
+          576
+        ],
+        [
+          1120,
+          576
+        ]
+      ],
+      "support": "solid",
+      "status": "verified",
+      "effectiveLandingRange": [
+        493,
+        1107
+      ],
+      "walkableRegion": [
+        [
+          493,
+          518
+        ],
+        [
+          1107,
+          518
+        ],
+        [
+          1107,
+          576
+        ],
+        [
+          493,
+          576
+        ]
+      ],
+      "clearance": 58,
+      "evidence": [
+        {
+          "objectId": "s_altar",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "static geometry / visual semantics and version-matched runtime evidence",
+          "path": "work/art-data-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "s_altar",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "continuous input playback + full body sweep",
+          "path": "work/final-body-sweep.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "s_altar",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "natural standing from full-tour route, no teleport",
+          "path": "work/final-screenshots/contact-s_altar.png",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_ground_right",
+      "polyline": [
+        [
+          1120,
+          640
+        ],
+        [
+          1568,
+          640
+        ]
+      ],
+      "support": "solid",
+      "status": "verified",
+      "effectiveLandingRange": [
+        1133,
+        1555
+      ],
+      "walkableRegion": [
+        [
+          1133,
+          582
+        ],
+        [
+          1555,
+          582
+        ],
+        [
+          1555,
+          640
+        ],
+        [
+          1133,
+          640
+        ]
+      ],
+      "clearance": 58,
+      "evidence": [
+        {
+          "objectId": "s_ground_right",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "static geometry / visual semantics and version-matched runtime evidence",
+          "path": "work/art-data-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "s_ground_right",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "continuous input playback + full body sweep",
+          "path": "work/final-body-sweep.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "s_ground_right",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "natural standing from full-tour route, no teleport",
+          "path": "work/final-screenshots/contact-s_ground_right.png",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_platform_left",
+      "polyline": [
+        [
+          192,
+          448
+        ],
+        [
+          448,
+          448
+        ]
+      ],
+      "support": "one-way",
+      "status": "verified",
+      "effectiveLandingRange": [
+        205,
+        435
+      ],
+      "walkableRegion": [
+        [
+          205,
+          390
+        ],
+        [
+          435,
+          390
+        ],
+        [
+          435,
+          448
+        ],
+        [
+          205,
+          448
+        ]
+      ],
+      "clearance": 58,
+      "evidence": [
+        {
+          "objectId": "s_platform_left",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "static geometry / visual semantics and version-matched runtime evidence",
+          "path": "work/art-data-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "s_platform_left",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "continuous input playback + full body sweep",
+          "path": "work/final-body-sweep.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "s_platform_left",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "natural standing from full-tour route, no teleport",
+          "path": "work/final-screenshots/contact-s_platform_left.png",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_platform_center",
+      "polyline": [
+        [
+          640,
+          384
+        ],
+        [
+          960,
+          384
+        ]
+      ],
+      "support": "one-way",
+      "status": "verified",
+      "effectiveLandingRange": [
+        653,
+        947
+      ],
+      "walkableRegion": [
+        [
+          653,
+          326
+        ],
+        [
+          947,
+          326
+        ],
+        [
+          947,
+          384
+        ],
+        [
+          653,
+          384
+        ]
+      ],
+      "clearance": 58,
+      "evidence": [
+        {
+          "objectId": "s_platform_center",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "static geometry / visual semantics and version-matched runtime evidence",
+          "path": "work/art-data-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "s_platform_center",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "continuous input playback + full body sweep",
+          "path": "work/final-body-sweep.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "s_platform_center",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "natural standing from full-tour route, no teleport",
+          "path": "work/final-screenshots/contact-s_platform_center.png",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_platform_right",
+      "polyline": [
+        [
+          1152,
+          448
+        ],
+        [
+          1408,
+          448
+        ]
+      ],
+      "support": "one-way",
+      "status": "verified",
+      "effectiveLandingRange": [
+        1165,
+        1395
+      ],
+      "walkableRegion": [
+        [
+          1165,
+          390
+        ],
+        [
+          1395,
+          390
+        ],
+        [
+          1395,
+          448
+        ],
+        [
+          1165,
+          448
+        ]
+      ],
+      "clearance": 58,
+      "evidence": [
+        {
+          "objectId": "s_platform_right",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "static geometry / visual semantics and version-matched runtime evidence",
+          "path": "work/art-data-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "s_platform_right",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "continuous input playback + full body sweep",
+          "path": "work/final-body-sweep.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "s_platform_right",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "natural standing from full-tour route, no teleport",
+          "path": "work/final-screenshots/contact-s_platform_right.png",
+          "result": "verified"
+        }
+      ]
+    }
+  ],
+  "climbs": [
+    {
+      "id": "c_rope_left",
+      "kind": "rope",
+      "corridor": [
+        [
+          318,
+          448
+        ],
+        [
+          354,
+          448
+        ],
+        [
+          354,
+          640
+        ],
+        [
+          318,
+          640
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            336,
+            640
+          ],
+          "surface": "s_ground_left"
+        },
+        "end": {
+          "position": [
+            336,
+            448
+          ],
+          "surface": "s_platform_left"
+        }
+      },
+      "direction": "both",
+      "status": "verified",
+      "entryToleranceX": 18,
+      "requiredAbilities": [
+        "climb"
+      ],
+      "sourceObject": "rope_10",
+      "sourceLength": 160,
+      "adaptation": {
+        "type": "extend-bottom",
+        "deltaY": 32,
+        "reason": "源绳下端离实际支撑面32px；显式延长至真实站立顶面，maps原JSON不改。"
+      },
+      "evidence": [
+        {
+          "objectId": "c_rope_left",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "static geometry / visual semantics and version-matched runtime evidence",
+          "path": "work/art-data-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "c_rope_left",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "continuous input playback + full body sweep",
+          "path": "work/final-body-sweep.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "c_rope_center",
+      "kind": "rope",
+      "corridor": [
+        [
+          766,
+          384
+        ],
+        [
+          802,
+          384
+        ],
+        [
+          802,
+          576
+        ],
+        [
+          766,
+          576
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            784,
+            576
+          ],
+          "surface": "s_altar"
+        },
+        "end": {
+          "position": [
+            784,
+            384
+          ],
+          "surface": "s_platform_center"
+        }
+      },
+      "direction": "both",
+      "status": "verified",
+      "entryToleranceX": 18,
+      "requiredAbilities": [
+        "climb"
+      ],
+      "sourceObject": "rope_24",
+      "sourceLength": 160,
+      "adaptation": {
+        "type": "extend-bottom",
+        "deltaY": 32,
+        "reason": "源绳下端离实际支撑面32px；显式延长至真实站立顶面，maps原JSON不改。"
+      },
+      "evidence": [
+        {
+          "objectId": "c_rope_center",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "static geometry / visual semantics and version-matched runtime evidence",
+          "path": "work/art-data-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "c_rope_center",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "continuous input playback + full body sweep",
+          "path": "work/final-body-sweep.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "c_rope_right",
+      "kind": "rope",
+      "corridor": [
+        [
+          1246,
+          448
+        ],
+        [
+          1282,
+          448
+        ],
+        [
+          1282,
+          640
+        ],
+        [
+          1246,
+          640
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1264,
+            640
+          ],
+          "surface": "s_ground_right"
+        },
+        "end": {
+          "position": [
+            1264,
+            448
+          ],
+          "surface": "s_platform_right"
+        }
+      },
+      "direction": "both",
+      "status": "verified",
+      "entryToleranceX": 18,
+      "requiredAbilities": [
+        "climb"
+      ],
+      "sourceObject": "rope_39",
+      "sourceLength": 160,
+      "adaptation": {
+        "type": "extend-bottom",
+        "deltaY": 32,
+        "reason": "源绳下端离实际支撑面32px；显式延长至真实站立顶面，maps原JSON不改。"
+      },
+      "evidence": [
+        {
+          "objectId": "c_rope_right",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "static geometry / visual semantics and version-matched runtime evidence",
+          "path": "work/art-data-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "c_rope_right",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "continuous input playback + full body sweep",
+          "path": "work/final-body-sweep.json",
+          "result": "verified"
+        }
+      ]
+    }
+  ],
+  "stairs": [],
+  "solids": [
+    {
+      "id": "solid_ground",
+      "polygon": [
+        [
+          32,
+          640
+        ],
+        [
+          1568,
+          640
+        ],
+        [
+          1568,
+          704
+        ],
+        [
+          32,
+          704
+        ]
+      ],
+      "status": "verified",
+      "openings": [],
+      "evidence": [
+        {
+          "objectId": "solid_ground",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "static geometry / visual semantics and version-matched runtime evidence",
+          "path": "work/art-data-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "solid_ground",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "continuous input playback + full body sweep",
+          "path": "work/final-body-sweep.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "solid_altar",
+      "polygon": [
+        [
+          480,
+          576
+        ],
+        [
+          1120,
+          576
+        ],
+        [
+          1120,
+          640
+        ],
+        [
+          480,
+          640
+        ]
+      ],
+      "status": "verified",
+      "openings": [],
+      "evidence": [
+        {
+          "objectId": "solid_altar",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "static geometry / visual semantics and version-matched runtime evidence",
+          "path": "work/art-data-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "solid_altar",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "continuous input playback + full body sweep",
+          "path": "work/final-body-sweep.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "solid_wall_left",
+      "polygon": [
+        [
+          0,
+          0
+        ],
+        [
+          32,
+          0
+        ],
+        [
+          32,
+          704
+        ],
+        [
+          0,
+          704
+        ]
+      ],
+      "status": "verified",
+      "openings": [],
+      "evidence": [
+        {
+          "objectId": "solid_wall_left",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "static geometry / visual semantics and version-matched runtime evidence",
+          "path": "work/art-data-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "solid_wall_left",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "continuous input playback + full body sweep",
+          "path": "work/final-body-sweep.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "solid_wall_right",
+      "polygon": [
+        [
+          1568,
+          0
+        ],
+        [
+          1600,
+          0
+        ],
+        [
+          1600,
+          704
+        ],
+        [
+          1568,
+          704
+        ]
+      ],
+      "status": "verified",
+      "openings": [],
+      "evidence": [
+        {
+          "objectId": "solid_wall_right",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "static geometry / visual semantics and version-matched runtime evidence",
+          "path": "work/art-data-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "solid_wall_right",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "continuous input playback + full body sweep",
+          "path": "work/final-body-sweep.json",
+          "result": "verified"
+        }
+      ]
+    }
+  ],
+  "hazards": [
+    {
+      "id": "thunder_area",
+      "polygon": [
+        [
+          416,
+          256
+        ],
+        [
+          1184,
+          256
+        ],
+        [
+          1184,
+          576
+        ],
+        [
+          416,
+          576
+        ]
+      ],
+      "effect": {
+        "type": "semantic-only",
+        "sample": "manual-warning-no-damage",
+        "balanceSource": "balance/trials.json; not read or changed for asset handoff"
+      },
+      "trigger": "local tester H/button; bounded to this source region",
+      "recovery": "sample clears automatically; no damage applied",
+      "status": "verified",
+      "evidence": [
+        {
+          "objectId": "thunder_area",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "static geometry / visual semantics and version-matched runtime evidence",
+          "path": "work/art-data-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "thunder_area",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "manual warning bounded to zone, no combat or damage simulation",
+          "path": "work/final-browser-check.json",
+          "result": "verified"
+        }
+      ]
+    }
+  ],
+  "points": [
+    {
+      "id": "start_spawn",
+      "type": "spawn",
+      "position": [
+        704,
+        576
+      ],
+      "surface": "s_altar",
+      "status": "verified",
+      "safeRadius": 13,
+      "sourceName": "playerStart",
+      "evidence": [
+        {
+          "objectId": "start_spawn",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "static geometry / visual semantics and version-matched runtime evidence",
+          "path": "work/art-data-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "start_spawn",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "preserved source-map semantic point, scenic object / spawn-gate anchor; cinematic NPC has no dialog or blocking collider",
+          "path": "work/scene-brief.md",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "spirit_array_eye",
+      "type": "objective",
+      "position": [
+        800,
+        576
+      ],
+      "surface": "s_altar",
+      "status": "verified",
+      "safeRadius": 13,
+      "sourceName": "spirit_array_eye",
+      "evidence": [
+        {
+          "objectId": "spirit_array_eye",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "static geometry / visual semantics and version-matched runtime evidence",
+          "path": "work/art-data-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "spirit_array_eye",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "preserved source-map semantic point, scenic object / spawn-gate anchor; cinematic NPC has no dialog or blocking collider",
+          "path": "work/scene-brief.md",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "elder_phantom",
+      "type": "cinematic-npc",
+      "position": [
+        960,
+        576
+      ],
+      "surface": "s_altar",
+      "status": "verified",
+      "collides": false,
+      "dialogue": false,
+      "phantom": true,
+      "sourceName": "elder_phantom",
+      "evidence": [
+        {
+          "objectId": "elder_phantom",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "static geometry / visual semantics and version-matched runtime evidence",
+          "path": "work/art-data-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "elder_phantom",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "preserved source-map semantic point, scenic object / spawn-gate anchor; cinematic NPC has no dialog or blocking collider",
+          "path": "work/scene-brief.md",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "gate_left",
+      "type": "spawnGate",
+      "position": [
+        64,
+        640
+      ],
+      "surface": "s_ground_left",
+      "status": "verified",
+      "properties": {
+        "side": "left"
+      },
+      "note": "原坐标；只作美术刷怪口语义，本测试器不执行波次。",
+      "evidence": [
+        {
+          "objectId": "gate_left",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "static geometry / visual semantics and version-matched runtime evidence",
+          "path": "work/art-data-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "gate_left",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "preserved source-map semantic point, scenic object / spawn-gate anchor; cinematic NPC has no dialog or blocking collider",
+          "path": "work/scene-brief.md",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "gate_right",
+      "type": "spawnGate",
+      "position": [
+        1504,
+        640
+      ],
+      "surface": "s_ground_right",
+      "status": "verified",
+      "properties": {
+        "side": "right"
+      },
+      "note": "原坐标；只作美术刷怪口语义，本测试器不执行波次。",
+      "evidence": [
+        {
+          "objectId": "gate_right",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "static geometry / visual semantics and version-matched runtime evidence",
+          "path": "work/art-data-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "gate_right",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "preserved source-map semantic point, scenic object / spawn-gate anchor; cinematic NPC has no dialog or blocking collider",
+          "path": "work/scene-brief.md",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "gate_air_left",
+      "type": "spawnGate",
+      "position": [
+        96,
+        320
+      ],
+      "surface": null,
+      "status": "verified",
+      "properties": {
+        "side": "left",
+        "flying": true
+      },
+      "note": "原坐标；只作美术刷怪口语义，本测试器不执行波次。",
+      "evidence": [
+        {
+          "objectId": "gate_air_left",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "static geometry / visual semantics and version-matched runtime evidence",
+          "path": "work/art-data-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "gate_air_left",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "preserved source-map semantic point, scenic object / spawn-gate anchor; cinematic NPC has no dialog or blocking collider",
+          "path": "work/scene-brief.md",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "gate_air_right",
+      "type": "spawnGate",
+      "position": [
+        1472,
+        320
+      ],
+      "surface": null,
+      "status": "verified",
+      "properties": {
+        "side": "right",
+        "flying": true
+      },
+      "note": "原坐标；只作美术刷怪口语义，本测试器不执行波次。",
+      "evidence": [
+        {
+          "objectId": "gate_air_right",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "static geometry / visual semantics and version-matched runtime evidence",
+          "path": "work/art-data-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "gate_air_right",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "preserved source-map semantic point, scenic object / spawn-gate anchor; cinematic NPC has no dialog or blocking collider",
+          "path": "work/scene-brief.md",
+          "result": "verified"
+        }
+      ]
+    }
+  ],
+  "transitions": [
+    {
+      "id": "t_spawn_to_center",
+      "from": "start_spawn",
+      "to": "c_rope_center",
+      "action": "walk",
+      "status": "verified",
+      "evidence": [
+        {
+          "objectId": "t_spawn_to_center",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "actual ordered events, pre-state and frame ranges",
+          "path": "work/final-transition-coverage.json",
+          "result": "verified",
+          "witnesses": [
+            {
+              "routeId": "route_center",
+              "evidence": "work/replays-final/route_center.json",
+              "inputFrameRange": [
+                0,
+                60
+              ],
+              "startEvent": {
+                "type": "reset",
+                "frame": 0,
+                "timeMs": 0,
+                "x": 704,
+                "y": 576,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_altar",
+                "climbId": null,
+                "reason": "explicit",
+                "pointId": "start_spawn"
+              },
+              "endEvent": {
+                "type": "climb-enter",
+                "frame": 60,
+                "timeMs": 1000,
+                "x": 784,
+                "y": 576,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": null,
+                "climbId": "c_rope_center",
+                "objectId": "c_rope_center",
+                "direction": "up"
+              },
+              "resetCount": 0,
+              "result": "verified"
+            },
+            {
+              "routeId": "route_full_tour",
+              "evidence": "work/replays-final/route_full_tour.json",
+              "inputFrameRange": [
+                0,
+                60
+              ],
+              "startEvent": {
+                "type": "reset",
+                "frame": 0,
+                "timeMs": 0,
+                "x": 704,
+                "y": 576,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_altar",
+                "climbId": null,
+                "reason": "explicit",
+                "pointId": "start_spawn"
+              },
+              "endEvent": {
+                "type": "climb-enter",
+                "frame": 60,
+                "timeMs": 1000,
+                "x": 784,
+                "y": 576,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": null,
+                "climbId": "c_rope_center",
+                "objectId": "c_rope_center",
+                "direction": "up"
+              },
+              "resetCount": 0,
+              "result": "verified"
+            }
+          ],
+          "actualExecutions": 2
+        }
+      ],
+      "conditions": "正常出生连续输入；碰撞体与FEEL基础100参数；不传送、不重置。"
+    },
+    {
+      "id": "t_center_up",
+      "from": "s_altar",
+      "to": "s_platform_center",
+      "action": "climb-up",
+      "status": "verified",
+      "evidence": [
+        {
+          "objectId": "t_center_up",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "actual ordered events, pre-state and frame ranges",
+          "path": "work/final-transition-coverage.json",
+          "result": "verified",
+          "witnesses": [
+            {
+              "routeId": "route_center",
+              "evidence": "work/replays-final/route_center.json",
+              "inputFrameRange": [
+                60,
+                165
+              ],
+              "startEvent": {
+                "type": "climb-enter",
+                "frame": 60,
+                "timeMs": 1000,
+                "x": 784,
+                "y": 576,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": null,
+                "climbId": "c_rope_center",
+                "objectId": "c_rope_center",
+                "direction": "up"
+              },
+              "endEvent": {
+                "type": "climb-arrive",
+                "frame": 165,
+                "timeMs": 2750,
+                "x": 784,
+                "y": 384,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_platform_center",
+                "climbId": null,
+                "objectId": "c_rope_center",
+                "end": "top"
+              },
+              "resetCount": 0,
+              "result": "verified"
+            },
+            {
+              "routeId": "route_full_tour",
+              "evidence": "work/replays-final/route_full_tour.json",
+              "inputFrameRange": [
+                60,
+                165
+              ],
+              "startEvent": {
+                "type": "climb-enter",
+                "frame": 60,
+                "timeMs": 1000,
+                "x": 784,
+                "y": 576,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": null,
+                "climbId": "c_rope_center",
+                "objectId": "c_rope_center",
+                "direction": "up"
+              },
+              "endEvent": {
+                "type": "climb-arrive",
+                "frame": 165,
+                "timeMs": 2750,
+                "x": 784,
+                "y": 384,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_platform_center",
+                "climbId": null,
+                "objectId": "c_rope_center",
+                "end": "top"
+              },
+              "resetCount": 0,
+              "result": "verified"
+            }
+          ],
+          "actualExecutions": 2
+        }
+      ],
+      "conditions": "正常出生连续输入；碰撞体与FEEL基础100参数；不传送、不重置。"
+    },
+    {
+      "id": "t_center_down",
+      "from": "s_platform_center",
+      "to": "s_altar",
+      "action": "climb-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "objectId": "t_center_down",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "actual ordered events, pre-state and frame ranges",
+          "path": "work/final-transition-coverage.json",
+          "result": "verified",
+          "witnesses": [
+            {
+              "routeId": "route_center",
+              "evidence": "work/replays-final/route_center.json",
+              "inputFrameRange": [
+                202,
+                300
+              ],
+              "startEvent": {
+                "type": "climb-enter",
+                "frame": 202,
+                "timeMs": 3366.6666666666665,
+                "x": 784,
+                "y": 398,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": null,
+                "climbId": "c_rope_center",
+                "objectId": "c_rope_center",
+                "direction": "down"
+              },
+              "endEvent": {
+                "type": "climb-arrive",
+                "frame": 300,
+                "timeMs": 5000,
+                "x": 784,
+                "y": 576,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_altar",
+                "climbId": null,
+                "objectId": "c_rope_center",
+                "end": "bottom"
+              },
+              "resetCount": 0,
+              "result": "verified"
+            },
+            {
+              "routeId": "route_full_tour",
+              "evidence": "work/replays-final/route_full_tour.json",
+              "inputFrameRange": [
+                202,
+                300
+              ],
+              "startEvent": {
+                "type": "climb-enter",
+                "frame": 202,
+                "timeMs": 3366.6666666666665,
+                "x": 784,
+                "y": 398,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": null,
+                "climbId": "c_rope_center",
+                "objectId": "c_rope_center",
+                "direction": "down"
+              },
+              "endEvent": {
+                "type": "climb-arrive",
+                "frame": 300,
+                "timeMs": 5000,
+                "x": 784,
+                "y": 576,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_altar",
+                "climbId": null,
+                "objectId": "c_rope_center",
+                "end": "bottom"
+              },
+              "resetCount": 0,
+              "result": "verified"
+            }
+          ],
+          "actualExecutions": 2
+        }
+      ],
+      "conditions": "正常出生连续输入；碰撞体与FEEL基础100参数；不传送、不重置。"
+    },
+    {
+      "id": "t_altar_drop_left",
+      "from": "s_altar",
+      "to": "s_ground_left",
+      "action": "walk-off-drop",
+      "status": "verified",
+      "evidence": [
+        {
+          "objectId": "t_altar_drop_left",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "actual ordered events, pre-state and frame ranges",
+          "path": "work/final-transition-coverage.json",
+          "result": "verified",
+          "witnesses": [
+            {
+              "routeId": "route_full_tour",
+              "evidence": "work/replays-final/route_full_tour.json",
+              "inputFrameRange": [
+                485,
+                499
+              ],
+              "startEvent": {
+                "type": "leave-surface",
+                "frame": 485,
+                "timeMs": 8083.333333333333,
+                "x": 465.16666666667106,
+                "y": 576.5555555555555,
+                "vx": -130,
+                "vy": 33.333333333333336,
+                "surfaceId": null,
+                "climbId": null,
+                "objectId": "s_altar"
+              },
+              "endEvent": {
+                "type": "land",
+                "frame": 499,
+                "timeMs": 8316.666666666666,
+                "x": 434.83333333333746,
+                "y": 640,
+                "vx": -130,
+                "vy": 0,
+                "surfaceId": "s_ground_left",
+                "climbId": null,
+                "objectId": "s_ground_left"
+              },
+              "resetCount": 0,
+              "result": "verified"
+            },
+            {
+              "routeId": "route_left",
+              "evidence": "work/replays-final/route_left.json",
+              "inputFrameRange": [
+                111,
+                125
+              ],
+              "startEvent": {
+                "type": "leave-surface",
+                "frame": 111,
+                "timeMs": 1850,
+                "x": 466.00000000000284,
+                "y": 576.5555555555555,
+                "vx": -130,
+                "vy": 33.333333333333336,
+                "surfaceId": null,
+                "climbId": null,
+                "objectId": "s_altar"
+              },
+              "endEvent": {
+                "type": "land",
+                "frame": 125,
+                "timeMs": 2083.3333333333335,
+                "x": 435.66666666666924,
+                "y": 640,
+                "vx": -130,
+                "vy": 0,
+                "surfaceId": "s_ground_left",
+                "climbId": null,
+                "objectId": "s_ground_left"
+              },
+              "resetCount": 0,
+              "result": "verified"
+            }
+          ],
+          "actualExecutions": 2
+        }
+      ],
+      "conditions": "正常出生连续输入；碰撞体与FEEL基础100参数；不传送、不重置。"
+    },
+    {
+      "id": "t_left_up",
+      "from": "s_ground_left",
+      "to": "s_platform_left",
+      "action": "climb-up",
+      "status": "verified",
+      "evidence": [
+        {
+          "objectId": "t_left_up",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "actual ordered events, pre-state and frame ranges",
+          "path": "work/final-transition-coverage.json",
+          "result": "verified",
+          "witnesses": [
+            {
+              "routeId": "route_full_tour",
+              "evidence": "work/replays-final/route_full_tour.json",
+              "inputFrameRange": [
+                566,
+                671
+              ],
+              "startEvent": {
+                "type": "climb-enter",
+                "frame": 566,
+                "timeMs": 9433.333333333334,
+                "x": 336,
+                "y": 640,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": null,
+                "climbId": "c_rope_left",
+                "objectId": "c_rope_left",
+                "direction": "up"
+              },
+              "endEvent": {
+                "type": "climb-arrive",
+                "frame": 671,
+                "timeMs": 11183.333333333334,
+                "x": 336,
+                "y": 448,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_platform_left",
+                "climbId": null,
+                "objectId": "c_rope_left",
+                "end": "top"
+              },
+              "resetCount": 0,
+              "result": "verified"
+            },
+            {
+              "routeId": "route_left",
+              "evidence": "work/replays-final/route_left.json",
+              "inputFrameRange": [
+                193,
+                298
+              ],
+              "startEvent": {
+                "type": "climb-enter",
+                "frame": 193,
+                "timeMs": 3216.6666666666665,
+                "x": 336,
+                "y": 640,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": null,
+                "climbId": "c_rope_left",
+                "objectId": "c_rope_left",
+                "direction": "up"
+              },
+              "endEvent": {
+                "type": "climb-arrive",
+                "frame": 298,
+                "timeMs": 4966.666666666667,
+                "x": 336,
+                "y": 448,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_platform_left",
+                "climbId": null,
+                "objectId": "c_rope_left",
+                "end": "top"
+              },
+              "resetCount": 0,
+              "result": "verified"
+            }
+          ],
+          "actualExecutions": 2
+        }
+      ],
+      "conditions": "正常出生连续输入；碰撞体与FEEL基础100参数；不传送、不重置。"
+    },
+    {
+      "id": "t_left_down",
+      "from": "s_platform_left",
+      "to": "s_ground_left",
+      "action": "climb-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "objectId": "t_left_down",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "actual ordered events, pre-state and frame ranges",
+          "path": "work/final-transition-coverage.json",
+          "result": "verified",
+          "witnesses": [
+            {
+              "routeId": "route_full_tour",
+              "evidence": "work/replays-final/route_full_tour.json",
+              "inputFrameRange": [
+                708,
+                806
+              ],
+              "startEvent": {
+                "type": "climb-enter",
+                "frame": 708,
+                "timeMs": 11800,
+                "x": 336,
+                "y": 462,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": null,
+                "climbId": "c_rope_left",
+                "objectId": "c_rope_left",
+                "direction": "down"
+              },
+              "endEvent": {
+                "type": "climb-arrive",
+                "frame": 806,
+                "timeMs": 13433.333333333334,
+                "x": 336,
+                "y": 640,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_ground_left",
+                "climbId": null,
+                "objectId": "c_rope_left",
+                "end": "bottom"
+              },
+              "resetCount": 0,
+              "result": "verified"
+            },
+            {
+              "routeId": "route_left",
+              "evidence": "work/replays-final/route_left.json",
+              "inputFrameRange": [
+                335,
+                433
+              ],
+              "startEvent": {
+                "type": "climb-enter",
+                "frame": 335,
+                "timeMs": 5583.333333333333,
+                "x": 336,
+                "y": 462,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": null,
+                "climbId": "c_rope_left",
+                "objectId": "c_rope_left",
+                "direction": "down"
+              },
+              "endEvent": {
+                "type": "climb-arrive",
+                "frame": 433,
+                "timeMs": 7216.666666666667,
+                "x": 336,
+                "y": 640,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_ground_left",
+                "climbId": null,
+                "objectId": "c_rope_left",
+                "end": "bottom"
+              },
+              "resetCount": 0,
+              "result": "verified"
+            }
+          ],
+          "actualExecutions": 2
+        }
+      ],
+      "conditions": "正常出生连续输入；碰撞体与FEEL基础100参数；不传送、不重置。"
+    },
+    {
+      "id": "t_left_return",
+      "from": "s_ground_left",
+      "to": "s_altar",
+      "action": "jump",
+      "status": "verified",
+      "evidence": [
+        {
+          "objectId": "t_left_return",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "actual ordered events, pre-state and frame ranges",
+          "path": "work/final-transition-coverage.json",
+          "result": "verified",
+          "witnesses": [
+            {
+              "routeId": "route_full_tour",
+              "evidence": "work/replays-final/route_full_tour.json",
+              "inputFrameRange": [
+                886,
+                908
+              ],
+              "startEvent": {
+                "type": "jump",
+                "frame": 886,
+                "timeMs": 14766.666666666666,
+                "x": 461.000000000001,
+                "y": 640,
+                "vx": 0,
+                "vy": -560,
+                "surfaceId": "s_ground_left",
+                "climbId": null,
+                "objectId": "s_ground_left"
+              },
+              "endEvent": {
+                "type": "land",
+                "frame": 908,
+                "timeMs": 15133.333333333334,
+                "x": 482.00000000000006,
+                "y": 576,
+                "vx": 130,
+                "vy": 0,
+                "surfaceId": "s_altar",
+                "climbId": null,
+                "objectId": "s_altar"
+              },
+              "resetCount": 0,
+              "result": "verified"
+            },
+            {
+              "routeId": "route_left",
+              "evidence": "work/replays-final/route_left.json",
+              "inputFrameRange": [
+                513,
+                535
+              ],
+              "startEvent": {
+                "type": "jump",
+                "frame": 513,
+                "timeMs": 8550,
+                "x": 461.000000000001,
+                "y": 640,
+                "vx": 0,
+                "vy": -560,
+                "surfaceId": "s_ground_left",
+                "climbId": null,
+                "objectId": "s_ground_left"
+              },
+              "endEvent": {
+                "type": "land",
+                "frame": 535,
+                "timeMs": 8916.666666666666,
+                "x": 482.00000000000006,
+                "y": 576,
+                "vx": 130,
+                "vy": 0,
+                "surfaceId": "s_altar",
+                "climbId": null,
+                "objectId": "s_altar"
+              },
+              "resetCount": 0,
+              "result": "verified"
+            }
+          ],
+          "actualExecutions": 2
+        }
+      ],
+      "conditions": "正常出生连续输入；碰撞体与FEEL基础100参数；不传送、不重置。"
+    },
+    {
+      "id": "t_altar_drop_right",
+      "from": "s_altar",
+      "to": "s_ground_right",
+      "action": "walk-off-drop",
+      "status": "verified",
+      "evidence": [
+        {
+          "objectId": "t_altar_drop_right",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "actual ordered events, pre-state and frame ranges",
+          "path": "work/final-transition-coverage.json",
+          "result": "verified",
+          "witnesses": [
+            {
+              "routeId": "route_full_tour",
+              "evidence": "work/replays-final/route_full_tour.json",
+              "inputFrameRange": [
+                1231,
+                1245
+              ],
+              "startEvent": {
+                "type": "leave-surface",
+                "frame": 1231,
+                "timeMs": 20516.666666666668,
+                "x": 1134.9999999999955,
+                "y": 576.5555555555555,
+                "vx": 130,
+                "vy": 33.333333333333336,
+                "surfaceId": null,
+                "climbId": null,
+                "objectId": "s_altar"
+              },
+              "endEvent": {
+                "type": "land",
+                "frame": 1245,
+                "timeMs": 20750,
+                "x": 1165.3333333333298,
+                "y": 640,
+                "vx": 130,
+                "vy": 0,
+                "surfaceId": "s_ground_right",
+                "climbId": null,
+                "objectId": "s_ground_right"
+              },
+              "resetCount": 0,
+              "result": "verified"
+            },
+            {
+              "routeId": "route_right",
+              "evidence": "work/replays-final/route_right.json",
+              "inputFrameRange": [
+                200,
+                214
+              ],
+              "startEvent": {
+                "type": "leave-surface",
+                "frame": 200,
+                "timeMs": 3333.3333333333335,
+                "x": 1134.8333333333317,
+                "y": 576.5555555555555,
+                "vx": 130,
+                "vy": 33.333333333333336,
+                "surfaceId": null,
+                "climbId": null,
+                "objectId": "s_altar"
+              },
+              "endEvent": {
+                "type": "land",
+                "frame": 214,
+                "timeMs": 3566.6666666666665,
+                "x": 1165.166666666666,
+                "y": 640,
+                "vx": 130,
+                "vy": 0,
+                "surfaceId": "s_ground_right",
+                "climbId": null,
+                "objectId": "s_ground_right"
+              },
+              "resetCount": 0,
+              "result": "verified"
+            }
+          ],
+          "actualExecutions": 2
+        }
+      ],
+      "conditions": "正常出生连续输入；碰撞体与FEEL基础100参数；不传送、不重置。"
+    },
+    {
+      "id": "t_right_up",
+      "from": "s_ground_right",
+      "to": "s_platform_right",
+      "action": "climb-up",
+      "status": "verified",
+      "evidence": [
+        {
+          "objectId": "t_right_up",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "actual ordered events, pre-state and frame ranges",
+          "path": "work/final-transition-coverage.json",
+          "result": "verified",
+          "witnesses": [
+            {
+              "routeId": "route_full_tour",
+              "evidence": "work/replays-final/route_full_tour.json",
+              "inputFrameRange": [
+                1312,
+                1417
+              ],
+              "startEvent": {
+                "type": "climb-enter",
+                "frame": 1312,
+                "timeMs": 21866.666666666668,
+                "x": 1264,
+                "y": 640,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": null,
+                "climbId": "c_rope_right",
+                "objectId": "c_rope_right",
+                "direction": "up"
+              },
+              "endEvent": {
+                "type": "climb-arrive",
+                "frame": 1417,
+                "timeMs": 23616.666666666668,
+                "x": 1264,
+                "y": 448,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_platform_right",
+                "climbId": null,
+                "objectId": "c_rope_right",
+                "end": "top"
+              },
+              "resetCount": 0,
+              "result": "verified"
+            },
+            {
+              "routeId": "route_right",
+              "evidence": "work/replays-final/route_right.json",
+              "inputFrameRange": [
+                281,
+                386
+              ],
+              "startEvent": {
+                "type": "climb-enter",
+                "frame": 281,
+                "timeMs": 4683.333333333333,
+                "x": 1264,
+                "y": 640,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": null,
+                "climbId": "c_rope_right",
+                "objectId": "c_rope_right",
+                "direction": "up"
+              },
+              "endEvent": {
+                "type": "climb-arrive",
+                "frame": 386,
+                "timeMs": 6433.333333333333,
+                "x": 1264,
+                "y": 448,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_platform_right",
+                "climbId": null,
+                "objectId": "c_rope_right",
+                "end": "top"
+              },
+              "resetCount": 0,
+              "result": "verified"
+            }
+          ],
+          "actualExecutions": 2
+        }
+      ],
+      "conditions": "正常出生连续输入；碰撞体与FEEL基础100参数；不传送、不重置。"
+    },
+    {
+      "id": "t_right_down",
+      "from": "s_platform_right",
+      "to": "s_ground_right",
+      "action": "climb-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "objectId": "t_right_down",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "actual ordered events, pre-state and frame ranges",
+          "path": "work/final-transition-coverage.json",
+          "result": "verified",
+          "witnesses": [
+            {
+              "routeId": "route_full_tour",
+              "evidence": "work/replays-final/route_full_tour.json",
+              "inputFrameRange": [
+                1454,
+                1552
+              ],
+              "startEvent": {
+                "type": "climb-enter",
+                "frame": 1454,
+                "timeMs": 24233.333333333332,
+                "x": 1264,
+                "y": 462,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": null,
+                "climbId": "c_rope_right",
+                "objectId": "c_rope_right",
+                "direction": "down"
+              },
+              "endEvent": {
+                "type": "climb-arrive",
+                "frame": 1552,
+                "timeMs": 25866.666666666668,
+                "x": 1264,
+                "y": 640,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_ground_right",
+                "climbId": null,
+                "objectId": "c_rope_right",
+                "end": "bottom"
+              },
+              "resetCount": 0,
+              "result": "verified"
+            },
+            {
+              "routeId": "route_right",
+              "evidence": "work/replays-final/route_right.json",
+              "inputFrameRange": [
+                423,
+                521
+              ],
+              "startEvent": {
+                "type": "climb-enter",
+                "frame": 423,
+                "timeMs": 7050,
+                "x": 1264,
+                "y": 462,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": null,
+                "climbId": "c_rope_right",
+                "objectId": "c_rope_right",
+                "direction": "down"
+              },
+              "endEvent": {
+                "type": "climb-arrive",
+                "frame": 521,
+                "timeMs": 8683.333333333334,
+                "x": 1264,
+                "y": 640,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_ground_right",
+                "climbId": null,
+                "objectId": "c_rope_right",
+                "end": "bottom"
+              },
+              "resetCount": 0,
+              "result": "verified"
+            }
+          ],
+          "actualExecutions": 2
+        }
+      ],
+      "conditions": "正常出生连续输入；碰撞体与FEEL基础100参数；不传送、不重置。"
+    },
+    {
+      "id": "t_right_return",
+      "from": "s_ground_right",
+      "to": "s_altar",
+      "action": "jump",
+      "status": "verified",
+      "evidence": [
+        {
+          "objectId": "t_right_return",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "actual ordered events, pre-state and frame ranges",
+          "path": "work/final-transition-coverage.json",
+          "result": "verified",
+          "witnesses": [
+            {
+              "routeId": "route_full_tour",
+              "evidence": "work/replays-final/route_full_tour.json",
+              "inputFrameRange": [
+                1632,
+                1654
+              ],
+              "startEvent": {
+                "type": "jump",
+                "frame": 1632,
+                "timeMs": 27200,
+                "x": 1138.999999999996,
+                "y": 640,
+                "vx": 0,
+                "vy": -560,
+                "surfaceId": "s_ground_right",
+                "climbId": null,
+                "objectId": "s_ground_right"
+              },
+              "endEvent": {
+                "type": "land",
+                "frame": 1654,
+                "timeMs": 27566.666666666668,
+                "x": 1118,
+                "y": 576,
+                "vx": -130,
+                "vy": 0,
+                "surfaceId": "s_altar",
+                "climbId": null,
+                "objectId": "s_altar"
+              },
+              "resetCount": 0,
+              "result": "verified"
+            },
+            {
+              "routeId": "route_right",
+              "evidence": "work/replays-final/route_right.json",
+              "inputFrameRange": [
+                601,
+                623
+              ],
+              "startEvent": {
+                "type": "jump",
+                "frame": 601,
+                "timeMs": 10016.666666666666,
+                "x": 1138.999999999996,
+                "y": 640,
+                "vx": 0,
+                "vy": -560,
+                "surfaceId": "s_ground_right",
+                "climbId": null,
+                "objectId": "s_ground_right"
+              },
+              "endEvent": {
+                "type": "land",
+                "frame": 623,
+                "timeMs": 10383.333333333334,
+                "x": 1118,
+                "y": 576,
+                "vx": -130,
+                "vy": 0,
+                "surfaceId": "s_altar",
+                "climbId": null,
+                "objectId": "s_altar"
+              },
+              "resetCount": 0,
+              "result": "verified"
+            }
+          ],
+          "actualExecutions": 2
+        }
+      ],
+      "conditions": "正常出生连续输入；碰撞体与FEEL基础100参数；不传送、不重置。"
+    }
+  ],
+  "requiredRoutes": [
+    {
+      "id": "route_center",
+      "from": "start_spawn",
+      "to": "spirit_array_eye",
+      "via": [
+        "c_rope_center",
+        "s_platform_center",
+        "c_rope_center",
+        "s_altar"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "objectId": "route_center",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "from real spawn, fixed 60 Hz continuous inputs without reset or teleport",
+          "path": "work/replays-final/route_center.json",
+          "result": "verified",
+          "frames": 329,
+          "resetCount": 0,
+          "executionSourceDataSha256": "51fd5e58e7f96383e31333cdea4ccdc10ea27f03c7c68711f55bd934e7706bf9",
+          "actionGeometrySha256": "70e7ff2c235e67d9808ce515e8c75f22b631d59ef547c0119b424dd4fa7f9c78"
+        }
+      ],
+      "direction": "out-and-return",
+      "returnRequired": true
+    },
+    {
+      "id": "route_left",
+      "from": "start_spawn",
+      "to": "spirit_array_eye",
+      "via": [
+        "s_ground_left",
+        "c_rope_left",
+        "s_platform_left",
+        "c_rope_left",
+        "s_ground_left",
+        "s_altar"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "objectId": "route_left",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "from real spawn, fixed 60 Hz continuous inputs without reset or teleport",
+          "path": "work/replays-final/route_left.json",
+          "result": "verified",
+          "frames": 703,
+          "resetCount": 0,
+          "executionSourceDataSha256": "51fd5e58e7f96383e31333cdea4ccdc10ea27f03c7c68711f55bd934e7706bf9",
+          "actionGeometrySha256": "70e7ff2c235e67d9808ce515e8c75f22b631d59ef547c0119b424dd4fa7f9c78"
+        }
+      ],
+      "direction": "out-and-return",
+      "returnRequired": true
+    },
+    {
+      "id": "route_right",
+      "from": "start_spawn",
+      "to": "spirit_array_eye",
+      "via": [
+        "s_ground_right",
+        "c_rope_right",
+        "s_platform_right",
+        "c_rope_right",
+        "s_ground_right",
+        "s_altar"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "objectId": "route_right",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "from real spawn, fixed 60 Hz continuous inputs without reset or teleport",
+          "path": "work/replays-final/route_right.json",
+          "result": "verified",
+          "frames": 791,
+          "resetCount": 0,
+          "executionSourceDataSha256": "51fd5e58e7f96383e31333cdea4ccdc10ea27f03c7c68711f55bd934e7706bf9",
+          "actionGeometrySha256": "70e7ff2c235e67d9808ce515e8c75f22b631d59ef547c0119b424dd4fa7f9c78"
+        }
+      ],
+      "direction": "out-and-return",
+      "returnRequired": true
+    },
+    {
+      "id": "route_full_tour",
+      "from": "start_spawn",
+      "to": "spirit_array_eye",
+      "via": [
+        "c_rope_center",
+        "s_platform_center",
+        "c_rope_center",
+        "s_altar",
+        "s_ground_left",
+        "c_rope_left",
+        "s_platform_left",
+        "c_rope_left",
+        "s_ground_left",
+        "s_altar",
+        "s_ground_right",
+        "c_rope_right",
+        "s_platform_right",
+        "c_rope_right",
+        "s_ground_right",
+        "s_altar"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "objectId": "route_full_tour",
+          "geometryRevision": "trial-foundation-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "parameterSource": [
+            "game/src/config/feel.ts",
+            "game/src/scenes/Player.ts",
+            "game/src/move.ts"
+          ],
+          "method": "from real spawn, fixed 60 Hz continuous inputs without reset or teleport",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified",
+          "frames": 1822,
+          "resetCount": 0,
+          "executionSourceDataSha256": "51fd5e58e7f96383e31333cdea4ccdc10ea27f03c7c68711f55bd934e7706bf9",
+          "actionGeometrySha256": "70e7ff2c235e67d9808ce515e8c75f22b631d59ef547c0119b424dd4fa7f9c78"
+        }
+      ],
+      "direction": "out-and-return",
+      "returnRequired": true
+    }
+  ],
+  "diagnostics": {
+    "maskPalette": {
+      "stand": [
+        0,
+        200,
+        80,
+        255
+      ],
+      "walk": [
+        150,
+        245,
+        160,
+        255
+      ],
+      "rope": [
+        0,
+        190,
+        230,
+        255
+      ],
+      "jump": [
+        255,
+        180,
+        0,
+        255
+      ],
+      "drop": [
+        170,
+        80,
+        225,
+        255
+      ],
+      "hazard": [
+        229,
+        72,
+        58,
+        255
+      ],
+      "point": [
+        255,
+        70,
+        160,
+        255
+      ]
+    },
+    "rasterizationOrder": [
+      "walk",
+      "stand",
+      "rope",
+      "jump",
+      "drop",
+      "hazard",
+      "point"
+    ],
+    "regionIdIndex": null,
+    "geometryRevision": "trial-foundation-final-001"
+  },
+  "validation": {
+    "status": "verified",
+    "geometryRevision": "trial-foundation-final-001",
+    "actorParameterRevision": "feel-base100-20261027",
+    "engineRevision": "trial-aabb-feel-60hz-001",
+    "evidence": [
+      {
+        "objectId": "all-required-routes",
+        "geometryRevision": "trial-foundation-final-001",
+        "actorParameterRevision": "feel-base100-20261027",
+        "engineRevision": "trial-aabb-feel-60hz-001",
+        "parameterSource": [
+          "game/src/config/feel.ts",
+          "game/src/scenes/Player.ts",
+          "game/src/move.ts"
+        ],
+        "method": "four continuous routes",
+        "path": "work/final-routes.json",
+        "result": "verified"
+      },
+      {
+        "objectId": "all-transitions",
+        "geometryRevision": "trial-foundation-final-001",
+        "actorParameterRevision": "feel-base100-20261027",
+        "engineRevision": "trial-aabb-feel-60hz-001",
+        "parameterSource": [
+          "game/src/config/feel.ts",
+          "game/src/scenes/Player.ts",
+          "game/src/move.ts"
+        ],
+        "method": "11 declared transitions; 22 ordered executions",
+        "path": "work/final-transition-coverage.json",
+        "result": "verified"
+      },
+      {
+        "objectId": "all-bodies",
+        "geometryRevision": "trial-foundation-final-001",
+        "actorParameterRevision": "feel-base100-20261027",
+        "engineRevision": "trial-aabb-feel-60hz-001",
+        "parameterSource": [
+          "game/src/config/feel.ts",
+          "game/src/scenes/Player.ts",
+          "game/src/move.ts"
+        ],
+        "method": "3645 trace samples, zero solid penetration",
+        "path": "work/final-body-sweep.json",
+        "result": "verified"
+      },
+      {
+        "objectId": "browser",
+        "geometryRevision": "trial-foundation-final-001",
+        "actorParameterRevision": "feel-base100-20261027",
+        "engineRevision": "trial-aabb-feel-60hz-001",
+        "parameterSource": [
+          "game/src/config/feel.ts",
+          "game/src/scenes/Player.ts",
+          "game/src/move.ts"
+        ],
+        "method": "Chrome art loading, six natural stands, controls/overlays/minimap/H/R",
+        "path": "work/final-browser-check.json",
+        "result": "verified"
+      },
+      {
+        "objectId": "art-registration",
+        "geometryRevision": "trial-foundation-final-001",
+        "actorParameterRevision": "feel-base100-20261027",
+        "engineRevision": "trial-aabb-feel-60hz-001",
+        "parameterSource": [
+          "game/src/config/feel.ts",
+          "game/src/scenes/Player.ts",
+          "game/src/move.ts"
+        ],
+        "method": "18 authored lip samples; exact recomposition; clean continuous bottom",
+        "path": "work/art-data-audit.json",
+        "result": "verified"
+      }
+    ],
+    "issues": [],
+    "productionIntegration": "forbidden-until-lead-PASS",
+    "scope": "local independent AABB adapter with repository FEEL base100; no production Phaser integration, combat waves, objective HP or damage evaluation",
+    "executionSourceSnapshot": "work/scene-data.final-executed.json",
+    "actionGeometrySha256": "70e7ff2c235e67d9808ce515e8c75f22b631d59ef547c0119b424dd4fa7f9c78"
+  },
+  "layerOwnership": {
+    "background": "sky, distant cloud mountains/pavilions, back-plane stone-wall relief and four spawn-gate arches; portal projections and arch feet decorative, cannot support actors",
+    "playable": "same-source flat ground, altar, three one-way slabs and three full ropes; attached eye/sigil, performance-only elder and warning sample decorations have no collision",
+    "foreground": {
+      "applicable": false,
+      "reason": "no foreground decoration; keep all access and clean lower seam unobstructed"
+    },
+    "solidWalls": "physical x0..32 and1568..1600 edge strips only; inset wall relief stays on background plane"
+  },
+  "calibration": {
+    "toleranceLogicalPixels": 1,
+    "standingHeights": [
+      640,
+      576,
+      640,
+      448,
+      384,
+      448
+    ],
+    "ropeAnchors": "upper and lower anchors exactly at assigned support surface, never at knobs",
+    "method": "AI generated master repaired by source raster component registration; AI local refinement; same-version component layer decomposition",
+    "geometryUnchangedFromGraybox": true,
+    "warnings": "native tool sizes measured in work/stage4-blocks.json; ordinary affine registration is not detail generation"
+  }
+}

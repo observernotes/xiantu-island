@@ -1,0 +1,86 @@
+{
+ "name": "tiles_altar_fill_variants",
+ "image": "tiles_altar_fill_variants.png",
+ "tilewidth": 32,
+ "tileheight": 32,
+ "columns": 3,
+ "tilecount": 3,
+ "imagewidth": 96,
+ "imageheight": 32,
+ "margin": 0,
+ "spacing": 0,
+ "properties": [
+  {
+   "name": "note",
+   "type": "string",
+   "value": "供程序随机铺满铺块：替换 tiles_altar #5（role ground_fill）的随机变体，四边 2px 与 #5 逐像素一致"
+  },
+  {
+   "name": "variantOf",
+   "type": "string",
+   "value": "tiles_altar#5"
+  }
+ ],
+ "tiles": [
+  {
+   "id": 0,
+   "properties": [
+    {
+     "name": "role",
+     "type": "string",
+     "value": "ground_fill"
+    },
+    {
+     "name": "variant",
+     "type": "int",
+     "value": 1
+    },
+    {
+     "name": "note",
+     "type": "string",
+     "value": "供程序随机铺满铺块｜亮斑移到右上（竖缝右侧）、暗斑左中；半截缝从横缝 x≈18 下伸；细裂在左下"
+    }
+   ]
+  },
+  {
+   "id": 1,
+   "properties": [
+    {
+     "name": "role",
+     "type": "string",
+     "value": "ground_fill"
+    },
+    {
+     "name": "variant",
+     "type": "int",
+     "value": 2
+    },
+    {
+     "name": "note",
+     "type": "string",
+     "value": "供程序随机铺满铺块｜亮斑左上贴横缝下、暗斑中下；半截缝从斜竖缝 y≈16 向左伸；细裂在右上"
+    }
+   ]
+  },
+  {
+   "id": 2,
+   "properties": [
+    {
+     "name": "role",
+     "type": "string",
+     "value": "ground_fill"
+    },
+    {
+     "name": "variant",
+     "type": "int",
+     "value": 3
+    },
+    {
+     "name": "note",
+     "type": "string",
+     "value": "供程序随机铺满铺块｜无大亮斑（只留小亮斑在中部）、暗斑在竖缝右侧；半截缝从横缝 x≈5 下伸；细裂在中下"
+    }
+   ]
+  }
+ ]
+}
