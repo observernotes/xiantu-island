@@ -26,6 +26,8 @@ import sectSceneData from '../data/art/scenes/tianjian_sect_gsb_v1/scene-data.js
 import sectTiledMap from '../data/maps/tianjian_sect.json';
 import taixuSceneData from '../data/art/scenes/taixu_temple_gsb_v1/scene-data.json';
 import taixuTiledMap from '../data/maps/taixu_temple.json';
+import lingfuSceneData from '../data/art/scenes/lingfu_pavilion_gsb_v1/scene-data.json';
+import lingfuTiledMap from '../data/maps/lingfu_pavilion.json';
 import { FEEL, SPEC } from './config/feel';
 import { buildTiledMap } from './scenes/MapBuilder';
 
@@ -1141,5 +1143,110 @@ function testTaixuTempleGsb() {
   eq(JSON.stringify(tiledMap), mapBefore, 'taixu_temple: building leaves the Tiled map input unchanged');
 }
 testTaixuTempleGsb();
+
+// Lingfu's pavilion retains its ferry, two NPCs and all three approved climbables.
+function testLingfuPavilionGsb() {
+  const sceneId = 'lingfu_pavilion_gsb_v1', revision = 'lingfu-final-003';
+  const data = clone(lingfuSceneData), tiledMap = clone(lingfuTiledMap);
+  const f = fixture(null, false), dataBefore = JSON.stringify(data), mapBefore = JSON.stringify(tiledMap);
+  f.cache.clear(); f.cache.set(`gsb_${sceneId}_data`, data);
+  f.textures.add(`gsb_${sceneId}_background`); f.textures.add(`gsb_${sceneId}_playable`);
+  const map = buildTiledMap(f.scene, tiledMap, 'tiles');
+  eq(map.gsbScene, sceneId, 'lingfu_pavilion: checked-in map enables its GSB scene');
+  eq(tiledMap.properties.find(property => property.name === 'gsbScene')?.value,
+    sceneId, 'lingfu_pavilion: map binds the approved GSB scene');
+  eq(tiledMap.properties.find(property => property.name === 'gsbGeometryRevision')?.value,
+    revision, 'lingfu_pavilion: map binds the approved geometry revision');
+  eq(data.geometryRevision, revision, 'lingfu_pavilion: scene-data has the approved geometry revision');
+  same([map.width, map.height], [1280, 640], 'lingfu_pavilion: logical world dimensions match the approved scene');
+  same([tiledMap.width, tiledMap.height], [40, 20], 'lingfu_pavilion: checked-in tile grid is 40 x 20');
+  same([tiledMap.tilewidth, tiledMap.tileheight], [32, 32], 'lingfu_pavilion: checked-in tiles are 32 x 32');
+  same([tiledMap.width * tiledMap.tilewidth, tiledMap.height * tiledMap.tileheight], [map.width, map.height],
+    'lingfu_pavilion: checked-in tile grid matches logical world dimensions');
+  same(f.groups.map(group => group.children.length), [3, 3], 'lingfu_pavilion: three solids and three one-way bodies are built');
+  same(data.surfaces.map(surface => [surface.id, surface.support, surface.polyline]), [
+    ['s_dock', 'solid', [[0, 512], [320, 512]]],
+    ['s_envoy', 'solid', [[320, 576], [768, 576]]],
+    ['s_elder', 'solid', [[768, 512], [1280, 512]]],
+    ['s_west', 'one-way', [[64, 384], [288, 384]]],
+    ['s_middle', 'one-way', [[832, 352], [1216, 352]]],
+    ['s_high', 'one-way', [[928, 224], [1152, 224]]],
+  ], 'lingfu_pavilion: all six approved surfaces retain their identities, kinds and exact landing spans');
+  for (const surface of data.surfaces) {
+    const left = Math.min(...surface.polyline.map(point => point[0]));
+    const right = Math.max(...surface.polyline.map(point => point[0]));
+    const bodies = f.groups[surface.support === 'one-way' ? 1 : 0].children.map(rectangle);
+    ok(bodies.some(body => body.y === surface.polyline[0][1] && body.x <= left && body.x + body.width >= right),
+      `lingfu_pavilion: ${surface.id} retains its full landing span and exact top edge`);
+  }
+  ok(f.groups[1].children.every(object => object.body?.checkCollision.up &&
+    !object.body.checkCollision.down && !object.body.checkCollision.left && !object.body.checkCollision.right),
+    'lingfu_pavilion: all one-way bodies only collide on top');
+  ok(f.groups[0].children.every(object => object.body?.checkCollision.up &&
+    object.body.checkCollision.down && object.body.checkCollision.left && object.body.checkCollision.right),
+    'lingfu_pavilion: solid bodies keep all collision directions');
+  same(map.spawn, { x: 224, y: 512 }, 'lingfu_pavilion: player start is preserved');
+  same(data.points.filter(point => point.id === 'start_spawn').map(point => point.position),
+    [[map.spawn.x, map.spawn.y]], 'lingfu_pavilion: player start matches the approved scene spawn point');
+  eq(map.ropes.length, 3, 'lingfu_pavilion: both ropes and the ladder are preserved');
+  same(data.climbs.map(climb => [climb.id, climb.kind]), [
+    ['c_rope_5', 'rope'], ['c_ladder_27', 'ladder'], ['c_rope_33', 'rope'],
+  ], 'lingfu_pavilion: all three approved climbs keep their identities and kinds');
+  const climbObjects = tiledMap.layers.flatMap(layer => layer.type === 'objectgroup' ? layer.objects ?? [] : [])
+    .filter(object => ['rope', 'ladder'].includes(object.type));
+  same(climbObjects.map(object => [object.name, object.type, object.x, object.y, object.width, object.height]), [
+    ['rope_5', 'rope', 176, 384, 0, 128],
+    ['ladder_27', 'ladder', 862, 352, 36, 160],
+    ['rope_33', 'rope', 1072, 224, 0, 128],
+  ], 'lingfu_pavilion: the named Tiled climbables retain the approved endpoints and ladder corridor');
+  same(map.ropes.map(rope => [rope.kind, rope.x, rope.top, rope.bottom, rope.halfW]),
+    data.climbs.map(climb => {
+      const width = Math.max(...climb.corridor.map(point => point[0])) - Math.min(...climb.corridor.map(point => point[0]));
+      return [climb.kind, climb.ends.end.position[0], climb.ends.end.position[1], climb.ends.start.position[1],
+        climb.kind === 'ladder' ? Math.max(12, width / 2) : FEEL.ropeGrabRangeX];
+    }), 'lingfu_pavilion: rope and ladder geometry follows the approved climb ends and corridor widths');
+  same(map.ropes, [
+    { kind: 'rope', x: 176, top: 384, bottom: 512, halfW: FEEL.ropeGrabRangeX },
+    { kind: 'ladder', x: 880, top: 352, bottom: 512, halfW: 18 },
+    { kind: 'rope', x: 1072, top: 224, bottom: 352, halfW: FEEL.ropeGrabRangeX },
+  ], 'lingfu_pavilion: all climbables keep their exact geometry, patched ladder center and half-width');
+  same(map.objects.filter(object => object.type === 'npc').map(object =>
+    [object.name, object.x, object.y, object.props.npc]), [
+    ['lingfu_envoy', 496, 576, 'lingfu_envoy'],
+    ['lingfu_elder', 1040, 512, 'lingfu_elder'],
+  ], 'lingfu_pavilion: both named NPCs keep their positions and identities');
+  same(map.objects.filter(object => object.type === 'npc').map(object =>
+    [object.name, object.x, object.y, object.props.npc]),
+  data.points.filter(point => point.type === 'npc').map(point =>
+    [point.id, ...point.position, point.properties?.npc]),
+  'lingfu_pavilion: NPC positions and identities match scene-data points');
+  same(map.objects.filter(object => object.name === 'lingfu_elder').map(object =>
+    [object.props.trial, object.props.target]), [['trial_sect_lingfu', 'trial_lingfu_range']],
+  'lingfu_pavilion: the elder retains the existing trial and target');
+  same(map.objects.filter(object => object.type === 'ferry').map(object =>
+    [object.name, object.x, object.y, object.w, object.props.returnTo]),
+  [['ferry_landing', 176, 512, 160, 'luoxia_town']],
+  'lingfu_pavilion: ferry landing retains its position, width and return town');
+  same(map.objects.filter(object => object.name === 'goal_east'), [],
+    'lingfu_pavilion: the scene-only east goal does not introduce a gameplay object');
+  same(map.spawns, [], 'lingfu_pavilion: no monster spawns are introduced');
+  same(map.hidden, [], 'lingfu_pavilion: no hidden controllers are introduced');
+  same(map.spawnGates, [], 'lingfu_pavilion: no spawn gates are introduced');
+  same(map.objects.filter(object => ['gather', 'chest', 'hidden', 'spawn', 'flyZone', 'spawnGate', 'portal'].includes(object.type)), [],
+    'lingfu_pavilion: no gather, chest, hidden, spawn, flying zone, spawn gate or portal objects are introduced');
+  same(map.objects.filter(object => !['npc', 'ferry'].includes(object.type)), [],
+    'lingfu_pavilion: no additional gameplay objects are introduced');
+  eq(f.tilemaps, 0, 'lingfu_pavilion: GSB skips the legacy tilemap path');
+  same(f.displays.filter(object => object.kind !== 'zone').map(object => [object.kind, object.key]),
+    [['image', `gsb_${sceneId}_background`], ['image', `gsb_${sceneId}_playable`]],
+    'lingfu_pavilion: GSB draws background and playable art without legacy terrain or climbs');
+  const legacyLayers = tiledMap.layers.filter(layer => layer.type === 'tilelayer' && ['ground', 'oneway'].includes(layer.name));
+  same(legacyLayers.map(layer => layer.name), ['ground', 'oneway'], 'lingfu_pavilion: both legacy collision layers are present');
+  ok(legacyLayers.every(layer => layer.data?.length === tiledMap.width * tiledMap.height && layer.data.every(gid => gid === 0)),
+    'lingfu_pavilion: checked-in legacy collision layers are fully cleared');
+  eq(JSON.stringify(data), dataBefore, 'lingfu_pavilion: building leaves the cached scene-data input unchanged');
+  eq(JSON.stringify(tiledMap), mapBefore, 'lingfu_pavilion: building leaves the Tiled map input unchanged');
+}
+testLingfuPavilionGsb();
 
 console.log(JSON.stringify({ suite: 'gsb-map', passed: true, assertions }));
