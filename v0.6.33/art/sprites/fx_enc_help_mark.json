@@ -1,0 +1,110 @@
+{
+  "frames": {
+    "fx_enc_help_mark_idle_01": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 24,
+        "h": 32
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    "fx_enc_help_mark_idle_02": {
+      "frame": {
+        "x": 24,
+        "y": 0,
+        "w": 24,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 24,
+        "h": 32
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    "fx_enc_help_mark_idle_03": {
+      "frame": {
+        "x": 48,
+        "y": 0,
+        "w": 24,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 24,
+        "h": 32
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    },
+    "fx_enc_help_mark_idle_04": {
+      "frame": {
+        "x": 72,
+        "y": 0,
+        "w": 24,
+        "h": 32
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 32
+      },
+      "sourceSize": {
+        "w": 24,
+        "h": 32
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 1
+      }
+    }
+  },
+  "meta": {
+    "app": "xiantu gen_encounter_v05.py",
+    "image": "fx_enc_help_mark.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 96,
+      "h": 32
+    },
+    "scale": "1"
+  }
+}
