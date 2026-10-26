@@ -28,6 +28,8 @@ import taixuSceneData from '../data/art/scenes/taixu_temple_gsb_v1/scene-data.js
 import taixuTiledMap from '../data/maps/taixu_temple.json';
 import lingfuSceneData from '../data/art/scenes/lingfu_pavilion_gsb_v1/scene-data.json';
 import lingfuTiledMap from '../data/maps/lingfu_pavilion.json';
+import youyingSceneData from '../data/art/scenes/youying_tower_gsb_v1/scene-data.json';
+import youyingTiledMap from '../data/maps/youying_tower.json';
 import { FEEL, SPEC } from './config/feel';
 import { buildTiledMap } from './scenes/MapBuilder';
 
@@ -1248,5 +1250,119 @@ function testLingfuPavilionGsb() {
   eq(JSON.stringify(tiledMap), mapBefore, 'lingfu_pavilion: building leaves the Tiled map input unchanged');
 }
 testLingfuPavilionGsb();
+
+// Youying's tower retains its ferry, two NPCs, decorative entrance and all three approved climbables.
+function testYouyingTowerGsb() {
+  const sceneId = 'youying_tower_gsb_v1', revision = 'youying-final-002';
+  const data = clone(youyingSceneData), tiledMap = clone(youyingTiledMap);
+  const f = fixture(null, false), dataBefore = JSON.stringify(data), mapBefore = JSON.stringify(tiledMap);
+  f.cache.clear(); f.cache.set(`gsb_${sceneId}_data`, data);
+  f.textures.add(`gsb_${sceneId}_background`); f.textures.add(`gsb_${sceneId}_playable`);
+  const map = buildTiledMap(f.scene, tiledMap, 'tiles');
+  eq(map.gsbScene, sceneId, 'youying_tower: checked-in map enables its GSB scene');
+  eq(tiledMap.properties.find(property => property.name === 'gsbScene')?.value,
+    sceneId, 'youying_tower: map binds the approved GSB scene');
+  eq(tiledMap.properties.find(property => property.name === 'gsbGeometryRevision')?.value,
+    revision, 'youying_tower: map binds the approved geometry revision');
+  eq(data.geometryRevision, revision, 'youying_tower: scene-data has the approved geometry revision');
+  same([map.width, map.height], [1280, 640], 'youying_tower: logical world dimensions match the approved scene');
+  same([data.space.logicalWidth, data.space.logicalHeight], [1280, 640],
+    'youying_tower: scene-data declares the approved logical dimensions');
+  same([tiledMap.width, tiledMap.height], [40, 20], 'youying_tower: checked-in tile grid is 40 x 20');
+  same([tiledMap.tilewidth, tiledMap.tileheight], [32, 32], 'youying_tower: checked-in tiles are 32 x 32');
+  same([tiledMap.width * tiledMap.tilewidth, tiledMap.height * tiledMap.tileheight], [map.width, map.height],
+    'youying_tower: checked-in tile grid matches logical world dimensions');
+  same(f.groups.map(group => group.children.length), [3, 3], 'youying_tower: three solids and three one-way bodies are built');
+  same(data.surfaces.map(surface => [surface.id, surface.support, surface.polyline]), [
+    ['s_dock', 'solid', [[0, 512], [320, 512]]],
+    ['s_envoy', 'solid', [[320, 576], [704, 576]]],
+    ['s_elder', 'solid', [[704, 512], [1280, 512]]],
+    ['s_west', 'one-way', [[48, 384], [280, 384]]],
+    ['s_middle', 'one-way', [[748, 352], [1200, 352]]],
+    ['s_high', 'one-way', [[880, 224], [1140, 224]]],
+  ], 'youying_tower: all six approved surfaces retain their identities, kinds and exact landing spans');
+  for (const surface of data.surfaces) {
+    const left = Math.min(...surface.polyline.map(point => point[0]));
+    const right = Math.max(...surface.polyline.map(point => point[0]));
+    const bodies = f.groups[surface.support === 'one-way' ? 1 : 0].children.map(rectangle);
+    ok(bodies.some(body => body.y === surface.polyline[0][1] && body.x <= left && body.x + body.width >= right),
+      `youying_tower: ${surface.id} retains its full landing span and exact top edge`);
+  }
+  ok(f.groups[1].children.every(object => object.body?.checkCollision.up &&
+    !object.body.checkCollision.down && !object.body.checkCollision.left && !object.body.checkCollision.right),
+    'youying_tower: all one-way bodies only collide on top');
+  ok(f.groups[0].children.every(object => object.body?.checkCollision.up &&
+    object.body.checkCollision.down && object.body.checkCollision.left && object.body.checkCollision.right),
+    'youying_tower: solid bodies keep all collision directions');
+  same(map.spawn, { x: 224, y: 512 }, 'youying_tower: player start is preserved');
+  same(data.points.filter(point => point.id === 'start_spawn').map(point => point.position),
+    [[map.spawn.x, map.spawn.y]], 'youying_tower: player start matches the approved scene spawn point');
+  eq(map.ropes.length, 3, 'youying_tower: both ropes and the ladder are preserved');
+  same(data.climbs.map(climb => [climb.id, climb.kind]), [
+    ['c_rope_4', 'rope'], ['c_rope_24', 'rope'], ['c_ladder_34', 'ladder'],
+  ], 'youying_tower: all three approved climbs keep their identities and kinds');
+  const climbObjects = tiledMap.layers.flatMap(layer => layer.type === 'objectgroup' ? layer.objects ?? [] : [])
+    .filter(object => ['rope', 'ladder'].includes(object.type));
+  same(climbObjects.map(object => [object.name, object.type, object.x, object.y, object.width, object.height]), [
+    ['rope_4', 'rope', 144, 384, 0, 128],
+    ['rope_24', 'rope', 784, 352, 0, 160],
+    ['ladder_34', 'ladder', 1086, 224, 36, 128],
+  ], 'youying_tower: the named Tiled climbables retain the approved endpoints and ladder corridor');
+  same(map.ropes.map(rope => [rope.kind, rope.x, rope.top, rope.bottom, rope.halfW]),
+    data.climbs.map(climb => {
+      const width = Math.max(...climb.corridor.map(point => point[0])) - Math.min(...climb.corridor.map(point => point[0]));
+      return [climb.kind, climb.ends.end.position[0], climb.ends.end.position[1], climb.ends.start.position[1],
+        climb.kind === 'ladder' ? Math.max(12, width / 2) : FEEL.ropeGrabRangeX];
+    }), 'youying_tower: rope and ladder geometry follows the approved climb ends and corridor widths');
+  same(map.ropes, [
+    { kind: 'rope', x: 144, top: 384, bottom: 512, halfW: FEEL.ropeGrabRangeX },
+    { kind: 'rope', x: 784, top: 352, bottom: 512, halfW: FEEL.ropeGrabRangeX },
+    { kind: 'ladder', x: 1104, top: 224, bottom: 352, halfW: 18 },
+  ], 'youying_tower: all climbables keep their exact geometry, approved ladder center and half-width');
+  same(map.objects.filter(object => object.type === 'npc').map(object =>
+    [object.name, object.x, object.y, object.props.npc]), [
+    ['youying_envoy', 432, 576, 'youying_envoy'],
+    ['youying_elder', 1008, 512, 'youying_elder'],
+  ], 'youying_tower: both named NPCs keep their positions and identities');
+  same(map.objects.filter(object => object.type === 'npc').map(object =>
+    [object.name, object.x, object.y, object.props.npc]),
+  data.points.filter(point => point.type === 'npc').map(point =>
+    [point.id, ...point.position, point.properties?.npc]),
+  'youying_tower: NPC positions and identities match scene-data points');
+  same(map.objects.filter(object => object.name === 'youying_elder').map(object =>
+    [object.props.trial, object.props.target]), [['trial_sect_youying', 'trial_youying_vault']],
+  'youying_tower: the elder retains the existing trial and target');
+  same(map.objects.filter(object => object.type === 'ferry').map(object =>
+    [object.name, object.x, object.y, object.w, object.props.returnTo]),
+  [['ferry_landing', 176, 512, 160, 'luoxia_town']],
+  'youying_tower: ferry landing retains its position, width and return town');
+  same(map.objects.filter(object => object.name === 'goal_east'), [],
+    'youying_tower: the scene-only east goal does not introduce a gameplay object');
+  same(map.spawns, [], 'youying_tower: no monster spawns are introduced');
+  same(map.hidden, [], 'youying_tower: no hidden controllers are introduced');
+  same(map.spawnGates, [], 'youying_tower: no spawn gates are introduced');
+  same(map.objects.filter(object => ['gather', 'chest', 'hidden', 'spawn', 'flyZone', 'spawnGate', 'portal'].includes(object.type)), [],
+    'youying_tower: no gather, chest, hidden, spawn, flying zone, spawn gate or portal objects are introduced');
+  same(map.objects.filter(object => object.name === 'tower_climb_entrance').map(object =>
+    [object.type, object.x, object.y, object.props.physicalTrialGate]),
+  [['tower_climb', 880, 512, false]],
+  'youying_tower: the tower entrance remains a decorative anchor without a physical trial gate');
+  ok(map.objects.filter(object => object.name === 'tower_climb_entrance').every(object =>
+    !['portal', 'trial', 'target'].some(property => Object.prototype.hasOwnProperty.call(object.props, property))),
+    'youying_tower: the decorative tower entrance has no portal, trial or target binding');
+  same(map.objects.filter(object => !['npc', 'ferry'].includes(object.type)).map(object => [object.type, object.name]),
+    [['tower_climb', 'tower_climb_entrance']], 'youying_tower: only the approved decorative anchor accompanies gameplay objects');
+  eq(f.tilemaps, 0, 'youying_tower: GSB skips the legacy tilemap path');
+  same(f.displays.filter(object => object.kind !== 'zone').map(object => [object.kind, object.key]),
+    [['image', `gsb_${sceneId}_background`], ['image', `gsb_${sceneId}_playable`]],
+    'youying_tower: GSB draws background and playable art without legacy terrain or climbs');
+  const legacyLayers = tiledMap.layers.filter(layer => layer.type === 'tilelayer' && ['ground', 'oneway'].includes(layer.name));
+  same(legacyLayers.map(layer => layer.name), ['ground', 'oneway'], 'youying_tower: both legacy collision layers are present');
+  ok(legacyLayers.every(layer => layer.data?.length === tiledMap.width * tiledMap.height && layer.data.every(gid => gid === 0)),
+    'youying_tower: checked-in legacy collision layers are fully cleared');
+  eq(JSON.stringify(data), dataBefore, 'youying_tower: building leaves the cached scene-data input unchanged');
+  eq(JSON.stringify(tiledMap), mapBefore, 'youying_tower: building leaves the Tiled map input unchanged');
+}
+testYouyingTowerGsb();
 
 console.log(JSON.stringify({ suite: 'gsb-map', passed: true, assertions }));
