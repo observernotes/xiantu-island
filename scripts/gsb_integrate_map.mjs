@@ -49,9 +49,13 @@ const POINT_TO_OBJECT = {
   npc_sun: 'doctor_sun',
   npc_envoy: 'tianjian_envoy',
   npc_teacher: 'tianjian_elder',
-  dummy_1: 'dummy_1',
-  dummy_2: 'dummy_2',
-  dummy_3: 'dummy_3',
+  dummy_1: ['dummy_1', 'spawn_training_dummy_5'],
+  dummy_2: ['dummy_2', 'spawn_training_dummy_6'],
+  dummy_3: ['dummy_3', 'spawn_training_dummy_7'],
+  // 天剑剑冢 gsb_v1：scene-data 点名 dummy_*，正式图对象为 spawn_training_dummy_*
+  dummy_4: 'spawn_training_dummy_8',
+  dummy_5: 'spawn_training_dummy_9',
+  dummy_6: 'spawn_training_dummy_10',
   point_chest: 'chest_lookout',
   point_stage_return: 'enc_sage_advice_anchor',
   // 万妖林林缘 gsb_v1：scene-data 点名与正式图对象名对齐

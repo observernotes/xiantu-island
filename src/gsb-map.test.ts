@@ -20,6 +20,8 @@ import wanyaoDeep1SceneData from '../data/art/scenes/wanyao_deep_1_gsb_v1/scene-
 import wanyaoDeep1TiledMap from '../data/maps/wanyao_deep_1.json';
 import wanyaoDeep2SceneData from '../data/art/scenes/wanyao_deep_2_gsb_v1/scene-data.json';
 import wanyaoDeep2TiledMap from '../data/maps/wanyao_deep_2.json';
+import tombSceneData from '../data/art/scenes/tianjian_sword_tomb_gsb_v1/scene-data.json';
+import tombTiledMap from '../data/maps/tianjian_sword_tomb.json';
 import { FEEL, SPEC } from './config/feel';
 import { buildTiledMap } from './scenes/MapBuilder';
 
@@ -889,6 +891,71 @@ for (const contract of productionMaps) {
     'wanyao_deep_2: checked-in legacy collision layers are fully cleared');
   eq(JSON.stringify(data), dataBefore, 'wanyao_deep_2: building leaves the cached scene-data input unchanged');
   eq(JSON.stringify(tiledMap), mapBefore, 'wanyao_deep_2: building leaves the Tiled map input unchanged');
+}
+
+// Tianjian's sword tomb retains its training dummies, tutorial zone and return portal.
+{
+  const sceneId = 'tianjian_sword_tomb_gsb_v1', revision = 'tomb-final-001';
+  const data = clone(tombSceneData), tiledMap = clone(tombTiledMap);
+  const f = fixture(null, false), dataBefore = JSON.stringify(data), mapBefore = JSON.stringify(tiledMap);
+  f.cache.clear(); f.cache.set(`gsb_${sceneId}_data`, data);
+  f.textures.add(`gsb_${sceneId}_background`); f.textures.add(`gsb_${sceneId}_playable`);
+  const map = buildTiledMap(f.scene, tiledMap, 'tiles');
+  eq(map.gsbScene, sceneId, 'tianjian_sword_tomb: checked-in map enables its GSB scene');
+  eq(tiledMap.properties.find(property => property.name === 'gsbScene')?.value,
+    sceneId, 'tianjian_sword_tomb: map binds the approved GSB scene');
+  eq(tiledMap.properties.find(property => property.name === 'gsbGeometryRevision')?.value,
+    revision, 'tianjian_sword_tomb: map binds the approved geometry revision');
+  eq(data.geometryRevision, revision, 'tianjian_sword_tomb: scene-data has the approved geometry revision');
+  same([map.width, map.height], [2240, 768], 'tianjian_sword_tomb: logical world dimensions match the approved scene');
+  same([tiledMap.width, tiledMap.height], [70, 24], 'tianjian_sword_tomb: checked-in tile grid is 70 x 24');
+  same([tiledMap.width * tiledMap.tilewidth, tiledMap.height * tiledMap.tileheight], [map.width, map.height],
+    'tianjian_sword_tomb: checked-in tile grid matches logical world dimensions');
+  same(f.groups.map(group => group.children.length), [3, 2], 'tianjian_sword_tomb: three solids and two one-way bodies are built');
+  for (const surface of data.surfaces) {
+    const left = Math.min(...surface.polyline.map(point => point[0]));
+    const right = Math.max(...surface.polyline.map(point => point[0]));
+    const bodies = f.groups[surface.support === 'one-way' ? 1 : 0].children.map(rectangle);
+    ok(bodies.some(body => body.y === surface.polyline[0][1] && body.x <= left && body.x + body.width >= right),
+      `tianjian_sword_tomb: ${surface.id} retains its full landing span and exact top edge`);
+  }
+  ok(f.groups[1].children.every(object => object.body?.checkCollision.up &&
+    !object.body.checkCollision.down && !object.body.checkCollision.left && !object.body.checkCollision.right),
+    'tianjian_sword_tomb: all one-way bodies only collide on top');
+  ok(f.groups[0].children.every(object => object.body?.checkCollision.up &&
+    object.body.checkCollision.down && object.body.checkCollision.left && object.body.checkCollision.right),
+    'tianjian_sword_tomb: solid bodies keep all collision directions');
+  same(map.spawn, { x: 128, y: 704 }, 'tianjian_sword_tomb: player start is preserved');
+  eq(map.ropes.length, 2, 'tianjian_sword_tomb: both ropes are preserved');
+  same(map.ropes.map(rope => [rope.kind, rope.x, rope.top, rope.bottom, rope.halfW]),
+    data.climbs.map(climb => [climb.kind, climb.ends.end.position[0], climb.ends.end.position[1],
+      climb.ends.start.position[1], FEEL.ropeGrabRangeX]),
+    'tianjian_sword_tomb: rope tops follow climb ends and bottoms follow climb starts');
+  same(map.objects.filter(object => object.type === 'portal').map(object =>
+    [object.name, object.x, object.y, object.props.target, object.props.targetPortal]),
+  [['portal_to_sect', 80, 704, 'tianjian_sect', 'portal_to_sword_tomb']],
+  'tianjian_sword_tomb: the return portal retains its position and destination');
+  same(map.spawns.map(spawn => [spawn.monster, spawn.x, spawn.y, spawn.w, spawn.count]), [
+    ['training_dummy', 512, 704, 32, 1], ['training_dummy', 704, 704, 32, 1],
+    ['training_dummy', 896, 704, 32, 1], ['training_dummy', 1600, 640, 32, 1],
+    ['training_dummy', 1824, 640, 32, 1], ['training_dummy', 1184, 576, 32, 1],
+  ], 'tianjian_sword_tomb: all six training dummy positions, patrol widths and counts survive integration');
+  same(map.zones, [{ name: 'skill_tutorial', x: 384, y: 384, w: 704, h: 320,
+    props: { label: '技能点教学', tutorial: 'skill_points' } }],
+  'tianjian_sword_tomb: the skill tutorial zone retains its bounds and properties');
+  same(map.hidden, [], 'tianjian_sword_tomb: no hidden controllers are introduced');
+  same(map.objects.filter(object => ['gather', 'chest', 'hidden', 'ferry', 'flyZone', 'spawnGate'].includes(object.type)), [],
+    'tianjian_sword_tomb: no gather, chest, hidden, ferry, flying zone or spawn gate objects are introduced');
+  eq(f.tilemaps, 0, 'tianjian_sword_tomb: GSB skips the legacy tilemap path');
+  same(f.displays.filter(object => object.kind !== 'zone').map(object => [object.kind, object.key]),
+    [['image', `gsb_${sceneId}_background`], ['image', `gsb_${sceneId}_playable`]],
+    'tianjian_sword_tomb: GSB draws background and playable art without legacy terrain or ropes');
+  const legacyLayers = tiledMap.layers.filter(layer => layer.type === 'tilelayer' && ['ground', 'oneway'].includes(layer.name));
+  same(legacyLayers.map(layer => layer.name), ['ground', 'oneway'], 'tianjian_sword_tomb: both legacy collision layers are present');
+  ok(legacyLayers.every(layer => layer.data?.length === tiledMap.width * tiledMap.height && layer.data.every(gid => gid === 0)),
+    'tianjian_sword_tomb: checked-in legacy collision layers are fully cleared');
+  eq(JSON.stringify(data), dataBefore, 'tianjian_sword_tomb: building leaves the cached scene-data input unchanged');
+  eq(JSON.stringify(tiledMap), mapBefore, 'tianjian_sword_tomb: building leaves the Tiled map input unchanged');
 }
 
 console.log(JSON.stringify({ suite: 'gsb-map', passed: true, assertions }));
