@@ -1,0 +1,532 @@
+{
+  "schemaVersion": "1.0",
+  "id": "tianjian_sect_gsb_v1",
+  "version": "2026-10-27-final-003",
+  "createdAt": "2026-10-27 05:22 CST",
+  "status": "self-check-passed-awaiting-owner",
+  "ownerPass": false,
+  "integrationAllowed": false,
+  "geometryRevision": "tianjian-sect-final-003",
+  "actorParameterRevision": "tianjian-base-feel-20261027-001",
+  "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+  "space": {
+    "origin": "top-left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "units": "logical-pixel",
+    "logicalWidth": 3072,
+    "logicalHeight": 960,
+    "sourceMap": "maps/tianjian_sect.json",
+    "sourceToWorld": [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0
+    ]
+  },
+  "safeZone": true,
+  "qiDensity": 4,
+  "assets": [
+    {
+      "id": "background",
+      "role": "background",
+      "path": "background.png",
+      "pixelWidth": 3072,
+      "pixelHeight": 960,
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "playable",
+      "role": "playable",
+      "path": "playable.png",
+      "pixelWidth": 3072,
+      "pixelHeight": 960,
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    }
+  ],
+  "drawOrder": [
+    "background",
+    "playable",
+    "actor-and-npc-reference"
+  ],
+  "foreground": {
+    "applicable": false,
+    "reason": "no foreground occluder needed"
+  },
+  "sceneDataSHA256": "be24feef7b1fe1e4af98a16beb5a44f3ce2514028f42db0880c8ec9bc051c956",
+  "files": [
+    {
+      "path": "DELIVERED.md",
+      "purpose": "handoff awaiting owner PASS",
+      "bytes": 1436,
+      "sha256": "7f5f43fa633850aa662355cf2fd8518f7d4d56e5acf9c1f283fa79867b9f2469"
+    },
+    {
+      "path": "README.md",
+      "purpose": "portable local launch and review instructions",
+      "bytes": 1818,
+      "sha256": "49467a1c0d2a947aa62a577c0d0b30911d791910b937a577adbae747aa800b09"
+    },
+    {
+      "path": "action-mask.png",
+      "purpose": "deterministic pure action semantics, not runtime collision",
+      "bytes": 13626,
+      "sha256": "cef8f5c9af7ec46a422769f9840e1df108ab3b7ed96b05e016512e274793cd82",
+      "pixelWidth": 3072,
+      "pixelHeight": 960,
+      "mode": "RGBA"
+    },
+    {
+      "path": "action-overlay.png",
+      "purpose": "art plus region IDs directions and verified transitions",
+      "bytes": 5062756,
+      "sha256": "3b8db606dd5dbd4d7bf2bbd06b467e5c4f4c1d23b8b2e7a2dc2d6fdea5782c2e",
+      "pixelWidth": 3072,
+      "pixelHeight": 960,
+      "mode": "RGBA"
+    },
+    {
+      "path": "background.png",
+      "purpose": "opaque non-interactive mountain/cloud layer drawOrder0",
+      "bytes": 4384189,
+      "sha256": "9c16950162b327d3c1409bb0a5a1d0ece0550d31fa4156a2af18ac02c30178be",
+      "pixelWidth": 3072,
+      "pixelHeight": 960,
+      "mode": "RGBA"
+    },
+    {
+      "path": "collision-overlay.png",
+      "purpose": "actual solid volumes, one-way surfaces and climb channels",
+      "bytes": 5018087,
+      "sha256": "e2a7b96ab53d43a7eba6ebc50661297cf290c6091a8647625cfdbe578dc3da16",
+      "pixelWidth": 3072,
+      "pixelHeight": 960,
+      "mode": "RGBA"
+    },
+    {
+      "path": "diagnostics-metadata.json",
+      "purpose": "source hashes revisions and raster palette",
+      "bytes": 1404,
+      "sha256": "75af98f527e816aeea1015a9a212c1e91607ccaf7b8edb39d302b2c7d41d4e1b"
+    },
+    {
+      "path": "index.html",
+      "purpose": "relative local test entry",
+      "bytes": 202,
+      "sha256": "84ad7d1d48616173750133c71fc6bd7797ecbda47c05d5abc8b58f438e76e889"
+    },
+    {
+      "path": "playable.png",
+      "purpose": "true alpha terrain, buildings and climbs drawOrder10",
+      "bytes": 2429855,
+      "sha256": "7c081d131452dc596b9904bad7d59ee63d0782937c19b9cf416b7b0bc05aab27",
+      "pixelWidth": 3072,
+      "pixelHeight": 960,
+      "mode": "RGBA"
+    },
+    {
+      "path": "polished.lock",
+      "purpose": "ownership and no-integration state",
+      "bytes": 120,
+      "sha256": "555f3a062ee73e9559e160d2d805da46a088648e7703a190943ea9723c56eacd"
+    },
+    {
+      "path": "scene-data.json",
+      "purpose": "sole authoritative action collision points and validation data",
+      "bytes": 44441,
+      "sha256": "be24feef7b1fe1e4af98a16beb5a44f3ce2514028f42db0880c8ec9bc051c956"
+    },
+    {
+      "path": "scene.png",
+      "purpose": "final background+playable composite for art review",
+      "bytes": 5068867,
+      "sha256": "3795fe3fdaa9b86e879f4d1dc9fd8946edd298d544875706a8569036a5e06f4c",
+      "pixelWidth": 3072,
+      "pixelHeight": 960,
+      "mode": "RGBA"
+    },
+    {
+      "path": "validation-report.md",
+      "purpose": "truthful local self-validation and evidence",
+      "bytes": 12414,
+      "sha256": "c2a2b0758ec8364c8f7e2b0825f34b23e29d4c5becc78352d95e12a8f1f4a083"
+    },
+    {
+      "path": "work/preview/index.html",
+      "bytes": 3797,
+      "sha256": "89387555c6e331a2ef0ad128127bae6fd14ce7641ed4b400872ce9a5779b092c"
+    },
+    {
+      "path": "work/preview/preview.mjs",
+      "bytes": 13830,
+      "sha256": "2dfa809f0c764d27dab7b391c5f73aea8c832e8785ab479baa8b3c17fced46af"
+    },
+    {
+      "path": "work/preview/engine.mjs",
+      "bytes": 13521,
+      "sha256": "bbea03054581ac2d17aace9fb3c3ba30f5ca970082f8ea085202b784d661d755"
+    },
+    {
+      "path": "work/preview/player-reference-idle.png",
+      "bytes": 10012,
+      "sha256": "520235d2f9c4c9e83b140ba439c2d18becfaa8e962fa15a98e35a14003ce0181"
+    }
+  ],
+  "diagnostics": {
+    "maskPalette": {
+      "walk": [
+        150,
+        245,
+        160,
+        255
+      ],
+      "stand": [
+        0,
+        200,
+        80,
+        255
+      ],
+      "rope": [
+        0,
+        190,
+        230,
+        255
+      ],
+      "ladder": [
+        80,
+        140,
+        255,
+        255
+      ],
+      "stairs": [
+        255,
+        160,
+        40,
+        255
+      ],
+      "point": [
+        255,
+        70,
+        160,
+        255
+      ]
+    },
+    "rasterizationOrder": [
+      "walk",
+      "stand",
+      "rope",
+      "ladder",
+      "stairs",
+      "point"
+    ],
+    "regionIdIndex": null,
+    "geometryRevision": "tianjian-sect-final-003"
+  },
+  "entry": "index.html",
+  "launch": "python3 -m http.server 8797 --bind 127.0.0.1",
+  "localOnly": true,
+  "processRoot": "work/",
+  "promptRoot": "work/prompts/",
+  "imageTool": "built-in imagegen; no CLI or external image service",
+  "finalMaster": "work/generated/clean-master-007-logical.png",
+  "layerRegistration": "work/layer-transform.json",
+  "generatedSources": [
+    {
+      "path": "work/generated/background-inpaint-006.png",
+      "pixelWidth": 2172,
+      "pixelHeight": 724,
+      "sha256": "318d6fcc4209c203b2d029b961b14fe0e861cc7dcb5abe2e9e0df112abc5a5e8",
+      "role": "process/candidate/measurement; not direct final asset"
+    },
+    {
+      "path": "work/generated/background-inpaint-008.png",
+      "pixelWidth": 2172,
+      "pixelHeight": 724,
+      "sha256": "b5ecd9a26e3ba284bdbf7d505e693eef3029b9ecd3c873c1d83b93ff6f5a691b",
+      "role": "final-source"
+    },
+    {
+      "path": "work/generated/clean-master-007-logical.png",
+      "pixelWidth": 3072,
+      "pixelHeight": 960,
+      "sha256": "24e951b931b7931b0a941d3894b60cb6a0ebfe0f67ef473591a15e305db3cbe2",
+      "role": "final-source"
+    },
+    {
+      "path": "work/generated/clean-master-007.png",
+      "pixelWidth": 2172,
+      "pixelHeight": 724,
+      "sha256": "a2f2a4deb39270ebb1bb36c77ee7355416fde05282994abfb6b79fac53a9d19c",
+      "role": "process/candidate/measurement; not direct final asset"
+    },
+    {
+      "path": "work/generated/cloud-defect.png",
+      "pixelWidth": 480,
+      "pixelHeight": 576,
+      "sha256": "8fe3f21947a707cc90ea73c8a843d8a7bbb3aa0c668177c2ac4cfbdac0bc8c35",
+      "role": "process/candidate/measurement; not direct final asset"
+    },
+    {
+      "path": "work/generated/cloud-fixed-005.png",
+      "pixelWidth": 1145,
+      "pixelHeight": 1374,
+      "sha256": "a8f5ef4a3245f3f188dacde513d67c67e7e6ff4af48be151ff95a1aed8a7d0c7",
+      "role": "process/candidate/measurement; not direct final asset"
+    },
+    {
+      "path": "work/generated/cloud-guide.png",
+      "pixelWidth": 480,
+      "pixelHeight": 576,
+      "sha256": "19728f9758df2a9fd4b97d98f358b16eabf6aa1fdbfd136b2a60f2759e8400d0",
+      "role": "process/candidate/measurement; not direct final asset"
+    },
+    {
+      "path": "work/generated/eaves-detail.png",
+      "pixelWidth": 1504,
+      "pixelHeight": 140,
+      "sha256": "c3de017f5bea56f19210d52022bfcc4b75c768d90bda4108e3e6de6637839b7f",
+      "role": "process/candidate/measurement; not direct final asset"
+    },
+    {
+      "path": "work/generated/extract-008-logical.png",
+      "pixelWidth": 3072,
+      "pixelHeight": 960,
+      "sha256": "38fd561be278fb4ee2f78ebe2a58f8cd4ef81855e4bd334ff4d58f67265d0ccf",
+      "role": "process/candidate/measurement; not direct final asset"
+    },
+    {
+      "path": "work/generated/extract-east.png",
+      "pixelWidth": 736,
+      "pixelHeight": 560,
+      "sha256": "958e9a3371adf1b073590e91554886cec18185ba510f246e13ea803d82961452",
+      "role": "process/candidate/measurement; not direct final asset"
+    },
+    {
+      "path": "work/generated/extract-hall.png",
+      "pixelWidth": 928,
+      "pixelHeight": 760,
+      "sha256": "e0c2c514858c86887abdfd54c7c35fff77921940bfd61d85609e090c17709d7f",
+      "role": "process/candidate/measurement; not direct final asset"
+    },
+    {
+      "path": "work/generated/extract-logical.png",
+      "pixelWidth": 3072,
+      "pixelHeight": 960,
+      "sha256": "4d255a308ccc22a73bb03ac1264df4e6de0b13167d369cfaa901b8dd63311962",
+      "role": "process/candidate/measurement; not direct final asset"
+    },
+    {
+      "path": "work/generated/extract-west.png",
+      "pixelWidth": 960,
+      "pixelHeight": 580,
+      "sha256": "f9b42b0b47101b370e70ef45d8b5c40504356e634c9e6ebaf9840094aa48aa11",
+      "role": "process/candidate/measurement; not direct final asset"
+    },
+    {
+      "path": "work/generated/final-master-005.png",
+      "pixelWidth": 3072,
+      "pixelHeight": 960,
+      "sha256": "1dc0849671f56ee8d48c42647c47f419c1dcec1013adb8b723a0671883992b79",
+      "role": "process/candidate/measurement; not direct final asset"
+    },
+    {
+      "path": "work/generated/hall-defect-002.png",
+      "pixelWidth": 928,
+      "pixelHeight": 704,
+      "sha256": "8211ad4bc7b12e633a85d63916e374cbdf1207bec445502b7983cb735dce5ccd",
+      "role": "process/candidate/measurement; not direct final asset"
+    },
+    {
+      "path": "work/generated/hall-guide.png",
+      "pixelWidth": 928,
+      "pixelHeight": 704,
+      "sha256": "31bd8794f74a9849eb139875c22659c682090cca307da6b871b48b1c066ca18b",
+      "role": "process/candidate/measurement; not direct final asset"
+    },
+    {
+      "path": "work/generated/hall-repair-003.png",
+      "pixelWidth": 1441,
+      "pixelHeight": 1092,
+      "sha256": "497afb14e3a15e35ed26a5639e80a751a09cd0ee7531b9f6f08c92e8123f1681",
+      "role": "process/candidate/measurement; not direct final asset"
+    },
+    {
+      "path": "work/generated/lesson-detail.png",
+      "pixelWidth": 1140,
+      "pixelHeight": 450,
+      "sha256": "c9406bcd3f3f0de81973089113863927905ec2f3b410119bf858f37acebea73b",
+      "role": "process/candidate/measurement; not direct final asset"
+    },
+    {
+      "path": "work/generated/master-001-logical.png",
+      "pixelWidth": 3072,
+      "pixelHeight": 960,
+      "sha256": "d09c1fe3bcc70715c292d9c4baedc32cc7693e61b94a4fee7886a9521c203a34",
+      "role": "process/candidate/measurement; not direct final asset"
+    },
+    {
+      "path": "work/generated/master-001.png",
+      "pixelWidth": 2172,
+      "pixelHeight": 724,
+      "sha256": "4c4d6e9d6ef269804a20f168ccf410cdaef5f0f41c3a63f1ac11efdaf22a4c4b",
+      "role": "process/candidate/measurement; not direct final asset"
+    },
+    {
+      "path": "work/generated/measure-east.png",
+      "pixelWidth": 736,
+      "pixelHeight": 410,
+      "sha256": "db9e86cdaa9b268cc47f8c430e65cf526a3116052a85dea39fe6fcd5062a9a0d",
+      "role": "process/candidate/measurement; not direct final asset"
+    },
+    {
+      "path": "work/generated/measure-hall.png",
+      "pixelWidth": 928,
+      "pixelHeight": 440,
+      "sha256": "0efd0c886c5bd380dba0a5ff8221c7a3313801cd4650e386a8b5b0e451a47d4d",
+      "role": "process/candidate/measurement; not direct final asset"
+    },
+    {
+      "path": "work/generated/measure-west.png",
+      "pixelWidth": 1200,
+      "pixelHeight": 560,
+      "sha256": "31a6e3f93a486fa1e9db0fa2504addbdbdf12da70fd2340f444688b44011265c",
+      "role": "process/candidate/measurement; not direct final asset"
+    },
+    {
+      "path": "work/generated/measure8-east.png",
+      "pixelWidth": 736,
+      "pixelHeight": 310,
+      "sha256": "f4f293fec7e88235a44542bcae1c209dca364248cd7bc5024b38d47512e8ee06",
+      "role": "process/candidate/measurement; not direct final asset"
+    },
+    {
+      "path": "work/generated/measure8-hall.png",
+      "pixelWidth": 864,
+      "pixelHeight": 380,
+      "sha256": "e87444649ac89cbb00a24854b1843d2a3ab1b1f0e3aa4ee21b9e6eafaf87a1cb",
+      "role": "process/candidate/measurement; not direct final asset"
+    },
+    {
+      "path": "work/generated/measure8-west.png",
+      "pixelWidth": 1472,
+      "pixelHeight": 540,
+      "sha256": "a293b0c5aa540a343cb908b25881702275a137289d144ce7cf70cb89f9ad2fc1",
+      "role": "process/candidate/measurement; not direct final asset"
+    },
+    {
+      "path": "work/generated/playable-extract-006.png",
+      "pixelWidth": 2172,
+      "pixelHeight": 724,
+      "sha256": "893f9e3855b0b72df10752bc42f35357f4ebf8cfd541e0b74ac8abc30cfa843b",
+      "role": "process/candidate/measurement; not direct final asset"
+    },
+    {
+      "path": "work/generated/playable-extract-008.png",
+      "pixelWidth": 2172,
+      "pixelHeight": 724,
+      "sha256": "ac236fad45a996aa326d941a6f1ba6153a8a64deb97f769c45315c273c6c5a4a",
+      "role": "final-source"
+    },
+    {
+      "path": "work/generated/raw-recompose.png",
+      "pixelWidth": 3072,
+      "pixelHeight": 960,
+      "sha256": "f2e147191e0d5f21781bc1304a852a74787e9a34276713e731486fcb5004ad9b",
+      "role": "process/candidate/measurement; not direct final asset"
+    },
+    {
+      "path": "work/generated/refine-east-input.png",
+      "pixelWidth": 1664,
+      "pixelHeight": 960,
+      "sha256": "270073622c4b9de81d5da72a7a1451815bdbf94c2a494fee67ee088195a2a0d8",
+      "role": "process/candidate/measurement; not direct final asset"
+    },
+    {
+      "path": "work/generated/refine-west-input.png",
+      "pixelWidth": 1664,
+      "pixelHeight": 960,
+      "sha256": "7cabe18676366c0aeaa4eb86ae40c06731d632bed5282acee51248cf5171cf6b",
+      "role": "process/candidate/measurement; not direct final asset"
+    },
+    {
+      "path": "work/generated/refined-east-004.png",
+      "pixelWidth": 1651,
+      "pixelHeight": 953,
+      "sha256": "eee510c4da57a85c1beb913fed565fc2fd2c482b318f576b40051ad0dffe1430",
+      "role": "process/candidate/measurement; not direct final asset"
+    },
+    {
+      "path": "work/generated/refined-master-004.png",
+      "pixelWidth": 3072,
+      "pixelHeight": 960,
+      "sha256": "a588b285461552f50af90597422546ca0fe92658d48e7aa297b3840e5a76cb45",
+      "role": "process/candidate/measurement; not direct final asset"
+    },
+    {
+      "path": "work/generated/refined-west-004.png",
+      "pixelWidth": 1651,
+      "pixelHeight": 953,
+      "sha256": "3a546917780dac83cd4f31e35e5082ff4f4f3e8f6b5e11820ce9c37903a13969",
+      "role": "process/candidate/measurement; not direct final asset"
+    },
+    {
+      "path": "work/generated/repair-002-logical.png",
+      "pixelWidth": 3072,
+      "pixelHeight": 960,
+      "sha256": "d6c0d1b2ac185d40ca379449930c5b2c61619b464e244d97f6d3958b2eb9526a",
+      "role": "process/candidate/measurement; not direct final asset"
+    },
+    {
+      "path": "work/generated/repair-002.png",
+      "pixelWidth": 2172,
+      "pixelHeight": 724,
+      "sha256": "3fa5b2a804608b673fbbc865dadeb8c6ef965c99dec051840ac21bdacdd3c8d7",
+      "role": "process/candidate/measurement; not direct final asset"
+    },
+    {
+      "path": "work/generated/structure-003.png",
+      "pixelWidth": 3072,
+      "pixelHeight": 960,
+      "sha256": "bd68b861340c80f9d663d64b7c47dc2731d773279839210971021786fee74d4d",
+      "role": "process/candidate/measurement; not direct final asset"
+    }
+  ],
+  "validation": {
+    "requiredRoutes": 7,
+    "verifiedRoutes": 7,
+    "surfaceContactScreenshots": 10,
+    "physicsChecks": 8,
+    "packageChecks": 17,
+    "artcheckErrors": 0,
+    "report": "validation-report.md",
+    "browser": "work/final-browser-check.json",
+    "audit": "work/package-audit.json",
+    "scope": "independent FEEL AABB adapter; production Phaser not integrated"
+  },
+  "prohibitionsRespected": [
+    "no game/public writes",
+    "no production release",
+    "no live push",
+    "no passed delivery root edits",
+    "no trial link forwarding",
+    "global Codex concurrency <=2"
+  ]
+}

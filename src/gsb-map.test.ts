@@ -22,6 +22,10 @@ import wanyaoDeep2SceneData from '../data/art/scenes/wanyao_deep_2_gsb_v1/scene-
 import wanyaoDeep2TiledMap from '../data/maps/wanyao_deep_2.json';
 import tombSceneData from '../data/art/scenes/tianjian_sword_tomb_gsb_v1/scene-data.json';
 import tombTiledMap from '../data/maps/tianjian_sword_tomb.json';
+import sectSceneData from '../data/art/scenes/tianjian_sect_gsb_v1/scene-data.json';
+import sectTiledMap from '../data/maps/tianjian_sect.json';
+import taixuSceneData from '../data/art/scenes/taixu_temple_gsb_v1/scene-data.json';
+import taixuTiledMap from '../data/maps/taixu_temple.json';
 import { FEEL, SPEC } from './config/feel';
 import { buildTiledMap } from './scenes/MapBuilder';
 
@@ -957,5 +961,185 @@ for (const contract of productionMaps) {
   eq(JSON.stringify(data), dataBefore, 'tianjian_sword_tomb: building leaves the cached scene-data input unchanged');
   eq(JSON.stringify(tiledMap), mapBefore, 'tianjian_sword_tomb: building leaves the Tiled map input unchanged');
 }
+
+// Tianjian's sect gate retains its ferry, three NPCs, seclusion point and sword tomb portal.
+{
+  const sceneId = 'tianjian_sect_gsb_v1', revision = 'tianjian-sect-final-003';
+  const data = clone(sectSceneData), tiledMap = clone(sectTiledMap);
+  const f = fixture(null, false), dataBefore = JSON.stringify(data), mapBefore = JSON.stringify(tiledMap);
+  f.cache.clear(); f.cache.set(`gsb_${sceneId}_data`, data);
+  f.textures.add(`gsb_${sceneId}_background`); f.textures.add(`gsb_${sceneId}_playable`);
+  const map = buildTiledMap(f.scene, tiledMap, 'tiles');
+  eq(map.gsbScene, sceneId, 'tianjian_sect: checked-in map enables its GSB scene');
+  eq(tiledMap.properties.find(property => property.name === 'gsbScene')?.value,
+    sceneId, 'tianjian_sect: map binds the approved GSB scene');
+  eq(tiledMap.properties.find(property => property.name === 'gsbGeometryRevision')?.value,
+    revision, 'tianjian_sect: map binds the approved geometry revision');
+  eq(data.geometryRevision, revision, 'tianjian_sect: scene-data has the approved geometry revision');
+  same([map.width, map.height], [3072, 960], 'tianjian_sect: logical world dimensions match the approved scene');
+  same([tiledMap.width, tiledMap.height], [96, 30], 'tianjian_sect: checked-in tile grid is 96 x 30');
+  same([tiledMap.width * tiledMap.tilewidth, tiledMap.height * tiledMap.tileheight], [map.width, map.height],
+    'tianjian_sect: checked-in tile grid matches logical world dimensions');
+  same(f.groups.map(group => group.children.length), [6, 4], 'tianjian_sect: six solids and four one-way bodies are built');
+  same(data.surfaces.filter(surface => surface.support === 'solid').map(surface => surface.id),
+    ['s_dock', 's_gate', 's_stair_1', 's_arena', 's_hall', 's_east'],
+    'tianjian_sect: all six approved solid surfaces are preserved');
+  same(data.surfaces.filter(surface => surface.support === 'one-way').map(surface => surface.id),
+    ['s_cloud', 's_eaves', 's_bell', 's_lesson'],
+    'tianjian_sect: all four approved one-way surfaces are preserved');
+  for (const surface of data.surfaces) {
+    const left = Math.min(...surface.polyline.map(point => point[0]));
+    const right = Math.max(...surface.polyline.map(point => point[0]));
+    const bodies = f.groups[surface.support === 'one-way' ? 1 : 0].children.map(rectangle);
+    ok(bodies.some(body => body.y === surface.polyline[0][1] && body.x <= left && body.x + body.width >= right),
+      `tianjian_sect: ${surface.id} retains its full landing span and exact top edge`);
+  }
+  ok(f.groups[1].children.every(object => object.body?.checkCollision.up &&
+    !object.body.checkCollision.down && !object.body.checkCollision.left && !object.body.checkCollision.right),
+    'tianjian_sect: all one-way bodies only collide on top');
+  ok(f.groups[0].children.every(object => object.body?.checkCollision.up &&
+    object.body.checkCollision.down && object.body.checkCollision.left && object.body.checkCollision.right),
+    'tianjian_sect: solid bodies keep all collision directions');
+  same(map.spawn, { x: 128, y: 832 }, 'tianjian_sect: player start is preserved');
+  eq(map.ropes.length, 4, 'tianjian_sect: both ropes and both ladders are preserved');
+  same(data.climbs.map(climb => [climb.id, climb.kind]), [
+    ['c_rope_7', 'rope'], ['c_ladder_52', 'ladder'], ['c_rope_59', 'rope'], ['c_ladder_80', 'ladder'],
+  ], 'tianjian_sect: all four approved climbs keep their identities and kinds');
+  same(map.ropes.map(rope => [rope.kind, rope.x, rope.top, rope.bottom, rope.halfW]),
+    data.climbs.map(climb => {
+      const width = Math.max(...climb.corridor.map(point => point[0])) - Math.min(...climb.corridor.map(point => point[0]));
+      return [climb.kind, climb.ends.end.position[0], climb.ends.end.position[1], climb.ends.start.position[1],
+        climb.kind === 'ladder' ? Math.max(12, width / 2) : FEEL.ropeGrabRangeX];
+    }), 'tianjian_sect: rope and ladder geometry follows the approved climbs');
+  same(map.ropes.filter(rope => rope.kind === 'ladder'), [
+    { kind: 'ladder', x: 1680, top: 544, bottom: 704, halfW: 18 },
+    { kind: 'ladder', x: 2576, top: 608, bottom: 768, halfW: 18 },
+  ], 'tianjian_sect: both ladders use the patched object centers and half-widths');
+  same(map.objects.filter(object => object.type === 'portal').map(object =>
+    [object.name, object.x, object.y, object.props.target, object.props.targetPortal]),
+  [['portal_to_sword_tomb', 3024, 768, 'tianjian_sword_tomb', 'portal_to_sect']],
+  'tianjian_sect: the sword tomb portal retains its position and destination');
+  same(map.objects.filter(object => object.type === 'npc').map(object => object.name),
+    ['senior_sister_su', 'sect_master_ling', 'tianjian_elder'],
+    'tianjian_sect: all three named NPCs are preserved');
+  same(map.objects.filter(object => object.type === 'npc').map(object =>
+    [object.name, object.x, object.y, object.props.npc]),
+  data.points.filter(point => point.type === 'npc').map(point =>
+    [point.sourceName, ...point.position, point.properties?.npc]),
+  'tianjian_sect: NPC positions and identities match scene-data points');
+  same(map.objects.filter(object => object.type === 'ferry').map(object =>
+    [object.name, object.x, object.y, object.w, object.props.returnTo]),
+  [['ferry_landing', 272, 832, 160, 'luoxia_town']],
+  'tianjian_sect: ferry landing retains its position, width and return town');
+  same(map.objects.filter(object => object.type === 'seclusion').map(object =>
+    [object.name, object.x, object.y, object.props.mode, object.props.reqRealm]),
+  [['sect_seclusion', 2864, 768, 'sect', 'foundation']],
+  'tianjian_sect: sect seclusion retains its position, mode and realm requirement');
+  same(map.objects.filter(object => object.name === 'goal_east'), [],
+    'tianjian_sect: the scene-only east goal does not introduce a gameplay object');
+  same(map.spawns, [], 'tianjian_sect: no monster spawns are introduced');
+  same(map.hidden, [], 'tianjian_sect: no hidden controllers are introduced');
+  same(map.objects.filter(object => ['gather', 'chest', 'hidden', 'spawn', 'flyZone', 'spawnGate'].includes(object.type)), [],
+    'tianjian_sect: no gather, chest, hidden, spawn, flying zone or spawn gate objects are introduced');
+  eq(f.tilemaps, 0, 'tianjian_sect: GSB skips the legacy tilemap path');
+  same(f.displays.filter(object => object.kind !== 'zone').map(object => [object.kind, object.key]),
+    [['image', `gsb_${sceneId}_background`], ['image', `gsb_${sceneId}_playable`]],
+    'tianjian_sect: GSB draws background and playable art without legacy terrain or climbs');
+  const legacyLayers = tiledMap.layers.filter(layer => layer.type === 'tilelayer' && ['ground', 'oneway'].includes(layer.name));
+  same(legacyLayers.map(layer => layer.name), ['ground', 'oneway'], 'tianjian_sect: both legacy collision layers are present');
+  ok(legacyLayers.every(layer => layer.data?.length === tiledMap.width * tiledMap.height && layer.data.every(gid => gid === 0)),
+    'tianjian_sect: checked-in legacy collision layers are fully cleared');
+  eq(JSON.stringify(data), dataBefore, 'tianjian_sect: building leaves the cached scene-data input unchanged');
+  eq(JSON.stringify(tiledMap), mapBefore, 'tianjian_sect: building leaves the Tiled map input unchanged');
+}
+
+// Taixu's temple retains its ferry, two NPCs and three approved climbables.
+function testTaixuTempleGsb() {
+  const sceneId = 'taixu_temple_gsb_v1', revision = 'taixu-final-001';
+  const data = clone(taixuSceneData), tiledMap = clone(taixuTiledMap);
+  const f = fixture(null, false), dataBefore = JSON.stringify(data), mapBefore = JSON.stringify(tiledMap);
+  f.cache.clear(); f.cache.set(`gsb_${sceneId}_data`, data);
+  f.textures.add(`gsb_${sceneId}_background`); f.textures.add(`gsb_${sceneId}_playable`);
+  const map = buildTiledMap(f.scene, tiledMap, 'tiles');
+  eq(map.gsbScene, sceneId, 'taixu_temple: checked-in map enables its GSB scene');
+  eq(tiledMap.properties.find(property => property.name === 'gsbScene')?.value,
+    sceneId, 'taixu_temple: map binds the approved GSB scene');
+  eq(tiledMap.properties.find(property => property.name === 'gsbGeometryRevision')?.value,
+    revision, 'taixu_temple: map binds the approved geometry revision');
+  eq(data.geometryRevision, revision, 'taixu_temple: scene-data has the approved geometry revision');
+  same([map.width, map.height], [1280, 640], 'taixu_temple: logical world dimensions match the approved scene');
+  same([tiledMap.width, tiledMap.height], [40, 20], 'taixu_temple: checked-in tile grid is 40 x 20');
+  same([tiledMap.tilewidth, tiledMap.tileheight], [32, 32], 'taixu_temple: checked-in tiles are 32 x 32');
+  same([tiledMap.width * tiledMap.tilewidth, tiledMap.height * tiledMap.tileheight], [map.width, map.height],
+    'taixu_temple: checked-in tile grid matches logical world dimensions');
+  same(f.groups.map(group => group.children.length), [3, 3], 'taixu_temple: three solids and three one-way bodies are built');
+  same(data.surfaces.filter(surface => surface.support === 'solid').map(surface => surface.id),
+    ['s_dock', 's_envoy', 's_elder'],
+    'taixu_temple: all three approved solid surfaces are preserved');
+  same(data.surfaces.filter(surface => surface.support === 'one-way').map(surface => surface.id),
+    ['s_west', 's_middle', 's_high'],
+    'taixu_temple: all three approved one-way surfaces are preserved');
+  for (const surface of data.surfaces) {
+    const left = Math.min(...surface.polyline.map(point => point[0]));
+    const right = Math.max(...surface.polyline.map(point => point[0]));
+    const bodies = f.groups[surface.support === 'one-way' ? 1 : 0].children.map(rectangle);
+    ok(bodies.some(body => body.y === surface.polyline[0][1] && body.x <= left && body.x + body.width >= right),
+      `taixu_temple: ${surface.id} retains its full landing span and exact top edge`);
+  }
+  ok(f.groups[1].children.every(object => object.body?.checkCollision.up &&
+    !object.body.checkCollision.down && !object.body.checkCollision.left && !object.body.checkCollision.right),
+    'taixu_temple: all one-way bodies only collide on top');
+  ok(f.groups[0].children.every(object => object.body?.checkCollision.up &&
+    object.body.checkCollision.down && object.body.checkCollision.left && object.body.checkCollision.right),
+    'taixu_temple: solid bodies keep all collision directions');
+  same(map.spawn, { x: 224, y: 512 }, 'taixu_temple: player start is preserved');
+  eq(map.ropes.length, 3, 'taixu_temple: one rope and both ladders are preserved');
+  same(data.climbs.map(climb => [climb.id, climb.kind]), [
+    ['c_ladder_5', 'ladder'], ['c_rope_25', 'rope'], ['c_ladder_31', 'ladder'],
+  ], 'taixu_temple: all three approved climbs keep their identities and kinds');
+  same(map.ropes.map(rope => [rope.kind, rope.x, rope.top, rope.bottom, rope.halfW]),
+    data.climbs.map(climb => {
+      const width = Math.max(...climb.corridor.map(point => point[0])) - Math.min(...climb.corridor.map(point => point[0]));
+      return [climb.kind, climb.ends.end.position[0], climb.ends.end.position[1], climb.ends.start.position[1],
+        climb.kind === 'ladder' ? Math.max(12, width / 2) : FEEL.ropeGrabRangeX];
+    }), 'taixu_temple: rope and ladder geometry follows the approved climbs');
+  same(map.ropes, [
+    { kind: 'ladder', x: 176, top: 384, bottom: 512, halfW: 18 },
+    { kind: 'rope', x: 816, top: 352, bottom: 512, halfW: 18 },
+    { kind: 'ladder', x: 1008, top: 224, bottom: 352, halfW: 18 },
+  ], 'taixu_temple: all climbables keep their exact geometry, patched ladder centers and half-widths');
+  same(map.objects.filter(object => object.type === 'npc').map(object =>
+    [object.name, object.x, object.y, object.props.npc]), [
+    ['taixu_envoy', 464, 576, 'taixu_envoy'],
+    ['taixu_elder', 976, 512, 'taixu_elder'],
+  ], 'taixu_temple: both named NPCs keep their positions and identities');
+  same(map.objects.filter(object => object.type === 'npc').map(object =>
+    [object.name, object.x, object.y, object.props.npc]),
+  data.points.filter(point => point.type === 'npc').map(point =>
+    [point.id, ...point.position, point.properties?.npc]),
+  'taixu_temple: NPC positions and identities match scene-data points');
+  same(map.objects.filter(object => object.type === 'ferry').map(object =>
+    [object.name, object.x, object.y, object.w, object.props.returnTo]),
+  [['ferry_landing', 176, 512, 160, 'luoxia_town']],
+  'taixu_temple: ferry landing retains its position, width and return town');
+  same(map.objects.filter(object => object.name === 'goal_east'), [],
+    'taixu_temple: the scene-only east goal does not introduce a gameplay object');
+  same(map.spawns, [], 'taixu_temple: no monster spawns are introduced');
+  same(map.hidden, [], 'taixu_temple: no hidden controllers are introduced');
+  same(map.spawnGates, [], 'taixu_temple: no spawn gates are introduced');
+  same(map.objects.filter(object => !['npc', 'ferry'].includes(object.type)), [],
+    'taixu_temple: no additional gameplay objects are introduced');
+  eq(f.tilemaps, 0, 'taixu_temple: GSB skips the legacy tilemap path');
+  same(f.displays.filter(object => object.kind !== 'zone').map(object => [object.kind, object.key]),
+    [['image', `gsb_${sceneId}_background`], ['image', `gsb_${sceneId}_playable`]],
+    'taixu_temple: GSB draws background and playable art without legacy terrain or climbs');
+  const legacyLayers = tiledMap.layers.filter(layer => layer.type === 'tilelayer' && ['ground', 'oneway'].includes(layer.name));
+  same(legacyLayers.map(layer => layer.name), ['ground', 'oneway'], 'taixu_temple: both legacy collision layers are present');
+  ok(legacyLayers.every(layer => layer.data?.length === tiledMap.width * tiledMap.height && layer.data.every(gid => gid === 0)),
+    'taixu_temple: checked-in legacy collision layers are fully cleared');
+  eq(JSON.stringify(data), dataBefore, 'taixu_temple: building leaves the cached scene-data input unchanged');
+  eq(JSON.stringify(tiledMap), mapBefore, 'taixu_temple: building leaves the Tiled map input unchanged');
+}
+testTaixuTempleGsb();
 
 console.log(JSON.stringify({ suite: 'gsb-map', passed: true, assertions }));
