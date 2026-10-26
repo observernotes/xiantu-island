@@ -1,0 +1,85 @@
+{
+ "atlas": "prop_enc_seal",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  48,
+  48
+ ],
+ "blend": "NORMAL",
+ "kind": "prop",
+ "note": "程序化占位；key 名待天机阁确认。土/水/木三枚机关，共用 atlas。原点 (0.5,1) 为石台底边。enc_seal_earth/water/wood 分别定格 earth/water/wood_idle；按正确顺序播对应 on，一次结束定格该 on_04。按错三种共播 wrong（通用石台朱红叉符，不保留元素外形），结束由程序关闭洞府；不扣气血。土/水/木描边 #5A3E22/#2678C8/#2E5A2A；朱红错误闪描边 #7A2A14，每帧最多3颗光点。",
+ "anims": [
+  {
+   "key": "prop_enc_seal_earth_idle",
+   "frames": [
+    "prop_enc_seal_earth_idle_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  },
+  {
+   "key": "prop_enc_seal_earth_on",
+   "frames": [
+    "prop_enc_seal_earth_on_01",
+    "prop_enc_seal_earth_on_02",
+    "prop_enc_seal_earth_on_03",
+    "prop_enc_seal_earth_on_04"
+   ],
+   "frameRate": 8,
+   "repeat": 0
+  },
+  {
+   "key": "prop_enc_seal_water_idle",
+   "frames": [
+    "prop_enc_seal_water_idle_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  },
+  {
+   "key": "prop_enc_seal_water_on",
+   "frames": [
+    "prop_enc_seal_water_on_01",
+    "prop_enc_seal_water_on_02",
+    "prop_enc_seal_water_on_03",
+    "prop_enc_seal_water_on_04"
+   ],
+   "frameRate": 8,
+   "repeat": 0
+  },
+  {
+   "key": "prop_enc_seal_wood_idle",
+   "frames": [
+    "prop_enc_seal_wood_idle_01"
+   ],
+   "frameRate": 1,
+   "repeat": 0
+  },
+  {
+   "key": "prop_enc_seal_wood_on",
+   "frames": [
+    "prop_enc_seal_wood_on_01",
+    "prop_enc_seal_wood_on_02",
+    "prop_enc_seal_wood_on_03",
+    "prop_enc_seal_wood_on_04"
+   ],
+   "frameRate": 8,
+   "repeat": 0
+  },
+  {
+   "key": "prop_enc_seal_wrong",
+   "frames": [
+    "prop_enc_seal_wrong_01",
+    "prop_enc_seal_wrong_02",
+    "prop_enc_seal_wrong_03",
+    "prop_enc_seal_wrong_04"
+   ],
+   "frameRate": 10,
+   "repeat": 0
+  }
+ ]
+}

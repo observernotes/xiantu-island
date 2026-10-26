@@ -1,0 +1,34 @@
+{
+ "atlas": "fx_breakthrough_fail",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  192,
+  256
+ ],
+ "anims": [
+  {
+   "key": "fx_breakthrough_fail_play",
+   "frames": [
+    "fx_breakthrough_fail_play_01",
+    "fx_breakthrough_fail_play_02",
+    "fx_breakthrough_fail_play_03",
+    "fx_breakthrough_fail_play_04",
+    "fx_breakthrough_fail_play_05",
+    "fx_breakthrough_fail_play_06",
+    "fx_breakthrough_fail_play_07",
+    "fx_breakthrough_fail_play_08",
+    "fx_breakthrough_fail_play_09",
+    "fx_breakthrough_fail_play_10"
+   ],
+   "frameRate": 8,
+   "repeat": 0
+  }
+ ],
+ "blend": "NORMAL",
+ "note": "突破失败：放在主角脚底、depth 高于主角，10 帧 8fps = 1.25s。第 4 帧光柱裂开、第 5 帧起碎散，配合震屏和画面发灰。",
+ "kind": "fx"
+}
