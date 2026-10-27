@@ -1,0 +1,3163 @@
+{
+  "schemaVersion": "1.0",
+  "assetVersion": "luoxia_outskirts_2_gsb_v1",
+  "geometryRevision": "luoxia2-final-001",
+  "actorParameterRevision": "xiantu-feel-base100-20261027",
+  "engineRevision": "gsb-aabb-feel-60hz-luoxia2-001",
+  "space": {
+    "origin": "top-left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "units": "world-pixel",
+    "logicalWidth": 3520,
+    "logicalHeight": 1152,
+    "sourceTranslation": [
+      0,
+      192
+    ]
+  },
+  "assets": [
+    {
+      "id": "asset_background",
+      "role": "background",
+      "path": "background.png",
+      "pixelWidth": 3520,
+      "pixelHeight": 1152,
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "sourceMaster": "work/generated/master-refined-006.png"
+    },
+    {
+      "id": "asset_playable",
+      "role": "playable",
+      "path": "playable.png",
+      "pixelWidth": 3520,
+      "pixelHeight": 1152,
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "sourceMaster": "work/generated/master-refined-006.png"
+    }
+  ],
+  "foreground": {
+    "status": "not-applicable",
+    "reason": "No character-front occluders. Attached cloth, gate, rope and gather sprites stay in playable behind actor."
+  },
+  "sceneData": {
+    "path": "scene-data.json",
+    "sha256": "5a8ee2aeeb822cae47d485c472a01006713fe51824f5fb31cab75b8078666fa5"
+  },
+  "composition": {
+    "order": [
+      "background",
+      "playable",
+      "actor"
+    ],
+    "method": "RGBA alpha composite",
+    "sceneRecompositionExact": true
+  },
+  "diagnostics": {
+    "maskPalette": {
+      "walk": [
+        150,
+        245,
+        160,
+        255
+      ],
+      "stand": [
+        0,
+        200,
+        80,
+        255
+      ],
+      "rope": [
+        0,
+        190,
+        230,
+        255
+      ],
+      "jump": [
+        255,
+        180,
+        0,
+        255
+      ],
+      "drop": [
+        170,
+        80,
+        225,
+        255
+      ],
+      "point": [
+        255,
+        70,
+        160,
+        255
+      ]
+    },
+    "rasterizationOrder": [
+      "walk",
+      "stand",
+      "rope",
+      "jump",
+      "drop",
+      "point"
+    ],
+    "regionIdIndex": null,
+    "geometryRevision": "luoxia2-final-001"
+  },
+  "validation": {
+    "status": "verified",
+    "report": "validation-report.md",
+    "routeStatuses": {
+      "route_main": "verified",
+      "route_return": "verified",
+      "route_gather": "verified",
+      "route_all_ropes": "verified"
+    },
+    "localEntry": "index.html",
+    "leadReview": "pending",
+    "productionIntegration": "forbidden-until-owner-PASS"
+  },
+  "generation": {
+    "mode": "built-in image_gen",
+    "prompts": "work/prompts/",
+    "process": "work/stage-log.md",
+    "rasterArtSource": "AI generated; crop, registration and compositing only in local scripts"
+  },
+  "files": {
+    "DELIVERED.md": {
+      "role": "delivery-declaration",
+      "bytes": 1139,
+      "sha256": "c3b8d5074fd8cacdbce2476de410e907ec97ed65c6c3ca87fa74744103dcb9d4",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "README.md": {
+      "role": "local-start-instructions",
+      "bytes": 1185,
+      "sha256": "3f34578037cee671b060b4fa10c5fc06a16b75499d6bcf853586686664761020",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "action-mask.png": {
+      "role": "pure-semantic-mask",
+      "bytes": 19021,
+      "sha256": "6d5b6dc31e50f0299bf574b2e3cddc237b6a4da00dffa795a8b5705e5f02305c",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 3520,
+      "pixelHeight": 1152,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ]
+    },
+    "action-overlay.png": {
+      "role": "action-diagnostic",
+      "bytes": 6722269,
+      "sha256": "fb25bc067208ca349df168ae7522b02e90741c0cf46fb63270a9bbbc6aca6362",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 3520,
+      "pixelHeight": 1152,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ]
+    },
+    "background.png": {
+      "role": "background",
+      "bytes": 6753687,
+      "sha256": "f2e92d3b3b2e984b9b9cbb8b906372a8d0b57f68e0d3438bfa5ae3de93527968",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 3520,
+      "pixelHeight": 1152,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    "collision-overlay.png": {
+      "role": "collision-diagnostic",
+      "bytes": 6696523,
+      "sha256": "e0a0003551fda45517c489cf2928724a065f21b016e4989b3a8da37cb8994cc1",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 3520,
+      "pixelHeight": 1152,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ]
+    },
+    "diagnostics-metadata.json": {
+      "role": "diagnostic-version-binding",
+      "bytes": 1363,
+      "sha256": "6dfc1d8b0549e21216cdb05b6e4d9490785648cd45cc3ead37101f4a92614dc8",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "index.html": {
+      "role": "local-test-entry",
+      "bytes": 530,
+      "sha256": "6a8182c539009dd8b76520d5dd95da1c688659c68c45839a27a07843d6c08f2c",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "playable.png": {
+      "role": "transparent-playable",
+      "bytes": 1268240,
+      "sha256": "5fa71da5f3b7fcf1a3d2e01bf0a7c800960ab084902d838fdcb54316a80607a1",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 3520,
+      "pixelHeight": 1152,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    "polished.lock": {
+      "role": "process-evidence",
+      "bytes": 186,
+      "sha256": "adad604fbe12e12af1c0b807cf81589ac62446a21b0c16003b918d8d94c36689",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "scene-data.json": {
+      "role": "authoritative-geometry",
+      "bytes": 65306,
+      "sha256": "5a8ee2aeeb822cae47d485c472a01006713fe51824f5fb31cab75b8078666fa5",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "scene.png": {
+      "role": "composited-scene",
+      "bytes": 6786378,
+      "sha256": "14e96fb40b530f0f9d2bdd131684c59623e25d5e55e25f5a8aae68ed92af246d",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 3520,
+      "pixelHeight": 1152,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ]
+    },
+    "validation-report.md": {
+      "role": "validation-report",
+      "bytes": 11797,
+      "sha256": "a625aad79bd1692c5aa1615b424c21b79bd744c458aa1d2c754b7f93caebda5b",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/_backup/丹青阁.before.md": {
+      "role": "process-evidence",
+      "bytes": 770,
+      "sha256": "df1c5049f0a53ee45bde1a4d904e04ac39bab44e1e7cdc5c55e84ed96dfd84ff",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/_backup/丹青阁.pre-delivery.md": {
+      "role": "process-evidence",
+      "bytes": 758,
+      "sha256": "c447005822dd9ff944558cf3fbcb9afe4b573446e3761a7a0a0436ee89017b11",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/action-layout.png": {
+      "role": "process-evidence",
+      "bytes": 34844,
+      "sha256": "2e18ff37a5e4f4caaf7def296a5ea58883e4d8e20ccfdf11a054c233d38a62c9",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 3520,
+      "pixelHeight": 1152,
+      "mode": "RGB"
+    },
+    "work/action-layout.svg": {
+      "role": "process-evidence",
+      "bytes": 4228,
+      "sha256": "ce68f9c972c3d6b2ee7d02228d3daad73567f8b3e88e6bd32847e2eef87c66be",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/artcheck-before.log": {
+      "role": "process-evidence",
+      "bytes": 948,
+      "sha256": "971ec2b5f561e9fc298167f5443cb1bb9bf08387c5e488c43dfd938ff1f09e5c",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/artcheck-final.log": {
+      "role": "process-evidence",
+      "bytes": 948,
+      "sha256": "971ec2b5f561e9fc298167f5443cb1bb9bf08387c5e488c43dfd938ff1f09e5c",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/audit_visuals.py": {
+      "role": "process-evidence",
+      "bytes": 4470,
+      "sha256": "61179f4afee6d259931b3c36e6d0a7b565931005a250304aea52db326ed04c34",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/bind-runtime.mjs": {
+      "role": "process-evidence",
+      "bytes": 4931,
+      "sha256": "e14d4683d8cd8a41a2489035cf6be7fc001aa466e94f9767bcf6fd42bcba8ecd",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/browser-check.mjs": {
+      "role": "process-evidence",
+      "bytes": 9165,
+      "sha256": "0904a218e38f76a3cd0ed6014eeca01a5c6d8f61bbf03659a78764b4fb4aaf70",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/browser-contact-sheets.py": {
+      "role": "process-evidence",
+      "bytes": 1395,
+      "sha256": "4d543a935cd2c07861de1603d927ed183b2b10a3e4b62b3ce67e33feb86a7963",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/browser-footline-review-final.png": {
+      "role": "process-evidence",
+      "bytes": 1102455,
+      "sha256": "a68abe6134b2cd4f1b46f946083876d08d5d84c9337cb10b3d0a96b4fee97eec",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 738,
+      "mode": "RGB"
+    },
+    "work/browser-footline-review-prebind.png": {
+      "role": "process-evidence",
+      "bytes": 1081011,
+      "sha256": "d8e9dc22dfa0ed3ce7587148e45c46cd5b2657d22be330aef1e7a0475949b490",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 738,
+      "mode": "RGB"
+    },
+    "work/browser-rope-ends-review-final.png": {
+      "role": "process-evidence",
+      "bytes": 1480844,
+      "sha256": "14d20d5c4c0a9c67babab81f6c54cc8810c969581f923b07157fbca0c3cc0a30",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 984,
+      "mode": "RGB"
+    },
+    "work/browser-rope-ends-review-prebind.png": {
+      "role": "process-evidence",
+      "bytes": 1529306,
+      "sha256": "1806c4b961d903e3323efc3450a91ec50c56132e979d4bf0485f2a930e021dae",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 984,
+      "mode": "RGB"
+    },
+    "work/build_layout.py": {
+      "role": "process-evidence",
+      "bytes": 16538,
+      "sha256": "47056452852c368c28e628a8721e8ffee8afcc2fc432569debc282368720ffc6",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/build_manifest.py": {
+      "role": "process-evidence",
+      "bytes": 3379,
+      "sha256": "af72cec9d11ec531634763c8803564087b6d340e2e1e2f2edec1bd62a77466a9",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/check_delivery.py": {
+      "role": "process-evidence",
+      "bytes": 6115,
+      "sha256": "76b2446a5d1ecacc8c2f751fa26c8aca2e0422820485cba77405eed090f6a4ab",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/compose_art.py": {
+      "role": "process-evidence",
+      "bytes": 3269,
+      "sha256": "eef805b7e50ecdd9786244c8e6ef5472c78c83975636ef37f36d5c9fdd27e4d3",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/compose_refined.py": {
+      "role": "process-evidence",
+      "bytes": 4175,
+      "sha256": "598a3cf9c4611b8dec6046889e35405db9b538202475dcbdf6d336ec13ba94cb",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/delivery-check.json": {
+      "role": "process-evidence",
+      "bytes": 4019,
+      "sha256": "cebe0bdd4aaeede0a2de767680c700f504a3721548dbf33624a95355e30ac297",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/external-live-log-proof.json": {
+      "role": "process-evidence",
+      "bytes": 1207,
+      "sha256": "982e6fda0463fd0ca46d5c69752824e800b5d2d46114d598be54f3dcb582530c",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/external-public-copy-observation.json": {
+      "role": "process-evidence",
+      "bytes": 4753,
+      "sha256": "96ab8034e4f9717cad82a7a77c1e5035607ec9830cba614cf19e1b4641ff20e5",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/final-runtime-summary.md": {
+      "role": "process-evidence",
+      "bytes": 2491,
+      "sha256": "5ddf5b9911f2b2ffcf5f94ca282b7665d15d6c9d7e5ede72f2cae12f7e19926e",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/final-runtime-verification.json": {
+      "role": "process-evidence",
+      "bytes": 1632,
+      "sha256": "e3bfddc358f71583de6f8e4f7c8a156cb2ecf8fc8301eea399686b9ce44b8c1e",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/finalize_layers.py": {
+      "role": "process-evidence",
+      "bytes": 3063,
+      "sha256": "77fd3d0cb724b8aa373b5e43585fa0d92ec3a26a447e53952790376fdb4e8df3",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/generated/background-003-normalized.png": {
+      "role": "process-evidence",
+      "bytes": 5832835,
+      "sha256": "a6804b812b2b36f8233ee9b7788c5bc344c1caffb3e2c74a65b12e7897075c86",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 3520,
+      "pixelHeight": 1152,
+      "mode": "RGB"
+    },
+    "work/generated/background-003.png": {
+      "role": "process-evidence",
+      "bytes": 2854245,
+      "sha256": "f7cd11af9234d05cebc8242275547229074dc9dd8d1a12de253ef41b0ed1b196",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 2170,
+      "pixelHeight": 725,
+      "mode": "RGB"
+    },
+    "work/generated/extracted-002-normalized.png": {
+      "role": "process-evidence",
+      "bytes": 3990211,
+      "sha256": "a6435cdad38c90570865a595f9c69bc35d9ba4b7e44bea2aa79a4ea9a90030f6",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 3520,
+      "pixelHeight": 1152,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ]
+    },
+    "work/generated/extracted-002.png": {
+      "role": "process-evidence",
+      "bytes": 1883026,
+      "sha256": "0f670c831abdd50ee4340497efc473f0a930cdc38c58a6caf9cc9b03de8e4045",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 2171,
+      "pixelHeight": 724,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ]
+    },
+    "work/generated/extraction-coordinate-audit.png": {
+      "role": "process-evidence",
+      "bytes": 3702305,
+      "sha256": "611724282e783eda5674d01581eb6c25139aeffaa42fc6396325363a627d7f97",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 3520,
+      "pixelHeight": 1152,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        102,
+        255
+      ]
+    },
+    "work/generated/master-001-normalized.png": {
+      "role": "process-evidence",
+      "bytes": 6236457,
+      "sha256": "d2a3642fec7389db2e5ffaae2b43a26e5e665f590b0d7cf2dd2467b60d8bf3aa",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 3520,
+      "pixelHeight": 1152,
+      "mode": "RGB"
+    },
+    "work/generated/master-001.png": {
+      "role": "process-evidence",
+      "bytes": 3066468,
+      "sha256": "e46202c54eaca76c1b211fe3a2c31f31315e8969d79fd44682b304db0df60560",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 2191,
+      "pixelHeight": 718,
+      "mode": "RGB"
+    },
+    "work/generated/master-refined-006.png": {
+      "role": "process-evidence",
+      "bytes": 6786378,
+      "sha256": "14e96fb40b530f0f9d2bdd131684c59623e25d5e55e25f5a8aae68ed92af246d",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 3520,
+      "pixelHeight": 1152,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ]
+    },
+    "work/generated/refine-station-target.png": {
+      "role": "process-evidence",
+      "bytes": 86634,
+      "sha256": "45485f34eb972c76afeb85aa6df8304fc4f34ceeb9f0f2c6cbbab960685ba3d9",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 480,
+      "pixelHeight": 91,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ]
+    },
+    "work/generated/refine-timber-target.png": {
+      "role": "process-evidence",
+      "bytes": 83110,
+      "sha256": "bce25d6818c3b62798b25ff7bce6b8b7f0e0690b0b2b81609c528e07233aae51",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 544,
+      "pixelHeight": 80,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ]
+    },
+    "work/generated/refined-background.png": {
+      "role": "process-evidence",
+      "bytes": 6753687,
+      "sha256": "f2e92d3b3b2e984b9b9cbb8b906372a8d0b57f68e0d3438bfa5ae3de93527968",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 3520,
+      "pixelHeight": 1152,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ]
+    },
+    "work/generated/refined-playable.png": {
+      "role": "process-evidence",
+      "bytes": 1268240,
+      "sha256": "5fa71da5f3b7fcf1a3d2e01bf0a7c800960ab084902d838fdcb54316a80607a1",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 3520,
+      "pixelHeight": 1152,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ]
+    },
+    "work/generated/source-board-audit.png": {
+      "role": "process-evidence",
+      "bytes": 809722,
+      "sha256": "79ae33e3b2cd135ce0b71e16c2e382cea6b8919d343ab0ebf4cacc093226262e",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1200,
+      "pixelHeight": 1300,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ]
+    },
+    "work/generated/source-rope.png": {
+      "role": "process-evidence",
+      "bytes": 7158,
+      "sha256": "0acbcab60e84a5182aa775959737a514155283e3cfab53264c8b17c87ef3e35f",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 14,
+      "pixelHeight": 214,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        185,
+        255
+      ]
+    },
+    "work/generated/station-refined-005.png": {
+      "role": "process-evidence",
+      "bytes": 558138,
+      "sha256": "46b9737eea212c5ea175d1705383d7d31c065f374a44fa0316e7c70e48a2b9ac",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 2172,
+      "pixelHeight": 724,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ]
+    },
+    "work/generated/structure-background.png": {
+      "role": "process-evidence",
+      "bytes": 6753687,
+      "sha256": "f2e92d3b3b2e984b9b9cbb8b906372a8d0b57f68e0d3438bfa5ae3de93527968",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 3520,
+      "pixelHeight": 1152,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ]
+    },
+    "work/generated/structure-master.png": {
+      "role": "process-evidence",
+      "bytes": 6754030,
+      "sha256": "b0f1907b4d8c1e25fffbf4b3015aabc9d834c8e0e7dc608b3770edbacdfdd8e1",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 3520,
+      "pixelHeight": 1152,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ]
+    },
+    "work/generated/structure-playable.png": {
+      "role": "process-evidence",
+      "bytes": 1226389,
+      "sha256": "e99992e46be7debeefaba1f43e4f9d29c37e3c7375eab4babc1aec76c9ff7e37",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 3520,
+      "pixelHeight": 1152,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ]
+    },
+    "work/generated/timber-refined-004.png": {
+      "role": "process-evidence",
+      "bytes": 569049,
+      "sha256": "04463822355b317ba4fa7a9fab8ea9eb40c3236692599d693f2f8de107215f35",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 2169,
+      "pixelHeight": 725,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ]
+    },
+    "work/geometry-audit/all-bearing-samples.png": {
+      "role": "process-evidence",
+      "bytes": 1233330,
+      "sha256": "5bd01f2951b03ff5973f3615217030aaa1c2f686f9e1a8c3547ef05d57eed67d",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1150,
+      "pixelHeight": 1650,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/alpha-dark.png": {
+      "role": "process-evidence",
+      "bytes": 1241316,
+      "sha256": "d247059807e78b9228e819751c4bfd2e20f21584df67510cb2582c6725ec7e34",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 3520,
+      "pixelHeight": 1152,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ]
+    },
+    "work/geometry-audit/alpha-light.png": {
+      "role": "process-evidence",
+      "bytes": 1249649,
+      "sha256": "ff23ddb88e143cbd6d535e76af646f9bb73be5e0d8a63635836192c68647f4a7",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 3520,
+      "pixelHeight": 1152,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ]
+    },
+    "work/geometry-audit/bottom-1.png": {
+      "role": "process-evidence",
+      "bytes": 429623,
+      "sha256": "f82349bb3f66b95041b70776d65a017049036a1b8fa295cb34e73242b377bd2a",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1250,
+      "pixelHeight": 162,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ]
+    },
+    "work/geometry-audit/bottom-2.png": {
+      "role": "process-evidence",
+      "bytes": 397224,
+      "sha256": "787c25a398c3e4f01533105bd909c3b7247de30ec88487437688be02b7e230c0",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1180,
+      "pixelHeight": 162,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ]
+    },
+    "work/geometry-audit/bottom-3.png": {
+      "role": "process-evidence",
+      "bytes": 405224,
+      "sha256": "f0bad4f748db9c62988536c1dd13ea4a0ca66a36385a81e612019e6ea3d83775",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1250,
+      "pixelHeight": 162,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ]
+    },
+    "work/geometry-audit/bottom-full-width.png": {
+      "role": "process-evidence",
+      "bytes": 964887,
+      "sha256": "81d024a7cb617bad37e63b1215aaeb9e53fb1b82412c562b98ee72d4d3462e38",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 3520,
+      "pixelHeight": 132,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ]
+    },
+    "work/geometry-audit/s_bridge_high-full.png": {
+      "role": "process-evidence",
+      "bytes": 58214,
+      "sha256": "6fafe1c4f3fe419db3bef49bd6eafc61918c53f496392a79ffcf50061019b75e",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 352,
+      "pixelHeight": 106,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_bridge_high-x1450.png": {
+      "role": "process-evidence",
+      "bytes": 21359,
+      "sha256": "560d4eedde6d6c76dda8131ea7fad21c4fc2d56228900a38372ecf7876f9fcda",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_bridge_high-x1583.png": {
+      "role": "process-evidence",
+      "bytes": 19042,
+      "sha256": "773d428b441619721e66981c9c959ea9a64f40e3f173a592c46459264b39869e",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_bridge_high-x1584.png": {
+      "role": "process-evidence",
+      "bytes": 19038,
+      "sha256": "0dcdfbd9fb777bddc2716468ae37289ddca23870cefe2838811a895aef6b91f9",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_bridge_high-x1672.png": {
+      "role": "process-evidence",
+      "bytes": 18878,
+      "sha256": "9de47472e2433fec712447e6fe901a3f69a3a7e28bb42ab5fa21336021d20af9",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_bridge_high-x1678.png": {
+      "role": "process-evidence",
+      "bytes": 18996,
+      "sha256": "00deecbae18a933f7d0d3088226d0b1c0a246452018fafef391bc2857d8f5c03",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_bridge_high-x1708.png": {
+      "role": "process-evidence",
+      "bytes": 19057,
+      "sha256": "8d1d5849f1bdfe8391219535557838045e8cfa2b6355cf760e68d1ae3251f836",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_bridge_low-full.png": {
+      "role": "process-evidence",
+      "bytes": 114259,
+      "sha256": "06cb3e82e629444d696a1fdf454f25157665f7b3e023a325e7954902bdc76461",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 608,
+      "pixelHeight": 106,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_bridge_low-x1161.png": {
+      "role": "process-evidence",
+      "bytes": 22919,
+      "sha256": "c80e9acb7ec3a45f116dfce2fd01cd260f125d02d944fd7471ef914d07e183e8",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_bridge_low-x1168.png": {
+      "role": "process-evidence",
+      "bytes": 22744,
+      "sha256": "91c6c00033f0275167e79d4ab9fcb5278590e5a633ec39ff582cc5a68f4f65d5",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_bridge_low-x1240.png": {
+      "role": "process-evidence",
+      "bytes": 22272,
+      "sha256": "d39a5a66f6dc0013afc4c676e0551027997e6407a7aad17ac40dbaa41046631f",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_bridge_low-x1328.png": {
+      "role": "process-evidence",
+      "bytes": 21905,
+      "sha256": "7817cfab88f57f4ef72600521d2c30accb458ee76e5d5140477f30a4434545f1",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_bridge_low-x1392.png": {
+      "role": "process-evidence",
+      "bytes": 21292,
+      "sha256": "6f8cd49e9d41919729d3a1c3afacb3c980bfc9b700e912dd0dfa83da68587dcc",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_bridge_low-x1428.png": {
+      "role": "process-evidence",
+      "bytes": 22005,
+      "sha256": "007884df44b181e5dbee32e938390e7fb0b809effb22efa42136370ce468dc3d",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_bridge_mid-full.png": {
+      "role": "process-evidence",
+      "bytes": 101219,
+      "sha256": "e7b3848d70faa4dc9b30560d88c88f7404eef3984a5c8c562504d48d913acad4",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 608,
+      "pixelHeight": 106,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_bridge_mid-x1361.png": {
+      "role": "process-evidence",
+      "bytes": 18530,
+      "sha256": "83c305e1b9f63e62e3be060c22be88fa1fdf77df3461a96a418e2a5bcfa7d47f",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_bridge_mid-x1368.png": {
+      "role": "process-evidence",
+      "bytes": 18322,
+      "sha256": "fd00f967264f03ce32c216f098add824260426c4ae2c91f4d03e59f693883f2b",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_bridge_mid-x1447.png": {
+      "role": "process-evidence",
+      "bytes": 16941,
+      "sha256": "35dd6728704b25305a581f412931fe41ff527daee9b67306aea2b1e0900568b5",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_bridge_mid-x1456.png": {
+      "role": "process-evidence",
+      "bytes": 17154,
+      "sha256": "ae55ec3c80d696182f9cc0c51cc86b231c942b3ff521ff5b635fe135e7c9ef6e",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_bridge_mid-x1520.png": {
+      "role": "process-evidence",
+      "bytes": 18224,
+      "sha256": "01e61ac648c6547e5a37602bfed3817c6dbb73ddcff75708dad5e0ba1b0a4178",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_bridge_mid-x1741.png": {
+      "role": "process-evidence",
+      "bytes": 19040,
+      "sha256": "72b90f1cfc1fd8b15ced3ee0e5fbeb6d45d144a17f8b8ad65495d126de9be9c5",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_east_ground-full.png": {
+      "role": "process-evidence",
+      "bytes": 147024,
+      "sha256": "8988d4c1bf5d3a2aa5528da67b542ceeabba2fb4009b3292bc2a5cad0189d295",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 768,
+      "pixelHeight": 106,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_east_ground-x2844.png": {
+      "role": "process-evidence",
+      "bytes": 22928,
+      "sha256": "7070729c7fd55c0d42392530f638b6e3c81df786512d6c86f222e6f788c57a1e",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_east_ground-x2867.png": {
+      "role": "process-evidence",
+      "bytes": 23312,
+      "sha256": "226caacbe6c832165b1c6f76d7e958dd1c0a2891dcc010a56d886a1219c5ad50",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_east_ground-x2944.png": {
+      "role": "process-evidence",
+      "bytes": 24105,
+      "sha256": "f6cf2267c1aa142c96078e2dfe32a4c7baf70d0722d9e02c92719f3bda286a3d",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_east_ground-x3217.png": {
+      "role": "process-evidence",
+      "bytes": 22772,
+      "sha256": "8c1e829bb6ffca9adf8e377cf0fddc92e8e2f16faf2f22260ed9e406b93c331b",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_east_ground-x3228.png": {
+      "role": "process-evidence",
+      "bytes": 22661,
+      "sha256": "d4b8732c6d794f71fb0c364ba84a9e3b1a176ce42c3205c7a1e41dfc48fc0045",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_east_ground-x3402.png": {
+      "role": "process-evidence",
+      "bytes": 21817,
+      "sha256": "3e85354eaa2652590f989a71ae91a1eb1ad36578a9030e4979e1d718e254bd4d",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_east_high-full.png": {
+      "role": "process-evidence",
+      "bytes": 63461,
+      "sha256": "d557cadcd684b3956645e4131f96142ff0f9d12961ec62dc5f6bdfbd48cd4963",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 352,
+      "pixelHeight": 106,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_east_high-x2986.png": {
+      "role": "process-evidence",
+      "bytes": 22707,
+      "sha256": "824620ecb883f4832f1cb64870fa4b8adb195b20676a1b17660b4630851e0c45",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_east_high-x2999.png": {
+      "role": "process-evidence",
+      "bytes": 22968,
+      "sha256": "0d75af8652923ff7cc20735cb6e5bf2f86c6a4235c910e1458c986f2d69a793a",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_east_high-x3120.png": {
+      "role": "process-evidence",
+      "bytes": 21318,
+      "sha256": "2fccfef27b05a8942464d7e5e7403537dd0db3af11f82f3a80756dcfa93e8aa6",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_east_high-x3194.png": {
+      "role": "process-evidence",
+      "bytes": 21548,
+      "sha256": "803626e46ab82180406674994a408444c17c9011182eb0c643902356328b7aad",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_east_high-x3208.png": {
+      "role": "process-evidence",
+      "bytes": 21681,
+      "sha256": "71dec86b06239c59c9d17cbc82b626874e761b622f1f9e92b435b58b747a9fce",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_east_high-x3239.png": {
+      "role": "process-evidence",
+      "bytes": 21928,
+      "sha256": "fce44fc9422138a81196d4c15990e87e22d700ad9d596179a35e62e2043fcd6b",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_east_low-full.png": {
+      "role": "process-evidence",
+      "bytes": 93318,
+      "sha256": "82692ff93075e74efd61506f5b599d869e0f2ada8e8ab4c62749c365e11dd4a4",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 480,
+      "pixelHeight": 106,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_east_low-x2938.png": {
+      "role": "process-evidence",
+      "bytes": 22522,
+      "sha256": "41ad67ff8a29646caac861c31eed9bc3dfa3ad8a166aaf46fead2a6ff59963c6",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_east_low-x2955.png": {
+      "role": "process-evidence",
+      "bytes": 22408,
+      "sha256": "c42f5a4572bc9cf1da59b81ddbd5709a4e536d82cf8fbc9e61f107694f21c67f",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_east_low-x3000.png": {
+      "role": "process-evidence",
+      "bytes": 21586,
+      "sha256": "50776f829fe51669db87f3cef7ae3839b3a118e6c86270aaf30603b3cf8442be",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_east_low-x3120.png": {
+      "role": "process-evidence",
+      "bytes": 21619,
+      "sha256": "2c16b6c1f63fb3b6a9fa7c7215c20caa4d85211c77b384044487475024a70a1d",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_east_low-x3195.png": {
+      "role": "process-evidence",
+      "bytes": 22895,
+      "sha256": "59446b3fa87ae43fd93e56cdb3020dbceea85ae1847d7cf5b3c98d4b2365ae67",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_east_low-x3285.png": {
+      "role": "process-evidence",
+      "bytes": 23832,
+      "sha256": "ecf7efbdcf0f586532c5fba7e758d2028a6af7016e18465e4d942649f08e469c",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_field_high-full.png": {
+      "role": "process-evidence",
+      "bytes": 109435,
+      "sha256": "b93c0df3505e0fa7ffdcb2d8627ba7dd0bf37970600b66c101996f8d5de49cc6",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 608,
+      "pixelHeight": 106,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_field_high-x457.png": {
+      "role": "process-evidence",
+      "bytes": 22731,
+      "sha256": "034a3ffe7bcf61fd81740142328cb29250c9323694ed41c3fc85bc567bcf6fbf",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_field_high-x469.png": {
+      "role": "process-evidence",
+      "bytes": 22510,
+      "sha256": "66e158d81888af9a318c17b62440bd6565111aa9219dd93301b1f51f38e1b723",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_field_high-x688.png": {
+      "role": "process-evidence",
+      "bytes": 20413,
+      "sha256": "7747d7351eae8bbd72d23e4c53f30d0fe6ace1690f1f80f811ab9b91b3449836",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_field_high-x714.png": {
+      "role": "process-evidence",
+      "bytes": 20863,
+      "sha256": "bd4ff4a4739597eaab68f14d546faa2e4f335f5e88e93d5bff06b2cd028b89dc",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_field_high-x840.png": {
+      "role": "process-evidence",
+      "bytes": 20571,
+      "sha256": "53eee7b1cd03660d96db40763c9f520ceae9b419d7512886942b6d573a15295e",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_field_high-x904.png": {
+      "role": "process-evidence",
+      "bytes": 21142,
+      "sha256": "1f8027760c9804a864d31f28e70d1924593fc773a0e8a2ecfdfbcb50d929f71a",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_field_low-full.png": {
+      "role": "process-evidence",
+      "bytes": 103705,
+      "sha256": "b11bf4dbc899fbc30c30fa66aab7c2a0e1eea3eb5988d647c6c21d1b6d7da715",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 544,
+      "pixelHeight": 106,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_field_low-x193.png": {
+      "role": "process-evidence",
+      "bytes": 23158,
+      "sha256": "045977c8d596fcc46c5e2eba8f5b0c892478bd2315a3a2ba63a9646000bb1cdd",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_field_low-x264.png": {
+      "role": "process-evidence",
+      "bytes": 22200,
+      "sha256": "803273531327b0b18c819fd42b99e0e5101a38c819f6ccc07d991f154c500046",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_field_low-x383.png": {
+      "role": "process-evidence",
+      "bytes": 21878,
+      "sha256": "5b609dc5dc6fd8f56eb893bb97be3f6bb62066e7c9e28ac95fb47bd51fbf82ca",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_field_low-x400.png": {
+      "role": "process-evidence",
+      "bytes": 22049,
+      "sha256": "d2ae03f04c03f8a62cfd836d98f0f6400cfa17d3f6eb08aebd2e5e3836e2f222",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_field_low-x433.png": {
+      "role": "process-evidence",
+      "bytes": 22444,
+      "sha256": "e27c38c07aea3b1ed783235e9df65c93d52e8c505b890146a3ee4f50276541b6",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_field_low-x488.png": {
+      "role": "process-evidence",
+      "bytes": 22580,
+      "sha256": "cce12221857ceddf58f18a73577906ee78e33c206bfbcb3d95c9f3ddf1a8d196",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_mid_ground-full.png": {
+      "role": "process-evidence",
+      "bytes": 97139,
+      "sha256": "aff9c38a3ece125ebe02a113d3fea8c8dbc655f494462fdfdbeaff7c4aa25e62",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 512,
+      "pixelHeight": 106,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_mid_ground-x2301.png": {
+      "role": "process-evidence",
+      "bytes": 22557,
+      "sha256": "aa4c66a4b8904ea0bef41ebd43821ac0cde83fb0ac90fd160439ba435f5972d5",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_mid_ground-x2330.png": {
+      "role": "process-evidence",
+      "bytes": 23238,
+      "sha256": "fbd312fde31591090b472a52a4de77093504c469185b05a12610d29279672ba4",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_mid_ground-x2368.png": {
+      "role": "process-evidence",
+      "bytes": 23623,
+      "sha256": "5fb7753a32f68fef9ddbe22eb9d10c9a5114c7f0ce261b97e97833fabe9c7e7e",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_mid_ground-x2435.png": {
+      "role": "process-evidence",
+      "bytes": 22986,
+      "sha256": "71e936ee54cf008a424b00c9cd4ffc63df83c97b8781e919cfdf9616c29055e4",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_mid_ground-x2465.png": {
+      "role": "process-evidence",
+      "bytes": 22607,
+      "sha256": "9a298909d6d36452bdff922cacbd01e077712c5efa265df1fa83e07df1d3e156",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_mid_ground-x2660.png": {
+      "role": "process-evidence",
+      "bytes": 21003,
+      "sha256": "f0f1d9dd66258a5261f8ca4acf9ed4459a6f8cbfe57ca2e2c2bf3abe1882898a",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_mid_outpost-full.png": {
+      "role": "process-evidence",
+      "bytes": 66425,
+      "sha256": "d52e3267f36d116608f6428b08d19994ce3c31981efb387c1465cb00640f9d17",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 416,
+      "pixelHeight": 106,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_mid_outpost-x2354.png": {
+      "role": "process-evidence",
+      "bytes": 18937,
+      "sha256": "eb4d51750deaed5e29b07831b42f046f28c0c083f35791737681473d1b218229",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_mid_outpost-x2384.png": {
+      "role": "process-evidence",
+      "bytes": 19051,
+      "sha256": "02665ac47ebdbb858ae977e1efba92152fbc746d3693c20e9e18c8140c306203",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_mid_outpost-x2408.png": {
+      "role": "process-evidence",
+      "bytes": 18287,
+      "sha256": "8a53c884a877890531f5ca228519c2afa0531fef0a2febf91a8cd2fb6b8c7c32",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_mid_outpost-x2462.png": {
+      "role": "process-evidence",
+      "bytes": 18231,
+      "sha256": "d1b860b0c6901c67fd18a0305c9047d812c6db1db96cd60f4ea363f6ad15f5fa",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_mid_outpost-x2479.png": {
+      "role": "process-evidence",
+      "bytes": 18185,
+      "sha256": "ec6a42e1b7cf6d3c2c041f8fa6d485fc43e3ae62082cea5d02e58ef947b41b13",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_mid_outpost-x2639.png": {
+      "role": "process-evidence",
+      "bytes": 19477,
+      "sha256": "c8c084b0ade9ab0b9559d01b7e72cd1f522896af10b72c8d7b287267553f6f84",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_west_ground-full.png": {
+      "role": "process-evidence",
+      "bytes": 399112,
+      "sha256": "425da9b7246a40832d752e03770aaa3fe5275ef290d3f4c761137bbcb0e10b74",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 2240,
+      "pixelHeight": 98,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_west_ground-x1120.png": {
+      "role": "process-evidence",
+      "bytes": 23994,
+      "sha256": "1bbf6a4ffad359dfb2c2b7e21fbbece3c00a9869a393621c718148e9e3054d4b",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_west_ground-x1250.png": {
+      "role": "process-evidence",
+      "bytes": 23790,
+      "sha256": "f4b683742b3373398b8e8873c3c7b4370a1c5b9b6371cd70f752f6b5e2ff1fd8",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_west_ground-x1990.png": {
+      "role": "process-evidence",
+      "bytes": 23563,
+      "sha256": "5f89fff81752a101e4a2c9c3742df20d8b17b91daf0b10f2e99d0808b18f5f31",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_west_ground-x269.png": {
+      "role": "process-evidence",
+      "bytes": 24326,
+      "sha256": "5d65d9b17cd15973b30f225617b4daf592e906457114d9eb68ea45041c35e876",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_west_ground-x560.png": {
+      "role": "process-evidence",
+      "bytes": 24242,
+      "sha256": "2c834e050b5fbcc5f6cbe358fda2b326d460bbc1e709a7748a611ff08bd14ebc",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_west_ground-x695.png": {
+      "role": "process-evidence",
+      "bytes": 23963,
+      "sha256": "6fcc7e76e23f2eefaab71814851f42e5a84ef3ccdab294871b3740a83f10418b",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/geometry-audit/s_west_ground-x851.png": {
+      "role": "process-evidence",
+      "bytes": 24255,
+      "sha256": "5dee765bb0cd4d5630373e4829c6c2ced72604b1ee67506f7e18dc13acef5eb6",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 140,
+      "pixelHeight": 90,
+      "mode": "RGB"
+    },
+    "work/graybox-no-labels.png": {
+      "role": "process-evidence",
+      "bytes": 15526,
+      "sha256": "529b69c7ae3cc5a2b9e6f2dbc12f7bf9143abadf9824c8c5e7b581824ed363d0",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 3520,
+      "pixelHeight": 1152,
+      "mode": "RGB"
+    },
+    "work/graybox-runtime.md": {
+      "role": "process-evidence",
+      "bytes": 2299,
+      "sha256": "0343eed4a516b8e7e6e9cb17c0070527c9b692659db0d5dc1ab5d15f06053c9f",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/parameter-audit.md": {
+      "role": "process-evidence",
+      "bytes": 1095,
+      "sha256": "b4c31bc53fdf283856481ba7442ee44ec0d70000a49af9550d591775d331c01b",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/parameter-source-audit.json": {
+      "role": "process-evidence",
+      "bytes": 1277,
+      "sha256": "cd3427739c3e3b09aefb4d84d63e107a898dcfcd7d81d77f977f7ba0c9a8dd3f",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/physics-smoke.mjs": {
+      "role": "process-evidence",
+      "bytes": 6803,
+      "sha256": "960ee0801e435c64123bff11bce9d58c60e6933f69cb9b45e08d0e971160baba",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/preview/engine.mjs": {
+      "role": "process-evidence",
+      "bytes": 13532,
+      "sha256": "a1bb93cde41069bab3acb8f3912b959ee242a65ac46fc75098c3b28a39b109f8",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/preview/index.html": {
+      "role": "process-evidence",
+      "bytes": 3889,
+      "sha256": "7841e120b9b98b0009ef90233af9d4ecb5a9e144a9f9192f007fd7d1c8f53df3",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/preview/mon_black_robe_minion-reference.png": {
+      "role": "process-evidence",
+      "bytes": 6850,
+      "sha256": "1c9dde2de953412cfc1b58527cb80b84a284c738465ec866f1923a4234229c3f",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 80,
+      "pixelHeight": 88,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ]
+    },
+    "work/preview/mon_straw_puppet-reference.png": {
+      "role": "process-evidence",
+      "bytes": 5924,
+      "sha256": "46e920d178191f38409ef7e33af7a712eb1483ffe0f9ba97d98d28340d12fc23",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 64,
+      "pixelHeight": 80,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ]
+    },
+    "work/preview/player-reference-idle.png": {
+      "role": "process-evidence",
+      "bytes": 10012,
+      "sha256": "520235d2f9c4c9e83b140ba439c2d18becfaa8e962fa15a98e35a14003ce0181",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 96,
+      "pixelHeight": 96,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ]
+    },
+    "work/preview/preview.mjs": {
+      "role": "process-evidence",
+      "bytes": 13858,
+      "sha256": "f6c82b8eda107c6855bed6271660da4d782eabd8ebb24fb2b7edcd7c2adcc957",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/prompts/stage3-background.txt": {
+      "role": "process-evidence",
+      "bytes": 1190,
+      "sha256": "d63bf3d17d0b9942695733cc71c90b5bdba61a82b59d84c305fd37757b0c99cc",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/prompts/stage3-extract.txt": {
+      "role": "process-evidence",
+      "bytes": 1148,
+      "sha256": "4223c216b116a791ff4186f701da9fadf42a57200deb1fead672ed490603095d",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/prompts/stage3-master.txt": {
+      "role": "process-evidence",
+      "bytes": 3518,
+      "sha256": "12f508b4ec0255c49039b45c45fc7005d5bbfd3ead0e172e016ca40101f3680c",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/prompts/stage4-station.txt": {
+      "role": "process-evidence",
+      "bytes": 1491,
+      "sha256": "b79d435fa3d42c05b575176cc0a8a669d10b56d7ec85d01dd7ab99d69fb7bf1b",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/prompts/stage4-timber.txt": {
+      "role": "process-evidence",
+      "bytes": 1503,
+      "sha256": "9305f6db54f2cc94dac5885c7b5b1007528e68c5e73ef64e1d299bd5dfdeb35a",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/protected-before.json": {
+      "role": "process-evidence",
+      "bytes": 378414,
+      "sha256": "e49f422abae0fdaf21cf4d19662ba7476daef436651e841421c710cc02c4a110",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/protected-final-check.json": {
+      "role": "process-evidence",
+      "bytes": 2509,
+      "sha256": "da279c0dc6b62288af0364266245fcb19c394a15b8dc0ba5d3f98c81e6df3628",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/protected-first-final-check.json": {
+      "role": "process-evidence",
+      "bytes": 393,
+      "sha256": "cca683236faba6a203ee261fce1e31191381c31eeb300f40f1f918393c886d56",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/reference-assets/prop_chest.png": {
+      "role": "process-evidence",
+      "bytes": 1183,
+      "sha256": "e686ef28d3ba282530c304f19c2df4d43d9a672767e692547871dfc0eadee0e9",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 48,
+      "pixelHeight": 40,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ]
+    },
+    "work/reference-assets/prop_gather_iron_essence.png": {
+      "role": "process-evidence",
+      "bytes": 2880,
+      "sha256": "bd93c8503ccd191b407374801097312de3b73bbbc8270767e3fa0963fe7ee9ae",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 48,
+      "pixelHeight": 48,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ]
+    },
+    "work/reference-assets/prop_gather_spirit_herb.png": {
+      "role": "process-evidence",
+      "bytes": 2834,
+      "sha256": "eb4c082a044357ea89a095ffb855e8f15a7a9b5598f27bcbcd4a2f0c235b5107",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 48,
+      "pixelHeight": 48,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ]
+    },
+    "work/reference-assets/provenance.json": {
+      "role": "process-evidence",
+      "bytes": 1709,
+      "sha256": "0d96808d5c0a670dcb9597c9fbf883c867e765985b7beacd20d74374ed748aa7",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/reference-review.md": {
+      "role": "process-evidence",
+      "bytes": 998,
+      "sha256": "fde6aae9c40d3acd8d5679fb8dd78e5e6425d4bc4d3ff3e7441e5063e91dd97b",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/render_diagnostics.py": {
+      "role": "process-evidence",
+      "bytes": 4673,
+      "sha256": "cd70709430d184e38d505ec3277fb86062060a71d988e9fb28dfc7b985c9102a",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/run_routes.mjs": {
+      "role": "process-evidence",
+      "bytes": 7166,
+      "sha256": "9ee464c318b268943ec4a5b71e375a05b4e3e74e2e1f432d0ee895c86f018e92",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/runtime-final/browser-contact-s_bridge_high-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2120634,
+      "sha256": "b6d6b83808c9ed3e1c06d2e3526efe9b9e5f112e654d279db27115acb1e91d6a",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-contact-s_bridge_high.png": {
+      "role": "process-evidence",
+      "bytes": 2107946,
+      "sha256": "85758a12e05b36f2fc6acd465cec3719211c160c067f21fefb5e05a37f230997",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-contact-s_bridge_low-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2079134,
+      "sha256": "1dd669c2c68e0728c5b0072a365e28f767cf0fae9ecaf80ca19333664751567c",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-contact-s_bridge_low.png": {
+      "role": "process-evidence",
+      "bytes": 2065531,
+      "sha256": "1650984375dbc4bce9f912fd5440f2f6af268222111c4ef5d3f51c6f669195b8",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-contact-s_bridge_mid-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2130510,
+      "sha256": "8f4e883df06c8a161327e4c068d76b407c961cbce8680b5c4921539aa906b3c2",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-contact-s_bridge_mid.png": {
+      "role": "process-evidence",
+      "bytes": 2117033,
+      "sha256": "dfd67c7e1fbe542aff5780f97954dbbead558b4319844da5222b6268a616b8fe",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-contact-s_east_ground-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2299194,
+      "sha256": "5a3050bb6fa71005bbf737df80f5ef679d9344e75a28cecef68c8122c5c777a9",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-contact-s_east_ground.png": {
+      "role": "process-evidence",
+      "bytes": 2273996,
+      "sha256": "3ddeae9b3f2134970b348d3fc440f96e925355f478ab95cf970592484096f5c0",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-contact-s_east_high-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2379616,
+      "sha256": "714ce80d499f8ae605ede808f02a7ba017a423c116dc49f84ba065c491e709a5",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-contact-s_east_high.png": {
+      "role": "process-evidence",
+      "bytes": 2351855,
+      "sha256": "2de4a839e6c51fef3a6618faeecee01a127b72125fb1e6d0b1eeb9a53f7947ae",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-contact-s_east_low-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2379413,
+      "sha256": "e37b0080962b1d8a6ec59bb57e58a408651123f6a08d9314183f8cfb5087efc0",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-contact-s_east_low.png": {
+      "role": "process-evidence",
+      "bytes": 2351668,
+      "sha256": "52608aa2a84eab8d0ee7cdae0e8c36dd53d61ec5a5313dc0ba9c13aaa2120e8a",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-contact-s_field_high-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2090619,
+      "sha256": "1191deaaefc628b115677818ae97cb5f2a2fa574711cc7a09e713bb6c695751c",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-contact-s_field_high.png": {
+      "role": "process-evidence",
+      "bytes": 2076780,
+      "sha256": "3328387e7dbed193b2721dcdd85d542695f4627e60485c60bc18f1b98763afe2",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-contact-s_field_low-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2199413,
+      "sha256": "560de5b12b5ece10c69360599f96ee8a70bef39d59ddc32c5ade033bad7f7667",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-contact-s_field_low.png": {
+      "role": "process-evidence",
+      "bytes": 2183849,
+      "sha256": "62013ce75fb48b9c796834aff2e3ef0907bfb7e4a82e21f7aa890800de606dbc",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-contact-s_mid_ground-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2157413,
+      "sha256": "4e8f1f4fe55a3c822a7528dcd6c23fba10a3625ed0144fe07faa6544e38dbc70",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-contact-s_mid_ground.png": {
+      "role": "process-evidence",
+      "bytes": 2138766,
+      "sha256": "7f8cecd7d97818d620f3b17fbeafcd7f401648774718f1cf8ea58fa97dfb970f",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-contact-s_mid_outpost-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2240920,
+      "sha256": "8d34fbe5445862f19d35732a133f8d83c811f74e6be3e0dec82263fe022b9a0d",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-contact-s_mid_outpost.png": {
+      "role": "process-evidence",
+      "bytes": 2218300,
+      "sha256": "bee60706342359b3ac1d51f87b90724ea295cca2a3d7c4b90cc61dc1e26415f5",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-contact-s_west_ground-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2198840,
+      "sha256": "0d514b9006948a236421820ab37e7f69819ac9c7d21132d89f6938406b76950d",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-contact-s_west_ground.png": {
+      "role": "process-evidence",
+      "bytes": 2183429,
+      "sha256": "ce7722b336c8f1e01a253bebc58067481d76ea4c380e29757f0fb4e06c09dfd4",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-final-minimap.png": {
+      "role": "process-evidence",
+      "bytes": 406390,
+      "sha256": "aa38438973a91f189477970eb0a0d0039d5f611e8940d30bffb92d217423dfe8",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1282,
+      "pixelHeight": 161,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-main-goal.png": {
+      "role": "process-evidence",
+      "bytes": 2377163,
+      "sha256": "42e102700978508cb1061a0e6d322ca9b3da59ee51faeaa7d1447c4895ed6ded",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-results.json": {
+      "role": "process-evidence",
+      "bytes": 55324,
+      "sha256": "c3fa0b54fedf386601c320da92d5bb786cc87a604d54aebeb51d3e96a3b61665",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/runtime-final/browser-rope-rope_10-bottom-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2199096,
+      "sha256": "b26441085b2448d8150e1b01003062b8e3e6e0a1d12adb0218c23018d8fd440f",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-rope-rope_10-bottom.png": {
+      "role": "process-evidence",
+      "bytes": 2183576,
+      "sha256": "82893d77f879ae4cabefe4d7afe134e58831bef56e4816a4538b5a71a842196a",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-rope-rope_10-top-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2199413,
+      "sha256": "560de5b12b5ece10c69360599f96ee8a70bef39d59ddc32c5ade033bad7f7667",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-rope-rope_10-top.png": {
+      "role": "process-evidence",
+      "bytes": 2183849,
+      "sha256": "62013ce75fb48b9c796834aff2e3ef0907bfb7e4a82e21f7aa890800de606dbc",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-rope-rope_24-bottom-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2089496,
+      "sha256": "5af14dbac9f1699e03e9d5d6d3bce1b04c4a39f243c9fccb4b9d35f2060de8d9",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-rope-rope_24-bottom.png": {
+      "role": "process-evidence",
+      "bytes": 2075794,
+      "sha256": "c64234c87f856fa50b7319f2da9d2e0e242cb3729ebdf742c30b0ff7d5bfee78",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-rope-rope_24-top-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2090619,
+      "sha256": "1191deaaefc628b115677818ae97cb5f2a2fa574711cc7a09e713bb6c695751c",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-rope-rope_24-top.png": {
+      "role": "process-evidence",
+      "bytes": 2076780,
+      "sha256": "3328387e7dbed193b2721dcdd85d542695f4627e60485c60bc18f1b98763afe2",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-rope-rope_40-bottom-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2078248,
+      "sha256": "517eb97e75a540aa946ab6c15864c1f01cbf6c2a257bb145baab9517c6a27dbf",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-rope-rope_40-bottom.png": {
+      "role": "process-evidence",
+      "bytes": 2064833,
+      "sha256": "d7f104e8a1ab7e9b7325c23f4afc360632b75cd4142fa43fd998724134e1ac3c",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-rope-rope_40-top-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2079134,
+      "sha256": "1dd669c2c68e0728c5b0072a365e28f767cf0fae9ecaf80ca19333664751567c",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-rope-rope_40-top.png": {
+      "role": "process-evidence",
+      "bytes": 2065531,
+      "sha256": "1650984375dbc4bce9f912fd5440f2f6af268222111c4ef5d3f51c6f669195b8",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-rope-rope_48-bottom-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2118834,
+      "sha256": "0eed7113e8838aa585e175f61040698f7677cba5b6179c9c71abdfda7dadcd2b",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-rope-rope_48-bottom.png": {
+      "role": "process-evidence",
+      "bytes": 2106117,
+      "sha256": "620e17d58b9605148e52597f131fa1c614f59c8ddfd11811a57b8627d0182ee0",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-rope-rope_48-top-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2120634,
+      "sha256": "b6d6b83808c9ed3e1c06d2e3526efe9b9e5f112e654d279db27115acb1e91d6a",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-rope-rope_48-top.png": {
+      "role": "process-evidence",
+      "bytes": 2107946,
+      "sha256": "85758a12e05b36f2fc6acd465cec3719211c160c067f21fefb5e05a37f230997",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-rope-rope_50-bottom-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2129841,
+      "sha256": "6b440a036707372ed619d21049bc213be28553b576e3efa13a4e7343b92eb078",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-rope-rope_50-bottom.png": {
+      "role": "process-evidence",
+      "bytes": 2116357,
+      "sha256": "c20e6ede5510868a6e26e42d126de50d9df22836f8a3d825c8842ddd6d8b5565",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-rope-rope_50-top-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2130510,
+      "sha256": "8f4e883df06c8a161327e4c068d76b407c961cbce8680b5c4921539aa906b3c2",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-rope-rope_50-top.png": {
+      "role": "process-evidence",
+      "bytes": 2117033,
+      "sha256": "dfd67c7e1fbe542aff5780f97954dbbead558b4319844da5222b6268a616b8fe",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-rope-rope_78-bottom-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2241274,
+      "sha256": "120f821ac335c5b0dd1e8eea0829db8c05b02ae227c4c342a39c28dfe80695db",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-rope-rope_78-bottom.png": {
+      "role": "process-evidence",
+      "bytes": 2218872,
+      "sha256": "5903197336b6374d95a059de82d1ce95b153a23f901eed3be9b1b039faf649a2",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-rope-rope_78-top-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2240920,
+      "sha256": "8d34fbe5445862f19d35732a133f8d83c811f74e6be3e0dec82263fe022b9a0d",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-rope-rope_78-top.png": {
+      "role": "process-evidence",
+      "bytes": 2218300,
+      "sha256": "bee60706342359b3ac1d51f87b90724ea295cca2a3d7c4b90cc61dc1e26415f5",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-rope-rope_96-bottom-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2379070,
+      "sha256": "4d067a6e101a50960a6dfedc1053b4cf211ebae7f02e5654762a5ce896385496",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-rope-rope_96-bottom.png": {
+      "role": "process-evidence",
+      "bytes": 2351329,
+      "sha256": "1dd06a6e86b87609edc8d8294f6c33c18524450841791a4feb9aa1f689193709",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-rope-rope_96-top-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2379616,
+      "sha256": "714ce80d499f8ae605ede808f02a7ba017a423c116dc49f84ba065c491e709a5",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-rope-rope_96-top.png": {
+      "role": "process-evidence",
+      "bytes": 2351855,
+      "sha256": "2de4a839e6c51fef3a6618faeecee01a127b72125fb1e6d0b1eeb9a53f7947ae",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-rope-rope_98-bottom-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2377661,
+      "sha256": "3a5ec3dfa41dfcb904d1f1b40ab0556c0815c7660c14083a4b2c9d2db0b74b48",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-rope-rope_98-bottom.png": {
+      "role": "process-evidence",
+      "bytes": 2350022,
+      "sha256": "c5343f8063d70bec0510c98cebc94bd0e50b1f0c10c1337f8d844fb6248288f0",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-rope-rope_98-top-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2379413,
+      "sha256": "e37b0080962b1d8a6ec59bb57e58a408651123f6a08d9314183f8cfb5087efc0",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-rope-rope_98-top.png": {
+      "role": "process-evidence",
+      "bytes": 2351668,
+      "sha256": "52608aa2a84eab8d0ee7cdae0e8c36dd53d61ec5a5313dc0ba9c13aaa2120e8a",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/browser-spawn-overlays.png": {
+      "role": "process-evidence",
+      "bytes": 2190868,
+      "sha256": "d436daeb7168e99f711d86cea4d316339880b85214a117ca1da6e005c3a26545",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 1153,
+      "mode": "RGB"
+    },
+    "work/runtime-final/physics-smoke-results.json": {
+      "role": "process-evidence",
+      "bytes": 118819,
+      "sha256": "85131958fe173ca0e76b30d660a3ed3c2e193ceab1d8081ceb254af6523a7563",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/runtime-final/route_all_ropes.json": {
+      "role": "process-evidence",
+      "bytes": 1487885,
+      "sha256": "2f4b366c35feb96926a90ab07066a188620b64d0d3948c3e76b9315fd356f194",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/runtime-final/route_gather.json": {
+      "role": "process-evidence",
+      "bytes": 961583,
+      "sha256": "4b09b89ec3931b33330a54ebd358c51431a102d7999147ef097da77c8b36a21f",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/runtime-final/route_main.json": {
+      "role": "process-evidence",
+      "bytes": 1141037,
+      "sha256": "3aaa669c888a55b01db2beb8692d4f4e2a07c9b8613b19d054f78fca62a93de5",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/runtime-final/route_return.json": {
+      "role": "process-evidence",
+      "bytes": 1700257,
+      "sha256": "3aa3d42a10b362e2d98f0de1d344e43c77ee689a6d27f8a9bfd96051b26128ec",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/runtime-final/routes-summary.json": {
+      "role": "process-evidence",
+      "bytes": 6981,
+      "sha256": "bef8010045d02d6149c48d6a704706647e2845fb9ac19f694664c9292d1fdd0f",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/runtime-final-prebind/browser-contact-s_bridge_high-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2054194,
+      "sha256": "d6475cc0860d624716c83486ab7331e5e38e036362bd942c9cc1f167f1e5d870",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-contact-s_bridge_high.png": {
+      "role": "process-evidence",
+      "bytes": 2043699,
+      "sha256": "0332b057147a6cb650dbaa28759833aac94bbb2b28aa1514a1750484cb15d6ed",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-contact-s_bridge_low-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2008845,
+      "sha256": "d0200ae3b5d4c391a949dfb46b102d4893605c0b0ddf170b6d6fa35891402ef1",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-contact-s_bridge_low.png": {
+      "role": "process-evidence",
+      "bytes": 1998573,
+      "sha256": "bedf6c5c81bc860f0ef8adddd2fb35e8936da5ac70bfa9759d926a6562bc7df9",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-contact-s_bridge_mid-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2063382,
+      "sha256": "3d2949f1bbaead48b4fa2857a34efe47920d0ad6934252f6b00187902d0e269d",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-contact-s_bridge_mid.png": {
+      "role": "process-evidence",
+      "bytes": 2052754,
+      "sha256": "2e530ea1200f04c2c1434270cfcc18853eef9889a98b0ece91f474bd12f78afc",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-contact-s_east_ground-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2221115,
+      "sha256": "0c499213507a20a5ec2b7e359701c9efd9d78647b0a9fc6e84216713d570e495",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-contact-s_east_ground.png": {
+      "role": "process-evidence",
+      "bytes": 2198741,
+      "sha256": "d826015033088d12b642084ba4e4edee6f4b3dea787f0c2fd62f9949f70e9a73",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-contact-s_east_high-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2293380,
+      "sha256": "8b126ef80408770c16fe0cc037c1ade76395e1da37c587091cd966f6c5497713",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-contact-s_east_high.png": {
+      "role": "process-evidence",
+      "bytes": 2269721,
+      "sha256": "7a2fa699badf90e0af1b1d3a989217eab655c17555708464301139100d15a43f",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-contact-s_east_low-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2292977,
+      "sha256": "5b0f4892e4d97847373acebdc58b3ac41f80773764ad1493e5560f0f4061f901",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-contact-s_east_low.png": {
+      "role": "process-evidence",
+      "bytes": 2269271,
+      "sha256": "46e6f5252e2130bcbb120a13d91f9d85c2e05fd7f4cdd978f9ad8e92e889be56",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-contact-s_field_high-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2012860,
+      "sha256": "4ba837188cd84c753d88694148a063a833a558c8683f90804aa2e4e0b43d0960",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-contact-s_field_high.png": {
+      "role": "process-evidence",
+      "bytes": 2002310,
+      "sha256": "c57a81e4984d8e35770262a552ed42cf6f140c6a8b70ad42b2facc4c43c32449",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-contact-s_field_low-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2121811,
+      "sha256": "f902be99b6dd2263bf53f8e943530b9f59c109561908b473ce43095cc888a177",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-contact-s_field_low.png": {
+      "role": "process-evidence",
+      "bytes": 2110009,
+      "sha256": "297b57405981626ba389e5399182e0205e148c8a8fc382a69315d179d0d4956f",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-contact-s_mid_ground-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2085095,
+      "sha256": "586fae000d98f63ab0ae539952f9b756afe986550a4c0a1ee0a5cdef5ee8c45a",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-contact-s_mid_ground.png": {
+      "role": "process-evidence",
+      "bytes": 2068684,
+      "sha256": "0b6ccda7fc326a45f7e01abfa425fc22714f19e2b4c25357e0a3bef42a177edc",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-contact-s_mid_outpost-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2164804,
+      "sha256": "d98cd839a0f1079c7d32a0fa744dd8047e567abb961b365dd82775bcdfc389da",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-contact-s_mid_outpost.png": {
+      "role": "process-evidence",
+      "bytes": 2145110,
+      "sha256": "ef4e6e547836908b62a423a45196ca8b45b7974c5c4b1f42f6c571295ebbafb4",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-contact-s_west_ground-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2121755,
+      "sha256": "2b1e609026a57d0dcb50bd44b89f37fec1e94d7a7878051c97c75f0df6a3d7ba",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-contact-s_west_ground.png": {
+      "role": "process-evidence",
+      "bytes": 2110083,
+      "sha256": "9ede0a31d82526a6ad201b67a968a3bef7b62d64cce28919e66b6d4db56d52d8",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-final-minimap.png": {
+      "role": "process-evidence",
+      "bytes": 405452,
+      "sha256": "02190582c389f76df76ab7eb71c91f049de2ebe0b703216d4655c69c724d9f9e",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 161,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-main-goal.png": {
+      "role": "process-evidence",
+      "bytes": 2291017,
+      "sha256": "301f42fe8a63a3e2af232aaff09fd92727083567da2d75b28e0ab8b013d5d930",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-results.json": {
+      "role": "process-evidence",
+      "bytes": 55547,
+      "sha256": "2e5134864539b2928ca0cdd051d8f983e7053707d64bf3b35a63470c280ed181",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/runtime-final-prebind/browser-rope-rope_10-bottom-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2121778,
+      "sha256": "5e56af2d432068c0d4748de2dc27b90422d93adb7cb4342b56e9cd0002dfd09f",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-rope-rope_10-bottom.png": {
+      "role": "process-evidence",
+      "bytes": 2110011,
+      "sha256": "be5a67c9d58553b718f050ce07251cf37c692976f914ebdab8b0fe4e9837fa9b",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-rope-rope_10-top-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2121811,
+      "sha256": "f902be99b6dd2263bf53f8e943530b9f59c109561908b473ce43095cc888a177",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-rope-rope_10-top.png": {
+      "role": "process-evidence",
+      "bytes": 2110009,
+      "sha256": "297b57405981626ba389e5399182e0205e148c8a8fc382a69315d179d0d4956f",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-rope-rope_24-bottom-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2011608,
+      "sha256": "3cb70ead320380a76cfe5b53be0070afaf9b5d39b1e29021f1fb3965d23cda75",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-rope-rope_24-bottom.png": {
+      "role": "process-evidence",
+      "bytes": 2001107,
+      "sha256": "22ead0913485fea212f8900c6bddb875d9311c8fec7d2c6c5e310c8af8693944",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-rope-rope_24-top-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2012860,
+      "sha256": "4ba837188cd84c753d88694148a063a833a558c8683f90804aa2e4e0b43d0960",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-rope-rope_24-top.png": {
+      "role": "process-evidence",
+      "bytes": 2002310,
+      "sha256": "c57a81e4984d8e35770262a552ed42cf6f140c6a8b70ad42b2facc4c43c32449",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-rope-rope_40-bottom-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2008208,
+      "sha256": "66124aea80665946bef91d772b05cf59b7df734e2951d80102c9b28e3166d5f2",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-rope-rope_40-bottom.png": {
+      "role": "process-evidence",
+      "bytes": 1998063,
+      "sha256": "e720a19968de31c3cc6c18986ab40a2d7b8b84f95d17dae4e75c505e5e798847",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-rope-rope_40-top-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2008845,
+      "sha256": "d0200ae3b5d4c391a949dfb46b102d4893605c0b0ddf170b6d6fa35891402ef1",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-rope-rope_40-top.png": {
+      "role": "process-evidence",
+      "bytes": 1998573,
+      "sha256": "bedf6c5c81bc860f0ef8adddd2fb35e8936da5ac70bfa9759d926a6562bc7df9",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-rope-rope_48-bottom-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2052448,
+      "sha256": "ff264c7ba7ebbcf9a6065faddd1e1b094da451e3e1601dd8dda109de83ea6767",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-rope-rope_48-bottom.png": {
+      "role": "process-evidence",
+      "bytes": 2042035,
+      "sha256": "8c85625602ea479278a77fca97f48aa91fec7488f160ede97c4bb1e44efd8368",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-rope-rope_48-top-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2054194,
+      "sha256": "d6475cc0860d624716c83486ab7331e5e38e036362bd942c9cc1f167f1e5d870",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-rope-rope_48-top.png": {
+      "role": "process-evidence",
+      "bytes": 2043699,
+      "sha256": "0332b057147a6cb650dbaa28759833aac94bbb2b28aa1514a1750484cb15d6ed",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-rope-rope_50-bottom-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2062685,
+      "sha256": "24c74ea1626488236968ac5c48143c6500b040e2df8a502866df2b1b20b3ed4c",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-rope-rope_50-bottom.png": {
+      "role": "process-evidence",
+      "bytes": 2052113,
+      "sha256": "0f66c1e44d3413b3719b2d92b5737de0efe42589d239430887cf16b770ae37b6",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-rope-rope_50-top-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2063382,
+      "sha256": "3d2949f1bbaead48b4fa2857a34efe47920d0ad6934252f6b00187902d0e269d",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-rope-rope_50-top.png": {
+      "role": "process-evidence",
+      "bytes": 2052754,
+      "sha256": "2e530ea1200f04c2c1434270cfcc18853eef9889a98b0ece91f474bd12f78afc",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-rope-rope_78-bottom-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2164939,
+      "sha256": "cbc7ef45810d496c54879c00069a1e703e878c27719349a448810a64e6ba4f92",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-rope-rope_78-bottom.png": {
+      "role": "process-evidence",
+      "bytes": 2145370,
+      "sha256": "5752d1034595e80e5934c6c362ba40d1257c46663ec8cdb2daf470de696933ef",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-rope-rope_78-top-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2164804,
+      "sha256": "d98cd839a0f1079c7d32a0fa744dd8047e567abb961b365dd82775bcdfc389da",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-rope-rope_78-top.png": {
+      "role": "process-evidence",
+      "bytes": 2145110,
+      "sha256": "ef4e6e547836908b62a423a45196ca8b45b7974c5c4b1f42f6c571295ebbafb4",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-rope-rope_96-bottom-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2292846,
+      "sha256": "2066d72c4dddb30761908f777f21af60497072272d5256a8b71da2ab22e1812a",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-rope-rope_96-bottom.png": {
+      "role": "process-evidence",
+      "bytes": 2269115,
+      "sha256": "c8de4fb989a727d0fef23b5a04b2998b5afbad4d367f5bc3192da32af57913af",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-rope-rope_96-top-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2293380,
+      "sha256": "8b126ef80408770c16fe0cc037c1ade76395e1da37c587091cd966f6c5497713",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-rope-rope_96-top.png": {
+      "role": "process-evidence",
+      "bytes": 2269721,
+      "sha256": "7a2fa699badf90e0af1b1d3a989217eab655c17555708464301139100d15a43f",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-rope-rope_98-bottom-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2291210,
+      "sha256": "07c2c3b9ef599a587070e5b48ab4708d5df2c57e1877d84b47ffc0264f4e5927",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-rope-rope_98-bottom.png": {
+      "role": "process-evidence",
+      "bytes": 2267629,
+      "sha256": "6bba3d19111b1ca6769472a9e72de04be14c6c4fae036f0a226a7491c14967c6",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-rope-rope_98-top-clean.png": {
+      "role": "process-evidence",
+      "bytes": 2292977,
+      "sha256": "5b0f4892e4d97847373acebdc58b3ac41f80773764ad1493e5560f0f4061f901",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-rope-rope_98-top.png": {
+      "role": "process-evidence",
+      "bytes": 2269271,
+      "sha256": "46e6f5252e2130bcbb120a13d91f9d85c2e05fd7f4cdd978f9ad8e92e889be56",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/browser-spawn-overlays.png": {
+      "role": "process-evidence",
+      "bytes": 2115090,
+      "sha256": "d8ca48b7d6b33177a9c065e91dcee95c2cafedd6b9e0b641b6a936385c71567f",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-final-prebind/physics-smoke-results.json": {
+      "role": "process-evidence",
+      "bytes": 118819,
+      "sha256": "cd976b8d62e87e119451b4fdc12172cefe20654193513e4454d4320eb3035fcf",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/runtime-final-prebind/route_all_ropes.json": {
+      "role": "process-evidence",
+      "bytes": 1487885,
+      "sha256": "e2a6f5406e99dc3fb1fca22eb51ddff32d6080031b577c18986bc69908c83976",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/runtime-final-prebind/route_gather.json": {
+      "role": "process-evidence",
+      "bytes": 961583,
+      "sha256": "c52bfe069a206210990eb457d5e4d0a58c2e84f82e1a1b868dc18bb00f5ddfd0",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/runtime-final-prebind/route_main.json": {
+      "role": "process-evidence",
+      "bytes": 1141037,
+      "sha256": "2fa0f9c085d31fcb15cebb78b369ef5bed09a9c94c95a01addd2b2733bcb5847",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/runtime-final-prebind/route_return.json": {
+      "role": "process-evidence",
+      "bytes": 1700257,
+      "sha256": "02dfc537157a3471312a169dcfe3921c1abc800c48ada0d1a18c21e0a478786c",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/runtime-final-prebind/routes-summary.json": {
+      "role": "process-evidence",
+      "bytes": 7013,
+      "sha256": "89f7c757ca855e0a7ec530258aa6c57a0de509d47acf06726a2d18eb47b6bd2d",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/runtime-graybox/browser-contact-s_bridge_high.png": {
+      "role": "process-evidence",
+      "bytes": 71768,
+      "sha256": "00a111c85091842d8b138545b62a6b410d4a20994be538a8c31cc39b753bab35",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-graybox/browser-contact-s_bridge_low.png": {
+      "role": "process-evidence",
+      "bytes": 78077,
+      "sha256": "8f24236fe7e0f970cc0206b01951e69b536a08fa9f062a711614a511c7c7b2ea",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-graybox/browser-contact-s_bridge_mid.png": {
+      "role": "process-evidence",
+      "bytes": 74804,
+      "sha256": "9b7f532179d6f9abf60505d7f318076b77a08835f8eedc4cc4e02ffee97514ea",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-graybox/browser-contact-s_east_ground.png": {
+      "role": "process-evidence",
+      "bytes": 71856,
+      "sha256": "109bd6a2924b4f06ef93a679250fded639529202fe60daeb7d5e4bfca07e7ffe",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-graybox/browser-contact-s_east_high.png": {
+      "role": "process-evidence",
+      "bytes": 71255,
+      "sha256": "1f303f2f81b6696ac18513ef7b73e9826d13fddd3e88d94a0218a1edb87a785e",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-graybox/browser-contact-s_east_low.png": {
+      "role": "process-evidence",
+      "bytes": 71250,
+      "sha256": "681a12d74fd30aebfca62ebd0bad6170a0682e924a4c47f04a7868ce95c6fc53",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-graybox/browser-contact-s_field_high.png": {
+      "role": "process-evidence",
+      "bytes": 81395,
+      "sha256": "d1f038f78ed99fc1d35e96d9136defe1019c82df545d84c238eeec8461d578f7",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-graybox/browser-contact-s_field_low.png": {
+      "role": "process-evidence",
+      "bytes": 80474,
+      "sha256": "ea1be6b8d84e7a75acdb52db4a92712dcf74b937591465097998d67396ead98d",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-graybox/browser-contact-s_mid_ground.png": {
+      "role": "process-evidence",
+      "bytes": 57174,
+      "sha256": "8c45fe2099652c4b45b83d70c893782b38191e6538c8995b32389fce44e4ef14",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-graybox/browser-contact-s_mid_outpost.png": {
+      "role": "process-evidence",
+      "bytes": 72061,
+      "sha256": "6daa43f65c4e795b0d52de686d527c383d0498b3eb1e53c329011e0798a73a3c",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-graybox/browser-contact-s_west_ground.png": {
+      "role": "process-evidence",
+      "bytes": 80773,
+      "sha256": "b4b2450a4659ac3c16aa5137180ef23d95adf11536d250a5d755a9241638edc8",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-graybox/browser-final-minimap.png": {
+      "role": "process-evidence",
+      "bytes": 4436,
+      "sha256": "544da39ef7a7491fa480ea87516d509ae4635df0c2fd2a19a0c2d895623a5728",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 161,
+      "mode": "RGB"
+    },
+    "work/runtime-graybox/browser-main-goal.png": {
+      "role": "process-evidence",
+      "bytes": 63541,
+      "sha256": "d646ac1c8df69eeaec6ef5e875f9f3b2d8d4514bb7780f7818c38ad7480ec249",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-graybox/browser-results.json": {
+      "role": "process-evidence",
+      "bytes": 51875,
+      "sha256": "7fa4e5f0594266648a30eea7a84234302a465ca5f2221c6fee739728b4e063fa",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/runtime-graybox/browser-rope-rope_10-bottom.png": {
+      "role": "process-evidence",
+      "bytes": 81370,
+      "sha256": "c9d882fd6e274d080f7b2781a88eb3727ac608e214250c780398cd546ca7625e",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-graybox/browser-rope-rope_10-top.png": {
+      "role": "process-evidence",
+      "bytes": 80474,
+      "sha256": "ea1be6b8d84e7a75acdb52db4a92712dcf74b937591465097998d67396ead98d",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-graybox/browser-rope-rope_24-bottom.png": {
+      "role": "process-evidence",
+      "bytes": 82034,
+      "sha256": "36f81c6be3303c5bf7afa0802d2ed33486c48fe3997315294b0b055820fe5c27",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-graybox/browser-rope-rope_24-top.png": {
+      "role": "process-evidence",
+      "bytes": 81395,
+      "sha256": "d1f038f78ed99fc1d35e96d9136defe1019c82df545d84c238eeec8461d578f7",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-graybox/browser-rope-rope_40-bottom.png": {
+      "role": "process-evidence",
+      "bytes": 78307,
+      "sha256": "b8f7d23177d074e05cecfb27e76c44e13409cbd99746a5843e4b14b434e487d6",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-graybox/browser-rope-rope_40-top.png": {
+      "role": "process-evidence",
+      "bytes": 78077,
+      "sha256": "8f24236fe7e0f970cc0206b01951e69b536a08fa9f062a711614a511c7c7b2ea",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-graybox/browser-rope-rope_48-bottom.png": {
+      "role": "process-evidence",
+      "bytes": 71669,
+      "sha256": "a9e9518b7cb36b199cf11c83262eb87a1f45598c4020aeb41b9abe041768c404",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-graybox/browser-rope-rope_48-top.png": {
+      "role": "process-evidence",
+      "bytes": 71768,
+      "sha256": "00a111c85091842d8b138545b62a6b410d4a20994be538a8c31cc39b753bab35",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-graybox/browser-rope-rope_50-bottom.png": {
+      "role": "process-evidence",
+      "bytes": 74858,
+      "sha256": "550a7e1d2f5c6e501b06f07bd8b354c42a339b669aaf4f84a3f4157a832a2256",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-graybox/browser-rope-rope_50-top.png": {
+      "role": "process-evidence",
+      "bytes": 74804,
+      "sha256": "9b7f532179d6f9abf60505d7f318076b77a08835f8eedc4cc4e02ffee97514ea",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-graybox/browser-rope-rope_78-bottom.png": {
+      "role": "process-evidence",
+      "bytes": 71260,
+      "sha256": "ffe580447868f5a32ee7e88088ad591e125142a3c87b6539bc5704004245d967",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-graybox/browser-rope-rope_78-top.png": {
+      "role": "process-evidence",
+      "bytes": 72061,
+      "sha256": "6daa43f65c4e795b0d52de686d527c383d0498b3eb1e53c329011e0798a73a3c",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-graybox/browser-rope-rope_96-bottom.png": {
+      "role": "process-evidence",
+      "bytes": 71343,
+      "sha256": "4da4ef4400af797cb4bf7f51a2fe7445346201b5cfe5ddafecf307c69bff64af",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-graybox/browser-rope-rope_96-top.png": {
+      "role": "process-evidence",
+      "bytes": 71255,
+      "sha256": "1f303f2f81b6696ac18513ef7b73e9826d13fddd3e88d94a0218a1edb87a785e",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-graybox/browser-rope-rope_98-bottom.png": {
+      "role": "process-evidence",
+      "bytes": 70656,
+      "sha256": "7c9faa47002b7e2c598871112a77d6f1090f80d07b89dd83c994d4d6f3f30d79",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-graybox/browser-rope-rope_98-top.png": {
+      "role": "process-evidence",
+      "bytes": 71250,
+      "sha256": "681a12d74fd30aebfca62ebd0bad6170a0682e924a4c47f04a7868ce95c6fc53",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-graybox/browser-spawn-overlays.png": {
+      "role": "process-evidence",
+      "bytes": 80625,
+      "sha256": "b624222ff44ac624219124fa35666e8656de7a11b792e432e95b39ba62a67fc7",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 1151,
+      "mode": "RGB"
+    },
+    "work/runtime-graybox/physics-smoke-results.json": {
+      "role": "process-evidence",
+      "bytes": 118845,
+      "sha256": "c2205ea8e4468c033a5b73b2babe876e195b06115f15d0378f145baf5d604c72",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/runtime-graybox/route_all_ropes.json": {
+      "role": "process-evidence",
+      "bytes": 1487889,
+      "sha256": "0ed95d71a83d0d9d93c689f36cdc6db7ee5bcfb3dbea74e26a034ae4b195006a",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/runtime-graybox/route_gather.json": {
+      "role": "process-evidence",
+      "bytes": 961587,
+      "sha256": "ec5684960e7da30bac838ff635fc941eb82c85b0c54ff0265a1b9e1973be561f",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/runtime-graybox/route_main.json": {
+      "role": "process-evidence",
+      "bytes": 1141041,
+      "sha256": "e9ea19287a731fc409fc370d575e05cbf8873f190f25bca07c845cf3764154bc",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/runtime-graybox/route_return.json": {
+      "role": "process-evidence",
+      "bytes": 1700261,
+      "sha256": "c3279d3619750ccd5b5b9d80b91b148e46430f83d66ea570b470aba6cd4037d1",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/runtime-graybox/routes-summary.json": {
+      "role": "process-evidence",
+      "bytes": 6991,
+      "sha256": "818faad09e8e6af13fbf599e625a0e145f0bb495df79fd53d7f1f38806f8c6b5",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/runtime-prebind-authority.json": {
+      "role": "process-evidence",
+      "bytes": 52404,
+      "sha256": "3236135817246132bdd4ef8d8f5483c3d8e419e5ed178bd65705e34d08d5fc74",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/scene-brief.md": {
+      "role": "process-evidence",
+      "bytes": 1869,
+      "sha256": "2347cd7fbc20b352c114f0bd78ef9ddc357ca4235c695ea7ce8a0f28c7236c15",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/scene-data.draft.json": {
+      "role": "process-evidence",
+      "bytes": 44844,
+      "sha256": "deb03be33e56456889f8c6cf29aa987062b205bbc56fe73761d4f0a7d3cc4dae",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/stage-log.md": {
+      "role": "process-evidence",
+      "bytes": 2558,
+      "sha256": "276050d69b3f6f93b52906b7f1c2fdac8199a329c2754034ae5d76493cbfb595",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/stage3-composition.json": {
+      "role": "process-evidence",
+      "bytes": 8325,
+      "sha256": "7d7b74d8ec6510277b3633a3bfe6fd857dd48b55b9ccda7978a943d70e2ade85",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/stage4-composition.json": {
+      "role": "process-evidence",
+      "bytes": 9492,
+      "sha256": "7412af194ccb2b7f3087196b29fd828db1f7e55ff889d60833a9440849e5ee72",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/stage4-detail-comparison.png": {
+      "role": "process-evidence",
+      "bytes": 281655,
+      "sha256": "0655f1c5765bb2ccfaf6b4c69f111ce9dc82a14aeb32d0900394b29347a8e994",
+      "geometryRevision": "luoxia2-final-001",
+      "pixelWidth": 1150,
+      "pixelHeight": 500,
+      "mode": "RGB"
+    },
+    "work/stage5-layer-record.json": {
+      "role": "process-evidence",
+      "bytes": 490,
+      "sha256": "83b9af627e92fe67bd4a494a351a8d99a9f1415a98fa4a608a9760d6b4ed4f2c",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/visual-alignment-audit.json": {
+      "role": "process-evidence",
+      "bytes": 16139,
+      "sha256": "bff413902a4149fa676ebe5a8f352512244ddb086e8b64710c7fd882d9cdd4e4",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/visual-alignment-first-gate-overlap.json": {
+      "role": "process-evidence",
+      "bytes": 16137,
+      "sha256": "ba80a46df43eb419ce884a60e040575ea4a12cb0af51a58b61b7f155c880a526",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "work/write_report.py": {
+      "role": "process-evidence",
+      "bytes": 16219,
+      "sha256": "41a2694c71aea3343d18da7c74b757d9ee7452c94b9e93f6bb9458c71d86ecd8",
+      "geometryRevision": "luoxia2-final-001"
+    },
+    "manifest.json": {
+      "role": "asset-manifest",
+      "sha256": null,
+      "hashPolicy": "self hash omitted to avoid recursive hashing"
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+ "atlas": "fx_tree_demon_corrupt_summon",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  96,
+  112
+ ],
+ "anims": [
+  {
+   "key": "fx_tree_demon_corrupt_summon_play",
+   "frames": [
+    "fx_tree_demon_corrupt_summon_play_01",
+    "fx_tree_demon_corrupt_summon_play_02",
+    "fx_tree_demon_corrupt_summon_play_03",
+    "fx_tree_demon_corrupt_summon_play_04",
+    "fx_tree_demon_corrupt_summon_play_05",
+    "fx_tree_demon_corrupt_summon_play_06"
+   ],
+   "frameRate": 12,
+   "repeat": 0
+  }
+ ],
+ "note": "唤魔召唤阵：原点 (0.5,1) 放刷怪点地面；第 4 帧刷出藤妖。描边深墨紫 #3A2A48。",
+ "blend": "normal",
+ "kind": "fx"
+}

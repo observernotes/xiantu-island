@@ -1,0 +1,1912 @@
+{
+  "schemaVersion": "1.0",
+  "sceneId": "trial_foundation_altar",
+  "assetVersion": "trial_foundation_altar_gsb_v1",
+  "geometryRevision": "trial-foundation-final-001",
+  "actorParameterRevision": "feel-base100-20261027",
+  "engineRevision": "trial-aabb-feel-60hz-001",
+  "deliveryStatus": "selfcheck-verified-awaiting-lead-review",
+  "leadApproval": "pending",
+  "integrationAllowed": false,
+  "space": {
+    "origin": "top-left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "units": "logical-pixel",
+    "logicalWidth": 1600,
+    "logicalHeight": 704
+  },
+  "files": {
+    "DELIVERED.md": {
+      "role": "pending-lead-review-note",
+      "bytes": 1147,
+      "sha256": "34f21c9eb3f2d848c9421f8e5308db043436f34de823cde6e8ccb3cd06c2aa33",
+      "schemaVersion": "1.0",
+      "geometryRevision": "trial-foundation-final-001",
+      "actorParameterRevision": "feel-base100-20261027",
+      "engineRevision": "trial-aabb-feel-60hz-001"
+    },
+    "README.md": {
+      "role": "local-start-instructions",
+      "bytes": 1816,
+      "sha256": "faedd95bf2617aa26dd706d7eaff9ef9bcd1bd91ae67989f2f882ca7898c7ca8",
+      "schemaVersion": "1.0",
+      "geometryRevision": "trial-foundation-final-001",
+      "actorParameterRevision": "feel-base100-20261027",
+      "engineRevision": "trial-aabb-feel-60hz-001"
+    },
+    "action-mask.png": {
+      "role": "pure-action-mask",
+      "bytes": 6672,
+      "sha256": "f6b62562554b51b554cc9c861fd87a69174260e07d14ec58adae82c2ef180a25",
+      "pixelWidth": 1600,
+      "pixelHeight": 704,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "schemaVersion": "1.0",
+      "geometryRevision": "trial-foundation-final-001",
+      "actorParameterRevision": "feel-base100-20261027",
+      "engineRevision": "trial-aabb-feel-60hz-001"
+    },
+    "action-overlay.png": {
+      "role": "labeled-action-overlay",
+      "bytes": 2043470,
+      "sha256": "72d445dbdb64b481d70c2c90157293aca68c64a609ba295e2b3ac400b3b8d3e2",
+      "pixelWidth": 1600,
+      "pixelHeight": 704,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "schemaVersion": "1.0",
+      "geometryRevision": "trial-foundation-final-001",
+      "actorParameterRevision": "feel-base100-20261027",
+      "engineRevision": "trial-aabb-feel-60hz-001"
+    },
+    "background.png": {
+      "role": "background",
+      "bytes": 1969384,
+      "sha256": "111bbdb310fa57fd88eb850b00749320a679fdcd4c6ccaa269f3062fc8730cd0",
+      "pixelWidth": 1600,
+      "pixelHeight": 704,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "schemaVersion": "1.0",
+      "geometryRevision": "trial-foundation-final-001",
+      "actorParameterRevision": "feel-base100-20261027",
+      "engineRevision": "trial-aabb-feel-60hz-001",
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "assetId": "asset_background",
+      "purpose": "sky, distant cloud mountains/pavilions, back-plane stone-wall relief and four spawn-gate arches; portal projections and arch feet decorative, cannot support actors"
+    },
+    "collision-overlay.png": {
+      "role": "runtime-collision-overlay",
+      "bytes": 2021427,
+      "sha256": "dba7bbbcc7070d25ccf9d424bfc8c30a6dbb29fbc36d66f79e8969afdfd1aa5b",
+      "pixelWidth": 1600,
+      "pixelHeight": 704,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "schemaVersion": "1.0",
+      "geometryRevision": "trial-foundation-final-001",
+      "actorParameterRevision": "feel-base100-20261027",
+      "engineRevision": "trial-aabb-feel-60hz-001"
+    },
+    "diagnostics-metadata.json": {
+      "role": "diagnostic-version-binding",
+      "bytes": 1366,
+      "sha256": "7426888c72d04bc3c01129f221aa2422328ad91308b86d090412fbe4eb68ecb1",
+      "schemaVersion": "1.0",
+      "geometryRevision": "trial-foundation-final-001",
+      "actorParameterRevision": "feel-base100-20261027",
+      "engineRevision": "trial-aabb-feel-60hz-001"
+    },
+    "index.html": {
+      "role": "local-entry",
+      "bytes": 381,
+      "sha256": "833e21bd202863e24577ba8f5d84b48b94990da325760690bfcff66763b167b7",
+      "schemaVersion": "1.0",
+      "geometryRevision": "trial-foundation-final-001",
+      "actorParameterRevision": "feel-base100-20261027",
+      "engineRevision": "trial-aabb-feel-60hz-001"
+    },
+    "playable.png": {
+      "role": "playable",
+      "bytes": 384900,
+      "sha256": "c2b1656e6fb6ae406b299f47fccfa3b84816314f7ed082e1a8112a7de6a7e9c5",
+      "pixelWidth": 1600,
+      "pixelHeight": 704,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "schemaVersion": "1.0",
+      "geometryRevision": "trial-foundation-final-001",
+      "actorParameterRevision": "feel-base100-20261027",
+      "engineRevision": "trial-aabb-feel-60hz-001",
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "assetId": "asset_playable",
+      "purpose": "same-source flat ground, altar, three one-way slabs and three full ropes; attached eye/sigil, performance-only elder and warning sample decorations have no collision"
+    },
+    "scene-data.json": {
+      "role": "authoritative-action-data",
+      "bytes": 85539,
+      "sha256": "ef99b5065b0da8d0469a7953f96ed49cc6db60104ba010c48796ac740257c451",
+      "schemaVersion": "1.0",
+      "geometryRevision": "trial-foundation-final-001",
+      "actorParameterRevision": "feel-base100-20261027",
+      "engineRevision": "trial-aabb-feel-60hz-001"
+    },
+    "scene.png": {
+      "role": "composed-scene",
+      "bytes": 2063119,
+      "sha256": "cac07e0709726d588f638cf00a9eb6d3d62a9fb9da6e183e9fffb77c0784dc61",
+      "pixelWidth": 1600,
+      "pixelHeight": 704,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "schemaVersion": "1.0",
+      "geometryRevision": "trial-foundation-final-001",
+      "actorParameterRevision": "feel-base100-20261027",
+      "engineRevision": "trial-aabb-feel-60hz-001",
+      "drawOrder": null,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "purpose": "exact alpha composite of background then playable; no actor baked in except performance phantom"
+    },
+    "validation-report.md": {
+      "role": "validation-report",
+      "bytes": 11559,
+      "sha256": "2f6108add211ce75290abcce9d947813cd7a642e6d2ac01c3fee0ff718e0b54e",
+      "schemaVersion": "1.0",
+      "geometryRevision": "trial-foundation-final-001",
+      "actorParameterRevision": "feel-base100-20261027",
+      "engineRevision": "trial-aabb-feel-60hz-001"
+    },
+    "work/action-layout-clean.png": {
+      "role": "process-artifact",
+      "bytes": 6063,
+      "sha256": "836a62b3a0cf7b842798a35ff0d883346129def718864b08c16206243f194084",
+      "pixelWidth": 1600,
+      "pixelHeight": 704,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/action-layout-clean.svg": {
+      "role": "process-artifact",
+      "bytes": 1782,
+      "sha256": "89c3bebae3a9b409a693b34a684957a9d44626a0af5ad91466be67a3e3cc9fda",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/action-layout.png": {
+      "role": "process-artifact",
+      "bytes": 31676,
+      "sha256": "c3a0bd8b3173c4a7150559f8d1cbbb80a08e4822eeca5f061794ef5747a3adef",
+      "pixelWidth": 1600,
+      "pixelHeight": 704,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/action-layout.svg": {
+      "role": "process-artifact",
+      "bytes": 2933,
+      "sha256": "96850568fa584b1f980e2660bfb40ad4ef417b76dd4fe50f5e778b816dc3691e",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/altar-ruler.png": {
+      "role": "process-artifact",
+      "bytes": 282064,
+      "sha256": "23b166051556ccde6ed2c5d9cbd713da5cb4b24169685799dcdec53ff7857a4f",
+      "pixelWidth": 1408,
+      "pixelHeight": 164,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/array-eye-edit-target.png": {
+      "role": "process-artifact",
+      "bytes": 22792,
+      "sha256": "0326be13388b9d974bb3550eb9345789dda8a193b22bbda4cce531f37d4047e1",
+      "pixelWidth": 128,
+      "pixelHeight": 104,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/art-data-audit.json": {
+      "role": "process-artifact",
+      "bytes": 4124,
+      "sha256": "1d60189a6037a06387d280004084694273b7aa01a1ef0fc78090dd0995e7c54a",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001",
+      "artifactGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/artcheck-before.log": {
+      "role": "process-artifact",
+      "bytes": 948,
+      "sha256": "971ec2b5f561e9fc298167f5443cb1bb9bf08387c5e488c43dfd938ff1f09e5c",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/artcheck-final.log": {
+      "role": "process-artifact",
+      "bytes": 948,
+      "sha256": "971ec2b5f561e9fc298167f5443cb1bb9bf08387c5e488c43dfd938ff1f09e5c",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/audit_art.py": {
+      "role": "process-artifact",
+      "bytes": 4480,
+      "sha256": "cda950462ef69a7545b3edc251333ec42271655ec136c68213134b444b81da90",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/browser-check.py": {
+      "role": "process-artifact",
+      "bytes": 11177,
+      "sha256": "6dbc3489a1a0233512e95dc72b249de646fe7b455f7ff299faf167aa29d6ae3e",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/build_layout.py": {
+      "role": "process-artifact",
+      "bytes": 12481,
+      "sha256": "052da96f30803c297733b38e5ecbdecabfac3dc50ea00204fe32d16c5d3758c7",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/build_manifest.py": {
+      "role": "process-artifact",
+      "bytes": 5678,
+      "sha256": "c09a69e72e6e8d02d6d032aec0bb03db66d0e590ddd665638c13a0968492aa28",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/center-ruler.png": {
+      "role": "process-artifact",
+      "bytes": 85168,
+      "sha256": "7190562648a579c784738199d8aef4cb55b73273a3aba2aee182bdcf0ec54d71",
+      "pixelWidth": 790,
+      "pixelHeight": 140,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/check_delivery.py": {
+      "role": "process-artifact",
+      "bytes": 3735,
+      "sha256": "d70c1802b33576e631e7f7b4d26cc7a2334995d844b89c3de24f48e1daca1a8a",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/check_footlines.py": {
+      "role": "process-artifact",
+      "bytes": 1637,
+      "sha256": "3c587810b9ed64c4a403b33546bcfd892c9df95c9d153b543dab93dede6f10fb",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/check_transition_coverage.py": {
+      "role": "process-artifact",
+      "bytes": 3641,
+      "sha256": "88a96cde8610cb4839f82a164a86cd73f92f5687b3de2951147c911d9dfd40fe",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/compose_refined.py": {
+      "role": "process-artifact",
+      "bytes": 3580,
+      "sha256": "6f22a379fcc0917b6d0cb313970498ed44eaa25f04db365cba63fcdcb879607b",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/delivery-check.json": {
+      "role": "process-artifact",
+      "bytes": 23546,
+      "sha256": "47e6af39d6a31d2cbab447b0d696e67bc82a3c62d24ddbe54c5006030af6614a",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001",
+      "artifactGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/evidence/alpha-dark.png": {
+      "role": "process-artifact",
+      "bytes": 327925,
+      "sha256": "2827e35e4d69bb757521bbbe27f99f1c5bd832f046f3455e8bfa9391e09a2ebf",
+      "pixelWidth": 1600,
+      "pixelHeight": 704,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/evidence/alpha-light.png": {
+      "role": "process-artifact",
+      "bytes": 326632,
+      "sha256": "d04c6acac7d4a12f947eb38526f6ed926a1d63f31fad324e88c0870c5da4f77d",
+      "pixelWidth": 1600,
+      "pixelHeight": 704,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/evidence/bottom-clean.png": {
+      "role": "process-artifact",
+      "bytes": 238588,
+      "sha256": "cf63de55380209414f18cc20f6bab137ae632bd68e720aaa57266c3d4b00b734",
+      "pixelWidth": 1600,
+      "pixelHeight": 80,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/evidence/topline-s_altar.png": {
+      "role": "process-artifact",
+      "bytes": 54077,
+      "sha256": "60e364930a2a7386c77b5f691d3a2f835a9d2cd82ed9ed89664bd54302f01cea",
+      "pixelWidth": 270,
+      "pixelHeight": 105,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/evidence/topline-s_ground_left.png": {
+      "role": "process-artifact",
+      "bytes": 55055,
+      "sha256": "a730db26bb6ed8e54eeee77effa15a0a330feb89981dd63ecbaa7ba330d103ce",
+      "pixelWidth": 270,
+      "pixelHeight": 105,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/evidence/topline-s_ground_right.png": {
+      "role": "process-artifact",
+      "bytes": 53094,
+      "sha256": "23b83a7324fa0b56ed15d2f414271f319798ed8905bcf2e39bffb104908eeade",
+      "pixelWidth": 270,
+      "pixelHeight": 105,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/evidence/topline-s_platform_center.png": {
+      "role": "process-artifact",
+      "bytes": 58793,
+      "sha256": "370405ea55345534803163105ed4f7fcb3b07738f585c111bd81f30069acb530",
+      "pixelWidth": 270,
+      "pixelHeight": 105,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/evidence/topline-s_platform_left.png": {
+      "role": "process-artifact",
+      "bytes": 56816,
+      "sha256": "65ff11196385a84950f9e8ac958e1983caecbdf0937da8c12031e850fb83efc7",
+      "pixelWidth": 270,
+      "pixelHeight": 105,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/evidence/topline-s_platform_right.png": {
+      "role": "process-artifact",
+      "bytes": 57113,
+      "sha256": "3cdc50e7017d7fc3bc30b1eb561c3befe00ece7a416afa8aa9a9efd6c22bad26",
+      "pixelWidth": 270,
+      "pixelHeight": 105,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/final-body-sweep.json": {
+      "role": "process-artifact",
+      "bytes": 591,
+      "sha256": "8277ac24da3a12073549ae9204f11aa42f9617ef0c7b7eca8c2016bcb69e09c8",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001",
+      "artifactGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/final-browser-check.json": {
+      "role": "process-artifact",
+      "bytes": 15339,
+      "sha256": "c2e8ae68e8aea526a16aa9e20ed7b110cab6e17a1cce0d61d1dd214c6e7141c7",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001",
+      "artifactGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/final-contact-inspection-montage.png": {
+      "role": "process-artifact",
+      "bytes": 554394,
+      "sha256": "0900c0ecbf36a2090d85d74eafc4b6745189eb61a60d0f180f635ad49341850b",
+      "pixelWidth": 640,
+      "pixelHeight": 600,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/final-current-hashes.json": {
+      "role": "process-artifact",
+      "bytes": 516,
+      "sha256": "f60873727092dac241265a53b6203e59f1d06894ce9154c1bde9eb14f9e530e4",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001",
+      "artifactGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/final-execution-hashes.json": {
+      "role": "process-artifact",
+      "bytes": 516,
+      "sha256": "d0de8f1a05178f0e0d7ba78a76b7ba245d7a910f1f26e72e47dbe88bb68cc376",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001",
+      "artifactGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/final-footline-alpha-audit.json": {
+      "role": "process-artifact",
+      "bytes": 3506,
+      "sha256": "4944f61dd624bc7be5ed2f0def8eec9491a6b8d0ece95186b627002d1acb4525",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001",
+      "artifactGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/final-root-hashes.json": {
+      "role": "process-artifact",
+      "bytes": 516,
+      "sha256": "f60873727092dac241265a53b6203e59f1d06894ce9154c1bde9eb14f9e530e4",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001",
+      "artifactGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/final-routes.json": {
+      "role": "process-artifact",
+      "bytes": 1159,
+      "sha256": "0c175287e703664cc6bb04346f39f9513a7bb0f5003fdc3673faa0ea187dd684",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001",
+      "artifactGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/final-runtime-summary.md": {
+      "role": "process-artifact",
+      "bytes": 3982,
+      "sha256": "a23818ef9129d0e58882065e1e621b2b4b0d44853e4b76b58945081c98ef6d24",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/final-screenshots/action-overlay.png": {
+      "role": "process-artifact",
+      "bytes": 1843913,
+      "sha256": "e5a869dfa8e717cd2c6f0d84d203aae6168a818bead565d5fa7014e54f7ae34e",
+      "pixelWidth": 1400,
+      "pixelHeight": 1350,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/final-screenshots/art-clean.png": {
+      "role": "process-artifact",
+      "bytes": 1829971,
+      "sha256": "5bf126d31bfab73325122056a8de4905a27a0d7a219c8d82641aa780652e26fc",
+      "pixelWidth": 1400,
+      "pixelHeight": 1350,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/final-screenshots/collision-overlay.png": {
+      "role": "process-artifact",
+      "bytes": 1820730,
+      "sha256": "b2c8f4d57f01a8c351ce33874f4fedad662cd4740c56dd416d9a8f298ab7f22c",
+      "pixelWidth": 1400,
+      "pixelHeight": 1350,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/final-screenshots/contact-s_altar.png": {
+      "role": "process-artifact",
+      "bytes": 1818810,
+      "sha256": "995909df607a5f642e1e14ff030cec7e78f16e9c2a1325218a574420f92049a1",
+      "pixelWidth": 1400,
+      "pixelHeight": 1350,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/final-screenshots/contact-s_ground_left.png": {
+      "role": "process-artifact",
+      "bytes": 1884642,
+      "sha256": "d05301510920b0635bf5dfbad7a92513e2e5366282921782d626da8c2f5072a4",
+      "pixelWidth": 1400,
+      "pixelHeight": 1350,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/final-screenshots/contact-s_ground_right.png": {
+      "role": "process-artifact",
+      "bytes": 1881579,
+      "sha256": "c031175b023c8cb65028312e896e4dd959b5ae8863c58ef7836e2f62b4f96814",
+      "pixelWidth": 1400,
+      "pixelHeight": 1350,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/final-screenshots/contact-s_platform_center.png": {
+      "role": "process-artifact",
+      "bytes": 1816213,
+      "sha256": "e33298babcd24cfd5536ede37b994d40ebd1040b74321875a2f645113c6e3d32",
+      "pixelWidth": 1400,
+      "pixelHeight": 1350,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/final-screenshots/contact-s_platform_left.png": {
+      "role": "process-artifact",
+      "bytes": 1882743,
+      "sha256": "8cb7b837d7fd87cf3dab706f03552c9d99c7529b879e60a8ab69c4680352ff5a",
+      "pixelWidth": 1400,
+      "pixelHeight": 1350,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/final-screenshots/contact-s_platform_right.png": {
+      "role": "process-artifact",
+      "bytes": 1881741,
+      "sha256": "79e1e16fd8473ca5efa3e1fa89160363fe1fdfa6cf9b83680acea10c65530455",
+      "pixelWidth": 1400,
+      "pixelHeight": 1350,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/final-screenshots/manual-thunder-sample.png": {
+      "role": "process-artifact",
+      "bytes": 1803338,
+      "sha256": "469b906f49ac591da4bacc25aa02f1ea5ba3451fc688222a5a68a15aad6deb96",
+      "pixelWidth": 1400,
+      "pixelHeight": 1350,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/final-screenshots/route_center.png": {
+      "role": "process-artifact",
+      "bytes": 1828264,
+      "sha256": "51a7032a2f7f7d99a711e792dc907dd96d2b05fc0f405044c750b8d975b2ae6f",
+      "pixelWidth": 1400,
+      "pixelHeight": 1350,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/final-screenshots/route_full_tour.png": {
+      "role": "process-artifact",
+      "bytes": 1834419,
+      "sha256": "c41516c53f1f0a04522986e5fce88a6b50b0741a74c3ee4ec580c599db1b96c1",
+      "pixelWidth": 1400,
+      "pixelHeight": 1350,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/final-screenshots/route_left.png": {
+      "role": "process-artifact",
+      "bytes": 1827024,
+      "sha256": "e863846d86a8145bb2ec8384489196d74bd4d5b40dce555c395238d7deb782ab",
+      "pixelWidth": 1400,
+      "pixelHeight": 1350,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/final-screenshots/route_right.png": {
+      "role": "process-artifact",
+      "bytes": 1833775,
+      "sha256": "ff327339642f404ff74dcfd89b27da380654babfd30a94a3ebba46c8dc837d24",
+      "pixelWidth": 1400,
+      "pixelHeight": 1350,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/final-screenshots/spawn.png": {
+      "role": "process-artifact",
+      "bytes": 1796700,
+      "sha256": "5554e29a628f50836f01699cc425707deb226b7bbdb162cbc38779a12d3c993b",
+      "pixelWidth": 1400,
+      "pixelHeight": 1350,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/final-transition-coverage.json": {
+      "role": "process-artifact",
+      "bytes": 24265,
+      "sha256": "1105b8a895527867ad17aae8a8719935cba3bb4827ebeecb77aa60c32ebaaa6e",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001",
+      "artifactGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/finalize_data.py": {
+      "role": "process-artifact",
+      "bytes": 4174,
+      "sha256": "6107a625b7e1a643133a9f18b8d2c755e9023c3530b6adf7d4b555865c11182b",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/floor-ruler.png": {
+      "role": "process-artifact",
+      "bytes": 668140,
+      "sha256": "fb86e85cd445861266791bd37c20ec42312c2de5cd8b646ad986ada744fbf77a",
+      "pixelWidth": 3200,
+      "pixelHeight": 210,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/generated/array-eye-alpha-repair.png": {
+      "role": "process-artifact",
+      "bytes": 736295,
+      "sha256": "f5107c4b9df95e599b0d69d836465110a8147e41f23f2b31e6e5f1476e9d0f05",
+      "pixelWidth": 1254,
+      "pixelHeight": 1254,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        254
+      ],
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/generated/geometry-background.png": {
+      "role": "process-artifact",
+      "bytes": 2349551,
+      "sha256": "dfc7d35521813790279b2f56fc830050b691a2db75e0d929660b7644084106ef",
+      "pixelWidth": 1891,
+      "pixelHeight": 832,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/generated/geometry-components.png": {
+      "role": "process-artifact",
+      "bytes": 805248,
+      "sha256": "9f4ecab3c8997bad7986a41ff1ceb5d1b45336dbb8f645648e184e5a59992e32",
+      "pixelWidth": 1891,
+      "pixelHeight": 832,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/generated/master-repair1.png": {
+      "role": "process-artifact",
+      "bytes": 2343089,
+      "sha256": "9e9a92acb15a24144f46962d01362bf8d5cf298565f5692f44f4a4a583236391",
+      "pixelWidth": 1891,
+      "pixelHeight": 832,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/generated/master-stage3.png": {
+      "role": "process-artifact",
+      "bytes": 2715794,
+      "sha256": "444c3635c74b528b04258c099d2aee215c376bef00f9f27be8a1d8b6392ea69a",
+      "pixelWidth": 1891,
+      "pixelHeight": 832,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/generated/piece-altar-refined.png": {
+      "role": "process-artifact",
+      "bytes": 87469,
+      "sha256": "c46022b820b0794d813d0d2c7d8c8d812c29bc014eea97898ba8d3669cc9cb1a",
+      "pixelWidth": 640,
+      "pixelHeight": 64,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/generated/piece-altar.png": {
+      "role": "process-artifact",
+      "bytes": 83464,
+      "sha256": "daaab0e9d32014e734bb6f4095eeb526936568290fcb044827a61773a23bcc36",
+      "pixelWidth": 640,
+      "pixelHeight": 64,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        66,
+        255
+      ],
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/generated/piece-array-crystal.png": {
+      "role": "process-artifact",
+      "bytes": 4304,
+      "sha256": "fa166afe770fc4e1f86ddd2421d4ff46018660eeeb1799b8f7d56d300a63e636",
+      "pixelWidth": 28,
+      "pixelHeight": 58,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        15,
+        253
+      ],
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/generated/piece-array-eye-repaired.png": {
+      "role": "process-artifact",
+      "bytes": 9939,
+      "sha256": "52ede1ed4464c53259b231a0575322b51ca3adf86d8791bf577ca6bc43f8af36",
+      "pixelWidth": 96,
+      "pixelHeight": 80,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/generated/piece-array-sigil.png": {
+      "role": "process-artifact",
+      "bytes": 2350,
+      "sha256": "fc29e996ce489d64f7950b7fba8b5f1eca06218b240834a6686b7a28a26c3d56",
+      "pixelWidth": 92,
+      "pixelHeight": 10,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        67,
+        253
+      ],
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/generated/piece-elder-phantom.png": {
+      "role": "process-artifact",
+      "bytes": 19093,
+      "sha256": "9612592161c9ca02dd55a41be310f32df6f4e92707c3a1add6a297632d5b1914",
+      "pixelWidth": 106,
+      "pixelHeight": 82,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/generated/piece-ground-final.png": {
+      "role": "process-artifact",
+      "bytes": 190816,
+      "sha256": "29502cc278ab0f78830feb32ed3de095bf22ca09ad65cac8cd0fb8cbd508c6a2",
+      "pixelWidth": 1600,
+      "pixelHeight": 64,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        232,
+        254
+      ],
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/generated/piece-ground.png": {
+      "role": "process-artifact",
+      "bytes": 189210,
+      "sha256": "6d65bcde715fd89aa5857bbe4cfe37a07cb929dd7ac76499792abdf0bb7333fa",
+      "pixelWidth": 1600,
+      "pixelHeight": 64,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/generated/piece-platform-center-refined.png": {
+      "role": "process-artifact",
+      "bytes": 21584,
+      "sha256": "3aabee9cbaa29e5a9eb0ebacfdf2a63a1b938c9b37eda5c1bf2da3abc8dfc160",
+      "pixelWidth": 320,
+      "pixelHeight": 38,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/generated/piece-platform-center.png": {
+      "role": "process-artifact",
+      "bytes": 22946,
+      "sha256": "f3b114faf9b393c9cb76843be5241e016d0bda1ea7142b3da19c295b66c20f2c",
+      "pixelWidth": 320,
+      "pixelHeight": 38,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/generated/piece-platform-left-refined.png": {
+      "role": "process-artifact",
+      "bytes": 17664,
+      "sha256": "e7a983340915025bd65e572734816d45b51f96f569f32f5aba4df9022b548b23",
+      "pixelWidth": 256,
+      "pixelHeight": 37,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/generated/piece-platform-left.png": {
+      "role": "process-artifact",
+      "bytes": 19427,
+      "sha256": "dbead28fd27d6782e425434d29077b4abff36fa796c65e45f22e2d015cfb0e3a",
+      "pixelWidth": 256,
+      "pixelHeight": 37,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/generated/piece-platform-right-refined.png": {
+      "role": "process-artifact",
+      "bytes": 17664,
+      "sha256": "e7a983340915025bd65e572734816d45b51f96f569f32f5aba4df9022b548b23",
+      "pixelWidth": 256,
+      "pixelHeight": 37,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/generated/piece-platform-right.png": {
+      "role": "process-artifact",
+      "bytes": 19012,
+      "sha256": "f0e4bfcf42fca03ebba360216933f0b8ec95a588a14bc9f99ebad568c876db5e",
+      "pixelWidth": 256,
+      "pixelHeight": 37,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/generated/piece-rope-center.png": {
+      "role": "process-artifact",
+      "bytes": 4532,
+      "sha256": "5a5af83fc282ca73167a18fe29f95ae20fbca62103fe0b0526191c406b9c337c",
+      "pixelWidth": 8,
+      "pixelHeight": 192,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        172,
+        255
+      ],
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/generated/piece-rope-left.png": {
+      "role": "process-artifact",
+      "bytes": 4317,
+      "sha256": "d3c17d82af2bf00a6bd9b56c4392f54abf0f20ab928e1d9f5a141b4e0d91276c",
+      "pixelWidth": 8,
+      "pixelHeight": 192,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        203,
+        253
+      ],
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/generated/piece-rope-right.png": {
+      "role": "process-artifact",
+      "bytes": 4334,
+      "sha256": "8f6e4bb16e7958c27cd2111a798acd5491bffc9fc2bbc62f6d13f5f97936ab4c",
+      "pixelWidth": 8,
+      "pixelHeight": 192,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        205,
+        255
+      ],
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/generated/piece-thunder-sample.png": {
+      "role": "process-artifact",
+      "bytes": 11889,
+      "sha256": "6fe513981baceb37bf6e8d4cd422a4087ab658dcfe369c25cddd3c63038fe37a",
+      "pixelWidth": 96,
+      "pixelHeight": 102,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/generated/refined-altar.png": {
+      "role": "process-artifact",
+      "bytes": 1608095,
+      "sha256": "3206e55ba88549d5a3c82184d97609a80ed1240aa0283e7909f521bd07628a49",
+      "pixelWidth": 2170,
+      "pixelHeight": 725,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/generated/refined-background.png": {
+      "role": "process-artifact",
+      "bytes": 2301551,
+      "sha256": "e76e4042cf07372ba3f956a8e218a87e469ba1219cbdda0a8a4da178fb8e5158",
+      "pixelWidth": 1890,
+      "pixelHeight": 832,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/generated/refined-slab-alpha.png": {
+      "role": "process-artifact",
+      "bytes": 563881,
+      "sha256": "064e062fef112eb09511ef66c9a605b56e3232e987c991da03c7027a90f3f299",
+      "pixelWidth": 2169,
+      "pixelHeight": 725,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/generated/refined-slab.png": {
+      "role": "process-artifact",
+      "bytes": 1323309,
+      "sha256": "311fe256b506607cae6fdccc000c4b5ce2196b2550768c1235defde99de73283",
+      "pixelWidth": 2170,
+      "pixelHeight": 725,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/geometry-background-size.png": {
+      "role": "process-artifact",
+      "bytes": 1750919,
+      "sha256": "d95927062344c3b34ddb455f793e0a7fa9bb3995c9e42fa18834aab225e439d8",
+      "pixelWidth": 1600,
+      "pixelHeight": 704,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/geometry-components-size.png": {
+      "role": "process-artifact",
+      "bytes": 577081,
+      "sha256": "c7a73a7887d2b1aa9ee286a8f37d8d089a05dbda3feb8d36a79f55796e67c5e1",
+      "pixelWidth": 1600,
+      "pixelHeight": 704,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/graybox-body-sweep.json": {
+      "role": "process-artifact",
+      "bytes": 499,
+      "sha256": "f218c3849b84eeaed58052bc104b60b46052fef6c59c7d0d37d5c40436575bbd",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001",
+      "artifactGeometryRevision": "trial-foundation-graybox-001"
+    },
+    "work/graybox-browser-attempt-001-path-failed.json": {
+      "role": "process-artifact",
+      "bytes": 9901,
+      "sha256": "02599bddd10c6367a21c8874d961efe067e65844ebd5a2118d53b86f1cd542ca",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001",
+      "artifactGeometryRevision": "trial-foundation-graybox-001"
+    },
+    "work/graybox-browser-check.json": {
+      "role": "process-artifact",
+      "bytes": 6763,
+      "sha256": "5998a509ff27091be507123f1917bc783d6a9321658c7e82fb526df56e5a55e2",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001",
+      "artifactGeometryRevision": "trial-foundation-graybox-001"
+    },
+    "work/graybox-routes.json": {
+      "role": "process-artifact",
+      "bytes": 1086,
+      "sha256": "e2b022459a2430ed8f372ed046227ca7b555d8e6c7c087ec1f6ce06e3e2e03a9",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001",
+      "artifactGeometryRevision": "trial-foundation-graybox-001"
+    },
+    "work/graybox-screenshots/contact-s_altar.png": {
+      "role": "process-artifact",
+      "bytes": 194925,
+      "sha256": "3403645c54663058a6624167e4242909f0f15586435f7275fd20921a69b16038",
+      "pixelWidth": 1400,
+      "pixelHeight": 1350,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/graybox-screenshots/contact-s_ground_left.png": {
+      "role": "process-artifact",
+      "bytes": 199397,
+      "sha256": "59631d9c96645e0b01f1fa824ac7ca97b8b315ee9d99d6796b3cfc49adb66c6b",
+      "pixelWidth": 1400,
+      "pixelHeight": 1350,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/graybox-screenshots/contact-s_ground_right.png": {
+      "role": "process-artifact",
+      "bytes": 193343,
+      "sha256": "b5b41d8fab44d04c86411b33e28b1ddf2795711a97f685ed6ca115d910deac24",
+      "pixelWidth": 1400,
+      "pixelHeight": 1350,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/graybox-screenshots/contact-s_platform_center.png": {
+      "role": "process-artifact",
+      "bytes": 196603,
+      "sha256": "582d91c33b3c824314593052502ed3c3a4ac5a68fde7e28b68cec27aac81ec7f",
+      "pixelWidth": 1400,
+      "pixelHeight": 1350,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/graybox-screenshots/contact-s_platform_left.png": {
+      "role": "process-artifact",
+      "bytes": 198718,
+      "sha256": "c90dfbe6168b0e2a608468bfd561ca01a88d35b5c42ab3745fa7c66177f64fc1",
+      "pixelWidth": 1400,
+      "pixelHeight": 1350,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/graybox-screenshots/contact-s_platform_right.png": {
+      "role": "process-artifact",
+      "bytes": 193288,
+      "sha256": "4a969280a67a6293ce47748e2b7eee5385ee30d4cd0cc568cae703a0e7e76c22",
+      "pixelWidth": 1400,
+      "pixelHeight": 1350,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/graybox-screenshots/manual-thunder-sample.png": {
+      "role": "process-artifact",
+      "bytes": 200477,
+      "sha256": "4648af39d0856e750f995f1fb45f42011d17d2494b868a8ae6fd5c95b1928185",
+      "pixelWidth": 1400,
+      "pixelHeight": 1350,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/graybox-screenshots/route_center.png": {
+      "role": "process-artifact",
+      "bytes": 194771,
+      "sha256": "64585b30a838fd68232f1b5319962012b82c39ff6f357e40f583d5931d62ec33",
+      "pixelWidth": 1400,
+      "pixelHeight": 1350,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/graybox-screenshots/route_full_tour.png": {
+      "role": "process-artifact",
+      "bytes": 192253,
+      "sha256": "886856d052fa82a98b881a2d99e756342d464e54aa81370bc83e0118a47ebe8e",
+      "pixelWidth": 1400,
+      "pixelHeight": 1350,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/graybox-screenshots/route_left.png": {
+      "role": "process-artifact",
+      "bytes": 193370,
+      "sha256": "101fdb20d9a8627df4e607609015669b5008cd8bf908a2d1c417b0e505d862e5",
+      "pixelWidth": 1400,
+      "pixelHeight": 1350,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/graybox-screenshots/route_right.png": {
+      "role": "process-artifact",
+      "bytes": 191367,
+      "sha256": "42cb8d4bc12aa4167af1e5e9527fb87132032085c9be194dc96912a344d2fe17",
+      "pixelWidth": 1400,
+      "pixelHeight": 1350,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/graybox-screenshots/spawn.png": {
+      "role": "process-artifact",
+      "bytes": 188712,
+      "sha256": "0b5f6933f84e38a58dda464bd96cbbaa1afe4e445a3bcf1d6d8a32dcf3d81737",
+      "pixelWidth": 1400,
+      "pixelHeight": 1350,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/hash_geometry.py": {
+      "role": "process-artifact",
+      "bytes": 1481,
+      "sha256": "e8499507bb4988ec6a83af929cf82c85d2dc3ca4ead8fdd17bdff589c4bb705b",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/left-ruler.png": {
+      "role": "process-artifact",
+      "bytes": 83600,
+      "sha256": "67e898ef58432489f078ae7eef7e1009914776668bc84918dfbc8b10309975e3",
+      "pixelWidth": 720,
+      "pixelHeight": 138,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/master-repair1-size.png": {
+      "role": "process-artifact",
+      "bytes": 1732430,
+      "sha256": "3c7504586740e8b643fbbfadd2c7b0068083dac611c8956522301f7fdb728d6b",
+      "pixelWidth": 1600,
+      "pixelHeight": 704,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/master-stage3-registered.png": {
+      "role": "process-artifact",
+      "bytes": 2082527,
+      "sha256": "bbdb43a230f3efbb19801b762c74609c72f7f503e37d004c6ee48a4f205ef7a7",
+      "pixelWidth": 1600,
+      "pixelHeight": 704,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/master-stage3-size.png": {
+      "role": "process-artifact",
+      "bytes": 1916585,
+      "sha256": "1784931b2c01d31e02208cbf2d95a966f112fc0203203f6d6859810bcf92d452",
+      "pixelWidth": 1600,
+      "pixelHeight": 704,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/master-stage4-refined.png": {
+      "role": "process-artifact",
+      "bytes": 2063119,
+      "sha256": "cac07e0709726d588f638cf00a9eb6d3d62a9fb9da6e183e9fffb77c0784dc61",
+      "pixelWidth": 1600,
+      "pixelHeight": 704,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/preview/engine.mjs": {
+      "role": "process-artifact",
+      "bytes": 14193,
+      "sha256": "aa5263518ebccd491515caa012a13801ea2017e6fe6a6b8d26e83aad9e78febb",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/preview/index.html": {
+      "role": "process-artifact",
+      "bytes": 3892,
+      "sha256": "352a3e1df9fb2672b5e9c2a53396b1f424a1fae5e96f8ba0e112b790fabf0fe0",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/preview/physics-smoke-final-results.json": {
+      "role": "process-artifact",
+      "bytes": 170483,
+      "sha256": "d82e99fdcc91b14c8c3d7efae53efb07dba529a1554e722177e69723b59d2b5c",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001",
+      "artifactGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/preview/physics-smoke-results.json": {
+      "role": "process-artifact",
+      "bytes": 170431,
+      "sha256": "f9b8ec55ea0ff0f704eb483438da903cadb1eb98479c6acbbd04bda15cbd059f",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001",
+      "artifactGeometryRevision": "trial-foundation-graybox-001"
+    },
+    "work/preview/physics-smoke.mjs": {
+      "role": "process-artifact",
+      "bytes": 5265,
+      "sha256": "f75de777de88634d4d8b44b62a144b2631d3637cc1e96c8a7f11ee7951ec94d2",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/preview/player-reference-idle.png": {
+      "role": "process-artifact",
+      "bytes": 10012,
+      "sha256": "520235d2f9c4c9e83b140ba439c2d18becfaa8e962fa15a98e35a14003ce0181",
+      "pixelWidth": 96,
+      "pixelHeight": 96,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/preview/preview.mjs": {
+      "role": "process-artifact",
+      "bytes": 14547,
+      "sha256": "cae8dc092f996f7b32231dedf5aa8bc28726ba285ad64bd7fc5112085ce80529",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/prompt-stage3-bg.txt": {
+      "role": "process-artifact",
+      "bytes": 1150,
+      "sha256": "9652365f1c7907f9ac3829098cd8751c8ecd81da3f101b4c227ff49244c411f7",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/prompt-stage3-cutout.txt": {
+      "role": "process-artifact",
+      "bytes": 1001,
+      "sha256": "f18e99dc1924b83185dd98e25b3f13c245019a22bb4e4734a71c1f500fb42ea7",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/prompt-stage3-repair.txt": {
+      "role": "process-artifact",
+      "bytes": 1727,
+      "sha256": "58660f83cf399299ba9e6abb7c87e752f38a8545ffc2c0578ebb51f131c81dde",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/prompt-stage3.txt": {
+      "role": "process-artifact",
+      "bytes": 3856,
+      "sha256": "c158611d465dac9591f7f9ae0446617dacdeb5c1d80a11617a055229f6b94788",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/prompt-stage4-altar.txt": {
+      "role": "process-artifact",
+      "bytes": 821,
+      "sha256": "7f5435c9dd9f2034add1325f3f50a911cc46e1f136a62c480f831f6d6f1b9b31",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/prompt-stage4-gates.txt": {
+      "role": "process-artifact",
+      "bytes": 922,
+      "sha256": "13b096962a46f58d6b5027918ccd0a043aed398f4429c7a714f42d4949d7895b",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/prompt-stage4-slab.txt": {
+      "role": "process-artifact",
+      "bytes": 837,
+      "sha256": "66c06aa957f6e8e14dbf414f213ad99cf39b03873f7bb2f81feecfe59cb29212",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/prompt-stage5-eye-repair.txt": {
+      "role": "process-artifact",
+      "bytes": 957,
+      "sha256": "047d3877bfc5ad0c85da128b81a560258047b67700295e7e36147ed34947a122",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/prompt-stage5-refined-slab-extraction.txt": {
+      "role": "process-artifact",
+      "bytes": 617,
+      "sha256": "fca93b88f2ee9f9635ea2d6f337536db16eb21cd2ff8a93c8765f9c638c8bff6",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/protected-after.json": {
+      "role": "process-artifact",
+      "bytes": 1572,
+      "sha256": "b79f1bec6689e7e83ce02d80886b0cb7da22c36cc14770b8f2b24d8f13e55ad4",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/protected-before.json": {
+      "role": "process-artifact",
+      "bytes": 487522,
+      "sha256": "e2fb51c836e01a2efb0178554b6f568056d384f1f6b1081be0284f215793048e",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/protected-boundary-notes.md": {
+      "role": "process-artifact",
+      "bytes": 1414,
+      "sha256": "afe2bb96a0b5c50297d5ce521736098eacaaa81d4517e3aa756ba6b6c62e0fbc",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/refined-altar-face-check.png": {
+      "role": "process-artifact",
+      "bytes": 165389,
+      "sha256": "2cf95f2054081844fc7c42927e28675b73ed1aa3fb112ae234a16b6db785afa9",
+      "pixelWidth": 990,
+      "pixelHeight": 103,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/register_art.py": {
+      "role": "process-artifact",
+      "bytes": 2319,
+      "sha256": "ba2cf125c9b19679f32a221ce0db7d4d24299c0a935b93d072dbc7c3ee8c9836",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/registration.json": {
+      "role": "process-artifact",
+      "bytes": 5423,
+      "sha256": "550c67b7efb9d1a08a36abcb329a9510dbb20d3c99643eadf2747e1854b0a5c7",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/render_diagnostics.py": {
+      "role": "process-artifact",
+      "bytes": 6597,
+      "sha256": "56b54394c50addf7fdd04b3c553a2daa347d507d5302a28b4e99464e78f2be45",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/replays-final/route_center.json": {
+      "role": "process-artifact",
+      "bytes": 118311,
+      "sha256": "b0b10fa1f555fe2bab47e1906661e219331568eb3da203dc78bacfbf5424fa34",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001",
+      "artifactGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/replays-final/route_full_tour.json": {
+      "role": "process-artifact",
+      "bytes": 650733,
+      "sha256": "e45ea8b4385ec13a232e04b588ab72a226c51bda5bac430d2cbe5666df98c753",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001",
+      "artifactGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/replays-final/route_left.json": {
+      "role": "process-artifact",
+      "bytes": 251693,
+      "sha256": "937d0957aa978a40a7a850cc54896f7d9e333d5a1401c597a75d3171c93aff12",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001",
+      "artifactGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/replays-final/route_right.json": {
+      "role": "process-artifact",
+      "bytes": 283381,
+      "sha256": "9d723ccbff511df4eb6409fd0095c74aa5447a2b11c235a67a0be845d566c943",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001",
+      "artifactGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/replays-graybox/route_center.json": {
+      "role": "process-artifact",
+      "bytes": 118232,
+      "sha256": "21551fd4899c9bc7a157bbde5c5a8a9ab0b598fc75975fb8eb2e45edac0fe25e",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001",
+      "artifactGeometryRevision": "trial-foundation-graybox-001"
+    },
+    "work/replays-graybox/route_full_tour.json": {
+      "role": "process-artifact",
+      "bytes": 650654,
+      "sha256": "4b51efc1450a4d7f43e9f1d17d4aec46b0bc199a0251d780024a0764f746d9e7",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001",
+      "artifactGeometryRevision": "trial-foundation-graybox-001"
+    },
+    "work/replays-graybox/route_left.json": {
+      "role": "process-artifact",
+      "bytes": 251614,
+      "sha256": "e69eccf6b3cbc2fe2e88dfb26a17034696da014d0cc52fda33118f3ac5e2c124",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001",
+      "artifactGeometryRevision": "trial-foundation-graybox-001"
+    },
+    "work/replays-graybox/route_right.json": {
+      "role": "process-artifact",
+      "bytes": 283302,
+      "sha256": "f05e13cdb91a1a27761a3d21d80698eb689e5019f34311d0c743b96a7cb671b4",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001",
+      "artifactGeometryRevision": "trial-foundation-graybox-001"
+    },
+    "work/run_routes.mjs": {
+      "role": "process-artifact",
+      "bytes": 4577,
+      "sha256": "52e7a40069f172edea8f0873afc16bc9ab3d1ce86d052f42b775986ad536763b",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/scene-brief.md": {
+      "role": "process-artifact",
+      "bytes": 2632,
+      "sha256": "7e3aa78def4b03c2eb82c29c4be59ad7e59bf36d9de1cda1939a7cc9d9b5ae90",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/scene-data.draft.json": {
+      "role": "process-artifact",
+      "bytes": 19044,
+      "sha256": "377ed1ab1bcf0cc771479c2de075afba069e32ebdb86879802d1fbb8ea801245",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001",
+      "artifactGeometryRevision": "trial-foundation-graybox-001"
+    },
+    "work/scene-data.final-executed.json": {
+      "role": "process-artifact",
+      "bytes": 20775,
+      "sha256": "51fd5e58e7f96383e31333cdea4ccdc10ea27f03c7c68711f55bd934e7706bf9",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001",
+      "artifactGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/scene-data.final-prevalidation.json": {
+      "role": "process-artifact",
+      "bytes": 20708,
+      "sha256": "0a8b8b461332fd7a33c483ffd8fca10d34c65cb6f1946d7dfaeb0258e1324be9",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001",
+      "artifactGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/stage2-graybox-report.md": {
+      "role": "process-artifact",
+      "bytes": 2925,
+      "sha256": "b6cbb91f814cb1924f1c26168e8835009188871fc8860d6d1c5092406cce4eaf",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/stage3-registered-playable.png": {
+      "role": "process-artifact",
+      "bytes": 395718,
+      "sha256": "7c3313bca0130a57bcc24d48f68ee8964631f609b8a4b5caeebf6d5f83d6604b",
+      "pixelWidth": 1600,
+      "pixelHeight": 704,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/stage4-altar-before-after.png": {
+      "role": "process-artifact",
+      "bytes": 188226,
+      "sha256": "8eff399d00def0cec8873f2ccb09f742ecf5c3088060aeafcbbf153a8dabf888",
+      "pixelWidth": 656,
+      "pixelHeight": 168,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/stage4-altar-target.png": {
+      "role": "process-artifact",
+      "bytes": 231566,
+      "sha256": "eeb3273758877600b9f9653a6b9d4b75f1cfd753de2d0920512af0fd0313e4fc",
+      "pixelWidth": 704,
+      "pixelHeight": 176,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/stage4-background.png": {
+      "role": "process-artifact",
+      "bytes": 1969384,
+      "sha256": "111bbdb310fa57fd88eb850b00749320a679fdcd4c6ccaa269f3062fc8730cd0",
+      "pixelWidth": 1600,
+      "pixelHeight": 704,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/stage4-blocks.json": {
+      "role": "process-artifact",
+      "bytes": 1842,
+      "sha256": "329f1ddcf47fcefa5670dcdf71dde25a496948adb6680d0b962c7453b0d7ac10",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/stage4-playable.png": {
+      "role": "process-artifact",
+      "bytes": 384900,
+      "sha256": "c2b1656e6fb6ae406b299f47fccfa3b84816314f7ed082e1a8112a7de6a7e9c5",
+      "pixelWidth": 1600,
+      "pixelHeight": 704,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/stage4-refined-slab-crop.png": {
+      "role": "process-artifact",
+      "bytes": 302673,
+      "sha256": "c3d68b8d525e8f83a40d638518486bf8a37f908b2b67d4e87240faed0263d2ff",
+      "pixelWidth": 1480,
+      "pixelHeight": 180,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/stage4-slab-before-after.png": {
+      "role": "process-artifact",
+      "bytes": 77871,
+      "sha256": "f2cf52156d64d73365a7cddce1236eada63135f0239fffa5841dddec120d67b6",
+      "pixelWidth": 352,
+      "pixelHeight": 128,
+      "mode": "RGB",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/stage4-slab-target.png": {
+      "role": "process-artifact",
+      "bytes": 86641,
+      "sha256": "6762dee7f89a3599f42fd3adbe345cf5c1db01a7cb2dd42ee90432347013b828",
+      "pixelWidth": 448,
+      "pixelHeight": 96,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "work/sweep_routes.py": {
+      "role": "process-artifact",
+      "bytes": 1750,
+      "sha256": "cc7e1eab30744e81400d2de3b3f356a619653af6cb3ab7192255415afd1261b3",
+      "purpose": "process source/prompt/crop/failed candidate or evidence; not a runtime layer",
+      "packagedWithGeometryRevision": "trial-foundation-final-001"
+    },
+    "manifest.json": {
+      "role": "asset-manifest",
+      "sha256": null,
+      "hashPolicy": "self hash omitted to avoid recursion"
+    }
+  },
+  "layers": [
+    {
+      "id": "asset_background",
+      "role": "background",
+      "path": "background.png",
+      "pixelWidth": 1600,
+      "pixelHeight": 704,
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "asset_playable",
+      "role": "playable",
+      "path": "playable.png",
+      "pixelWidth": 1600,
+      "pixelHeight": 704,
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    }
+  ],
+  "actorDrawOrder": 20,
+  "foreground": {
+    "applicable": false,
+    "reason": "no foreground occluders; keep bottom and all entrances clear"
+  },
+  "composition": {
+    "inputs": [
+      "background.png",
+      "playable.png"
+    ],
+    "operation": "RGBA alpha composite in draw order",
+    "exactRecomposition": true,
+    "refinedMaster": "work/master-stage4-refined.png"
+  },
+  "sceneData": {
+    "path": "scene-data.json",
+    "sha256": "ef99b5065b0da8d0469a7953f96ed49cc6db60104ba010c48796ac740257c451",
+    "geometryRevision": "trial-foundation-final-001",
+    "validationStatus": "verified",
+    "actionGeometrySha256": "70e7ff2c235e67d9808ce515e8c75f22b631d59ef547c0119b424dd4fa7f9c78"
+  },
+  "runtime": {
+    "entry": "index.html",
+    "page": "work/preview/index.html",
+    "engine": "work/preview/engine.mjs",
+    "engineSha256": "aa5263518ebccd491515caa012a13801ea2017e6fe6a6b8d26e83aad9e78febb",
+    "dataSource": "scene-data.json",
+    "collisionModel": "fixed60Hz rectangular AABB solids plus one-way support; source FEEL base100; independent adapter, not Phaser",
+    "localStart": "python3 -m http.server 8796 --bind 127.0.0.1",
+    "noAbsoluteRuntimeAssetPaths": true
+  },
+  "diagnostics": {
+    "schemaVersion": "1.0",
+    "geometryRevision": "trial-foundation-final-001",
+    "actorParameterRevision": "feel-base100-20261027",
+    "engineRevision": "trial-aabb-feel-60hz-001",
+    "sceneDataSHA256": "ef99b5065b0da8d0469a7953f96ed49cc6db60104ba010c48796ac740257c451",
+    "status": "verified",
+    "validationStatus": "verified",
+    "maskPalette": {
+      "stand": [
+        0,
+        200,
+        80,
+        255
+      ],
+      "walk": [
+        150,
+        245,
+        160,
+        255
+      ],
+      "rope": [
+        0,
+        190,
+        230,
+        255
+      ],
+      "jump": [
+        255,
+        180,
+        0,
+        255
+      ],
+      "drop": [
+        170,
+        80,
+        225,
+        255
+      ],
+      "hazard": [
+        229,
+        72,
+        58,
+        255
+      ],
+      "point": [
+        255,
+        70,
+        160,
+        255
+      ]
+    },
+    "rasterizationOrder": [
+      "walk",
+      "stand",
+      "rope",
+      "jump",
+      "drop",
+      "hazard",
+      "point"
+    ],
+    "maskAntialiasing": false,
+    "maskHasLabels": false,
+    "collisionSource": "scene-data.json: solids, surfaces, climbs; hazards explicitly telegraph-only",
+    "files": {
+      "action-mask.png": "f6b62562554b51b554cc9c861fd87a69174260e07d14ec58adae82c2ef180a25",
+      "action-overlay.png": "72d445dbdb64b481d70c2c90157293aca68c64a609ba295e2b3ac400b3b8d3e2",
+      "collision-overlay.png": "dba7bbbcc7070d25ccf9d424bfc8c30a6dbb29fbc36d66f79e8969afdfd1aa5b"
+    }
+  },
+  "validation": {
+    "status": "verified",
+    "report": "validation-report.md",
+    "routeCount": 4,
+    "transitionCount": 11,
+    "actualTransitionExecutions": 22,
+    "traceSamples": 3645,
+    "resetCount": 0,
+    "bodyPenetrations": 0,
+    "toplineSamples": 18,
+    "toplineMaxDeltaY": 0,
+    "toplineTolerance": 1,
+    "ropeAnchorCount": 6,
+    "ropeAnchorDeltaY": 0,
+    "browser": "work/final-browser-check.json",
+    "artAudit": "work/art-data-audit.json",
+    "executionSnapshot": "work/scene-data.final-executed.json",
+    "executionHashes": "work/final-execution-hashes.json",
+    "currentHashes": "work/final-current-hashes.json",
+    "scope": "local independent AABB adapter with repository FEEL base100; no production Phaser integration, combat waves, objective HP or damage evaluation"
+  },
+  "provenance": {
+    "artTool": "built-in image_gen.imagegen",
+    "prompts": "work/prompt-*.txt",
+    "originals": "work/generated/",
+    "registration": "work/registration.json",
+    "refinementBlocks": "work/stage4-blocks.json",
+    "sourceMap": "maps/trial_foundation_altar.json (read-only)",
+    "positiveStyleReference": "art/scenes/qingyun_village_gsb_v2/scene.png (read-only)",
+    "ordinaryResizeMeaning": "coordinate registration only; actual material refinement is AI repaint",
+    "finalEyeRepair": "work/generated/array-eye-alpha-repair.png",
+    "floorFinalCrop": [
+      4,
+      585,
+      1596,
+      659
+    ],
+    "floorPlacement": [
+      0,
+      640,
+      1600,
+      64
+    ]
+  },
+  "protectedBoundary": {
+    "gamePublicUnchanged": true,
+    "balanceUnchanged": true,
+    "trialSourceMapUnchanged": true,
+    "otherDeliveryArtUnchanged": true,
+    "strictWholeWorkspaceSnapshot": "observed concurrent drift; see detailed notes, not asserted wholly unchanged",
+    "details": "work/protected-boundary-notes.md",
+    "snapshot": "work/protected-after.json"
+  },
+  "notes": [
+    "No production integration, deployment, trial-link forwarding or git push.",
+    "Standalone warning sample has no damage; combat waves and objective health remain outside scope.",
+    "Status/evidence writeback preserves stable action geometry hash; old candidate evidence remains explicitly historical."
+  ]
+}

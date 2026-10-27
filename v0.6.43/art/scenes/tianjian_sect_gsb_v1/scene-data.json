@@ -1,0 +1,1999 @@
+{
+  "schemaVersion": "1.0",
+  "geometryRevision": "tianjian-sect-final-003",
+  "status": "verified",
+  "space": {
+    "origin": "top-left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "units": "logical-pixel",
+    "logicalWidth": 3072,
+    "logicalHeight": 960,
+    "sourceMap": "maps/tianjian_sect.json",
+    "sourceToWorld": [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0
+    ]
+  },
+  "safeZone": true,
+  "qiDensity": 4,
+  "actor": {
+    "parameterRevision": "tianjian-base-feel-20261027-001",
+    "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/move.ts; independent minimum AABB adapter",
+    "sourceRevision": {
+      "game/src/config/feel.ts": "9375297a15b04012633197a935f4d9ffd403c3ff8d1e055cb585dd5f81acdeec",
+      "game/src/scenes/Player.ts": "ec9426ed625784532c6e632a1755bd16076cc3f559d177f465b741341193f513",
+      "game/src/move.ts": "585c9987623cbe532d7f65508773addd52ccd2f312e5c2ee592e9e6f2f686a74",
+      "game/src/SpriteArt.ts": "6c1fcb4fe67857c7fc3d569a2151f4b1a7cdd914e69be6d12d53b54b288b6f18",
+      "maps/tianjian_sect.json": "60bdd46b4a87023a24a6ebca599b48062b6f4935bd5a6c2635531c024b2ae9da",
+      "balance/tools/gen_tianjian.py": "50d696e643739ff06824405f6783eb19122b5907580263a8cf5d7df17e180e16"
+    },
+    "provisional": false,
+    "visualBounds": {
+      "width": 96,
+      "height": 96,
+      "idleAlphaBounds": [
+        15,
+        9,
+        76,
+        96
+      ],
+      "idleVisibleWidth": 61,
+      "idleVisibleHeight": 87,
+      "anchor": "feet-center"
+    },
+    "collider": {
+      "shape": "aabb",
+      "width": 26,
+      "height": 58,
+      "anchor": "feet-center"
+    },
+    "abilities": [
+      "walk",
+      "jump",
+      "double-jump",
+      "ladder",
+      "rope",
+      "drop-through"
+    ],
+    "movement": {
+      "gravity": 2000,
+      "maxFallSpeed": 670,
+      "walkSpeed": 130,
+      "groundAccel": 2400,
+      "groundDecel": 3000,
+      "airAccel": 700,
+      "airMaxSpeed": 130,
+      "jumpSpeed": 560,
+      "coyoteMs": 60,
+      "jumpBufferMs": 80,
+      "doubleJumpVy": 480,
+      "doubleJumpVx": 330,
+      "climbSpeed": 110,
+      "ropeGrabRangeX": 18,
+      "ropeJumpVx": 160,
+      "ropeJumpVy": 360,
+      "ropeRegrabMs": 250,
+      "dropThroughMs": 220,
+      "oneWayEdge": 8,
+      "fixedHz": 60,
+      "speedPoints": 100,
+      "jumpPoints": 100
+    },
+    "failureRules": {
+      "hazards": "none-safe-zone",
+      "fall": "land on continuous white-stone foundation",
+      "reset": "R returns start_spawn and clears velocity/input buffer"
+    },
+    "visualAsset": {
+      "path": "work/preview/player-reference-idle.png",
+      "width": 96,
+      "height": 96,
+      "anchor": "feet-center"
+    }
+  },
+  "assets": [
+    {
+      "id": "background",
+      "role": "background",
+      "path": "background.png",
+      "pixelWidth": 3072,
+      "pixelHeight": 960,
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "playable",
+      "role": "playable",
+      "path": "playable.png",
+      "pixelWidth": 3072,
+      "pixelHeight": 960,
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "s_dock",
+      "name": "云台",
+      "polyline": [
+        [
+          0,
+          832
+        ],
+        [
+          448,
+          832
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        13,
+        435
+      ],
+      "walkRegion": [
+        [
+          13,
+          774
+        ],
+        [
+          435,
+          774
+        ],
+        [
+          435,
+          832
+        ],
+        [
+          13,
+          832
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 832,
+        "tolerance": 2,
+        "rule": "visible bearing stone/wood top, not rail/knot/hook"
+      },
+      "status": "verified"
+    },
+    {
+      "id": "s_gate",
+      "name": "山门苏师姐",
+      "polyline": [
+        [
+          448,
+          896
+        ],
+        [
+          896,
+          896
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        461,
+        883
+      ],
+      "walkRegion": [
+        [
+          461,
+          838
+        ],
+        [
+          883,
+          838
+        ],
+        [
+          883,
+          896
+        ],
+        [
+          461,
+          896
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 896,
+        "tolerance": 2,
+        "rule": "visible bearing stone/wood top, not rail/knot/hook"
+      },
+      "status": "verified"
+    },
+    {
+      "id": "s_stair_1",
+      "name": "白石第一阶",
+      "polyline": [
+        [
+          896,
+          832
+        ],
+        [
+          1152,
+          832
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        909,
+        1139
+      ],
+      "walkRegion": [
+        [
+          909,
+          774
+        ],
+        [
+          1139,
+          774
+        ],
+        [
+          1139,
+          832
+        ],
+        [
+          909,
+          832
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 832,
+        "tolerance": 2,
+        "rule": "visible bearing stone/wood top, not rail/knot/hook"
+      },
+      "status": "verified"
+    },
+    {
+      "id": "s_arena",
+      "name": "演武坪",
+      "polyline": [
+        [
+          1152,
+          768
+        ],
+        [
+          1472,
+          768
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        1165,
+        1459
+      ],
+      "walkRegion": [
+        [
+          1165,
+          710
+        ],
+        [
+          1459,
+          710
+        ],
+        [
+          1459,
+          768
+        ],
+        [
+          1165,
+          768
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 768,
+        "tolerance": 2,
+        "rule": "visible bearing stone/wood top, not rail/knot/hook"
+      },
+      "status": "verified"
+    },
+    {
+      "id": "s_hall",
+      "name": "主殿凌宗主",
+      "polyline": [
+        [
+          1472,
+          704
+        ],
+        [
+          2336,
+          704
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        1485,
+        2323
+      ],
+      "walkRegion": [
+        [
+          1485,
+          646
+        ],
+        [
+          2323,
+          646
+        ],
+        [
+          2323,
+          704
+        ],
+        [
+          1485,
+          704
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 704,
+        "tolerance": 2,
+        "rule": "visible bearing stone/wood top, not rail/knot/hook"
+      },
+      "status": "verified"
+    },
+    {
+      "id": "s_east",
+      "name": "传功殿闭关室东门",
+      "polyline": [
+        [
+          2336,
+          768
+        ],
+        [
+          3072,
+          768
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        2349,
+        3059
+      ],
+      "walkRegion": [
+        [
+          2349,
+          710
+        ],
+        [
+          3059,
+          710
+        ],
+        [
+          3059,
+          768
+        ],
+        [
+          2349,
+          768
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 768,
+        "tolerance": 2,
+        "rule": "visible bearing stone/wood top, not rail/knot/hook"
+      },
+      "status": "verified"
+    },
+    {
+      "id": "s_cloud",
+      "name": "观云台",
+      "polyline": [
+        [
+          128,
+          704
+        ],
+        [
+          352,
+          704
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        141,
+        339
+      ],
+      "walkRegion": [
+        [
+          141,
+          646
+        ],
+        [
+          339,
+          646
+        ],
+        [
+          339,
+          704
+        ],
+        [
+          141,
+          704
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 704,
+        "tolerance": 2,
+        "rule": "visible bearing stone/wood top, not rail/knot/hook"
+      },
+      "status": "verified"
+    },
+    {
+      "id": "s_eaves",
+      "name": "主殿平檐",
+      "polyline": [
+        [
+          1600,
+          544
+        ],
+        [
+          2208,
+          544
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        1613,
+        2195
+      ],
+      "walkRegion": [
+        [
+          1613,
+          486
+        ],
+        [
+          2195,
+          486
+        ],
+        [
+          2195,
+          544
+        ],
+        [
+          1613,
+          544
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 544,
+        "tolerance": 2,
+        "rule": "visible bearing stone/wood top, not rail/knot/hook"
+      },
+      "status": "verified"
+    },
+    {
+      "id": "s_bell",
+      "name": "钟楼踏台",
+      "polyline": [
+        [
+          1792,
+          448
+        ],
+        [
+          2016,
+          448
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        1805,
+        2003
+      ],
+      "walkRegion": [
+        [
+          1805,
+          390
+        ],
+        [
+          2003,
+          390
+        ],
+        [
+          2003,
+          448
+        ],
+        [
+          1805,
+          448
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 448,
+        "tolerance": 2,
+        "rule": "visible bearing stone/wood top, not rail/knot/hook"
+      },
+      "status": "verified"
+    },
+    {
+      "id": "s_lesson",
+      "name": "传功殿平檐",
+      "polyline": [
+        [
+          2432,
+          608
+        ],
+        [
+          2656,
+          608
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        2445,
+        2643
+      ],
+      "walkRegion": [
+        [
+          2445,
+          550
+        ],
+        [
+          2643,
+          550
+        ],
+        [
+          2643,
+          608
+        ],
+        [
+          2445,
+          608
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 608,
+        "tolerance": 2,
+        "rule": "visible bearing stone/wood top, not rail/knot/hook"
+      },
+      "status": "verified"
+    }
+  ],
+  "climbs": [
+    {
+      "id": "c_rope_7",
+      "kind": "rope",
+      "sourceObject": "rope_7",
+      "corridor": [
+        [
+          222,
+          704
+        ],
+        [
+          258,
+          704
+        ],
+        [
+          258,
+          832
+        ],
+        [
+          222,
+          832
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            240,
+            832
+          ],
+          "surface": "s_dock"
+        },
+        "end": {
+          "position": [
+            240,
+            704
+          ],
+          "surface": "s_cloud"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "status": "verified",
+      "sourceCorrection": "lower endpoint extended 32px to real platform bearing top; ladder center original x+16"
+    },
+    {
+      "id": "c_ladder_52",
+      "kind": "ladder",
+      "sourceObject": "ladder_52",
+      "corridor": [
+        [
+          1662,
+          544
+        ],
+        [
+          1698,
+          544
+        ],
+        [
+          1698,
+          704
+        ],
+        [
+          1662,
+          704
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1680,
+            704
+          ],
+          "surface": "s_hall"
+        },
+        "end": {
+          "position": [
+            1680,
+            544
+          ],
+          "surface": "s_eaves"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "ladder",
+      "status": "verified",
+      "sourceCorrection": "lower endpoint extended 32px to real platform bearing top; ladder center original x+16"
+    },
+    {
+      "id": "c_rope_59",
+      "kind": "rope",
+      "sourceObject": "rope_59",
+      "corridor": [
+        [
+          1886,
+          448
+        ],
+        [
+          1922,
+          448
+        ],
+        [
+          1922,
+          544
+        ],
+        [
+          1886,
+          544
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1904,
+            544
+          ],
+          "surface": "s_eaves"
+        },
+        "end": {
+          "position": [
+            1904,
+            448
+          ],
+          "surface": "s_bell"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "status": "verified",
+      "sourceCorrection": "lower endpoint extended 32px to real platform bearing top; ladder center original x+16"
+    },
+    {
+      "id": "c_ladder_80",
+      "kind": "ladder",
+      "sourceObject": "ladder_80",
+      "corridor": [
+        [
+          2558,
+          608
+        ],
+        [
+          2594,
+          608
+        ],
+        [
+          2594,
+          768
+        ],
+        [
+          2558,
+          768
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            2576,
+            768
+          ],
+          "surface": "s_east"
+        },
+        "end": {
+          "position": [
+            2576,
+            608
+          ],
+          "surface": "s_lesson"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "ladder",
+      "status": "verified",
+      "sourceCorrection": "lower endpoint extended 32px to real platform bearing top; ladder center original x+16"
+    }
+  ],
+  "stairs": [
+    {
+      "id": "stair_0",
+      "polyline": [
+        [
+          384,
+          832
+        ],
+        [
+          448,
+          832
+        ],
+        [
+          448,
+          896
+        ],
+        [
+          512,
+          896
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            384,
+            832
+          ],
+          "surface": "s_dock"
+        },
+        "end": {
+          "position": [
+            512,
+            896
+          ],
+          "surface": "s_gate"
+        }
+      },
+      "mode": "steps",
+      "riserHeight": 64,
+      "runtimeRule": "explicit ordinary jump upward; gravity descent downward; no automatic step lift",
+      "status": "verified"
+    },
+    {
+      "id": "stair_1",
+      "polyline": [
+        [
+          832,
+          896
+        ],
+        [
+          896,
+          896
+        ],
+        [
+          896,
+          832
+        ],
+        [
+          960,
+          832
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            832,
+            896
+          ],
+          "surface": "s_gate"
+        },
+        "end": {
+          "position": [
+            960,
+            832
+          ],
+          "surface": "s_stair_1"
+        }
+      },
+      "mode": "steps",
+      "riserHeight": 64,
+      "runtimeRule": "explicit ordinary jump upward; gravity descent downward; no automatic step lift",
+      "status": "verified"
+    },
+    {
+      "id": "stair_2",
+      "polyline": [
+        [
+          1088,
+          832
+        ],
+        [
+          1152,
+          832
+        ],
+        [
+          1152,
+          768
+        ],
+        [
+          1216,
+          768
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1088,
+            832
+          ],
+          "surface": "s_stair_1"
+        },
+        "end": {
+          "position": [
+            1216,
+            768
+          ],
+          "surface": "s_arena"
+        }
+      },
+      "mode": "steps",
+      "riserHeight": 64,
+      "runtimeRule": "explicit ordinary jump upward; gravity descent downward; no automatic step lift",
+      "status": "verified"
+    },
+    {
+      "id": "stair_3",
+      "polyline": [
+        [
+          1408,
+          768
+        ],
+        [
+          1472,
+          768
+        ],
+        [
+          1472,
+          704
+        ],
+        [
+          1536,
+          704
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1408,
+            768
+          ],
+          "surface": "s_arena"
+        },
+        "end": {
+          "position": [
+            1536,
+            704
+          ],
+          "surface": "s_hall"
+        }
+      },
+      "mode": "steps",
+      "riserHeight": 64,
+      "runtimeRule": "explicit ordinary jump upward; gravity descent downward; no automatic step lift",
+      "status": "verified"
+    },
+    {
+      "id": "stair_4",
+      "polyline": [
+        [
+          2272,
+          704
+        ],
+        [
+          2336,
+          704
+        ],
+        [
+          2336,
+          768
+        ],
+        [
+          2400,
+          768
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            2272,
+            704
+          ],
+          "surface": "s_hall"
+        },
+        "end": {
+          "position": [
+            2400,
+            768
+          ],
+          "surface": "s_east"
+        }
+      },
+      "mode": "steps",
+      "riserHeight": 64,
+      "runtimeRule": "explicit ordinary jump upward; gravity descent downward; no automatic step lift",
+      "status": "verified"
+    }
+  ],
+  "solids": [
+    {
+      "id": "solid_dock",
+      "polygon": [
+        [
+          0,
+          832
+        ],
+        [
+          448,
+          832
+        ],
+        [
+          448,
+          960
+        ],
+        [
+          0,
+          960
+        ]
+      ],
+      "surface": "s_dock",
+      "type": "white-stone-foundation",
+      "openings": [],
+      "status": "verified"
+    },
+    {
+      "id": "solid_gate",
+      "polygon": [
+        [
+          448,
+          896
+        ],
+        [
+          896,
+          896
+        ],
+        [
+          896,
+          960
+        ],
+        [
+          448,
+          960
+        ]
+      ],
+      "surface": "s_gate",
+      "type": "white-stone-foundation",
+      "openings": [],
+      "status": "verified"
+    },
+    {
+      "id": "solid_stair_1",
+      "polygon": [
+        [
+          896,
+          832
+        ],
+        [
+          1152,
+          832
+        ],
+        [
+          1152,
+          960
+        ],
+        [
+          896,
+          960
+        ]
+      ],
+      "surface": "s_stair_1",
+      "type": "white-stone-foundation",
+      "openings": [],
+      "status": "verified"
+    },
+    {
+      "id": "solid_arena",
+      "polygon": [
+        [
+          1152,
+          768
+        ],
+        [
+          1472,
+          768
+        ],
+        [
+          1472,
+          960
+        ],
+        [
+          1152,
+          960
+        ]
+      ],
+      "surface": "s_arena",
+      "type": "white-stone-foundation",
+      "openings": [],
+      "status": "verified"
+    },
+    {
+      "id": "solid_hall",
+      "polygon": [
+        [
+          1472,
+          704
+        ],
+        [
+          2336,
+          704
+        ],
+        [
+          2336,
+          960
+        ],
+        [
+          1472,
+          960
+        ]
+      ],
+      "surface": "s_hall",
+      "type": "white-stone-foundation",
+      "openings": [],
+      "status": "verified"
+    },
+    {
+      "id": "solid_east",
+      "polygon": [
+        [
+          2336,
+          768
+        ],
+        [
+          3072,
+          768
+        ],
+        [
+          3072,
+          960
+        ],
+        [
+          2336,
+          960
+        ]
+      ],
+      "surface": "s_east",
+      "type": "white-stone-foundation",
+      "openings": [],
+      "status": "verified"
+    }
+  ],
+  "hazards": [],
+  "points": [
+    {
+      "id": "start_spawn",
+      "type": "spawn",
+      "position": [
+        128,
+        832
+      ],
+      "surface": "s_dock",
+      "sourceId": 5,
+      "sourceName": "playerStart",
+      "width": 0,
+      "properties": {},
+      "status": "verified"
+    },
+    {
+      "id": "ferry_landing",
+      "type": "ferry",
+      "position": [
+        272.0,
+        832
+      ],
+      "surface": "s_dock",
+      "sourceId": 6,
+      "sourceName": "ferry_landing",
+      "width": 160,
+      "properties": {
+        "returnTo": "luoxia_town"
+      },
+      "status": "verified"
+    },
+    {
+      "id": "senior_sister_su",
+      "type": "npc",
+      "position": [
+        656,
+        896
+      ],
+      "surface": "s_gate",
+      "sourceId": 7,
+      "sourceName": "senior_sister_su",
+      "width": 0,
+      "properties": {
+        "npc": "senior_sister_su"
+      },
+      "status": "verified"
+    },
+    {
+      "id": "sect_master_ling",
+      "type": "npc",
+      "position": [
+        1904,
+        704
+      ],
+      "surface": "s_hall",
+      "sourceId": 8,
+      "sourceName": "sect_master_ling",
+      "width": 0,
+      "properties": {
+        "npc": "sect_master_ling"
+      },
+      "status": "verified"
+    },
+    {
+      "id": "tianjian_elder",
+      "type": "npc",
+      "position": [
+        2512,
+        768
+      ],
+      "surface": "s_east",
+      "sourceId": 9,
+      "sourceName": "tianjian_elder",
+      "width": 0,
+      "properties": {
+        "npc": "tianjian_elder"
+      },
+      "status": "verified"
+    },
+    {
+      "id": "sect_seclusion",
+      "type": "seclusion",
+      "position": [
+        2864,
+        768
+      ],
+      "surface": "s_east",
+      "sourceId": 10,
+      "sourceName": "sect_seclusion",
+      "width": 0,
+      "properties": {
+        "mode": "sect",
+        "reqRealm": "foundation"
+      },
+      "status": "verified"
+    },
+    {
+      "id": "portal_to_sword_tomb",
+      "type": "portal",
+      "position": [
+        3024,
+        768
+      ],
+      "surface": "s_east",
+      "sourceId": 11,
+      "sourceName": "portal_to_sword_tomb",
+      "width": 0,
+      "properties": {
+        "target": "tianjian_sword_tomb",
+        "targetPortal": "portal_to_sect"
+      },
+      "status": "verified"
+    },
+    {
+      "id": "goal_east",
+      "type": "goal",
+      "position": [
+        3024,
+        768
+      ],
+      "surface": "s_east",
+      "status": "verified"
+    }
+  ],
+  "transitions": [
+    {
+      "id": "t_rope_7_up",
+      "from": "s_dock",
+      "to": "s_cloud",
+      "action": "climb-up",
+      "climb": "c_rope_7",
+      "conditions": [
+        "natural approach",
+        "full-body clear"
+      ],
+      "status": "verified",
+      "evidence": [
+        "t_rope_7_up"
+      ]
+    },
+    {
+      "id": "t_rope_7_down",
+      "from": "s_cloud",
+      "to": "s_dock",
+      "action": "climb-down",
+      "climb": "c_rope_7",
+      "conditions": [
+        "natural approach",
+        "full-body clear"
+      ],
+      "status": "verified",
+      "evidence": [
+        "t_rope_7_down"
+      ]
+    },
+    {
+      "id": "t_ladder_52_up",
+      "from": "s_hall",
+      "to": "s_eaves",
+      "action": "climb-up",
+      "climb": "c_ladder_52",
+      "conditions": [
+        "natural approach",
+        "full-body clear"
+      ],
+      "status": "verified",
+      "evidence": [
+        "t_ladder_52_up"
+      ]
+    },
+    {
+      "id": "t_ladder_52_down",
+      "from": "s_eaves",
+      "to": "s_hall",
+      "action": "climb-down",
+      "climb": "c_ladder_52",
+      "conditions": [
+        "natural approach",
+        "full-body clear"
+      ],
+      "status": "verified",
+      "evidence": [
+        "t_ladder_52_down"
+      ]
+    },
+    {
+      "id": "t_rope_59_up",
+      "from": "s_eaves",
+      "to": "s_bell",
+      "action": "climb-up",
+      "climb": "c_rope_59",
+      "conditions": [
+        "natural approach",
+        "full-body clear"
+      ],
+      "status": "verified",
+      "evidence": [
+        "t_rope_59_up"
+      ]
+    },
+    {
+      "id": "t_rope_59_down",
+      "from": "s_bell",
+      "to": "s_eaves",
+      "action": "climb-down",
+      "climb": "c_rope_59",
+      "conditions": [
+        "natural approach",
+        "full-body clear"
+      ],
+      "status": "verified",
+      "evidence": [
+        "t_rope_59_down"
+      ]
+    },
+    {
+      "id": "t_ladder_80_up",
+      "from": "s_east",
+      "to": "s_lesson",
+      "action": "climb-up",
+      "climb": "c_ladder_80",
+      "conditions": [
+        "natural approach",
+        "full-body clear"
+      ],
+      "status": "verified",
+      "evidence": [
+        "t_ladder_80_up"
+      ]
+    },
+    {
+      "id": "t_ladder_80_down",
+      "from": "s_lesson",
+      "to": "s_east",
+      "action": "climb-down",
+      "climb": "c_ladder_80",
+      "conditions": [
+        "natural approach",
+        "full-body clear"
+      ],
+      "status": "verified",
+      "evidence": [
+        "t_ladder_80_down"
+      ]
+    },
+    {
+      "id": "t_dock_to_gate",
+      "from": "s_dock",
+      "to": "s_gate",
+      "action": "drop",
+      "conditions": [
+        "base ordinary jump on two-tile rise",
+        "no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        "t_dock_to_gate"
+      ]
+    },
+    {
+      "id": "t_gate_to_dock",
+      "from": "s_gate",
+      "to": "s_dock",
+      "action": "jump",
+      "conditions": [
+        "base ordinary jump on two-tile rise",
+        "no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        "t_gate_to_dock"
+      ]
+    },
+    {
+      "id": "t_gate_to_stair_1",
+      "from": "s_gate",
+      "to": "s_stair_1",
+      "action": "jump",
+      "conditions": [
+        "base ordinary jump on two-tile rise",
+        "no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        "t_gate_to_stair_1"
+      ]
+    },
+    {
+      "id": "t_stair_1_to_gate",
+      "from": "s_stair_1",
+      "to": "s_gate",
+      "action": "drop",
+      "conditions": [
+        "base ordinary jump on two-tile rise",
+        "no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        "t_stair_1_to_gate"
+      ]
+    },
+    {
+      "id": "t_stair_1_to_arena",
+      "from": "s_stair_1",
+      "to": "s_arena",
+      "action": "jump",
+      "conditions": [
+        "base ordinary jump on two-tile rise",
+        "no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        "t_stair_1_to_arena"
+      ]
+    },
+    {
+      "id": "t_arena_to_stair_1",
+      "from": "s_arena",
+      "to": "s_stair_1",
+      "action": "drop",
+      "conditions": [
+        "base ordinary jump on two-tile rise",
+        "no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        "t_arena_to_stair_1"
+      ]
+    },
+    {
+      "id": "t_arena_to_hall",
+      "from": "s_arena",
+      "to": "s_hall",
+      "action": "jump",
+      "conditions": [
+        "base ordinary jump on two-tile rise",
+        "no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        "t_arena_to_hall"
+      ]
+    },
+    {
+      "id": "t_hall_to_arena",
+      "from": "s_hall",
+      "to": "s_arena",
+      "action": "drop",
+      "conditions": [
+        "base ordinary jump on two-tile rise",
+        "no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        "t_hall_to_arena"
+      ]
+    },
+    {
+      "id": "t_hall_to_east",
+      "from": "s_hall",
+      "to": "s_east",
+      "action": "drop",
+      "conditions": [
+        "base ordinary jump on two-tile rise",
+        "no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        "t_hall_to_east"
+      ]
+    },
+    {
+      "id": "t_east_to_hall",
+      "from": "s_east",
+      "to": "s_hall",
+      "action": "jump",
+      "conditions": [
+        "base ordinary jump on two-tile rise",
+        "no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        "t_east_to_hall"
+      ]
+    }
+  ],
+  "requiredRoutes": [
+    {
+      "id": "route_main",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "senior_sister_su",
+        "s_arena",
+        "sect_master_ling",
+        "tianjian_elder",
+        "sect_seclusion"
+      ],
+      "status": "verified",
+      "evidence": [
+        "route_main"
+      ]
+    },
+    {
+      "id": "route_return",
+      "from": "start_spawn",
+      "to": "start_spawn",
+      "via": [
+        "goal_east",
+        "s_hall",
+        "s_gate",
+        "s_dock"
+      ],
+      "status": "verified",
+      "evidence": [
+        "route_return"
+      ]
+    },
+    {
+      "id": "route_cloud",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "c_rope_7",
+        "s_cloud",
+        "s_dock"
+      ],
+      "direction": "branch-up-and-down",
+      "status": "verified",
+      "evidence": [
+        "route_cloud"
+      ]
+    },
+    {
+      "id": "route_hall_roof",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "c_ladder_52",
+        "s_eaves",
+        "s_hall"
+      ],
+      "direction": "branch-up-and-down",
+      "status": "verified",
+      "evidence": [
+        "route_hall_roof"
+      ]
+    },
+    {
+      "id": "route_bell",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "c_ladder_52",
+        "c_rope_59",
+        "s_bell",
+        "s_eaves",
+        "s_hall"
+      ],
+      "direction": "branch-up-and-down",
+      "status": "verified",
+      "evidence": [
+        "route_bell"
+      ]
+    },
+    {
+      "id": "route_lesson",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "c_ladder_80",
+        "s_lesson",
+        "s_east"
+      ],
+      "direction": "branch-up-and-down",
+      "status": "verified",
+      "evidence": [
+        "route_lesson"
+      ]
+    },
+    {
+      "id": "route_full_tour",
+      "from": "start_spawn",
+      "to": "start_spawn",
+      "via": [
+        "s_cloud",
+        "s_gate",
+        "s_eaves",
+        "s_bell",
+        "s_lesson",
+        "goal_east",
+        "s_dock"
+      ],
+      "direction": "round-trip-all-climbs",
+      "status": "verified",
+      "evidence": [
+        "route_full_tour"
+      ]
+    }
+  ],
+  "diagnostics": {
+    "maskPalette": {
+      "walk": [
+        150,
+        245,
+        160,
+        255
+      ],
+      "stand": [
+        0,
+        200,
+        80,
+        255
+      ],
+      "rope": [
+        0,
+        190,
+        230,
+        255
+      ],
+      "ladder": [
+        80,
+        140,
+        255,
+        255
+      ],
+      "stairs": [
+        255,
+        160,
+        40,
+        255
+      ],
+      "point": [
+        255,
+        70,
+        160,
+        255
+      ]
+    },
+    "rasterizationOrder": [
+      "walk",
+      "stand",
+      "rope",
+      "ladder",
+      "stairs",
+      "point"
+    ],
+    "regionIdIndex": null,
+    "geometryRevision": "tianjian-sect-final-003"
+  },
+  "validation": {
+    "status": "verified",
+    "geometryRevision": "tianjian-sect-final-003",
+    "actorParameterRevision": "tianjian-base-feel-20261027-001",
+    "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+    "evidence": [
+      {
+        "id": "route_main",
+        "geometryRevision": "tianjian-sect-final-003",
+        "actorParameterRevision": "tianjian-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "method": "continuous normal-spawn input replay; browser replay matches; no teleport or mid-route reset",
+        "path": "work/replays-final/route_main.json",
+        "result": "verified",
+        "frames": 1418,
+        "resetCount": 0
+      },
+      {
+        "id": "route_return",
+        "geometryRevision": "tianjian-sect-final-003",
+        "actorParameterRevision": "tianjian-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "method": "continuous normal-spawn input replay; browser replay matches; no teleport or mid-route reset",
+        "path": "work/replays-final/route_return.json",
+        "result": "verified",
+        "frames": 2816,
+        "resetCount": 0
+      },
+      {
+        "id": "route_cloud",
+        "geometryRevision": "tianjian-sect-final-003",
+        "actorParameterRevision": "tianjian-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "method": "continuous normal-spawn input replay; browser replay matches; no teleport or mid-route reset",
+        "path": "work/replays-final/route_cloud.json",
+        "result": "verified",
+        "frames": 1708,
+        "resetCount": 0
+      },
+      {
+        "id": "route_hall_roof",
+        "geometryRevision": "tianjian-sect-final-003",
+        "actorParameterRevision": "tianjian-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "method": "continuous normal-spawn input replay; browser replay matches; no teleport or mid-route reset",
+        "path": "work/replays-final/route_hall_roof.json",
+        "result": "verified",
+        "frames": 2066,
+        "resetCount": 0
+      },
+      {
+        "id": "route_bell",
+        "geometryRevision": "tianjian-sect-final-003",
+        "actorParameterRevision": "tianjian-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "method": "continuous normal-spawn input replay; browser replay matches; no teleport or mid-route reset",
+        "path": "work/replays-final/route_bell.json",
+        "result": "verified",
+        "frames": 2317,
+        "resetCount": 0
+      },
+      {
+        "id": "route_lesson",
+        "geometryRevision": "tianjian-sect-final-003",
+        "actorParameterRevision": "tianjian-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "method": "continuous normal-spawn input replay; browser replay matches; no teleport or mid-route reset",
+        "path": "work/replays-final/route_lesson.json",
+        "result": "verified",
+        "frames": 1709,
+        "resetCount": 0
+      },
+      {
+        "id": "route_full_tour",
+        "geometryRevision": "tianjian-sect-final-003",
+        "actorParameterRevision": "tianjian-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "method": "continuous normal-spawn input replay; browser replay matches; no teleport or mid-route reset",
+        "path": "work/replays-final/route_full_tour.json",
+        "result": "verified",
+        "frames": 4297,
+        "resetCount": 0
+      },
+      {
+        "id": "t_rope_7_up",
+        "geometryRevision": "tianjian-sect-final-003",
+        "actorParameterRevision": "tianjian-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "method": "continuous input route natural state transition",
+        "path": "work/replays-final/route_cloud.json",
+        "result": "verified",
+        "frame": 146
+      },
+      {
+        "id": "t_rope_7_down",
+        "geometryRevision": "tianjian-sect-final-003",
+        "actorParameterRevision": "tianjian-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "method": "continuous input route natural state transition",
+        "path": "work/replays-final/route_cloud.json",
+        "result": "verified",
+        "frame": 322
+      },
+      {
+        "id": "t_ladder_52_up",
+        "geometryRevision": "tianjian-sect-final-003",
+        "actorParameterRevision": "tianjian-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "method": "continuous input route natural state transition",
+        "path": "work/replays-final/route_hall_roof.json",
+        "result": "verified",
+        "frame": 902
+      },
+      {
+        "id": "t_ladder_52_down",
+        "geometryRevision": "tianjian-sect-final-003",
+        "actorParameterRevision": "tianjian-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "method": "continuous input route natural state transition",
+        "path": "work/replays-final/route_hall_roof.json",
+        "result": "verified",
+        "frame": 1419
+      },
+      {
+        "id": "t_rope_59_up",
+        "geometryRevision": "tianjian-sect-final-003",
+        "actorParameterRevision": "tianjian-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "method": "continuous input route natural state transition",
+        "path": "work/replays-final/route_bell.json",
+        "result": "verified",
+        "frame": 1288
+      },
+      {
+        "id": "t_rope_59_down",
+        "geometryRevision": "tianjian-sect-final-003",
+        "actorParameterRevision": "tianjian-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "method": "continuous input route natural state transition",
+        "path": "work/replays-final/route_bell.json",
+        "result": "verified",
+        "frame": 1442
+      },
+      {
+        "id": "t_ladder_80_up",
+        "geometryRevision": "tianjian-sect-final-003",
+        "actorParameterRevision": "tianjian-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "method": "continuous input route natural state transition",
+        "path": "work/replays-final/route_lesson.json",
+        "result": "verified",
+        "frame": 1319
+      },
+      {
+        "id": "t_ladder_80_down",
+        "geometryRevision": "tianjian-sect-final-003",
+        "actorParameterRevision": "tianjian-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "method": "continuous input route natural state transition",
+        "path": "work/replays-final/route_lesson.json",
+        "result": "verified",
+        "frame": 1478
+      },
+      {
+        "id": "t_dock_to_gate",
+        "geometryRevision": "tianjian-sect-final-003",
+        "actorParameterRevision": "tianjian-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "method": "continuous input route natural state transition",
+        "path": "work/replays-final/route_main.json",
+        "result": "verified",
+        "frame": 169
+      },
+      {
+        "id": "t_gate_to_dock",
+        "geometryRevision": "tianjian-sect-final-003",
+        "actorParameterRevision": "tianjian-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "method": "continuous input route natural state transition",
+        "path": "work/replays-final/route_return.json",
+        "result": "verified",
+        "frame": 2647
+      },
+      {
+        "id": "t_gate_to_stair_1",
+        "geometryRevision": "tianjian-sect-final-003",
+        "actorParameterRevision": "tianjian-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "method": "continuous input route natural state transition",
+        "path": "work/replays-final/route_main.json",
+        "result": "verified",
+        "frame": 364
+      },
+      {
+        "id": "t_stair_1_to_gate",
+        "geometryRevision": "tianjian-sect-final-003",
+        "actorParameterRevision": "tianjian-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "method": "continuous input route natural state transition",
+        "path": "work/replays-final/route_return.json",
+        "result": "verified",
+        "frame": 2453
+      },
+      {
+        "id": "t_stair_1_to_arena",
+        "geometryRevision": "tianjian-sect-final-003",
+        "actorParameterRevision": "tianjian-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "method": "continuous input route natural state transition",
+        "path": "work/replays-final/route_main.json",
+        "result": "verified",
+        "frame": 505
+      },
+      {
+        "id": "t_arena_to_stair_1",
+        "geometryRevision": "tianjian-sect-final-003",
+        "actorParameterRevision": "tianjian-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "method": "continuous input route natural state transition",
+        "path": "work/replays-final/route_return.json",
+        "result": "verified",
+        "frame": 2331
+      },
+      {
+        "id": "t_arena_to_hall",
+        "geometryRevision": "tianjian-sect-final-003",
+        "actorParameterRevision": "tianjian-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "method": "continuous input route natural state transition",
+        "path": "work/replays-final/route_main.json",
+        "result": "verified",
+        "frame": 677
+      },
+      {
+        "id": "t_hall_to_arena",
+        "geometryRevision": "tianjian-sect-final-003",
+        "actorParameterRevision": "tianjian-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "method": "continuous input route natural state transition",
+        "path": "work/replays-final/route_return.json",
+        "result": "verified",
+        "frame": 2180
+      },
+      {
+        "id": "t_hall_to_east",
+        "geometryRevision": "tianjian-sect-final-003",
+        "actorParameterRevision": "tianjian-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "method": "continuous input route natural state transition",
+        "path": "work/replays-final/route_main.json",
+        "result": "verified",
+        "frame": 1115
+      },
+      {
+        "id": "t_east_to_hall",
+        "geometryRevision": "tianjian-sect-final-003",
+        "actorParameterRevision": "tianjian-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "method": "continuous input route natural state transition",
+        "path": "work/replays-final/route_return.json",
+        "result": "verified",
+        "frame": 1742
+      },
+      {
+        "id": "browser-contacts",
+        "geometryRevision": "tianjian-sect-final-003",
+        "actorParameterRevision": "tianjian-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "method": "Chrome input replay; ten natural surface contact captures; real keyboard/reset; same asset hashes",
+        "path": "work/final-browser-check.json",
+        "result": "verified"
+      },
+      {
+        "id": "physics",
+        "geometryRevision": "tianjian-sect-final-003",
+        "actorParameterRevision": "tianjian-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "method": "8 action checks; ceiling explicitly synthetic adapter fixture",
+        "path": "work/final-physics-check.json",
+        "result": "verified"
+      }
+    ],
+    "issues": []
+  },
+  "alignmentContract": {
+    "tolerancePx": 2,
+    "bottom": "continuous stone foundation to canvas edge; no loose fragments",
+    "climbAnchor": "bearing top only"
+  },
+  "previewEntities": [
+    {
+      "id": "senior_sister_su",
+      "name": "苏师姐",
+      "path": "work/preview/npc_senior_sister_su-idle.png",
+      "width": 96,
+      "height": 96,
+      "position": [
+        656,
+        896
+      ],
+      "source": "game/public/art/sprites/npc_senior_sister_su.png",
+      "sourceSHA256": "b42dc11566eb9c6cd6de9321119e755612d4318cf7059adc5cabfae977bb5f29",
+      "purpose": "read-only existing NPC scale and foot reference; no new scene art"
+    },
+    {
+      "id": "sect_master_ling",
+      "name": "凌宗主",
+      "path": "work/preview/npc_sect_master_ling-idle.png",
+      "width": 96,
+      "height": 96,
+      "position": [
+        1904,
+        704
+      ],
+      "source": "game/public/art/sprites/npc_sect_master_ling.png",
+      "sourceSHA256": "bd722ffd93e4350cdbc8ba18bef97ce7ba3eccba9426ce547413461071552e38",
+      "purpose": "read-only existing NPC scale and foot reference; no new scene art"
+    },
+    {
+      "id": "tianjian_elder",
+      "name": "传功长老",
+      "path": "work/preview/npc_tianjian_elder-idle.png",
+      "width": 96,
+      "height": 96,
+      "position": [
+        2512,
+        768
+      ],
+      "source": "game/public/art/sprites/npc_tianjian_elder.png",
+      "sourceSHA256": "a8c55faa74c763ba98348fbb24e0d28a564d8df4f45489d01e70bc625ffc6c9b",
+      "purpose": "read-only existing NPC scale and foot reference; no new scene art"
+    }
+  ],
+  "scope": {
+    "integration": "local test only; awaiting owner PASS",
+    "engine": "independent AABB FEEL adapter, not production Phaser",
+    "foreground": "not applicable; no occluding decoration layer",
+    "monsters": [],
+    "interactionSemantics": "ferry/portal/seclusion metadata only; no remote travel or game progression in preview"
+  }
+}
