@@ -1,0 +1,1775 @@
+{
+  "schemaVersion": "1.0",
+  "geometryRevision": "trial-lingfu-final-002",
+  "status": "verified",
+  "space": {
+    "origin": "top-left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "units": "logical-pixel",
+    "logicalWidth": 1792,
+    "logicalHeight": 704,
+    "sourceMap": "maps/trial_lingfu_range.json",
+    "sourceToWorld": [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0
+    ]
+  },
+  "area": "lingfu",
+  "trial": "trial_sect_lingfu",
+  "qiDensity": 4,
+  "safeZone": false,
+  "actor": {
+    "parameterRevision": "trial-lingfu-base-feel-20261027-001",
+    "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+    "sourceRevision": {
+      "game/src/config/feel.ts": "9375297a15b04012633197a935f4d9ffd403c3ff8d1e055cb585dd5f81acdeec",
+      "game/src/scenes/Player.ts": "ec9426ed625784532c6e632a1755bd16076cc3f559d177f465b741341193f513",
+      "game/src/move.ts": "585c9987623cbe532d7f65508773addd52ccd2f312e5c2ee592e9e6f2f686a74",
+      "maps/trial_lingfu_range.json": "2fd5f724d3c9c1462ebd4a2cd4724f60ac9d1a52d09daa6217ac1ab01d2f8aba"
+    },
+    "provisional": false,
+    "visualBounds": {
+      "width": 96,
+      "height": 96,
+      "idleAlphaBounds": [
+        15,
+        9,
+        76,
+        96
+      ],
+      "idleVisibleWidth": 61,
+      "idleVisibleHeight": 87,
+      "anchor": "feet-center"
+    },
+    "collider": {
+      "shape": "aabb",
+      "width": 26,
+      "height": 58,
+      "anchor": "feet-center"
+    },
+    "abilities": [
+      "walk",
+      "jump",
+      "double-jump",
+      "ladder",
+      "rope",
+      "drop-through"
+    ],
+    "movement": {
+      "gravity": 2000,
+      "maxFallSpeed": 670,
+      "walkSpeed": 130,
+      "groundAccel": 2400,
+      "groundDecel": 3000,
+      "airAccel": 700,
+      "airMaxSpeed": 130,
+      "jumpSpeed": 560,
+      "coyoteMs": 60,
+      "jumpBufferMs": 80,
+      "doubleJumpVy": 480,
+      "doubleJumpVx": 330,
+      "climbSpeed": 110,
+      "ropeGrabRangeX": 18,
+      "ropeJumpVx": 160,
+      "ropeJumpVy": 360,
+      "ropeRegrabMs": 250,
+      "dropThroughMs": 220,
+      "oneWayEdge": 8,
+      "fixedHz": 60,
+      "speedPoints": 100,
+      "jumpPoints": 100
+    },
+    "failureRules": {
+      "hazards": "none; targets non-colliding",
+      "fall": "continuous ground",
+      "reset": "R returns actual spawn"
+    },
+    "visualAsset": {
+      "path": "work/preview/player-reference-idle.png",
+      "width": 96,
+      "height": 96,
+      "anchor": "feet-center",
+      "sourceAtlas": "art/sprites/player_sword_m.png",
+      "sourceFrame": "player_sword_m_idle_01",
+      "mode": "existing static frame; no animation claim"
+    }
+  },
+  "assets": [
+    {
+      "id": "asset_background",
+      "role": "background",
+      "path": "background.png",
+      "pixelWidth": 1792,
+      "pixelHeight": 704,
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "asset_playable",
+      "role": "playable",
+      "path": "playable.png",
+      "pixelWidth": 1792,
+      "pixelHeight": 704,
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "s_pavilion",
+      "name": "西符阁台",
+      "polyline": [
+        [
+          0,
+          576
+        ],
+        [
+          384,
+          576
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        13,
+        371
+      ],
+      "walkRegion": [
+        [
+          13,
+          518
+        ],
+        [
+          371,
+          518
+        ],
+        [
+          371,
+          576
+        ],
+        [
+          13,
+          576
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 576,
+        "tolerance": 2,
+        "rule": "bearing board or stone cap, not rail/knot"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-lingfu-final-001",
+          "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "s_pavilion",
+          "method": "normal-spawn continuous full tour; full-body collision sweep and browser replay",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+          "record": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_ground",
+      "name": "主地面",
+      "polyline": [
+        [
+          384,
+          640
+        ],
+        [
+          1792,
+          640
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        397,
+        1779
+      ],
+      "walkRegion": [
+        [
+          397,
+          582
+        ],
+        [
+          1779,
+          582
+        ],
+        [
+          1779,
+          640
+        ],
+        [
+          397,
+          640
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 640,
+        "tolerance": 2,
+        "rule": "bearing board or stone cap, not rail/knot"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-lingfu-final-001",
+          "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "s_ground",
+          "method": "normal-spawn continuous full tour; full-body collision sweep and browser replay",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+          "record": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_low",
+      "name": "中低靶台",
+      "polyline": [
+        [
+          832,
+          512
+        ],
+        [
+          1184,
+          512
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        845,
+        1171
+      ],
+      "walkRegion": [
+        [
+          845,
+          454
+        ],
+        [
+          1171,
+          454
+        ],
+        [
+          1171,
+          512
+        ],
+        [
+          845,
+          512
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 512,
+        "tolerance": 2,
+        "rule": "bearing board or stone cap, not rail/knot"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-lingfu-final-001",
+          "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "s_low",
+          "method": "normal-spawn continuous full tour; full-body collision sweep and browser replay",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+          "record": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_west",
+      "name": "西高靶台",
+      "polyline": [
+        [
+          608,
+          416
+        ],
+        [
+          832,
+          416
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        621,
+        819
+      ],
+      "walkRegion": [
+        [
+          621,
+          358
+        ],
+        [
+          819,
+          358
+        ],
+        [
+          819,
+          416
+        ],
+        [
+          621,
+          416
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 416,
+        "tolerance": 2,
+        "rule": "bearing board or stone cap, not rail/knot"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-lingfu-final-001",
+          "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "s_west",
+          "method": "normal-spawn continuous full tour; full-body collision sweep and browser replay",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+          "record": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_high",
+      "name": "东高靶台",
+      "polyline": [
+        [
+          1216,
+          384
+        ],
+        [
+          1440,
+          384
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        1229,
+        1427
+      ],
+      "walkRegion": [
+        [
+          1229,
+          326
+        ],
+        [
+          1427,
+          326
+        ],
+        [
+          1427,
+          384
+        ],
+        [
+          1229,
+          384
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 384,
+        "tolerance": 2,
+        "rule": "bearing board or stone cap, not rail/knot"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-lingfu-final-001",
+          "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "s_high",
+          "method": "normal-spawn continuous full tour; full-body collision sweep and browser replay",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+          "record": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_east",
+      "name": "东靶台",
+      "polyline": [
+        [
+          1536,
+          448
+        ],
+        [
+          1728,
+          448
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        1549,
+        1715
+      ],
+      "walkRegion": [
+        [
+          1549,
+          390
+        ],
+        [
+          1715,
+          390
+        ],
+        [
+          1715,
+          448
+        ],
+        [
+          1549,
+          448
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 448,
+        "tolerance": 2,
+        "rule": "bearing board or stone cap, not rail/knot"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-lingfu-final-001",
+          "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "s_east",
+          "method": "normal-spawn continuous full tour; full-body collision sweep and browser replay",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+          "record": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    }
+  ],
+  "climbs": [
+    {
+      "id": "rope_28",
+      "kind": "rope",
+      "corridor": [
+        [
+          894,
+          512
+        ],
+        [
+          930,
+          512
+        ],
+        [
+          930,
+          640
+        ],
+        [
+          894,
+          640
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            912,
+            640
+          ],
+          "surface": "s_ground"
+        },
+        "end": {
+          "position": [
+            912,
+            512
+          ],
+          "surface": "s_low"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "sourceCorrection": "source bottom 608 extended to actual ground 640; map untouched",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-lingfu-final-001",
+          "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "rope_28",
+          "method": "normal-spawn continuous full tour; full-body collision sweep and browser replay",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+          "record": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "rope_21",
+      "kind": "rope",
+      "corridor": [
+        [
+          670,
+          416
+        ],
+        [
+          706,
+          416
+        ],
+        [
+          706,
+          640
+        ],
+        [
+          670,
+          640
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            688,
+            640
+          ],
+          "surface": "s_ground"
+        },
+        "end": {
+          "position": [
+            688,
+            416
+          ],
+          "surface": "s_west"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "sourceCorrection": "source bottom 608 extended to actual ground 640; map untouched",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-lingfu-final-001",
+          "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "rope_21",
+          "method": "normal-spawn continuous full tour; full-body collision sweep and browser replay",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+          "record": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "rope_40",
+      "kind": "rope",
+      "corridor": [
+        [
+          1278,
+          384
+        ],
+        [
+          1314,
+          384
+        ],
+        [
+          1314,
+          640
+        ],
+        [
+          1278,
+          640
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1296,
+            640
+          ],
+          "surface": "s_ground"
+        },
+        "end": {
+          "position": [
+            1296,
+            384
+          ],
+          "surface": "s_high"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "sourceCorrection": "source bottom 608 extended to actual ground 640; map untouched",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-lingfu-final-001",
+          "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "rope_40",
+          "method": "normal-spawn continuous full tour; full-body collision sweep and browser replay",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+          "record": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "rope_51",
+      "kind": "rope",
+      "corridor": [
+        [
+          1630,
+          448
+        ],
+        [
+          1666,
+          448
+        ],
+        [
+          1666,
+          640
+        ],
+        [
+          1630,
+          640
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1648,
+            640
+          ],
+          "surface": "s_ground"
+        },
+        "end": {
+          "position": [
+            1648,
+            448
+          ],
+          "surface": "s_east"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "sourceCorrection": "source bottom 608 extended to actual ground 640; map untouched",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-lingfu-final-001",
+          "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "rope_51",
+          "method": "normal-spawn continuous full tour; full-body collision sweep and browser replay",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+          "record": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    }
+  ],
+  "stairs": [],
+  "solids": [
+    {
+      "id": "solid_pavilion",
+      "polygon": [
+        [
+          0,
+          576
+        ],
+        [
+          384,
+          576
+        ],
+        [
+          384,
+          704
+        ],
+        [
+          0,
+          704
+        ]
+      ],
+      "surface": "s_pavilion",
+      "type": "continuous-foundation",
+      "openings": [],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-lingfu-final-001",
+          "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "solid_pavilion",
+          "method": "normal-spawn continuous full tour; full-body collision sweep and browser replay",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+          "record": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "solid_ground",
+      "polygon": [
+        [
+          384,
+          640
+        ],
+        [
+          1792,
+          640
+        ],
+        [
+          1792,
+          704
+        ],
+        [
+          384,
+          704
+        ]
+      ],
+      "surface": "s_ground",
+      "type": "continuous-foundation",
+      "openings": [],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-lingfu-final-001",
+          "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "solid_ground",
+          "method": "normal-spawn continuous full tour; full-body collision sweep and browser replay",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+          "record": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    }
+  ],
+  "hazards": [],
+  "points": [
+    {
+      "id": "start_spawn",
+      "type": "spawn",
+      "position": [
+        96,
+        576
+      ],
+      "surface": "s_pavilion",
+      "sourceId": 5,
+      "properties": {},
+      "collision": false,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-lingfu-final-001",
+          "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "start_spawn",
+          "method": "normal-spawn continuous full tour; full-body collision sweep and browser replay",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+          "record": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "draw_desk_6",
+      "type": "draw_desk",
+      "position": [
+        240,
+        576
+      ],
+      "surface": "s_pavilion",
+      "sourceId": 6,
+      "properties": {
+        "talismans": 3
+      },
+      "collision": false,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-lingfu-final-001",
+          "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "draw_desk_6",
+          "method": "normal-spawn continuous full tour; full-body collision sweep and browser replay",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+          "record": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "target_spot_7",
+      "type": "target_spot",
+      "position": [
+        528,
+        640
+      ],
+      "surface": "s_ground",
+      "sourceId": 7,
+      "properties": {},
+      "collision": false,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-lingfu-final-001",
+          "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "target_spot_7",
+          "method": "normal-spawn continuous full tour; full-body collision sweep and browser replay",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+          "record": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "target_spot_8",
+      "type": "target_spot",
+      "position": [
+        976,
+        640
+      ],
+      "surface": "s_ground",
+      "sourceId": 8,
+      "properties": {
+        "moveRange": 128
+      },
+      "collision": false,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-lingfu-final-001",
+          "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "target_spot_8",
+          "method": "normal-spawn continuous full tour; full-body collision sweep and browser replay",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+          "record": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "target_spot_9",
+      "type": "target_spot",
+      "position": [
+        1200,
+        640
+      ],
+      "surface": "s_ground",
+      "sourceId": 9,
+      "properties": {},
+      "collision": false,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-lingfu-final-001",
+          "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "target_spot_9",
+          "method": "normal-spawn continuous full tour; full-body collision sweep and browser replay",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+          "record": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "target_spot_10",
+      "type": "target_spot",
+      "position": [
+        1424,
+        640
+      ],
+      "surface": "s_ground",
+      "sourceId": 10,
+      "properties": {
+        "moveRange": 128
+      },
+      "collision": false,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-lingfu-final-001",
+          "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "target_spot_10",
+          "method": "normal-spawn continuous full tour; full-body collision sweep and browser replay",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+          "record": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "target_spot_11",
+      "type": "target_spot",
+      "position": [
+        1008,
+        512
+      ],
+      "surface": "s_low",
+      "sourceId": 11,
+      "properties": {
+        "moveRange": 128
+      },
+      "collision": false,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-lingfu-final-001",
+          "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "target_spot_11",
+          "method": "normal-spawn continuous full tour; full-body collision sweep and browser replay",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+          "record": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "target_spot_12",
+      "type": "target_spot",
+      "position": [
+        752,
+        416
+      ],
+      "surface": "s_west",
+      "sourceId": 12,
+      "properties": {
+        "high": true
+      },
+      "collision": false,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-lingfu-final-001",
+          "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "target_spot_12",
+          "method": "normal-spawn continuous full tour; full-body collision sweep and browser replay",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+          "record": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "target_spot_13",
+      "type": "target_spot",
+      "position": [
+        1360,
+        384
+      ],
+      "surface": "s_high",
+      "sourceId": 13,
+      "properties": {
+        "high": true
+      },
+      "collision": false,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-lingfu-final-001",
+          "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "target_spot_13",
+          "method": "normal-spawn continuous full tour; full-body collision sweep and browser replay",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+          "record": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "target_spot_14",
+      "type": "target_spot",
+      "position": [
+        1616,
+        448
+      ],
+      "surface": "s_east",
+      "sourceId": 14,
+      "properties": {
+        "high": true
+      },
+      "collision": false,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-lingfu-final-001",
+          "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "target_spot_14",
+          "method": "normal-spawn continuous full tour; full-body collision sweep and browser replay",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+          "record": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "goal_east",
+      "type": "goal",
+      "position": [
+        1760,
+        640
+      ],
+      "surface": "s_ground",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-lingfu-final-001",
+          "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "goal_east",
+          "method": "normal-spawn continuous full tour; full-body collision sweep and browser replay",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+          "record": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    }
+  ],
+  "transitions": [
+    {
+      "id": "t_rope_28_up",
+      "from": "s_ground",
+      "to": "s_low",
+      "action": "climb-up",
+      "climb": "rope_28",
+      "conditions": [
+        "normal approach",
+        "body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-lingfu-final-001",
+          "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "t_rope_28_up",
+          "method": "full tour input sequence; directed climb enter/arrive or jump/drop trace",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+          "record": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_rope_28_down",
+      "from": "s_low",
+      "to": "s_ground",
+      "action": "climb-down",
+      "climb": "rope_28",
+      "conditions": [
+        "normal approach",
+        "body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-lingfu-final-001",
+          "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "t_rope_28_down",
+          "method": "full tour input sequence; directed climb enter/arrive or jump/drop trace",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+          "record": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_rope_21_up",
+      "from": "s_ground",
+      "to": "s_west",
+      "action": "climb-up",
+      "climb": "rope_21",
+      "conditions": [
+        "normal approach",
+        "body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-lingfu-final-001",
+          "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "t_rope_21_up",
+          "method": "full tour input sequence; directed climb enter/arrive or jump/drop trace",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+          "record": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_rope_21_down",
+      "from": "s_west",
+      "to": "s_ground",
+      "action": "climb-down",
+      "climb": "rope_21",
+      "conditions": [
+        "normal approach",
+        "body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-lingfu-final-001",
+          "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "t_rope_21_down",
+          "method": "full tour input sequence; directed climb enter/arrive or jump/drop trace",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+          "record": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_rope_40_up",
+      "from": "s_ground",
+      "to": "s_high",
+      "action": "climb-up",
+      "climb": "rope_40",
+      "conditions": [
+        "normal approach",
+        "body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-lingfu-final-001",
+          "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "t_rope_40_up",
+          "method": "full tour input sequence; directed climb enter/arrive or jump/drop trace",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+          "record": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_rope_40_down",
+      "from": "s_high",
+      "to": "s_ground",
+      "action": "climb-down",
+      "climb": "rope_40",
+      "conditions": [
+        "normal approach",
+        "body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-lingfu-final-001",
+          "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "t_rope_40_down",
+          "method": "full tour input sequence; directed climb enter/arrive or jump/drop trace",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+          "record": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_rope_51_up",
+      "from": "s_ground",
+      "to": "s_east",
+      "action": "climb-up",
+      "climb": "rope_51",
+      "conditions": [
+        "normal approach",
+        "body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-lingfu-final-001",
+          "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "t_rope_51_up",
+          "method": "full tour input sequence; directed climb enter/arrive or jump/drop trace",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+          "record": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_rope_51_down",
+      "from": "s_east",
+      "to": "s_ground",
+      "action": "climb-down",
+      "climb": "rope_51",
+      "conditions": [
+        "normal approach",
+        "body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-lingfu-final-001",
+          "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "t_rope_51_down",
+          "method": "full tour input sequence; directed climb enter/arrive or jump/drop trace",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+          "record": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_pavilion_to_ground",
+      "from": "s_pavilion",
+      "to": "s_ground",
+      "action": "drop",
+      "conditions": [
+        "64px rise uses ordinary jump"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-lingfu-final-001",
+          "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "t_pavilion_to_ground",
+          "method": "full tour input sequence; directed climb enter/arrive or jump/drop trace",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+          "record": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ],
+      "inspectionPath": [
+        [
+          396.1666666666674,
+          576
+        ],
+        [
+          398.3333333333341,
+          576.5555555555555
+        ],
+        [
+          400.5000000000008,
+          577.6666666666666
+        ],
+        [
+          402.6666666666675,
+          579.3333333333333
+        ],
+        [
+          404.83333333333417,
+          581.5555555555554
+        ],
+        [
+          407.00000000000085,
+          584.3333333333333
+        ],
+        [
+          409.16666666666754,
+          587.6666666666666
+        ],
+        [
+          411.3333333333342,
+          591.5555555555555
+        ],
+        [
+          413.5000000000009,
+          596
+        ],
+        [
+          415.6666666666676,
+          601
+        ],
+        [
+          417.8333333333343,
+          606.5555555555555
+        ],
+        [
+          420.00000000000097,
+          612.6666666666666
+        ],
+        [
+          422.16666666666765,
+          619.3333333333333
+        ],
+        [
+          424.33333333333434,
+          626.5555555555554
+        ],
+        [
+          426.500000000001,
+          634.3333333333333
+        ],
+        [
+          428.6666666666677,
+          640
+        ]
+      ],
+      "inspectionPathSource": {
+        "record": "work/replays-final/route_full_tour.json",
+        "frameRange": [
+          143,
+          158
+        ],
+        "semantic": "measured foot trajectory, not candidate arc"
+      }
+    },
+    {
+      "id": "t_ground_to_pavilion",
+      "from": "s_ground",
+      "to": "s_pavilion",
+      "action": "jump",
+      "conditions": [
+        "64px rise uses ordinary jump"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-lingfu-final-001",
+          "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "t_ground_to_pavilion",
+          "method": "full tour input sequence; directed climb enter/arrive or jump/drop trace",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+          "record": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ],
+      "inspectionPath": [
+        [
+          428.16666666665304,
+          640
+        ],
+        [
+          427.9722222222086,
+          631.2222222222222
+        ],
+        [
+          427.5833333333197,
+          623
+        ],
+        [
+          426.99999999998636,
+          615.3333333333334
+        ],
+        [
+          426.2222222222086,
+          608.2222222222223
+        ],
+        [
+          425.24999999998636,
+          601.6666666666667
+        ],
+        [
+          424.0833333333197,
+          595.6666666666667
+        ],
+        [
+          422.7222222222086,
+          590.2222222222223
+        ],
+        [
+          421.16666666665304,
+          585.3333333333334
+        ],
+        [
+          419.41666666665304,
+          581
+        ],
+        [
+          417.4722222222086,
+          577.2222222222222
+        ],
+        [
+          415.3333333333197,
+          574
+        ],
+        [
+          413.166666666653,
+          571.3333333333334
+        ],
+        [
+          410.9999999999863,
+          569.2222222222223
+        ],
+        [
+          408.8333333333196,
+          567.6666666666667
+        ],
+        [
+          406.66666666665293,
+          566.6666666666667
+        ],
+        [
+          404.49999999998624,
+          566.2222222222223
+        ],
+        [
+          402.33333333331956,
+          566.3333333333334
+        ],
+        [
+          400.1666666666529,
+          567
+        ],
+        [
+          397.9999999999862,
+          568.2222222222222
+        ],
+        [
+          395.8333333333195,
+          570
+        ],
+        [
+          393.6666666666528,
+          572.3333333333334
+        ],
+        [
+          391.49999999998613,
+          575.2222222222223
+        ],
+        [
+          389.33333333331944,
+          576
+        ]
+      ],
+      "inspectionPathSource": {
+        "record": "work/replays-final/route_full_tour.json",
+        "frameRange": [
+          2861,
+          2884
+        ],
+        "semantic": "measured foot trajectory, not candidate arc"
+      }
+    }
+  ],
+  "requiredRoutes": [
+    {
+      "id": "route_ground_return",
+      "from": "start_spawn",
+      "to": "start_spawn",
+      "via": [
+        "draw_desk_6",
+        "target_spot_7",
+        "target_spot_8",
+        "target_spot_9",
+        "target_spot_10",
+        "goal_east",
+        "s_pavilion"
+      ],
+      "direction": "out-and-back",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-lingfu-final-001",
+          "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "route_ground_return",
+          "method": "continuous fixed60Hz input replay from actual spawn and browser identical terminal state",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+          "record": "work/replays-final/route_ground_return.json",
+          "result": "verified",
+          "frames": 1586,
+          "resets": 0,
+          "browserRecord": "work/final-browser-check.json"
+        }
+      ]
+    },
+    {
+      "id": "route_rope_28_return",
+      "from": "start_spawn",
+      "to": "start_spawn",
+      "via": [
+        "draw_desk_6",
+        "rope_28",
+        "s_low",
+        "target_spot_11",
+        "s_ground",
+        "s_pavilion"
+      ],
+      "direction": "out-and-back",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-lingfu-final-001",
+          "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "route_rope_28_return",
+          "method": "continuous fixed60Hz input replay from actual spawn and browser identical terminal state",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+          "record": "work/replays-final/route_rope_28_return.json",
+          "result": "verified",
+          "frames": 1100,
+          "resets": 0,
+          "browserRecord": "work/final-browser-check.json"
+        }
+      ]
+    },
+    {
+      "id": "route_rope_21_return",
+      "from": "start_spawn",
+      "to": "start_spawn",
+      "via": [
+        "draw_desk_6",
+        "rope_21",
+        "s_west",
+        "target_spot_12",
+        "s_ground",
+        "s_pavilion"
+      ],
+      "direction": "out-and-back",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-lingfu-final-001",
+          "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "route_rope_21_return",
+          "method": "continuous fixed60Hz input replay from actual spawn and browser identical terminal state",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+          "record": "work/replays-final/route_rope_21_return.json",
+          "result": "verified",
+          "frames": 968,
+          "resets": 0,
+          "browserRecord": "work/final-browser-check.json"
+        }
+      ]
+    },
+    {
+      "id": "route_rope_40_return",
+      "from": "start_spawn",
+      "to": "start_spawn",
+      "via": [
+        "draw_desk_6",
+        "rope_40",
+        "s_high",
+        "target_spot_13",
+        "s_ground",
+        "s_pavilion"
+      ],
+      "direction": "out-and-back",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-lingfu-final-001",
+          "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "route_rope_40_return",
+          "method": "continuous fixed60Hz input replay from actual spawn and browser identical terminal state",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+          "record": "work/replays-final/route_rope_40_return.json",
+          "result": "verified",
+          "frames": 1563,
+          "resets": 0,
+          "browserRecord": "work/final-browser-check.json"
+        }
+      ]
+    },
+    {
+      "id": "route_rope_51_return",
+      "from": "start_spawn",
+      "to": "start_spawn",
+      "via": [
+        "draw_desk_6",
+        "rope_51",
+        "s_east",
+        "target_spot_14",
+        "s_ground",
+        "s_pavilion"
+      ],
+      "direction": "out-and-back",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-lingfu-final-001",
+          "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "route_rope_51_return",
+          "method": "continuous fixed60Hz input replay from actual spawn and browser identical terminal state",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+          "record": "work/replays-final/route_rope_51_return.json",
+          "result": "verified",
+          "frames": 1790,
+          "resets": 0,
+          "browserRecord": "work/final-browser-check.json"
+        }
+      ]
+    },
+    {
+      "id": "route_full_tour",
+      "from": "start_spawn",
+      "to": "start_spawn",
+      "via": [
+        "draw_desk_6",
+        "target_spot_7",
+        "target_spot_12",
+        "target_spot_11",
+        "target_spot_8",
+        "target_spot_9",
+        "target_spot_13",
+        "target_spot_10",
+        "target_spot_14",
+        "goal_east",
+        "s_pavilion"
+      ],
+      "direction": "out-and-back",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-lingfu-final-001",
+          "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "objectId": "route_full_tour",
+          "method": "continuous fixed60Hz input replay from actual spawn and browser identical terminal state",
+          "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+          "record": "work/replays-final/route_full_tour.json",
+          "result": "verified",
+          "frames": 3036,
+          "resets": 0,
+          "browserRecord": "work/final-browser-check.json"
+        }
+      ]
+    }
+  ],
+  "diagnostics": {
+    "maskPalette": {
+      "walk": [
+        150,
+        245,
+        160,
+        255
+      ],
+      "stand": [
+        0,
+        200,
+        80,
+        255
+      ],
+      "rope": [
+        0,
+        190,
+        230,
+        255
+      ],
+      "point": [
+        255,
+        70,
+        160,
+        255
+      ],
+      "jump": [
+        255,
+        160,
+        40,
+        255
+      ],
+      "drop": [
+        180,
+        80,
+        220,
+        255
+      ]
+    },
+    "rasterizationOrder": [
+      "walk",
+      "stand",
+      "rope",
+      "drop",
+      "jump",
+      "point"
+    ],
+    "regionIdIndex": null,
+    "geometryRevision": "trial-lingfu-final-001"
+  },
+  "validation": {
+    "status": "verified",
+    "geometryRevision": "trial-lingfu-final-001",
+    "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+    "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+    "evidence": [
+      {
+        "geometryRevision": "trial-lingfu-final-001",
+        "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "objectId": "requiredRoutes",
+        "method": "all6 continuous replay and full body sweep",
+        "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+        "record": "work/final-routes.json",
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "trial-lingfu-final-001",
+        "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "objectId": "physics",
+        "method": "20 actual-map and explicitly named synthetic action probes",
+        "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+        "record": "work/final-physics-check.json",
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "trial-lingfu-final-001",
+        "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "objectId": "browser",
+        "method": "all6 replay,6 standing contacts,keyboard,reset,minimap;1280x704 at1x",
+        "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+        "record": "work/final-browser-check.json",
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "trial-lingfu-final-001",
+        "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "objectId": "visual",
+        "method": "manual full scene/bottom/alpha/6 contact sheet inspection",
+        "parameterSource": "game/src/config/feel.ts; Player.ts; move.ts; independent fixed-step AABB adapter, base 100 points",
+        "record": "work/visual-review.json",
+        "result": "verified"
+      }
+    ],
+    "issues": [],
+    "scope": "local independent AABB FEEL adapter; owner VERIFY_PASS pending; production integration prohibited by user"
+  },
+  "alignmentContract": {
+    "tolerancePx": 2,
+    "bottom": "continuous attached stone foundation; no fragments",
+    "climbAnchor": "exact bearing top"
+  },
+  "review": {
+    "status": "pending-owner-review",
+    "selfCheck": "pass",
+    "integration": "forbidden-before-owner-PASS",
+    "productionIntegrated": false
+  }
+}

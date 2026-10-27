@@ -32,6 +32,10 @@ import youyingSceneData from '../data/art/scenes/youying_tower_gsb_v1/scene-data
 import youyingTiledMap from '../data/maps/youying_tower.json';
 import wanshouSceneData from '../data/art/scenes/wanshou_mountain_gsb_v1/scene-data.json';
 import wanshouTiledMap from '../data/maps/wanshou_mountain.json';
+import trialLingfuRangeSceneData from '../data/art/scenes/trial_lingfu_range_gsb_v1/scene-data.json';
+import trialLingfuRangeTiledMap from '../data/maps/trial_lingfu_range.json';
+import trialTaixuStageSceneData from '../data/art/scenes/trial_taixu_stage_gsb_v1/scene-data.json';
+import trialTaixuStageTiledMap from '../data/maps/trial_taixu_stage.json';
 import { FEEL, SPEC } from './config/feel';
 import { buildTiledMap } from './scenes/MapBuilder';
 
@@ -1475,5 +1479,277 @@ function testWanshouMountainGsb() {
   eq(JSON.stringify(tiledMap), mapBefore, 'wanshou_mountain: building leaves the Tiled map input unchanged');
 }
 testWanshouMountainGsb();
+
+// Lingfu's trial retains its drawing desk and eight targets with four approved ropes.
+function testTrialLingfuRangeGsb() {
+  const sceneId = 'trial_lingfu_range_gsb_v1', revision = 'trial-lingfu-final-002';
+  const data = clone(trialLingfuRangeSceneData), tiledMap = clone(trialLingfuRangeTiledMap);
+  const f = fixture(null, false), dataBefore = JSON.stringify(data), mapBefore = JSON.stringify(tiledMap);
+  f.cache.clear(); f.cache.set(`gsb_${sceneId}_data`, data);
+  f.textures.add(`gsb_${sceneId}_background`); f.textures.add(`gsb_${sceneId}_playable`);
+  const map = buildTiledMap(f.scene, tiledMap, 'tiles');
+  eq(map.gsbScene, sceneId, 'trial_lingfu_range: checked-in map enables its GSB scene');
+  eq(tiledMap.properties.find(property => property.name === 'gsbScene')?.value,
+    sceneId, 'trial_lingfu_range: map binds the approved GSB scene');
+  eq(tiledMap.properties.find(property => property.name === 'gsbGeometryRevision')?.value,
+    revision, 'trial_lingfu_range: map binds the approved geometry revision');
+  eq(data.geometryRevision, revision, 'trial_lingfu_range: scene-data has the approved geometry revision');
+  same([map.width, map.height], [1792, 704], 'trial_lingfu_range: logical world dimensions match the approved scene');
+  same([data.space.logicalWidth, data.space.logicalHeight], [1792, 704],
+    'trial_lingfu_range: scene-data declares the approved logical dimensions');
+  eq(data.space.sourceMap, 'maps/trial_lingfu_range.json', 'trial_lingfu_range: scene-data identifies the original trial map');
+  same([tiledMap.width, tiledMap.height], [56, 22], 'trial_lingfu_range: checked-in tile grid is 56 x 22');
+  same([tiledMap.tilewidth, tiledMap.tileheight], [32, 32], 'trial_lingfu_range: checked-in tiles are 32 x 32');
+  same([tiledMap.width * tiledMap.tilewidth, tiledMap.height * tiledMap.tileheight], [map.width, map.height],
+    'trial_lingfu_range: checked-in tile grid matches logical world dimensions');
+  same(Object.fromEntries(tiledMap.properties.filter(property => !['gsbScene', 'gsbGeometryRevision'].includes(property.name))
+    .map(property => [property.name, property.value])), {
+    id: 'trial_lingfu_range', name: '灵符派·符阁靶场', safeZone: false, qiDensity: 4, area: 'lingfu',
+    trial: 'trial_sect_lingfu', returnTown: false, allowTalismanReturn: false,
+  }, 'trial_lingfu_range: all existing map properties and trial identity are preserved');
+  same([map.id, map.trial, map.safeZone], ['trial_lingfu_range', 'trial_sect_lingfu', false],
+    'trial_lingfu_range: the built map retains its identity, trial flow and unsafe zone');
+  same(f.groups.map(group => group.children.length), [2, 4], 'trial_lingfu_range: two solids and four one-way bodies are built');
+  same(data.surfaces.map(surface => [surface.id, surface.support, surface.polyline]), [
+    ['s_pavilion', 'solid', [[0, 576], [384, 576]]],
+    ['s_ground', 'solid', [[384, 640], [1792, 640]]],
+    ['s_low', 'one-way', [[832, 512], [1184, 512]]],
+    ['s_west', 'one-way', [[608, 416], [832, 416]]],
+    ['s_high', 'one-way', [[1216, 384], [1440, 384]]],
+    ['s_east', 'one-way', [[1536, 448], [1728, 448]]],
+  ], 'trial_lingfu_range: all six approved surfaces retain their identities, kinds and exact landing spans');
+  for (const surface of data.surfaces) {
+    const left = Math.min(...surface.polyline.map(point => point[0]));
+    const right = Math.max(...surface.polyline.map(point => point[0]));
+    const bodies = f.groups[surface.support === 'one-way' ? 1 : 0].children.map(rectangle);
+    ok(bodies.some(body => body.y === surface.polyline[0][1] && body.x <= left && body.x + body.width >= right),
+      `trial_lingfu_range: ${surface.id} retains its full landing span and exact top edge`);
+  }
+  ok(f.groups[1].children.every(object => object.body?.checkCollision.up &&
+    !object.body.checkCollision.down && !object.body.checkCollision.left && !object.body.checkCollision.right),
+    'trial_lingfu_range: all one-way bodies only collide on top');
+  ok(f.groups[0].children.every(object => object.body?.checkCollision.up &&
+    object.body.checkCollision.down && object.body.checkCollision.left && object.body.checkCollision.right),
+    'trial_lingfu_range: solid bodies keep all collision directions');
+  same(map.spawn, { x: 96, y: 576 }, 'trial_lingfu_range: player start is on the approved pavilion surface');
+  same(data.points.filter(point => point.id === 'start_spawn').map(point => point.position),
+    [[map.spawn.x, map.spawn.y]], 'trial_lingfu_range: player start matches the approved scene spawn point');
+  const tiledObjects = tiledMap.layers.flatMap(layer => layer.type === 'objectgroup' ? layer.objects ?? [] : []);
+  same(tiledObjects.filter(object => object.type === 'playerStart').map(object =>
+    [object.name, object.x, object.y, object.width, object.height]),
+  [['playerStart', 96, 576, 0, 0]], 'trial_lingfu_range: Tiled retains exactly one approved player start');
+  eq(map.ropes.length, 4, 'trial_lingfu_range: all four ropes are preserved');
+  same([...data.climbs].sort((a, b) => a.ends.end.position[0] - b.ends.end.position[0]).map(climb =>
+    [climb.id, climb.kind, climb.ends.start.position, climb.ends.start.surface,
+      climb.ends.end.position, climb.ends.end.surface, climb.corridor]), [
+    ['rope_21', 'rope', [688, 640], 's_ground', [688, 416], 's_west', [[670, 416], [706, 416], [706, 640], [670, 640]]],
+    ['rope_28', 'rope', [912, 640], 's_ground', [912, 512], 's_low', [[894, 512], [930, 512], [930, 640], [894, 640]]],
+    ['rope_40', 'rope', [1296, 640], 's_ground', [1296, 384], 's_high', [[1278, 384], [1314, 384], [1314, 640], [1278, 640]]],
+    ['rope_51', 'rope', [1648, 640], 's_ground', [1648, 448], 's_east', [[1630, 448], [1666, 448], [1666, 640], [1630, 640]]],
+  ], 'trial_lingfu_range: all climbs keep their rope identities, surface bindings, endpoints and 36px corridors');
+  same(tiledObjects.filter(object => ['rope', 'ladder'].includes(object.type)).sort((a, b) => a.x - b.x)
+    .map(object => [object.name, object.type, object.x, object.y, object.width, object.height]), [
+    ['rope_21', 'rope', 688, 416, 0, 224],
+    ['rope_28', 'rope', 912, 512, 0, 128],
+    ['rope_40', 'rope', 1296, 384, 0, 256],
+    ['rope_51', 'rope', 1648, 448, 0, 192],
+  ], 'trial_lingfu_range: the four named Tiled climbables are ropes with approved geometry and no ladder');
+  same([...map.ropes].sort((a, b) => a.x - b.x), [
+    { kind: 'rope', x: 688, top: 416, bottom: 640, halfW: FEEL.ropeGrabRangeX },
+    { kind: 'rope', x: 912, top: 512, bottom: 640, halfW: FEEL.ropeGrabRangeX },
+    { kind: 'rope', x: 1296, top: 384, bottom: 640, halfW: FEEL.ropeGrabRangeX },
+    { kind: 'rope', x: 1648, top: 448, bottom: 640, halfW: FEEL.ropeGrabRangeX },
+  ], 'trial_lingfu_range: all runtime ropes keep exact endpoints and FEEL grab half-width');
+  same(map.ropes.map(rope => [rope.kind, rope.x, rope.top, rope.bottom, rope.halfW]),
+    data.climbs.map(climb => [climb.kind, climb.ends.end.position[0], climb.ends.end.position[1],
+      climb.ends.start.position[1], FEEL.ropeGrabRangeX]),
+    'trial_lingfu_range: runtime ropes match the approved scene climbs');
+  const trialObjects = [
+    ['draw_desk_6', 'draw_desk', 240, 576, { talismans: 3 }],
+    ['target_spot_7', 'target_spot', 528, 640, {}],
+    ['target_spot_8', 'target_spot', 976, 640, { moveRange: 128 }],
+    ['target_spot_9', 'target_spot', 1200, 640, {}],
+    ['target_spot_10', 'target_spot', 1424, 640, { moveRange: 128 }],
+    ['target_spot_11', 'target_spot', 1008, 512, { moveRange: 128 }],
+    ['target_spot_12', 'target_spot', 752, 416, { high: true }],
+    ['target_spot_13', 'target_spot', 1360, 384, { high: true }],
+    ['target_spot_14', 'target_spot', 1616, 448, { high: true }],
+  ];
+  same(map.objects.map(object => [object.name, object.type, object.x, object.y, object.props]), trialObjects,
+    'trial_lingfu_range: the drawing desk and eight targets retain approved positions and all gameplay properties');
+  same(data.points.filter(point => ['draw_desk', 'target_spot'].includes(point.type)).map(point =>
+    [point.id, point.type, ...point.position, point.properties]), trialObjects,
+  'trial_lingfu_range: retained gameplay objects agree with scene-data points');
+  same(tiledObjects.filter(object => ['draw_desk', 'target_spot'].includes(object.type)).map(object =>
+    [object.name, object.type, object.x, object.y,
+      Object.fromEntries(object.properties.map(property => [property.name, property.value]))]), trialObjects,
+  'trial_lingfu_range: Tiled retains the desk talismans, moving targets and high targets');
+  same(map.objects.filter(object => object.name === 'goal_east'), [],
+    'trial_lingfu_range: the scene-only east goal does not introduce a gameplay object');
+  same(map.spawns, [], 'trial_lingfu_range: no monster spawns are introduced');
+  same(map.hidden, [], 'trial_lingfu_range: no hidden controllers are introduced');
+  same(map.spawnGates, [], 'trial_lingfu_range: no spawn gates are introduced');
+  same(map.zones, [], 'trial_lingfu_range: no extra gameplay zones are introduced');
+  same(map.objects.filter(object => ['gather', 'chest', 'hidden', 'spawn', 'flyZone', 'spawnGate', 'portal'].includes(object.type)), [],
+    'trial_lingfu_range: no gather, chest, hidden, spawn, flying zone, spawn gate or portal objects are introduced');
+  eq(f.tilemaps, 0, 'trial_lingfu_range: GSB skips the legacy tilemap path');
+  same(f.displays.filter(object => object.kind !== 'zone').map(object => [object.kind, object.key]),
+    [['image', `gsb_${sceneId}_background`], ['image', `gsb_${sceneId}_playable`]],
+    'trial_lingfu_range: GSB draws background and playable art without legacy terrain or ropes');
+  const legacyLayers = tiledMap.layers.filter(layer => layer.type === 'tilelayer' && ['ground', 'oneway'].includes(layer.name));
+  same(legacyLayers.map(layer => layer.name), ['ground', 'oneway'], 'trial_lingfu_range: both legacy collision layers are present');
+  ok(legacyLayers.every(layer => layer.data?.length === tiledMap.width * tiledMap.height && layer.data.every(gid => gid === 0)),
+    'trial_lingfu_range: checked-in legacy collision layers are fully cleared');
+  eq(JSON.stringify(data), dataBefore, 'trial_lingfu_range: building leaves the cached scene-data input unchanged');
+  eq(JSON.stringify(tiledMap), mapBefore, 'trial_lingfu_range: building leaves the Tiled map input unchanged');
+}
+testTrialLingfuRangeGsb();
+
+// Taixu's trial retains five lamps and two spawn gates with three approved ropes.
+function testTrialTaixuStageGsb() {
+  const sceneId = 'trial_taixu_stage_gsb_v1', revision = 'taixu-stage-final-003';
+  const data = clone(trialTaixuStageSceneData), tiledMap = clone(trialTaixuStageTiledMap);
+  const f = fixture(null, false), dataBefore = JSON.stringify(data), mapBefore = JSON.stringify(tiledMap);
+  f.cache.clear(); f.cache.set(`gsb_${sceneId}_data`, data);
+  f.textures.add(`gsb_${sceneId}_background`); f.textures.add(`gsb_${sceneId}_playable`);
+  const map = buildTiledMap(f.scene, tiledMap, 'tiles');
+  eq(map.gsbScene, sceneId, 'trial_taixu_stage: checked-in map enables its GSB scene');
+  eq(tiledMap.properties.find(property => property.name === 'gsbScene')?.value,
+    sceneId, 'trial_taixu_stage: map binds the approved GSB scene');
+  eq(tiledMap.properties.find(property => property.name === 'gsbGeometryRevision')?.value,
+    revision, 'trial_taixu_stage: map binds the approved geometry revision');
+  eq(data.geometryRevision, revision, 'trial_taixu_stage: scene-data has the approved geometry revision');
+  same([map.width, map.height], [1600, 704], 'trial_taixu_stage: logical world dimensions match the approved scene');
+  same([data.space.logicalWidth, data.space.logicalHeight], [1600, 704],
+    'trial_taixu_stage: scene-data declares the approved logical dimensions');
+  same([tiledMap.width, tiledMap.height], [50, 22], 'trial_taixu_stage: checked-in tile grid is 50 x 22');
+  same([tiledMap.tilewidth, tiledMap.tileheight], [32, 32], 'trial_taixu_stage: checked-in tiles are 32 x 32');
+  same([tiledMap.width * tiledMap.tilewidth, tiledMap.height * tiledMap.tileheight], [map.width, map.height],
+    'trial_taixu_stage: checked-in tile grid matches logical world dimensions');
+  same(Object.fromEntries(tiledMap.properties.filter(property => !['gsbScene', 'gsbGeometryRevision'].includes(property.name))
+    .map(property => [property.name, property.value])), {
+    id: 'trial_taixu_stage', name: '太虚观·演法台', safeZone: false, qiDensity: 4, area: 'taixu',
+    trial: 'trial_sect_taixu', returnTown: false, allowTalismanReturn: false,
+  }, 'trial_taixu_stage: all existing map properties and trial identity are preserved');
+  same([map.id, map.trial, map.safeZone], ['trial_taixu_stage', 'trial_sect_taixu', false],
+    'trial_taixu_stage: the built map retains its identity, trial flow and unsafe zone');
+  // The approved full scene has two thick polygon blockers and three exposed solid standing surfaces.
+  same(f.groups.map(group => group.children.length), [2, 5], 'trial_taixu_stage: two approved polygon blockers and five one-way bodies are built');
+  same(f.groups[0].children.map(rectangle), [
+    { x: 0, y: 640, width: 1600, height: 64 },
+    { x: 512, y: 576, width: 576, height: 64 },
+  ], 'trial_taixu_stage: the full map preserves approved ground and altar polygon thickness without duplicate surface bodies');
+  same(data.surfaces.map(surface => [surface.id, surface.support, surface.polyline]), [
+    ['s_ground_left', 'solid', [[0, 640], [512, 640]]],
+    ['s_altar', 'solid', [[512, 576], [1088, 576]]],
+    ['s_ground_right', 'solid', [[1088, 640], [1600, 640]]],
+    ['s_side_left', 'one-way', [[160, 544], [384, 544]]],
+    ['s_mid_left', 'one-way', [[448, 448], [736, 448]]],
+    ['s_top', 'one-way', [[672, 320], [928, 320]]],
+    ['s_mid_right', 'one-way', [[864, 448], [1152, 448]]],
+    ['s_side_right', 'one-way', [[1216, 544], [1440, 544]]],
+  ], 'trial_taixu_stage: all eight approved surfaces retain their identities, kinds and exact landing spans');
+  for (const surface of data.surfaces) {
+    const left = Math.min(...surface.polyline.map(point => point[0]));
+    const right = Math.max(...surface.polyline.map(point => point[0]));
+    const bodies = f.groups[surface.support === 'one-way' ? 1 : 0].children.map(rectangle);
+    ok(bodies.some(body => body.y === surface.polyline[0][1] && body.x <= left && body.x + body.width >= right),
+      `trial_taixu_stage: ${surface.id} retains its full landing span and exact top edge`);
+  }
+  // This independent fallback omits polygons; it does not describe the full map's body count.
+  const surfaceOnlyData = { ...clone(data), solids: [] }, surfaceOnlyTiledMap = clone(tiledMap);
+  const surfaceOnlyDataBefore = JSON.stringify(surfaceOnlyData), surfaceOnlyMapBefore = JSON.stringify(surfaceOnlyTiledMap);
+  const surfaceOnlyFixture = fixture(null, false);
+  surfaceOnlyFixture.cache.clear(); surfaceOnlyFixture.cache.set(`gsb_${sceneId}_data`, surfaceOnlyData);
+  surfaceOnlyFixture.textures.add(`gsb_${sceneId}_background`); surfaceOnlyFixture.textures.add(`gsb_${sceneId}_playable`);
+  buildTiledMap(surfaceOnlyFixture.scene, surfaceOnlyTiledMap, 'tiles');
+  same(surfaceOnlyFixture.groups.map(group => group.children.length), [3, 5],
+    'trial_taixu_stage: the independent surface-only fallback builds three solid and five one-way bodies');
+  same(surfaceOnlyFixture.groups[0].children.map(rectangle), [
+    { x: 0, y: 640, width: 512, height: FEEL.tile },
+    { x: 512, y: 576, width: 576, height: FEEL.tile },
+    { x: 1088, y: 640, width: 512, height: FEEL.tile },
+  ], 'trial_taixu_stage: surface-only fallback collision spans exactly match all three approved solid surfaces');
+  eq(JSON.stringify(surfaceOnlyData), surfaceOnlyDataBefore,
+    'trial_taixu_stage: surface-only fallback leaves its cached scene-data input unchanged');
+  eq(JSON.stringify(surfaceOnlyTiledMap), surfaceOnlyMapBefore,
+    'trial_taixu_stage: surface-only fallback leaves its Tiled map input unchanged');
+  ok(f.groups[1].children.every(object => object.body?.checkCollision.up &&
+    !object.body.checkCollision.down && !object.body.checkCollision.left && !object.body.checkCollision.right),
+    'trial_taixu_stage: all one-way bodies only collide on top');
+  ok(f.groups[0].children.every(object => object.body?.checkCollision.up &&
+    object.body.checkCollision.down && object.body.checkCollision.left && object.body.checkCollision.right),
+    'trial_taixu_stage: solid bodies keep all collision directions');
+  same(map.spawn, { x: 768, y: 576 }, 'trial_taixu_stage: player start is on the approved altar surface');
+  same(data.points.filter(point => point.id === 'start_spawn').map(point => point.position),
+    [[map.spawn.x, map.spawn.y]], 'trial_taixu_stage: player start matches the approved scene spawn point');
+  const tiledObjects = tiledMap.layers.flatMap(layer => layer.type === 'objectgroup' ? layer.objects ?? [] : []);
+  same(tiledObjects.filter(object => object.type === 'playerStart').map(object =>
+    [object.name, object.x, object.y, object.width, object.height]),
+  [['playerStart', 768, 576, 0, 0]], 'trial_taixu_stage: Tiled retains exactly one approved player start');
+  eq(map.ropes.length, 3, 'trial_taixu_stage: all three ropes are preserved');
+  same(data.climbs.map(climb => [climb.id, climb.kind, climb.ends.start.position, climb.ends.start.surface,
+    climb.ends.end.position, climb.ends.end.surface, climb.corridor]), [
+    ['rope_18', 'rope', [592, 576], 's_altar', [592, 448], 's_mid_left', [[574, 448], [610, 448], [610, 576], [574, 576]]],
+    ['rope_31', 'rope', [1008, 576], 's_altar', [1008, 448], 's_mid_right', [[990, 448], [1026, 448], [1026, 576], [990, 576]]],
+    ['rope_22', 'rope', [720, 448], 's_mid_left', [720, 320], 's_top', [[702, 320], [738, 320], [738, 448], [702, 448]]],
+  ], 'trial_taixu_stage: all climbs keep their rope identities, surface bindings, endpoints and 36px corridors');
+  same(tiledObjects.filter(object => ['rope', 'ladder'].includes(object.type)).map(object =>
+    [object.name, object.type, object.x, object.y, object.width, object.height]), [
+    ['rope_18', 'rope', 592, 448, 0, 128],
+    ['rope_31', 'rope', 1008, 448, 0, 128],
+    ['rope_22', 'rope', 720, 320, 0, 128],
+  ], 'trial_taixu_stage: the three named Tiled climbables are ropes with approved geometry and no ladder');
+  same(map.ropes, [
+    { kind: 'rope', x: 592, top: 448, bottom: 576, halfW: FEEL.ropeGrabRangeX },
+    { kind: 'rope', x: 1008, top: 448, bottom: 576, halfW: FEEL.ropeGrabRangeX },
+    { kind: 'rope', x: 720, top: 320, bottom: 448, halfW: FEEL.ropeGrabRangeX },
+  ], 'trial_taixu_stage: all runtime ropes keep exact endpoints and FEEL grab half-width');
+  same(map.ropes.map(rope => [rope.kind, rope.x, rope.top, rope.bottom, rope.halfW]),
+    data.climbs.map(climb => [climb.kind, climb.ends.end.position[0], climb.ends.end.position[1],
+      climb.ends.start.position[1], FEEL.ropeGrabRangeX]),
+    'trial_taixu_stage: runtime ropes match the approved scene climbs');
+  const lamps = [
+    ['lamp_5', 272, 544, { sprite: 'prop_trial_lamp' }],
+    ['lamp_6', 528, 448, { sprite: 'prop_trial_lamp' }],
+    ['lamp_7', 784, 320, { sprite: 'prop_trial_lamp' }],
+    ['lamp_8', 1072, 448, { sprite: 'prop_trial_lamp' }],
+    ['lamp_9', 1328, 544, { sprite: 'prop_trial_lamp' }],
+  ];
+  same(map.objects.filter(object => object.type === 'lamp').map(object =>
+    [object.name, object.x, object.y, object.props]), lamps,
+  'trial_taixu_stage: all five lamps retain approved positions and trial lamp sprites');
+  same(data.points.filter(point => point.type === 'lamp').map(point =>
+    [point.id, ...point.position, point.properties]), lamps,
+  'trial_taixu_stage: retained lamps agree with scene-data points');
+  same(tiledObjects.filter(object => object.type === 'lamp').map(object =>
+    [object.name, object.x, object.y, Object.fromEntries(object.properties.map(property => [property.name, property.value]))]),
+  lamps, 'trial_taixu_stage: Tiled retains all five lamp identities, positions and sprites');
+  same(map.spawnGates, [
+    { type: 'spawnGate', name: 'gate_left', x: 80, y: 640, w: 0, h: 0, props: { side: 'left' } },
+    { type: 'spawnGate', name: 'gate_right', x: 1520, y: 640, w: 0, h: 0, props: { side: 'right' } },
+  ], 'trial_taixu_stage: both spawn gates retain approved positions and sides');
+  same(map.objects.filter(object => object.type === 'spawnGate'), map.spawnGates,
+    'trial_taixu_stage: spawn gates remain available through gameplay objects');
+  same(map.spawnGates.map(object => [object.name, object.x, object.y, object.props]),
+    data.points.filter(point => point.type === 'spawnGate').map(point => [point.id, ...point.position, point.properties]),
+    'trial_taixu_stage: spawn gate positions and sides match the approved scene points');
+  same(map.objects.filter(object => !['lamp', 'spawnGate'].includes(object.type)), [],
+    'trial_taixu_stage: only the approved lamps and spawn gates accompany the trial');
+  same(map.spawns, [], 'trial_taixu_stage: no monster spawns are introduced');
+  same(map.hidden, [], 'trial_taixu_stage: no hidden controllers are introduced');
+  same(map.zones, [], 'trial_taixu_stage: no extra gameplay zones are introduced');
+  eq(f.tilemaps, 0, 'trial_taixu_stage: GSB skips the legacy tilemap path');
+  same(f.displays.filter(object => object.kind !== 'zone').map(object => [object.kind, object.key]),
+    [['image', `gsb_${sceneId}_background`], ['image', `gsb_${sceneId}_playable`]],
+    'trial_taixu_stage: GSB draws background and playable art without legacy terrain or ropes');
+  const legacyLayers = tiledMap.layers.filter(layer => layer.type === 'tilelayer' && ['ground', 'oneway'].includes(layer.name));
+  same(legacyLayers.map(layer => layer.name), ['ground', 'oneway'], 'trial_taixu_stage: both legacy collision layers are present');
+  ok(legacyLayers.every(layer => layer.data?.length === tiledMap.width * tiledMap.height && layer.data.every(gid => gid === 0)),
+    'trial_taixu_stage: checked-in legacy collision layers are fully cleared');
+  eq(JSON.stringify(data), dataBefore, 'trial_taixu_stage: building leaves the cached scene-data input unchanged');
+  eq(JSON.stringify(tiledMap), mapBefore, 'trial_taixu_stage: building leaves the Tiled map input unchanged');
+}
+testTrialTaixuStageGsb();
 
 console.log(JSON.stringify({ suite: 'gsb-map', passed: true, assertions }));
