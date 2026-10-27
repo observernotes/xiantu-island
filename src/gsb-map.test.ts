@@ -32,6 +32,10 @@ import youyingSceneData from '../data/art/scenes/youying_tower_gsb_v1/scene-data
 import youyingTiledMap from '../data/maps/youying_tower.json';
 import wanshouSceneData from '../data/art/scenes/wanshou_mountain_gsb_v1/scene-data.json';
 import wanshouTiledMap from '../data/maps/wanshou_mountain.json';
+import chiyanSlope1SceneData from '../data/art/scenes/chiyan_slope_1_gsb_v1/scene-data.json';
+import chiyanSlope1TiledMap from '../data/maps/chiyan_slope_1.json';
+import chiyanSlope2SceneData from '../data/art/scenes/chiyan_slope_2_gsb_v1/scene-data.json';
+import chiyanSlope2TiledMap from '../data/maps/chiyan_slope_2.json';
 import trialLingfuRangeSceneData from '../data/art/scenes/trial_lingfu_range_gsb_v1/scene-data.json';
 import trialLingfuRangeTiledMap from '../data/maps/trial_lingfu_range.json';
 import trialTaixuStageSceneData from '../data/art/scenes/trial_taixu_stage_gsb_v1/scene-data.json';
@@ -1483,6 +1487,360 @@ function testWanshouMountainGsb() {
   eq(JSON.stringify(tiledMap), mapBefore, 'wanshou_mountain: building leaves the Tiled map input unchanged');
 }
 testWanshouMountainGsb();
+
+// Chiyan's foothill keeps its lava hazards, source patrol extents, two ladders and three ropes.
+function testChiyanSlope1Gsb() {
+  const sceneId = 'chiyan_slope_1_gsb_v1', revision = 'chiyan1-final-002';
+  const data = clone(chiyanSlope1SceneData), tiledMap = clone(chiyanSlope1TiledMap);
+  const f = fixture(null, false), dataBefore = JSON.stringify(data), mapBefore = JSON.stringify(tiledMap);
+  f.cache.clear(); f.cache.set(`gsb_${sceneId}_data`, data);
+  f.textures.add(`gsb_${sceneId}_background`); f.textures.add(`gsb_${sceneId}_playable`);
+  const map = buildTiledMap(f.scene, tiledMap, 'tiles');
+  eq(map.gsbScene, sceneId, 'chiyan_slope_1: checked-in map enables its GSB scene');
+  eq(tiledMap.properties.find(property => property.name === 'gsbScene')?.value,
+    sceneId, 'chiyan_slope_1: map binds the approved GSB scene');
+  eq(tiledMap.properties.find(property => property.name === 'gsbGeometryRevision')?.value,
+    revision, 'chiyan_slope_1: map binds the approved geometry revision');
+  eq(data.geometryRevision, revision, 'chiyan_slope_1: scene-data has the approved geometry revision');
+  same([map.width, map.height], [3200, 896], 'chiyan_slope_1: logical world dimensions match the approved scene');
+  same([data.space.logicalWidth, data.space.logicalHeight], [3200, 896],
+    'chiyan_slope_1: scene-data declares the approved logical dimensions');
+  same([tiledMap.width, tiledMap.height], [100, 28], 'chiyan_slope_1: checked-in tile grid is 100 x 28');
+  same([tiledMap.tilewidth, tiledMap.tileheight], [32, 32], 'chiyan_slope_1: checked-in tiles are 32 x 32');
+  same([tiledMap.width * tiledMap.tilewidth, tiledMap.height * tiledMap.tileheight], [map.width, map.height],
+    'chiyan_slope_1: checked-in tile grid matches logical world dimensions');
+  same(f.groups.map(group => group.children.length), [5, 5], 'chiyan_slope_1: five solids and five one-way bodies are built');
+  same(data.surfaces.map(surface => [surface.id, surface.support, surface.polyline]), [
+    ['s_dock', 'solid', [[0, 768], [384, 768]]],
+    ['s_low_west', 'solid', [[384, 832], [1536, 832]]],
+    ['s_middle', 'solid', [[1536, 768], [2144, 768]]],
+    ['s_low_east', 'solid', [[2144, 832], [2432, 832]]],
+    ['s_east', 'solid', [[2432, 768], [3200, 768]]],
+    ['s_west_low', 'one-way', [[704, 704], [1120, 704]]],
+    ['s_west_high', 'one-way', [[896, 576], [1312, 576]]],
+    ['s_middle_low', 'one-way', [[1664, 640], [2080, 640]]],
+    ['s_middle_high', 'one-way', [[1792, 512], [2272, 512]]],
+    ['s_east_high', 'one-way', [[2560, 640], [3040, 640]]],
+  ], 'chiyan_slope_1: all ten approved surfaces keep their identities, kinds and exact landing spans');
+  for (const surface of data.surfaces) {
+    const left = Math.min(...surface.polyline.map(point => point[0]));
+    const right = Math.max(...surface.polyline.map(point => point[0]));
+    const bodies = f.groups[surface.support === 'one-way' ? 1 : 0].children.map(rectangle);
+    ok(bodies.some(body => body.y === surface.polyline[0][1] && body.x <= left && body.x + body.width >= right),
+      `chiyan_slope_1: ${surface.id} retains its full landing span and exact top edge`);
+  }
+  ok(f.groups[1].children.every(object => object.body?.checkCollision.up &&
+    !object.body.checkCollision.down && !object.body.checkCollision.left && !object.body.checkCollision.right),
+    'chiyan_slope_1: all one-way bodies only collide on top');
+  ok(f.groups[0].children.every(object => object.body?.checkCollision.up &&
+    object.body.checkCollision.down && object.body.checkCollision.left && object.body.checkCollision.right),
+    'chiyan_slope_1: solid bodies keep all collision directions');
+  same(map.spawn, { x: 128, y: 768 }, 'chiyan_slope_1: player start is preserved');
+  same(data.points.filter(point => point.id === 'start_spawn').map(point => point.position),
+    [[map.spawn.x, map.spawn.y]], 'chiyan_slope_1: player start matches the approved scene spawn point');
+  eq(map.ropes.length, 5, 'chiyan_slope_1: both ladders and all three ropes are preserved');
+  same(data.climbs.map(climb => [climb.id, climb.kind]), [
+    ['c_rope_26', 'ladder'], ['c_rope_32', 'rope'], ['c_rope_58', 'rope'],
+    ['c_rope_62', 'rope'], ['c_rope_86', 'ladder'],
+  ], 'chiyan_slope_1: all five approved climbs keep their identities and corrected kinds');
+  const tiledObjects = tiledMap.layers.flatMap(layer => layer.type === 'objectgroup' ? layer.objects ?? [] : []);
+  same(tiledObjects.filter(object => ['rope', 'ladder'].includes(object.type)).map(object =>
+    [object.name, object.type, object.x, object.y, object.width, object.height]), [
+    ['ladder_26', 'ladder', 830, 704, 36, 128],
+    ['rope_32', 'rope', 1040, 576, 0, 128],
+    ['rope_58', 'rope', 1872, 640, 0, 128],
+    ['rope_62', 'rope', 2000, 512, 0, 128],
+    ['ladder_86', 'ladder', 2750, 640, 36, 128],
+  ], 'chiyan_slope_1: Tiled climbables retain their approved names, kinds, endpoints and ladder corridors');
+  same(map.ropes.map(rope => [rope.kind, rope.x, rope.top, rope.bottom, rope.halfW]),
+    data.climbs.map(climb => {
+      const width = Math.max(...climb.corridor.map(point => point[0])) - Math.min(...climb.corridor.map(point => point[0]));
+      return [climb.kind, climb.ends.end.position[0], climb.ends.end.position[1], climb.ends.start.position[1],
+        climb.kind === 'ladder' ? Math.max(12, width / 2) : FEEL.ropeGrabRangeX];
+    }), 'chiyan_slope_1: runtime climb geometry follows approved ends and corridor widths');
+  same(map.ropes, [
+    { kind: 'ladder', x: 848, top: 704, bottom: 832, halfW: 18 },
+    { kind: 'rope', x: 1040, top: 576, bottom: 704, halfW: FEEL.ropeGrabRangeX },
+    { kind: 'rope', x: 1872, top: 640, bottom: 768, halfW: FEEL.ropeGrabRangeX },
+    { kind: 'rope', x: 2000, top: 512, bottom: 640, halfW: FEEL.ropeGrabRangeX },
+    { kind: 'ladder', x: 2768, top: 640, bottom: 768, halfW: 18 },
+  ], 'chiyan_slope_1: all climbables retain their exact centers, ends and grab half-widths');
+  same(map.objects.filter(object => object.type === 'ferry').map(object =>
+    [object.name, object.x, object.y, object.w, object.props.returnTo]),
+  [['ferry_landing', 192, 768, 160, 'luoxia_town']],
+  'chiyan_slope_1: ferry landing retains its position, width and return town');
+  same(map.objects.filter(object => object.type === 'portal').map(object =>
+    [object.name, object.x, object.y, object.props.target, object.props.targetPortal]),
+  [['portal_to_slope_2', 3120, 768, 'chiyan_slope_2', 'portal_to_slope_1']],
+  'chiyan_slope_1: the east portal retains its position and existing destination');
+  same(map.zones.map(zone => [zone.name, zone.x, zone.y, zone.w, zone.h, zone.props.label,
+    zone.props.hazard, zone.props.damagePermilleOfMaxHp, zone.props.tickMs, zone.props.knockUp]), [
+    ['lava_6', 1280, 800, 128, 32, '岩浆', 'lava', 80, 500, 480],
+    ['lava_7', 2240, 800, 128, 32, '岩浆', 'lava', 80, 500, 480],
+  ], 'chiyan_slope_1: both lava zones retain their bounds, hazard identity and damage properties');
+  same(tiledObjects.filter(object => ['lava_6', 'lava_7'].includes(object.name)).map(object => object.type),
+    ['zone', 'zone'], 'chiyan_slope_1: hazards remain Tiled zone objects');
+  same(map.zones.map(zone => [zone.name, zone.x, zone.y, zone.w, zone.h, zone.props.hazard,
+    zone.props.damagePermilleOfMaxHp, zone.props.tickMs, zone.props.knockUp]),
+    data.hazards.map(hazard => {
+      const xs = hazard.polygon.map(point => point[0]), ys = hazard.polygon.map(point => point[1]);
+      return [hazard.id, Math.min(...xs), Math.min(...ys), Math.max(...xs) - Math.min(...xs),
+        Math.max(...ys) - Math.min(...ys), hazard.type, hazard.effect.damagePermilleOfMaxHp,
+        hazard.effect.tickMs, hazard.effect.knockUp];
+    }), 'chiyan_slope_1: runtime hazard bounds and effects match approved scene-data');
+  const spawnPoints = data.points.filter(point => point.type === 'spawn');
+  const tiledSpawns = tiledObjects.filter(object => object.type === 'spawn');
+  same(tiledSpawns.map(object => [object.name, object.x, object.y, object.width]),
+    spawnPoints.map(point => [point.id, ...point.sourcePosition!, point.sourceWidth]),
+    'chiyan_slope_1: Tiled spawns retain source positions and patrol widths rather than inset center ranges');
+  same(spawnPoints.map(point => [point.id, point.position, point.width, point.spawnCenterRange]), [
+    ['spawn_lava_lizard_11', [525, 832], 742, [525, 1267]],
+    ['spawn_lava_lizard_12', [1421, 832], 102, [1421, 1523]],
+    ['spawn_lava_lizard_13', [1549, 768], 582, [1549, 2131]],
+    ['spawn_lava_lizard_14', [2445, 768], 582, [2445, 3027]],
+    ['spawn_fire_crow_15', [717, 704], 390, [717, 1107]],
+    ['spawn_fire_crow_16', [909, 576], 390, [909, 1299]],
+    ['spawn_fire_crow_17', [1677, 640], 390, [1677, 2067]],
+    ['spawn_fire_crow_18', [1805, 512], 454, [1805, 2259]],
+    ['spawn_fire_crow_19', [2573, 640], 454, [2573, 3027]],
+  ], 'chiyan_slope_1: scene-data keeps its approved inset spawn center ranges');
+  same(map.spawns.map(spawn => [spawn.monster, spawn.x, spawn.y, spawn.w, spawn.count]), [
+    ['lava_lizard', 512, 832, 768, 3], ['lava_lizard', 1408, 832, 128, 1],
+    ['lava_lizard', 1536, 768, 608, 3], ['lava_lizard', 2432, 768, 608, 3],
+    ['fire_crow', 704, 704, 416, 2], ['fire_crow', 896, 576, 416, 1],
+    ['fire_crow', 1664, 640, 416, 2], ['fire_crow', 1792, 512, 480, 1],
+    ['fire_crow', 2560, 640, 480, 2],
+  ], 'chiyan_slope_1: all four lizard and five crow spawns retain source patrol extents and counts');
+  same(map.spawns.map(spawn => [spawn.monster, spawn.x, spawn.y, spawn.w, spawn.count]),
+    spawnPoints.map(point => [point.properties?.monster, ...point.sourcePosition!, point.sourceWidth, point.properties?.count]),
+    'chiyan_slope_1: runtime monster spawns match scene-data source semantics');
+  same(map.objects.filter(object => object.type === 'gather').map(object =>
+    [object.name, object.x, object.y, object.props.item, object.props.respawnMs]), [
+    ['gather_fire_herb_20', 1232, 576, 'fire_herb', 120000],
+    ['gather_fire_herb_21', 2192, 512, 'fire_herb', 120000],
+    ['gather_fire_herb_22', 2960, 640, 'fire_herb', 120000],
+  ], 'chiyan_slope_1: all three gathers retain their positions, items and respawn times');
+  same(map.objects.filter(object => object.type === 'chest').map(object =>
+    [object.name, object.x, object.y, object.props.loot, object.props.count]),
+  [['sense_chest_01', 944, 576, 'qi_pill', 1]],
+  'chiyan_slope_1: the native chest retains its position and loot');
+  eq(map.hidden.length, 2, 'chiyan_slope_1: both existing hidden controllers are retained');
+  same(map.hidden.map(hidden => [hidden.object.name, hidden.object.x, hidden.object.y,
+    hidden.object.w, hidden.object.h, hidden.object.props.enabled, hidden.object.props.reqSpirit,
+    hidden.object.props.reveal, hidden.object.props.targetObject ?? null]), [
+    ['sense_hidden_chest_01', 944, 576, 0, 0, false, 0, 'chest', 'sense_chest_01'],
+    ['sense_hidden_platform_01', 3056, 576, 64, 32, false, 10, 'platform', null],
+  ], 'chiyan_slope_1: hidden chest and platform retain their disabled state, geometry and reveal requirements');
+  same(map.objects.filter(object => object.type === 'flyZone').map(object =>
+    [object.name, object.x, object.y, object.w, object.h]),
+  [['flyZone_1', 480, 384, 2000, 256]], 'chiyan_slope_1: the flying zone retains its approved bounds');
+  same(map.objects.filter(object => object.name === 'goal_east'), [],
+    'chiyan_slope_1: the scene-only east goal does not introduce a gameplay object');
+  same(tiledObjects.filter(object => object.name === 'goal_east'), [],
+    'chiyan_slope_1: the scene-only east goal does not introduce a Tiled object');
+  eq(f.tilemaps, 0, 'chiyan_slope_1: GSB skips the legacy tilemap path');
+  same(f.displays.filter(object => object.kind !== 'zone').map(object => [object.kind, object.key]),
+    [['image', `gsb_${sceneId}_background`], ['image', `gsb_${sceneId}_playable`]],
+    'chiyan_slope_1: GSB draws background and playable art without legacy terrain or climbs');
+  const legacyLayers = tiledMap.layers.filter(layer => layer.type === 'tilelayer' && ['ground', 'oneway'].includes(layer.name));
+  same(legacyLayers.map(layer => layer.name), ['ground', 'oneway'], 'chiyan_slope_1: both legacy collision layers are present');
+  ok(legacyLayers.every(layer => layer.data?.length === tiledMap.width * tiledMap.height && layer.data.every(gid => gid === 0)),
+    'chiyan_slope_1: checked-in legacy collision layers are fully cleared');
+  eq(JSON.stringify(data), dataBefore, 'chiyan_slope_1: building leaves cached scene-data input unchanged');
+  eq(JSON.stringify(tiledMap), mapBefore, 'chiyan_slope_1: building leaves the Tiled map input unchanged');
+}
+testChiyanSlope1Gsb();
+
+// Chiyan's lava road retains both portals, ten patrols, lava and all thirteen approved climbs.
+function testChiyanSlope2Gsb() {
+  const sceneId = 'chiyan_slope_2_gsb_v1', revision = 'slope2-geometry-003';
+  const data = clone(chiyanSlope2SceneData), tiledMap = clone(chiyanSlope2TiledMap);
+  const f = fixture(null, false), dataBefore = JSON.stringify(data), mapBefore = JSON.stringify(tiledMap);
+  f.cache.clear(); f.cache.set(`gsb_${sceneId}_data`, data);
+  f.textures.add(`gsb_${sceneId}_background`); f.textures.add(`gsb_${sceneId}_playable`);
+  const map = buildTiledMap(f.scene, tiledMap, 'tiles');
+  eq(map.gsbScene, sceneId, 'chiyan_slope_2: checked-in map enables its GSB scene');
+  eq(tiledMap.properties.find(property => property.name === 'gsbScene')?.value,
+    sceneId, 'chiyan_slope_2: map binds the approved GSB scene');
+  eq(tiledMap.properties.find(property => property.name === 'gsbGeometryRevision')?.value,
+    revision, 'chiyan_slope_2: map binds the approved geometry revision');
+  eq(data.geometryRevision, revision, 'chiyan_slope_2: scene-data has the approved geometry revision');
+  same([map.width, map.height], [3520, 960], 'chiyan_slope_2: logical world dimensions match the approved scene');
+  same([data.space.logicalWidth, data.space.logicalHeight], [3520, 960],
+    'chiyan_slope_2: scene-data declares the approved logical dimensions');
+  same([tiledMap.width, tiledMap.height], [110, 30], 'chiyan_slope_2: checked-in tile grid is 110 x 30');
+  same([tiledMap.tilewidth, tiledMap.tileheight], [32, 32], 'chiyan_slope_2: checked-in tiles are 32 x 32');
+  same([tiledMap.width * tiledMap.tilewidth, tiledMap.height * tiledMap.tileheight], [map.width, map.height],
+    'chiyan_slope_2: checked-in tile grid matches logical world dimensions');
+  same([data.surfaces.filter(surface => surface.support === 'solid').length,
+    data.surfaces.filter(surface => surface.support === 'one-way').length], [6, 12],
+    'chiyan_slope_2: approved surfaces comprise six solids and twelve one-way spans');
+  same(f.groups.map(group => group.children.length), [8, 12],
+    'chiyan_slope_2: runtime builds six solid surfaces, two approved lava beds and twelve one-way bodies');
+  same(data.solids.filter(solid => solid.id.startsWith('bed_lava_')).map(solid => [solid.id, solid.polygon]), [
+    ['bed_lava_9', [[960, 896], [1152, 896], [1152, 960], [960, 960]]],
+    ['bed_lava_10', [[1920, 896], [2080, 896], [2080, 960], [1920, 960]]],
+  ], 'chiyan_slope_2: both approved lava bed polygons remain below the hazards');
+  same(f.groups[0].children.map(rectangle).filter(body => body.y === 896 && [960, 1920].includes(body.x)), [
+    { x: 960, y: 896, width: 192, height: 64 },
+    { x: 1920, y: 896, width: 160, height: 64 },
+  ], 'chiyan_slope_2: both lava beds retain their exact runtime collision bounds');
+  same(data.surfaces.map(surface => [surface.id, surface.support, surface.polyline]), [
+    ['s_west', 'solid', [[0, 832], [480, 832]]],
+    ['s_low_w', 'solid', [[480, 896], [960, 896]]],
+    ['s_low_mid', 'solid', [[1152, 896], [1920, 896]]],
+    ['s_bank', 'solid', [[2080, 896], [2112, 896]]],
+    ['s_east', 'solid', [[2112, 832], [2752, 832]]],
+    ['s_gate', 'solid', [[2752, 768], [3520, 768]]],
+    ['s_p16', 'one-way', [[512, 768], [928, 768]]],
+    ['s_p20', 'one-way', [[640, 640], [1120, 640]]],
+    ['s_p38', 'one-way', [[1216, 768], [1824, 768]]],
+    ['s_p42', 'one-way', [[1344, 640], [1888, 640]]],
+    ['s_p46', 'one-way', [[1472, 512], [1824, 512]]],
+    ['s_p70', 'one-way', [[2240, 704], [2720, 704]]],
+    ['s_p74', 'one-way', [[2368, 576], [2848, 576]]],
+    ['s_p92', 'one-way', [[2944, 640], [3360, 640]]],
+    ['s_bridge1', 'one-way', [[896, 832], [1216, 832]]],
+    ['s_bridge2', 'one-way', [[1856, 832], [2144, 832]]],
+    ['s_lip_w', 'one-way', [[480, 832], [528, 832]]],
+    ['s_lip_e', 'one-way', [[2704, 768], [2752, 768]]],
+  ], 'chiyan_slope_2: all eighteen approved surfaces retain their identities, kinds and exact landing spans');
+  for (const surface of data.surfaces) {
+    const left = Math.min(...surface.polyline.map(point => point[0]));
+    const right = Math.max(...surface.polyline.map(point => point[0]));
+    const bodies = f.groups[surface.support === 'one-way' ? 1 : 0].children.map(rectangle);
+    ok(bodies.some(body => body.y === surface.polyline[0][1] && body.x <= left && body.x + body.width >= right),
+      `chiyan_slope_2: ${surface.id} retains its full landing span and exact top edge`);
+  }
+  ok(f.groups[1].children.every(object => object.body?.checkCollision.up &&
+    !object.body.checkCollision.down && !object.body.checkCollision.left && !object.body.checkCollision.right),
+    'chiyan_slope_2: all one-way bodies only collide on top');
+  ok(f.groups[0].children.every(object => object.body?.checkCollision.up &&
+    object.body.checkCollision.down && object.body.checkCollision.left && object.body.checkCollision.right),
+    'chiyan_slope_2: solid bodies keep all collision directions');
+  same(map.spawn, { x: 128, y: 832 }, 'chiyan_slope_2: player start is preserved');
+  same(data.points.filter(point => point.id === 'start_spawn').map(point => point.position),
+    [[map.spawn.x, map.spawn.y]], 'chiyan_slope_2: player start matches the approved scene spawn point');
+  eq(map.ropes.length, 13, 'chiyan_slope_2: all eight ropes and five ladders are retained');
+  same(data.climbs.map(climb => [climb.id, climb.kind, climb.ends.start.position, climb.ends.end.position]), [
+    ['c_rope_20', 'rope', [656, 896], [656, 768]],
+    ['c_rope_24', 'rope', [784, 768], [784, 640]],
+    ['c_rope_44', 'rope', [1424, 896], [1424, 768]],
+    ['c_rope_50', 'rope', [1616, 768], [1616, 640]],
+    ['c_rope_52', 'rope', [1680, 640], [1680, 512]],
+    ['c_rope_76', 'rope', [2448, 832], [2448, 704]],
+    ['c_rope_82', 'rope', [2640, 704], [2640, 576]],
+    ['c_rope_98', 'rope', [3152, 768], [3152, 640]],
+    ['c_step_w', 'ladder', [496, 896], [496, 832]],
+    ['c_bridge1_w', 'ladder', [944, 896], [944, 832]],
+    ['c_bridge1_e', 'ladder', [1168, 896], [1168, 832]],
+    ['c_bridge2_w', 'ladder', [1872, 896], [1872, 832]],
+    ['c_step_e', 'ladder', [2736, 832], [2736, 768]],
+  ], 'chiyan_slope_2: all thirteen approved climbs retain their identities, kinds and both endpoints');
+  const tiledObjects = tiledMap.layers.flatMap(layer => layer.type === 'objectgroup' ? layer.objects ?? [] : []);
+  same(tiledObjects.filter(object => ['rope', 'ladder'].includes(object.type)).map(object =>
+    [object.name, object.type, object.x, object.y, object.width, object.height]), [
+    ['rope_20', 'rope', 656, 768, 0, 128],
+    ['rope_24', 'rope', 784, 640, 0, 128],
+    ['rope_44', 'rope', 1424, 768, 0, 128],
+    ['rope_50', 'rope', 1616, 640, 0, 128],
+    ['rope_52', 'rope', 1680, 512, 0, 128],
+    ['rope_76', 'rope', 2448, 704, 0, 128],
+    ['rope_82', 'rope', 2640, 576, 0, 128],
+    ['rope_98', 'rope', 3152, 640, 0, 128],
+    ['ladder_step_w', 'ladder', 478, 832, 36, 64],
+    ['ladder_bridge1_w', 'ladder', 926, 832, 36, 64],
+    ['ladder_bridge1_e', 'ladder', 1150, 832, 36, 64],
+    ['ladder_bridge2_w', 'ladder', 1854, 832, 36, 64],
+    ['ladder_step_e', 'ladder', 2718, 768, 36, 64],
+  ], 'chiyan_slope_2: Tiled keeps eight full-length ropes and creates five ladders with 36px corridors');
+  same(map.ropes.map(rope => [rope.kind, rope.x, rope.top, rope.bottom, rope.halfW]),
+    data.climbs.map(climb => {
+      const width = Math.max(...climb.corridor.map(point => point[0])) - Math.min(...climb.corridor.map(point => point[0]));
+      return [climb.kind, climb.ends.end.position[0], climb.ends.end.position[1], climb.ends.start.position[1],
+        climb.kind === 'ladder' ? Math.max(12, width / 2) : FEEL.ropeGrabRangeX];
+    }), 'chiyan_slope_2: runtime climbs retain exact centers, endpoints, rope grab ranges and ladder half-widths');
+  same([map.ropes.filter(rope => rope.kind === 'rope').length, map.ropes.filter(rope => rope.kind === 'ladder').length],
+    [8, 5], 'chiyan_slope_2: the runtime exposes all eight ropes and five ladders');
+  same(map.objects.filter(object => object.type === 'portal').map(object =>
+    [object.name, object.x, object.y, object.props.target, object.props.targetPortal]), [
+    ['portal_to_slope_1', 80, 832, 'chiyan_slope_1', 'portal_to_slope_2'],
+    ['portal_to_core', 3440, 768, 'chiyan_core', 'portal_to_slope_2'],
+  ], 'chiyan_slope_2: both portals retain their positions and destinations');
+  eq(map.objects.find(object => object.name === 'portal_to_core')?.props.reqLevel,
+    55, 'chiyan_slope_2: the preserved core portal retains its level requirement');
+  const slope1Objects = chiyanSlope1TiledMap.layers.flatMap(layer => layer.type === 'objectgroup' ? layer.objects ?? [] : []);
+  same(slope1Objects.filter(object => object.name === 'portal_to_slope_2').map(object =>
+    [object.type, object.x, object.y, object.properties.find(property => property.name === 'target')?.value,
+      object.properties.find(property => property.name === 'targetPortal')?.value]),
+    [['portal', 3120, 768, 'chiyan_slope_2', 'portal_to_slope_1']],
+    'chiyan_slope_2: the mountain-foot portal completes the reciprocal link');
+  same(map.zones.map(zone => [zone.name, zone.x, zone.y, zone.w, zone.h, zone.props.label,
+    zone.props.hazard, zone.props.damagePermilleOfMaxHp, zone.props.tickMs, zone.props.knockUp]), [
+    ['lava_9', 960, 864, 192, 32, '岩浆', 'lava', 80, 500, 480],
+    ['lava_10', 1920, 864, 160, 32, '岩浆', 'lava', 80, 500, 480],
+  ], 'chiyan_slope_2: both lava zones retain their bounds, identity and damage properties');
+  same(tiledObjects.filter(object => ['lava_9', 'lava_10'].includes(object.name)).map(object => object.type),
+    ['zone', 'zone'], 'chiyan_slope_2: hazards remain Tiled zone objects');
+  same(map.zones.map(zone => [zone.name, zone.x, zone.y, zone.w, zone.h, zone.props.hazard,
+    zone.props.damagePermilleOfMaxHp, zone.props.tickMs, zone.props.knockUp]),
+    data.hazards.map(hazard => {
+      const xs = hazard.polygon.map(point => point[0]), ys = hazard.polygon.map(point => point[1]);
+      return [hazard.id, Math.min(...xs), Math.min(...ys), Math.max(...xs) - Math.min(...xs),
+        Math.max(...ys) - Math.min(...ys), hazard.hazard, hazard.effect.damagePermilleOfMaxHp,
+        hazard.effect.tickMs, hazard.effect.knockUp];
+    }), 'chiyan_slope_2: runtime hazard bounds and effects match approved scene-data');
+  const spawnPoints = data.points.filter(point => ['spawn', 'monsterSpawn'].includes(point.type) && point.properties?.monster);
+  const tiledSpawns = tiledObjects.filter(object => object.type === 'spawn');
+  same(tiledSpawns.map(object => [object.name, object.x, object.y, object.width]),
+    spawnPoints.map(point => [point.id, ...point.position, point.width]),
+    'chiyan_slope_2: all ten monsterSpawn scene points remain Tiled spawns with matching positions and widths');
+  same(map.spawns.map(spawn => [spawn.monster, spawn.x, spawn.y, spawn.w, spawn.count]), [
+    ['flame_puppet', 480, 896, 480, 2], ['flame_puppet', 1152, 896, 768, 3],
+    ['flame_puppet', 2112, 832, 640, 3], ['flame_puppet', 2752, 768, 608, 2],
+    ['fire_crow', 512, 768, 416, 2], ['fire_crow', 640, 640, 480, 1],
+    ['fire_crow', 1344, 640, 544, 2], ['fire_crow', 1472, 512, 352, 1],
+    ['fire_crow', 2240, 704, 480, 2], ['fire_crow', 2368, 576, 480, 1],
+  ], 'chiyan_slope_2: all four puppet and six crow spawns retain their patrol extents and counts');
+  same(map.spawns.map(spawn => [spawn.monster, spawn.x, spawn.y, spawn.w, spawn.count]),
+    spawnPoints.map(point => [point.properties?.monster, ...point.position, point.width, point.properties?.count]),
+    'chiyan_slope_2: runtime monster spawns match approved scene point semantics');
+  same(map.objects.filter(object => object.type === 'gather').map(object =>
+    [object.name, object.x, object.y, object.props.item, object.props.respawnMs]), [
+    ['gather_fire_herb_24', 1744, 512, 'fire_herb', 120000],
+    ['gather_fire_herb_25', 2768, 576, 'fire_herb', 120000],
+    ['gather_fire_herb_26', 3216, 640, 'fire_herb', 120000],
+  ], 'chiyan_slope_2: all three gathers retain their positions, items and respawn times');
+  same(map.objects.filter(object => object.type === 'chest').map(object =>
+    [object.name, object.x, object.y, object.props.loot, object.props.count]),
+    [['sense_chest_01', 3024, 640, 'qi_pill', 1]],
+    'chiyan_slope_2: the native chest retains its position and loot');
+  eq(map.hidden.length, 2, 'chiyan_slope_2: both existing hidden controllers are retained');
+  same(map.hidden.map(hidden => [hidden.object.name, hidden.object.x, hidden.object.y,
+    hidden.object.w, hidden.object.h, hidden.object.props.enabled, hidden.object.props.reqSpirit,
+    hidden.object.props.reveal, hidden.object.props.targetObject ?? null]), [
+    ['sense_hidden_chest_01', 3024, 640, 0, 0, false, 0, 'chest', 'sense_chest_01'],
+    ['sense_hidden_platform_01', 560, 576, 64, 32, false, 10, 'platform', null],
+  ], 'chiyan_slope_2: hidden chest and platform retain their disabled state, geometry and reveal requirements');
+  same(map.objects.filter(object => object.type === 'flyZone').map(object =>
+    [object.name, object.x, object.y, object.w, object.h]),
+    [['flyZone_1', 480, 400, 2200, 272]], 'chiyan_slope_2: the flying zone retains its approved bounds');
+  same(map.objects.filter(object => object.name === 'goal_east'), [],
+    'chiyan_slope_2: the scene-only east goal does not introduce a gameplay object');
+  same(tiledObjects.filter(object => object.name === 'goal_east'), [],
+    'chiyan_slope_2: the scene-only east goal does not introduce a Tiled object');
+  eq(f.tilemaps, 0, 'chiyan_slope_2: GSB skips the legacy tilemap path');
+  same(f.displays.filter(object => object.kind !== 'zone').map(object => [object.kind, object.key]),
+    [['image', `gsb_${sceneId}_background`], ['image', `gsb_${sceneId}_playable`]],
+    'chiyan_slope_2: GSB draws background and playable art without legacy terrain or climbs');
+  const legacyLayers = tiledMap.layers.filter(layer => layer.type === 'tilelayer' && ['ground', 'oneway'].includes(layer.name));
+  same(legacyLayers.map(layer => layer.name), ['ground', 'oneway'], 'chiyan_slope_2: both legacy collision layers are present');
+  ok(legacyLayers.every(layer => layer.data?.length === tiledMap.width * tiledMap.height && layer.data.every(gid => gid === 0)),
+    'chiyan_slope_2: checked-in legacy collision layers are fully cleared');
+  eq(JSON.stringify(data), dataBefore, 'chiyan_slope_2: building leaves cached scene-data input unchanged');
+  eq(JSON.stringify(tiledMap), mapBefore, 'chiyan_slope_2: building leaves the Tiled map input unchanged');
+}
+testChiyanSlope2Gsb();
 
 // Lingfu's trial retains its drawing desk and eight targets with four approved ropes.
 function testTrialLingfuRangeGsb() {

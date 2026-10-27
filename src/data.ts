@@ -15,6 +15,8 @@ import wanyaoOuter1 from '@xt/maps/wanyao_outer_1.json';
 import wanyaoOuter2 from '@xt/maps/wanyao_outer_2.json';
 import wanyaoDeep1 from '@xt/maps/wanyao_deep_1.json';
 import wanyaoDeep2 from '@xt/maps/wanyao_deep_2.json';
+import chiyanSlope1 from '@xt/maps/chiyan_slope_1.json';
+import chiyanSlope2 from '@xt/maps/chiyan_slope_2.json';
 import tianjianSect from '@xt/maps/tianjian_sect.json';
 import tianjianSwordTomb from '@xt/maps/tianjian_sword_tomb.json';
 import trialTaixuStage from '@xt/maps/trial_taixu_stage.json';
@@ -158,6 +160,8 @@ export const TILED_MAPS: Record<string, any> = {
   trial_foundation_altar: altar,
   wanyao_outer_1: wanyaoOuter1, wanyao_outer_2: wanyaoOuter2,
   wanyao_deep_1: wanyaoDeep1, wanyao_deep_2: wanyaoDeep2,
+  chiyan_slope_1: chiyanSlope1,
+  chiyan_slope_2: chiyanSlope2,
   tianjian_sect: tianjianSect, tianjian_sword_tomb: tianjianSwordTomb,
   trial_taixu_stage: trialTaixuStage, trial_lingfu_range: trialLingfuRange,
   trial_youying_vault: trialYouyingVault, trial_wanshou_pen: trialWanshouPen,
@@ -210,6 +214,8 @@ export const MAP_AREA: Record<string, string> = {
   trial_foundation_altar: 'altar', field_test: 'qingyun',
   wanyao_outer_1: 'wanyao', wanyao_outer_2: 'wanyao',
   wanyao_deep_1: 'wanyao', wanyao_deep_2: 'wanyao',
+  chiyan_slope_1: 'chiyan',
+  chiyan_slope_2: 'chiyan',
   tianjian_sect: 'tianjian', tianjian_sword_tomb: 'tianjian',
   trial_taixu_stage: 'taixu', trial_lingfu_range: 'lingfu',
   trial_youying_vault: 'youying', trial_wanshou_pen: 'wanshou',

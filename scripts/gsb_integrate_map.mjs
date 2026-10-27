@@ -72,6 +72,15 @@ const CLIMB_TO_OBJECT = {
   c_rope_left: 'rope_10',
   c_rope_center: 'rope_24',
   c_rope_right: 'rope_39',
+  // 赤炎山麓：交付将源 rope_26/86 纠正为 ladder；兼容首次接入和重复接入。
+  c_rope_26: 'ladder_26',
+  c_rope_86: 'ladder_86',
+  // 赤炎熔岩道：交付补齐的可见路线梯，源 Tiled 中尚无对象。
+  c_step_w: 'ladder_step_w',
+  c_bridge1_w: 'ladder_bridge1_w',
+  c_bridge1_e: 'ladder_bridge1_e',
+  c_bridge2_w: 'ladder_bridge2_w',
+  c_step_e: 'ladder_step_e',
 };
 
 function setProp(props, name, type, value) {
@@ -83,7 +92,9 @@ function setProp(props, name, type, value) {
 }
 
 function patchMap(mapPath) {
-  const map = JSON.parse(fs.readFileSync(mapPath, 'utf8'));
+  const mapText = fs.readFileSync(mapPath, 'utf8');
+  const map = JSON.parse(mapText);
+  const indent = mapText.match(/\n([ \t]+)"/)?.[1] ?? '  ';
   const tile = map.tilewidth || 32;
   const cols = Math.round(logicalW / tile);
   const rows = Math.round(logicalH / tile);
@@ -102,24 +113,37 @@ function patchMap(mapPath) {
   const pointByObj = new Map();
   // 直名点优先，避免 goal_east 等旧别名覆盖本图明确标注的 portal（不依赖 points 顺序）。
   for (const p of scene.points ?? []) {
-    if (objectNames.has(p.id) && Array.isArray(p.position)) pointByObj.set(p.id, p.position);
+    if (objectNames.has(p.id) && Array.isArray(p.position)) pointByObj.set(p.id, p);
   }
   for (const p of scene.points ?? []) {
     if (objectNames.has(p.id)) continue;
     const name = resolveAlias(POINT_TO_OBJECT, p.id);
-    if (name && !pointByObj.has(name) && Array.isArray(p.position)) pointByObj.set(name, p.position);
+    if (name && !pointByObj.has(name) && Array.isArray(p.position)) pointByObj.set(name, p);
   }
   const climbByObj = new Map();
   for (const c of scene.climbs ?? []) {
     const stripped = c.id?.replace(/^c_/, '');
-    const name = resolveAlias(CLIMB_TO_OBJECT, c.id) ?? (objectNames.has(stripped) ? stripped : undefined);
-    if (!name || !c.corridor?.length) continue;
+    if (!c.corridor?.length) continue;
+    let name = resolveAlias(CLIMB_TO_OBJECT, c.id) ?? (objectNames.has(stripped) ? stripped : undefined);
+    if (!name && c.kind === 'ladder' && CLIMB_TO_OBJECT[c.id]) {
+      const layer = (map.layers ?? []).find(layer => layer.type === 'objectgroup' && layer.name === 'objects')
+        ?? (map.layers ?? []).find(layer => layer.type === 'objectgroup');
+      if (!layer) throw new Error(`无法创建 ${c.id}：地图缺少 objectgroup`);
+      name = CLIMB_TO_OBJECT[c.id];
+      const objects = (map.layers ?? []).flatMap(layer => layer.type === 'objectgroup' ? layer.objects ?? [] : []);
+      const id = Math.max(map.nextobjectid ?? 1, ...objects.map(object => (object.id ?? 0) + 1));
+      (layer.objects ??= []).push({ id, name, type: 'ladder', x: 0, y: 0, width: 0, height: 0, properties: [] });
+      map.nextobjectid = id + 1;
+      objectNames.add(name);
+    }
+    if (!name) continue;
     const xs = c.corridor.map(pt => pt[0]);
     const ys = c.corridor.map(pt => pt[1]);
     const left = Math.min(...xs), right = Math.max(...xs);
     const top = Math.min(...ys), bottom = Math.max(...ys);
     const cx = c.ends?.end?.position?.[0] ?? c.ends?.start?.position?.[0] ?? (left + right) / 2;
-    climbByObj.set(name, { kind: c.kind, left, right, top, bottom, cx, w: right - left, h: bottom - top });
+    const targetName = c.kind === 'ladder' ? (CLIMB_TO_OBJECT[c.id] ?? name) : name;
+    climbByObj.set(name, { name: targetName, kind: c.kind, left, right, top, bottom, cx, w: right - left, h: bottom - top });
   }
 
   for (const layer of map.layers ?? []) {
@@ -132,10 +156,17 @@ function patchMap(mapPath) {
       const dy = Array.isArray(space.sourceTranslation) ? (space.sourceTranslation[1] ?? 0) : 0;
       for (const o of layer.objects ?? []) {
         let relocated = false;
-        const pos = pointByObj.get(o.name);
-        if (pos) { o.x = pos[0]; o.y = pos[1]; relocated = true; }
+        const point = pointByObj.get(o.name);
+        if (point) {
+          // 怪物巡逻区保留源矩形；inset position/width 只描述安全中心范围。
+          const pos = o.type === 'spawn' && Array.isArray(point.sourcePosition) ? point.sourcePosition : point.position;
+          o.x = pos[0]; o.y = pos[1]; relocated = true;
+          if (o.type === 'spawn' && typeof point.sourceWidth === 'number') o.width = point.sourceWidth;
+        }
         const climb = climbByObj.get(o.name);
         if (climb) {
+          o.name = climb.name;
+          if (climb.kind === 'ladder' || climb.kind === 'rope') o.type = climb.kind;
           if (climb.kind === 'ladder' || o.type === 'ladder') {
             o.x = climb.left;
             o.y = climb.top;
@@ -156,7 +187,7 @@ function patchMap(mapPath) {
     }
   }
 
-  fs.writeFileSync(mapPath, JSON.stringify(map, null, 2) + '\n');
+  fs.writeFileSync(mapPath, JSON.stringify(map, null, indent) + '\n');
   console.log('[gsb] patched map', mapPath, `→ ${cols}x${rows} gsbScene=${gsbSceneId}`);
 }
 

@@ -500,6 +500,13 @@
         "targetMap": "wanshou_mountain",
         "targetPortal": null,
         "cost": 0
+      },
+      {
+        "id": "chiyan_slope_1",
+        "label": "ferry.route_chiyan_slope_1",
+        "targetMap": "chiyan_slope_1",
+        "targetPortal": null,
+        "cost": 0
       }
     ],
     "phase": 5

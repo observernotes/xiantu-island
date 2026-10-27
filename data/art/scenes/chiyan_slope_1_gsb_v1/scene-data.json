@@ -1,0 +1,3442 @@
+{
+  "schemaVersion": "1.0",
+  "geometryRevision": "chiyan1-final-002",
+  "status": "verified",
+  "space": {
+    "origin": "top-left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "units": "logical-pixel",
+    "logicalWidth": 3200,
+    "logicalHeight": 896,
+    "tileSize": 32,
+    "columns": 100,
+    "rows": 28,
+    "sourceMap": "maps/chiyan_slope_1.json",
+    "sourceToWorld": [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0
+    ]
+  },
+  "mapProperties": {
+    "id": "chiyan_slope_1",
+    "name": "赤炎火山·山麓",
+    "safeZone": false,
+    "qiDensity": 7,
+    "area": "chiyan",
+    "returnTown": false,
+    "allowTalismanReturn": true
+  },
+  "actor": {
+    "parameterRevision": "chiyan1-base-feel-20261027-001",
+    "parameterSource": "game/src/config/feel.ts FEEL/SPEC; Player.ts; base movement points 100",
+    "sourceRevision": {
+      "game/src/config/feel.ts": "9375297a15b04012633197a935f4d9ffd403c3ff8d1e055cb585dd5f81acdeec",
+      "game/src/scenes/Player.ts": "ec9426ed625784532c6e632a1755bd16076cc3f559d177f465b741341193f513",
+      "game/src/move.ts": "585c9987623cbe532d7f65508773addd52ccd2f312e5c2ee592e9e6f2f686a74",
+      "maps/chiyan_slope_1.json": "e8a10fdb4f4d8d1153a7b21c493f241313fc2598f237deb9bca2cb96db9e25cc",
+      "maps/chiyan_slope_1.proto.txt": "59a2b57edcf63ce596b9c705a517d019f9d173838d8fdbbec29b3c862caa2152"
+    },
+    "provisional": false,
+    "visualBounds": {
+      "width": 96,
+      "height": 96,
+      "idleAlphaBounds": [
+        15,
+        9,
+        76,
+        96
+      ],
+      "idleVisibleWidth": 61,
+      "idleVisibleHeight": 87,
+      "anchor": "feet-center"
+    },
+    "collider": {
+      "shape": "aabb",
+      "width": 26,
+      "height": 58,
+      "anchor": "feet-center"
+    },
+    "abilities": [
+      "walk",
+      "jump",
+      "double-jump",
+      "ladder",
+      "rope",
+      "drop-through"
+    ],
+    "movement": {
+      "gravity": 2000,
+      "maxFallSpeed": 670,
+      "walkSpeed": 130,
+      "groundAccel": 2400,
+      "groundDecel": 3000,
+      "airAccel": 700,
+      "airMaxSpeed": 130,
+      "jumpSpeed": 560,
+      "coyoteMs": 60,
+      "jumpBufferMs": 80,
+      "doubleJumpVy": 480,
+      "doubleJumpVx": 330,
+      "climbSpeed": 110,
+      "ropeGrabRangeX": 18,
+      "ropeJumpVx": 160,
+      "ropeJumpVy": 360,
+      "ropeRegrabMs": 250,
+      "dropThroughMs": 220,
+      "oneWayEdge": 8,
+      "fixedHz": 60,
+      "speedPoints": 100,
+      "jumpPoints": 100
+    },
+    "failureRules": {
+      "fall": "world fall resets spawn",
+      "reset": "R clears input and motion",
+      "lava": "80/1000 maxHp damage per 500ms, knockUp vy=-480; source maps zone properties",
+      "combat": "not simulated"
+    },
+    "visualAsset": {
+      "path": "work/preview/player-reference-idle.png",
+      "width": 96,
+      "height": 96,
+      "anchor": "feet-center"
+    }
+  },
+  "assets": [
+    {
+      "id": "background",
+      "role": "background",
+      "path": "background.png",
+      "pixelWidth": 3200,
+      "pixelHeight": 896,
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "geometryRevision": "chiyan1-final-002",
+      "derivedFrom": "work/stage4-master.png"
+    },
+    {
+      "id": "playable",
+      "role": "playable",
+      "path": "playable.png",
+      "pixelWidth": 3200,
+      "pixelHeight": 896,
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "geometryRevision": "chiyan1-final-002",
+      "derivedFrom": "work/stage4-master.png"
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "s_dock",
+      "name": "dock",
+      "polyline": [
+        [
+          0,
+          768
+        ],
+        [
+          384,
+          768
+        ]
+      ],
+      "support": "solid",
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 768,
+        "tolerance": 2,
+        "reference": "bearing surface, excludes knots / railings / ash grass"
+      },
+      "status": "verified",
+      "effectiveLandingRanges": [
+        [
+          13,
+          371
+        ]
+      ],
+      "walkRegions": [
+        [
+          [
+            13,
+            710
+          ],
+          [
+            371,
+            710
+          ],
+          [
+            371,
+            768
+          ],
+          [
+            13,
+            768
+          ]
+        ]
+      ],
+      "drySurfaceSegments": [
+        [
+          0,
+          384
+        ]
+      ]
+    },
+    {
+      "id": "s_low_west",
+      "name": "low_west",
+      "polyline": [
+        [
+          384,
+          832
+        ],
+        [
+          1536,
+          832
+        ]
+      ],
+      "support": "solid",
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 832,
+        "tolerance": 2,
+        "reference": "bearing surface, excludes knots / railings / ash grass"
+      },
+      "status": "verified",
+      "effectiveLandingRanges": [
+        [
+          397,
+          1267
+        ],
+        [
+          1421,
+          1523
+        ]
+      ],
+      "walkRegions": [
+        [
+          [
+            397,
+            774
+          ],
+          [
+            1267,
+            774
+          ],
+          [
+            1267,
+            832
+          ],
+          [
+            397,
+            832
+          ]
+        ],
+        [
+          [
+            1421,
+            774
+          ],
+          [
+            1523,
+            774
+          ],
+          [
+            1523,
+            832
+          ],
+          [
+            1421,
+            832
+          ]
+        ]
+      ],
+      "drySurfaceSegments": [
+        [
+          384,
+          1280
+        ],
+        [
+          1408,
+          1536
+        ]
+      ]
+    },
+    {
+      "id": "s_middle",
+      "name": "middle",
+      "polyline": [
+        [
+          1536,
+          768
+        ],
+        [
+          2144,
+          768
+        ]
+      ],
+      "support": "solid",
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 768,
+        "tolerance": 2,
+        "reference": "bearing surface, excludes knots / railings / ash grass"
+      },
+      "status": "verified",
+      "effectiveLandingRanges": [
+        [
+          1549,
+          2131
+        ]
+      ],
+      "walkRegions": [
+        [
+          [
+            1549,
+            710
+          ],
+          [
+            2131,
+            710
+          ],
+          [
+            2131,
+            768
+          ],
+          [
+            1549,
+            768
+          ]
+        ]
+      ],
+      "drySurfaceSegments": [
+        [
+          1536,
+          2144
+        ]
+      ]
+    },
+    {
+      "id": "s_low_east",
+      "name": "low_east",
+      "polyline": [
+        [
+          2144,
+          832
+        ],
+        [
+          2432,
+          832
+        ]
+      ],
+      "support": "solid",
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 832,
+        "tolerance": 2,
+        "reference": "bearing surface, excludes knots / railings / ash grass"
+      },
+      "status": "verified",
+      "effectiveLandingRanges": [
+        [
+          2157,
+          2227
+        ],
+        [
+          2381,
+          2419
+        ]
+      ],
+      "walkRegions": [
+        [
+          [
+            2157,
+            774
+          ],
+          [
+            2227,
+            774
+          ],
+          [
+            2227,
+            832
+          ],
+          [
+            2157,
+            832
+          ]
+        ],
+        [
+          [
+            2381,
+            774
+          ],
+          [
+            2419,
+            774
+          ],
+          [
+            2419,
+            832
+          ],
+          [
+            2381,
+            832
+          ]
+        ]
+      ],
+      "drySurfaceSegments": [
+        [
+          2144,
+          2240
+        ],
+        [
+          2368,
+          2432
+        ]
+      ]
+    },
+    {
+      "id": "s_east",
+      "name": "east",
+      "polyline": [
+        [
+          2432,
+          768
+        ],
+        [
+          3200,
+          768
+        ]
+      ],
+      "support": "solid",
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 768,
+        "tolerance": 2,
+        "reference": "bearing surface, excludes knots / railings / ash grass"
+      },
+      "status": "verified",
+      "effectiveLandingRanges": [
+        [
+          2445,
+          3187
+        ]
+      ],
+      "walkRegions": [
+        [
+          [
+            2445,
+            710
+          ],
+          [
+            3187,
+            710
+          ],
+          [
+            3187,
+            768
+          ],
+          [
+            2445,
+            768
+          ]
+        ]
+      ],
+      "drySurfaceSegments": [
+        [
+          2432,
+          3200
+        ]
+      ]
+    },
+    {
+      "id": "s_west_low",
+      "name": "west_low",
+      "polyline": [
+        [
+          704,
+          704
+        ],
+        [
+          1120,
+          704
+        ]
+      ],
+      "support": "one-way",
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 704,
+        "tolerance": 2,
+        "reference": "bearing surface, excludes knots / railings / ash grass"
+      },
+      "status": "verified",
+      "effectiveLandingRanges": [
+        [
+          717,
+          1107
+        ]
+      ],
+      "walkRegions": [
+        [
+          [
+            717,
+            646
+          ],
+          [
+            1107,
+            646
+          ],
+          [
+            1107,
+            704
+          ],
+          [
+            717,
+            704
+          ]
+        ]
+      ],
+      "drySurfaceSegments": [
+        [
+          704,
+          1120
+        ]
+      ]
+    },
+    {
+      "id": "s_west_high",
+      "name": "west_high",
+      "polyline": [
+        [
+          896,
+          576
+        ],
+        [
+          1312,
+          576
+        ]
+      ],
+      "support": "one-way",
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 576,
+        "tolerance": 2,
+        "reference": "bearing surface, excludes knots / railings / ash grass"
+      },
+      "status": "verified",
+      "effectiveLandingRanges": [
+        [
+          909,
+          1299
+        ]
+      ],
+      "walkRegions": [
+        [
+          [
+            909,
+            518
+          ],
+          [
+            1299,
+            518
+          ],
+          [
+            1299,
+            576
+          ],
+          [
+            909,
+            576
+          ]
+        ]
+      ],
+      "drySurfaceSegments": [
+        [
+          896,
+          1312
+        ]
+      ]
+    },
+    {
+      "id": "s_middle_low",
+      "name": "middle_low",
+      "polyline": [
+        [
+          1664,
+          640
+        ],
+        [
+          2080,
+          640
+        ]
+      ],
+      "support": "one-way",
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 640,
+        "tolerance": 2,
+        "reference": "bearing surface, excludes knots / railings / ash grass"
+      },
+      "status": "verified",
+      "effectiveLandingRanges": [
+        [
+          1677,
+          2067
+        ]
+      ],
+      "walkRegions": [
+        [
+          [
+            1677,
+            582
+          ],
+          [
+            2067,
+            582
+          ],
+          [
+            2067,
+            640
+          ],
+          [
+            1677,
+            640
+          ]
+        ]
+      ],
+      "drySurfaceSegments": [
+        [
+          1664,
+          2080
+        ]
+      ]
+    },
+    {
+      "id": "s_middle_high",
+      "name": "middle_high",
+      "polyline": [
+        [
+          1792,
+          512
+        ],
+        [
+          2272,
+          512
+        ]
+      ],
+      "support": "one-way",
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 512,
+        "tolerance": 2,
+        "reference": "bearing surface, excludes knots / railings / ash grass"
+      },
+      "status": "verified",
+      "effectiveLandingRanges": [
+        [
+          1805,
+          2259
+        ]
+      ],
+      "walkRegions": [
+        [
+          [
+            1805,
+            454
+          ],
+          [
+            2259,
+            454
+          ],
+          [
+            2259,
+            512
+          ],
+          [
+            1805,
+            512
+          ]
+        ]
+      ],
+      "drySurfaceSegments": [
+        [
+          1792,
+          2272
+        ]
+      ]
+    },
+    {
+      "id": "s_east_high",
+      "name": "east_high",
+      "polyline": [
+        [
+          2560,
+          640
+        ],
+        [
+          3040,
+          640
+        ]
+      ],
+      "support": "one-way",
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 640,
+        "tolerance": 2,
+        "reference": "bearing surface, excludes knots / railings / ash grass"
+      },
+      "status": "verified",
+      "effectiveLandingRanges": [
+        [
+          2573,
+          3027
+        ]
+      ],
+      "walkRegions": [
+        [
+          [
+            2573,
+            582
+          ],
+          [
+            3027,
+            582
+          ],
+          [
+            3027,
+            640
+          ],
+          [
+            2573,
+            640
+          ]
+        ]
+      ],
+      "drySurfaceSegments": [
+        [
+          2560,
+          3040
+        ]
+      ]
+    }
+  ],
+  "climbs": [
+    {
+      "id": "c_rope_26",
+      "kind": "ladder",
+      "material": "charred wood + iron hoops",
+      "sourceObject": "rope_26",
+      "corridor": [
+        [
+          830,
+          704
+        ],
+        [
+          866,
+          704
+        ],
+        [
+          866,
+          832
+        ],
+        [
+          830,
+          832
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            848,
+            832
+          ],
+          "surface": "s_low_west"
+        },
+        "end": {
+          "position": [
+            848,
+            704
+          ],
+          "surface": "s_west_low"
+        }
+      },
+      "direction": "both",
+      "entryRange": 18,
+      "requiredAbility": "rope",
+      "status": "verified",
+      "sourceCorrection": "extend source lower endpoint to actual lower standing surface; same x and top"
+    },
+    {
+      "id": "c_rope_32",
+      "kind": "rope",
+      "material": "iron chain",
+      "sourceObject": "rope_32",
+      "corridor": [
+        [
+          1022,
+          576
+        ],
+        [
+          1058,
+          576
+        ],
+        [
+          1058,
+          704
+        ],
+        [
+          1022,
+          704
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1040,
+            704
+          ],
+          "surface": "s_west_low"
+        },
+        "end": {
+          "position": [
+            1040,
+            576
+          ],
+          "surface": "s_west_high"
+        }
+      },
+      "direction": "both",
+      "entryRange": 18,
+      "requiredAbility": "rope",
+      "status": "verified",
+      "sourceCorrection": "extend source lower endpoint to actual lower standing surface; same x and top"
+    },
+    {
+      "id": "c_rope_58",
+      "kind": "rope",
+      "material": "iron chain",
+      "sourceObject": "rope_58",
+      "corridor": [
+        [
+          1854,
+          640
+        ],
+        [
+          1890,
+          640
+        ],
+        [
+          1890,
+          768
+        ],
+        [
+          1854,
+          768
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1872,
+            768
+          ],
+          "surface": "s_middle"
+        },
+        "end": {
+          "position": [
+            1872,
+            640
+          ],
+          "surface": "s_middle_low"
+        }
+      },
+      "direction": "both",
+      "entryRange": 18,
+      "requiredAbility": "rope",
+      "status": "verified",
+      "sourceCorrection": "extend source lower endpoint to actual lower standing surface; same x and top"
+    },
+    {
+      "id": "c_rope_62",
+      "kind": "rope",
+      "material": "iron chain",
+      "sourceObject": "rope_62",
+      "corridor": [
+        [
+          1982,
+          512
+        ],
+        [
+          2018,
+          512
+        ],
+        [
+          2018,
+          640
+        ],
+        [
+          1982,
+          640
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            2000,
+            640
+          ],
+          "surface": "s_middle_low"
+        },
+        "end": {
+          "position": [
+            2000,
+            512
+          ],
+          "surface": "s_middle_high"
+        }
+      },
+      "direction": "both",
+      "entryRange": 18,
+      "requiredAbility": "rope",
+      "status": "verified",
+      "sourceCorrection": "extend source lower endpoint to actual lower standing surface; same x and top"
+    },
+    {
+      "id": "c_rope_86",
+      "kind": "ladder",
+      "material": "charred wood + iron hoops",
+      "sourceObject": "rope_86",
+      "corridor": [
+        [
+          2750,
+          640
+        ],
+        [
+          2786,
+          640
+        ],
+        [
+          2786,
+          768
+        ],
+        [
+          2750,
+          768
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            2768,
+            768
+          ],
+          "surface": "s_east"
+        },
+        "end": {
+          "position": [
+            2768,
+            640
+          ],
+          "surface": "s_east_high"
+        }
+      },
+      "direction": "both",
+      "entryRange": 18,
+      "requiredAbility": "rope",
+      "status": "verified",
+      "sourceCorrection": "extend source lower endpoint to actual lower standing surface; same x and top"
+    }
+  ],
+  "stairs": [],
+  "solids": [
+    {
+      "id": "solid_dock",
+      "polygon": [
+        [
+          0,
+          768
+        ],
+        [
+          384,
+          768
+        ],
+        [
+          384,
+          896
+        ],
+        [
+          0,
+          896
+        ]
+      ],
+      "surface": "s_dock",
+      "type": "dock-foundation",
+      "openings": [],
+      "status": "verified"
+    },
+    {
+      "id": "solid_low_west",
+      "polygon": [
+        [
+          384,
+          832
+        ],
+        [
+          1536,
+          832
+        ],
+        [
+          1536,
+          896
+        ],
+        [
+          384,
+          896
+        ]
+      ],
+      "surface": "s_low_west",
+      "type": "basalt-ground",
+      "openings": [],
+      "status": "verified"
+    },
+    {
+      "id": "solid_middle",
+      "polygon": [
+        [
+          1536,
+          768
+        ],
+        [
+          2144,
+          768
+        ],
+        [
+          2144,
+          896
+        ],
+        [
+          1536,
+          896
+        ]
+      ],
+      "surface": "s_middle",
+      "type": "basalt-ground",
+      "openings": [],
+      "status": "verified"
+    },
+    {
+      "id": "solid_low_east",
+      "polygon": [
+        [
+          2144,
+          832
+        ],
+        [
+          2432,
+          832
+        ],
+        [
+          2432,
+          896
+        ],
+        [
+          2144,
+          896
+        ]
+      ],
+      "surface": "s_low_east",
+      "type": "basalt-ground",
+      "openings": [],
+      "status": "verified"
+    },
+    {
+      "id": "solid_east",
+      "polygon": [
+        [
+          2432,
+          768
+        ],
+        [
+          3200,
+          768
+        ],
+        [
+          3200,
+          896
+        ],
+        [
+          2432,
+          896
+        ]
+      ],
+      "surface": "s_east",
+      "type": "basalt-ground",
+      "openings": [],
+      "status": "verified"
+    }
+  ],
+  "hazards": [
+    {
+      "id": "lava_6",
+      "type": "lava",
+      "polygon": [
+        [
+          1280,
+          800
+        ],
+        [
+          1408,
+          800
+        ],
+        [
+          1408,
+          832
+        ],
+        [
+          1280,
+          832
+        ]
+      ],
+      "effect": {
+        "type": "damage-and-knock-up",
+        "damagePermilleOfMaxHp": 80,
+        "tickMs": 500,
+        "knockUp": 480
+      },
+      "trigger": "actor AABB overlaps visible lava rectangle",
+      "recovery": "upward bounce; steer to adjacent dry surface; R resets",
+      "status": "verified",
+      "hazard": "lava",
+      "sourceObject": "lava_6",
+      "sourceProperties": {
+        "hazard": "lava",
+        "damagePermilleOfMaxHp": 80,
+        "tickMs": 500,
+        "knockUp": 480
+      }
+    },
+    {
+      "id": "lava_7",
+      "type": "lava",
+      "polygon": [
+        [
+          2240,
+          800
+        ],
+        [
+          2368,
+          800
+        ],
+        [
+          2368,
+          832
+        ],
+        [
+          2240,
+          832
+        ]
+      ],
+      "effect": {
+        "type": "damage-and-knock-up",
+        "damagePermilleOfMaxHp": 80,
+        "tickMs": 500,
+        "knockUp": 480
+      },
+      "trigger": "actor AABB overlaps visible lava rectangle",
+      "recovery": "upward bounce; steer to adjacent dry surface; R resets",
+      "status": "verified",
+      "hazard": "lava",
+      "sourceObject": "lava_7",
+      "sourceProperties": {
+        "hazard": "lava",
+        "damagePermilleOfMaxHp": 80,
+        "tickMs": 500,
+        "knockUp": 480
+      }
+    }
+  ],
+  "points": [
+    {
+      "id": "start_spawn",
+      "type": "spawn-player",
+      "sourceId": 8,
+      "position": [
+        128,
+        768
+      ],
+      "surface": "s_dock",
+      "width": 0,
+      "height": 0,
+      "properties": {},
+      "status": "verified",
+      "safetyMargin": 0,
+      "note": "source semantics retained"
+    },
+    {
+      "id": "ferry_landing",
+      "type": "ferry",
+      "sourceId": 9,
+      "position": [
+        192,
+        768
+      ],
+      "surface": "s_dock",
+      "width": 160,
+      "height": 0,
+      "properties": {
+        "returnTo": "luoxia_town"
+      },
+      "status": "verified",
+      "safetyMargin": 0,
+      "note": "source semantics retained"
+    },
+    {
+      "id": "portal_to_slope_2",
+      "type": "portal",
+      "sourceId": 10,
+      "position": [
+        3120,
+        768
+      ],
+      "surface": "s_east",
+      "width": 0,
+      "height": 0,
+      "properties": {
+        "target": "chiyan_slope_2",
+        "targetPortal": "portal_to_slope_1"
+      },
+      "status": "verified",
+      "safetyMargin": 0,
+      "note": "source semantics retained"
+    },
+    {
+      "id": "spawn_lava_lizard_11",
+      "type": "spawn",
+      "sourceId": 11,
+      "position": [
+        525,
+        832
+      ],
+      "surface": "s_low_west",
+      "width": 742,
+      "height": 0,
+      "properties": {
+        "monster": "lava_lizard",
+        "count": 3
+      },
+      "status": "verified",
+      "safetyMargin": 13,
+      "note": "source patrol extent retained in sourcePosition/sourceWidth; center range inset13px for 26px actor-width safety",
+      "sourcePosition": [
+        512,
+        832
+      ],
+      "sourceWidth": 768,
+      "spawnCenterRange": [
+        525,
+        1267
+      ],
+      "visualAsset": {
+        "path": "work/preview/mon_lava_lizard-idle.png",
+        "width": 96,
+        "height": 48,
+        "sourceAtlas": "art/sprites/mon_lava_lizard.png",
+        "sourceFrame": "mon_lava_lizard_idle_01",
+        "sourceSha256": "23870844d73cf1d0e5e65fedc65ced45feefa007481c95c00d5f043e03dca1b2",
+        "purpose": "existing static scale reference; no combat simulation"
+      }
+    },
+    {
+      "id": "spawn_lava_lizard_12",
+      "type": "spawn",
+      "sourceId": 12,
+      "position": [
+        1421,
+        832
+      ],
+      "surface": "s_low_west",
+      "width": 102,
+      "height": 0,
+      "properties": {
+        "monster": "lava_lizard",
+        "count": 1
+      },
+      "status": "verified",
+      "safetyMargin": 13,
+      "note": "source patrol extent retained in sourcePosition/sourceWidth; center range inset13px for 26px actor-width safety",
+      "sourcePosition": [
+        1408,
+        832
+      ],
+      "sourceWidth": 128,
+      "spawnCenterRange": [
+        1421,
+        1523
+      ],
+      "visualAsset": {
+        "path": "work/preview/mon_lava_lizard-idle.png",
+        "width": 96,
+        "height": 48,
+        "sourceAtlas": "art/sprites/mon_lava_lizard.png",
+        "sourceFrame": "mon_lava_lizard_idle_01",
+        "sourceSha256": "23870844d73cf1d0e5e65fedc65ced45feefa007481c95c00d5f043e03dca1b2",
+        "purpose": "existing static scale reference; no combat simulation"
+      }
+    },
+    {
+      "id": "spawn_lava_lizard_13",
+      "type": "spawn",
+      "sourceId": 13,
+      "position": [
+        1549,
+        768
+      ],
+      "surface": "s_middle",
+      "width": 582,
+      "height": 0,
+      "properties": {
+        "monster": "lava_lizard",
+        "count": 3
+      },
+      "status": "verified",
+      "safetyMargin": 13,
+      "note": "source patrol extent retained in sourcePosition/sourceWidth; center range inset13px for 26px actor-width safety",
+      "sourcePosition": [
+        1536,
+        768
+      ],
+      "sourceWidth": 608,
+      "spawnCenterRange": [
+        1549,
+        2131
+      ],
+      "visualAsset": {
+        "path": "work/preview/mon_lava_lizard-idle.png",
+        "width": 96,
+        "height": 48,
+        "sourceAtlas": "art/sprites/mon_lava_lizard.png",
+        "sourceFrame": "mon_lava_lizard_idle_01",
+        "sourceSha256": "23870844d73cf1d0e5e65fedc65ced45feefa007481c95c00d5f043e03dca1b2",
+        "purpose": "existing static scale reference; no combat simulation"
+      }
+    },
+    {
+      "id": "spawn_lava_lizard_14",
+      "type": "spawn",
+      "sourceId": 14,
+      "position": [
+        2445,
+        768
+      ],
+      "surface": "s_east",
+      "width": 582,
+      "height": 0,
+      "properties": {
+        "monster": "lava_lizard",
+        "count": 3
+      },
+      "status": "verified",
+      "safetyMargin": 13,
+      "note": "source patrol extent retained in sourcePosition/sourceWidth; center range inset13px for 26px actor-width safety",
+      "sourcePosition": [
+        2432,
+        768
+      ],
+      "sourceWidth": 608,
+      "spawnCenterRange": [
+        2445,
+        3027
+      ],
+      "visualAsset": {
+        "path": "work/preview/mon_lava_lizard-idle.png",
+        "width": 96,
+        "height": 48,
+        "sourceAtlas": "art/sprites/mon_lava_lizard.png",
+        "sourceFrame": "mon_lava_lizard_idle_01",
+        "sourceSha256": "23870844d73cf1d0e5e65fedc65ced45feefa007481c95c00d5f043e03dca1b2",
+        "purpose": "existing static scale reference; no combat simulation"
+      }
+    },
+    {
+      "id": "spawn_fire_crow_15",
+      "type": "spawn",
+      "sourceId": 15,
+      "position": [
+        717,
+        704
+      ],
+      "surface": "s_west_low",
+      "width": 390,
+      "height": 0,
+      "properties": {
+        "monster": "fire_crow",
+        "count": 2
+      },
+      "status": "verified",
+      "safetyMargin": 13,
+      "note": "source patrol extent retained in sourcePosition/sourceWidth; center range inset13px for 26px actor-width safety",
+      "sourcePosition": [
+        704,
+        704
+      ],
+      "sourceWidth": 416,
+      "spawnCenterRange": [
+        717,
+        1107
+      ],
+      "visualAsset": {
+        "path": "work/preview/mon_fire_crow-idle.png",
+        "width": 80,
+        "height": 64,
+        "sourceAtlas": "art/sprites/mon_fire_crow.png",
+        "sourceFrame": "mon_fire_crow_idle_01",
+        "sourceSha256": "76c5beec68063945f63f38bb8feafeb97713250060adf0c9932a15ab993d0356",
+        "purpose": "existing static scale reference; no combat simulation"
+      }
+    },
+    {
+      "id": "spawn_fire_crow_16",
+      "type": "spawn",
+      "sourceId": 16,
+      "position": [
+        909,
+        576
+      ],
+      "surface": "s_west_high",
+      "width": 390,
+      "height": 0,
+      "properties": {
+        "monster": "fire_crow",
+        "count": 1
+      },
+      "status": "verified",
+      "safetyMargin": 13,
+      "note": "source patrol extent retained in sourcePosition/sourceWidth; center range inset13px for 26px actor-width safety",
+      "sourcePosition": [
+        896,
+        576
+      ],
+      "sourceWidth": 416,
+      "spawnCenterRange": [
+        909,
+        1299
+      ],
+      "visualAsset": {
+        "path": "work/preview/mon_fire_crow-idle.png",
+        "width": 80,
+        "height": 64,
+        "sourceAtlas": "art/sprites/mon_fire_crow.png",
+        "sourceFrame": "mon_fire_crow_idle_01",
+        "sourceSha256": "76c5beec68063945f63f38bb8feafeb97713250060adf0c9932a15ab993d0356",
+        "purpose": "existing static scale reference; no combat simulation"
+      }
+    },
+    {
+      "id": "spawn_fire_crow_17",
+      "type": "spawn",
+      "sourceId": 17,
+      "position": [
+        1677,
+        640
+      ],
+      "surface": "s_middle_low",
+      "width": 390,
+      "height": 0,
+      "properties": {
+        "monster": "fire_crow",
+        "count": 2
+      },
+      "status": "verified",
+      "safetyMargin": 13,
+      "note": "source patrol extent retained in sourcePosition/sourceWidth; center range inset13px for 26px actor-width safety",
+      "sourcePosition": [
+        1664,
+        640
+      ],
+      "sourceWidth": 416,
+      "spawnCenterRange": [
+        1677,
+        2067
+      ],
+      "visualAsset": {
+        "path": "work/preview/mon_fire_crow-idle.png",
+        "width": 80,
+        "height": 64,
+        "sourceAtlas": "art/sprites/mon_fire_crow.png",
+        "sourceFrame": "mon_fire_crow_idle_01",
+        "sourceSha256": "76c5beec68063945f63f38bb8feafeb97713250060adf0c9932a15ab993d0356",
+        "purpose": "existing static scale reference; no combat simulation"
+      }
+    },
+    {
+      "id": "spawn_fire_crow_18",
+      "type": "spawn",
+      "sourceId": 18,
+      "position": [
+        1805,
+        512
+      ],
+      "surface": "s_middle_high",
+      "width": 454,
+      "height": 0,
+      "properties": {
+        "monster": "fire_crow",
+        "count": 1
+      },
+      "status": "verified",
+      "safetyMargin": 13,
+      "note": "source patrol extent retained in sourcePosition/sourceWidth; center range inset13px for 26px actor-width safety",
+      "sourcePosition": [
+        1792,
+        512
+      ],
+      "sourceWidth": 480,
+      "spawnCenterRange": [
+        1805,
+        2259
+      ],
+      "visualAsset": {
+        "path": "work/preview/mon_fire_crow-idle.png",
+        "width": 80,
+        "height": 64,
+        "sourceAtlas": "art/sprites/mon_fire_crow.png",
+        "sourceFrame": "mon_fire_crow_idle_01",
+        "sourceSha256": "76c5beec68063945f63f38bb8feafeb97713250060adf0c9932a15ab993d0356",
+        "purpose": "existing static scale reference; no combat simulation"
+      }
+    },
+    {
+      "id": "spawn_fire_crow_19",
+      "type": "spawn",
+      "sourceId": 19,
+      "position": [
+        2573,
+        640
+      ],
+      "surface": "s_east_high",
+      "width": 454,
+      "height": 0,
+      "properties": {
+        "monster": "fire_crow",
+        "count": 2
+      },
+      "status": "verified",
+      "safetyMargin": 13,
+      "note": "source patrol extent retained in sourcePosition/sourceWidth; center range inset13px for 26px actor-width safety",
+      "sourcePosition": [
+        2560,
+        640
+      ],
+      "sourceWidth": 480,
+      "spawnCenterRange": [
+        2573,
+        3027
+      ],
+      "visualAsset": {
+        "path": "work/preview/mon_fire_crow-idle.png",
+        "width": 80,
+        "height": 64,
+        "sourceAtlas": "art/sprites/mon_fire_crow.png",
+        "sourceFrame": "mon_fire_crow_idle_01",
+        "sourceSha256": "76c5beec68063945f63f38bb8feafeb97713250060adf0c9932a15ab993d0356",
+        "purpose": "existing static scale reference; no combat simulation"
+      }
+    },
+    {
+      "id": "gather_fire_herb_20",
+      "type": "gather",
+      "sourceId": 20,
+      "position": [
+        1232,
+        576
+      ],
+      "surface": "s_west_high",
+      "width": 0,
+      "height": 0,
+      "properties": {
+        "item": "fire_herb",
+        "respawnMs": 120000
+      },
+      "status": "verified",
+      "safetyMargin": 0,
+      "note": "source semantics retained"
+    },
+    {
+      "id": "gather_fire_herb_21",
+      "type": "gather",
+      "sourceId": 21,
+      "position": [
+        2192,
+        512
+      ],
+      "surface": "s_middle_high",
+      "width": 0,
+      "height": 0,
+      "properties": {
+        "item": "fire_herb",
+        "respawnMs": 120000
+      },
+      "status": "verified",
+      "safetyMargin": 0,
+      "note": "source semantics retained"
+    },
+    {
+      "id": "gather_fire_herb_22",
+      "type": "gather",
+      "sourceId": 22,
+      "position": [
+        2960,
+        640
+      ],
+      "surface": "s_east_high",
+      "width": 0,
+      "height": 0,
+      "properties": {
+        "item": "fire_herb",
+        "respawnMs": 120000
+      },
+      "status": "verified",
+      "safetyMargin": 0,
+      "note": "source semantics retained"
+    },
+    {
+      "id": "sense_chest_01",
+      "type": "chest",
+      "sourceId": 23,
+      "position": [
+        944,
+        576
+      ],
+      "surface": "s_west_high",
+      "width": 0,
+      "height": 0,
+      "properties": {
+        "loot": "qi_pill",
+        "count": 1
+      },
+      "status": "verified",
+      "safetyMargin": 0,
+      "note": "source semantics retained"
+    },
+    {
+      "id": "sense_hidden_chest_01",
+      "type": "hidden",
+      "sourceId": 24,
+      "position": [
+        944,
+        576
+      ],
+      "surface": "s_west_high",
+      "width": 0,
+      "height": 0,
+      "properties": {
+        "enabled": false,
+        "reqSpirit": 0,
+        "reveal": "chest",
+        "targetObject": "sense_chest_01"
+      },
+      "status": "verified",
+      "safetyMargin": 0,
+      "note": "non-standing metadata only; hidden enabled=false so no active geometry or art"
+    },
+    {
+      "id": "sense_hidden_platform_01",
+      "type": "hidden",
+      "sourceId": 25,
+      "position": [
+        3056,
+        576
+      ],
+      "surface": null,
+      "width": 64,
+      "height": 32,
+      "properties": {
+        "enabled": false,
+        "reqSpirit": 10,
+        "reveal": "platform"
+      },
+      "status": "verified",
+      "safetyMargin": 0,
+      "note": "non-standing metadata only; hidden enabled=false so no active geometry or art"
+    },
+    {
+      "id": "flyZone_1",
+      "type": "flyZone",
+      "sourceId": 26,
+      "position": [
+        480,
+        384
+      ],
+      "surface": null,
+      "width": 2000,
+      "height": 256,
+      "properties": {},
+      "status": "verified",
+      "safetyMargin": 0,
+      "note": "non-standing metadata only; hidden enabled=false so no active geometry or art"
+    },
+    {
+      "id": "goal_east",
+      "type": "goal",
+      "position": [
+        3120,
+        768
+      ],
+      "surface": "s_east",
+      "status": "verified"
+    }
+  ],
+  "transitions": [
+    {
+      "id": "t_rope_26_up",
+      "from": "s_low_west",
+      "to": "s_west_low",
+      "action": "climb-up",
+      "climb": "c_rope_26",
+      "conditions": [
+        "natural approach",
+        "full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "chiyan1-final-002",
+          "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-chiyan1-001",
+          "objectId": "t_rope_26_up",
+          "file": "work/final-route_all_climbs.json",
+          "method": "natural lower/upper approach, enter, traverse, exit; continuous spawn input",
+          "result": "verified",
+          "frames": [
+            442,
+            512
+          ],
+          "detail": {
+            "climb": "c_rope_26",
+            "end": "top",
+            "standingSurface": "s_west_low"
+          }
+        }
+      ]
+    },
+    {
+      "id": "t_rope_26_down",
+      "from": "s_west_low",
+      "to": "s_low_west",
+      "action": "climb-down",
+      "climb": "c_rope_26",
+      "conditions": [
+        "natural approach",
+        "full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "chiyan1-final-002",
+          "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-chiyan1-001",
+          "objectId": "t_rope_26_down",
+          "file": "work/final-route_all_climbs.json",
+          "method": "natural lower/upper approach, enter, traverse, exit; continuous spawn input",
+          "result": "verified",
+          "frames": [
+            1270,
+            1333
+          ],
+          "detail": {
+            "climb": "c_rope_26",
+            "end": "bottom",
+            "standingSurface": "s_low_west"
+          }
+        }
+      ]
+    },
+    {
+      "id": "t_rope_32_up",
+      "from": "s_west_low",
+      "to": "s_west_high",
+      "action": "climb-up",
+      "climb": "c_rope_32",
+      "conditions": [
+        "natural approach",
+        "full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "chiyan1-final-002",
+          "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-chiyan1-001",
+          "objectId": "t_rope_32_up",
+          "file": "work/final-route_all_climbs.json",
+          "method": "natural lower/upper approach, enter, traverse, exit; continuous spawn input",
+          "result": "verified",
+          "frames": [
+            645,
+            715
+          ],
+          "detail": {
+            "climb": "c_rope_32",
+            "end": "top",
+            "standingSurface": "s_west_high"
+          }
+        }
+      ]
+    },
+    {
+      "id": "t_rope_32_down",
+      "from": "s_west_high",
+      "to": "s_west_low",
+      "action": "climb-down",
+      "climb": "c_rope_32",
+      "conditions": [
+        "natural approach",
+        "full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "chiyan1-final-002",
+          "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-chiyan1-001",
+          "objectId": "t_rope_32_down",
+          "file": "work/final-route_all_climbs.json",
+          "method": "natural lower/upper approach, enter, traverse, exit; continuous spawn input",
+          "result": "verified",
+          "frames": [
+            1074,
+            1137
+          ],
+          "detail": {
+            "climb": "c_rope_32",
+            "end": "bottom",
+            "standingSurface": "s_west_low"
+          }
+        }
+      ]
+    },
+    {
+      "id": "t_rope_58_up",
+      "from": "s_middle",
+      "to": "s_middle_low",
+      "action": "climb-up",
+      "climb": "c_rope_58",
+      "conditions": [
+        "natural approach",
+        "full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "chiyan1-final-002",
+          "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-chiyan1-001",
+          "objectId": "t_rope_58_up",
+          "file": "work/final-route_all_climbs.json",
+          "method": "natural lower/upper approach, enter, traverse, exit; continuous spawn input",
+          "result": "verified",
+          "frames": [
+            1893,
+            1963
+          ],
+          "detail": {
+            "climb": "c_rope_58",
+            "end": "top",
+            "standingSurface": "s_middle_low"
+          }
+        }
+      ]
+    },
+    {
+      "id": "t_rope_58_down",
+      "from": "s_middle_low",
+      "to": "s_middle",
+      "action": "climb-down",
+      "climb": "c_rope_58",
+      "conditions": [
+        "natural approach",
+        "full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "chiyan1-final-002",
+          "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-chiyan1-001",
+          "objectId": "t_rope_58_down",
+          "file": "work/final-route_all_climbs.json",
+          "method": "natural lower/upper approach, enter, traverse, exit; continuous spawn input",
+          "result": "verified",
+          "frames": [
+            2549,
+            2612
+          ],
+          "detail": {
+            "climb": "c_rope_58",
+            "end": "bottom",
+            "standingSurface": "s_middle"
+          }
+        }
+      ]
+    },
+    {
+      "id": "t_rope_62_up",
+      "from": "s_middle_low",
+      "to": "s_middle_high",
+      "action": "climb-up",
+      "climb": "c_rope_62",
+      "conditions": [
+        "natural approach",
+        "full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "chiyan1-final-002",
+          "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-chiyan1-001",
+          "objectId": "t_rope_62_up",
+          "file": "work/final-route_all_climbs.json",
+          "method": "natural lower/upper approach, enter, traverse, exit; continuous spawn input",
+          "result": "verified",
+          "frames": [
+            2067,
+            2137
+          ],
+          "detail": {
+            "climb": "c_rope_62",
+            "end": "top",
+            "standingSurface": "s_middle_high"
+          }
+        }
+      ]
+    },
+    {
+      "id": "t_rope_62_down",
+      "from": "s_middle_high",
+      "to": "s_middle_low",
+      "action": "climb-down",
+      "climb": "c_rope_62",
+      "conditions": [
+        "natural approach",
+        "full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "chiyan1-final-002",
+          "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-chiyan1-001",
+          "objectId": "t_rope_62_down",
+          "file": "work/final-route_all_climbs.json",
+          "method": "natural lower/upper approach, enter, traverse, exit; continuous spawn input",
+          "result": "verified",
+          "frames": [
+            2382,
+            2445
+          ],
+          "detail": {
+            "climb": "c_rope_62",
+            "end": "bottom",
+            "standingSurface": "s_middle_low"
+          }
+        }
+      ]
+    },
+    {
+      "id": "t_rope_86_up",
+      "from": "s_east",
+      "to": "s_east_high",
+      "action": "climb-up",
+      "climb": "c_rope_86",
+      "conditions": [
+        "natural approach",
+        "full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "chiyan1-final-002",
+          "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-chiyan1-001",
+          "objectId": "t_rope_86_up",
+          "file": "work/final-route_all_climbs.json",
+          "method": "natural lower/upper approach, enter, traverse, exit; continuous spawn input",
+          "result": "verified",
+          "frames": [
+            3157,
+            3227
+          ],
+          "detail": {
+            "climb": "c_rope_86",
+            "end": "top",
+            "standingSurface": "s_east_high"
+          }
+        }
+      ]
+    },
+    {
+      "id": "t_rope_86_down",
+      "from": "s_east_high",
+      "to": "s_east",
+      "action": "climb-down",
+      "climb": "c_rope_86",
+      "conditions": [
+        "natural approach",
+        "full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "chiyan1-final-002",
+          "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-chiyan1-001",
+          "objectId": "t_rope_86_down",
+          "file": "work/final-route_all_climbs.json",
+          "method": "natural lower/upper approach, enter, traverse, exit; continuous spawn input",
+          "result": "verified",
+          "frames": [
+            3472,
+            3535
+          ],
+          "detail": {
+            "climb": "c_rope_86",
+            "end": "bottom",
+            "standingSurface": "s_east"
+          }
+        }
+      ]
+    },
+    {
+      "id": "t_dock_down",
+      "from": "s_dock",
+      "to": "s_low_west",
+      "action": "drop",
+      "conditions": [
+        "base FEEL",
+        "safe lava margins",
+        "no hazard contact"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "chiyan1-final-002",
+          "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-chiyan1-001",
+          "objectId": "t_dock_down",
+          "file": "work/final-route_return.json",
+          "method": "normal continuous ground run; body collides with step sides; jump or drop as declared",
+          "result": "verified",
+          "frames": [
+            0,
+            186
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_dock_up",
+      "from": "s_low_west",
+      "to": "s_dock",
+      "action": "jump",
+      "conditions": [
+        "base FEEL",
+        "safe lava margins",
+        "no hazard contact"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "chiyan1-final-002",
+          "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-chiyan1-001",
+          "objectId": "t_dock_up",
+          "file": "work/final-route_return.json",
+          "method": "normal continuous ground run; body collides with step sides; jump or drop as declared",
+          "result": "verified",
+          "frames": [
+            2611,
+            3070
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_middle_up",
+      "from": "s_low_west",
+      "to": "s_middle",
+      "action": "jump",
+      "conditions": [
+        "base FEEL",
+        "safe lava margins",
+        "no hazard contact"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "chiyan1-final-002",
+          "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-chiyan1-001",
+          "objectId": "t_middle_up",
+          "file": "work/final-route_return.json",
+          "method": "normal continuous ground run; body collides with step sides; jump or drop as declared",
+          "result": "verified",
+          "frames": [
+            658,
+            762
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_middle_down",
+      "from": "s_middle",
+      "to": "s_low_west",
+      "action": "drop",
+      "conditions": [
+        "base FEEL",
+        "safe lava margins",
+        "no hazard contact"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "chiyan1-final-002",
+          "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-chiyan1-001",
+          "objectId": "t_middle_down",
+          "file": "work/final-route_return.json",
+          "method": "normal continuous ground run; body collides with step sides; jump or drop as declared",
+          "result": "verified",
+          "frames": [
+            2166,
+            2495
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_middle_east_down",
+      "from": "s_middle",
+      "to": "s_low_east",
+      "action": "drop",
+      "conditions": [
+        "base FEEL",
+        "safe lava margins",
+        "no hazard contact"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "chiyan1-final-002",
+          "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-chiyan1-001",
+          "objectId": "t_middle_east_down",
+          "file": "work/final-route_return.json",
+          "method": "normal continuous ground run; body collides with step sides; jump or drop as declared",
+          "result": "verified",
+          "frames": [
+            762,
+            1091
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_middle_east_up",
+      "from": "s_low_east",
+      "to": "s_middle",
+      "action": "jump",
+      "conditions": [
+        "base FEEL",
+        "safe lava margins",
+        "no hazard contact"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "chiyan1-final-002",
+          "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-chiyan1-001",
+          "objectId": "t_middle_east_up",
+          "file": "work/final-route_return.json",
+          "method": "normal continuous ground run; body collides with step sides; jump or drop as declared",
+          "result": "verified",
+          "frames": [
+            2076,
+            2166
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_east_up",
+      "from": "s_low_east",
+      "to": "s_east",
+      "action": "jump",
+      "conditions": [
+        "base FEEL",
+        "safe lava margins",
+        "no hazard contact"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "chiyan1-final-002",
+          "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-chiyan1-001",
+          "objectId": "t_east_up",
+          "file": "work/final-route_return.json",
+          "method": "normal continuous ground run; body collides with step sides; jump or drop as declared",
+          "result": "verified",
+          "frames": [
+            1192,
+            1263
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_east_down",
+      "from": "s_east",
+      "to": "s_low_east",
+      "action": "drop",
+      "conditions": [
+        "base FEEL",
+        "safe lava margins",
+        "no hazard contact"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "chiyan1-final-002",
+          "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-chiyan1-001",
+          "objectId": "t_east_down",
+          "file": "work/final-route_return.json",
+          "method": "normal continuous ground run; body collides with step sides; jump or drop as declared",
+          "result": "verified",
+          "frames": [
+            1263,
+            1981
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_lava6_forward",
+      "from": "s_low_west",
+      "to": "s_low_west",
+      "action": "double-jump",
+      "conditions": [
+        "base FEEL",
+        "safe lava margins",
+        "no hazard contact"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "chiyan1-final-002",
+          "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-chiyan1-001",
+          "objectId": "t_lava6_forward",
+          "file": "work/final-route_return.json",
+          "method": "normal attainable stop/takeoff; two discrete jump presses; safe dry landing with full AABB",
+          "result": "verified",
+          "frames": [
+            612,
+            658
+          ],
+          "detail": {
+            "doubleJumpFrame": 624,
+            "takeoff": [
+              1239,
+              832
+            ],
+            "landing": [
+              1446.5,
+              832
+            ],
+            "hazardContacts": 0
+          }
+        }
+      ],
+      "fromRegion": [
+        [
+          1233,
+          824
+        ],
+        [
+          1243,
+          824
+        ],
+        [
+          1243,
+          834
+        ],
+        [
+          1233,
+          834
+        ]
+      ],
+      "toRegion": [
+        [
+          1430,
+          824
+        ],
+        [
+          1470,
+          824
+        ],
+        [
+          1470,
+          834
+        ],
+        [
+          1430,
+          834
+        ]
+      ],
+      "hazard": "lava_6",
+      "direction": "east",
+      "diagnosticPath": [
+        [
+          1238,
+          832
+        ],
+        [
+          1344.0,
+          670
+        ],
+        [
+          1450,
+          832
+        ]
+      ]
+    },
+    {
+      "id": "t_lava6_return",
+      "from": "s_low_west",
+      "to": "s_low_west",
+      "action": "double-jump",
+      "conditions": [
+        "base FEEL",
+        "safe lava margins",
+        "no hazard contact"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "chiyan1-final-002",
+          "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-chiyan1-001",
+          "objectId": "t_lava6_return",
+          "file": "work/final-route_return.json",
+          "method": "normal attainable stop/takeoff; two discrete jump presses; safe dry landing with full AABB",
+          "result": "verified",
+          "frames": [
+            2565,
+            2611
+          ],
+          "detail": {
+            "doubleJumpFrame": 2577,
+            "takeoff": [
+              1448.6111111110972,
+              832
+            ],
+            "landing": [
+              1241.1111111110972,
+              832
+            ],
+            "hazardContacts": 0
+          }
+        }
+      ],
+      "fromRegion": [
+        [
+          1445,
+          824
+        ],
+        [
+          1455,
+          824
+        ],
+        [
+          1455,
+          834
+        ],
+        [
+          1445,
+          834
+        ]
+      ],
+      "toRegion": [
+        [
+          1218,
+          824
+        ],
+        [
+          1258,
+          824
+        ],
+        [
+          1258,
+          834
+        ],
+        [
+          1218,
+          834
+        ]
+      ],
+      "hazard": "lava_6",
+      "direction": "west",
+      "diagnosticPath": [
+        [
+          1450,
+          832
+        ],
+        [
+          1344.0,
+          670
+        ],
+        [
+          1238,
+          832
+        ]
+      ]
+    },
+    {
+      "id": "t_lava7_forward",
+      "from": "s_low_east",
+      "to": "s_low_east",
+      "action": "double-jump",
+      "conditions": [
+        "base FEEL",
+        "safe lava margins",
+        "no hazard contact"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "chiyan1-final-002",
+          "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-chiyan1-001",
+          "objectId": "t_lava7_forward",
+          "file": "work/final-route_return.json",
+          "method": "normal attainable stop/takeoff; two discrete jump presses; safe dry landing with full AABB",
+          "result": "verified",
+          "frames": [
+            1146,
+            1192
+          ],
+          "detail": {
+            "doubleJumpFrame": 1158,
+            "takeoff": [
+              2198.8888888888973,
+              832
+            ],
+            "landing": [
+              2406.388888888897,
+              832
+            ],
+            "hazardContacts": 0
+          }
+        }
+      ],
+      "fromRegion": [
+        [
+          2193,
+          824
+        ],
+        [
+          2203,
+          824
+        ],
+        [
+          2203,
+          834
+        ],
+        [
+          2193,
+          834
+        ]
+      ],
+      "toRegion": [
+        [
+          2390,
+          824
+        ],
+        [
+          2430,
+          824
+        ],
+        [
+          2430,
+          834
+        ],
+        [
+          2390,
+          834
+        ]
+      ],
+      "hazard": "lava_7",
+      "direction": "east",
+      "diagnosticPath": [
+        [
+          2198,
+          832
+        ],
+        [
+          2304.0,
+          670
+        ],
+        [
+          2410,
+          832
+        ]
+      ]
+    },
+    {
+      "id": "t_lava7_return",
+      "from": "s_low_east",
+      "to": "s_low_east",
+      "action": "double-jump",
+      "conditions": [
+        "base FEEL",
+        "safe lava margins",
+        "no hazard contact"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "chiyan1-final-002",
+          "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-chiyan1-001",
+          "objectId": "t_lava7_return",
+          "file": "work/final-route_return.json",
+          "method": "normal attainable stop/takeoff; two discrete jump presses; safe dry landing with full AABB",
+          "result": "verified",
+          "frames": [
+            2030,
+            2076
+          ],
+          "detail": {
+            "doubleJumpFrame": 2042,
+            "takeoff": [
+              2409.8333333333353,
+              832
+            ],
+            "landing": [
+              2202.3333333333358,
+              832
+            ],
+            "hazardContacts": 0
+          }
+        }
+      ],
+      "fromRegion": [
+        [
+          2405,
+          824
+        ],
+        [
+          2415,
+          824
+        ],
+        [
+          2415,
+          834
+        ],
+        [
+          2405,
+          834
+        ]
+      ],
+      "toRegion": [
+        [
+          2178,
+          824
+        ],
+        [
+          2218,
+          824
+        ],
+        [
+          2218,
+          834
+        ],
+        [
+          2178,
+          834
+        ]
+      ],
+      "hazard": "lava_7",
+      "direction": "west",
+      "diagnosticPath": [
+        [
+          2410,
+          832
+        ],
+        [
+          2304.0,
+          670
+        ],
+        [
+          2198,
+          832
+        ]
+      ]
+    }
+  ],
+  "requiredRoutes": [
+    {
+      "id": "route_main",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "ferry_landing",
+        "s_low_west",
+        "s_middle",
+        "s_low_east",
+        "s_east"
+      ],
+      "direction": "forward",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "chiyan1-final-002",
+          "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-chiyan1-001",
+          "objectId": "route_main",
+          "file": "work/final-route_main.json",
+          "method": "continuous input-only fixed60Hz replay from real spawn zero velocity; browser trace equals Node",
+          "result": "verified",
+          "frames": [
+            0,
+            1628
+          ],
+          "detail": {
+            "teleports": 0,
+            "midRouteResets": 0,
+            "hazardContacts": 0,
+            "via": [
+              "ferry_landing",
+              "s_low_west",
+              "s_middle",
+              "s_low_east",
+              "s_east"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "route_return",
+      "from": "start_spawn",
+      "to": "ferry_landing",
+      "via": [
+        "goal_east",
+        "s_low_east",
+        "s_middle",
+        "s_low_west",
+        "s_dock"
+      ],
+      "direction": "out-and-back",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "chiyan1-final-002",
+          "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-chiyan1-001",
+          "objectId": "route_return",
+          "file": "work/final-route_return.json",
+          "method": "continuous input-only fixed60Hz replay from real spawn zero velocity; browser trace equals Node",
+          "result": "verified",
+          "frames": [
+            0,
+            3206
+          ],
+          "detail": {
+            "teleports": 0,
+            "midRouteResets": 0,
+            "hazardContacts": 0,
+            "via": [
+              "goal_east",
+              "s_low_east",
+              "s_middle",
+              "s_low_west",
+              "s_dock"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "route_all_climbs",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "c_rope_26",
+        "c_rope_32",
+        "c_rope_58",
+        "c_rope_62",
+        "c_rope_86"
+      ],
+      "direction": "forward",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "chiyan1-final-002",
+          "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-chiyan1-001",
+          "objectId": "route_all_climbs",
+          "file": "work/final-route_all_climbs.json",
+          "method": "continuous input-only fixed60Hz replay from real spawn zero velocity; browser trace equals Node",
+          "result": "verified",
+          "frames": [
+            0,
+            3751
+          ],
+          "detail": {
+            "teleports": 0,
+            "midRouteResets": 0,
+            "hazardContacts": 0,
+            "via": [
+              "c_rope_26",
+              "c_rope_32",
+              "c_rope_58",
+              "c_rope_62",
+              "c_rope_86"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "route_all_gathers",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "gather_fire_herb_20",
+        "gather_fire_herb_21",
+        "gather_fire_herb_22"
+      ],
+      "direction": "forward",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "chiyan1-final-002",
+          "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-chiyan1-001",
+          "objectId": "route_all_gathers",
+          "file": "work/final-route_all_gathers.json",
+          "method": "continuous input-only fixed60Hz replay from real spawn zero velocity; browser trace equals Node",
+          "result": "verified",
+          "frames": [
+            0,
+            3751
+          ],
+          "detail": {
+            "teleports": 0,
+            "midRouteResets": 0,
+            "hazardContacts": 0,
+            "via": [
+              "gather_fire_herb_20",
+              "gather_fire_herb_21",
+              "gather_fire_herb_22"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "route_chest",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "sense_chest_01"
+      ],
+      "direction": "forward",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "chiyan1-final-002",
+          "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-chiyan1-001",
+          "objectId": "route_chest",
+          "file": "work/final-route_chest.json",
+          "method": "continuous input-only fixed60Hz replay from real spawn zero velocity; browser trace equals Node",
+          "result": "verified",
+          "frames": [
+            0,
+            3751
+          ],
+          "detail": {
+            "teleports": 0,
+            "midRouteResets": 0,
+            "hazardContacts": 0,
+            "via": [
+              "sense_chest_01"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "diagnostics": {
+    "maskPalette": {
+      "walk": [
+        150,
+        245,
+        160,
+        255
+      ],
+      "stand": [
+        0,
+        200,
+        80,
+        255
+      ],
+      "climb": [
+        0,
+        190,
+        230,
+        255
+      ],
+      "jump": [
+        255,
+        180,
+        0,
+        255
+      ],
+      "drop": [
+        170,
+        80,
+        225,
+        255
+      ],
+      "hazard": [
+        255,
+        60,
+        30,
+        255
+      ],
+      "point": [
+        255,
+        70,
+        160,
+        255
+      ]
+    },
+    "rasterizationOrder": [
+      "walk",
+      "stand",
+      "climb",
+      "jump",
+      "drop",
+      "hazard",
+      "point"
+    ],
+    "regionIdIndex": null,
+    "geometryRevision": "chiyan1-final-002"
+  },
+  "validation": {
+    "status": "verified",
+    "geometryRevision": "chiyan1-final-002",
+    "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+    "engineRevision": "gsb-aabb-feel-chiyan1-001",
+    "evidence": [
+      {
+        "geometryRevision": "chiyan1-final-002",
+        "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-chiyan1-001",
+        "objectId": "t_rope_26_up",
+        "file": "work/final-route_all_climbs.json",
+        "method": "natural lower/upper approach, enter, traverse, exit; continuous spawn input",
+        "result": "verified",
+        "frames": [
+          442,
+          512
+        ],
+        "detail": {
+          "climb": "c_rope_26",
+          "end": "top",
+          "standingSurface": "s_west_low"
+        }
+      },
+      {
+        "geometryRevision": "chiyan1-final-002",
+        "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-chiyan1-001",
+        "objectId": "t_rope_26_down",
+        "file": "work/final-route_all_climbs.json",
+        "method": "natural lower/upper approach, enter, traverse, exit; continuous spawn input",
+        "result": "verified",
+        "frames": [
+          1270,
+          1333
+        ],
+        "detail": {
+          "climb": "c_rope_26",
+          "end": "bottom",
+          "standingSurface": "s_low_west"
+        }
+      },
+      {
+        "geometryRevision": "chiyan1-final-002",
+        "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-chiyan1-001",
+        "objectId": "t_rope_32_up",
+        "file": "work/final-route_all_climbs.json",
+        "method": "natural lower/upper approach, enter, traverse, exit; continuous spawn input",
+        "result": "verified",
+        "frames": [
+          645,
+          715
+        ],
+        "detail": {
+          "climb": "c_rope_32",
+          "end": "top",
+          "standingSurface": "s_west_high"
+        }
+      },
+      {
+        "geometryRevision": "chiyan1-final-002",
+        "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-chiyan1-001",
+        "objectId": "t_rope_32_down",
+        "file": "work/final-route_all_climbs.json",
+        "method": "natural lower/upper approach, enter, traverse, exit; continuous spawn input",
+        "result": "verified",
+        "frames": [
+          1074,
+          1137
+        ],
+        "detail": {
+          "climb": "c_rope_32",
+          "end": "bottom",
+          "standingSurface": "s_west_low"
+        }
+      },
+      {
+        "geometryRevision": "chiyan1-final-002",
+        "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-chiyan1-001",
+        "objectId": "t_rope_58_up",
+        "file": "work/final-route_all_climbs.json",
+        "method": "natural lower/upper approach, enter, traverse, exit; continuous spawn input",
+        "result": "verified",
+        "frames": [
+          1893,
+          1963
+        ],
+        "detail": {
+          "climb": "c_rope_58",
+          "end": "top",
+          "standingSurface": "s_middle_low"
+        }
+      },
+      {
+        "geometryRevision": "chiyan1-final-002",
+        "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-chiyan1-001",
+        "objectId": "t_rope_58_down",
+        "file": "work/final-route_all_climbs.json",
+        "method": "natural lower/upper approach, enter, traverse, exit; continuous spawn input",
+        "result": "verified",
+        "frames": [
+          2549,
+          2612
+        ],
+        "detail": {
+          "climb": "c_rope_58",
+          "end": "bottom",
+          "standingSurface": "s_middle"
+        }
+      },
+      {
+        "geometryRevision": "chiyan1-final-002",
+        "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-chiyan1-001",
+        "objectId": "t_rope_62_up",
+        "file": "work/final-route_all_climbs.json",
+        "method": "natural lower/upper approach, enter, traverse, exit; continuous spawn input",
+        "result": "verified",
+        "frames": [
+          2067,
+          2137
+        ],
+        "detail": {
+          "climb": "c_rope_62",
+          "end": "top",
+          "standingSurface": "s_middle_high"
+        }
+      },
+      {
+        "geometryRevision": "chiyan1-final-002",
+        "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-chiyan1-001",
+        "objectId": "t_rope_62_down",
+        "file": "work/final-route_all_climbs.json",
+        "method": "natural lower/upper approach, enter, traverse, exit; continuous spawn input",
+        "result": "verified",
+        "frames": [
+          2382,
+          2445
+        ],
+        "detail": {
+          "climb": "c_rope_62",
+          "end": "bottom",
+          "standingSurface": "s_middle_low"
+        }
+      },
+      {
+        "geometryRevision": "chiyan1-final-002",
+        "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-chiyan1-001",
+        "objectId": "t_rope_86_up",
+        "file": "work/final-route_all_climbs.json",
+        "method": "natural lower/upper approach, enter, traverse, exit; continuous spawn input",
+        "result": "verified",
+        "frames": [
+          3157,
+          3227
+        ],
+        "detail": {
+          "climb": "c_rope_86",
+          "end": "top",
+          "standingSurface": "s_east_high"
+        }
+      },
+      {
+        "geometryRevision": "chiyan1-final-002",
+        "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-chiyan1-001",
+        "objectId": "t_rope_86_down",
+        "file": "work/final-route_all_climbs.json",
+        "method": "natural lower/upper approach, enter, traverse, exit; continuous spawn input",
+        "result": "verified",
+        "frames": [
+          3472,
+          3535
+        ],
+        "detail": {
+          "climb": "c_rope_86",
+          "end": "bottom",
+          "standingSurface": "s_east"
+        }
+      },
+      {
+        "geometryRevision": "chiyan1-final-002",
+        "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-chiyan1-001",
+        "objectId": "t_dock_down",
+        "file": "work/final-route_return.json",
+        "method": "normal continuous ground run; body collides with step sides; jump or drop as declared",
+        "result": "verified",
+        "frames": [
+          0,
+          186
+        ]
+      },
+      {
+        "geometryRevision": "chiyan1-final-002",
+        "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-chiyan1-001",
+        "objectId": "t_dock_up",
+        "file": "work/final-route_return.json",
+        "method": "normal continuous ground run; body collides with step sides; jump or drop as declared",
+        "result": "verified",
+        "frames": [
+          2611,
+          3070
+        ]
+      },
+      {
+        "geometryRevision": "chiyan1-final-002",
+        "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-chiyan1-001",
+        "objectId": "t_middle_up",
+        "file": "work/final-route_return.json",
+        "method": "normal continuous ground run; body collides with step sides; jump or drop as declared",
+        "result": "verified",
+        "frames": [
+          658,
+          762
+        ]
+      },
+      {
+        "geometryRevision": "chiyan1-final-002",
+        "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-chiyan1-001",
+        "objectId": "t_middle_down",
+        "file": "work/final-route_return.json",
+        "method": "normal continuous ground run; body collides with step sides; jump or drop as declared",
+        "result": "verified",
+        "frames": [
+          2166,
+          2495
+        ]
+      },
+      {
+        "geometryRevision": "chiyan1-final-002",
+        "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-chiyan1-001",
+        "objectId": "t_middle_east_down",
+        "file": "work/final-route_return.json",
+        "method": "normal continuous ground run; body collides with step sides; jump or drop as declared",
+        "result": "verified",
+        "frames": [
+          762,
+          1091
+        ]
+      },
+      {
+        "geometryRevision": "chiyan1-final-002",
+        "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-chiyan1-001",
+        "objectId": "t_middle_east_up",
+        "file": "work/final-route_return.json",
+        "method": "normal continuous ground run; body collides with step sides; jump or drop as declared",
+        "result": "verified",
+        "frames": [
+          2076,
+          2166
+        ]
+      },
+      {
+        "geometryRevision": "chiyan1-final-002",
+        "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-chiyan1-001",
+        "objectId": "t_east_up",
+        "file": "work/final-route_return.json",
+        "method": "normal continuous ground run; body collides with step sides; jump or drop as declared",
+        "result": "verified",
+        "frames": [
+          1192,
+          1263
+        ]
+      },
+      {
+        "geometryRevision": "chiyan1-final-002",
+        "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-chiyan1-001",
+        "objectId": "t_east_down",
+        "file": "work/final-route_return.json",
+        "method": "normal continuous ground run; body collides with step sides; jump or drop as declared",
+        "result": "verified",
+        "frames": [
+          1263,
+          1981
+        ]
+      },
+      {
+        "geometryRevision": "chiyan1-final-002",
+        "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-chiyan1-001",
+        "objectId": "t_lava6_forward",
+        "file": "work/final-route_return.json",
+        "method": "normal attainable stop/takeoff; two discrete jump presses; safe dry landing with full AABB",
+        "result": "verified",
+        "frames": [
+          612,
+          658
+        ],
+        "detail": {
+          "doubleJumpFrame": 624,
+          "takeoff": [
+            1239,
+            832
+          ],
+          "landing": [
+            1446.5,
+            832
+          ],
+          "hazardContacts": 0
+        }
+      },
+      {
+        "geometryRevision": "chiyan1-final-002",
+        "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-chiyan1-001",
+        "objectId": "t_lava6_return",
+        "file": "work/final-route_return.json",
+        "method": "normal attainable stop/takeoff; two discrete jump presses; safe dry landing with full AABB",
+        "result": "verified",
+        "frames": [
+          2565,
+          2611
+        ],
+        "detail": {
+          "doubleJumpFrame": 2577,
+          "takeoff": [
+            1448.6111111110972,
+            832
+          ],
+          "landing": [
+            1241.1111111110972,
+            832
+          ],
+          "hazardContacts": 0
+        }
+      },
+      {
+        "geometryRevision": "chiyan1-final-002",
+        "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-chiyan1-001",
+        "objectId": "t_lava7_forward",
+        "file": "work/final-route_return.json",
+        "method": "normal attainable stop/takeoff; two discrete jump presses; safe dry landing with full AABB",
+        "result": "verified",
+        "frames": [
+          1146,
+          1192
+        ],
+        "detail": {
+          "doubleJumpFrame": 1158,
+          "takeoff": [
+            2198.8888888888973,
+            832
+          ],
+          "landing": [
+            2406.388888888897,
+            832
+          ],
+          "hazardContacts": 0
+        }
+      },
+      {
+        "geometryRevision": "chiyan1-final-002",
+        "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-chiyan1-001",
+        "objectId": "t_lava7_return",
+        "file": "work/final-route_return.json",
+        "method": "normal attainable stop/takeoff; two discrete jump presses; safe dry landing with full AABB",
+        "result": "verified",
+        "frames": [
+          2030,
+          2076
+        ],
+        "detail": {
+          "doubleJumpFrame": 2042,
+          "takeoff": [
+            2409.8333333333353,
+            832
+          ],
+          "landing": [
+            2202.3333333333358,
+            832
+          ],
+          "hazardContacts": 0
+        }
+      },
+      {
+        "geometryRevision": "chiyan1-final-002",
+        "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-chiyan1-001",
+        "objectId": "route_main",
+        "file": "work/final-route_main.json",
+        "method": "continuous input-only fixed60Hz replay from real spawn zero velocity; browser trace equals Node",
+        "result": "verified",
+        "frames": [
+          0,
+          1628
+        ],
+        "detail": {
+          "teleports": 0,
+          "midRouteResets": 0,
+          "hazardContacts": 0,
+          "via": [
+            "ferry_landing",
+            "s_low_west",
+            "s_middle",
+            "s_low_east",
+            "s_east"
+          ]
+        }
+      },
+      {
+        "geometryRevision": "chiyan1-final-002",
+        "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-chiyan1-001",
+        "objectId": "route_return",
+        "file": "work/final-route_return.json",
+        "method": "continuous input-only fixed60Hz replay from real spawn zero velocity; browser trace equals Node",
+        "result": "verified",
+        "frames": [
+          0,
+          3206
+        ],
+        "detail": {
+          "teleports": 0,
+          "midRouteResets": 0,
+          "hazardContacts": 0,
+          "via": [
+            "goal_east",
+            "s_low_east",
+            "s_middle",
+            "s_low_west",
+            "s_dock"
+          ]
+        }
+      },
+      {
+        "geometryRevision": "chiyan1-final-002",
+        "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-chiyan1-001",
+        "objectId": "route_all_climbs",
+        "file": "work/final-route_all_climbs.json",
+        "method": "continuous input-only fixed60Hz replay from real spawn zero velocity; browser trace equals Node",
+        "result": "verified",
+        "frames": [
+          0,
+          3751
+        ],
+        "detail": {
+          "teleports": 0,
+          "midRouteResets": 0,
+          "hazardContacts": 0,
+          "via": [
+            "c_rope_26",
+            "c_rope_32",
+            "c_rope_58",
+            "c_rope_62",
+            "c_rope_86"
+          ]
+        }
+      },
+      {
+        "geometryRevision": "chiyan1-final-002",
+        "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-chiyan1-001",
+        "objectId": "route_all_gathers",
+        "file": "work/final-route_all_gathers.json",
+        "method": "continuous input-only fixed60Hz replay from real spawn zero velocity; browser trace equals Node",
+        "result": "verified",
+        "frames": [
+          0,
+          3751
+        ],
+        "detail": {
+          "teleports": 0,
+          "midRouteResets": 0,
+          "hazardContacts": 0,
+          "via": [
+            "gather_fire_herb_20",
+            "gather_fire_herb_21",
+            "gather_fire_herb_22"
+          ]
+        }
+      },
+      {
+        "geometryRevision": "chiyan1-final-002",
+        "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-chiyan1-001",
+        "objectId": "route_chest",
+        "file": "work/final-route_chest.json",
+        "method": "continuous input-only fixed60Hz replay from real spawn zero velocity; browser trace equals Node",
+        "result": "verified",
+        "frames": [
+          0,
+          3751
+        ],
+        "detail": {
+          "teleports": 0,
+          "midRouteResets": 0,
+          "hazardContacts": 0,
+          "via": [
+            "sense_chest_01"
+          ]
+        }
+      },
+      {
+        "geometryRevision": "chiyan1-final-002",
+        "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-chiyan1-001",
+        "objectId": "asset-and-point-audit",
+        "file": "work/final-asset-audit.json",
+        "method": "IDs, source hashes, point body safety, RGBA composite, palette, bottom continuity",
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "chiyan1-final-002",
+        "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-chiyan1-001",
+        "objectId": "standing-contact",
+        "file": "work/final-geometry-measurements.json",
+        "method": "10 surfaces dry E/L/R ±2; 10 climb ends; 1x overlay and natural browser contacts",
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "chiyan1-final-002",
+        "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-chiyan1-001",
+        "objectId": "physics",
+        "file": "work/final-physics-smoke.json",
+        "method": "9 actual-map input checks plus1 clearly marked synthetic ceiling fixture",
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "chiyan1-final-002",
+        "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-chiyan1-001",
+        "objectId": "browser",
+        "file": "work/final-browser-check.json",
+        "method": "5 complete continuous input replays, all traces equal; DOM keyboard and layers/minimap",
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "chiyan1-final-002",
+        "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-chiyan1-001",
+        "objectId": "render-cadence",
+        "file": "work/final-cadence-check.json",
+        "method": "fixed-step accumulator30/60/144Hz trace equality",
+        "result": "verified"
+      }
+    ],
+    "issues": [],
+    "scope": "independent local AABB movement adapter at base FEEL100 points; not Phaser/combat/live gates integration",
+    "notInScope": [
+      "real combat/AI patrol",
+      "gather cast and item grant",
+      "cross-map loading/ferry interaction",
+      "leader PASS and release"
+    ],
+    "summary": {
+      "requiredRoutes": 5,
+      "verifiedRoutes": 5,
+      "transitions": 22,
+      "verifiedTransitions": 22,
+      "actualMapPhysics": 9,
+      "syntheticCeiling": 1,
+      "routeFrames": 16087,
+      "hazardContactsOnRequiredRoutes": 0,
+      "midRouteResets": 0,
+      "bodyPenetrations": 0
+    }
+  },
+  "foreground": {
+    "applicable": false,
+    "reason": "no front-of-actor obstruction; boat, chains and gate in terrain layer behind actors"
+  },
+  "deliveryState": "自检通过，赤炎山麓 gsb_v1 已交核待负责人；负责人PASS前禁止接入"
+}
