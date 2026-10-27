@@ -1,0 +1,2007 @@
+{
+  "name": "taixu_temple_gsb_v1",
+  "assetVersion": "taixu-gsb-v1-final-001",
+  "status": "verified",
+  "handoff": "太虚观·山门 gsb_v1 已交核待负责人",
+  "schemaVersion": "1.0",
+  "geometryRevision": "taixu-final-001",
+  "actorParameterRevision": "taixu-base-feel-20261027-001",
+  "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+  "space": {
+    "origin": "top-left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "units": "logical-pixel",
+    "logicalWidth": 1280,
+    "logicalHeight": 640,
+    "sourceMap": "maps/taixu_temple.json",
+    "sourceToWorld": [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0
+    ]
+  },
+  "safeZone": true,
+  "qiDensity": 4,
+  "logicalWidth": 1280,
+  "logicalHeight": 640,
+  "assets": [
+    {
+      "id": "asset_background",
+      "role": "background",
+      "path": "background.png",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "asset_playable",
+      "role": "playable",
+      "path": "playable.png",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    }
+  ],
+  "files": {
+    "DELIVERED.md": {
+      "path": "DELIVERED.md",
+      "role": "pending-lead-review-handoff",
+      "bytes": 876,
+      "sha256": "0bcc74f1bce58a5228a849108520e37cc754ec37b8ca30abf0aaa6b176863777",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "README.md": {
+      "path": "README.md",
+      "role": "local-reproduction-instructions",
+      "bytes": 969,
+      "sha256": "7c44a92b6419c4840e230b83f702aa7510bd9016218108c9b3c33f58de7ffc44",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "action-mask.png": {
+      "path": "action-mask.png",
+      "role": "pure-semantic-mask",
+      "bytes": 5414,
+      "sha256": "7212660ade023fd7dfa7a864718eee70ca3c8da0e404d17e9f8902376c906449",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    "action-overlay.png": {
+      "path": "action-overlay.png",
+      "role": "action-ids-direction-status-inspection",
+      "bytes": 1754042,
+      "sha256": "3c5f3c01ec12a3cf6dbd4eea52705a4f66ef499e8310c3c06fc1a4f06940c492",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    "background.png": {
+      "path": "background.png",
+      "role": "noninteractive-background",
+      "bytes": 1376138,
+      "sha256": "ec02fd2a3d9c5e285e3784546229b71b66790bb8b03dedee1a01294c25e3ba15",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    "collision-overlay.png": {
+      "path": "collision-overlay.png",
+      "role": "actual-runtime-solids-and-oneway-inspection",
+      "bytes": 1748519,
+      "sha256": "b0ef417f1ea2fd11ca6898e4e9ba341c5ce6074858d2da46c3377588abae8baa",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    "diagnostics-metadata.json": {
+      "path": "diagnostics-metadata.json",
+      "role": "diagnostic-hash-binding",
+      "bytes": 1542,
+      "sha256": "4f82b8c000230335010ce89e8aa2db64a8ccfe19729a821ca5f077e80044992e",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "index.html": {
+      "path": "index.html",
+      "role": "local-entry",
+      "bytes": 248,
+      "sha256": "2bba975d1d68b85403580d1a36e254ca071e42e950f0a424d01e5434469fab98",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "playable.png": {
+      "path": "playable.png",
+      "role": "true-alpha-playable-terrain",
+      "bytes": 862306,
+      "sha256": "b4125a9182e5ebf097a7889cf6c2552b884af49329c0fc16bb5f64537e933cdc",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    "scene-data.json": {
+      "path": "scene-data.json",
+      "role": "sole-authoritative-action-collision-data",
+      "bytes": 37315,
+      "sha256": "5510abea892a1ae3a33789e4a83326df9ea126afcde2efecdeec2ee42294af6a",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "scene.png": {
+      "path": "scene.png",
+      "role": "recomposed-final-scene",
+      "bytes": 1766535,
+      "sha256": "f573393bc66e8e4c5e8041c3cd9800ae56bec14a40b1de93f2fd79eaf713e459",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    "validation-report.md": {
+      "path": "validation-report.md",
+      "role": "truthful-validation-report",
+      "bytes": 8445,
+      "sha256": "24b2928a68dcc2888d15469bac2a2847708cfe307c363eb9f54815b4810d2610",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/_backup/polished.lock.before": {
+      "path": "work/_backup/polished.lock.before",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 57549,
+      "sha256": "fae10ff8453a1a2118612bf7617c9496a3068d77feeaf1cde566718cb5eb130c",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/_backup/丹青阁.before.md": {
+      "path": "work/_backup/丹青阁.before.md",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 907,
+      "sha256": "7be6bcbd6f350530f94275a8c7af575254460517d403eab7188b4f8d47a97623",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/_backup/丹青阁.pre-handoff.md": {
+      "path": "work/_backup/丹青阁.pre-handoff.md",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 904,
+      "sha256": "83a908a6110a2d048d579c91412bf9f24f6598fda033fa2f148bbac744f81ee7",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/action-layout.png": {
+      "path": "work/action-layout.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 7567,
+      "sha256": "3a37b9f6eb91f462fec0db39eb323d3838663daa03dafe450821a8fa8840be10",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGB"
+    },
+    "work/action-layout.svg": {
+      "path": "work/action-layout.svg",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 870,
+      "sha256": "b5db599c33d2eba3c882ae081d12fe441437c41a6a84596f60ecd73e5be9888c",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/alpha-preview-checker.png": {
+      "path": "work/alpha-preview-checker.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 832666,
+      "sha256": "777a26dea4a4b2a3bbb6d0d5144d3b51e52a4091d0a51a51f10f4dee808949d9",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/alpha-preview-dark.png": {
+      "path": "work/alpha-preview-dark.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 819359,
+      "sha256": "7c3a3988928d452c037655b07870dece55bc46dd778c40a5ca2253aca61b47b6",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/alpha-preview-light.png": {
+      "path": "work/alpha-preview-light.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 832194,
+      "sha256": "be1fac99fed4d71e4b0ce410d82d43db40eb2a452ca433953a655efd8eb8e1dd",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/artcheck-final.log": {
+      "path": "work/artcheck-final.log",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 948,
+      "sha256": "971ec2b5f561e9fc298167f5443cb1bb9bf08387c5e488c43dfd938ff1f09e5c",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/bind_validation.py": {
+      "path": "work/bind_validation.py",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 3859,
+      "sha256": "e6f005704ef7a8b90d0672b933583aa356df6cef161827ae06dbe2593fe16c2d",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/bottom-clean-inspection.png": {
+      "path": "work/bottom-clean-inspection.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 463959,
+      "sha256": "9bb83d34584e5fe4041870cd938805e6f1879cbf87153c2e9d5f4cced25e7e1d",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 148,
+      "mode": "RGBA"
+    },
+    "work/browser_check.py": {
+      "path": "work/browser_check.py",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 9010,
+      "sha256": "cf4a1ed033da29221a3099a9a2aeef5b09c7d86df53ce98c361fcaaa7ac6ba7b",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/build_layout.py": {
+      "path": "work/build_layout.py",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 6649,
+      "sha256": "c05f88ce20711204b6eb1683fbfc6d9e49113e43599dbf5452e9430b008dde8d",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/build_manifest.py": {
+      "path": "work/build_manifest.py",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 4177,
+      "sha256": "d2a4f4a851e6b9f5d8a81dd36cae2d2fe737107bc48fac2b65e1aabce59a2fb1",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/check_package.py": {
+      "path": "work/check_package.py",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 6010,
+      "sha256": "4eb9254c999b5fe1b8039f4f4aa4331b46e629e4861e65fb0ea51d813b32f0cc",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/check_physics.mjs": {
+      "path": "work/check_physics.mjs",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 3941,
+      "sha256": "0a45b20ab970ef50f5b462dbc83879a7f33d996f037d7c737d029fd47db21320",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/contact-audit-precalibration.png": {
+      "path": "work/contact-audit-precalibration.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 669292,
+      "sha256": "32e6b8c8e541e8bb9326af9cc96bfe8fb4988415c5956ee5c8dd18f107095739",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1000,
+      "pixelHeight": 780,
+      "mode": "RGB"
+    },
+    "work/detail-blocks.json": {
+      "path": "work/detail-blocks.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 953,
+      "sha256": "bf8afac06369c216bf81dc0247e892e4966ac9ec4f3df32d0706fec066a9e11b",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/final-browser-check.json": {
+      "path": "work/final-browser-check.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 5596,
+      "sha256": "2ac9f1c62b8a2b904d6c91ba132c958fbfa1a134e3c40b509b7a85b3640a4f90",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/final-geometry-measurements.json": {
+      "path": "work/final-geometry-measurements.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 3798,
+      "sha256": "8b98d480ad1fc647854e5788558b0cf9490a3b4453a3d49f0d5196dec8552be0",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/final-physics-check.json": {
+      "path": "work/final-physics-check.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 713409,
+      "sha256": "3b806faad5c0758bf688d5595b00af2ac1ee98ebbb27a0bbad227295c259ff4e",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/final-prebind-browser-check.json": {
+      "path": "work/final-prebind-browser-check.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 5596,
+      "sha256": "5c116c9f76e6012bce90931425c5c81c3045aa49927d3ebeca2fddb9d0c23863",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/final-routes.json": {
+      "path": "work/final-routes.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 4815,
+      "sha256": "4ede7e31629e6aa860799b30174c97991b3804288b4fd65e5051c19bca1407f5",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/final-screenshots/contact-s_dock.png": {
+      "path": "work/final-screenshots/contact-s_dock.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1980484,
+      "sha256": "7e606c130b708bfab71a20e8167593544cef443062ecb79e1b7b85f677dbe238",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/contact-s_elder.png": {
+      "path": "work/final-screenshots/contact-s_elder.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1981071,
+      "sha256": "b55187428f701283df3b3cbb434b14ca066c3a7fd67603ff9e6bd5e2d7a50e41",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/contact-s_envoy.png": {
+      "path": "work/final-screenshots/contact-s_envoy.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1982338,
+      "sha256": "f60bf49beab4e15bad6e27d1eb34448835ff1285e5a191ba1a743933fec34117",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/contact-s_high.png": {
+      "path": "work/final-screenshots/contact-s_high.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1984745,
+      "sha256": "9d761b4ca8d77ba7683ef5defd7373835eb66649b0cc766a332148d96baab3f7",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/contact-s_middle.png": {
+      "path": "work/final-screenshots/contact-s_middle.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1983684,
+      "sha256": "9e99eb1c951fa328af379e2e9df8e7e228bb6c0bad342856d884e73685361376",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/contact-s_west.png": {
+      "path": "work/final-screenshots/contact-s_west.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1983942,
+      "sha256": "7d40c8d1396cc4d74301e110c586abc1982a265321593dba541d6fa18519a41c",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/route_full_tour.png": {
+      "path": "work/final-screenshots/route_full_tour.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 2000611,
+      "sha256": "55e571a48fad8d0a8d05b4c9df18c9054fb49296bd70270f604a90cd4265257f",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/route_main.png": {
+      "path": "work/final-screenshots/route_main.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 2000819,
+      "sha256": "2ac3b4b293088b6ee0727e68f8699ba7d4937a1486f140331973c52f387ea239",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/route_return.png": {
+      "path": "work/final-screenshots/route_return.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 2000342,
+      "sha256": "2e03d8e4d9f2224a603e5d391758eeead13abc7f5c3ae322ccf7e06d243fe346",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/standing-s_dock.png": {
+      "path": "work/final-screenshots/standing-s_dock.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 2108572,
+      "sha256": "25f021cd5ff3fbbea66a3f0b345857e5baa4436f6b5f09b72967e4e274e54648",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/final-screenshots/standing-s_elder.png": {
+      "path": "work/final-screenshots/standing-s_elder.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 2108870,
+      "sha256": "0f7627e5d714317cb131b7e7c792764a8c0493820e620c2eed929216417e857a",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/final-screenshots/standing-s_envoy.png": {
+      "path": "work/final-screenshots/standing-s_envoy.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 2110352,
+      "sha256": "5f61ab211779b48696007c4b58b4b744e50fb3ba79cec5bed96d565fb68d5114",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/final-screenshots/standing-s_high.png": {
+      "path": "work/final-screenshots/standing-s_high.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 2111287,
+      "sha256": "50f3f42e6584f2fd18957588da02c9ae78ef7f77aeb54411ad4082cc5113520f",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/final-screenshots/standing-s_middle.png": {
+      "path": "work/final-screenshots/standing-s_middle.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 2110336,
+      "sha256": "3d602d0e82fb66180b61685f3223d44f047c09ff59e04d3b4a9e9537704f8a50",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/final-screenshots/standing-s_west.png": {
+      "path": "work/final-screenshots/standing-s_west.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 2110252,
+      "sha256": "82a344a8193031b547aa67bb404d09c91c320f6f1c84e2a7a4ebda4382b5efd6",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/generated/background-002.png": {
+      "path": "work/generated/background-002.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 2178580,
+      "sha256": "2dd62e9cde56c04df9ee16b4afc01b478e4e99bd88af8798f13c92813e026686",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1774,
+      "pixelHeight": 887,
+      "mode": "RGB"
+    },
+    "work/generated/background-004.png": {
+      "path": "work/generated/background-004.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 2169990,
+      "sha256": "49b527a947fa0c8db02b0cf1dde033bf059487df65b4f591ed5a991f6a2a24b8",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1774,
+      "pixelHeight": 887,
+      "mode": "RGB"
+    },
+    "work/generated/detail-elder-hall-004.png": {
+      "path": "work/generated/detail-elder-hall-004.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 2482254,
+      "sha256": "1e16d8efaa9bf229455b24e4a330392b0ea9817aceff5a9399ea110e453412a4",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1224,
+      "pixelHeight": 1285,
+      "mode": "RGB"
+    },
+    "work/generated/detail-reception-004.png": {
+      "path": "work/generated/detail-reception-004.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 2371553,
+      "sha256": "bfd7fe90569e5ed72aa1fa6cfbaf74772a76b98b39d7c35ec6ec25efdba4448d",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1470,
+      "pixelHeight": 1070,
+      "mode": "RGB"
+    },
+    "work/generated/extract-002-logical.png": {
+      "path": "work/generated/extract-002-logical.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 986920,
+      "sha256": "38e88f8be1c44a11a993cb62eaef227c1df38676a8414b5169ce0082b2482951",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/generated/extract-002-no-climbs.png": {
+      "path": "work/generated/extract-002-no-climbs.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1726933,
+      "sha256": "4c9145d8a25a36a8e72b4756171b290c4c663a599bfaab758563266d50c94c99",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1774,
+      "pixelHeight": 887,
+      "mode": "RGBA"
+    },
+    "work/generated/extract-002.png": {
+      "path": "work/generated/extract-002.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1828770,
+      "sha256": "786cadd26c5c494d96cfdee66e8fe133275bb67dbd99054c68103db78ff1ea16",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1774,
+      "pixelHeight": 887,
+      "mode": "RGBA"
+    },
+    "work/generated/extract-004.png": {
+      "path": "work/generated/extract-004.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1587704,
+      "sha256": "c64bd13e53be569c85165c706ba7ff448cfb47646482ec474dc4456bc5be88df",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1774,
+      "pixelHeight": 887,
+      "mode": "RGBA"
+    },
+    "work/generated/master-001-logical.png": {
+      "path": "work/generated/master-001-logical.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1588093,
+      "sha256": "f2fbb952a90e842ad2751820c4c155c93cdf5c57a98a581fe0f8e9ad72f31d28",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGB"
+    },
+    "work/generated/master-001.png": {
+      "path": "work/generated/master-001.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 2963195,
+      "sha256": "8992ea142f8df570e2a6bbee8c84ca66351664df977a630a2713c83f72743008",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1774,
+      "pixelHeight": 887,
+      "mode": "RGB"
+    },
+    "work/generated/master-002.png": {
+      "path": "work/generated/master-002.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 2903006,
+      "sha256": "46be4a3e6cf0e7808f93af5c130f4e4e06940b56ea18e3a917a045105449bed7",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1774,
+      "pixelHeight": 887,
+      "mode": "RGB"
+    },
+    "work/generated/master-003-registered.png": {
+      "path": "work/generated/master-003-registered.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1769532,
+      "sha256": "91ce71f6797adc942aa0627671a84b2dd68a94ecdec21e8b0a58474c752844ac",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/generated/master-004-refined.png": {
+      "path": "work/generated/master-004-refined.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1796666,
+      "sha256": "cd26a5eb7852c3ebffaecea6ea061c9bae90a938daf77e2b8951e4bc2af2338f",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/generated/master-005-precalibration.png": {
+      "path": "work/generated/master-005-precalibration.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1766535,
+      "sha256": "f573393bc66e8e4c5e8041c3cd9800ae56bec14a40b1de93f2fd79eaf713e459",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/generated/stage3-registered-background.png": {
+      "path": "work/generated/stage3-registered-background.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1386401,
+      "sha256": "6cdba21618ac3e5be43edb1e1cf54a19bfb0d213b37608e7bef1b80b24828825",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/generated/stage3-registered-playable.png": {
+      "path": "work/generated/stage3-registered-playable.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 889553,
+      "sha256": "acc1b54c02550e4f4dd5d881799af98accaa16a30900a0ceae98c1c989c4e980",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/generated/stage4-target-elder-hall.png": {
+      "path": "work/generated/stage4-target-elder-hall.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 261450,
+      "sha256": "c6aee1baf89183db8f93c5d2eae5c3d06e9ecaa6df3833a02c33997bee992ef7",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 320,
+      "pixelHeight": 336,
+      "mode": "RGBA"
+    },
+    "work/generated/stage4-target-reception.png": {
+      "path": "work/generated/stage4-target-reception.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 207612,
+      "sha256": "a1747ba67b9b7d894e073eacddd16ff1fc013a1106d7b13bfa336a6f44bf9275",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 352,
+      "pixelHeight": 256,
+      "mode": "RGBA"
+    },
+    "work/graybox-browser-check.json": {
+      "path": "work/graybox-browser-check.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 4613,
+      "sha256": "20dd850b459eb5632da45ed898029ccaefca8c5c611965f8a4ddf35a3f8a0dcb",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/graybox-routes.json": {
+      "path": "work/graybox-routes.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 4977,
+      "sha256": "9d3f0f2f3320223488f11138943db8e5e4845b8c81907bad27487a646372f03f",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/graybox-screenshots/contact-s_dock.png": {
+      "path": "work/graybox-screenshots/contact-s_dock.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 139935,
+      "sha256": "6d5c9be25d0f639926b0077ad6ad33e3c573dbf8bf46b0fb444b9d2de890cdb6",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/graybox-screenshots/contact-s_elder.png": {
+      "path": "work/graybox-screenshots/contact-s_elder.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 144396,
+      "sha256": "c0b6db6cafef12ea8c69f5114c9ad1475278e4dbef37a64eb4f1a73d53473335",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/graybox-screenshots/contact-s_envoy.png": {
+      "path": "work/graybox-screenshots/contact-s_envoy.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 143380,
+      "sha256": "0233f874678374682e8306cd08e0c9ca80676854ef9f58f0eb95b4b30272b994",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/graybox-screenshots/contact-s_high.png": {
+      "path": "work/graybox-screenshots/contact-s_high.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 144910,
+      "sha256": "6ca28ec2fca166c99eb06da52a2b713afb3d2f807cca3a22d43a93ec5cf0245c",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/graybox-screenshots/contact-s_middle.png": {
+      "path": "work/graybox-screenshots/contact-s_middle.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 145279,
+      "sha256": "ff1905a754c3d8337702cc7113b707d2b2f7ca97f77feb6bf637ffae084d4c09",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/graybox-screenshots/contact-s_west.png": {
+      "path": "work/graybox-screenshots/contact-s_west.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 145485,
+      "sha256": "c337794c9716c5c96368a7317258abf0ca49c85259155616d3bb6b71cb6a2546",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/graybox-screenshots/route_full_tour.png": {
+      "path": "work/graybox-screenshots/route_full_tour.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 169522,
+      "sha256": "5884f23dfc81265d31bb18b958d1a5a3134c71e2a1bd40d770d5a105d1266120",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/graybox-screenshots/route_main.png": {
+      "path": "work/graybox-screenshots/route_main.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 169541,
+      "sha256": "86feb5a37853a4026c5c543dcf96cb4437d90e1109c94c5fb9cb07c8f680f700",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/graybox-screenshots/route_return.png": {
+      "path": "work/graybox-screenshots/route_return.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 169363,
+      "sha256": "da09415d02edde0442321acbe88c25527663dc25c3bde075fa5d1eb397f675df",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/graybox-screenshots/standing-s_dock.png": {
+      "path": "work/graybox-screenshots/standing-s_dock.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 24576,
+      "sha256": "cb6171b22a130663220701527cb09d56a4f373266760daa312a099bbb49b5bf3",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/graybox-screenshots/standing-s_elder.png": {
+      "path": "work/graybox-screenshots/standing-s_elder.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 23752,
+      "sha256": "b62b58e71ae0e241b84faf576001d0181f1052fc57c6156964a07d2a39aab464",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/graybox-screenshots/standing-s_envoy.png": {
+      "path": "work/graybox-screenshots/standing-s_envoy.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 23744,
+      "sha256": "5353afb309cbd05dd95b35098d0951887203165ba4c847a65b716b052ab931b1",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/graybox-screenshots/standing-s_high.png": {
+      "path": "work/graybox-screenshots/standing-s_high.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 23701,
+      "sha256": "590f5fc6c58f102039c0118a2d199dff6904f0fa36eb8774cb1ac1637639cce7",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/graybox-screenshots/standing-s_middle.png": {
+      "path": "work/graybox-screenshots/standing-s_middle.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 23701,
+      "sha256": "e78c11d3206bb87683053c7b5cc9c85a3051a6321dc5424c2cbba1ce50480070",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/graybox-screenshots/standing-s_west.png": {
+      "path": "work/graybox-screenshots/standing-s_west.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 23698,
+      "sha256": "7ae958ff647b846139eb764466f8339db1ed31fc198074870775a152f8147790",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/imagegen-provenance.json": {
+      "path": "work/imagegen-provenance.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 4333,
+      "sha256": "b86a07d25a12da907a65730b6563a08c6e1e8db0baa33ac6fc64a8f5a4050992",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/layer-audit.json": {
+      "path": "work/layer-audit.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 679,
+      "sha256": "6915346e1a560d76b3516d8c5c20552a475e085de93132606b19c361d731610f",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/package-check.json": {
+      "path": "work/package-check.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 2370,
+      "sha256": "60ffd9e4706bd92721be0306f9bdfa12c23ff4a8f456d3aef130cbeb8be835b0",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/preview/engine.mjs": {
+      "path": "work/preview/engine.mjs",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 13521,
+      "sha256": "bbea03054581ac2d17aace9fb3c3ba30f5ca970082f8ea085202b784d661d755",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/preview/index.html": {
+      "path": "work/preview/index.html",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 3797,
+      "sha256": "20048835dc3591c0b6ce31b8fff844ee140b778158dd004b6631c109c783c54f",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/preview/npc_taixu_elder-idle.png": {
+      "path": "work/preview/npc_taixu_elder-idle.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 10482,
+      "sha256": "4af0b977f00eaced74d19d0ec69e413dbc3c7617ade21e71f5120440b3e71ed4",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 96,
+      "pixelHeight": 96,
+      "mode": "RGBA"
+    },
+    "work/preview/npc_taixu_envoy-idle.png": {
+      "path": "work/preview/npc_taixu_envoy-idle.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 8834,
+      "sha256": "ff56c5445547d4e6fd69d821a3e9bf7d13fa33f0551c58388ec1a77d0b0b578d",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 96,
+      "pixelHeight": 96,
+      "mode": "RGBA"
+    },
+    "work/preview/player-reference-idle.png": {
+      "path": "work/preview/player-reference-idle.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 10012,
+      "sha256": "520235d2f9c4c9e83b140ba439c2d18becfaa8e962fa15a98e35a14003ce0181",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 96,
+      "pixelHeight": 96,
+      "mode": "RGBA"
+    },
+    "work/preview/preview.mjs": {
+      "path": "work/preview/preview.mjs",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 13829,
+      "sha256": "a02d1d3845f79dda1dfdd8721d4c3c5cc5ce5dce0a2e3bb9203cc558f64c9593",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/prompts/stage3-background-prep.txt": {
+      "path": "work/prompts/stage3-background-prep.txt",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1076,
+      "sha256": "28ff6593cc895765286e587bd54e5abe61188ca7649ce1117a59f2e8b3b66f47",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/prompts/stage3-clean-climb-anchors.txt": {
+      "path": "work/prompts/stage3-clean-climb-anchors.txt",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1012,
+      "sha256": "73cacb27c5b08cb07a36975a44f1f403c2a824f97cebfa33f8f8c701803926bb",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/prompts/stage3-extract-prep.txt": {
+      "path": "work/prompts/stage3-extract-prep.txt",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 952,
+      "sha256": "c94c86c4bb75f7d551b0ec237f7df7b06668698b0fb0cf9aa47f5136212eea5c",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/prompts/stage3-geometry-repair.txt": {
+      "path": "work/prompts/stage3-geometry-repair.txt",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1891,
+      "sha256": "8d2afe5b25ef1d3651adceae711c417a5237fbc7ce6ad65348e11733b486c9bb",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/prompts/stage3-master.txt": {
+      "path": "work/prompts/stage3-master.txt",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 3550,
+      "sha256": "89c02fcbc42192b3e4806e013c36a598169f30523ca22cceecaf39767e1f5134",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/prompts/stage4-elder-hall.txt": {
+      "path": "work/prompts/stage4-elder-hall.txt",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1433,
+      "sha256": "54567480d378d756e47f635d65b5188f33d043b639b7ca9c551b4f62ed8fd0cd",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/prompts/stage4-reception.txt": {
+      "path": "work/prompts/stage4-reception.txt",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1353,
+      "sha256": "f1d87ddfee52e06b6e2f11ebe76dcddbe53867eb7fef3d2ba0caadb4ae79354e",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/prompts/stage5-background.txt": {
+      "path": "work/prompts/stage5-background.txt",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 892,
+      "sha256": "5d7114595a8cd4fa7571c6e911bd03bd9c23c7f8c95ebce912ad1874aa7da64a",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/prompts/stage5-playable.txt": {
+      "path": "work/prompts/stage5-playable.txt",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1145,
+      "sha256": "110acb3f174a9c150863f4425f057508107af2f2eda3a9973bbfc94b08a64538",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/protected-before.json": {
+      "path": "work/protected-before.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 653175,
+      "sha256": "fedab97613dabaae64691eb1b0c200bb1486fd3d52ded14fade767714b2aafd4",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/protected-final.json": {
+      "path": "work/protected-final.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 395,
+      "sha256": "19238a4aa101c770d88e74ebbb76f2eb29b48cc7d79034f8c68f49ec7aea8fcd",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/register_structure.py": {
+      "path": "work/register_structure.py",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 2664,
+      "sha256": "a6204408e904676ad00e21468332f414e0c20cb81ac12d0afcbd33c4df186b47",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/render_diagnostics.py": {
+      "path": "work/render_diagnostics.py",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 3935,
+      "sha256": "d651688fd9863a7a4b91f937f95f28d35ef46f41ccc162cb2059bc6e170ecf35",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/replays-final/route_full_tour.json": {
+      "path": "work/replays-final/route_full_tour.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 458632,
+      "sha256": "ce63ccccd876e70486e9abdf7f40f4c90d70fd686e719a01245093ab9f15576a",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/replays-final/route_high.json": {
+      "path": "work/replays-final/route_high.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 303835,
+      "sha256": "bee9ec9efcaa3cb9de549ca91b8e2838ec91574d33c37b9f738ed100ebe70d0e",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/replays-final/route_main.json": {
+      "path": "work/replays-final/route_main.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 105893,
+      "sha256": "ab4e1271aa1f1a6e925a7037e6aad277f63ae0a4e8a967d13e3139aa1e3ee595",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/replays-final/route_middle.json": {
+      "path": "work/replays-final/route_middle.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 246882,
+      "sha256": "efd4210ad9e3e93e10e5493c21dad7896a4e1a82b73313465cb7feff995d529d",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/replays-final/route_return.json": {
+      "path": "work/replays-final/route_return.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 210630,
+      "sha256": "1dce5d0907da16e95eaee8bf89d6eb10c7e5591948418950eeaaddc976e36222",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/replays-final/route_west.json": {
+      "path": "work/replays-final/route_west.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 74092,
+      "sha256": "286a3a6b3824565260ea2be1e438c5b75288c6fc3ecfb1570cf3c8fae48f45d4",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/replays-graybox/route_full_tour.json": {
+      "path": "work/replays-graybox/route_full_tour.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 458637,
+      "sha256": "41dbb1c6da97ad6c69008f17cb2d950dd17f6512115913936cb7ba5d58e3c0fd",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/replays-graybox/route_high.json": {
+      "path": "work/replays-graybox/route_high.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 303837,
+      "sha256": "68096c1d66ee2fe2768aa552152844c8f7bf7b00970f51b53db29f1e3156d248",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/replays-graybox/route_main.json": {
+      "path": "work/replays-graybox/route_main.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 105972,
+      "sha256": "cbf38bfedb56131f961a3405dcb0ae3cb9653d441c2c0fa3684c43488a9d7078",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/replays-graybox/route_middle.json": {
+      "path": "work/replays-graybox/route_middle.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 246884,
+      "sha256": "ecb98a3702c3bd95af7e72ace1632ebfda9c9738c67dcdf45fa823693213a57f",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/replays-graybox/route_return.json": {
+      "path": "work/replays-graybox/route_return.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 210632,
+      "sha256": "80bf6101e04ac56bbc194d8ab7967f813cf3afda38e32a6f2c24eb24d283d3e4",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/replays-graybox/route_west.json": {
+      "path": "work/replays-graybox/route_west.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 74096,
+      "sha256": "9f23f2e6666173cea0167a409ffd72a6363cca3954de81c2a414ac4fa6065383",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/route-plan.md": {
+      "path": "work/route-plan.md",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 261,
+      "sha256": "71d4aa1a099839eb2af142111103779c0f184ce8b81483475983cbedc0753f63",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/run_routes.mjs": {
+      "path": "work/run_routes.mjs",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 4254,
+      "sha256": "5e897735790c064a4e2a0b0e9635dcbc0cc3dc67dafff7d535e8d5666a20d939",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/scene-brief.md": {
+      "path": "work/scene-brief.md",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1749,
+      "sha256": "c151f0854d91df46b31b636ed4d42dfeb6f5a6281be79b4170c89671be174223",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/scene-data.draft.json": {
+      "path": "work/scene-data.draft.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 17422,
+      "sha256": "8173a245227cee9b1b5d6a958aa715087216953e47333ef184dbfedc52ef5b9d",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/scene-data.final-prebind.json": {
+      "path": "work/scene-data.final-prebind.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 30042,
+      "sha256": "cd071db646f57430691c318941f6ba2a57919bfc2b34622df60fe6977ea8bbae",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/stage2-graybox-report.md": {
+      "path": "work/stage2-graybox-report.md",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 288,
+      "sha256": "850de4fa33a0674417e4ccf70c11a5008efe6d84ab3ca45cb85f1d5ade761e63",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/stage3-review.md": {
+      "path": "work/stage3-review.md",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 652,
+      "sha256": "e4b8b6f2dfc66a290e3c319a49ab73f95cc9271b97fa656d4e47db8ebcc9db7b",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/stage3-transform.json": {
+      "path": "work/stage3-transform.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 7660,
+      "sha256": "4fc27b3a82ce9f345dde83811873267dceb15f34b0cf4bbec90cef12d394e6e2",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/stage4-detail-comparison.png": {
+      "path": "work/stage4-detail-comparison.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 852771,
+      "sha256": "95c2e38db6bb57d2d1b863f70dd47fbb0051072053580f89e552488aac57f09a",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 704,
+      "pixelHeight": 592,
+      "mode": "RGB"
+    },
+    "work/stage4-review.md": {
+      "path": "work/stage4-review.md",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 493,
+      "sha256": "6efe2bf2e973f7cb23bd0ca827978d1fe28bb82ad437cfba0d9e2f36c5c02dc0",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/stage5-review.md": {
+      "path": "work/stage5-review.md",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 596,
+      "sha256": "d241139a2126e87771ffca45a1b99a326d84a7264256ae20829ce2d0e477f7f3",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/standing-contacts-sheet.png": {
+      "path": "work/standing-contacts-sheet.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 783781,
+      "sha256": "ccf8b9f80a64e1ab70027f9090b1e050c264d8494769af68fd5fe14177bf6412",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 960,
+      "pixelHeight": 660,
+      "mode": "RGB"
+    },
+    "work/write_delivery.py": {
+      "path": "work/write_delivery.py",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 14242,
+      "sha256": "4901ec2f6c2b5a3ecede805e4276338de00466ea59716dfb72179ca89e308496",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "manifest.json": {
+      "path": "manifest.json",
+      "role": "root-asset-manifest",
+      "sha256": null,
+      "hashPolicy": "self digest omitted to avoid recursive hash",
+      "schemaVersion": "1.0",
+      "geometryRevision": "taixu-final-001",
+      "actorParameterRevision": "taixu-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    }
+  },
+  "foreground": {
+    "applicable": false,
+    "reason": "all attached shrine/hall/lantern decoration is behind NPCs and player"
+  },
+  "drawOrder": [
+    "background",
+    "playable",
+    "static-NPC-references",
+    "actor"
+  ],
+  "composition": {
+    "sourceRefinedMaster": "work/generated/master-004-refined.png",
+    "registeredFinalMaster": "scene.png",
+    "sameMasterLayerLineage": true,
+    "exactRGBARecomposition": true,
+    "layerAudit": "work/layer-audit.json",
+    "cropPlacement": "work/stage3-transform.json",
+    "localRefinementPlacement": "work/detail-blocks.json"
+  },
+  "sceneData": {
+    "path": "scene-data.json",
+    "sha256": "5510abea892a1ae3a33789e4a83326df9ea126afcde2efecdeec2ee42294af6a",
+    "schemaVersion": "1.0",
+    "geometryRevision": "taixu-final-001",
+    "actorParameterRevision": "taixu-base-feel-20261027-001",
+    "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+  },
+  "diagnostics": {
+    "schemaVersion": "1.0",
+    "geometryRevision": "taixu-final-001",
+    "actorParameterRevision": "taixu-base-feel-20261027-001",
+    "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+    "sourceDataSHA256": "5510abea892a1ae3a33789e4a83326df9ea126afcde2efecdeec2ee42294af6a",
+    "sceneSHA256": "f573393bc66e8e4c5e8041c3cd9800ae56bec14a40b1de93f2fd79eaf713e459",
+    "maskPalette": {
+      "walk": [
+        150,
+        245,
+        160,
+        255
+      ],
+      "stand": [
+        0,
+        200,
+        80,
+        255
+      ],
+      "rope": [
+        0,
+        190,
+        230,
+        255
+      ],
+      "ladder": [
+        80,
+        140,
+        255,
+        255
+      ],
+      "stairs": [
+        255,
+        160,
+        40,
+        255
+      ],
+      "point": [
+        255,
+        70,
+        160,
+        255
+      ],
+      "jump": [
+        255,
+        180,
+        0,
+        255
+      ],
+      "drop": [
+        170,
+        80,
+        225,
+        255
+      ]
+    },
+    "rasterizationOrder": [
+      "walk",
+      "stand",
+      "rope",
+      "ladder",
+      "stairs",
+      "jump",
+      "drop",
+      "point"
+    ],
+    "files": {
+      "action-mask.png": {
+        "sha256": "7212660ade023fd7dfa7a864718eee70ca3c8da0e404d17e9f8902376c906449",
+        "pixelWidth": 1280,
+        "pixelHeight": 640
+      },
+      "action-overlay.png": {
+        "sha256": "3c5f3c01ec12a3cf6dbd4eea52705a4f66ef499e8310c3c06fc1a4f06940c492",
+        "pixelWidth": 1280,
+        "pixelHeight": 640
+      },
+      "collision-overlay.png": {
+        "sha256": "b0ef417f1ea2fd11ca6898e4e9ba341c5ce6074858d2da46c3377588abae8baa",
+        "pixelWidth": 1280,
+        "pixelHeight": 640
+      }
+    }
+  },
+  "mask": {
+    "antialiasing": false,
+    "palette": {
+      "walk": [
+        150,
+        245,
+        160,
+        255
+      ],
+      "stand": [
+        0,
+        200,
+        80,
+        255
+      ],
+      "rope": [
+        0,
+        190,
+        230,
+        255
+      ],
+      "ladder": [
+        80,
+        140,
+        255,
+        255
+      ],
+      "stairs": [
+        255,
+        160,
+        40,
+        255
+      ],
+      "point": [
+        255,
+        70,
+        160,
+        255
+      ],
+      "jump": [
+        255,
+        180,
+        0,
+        255
+      ],
+      "drop": [
+        170,
+        80,
+        225,
+        255
+      ]
+    },
+    "rasterizationOrder": [
+      "walk",
+      "stand",
+      "rope",
+      "ladder",
+      "stairs",
+      "jump",
+      "drop",
+      "point"
+    ],
+    "authority": "scene-data.json; mask is derived inspection only"
+  },
+  "runtime": {
+    "entry": "index.html",
+    "relativeTester": "work/preview/index.html",
+    "engine": "work/preview/engine.mjs",
+    "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+    "productionPhaserIntegrated": false,
+    "collisionModel": "rectangular solid AABB, horizontal one-way support, explicit bounded climb corridors",
+    "actorReferenceIsStaticFrame": true,
+    "NPCsReferenceOnly": true,
+    "networkDependencies": []
+  },
+  "validation": {
+    "status": "verified",
+    "report": "validation-report.md",
+    "requiredRoutes": {
+      "route_main": "verified",
+      "route_return": "verified",
+      "route_west": "verified",
+      "route_middle": "verified",
+      "route_high": "verified",
+      "route_full_tour": "verified"
+    },
+    "routesVerified": 6,
+    "directedTransitionsVerified": 10,
+    "physicsChecksVerified": 9,
+    "browserStableContacts": 6,
+    "bearingTolerancePx": 2,
+    "maxSampleAbsBearingDeltaPx": 1,
+    "leadApproval": "pending",
+    "integrationAllowed": false
+  },
+  "artGeneration": {
+    "callCount": 9,
+    "mode": "built-in image_gen",
+    "sourceImages": [
+      {
+        "tool": "built-in image_gen",
+        "mode": "generation/edit",
+        "output": "work/generated/master-001.png",
+        "prompt": "work/prompts/stage3-master.txt",
+        "inputs": [
+          "work/action-layout.png",
+          "art/scenes/qingyun_village_gsb_v2/scene.png"
+        ],
+        "actualPixels": [
+          1774,
+          887
+        ],
+        "modeRGBA": "RGB",
+        "sha256": "8992ea142f8df570e2a6bbee8c84ca66351664df977a630a2713c83f72743008"
+      },
+      {
+        "tool": "built-in image_gen",
+        "mode": "generation/edit",
+        "output": "work/generated/master-002.png",
+        "prompt": "work/prompts/stage3-geometry-repair.txt",
+        "inputs": [
+          "work/generated/master-001.png",
+          "work/action-layout.png"
+        ],
+        "actualPixels": [
+          1774,
+          887
+        ],
+        "modeRGBA": "RGB",
+        "sha256": "46be4a3e6cf0e7808f93af5c130f4e4e06940b56ea18e3a917a045105449bed7"
+      },
+      {
+        "tool": "built-in image_gen",
+        "mode": "transparent-extraction/edit",
+        "output": "work/generated/extract-002.png",
+        "prompt": "work/prompts/stage3-extract-prep.txt",
+        "inputs": [
+          "work/generated/master-002.png"
+        ],
+        "actualPixels": [
+          1774,
+          887
+        ],
+        "modeRGBA": "RGBA",
+        "sha256": "786cadd26c5c494d96cfdee66e8fe133275bb67dbd99054c68103db78ff1ea16"
+      },
+      {
+        "tool": "built-in image_gen",
+        "mode": "generation/edit",
+        "output": "work/generated/background-002.png",
+        "prompt": "work/prompts/stage3-background-prep.txt",
+        "inputs": [
+          "work/generated/master-002.png"
+        ],
+        "actualPixels": [
+          1774,
+          887
+        ],
+        "modeRGBA": "RGB",
+        "sha256": "2dd62e9cde56c04df9ee16b4afc01b478e4e99bd88af8798f13c92813e026686"
+      },
+      {
+        "tool": "built-in image_gen",
+        "mode": "transparent-extraction/edit",
+        "output": "work/generated/extract-002-no-climbs.png",
+        "prompt": "work/prompts/stage3-clean-climb-anchors.txt",
+        "inputs": [
+          "work/generated/extract-002.png"
+        ],
+        "actualPixels": [
+          1774,
+          887
+        ],
+        "modeRGBA": "RGBA",
+        "sha256": "4c9145d8a25a36a8e72b4756171b290c4c663a599bfaab758563266d50c94c99"
+      },
+      {
+        "tool": "built-in image_gen",
+        "mode": "generation/edit",
+        "output": "work/generated/detail-reception-004.png",
+        "prompt": "work/prompts/stage4-reception.txt",
+        "inputs": [
+          "work/generated/stage4-target-reception.png",
+          "work/generated/master-003-registered.png"
+        ],
+        "actualPixels": [
+          1470,
+          1070
+        ],
+        "modeRGBA": "RGB",
+        "sha256": "bfd7fe90569e5ed72aa1fa6cfbaf74772a76b98b39d7c35ec6ec25efdba4448d"
+      },
+      {
+        "tool": "built-in image_gen",
+        "mode": "generation/edit",
+        "output": "work/generated/detail-elder-hall-004.png",
+        "prompt": "work/prompts/stage4-elder-hall.txt",
+        "inputs": [
+          "work/generated/stage4-target-elder-hall.png",
+          "work/generated/master-003-registered.png"
+        ],
+        "actualPixels": [
+          1224,
+          1285
+        ],
+        "modeRGBA": "RGB",
+        "sha256": "1e16d8efaa9bf229455b24e4a330392b0ea9817aceff5a9399ea110e453412a4"
+      },
+      {
+        "tool": "built-in image_gen",
+        "mode": "transparent-extraction/edit",
+        "output": "work/generated/extract-004.png",
+        "prompt": "work/prompts/stage5-playable.txt",
+        "inputs": [
+          "work/generated/master-004-refined.png"
+        ],
+        "actualPixels": [
+          1774,
+          887
+        ],
+        "modeRGBA": "RGBA",
+        "sha256": "c64bd13e53be569c85165c706ba7ff448cfb47646482ec474dc4456bc5be88df"
+      },
+      {
+        "tool": "built-in image_gen",
+        "mode": "generation/edit",
+        "output": "work/generated/background-004.png",
+        "prompt": "work/prompts/stage5-background.txt",
+        "inputs": [
+          "work/generated/master-004-refined.png"
+        ],
+        "actualPixels": [
+          1774,
+          887
+        ],
+        "modeRGBA": "RGB",
+        "sha256": "49b527a947fa0c8db02b0cf1dde033bf059487df65b4f591ed5a991f6a2a24b8"
+      }
+    ],
+    "registrationAndCompositing": "stage3-transform.json; detail-blocks.json; layer-audit.json; crops/scales/composites only, no hand-painted final-art pixels"
+  },
+  "authority": {
+    "protectedBoundaryAudit": "work/protected-final.json",
+    "gamePublicTaskWrites": false,
+    "taskDeployed": false,
+    "taskPushed": false,
+    "taskForwardedExternalTrial": false,
+    "sourceMapModified": false,
+    "concurrency": "no extra agents; taixu with at most one other executing art task"
+  },
+  "limitations": [
+    "Independent local AABB adapter; rerun production Phaser checks after lead PASS.",
+    "NPC/ferry/trial metadata and static reference frames only; no live dialogue, teleport, reward or combat.",
+    "No standalone foreground layer."
+  ]
+}

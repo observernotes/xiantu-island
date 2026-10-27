@@ -1,0 +1,3770 @@
+{
+  "schemaVersion": "1.0",
+  "geometryRevision": "luoxia-final-001",
+  "status": "verified",
+  "space": {
+    "origin": "top-left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "units": "logical-pixel",
+    "logicalWidth": 3072,
+    "logicalHeight": 1024,
+    "sourceMap": "maps/luoxia_town.json",
+    "sourceToWorld": [
+      1,
+      0,
+      0,
+      1,
+      0,
+      192
+    ]
+  },
+  "safeZone": true,
+  "actor": {
+    "parameterRevision": "luoxia-base-feel-20261027-001",
+    "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; MapBuilder.ts; game/src/move.ts; SpriteArt.ts; game/public/art/sprites/player_sword_m.anims.json; balance/player_growth.json",
+    "sourceRevision": {
+      "game/src/config/feel.ts": "9375297a15b04012633197a935f4d9ffd403c3ff8d1e055cb585dd5f81acdeec",
+      "game/src/scenes/Player.ts": "ec9426ed625784532c6e632a1755bd16076cc3f559d177f465b741341193f513",
+      "game/src/scenes/MapBuilder.ts": "b57cf44af7f3aed6cfc7318cd2615f95e42a4f3e99a837b82c795eac257ca86b",
+      "game/src/scenes/GameScene.ts": "be729e283208874e69b7b9d7d69ded54d5225f4276e77cdc7efa05f474d5da87",
+      "game/src/main.ts": "c882932569a2040c23c6f131ea741f34e3820e9ea721410a5ff6e859d00b6f9d",
+      "game/src/move.ts": "585c9987623cbe532d7f65508773addd52ccd2f312e5c2ee592e9e6f2f686a74",
+      "game/src/SpriteArt.ts": "6c1fcb4fe67857c7fc3d569a2151f4b1a7cdd914e69be6d12d53b54b288b6f18",
+      "game/src/PlayerInput.ts": "5621449dc667aedb17034e10f42d2f34425c9ef1d45f21112de6be1a1139a04e",
+      "game/public/art/sprites/player_sword_m.anims.json": "50ee41e30ca903b95db22b9290a49ac2220d243ca37dba3876fdec784271df92",
+      "balance/player_growth.json": "04cf448040bff27b2c578d4ec9e1c0babde07afdf14d4b91d5f56ba6f403604e",
+      "maps/luoxia_town.json": "15ea445ca10bb92b29249c25e74cfd2dee08eb8ffaa3c9709fe1cce5da66ffd5",
+      "balance/tools/gen_towns.py": "c2dc10a9d57aea84949d01737531f140b1e94f4924f4151e99023c6375ed4cf5"
+    },
+    "provisional": false,
+    "visualBounds": {
+      "width": 96,
+      "height": 96,
+      "idleAlphaBounds": [
+        15,
+        9,
+        76,
+        96
+      ],
+      "idleVisibleWidth": 61,
+      "idleVisibleHeight": 87,
+      "anchor": "feet-center"
+    },
+    "collider": {
+      "shape": "aabb",
+      "width": 26,
+      "height": 58,
+      "anchor": "feet-center"
+    },
+    "abilities": [
+      "walk",
+      "jump",
+      "double-jump",
+      "ladder",
+      "rope",
+      "drop-through"
+    ],
+    "movement": {
+      "gravity": 2000,
+      "maxFallSpeed": 670,
+      "walkSpeed": 130,
+      "groundAccel": 2400,
+      "groundDecel": 3000,
+      "airAccel": 700,
+      "airMaxSpeed": 130,
+      "jumpSpeed": 560,
+      "coyoteMs": 60,
+      "jumpBufferMs": 80,
+      "doubleJumpVy": 480,
+      "doubleJumpVx": 330,
+      "climbSpeed": 110,
+      "ropeGrabRangeX": 18,
+      "ropeJumpVx": 160,
+      "ropeJumpVy": 360,
+      "ropeRegrabMs": 250,
+      "dropThroughMs": 220,
+      "oneWayEdge": 8,
+      "fixedHz": 60,
+      "speedPoints": 100,
+      "jumpPoints": 100
+    },
+    "failureRules": {
+      "hazards": "none: safe town; no combat or gather",
+      "fall": "land on continuous lower ground",
+      "reset": "R restores start_spawn and clears motion/input"
+    },
+    "visualAsset": {
+      "path": "work/preview/player-reference-idle.png",
+      "width": 96,
+      "height": 96,
+      "anchor": "feet-center"
+    }
+  },
+  "assets": [
+    {
+      "id": "asset_background",
+      "role": "background",
+      "path": "background.png",
+      "pixelWidth": 3072,
+      "pixelHeight": 1024,
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "asset_playable",
+      "role": "playable",
+      "path": "playable.png",
+      "pixelWidth": 3072,
+      "pixelHeight": 1024,
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "s_dock",
+      "name": "栈桥",
+      "polyline": [
+        [
+          0,
+          832
+        ],
+        [
+          512,
+          832
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        13,
+        499
+      ],
+      "walkRegion": [
+        [
+          13,
+          774
+        ],
+        [
+          499,
+          774
+        ],
+        [
+          499,
+          832
+        ],
+        [
+          13,
+          832
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 832,
+        "tolerance": 2,
+        "surfaceKind": "visible board/stone bearing top; not rail, knot, hook or ridge"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-geometry-measurements.json",
+          "objectId": "s_dock",
+          "method": "five visible bearing material samples plus source placement",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        },
+        {
+          "path": "work/final-browser-check.json",
+          "objectId": "s_dock",
+          "method": "continuous normal-spawn replay prefix reaches stable natural support; screenshot feet contact",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "s_market",
+      "name": "坊市路",
+      "polyline": [
+        [
+          512,
+          896
+        ],
+        [
+          1600,
+          896
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        525,
+        1587
+      ],
+      "walkRegion": [
+        [
+          525,
+          838
+        ],
+        [
+          1587,
+          838
+        ],
+        [
+          1587,
+          896
+        ],
+        [
+          525,
+          896
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 896,
+        "tolerance": 2,
+        "surfaceKind": "visible board/stone bearing top; not rail, knot, hook or ridge"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-geometry-measurements.json",
+          "objectId": "s_market",
+          "method": "five visible bearing material samples plus source placement",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        },
+        {
+          "path": "work/final-browser-check.json",
+          "objectId": "s_market",
+          "method": "continuous normal-spawn replay prefix reaches stable natural support; screenshot feet contact",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "s_county",
+      "name": "县衙台基",
+      "polyline": [
+        [
+          1600,
+          832
+        ],
+        [
+          1952,
+          832
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        1613,
+        1939
+      ],
+      "walkRegion": [
+        [
+          1613,
+          774
+        ],
+        [
+          1939,
+          774
+        ],
+        [
+          1939,
+          832
+        ],
+        [
+          1613,
+          832
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 832,
+        "tolerance": 2,
+        "surfaceKind": "visible board/stone bearing top; not rail, knot, hook or ridge"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-geometry-measurements.json",
+          "objectId": "s_county",
+          "method": "five visible bearing material samples plus source placement",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        },
+        {
+          "path": "work/final-browser-check.json",
+          "objectId": "s_county",
+          "method": "continuous normal-spawn replay prefix reaches stable natural support; screenshot feet contact",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "s_smith",
+      "name": "匠作街",
+      "polyline": [
+        [
+          1952,
+          896
+        ],
+        [
+          2560,
+          896
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        1965,
+        2547
+      ],
+      "walkRegion": [
+        [
+          1965,
+          838
+        ],
+        [
+          2547,
+          838
+        ],
+        [
+          2547,
+          896
+        ],
+        [
+          1965,
+          896
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 896,
+        "tolerance": 2,
+        "surfaceKind": "visible board/stone bearing top; not rail, knot, hook or ridge"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-geometry-measurements.json",
+          "objectId": "s_smith",
+          "method": "five visible bearing material samples plus source placement",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        },
+        {
+          "path": "work/final-browser-check.json",
+          "objectId": "s_smith",
+          "method": "continuous normal-spawn replay prefix reaches stable natural support; screenshot feet contact",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "s_east",
+      "name": "城门街",
+      "polyline": [
+        [
+          2560,
+          896
+        ],
+        [
+          3072,
+          896
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        2573,
+        3059
+      ],
+      "walkRegion": [
+        [
+          2573,
+          838
+        ],
+        [
+          3059,
+          838
+        ],
+        [
+          3059,
+          896
+        ],
+        [
+          2573,
+          896
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 896,
+        "tolerance": 2,
+        "surfaceKind": "visible board/stone bearing top; not rail, knot, hook or ridge"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-geometry-measurements.json",
+          "objectId": "s_east",
+          "method": "five visible bearing material samples plus source placement",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        },
+        {
+          "path": "work/final-browser-check.json",
+          "objectId": "s_east",
+          "method": "continuous normal-spawn replay prefix reaches stable natural support; screenshot feet contact",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "s_deck",
+      "name": "飞舟甲板",
+      "polyline": [
+        [
+          64,
+          736
+        ],
+        [
+          352,
+          736
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        77,
+        339
+      ],
+      "walkRegion": [
+        [
+          77,
+          678
+        ],
+        [
+          339,
+          678
+        ],
+        [
+          339,
+          736
+        ],
+        [
+          77,
+          736
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 736,
+        "tolerance": 2,
+        "surfaceKind": "visible board/stone bearing top; not rail, knot, hook or ridge"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-geometry-measurements.json",
+          "objectId": "s_deck",
+          "method": "five visible bearing material samples plus source placement",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        },
+        {
+          "path": "work/final-browser-check.json",
+          "objectId": "s_deck",
+          "method": "continuous normal-spawn replay prefix reaches stable natural support; screenshot feet contact",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "s_market_w",
+      "name": "西坊市屋顶",
+      "polyline": [
+        [
+          704,
+          736
+        ],
+        [
+          1120,
+          736
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        717,
+        1107
+      ],
+      "walkRegion": [
+        [
+          717,
+          678
+        ],
+        [
+          1107,
+          678
+        ],
+        [
+          1107,
+          736
+        ],
+        [
+          717,
+          736
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 736,
+        "tolerance": 2,
+        "surfaceKind": "visible board/stone bearing top; not rail, knot, hook or ridge"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-geometry-measurements.json",
+          "objectId": "s_market_w",
+          "method": "five visible bearing material samples plus source placement",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        },
+        {
+          "path": "work/final-browser-check.json",
+          "objectId": "s_market_w",
+          "method": "continuous normal-spawn replay prefix reaches stable natural support; screenshot feet contact",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "s_market_e",
+      "name": "东坊市屋顶",
+      "polyline": [
+        [
+          1184,
+          736
+        ],
+        [
+          1376,
+          736
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        1197,
+        1363
+      ],
+      "walkRegion": [
+        [
+          1197,
+          678
+        ],
+        [
+          1363,
+          678
+        ],
+        [
+          1363,
+          736
+        ],
+        [
+          1197,
+          736
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 736,
+        "tolerance": 2,
+        "surfaceKind": "visible board/stone bearing top; not rail, knot, hook or ridge"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-geometry-measurements.json",
+          "objectId": "s_market_e",
+          "method": "five visible bearing material samples plus source placement",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        },
+        {
+          "path": "work/final-browser-check.json",
+          "objectId": "s_market_e",
+          "method": "continuous normal-spawn replay prefix reaches stable natural support; screenshot feet contact",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "s_drum",
+      "name": "鼓楼踏板",
+      "polyline": [
+        [
+          1408,
+          704
+        ],
+        [
+          1568,
+          704
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        1421,
+        1555
+      ],
+      "walkRegion": [
+        [
+          1421,
+          646
+        ],
+        [
+          1555,
+          646
+        ],
+        [
+          1555,
+          704
+        ],
+        [
+          1421,
+          704
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 704,
+        "tolerance": 2,
+        "surfaceKind": "visible board/stone bearing top; not rail, knot, hook or ridge"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-geometry-measurements.json",
+          "objectId": "s_drum",
+          "method": "five visible bearing material samples plus source placement",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        },
+        {
+          "path": "work/final-browser-check.json",
+          "objectId": "s_drum",
+          "method": "continuous normal-spawn replay prefix reaches stable natural support; screenshot feet contact",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "s_hall",
+      "name": "县衙屋檐",
+      "polyline": [
+        [
+          1664,
+          672
+        ],
+        [
+          1888,
+          672
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        1677,
+        1875
+      ],
+      "walkRegion": [
+        [
+          1677,
+          614
+        ],
+        [
+          1875,
+          614
+        ],
+        [
+          1875,
+          672
+        ],
+        [
+          1677,
+          672
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 672,
+        "tolerance": 2,
+        "surfaceKind": "visible board/stone bearing top; not rail, knot, hook or ridge"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-geometry-measurements.json",
+          "objectId": "s_hall",
+          "method": "five visible bearing material samples plus source placement",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        },
+        {
+          "path": "work/final-browser-check.json",
+          "objectId": "s_hall",
+          "method": "continuous normal-spawn replay prefix reaches stable natural support; screenshot feet contact",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "s_chimney",
+      "name": "烟囱台",
+      "polyline": [
+        [
+          2368,
+          736
+        ],
+        [
+          2496,
+          736
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        2381,
+        2483
+      ],
+      "walkRegion": [
+        [
+          2381,
+          678
+        ],
+        [
+          2483,
+          678
+        ],
+        [
+          2483,
+          736
+        ],
+        [
+          2381,
+          736
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 736,
+        "tolerance": 2,
+        "surfaceKind": "visible board/stone bearing top; not rail, knot, hook or ridge"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-geometry-measurements.json",
+          "objectId": "s_chimney",
+          "method": "five visible bearing material samples plus source placement",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        },
+        {
+          "path": "work/final-browser-check.json",
+          "objectId": "s_chimney",
+          "method": "continuous normal-spawn replay prefix reaches stable natural support; screenshot feet contact",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "s_gate_low",
+      "name": "城楼一层",
+      "polyline": [
+        [
+          2624,
+          768
+        ],
+        [
+          2880,
+          768
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        2637,
+        2867
+      ],
+      "walkRegion": [
+        [
+          2637,
+          710
+        ],
+        [
+          2867,
+          710
+        ],
+        [
+          2867,
+          768
+        ],
+        [
+          2637,
+          768
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 768,
+        "tolerance": 2,
+        "surfaceKind": "visible board/stone bearing top; not rail, knot, hook or ridge"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-geometry-measurements.json",
+          "objectId": "s_gate_low",
+          "method": "five visible bearing material samples plus source placement",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        },
+        {
+          "path": "work/final-browser-check.json",
+          "objectId": "s_gate_low",
+          "method": "continuous normal-spawn replay prefix reaches stable natural support; screenshot feet contact",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "s_gate_high",
+      "name": "城楼二层",
+      "polyline": [
+        [
+          2688,
+          640
+        ],
+        [
+          2848,
+          640
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        2701,
+        2835
+      ],
+      "walkRegion": [
+        [
+          2701,
+          582
+        ],
+        [
+          2835,
+          582
+        ],
+        [
+          2835,
+          640
+        ],
+        [
+          2701,
+          640
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 640,
+        "tolerance": 2,
+        "surfaceKind": "visible board/stone bearing top; not rail, knot, hook or ridge"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-geometry-measurements.json",
+          "objectId": "s_gate_high",
+          "method": "five visible bearing material samples plus source placement",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        },
+        {
+          "path": "work/final-browser-check.json",
+          "objectId": "s_gate_high",
+          "method": "continuous normal-spawn replay prefix reaches stable natural support; screenshot feet contact",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "s_smith_roof",
+      "name": "炉房屋顶",
+      "polyline": [
+        [
+          2304,
+          800
+        ],
+        [
+          2528,
+          800
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        2317,
+        2515
+      ],
+      "walkRegion": [
+        [
+          2317,
+          742
+        ],
+        [
+          2515,
+          742
+        ],
+        [
+          2515,
+          800
+        ],
+        [
+          2317,
+          800
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 800,
+        "tolerance": 2,
+        "surfaceKind": "visible board/stone bearing top; not rail, knot, hook or ridge"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-geometry-measurements.json",
+          "objectId": "s_smith_roof",
+          "method": "five visible bearing material samples plus source placement",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        },
+        {
+          "path": "work/final-browser-check.json",
+          "objectId": "s_smith_roof",
+          "method": "continuous normal-spawn replay prefix reaches stable natural support; screenshot feet contact",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "s_awning_w",
+      "name": "坊市西雨棚",
+      "polyline": [
+        [
+          768,
+          832
+        ],
+        [
+          896,
+          832
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        781,
+        883
+      ],
+      "walkRegion": [
+        [
+          781,
+          774
+        ],
+        [
+          883,
+          774
+        ],
+        [
+          883,
+          832
+        ],
+        [
+          781,
+          832
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 832,
+        "tolerance": 2,
+        "surfaceKind": "visible board/stone bearing top; not rail, knot, hook or ridge"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-geometry-measurements.json",
+          "objectId": "s_awning_w",
+          "method": "five visible bearing material samples plus source placement",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        },
+        {
+          "path": "work/final-browser-check.json",
+          "objectId": "s_awning_w",
+          "method": "continuous normal-spawn replay prefix reaches stable natural support; screenshot feet contact",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "s_awning_e",
+      "name": "坊市东雨棚",
+      "polyline": [
+        [
+          1024,
+          832
+        ],
+        [
+          1184,
+          832
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        1037,
+        1171
+      ],
+      "walkRegion": [
+        [
+          1037,
+          774
+        ],
+        [
+          1171,
+          774
+        ],
+        [
+          1171,
+          832
+        ],
+        [
+          1037,
+          832
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 832,
+        "tolerance": 2,
+        "surfaceKind": "visible board/stone bearing top; not rail, knot, hook or ridge"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-geometry-measurements.json",
+          "objectId": "s_awning_e",
+          "method": "five visible bearing material samples plus source placement",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        },
+        {
+          "path": "work/final-browser-check.json",
+          "objectId": "s_awning_e",
+          "method": "continuous normal-spawn replay prefix reaches stable natural support; screenshot feet contact",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    }
+  ],
+  "climbs": [
+    {
+      "id": "c_rope_6",
+      "kind": "rope",
+      "sourceObject": "rope_6",
+      "corridor": [
+        [
+          190,
+          736
+        ],
+        [
+          226,
+          736
+        ],
+        [
+          226,
+          832
+        ],
+        [
+          190,
+          832
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            208,
+            832
+          ],
+          "surface": "s_dock"
+        },
+        "end": {
+          "position": [
+            208,
+            736
+          ],
+          "surface": "s_deck"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "source lower endpoint short 32px; extend to actual supporting top. Ladder center is original x+width/2.",
+      "evidence": [
+        {
+          "path": "work/final-transition-evidence.json",
+          "objectId": "c_rope_6",
+          "method": "both directed actual climb-enter/arrive segments from continuous input replay",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        },
+        {
+          "path": "work/final-geometry-measurements.json",
+          "objectId": "c_rope_6",
+          "method": "two visible endpoint and support association checks",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "c_rope_23",
+      "kind": "rope",
+      "sourceObject": "rope_23",
+      "corridor": [
+        [
+          734,
+          736
+        ],
+        [
+          770,
+          736
+        ],
+        [
+          770,
+          896
+        ],
+        [
+          734,
+          896
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            752,
+            896
+          ],
+          "surface": "s_market"
+        },
+        "end": {
+          "position": [
+            752,
+            736
+          ],
+          "surface": "s_market_w"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "source lower endpoint short 32px; extend to actual supporting top. Ladder center is original x+width/2.",
+      "evidence": [
+        {
+          "path": "work/final-transition-evidence.json",
+          "objectId": "c_rope_23",
+          "method": "both directed actual climb-enter/arrive segments from continuous input replay",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        },
+        {
+          "path": "work/final-geometry-measurements.json",
+          "objectId": "c_rope_23",
+          "method": "two visible endpoint and support association checks",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "c_rope_41",
+      "kind": "rope",
+      "sourceObject": "rope_41",
+      "corridor": [
+        [
+          1310,
+          736
+        ],
+        [
+          1346,
+          736
+        ],
+        [
+          1346,
+          896
+        ],
+        [
+          1310,
+          896
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1328,
+            896
+          ],
+          "surface": "s_market"
+        },
+        "end": {
+          "position": [
+            1328,
+            736
+          ],
+          "surface": "s_market_e"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "source lower endpoint short 32px; extend to actual supporting top. Ladder center is original x+width/2.",
+      "evidence": [
+        {
+          "path": "work/final-transition-evidence.json",
+          "objectId": "c_rope_41",
+          "method": "both directed actual climb-enter/arrive segments from continuous input replay",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        },
+        {
+          "path": "work/final-geometry-measurements.json",
+          "objectId": "c_rope_41",
+          "method": "two visible endpoint and support association checks",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "c_rope_46",
+      "kind": "rope",
+      "sourceObject": "rope_46",
+      "corridor": [
+        [
+          1470,
+          704
+        ],
+        [
+          1506,
+          704
+        ],
+        [
+          1506,
+          896
+        ],
+        [
+          1470,
+          896
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1488,
+            896
+          ],
+          "surface": "s_market"
+        },
+        "end": {
+          "position": [
+            1488,
+            704
+          ],
+          "surface": "s_drum"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "source lower endpoint short 32px; extend to actual supporting top. Ladder center is original x+width/2.",
+      "evidence": [
+        {
+          "path": "work/final-transition-evidence.json",
+          "objectId": "c_rope_46",
+          "method": "both directed actual climb-enter/arrive segments from continuous input replay",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        },
+        {
+          "path": "work/final-geometry-measurements.json",
+          "objectId": "c_rope_46",
+          "method": "two visible endpoint and support association checks",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "c_rope_53",
+      "kind": "rope",
+      "sourceObject": "rope_53",
+      "corridor": [
+        [
+          1694,
+          672
+        ],
+        [
+          1730,
+          672
+        ],
+        [
+          1730,
+          832
+        ],
+        [
+          1694,
+          832
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1712,
+            832
+          ],
+          "surface": "s_county"
+        },
+        "end": {
+          "position": [
+            1712,
+            672
+          ],
+          "surface": "s_hall"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "source lower endpoint short 32px; extend to actual supporting top. Ladder center is original x+width/2.",
+      "evidence": [
+        {
+          "path": "work/final-transition-evidence.json",
+          "objectId": "c_rope_53",
+          "method": "both directed actual climb-enter/arrive segments from continuous input replay",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        },
+        {
+          "path": "work/final-geometry-measurements.json",
+          "objectId": "c_rope_53",
+          "method": "two visible endpoint and support association checks",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "c_ladder_76",
+      "kind": "ladder",
+      "sourceObject": "ladder_76",
+      "corridor": [
+        [
+          2430,
+          800
+        ],
+        [
+          2466,
+          800
+        ],
+        [
+          2466,
+          896
+        ],
+        [
+          2430,
+          896
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            2448,
+            896
+          ],
+          "surface": "s_smith"
+        },
+        "end": {
+          "position": [
+            2448,
+            800
+          ],
+          "surface": "s_smith_roof"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "ladder",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "source lower endpoint short 32px; extend to actual supporting top. Ladder center is original x+width/2.",
+      "evidence": [
+        {
+          "path": "work/final-transition-evidence.json",
+          "objectId": "c_ladder_76",
+          "method": "both directed actual climb-enter/arrive segments from continuous input replay",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        },
+        {
+          "path": "work/final-geometry-measurements.json",
+          "objectId": "c_ladder_76",
+          "method": "two visible endpoint and support association checks",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "c_rope_85",
+      "kind": "rope",
+      "sourceObject": "rope_85",
+      "corridor": [
+        [
+          2718,
+          768
+        ],
+        [
+          2754,
+          768
+        ],
+        [
+          2754,
+          896
+        ],
+        [
+          2718,
+          896
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            2736,
+            896
+          ],
+          "surface": "s_east"
+        },
+        "end": {
+          "position": [
+            2736,
+            768
+          ],
+          "surface": "s_gate_low"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "source lower endpoint short 32px; extend to actual supporting top. Ladder center is original x+width/2.",
+      "evidence": [
+        {
+          "path": "work/final-transition-evidence.json",
+          "objectId": "c_rope_85",
+          "method": "both directed actual climb-enter/arrive segments from continuous input replay",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        },
+        {
+          "path": "work/final-geometry-measurements.json",
+          "objectId": "c_rope_85",
+          "method": "two visible endpoint and support association checks",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "c_rope_87",
+      "kind": "rope",
+      "sourceObject": "rope_87",
+      "corridor": [
+        [
+          2782,
+          640
+        ],
+        [
+          2818,
+          640
+        ],
+        [
+          2818,
+          768
+        ],
+        [
+          2782,
+          768
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            2800,
+            768
+          ],
+          "surface": "s_gate_low"
+        },
+        "end": {
+          "position": [
+            2800,
+            640
+          ],
+          "surface": "s_gate_high"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "source lower endpoint short 32px; extend to actual supporting top. Ladder center is original x+width/2.",
+      "evidence": [
+        {
+          "path": "work/final-transition-evidence.json",
+          "objectId": "c_rope_87",
+          "method": "both directed actual climb-enter/arrive segments from continuous input replay",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        },
+        {
+          "path": "work/final-geometry-measurements.json",
+          "objectId": "c_rope_87",
+          "method": "two visible endpoint and support association checks",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    }
+  ],
+  "stairs": [],
+  "solids": [
+    {
+      "id": "solid_dock",
+      "polygon": [
+        [
+          0,
+          832
+        ],
+        [
+          512,
+          832
+        ],
+        [
+          512,
+          1024
+        ],
+        [
+          0,
+          1024
+        ]
+      ],
+      "surface": "s_dock",
+      "type": "town-foundation",
+      "openings": [],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-data-check.json",
+          "objectId": "solid_dock",
+          "method": "every sampled actual-route AABB checked for penetration",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        },
+        {
+          "path": "work/final-physics-smoke-results.json",
+          "objectId": "solid_dock",
+          "method": "actual scene support and sidewall behavior",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "solid_market",
+      "polygon": [
+        [
+          512,
+          896
+        ],
+        [
+          1600,
+          896
+        ],
+        [
+          1600,
+          1024
+        ],
+        [
+          512,
+          1024
+        ]
+      ],
+      "surface": "s_market",
+      "type": "town-foundation",
+      "openings": [],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-data-check.json",
+          "objectId": "solid_market",
+          "method": "every sampled actual-route AABB checked for penetration",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        },
+        {
+          "path": "work/final-physics-smoke-results.json",
+          "objectId": "solid_market",
+          "method": "actual scene support and sidewall behavior",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "solid_county",
+      "polygon": [
+        [
+          1600,
+          832
+        ],
+        [
+          1952,
+          832
+        ],
+        [
+          1952,
+          1024
+        ],
+        [
+          1600,
+          1024
+        ]
+      ],
+      "surface": "s_county",
+      "type": "town-foundation",
+      "openings": [],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-data-check.json",
+          "objectId": "solid_county",
+          "method": "every sampled actual-route AABB checked for penetration",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        },
+        {
+          "path": "work/final-physics-smoke-results.json",
+          "objectId": "solid_county",
+          "method": "actual scene support and sidewall behavior",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "solid_smith",
+      "polygon": [
+        [
+          1952,
+          896
+        ],
+        [
+          2560,
+          896
+        ],
+        [
+          2560,
+          1024
+        ],
+        [
+          1952,
+          1024
+        ]
+      ],
+      "surface": "s_smith",
+      "type": "town-foundation",
+      "openings": [],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-data-check.json",
+          "objectId": "solid_smith",
+          "method": "every sampled actual-route AABB checked for penetration",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        },
+        {
+          "path": "work/final-physics-smoke-results.json",
+          "objectId": "solid_smith",
+          "method": "actual scene support and sidewall behavior",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "solid_east",
+      "polygon": [
+        [
+          2560,
+          896
+        ],
+        [
+          3072,
+          896
+        ],
+        [
+          3072,
+          1024
+        ],
+        [
+          2560,
+          1024
+        ]
+      ],
+      "surface": "s_east",
+      "type": "town-foundation",
+      "openings": [],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-data-check.json",
+          "objectId": "solid_east",
+          "method": "every sampled actual-route AABB checked for penetration",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        },
+        {
+          "path": "work/final-physics-smoke-results.json",
+          "objectId": "solid_east",
+          "method": "actual scene support and sidewall behavior",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    }
+  ],
+  "hazards": [],
+  "points": [
+    {
+      "id": "ferry_dock",
+      "type": "ferry",
+      "sourceId": 2,
+      "sourceName": "ferry_dock",
+      "position": [
+        208.0,
+        736
+      ],
+      "surface": "s_deck",
+      "width": 288,
+      "properties": {
+        "npc": "ferry_master"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-data-check.json",
+          "objectId": "ferry_dock",
+          "method": "coordinate/support/reference semantics; encounter_anchor remains metadata-only and never enables combat",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "start_spawn",
+      "type": "spawn",
+      "sourceId": 10,
+      "sourceName": "playerStart",
+      "position": [
+        128,
+        832
+      ],
+      "surface": "s_dock",
+      "width": 0,
+      "properties": {},
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-data-check.json",
+          "objectId": "start_spawn",
+          "method": "coordinate/support/reference semantics; encounter_anchor remains metadata-only and never enables combat",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "ferry_master",
+      "type": "npc",
+      "sourceId": 11,
+      "sourceName": "ferry_master",
+      "position": [
+        400,
+        832
+      ],
+      "surface": "s_dock",
+      "width": 0,
+      "properties": {
+        "npc": "ferry_master"
+      },
+      "status": "verified",
+      "visualAsset": {
+        "path": "work/preview/npc-ferry_master-idle.png",
+        "width": 96,
+        "height": 96,
+        "anchor": "feet-center",
+        "name": "船老大",
+        "questMarkerOffsetY": 110,
+        "scope": "read-only existing idle frame for NPC placement and headroom; no dialogue or quest logic",
+        "source": "art/sprites/npc_ferry_master.png",
+        "atlas": "art/sprites/npc_ferry_master.json",
+        "sourceFrame": "npc_ferry_master_idle_01",
+        "sourceCrop": [
+          0,
+          0,
+          96,
+          96
+        ],
+        "sourceSha256": "ad7cb6ddab1709b606dedd905a6b7593cda5ae27fcc17f31b1f92e632fddcbc4",
+        "sha256": "3567d624370dbb75ae4dc639e1fc12c11f2970718cb0c641672e9a3e55039b7c",
+        "alphaBounds": [
+          14,
+          6,
+          82,
+          96
+        ]
+      },
+      "evidence": [
+        {
+          "path": "work/final-data-check.json",
+          "objectId": "ferry_master",
+          "method": "coordinate/support/reference semantics; encounter_anchor remains metadata-only and never enables combat",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        },
+        {
+          "path": "work/final-browser-check.json",
+          "objectId": "ferry_master",
+          "method": "existing static NPC and task badge headroom at actual display scale",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "merchant_qian",
+      "type": "npc",
+      "sourceId": 12,
+      "sourceName": "merchant_qian",
+      "position": [
+        688,
+        896
+      ],
+      "surface": "s_market",
+      "width": 0,
+      "properties": {
+        "npc": "merchant_qian"
+      },
+      "status": "verified",
+      "visualAsset": {
+        "path": "work/preview/npc-merchant_qian-idle.png",
+        "width": 96,
+        "height": 96,
+        "anchor": "feet-center",
+        "name": "钱掌柜",
+        "questMarkerOffsetY": 110,
+        "scope": "read-only existing idle frame for NPC placement and headroom; no dialogue or quest logic",
+        "source": "art/sprites/npc_merchant_qian.png",
+        "atlas": "art/sprites/npc_merchant_qian.json",
+        "sourceFrame": "npc_merchant_qian_idle_01",
+        "sourceCrop": [
+          0,
+          0,
+          96,
+          96
+        ],
+        "sourceSha256": "43b99f2ed8136063efa220802dc03b84281783da80955b81ab728e3b5d191413",
+        "sha256": "cde1137f8b93775432d97077e1473314a511b059789279975cc00484a5b7cacf",
+        "alphaBounds": [
+          23,
+          11,
+          73,
+          96
+        ]
+      },
+      "evidence": [
+        {
+          "path": "work/final-data-check.json",
+          "objectId": "merchant_qian",
+          "method": "coordinate/support/reference semantics; encounter_anchor remains metadata-only and never enables combat",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        },
+        {
+          "path": "work/final-browser-check.json",
+          "objectId": "merchant_qian",
+          "method": "existing static NPC and task badge headroom at actual display scale",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "storage_keeper",
+      "type": "npc",
+      "sourceId": 13,
+      "sourceName": "storage_keeper",
+      "position": [
+        944,
+        896
+      ],
+      "surface": "s_market",
+      "width": 0,
+      "properties": {
+        "npc": "storage_keeper"
+      },
+      "status": "verified",
+      "visualAsset": {
+        "path": "work/preview/npc-storage_keeper-idle.png",
+        "width": 96,
+        "height": 96,
+        "anchor": "feet-center",
+        "name": "库房老周",
+        "questMarkerOffsetY": 110,
+        "scope": "read-only existing idle frame for NPC placement and headroom; no dialogue or quest logic",
+        "source": "art/sprites/npc_storage_keeper.png",
+        "atlas": "art/sprites/npc_storage_keeper.json",
+        "sourceFrame": "npc_storage_keeper_idle_01",
+        "sourceCrop": [
+          0,
+          0,
+          96,
+          96
+        ],
+        "sourceSha256": "b309c668b735416bf302a7ea9e5a995b1e82ab82ad2ed1507769aebb017dc833",
+        "sha256": "6e4617d797f70c567ca452e31d387700da40fc66c38a506b6d20676f98f99ba0",
+        "alphaBounds": [
+          20,
+          15,
+          73,
+          96
+        ]
+      },
+      "evidence": [
+        {
+          "path": "work/final-data-check.json",
+          "objectId": "storage_keeper",
+          "method": "coordinate/support/reference semantics; encounter_anchor remains metadata-only and never enables combat",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        },
+        {
+          "path": "work/final-browser-check.json",
+          "objectId": "storage_keeper",
+          "method": "existing static NPC and task badge headroom at actual display scale",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "alchemist_ge",
+      "type": "npc",
+      "sourceId": 14,
+      "sourceName": "alchemist_ge",
+      "position": [
+        1264,
+        896
+      ],
+      "surface": "s_market",
+      "width": 0,
+      "properties": {
+        "npc": "alchemist_ge"
+      },
+      "status": "verified",
+      "visualAsset": {
+        "path": "work/preview/npc-alchemist_ge-idle.png",
+        "width": 96,
+        "height": 96,
+        "anchor": "feet-center",
+        "name": "葛丹师",
+        "questMarkerOffsetY": 110,
+        "scope": "read-only existing idle frame for NPC placement and headroom; no dialogue or quest logic",
+        "source": "art/sprites/npc_alchemist_ge.png",
+        "atlas": "art/sprites/npc_alchemist_ge.json",
+        "sourceFrame": "npc_alchemist_ge_idle_01",
+        "sourceCrop": [
+          0,
+          0,
+          96,
+          96
+        ],
+        "sourceSha256": "016e0c6fb76a322f0b3971a58fb16b14af3ccc1f6271f9986fdd18c223b79e4b",
+        "sha256": "0effff18a1c59d71cd8a943d5c4176995901bf2c42b650cd6f54f61daef3191f",
+        "alphaBounds": [
+          24,
+          8,
+          71,
+          96
+        ]
+      },
+      "evidence": [
+        {
+          "path": "work/final-data-check.json",
+          "objectId": "alchemist_ge",
+          "method": "coordinate/support/reference semantics; encounter_anchor remains metadata-only and never enables combat",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        },
+        {
+          "path": "work/final-browser-check.json",
+          "objectId": "alchemist_ge",
+          "method": "existing static NPC and task badge headroom at actual display scale",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "luoxia_mayor",
+      "type": "npc",
+      "sourceId": 15,
+      "sourceName": "luoxia_mayor",
+      "position": [
+        1776,
+        832
+      ],
+      "surface": "s_county",
+      "width": 0,
+      "properties": {
+        "npc": "luoxia_mayor"
+      },
+      "status": "verified",
+      "visualAsset": {
+        "path": "work/preview/npc-luoxia_mayor-idle.png",
+        "width": 96,
+        "height": 96,
+        "anchor": "feet-center",
+        "name": "柳知县",
+        "questMarkerOffsetY": 110,
+        "scope": "read-only existing idle frame for NPC placement and headroom; no dialogue or quest logic",
+        "source": "art/sprites/npc_luoxia_mayor.png",
+        "atlas": "art/sprites/npc_luoxia_mayor.json",
+        "sourceFrame": "npc_luoxia_mayor_idle_01",
+        "sourceCrop": [
+          0,
+          0,
+          96,
+          96
+        ],
+        "sourceSha256": "a7f88a8effaf293a0cac3d4ed7f53347096822db0d4455ccc329834b627bfd8b",
+        "sha256": "e81a2056ed7bb31fb607e607c558e36a03510c7baac61ff2f6f4642366869704",
+        "alphaBounds": [
+          9,
+          5,
+          87,
+          96
+        ]
+      },
+      "evidence": [
+        {
+          "path": "work/final-data-check.json",
+          "objectId": "luoxia_mayor",
+          "method": "coordinate/support/reference semantics; encounter_anchor remains metadata-only and never enables combat",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        },
+        {
+          "path": "work/final-browser-check.json",
+          "objectId": "luoxia_mayor",
+          "method": "existing static NPC and task badge headroom at actual display scale",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "smith_ou",
+      "type": "npc",
+      "sourceId": 16,
+      "sourceName": "smith_ou",
+      "position": [
+        2224,
+        896
+      ],
+      "surface": "s_smith",
+      "width": 0,
+      "properties": {
+        "npc": "smith_ou"
+      },
+      "status": "verified",
+      "visualAsset": {
+        "path": "work/preview/npc-smith_ou-idle.png",
+        "width": 96,
+        "height": 96,
+        "anchor": "feet-center",
+        "name": "欧冶匠",
+        "questMarkerOffsetY": 110,
+        "scope": "read-only existing idle frame for NPC placement and headroom; no dialogue or quest logic",
+        "source": "art/sprites/npc_smith_ou.png",
+        "atlas": "art/sprites/npc_smith_ou.json",
+        "sourceFrame": "npc_smith_ou_idle_01",
+        "sourceCrop": [
+          0,
+          0,
+          96,
+          96
+        ],
+        "sourceSha256": "1c8afbb8d8519637077058155f5ddf4f5e71e2adc6ebc7b5011a59eec6870562",
+        "sha256": "dde168fa5583ff5fe3ea4b0c02e1c73b0355757cdad6e2843a2bf27da0f5e36d",
+        "alphaBounds": [
+          23,
+          21,
+          79,
+          96
+        ]
+      },
+      "evidence": [
+        {
+          "path": "work/final-data-check.json",
+          "objectId": "smith_ou",
+          "method": "coordinate/support/reference semantics; encounter_anchor remains metadata-only and never enables combat",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        },
+        {
+          "path": "work/final-browser-check.json",
+          "objectId": "smith_ou",
+          "method": "existing static NPC and task badge headroom at actual display scale",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "portal_to_outskirts",
+      "type": "portal",
+      "sourceId": 17,
+      "sourceName": "portal_to_outskirts",
+      "position": [
+        2992,
+        896
+      ],
+      "surface": "s_east",
+      "width": 0,
+      "properties": {
+        "target": "luoxia_outskirts_2",
+        "targetPortal": "portal_to_town"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-data-check.json",
+          "objectId": "portal_to_outskirts",
+          "method": "coordinate/support/reference semantics; encounter_anchor remains metadata-only and never enables combat",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "enc_demon_whisper_anchor",
+      "type": "encounter_anchor",
+      "sourceId": 18,
+      "sourceName": "enc_demon_whisper_anchor",
+      "position": [
+        2128,
+        896
+      ],
+      "surface": "s_smith",
+      "width": 0,
+      "properties": {
+        "encounter": "enc_demon_whisper"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-data-check.json",
+          "objectId": "enc_demon_whisper_anchor",
+          "method": "coordinate/support/reference semantics; encounter_anchor remains metadata-only and never enables combat",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "goal_east",
+      "type": "goal",
+      "position": [
+        2992,
+        896
+      ],
+      "surface": "s_east",
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-data-check.json",
+          "objectId": "goal_east",
+          "method": "coordinate/support/reference semantics; encounter_anchor remains metadata-only and never enables combat",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    }
+  ],
+  "transitions": [
+    {
+      "id": "t_rope_6_up",
+      "from": "s_dock",
+      "to": "s_deck",
+      "action": "climb-up",
+      "climb": "c_rope_6",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clear"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-transition-evidence.json",
+          "objectId": "t_rope_6_up",
+          "method": "actual adjacent directed support contacts plus required action events from one continuous normal-spawn input replay; no topology inference",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "routeId": "route_rope_6",
+          "replay": "work/replays-final/route_rope_6.json",
+          "fromFrame": 61,
+          "toFrame": 114
+        }
+      ]
+    },
+    {
+      "id": "t_rope_6_down",
+      "from": "s_deck",
+      "to": "s_dock",
+      "action": "climb-down",
+      "climb": "c_rope_6",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clear"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-transition-evidence.json",
+          "objectId": "t_rope_6_down",
+          "method": "actual adjacent directed support contacts plus required action events from one continuous normal-spawn input replay; no topology inference",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "routeId": "route_rope_6",
+          "replay": "work/replays-final/route_rope_6.json",
+          "fromFrame": 154,
+          "toFrame": 200
+        }
+      ]
+    },
+    {
+      "id": "t_rope_23_up",
+      "from": "s_market",
+      "to": "s_market_w",
+      "action": "climb-up",
+      "climb": "c_rope_23",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clear"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-transition-evidence.json",
+          "objectId": "t_rope_23_up",
+          "method": "actual adjacent directed support contacts plus required action events from one continuous normal-spawn input replay; no topology inference",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "routeId": "route_rope_23",
+          "replay": "work/replays-final/route_rope_23.json",
+          "fromFrame": 363,
+          "toFrame": 451
+        }
+      ]
+    },
+    {
+      "id": "t_rope_23_down",
+      "from": "s_market_w",
+      "to": "s_market",
+      "action": "climb-down",
+      "climb": "c_rope_23",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clear"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-transition-evidence.json",
+          "objectId": "t_rope_23_down",
+          "method": "actual adjacent directed support contacts plus required action events from one continuous normal-spawn input replay; no topology inference",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "routeId": "route_rope_23",
+          "replay": "work/replays-final/route_rope_23.json",
+          "fromFrame": 491,
+          "toFrame": 572
+        }
+      ]
+    },
+    {
+      "id": "t_rope_41_up",
+      "from": "s_market",
+      "to": "s_market_e",
+      "action": "climb-up",
+      "climb": "c_rope_41",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clear"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-transition-evidence.json",
+          "objectId": "t_rope_41_up",
+          "method": "actual adjacent directed support contacts plus required action events from one continuous normal-spawn input replay; no topology inference",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "routeId": "route_rope_41",
+          "replay": "work/replays-final/route_rope_41.json",
+          "fromFrame": 629,
+          "toFrame": 717
+        }
+      ]
+    },
+    {
+      "id": "t_rope_41_down",
+      "from": "s_market_e",
+      "to": "s_market",
+      "action": "climb-down",
+      "climb": "c_rope_41",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clear"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-transition-evidence.json",
+          "objectId": "t_rope_41_down",
+          "method": "actual adjacent directed support contacts plus required action events from one continuous normal-spawn input replay; no topology inference",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "routeId": "route_rope_41",
+          "replay": "work/replays-final/route_rope_41.json",
+          "fromFrame": 757,
+          "toFrame": 838
+        }
+      ]
+    },
+    {
+      "id": "t_rope_46_up",
+      "from": "s_market",
+      "to": "s_drum",
+      "action": "climb-up",
+      "climb": "c_rope_46",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clear"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-transition-evidence.json",
+          "objectId": "t_rope_46_up",
+          "method": "actual adjacent directed support contacts plus required action events from one continuous normal-spawn input replay; no topology inference",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "routeId": "route_rope_46",
+          "replay": "work/replays-final/route_rope_46.json",
+          "fromFrame": 703,
+          "toFrame": 809
+        }
+      ]
+    },
+    {
+      "id": "t_rope_46_down",
+      "from": "s_drum",
+      "to": "s_market",
+      "action": "climb-down",
+      "climb": "c_rope_46",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clear"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-transition-evidence.json",
+          "objectId": "t_rope_46_down",
+          "method": "actual adjacent directed support contacts plus required action events from one continuous normal-spawn input replay; no topology inference",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "routeId": "route_rope_46",
+          "replay": "work/replays-final/route_rope_46.json",
+          "fromFrame": 849,
+          "toFrame": 948
+        }
+      ]
+    },
+    {
+      "id": "t_rope_53_up",
+      "from": "s_county",
+      "to": "s_hall",
+      "action": "climb-up",
+      "climb": "c_rope_53",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clear"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-transition-evidence.json",
+          "objectId": "t_rope_53_up",
+          "method": "actual adjacent directed support contacts plus required action events from one continuous normal-spawn input replay; no topology inference",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "routeId": "route_rope_53",
+          "replay": "work/replays-final/route_rope_53.json",
+          "fromFrame": 846,
+          "toFrame": 934
+        }
+      ]
+    },
+    {
+      "id": "t_rope_53_down",
+      "from": "s_hall",
+      "to": "s_county",
+      "action": "climb-down",
+      "climb": "c_rope_53",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clear"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-transition-evidence.json",
+          "objectId": "t_rope_53_down",
+          "method": "actual adjacent directed support contacts plus required action events from one continuous normal-spawn input replay; no topology inference",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "routeId": "route_rope_53",
+          "replay": "work/replays-final/route_rope_53.json",
+          "fromFrame": 974,
+          "toFrame": 1055
+        }
+      ]
+    },
+    {
+      "id": "t_ladder_76_up",
+      "from": "s_smith",
+      "to": "s_smith_roof",
+      "action": "climb-up",
+      "climb": "c_ladder_76",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clear"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-transition-evidence.json",
+          "objectId": "t_ladder_76_up",
+          "method": "actual adjacent directed support contacts plus required action events from one continuous normal-spawn input replay; no topology inference",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "routeId": "route_ladder_76",
+          "replay": "work/replays-final/route_ladder_76.json",
+          "fromFrame": 1236,
+          "toFrame": 1289
+        }
+      ]
+    },
+    {
+      "id": "t_ladder_76_down",
+      "from": "s_smith_roof",
+      "to": "s_smith",
+      "action": "climb-down",
+      "climb": "c_ladder_76",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clear"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-transition-evidence.json",
+          "objectId": "t_ladder_76_down",
+          "method": "actual adjacent directed support contacts plus required action events from one continuous normal-spawn input replay; no topology inference",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "routeId": "route_ladder_76",
+          "replay": "work/replays-final/route_ladder_76.json",
+          "fromFrame": 1329,
+          "toFrame": 1375
+        }
+      ]
+    },
+    {
+      "id": "t_rope_85_up",
+      "from": "s_east",
+      "to": "s_gate_low",
+      "action": "climb-up",
+      "climb": "c_rope_85",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clear"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-transition-evidence.json",
+          "objectId": "t_rope_85_up",
+          "method": "actual adjacent directed support contacts plus required action events from one continuous normal-spawn input replay; no topology inference",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "routeId": "route_rope_85",
+          "replay": "work/replays-final/route_rope_85.json",
+          "fromFrame": 1405,
+          "toFrame": 1476
+        }
+      ]
+    },
+    {
+      "id": "t_rope_85_down",
+      "from": "s_gate_low",
+      "to": "s_east",
+      "action": "climb-down",
+      "climb": "c_rope_85",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clear"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-transition-evidence.json",
+          "objectId": "t_rope_85_down",
+          "method": "actual adjacent directed support contacts plus required action events from one continuous normal-spawn input replay; no topology inference",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "routeId": "route_rope_85",
+          "replay": "work/replays-final/route_rope_85.json",
+          "fromFrame": 1516,
+          "toFrame": 1580
+        }
+      ]
+    },
+    {
+      "id": "t_rope_87_up",
+      "from": "s_gate_low",
+      "to": "s_gate_high",
+      "action": "climb-up",
+      "climb": "c_rope_87",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clear"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-transition-evidence.json",
+          "objectId": "t_rope_87_up",
+          "method": "actual adjacent directed support contacts plus required action events from one continuous normal-spawn input replay; no topology inference",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "routeId": "route_rope_87",
+          "replay": "work/replays-final/route_rope_87.json",
+          "fromFrame": 1549,
+          "toFrame": 1620
+        }
+      ]
+    },
+    {
+      "id": "t_rope_87_down",
+      "from": "s_gate_high",
+      "to": "s_gate_low",
+      "action": "climb-down",
+      "climb": "c_rope_87",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clear"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-transition-evidence.json",
+          "objectId": "t_rope_87_down",
+          "method": "actual adjacent directed support contacts plus required action events from one continuous normal-spawn input replay; no topology inference",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "routeId": "route_rope_87",
+          "replay": "work/replays-final/route_rope_87.json",
+          "fromFrame": 1660,
+          "toFrame": 1724
+        }
+      ]
+    },
+    {
+      "id": "t_dock_down",
+      "from": "s_dock",
+      "to": "s_market",
+      "action": "drop",
+      "conditions": [
+        "base movement parameters",
+        "no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-transition-evidence.json",
+          "objectId": "t_dock_down",
+          "method": "actual adjacent directed support contacts plus required action events from one continuous normal-spawn input replay; no topology inference",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "routeId": "route_main",
+          "replay": "work/replays-final/route_main.json",
+          "fromFrame": 197,
+          "toFrame": 212
+        }
+      ]
+    },
+    {
+      "id": "t_dock_up",
+      "from": "s_market",
+      "to": "s_dock",
+      "action": "jump",
+      "conditions": [
+        "base movement parameters",
+        "no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-transition-evidence.json",
+          "objectId": "t_dock_up",
+          "method": "actual adjacent directed support contacts plus required action events from one continuous normal-spawn input replay; no topology inference",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "routeId": "route_return",
+          "replay": "work/replays-final/route_return.json",
+          "fromFrame": 2778,
+          "toFrame": 2801
+        }
+      ]
+    },
+    {
+      "id": "t_county_up",
+      "from": "s_market",
+      "to": "s_county",
+      "action": "jump",
+      "conditions": [
+        "base movement parameters",
+        "no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-transition-evidence.json",
+          "objectId": "t_county_up",
+          "method": "actual adjacent directed support contacts plus required action events from one continuous normal-spawn input replay; no topology inference",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "routeId": "route_main",
+          "replay": "work/replays-final/route_main.json",
+          "fromFrame": 734,
+          "toFrame": 757
+        }
+      ]
+    },
+    {
+      "id": "t_county_down",
+      "from": "s_county",
+      "to": "s_smith",
+      "action": "drop",
+      "conditions": [
+        "base movement parameters",
+        "no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-transition-evidence.json",
+          "objectId": "t_county_down",
+          "method": "actual adjacent directed support contacts plus required action events from one continuous normal-spawn input replay; no topology inference",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "routeId": "route_main",
+          "replay": "work/replays-final/route_main.json",
+          "fromFrame": 953,
+          "toFrame": 968
+        }
+      ]
+    },
+    {
+      "id": "t_county_west",
+      "from": "s_county",
+      "to": "s_market",
+      "action": "drop",
+      "conditions": [
+        "base movement parameters",
+        "no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-transition-evidence.json",
+          "objectId": "t_county_west",
+          "method": "actual adjacent directed support contacts plus required action events from one continuous normal-spawn input replay; no topology inference",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "routeId": "route_return",
+          "replay": "work/replays-final/route_return.json",
+          "fromFrame": 2243,
+          "toFrame": 2258
+        }
+      ]
+    },
+    {
+      "id": "t_county_east",
+      "from": "s_smith",
+      "to": "s_county",
+      "action": "jump",
+      "conditions": [
+        "base movement parameters",
+        "no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-transition-evidence.json",
+          "objectId": "t_county_east",
+          "method": "actual adjacent directed support contacts plus required action events from one continuous normal-spawn input replay; no topology inference",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "routeId": "route_return",
+          "replay": "work/replays-final/route_return.json",
+          "fromFrame": 2024,
+          "toFrame": 2047
+        }
+      ]
+    },
+    {
+      "id": "t_street_east",
+      "from": "s_smith",
+      "to": "s_east",
+      "action": "walk",
+      "conditions": [
+        "base movement parameters",
+        "no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-transition-evidence.json",
+          "objectId": "t_street_east",
+          "method": "actual adjacent directed support contacts plus required action events from one continuous normal-spawn input replay; no topology inference",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "routeId": "route_main",
+          "replay": "work/replays-final/route_main.json",
+          "fromFrame": 1272,
+          "toFrame": 1273
+        }
+      ]
+    },
+    {
+      "id": "t_street_west",
+      "from": "s_east",
+      "to": "s_smith",
+      "action": "walk",
+      "conditions": [
+        "base movement parameters",
+        "no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-transition-evidence.json",
+          "objectId": "t_street_west",
+          "method": "actual adjacent directed support contacts plus required action events from one continuous normal-spawn input replay; no topology inference",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "routeId": "route_return",
+          "replay": "work/replays-final/route_return.json",
+          "fromFrame": 1724,
+          "toFrame": 1725
+        }
+      ]
+    },
+    {
+      "id": "t_awning_w_up",
+      "from": "s_market",
+      "to": "s_awning_w",
+      "action": "jump",
+      "conditions": [
+        "base movement parameters",
+        "no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-transition-evidence.json",
+          "objectId": "t_awning_w_up",
+          "method": "actual adjacent directed support contacts plus required action events from one continuous normal-spawn input replay; no topology inference",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "routeId": "route_awnings",
+          "replay": "work/replays-final/route_awnings.json",
+          "fromFrame": 400,
+          "toFrame": 423
+        }
+      ]
+    },
+    {
+      "id": "t_awning_w_down",
+      "from": "s_awning_w",
+      "to": "s_market",
+      "action": "drop-through",
+      "conditions": [
+        "base movement parameters",
+        "no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-transition-evidence.json",
+          "objectId": "t_awning_w_down",
+          "method": "actual adjacent directed support contacts plus required action events from one continuous normal-spawn input replay; no topology inference",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "routeId": "route_awnings",
+          "replay": "work/replays-final/route_awnings.json",
+          "fromFrame": 438,
+          "toFrame": 452
+        }
+      ]
+    },
+    {
+      "id": "t_awning_e_up",
+      "from": "s_market",
+      "to": "s_awning_e",
+      "action": "jump",
+      "conditions": [
+        "base movement parameters",
+        "no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-transition-evidence.json",
+          "objectId": "t_awning_e_up",
+          "method": "actual adjacent directed support contacts plus required action events from one continuous normal-spawn input replay; no topology inference",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "routeId": "route_awnings",
+          "replay": "work/replays-final/route_awnings.json",
+          "fromFrame": 621,
+          "toFrame": 644
+        }
+      ]
+    },
+    {
+      "id": "t_awning_e_down",
+      "from": "s_awning_e",
+      "to": "s_market",
+      "action": "drop-through",
+      "conditions": [
+        "base movement parameters",
+        "no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-transition-evidence.json",
+          "objectId": "t_awning_e_down",
+          "method": "actual adjacent directed support contacts plus required action events from one continuous normal-spawn input replay; no topology inference",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "routeId": "route_awnings",
+          "replay": "work/replays-final/route_awnings.json",
+          "fromFrame": 659,
+          "toFrame": 673
+        }
+      ]
+    },
+    {
+      "id": "t_chimney_up",
+      "from": "s_smith_roof",
+      "to": "s_chimney",
+      "action": "jump",
+      "conditions": [
+        "base movement parameters",
+        "no teleport"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-transition-evidence.json",
+          "objectId": "t_chimney_up",
+          "method": "actual adjacent directed support contacts plus required action events from one continuous normal-spawn input replay; no topology inference",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "routeId": "route_chimney",
+          "replay": "work/replays-final/route_chimney.json",
+          "fromFrame": 1364,
+          "toFrame": 1387
+        }
+      ]
+    },
+    {
+      "id": "t_chimney_down",
+      "from": "s_chimney",
+      "to": "s_smith_roof",
+      "action": "drop",
+      "conditions": [
+        "walk off chimney left edge; land on roof",
+        "no drop-through: 220ms would skip close lower roof"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/final-transition-evidence.json",
+          "objectId": "t_chimney_down",
+          "method": "actual adjacent directed support contacts plus required action events from one continuous normal-spawn input replay; no topology inference",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "routeId": "route_chimney",
+          "replay": "work/replays-final/route_chimney.json",
+          "fromFrame": 1419,
+          "toFrame": 1434
+        }
+      ]
+    }
+  ],
+  "requiredRoutes": [
+    {
+      "id": "route_main",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "s_market",
+        "s_county",
+        "s_smith",
+        "s_east"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/replays-final/route_main.json",
+          "objectId": "route_main",
+          "method": "normal spawn at zero speed; continuous input-only execution with no midrun reset or teleport",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "frames": 1504,
+          "resetCount": 0
+        },
+        {
+          "path": "work/final-browser-check.json",
+          "objectId": "route_main",
+          "method": "same input replay reproduced in local Chrome",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "route_return",
+      "from": "start_spawn",
+      "to": "start_spawn",
+      "via": [
+        "goal_east",
+        "s_county",
+        "s_dock"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/replays-final/route_return.json",
+          "objectId": "route_return",
+          "method": "normal spawn at zero speed; continuous input-only execution with no midrun reset or teleport",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "frames": 2995,
+          "resetCount": 0
+        },
+        {
+          "path": "work/final-browser-check.json",
+          "objectId": "route_return",
+          "method": "same input replay reproduced in local Chrome",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "route_rope_6",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "c_rope_6",
+        "s_deck",
+        "s_dock"
+      ],
+      "direction": "up-and-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/replays-final/route_rope_6.json",
+          "objectId": "route_rope_6",
+          "method": "normal spawn at zero speed; continuous input-only execution with no midrun reset or teleport",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "frames": 1687,
+          "resetCount": 0
+        },
+        {
+          "path": "work/final-browser-check.json",
+          "objectId": "route_rope_6",
+          "method": "same input replay reproduced in local Chrome",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "route_rope_23",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "c_rope_23",
+        "s_market_w",
+        "s_market"
+      ],
+      "direction": "up-and-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/replays-final/route_rope_23.json",
+          "objectId": "route_rope_23",
+          "method": "normal spawn at zero speed; continuous input-only execution with no midrun reset or teleport",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "frames": 1756,
+          "resetCount": 0
+        },
+        {
+          "path": "work/final-browser-check.json",
+          "objectId": "route_rope_23",
+          "method": "same input replay reproduced in local Chrome",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "route_rope_41",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "c_rope_41",
+        "s_market_e",
+        "s_market"
+      ],
+      "direction": "up-and-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/replays-final/route_rope_41.json",
+          "objectId": "route_rope_41",
+          "method": "normal spawn at zero speed; continuous input-only execution with no midrun reset or teleport",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "frames": 1756,
+          "resetCount": 0
+        },
+        {
+          "path": "work/final-browser-check.json",
+          "objectId": "route_rope_41",
+          "method": "same input replay reproduced in local Chrome",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "route_rope_46",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "c_rope_46",
+        "s_drum",
+        "s_market"
+      ],
+      "direction": "up-and-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/replays-final/route_rope_46.json",
+          "objectId": "route_rope_46",
+          "method": "normal spawn at zero speed; continuous input-only execution with no midrun reset or teleport",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "frames": 1792,
+          "resetCount": 0
+        },
+        {
+          "path": "work/final-browser-check.json",
+          "objectId": "route_rope_46",
+          "method": "same input replay reproduced in local Chrome",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "route_rope_53",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "c_rope_53",
+        "s_hall",
+        "s_county"
+      ],
+      "direction": "up-and-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/replays-final/route_rope_53.json",
+          "objectId": "route_rope_53",
+          "method": "normal spawn at zero speed; continuous input-only execution with no midrun reset or teleport",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "frames": 1757,
+          "resetCount": 0
+        },
+        {
+          "path": "work/final-browser-check.json",
+          "objectId": "route_rope_53",
+          "method": "same input replay reproduced in local Chrome",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "route_ladder_76",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "c_ladder_76",
+        "s_smith_roof",
+        "s_smith"
+      ],
+      "direction": "up-and-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/replays-final/route_ladder_76.json",
+          "objectId": "route_ladder_76",
+          "method": "normal spawn at zero speed; continuous input-only execution with no midrun reset or teleport",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "frames": 1686,
+          "resetCount": 0
+        },
+        {
+          "path": "work/final-browser-check.json",
+          "objectId": "route_ladder_76",
+          "method": "same input replay reproduced in local Chrome",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "route_rope_85",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "c_rope_85",
+        "s_gate_low",
+        "s_east"
+      ],
+      "direction": "up-and-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/replays-final/route_rope_85.json",
+          "objectId": "route_rope_85",
+          "method": "normal spawn at zero speed; continuous input-only execution with no midrun reset or teleport",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "frames": 1722,
+          "resetCount": 0
+        },
+        {
+          "path": "work/final-browser-check.json",
+          "objectId": "route_rope_85",
+          "method": "same input replay reproduced in local Chrome",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "route_rope_87",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "c_rope_87",
+        "s_gate_high",
+        "s_gate_low"
+      ],
+      "direction": "up-and-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/replays-final/route_rope_87.json",
+          "objectId": "route_rope_87",
+          "method": "normal spawn at zero speed; continuous input-only execution with no midrun reset or teleport",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "frames": 2003,
+          "resetCount": 0
+        },
+        {
+          "path": "work/final-browser-check.json",
+          "objectId": "route_rope_87",
+          "method": "same input replay reproduced in local Chrome",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "route_awnings",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "s_awning_w",
+        "s_awning_e"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/replays-final/route_awnings.json",
+          "objectId": "route_awnings",
+          "method": "normal spawn at zero speed; continuous input-only execution with no midrun reset or teleport",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "frames": 1694,
+          "resetCount": 0
+        },
+        {
+          "path": "work/final-browser-check.json",
+          "objectId": "route_awnings",
+          "method": "same input replay reproduced in local Chrome",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "route_chimney",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "s_smith_roof",
+        "s_chimney",
+        "s_smith_roof"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/replays-final/route_chimney.json",
+          "objectId": "route_chimney",
+          "method": "normal spawn at zero speed; continuous input-only execution with no midrun reset or teleport",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "frames": 1896,
+          "resetCount": 0
+        },
+        {
+          "path": "work/final-browser-check.json",
+          "objectId": "route_chimney",
+          "method": "same input replay reproduced in local Chrome",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    },
+    {
+      "id": "route_all_climbs",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [],
+      "direction": "all-climbs-both-directions",
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/replays-final/route_all_climbs.json",
+          "objectId": "route_all_climbs",
+          "method": "normal spawn at zero speed; continuous input-only execution with no midrun reset or teleport",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+          "frames": 3416,
+          "resetCount": 0
+        },
+        {
+          "path": "work/final-browser-check.json",
+          "objectId": "route_all_climbs",
+          "method": "same input replay reproduced in local Chrome",
+          "result": "verified",
+          "geometryRevision": "luoxia-final-001",
+          "actorParameterRevision": "luoxia-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+        }
+      ]
+    }
+  ],
+  "diagnostics": {
+    "maskPalette": {
+      "walk": [
+        150,
+        245,
+        160,
+        255
+      ],
+      "stand": [
+        0,
+        200,
+        80,
+        255
+      ],
+      "rope": [
+        0,
+        190,
+        230,
+        255
+      ],
+      "ladder": [
+        80,
+        140,
+        255,
+        255
+      ],
+      "jump": [
+        255,
+        180,
+        0,
+        255
+      ],
+      "drop": [
+        170,
+        80,
+        225,
+        255
+      ],
+      "point": [
+        255,
+        70,
+        160,
+        255
+      ]
+    },
+    "rasterizationOrder": [
+      "walk",
+      "stand",
+      "rope",
+      "ladder",
+      "jump",
+      "drop",
+      "point"
+    ],
+    "regionIdIndex": null,
+    "geometryRevision": "luoxia-final-001"
+  },
+  "validation": {
+    "status": "verified",
+    "geometryRevision": "luoxia-final-001",
+    "actorParameterRevision": "luoxia-base-feel-20261027-001",
+    "engineRevision": "gsb-aabb-feel-60hz-luoxia-001",
+    "evidence": [
+      {
+        "path": "work/final-routes.json",
+        "objectId": "all-required-routes",
+        "method": "13 actual continuous routes",
+        "result": "verified",
+        "geometryRevision": "luoxia-final-001",
+        "actorParameterRevision": "luoxia-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+      },
+      {
+        "path": "work/final-physics-smoke-results.json",
+        "objectId": "movement-regression",
+        "method": "11 scene actions plus1 explicitly synthetic ceiling fixture",
+        "result": "verified",
+        "geometryRevision": "luoxia-final-001",
+        "actorParameterRevision": "luoxia-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+      },
+      {
+        "path": "work/final-transition-evidence.json",
+        "objectId": "all-transitions",
+        "method": "30 directed actual replay segments",
+        "result": "verified",
+        "geometryRevision": "luoxia-final-001",
+        "actorParameterRevision": "luoxia-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+      },
+      {
+        "path": "work/final-browser-check.json",
+        "objectId": "browser",
+        "method": "13 routes/16 surfaces/6 NPCs/keyboard/reset/UI",
+        "result": "verified",
+        "geometryRevision": "luoxia-final-001",
+        "actorParameterRevision": "luoxia-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+      },
+      {
+        "path": "work/final-geometry-measurements.json",
+        "objectId": "art-alignment",
+        "method": "80 visible bearing samples and16 climb endpoints",
+        "result": "verified",
+        "geometryRevision": "luoxia-final-001",
+        "actorParameterRevision": "luoxia-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+      },
+      {
+        "path": "work/layer-audit.json",
+        "objectId": "layers",
+        "method": "real alpha, exact recomposition, continuous opaque lower wall",
+        "result": "verified",
+        "geometryRevision": "luoxia-final-001",
+        "actorParameterRevision": "luoxia-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-luoxia-001"
+      }
+    ],
+    "issues": [],
+    "limitations": [
+      "Independent fixed60Hz AABB adapter; production Phaser integration must rerun movement checks after lead PASS.",
+      "NPC/static actors are placement/readability references; no dialogue, combat, gather, quest reward or portal activation implemented.",
+      "220ms drop-through skips the close roof below chimney; tested return walks off left edge and lands naturally.",
+      "Foreground layer not applicable: attached ornaments render behind actor."
+    ],
+    "leadApproval": "pending"
+  }
+}

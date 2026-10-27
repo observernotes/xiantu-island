@@ -1,0 +1,1407 @@
+{
+  "schemaVersion": "1.0",
+  "sceneId": "trial_wanshou_pen",
+  "assetVersion": "trial_wanshou_pen_gsb_v1",
+  "geometryRevision": "trial-wanshou-final-002",
+  "actorParameterRevision": "feel-base100-20261027",
+  "engineRevision": "trial-aabb-feel-60hz-001",
+  "deliveryStatus": "selfcheck-verified-awaiting-lead-review",
+  "leadApproval": "pending",
+  "integrationAllowed": false,
+  "space": {
+    "origin": "top-left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "units": "logical-pixel",
+    "logicalWidth": 1600,
+    "logicalHeight": 640
+  },
+  "files": {
+    "DELIVERED.md": {
+      "bytes": 1318,
+      "sha256": "31190ae4d5171f85b718531c7331019df416b49ca37ad8b33f22adb40d51b2e8",
+      "geometryRevision": "trial-wanshou-final-002",
+      "schemaVersion": "1.0",
+      "actorParameterRevision": "feel-base100-20261027",
+      "engineRevision": "trial-aabb-feel-60hz-001"
+    },
+    "README.md": {
+      "bytes": 2173,
+      "sha256": "3821cbe466845edac5a1cb4ff68402f03f4611bdf845ab65b66d94275425cc66",
+      "geometryRevision": "trial-wanshou-final-002",
+      "schemaVersion": "1.0",
+      "actorParameterRevision": "feel-base100-20261027",
+      "engineRevision": "trial-aabb-feel-60hz-001"
+    },
+    "action-mask.png": {
+      "bytes": 4793,
+      "sha256": "3ebda1ffb16a6544c2e5f381df117dc0110db3ce26bec0395c11a2785269f483",
+      "pixelWidth": 1600,
+      "pixelHeight": 640,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "geometryRevision": "trial-wanshou-final-002",
+      "schemaVersion": "1.0",
+      "actorParameterRevision": "feel-base100-20261027",
+      "engineRevision": "trial-aabb-feel-60hz-001"
+    },
+    "action-overlay.png": {
+      "bytes": 2004875,
+      "sha256": "19e3f1df13ce947645b0f7ba888969c6af166894f3986e0f6f45fc865ee4ab90",
+      "pixelWidth": 1600,
+      "pixelHeight": 640,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "geometryRevision": "trial-wanshou-final-002",
+      "schemaVersion": "1.0",
+      "actorParameterRevision": "feel-base100-20261027",
+      "engineRevision": "trial-aabb-feel-60hz-001"
+    },
+    "background.png": {
+      "bytes": 2103630,
+      "sha256": "1e66c8207c6edcf9a2ada770c6752bd3721add9854d413cb971f1ad893775162",
+      "pixelWidth": 1600,
+      "pixelHeight": 640,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "geometryRevision": "trial-wanshou-final-002",
+      "schemaVersion": "1.0",
+      "actorParameterRevision": "feel-base100-20261027",
+      "engineRevision": "trial-aabb-feel-60hz-001",
+      "role": "background",
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    "collision-overlay.png": {
+      "bytes": 2011064,
+      "sha256": "087e50008aac15154f36f7aef902972f48f0c1074a9d1aa07dcd02e06e9f386e",
+      "pixelWidth": 1600,
+      "pixelHeight": 640,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "geometryRevision": "trial-wanshou-final-002",
+      "schemaVersion": "1.0",
+      "actorParameterRevision": "feel-base100-20261027",
+      "engineRevision": "trial-aabb-feel-60hz-001"
+    },
+    "diagnostics-metadata.json": {
+      "bytes": 1086,
+      "sha256": "808c4bc7cedf575150f6f7ab21e138bc11e3f6d4f14da4a8b000391a89750201",
+      "geometryRevision": "trial-wanshou-final-002",
+      "schemaVersion": "1.0",
+      "actorParameterRevision": "feel-base100-20261027",
+      "engineRevision": "trial-aabb-feel-60hz-001"
+    },
+    "index.html": {
+      "bytes": 167,
+      "sha256": "1c436899ef3ba9a8b3b8370544410a6e3cf9acd6f906869e41fdebd8154ab537",
+      "geometryRevision": "trial-wanshou-final-002",
+      "schemaVersion": "1.0",
+      "actorParameterRevision": "feel-base100-20261027",
+      "engineRevision": "trial-aabb-feel-60hz-001"
+    },
+    "playable.png": {
+      "bytes": 225911,
+      "sha256": "559a640f725cff6d79815eeaa91c8a7d4ebf37a46e35f8dd60ea6c35159e6d6d",
+      "pixelWidth": 1600,
+      "pixelHeight": 640,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "geometryRevision": "trial-wanshou-final-002",
+      "schemaVersion": "1.0",
+      "actorParameterRevision": "feel-base100-20261027",
+      "engineRevision": "trial-aabb-feel-60hz-001",
+      "role": "playable",
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    "polished.lock": {
+      "bytes": 214,
+      "sha256": "f2c593b05a28a6d730efa3b042bae3e47ac5891ffdc16c1b7cc70e12e927f8a2",
+      "geometryRevision": "trial-wanshou-final-002",
+      "schemaVersion": "1.0",
+      "actorParameterRevision": "feel-base100-20261027",
+      "engineRevision": "trial-aabb-feel-60hz-001"
+    },
+    "scene-data.json": {
+      "bytes": 19960,
+      "sha256": "67ce5db84cc8994d9b297c2439f7d319b880ba3bb264a3508e8a1908811f98b7",
+      "geometryRevision": "trial-wanshou-final-002",
+      "schemaVersion": "1.0",
+      "actorParameterRevision": "feel-base100-20261027",
+      "engineRevision": "trial-aabb-feel-60hz-001",
+      "role": "authoritative-action-and-collision-data"
+    },
+    "scene.png": {
+      "bytes": 2031445,
+      "sha256": "6a615cc868fc5e596349da6215c29adf8ea85c2715571a5eea6c0eb8b77f1eeb",
+      "pixelWidth": 1600,
+      "pixelHeight": 640,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "geometryRevision": "trial-wanshou-final-002",
+      "schemaVersion": "1.0",
+      "actorParameterRevision": "feel-base100-20261027",
+      "engineRevision": "trial-aabb-feel-60hz-001",
+      "role": "exact-layer-composite"
+    },
+    "validation-report.md": {
+      "bytes": 10367,
+      "sha256": "528b251b550d6495b4b0153d2f22661750ed2e821dafb38519b2dd2df844c666",
+      "geometryRevision": "trial-wanshou-final-002",
+      "schemaVersion": "1.0",
+      "actorParameterRevision": "feel-base100-20261027",
+      "engineRevision": "trial-aabb-feel-60hz-001"
+    },
+    "work/_backup/status-before-handoff.md": {
+      "bytes": 842,
+      "sha256": "38ef90d92749b3501e42766adaca18c0926431a1f937f792f746b1aec1e05dca",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/_backup/status-before.md": {
+      "bytes": 652,
+      "sha256": "242e9deea8d8798fc7ff1301f68683c73e064c193b85bc75de139ff91fbbe36f",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/action-layout-clean.png": {
+      "bytes": 4949,
+      "sha256": "d1f9bdb078323af50c65cd73d02f1bd0e883862a2300a9ddd6e08afc794028fc",
+      "pixelWidth": 1600,
+      "pixelHeight": 640,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/action-layout-clean.svg": {
+      "bytes": 649,
+      "sha256": "44121fa3805b2f81b6e93abd88bdaec7ff62935b4684fb6c3245b39c03d77126",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/action-layout.png": {
+      "bytes": 10646,
+      "sha256": "83524fc39180248e164d062315329cd07d89ee655649d2e6f9c1212855ca7b85",
+      "pixelWidth": 1600,
+      "pixelHeight": 640,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/action-layout.svg": {
+      "bytes": 1027,
+      "sha256": "ec2145a2f7386c2df2640b45e4ce8b8c565f4877832b840f929136637e7c0bcf",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/art-data-audit.json": {
+      "bytes": 6985,
+      "sha256": "52ce132aa1029987fbbfa4f410bd72c7a4448724f2c2eec705196c29d02409db",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/artcheck-before.log": {
+      "bytes": 948,
+      "sha256": "971ec2b5f561e9fc298167f5443cb1bb9bf08387c5e488c43dfd938ff1f09e5c",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/artcheck-final.log": {
+      "bytes": 948,
+      "sha256": "971ec2b5f561e9fc298167f5443cb1bb9bf08387c5e488c43dfd938ff1f09e5c",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/audit_art.py": {
+      "bytes": 3800,
+      "sha256": "81d5bd86d724c230ae8908816c0ab4dfdd6e32b4cbdafe9984be63a9b67cfb10",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/block-east-target.png": {
+      "bytes": 611305,
+      "sha256": "fd19468cac35e63a910f6e803aab954075eb93b7b11b3f2e16c03b526bf10790",
+      "pixelWidth": 960,
+      "pixelHeight": 320,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/block-west-target.png": {
+      "bytes": 607656,
+      "sha256": "c2a89bea97c79ce3205820672bd25068dbb82c2d76a3c1fa61cc6d95dc8b6838",
+      "pixelWidth": 960,
+      "pixelHeight": 320,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/bootstrap.py": {
+      "bytes": 9771,
+      "sha256": "72f57b7d4b60701a6d061067e3b78aefab6339f62b5dc988ccb2a80f6855a5c9",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/browser_check.py": {
+      "bytes": 6059,
+      "sha256": "5a74ab45bbb506aec6fdcd59308481221e4798ccbb5b33591073466050a76f8d",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/build_manifest.py": {
+      "bytes": 3654,
+      "sha256": "15835b06fd92f7e94d11bde10afb02b45175d996accb546e99b015665db2f747",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/cdp.py": {
+      "bytes": 2277,
+      "sha256": "bf01509fda90f3337f6df5019267e1e697a65fc2164d7188498ed2daedfd58e5",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/check_package.py": {
+      "bytes": 3641,
+      "sha256": "0f0b5dc8b191ca9be2e7340086f5adf28b9f5975a4c98b47238c728961465821",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/check_physics.mjs": {
+      "bytes": 2746,
+      "sha256": "2eb35d551008fea231b01670a5e09dd5ef2cc639d0ffe68474c41ddaae879a61",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/compose_refined.py": {
+      "bytes": 2824,
+      "sha256": "421b0c532edd3d482fa29b526fafbc94fd94a62139a264bf9178e8affa44f6ad",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/deck-ruler.png": {
+      "bytes": 375654,
+      "sha256": "7c33131f8c2b7502165dfca81f7c8cb73e1887f8129981091c001f7895aaf640",
+      "pixelWidth": 1050,
+      "pixelHeight": 270,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/delivery-check.json": {
+      "bytes": 1834,
+      "sha256": "0bf09164176da89cf0842b080eff68ab8392edb86dd0a40fa8732d860aa9a385",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/extracted-deck-ruler.png": {
+      "bytes": 105365,
+      "sha256": "3009af33f7de49e5ab27888bed1e4b8aaf53c2b0f47fab42b4e4e632dd35cf02",
+      "pixelWidth": 1020,
+      "pixelHeight": 180,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/extracted-right-deck-ruler.png": {
+      "bytes": 101627,
+      "sha256": "c1679cdf9e331896e55bc7a8dbf4cbb9208800f0094b48c35620e58c7510a449",
+      "pixelWidth": 1040,
+      "pixelHeight": 180,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/final-browser-check.json": {
+      "bytes": 10543,
+      "sha256": "dfcc652d2db5bd3e824b7ae7bfdf6f605835f2fb531df0388ba3d3bbbbd21e9c",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/final-contact-montage.png": {
+      "bytes": 700399,
+      "sha256": "aca787bedfde28a72f3009606869f28c0a84c68a756b1bccfc53e97c8a47dc64",
+      "pixelWidth": 1440,
+      "pixelHeight": 270,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/final-physics.json": {
+      "bytes": 1206,
+      "sha256": "37cf3de8e0112a389f9ba56fe56a26975ca9ed6c3c4fc0ea4054a208210f2345",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/final-routes.json": {
+      "bytes": 1077,
+      "sha256": "16a80f37d50c2cadb8af2076a5f622341bf5f63c00cf50bb81e7778cb40c3b69",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/final-screenshots/actions.png": {
+      "bytes": 2070298,
+      "sha256": "e64c4ed7491018bbc56b900de5833e1fadc531f204aeba4415f08b15307c6b93",
+      "pixelWidth": 1660,
+      "pixelHeight": 1250,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/final-screenshots/clean.png": {
+      "bytes": 2080199,
+      "sha256": "ae329b17bde25fd9dc053146903100bd5bd75f931187b6ac022854a1ae04f5e8",
+      "pixelWidth": 1660,
+      "pixelHeight": 1250,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/final-screenshots/collision.png": {
+      "bytes": 2065388,
+      "sha256": "5c90b9317319207b9986cd25e3c9ee0d287555000c9fd71764b4378b7fbcdcdb",
+      "pixelWidth": 1660,
+      "pixelHeight": 1250,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/final-screenshots/contact-s_ground.png": {
+      "bytes": 2060581,
+      "sha256": "492e67ec0734af502a63cd65b04bc3de0af08ed0dec67a7e3b3a28714f173b87",
+      "pixelWidth": 1660,
+      "pixelHeight": 1250,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/final-screenshots/contact-s_pen_left.png": {
+      "bytes": 2060752,
+      "sha256": "76d4737a4db07ff10b36d10fe00708c6a460bbb802d034d248a0d7b1973ebf31",
+      "pixelWidth": 1660,
+      "pixelHeight": 1250,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/final-screenshots/contact-s_pen_right.png": {
+      "bytes": 2051579,
+      "sha256": "a6faa0a83bfa4520b79632887413e661e02efb25512feeac932af16bb7391337",
+      "pixelWidth": 1660,
+      "pixelHeight": 1250,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/final-screenshots/route_full_tour.png": {
+      "bytes": 2079930,
+      "sha256": "15254ed1f25a097ad11f02a6dba6708fad047a1a5b80331065d3d54f0c093601",
+      "pixelWidth": 1660,
+      "pixelHeight": 1250,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/final-screenshots/route_ground_roundtrip.png": {
+      "bytes": 2079875,
+      "sha256": "b0d73b4935af619e47481fefc91c079b36e7a79f4955c758e4ed33dde26aa1c2",
+      "pixelWidth": 1660,
+      "pixelHeight": 1250,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/final-screenshots/route_left_return.png": {
+      "bytes": 2079869,
+      "sha256": "d237fce94051651e313876e943ca355500a683797b32266b9e16f562c557d455",
+      "pixelWidth": 1660,
+      "pixelHeight": 1250,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/final-screenshots/route_right_return.png": {
+      "bytes": 2080199,
+      "sha256": "ae329b17bde25fd9dc053146903100bd5bd75f931187b6ac022854a1ae04f5e8",
+      "pixelWidth": 1660,
+      "pixelHeight": 1250,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/finalize_data.py": {
+      "bytes": 3709,
+      "sha256": "416f980df4f03b7dacf768aad1b57d92c5d80a5a9dc06bc580bc5472df389a79",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/fix002-routes.json": {
+      "bytes": 1081,
+      "sha256": "e84e47e388295b0b8afccd51f53f6a790de8814af504fda024e01703686da664",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/fix_final002/harden_standing.py": {
+      "bytes": 13750,
+      "sha256": "98c669c37d5d32220ad3a1491629c4fe8ffa2b06a63e11f2d4fb5bb392f5b461",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/fix_final002/playable.png": {
+      "bytes": 225911,
+      "sha256": "559a640f725cff6d79815eeaa91c8a7d4ebf37a46e35f8dd60ea6c35159e6d6d",
+      "pixelWidth": 1600,
+      "pixelHeight": 640,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/fix_final002/pre_DELIVERED.md": {
+      "bytes": 1077,
+      "sha256": "aa9913e8eae10b806d26913433a250ba409d69ff358253ca3deb93e437aa62b3",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/fix_final002/pre_action-mask.png": {
+      "bytes": 4793,
+      "sha256": "3ebda1ffb16a6544c2e5f381df117dc0110db3ce26bec0395c11a2785269f483",
+      "pixelWidth": 1600,
+      "pixelHeight": 640,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/fix_final002/pre_action-overlay.png": {
+      "bytes": 2004021,
+      "sha256": "191d29c6e62c175104d9ac8134f236ecd4f79f31319d91f18871461e0e9ca91d",
+      "pixelWidth": 1600,
+      "pixelHeight": 640,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/fix_final002/pre_collision-overlay.png": {
+      "bytes": 2010115,
+      "sha256": "09cf4d794fedac41e74a5355a03ddb345f285af0cb67ac2a4464603a36f4f01a",
+      "pixelWidth": 1600,
+      "pixelHeight": 640,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/fix_final002/pre_diagnostics-metadata.json": {
+      "bytes": 1086,
+      "sha256": "dc58c9f7343e52c9e0332dabc17eaaa10f90a02a2ffb873c3bae9c3546eda2d3",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/fix_final002/pre_manifest.json": {
+      "bytes": 43726,
+      "sha256": "22a8565c14d2b8588561b4014ad195d104e798d40b99a193d56cd755057d4556",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/fix_final002/pre_playable.png": {
+      "bytes": 225271,
+      "sha256": "5a9535bdf415ce6219c836585c99cb12a8d25a23eb7c6e792a41c3ab92d0fae9",
+      "pixelWidth": 1600,
+      "pixelHeight": 640,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/fix_final002/pre_scene-data.json": {
+      "bytes": 19960,
+      "sha256": "0ca5e918652cf7adb4f1159e35079b1100d4883c37eddd2c6c05d9a85e72795c",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/fix_final002/pre_scene.png": {
+      "bytes": 2030601,
+      "sha256": "a4844879c09daa102c37f599b1b7db5a283fda4815712143e988e3a1c4225dad",
+      "pixelWidth": 1600,
+      "pixelHeight": 640,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/fix_final002/pre_validation-report.md": {
+      "bytes": 8802,
+      "sha256": "d1443fd92708658ad2c8326a7b5c0bb88cf474f1ea38acc87ee20b3f2fd2b3cd",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/fix_final002/routes-rerun.log": {
+      "bytes": 135,
+      "sha256": "e239a688f7e62d5ba35a98e0100fef82b211f058eb87cf460c7e42e0a423f59e",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/fix_final002/scene.png": {
+      "bytes": 2031445,
+      "sha256": "6a615cc868fc5e596349da6215c29adf8ea85c2715571a5eea6c0eb8b77f1eeb",
+      "pixelWidth": 1600,
+      "pixelHeight": 640,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/fix_final002/standing-remeasure.json": {
+      "bytes": 8055,
+      "sha256": "284ea205b79603335fc7083ef9064925ee5906299fa9b7a43c6516a49c936c74",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/floor-ruler.png": {
+      "bytes": 162086,
+      "sha256": "58051394498d49dd3b9732cdc0375242f7fa051ab0bfee7199d04b298d345cf6",
+      "pixelWidth": 1600,
+      "pixelHeight": 45,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/generated/stage3-native.png": {
+      "bytes": 2995881,
+      "sha256": "4e36d937879ffb6a3e85572ea3e34557b18ec3f25fd1082c6624040c4a9003d7",
+      "pixelWidth": 1983,
+      "pixelHeight": 793,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/generated/stage3-repair-native.png": {
+      "bytes": 2917861,
+      "sha256": "64fe6383eba47eb241d16a1a435df4680f4a3f9ed1ada5d4b87a8f9f7bc77d21",
+      "pixelWidth": 1983,
+      "pixelHeight": 793,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/generated/stage4-east-native.png": {
+      "bytes": 2604483,
+      "sha256": "fcd84fbbadbd54814d8396ebea20fd612d12c75f2f7bfaa679996ecd75a1fdc2",
+      "pixelWidth": 2170,
+      "pixelHeight": 725,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/generated/stage4-west-native.png": {
+      "bytes": 2746544,
+      "sha256": "e2a9d58b2bf51bda8e0e2511613da2dfb7fb761bbb5d5bd3753cf8394a272f02",
+      "pixelWidth": 2172,
+      "pixelHeight": 724,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/generated/stage5-background-native.png": {
+      "bytes": 2742009,
+      "sha256": "0cf36f99add2a55b3e8faa2291094134c6625d812f40437f120bfcf355fa7e33",
+      "pixelWidth": 1983,
+      "pixelHeight": 793,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/generated/stage5-playable-native.png": {
+      "bytes": 587933,
+      "sha256": "e97b10811ca698bd4d3cb31c03d4a588e5d81e42dfadac069a6a6b6e29bc1367",
+      "pixelWidth": 1983,
+      "pixelHeight": 793,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/graybox-browser-attempt-favicon404.json": {
+      "bytes": 12784,
+      "sha256": "5475ee48a29de5a0345f61df80138eaabc2815a80476619a1133d6ed6b534bcb",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/graybox-browser-check.json": {
+      "bytes": 9533,
+      "sha256": "93cbe8243733da4f8b1b39a9eab519287f2ccb9c7e5d3bf31d4a2005dff28d20",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/graybox-contact-check.png": {
+      "bytes": 28068,
+      "sha256": "fa78d69b5b0d253f97af2f1dd4d7c68ba0349e705c951e1c36fbe7a1e68869b4",
+      "pixelWidth": 890,
+      "pixelHeight": 700,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/graybox-physics.json": {
+      "bytes": 1208,
+      "sha256": "b3cae00dbec7803de3e7a906d8dcd81d1be606cbaf78e11378bda9eb3e78501f",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/graybox-routes.json": {
+      "bytes": 1087,
+      "sha256": "a549e5b36075c013a1262bafbe01b0911770a2e0a7a57dcd8323ceb1bd76b94d",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/graybox-screenshots/actions.png": {
+      "bytes": 67815,
+      "sha256": "c7d8aa36db00501b1368617bfda8729d6bd5e7504cde81cfe8cbf85da7140efa",
+      "pixelWidth": 1660,
+      "pixelHeight": 1250,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/graybox-screenshots/clean.png": {
+      "bytes": 59883,
+      "sha256": "a3404576898e173ddd210e2b8a7311cca7a0a905a4950e2ff086fe8f31740220",
+      "pixelWidth": 1660,
+      "pixelHeight": 1250,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/graybox-screenshots/collision.png": {
+      "bytes": 60230,
+      "sha256": "eaa6014bc2d62465ae147b1de171fdbf55db70a79e518957fcd329c80191828d",
+      "pixelWidth": 1660,
+      "pixelHeight": 1250,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/graybox-screenshots/contact-s_ground.png": {
+      "bytes": 67864,
+      "sha256": "01a7705f730059c27f94edb8a33462958e911cc55dec490555a86cb67aa09b62",
+      "pixelWidth": 1660,
+      "pixelHeight": 1250,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/graybox-screenshots/contact-s_pen_left.png": {
+      "bytes": 67657,
+      "sha256": "34e79209f4726435313e78d563c27d21e485803d6865e73c0ca2635a19fdb33b",
+      "pixelWidth": 1660,
+      "pixelHeight": 1250,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/graybox-screenshots/contact-s_pen_right.png": {
+      "bytes": 66345,
+      "sha256": "173b0c277edf3c17e064261cee0a1a9ad3fa10fe3d1bf8b3289f926fc826e249",
+      "pixelWidth": 1660,
+      "pixelHeight": 1250,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/graybox-screenshots/route_full_tour.png": {
+      "bytes": 59683,
+      "sha256": "ef495c0968ef43fb9d6051b29a5784828875e9ee9f0258bb0dddc6a9e7d5e262",
+      "pixelWidth": 1660,
+      "pixelHeight": 1250,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/graybox-screenshots/route_ground_roundtrip.png": {
+      "bytes": 59573,
+      "sha256": "5a4a015a7ec4517770c20ea90181aec672418cbed88025e503752be601a16799",
+      "pixelWidth": 1660,
+      "pixelHeight": 1250,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/graybox-screenshots/route_left_return.png": {
+      "bytes": 59591,
+      "sha256": "22098d9fcc89737ba512fdb69b33525b7499d4399ca2ba615ad7642a3d30a1cc",
+      "pixelWidth": 1660,
+      "pixelHeight": 1250,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/graybox-screenshots/route_right_return.png": {
+      "bytes": 59883,
+      "sha256": "a3404576898e173ddd210e2b8a7311cca7a0a905a4950e2ff086fe8f31740220",
+      "pixelWidth": 1660,
+      "pixelHeight": 1250,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/indep-verify-routes.json": {
+      "bytes": 1105,
+      "sha256": "7ea027e1dc5edc444271fd828698adcc295aba96a26ba3cf9f06c5dcd9f0ac15",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/master-stage3-registered.png": {
+      "bytes": 1801138,
+      "sha256": "feaef7d9df094f145cccaabd8efe885e6e7b3bd4ce75b2008b3dfe9182c2227b",
+      "pixelWidth": 1600,
+      "pixelHeight": 640,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/master-stage4-refined.png": {
+      "bytes": 1821332,
+      "sha256": "d9778b35fe118dc486b047511850729f96cfa51cd676b85f3e213224b92448a8",
+      "pixelWidth": 1600,
+      "pixelHeight": 640,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/playable-alpha-dark.png": {
+      "bytes": 223013,
+      "sha256": "ef62598bb0bcd5ab17ac6d506e0dcf8a3f879995cff34917a115d997409072d4",
+      "pixelWidth": 1600,
+      "pixelHeight": 640,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/playable-alpha-light.png": {
+      "bytes": 223512,
+      "sha256": "802551a73fcfb646ea74d743fd12801e1bb6fc8823c09973dad8f9a63f2b3c17",
+      "pixelWidth": 1600,
+      "pixelHeight": 640,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/preview/engine.mjs": {
+      "bytes": 14193,
+      "sha256": "aa5263518ebccd491515caa012a13801ea2017e6fe6a6b8d26e83aad9e78febb",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/preview/index.html": {
+      "bytes": 1444,
+      "sha256": "9f5bb6a948010fd58ab3bd8d765a7ebfbf590b51046b8eba1ab8c0311f080c07",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/preview/player-reference-idle.png": {
+      "bytes": 10012,
+      "sha256": "520235d2f9c4c9e83b140ba439c2d18becfaa8e962fa15a98e35a14003ce0181",
+      "pixelWidth": 96,
+      "pixelHeight": 96,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/preview/preview.mjs": {
+      "bytes": 5583,
+      "sha256": "6ffcf22cde1ffda03c02981a9a3aa061cb29c62f1c92a9af2b2971cfe6756017",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/prompt-stage3-repair.txt": {
+      "bytes": 2014,
+      "sha256": "cc7a0a5404becec5fbfdcda3b377ecb19dbdfc936fdc8e1faef24813cb480d9b",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/prompt-stage3.txt": {
+      "bytes": 2761,
+      "sha256": "0c19525b4609c38346560954525c50563a0ec8725854f1eedf2a6f1f25920674",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/prompt-stage4-east.txt": {
+      "bytes": 1800,
+      "sha256": "099e7f71205d06bb1b9fa6ac66e83079622f498f4b36193b1f06e84064bf3513",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/prompt-stage4-west.txt": {
+      "bytes": 1839,
+      "sha256": "9da7de5b3a23c2fed2a7de2370e4adcfb2cf8eb7c0de672345213f85ba4c0a4d",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/prompt-stage5-background.txt": {
+      "bytes": 1693,
+      "sha256": "210c13036c629e57abb1358fc7307b62ad30a8279a1a713a26cb76d4555f2351",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/prompt-stage5-playable.txt": {
+      "bytes": 1503,
+      "sha256": "29ae82b8536e477d89831a41bb3ec902dbb82bb6cd48b1cdb08783548441ad83",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/protected-before.json": {
+      "bytes": 700031,
+      "sha256": "1a40a8bbccc03b12ea4ac7a8190689504b54ab3eb85fb268ae57df69df06e21f",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/protected-boundary.json": {
+      "bytes": 329,
+      "sha256": "d9fe9b604b34f6ab751415074d0d957f62bc50f5ddb71c9daac34a22c4f3c633",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/register_layers.py": {
+      "bytes": 2788,
+      "sha256": "32513ee59a355c48949c9e1d56476e2a3116491f54742b35e18ab725a368240b",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/registration-stage3.json": {
+      "bytes": 593,
+      "sha256": "80d2bfa36477b4344f828ac734763ecea6f1a884a7568e75508e830b3407f084",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/registration-stage5.json": {
+      "bytes": 2523,
+      "sha256": "13f818dbc4e759dd005d149e72fb58f86a246ff5b15d93b56cd27a69e0dc58be",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/render_diagnostics.py": {
+      "bytes": 4311,
+      "sha256": "70a5224a30012b4b34999b6b0dd1c998306cf58bb8722b27f28dc870da142877",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/replays-final/route_full_tour.json": {
+      "bytes": 913845,
+      "sha256": "cb673314366b0ddc7f231134dc13a617ca2a36d1933ccaed75c290d43cde409d",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/replays-final/route_ground_roundtrip.json": {
+      "bytes": 473358,
+      "sha256": "3dda7e4f739ead017b6e0c2ffe19263c650f083dead7546fc53bbb2226bb0f57",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/replays-final/route_left_return.json": {
+      "bytes": 265608,
+      "sha256": "22a93f004938f34c0b1a05bb6e4e343b2771c3602f001be19e09631a948ed1bb",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/replays-final/route_right_return.json": {
+      "bytes": 451547,
+      "sha256": "e6188ea1008f5f746704677807979c5aeb798a51fcc2c9654875ce52c8fa107b",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/replays-fix002/route_full_tour.json": {
+      "bytes": 913845,
+      "sha256": "4243b2fdaa48dc20dcec72399a4edf4442665354926ab4795392b783ad5e02ce",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/replays-fix002/route_ground_roundtrip.json": {
+      "bytes": 473358,
+      "sha256": "6adebc4750816ae50fdd59f2eb4e353bfa5b64ef1ec6b6bd1ec141fa6816b003",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/replays-fix002/route_left_return.json": {
+      "bytes": 265608,
+      "sha256": "3d13f05d0cc69557099296d020eb98416b6cc3b0c46da1ded77fad9995ce112d",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/replays-fix002/route_right_return.json": {
+      "bytes": 451547,
+      "sha256": "cc388ab11dcd39d1e0d1f8a4f802bf82a6aab00c45bdfc2892b43b539df76d5c",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/replays-graybox/route_full_tour.json": {
+      "bytes": 913849,
+      "sha256": "a6d27dab57d4d0c8dce076a88b13fc869701873c7fdbef2430acd59b29aa5b80",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/replays-graybox/route_ground_roundtrip.json": {
+      "bytes": 473362,
+      "sha256": "27a16a42edbeef87d2c885dc9da41bd00fdecaca49420f6c745a8949e0acbc54",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/replays-graybox/route_left_return.json": {
+      "bytes": 265612,
+      "sha256": "ceef67475fbcc70fe497e47bcb6b7fce024ef991ba490608eced6138786035a8",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/replays-graybox/route_right_return.json": {
+      "bytes": 451551,
+      "sha256": "04a7387b1cd0a72597b23e049e5b4c509b63ba88cf8c88acecf9d2d566670400",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/replays-indep-verify/route_full_tour.json": {
+      "bytes": 913845,
+      "sha256": "a4dad2df21359fed29a161717fe5b11f60a14161f20609a063be114188a55192",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/replays-indep-verify/route_ground_roundtrip.json": {
+      "bytes": 473358,
+      "sha256": "7dc2464a48c9d2f91e2861be3a8b3f44cb5d1a6549ddb9810ec24a666305b312",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/replays-indep-verify/route_left_return.json": {
+      "bytes": 265608,
+      "sha256": "8db92232a15bac6913b91047911c9fe5afac5781e53911f42207a58355f3dcb6",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/replays-indep-verify/route_right_return.json": {
+      "bytes": 451547,
+      "sha256": "4f20a419cc49ebe5bc11430d8c327b6255403edcf26e783a6a0433ad4e76ffab",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/run_routes.mjs": {
+      "bytes": 3729,
+      "sha256": "c4f7590c947c84465951468cc65018dcc3851889e7a88ce1ba210aeb660dd22f",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/scene-brief.md": {
+      "bytes": 2476,
+      "sha256": "c321e7c233a0f761e7ea6210af0eed83709c1b4e62f0d930cf5b38c38514ab78",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/scene-data.draft.json": {
+      "bytes": 10880,
+      "sha256": "a7ae6f7b80536217bc4560c478c9582eac6fb59390e7b1f31c98c14510acef28",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/scene-data.final-executed.json": {
+      "bytes": 10959,
+      "sha256": "55de7cc1be4d1188baea790c4c47655b48035f29307fddf2d8b9670ddce453ee",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/scene-data.graybox.json": {
+      "bytes": 10880,
+      "sha256": "a7ae6f7b80536217bc4560c478c9582eac6fb59390e7b1f31c98c14510acef28",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/stage-ledger.md": {
+      "bytes": 1556,
+      "sha256": "35177ddb227ef81d48fc55a17fd9582aed9855b9d7858ca74a76f82e19cb0c5c",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/stage2-graybox-report.md": {
+      "bytes": 649,
+      "sha256": "a7ba3d0ece0abf11f5f9faddc9610b37a05d4c7d261af94a6a2917b4e87e0010",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/stage3-geometry-check.png": {
+      "bytes": 1797247,
+      "sha256": "cc26507c50f9c77566c238bf990ae96bdf2ef4161fbf17e835aadb9efb07849a",
+      "pixelWidth": 1600,
+      "pixelHeight": 640,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/stage3-issues.md": {
+      "bytes": 592,
+      "sha256": "db4e38ed683824f067fd8719e5c1ae7f9e64baca507b795cec10c6fabef35131",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/stage3-registered.png": {
+      "bytes": 1963931,
+      "sha256": "4a9e0cfb70cbe587a0a6fe33db5c3df848854ea9b9e7d0211b5f612df5f83b82",
+      "pixelWidth": 1600,
+      "pixelHeight": 640,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/stage3-repair-size.png": {
+      "bytes": 1940932,
+      "sha256": "ee59acc4226aafa12ac8bdab8f8ec42a6c3dce3413cc0f76176fd2c945e6e55c",
+      "pixelWidth": 1600,
+      "pixelHeight": 640,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/stage3-target-overlay.png": {
+      "bytes": 2226504,
+      "sha256": "b3bbf9bcd1218a48e8b406dc8459792dd7ab723631a7e4de8b137c75fc0b4dd5",
+      "pixelWidth": 1600,
+      "pixelHeight": 640,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/stage4-blocks.json": {
+      "bytes": 8015,
+      "sha256": "1d87e135dfca2d266647815cb83e6d9a3201746e4837ff555df9eab23abedbb2",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/stage4-east-before-after.png": {
+      "bytes": 1233063,
+      "sha256": "bb528bca4740b66a65419e093655c570f76536a78d274487636122b11ac4ffbf",
+      "pixelWidth": 960,
+      "pixelHeight": 640,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/stage4-east-registered.png": {
+      "bytes": 621710,
+      "sha256": "d1f83889cb49ab8fff93a2439bec4624049957ee4d3eb59e855ad0c3d482fcc6",
+      "pixelWidth": 960,
+      "pixelHeight": 320,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/stage4-east-ruler.png": {
+      "bytes": 266134,
+      "sha256": "097ff245c5c7e272062e922b01e24eef19ed9fc96988917a9c6f0148c82f30b1",
+      "pixelWidth": 960,
+      "pixelHeight": 140,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/stage4-east-size.png": {
+      "bytes": 620688,
+      "sha256": "f8b2eb7f36986cd5c8089808dc1efa051c71d3da72d47a5e5bea4a80685aaea7",
+      "pixelWidth": 960,
+      "pixelHeight": 320,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/stage4-west-before-after.png": {
+      "bytes": 1243761,
+      "sha256": "8521dd25f5239076fc47276cd6bc7b7f3c7e210c2304d1a3f2ae03cba61d974d",
+      "pixelWidth": 960,
+      "pixelHeight": 640,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/stage4-west-registered.png": {
+      "bytes": 636192,
+      "sha256": "3f7f60cfc5a74e585660d1cc03eddd88f88b7a39fa8c1231d546835d06821d5e",
+      "pixelWidth": 960,
+      "pixelHeight": 320,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/stage4-west-ruler.png": {
+      "bytes": 274468,
+      "sha256": "cde3cacb1c4d873b4744ee6b93b11259d29061c864da2c06b2efbece34bbc7ed",
+      "pixelWidth": 960,
+      "pixelHeight": 140,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/stage4-west-size.png": {
+      "bytes": 639322,
+      "sha256": "3ed0a2cd2672fdbad7d0502756ba25bd523ed6c4276ceb6c3c774f11483ea261",
+      "pixelWidth": 960,
+      "pixelHeight": 320,
+      "mode": "RGB",
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    },
+    "work/stage5-playable-size.png": {
+      "bytes": 363098,
+      "sha256": "6ebb15e00787da0546ffa3cb4506b46029196e3be712e70ddbc744f44a756c9a",
+      "pixelWidth": 1600,
+      "pixelHeight": 640,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "role": "process-source-or-evidence",
+      "packagedWithGeometryRevision": "trial-wanshou-final-002"
+    }
+  },
+  "assets": [
+    {
+      "id": "background",
+      "role": "background",
+      "path": "background.png",
+      "pixelWidth": 1600,
+      "pixelHeight": 640,
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "playable",
+      "role": "playable",
+      "path": "playable.png",
+      "pixelWidth": 1600,
+      "pixelHeight": 640,
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    }
+  ],
+  "actorDrawOrder": 20,
+  "foreground": {
+    "applicable": false,
+    "reason": "No foreground occluders, preserve clear bottom and entrances"
+  },
+  "composition": {
+    "inputs": [
+      "background.png",
+      "playable.png"
+    ],
+    "operation": "RGBA alpha composite",
+    "exactRecomposition": true,
+    "refinedMaster": "work/master-stage4-refined.png"
+  },
+  "sceneData": {
+    "path": "scene-data.json",
+    "sha256": "67ce5db84cc8994d9b297c2439f7d319b880ba3bb264a3508e8a1908811f98b7",
+    "geometryRevision": "trial-wanshou-final-002",
+    "validationStatus": "verified"
+  },
+  "diagnostics": {
+    "schemaVersion": "1.0",
+    "geometryRevision": "trial-wanshou-final-002",
+    "actorParameterRevision": "feel-base100-20261027",
+    "engineRevision": "trial-aabb-feel-60hz-001",
+    "sceneDataSHA256": "67ce5db84cc8994d9b297c2439f7d319b880ba3bb264a3508e8a1908811f98b7",
+    "validationStatus": "verified",
+    "maskPalette": {
+      "walk": [
+        150,
+        245,
+        160,
+        255
+      ],
+      "stand": [
+        0,
+        200,
+        80,
+        255
+      ],
+      "jump": [
+        255,
+        180,
+        0,
+        255
+      ],
+      "drop": [
+        170,
+        80,
+        225,
+        255
+      ],
+      "point": [
+        255,
+        70,
+        160,
+        255
+      ]
+    },
+    "rasterizationOrder": [
+      "walk",
+      "stand",
+      "jump",
+      "drop",
+      "point"
+    ],
+    "maskAntialiasing": false,
+    "maskHasLabels": false,
+    "files": {
+      "action-mask.png": "3ebda1ffb16a6544c2e5f381df117dc0110db3ce26bec0395c11a2785269f483",
+      "action-overlay.png": "19e3f1df13ce947645b0f7ba888969c6af166894f3986e0f6f45fc865ee4ab90",
+      "collision-overlay.png": "087e50008aac15154f36f7aef902972f48f0c1074a9d1aa07dcd02e06e9f386e"
+    }
+  },
+  "runtime": {
+    "entry": "index.html",
+    "page": "work/preview/index.html",
+    "engine": "work/preview/engine.mjs",
+    "engineSha256": "aa5263518ebccd491515caa012a13801ea2017e6fe6a6b8d26e83aad9e78febb",
+    "dataSource": "scene-data.json",
+    "localStart": "python3 -m http.server 8813 --bind 127.0.0.1",
+    "scope": "independent fixed60Hz AABB with repository FEEL base100; no production Phaser integration"
+  },
+  "validation": {
+    "status": "verified",
+    "report": "validation-report.md",
+    "routeCount": 4,
+    "transitionCount": 7,
+    "routes": "work/final-routes.json",
+    "physics": "work/final-physics.json",
+    "browser": "work/final-browser-check.json",
+    "artAudit": "work/art-data-audit.json",
+    "executionSnapshot": "work/scene-data.final-executed.json",
+    "toplineTolerance": 1,
+    "toplineMaxDeltaY": 0,
+    "resetCount": 0
+  },
+  "provenance": {
+    "artTool": "built-in image_gen.imagegen",
+    "prompts": "work/prompt-*.txt",
+    "originals": "work/generated/",
+    "stage3Registration": "work/registration-stage3.json",
+    "refinementBlocks": "work/stage4-blocks.json",
+    "finalLayerRegistration": "work/registration-stage5.json",
+    "sourceMap": "maps/trial_wanshou_pen.json (read-only)",
+    "positiveReferences": [
+      "trial_foundation_altar_gsb_v1",
+      "wanshou_mountain_gsb_v1",
+      "qingyun_village_gsb_v2"
+    ],
+    "ordinaryResizeMeaning": "coordinate registration and crop placement only; AI repaint/material changes evidenced by stage4 before/after"
+  },
+  "protectedBoundary": {
+    "status": "verified",
+    "snapshotFiles": 4988,
+    "changed": [],
+    "missing": [],
+    "taskWriteScope": [
+      "art/scenes/trial_wanshou_pen_gsb_v1/**",
+      "status/丹青阁.md"
+    ],
+    "protectedPathsWrittenByThisTask": false,
+    "publication": false,
+    "push": false,
+    "integration": false,
+    "otherSceneLanesStarted": false
+  },
+  "notes": [
+    "PM PASS前禁接入；无发布、push或P3赤炎工作。",
+    "No battle waves or taming mechanics executed; delivery validates terrain routes only."
+  ]
+}

@@ -1,0 +1,765 @@
+{
+  "schemaVersion": "1.0",
+  "sceneId": "trial_wanshou_pen",
+  "geometryRevision": "trial-wanshou-final-002",
+  "status": "verified",
+  "space": {
+    "origin": "top-left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "units": "logical-pixel",
+    "logicalWidth": 1600,
+    "logicalHeight": 640
+  },
+  "source": {
+    "path": "maps/trial_wanshou_pen.json",
+    "sha256": "b777bebb1b8b59ea47049bdccdde57c765600cb9ac939030300b7222edd508fd",
+    "properties": {
+      "qiDensity": 4,
+      "area": "wanshou",
+      "trial": "trial_sect_wanshou",
+      "safeZone": false
+    },
+    "tileSize": 32
+  },
+  "actor": {
+    "parameterRevision": "feel-base100-20261027",
+    "parameterSource": [
+      "game/src/config/feel.ts",
+      "game/src/scenes/Player.ts",
+      "game/src/move.ts"
+    ],
+    "sourceRevision": {
+      "game/src/config/feel.ts": "9375297a15b04012633197a935f4d9ffd403c3ff8d1e055cb585dd5f81acdeec",
+      "game/src/scenes/Player.ts": "ec9426ed625784532c6e632a1755bd16076cc3f559d177f465b741341193f513",
+      "game/src/move.ts": "585c9987623cbe532d7f65508773addd52ccd2f312e5c2ee592e9e6f2f686a74"
+    },
+    "provisional": false,
+    "visualBounds": {
+      "width": 96,
+      "height": 96,
+      "anchor": "feet-center"
+    },
+    "visualAsset": {
+      "path": "work/preview/player-reference-idle.png",
+      "width": 96,
+      "height": 96,
+      "source": "read-only copied existing foundation tester frame; no animation claim"
+    },
+    "collider": {
+      "shape": "aabb",
+      "width": 26,
+      "height": 58,
+      "anchor": "feet-center"
+    },
+    "abilities": [
+      "walk",
+      "jump",
+      "double-jump",
+      "drop-through"
+    ],
+    "movement": {
+      "gravity": 2000,
+      "maxFallSpeed": 670,
+      "walkSpeed": 130,
+      "groundAccel": 2400,
+      "groundDecel": 3000,
+      "airAccel": 700,
+      "airMaxSpeed": 130,
+      "jumpSpeed": 560,
+      "coyoteMs": 60,
+      "jumpBufferMs": 80,
+      "doubleJumpVy": 480,
+      "doubleJumpVx": 330,
+      "dropThroughMs": 220
+    },
+    "failureRules": {
+      "manualReset": "R resets to start_spawn; prohibited within required route evidence",
+      "outOfBounds": "reset at y > logicalHeight+160"
+    }
+  },
+  "assets": [
+    {
+      "id": "background",
+      "role": "background",
+      "path": "background.png",
+      "pixelWidth": 1600,
+      "pixelHeight": 640,
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "playable",
+      "role": "playable",
+      "path": "playable.png",
+      "pixelWidth": 1600,
+      "pixelHeight": 640,
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "s_ground",
+      "polyline": [
+        [
+          0,
+          576
+        ],
+        [
+          1600,
+          576
+        ]
+      ],
+      "support": "solid",
+      "status": "verified",
+      "effectiveLandingRange": [
+        13,
+        1587
+      ],
+      "walkableRegion": [
+        [
+          13,
+          518
+        ],
+        [
+          1587,
+          518
+        ],
+        [
+          1587,
+          576
+        ],
+        [
+          13,
+          576
+        ]
+      ],
+      "clearance": 58,
+      "visualTopEdgeY": 576
+    },
+    {
+      "id": "s_pen_left",
+      "polyline": [
+        [
+          128,
+          480
+        ],
+        [
+          352,
+          480
+        ]
+      ],
+      "support": "one-way",
+      "status": "verified",
+      "effectiveLandingRange": [
+        141,
+        339
+      ],
+      "walkableRegion": [
+        [
+          141,
+          422
+        ],
+        [
+          339,
+          422
+        ],
+        [
+          339,
+          480
+        ],
+        [
+          141,
+          480
+        ]
+      ],
+      "clearance": 58,
+      "visualTopEdgeY": 480
+    },
+    {
+      "id": "s_pen_right",
+      "polyline": [
+        [
+          1248,
+          480
+        ],
+        [
+          1472,
+          480
+        ]
+      ],
+      "support": "one-way",
+      "status": "verified",
+      "effectiveLandingRange": [
+        1261,
+        1459
+      ],
+      "walkableRegion": [
+        [
+          1261,
+          422
+        ],
+        [
+          1459,
+          422
+        ],
+        [
+          1459,
+          480
+        ],
+        [
+          1261,
+          480
+        ]
+      ],
+      "clearance": 58,
+      "visualTopEdgeY": 480
+    }
+  ],
+  "climbs": [],
+  "stairs": [],
+  "solids": [
+    {
+      "id": "solid_ground",
+      "polygon": [
+        [
+          0,
+          576
+        ],
+        [
+          1600,
+          576
+        ],
+        [
+          1600,
+          640
+        ],
+        [
+          0,
+          640
+        ]
+      ],
+      "terrain": "s_ground",
+      "status": "verified",
+      "openings": []
+    }
+  ],
+  "hazards": [],
+  "points": [
+    {
+      "id": "start_spawn",
+      "type": "spawn",
+      "position": [
+        256,
+        576
+      ],
+      "surface": "s_ground",
+      "status": "verified",
+      "safeRadius": 13
+    },
+    {
+      "id": "mad_mandrill",
+      "type": "monster-spawn",
+      "position": [
+        768,
+        576
+      ],
+      "surface": "s_ground",
+      "status": "verified",
+      "safeRadius": 13,
+      "monster": "mad_mandrill",
+      "count": 1,
+      "spawnRange": [
+        768,
+        832
+      ],
+      "sourceName": "spawn_mad_mandrill_2"
+    },
+    {
+      "id": "gate_left",
+      "type": "spawnGate",
+      "position": [
+        80,
+        576
+      ],
+      "surface": "s_ground",
+      "status": "verified",
+      "safeRadius": 13,
+      "side": "left",
+      "monster": "wild_wolf"
+    },
+    {
+      "id": "gate_right",
+      "type": "spawnGate",
+      "position": [
+        1520,
+        576
+      ],
+      "surface": "s_ground",
+      "status": "verified",
+      "safeRadius": 13,
+      "side": "right",
+      "monster": "wild_wolf"
+    },
+    {
+      "id": "pen_left",
+      "type": "waypoint",
+      "position": [
+        240,
+        480
+      ],
+      "surface": "s_pen_left",
+      "status": "verified",
+      "safeRadius": 13
+    },
+    {
+      "id": "pen_right",
+      "type": "waypoint",
+      "position": [
+        1360,
+        480
+      ],
+      "surface": "s_pen_right",
+      "status": "verified",
+      "safeRadius": 13
+    }
+  ],
+  "transitions": [
+    {
+      "id": "t_left_up",
+      "from": "s_ground",
+      "to": "s_pen_left",
+      "action": "double-jump",
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/replays-final/route_full_tour.json",
+          "geometryRevision": "trial-wanshou-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "actual ordered transition interval within continuous route",
+          "result": "verified",
+          "executionSnapshot": "work/scene-data.final-executed.json",
+          "transitionId": "t_left_up",
+          "routeId": "route_full_tour",
+          "frameRange": [
+            23,
+            63
+          ],
+          "eventTypes": [
+            "jump",
+            "double-jump",
+            "point-reached",
+            "land"
+          ]
+        }
+      ],
+      "conditions": "continuous normal spawn inputs; FEEL base100; no teleport or intermediate reset"
+    },
+    {
+      "id": "t_left_drop",
+      "from": "s_pen_left",
+      "to": "s_ground",
+      "action": "drop-through",
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/replays-final/route_full_tour.json",
+          "geometryRevision": "trial-wanshou-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "actual ordered transition interval within continuous route",
+          "result": "verified",
+          "executionSnapshot": "work/scene-data.final-executed.json",
+          "transitionId": "t_left_drop",
+          "routeId": "route_full_tour",
+          "frameRange": [
+            81,
+            98
+          ],
+          "eventTypes": [
+            "drop-through",
+            "land"
+          ]
+        }
+      ],
+      "conditions": "continuous normal spawn inputs; FEEL base100; no teleport or intermediate reset"
+    },
+    {
+      "id": "t_right_up",
+      "from": "s_ground",
+      "to": "s_pen_right",
+      "action": "double-jump",
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/replays-final/route_full_tour.json",
+          "geometryRevision": "trial-wanshou-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "actual ordered transition interval within continuous route",
+          "result": "verified",
+          "executionSnapshot": "work/scene-data.final-executed.json",
+          "transitionId": "t_right_up",
+          "routeId": "route_full_tour",
+          "frameRange": [
+            643,
+            683
+          ],
+          "eventTypes": [
+            "jump",
+            "double-jump",
+            "point-reached",
+            "land"
+          ]
+        }
+      ],
+      "conditions": "continuous normal spawn inputs; FEEL base100; no teleport or intermediate reset"
+    },
+    {
+      "id": "t_right_drop",
+      "from": "s_pen_right",
+      "to": "s_ground",
+      "action": "drop-through",
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/replays-final/route_full_tour.json",
+          "geometryRevision": "trial-wanshou-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "actual ordered transition interval within continuous route",
+          "result": "verified",
+          "executionSnapshot": "work/scene-data.final-executed.json",
+          "transitionId": "t_right_drop",
+          "routeId": "route_full_tour",
+          "frameRange": [
+            701,
+            718
+          ],
+          "eventTypes": [
+            "drop-through",
+            "land"
+          ]
+        }
+      ],
+      "conditions": "continuous normal spawn inputs; FEEL base100; no teleport or intermediate reset"
+    },
+    {
+      "id": "t_center",
+      "from": "start_spawn",
+      "to": "mad_mandrill",
+      "action": "walk",
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/replays-final/route_ground_roundtrip.json",
+          "geometryRevision": "trial-wanshou-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "actual ordered transition interval within continuous route",
+          "result": "verified",
+          "executionSnapshot": "work/scene-data.final-executed.json",
+          "transitionId": "t_center",
+          "routeId": "route_ground_roundtrip",
+          "frameRange": [
+            178,
+            394
+          ],
+          "eventTypes": [
+            "point-reached"
+          ]
+        }
+      ],
+      "conditions": "continuous normal spawn inputs; FEEL base100; no teleport or intermediate reset"
+    },
+    {
+      "id": "t_gate_left",
+      "from": "mad_mandrill",
+      "to": "gate_left",
+      "action": "walk",
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/replays-final/route_full_tour.json",
+          "geometryRevision": "trial-wanshou-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "actual ordered transition interval within continuous route",
+          "result": "verified",
+          "executionSnapshot": "work/scene-data.final-executed.json",
+          "transitionId": "t_gate_left",
+          "routeId": "route_full_tour",
+          "frameRange": [
+            1019,
+            1315
+          ],
+          "eventTypes": [
+            "point-reached"
+          ]
+        }
+      ],
+      "conditions": "continuous normal spawn inputs; FEEL base100; no teleport or intermediate reset"
+    },
+    {
+      "id": "t_gate_right",
+      "from": "mad_mandrill",
+      "to": "gate_right",
+      "action": "walk",
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/replays-final/route_full_tour.json",
+          "geometryRevision": "trial-wanshou-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "actual ordered transition interval within continuous route",
+          "result": "verified",
+          "executionSnapshot": "work/scene-data.final-executed.json",
+          "transitionId": "t_gate_right",
+          "routeId": "route_full_tour",
+          "frameRange": [
+            1657,
+            1983
+          ],
+          "eventTypes": [
+            "point-reached"
+          ]
+        }
+      ],
+      "conditions": "continuous normal spawn inputs; FEEL base100; no teleport or intermediate reset"
+    }
+  ],
+  "requiredRoutes": [
+    {
+      "id": "route_left_return",
+      "from": "start_spawn",
+      "to": "start_spawn",
+      "via": [
+        "s_pen_left",
+        "gate_left",
+        "mad_mandrill"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/replays-final/route_left_return.json",
+          "geometryRevision": "trial-wanshou-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "normal spawn zero-speed continuous input; ordered via checks; return to spawn; no intermediate teleport/reset",
+          "result": "verified",
+          "executionSnapshot": "work/scene-data.final-executed.json",
+          "routeId": "route_left_return",
+          "frames": 748,
+          "resetCount": 0
+        }
+      ],
+      "direction": "out-and-return",
+      "returnRequired": true
+    },
+    {
+      "id": "route_right_return",
+      "from": "start_spawn",
+      "to": "start_spawn",
+      "via": [
+        "s_pen_right",
+        "gate_right",
+        "mad_mandrill"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/replays-final/route_right_return.json",
+          "geometryRevision": "trial-wanshou-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "normal spawn zero-speed continuous input; ordered via checks; return to spawn; no intermediate teleport/reset",
+          "result": "verified",
+          "executionSnapshot": "work/scene-data.final-executed.json",
+          "routeId": "route_right_return",
+          "frames": 1279,
+          "resetCount": 0
+        }
+      ],
+      "direction": "out-and-return",
+      "returnRequired": true
+    },
+    {
+      "id": "route_ground_roundtrip",
+      "from": "start_spawn",
+      "to": "start_spawn",
+      "via": [
+        "gate_left",
+        "mad_mandrill",
+        "gate_right",
+        "mad_mandrill"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/replays-final/route_ground_roundtrip.json",
+          "geometryRevision": "trial-wanshou-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "normal spawn zero-speed continuous input; ordered via checks; return to spawn; no intermediate teleport/reset",
+          "result": "verified",
+          "executionSnapshot": "work/scene-data.final-executed.json",
+          "routeId": "route_ground_roundtrip",
+          "frames": 1348,
+          "resetCount": 0
+        }
+      ],
+      "direction": "out-and-return",
+      "returnRequired": true
+    },
+    {
+      "id": "route_full_tour",
+      "from": "start_spawn",
+      "to": "start_spawn",
+      "via": [
+        "s_pen_left",
+        "s_pen_right",
+        "mad_mandrill",
+        "gate_left",
+        "gate_right",
+        "mad_mandrill"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "path": "work/replays-final/route_full_tour.json",
+          "geometryRevision": "trial-wanshou-final-001",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "normal spawn zero-speed continuous input; ordered via checks; return to spawn; no intermediate teleport/reset",
+          "result": "verified",
+          "executionSnapshot": "work/scene-data.final-executed.json",
+          "routeId": "route_full_tour",
+          "frames": 2589,
+          "resetCount": 0
+        }
+      ],
+      "direction": "out-and-return",
+      "returnRequired": true
+    }
+  ],
+  "decorations": {
+    "background": [
+      "autumn forest",
+      "brown rocks",
+      "beast-bone totems",
+      "enclosure fence",
+      "two wolf spawn mouths",
+      "central mandrill paw-mark"
+    ],
+    "collision": "none",
+    "oneWayPosts": "visual supports only; no sidewall or underside collision"
+  },
+  "diagnostics": {
+    "maskPalette": {
+      "walk": [
+        150,
+        245,
+        160,
+        255
+      ],
+      "stand": [
+        0,
+        200,
+        80,
+        255
+      ],
+      "jump": [
+        255,
+        180,
+        0,
+        255
+      ],
+      "drop": [
+        170,
+        80,
+        225,
+        255
+      ],
+      "point": [
+        255,
+        70,
+        160,
+        255
+      ]
+    },
+    "rasterizationOrder": [
+      "walk",
+      "stand",
+      "jump",
+      "drop",
+      "point"
+    ],
+    "regionIdIndex": null,
+    "geometryRevision": "trial-wanshou-final-001"
+  },
+  "validation": {
+    "status": "verified",
+    "geometryRevision": "trial-wanshou-final-002",
+    "actorParameterRevision": "feel-base100-20261027",
+    "engineRevision": "trial-aabb-feel-60hz-001",
+    "evidence": [
+      {
+        "path": "work/final-routes.json",
+        "geometryRevision": "trial-wanshou-final-001",
+        "actorParameterRevision": "feel-base100-20261027",
+        "engineRevision": "trial-aabb-feel-60hz-001",
+        "method": "four continuous routes, all verified",
+        "result": "verified",
+        "executionSnapshot": "work/scene-data.final-executed.json"
+      },
+      {
+        "path": "work/final-physics.json",
+        "geometryRevision": "trial-wanshou-final-001",
+        "actorParameterRevision": "feel-base100-20261027",
+        "engineRevision": "trial-aabb-feel-60hz-001",
+        "method": "every-frame body penetration/support sweep and relevant physics smoke",
+        "result": "verified",
+        "executionSnapshot": "work/scene-data.final-executed.json"
+      },
+      {
+        "path": "work/art-data-audit.json",
+        "geometryRevision": "trial-wanshou-final-001",
+        "actorParameterRevision": "feel-base100-20261027",
+        "engineRevision": "trial-aabb-feel-60hz-001",
+        "method": "exact recomposition; alpha and footline geometry; visual contact review",
+        "result": "verified",
+        "executionSnapshot": "work/scene-data.final-executed.json"
+      },
+      {
+        "path": "work/final-browser-check.json",
+        "geometryRevision": "trial-wanshou-final-001",
+        "actorParameterRevision": "feel-base100-20261027",
+        "engineRevision": "trial-aabb-feel-60hz-001",
+        "method": "Chrome actual assets + same-input replay + keyboard/minimap + contact screenshots",
+        "result": "verified",
+        "executionSnapshot": "work/scene-data.final-executed.json"
+      }
+    ],
+    "issues": [],
+    "scope": "local independent AABB adapter, fixed60Hz, repository FEEL base100; production Phaser integration and combat waves outside this authorized delivery",
+    "leadApproval": "pending",
+    "integrationAllowed": false
+  }
+}

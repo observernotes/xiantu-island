@@ -1,0 +1,454 @@
+{
+  "schemaVersion": "1.0",
+  "sceneId": "trial_taixu_stage",
+  "assetVersion": "trial_taixu_stage_gsb_v1",
+  "geometryRevision": "taixu-stage-final-003",
+  "createdAt": "2026-10-27T08:43:49.216798+08:00",
+  "status": "local-selfcheck-verified-pending-lead",
+  "review": {
+    "selfcheck": "verified",
+    "lead": "pending",
+    "productionIntegration": "forbidden-until-lead-PASS"
+  },
+  "space": {
+    "origin": "top-left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "units": "logical-pixel",
+    "logicalWidth": 1600,
+    "logicalHeight": 704
+  },
+  "sourceData": {
+    "path": "scene-data.json",
+    "sha256": "ebcd8dabf2745b35a6002600e84dfdb4839b751c12a46fdaf8e2e4d1fbd6b179",
+    "schemaVersion": "1.0",
+    "actionGeometrySha256": "7d7a9cba1118d4a3d00b9e74fe618a2c93099ba530540de35ed6b702561ff324"
+  },
+  "files": [
+    {
+      "path": "scene.png",
+      "role": "final-recomposition",
+      "bytes": 2037185,
+      "sha256": "f52b93a1457fdbf7ae5764cbfb044f80128612a2add26e9956ef712b257aa46a",
+      "geometryRevision": "taixu-stage-final-003",
+      "pixelWidth": 1600,
+      "pixelHeight": 704,
+      "mode": "RGBA",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "background.png",
+      "role": "background",
+      "bytes": 1870266,
+      "sha256": "35ff901071758a4eca8d1a98a41aca5cfea7f4e2761d3c3ab146081a3ceccb05",
+      "geometryRevision": "taixu-stage-final-003",
+      "pixelWidth": 1600,
+      "pixelHeight": 704,
+      "mode": "RGBA",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "drawOrder": 0
+    },
+    {
+      "path": "playable.png",
+      "role": "transparent-playable",
+      "bytes": 426613,
+      "sha256": "c3aa147735c39e277dbc08d0be8f88143c849f5cc8e84bdc395552933c72b543",
+      "geometryRevision": "taixu-stage-final-003",
+      "pixelWidth": 1600,
+      "pixelHeight": 704,
+      "mode": "RGBA",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "drawOrder": 10
+    },
+    {
+      "path": "scene-data.json",
+      "role": "authoritative-action-and-collision-data",
+      "bytes": 85432,
+      "sha256": "ebcd8dabf2745b35a6002600e84dfdb4839b751c12a46fdaf8e2e4d1fbd6b179",
+      "geometryRevision": "taixu-stage-final-003"
+    },
+    {
+      "path": "action-mask.png",
+      "role": "pure-action-semantics",
+      "bytes": 7241,
+      "sha256": "f8e6d203820dfc0636c31eba7c07f669223f8f7aa71d0004d9aefc0b2a34ae6b",
+      "geometryRevision": "taixu-stage-final-003",
+      "pixelWidth": 1600,
+      "pixelHeight": 704,
+      "mode": "RGBA",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "action-overlay.png",
+      "role": "action-diagnostic",
+      "bytes": 1950336,
+      "sha256": "6bfc4723b249285634c2eaf679ffeb0b5eae1b12a37c02b475d4f9221645c9f7",
+      "geometryRevision": "taixu-stage-final-003",
+      "pixelWidth": 1600,
+      "pixelHeight": 704,
+      "mode": "RGBA",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "collision-overlay.png",
+      "role": "collision-diagnostic",
+      "bytes": 1942747,
+      "sha256": "b682272db34f37e1b45171dd4ad1d347ecf80dbd924481a8c91dd1aa623f5a4c",
+      "geometryRevision": "taixu-stage-final-003",
+      "pixelWidth": 1600,
+      "pixelHeight": 704,
+      "mode": "RGBA",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "diagnostics-metadata.json",
+      "role": "diagnostic-provenance",
+      "bytes": 2210,
+      "sha256": "d2ec51121ded341366ecf4990b471e53aebb21d6c8a6060fddb5e8b40b2293f1",
+      "geometryRevision": "taixu-stage-final-003"
+    },
+    {
+      "path": "index.html",
+      "role": "relative-local-entry",
+      "bytes": 360,
+      "sha256": "f2de69faf57089df174f7e345c11295fdac966a9e422d3ff71a8baecdc1d33df",
+      "geometryRevision": "taixu-stage-final-003"
+    },
+    {
+      "path": "README.md",
+      "role": "local-start-and-scope",
+      "bytes": 1547,
+      "sha256": "8f4a80dcef0854bf3289cb3925e4cad8c3b12343a01ce8e8eae66d1c37001d8e",
+      "geometryRevision": "taixu-stage-final-003"
+    },
+    {
+      "path": "validation-report.md",
+      "role": "validation-report",
+      "bytes": 11064,
+      "sha256": "72c3c9922aadc66817e8d6fc0ad80ba1f5de57f874e9b201179a65059156a7fb",
+      "geometryRevision": "taixu-stage-final-003"
+    },
+    {
+      "path": "DELIVERED.md",
+      "role": "lead-review-handoff",
+      "bytes": 1074,
+      "sha256": "d04ce5c67dc6ee1745aa56aa1209dbc704fbecf04b604cfbff2095e29096f729",
+      "geometryRevision": "taixu-stage-final-003"
+    }
+  ],
+  "layers": [
+    {
+      "id": "asset_background",
+      "role": "background",
+      "path": "background.png",
+      "pixelWidth": 1600,
+      "pixelHeight": 704,
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "asset_playable",
+      "role": "playable",
+      "path": "playable.png",
+      "pixelWidth": 1600,
+      "pixelHeight": 704,
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    }
+  ],
+  "drawOrder": [
+    "background",
+    "playable",
+    "actor"
+  ],
+  "foreground": {
+    "applicable": false,
+    "reason": "No foreground layer required; preserve clear movement and bottom seam."
+  },
+  "runtime": {
+    "entry": "index.html",
+    "localStart": "python3 -m http.server 8767 --bind 127.0.0.1",
+    "files": [
+      {
+        "path": "work/preview/index.html",
+        "sha256": "1571b0e6f9c393799a6e345b133588efb536ff0c153cc245231e4942cc81b096",
+        "bytes": 3931
+      },
+      {
+        "path": "work/preview/preview.mjs",
+        "sha256": "e5568fa77f9deec016cd7a455b5af86036f89ef74c8952e024de4e47c6d93bd9",
+        "bytes": 14746
+      },
+      {
+        "path": "work/preview/engine.mjs",
+        "sha256": "aa5263518ebccd491515caa012a13801ea2017e6fe6a6b8d26e83aad9e78febb",
+        "bytes": 14193
+      },
+      {
+        "path": "work/preview/player-reference-idle.png",
+        "sha256": "520235d2f9c4c9e83b140ba439c2d18becfaa8e962fa15a98e35a14003ce0181",
+        "bytes": 10012
+      }
+    ],
+    "engineRevision": "trial-aabb-feel-60hz-001",
+    "actorParameterRevision": "feel-base100-20261027",
+    "scope": "Local independent fixed-60Hz AABB adapter using source FEEL base100. No production Phaser integration or combat/wave/damage validation.",
+    "dependencies": "Static relative HTTP resources; browser native ES modules. Verification scripts use Python/Pillow, Node, host Chrome; no install or build step."
+  },
+  "diagnostics": {
+    "maskPalette": {
+      "stand": [
+        0,
+        200,
+        80,
+        255
+      ],
+      "walk": [
+        150,
+        245,
+        160,
+        255
+      ],
+      "rope": [
+        0,
+        190,
+        230,
+        255
+      ],
+      "jump": [
+        255,
+        180,
+        0,
+        255
+      ],
+      "drop": [
+        170,
+        80,
+        225,
+        255
+      ],
+      "hazard": [
+        229,
+        72,
+        58,
+        255
+      ],
+      "point": [
+        255,
+        70,
+        160,
+        255
+      ]
+    },
+    "rasterizationOrder": [
+      "surfaces-in-array-order:walk-then-stand",
+      "rope-corridors",
+      "transitions-in-array-order:action-regions-and-arrows",
+      "points"
+    ],
+    "regionIdIndex": null,
+    "geometryRevision": "taixu-stage-final-003"
+  },
+  "maskSemantics": "Pure RGBA exact palette; no antialias/text/art; authority remains scene-data.json. Overlaps retained in JSON. Arrows are semantic action links, not ballistic traces.",
+  "artProvenance": {
+    "tool": "built-in image_gen",
+    "promptFiles": [
+      "work/prompt-stage3-background.txt",
+      "work/prompt-stage3-extraction.txt",
+      "work/prompt-stage3.txt",
+      "work/prompt-stage4-altar.txt",
+      "work/prompt-stage4-floor.txt",
+      "work/prompt-stage4-gates.txt"
+    ],
+    "generatedImages": [
+      {
+        "path": "work/generated/background-stage3.png",
+        "nativePixelWidth": 1891,
+        "nativePixelHeight": 832,
+        "sha256": "f5d9c6311e55a0cb6d0b4fbebc7b935fe2f94bbabfa14e018d572cda91e96e6b",
+        "tool": "built-in image_gen"
+      },
+      {
+        "path": "work/generated/extract-stage3.png",
+        "nativePixelWidth": 1890,
+        "nativePixelHeight": 832,
+        "sha256": "9368d0839e2415a9bc88426927480de2fd9b4b1651d8ee6e17cfab38007899a5",
+        "tool": "built-in image_gen"
+      },
+      {
+        "path": "work/generated/master-stage3.png",
+        "nativePixelWidth": 1891,
+        "nativePixelHeight": 832,
+        "sha256": "4da0017dca458726e92ce030a7f6ea592f23d8d944c154c25b5b0e3b6a733d39",
+        "tool": "built-in image_gen"
+      },
+      {
+        "path": "work/generated/refined-altar.png",
+        "nativePixelWidth": 2170,
+        "nativePixelHeight": 725,
+        "sha256": "ec358a9d0c0e4c8108549c1ba9362b2116b9d7cf676fef793b15c895923ea542",
+        "tool": "built-in image_gen"
+      },
+      {
+        "path": "work/generated/refined-floor.png",
+        "nativePixelWidth": 2172,
+        "nativePixelHeight": 724,
+        "sha256": "92d45b2654b5822247f98a0968fa6afaa811214ebf7d44b4ed69e2ae9cea9ffc",
+        "tool": "built-in image_gen"
+      },
+      {
+        "path": "work/generated/refined-gate.png",
+        "nativePixelWidth": 1448,
+        "nativePixelHeight": 1086,
+        "sha256": "8779b767616aac1afbb0ccbbae043ee10dd69382c09c9d101f0e6bc2618c6f14",
+        "tool": "built-in image_gen"
+      }
+    ],
+    "registration": "work/registration-stage3.json",
+    "refinement": "work/stage4-blocks.json",
+    "layerDecomposition": "work/stage5-layer-audit.json",
+    "nativeSizesAreMeasured": true,
+    "localProcessing": "Only raster cropping, ordinary affine registration, same-source layer compositing, diagnostic rasterization; no code-painted final art.",
+    "master": "work/master-stage4-refined.png",
+    "recompositionPixelDifference": 0
+  },
+  "stages": [
+    {
+      "stage": 0,
+      "status": "verified",
+      "evidence": [
+        "work/scene-brief.md"
+      ]
+    },
+    {
+      "stage": 1,
+      "status": "verified",
+      "evidence": [
+        "work/action-layout.svg",
+        "work/scene-data.draft.json"
+      ]
+    },
+    {
+      "stage": 2,
+      "status": "verified",
+      "evidence": [
+        "work/graybox-routes.json",
+        "work/graybox-browser-check.json"
+      ]
+    },
+    {
+      "stage": 3,
+      "status": "verified",
+      "evidence": [
+        "work/master-stage3-registered.png",
+        "work/registration-stage3.json"
+      ]
+    },
+    {
+      "stage": 4,
+      "status": "verified",
+      "evidence": [
+        "work/master-stage4-refined.png",
+        "work/stage4-blocks.json"
+      ]
+    },
+    {
+      "stage": 5,
+      "status": "verified",
+      "evidence": [
+        "work/stage5-layer-audit.json"
+      ]
+    },
+    {
+      "stage": 6,
+      "status": "verified",
+      "evidence": [
+        "diagnostics-metadata.json"
+      ]
+    },
+    {
+      "stage": 7,
+      "status": "verified",
+      "evidence": [
+        "work/final-routes.json",
+        "work/final-physics.json",
+        "work/final-art-audit.json",
+        "work/final-browser-check.json"
+      ]
+    }
+  ],
+  "validation": {
+    "routes": 4,
+    "transitions": 14,
+    "transitionExecutions": 28,
+    "bodySamples": 5943,
+    "solidPenetrations": 0,
+    "naturalContactSurfaces": 8,
+    "ropeEndpointAnchors": 6,
+    "toplineTolerancePixels": 2,
+    "measuredToplineMaxErrorPixels": 2,
+    "protectedSnapshot": "work/protected-after.json",
+    "routeSummary": "work/final-routes.json",
+    "physics": "work/final-physics.json",
+    "browser": "work/final-browser-check.json",
+    "art": "work/final-art-audit.json",
+    "executionHashes": "work/execution-hashes.json",
+    "report": "validation-report.md"
+  }
+}

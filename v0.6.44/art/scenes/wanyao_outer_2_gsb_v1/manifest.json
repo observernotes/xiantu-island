@@ -1,0 +1,1191 @@
+{
+  "manifestVersion": "1.0",
+  "sceneId": "wanyao_outer_2_gsb_v1",
+  "title": "万妖林·蛛网谷",
+  "assetVersion": "v1",
+  "createdAt": "2026-10-27T04:06:39+08:00",
+  "status": "verified",
+  "reviewStatus": "已交核待负责人；负责人PASS待定",
+  "integrated": false,
+  "published": false,
+  "geometryRevision": "wanyao2-final-002",
+  "actorParameterRevision": "wanyao2-base-feel-20261027-001",
+  "engineRevision": "gsb-aabb-feel-60hz-wanyao2-001",
+  "sourceData": {
+    "path": "scene-data.json",
+    "schemaVersion": "1.0",
+    "sha256": "3df9dfbc48b695cbc0d7a3fc404b27bae0fd7536fb26a1a9474b2ca0d8491377"
+  },
+  "space": {
+    "origin": "top-left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "units": "logical-pixel",
+    "logicalWidth": 3520,
+    "logicalHeight": 1216,
+    "sourceMap": "maps/wanyao_outer_2.json",
+    "sourceToWorld": [
+      1,
+      0,
+      0,
+      1,
+      0,
+      256
+    ]
+  },
+  "sourceMap": {
+    "path": "maps/wanyao_outer_2.json",
+    "width": 110,
+    "height": 30,
+    "tileSize": 32,
+    "levels": [
+      26,
+      32
+    ],
+    "sourceSha256": "13e9940c053e7fe4ff0d8ad717b04fcf2af7754b324894d53579000e2c06839b"
+  },
+  "assets": [
+    {
+      "id": "background",
+      "role": "background",
+      "path": "background.png",
+      "pixelWidth": 3520,
+      "pixelHeight": 1216,
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "geometryRevision": "wanyao2-final-002",
+      "derivedFrom": "work/stage4-master.png",
+      "sha256": "7ad455e8d4d7e1e7937f064406fcf7974aa5d998761c2cfcd7b93bd2ad7b72d9"
+    },
+    {
+      "id": "playable",
+      "role": "playable",
+      "path": "playable.png",
+      "pixelWidth": 3520,
+      "pixelHeight": 1216,
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "geometryRevision": "wanyao2-final-002",
+      "derivedFrom": "work/stage4-master.png",
+      "sha256": "6239975701b2a4304840aa2b21f467a4c4b8c718c251bf1bc876b523256b6d4b"
+    }
+  ],
+  "foreground": {
+    "applicable": false,
+    "reason": "ancient tree, attached canopy and webs are behind actors; no foreground occlusion needed"
+  },
+  "sceneComposite": {
+    "path": "scene.png",
+    "pixelWidth": 3520,
+    "pixelHeight": 1216,
+    "sourceLayers": [
+      "background.png",
+      "playable.png"
+    ],
+    "pixelToWorld": [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "compositionPixelExact": true
+  },
+  "drawOrder": [
+    {
+      "role": "background",
+      "order": 0
+    },
+    {
+      "role": "playable",
+      "order": 10
+    },
+    {
+      "role": "static-reference NPC/monsters/gathers/player",
+      "order": 20,
+      "notes": "runtime only, not baked into scene.png"
+    }
+  ],
+  "diagnostics": {
+    "maskPalette": {
+      "walk": [
+        150,
+        245,
+        160,
+        255
+      ],
+      "stand": [
+        0,
+        200,
+        80,
+        255
+      ],
+      "rope": [
+        0,
+        190,
+        230,
+        255
+      ],
+      "jump": [
+        255,
+        180,
+        0,
+        255
+      ],
+      "drop": [
+        170,
+        80,
+        225,
+        255
+      ],
+      "point": [
+        255,
+        70,
+        160,
+        255
+      ]
+    },
+    "rasterizationOrder": [
+      "walk",
+      "stand",
+      "rope",
+      "jump",
+      "drop",
+      "point"
+    ],
+    "regionIdIndex": null,
+    "geometryRevision": "wanyao2-final-002",
+    "metadata": "work/diagnostics-metadata.json",
+    "sourceDataSha256": "3df9dfbc48b695cbc0d7a3fc404b27bae0fd7536fb26a1a9474b2ca0d8491377",
+    "collisionAuthority": "scene-data.json; not pixels"
+  },
+  "actor": {
+    "parameterRevision": "wanyao2-base-feel-20261027-001",
+    "collider": {
+      "shape": "aabb",
+      "width": 26,
+      "height": 58,
+      "anchor": "feet-center"
+    },
+    "visualBounds": {
+      "width": 96,
+      "height": 96,
+      "idleAlphaBounds": [
+        15,
+        9,
+        76,
+        96
+      ],
+      "idleVisibleWidth": 61,
+      "idleVisibleHeight": 87,
+      "anchor": "feet-center"
+    },
+    "parameterSource": "game/src/config/feel.ts FEEL+SPEC; game/src/scenes/Player.ts; movement base points 100",
+    "sourceRevision": {
+      "game/src/config/feel.ts": "9375297a15b04012633197a935f4d9ffd403c3ff8d1e055cb585dd5f81acdeec",
+      "game/src/scenes/Player.ts": "ec9426ed625784532c6e632a1755bd16076cc3f559d177f465b741341193f513",
+      "game/src/move.ts": "585c9987623cbe532d7f65508773addd52ccd2f312e5c2ee592e9e6f2f686a74",
+      "maps/wanyao_outer_2.json": "13e9940c053e7fe4ff0d8ad717b04fcf2af7754b324894d53579000e2c06839b",
+      "maps/README.md": "10d7b6cd4cc8cce3ff80b1dbcba6e4007c47596e12702d5ff396e8cdb5d8c671"
+    }
+  },
+  "validation": {
+    "status": "verified",
+    "requiredRoutes": 5,
+    "directedTransitions": 25,
+    "surfaces": 12,
+    "climbs": 7,
+    "physicsChecks": 11,
+    "optionalDropChecks": 3,
+    "mainFrames": 4798,
+    "returnFrames": 6524,
+    "browserReplayTraceMatchesNode": true,
+    "browserKeyboard": "real DOM key down/up under unpaused RAF",
+    "alignmentToleranceLogicalPixels": 2,
+    "measuredMaximumFootlineError": 0,
+    "measuredMaximumRopeAnchorError": 0,
+    "geometryAudit": "work/final-asset-audit.json",
+    "routeSummary": "work/final-routes-summary.json",
+    "browser": "work/final-browser-check.json",
+    "independentAudit": "work/independent-audit.md",
+    "scope": "Local fixed-step AABB with project base movement parameters; no production Phaser/combat/quest/gather cast/real portal integration",
+    "remainingCoreFailures": [],
+    "remainingUnverifiedRequiredItems": []
+  },
+  "provenance": "work/imagegen-provenance.json",
+  "processDirectory": "work/",
+  "invalidatedArchive": {
+    "path": "work/pre-ID-fix/",
+    "includedAsDeliveryEvidence": false,
+    "reason": "old duplicate spawn ID version, superseded and fully rerun as final-002"
+  },
+  "entry": {
+    "path": "index.html",
+    "server": "bash serve-local.sh",
+    "bind": "127.0.0.1",
+    "defaultPort": 8872,
+    "scope": "local only, no deployment or production integration"
+  },
+  "files": [
+    {
+      "path": "DELIVERED.md",
+      "bytes": 1597,
+      "sha256": "acdc7ca1c1189010eb5c8830c17710703dda71868385d62a69c55bd04c49ac50",
+      "role": "handoff and local launch instructions"
+    },
+    {
+      "path": "action-mask.png",
+      "bytes": 24674,
+      "sha256": "66add3572736b7f9042ac36c6609b60afd1cec684852976d2722c72e790b2d34",
+      "pixelWidth": 3520,
+      "pixelHeight": 1216,
+      "mode": "RGBA",
+      "role": "pure semantic diagnostic; no text/no antialiasing"
+    },
+    {
+      "path": "action-overlay.png",
+      "bytes": 7228951,
+      "sha256": "eea016f463410223915b1041249b642f987f23913f50a48bf0971b800e284ad4",
+      "pixelWidth": 3520,
+      "pixelHeight": 1216,
+      "mode": "RGB",
+      "role": "final art + IDs/actions/verified directions"
+    },
+    {
+      "path": "background.png",
+      "bytes": 7986254,
+      "sha256": "7ad455e8d4d7e1e7937f064406fcf7974aa5d998761c2cfcd7b93bd2ad7b72d9",
+      "pixelWidth": 3520,
+      "pixelHeight": 1216,
+      "mode": "RGBA",
+      "role": "noninteractive background; ancient tree and webs behind actors"
+    },
+    {
+      "path": "collision-overlay.png",
+      "bytes": 7185763,
+      "sha256": "46933d94bdc5f6c5cb5d077183bdd52878be0738032e5b312daf9b303931294f",
+      "pixelWidth": 3520,
+      "pixelHeight": 1216,
+      "mode": "RGB",
+      "role": "same runtime solids/one-way surfaces"
+    },
+    {
+      "path": "index.html",
+      "bytes": 488,
+      "sha256": "94b52b7dcaf6c24b9e39ea69160c9a88ded3d3b994946db0c72d88e9c0c0093a",
+      "role": "relative local entry redirect"
+    },
+    {
+      "path": "playable.png",
+      "bytes": 1286907,
+      "sha256": "6239975701b2a4304840aa2b21f467a4c4b8c718c251bf1bc876b523256b6d4b",
+      "pixelWidth": 3520,
+      "pixelHeight": 1216,
+      "mode": "RGBA",
+      "role": "true RGBA playable terrain art; alpha never collision authority"
+    },
+    {
+      "path": "polished.lock",
+      "bytes": 242,
+      "sha256": "7062296865f7c7bfad0d6ea6c035ba56457f257ca19321cc0b054aa5a38a7f07",
+      "role": "this scene-only production registration"
+    },
+    {
+      "path": "scene-data.json",
+      "bytes": 56340,
+      "sha256": "3df9dfbc48b695cbc0d7a3fc404b27bae0fd7536fb26a1a9474b2ca0d8491377",
+      "role": "sole authoritative movement/collision/points/routes/validation"
+    },
+    {
+      "path": "scene.png",
+      "bytes": 7225334,
+      "sha256": "1f4bc26185c3082a88533257bd1f886eaa57c7e2a0073aaa162e4c229e9680bb",
+      "pixelWidth": 3520,
+      "pixelHeight": 1216,
+      "mode": "RGB",
+      "role": "final recomposed visual inspection"
+    },
+    {
+      "path": "serve-local.sh",
+      "bytes": 203,
+      "sha256": "d984576376f74eadb05e8f929d5ab2b28510f64da4d02717f84eedd37efb8dc2",
+      "role": "loopback-only local HTTP server"
+    },
+    {
+      "path": "validation-report.md",
+      "bytes": 10553,
+      "sha256": "f1e8673b13be43446cc8ea34f83c8260457586d674eb2917099a4401ce3257e5",
+      "role": "results, screenshots, limitations and reproduction"
+    },
+    {
+      "path": "work/_backup/丹青阁.before.md",
+      "bytes": 776,
+      "sha256": "c04c9221d9c69f53db8865627f0c09a363d8304127eb4713245cc47899b60bcb"
+    },
+    {
+      "path": "work/_backup/丹青阁.pre-delivery.md",
+      "bytes": 606,
+      "sha256": "3fc2fea3cb07ad308d1baf197c0b5ffd6761c82112daa7777868f6d3af219aaf"
+    },
+    {
+      "path": "work/action-layout.png",
+      "bytes": 15946,
+      "sha256": "d815dae3e85945bd41b86562f7dea60c8de0956367f0350a78100c37a7c92f2e",
+      "pixelWidth": 3520,
+      "pixelHeight": 1216,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/action-layout.svg",
+      "bytes": 2242,
+      "sha256": "c5dbf15a13a8bd41636a7e95f614728becbf06157d7784885c194fc11b59e56b"
+    },
+    {
+      "path": "work/align_art.py",
+      "bytes": 3044,
+      "sha256": "be93baa56dbfd1a2b839d41c05b79491f1a28ac2a74874d207da8ba1419d184b"
+    },
+    {
+      "path": "work/artcheck-final.log",
+      "bytes": 948,
+      "sha256": "971ec2b5f561e9fc298167f5443cb1bb9bf08387c5e488c43dfd938ff1f09e5c"
+    },
+    {
+      "path": "work/audit_assets.py",
+      "bytes": 6027,
+      "sha256": "28c7ef7b3051530c8334e253409bacc7757c7bbce63c81443709ad50dc1d32fa"
+    },
+    {
+      "path": "work/bind_validation.py",
+      "bytes": 3606,
+      "sha256": "f2cf9e57ed0546dd81d9d7b2abf56b02dafd87edd340db0eae6db40643a6e06d"
+    },
+    {
+      "path": "work/browser-contact-copper.png",
+      "bytes": 1584882,
+      "sha256": "26f7ffd6762e8a78a3d4562f0963b960a54bc8d7caea6844f413d296474c768f",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/browser-contact-ganoderma.png",
+      "bytes": 1394565,
+      "sha256": "3b7eb48ff128958ffda661fb9bce5c8385c99fb347b1e7c9973ebbeba38394d8",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/browser-contact-goal.png",
+      "bytes": 1697984,
+      "sha256": "0f509b7ee66ea8ea32163d4954694f294fd4d52babe8b2e1a5de9902f7663c18",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/browser-contact-herb.png",
+      "bytes": 1403293,
+      "sha256": "b3f8a17e17fa196bdf4759d36802be3bd3682e381737a87eb826588d452f393a",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/browser-contact-s_clearing.png",
+      "bytes": 1699945,
+      "sha256": "eebe02f6292dfc29ebd0269a27188cdad843806b961855c05aa7318a2aa81903",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/browser-contact-s_east_cliff.png",
+      "bytes": 1465018,
+      "sha256": "c9bf8e2f424b439108091048ceae0c48515940f8421abba8e88a8face06a0958",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/browser-contact-s_east_high.png",
+      "bytes": 1505710,
+      "sha256": "c7183b29b0eee961aef750c68c1e681e9a13cfe409f0c41e11d074c654d95847",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/browser-contact-s_east_low.png",
+      "bytes": 1489841,
+      "sha256": "010b54625a58f1f28a25014daa11dc7ace7ba7cfad665c09b066ab921ae6c6fe",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/browser-contact-s_ganoderma.png",
+      "bytes": 1394565,
+      "sha256": "3b7eb48ff128958ffda661fb9bce5c8385c99fb347b1e7c9973ebbeba38394d8",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/browser-contact-s_middle_high.png",
+      "bytes": 1371766,
+      "sha256": "79c607dfd8aaa13cf806ebe7d2295f0a7509c86d31474c70596c2cd87c85fbbc",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/browser-contact-s_middle_low.png",
+      "bytes": 1445201,
+      "sha256": "ba4ecfa8b19a87c449377b3a5b9d9356c916cf803599451e15e64bb846d1f0bc",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/browser-contact-s_valley.png",
+      "bytes": 1668453,
+      "sha256": "ef75602350d02beef828978959beb011f71caa8e9074038f6be4829b0e52bd72",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/browser-contact-s_west.png",
+      "bytes": 1669597,
+      "sha256": "c907cac50fce94d161c28396c42fec2de32a28e594112da7eae495d3dc719c7c",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/browser-contact-s_west_high.png",
+      "bytes": 1422655,
+      "sha256": "440627d703efc918bdb08972f10132c8faa61d2dd7a304c56c8601de4b4a0e50",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/browser-contact-s_west_low.png",
+      "bytes": 1591393,
+      "sha256": "e81f99da1ccee2f71eff8f36dbf8e39341631c7cfb3a7c8e32158340539d53bb",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/browser-contact-s_west_mid.png",
+      "bytes": 1479744,
+      "sha256": "c811b876464078904e34ecda1d7bb5765c45b87b96b6f7ce09b1709973b9436a",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/browser-contact-tree-spirit.png",
+      "bytes": 1698955,
+      "sha256": "7951b41085d3cd8f938595c11f635d8ccf5d7db3893c0d0f905216ef160bf162",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/browser-final-overlays.png",
+      "bytes": 2266721,
+      "sha256": "6d3d6274b4ff20f5f71b9e0745c179c28ab1ce422cbcd9e18f3b0376ab66a2e1",
+      "pixelWidth": 1440,
+      "pixelHeight": 1326,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/browser-overlay-ganoderma.png",
+      "bytes": 1393911,
+      "sha256": "e5a3099341b90abc8ef0f4e9f2cc4d1abef4a0f1408d9a971700b325d70fa660",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/browser-overlay-tree-spirit.png",
+      "bytes": 1666932,
+      "sha256": "03b77110cf52a9438db54270b0bebbecc68d64c7c63d3df645aea34319e2f6dc",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/browser-spawn.png",
+      "bytes": 2256449,
+      "sha256": "cd60859419207f0e9677fb30473f4669f6436e169767d9acf253a90e44e638bc",
+      "pixelWidth": 1440,
+      "pixelHeight": 1326,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/browser_check.mjs",
+      "bytes": 4801,
+      "sha256": "6712ff0e3e4e795584116c989466c67f06c30e7e2e85ca5993bfdfa25739856c"
+    },
+    {
+      "path": "work/build_layout.py",
+      "bytes": 8128,
+      "sha256": "69dfcf1fd532bbb69055f71151c41e91cb14fd3681893a453f3385c38d20588b"
+    },
+    {
+      "path": "work/build_manifest.py",
+      "bytes": 4447,
+      "sha256": "29550d217fdc244d2b91e03808eadc1cb658d0c8f573fb903fe310c6b0f4171a"
+    },
+    {
+      "path": "work/check_cadence.mjs",
+      "bytes": 1267,
+      "sha256": "ac3a3780958bef7a7e184363b94a890c0c99cf628fc86efb8314240c7510d78d"
+    },
+    {
+      "path": "work/check_package.py",
+      "bytes": 3107,
+      "sha256": "bedeaec937670c48603a9cbde40ef107c830b2443dd880c72eca4c3c962df20f"
+    },
+    {
+      "path": "work/compose_detail.py",
+      "bytes": 4072,
+      "sha256": "a49a285ed00fffb645b53b94d2ff8a919f8cede910974c7a02a38b1cca53aa5f"
+    },
+    {
+      "path": "work/diagnostics-metadata.json",
+      "bytes": 834,
+      "sha256": "869fc1baa9dad4e9dc3dec20182d7440cdf171c2f96480d2caa95ad5ed5103ea"
+    },
+    {
+      "path": "work/final-all-surface-contact-atlas.png",
+      "bytes": 1958528,
+      "sha256": "cc87fe7832c76e5a26f5a048f7c1eef1c5bb53696b5d07287fb2ec3e537ab8d4",
+      "pixelWidth": 1560,
+      "pixelHeight": 840,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/final-asset-audit.json",
+      "bytes": 8867,
+      "sha256": "5df4d2985768ef2f592919782188d595b5d99fac10a8bb747d4bb112f17a836c"
+    },
+    {
+      "path": "work/final-bottom-clearing.png",
+      "bytes": 282522,
+      "sha256": "b87816fb14de906613f362f6ccedc98fa730c3a087f8d9648bda9b8584528077",
+      "pixelWidth": 576,
+      "pixelHeight": 216,
+      "mode": "RGBA"
+    },
+    {
+      "path": "work/final-bottom-east.png",
+      "bytes": 376975,
+      "sha256": "8b31df28d625aa3ec46c453bd6d5de9bf12d6f6e0ccf79913eb781a767b1a409",
+      "pixelWidth": 896,
+      "pixelHeight": 216,
+      "mode": "RGBA"
+    },
+    {
+      "path": "work/final-bottom-middle.png",
+      "bytes": 405560,
+      "sha256": "91ba870cccac297fde17cd752a8539df69a9d3a50bb6bbcae92b1225f307d565",
+      "pixelWidth": 1024,
+      "pixelHeight": 216,
+      "mode": "RGBA"
+    },
+    {
+      "path": "work/final-bottom-west.png",
+      "bytes": 486811,
+      "sha256": "aefa88fbe6c7a342d2a4dc9ff359f2b46123254376d7ce5e0334d3864380bcde",
+      "pixelWidth": 1024,
+      "pixelHeight": 216,
+      "mode": "RGBA"
+    },
+    {
+      "path": "work/final-browser-check.json",
+      "bytes": 20512,
+      "sha256": "ea3f76dddb77c85a85bf0fc5bfe33f0f63b00e6f7245059a14f7ebce5babe9a5"
+    },
+    {
+      "path": "work/final-cadence-check.json",
+      "bytes": 3499,
+      "sha256": "80496cb9955e78ba3b5ea1056eaefce56285a2b56ce74cabc8f44d12410c9bdc"
+    },
+    {
+      "path": "work/final-optional-drops.json",
+      "bytes": 899276,
+      "sha256": "a19addaeec17947d9a756f9f1527609d0adb196a879b825d0ac68eb668bbad88"
+    },
+    {
+      "path": "work/final-physics-smoke.json",
+      "bytes": 97742,
+      "sha256": "28c9a1f29d171bc6464874a8752660dd46e8783b0e177521fe0ed2330f0456fb"
+    },
+    {
+      "path": "work/final-route_all_climbs.json",
+      "bytes": 1028541,
+      "sha256": "3edf6cd1de1c7fc62fc5044f498a6131491463b39c4e5d2aada18e08768c2c7f"
+    },
+    {
+      "path": "work/final-route_all_gathers.json",
+      "bytes": 1028542,
+      "sha256": "7f70176103ca8b933e1dd673a5237d87a59470f3a3cb73b05d2ea23c0b774e69"
+    },
+    {
+      "path": "work/final-route_chest.json",
+      "bytes": 1028536,
+      "sha256": "407fa142156794cfe0e05c82b2088936d14153cb54068c283ce1f7e35f77fb6c"
+    },
+    {
+      "path": "work/final-route_main.json",
+      "bytes": 1028535,
+      "sha256": "33f51fb42e75736784bbd0cda5cba3c7311b33675f5f8f3fe3ca8966b12e9b12"
+    },
+    {
+      "path": "work/final-route_return.json",
+      "bytes": 1399496,
+      "sha256": "e7401c6ae4d9c8c82ba5596b36e06741a7e648884d64b73f6bd328cd14f1397d"
+    },
+    {
+      "path": "work/final-routes-summary.json",
+      "bytes": 125122,
+      "sha256": "9aaabf556856fb52f621b9e9bee827fea21cb439082cd5cc7a96ced20a117117"
+    },
+    {
+      "path": "work/final-validation-binding.json",
+      "bytes": 660,
+      "sha256": "8826a7a4ce5165ee960717976b9ec49aaa231c0516a3ecb761c39484239efd00"
+    },
+    {
+      "path": "work/finalize_layers.py",
+      "bytes": 3478,
+      "sha256": "a7f89be083aeff37dcf99529701f3cc5b5c3c90d4776752db379b592cb2a3fa0"
+    },
+    {
+      "path": "work/graybox-route_all_climbs.json",
+      "bytes": 1028545,
+      "sha256": "a419e7f6a3faf88380dd202a6df0aad98d4a5b756b2dee26f532ee145da3757f"
+    },
+    {
+      "path": "work/graybox-route_all_gathers.json",
+      "bytes": 1028546,
+      "sha256": "8de35df9e629d0bbf3b7da1e0c9dec887e443339dc4bb81b273efbc98bff0d3c"
+    },
+    {
+      "path": "work/graybox-route_chest.json",
+      "bytes": 1028540,
+      "sha256": "7d6df7613adc975d518f7a16daf02e333de649a84852a3e71bf5cc6bd54f6ce9"
+    },
+    {
+      "path": "work/graybox-route_main.json",
+      "bytes": 1028539,
+      "sha256": "7431a5c3a1523d53e10a1ec52bdbf6c33cd2adcf6badd4c79331a7254809ace3"
+    },
+    {
+      "path": "work/graybox-route_return.json",
+      "bytes": 1399500,
+      "sha256": "48026adb569dba311abf0eb30d2d509c6ee6f9a43fe9a4e42c592ce36469b648"
+    },
+    {
+      "path": "work/graybox-routes-summary.json",
+      "bytes": 125144,
+      "sha256": "0636b700d9577e28ab42350fee34c2154ce4cadac448289a52f68568cd7ae094"
+    },
+    {
+      "path": "work/imagegen-provenance.json",
+      "bytes": 2285,
+      "sha256": "5f784c1713dbf5347ddfd12d61799582adf9eb0651ec19e4b0ad9471f8449f05"
+    },
+    {
+      "path": "work/independent-audit.md",
+      "bytes": 1166,
+      "sha256": "9cfe2a0199544c4c989aeac4cb2bd0b1f567143636d5f07c0cfadb4cae682e2f"
+    },
+    {
+      "path": "work/optional_drops.mjs",
+      "bytes": 1815,
+      "sha256": "5f828420264ebcb2a4d2bdf635c0f0ea4215d1cc26ac5e5ad1792f20498eb6f4"
+    },
+    {
+      "path": "work/physics_smoke.mjs",
+      "bytes": 4983,
+      "sha256": "dbdd7bbab3d53a1236272ac15f36c8115234bcdc47ea16b35679543ea60acb66"
+    },
+    {
+      "path": "work/preview/engine.mjs",
+      "bytes": 13558,
+      "sha256": "a15a80211c1957a41ef71056b8e48fe94081fa4c2e763125a8761aefc0143352"
+    },
+    {
+      "path": "work/preview/index.html",
+      "bytes": 3967,
+      "sha256": "73b0db785dd40d2e62a2630107171186c01c54c209e672b450b6e07218da2cb0"
+    },
+    {
+      "path": "work/preview/mon_poison_spider-idle.png",
+      "bytes": 5494,
+      "sha256": "500582d945fb5e0b5d519d9bf82c40d6c88d14c8de3ce251e842908e0f570046",
+      "pixelWidth": 80,
+      "pixelHeight": 56,
+      "mode": "RGBA"
+    },
+    {
+      "path": "work/preview/mon_shadow_wolf-idle.png",
+      "bytes": 5909,
+      "sha256": "f3753a46b435f16751b7f9c43fe09b7a0288039b375437270379bc7f94e6472e",
+      "pixelWidth": 96,
+      "pixelHeight": 64,
+      "mode": "RGBA"
+    },
+    {
+      "path": "work/preview/npc-reference-data.json",
+      "bytes": 3,
+      "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+    },
+    {
+      "path": "work/preview/npc_tree_spirit-idle.png",
+      "bytes": 10699,
+      "sha256": "feeb65daedbd7829da96586049072246230bf57566ec46c927d6ae3da63af8af",
+      "pixelWidth": 96,
+      "pixelHeight": 96,
+      "mode": "RGBA"
+    },
+    {
+      "path": "work/preview/player-reference-idle.png",
+      "bytes": 10012,
+      "sha256": "520235d2f9c4c9e83b140ba439c2d18becfaa8e962fa15a98e35a14003ce0181",
+      "pixelWidth": 96,
+      "pixelHeight": 96,
+      "mode": "RGBA"
+    },
+    {
+      "path": "work/preview/preview.mjs",
+      "bytes": 15183,
+      "sha256": "f7dae086f4c1487ac2b483873d74797f960e41cecf36b5c62a6790134a5f8579"
+    },
+    {
+      "path": "work/preview/prop_gather_nine_leaf_ganoderma-idle.png",
+      "bytes": 2794,
+      "sha256": "b1a83d6d2311a755fb6678b2ee4edb77d54144996767952d19e9a6e6b3fed045",
+      "pixelWidth": 48,
+      "pixelHeight": 48,
+      "mode": "RGBA"
+    },
+    {
+      "path": "work/preview/prop_gather_spirit_copper-idle.png",
+      "bytes": 2359,
+      "sha256": "d195b4287d9c16fff7384f5a5835acb22233249ec2fababa354268b92491b41f",
+      "pixelWidth": 48,
+      "pixelHeight": 48,
+      "mode": "RGBA"
+    },
+    {
+      "path": "work/preview/prop_gather_spirit_herb-idle.png",
+      "bytes": 2834,
+      "sha256": "eb4c082a044357ea89a095ffb855e8f15a7a9b5598f27bcbcd4a2f0c235b5107",
+      "pixelWidth": 48,
+      "pixelHeight": 48,
+      "mode": "RGBA"
+    },
+    {
+      "path": "work/prompt-stage3-background-repair.txt",
+      "bytes": 1328,
+      "sha256": "cab6bf3257f45e110ab73266239127f7bd6d65d35559853b5667621184d05471"
+    },
+    {
+      "path": "work/prompt-stage3-repair.txt",
+      "bytes": 2102,
+      "sha256": "4ac02d7c4cf569824618f4b567afad1251250274145515b215ebbcfa06853e6a"
+    },
+    {
+      "path": "work/prompt-stage3-terrain-extraction.txt",
+      "bytes": 1462,
+      "sha256": "f94ea5ebaa5476b5b2481506c04431863dd4dc53a8259c4a2b5762428a91b363"
+    },
+    {
+      "path": "work/prompt-stage3.txt",
+      "bytes": 3318,
+      "sha256": "b45a6ec0b0fc920ed595b9b25a35f769b28eb3056ebb0e0d63e77a9fdc0014fc"
+    },
+    {
+      "path": "work/prompt-stage4-east.txt",
+      "bytes": 1678,
+      "sha256": "024fdf30b7535f9ae063d10ad20f31915652e368ca6086a8bccbeef1082a5a4c"
+    },
+    {
+      "path": "work/prompt-stage4-middle.txt",
+      "bytes": 1353,
+      "sha256": "255c9f4db1043cbfb13be5f4e3aaf1963bbb56fa869b99d0b1dc71e7a7b1bbce"
+    },
+    {
+      "path": "work/prompt-stage4-west.txt",
+      "bytes": 1530,
+      "sha256": "fa664dbfe65850432b6bf1f8c53fa023f0e044cbea57adb781ae4a95cf822046"
+    },
+    {
+      "path": "work/protected-boundary-final.json",
+      "bytes": 363,
+      "sha256": "b79fd4a3f96640b30da5afe21b5f17007753bd190b358a0812224297fd42fe73"
+    },
+    {
+      "path": "work/protected-roots-before.json",
+      "bytes": 390432,
+      "sha256": "2427d83ed7aaa47094ed30edc7109e43baffa98c164a760eaf092074375a7dbf"
+    },
+    {
+      "path": "work/reference-sprite-provenance.json",
+      "bytes": 2895,
+      "sha256": "14447e96bfede7d6bbcffb1bc2266573ad3395ab733a3382da3641c6a6fd3ffc"
+    },
+    {
+      "path": "work/render_diagnostics.py",
+      "bytes": 3803,
+      "sha256": "49185261fb3f25adf60b20903faf933b34b8b1ba70d567c578a58a516e5206d8"
+    },
+    {
+      "path": "work/route-plan.md",
+      "bytes": 329,
+      "sha256": "c0ff533ef525e6064929b856aa55fa113c2c19e57e9dd29736cdb2612c69d48f"
+    },
+    {
+      "path": "work/runtime-controller.mjs",
+      "bytes": 5927,
+      "sha256": "779783ce1f6686e204ab1df1b88adeb0fcd19e65e817ad4973c443fc480473fd"
+    },
+    {
+      "path": "work/scene-brief.md",
+      "bytes": 1826,
+      "sha256": "8e97680f119f6fc2f49de0fc758ce4d46a26735a204910eb0cbc0d3fee40736b"
+    },
+    {
+      "path": "work/scene-data.draft.json",
+      "bytes": 36272,
+      "sha256": "8e14e6a733a97af997e8c0186d1e3e8e42f033823da1100b30b427a864846ebc"
+    },
+    {
+      "path": "work/scene-data.final-prevalidation.json",
+      "bytes": 43472,
+      "sha256": "a93bcce111bebfbd53d223db584f2cbb94feaa6a012cfe897a35536fdbdab08a"
+    },
+    {
+      "path": "work/stage2-graybox-validation.md",
+      "bytes": 391,
+      "sha256": "77f78116729b43e8138e72c2aea0007167817575913cd144e37dbfe1aa2755de"
+    },
+    {
+      "path": "work/stage3-aligned-background.png",
+      "bytes": 7986254,
+      "sha256": "7ad455e8d4d7e1e7937f064406fcf7974aa5d998761c2cfcd7b93bd2ad7b72d9",
+      "pixelWidth": 3520,
+      "pixelHeight": 1216,
+      "mode": "RGBA"
+    },
+    {
+      "path": "work/stage3-aligned-master.png",
+      "bytes": 7178962,
+      "sha256": "efeafc6327166fab2f46a1b366f20523427084e8145341aabedd736d94aa9d30",
+      "pixelWidth": 3520,
+      "pixelHeight": 1216,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/stage3-aligned-playable.png",
+      "bytes": 1293645,
+      "sha256": "f137dd924ad218d6dd02e70e28d55e7793bf56b0d3919bd82075543b204a33c3",
+      "pixelWidth": 3520,
+      "pixelHeight": 1216,
+      "mode": "RGBA"
+    },
+    {
+      "path": "work/stage3-background-normalized.png",
+      "bytes": 6989500,
+      "sha256": "429891718ae0e85be0d1ba6bc687f228d01c483f444aa8bc0517083ec7b370f5",
+      "pixelWidth": 3520,
+      "pixelHeight": 1216,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/stage3-background-raw.png",
+      "bytes": 3290015,
+      "sha256": "b6c93bc954d7a9d0f64459a847aa17b9793c1608419456de5190b16088333e87",
+      "pixelWidth": 2134,
+      "pixelHeight": 737,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/stage3-contact-strip.png",
+      "bytes": 1193139,
+      "sha256": "869c5b56d82bc0c5ebf19936bd5578afb3cfd5b41449143f9803e51bbab2a4bb",
+      "pixelWidth": 2134,
+      "pixelHeight": 267,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/stage3-first-review.md",
+      "bytes": 216,
+      "sha256": "165d03c8cecfcbf4c957fdcca5bf542a261b853189fab705204a4093c724b9ea"
+    },
+    {
+      "path": "work/stage3-master-raw.png",
+      "bytes": 3420788,
+      "sha256": "d53d7da27469eb14b71a98f2b07d2169646e780b1287d79cfbc181f433d9824c",
+      "pixelWidth": 2134,
+      "pixelHeight": 737,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/stage3-object-transforms.json",
+      "bytes": 12228,
+      "sha256": "1815b91a1244df037db742e82b5b5062aee91ca8786ed6f7794bb5ff8fcca3d1"
+    },
+    {
+      "path": "work/stage3-repair-normalized.png",
+      "bytes": 7378383,
+      "sha256": "3abac68430ccc149dc4b94915cf948f42a1ae5e114b394a6cca69613dd1d8416",
+      "pixelWidth": 3520,
+      "pixelHeight": 1216,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/stage3-repair-raw.png",
+      "bytes": 3501050,
+      "sha256": "83b0301977861c71f9fb9c6dc78aa35d01ab22659590c4d4e3fce2989a9090fe",
+      "pixelWidth": 2134,
+      "pixelHeight": 737,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/stage3-status.md",
+      "bytes": 181,
+      "sha256": "02c684cd7372c75119e8b6bced63bc159a9906fb62213d0c2abcddcc06e3ab92"
+    },
+    {
+      "path": "work/stage3-structure-overlay.png",
+      "bytes": 7172664,
+      "sha256": "37e7c56c183c887f9d15dbe59b4ee9df1b2090bb615c08da2c5365cd2ae566f0",
+      "pixelWidth": 3520,
+      "pixelHeight": 1216,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/stage3-structure-review.md",
+      "bytes": 476,
+      "sha256": "d24fc4b3430738af426e9011d49c0a0061ac6cf0cc059e395368aa7b132120a0"
+    },
+    {
+      "path": "work/stage3-terrain-extracted-normalized.png",
+      "bytes": 2276882,
+      "sha256": "a96877135322c6da28ed6329b06ac35862f19f51f20a790e7b10831fa3a20f41",
+      "pixelWidth": 3520,
+      "pixelHeight": 1216,
+      "mode": "RGBA"
+    },
+    {
+      "path": "work/stage3-terrain-extracted-raw.png",
+      "bytes": 1077506,
+      "sha256": "535d2d974687033bb716a917f195fb25928b8a99073cb190138ac41512841847",
+      "pixelWidth": 2134,
+      "pixelHeight": 737,
+      "mode": "RGBA"
+    },
+    {
+      "path": "work/stage4-background-master.png",
+      "bytes": 7986254,
+      "sha256": "7ad455e8d4d7e1e7937f064406fcf7974aa5d998761c2cfcd7b93bd2ad7b72d9",
+      "pixelWidth": 3520,
+      "pixelHeight": 1216,
+      "mode": "RGBA"
+    },
+    {
+      "path": "work/stage4-block-plan.json",
+      "bytes": 280,
+      "sha256": "9e3e2df53fb064fb04e1e1bc5b47ba229771fa665a3edd4932b4007dad4869e5"
+    },
+    {
+      "path": "work/stage4-block-records.json",
+      "bytes": 11526,
+      "sha256": "d3e6afe968790ca773c7c56c791954b2fe3672c5cacb78f1c540882febab7240"
+    },
+    {
+      "path": "work/stage4-compare-east.png",
+      "bytes": 770450,
+      "sha256": "2968caebf8290b1232dfe1155b8921b1138c7310daa15bf141d0e9ae45ad8e4c",
+      "pixelWidth": 1280,
+      "pixelHeight": 400,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/stage4-compare-middle.png",
+      "bytes": 344734,
+      "sha256": "edce522e4c944ad4bf753d75dfdd48e3059ae27efdc81ca15b76d7413c1ec98d",
+      "pixelWidth": 1440,
+      "pixelHeight": 212,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/stage4-compare-west.png",
+      "bytes": 689826,
+      "sha256": "c11eb38b55a8fadc04329c3945283c0e0d232b0dbe87d162a9eab021a5f6217f",
+      "pixelWidth": 1572,
+      "pixelHeight": 432,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/stage4-crossblock-east-high.png",
+      "bytes": 195463,
+      "sha256": "93f87c424ee5569d69f8096e9985f3c702fc64994d0c1306c8f461d697c62378",
+      "pixelWidth": 560,
+      "pixelHeight": 200,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/stage4-east-before.png",
+      "bytes": 1126300,
+      "sha256": "4a9fa8ec4c12f99d6972fe8dc219e05d6f403abf79446003892c89458aa6430d",
+      "pixelWidth": 960,
+      "pixelHeight": 640,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/stage4-east-normalized.png",
+      "bytes": 1234821,
+      "sha256": "d085013ae587261458e73779d30b58564e152802e5624c6af547803c3753e4dc",
+      "pixelWidth": 960,
+      "pixelHeight": 640,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/stage4-east-raw.png",
+      "bytes": 2826311,
+      "sha256": "2d3b59132532790c16781c8e87759b622ea370b95c9fbd33f6c632d582cb4426",
+      "pixelWidth": 1536,
+      "pixelHeight": 1024,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/stage4-master.png",
+      "bytes": 7225334,
+      "sha256": "1f4bc26185c3082a88533257bd1f886eaa57c7e2a0073aaa162e4c229e9680bb",
+      "pixelWidth": 3520,
+      "pixelHeight": 1216,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/stage4-middle-before.png",
+      "bytes": 1407193,
+      "sha256": "93e2212052f2d93ad2def45687e5d8de197085281539bed34cd43eb38a80e2aa",
+      "pixelWidth": 1408,
+      "pixelHeight": 640,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/stage4-middle-normalized.png",
+      "bytes": 1671601,
+      "sha256": "9383484294e21773ba838c092344ba7792a458edfae11a8b55493b606178e073",
+      "pixelWidth": 1408,
+      "pixelHeight": 640,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/stage4-middle-raw.png",
+      "bytes": 2740888,
+      "sha256": "e922a29bab08378f0ab265c6cd8e25112bcc66aae40218016b0c8ab93e529726",
+      "pixelWidth": 1860,
+      "pixelHeight": 845,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/stage4-playable-master.png",
+      "bytes": 1286907,
+      "sha256": "6239975701b2a4304840aa2b21f467a4c4b8c718c251bf1bc876b523256b6d4b",
+      "pixelWidth": 3520,
+      "pixelHeight": 1216,
+      "mode": "RGBA"
+    },
+    {
+      "path": "work/stage4-review.md",
+      "bytes": 614,
+      "sha256": "a70c3865340183dedf0a6e8954833cb0312abc3a9bcbc63df3ecd41091d413d3"
+    },
+    {
+      "path": "work/stage4-structure-overlay.png",
+      "bytes": 7212552,
+      "sha256": "4c5857442c12a841d5cce93ffb4df551107eba2d8b81513b828f456be68ee749",
+      "pixelWidth": 3520,
+      "pixelHeight": 1216,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/stage4-west-before.png",
+      "bytes": 1557672,
+      "sha256": "528c32d1517f1e2470a805236f23edbe4d939a835b9e73bc1109b107cf0a62ce",
+      "pixelWidth": 1408,
+      "pixelHeight": 640,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/stage4-west-normalized.png",
+      "bytes": 1747760,
+      "sha256": "b772d2af8e381dad08b3d85c1d82ef202e075aedc5d8d3e59b89ad3edf29edb9",
+      "pixelWidth": 1408,
+      "pixelHeight": 640,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/stage4-west-raw.png",
+      "bytes": 2872468,
+      "sha256": "d0780853ad59477adcbb7526684eb7ee7855a6cb58379307e727a95e6e580211",
+      "pixelWidth": 1860,
+      "pixelHeight": 845,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/stage5-alpha-dark.png",
+      "bytes": 334178,
+      "sha256": "cd507a48e432b67bfb8cc4c1cb438018d092ab4dd0ef64682d6288538e9fb3c3",
+      "pixelWidth": 1760,
+      "pixelHeight": 608,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/stage5-alpha-light.png",
+      "bytes": 335899,
+      "sha256": "88803afe7ef8cfa69fc58746920e2a544b1163927e6e91f0d7f052375d095c23",
+      "pixelWidth": 1760,
+      "pixelHeight": 608,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/stage5-layer-review.md",
+      "bytes": 441,
+      "sha256": "288009b0a7bdcba1b6e76d22740b7edb58cffbfcc41e639e0fe4b6b0343e3a41"
+    },
+    {
+      "path": "work/validate_routes.mjs",
+      "bytes": 2571,
+      "sha256": "16f93bf481438c31d561bb8873f9d09e544b6302586a2b5910ceb2484caf8cd9"
+    }
+  ]
+}

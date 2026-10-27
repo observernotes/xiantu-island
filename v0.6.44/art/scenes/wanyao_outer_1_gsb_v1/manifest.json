@@ -1,0 +1,551 @@
+{
+  "schemaVersion": "1.0",
+  "manifestRevision": "wanyao-outer1-manifest-001",
+  "sceneId": "wanyao_outer_1_gsb_v1",
+  "title": "万妖林·林缘 GSB v1",
+  "status": "verified",
+  "deliveryState": "已交核待负责人；负责人PASS前禁止接入",
+  "geometryRevision": "wanyao-outer1-final-001",
+  "actorParameterRevision": "wanyao-base-feel-20261027-001",
+  "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+  "sourceDataSHA256": "c6566f3a8eecf4cea2fa349265233a931095668300abb15fbcafc8afb0f4497a",
+  "space": {
+    "origin": "top-left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "units": "logical-pixel",
+    "logicalWidth": 3200,
+    "logicalHeight": 896,
+    "tileSize": 32,
+    "columns": 100,
+    "rows": 28
+  },
+  "drawOrder": [
+    "background.png",
+    "playable.png",
+    "actor and static entity scale references"
+  ],
+  "foreground": {
+    "status": "not-applicable",
+    "reason": "无须置于角色前方的独立遮挡物"
+  },
+  "generator": "built-in imagegen; work/imagegen-provenance.json",
+  "maskPalette": {
+    "stand": [
+      64,
+      220,
+      120,
+      255
+    ],
+    "walk": [
+      44,
+      132,
+      80,
+      255
+    ],
+    "climb": [
+      80,
+      180,
+      255,
+      255
+    ],
+    "jump": [
+      255,
+      190,
+      64,
+      255
+    ],
+    "drop": [
+      180,
+      100,
+      240,
+      255
+    ],
+    "point": [
+      255,
+      220,
+      80,
+      255
+    ]
+  },
+  "maskPurpose": "pure RGBA semantics, no texture/text/antialias; not collision authority",
+  "rasterizationOrder": [
+    "walk",
+    "stand",
+    "climb",
+    "jump",
+    "drop",
+    "point"
+  ],
+  "assets": [
+    {
+      "path": "scene.png",
+      "bytes": 5483594,
+      "sha256": "b836f5ab85a83d38c2a266973a80a317179376daf15608ec4756a7a0e6e1a01c",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "pixelWidth": 3200,
+      "pixelHeight": 896,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "role": "inspection-composite",
+      "derivation": "background alphaComposite playable"
+    },
+    {
+      "path": "background.png",
+      "bytes": 5298930,
+      "sha256": "8032691f721fc901950d2f44acafe6a16e287b40d81026a7ae174167ff44d683",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "pixelWidth": 3200,
+      "pixelHeight": 896,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "role": "background",
+      "drawOrder": 0
+    },
+    {
+      "path": "playable.png",
+      "bytes": 1475535,
+      "sha256": "b83b13e96c72fc3b85144a4c28a84c67993e33e578063ed86cae294dd101a19a",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "pixelWidth": 3200,
+      "pixelHeight": 896,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "role": "playable",
+      "drawOrder": 10
+    },
+    {
+      "path": "scene-data.json",
+      "bytes": 83148,
+      "sha256": "c6566f3a8eecf4cea2fa349265233a931095668300abb15fbcafc8afb0f4497a",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "role": "data-or-evidence"
+    },
+    {
+      "path": "action-mask.png",
+      "bytes": 14136,
+      "sha256": "e474aa1431226931065cc059aa36abdd39325e3c763042a699146b6f6cd0fd7f",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "pixelWidth": 3200,
+      "pixelHeight": 896,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "role": "deterministic-diagnostics",
+      "sourceDataSHA256": "c6566f3a8eecf4cea2fa349265233a931095668300abb15fbcafc8afb0f4497a"
+    },
+    {
+      "path": "action-overlay.png",
+      "bytes": 5465066,
+      "sha256": "794107d1b70fa2c4830f96bb7bf33c6bef78f8dd54737a58e7e781d71f43384e",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "pixelWidth": 3200,
+      "pixelHeight": 896,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "role": "deterministic-diagnostics",
+      "sourceDataSHA256": "c6566f3a8eecf4cea2fa349265233a931095668300abb15fbcafc8afb0f4497a"
+    },
+    {
+      "path": "collision-overlay.png",
+      "bytes": 5430323,
+      "sha256": "d53884af843e3d62bd3109b6182738ed3385924576146ac53e0648a5430369eb",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "pixelWidth": 3200,
+      "pixelHeight": 896,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "role": "deterministic-diagnostics",
+      "sourceDataSHA256": "c6566f3a8eecf4cea2fa349265233a931095668300abb15fbcafc8afb0f4497a"
+    },
+    {
+      "path": "diagnostics-metadata.json",
+      "bytes": 1217,
+      "sha256": "5002c00e9613ef613d6b955aecbba9edc618dfd65221350b335f9aaab155041e",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "role": "data-or-evidence"
+    },
+    {
+      "path": "index.html",
+      "bytes": 171,
+      "sha256": "d562d30d678fbeeae3b22a219c2886a5dcf2e510090b270ff7201f1c36e2a49f",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "role": "data-or-evidence"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1130,
+      "sha256": "0588c02682cfd9a6ce23dbe8bf0fcfd7ba46d663e324de6efca04070ec50aa74",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "role": "data-or-evidence"
+    },
+    {
+      "path": "DELIVERED.md",
+      "bytes": 887,
+      "sha256": "d7634d0effc7ee6062404232488a1d4abd77a327b13fb051fbf095448ebc11fa",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "role": "data-or-evidence"
+    },
+    {
+      "path": "validation-report.md",
+      "bytes": 8481,
+      "sha256": "25e8f5f678d4ee5a63a805ecf96b37df34e677bcfa7d53634a4c61800bdd6070",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "role": "data-or-evidence"
+    },
+    {
+      "path": "polished.lock",
+      "bytes": 114,
+      "sha256": "e62af33eac0658ab4e06c25c9d0ddcdc51d8189947a1da28e80353959311dd5b",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "role": "data-or-evidence"
+    },
+    {
+      "path": "work/scene-brief.md",
+      "bytes": 2093,
+      "sha256": "74095f2c8e321af4ead3da57f69ab6736fabf4a017329636f9985ec3e15c3fb2",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "role": "data-or-evidence"
+    },
+    {
+      "path": "work/action-layout.svg",
+      "bytes": 1721,
+      "sha256": "e9032563da811b9ca47c66e4ffb7d95092641e7b59df40a3f605f24f191e72dd",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "role": "data-or-evidence"
+    },
+    {
+      "path": "work/stage2-graybox-report.md",
+      "bytes": 470,
+      "sha256": "6ec38797facf9cea98d2b49ce5a7ccad91ec07eabea75d5bd5f639db0a95c84e",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "role": "data-or-evidence"
+    },
+    {
+      "path": "work/stage3-geometry-report.md",
+      "bytes": 614,
+      "sha256": "87bd2561b1e853997ccd30f412e990eaf0a68ab3b9836ac73c84b4441f886372",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "role": "data-or-evidence"
+    },
+    {
+      "path": "work/stage4-report.md",
+      "bytes": 565,
+      "sha256": "8d8b0c1cfb9c3ed0fdfacbcd5e189ee33b903a4584e5fa3605455f3f1f4d4af3",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "role": "data-or-evidence"
+    },
+    {
+      "path": "work/stage5-report.md",
+      "bytes": 832,
+      "sha256": "9e7b648f7f152771ae7f6a078aa2946fa0f159f13f9ed7edff8d709cac1b24a4",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "role": "data-or-evidence"
+    },
+    {
+      "path": "work/stage4-blocks.json",
+      "bytes": 805,
+      "sha256": "ff53021c8c0832addfc66b039fda8d3d85053bf0b54c7e9853cf36656f3b5af9",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "role": "data-or-evidence"
+    },
+    {
+      "path": "work/stage5-placement-records.json",
+      "bytes": 10940,
+      "sha256": "b7fc007f4ec480f191fa2673073b34c4cbd655491385db372d6cdf6d634bd920",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "role": "data-or-evidence"
+    },
+    {
+      "path": "work/imagegen-provenance.json",
+      "bytes": 1953,
+      "sha256": "7309e1510ede0a7dc029e46d72281a8747b844019d44d08dd2ff9707b31085a7",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "role": "data-or-evidence"
+    },
+    {
+      "path": "work/final-routes.json",
+      "bytes": 1524,
+      "sha256": "05d1ca47cfd17f3e91d03a57328a0280825e705ac36ef937cd9216353dbc3969",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "role": "data-or-evidence"
+    },
+    {
+      "path": "work/final-physics-check.json",
+      "bytes": 1505064,
+      "sha256": "a7082540bdefb365943292d40c691f5b36d576b9fb6bf3be101ea0e44dcbe483",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "role": "data-or-evidence"
+    },
+    {
+      "path": "work/final-browser-check.json",
+      "bytes": 4713,
+      "sha256": "471653b319c7a9a8f90a1c01447be0d5ac8c6dfaa533c757ef80f317017e856f",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "role": "data-or-evidence"
+    },
+    {
+      "path": "work/final-transition-evidence.json",
+      "bytes": 31471,
+      "sha256": "04097527f293e51e29755d033b91aa5553370ccd3e7e8204094320dd5f4a6c1a",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "role": "data-or-evidence"
+    },
+    {
+      "path": "work/final-data-check.json",
+      "bytes": 419,
+      "sha256": "e8f1672b3993038e95924aea56dbdccb18b53288d7f4d47659f96287be70fb91",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "role": "data-or-evidence"
+    },
+    {
+      "path": "work/final-geometry-measurements.json",
+      "bytes": 11636,
+      "sha256": "b2b7a7e8d6f152e2a0290fe474c8d0feba68230e778febbbcdf67b9cab108e7a",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "role": "data-or-evidence"
+    },
+    {
+      "path": "work/protected-boundary-final.json",
+      "bytes": 269,
+      "sha256": "5f329173b9ea4bcbfe577095ede1de6656b98f4416bdacc27620297ca8fac424",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "role": "data-or-evidence"
+    },
+    {
+      "path": "work/artcheck-final.log",
+      "bytes": 948,
+      "sha256": "971ec2b5f561e9fc298167f5443cb1bb9bf08387c5e488c43dfd938ff1f09e5c",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "role": "data-or-evidence"
+    },
+    {
+      "path": "work/preview/index.html",
+      "bytes": 3797,
+      "sha256": "c344e6321f1fcbc762f30022fba7dc08832cb151fdd8d7d3ddd6ca02095e8853",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "role": "data-or-evidence"
+    },
+    {
+      "path": "work/preview/preview.mjs",
+      "bytes": 13853,
+      "sha256": "09bae5253f97e13ec659fb2fdcc4ff7505ac68207522b870ff48ccaad5d11d41",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "role": "data-or-evidence"
+    },
+    {
+      "path": "work/preview/engine.mjs",
+      "bytes": 13521,
+      "sha256": "bbea03054581ac2d17aace9fb3c3ba30f5ca970082f8ea085202b784d661d755",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "role": "data-or-evidence"
+    },
+    {
+      "path": "work/preview/player-reference-idle.png",
+      "bytes": 10012,
+      "sha256": "520235d2f9c4c9e83b140ba439c2d18becfaa8e962fa15a98e35a14003ce0181",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "pixelWidth": 96,
+      "pixelHeight": 96,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "role": "data-or-evidence"
+    },
+    {
+      "path": "work/preview/npc_hunter_lei-idle.png",
+      "bytes": 8776,
+      "sha256": "eb400c13bcd27c7ae482adad59ceb557db27746e29320c388546c0e495b744c9",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "pixelWidth": 96,
+      "pixelHeight": 96,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "role": "data-or-evidence"
+    },
+    {
+      "path": "work/preview/mon_vine_imp-idle.png",
+      "bytes": 5889,
+      "sha256": "59377f310fa6dc15da2ee7215159f2799025a4dde0c7892e581b5676743d3be2",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "pixelWidth": 64,
+      "pixelHeight": 72,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "role": "data-or-evidence"
+    },
+    {
+      "path": "work/preview/player-reference-idle.png",
+      "bytes": 10012,
+      "sha256": "520235d2f9c4c9e83b140ba439c2d18becfaa8e962fa15a98e35a14003ce0181",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "pixelWidth": 96,
+      "pixelHeight": 96,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "role": "data-or-evidence"
+    },
+    {
+      "path": "work/preview/mon_shadow_wolf-idle.png",
+      "bytes": 5909,
+      "sha256": "f3753a46b435f16751b7f9c43fe09b7a0288039b375437270379bc7f94e6472e",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "pixelWidth": 96,
+      "pixelHeight": 64,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "role": "data-or-evidence"
+    },
+    {
+      "path": "work/replays-final/route_main.json",
+      "bytes": 301991,
+      "sha256": "1c91802761d2fc706e2d87e5b1c0648801902805656b27d0b93ec4b243772c09",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "role": "data-or-evidence"
+    },
+    {
+      "path": "work/replays-final/route_return.json",
+      "bytes": 598138,
+      "sha256": "e17201cbe834ae951e8b3d3fd174e1d40d5be28582e85943b28ae0cf6f3fcb94",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "role": "data-or-evidence"
+    },
+    {
+      "path": "work/replays-final/route_herb_w.json",
+      "bytes": 473038,
+      "sha256": "eb08da59dfcb60387319da30d570efb8dcb2b7db5bc6909bba0a7b27027eecd8",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "role": "data-or-evidence"
+    },
+    {
+      "path": "work/replays-final/route_mid.json",
+      "bytes": 394509,
+      "sha256": "093aa7f21baa41d6fcce438c388063c3a31d8fa09fa4e801c6ef06a392eb78e7",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "role": "data-or-evidence"
+    },
+    {
+      "path": "work/replays-final/route_herb_c.json",
+      "bytes": 446920,
+      "sha256": "f3bd6bc8fb9230ac637d9ada476edfd7dde0ecefb3e6d612379b326119f8dbe0",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "role": "data-or-evidence"
+    },
+    {
+      "path": "work/replays-final/route_copper_e.json",
+      "bytes": 471871,
+      "sha256": "45d666e4fc125e44daf7c1b0544219b4fff6c2635c3a9d16fe915de0a2d53354",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "role": "data-or-evidence"
+    },
+    {
+      "path": "work/replays-final/route_full_tour.json",
+      "bytes": 1151834,
+      "sha256": "75a23a658bb5d592f76b2ae809f6ca0d4cfda74a4654a94d484c37ddec387667",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "role": "data-or-evidence"
+    },
+    {
+      "path": "work/final-browser-resource-binding.json",
+      "bytes": 1648,
+      "sha256": "2582ba7a96e166bf67307c497d957dd46a44bd0a98891a42e12d38e27e036842",
+      "geometryRevision": "wanyao-outer1-final-001",
+      "role": "data-or-evidence"
+    }
+  ],
+  "runtimeEntry": "index.html",
+  "localStart": "python3 -m http.server 8796 --bind 127.0.0.1",
+  "scope": "independent local AABB motion adapter at project base movement100; not Phaser/combat/portal integration",
+  "validation": {
+    "routes": "7/7",
+    "transitions": "22/22",
+    "physics": "9/9",
+    "browser": "8/8 +12 contact surfaces",
+    "bodyFrames": 18059,
+    "midRouteResets": 0,
+    "teleports": 0,
+    "bodyPenetrations": 0,
+    "bottom": "continuous full-width bottom64px",
+    "standingTolerancePx": 1,
+    "report": "validation-report.md"
+  }
+}
