@@ -36,6 +36,9 @@ import chiyanSlope1SceneData from '../data/art/scenes/chiyan_slope_1_gsb_v1/scen
 import chiyanSlope1TiledMap from '../data/maps/chiyan_slope_1.json';
 import chiyanSlope2SceneData from '../data/art/scenes/chiyan_slope_2_gsb_v1/scene-data.json';
 import chiyanSlope2TiledMap from '../data/maps/chiyan_slope_2.json';
+import chiyanCoreSceneData from '../data/art/scenes/chiyan_core_gsb_v1/scene-data.json';
+import chiyanCoreSceneDataRaw from '../data/art/scenes/chiyan_core_gsb_v1/scene-data.json?raw';
+import chiyanCoreTiledMap from '../data/maps/chiyan_core.json';
 import trialLingfuRangeSceneData from '../data/art/scenes/trial_lingfu_range_gsb_v1/scene-data.json';
 import trialLingfuRangeTiledMap from '../data/maps/trial_lingfu_range.json';
 import trialTaixuStageSceneData from '../data/art/scenes/trial_taixu_stage_gsb_v1/scene-data.json';
@@ -1841,6 +1844,225 @@ function testChiyanSlope2Gsb() {
   eq(JSON.stringify(tiledMap), mapBefore, 'chiyan_slope_2: building leaves the Tiled map input unchanged');
 }
 testChiyanSlope2Gsb();
+
+// Chiyan's demon hall keeps its approved chains as full-length runtime ropes and retains the boss arena.
+async function testChiyanCoreGsb() {
+  const sceneId = 'chiyan_core_gsb_v1', revision = 'chiyan-core-final-002';
+  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(chiyanCoreSceneDataRaw));
+  eq(Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join(''),
+    '55fcec53e279ec68714225269be9f2e041c386154ac0e6633136325bcb7ec383',
+    'chiyan_core: checked-in scene-data bytes retain the approved SHA256');
+  const data = clone(chiyanCoreSceneData), tiledMap = clone(chiyanCoreTiledMap);
+  const f = fixture(null, false), dataBefore = JSON.stringify(data), mapBefore = JSON.stringify(tiledMap);
+  f.cache.clear(); f.cache.set(`gsb_${sceneId}_data`, data);
+  f.textures.add(`gsb_${sceneId}_background`); f.textures.add(`gsb_${sceneId}_playable`);
+  const map = buildTiledMap(f.scene, tiledMap, 'tiles');
+  eq(map.gsbScene, sceneId, 'chiyan_core: checked-in map enables its GSB scene');
+  eq(tiledMap.properties.find(property => property.name === 'gsbScene')?.value,
+    sceneId, 'chiyan_core: map binds the approved delivery-directory scene id');
+  eq(tiledMap.properties.find(property => property.name === 'gsbGeometryRevision')?.value,
+    revision, 'chiyan_core: map binds the approved geometry revision');
+  eq(data.geometryRevision, revision, 'chiyan_core: scene-data retains the approved geometry revision');
+  eq(data.sceneId, 'chiyan_core', 'chiyan_core: the approved embedded sceneId remains unchanged');
+  same([map.width, map.height], [3840, 1024], 'chiyan_core: logical world dimensions match the approved scene');
+  same([data.space.logicalWidth, data.space.logicalHeight], [3840, 1024],
+    'chiyan_core: scene-data declares the approved logical dimensions');
+  same([tiledMap.width, tiledMap.height], [120, 32], 'chiyan_core: checked-in tile grid is 120 x 32');
+  same([tiledMap.tilewidth, tiledMap.tileheight], [32, 32], 'chiyan_core: checked-in tiles are 32 x 32');
+  same([tiledMap.width * tiledMap.tilewidth, tiledMap.height * tiledMap.tileheight], [map.width, map.height],
+    'chiyan_core: checked-in tile grid matches logical world dimensions');
+  same([data.surfaces.filter(surface => surface.support === 'solid').length,
+    data.surfaces.filter(surface => surface.support === 'one-way').length], [11, 8],
+    'chiyan_core: the nineteen approved surfaces comprise eleven solid and eight one-way spans');
+  same(f.groups.map(group => group.children.length), [10, 8],
+    'chiyan_core: runtime builds ten approved solid polygons and eight one-way bodies');
+  same(data.solids.map(solid => [solid.id, solid.surface, solid.polygon]), [
+    ['solid_base', null, [[0, 960], [3840, 960], [3840, 1024], [0, 1024]]],
+    ['solid_ridge', null, [[1280, 896], [2240, 896], [2240, 960], [1280, 960]]],
+    ['solid_west_arena', null, [[2048, 864], [2240, 864], [2240, 896], [2048, 896]]],
+    ['solid_east_arena', null, [[3584, 864], [3840, 864], [3840, 960], [3584, 960]]],
+    ['solid_collapse_1', 'collapse_1', [[2240, 864], [2464, 864], [2464, 896], [2240, 896]]],
+    ['solid_collapse_2', 'collapse_2', [[2464, 864], [2688, 864], [2688, 896], [2464, 896]]],
+    ['solid_collapse_3', 'collapse_3', [[2688, 864], [2912, 864], [2912, 896], [2688, 896]]],
+    ['solid_collapse_4', 'collapse_4', [[2912, 864], [3136, 864], [3136, 896], [2912, 896]]],
+    ['solid_collapse_5', 'collapse_5', [[3136, 864], [3360, 864], [3360, 896], [3136, 896]]],
+    ['solid_collapse_6', 'collapse_6', [[3360, 864], [3584, 864], [3584, 896], [3360, 896]]],
+  ], 'chiyan_core: all approved solid polygons retain their exact identities, links and bounds');
+  same(f.groups[0].children.map(rectangle), [
+    { x: 0, y: 960, width: 3840, height: 64 },
+    { x: 1280, y: 896, width: 960, height: 64 },
+    { x: 2048, y: 864, width: 192, height: 32 },
+    { x: 3584, y: 864, width: 256, height: 96 },
+    { x: 2240, y: 864, width: 224, height: 32 },
+    { x: 2464, y: 864, width: 224, height: 32 },
+    { x: 2688, y: 864, width: 224, height: 32 },
+    { x: 2912, y: 864, width: 224, height: 32 },
+    { x: 3136, y: 864, width: 224, height: 32 },
+    { x: 3360, y: 864, width: 224, height: 32 },
+  ], 'chiyan_core: solid runtime bodies preserve the full base, ridge, arena and six collapse polygons');
+  same(data.surfaces.map(surface => [surface.id, surface.support, surface.polyline]), [
+    ['s_west_ground', 'solid', [[0, 960], [1024, 960]]],
+    ['s_after_lava', 'solid', [[1152, 960], [1280, 960]]],
+    ['s_west_ridge', 'solid', [[1280, 896], [2048, 896]]],
+    ['s_west_arena', 'solid', [[2048, 864], [2240, 864]]],
+    ['s_east_arena', 'solid', [[3584, 864], [3840, 864]]],
+    ['collapse_1', 'solid', [[2240, 864], [2464, 864]]],
+    ['collapse_2', 'solid', [[2464, 864], [2688, 864]]],
+    ['collapse_3', 'solid', [[2688, 864], [2912, 864]]],
+    ['collapse_4', 'solid', [[2912, 864], [3136, 864]]],
+    ['collapse_5', 'solid', [[3136, 864], [3360, 864]]],
+    ['collapse_6', 'solid', [[3360, 864], [3584, 864]]],
+    ['s_west_low', 'one-way', [[320, 832], [800, 832]]],
+    ['s_west_high', 'one-way', [[512, 704], [992, 704]]],
+    ['s_west_mid', 'one-way', [[1408, 768], [1888, 768]]],
+    ['s_west_top', 'one-way', [[1536, 640], [1952, 640]]],
+    ['s_arena_left', 'one-way', [[2368, 800], [2528, 800]]],
+    ['s_arena_mid', 'one-way', [[2816, 800], [3008, 800]]],
+    ['s_arena_right', 'one-way', [[3328, 800], [3488, 800]]],
+    ['s_arena_high', 'one-way', [[2752, 672], [3072, 672]]],
+  ], 'chiyan_core: all nineteen approved surfaces retain their identities, support kinds and exact landing spans');
+  for (const surface of data.surfaces) {
+    const left = Math.min(...surface.polyline.map(point => point[0]));
+    const right = Math.max(...surface.polyline.map(point => point[0]));
+    const bodies = f.groups[surface.support === 'one-way' ? 1 : 0].children.map(rectangle);
+    ok(bodies.some(body => body.y === surface.polyline[0][1] && body.x <= left && body.x + body.width >= right),
+      `chiyan_core: ${surface.id} retains its full landing span and exact top edge`);
+  }
+  ok(f.groups[1].children.every(object => object.body?.checkCollision.up &&
+    !object.body.checkCollision.down && !object.body.checkCollision.left && !object.body.checkCollision.right),
+    'chiyan_core: all one-way bodies only collide on top');
+  ok(f.groups[0].children.every(object => object.body?.checkCollision.up &&
+    object.body.checkCollision.down && object.body.checkCollision.left && object.body.checkCollision.right),
+    'chiyan_core: all solid bodies keep every collision direction');
+  same(map.spawn, { x: 128, y: 960 }, 'chiyan_core: player start is preserved');
+  same(data.points.filter(point => point.id === 'start_spawn').map(point => [point.sourceObject, point.position]),
+    [['playerStart', [map.spawn.x, map.spawn.y]]], 'chiyan_core: player start matches the approved spawn point');
+  same(data.climbs.map(climb => [climb.id, climb.kind, climb.sourceObject,
+    climb.ends.start.position, climb.ends.end.position]), [
+    ['c_rope_16', 'chain', 'rope_16', [528, 960], [528, 832]],
+    ['c_rope_22', 'chain', 'rope_22', [720, 832], [720, 704]],
+    ['c_rope_50', 'chain', 'rope_50', [1616, 896], [1616, 768]],
+    ['c_rope_54', 'chain', 'rope_54', [1744, 768], [1744, 640]],
+    ['c_rope_90', 'chain', 'rope_90', [2896, 800], [2896, 672]],
+  ], 'chiyan_core: all five scene chains keep their source identities and both approved endpoints');
+  same(data.climbs.map(climb => Math.max(...climb.corridor.map(point => point[0])) -
+    Math.min(...climb.corridor.map(point => point[0]))), [36, 36, 36, 36, 36],
+    'chiyan_core: all five approved chain corridors remain 36 pixels wide');
+  const tiledObjects = tiledMap.layers.flatMap(layer => layer.type === 'objectgroup' ? layer.objects ?? [] : []);
+  same(tiledObjects.filter(object => ['rope', 'ladder', 'chain'].includes(object.type)).map(object =>
+    [object.name, object.type, object.x, object.y, object.width, object.height]), [
+    ['rope_16', 'rope', 528, 832, 0, 128],
+    ['rope_22', 'rope', 720, 704, 0, 128],
+    ['rope_50', 'rope', 1616, 768, 0, 128],
+    ['rope_54', 'rope', 1744, 640, 0, 128],
+    ['rope_90', 'rope', 2896, 672, 0, 128],
+  ], 'chiyan_core: Tiled keeps five ropes extended to both chain endpoints');
+  eq(FEEL.ropeGrabRangeX, 18, 'chiyan_core: runtime rope grab half-width retains the approved 18 pixel feel');
+  same(map.ropes, [
+    { kind: 'rope', x: 528, top: 832, bottom: 960, halfW: FEEL.ropeGrabRangeX },
+    { kind: 'rope', x: 720, top: 704, bottom: 832, halfW: FEEL.ropeGrabRangeX },
+    { kind: 'rope', x: 1616, top: 768, bottom: 896, halfW: FEEL.ropeGrabRangeX },
+    { kind: 'rope', x: 1744, top: 640, bottom: 768, halfW: FEEL.ropeGrabRangeX },
+    { kind: 'rope', x: 2896, top: 672, bottom: 800, halfW: FEEL.ropeGrabRangeX },
+  ], 'chiyan_core: all five chains retain exact runtime rope centers, endpoints and grab ranges');
+  same(map.ropes.map(rope => [rope.kind, rope.x, rope.top, rope.bottom, rope.halfW]),
+    data.climbs.map(climb => ['rope', climb.ends.end.position[0], climb.ends.end.position[1],
+      climb.ends.start.position[1], (Math.max(...climb.corridor.map(point => point[0])) -
+        Math.min(...climb.corridor.map(point => point[0]))) / 2]),
+    'chiyan_core: runtime rope geometry matches approved scene chain endpoints and corridor half-widths');
+  same(map.objects.filter(object => object.type === 'portal').map(object =>
+    [object.name, object.x, object.y, object.props.target, object.props.targetPortal]),
+    [['portal_to_slope_2', 80, 960, 'chiyan_slope_2', 'portal_to_core']],
+    'chiyan_core: the west portal keeps its destination and reciprocal portal');
+  const slope2Objects = chiyanSlope2TiledMap.layers.flatMap(layer => layer.type === 'objectgroup' ? layer.objects ?? [] : []);
+  same(slope2Objects.filter(object => object.name === 'portal_to_core').map(object =>
+    [object.type, object.x, object.y, object.properties.find(property => property.name === 'target')?.value,
+      object.properties.find(property => property.name === 'targetPortal')?.value,
+      object.properties.find(property => property.name === 'reqLevel')?.value]),
+    [['portal', 3440, 768, 'chiyan_core', 'portal_to_slope_2', 55]],
+    'chiyan_core: the established lava-road portal keeps the reciprocal link and level requirement');
+  same(map.objects.filter(object => object.type === 'ferry').map(object =>
+    [object.name, object.x, object.y, object.w, object.props.returnTo]),
+    [['ferry_pickup', 3680, 864, 96, 'luoxia_town']],
+    'chiyan_core: ferry pickup keeps its type, exact position, width and return town');
+  same(data.points.filter(point => point.id === 'ferry_pickup').map(point =>
+    [point.type, point.sourceObject, point.position, point.width, point.properties]),
+    [['goal', 'ferry_pickup', [3680, 864], 96, { returnTo: 'luoxia_town' }]],
+    'chiyan_core: the approved goal point remains linked to the existing ferry object');
+  const lavaZones = map.zones.filter(zone => zone.props.hazard === 'lava');
+  same(lavaZones.map(zone => [zone.name, zone.x, zone.y, zone.w, zone.h, zone.props.label,
+    zone.props.hazard, zone.props.damagePermilleOfMaxHp, zone.props.tickMs, zone.props.knockUp]), [
+    ['lava_6', 1024, 928, 128, 32, '岩浆', 'lava', 80, 500, 480],
+    ['lava_bed', 2240, 928, 1344, 32, '岩浆', 'lava', 80, 500, 480],
+  ], 'chiyan_core: both lava zones retain their exact rectangles, identity and damage properties');
+  same(tiledObjects.filter(object => ['lava_6', 'lava_bed'].includes(object.name)).map(object => object.type),
+    ['zone', 'zone'], 'chiyan_core: hazards remain Tiled zone objects');
+  same(lavaZones.map(zone => [zone.name, zone.x, zone.y, zone.w, zone.h, zone.props.hazard,
+    zone.props.damagePermilleOfMaxHp, zone.props.tickMs, zone.props.knockUp]),
+    data.hazards.map(hazard => {
+      const xs = hazard.polygon.map(point => point[0]), ys = hazard.polygon.map(point => point[1]);
+      return [hazard.id, Math.min(...xs), Math.min(...ys), Math.max(...xs) - Math.min(...xs),
+        Math.max(...ys) - Math.min(...ys), hazard.effect.type, hazard.effect.damagePermilleOfMaxHp,
+        hazard.effect.tickMs, hazard.effect.knockUp];
+    }), 'chiyan_core: runtime lava bounds and effects match approved scene-data');
+  const spawnPoints = data.points.filter(point => point.type === 'spawn' && point.properties?.monster);
+  same(tiledObjects.filter(object => object.type === 'spawn').map(object => [object.name, object.x, object.y, object.width]),
+    spawnPoints.map(point => [point.id, ...point.position, point.width]),
+    'chiyan_core: all seven monster scene points keep their Tiled positions and patrol widths');
+  same(map.spawns.map(spawn => [spawn.monster, spawn.x, spawn.y, spawn.w, spawn.count]), [
+    ['flame_puppet', 192, 960, 832, 3], ['flame_puppet', 1280, 896, 768, 2],
+    ['black_robe_guard', 320, 832, 480, 2], ['black_robe_guard', 512, 704, 480, 2],
+    ['black_robe_guard', 1408, 768, 480, 2], ['black_robe_guard', 1536, 640, 416, 2],
+    ['flame_envoy', 2752, 864, 352, 1],
+  ], 'chiyan_core: two puppet, four guard and one envoy patrol retain all source extents and counts');
+  same(map.spawns.map(spawn => [spawn.monster, spawn.x, spawn.y, spawn.w, spawn.count]),
+    spawnPoints.map(point => [point.properties?.monster, ...point.position, point.width, point.properties?.count]),
+    'chiyan_core: runtime monster spawns match approved scene point semantics');
+  same(map.objects.filter(object => object.type === 'gather').map(object =>
+    [object.name, object.x, object.y, object.props.item, object.props.respawnMs]),
+    [['gather_fire_herb_25', 912, 704, 'fire_herb', 120000]],
+    'chiyan_core: fire herb keeps its approved position, item and respawn time');
+  same(map.objects.filter(object => object.type === 'chest').map(object =>
+    [object.name, object.x, object.y, object.props.loot, object.props.count]),
+    [['sense_chest_01', 592, 704, 'hp_pill_small', 1]],
+    'chiyan_core: the native chest keeps its approved position and loot');
+  same(map.hidden.map(hidden => [hidden.object.name, hidden.object.x, hidden.object.y,
+    hidden.object.w, hidden.object.h, hidden.object.props.enabled, hidden.object.props.reqSpirit,
+    hidden.object.props.reveal, hidden.object.props.targetObject ?? null]), [
+    ['sense_hidden_chest_01', 592, 704, 0, 0, false, 0, 'chest', 'sense_chest_01'],
+    ['sense_hidden_platform_01', 1968, 576, 64, 32, false, 10, 'platform', null],
+  ], 'chiyan_core: both hidden controllers keep their disabled state, geometry and reveal requirements');
+  same(map.objects.filter(object => object.type === 'flyZone').map(object =>
+    [object.name, object.x, object.y, object.w, object.h]),
+    [['flyZone_1', 480, 448, 1400, 288]], 'chiyan_core: the flying zone keeps its approved bounds');
+  same(map.objects.filter(object => object.type === 'collapseSegment').map(object =>
+    [object.name, object.x, object.y, object.w, object.h, object.props.index, object.props.boss]), [
+    ['collapse_1', 2240, 864, 224, 32, 1, 'flame_envoy'],
+    ['collapse_2', 2464, 864, 224, 32, 2, 'flame_envoy'],
+    ['collapse_3', 2688, 864, 224, 32, 3, 'flame_envoy'],
+    ['collapse_4', 2912, 864, 224, 32, 4, 'flame_envoy'],
+    ['collapse_5', 3136, 864, 224, 32, 5, 'flame_envoy'],
+    ['collapse_6', 3360, 864, 224, 32, 6, 'flame_envoy'],
+  ], 'chiyan_core: all six collapse gameplay segments keep their geometry, order and boss binding');
+  same(map.zones.filter(zone => zone.name === 'boss_arena').map(zone =>
+    [zone.name, zone.x, zone.y, zone.w, zone.h, zone.props.label, zone.props.bossOnly]),
+    [['boss_arena', 2048, 384, 1792, 576, '炎魔殿（炎魔使）', true]],
+    'chiyan_core: the existing boss arena keeps its bounds, label and boss-only flag');
+  same(tiledObjects.map(object => [object.id, object.name, object.type, object.properties]),
+    data.source.objects.map(object => [object.id, object.name, object.type, object.properties]),
+    'chiyan_core: all twenty-nine source objects keep their ids, types and gameplay properties');
+  eq(f.tilemaps, 0, 'chiyan_core: GSB skips the legacy tilemap path');
+  same(f.displays.filter(object => object.kind !== 'zone').map(object => [object.kind, object.key]),
+    [['image', `gsb_${sceneId}_background`], ['image', `gsb_${sceneId}_playable`]],
+    'chiyan_core: GSB draws background and playable art without legacy terrain or climbs');
+  const legacyLayers = tiledMap.layers.filter(layer => layer.type === 'tilelayer' && ['ground', 'oneway'].includes(layer.name));
+  same(legacyLayers.map(layer => layer.name), ['ground', 'oneway'], 'chiyan_core: both legacy collision layers are present');
+  ok(legacyLayers.every(layer => layer.data?.length === tiledMap.width * tiledMap.height && layer.data.every(gid => gid === 0)),
+    'chiyan_core: checked-in legacy collision layers are fully cleared');
+  eq(JSON.stringify(data), dataBefore, 'chiyan_core: building leaves cached scene-data input unchanged');
+  eq(JSON.stringify(tiledMap), mapBefore, 'chiyan_core: building leaves the Tiled map input unchanged');
+}
+await testChiyanCoreGsb();
 
 // Lingfu's trial retains its drawing desk and eight targets with four approved ropes.
 function testTrialLingfuRangeGsb() {

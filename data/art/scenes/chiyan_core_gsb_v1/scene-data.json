@@ -1,0 +1,3594 @@
+{
+  "schemaVersion": "1.0",
+  "geometryRevision": "chiyan-core-final-002",
+  "sceneId": "chiyan_core",
+  "status": "verified",
+  "space": {
+    "origin": "top-left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "units": "logical-pixel",
+    "logicalWidth": 3840,
+    "logicalHeight": 1024
+  },
+  "mapProperties": {
+    "id": "chiyan_core",
+    "name": "赤炎火山·炎魔殿",
+    "safeZone": false,
+    "qiDensity": 7,
+    "area": "chiyan",
+    "returnTown": false,
+    "allowTalismanReturn": true
+  },
+  "source": {
+    "path": "maps/chiyan_core.json",
+    "sha256": "34e4feee077b9cc0fa99425b9620ed04fcd443355ca9f75eb018fb8b698e5f52",
+    "tileSize": 32,
+    "objects": [
+      {
+        "id": 1,
+        "name": "rope_16",
+        "type": "rope",
+        "x": 528,
+        "y": 832,
+        "width": 0,
+        "height": 96,
+        "properties": []
+      },
+      {
+        "id": 2,
+        "name": "rope_22",
+        "type": "rope",
+        "x": 720,
+        "y": 704,
+        "width": 0,
+        "height": 96,
+        "properties": []
+      },
+      {
+        "id": 3,
+        "name": "rope_50",
+        "type": "rope",
+        "x": 1616,
+        "y": 768,
+        "width": 0,
+        "height": 96,
+        "properties": []
+      },
+      {
+        "id": 4,
+        "name": "rope_54",
+        "type": "rope",
+        "x": 1744,
+        "y": 640,
+        "width": 0,
+        "height": 96,
+        "properties": []
+      },
+      {
+        "id": 5,
+        "name": "rope_90",
+        "type": "rope",
+        "x": 2896,
+        "y": 672,
+        "width": 0,
+        "height": 96,
+        "properties": []
+      },
+      {
+        "id": 6,
+        "name": "lava_6",
+        "type": "zone",
+        "x": 1024,
+        "y": 928,
+        "width": 128,
+        "height": 32,
+        "properties": [
+          {
+            "name": "label",
+            "type": "string",
+            "value": "岩浆"
+          },
+          {
+            "name": "hazard",
+            "type": "string",
+            "value": "lava"
+          },
+          {
+            "name": "damagePermilleOfMaxHp",
+            "type": "int",
+            "value": 80
+          },
+          {
+            "name": "tickMs",
+            "type": "int",
+            "value": 500
+          },
+          {
+            "name": "knockUp",
+            "type": "int",
+            "value": 480
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "name": "lava_bed",
+        "type": "zone",
+        "x": 2240,
+        "y": 928,
+        "width": 1344,
+        "height": 32,
+        "properties": [
+          {
+            "name": "label",
+            "type": "string",
+            "value": "岩浆"
+          },
+          {
+            "name": "hazard",
+            "type": "string",
+            "value": "lava"
+          },
+          {
+            "name": "damagePermilleOfMaxHp",
+            "type": "int",
+            "value": 80
+          },
+          {
+            "name": "tickMs",
+            "type": "int",
+            "value": 500
+          },
+          {
+            "name": "knockUp",
+            "type": "int",
+            "value": 480
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "name": "playerStart",
+        "type": "playerStart",
+        "x": 128,
+        "y": 960,
+        "width": 0,
+        "height": 0,
+        "properties": []
+      },
+      {
+        "id": 9,
+        "name": "portal_to_slope_2",
+        "type": "portal",
+        "x": 80,
+        "y": 960,
+        "width": 0,
+        "height": 0,
+        "properties": [
+          {
+            "name": "target",
+            "type": "string",
+            "value": "chiyan_slope_2"
+          },
+          {
+            "name": "targetPortal",
+            "type": "string",
+            "value": "portal_to_core"
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "name": "ferry_pickup",
+        "type": "ferry",
+        "x": 3680,
+        "y": 864,
+        "width": 96,
+        "height": 0,
+        "properties": [
+          {
+            "name": "returnTo",
+            "type": "string",
+            "value": "luoxia_town"
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "name": "spawn_flame_puppet_11",
+        "type": "spawn",
+        "x": 192,
+        "y": 960,
+        "width": 832,
+        "height": 0,
+        "properties": [
+          {
+            "name": "monster",
+            "type": "string",
+            "value": "flame_puppet"
+          },
+          {
+            "name": "count",
+            "type": "int",
+            "value": 3
+          }
+        ]
+      },
+      {
+        "id": 12,
+        "name": "spawn_flame_puppet_12",
+        "type": "spawn",
+        "x": 1280,
+        "y": 896,
+        "width": 768,
+        "height": 0,
+        "properties": [
+          {
+            "name": "monster",
+            "type": "string",
+            "value": "flame_puppet"
+          },
+          {
+            "name": "count",
+            "type": "int",
+            "value": 2
+          }
+        ]
+      },
+      {
+        "id": 13,
+        "name": "spawn_black_robe_guard_13",
+        "type": "spawn",
+        "x": 320,
+        "y": 832,
+        "width": 480,
+        "height": 0,
+        "properties": [
+          {
+            "name": "monster",
+            "type": "string",
+            "value": "black_robe_guard"
+          },
+          {
+            "name": "count",
+            "type": "int",
+            "value": 2
+          }
+        ]
+      },
+      {
+        "id": 14,
+        "name": "spawn_black_robe_guard_14",
+        "type": "spawn",
+        "x": 512,
+        "y": 704,
+        "width": 480,
+        "height": 0,
+        "properties": [
+          {
+            "name": "monster",
+            "type": "string",
+            "value": "black_robe_guard"
+          },
+          {
+            "name": "count",
+            "type": "int",
+            "value": 2
+          }
+        ]
+      },
+      {
+        "id": 15,
+        "name": "spawn_black_robe_guard_15",
+        "type": "spawn",
+        "x": 1408,
+        "y": 768,
+        "width": 480,
+        "height": 0,
+        "properties": [
+          {
+            "name": "monster",
+            "type": "string",
+            "value": "black_robe_guard"
+          },
+          {
+            "name": "count",
+            "type": "int",
+            "value": 2
+          }
+        ]
+      },
+      {
+        "id": 16,
+        "name": "spawn_black_robe_guard_16",
+        "type": "spawn",
+        "x": 1536,
+        "y": 640,
+        "width": 416,
+        "height": 0,
+        "properties": [
+          {
+            "name": "monster",
+            "type": "string",
+            "value": "black_robe_guard"
+          },
+          {
+            "name": "count",
+            "type": "int",
+            "value": 2
+          }
+        ]
+      },
+      {
+        "id": 17,
+        "name": "spawn_flame_envoy_17",
+        "type": "spawn",
+        "x": 2752,
+        "y": 864,
+        "width": 352,
+        "height": 0,
+        "properties": [
+          {
+            "name": "monster",
+            "type": "string",
+            "value": "flame_envoy"
+          },
+          {
+            "name": "count",
+            "type": "int",
+            "value": 1
+          }
+        ]
+      },
+      {
+        "id": 18,
+        "name": "boss_arena",
+        "type": "zone",
+        "x": 2048,
+        "y": 384,
+        "width": 1792,
+        "height": 576,
+        "properties": [
+          {
+            "name": "label",
+            "type": "string",
+            "value": "炎魔殿（炎魔使）"
+          },
+          {
+            "name": "bossOnly",
+            "type": "bool",
+            "value": true
+          }
+        ]
+      },
+      {
+        "id": 19,
+        "name": "collapse_1",
+        "type": "collapseSegment",
+        "x": 2240,
+        "y": 864,
+        "width": 224,
+        "height": 32,
+        "properties": [
+          {
+            "name": "index",
+            "type": "int",
+            "value": 1
+          },
+          {
+            "name": "boss",
+            "type": "string",
+            "value": "flame_envoy"
+          }
+        ]
+      },
+      {
+        "id": 20,
+        "name": "collapse_2",
+        "type": "collapseSegment",
+        "x": 2464,
+        "y": 864,
+        "width": 224,
+        "height": 32,
+        "properties": [
+          {
+            "name": "index",
+            "type": "int",
+            "value": 2
+          },
+          {
+            "name": "boss",
+            "type": "string",
+            "value": "flame_envoy"
+          }
+        ]
+      },
+      {
+        "id": 21,
+        "name": "collapse_3",
+        "type": "collapseSegment",
+        "x": 2688,
+        "y": 864,
+        "width": 224,
+        "height": 32,
+        "properties": [
+          {
+            "name": "index",
+            "type": "int",
+            "value": 3
+          },
+          {
+            "name": "boss",
+            "type": "string",
+            "value": "flame_envoy"
+          }
+        ]
+      },
+      {
+        "id": 22,
+        "name": "collapse_4",
+        "type": "collapseSegment",
+        "x": 2912,
+        "y": 864,
+        "width": 224,
+        "height": 32,
+        "properties": [
+          {
+            "name": "index",
+            "type": "int",
+            "value": 4
+          },
+          {
+            "name": "boss",
+            "type": "string",
+            "value": "flame_envoy"
+          }
+        ]
+      },
+      {
+        "id": 23,
+        "name": "collapse_5",
+        "type": "collapseSegment",
+        "x": 3136,
+        "y": 864,
+        "width": 224,
+        "height": 32,
+        "properties": [
+          {
+            "name": "index",
+            "type": "int",
+            "value": 5
+          },
+          {
+            "name": "boss",
+            "type": "string",
+            "value": "flame_envoy"
+          }
+        ]
+      },
+      {
+        "id": 24,
+        "name": "collapse_6",
+        "type": "collapseSegment",
+        "x": 3360,
+        "y": 864,
+        "width": 224,
+        "height": 32,
+        "properties": [
+          {
+            "name": "index",
+            "type": "int",
+            "value": 6
+          },
+          {
+            "name": "boss",
+            "type": "string",
+            "value": "flame_envoy"
+          }
+        ]
+      },
+      {
+        "id": 25,
+        "name": "gather_fire_herb_25",
+        "type": "gather",
+        "x": 912,
+        "y": 704,
+        "width": 0,
+        "height": 0,
+        "properties": [
+          {
+            "name": "item",
+            "type": "string",
+            "value": "fire_herb"
+          },
+          {
+            "name": "respawnMs",
+            "type": "int",
+            "value": 120000
+          }
+        ]
+      },
+      {
+        "id": 26,
+        "name": "sense_chest_01",
+        "type": "chest",
+        "x": 592,
+        "y": 704,
+        "width": 0,
+        "height": 0,
+        "properties": [
+          {
+            "name": "loot",
+            "type": "string",
+            "value": "hp_pill_small"
+          },
+          {
+            "name": "count",
+            "type": "int",
+            "value": 1
+          }
+        ]
+      },
+      {
+        "id": 27,
+        "name": "sense_hidden_chest_01",
+        "type": "hidden",
+        "x": 592,
+        "y": 704,
+        "width": 0,
+        "height": 0,
+        "properties": [
+          {
+            "name": "enabled",
+            "type": "bool",
+            "value": false
+          },
+          {
+            "name": "reqSpirit",
+            "type": "int",
+            "value": 0
+          },
+          {
+            "name": "reveal",
+            "type": "string",
+            "value": "chest"
+          },
+          {
+            "name": "targetObject",
+            "type": "string",
+            "value": "sense_chest_01"
+          }
+        ]
+      },
+      {
+        "id": 28,
+        "name": "sense_hidden_platform_01",
+        "type": "hidden",
+        "x": 1968,
+        "y": 576,
+        "width": 64,
+        "height": 32,
+        "properties": [
+          {
+            "name": "enabled",
+            "type": "bool",
+            "value": false
+          },
+          {
+            "name": "reqSpirit",
+            "type": "int",
+            "value": 10
+          },
+          {
+            "name": "reveal",
+            "type": "string",
+            "value": "platform"
+          }
+        ]
+      },
+      {
+        "id": 29,
+        "name": "flyZone_1",
+        "type": "flyZone",
+        "x": 480,
+        "y": 448,
+        "width": 1400,
+        "height": 288,
+        "properties": []
+      }
+    ],
+    "unchanged": true
+  },
+  "actor": {
+    "parameterRevision": "chiyan-core-feel-base100-20261027",
+    "parameterSource": [
+      "game/src/config/feel.ts",
+      "game/src/move.ts",
+      "game/src/scenes/Player.ts"
+    ],
+    "sourceRevision": {
+      "game/src/config/feel.ts": "9375297a15b04012633197a935f4d9ffd403c3ff8d1e055cb585dd5f81acdeec",
+      "game/src/move.ts": "585c9987623cbe532d7f65508773addd52ccd2f312e5c2ee592e9e6f2f686a74",
+      "game/src/scenes/Player.ts": "ec9426ed625784532c6e632a1755bd16076cc3f559d177f465b741341193f513"
+    },
+    "provisional": false,
+    "visualBounds": {
+      "width": 96,
+      "height": 96,
+      "anchor": "feet-center",
+      "bodyVisibleHeightApprox": 64
+    },
+    "visualAsset": {
+      "path": "work/preview/player-reference-idle.png",
+      "width": 96,
+      "height": 96,
+      "source": "read-only approved qingyun reference static player frame"
+    },
+    "collider": {
+      "shape": "aabb",
+      "width": 26,
+      "height": 58,
+      "anchor": "feet-center"
+    },
+    "abilities": [
+      "walk",
+      "jump",
+      "double-jump",
+      "climb",
+      "drop-through"
+    ],
+    "movement": {
+      "gravity": 2000,
+      "maxFallSpeed": 670,
+      "walkSpeed": 130,
+      "groundAccel": 2400,
+      "groundDecel": 3000,
+      "airAccel": 700,
+      "airMaxSpeed": 130,
+      "jumpSpeed": 560,
+      "coyoteMs": 60,
+      "jumpBufferMs": 80,
+      "doubleJumpVy": 480,
+      "doubleJumpVx": 330,
+      "climbSpeed": 110,
+      "ropeGrabRangeX": 18,
+      "ropeJumpVx": 160,
+      "ropeJumpVy": 360,
+      "dropThroughMs": 220,
+      "ropeRegrabMs": 250
+    },
+    "failureRules": {
+      "manualReset": "R returns to playerStart",
+      "lava": {
+        "damagePermilleOfMaxHp": 80,
+        "tickMs": 500,
+        "knockUp": 480
+      },
+      "outOfBounds": "reset"
+    },
+    "applicability": "Base speed/jump 100. Independent AABB adapter, not Phaser integration; combat excluded."
+  },
+  "assets": [
+    {
+      "id": "background",
+      "role": "background",
+      "path": "background.png",
+      "pixelWidth": 3840,
+      "pixelHeight": 1024,
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "playable",
+      "role": "playable",
+      "path": "playable.png",
+      "pixelWidth": 3840,
+      "pixelHeight": 1024,
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "s_west_ground",
+      "polyline": [
+        [
+          0,
+          960
+        ],
+        [
+          1024,
+          960
+        ]
+      ],
+      "support": "solid",
+      "status": "verified",
+      "landingRange": [
+        13,
+        1011
+      ],
+      "walkRegion": [
+        [
+          13,
+          902
+        ],
+        [
+          1011,
+          902
+        ],
+        [
+          1011,
+          960
+        ],
+        [
+          13,
+          960
+        ]
+      ],
+      "kind": "terrain",
+      "evidence": [
+        {
+          "id": "s_west_ground",
+          "geometryRevision": "chiyan-core-final-002",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_after_lava",
+      "polyline": [
+        [
+          1152,
+          960
+        ],
+        [
+          1280,
+          960
+        ]
+      ],
+      "support": "solid",
+      "status": "verified",
+      "landingRange": [
+        1165,
+        1267
+      ],
+      "walkRegion": [
+        [
+          1165,
+          902
+        ],
+        [
+          1267,
+          902
+        ],
+        [
+          1267,
+          960
+        ],
+        [
+          1165,
+          960
+        ]
+      ],
+      "kind": "terrain",
+      "evidence": [
+        {
+          "id": "s_after_lava",
+          "geometryRevision": "chiyan-core-final-002",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_west_ridge",
+      "polyline": [
+        [
+          1280,
+          896
+        ],
+        [
+          2048,
+          896
+        ]
+      ],
+      "support": "solid",
+      "status": "verified",
+      "landingRange": [
+        1293,
+        2035
+      ],
+      "walkRegion": [
+        [
+          1293,
+          838
+        ],
+        [
+          2035,
+          838
+        ],
+        [
+          2035,
+          896
+        ],
+        [
+          1293,
+          896
+        ]
+      ],
+      "kind": "terrain",
+      "evidence": [
+        {
+          "id": "s_west_ridge",
+          "geometryRevision": "chiyan-core-final-002",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_west_arena",
+      "polyline": [
+        [
+          2048,
+          864
+        ],
+        [
+          2240,
+          864
+        ]
+      ],
+      "support": "solid",
+      "status": "verified",
+      "landingRange": [
+        2061,
+        2227
+      ],
+      "walkRegion": [
+        [
+          2061,
+          806
+        ],
+        [
+          2227,
+          806
+        ],
+        [
+          2227,
+          864
+        ],
+        [
+          2061,
+          864
+        ]
+      ],
+      "kind": "terrain",
+      "evidence": [
+        {
+          "id": "s_west_arena",
+          "geometryRevision": "chiyan-core-final-002",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_east_arena",
+      "polyline": [
+        [
+          3584,
+          864
+        ],
+        [
+          3840,
+          864
+        ]
+      ],
+      "support": "solid",
+      "status": "verified",
+      "landingRange": [
+        3597,
+        3827
+      ],
+      "walkRegion": [
+        [
+          3597,
+          806
+        ],
+        [
+          3827,
+          806
+        ],
+        [
+          3827,
+          864
+        ],
+        [
+          3597,
+          864
+        ]
+      ],
+      "kind": "terrain",
+      "evidence": [
+        {
+          "id": "s_east_arena",
+          "geometryRevision": "chiyan-core-final-002",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "collapse_1",
+      "polyline": [
+        [
+          2240,
+          864
+        ],
+        [
+          2464,
+          864
+        ]
+      ],
+      "support": "solid",
+      "status": "verified",
+      "landingRange": [
+        2253,
+        2451
+      ],
+      "walkRegion": [
+        [
+          2253,
+          806
+        ],
+        [
+          2451,
+          806
+        ],
+        [
+          2451,
+          864
+        ],
+        [
+          2253,
+          864
+        ]
+      ],
+      "kind": "collapseSegment",
+      "evidence": [
+        {
+          "id": "collapse_1",
+          "geometryRevision": "chiyan-core-final-002",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "collapse_2",
+      "polyline": [
+        [
+          2464,
+          864
+        ],
+        [
+          2688,
+          864
+        ]
+      ],
+      "support": "solid",
+      "status": "verified",
+      "landingRange": [
+        2477,
+        2675
+      ],
+      "walkRegion": [
+        [
+          2477,
+          806
+        ],
+        [
+          2675,
+          806
+        ],
+        [
+          2675,
+          864
+        ],
+        [
+          2477,
+          864
+        ]
+      ],
+      "kind": "collapseSegment",
+      "evidence": [
+        {
+          "id": "collapse_2",
+          "geometryRevision": "chiyan-core-final-002",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "collapse_3",
+      "polyline": [
+        [
+          2688,
+          864
+        ],
+        [
+          2912,
+          864
+        ]
+      ],
+      "support": "solid",
+      "status": "verified",
+      "landingRange": [
+        2701,
+        2899
+      ],
+      "walkRegion": [
+        [
+          2701,
+          806
+        ],
+        [
+          2899,
+          806
+        ],
+        [
+          2899,
+          864
+        ],
+        [
+          2701,
+          864
+        ]
+      ],
+      "kind": "collapseSegment",
+      "evidence": [
+        {
+          "id": "collapse_3",
+          "geometryRevision": "chiyan-core-final-002",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "collapse_4",
+      "polyline": [
+        [
+          2912,
+          864
+        ],
+        [
+          3136,
+          864
+        ]
+      ],
+      "support": "solid",
+      "status": "verified",
+      "landingRange": [
+        2925,
+        3123
+      ],
+      "walkRegion": [
+        [
+          2925,
+          806
+        ],
+        [
+          3123,
+          806
+        ],
+        [
+          3123,
+          864
+        ],
+        [
+          2925,
+          864
+        ]
+      ],
+      "kind": "collapseSegment",
+      "evidence": [
+        {
+          "id": "collapse_4",
+          "geometryRevision": "chiyan-core-final-002",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "collapse_5",
+      "polyline": [
+        [
+          3136,
+          864
+        ],
+        [
+          3360,
+          864
+        ]
+      ],
+      "support": "solid",
+      "status": "verified",
+      "landingRange": [
+        3149,
+        3347
+      ],
+      "walkRegion": [
+        [
+          3149,
+          806
+        ],
+        [
+          3347,
+          806
+        ],
+        [
+          3347,
+          864
+        ],
+        [
+          3149,
+          864
+        ]
+      ],
+      "kind": "collapseSegment",
+      "evidence": [
+        {
+          "id": "collapse_5",
+          "geometryRevision": "chiyan-core-final-002",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "collapse_6",
+      "polyline": [
+        [
+          3360,
+          864
+        ],
+        [
+          3584,
+          864
+        ]
+      ],
+      "support": "solid",
+      "status": "verified",
+      "landingRange": [
+        3373,
+        3571
+      ],
+      "walkRegion": [
+        [
+          3373,
+          806
+        ],
+        [
+          3571,
+          806
+        ],
+        [
+          3571,
+          864
+        ],
+        [
+          3373,
+          864
+        ]
+      ],
+      "kind": "collapseSegment",
+      "evidence": [
+        {
+          "id": "collapse_6",
+          "geometryRevision": "chiyan-core-final-002",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_west_low",
+      "polyline": [
+        [
+          320,
+          832
+        ],
+        [
+          800,
+          832
+        ]
+      ],
+      "support": "one-way",
+      "status": "verified",
+      "landingRange": [
+        333,
+        787
+      ],
+      "walkRegion": [
+        [
+          333,
+          774
+        ],
+        [
+          787,
+          774
+        ],
+        [
+          787,
+          832
+        ],
+        [
+          333,
+          832
+        ]
+      ],
+      "kind": "terrain",
+      "evidence": [
+        {
+          "id": "s_west_low",
+          "geometryRevision": "chiyan-core-final-002",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_west_high",
+      "polyline": [
+        [
+          512,
+          704
+        ],
+        [
+          992,
+          704
+        ]
+      ],
+      "support": "one-way",
+      "status": "verified",
+      "landingRange": [
+        525,
+        979
+      ],
+      "walkRegion": [
+        [
+          525,
+          646
+        ],
+        [
+          979,
+          646
+        ],
+        [
+          979,
+          704
+        ],
+        [
+          525,
+          704
+        ]
+      ],
+      "kind": "terrain",
+      "evidence": [
+        {
+          "id": "s_west_high",
+          "geometryRevision": "chiyan-core-final-002",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_west_mid",
+      "polyline": [
+        [
+          1408,
+          768
+        ],
+        [
+          1888,
+          768
+        ]
+      ],
+      "support": "one-way",
+      "status": "verified",
+      "landingRange": [
+        1421,
+        1875
+      ],
+      "walkRegion": [
+        [
+          1421,
+          710
+        ],
+        [
+          1875,
+          710
+        ],
+        [
+          1875,
+          768
+        ],
+        [
+          1421,
+          768
+        ]
+      ],
+      "kind": "terrain",
+      "evidence": [
+        {
+          "id": "s_west_mid",
+          "geometryRevision": "chiyan-core-final-002",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_west_top",
+      "polyline": [
+        [
+          1536,
+          640
+        ],
+        [
+          1952,
+          640
+        ]
+      ],
+      "support": "one-way",
+      "status": "verified",
+      "landingRange": [
+        1549,
+        1939
+      ],
+      "walkRegion": [
+        [
+          1549,
+          582
+        ],
+        [
+          1939,
+          582
+        ],
+        [
+          1939,
+          640
+        ],
+        [
+          1549,
+          640
+        ]
+      ],
+      "kind": "terrain",
+      "evidence": [
+        {
+          "id": "s_west_top",
+          "geometryRevision": "chiyan-core-final-002",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_arena_left",
+      "polyline": [
+        [
+          2368,
+          800
+        ],
+        [
+          2528,
+          800
+        ]
+      ],
+      "support": "one-way",
+      "status": "verified",
+      "landingRange": [
+        2381,
+        2515
+      ],
+      "walkRegion": [
+        [
+          2381,
+          742
+        ],
+        [
+          2515,
+          742
+        ],
+        [
+          2515,
+          800
+        ],
+        [
+          2381,
+          800
+        ]
+      ],
+      "kind": "terrain",
+      "evidence": [
+        {
+          "id": "s_arena_left",
+          "geometryRevision": "chiyan-core-final-002",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_arena_mid",
+      "polyline": [
+        [
+          2816,
+          800
+        ],
+        [
+          3008,
+          800
+        ]
+      ],
+      "support": "one-way",
+      "status": "verified",
+      "landingRange": [
+        2829,
+        2995
+      ],
+      "walkRegion": [
+        [
+          2829,
+          742
+        ],
+        [
+          2995,
+          742
+        ],
+        [
+          2995,
+          800
+        ],
+        [
+          2829,
+          800
+        ]
+      ],
+      "kind": "terrain",
+      "evidence": [
+        {
+          "id": "s_arena_mid",
+          "geometryRevision": "chiyan-core-final-002",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_arena_right",
+      "polyline": [
+        [
+          3328,
+          800
+        ],
+        [
+          3488,
+          800
+        ]
+      ],
+      "support": "one-way",
+      "status": "verified",
+      "landingRange": [
+        3341,
+        3475
+      ],
+      "walkRegion": [
+        [
+          3341,
+          742
+        ],
+        [
+          3475,
+          742
+        ],
+        [
+          3475,
+          800
+        ],
+        [
+          3341,
+          800
+        ]
+      ],
+      "kind": "terrain",
+      "evidence": [
+        {
+          "id": "s_arena_right",
+          "geometryRevision": "chiyan-core-final-002",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_arena_high",
+      "polyline": [
+        [
+          2752,
+          672
+        ],
+        [
+          3072,
+          672
+        ]
+      ],
+      "support": "one-way",
+      "status": "verified",
+      "landingRange": [
+        2765,
+        3059
+      ],
+      "walkRegion": [
+        [
+          2765,
+          614
+        ],
+        [
+          3059,
+          614
+        ],
+        [
+          3059,
+          672
+        ],
+        [
+          2765,
+          672
+        ]
+      ],
+      "kind": "terrain",
+      "evidence": [
+        {
+          "id": "s_arena_high",
+          "geometryRevision": "chiyan-core-final-002",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    }
+  ],
+  "climbs": [
+    {
+      "id": "c_rope_16",
+      "kind": "chain",
+      "corridor": [
+        [
+          510,
+          832
+        ],
+        [
+          546,
+          832
+        ],
+        [
+          546,
+          960
+        ],
+        [
+          510,
+          960
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            528,
+            960
+          ],
+          "surface": "s_west_ground"
+        },
+        "end": {
+          "position": [
+            528,
+            832
+          ],
+          "surface": "s_west_low"
+        }
+      },
+      "direction": "both",
+      "status": "verified",
+      "sourceObject": "rope_16",
+      "adaptation": {
+        "type": "extend-bottom",
+        "deltaY": 32,
+        "reason": "source lower endpoint 32px above real support; source map unchanged"
+      },
+      "evidence": [
+        {
+          "id": "c_rope_16",
+          "geometryRevision": "chiyan-core-final-002",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "c_rope_22",
+      "kind": "chain",
+      "corridor": [
+        [
+          702,
+          704
+        ],
+        [
+          738,
+          704
+        ],
+        [
+          738,
+          832
+        ],
+        [
+          702,
+          832
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            720,
+            832
+          ],
+          "surface": "s_west_low"
+        },
+        "end": {
+          "position": [
+            720,
+            704
+          ],
+          "surface": "s_west_high"
+        }
+      },
+      "direction": "both",
+      "status": "verified",
+      "sourceObject": "rope_22",
+      "adaptation": {
+        "type": "extend-bottom",
+        "deltaY": 32,
+        "reason": "source lower endpoint 32px above real support; source map unchanged"
+      },
+      "evidence": [
+        {
+          "id": "c_rope_22",
+          "geometryRevision": "chiyan-core-final-002",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "c_rope_50",
+      "kind": "chain",
+      "corridor": [
+        [
+          1598,
+          768
+        ],
+        [
+          1634,
+          768
+        ],
+        [
+          1634,
+          896
+        ],
+        [
+          1598,
+          896
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1616,
+            896
+          ],
+          "surface": "s_west_ridge"
+        },
+        "end": {
+          "position": [
+            1616,
+            768
+          ],
+          "surface": "s_west_mid"
+        }
+      },
+      "direction": "both",
+      "status": "verified",
+      "sourceObject": "rope_50",
+      "adaptation": {
+        "type": "extend-bottom",
+        "deltaY": 32,
+        "reason": "source lower endpoint 32px above real support; source map unchanged"
+      },
+      "evidence": [
+        {
+          "id": "c_rope_50",
+          "geometryRevision": "chiyan-core-final-002",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "c_rope_54",
+      "kind": "chain",
+      "corridor": [
+        [
+          1726,
+          640
+        ],
+        [
+          1762,
+          640
+        ],
+        [
+          1762,
+          768
+        ],
+        [
+          1726,
+          768
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1744,
+            768
+          ],
+          "surface": "s_west_mid"
+        },
+        "end": {
+          "position": [
+            1744,
+            640
+          ],
+          "surface": "s_west_top"
+        }
+      },
+      "direction": "both",
+      "status": "verified",
+      "sourceObject": "rope_54",
+      "adaptation": {
+        "type": "extend-bottom",
+        "deltaY": 32,
+        "reason": "source lower endpoint 32px above real support; source map unchanged"
+      },
+      "evidence": [
+        {
+          "id": "c_rope_54",
+          "geometryRevision": "chiyan-core-final-002",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "c_rope_90",
+      "kind": "chain",
+      "corridor": [
+        [
+          2878,
+          672
+        ],
+        [
+          2914,
+          672
+        ],
+        [
+          2914,
+          800
+        ],
+        [
+          2878,
+          800
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            2896,
+            800
+          ],
+          "surface": "s_arena_mid"
+        },
+        "end": {
+          "position": [
+            2896,
+            672
+          ],
+          "surface": "s_arena_high"
+        }
+      },
+      "direction": "both",
+      "status": "verified",
+      "sourceObject": "rope_90",
+      "adaptation": {
+        "type": "extend-bottom",
+        "deltaY": 32,
+        "reason": "source lower endpoint 32px above real support; source map unchanged"
+      },
+      "evidence": [
+        {
+          "id": "c_rope_90",
+          "geometryRevision": "chiyan-core-final-002",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    }
+  ],
+  "stairs": [],
+  "solids": [
+    {
+      "id": "solid_base",
+      "polygon": [
+        [
+          0,
+          960
+        ],
+        [
+          3840,
+          960
+        ],
+        [
+          3840,
+          1024
+        ],
+        [
+          0,
+          1024
+        ]
+      ],
+      "status": "verified",
+      "openings": [],
+      "surface": null,
+      "evidence": [
+        {
+          "id": "solid_base",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "solid_ridge",
+      "polygon": [
+        [
+          1280,
+          896
+        ],
+        [
+          2240,
+          896
+        ],
+        [
+          2240,
+          960
+        ],
+        [
+          1280,
+          960
+        ]
+      ],
+      "status": "verified",
+      "openings": [],
+      "surface": null,
+      "evidence": [
+        {
+          "id": "solid_ridge",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "solid_west_arena",
+      "polygon": [
+        [
+          2048,
+          864
+        ],
+        [
+          2240,
+          864
+        ],
+        [
+          2240,
+          896
+        ],
+        [
+          2048,
+          896
+        ]
+      ],
+      "status": "verified",
+      "openings": [],
+      "surface": null,
+      "evidence": [
+        {
+          "id": "solid_west_arena",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "solid_east_arena",
+      "polygon": [
+        [
+          3584,
+          864
+        ],
+        [
+          3840,
+          864
+        ],
+        [
+          3840,
+          960
+        ],
+        [
+          3584,
+          960
+        ]
+      ],
+      "status": "verified",
+      "openings": [],
+      "surface": null,
+      "evidence": [
+        {
+          "id": "solid_east_arena",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "solid_collapse_1",
+      "polygon": [
+        [
+          2240,
+          864
+        ],
+        [
+          2464,
+          864
+        ],
+        [
+          2464,
+          896
+        ],
+        [
+          2240,
+          896
+        ]
+      ],
+      "status": "verified",
+      "openings": [],
+      "surface": "collapse_1",
+      "evidence": [
+        {
+          "id": "solid_collapse_1",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "solid_collapse_2",
+      "polygon": [
+        [
+          2464,
+          864
+        ],
+        [
+          2688,
+          864
+        ],
+        [
+          2688,
+          896
+        ],
+        [
+          2464,
+          896
+        ]
+      ],
+      "status": "verified",
+      "openings": [],
+      "surface": "collapse_2",
+      "evidence": [
+        {
+          "id": "solid_collapse_2",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "solid_collapse_3",
+      "polygon": [
+        [
+          2688,
+          864
+        ],
+        [
+          2912,
+          864
+        ],
+        [
+          2912,
+          896
+        ],
+        [
+          2688,
+          896
+        ]
+      ],
+      "status": "verified",
+      "openings": [],
+      "surface": "collapse_3",
+      "evidence": [
+        {
+          "id": "solid_collapse_3",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "solid_collapse_4",
+      "polygon": [
+        [
+          2912,
+          864
+        ],
+        [
+          3136,
+          864
+        ],
+        [
+          3136,
+          896
+        ],
+        [
+          2912,
+          896
+        ]
+      ],
+      "status": "verified",
+      "openings": [],
+      "surface": "collapse_4",
+      "evidence": [
+        {
+          "id": "solid_collapse_4",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "solid_collapse_5",
+      "polygon": [
+        [
+          3136,
+          864
+        ],
+        [
+          3360,
+          864
+        ],
+        [
+          3360,
+          896
+        ],
+        [
+          3136,
+          896
+        ]
+      ],
+      "status": "verified",
+      "openings": [],
+      "surface": "collapse_5",
+      "evidence": [
+        {
+          "id": "solid_collapse_5",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "solid_collapse_6",
+      "polygon": [
+        [
+          3360,
+          864
+        ],
+        [
+          3584,
+          864
+        ],
+        [
+          3584,
+          896
+        ],
+        [
+          3360,
+          896
+        ]
+      ],
+      "status": "verified",
+      "openings": [],
+      "surface": "collapse_6",
+      "evidence": [
+        {
+          "id": "solid_collapse_6",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    }
+  ],
+  "hazards": [
+    {
+      "id": "lava_6",
+      "polygon": [
+        [
+          1024,
+          928
+        ],
+        [
+          1152,
+          928
+        ],
+        [
+          1152,
+          960
+        ],
+        [
+          1024,
+          960
+        ]
+      ],
+      "effect": {
+        "type": "lava",
+        "damagePermilleOfMaxHp": 80,
+        "tickMs": 500,
+        "knockUp": 480
+      },
+      "trigger": "actor AABB overlap; bounce each contact; damage cooldown500ms",
+      "recovery": "knock upward 480; manual R returns spawn",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "lava_6",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "exact source rectangle; actual lava6 from spawn and lava bed isolated local fixture; cooldown and upward knockback",
+          "path": "work/final-physics-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "lava_bed",
+      "polygon": [
+        [
+          2240,
+          928
+        ],
+        [
+          3584,
+          928
+        ],
+        [
+          3584,
+          960
+        ],
+        [
+          2240,
+          960
+        ]
+      ],
+      "effect": {
+        "type": "lava",
+        "damagePermilleOfMaxHp": 80,
+        "tickMs": 500,
+        "knockUp": 480
+      },
+      "trigger": "actor AABB overlap; bounce each contact; damage cooldown500ms",
+      "recovery": "knock upward 480; manual R returns spawn",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "lava_bed",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "exact source rectangle; actual lava6 from spawn and lava bed isolated local fixture; cooldown and upward knockback",
+          "path": "work/final-physics-check.json",
+          "result": "verified"
+        }
+      ]
+    }
+  ],
+  "points": [
+    {
+      "id": "start_spawn",
+      "type": "spawn",
+      "position": [
+        128,
+        960
+      ],
+      "surface": "s_west_ground",
+      "status": "verified",
+      "sourceObject": "playerStart",
+      "width": 0,
+      "properties": {},
+      "evidence": [
+        {
+          "id": "start_spawn",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "portal_to_slope_2",
+      "type": "portal",
+      "position": [
+        80,
+        960
+      ],
+      "surface": "s_west_ground",
+      "status": "verified",
+      "sourceObject": "portal_to_slope_2",
+      "width": 0,
+      "properties": {
+        "target": "chiyan_slope_2",
+        "targetPortal": "portal_to_core"
+      },
+      "evidence": [
+        {
+          "id": "portal_to_slope_2",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "ferry_pickup",
+      "type": "goal",
+      "position": [
+        3680,
+        864
+      ],
+      "surface": "s_east_arena",
+      "status": "verified",
+      "sourceObject": "ferry_pickup",
+      "width": 96,
+      "properties": {
+        "returnTo": "luoxia_town"
+      },
+      "evidence": [
+        {
+          "id": "ferry_pickup",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "spawn_flame_puppet_11",
+      "type": "spawn",
+      "position": [
+        192,
+        960
+      ],
+      "surface": "s_west_ground",
+      "status": "verified",
+      "sourceObject": "spawn_flame_puppet_11",
+      "width": 832,
+      "properties": {
+        "monster": "flame_puppet",
+        "count": 3
+      },
+      "evidence": [
+        {
+          "id": "spawn_flame_puppet_11",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ],
+      "effectiveSpawnCenterRanges": [
+        [
+          205,
+          1011
+        ]
+      ]
+    },
+    {
+      "id": "spawn_flame_puppet_12",
+      "type": "spawn",
+      "position": [
+        1280,
+        896
+      ],
+      "surface": "s_west_ridge",
+      "status": "verified",
+      "sourceObject": "spawn_flame_puppet_12",
+      "width": 768,
+      "properties": {
+        "monster": "flame_puppet",
+        "count": 2
+      },
+      "evidence": [
+        {
+          "id": "spawn_flame_puppet_12",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ],
+      "effectiveSpawnCenterRanges": [
+        [
+          1293,
+          2035
+        ]
+      ]
+    },
+    {
+      "id": "spawn_black_robe_guard_13",
+      "type": "spawn",
+      "position": [
+        320,
+        832
+      ],
+      "surface": "s_west_low",
+      "status": "verified",
+      "sourceObject": "spawn_black_robe_guard_13",
+      "width": 480,
+      "properties": {
+        "monster": "black_robe_guard",
+        "count": 2
+      },
+      "evidence": [
+        {
+          "id": "spawn_black_robe_guard_13",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ],
+      "effectiveSpawnCenterRanges": [
+        [
+          333,
+          787
+        ]
+      ]
+    },
+    {
+      "id": "spawn_black_robe_guard_14",
+      "type": "spawn",
+      "position": [
+        512,
+        704
+      ],
+      "surface": "s_west_high",
+      "status": "verified",
+      "sourceObject": "spawn_black_robe_guard_14",
+      "width": 480,
+      "properties": {
+        "monster": "black_robe_guard",
+        "count": 2
+      },
+      "evidence": [
+        {
+          "id": "spawn_black_robe_guard_14",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ],
+      "effectiveSpawnCenterRanges": [
+        [
+          525,
+          979
+        ]
+      ]
+    },
+    {
+      "id": "spawn_black_robe_guard_15",
+      "type": "spawn",
+      "position": [
+        1408,
+        768
+      ],
+      "surface": "s_west_mid",
+      "status": "verified",
+      "sourceObject": "spawn_black_robe_guard_15",
+      "width": 480,
+      "properties": {
+        "monster": "black_robe_guard",
+        "count": 2
+      },
+      "evidence": [
+        {
+          "id": "spawn_black_robe_guard_15",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ],
+      "effectiveSpawnCenterRanges": [
+        [
+          1421,
+          1875
+        ]
+      ]
+    },
+    {
+      "id": "spawn_black_robe_guard_16",
+      "type": "spawn",
+      "position": [
+        1536,
+        640
+      ],
+      "surface": "s_west_top",
+      "status": "verified",
+      "sourceObject": "spawn_black_robe_guard_16",
+      "width": 416,
+      "properties": {
+        "monster": "black_robe_guard",
+        "count": 2
+      },
+      "evidence": [
+        {
+          "id": "spawn_black_robe_guard_16",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ],
+      "effectiveSpawnCenterRanges": [
+        [
+          1549,
+          1939
+        ]
+      ]
+    },
+    {
+      "id": "spawn_flame_envoy_17",
+      "type": "spawn",
+      "position": [
+        2752,
+        864
+      ],
+      "surface": "collapse_3",
+      "status": "verified",
+      "sourceObject": "spawn_flame_envoy_17",
+      "width": 352,
+      "properties": {
+        "monster": "flame_envoy",
+        "count": 1
+      },
+      "evidence": [
+        {
+          "id": "spawn_flame_envoy_17",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ],
+      "effectiveSpawnCenterRanges": [
+        [
+          2765,
+          2899
+        ],
+        [
+          2925,
+          3091
+        ]
+      ]
+    },
+    {
+      "id": "gather_fire_herb_25",
+      "type": "gather",
+      "position": [
+        912,
+        704
+      ],
+      "surface": "s_west_high",
+      "status": "verified",
+      "sourceObject": "gather_fire_herb_25",
+      "width": 0,
+      "properties": {
+        "item": "fire_herb",
+        "respawnMs": 120000
+      },
+      "evidence": [
+        {
+          "id": "gather_fire_herb_25",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "sense_chest_01",
+      "type": "chest",
+      "position": [
+        592,
+        704
+      ],
+      "surface": "s_west_high",
+      "status": "verified",
+      "sourceObject": "sense_chest_01",
+      "width": 0,
+      "properties": {
+        "loot": "hp_pill_small",
+        "count": 1
+      },
+      "evidence": [
+        {
+          "id": "sense_chest_01",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "authority/visual alignment, safe points, full-body continuous runtime and natural contact checks",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    }
+  ],
+  "transitions": [
+    {
+      "id": "t_lava6",
+      "from": "s_west_ground",
+      "to": "s_after_lava",
+      "action": "double-jump",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "t_lava6",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "specific directed transition found in continuous input replay events / trace",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": "base100 FEEL; normal spawn; no teleport or reset"
+    },
+    {
+      "id": "t_ridge",
+      "from": "s_after_lava",
+      "to": "s_west_ridge",
+      "action": "jump",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "t_ridge",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "specific directed transition found in continuous input replay events / trace",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": "base100 FEEL; normal spawn; no teleport or reset"
+    },
+    {
+      "id": "t_west_arena",
+      "from": "s_west_ridge",
+      "to": "s_west_arena",
+      "action": "jump",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "t_west_arena",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "specific directed transition found in continuous input replay events / trace",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": "base100 FEEL; normal spawn; no teleport or reset"
+    },
+    {
+      "id": "t_c_rope_16_climb-up",
+      "from": "s_west_ground",
+      "to": "s_west_low",
+      "action": "climb-up",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "t_c_rope_16_climb-up",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "specific directed transition found in continuous input replay events / trace",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": "base100 FEEL; normal spawn; no teleport or reset"
+    },
+    {
+      "id": "t_c_rope_16_climb-down",
+      "from": "s_west_low",
+      "to": "s_west_ground",
+      "action": "climb-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "t_c_rope_16_climb-down",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "specific directed transition found in continuous input replay events / trace",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": "base100 FEEL; normal spawn; no teleport or reset"
+    },
+    {
+      "id": "t_c_rope_22_climb-up",
+      "from": "s_west_low",
+      "to": "s_west_high",
+      "action": "climb-up",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "t_c_rope_22_climb-up",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "specific directed transition found in continuous input replay events / trace",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": "base100 FEEL; normal spawn; no teleport or reset"
+    },
+    {
+      "id": "t_c_rope_22_climb-down",
+      "from": "s_west_high",
+      "to": "s_west_low",
+      "action": "climb-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "t_c_rope_22_climb-down",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "specific directed transition found in continuous input replay events / trace",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": "base100 FEEL; normal spawn; no teleport or reset"
+    },
+    {
+      "id": "t_c_rope_50_climb-up",
+      "from": "s_west_ridge",
+      "to": "s_west_mid",
+      "action": "climb-up",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "t_c_rope_50_climb-up",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "specific directed transition found in continuous input replay events / trace",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": "base100 FEEL; normal spawn; no teleport or reset"
+    },
+    {
+      "id": "t_c_rope_50_climb-down",
+      "from": "s_west_mid",
+      "to": "s_west_ridge",
+      "action": "climb-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "t_c_rope_50_climb-down",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "specific directed transition found in continuous input replay events / trace",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": "base100 FEEL; normal spawn; no teleport or reset"
+    },
+    {
+      "id": "t_c_rope_54_climb-up",
+      "from": "s_west_mid",
+      "to": "s_west_top",
+      "action": "climb-up",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "t_c_rope_54_climb-up",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "specific directed transition found in continuous input replay events / trace",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": "base100 FEEL; normal spawn; no teleport or reset"
+    },
+    {
+      "id": "t_c_rope_54_climb-down",
+      "from": "s_west_top",
+      "to": "s_west_mid",
+      "action": "climb-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "t_c_rope_54_climb-down",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "specific directed transition found in continuous input replay events / trace",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": "base100 FEEL; normal spawn; no teleport or reset"
+    },
+    {
+      "id": "t_c_rope_90_climb-up",
+      "from": "s_arena_mid",
+      "to": "s_arena_high",
+      "action": "climb-up",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "t_c_rope_90_climb-up",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "specific directed transition found in continuous input replay events / trace",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": "base100 FEEL; normal spawn; no teleport or reset"
+    },
+    {
+      "id": "t_c_rope_90_climb-down",
+      "from": "s_arena_high",
+      "to": "s_arena_mid",
+      "action": "climb-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "t_c_rope_90_climb-down",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "specific directed transition found in continuous input replay events / trace",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": "base100 FEEL; normal spawn; no teleport or reset"
+    },
+    {
+      "id": "t_s_west_arena_to_collapse_1",
+      "from": "s_west_arena",
+      "to": "collapse_1",
+      "action": "walk",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "t_s_west_arena_to_collapse_1",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "specific directed transition found in continuous input replay events / trace",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": "base100 FEEL; normal spawn; no teleport or reset"
+    },
+    {
+      "id": "t_collapse_1_to_collapse_2",
+      "from": "collapse_1",
+      "to": "collapse_2",
+      "action": "walk",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "t_collapse_1_to_collapse_2",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "specific directed transition found in continuous input replay events / trace",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": "base100 FEEL; normal spawn; no teleport or reset"
+    },
+    {
+      "id": "t_collapse_2_to_collapse_3",
+      "from": "collapse_2",
+      "to": "collapse_3",
+      "action": "walk",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "t_collapse_2_to_collapse_3",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "specific directed transition found in continuous input replay events / trace",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": "base100 FEEL; normal spawn; no teleport or reset"
+    },
+    {
+      "id": "t_collapse_3_to_collapse_4",
+      "from": "collapse_3",
+      "to": "collapse_4",
+      "action": "walk",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "t_collapse_3_to_collapse_4",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "specific directed transition found in continuous input replay events / trace",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": "base100 FEEL; normal spawn; no teleport or reset"
+    },
+    {
+      "id": "t_collapse_4_to_collapse_5",
+      "from": "collapse_4",
+      "to": "collapse_5",
+      "action": "walk",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "t_collapse_4_to_collapse_5",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "specific directed transition found in continuous input replay events / trace",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": "base100 FEEL; normal spawn; no teleport or reset"
+    },
+    {
+      "id": "t_collapse_5_to_collapse_6",
+      "from": "collapse_5",
+      "to": "collapse_6",
+      "action": "walk",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "t_collapse_5_to_collapse_6",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "specific directed transition found in continuous input replay events / trace",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": "base100 FEEL; normal spawn; no teleport or reset"
+    },
+    {
+      "id": "t_collapse_6_to_s_east_arena",
+      "from": "collapse_6",
+      "to": "s_east_arena",
+      "action": "walk",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "t_collapse_6_to_s_east_arena",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "specific directed transition found in continuous input replay events / trace",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": "base100 FEEL; normal spawn; no teleport or reset"
+    },
+    {
+      "id": "t_jump_s_arena_left",
+      "from": "collapse_1",
+      "to": "s_arena_left",
+      "action": "jump",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "t_jump_s_arena_left",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "specific directed transition found in continuous input replay events / trace",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": "base100 FEEL; normal spawn; no teleport or reset"
+    },
+    {
+      "id": "t_drop_s_arena_left",
+      "from": "s_arena_left",
+      "to": "collapse_1",
+      "action": "drop",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "t_drop_s_arena_left",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "specific directed transition found in continuous input replay events / trace",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": "base100 FEEL; normal spawn; no teleport or reset"
+    },
+    {
+      "id": "t_jump_s_arena_mid",
+      "from": "collapse_3",
+      "to": "s_arena_mid",
+      "action": "jump",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "t_jump_s_arena_mid",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "specific directed transition found in continuous input replay events / trace",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": "base100 FEEL; normal spawn; no teleport or reset"
+    },
+    {
+      "id": "t_drop_s_arena_mid",
+      "from": "s_arena_mid",
+      "to": "collapse_3",
+      "action": "drop",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "t_drop_s_arena_mid",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "specific directed transition found in continuous input replay events / trace",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": "base100 FEEL; normal spawn; no teleport or reset"
+    },
+    {
+      "id": "t_jump_s_arena_right",
+      "from": "collapse_6",
+      "to": "s_arena_right",
+      "action": "jump",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "t_jump_s_arena_right",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "specific directed transition found in continuous input replay events / trace",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": "base100 FEEL; normal spawn; no teleport or reset"
+    },
+    {
+      "id": "t_drop_s_arena_right",
+      "from": "s_arena_right",
+      "to": "collapse_6",
+      "action": "drop",
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "t_drop_s_arena_right",
+          "geometryRevision": "chiyan-core-final-001",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "specific directed transition found in continuous input replay events / trace",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified"
+        }
+      ],
+      "conditions": "base100 FEEL; normal spawn; no teleport or reset"
+    }
+  ],
+  "requiredRoutes": [
+    {
+      "id": "route_main",
+      "from": "start_spawn",
+      "to": "ferry_pickup",
+      "via": [
+        "portal_to_slope_2",
+        "s_west_ground",
+        "s_after_lava",
+        "s_west_ridge",
+        "s_west_arena",
+        "collapse_1",
+        "collapse_2",
+        "collapse_3",
+        "collapse_4",
+        "collapse_5",
+        "collapse_6",
+        "s_east_arena"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "route_main",
+          "geometryRevision": "chiyan-core-final-002",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "normal-spawn continuous fixed60Hz input; no teleport/reset; full-body sweep; CLI and browser replay",
+          "path": "work/replays-final/route_main.json",
+          "result": "verified"
+        }
+      ],
+      "direction": "eastward"
+    },
+    {
+      "id": "route_west_platforms",
+      "from": "start_spawn",
+      "to": "ferry_pickup",
+      "via": [
+        "s_west_low",
+        "s_west_high",
+        "gather_fire_herb_25",
+        "s_west_low",
+        "s_west_ground",
+        "s_after_lava",
+        "s_west_ridge",
+        "s_west_mid",
+        "s_west_top",
+        "s_west_mid",
+        "s_west_ridge",
+        "s_west_arena"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "route_west_platforms",
+          "geometryRevision": "chiyan-core-final-002",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "normal-spawn continuous fixed60Hz input; no teleport/reset; full-body sweep; CLI and browser replay",
+          "path": "work/replays-final/route_west_platforms.json",
+          "result": "verified"
+        }
+      ],
+      "direction": "eastward"
+    },
+    {
+      "id": "route_arena_platforms",
+      "from": "start_spawn",
+      "to": "ferry_pickup",
+      "via": [
+        "s_after_lava",
+        "s_west_ridge",
+        "s_west_arena",
+        "s_arena_left",
+        "s_arena_mid",
+        "s_arena_high",
+        "s_arena_mid",
+        "s_arena_right",
+        "s_east_arena"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "route_arena_platforms",
+          "geometryRevision": "chiyan-core-final-002",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "normal-spawn continuous fixed60Hz input; no teleport/reset; full-body sweep; CLI and browser replay",
+          "path": "work/replays-final/route_arena_platforms.json",
+          "result": "verified"
+        }
+      ],
+      "direction": "eastward"
+    },
+    {
+      "id": "route_return",
+      "from": "start_spawn",
+      "to": "portal_to_slope_2",
+      "via": [
+        "ferry_pickup",
+        "s_west_arena",
+        "s_west_ridge",
+        "s_after_lava"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "id": "route_return",
+          "geometryRevision": "chiyan-core-final-002",
+          "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+          "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+          "method": "normal-spawn continuous fixed60Hz input; no teleport/reset; full-body sweep; CLI and browser replay",
+          "path": "work/replays-final/route_return.json",
+          "result": "verified"
+        }
+      ],
+      "direction": "out-and-return"
+    }
+  ],
+  "diagnostics": {
+    "maskPalette": {
+      "stand": [
+        88,
+        220,
+        126,
+        255
+      ],
+      "walk": [
+        74,
+        170,
+        100,
+        255
+      ],
+      "climb": [
+        120,
+        190,
+        255,
+        255
+      ],
+      "hazard": [
+        229,
+        72,
+        58,
+        255
+      ],
+      "point": [
+        249,
+        207,
+        83,
+        255
+      ],
+      "jump": [
+        250,
+        180,
+        70,
+        255
+      ],
+      "drop": [
+        170,
+        200,
+        230,
+        255
+      ]
+    },
+    "rasterizationOrder": [
+      "walk",
+      "climb",
+      "hazard",
+      "stand",
+      "point",
+      "jump",
+      "drop"
+    ],
+    "regionIdIndex": null,
+    "geometryRevision": "chiyan-core-final-001"
+  },
+  "validation": {
+    "status": "verified",
+    "geometryRevision": "chiyan-core-final-002",
+    "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+    "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+    "evidence": [
+      {
+        "id": "route_main",
+        "geometryRevision": "chiyan-core-final-001",
+        "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+        "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+        "method": "normal-spawn continuous fixed60Hz input; no teleport/reset; full-body sweep; CLI and browser replay",
+        "path": "work/replays-final/route_main.json",
+        "result": "verified"
+      },
+      {
+        "id": "route_west_platforms",
+        "geometryRevision": "chiyan-core-final-001",
+        "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+        "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+        "method": "normal-spawn continuous fixed60Hz input; no teleport/reset; full-body sweep; CLI and browser replay",
+        "path": "work/replays-final/route_west_platforms.json",
+        "result": "verified"
+      },
+      {
+        "id": "route_arena_platforms",
+        "geometryRevision": "chiyan-core-final-001",
+        "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+        "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+        "method": "normal-spawn continuous fixed60Hz input; no teleport/reset; full-body sweep; CLI and browser replay",
+        "path": "work/replays-final/route_arena_platforms.json",
+        "result": "verified"
+      },
+      {
+        "id": "route_return",
+        "geometryRevision": "chiyan-core-final-001",
+        "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+        "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+        "method": "normal-spawn continuous fixed60Hz input; no teleport/reset; full-body sweep; CLI and browser replay",
+        "path": "work/replays-final/route_return.json",
+        "result": "verified"
+      },
+      {
+        "id": "geometry",
+        "geometryRevision": "chiyan-core-final-001",
+        "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+        "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+        "method": "19 visual contact planes;10 chain endpoints;12 safe points; exact composition",
+        "path": "work/final-geometry-measurements.json",
+        "result": "verified"
+      },
+      {
+        "id": "browser",
+        "geometryRevision": "chiyan-core-final-001",
+        "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+        "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+        "method": "four full input replays,19 natural contact screenshots and controls at1x/responsive",
+        "path": "work/final-browser-check.json",
+        "result": "verified"
+      },
+      {
+        "id": "physics",
+        "geometryRevision": "chiyan-core-final-001",
+        "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+        "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+        "method": "15 checks including real map and labelled local/synthetic fixtures",
+        "path": "work/final-physics-check.json",
+        "result": "verified"
+      }
+    ],
+    "issues": [],
+    "scope": "self-check verified in local independent AABB adapter; responsible-owner PASS pending; production integration prohibited",
+    "responsibleOwnerStatus": "pending",
+    "productionIntegrated": false
+  },
+  "staticCollapse": {
+    "enabled": true,
+    "dynamic": false,
+    "indices": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "note": "static cracked segmented bridge only; dynamic collapse left to post-PASS program integration"
+  },
+  "zones": [
+    {
+      "id": "boss_arena",
+      "polygon": [
+        [
+          2048,
+          384
+        ],
+        [
+          3840,
+          384
+        ],
+        [
+          3840,
+          960
+        ],
+        [
+          2048,
+          960
+        ]
+      ],
+      "properties": {
+        "label": "炎魔殿（炎魔使）",
+        "bossOnly": true
+      },
+      "collision": false,
+      "sourceObject": "boss_arena"
+    },
+    {
+      "id": "flyZone_1",
+      "polygon": [
+        [
+          480,
+          448
+        ],
+        [
+          1880,
+          448
+        ],
+        [
+          1880,
+          736
+        ],
+        [
+          480,
+          736
+        ]
+      ],
+      "properties": {},
+      "collision": false,
+      "sourceObject": "flyZone_1"
+    }
+  ],
+  "collapseSegments": [
+    {
+      "id": "collapse_1",
+      "surface": "collapse_1",
+      "solid": "solid_collapse_1",
+      "index": 1,
+      "static": true,
+      "dynamicImplemented": false
+    },
+    {
+      "id": "collapse_2",
+      "surface": "collapse_2",
+      "solid": "solid_collapse_2",
+      "index": 2,
+      "static": true,
+      "dynamicImplemented": false
+    },
+    {
+      "id": "collapse_3",
+      "surface": "collapse_3",
+      "solid": "solid_collapse_3",
+      "index": 3,
+      "static": true,
+      "dynamicImplemented": false
+    },
+    {
+      "id": "collapse_4",
+      "surface": "collapse_4",
+      "solid": "solid_collapse_4",
+      "index": 4,
+      "static": true,
+      "dynamicImplemented": false
+    },
+    {
+      "id": "collapse_5",
+      "surface": "collapse_5",
+      "solid": "solid_collapse_5",
+      "index": 5,
+      "static": true,
+      "dynamicImplemented": false
+    },
+    {
+      "id": "collapse_6",
+      "surface": "collapse_6",
+      "solid": "solid_collapse_6",
+      "index": 6,
+      "static": true,
+      "dynamicImplemented": false
+    }
+  ]
+}

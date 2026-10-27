@@ -5,7 +5,7 @@ export { SECT_GATE_MAPS } from './data';
 
 /** v0.5 新增地图；旧地图与筑基台不受新地图入口开关影响。 */
 export const V05_MAPS = new Set([
-  'chiyan_slope_1', 'chiyan_slope_2',
+  'chiyan_slope_1', 'chiyan_slope_2', 'chiyan_core',
   'luoxia_town', 'wanyao_outer_1', 'wanyao_outer_2', 'wanyao_deep_1', 'wanyao_deep_2',
   'tianjian_sect', 'tianjian_sword_tomb',
   ...SECT_GATE_MAPS,
@@ -16,6 +16,7 @@ export const FIRST_CLASS_TRIAL_MAPS = new Set([
 ]);
 const RETURN_MAPS: Record<string, string> = {
   chiyan_slope_1: 'luoxia_town', chiyan_slope_2: 'chiyan_slope_1',
+  chiyan_core: 'luoxia_town',
   wanyao_deep_2: 'wanyao_deep_1', wanyao_deep_1: 'wanyao_outer_2',
   wanyao_outer_2: 'wanyao_outer_1', wanyao_outer_1: 'luoxia_town',
   tianjian_sword_tomb: 'tianjian_sect', tianjian_sect: 'luoxia_town',

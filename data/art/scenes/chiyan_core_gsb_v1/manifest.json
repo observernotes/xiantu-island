@@ -1,0 +1,443 @@
+{
+  "schemaVersion": "1.0",
+  "assetVersion": "chiyan_core_gsb_v1-registered-003",
+  "sceneId": "chiyan_core",
+  "geometryRevision": "chiyan-core-final-002",
+  "status": "self-check-verified-owner-review-pending",
+  "updatedAt": "2026-10-27T11:53:49+08:00",
+  "responsibleOwnerPASS": false,
+  "productionIntegrated": false,
+  "sourceDataSHA256": "55fcec53e279ec68714225269be9f2e041c386154ac0e6633136325bcb7ec383",
+  "logicalSpace": {
+    "origin": "top-left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "units": "logical-pixel",
+    "logicalWidth": 3840,
+    "logicalHeight": 1024
+  },
+  "actorParameterRevision": "chiyan-core-feel-base100-20261027",
+  "engineRevision": "chiyan-aabb-feel-lava-60hz-001",
+  "assets": [
+    {
+      "id": "background",
+      "role": "background",
+      "path": "background.png",
+      "pixelWidth": 3840,
+      "pixelHeight": 1024,
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "playable",
+      "role": "playable",
+      "path": "playable.png",
+      "pixelWidth": 3840,
+      "pixelHeight": 1024,
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    }
+  ],
+  "drawOrder": [
+    "background",
+    "playable",
+    "actor"
+  ],
+  "foreground": {
+    "applicable": false,
+    "reason": "keep route and platform lips unobscured"
+  },
+  "files": [
+    {
+      "path": "scene.png",
+      "role": "scene",
+      "bytes": 5451728,
+      "sha256": "a4595db3292fa2934a14c34d2c6b898ef92a4c044aca26817e20f8dc4b18905a",
+      "geometryRevision": "chiyan-core-final-002",
+      "pixelWidth": 3840,
+      "pixelHeight": 1024,
+      "mode": "RGBA",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "background.png",
+      "role": "background",
+      "bytes": 5105483,
+      "sha256": "697c462f57a6adfe0924ecd72c26d76be4ada57af5becc31afe2882fe94a46ed",
+      "geometryRevision": "chiyan-core-final-002",
+      "pixelWidth": 3840,
+      "pixelHeight": 1024,
+      "mode": "RGBA",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "playable.png",
+      "role": "playable",
+      "bytes": 1143190,
+      "sha256": "ea5e0853d354682f9598f712af21b01d3e95626b80d0dc7f3b0ebc21eed679f9",
+      "geometryRevision": "chiyan-core-final-002",
+      "pixelWidth": 3840,
+      "pixelHeight": 1024,
+      "mode": "RGBA",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "scene-data.json",
+      "role": "scene-data",
+      "bytes": 90553,
+      "sha256": "55fcec53e279ec68714225269be9f2e041c386154ac0e6633136325bcb7ec383",
+      "geometryRevision": "chiyan-core-final-002"
+    },
+    {
+      "path": "action-mask.png",
+      "role": "action-mask",
+      "bytes": 19118,
+      "sha256": "677a5992e1657f5dcd322735ea9ee10bd9829a88c5ddb8ac23e1d6ae492f00f9",
+      "geometryRevision": "chiyan-core-final-002",
+      "pixelWidth": 3840,
+      "pixelHeight": 1024,
+      "mode": "RGBA",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "action-overlay.png",
+      "role": "action-overlay",
+      "bytes": 5455801,
+      "sha256": "2d10b67db13aa019d0b6aa09bd670b8a8361f3dacbcdadcbd65e9e23b0b61e41",
+      "geometryRevision": "chiyan-core-final-002",
+      "pixelWidth": 3840,
+      "pixelHeight": 1024,
+      "mode": "RGBA",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "collision-overlay.png",
+      "role": "collision-overlay",
+      "bytes": 5368217,
+      "sha256": "419d61bd734208d2f70bb1fe69924ceec7516cb2e38ad688015368c725935b54",
+      "geometryRevision": "chiyan-core-final-002",
+      "pixelWidth": 3840,
+      "pixelHeight": 1024,
+      "mode": "RGBA",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "diagnostics-metadata.json",
+      "role": "source hashes and revision binding",
+      "bytes": 1304,
+      "sha256": "65ee4cb0167317fda276113f17ed9d614d467197e2bd17e0825663cd62536ec3",
+      "geometryRevision": "chiyan-core-final-002"
+    },
+    {
+      "path": "index.html",
+      "role": "entry",
+      "bytes": 169,
+      "sha256": "d33cf2824d483f6b94c60610920a44fc7daa15f0d8a357fd9a73f83528d6db98",
+      "geometryRevision": "chiyan-core-final-002"
+    },
+    {
+      "path": "serve-local.sh",
+      "role": "loopback local server",
+      "bytes": 123,
+      "sha256": "040fa85de76ed85ed3e6f5ca792a262fcd61cb376fae5ea6545567fd32efafcc",
+      "geometryRevision": "chiyan-core-final-002"
+    },
+    {
+      "path": "README.md",
+      "role": "launch, controls and scope",
+      "bytes": 1773,
+      "sha256": "b2540fda432e290839dd36e7f79fd056143a183fd0f8bb77e3c92856d008513e",
+      "geometryRevision": "chiyan-core-final-002"
+    },
+    {
+      "path": "validation-report.md",
+      "role": "validation-report",
+      "bytes": 13991,
+      "sha256": "5eda0ce226c4c8f776e53d4d9164958d28dde195fa40f82c796ce1d4ec868aa2",
+      "geometryRevision": "chiyan-core-final-002"
+    },
+    {
+      "path": "DELIVERED.md",
+      "role": "delivered",
+      "bytes": 1124,
+      "sha256": "a2b7e116f2ed51758e3fff8f2187eaf19f0a390f557ce6fd4b12e93588e7e72a",
+      "geometryRevision": "chiyan-core-final-002"
+    },
+    {
+      "path": "manifest.json",
+      "role": "manifest",
+      "bytes": 11507,
+      "sha256": "824fd977f7821fe7cd6b0c4eb0849e5baa5cda9d6d6432ecfd01494cac70f49b",
+      "geometryRevision": "chiyan-core-final-002"
+    }
+  ],
+  "maskPalette": {
+    "stand": [
+      88,
+      220,
+      126,
+      255
+    ],
+    "walk": [
+      74,
+      170,
+      100,
+      255
+    ],
+    "climb": [
+      120,
+      190,
+      255,
+      255
+    ],
+    "hazard": [
+      229,
+      72,
+      58,
+      255
+    ],
+    "point": [
+      249,
+      207,
+      83,
+      255
+    ],
+    "jump": [
+      250,
+      180,
+      70,
+      255
+    ],
+    "drop": [
+      170,
+      200,
+      230,
+      255
+    ]
+  },
+  "rasterizationOrder": [
+    "walk",
+    "climb",
+    "hazard",
+    "stand",
+    "point",
+    "jump",
+    "drop"
+  ],
+  "generatedFrom": {
+    "master": "work/master-stage4-refined.png",
+    "provenance": "work/imagegen-provenance.json",
+    "registration": "work/stage5-placement-records.json",
+    "supportMeasurement": "work/final-geometry-measurements.json"
+  },
+  "stages": [
+    {
+      "stage": 0,
+      "status": "verified",
+      "scope": "local GSB asset workflow"
+    },
+    {
+      "stage": 1,
+      "status": "verified",
+      "scope": "local GSB asset workflow"
+    },
+    {
+      "stage": 2,
+      "status": "verified",
+      "scope": "local GSB asset workflow"
+    },
+    {
+      "stage": 3,
+      "status": "verified",
+      "scope": "local GSB asset workflow"
+    },
+    {
+      "stage": 4,
+      "status": "verified",
+      "scope": "local GSB asset workflow"
+    },
+    {
+      "stage": 5,
+      "status": "verified",
+      "scope": "local GSB asset workflow"
+    },
+    {
+      "stage": 6,
+      "status": "verified",
+      "scope": "local GSB asset workflow"
+    },
+    {
+      "stage": 7,
+      "status": "verified",
+      "scope": "local GSB asset workflow"
+    }
+  ],
+  "validation": {
+    "routes": 4,
+    "directedTransitions": 26,
+    "physicsChecks": 15,
+    "naturalContacts": 19,
+    "climbEndpoints": 10,
+    "maxELRpx": 2,
+    "tolerancePx": 2,
+    "scope": "local fixed60Hz AABB adapter; owner PASS and production integration pending"
+  },
+  "entry": "index.html",
+  "launch": "bash serve-local.sh [port=8896]",
+  "restrictions": [
+    "no game/public writes",
+    "no balance writes",
+    "no source maps writes",
+    "no PASS root edits",
+    "no deploy/push/integration",
+    "static collapse appearance only"
+  ],
+  "evidenceFiles": [
+    {
+      "path": "work/scene-brief.md",
+      "sha256": "7fb93613d6a8e4de6765463639c2e12a9fca853ef9609337c7be47057f738711",
+      "geometryRevision": "chiyan-core-final-001"
+    },
+    {
+      "path": "work/action-layout.svg",
+      "sha256": "21ccf70851f8fb1c51a1d52f7dfce6b0c69d2c561ea2a728445acab4f8058e15",
+      "geometryRevision": "chiyan-core-final-001"
+    },
+    {
+      "path": "work/stage2-graybox-report.md",
+      "sha256": "73c2e5d2f9b464dfc24488b062849cdcf0040fea94a80a61350bb88c853b150f",
+      "geometryRevision": "chiyan-core-final-001"
+    },
+    {
+      "path": "work/stage3-geometry-report.md",
+      "sha256": "fad309a54f6cbb24cc3a334bbb9ad9b3aa3371d8247ec7885014d8b985952da1",
+      "geometryRevision": "chiyan-core-final-001"
+    },
+    {
+      "path": "work/stage4-report.md",
+      "sha256": "18ab823a0f03e852c49b35807591ac5dcfa2d8ac4cd2b3b9b94c899e4d92f6b0",
+      "geometryRevision": "chiyan-core-final-001"
+    },
+    {
+      "path": "work/stage4-blocks.json",
+      "sha256": "d0cff5a7974a95cbfcb4cb82c0cff0566a6741bb435c3a98d9b381338429839f",
+      "geometryRevision": "chiyan-core-final-001"
+    },
+    {
+      "path": "work/stage5-report.md",
+      "sha256": "217330d661f2b5e46f4aff641b954645d0766004e21aea3b8a166691ad059074",
+      "geometryRevision": "chiyan-core-final-001"
+    },
+    {
+      "path": "work/stage5-placement-records.json",
+      "sha256": "6fcb1c0f8aa8590c51b2b554d212f4884766467e7f2211405e0d89eace0d4fc1",
+      "geometryRevision": "chiyan-core-final-001"
+    },
+    {
+      "path": "work/imagegen-provenance.json",
+      "sha256": "b03c1317f0cdbb90bff7b8ebc4d9b05e9a7d957b6d941a4fcfedb6ed41a150bc",
+      "geometryRevision": "chiyan-core-final-001"
+    },
+    {
+      "path": "work/final-routes.json",
+      "sha256": "efb343bb25878da527a31e330c05da78294d619d3a38b90802203d79a8c1c526",
+      "geometryRevision": "chiyan-core-final-001"
+    },
+    {
+      "path": "work/final-geometry-measurements.json",
+      "sha256": "778f4a7d43af4d21155b3942bae51710c17cb4f9049981c6a8e6c2ed0cb41061",
+      "geometryRevision": "chiyan-core-final-001"
+    },
+    {
+      "path": "work/final-transition-evidence.json",
+      "sha256": "fb412549b5adc79a4ea01fcdd20501d96a3aab31f4094747013d501fe6ed4679",
+      "geometryRevision": "chiyan-core-final-001"
+    },
+    {
+      "path": "work/final-physics-check.json",
+      "sha256": "107c6c7241bbb21004dd1c510e4738fbc3e2287de9652bb7b881bfe674e068bb",
+      "geometryRevision": "chiyan-core-final-001"
+    },
+    {
+      "path": "work/final-browser-check.json",
+      "sha256": "ed3e182ab92946bdf35d9ba77e0967f0be162c77ee2d96f7c62b57a6502044fb",
+      "geometryRevision": "chiyan-core-final-001"
+    },
+    {
+      "path": "work/final-browser-resource-binding.json",
+      "sha256": "90d488cd3a1b49e556cc698df055d23ee289de702af9b5f26124779312eac64e",
+      "geometryRevision": "chiyan-core-final-001"
+    },
+    {
+      "path": "work/independent-audit.md",
+      "sha256": "7a2532e60b970adf832feac8c07ff7399c632d6af50bb1b6fa8fb41601acc32b",
+      "geometryRevision": "chiyan-core-final-001"
+    },
+    {
+      "path": "work/independent-replay-check.json",
+      "sha256": "fad349376cd49ae973860062298ec73ff972a80287055fd895da2dd221fcea54",
+      "geometryRevision": "chiyan-core-final-001"
+    },
+    {
+      "path": "work/protected-boundary-final.json",
+      "sha256": "478a5967987d6d6b31e1c45e31c84d24e7d4dc67b306d5de7cb37eec0742c1b6",
+      "geometryRevision": "chiyan-core-final-001"
+    }
+  ]
+}
