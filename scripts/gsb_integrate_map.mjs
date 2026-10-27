@@ -143,7 +143,9 @@ function patchMap(mapPath) {
     const top = Math.min(...ys), bottom = Math.max(...ys);
     const cx = c.ends?.end?.position?.[0] ?? c.ends?.start?.position?.[0] ?? (left + right) / 2;
     const targetName = c.kind === 'ladder' ? (CLIMB_TO_OBJECT[c.id] ?? name) : name;
-    climbByObj.set(name, { name: targetName, kind: c.kind, left, right, top, bottom, cx, w: right - left, h: bottom - top });
+    // chain 使用引擎既有 rope 几何与抓取范围，Tiled 不引入 chain 类型。
+    const runtimeKind = c.kind === 'chain' ? 'rope' : c.kind;
+    climbByObj.set(name, { name: targetName, kind: runtimeKind, left, right, top, bottom, cx, w: right - left, h: bottom - top });
   }
 
   for (const layer of map.layers ?? []) {
