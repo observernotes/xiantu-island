@@ -1,0 +1,1342 @@
+{
+  "schemaVersion": "1.0",
+  "manifestRevision": "chiyan1-manifest-002",
+  "sceneId": "chiyan_slope_1_gsb_v1",
+  "title": "赤炎火山·山麓 GSB v1",
+  "status": "verified",
+  "deliveryState": "自检通过，赤炎山麓 gsb_v1 已交核待负责人；负责人PASS前禁止接入",
+  "geometryRevision": "chiyan1-final-002",
+  "actorParameterRevision": "chiyan1-base-feel-20261027-001",
+  "engineRevision": "gsb-aabb-feel-chiyan1-001",
+  "sourceDataSHA256": "cb6d999fb333da2e34514a8ab92f2073f54916a7d260c538c2be4c09454861e0",
+  "space": {
+    "origin": "top-left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "units": "logical-pixel",
+    "logicalWidth": 3200,
+    "logicalHeight": 896,
+    "tileSize": 32,
+    "columns": 100,
+    "rows": 28,
+    "sourceMap": "maps/chiyan_slope_1.json",
+    "sourceToWorld": [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0
+    ]
+  },
+  "mapProperties": {
+    "id": "chiyan_slope_1",
+    "name": "赤炎火山·山麓",
+    "safeZone": false,
+    "qiDensity": 7,
+    "area": "chiyan",
+    "returnTown": false,
+    "allowTalismanReturn": true
+  },
+  "drawOrder": [
+    "background.png",
+    "playable.png",
+    "actor + existing monster static scale references"
+  ],
+  "foreground": {
+    "applicable": false,
+    "reason": "no front-of-actor obstruction; boat, chains and gate in terrain layer behind actors"
+  },
+  "generator": "built-in image_gen.imagegen, 6 calls; work/imagegen-provenance.json",
+  "maskPalette": {
+    "walk": [
+      150,
+      245,
+      160,
+      255
+    ],
+    "stand": [
+      0,
+      200,
+      80,
+      255
+    ],
+    "climb": [
+      0,
+      190,
+      230,
+      255
+    ],
+    "jump": [
+      255,
+      180,
+      0,
+      255
+    ],
+    "drop": [
+      170,
+      80,
+      225,
+      255
+    ],
+    "hazard": [
+      255,
+      60,
+      30,
+      255
+    ],
+    "point": [
+      255,
+      70,
+      160,
+      255
+    ]
+  },
+  "rasterizationOrder": [
+    "walk",
+    "stand",
+    "climb",
+    "jump",
+    "drop",
+    "hazard",
+    "point"
+  ],
+  "maskPurpose": "pure no-antialias RGBA action semantics; never collision authority",
+  "assets": [
+    {
+      "path": "DELIVERED.md",
+      "bytes": 1419,
+      "sha256": "c33a3fddd843a88500fe8729d2e564d2da27f58cd01fe5374dad91458e4b13af",
+      "role": "delivery"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1274,
+      "sha256": "4e6e7a3cf887d69762cf5670ffd3db6abbf3f5950b8766ce8f40f3f91de0b0af",
+      "role": "delivery"
+    },
+    {
+      "path": "action-mask.png",
+      "bytes": 17627,
+      "sha256": "55d5f66add141489ecb9f76302935a15bf32b902f40aff8df069129e6ebd3b61",
+      "role": "deterministic-diagnostics",
+      "pixelWidth": 3200,
+      "pixelHeight": 896,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "geometryRevision": "chiyan1-final-002",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "sourceDataSHA256": "cb6d999fb333da2e34514a8ab92f2073f54916a7d260c538c2be4c09454861e0"
+    },
+    {
+      "path": "action-overlay.png",
+      "bytes": 3718921,
+      "sha256": "8f03c1d295e6a1162714b27786b9a041e9a091793835ba46c2b0c8e7e6458bc0",
+      "role": "deterministic-diagnostics",
+      "pixelWidth": 3200,
+      "pixelHeight": 896,
+      "mode": "RGB",
+      "geometryRevision": "chiyan1-final-002",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "sourceDataSHA256": "cb6d999fb333da2e34514a8ab92f2073f54916a7d260c538c2be4c09454861e0"
+    },
+    {
+      "path": "background.png",
+      "bytes": 3807409,
+      "sha256": "fbeec694c0b92312b0d55bc8a899a050602beed8c9f15bbe003a9218fd614f92",
+      "role": "background",
+      "pixelWidth": 3200,
+      "pixelHeight": 896,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "geometryRevision": "chiyan1-final-002",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "drawOrder": 0,
+      "derivedFrom": "work/stage4-master.png"
+    },
+    {
+      "path": "collision-overlay.png",
+      "bytes": 3678777,
+      "sha256": "36604a8de7f5a2f1cd9c40408abed2384a458e9ae9f204b9c25b49455c80d951",
+      "role": "deterministic-diagnostics",
+      "pixelWidth": 3200,
+      "pixelHeight": 896,
+      "mode": "RGB",
+      "geometryRevision": "chiyan1-final-002",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "sourceDataSHA256": "cb6d999fb333da2e34514a8ab92f2073f54916a7d260c538c2be4c09454861e0"
+    },
+    {
+      "path": "diagnostics-metadata.json",
+      "bytes": 909,
+      "sha256": "23e6a69561b7fd96b0c59d0159c04aa4f5d28cd1bc958fb2fe6238d1813e7228",
+      "role": "delivery"
+    },
+    {
+      "path": "index.html",
+      "bytes": 166,
+      "sha256": "4ca39416d643086719e199d3a11c77c69cd8ef1f4fc7e6aa25cf42d14cbfb937",
+      "role": "delivery"
+    },
+    {
+      "path": "playable.png",
+      "bytes": 1229035,
+      "sha256": "a88e630f7543d8e86cc838fa79bf52886b09c2684172b116638795907e897fde",
+      "role": "playable",
+      "pixelWidth": 3200,
+      "pixelHeight": 896,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "geometryRevision": "chiyan1-final-002",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "drawOrder": 10,
+      "derivedFrom": "work/stage4-master.png"
+    },
+    {
+      "path": "polished.lock",
+      "bytes": 100,
+      "sha256": "c52268b9978d8e04b4c2875319912ceb937aa26a381760abb3d06380f3088a05",
+      "role": "delivery"
+    },
+    {
+      "path": "scene-data.json",
+      "bytes": 83235,
+      "sha256": "cb6d999fb333da2e34514a8ab92f2073f54916a7d260c538c2be4c09454861e0",
+      "role": "single-authoritative-action-and-collision-data",
+      "geometryRevision": "chiyan1-final-002"
+    },
+    {
+      "path": "scene.png",
+      "bytes": 4272666,
+      "sha256": "c29a2b3df78789eb66ae200ddf9fd8755648b343cddf5fe69f67d3cbc7a2ffd9",
+      "role": "inspection-composite",
+      "pixelWidth": 3200,
+      "pixelHeight": 896,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "geometryRevision": "chiyan1-final-002",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "derivedFrom": [
+        "background.png",
+        "playable.png"
+      ]
+    },
+    {
+      "path": "serve-local.sh",
+      "bytes": 113,
+      "sha256": "7769a796fcaa8a27063d987caf0ebf22f46094bea9a9cbc3350e0a0adb5341a8",
+      "role": "delivery"
+    },
+    {
+      "path": "validation-report.md",
+      "bytes": 10329,
+      "sha256": "52cdb50f5e3032b1b82f1ad8a4e1a51bc75c457e8bbc1f6294c66bb220f82d3c",
+      "role": "delivery"
+    },
+    {
+      "path": "work/action-layout.png",
+      "bytes": 10899,
+      "sha256": "e3beb004ad149395cbabbef4287129eaeaac3893e44dd4e4eb5eec7643e0e385",
+      "role": "process-record",
+      "pixelWidth": 3200,
+      "pixelHeight": 896,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/action-layout.svg",
+      "bytes": 2056,
+      "sha256": "7c8f4dcef1315b5bc87df3de28ffd2bb0a84fbcba9095b93b8d78f98be945bbc",
+      "role": "process-record"
+    },
+    {
+      "path": "work/align_art.py",
+      "bytes": 3642,
+      "sha256": "ff1a81a655406b4413fc2a72dc8318bd4f630870486bcaef3da93fa37287fd60",
+      "role": "process-record"
+    },
+    {
+      "path": "work/artcheck-final.log",
+      "bytes": 948,
+      "sha256": "971ec2b5f561e9fc298167f5443cb1bb9bf08387c5e488c43dfd938ff1f09e5c",
+      "role": "process-record"
+    },
+    {
+      "path": "work/audit_assets.py",
+      "bytes": 6502,
+      "sha256": "8d35b239b6a73c3ee5ac0f8310e37e6b97524655d1ff0d5bf11e1ef7ccac327b",
+      "role": "process-record"
+    },
+    {
+      "path": "work/bind_validation.py",
+      "bytes": 5658,
+      "sha256": "8091ea32fc3041322c518bdb43e1d826ae220bd4c01c6e2ef6f2212ffcf29b75",
+      "role": "process-record"
+    },
+    {
+      "path": "work/browser-contact-gather_fire_herb_20.png",
+      "bytes": 1094434,
+      "sha256": "a5a23a9edaf9260203768e79bb38588d4890a0b57fb2b1cb0710a946170f40df",
+      "role": "process-record",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/browser-contact-gather_fire_herb_21.png",
+      "bytes": 1122021,
+      "sha256": "6711818c1f65aa268f6e47565da1c97c8e8d1c4c3d9d2285aa9b17188f81845e",
+      "role": "process-record",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/browser-contact-gather_fire_herb_22.png",
+      "bytes": 1226278,
+      "sha256": "43efe29d09efff6135fb2ab2d2673e4f2bd129d710cfa501f9d5cf0101cebd29",
+      "role": "process-record",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/browser-contact-goal.png",
+      "bytes": 1290992,
+      "sha256": "aa4b438a603b7fb1f54a5b6128910364d59d9a235f030517696d073933e4fba4",
+      "role": "process-record",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/browser-contact-s_dock.png",
+      "bytes": 1367789,
+      "sha256": "bd8f748b13f8ddae7ff9cfa1150d9e3bbaa87c3be0ddf8a870f87b020fb5e094",
+      "role": "process-record",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/browser-contact-s_east.png",
+      "bytes": 1232785,
+      "sha256": "34ce3de07591e6e5b837a3ba186e200ef67ea29d25e76591d28b345fce8189b5",
+      "role": "process-record",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/browser-contact-s_east_high.png",
+      "bytes": 1227701,
+      "sha256": "109992d8834e6f68e05f1e7d7eaf789c229c343f5357326e1a506b3dff889b21",
+      "role": "process-record",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/browser-contact-s_low_east.png",
+      "bytes": 1236135,
+      "sha256": "b6e450766c395cc7de63e9dcb0e776a6bb15ae4b8965482e94b4746c509ff9d8",
+      "role": "process-record",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/browser-contact-s_low_west.png",
+      "bytes": 1367389,
+      "sha256": "886303a4b794eb43c0e1cf700663295b5f61771d9b9901866508d2b954a89a25",
+      "role": "process-record",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/browser-contact-s_middle.png",
+      "bytes": 1198196,
+      "sha256": "740a89a092f2fed0e91f25d3124d0bdd54d241fd86ea3d35122742e3b3c9cbfb",
+      "role": "process-record",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/browser-contact-s_middle_high.png",
+      "bytes": 1110058,
+      "sha256": "1231ab2e22bb15e0d49535a7b1a932fda7820bf9df538f2b4adb36d0071fefac",
+      "role": "process-record",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/browser-contact-s_middle_low.png",
+      "bytes": 1127525,
+      "sha256": "85ef655c61b42c505665cab5b7a15ce34985df590761ea895d2e662697651e41",
+      "role": "process-record",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/browser-contact-s_west_high.png",
+      "bytes": 1099454,
+      "sha256": "d7641f3ca9c3b7681c948f1eca37c8c84a132380c710b4efa77dce46073116ee",
+      "role": "process-record",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/browser-contact-s_west_low.png",
+      "bytes": 1237236,
+      "sha256": "9268dbcbfb371a716cd1437748cde6f5583aa611ba46e42915cfd2e0927c0f31",
+      "role": "process-record",
+      "pixelWidth": 1280,
+      "pixelHeight": 721,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/browser-final-overlays.png",
+      "bytes": 1765329,
+      "sha256": "18ea942796c42cf9facf638295dba2324777a68df33fa413788e14b08832b168",
+      "role": "process-record",
+      "pixelWidth": 1440,
+      "pixelHeight": 1304,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/browser-spawn.png",
+      "bytes": 1843283,
+      "sha256": "ee29ffb5af23616b8b278a0401381fe18250ccc3c65d800c5570376ddb406f7c",
+      "role": "process-record",
+      "pixelWidth": 1440,
+      "pixelHeight": 1304,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/browser_check.mjs",
+      "bytes": 4662,
+      "sha256": "211b56269bcf35db54f5667c3787cf56d6a4efe5e8b7dd1d428f1253225c54eb",
+      "role": "process-record"
+    },
+    {
+      "path": "work/build_layout.py",
+      "bytes": 8234,
+      "sha256": "5a233d6dba2b786c5c4aef5ff9e821ea1c5e2b705b076be4be61656ada345a13",
+      "role": "process-record"
+    },
+    {
+      "path": "work/build_manifest.py",
+      "bytes": 3080,
+      "sha256": "49904d8108751e6377fce037e78389dea8369881e751f6ccad56467d6fad2338",
+      "role": "process-record"
+    },
+    {
+      "path": "work/check_cadence.mjs",
+      "bytes": 1267,
+      "sha256": "ac3a3780958bef7a7e184363b94a890c0c99cf628fc86efb8314240c7510d78d",
+      "role": "process-record"
+    },
+    {
+      "path": "work/check_package.py",
+      "bytes": 2351,
+      "sha256": "147fea88cebdb06ce89fbe2b63f2e22cfe6de8187f2508e6a74e8e1e7aa54058",
+      "role": "process-record"
+    },
+    {
+      "path": "work/compose_detail.py",
+      "bytes": 2890,
+      "sha256": "53729bd0dd4ad61ae508105054dae14cae0c1a3a24e8d9ae81fd51f950aa5ae1",
+      "role": "process-record"
+    },
+    {
+      "path": "work/final-asset-audit.json",
+      "bytes": 3945,
+      "sha256": "463ece7527a34c235b14d7a9acf4205efbd6867ba3a42bf3835f5513e445d207",
+      "role": "process-record"
+    },
+    {
+      "path": "work/final-bottom-1.png",
+      "bytes": 210624,
+      "sha256": "97adee40ac7372ef58a61593bbb1a3eac181dcc20948c47caf240557a47398ff",
+      "role": "process-record",
+      "pixelWidth": 800,
+      "pixelHeight": 144,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ]
+    },
+    {
+      "path": "work/final-bottom-2.png",
+      "bytes": 185322,
+      "sha256": "e1be4ab029f0c3996677075de7a87e7ccf15347929d7a2ffa378202d472aebbe",
+      "role": "process-record",
+      "pixelWidth": 800,
+      "pixelHeight": 144,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ]
+    },
+    {
+      "path": "work/final-bottom-3.png",
+      "bytes": 206690,
+      "sha256": "3ade8779e77c961779d520f4269ef4af434ccd35af51eac61f2059aac6955dcd",
+      "role": "process-record",
+      "pixelWidth": 800,
+      "pixelHeight": 144,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ]
+    },
+    {
+      "path": "work/final-bottom-4.png",
+      "bytes": 206533,
+      "sha256": "d4cda94c60e38fcfcbfea4a8a92e8af1a964a9a15cd3715c4d2b9757b3a358d7",
+      "role": "process-record",
+      "pixelWidth": 800,
+      "pixelHeight": 144,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ]
+    },
+    {
+      "path": "work/final-browser-check.json",
+      "bytes": 15802,
+      "sha256": "fd10f053fe1e0bf0ecbc2537dfdd1509db5767e2b21ec432cd5b400578ab4243",
+      "role": "process-record"
+    },
+    {
+      "path": "work/final-cadence-check.json",
+      "bytes": 3630,
+      "sha256": "f1d7c689f3e53f0a66eda41d6dd87f837cb930d28401db7a210cfe025244eacf",
+      "role": "process-record"
+    },
+    {
+      "path": "work/final-contact-ELR-atlas.png",
+      "bytes": 1283248,
+      "sha256": "46a3c529a6ec9be6cc40308a1e67e4175de072c14a2f015b9df057dbb259d4c3",
+      "role": "process-record",
+      "pixelWidth": 780,
+      "pixelHeight": 1550,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/final-geometry-measurements.json",
+      "bytes": 12456,
+      "sha256": "1f89a97f1d88600264718a5f292b7a45894c01757a2cd54de3c12e0328d3aadc",
+      "role": "process-record"
+    },
+    {
+      "path": "work/final-hazards-details.png",
+      "bytes": 91140,
+      "sha256": "d5e188cb9864caa76c71a6e613641ebcee0a8e5125a8b49237dc5de01a9b8ce2",
+      "role": "process-record",
+      "pixelWidth": 320,
+      "pixelHeight": 320,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/final-package-check.json",
+      "bytes": 448,
+      "sha256": "3b0329d1ef7c760503ff9cc52cf8fc87b0d3b9107f6795d1d582fa746ec286c7",
+      "role": "process-record"
+    },
+    {
+      "path": "work/final-physics-smoke.json",
+      "bytes": 39045,
+      "sha256": "32614e308c1dcad1dd584c7dfdb02f3c9271059e0e86594df5ead11e83f23599",
+      "role": "process-record"
+    },
+    {
+      "path": "work/final-route_all_climbs.json",
+      "bytes": 803794,
+      "sha256": "ee76c5a760bf51de7bd021cdc61f1890f829284b87fafc121bb5a4c3f2805df9",
+      "role": "process-record"
+    },
+    {
+      "path": "work/final-route_all_gathers.json",
+      "bytes": 803795,
+      "sha256": "6027d5c40dfb9b20a7eecec4ba4b07ca051ae39bfcea30b6a7839875a7b5fa02",
+      "role": "process-record"
+    },
+    {
+      "path": "work/final-route_chest.json",
+      "bytes": 803789,
+      "sha256": "a31ee0120322209ceae7e8658c9a8f0fe0e46edef06021ec0e5b0789698ab9d5",
+      "role": "process-record"
+    },
+    {
+      "path": "work/final-route_main.json",
+      "bytes": 348604,
+      "sha256": "b59ce128f1b7f9ed34f7fc85181fa89abfec6f0df82af614cac67f19c0bf29c6",
+      "role": "process-record"
+    },
+    {
+      "path": "work/final-route_return.json",
+      "bytes": 689089,
+      "sha256": "972bb1b8acb1542ca8a116ff46d0d03da16bf5ff358e1ad780bfadc782948f47",
+      "role": "process-record"
+    },
+    {
+      "path": "work/final-routes-summary.json",
+      "bytes": 93633,
+      "sha256": "40cf091fb0f7e1e59ccedf59c35389bd7545df2d8251994c0d906400d24be4f7",
+      "role": "process-record"
+    },
+    {
+      "path": "work/final-transition-evidence.json",
+      "bytes": 12103,
+      "sha256": "5b921ae375d3d8a4ae21ab4c2ef168d869d211c15e5d4f53c57826468f544014",
+      "role": "process-record"
+    },
+    {
+      "path": "work/finalize_layers.py",
+      "bytes": 4531,
+      "sha256": "0a8580c235c54aa021e0fa4f0a87cc056b59eac809fa112d2a80b72fa1078697",
+      "role": "process-record"
+    },
+    {
+      "path": "work/graybox-browser.mjs",
+      "bytes": 1157,
+      "sha256": "dc27c8dc6e6b66ff5aa49e695b0d5d0f917242515940841712c160785686db7d",
+      "role": "process-record"
+    },
+    {
+      "path": "work/graybox-route_all_climbs.json",
+      "bytes": 803547,
+      "sha256": "55d7bd408d83ff737d1330b08f7a728433b5a8a19589ebc9f42bfa89ed4d255c",
+      "role": "process-record"
+    },
+    {
+      "path": "work/graybox-route_all_gathers.json",
+      "bytes": 803548,
+      "sha256": "2b8c27bdd8a38a66ddefa2c1d0ca9c79f6cc6f2ca515f9afdb652374f130daa5",
+      "role": "process-record"
+    },
+    {
+      "path": "work/graybox-route_chest.json",
+      "bytes": 803542,
+      "sha256": "fc4dcc7c685a3f101f4f6f19eb17315340ebe624e674840073d759b47c01b8a3",
+      "role": "process-record"
+    },
+    {
+      "path": "work/graybox-route_main.json",
+      "bytes": 348358,
+      "sha256": "0c57c77916c091ee34bca15eaecfeadb522ffcba97d8ea008b73ec3ae2ff035b",
+      "role": "process-record"
+    },
+    {
+      "path": "work/graybox-route_return.json",
+      "bytes": 688843,
+      "sha256": "d70ce344b18c9dfdd0b63569f4032eb193b1e4a3112e413b7cea08f1e17581df",
+      "role": "process-record"
+    },
+    {
+      "path": "work/graybox-routes-summary.json",
+      "bytes": 91607,
+      "sha256": "2e0f8031235f0ed56fbbcc69c111f877df0d4fc3a9fab838eea9249cb88539c2",
+      "role": "process-record"
+    },
+    {
+      "path": "work/imagegen-provenance.json",
+      "bytes": 1907,
+      "sha256": "af9133da87e047306bf01f775239c7f6ffe6c3d746cf39ad4ad31cd5e07a4a6f",
+      "role": "process-record"
+    },
+    {
+      "path": "work/inspect-east-grid.png",
+      "bytes": 920131,
+      "sha256": "b30b062f8dc29b955aa51dc1dc055828bf8f86346b84ea7e464d7846c4804ddf",
+      "role": "process-record",
+      "pixelWidth": 1172,
+      "pixelHeight": 494,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/inspect-west-grid.png",
+      "bytes": 903426,
+      "sha256": "05bbab3e93553ead89491236bbfb994e07467045c7496cf1f058c766669d3224",
+      "role": "process-record",
+      "pixelWidth": 1120,
+      "pixelHeight": 494,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/physics_smoke.mjs",
+      "bytes": 4764,
+      "sha256": "d27affa6cecef9bf67ac9ae0b349d5fe11fd12c9f794315fd5866a7c470222da",
+      "role": "process-record"
+    },
+    {
+      "path": "work/pre-walkregion-fix/INVALIDATED.md",
+      "bytes": 277,
+      "sha256": "5c61adeeeaf399083def61392e3ce3e1e1e2c5b79295a4e0f6e812dd404ba81b",
+      "role": "invalidated-history",
+      "excludedFromAcceptance": true
+    },
+    {
+      "path": "work/pre-walkregion-fix/diagnostics-metadata.json",
+      "bytes": 911,
+      "sha256": "43ba0bf88dc69db2be7aa8960f9718cc399a18e601c8e317abadd8ea83862c05",
+      "role": "invalidated-history",
+      "excludedFromAcceptance": true
+    },
+    {
+      "path": "work/pre-walkregion-fix/final-asset-audit.json",
+      "bytes": 3945,
+      "sha256": "0fa8f6a1dac57cfc314327f0657476b0c5cc6323b1d2c78a8619aef4805cc830",
+      "role": "invalidated-history",
+      "excludedFromAcceptance": true
+    },
+    {
+      "path": "work/pre-walkregion-fix/final-browser-check.json",
+      "bytes": 15802,
+      "sha256": "11f89d4c02e8705f8a5a3f89c096c5572b13966a82bdf16b075a258820fd44a0",
+      "role": "invalidated-history",
+      "excludedFromAcceptance": true
+    },
+    {
+      "path": "work/pre-walkregion-fix/final-cadence-check.json",
+      "bytes": 3630,
+      "sha256": "e58419009ee54aa5830d634aee8fc23e4237b59207e22a0bb351a71c3eb5d51f",
+      "role": "invalidated-history",
+      "excludedFromAcceptance": true
+    },
+    {
+      "path": "work/pre-walkregion-fix/final-geometry-measurements.json",
+      "bytes": 12406,
+      "sha256": "0a9feda477d6d36af28660142301a274c03fbad5754edfa5b09779ece00b7a4f",
+      "role": "invalidated-history",
+      "excludedFromAcceptance": true
+    },
+    {
+      "path": "work/pre-walkregion-fix/final-physics-smoke.json",
+      "bytes": 39045,
+      "sha256": "864a54bd98bc865b913908c948ccc90d7aa1b6e14e27154a917b3d23a1af6e42",
+      "role": "invalidated-history",
+      "excludedFromAcceptance": true
+    },
+    {
+      "path": "work/pre-walkregion-fix/final-route_all_climbs.json",
+      "bytes": 803794,
+      "sha256": "c89c6a69986115a2ce5e09513e71d2e9f9a61985cc95c20f60c41c29fabcb1e0",
+      "role": "invalidated-history",
+      "excludedFromAcceptance": true
+    },
+    {
+      "path": "work/pre-walkregion-fix/final-route_all_gathers.json",
+      "bytes": 803795,
+      "sha256": "fbc787e51448be222f67c5cb4bcb3b23bf5901c9013dbb46aa2a20951b8ad93d",
+      "role": "invalidated-history",
+      "excludedFromAcceptance": true
+    },
+    {
+      "path": "work/pre-walkregion-fix/final-route_chest.json",
+      "bytes": 803789,
+      "sha256": "e6e93a826e1a61244c8efb8affaf53e4d96a702dc2fb5b2882de9904ca52c1fe",
+      "role": "invalidated-history",
+      "excludedFromAcceptance": true
+    },
+    {
+      "path": "work/pre-walkregion-fix/final-route_main.json",
+      "bytes": 348604,
+      "sha256": "bf253e586e999e7c55c818c0788a996bbad976bb91d7335ed25b1872c794e532",
+      "role": "invalidated-history",
+      "excludedFromAcceptance": true
+    },
+    {
+      "path": "work/pre-walkregion-fix/final-route_return.json",
+      "bytes": 689089,
+      "sha256": "b2573db905f59755dc53e0f5a857a395d5cf4044978cafcd5ad46f9a728b4951",
+      "role": "invalidated-history",
+      "excludedFromAcceptance": true
+    },
+    {
+      "path": "work/pre-walkregion-fix/final-routes-summary.json",
+      "bytes": 93633,
+      "sha256": "9446fc8bb32d1ad6347d970e48420902b1d9fe1ff9a78088a8716f1609a06121",
+      "role": "invalidated-history",
+      "excludedFromAcceptance": true
+    },
+    {
+      "path": "work/pre-walkregion-fix/scene-data.json",
+      "bytes": 44034,
+      "sha256": "1ea4f23b7a65c23e547347c9a78247b5dfa46ddc0e44dffcb9622208ee8e8554",
+      "role": "invalidated-history",
+      "excludedFromAcceptance": true
+    },
+    {
+      "path": "work/preview/engine.mjs",
+      "bytes": 14243,
+      "sha256": "2b650b004ba899e4deef5e7fcf14f88a76b5e65f6171c8479e1f3d1dc4f67d32",
+      "role": "process-record"
+    },
+    {
+      "path": "work/preview/index.html",
+      "bytes": 3947,
+      "sha256": "a76564a45a1201fdd4d613d57cdb754d3dd18be2c54d583bc055822bb6e5b1d9",
+      "role": "process-record"
+    },
+    {
+      "path": "work/preview/mon_fire_crow-idle.png",
+      "bytes": 2380,
+      "sha256": "cee6a5c4b1c40dcaf63501f75458a11b6abb2ef274e1e6c32763e2875639e71d",
+      "role": "process-record",
+      "pixelWidth": 80,
+      "pixelHeight": 64,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "path": "work/preview/mon_lava_lizard-idle.png",
+      "bytes": 2438,
+      "sha256": "e4b27c0d1b3983d2784c5b611623b854d0dce100dd412b7e23b702fece991725",
+      "role": "process-record",
+      "pixelWidth": 96,
+      "pixelHeight": 48,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "path": "work/preview/npc-reference-data.json",
+      "bytes": 2,
+      "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "role": "process-record"
+    },
+    {
+      "path": "work/preview/player-reference-idle.png",
+      "bytes": 10012,
+      "sha256": "520235d2f9c4c9e83b140ba439c2d18becfaa8e962fa15a98e35a14003ce0181",
+      "role": "process-record",
+      "pixelWidth": 96,
+      "pixelHeight": 96,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "path": "work/preview/preview.mjs",
+      "bytes": 15461,
+      "sha256": "8899fb3ea4f601d56d0de9ed26e75a5554da2c931b43c4e9852379010d422eab",
+      "role": "process-record"
+    },
+    {
+      "path": "work/prompt-alphaPrompt.txt",
+      "bytes": 843,
+      "sha256": "b9fbfbbbf175ef04b14641a69ce4d36343a499bac2529f0fe1d2b659cb1304a4",
+      "role": "process-record"
+    },
+    {
+      "path": "work/prompt-bgPrompt.txt",
+      "bytes": 963,
+      "sha256": "b6a64b192cd6c6240a2bf9deadff17ed823ae118d67bb34769447b9e6be1085c",
+      "role": "process-record"
+    },
+    {
+      "path": "work/prompt-stage3-repair.txt",
+      "bytes": 1009,
+      "sha256": "795a0520dcf91862d8ccec13078f02dcac85918fbfcca1a9975ceabc64aa3d1b",
+      "role": "process-record"
+    },
+    {
+      "path": "work/prompt-stage3.txt",
+      "bytes": 3463,
+      "sha256": "fdd487170867200d9ffcfcaddcfffcc8808543c7681a5639876719352dd67b1d",
+      "role": "process-record"
+    },
+    {
+      "path": "work/prompt-stage4-east.txt",
+      "bytes": 2022,
+      "sha256": "e27b4388831d57c74ccab76261434315a35086856c0f0b06bdae69454f259fb0",
+      "role": "process-record"
+    },
+    {
+      "path": "work/prompt-stage4-west.txt",
+      "bytes": 1984,
+      "sha256": "dd2d207493028603539e672990d58db3fff54401adce1fd8aa1787fa5dd5b8f3",
+      "role": "process-record"
+    },
+    {
+      "path": "work/protected-boundary-before.json",
+      "bytes": 794,
+      "sha256": "3846c5a6276481dfe44d27351f5e672a98ad547709c2f8e1f35fc77dd6951ac8",
+      "role": "process-record"
+    },
+    {
+      "path": "work/protected-boundary-final.json",
+      "bytes": 1116,
+      "sha256": "29465d28622228bbb56d6066adf2b7d4af5f0045cbd0fd70b2c118f06ee12a05",
+      "role": "process-record"
+    },
+    {
+      "path": "work/reference-sprite-provenance.json",
+      "bytes": 745,
+      "sha256": "72481e5007d9581c2b445f8270f0171f380a35197252818e7199f0d3662dc723",
+      "role": "process-record"
+    },
+    {
+      "path": "work/render_diagnostics.py",
+      "bytes": 4371,
+      "sha256": "4d9ee66e0bd837769052905e234b5f120021be2e8928589bc01babd10ffa0ed5",
+      "role": "process-record"
+    },
+    {
+      "path": "work/route-plan.md",
+      "bytes": 348,
+      "sha256": "85f565c87e6407496ceaa5e0811640d8c1b8180bc305bc19b7df240bbfa6dd4f",
+      "role": "process-record"
+    },
+    {
+      "path": "work/runtime-controller.mjs",
+      "bytes": 3595,
+      "sha256": "fdb1075dc851f003002faf5ef089e5ea1045ee5668d5b45eae42870ddeca1e92",
+      "role": "process-record"
+    },
+    {
+      "path": "work/scene-brief.md",
+      "bytes": 1761,
+      "sha256": "966bad363beb94c36b74d8eecc97d27e79bdbb5600926c1e468b0536cfc8e083",
+      "role": "process-record"
+    },
+    {
+      "path": "work/scene-data.draft.json",
+      "bytes": 34287,
+      "sha256": "61efe12342e99b1b6cd703d56f9c62e558baeb29b7e43f1491eee1a6d9acdf11",
+      "role": "process-record"
+    },
+    {
+      "path": "work/scene-data.final-prevalidation.json",
+      "bytes": 46427,
+      "sha256": "ab91b4d4d8824aedcc72ad457027b8a312fd737823f166b435bd7ab7a3ab4950",
+      "role": "process-record"
+    },
+    {
+      "path": "work/stage2-browser-check.json",
+      "bytes": 59,
+      "sha256": "204dc73b09258cf1b99d430ab42f226fca139e74d14febb08f0b886685ee2743",
+      "role": "process-record"
+    },
+    {
+      "path": "work/stage2-graybox-browser.png",
+      "bytes": 188356,
+      "sha256": "02c12513a80bda1bff9ec14a4cbadcbae8b9d007d872a41428ae5010773bf1a1",
+      "role": "process-record",
+      "pixelWidth": 1440,
+      "pixelHeight": 1304,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/stage2-graybox-validation.md",
+      "bytes": 354,
+      "sha256": "18357dd997b698531cc3abc92e2d324095827cdec242ab5cb4768310f877aece",
+      "role": "process-record"
+    },
+    {
+      "path": "work/stage3-aligned-background.png",
+      "bytes": 3807409,
+      "sha256": "fbeec694c0b92312b0d55bc8a899a050602beed8c9f15bbe003a9218fd614f92",
+      "role": "process-record",
+      "pixelWidth": 3200,
+      "pixelHeight": 896,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ]
+    },
+    {
+      "path": "work/stage3-aligned-master.png",
+      "bytes": 4179641,
+      "sha256": "dcdd1d52e3d47e5f4d29b1142b1debee3c7957de294c2839a160ceba3b0bade2",
+      "role": "process-record",
+      "pixelWidth": 3200,
+      "pixelHeight": 896,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ]
+    },
+    {
+      "path": "work/stage3-aligned-playable.png",
+      "bytes": 1144560,
+      "sha256": "24a77d71858d12ef3c8d29ef50f0d004335145d3d5d34e8e1bd8005e625880aa",
+      "role": "process-record",
+      "pixelWidth": 3200,
+      "pixelHeight": 896,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "path": "work/stage3-alpha-raw.png",
+      "bytes": 1324559,
+      "sha256": "306fb9217ed036317ac8f6e7bab7dcdd303043852b9d941776b4a737b5eede7e",
+      "role": "process-record",
+      "pixelWidth": 2172,
+      "pixelHeight": 724,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "path": "work/stage3-background-raw.png",
+      "bytes": 2104010,
+      "sha256": "d130a1e1f973310190b34d424b75a48ca2813398a821cd4f14e7462e4c4188f1",
+      "role": "process-record",
+      "pixelWidth": 2172,
+      "pixelHeight": 724,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/stage3-generated.png",
+      "bytes": 2557839,
+      "sha256": "df3f8b8ff0c3918d53732dae0f762e7e4236ba74d6d488252a2e7a91a2c38042",
+      "role": "process-record",
+      "pixelWidth": 2171,
+      "pixelHeight": 724,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/stage3-geometry-report.md",
+      "bytes": 451,
+      "sha256": "01cf8c7af4ffed2b7e654c8348797b428e3bc66af61ebd38b5fb64912a1529b8",
+      "role": "process-record"
+    },
+    {
+      "path": "work/stage3-object-transforms.json",
+      "bytes": 13439,
+      "sha256": "2da382a241bb0d9f521dd8f8ae7a6462e2f58d0c6ac433ba96bb5854636a4f41",
+      "role": "process-record"
+    },
+    {
+      "path": "work/stage3-repair.png",
+      "bytes": 2457982,
+      "sha256": "e28f784bb6b0897acb96d968bb8d00f2113654d39560cd33692e76550adc7ebb",
+      "role": "process-record",
+      "pixelWidth": 2172,
+      "pixelHeight": 724,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/stage3-structure-overlay.png",
+      "bytes": 3613042,
+      "sha256": "db0e2cf3c98a889c5d4442c10393b63e82f8c12159a86e647565f4010eb2fe9f",
+      "role": "process-record",
+      "pixelWidth": 3200,
+      "pixelHeight": 896,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/stage4-background-master.png",
+      "bytes": 3807409,
+      "sha256": "fbeec694c0b92312b0d55bc8a899a050602beed8c9f15bbe003a9218fd614f92",
+      "role": "process-record",
+      "pixelWidth": 3200,
+      "pixelHeight": 896,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ]
+    },
+    {
+      "path": "work/stage4-blocks.json",
+      "bytes": 3572,
+      "sha256": "d6b099cd2cb13ebe6a144f190d720dad7906800de86966b6b0490a974ce531ac",
+      "role": "process-record"
+    },
+    {
+      "path": "work/stage4-compare-east-shelf.png",
+      "bytes": 101562,
+      "sha256": "848551dacad5dccebb7391b9be3fa05af674205e14c12261d1d09b39115c62d2",
+      "role": "process-record",
+      "pixelWidth": 480,
+      "pixelHeight": 160,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/stage4-compare-middle-ground.png",
+      "bytes": 145093,
+      "sha256": "973b675cad8fb07a98d1e23808a387954afbe73d5c5a6e8d58adbaf61275a480",
+      "role": "process-record",
+      "pixelWidth": 320,
+      "pixelHeight": 320,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/stage4-compare-west-shelf.png",
+      "bytes": 92919,
+      "sha256": "6b638909072707c4a7450e107b54b575c02ee9e148bb747f5fe9d273587063a3",
+      "role": "process-record",
+      "pixelWidth": 416,
+      "pixelHeight": 160,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/stage4-crossblock-ground.png",
+      "bytes": 88915,
+      "sha256": "67ca3c0f7146a4f61c79edf1d0261d1f68e2dbfea34a5a2dba54316dad961e05",
+      "role": "process-record",
+      "pixelWidth": 320,
+      "pixelHeight": 166,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ]
+    },
+    {
+      "path": "work/stage4-east-input.png",
+      "bytes": 2213148,
+      "sha256": "727fa489820c1fab1ce7952a1b1ae15ff320c657c0ede092fa0239489463c68f",
+      "role": "process-record",
+      "pixelWidth": 1728,
+      "pixelHeight": 896,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ]
+    },
+    {
+      "path": "work/stage4-east-raw.png",
+      "bytes": 2062690,
+      "sha256": "10f4d6ca430d096be0fc54665a0ef043299f2ab89a15726b8456e4d6239b763e",
+      "role": "process-record",
+      "pixelWidth": 1742,
+      "pixelHeight": 903,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/stage4-master.png",
+      "bytes": 4272666,
+      "sha256": "c29a2b3df78789eb66ae200ddf9fd8755648b343cddf5fe69f67d3cbc7a2ffd9",
+      "role": "process-record",
+      "pixelWidth": 3200,
+      "pixelHeight": 896,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ]
+    },
+    {
+      "path": "work/stage4-playable-master.png",
+      "bytes": 1229035,
+      "sha256": "a88e630f7543d8e86cc838fa79bf52886b09c2684172b116638795907e897fde",
+      "role": "process-record",
+      "pixelWidth": 3200,
+      "pixelHeight": 896,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "path": "work/stage4-report.md",
+      "bytes": 373,
+      "sha256": "41037d2920190811ad2a61fb6c5be3e273afa1794b1db768a530defe6ac19f4b",
+      "role": "process-record"
+    },
+    {
+      "path": "work/stage4-west-input.png",
+      "bytes": 2278394,
+      "sha256": "46fbffc0f1f9e8024973cc992babf662c206aea5077f1995c5d5202d9bc33290",
+      "role": "process-record",
+      "pixelWidth": 1728,
+      "pixelHeight": 896,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ]
+    },
+    {
+      "path": "work/stage4-west-raw.png",
+      "bytes": 2062937,
+      "sha256": "2ae9fdc4c80b3e27dbe1b1e4138ed2961d6d5309ef8b318f045298782c5f68b1",
+      "role": "process-record",
+      "pixelWidth": 1741,
+      "pixelHeight": 903,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/stage5-alpha-dark.png",
+      "bytes": 298354,
+      "sha256": "030394c5fde7e52985bfddf2e7806fc5fd62c1754ac6a6bb313e814c0a5f0895",
+      "role": "process-record",
+      "pixelWidth": 1600,
+      "pixelHeight": 448,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/stage5-alpha-light.png",
+      "bytes": 300842,
+      "sha256": "4f67c11d926b72ede07c4bc74933c9348e03e964acf31f53d4ea25d5e04a4e80",
+      "role": "process-record",
+      "pixelWidth": 1600,
+      "pixelHeight": 448,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/stage5-layer-review.md",
+      "bytes": 645,
+      "sha256": "5530223aabb9229523ad7c7edacc0568435f63637678611be803aa6e157f5383",
+      "role": "process-record"
+    },
+    {
+      "path": "work/stage6-report.md",
+      "bytes": 418,
+      "sha256": "c8f68799d157fe93a542f2db68ca6f17eeca725ca19e23320d64e392413b7073",
+      "role": "process-record"
+    },
+    {
+      "path": "work/stage7-report.md",
+      "bytes": 509,
+      "sha256": "5eb0250e918503054133ea795d704799715fb9f53c3494ef1101df3ce0cc264f",
+      "role": "process-record"
+    },
+    {
+      "path": "work/validate_routes.mjs",
+      "bytes": 2645,
+      "sha256": "fa34f7ac425135a146b216c4a7c928b797ae09ed9f840ee57821167e2d2b56b7",
+      "role": "process-record"
+    }
+  ],
+  "runtimeEntry": "index.html",
+  "runtimeActualEntry": "work/preview/index.html",
+  "localStart": "bash serve-local.sh",
+  "localURL": "http://127.0.0.1:8873/index.html",
+  "validation": {
+    "requiredRoutes": 5,
+    "verifiedRoutes": 5,
+    "transitions": 22,
+    "verifiedTransitions": 22,
+    "actualMapPhysics": 9,
+    "syntheticCeiling": 1,
+    "routeFrames": 16087,
+    "hazardContactsOnRequiredRoutes": 0,
+    "midRouteResets": 0,
+    "bodyPenetrations": 0,
+    "standingTolerancePx": 2,
+    "registeredDryELRMaxDeltaPx": 0,
+    "browserAllFiveTracesEqual": true,
+    "browserErrors": 0,
+    "sourceReport": "validation-report.md"
+  },
+  "scope": "independent local AABB movement adapter at base FEEL100 points; not Phaser/combat/live gates integration",
+  "protectedRootsEvidence": "work/protected-boundary-final.json",
+  "workflow": [
+    {
+      "stage": 0,
+      "status": "verified"
+    },
+    {
+      "stage": 1,
+      "status": "verified"
+    },
+    {
+      "stage": 2,
+      "status": "verified"
+    },
+    {
+      "stage": 3,
+      "status": "verified"
+    },
+    {
+      "stage": 4,
+      "status": "verified"
+    },
+    {
+      "stage": 5,
+      "status": "verified"
+    },
+    {
+      "stage": 6,
+      "status": "verified"
+    },
+    {
+      "stage": 7,
+      "status": "verified"
+    }
+  ]
+}

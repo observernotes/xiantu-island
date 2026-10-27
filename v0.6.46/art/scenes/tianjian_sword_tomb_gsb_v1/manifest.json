@@ -1,0 +1,1353 @@
+{
+  "schemaVersion": "1.0",
+  "manifestRevision": "tomb-manifest-001",
+  "sceneId": "tianjian_sword_tomb_gsb_v1",
+  "title": "天剑宗·剑冢",
+  "status": "verified",
+  "deliveryState": "天剑剑冢 gsb_v1 已交核待负责人；负责人PASS前禁止接入",
+  "geometryRevision": "tomb-final-001",
+  "actorParameterRevision": "tomb-base-feel-20261027-001",
+  "engineRevision": "gsb-tomb-aabb-feel-60hz-v3-001",
+  "sourceDataSHA256": "92574fdc94a93ced8823a47bf6b8cd7de733e1f1868eea6af226a105c7599409",
+  "space": {
+    "origin": "top-left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "units": "logical-pixel",
+    "logicalWidth": 2240,
+    "logicalHeight": 768,
+    "tileSize": 32,
+    "columns": 70,
+    "rows": 24
+  },
+  "drawOrder": [
+    "background.png",
+    "playable.png",
+    "actor"
+  ],
+  "foreground": {
+    "status": "not-applicable",
+    "reason": "没有必须压在角色前的独立遮挡物"
+  },
+  "maskPalette": {
+    "walk": [
+      44,
+      132,
+      80,
+      255
+    ],
+    "stand": [
+      64,
+      220,
+      120,
+      255
+    ],
+    "climb": [
+      80,
+      180,
+      255,
+      255
+    ],
+    "jump": [
+      255,
+      190,
+      64,
+      255
+    ],
+    "drop": [
+      180,
+      100,
+      240,
+      255
+    ],
+    "point": [
+      255,
+      220,
+      80,
+      255
+    ],
+    "tutorial": [
+      70,
+      210,
+      210,
+      255
+    ]
+  },
+  "rasterizationOrder": [
+    "tutorial",
+    "walk",
+    "stand",
+    "climb",
+    "jump",
+    "drop",
+    "point"
+  ],
+  "maskPurpose": "pure RGBA semantic visualization; not collision authority",
+  "generator": "built-in imagegen; work/imagegen-provenance.json",
+  "assets": [
+    {
+      "path": "DELIVERED.md",
+      "bytes": 918,
+      "sha256": "ce28d21720917be1a693ee022f2f64f372eb640446bfabe9cb3193f63b690081",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1642,
+      "sha256": "7568ac3e2f73c912a082bdaba5fddf9115e3dbd920bd1ac40ba4f1c0c9457f58",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "action-mask.png",
+      "bytes": 8929,
+      "sha256": "17c6cdc810ed5461dacc327d9e7c85bef73a7175a3c23ce7de4e55037f9ffbf7",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 2240,
+      "pixelHeight": 768,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "role": "deterministic-diagnostics",
+      "sourceDataSHA256": "92574fdc94a93ced8823a47bf6b8cd7de733e1f1868eea6af226a105c7599409"
+    },
+    {
+      "path": "action-overlay.png",
+      "bytes": 3366621,
+      "sha256": "aa991116aafe5eb7c2e56050395c8bd65564aeed4e84a18e23dc080b86c82936",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 2240,
+      "pixelHeight": 768,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "role": "deterministic-diagnostics",
+      "sourceDataSHA256": "92574fdc94a93ced8823a47bf6b8cd7de733e1f1868eea6af226a105c7599409"
+    },
+    {
+      "path": "background.png",
+      "bytes": 3186374,
+      "sha256": "3e4fd8bc6c481e08f70acf7c8cd00c654cc880f327552d255fef472a3636debb",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 2240,
+      "pixelHeight": 768,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "role": "background",
+      "drawOrder": 0
+    },
+    {
+      "path": "collision-overlay.png",
+      "bytes": 3340905,
+      "sha256": "8c84337f0bbf37a021213b44ca70353909fb6abe0a3621aa3b2ac5cdc422e8c7",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 2240,
+      "pixelHeight": 768,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "role": "deterministic-diagnostics",
+      "sourceDataSHA256": "92574fdc94a93ced8823a47bf6b8cd7de733e1f1868eea6af226a105c7599409"
+    },
+    {
+      "path": "diagnostics-metadata.json",
+      "bytes": 1294,
+      "sha256": "ca6dc2377f4cfc9861ad30504243ceea813869f7b022fd50781350b50947c948",
+      "geometryRevision": "tomb-final-001",
+      "role": "deterministic-diagnostics",
+      "sourceDataSHA256": "92574fdc94a93ced8823a47bf6b8cd7de733e1f1868eea6af226a105c7599409"
+    },
+    {
+      "path": "index.html",
+      "bytes": 171,
+      "sha256": "f29517f67c9323b3532a6d97a72abeae82a5ea097046ceef1dae876d1f620590",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "playable.png",
+      "bytes": 645433,
+      "sha256": "29254e3cdc7ad973770c9d96846cfc468332c0f43c9745c225619b681fc98084",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 2240,
+      "pixelHeight": 768,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "role": "playable",
+      "drawOrder": 10
+    },
+    {
+      "path": "polished.lock",
+      "bytes": 87,
+      "sha256": "7f79a77b866dadb4a4175abc1dc37b717d0c5a5c25baeeb4031d1d0bbe646bf5",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "scene-data.json",
+      "bytes": 41816,
+      "sha256": "92574fdc94a93ced8823a47bf6b8cd7de733e1f1868eea6af226a105c7599409",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "scene.png",
+      "bytes": 3381405,
+      "sha256": "cc018492ebb4b5cf58cb9ca13ccb99310a850d86d6e35a0971b8799bd51da19b",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 2240,
+      "pixelHeight": 768,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "role": "inspection-composite",
+      "derivation": "background alphaComposite playable"
+    },
+    {
+      "path": "validation-report.md",
+      "bytes": 8185,
+      "sha256": "b42309835b680f70c6abfd9b08adba98237fcce705cd51c7b1cbb74dfe213c8e",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/action-layout.png",
+      "bytes": 7626,
+      "sha256": "3c69c5fa57bdd20e788995fb73e66ba21e39d0825346f708308e797cabdabf03",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 2240,
+      "pixelHeight": 768,
+      "mode": "RGB",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/action-layout.svg",
+      "bytes": 636,
+      "sha256": "2684a0c11b6b7d959a0cc7b816b532fbee5680ba082f537afebbe750d3652b16",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/artcheck-before.log",
+      "bytes": 948,
+      "sha256": "971ec2b5f561e9fc298167f5443cb1bb9bf08387c5e488c43dfd938ff1f09e5c",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/artcheck-final.log",
+      "bytes": 948,
+      "sha256": "971ec2b5f561e9fc298167f5443cb1bb9bf08387c5e488c43dfd938ff1f09e5c",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/bind_validation.py",
+      "bytes": 2548,
+      "sha256": "f533a19793e3c533b147d0e5b45ee4efa77d5df65f0ede425cc4b04f848c77d5",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/block-east.png",
+      "bytes": 1757559,
+      "sha256": "11231e1500ef4b64069944b854523e7061c6266c3ac65fa12b1509e1166875c6",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 768,
+      "mode": "RGB",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/block-west.png",
+      "bytes": 1680276,
+      "sha256": "8c16d30bb4d0b09c3b9d4ab9d549222a3549b26c01586fe3921e0de680e001bb",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 768,
+      "mode": "RGB",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/browser_check.cjs",
+      "bytes": 4573,
+      "sha256": "caa457216e57a9e9e269d7bb156359cf9d2e28930f27d5cc7c9a1b87286e08c0",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/build_layout.py",
+      "bytes": 8711,
+      "sha256": "a44674cc6302fd2d6444ebc4f6198fff631a4ddac6b015b2dc06f3d91dff8352",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/check_binding.cjs",
+      "bytes": 1832,
+      "sha256": "2dae7661bc59a0ba2aea8215ca57d61d04510fe0c511dd953c892a5dec4bc28f",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/check_package.py",
+      "bytes": 2497,
+      "sha256": "5ffdaf729685de17aec990ad6002ec5c81bcea99f0fa533951edac3b197cf51c",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/check_physics.mjs",
+      "bytes": 4251,
+      "sha256": "314bc556e29a0e4a694a5d52cec433ad7f307a8654c2105cf238fa6d3371845d",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/compose_stage4.py",
+      "bytes": 2585,
+      "sha256": "dd13c15cc009916ab218402e44823f0b135a141bd8960d1191cfcb186d60f6e7",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/dummy-foot-inspect.png",
+      "bytes": 140306,
+      "sha256": "f6fd3e492fa89ebd818d81f8e7a34b8dbba5bebd8a4268c2554f9c0f9d23c9f7",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 380,
+      "pixelHeight": 384,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/dummy-source-ruler.png",
+      "bytes": 53869,
+      "sha256": "19fa5627a85efd546ffa37f6f8b765ed9d5f4e9fe436ff88c7f24d3c9fbae7b7",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 325,
+      "pixelHeight": 130,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/evidence/alpha-dark.png",
+      "bytes": 632305,
+      "sha256": "53f5c2116cb06da67c52e3189e90bbebd25a2361e9cff50dc1c7997960503d5e",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 2240,
+      "pixelHeight": 768,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/evidence/alpha-light.png",
+      "bytes": 639471,
+      "sha256": "37795488cedb27bfb56074542d71eff924a6d3638f6d007c59f63c41de45cf8b",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 2240,
+      "pixelHeight": 768,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/evidence/bottom-clean.png",
+      "bytes": 821773,
+      "sha256": "2f1e962ed455ff077d99593775159219f4d1bbb597668347c4e4dbfae0368d2c",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 2240,
+      "pixelHeight": 160,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/evidence/camp-player-1x.png",
+      "bytes": 1607838,
+      "sha256": "94f1dfb0e12ec3ccbb04f2ff48cb06e6c12a9af81e53620178ea95480eaf1f33",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 768,
+      "mode": "RGB",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/evidence/contact-overlay-s_ground_e.png",
+      "bytes": 1648942,
+      "sha256": "160c59e360700f9fa21db6fa2e878157fd870b7b5a60c23401679336b2144226",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 768,
+      "mode": "RGB",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/evidence/contact-overlay-s_ground_w.png",
+      "bytes": 1592345,
+      "sha256": "583a1aea5eb7e6893a8a93874d5a28dd1c6926f742b6c82927e015a1b8f61d40",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 768,
+      "mode": "RGB",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/evidence/contact-overlay-s_hanging_sword.png",
+      "bytes": 1457371,
+      "sha256": "9393693eba6cac1e6bccf1144451a7824f71f029da75ccf74765fb6db1f45bc1",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 768,
+      "mode": "RGB",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/evidence/contact-overlay-s_high_sword.png",
+      "bytes": 1649205,
+      "sha256": "c4dee40b06c58aa6c5861b2d223f2446b7cb495d796326141d52a848cfa045fb",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 768,
+      "mode": "RGB",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/evidence/contact-overlay-s_sword_hill.png",
+      "bytes": 1617336,
+      "sha256": "7e5b6e2ee40aabc036e5aeb09be920d11d7f62d9b657ad08d7b41b29b77a6098",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 768,
+      "mode": "RGB",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/evidence/final-browser-verified.png",
+      "bytes": 2111721,
+      "sha256": "d6d0abd6f5ce48ef4d3b1099fb9290c6ffda03afbf9e64291eda90b168ecec4b",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 1360,
+      "pixelHeight": 1329,
+      "mode": "RGB",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/evidence/final-browser.png",
+      "bytes": 2177596,
+      "sha256": "e3beed66f652bf38fc23c276dab7d0fe53b6e749bb71f7291a59a09273f9cca2",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 1360,
+      "pixelHeight": 1329,
+      "mode": "RGB",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/evidence/graybox.png",
+      "bytes": 48576,
+      "sha256": "cad68607607687fdbf01a564ec8041359cde5ed457b29e58a9c3763763c6af99",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 768,
+      "mode": "RGB",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/evidence/route_full_tour.png",
+      "bytes": 1605286,
+      "sha256": "96f29f7e7e0013633044613a7c3c9c7c5aaef1a67c297f5e788d683236fd95a2",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 768,
+      "mode": "RGB",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/evidence/route_ground.png",
+      "bytes": 1461367,
+      "sha256": "181d43d0bd04fb0780010fabf4ac122defbddd365a899bb99859132f00f81d66",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 768,
+      "mode": "RGB",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/evidence/route_hanging.png",
+      "bytes": 1516251,
+      "sha256": "45906837c50ae75bd3213227a5a41e08a9a40d1128ddac46d1fabfddf91ef221",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 768,
+      "mode": "RGB",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/evidence/route_high.png",
+      "bytes": 1668758,
+      "sha256": "2e0a8bf891bb2001088e8602d2be7d18fcf0a477688f087a711fc52ad527a428",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 768,
+      "mode": "RGB",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/evidence/route_hill.png",
+      "bytes": 1667270,
+      "sha256": "e0000492dd18d4b416c6d98603a8f962be1f13f642ee4af43d97bfe8488c2e55",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 768,
+      "mode": "RGB",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/evidence/route_main.png",
+      "bytes": 1666543,
+      "sha256": "15fef231461d1ca0451205cc99b9113e3e50745564f92ec395d8716caf275fc4",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 768,
+      "mode": "RGB",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/evidence/route_return.png",
+      "bytes": 1605286,
+      "sha256": "96f29f7e7e0013633044613a7c3c9c7c5aaef1a67c297f5e788d683236fd95a2",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 768,
+      "mode": "RGB",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/evidence/ruler-s_ground_e.png",
+      "bytes": 69804,
+      "sha256": "8ca5f76c1abf9816544a1f94157dc2ff64c1adef3967dc2141adf790acaca21a",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 224,
+      "pixelHeight": 140,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/evidence/ruler-s_ground_w.png",
+      "bytes": 461101,
+      "sha256": "258e7a6401573c2a5b766afda245b801253304c46e6bec78fbe035d594e80794",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 1472,
+      "pixelHeight": 140,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/evidence/ruler-s_hanging_sword.png",
+      "bytes": 129451,
+      "sha256": "348fd8c5c3466fddfd0ef8877da3a8db35b9788a033ba51d1422d3cea7aff18c",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 416,
+      "pixelHeight": 140,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/evidence/ruler-s_high_sword.png",
+      "bytes": 83268,
+      "sha256": "57ccf1ec85db9c96382726b32821cef18523ee8bf562e9752ed83cc42b2ffa53",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 288,
+      "pixelHeight": 140,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/evidence/ruler-s_sword_hill.png",
+      "bytes": 175388,
+      "sha256": "52808fe9b582c24c7e8c96b83f248fe9797a603be9bd3ff82b00a951db5c40cf",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 544,
+      "pixelHeight": 140,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/evidence/six-dummy-contact-sheet.png",
+      "bytes": 377204,
+      "sha256": "e802bec07f8064252033dcfdaa0d3bfbd0f063aa2a238951d5b50ad88aaef1e5",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 900,
+      "pixelHeight": 480,
+      "mode": "RGB",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/evidence/standing-contact-sheet.png",
+      "bytes": 693262,
+      "sha256": "a6b0c847274df5c5b19c343ba6e5628a8b3c3f28a84757d73186cf5dc6539db7",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 800,
+      "pixelHeight": 615,
+      "mode": "RGB",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/evidence/standing-s_ground_e.png",
+      "bytes": 1667946,
+      "sha256": "aa8c215cc7dce7a74b0d3c57a98aee6d078cd01190ee5dc80f02492bf988ef71",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 768,
+      "mode": "RGB",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/evidence/standing-s_ground_w.png",
+      "bytes": 1607346,
+      "sha256": "a8070709245049dc0cd18a61aa70241a3e9369a67930ef98aa1f68176f508378",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 768,
+      "mode": "RGB",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/evidence/standing-s_hanging_sword.png",
+      "bytes": 1473620,
+      "sha256": "a6498dd68cfd9520088ae310072c44002ea067e92ee3391d9958dd5a3c8180c8",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 768,
+      "mode": "RGB",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/evidence/standing-s_high_sword.png",
+      "bytes": 1668568,
+      "sha256": "7a2c1911d2bbe904953649957e9e1bb4452b1fd82cc2e1765890c921914c6032",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 768,
+      "mode": "RGB",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/evidence/standing-s_sword_hill.png",
+      "bytes": 1636502,
+      "sha256": "5b1b869c82edbc1f62badeaebcd1c87f0a94de95d1f2ef8d8eecc9fedb70511d",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 1278,
+      "pixelHeight": 768,
+      "mode": "RGB",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/extracted-ruler.png",
+      "bytes": 1098484,
+      "sha256": "9ca2fca3180af08d8f692e083c1c336f4b03125996b22ff887396a0701b09b78",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 2240,
+      "pixelHeight": 768,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/final-browser-check.json",
+      "bytes": 3276,
+      "sha256": "d355c1552ec92a2bd46287449d9addb4aa735cd871c0817a105ca89fdba6452c",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/final-browser-resource-binding.json",
+      "bytes": 1233,
+      "sha256": "1a8ccc0a2d6c176c5900197b8d9a39317ed3f2fddc83fc5b6d30aaa0fb48afcf",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/final-data-check-first.json",
+      "bytes": 500,
+      "sha256": "83ba2d6cdd99a2211879ddd4ce3a29442a248af65ee4889f0acb417872287096",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/final-data-check.json",
+      "bytes": 475,
+      "sha256": "c1509484c77b17f0b1e29af08dedd9e8865ad395594dc6617047e49cb5c724ea",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/final-geometry-measurements.json",
+      "bytes": 7807,
+      "sha256": "f91cdbed305ea0d24ff39b9727d57c8ba32f5046658418bfca41151992eaf051",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/final-physics-check.json",
+      "bytes": 1777352,
+      "sha256": "b3af80d663f99a96a9f0fcabf741f18c7f39eff7c675d792fbf43805a7418259",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/final-routes.json",
+      "bytes": 1510,
+      "sha256": "251b60f62f83ca94153e2038893abb085bc27f00706bf20da7ab0372b7841779",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/final-transition-evidence.json",
+      "bytes": 12864,
+      "sha256": "c353d4a870a2ef19f9f75499ae9ff26d8030db41b7b0b7673c8af4e19bb7634a",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/final_audit.py",
+      "bytes": 8506,
+      "sha256": "960afacafe7971f9abc0472df18704448d7ecb119e0c39caf56afa69f1ee72f4",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/finalize_layers.py",
+      "bytes": 5573,
+      "sha256": "3c462582855b0b0968581d46703090a6d7d1a43c708828e461ee65962af44c2f",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/generated/background-stage5-native.png",
+      "bytes": 2660923,
+      "sha256": "8bc9b3f09ec85602f8084d326905146ef360dc65b115edd2da9ae12ec79dcad3",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 2141,
+      "pixelHeight": 734,
+      "mode": "RGB",
+      "role": "AI source or refined master; process only"
+    },
+    {
+      "path": "work/generated/block-east-stage4.png",
+      "bytes": 2757423,
+      "sha256": "173508f45fb7542c8d8d66fff2901f3fe1c3796c3db4009e7766db10badbdf29",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 1619,
+      "pixelHeight": 971,
+      "mode": "RGB",
+      "role": "AI source or refined master; process only"
+    },
+    {
+      "path": "work/generated/block-west-stage4.png",
+      "bytes": 2812000,
+      "sha256": "19d8f6b1de5b11d4b65757a2e1cc3f4a088a930af933acc6d148b44d0c256ad0",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 1619,
+      "pixelHeight": 971,
+      "mode": "RGB",
+      "role": "AI source or refined master; process only"
+    },
+    {
+      "path": "work/generated/master-stage3-repaired.png",
+      "bytes": 3019027,
+      "sha256": "169befd6fd3ff3c83a2c4d6c8f12235d0671be0e8db94be9e3d440aebf103e07",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 2141,
+      "pixelHeight": 734,
+      "mode": "RGB",
+      "role": "AI source or refined master; process only"
+    },
+    {
+      "path": "work/generated/master-stage3.png",
+      "bytes": 3146002,
+      "sha256": "b48002f3eb22d3a907cbc7bff4c903e13cb1a485988a050cd6c8728dfd781399",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 2141,
+      "pixelHeight": 734,
+      "mode": "RGB",
+      "role": "AI source or refined master; process only"
+    },
+    {
+      "path": "work/generated/master-stage4.png",
+      "bytes": 3140492,
+      "sha256": "dc8295164d06169f1c50f3a886d30dcffd86a6189634e5381790e0475a97c52f",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 2240,
+      "pixelHeight": 768,
+      "mode": "RGB",
+      "role": "AI source or refined master; process only"
+    },
+    {
+      "path": "work/generated/playable-stage5-native.png",
+      "bytes": 1177182,
+      "sha256": "c79be95eb6cbacdc3b5156b230304c0608b545f3e46b6c5f8c914fe6aee99c7e",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 2141,
+      "pixelHeight": 734,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "role": "AI source or refined master; process only"
+    },
+    {
+      "path": "work/graybox-routes.json",
+      "bytes": 1526,
+      "sha256": "bb4ba2ad5160c0a9c29fd920acf6576d3001b2a4a1a06ac553aca5bb80e0e9d8",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/high-source-ruler.png",
+      "bytes": 56440,
+      "sha256": "d7ba4f9516d7e1e6d1c3e236849980d75cba26b24a7eee57abafcd86f01a8a39",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 400,
+      "pixelHeight": 95,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/hill-source-ruler.png",
+      "bytes": 225752,
+      "sha256": "0ffce1a560a58b4bbd64b7c310d251e5749502c6274d4caf4e638e49c2efa0db",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 740,
+      "pixelHeight": 160,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/imagegen-provenance.json",
+      "bytes": 4104,
+      "sha256": "0ab8be22f0a108cf0447db79c5aabf204327906fff2bae6a7f773509eafe9efb",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/low-source-ruler.png",
+      "bytes": 73839,
+      "sha256": "3d6548876b1d0e477d154dabde50a4601cb532a2774c48e8544240b8b4227ed5",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 510,
+      "pixelHeight": 160,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/master-stage3-normalized.png",
+      "bytes": 3121096,
+      "sha256": "fb978975c8fa246e27f04e17214d030b0086f5ef44589ddf2f94b595743bc4ec",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 2240,
+      "pixelHeight": 768,
+      "mode": "RGB",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/master-stage3-registered.png",
+      "bytes": 3024516,
+      "sha256": "ff50d4657be9ad2146b51ae66b837d0e2ea996b6a5a5ce0b7c09b1217769cdfa",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 2240,
+      "pixelHeight": 768,
+      "mode": "RGB",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/playable-extracted-normalized.png",
+      "bytes": 1154198,
+      "sha256": "884461559d4a0bf37d05132868ccbbab3cffd7cd4d5f2d9c63d7c4aa5a28a292",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 2240,
+      "pixelHeight": 768,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/preview/engine.mjs",
+      "bytes": 13934,
+      "sha256": "f6fa9dfb1dd3bca339876d52c93d90e04cfb2885ece6482d2fb744886c770e25",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/preview/index.html",
+      "bytes": 3797,
+      "sha256": "4dcd7ef22a9e3f01d9a4f967b2862e0ddba499757d3b1718ebb9d02b2375a02d",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/preview/player-reference-idle.png",
+      "bytes": 10012,
+      "sha256": "520235d2f9c4c9e83b140ba439c2d18becfaa8e962fa15a98e35a14003ce0181",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 96,
+      "pixelHeight": 96,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/preview/preview.mjs",
+      "bytes": 13991,
+      "sha256": "ed44dcbe935b42717ba46abe3be717a093296eb8b6a5c0f3290c474a337c0629",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/prompts/stage3-master.txt",
+      "bytes": 3169,
+      "sha256": "81a3947ba9f1cfdf5f7edc8cf2e7e9f4003227d98b6f1ee1d7492580393dac26",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/prompts/stage3-structure-repair.txt",
+      "bytes": 2101,
+      "sha256": "191832f115e8cb99da51e0497bc59ad7b988c7252952009bc468b8bbbfb51b3d",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/prompts/stage4-east.txt",
+      "bytes": 1878,
+      "sha256": "787e57a8029669a0ad1c663247cebaaf9bfa65a3c8762dc9ea86853a974d76ed",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/prompts/stage4-west.txt",
+      "bytes": 1764,
+      "sha256": "73487a31e224fa2f6cc5a688bfc7e52ec9069936feba4b223bb3a8c61cc2fc7d",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/prompts/stage5-background.txt",
+      "bytes": 1135,
+      "sha256": "694f52c0905c153ca9d0f9e161a81f438267e71e064f25a3abd5c99968ccbda5",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/prompts/stage5-playable.txt",
+      "bytes": 1387,
+      "sha256": "ed20645bcfeaebd28c0c3ef375141cb6aea3f79509828f29b11977cefa43c6e4",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/protected-before.json",
+      "bytes": 568689,
+      "sha256": "4de61c78fd165a531467806d3e24ffb9428a65e3d7c8d69ffcd8a59a0c753070",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/protected-boundary-final.json",
+      "bytes": 658,
+      "sha256": "8df275f80dd2dbf263d7276b74ddea33f896f9c98a975593f4ace84663a6234a",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/render_diagnostics.py",
+      "bytes": 3701,
+      "sha256": "3dacc143f6001b585cad514eb94c5f85f70f73f2925d56914627b3b4ef1f4932",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/replays-final/route_full_tour.json",
+      "bytes": 569866,
+      "sha256": "0393da8542d25747989624c4001b0d385a49d36d1fc1f7f66397bfd1f61b9e6e",
+      "geometryRevision": "tomb-final-001",
+      "role": "continuous input replay evidence"
+    },
+    {
+      "path": "work/replays-final/route_ground.json",
+      "bytes": 78475,
+      "sha256": "d25f345819f748186ceddc7331246f21acb769decdf1e000bdfb605e06ad7f9c",
+      "geometryRevision": "tomb-final-001",
+      "role": "continuous input replay evidence"
+    },
+    {
+      "path": "work/replays-final/route_hanging.json",
+      "bytes": 132111,
+      "sha256": "8cc47a0f3f8da36e7b729db1bf75ebbaf1fc54395e8f7142871f04b73c82d9bf",
+      "geometryRevision": "tomb-final-001",
+      "role": "continuous input replay evidence"
+    },
+    {
+      "path": "work/replays-final/route_high.json",
+      "bytes": 215754,
+      "sha256": "43e4c4920df7fcce2bc543b774bdc930c1f43c3d6a9e07ef330a9973a6ea6be7",
+      "geometryRevision": "tomb-final-001",
+      "role": "continuous input replay evidence"
+    },
+    {
+      "path": "work/replays-final/route_hill.json",
+      "bytes": 176221,
+      "sha256": "cfc8632697aa178af3268bd001a2a7e28d5fcf39d8dd4452ce1232d33765c4ed",
+      "geometryRevision": "tomb-final-001",
+      "role": "continuous input replay evidence"
+    },
+    {
+      "path": "work/replays-final/route_main.json",
+      "bytes": 212562,
+      "sha256": "6bbf927d2e5140bf3095d061e9e91129752ea9cbc4c1f2ddaf0167f0ec2f0ee1",
+      "geometryRevision": "tomb-final-001",
+      "role": "continuous input replay evidence"
+    },
+    {
+      "path": "work/replays-final/route_return.json",
+      "bytes": 427913,
+      "sha256": "c7bf4f65a328c7159a6eb130f73d12ced63bac64e6c30d5de4a5ce73b41e8e67",
+      "geometryRevision": "tomb-final-001",
+      "role": "continuous input replay evidence"
+    },
+    {
+      "path": "work/replays-graybox/route_full_tour.json",
+      "bytes": 569870,
+      "sha256": "3472ed19e540da113eed4e35374440449b7bb8fe94bd4403ecbb14147cebc856",
+      "geometryRevision": "tomb-final-001",
+      "role": "continuous input replay evidence"
+    },
+    {
+      "path": "work/replays-graybox/route_ground.json",
+      "bytes": 78479,
+      "sha256": "e7816db4df9c403c74575d6b54abc53b902c10386918ff1617db4b7577ddbd55",
+      "geometryRevision": "tomb-final-001",
+      "role": "continuous input replay evidence"
+    },
+    {
+      "path": "work/replays-graybox/route_hanging.json",
+      "bytes": 132115,
+      "sha256": "476f339055759cc648ee397c451d933317757a31ce6f7ff18d024533bdc799d6",
+      "geometryRevision": "tomb-final-001",
+      "role": "continuous input replay evidence"
+    },
+    {
+      "path": "work/replays-graybox/route_high.json",
+      "bytes": 215758,
+      "sha256": "688e929bcc985593b9068fc2de5220984e00d804291938b97906fb2fb41209ed",
+      "geometryRevision": "tomb-final-001",
+      "role": "continuous input replay evidence"
+    },
+    {
+      "path": "work/replays-graybox/route_hill.json",
+      "bytes": 176225,
+      "sha256": "29a52fe39e2f55af1e7b7278c81b2cb8ff30a62ae110bda6e600736b0523f0ff",
+      "geometryRevision": "tomb-final-001",
+      "role": "continuous input replay evidence"
+    },
+    {
+      "path": "work/replays-graybox/route_main.json",
+      "bytes": 212566,
+      "sha256": "886841c209123320b1ce6ee4e9f8f5206d1ee2ca1a7aa8eed5c103d0b208eccc",
+      "geometryRevision": "tomb-final-001",
+      "role": "continuous input replay evidence"
+    },
+    {
+      "path": "work/replays-graybox/route_return.json",
+      "bytes": 427917,
+      "sha256": "a3cf3e28391aea3f2d61f254c75f27532b789e22f17810e62dd89512abf8710a",
+      "geometryRevision": "tomb-final-001",
+      "role": "continuous input replay evidence"
+    },
+    {
+      "path": "work/run_routes.mjs",
+      "bytes": 3584,
+      "sha256": "24c27369fb3d21b9478c85266eb136cef3f4969f71e24dd67aa5fec16c25e95b",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/scene-brief.md",
+      "bytes": 1648,
+      "sha256": "b382b98edbbc3a8c3ddc0d058e3f49ba07f16cdd5efe9acb8386d91c092b53d4",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/scene-data.draft.json",
+      "bytes": 15556,
+      "sha256": "7275d8e6fc6f2217608989d2aa6e365db873803584d18f9849ac2209efb3a3ae",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/slab-inspect.png",
+      "bytes": 51170,
+      "sha256": "53ffc8ebd6984c577fda367c64d2c76a6a776df4d7fad934de17a58cceac22f5",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 437,
+      "pixelHeight": 50,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/source-map.json",
+      "bytes": 43879,
+      "sha256": "cb03606ef421a0328f9aae88e561561ef3f3c363f3563256fc78bb29767d4dc8",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/stage2-graybox-report.md",
+      "bytes": 686,
+      "sha256": "d9c163f79e2d3fe69d2bba054c0f2745387e2c1308f624c1294e6868ddb9c91f",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/stage3-geometry-report.md",
+      "bytes": 652,
+      "sha256": "423885a4d952f63c46e1f37748317ad5f63bf9a2513835bef2331930dea2bb5d",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/stage3-placement-transform.json",
+      "bytes": 627,
+      "sha256": "52d8c56a4103303d586f5b2900e047671b2bdcdccfb812e6e119d1b0359c41cb",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/stage3-ruler.png",
+      "bytes": 3071686,
+      "sha256": "1079ad4c3420f770feaa42f57de7c9e1ca62557c47c555151b254077437e6caa",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 2240,
+      "pixelHeight": 768,
+      "mode": "RGB",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/stage4-blocks.json",
+      "bytes": 1243,
+      "sha256": "4d685057e28e1b039d165c80834ab67f3abf9cccbb45f274ee40bc0d3430ef25",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/stage4-detail-comparison.png",
+      "bytes": 836368,
+      "sha256": "df3584ef6a02f8fab2645fc9b2dfd01411620168f891f1d0d44c30ee61f312f1",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 1000,
+      "pixelHeight": 480,
+      "mode": "RGB",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/stage4-report.md",
+      "bytes": 473,
+      "sha256": "9017b329880de3dcd818e628ff65671c3dca9aafdcbf629c0b743dc058f2c439",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/stage5-placement-records.json",
+      "bytes": 10075,
+      "sha256": "4d710f6f28788851937155c3442d6827d000711120bbecdea9676ffa697107b2",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/stage5-report.md",
+      "bytes": 1017,
+      "sha256": "d99f0bf39a4f146e1257c7d356671fbf0eb6887b29963aad7c4eba508b41beb8",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/stage6-report.md",
+      "bytes": 509,
+      "sha256": "17cb436ad061c6c6a46dee84dc4ef971de6ec746dbc6562098f687fa4b0abd47",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/stage7-report.md",
+      "bytes": 594,
+      "sha256": "13fc19b762605cd971292b4a21e4c20d6ecf6fab4e230ee584e52eb59d0fd108",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/west-source-ruler.png",
+      "bytes": 149005,
+      "sha256": "057e47d6478d741d748fdec0e64fc3d5885938f89badaa03a7833437736fe478",
+      "geometryRevision": "tomb-final-001",
+      "pixelWidth": 390,
+      "pixelHeight": 240,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ],
+      "role": "data-document-evidence-or-local-runtime"
+    },
+    {
+      "path": "work/write_delivery.py",
+      "bytes": 16351,
+      "sha256": "eef3841fd8110acb0a8483b1f3f40313d8baae06ad12eccf3c69407539d18293",
+      "geometryRevision": "tomb-final-001",
+      "role": "data-document-evidence-or-local-runtime"
+    }
+  ],
+  "runtimeEntry": "index.html",
+  "localStart": "python3 -m http.server 8802 --bind 127.0.0.1",
+  "scope": "independent local AABB adapter at base movement100; no production Phaser/combat/portal/skill-award integration",
+  "validation": {
+    "routes": "7/7",
+    "transitions": "8/8",
+    "physics": "10/10",
+    "browser": "8/8 plus5 natural standing contacts",
+    "bodyFrames": 8421,
+    "bodyPenetrations": 0,
+    "teleports": 0,
+    "midRouteResets": 0,
+    "standingTolerancePx": 1,
+    "bottomContinuousRows": 64,
+    "report": "validation-report.md"
+  }
+}

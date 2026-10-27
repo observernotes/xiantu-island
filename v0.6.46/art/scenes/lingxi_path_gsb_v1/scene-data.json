@@ -1,0 +1,3446 @@
+{
+  "schemaVersion": "1.0",
+  "geometryRevision": "lingxi-final-001",
+  "status": "verified",
+  "space": {
+    "origin": "top-left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "units": "logical-pixel",
+    "logicalWidth": 3840,
+    "logicalHeight": 1024
+  },
+  "actor": {
+    "parameterRevision": "lingxi-base-feel-20261027-001",
+    "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; MapBuilder.ts; game/src/move.ts; SpriteArt.ts; game/public/art/sprites/player_sword_m.anims.json; balance/player_growth.json",
+    "sourceRevision": {
+      "game/src/config/feel.ts": "9375297a15b04012633197a935f4d9ffd403c3ff8d1e055cb585dd5f81acdeec",
+      "game/src/scenes/Player.ts": "ec9426ed625784532c6e632a1755bd16076cc3f559d177f465b741341193f513",
+      "game/src/scenes/MapBuilder.ts": "df5d1328f31de944550b693b8c6e2c27a1d6df08f2bdb8264385a832150e987c",
+      "game/src/scenes/GameScene.ts": "c976cebca518c33aea3b5d6a6f86d3d678845cfffad236db485104db482d3bfd",
+      "game/src/main.ts": "c882932569a2040c23c6f131ea741f34e3820e9ea721410a5ff6e859d00b6f9d",
+      "game/src/move.ts": "585c9987623cbe532d7f65508773addd52ccd2f312e5c2ee592e9e6f2f686a74",
+      "game/src/SpriteArt.ts": "6c1fcb4fe67857c7fc3d569a2151f4b1a7cdd914e69be6d12d53b54b288b6f18",
+      "game/src/PlayerInput.ts": "5621449dc667aedb17034e10f42d2f34425c9ef1d45f21112de6be1a1139a04e",
+      "game/public/art/sprites/player_sword_m.anims.json": "50ee41e30ca903b95db22b9290a49ac2220d243ca37dba3876fdec784271df92",
+      "balance/player_growth.json": "04cf448040bff27b2c578d4ec9e1c0babde07afdf14d4b91d5f56ba6f403604e",
+      "maps/lingxi_path.json": "fbb102cef751fe1c3603a8687c9900d7f8601dd680638a4fc1fcfd9570f5602b",
+      "balance/tools/gen_fields.py": "5062bb2f846101c7541e9d31c3ef577a4a9177e55869687ecfc192104decf16f"
+    },
+    "provisional": false,
+    "visualBounds": {
+      "width": 96,
+      "height": 96,
+      "idleAlphaBounds": [
+        15,
+        9,
+        76,
+        96
+      ],
+      "idleVisibleWidth": 61,
+      "idleVisibleHeight": 87,
+      "anchor": "feet-center"
+    },
+    "collider": {
+      "shape": "aabb",
+      "width": 26,
+      "height": 58,
+      "anchor": "feet-center"
+    },
+    "abilities": [
+      "walk",
+      "jump",
+      "double-jump",
+      "ladder",
+      "rope",
+      "drop-through"
+    ],
+    "movement": {
+      "gravity": 2000,
+      "maxFallSpeed": 670,
+      "walkSpeed": 130,
+      "groundAccel": 2400,
+      "groundDecel": 3000,
+      "airAccel": 700,
+      "airMaxSpeed": 130,
+      "jumpSpeed": 560,
+      "coyoteMs": 60,
+      "jumpBufferMs": 80,
+      "doubleJumpVy": 480,
+      "doubleJumpVx": 330,
+      "climbSpeed": 110,
+      "ropeGrabRangeX": 18,
+      "ropeJumpVx": 160,
+      "ropeJumpVy": 360,
+      "ropeRegrabMs": 250,
+      "dropThroughMs": 220,
+      "oneWayEdge": 8,
+      "fixedHz": 60,
+      "speedPoints": 100,
+      "jumpPoints": 100
+    },
+    "failureRules": {
+      "hazards": "no static damage zones; combat is outside local scene tester",
+      "fall": "land on continuous ground",
+      "reset": "R returns to start_spawn and clears motion/input"
+    },
+    "visualAsset": {
+      "path": "work/preview/player-reference-idle.png",
+      "width": 96,
+      "height": 96,
+      "anchor": "feet-center"
+    }
+  },
+  "assets": [
+    {
+      "id": "asset_background",
+      "role": "background",
+      "path": "background.png",
+      "pixelWidth": 3840,
+      "pixelHeight": 1024,
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "asset_playable",
+      "role": "playable",
+      "path": "playable.png",
+      "pixelWidth": 3840,
+      "pixelHeight": 1024,
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "s_g0",
+      "name": "山脚",
+      "polyline": [
+        [
+          0,
+          960
+        ],
+        [
+          960,
+          960
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        13,
+        947
+      ],
+      "walkRegion": [
+        [
+          13,
+          902
+        ],
+        [
+          947,
+          902
+        ],
+        [
+          947,
+          960
+        ],
+        [
+          13,
+          960
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 960,
+        "tolerance": 2,
+        "surfaceKind": "stone or board bearing top, excluding moss, rope knots and ornaments"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "natural normal-spawn replay prefix: complete body stable on this standable surface",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified",
+          "objectId": "s_g0",
+          "contact": {
+            "surfaceId": "s_g0",
+            "frame": 159,
+            "x": 465.33333333333456,
+            "feet": 960,
+            "dataY": 960,
+            "error": 0
+          }
+        },
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "final bearing-top raster and material review; tolerance 2 logical pixels",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified",
+          "objectId": "s_g0"
+        }
+      ]
+    },
+    {
+      "id": "s_g1",
+      "name": "石阶西",
+      "polyline": [
+        [
+          960,
+          896
+        ],
+        [
+          1440,
+          896
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        973,
+        1427
+      ],
+      "walkRegion": [
+        [
+          973,
+          838
+        ],
+        [
+          1427,
+          838
+        ],
+        [
+          1427,
+          896
+        ],
+        [
+          973,
+          896
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 896,
+        "tolerance": 2,
+        "surfaceKind": "stone or board bearing top, excluding moss, rope knots and ornaments"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "natural normal-spawn replay prefix: complete body stable on this standable surface",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified",
+          "objectId": "s_g1",
+          "contact": {
+            "surfaceId": "s_g1",
+            "frame": 628,
+            "x": 976.8333333333331,
+            "feet": 896,
+            "dataY": 896,
+            "error": 0
+          }
+        },
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "final bearing-top raster and material review; tolerance 2 logical pixels",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified",
+          "objectId": "s_g1"
+        }
+      ]
+    },
+    {
+      "id": "s_g2",
+      "name": "石阶东",
+      "polyline": [
+        [
+          1440,
+          832
+        ],
+        [
+          1920,
+          832
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        1453,
+        1907
+      ],
+      "walkRegion": [
+        [
+          1453,
+          774
+        ],
+        [
+          1907,
+          774
+        ],
+        [
+          1907,
+          832
+        ],
+        [
+          1453,
+          832
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 832,
+        "tolerance": 2,
+        "surfaceKind": "stone or board bearing top, excluding moss, rope knots and ornaments"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "natural normal-spawn replay prefix: complete body stable on this standable surface",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified",
+          "objectId": "s_g2",
+          "contact": {
+            "surfaceId": "s_g2",
+            "frame": 1097,
+            "x": 1456.8333333333337,
+            "feet": 832,
+            "dataY": 832,
+            "error": 0
+          }
+        },
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "final bearing-top raster and material review; tolerance 2 logical pixels",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified",
+          "objectId": "s_g2"
+        }
+      ]
+    },
+    {
+      "id": "s_g3",
+      "name": "山魈岭至首领场",
+      "polyline": [
+        [
+          1920,
+          768
+        ],
+        [
+          3840,
+          768
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        1933,
+        3827
+      ],
+      "walkRegion": [
+        [
+          1933,
+          710
+        ],
+        [
+          3827,
+          710
+        ],
+        [
+          3827,
+          768
+        ],
+        [
+          1933,
+          768
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 768,
+        "tolerance": 2,
+        "surfaceKind": "stone or board bearing top, excluding moss, rope knots and ornaments"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "natural normal-spawn replay prefix: complete body stable on this standable surface",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified",
+          "objectId": "s_g3",
+          "contact": {
+            "surfaceId": "s_g3",
+            "frame": 2035,
+            "x": 1936.8333333333337,
+            "feet": 768,
+            "dataY": 768,
+            "error": 0
+          }
+        },
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "final bearing-top raster and material review; tolerance 2 logical pixels",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified",
+          "objectId": "s_g3"
+        }
+      ]
+    },
+    {
+      "id": "s_p0",
+      "name": "山脚溪石台",
+      "polyline": [
+        [
+          256,
+          832
+        ],
+        [
+          672,
+          832
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        269,
+        659
+      ],
+      "walkRegion": [
+        [
+          269,
+          774
+        ],
+        [
+          659,
+          774
+        ],
+        [
+          659,
+          832
+        ],
+        [
+          269,
+          832
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 832,
+        "tolerance": 2,
+        "surfaceKind": "stone or board bearing top, excluding moss, rope knots and ornaments"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "natural normal-spawn replay prefix: complete body stable on this standable surface",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified",
+          "objectId": "s_p0",
+          "contact": {
+            "surfaceId": "s_p0",
+            "frame": 250,
+            "x": 464,
+            "feet": 832,
+            "dataY": 832,
+            "error": 0
+          }
+        },
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "final bearing-top raster and material review; tolerance 2 logical pixels",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified",
+          "objectId": "s_p0"
+        }
+      ]
+    },
+    {
+      "id": "s_p1",
+      "name": "石阶台",
+      "polyline": [
+        [
+          1024,
+          768
+        ],
+        [
+          1376,
+          768
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        1037,
+        1363
+      ],
+      "walkRegion": [
+        [
+          1037,
+          710
+        ],
+        [
+          1363,
+          710
+        ],
+        [
+          1363,
+          768
+        ],
+        [
+          1037,
+          768
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 768,
+        "tolerance": 2,
+        "surfaceKind": "stone or board bearing top, excluding moss, rope knots and ornaments"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "natural normal-spawn replay prefix: complete body stable on this standable surface",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified",
+          "objectId": "s_p1",
+          "contact": {
+            "surfaceId": "s_p1",
+            "frame": 823,
+            "x": 1168,
+            "feet": 768,
+            "dataY": 768,
+            "error": 0
+          }
+        },
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "final bearing-top raster and material review; tolerance 2 logical pixels",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified",
+          "objectId": "s_p1"
+        }
+      ]
+    },
+    {
+      "id": "s_p2",
+      "name": "山魈岭西一层",
+      "polyline": [
+        [
+          1600,
+          640
+        ],
+        [
+          2080,
+          640
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        1613,
+        2067
+      ],
+      "walkRegion": [
+        [
+          1613,
+          582
+        ],
+        [
+          2067,
+          582
+        ],
+        [
+          2067,
+          640
+        ],
+        [
+          1613,
+          640
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 640,
+        "tolerance": 2,
+        "surfaceKind": "stone or board bearing top, excluding moss, rope knots and ornaments"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "natural normal-spawn replay prefix: complete body stable on this standable surface",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified",
+          "objectId": "s_p2",
+          "contact": {
+            "surfaceId": "s_p2",
+            "frame": 1401,
+            "x": 1808,
+            "feet": 640,
+            "dataY": 640,
+            "error": 0
+          }
+        },
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "final bearing-top raster and material review; tolerance 2 logical pixels",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified",
+          "objectId": "s_p2"
+        }
+      ]
+    },
+    {
+      "id": "s_p3",
+      "name": "山魈岭东一层",
+      "polyline": [
+        [
+          2176,
+          640
+        ],
+        [
+          2656,
+          640
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        2189,
+        2643
+      ],
+      "walkRegion": [
+        [
+          2189,
+          582
+        ],
+        [
+          2643,
+          582
+        ],
+        [
+          2643,
+          640
+        ],
+        [
+          2189,
+          640
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 640,
+        "tolerance": 2,
+        "surfaceKind": "stone or board bearing top, excluding moss, rope knots and ornaments"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "natural normal-spawn replay prefix: complete body stable on this standable surface",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified",
+          "objectId": "s_p3",
+          "contact": {
+            "surfaceId": "s_p3",
+            "frame": 2348,
+            "x": 2384,
+            "feet": 640,
+            "dataY": 640,
+            "error": 0
+          }
+        },
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "final bearing-top raster and material review; tolerance 2 logical pixels",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified",
+          "objectId": "s_p3"
+        }
+      ]
+    },
+    {
+      "id": "s_p4",
+      "name": "山魈岭西二层",
+      "polyline": [
+        [
+          1856,
+          512
+        ],
+        [
+          2336,
+          512
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        1869,
+        2323
+      ],
+      "walkRegion": [
+        [
+          1869,
+          454
+        ],
+        [
+          2323,
+          454
+        ],
+        [
+          2323,
+          512
+        ],
+        [
+          1869,
+          512
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 512,
+        "tolerance": 2,
+        "surfaceKind": "stone or board bearing top, excluding moss, rope knots and ornaments"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "natural normal-spawn replay prefix: complete body stable on this standable surface",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified",
+          "objectId": "s_p4",
+          "contact": {
+            "surfaceId": "s_p4",
+            "frame": 1604,
+            "x": 2000,
+            "feet": 512,
+            "dataY": 512,
+            "error": 0
+          }
+        },
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "final bearing-top raster and material review; tolerance 2 logical pixels",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified",
+          "objectId": "s_p4"
+        }
+      ]
+    },
+    {
+      "id": "s_p5",
+      "name": "山魈岭东三层",
+      "polyline": [
+        [
+          2432,
+          480
+        ],
+        [
+          2784,
+          480
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        2445,
+        2771
+      ],
+      "walkRegion": [
+        [
+          2445,
+          422
+        ],
+        [
+          2771,
+          422
+        ],
+        [
+          2771,
+          480
+        ],
+        [
+          2445,
+          480
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 480,
+        "tolerance": 2,
+        "surfaceKind": "stone or board bearing top, excluding moss, rope knots and ornaments"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "natural normal-spawn replay prefix: complete body stable on this standable surface",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified",
+          "objectId": "s_p5",
+          "contact": {
+            "surfaceId": "s_p5",
+            "frame": 2568,
+            "x": 2576,
+            "feet": 480,
+            "dataY": 480,
+            "error": 0
+          }
+        },
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "final bearing-top raster and material review; tolerance 2 logical pixels",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified",
+          "objectId": "s_p5"
+        }
+      ]
+    },
+    {
+      "id": "s_p6",
+      "name": "妖狐西躲避板",
+      "polyline": [
+        [
+          3072,
+          672
+        ],
+        [
+          3264,
+          672
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        3085,
+        3251
+      ],
+      "walkRegion": [
+        [
+          3085,
+          614
+        ],
+        [
+          3251,
+          614
+        ],
+        [
+          3251,
+          672
+        ],
+        [
+          3085,
+          672
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 672,
+        "tolerance": 2,
+        "surfaceKind": "stone or board bearing top, excluding moss, rope knots and ornaments"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "natural normal-spawn replay prefix: complete body stable on this standable surface",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified",
+          "objectId": "s_p6",
+          "contact": {
+            "surfaceId": "s_p6",
+            "frame": 3336,
+            "x": 3152,
+            "feet": 672,
+            "dataY": 672,
+            "error": 0
+          }
+        },
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "final bearing-top raster and material review; tolerance 2 logical pixels",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified",
+          "objectId": "s_p6"
+        }
+      ]
+    },
+    {
+      "id": "s_p7",
+      "name": "妖狐东躲避板",
+      "polyline": [
+        [
+          3456,
+          672
+        ],
+        [
+          3648,
+          672
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        3469,
+        3635
+      ],
+      "walkRegion": [
+        [
+          3469,
+          614
+        ],
+        [
+          3635,
+          614
+        ],
+        [
+          3635,
+          672
+        ],
+        [
+          3469,
+          672
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 672,
+        "tolerance": 2,
+        "surfaceKind": "stone or board bearing top, excluding moss, rope knots and ornaments"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "natural normal-spawn replay prefix: complete body stable on this standable surface",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified",
+          "objectId": "s_p7",
+          "contact": {
+            "surfaceId": "s_p7",
+            "frame": 3711,
+            "x": 3568,
+            "feet": 672,
+            "dataY": 672,
+            "error": 0
+          }
+        },
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "final bearing-top raster and material review; tolerance 2 logical pixels",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified",
+          "objectId": "s_p7"
+        }
+      ]
+    }
+  ],
+  "climbs": [
+    {
+      "id": "c_rope_14",
+      "kind": "rope",
+      "sourceObject": "rope_14",
+      "corridor": [
+        [
+          446,
+          832
+        ],
+        [
+          482,
+          832
+        ],
+        [
+          482,
+          960
+        ],
+        [
+          446,
+          960
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            464,
+            960
+          ],
+          "surface": "s_g0"
+        },
+        "end": {
+          "position": [
+            464,
+            832
+          ],
+          "surface": "s_p0"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "extend original rope bottom by 32px to actual lower bearing surface",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "normal-spawn approach, enter, climb to top, leave, reenter, descend to lower surface and leave",
+          "path": "work/replays-final/route_rope_14.json",
+          "result": "verified",
+          "objectId": "c_rope_14",
+          "routeId": "route_rope_14"
+        },
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "both endpoint heights equal associated standable surface, source correction recorded",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified",
+          "objectId": "c_rope_14",
+          "endpointErrorPx": 0
+        }
+      ]
+    },
+    {
+      "id": "c_rope_36",
+      "kind": "rope",
+      "sourceObject": "rope_36",
+      "corridor": [
+        [
+          1150,
+          768
+        ],
+        [
+          1186,
+          768
+        ],
+        [
+          1186,
+          896
+        ],
+        [
+          1150,
+          896
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1168,
+            896
+          ],
+          "surface": "s_g1"
+        },
+        "end": {
+          "position": [
+            1168,
+            768
+          ],
+          "surface": "s_p1"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "extend original rope bottom by 32px to actual lower bearing surface",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "normal-spawn approach, enter, climb to top, leave, reenter, descend to lower surface and leave",
+          "path": "work/replays-final/route_rope_36.json",
+          "result": "verified",
+          "objectId": "c_rope_36",
+          "routeId": "route_rope_36"
+        },
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "both endpoint heights equal associated standable surface, source correction recorded",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified",
+          "objectId": "c_rope_36",
+          "endpointErrorPx": 0
+        }
+      ]
+    },
+    {
+      "id": "c_rope_56",
+      "kind": "rope",
+      "sourceObject": "rope_56",
+      "corridor": [
+        [
+          1790,
+          640
+        ],
+        [
+          1826,
+          640
+        ],
+        [
+          1826,
+          832
+        ],
+        [
+          1790,
+          832
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1808,
+            832
+          ],
+          "surface": "s_g2"
+        },
+        "end": {
+          "position": [
+            1808,
+            640
+          ],
+          "surface": "s_p2"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "extend original rope bottom by 32px to actual lower bearing surface",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "normal-spawn approach, enter, climb to top, leave, reenter, descend to lower surface and leave",
+          "path": "work/replays-final/route_rope_56.json",
+          "result": "verified",
+          "objectId": "c_rope_56",
+          "routeId": "route_rope_56"
+        },
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "both endpoint heights equal associated standable surface, source correction recorded",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified",
+          "objectId": "c_rope_56",
+          "endpointErrorPx": 0
+        }
+      ]
+    },
+    {
+      "id": "c_rope_74",
+      "kind": "rope",
+      "sourceObject": "rope_74",
+      "corridor": [
+        [
+          2366,
+          640
+        ],
+        [
+          2402,
+          640
+        ],
+        [
+          2402,
+          768
+        ],
+        [
+          2366,
+          768
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            2384,
+            768
+          ],
+          "surface": "s_g3"
+        },
+        "end": {
+          "position": [
+            2384,
+            640
+          ],
+          "surface": "s_p3"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "extend original rope bottom by 32px to actual lower bearing surface",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "normal-spawn approach, enter, climb to top, leave, reenter, descend to lower surface and leave",
+          "path": "work/replays-final/route_rope_74.json",
+          "result": "verified",
+          "objectId": "c_rope_74",
+          "routeId": "route_rope_74"
+        },
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "both endpoint heights equal associated standable surface, source correction recorded",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified",
+          "objectId": "c_rope_74",
+          "endpointErrorPx": 0
+        }
+      ]
+    },
+    {
+      "id": "c_rope_62",
+      "kind": "rope",
+      "sourceObject": "rope_62",
+      "corridor": [
+        [
+          1982,
+          512
+        ],
+        [
+          2018,
+          512
+        ],
+        [
+          2018,
+          640
+        ],
+        [
+          1982,
+          640
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            2000,
+            640
+          ],
+          "surface": "s_p2"
+        },
+        "end": {
+          "position": [
+            2000,
+            512
+          ],
+          "surface": "s_p4"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "extend original rope bottom by 32px to actual lower bearing surface",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "normal-spawn approach, enter, climb to top, leave, reenter, descend to lower surface and leave",
+          "path": "work/replays-final/route_rope_62.json",
+          "result": "verified",
+          "objectId": "c_rope_62",
+          "routeId": "route_rope_62"
+        },
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "both endpoint heights equal associated standable surface, source correction recorded",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified",
+          "objectId": "c_rope_62",
+          "endpointErrorPx": 0
+        }
+      ]
+    },
+    {
+      "id": "c_rope_80",
+      "kind": "rope",
+      "sourceObject": "rope_80",
+      "corridor": [
+        [
+          2558,
+          480
+        ],
+        [
+          2594,
+          480
+        ],
+        [
+          2594,
+          640
+        ],
+        [
+          2558,
+          640
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            2576,
+            640
+          ],
+          "surface": "s_p3"
+        },
+        "end": {
+          "position": [
+            2576,
+            480
+          ],
+          "surface": "s_p5"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "extend original rope bottom by 32px to actual lower bearing surface",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "normal-spawn approach, enter, climb to top, leave, reenter, descend to lower surface and leave",
+          "path": "work/replays-final/route_rope_80.json",
+          "result": "verified",
+          "objectId": "c_rope_80",
+          "routeId": "route_rope_80"
+        },
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "both endpoint heights equal associated standable surface, source correction recorded",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified",
+          "objectId": "c_rope_80",
+          "endpointErrorPx": 0
+        }
+      ]
+    },
+    {
+      "id": "c_rope_98",
+      "kind": "rope",
+      "sourceObject": "rope_98",
+      "corridor": [
+        [
+          3134,
+          672
+        ],
+        [
+          3170,
+          672
+        ],
+        [
+          3170,
+          768
+        ],
+        [
+          3134,
+          768
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            3152,
+            768
+          ],
+          "surface": "s_g3"
+        },
+        "end": {
+          "position": [
+            3152,
+            672
+          ],
+          "surface": "s_p6"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "extend original rope bottom by 32px to actual lower bearing surface",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "normal-spawn approach, enter, climb to top, leave, reenter, descend to lower surface and leave",
+          "path": "work/replays-final/route_rope_98.json",
+          "result": "verified",
+          "objectId": "c_rope_98",
+          "routeId": "route_rope_98"
+        },
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "both endpoint heights equal associated standable surface, source correction recorded",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified",
+          "objectId": "c_rope_98",
+          "endpointErrorPx": 0
+        }
+      ]
+    },
+    {
+      "id": "c_rope_111",
+      "kind": "rope",
+      "sourceObject": "rope_111",
+      "corridor": [
+        [
+          3550,
+          672
+        ],
+        [
+          3586,
+          672
+        ],
+        [
+          3586,
+          768
+        ],
+        [
+          3550,
+          768
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            3568,
+            768
+          ],
+          "surface": "s_g3"
+        },
+        "end": {
+          "position": [
+            3568,
+            672
+          ],
+          "surface": "s_p7"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "extend original rope bottom by 32px to actual lower bearing surface",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "normal-spawn approach, enter, climb to top, leave, reenter, descend to lower surface and leave",
+          "path": "work/replays-final/route_rope_111.json",
+          "result": "verified",
+          "objectId": "c_rope_111",
+          "routeId": "route_rope_111"
+        },
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "both endpoint heights equal associated standable surface, source correction recorded",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified",
+          "objectId": "c_rope_111",
+          "endpointErrorPx": 0
+        }
+      ]
+    }
+  ],
+  "stairs": [],
+  "solids": [
+    {
+      "id": "solid_g0",
+      "polygon": [
+        [
+          0,
+          960
+        ],
+        [
+          960,
+          960
+        ],
+        [
+          960,
+          1024
+        ],
+        [
+          0,
+          1024
+        ]
+      ],
+      "surface": "s_g0",
+      "type": "ground",
+      "openings": [],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "rectangle volume/standable-boundary agreement; normal-spawn full-body sidewall, landing, and reset regression",
+          "path": "work/final-physics-smoke-results.json",
+          "result": "verified",
+          "objectId": "solid_g0",
+          "checks": [
+            "solid-sidewall-full-body-and-down-jump",
+            "all-three-step-sidewalls-from-normal-approach",
+            "main-three-ordinary-jumps-no-extra-ability"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "solid_g1",
+      "polygon": [
+        [
+          960,
+          896
+        ],
+        [
+          1440,
+          896
+        ],
+        [
+          1440,
+          1024
+        ],
+        [
+          960,
+          1024
+        ]
+      ],
+      "surface": "s_g1",
+      "type": "ground",
+      "openings": [],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "rectangle volume/standable-boundary agreement; normal-spawn full-body sidewall, landing, and reset regression",
+          "path": "work/final-physics-smoke-results.json",
+          "result": "verified",
+          "objectId": "solid_g1",
+          "checks": [
+            "solid-sidewall-full-body-and-down-jump",
+            "all-three-step-sidewalls-from-normal-approach",
+            "main-three-ordinary-jumps-no-extra-ability"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "solid_g2",
+      "polygon": [
+        [
+          1440,
+          832
+        ],
+        [
+          1920,
+          832
+        ],
+        [
+          1920,
+          1024
+        ],
+        [
+          1440,
+          1024
+        ]
+      ],
+      "surface": "s_g2",
+      "type": "ground",
+      "openings": [],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "rectangle volume/standable-boundary agreement; normal-spawn full-body sidewall, landing, and reset regression",
+          "path": "work/final-physics-smoke-results.json",
+          "result": "verified",
+          "objectId": "solid_g2",
+          "checks": [
+            "solid-sidewall-full-body-and-down-jump",
+            "all-three-step-sidewalls-from-normal-approach",
+            "main-three-ordinary-jumps-no-extra-ability"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "solid_g3",
+      "polygon": [
+        [
+          1920,
+          768
+        ],
+        [
+          3840,
+          768
+        ],
+        [
+          3840,
+          1024
+        ],
+        [
+          1920,
+          1024
+        ]
+      ],
+      "surface": "s_g3",
+      "type": "ground",
+      "openings": [],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "rectangle volume/standable-boundary agreement; normal-spawn full-body sidewall, landing, and reset regression",
+          "path": "work/final-physics-smoke-results.json",
+          "result": "verified",
+          "objectId": "solid_g3",
+          "checks": [
+            "solid-sidewall-full-body-and-down-jump",
+            "all-three-step-sidewalls-from-normal-approach",
+            "main-three-ordinary-jumps-no-extra-ability"
+          ]
+        }
+      ]
+    }
+  ],
+  "hazards": [],
+  "points": [
+    {
+      "id": "start_spawn",
+      "type": "spawn",
+      "sourceId": 9,
+      "position": [
+        128,
+        960
+      ],
+      "surface": "s_g0",
+      "width": 0,
+      "properties": {},
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "source coordinate/property preservation and supported placement only; interaction/combat behavior outside tester",
+          "path": "work/source-semantics-audit.json",
+          "result": "verified",
+          "objectId": "start_spawn",
+          "scope": "layout anchor"
+        }
+      ]
+    },
+    {
+      "id": "portal_to_bamboo",
+      "type": "portal",
+      "sourceId": 10,
+      "position": [
+        80,
+        960
+      ],
+      "surface": "s_g0",
+      "width": 0,
+      "properties": {
+        "target": "bamboo_forest",
+        "targetPortal": "portal_to_lingxi"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "source coordinate/property preservation and supported placement only; interaction/combat behavior outside tester",
+          "path": "work/source-semantics-audit.json",
+          "result": "verified",
+          "objectId": "portal_to_bamboo",
+          "scope": "layout anchor"
+        }
+      ]
+    },
+    {
+      "id": "portal_to_village",
+      "type": "portal",
+      "sourceId": 11,
+      "position": [
+        3760,
+        768
+      ],
+      "surface": "s_g3",
+      "width": 0,
+      "properties": {
+        "target": "qingyun_village",
+        "targetPortal": "portal_to_bamboo"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "source coordinate/property preservation and supported placement only; interaction/combat behavior outside tester",
+          "path": "work/source-semantics-audit.json",
+          "result": "verified",
+          "objectId": "portal_to_village",
+          "scope": "layout anchor"
+        }
+      ]
+    },
+    {
+      "id": "spawn_bamboo_snake_12",
+      "type": "monster-spawn",
+      "sourceId": 12,
+      "position": [
+        128,
+        960
+      ],
+      "surface": "s_g0",
+      "width": 800,
+      "properties": {
+        "monster": "bamboo_snake",
+        "count": 3
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "source coordinate/property preservation and supported placement only; interaction/combat behavior outside tester",
+          "path": "work/source-semantics-audit.json",
+          "result": "verified",
+          "objectId": "spawn_bamboo_snake_12",
+          "scope": "layout anchor"
+        }
+      ]
+    },
+    {
+      "id": "spawn_bamboo_snake_13",
+      "type": "monster-spawn",
+      "sourceId": 13,
+      "position": [
+        256,
+        832
+      ],
+      "surface": "s_p0",
+      "width": 416,
+      "properties": {
+        "monster": "bamboo_snake",
+        "count": 1
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "source coordinate/property preservation and supported placement only; interaction/combat behavior outside tester",
+          "path": "work/source-semantics-audit.json",
+          "result": "verified",
+          "objectId": "spawn_bamboo_snake_13",
+          "scope": "layout anchor"
+        }
+      ]
+    },
+    {
+      "id": "spawn_bamboo_snake_14",
+      "type": "monster-spawn",
+      "sourceId": 14,
+      "position": [
+        960,
+        896
+      ],
+      "surface": "s_g1",
+      "width": 480,
+      "properties": {
+        "monster": "bamboo_snake",
+        "count": 2
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "source coordinate/property preservation and supported placement only; interaction/combat behavior outside tester",
+          "path": "work/source-semantics-audit.json",
+          "result": "verified",
+          "objectId": "spawn_bamboo_snake_14",
+          "scope": "layout anchor"
+        }
+      ]
+    },
+    {
+      "id": "spawn_mountain_mandrill_15",
+      "type": "monster-spawn",
+      "sourceId": 15,
+      "position": [
+        1440,
+        832
+      ],
+      "surface": "s_g2",
+      "width": 480,
+      "properties": {
+        "monster": "mountain_mandrill",
+        "count": 2
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "source coordinate/property preservation and supported placement only; interaction/combat behavior outside tester",
+          "path": "work/source-semantics-audit.json",
+          "result": "verified",
+          "objectId": "spawn_mountain_mandrill_15",
+          "scope": "layout anchor"
+        }
+      ]
+    },
+    {
+      "id": "spawn_mountain_mandrill_16",
+      "type": "monster-spawn",
+      "sourceId": 16,
+      "position": [
+        1920,
+        768
+      ],
+      "surface": "s_g3",
+      "width": 864,
+      "properties": {
+        "monster": "mountain_mandrill",
+        "count": 3
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "source coordinate/property preservation and supported placement only; interaction/combat behavior outside tester",
+          "path": "work/source-semantics-audit.json",
+          "result": "verified",
+          "objectId": "spawn_mountain_mandrill_16",
+          "scope": "layout anchor"
+        }
+      ]
+    },
+    {
+      "id": "spawn_mountain_mandrill_17",
+      "type": "monster-spawn",
+      "sourceId": 17,
+      "position": [
+        1600,
+        640
+      ],
+      "surface": "s_p2",
+      "width": 480,
+      "properties": {
+        "monster": "mountain_mandrill",
+        "count": 1
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "source coordinate/property preservation and supported placement only; interaction/combat behavior outside tester",
+          "path": "work/source-semantics-audit.json",
+          "result": "verified",
+          "objectId": "spawn_mountain_mandrill_17",
+          "scope": "layout anchor"
+        }
+      ]
+    },
+    {
+      "id": "spawn_mountain_mandrill_18",
+      "type": "monster-spawn",
+      "sourceId": 18,
+      "position": [
+        2176,
+        640
+      ],
+      "surface": "s_p3",
+      "width": 480,
+      "properties": {
+        "monster": "mountain_mandrill",
+        "count": 2
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "source coordinate/property preservation and supported placement only; interaction/combat behavior outside tester",
+          "path": "work/source-semantics-audit.json",
+          "result": "verified",
+          "objectId": "spawn_mountain_mandrill_18",
+          "scope": "layout anchor"
+        }
+      ]
+    },
+    {
+      "id": "spawn_mountain_mandrill_19",
+      "type": "monster-spawn",
+      "sourceId": 19,
+      "position": [
+        1856,
+        512
+      ],
+      "surface": "s_p4",
+      "width": 480,
+      "properties": {
+        "monster": "mountain_mandrill",
+        "count": 1
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "source coordinate/property preservation and supported placement only; interaction/combat behavior outside tester",
+          "path": "work/source-semantics-audit.json",
+          "result": "verified",
+          "objectId": "spawn_mountain_mandrill_19",
+          "scope": "layout anchor"
+        }
+      ]
+    },
+    {
+      "id": "spawn_mountain_mandrill_20",
+      "type": "monster-spawn",
+      "sourceId": 20,
+      "position": [
+        2432,
+        480
+      ],
+      "surface": "s_p5",
+      "width": 352,
+      "properties": {
+        "monster": "mountain_mandrill",
+        "count": 1
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "source coordinate/property preservation and supported placement only; interaction/combat behavior outside tester",
+          "path": "work/source-semantics-audit.json",
+          "result": "verified",
+          "objectId": "spawn_mountain_mandrill_20",
+          "scope": "layout anchor"
+        }
+      ]
+    },
+    {
+      "id": "spawn_demon_fox_21",
+      "type": "monster-spawn",
+      "sourceId": 21,
+      "position": [
+        3200,
+        768
+      ],
+      "surface": "s_g3",
+      "width": 352,
+      "properties": {
+        "monster": "demon_fox",
+        "count": 1
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "source coordinate/property preservation and supported placement only; interaction/combat behavior outside tester",
+          "path": "work/source-semantics-audit.json",
+          "result": "verified",
+          "objectId": "spawn_demon_fox_21",
+          "scope": "layout anchor"
+        }
+      ]
+    },
+    {
+      "id": "gather_cold_heart_lotus_23",
+      "type": "gather",
+      "sourceId": 23,
+      "position": [
+        656,
+        960
+      ],
+      "surface": "s_g0",
+      "width": 0,
+      "properties": {
+        "item": "cold_heart_lotus",
+        "respawnMs": 300000
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "source coordinate/property preservation and supported placement only; interaction/combat behavior outside tester",
+          "path": "work/source-semantics-audit.json",
+          "result": "verified",
+          "objectId": "gather_cold_heart_lotus_23",
+          "scope": "layout anchor"
+        }
+      ]
+    },
+    {
+      "id": "gather_spirit_herb_24",
+      "type": "gather",
+      "sourceId": 24,
+      "position": [
+        1296,
+        896
+      ],
+      "surface": "s_g1",
+      "width": 0,
+      "properties": {
+        "item": "spirit_herb",
+        "respawnMs": 60000
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "source coordinate/property preservation and supported placement only; interaction/combat behavior outside tester",
+          "path": "work/source-semantics-audit.json",
+          "result": "verified",
+          "objectId": "gather_spirit_herb_24",
+          "scope": "layout anchor"
+        }
+      ]
+    },
+    {
+      "id": "gather_iron_essence_25",
+      "type": "gather",
+      "sourceId": 25,
+      "position": [
+        2256,
+        768
+      ],
+      "surface": "s_g3",
+      "width": 0,
+      "properties": {
+        "item": "iron_essence",
+        "respawnMs": 90000
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "source coordinate/property preservation and supported placement only; interaction/combat behavior outside tester",
+          "path": "work/source-semantics-audit.json",
+          "result": "verified",
+          "objectId": "gather_iron_essence_25",
+          "scope": "layout anchor"
+        }
+      ]
+    },
+    {
+      "id": "sense_chest_01",
+      "type": "chest",
+      "sourceId": 26,
+      "position": [
+        400,
+        832
+      ],
+      "surface": "s_p0",
+      "width": 0,
+      "properties": {
+        "loot": "qi_pill",
+        "count": 1
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "source coordinate/property preservation and supported placement only; interaction/combat behavior outside tester",
+          "path": "work/source-semantics-audit.json",
+          "result": "verified",
+          "objectId": "sense_chest_01",
+          "scope": "layout anchor"
+        }
+      ]
+    },
+    {
+      "id": "enc_stranded_cultivator_anchor",
+      "type": "encounter_anchor",
+      "sourceId": 29,
+      "position": [
+        1712,
+        640
+      ],
+      "surface": "s_p2",
+      "width": 0,
+      "properties": {
+        "encounter": "enc_stranded_cultivator"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "source coordinate/property preservation and supported placement only; interaction/combat behavior outside tester",
+          "path": "work/source-semantics-audit.json",
+          "result": "verified",
+          "objectId": "enc_stranded_cultivator_anchor",
+          "scope": "layout anchor"
+        }
+      ]
+    },
+    {
+      "id": "goal_east",
+      "type": "goal",
+      "position": [
+        3760,
+        768
+      ],
+      "surface": "s_g3",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "source coordinate/property preservation and supported placement only; interaction/combat behavior outside tester",
+          "path": "work/source-semantics-audit.json",
+          "result": "verified",
+          "objectId": "goal_east",
+          "scope": "layout anchor"
+        }
+      ]
+    }
+  ],
+  "transitions": [
+    {
+      "id": "t_rope_14_up",
+      "from": "s_g0",
+      "to": "s_p0",
+      "action": "climb-up",
+      "climb": "c_rope_14",
+      "conditions": [
+        "normal approach",
+        "full collider clear"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "event and state segment within a successful continuous normal-spawn input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified",
+          "objectId": "t_rope_14_up",
+          "routeSegment": [
+            {
+              "routeId": "route_rope_14",
+              "replay": "work/replays-final/route_rope_14.json",
+              "startFrame": 180,
+              "endFrame": 250,
+              "fromSurface": "s_g0",
+              "toSurface": "s_p0",
+              "action": "climb-up",
+              "climb": "c_rope_14"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_rope_14_down",
+      "from": "s_p0",
+      "to": "s_g0",
+      "action": "climb-down",
+      "climb": "c_rope_14",
+      "conditions": [
+        "normal approach",
+        "full collider clear"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "event and state segment within a successful continuous normal-spawn input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified",
+          "objectId": "t_rope_14_down",
+          "routeSegment": [
+            {
+              "routeId": "route_rope_14",
+              "replay": "work/replays-final/route_rope_14.json",
+              "startFrame": 291,
+              "endFrame": 354,
+              "fromSurface": "s_p0",
+              "toSurface": "s_g0",
+              "action": "climb-down",
+              "climb": "c_rope_14"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_rope_36_up",
+      "from": "s_g1",
+      "to": "s_p1",
+      "action": "climb-up",
+      "climb": "c_rope_36",
+      "conditions": [
+        "normal approach",
+        "full collider clear"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "event and state segment within a successful continuous normal-spawn input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified",
+          "objectId": "t_rope_36_up",
+          "routeSegment": [
+            {
+              "routeId": "route_rope_36",
+              "replay": "work/replays-final/route_rope_36.json",
+              "startFrame": 534,
+              "endFrame": 604,
+              "fromSurface": "s_g1",
+              "toSurface": "s_p1",
+              "action": "climb-up",
+              "climb": "c_rope_36"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_rope_36_down",
+      "from": "s_p1",
+      "to": "s_g1",
+      "action": "climb-down",
+      "climb": "c_rope_36",
+      "conditions": [
+        "normal approach",
+        "full collider clear"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "event and state segment within a successful continuous normal-spawn input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified",
+          "objectId": "t_rope_36_down",
+          "routeSegment": [
+            {
+              "routeId": "route_rope_36",
+              "replay": "work/replays-final/route_rope_36.json",
+              "startFrame": 645,
+              "endFrame": 708,
+              "fromSurface": "s_p1",
+              "toSurface": "s_g1",
+              "action": "climb-down",
+              "climb": "c_rope_36"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_rope_56_up",
+      "from": "s_g2",
+      "to": "s_p2",
+      "action": "climb-up",
+      "climb": "c_rope_56",
+      "conditions": [
+        "normal approach",
+        "full collider clear"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "event and state segment within a successful continuous normal-spawn input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified",
+          "objectId": "t_rope_56_up",
+          "routeSegment": [
+            {
+              "routeId": "route_rope_56",
+              "replay": "work/replays-final/route_rope_56.json",
+              "startFrame": 858,
+              "endFrame": 963,
+              "fromSurface": "s_g2",
+              "toSurface": "s_p2",
+              "action": "climb-up",
+              "climb": "c_rope_56"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_rope_56_down",
+      "from": "s_p2",
+      "to": "s_g2",
+      "action": "climb-down",
+      "climb": "c_rope_56",
+      "conditions": [
+        "normal approach",
+        "full collider clear"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "event and state segment within a successful continuous normal-spawn input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified",
+          "objectId": "t_rope_56_down",
+          "routeSegment": [
+            {
+              "routeId": "route_rope_56",
+              "replay": "work/replays-final/route_rope_56.json",
+              "startFrame": 1004,
+              "endFrame": 1102,
+              "fromSurface": "s_p2",
+              "toSurface": "s_g2",
+              "action": "climb-down",
+              "climb": "c_rope_56"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_rope_74_up",
+      "from": "s_g3",
+      "to": "s_p3",
+      "action": "climb-up",
+      "climb": "c_rope_74",
+      "conditions": [
+        "normal approach",
+        "full collider clear"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "event and state segment within a successful continuous normal-spawn input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified",
+          "objectId": "t_rope_74_up",
+          "routeSegment": [
+            {
+              "routeId": "route_rope_74",
+              "replay": "work/replays-final/route_rope_74.json",
+              "startFrame": 1152,
+              "endFrame": 1222,
+              "fromSurface": "s_g3",
+              "toSurface": "s_p3",
+              "action": "climb-up",
+              "climb": "c_rope_74"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_rope_74_down",
+      "from": "s_p3",
+      "to": "s_g3",
+      "action": "climb-down",
+      "climb": "c_rope_74",
+      "conditions": [
+        "normal approach",
+        "full collider clear"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "event and state segment within a successful continuous normal-spawn input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified",
+          "objectId": "t_rope_74_down",
+          "routeSegment": [
+            {
+              "routeId": "route_rope_74",
+              "replay": "work/replays-final/route_rope_74.json",
+              "startFrame": 1263,
+              "endFrame": 1326,
+              "fromSurface": "s_p3",
+              "toSurface": "s_g3",
+              "action": "climb-down",
+              "climb": "c_rope_74"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_rope_62_up",
+      "from": "s_p2",
+      "to": "s_p4",
+      "action": "climb-up",
+      "climb": "c_rope_62",
+      "conditions": [
+        "normal approach",
+        "full collider clear"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "event and state segment within a successful continuous normal-spawn input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified",
+          "objectId": "t_rope_62_up",
+          "routeSegment": [
+            {
+              "routeId": "route_rope_62",
+              "replay": "work/replays-final/route_rope_62.json",
+              "startFrame": 1096,
+              "endFrame": 1166,
+              "fromSurface": "s_p2",
+              "toSurface": "s_p4",
+              "action": "climb-up",
+              "climb": "c_rope_62"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_rope_62_down",
+      "from": "s_p4",
+      "to": "s_p2",
+      "action": "climb-down",
+      "climb": "c_rope_62",
+      "conditions": [
+        "normal approach",
+        "full collider clear"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "event and state segment within a successful continuous normal-spawn input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified",
+          "objectId": "t_rope_62_down",
+          "routeSegment": [
+            {
+              "routeId": "route_rope_62",
+              "replay": "work/replays-final/route_rope_62.json",
+              "startFrame": 1207,
+              "endFrame": 1270,
+              "fromSurface": "s_p4",
+              "toSurface": "s_p2",
+              "action": "climb-down",
+              "climb": "c_rope_62"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_rope_80_up",
+      "from": "s_p3",
+      "to": "s_p5",
+      "action": "climb-up",
+      "climb": "c_rope_80",
+      "conditions": [
+        "normal approach",
+        "full collider clear"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "event and state segment within a successful continuous normal-spawn input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified",
+          "objectId": "t_rope_80_up",
+          "routeSegment": [
+            {
+              "routeId": "route_rope_80",
+              "replay": "work/replays-final/route_rope_80.json",
+              "startFrame": 1355,
+              "endFrame": 1442,
+              "fromSurface": "s_p3",
+              "toSurface": "s_p5",
+              "action": "climb-up",
+              "climb": "c_rope_80"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_rope_80_down",
+      "from": "s_p5",
+      "to": "s_p3",
+      "action": "climb-down",
+      "climb": "c_rope_80",
+      "conditions": [
+        "normal approach",
+        "full collider clear"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "event and state segment within a successful continuous normal-spawn input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified",
+          "objectId": "t_rope_80_down",
+          "routeSegment": [
+            {
+              "routeId": "route_rope_80",
+              "replay": "work/replays-final/route_rope_80.json",
+              "startFrame": 1483,
+              "endFrame": 1563,
+              "fromSurface": "s_p5",
+              "toSurface": "s_p3",
+              "action": "climb-down",
+              "climb": "c_rope_80"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_rope_98_up",
+      "from": "s_g3",
+      "to": "s_p6",
+      "action": "climb-up",
+      "climb": "c_rope_98",
+      "conditions": [
+        "normal approach",
+        "full collider clear"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "event and state segment within a successful continuous normal-spawn input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified",
+          "objectId": "t_rope_98_up",
+          "routeSegment": [
+            {
+              "routeId": "route_rope_98",
+              "replay": "work/replays-final/route_rope_98.json",
+              "startFrame": 1507,
+              "endFrame": 1559,
+              "fromSurface": "s_g3",
+              "toSurface": "s_p6",
+              "action": "climb-up",
+              "climb": "c_rope_98"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_rope_98_down",
+      "from": "s_p6",
+      "to": "s_g3",
+      "action": "climb-down",
+      "climb": "c_rope_98",
+      "conditions": [
+        "normal approach",
+        "full collider clear"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "event and state segment within a successful continuous normal-spawn input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified",
+          "objectId": "t_rope_98_down",
+          "routeSegment": [
+            {
+              "routeId": "route_rope_98",
+              "replay": "work/replays-final/route_rope_98.json",
+              "startFrame": 1600,
+              "endFrame": 1645,
+              "fromSurface": "s_p6",
+              "toSurface": "s_g3",
+              "action": "climb-down",
+              "climb": "c_rope_98"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_rope_111_up",
+      "from": "s_g3",
+      "to": "s_p7",
+      "action": "climb-up",
+      "climb": "c_rope_111",
+      "conditions": [
+        "normal approach",
+        "full collider clear"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "event and state segment within a successful continuous normal-spawn input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified",
+          "objectId": "t_rope_111_up",
+          "routeSegment": [
+            {
+              "routeId": "route_rope_111",
+              "replay": "work/replays-final/route_rope_111.json",
+              "startFrame": 1699,
+              "endFrame": 1751,
+              "fromSurface": "s_g3",
+              "toSurface": "s_p7",
+              "action": "climb-up",
+              "climb": "c_rope_111"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_rope_111_down",
+      "from": "s_p7",
+      "to": "s_g3",
+      "action": "climb-down",
+      "climb": "c_rope_111",
+      "conditions": [
+        "normal approach",
+        "full collider clear"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "event and state segment within a successful continuous normal-spawn input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified",
+          "objectId": "t_rope_111_down",
+          "routeSegment": [
+            {
+              "routeId": "route_rope_111",
+              "replay": "work/replays-final/route_rope_111.json",
+              "startFrame": 1792,
+              "endFrame": 1837,
+              "fromSurface": "s_p7",
+              "toSurface": "s_g3",
+              "action": "climb-down",
+              "climb": "c_rope_111"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_step_0_up",
+      "from": "s_g0",
+      "to": "s_g1",
+      "action": "jump",
+      "conditions": [
+        "ordinary jump only"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "event and state segment within a successful continuous normal-spawn input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified",
+          "objectId": "t_step_0_up",
+          "routeSegment": [
+            {
+              "routeId": "route_main",
+              "replay": "work/replays-final/route_main.json",
+              "startFrame": 378,
+              "endFrame": 400,
+              "fromSurface": "s_g0",
+              "toSurface": "s_g1",
+              "action": "jump"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_step_0_down",
+      "from": "s_g1",
+      "to": "s_g0",
+      "action": "drop",
+      "conditions": [
+        "walk off ledge"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "event and state segment within a successful continuous normal-spawn input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified",
+          "objectId": "t_step_0_down",
+          "routeSegment": [
+            {
+              "routeId": "route_return",
+              "replay": "work/replays-final/route_return.json",
+              "startFrame": 3066,
+              "endFrame": 3080,
+              "fromSurface": "s_g1",
+              "toSurface": "s_g0",
+              "action": "drop"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_step_1_up",
+      "from": "s_g1",
+      "to": "s_g2",
+      "action": "jump",
+      "conditions": [
+        "ordinary jump only"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "event and state segment within a successful continuous normal-spawn input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified",
+          "objectId": "t_step_1_up",
+          "routeSegment": [
+            {
+              "routeId": "route_main",
+              "replay": "work/replays-final/route_main.json",
+              "startFrame": 628,
+              "endFrame": 650,
+              "fromSurface": "s_g1",
+              "toSurface": "s_g2",
+              "action": "jump"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_step_1_down",
+      "from": "s_g2",
+      "to": "s_g1",
+      "action": "drop",
+      "conditions": [
+        "walk off ledge"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "event and state segment within a successful continuous normal-spawn input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified",
+          "objectId": "t_step_1_down",
+          "routeSegment": [
+            {
+              "routeId": "route_return",
+              "replay": "work/replays-final/route_return.json",
+              "startFrame": 2845,
+              "endFrame": 2859,
+              "fromSurface": "s_g2",
+              "toSurface": "s_g1",
+              "action": "drop"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_step_2_up",
+      "from": "s_g2",
+      "to": "s_g3",
+      "action": "jump",
+      "conditions": [
+        "ordinary jump only"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "event and state segment within a successful continuous normal-spawn input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified",
+          "objectId": "t_step_2_up",
+          "routeSegment": [
+            {
+              "routeId": "route_main",
+              "replay": "work/replays-final/route_main.json",
+              "startFrame": 878,
+              "endFrame": 900,
+              "fromSurface": "s_g2",
+              "toSurface": "s_g3",
+              "action": "jump"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "t_step_2_down",
+      "from": "s_g3",
+      "to": "s_g2",
+      "action": "drop",
+      "conditions": [
+        "walk off ledge"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "event and state segment within a successful continuous normal-spawn input replay",
+          "path": "work/final-transition-evidence.json",
+          "result": "verified",
+          "objectId": "t_step_2_down",
+          "routeSegment": [
+            {
+              "routeId": "route_return",
+              "replay": "work/replays-final/route_return.json",
+              "startFrame": 2623,
+              "endFrame": 2637,
+              "fromSurface": "s_g3",
+              "toSurface": "s_g2",
+              "action": "drop"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "requiredRoutes": [
+    {
+      "id": "route_main",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "s_g1",
+        "s_g2",
+        "s_g3",
+        "boss_arena"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "continuous fixed-60Hz normal-spawn input replay; no teleport or reset",
+          "path": "work/replays-final/route_main.json",
+          "result": "verified",
+          "routeId": "route_main",
+          "frames": 1766
+        }
+      ]
+    },
+    {
+      "id": "route_return",
+      "from": "start_spawn",
+      "to": "portal_to_bamboo",
+      "via": [
+        "goal_east"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "continuous fixed-60Hz normal-spawn input replay; no teleport or reset",
+          "path": "work/replays-final/route_return.json",
+          "result": "verified",
+          "routeId": "route_return",
+          "frames": 3468
+        }
+      ]
+    },
+    {
+      "id": "route_rope_14",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "c_rope_14",
+        "s_p0",
+        "s_g0"
+      ],
+      "direction": "up-and-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "continuous fixed-60Hz normal-spawn input replay; no teleport or reset",
+          "path": "work/replays-final/route_rope_14.json",
+          "result": "verified",
+          "routeId": "route_rope_14",
+          "frames": 1985
+        }
+      ]
+    },
+    {
+      "id": "route_rope_36",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "c_rope_36",
+        "s_p1",
+        "s_g1"
+      ],
+      "direction": "up-and-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "continuous fixed-60Hz normal-spawn input replay; no teleport or reset",
+          "path": "work/replays-final/route_rope_36.json",
+          "result": "verified",
+          "routeId": "route_rope_36",
+          "frames": 1985
+        }
+      ]
+    },
+    {
+      "id": "route_rope_56",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "c_rope_56",
+        "s_p2",
+        "s_g2"
+      ],
+      "direction": "up-and-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "continuous fixed-60Hz normal-spawn input replay; no teleport or reset",
+          "path": "work/replays-final/route_rope_56.json",
+          "result": "verified",
+          "routeId": "route_rope_56",
+          "frames": 2055
+        }
+      ]
+    },
+    {
+      "id": "route_rope_74",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "c_rope_74",
+        "s_p3",
+        "s_g3"
+      ],
+      "direction": "up-and-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "continuous fixed-60Hz normal-spawn input replay; no teleport or reset",
+          "path": "work/replays-final/route_rope_74.json",
+          "result": "verified",
+          "routeId": "route_rope_74",
+          "frames": 1985
+        }
+      ]
+    },
+    {
+      "id": "route_rope_62",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "c_rope_62",
+        "s_p4",
+        "s_p2"
+      ],
+      "direction": "up-and-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "continuous fixed-60Hz normal-spawn input replay; no teleport or reset",
+          "path": "work/replays-final/route_rope_62.json",
+          "result": "verified",
+          "routeId": "route_rope_62",
+          "frames": 2454
+        }
+      ]
+    },
+    {
+      "id": "route_rope_80",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "c_rope_80",
+        "s_p5",
+        "s_p3"
+      ],
+      "direction": "up-and-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "continuous fixed-60Hz normal-spawn input replay; no teleport or reset",
+          "path": "work/replays-final/route_rope_80.json",
+          "result": "verified",
+          "routeId": "route_rope_80",
+          "frames": 2418
+        }
+      ]
+    },
+    {
+      "id": "route_rope_98",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "c_rope_98",
+        "s_p6",
+        "s_g3"
+      ],
+      "direction": "up-and-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "continuous fixed-60Hz normal-spawn input replay; no teleport or reset",
+          "path": "work/replays-final/route_rope_98.json",
+          "result": "verified",
+          "routeId": "route_rope_98",
+          "frames": 1949
+        }
+      ]
+    },
+    {
+      "id": "route_rope_111",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "c_rope_111",
+        "s_p7",
+        "s_g3"
+      ],
+      "direction": "up-and-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "continuous fixed-60Hz normal-spawn input replay; no teleport or reset",
+          "path": "work/replays-final/route_rope_111.json",
+          "result": "verified",
+          "routeId": "route_rope_111",
+          "frames": 1949
+        }
+      ]
+    },
+    {
+      "id": "route_all_climbs",
+      "from": "start_spawn",
+      "to": "goal_east",
+      "via": [
+        "c_rope_14",
+        "s_p0",
+        "c_rope_36",
+        "s_p1",
+        "c_rope_56",
+        "s_p2",
+        "c_rope_62",
+        "s_p4",
+        "c_rope_74",
+        "s_p3",
+        "c_rope_80",
+        "s_p5",
+        "c_rope_98",
+        "s_p6",
+        "c_rope_111",
+        "s_p7"
+      ],
+      "direction": "all eight ropes up and down, continuous normal-spawn run",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "continuous fixed-60Hz normal-spawn input replay; no teleport or reset",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified",
+          "routeId": "route_all_climbs",
+          "frames": 3909
+        }
+      ]
+    }
+  ],
+  "zones": [
+    {
+      "id": "boss_arena",
+      "polygon": [
+        [
+          2880,
+          384
+        ],
+        [
+          3840,
+          384
+        ],
+        [
+          3840,
+          768
+        ],
+        [
+          2880,
+          768
+        ]
+      ],
+      "properties": {
+        "label": "妖狐巢穴",
+        "unlockQuest": "q_fox",
+        "bossOnly": true
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "lingxi-final-001",
+          "actorParameterRevision": "lingxi-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+          "method": "source zone geometry/properties preserved; continuous main route crosses arena",
+          "path": "work/source-semantics-audit.json",
+          "result": "verified",
+          "objectId": "boss_arena",
+          "scope": "layout/semantic preservation; quest spawn logic not executed"
+        }
+      ]
+    }
+  ],
+  "inactiveSourceObjects": [
+    {
+      "id": 27,
+      "name": "sense_hidden_chest_01",
+      "type": "hidden",
+      "x": 400,
+      "y": 832,
+      "width": 0,
+      "height": 0,
+      "properties": [
+        {
+          "name": "enabled",
+          "type": "bool",
+          "value": false
+        },
+        {
+          "name": "reqSpirit",
+          "type": "int",
+          "value": 0
+        },
+        {
+          "name": "reveal",
+          "type": "string",
+          "value": "chest"
+        },
+        {
+          "name": "targetObject",
+          "type": "string",
+          "value": "sense_chest_01"
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "name": "sense_hidden_platform_01",
+      "type": "hidden",
+      "x": 2800,
+      "y": 416,
+      "width": 64,
+      "height": 32,
+      "properties": [
+        {
+          "name": "enabled",
+          "type": "bool",
+          "value": false
+        },
+        {
+          "name": "reqSpirit",
+          "type": "int",
+          "value": 10
+        },
+        {
+          "name": "reveal",
+          "type": "string",
+          "value": "platform"
+        }
+      ]
+    }
+  ],
+  "diagnostics": {
+    "maskPalette": {
+      "walk": [
+        150,
+        245,
+        160,
+        255
+      ],
+      "stand": [
+        0,
+        200,
+        80,
+        255
+      ],
+      "rope": [
+        0,
+        190,
+        230,
+        255
+      ],
+      "jump": [
+        255,
+        180,
+        0,
+        255
+      ],
+      "drop": [
+        170,
+        80,
+        225,
+        255
+      ],
+      "point": [
+        255,
+        70,
+        160,
+        255
+      ]
+    },
+    "rasterizationOrder": [
+      "walk",
+      "stand",
+      "rope",
+      "jump",
+      "drop",
+      "point"
+    ],
+    "regionIdIndex": null,
+    "geometryRevision": "lingxi-final-001"
+  },
+  "validation": {
+    "status": "verified",
+    "geometryRevision": "lingxi-final-001",
+    "actorParameterRevision": "lingxi-base-feel-20261027-001",
+    "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+    "evidence": [
+      {
+        "geometryRevision": "lingxi-final-001",
+        "actorParameterRevision": "lingxi-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+        "method": "required routes plus all-climbs replay summary",
+        "path": "work/final-routes.json",
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "lingxi-final-001",
+        "actorParameterRevision": "lingxi-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+        "method": "actual-scene movement/collision regressions; one separately labeled synthetic ceiling fixture",
+        "path": "work/final-physics-smoke-results.json",
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "lingxi-final-001",
+        "actorParameterRevision": "lingxi-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+        "method": "22 transition event/state segments within continuous input replays",
+        "path": "work/final-transition-evidence.json",
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "lingxi-final-001",
+        "actorParameterRevision": "lingxi-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+        "method": "Chrome same-SHA route replay, 12 natural surface contacts, real keyboard/R, same-source asset loading",
+        "path": "work/final-browser-check.json",
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "lingxi-final-001",
+        "actorParameterRevision": "lingxi-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-lingxi-001",
+        "method": "independent manual final-art and bottom visual review",
+        "path": "work/independent-visual-review.json",
+        "result": "verified"
+      }
+    ],
+    "issues": [],
+    "scope": "Final scene asset geometry/art alignment and independent fixed-step AABB movement only. Production Phaser integration, combat, quest activation, monster AI, gathers, rewards and portal transfers are excluded, not claimed passed."
+  }
+}

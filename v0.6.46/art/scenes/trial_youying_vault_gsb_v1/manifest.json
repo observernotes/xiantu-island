@@ -1,0 +1,1147 @@
+{
+  "schemaVersion": "1.0",
+  "version": "trial_youying_vault_gsb_v1",
+  "geometryRevision": "trial-youying-final-002",
+  "actorParameterRevision": "trial-youying-base-feel-20261027-001",
+  "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+  "deliveryStatus": "SELF_CHECK_PASS_AWAITING_OWNER_REVIEW",
+  "reviewerPass": false,
+  "integrationAllowed": false,
+  "productionIntegrated": false,
+  "deliveryRoot": "art/scenes/trial_youying_vault_gsb_v1/",
+  "space": {
+    "origin": "top-left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "units": "logical-pixel",
+    "logicalWidth": 1792,
+    "logicalHeight": 704,
+    "sourceMap": "maps/trial_youying_vault.json",
+    "sourceToWorld": [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0
+    ]
+  },
+  "sourceDataSHA256": "4a420537d95d8b48e1c8454db16789d8a11f8aa5d43253ec01ccfa6bced88fbd",
+  "assets": [
+    {
+      "id": "asset_background",
+      "role": "background",
+      "path": "background.png",
+      "pixelWidth": 1792,
+      "pixelHeight": 704,
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "asset_playable",
+      "role": "playable",
+      "path": "playable.png",
+      "pixelWidth": 1792,
+      "pixelHeight": 704,
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    }
+  ],
+  "renderOrder": [
+    "background",
+    "playable",
+    "actor+patrols"
+  ],
+  "foreground": {
+    "applicable": false,
+    "reason": "all decor behind actor, no required foreground occlusion"
+  },
+  "entry": "index.html",
+  "launch": "python3 -m http.server 8787 --bind 127.0.0.1 --directory art/scenes/trial_youying_vault_gsb_v1",
+  "maskPalette": {
+    "walk": [
+      150,
+      245,
+      160,
+      255
+    ],
+    "stand": [
+      0,
+      200,
+      80,
+      255
+    ],
+    "rope": [
+      0,
+      190,
+      230,
+      255
+    ],
+    "jump": [
+      255,
+      170,
+      45,
+      255
+    ],
+    "drop": [
+      180,
+      125,
+      245,
+      255
+    ],
+    "shadow": [
+      115,
+      65,
+      170,
+      255
+    ],
+    "patrol": [
+      245,
+      130,
+      60,
+      255
+    ],
+    "point": [
+      255,
+      70,
+      160,
+      255
+    ]
+  },
+  "rasterizationOrder": [
+    "walk",
+    "shadow",
+    "patrol",
+    "stand",
+    "rope",
+    "jump",
+    "drop",
+    "point"
+  ],
+  "provenance": "work/imagegen-provenance.json",
+  "prompts": "work/imagegen-final-calls.json",
+  "validation": {
+    "routes": "work/final-routes.json",
+    "physics": "work/final-physics-check.json",
+    "browser": "work/final-browser-check.json",
+    "visual": "work/visual-review.json",
+    "transitions": "work/transition-coverage.json",
+    "selfCheck": "work/self-check.json",
+    "artcheck": "work/artcheck-final.log"
+  },
+  "registration": "work/stage5-registration.json",
+  "files": [
+    {
+      "path": "DELIVERED.md",
+      "purpose": "final deliverable",
+      "bytes": 967,
+      "sha256": "3ceac077ecb1d4675714a373530163107dca2ddba4edad59beebe978a75647d6",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "README.md",
+      "purpose": "final deliverable",
+      "bytes": 1139,
+      "sha256": "665bc8caf5dd08bf10f51124dc1647e5626ca047d2df55f7bcac7bc43589ced5",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "action-mask.png",
+      "purpose": "final deliverable",
+      "bytes": 6813,
+      "sha256": "7bdacce3c760567781f183336d0654717bc287f9e5b0e049daeebf55478270fa",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 1792,
+      "pixelHeight": 704,
+      "mode": "RGBA"
+    },
+    {
+      "path": "action-overlay.png",
+      "purpose": "final deliverable",
+      "bytes": 2248852,
+      "sha256": "bca63806b9f75fe30237f515990b1c31d4678c912f7e8eea992716b61570e24f",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 1792,
+      "pixelHeight": 704,
+      "mode": "RGBA"
+    },
+    {
+      "path": "background.png",
+      "purpose": "final deliverable",
+      "bytes": 2229218,
+      "sha256": "f07c68ebf61699b4d58b6914724bba26c878eee285a7f629b2ef5c0ca449c29b",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 1792,
+      "pixelHeight": 704,
+      "mode": "RGBA"
+    },
+    {
+      "path": "collision-overlay.png",
+      "purpose": "final deliverable",
+      "bytes": 2244648,
+      "sha256": "deb206f1bb0726be54d6fdcd0a6156e89340b7973ee61165240147b93b38fc74",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 1792,
+      "pixelHeight": 704,
+      "mode": "RGBA"
+    },
+    {
+      "path": "diagnostics-metadata.json",
+      "purpose": "final deliverable",
+      "bytes": 1560,
+      "sha256": "11017e5714821ea4c4dbc37548e496208853139114a1f3ac6920a35dc9a0dad2",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "index.html",
+      "purpose": "final deliverable",
+      "bytes": 237,
+      "sha256": "716e3f0f511b6630aa302b6a06a3f81de6984aea624828e065bba0992ce2d7f4",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "playable.png",
+      "purpose": "final deliverable",
+      "bytes": 376252,
+      "sha256": "4bb958de847680d8e7cf59c208e4fbb060a8c2d1b3d9f811d588386e13bed2cd",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 1792,
+      "pixelHeight": 704,
+      "mode": "RGBA"
+    },
+    {
+      "path": "polished.lock",
+      "purpose": "final deliverable",
+      "bytes": 152,
+      "sha256": "382e8200e873ef0fc8e1f9733b4641cda2f1bb3a069e0a127a8ce8d5606fecf4",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "scene-data.json",
+      "purpose": "final deliverable",
+      "bytes": 39353,
+      "sha256": "4a420537d95d8b48e1c8454db16789d8a11f8aa5d43253ec01ccfa6bced88fbd",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "scene.png",
+      "purpose": "final deliverable",
+      "bytes": 2265554,
+      "sha256": "dde121cdffc86d04a5f187f49fb080bfa2b27d4e04cc94af56fda92a61688b4a",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 1792,
+      "pixelHeight": 704,
+      "mode": "RGBA"
+    },
+    {
+      "path": "validation-report.md",
+      "purpose": "final deliverable",
+      "bytes": 10676,
+      "sha256": "52371ed5a4b4520d8a9e7d1be652f67652409f319a30e5a15618343853712828",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/action-layout.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 8926,
+      "sha256": "a7414895940c76018441dedb3b57744bb00e9e6b7fbcc8e545808abdf7b0ca8a",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 1792,
+      "pixelHeight": 704,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/action-layout.svg",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 904,
+      "sha256": "84773721632ba90415bfeeaac9a2230b58ac561a91f0339cafbd30edea441d1d",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/alpha-preview-checker.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 367065,
+      "sha256": "5617eaa5b8b88d439c577750ad9a23fcb87a4d875842e3d96b3d8af33231e00c",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 1792,
+      "pixelHeight": 704,
+      "mode": "RGBA"
+    },
+    {
+      "path": "work/alpha-preview-dark.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 360091,
+      "sha256": "025ef660cd159243e04b0f8cb7743fbceb8d6761d9a9f850befcb063b247ccca",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 1792,
+      "pixelHeight": 704,
+      "mode": "RGBA"
+    },
+    {
+      "path": "work/alpha-preview-light.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 364307,
+      "sha256": "25449d4ba92609d009692bfb93700fceda44896152ae8003cc8889f8efc0c59c",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 1792,
+      "pixelHeight": 704,
+      "mode": "RGBA"
+    },
+    {
+      "path": "work/artcheck-final.log",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 948,
+      "sha256": "971ec2b5f561e9fc298167f5443cb1bb9bf08387c5e488c43dfd938ff1f09e5c",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/background-stage3.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 1901240,
+      "sha256": "ef37c2f909afecf0ed7d2455b5ddff3c7b38145dfbfe0751d1046a0238eb373f",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 1792,
+      "pixelHeight": 704,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/background-stage5.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 1947834,
+      "sha256": "2020ba5734a13561f76bf99b234ddb7b199b59b500b5bf7a60f61b6dc15151ce",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 1792,
+      "pixelHeight": 704,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/bind_validation.py",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 6228,
+      "sha256": "176f0eeb874228cbe59cc123248737b72efb4d02c4087d5ca764d4645e5c4bd1",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/bottom-clean-inspection.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 291307,
+      "sha256": "a0643779cdaf16123df0691d341bfbd7a52dceafcd32f170ef832448a8fc87f2",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 1792,
+      "pixelHeight": 96,
+      "mode": "RGBA"
+    },
+    {
+      "path": "work/browser-console.log",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 3360,
+      "sha256": "8e82664f80d193011b3265c9cd5a386b9c6e489d53895ccaead44370f0560816",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/browser_check.mjs",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 5361,
+      "sha256": "e3345483ff71eebf98afd3e6dfea7f21c00af9c58f0b8d0791583b55f045375d",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/build_layout.py",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 8200,
+      "sha256": "fd4a1230d9ddc2c8de43793a5eee5abdfd6e4c18d13cf7e78cbe6044eaa5c6aa",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/check_delivery.py",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 9566,
+      "sha256": "8bbb1bed83604563f8a7e4f82b966fc881c44f665bbc50c8ebdf46bd3d99b506",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/check_physics.mjs",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 7153,
+      "sha256": "556b7d702eaf7e5965146ede58948102f966d434e8f7bce586a8d5bdac0ef28d",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/check_visual.py",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 4529,
+      "sha256": "ea1e01da9fb6a0cc2d4ae580870273ad373da23ff4608b8854a0418674b8dc8a",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/compose_stage4.py",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 2674,
+      "sha256": "201200eba5fe87960d70bd451ea2c9595fb1a0ce4e791f5ac45622725ccac91c",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/external-concurrent-changes.json",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 3933,
+      "sha256": "b90ed396549cd34a5cc8ab0eff8be3722fa52e67dd9dc1e698535f4fe30c02f9",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/final-browser-check.json",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 5700,
+      "sha256": "aa80fb5285d693d9271454236c3e6d033ff7201ad4c1838e81ff5f53db436a27",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/final-physics-check.json",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 1162511,
+      "sha256": "31a2f6344dd02b584fae4c94bd1c664e6b724e66bc8ee25ed6ff021d7432ea7b",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/final-routes.json",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 14101,
+      "sha256": "e49aaed142819cc73dbbf20e01dfe036e5f23aab3f9fd5bde96b6290254c3260",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/final-screenshots/browser-overview.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 1727238,
+      "sha256": "bc5bca7c2a9fa5109e4ce36698884a8e7cfda1515db6e1fd3f0c2c9dd98154a5",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 1440,
+      "pixelHeight": 1289,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/final-screenshots/contact-s_ground.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 1460277,
+      "sha256": "8d9e8e1ba4a42c7c177afcedc68158ae841086267843e4b1a632e3f34de0aab4",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 1280,
+      "pixelHeight": 705,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/final-screenshots/contact-s_library.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 1457782,
+      "sha256": "7ddae1a0bd3d88ec7468469104e4f33934225fc8580dea3c241d894825e1cd4c",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 1280,
+      "pixelHeight": 705,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/final-screenshots/contact-s_token.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 1459851,
+      "sha256": "3f3ffc4a089bb953316fdd3df263140e85b9c351187065f6ab428e7394e84af8",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 1280,
+      "pixelHeight": 705,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/final-screenshots/contact-s_upper.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 1462386,
+      "sha256": "8ae7cd578ed6549bd0a63d917a2e848ae4803c43710353374b1fad822e98d3ed",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 1280,
+      "pixelHeight": 705,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/final-screenshots/contact-s_west.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 1464182,
+      "sha256": "22f90c28c0665f9cc89c3f8b1e93f8b1f7e99ba2efea1b7a751954923479e49a",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 1280,
+      "pixelHeight": 705,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/final-screenshots/minimap-three-patrols.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 138575,
+      "sha256": "75fbf0367d959f164f604f4b71f6ac0fec96f43f4e1207eea4ce96e996943468",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 407,
+      "pixelHeight": 162,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/final-screenshots/route_full_tour.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 1469002,
+      "sha256": "17a4153a0a3b495db6a0c96bdeb40104c04433bdd5427d157aef81ed730f69e6",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 1280,
+      "pixelHeight": 705,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/final-screenshots/route_library_roundtrip.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 1470606,
+      "sha256": "cda96e244ec6c2d699d8b871d8f8383130d7fb08c9edf451a09ed769ceb37003",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 1280,
+      "pixelHeight": 705,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/final-screenshots/route_shadow_ground_roundtrip.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 1469099,
+      "sha256": "ccb80254295aa60e0b42ce6404a0929b550307bd03eb7d90954e8cedcc7b7a2e",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 1280,
+      "pixelHeight": 705,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/final-screenshots/route_stealth_roundtrip.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 1469715,
+      "sha256": "8910200f4b65a64a8408da4b1ca2c6ac6d3e1676289b163abb934de210be5c14",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 1280,
+      "pixelHeight": 705,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/final-screenshots/standing-s_ground.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 1470993,
+      "sha256": "74812c13ead520f4e9425de20d7484107c8034c4e110bf58e7ce657cce86f659",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 1280,
+      "pixelHeight": 705,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/final-screenshots/standing-s_library.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 1470904,
+      "sha256": "bce374f7d40d4d9ea557a7c12cd936f6a078e010611757e86de1a5078809d615",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 1280,
+      "pixelHeight": 705,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/final-screenshots/standing-s_token.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 1472913,
+      "sha256": "28ba75ce07b12d4200c136bac384f6d173cf2553d1a5a1e0769afe6d6076ac00",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 1280,
+      "pixelHeight": 705,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/final-screenshots/standing-s_upper.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 1475255,
+      "sha256": "969efba198886117b3e436b20e401cc94007b0bd3a326d5df02a4508c9a57988",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 1280,
+      "pixelHeight": 705,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/final-screenshots/standing-s_west.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 1475146,
+      "sha256": "7f3b4476891ad7cdf0528a2ec554a435fb7a09fcf72b7aacdb35f724a28401f7",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 1280,
+      "pixelHeight": 705,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/final-screenshots/three-patrol-bands.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 1466864,
+      "sha256": "a3e116e7d3eeabd9fb5e19a10e05db9cafa54c22918baf4913b38c20d80647f2",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 1280,
+      "pixelHeight": 705,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/finalize_layers.py",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 5364,
+      "sha256": "3ce97652d03d25164351da5825116f257d8f2f50c95b16dfd5c721eff84904e6",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/generated/background-stage3-raw.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 2349370,
+      "sha256": "2b51e5eee4b4b714059a49fa4ee3ae9405f020a2cf439c5454bc302898897d74",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 2001,
+      "pixelHeight": 786,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/generated/background-stage5-raw.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 2388197,
+      "sha256": "122db6168e17ab3cff917d0f0fff74e7750104c2d40122753c02da78ba823e34",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 2001,
+      "pixelHeight": 786,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/generated/master-stage3-raw.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 2419777,
+      "sha256": "daf16fdbf701a0068d6f30fc4e9334003264ca497afc3b6e2e71ad132582614f",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 2001,
+      "pixelHeight": 786,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/generated/playable-stage5-raw.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 680708,
+      "sha256": "c0415c2870b86381840092232dc90232c6ad6f5524fde37b2f60e08d6d70bc8f",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 2001,
+      "pixelHeight": 786,
+      "mode": "RGBA"
+    },
+    {
+      "path": "work/generated/stage4-east-raw.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 2069527,
+      "sha256": "c90c2cd1c7da59f6c801e431fe6e6343f7bc67c4ce81579d2ab320431d4331b5",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 1709,
+      "pixelHeight": 920,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/generated/stage4-west-raw.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 2185342,
+      "sha256": "b69f4d459ad2ca91b4492bc06b7f9be00a2d44d817dd43bafc9a540f499a49db",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 2126,
+      "pixelHeight": 740,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/generated/structure-stage3-raw.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 618411,
+      "sha256": "b25eaf3ba737582882d769392366e2e275e531834fe4c794f34e5f97837c3f39",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 2001,
+      "pixelHeight": 786,
+      "mode": "RGBA"
+    },
+    {
+      "path": "work/graybox-attempt-001.json",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 14073,
+      "sha256": "4cafa78061f69efa32791f2da48a8975197530ca3fac67ffed1f3b454e2bee8b",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/graybox-browser.json",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 774,
+      "sha256": "0d6d8de6582d3a02e87f4a5894b1b59589a1290a6540ea5450c6fbb23f18766b",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/graybox-browser.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 124397,
+      "sha256": "f341d670188979d7a6e56c55916643a69e3e15dca84e36d24e8025d92cf61f29",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 1440,
+      "pixelHeight": 1266,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/graybox-routes.json",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 14093,
+      "sha256": "336ba95c8ffc5d5c959439137ca3b23b7e7c501441b0ce779203e650a49cb834",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/imagegen-call-log.json",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 12346,
+      "sha256": "970a943e4c70759b043a1a6d6f999a6043940a6c33ab4ae0d254be4872f441c9",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/imagegen-final-calls.json",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 16572,
+      "sha256": "7363ef727e4267336d7812e046b7c798f30b9a0351b3d466076842dcc00718e6",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/imagegen-prompts.json",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 3377,
+      "sha256": "3bf2bcb46d0d247c9570439477a61c8f8d367a0b16a05715a34488320fc99676",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/imagegen-provenance.json",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 19315,
+      "sha256": "9166e750c29160d5e8e10e8ef0a70fe00bdd8e2ecb3795b42babd84f693d6f62",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/master-stage3-registered.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 2272255,
+      "sha256": "ece76e6ed9adb424d141456ca5fffac5559b43e0ba08a334d3d1c3e1ac67e938",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 1792,
+      "pixelHeight": 704,
+      "mode": "RGBA"
+    },
+    {
+      "path": "work/master-stage3.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 1935207,
+      "sha256": "01121d7c0be6173994530b0513f2a28c260f1c8fc7593e4b2ac8194494991dc8",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 1792,
+      "pixelHeight": 704,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/master-stage4-refined.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 2297933,
+      "sha256": "004650b668dc67fa88cf3e75b674e6c170e4ad93d40e785ad8045dea9cb77813",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 1792,
+      "pixelHeight": 704,
+      "mode": "RGBA"
+    },
+    {
+      "path": "work/opaque-bearing-check.json",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 212158,
+      "sha256": "14f3c27d789cc1c58a64a00990dcccf538dded455d0aad140405c3cad98ba29b",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/physics-attempt-001.json",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 1195655,
+      "sha256": "b75146c51884b11661d4ef5b69303e4f639090e35a631ac9d0b210ecbe9650ec",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/playable-stage5-before-core-trim.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 392501,
+      "sha256": "4544d61a207d1188ea8873cbb967909db50a1a31a79cb4cffaae2451de04df5b",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 1792,
+      "pixelHeight": 704,
+      "mode": "RGBA"
+    },
+    {
+      "path": "work/playable-stage5.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 515636,
+      "sha256": "1dc4acfd4844e46ab0aed45c1b66fba87b2e06cc83d23042bd04cb30b7f7108a",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 1792,
+      "pixelHeight": 704,
+      "mode": "RGBA"
+    },
+    {
+      "path": "work/preview/engine.mjs",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 13644,
+      "sha256": "6cc8fd84334046c21628086f4b6dfb188e7b2e3065fda213a4fb32fcdac456a3",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/preview/index.html",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 3926,
+      "sha256": "adf5ef6b3ec71e7f7c3abed5ef3c30062045364b8787652026836feb444f5b4e",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/preview/patrol-reference-idle.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 8030,
+      "sha256": "637e9661a33efeb476b211c656ea24223e6ceb7a315ed11f3665c43ae9826de7",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 80,
+      "pixelHeight": 88,
+      "mode": "RGBA"
+    },
+    {
+      "path": "work/preview/player-reference-idle.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 10012,
+      "sha256": "520235d2f9c4c9e83b140ba439c2d18becfaa8e962fa15a98e35a14003ce0181",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 96,
+      "pixelHeight": 96,
+      "mode": "RGBA"
+    },
+    {
+      "path": "work/preview/preview.mjs",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 15593,
+      "sha256": "c75015c3e9bed6c12b830b81d84cb376e0c02f321eb02645755e60b76a7adbdc",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/preview/trial.mjs",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 2203,
+      "sha256": "59ca2180032f0da7ded4fced5423aa66cd508f9176df21846f88b2348a887c9c",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/protected-hashes.json",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 170662,
+      "sha256": "51ffed939e11c4749b51917ea876dc79b9b575d6e91475d256e01d02bd9e9716",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/register_stage3.py",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 2781,
+      "sha256": "96c0e22bf161fa51e5073fab29ecfa36add540af984e9d12b340c0e5d65e2bfe",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/registered-stage3-playable.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 381198,
+      "sha256": "d104a2c71a089ec249ed4b44b8ecae1b7f8ebc5c8b290d077e8c57f5476d8fce",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 1792,
+      "pixelHeight": 704,
+      "mode": "RGBA"
+    },
+    {
+      "path": "work/render_diagnostics.py",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 4627,
+      "sha256": "e99f080d9dc834f702109907be2df7c1bb593308018d287018dc59e922fa85b9",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/replays-final/route_full_tour.json",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 625752,
+      "sha256": "65c8058f755674ca85d78c49e451bc76141f29acea6e5b42318ee21fc19b653d",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/replays-final/route_library_roundtrip.json",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 317552,
+      "sha256": "4663296f1cc42ad81e2d720fbbc2f46fb0e18f6d99b2172f4d5dff0085e70076",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/replays-final/route_shadow_ground_roundtrip.json",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 474508,
+      "sha256": "5393311e8cfa07d40e33f57590ee0fa76a3bc9fb2d4ba4069bf4496456b5799f",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/replays-final/route_stealth_roundtrip.json",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 550364,
+      "sha256": "dea61912332802deeb744bb48db4ca6b85bd7255d833ef3886f1e2e76047a904",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/replays-graybox/route_full_tour.json",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 625751,
+      "sha256": "aaeeb9f8c4161df4bda6764949250f641d3a6d44c6e7afd2f5f1a0a9424ca3e8",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/replays-graybox/route_library_roundtrip.json",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 317551,
+      "sha256": "b27a0d6681c67b8c496aba6eb8a99401b13f835e1f7cea011c2886510c7600fc",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/replays-graybox/route_shadow_ground_roundtrip.json",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 451070,
+      "sha256": "2451e0bdef168c618b44782e0fd72c8764c4da2bc8884d3b75799116917eba8a",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/replays-graybox/route_stealth_roundtrip.json",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 550363,
+      "sha256": "8ab8b0b67a42abf4ae745a8bfbb77ec1a2661ed8ddf01d2481d45dd4d0d7f3c6",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/run_routes.mjs",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 4432,
+      "sha256": "5fddf749097b5fbc2ea38c1bd8518bec2cc81d173a02ba929645161a74174a01",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/scene-brief.md",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 2048,
+      "sha256": "7b1bc044d50064cddf6d8e9053197f95a2dcedb9f2296bab85cf7a6bfc3bd73f",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/scene-data.draft.json",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 23098,
+      "sha256": "c48c85cd07a95b0350e092f5d7925e4b62b9a4f17ad2d431890f23003ee3a988",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/source-trial-motion.mjs",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 2837,
+      "sha256": "150abf5a6cf69d0c173d6e1a4d476d30b0da1b34a3279a015a2e5d87d3118036",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/sprite-provenance.json",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 475,
+      "sha256": "57e376e4ad87c915a6e865e07f4c7d1525a39b8d45d6d6504a1aa0956dec8101",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/stage-log.md",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 984,
+      "sha256": "5756fa574be3c28939157a857db2b1aaaeb52a6239994d372f239d77c218ec51",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/stage2-graybox-report.md",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 391,
+      "sha256": "f586428966532725e0801b51b107d7aab6eaca9d9d9bb762b1b7d034c289975d",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/stage3-registration.json",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 7208,
+      "sha256": "0d4297e5e0cfec903db91856823e4e3cfcd1fb4444afddd710529dc209bdbccc",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/stage3-review.md",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 331,
+      "sha256": "82aa858c40bc65118852b51bafe42826b751404843598266f58eeec7f77f3cbc",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/stage4-blocks.json",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 1640,
+      "sha256": "98e2e9e8caf9f6e4185b72aa7d602421a80ceff603ed8e4f75bd52747a9af805",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/stage4-east-comparison-1x.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 156114,
+      "sha256": "c5151b32f332b6f2ee9ca926195b2fad6addb7917c49858d47656956506a16d4",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 480,
+      "pixelHeight": 212,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/stage4-east-input.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 670445,
+      "sha256": "13da8499fe1951aa21d7a0f1e2110e2e461dfa5914d83798c49b704ecf194cf5",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 832,
+      "pixelHeight": 448,
+      "mode": "RGBA"
+    },
+    {
+      "path": "work/stage4-east-registered.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 679408,
+      "sha256": "a5b9e1043c1d0ab04a64d2dfdd4b6c9c7a75aec967a14fa478bedf574a88412f",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 832,
+      "pixelHeight": 448,
+      "mode": "RGBA"
+    },
+    {
+      "path": "work/stage4-review.md",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 342,
+      "sha256": "a108ec79005af11f94940576f7a2d303e211cdda5b3993a5d9c47f3282a3a2bc",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/stage4-west-comparison-1x.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 149865,
+      "sha256": "6dd43cda7550717f84dcbb2a659dd22cef959dcb88aebc5e370e28a7573c24d4",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 480,
+      "pixelHeight": 212,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/stage4-west-input.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 759330,
+      "sha256": "06c6bac03cd9a1425dbb90879da7681844537c220a65c31c48392e0eed047362",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 1104,
+      "pixelHeight": 384,
+      "mode": "RGBA"
+    },
+    {
+      "path": "work/stage4-west-registered.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 780922,
+      "sha256": "a1d6b4fe4b0e5f5297403b250e0fd43279a6324fc46de502dd0b7b2187718a7c",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 1104,
+      "pixelHeight": 384,
+      "mode": "RGBA"
+    },
+    {
+      "path": "work/stage5-registration.json",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 9898,
+      "sha256": "783df885edcca1ae935800a2cba763a93b53f8b896627d5dc3315ef17ff79ce8",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/stage5-review.md",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 613,
+      "sha256": "e8b1419311bafe275b73d5f5e04e0a46fd63c3f87972865227aaadeac09abf8c",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/stage6-review.md",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 212,
+      "sha256": "e81cf5e0a5876e12da146e0ccd187a7284b3a46acce2d268900f40a57b008849",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/stage7-review.md",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 520,
+      "sha256": "193bded4e4a0ca06dbc4369b9de4fc69b1c8ce1c78eefc5e36e44db7c6b12cbf",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/structure-fringe-inspection.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 202816,
+      "sha256": "7a911c183123de9b7725ab9f5d454091979b1d6695efc398e8cfbce9b3b58054",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 320,
+      "pixelHeight": 1220,
+      "mode": "RGBA"
+    },
+    {
+      "path": "work/structure-stage3.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 481939,
+      "sha256": "54226fe5b0619484fcdb9bed5405261fb75e617e5bfce393e3585d411f040ff7",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 1792,
+      "pixelHeight": 704,
+      "mode": "RGBA"
+    },
+    {
+      "path": "work/transition-coverage.json",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 6204,
+      "sha256": "3bcf7fb7c967e16518052787b79725e9b05725a178126cb61c14f0ccdd7ceb8e",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/visual-bearing-samples-8x.png",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 19494,
+      "sha256": "f4f813ebf98fa5224991b476c29e3f38713e68c7d8d752ff311b584aea58f67b",
+      "geometryRevision": "trial-youying-final-002",
+      "pixelWidth": 900,
+      "pixelHeight": 480,
+      "mode": "RGB"
+    },
+    {
+      "path": "work/visual-review.json",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 283404,
+      "sha256": "d673928283b769069ef7a774c0fb5961bb714d452a7d7c54fbecbc4f9b9ef310",
+      "geometryRevision": "trial-youying-final-002"
+    },
+    {
+      "path": "work/write_delivery.py",
+      "purpose": "process/evidence/local runtime",
+      "bytes": 15449,
+      "sha256": "de73fec022f99620a0f8c61c026340098b3fbc0419d5fe23a50e36c0b3f690f9",
+      "geometryRevision": "trial-youying-final-002"
+    }
+  ]
+}

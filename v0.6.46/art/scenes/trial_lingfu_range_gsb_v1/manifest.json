@@ -1,0 +1,249 @@
+{
+  "schemaVersion": "1.0",
+  "version": "trial_lingfu_range_gsb_v1",
+  "geometryRevision": "trial-lingfu-final-002",
+  "actorParameterRevision": "trial-lingfu-base-feel-20261027-001",
+  "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+  "deliveryStatus": "SELF_CHECK_PASS_AWAITING_OWNER_REVIEW",
+  "reviewerPass": false,
+  "integrationAllowed": false,
+  "deliveryRoot": "art/scenes/trial_lingfu_range_gsb_v1/",
+  "space": {
+    "origin": "top-left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "units": "logical-pixel",
+    "logicalWidth": 1792,
+    "logicalHeight": 704,
+    "sourceMap": "maps/trial_lingfu_range.json",
+    "sourceToWorld": [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0
+    ]
+  },
+  "sourceDataSHA256": "08449afce07a641c5e5d82aee28435bb8e3d7e424f01307331468c5d76a53aa1",
+  "assets": [
+    {
+      "id": "asset_background",
+      "role": "background",
+      "path": "background.png",
+      "pixelWidth": 1792,
+      "pixelHeight": 704,
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "asset_playable",
+      "role": "playable",
+      "path": "playable.png",
+      "pixelWidth": 1792,
+      "pixelHeight": 704,
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    }
+  ],
+  "renderOrder": [
+    "background",
+    "playable",
+    "actor"
+  ],
+  "foreground": {
+    "applicable": false,
+    "reason": "all decoration behind actor; no required front occluders"
+  },
+  "entry": "index.html",
+  "launch": "python3 -m http.server 8786 --bind 127.0.0.1 --directory art/scenes/trial_lingfu_range_gsb_v1",
+  "maskPalette": {
+    "walk": [
+      150,
+      245,
+      160,
+      255
+    ],
+    "stand": [
+      0,
+      200,
+      80,
+      255
+    ],
+    "rope": [
+      0,
+      190,
+      230,
+      255
+    ],
+    "point": [
+      255,
+      70,
+      160,
+      255
+    ],
+    "jump": [
+      255,
+      160,
+      40,
+      255
+    ],
+    "drop": [
+      180,
+      80,
+      220,
+      255
+    ]
+  },
+  "rasterizationOrder": [
+    "walk",
+    "stand",
+    "rope",
+    "drop",
+    "jump",
+    "point"
+  ],
+  "provenance": "work/imagegen-provenance.json",
+  "prompts": "work/imagegen-prompts.json",
+  "validation": {
+    "routes": "work/final-routes.json",
+    "physics": "work/final-physics-check.json",
+    "browser": "work/final-browser-check.json",
+    "visual": "work/visual-review.json",
+    "selfCheck": "work/self-check.json",
+    "artcheck": "work/artcheck-final.log"
+  },
+  "files": [
+    {
+      "path": "scene.png",
+      "sha256": "43c0e13c633d89c5905a6a7e458ecff553b03afc11e5dfdd00e64ca3352de3d2",
+      "bytes": 2627640,
+      "geometryRevision": "trial-lingfu-final-002",
+      "pixelWidth": 1792,
+      "pixelHeight": 704,
+      "mode": "RGBA"
+    },
+    {
+      "path": "background.png",
+      "sha256": "4359f2c0a2be9fab6ed77a2d7acda4e46e3af38747d5cd9f21dde2c70c09d710",
+      "bytes": 2483769,
+      "geometryRevision": "trial-lingfu-final-002",
+      "pixelWidth": 1792,
+      "pixelHeight": 704,
+      "mode": "RGBA"
+    },
+    {
+      "path": "playable.png",
+      "sha256": "287bbf3feb1f431c7620183a2a247386c7ab57d5165f2ff014cade20afd5c956",
+      "bytes": 867795,
+      "geometryRevision": "trial-lingfu-final-002",
+      "pixelWidth": 1792,
+      "pixelHeight": 704,
+      "mode": "RGBA"
+    },
+    {
+      "path": "scene-data.json",
+      "sha256": "08449afce07a641c5e5d82aee28435bb8e3d7e424f01307331468c5d76a53aa1",
+      "bytes": 50122,
+      "geometryRevision": "trial-lingfu-final-002"
+    },
+    {
+      "path": "action-mask.png",
+      "sha256": "f8ff3bdf85986a23353cf8ebec7cc2fec88fce0d2683cbd7b9c9dec035c08c82",
+      "bytes": 6799,
+      "geometryRevision": "trial-lingfu-final-002",
+      "pixelWidth": 1792,
+      "pixelHeight": 704,
+      "mode": "RGBA"
+    },
+    {
+      "path": "action-overlay.png",
+      "sha256": "5a2d11fb0c5a89dbd23f24f49ee30e9f56d36f312376e66c866c27cc8fbfde95",
+      "bytes": 2619959,
+      "geometryRevision": "trial-lingfu-final-002",
+      "pixelWidth": 1792,
+      "pixelHeight": 704,
+      "mode": "RGBA"
+    },
+    {
+      "path": "collision-overlay.png",
+      "sha256": "e5f29068e3652c6c0846a52662a3b8f75709c5f5e7ad88cafe4b56802d56bf75",
+      "bytes": 2606550,
+      "geometryRevision": "trial-lingfu-final-002",
+      "pixelWidth": 1792,
+      "pixelHeight": 704,
+      "mode": "RGBA"
+    },
+    {
+      "path": "diagnostics-metadata.json",
+      "sha256": "4da2b8cb40ac374e332381895ca358968015582b903f9848769fcd22496a30c9",
+      "bytes": 1399,
+      "geometryRevision": "trial-lingfu-final-002"
+    },
+    {
+      "path": "validation-report.md",
+      "sha256": "2a1fb47c1b09e952b2dcd44a37079842ca8a586ce1da3600d12c6b18f7bd176d",
+      "bytes": 6900,
+      "geometryRevision": "trial-lingfu-final-002"
+    },
+    {
+      "path": "README.md",
+      "sha256": "3a2cdafbd38734cb544ccc23c4d30bd306e9ec7e8c0f077bdd6505e7a431c1fa",
+      "bytes": 1200,
+      "geometryRevision": "trial-lingfu-final-002"
+    },
+    {
+      "path": "DELIVERED.md",
+      "sha256": "ce09068ffe20fd300d924a32ef42f9f5e8e9e09dd0ba0e8bbfd3b52c9362ea1b",
+      "bytes": 1308,
+      "geometryRevision": "trial-lingfu-final-002"
+    },
+    {
+      "path": "index.html",
+      "sha256": "cce8859ac165834a7c509904156060fc226a147d3ac2c49ef17d3278833dc943",
+      "bytes": 249,
+      "geometryRevision": "trial-lingfu-final-002"
+    },
+    {
+      "path": "work/preview/index.html",
+      "sha256": "8afe32a1daa14c8a90ab694d17cc25225d42ee4c959bec34b8ccc9ba6851ce33",
+      "bytes": 3843,
+      "geometryRevision": "trial-lingfu-final-002"
+    },
+    {
+      "path": "work/preview/engine.mjs",
+      "sha256": "bbea03054581ac2d17aace9fb3c3ba30f5ca970082f8ea085202b784d661d755",
+      "bytes": 13521,
+      "geometryRevision": "trial-lingfu-final-002"
+    },
+    {
+      "path": "work/preview/preview.mjs",
+      "sha256": "31ac700c27fc536db53e3f76eb154710687964f3959a2b6e1ca68b9376bce072",
+      "bytes": 14075,
+      "geometryRevision": "trial-lingfu-final-002"
+    },
+    {
+      "path": "work/preview/player-reference-idle.png",
+      "sha256": "a852592b76b7414fc5572869afe97624658597da82134457cae6699f14bb51b6",
+      "bytes": 10016,
+      "geometryRevision": "trial-lingfu-final-002",
+      "pixelWidth": 96,
+      "pixelHeight": 96,
+      "mode": "RGBA"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+ "atlas": "fx_trial_tame_bond",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  96,
+  112
+ ],
+ "anims": [
+  {
+   "key": "fx_trial_tame_bond_play",
+   "frames": [
+    "fx_trial_tame_bond_play_01",
+    "fx_trial_tame_bond_play_02",
+    "fx_trial_tame_bond_play_03",
+    "fx_trial_tame_bond_play_04",
+    "fx_trial_tame_bond_play_05",
+    "fx_trial_tame_bond_play_06",
+    "fx_trial_tame_bond_play_07",
+    "fx_trial_tame_bond_play_08"
+   ],
+   "frameRate": 10,
+   "repeat": 0
+  }
+ ],
+ "blend": "normal",
+ "note": "驯服成功·灵契：原点 (0.5,1) 放山魈脚底。金环展开 + 4 片叶 → 光柱升起、中间一枚心形契纹（第 5 帧最亮，适合配「山魈愿意跟着你了！」）→ 淡出。播到第 5 帧时把山魈图集从 mon_mad_mandrill 换回 mon_mountain_mandrill。金光类描边 #A86E1E。",
+ "kind": "fx"
+}
