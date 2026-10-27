@@ -1,0 +1,462 @@
+{
+  "assetVersion": "chiyan_slope_2_gsb_v1",
+  "schemaVersion": "1.0",
+  "geometryRevision": "slope2-geometry-003",
+  "actorParameterRevision": "slope2-base-feel-20261027-001",
+  "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+  "status": "verified-local-pending-owner-review",
+  "ownerApproval": "pending; no production integration",
+  "generatedAt": "2026-10-27T11:19:31+08:00",
+  "space": {
+    "origin": "top-left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "units": "logical-pixel",
+    "logicalWidth": 3520,
+    "logicalHeight": 960,
+    "sourceMap": "maps/chiyan_slope_2.json",
+    "sourceToWorld": [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0
+    ]
+  },
+  "sceneDataSha256": "c17a5ff3aa1891dda1799ac63fb3c72c4f8833483f51f8b32292a933eb16ad48",
+  "stages": {
+    "0": "verified",
+    "1": "verified",
+    "2": "verified",
+    "3": "verified",
+    "4": "verified",
+    "5": "verified",
+    "6": "verified",
+    "7": "verified"
+  },
+  "files": [
+    {
+      "path": "scene.png",
+      "bytes": 3283377,
+      "sha256": "7d340ffc449c4b07c306754259a18e29ddce4bdcef43064bc03859f65bb0fefe",
+      "geometryRevision": "slope2-geometry-003",
+      "pixelWidth": 3520,
+      "pixelHeight": 960,
+      "mode": "RGB"
+    },
+    {
+      "path": "background.png",
+      "bytes": 2889039,
+      "sha256": "80c91cdd4b195fc47efb405e3a229ca81a5ce71eb460eff2dfa3a4be95f9efbf",
+      "geometryRevision": "slope2-geometry-003",
+      "pixelWidth": 3520,
+      "pixelHeight": 960,
+      "mode": "RGB",
+      "role": "background",
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "playable.png",
+      "bytes": 1032683,
+      "sha256": "60c1b820c56e6a384c50319082f685ef092d257121bc68e6d9452569a1156328",
+      "geometryRevision": "slope2-geometry-003",
+      "pixelWidth": 3520,
+      "pixelHeight": 960,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ],
+      "role": "playable",
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "path": "scene-data.json",
+      "bytes": 107534,
+      "sha256": "c17a5ff3aa1891dda1799ac63fb3c72c4f8833483f51f8b32292a933eb16ad48",
+      "geometryRevision": "slope2-geometry-003"
+    },
+    {
+      "path": "action-mask.png",
+      "bytes": 16904,
+      "sha256": "1ff1e43e0d93d9560fc0ad7258e29d4c3f85afdbba11a00a7e818725a56f15a0",
+      "geometryRevision": "slope2-geometry-003",
+      "pixelWidth": 3520,
+      "pixelHeight": 960,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "path": "action-overlay.png",
+      "bytes": 3739165,
+      "sha256": "1d8ffd16564ce3e186c92d2576ce354998fa3e63aeb6b295a9c1328e1c0d6cb5",
+      "geometryRevision": "slope2-geometry-003",
+      "pixelWidth": 3520,
+      "pixelHeight": 960,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ]
+    },
+    {
+      "path": "collision-overlay.png",
+      "bytes": 3704650,
+      "sha256": "2e659d2977ce4d7483dd1ad0613a5575e6eec1dee72a76e94c91cde1742740c5",
+      "geometryRevision": "slope2-geometry-003",
+      "pixelWidth": 3520,
+      "pixelHeight": 960,
+      "mode": "RGBA",
+      "alphaExtrema": [
+        255,
+        255
+      ]
+    },
+    {
+      "path": "diagnostics-metadata.json",
+      "bytes": 1516,
+      "sha256": "9c420155785001f40b607d0926f91981c803ae3195d831d74caa19ac8d971774",
+      "geometryRevision": "slope2-geometry-003"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1660,
+      "sha256": "16c91e245ef1935c354ffb2c96bd1b04a3c4a5522993fe46a05f1c79e39d50ef",
+      "geometryRevision": "slope2-geometry-003"
+    },
+    {
+      "path": "index.html",
+      "bytes": 301,
+      "sha256": "a12adfb1270e7440b36ed7776409899a4349bee0837b398019dba33e6d43d3b7",
+      "geometryRevision": "slope2-geometry-003"
+    },
+    {
+      "path": "validation-report.md",
+      "bytes": 9632,
+      "sha256": "a387f52d2a9980ad58d060d53486430c3a792b4e3470bef2f02488914cb288de",
+      "geometryRevision": "slope2-geometry-003"
+    },
+    {
+      "path": "DELIVERED.md",
+      "bytes": 842,
+      "sha256": "090888ec431f90f5a7cd4c0d43718702de4e3481bc879ae85528f9877d20ea7e",
+      "geometryRevision": "slope2-geometry-003"
+    }
+  ],
+  "runtimeFiles": [
+    {
+      "path": "work/preview/engine.mjs",
+      "bytes": 14309,
+      "sha256": "c1399e4eb43698cb0cf3b9a1108c505a510878c3d01ebeff6374fdedc886b427"
+    },
+    {
+      "path": "work/preview/index.html",
+      "bytes": 3926,
+      "sha256": "1dea2caf90b9e37371ec93ca4e98ea9da8e767ea84f6ace9ded584ed7b9c5365"
+    },
+    {
+      "path": "work/preview/mon_fire_crow.png",
+      "bytes": 2380,
+      "sha256": "cee6a5c4b1c40dcaf63501f75458a11b6abb2ef274e1e6c32763e2875639e71d"
+    },
+    {
+      "path": "work/preview/mon_flame_puppet.png",
+      "bytes": 2812,
+      "sha256": "25098c0c69969e8a4da50706928b1a5cddc7d2b0790184a57a9527fb96d10b1d"
+    },
+    {
+      "path": "work/preview/npc-reference-data.json",
+      "bytes": 2,
+      "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+    },
+    {
+      "path": "work/preview/player-reference-idle.png",
+      "bytes": 10012,
+      "sha256": "520235d2f9c4c9e83b140ba439c2d18becfaa8e962fa15a98e35a14003ce0181"
+    },
+    {
+      "path": "work/preview/preview.mjs",
+      "bytes": 15344,
+      "sha256": "37a1eed4baec00c8dc2cdd48379855e7d6ec1caaf9ac7f62ce81d14b2baf3e57"
+    },
+    {
+      "path": "work/preview/prop_chest.png",
+      "bytes": 1183,
+      "sha256": "e686ef28d3ba282530c304f19c2df4d43d9a672767e692547871dfc0eadee0e9"
+    },
+    {
+      "path": "work/preview/prop_gather_fire_herb.png",
+      "bytes": 2506,
+      "sha256": "d4e4699f2430521c090c863b251005cc53d564c6834602498cb4d944ca8983ac"
+    }
+  ],
+  "evidenceFiles": [
+    {
+      "path": "work/final-routes.json",
+      "sha256": "0da78cc16937562dfcab7e405125c513ed6123d357aae8682927794feab0dbaf",
+      "geometryRevision": "slope2-geometry-003"
+    },
+    {
+      "path": "work/final-browser-check.json",
+      "sha256": "48dfec3a68cd86ceacda503915d81ddac7bf66bf56797a2e43f3176e7631fe88",
+      "geometryRevision": "slope2-geometry-003"
+    },
+    {
+      "path": "work/final-geometry-measurements.json",
+      "sha256": "efcea8ed41b5bb7006e44283ffd34261e7a5b3a5db15d80ae3c7a098c658dfca",
+      "geometryRevision": "slope2-geometry-003"
+    },
+    {
+      "path": "work/checks/physics-check.json",
+      "sha256": "789fd23628e0d43e06a2a4516d1163f0f921ae34372842e1146bc2752c401cda",
+      "geometryRevision": "slope2-geometry-003"
+    },
+    {
+      "path": "work/checks/protected-boundary-check.json",
+      "sha256": "32902eee1f4f59900bb1cbe78b236c3cb5901d1273d112347c0d5dc8a4dd9d2a",
+      "geometryRevision": "slope2-geometry-003"
+    },
+    {
+      "path": "work/replays-final/route_all_climbs.json",
+      "sha256": "58e4ebf1cad8b543eccf3e01bb8fc9a8a47d7812754b674a98f8885aaa0918e0",
+      "geometryRevision": "slope2-geometry-003"
+    },
+    {
+      "path": "work/replays-final/route_branch_gate.json",
+      "sha256": "b38e1b7fffb05fe65731869a9e48c37822c0f466b76ca0ca34e409a500829f6b",
+      "geometryRevision": "slope2-geometry-003"
+    },
+    {
+      "path": "work/replays-final/route_return.json",
+      "sha256": "2a1dffbbf8f61d6533c903e744c51472f415bc5009d67442ad22f981cbd20fa3",
+      "geometryRevision": "slope2-geometry-003"
+    },
+    {
+      "path": "work/replays-final/route_main.json",
+      "sha256": "9d8c740b4ff08c71ea4de1981461cdd7ebdab0a09d4e352dafa2d0956b70de10",
+      "geometryRevision": "slope2-geometry-003"
+    },
+    {
+      "path": "work/replays-final/route_branch_west.json",
+      "sha256": "33d9105ab6846fe59903a49e7a4d3da2d54a8e5dcb8169f9352abfeb349ece58",
+      "geometryRevision": "slope2-geometry-003"
+    },
+    {
+      "path": "work/replays-final/route_branch_center.json",
+      "sha256": "d9cca49799fc5c292db10a6c67270c772b9ea7b08080f4c337898706c84cbe53",
+      "geometryRevision": "slope2-geometry-003"
+    },
+    {
+      "path": "work/replays-final/route_branch_east.json",
+      "sha256": "5bff399eb2edd6af00b687beba3a10b82c9869ddac3fb3117716c095dbad7780",
+      "geometryRevision": "slope2-geometry-003"
+    }
+  ],
+  "assets": [
+    {
+      "id": "background",
+      "role": "background",
+      "path": "background.png",
+      "pixelWidth": 3520,
+      "pixelHeight": 960,
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "playable",
+      "role": "playable",
+      "path": "playable.png",
+      "pixelWidth": 3520,
+      "pixelHeight": 960,
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    }
+  ],
+  "drawOrder": [
+    "background",
+    "playable",
+    "actor-and-reference-sprites"
+  ],
+  "foreground": {
+    "applicable": false,
+    "reason": "no foreground objects occluding actors or ladder ports"
+  },
+  "diagnostics": {
+    "maskPalette": {
+      "walk": [
+        150,
+        245,
+        160,
+        255
+      ],
+      "stand": [
+        0,
+        200,
+        80,
+        255
+      ],
+      "rope": [
+        0,
+        190,
+        230,
+        255
+      ],
+      "ladder": [
+        80,
+        140,
+        255,
+        255
+      ],
+      "hazard": [
+        255,
+        70,
+        30,
+        255
+      ],
+      "point": [
+        255,
+        70,
+        160,
+        255
+      ],
+      "jump": [
+        255,
+        205,
+        50,
+        255
+      ],
+      "drop": [
+        250,
+        150,
+        30,
+        255
+      ]
+    },
+    "rasterizationOrder": [
+      "walk",
+      "stand",
+      "rope",
+      "ladder",
+      "jump",
+      "drop",
+      "hazard",
+      "point"
+    ],
+    "regionIdIndex": null,
+    "geometryRevision": "slope2-geometry-003"
+  },
+  "entry": {
+    "path": "index.html",
+    "startCommand": "python3 -m http.server 8892 --bind 127.0.0.1",
+    "url": "http://127.0.0.1:8892/index.html",
+    "resourcePaths": "relative",
+    "integration": "standalone local minimum tester; no game/public changes"
+  },
+  "generation": {
+    "tool": "builtin image_gen.imagegen",
+    "calls": 7,
+    "nativeMasterPixels": [
+      2161,
+      728
+    ],
+    "finalCanvasPixels": [
+      3520,
+      960
+    ],
+    "operations": "AI illustration/refinement/extraction/inpainting; local crop, size registration, alpha placement and compositing only",
+    "provenance": "work/imagegen-provenance.json",
+    "promptDirectory": "work/prompts/"
+  },
+  "sourceIntegrity": "work/checks/protected-boundary-check.json",
+  "requiredRoutes": [
+    {
+      "id": "route_main",
+      "status": "verified",
+      "error": null,
+      "frames": 1951,
+      "evidence": "work/replays-final/route_main.json"
+    },
+    {
+      "id": "route_return",
+      "status": "verified",
+      "error": null,
+      "frames": 3917,
+      "evidence": "work/replays-final/route_return.json"
+    },
+    {
+      "id": "route_all_climbs",
+      "status": "verified",
+      "error": null,
+      "frames": 8830,
+      "evidence": "work/replays-final/route_all_climbs.json"
+    },
+    {
+      "id": "route_branch_west",
+      "status": "verified",
+      "error": null,
+      "frames": 2531,
+      "evidence": "work/replays-final/route_branch_west.json"
+    },
+    {
+      "id": "route_branch_center",
+      "status": "verified",
+      "error": null,
+      "frames": 2935,
+      "evidence": "work/replays-final/route_branch_center.json"
+    },
+    {
+      "id": "route_branch_east",
+      "status": "verified",
+      "error": null,
+      "frames": 2715,
+      "evidence": "work/replays-final/route_branch_east.json"
+    },
+    {
+      "id": "route_branch_gate",
+      "status": "verified",
+      "error": null,
+      "frames": 2380,
+      "evidence": "work/replays-final/route_branch_gate.json"
+    }
+  ],
+  "limitations": [
+    "Independent AABB 60Hz adapter; production Phaser not integrated.",
+    "Ceiling and continuous hazard tick checks are explicitly LOCAL fixtures.",
+    "Static monster/gather reference frames; no combat, service portal loading or inventory logic.",
+    "Host schedules retain fixed physics dt; elapsed over100ms is clamped."
+  ]
+}
