@@ -36,6 +36,10 @@ import trialLingfuRangeSceneData from '../data/art/scenes/trial_lingfu_range_gsb
 import trialLingfuRangeTiledMap from '../data/maps/trial_lingfu_range.json';
 import trialTaixuStageSceneData from '../data/art/scenes/trial_taixu_stage_gsb_v1/scene-data.json';
 import trialTaixuStageTiledMap from '../data/maps/trial_taixu_stage.json';
+import trialYouyingVaultSceneData from '../data/art/scenes/trial_youying_vault_gsb_v1/scene-data.json';
+import trialYouyingVaultTiledMap from '../data/maps/trial_youying_vault.json';
+import trialWanshouPenSceneData from '../data/art/scenes/trial_wanshou_pen_gsb_v1/scene-data.json';
+import trialWanshouPenTiledMap from '../data/maps/trial_wanshou_pen.json';
 import { FEEL, SPEC } from './config/feel';
 import { buildTiledMap } from './scenes/MapBuilder';
 
@@ -1751,5 +1755,309 @@ function testTrialTaixuStageGsb() {
   eq(JSON.stringify(tiledMap), mapBefore, 'trial_taixu_stage: building leaves the Tiled map input unchanged');
 }
 testTrialTaixuStageGsb();
+
+// Approved scene-data SHA256: 4a420537d95d8b48e1c8454db16789d8a11f8aa5d43253ec01ccfa6bced88fbd.
+// Youying's night trial retains its token, patrols and shadow/return zones with five approved ropes.
+function testTrialYouyingVaultGsb() {
+  const sceneId = 'trial_youying_vault_gsb_v1', revision = 'trial-youying-final-002';
+  const data = clone(trialYouyingVaultSceneData), tiledMap = clone(trialYouyingVaultTiledMap);
+  const f = fixture(null, false), dataBefore = JSON.stringify(data), mapBefore = JSON.stringify(tiledMap);
+  f.cache.clear(); f.cache.set(`gsb_${sceneId}_data`, data);
+  f.textures.add(`gsb_${sceneId}_background`); f.textures.add(`gsb_${sceneId}_playable`);
+  const map = buildTiledMap(f.scene, tiledMap, 'tiles');
+  eq(map.gsbScene, sceneId, 'trial_youying_vault: checked-in map enables its GSB scene');
+  eq(tiledMap.properties.find(property => property.name === 'gsbScene')?.value,
+    sceneId, 'trial_youying_vault: map binds the approved GSB scene');
+  eq(tiledMap.properties.find(property => property.name === 'gsbGeometryRevision')?.value,
+    revision, 'trial_youying_vault: map binds the approved geometry revision');
+  eq(data.geometryRevision, revision, 'trial_youying_vault: scene-data has the approved geometry revision');
+  same([map.width, map.height], [1792, 704], 'trial_youying_vault: logical world dimensions match the approved scene');
+  same([data.space.logicalWidth, data.space.logicalHeight], [1792, 704],
+    'trial_youying_vault: scene-data declares the approved logical dimensions');
+  eq(data.space.sourceMap, 'maps/trial_youying_vault.json', 'trial_youying_vault: scene-data identifies the original trial map');
+  same([tiledMap.width, tiledMap.height], [56, 22], 'trial_youying_vault: checked-in tile grid is 56 x 22');
+  same([tiledMap.tilewidth, tiledMap.tileheight], [32, 32], 'trial_youying_vault: checked-in tiles are 32 x 32');
+  same([tiledMap.width * tiledMap.tilewidth, tiledMap.height * tiledMap.tileheight], [map.width, map.height],
+    'trial_youying_vault: checked-in tile grid matches logical world dimensions');
+  same(Object.fromEntries(tiledMap.properties.filter(property => !['gsbScene', 'gsbGeometryRevision'].includes(property.name))
+    .map(property => [property.name, property.value])), {
+    id: 'trial_youying_vault', name: '幽影楼·夜藏宝阁', safeZone: false, qiDensity: 4, area: 'youying',
+    trial: 'trial_sect_youying', night: true, returnTown: false, allowTalismanReturn: false,
+  }, 'trial_youying_vault: all existing map properties and night trial identity are preserved');
+  same([data.trial, data.area, data.night, data.qiDensity, data.safeZone],
+    ['trial_sect_youying', 'youying', true, 4, false], 'trial_youying_vault: scene-data retains the existing trial environment');
+  same([map.id, map.trial, map.night, map.safeZone], ['trial_youying_vault', 'trial_sect_youying', true, false],
+    'trial_youying_vault: the built map retains its identity, trial flow and unsafe night setting');
+  same(data.solids.map(solid => [solid.id, solid.surface, solid.polygon]), [
+    ['solid_ground', 's_ground', [[0, 640], [1792, 640], [1792, 704], [0, 704]]],
+    ['solid_token', 's_token', [[1632, 544], [1792, 544], [1792, 640], [1632, 640]]],
+  ], 'trial_youying_vault: both solid polygons retain their approved spans and thickness');
+  same(f.groups.map(group => group.children.length), [2, 3],
+    'trial_youying_vault: the full map builds two solid polygon bodies and three one-way bodies');
+  same(f.groups[0].children.map(rectangle), [
+    { x: 0, y: 640, width: 1792, height: 64 },
+    { x: 1632, y: 544, width: 160, height: 96 },
+  ], 'trial_youying_vault: the full map preserves the foundation and token dais without duplicate surface bodies');
+  same(data.surfaces.map(surface => [surface.id, surface.support, surface.polyline]), [
+    ['s_ground', 'solid', [[0, 640], [1632, 640]]],
+    ['s_token', 'solid', [[1632, 544], [1792, 544]]],
+    ['s_west', 'one-way', [[160, 512], [1024, 512]]],
+    ['s_library', 'one-way', [[1216, 512], [1568, 512]]],
+    ['s_upper', 'one-way', [[1024, 384], [1792, 384]]],
+  ], 'trial_youying_vault: all five approved surfaces retain their identities, support kinds and exact landing spans');
+  for (const surface of data.surfaces) {
+    const left = Math.min(...surface.polyline.map(point => point[0]));
+    const right = Math.max(...surface.polyline.map(point => point[0]));
+    const bodies = f.groups[surface.support === 'one-way' ? 1 : 0].children.map(rectangle);
+    ok(bodies.some(body => body.y === surface.polyline[0][1] && body.x <= left && body.x + body.width >= right),
+      `trial_youying_vault: ${surface.id} retains its full landing span and exact top edge`);
+  }
+  same(f.groups[1].children.map(rectangle), [
+    { x: 160, y: 512, width: 864, height: SPEC.oneWayEdge },
+    { x: 1216, y: 512, width: 352, height: SPEC.oneWayEdge },
+    { x: 1024, y: 384, width: 768, height: SPEC.oneWayEdge },
+  ], 'trial_youying_vault: all three one-way bodies use exact approved top edges and spans');
+  ok(f.groups[1].children.every(object => object.body?.checkCollision.up &&
+    !object.body.checkCollision.down && !object.body.checkCollision.left && !object.body.checkCollision.right),
+    'trial_youying_vault: all one-way bodies only collide on top');
+  ok(f.groups[0].children.every(object => object.body?.checkCollision.up &&
+    object.body.checkCollision.down && object.body.checkCollision.left && object.body.checkCollision.right),
+    'trial_youying_vault: solid bodies keep all collision directions');
+  const surfaceOnlyData = { ...clone(data), solids: [] }, surfaceOnlyTiledMap = clone(tiledMap);
+  const surfaceOnlyDataBefore = JSON.stringify(surfaceOnlyData), surfaceOnlyMapBefore = JSON.stringify(surfaceOnlyTiledMap);
+  const surfaceOnlyFixture = fixture(null, false);
+  surfaceOnlyFixture.cache.clear(); surfaceOnlyFixture.cache.set(`gsb_${sceneId}_data`, surfaceOnlyData);
+  surfaceOnlyFixture.textures.add(`gsb_${sceneId}_background`); surfaceOnlyFixture.textures.add(`gsb_${sceneId}_playable`);
+  buildTiledMap(surfaceOnlyFixture.scene, surfaceOnlyTiledMap, 'tiles');
+  same(surfaceOnlyFixture.groups.map(group => group.children.length), [2, 3],
+    'trial_youying_vault: the independent surface-only fallback builds two solid and three one-way bodies');
+  same(surfaceOnlyFixture.groups[0].children.map(rectangle), [
+    { x: 0, y: 640, width: 1632, height: FEEL.tile },
+    { x: 1632, y: 544, width: 160, height: FEEL.tile },
+  ], 'trial_youying_vault: surface-only fallback collision spans exactly match both approved solid surfaces');
+  same(surfaceOnlyFixture.groups[1].children.map(rectangle), f.groups[1].children.map(rectangle),
+    'trial_youying_vault: surface-only fallback retains all three approved one-way bodies');
+  eq(JSON.stringify(surfaceOnlyData), surfaceOnlyDataBefore,
+    'trial_youying_vault: surface-only fallback leaves its cached scene-data input unchanged');
+  eq(JSON.stringify(surfaceOnlyTiledMap), surfaceOnlyMapBefore,
+    'trial_youying_vault: surface-only fallback leaves its Tiled map input unchanged');
+  same(map.spawn, { x: 64, y: 640 }, 'trial_youying_vault: player starts at the approved ground spawn');
+  same(data.points.filter(point => point.id === 'start_spawn').map(point => point.position),
+    [[map.spawn.x, map.spawn.y]], 'trial_youying_vault: player start matches the approved scene spawn point');
+  const tiledObjects = tiledMap.layers.flatMap(layer => layer.type === 'objectgroup' ? layer.objects ?? [] : []);
+  same(tiledObjects.filter(object => object.type === 'playerStart').map(object =>
+    [object.name, object.x, object.y, object.width, object.height]),
+  [['playerStart', 64, 640, 0, 0]], 'trial_youying_vault: Tiled retains exactly one approved player start');
+  eq(map.ropes.length, 5, 'trial_youying_vault: all five ropes are preserved');
+  same(data.climbs.map(climb => [climb.id, climb.kind, climb.ends.start.position, climb.ends.start.surface,
+    climb.ends.end.position, climb.ends.end.surface, climb.corridor]), [
+    ['rope_6', 'rope', [208, 640], 's_ground', [208, 512], 's_west', [[190, 512], [226, 512], [226, 640], [190, 640]]],
+    ['rope_31', 'rope', [1008, 640], 's_ground', [1008, 512], 's_west', [[990, 512], [1026, 512], [1026, 640], [990, 640]]],
+    ['rope_39', 'rope', [1264, 640], 's_ground', [1264, 512], 's_library', [[1246, 512], [1282, 512], [1282, 640], [1246, 640]]],
+    ['rope_33', 'rope', [1072, 640], 's_ground', [1072, 384], 's_upper', [[1054, 384], [1090, 384], [1090, 640], [1054, 640]]],
+    ['rope_53', 'rope', [1712, 544], 's_token', [1712, 384], 's_upper', [[1694, 384], [1730, 384], [1730, 544], [1694, 544]]],
+  ], 'trial_youying_vault: all climbs keep rope identities, surface bindings, exact endpoints and 36px corridors');
+  same(tiledObjects.filter(object => ['rope', 'ladder'].includes(object.type)).map(object =>
+    [object.name, object.type, object.x, object.y, object.width, object.height]), [
+    ['rope_6', 'rope', 208, 512, 0, 128],
+    ['rope_31', 'rope', 1008, 512, 0, 128],
+    ['rope_39', 'rope', 1264, 512, 0, 128],
+    ['rope_33', 'rope', 1072, 384, 0, 256],
+    ['rope_53', 'rope', 1712, 384, 0, 160],
+  ], 'trial_youying_vault: five named Tiled ropes reach their approved bearing surfaces');
+  same(map.ropes, [
+    { kind: 'rope', x: 208, top: 512, bottom: 640, halfW: FEEL.ropeGrabRangeX },
+    { kind: 'rope', x: 1008, top: 512, bottom: 640, halfW: FEEL.ropeGrabRangeX },
+    { kind: 'rope', x: 1264, top: 512, bottom: 640, halfW: FEEL.ropeGrabRangeX },
+    { kind: 'rope', x: 1072, top: 384, bottom: 640, halfW: FEEL.ropeGrabRangeX },
+    { kind: 'rope', x: 1712, top: 384, bottom: 544, halfW: FEEL.ropeGrabRangeX },
+  ], 'trial_youying_vault: all runtime ropes keep exact endpoints and FEEL grab half-width');
+  same(map.ropes.map(rope => [rope.kind, rope.x, rope.top, rope.bottom, rope.halfW]),
+    data.climbs.map(climb => [climb.kind, climb.ends.end.position[0], climb.ends.end.position[1],
+      climb.ends.start.position[1], FEEL.ropeGrabRangeX]),
+    'trial_youying_vault: runtime ropes match the approved scene climbs');
+  const token = [['token_8', 'token', 1744, 544, { item: 'shadow_token' }]];
+  same(map.objects.filter(object => object.type === 'token').map(object =>
+    [object.name, object.type, object.x, object.y, object.props]), token,
+  'trial_youying_vault: the existing named token retains its approved position and shadow_token item');
+  same(tiledObjects.filter(object => object.type === 'token').map(object =>
+    [object.name, object.type, object.x, object.y, Object.fromEntries(object.properties.map(property => [property.name, property.value]))]),
+  token, 'trial_youying_vault: Tiled retains exactly the existing token object');
+  same(data.points.filter(point => point.id === 'shadow_token').map(point => [point.position, point.properties]),
+    [[[1744, 544], { item: 'shadow_token' }]], 'trial_youying_vault: token agrees with the approved scene goal');
+  const patrols = [
+    ['patrol_1', 'patrol_path', 448, 640, 320, 0,
+      { index: 1, monster: 'youying_patrol', startX: 464, endX: 784, turnPauseMs: 1500, visionLength: 192, visionHalfAngleDeg: 15 }],
+    ['patrol_2', 'patrol_path', 1280, 512, 192, 0,
+      { index: 2, monster: 'youying_patrol', startX: 1296, endX: 1488, turnPauseMs: 1500, visionLength: 192, visionHalfAngleDeg: 15 }],
+    ['patrol_3', 'patrol_path', 1344, 640, 192, 0,
+      { index: 3, monster: 'youying_patrol', startX: 1360, endX: 1552, turnPauseMs: 1500, visionLength: 192, visionHalfAngleDeg: 15 }],
+  ];
+  same(map.objects.filter(object => object.type === 'patrol_path').map(object =>
+    [object.name, object.type, object.x, object.y, object.w, object.h, object.props]), patrols,
+  'trial_youying_vault: all three named patrols preserve positions, path sizes, monster, endpoints, pauses and vision');
+  same(tiledObjects.filter(object => object.type === 'patrol_path').map(object =>
+    [object.name, object.type, object.x, object.y, object.width, object.height,
+      Object.fromEntries(object.properties.map(property => [property.name, property.value]))]), patrols,
+  'trial_youying_vault: Tiled retains all three patrol paths and every gameplay property');
+  same(map.objects.filter(object => object.type === 'patrol_path').map(object =>
+    [object.name, object.type, object.x, object.y, object.props]),
+  data.patrols.map(patrol => [patrol.id, patrol.type, ...patrol.position, patrol.properties]),
+  'trial_youying_vault: retained patrol identities, positions and properties match scene-data');
+  const zones = [
+    ['return_point', 0, 544, 160, 96, { label: '起点（交令牌）', kind: 'return_point' }],
+    ['shadow_18', 576, 576, 64, 64, { label: '阴影', kind: 'shadow' }],
+    ['shadow_36', 1152, 576, 64, 64, { label: '阴影', kind: 'shadow' }],
+  ];
+  same(map.zones.map(zone => [zone.name, zone.x, zone.y, zone.w, zone.h, zone.props]), zones,
+    'trial_youying_vault: the return point and both named shadow zones preserve exact rectangles and properties');
+  same(tiledObjects.filter(object => object.type === 'zone').map(object =>
+    [object.name, object.x, object.y, object.width, object.height,
+      Object.fromEntries(object.properties.map(property => [property.name, property.value]))]), zones,
+  'trial_youying_vault: Tiled retains the return zone and both shadow zones');
+  same(map.zones.map(zone => [zone.name, [[zone.x, zone.y], [zone.x + zone.w, zone.y],
+    [zone.x + zone.w, zone.y + zone.h], [zone.x, zone.y + zone.h]], zone.props]),
+  data.zones.map(zone => [zone.sourceName, zone.polygon, zone.properties]),
+  'trial_youying_vault: all retained gameplay zones agree with approved scene polygons');
+  const returnZone = map.zones.find(zone => zone.name === 'return_point')!;
+  ok(map.spawn.x >= returnZone.x && map.spawn.x <= returnZone.x + returnZone.w &&
+    map.spawn.y >= returnZone.y && map.spawn.y <= returnZone.y + returnZone.h,
+  'trial_youying_vault: the token return zone still includes the natural spawn');
+  same(map.objects.filter(object => !['token', 'patrol_path'].includes(object.type)), [],
+    'trial_youying_vault: only the approved token and patrol paths accompany the gameplay zones');
+  same(map.spawns, [], 'trial_youying_vault: no independent monster spawns are introduced');
+  same(map.spawnGates, [], 'trial_youying_vault: no spawn gates are introduced');
+  same(map.hidden, [], 'trial_youying_vault: no hidden controllers are introduced');
+  eq(f.tilemaps, 0, 'trial_youying_vault: GSB skips the legacy tilemap path');
+  same(f.displays.filter(object => object.kind !== 'zone').map(object => [object.kind, object.key]),
+    [['image', `gsb_${sceneId}_background`], ['image', `gsb_${sceneId}_playable`]],
+    'trial_youying_vault: GSB draws background and playable art without legacy terrain or ropes');
+  const legacyLayers = tiledMap.layers.filter(layer => layer.type === 'tilelayer' && ['ground', 'oneway'].includes(layer.name));
+  same(legacyLayers.map(layer => layer.name), ['ground', 'oneway'], 'trial_youying_vault: both legacy collision layers are present');
+  ok(legacyLayers.every(layer => layer.data?.length === tiledMap.width * tiledMap.height && layer.data.every(gid => gid === 0)),
+    'trial_youying_vault: checked-in legacy collision layers are fully cleared');
+  eq(JSON.stringify(data), dataBefore, 'trial_youying_vault: building leaves the cached scene-data input unchanged');
+  eq(JSON.stringify(tiledMap), mapBefore, 'trial_youying_vault: building leaves the Tiled map input unchanged');
+}
+testTrialYouyingVaultGsb();
+
+// Wanshou's pen keeps its mandrill spawn and both wave gates on three approved standing surfaces.
+function testTrialWanshouPenGsb() {
+  const sceneId = 'trial_wanshou_pen_gsb_v1', revision = 'trial-wanshou-final-002';
+  const data = clone(trialWanshouPenSceneData), tiledMap = clone(trialWanshouPenTiledMap);
+  const f = fixture(null, false), dataBefore = JSON.stringify(data), mapBefore = JSON.stringify(tiledMap);
+  f.cache.clear(); f.cache.set(`gsb_${sceneId}_data`, data);
+  f.textures.add(`gsb_${sceneId}_background`); f.textures.add(`gsb_${sceneId}_playable`);
+  const map = buildTiledMap(f.scene, tiledMap, 'tiles');
+  eq(map.gsbScene, sceneId, 'trial_wanshou_pen: checked-in map enables its GSB scene');
+  eq(tiledMap.properties.find(property => property.name === 'gsbScene')?.value,
+    sceneId, 'trial_wanshou_pen: map binds the approved GSB scene');
+  eq(tiledMap.properties.find(property => property.name === 'gsbGeometryRevision')?.value,
+    revision, 'trial_wanshou_pen: map binds the approved geometry revision');
+  eq(data.geometryRevision, revision, 'trial_wanshou_pen: scene-data has the approved geometry revision');
+  same([map.width, map.height], [1600, 640], 'trial_wanshou_pen: logical world dimensions match the approved scene');
+  same([data.space.logicalWidth, data.space.logicalHeight], [1600, 640],
+    'trial_wanshou_pen: scene-data declares the approved logical dimensions');
+  same([tiledMap.width, tiledMap.height, tiledMap.tilewidth, tiledMap.tileheight], [50, 20, 32, 32],
+    'trial_wanshou_pen: checked-in tile grid is 50 x 20 with 32px tiles');
+  same([tiledMap.width * tiledMap.tilewidth, tiledMap.height * tiledMap.tileheight], [map.width, map.height],
+    'trial_wanshou_pen: checked-in tile grid matches logical world dimensions');
+  same(Object.fromEntries(tiledMap.properties.filter(property => !['gsbScene', 'gsbGeometryRevision'].includes(property.name))
+    .map(property => [property.name, property.value])), {
+    id: 'trial_wanshou_pen', name: '万兽山·兽栏', safeZone: false, qiDensity: 4, area: 'wanshou',
+    trial: 'trial_sect_wanshou', returnTown: false, allowTalismanReturn: false,
+  }, 'trial_wanshou_pen: every existing map property and trial identity is preserved');
+  eq(data.source.path, 'maps/trial_wanshou_pen.json', 'trial_wanshou_pen: scene-data identifies the original trial map');
+  same(data.source.properties, { qiDensity: 4, area: 'wanshou', trial: 'trial_sect_wanshou', safeZone: false },
+    'trial_wanshou_pen: scene-data retains the existing trial environment');
+  same([map.id, map.trial, map.safeZone], ['trial_wanshou_pen', 'trial_sect_wanshou', false],
+    'trial_wanshou_pen: the built map retains its identity, trial flow and unsafe zone');
+  same(data.surfaces.map(surface => [surface.id, surface.support, surface.polyline]), [
+    ['s_ground', 'solid', [[0, 576], [1600, 576]]],
+    ['s_pen_left', 'one-way', [[128, 480], [352, 480]]],
+    ['s_pen_right', 'one-way', [[1248, 480], [1472, 480]]],
+  ], 'trial_wanshou_pen: all three surfaces retain their identities, support kinds and exact landing spans');
+  same(data.solids.map(solid => [solid.id, solid.terrain, solid.polygon]), [
+    ['solid_ground', 's_ground', [[0, 576], [1600, 576], [1600, 640], [0, 640]]],
+  ], 'trial_wanshou_pen: the approved ground polygon retains its full thickness');
+  same(f.groups.map(group => group.children.length), [1, 2],
+    'trial_wanshou_pen: the full map builds one solid polygon and two one-way bodies');
+  same(f.groups[0].children.map(rectangle), [{ x: 0, y: 576, width: 1600, height: 64 }],
+    'trial_wanshou_pen: the full ground polygon replaces duplicate solid surface bodies');
+  same(f.groups[1].children.map(rectangle), [
+    { x: 128, y: 480, width: 224, height: SPEC.oneWayEdge },
+    { x: 1248, y: 480, width: 224, height: SPEC.oneWayEdge },
+  ], 'trial_wanshou_pen: both pen platforms use exact approved spans and thin one-way tops');
+  for (const surface of data.surfaces) {
+    const left = Math.min(...surface.polyline.map(point => point[0]));
+    const right = Math.max(...surface.polyline.map(point => point[0]));
+    const bodies = f.groups[surface.support === 'one-way' ? 1 : 0].children.map(rectangle);
+    ok(bodies.some(body => body.y === surface.polyline[0][1] && body.x === left && body.x + body.width === right),
+      `trial_wanshou_pen: ${surface.id} retains its full landing span and exact top edge`);
+  }
+  ok(f.groups[1].children.every(object => object.body?.checkCollision.up &&
+    !object.body.checkCollision.down && !object.body.checkCollision.left && !object.body.checkCollision.right),
+    'trial_wanshou_pen: both one-way bodies collide only on top');
+  ok(f.groups[0].children.every(object => object.body?.checkCollision.up &&
+    object.body.checkCollision.down && object.body.checkCollision.left && object.body.checkCollision.right),
+    'trial_wanshou_pen: the solid ground keeps all collision directions');
+  const surfaceOnlyData = { ...clone(data), solids: [] }, surfaceOnlyTiledMap = clone(tiledMap);
+  const surfaceOnlyDataBefore = JSON.stringify(surfaceOnlyData), surfaceOnlyMapBefore = JSON.stringify(surfaceOnlyTiledMap);
+  const surfaceOnlyFixture = fixture(null, false);
+  surfaceOnlyFixture.cache.clear(); surfaceOnlyFixture.cache.set(`gsb_${sceneId}_data`, surfaceOnlyData);
+  surfaceOnlyFixture.textures.add(`gsb_${sceneId}_background`); surfaceOnlyFixture.textures.add(`gsb_${sceneId}_playable`);
+  buildTiledMap(surfaceOnlyFixture.scene, surfaceOnlyTiledMap, 'tiles');
+  same(surfaceOnlyFixture.groups.map(group => group.children.length), [1, 2],
+    'trial_wanshou_pen: surface-only fallback builds one solid and two one-way bodies');
+  same(surfaceOnlyFixture.groups[0].children.map(rectangle), [{ x: 0, y: 576, width: 1600, height: FEEL.tile }],
+    'trial_wanshou_pen: surface-only fallback retains the approved ground top and full span');
+  same(surfaceOnlyFixture.groups[1].children.map(rectangle), f.groups[1].children.map(rectangle),
+    'trial_wanshou_pen: surface-only fallback retains both approved one-way bodies');
+  eq(JSON.stringify(surfaceOnlyData), surfaceOnlyDataBefore, 'trial_wanshou_pen: fallback leaves cached scene-data unchanged');
+  eq(JSON.stringify(surfaceOnlyTiledMap), surfaceOnlyMapBefore, 'trial_wanshou_pen: fallback leaves its Tiled map unchanged');
+  same(map.spawn, { x: 256, y: 576 }, 'trial_wanshou_pen: player starts at the approved ground spawn');
+  same(data.points.filter(point => point.id === 'start_spawn').map(point => point.position),
+    [[map.spawn.x, map.spawn.y]], 'trial_wanshou_pen: player start matches the approved scene spawn point');
+  const tiledObjects = tiledMap.layers.flatMap(layer => layer.type === 'objectgroup' ? layer.objects ?? [] : []);
+  same(tiledObjects.map(object => [object.name, object.type, object.x, object.y, object.width, object.height,
+    Object.fromEntries(object.properties.map(property => [property.name, property.value]))]), [
+    ['playerStart', 'playerStart', 256, 576, 0, 0, {}],
+    ['spawn_mad_mandrill_2', 'spawn', 768, 576, 64, 0, { monster: 'mad_mandrill', count: 1 }],
+    ['gate_left', 'spawnGate', 80, 576, 0, 0, { side: 'left' }],
+    ['gate_right', 'spawnGate', 1520, 576, 0, 0, { side: 'right' }],
+  ], 'trial_wanshou_pen: all four original Tiled objects retain their names, geometry and gameplay properties');
+  same(data.climbs, [], 'trial_wanshou_pen: the approved scene has no climbs');
+  same(map.ropes, [], 'trial_wanshou_pen: no runtime ropes or ladders are introduced');
+  same(map.spawns, [{ x: 768, y: 576, w: 64, monster: 'mad_mandrill', count: 1 }],
+    'trial_wanshou_pen: the single mandrill spawn retains its position, range and identity');
+  const mandrillPoint = data.points.find(point => point.id === 'mad_mandrill')!;
+  same([mandrillPoint.sourceName, mandrillPoint.position, mandrillPoint.spawnRange, mandrillPoint.monster, mandrillPoint.count],
+    ['spawn_mad_mandrill_2', [768, 576], [768, 832], 'mad_mandrill', 1],
+    'trial_wanshou_pen: scene-data binds the named mandrill spawn and full 64px range');
+  const gates = [
+    ['gate_left', 'spawnGate', 80, 576, 0, 0, { side: 'left' }],
+    ['gate_right', 'spawnGate', 1520, 576, 0, 0, { side: 'right' }],
+  ];
+  same(map.spawnGates.map(gate => [gate.name, gate.type, gate.x, gate.y, gate.w, gate.h, gate.props]), gates,
+    'trial_wanshou_pen: both named spawn gates retain exact positions, sizes and sides');
+  same(map.objects.map(object => [object.name, object.type, object.x, object.y, object.w, object.h, object.props]), gates,
+    'trial_wanshou_pen: both gates remain available to existing object lookup without extra gameplay objects');
+  same(data.points.filter(point => point.type === 'spawnGate').map(point => [point.id, ...point.position, point.side]),
+    map.spawnGates.map(gate => [gate.name, gate.x, gate.y, gate.props.side]),
+    'trial_wanshou_pen: runtime gate positions and sides agree with scene-data points');
+  same(map.hidden, [], 'trial_wanshou_pen: no hidden controllers are introduced');
+  same(map.zones, [], 'trial_wanshou_pen: no extra gameplay zones are introduced');
+  eq(f.tilemaps, 0, 'trial_wanshou_pen: GSB skips the legacy tilemap path');
+  same(f.displays.filter(object => object.kind !== 'zone').map(object => [object.kind, object.key]),
+    [['image', `gsb_${sceneId}_background`], ['image', `gsb_${sceneId}_playable`]],
+    'trial_wanshou_pen: GSB draws background and playable art without legacy terrain');
+  const legacyLayers = tiledMap.layers.filter(layer => layer.type === 'tilelayer' && ['ground', 'oneway'].includes(layer.name));
+  same(legacyLayers.map(layer => layer.name), ['ground', 'oneway'], 'trial_wanshou_pen: both legacy collision layers are present');
+  ok(legacyLayers.every(layer => layer.data?.length === tiledMap.width * tiledMap.height && layer.data.every(gid => gid === 0)),
+    'trial_wanshou_pen: checked-in legacy collision layers are fully cleared');
+  eq(JSON.stringify(data), dataBefore, 'trial_wanshou_pen: building leaves cached scene-data unchanged');
+  eq(JSON.stringify(tiledMap), mapBefore, 'trial_wanshou_pen: building leaves the Tiled map unchanged');
+}
+testTrialWanshouPenGsb();
 
 console.log(JSON.stringify({ suite: 'gsb-map', passed: true, assertions }));
