@@ -1,0 +1,1698 @@
+{
+  "schemaVersion": "1.0",
+  "geometryRevision": "trial-youying-final-002",
+  "status": "verified",
+  "space": {
+    "origin": "top-left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "units": "logical-pixel",
+    "logicalWidth": 1792,
+    "logicalHeight": 704,
+    "sourceMap": "maps/trial_youying_vault.json",
+    "sourceToWorld": [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0
+    ]
+  },
+  "area": "youying",
+  "trial": "trial_sect_youying",
+  "qiDensity": 4,
+  "safeZone": false,
+  "night": true,
+  "actor": {
+    "parameterRevision": "trial-youying-base-feel-20261027-001",
+    "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/move.ts; base speed/jump points100; independent fixed-step AABB adapter",
+    "sourceRevision": {
+      "game/src/config/feel.ts": "9375297a15b04012633197a935f4d9ffd403c3ff8d1e055cb585dd5f81acdeec",
+      "game/src/scenes/Player.ts": "ec9426ed625784532c6e632a1755bd16076cc3f559d177f465b741341193f513",
+      "game/src/move.ts": "585c9987623cbe532d7f65508773addd52ccd2f312e5c2ee592e9e6f2f686a74",
+      "maps/trial_youying_vault.json": "56aa87482cce46fefc9c7d75b4ca027ab73cc743762cb1147ac83e10803207a8",
+      "game/src/TrialMotion.ts": "ae05a0bf8f4bfbdbf59e1d14bdf31804b02216cd982c12e1889fb6cf0e2ae824",
+      "game/src/scenes/StealthVision.ts": "c56b60a6b498a099f742572b3119f0f6ddc0edbc4a368d2e624f141d2402ce43",
+      "game/src/scenes/SectTrialObjects.ts": "c51f82bda24c3309779d7415112cbb711f2606147ef6c676ee9d9ea1fadaee50",
+      "balance/monsters.json": "4a6f9b4ec8d95b10f86ed46598775be4a294b9b2689d72f587ef323d07971521"
+    },
+    "provisional": false,
+    "visualBounds": {
+      "width": 96,
+      "height": 96,
+      "idleAlphaBounds": [
+        15,
+        9,
+        76,
+        96
+      ],
+      "idleVisibleWidth": 61,
+      "idleVisibleHeight": 87,
+      "anchor": "feet-center"
+    },
+    "collider": {
+      "shape": "aabb",
+      "width": 26,
+      "height": 58,
+      "anchor": "feet-center"
+    },
+    "abilities": [
+      "walk",
+      "jump",
+      "double-jump",
+      "ladder",
+      "rope",
+      "drop-through"
+    ],
+    "movement": {
+      "gravity": 2000,
+      "maxFallSpeed": 670,
+      "walkSpeed": 130,
+      "groundAccel": 2400,
+      "groundDecel": 3000,
+      "airAccel": 700,
+      "airMaxSpeed": 130,
+      "jumpSpeed": 560,
+      "coyoteMs": 60,
+      "jumpBufferMs": 80,
+      "doubleJumpVy": 480,
+      "doubleJumpVx": 330,
+      "climbSpeed": 110,
+      "ropeGrabRangeX": 18,
+      "ropeJumpVx": 160,
+      "ropeJumpVy": 360,
+      "ropeRegrabMs": 250,
+      "dropThroughMs": 220,
+      "oneWayEdge": 8,
+      "fixedHz": 60,
+      "speedPoints": 100,
+      "jumpPoints": 100
+    },
+    "failureRules": {
+      "fall": "continuous floor; world fall resets actual spawn",
+      "reset": "R clears motion and returns (64,640)",
+      "patrol": "local visualization/sight audit; game trial logic not integrated"
+    },
+    "visualAsset": {
+      "path": "work/preview/player-reference-idle.png",
+      "width": 96,
+      "height": 96,
+      "anchor": "feet-center",
+      "referenceOnly": true,
+      "source": "read-only existing player idle frame; no animation claim"
+    }
+  },
+  "assets": [
+    {
+      "id": "asset_background",
+      "role": "background",
+      "path": "background.png",
+      "pixelWidth": 1792,
+      "pixelHeight": 704,
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "asset_playable",
+      "role": "playable",
+      "path": "playable.png",
+      "pixelWidth": 1792,
+      "pixelHeight": 704,
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "s_ground",
+      "name": "地面",
+      "polyline": [
+        [
+          0,
+          640
+        ],
+        [
+          1632,
+          640
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        13,
+        1619
+      ],
+      "walkRegion": [
+        [
+          13,
+          582
+        ],
+        [
+          1619,
+          582
+        ],
+        [
+          1619,
+          640
+        ],
+        [
+          13,
+          640
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 640,
+        "tolerance": 2,
+        "rule": "real bearing board/stone cap, exclude rope knot and decorative projection"
+      },
+      "status": "verified"
+    },
+    {
+      "id": "s_token",
+      "name": "东令牌台",
+      "polyline": [
+        [
+          1632,
+          544
+        ],
+        [
+          1792,
+          544
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        1645,
+        1779
+      ],
+      "walkRegion": [
+        [
+          1645,
+          486
+        ],
+        [
+          1779,
+          486
+        ],
+        [
+          1779,
+          544
+        ],
+        [
+          1645,
+          544
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 544,
+        "tolerance": 2,
+        "rule": "real bearing board/stone cap, exclude rope knot and decorative projection"
+      },
+      "status": "verified"
+    },
+    {
+      "id": "s_west",
+      "name": "西藏书廊梁",
+      "polyline": [
+        [
+          160,
+          512
+        ],
+        [
+          1024,
+          512
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        173,
+        1011
+      ],
+      "walkRegion": [
+        [
+          173,
+          454
+        ],
+        [
+          1011,
+          454
+        ],
+        [
+          1011,
+          512
+        ],
+        [
+          173,
+          512
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 512,
+        "tolerance": 2,
+        "rule": "real bearing board/stone cap, exclude rope knot and decorative projection"
+      },
+      "status": "verified"
+    },
+    {
+      "id": "s_library",
+      "name": "中层东藏书廊",
+      "polyline": [
+        [
+          1216,
+          512
+        ],
+        [
+          1568,
+          512
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        1229,
+        1555
+      ],
+      "walkRegion": [
+        [
+          1229,
+          454
+        ],
+        [
+          1555,
+          454
+        ],
+        [
+          1555,
+          512
+        ],
+        [
+          1229,
+          512
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 512,
+        "tolerance": 2,
+        "rule": "real bearing board/stone cap, exclude rope knot and decorative projection"
+      },
+      "status": "verified"
+    },
+    {
+      "id": "s_upper",
+      "name": "顶层梁",
+      "polyline": [
+        [
+          1024,
+          384
+        ],
+        [
+          1792,
+          384
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        1037,
+        1779
+      ],
+      "walkRegion": [
+        [
+          1037,
+          326
+        ],
+        [
+          1779,
+          326
+        ],
+        [
+          1779,
+          384
+        ],
+        [
+          1037,
+          384
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 384,
+        "tolerance": 2,
+        "rule": "real bearing board/stone cap, exclude rope knot and decorative projection"
+      },
+      "status": "verified"
+    }
+  ],
+  "climbs": [
+    {
+      "id": "rope_6",
+      "kind": "rope",
+      "corridor": [
+        [
+          190,
+          512
+        ],
+        [
+          226,
+          512
+        ],
+        [
+          226,
+          640
+        ],
+        [
+          190,
+          640
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            208,
+            640
+          ],
+          "surface": "s_ground"
+        },
+        "end": {
+          "position": [
+            208,
+            512
+          ],
+          "surface": "s_west"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "sourceObject": {
+        "id": 1,
+        "name": "rope_6",
+        "type": "rope",
+        "x": 208,
+        "y": 512,
+        "width": 0,
+        "height": 96,
+        "properties": []
+      },
+      "sourceCorrection": "raw bottom 608 extended to actual bearing 640; source map untouched",
+      "status": "verified"
+    },
+    {
+      "id": "rope_31",
+      "kind": "rope",
+      "corridor": [
+        [
+          990,
+          512
+        ],
+        [
+          1026,
+          512
+        ],
+        [
+          1026,
+          640
+        ],
+        [
+          990,
+          640
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1008,
+            640
+          ],
+          "surface": "s_ground"
+        },
+        "end": {
+          "position": [
+            1008,
+            512
+          ],
+          "surface": "s_west"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "sourceObject": {
+        "id": 2,
+        "name": "rope_31",
+        "type": "rope",
+        "x": 1008,
+        "y": 512,
+        "width": 0,
+        "height": 96,
+        "properties": []
+      },
+      "sourceCorrection": "raw bottom 608 extended to actual bearing 640; source map untouched",
+      "status": "verified"
+    },
+    {
+      "id": "rope_39",
+      "kind": "rope",
+      "corridor": [
+        [
+          1246,
+          512
+        ],
+        [
+          1282,
+          512
+        ],
+        [
+          1282,
+          640
+        ],
+        [
+          1246,
+          640
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1264,
+            640
+          ],
+          "surface": "s_ground"
+        },
+        "end": {
+          "position": [
+            1264,
+            512
+          ],
+          "surface": "s_library"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "sourceObject": {
+        "id": 3,
+        "name": "rope_39",
+        "type": "rope",
+        "x": 1264,
+        "y": 512,
+        "width": 0,
+        "height": 96,
+        "properties": []
+      },
+      "sourceCorrection": "raw bottom 608 extended to actual bearing 640; source map untouched",
+      "status": "verified"
+    },
+    {
+      "id": "rope_33",
+      "kind": "rope",
+      "corridor": [
+        [
+          1054,
+          384
+        ],
+        [
+          1090,
+          384
+        ],
+        [
+          1090,
+          640
+        ],
+        [
+          1054,
+          640
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1072,
+            640
+          ],
+          "surface": "s_ground"
+        },
+        "end": {
+          "position": [
+            1072,
+            384
+          ],
+          "surface": "s_upper"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "sourceObject": {
+        "id": 4,
+        "name": "rope_33",
+        "type": "rope",
+        "x": 1072,
+        "y": 384,
+        "width": 0,
+        "height": 224,
+        "properties": []
+      },
+      "sourceCorrection": "raw bottom 608 extended to actual bearing 640; source map untouched",
+      "status": "verified"
+    },
+    {
+      "id": "rope_53",
+      "kind": "rope",
+      "corridor": [
+        [
+          1694,
+          384
+        ],
+        [
+          1730,
+          384
+        ],
+        [
+          1730,
+          544
+        ],
+        [
+          1694,
+          544
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1712,
+            544
+          ],
+          "surface": "s_token"
+        },
+        "end": {
+          "position": [
+            1712,
+            384
+          ],
+          "surface": "s_upper"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "sourceObject": {
+        "id": 5,
+        "name": "rope_53",
+        "type": "rope",
+        "x": 1712,
+        "y": 384,
+        "width": 0,
+        "height": 128,
+        "properties": []
+      },
+      "sourceCorrection": "raw bottom 512 extended to actual bearing 544; source map untouched",
+      "status": "verified"
+    }
+  ],
+  "stairs": [],
+  "solids": [
+    {
+      "id": "solid_ground",
+      "polygon": [
+        [
+          0,
+          640
+        ],
+        [
+          1792,
+          640
+        ],
+        [
+          1792,
+          704
+        ],
+        [
+          0,
+          704
+        ]
+      ],
+      "surface": "s_ground",
+      "type": "continuous-foundation",
+      "openings": [],
+      "status": "verified"
+    },
+    {
+      "id": "solid_token",
+      "polygon": [
+        [
+          1632,
+          544
+        ],
+        [
+          1792,
+          544
+        ],
+        [
+          1792,
+          640
+        ],
+        [
+          1632,
+          640
+        ]
+      ],
+      "surface": "s_token",
+      "type": "token-dais",
+      "openings": [],
+      "status": "verified"
+    }
+  ],
+  "hazards": [],
+  "points": [
+    {
+      "id": "start_spawn",
+      "type": "spawn",
+      "position": [
+        64,
+        640
+      ],
+      "surface": "s_ground",
+      "properties": {},
+      "sourceId": 6,
+      "collision": false,
+      "status": "verified"
+    },
+    {
+      "id": "shadow_token",
+      "type": "goal",
+      "position": [
+        1744,
+        544
+      ],
+      "surface": "s_token",
+      "properties": {
+        "item": "shadow_token"
+      },
+      "sourceId": 8,
+      "collision": false,
+      "status": "verified"
+    },
+    {
+      "id": "return_point",
+      "type": "return",
+      "position": [
+        64,
+        640
+      ],
+      "surface": "s_ground",
+      "status": "verified"
+    },
+    {
+      "id": "shadow_18",
+      "type": "inspection",
+      "position": [
+        608,
+        640
+      ],
+      "surface": "s_ground",
+      "status": "verified"
+    },
+    {
+      "id": "shadow_36",
+      "type": "inspection",
+      "position": [
+        1184,
+        640
+      ],
+      "surface": "s_ground",
+      "status": "verified"
+    },
+    {
+      "id": "library_watch",
+      "type": "inspection",
+      "position": [
+        1440,
+        512
+      ],
+      "surface": "s_library",
+      "status": "verified"
+    }
+  ],
+  "zones": [
+    {
+      "id": "zone_return_point",
+      "kind": "return_point",
+      "polygon": [
+        [
+          0,
+          544
+        ],
+        [
+          160,
+          544
+        ],
+        [
+          160,
+          640
+        ],
+        [
+          0,
+          640
+        ]
+      ],
+      "properties": {
+        "label": "起点（交令牌）",
+        "kind": "return_point"
+      },
+      "surface": "s_ground",
+      "collision": false,
+      "status": "verified",
+      "sourceName": "return_point"
+    },
+    {
+      "id": "zone_shadow_18",
+      "kind": "shadow",
+      "polygon": [
+        [
+          576,
+          576
+        ],
+        [
+          640,
+          576
+        ],
+        [
+          640,
+          640
+        ],
+        [
+          576,
+          640
+        ]
+      ],
+      "properties": {
+        "label": "阴影",
+        "kind": "shadow"
+      },
+      "surface": "s_ground",
+      "collision": false,
+      "status": "verified",
+      "sourceName": "shadow_18"
+    },
+    {
+      "id": "zone_shadow_36",
+      "kind": "shadow",
+      "polygon": [
+        [
+          1152,
+          576
+        ],
+        [
+          1216,
+          576
+        ],
+        [
+          1216,
+          640
+        ],
+        [
+          1152,
+          640
+        ]
+      ],
+      "properties": {
+        "label": "阴影",
+        "kind": "shadow"
+      },
+      "surface": "s_ground",
+      "collision": false,
+      "status": "verified",
+      "sourceName": "shadow_36"
+    }
+  ],
+  "patrols": [
+    {
+      "id": "patrol_1",
+      "type": "patrol_path",
+      "position": [
+        448,
+        640
+      ],
+      "properties": {
+        "index": 1,
+        "monster": "youying_patrol",
+        "startX": 464,
+        "endX": 784,
+        "turnPauseMs": 1500,
+        "visionLength": 192,
+        "visionHalfAngleDeg": 15
+      },
+      "surface": "s_ground",
+      "collision": false,
+      "status": "verified"
+    },
+    {
+      "id": "patrol_2",
+      "type": "patrol_path",
+      "position": [
+        1280,
+        512
+      ],
+      "properties": {
+        "index": 2,
+        "monster": "youying_patrol",
+        "startX": 1296,
+        "endX": 1488,
+        "turnPauseMs": 1500,
+        "visionLength": 192,
+        "visionHalfAngleDeg": 15
+      },
+      "surface": "s_library",
+      "collision": false,
+      "status": "verified"
+    },
+    {
+      "id": "patrol_3",
+      "type": "patrol_path",
+      "position": [
+        1344,
+        640
+      ],
+      "properties": {
+        "index": 3,
+        "monster": "youying_patrol",
+        "startX": 1360,
+        "endX": 1552,
+        "turnPauseMs": 1500,
+        "visionLength": 192,
+        "visionHalfAngleDeg": 15
+      },
+      "surface": "s_ground",
+      "collision": false,
+      "status": "verified"
+    }
+  ],
+  "transitions": [
+    {
+      "id": "t_rope_6_up",
+      "from": "s_ground",
+      "to": "s_west",
+      "action": "climb-up",
+      "climb": "rope_6",
+      "conditions": [
+        "normal approach",
+        "whole body clearance",
+        "one-way platform crossing only during named climb"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-youying-final-002",
+          "actorParameterRevision": "trial-youying-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "record": "work/replays-final/route_stealth_roundtrip.json",
+          "method": "continuous route enter/arrive events; whole body collision; input replay",
+          "result": "verified",
+          "transitionId": "t_rope_6_up",
+          "startFrame": 91,
+          "endFrame": 161
+        }
+      ]
+    },
+    {
+      "id": "t_rope_6_down",
+      "from": "s_west",
+      "to": "s_ground",
+      "action": "climb-down",
+      "climb": "rope_6",
+      "conditions": [
+        "normal approach",
+        "whole body clearance",
+        "one-way platform crossing only during named climb"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-youying-final-002",
+          "actorParameterRevision": "trial-youying-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "record": "work/replays-final/route_stealth_roundtrip.json",
+          "method": "continuous route enter/arrive events; whole body collision; input replay",
+          "result": "verified",
+          "transitionId": "t_rope_6_down",
+          "startFrame": 2467,
+          "endFrame": 2530
+        }
+      ]
+    },
+    {
+      "id": "t_rope_31_up",
+      "from": "s_ground",
+      "to": "s_west",
+      "action": "climb-up",
+      "climb": "rope_31",
+      "conditions": [
+        "normal approach",
+        "whole body clearance",
+        "one-way platform crossing only during named climb"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-youying-final-002",
+          "actorParameterRevision": "trial-youying-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "record": "work/replays-final/route_stealth_roundtrip.json",
+          "method": "continuous route enter/arrive events; whole body collision; input replay",
+          "result": "verified",
+          "transitionId": "t_rope_31_up",
+          "startFrame": 1983,
+          "endFrame": 2053
+        }
+      ]
+    },
+    {
+      "id": "t_rope_31_down",
+      "from": "s_west",
+      "to": "s_ground",
+      "action": "climb-down",
+      "climb": "rope_31",
+      "conditions": [
+        "normal approach",
+        "whole body clearance",
+        "one-way platform crossing only during named climb"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-youying-final-002",
+          "actorParameterRevision": "trial-youying-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "record": "work/replays-final/route_stealth_roundtrip.json",
+          "method": "continuous route enter/arrive events; whole body collision; input replay",
+          "result": "verified",
+          "transitionId": "t_rope_31_down",
+          "startFrame": 575,
+          "endFrame": 638
+        }
+      ]
+    },
+    {
+      "id": "t_rope_39_up",
+      "from": "s_ground",
+      "to": "s_library",
+      "action": "climb-up",
+      "climb": "rope_39",
+      "conditions": [
+        "normal approach",
+        "whole body clearance",
+        "one-way platform crossing only during named climb"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-youying-final-002",
+          "actorParameterRevision": "trial-youying-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "record": "work/replays-final/route_library_roundtrip.json",
+          "method": "continuous route enter/arrive events; whole body collision; input replay",
+          "result": "verified",
+          "transitionId": "t_rope_39_up",
+          "startFrame": 579,
+          "endFrame": 649
+        }
+      ]
+    },
+    {
+      "id": "t_rope_39_down",
+      "from": "s_library",
+      "to": "s_ground",
+      "action": "climb-down",
+      "climb": "rope_39",
+      "conditions": [
+        "normal approach",
+        "whole body clearance",
+        "one-way platform crossing only during named climb"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-youying-final-002",
+          "actorParameterRevision": "trial-youying-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "record": "work/replays-final/route_library_roundtrip.json",
+          "method": "continuous route enter/arrive events; whole body collision; input replay",
+          "result": "verified",
+          "transitionId": "t_rope_39_down",
+          "startFrame": 860,
+          "endFrame": 923
+        }
+      ]
+    },
+    {
+      "id": "t_rope_33_up",
+      "from": "s_ground",
+      "to": "s_upper",
+      "action": "climb-up",
+      "climb": "rope_33",
+      "conditions": [
+        "normal approach",
+        "whole body clearance",
+        "one-way platform crossing only during named climb"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-youying-final-002",
+          "actorParameterRevision": "trial-youying-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "record": "work/replays-final/route_stealth_roundtrip.json",
+          "method": "continuous route enter/arrive events; whole body collision; input replay",
+          "result": "verified",
+          "transitionId": "t_rope_33_up",
+          "startFrame": 712,
+          "endFrame": 852
+        }
+      ]
+    },
+    {
+      "id": "t_rope_33_down",
+      "from": "s_upper",
+      "to": "s_ground",
+      "action": "climb-down",
+      "climb": "rope_33",
+      "conditions": [
+        "normal approach",
+        "whole body clearance",
+        "one-way platform crossing only during named climb"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-youying-final-002",
+          "actorParameterRevision": "trial-youying-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "record": "work/replays-final/route_stealth_roundtrip.json",
+          "method": "continuous route enter/arrive events; whole body collision; input replay",
+          "result": "verified",
+          "transitionId": "t_rope_33_down",
+          "startFrame": 1777,
+          "endFrame": 1909
+        }
+      ]
+    },
+    {
+      "id": "t_rope_53_up",
+      "from": "s_token",
+      "to": "s_upper",
+      "action": "climb-up",
+      "climb": "rope_53",
+      "conditions": [
+        "normal approach",
+        "whole body clearance",
+        "one-way platform crossing only during named climb"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-youying-final-002",
+          "actorParameterRevision": "trial-youying-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "record": "work/replays-final/route_stealth_roundtrip.json",
+          "method": "continuous route enter/arrive events; whole body collision; input replay",
+          "result": "verified",
+          "transitionId": "t_rope_53_up",
+          "startFrame": 1350,
+          "endFrame": 1437
+        }
+      ]
+    },
+    {
+      "id": "t_rope_53_down",
+      "from": "s_upper",
+      "to": "s_token",
+      "action": "climb-down",
+      "climb": "rope_53",
+      "conditions": [
+        "normal approach",
+        "whole body clearance",
+        "one-way platform crossing only during named climb"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-youying-final-002",
+          "actorParameterRevision": "trial-youying-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "record": "work/replays-final/route_stealth_roundtrip.json",
+          "method": "continuous route enter/arrive events; whole body collision; input replay",
+          "result": "verified",
+          "transitionId": "t_rope_53_down",
+          "startFrame": 1192,
+          "endFrame": 1272
+        }
+      ]
+    },
+    {
+      "id": "t_ground_token_jump",
+      "from": "s_ground",
+      "to": "s_token",
+      "action": "jump",
+      "conditions": [
+        "96px rise",
+        "normal attainable acceleration; double jump available"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-youying-final-002",
+          "actorParameterRevision": "trial-youying-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "record": "work/replays-final/route_shadow_ground_roundtrip.json",
+          "method": "continuous route enter/arrive events; whole body collision; input replay",
+          "result": "verified",
+          "transitionId": "t_ground_token_jump",
+          "startFrame": 717,
+          "endFrame": 756
+        }
+      ],
+      "inspectionPath": [
+        [
+          1594.02777777779,
+          631.2222222222222
+        ],
+        [
+          1594.416666666679,
+          623
+        ],
+        [
+          1595.0000000000123,
+          615.3333333333334
+        ],
+        [
+          1595.77777777779,
+          608.2222222222223
+        ],
+        [
+          1596.7500000000123,
+          601.6666666666667
+        ],
+        [
+          1597.916666666679,
+          595.6666666666667
+        ],
+        [
+          1599.27777777779,
+          590.2222222222223
+        ],
+        [
+          1600.8333333333458,
+          585.3333333333334
+        ],
+        [
+          1602.5833333333458,
+          581
+        ],
+        [
+          1604.52777777779,
+          577.2222222222222
+        ],
+        [
+          1606.666666666679,
+          574
+        ],
+        [
+          1608.8333333333458,
+          571.3333333333334
+        ],
+        [
+          1611.0000000000125,
+          569.2222222222223
+        ],
+        [
+          1613.1666666666792,
+          567.6666666666667
+        ],
+        [
+          1615.333333333346,
+          566.6666666666667
+        ],
+        [
+          1619,
+          559.2222222222223
+        ],
+        [
+          1619,
+          552.3333333333334
+        ],
+        [
+          1619,
+          546
+        ],
+        [
+          1619,
+          540.2222222222222
+        ],
+        [
+          1619.1944444444443,
+          535
+        ],
+        [
+          1619.5833333333333,
+          530.3333333333334
+        ],
+        [
+          1620.1666666666665,
+          526.2222222222223
+        ],
+        [
+          1620.9444444444443,
+          522.6666666666667
+        ],
+        [
+          1621.9166666666665,
+          519.6666666666667
+        ],
+        [
+          1623.0833333333333,
+          517.2222222222223
+        ],
+        [
+          1624.4444444444443,
+          515.3333333333334
+        ],
+        [
+          1626,
+          514
+        ],
+        [
+          1627.75,
+          513.2222222222222
+        ],
+        [
+          1629.6944444444443,
+          513
+        ],
+        [
+          1631.8333333333333,
+          513.3333333333334
+        ],
+        [
+          1634,
+          514.2222222222223
+        ],
+        [
+          1636.1666666666667,
+          515.6666666666667
+        ],
+        [
+          1638.3333333333335,
+          517.6666666666667
+        ],
+        [
+          1640.5000000000002,
+          520.2222222222223
+        ],
+        [
+          1642.666666666667,
+          523.3333333333334
+        ],
+        [
+          1644.8333333333337,
+          527
+        ],
+        [
+          1647.0000000000005,
+          531.2222222222222
+        ],
+        [
+          1649.1666666666672,
+          536
+        ],
+        [
+          1651.333333333334,
+          541.3333333333334
+        ],
+        [
+          1653.5000000000007,
+          544
+        ]
+      ]
+    },
+    {
+      "id": "t_token_ground_drop",
+      "from": "s_token",
+      "to": "s_ground",
+      "action": "drop",
+      "conditions": [
+        "west edge descent"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-youying-final-002",
+          "actorParameterRevision": "trial-youying-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "record": "work/replays-final/route_shadow_ground_roundtrip.json",
+          "method": "continuous route enter/arrive events; whole body collision; input replay",
+          "result": "verified",
+          "transitionId": "t_token_ground_drop",
+          "startFrame": 880,
+          "endFrame": 898
+        }
+      ],
+      "inspectionPath": [
+        [
+          1618.1666666666658,
+          544.5555555555555
+        ],
+        [
+          1615.999999999999,
+          545.6666666666666
+        ],
+        [
+          1613.8333333333323,
+          547.3333333333333
+        ],
+        [
+          1611.6666666666656,
+          549.5555555555554
+        ],
+        [
+          1609.4999999999989,
+          552.3333333333333
+        ],
+        [
+          1607.3333333333321,
+          555.6666666666666
+        ],
+        [
+          1605.1666666666654,
+          559.5555555555555
+        ],
+        [
+          1602.9999999999986,
+          564
+        ],
+        [
+          1600.833333333332,
+          569
+        ],
+        [
+          1598.6666666666652,
+          574.5555555555555
+        ],
+        [
+          1596.4999999999984,
+          580.6666666666666
+        ],
+        [
+          1594.3333333333317,
+          587.3333333333333
+        ],
+        [
+          1592.166666666665,
+          594.5555555555554
+        ],
+        [
+          1589.9999999999982,
+          602.3333333333333
+        ],
+        [
+          1588.027777777776,
+          610.6666666666666
+        ],
+        [
+          1586.2499999999982,
+          619.5555555555555
+        ],
+        [
+          1584.666666666665,
+          629
+        ],
+        [
+          1583.277777777776,
+          639
+        ],
+        [
+          1582.0833333333317,
+          640
+        ]
+      ]
+    }
+  ],
+  "requiredRoutes": [
+    {
+      "id": "route_stealth_roundtrip",
+      "from": "start_spawn",
+      "to": "return_point",
+      "via": [
+        "rope_6",
+        "s_west",
+        "rope_31",
+        "s_ground",
+        "rope_33",
+        "s_upper",
+        "rope_53",
+        "shadow_token",
+        "rope_53",
+        "s_upper",
+        "rope_33",
+        "s_ground",
+        "rope_31",
+        "s_west",
+        "rope_6"
+      ],
+      "direction": "out-and-back",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-youying-final-002",
+          "actorParameterRevision": "trial-youying-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "record": "work/replays-final/route_stealth_roundtrip.json",
+          "method": "normal-spawn continuous fixed60Hz input replay, ordered via checks, full body collision audit, Chrome replay equal",
+          "result": "verified",
+          "routeId": "route_stealth_roundtrip",
+          "frames": 2620,
+          "noMidRouteResets": true
+        }
+      ],
+      "sightRequirement": "all patrol positions conservative envelope"
+    },
+    {
+      "id": "route_library_roundtrip",
+      "from": "start_spawn",
+      "to": "return_point",
+      "via": [
+        "rope_39",
+        "s_library",
+        "library_watch",
+        "s_ground"
+      ],
+      "direction": "out-and-back",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-youying-final-002",
+          "actorParameterRevision": "trial-youying-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "record": "work/replays-final/route_library_roundtrip.json",
+          "method": "normal-spawn continuous fixed60Hz input replay, ordered via checks, full body collision audit, Chrome replay equal",
+          "result": "verified",
+          "routeId": "route_library_roundtrip",
+          "frames": 1501,
+          "noMidRouteResets": true
+        }
+      ],
+      "sightRequirement": "geometry route; timed/stealth skill not asserted"
+    },
+    {
+      "id": "route_shadow_ground_roundtrip",
+      "from": "start_spawn",
+      "to": "return_point",
+      "via": [
+        "shadow_18",
+        "shadow_36",
+        "shadow_token",
+        "s_upper",
+        "s_west"
+      ],
+      "direction": "out-and-back",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-youying-final-002",
+          "actorParameterRevision": "trial-youying-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "record": "work/replays-final/route_shadow_ground_roundtrip.json",
+          "method": "normal-spawn continuous fixed60Hz input replay, ordered via checks, full body collision audit, Chrome replay equal",
+          "result": "verified",
+          "routeId": "route_shadow_ground_roundtrip",
+          "frames": 2237,
+          "noMidRouteResets": true
+        }
+      ],
+      "sightRequirement": "geometry route; timed/stealth skill not asserted"
+    },
+    {
+      "id": "route_full_tour",
+      "from": "start_spawn",
+      "to": "return_point",
+      "via": [
+        "s_west",
+        "s_upper",
+        "shadow_token",
+        "s_library",
+        "library_watch",
+        "shadow_36",
+        "shadow_18"
+      ],
+      "direction": "out-and-back",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "trial-youying-final-002",
+          "actorParameterRevision": "trial-youying-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+          "record": "work/replays-final/route_full_tour.json",
+          "method": "normal-spawn continuous fixed60Hz input replay, ordered via checks, full body collision audit, Chrome replay equal",
+          "result": "verified",
+          "routeId": "route_full_tour",
+          "frames": 2970,
+          "noMidRouteResets": true
+        }
+      ],
+      "sightRequirement": "geometry route; timed/stealth skill not asserted"
+    }
+  ],
+  "diagnostics": {
+    "maskPalette": {
+      "walk": [
+        150,
+        245,
+        160,
+        255
+      ],
+      "stand": [
+        0,
+        200,
+        80,
+        255
+      ],
+      "rope": [
+        0,
+        190,
+        230,
+        255
+      ],
+      "jump": [
+        255,
+        170,
+        45,
+        255
+      ],
+      "drop": [
+        180,
+        125,
+        245,
+        255
+      ],
+      "shadow": [
+        115,
+        65,
+        170,
+        255
+      ],
+      "patrol": [
+        245,
+        130,
+        60,
+        255
+      ],
+      "point": [
+        255,
+        70,
+        160,
+        255
+      ]
+    },
+    "rasterizationOrder": [
+      "walk",
+      "shadow",
+      "patrol",
+      "stand",
+      "rope",
+      "jump",
+      "drop",
+      "point"
+    ],
+    "regionIdIndex": null,
+    "geometryRevision": "trial-youying-final-002"
+  },
+  "validation": {
+    "status": "verified",
+    "geometryRevision": "trial-youying-final-002",
+    "actorParameterRevision": "trial-youying-base-feel-20261027-001",
+    "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+    "evidence": [
+      {
+        "geometryRevision": "trial-youying-final-002",
+        "actorParameterRevision": "trial-youying-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "record": "work/final-routes.json",
+        "method": "4 normal-spawn input routes, no teleport",
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "trial-youying-final-002",
+        "actorParameterRevision": "trial-youying-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "record": "work/final-physics-check.json",
+        "method": "15 executed action/source-motion/sight probes",
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "trial-youying-final-002",
+        "actorParameterRevision": "trial-youying-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "record": "work/final-browser-check.json",
+        "method": "Chrome native1x all-route replays,5 stable contacts, keyboard reset, minimap and patrol cones",
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "trial-youying-final-002",
+        "actorParameterRevision": "trial-youying-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+        "record": "work/visual-review.json",
+        "method": "3404 bearing samples,3381 opaque12px core samples,independent1x/8x visual inspection",
+        "result": "verified"
+      }
+    ],
+    "issues": [],
+    "leadApproval": "pending",
+    "integrationAllowed": false,
+    "scope": "independent local fixed60Hz AABB + trial model; not Phaser integration or live progression",
+    "sourceSightSamples": 3704680,
+    "routeInterpretation": "route_stealth_roundtrip verifies invisible token delivery; other3 verify geometric exploration and permit recorded patrol detection"
+  },
+  "alignmentContract": {
+    "tolerancePx": 2,
+    "bottom": "continuous attached foundation, no separate fragments",
+    "climbAnchor": "exact bearing top, never rope knot"
+  },
+  "review": {
+    "status": "SELF_CHECK_PASS_AWAITING_OWNER_REVIEW",
+    "reviewerPass": false,
+    "productionIntegrated": false,
+    "integrationAllowed": false,
+    "requestedStatus": "幽影宝阁 gsb_v1 已交核待负责人"
+  }
+}

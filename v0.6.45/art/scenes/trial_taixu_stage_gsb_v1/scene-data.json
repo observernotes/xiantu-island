@@ -1,0 +1,3109 @@
+{
+  "schemaVersion": "1.0",
+  "geometryRevision": "taixu-stage-final-003",
+  "status": "verified",
+  "sceneId": "trial_taixu_stage",
+  "space": {
+    "origin": "top-left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "units": "logical-pixel",
+    "logicalWidth": 1600,
+    "logicalHeight": 704
+  },
+  "mapProperties": {
+    "id": "trial_taixu_stage",
+    "name": "太虚观·演法台",
+    "safeZone": false,
+    "qiDensity": 4,
+    "area": "taixu",
+    "trial": "trial_sect_taixu",
+    "returnTown": false,
+    "allowTalismanReturn": false
+  },
+  "source": {
+    "path": "maps/trial_taixu_stage.json",
+    "sha256": "dc01caaa697f75fe59d93e01a2abd246ccb376b3206a1f4609ae60115effbaca",
+    "tileSize": 32,
+    "unchanged": true
+  },
+  "actor": {
+    "parameterRevision": "feel-base100-20261027",
+    "parameterSource": [
+      "game/src/config/feel.ts",
+      "game/src/scenes/Player.ts",
+      "game/src/move.ts"
+    ],
+    "sourceRevision": "repository files read 2026-10-27; base move points 100/100",
+    "provisional": true,
+    "visualBounds": {
+      "width": 96,
+      "height": 96,
+      "anchor": "feet-center"
+    },
+    "visualAsset": {
+      "path": "work/preview/player-reference-idle.png",
+      "width": 96,
+      "height": 96,
+      "source": "Read-only copy of approved foundation tester static player frame; no animation claim."
+    },
+    "collider": {
+      "shape": "aabb",
+      "width": 26,
+      "height": 58,
+      "anchor": "feet-center"
+    },
+    "abilities": [
+      "walk",
+      "jump",
+      "double-jump",
+      "climb",
+      "rope-jump",
+      "drop-through"
+    ],
+    "movement": {
+      "gravity": 2000,
+      "maxFallSpeed": 670,
+      "walkSpeed": 130,
+      "groundAccel": 2400,
+      "groundDecel": 3000,
+      "airAccel": 700,
+      "airMaxSpeed": 130,
+      "jumpSpeed": 560,
+      "coyoteMs": 60,
+      "jumpBufferMs": 80,
+      "doubleJumpVy": 480,
+      "doubleJumpVx": 330,
+      "climbSpeed": 110,
+      "ropeGrabRangeX": 18,
+      "ropeJumpVx": 160,
+      "ropeJumpVy": 360,
+      "dropThroughMs": 220,
+      "ropeRegrabMs": 250
+    },
+    "failureRules": {
+      "manualReset": "R returns to playerStart; forbidden inside continuous routes",
+      "outOfBounds": "reset to start_spawn"
+    }
+  },
+  "assets": [
+    {
+      "id": "asset_background",
+      "role": "background",
+      "path": "background.png",
+      "pixelWidth": 1600,
+      "pixelHeight": 704,
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "asset_playable",
+      "role": "playable",
+      "path": "playable.png",
+      "pixelWidth": 1600,
+      "pixelHeight": 704,
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "s_ground_left",
+      "polyline": [
+        [
+          0,
+          640
+        ],
+        [
+          512,
+          640
+        ]
+      ],
+      "support": "solid",
+      "status": "verified",
+      "effectiveLandingRange": [
+        13,
+        499
+      ],
+      "walkableRegion": [
+        [
+          13,
+          582
+        ],
+        [
+          499,
+          582
+        ],
+        [
+          499,
+          640
+        ],
+        [
+          13,
+          640
+        ]
+      ],
+      "clearance": 58,
+      "evidence": [
+        {
+          "objectId": "s_ground_left",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Source contract and final visible art/collision registration",
+          "path": "work/final-art-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "s_ground_left",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Natural contact from continuous full-tour input prefix; no teleport",
+          "path": "work/final-screenshots/contact-s_ground_left.png",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_altar",
+      "polyline": [
+        [
+          512,
+          576
+        ],
+        [
+          1088,
+          576
+        ]
+      ],
+      "support": "solid",
+      "status": "verified",
+      "effectiveLandingRange": [
+        525,
+        1075
+      ],
+      "walkableRegion": [
+        [
+          525,
+          518
+        ],
+        [
+          1075,
+          518
+        ],
+        [
+          1075,
+          576
+        ],
+        [
+          525,
+          576
+        ]
+      ],
+      "clearance": 58,
+      "evidence": [
+        {
+          "objectId": "s_altar",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Source contract and final visible art/collision registration",
+          "path": "work/final-art-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "s_altar",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Natural contact from continuous full-tour input prefix; no teleport",
+          "path": "work/final-screenshots/contact-s_altar.png",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_ground_right",
+      "polyline": [
+        [
+          1088,
+          640
+        ],
+        [
+          1600,
+          640
+        ]
+      ],
+      "support": "solid",
+      "status": "verified",
+      "effectiveLandingRange": [
+        1101,
+        1587
+      ],
+      "walkableRegion": [
+        [
+          1101,
+          582
+        ],
+        [
+          1587,
+          582
+        ],
+        [
+          1587,
+          640
+        ],
+        [
+          1101,
+          640
+        ]
+      ],
+      "clearance": 58,
+      "evidence": [
+        {
+          "objectId": "s_ground_right",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Source contract and final visible art/collision registration",
+          "path": "work/final-art-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "s_ground_right",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Natural contact from continuous full-tour input prefix; no teleport",
+          "path": "work/final-screenshots/contact-s_ground_right.png",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_side_left",
+      "polyline": [
+        [
+          160,
+          544
+        ],
+        [
+          384,
+          544
+        ]
+      ],
+      "support": "one-way",
+      "status": "verified",
+      "effectiveLandingRange": [
+        173,
+        371
+      ],
+      "walkableRegion": [
+        [
+          173,
+          486
+        ],
+        [
+          371,
+          486
+        ],
+        [
+          371,
+          544
+        ],
+        [
+          173,
+          544
+        ]
+      ],
+      "clearance": 58,
+      "evidence": [
+        {
+          "objectId": "s_side_left",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Source contract and final visible art/collision registration",
+          "path": "work/final-art-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "s_side_left",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Natural contact from continuous full-tour input prefix; no teleport",
+          "path": "work/final-screenshots/contact-s_side_left.png",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_mid_left",
+      "polyline": [
+        [
+          448,
+          448
+        ],
+        [
+          736,
+          448
+        ]
+      ],
+      "support": "one-way",
+      "status": "verified",
+      "effectiveLandingRange": [
+        461,
+        723
+      ],
+      "walkableRegion": [
+        [
+          461,
+          390
+        ],
+        [
+          723,
+          390
+        ],
+        [
+          723,
+          448
+        ],
+        [
+          461,
+          448
+        ]
+      ],
+      "clearance": 58,
+      "evidence": [
+        {
+          "objectId": "s_mid_left",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Source contract and final visible art/collision registration",
+          "path": "work/final-art-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "s_mid_left",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Natural contact from continuous full-tour input prefix; no teleport",
+          "path": "work/final-screenshots/contact-s_mid_left.png",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_top",
+      "polyline": [
+        [
+          672,
+          320
+        ],
+        [
+          928,
+          320
+        ]
+      ],
+      "support": "one-way",
+      "status": "verified",
+      "effectiveLandingRange": [
+        685,
+        915
+      ],
+      "walkableRegion": [
+        [
+          685,
+          262
+        ],
+        [
+          915,
+          262
+        ],
+        [
+          915,
+          320
+        ],
+        [
+          685,
+          320
+        ]
+      ],
+      "clearance": 58,
+      "evidence": [
+        {
+          "objectId": "s_top",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Source contract and final visible art/collision registration",
+          "path": "work/final-art-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "s_top",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Natural contact from continuous full-tour input prefix; no teleport",
+          "path": "work/final-screenshots/contact-s_top.png",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_mid_right",
+      "polyline": [
+        [
+          864,
+          448
+        ],
+        [
+          1152,
+          448
+        ]
+      ],
+      "support": "one-way",
+      "status": "verified",
+      "effectiveLandingRange": [
+        877,
+        1139
+      ],
+      "walkableRegion": [
+        [
+          877,
+          390
+        ],
+        [
+          1139,
+          390
+        ],
+        [
+          1139,
+          448
+        ],
+        [
+          877,
+          448
+        ]
+      ],
+      "clearance": 58,
+      "evidence": [
+        {
+          "objectId": "s_mid_right",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Source contract and final visible art/collision registration",
+          "path": "work/final-art-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "s_mid_right",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Natural contact from continuous full-tour input prefix; no teleport",
+          "path": "work/final-screenshots/contact-s_mid_right.png",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_side_right",
+      "polyline": [
+        [
+          1216,
+          544
+        ],
+        [
+          1440,
+          544
+        ]
+      ],
+      "support": "one-way",
+      "status": "verified",
+      "effectiveLandingRange": [
+        1229,
+        1427
+      ],
+      "walkableRegion": [
+        [
+          1229,
+          486
+        ],
+        [
+          1427,
+          486
+        ],
+        [
+          1427,
+          544
+        ],
+        [
+          1229,
+          544
+        ]
+      ],
+      "clearance": 58,
+      "evidence": [
+        {
+          "objectId": "s_side_right",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Source contract and final visible art/collision registration",
+          "path": "work/final-art-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "s_side_right",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Natural contact from continuous full-tour input prefix; no teleport",
+          "path": "work/final-screenshots/contact-s_side_right.png",
+          "result": "verified"
+        }
+      ]
+    }
+  ],
+  "climbs": [
+    {
+      "id": "rope_18",
+      "kind": "rope",
+      "corridor": [
+        [
+          574,
+          448
+        ],
+        [
+          610,
+          448
+        ],
+        [
+          610,
+          576
+        ],
+        [
+          574,
+          576
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            592,
+            576
+          ],
+          "surface": "s_altar"
+        },
+        "end": {
+          "position": [
+            592,
+            448
+          ],
+          "surface": "s_mid_left"
+        }
+      },
+      "direction": "both",
+      "status": "verified",
+      "evidence": [
+        {
+          "objectId": "rope_18",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Source contract and final visible art/collision registration",
+          "path": "work/final-art-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "rope_18",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Continuous final physical executions and full-body sweep",
+          "path": "work/final-physics.json",
+          "result": "verified"
+        }
+      ],
+      "requiredAbilities": [
+        "climb"
+      ],
+      "sourceObject": "rope_18",
+      "adaptation": {
+        "sourceHeight": 96,
+        "finalHeight": 128,
+        "deltaBottomY": 32,
+        "reason": "Extend source rope bottom to actual platform standing top; never use knot height. Original maps JSON untouched."
+      }
+    },
+    {
+      "id": "rope_31",
+      "kind": "rope",
+      "corridor": [
+        [
+          990,
+          448
+        ],
+        [
+          1026,
+          448
+        ],
+        [
+          1026,
+          576
+        ],
+        [
+          990,
+          576
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1008,
+            576
+          ],
+          "surface": "s_altar"
+        },
+        "end": {
+          "position": [
+            1008,
+            448
+          ],
+          "surface": "s_mid_right"
+        }
+      },
+      "direction": "both",
+      "status": "verified",
+      "evidence": [
+        {
+          "objectId": "rope_31",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Source contract and final visible art/collision registration",
+          "path": "work/final-art-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "rope_31",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Continuous final physical executions and full-body sweep",
+          "path": "work/final-physics.json",
+          "result": "verified"
+        }
+      ],
+      "requiredAbilities": [
+        "climb"
+      ],
+      "sourceObject": "rope_31",
+      "adaptation": {
+        "sourceHeight": 96,
+        "finalHeight": 128,
+        "deltaBottomY": 32,
+        "reason": "Extend source rope bottom to actual platform standing top; never use knot height. Original maps JSON untouched."
+      }
+    },
+    {
+      "id": "rope_22",
+      "kind": "rope",
+      "corridor": [
+        [
+          702,
+          320
+        ],
+        [
+          738,
+          320
+        ],
+        [
+          738,
+          448
+        ],
+        [
+          702,
+          448
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            720,
+            448
+          ],
+          "surface": "s_mid_left"
+        },
+        "end": {
+          "position": [
+            720,
+            320
+          ],
+          "surface": "s_top"
+        }
+      },
+      "direction": "both",
+      "status": "verified",
+      "evidence": [
+        {
+          "objectId": "rope_22",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Source contract and final visible art/collision registration",
+          "path": "work/final-art-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "rope_22",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Continuous final physical executions and full-body sweep",
+          "path": "work/final-physics.json",
+          "result": "verified"
+        }
+      ],
+      "requiredAbilities": [
+        "climb"
+      ],
+      "sourceObject": "rope_22",
+      "adaptation": {
+        "sourceHeight": 96,
+        "finalHeight": 128,
+        "deltaBottomY": 32,
+        "reason": "Extend source rope bottom to actual platform standing top; never use knot height. Original maps JSON untouched."
+      }
+    }
+  ],
+  "stairs": [],
+  "solids": [
+    {
+      "id": "solid_ground",
+      "polygon": [
+        [
+          0,
+          640
+        ],
+        [
+          1600,
+          640
+        ],
+        [
+          1600,
+          704
+        ],
+        [
+          0,
+          704
+        ]
+      ],
+      "status": "verified",
+      "openings": [],
+      "evidence": [
+        {
+          "objectId": "solid_ground",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Source contract and final visible art/collision registration",
+          "path": "work/final-art-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "solid_ground",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Continuous final physical executions and full-body sweep",
+          "path": "work/final-physics.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "solid_altar",
+      "polygon": [
+        [
+          512,
+          576
+        ],
+        [
+          1088,
+          576
+        ],
+        [
+          1088,
+          640
+        ],
+        [
+          512,
+          640
+        ]
+      ],
+      "status": "verified",
+      "openings": [],
+      "evidence": [
+        {
+          "objectId": "solid_altar",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Source contract and final visible art/collision registration",
+          "path": "work/final-art-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "solid_altar",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Continuous final physical executions and full-body sweep",
+          "path": "work/final-physics.json",
+          "result": "verified"
+        }
+      ]
+    }
+  ],
+  "hazards": [],
+  "points": [
+    {
+      "id": "start_spawn",
+      "sourceName": "playerStart",
+      "type": "spawn",
+      "position": [
+        768,
+        576
+      ],
+      "surface": "s_altar",
+      "status": "verified",
+      "properties": {},
+      "collides": false,
+      "evidence": [
+        {
+          "objectId": "start_spawn",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Source contract and final visible art/collision registration",
+          "path": "work/final-art-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "start_spawn",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Normal-spawn full-tour visited point at exact surface and feet height",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "lamp_5",
+      "sourceName": "lamp_5",
+      "type": "lamp",
+      "position": [
+        272,
+        544
+      ],
+      "surface": "s_side_left",
+      "status": "verified",
+      "properties": {
+        "sprite": "prop_trial_lamp"
+      },
+      "collides": false,
+      "evidence": [
+        {
+          "objectId": "lamp_5",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Source contract and final visible art/collision registration",
+          "path": "work/final-art-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "lamp_5",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Normal-spawn full-tour visited point at exact surface and feet height",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "lamp_6",
+      "sourceName": "lamp_6",
+      "type": "lamp",
+      "position": [
+        528,
+        448
+      ],
+      "surface": "s_mid_left",
+      "status": "verified",
+      "properties": {
+        "sprite": "prop_trial_lamp"
+      },
+      "collides": false,
+      "evidence": [
+        {
+          "objectId": "lamp_6",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Source contract and final visible art/collision registration",
+          "path": "work/final-art-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "lamp_6",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Normal-spawn full-tour visited point at exact surface and feet height",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "lamp_7",
+      "sourceName": "lamp_7",
+      "type": "lamp",
+      "position": [
+        784,
+        320
+      ],
+      "surface": "s_top",
+      "status": "verified",
+      "properties": {
+        "sprite": "prop_trial_lamp"
+      },
+      "collides": false,
+      "evidence": [
+        {
+          "objectId": "lamp_7",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Source contract and final visible art/collision registration",
+          "path": "work/final-art-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "lamp_7",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Normal-spawn full-tour visited point at exact surface and feet height",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "lamp_8",
+      "sourceName": "lamp_8",
+      "type": "lamp",
+      "position": [
+        1072,
+        448
+      ],
+      "surface": "s_mid_right",
+      "status": "verified",
+      "properties": {
+        "sprite": "prop_trial_lamp"
+      },
+      "collides": false,
+      "evidence": [
+        {
+          "objectId": "lamp_8",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Source contract and final visible art/collision registration",
+          "path": "work/final-art-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "lamp_8",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Normal-spawn full-tour visited point at exact surface and feet height",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "lamp_9",
+      "sourceName": "lamp_9",
+      "type": "lamp",
+      "position": [
+        1328,
+        544
+      ],
+      "surface": "s_side_right",
+      "status": "verified",
+      "properties": {
+        "sprite": "prop_trial_lamp"
+      },
+      "collides": false,
+      "evidence": [
+        {
+          "objectId": "lamp_9",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Source contract and final visible art/collision registration",
+          "path": "work/final-art-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "lamp_9",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Normal-spawn full-tour visited point at exact surface and feet height",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "gate_left",
+      "sourceName": "gate_left",
+      "type": "spawnGate",
+      "position": [
+        80,
+        640
+      ],
+      "surface": "s_ground_left",
+      "status": "verified",
+      "properties": {
+        "side": "left"
+      },
+      "collides": false,
+      "evidence": [
+        {
+          "objectId": "gate_left",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Source contract and final visible art/collision registration",
+          "path": "work/final-art-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "gate_left",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Normal-spawn full-tour visited point at exact surface and feet height",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "gate_right",
+      "sourceName": "gate_right",
+      "type": "spawnGate",
+      "position": [
+        1520,
+        640
+      ],
+      "surface": "s_ground_right",
+      "status": "verified",
+      "properties": {
+        "side": "right"
+      },
+      "collides": false,
+      "evidence": [
+        {
+          "objectId": "gate_right",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Source contract and final visible art/collision registration",
+          "path": "work/final-art-audit.json",
+          "result": "verified"
+        },
+        {
+          "objectId": "gate_right",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Normal-spawn full-tour visited point at exact surface and feet height",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified"
+        }
+      ]
+    }
+  ],
+  "transitions": [
+    {
+      "id": "rope_18_up",
+      "from": "s_altar",
+      "to": "s_mid_left",
+      "action": "climb-up",
+      "status": "verified",
+      "evidence": [
+        {
+          "objectId": "rope_18_up",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Actual ordered input frame ranges and entry/exit states",
+          "path": "work/final-physics.json",
+          "result": "verified",
+          "executions": 2,
+          "witnesses": [
+            {
+              "route": "route_lamps",
+              "startFrame": 104,
+              "endFrame": 174,
+              "action": "up",
+              "climb": "rope_18",
+              "startState": {
+                "frame": 103,
+                "x": 591.000000000003,
+                "y": 576,
+                "vx": 0,
+                "vy": 0,
+                "mode": "ground",
+                "surfaceId": "s_altar",
+                "climbId": null
+              },
+              "endEvent": {
+                "type": "climb-arrive",
+                "frame": 174,
+                "timeMs": 2900,
+                "x": 592,
+                "y": 448,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_mid_left",
+                "climbId": null,
+                "objectId": "rope_18",
+                "end": "top"
+              }
+            },
+            {
+              "route": "route_full_tour",
+              "startFrame": 104,
+              "endFrame": 174,
+              "action": "up",
+              "climb": "rope_18",
+              "startState": {
+                "frame": 103,
+                "x": 591.000000000003,
+                "y": 576,
+                "vx": 0,
+                "vy": 0,
+                "mode": "ground",
+                "surfaceId": "s_altar",
+                "climbId": null
+              },
+              "endEvent": {
+                "type": "climb-arrive",
+                "frame": 174,
+                "timeMs": 2900,
+                "x": 592,
+                "y": 448,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_mid_left",
+                "climbId": null,
+                "objectId": "rope_18",
+                "end": "top"
+              }
+            }
+          ]
+        }
+      ],
+      "conditions": "Normal-spawn continuous inputs; base FEEL 100/100; no state mutation or teleport.",
+      "takeoffRegion": [
+        [
+          583.000000000003,
+          574
+        ],
+        [
+          599.000000000003,
+          574
+        ],
+        [
+          599.000000000003,
+          578
+        ],
+        [
+          583.000000000003,
+          578
+        ]
+      ],
+      "landingRegion": [
+        [
+          584,
+          446
+        ],
+        [
+          600,
+          446
+        ],
+        [
+          600,
+          450
+        ],
+        [
+          584,
+          450
+        ]
+      ],
+      "planningNote": "Localized entry/exit neighborhood from graybox-equivalent continuous input plan; final revision replay required after adding these explicit action regions."
+    },
+    {
+      "id": "rope_18_down",
+      "from": "s_mid_left",
+      "to": "s_altar",
+      "action": "climb-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "objectId": "rope_18_down",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Actual ordered input frame ranges and entry/exit states",
+          "path": "work/final-physics.json",
+          "result": "verified",
+          "executions": 2,
+          "witnesses": [
+            {
+              "route": "route_lamps",
+              "startFrame": 674,
+              "endFrame": 737,
+              "action": "down",
+              "climb": "rope_18",
+              "startState": {
+                "frame": 673,
+                "x": 590.6666666666688,
+                "y": 448,
+                "vx": 0,
+                "vy": 0,
+                "mode": "ground",
+                "surfaceId": "s_mid_left",
+                "climbId": null
+              },
+              "endEvent": {
+                "type": "climb-arrive",
+                "frame": 737,
+                "timeMs": 12283.333333333334,
+                "x": 592,
+                "y": 576,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_altar",
+                "climbId": null,
+                "objectId": "rope_18",
+                "end": "bottom"
+              }
+            },
+            {
+              "route": "route_full_tour",
+              "startFrame": 674,
+              "endFrame": 737,
+              "action": "down",
+              "climb": "rope_18",
+              "startState": {
+                "frame": 673,
+                "x": 590.6666666666688,
+                "y": 448,
+                "vx": 0,
+                "vy": 0,
+                "mode": "ground",
+                "surfaceId": "s_mid_left",
+                "climbId": null
+              },
+              "endEvent": {
+                "type": "climb-arrive",
+                "frame": 737,
+                "timeMs": 12283.333333333334,
+                "x": 592,
+                "y": 576,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_altar",
+                "climbId": null,
+                "objectId": "rope_18",
+                "end": "bottom"
+              }
+            }
+          ]
+        }
+      ],
+      "conditions": "Normal-spawn continuous inputs; base FEEL 100/100; no state mutation or teleport.",
+      "takeoffRegion": [
+        [
+          582.6666666666688,
+          446
+        ],
+        [
+          598.6666666666688,
+          446
+        ],
+        [
+          598.6666666666688,
+          450
+        ],
+        [
+          582.6666666666688,
+          450
+        ]
+      ],
+      "landingRegion": [
+        [
+          584,
+          574
+        ],
+        [
+          600,
+          574
+        ],
+        [
+          600,
+          578
+        ],
+        [
+          584,
+          578
+        ]
+      ],
+      "planningNote": "Localized entry/exit neighborhood from graybox-equivalent continuous input plan; final revision replay required after adding these explicit action regions."
+    },
+    {
+      "id": "rope_31_up",
+      "from": "s_altar",
+      "to": "s_mid_right",
+      "action": "climb-up",
+      "status": "verified",
+      "evidence": [
+        {
+          "objectId": "rope_31_up",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Actual ordered input frame ranges and entry/exit states",
+          "path": "work/final-physics.json",
+          "result": "verified",
+          "executions": 2,
+          "witnesses": [
+            {
+              "route": "route_lamps",
+              "startFrame": 970,
+              "endFrame": 1040,
+              "action": "up",
+              "climb": "rope_31",
+              "startState": {
+                "frame": 969,
+                "x": 1009.4999999999928,
+                "y": 576,
+                "vx": 0,
+                "vy": 0,
+                "mode": "ground",
+                "surfaceId": "s_altar",
+                "climbId": null
+              },
+              "endEvent": {
+                "type": "climb-arrive",
+                "frame": 1040,
+                "timeMs": 17333.333333333332,
+                "x": 1008,
+                "y": 448,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_mid_right",
+                "climbId": null,
+                "objectId": "rope_31",
+                "end": "top"
+              }
+            },
+            {
+              "route": "route_full_tour",
+              "startFrame": 970,
+              "endFrame": 1040,
+              "action": "up",
+              "climb": "rope_31",
+              "startState": {
+                "frame": 969,
+                "x": 1009.4999999999928,
+                "y": 576,
+                "vx": 0,
+                "vy": 0,
+                "mode": "ground",
+                "surfaceId": "s_altar",
+                "climbId": null
+              },
+              "endEvent": {
+                "type": "climb-arrive",
+                "frame": 1040,
+                "timeMs": 17333.333333333332,
+                "x": 1008,
+                "y": 448,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_mid_right",
+                "climbId": null,
+                "objectId": "rope_31",
+                "end": "top"
+              }
+            }
+          ]
+        }
+      ],
+      "conditions": "Normal-spawn continuous inputs; base FEEL 100/100; no state mutation or teleport.",
+      "takeoffRegion": [
+        [
+          1001.4999999999928,
+          574
+        ],
+        [
+          1017.4999999999928,
+          574
+        ],
+        [
+          1017.4999999999928,
+          578
+        ],
+        [
+          1001.4999999999928,
+          578
+        ]
+      ],
+      "landingRegion": [
+        [
+          1000,
+          446
+        ],
+        [
+          1016,
+          446
+        ],
+        [
+          1016,
+          450
+        ],
+        [
+          1000,
+          450
+        ]
+      ],
+      "planningNote": "Localized entry/exit neighborhood from graybox-equivalent continuous input plan; final revision replay required after adding these explicit action regions."
+    },
+    {
+      "id": "rope_31_down",
+      "from": "s_mid_right",
+      "to": "s_altar",
+      "action": "climb-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "objectId": "rope_31_down",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Actual ordered input frame ranges and entry/exit states",
+          "path": "work/final-physics.json",
+          "result": "verified",
+          "executions": 2,
+          "witnesses": [
+            {
+              "route": "route_lamps",
+              "startFrame": 1143,
+              "endFrame": 1206,
+              "action": "down",
+              "climb": "rope_31",
+              "startState": {
+                "frame": 1142,
+                "x": 1008,
+                "y": 448,
+                "vx": 0,
+                "vy": 0,
+                "mode": "ground",
+                "surfaceId": "s_mid_right",
+                "climbId": null
+              },
+              "endEvent": {
+                "type": "climb-arrive",
+                "frame": 1206,
+                "timeMs": 20100,
+                "x": 1008,
+                "y": 576,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_altar",
+                "climbId": null,
+                "objectId": "rope_31",
+                "end": "bottom"
+              }
+            },
+            {
+              "route": "route_full_tour",
+              "startFrame": 1143,
+              "endFrame": 1206,
+              "action": "down",
+              "climb": "rope_31",
+              "startState": {
+                "frame": 1142,
+                "x": 1008,
+                "y": 448,
+                "vx": 0,
+                "vy": 0,
+                "mode": "ground",
+                "surfaceId": "s_mid_right",
+                "climbId": null
+              },
+              "endEvent": {
+                "type": "climb-arrive",
+                "frame": 1206,
+                "timeMs": 20100,
+                "x": 1008,
+                "y": 576,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_altar",
+                "climbId": null,
+                "objectId": "rope_31",
+                "end": "bottom"
+              }
+            }
+          ]
+        }
+      ],
+      "conditions": "Normal-spawn continuous inputs; base FEEL 100/100; no state mutation or teleport.",
+      "takeoffRegion": [
+        [
+          1000,
+          446
+        ],
+        [
+          1016,
+          446
+        ],
+        [
+          1016,
+          450
+        ],
+        [
+          1000,
+          450
+        ]
+      ],
+      "landingRegion": [
+        [
+          1000,
+          574
+        ],
+        [
+          1016,
+          574
+        ],
+        [
+          1016,
+          578
+        ],
+        [
+          1000,
+          578
+        ]
+      ],
+      "planningNote": "Localized entry/exit neighborhood from graybox-equivalent continuous input plan; final revision replay required after adding these explicit action regions."
+    },
+    {
+      "id": "rope_22_up",
+      "from": "s_mid_left",
+      "to": "s_top",
+      "action": "climb-up",
+      "status": "verified",
+      "evidence": [
+        {
+          "objectId": "rope_22_up",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Actual ordered input frame ranges and entry/exit states",
+          "path": "work/final-physics.json",
+          "result": "verified",
+          "executions": 2,
+          "witnesses": [
+            {
+              "route": "route_lamps",
+              "startFrame": 338,
+              "endFrame": 408,
+              "action": "up",
+              "climb": "rope_22",
+              "startState": {
+                "frame": 337,
+                "x": 721.8333333333311,
+                "y": 448,
+                "vx": 0,
+                "vy": 0,
+                "mode": "ground",
+                "surfaceId": "s_mid_left",
+                "climbId": null
+              },
+              "endEvent": {
+                "type": "climb-arrive",
+                "frame": 408,
+                "timeMs": 6800,
+                "x": 720,
+                "y": 320,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_top",
+                "climbId": null,
+                "objectId": "rope_22",
+                "end": "top"
+              }
+            },
+            {
+              "route": "route_full_tour",
+              "startFrame": 338,
+              "endFrame": 408,
+              "action": "up",
+              "climb": "rope_22",
+              "startState": {
+                "frame": 337,
+                "x": 721.8333333333311,
+                "y": 448,
+                "vx": 0,
+                "vy": 0,
+                "mode": "ground",
+                "surfaceId": "s_mid_left",
+                "climbId": null
+              },
+              "endEvent": {
+                "type": "climb-arrive",
+                "frame": 408,
+                "timeMs": 6800,
+                "x": 720,
+                "y": 320,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_top",
+                "climbId": null,
+                "objectId": "rope_22",
+                "end": "top"
+              }
+            }
+          ]
+        }
+      ],
+      "conditions": "Normal-spawn continuous inputs; base FEEL 100/100; no state mutation or teleport.",
+      "takeoffRegion": [
+        [
+          713.8333333333311,
+          446
+        ],
+        [
+          729.8333333333311,
+          446
+        ],
+        [
+          729.8333333333311,
+          450
+        ],
+        [
+          713.8333333333311,
+          450
+        ]
+      ],
+      "landingRegion": [
+        [
+          712,
+          318
+        ],
+        [
+          728,
+          318
+        ],
+        [
+          728,
+          322
+        ],
+        [
+          712,
+          322
+        ]
+      ],
+      "planningNote": "Localized entry/exit neighborhood from graybox-equivalent continuous input plan; final revision replay required after adding these explicit action regions."
+    },
+    {
+      "id": "rope_22_down",
+      "from": "s_top",
+      "to": "s_mid_left",
+      "action": "climb-down",
+      "status": "verified",
+      "evidence": [
+        {
+          "objectId": "rope_22_down",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Actual ordered input frame ranges and entry/exit states",
+          "path": "work/final-physics.json",
+          "result": "verified",
+          "executions": 2,
+          "witnesses": [
+            {
+              "route": "route_lamps",
+              "startFrame": 511,
+              "endFrame": 574,
+              "action": "down",
+              "climb": "rope_22",
+              "startState": {
+                "frame": 510,
+                "x": 720,
+                "y": 320,
+                "vx": 0,
+                "vy": 0,
+                "mode": "ground",
+                "surfaceId": "s_top",
+                "climbId": null
+              },
+              "endEvent": {
+                "type": "climb-arrive",
+                "frame": 574,
+                "timeMs": 9566.666666666666,
+                "x": 720,
+                "y": 448,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_mid_left",
+                "climbId": null,
+                "objectId": "rope_22",
+                "end": "bottom"
+              }
+            },
+            {
+              "route": "route_full_tour",
+              "startFrame": 511,
+              "endFrame": 574,
+              "action": "down",
+              "climb": "rope_22",
+              "startState": {
+                "frame": 510,
+                "x": 720,
+                "y": 320,
+                "vx": 0,
+                "vy": 0,
+                "mode": "ground",
+                "surfaceId": "s_top",
+                "climbId": null
+              },
+              "endEvent": {
+                "type": "climb-arrive",
+                "frame": 574,
+                "timeMs": 9566.666666666666,
+                "x": 720,
+                "y": 448,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_mid_left",
+                "climbId": null,
+                "objectId": "rope_22",
+                "end": "bottom"
+              }
+            }
+          ]
+        }
+      ],
+      "conditions": "Normal-spawn continuous inputs; base FEEL 100/100; no state mutation or teleport.",
+      "takeoffRegion": [
+        [
+          712,
+          318
+        ],
+        [
+          728,
+          318
+        ],
+        [
+          728,
+          322
+        ],
+        [
+          712,
+          322
+        ]
+      ],
+      "landingRegion": [
+        [
+          712,
+          446
+        ],
+        [
+          728,
+          446
+        ],
+        [
+          728,
+          450
+        ],
+        [
+          712,
+          450
+        ]
+      ],
+      "planningNote": "Localized entry/exit neighborhood from graybox-equivalent continuous input plan; final revision replay required after adding these explicit action regions."
+    },
+    {
+      "id": "t_drop_left",
+      "from": "s_altar",
+      "to": "s_ground_left",
+      "action": "walk-off-drop",
+      "status": "verified",
+      "evidence": [
+        {
+          "objectId": "t_drop_left",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Actual ordered input frame ranges and entry/exit states",
+          "path": "work/final-physics.json",
+          "result": "verified",
+          "executions": 2,
+          "witnesses": [
+            {
+              "route": "route_left",
+              "startFrame": 126,
+              "endFrame": 140,
+              "startEvent": {
+                "type": "leave-surface",
+                "frame": 126,
+                "timeMs": 2100,
+                "x": 497.50000000000426,
+                "y": 576.5555555555555,
+                "vx": -130,
+                "vy": 33.333333333333336,
+                "surfaceId": null,
+                "climbId": null,
+                "objectId": "s_altar"
+              },
+              "endEvent": {
+                "type": "land",
+                "frame": 140,
+                "timeMs": 2333.3333333333335,
+                "x": 467.16666666667066,
+                "y": 640,
+                "vx": -130,
+                "vy": 0,
+                "surfaceId": "s_ground_left",
+                "climbId": null,
+                "objectId": "s_ground_left"
+              }
+            },
+            {
+              "route": "route_full_tour",
+              "startFrame": 1465,
+              "endFrame": 1479,
+              "startEvent": {
+                "type": "leave-surface",
+                "frame": 1465,
+                "timeMs": 24416.666666666668,
+                "x": 497.8333333333416,
+                "y": 576.5555555555555,
+                "vx": -130,
+                "vy": 33.333333333333336,
+                "surfaceId": null,
+                "climbId": null,
+                "objectId": "s_altar"
+              },
+              "endEvent": {
+                "type": "land",
+                "frame": 1479,
+                "timeMs": 24650,
+                "x": 467.500000000008,
+                "y": 640,
+                "vx": -130,
+                "vy": 0,
+                "surfaceId": "s_ground_left",
+                "climbId": null,
+                "objectId": "s_ground_left"
+              }
+            }
+          ]
+        }
+      ],
+      "conditions": "Normal-spawn continuous inputs; base FEEL 100/100; no state mutation or teleport.",
+      "takeoffRegion": [
+        [
+          489.50000000000426,
+          574.5555555555555
+        ],
+        [
+          505.50000000000426,
+          574.5555555555555
+        ],
+        [
+          505.50000000000426,
+          578.5555555555555
+        ],
+        [
+          489.50000000000426,
+          578.5555555555555
+        ]
+      ],
+      "landingRegion": [
+        [
+          459.16666666667066,
+          638
+        ],
+        [
+          475.16666666667066,
+          638
+        ],
+        [
+          475.16666666667066,
+          642
+        ],
+        [
+          459.16666666667066,
+          642
+        ]
+      ],
+      "planningNote": "Localized entry/exit neighborhood from graybox-equivalent continuous input plan; final revision replay required after adding these explicit action regions."
+    },
+    {
+      "id": "t_double_left",
+      "from": "s_ground_left",
+      "to": "s_side_left",
+      "action": "double-jump",
+      "status": "verified",
+      "evidence": [
+        {
+          "objectId": "t_double_left",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Actual ordered input frame ranges and entry/exit states",
+          "path": "work/final-physics.json",
+          "result": "verified",
+          "executions": 2,
+          "witnesses": [
+            {
+              "route": "route_left",
+              "startFrame": 416,
+              "endFrame": 456,
+              "startEvent": {
+                "type": "jump",
+                "frame": 416,
+                "timeMs": 6933.333333333333,
+                "x": 273.8333333333356,
+                "y": 640,
+                "vx": 0,
+                "vy": -560,
+                "surfaceId": "s_ground_left",
+                "climbId": null,
+                "objectId": "s_ground_left"
+              },
+              "endEvent": {
+                "type": "land",
+                "frame": 456,
+                "timeMs": 7600,
+                "x": 273.8333333333356,
+                "y": 544,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_side_left",
+                "climbId": null,
+                "objectId": "s_side_left"
+              }
+            },
+            {
+              "route": "route_full_tour",
+              "startFrame": 1753,
+              "endFrame": 1793,
+              "startEvent": {
+                "type": "jump",
+                "frame": 1753,
+                "timeMs": 29216.666666666668,
+                "x": 272.16666666667294,
+                "y": 640,
+                "vx": 0,
+                "vy": -560,
+                "surfaceId": "s_ground_left",
+                "climbId": null,
+                "objectId": "s_ground_left"
+              },
+              "endEvent": {
+                "type": "land",
+                "frame": 1793,
+                "timeMs": 29883.333333333332,
+                "x": 272.16666666667294,
+                "y": 544,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_side_left",
+                "climbId": null,
+                "objectId": "s_side_left"
+              }
+            }
+          ]
+        }
+      ],
+      "conditions": "Normal-spawn continuous inputs; base FEEL 100/100; no state mutation or teleport.",
+      "takeoffRegion": [
+        [
+          265.8333333333356,
+          638
+        ],
+        [
+          281.8333333333356,
+          638
+        ],
+        [
+          281.8333333333356,
+          642
+        ],
+        [
+          265.8333333333356,
+          642
+        ]
+      ],
+      "landingRegion": [
+        [
+          265.8333333333356,
+          542
+        ],
+        [
+          281.8333333333356,
+          542
+        ],
+        [
+          281.8333333333356,
+          546
+        ],
+        [
+          265.8333333333356,
+          546
+        ]
+      ],
+      "planningNote": "Localized entry/exit neighborhood from graybox-equivalent continuous input plan; final revision replay required after adding these explicit action regions."
+    },
+    {
+      "id": "t_side_drop_left",
+      "from": "s_side_left",
+      "to": "s_ground_left",
+      "action": "drop-through",
+      "status": "verified",
+      "evidence": [
+        {
+          "objectId": "t_side_drop_left",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Actual ordered input frame ranges and entry/exit states",
+          "path": "work/final-physics.json",
+          "result": "verified",
+          "executions": 2,
+          "witnesses": [
+            {
+              "route": "route_left",
+              "startFrame": 487,
+              "endFrame": 503,
+              "startEvent": {
+                "type": "drop-through",
+                "frame": 487,
+                "timeMs": 8116.666666666667,
+                "x": 273.8333333333356,
+                "y": 544,
+                "vx": 0,
+                "vy": 60,
+                "surfaceId": "s_side_left",
+                "climbId": null,
+                "objectId": "s_side_left"
+              },
+              "endEvent": {
+                "type": "land",
+                "frame": 503,
+                "timeMs": 8383.333333333334,
+                "x": 273.8333333333356,
+                "y": 640,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_ground_left",
+                "climbId": null,
+                "objectId": "s_ground_left"
+              }
+            },
+            {
+              "route": "route_full_tour",
+              "startFrame": 1824,
+              "endFrame": 1840,
+              "startEvent": {
+                "type": "drop-through",
+                "frame": 1824,
+                "timeMs": 30400,
+                "x": 272.16666666667294,
+                "y": 544,
+                "vx": 0,
+                "vy": 60,
+                "surfaceId": "s_side_left",
+                "climbId": null,
+                "objectId": "s_side_left"
+              },
+              "endEvent": {
+                "type": "land",
+                "frame": 1840,
+                "timeMs": 30666.666666666668,
+                "x": 272.16666666667294,
+                "y": 640,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_ground_left",
+                "climbId": null,
+                "objectId": "s_ground_left"
+              }
+            }
+          ]
+        }
+      ],
+      "conditions": "Normal-spawn continuous inputs; base FEEL 100/100; no state mutation or teleport.",
+      "takeoffRegion": [
+        [
+          265.8333333333356,
+          542
+        ],
+        [
+          281.8333333333356,
+          542
+        ],
+        [
+          281.8333333333356,
+          546
+        ],
+        [
+          265.8333333333356,
+          546
+        ]
+      ],
+      "landingRegion": [
+        [
+          265.8333333333356,
+          638
+        ],
+        [
+          281.8333333333356,
+          638
+        ],
+        [
+          281.8333333333356,
+          642
+        ],
+        [
+          265.8333333333356,
+          642
+        ]
+      ],
+      "planningNote": "Localized entry/exit neighborhood from graybox-equivalent continuous input plan; final revision replay required after adding these explicit action regions."
+    },
+    {
+      "id": "t_return_left",
+      "from": "s_ground_left",
+      "to": "s_altar",
+      "action": "jump",
+      "status": "verified",
+      "evidence": [
+        {
+          "objectId": "t_return_left",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Actual ordered input frame ranges and entry/exit states",
+          "path": "work/final-physics.json",
+          "result": "verified",
+          "executions": 2,
+          "witnesses": [
+            {
+              "route": "route_left",
+              "startFrame": 626,
+              "endFrame": 648,
+              "startEvent": {
+                "type": "jump",
+                "frame": 626,
+                "timeMs": 10433.333333333334,
+                "x": 492.0000000000041,
+                "y": 640,
+                "vx": 0,
+                "vy": -560,
+                "surfaceId": "s_ground_left",
+                "climbId": null,
+                "objectId": "s_ground_left"
+              },
+              "endEvent": {
+                "type": "land",
+                "frame": 648,
+                "timeMs": 10800,
+                "x": 514,
+                "y": 576,
+                "vx": 130,
+                "vy": 0,
+                "surfaceId": "s_altar",
+                "climbId": null,
+                "objectId": "s_altar"
+              }
+            },
+            {
+              "route": "route_full_tour",
+              "startFrame": 1964,
+              "endFrame": 1986,
+              "startEvent": {
+                "type": "jump",
+                "frame": 1964,
+                "timeMs": 32733.333333333332,
+                "x": 492.50000000000813,
+                "y": 640,
+                "vx": 0,
+                "vy": -560,
+                "surfaceId": "s_ground_left",
+                "climbId": null,
+                "objectId": "s_ground_left"
+              },
+              "endEvent": {
+                "type": "land",
+                "frame": 1986,
+                "timeMs": 33100,
+                "x": 514,
+                "y": 576,
+                "vx": 130,
+                "vy": 0,
+                "surfaceId": "s_altar",
+                "climbId": null,
+                "objectId": "s_altar"
+              }
+            }
+          ]
+        }
+      ],
+      "conditions": "Normal-spawn continuous inputs; base FEEL 100/100; no state mutation or teleport.",
+      "takeoffRegion": [
+        [
+          484.0000000000041,
+          638
+        ],
+        [
+          500.0000000000041,
+          638
+        ],
+        [
+          500.0000000000041,
+          642
+        ],
+        [
+          484.0000000000041,
+          642
+        ]
+      ],
+      "landingRegion": [
+        [
+          506,
+          574
+        ],
+        [
+          522,
+          574
+        ],
+        [
+          522,
+          578
+        ],
+        [
+          506,
+          578
+        ]
+      ],
+      "planningNote": "Localized entry/exit neighborhood from graybox-equivalent continuous input plan; final revision replay required after adding these explicit action regions."
+    },
+    {
+      "id": "t_drop_right",
+      "from": "s_altar",
+      "to": "s_ground_right",
+      "action": "walk-off-drop",
+      "status": "verified",
+      "evidence": [
+        {
+          "objectId": "t_drop_right",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Actual ordered input frame ranges and entry/exit states",
+          "path": "work/final-physics.json",
+          "result": "verified",
+          "executions": 2,
+          "witnesses": [
+            {
+              "route": "route_right",
+              "startFrame": 155,
+              "endFrame": 169,
+              "startEvent": {
+                "type": "leave-surface",
+                "frame": 155,
+                "timeMs": 2583.3333333333335,
+                "x": 1101.3333333333317,
+                "y": 576.5555555555555,
+                "vx": 130,
+                "vy": 33.333333333333336,
+                "surfaceId": null,
+                "climbId": null,
+                "objectId": "s_altar"
+              },
+              "endEvent": {
+                "type": "land",
+                "frame": 169,
+                "timeMs": 2816.6666666666665,
+                "x": 1131.666666666666,
+                "y": 640,
+                "vx": 130,
+                "vy": 0,
+                "surfaceId": "s_ground_right",
+                "climbId": null,
+                "objectId": "s_ground_right"
+              }
+            },
+            {
+              "route": "route_full_tour",
+              "startFrame": 2279,
+              "endFrame": 2293,
+              "startEvent": {
+                "type": "leave-surface",
+                "frame": 2279,
+                "timeMs": 37983.333333333336,
+                "x": 1101.999999999994,
+                "y": 576.5555555555555,
+                "vx": 130,
+                "vy": 33.333333333333336,
+                "surfaceId": null,
+                "climbId": null,
+                "objectId": "s_altar"
+              },
+              "endEvent": {
+                "type": "land",
+                "frame": 2293,
+                "timeMs": 38216.666666666664,
+                "x": 1132.3333333333285,
+                "y": 640,
+                "vx": 130,
+                "vy": 0,
+                "surfaceId": "s_ground_right",
+                "climbId": null,
+                "objectId": "s_ground_right"
+              }
+            }
+          ]
+        }
+      ],
+      "conditions": "Normal-spawn continuous inputs; base FEEL 100/100; no state mutation or teleport.",
+      "takeoffRegion": [
+        [
+          1093.3333333333317,
+          574.5555555555555
+        ],
+        [
+          1109.3333333333317,
+          574.5555555555555
+        ],
+        [
+          1109.3333333333317,
+          578.5555555555555
+        ],
+        [
+          1093.3333333333317,
+          578.5555555555555
+        ]
+      ],
+      "landingRegion": [
+        [
+          1123.666666666666,
+          638
+        ],
+        [
+          1139.666666666666,
+          638
+        ],
+        [
+          1139.666666666666,
+          642
+        ],
+        [
+          1123.666666666666,
+          642
+        ]
+      ],
+      "planningNote": "Localized entry/exit neighborhood from graybox-equivalent continuous input plan; final revision replay required after adding these explicit action regions."
+    },
+    {
+      "id": "t_double_right",
+      "from": "s_ground_right",
+      "to": "s_side_right",
+      "action": "double-jump",
+      "status": "verified",
+      "evidence": [
+        {
+          "objectId": "t_double_right",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Actual ordered input frame ranges and entry/exit states",
+          "path": "work/final-physics.json",
+          "result": "verified",
+          "executions": 2,
+          "witnesses": [
+            {
+              "route": "route_right",
+              "startFrame": 445,
+              "endFrame": 485,
+              "startEvent": {
+                "type": "jump",
+                "frame": 445,
+                "timeMs": 7416.666666666667,
+                "x": 1327.0000000000064,
+                "y": 640,
+                "vx": 0,
+                "vy": -560,
+                "surfaceId": "s_ground_right",
+                "climbId": null,
+                "objectId": "s_ground_right"
+              },
+              "endEvent": {
+                "type": "land",
+                "frame": 485,
+                "timeMs": 8083.333333333333,
+                "x": 1327.0000000000064,
+                "y": 544,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_side_right",
+                "climbId": null,
+                "objectId": "s_side_right"
+              }
+            },
+            {
+              "route": "route_full_tour",
+              "startFrame": 2570,
+              "endFrame": 2610,
+              "startEvent": {
+                "type": "jump",
+                "frame": 2570,
+                "timeMs": 42833.333333333336,
+                "x": 1327.500000000002,
+                "y": 640,
+                "vx": 0,
+                "vy": -560,
+                "surfaceId": "s_ground_right",
+                "climbId": null,
+                "objectId": "s_ground_right"
+              },
+              "endEvent": {
+                "type": "land",
+                "frame": 2610,
+                "timeMs": 43500,
+                "x": 1327.500000000002,
+                "y": 544,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_side_right",
+                "climbId": null,
+                "objectId": "s_side_right"
+              }
+            }
+          ]
+        }
+      ],
+      "conditions": "Normal-spawn continuous inputs; base FEEL 100/100; no state mutation or teleport.",
+      "takeoffRegion": [
+        [
+          1319.0000000000064,
+          638
+        ],
+        [
+          1335.0000000000064,
+          638
+        ],
+        [
+          1335.0000000000064,
+          642
+        ],
+        [
+          1319.0000000000064,
+          642
+        ]
+      ],
+      "landingRegion": [
+        [
+          1319.0000000000064,
+          542
+        ],
+        [
+          1335.0000000000064,
+          542
+        ],
+        [
+          1335.0000000000064,
+          546
+        ],
+        [
+          1319.0000000000064,
+          546
+        ]
+      ],
+      "planningNote": "Localized entry/exit neighborhood from graybox-equivalent continuous input plan; final revision replay required after adding these explicit action regions."
+    },
+    {
+      "id": "t_side_drop_right",
+      "from": "s_side_right",
+      "to": "s_ground_right",
+      "action": "drop-through",
+      "status": "verified",
+      "evidence": [
+        {
+          "objectId": "t_side_drop_right",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Actual ordered input frame ranges and entry/exit states",
+          "path": "work/final-physics.json",
+          "result": "verified",
+          "executions": 2,
+          "witnesses": [
+            {
+              "route": "route_right",
+              "startFrame": 516,
+              "endFrame": 532,
+              "startEvent": {
+                "type": "drop-through",
+                "frame": 516,
+                "timeMs": 8600,
+                "x": 1327.0000000000064,
+                "y": 544,
+                "vx": 0,
+                "vy": 60,
+                "surfaceId": "s_side_right",
+                "climbId": null,
+                "objectId": "s_side_right"
+              },
+              "endEvent": {
+                "type": "land",
+                "frame": 532,
+                "timeMs": 8866.666666666666,
+                "x": 1327.0000000000064,
+                "y": 640,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_ground_right",
+                "climbId": null,
+                "objectId": "s_ground_right"
+              }
+            },
+            {
+              "route": "route_full_tour",
+              "startFrame": 2641,
+              "endFrame": 2657,
+              "startEvent": {
+                "type": "drop-through",
+                "frame": 2641,
+                "timeMs": 44016.666666666664,
+                "x": 1327.500000000002,
+                "y": 544,
+                "vx": 0,
+                "vy": 60,
+                "surfaceId": "s_side_right",
+                "climbId": null,
+                "objectId": "s_side_right"
+              },
+              "endEvent": {
+                "type": "land",
+                "frame": 2657,
+                "timeMs": 44283.333333333336,
+                "x": 1327.500000000002,
+                "y": 640,
+                "vx": 0,
+                "vy": 0,
+                "surfaceId": "s_ground_right",
+                "climbId": null,
+                "objectId": "s_ground_right"
+              }
+            }
+          ]
+        }
+      ],
+      "conditions": "Normal-spawn continuous inputs; base FEEL 100/100; no state mutation or teleport.",
+      "takeoffRegion": [
+        [
+          1319.0000000000064,
+          542
+        ],
+        [
+          1335.0000000000064,
+          542
+        ],
+        [
+          1335.0000000000064,
+          546
+        ],
+        [
+          1319.0000000000064,
+          546
+        ]
+      ],
+      "landingRegion": [
+        [
+          1319.0000000000064,
+          638
+        ],
+        [
+          1335.0000000000064,
+          638
+        ],
+        [
+          1335.0000000000064,
+          642
+        ],
+        [
+          1319.0000000000064,
+          642
+        ]
+      ],
+      "planningNote": "Localized entry/exit neighborhood from graybox-equivalent continuous input plan; final revision replay required after adding these explicit action regions."
+    },
+    {
+      "id": "t_return_right",
+      "from": "s_ground_right",
+      "to": "s_altar",
+      "action": "jump",
+      "status": "verified",
+      "evidence": [
+        {
+          "objectId": "t_return_right",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Actual ordered input frame ranges and entry/exit states",
+          "path": "work/final-physics.json",
+          "result": "verified",
+          "executions": 2,
+          "witnesses": [
+            {
+              "route": "route_right",
+              "startFrame": 656,
+              "endFrame": 678,
+              "startEvent": {
+                "type": "jump",
+                "frame": 656,
+                "timeMs": 10933.333333333334,
+                "x": 1106.6666666666656,
+                "y": 640,
+                "vx": 0,
+                "vy": -560,
+                "surfaceId": "s_ground_right",
+                "climbId": null,
+                "objectId": "s_ground_right"
+              },
+              "endEvent": {
+                "type": "land",
+                "frame": 678,
+                "timeMs": 11300,
+                "x": 1086,
+                "y": 576,
+                "vx": -130,
+                "vy": 0,
+                "surfaceId": "s_altar",
+                "climbId": null,
+                "objectId": "s_altar"
+              }
+            },
+            {
+              "route": "route_full_tour",
+              "startFrame": 2781,
+              "endFrame": 2803,
+              "startEvent": {
+                "type": "jump",
+                "frame": 2781,
+                "timeMs": 46350,
+                "x": 1107.1666666666613,
+                "y": 640,
+                "vx": 0,
+                "vy": -560,
+                "surfaceId": "s_ground_right",
+                "climbId": null,
+                "objectId": "s_ground_right"
+              },
+              "endEvent": {
+                "type": "land",
+                "frame": 2803,
+                "timeMs": 46716.666666666664,
+                "x": 1086,
+                "y": 576,
+                "vx": -130,
+                "vy": 0,
+                "surfaceId": "s_altar",
+                "climbId": null,
+                "objectId": "s_altar"
+              }
+            }
+          ]
+        }
+      ],
+      "conditions": "Normal-spawn continuous inputs; base FEEL 100/100; no state mutation or teleport.",
+      "takeoffRegion": [
+        [
+          1098.6666666666656,
+          638
+        ],
+        [
+          1114.6666666666656,
+          638
+        ],
+        [
+          1114.6666666666656,
+          642
+        ],
+        [
+          1098.6666666666656,
+          642
+        ]
+      ],
+      "landingRegion": [
+        [
+          1078,
+          574
+        ],
+        [
+          1094,
+          574
+        ],
+        [
+          1094,
+          578
+        ],
+        [
+          1078,
+          578
+        ]
+      ],
+      "planningNote": "Localized entry/exit neighborhood from graybox-equivalent continuous input plan; final revision replay required after adding these explicit action regions."
+    }
+  ],
+  "requiredRoutes": [
+    {
+      "id": "route_lamps",
+      "from": "start_spawn",
+      "to": "start_spawn",
+      "via": [
+        "rope_18",
+        "s_mid_left",
+        "lamp_6",
+        "rope_22",
+        "s_top",
+        "lamp_7",
+        "rope_22",
+        "s_mid_left",
+        "rope_18",
+        "s_altar",
+        "rope_31",
+        "s_mid_right",
+        "lamp_8",
+        "rope_31",
+        "s_altar"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "objectId": "route_lamps",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Continuous normal-spawn fixed-60Hz inputs, all ordered via points and actual return; no teleport or reset",
+          "path": "work/replays-final/route_lamps.json",
+          "result": "verified",
+          "frames": 1340,
+          "resetCount": 0,
+          "executionSourceDataSha256": "c885eab5ea17da77193385b04f98514399a281c47efe95a75e49f103ed8152f9"
+        }
+      ],
+      "direction": "out-and-return",
+      "returnRequired": true
+    },
+    {
+      "id": "route_left",
+      "from": "start_spawn",
+      "to": "start_spawn",
+      "via": [
+        "s_ground_left",
+        "gate_left",
+        "s_side_left",
+        "lamp_5",
+        "s_ground_left",
+        "s_altar"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "objectId": "route_left",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Continuous normal-spawn fixed-60Hz inputs, all ordered via points and actual return; no teleport or reset",
+          "path": "work/replays-final/route_left.json",
+          "result": "verified",
+          "frames": 786,
+          "resetCount": 0,
+          "executionSourceDataSha256": "c885eab5ea17da77193385b04f98514399a281c47efe95a75e49f103ed8152f9"
+        }
+      ],
+      "direction": "out-and-return",
+      "returnRequired": true
+    },
+    {
+      "id": "route_right",
+      "from": "start_spawn",
+      "to": "start_spawn",
+      "via": [
+        "s_ground_right",
+        "gate_right",
+        "s_side_right",
+        "lamp_9",
+        "s_ground_right",
+        "s_altar"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "objectId": "route_right",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Continuous normal-spawn fixed-60Hz inputs, all ordered via points and actual return; no teleport or reset",
+          "path": "work/replays-final/route_right.json",
+          "result": "verified",
+          "frames": 846,
+          "resetCount": 0,
+          "executionSourceDataSha256": "c885eab5ea17da77193385b04f98514399a281c47efe95a75e49f103ed8152f9"
+        }
+      ],
+      "direction": "out-and-return",
+      "returnRequired": true
+    },
+    {
+      "id": "route_full_tour",
+      "from": "start_spawn",
+      "to": "start_spawn",
+      "via": [
+        "rope_18",
+        "s_mid_left",
+        "lamp_6",
+        "rope_22",
+        "s_top",
+        "lamp_7",
+        "rope_22",
+        "s_mid_left",
+        "rope_18",
+        "s_altar",
+        "rope_31",
+        "s_mid_right",
+        "lamp_8",
+        "rope_31",
+        "s_altar",
+        "s_ground_left",
+        "gate_left",
+        "s_side_left",
+        "lamp_5",
+        "s_ground_left",
+        "s_altar",
+        "s_ground_right",
+        "gate_right",
+        "s_side_right",
+        "lamp_9",
+        "s_ground_right",
+        "s_altar"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "objectId": "route_full_tour",
+          "geometryRevision": "taixu-stage-final-003",
+          "actorParameterRevision": "feel-base100-20261027",
+          "engineRevision": "trial-aabb-feel-60hz-001",
+          "method": "Continuous normal-spawn fixed-60Hz inputs, all ordered via points and actual return; no teleport or reset",
+          "path": "work/replays-final/route_full_tour.json",
+          "result": "verified",
+          "frames": 2971,
+          "resetCount": 0,
+          "executionSourceDataSha256": "c885eab5ea17da77193385b04f98514399a281c47efe95a75e49f103ed8152f9"
+        }
+      ],
+      "direction": "out-and-return",
+      "returnRequired": true
+    }
+  ],
+  "diagnostics": {
+    "maskPalette": {
+      "stand": [
+        0,
+        200,
+        80,
+        255
+      ],
+      "walk": [
+        150,
+        245,
+        160,
+        255
+      ],
+      "rope": [
+        0,
+        190,
+        230,
+        255
+      ],
+      "jump": [
+        255,
+        180,
+        0,
+        255
+      ],
+      "drop": [
+        170,
+        80,
+        225,
+        255
+      ],
+      "hazard": [
+        229,
+        72,
+        58,
+        255
+      ],
+      "point": [
+        255,
+        70,
+        160,
+        255
+      ]
+    },
+    "rasterizationOrder": [
+      "surfaces-in-array-order:walk-then-stand",
+      "rope-corridors",
+      "transitions-in-array-order:action-regions-and-arrows",
+      "points"
+    ],
+    "regionIdIndex": null,
+    "geometryRevision": "taixu-stage-final-003"
+  },
+  "validation": {
+    "status": "verified",
+    "geometryRevision": "taixu-stage-final-003",
+    "actorParameterRevision": "feel-base100-20261027",
+    "engineRevision": "trial-aabb-feel-60hz-001",
+    "evidence": [
+      {
+        "objectId": "routes",
+        "geometryRevision": "taixu-stage-final-003",
+        "actorParameterRevision": "feel-base100-20261027",
+        "engineRevision": "trial-aabb-feel-60hz-001",
+        "method": "Four continuous final input routes",
+        "path": "work/final-routes.json",
+        "result": "verified"
+      },
+      {
+        "objectId": "physics",
+        "geometryRevision": "taixu-stage-final-003",
+        "actorParameterRevision": "feel-base100-20261027",
+        "engineRevision": "trial-aabb-feel-60hz-001",
+        "method": "Seven physics probes, 5943 full-body samples, 14 actually witnessed transitions",
+        "path": "work/final-physics.json",
+        "result": "verified"
+      },
+      {
+        "objectId": "art",
+        "geometryRevision": "taixu-stage-final-003",
+        "actorParameterRevision": "feel-base100-20261027",
+        "engineRevision": "trial-aabb-feel-60hz-001",
+        "method": "39 checks: eight lips / six rope endpoints / real alpha / clean continuous bottom",
+        "path": "work/final-art-audit.json",
+        "result": "verified"
+      },
+      {
+        "objectId": "browser",
+        "geometryRevision": "taixu-stage-final-003",
+        "actorParameterRevision": "feel-base100-20261027",
+        "engineRevision": "trial-aabb-feel-60hz-001",
+        "method": "Four Chrome replays, eight natural support views, same-art main view and minimap, keyboard/reset/overlays",
+        "path": "work/final-browser-check.json",
+        "result": "verified"
+      }
+    ],
+    "issues": [],
+    "productionIntegration": "forbidden-until-lead-PASS",
+    "scope": "Local independent fixed-60Hz AABB adapter using source FEEL base100. No production Phaser integration or combat/wave/damage validation.",
+    "executionSourceSnapshot": "work/scene-data.final-executed.json",
+    "leadReview": "pending",
+    "actionGeometrySha256": "7d7a9cba1118d4a3d00b9e74fe618a2c93099ba530540de35ed6b702561ff324"
+  },
+  "layerOwnership": {
+    "background": "Sky, cloud mountains and distant pale teal Taixu roofs; no foreground platforms.",
+    "playable": "All eight standable top spans, continuous floor, raised central altar, five one-way slabs, three ropes, five attached lamps, two non-colliding paper-puppet spawn gates.",
+    "foreground": {
+      "applicable": false,
+      "reason": "Keep all traversal visible and bottom continuous."
+    }
+  },
+  "calibration": {
+    "toleranceLogicalPixels": 2,
+    "ropeAnchors": "exact aligned support surfaces, not knots",
+    "geometryUnchangedFromGraybox": true,
+    "method": "AI source component registration followed by AI local detail edits, then lossless source-layer decomposition of the accepted refined master",
+    "registration": "work/registration-stage3.json",
+    "refinement": "work/stage4-blocks.json",
+    "recompositionPixelDifference": 0,
+    "actionRegionsAdded": "Final-002 explicitly localizes action takeoff/landing neighborhoods; physical geometry and FEEL unchanged.",
+    "fix003": {
+      "from": "taixu-stage-final-002",
+      "to": "taixu-stage-final-003",
+      "method": "Pillow in-place: bottom64 soft α∈(0,250)→255; harden s_ground_left/right fail cols solid_run=12 at Y=640",
+      "lifted_bottom64_px": 2505,
+      "solid_run_patch": 12,
+      "patched_cols": {
+        "s_ground_left": 13,
+        "s_ground_right": 14
+      },
+      "time": "2026-10-27T08:42:40.208133+08:00"
+    }
+  }
+}

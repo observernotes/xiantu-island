@@ -1,0 +1,346 @@
+{
+  "schemaVersion": "1.0",
+  "geometryRevision": "lingfu-final-003",
+  "actorParameterRevision": "lingfu-base-feel-20261027-001",
+  "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+  "assetVersion": "lingfu-gsb-v1-final-002",
+  "sceneId": "lingfu_pavilion",
+  "name": "灵符派·山门",
+  "status": "local-self-check-verified-awaiting-lead",
+  "leadApproval": "pending",
+  "integrationAllowed": false,
+  "sourceData": "scene-data.json",
+  "sourceDataSHA256": "71e649516182167e1f419a4f1b591c42c96cf8fe33d211c618958ce32f0c6c1b",
+  "logicalSpace": {
+    "origin": "top-left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "units": "logical-pixel",
+    "logicalWidth": 1280,
+    "logicalHeight": 640,
+    "sourceMap": "maps/lingfu_pavilion.json",
+    "sourceToWorld": [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0
+    ]
+  },
+  "safeZone": true,
+  "qiDensity": 4,
+  "assets": [
+    {
+      "id": "asset_background",
+      "role": "background",
+      "path": "background.png",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "geometryRevision": "lingfu-final-003",
+      "sha256": "641e70baa3bc81a9cb61bdd6af06360c3d44d2c681214f0951219aa5796afef9"
+    },
+    {
+      "id": "asset_playable",
+      "role": "playable",
+      "path": "playable.png",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "geometryRevision": "lingfu-final-003",
+      "sha256": "440cfd46d06acedc947f36834a4f07689eb1cb70b055ebb37974499556a1483c"
+    },
+    {
+      "id": "asset_inspection-composite",
+      "role": "inspection-composite",
+      "path": "scene.png",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "drawOrder": null,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "geometryRevision": "lingfu-final-003",
+      "sha256": "8ea061a374c809433809fd1e8e29f2a140960dae01b692b75d2f77df3b311fe0"
+    }
+  ],
+  "drawOrder": [
+    "background",
+    "playable",
+    "actor-and-existing-static-npcs"
+  ],
+  "foreground": {
+    "applicable": false,
+    "reason": "No separate front decorations"
+  },
+  "alignment": {
+    "origin": [
+      0,
+      0
+    ],
+    "pixelToWorld": [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "logicalPixels": [
+      1280,
+      640
+    ],
+    "contactTolerancePx": 2,
+    "maxMeasuredSampleAbsErrorPx": 1,
+    "climbDataAnchorErrorPx": 0
+  },
+  "diagnostics": {
+    "maskPalette": {
+      "walk": [
+        150,
+        245,
+        160,
+        255
+      ],
+      "stand": [
+        0,
+        200,
+        80,
+        255
+      ],
+      "rope": [
+        0,
+        190,
+        230,
+        255
+      ],
+      "ladder": [
+        80,
+        140,
+        255,
+        255
+      ],
+      "stairs": [
+        255,
+        160,
+        40,
+        255
+      ],
+      "point": [
+        255,
+        70,
+        160,
+        255
+      ],
+      "jump": [
+        255,
+        180,
+        0,
+        255
+      ],
+      "drop": [
+        170,
+        80,
+        225,
+        255
+      ]
+    },
+    "rasterizationOrder": [
+      "walk",
+      "stand",
+      "rope",
+      "ladder",
+      "stairs",
+      "jump",
+      "drop",
+      "point"
+    ],
+    "regionIdIndex": null,
+    "geometryRevision": "lingfu-final-003"
+  },
+  "diagnosticsMetadata": "diagnostics-metadata.json",
+  "runtime": {
+    "entry": "index.html",
+    "implementation": "work/preview/index.html",
+    "engine": "work/preview/engine.mjs",
+    "localOnly": true,
+    "port": 8801,
+    "binding": "reads scene-data.json; independent AABB fixed60Hz FEEL adapter; not production Phaser",
+    "staticReferenceOnly": true
+  },
+  "validation": {
+    "report": "validation-report.md",
+    "routes": "work/final-routes.json",
+    "browser": "work/final-browser-check.json",
+    "physics": "work/final-physics-check.json",
+    "geometry": "work/final-geometry-measurements.json",
+    "routePassed": 6,
+    "routeTotal": 6,
+    "contactsPassed": 6,
+    "contactsTotal": 6,
+    "physicsPassed": 9,
+    "physicsTotal": 9,
+    "failures": 0,
+    "unverifiedCoreItems": 0,
+    "productionIntegration": "out-of-scope until lead PASS"
+  },
+  "provenance": "work/imagegen-provenance.json",
+  "promptDirectory": "work/prompts",
+  "processDirectory": "work",
+  "files": [
+    {
+      "path": "DELIVERED.md",
+      "bytes": 952,
+      "sha256": "33e9c04c7ec63a81cbd4ea80a0a2821d7c1bd24fb6e7c59dc19dac8004a58706",
+      "geometryRevision": "lingfu-final-003"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1063,
+      "sha256": "d38e9dc5fc9c2fa320d91e88e5c2ba653543856a202f504339a53e7a89753c66",
+      "geometryRevision": "lingfu-final-003"
+    },
+    {
+      "path": "action-mask.png",
+      "bytes": 5376,
+      "sha256": "e79b1ffee1ac307652b5c8139357aaec0543e5b6079fcdcb5b0ca3b85933a132",
+      "geometryRevision": "lingfu-final-003",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    {
+      "path": "action-overlay.png",
+      "bytes": 1672894,
+      "sha256": "b9e3d80e31a4a74e3c781298e7e9f45876498b3dfbf7cab6e6a91064ace5990a",
+      "geometryRevision": "lingfu-final-003",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    {
+      "path": "background.png",
+      "bytes": 1396202,
+      "sha256": "641e70baa3bc81a9cb61bdd6af06360c3d44d2c681214f0951219aa5796afef9",
+      "geometryRevision": "lingfu-final-003",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGB"
+    },
+    {
+      "path": "collision-overlay.png",
+      "bytes": 1659479,
+      "sha256": "6332705a17069bdb5725bcedcfd6797cf9da4be0b248683fee25977040a1e905",
+      "geometryRevision": "lingfu-final-003",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    {
+      "path": "diagnostics-metadata.json",
+      "bytes": 1544,
+      "sha256": "014dc3ae0360885c8d6f2008496d0c9a465ad295e68484b8d339ba396376768e",
+      "geometryRevision": "lingfu-final-003"
+    },
+    {
+      "path": "index.html",
+      "bytes": 248,
+      "sha256": "ef5ad1e6fdc38f8bd1e0a9bdf677b70a0e2fee5ad5c64865e1738a80ec35f355",
+      "geometryRevision": "lingfu-final-003"
+    },
+    {
+      "path": "playable.png",
+      "bytes": 569115,
+      "sha256": "440cfd46d06acedc947f36834a4f07689eb1cb70b055ebb37974499556a1483c",
+      "geometryRevision": "lingfu-final-003",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    {
+      "path": "polished.lock",
+      "bytes": 171,
+      "sha256": "c64d5c258c507a3614af9e079c9a1bfef58f203825bb2659a9d1455862f04138",
+      "geometryRevision": "lingfu-final-003"
+    },
+    {
+      "path": "scene-data.json",
+      "bytes": 39217,
+      "sha256": "71e649516182167e1f419a4f1b591c42c96cf8fe33d211c618958ce32f0c6c1b",
+      "geometryRevision": "lingfu-final-003"
+    },
+    {
+      "path": "scene.png",
+      "bytes": 1474210,
+      "sha256": "8ea061a374c809433809fd1e8e29f2a140960dae01b692b75d2f77df3b311fe0",
+      "geometryRevision": "lingfu-final-003",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGB"
+    },
+    {
+      "path": "validation-report.md",
+      "bytes": 10523,
+      "sha256": "5d19f49bbd9741ed69abd5bedf045a2161b9675b06664c7d1f2c5e75fd152d2b",
+      "geometryRevision": "lingfu-final-003"
+    },
+    {
+      "path": "work/preview/engine.mjs",
+      "bytes": 13521,
+      "sha256": "bbea03054581ac2d17aace9fb3c3ba30f5ca970082f8ea085202b784d661d755",
+      "geometryRevision": "lingfu-final-003"
+    },
+    {
+      "path": "work/preview/index.html",
+      "bytes": 3797,
+      "sha256": "ef5ad1e6fdc38f8bd1e0a9bdf677b70a0e2fee5ad5c64865e1738a80ec35f355",
+      "geometryRevision": "lingfu-final-003"
+    },
+    {
+      "path": "work/preview/npc_lingfu_elder-reference-idle.png",
+      "bytes": 9547,
+      "sha256": "49e4092500070186859c63a70e85c4c73af2c256b7379e8d88062e663d8c5a87",
+      "geometryRevision": "lingfu-final-003"
+    },
+    {
+      "path": "work/preview/npc_lingfu_envoy-reference-idle.png",
+      "bytes": 8706,
+      "sha256": "fd30b610b72f4181831181b7a5c41f377c3ad192640f4cd6178d01255100b137",
+      "geometryRevision": "lingfu-final-003"
+    },
+    {
+      "path": "work/preview/player-reference-idle.png",
+      "bytes": 10016,
+      "sha256": "a852592b76b7414fc5572869afe97624658597da82134457cae6699f14bb51b6",
+      "geometryRevision": "lingfu-final-003"
+    },
+    {
+      "path": "work/preview/preview.mjs",
+      "bytes": 14072,
+      "sha256": "0860f7541ea51cf1fdc1b00ad1c21f54d93b35a0a1f45ccce8b6778fc3fae7d2",
+      "geometryRevision": "lingfu-final-003"
+    }
+  ]
+}

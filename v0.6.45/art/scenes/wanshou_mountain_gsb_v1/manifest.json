@@ -1,0 +1,2220 @@
+{
+  "name": "wanshou_mountain_gsb_v1",
+  "assetVersion": "wanshou-gsb-v1-final-003",
+  "status": "verified",
+  "handoff": "万兽山·山门 gsb_v1 已交核待负责人",
+  "schemaVersion": "1.0",
+  "geometryRevision": "wanshou-final-003",
+  "actorParameterRevision": "wanshou-base-feel-20261027-001",
+  "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+  "space": {
+    "origin": "top-left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "units": "logical-pixel",
+    "logicalWidth": 1280,
+    "logicalHeight": 640,
+    "sourceMap": "maps/wanshou_mountain.json",
+    "sourceToWorld": [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0
+    ]
+  },
+  "safeZone": true,
+  "qiDensity": 4,
+  "logicalWidth": 1280,
+  "logicalHeight": 640,
+  "assets": [
+    {
+      "id": "asset_background",
+      "role": "background",
+      "path": "background.png",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "asset_playable",
+      "role": "playable",
+      "path": "playable.png",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "drawOrder": 1,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    }
+  ],
+  "files": {
+    "DELIVERED.md": {
+      "path": "DELIVERED.md",
+      "role": "pending-lead-review-handoff",
+      "bytes": 1440,
+      "sha256": "c38f83070078560a47dc551ecce1e78015bc80db440816169a034c8ec196ba45",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "README.md": {
+      "path": "README.md",
+      "role": "local-reproduction-instructions",
+      "bytes": 1465,
+      "sha256": "1c390c94b7de8084bc3c0b99e88a4fd1beaf0f4c3c050b852043ebfe4aea65fc",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "action-mask.png": {
+      "path": "action-mask.png",
+      "role": "pure-semantic-mask",
+      "bytes": 5414,
+      "sha256": "8f01380290765aa9610563c18db6f0f844cb70c4e81e2ae2830ce7d171f19006",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    "action-overlay.png": {
+      "path": "action-overlay.png",
+      "role": "action-ids-direction-status-inspection",
+      "bytes": 1866463,
+      "sha256": "f704d72a89862c9830b64c1ef8df8bb61c3eb327771e9651051674c866771b84",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    "background.png": {
+      "path": "background.png",
+      "role": "noninteractive-background",
+      "bytes": 1837617,
+      "sha256": "5711ce8a0d26de6fbe20507341045f179db3630f23971acb697b5bda99c79422",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    "collision-overlay.png": {
+      "path": "collision-overlay.png",
+      "role": "actual-runtime-solids-and-oneway-inspection",
+      "bytes": 1861523,
+      "sha256": "6a32bd650743af5466ce0581f59c3e8fcca92ebb741c234b052548a6d5d4fff1",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    "diagnostics-metadata.json": {
+      "path": "diagnostics-metadata.json",
+      "role": "diagnostic-hash-binding",
+      "bytes": 1546,
+      "sha256": "53900f205987de4aef66c4f94405fa8da8f43e34d571e00770ba564b880872bc",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "index.html": {
+      "path": "index.html",
+      "role": "local-entry",
+      "bytes": 248,
+      "sha256": "2ae49f485f1f980d12d6550886ddcdc6796460ca2afba8868ac15cf8752210aa",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "playable.png": {
+      "path": "playable.png",
+      "role": "true-alpha-playable-terrain",
+      "bytes": 888708,
+      "sha256": "4e6c24346f17e340d61b7f7a1ba395284cb635ce6c7ac6e613315b7c6129a208",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    "polished.lock": {
+      "path": "polished.lock",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 127,
+      "sha256": "5d21563aed2653b5121d536add626f36a01bfa971feea7b46eb5934a308d09c2",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "scene-data.json": {
+      "path": "scene-data.json",
+      "role": "sole-authoritative-action-collision-data",
+      "bytes": 37214,
+      "sha256": "ad8c471688210e753163f50e8330796b98690ecba35f7c98951415bb5df73c46",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "scene.png": {
+      "path": "scene.png",
+      "role": "recomposed-final-scene",
+      "bytes": 1881668,
+      "sha256": "e81d09215c52eb523965cc545e505c9bc967aab0b40d52d4c35fa2d475f0be50",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA",
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    "validation-report.md": {
+      "path": "validation-report.md",
+      "role": "truthful-validation-report",
+      "bytes": 12120,
+      "sha256": "213300f169e26c8e2f26be500507fea6ff127dd64452e77d8553b90ad9c76158",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/_backup/README.md": {
+      "path": "work/_backup/README.md",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 142,
+      "sha256": "ad785285c73de2e8ee1c5fe2e631fc8e14b200f23bf66d98fd987cab0569359a",
+      "evidenceScope": "process-source; current final verification only where explicitly cited"
+    },
+    "work/_backup/final-002-pre-fix/DELIVERED.md": {
+      "path": "work/_backup/final-002-pre-fix/DELIVERED.md",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1044,
+      "sha256": "f22028ab6402755f41fa282b5008e8c12013cb4ee44cc41ce75eb4c9b7b7f3bd",
+      "evidenceScope": "process-source; current final verification only where explicitly cited"
+    },
+    "work/_backup/final-002-pre-fix/action-mask.png": {
+      "path": "work/_backup/final-002-pre-fix/action-mask.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 5414,
+      "sha256": "8f01380290765aa9610563c18db6f0f844cb70c4e81e2ae2830ce7d171f19006",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/_backup/final-002-pre-fix/action-overlay.png": {
+      "path": "work/_backup/final-002-pre-fix/action-overlay.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1866422,
+      "sha256": "15941423ad2bb4b503bf77da7771a61c9bddd10428fd37e5655257ea21df759d",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/_backup/final-002-pre-fix/collision-overlay.png": {
+      "path": "work/_backup/final-002-pre-fix/collision-overlay.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1861339,
+      "sha256": "b6df73341af302d6341e8e140ca0bff3d4941f224a8a55b6ee7a35892a2e0b42",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/_backup/final-002-pre-fix/diagnostics-metadata.json": {
+      "path": "work/_backup/final-002-pre-fix/diagnostics-metadata.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1546,
+      "sha256": "f245b137ab762fb188b580e96fc94e89323e688453fe389bb18b38abd1a6d35d",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-final-002",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-process-only"
+    },
+    "work/_backup/final-002-pre-fix/playable.png": {
+      "path": "work/_backup/final-002-pre-fix/playable.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 888862,
+      "sha256": "aa5b8f262136376eebe6ec8ae7248f57cd099ac069b877b3c86a0a591f645908",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/_backup/final-002-pre-fix/scene-data.json": {
+      "path": "work/_backup/final-002-pre-fix/scene-data.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 37214,
+      "sha256": "90e94d70243b32be6d1a01955211875065d1dd77fddf782a8a5e43f0f4f47340",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-final-002",
+      "evidenceScope": "historical-process-only"
+    },
+    "work/_backup/final-002-pre-fix/scene.png": {
+      "path": "work/_backup/final-002-pre-fix/scene.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1881650,
+      "sha256": "3d1c0f06ab04ddea4e2fae85fcbc300fea2fb2f64dc178bf187b0c6ced92bf1b",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/_backup/final-002-pre-fix/validation-report.md": {
+      "path": "work/_backup/final-002-pre-fix/validation-report.md",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 11230,
+      "sha256": "0ebb1ba1e823adc36a6b0155df9170daad52b66634b9fcddbd00ec86229ec21b",
+      "evidenceScope": "process-source; current final verification only where explicitly cited"
+    },
+    "work/_backup/master-002-registered.png": {
+      "path": "work/_backup/master-002-registered.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1891485,
+      "sha256": "7e5f207484e00e8f01b311973a6a6adbeb45c1ad037539964f17dac7c94de787",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/_backup/master-003-refined.png": {
+      "path": "work/_backup/master-003-refined.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1891932,
+      "sha256": "4c49214aa53fdd198c98969c0d28de933cef917736fef35fc1b185387e16f2c8",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/action-layout.png": {
+      "path": "work/action-layout.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 7572,
+      "sha256": "f6f7bbe1a70556322facf0f0396e8cbccd4398f210b23e16486829d7aaa73f45",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGB"
+    },
+    "work/action-layout.svg": {
+      "path": "work/action-layout.svg",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 870,
+      "sha256": "d13952d3eb0bb3698089802af41f109c078ecfece00d8ff8fd029bf08d533cd5",
+      "evidenceScope": "process-source; current final verification only where explicitly cited"
+    },
+    "work/alpha-preview-checker.png": {
+      "path": "work/alpha-preview-checker.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 858232,
+      "sha256": "0224b3b8a95ccfe30c6be1305ea6d743f1413a08d13fcd384c362ca964e9d8fe",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/alpha-preview-dark.png": {
+      "path": "work/alpha-preview-dark.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 850864,
+      "sha256": "415379d1f629c8de4b829d62fb615bbd9764a75cc2c10850053f135ff89c211e",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/alpha-preview-light.png": {
+      "path": "work/alpha-preview-light.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 857596,
+      "sha256": "eaffe55ba327c0f61ac58982329b3419867ae8347105917e8fd41ed2f6702429",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/artcheck-final.log": {
+      "path": "work/artcheck-final.log",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 948,
+      "sha256": "971ec2b5f561e9fc298167f5443cb1bb9bf08387c5e488c43dfd938ff1f09e5c",
+      "evidenceScope": "process-source; current final verification only where explicitly cited"
+    },
+    "work/bearing-pixel-samples.png": {
+      "path": "work/bearing-pixel-samples.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 35495,
+      "sha256": "504dccac4dd230b0070a8a968959496d8656077dafdc51387705cae769c96377",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 1056,
+      "pixelHeight": 420,
+      "mode": "RGB"
+    },
+    "work/bind_validation.py": {
+      "path": "work/bind_validation.py",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 3859,
+      "sha256": "e6f005704ef7a8b90d0672b933583aa356df6cef161827ae06dbe2593fe16c2d",
+      "evidenceScope": "process-source; current final verification only where explicitly cited"
+    },
+    "work/bottom-clean-inspection.png": {
+      "path": "work/bottom-clean-inspection.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1396568,
+      "sha256": "eb5f5e98295319b7e3f8fcddae4fb1ca8af456fe1b44d39165e7b6e6cc3c809c",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 780,
+      "mode": "RGB"
+    },
+    "work/browser_check.py": {
+      "path": "work/browser_check.py",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 9089,
+      "sha256": "9c056ee6a5a940d3eeca9c00f2776370161e95a2094bb4d14cd3dbf30dc7c6b4",
+      "evidenceScope": "process-source; current final verification only where explicitly cited"
+    },
+    "work/build_layout.py": {
+      "path": "work/build_layout.py",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 6719,
+      "sha256": "91f491a2125873909084b20dfcce60e2d57cdb8c76b56813a298c7b0ca4a9134",
+      "evidenceScope": "process-source; current final verification only where explicitly cited"
+    },
+    "work/build_manifest.py": {
+      "path": "work/build_manifest.py",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 5183,
+      "sha256": "6b6dcf587091b02ae9fd062727da70614cf30e9138dfa6ea5ba549cb945829a7",
+      "evidenceScope": "process-source; current final verification only where explicitly cited"
+    },
+    "work/check_package.py": {
+      "path": "work/check_package.py",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 6093,
+      "sha256": "c8f618f7361f9a105aa93856804156f259d62eff87a272decf97ce79fc697f5b",
+      "evidenceScope": "process-source; current final verification only where explicitly cited"
+    },
+    "work/check_physics.mjs": {
+      "path": "work/check_physics.mjs",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 3941,
+      "sha256": "340f8a286d2fbe3e5d74d4bf9f8e7d1b56aaabdbb239aedaaddefc3fbe3ec97c",
+      "evidenceScope": "process-source; current final verification only where explicitly cited"
+    },
+    "work/concurrency-audit.json": {
+      "path": "work/concurrency-audit.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 215,
+      "sha256": "7a0bd2d405f32b078043eafdc3f6ec173cded532db6ce5b3287e38887ef79865"
+    },
+    "work/contact-audit-precalibration.png": {
+      "path": "work/contact-audit-precalibration.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 483679,
+      "sha256": "90294175866216da546e2235f7ef181c7c691569f635d2b7a537fe00713d92e6",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 1280,
+      "pixelHeight": 900,
+      "mode": "RGB"
+    },
+    "work/detail-blocks.json": {
+      "path": "work/detail-blocks.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1690,
+      "sha256": "1ee778ada8b0ba9d131aa84eacf6b766c41a58ed801944cd5e27fa206427b5a5"
+    },
+    "work/final-browser-check.json": {
+      "path": "work/final-browser-check.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 5605,
+      "sha256": "fd8711b92162e119b7517f517ccd3a825a3c7f5ba14efc81753e044f67d50487",
+      "geometryRevision": "wanshou-final-002",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-process-only"
+    },
+    "work/final-geometry-measurements.json": {
+      "path": "work/final-geometry-measurements.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 4041,
+      "sha256": "c7046bcee0cd993b4abbaa9e1854b5209e095aad94b8741df470b0465b04d736",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/final-physics-check.json": {
+      "path": "work/final-physics-check.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 699572,
+      "sha256": "f10768acd6b2e4956b5fe22273b2d33866238fa1899d84f81b1ac8142b1ecc64",
+      "geometryRevision": "wanshou-final-002",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-process-only"
+    },
+    "work/final-prebind-browser-check.json": {
+      "path": "work/final-prebind-browser-check.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 5605,
+      "sha256": "4da21cf7f1f3774eb93556595e2b68c3b1315adacdf9f435246ed65462483a26",
+      "geometryRevision": "wanshou-final-002",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-process-only"
+    },
+    "work/final-routes.json": {
+      "path": "work/final-routes.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 4820,
+      "sha256": "09734ece5235713ba6b38f54b92dd2534afea3b3e12735c2ddc17a228b480f3d",
+      "geometryRevision": "wanshou-final-002",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-process-only"
+    },
+    "work/final-screenshots/contact-s_dock.png": {
+      "path": "work/final-screenshots/contact-s_dock.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1821165,
+      "sha256": "cc194f8d9eb5ec24400aea4fddd5a606413895fb072e2e9deb2e3049da3f23a6",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/contact-s_elder.png": {
+      "path": "work/final-screenshots/contact-s_elder.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1821868,
+      "sha256": "5cb257aedf5b5bc36839f54785d12f1efaad19c1571689374940e822541552b9",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/contact-s_envoy.png": {
+      "path": "work/final-screenshots/contact-s_envoy.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1820218,
+      "sha256": "dc060690f2f059e3ddf83d538a9d4ef031359897c581e371baa0c35dde2cfbeb",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/contact-s_high.png": {
+      "path": "work/final-screenshots/contact-s_high.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1825447,
+      "sha256": "fbd2629c1dbed9d1d2131f805cf2bf24d6a995ad073e5e5cd600c299d8932d36",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/contact-s_middle.png": {
+      "path": "work/final-screenshots/contact-s_middle.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1824878,
+      "sha256": "dc4d1b2766196df1c11d27cba2e8ae85d7d569b442df8bb051e3848b2ad94831",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/contact-s_west.png": {
+      "path": "work/final-screenshots/contact-s_west.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1824985,
+      "sha256": "bcf36b245b82e23761c54a68121c594b22cd1b847ec31d7ab47957a6c73e9d68",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/route_full_tour.png": {
+      "path": "work/final-screenshots/route_full_tour.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1837032,
+      "sha256": "5ccb05e47c3e92532d396f19dfb1865b591893ae058d4ce17afb7707a5216da2",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/route_main.png": {
+      "path": "work/final-screenshots/route_main.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1837517,
+      "sha256": "c061bb3e3b4331b79b3bd68132690ab24ce37a7dc77dae8a1e05a4ae7f5ec340",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/route_return.png": {
+      "path": "work/final-screenshots/route_return.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1836793,
+      "sha256": "2c4395739e4b1315f68a2e7dc3c7730b42b09da7397a6b5f1aba3544424235ee",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/final-screenshots/standing-s_dock.png": {
+      "path": "work/final-screenshots/standing-s_dock.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 2195920,
+      "sha256": "7f51f2d9a5cc5951afbc2f80fd7f666f6bd74c6411698d4732e3f1419be07c21",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/final-screenshots/standing-s_elder.png": {
+      "path": "work/final-screenshots/standing-s_elder.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 2195902,
+      "sha256": "f2dde848a9a57afd047138b6762ccdda1fbd912155623f827152fa88f70dafb4",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/final-screenshots/standing-s_envoy.png": {
+      "path": "work/final-screenshots/standing-s_envoy.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 2195835,
+      "sha256": "9a43cbcfc054b0eab63282902a40c7f51def7bfe796882e281870fdec4e5fe97",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/final-screenshots/standing-s_high.png": {
+      "path": "work/final-screenshots/standing-s_high.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 2197905,
+      "sha256": "b53693ad4f432dca113bc40674dacc55fba8fe9e141fa8b4f529f7d3bee75c8e",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/final-screenshots/standing-s_middle.png": {
+      "path": "work/final-screenshots/standing-s_middle.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 2197596,
+      "sha256": "a2b927a6cce1390603bc7bc67a8154edcbed8bf5152788e24ac797c629d3274f",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/final-screenshots/standing-s_west.png": {
+      "path": "work/final-screenshots/standing-s_west.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 2197766,
+      "sha256": "408ee5148828c0c67add4b07f5d86f8542d918b824005da47b2fe8e1ec5dd3ff",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/fix003-routes.json": {
+      "path": "work/fix003-routes.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 4826,
+      "sha256": "d5170248cbd6a763aeb8402c671ef3f6c0508fd2d78fcf1ed9e7477adff01161",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "final"
+    },
+    "work/fix_final003/bearing-s_dock-fix003.png": {
+      "path": "work/fix_final003/bearing-s_dock-fix003.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 85209,
+      "sha256": "2323c3489c0bc29fe374bd70e31f508d7df0f3144a3ee7ddac1fdf0c53959aa6",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 327,
+      "pixelHeight": 100,
+      "mode": "RGBA"
+    },
+    "work/fix_final003/bearing-s_high-fix003.png": {
+      "path": "work/fix_final003/bearing-s_high-fix003.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 50491,
+      "sha256": "fc1b6a9c9aa6d6d69bac5cae404c5de92429026021b598d56ea24e530ae2f6fa",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 238,
+      "pixelHeight": 100,
+      "mode": "RGBA"
+    },
+    "work/fix_final003/bearing-s_middle-fix003.png": {
+      "path": "work/fix_final003/bearing-s_middle-fix003.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 89269,
+      "sha256": "b987e4e8f4b5f7dc7dc6574f6454a13e7da7e5f300c6a2005654acf144ad62fd",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 398,
+      "pixelHeight": 100,
+      "mode": "RGBA"
+    },
+    "work/fix_final003/bearing-s_west-fix003.png": {
+      "path": "work/fix_final003/bearing-s_west-fix003.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 57454,
+      "sha256": "271caf5075eb59d8998c14c3f2f5b75f24ae2ca2807682dd437f9abb179b0014",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 238,
+      "pixelHeight": 100,
+      "mode": "RGBA"
+    },
+    "work/fix_final003/playable.png": {
+      "path": "work/fix_final003/playable.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 888708,
+      "sha256": "4e6c24346f17e340d61b7f7a1ba395284cb635ce6c7ac6e613315b7c6129a208",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/fix_final003/routes-rerun.log": {
+      "path": "work/fix_final003/routes-rerun.log",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 135,
+      "sha256": "bc95a6628ace6acff9e071d0751a77b373ddd2abeacc0103a67853bfbe12f982",
+      "evidenceScope": "process-source; current final verification only where explicitly cited"
+    },
+    "work/fix_final003/scene.png": {
+      "path": "work/fix_final003/scene.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1881668,
+      "sha256": "e81d09215c52eb523965cc545e505c9bc967aab0b40d52d4c35fa2d475f0be50",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/fix_final003/standing-remeasure.json": {
+      "path": "work/fix_final003/standing-remeasure.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 11602,
+      "sha256": "48c1b5b9b328bd743d666bc96d859c48787118be23c8a812e37dc88754d9ddda"
+    },
+    "work/generated/background-001.png": {
+      "path": "work/generated/background-001.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 2929435,
+      "sha256": "1aaec53d7dba675126edb5fd23544d95d7e0ab6556ce981d65f81165603e27a4",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 1774,
+      "pixelHeight": 887,
+      "mode": "RGB"
+    },
+    "work/generated/background-normalized.png": {
+      "path": "work/generated/background-normalized.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1837617,
+      "sha256": "5711ce8a0d26de6fbe20507341045f179db3630f23971acb697b5bda99c79422",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/generated/climbs-001.png": {
+      "path": "work/generated/climbs-001.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 147963,
+      "sha256": "509183bee10adf46798c5f800ff4034ccff0c796130531125132baf2742f44e2",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 1774,
+      "pixelHeight": 887,
+      "mode": "RGBA"
+    },
+    "work/generated/climbs-normalized.png": {
+      "path": "work/generated/climbs-normalized.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 62725,
+      "sha256": "b9fee80edd827c0d23663bfe19a91f10ccc037267a3f3d1cb91d0646159c51d6",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/generated/decor-repair-001.png": {
+      "path": "work/generated/decor-repair-001.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1863176,
+      "sha256": "4c3e17654440765451eaa4966a915824aa1faa17cdd0833e6bccb4c0c42ac5e7",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 1774,
+      "pixelHeight": 887,
+      "mode": "RGBA"
+    },
+    "work/generated/decor-repair-normalized.png": {
+      "path": "work/generated/decor-repair-normalized.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1023953,
+      "sha256": "784da8a754d06a30a7880425511ffdbcff26c3e7c6f593ee303f7e9273e80f08",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/generated/detail-elder-after.png": {
+      "path": "work/generated/detail-elder-after.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 2215571,
+      "sha256": "c9c3f712d1b8334c319ac54c9494a0412d53779a47d582da02ab8a8bc3e32aab",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 1721,
+      "pixelHeight": 914,
+      "mode": "RGB"
+    },
+    "work/generated/detail-elder-before.png": {
+      "path": "work/generated/detail-elder-before.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 91873,
+      "sha256": "91dbf289cc704b090a231cd36d2e74927bcd376a6923d04be142c5863764260e",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 260,
+      "pixelHeight": 138,
+      "mode": "RGBA"
+    },
+    "work/generated/detail-reception-after-grid.png": {
+      "path": "work/generated/detail-reception-after-grid.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 760030,
+      "sha256": "81d9acb47983f7dba0570d72b8f358a93062414704efefb48f3cf9cc0d006a31",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 1008,
+      "pixelHeight": 486,
+      "mode": "RGB"
+    },
+    "work/generated/detail-reception-after.png": {
+      "path": "work/generated/detail-reception-after.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 2455539,
+      "sha256": "0668986d1b883f4d004795b08e5a2fefcb03fff0913df49fa740c8ea6c98073b",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 1806,
+      "pixelHeight": 871,
+      "mode": "RGB"
+    },
+    "work/generated/detail-reception-before-grid.png": {
+      "path": "work/generated/detail-reception-before-grid.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 697191,
+      "sha256": "8a2c59d822d9768ffe17fd07af2c82634820577d1bafda8830cc305bbc2879dc",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 1008,
+      "pixelHeight": 486,
+      "mode": "RGB"
+    },
+    "work/generated/detail-reception-before.png": {
+      "path": "work/generated/detail-reception-before.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 137085,
+      "sha256": "5e493c79a23bb1385bee6b7973fa1b7d6737f474106c890ffdabd45f1a4691bf",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 336,
+      "pixelHeight": 162,
+      "mode": "RGBA"
+    },
+    "work/generated/extract-001.png": {
+      "path": "work/generated/extract-001.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 2046458,
+      "sha256": "9ba812974bc0796d06003629b025fa0332724282bd6f8676ea5cdf60e67bc2bc",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 1774,
+      "pixelHeight": 887,
+      "mode": "RGBA"
+    },
+    "work/generated/extract-light.png": {
+      "path": "work/generated/extract-light.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1069003,
+      "sha256": "0e2001e26cc54abeadc8db6f2c7f1566ea3ad9adc4d4de0547e5e4c5a2479062",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/generated/extract-normalized.png": {
+      "path": "work/generated/extract-normalized.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1111812,
+      "sha256": "49ec4a0fb5bfa9f64ace4ce03682ebf8f67e99e1cefd121daf7d9ac0cb494d9d",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/generated/ladder-cleaned.png": {
+      "path": "work/generated/ladder-cleaned.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1454506,
+      "sha256": "c0b8cc08aeb685f0e4435bbb3bd72947dae99648c45ed2088012061cba340ef2",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 747,
+      "pixelHeight": 2106,
+      "mode": "RGBA"
+    },
+    "work/generated/ladder-cleanup-target.png": {
+      "path": "work/generated/ladder-cleanup-target.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 30621,
+      "sha256": "db53be649b5a1a60211baef732763e54f8276ccf6afdf13447009032e2ff9cd3",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 73,
+      "pixelHeight": 206,
+      "mode": "RGBA"
+    },
+    "work/generated/master-001.png": {
+      "path": "work/generated/master-001.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 3273124,
+      "sha256": "f41235e7cb2fb0caab854a6c4102d9af4f57f53a38f6ff3c2418412a15a6e466",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 1774,
+      "pixelHeight": 887,
+      "mode": "RGB"
+    },
+    "work/generated/master-002-registered.png": {
+      "path": "work/generated/master-002-registered.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1881221,
+      "sha256": "c627e42b6e18067c035afbaba30649008aa17a70634a3574affb72deb2604560",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/generated/master-003-refined.png": {
+      "path": "work/generated/master-003-refined.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1881650,
+      "sha256": "3d1c0f06ab04ddea4e2fae85fcbc300fea2fb2f64dc178bf187b0c6ced92bf1b",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/generated/master-normalized.png": {
+      "path": "work/generated/master-normalized.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1964375,
+      "sha256": "e227af03df2970a6f7fd639ca5e7fc7aa208422049fdc3ac9d8ebd27e26dc738",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/generated/refined-owned-playable.png": {
+      "path": "work/generated/refined-owned-playable.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 888862,
+      "sha256": "aa5b8f262136376eebe6ec8ae7248f57cd099ac069b877b3c86a0a591f645908",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/generated/stage3-registered-background.png": {
+      "path": "work/generated/stage3-registered-background.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1837617,
+      "sha256": "5711ce8a0d26de6fbe20507341045f179db3630f23971acb697b5bda99c79422",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/generated/stage3-registered-playable.png": {
+      "path": "work/generated/stage3-registered-playable.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 888692,
+      "sha256": "0b598ac69c29c225b6ee89c9c6ac7f26e9f4f77ace12fed99d1c520b83d7f130",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/graybox-browser-check.json": {
+      "path": "work/graybox-browser-check.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 4620,
+      "sha256": "5e208f5e4bbcedc4897abcbfa7cdb3333a9c68789dce659af01388fc48720be4",
+      "geometryRevision": "wanshou-graybox-001",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-process-only"
+    },
+    "work/graybox-routes.json": {
+      "path": "work/graybox-routes.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 4834,
+      "sha256": "7c20ecfc4705c48b215ac1d028650accbe2de2351297d45a90ddf136969aa3d6",
+      "geometryRevision": "wanshou-graybox-001",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-process-only"
+    },
+    "work/graybox-screenshots/contact-s_dock.png": {
+      "path": "work/graybox-screenshots/contact-s_dock.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 134932,
+      "sha256": "40612b7a6426cb313f9a827e1100912d1908aad3472c4fbff3feb9ae80951315",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-graybox-001",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-graybox-only",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/graybox-screenshots/contact-s_elder.png": {
+      "path": "work/graybox-screenshots/contact-s_elder.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 135784,
+      "sha256": "66de45be113c30783fe93958c895aecc0cc4bc60b2bdc681b6c3c294a3ffd1ac",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-graybox-001",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-graybox-only",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/graybox-screenshots/contact-s_envoy.png": {
+      "path": "work/graybox-screenshots/contact-s_envoy.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 132793,
+      "sha256": "4de4d715975c99349a39f62cb84431b6dd712aad9b3433c39b48a16253c86089",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-graybox-001",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-graybox-only",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/graybox-screenshots/contact-s_high.png": {
+      "path": "work/graybox-screenshots/contact-s_high.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 135450,
+      "sha256": "3380c8bd73a6b015ad5c520fb87050c94206d73d3654f1521e1ab5b6db7fd6ce",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-graybox-001",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-graybox-only",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/graybox-screenshots/contact-s_middle.png": {
+      "path": "work/graybox-screenshots/contact-s_middle.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 135377,
+      "sha256": "313521381a8538de51b1e135c4c60e80bb10f25dd37567a2429c88ac0743469d",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-graybox-001",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-graybox-only",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/graybox-screenshots/contact-s_west.png": {
+      "path": "work/graybox-screenshots/contact-s_west.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 134833,
+      "sha256": "18358a5d8717f04b6cd0dccc792f5df96f240da6cb4d8154bc49f150097b125f",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-graybox-001",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-graybox-only",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/graybox-screenshots/route_full_tour.png": {
+      "path": "work/graybox-screenshots/route_full_tour.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 159284,
+      "sha256": "9d2306a205a8f2877d64fd1423edd6dfd4e6d005ab680b0845599bbb7d47f29c",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-graybox-001",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-graybox-only",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/graybox-screenshots/route_main.png": {
+      "path": "work/graybox-screenshots/route_main.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 159661,
+      "sha256": "d3a4cd72c93b250a8b5703d631d046cd3578e4d2777a51f62147188731489706",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-graybox-001",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-graybox-only",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/graybox-screenshots/route_return.png": {
+      "path": "work/graybox-screenshots/route_return.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 158840,
+      "sha256": "941e958a3e1c1d6a5155e1678638b2918f09e33aa4cf166771287376a4b9107b",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-graybox-001",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-graybox-only",
+      "pixelWidth": 1400,
+      "pixelHeight": 1500,
+      "mode": "RGB"
+    },
+    "work/graybox-screenshots/standing-s_dock.png": {
+      "path": "work/graybox-screenshots/standing-s_dock.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 24373,
+      "sha256": "7a5ab7c9739e24690581a7ce5adc67cdb8bc67194791ced281f8902b64af10b1",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-graybox-001",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-graybox-only",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/graybox-screenshots/standing-s_elder.png": {
+      "path": "work/graybox-screenshots/standing-s_elder.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 24012,
+      "sha256": "cc5a5a4b70b9151981daed3a96af5b502453b4f5513bf86b1d06dd14458e5f80",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-graybox-001",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-graybox-only",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/graybox-screenshots/standing-s_envoy.png": {
+      "path": "work/graybox-screenshots/standing-s_envoy.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 23646,
+      "sha256": "3a066ffa9139a78f6937f9ac82c1f4b016fc88d375d7bdc66dc55b53399693bd",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-graybox-001",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-graybox-only",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/graybox-screenshots/standing-s_high.png": {
+      "path": "work/graybox-screenshots/standing-s_high.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 23587,
+      "sha256": "466351c08cb5308059a64cec72a19e4512e316cd32f97aefe57d2d43a53642d5",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-graybox-001",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-graybox-only",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/graybox-screenshots/standing-s_middle.png": {
+      "path": "work/graybox-screenshots/standing-s_middle.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 23584,
+      "sha256": "d176f51259cdf639a47eeca80c13f04076dc890c00f5c247eb1c41e530aad7df",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-graybox-001",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-graybox-only",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/graybox-screenshots/standing-s_west.png": {
+      "path": "work/graybox-screenshots/standing-s_west.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 23586,
+      "sha256": "85e5ad36513db2a0b9dac8c1b841c8c0bb29d7bf6d66ef95009f3aae0dae5964",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-graybox-001",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-graybox-only",
+      "pixelWidth": 1280,
+      "pixelHeight": 640,
+      "mode": "RGBA"
+    },
+    "work/imagegen-provenance.json": {
+      "path": "work/imagegen-provenance.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 3701,
+      "sha256": "680ca5ab379f423840afc9986517826eb679c77ced7ef749c5a4d4dfffefb086"
+    },
+    "work/indep-verify-routes.json": {
+      "path": "work/indep-verify-routes.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 4862,
+      "sha256": "474edfb4cf1edb50e9ddb93d782e70ad431ec6f3f62ab804ece12499167a9610",
+      "geometryRevision": "wanshou-final-002",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-process-only"
+    },
+    "work/independent-review.md": {
+      "path": "work/independent-review.md",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1006,
+      "sha256": "b1e6fa867c91dff780a36f7eb73f0ea8cfcbece9646b7895cbd6458d8726de13",
+      "evidenceScope": "process-source; current final verification only where explicitly cited"
+    },
+    "work/layer-audit.json": {
+      "path": "work/layer-audit.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 704,
+      "sha256": "b5a8117217bec98bd09cb641bdbf7805a028c221e7c33c2516f4edd8bb108d40",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    },
+    "work/package-check.json": {
+      "path": "work/package-check.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 2374,
+      "sha256": "2d163c16a79bfa0e7acb026dc6510305c83fdcad12dfb1b93dcb872280ae4217",
+      "geometryRevision": "wanshou-final-002",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-process-only"
+    },
+    "work/preview/engine.mjs": {
+      "path": "work/preview/engine.mjs",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 13521,
+      "sha256": "bbea03054581ac2d17aace9fb3c3ba30f5ca970082f8ea085202b784d661d755",
+      "evidenceScope": "process-source; current final verification only where explicitly cited"
+    },
+    "work/preview/index.html": {
+      "path": "work/preview/index.html",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 3836,
+      "sha256": "35998fbc588d7cbc20a5a195aec277c629d69eeb1f0771df908c5b988f6ef2e3",
+      "evidenceScope": "process-source; current final verification only where explicitly cited"
+    },
+    "work/preview/npc_wanshou_elder-idle.png": {
+      "path": "work/preview/npc_wanshou_elder-idle.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 10058,
+      "sha256": "172536627e33091df36e473b20e8e959e4de9729cbd147319e4af2ffdebe6000",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 96,
+      "pixelHeight": 96,
+      "mode": "RGBA"
+    },
+    "work/preview/npc_wanshou_envoy-idle.png": {
+      "path": "work/preview/npc_wanshou_envoy-idle.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 9157,
+      "sha256": "c70392ee9cbb11905570b9cd45b35fa8c7dad84460eb337c7ab83e6f366ac3f8",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 96,
+      "pixelHeight": 96,
+      "mode": "RGBA"
+    },
+    "work/preview/player-reference-idle.png": {
+      "path": "work/preview/player-reference-idle.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 10012,
+      "sha256": "520235d2f9c4c9e83b140ba439c2d18becfaa8e962fa15a98e35a14003ce0181",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 96,
+      "pixelHeight": 96,
+      "mode": "RGBA"
+    },
+    "work/preview/preview.mjs": {
+      "path": "work/preview/preview.mjs",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 13833,
+      "sha256": "f5d8624daf2cac2c9c9a6084e17d2d921bfecfbdf10d468e3993cc8097ecaf06",
+      "evidenceScope": "process-source; current final verification only where explicitly cited"
+    },
+    "work/prompts/stage3-background.txt": {
+      "path": "work/prompts/stage3-background.txt",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1059,
+      "sha256": "4e98d901ed3b577db3ddc23dfe13b9fcff0a723b4f130525279c278fb6200b6f",
+      "evidenceScope": "process-source; current final verification only where explicitly cited"
+    },
+    "work/prompts/stage3-climbs.txt": {
+      "path": "work/prompts/stage3-climbs.txt",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 954,
+      "sha256": "eb2c2bbbd4a3e8a80482523bc0fdc6d4066bd120f35cd5193ef6bff86ece05d6",
+      "evidenceScope": "process-source; current final verification only where explicitly cited"
+    },
+    "work/prompts/stage3-extract.txt": {
+      "path": "work/prompts/stage3-extract.txt",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1119,
+      "sha256": "94778fb4f786dfe1868b063832d9aa575489c836d55f39323d037cd1c337805e",
+      "evidenceScope": "process-source; current final verification only where explicitly cited"
+    },
+    "work/prompts/stage3-master.txt": {
+      "path": "work/prompts/stage3-master.txt",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 3194,
+      "sha256": "2afd91e3b0aca18c09fa9d28f95a152399ea56d05360e6d70f8b25d62cdcf383",
+      "evidenceScope": "process-source; current final verification only where explicitly cited"
+    },
+    "work/prompts/stage4-0.txt": {
+      "path": "work/prompts/stage4-0.txt",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1185,
+      "sha256": "a244354b205cb4e7e3ae34215c31f8ad585e47b6cc48f4cc0f0c23037a023fe8",
+      "evidenceScope": "process-source; current final verification only where explicitly cited"
+    },
+    "work/prompts/stage4-1.txt": {
+      "path": "work/prompts/stage4-1.txt",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1168,
+      "sha256": "d8ae9539d82b24b9659a992229907743699bad271d331afaf3e333e6646938d0",
+      "evidenceScope": "process-source; current final verification only where explicitly cited"
+    },
+    "work/prompts/stage4-2.txt": {
+      "path": "work/prompts/stage4-2.txt",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 691,
+      "sha256": "9b7d64807e929179e531c5cf280498c82814a661f3cc4728c577f00335def093",
+      "evidenceScope": "process-source; current final verification only where explicitly cited"
+    },
+    "work/prompts/stage5-decor-repair.txt": {
+      "path": "work/prompts/stage5-decor-repair.txt",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1061,
+      "sha256": "a2635953f0a1179804bab566f7b706c28fdaaf2fc64979c2bd78af86e585b70a",
+      "evidenceScope": "process-source; current final verification only where explicitly cited"
+    },
+    "work/protected-before.json": {
+      "path": "work/protected-before.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 703804,
+      "sha256": "809f2603b4e42d03aa99e7688948b1d4c440ff9b27bbc8fb75e4d5743251fe8d"
+    },
+    "work/protected-final.json": {
+      "path": "work/protected-final.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 425,
+      "sha256": "96ba0d04ee9896d083ccf51d3af4d35784ff03f4d323e8d5ab11b6445747a4b8"
+    },
+    "work/refine_and_split.py": {
+      "path": "work/refine_and_split.py",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 5008,
+      "sha256": "159dee13569fde0fa221b3c68a3007354d3666d40bab09198bf8135d441ac49e",
+      "evidenceScope": "process-source; current final verification only where explicitly cited"
+    },
+    "work/register_structure.py": {
+      "path": "work/register_structure.py",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 2330,
+      "sha256": "cc8c0e13daa34c35f84084b600c2f000c26ba9c6b3282d934a399895e3dc6a77",
+      "evidenceScope": "process-source; current final verification only where explicitly cited"
+    },
+    "work/render_diagnostics.py": {
+      "path": "work/render_diagnostics.py",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 3935,
+      "sha256": "d651688fd9863a7a4b91f937f95f28d35ef46f41ccc162cb2059bc6e170ecf35",
+      "evidenceScope": "process-source; current final verification only where explicitly cited"
+    },
+    "work/replays-final/route_full_tour.json": {
+      "path": "work/replays-final/route_full_tour.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 468479,
+      "sha256": "b22a32ce9a0b69a435a53b1455435f7fc7c0c78ddf5449e7b58c4f0ee89acf11",
+      "geometryRevision": "wanshou-final-002",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-process-only"
+    },
+    "work/replays-final/route_high.json": {
+      "path": "work/replays-final/route_high.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 332462,
+      "sha256": "617756ef42802bf86cd239eeb2aa9c17b1198debf1bf3d023cbb31e9a87cf810",
+      "geometryRevision": "wanshou-final-002",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-process-only"
+    },
+    "work/replays-final/route_main.json": {
+      "path": "work/replays-final/route_main.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 105926,
+      "sha256": "4b6a56c92c1311e75dba3337150773a10284fd4004e1c5906d71325ce971e7b6",
+      "geometryRevision": "wanshou-final-002",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-process-only"
+    },
+    "work/replays-final/route_middle.json": {
+      "path": "work/replays-final/route_middle.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 258299,
+      "sha256": "aeac0e247ba05faa7b17b5aec6b1c978631981cac79804ebb07cc661f74c247c",
+      "geometryRevision": "wanshou-final-002",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-process-only"
+    },
+    "work/replays-final/route_return.json": {
+      "path": "work/replays-final/route_return.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 210676,
+      "sha256": "b84f3793c37021079c10e8deee9ae8e4703a06187c56e8aec7845ad2d702e80d",
+      "geometryRevision": "wanshou-final-002",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-process-only"
+    },
+    "work/replays-final/route_west.json": {
+      "path": "work/replays-final/route_west.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 74100,
+      "sha256": "aa3fbd7566dbf38452b8ec3c1a7446e18446bbecacbf98484fed282709a9d98d",
+      "geometryRevision": "wanshou-final-002",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-process-only"
+    },
+    "work/replays-fix003/route_full_tour.json": {
+      "path": "work/replays-fix003/route_full_tour.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 468479,
+      "sha256": "cf1364ffe34eb05c4a4a9d2d28eab1f6e6151c40bddf734bd9e7225afd7caf57",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "final"
+    },
+    "work/replays-fix003/route_high.json": {
+      "path": "work/replays-fix003/route_high.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 332462,
+      "sha256": "d146fcb322636d6c9a63ab7d09d6aac499fe0ddf9c553035c40d1968d27401f4",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "final"
+    },
+    "work/replays-fix003/route_main.json": {
+      "path": "work/replays-fix003/route_main.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 105926,
+      "sha256": "f8e6c249af61763ff23e7e81f209e0227670e01aca208e150380c629435f89bf",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "final"
+    },
+    "work/replays-fix003/route_middle.json": {
+      "path": "work/replays-fix003/route_middle.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 258299,
+      "sha256": "e2062e23627bf05c8115f9719472861bbec331a4e83e8ae6c9c381c9b7bdaace",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "final"
+    },
+    "work/replays-fix003/route_return.json": {
+      "path": "work/replays-fix003/route_return.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 210676,
+      "sha256": "f15543ae8fe916b71a6f58ed3bb09addd6fd14865ff167870216b8c3f1d74a04",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "final"
+    },
+    "work/replays-fix003/route_west.json": {
+      "path": "work/replays-fix003/route_west.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 74100,
+      "sha256": "6ad4ee9e94506003976ddd976a90361e0191c1687a67457220a7c9a039038f6a",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "final"
+    },
+    "work/replays-graybox/route_full_tour.json": {
+      "path": "work/replays-graybox/route_full_tour.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 468483,
+      "sha256": "bbc295ecbb6d6561cf1f2c67c052766520a9cfb59202f1ab6689c99c4cdcd921",
+      "geometryRevision": "wanshou-graybox-001",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-process-only"
+    },
+    "work/replays-graybox/route_high.json": {
+      "path": "work/replays-graybox/route_high.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 332466,
+      "sha256": "ab50575f735939eac79021ed2dfc5437c62a85fc3364af943155a811a400a5e5",
+      "geometryRevision": "wanshou-graybox-001",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-process-only"
+    },
+    "work/replays-graybox/route_main.json": {
+      "path": "work/replays-graybox/route_main.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 105930,
+      "sha256": "ad6e60e3326694b48a1a7b7a9bd206125b6a0f2163c4d45280e044e26204c814",
+      "geometryRevision": "wanshou-graybox-001",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-process-only"
+    },
+    "work/replays-graybox/route_middle.json": {
+      "path": "work/replays-graybox/route_middle.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 258303,
+      "sha256": "55e5ec3d66fee68c2d66825c2cad428c850c75c752cb53c4124e0ebb94a7acbb",
+      "geometryRevision": "wanshou-graybox-001",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-process-only"
+    },
+    "work/replays-graybox/route_return.json": {
+      "path": "work/replays-graybox/route_return.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 210680,
+      "sha256": "309e14794909127efe857ff9bd5c8af640e74896ddc8e3b0c42dcebaf3b83712",
+      "geometryRevision": "wanshou-graybox-001",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-process-only"
+    },
+    "work/replays-graybox/route_west.json": {
+      "path": "work/replays-graybox/route_west.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 74104,
+      "sha256": "8669f05818de0fbbcb12970cf47aa4d8d1a71deecb169f6b811b6b6aec14b73c",
+      "geometryRevision": "wanshou-graybox-001",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-process-only"
+    },
+    "work/replays-indep-verify/route_full_tour.json": {
+      "path": "work/replays-indep-verify/route_full_tour.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 468479,
+      "sha256": "b22a32ce9a0b69a435a53b1455435f7fc7c0c78ddf5449e7b58c4f0ee89acf11",
+      "geometryRevision": "wanshou-final-002",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-process-only"
+    },
+    "work/replays-indep-verify/route_high.json": {
+      "path": "work/replays-indep-verify/route_high.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 332462,
+      "sha256": "617756ef42802bf86cd239eeb2aa9c17b1198debf1bf3d023cbb31e9a87cf810",
+      "geometryRevision": "wanshou-final-002",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-process-only"
+    },
+    "work/replays-indep-verify/route_main.json": {
+      "path": "work/replays-indep-verify/route_main.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 105926,
+      "sha256": "4b6a56c92c1311e75dba3337150773a10284fd4004e1c5906d71325ce971e7b6",
+      "geometryRevision": "wanshou-final-002",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-process-only"
+    },
+    "work/replays-indep-verify/route_middle.json": {
+      "path": "work/replays-indep-verify/route_middle.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 258299,
+      "sha256": "aeac0e247ba05faa7b17b5aec6b1c978631981cac79804ebb07cc661f74c247c",
+      "geometryRevision": "wanshou-final-002",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-process-only"
+    },
+    "work/replays-indep-verify/route_return.json": {
+      "path": "work/replays-indep-verify/route_return.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 210676,
+      "sha256": "b84f3793c37021079c10e8deee9ae8e4703a06187c56e8aec7845ad2d702e80d",
+      "geometryRevision": "wanshou-final-002",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-process-only"
+    },
+    "work/replays-indep-verify/route_west.json": {
+      "path": "work/replays-indep-verify/route_west.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 74100,
+      "sha256": "aa3fbd7566dbf38452b8ec3c1a7446e18446bbecacbf98484fed282709a9d98d",
+      "geometryRevision": "wanshou-final-002",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "evidenceScope": "historical-process-only"
+    },
+    "work/route-plan.md": {
+      "path": "work/route-plan.md",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 261,
+      "sha256": "4ac3667fdf2e03d2277c920270f16efb5bcce54ecd5aa14159c88d4630b5cf2e",
+      "evidenceScope": "process-source; current final verification only where explicitly cited"
+    },
+    "work/run_routes.mjs": {
+      "path": "work/run_routes.mjs",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 4250,
+      "sha256": "9401e6a9218cfeb1066bba51ac5da3e55b721eaa3740ab33b6e76e76ee2fa4d4",
+      "evidenceScope": "process-source; current final verification only where explicitly cited"
+    },
+    "work/scene-brief.md": {
+      "path": "work/scene-brief.md",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 2176,
+      "sha256": "bf19aa226d2928f984d6af53c7d3308a0c546d2611e4328b71d7c2d160553d35",
+      "evidenceScope": "process-source; current final verification only where explicitly cited"
+    },
+    "work/scene-data.draft.json": {
+      "path": "work/scene-data.draft.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 17322,
+      "sha256": "85345125d6c5e13fb6e96678839f6b2ea2ab624ca4957b073ac3b3a15efc9ab3",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-graybox-001",
+      "evidenceScope": "historical-process-only"
+    },
+    "work/scene-data.final-prebind.json": {
+      "path": "work/scene-data.final-prebind.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 18868,
+      "sha256": "d5031a4388658e2b8bc530350099c86f8ccddc9fe88ee6280473eed2e328edd6",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-final-002",
+      "evidenceScope": "historical-process-only"
+    },
+    "work/stage2-graybox-report.md": {
+      "path": "work/stage2-graybox-report.md",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 624,
+      "sha256": "f7420d158b32bfd5be846a97176ca18f77e59c5d77ea88cd385196e8fcbc0816",
+      "evidenceScope": "process-source; current final verification only where explicitly cited"
+    },
+    "work/stage3-review.md": {
+      "path": "work/stage3-review.md",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 655,
+      "sha256": "7f2baf5866c314c8440729a8ff8b5b62fdbdeae8d0c8feca82fbc339fabae976",
+      "evidenceScope": "process-source; current final verification only where explicitly cited"
+    },
+    "work/stage3-transform.json": {
+      "path": "work/stage3-transform.json",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 5947,
+      "sha256": "df44028ad80b00d71092600dc0a59c3cc66d21318cd6eb62330f6c8333a9614d",
+      "geometryRevision": "wanshou-graybox-001",
+      "evidenceScope": "historical-process-only"
+    },
+    "work/stage4-detail-comparison.png": {
+      "path": "work/stage4-detail-comparison.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 220189,
+      "sha256": "d6c42db6d37920abf86fcb13ccfa3a3e8dabddd21869b4985ce50db371b665a9",
+      "evidenceScope": "process-source; current final verification only where explicitly cited",
+      "pixelWidth": 704,
+      "pixelHeight": 390,
+      "mode": "RGB"
+    },
+    "work/stage4-review.md": {
+      "path": "work/stage4-review.md",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 863,
+      "sha256": "31c056b17f2be8a0f3c49640853f284a3b5180764816078091de27b68d17a60c",
+      "evidenceScope": "process-source; current final verification only where explicitly cited"
+    },
+    "work/stage5-review.md": {
+      "path": "work/stage5-review.md",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 1074,
+      "sha256": "528a61b9071a101ecc3f8280cb5090211a2d638456053a62ecb3f70a99200880",
+      "evidenceScope": "process-source; current final verification only where explicitly cited"
+    },
+    "work/stage6-review.md": {
+      "path": "work/stage6-review.md",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 547,
+      "sha256": "36cad7c0bd4a3c6b09dd215bb0d88d62a3cfdde0f23bcb72de87d74c46207c12",
+      "evidenceScope": "process-source; current final verification only where explicitly cited"
+    },
+    "work/standing-contacts-sheet.png": {
+      "path": "work/standing-contacts-sheet.png",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 830987,
+      "sha256": "d03cdab96dcaca995bff5f559dacc960ffcbcfe04cbd863abca3df8ace15e1e4",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+      "pixelWidth": 960,
+      "pixelHeight": 660,
+      "mode": "RGB"
+    },
+    "work/write_audits.py": {
+      "path": "work/write_audits.py",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 5837,
+      "sha256": "11ecd089d550d038ba5a5b9b35e831f2bf64245d629c33135e1fc9cdc59af7e8",
+      "evidenceScope": "process-source; current final verification only where explicitly cited"
+    },
+    "work/write_delivery.py": {
+      "path": "work/write_delivery.py",
+      "role": "process-source-or-replay-evidence",
+      "bytes": 13552,
+      "sha256": "546c0865ef9fdb3dcec4254ae4f16c9cb0074d4327d64b62115ed4deb5cb66e2",
+      "evidenceScope": "process-source; current final verification only where explicitly cited"
+    },
+    "manifest.json": {
+      "path": "manifest.json",
+      "role": "root-asset-manifest",
+      "sha256": null,
+      "hashPolicy": "self digest omitted to avoid recursive hash",
+      "schemaVersion": "1.0",
+      "geometryRevision": "wanshou-final-003",
+      "actorParameterRevision": "wanshou-base-feel-20261027-001",
+      "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+    }
+  },
+  "foreground": {
+    "applicable": false,
+    "reason": "all attached shrine/hall/lantern decoration is behind NPCs and player"
+  },
+  "drawOrder": [
+    "background",
+    "playable",
+    "static-NPC-references",
+    "actor"
+  ],
+  "composition": {
+    "sourceRefinedMaster": "work/generated/master-003-refined.png",
+    "registeredFinalMaster": "scene.png",
+    "sameMasterLayerLineage": true,
+    "exactRGBARecomposition": true,
+    "layerAudit": "work/layer-audit.json",
+    "cropPlacement": "work/stage3-transform.json",
+    "localRefinementPlacement": "work/detail-blocks.json"
+  },
+  "sceneData": {
+    "path": "scene-data.json",
+    "sha256": "ad8c471688210e753163f50e8330796b98690ecba35f7c98951415bb5df73c46",
+    "schemaVersion": "1.0",
+    "geometryRevision": "wanshou-final-003",
+    "actorParameterRevision": "wanshou-base-feel-20261027-001",
+    "engineRevision": "gsb-aabb-feel-60hz-v2-001"
+  },
+  "diagnostics": {
+    "schemaVersion": "1.0",
+    "geometryRevision": "wanshou-final-003",
+    "actorParameterRevision": "wanshou-base-feel-20261027-001",
+    "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+    "sourceDataSHA256": "ad8c471688210e753163f50e8330796b98690ecba35f7c98951415bb5df73c46",
+    "sceneSHA256": "e81d09215c52eb523965cc545e505c9bc967aab0b40d52d4c35fa2d475f0be50",
+    "maskPalette": {
+      "walk": [
+        150,
+        245,
+        160,
+        255
+      ],
+      "stand": [
+        0,
+        200,
+        80,
+        255
+      ],
+      "rope": [
+        0,
+        190,
+        230,
+        255
+      ],
+      "ladder": [
+        80,
+        140,
+        255,
+        255
+      ],
+      "stairs": [
+        255,
+        160,
+        40,
+        255
+      ],
+      "point": [
+        255,
+        70,
+        160,
+        255
+      ],
+      "jump": [
+        255,
+        180,
+        0,
+        255
+      ],
+      "drop": [
+        170,
+        80,
+        225,
+        255
+      ]
+    },
+    "rasterizationOrder": [
+      "walk",
+      "stand",
+      "rope",
+      "ladder",
+      "stairs",
+      "jump",
+      "drop",
+      "point"
+    ],
+    "files": {
+      "action-mask.png": {
+        "sha256": "8f01380290765aa9610563c18db6f0f844cb70c4e81e2ae2830ce7d171f19006",
+        "pixelWidth": 1280,
+        "pixelHeight": 640
+      },
+      "action-overlay.png": {
+        "sha256": "f704d72a89862c9830b64c1ef8df8bb61c3eb327771e9651051674c866771b84",
+        "pixelWidth": 1280,
+        "pixelHeight": 640
+      },
+      "collision-overlay.png": {
+        "sha256": "6a32bd650743af5466ce0581f59c3e8fcca92ebb741c234b052548a6d5d4fff1",
+        "pixelWidth": 1280,
+        "pixelHeight": 640
+      }
+    }
+  },
+  "mask": {
+    "antialiasing": false,
+    "palette": {
+      "walk": [
+        150,
+        245,
+        160,
+        255
+      ],
+      "stand": [
+        0,
+        200,
+        80,
+        255
+      ],
+      "rope": [
+        0,
+        190,
+        230,
+        255
+      ],
+      "ladder": [
+        80,
+        140,
+        255,
+        255
+      ],
+      "stairs": [
+        255,
+        160,
+        40,
+        255
+      ],
+      "point": [
+        255,
+        70,
+        160,
+        255
+      ],
+      "jump": [
+        255,
+        180,
+        0,
+        255
+      ],
+      "drop": [
+        170,
+        80,
+        225,
+        255
+      ]
+    },
+    "rasterizationOrder": [
+      "walk",
+      "stand",
+      "rope",
+      "ladder",
+      "stairs",
+      "jump",
+      "drop",
+      "point"
+    ],
+    "authority": "scene-data.json; mask is derived inspection only"
+  },
+  "runtime": {
+    "entry": "index.html",
+    "relativeTester": "work/preview/index.html",
+    "engine": "work/preview/engine.mjs",
+    "engineRevision": "gsb-aabb-feel-60hz-v2-001",
+    "productionPhaserIntegrated": false,
+    "collisionModel": "rectangular solid AABB, horizontal one-way support, explicit bounded climb corridors",
+    "actorReferenceIsStaticFrame": true,
+    "NPCsReferenceOnly": true,
+    "networkDependencies": []
+  },
+  "validation": {
+    "status": "verified",
+    "report": "validation-report.md",
+    "requiredRoutes": {
+      "route_main": "verified",
+      "route_return": "verified",
+      "route_west": "verified",
+      "route_middle": "verified",
+      "route_high": "verified",
+      "route_full_tour": "verified"
+    },
+    "routesVerified": 6,
+    "directedTransitionsVerified": 10,
+    "physicsChecksVerified": 9,
+    "browserStableContacts": 6,
+    "bearingTolerancePx": 2,
+    "maxSampleAbsBearingDeltaPx": 0,
+    "leadApproval": "pending",
+    "integrationAllowed": false
+  },
+  "artGeneration": {
+    "callCount": 8,
+    "mode": "built-in image_gen",
+    "sourceImages": [
+      {
+        "tool": "built-in image_gen",
+        "output": "work/generated/master-001.png",
+        "prompt": "work/prompts/stage3-master.txt",
+        "inputs": [
+          "work/action-layout.png",
+          "art/scenes/qingyun_village_gsb_v2/scene.png",
+          "art/scenes/taixu_temple_gsb_v1/scene.png"
+        ],
+        "actualPixels": [
+          1774,
+          887
+        ],
+        "mode": "RGB",
+        "sha256": "f41235e7cb2fb0caab854a6c4102d9af4f57f53a38f6ff3c2418412a15a6e466"
+      },
+      {
+        "tool": "built-in image_gen",
+        "output": "work/generated/extract-001.png",
+        "prompt": "work/prompts/stage3-extract.txt",
+        "inputs": [
+          "work/generated/master-001.png"
+        ],
+        "actualPixels": [
+          1774,
+          887
+        ],
+        "mode": "RGBA",
+        "sha256": "9ba812974bc0796d06003629b025fa0332724282bd6f8676ea5cdf60e67bc2bc"
+      },
+      {
+        "tool": "built-in image_gen",
+        "output": "work/generated/background-001.png",
+        "prompt": "work/prompts/stage3-background.txt",
+        "inputs": [
+          "work/generated/master-001.png"
+        ],
+        "actualPixels": [
+          1774,
+          887
+        ],
+        "mode": "RGB",
+        "sha256": "1aaec53d7dba675126edb5fd23544d95d7e0ab6556ce981d65f81165603e27a4"
+      },
+      {
+        "tool": "built-in image_gen",
+        "output": "work/generated/climbs-001.png",
+        "prompt": "work/prompts/stage3-climbs.txt",
+        "inputs": [
+          "work/generated/master-001.png"
+        ],
+        "actualPixels": [
+          1774,
+          887
+        ],
+        "mode": "RGBA",
+        "sha256": "509183bee10adf46798c5f800ff4034ccff0c796130531125132baf2742f44e2"
+      },
+      {
+        "tool": "built-in image_gen",
+        "output": "work/generated/detail-reception-after.png",
+        "prompt": "work/prompts/stage4-0.txt",
+        "inputs": [
+          "work/generated/detail-reception-before.png",
+          "work/_backup/master-002-registered.png"
+        ],
+        "actualPixels": [
+          1806,
+          871
+        ],
+        "mode": "RGB",
+        "sha256": "0668986d1b883f4d004795b08e5a2fefcb03fff0913df49fa740c8ea6c98073b"
+      },
+      {
+        "tool": "built-in image_gen",
+        "output": "work/generated/detail-elder-after.png",
+        "prompt": "work/prompts/stage4-1.txt",
+        "inputs": [
+          "work/generated/detail-elder-before.png",
+          "work/_backup/master-002-registered.png"
+        ],
+        "actualPixels": [
+          1721,
+          914
+        ],
+        "mode": "RGB",
+        "sha256": "c9c3f712d1b8334c319ac54c9494a0412d53779a47d582da02ab8a8bc3e32aab"
+      },
+      {
+        "tool": "built-in image_gen",
+        "output": "work/generated/ladder-cleaned.png",
+        "prompt": "work/prompts/stage4-2.txt",
+        "inputs": [
+          "work/generated/ladder-cleanup-target.png"
+        ],
+        "actualPixels": [
+          747,
+          2106
+        ],
+        "mode": "RGBA",
+        "sha256": "c0b8cc08aeb685f0e4435bbb3bd72947dae99648c45ed2088012061cba340ef2"
+      },
+      {
+        "tool": "built-in image_gen",
+        "output": "work/generated/decor-repair-001.png",
+        "prompt": "work/prompts/stage5-decor-repair.txt",
+        "inputs": [
+          "work/generated/extract-001.png"
+        ],
+        "actualPixels": [
+          1774,
+          887
+        ],
+        "mode": "RGBA",
+        "sha256": "4c3e17654440765451eaa4966a915824aa1faa17cdd0833e6bccb4c0c42ac5e7"
+      }
+    ],
+    "registrationAndCompositing": "generated pixel crop/scale/place, inherited-alpha material adoption and compositing; no code-painted final artwork",
+    "dimensionsOnly": "1774x887 original normalized to1280x640; normalization is dimensional alignment, not claimed detail gain",
+    "detailProof": "work/stage4-detail-comparison.png"
+  },
+  "authority": {
+    "protectedBoundaryAudit": "work/protected-final.json",
+    "gamePublicTaskWrites": false,
+    "taskDeployed": false,
+    "taskPushed": false,
+    "taskForwardedExternalTrial": false,
+    "sourceMapModified": false,
+    "concurrency": "max2: wanshou+youying; after youying exit wanshou+one read-only audit child"
+  },
+  "limitations": [
+    "Independent local AABB adapter; rerun production Phaser checks after lead PASS.",
+    "NPC/ferry/trial metadata and static reference frames only; no live dialogue, teleport, reward or combat.",
+    "No standalone foreground layer."
+  ]
+}

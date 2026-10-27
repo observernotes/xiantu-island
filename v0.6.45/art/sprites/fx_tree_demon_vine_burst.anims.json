@@ -1,0 +1,29 @@
+{
+ "atlas": "fx_tree_demon_vine_burst",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  128,
+  128
+ ],
+ "anims": [
+  {
+   "key": "fx_tree_demon_vine_burst_play",
+   "frames": [
+    "fx_tree_demon_vine_burst_play_01",
+    "fx_tree_demon_vine_burst_play_02",
+    "fx_tree_demon_vine_burst_play_03",
+    "fx_tree_demon_vine_burst_play_04",
+    "fx_tree_demon_vine_burst_play_05"
+   ],
+   "frameRate": 12,
+   "repeat": 0
+  }
+ ],
+ "note": "原点 (0.5,1) 放在预警圈中心的地面；判定帧 = play_02；描边土褐 #8A6A3E（破土），藤尖带魔种紫。 藤蔓部分用木描边 #2E6A34。",
+ "blend": "normal",
+ "kind": "fx"
+}

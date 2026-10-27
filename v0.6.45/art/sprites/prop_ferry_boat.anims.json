@@ -1,0 +1,41 @@
+{
+ "atlas": "prop_ferry_boat",
+ "facing": "left",
+ "origin": [
+  0.5,
+  1
+ ],
+ "frameSize": [
+  320,
+  192
+ ],
+ "anims": [
+  {
+   "key": "prop_ferry_boat_idle",
+   "frames": [
+    "prop_ferry_boat_idle_01",
+    "prop_ferry_boat_idle_02",
+    "prop_ferry_boat_idle_03",
+    "prop_ferry_boat_idle_04"
+   ],
+   "frameRate": 4,
+   "repeat": -1
+  }
+ ],
+ "blend": "NORMAL",
+ "deckOffsetY": 96,
+ "deckWidth": 288,
+ "depth": "behindPlayer",
+ "promptOffsetY": -196,
+ "mapObject": "ferry",
+ "maps": [
+  "luoxia_town",
+  "wanyao_outer_1",
+  "wanyao_deep_2",
+  "chiyan_slope_1",
+  "chiyan_core",
+  "tianjian_sect"
+ ],
+ "note": "飞舟占位（ferry 对象用，地图没写 sprite 字段，统一用这张）。原点 (0.5,1) = 船底托云最低点；甲板面在原点上方 deckOffsetY=96，宽 288。落霞镇 ferry_dock 的对象 y 是甲板面（2–10 列单向平台）：sprite 放在 (平台中心 x=208, o.y + 96)；万妖林、赤炎、天剑宗的 ferry_landing / ferry_pickup 对象 y 是地面：sprite.y = o.y。只做演出不带碰撞，层级放在角色后面；idle 循环（浮动 0~-2px、帆鼓、旗飘）。交互范围按 ferry 对象的 width。",
+ "kind": "prop"
+}

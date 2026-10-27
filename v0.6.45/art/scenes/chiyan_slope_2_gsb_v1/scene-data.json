@@ -1,0 +1,4223 @@
+{
+  "schemaVersion": "1.0",
+  "geometryRevision": "slope2-geometry-003",
+  "status": "verified",
+  "space": {
+    "origin": "top-left",
+    "xDirection": "right",
+    "yDirection": "down",
+    "units": "logical-pixel",
+    "logicalWidth": 3520,
+    "logicalHeight": 960,
+    "sourceMap": "maps/chiyan_slope_2.json",
+    "sourceToWorld": [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0
+    ]
+  },
+  "map": {
+    "id": "chiyan_slope_2",
+    "name": "赤炎火山·熔岩道",
+    "area": "chiyan",
+    "qiDensity": 7,
+    "safeZone": false,
+    "levelRange": [
+      47,
+      55
+    ]
+  },
+  "safeZone": false,
+  "actor": {
+    "parameterRevision": "slope2-base-feel-20261027-001",
+    "parameterSource": "game/src/config/feel.ts; game/src/scenes/Player.ts; game/src/move.ts; game/src/SpriteArt.ts; maps/chiyan_slope_2.json",
+    "sourceRevision": {
+      "game/src/config/feel.ts": "9375297a15b04012633197a935f4d9ffd403c3ff8d1e055cb585dd5f81acdeec",
+      "game/src/scenes/Player.ts": "ec9426ed625784532c6e632a1755bd16076cc3f559d177f465b741341193f513",
+      "game/src/move.ts": "585c9987623cbe532d7f65508773addd52ccd2f312e5c2ee592e9e6f2f686a74",
+      "game/src/SpriteArt.ts": "6c1fcb4fe67857c7fc3d569a2151f4b1a7cdd914e69be6d12d53b54b288b6f18",
+      "maps/chiyan_slope_2.json": "ef1e5d31987abde9c7bb3d1002738791e9bf95fb13d78c378bae74c38632f754"
+    },
+    "provisional": false,
+    "visualBounds": {
+      "width": 96,
+      "height": 96,
+      "idleAlphaBounds": [
+        15,
+        9,
+        76,
+        96
+      ],
+      "idleVisibleWidth": 61,
+      "idleVisibleHeight": 87,
+      "anchor": "feet-center"
+    },
+    "collider": {
+      "shape": "aabb",
+      "width": 26,
+      "height": 58,
+      "anchor": "feet-center"
+    },
+    "abilities": [
+      "walk",
+      "jump",
+      "double-jump",
+      "ladder",
+      "rope",
+      "drop-through"
+    ],
+    "movement": {
+      "gravity": 2000,
+      "maxFallSpeed": 670,
+      "walkSpeed": 130,
+      "groundAccel": 2400,
+      "groundDecel": 3000,
+      "airAccel": 700,
+      "airMaxSpeed": 130,
+      "jumpSpeed": 560,
+      "coyoteMs": 60,
+      "jumpBufferMs": 80,
+      "doubleJumpVy": 480,
+      "doubleJumpVx": 330,
+      "climbSpeed": 110,
+      "ropeGrabRangeX": 18,
+      "ropeJumpVx": 160,
+      "ropeJumpVy": 360,
+      "ropeRegrabMs": 250,
+      "dropThroughMs": 220,
+      "oneWayEdge": 8,
+      "fixedHz": 60,
+      "speedPoints": 100,
+      "jumpPoints": 100
+    },
+    "failureRules": {
+      "lava": "8 percent maximum HP per 500ms, upward velocity 480; HP zero resets spawn",
+      "fall": "reset if below world +100",
+      "reset": "R returns spawn and clears velocity"
+    },
+    "visualAsset": {
+      "path": "work/preview/player-reference-idle.png",
+      "width": 96,
+      "height": 96,
+      "anchor": "feet-center"
+    }
+  },
+  "assets": [
+    {
+      "id": "background",
+      "role": "background",
+      "path": "background.png",
+      "pixelWidth": 3520,
+      "pixelHeight": 960,
+      "drawOrder": 0,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "id": "playable",
+      "role": "playable",
+      "path": "playable.png",
+      "pixelWidth": 3520,
+      "pixelHeight": 960,
+      "drawOrder": 10,
+      "pixelToWorld": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ]
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "s_west",
+      "polyline": [
+        [
+          0,
+          832
+        ],
+        [
+          480,
+          832
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        13,
+        467
+      ],
+      "walkRegion": [
+        [
+          13,
+          774
+        ],
+        [
+          467,
+          774
+        ],
+        [
+          467,
+          832
+        ],
+        [
+          13,
+          832
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 832,
+        "tolerance": 2,
+        "surfaceKind": "actual ash-crust / bridge deck bearing line; excludes chain knots and decoration"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "s_west"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_low_w",
+      "polyline": [
+        [
+          480,
+          896
+        ],
+        [
+          960,
+          896
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        493,
+        947
+      ],
+      "walkRegion": [
+        [
+          493,
+          838
+        ],
+        [
+          947,
+          838
+        ],
+        [
+          947,
+          896
+        ],
+        [
+          493,
+          896
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 896,
+        "tolerance": 2,
+        "surfaceKind": "actual ash-crust / bridge deck bearing line; excludes chain knots and decoration"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "s_low_w"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_low_mid",
+      "polyline": [
+        [
+          1152,
+          896
+        ],
+        [
+          1920,
+          896
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        1165,
+        1907
+      ],
+      "walkRegion": [
+        [
+          1165,
+          838
+        ],
+        [
+          1907,
+          838
+        ],
+        [
+          1907,
+          896
+        ],
+        [
+          1165,
+          896
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 896,
+        "tolerance": 2,
+        "surfaceKind": "actual ash-crust / bridge deck bearing line; excludes chain knots and decoration"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "s_low_mid"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_bank",
+      "polyline": [
+        [
+          2080,
+          896
+        ],
+        [
+          2112,
+          896
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        2093,
+        2099
+      ],
+      "walkRegion": [
+        [
+          2093,
+          838
+        ],
+        [
+          2099,
+          838
+        ],
+        [
+          2099,
+          896
+        ],
+        [
+          2093,
+          896
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 896,
+        "tolerance": 2,
+        "surfaceKind": "actual ash-crust / bridge deck bearing line; excludes chain knots and decoration"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "s_bank"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_east",
+      "polyline": [
+        [
+          2112,
+          832
+        ],
+        [
+          2752,
+          832
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        2125,
+        2739
+      ],
+      "walkRegion": [
+        [
+          2125,
+          774
+        ],
+        [
+          2739,
+          774
+        ],
+        [
+          2739,
+          832
+        ],
+        [
+          2125,
+          832
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 832,
+        "tolerance": 2,
+        "surfaceKind": "actual ash-crust / bridge deck bearing line; excludes chain knots and decoration"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "s_east"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_gate",
+      "polyline": [
+        [
+          2752,
+          768
+        ],
+        [
+          3520,
+          768
+        ]
+      ],
+      "support": "solid",
+      "effectiveLandingRange": [
+        2765,
+        3507
+      ],
+      "walkRegion": [
+        [
+          2765,
+          710
+        ],
+        [
+          3507,
+          710
+        ],
+        [
+          3507,
+          768
+        ],
+        [
+          2765,
+          768
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 768,
+        "tolerance": 2,
+        "surfaceKind": "actual ash-crust / bridge deck bearing line; excludes chain knots and decoration"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "s_gate"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_p16",
+      "polyline": [
+        [
+          512,
+          768
+        ],
+        [
+          928,
+          768
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        525,
+        915
+      ],
+      "walkRegion": [
+        [
+          525,
+          710
+        ],
+        [
+          915,
+          710
+        ],
+        [
+          915,
+          768
+        ],
+        [
+          525,
+          768
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 768,
+        "tolerance": 2,
+        "surfaceKind": "actual ash-crust / bridge deck bearing line; excludes chain knots and decoration"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "s_p16"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_p20",
+      "polyline": [
+        [
+          640,
+          640
+        ],
+        [
+          1120,
+          640
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        653,
+        1107
+      ],
+      "walkRegion": [
+        [
+          653,
+          582
+        ],
+        [
+          1107,
+          582
+        ],
+        [
+          1107,
+          640
+        ],
+        [
+          653,
+          640
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 640,
+        "tolerance": 2,
+        "surfaceKind": "actual ash-crust / bridge deck bearing line; excludes chain knots and decoration"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "s_p20"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_p38",
+      "polyline": [
+        [
+          1216,
+          768
+        ],
+        [
+          1824,
+          768
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        1229,
+        1811
+      ],
+      "walkRegion": [
+        [
+          1229,
+          710
+        ],
+        [
+          1811,
+          710
+        ],
+        [
+          1811,
+          768
+        ],
+        [
+          1229,
+          768
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 768,
+        "tolerance": 2,
+        "surfaceKind": "actual ash-crust / bridge deck bearing line; excludes chain knots and decoration"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "s_p38"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_p42",
+      "polyline": [
+        [
+          1344,
+          640
+        ],
+        [
+          1888,
+          640
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        1357,
+        1875
+      ],
+      "walkRegion": [
+        [
+          1357,
+          582
+        ],
+        [
+          1875,
+          582
+        ],
+        [
+          1875,
+          640
+        ],
+        [
+          1357,
+          640
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 640,
+        "tolerance": 2,
+        "surfaceKind": "actual ash-crust / bridge deck bearing line; excludes chain knots and decoration"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "s_p42"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_p46",
+      "polyline": [
+        [
+          1472,
+          512
+        ],
+        [
+          1824,
+          512
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        1485,
+        1811
+      ],
+      "walkRegion": [
+        [
+          1485,
+          454
+        ],
+        [
+          1811,
+          454
+        ],
+        [
+          1811,
+          512
+        ],
+        [
+          1485,
+          512
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 512,
+        "tolerance": 2,
+        "surfaceKind": "actual ash-crust / bridge deck bearing line; excludes chain knots and decoration"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "s_p46"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_p70",
+      "polyline": [
+        [
+          2240,
+          704
+        ],
+        [
+          2720,
+          704
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        2253,
+        2707
+      ],
+      "walkRegion": [
+        [
+          2253,
+          646
+        ],
+        [
+          2707,
+          646
+        ],
+        [
+          2707,
+          704
+        ],
+        [
+          2253,
+          704
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 704,
+        "tolerance": 2,
+        "surfaceKind": "actual ash-crust / bridge deck bearing line; excludes chain knots and decoration"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "s_p70"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_p74",
+      "polyline": [
+        [
+          2368,
+          576
+        ],
+        [
+          2848,
+          576
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        2381,
+        2835
+      ],
+      "walkRegion": [
+        [
+          2381,
+          518
+        ],
+        [
+          2835,
+          518
+        ],
+        [
+          2835,
+          576
+        ],
+        [
+          2381,
+          576
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 576,
+        "tolerance": 2,
+        "surfaceKind": "actual ash-crust / bridge deck bearing line; excludes chain knots and decoration"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "s_p74"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_p92",
+      "polyline": [
+        [
+          2944,
+          640
+        ],
+        [
+          3360,
+          640
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        2957,
+        3347
+      ],
+      "walkRegion": [
+        [
+          2957,
+          582
+        ],
+        [
+          3347,
+          582
+        ],
+        [
+          3347,
+          640
+        ],
+        [
+          2957,
+          640
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 640,
+        "tolerance": 2,
+        "surfaceKind": "actual ash-crust / bridge deck bearing line; excludes chain knots and decoration"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "s_p92"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_bridge1",
+      "polyline": [
+        [
+          896,
+          832
+        ],
+        [
+          1216,
+          832
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        909,
+        1203
+      ],
+      "walkRegion": [
+        [
+          909,
+          774
+        ],
+        [
+          1203,
+          774
+        ],
+        [
+          1203,
+          832
+        ],
+        [
+          909,
+          832
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 832,
+        "tolerance": 2,
+        "surfaceKind": "actual ash-crust / bridge deck bearing line; excludes chain knots and decoration"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "s_bridge1"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_bridge2",
+      "polyline": [
+        [
+          1856,
+          832
+        ],
+        [
+          2144,
+          832
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        1869,
+        2131
+      ],
+      "walkRegion": [
+        [
+          1869,
+          774
+        ],
+        [
+          2131,
+          774
+        ],
+        [
+          2131,
+          832
+        ],
+        [
+          1869,
+          832
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 832,
+        "tolerance": 2,
+        "surfaceKind": "actual ash-crust / bridge deck bearing line; excludes chain knots and decoration"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "s_bridge2"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_lip_w",
+      "polyline": [
+        [
+          480,
+          832
+        ],
+        [
+          528,
+          832
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        493,
+        515
+      ],
+      "walkRegion": [
+        [
+          493,
+          774
+        ],
+        [
+          515,
+          774
+        ],
+        [
+          515,
+          832
+        ],
+        [
+          493,
+          832
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 832,
+        "tolerance": 2,
+        "surfaceKind": "actual ash-crust / bridge deck bearing line; excludes chain knots and decoration"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "s_lip_w"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "s_lip_e",
+      "polyline": [
+        [
+          2704,
+          768
+        ],
+        [
+          2752,
+          768
+        ]
+      ],
+      "support": "one-way",
+      "effectiveLandingRange": [
+        2717,
+        2739
+      ],
+      "walkRegion": [
+        [
+          2717,
+          710
+        ],
+        [
+          2739,
+          710
+        ],
+        [
+          2739,
+          768
+        ],
+        [
+          2717,
+          768
+        ]
+      ],
+      "clearanceRequired": 58,
+      "visualContact": {
+        "targetY": 768,
+        "tolerance": 2,
+        "surfaceKind": "actual ash-crust / bridge deck bearing line; excludes chain knots and decoration"
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "s_lip_e"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    }
+  ],
+  "climbs": [
+    {
+      "id": "c_rope_20",
+      "kind": "rope",
+      "sourceObject": "rope_20",
+      "corridor": [
+        [
+          638,
+          768
+        ],
+        [
+          674,
+          768
+        ],
+        [
+          674,
+          896
+        ],
+        [
+          638,
+          896
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            656,
+            896
+          ],
+          "surface": "s_low_w"
+        },
+        "end": {
+          "position": [
+            656,
+            768
+          ],
+          "surface": "s_p16"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "extend source chain to lower standing deck",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "c_rope_20"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "c_rope_24",
+      "kind": "rope",
+      "sourceObject": "rope_24",
+      "corridor": [
+        [
+          766,
+          640
+        ],
+        [
+          802,
+          640
+        ],
+        [
+          802,
+          768
+        ],
+        [
+          766,
+          768
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            784,
+            768
+          ],
+          "surface": "s_p16"
+        },
+        "end": {
+          "position": [
+            784,
+            640
+          ],
+          "surface": "s_p20"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "extend source chain to lower standing deck",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "c_rope_24"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "c_rope_44",
+      "kind": "rope",
+      "sourceObject": "rope_44",
+      "corridor": [
+        [
+          1406,
+          768
+        ],
+        [
+          1442,
+          768
+        ],
+        [
+          1442,
+          896
+        ],
+        [
+          1406,
+          896
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1424,
+            896
+          ],
+          "surface": "s_low_mid"
+        },
+        "end": {
+          "position": [
+            1424,
+            768
+          ],
+          "surface": "s_p38"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "extend source chain to lower standing deck",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "c_rope_44"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "c_rope_50",
+      "kind": "rope",
+      "sourceObject": "rope_50",
+      "corridor": [
+        [
+          1598,
+          640
+        ],
+        [
+          1634,
+          640
+        ],
+        [
+          1634,
+          768
+        ],
+        [
+          1598,
+          768
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1616,
+            768
+          ],
+          "surface": "s_p38"
+        },
+        "end": {
+          "position": [
+            1616,
+            640
+          ],
+          "surface": "s_p42"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "extend source chain to lower standing deck",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "c_rope_50"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "c_rope_52",
+      "kind": "rope",
+      "sourceObject": "rope_52",
+      "corridor": [
+        [
+          1662,
+          512
+        ],
+        [
+          1698,
+          512
+        ],
+        [
+          1698,
+          640
+        ],
+        [
+          1662,
+          640
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1680,
+            640
+          ],
+          "surface": "s_p42"
+        },
+        "end": {
+          "position": [
+            1680,
+            512
+          ],
+          "surface": "s_p46"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "extend source chain to lower standing deck",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "c_rope_52"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "c_rope_76",
+      "kind": "rope",
+      "sourceObject": "rope_76",
+      "corridor": [
+        [
+          2430,
+          704
+        ],
+        [
+          2466,
+          704
+        ],
+        [
+          2466,
+          832
+        ],
+        [
+          2430,
+          832
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            2448,
+            832
+          ],
+          "surface": "s_east"
+        },
+        "end": {
+          "position": [
+            2448,
+            704
+          ],
+          "surface": "s_p70"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "extend source chain to lower standing deck",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "c_rope_76"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "c_rope_82",
+      "kind": "rope",
+      "sourceObject": "rope_82",
+      "corridor": [
+        [
+          2622,
+          576
+        ],
+        [
+          2658,
+          576
+        ],
+        [
+          2658,
+          704
+        ],
+        [
+          2622,
+          704
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            2640,
+            704
+          ],
+          "surface": "s_p70"
+        },
+        "end": {
+          "position": [
+            2640,
+            576
+          ],
+          "surface": "s_p74"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "extend source chain to lower standing deck",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "c_rope_82"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "c_rope_98",
+      "kind": "rope",
+      "sourceObject": "rope_98",
+      "corridor": [
+        [
+          3134,
+          640
+        ],
+        [
+          3170,
+          640
+        ],
+        [
+          3170,
+          768
+        ],
+        [
+          3134,
+          768
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            3152,
+            768
+          ],
+          "surface": "s_gate"
+        },
+        "end": {
+          "position": [
+            3152,
+            640
+          ],
+          "surface": "s_p92"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "rope",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "extend source chain to lower standing deck",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "c_rope_98"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "c_step_w",
+      "kind": "ladder",
+      "sourceObject": "added-visible-route-link",
+      "corridor": [
+        [
+          478,
+          832
+        ],
+        [
+          514,
+          832
+        ],
+        [
+          514,
+          896
+        ],
+        [
+          478,
+          896
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            496,
+            896
+          ],
+          "surface": "s_low_w"
+        },
+        "end": {
+          "position": [
+            496,
+            832
+          ],
+          "surface": "s_lip_w"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "ladder",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "visible iron ladder; no hidden collision exception",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "c_step_w"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "c_bridge1_w",
+      "kind": "ladder",
+      "sourceObject": "added-visible-route-link",
+      "corridor": [
+        [
+          926,
+          832
+        ],
+        [
+          962,
+          832
+        ],
+        [
+          962,
+          896
+        ],
+        [
+          926,
+          896
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            944,
+            896
+          ],
+          "surface": "s_low_w"
+        },
+        "end": {
+          "position": [
+            944,
+            832
+          ],
+          "surface": "s_bridge1"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "ladder",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "visible iron ladder; no hidden collision exception",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "c_bridge1_w"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "c_bridge1_e",
+      "kind": "ladder",
+      "sourceObject": "added-visible-route-link",
+      "corridor": [
+        [
+          1150,
+          832
+        ],
+        [
+          1186,
+          832
+        ],
+        [
+          1186,
+          896
+        ],
+        [
+          1150,
+          896
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1168,
+            896
+          ],
+          "surface": "s_low_mid"
+        },
+        "end": {
+          "position": [
+            1168,
+            832
+          ],
+          "surface": "s_bridge1"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "ladder",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "visible iron ladder; no hidden collision exception",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "c_bridge1_e"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "c_bridge2_w",
+      "kind": "ladder",
+      "sourceObject": "added-visible-route-link",
+      "corridor": [
+        [
+          1854,
+          832
+        ],
+        [
+          1890,
+          832
+        ],
+        [
+          1890,
+          896
+        ],
+        [
+          1854,
+          896
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            1872,
+            896
+          ],
+          "surface": "s_low_mid"
+        },
+        "end": {
+          "position": [
+            1872,
+            832
+          ],
+          "surface": "s_bridge2"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "ladder",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "visible iron ladder; no hidden collision exception",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "c_bridge2_w"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "c_step_e",
+      "kind": "ladder",
+      "sourceObject": "added-visible-route-link",
+      "corridor": [
+        [
+          2718,
+          768
+        ],
+        [
+          2754,
+          768
+        ],
+        [
+          2754,
+          832
+        ],
+        [
+          2718,
+          832
+        ]
+      ],
+      "ends": {
+        "start": {
+          "position": [
+            2736,
+            832
+          ],
+          "surface": "s_east"
+        },
+        "end": {
+          "position": [
+            2736,
+            768
+          ],
+          "surface": "s_lip_e"
+        }
+      },
+      "direction": "both",
+      "requiredAbility": "ladder",
+      "entryRange": 18,
+      "status": "verified",
+      "sourceCorrection": "visible iron ladder; no hidden collision exception",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "c_step_e"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/final-geometry-measurements.json",
+          "result": "verified"
+        }
+      ]
+    }
+  ],
+  "stairs": [],
+  "solids": [
+    {
+      "id": "solid_west",
+      "polygon": [
+        [
+          0,
+          832
+        ],
+        [
+          480,
+          832
+        ],
+        [
+          480,
+          960
+        ],
+        [
+          0,
+          960
+        ]
+      ],
+      "surface": "s_west",
+      "type": "basalt-foundation",
+      "openings": [],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "solid_west"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/checks/physics-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "solid_low_w",
+      "polygon": [
+        [
+          480,
+          896
+        ],
+        [
+          960,
+          896
+        ],
+        [
+          960,
+          960
+        ],
+        [
+          480,
+          960
+        ]
+      ],
+      "surface": "s_low_w",
+      "type": "basalt-foundation",
+      "openings": [],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "solid_low_w"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/checks/physics-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "solid_low_mid",
+      "polygon": [
+        [
+          1152,
+          896
+        ],
+        [
+          1920,
+          896
+        ],
+        [
+          1920,
+          960
+        ],
+        [
+          1152,
+          960
+        ]
+      ],
+      "surface": "s_low_mid",
+      "type": "basalt-foundation",
+      "openings": [],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "solid_low_mid"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/checks/physics-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "solid_bank",
+      "polygon": [
+        [
+          2080,
+          896
+        ],
+        [
+          2112,
+          896
+        ],
+        [
+          2112,
+          960
+        ],
+        [
+          2080,
+          960
+        ]
+      ],
+      "surface": "s_bank",
+      "type": "basalt-foundation",
+      "openings": [],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "solid_bank"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/checks/physics-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "solid_east",
+      "polygon": [
+        [
+          2112,
+          832
+        ],
+        [
+          2752,
+          832
+        ],
+        [
+          2752,
+          960
+        ],
+        [
+          2112,
+          960
+        ]
+      ],
+      "surface": "s_east",
+      "type": "basalt-foundation",
+      "openings": [],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "solid_east"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/checks/physics-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "solid_gate",
+      "polygon": [
+        [
+          2752,
+          768
+        ],
+        [
+          3520,
+          768
+        ],
+        [
+          3520,
+          960
+        ],
+        [
+          2752,
+          960
+        ]
+      ],
+      "surface": "s_gate",
+      "type": "basalt-foundation",
+      "openings": [],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "solid_gate"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/checks/physics-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "bed_lava_9",
+      "polygon": [
+        [
+          960,
+          896
+        ],
+        [
+          1152,
+          896
+        ],
+        [
+          1152,
+          960
+        ],
+        [
+          960,
+          960
+        ]
+      ],
+      "type": "submerged-basalt-bed",
+      "surface": null,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "bed_lava_9"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/checks/physics-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "bed_lava_10",
+      "polygon": [
+        [
+          1920,
+          896
+        ],
+        [
+          2080,
+          896
+        ],
+        [
+          2080,
+          960
+        ],
+        [
+          1920,
+          960
+        ]
+      ],
+      "type": "submerged-basalt-bed",
+      "surface": null,
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "bed_lava_10"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/checks/physics-check.json",
+          "result": "verified"
+        }
+      ]
+    }
+  ],
+  "hazards": [
+    {
+      "id": "lava_9",
+      "hazard": "lava",
+      "polygon": [
+        [
+          960,
+          864
+        ],
+        [
+          1152,
+          864
+        ],
+        [
+          1152,
+          896
+        ],
+        [
+          960,
+          896
+        ]
+      ],
+      "effect": {
+        "type": "damage-and-knockup",
+        "damagePermilleOfMaxHp": 80,
+        "tickMs": 500,
+        "knockUp": 480
+      },
+      "trigger": "strict AABB body overlap with visible molten region",
+      "recovery": "upward velocity then natural landing; zero HP resets spawn",
+      "sourceObject": "lava_9",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "lava_9"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/checks/physics-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "lava_10",
+      "hazard": "lava",
+      "polygon": [
+        [
+          1920,
+          864
+        ],
+        [
+          2080,
+          864
+        ],
+        [
+          2080,
+          896
+        ],
+        [
+          1920,
+          896
+        ]
+      ],
+      "effect": {
+        "type": "damage-and-knockup",
+        "damagePermilleOfMaxHp": 80,
+        "tickMs": 500,
+        "knockUp": 480
+      },
+      "trigger": "strict AABB body overlap with visible molten region",
+      "recovery": "upward velocity then natural landing; zero HP resets spawn",
+      "sourceObject": "lava_10",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "lava_10"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/checks/physics-check.json",
+          "result": "verified"
+        }
+      ]
+    }
+  ],
+  "points": [
+    {
+      "id": "start_spawn",
+      "type": "spawn",
+      "position": [
+        128,
+        832
+      ],
+      "surface": "s_west",
+      "width": 0,
+      "height": 0,
+      "properties": {},
+      "active": true,
+      "status": "verified",
+      "notes": "",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "start_spawn"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/checks/physics-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "portal_to_slope_1",
+      "type": "portal",
+      "position": [
+        80,
+        832
+      ],
+      "surface": "s_west",
+      "width": 0,
+      "height": 0,
+      "properties": {
+        "target": "chiyan_slope_1",
+        "targetPortal": "portal_to_slope_2"
+      },
+      "active": true,
+      "status": "verified",
+      "notes": "",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "portal_to_slope_1"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/checks/physics-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "portal_to_core",
+      "type": "portal",
+      "position": [
+        3440,
+        768
+      ],
+      "surface": "s_gate",
+      "width": 0,
+      "height": 0,
+      "properties": {
+        "target": "chiyan_core",
+        "targetPortal": "portal_to_slope_2",
+        "reqLevel": 55
+      },
+      "active": true,
+      "status": "verified",
+      "notes": "",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "portal_to_core"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/checks/physics-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "spawn_flame_puppet_14",
+      "type": "monsterSpawn",
+      "position": [
+        480,
+        896
+      ],
+      "surface": "s_low_w",
+      "width": 480,
+      "height": 0,
+      "properties": {
+        "monster": "flame_puppet",
+        "count": 2
+      },
+      "active": true,
+      "status": "verified",
+      "notes": "",
+      "spawnRange": [
+        512,
+        928
+      ],
+      "safetyInset": 32,
+      "visualAsset": {
+        "path": "work/preview/mon_flame_puppet.png",
+        "width": 80,
+        "height": 96,
+        "instances": 2,
+        "name": "炎傀",
+        "source": "art/sprites/mon_flame_puppet.png"
+      },
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "spawn_flame_puppet_14"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/checks/physics-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "spawn_flame_puppet_15",
+      "type": "monsterSpawn",
+      "position": [
+        1152,
+        896
+      ],
+      "surface": "s_low_mid",
+      "width": 768,
+      "height": 0,
+      "properties": {
+        "monster": "flame_puppet",
+        "count": 3
+      },
+      "active": true,
+      "status": "verified",
+      "notes": "",
+      "spawnRange": [
+        1184,
+        1888
+      ],
+      "safetyInset": 32,
+      "visualAsset": {
+        "path": "work/preview/mon_flame_puppet.png",
+        "width": 80,
+        "height": 96,
+        "instances": 3,
+        "name": "炎傀",
+        "source": "art/sprites/mon_flame_puppet.png"
+      },
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "spawn_flame_puppet_15"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/checks/physics-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "spawn_flame_puppet_16",
+      "type": "monsterSpawn",
+      "position": [
+        2112,
+        832
+      ],
+      "surface": "s_east",
+      "width": 640,
+      "height": 0,
+      "properties": {
+        "monster": "flame_puppet",
+        "count": 3
+      },
+      "active": true,
+      "status": "verified",
+      "notes": "",
+      "spawnRange": [
+        2144,
+        2720
+      ],
+      "safetyInset": 32,
+      "visualAsset": {
+        "path": "work/preview/mon_flame_puppet.png",
+        "width": 80,
+        "height": 96,
+        "instances": 3,
+        "name": "炎傀",
+        "source": "art/sprites/mon_flame_puppet.png"
+      },
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "spawn_flame_puppet_16"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/checks/physics-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "spawn_flame_puppet_17",
+      "type": "monsterSpawn",
+      "position": [
+        2752,
+        768
+      ],
+      "surface": "s_gate",
+      "width": 608,
+      "height": 0,
+      "properties": {
+        "monster": "flame_puppet",
+        "count": 2
+      },
+      "active": true,
+      "status": "verified",
+      "notes": "",
+      "spawnRange": [
+        2784,
+        3328
+      ],
+      "safetyInset": 32,
+      "visualAsset": {
+        "path": "work/preview/mon_flame_puppet.png",
+        "width": 80,
+        "height": 96,
+        "instances": 2,
+        "name": "炎傀",
+        "source": "art/sprites/mon_flame_puppet.png"
+      },
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "spawn_flame_puppet_17"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/checks/physics-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "spawn_fire_crow_18",
+      "type": "monsterSpawn",
+      "position": [
+        512,
+        768
+      ],
+      "surface": "s_p16",
+      "width": 416,
+      "height": 0,
+      "properties": {
+        "monster": "fire_crow",
+        "count": 2
+      },
+      "active": true,
+      "status": "verified",
+      "notes": "",
+      "spawnRange": [
+        536,
+        904
+      ],
+      "safetyInset": 24,
+      "visualAsset": {
+        "path": "work/preview/mon_fire_crow.png",
+        "width": 80,
+        "height": 64,
+        "instances": 2,
+        "name": "火鸦",
+        "source": "art/sprites/mon_fire_crow.png"
+      },
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "spawn_fire_crow_18"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/checks/physics-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "spawn_fire_crow_19",
+      "type": "monsterSpawn",
+      "position": [
+        640,
+        640
+      ],
+      "surface": "s_p20",
+      "width": 480,
+      "height": 0,
+      "properties": {
+        "monster": "fire_crow",
+        "count": 1
+      },
+      "active": true,
+      "status": "verified",
+      "notes": "",
+      "spawnRange": [
+        664,
+        1096
+      ],
+      "safetyInset": 24,
+      "visualAsset": {
+        "path": "work/preview/mon_fire_crow.png",
+        "width": 80,
+        "height": 64,
+        "instances": 1,
+        "name": "火鸦",
+        "source": "art/sprites/mon_fire_crow.png"
+      },
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "spawn_fire_crow_19"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/checks/physics-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "spawn_fire_crow_20",
+      "type": "monsterSpawn",
+      "position": [
+        1344,
+        640
+      ],
+      "surface": "s_p42",
+      "width": 544,
+      "height": 0,
+      "properties": {
+        "monster": "fire_crow",
+        "count": 2
+      },
+      "active": true,
+      "status": "verified",
+      "notes": "",
+      "spawnRange": [
+        1368,
+        1864
+      ],
+      "safetyInset": 24,
+      "visualAsset": {
+        "path": "work/preview/mon_fire_crow.png",
+        "width": 80,
+        "height": 64,
+        "instances": 2,
+        "name": "火鸦",
+        "source": "art/sprites/mon_fire_crow.png"
+      },
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "spawn_fire_crow_20"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/checks/physics-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "spawn_fire_crow_21",
+      "type": "monsterSpawn",
+      "position": [
+        1472,
+        512
+      ],
+      "surface": "s_p46",
+      "width": 352,
+      "height": 0,
+      "properties": {
+        "monster": "fire_crow",
+        "count": 1
+      },
+      "active": true,
+      "status": "verified",
+      "notes": "",
+      "spawnRange": [
+        1496,
+        1800
+      ],
+      "safetyInset": 24,
+      "visualAsset": {
+        "path": "work/preview/mon_fire_crow.png",
+        "width": 80,
+        "height": 64,
+        "instances": 1,
+        "name": "火鸦",
+        "source": "art/sprites/mon_fire_crow.png"
+      },
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "spawn_fire_crow_21"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/checks/physics-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "spawn_fire_crow_22",
+      "type": "monsterSpawn",
+      "position": [
+        2240,
+        704
+      ],
+      "surface": "s_p70",
+      "width": 480,
+      "height": 0,
+      "properties": {
+        "monster": "fire_crow",
+        "count": 2
+      },
+      "active": true,
+      "status": "verified",
+      "notes": "",
+      "spawnRange": [
+        2264,
+        2696
+      ],
+      "safetyInset": 24,
+      "visualAsset": {
+        "path": "work/preview/mon_fire_crow.png",
+        "width": 80,
+        "height": 64,
+        "instances": 2,
+        "name": "火鸦",
+        "source": "art/sprites/mon_fire_crow.png"
+      },
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "spawn_fire_crow_22"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/checks/physics-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "spawn_fire_crow_23",
+      "type": "monsterSpawn",
+      "position": [
+        2368,
+        576
+      ],
+      "surface": "s_p74",
+      "width": 480,
+      "height": 0,
+      "properties": {
+        "monster": "fire_crow",
+        "count": 1
+      },
+      "active": true,
+      "status": "verified",
+      "notes": "",
+      "spawnRange": [
+        2392,
+        2824
+      ],
+      "safetyInset": 24,
+      "visualAsset": {
+        "path": "work/preview/mon_fire_crow.png",
+        "width": 80,
+        "height": 64,
+        "instances": 1,
+        "name": "火鸦",
+        "source": "art/sprites/mon_fire_crow.png"
+      },
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "spawn_fire_crow_23"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/checks/physics-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "gather_fire_herb_24",
+      "type": "gather",
+      "position": [
+        1744,
+        512
+      ],
+      "surface": "s_p46",
+      "width": 0,
+      "height": 0,
+      "properties": {
+        "item": "fire_herb",
+        "respawnMs": 120000
+      },
+      "active": true,
+      "status": "verified",
+      "notes": "",
+      "visualAsset": {
+        "path": "work/preview/prop_gather_fire_herb.png",
+        "width": 48,
+        "height": 48,
+        "instances": 1,
+        "name": "火灵草",
+        "source": "art/sprites/prop_gather_fire_herb.png"
+      },
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "gather_fire_herb_24"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/checks/physics-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "gather_fire_herb_25",
+      "type": "gather",
+      "position": [
+        2768,
+        576
+      ],
+      "surface": "s_p74",
+      "width": 0,
+      "height": 0,
+      "properties": {
+        "item": "fire_herb",
+        "respawnMs": 120000
+      },
+      "active": true,
+      "status": "verified",
+      "notes": "",
+      "visualAsset": {
+        "path": "work/preview/prop_gather_fire_herb.png",
+        "width": 48,
+        "height": 48,
+        "instances": 1,
+        "name": "火灵草",
+        "source": "art/sprites/prop_gather_fire_herb.png"
+      },
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "gather_fire_herb_25"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/checks/physics-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "gather_fire_herb_26",
+      "type": "gather",
+      "position": [
+        3216,
+        640
+      ],
+      "surface": "s_p92",
+      "width": 0,
+      "height": 0,
+      "properties": {
+        "item": "fire_herb",
+        "respawnMs": 120000
+      },
+      "active": true,
+      "status": "verified",
+      "notes": "",
+      "visualAsset": {
+        "path": "work/preview/prop_gather_fire_herb.png",
+        "width": 48,
+        "height": 48,
+        "instances": 1,
+        "name": "火灵草",
+        "source": "art/sprites/prop_gather_fire_herb.png"
+      },
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "gather_fire_herb_26"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/checks/physics-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "sense_chest_01",
+      "type": "chest",
+      "position": [
+        3024,
+        640
+      ],
+      "surface": "s_p92",
+      "width": 0,
+      "height": 0,
+      "properties": {
+        "loot": "qi_pill",
+        "count": 1
+      },
+      "active": true,
+      "status": "verified",
+      "notes": "",
+      "visualAsset": {
+        "path": "work/preview/prop_chest.png",
+        "width": 48,
+        "height": 40,
+        "instances": 1,
+        "name": "宝箱",
+        "source": "art/sprites/prop_chest.png"
+      },
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "sense_chest_01"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/checks/physics-check.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "sense_hidden_chest_01",
+      "type": "hidden",
+      "position": [
+        3024,
+        640
+      ],
+      "surface": "s_p92",
+      "width": 0,
+      "height": 0,
+      "properties": {
+        "enabled": false,
+        "reqSpirit": 0,
+        "reveal": "chest",
+        "targetObject": "sense_chest_01"
+      },
+      "active": false,
+      "status": "unverified",
+      "notes": "source metadata disabled; no hidden collision or flight ability"
+    },
+    {
+      "id": "sense_hidden_platform_01",
+      "type": "hidden",
+      "position": [
+        560,
+        576
+      ],
+      "surface": null,
+      "width": 64,
+      "height": 32,
+      "properties": {
+        "enabled": false,
+        "reqSpirit": 10,
+        "reveal": "platform"
+      },
+      "active": false,
+      "status": "unverified",
+      "notes": "source metadata disabled; no hidden collision or flight ability"
+    },
+    {
+      "id": "flyZone_1",
+      "type": "flyZone",
+      "position": [
+        480,
+        400
+      ],
+      "surface": null,
+      "width": 2200,
+      "height": 272,
+      "properties": {},
+      "active": false,
+      "status": "unverified",
+      "notes": "source metadata disabled; no hidden collision or flight ability"
+    },
+    {
+      "id": "goal_east",
+      "type": "goal",
+      "position": [
+        3440,
+        768
+      ],
+      "surface": "s_gate",
+      "properties": {
+        "reqLevel": 55
+      },
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "goal_east"
+          ],
+          "method": "current data / visual registration / collision and source point check",
+          "path": "work/checks/physics-check.json",
+          "result": "verified"
+        }
+      ]
+    }
+  ],
+  "transitions": [
+    {
+      "id": "t_rope_20_up",
+      "from": "s_low_w",
+      "to": "s_p16",
+      "action": "climb-up",
+      "climb": "c_rope_20",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "t_rope_20_up"
+          ],
+          "method": "continuous full tour covers both directions of every chain/ladder; actual surface transfers, bank drop-through and 64px normal jump return",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_rope_20_down",
+      "from": "s_p16",
+      "to": "s_low_w",
+      "action": "climb-down",
+      "climb": "c_rope_20",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "t_rope_20_down"
+          ],
+          "method": "continuous full tour covers both directions of every chain/ladder; actual surface transfers, bank drop-through and 64px normal jump return",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_rope_24_up",
+      "from": "s_p16",
+      "to": "s_p20",
+      "action": "climb-up",
+      "climb": "c_rope_24",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "t_rope_24_up"
+          ],
+          "method": "continuous full tour covers both directions of every chain/ladder; actual surface transfers, bank drop-through and 64px normal jump return",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_rope_24_down",
+      "from": "s_p20",
+      "to": "s_p16",
+      "action": "climb-down",
+      "climb": "c_rope_24",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "t_rope_24_down"
+          ],
+          "method": "continuous full tour covers both directions of every chain/ladder; actual surface transfers, bank drop-through and 64px normal jump return",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_rope_44_up",
+      "from": "s_low_mid",
+      "to": "s_p38",
+      "action": "climb-up",
+      "climb": "c_rope_44",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "t_rope_44_up"
+          ],
+          "method": "continuous full tour covers both directions of every chain/ladder; actual surface transfers, bank drop-through and 64px normal jump return",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_rope_44_down",
+      "from": "s_p38",
+      "to": "s_low_mid",
+      "action": "climb-down",
+      "climb": "c_rope_44",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "t_rope_44_down"
+          ],
+          "method": "continuous full tour covers both directions of every chain/ladder; actual surface transfers, bank drop-through and 64px normal jump return",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_rope_50_up",
+      "from": "s_p38",
+      "to": "s_p42",
+      "action": "climb-up",
+      "climb": "c_rope_50",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "t_rope_50_up"
+          ],
+          "method": "continuous full tour covers both directions of every chain/ladder; actual surface transfers, bank drop-through and 64px normal jump return",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_rope_50_down",
+      "from": "s_p42",
+      "to": "s_p38",
+      "action": "climb-down",
+      "climb": "c_rope_50",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "t_rope_50_down"
+          ],
+          "method": "continuous full tour covers both directions of every chain/ladder; actual surface transfers, bank drop-through and 64px normal jump return",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_rope_52_up",
+      "from": "s_p42",
+      "to": "s_p46",
+      "action": "climb-up",
+      "climb": "c_rope_52",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "t_rope_52_up"
+          ],
+          "method": "continuous full tour covers both directions of every chain/ladder; actual surface transfers, bank drop-through and 64px normal jump return",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_rope_52_down",
+      "from": "s_p46",
+      "to": "s_p42",
+      "action": "climb-down",
+      "climb": "c_rope_52",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "t_rope_52_down"
+          ],
+          "method": "continuous full tour covers both directions of every chain/ladder; actual surface transfers, bank drop-through and 64px normal jump return",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_rope_76_up",
+      "from": "s_east",
+      "to": "s_p70",
+      "action": "climb-up",
+      "climb": "c_rope_76",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "t_rope_76_up"
+          ],
+          "method": "continuous full tour covers both directions of every chain/ladder; actual surface transfers, bank drop-through and 64px normal jump return",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_rope_76_down",
+      "from": "s_p70",
+      "to": "s_east",
+      "action": "climb-down",
+      "climb": "c_rope_76",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "t_rope_76_down"
+          ],
+          "method": "continuous full tour covers both directions of every chain/ladder; actual surface transfers, bank drop-through and 64px normal jump return",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_rope_82_up",
+      "from": "s_p70",
+      "to": "s_p74",
+      "action": "climb-up",
+      "climb": "c_rope_82",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "t_rope_82_up"
+          ],
+          "method": "continuous full tour covers both directions of every chain/ladder; actual surface transfers, bank drop-through and 64px normal jump return",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_rope_82_down",
+      "from": "s_p74",
+      "to": "s_p70",
+      "action": "climb-down",
+      "climb": "c_rope_82",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "t_rope_82_down"
+          ],
+          "method": "continuous full tour covers both directions of every chain/ladder; actual surface transfers, bank drop-through and 64px normal jump return",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_rope_98_up",
+      "from": "s_gate",
+      "to": "s_p92",
+      "action": "climb-up",
+      "climb": "c_rope_98",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "t_rope_98_up"
+          ],
+          "method": "continuous full tour covers both directions of every chain/ladder; actual surface transfers, bank drop-through and 64px normal jump return",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_rope_98_down",
+      "from": "s_p92",
+      "to": "s_gate",
+      "action": "climb-down",
+      "climb": "c_rope_98",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "t_rope_98_down"
+          ],
+          "method": "continuous full tour covers both directions of every chain/ladder; actual surface transfers, bank drop-through and 64px normal jump return",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_step_w_up",
+      "from": "s_low_w",
+      "to": "s_lip_w",
+      "action": "climb-up",
+      "climb": "c_step_w",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "t_step_w_up"
+          ],
+          "method": "continuous full tour covers both directions of every chain/ladder; actual surface transfers, bank drop-through and 64px normal jump return",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_step_w_down",
+      "from": "s_lip_w",
+      "to": "s_low_w",
+      "action": "climb-down",
+      "climb": "c_step_w",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "t_step_w_down"
+          ],
+          "method": "continuous full tour covers both directions of every chain/ladder; actual surface transfers, bank drop-through and 64px normal jump return",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_bridge1_w_up",
+      "from": "s_low_w",
+      "to": "s_bridge1",
+      "action": "climb-up",
+      "climb": "c_bridge1_w",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "t_bridge1_w_up"
+          ],
+          "method": "continuous full tour covers both directions of every chain/ladder; actual surface transfers, bank drop-through and 64px normal jump return",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_bridge1_w_down",
+      "from": "s_bridge1",
+      "to": "s_low_w",
+      "action": "climb-down",
+      "climb": "c_bridge1_w",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "t_bridge1_w_down"
+          ],
+          "method": "continuous full tour covers both directions of every chain/ladder; actual surface transfers, bank drop-through and 64px normal jump return",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_bridge1_e_up",
+      "from": "s_low_mid",
+      "to": "s_bridge1",
+      "action": "climb-up",
+      "climb": "c_bridge1_e",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "t_bridge1_e_up"
+          ],
+          "method": "continuous full tour covers both directions of every chain/ladder; actual surface transfers, bank drop-through and 64px normal jump return",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_bridge1_e_down",
+      "from": "s_bridge1",
+      "to": "s_low_mid",
+      "action": "climb-down",
+      "climb": "c_bridge1_e",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "t_bridge1_e_down"
+          ],
+          "method": "continuous full tour covers both directions of every chain/ladder; actual surface transfers, bank drop-through and 64px normal jump return",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_bridge2_w_up",
+      "from": "s_low_mid",
+      "to": "s_bridge2",
+      "action": "climb-up",
+      "climb": "c_bridge2_w",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "t_bridge2_w_up"
+          ],
+          "method": "continuous full tour covers both directions of every chain/ladder; actual surface transfers, bank drop-through and 64px normal jump return",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_bridge2_w_down",
+      "from": "s_bridge2",
+      "to": "s_low_mid",
+      "action": "climb-down",
+      "climb": "c_bridge2_w",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "t_bridge2_w_down"
+          ],
+          "method": "continuous full tour covers both directions of every chain/ladder; actual surface transfers, bank drop-through and 64px normal jump return",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_step_e_up",
+      "from": "s_east",
+      "to": "s_lip_e",
+      "action": "climb-up",
+      "climb": "c_step_e",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "t_step_e_up"
+          ],
+          "method": "continuous full tour covers both directions of every chain/ladder; actual surface transfers, bank drop-through and 64px normal jump return",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_step_e_down",
+      "from": "s_lip_e",
+      "to": "s_east",
+      "action": "climb-down",
+      "climb": "c_step_e",
+      "conditions": [
+        "natural approach",
+        "26x58 full body clearance"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "t_step_e_down"
+          ],
+          "method": "continuous full tour covers both directions of every chain/ladder; actual surface transfers, bank drop-through and 64px normal jump return",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_west_lip_w",
+      "from": "s_west",
+      "to": "s_lip_w",
+      "action": "walk",
+      "conditions": [
+        "same visible bearing height"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "t_west_lip_w"
+          ],
+          "method": "continuous full tour covers both directions of every chain/ladder; actual surface transfers, bank drop-through and 64px normal jump return",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_lip_w_west",
+      "from": "s_lip_w",
+      "to": "s_west",
+      "action": "walk",
+      "conditions": [
+        "same visible bearing height"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "t_lip_w_west"
+          ],
+          "method": "continuous full tour covers both directions of every chain/ladder; actual surface transfers, bank drop-through and 64px normal jump return",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_bridge2_east",
+      "from": "s_bridge2",
+      "to": "s_east",
+      "action": "walk",
+      "conditions": [
+        "same visible bearing height"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "t_bridge2_east"
+          ],
+          "method": "continuous full tour covers both directions of every chain/ladder; actual surface transfers, bank drop-through and 64px normal jump return",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_east_bridge2",
+      "from": "s_east",
+      "to": "s_bridge2",
+      "action": "walk",
+      "conditions": [
+        "same visible bearing height"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "t_east_bridge2"
+          ],
+          "method": "continuous full tour covers both directions of every chain/ladder; actual surface transfers, bank drop-through and 64px normal jump return",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_lip_e_gate",
+      "from": "s_lip_e",
+      "to": "s_gate",
+      "action": "walk",
+      "conditions": [
+        "same visible bearing height"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "t_lip_e_gate"
+          ],
+          "method": "continuous full tour covers both directions of every chain/ladder; actual surface transfers, bank drop-through and 64px normal jump return",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_gate_lip_e",
+      "from": "s_gate",
+      "to": "s_lip_e",
+      "action": "walk",
+      "conditions": [
+        "same visible bearing height"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "t_gate_lip_e"
+          ],
+          "method": "continuous full tour covers both directions of every chain/ladder; actual surface transfers, bank drop-through and 64px normal jump return",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_bridge2_bank",
+      "from": "s_bridge2",
+      "to": "s_bank",
+      "action": "drop-through",
+      "conditions": [
+        "x2096 full body fits 32px bank with 3px rim margin",
+        "64px rise within normal jump capability"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "t_bridge2_bank"
+          ],
+          "method": "continuous full tour covers both directions of every chain/ladder; actual surface transfers, bank drop-through and 64px normal jump return",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "t_bank_bridge2",
+      "from": "s_bank",
+      "to": "s_bridge2",
+      "action": "jump",
+      "conditions": [
+        "x2096 full body fits 32px bank with 3px rim margin",
+        "64px rise within normal jump capability"
+      ],
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "t_bank_bridge2"
+          ],
+          "method": "continuous full tour covers both directions of every chain/ladder; actual surface transfers, bank drop-through and 64px normal jump return",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified"
+        }
+      ]
+    }
+  ],
+  "requiredRoutes": [
+    {
+      "id": "route_main",
+      "from": "start_spawn",
+      "to": "portal_to_core",
+      "via": [
+        "c_step_w",
+        "c_bridge1_w",
+        "s_bridge1",
+        "c_bridge1_e",
+        "c_bridge2_w",
+        "s_bridge2",
+        "s_east",
+        "c_step_e"
+      ],
+      "direction": "forward",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "route_main"
+          ],
+          "method": "60Hz continuous input replay from actual spawn, no resets / teleports / hazard contacts",
+          "path": "work/replays-final/route_main.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "route_return",
+      "from": "start_spawn",
+      "to": "portal_to_slope_1",
+      "via": [
+        "portal_to_core",
+        "c_step_e",
+        "s_bridge2",
+        "c_bridge2_w",
+        "c_bridge1_e",
+        "s_bridge1",
+        "c_bridge1_w",
+        "c_step_w"
+      ],
+      "direction": "round-trip",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "route_return"
+          ],
+          "method": "60Hz continuous input replay from actual spawn, no resets / teleports / hazard contacts",
+          "path": "work/replays-final/route_return.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "route_all_climbs",
+      "from": "start_spawn",
+      "to": "portal_to_core",
+      "via": [],
+      "direction": "forward",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "route_all_climbs"
+          ],
+          "method": "60Hz continuous input replay from actual spawn, no resets / teleports / hazard contacts",
+          "path": "work/replays-final/route_all_climbs.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "route_branch_west",
+      "from": "start_spawn",
+      "to": "portal_to_core",
+      "via": [
+        "c_rope_20"
+      ],
+      "direction": "forward",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "route_branch_west"
+          ],
+          "method": "60Hz continuous input replay from actual spawn, no resets / teleports / hazard contacts",
+          "path": "work/replays-final/route_branch_west.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "route_branch_center",
+      "from": "start_spawn",
+      "to": "portal_to_core",
+      "via": [
+        "c_rope_44",
+        "gather_fire_herb_24"
+      ],
+      "direction": "forward",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "route_branch_center"
+          ],
+          "method": "60Hz continuous input replay from actual spawn, no resets / teleports / hazard contacts",
+          "path": "work/replays-final/route_branch_center.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "route_branch_east",
+      "from": "start_spawn",
+      "to": "portal_to_core",
+      "via": [
+        "c_rope_76",
+        "gather_fire_herb_25"
+      ],
+      "direction": "forward",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "route_branch_east"
+          ],
+          "method": "60Hz continuous input replay from actual spawn, no resets / teleports / hazard contacts",
+          "path": "work/replays-final/route_branch_east.json",
+          "result": "verified"
+        }
+      ]
+    },
+    {
+      "id": "route_branch_gate",
+      "from": "start_spawn",
+      "to": "portal_to_core",
+      "via": [
+        "c_rope_98",
+        "gather_fire_herb_26"
+      ],
+      "direction": "forward",
+      "status": "verified",
+      "evidence": [
+        {
+          "geometryRevision": "slope2-geometry-003",
+          "actorParameterRevision": "slope2-base-feel-20261027-001",
+          "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+          "objects": [
+            "route_branch_gate"
+          ],
+          "method": "60Hz continuous input replay from actual spawn, no resets / teleports / hazard contacts",
+          "path": "work/replays-final/route_branch_gate.json",
+          "result": "verified"
+        }
+      ]
+    }
+  ],
+  "diagnostics": {
+    "maskPalette": {
+      "walk": [
+        150,
+        245,
+        160,
+        255
+      ],
+      "stand": [
+        0,
+        200,
+        80,
+        255
+      ],
+      "rope": [
+        0,
+        190,
+        230,
+        255
+      ],
+      "ladder": [
+        80,
+        140,
+        255,
+        255
+      ],
+      "hazard": [
+        255,
+        70,
+        30,
+        255
+      ],
+      "point": [
+        255,
+        70,
+        160,
+        255
+      ],
+      "jump": [
+        255,
+        205,
+        50,
+        255
+      ],
+      "drop": [
+        250,
+        150,
+        30,
+        255
+      ]
+    },
+    "rasterizationOrder": [
+      "walk",
+      "stand",
+      "rope",
+      "ladder",
+      "jump",
+      "drop",
+      "hazard",
+      "point"
+    ],
+    "regionIdIndex": null,
+    "geometryRevision": "slope2-geometry-003"
+  },
+  "validation": {
+    "status": "verified",
+    "geometryRevision": "slope2-geometry-003",
+    "actorParameterRevision": "slope2-base-feel-20261027-001",
+    "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+    "evidence": [
+      {
+        "geometryRevision": "slope2-geometry-003",
+        "actorParameterRevision": "slope2-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+        "objects": [
+          "route_main",
+          "route_return",
+          "route_all_climbs",
+          "route_branch_west",
+          "route_branch_center",
+          "route_branch_east",
+          "route_branch_gate"
+        ],
+        "method": "all 7 mandatory continuous routes",
+        "path": "work/final-routes.json",
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "slope2-geometry-003",
+        "actorParameterRevision": "slope2-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+        "objects": [],
+        "method": "12 executed data/physics checks including two real lava contacts and explicitly labeled local fixtures",
+        "path": "work/checks/physics-check.json",
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "slope2-geometry-003",
+        "actorParameterRevision": "slope2-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+        "objects": [],
+        "method": "actual Chromium assets, fixed-step replay, keyboard, camera and miniature map",
+        "path": "work/final-browser-check.json",
+        "result": "verified"
+      },
+      {
+        "geometryRevision": "slope2-geometry-003",
+        "actorParameterRevision": "slope2-base-feel-20261027-001",
+        "engineRevision": "gsb-aabb-feel-60hz-slope2-001",
+        "objects": [
+          "s_west",
+          "s_low_w",
+          "s_low_mid",
+          "s_bank",
+          "s_east",
+          "s_gate",
+          "s_p16",
+          "s_p20",
+          "s_p38",
+          "s_p42",
+          "s_p46",
+          "s_p70",
+          "s_p74",
+          "s_p92",
+          "s_bridge1",
+          "s_bridge2",
+          "s_lip_w",
+          "s_lip_e"
+        ],
+        "method": "18 generated bearing rows; 26 climb endpoint feet planes; 1x contact screenshots",
+        "path": "work/final-geometry-measurements.json",
+        "result": "verified"
+      }
+    ],
+    "issues": [],
+    "scope": "standalone local minimum tester; production integration prohibited until owner PASS"
+  },
+  "layerPolicy": {
+    "drawOrder": [
+      "background",
+      "playable",
+      "actor-and-runtime-sprites"
+    ],
+    "foreground": "not-applicable: no occluding foreground decoration",
+    "derivation": "exact layered master-003; generated terrain alpha retained; AI inpainted same-master background; registered material interiors refined"
+  }
+}
